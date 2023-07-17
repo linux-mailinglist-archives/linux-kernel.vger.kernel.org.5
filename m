@@ -2,110 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E21375627C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D35B756282
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbjGQMIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 08:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41374 "EHLO
+        id S230498AbjGQMJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 08:09:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231229AbjGQMH7 (ORCPT
+        with ESMTP id S230100AbjGQMJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 08:07:59 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0C8E58;
-        Mon, 17 Jul 2023 05:07:34 -0700 (PDT)
+        Mon, 17 Jul 2023 08:09:25 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACAEE6;
+        Mon, 17 Jul 2023 05:09:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689595655; x=1721131655;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=WP9jbrwJlCzDhGsE/E1k9YoxHP6CB4ER/l8Uze8ZUhU=;
-  b=VUmHmtKw3+V42iWkXCTgXkiGTj4CJyxGrrr5Ms0I109kVZouKhHgUt5e
-   1r28kx5QtN1ijv0wbR7WNK/ak1FVKwbxQNCzkGKZsNSRwj9wIls8JdsZ0
-   3zqJHAxJ+0EE5R1WKNrU70uGoSZtXVDuOV4+k8xq7JNgwXGkqlLM/n2pW
-   DaBG7wWAZzdBCtoPPJQ5U7fd9pCusF0OjGpRoCKdCk2NL41Tk2CrAhT3m
-   BB7IHn1/tIvJjaOxUJZUBHQ8kJEYEmc3KcbwV/HKwzggWe3vHPPbt3/Pt
-   gokginQ5eqnFlz6raXWRz0XoaSMyHP89IZTg8CGAMMBj82HL81k3cG8fN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="432082001"
+  t=1689595742; x=1721131742;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=O3yP0T0bW+xJPNEoHbl0Tg6ZcW8tghAmjL0CP7lEp9o=;
+  b=AwDwWe7OfP0mDfdW/0tcb05xj59dBShTYrWU5AZVqtE/Afbe2dLwBtGY
+   Yw1IQXVr+h34OZJsXDm/DUBwXGzDyhdMcXRYQWSeu7GcvnnxNGYW7kWSJ
+   SKJKzwCE5PoxapG2hdzHId+yAGNC3EJn06nekaCtPqTxeoizZ+XyTYRUT
+   OiVaBnxQF3Vi1urEGHZ9cy2qHGvuTwZj5Nhe689GekNdDZy/rmLd+OwNd
+   qvVZFJ4NCtcQViTwdTLuVyJ+kKwwdTfH9RUq0yOq4rHYWuV+RvlJdo6Nf
+   XD491kC8sCJ4sAj074o+9nXr2FJpTXEkIj6+Usxv70Fjm4HJ6wNga7ehn
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="452286736"
 X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="432082001"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 05:07:15 -0700
+   d="scan'208";a="452286736"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 05:08:18 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="752876486"
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="1053891367"
 X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="752876486"
-Received: from dkravtso-mobl1.ccr.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.252.45.233])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 05:07:10 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Dean Luick <dean.luick@cornelisnetworks.com>,
-        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH v5 11/11] PCI: Document the Capability accessor RMW improvements
-Date:   Mon, 17 Jul 2023 15:05:03 +0300
-Message-Id: <20230717120503.15276-12-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230717120503.15276-1-ilpo.jarvinen@linux.intel.com>
-References: <20230717120503.15276-1-ilpo.jarvinen@linux.intel.com>
+   d="scan'208";a="1053891367"
+Received: from pglc00062.png.intel.com ([10.221.207.82])
+  by fmsmga005.fm.intel.com with ESMTP; 17 Jul 2023 05:08:13 -0700
+From:   Rohan G Thomas <rohan.g.thomas@intel.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rohan G Thomas <rohan.g.thomas@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH net-next 1/1] net: stmmac: xgmac: Fix L3L4 filter count
+Date:   Mon, 17 Jul 2023 20:06:03 +0800
+Message-Id: <20230717120603.5053-1-rohan.g.thomas@intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Documentation claims port service drivers should play nice wrt. PCIe
-Capability changes but the concurrency control is now provided in the
-Capability accessors as long as the correct ones are used.
+Get the exact count of L3L4 filters when the L3L4FNUM field of
+HW_FEATURE1 register is >= 8. If L3L4FNUM < 8, then the number of L3L4
+filters supported by XGMAC is equal to L3L4FNUM. From L3L4FNUM >= 8
+the number of L3L4 filters goes on like 8, 16, 32, ... Current
+maximum of L3L4FNUM = 10.
 
-Update the documention to match the RMW accessor behavior.
+Also, fix the XGMAC_IDDR bitmask of L3L4_ADDR_CTRL register. IDDR
+field starts from the 8th bit of the L3L4_ADDR_CTRL register. IDDR[3:0]
+indicates the type of L3L4 filter register while IDDR[8:4] indicates
+the filter number (0 to 31). So overall 9 bits are used for IDDR
+(i.e. L3L4_ADDR_CTRL[16:8]) to address the registers of all the
+filters. Currently, XGMAC_IDDR is GENMASK(15,8), causing issues
+accessing L3L4 filters above 15 for those XGMACs configured with more
+than 16 L3L4 filters.
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Rohan G Thomas <rohan.g.thomas@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- Documentation/PCI/pciebus-howto.rst | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h     |  2 +-
+ drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c | 10 ++++++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/PCI/pciebus-howto.rst b/Documentation/PCI/pciebus-howto.rst
-index f882ff62c51f..a0027e8fb0d0 100644
---- a/Documentation/PCI/pciebus-howto.rst
-+++ b/Documentation/PCI/pciebus-howto.rst
-@@ -213,8 +213,12 @@ PCI Config Registers
- --------------------
- 
- Each service driver runs its PCI config operations on its own
--capability structure except the PCI Express capability structure, in
--which Root Control register and Device Control register are shared
--between PME and AER. This patch assumes that all service drivers
--will be well behaved and not overwrite other service driver's
--configuration settings.
-+capability structure except the PCI Express capability structure,
-+that is shared between many drivers including the service drivers.
-+RMW Capability accessors (pcie_capability_clear_and_set_word(),
-+pcie_capability_set_word(), and pcie_capability_clear_word()) protect
-+a selected set of PCI Express Capability Registers (Link Control
-+Register and Root Control Register). Any change to those registers
-+should be performed using RMW accessors to avoid problems due to
-+concurrent updates. For the up-to-date list of protected registers,
-+see pcie_capability_clear_and_set_word().
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
+index 1913385df685..153321fe42c3 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
++++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
+@@ -165,7 +165,7 @@
+ #define XGMAC_DCS_SHIFT			16
+ #define XGMAC_ADDRx_LOW(x)		(0x00000304 + (x) * 0x8)
+ #define XGMAC_L3L4_ADDR_CTRL		0x00000c00
+-#define XGMAC_IDDR			GENMASK(15, 8)
++#define XGMAC_IDDR			GENMASK(16, 8)
+ #define XGMAC_IDDR_SHIFT		8
+ #define XGMAC_IDDR_FNUM			4
+ #define XGMAC_TT			BIT(1)
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
+index 070bd912580b..df5af52fd1a1 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
+@@ -408,6 +408,16 @@ static int dwxgmac2_get_hw_feature(void __iomem *ioaddr,
+ 	/* MAC HW feature 1 */
+ 	hw_cap = readl(ioaddr + XGMAC_HW_FEATURE1);
+ 	dma_cap->l3l4fnum = (hw_cap & XGMAC_HWFEAT_L3L4FNUM) >> 27;
++	/* If L3L4FNUM < 8, then the number of L3L4 filters supported by
++	 * XGMAC is equal to L3L4FNUM. From L3L4FNUM >= 8 the number of
++	 * L3L4 filters goes on like 8, 16, 32, ... Current maximum of
++	 * L3L4FNUM = 10.
++	 */
++	if (dma_cap->l3l4fnum >= 8 && dma_cap->l3l4fnum <= 10)
++		dma_cap->l3l4fnum = 8 << (dma_cap->l3l4fnum - 8);
++	else if (dma_cap->l3l4fnum > 10)
++		dma_cap->l3l4fnum = 32;
++
+ 	dma_cap->hash_tb_sz = (hw_cap & XGMAC_HWFEAT_HASHTBLSZ) >> 24;
+ 	dma_cap->rssen = (hw_cap & XGMAC_HWFEAT_RSSEN) >> 20;
+ 	dma_cap->tsoen = (hw_cap & XGMAC_HWFEAT_TSOEN) >> 18;
 -- 
-2.30.2
+2.26.2
 
