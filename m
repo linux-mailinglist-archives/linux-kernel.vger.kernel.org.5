@@ -2,132 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 364687566F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E63B47566F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbjGQO6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39910 "EHLO
+        id S230266AbjGQO7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbjGQO6C (ORCPT
+        with ESMTP id S229762AbjGQO7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:58:02 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2070.outbound.protection.outlook.com [40.107.7.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7CBE5E;
-        Mon, 17 Jul 2023 07:58:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k1MicFwIW9zJA+bZHjiUXZ3ne09+M4N/XAfqKybttlgLYgNEYny0YNSDPieGTaHg6Za4UdLrykzTvX4ngPH0ZdnBRqIGD3tXK51L9ZAiNnwIMHReHYnzusNvIFNsG46gFQLoxJRHMPNJDhi4aZPjG9MzfSBsBwdpBVXzODDYynXUAFX3nErlGY7nL75fm17Jhac4drxSwFEqvh9ZbgiuRcAAvt4RM4npLgf8Jtlt9ebs5WOUC/UFQIZdPvKE2Sh9D0yKo5p7HogCMWa1LfxO2bVaEAKl074zzknGmEAbGSTNKK5RLZK7pyynwAOqx0p8BIDlRDXDQy1lmxRygI5G3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=n9LEHGFTwmRLbQqqsyHdq9bnzJ1Q3Hu4ZC5s9tBIlB4=;
- b=IZfi95kTuQKf5dp5fqTy/Iej7kABHBwWFyCpNlmo2b/HNh3OPflYXwECe9w6P+DUXsNiuvMDcHJaBeqbMdLxFRghehObMzaMday6GpPeAHCDMFtY0XkvtRgDOY3HgHx+2hBYP77EKNvRO/sWlKvkUJKv6Vn8yh9jznIC8uKeXfXI8psd+LDume9+9Pi+5kJC+Y2RV0Q3wBhxTPv1w9zl66QJHjkElFwuRU9yaqTMxsurLwbSXalAjF6GDbNCFf9ZVsORpY9YuBBd+hoTs8uIIxLQuYKMo+fKoX4BgRXHVw+WV5jmX/Ps18aFEWK25SCd3CCJhi1oY/Ho4bQQ/IkIBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n9LEHGFTwmRLbQqqsyHdq9bnzJ1Q3Hu4ZC5s9tBIlB4=;
- b=UMeMQkICxVVQ2/tJ+WLCFdmPhWiLr90tsBS5IIp4rKRCwcQ8pC9JPHVP1eSMSvGcITMVehtd+L5U3PLk0LZkNta0GQvdq+HSMNb+3Z3AxE1Aw0ZThHMyGjiSMPn0WX2WxDsnPa3QxVQuCQ/t2EKibVqXZQEevihOcDUJRwZPzz0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by PAXPR04MB9140.eurprd04.prod.outlook.com (2603:10a6:102:22f::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Mon, 17 Jul
- 2023 14:57:57 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::6cc2:14b2:ca51:6c0]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::6cc2:14b2:ca51:6c0%4]) with mapi id 15.20.6588.031; Mon, 17 Jul 2023
- 14:57:57 +0000
-Date:   Mon, 17 Jul 2023 10:57:44 -0400
-From:   Frank Li <Frank.li@nxp.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     mani@kernel.org, Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-pci@vger.kernel.org>,
-        "moderated list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-Subject: Re: [PATCH 2/2] PCI: layerscape: Add the workaround for lost link
- capablities during reset
-Message-ID: <ZLVW6OotFdesx+wG@lizhi-Precision-Tower-5810>
-References: <20230615164113.2270698-1-Frank.Li@nxp.com>
- <20230615164113.2270698-2-Frank.Li@nxp.com>
- <CAL_JsqL7o5ipaBkNRECkWZPZDTB1kSFrUV3YjKL6xj02f0x2Sw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqL7o5ipaBkNRECkWZPZDTB1kSFrUV3YjKL6xj02f0x2Sw@mail.gmail.com>
-X-ClientProxiedBy: SJ0PR03CA0332.namprd03.prod.outlook.com
- (2603:10b6:a03:39c::7) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Mon, 17 Jul 2023 10:59:16 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE62AB9
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:59:15 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36HEhtPL008059;
+        Mon, 17 Jul 2023 14:58:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=LmURygZlBrerhkIVoF5heWa/27Y6FcJVGdZwY+PeiMw=;
+ b=oWla03hKzYHhu3RzVI4y8jqMf3YO/YPF2aEOnFaxqMW5Nq7E3cgWXgptNq4Gf3uSQw7O
+ jHaT85AmGRku86XxQlUfAAzBIuwSmnedl0HcyQx1+8FLFVGeyiSEg6zWVR0BJtMrCMFj
+ ad5SZu/f04eUny7iTkqQDiX81+82a2zo7jhpH6DW8dkcYSa++JR6i79jVfsclCmScvKp
+ 8TmyBW5qUCMuR/3I3qmGWJ7MQAIQesyuwVgd2rjNjX+tNL6+q5f7eR2LngqDpVJNXd3U
+ Ldgsof2OmgokPzz3Lne4S08aBtmcFwmPFx8pXoYEUTDyRekQpIy2hvg9DC4LPFBha/CQ Zw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rw77y123r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 14:58:50 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36HEiNDE011834;
+        Mon, 17 Jul 2023 14:58:49 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rw77y1233-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 14:58:49 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36HDwFPW007605;
+        Mon, 17 Jul 2023 14:58:48 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rv80j04tk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 14:58:47 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36HEwkmH44695898
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 Jul 2023 14:58:46 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 379E320049;
+        Mon, 17 Jul 2023 14:58:46 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 464DF20040;
+        Mon, 17 Jul 2023 14:58:40 +0000 (GMT)
+Received: from li-c1fdab4c-355a-11b2-a85c-ef242fe9efb4.ibm.com.com (unknown [9.171.2.235])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 17 Jul 2023 14:58:40 +0000 (GMT)
+From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+To:     peterz@infradead.org, tim.c.chen@linux.intel.com
+Cc:     bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
+        hdanton@sina.com, ionela.voinescu@arm.com, juri.lelli@redhat.com,
+        len.brown@intel.com, linux-kernel@vger.kernel.org, mgorman@suse.de,
+        naveen.n.rao@linux.vnet.ibm.com, rafael.j.wysocki@intel.com,
+        ravi.v.shankar@intel.com, ricardo.neri@intel.com,
+        rostedt@goodmis.org, srikar@linux.vnet.ibm.com,
+        srinivas.pandruvada@linux.intel.com, sshegde@linux.vnet.ibm.com,
+        v-songbaohua@oppo.com, vincent.guittot@linaro.org,
+        vschneid@redhat.com, x86@kernel.org, yangyicong@hisilicon.com,
+        yu.c.chen@intel.com
+Subject: [PATCH] sched/fair: Add SMT4 group_smt_balance handling
+Date:   Mon, 17 Jul 2023 20:28:23 +0530
+Message-Id: <20230717145823.1531759-1-sshegde@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20230717133718.GJ4253@hirez.programming.kicks-ass.net>
+References: <20230717133718.GJ4253@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PAXPR04MB9140:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7c7ac133-a5ef-496c-d9ab-08db86d634d7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0jW9lJRc6Kiga/xlXOy4qDSVQxuNwhdRGOdaavfvAdaDGaPEQ40vGK01XOvOiMLYYsIDCpgf/py9L6BO8+Ue3VhakChpMq8VQOFpvlvJ7zwQeku5j+4q2HhrVlBBYeibir8xqm1aSdLRQT+8NmrXivm3EK27gCtC9pdIfKiH6QXkZTudneQpFw4CDuxTAKYQ484hpQqM4BapdlnDLv1eIe6lVh4Lp29H59ou9+N4fb0L685bz0QPh+SQGu5rCGFR6CIQAwuQN2PjMaPlCDaZxSWMEQQcHA5hL1HDz+waZwbzbELe93SWBfvaJo0I08X4R/jzqyqPKyQZUCrmWJIRvNBJK/Gu1Clqip8p0aiYcM+zNCkaPrDBBPLhCxdGOZg0DGXS+bdrkEG0tideOXR68v3Nd44lTTLbjHVZ+PnA2NrnoZ7Vds7SvV9D6n1h+aPgkfT/Lsf4XXHJ/CAt1rTNaucB0OmCO2kL7yjb/S3e3kqX1yS6cjlSk8gM2STbxQA8r6fwcPbREx1h292fQaT2oHXzrw2pOm0eCdkhmKughirYCQxVoW/B2F4KzFJm8/GzCZgq3sJD9HiyyBKeAqrUrbif6CRVQd8vZ1TGOsMxP0zG9jxzrtxHcyJYzpfBk0Gb2aB6cgfmRyBmcWGw2oaW4A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(4636009)(39860400002)(396003)(366004)(136003)(346002)(376002)(451199021)(478600001)(6486002)(52116002)(6666004)(54906003)(6506007)(53546011)(186003)(2906002)(9686003)(6512007)(26005)(33716001)(316002)(41300700001)(4326008)(6916009)(66946007)(7416002)(8676002)(5660300002)(8936002)(66476007)(38350700002)(38100700002)(66556008)(86362001)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dEtmUWwwOGhNcmJXYUpneTFHRlowSmJlSEJoOHZ6alZld2JJM0xtRE5jT1pU?=
- =?utf-8?B?RHBBaHAxQ2dYUU5QUThMc2lrUWZwbDlqWGFzZGxOR1k5K3lMcXVYNkp3bEdk?=
- =?utf-8?B?VGNPQk5jdnRCQVluR0dHWTZhNzQ2dUlPUUpsVVpSK2tQNDFNaWp1eitZb3JR?=
- =?utf-8?B?NEx6RndqY1o3TFlFSEJaTTlrSDl2N1o0dTBZaWpWK0tMclV4OHhQdkM5bXhn?=
- =?utf-8?B?bW5nR1ZwaUFPY1N0TWNwQlJuZGhBc2tDcFNPck1nNEY4TEcyb1pYVmRzcTR3?=
- =?utf-8?B?Nk1WWEZ4NEVkYjFDdDdDdUNtQ1FDRktFa1lVM2U1dFlUQUhMcTFXaVdnSWdJ?=
- =?utf-8?B?dFFKVTR0ZTlDK05KbXE4U2NYZFlBUitXV0NvcEswOTIwZllncVYrMW1wTTlT?=
- =?utf-8?B?czl1M2F5T014VDFVQzJxOWF4MVFVNlBoZmp5UlVDVVMrd1N0MWttbDBsb1JK?=
- =?utf-8?B?SlhKT1ZNOWR1ZXFQM05EU01JcHduZ0ZlK0tuSnBaU241NUROWVhrRi9xRWlG?=
- =?utf-8?B?SHZOYTRxcU5SY2NSVlR3eko5aGhOeTg3WExKRkw0cnhlY3FPSS9hVk4xak5v?=
- =?utf-8?B?eTN6RFNSb3VtYXhPSitIdEU2Tm90WjJleFdGbUFmZVhMTGpDMGxwUEJWYlVx?=
- =?utf-8?B?QmVPcHRIMHlJdWxySCtDT1RscVFzd2E1YVhRVUo1dE9kMVFrZUFNOFQ0TGxa?=
- =?utf-8?B?dTlzT3BURGJ3WEQ3TmI2WUg2UklZVzRGZkE3SENoMGc5cWpVMUFHMGlQYmpF?=
- =?utf-8?B?SzRYUmoyNkVCeEZmR0JXclc4bTE5R2Y2K09BS3k4Q3ZxR3BCWWNVNGdNMWx6?=
- =?utf-8?B?ZTJYSjlPNnJrNkEvb2ozUFQ5RnE4dXU4MlY5b3NEVXFDbFpTbU1TRUFIek1K?=
- =?utf-8?B?M1crOWFmQzEzMkhab0F1aURoTkdWcDNhek5KSVJEd0NJVHUxWmYxRy9CdDIr?=
- =?utf-8?B?VitiTEQxQ0FCeHJRL1V1MVNZUlQzcWZGbWNnbWVuMEltQnhvRGRjWk1CcitF?=
- =?utf-8?B?K1dXNGxhd2xNSnpjeXJTdWNJUnJqWFM4OWovZ21obXZxSy9FcVVsR3BWY3VC?=
- =?utf-8?B?Z1NOOWVZR2FjbGRnVlAvbkR4dTlZQzdUN202WTBtWjkyai9kczljZTQwdHNV?=
- =?utf-8?B?c2RNbGVXVmMzV1JicVBlUlZUN3R2OE1GU0RoKzNVTENzai9Mc2dLU3FIUkwx?=
- =?utf-8?B?Vm43eS9YZUJXSjd1UVZCVUQvSVlZek9sTExweVJsMTRUVFVFNXpNZ2h1UGhj?=
- =?utf-8?B?MXpRUVlDcDFLWEZ0SmlIdUZZR3NqZTl1ZVpQKzJyYWZoZTBSTGtTRDJBR3Qx?=
- =?utf-8?B?SjZ6TWlrTThvc00rcEQzWjZCRFNvdGhhTzYwdlhTN0tZRnBUZThWM3duM2Rk?=
- =?utf-8?B?WFNic1NjUTQ3bHBQdUVrQzRHR2FId1JlVjczd1Zvb1NFdkExMGd2QlhXdVNL?=
- =?utf-8?B?bEhnSWlFQUpaOW1aSFIybXRpQXdacE1yOVk1anlybTBzTzF5TTZ6Y2RRb0Fw?=
- =?utf-8?B?SEhwWlY1dUxmY1FyZENlVmgrcWZ3L2xHSG5QeFY0ZUxaMzlac3lqcjJISDFz?=
- =?utf-8?B?OERnUitYaFZ3eHNqTkRYSFZYSit4Z3dLT2FzRUdUbWlrMWpzQjhnN2g1VzBG?=
- =?utf-8?B?eHpvVHR6ZEtkSmN1ZFdEWElvVUJDMUZvYUxHMmZQaUFmdFZpS1ZpZWZ2blJm?=
- =?utf-8?B?bTNHR3ZyNUtENE1obmtQMjE5SlZHSDlIeDJmeE5JaEhicWRrSmpHRytvMUND?=
- =?utf-8?B?cEN6czg3a20vUXZ0Z1hvUVh0OSt3dXFsZERDNnhHOE5vZTluUHRmU3JvMExT?=
- =?utf-8?B?MVplZmFoRVFTQ1hGK28vM3dKMHFxQnpHaDliTS9ic3NMYXBJNmtsc0JrQmRk?=
- =?utf-8?B?VUdyRE9DSnFSWTBwUks5WXpqTUlOdFBtaHFYSFk2bmhuTzdRdXRZZVdKd1hM?=
- =?utf-8?B?YnRwck5QWnROQVVDbXdUWU5jd3FDeVVMUWpqaTNpaTVlcENDeFhnZ0Y0c3RQ?=
- =?utf-8?B?QVdWMGFzRHdaVThiYzU0aFgwcDhiMmFReUtMMWVGamxuZUhWK1JOcllMNlJR?=
- =?utf-8?B?NkhRRStWQzJQQ0tDa2FNTkx2ZHY4NUVrVmdhU0htd1Awdm5Obk5ydVkzNFht?=
- =?utf-8?Q?ZWbsY4KDMgjY05sWSKwzNoYc0?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7c7ac133-a5ef-496c-d9ab-08db86d634d7
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 14:57:57.1965
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Dmh2nLw6VQerQnU/sVmx+jZA0kR/7ijRypNJrAty/JV7PqzOohMSlXciiFAaAxOjW6k29pz+RHdFhUiTN3zI2w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9140
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: tTlXGqcHP_YJuXzdxvOaoIeYaVLpk4S8
+X-Proofpoint-ORIG-GUID: JtuPYtP2yaSaEIORV3zR3973jtzx-1xD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_11,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 mlxscore=0 mlxlogscore=999 clxscore=1015 adultscore=0
+ spamscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307170133
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -135,91 +99,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 08:45:14AM -0600, Rob Herring wrote:
-> On Thu, Jun 15, 2023 at 10:41 AM Frank Li <Frank.Li@nxp.com> wrote:
-> >
-> > From: Xiaowei Bao <xiaowei.bao@nxp.com>
-> >
-> > A workaround for the issue where the PCI Express Endpoint (EP) controller
-> > loses the values of the Maximum Link Width and Supported Link Speed from
-> > the Link Capabilities Register, which initially configured by the Reset
-> > Configuration Word (RCW) during a link-down or hot reset event.
-> 
-> What makes this Layerscape specific? Seems like something internal to DWC.
+From: Tim Chen <tim.c.chen@linux.intel.com>
 
-layerscape designed behavor is that LINK speed and width controled by RCW.
-But design have been 'defect' when switch to dwc controller, may not
-correct connect some wire. So provide an errata, ask software recover such
-information when link up/down to align design spec.
+For SMT4, any group with more than 2 tasks will be marked as
+group_smt_balance. Retain the behaviour of group_has_spare by marking
+the busiest group as the group which has the least number of idle_cpus.
 
-For example, RCW config max link is 2lan, after link down/up, DWC reset
-to max link to 4lan. So host side get a report, max link is 4 lan. 
+Also, handle rounding effect of adding (ncores_local + ncores_busy)
+when the local is fully idle and busy group has more than 2 tasks.
+Local group should try to pull at least 1 task in this case.
 
-It will not impact function, just information miss matched.
+Originally-by: Tim Chen <tim.c.chen@linux.intel.com>
+Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+Signed-off-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+---
+ kernel/sched/fair.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-Frank
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 932e7b78894a..9502013abe33 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -9532,7 +9532,7 @@ static inline long sibling_imbalance(struct lb_env *env,
+ 	imbalance /= ncores_local + ncores_busiest;
 
-> 
-> >
-> > Signed-off-by: Xiaowei Bao <xiaowei.bao@nxp.com>
-> > Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> >  drivers/pci/controller/dwc/pci-layerscape-ep.c | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> >
-> > diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-> > index 4e4fdd1dfea7..2ef02d827eeb 100644
-> > --- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
-> > +++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-> > @@ -45,6 +45,7 @@ struct ls_pcie_ep {
-> >         struct pci_epc_features         *ls_epc;
-> >         const struct ls_pcie_ep_drvdata *drvdata;
-> >         int                             irq;
-> > +       u32                             lnkcap;
-> >         bool                            big_endian;
-> >  };
-> >
-> > @@ -73,6 +74,7 @@ static irqreturn_t ls_pcie_ep_event_handler(int irq, void *dev_id)
-> >         struct ls_pcie_ep *pcie = dev_id;
-> >         struct dw_pcie *pci = pcie->pci;
-> >         u32 val, cfg;
-> > +       u8 offset;
-> >
-> >         val = ls_lut_readl(pcie, PEX_PF0_PME_MES_DR);
-> >         ls_lut_writel(pcie, PEX_PF0_PME_MES_DR, val);
-> > @@ -81,6 +83,13 @@ static irqreturn_t ls_pcie_ep_event_handler(int irq, void *dev_id)
-> >                 return IRQ_NONE;
-> >
-> >         if (val & PEX_PF0_PME_MES_DR_LUD) {
-> > +
-> > +               offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-> > +
-> > +               dw_pcie_dbi_ro_wr_en(pci);
-> > +               dw_pcie_writew_dbi(pci, offset + PCI_EXP_LNKCAP, pcie->lnkcap);
-> > +               dw_pcie_dbi_ro_wr_dis(pci);
-> > +
-> >                 cfg = ls_lut_readl(pcie, PEX_PF0_CONFIG);
-> >                 cfg |= PEX_PF0_CFG_READY;
-> >                 ls_lut_writel(pcie, PEX_PF0_CONFIG, cfg);
-> > @@ -216,6 +225,7 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
-> >         struct ls_pcie_ep *pcie;
-> >         struct pci_epc_features *ls_epc;
-> >         struct resource *dbi_base;
-> > +       u8 offset;
-> >         int ret;
-> >
-> >         pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
-> > @@ -252,6 +262,9 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
-> >
-> >         platform_set_drvdata(pdev, pcie);
-> >
-> > +       offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-> > +       pcie->lnkcap = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
-> > +
-> >         ret = dw_pcie_ep_init(&pci->ep);
-> >         if (ret)
-> >                 return ret;
-> > --
-> > 2.34.1
-> >
+ 	/* Take advantage of resource in an empty sched group */
+-	if (imbalance == 0 && local->sum_nr_running == 0 &&
++	if (imbalance <= 1 && local->sum_nr_running == 0 &&
+ 	    busiest->sum_nr_running > 1)
+ 		imbalance = 2;
+
+@@ -9720,6 +9720,17 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+ 		break;
+
+ 	case group_smt_balance:
++		/* no idle cpus on both groups handled by group_fully_busy below */
++		if (sgs->idle_cpus != 0 || busiest->idle_cpus != 0) {
++			if (sgs->idle_cpus > busiest->idle_cpus)
++				return false;
++			if (sgs->idle_cpus < busiest->idle_cpus)
++				return true;
++			if (sgs->sum_nr_running <= busiest->sum_nr_running)
++				return false;
++		}
++		break;
++
+ 	case group_fully_busy:
+ 		/*
+ 		 * Select the fully busy group with highest avg_load. In
+--
+2.31.1
+
