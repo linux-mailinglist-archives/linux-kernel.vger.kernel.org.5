@@ -2,159 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D40DB75660A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854B975660F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbjGQOOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:14:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42150 "EHLO
+        id S230425AbjGQOO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:14:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232112AbjGQOOq (ORCPT
+        with ESMTP id S232140AbjGQOOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:14:46 -0400
-Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2180.outbound.protection.outlook.com [40.92.62.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDACC98
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:14:43 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ArLK4pZjiXCCjTrMF2qVZftrLqgrWzBiE5tev3r2nQW2+JmtbDwj9cN8M/jfKKVBmfgrHR8vTfsXJ0dUfu5C958Kxo0+E1gxwgEePfuKhNUloYSyYqE7trMenSjUcrmfIylpq30zi3kouVuKy5LaqzGUbmnBEeVCn/LMA5QXXSjQ2T8iV3DuQATAdtlUsU0tStAKS6urcF/507EkT5pUuq0Pk1y8Ro/CDpvjGm82KmF98KQmhHuGNPgSub96PijzSXMxJNvUZ9yLzvb5/+aDmLkgPeMJBa6CAQbzmj99zeviSQ7qtRfc7cPlhEs9W1z+CJBzkucGYDe87xmu5EZmpg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W5Ua9q0vJVjyvsdJ5XbWStiiNEWQXyUO+jkHU9D95SQ=;
- b=FaThyPozuDqeDgDYfv5RaotlrfUlZB7ZVIaxSHmE9X8tixMbUsOEa15qSVI+/GB2nT8rE3b6bXmEZSqvAjdaITVGWej7GMOsKUyHyffIBbhrKa/XfBoKn+52OD1R30pp3A0KDYx6sesUBqtwT/hZi9zX+z92orL7CXCCbOnfivZbbb+t4Gtjt+9FBr4F2tQVzzWAcS3EoLDZjJ9lNPGwooub6T4M8AL9b9a5b06vQHPMALdkUxwxEdLfKOBI8L5LlLl25T5lAyYtV2qEidErWB2/BMTCyLTtqTVXsgvnouWZ8zNTlrvvdf59AxaKNuWaCRiWuapumXHbSt5LRpFbOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W5Ua9q0vJVjyvsdJ5XbWStiiNEWQXyUO+jkHU9D95SQ=;
- b=iAOsLJpazsRC3eP3hHgTfQzyBqtpXZgDsIS8H/k1Shdg9Pj0cdrub47GCuMfN2NsF+YAbYDdpDiGfYTior6OL9ClSjZfdb7Du2HLCwv2ogt+L1ukSyAlkp9Q/sen5zYcfR1tpK+h7mZ5+afcX/9VNutYbyOCHmhZ8+3tzW72S5eam5LDZSZllnbgsXQYmQNGhPAcgPOzsngI5GjymaoYSpk94KipV79vwGxFa1nE1J4gfJ2TL5HHcil2yf9QZbUaoGka0ZBDyDOGVgjF+8pvCSo26CVAhPm2snwti4rNiAAlwS1tWWa+fUSFDHumrjYCE0e9hKzK8A1FL6FYlwM4Yw==
-Received: from SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:c2::7) by
- SYBP282MB4213.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:1a8::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.31; Mon, 17 Jul 2023 14:14:37 +0000
-Received: from SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM
- ([fe80::42d9:eaab:e6bf:1f81]) by SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM
- ([fe80::42d9:eaab:e6bf:1f81%5]) with mapi id 15.20.6588.031; Mon, 17 Jul 2023
- 14:14:37 +0000
-From:   David Xu <xuwd1@hotmail.com>
-To:     tiwai@suse.de
-Cc:     alsa-devel@alsa-project.org, andy.chi@canonical.com,
-        david.rhodes@cirrus.com, james.schulman@cirrus.com,
-        kasper93@gmail.com, linux-kernel@vger.kernel.org, luke@ljones.dev,
-        p.jungkamp@gmx.net, patches@opensource.cirrus.com, perex@perex.cz,
-        rf@opensource.cirrus.com, ruinairas1992@gmail.com,
-        sbinding@opensource.cirrus.com, tcrawford@system76.com,
-        tiwai@suse.com, xuwd1@hotmail.com, yangyingliang@huawei.com,
-        yangyuchi66@gmail.com
-Subject: Re: [PATCH 0/2] Fix CSC3551 speaker sound problem for machines without a valid ACPI _DSD
-Date:   Mon, 17 Jul 2023 22:14:17 +0800
-Message-ID: <SY4P282MB18354B658F2FFE36E6FED411E03BA@SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <87zg3waunl.wl-tiwai@suse.de>
-References: <87zg3waunl.wl-tiwai@suse.de>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [9kA2XvV4uynHXP9PdnK2UftfNQCpv61e]
-X-ClientProxiedBy: SG2PR02CA0104.apcprd02.prod.outlook.com
- (2603:1096:4:92::20) To SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM
- (2603:10c6:10:c2::7)
-X-Microsoft-Original-Message-ID: <20230717141417.163591-1-xuwd1@hotmail.com>
+        Mon, 17 Jul 2023 10:14:52 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E17E56
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:14:44 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C30146606FC8;
+        Mon, 17 Jul 2023 15:14:42 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689603283;
+        bh=Q4HPiSYOmkoIPgF+rGlTLj93wrF/ANybvzT6KO8OyD8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nLS5D4dYhx22ds1BMwMhee0pcviP4/9asFclVstHL6dfcKqS1X456/ppQhrzvJDWo
+         LJ1Kltf54heseL8T+gaMyoRn+gin86e7gqPipg4d/xzeqRPij+06gp2ptSnLZNpiFH
+         b4AQa1UiFsqMar/ZiCkV7yT3wWsv6rLMi3KhTFtm30i/+ZHGEpNA1eBI3WA3lLYSJ1
+         ZDld9G5Spwq5o9Z86KJablku9uGp3ZRBEFH5QsnOTkgmmeYMbloXzHAH9EKKSHtnCW
+         gP862bhZfaqlIzgfZVqT8iSbsFWYMZyAy59l2zcCjXJWApx/hbpDS30EDsgSpyLvvD
+         FJ9YafJ5drxVA==
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     chunkuang.hu@kernel.org
+Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
+        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
+        wenst@chromium.org, nfraprado@collabora.com
+Subject: [PATCH v6 00/11] MediaTek DisplayPort: support eDP and aux-bus
+Date:   Mon, 17 Jul 2023 16:14:27 +0200
+Message-Id: <20230717141438.274419-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SY4P282MB1835:EE_|SYBP282MB4213:EE_
-X-MS-Office365-Filtering-Correlation-Id: ce582c4f-d861-4e1d-c60d-08db86d02719
-X-MS-Exchange-SLBlob-MailProps: YfhX3sd/0TWYnBBcTvvGLleK17hkRWRifCYsPdzpOrPNGQYP/ETw19XfNJlnKZ/uQYX/JpesW9FtnlDeNsgJpQc9yfQYRp1Hd//Q0kq6YhtidQ25C4ooUGHxCfs3MIKqNNk0XcHTeJlR3mJC67f77z2T0ZEiLUZIBZypOFilKYbnjOuEphPeNuRVsATitW4xqebMPQglAp5MS6jxwr9AGZecct74OSvswWEuuhuh/gDaW1tEWr0YqzS+SvHGFHwEi3jXwa/04H6OEdEwjLi3xpWz7JCQkFyiIf8Bsk0SZAAlrUGHaQWqf101uvcbs7OVZfS5888HZZtdY5TVnvhgSPprWTSINp1fGetdUNbZmKUyQsOYUs0t78zax/Z/3+VRLjG8l+nEprlFMMA96NiRZBHd681uguXsDZVlz2wuGW5OmNu6r5ZM5T7T5b7zmHn59V9g9zmTV/fNs3rAqVFZXCVUJ3CV0sbIwaxbJ2KT+tWz/4Ci5C/dLJ1ksVMXfuMHBX7tYCKhv/Tootks0/BB0s+Ndwx+wgm8Yoo2jsx+A7RPVE/aOJMJ6nuBp8SS5Kt1DUPiF/fDQ/knIeyHpXbS7vb9bRxhMSYr4SHC5KHXDQvl3kZu0pKbCmG2BbDnMLm6dTpja4PDNk57t5VXwEyfal5t/GflhJUMzta27ltXbu5X4JZWVlPF/TXZ2lLctRibT0g8w803RCzlExwtgC/HPb7Kk/PNNeQz9Y9Oub7b4hfJ8rRc1geOZLya0yL2M9Rw/pr3B5AOoJLks/qu/55oYWtr4ICUIK+G7gDjNWn/9R0=
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: M+UISZR1lKdMxp6UqqwnZzq2UyYHubRNwRbXnfBO8gOc8iMTxaEHOIeEYx7zq6kDpFCrndvnSX/ElIC25Mwg+1fOzcFWt8CiGkFQaMjNQf7ij0pFnszYJXpcIQgpMRh7Hd2BMR8bWPmPbmlf9IIcvhpcnh4K26s128l6WIT1QMUfQebu7Qhus1bd5oj5PSLsr8IhDgl2dVdrzEzBZ2NaG2xbuyKhmuMp8M1mfkHOKHIBhkt2jWi977c7GiGr/23F+ZZqaeSrCxLZSMSXIthoXaU9wQj927/zw4Rrsl3+3G5BzNCKmfoO4ce28ZkA2rOPgCfL3x48kFKE1XKeDy3zt3/jyRjoxC9E3qBtKQc8fAjoJyxiwpKNvBNjNOwae72NuvHGCoPfr+vS+fJqGYbyQdDtXv7EEGTQkuNHOQinvUNBtAaecTdHtLAiKLtPdvQtKWqrQcHTnNuOrpVbzAp3KzGcvPJuWxJKBuKukw0DkbQgVTWbfSY/0DqCZaGKEhrXOf6GA/+4JzuYo6eO9f+VpNc2wVeLvXNJneFYdMD23JyPJowCESyud4Gy4xo8mBOQtf7sROie02OFUvYTOw5VNk4Vqyw5hMTHPgAygrm7Og2OHWL8QQgDmdY+KY0/pXjq
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Zvt0NhIGRHmnXqQw+SMOugcKwP+i76kF/x/kkkt3fOkfkdb6PWK8NlIcrTXl?=
- =?us-ascii?Q?FduDGA6Z8I7Gsknk/gOiG7AR9v1+qHbWYwmGS83/kik56FijtEIBN6C3JLRP?=
- =?us-ascii?Q?hvdxAyFbdNIPxba4unshSAqwFYjUXdSoW8JBkJS1KlTbJsHi19270wUwkRGi?=
- =?us-ascii?Q?sOUjpznFSPcGQE8CEszjnbErBIE1Zs43Di9Ir8MK0aLXfKTHCas+f8qleEBG?=
- =?us-ascii?Q?vJjGP1p0z7TA2ma6qd12p24lJ4GJaMpxjxFi2Mp0uKEV9tRjQzVqne0HC8a6?=
- =?us-ascii?Q?8/lQSrkSZvebumQdeeEyZf+AzmMWJvFWE7gVmV3Zvl6pSj0JYbIje9RnWTaU?=
- =?us-ascii?Q?aAMolaXwr8I3R+0mzIkuQZIHiib2lNTK/a0xpq+tKlmqLeRRVM7KL5fb5zWf?=
- =?us-ascii?Q?7j9pEZ0F9HAP5F9FxFdRU5qJm390CpeteTuC0IPjtWqEwpaVjsBa8JiRZAVA?=
- =?us-ascii?Q?eH1LmpI7J+5v8RLN1F+ZEaJXnLxC7Gc5eyOv1+NML0MsKT2+FIliC+RaPdBU?=
- =?us-ascii?Q?lC7u7blstr7Nkcpd7ajHVVgnGxZcCTnxRC5BGNSFxnzAZTMm06SOspEQsTBH?=
- =?us-ascii?Q?de37oSjSzcPZU1yqw+2UA/vh6nQiTzICt3tZRw/ITx8rgZa7qfQfkNrvOTT0?=
- =?us-ascii?Q?PdrmkAo6703sUy0iI0+LXdGY3B5CRMxzpkrmfKumvYMnCNuVich+eA93kERT?=
- =?us-ascii?Q?fl7W9g5p2/k997W2gQDS1DXU1+h3MwHoz3qfMMvEEDB2hEK4suur6XJ2wplH?=
- =?us-ascii?Q?kX3Y7FCH8+k+LsNhToFE/kIMabE1H/sEjCSrFgePYyeianCEI8MohqcjZ2Z6?=
- =?us-ascii?Q?b1MBhO41sZnmXSK27QkCXyuZR/pK1qXR3km+Mh7/8VLuLISnNvBMDlJHi727?=
- =?us-ascii?Q?x4w7/g2k0HVvyPAYTAWvQ9r8oMEU0nkQaJsEsvDuRKa3pXwfRVwXUyxshG8A?=
- =?us-ascii?Q?WaUF2YTHDTRxZjwnCe4wK/2uodLzK0duRdrbkhyXij6r3upqlF/HQd7DjU4W?=
- =?us-ascii?Q?JflklIxBvHQqYzgSfGuB6oWFcyCn5MwOgTZ2DAYFi19nsdOnYPjXprT/8U+P?=
- =?us-ascii?Q?3pXVQaWBivTVkSwXD4MTEBOs5G5mDkDWaCcO51hDKwLBB4aIaO47ch66hyn/?=
- =?us-ascii?Q?SjXBZKs9WHcnTUqsJSoZGYqFuBPufkJqQTlTbmT5iXDDB4X8lZK6WlL+GglZ?=
- =?us-ascii?Q?XqqdJwmGh2nr94GadhQPbWx0KRWH88XC3pu8ZA=3D=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-746f3.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce582c4f-d861-4e1d-c60d-08db86d02719
-X-MS-Exchange-CrossTenant-AuthSource: SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 14:14:37.4004
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYBP282MB4213
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Takashi,
+Changes in v6:
+ - Added some previously missing error checking (patch [01/11])
+ - Added error checks for devm_drm_bridge_add()
+ - Made sure that cable_plugged_in is set to false if HPD assertion
+   polling fails (timeout)
+ - Support panel as module (tested with panel-edp on MT8195 Tomato)
+ - Rebased over next-20230717
 
-On Sun, 16 Jul 2023 14:49:18 +0200 you wrote:
+Changes in v5:
+ - Added .wait_hpd_asserted() callback for aux-bus
+ - Avoid enabling and registering HPD interrupt + handlers for
+   eDP case only (keeps HPD interrupts enabled for full DP case)
+ - Support not always-on eDP panels (boot with regulator off,
+   suspend with regulator off) for power saving in PM suspend.
 
-> Thanks for the patches.
-> 
-> I've seen the lots of pains with CS35L41 codec stuff on the recent
-> machines.  But, first of all, it still needs to be agreed by Cirrus
-> people whether this approach is acceptable.  Judging from the current 
-> situation, such workaround appears inevitable, but we need a
-> consensus.
-> 
-> So, Cirrus people, please check this.
+Changes in v4:
+ - Set data lanes to idle to prevent stalls if bootloader didn't
+   properly close the eDP port
+ - Now using the .done_probing() callback for AUX bus to prevent
+   probe deferral loops in case the panel-edp driver is a module
+   as previously seen with another bridge driver (ANX7625) on
+   some other SoCs (MT8192 and others)
+ - Rebased over next-20230706
+ - Dropped Chen-Yu's T-b tag on last patch as some logic changed
+   (before, I wasn't using the .done_probing() callback).
 
-Agreed.
- 
-> Also, some ideas about the current patch set:
-> 
-> - Do we need yet another listing and check of each ID in another
->   place?  The existing entry in the SSID quirk table is already unique
->   enough to identify which configuration is taken, I suppose.
->
-> - The quirk entries can be gathered in patch_realtek.c, and the hw_cfg
->   and other items are overwritten in cs35l41_no_acpi_dsd() when no
->   _DSD is found.  In that way, we can avoid fixing two places for each
->   update.
+Changes in v3:
+ - Added DPTX AUX block initialization before trying to communicate
+   to stop relying on the bootloader keeping it initialized before
+   booting Linux.
+ - Fixed commit description for patch [09/09] and removed commented
+   out code (that slipped from dev phase.. sorry!).
 
-I do have noticed that the existing entries in patch_realtek.c are enough
-for locating the right quirk. However I'm unsure if these entries can 
-be moved to that file since the cs35l41 i2c/spi devices are instantiated
-by the serial-multi-instantiate driver, and if no proper _DSD is found 
-the cs35l41 driver would just fail with no corresponding i2c/spi devices.
-I don't know if it is possible for the hda driver to intervene this 
-probing process.
+This series adds "real" support for eDP in the mtk-dp DisplayPort driver.
+
+Explaining the "real":
+Before this change, the DisplayPort driver did support eDP to some
+extent, but it was treating it entirely like a regular DP interface
+which is partially fine, after all, embedded DisplayPort *is* actually
+DisplayPort, but there might be some differences to account for... and
+this is for both small performance improvements and, more importantly,
+for correct functionality in some systems.
+
+Functionality first:
+
+One of the common differences found in various boards implementing eDP
+and machines using an eDP panel is that many times the HPD line is not
+connected. This *must* be accounted for: at startup, this specific IP
+will raise a HPD interrupt (which should maybe be ignored... as it does
+not appear to be a "real" event...) that will make the eDP panel to be
+detected and to actually work but, after a suspend-resume cycle, there
+will be no HPD interrupt (as there's no HPD line in my case!) producing
+a functionality issue - specifically, the DP Link Training fails because
+the panel doesn't get powered up, then it stays black and won't work
+until rebooting the machine (or removing and reinserting the module I
+think, but I haven't tried that).
+
+Now for.. both:
+eDP panels are *e*DP because they are *not* removable (in the sense that
+you can't unplug the cable without disassembling the machine, in which
+case, the machine shall be powered down..!): this (correct) assumption
+makes us able to solve some issues and to also gain a little performance
+during PM operations.
+
+What was done here is:
+ - Caching the EDID if the panel is eDP: we're always going to read the
+   same data everytime, so we can just cache that (as it's small enough)
+   shortening PM resume times for the eDP driver instance;
+ - Always return connector_status_connected if it's eDP: non-removable
+   means connector_status_disconnected can't happen during runtime...
+   this also saves us some time and even power, as we won't have to
+   perform yet another power cycle of the HW;
+ - Added aux-bus support!
+   This makes us able to rely on panel autodetection from the EDID,
+   avoiding to add more and more panel timings to panel-edp and, even
+   better, allowing to use one panel node in devicetrees for multiple
+   variants of the same machine since, at that point, it's not important
+   to "preventively know" what panel we have (eh, it's autodetected...!).
+
+This was tested on a MT8195 Cherry Tomato Chromebook (panel-edp on aux-bus)
 
 
-> - The workaround is a workaround, and it's fundamentally dangerous.
->   We should warn it in a kernel message.
+P.S.: For your own testing commodity, here's a reference devicetree:
 
-Agreed. I will update my patches to emit a warning message, however as
-Stuart has replied, a patch series which is cleaner is on its way in few 
-weeks and I would not submit a new version for now. I am looking forward 
-to Cirrus's work. 
+pp3300_disp_x: regulator-pp3300-disp-x {
+	compatible = "regulator-fixed";
+	regulator-name = "pp3300_disp_x";
+	regulator-min-microvolt = <3300000>;
+	regulator-max-microvolt = <3300000>;
+	enable-active-high;
+	gpio = <&pio 55 GPIO_ACTIVE_HIGH>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&panel_fixed_pins>;
+};
 
-Regards,
+&edp_tx {
+	status = "okay";
 
-David.
+	pinctrl-names = "default";
+	pinctrl-0 = <&edptx_pins_default>;
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@0 {
+			reg = <0>;
+			edp_in: endpoint {
+				remote-endpoint = <&dp_intf0_out>;
+			};
+		};
+
+		port@1 {
+			reg = <1>;
+			edp_out: endpoint {
+				data-lanes = <0 1 2 3>;
+				remote-endpoint = <&panel_in>;
+			};
+		};
+	};
+
+	aux-bus {
+		panel: panel {
+			compatible = "edp-panel";
+			power-supply = <&pp3300_disp_x>;
+			backlight = <&backlight_lcd0>;
+			port {
+				panel_in: endpoint {
+					remote-endpoint = <&edp_out>;
+				};
+			};
+		};
+	};
+};
+
+AngeloGioacchino Del Regno (11):
+  drm/mediatek: dp: Add missing error checks in
+    mtk_dp_parse_capabilities
+  drm/mediatek: dp: Move AUX and panel poweron/off sequence to function
+  drm/mediatek: dp: Change logging to dev for mtk_dp_aux_transfer()
+  drm/mediatek: dp: Use devm variant of drm_bridge_add()
+  drm/mediatek: dp: Move AUX_P0 setting to
+    mtk_dp_initialize_aux_settings()
+  drm/mediatek: dp: Enable event interrupt only when bridge attached
+  drm/mediatek: dp: Avoid mutex locks if audio is not supported/enabled
+  drm/mediatek: dp: Move PHY registration to new function
+  drm/mediatek: dp: Add support for embedded DisplayPort aux-bus
+  drm/mediatek: dp: Add .wait_hpd_asserted() for AUX bus
+  drm/mediatek: dp: Don't register HPD interrupt handler for eDP case
+
+ drivers/gpu/drm/mediatek/Kconfig  |   1 +
+ drivers/gpu/drm/mediatek/mtk_dp.c | 360 ++++++++++++++++++++----------
+ 2 files changed, 242 insertions(+), 119 deletions(-)
+
+-- 
+2.40.1
+
