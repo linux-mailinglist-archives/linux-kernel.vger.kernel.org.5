@@ -2,201 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D11F755D52
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82E1755D56
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230172AbjGQHqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 03:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
+        id S229977AbjGQHrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 03:47:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjGQHqm (ORCPT
+        with ESMTP id S229697AbjGQHrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 03:46:42 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2049.outbound.protection.outlook.com [40.107.8.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4FD170B;
-        Mon, 17 Jul 2023 00:46:20 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KiIfLWAk5T4HXZ/hI/2H1Uw78fNWgJ56pwqVJ3rmePOn1wo47VT9Crw2Zbsm1qu+uEfgK+mFj8xyvNk64ln8Njf1dW4fCpuBkXC2fSz8rtMs7Du2SZQXrlDQ+B3/XqCUDz4zcoVtFbKu3wr+zfwIO7hL/If0alnu/9Xw3ktMqPSbdKW+JWlQGycNV3uqrlaer4dgm3o3YzTANFHlq62laIW60Q9D7rrWe4S9yC3uMNo5hChg4t0RzfvtcJ5eNcm/FOlaRjTUIbKJfhWaeHwshk8vlUVZ3k98WuXZDmOmwqG8ljEcSBGDriiu+fNQgm48J5uWBXOPP5F6iUmR+MwQKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ezaIJRiCK+vxJ6JatJtH5a3EjJVS9ErgYH3A41s7h4Y=;
- b=ZroLKU9TwPVPmj1FFqDBANtp5nHvSZT86mJ5T8kWqKz+wQX2AroTbaoqFEecY6pAB4prF+8iNuoEn1kGHq17Q3lzckd+M+wbciVC45IWfRPlxCsiHT2s39V0BHnlwKJtM4Iwp/fmRVJrNL1kawpToyYsc7qkj9I/uvtytVm3sCg9ZG+KVQaRjDPzQGS+RyHbUY4QchzHOPAM9QjuH9FtLMBm5kct8GqyA7LTO9x1nLbBgT/KKXZA/HPDHMl1w8veks9IHswf2y9M44cvAKT5J8gUOqLivjuwEb5MnWVhE+fQE7pGOWYFUN4Y1zbfzN31mqanMo3pAkKwURJjdvqZYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ezaIJRiCK+vxJ6JatJtH5a3EjJVS9ErgYH3A41s7h4Y=;
- b=VRgGjcEXt83PMfEs5WUPeImGJ0idfbukM+DQavUy0tk5pJU/+qiUJAwpKE5Zp0okDg8yOdFoQEWMw7JY1aMyZmNNTTNWqYkIaGo7ubMBZi+2GtT8HCXjE0FVeCv0UWWGynG4hb8IKGsXgLGt/IXpEcKGSsxYwtWAO7uPgQahlBgKOLpmc4cD1eG9M83ht8GU0nfs1E3+HFMxCICIvtzgQGSEWCWJKBVGuzQB8TuGpuIp7/TjfS0K++MpMamSNTFrcA7Zlx8dKMmb3rVF9VdcBHwCTgYig5HxdxYf2oiKkvV9hXPmzOeSGDE2r7Hhq4gFVFFWt5ttH/zDNFnjrRgvFQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siemens.com;
-Received: from PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:269::8)
- by AS4PR10MB6134.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:585::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Mon, 17 Jul
- 2023 07:45:37 +0000
-Received: from PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::a171:a3f2:99b7:5f29]) by PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::a171:a3f2:99b7:5f29%6]) with mapi id 15.20.6588.031; Mon, 17 Jul 2023
- 07:45:36 +0000
-Date:   Mon, 17 Jul 2023 09:45:29 +0200
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Mark Gross <markgross@kernel.org>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tobias Schaffner <tobias.schaffner@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>
-Subject: Re: [PATCH v2 0/3] platform/x86: simatic-ipc: add another model and
- hwmon module loading
-Message-ID: <20230717094529.45664a4a@md1za8fc.ad001.siemens.net>
-In-Reply-To: <88021872-8aff-4bd2-ba95-8277a5a8e1fe@redhat.com>
-References: <20230713144832.26473-1-henning.schild@siemens.com>
-        <88021872-8aff-4bd2-ba95-8277a5a8e1fe@redhat.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR0P281CA0197.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ad::20) To PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:102:269::8)
+        Mon, 17 Jul 2023 03:47:09 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753F6173E
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 00:46:45 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qLIvw-0006Ew-M1; Mon, 17 Jul 2023 09:46:16 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qLIvu-0004V7-Rb; Mon, 17 Jul 2023 09:46:14 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qLIvu-005Wy1-6x; Mon, 17 Jul 2023 09:46:14 +0200
+Date:   Mon, 17 Jul 2023 09:46:14 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     Ben Dooks <ben.dooks@sifive.com>, linux-pwm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        jarkko.nikula@linux.intel.com,
+        William Salmon <william.salmon@sifive.com>,
+        Jude Onyenegecha <jude.onyenegecha@sifive.com>
+Subject: Re: [PATCH v8 1/5] pwm: dwc: split pci out of core driver
+Message-ID: <20230717074614.zv2c26vh2j6cm3pz@pengutronix.de>
+References: <20230614171457.69191-1-ben.dooks@sifive.com>
+ <20230614171457.69191-2-ben.dooks@sifive.com>
+ <20230715192832.hczmcchn4svzilnd@pengutronix.de>
+ <faa870b6-112e-46fa-2b98-f5700dd76263@codethink.co.uk>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR10MB5780:EE_|AS4PR10MB6134:EE_
-X-MS-Office365-Filtering-Correlation-Id: e8e15f87-3aa0-41de-3440-08db8699cef5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TehQZkVhiZAnM3fc97ty917qnUtlALxOqnodjOlgnxhL0Vrr0eCuzxPCf9Aemz+HvoAT4qUjX0MmQ9t5CsKhnlcX5sDZWvnR3OMLj2vWNhvaYD2H7ywvgKzDAq4owwz+rfcezjQL57Kc5+iBdc2QWYfTNq916iWBojp4sqtMajrdmjYkb9bV10uMXFTlCMCsVoJYAawgZCRgv/QCCGYkvQE0f+ljLhPQ4iS/SXw9Zpz+vnDaSX7rOQuZZVyYbJT4f4ZQYflGG1TyVJR+93BMhaBPKcHXNd70YKWdXp1+XaWwVQroNOmXs2VDIExkXRxStbbDZ+BQjKgeP7ecvCDUfZYRTZu6EjWfT8w5udFxscN0CUBD3xtEL4VHb8suPMlNT3X158Q3t1fVR46W5nooe7CUUk97ifERkofevkGnowmiyIiH+ZKtj9hkkebVQG5SVfM4JM/2mtgZ48nhTbSPhJW0mtbylGGdERPvVSMhjFPjXQcUlL3utINsmdKJVcex2edJ3vtAvr93e9OvuEf+w6XHNVW/DuwblGPPD/v3Jzc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(39860400002)(366004)(346002)(376002)(396003)(451199021)(966005)(9686003)(6512007)(107886003)(53546011)(6506007)(1076003)(54906003)(66556008)(66476007)(38100700002)(66946007)(5660300002)(44832011)(2906002)(316002)(4326008)(41300700001)(8676002)(8936002)(6916009)(86362001)(6486002)(6666004)(478600001)(82960400001)(83380400001)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QtTeKB3uyo6mLra32VBAoTVGWec8yASaLVE2pfBPDLi8VhWi+4cUNVYsUYp6?=
- =?us-ascii?Q?qOgoy9uXj7ZPN6Aqs8LoYK7XybrvvMoDEwG4zs21Qm8C9F+8upAGQlHddIuV?=
- =?us-ascii?Q?SPYYsZm7J2nEwIViJ3HyTPx5XYx3e7p6RfX6heNVsPhLKcSQ4rdHgeCUmFC5?=
- =?us-ascii?Q?32v1nhgsiabPQEUeoGi4nK1wmO+VDa/U0V8PDg0B5EEWDxpo6u+ZMFyTe3Ly?=
- =?us-ascii?Q?BcMK3+iGdFAtWbWHYwkdwqgQoW845JNmvNGt32qJ5/w1DLsuBnkPCFFq7IOH?=
- =?us-ascii?Q?rgGtl0xeR6BVMZIf40T1bPG2GrTnEXD3TGmQ2e1fwqSj+5LqZ6AY6coZmG50?=
- =?us-ascii?Q?Y7gd/vwSNtwweHoE5DJhTZXMhVHjz1Zpu6ZjBE1O4H9ZzWi8rFFnreZE/2mU?=
- =?us-ascii?Q?M3vz6NnTvdkEQBzDohMfgGRjsM9HoveR3zJDJkNsFgADTWKyD0QQVJdwpOcl?=
- =?us-ascii?Q?NKodQUB7Ig63Z0eaTPgIZdutTyMJVYxf/9OPBqiEeCHMSs70fS5Su5J8+JUQ?=
- =?us-ascii?Q?4RmBN8QHiuEUglbo6A3wXU+0Ai2MfsWzcRKNxvoywXPnwXqm4AkKyQRaxY0V?=
- =?us-ascii?Q?24YpFMMSfTOPZpp3ufiAZmjUrnokxgkYbCxLHjNFCNhmQAl73tafLWDVkcVy?=
- =?us-ascii?Q?MKqXsWlOJmouZyT2j9K1JNnuU1Cy4tN7yIoG41+S2IrqeVA1MgrvofwMf/8N?=
- =?us-ascii?Q?f9b7N7earKoHHmND6/wQUMkfLIn5tYkMHA3YpMQKmeBth1M2CDZaZKoRqyul?=
- =?us-ascii?Q?zeokagqG6Ysza5J48nSqKBqS3PVGVkdesI23sRpN6F8CZEKnZ+ASa2Dd7I+T?=
- =?us-ascii?Q?9fTWJ1V+w6BC5GnKFguZc7EwfVAFbHTJLviEzoHaQBHGyUKxDQ0hBe0iWCRL?=
- =?us-ascii?Q?CDi8LZUx4OOoncNO10esuc/w5LqOKSZMjpSm37KXTZ09UtKWAyPRnzmbiUim?=
- =?us-ascii?Q?K9WsAJ4mN/7OB6vuDW2hK3phq3JCM0Lp+XHSo353h8fROB2CJzBKAgR1QVuT?=
- =?us-ascii?Q?IWH7gRNHvNy33GpdUyB8knu0TMJXYacgkl//Whk7bX3rUtjPfoDUyUObdQvV?=
- =?us-ascii?Q?hlkWHbHS6Ls77ZmKQeBQWjxCRyeyO+SPZirPIQb0a+7/FNB1Wg1NPdu8yvAI?=
- =?us-ascii?Q?/Iw9/l86Lf5g/LPN9N0uccAw5zQeY8PDWiJiWQtpdsGLRFlG9U9ppx2fi0np?=
- =?us-ascii?Q?tSeG0yVC0HNDi7S0fuW9a6cTf6xP7peF2Sia4zNUrgFaKFzaXUsVMzswgSCl?=
- =?us-ascii?Q?ozrMUI4qbniVp2+ppqww6d2gOiwFajQfUIsoLO2NHB6jVPZV3YkAkkSYpAeX?=
- =?us-ascii?Q?WWGKHxAMRBz1BuWSlqZkirvLGwgzIL5UQuM4hxrsFwtD6RhDKZv4K6NFXTcO?=
- =?us-ascii?Q?qGVzDLJEQTWo0aWCj0QJsog4LcDoTUCPvsGDCIhBDQMBhr0iIuFZmGbwqjXY?=
- =?us-ascii?Q?znWMFYJWFN3h00dY00SF/MuUZO2y+JvV+36U889v3Gk/X9KPC0o5A89h2KtT?=
- =?us-ascii?Q?040MahcwpgIFnTJVsrvJQLYAwKqbzfdBkPPXvd1V4oGq26jO/v2emfzav1kZ?=
- =?us-ascii?Q?I79Cq4b9cDbQF1sovkO25+JFDQd83jKaBdvchhe7QJtWBz8mHRPAZsULjbAb?=
- =?us-ascii?Q?uqhh+e3z7vcXxBVGXkItBNdsZLQe6VjKJ2aK7b2KfiRItvgX0tZEpYCiu58f?=
- =?us-ascii?Q?SFY1EQ=3D=3D?=
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8e15f87-3aa0-41de-3440-08db8699cef5
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 07:45:36.5365
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2TRzwC54qWbTsQ7VhhQY1VXO0nHzD00iZdIM7dRSAjrBkpEW1YQnYjYXmxgvI0gKBWsQFDSqXLznUEzvNKeipjcmJZOUqQ4Fx3ws3u6DjEs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR10MB6134
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rn6fijr2nsjoxci2"
+Content-Disposition: inline
+In-Reply-To: <faa870b6-112e-46fa-2b98-f5700dd76263@codethink.co.uk>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Fri, 14 Jul 2023 12:18:04 +0200
-schrieb Hans de Goede <hdegoede@redhat.com>:
 
-> Hi Henning,
-> 
-> On 7/13/23 16:48, Henning Schild wrote:
-> > cahnged since v1:
-> >  - switch to using a list of modules per device
-> >  - add p3 and make the watchdog module load code use what p2 created
-> > 
-> > The first patch just adds a device that is pretty similar to
-> > another one we already had here.
-> > 
-> > The second patch loads modules for hwmon support, should they be
-> > available. That will save users the need to detect and manually load
-> > those modules after a machine has been clearly identified by its
-> > Siemens Simatic IPC station id.
-> > 
-> > And finally p3 changes another request_module call to use the
-> > mechanism introduced in p2.
-> > 
-> > Henning Schild (3):
-> >   platform/x86: simatic-ipc: add another model
-> >   platform/x86: simatic-ipc: add auto-loading of hwmon modules
-> >   platform/x86: simatic-ipc: use extra module loading for watchdog
-> > 
-> >  drivers/platform/x86/simatic-ipc.c            | 74
-> > ++++++++++++++----- include/linux/platform_data/x86/simatic-ipc.h |
-> >  1 + 2 files changed, 57 insertions(+), 18 deletions(-)  
-> 
-> p.s.
-> 
-> Looking at the latest simatic pdx86 code:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=platform-drivers-x86-simatic-ipc
-> 
-> I see 5 Kconfig options and 5 .c files directly under
-> 
-> drivers/platform/x86/
-> 
-> at this point I think it would be nice to move this into its
-> own simatic subdir: drivers/platform/x86/simatic
-> 
-> with its own Makefile and Kconfig to avoid cluttering the main
-> drivers/platform/x86 dir and Kconfig too much.
-> 
-> Can you prepare a patch for this on top of:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=platform-drivers-x86-simatic-ipc
-> 
-> ?
-> 
-> See:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f1e1ea516721d1ea0b21327ff9e6cb2c2bb86e28
-> 
-> For an example of a similar move done for Dell.
-> 
-> Note this example also adds
-> 
-> "default m"
-> 
-> to all options except for the main X86_PLATFORM_DRIVERS_DELL
-> (X86_PLATFORM_DRIVERS_SIMATIC in this case) so that on interactive
-> make config only the X86_PLATFORM_DRIVERS_SIMATIC will gets asked
-> about and then the rest will automatically get enabled as modules.
+--rn6fijr2nsjoxci2
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I will look into the relocation of the drivers and send patches in the
-coming days.
+On Mon, Jul 17, 2023 at 08:07:10AM +0100, Ben Dooks wrote:
+> On 15/07/2023 20:28, Uwe Kleine-K=F6nig wrote:
+> > On Wed, Jun 14, 2023 at 06:14:53PM +0100, Ben Dooks wrote:
+> > > Moving towards adding non-pci support for the driver, move the pci
+> > > parts out of the core into their own module. This is partly due to
+> > > the module_driver() code only being allowed once in a module and also
+> > > to avoid a number of #ifdef if we build a single file in a system
+> > > without pci support.
+> > >=20
+> > > Signed-off-by: Ben Dooks <ben.dooks@sifive.com>
+> > > ---
+> > > v8:
+> > >   - add module namespace
+> > >   - remove compile-test for pci case, doesn't make sense
+> > >   - fix makefile, missed config symbol changes
+> > > v7:
+> > >   - re-order kconfig to make dwc core be selected by PCI driver
+> > > v6:
+> > >   - put DWC_PERIOD_NS back to avoid bisect issues
+> > > v4:
+> > >   - removed DWC_PERIOD_NS as not needed
+> > > ---
+> > >   drivers/pwm/Kconfig        |  14 ++-
+> > >   drivers/pwm/Makefile       |   1 +
+> > >   drivers/pwm/pwm-dwc-core.c | 176 +++++++++++++++++++++++++++++++++
+> > >   drivers/pwm/pwm-dwc.c      | 197 +---------------------------------=
+---
+> > >   drivers/pwm/pwm-dwc.h      |  60 +++++++++++
+> > >   5 files changed, 253 insertions(+), 195 deletions(-)
+> > >   create mode 100644 drivers/pwm/pwm-dwc-core.c
+> > >   create mode 100644 drivers/pwm/pwm-dwc.h
+> > >=20
+> > > diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> > > index 8df861b1f4a3..7c54cdcb97a0 100644
+> > > --- a/drivers/pwm/Kconfig
+> > > +++ b/drivers/pwm/Kconfig
+> > > @@ -186,9 +186,19 @@ config PWM_CROS_EC
+> > >   	  PWM driver for exposing a PWM attached to the ChromeOS Embedded
+> > >   	  Controller.
+> > > +config PWM_DWC_CORE
+> > > +	tristate
+> > > +	depends on HAS_IOMEM
+> > > +	help
+> > > +	  PWM driver for Synopsys DWC PWM Controller.
+> > > +
+> > > +	  To compile this driver as a module, build the dependecies as
+> > > +	  modules, this will be called pwm-dwc-core.
+> > > +
+> > >   config PWM_DWC
+> > > -	tristate "DesignWare PWM Controller"
+> > > -	depends on PCI
+> > > +	tristate "DesignWare PWM Controller (PCI bus)"
+> > > +	depends on HAS_IOMEM && PCI
+> > > +	select PWM_DWC_CORE
+> > >   	help
+> > >   	  PWM driver for Synopsys DWC PWM Controller attached to a PCI bus.
+> > > diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+> > > index 19899b912e00..de3ed77e8d7c 100644
+> > > --- a/drivers/pwm/Makefile
+> > > +++ b/drivers/pwm/Makefile
+> > > @@ -15,6 +15,7 @@ obj-$(CONFIG_PWM_CLK)		+=3D pwm-clk.o
+> > >   obj-$(CONFIG_PWM_CLPS711X)	+=3D pwm-clps711x.o
+> > >   obj-$(CONFIG_PWM_CRC)		+=3D pwm-crc.o
+> > >   obj-$(CONFIG_PWM_CROS_EC)	+=3D pwm-cros-ec.o
+> > > +obj-$(CONFIG_PWM_DWC_CORE)	+=3D pwm-dwc-core.o
+> > >   obj-$(CONFIG_PWM_DWC)		+=3D pwm-dwc.o
+> >=20
+> > Would it make sense to call this pwm-dwc-pci.o? And the symbol
+> > CONFIG_PWM_DWC_PCI? (The latter would break make oldconfig. Hmm, I'm
+> > unsure myself.)
+>=20
+> i left the pci as the pwm-dwc so that anyone moving up and using
+> this as a module won't have to change config or their module loading
+> if they're not autoloading modules.
 
-Thanks,
-Henning
+Yeah, I thought so. I don't care much either way, but maybe that's worth
+mentioning in the commit log or even a comment in drivers/pwm/Makefile.
 
-> Regards,
-> 
-> Hans
-> 
-> 
-> 
+Best regards
+Uwe
 
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--rn6fijr2nsjoxci2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmS08cUACgkQj4D7WH0S
+/k6UlQf+K5YF0HgTVhK6JnRE/jEYcmCeKznSCR1NLXV0Bc0fzqFvxHPoRL7t6wxy
+khjN7dunvOiWsY1cjWjzXN1zl63TJzhgC/gENKiPSYux5S9mEhPKq8SLyDVfOflw
+q0dzlx+XreE1Cxdjc3uIOCwz9mI6azvWN9l19SjqNc7M44H2tLjnJSB83TEC59BM
+6WXYIFkZ/QZVJY31FZj7t6T571XKYmDnCJopq50om4kud689Hb1xrIy6xnFT24Kq
+iq+yeW3ctSAOscOdZWsxBOrIonJlHuAJuftW7TEYWHywaOZZ0oPtRBuQox1SinMN
+bHDKOxDUq0zDSgrfFyy554+Iet2s0A==
+=1vuS
+-----END PGP SIGNATURE-----
+
+--rn6fijr2nsjoxci2--
