@@ -2,114 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B863755C94
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AFA8755C8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbjGQHSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 03:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60556 "EHLO
+        id S230259AbjGQHRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 03:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbjGQHRv (ORCPT
+        with ESMTP id S229734AbjGQHRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 03:17:51 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C601A10E4;
-        Mon, 17 Jul 2023 00:17:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1689578269; x=1721114269;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=7KVNCKs6gEptnFwi+TK2wmJGN3a7Hiqbrvw+tIvj3fg=;
-  b=O4B+btIigG+nVJqlbRKzSdE/AX9ADN0FTopDwWyRM1mDWWRXxnZOHfou
-   bxU1zn811ubFsGyh6XiEf50FoWa8GZN7Acwm4X3JfgJ+qtai4kOtjkP7/
-   9Aw/9BLVSVN2LpjjeoRJ37GWxJArkjzaYpATbXKnCFP6XfRp+u5QiA+Sg
-   jhfPfJqXsv/J111FBr5ABim30TOjXDTA5i/LdX2FfwfHfWEdMFk+LiIhd
-   ZoowRFsTCFBaGmVL4JksL9whyffhCEpZBv50i6eBciWYT7Vv3Fr4SGadH
-   rnv0Sqkub2Wu/F4nxi8ewDqtmX3L9W2Hi4n9x65cu2arQbcihfaMlnPpJ
-   w==;
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="asc'?scan'208";a="235896502"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Jul 2023 00:17:48 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 17 Jul 2023 00:17:48 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Mon, 17 Jul 2023 00:17:45 -0700
-Date:   Mon, 17 Jul 2023 08:17:12 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     <huaqian.li@siemens.com>
-CC:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <huaqianlee@gmail.com>, <nm@ti.com>,
-        <vigneshr@ti.com>, <kristo@kernel.org>,
-        <linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <jan.kiszka@siemens.com>,
-        <baocheng.su@siemens.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v4 1/3] dt-bindings: watchdog: ti,rti-wdt: Add support
- for WDIOF_CARDRESET
-Message-ID: <20230717-napped-resample-b4891bedd913@wendy>
-References: <20230717040723.1306374-1-huaqian.li@siemens.com>
- <20230717040723.1306374-2-huaqian.li@siemens.com>
+        Mon, 17 Jul 2023 03:17:35 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10100E2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 00:17:34 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-51e29ede885so5959106a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 00:17:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689578252; x=1692170252;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bears7qmNayvkyvSpBGDpm7cFMqEk6Zkcv4MJmrzivQ=;
+        b=aWIEP+GLIsj6qBQrfye4O6KdMlc2qKtB32OyZA2VFueZ5QZN29/hBHS27zxvGgKxOg
+         iSRDxIpisCiiJTUHUr84An8ZbzsFfO+2uYn0EPv0PeO/F8+Wvh0a5jNdkmZDILZAHJil
+         byToVJMTf2ofRHSI1g4tbnvDobal6tp4DTzc6P5u1fPebj+KtP3J5eknOpFHekW7q5Ic
+         vzlBlMKAwjF0O/GZraJk5MtIwbPIvjKgUJctxmxzfufvd1QWFBGaJy5JZ+uh2AS7nRkW
+         /StRDER/OLu7sORA1So1RlF2/tUhVACimQXFJRcR7s0m1fl9LtsUHAslCUKwIr1jwaVE
+         kbhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689578252; x=1692170252;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bears7qmNayvkyvSpBGDpm7cFMqEk6Zkcv4MJmrzivQ=;
+        b=auHO+fzKjD0GrdxJ7PiMn5B+BNGdSPrXcBPPjNzoGpDUxe4qdzSIFNQr/h+/tARUtb
+         EuJXQsQhxXD6v7YDdoeMpzMFwyZlUHHkuiyIHA7CWHyj+j8UERYLtAZygJBE4jwCrCg1
+         HGXriw+EkRkMSG5/puynLrLZ7ofCt95AXFnXcOZUWVaUPjJIW4Cd87b6P4DxP09J2BVb
+         krUJV7LJKxHTCUNKy6E4UEV9Tqi0rPTo4XbQDHp1Mgeir+QjB5628o0/4mHgZ6MRUgTJ
+         XorYtaqJAjSMBgDnTb4zE8CFGIQkgGUoOpJRg0s5thS4rb2f+o/MYv5FxW+gzjlFHqcB
+         UcAQ==
+X-Gm-Message-State: ABy/qLbdOSBCI82VRGf+PUHF2/kiEXf5zIJqwmtaY1EsIdkcilIcMWLB
+        ItGEmIoZR85Kt8MMcYVxIZbjjw==
+X-Google-Smtp-Source: APBJJlG7DAUOZJcM6TGPHYOHzO7eUSejpitgzW5kbOUSMAkSlJidQ4O0kpPl0UaXyIVdczM0v8gttA==
+X-Received: by 2002:a17:907:7894:b0:993:8899:a3ac with SMTP id ku20-20020a170907789400b009938899a3acmr10121867ejc.74.1689578252560;
+        Mon, 17 Jul 2023 00:17:32 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id um10-20020a170906cf8a00b0098e78ff1a87sm8745082ejb.120.2023.07.17.00.17.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 00:17:32 -0700 (PDT)
+Message-ID: <46bccbca-1343-aed4-4dfe-eb5182b8f6a1@linaro.org>
+Date:   Mon, 17 Jul 2023 09:17:29 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="obfEl7xNr3y6dFFs"
-Content-Disposition: inline
-In-Reply-To: <20230717040723.1306374-2-huaqian.li@siemens.com>
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: =?UTF-8?Q?Re=3a_=5bPATCH_v2_0/2=5d_add_mcp4728_I2C_DAC_driver?=
+ =?UTF-8?B?4oCL?=
+Content-Language: en-US
+To:     Andrea Collamati <andrea.collamati@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        William Breathitt Gray <william.gray@linaro.org>,
+        Angelo Dureghello <angelo.dureghello@timesys.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <0414e2e4-a17d-3435-e9e7-35b110233a6d@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <0414e2e4-a17d-3435-e9e7-35b110233a6d@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---obfEl7xNr3y6dFFs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 16/07/2023 23:26, Andrea Collamati wrote:
+> Dear Krzysztof
+> 
+> I release a V2 version. I hope I have understood all your requests.
+> See below.
+> 
+>> 2. Please use scripts/get_maintainers.pl to get a list of necessary
+>> people and lists to CC (and consider --no-git-fallback argument). It
+>> might happen, that command when run on an older kernel, gives you
+>> outdated entries. Therefore please be sure you base your patches on
+>> recent Linux kernel.
+>>
+> I was using branch master git://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git but
 
-On Mon, Jul 17, 2023 at 12:07:21PM +0800, huaqian.li@siemens.com wrote:
-> From: Li Hua Qian <huaqian.li@siemens.com>
->=20
-> TI RTI (Real Time Interrupt) Watchdog doesn't support to record the
-> watchdog cause. Add a reserved memory to know the last reboot was caused
-> by the watchdog card. In the reserved memory, some specific info will be
-> saved to indicate whether the watchdog reset was triggered in last
-> boot.
->=20
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Should be fine. I still doubt that you used it, though. If you got
+Conor's email, then for sure you should have got my email.
 
-> Reviewed-by: Conor Dooley <conor@kernel.org>
+> 
+> I saw it was too old. I switched to branch testing.
+>> 6. mcp or MCP? What is this? Proper title is missing... also no
+>> description.
+>>
+> I don't know whether using small o capital letters. Usually manufacturers use capital letter to identify the component
+> but kernel drivers use lowercase in code.
 
-I don't recall actually replying to the earlier revisions of this
-patchset, let alone providing a review, but this is not the email
-address I would have used, had I done so.
+Use what is in datasheet.
 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Li Hua Qian <huaqian.li@siemens.com>
+>>
+>> Shouldn't this binding be just merged with existing mcp4725? Are you
+>> sure it's not similar device, IOW, are you sure you do not have vref supply?
+>>
+> Unfortunately they are not that similar. MCP4728 has two vref choices:
+> 
+> - Use Vdd (power supply) as Vref
+> 
+> - User Internal 2.048 V Vref source.
 
---obfEl7xNr3y6dFFs
-Content-Type: application/pgp-signature; name="signature.asc"
+Exactly the same as existing mcp4726, so what is the problem?
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLTq9QAKCRB4tDGHoIJi
-0mGoAQCZOYybnsTtnt5Ge05inw85nLLj/dTlEHJVHu0zdfWMgwEAqrESK+Ni6xTM
-ov1hKuDJKrofhz/J6kQ8JYW3ZmrplgM=
-=OtCo
------END PGP SIGNATURE-----
+Best regards,
+Krzysztof
 
---obfEl7xNr3y6dFFs--
