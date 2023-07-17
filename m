@@ -2,141 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1CB755C6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52835755C69
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbjGQHH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 03:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55108 "EHLO
+        id S229481AbjGQHHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 03:07:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbjGQHHS (ORCPT
+        with ESMTP id S230203AbjGQHHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 Jul 2023 03:07:18 -0400
-Received: from imap4.hz.codethink.co.uk (imap4.hz.codethink.co.uk [188.40.203.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02DC9E7D;
-        Mon, 17 Jul 2023 00:07:16 -0700 (PDT)
-Received: from [93.159.155.93] (helo=[172.20.8.34])
-        by imap4.hz.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
-        id 1qLIK8-00F7EA-5M; Mon, 17 Jul 2023 08:07:12 +0100
-Message-ID: <faa870b6-112e-46fa-2b98-f5700dd76263@codethink.co.uk>
-Date:   Mon, 17 Jul 2023 08:07:10 +0100
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27CC1E76
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 00:07:16 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R4CnX1hJVzBQHHV
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:07:12 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689577632; x=1692169633; bh=TRPMaZ7z6lfdqj4fssGi4QAIMSX
+        OwcQSbEONR5PWssc=; b=PqGqTThuhKaNQaa/4hsPx5DrWpN/VNRzCx9Na/JnKI0
+        FFHzQu2oMdBP2GHFLXC3R9WY+i/ZpFNUNt3iovUPhlq1YkH0PeNP67k1y0eOPBR+
+        yIWI2vTGrlnpcxcudPhUstdsS3Nsx9d6bQD8O9JWyRf5aha7VHPssS/JnGbIYiRq
+        WvD7UR/pVH9mFbZZixksqMb6wXA+SMeqYGYjSFf6kmahiNa+tJujC+mWmD6hjTjZ
+        62hSDg/XF9BBLoqQTZjga91BjOeT2IVmo1syjnejTSXZKVw/nwgdDcmEO2rzM/+4
+        rlLIergdgGUvgNMouMABRtIEOZlPvo9hyTDGfhEQqQg==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id i5alGdjRTzzr for <linux-kernel@vger.kernel.org>;
+        Mon, 17 Jul 2023 15:07:12 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R4CnX000dzBJR3x;
+        Mon, 17 Jul 2023 15:07:11 +0800 (CST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v8 1/5] pwm: dwc: split pci out of core driver
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Ben Dooks <ben.dooks@sifive.com>
-Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        jarkko.nikula@linux.intel.com,
-        William Salmon <william.salmon@sifive.com>,
-        Jude Onyenegecha <jude.onyenegecha@sifive.com>
-References: <20230614171457.69191-1-ben.dooks@sifive.com>
- <20230614171457.69191-2-ben.dooks@sifive.com>
- <20230715192832.hczmcchn4svzilnd@pengutronix.de>
-Content-Language: en-GB
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-In-Reply-To: <20230715192832.hczmcchn4svzilnd@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Date:   Mon, 17 Jul 2023 15:07:11 +0800
+From:   wuyonggang001@208suo.com
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] fs/filesystems.c: ERROR: "(foo*)" should be "(foo *)"
+In-Reply-To: <20230717070500.38410-1-zhanglibing@cdjrlc.com>
+References: <20230717070500.38410-1-zhanglibing@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <a456720721d2f8fc33bb0befbe2ad115@208suo.com>
+X-Sender: wuyonggang001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/07/2023 20:28, Uwe Kleine-König wrote:
-> On Wed, Jun 14, 2023 at 06:14:53PM +0100, Ben Dooks wrote:
->> Moving towards adding non-pci support for the driver, move the pci
->> parts out of the core into their own module. This is partly due to
->> the module_driver() code only being allowed once in a module and also
->> to avoid a number of #ifdef if we build a single file in a system
->> without pci support.
->>
->> Signed-off-by: Ben Dooks <ben.dooks@sifive.com>
->> ---
->> v8:
->>   - add module namespace
->>   - remove compile-test for pci case, doesn't make sense
->>   - fix makefile, missed config symbol changes
->> v7:
->>   - re-order kconfig to make dwc core be selected by PCI driver
->> v6:
->>   - put DWC_PERIOD_NS back to avoid bisect issues
->> v4:
->>   - removed DWC_PERIOD_NS as not needed
->> ---
->>   drivers/pwm/Kconfig        |  14 ++-
->>   drivers/pwm/Makefile       |   1 +
->>   drivers/pwm/pwm-dwc-core.c | 176 +++++++++++++++++++++++++++++++++
->>   drivers/pwm/pwm-dwc.c      | 197 +------------------------------------
->>   drivers/pwm/pwm-dwc.h      |  60 +++++++++++
->>   5 files changed, 253 insertions(+), 195 deletions(-)
->>   create mode 100644 drivers/pwm/pwm-dwc-core.c
->>   create mode 100644 drivers/pwm/pwm-dwc.h
->>
->> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
->> index 8df861b1f4a3..7c54cdcb97a0 100644
->> --- a/drivers/pwm/Kconfig
->> +++ b/drivers/pwm/Kconfig
->> @@ -186,9 +186,19 @@ config PWM_CROS_EC
->>   	  PWM driver for exposing a PWM attached to the ChromeOS Embedded
->>   	  Controller.
->>   
->> +config PWM_DWC_CORE
->> +	tristate
->> +	depends on HAS_IOMEM
->> +	help
->> +	  PWM driver for Synopsys DWC PWM Controller.
->> +
->> +	  To compile this driver as a module, build the dependecies as
->> +	  modules, this will be called pwm-dwc-core.
->> +
->>   config PWM_DWC
->> -	tristate "DesignWare PWM Controller"
->> -	depends on PCI
->> +	tristate "DesignWare PWM Controller (PCI bus)"
->> +	depends on HAS_IOMEM && PCI
->> +	select PWM_DWC_CORE
->>   	help
->>   	  PWM driver for Synopsys DWC PWM Controller attached to a PCI bus.
->>   
->> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
->> index 19899b912e00..de3ed77e8d7c 100644
->> --- a/drivers/pwm/Makefile
->> +++ b/drivers/pwm/Makefile
->> @@ -15,6 +15,7 @@ obj-$(CONFIG_PWM_CLK)		+= pwm-clk.o
->>   obj-$(CONFIG_PWM_CLPS711X)	+= pwm-clps711x.o
->>   obj-$(CONFIG_PWM_CRC)		+= pwm-crc.o
->>   obj-$(CONFIG_PWM_CROS_EC)	+= pwm-cros-ec.o
->> +obj-$(CONFIG_PWM_DWC_CORE)	+= pwm-dwc-core.o
->>   obj-$(CONFIG_PWM_DWC)		+= pwm-dwc.o
-> 
-> Would it make sense to call this pwm-dwc-pci.o? And the symbol
-> CONFIG_PWM_DWC_PCI? (The latter would break make oldconfig. Hmm, I'm
-> unsure myself.)
+Fix five occurrences of the checkpatch.pl error:
+ERROR: "(foo*)" should be "(foo *)"
 
-i left the pci as the pwm-dwc so that anyone moving up and using
-this as a module won't have to change config or their module loading
-if they're not autoloading modules.
+Signed-off-by: Yonggang Wu <wuyonggang001@208suo.com>
+---
+  fs/filesystems.c | 20 ++++++++++----------
+  1 file changed, 10 insertions(+), 10 deletions(-)
 
-> I didn't check all the details, but assuming that this is a split
-> without further changes it looks ok to me.
-> 
-> Best regards
-> Uwe
-> 
+diff --git a/fs/filesystems.c b/fs/filesystems.c
+index 58b9067b2391..6a93b4904d27 100644
+--- a/fs/filesystems.c
++++ b/fs/filesystems.c
+@@ -69,10 +69,10 @@ static struct file_system_type 
+**find_filesystem(const char *name, unsigned len)
+   *    unregistered.
+   */
 
--- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
+-int register_filesystem(struct file_system_type * fs)
++int register_filesystem(struct file_system_type *fs)
+  {
+      int res = 0;
+-    struct file_system_type ** p;
++    struct file_system_type **p;
 
-https://www.codethink.co.uk/privacy.html
+      if (fs->parameters &&
+          !fs_validate_description(fs->name, fs->parameters))
+@@ -105,9 +105,9 @@ EXPORT_SYMBOL(register_filesystem);
+   *    may be freed or reused.
+   */
 
+-int unregister_filesystem(struct file_system_type * fs)
++int unregister_filesystem(struct file_system_type *fs)
+  {
+-    struct file_system_type ** tmp;
++    struct file_system_type **tmp;
+
+      write_lock(&file_systems_lock);
+      tmp = &file_systems;
+@@ -129,9 +129,9 @@ int unregister_filesystem(struct file_system_type * 
+fs)
+  EXPORT_SYMBOL(unregister_filesystem);
+
+  #ifdef CONFIG_SYSFS_SYSCALL
+-static int fs_index(const char __user * __name)
++static int fs_index(const char __user *__name)
+  {
+-    struct file_system_type * tmp;
++    struct file_system_type *tmp;
+      struct filename *name;
+      int err, index;
+
+@@ -153,9 +153,9 @@ static int fs_index(const char __user * __name)
+      return err;
+  }
+
+-static int fs_name(unsigned int index, char __user * buf)
++static int fs_name(unsigned int index, char __user *buf)
+  {
+-    struct file_system_type * tmp;
++    struct file_system_type *tmp;
+      int len, res;
+
+      read_lock(&file_systems_lock);
+@@ -175,7 +175,7 @@ static int fs_name(unsigned int index, char __user * 
+buf)
+
+  static int fs_maxindex(void)
+  {
+-    struct file_system_type * tmp;
++    struct file_system_type *tmp;
+      int index;
+
+      read_lock(&file_systems_lock);
+@@ -236,7 +236,7 @@ int __init list_bdev_fs_names(char *buf, size_t 
+size)
+  #ifdef CONFIG_PROC_FS
+  static int filesystems_proc_show(struct seq_file *m, void *v)
+  {
+-    struct file_system_type * tmp;
++    struct file_system_type *tmp;
+
+      read_lock(&file_systems_lock);
+      tmp = file_systems;
