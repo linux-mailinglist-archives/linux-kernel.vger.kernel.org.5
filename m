@@ -2,239 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE7B756871
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F520756872
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbjGQP4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 11:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
+        id S229928AbjGQP4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 11:56:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbjGQP4A (ORCPT
+        with ESMTP id S229658AbjGQP4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 11:56:00 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D6DACE7F
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:55:57 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 00B97C15;
-        Mon, 17 Jul 2023 08:56:41 -0700 (PDT)
-Received: from [10.57.76.30] (unknown [10.57.76.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 229443F738;
-        Mon, 17 Jul 2023 08:55:56 -0700 (PDT)
-Message-ID: <980c4e1f-116b-0113-65ee-4e77fdd3e7b4@arm.com>
-Date:   Mon, 17 Jul 2023 16:55:54 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v1 3/3] mm: Batch-zap large anonymous folio PTE mappings
-To:     Zi Yan <ziy@nvidia.com>
+        Mon, 17 Jul 2023 11:56:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B893A4
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:56:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6rAKK+wxmLyxeZyfI3ZVNCD6IgYLEheT+1mkWcIo2/E=; b=ITVsMo0EZxjDbPwjtXY0q+QtNZ
+        8gbl3PWmF5+IAR7w4w6H/Gm41zQRpOUIsLgchJsvXLJWhrsKhMLpwnQXdX0BARLpbAMWtIR17mf81
+        8k+cba7QIun/PJbpMWeoaAwIIUKrROId6C/qlmcLannc8zhoMZvyimfHHtEpuET30xRPmWtZGXd2u
+        RwVigIm0cdATeKOSJWBU68QowMBRC5VxWg2pGk/5mtMRGvqehERugmOLbJN9UezYwClx1ybGqWBDN
+        YiywyLAo9rq7PVwrkpZ06ocNdso53hQsS76UHy5ZMiWv+drZ/tPxYZNWvFHsDcJLaDvdo2vw6kPEf
+        y/xeajcA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qLQaX-0043ax-Dg; Mon, 17 Jul 2023 15:56:41 +0000
+Date:   Mon, 17 Jul 2023 16:56:41 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ryan Roberts <ryan.roberts@arm.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
         Yin Fengwei <fengwei.yin@intel.com>,
         David Hildenbrand <david@redhat.com>,
         Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 2/3] mm: Implement folio_remove_rmap_range()
+Message-ID: <ZLVkucGl88vxEuIu@casper.infradead.org>
 References: <20230717143110.260162-1-ryan.roberts@arm.com>
- <20230717143110.260162-4-ryan.roberts@arm.com>
- <5A282984-F3AD-41E3-8EF2-BA0A77DD1A3A@nvidia.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <5A282984-F3AD-41E3-8EF2-BA0A77DD1A3A@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+ <20230717143110.260162-3-ryan.roberts@arm.com>
+ <ZLVZTupQXt7pAqt8@casper.infradead.org>
+ <adac1493-da6d-4581-b8b1-e5911b68cdd7@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <adac1493-da6d-4581-b8b1-e5911b68cdd7@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/07/2023 16:25, Zi Yan wrote:
-> On 17 Jul 2023, at 10:31, Ryan Roberts wrote:
+On Mon, Jul 17, 2023 at 04:49:19PM +0100, Ryan Roberts wrote:
+> > We're still doing one atomic op per page on the folio's nr_pages_mapped
+> > ... is it possible to batch this and use atomic_sub_return_relaxed()?
 > 
->> This allows batching the rmap removal with folio_remove_rmap_range(),
->> which means we avoid spuriously adding a partially unmapped folio to the
->> deferrred split queue in the common case, which reduces split queue lock
->> contention.
->>
->> Previously each page was removed from the rmap individually with
->> page_remove_rmap(). If the first page belonged to a large folio, this
->> would cause page_remove_rmap() to conclude that the folio was now
->> partially mapped and add the folio to the deferred split queue. But
->> subsequent calls would cause the folio to become fully unmapped, meaning
->> there is no value to adding it to the split queue.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>  mm/memory.c | 119 ++++++++++++++++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 119 insertions(+)
->>
->> diff --git a/mm/memory.c b/mm/memory.c
->> index 01f39e8144ef..6facb8c8807a 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -1391,6 +1391,95 @@ zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
->>  	pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
->>  }
->>
->> +static inline unsigned long page_addr(struct page *page,
->> +				struct page *anchor, unsigned long anchor_addr)
->> +{
->> +	unsigned long offset;
->> +	unsigned long addr;
->> +
->> +	offset = (page_to_pfn(page) - page_to_pfn(anchor)) << PAGE_SHIFT;
->> +	addr = anchor_addr + offset;
->> +
->> +	if (anchor > page) {
->> +		if (addr > anchor_addr)
->> +			return 0;
->> +	} else {
->> +		if (addr < anchor_addr)
->> +			return ULONG_MAX;
->> +	}
->> +
->> +	return addr;
->> +}
->> +
->> +static int calc_anon_folio_map_pgcount(struct folio *folio,
->> +				       struct page *page, pte_t *pte,
->> +				       unsigned long addr, unsigned long end)
->> +{
->> +	pte_t ptent;
->> +	int floops;
->> +	int i;
->> +	unsigned long pfn;
->> +
->> +	end = min(page_addr(&folio->page + folio_nr_pages(folio), page, addr),
->> +		  end);
->> +	floops = (end - addr) >> PAGE_SHIFT;
->> +	pfn = page_to_pfn(page);
->> +	pfn++;
->> +	pte++;
->> +
->> +	for (i = 1; i < floops; i++) {
->> +		ptent = ptep_get(pte);
->> +
->> +		if (!pte_present(ptent) ||
->> +		    pte_pfn(ptent) != pfn) {
->> +			return i;
->> +		}
->> +
->> +		pfn++;
->> +		pte++;
->> +	}
->> +
->> +	return floops;
->> +}
->> +
->> +static unsigned long zap_anon_pte_range(struct mmu_gather *tlb,
->> +					struct vm_area_struct *vma,
->> +					struct page *page, pte_t *pte,
->> +					unsigned long addr, unsigned long end,
->> +					bool *full_out)
->> +{
->> +	struct folio *folio = page_folio(page);
->> +	struct mm_struct *mm = tlb->mm;
->> +	pte_t ptent;
->> +	int pgcount;
->> +	int i;
->> +	bool full;
->> +
->> +	pgcount = calc_anon_folio_map_pgcount(folio, page, pte, addr, end);
->> +
->> +	for (i = 0; i < pgcount;) {
->> +		ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
->> +		tlb_remove_tlb_entry(tlb, pte, addr);
->> +		full = __tlb_remove_page(tlb, page, 0);
->> +
->> +		if (unlikely(page_mapcount(page) < 1))
->> +			print_bad_pte(vma, addr, ptent, page);
->> +
->> +		i++;
->> +		page++;
->> +		pte++;
->> +		addr += PAGE_SIZE;
->> +
->> +		if (unlikely(full))
->> +			break;
->> +	}
->> +
->> +	folio_remove_rmap_range(folio, page - i, i, vma);
->> +
->> +	*full_out = full;
->> +	return i;
->> +}
->> +
->>  static unsigned long zap_pte_range(struct mmu_gather *tlb,
->>  				struct vm_area_struct *vma, pmd_t *pmd,
->>  				unsigned long addr, unsigned long end,
->> @@ -1428,6 +1517,36 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
->>  			page = vm_normal_page(vma, addr, ptent);
->>  			if (unlikely(!should_zap_page(details, page)))
->>  				continue;
->> +
->> +			/*
->> +			 * Batch zap large anonymous folio mappings. This allows
->> +			 * batching the rmap removal, which means we avoid
->> +			 * spuriously adding a partially unmapped folio to the
->> +			 * deferrred split queue in the common case, which
->> +			 * reduces split queue lock contention. Require the VMA
->> +			 * to be anonymous to ensure that none of the PTEs in
->> +			 * the range require zap_install_uffd_wp_if_needed().
->> +			 */
->> +			if (page && PageAnon(page) && vma_is_anonymous(vma)) {
->> +				bool full;
->> +				int pgcount;
->> +
->> +				pgcount = zap_anon_pte_range(tlb, vma,
->> +						page, pte, addr, end, &full);
+> Good spot, something like this:
 > 
-> Are you trying to zap as many ptes as possible if all these ptes are
-> within a folio? 
-
-Yes.
-
-> If so, why not calculate end before calling zap_anon_pte_range()?
-> That would make zap_anon_pte_range() simpler. 
-
-I'm not sure I follow. That's currently done in calc_anon_folio_map_pgcount(). I
-could move it to here, but I'm not sure that makes things simpler, just puts
-more code in here and less in there?
-
-> Also check if page is part of
-> a large folio first to make sure you can batch.
-
-Yeah that's fair. I'd be inclined to put that in zap_anon_pte_range() to short
-circuit calc_anon_folio_map_pgcount(). But ultimately zap_anon_pte_range() would
-still zap the single pte.
-
-
+> 	} else {
+> 		for (; nr != 0; nr--, page++) {
+> 			/* Is this the page's last map to be removed? */
+> 			last = atomic_add_negative(-1, &page->_mapcount);
+> 			if (last)
+> 				nr_unmapped++;
+> 		}
 > 
->> +
->> +				rss[mm_counter(page)] -= pgcount;
->> +				pgcount--;
->> +				pte += pgcount;
->> +				addr += pgcount << PAGE_SHIFT;
->> +
->> +				if (unlikely(full)) {
->> +					force_flush = 1;
->> +					addr += PAGE_SIZE;
->> +					break;
->> +				}
->> +				continue;
->> +			}
->> +
->>  			ptent = ptep_get_and_clear_full(mm, addr, pte,
->>  							tlb->fullmm);
->>  			tlb_remove_tlb_entry(tlb, pte, addr);
->> -- 
->> 2.25.1
-> 
-> 
-> --
-> Best Regards,
-> Yan, Zi
+> 		/* Pages still mapped if folio mapped entirely */
+> 		nr_mapped = atomic_sub_return_relaxed(nr_unmapped, mapped);
+> 		if (nr_mapped >= COMPOUND_MAPPED)
+> 			nr_unmapped = 0;
+> 	}
 
+I think that's right, but my eyes always go slightly crossed trying to
+read the new mapcount scheme.
