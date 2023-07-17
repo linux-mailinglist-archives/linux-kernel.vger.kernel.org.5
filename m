@@ -2,115 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26358756FD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 00:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8FA1756FD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 00:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbjGQWbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 18:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43788 "EHLO
+        id S230371AbjGQWe0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Jul 2023 18:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbjGQWbR (ORCPT
+        with ESMTP id S229872AbjGQWeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 18:31:17 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F298121;
-        Mon, 17 Jul 2023 15:31:12 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3a3790a0a48so3778953b6e.1;
-        Mon, 17 Jul 2023 15:31:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689633071; x=1692225071;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SHDp8nB7O1cUSk6u+dkygi1nw20zAJ2ZKhqLuBxI790=;
-        b=G5n13dJeXmTKv6yojdScom21ZyYUXIm+6JbNUjHBnCqk3Tjh9BDMM8zwsNi+zNqM1M
-         d3BXYtSzETH0Rd90iFhzBoVsQ9ItI+wukpzw87SPGkn1nqIGTpio+Im2KsmqpSwZoexV
-         SczTZWml4H1sSJA4fQMcn3BCyvyaPJMC/RJHFegzT3pvCZSl8TdQYKC4+iLc7kp/2sWe
-         yOYRxtM3Q+ZQTf3W1YqphCY/ogoETWQy1UOqPdWl/DNiKGHb8MekjHzleFExMpCSf4YL
-         T5lA7L1qVsU+YmDmdqL4rURyEbstAkvRzTmBdEpXSJ1C8NLzOaxDk1qoEcaG4XAl+nSw
-         kjjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689633071; x=1692225071;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SHDp8nB7O1cUSk6u+dkygi1nw20zAJ2ZKhqLuBxI790=;
-        b=iCwGp8qtxWBpj+NPWwxlV4bcFg6VsSY3EMxahkG+SwgG5yWpwX9iGmWI0nloSDoDsm
-         Juwg512PWILQqtRv9IR3Vw1EAdLlFeC+qCl4gQqDG7+XVvpl1G30dpK5dvUGdEdxP/Th
-         tqDM1DMRJiZKtaca9uiKztFMiqmbtAwkzM9z2bNkVFepWhyFqun3X+HtoE6y0yIzjHFV
-         Eo+jNAwfHpFQldUrwzgQqxZp4U0P9YpQzcLzRWITvYILkCBiXZC+6e7flfN5zsNL2/ki
-         vHRIC5+Vp/IaM300PY5n/mSTWguab36tm3COCG/z+6DqzXowkxQE/Tw1+wBLvUdiWaW3
-         QfdQ==
-X-Gm-Message-State: ABy/qLaaXiY991fs5fdcPn3asy5SWCQ2hpmqq4Ix9E1ZyWtSTUhtITga
-        Y7UXql0v1OUeMRYkR1pIYiw=
-X-Google-Smtp-Source: APBJJlFBdYyBQNo03MuUiEg0P4y5KzZsEf+U7+d/55pz5eYo/yLMgvdrot/jg88363nARNsMAPiFgg==
-X-Received: by 2002:a05:6808:1384:b0:3a4:1f76:bdfb with SMTP id c4-20020a056808138400b003a41f76bdfbmr15020079oiw.14.1689633071269;
-        Mon, 17 Jul 2023 15:31:11 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:2f8:ff69:16db:1c31? (2603-8081-140c-1a00-02f8-ff69-16db-1c31.res6.spectrum.com. [2603:8081:140c:1a00:2f8:ff69:16db:1c31])
-        by smtp.gmail.com with ESMTPSA id a14-20020a056808128e00b003a44b425c18sm184398oiw.43.2023.07.17.15.31.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 15:31:10 -0700 (PDT)
-Message-ID: <b5880a47-aaa4-cb5e-e1f6-00f17695efe8@gmail.com>
-Date:   Mon, 17 Jul 2023 17:31:09 -0500
+        Mon, 17 Jul 2023 18:34:25 -0400
+Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B23FB5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:34:23 -0700 (PDT)
+Received: from omf07.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay04.hostedemail.com (Postfix) with ESMTP id D40B71A05CE;
+        Mon, 17 Jul 2023 22:34:19 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id 68AEC2002D;
+        Mon, 17 Jul 2023 22:34:15 +0000 (UTC)
+Message-ID: <04e74fd214a01bee0fb5ac690730cb386536cced.camel@perches.com>
+Subject: Re: [PATCH rcu 5/5] checkpatch: Complain about unexpected uses of
+ RCU Tasks Trace
+From:   Joe Perches <joe@perches.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Date:   Mon, 17 Jul 2023 15:34:14 -0700
+In-Reply-To: <20230717180454.1097714-5-paulmck@kernel.org>
+References: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
+         <20230717180454.1097714-5-paulmck@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] RDMA/rxe: Fix an error handling path in rxe_bind_mw()
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-References: <43698d8a3ed4e720899eadac887427f73d7ec2eb.1689623735.git.christophe.jaillet@wanadoo.fr>
-Content-Language: en-US
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <43698d8a3ed4e720899eadac887427f73d7ec2eb.1689623735.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Rspamd-Queue-Id: 68AEC2002D
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
+X-Rspamd-Server: rspamout02
+X-Stat-Signature: ydqcdtaadgq3km87eotg8j8pd3mh6b44
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX199v8b1YJAszH97EHPUzWOIn/skmRIxrWs=
+X-HE-Tag: 1689633255-124912
+X-HE-Meta: U2FsdGVkX18q26xURpW9+7yIL42BuR4Zkw3canI6Q+OaBoEjxOlN4sWO2r2VSPNWSpmqVT2U5xjk7hqFilI04qYOR0SfI2y77lfk9KiC3ksoCTNcalQJLUoOAbm22blsjRiMqKOOFrUtlbPz6p8+1d3RDEZbL/cNxlrRGIfcABTMjv3YW1yQx0HxurQICyXOXY9236m5b8jXkMAeP0DYKYxDMi65GeHRr0wfvh9DCQC0GClucM3KkPEVsRmbrk7JhWDR+6wyGr+fOq244GpBh558PLQ5RW7Lww8erKmNSkQT7MZpMM4KYity//XXO3qESACljOpJ+E3tdzooYjEbv8kH5JOZyxBEuVOEoeG832GISOUxT7dNW0VHoYb0GJ3O0Dfry58QH0V6GhebW2QhLmXhRMKWe3CIv9dyqT1ngG8zSlaC0dQSWlqxxIoWa3U7y2SNQ0Y7BcNEzDK9dcTvxzLAnjtAsIMeLRs+sbYfkB4NOOwrQ9nSYcmJO+ZB5L1M6UpJzh3c0UzxOi/2KW/ZI41TxOlm/8dRVG1Z+KpHLl8U10glR/PgjHnG7cFTil2GKT2UWE5WrRo=
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/17/23 14:55, Christophe JAILLET wrote:
-> All errors go to the error handling path, except this one. Be consistent
-> and also branch to it.
+On Mon, 2023-07-17 at 11:04 -0700, Paul E. McKenney wrote:
+> RCU Tasks Trace is quite specialized, having been created specifically
+> for sleepable BPF programs.  Because it allows general blocking within
+> readers, any new use of RCU Tasks Trace must take current use cases into
+> account.  Therefore, update checkpatch.pl to complain about use of any of
+> the RCU Tasks Trace API members outside of BPF and outside of RCU itself.
 > 
-> Fixes: 02ed253770fb ("RDMA/rxe: Introduce rxe access supported flags")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Cc: Andy Whitcroft <apw@canonical.com> (maintainer:CHECKPATCH)
+> Cc: Joe Perches <joe@perches.com> (maintainer:CHECKPATCH)
+> Cc: Dwaipayan Ray <dwaipayanray1@gmail.com> (reviewer:CHECKPATCH)
+> Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: <bpf@vger.kernel.org>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > ---
-> /!\ Speculative /!\
+>  scripts/checkpatch.pl | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 > 
->    This patch is based on analysis of the surrounding code and should be
->    reviewed with care !
-> 
-> /!\ Speculative /!\
-> ---
->  drivers/infiniband/sw/rxe/rxe_mw.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
-> index d8a43d87de93..d9312b5c9d20 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mw.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mw.c
-> @@ -199,7 +199,8 @@ int rxe_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -7457,6 +7457,24 @@ sub process {
+>  			}
+>  		}
 >  
->  	if (access & ~RXE_ACCESS_SUPPORTED_MW) {
->  		rxe_err_mw(mw, "access %#x not supported", access);
-> -		return -EOPNOTSUPP;
-> +		ret = -EOPNOTSUPP;
-> +		goto err_drop_mr;
->  	}
->  
->  	spin_lock_bh(&mw->lock);
-Christophe,
-Good catch. Thanks. Probably should go to for-next.
-Bob
+> +# Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
+> +		if ($line =~ /\brcu_read_lock_trace\s*\(/ ||
+> +		    $line =~ /\brcu_read_lock_trace_held\s*\(/ ||
+> +		    $line =~ /\brcu_read_unlock_trace\s*\(/ ||
+> +		    $line =~ /\bcall_rcu_tasks_trace\s*\(/ ||
+> +		    $line =~ /\bsynchronize_rcu_tasks_trace\s*\(/ ||
+> +		    $line =~ /\brcu_barrier_tasks_trace\s*\(/ ||
+> +		    $line =~ /\brcu_request_urgent_qs_task\s*\(/) {
+> +			if ($realfile !~ m@^kernel/bpf@ &&
+> +			    $realfile !~ m@^include/linux/bpf@ &&
+> +			    $realfile !~ m@^net/bpf@ &&
+> +			    $realfile !~ m@^kernel/rcu@ &&
+> +			    $realfile !~ m@^include/linux/rcu@) {
 
-Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
+Functions and paths like these tend to be accreted.
+
+Please use a variable or 2 like:
+
+our $rcu_trace_funcs = qr{(?x:
+	rcu_read_lock_trace |
+	rcu_read_lock_trace_held |
+	rcu_read_unlock_trace |
+	call_rcu_tasks_trace |
+	synchronize_rcu_tasks_trace |
+	rcu_barrier_tasks_trace |
+	rcu_request_urgent_qs_task
+)};
+our $rcu_trace_paths = qr{(?x:
+	kernel/bfp/ |
+	include/linux/bpf |
+	net/bpf/ |
+	kernel/rcu/ |
+	include/linux/rcu
+)};
+
+...
+	
+		if ($line =~ /\b($rcu_trace_funcs)\s*\(/ &&
+		    $realfile !~ m{^$rcu_trace_paths}) {
+			WARN("RCU_TASKS_TRACE",
+			     "use of RCU tasks trace '$1' is incorrect outside BPF or core RCU code\n" . $herecurr);			}
+		}
+
+
