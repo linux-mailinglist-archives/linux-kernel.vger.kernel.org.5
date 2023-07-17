@@ -2,52 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1BD7565FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8837565B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbjGQOMy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Jul 2023 10:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40642 "EHLO
+        id S231872AbjGQODg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232086AbjGQOMu (ORCPT
+        with ESMTP id S229590AbjGQODe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:12:50 -0400
-X-Greylist: delayed 2156 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 17 Jul 2023 07:12:44 PDT
-Received: from 11.mo584.mail-out.ovh.net (11.mo584.mail-out.ovh.net [46.105.34.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7AA0198
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:12:44 -0700 (PDT)
-Received: from director9.ghost.mail-out.ovh.net (unknown [10.108.4.54])
-        by mo584.mail-out.ovh.net (Postfix) with ESMTP id 46BA72349E
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:35:59 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-nt57t (unknown [10.110.208.139])
-        by director9.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 5908E1FE0D;
-        Mon, 17 Jul 2023 13:35:58 +0000 (UTC)
-Received: from courmont.net ([37.59.142.99])
-        by ghost-submission-6684bf9d7b-nt57t with ESMTPSA
-        id 0WBlO71DtWRI+QAABt2Raw
-        (envelope-from <remi@remlab.net>); Mon, 17 Jul 2023 13:35:57 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-99G003bbea4a9f-defe-487c-86c7-12b72316aa3d,
-                    B0373659C9CBE7527DE2AA887F006526039BD3B2) smtp.auth=postmaster@courmont.net
-X-OVh-ClientIp: 37.33.153.76
-Date:   Mon, 17 Jul 2023 16:35:52 +0300
-From:   =?ISO-8859-1?Q?R=E9mi_Denis-Courmont?= <remi@remlab.net>
-To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v4_00/10=5D_riscv=3A_Allow_user?= =?US-ASCII?Q?space_to_directly_access_perf_counters?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20230703124647.215952-1-alexghiti@rivosinc.com>
-References: <20230703124647.215952-1-alexghiti@rivosinc.com>
-Message-ID: <DDB4EEB8-12A0-4E66-8E96-808E84A82078@remlab.net>
+        Mon, 17 Jul 2023 10:03:34 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67041D1;
+        Mon, 17 Jul 2023 07:03:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689602613; x=1721138613;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=eak0Awh/jpPpCIghRwyoQAOusxOLZVy8MBwHFNwXJ0A=;
+  b=fatd0RwR9OK4XzRGNqlH+Wt1J+Z7l8n8bsl8B23smt6+fRo4d0/Sp93d
+   7c/ibu9pErWQ5MxZlBGCkcaifQecJb0IN+7G3sIV6vzgX07Rx/aQehi9D
+   KB0iDGXb05JoZQLt9nn7V3HwZGB+Z8JLgU1+TXCALiwXCDJ582jOy7tog
+   ciOvY9WGu8RKlUBIeF4lsqQE3YmSGIKAsG1E2VSyKw87KAe/ueEfKtUFl
+   6Mtvvo8ZG65rGtzSPPVi/4aQIIiPWCwOyePV8IlH2wx06hM7ro9xtX3Vo
+   9KeDVPDZ5lqpS2dA3sOrah9wGmJWMlbM8pERdxsM4pasEuF5RJYBAi8eG
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="396765748"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="396765748"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 07:03:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="726555400"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="726555400"
+Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.16.144]) ([10.99.16.144])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 07:02:57 -0700
+Message-ID: <78f7ff79-cb32-1e08-f87a-9186c9114056@linux.intel.com>
+Date:   Mon, 17 Jul 2023 16:02:55 +0200
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Ovh-Tracer-Id: 4881620523424160219
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrgedvgdeihecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurhepfffhvffufggjfhfkgggtgfesthhqmhdttderjeenucfhrhhomheptformhhiucffvghnihhsqdevohhurhhmohhnthcuoehrvghmihesrhgvmhhlrggsrdhnvghtqeenucggtffrrghtthgvrhhnpeevjeejleefheetveehffekiedtveegteevteffueffffefkeegieeikefghfegfeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduvdejrddtrddtrddupdefjedrfeefrdduheefrdejiedpfeejrdehledrudegvddrleelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeorhgvmhhisehrvghmlhgrsgdrnhgvtheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehkeegpdhmohguvgepshhmthhpohhuth
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4 01/15] PCI: Sort Intel PCI IDs by number
+Content-Language: en-US
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+References: <20230717114511.484999-1-amadeuszx.slawinski@linux.intel.com>
+ <20230717114511.484999-2-amadeuszx.slawinski@linux.intel.com>
+ <ZLVIGlpoNsr0RRGE@smile.fi.intel.com> <ZLVI8NuiIZZrhjRg@smile.fi.intel.com>
+From:   =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>
+In-Reply-To: <ZLVI8NuiIZZrhjRg@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,79 +75,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 7/17/2023 3:58 PM, Andy Shevchenko wrote:
+> On Mon, Jul 17, 2023 at 04:54:34PM +0300, Andy Shevchenko wrote:
+>> On Mon, Jul 17, 2023 at 01:44:57PM +0200, Amadeusz Sławiński wrote:
+>>> Some of the PCI IDs are not sorted correctly, reorder them by growing ID
+>>> number.
+>>
+>> Hmm... I don't see a cover letter...
+> 
+> Okay, `b4` fetches it. It seems I asked you (or my memory is doing a trick?)
+> to avoid using my @intel.com for LKML archives...
+> 
 
-Le 3 juillet 2023 15:46:37 GMT+03:00, Alexandre Ghiti <alexghiti@rivosinc.com> a écrit :
->riscv used to allow direct access to cycle/time/instret counters,
->bypassing the perf framework, this patchset intends to allow the user to
->mmap any counter when accessed through perf. But we can't break the
->existing behaviour so we introduce a sysctl perf_user_access like arm64
->does, which defaults to the legacy mode described above.
-
-AFAIK, if the default settings breaks user space, the patchset is considered to break user space. That being the case, either this case is deemed special enough that breaking user space is OK, or it is not.
-
-If it is not OK, then the only way out that I can think of, consists of trapping and emulating the counters, returning the same sanitised values that Linux perf would return. Then you can add a kernel config option to disable that trap-and-emulation code in the future.
-
-Either way, I don't suppose that there should be an option to be insecurely backward compatible.
-
->
->This version needs openSBI v1.3 *and* a kernel fix that went upstream lately
->(https://lore.kernel.org/lkml/20230616114831.3186980-1-maz@kernel.org/T/).
->
->**Important**: In this version, the default mode is now user access, not
->the legacy so some applications will break.
->
->base-commit-tag: v6.4-rc6
->
->Changes in v4:
->- Fixed some nits in riscv_pmu_sbi.c thanks to Andrew
->- Fixed the documentation thanks to Andrew
->- Added RB from Andrew \o/
->
->Changes in v3:
->- patch 1 now contains the ref to the faulty commit (no Fixes tag as it is only a comment), as Andrew suggested
->- Removed RISCV_PMU_LEGACY_TIME from patch 3, as Andrew suggested
->- Rename RISCV_PMU_PDEV_NAME to "riscv-pmu-sbi", patch4 is just cosmetic now, as Andrew suggested
->- Removed a few useless (and wrong) comments, as Andrew suggested
->- Simplify arch_perf_update_userpage code, as Andrew suggested
->- Documentation now mentions that time CSR is *always* accessible, whatever the mode, as suggested by Andrew
->- Removed CYCLEH reference and add TODO for rv32 support, as suggested by Atish
->- Do not rename the pmu instance as Atish suggested
->- Set pmc_width only if rdpmc is enabled and CONFIG_RISCV_PMU is set and the event is a hw event
->- Move arch_perf_update_userpage https://lore.kernel.org/lkml/20230616114831.3186980-1-maz@kernel.org/T/
->- **Switch to user mode access by default**
->
->Changes in v2:
->- Split into smaller patches, way better!
->- Add RB from Conor
->- Simplify the way we checked riscv architecture
->- Fix race mmap and other thread running on other cpus
->- Use hwc when available
->- Set all userspace access flags in event_init, too cumbersome to handle sysctl changes
->- Fix arch_perf_update_userpage for pmu other than riscv-pmu by renaming pmu driver
->- Fixed kernel test robot build error
->- Fixed documentation (Andrew and Bagas)
->- perf testsuite passes mmap tests in all 3 modes
->
->Alexandre Ghiti (10):
->  perf: Fix wrong comment about default event_idx
->  include: riscv: Fix wrong include guard in riscv_pmu.h
->  riscv: Make legacy counter enum match the HW numbering
->  drivers: perf: Rename riscv pmu sbi driver
->  riscv: Prepare for user-space perf event mmap support
->  drivers: perf: Implement perf event mmap support in the legacy backend
->  drivers: perf: Implement perf event mmap support in the SBI backend
->  Documentation: admin-guide: Add riscv sysctl_perf_user_access
->  tools: lib: perf: Implement riscv mmap support
->  perf: tests: Adapt mmap-basic.c for riscv
->
-> Documentation/admin-guide/sysctl/kernel.rst |  27 ++-
-> drivers/perf/riscv_pmu.c                    | 113 +++++++++++
-> drivers/perf/riscv_pmu_legacy.c             |  28 ++-
-> drivers/perf/riscv_pmu_sbi.c                | 196 +++++++++++++++++++-
-> include/linux/perf/riscv_pmu.h              |  12 +-
-> include/linux/perf_event.h                  |   3 +-
-> tools/lib/perf/mmap.c                       |  65 +++++++
-> tools/perf/tests/mmap-basic.c               |   4 +-
-> 8 files changed, 428 insertions(+), 20 deletions(-)
->
+It was on NHLT patchset review with Cezary, but I will also try to 
+remember it for future patches.
