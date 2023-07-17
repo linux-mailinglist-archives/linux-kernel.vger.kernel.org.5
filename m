@@ -2,244 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 286847569F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C3B7569FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbjGQRQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 13:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
+        id S230261AbjGQRRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 13:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjGQRQt (ORCPT
+        with ESMTP id S229630AbjGQRRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 13:16:49 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA251A2;
-        Mon, 17 Jul 2023 10:16:47 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36HEHfQZ012945;
-        Mon, 17 Jul 2023 17:16:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=t+CibPKYMmmxXaBrz9AbPzPKG7TqeWT9CulsqR4PHuU=;
- b=ktWzQtnXTgPtTpqk/h46JCU14q9veHGxfLvKPUZBZmbJ/dmWS1xNVliWHBJyMR1+YAP4
- u6JmcDu7Ec9T/zBQiCpazBibibDjIpzTXZQQUdWiBVyQGL8nQgDrjFWmcPaIG0TDYs34
- LkUowx64FbvdZ2v6qWesVy9KsarUw8kYnkxUH9j+CoI54VJWbTh9PttVxR2vQiMkqv0/
- 3HYfh5PCQ1h9LY0994I8hDKxT8N1lSdEdKby75r7neZAQyfK1eg8rDfNx7zJOsH31wB1
- bL55ixhSxHwj0NUkvpSS0/8pUaucYE8NiuadOwUrCMcdV+y4JYdHm/F/tTMTfeyQlMUK hA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3run09v4qk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 17:16:35 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36HHGYA5028695
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 17:16:34 GMT
-Received: from [10.71.108.91] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 17 Jul
- 2023 10:16:33 -0700
-Message-ID: <8bc82b4b-b169-a11b-9f5d-eb821b680af7@quicinc.com>
-Date:   Mon, 17 Jul 2023 10:16:26 -0700
+        Mon, 17 Jul 2023 13:17:33 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B80AB5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:17:12 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3159da54e95so4313388f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1689614231; x=1692206231;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d4Z4ndQxPvlU042D2Sffvs/STBs5DhPCeXrD5S+fgHE=;
+        b=O3XHCFRX1uaiLT4EGg2b5TeByou4XdZ0/d6iVQHoWIRnqYP3URhDK2REkmEHmow7rz
+         H/KtVE7CHlUZvFnkvUaHQCbHDRWtA2xHM82rhLlY0K+ywztbwmgvEdINeZsylQ3o8yz8
+         Nc3ispHXmb5is1JMW3pEwB+jdqkCsv6wbJrN++63Ed9ufeNO//W9e4cCuUJd43f06Fsq
+         ci1df5i55co+3nDLUmQSnsEWCF+Up2pNLwJFfJ9qVoAaC+oeq7rg6ZMafh5H4RNzr0mb
+         lPxCPQRc9EGA1H1/MGdQ1j7DaRnkVXcSAQwqr6ZU2KWMd8VGdLe/Yi5njQkA5CWBCcDI
+         oXZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689614231; x=1692206231;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d4Z4ndQxPvlU042D2Sffvs/STBs5DhPCeXrD5S+fgHE=;
+        b=ffkHuw/B+7bJrK/Xr/LB8MMZvCvsM5i7JYzApKUWZZNL5gfEKED710xOPrPqbpbQ1O
+         oAy9YDQLpFP4c33Rs8M2Kg5w6BoDQhCPvlgaNd2qUXgt9r17SQ65nilESXytJ8wzjgvI
+         qfOCuX8qZ2JcnvabVYioZuUwnK5DQEW5SlHTAOpwF0NLRLW0LHQHBGq6TbJvgGMMTijS
+         L2v8W5yMST4ZaExnEPeptKE0kXkEiMSAF87nqaDmiNRUzobRy+aCMSMzsc5yHTDp6OjP
+         ak6eYV+ucM5djYdY4LmBwJjqEpNns1p2PCb5uN0wXHnLCDRT5Tu1Gq7xKXCsZwK+HAzg
+         Z2KA==
+X-Gm-Message-State: ABy/qLaw/oxm2SBBKgl+XnspyHwlBF5mbyVvaCnAcZk8a/qAhI5mLgL2
+        38n9ItYmrAhmRC0gGoYf6GWdBw==
+X-Google-Smtp-Source: APBJJlE8SQT5KSsfeMZZ5HoF4OqXcFaj3mkwxlUHV0eiH03tmZUiul4NgF+I6z3ufuroyppoe2YtDQ==
+X-Received: by 2002:a5d:5544:0:b0:313:f907:ceed with SMTP id g4-20020a5d5544000000b00313f907ceedmr9868023wrw.39.1689614230739;
+        Mon, 17 Jul 2023 10:17:10 -0700 (PDT)
+Received: from localhost ([95.148.15.113])
+        by smtp.gmail.com with ESMTPSA id s10-20020a5d69ca000000b0031134bcdacdsm10165wrw.42.2023.07.17.10.17.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 10:17:10 -0700 (PDT)
+From:   Punit Agrawal <punit.agrawal@bytedance.com>
+To:     sudeep.holla@arm.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Punit Agrawal <punit.agrawal@bytedance.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Shanker Donthineni <sdonthineni@nvidia.com>
+Subject: [PATCH] firmware: smccc: Fix use of uninitialised results structure
+Date:   Mon, 17 Jul 2023 18:17:02 +0100
+Message-Id: <20230717171702.424253-1-punit.agrawal@bytedance.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 4/5] drm/msm/dp: move relevant dp initialization code
- from bind() to probe()
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
-        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
-        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
-        <agross@kernel.org>, <andersson@kernel.org>
-CC:     <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
-        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
-        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1688773943-3887-1-git-send-email-quic_khsieh@quicinc.com>
- <1688773943-3887-5-git-send-email-quic_khsieh@quicinc.com>
- <121f82ad-9d5d-6d7f-b4ae-9a371ab49ef7@linaro.org>
- <9df52052-93fd-75a4-b54c-02ed9554e15f@quicinc.com>
- <3fa812d6-9222-065a-8b40-95c2f2c808a6@linaro.org>
-Content-Language: en-US
-From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
-In-Reply-To: <3fa812d6-9222-065a-8b40-95c2f2c808a6@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: KAMvzj5dbS38MwgCxAlfxehCzfQaxPWO
-X-Proofpoint-GUID: KAMvzj5dbS38MwgCxAlfxehCzfQaxPWO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-17_13,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- phishscore=0 mlxlogscore=999 lowpriorityscore=0 adultscore=0
- suspectscore=0 spamscore=0 bulkscore=0 malwarescore=0 impostorscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307170159
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit 35727af2b15d ("irqchip/gicv3: Workaround for NVIDIA erratum
+T241-FABRIC-4") moved the initialisation of the SoC version to
+arm_smccc_version_init() but forgot to update the results structure
+and it's usage.
 
-On 7/10/2023 11:13 AM, Dmitry Baryshkov wrote:
-> On 10/07/2023 19:57, Kuogee Hsieh wrote:
->>
->> On 7/7/2023 5:11 PM, Dmitry Baryshkov wrote:
->>> On 08/07/2023 02:52, Kuogee Hsieh wrote:
->>>> In preparation of moving edp of_dp_aux_populate_bus() to
->>>> dp_display_probe(), move dp_display_request_irq(),
->>>> dp->parser->parse() and dp_power_client_init() to dp_display_probe()
->>>> too.
->>>>
->>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
->>>> ---
->>>>   drivers/gpu/drm/msm/dp/dp_display.c | 48 
->>>> +++++++++++++++++--------------------
->>>>   drivers/gpu/drm/msm/dp/dp_display.h |  1 -
->>>>   2 files changed, 22 insertions(+), 27 deletions(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
->>>> b/drivers/gpu/drm/msm/dp/dp_display.c
->>>> index 44580c2..185f1eb 100644
->>>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
->>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->>>> @@ -290,12 +290,6 @@ static int dp_display_bind(struct device *dev, 
->>>> struct device *master,
->>>>           goto end;
->>>>       }
->>>>   -    rc = dp_power_client_init(dp->power);
->>>> -    if (rc) {
->>>> -        DRM_ERROR("Power client create failed\n");
->>>> -        goto end;
->>>> -    }
->>>> -
->>>>       rc = dp_register_audio_driver(dev, dp->audio);
->>>>       if (rc) {
->>>>           DRM_ERROR("Audio registration Dp failed\n");
->>>> @@ -752,6 +746,12 @@ static int dp_init_sub_modules(struct 
->>>> dp_display_private *dp)
->>>>           goto error;
->>>>       }
->>>>   +    rc = dp->parser->parse(dp->parser);
->>>> +    if (rc) {
->>>> +        DRM_ERROR("device tree parsing failed\n");
->>>> +        goto error;
->>>> +    }
->>>> +
->>>>       dp->catalog = dp_catalog_get(dev, &dp->parser->io);
->>>>       if (IS_ERR(dp->catalog)) {
->>>>           rc = PTR_ERR(dp->catalog);
->>>> @@ -768,6 +768,12 @@ static int dp_init_sub_modules(struct 
->>>> dp_display_private *dp)
->>>>           goto error;
->>>>       }
->>>>   +    rc = dp_power_client_init(dp->power);
->>>> +    if (rc) {
->>>> +        DRM_ERROR("Power client create failed\n");
->>>> +        goto error;
->>>> +    }
->>>> +
->>>>       dp->aux = dp_aux_get(dev, dp->catalog, dp->dp_display.is_edp);
->>>>       if (IS_ERR(dp->aux)) {
->>>>           rc = PTR_ERR(dp->aux);
->>>> @@ -1196,26 +1202,20 @@ static irqreturn_t 
->>>> dp_display_irq_handler(int irq, void *dev_id)
->>>>       return ret;
->>>>   }
->>>>   -int dp_display_request_irq(struct msm_dp *dp_display)
->>>> +static int dp_display_request_irq(struct dp_display_private *dp)
->>>>   {
->>>>       int rc = 0;
->>>> -    struct dp_display_private *dp;
->>>> -
->>>> -    if (!dp_display) {
->>>> -        DRM_ERROR("invalid input\n");
->>>> -        return -EINVAL;
->>>> -    }
->>>> -
->>>> -    dp = container_of(dp_display, struct dp_display_private, 
->>>> dp_display);
->>>> +    struct device *dev = &dp->pdev->dev;
->>>>   -    dp->irq = irq_of_parse_and_map(dp->pdev->dev.of_node, 0);
->>>>       if (!dp->irq) {
->>>> -        DRM_ERROR("failed to get irq\n");
->>>> -        return -EINVAL;
->>>> +        dp->irq = irq_of_parse_and_map(dp->pdev->dev.of_node, 0);
->>>> +        if (!dp->irq) {
->>>> +            DRM_ERROR("failed to get irq\n");
->>>> +            return -EINVAL;
->>>> +        }
->>>>       }
->>>
->>> Use platform_get_irq() from probe() function.
->>>
->>>>   -    rc = devm_request_irq(dp_display->drm_dev->dev, dp->irq,
->>>> -            dp_display_irq_handler,
->>>> +    rc = devm_request_irq(dev, dp->irq, dp_display_irq_handler,
->>>>               IRQF_TRIGGER_HIGH, "dp_display_isr", dp);
->>>
->>>
->>>>       if (rc < 0) {
->>>>           DRM_ERROR("failed to request IRQ%u: %d\n",
->>>> @@ -1290,6 +1290,8 @@ static int dp_display_probe(struct 
->>>> platform_device *pdev)
->>>>         platform_set_drvdata(pdev, &dp->dp_display);
->>>>   +    dp_display_request_irq(dp);
->>>> +
->>>
->>> Error checking?
->>> Are we completely ready to handle interrupts at this point?
->> not until dp_display_host_init() is called which will be called from 
->> pm_runtime_resume() later.
->
-> But once you request_irq(), you should be ready for the IRQs to be 
-> delivered right away.
+Fix the use of the uninitialised results structure and update the
+error strings.
 
-At this point, the DP controller interrupts mask bit is not enabled yet.
+Fixes: 35727af2b15d ("irqchip/gicv3: Workaround for NVIDIA erratum T241-FABRIC-4")
+Signed-off-by: Punit Agrawal <punit.agrawal@bytedance.com>
+Cc: Sudeep Holla <sudeep.holla@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Vikram Sethi <vsethi@nvidia.com>
+Cc: Shanker Donthineni <sdonthineni@nvidia.com>
+---
+ drivers/firmware/smccc/soc_id.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Therefore interrupts will not happen until dp_bridge_hpd_enable() is 
-called to initialize dp host  controller and then enabled mask bits.
+diff --git a/drivers/firmware/smccc/soc_id.c b/drivers/firmware/smccc/soc_id.c
+index 890eb454599a..1990263fbba0 100644
+--- a/drivers/firmware/smccc/soc_id.c
++++ b/drivers/firmware/smccc/soc_id.c
+@@ -34,7 +34,6 @@ static struct soc_device_attribute *soc_dev_attr;
+ 
+ static int __init smccc_soc_init(void)
+ {
+-	struct arm_smccc_res res;
+ 	int soc_id_rev, soc_id_version;
+ 	static char soc_id_str[20], soc_id_rev_str[12];
+ 	static char soc_id_jep106_id_str[12];
+@@ -49,13 +48,13 @@ static int __init smccc_soc_init(void)
+ 	}
+ 
+ 	if (soc_id_version < 0) {
+-		pr_err("ARCH_SOC_ID(0) returned error: %lx\n", res.a0);
++		pr_err("Invalid SoC Version: %x\n", soc_id_version);
+ 		return -EINVAL;
+ 	}
+ 
+ 	soc_id_rev = arm_smccc_get_soc_id_revision();
+ 	if (soc_id_rev < 0) {
+-		pr_err("ARCH_SOC_ID(1) returned error: %lx\n", res.a0);
++		pr_err("Invalid SoC Revision: %x\n", soc_id_rev);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.39.2
 
->
->>>
->>>>       rc = component_add(&pdev->dev, &dp_display_comp_ops);
->>>>       if (rc) {
->>>>           DRM_ERROR("component add failed, rc=%d\n", rc);
->>>> @@ -1574,12 +1576,6 @@ int msm_dp_modeset_init(struct msm_dp 
->>>> *dp_display, struct drm_device *dev,
->>>>         dp_priv = container_of(dp_display, struct 
->>>> dp_display_private, dp_display);
->>>>   -    ret = dp_display_request_irq(dp_display);
->>>> -    if (ret) {
->>>> -        DRM_ERROR("request_irq failed, ret=%d\n", ret);
->>>> -        return ret;
->>>> -    }
->>>> -
->>>>       ret = dp_display_get_next_bridge(dp_display);
->>>>       if (ret)
->>>>           return ret;
->>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.h 
->>>> b/drivers/gpu/drm/msm/dp/dp_display.h
->>>> index 1e9415a..b3c08de 100644
->>>> --- a/drivers/gpu/drm/msm/dp/dp_display.h
->>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.h
->>>> @@ -35,7 +35,6 @@ struct msm_dp {
->>>>   int dp_display_set_plugged_cb(struct msm_dp *dp_display,
->>>>           hdmi_codec_plugged_cb fn, struct device *codec_dev);
->>>>   int dp_display_get_modes(struct msm_dp *dp_display);
->>>> -int dp_display_request_irq(struct msm_dp *dp_display);
->>>>   bool dp_display_check_video_test(struct msm_dp *dp_display);
->>>>   int dp_display_get_test_bpp(struct msm_dp *dp_display);
->>>>   void dp_display_signal_audio_start(struct msm_dp *dp_display);
->>>
->
