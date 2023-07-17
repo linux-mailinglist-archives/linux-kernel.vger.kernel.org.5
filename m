@@ -2,115 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D167F755F58
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF070755F4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbjGQJeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 05:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40508 "EHLO
+        id S230205AbjGQJdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 05:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230336AbjGQJd6 (ORCPT
+        with ESMTP id S229621AbjGQJdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 05:33:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3824130
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:33:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689586392;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4GSk6WKN5IHnbhndU+RbN845PKQyEPVxzi9rw1bYqlc=;
-        b=Z5uCTup8EObBz1QRWZrQsr1+9yi1WDb7anMjwdxV224/hlS5rx2kL7jWTnfQYxrS0YLj2o
-        IOkkOFW3MaIFQ/ONcfCCTxTAgnpLnaXrsteKRQ4I+lYrTWC/ZLzltvosnivBSk3rNaP+8L
-        sRkHIWSqZRGmVzK5/ofefKSBEhNr2SA=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-488-0eglSViUPVC6qwu7O76DDA-1; Mon, 17 Jul 2023 05:33:09 -0400
-X-MC-Unique: 0eglSViUPVC6qwu7O76DDA-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2b6f51e170fso35682371fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:33:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689586388; x=1692178388;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4GSk6WKN5IHnbhndU+RbN845PKQyEPVxzi9rw1bYqlc=;
-        b=LccWf61t3lUbsKP4WZyMxeZr+KtVo1aSKSriUzCRWV5XW65LiHuL3okHjZg8s8uBgD
-         hcph5UG/jKzGuouDE7naMrgULpU42NZWwUSOpXUxuayj4mfM3uFGqo1bS9y9TGSP+T1q
-         eiFt2EeeZYhUElVcvMPdhPZgzVYat9SRqJ7hVkgnDbqybQ2PBfPyQYccvtkMe0lSD2nB
-         xubWmsPnKytZbLXUTD3xw015nICThj7gT35DdMgh970w4Ebpva60t0vPbwxmuXXCS5j7
-         p20BVwxHyhDhtOtnwt4iFxHgahXp31LJglnW8T26BqRppey1xaZOoyijEhoZAFQQXSqV
-         Va4A==
-X-Gm-Message-State: ABy/qLZZ7Bc7ar97r/GRFqrtBpdZsbdCOJ8eUqIx6wLXkgMAf5vUPNek
-        T6hoV7De76byfNBxCj1Ar6xSqk8w32e5JvY0GvUhoKS5xXtwk5Twkj/JvmZFGFse4flM/jBD99g
-        VUIP7jBxOB+1avXuzZ+/PiiWT
-X-Received: by 2002:a2e:86d4:0:b0:2b6:e958:5700 with SMTP id n20-20020a2e86d4000000b002b6e9585700mr7669259ljj.4.1689586388036;
-        Mon, 17 Jul 2023 02:33:08 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlE0OLByQN5N+LQ57Inm6jnh+Bx3SZZ6vASzWXxO8whZtwkQRvwOLwzKHyX9P3IFIbL18i2Aqg==
-X-Received: by 2002:a2e:86d4:0:b0:2b6:e958:5700 with SMTP id n20-20020a2e86d4000000b002b6e9585700mr7669243ljj.4.1689586387736;
-        Mon, 17 Jul 2023 02:33:07 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id n21-20020a1c7215000000b003fbd0c50ba2sm7627771wmc.32.2023.07.17.02.33.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 02:33:07 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/8] drm: fb-helper/ssd130x: Add support for DRM_FORMAT_R1
-In-Reply-To: <CAMuHMdURa8E9cmphbDkTgS2o3ORWd7JAj68PV9bxd3aygKZRJg@mail.gmail.com>
-References: <cover.1689252746.git.geert@linux-m68k.org>
- <87zg3w7zlz.fsf@minerva.mail-host-address-is-not-set>
- <CAMuHMdV_qNfytroBEfqDMe04POt27s9o=FevXht7N4YXRmBz8Q@mail.gmail.com>
- <87o7kakijn.fsf@minerva.mail-host-address-is-not-set>
- <CAMuHMdURa8E9cmphbDkTgS2o3ORWd7JAj68PV9bxd3aygKZRJg@mail.gmail.com>
-Date:   Mon, 17 Jul 2023 11:33:06 +0200
-Message-ID: <87jzuykhm5.fsf@minerva.mail-host-address-is-not-set>
+        Mon, 17 Jul 2023 05:33:42 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD5FBE;
+        Mon, 17 Jul 2023 02:33:41 -0700 (PDT)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36H5Tp1v020422;
+        Mon, 17 Jul 2023 02:33:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=y6hp+s+hQsfK+6/k8ufarcCUrnxJf/cZ5C+kliYfWUk=;
+ b=QEXlSB5hB/u7k84bjv0GEIkf3LJ1t5B/wjc8R50EMEuy0lOJHyQ0RUIICQRbJpNSE0No
+ 90nUGYjiNqeF0S8khT0+DuS4vFtpDXUa9Trowa/Ovew3QB0QZMwdkB36IjLxBbVQ6Csp
+ PlGZq/Z8A7+W1x7IFEyi7PC0DBmggJ8ZyLGRY4ZaWzEsdvxMV22uDC4JPZnvNx2T0oDr
+ F5zkESGYgr2RS9DO/gVS90glVqFGj+Rm3Kgx5pYiW/EfjfmQxUiCOdZ6im26f3N9RgYj
+ 737j+Lctt05uGpnpMS3N6EIap8re+bzoh6B4PqK/l+ayG1n3aSyDhyGtP5X5cLl8tVgS 2A== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3rvyhx0p1a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 02:33:28 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 17 Jul
+ 2023 02:33:26 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Mon, 17 Jul 2023 02:33:26 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.134])
+        by maili.marvell.com (Postfix) with ESMTP id 745553F70A4;
+        Mon, 17 Jul 2023 02:33:20 -0700 (PDT)
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>,
+        <willemdebruijn.kernel@gmail.com>, <andrew@lunn.ch>,
+        <sgoutham@marvell.com>, <lcherian@marvell.com>,
+        <gakula@marvell.com>, <jerinj@marvell.com>, <sbhatta@marvell.com>,
+        <hkelam@marvell.com>, <naveenm@marvell.com>, <edumazet@google.com>,
+        <pabeni@redhat.com>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <maxtram95@gmail.com>, <corbet@lwn.net>,
+        <linux-doc@vger.kernel.org>
+Subject: [net-next Patch v3 0/4] octeontx2-pf: support Round Robin scheduling
+Date:   Mon, 17 Jul 2023 15:03:15 +0530
+Message-ID: <20230717093319.26618-1-hkelam@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-GUID: MULHA1Yrpye_ZfrE7_tJhdx5wjurB7E2
+X-Proofpoint-ORIG-GUID: MULHA1Yrpye_ZfrE7_tJhdx5wjurB7E2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_07,2023-07-13_01,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+octeontx2 and CN10K silicons support Round Robin scheduling. When multiple
+traffic flows reach transmit level with the same priority, with Round Robin
+scheduling traffic flow with the highest quantum value is picked. With this
+support, the user can add multiple classes with the same priority and
+different quantum in htb offload.
 
-> Hi Javier,
+This series of patches adds support for the same.
 
-[...]
+Patch1: implement transmit schedular allocation algorithm as preparation
+        for support round robin scheduling.
 
->> >> penguin in test004 is not displayed correctly. I was expecting that to be
->> >> working correctly since you mentioned to be using the Linux logo on boot.
->> >
->> > Linux has logos for displays using 2, 16, and 256 colors. Note that the
->> > default logos are 80x80, which is larger than your display, so no logo
->> > is drawn.
->> > Fbtest has only the full color logo, so it will look bad on a monochrome
->> > display.
->>
->> I see. Should the test check for minimum num_colors and skip that test then?
->
-> The test still works (you did see an ugly black-and-white penguin), doesn't it?
->
+Patch2: Allow quantum parameter in HTB offload mode.
 
-Fair enough. But when it defaulted to XRGB8888, it looked better. So I
-thought that it was a regression. No strong opinion though if the test
-should be skipped or not.
+Patch3: extends octeontx2 htb offload support for Round Robin scheduling
 
--- 
-Best regards,
+Patch4: extend QOS documentation for Round Robin scheduling
 
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+Hariprasad Kelam (1):
+  docs: octeontx2: extend documentation for Round Robin scheduling
 
+Naveen Mamindlapalli (3):
+  octeontx2-pf: implement transmit schedular allocation algorithm
+  sch_htb: Allow HTB quantum parameter in offload mode
+  octeontx2-pf: htb offload support for Round Robin scheduling
+---
+v3 * update QOS documentation for round robin scheduling
+     added out of bound checks for quantum parameter
+
+v2 * change data type of otx2_index_used to reduce size of structure
+     otx2_qos_cfg
+
+ .../ethernet/marvell/octeontx2.rst            |   8 +
+ .../marvell/octeontx2/nic/otx2_common.c       |   1 +
+ .../marvell/octeontx2/nic/otx2_common.h       |   1 +
+ .../net/ethernet/marvell/octeontx2/nic/qos.c  | 398 ++++++++++++++++--
+ .../net/ethernet/marvell/octeontx2/nic/qos.h  |  11 +-
+ .../net/ethernet/mellanox/mlx5/core/en/qos.c  |   4 +-
+ include/net/pkt_cls.h                         |   1 +
+ net/sched/sch_htb.c                           |   7 +-
+ 8 files changed, 388 insertions(+), 43 deletions(-)
+
+--
+2.17.1
