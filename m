@@ -2,117 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6DC75590E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 03:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6D6755911
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 03:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbjGQBdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 21:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37860 "EHLO
+        id S229705AbjGQBfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 21:35:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjGQBdu (ORCPT
+        with ESMTP id S229461AbjGQBfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 21:33:50 -0400
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 227E8B2;
-        Sun, 16 Jul 2023 18:33:47 -0700 (PDT)
-Received: from [172.30.11.106] (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id E21B960108C45;
-        Mon, 17 Jul 2023 09:33:31 +0800 (CST)
-Message-ID: <9880bad7-66b5-4d73-7464-8be859d8b56f@nfschina.com>
-Date:   Mon, 17 Jul 2023 09:33:30 +0800
+        Sun, 16 Jul 2023 21:35:09 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347C6E4B;
+        Sun, 16 Jul 2023 18:35:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1689557701;
+        bh=bnvwNZQU3ddiFMia+1TsCXAcGm8c4FN8Q+vD+CXPH0g=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Kk+rnRhx+j77vI2IVPEmstHrcQQ+cpbU9t2QZJd4Wfc4nGa4BCYBX636b9b9pCX5d
+         oEqeCtUSFVpt7oW05ar8y/Cy8xDj+clqqWtKiNI1kXI6FfLZug5ZdjlUt1ewh6GYox
+         vIdhGO0dINYQDHB4ziuexsyUtqDLCJlNVMEvrWb7dXVRpsF4BVdo5BAE1KsfC26Co2
+         l8VS7XrWRjMj/j6yQ9N7OsiIzwdwg70ESX+DeFwuBtiDPs0AXTj7O6VSbElB5oT4E5
+         +rLWZ3hMPLC9x2v23MnfTBX1HaxVv1Ke+DLIlhH9FVX9XsajFPu+mhYm71GM2qWbXx
+         tI6OVDDcMdJ2Q==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R44QC59JNz4whq;
+        Mon, 17 Jul 2023 11:34:59 +1000 (AEST)
+Date:   Mon, 17 Jul 2023 11:34:57 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Tejun Heo <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Don <joshdon@google.com>, Miaohe Lin <linmiaohe@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the cgroup tree
+Message-ID: <20230717113457.527d7483@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH net-next v2 03/10] net: ppp: Remove unnecessary (void*)
- conversions
-Content-Language: en-US
-To:     Guillaume Nault <gnault@redhat.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, xeb@mail.ru, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-X-MD-Sfrom: yunchuan@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From:   yunchuan <yunchuan@nfschina.com>
-In-Reply-To: <ZLEQSivEvfpWXrdr@debian>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/4bTzXuWvwl5z6X1ORQXeIYl";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/14 17:07, Guillaume Nault wrote:
-> On Mon, Jul 10, 2023 at 02:40:27PM +0800, Su Hui wrote:
->> From: wuych <yunchuan@nfschina.com>
->>
->> Pointer variables of void * type do not require type cast.
->>
->> Signed-off-by: wuych <yunchuan@nfschina.com>
->> ---
->>   drivers/net/ppp/pppoe.c | 4 ++--
->>   drivers/net/ppp/pptp.c  | 4 ++--
->>   2 files changed, 4 insertions(+), 4 deletions(-)
-> Reviewed-by: Guillaume Nault <gnault@redhat.com>
->
-> While there, you might want to also remove the useless casts in
-> net/l2tp/l2tp_ppp.c and net/atm/pppoatm.c.
+--Sig_/4bTzXuWvwl5z6X1ORQXeIYl
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi all,
 
-Thanks four your reminder! There are about 20 useless casts in net.
-I will remove all of them.
+After merging the cgroup tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
 
-Wu Yunchuan
+kernel/cgroup/cgroup.c: In function 'cgroup_local_stat_show':
+kernel/cgroup/cgroup.c:3699:15: error: implicit declaration of function 'cg=
+roup_tryget_css'; did you mean 'cgroup_tryget'? [-Werror=3Dimplicit-functio=
+n-declaration]
+ 3699 |         css =3D cgroup_tryget_css(cgrp, ss);
+      |               ^~~~~~~~~~~~~~~~~
+      |               cgroup_tryget
+kernel/cgroup/cgroup.c:3699:13: warning: assignment to 'struct cgroup_subsy=
+s_state *' from 'int' makes pointer from integer without a cast [-Wint-conv=
+ersion]
+ 3699 |         css =3D cgroup_tryget_css(cgrp, ss);
+      |             ^
 
->> diff --git a/drivers/net/ppp/pppoe.c b/drivers/net/ppp/pppoe.c
->> index 3b79c603b936..ba8b6bd8233c 100644
->> --- a/drivers/net/ppp/pppoe.c
->> +++ b/drivers/net/ppp/pppoe.c
->> @@ -968,7 +968,7 @@ static int __pppoe_xmit(struct sock *sk, struct sk_buff *skb)
->>    ***********************************************************************/
->>   static int pppoe_xmit(struct ppp_channel *chan, struct sk_buff *skb)
->>   {
->> -	struct sock *sk = (struct sock *)chan->private;
->> +	struct sock *sk = chan->private;
->>   	return __pppoe_xmit(sk, skb);
->>   }
->>   
->> @@ -976,7 +976,7 @@ static int pppoe_fill_forward_path(struct net_device_path_ctx *ctx,
->>   				   struct net_device_path *path,
->>   				   const struct ppp_channel *chan)
->>   {
->> -	struct sock *sk = (struct sock *)chan->private;
->> +	struct sock *sk = chan->private;
->>   	struct pppox_sock *po = pppox_sk(sk);
->>   	struct net_device *dev = po->pppoe_dev;
->>   
->> diff --git a/drivers/net/ppp/pptp.c b/drivers/net/ppp/pptp.c
->> index 32183f24e63f..6b3d3df99549 100644
->> --- a/drivers/net/ppp/pptp.c
->> +++ b/drivers/net/ppp/pptp.c
->> @@ -148,7 +148,7 @@ static struct rtable *pptp_route_output(struct pppox_sock *po,
->>   
->>   static int pptp_xmit(struct ppp_channel *chan, struct sk_buff *skb)
->>   {
->> -	struct sock *sk = (struct sock *) chan->private;
->> +	struct sock *sk = chan->private;
->>   	struct pppox_sock *po = pppox_sk(sk);
->>   	struct net *net = sock_net(sk);
->>   	struct pptp_opt *opt = &po->proto.pptp;
->> @@ -575,7 +575,7 @@ static int pptp_create(struct net *net, struct socket *sock, int kern)
->>   static int pptp_ppp_ioctl(struct ppp_channel *chan, unsigned int cmd,
->>   	unsigned long arg)
->>   {
->> -	struct sock *sk = (struct sock *) chan->private;
->> +	struct sock *sk = chan->private;
->>   	struct pppox_sock *po = pppox_sk(sk);
->>   	struct pptp_opt *opt = &po->proto.pptp;
->>   	void __user *argp = (void __user *)arg;
->> -- 
->> 2.30.2
->>
->>
+Caused by commit
+
+  d1d4ff5d11a5 ("cgroup: put cgroup_tryget_css() inside CONFIG_CGROUP_SCHED=
+")
+
+interacting with commit
+
+  677ea015f231 ("sched: add throttled time stat for throttled children")
+
+from the tip tree.
+
+I have reverted commit d1d4ff5d11a5 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/4bTzXuWvwl5z6X1ORQXeIYl
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmS0msIACgkQAVBC80lX
+0GyvawgAljw5cf9eWDqP6vP6up0CFVJ4JssGbh/NxoRlgRK2+flCbqGDBLSskun3
+6r0mkoUckgE0QK4VnFOET8f9pEuLOQ6mT2QzfVjJ2LbzjpK0smFjG6NHuNAH7Vob
+6Bg6wVNl81zbebO4ArFvH+Lc1xw8TnEeRHpb7pSVBMcpNXRE52EIrD8SUTiRsh7P
+FcDZlLGrgwxbI0h7ksWaItsMNdbaThkJ3ou4GVqhbBbtEvj90GzQ2NAi4D+mflxz
+mN9RsEAKQQYxnRaKsge5GRneSwJnLwZQUU3YMkhRd3QSMT6dgTFrmDXy71cTPLsu
+Au22zSCGmQjHA0VEVL4YxzdmKFowcg==
+=Hq1K
+-----END PGP SIGNATURE-----
+
+--Sig_/4bTzXuWvwl5z6X1ORQXeIYl--
