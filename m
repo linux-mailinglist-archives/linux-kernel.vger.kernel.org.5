@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8355A755E87
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36E1755E8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbjGQIcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 04:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47554 "EHLO
+        id S230474AbjGQIdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 04:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjGQIcs (ORCPT
+        with ESMTP id S229537AbjGQIds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 04:32:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B289D8
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:32:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 30E2D60FC6
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:32:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44651C433C7;
-        Mon, 17 Jul 2023 08:32:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689582766;
-        bh=nVdNFaIM5q8yzAM6X+ufMIbwtpAWzqwx9TWlj/9T9a0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eJv8zaXTCskf0rsUA2PcHM5wmjcsMNCwOxRXctje0xqR6ITX+/19lybW3LQiEkOik
-         MpIy+cALmr5EXeHLBSIOU8eiUXQwB3FWADGAd6R5wGWmBYs/oAQNSF6WijrWD9s8XF
-         qOh4yZlrywBH8R5UmZF6jaJjLi4bm5efVj13pMjdwK5Ns63+4gM/ocZ1lHT8Umcv1C
-         5PLma2w6djzqVpWBX2ItlXsp6K4hXtbCG4a2P63f6QMBv4iE6yiMkYOrMqLkJmVWOi
-         8zep+sMwzjH91JwjqeHWZ0crB752mKET/bAXqnLjCriTu/wWU92hbW5dDoZTO36fiz
-         DlGaVHBJ9gQ+Q==
-Date:   Mon, 17 Jul 2023 10:32:44 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Sarah Walker <sarah.walker@imgtec.com>
-Cc:     dri-devel@lists.freedesktop.org, frank.binns@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        faith.ekstrand@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de, afd@ti.com,
-        hns@goldelico.com, matthew.brost@intel.com,
-        christian.koenig@amd.com, luben.tuikov@amd.com, dakr@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 17/17] arm64: dts: ti: k3-am62-main: Add GPU device
- node [DO NOT MERGE]
-Message-ID: <el4ythd7inzj5emscuoiewh4x2glkyugxxnqd67axloglamtpr@vp26mlv6ocas>
-References: <20230714143033.112624-1-sarah.walker@imgtec.com>
+        Mon, 17 Jul 2023 04:33:48 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 311C3AB
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:33:46 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R4FjJ4pbhzBR7Zv
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:33:40 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689582820; x=1692174821; bh=qDEzJDHeLkl5fOCGw+7n0TBDlqx
+        xR3XxrG/mc9PY8lI=; b=gypN3lrlaHSNA4wCXFaOQVAYpDtGRX4q90wB9KeZsR0
+        0f3dDdO/tnDjUa/XQfMMmRwwZka2g1F5l+G0rQVP8BP6qIHsWOaR6masT/WflIcq
+        O4u4q67/dI2+SNxGnnpt0+zcDV9Wi0bSE7Gc0nva171EEut3j1lqBh58g3rA/XXf
+        HTd8jcu4TCq1cZafG8PqsHaUFDYScNsB8f9yzWy+iYAPJGRQZV2cg9wuMeDjDoX8
+        NVuLdtqyKyphv9PzImIOjEX6AQEndS00+EYE5EVo8FRjBcunkkj3HcfHYziToUtR
+        cPeJTqjktOlFxC67Ejsxwt9TjAuG5JpvOFsDZuqQLRw==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id yYf6feZ64gAY for <linux-kernel@vger.kernel.org>;
+        Mon, 17 Jul 2023 16:33:40 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R4FjJ2JpCzBR5lS;
+        Mon, 17 Jul 2023 16:33:40 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mfri3en37qva4g6l"
-Content-Disposition: inline
-In-Reply-To: <20230714143033.112624-1-sarah.walker@imgtec.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Mon, 17 Jul 2023 16:33:40 +0800
+From:   hanyu001@208suo.com
+To:     benh@kernel.crashing.org, mpe@ellerman.id.au, baihaowen@meizu.com,
+        studentxswpy@163.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers: macintosh: add spaces required around that ':' and
+ '?'
+In-Reply-To: <tencent_A7289285160569DAEE7418CF0B205D2C520A@qq.com>
+References: <tencent_A7289285160569DAEE7418CF0B205D2C520A@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <1deebcc233b93769ff1c85c74a432199@208suo.com>
+X-Sender: hanyu001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch adds spaces required around that ':' and '?'.
 
---mfri3en37qva4g6l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+./drivers/macintosh/macio-adb.c:143: ERROR: spaces required around that 
+'?' (ctx:VxW)
+./drivers/macintosh/macio-adb.c:143: ERROR: spaces required around that 
+':' (ctx:VxW)
 
-Hi,
+Signed-off-by: maqimei <2433033762@qq.com>
+---
+  drivers/macintosh/macio-adb.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Fri, Jul 14, 2023 at 03:30:33PM +0100, Sarah Walker wrote:
-> Add the Series AXE GPU node to the AM62 device tree.
->=20
-> Signed-off-by: Sarah Walker <sarah.walker@imgtec.com>
-
-Checkpatch complains about that one because you indented the node with
-spaces instead of tabs.
-
-Once fixed:
-Reviewed-by: Maxime Ripard <mripard@kernel.org>
-
-Maxime
-
---mfri3en37qva4g6l
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZLT8qwAKCRDj7w1vZxhR
-xa7fAP9FDt6bwQ/W8zycfYaWUKZ/M9LdF98tonOYw0cebZEB8gD/aOmlzvHgQ9FI
-LdvGl02SvojJp3fIySEVUOc3xWUX5Aw=
-=6+yl
------END PGP SIGNATURE-----
-
---mfri3en37qva4g6l--
+diff --git a/drivers/macintosh/macio-adb.c 
+b/drivers/macintosh/macio-adb.c
+index 55a9f8c..4de4883 100644
+--- a/drivers/macintosh/macio-adb.c
++++ b/drivers/macintosh/macio-adb.c
+@@ -140,7 +140,7 @@ static int macio_adb_autopoll(int devs)
+      spin_lock_irqsave(&macio_lock, flags);
+      out_8(&adb->active_hi.r, devs >> 8);
+      out_8(&adb->active_lo.r, devs);
+-    out_8(&adb->autopoll.r, devs? APE: 0);
++    out_8(&adb->autopoll.r, devs ? APE : 0);
+      spin_unlock_irqrestore(&macio_lock, flags);
+      return 0;
+  }
