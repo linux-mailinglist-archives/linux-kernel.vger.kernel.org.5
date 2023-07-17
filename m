@@ -2,131 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6C47569E6
+	by mail.lfdr.de (Postfix) with ESMTP id 0872B7569E5
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbjGQRM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 13:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
+        id S230118AbjGQRNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 13:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbjGQRMn (ORCPT
+        with ESMTP id S231220AbjGQRM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 13:12:43 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5706E1B5;
-        Mon, 17 Jul 2023 10:12:41 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bb1baf55f5so25365515ad.0;
-        Mon, 17 Jul 2023 10:12:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689613961; x=1692205961;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Su4c46X8cRa6PHlO4wAUnjVZ+C+9OAGrRoJ7Aqgs5cU=;
-        b=WhyYIPZO2p/YK6SgdYh6KiwmnlwFGuP6x4o8fFwfjzP+k6nWK6x2EQrcUhIMLtG4Mx
-         Whm04pBT4llFHDRUKvbjL0pDnzPiWOCd/ANwoVihiOr3NeNeZHJRYz0SiP5iIDYNIjJg
-         PmgNSHJFfg1lwtCaKM591/qkZ/cYCDZ1TjeOybC+bVwttAqPs6U1Fmle4dPAXzrMlTGS
-         Z6SA5nrmWax6/N8LUJOUjn4e2BsXzJeu0Ksg/n6Joopb4MpWdOyoV/pkAb/95N1JFM5c
-         X6LeAWmt4mA3kiYVq5eRRer7lQUjtG2K7gtpBKq+38Dq2qO1PxQn/EY9BL/t/YMzuFUl
-         GRpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689613961; x=1692205961;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Su4c46X8cRa6PHlO4wAUnjVZ+C+9OAGrRoJ7Aqgs5cU=;
-        b=X70VBmRqRHBgjXsHMlk/Sw7cpn5uX7zTa7j+QKZAI1WgIbbdKpj4kHFMn5qk3ADD0v
-         QDTL9X+19KKsi+CLcm5ZkHJL73aKwNVDfpx74GKk06Gi0UBMjspCgo8Qy3Ufas5Sp3fU
-         MNkk1IkS8gDiq0zKX+buuZAI4ZuR0Po1+QtIzW23M2zMcDrrmv+yZAgyD9tQU+zbiGwz
-         t9UxHhxvHmxeYzwDTnGSEvmGsKu0hPpOTUtcFVVF19zImqg3PUgt8oX9kE/1sJzWPFT2
-         RcImfmeZQ4fDZKpXcs5rrNjUjkC4GRYz2M8n9ExaKcUfT+1dNAn9O0bSNbplVP9UHsl2
-         Ii3Q==
-X-Gm-Message-State: ABy/qLaGESUUwe4s17WxxSvzc8huoysC3xenTFqWeuVpOoViyzAKbs6q
-        eXdCIRPm+3ZryBoGMKJzGiVH0Iv2ehc=
-X-Google-Smtp-Source: APBJJlFKrg3zrMVnT4y3lM3F/XIOZCnHovdC25gxGLpXATGcGi9mXUoOJGZ6EIElYox6qUlWKCmNIg==
-X-Received: by 2002:a17:902:e550:b0:1b8:7e53:704 with SMTP id n16-20020a170902e55000b001b87e530704mr14859904plf.27.1689613960688;
-        Mon, 17 Jul 2023 10:12:40 -0700 (PDT)
-Received: from localhost ([192.55.54.50])
-        by smtp.gmail.com with ESMTPSA id j17-20020a170902da9100b001b9d88a4d1asm112268plx.289.2023.07.17.10.12.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 10:12:40 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 10:12:38 -0700
-From:   Isaku Yamahata <isaku.yamahata@gmail.com>
-To:     "Wen, Qian" <qian.wen@intel.com>
-Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com
-Subject: Re: [PATCH v14 072/113] KVM: TDX: handle vcpu migration over logical
- processor
-Message-ID: <20230717171238.GA25699@ls.amr.corp.intel.com>
-References: <cover.1685333727.git.isaku.yamahata@intel.com>
- <7a57603a0668ec51a7ac324ab3d1a8acb9863e7b.1685333728.git.isaku.yamahata@intel.com>
- <48951fc1-4e98-b32a-af4f-343b7ea2d44d@intel.com>
+        Mon, 17 Jul 2023 13:12:58 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79041A8
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:12:56 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1qLRm8-0000bV-Vh; Mon, 17 Jul 2023 19:12:44 +0200
+Received: from mfe by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1qLRm8-0003j1-8s; Mon, 17 Jul 2023 19:12:44 +0200
+Date:   Mon, 17 Jul 2023 19:12:44 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, shawnguo@kernel.org, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        laurent.pinchart@ideasonboard.com, dan.scally@ideasonboard.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/4] dt-bindings: arm: fsl: fix DEBIX binding
+Message-ID: <20230717171244.jdqwn5l7tiugxeyo@pengutronix.de>
+References: <20230717165127.2882535-1-m.felsch@pengutronix.de>
+ <20230717165127.2882535-2-m.felsch@pengutronix.de>
+ <3d1a260c-bc8c-6347-17be-5558343c85a4@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <48951fc1-4e98-b32a-af4f-343b7ea2d44d@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <3d1a260c-bc8c-6347-17be-5558343c85a4@linaro.org>
+User-Agent: NeoMutt/20180716
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 02:08:15PM +0800,
-"Wen, Qian" <qian.wen@intel.com> wrote:
-
-> On 5/29/2023 12:19 PM, isaku.yamahata@intel.com wrote:
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+On 23-07-17, Krzysztof Kozlowski wrote:
+> On 17/07/2023 18:51, Marco Felsch wrote:
+> > The current imx8mp-debix-model-a.dts uses all three compatibles. Fix the
+> > corresponding bindings by adding an own entry for it. Mark
+> > polyhex,imx8mp-debix as deprecated but keep it within the dts file since
+> > we already have a user for it [1].
 > > 
-> > For vcpu migration, in the case of VMX, VMCS is flushed on the source pcpu,
-> > and load it on the target pcpu.  There are corresponding TDX SEAMCALL APIs,
-> > call them on vcpu migration.  The logic is mostly same as VMX except the
-> > TDX SEAMCALLs are used.
+> > [1] https://elixir.bootlin.com/barebox/v2023.07.1/source/arch/arm/ \
+> >     boards/polyhex-debix/board.c#L38
 > > 
-> > When shutting down the machine, (VMX or TDX) vcpus needs to be shutdown on
-> > each pcpu.  Do the similar for TDX with TDX SEAMCALL APIs.
-> > 
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
 > > ---
-> >  arch/x86/kvm/vmx/main.c    |  32 ++++++-
-> >  arch/x86/kvm/vmx/tdx.c     | 168 +++++++++++++++++++++++++++++++++++++
-> >  arch/x86/kvm/vmx/tdx.h     |   2 +
-> >  arch/x86/kvm/vmx/x86_ops.h |   4 +
-> >  4 files changed, 203 insertions(+), 3 deletions(-)
+> > Changelog:
 > > 
-> > diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> > index 17fb1515e56a..29ebd171dbe3 100644
-> 
-> ...
-> 
-> > @@ -455,6 +606,19 @@ void tdx_vcpu_free(struct kvm_vcpu *vcpu)
-> >  		return;
-> >  	}
+> > v2:
+> > - deprecate polyhex,imx8mp-debix
+> > 
+> >  Documentation/devicetree/bindings/arm/fsl.yaml | 10 ++++++++--
+> >  1 file changed, 8 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > index 15d4110840654..b29974e3c30b3 100644
+> > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > @@ -1019,8 +1019,6 @@ properties:
+> >                - dmo,imx8mp-data-modul-edm-sbc # i.MX8MP eDM SBC
+> >                - fsl,imx8mp-evk            # i.MX8MP EVK Board
+> >                - gateworks,imx8mp-gw74xx   # i.MX8MP Gateworks Board
+> > -              - polyhex,imx8mp-debix      # Polyhex Debix boards
+> > -              - polyhex,imx8mp-debix-model-a # Polyhex Debix Model A Board
+> >                - toradex,verdin-imx8mp     # Verdin iMX8M Plus Modules
+> >                - toradex,verdin-imx8mp-nonwifi  # Verdin iMX8M Plus Modules without Wi-Fi / BT
+> >                - toradex,verdin-imx8mp-wifi  # Verdin iMX8M Plus Wi-Fi / BT Modules
+> > @@ -1054,6 +1052,14 @@ properties:
+> >            - const: phytec,imx8mp-phycore-som         # phyCORE-i.MX8MP SoM
+> >            - const: fsl,imx8mp
 > >  
-> > +	/*
-> > +	 * kvm_free_vcpus()
-> > +	 *   -> kvm_unload_vcpu_mmu()
-> > +	 *
-> > +	 * does vcpu_load() for every vcpu after they already disassociated
-> > +	 * from the per cpu list when tdx_vm_teardown(). So we need to
-> > +	 * disassociate them again, otherwise the freed vcpu data will be
-> > +	 * accessed when do list_{del,add}() on associated_tdvcpus list
-> > +	 * later.
-> > +	 */
+> > +      - description: Polyhex DEBIX i.MX8MP based SBCs
+> > +        items:
+> > +          - enum:
+> > +              - polyhex,imx8mp-debix-model-a        # Polyhex Debix Model A Board
+> > +          - const: polyhex,imx8mp-debix             # Polyhex Debix boards
 > 
-> Nit: kvm_free_vcpus() and tdx_vm_teardown() are typos? I don't find these functions.
+> I cannot find patches which add new compatible to the binding and which
+> fix the DTS. :/
 
-kvm_free_vcpus() => kvm_destroy_vcpus()
-tdx_vm_teardown() => tdx_mmu_release_hkid()
+Please see my commit message, we can't remove the compatible since we
+already have one user of this compatible.
 
-Will fix the comment.
--- 
-Isaku Yamahata <isaku.yamahata@gmail.com>
+Regards,
+  Marco
