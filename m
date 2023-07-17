@@ -2,107 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A01B27562FB
+	by mail.lfdr.de (Postfix) with ESMTP id F0BA57562FC
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbjGQMn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 08:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57518 "EHLO
+        id S230116AbjGQMoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 08:44:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbjGQMni (ORCPT
+        with ESMTP id S230322AbjGQMnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 08:43:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F7D91;
-        Mon, 17 Jul 2023 05:43:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5C55C61053;
-        Mon, 17 Jul 2023 12:43:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BED3C433C8;
-        Mon, 17 Jul 2023 12:43:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689597816;
-        bh=7B2Pjw6NKXemEOfCP4Ct4UyD922UxZCxaO6K3gVi/7E=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=OBushMGAKDmd4+oHNO5CKO8iknCBEDcvl5hf2of5KPj1BfEJCq7TVDaEvrMjoqLlq
-         2TqfkuZvscTEC5Uee8X00ZQcbtClJ7+r6x6S3ZGVP0L0sIZ7PsfDCks/N6OKw3eqzm
-         jA3MFXDNom5FJzY8hIRJWWVwNBei9J3GWe9AE98TJQjtsnJjnNI1O7EIqtWP4Tmx4O
-         gXsWE61LX8N0YPg4XtrwcGpf+BH8Cvy6NCkspYxBMv9opPOug/Ti0SowGR2IRRL3zo
-         XpF9cJO8Zo4voPbDGC7qeGog8ml7AaCbUnZ6qppr6+xrJytDTObPsoqyRu+kUMZxZV
-         S+3i9iULCfdpg==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 17 Jul 2023 12:43:31 +0000
-Message-Id: <CU4GFR4WLMZP.3R9HJQFFG1JEK@seitikki>
-Subject: Re: [PATCH v3 02/28] x86/sgx: Add EPC page flags to identify owner
- type
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>,
-        "Haitao Huang" <haitao.huang@linux.intel.com>,
-        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
-        <cgroups@vger.kernel.org>, "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     <kai.huang@intel.com>, <reinette.chatre@intel.com>,
-        "Sean Christopherson" <sean.j.christopherson@intel.com>,
-        <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
-        <seanjc@google.com>
-X-Mailer: aerc 0.14.0
-References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
- <20230712230202.47929-3-haitao.huang@linux.intel.com>
- <CU4GEFJ8R4US.227AN2H482Q4G@seitikki>
-In-Reply-To: <CU4GEFJ8R4US.227AN2H482Q4G@seitikki>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 17 Jul 2023 08:43:50 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AEE116
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 05:43:49 -0700 (PDT)
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <bst@pengutronix.de>)
+        id 1qLNZm-0003ul-21; Mon, 17 Jul 2023 14:43:42 +0200
+Message-ID: <e1f3f073-9d5e-1bae-f4f8-08dc48adad62@pengutronix.de>
+Date:   Mon, 17 Jul 2023 14:43:34 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] crypto: caam - adjust RNG timing to support more devices
+Content-Language: en-US
+To:     meenakshi.aggarwal@nxp.com, horia.geanta@nxp.com, V.sethi@nxp.com,
+        pankaj.gupta@nxp.com, gaurav.jain@nxp.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Victoria Milhoan <vicki.milhoan@freescale.com>,
+        Dan Douglass <dan.douglass@nxp.com>,
+        Vipul Kumar <vipul_kumar@mentor.com>, kernel@pengutronix.de
+References: <20230612082615.1255357-1-meenakshi.aggarwal@nxp.com>
+From:   Bastian Krause <bst@pengutronix.de>
+In-Reply-To: <20230612082615.1255357-1-meenakshi.aggarwal@nxp.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: bst@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon Jul 17, 2023 at 12:41 PM UTC, Jarkko Sakkinen wrote:
-> On Wed Jul 12, 2023 at 11:01 PM UTC, Haitao Huang wrote:
-> > From: Sean Christopherson <sean.j.christopherson@intel.com>
-> >
-> > Two types of owners, 'sgx_encl' for VA pages and 'sgx_encl_page' for ot=
-her,
-> > can be stored in the union field in sgx_epc_page struct introduced in t=
-he
-> > previous patch.
->
-> This would be easier to follow:
->
-> "Two types of owners of struct_epc_page, 'sgx_encl' for VA pages and
-> 'sgx_encl_page' can be stored in the previously introduced union field."
->
-> > When cgroup OOM support is added in a later patch, the owning enclave o=
-f a
-> > page will need to be identified. Retrieving the sgx_encl struct from a
-> > sgx_epc_page will be different if the page is a VA page vs. other encla=
-ve
-> > pages.
-> >
-> > Add 2 flags which will identify the type of the owner and apply them
-> > accordingly to newly allocated pages.
->
-> This would be easier to follow:
->
-> "OOM support for cgroups requires that the owner needs to be identified
-> when selecting pages from the unreclaimable list. Address this by adding
-> flags for identifying the owner type."
->
-> It is better to carry the story a little bit forward than say that a
-> subsequent patch will require this :-) I.e. enough to get at least a
-> rough idea what is going on.
+On 6/12/23 10:26, meenakshi.aggarwal@nxp.com wrote:
+> From: Victoria Milhoan <vicki.milhoan@freescale.com>
+> 
+> Adjust RNG timing parameters to support more i.MX6 devices.
+> 
+> Signed-off-by: Victoria Milhoan <vicki.milhoan@freescale.com>
+> Signed-off-by: Dan Douglass <dan.douglass@nxp.com>
+> Signed-off-by: Vipul Kumar <vipul_kumar@mentor.com>
+> Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+> ---
+>   drivers/crypto/caam/ctrl.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 
-Oops, sent by mistake. I was going to say that the flag would be better
-named simply as SGX_EPC_OWNER_PAGE instead of SGX_EPC_OWNER_ENCL_PAGE.
+This patch seems to breaks CAAM RNG instantiation on an i.MX8MM at my end:
 
-BR, Jarkko
+caam 30900000.crypto: Entropy delay = 3200
+caam 30900000.crypto: Entropy delay = 3600
+[...]
+caam 30900000.crypto: Entropy delay = 12400
+caam 30900000.crypto: failed to instantiate RNG
+caam: probe of 30900000.crypto failed with error -11
+
+If I revert this patch or increase RTSDCTL_ENT_DLY_MAX to a value > 
+66800, it works again:
+
+caam 30900000.crypto: Entropy delay = 32800
+caam 30900000.crypto: Entropy delay = 33200
+[...]
+caam 30900000.crypto: Entropy delay = 66800
+caam 30900000.crypto: Instantiated RNG4 SH0
+caam 30900000.crypto: Instantiated RNG4 SH1
+caam 30900000.crypto: device ID = 0x0a16040100000000 (Era 9)
+caam 30900000.crypto: job rings = 2, qi = 0
+caam algorithms registered in /proc/crypto
+caam 30900000.crypto: caam pkc algorithms registered in /proc/crypto
+caam 30900000.crypto: registering rng-caam
+Executing RNG SELF-TEST with wait
+random: crng init done
+caam 30900000.crypto: rng crypto API alg registered prng-caam
+
+Regards,
+Bastian
+
+> 
+> diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+> index 5fed3cf354c0..62dd069942e4 100644
+> --- a/drivers/crypto/caam/ctrl.c
+> +++ b/drivers/crypto/caam/ctrl.c
+> @@ -383,8 +383,8 @@ static void kick_trng(struct device *dev, int ent_delay)
+>   	wr_reg32(&r4tst->rtsdctl, val);
+>   	/* min. freq. count, equal to 1/4 of the entropy sample length */
+>   	wr_reg32(&r4tst->rtfrqmin, ent_delay >> 2);
+> -	/* disable maximum frequency count */
+> -	wr_reg32(&r4tst->rtfrqmax, RTFRQMAX_DISABLE);
+> +	/* max. freq. count, equal to 16 times the entropy sample length */
+> +	wr_reg32(&r4tst->rtfrqmax, ent_delay << 4);
+>   	/* read the control register */
+>   	val = rd_reg32(&r4tst->rtmctl);
+>   start_rng:
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
