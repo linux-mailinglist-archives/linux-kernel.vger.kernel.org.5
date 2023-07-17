@@ -2,168 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A9F756585
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A302756591
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231878AbjGQNyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 09:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57600 "EHLO
+        id S230168AbjGQNyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 09:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231791AbjGQNxx (ORCPT
+        with ESMTP id S231835AbjGQNyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 09:53:53 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3A8BD
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:53:52 -0700 (PDT)
+        Mon, 17 Jul 2023 09:54:40 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E41C7;
+        Mon, 17 Jul 2023 06:54:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689602032; x=1721138032;
+  t=1689602080; x=1721138080;
   h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wFdVfTs7bwCHPiF9tKeb/4/2QCO1PgW97PqZHVQwldg=;
-  b=OcScKaZhxPCs8mPACGEvHHtJB5I3wBr3WflSu5SMo/LjAgg63Lx4JTiZ
-   JDQc2YAipieUG2BKk/gqht7yehbcbM/Hx0F44NXE54AHsWI5mHdmqSGl1
-   E8Pho7s2CWhg9YZrod+5p0J3FE+I15rOZ6VUaKrm2h156UQ1LeDu1a1tV
-   ljQwSCCptit9XqDrW8/O29U9iYHeVV6gkl7uim75LeK2sCgbvqGeIegtp
-   YG0FEvz6RpbhgwSyC/y/xYI/IofqksQW59HCilAzb8I6TFV+Wtngbs3UN
-   0qyeNutKBUhBkwKoMQQBN1m/XHhOakJky8Dt+R/Ic4i7ur+OL1N8AxbIC
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="396763236"
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=FrmhMcGq6Yw5RIRrByo036Ctus6slD2drwf6+eTiVSs=;
+  b=KkJhi+OqnMhuYKPikAeQxnUBPjlFuvNO0aZk5gS5O5tTkbPeA2G09Por
+   wE1/akmN24lNk1ir/kBNGvqw47RCXkLpSnMyq0JIVxfoYeK+9l56nGSWr
+   5DfDWwpH7BbtMUuEbfQ26WWuK6A2YxAIoMWTuj96LH2ukuXvAD2EmMwdk
+   Neu4XI5xBGL1UvhpUyQLujMfCoADYGy/4NVzW6lgsWtN5RwsaTjJQ0jWR
+   SI4M2PynlnFEZpW0Zwtq4+i5ri0MzA7cy6sQfHMy85UBwpuUfCpN7D1lq
+   CD3ml0HWo6gK10ny3j2XESpxZDCWfNy8NNch9h2CqktpzQ2J1SsmHY3Wa
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="345525871"
 X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="396763236"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 06:53:52 -0700
+   d="scan'208";a="345525871"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 06:54:39 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="726554213"
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="752903299"
 X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="726554213"
+   d="scan'208";a="752903299"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP; 17 Jul 2023 06:53:48 -0700
+  by orsmga008.jf.intel.com with ESMTP; 17 Jul 2023 06:54:36 -0700
 Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qLOfb-00H276-0H;
-        Mon, 17 Jul 2023 16:53:47 +0300
-Date:   Mon, 17 Jul 2023 16:53:46 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
-        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org
-Subject: Re: [PATCH v3 5/5] arm64: mte: add compression support to mteswap.c
-Message-ID: <ZLVH6t25HD+HhCka@smile.fi.intel.com>
-References: <20230717113709.328671-1-glider@google.com>
- <20230717113709.328671-6-glider@google.com>
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1qLOgM-00H3tq-1u;
+        Mon, 17 Jul 2023 16:54:34 +0300
+Date:   Mon, 17 Jul 2023 16:54:34 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= 
+        <amadeuszx.slawinski@linux.intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v4 01/15] PCI: Sort Intel PCI IDs by number
+Message-ID: <ZLVIGlpoNsr0RRGE@smile.fi.intel.com>
+References: <20230717114511.484999-1-amadeuszx.slawinski@linux.intel.com>
+ <20230717114511.484999-2-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230717113709.328671-6-glider@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230717114511.484999-2-amadeuszx.slawinski@linux.intel.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 01:37:08PM +0200, Alexander Potapenko wrote:
-> Define the internal mteswap.h interface:
->  - _mte_alloc_and_save_tags()
->  - _mte_free_saved_tags()
->  - _mte_restore_tags()
-> 
-> , that encapsulates saving tags for a struct page (together with memory
-> allocation), restoring tags, and deleting the storage allocated for them.
-> 
-> These functions accept opaque pointers, which may point to 128-byte
-> tag buffers, as well as smaller buffers containing compressed tags, or
-> have compressed tags stored directly in them.
-> 
-> The existing code from mteswap.c operating with uncompressed tags is split
-> away into mteswap_nocomp.c, and the newly introduced mteswap_comp.c
-> provides compression with the EA0 algorithm. The latter implementation
-> is picked if CONFIG_ARM64_MTE_COMP=y.
-> 
-> Soon after booting Android, tag compression saves ~2.5x memory previously
-> spent by mteswap.c on tag allocations. With the growing uptime, the
-> savings reach 20x and even more.
+On Mon, Jul 17, 2023 at 01:44:57PM +0200, Amadeusz Sławiński wrote:
+> Some of the PCI IDs are not sorted correctly, reorder them by growing ID
+> number.
 
-...
-
-> +#ifndef ARCH_ARM64_MM_MTESWAP_H_
-> +#define ARCH_ARM64_MM_MTESWAP_H_
-
-> +#include <linux/mm_types.h>
-
-But you actually don't use that.
-
-struct page;
-
-forward declaration is enough.
-
-> +void *_mte_alloc_and_save_tags(struct page *page);
-> +void _mte_free_saved_tags(void *tags);
-> +void _mte_restore_tags(void *tags, struct page *page);
-> +
-> +#endif // ARCH_ARM64_MM_MTESWAP_H_
-
-...
-
-> +void _mte_free_saved_tags(void *storage)
-> +{
-> +	unsigned long handle = xa_to_value(storage);
-> +	int size;
-> +
-> +	if (!handle)
-> +		return;
-
-Perhaps
-
-	unsigned long handle;
-
-	handle = xa_to_value(storage);
-	if (!handle)
-		return;
-
-> +	size = ea0_storage_size(handle);
-> +	ea0_release_handle(handle);
-> +}
-
-> +void _mte_restore_tags(void *tags, struct page *page)
-> +{
-
-As per above.
-
-> +	if (try_page_mte_tagging(page)) {
-> +		if (!ea0_decompress(handle, tags_decomp))
-> +			return;
-> +		mte_restore_page_tags(page_address(page), tags_decomp);
-> +		set_page_mte_tagged(page);
-> +	}
-
-I think you may drop an indentation level by
-
-	if (!try_page_mte_tagging(page))
-		return;
-
-> +}
-
-...
-
-> +void _mte_restore_tags(void *tags, struct page *page)
-> +{
-> +	if (try_page_mte_tagging(page)) {
-> +		mte_restore_page_tags(page_address(page), tags);
-> +		set_page_mte_tagged(page);
-> +	}
-
-Ditto.
-
-> +}
+Hmm... I don't see a cover letter...
 
 -- 
 With Best Regards,
