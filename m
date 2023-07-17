@@ -2,77 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6521675631C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FFE575632D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbjGQMt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 08:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60888 "EHLO
+        id S230375AbjGQMwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 08:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbjGQMtz (ORCPT
+        with ESMTP id S229579AbjGQMwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 08:49:55 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE84EE56
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 05:49:53 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-440b54708f2so1418343137.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 05:49:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689598193; x=1692190193;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u6OMvqy130+5/ljzn1mUj/xyoKNjczOFrevPrpn07wc=;
-        b=A31cUzmIkeiVt//YLF1ZLePS6oLNF0i7+jGoT3m3wldh6U3VUAQ+hMa+prRtlNhrBR
-         B1dP3ns5KGRqW+2qJyt2yX4rQn1UYm3QzFuUf40GHVesDHlCtMgP7IkFPXlyyREDBnNu
-         ErXyqTLUFsgs0ptGzdPnpx59jCgnmH097clrcj00a2QVptYa9jRA1DVvygaujB450XD4
-         2cktLmfjNHLcD775UNqTQJVb6hHkETWqKEZjgstW8dnFOB69uNW2NV1UT9T1Q+pCYBn/
-         5LnV/vXwq82vNooqfxiXGaXbwE3t8ADTgHJWDqjoyD2MlWQW/EMJAFSmDecnPPlVfbbN
-         MH/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689598193; x=1692190193;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=u6OMvqy130+5/ljzn1mUj/xyoKNjczOFrevPrpn07wc=;
-        b=C9aA++gR1AzihTz/NeGKgPUrMyTLkukywI6Q+ciAH2Sn6LtUeY0j4NsjMfM7FRTPQW
-         cpzRoy+rvbc73JOxMLhSuyzwd6SY3YfeLFe3xqAfP+qAhElD9hHJsuBAR85MLTjwdQOO
-         kMn3QfO9sQqe9ljcZQqyMh+LHYbpdga3ufp9kQBPyf9thoSYkG+WGXGCHdxOeRrzYexp
-         KROz68mO/+wCiay+SuwaFG5Lhr4MMD4ba2tfPSLwuCS7ncrUvO1Ct1d5bvWXDifI3Vdm
-         fJvsH1BsUnT6pRVQ/oPs/JubP4Blw1uEbxZvqqU04T4ZiUkB5Eilwd4CZKCPFX2/PASf
-         63ow==
-X-Gm-Message-State: ABy/qLbQHdCpHpXI4IdSt6KIC2LWBfPaAt5fFCnUs85cr9txIXzm1+hR
-        h9lzyvSfpPPvwIdCppEA63IyKBWZ5/tQO7wRlec=
-X-Google-Smtp-Source: APBJJlGmwZ5G6vaRkXDR7kg47DoWK4hApAyTmfUvoGOxO85k/r+oaTXlcyKRQydluyp2fuOxCGLFds9TJPfonELbKSQ=
-X-Received: by 2002:a05:6102:d7:b0:444:ca02:98fb with SMTP id
- u23-20020a05610200d700b00444ca0298fbmr4945851vsp.21.1689598193077; Mon, 17
- Jul 2023 05:49:53 -0700 (PDT)
+        Mon, 17 Jul 2023 08:52:11 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B8CB1;
+        Mon, 17 Jul 2023 05:52:10 -0700 (PDT)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36H5Tq4m020449;
+        Mon, 17 Jul 2023 05:52:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=jmtjFxp42ZyNv2chltldYPbE+ncQnkd6aa9V2Suk64o=;
+ b=E/2Em+lT6qKWwbKtRNH2JOqTJqnOjRSWJgWtnYehlS4heHNkZGBD0hFR4BMTNhPTVpeG
+ oMvCN7rX8OWpXzi03g6jLZMD+nvOHLzyXj9+itCBguJsoBaOs6CXRkhiG3e4uqTwbQsB
+ 0KEAUlMD6qTdTO0+xndxTYS1A5dpYLJBkB3+xhnSHtkFdq3GM2sdcQ+e2N2RzumhTY4e
+ UQMF+Wep9g7zdfLDpFZqyi108GEzPH6I+My4SRv83ARbazFlsB5UMNwEmjxPVeB1Ta7v
+ FJ5VS/JixXrXXBc9E6z3JfoqsUlxlHzu8g1Fup6xu5iKBiDn7zYwM1u8aTirdgACC8+w NQ== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3rvyhx18hs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 05:52:00 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 17 Jul
+ 2023 05:51:58 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Mon, 17 Jul 2023 05:51:58 -0700
+Received: from localhost.localdomain (unknown [10.110.150.250])
+        by maili.marvell.com (Postfix) with ESMTP id 4F63D3F70A4;
+        Mon, 17 Jul 2023 05:51:58 -0700 (PDT)
+From:   Piyush Malgujar <pmalgujar@marvell.com>
+To:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
+        <p.zabel@pengutronix.de>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <yamada.masahiro@socionext.com>, <devicetree@vger.kernel.org>
+CC:     <jannadurai@marvell.com>, <cchavva@marvell.com>,
+        Piyush Malgujar <pmalgujar@marvell.com>
+Subject: [PATCH v4 0/6] mmc: sdhci-cadence: SD6 controller support
+Date:   Mon, 17 Jul 2023 05:51:40 -0700
+Message-ID: <20230717125146.16791-1-pmalgujar@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Received: by 2002:ab0:6508:0:b0:787:5ed1:95d0 with HTTP; Mon, 17 Jul 2023
- 05:49:52 -0700 (PDT)
-Reply-To: ameenhammadi52@gmail.com
-From:   Ameen Hammadi <interc.delivery@gmail.com>
-Date:   Mon, 17 Jul 2023 13:49:52 +0100
-Message-ID: <CAPCD-=+T=TiLqzdj2-4NWAJU95+Vu2gg3Wh-Yj1mi5ti5TWp+Q@mail.gmail.com>
-Subject: Beneficial
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: T2E7MBMrWTxUjv1d51-exHQETXgqh58R
+X-Proofpoint-ORIG-GUID: T2E7MBMrWTxUjv1d51-exHQETXgqh58R
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_10,2023-07-13_01,2023-05-22_02
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello ,
+Added changes to support SD6 controller on Marvell CN10K SOCs:
+- Restructure and reformat the code.
+- Add SD6 related operations.
+- Support added for MMC_SDHCI_IO_ACCESSORS.
+- Related changes done in dt bindings.
+- Support for debug option.
 
-My Name is Ameen Hammadi, I want to share a beneficial and
-life-changing information with you. If you are willing to handle this
-business with me, kindly reply immediately for more information.
+Changes since V3:
+- Adapted to the new code structure sdhci_cdns_drv_data.
+- Added controller version specific phy_init separating SD4 and SD6.
+- Added SD6 compatibility check for SD6 specific things like
+  quirks/version.
+- Added marvell specific string to dts properties.
 
-Regards
-Ameen
-E-mail: ameen@merit-services.com
+Changes since V2:
+- Added separate patches for renaming of functions and
+  restructuring, adding new structures to support SD4/SD6 operations.
+- Added proper suffixes to properties in dt binding.
+- Removed unreachable code.
+- Handled sdhci_cdns_uniphier_pltfm_data similar to sdhci_cdns_sd4_of_data
+  as per the added structured design.
+- Used dev_dbg instead of DEBUG_DRV in debug patch.
+
+Changes since V1:
+- Added separate patch for reformat/rename changes.
+- Enabled MMC_SDHCI_IO_ACCESSORS in config MMC_SDHCI_CADENCE.
+- Used proper properties in dt binding.
+- Removed patch of config option to change default for sdhci timeout.
+- Resolved issues reported by:
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <error27@gmail.com>
+
+Dhananjay Kangude (3):
+  mmc: sdhci-cadence: Rename functions/structures to SD4 specific
+  mmc: sdhci-cadence: Restructure the code
+  mmc: sdhci-cadence: SD6 controller support
+
+Jayanthi Annadurai (3):
+  mmc: sdhci-cadence: enable MMC_SDHCI_IO_ACCESSORS support
+  dt-bindings: mmc: sdhci-cadence: SD6 support
+  mmc: sdhci-cadence: Add debug option for SD6 controller
+
+ .../devicetree/bindings/mmc/cdns,sdhci.yaml   |   52 +-
+ drivers/mmc/host/sdhci-cadence.c              | 1613 ++++++++++++++++-
+ 2 files changed, 1603 insertions(+), 62 deletions(-)
+
+-- 
+2.17.1
+
