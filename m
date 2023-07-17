@@ -2,144 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A00FA756166
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0F9756169
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbjGQLTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 07:19:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
+        id S230352AbjGQLTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 07:19:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbjGQLTd (ORCPT
+        with ESMTP id S229637AbjGQLTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 07:19:33 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3120810D3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:19:27 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b8392076c9so49956111fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:19:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20221208.gappssmtp.com; s=20221208; t=1689592765; x=1692184765;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NP+nVMJjM1Cb7BnxGt2NHvMg7jOq0WlJMksYF5HiLBg=;
-        b=rj025K+C5Z8BE5/YeGBiuH67TsN9ZX0VWnpkXMlbJGWRFWA7fsAqeVxzWp5qVWkG+o
-         pKLE3QgGPjIIIKbq/4imgPdiBukFyVUQM2WSRBis10DSvld98y0jzXBs52dQnS2gMqW4
-         e3pZ9giZgOD88+JCfXi5xAj1PqUhQgFez1ju7pNvDSOI8sMLcyUq4wOVJ2xrlTnl9z8y
-         I1jWJf4EvHo/9Db6L5/jo5ja0RdPD5pPOy1f72RDjAzA6Moe343BLlVGakPJ6DswXJ86
-         Ht/bh+bom0M98bkyd9g8LGtyLsmvJSot8J3P8KsSDyB6dIuJijn0GfiCJDjGOA/VL7F0
-         l88Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689592765; x=1692184765;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NP+nVMJjM1Cb7BnxGt2NHvMg7jOq0WlJMksYF5HiLBg=;
-        b=GGYHpRJ+sw05VNmMajZcIWdkD1qKl7NfPsGRs5DGCGTZi3vira+M2kF9Hk03qmnpRz
-         O8rKkvIX4Z361tNL5OD0WEbirW+24YumNNt2/rAfhyBWa7kH8DuywbhBRSCreyY7JG7G
-         IN7q2t3ciVTuyFu35cOVphsrr9qkz0vUrXcaRWhU/qHJkgTJluL1DwtqD2Latg8qLluo
-         L0D7LWI35WLLRP5Z/7LCQzyj55+qhH7ddkc4Y9j4nOpLSUnKkeERpJePotatPtizYENw
-         HzvfT0WoH2nstoPknONkzJ7jtjmF3VISA7wd6BCw8oO6jGvl48j5mFIgo6ztwZQLFN2G
-         5g9g==
-X-Gm-Message-State: ABy/qLYdL1NLQ/5pn5VUHMgQRg2QmzFuEpc3zMe2QlZ54e63Qne0joJH
-        Rc9klzTq3JmCW57usKeKeTk7AIwQp6SMIaIMRoE3VGaliHYEw5e9
-X-Google-Smtp-Source: APBJJlH4R5Xe/E1R4Dc/dga5xiLgfWGkDb3SuDMXjnAI7QZGce5yHzVql6xy4ermoZmvw25KyymPvezpYrkHnpuFqgc=
-X-Received: by 2002:a2e:3603:0:b0:2b6:d536:1bba with SMTP id
- d3-20020a2e3603000000b002b6d5361bbamr8490425lja.18.1689592765299; Mon, 17 Jul
- 2023 04:19:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230713080807.69999-1-frank.li@vivo.com> <20230713080807.69999-49-frank.li@vivo.com>
-In-Reply-To: <20230713080807.69999-49-frank.li@vivo.com>
-From:   Angelo Dureghello <angelo.dureghello@timesys.com>
-Date:   Mon, 17 Jul 2023 13:18:39 +0200
-Message-ID: <CALJHbkA1HCubm5b31CQmHtX-UC29LfgoafyzwxpHFydttdOe+g@mail.gmail.com>
-Subject: Re: [PATCH 49/58] mmc: sdhci-esdhc-mcf: Convert to platform remove
- callback returning void
-To:     Yangtao Li <frank.li@vivo.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 17 Jul 2023 07:19:38 -0400
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2078.outbound.protection.outlook.com [40.107.15.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234871B9;
+        Mon, 17 Jul 2023 04:19:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QJ/8LxVLI6mxcnNY+2paWNQYFs5/4Habm94dPNtpUY4=;
+ b=TwGec4GEkTE4u1BTHZNGuGt8uzjanOl/8JMpJQtHsZDO8MA7SdzDMf19finWkw3FO19PHyStvchKpD1KolUpZMlhcAeEqzTyM9U7RIIj5o7jUodk7w3QdLuPpufrUoh6MLqxNy1mkau7yGKlRssz+FM3eq3QnvyqkMKQgEcDels=
+Received: from DUZPR01CA0105.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:4bb::16) by DU2PR08MB7341.eurprd08.prod.outlook.com
+ (2603:10a6:10:2f0::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.24; Mon, 17 Jul
+ 2023 11:19:31 +0000
+Received: from DBAEUR03FT051.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:10:4bb:cafe::a4) by DUZPR01CA0105.outlook.office365.com
+ (2603:10a6:10:4bb::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32 via Frontend
+ Transport; Mon, 17 Jul 2023 11:19:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
+ smtp.mailfrom=arm.com; dkim=pass (signature was verified)
+ header.d=armh.onmicrosoft.com;dmarc=pass action=none header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
+ pr=C
+Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
+ DBAEUR03FT051.mail.protection.outlook.com (100.127.142.148) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6588.33 via Frontend Transport; Mon, 17 Jul 2023 11:19:31 +0000
+Received: ("Tessian outbound d7adc65d10b4:v145"); Mon, 17 Jul 2023 11:19:31 +0000
+X-CheckRecipientChecked: true
+X-CR-MTA-CID: af17f1b744e4c190
+X-CR-MTA-TID: 64aa7808
+Received: from f757e94d04d8.1
+        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 8A934DD7-E2E4-48C5-8FEC-B3BCAB61F8AE.1;
+        Mon, 17 Jul 2023 11:19:20 +0000
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id f757e94d04d8.1
+    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+    Mon, 17 Jul 2023 11:19:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Phe6BFL4dsOU/jRcXt4xrSKBXu/LN4SypBqFnEBxYX1kHg5wsA//EgT4ccktmdkV7dkXYeGfb+RkJbNIB1NE5vFNPu0T9fGjh06kOnsczz5AvCTVAXH6kOsBgJxRjV1e3bVQQbWZU8cDA9ycptAigEPC0wo9tZvP8e+Z5S7npYDHKOUEtOCCh4O0ZE3LwngS5cdPITOx8HcADEKlJ4x4yRwq2ghNOYzE1iO16biUfycA8qKzB0ZV9M9O0QdjcvcGYe02k00zszlJbrX30TfXgGIZOOV5L26Q9FWWop3Ic4lgCV6qtesaueHTRANWmtf/hoUqPaBd3tMajeck/tEQoA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QJ/8LxVLI6mxcnNY+2paWNQYFs5/4Habm94dPNtpUY4=;
+ b=A4tsaXPkHSYILALDIFc3i5Q6ktF1xoAKu/YhDL+vkWQrvwYpRsImW10m4rc+5MucXNfFM33cIG/9q6yAMOIIqVJhiSMpoOgtUoY7XqiSm6A6xlhui/JK4YbISJ6vZRe0a3i8BYGfdrzre/sshupcd9tcZtr49w3U7ifxXC44lPCRAtCTB7DXgdvS93rLmIOzJ5pRAF6DbajmnKaNgutLpLI5z1uhWdPX49v00q9JGk9i2I8KOAH0MXQhWZ/trQ92QdjqyzagjwDciBUxI9te37hge95e+Xnr1JGZohHpVdZ0pn29l6o/W99wkRDSHSvF7GxOW1qe6VPjPgwYay0AVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QJ/8LxVLI6mxcnNY+2paWNQYFs5/4Habm94dPNtpUY4=;
+ b=TwGec4GEkTE4u1BTHZNGuGt8uzjanOl/8JMpJQtHsZDO8MA7SdzDMf19finWkw3FO19PHyStvchKpD1KolUpZMlhcAeEqzTyM9U7RIIj5o7jUodk7w3QdLuPpufrUoh6MLqxNy1mkau7yGKlRssz+FM3eq3QnvyqkMKQgEcDels=
+Received: from AM7PR08MB5511.eurprd08.prod.outlook.com (2603:10a6:20b:10d::12)
+ by AM8PR08MB6369.eurprd08.prod.outlook.com (2603:10a6:20b:354::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32; Mon, 17 Jul
+ 2023 11:19:15 +0000
+Received: from AM7PR08MB5511.eurprd08.prod.outlook.com
+ ([fe80::7cbc:264c:4117:6a88]) by AM7PR08MB5511.eurprd08.prod.outlook.com
+ ([fe80::7cbc:264c:4117:6a88%4]) with mapi id 15.20.6588.031; Mon, 17 Jul 2023
+ 11:19:15 +0000
+From:   David Spickett <David.Spickett@arm.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <Catalin.Marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Shuah Khan <shuah@kernel.org>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH 1/3] arm64/fpsimd: Ensure SME storage is allocated after
+ SVE VL changes
+Thread-Topic: [PATCH 1/3] arm64/fpsimd: Ensure SME storage is allocated after
+ SVE VL changes
+Thread-Index: AQHZtcYpaNEcPWFzOk2rqQzUt4IivK+91Ua0
+Date:   Mon, 17 Jul 2023 11:19:15 +0000
+Message-ID: <AM7PR08MB551161F243297FCBBEC0C6249C3BA@AM7PR08MB5511.eurprd08.prod.outlook.com>
+References: <20230713-arm64-fix-sve-sme-vl-change-v1-0-129dd8611413@kernel.org>
+ <20230713-arm64-fix-sve-sme-vl-change-v1-1-129dd8611413@kernel.org>
+In-Reply-To: <20230713-arm64-fix-sve-sme-vl-change-v1-1-129dd8611413@kernel.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+Authentication-Results-Original: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=arm.com;
+x-ms-traffictypediagnostic: AM7PR08MB5511:EE_|AM8PR08MB6369:EE_|DBAEUR03FT051:EE_|DU2PR08MB7341:EE_
+X-MS-Office365-Filtering-Correlation-Id: 26920520-3584-451c-d9cd-08db86b7b14b
+x-checkrecipientrouted: true
+nodisclaimer: true
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: tFXsb1rYentgrvRrUMhGNfcEMkL6cVtHWzrPxbg54U6szTNFXdoj245HNVPQg8YHhLIPrKw0NLWIJNyFqUIJ+1z/NoIXzRajMH2YNA0QLGkl9Wx717oSXP/JTcMm7hP9aWVPgqJf00ncHq6Fgt6JWNO0AW4gOYYbg4hnPQUuvum6OmGOu82ynEELLujR4mDq/ciKIk9hppm71HTkJ7SUu5T02RQbY0Cm1PAP88lreXBClaJ7alz83fUEkinIaq699X8GuLvS85q32ETa/N23b6L3yIh2H/3rhD8aatD3BTD7uIDVc6enejqT/wjUuDfmdtSg3uGfBHcmeyznQ1tTyqPfDtXVsTQt7CRPCwvTWmEz87rDK1oTLvzjU9x18DvJIjiSCzfu92qjxYW/yPuUCAMkoo7wD0XPwPfdhtlFNHHhWw9VgoBXi1FwVj43gmlTugEV249Q78ywHWOC1Y/scby1zG91I1428C+Yqxbn9X11JfCFxcnIIvNweAwHwTHGp6NqCJ5M4QLMD2Qh4lajChYlzxMZqUCLzEX2lmh7Z2j6IrnPxT0kwzU86mfugoIJpejg3JHUxInSCCxP4u+iP1HDlohHsTlKiwnFEX+4v40nltkgbOTdn4DdUIWeQzy0
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR08MB5511.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(376002)(396003)(136003)(366004)(451199021)(55016003)(38070700005)(33656002)(122000001)(38100700002)(86362001)(2906002)(478600001)(7696005)(71200400001)(41300700001)(110136005)(53546011)(9686003)(6506007)(54906003)(26005)(8676002)(8936002)(316002)(76116006)(66946007)(91956017)(5660300002)(66556008)(52536014)(4326008)(66476007)(66446008)(64756008)(83380400001)(186003);DIR:OUT;SFP:1101;
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR08MB6369
+Original-Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=arm.com;
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: DBAEUR03FT051.eop-EUR03.prod.protection.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id-Prvs: dcd9897a-a25f-468e-d14b-08db86b7a7a1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4aF8NZCohbAIYbrvad7HFKVAhMANQOtp1lpfvMKc8oOjTqCjAE+R4Y8/SaGib6mFxS61P5F0W6eAw7RcGnfOhlRPHgHCIKNgvP8LMUXb6n4U3AcdIp30pVlltmn5btOl/jxNbIMbFPiJPKenhrIn8svhkEt3pTJWXOPqAZQn1qbI5889FbGaZ/MhZac4/HOWkjFpOD0pYNMIMvPZKL+mvMae02p9ptwy6uD4Kg201ZdcXKMeh7RV41FdAhfcBBE1ozI11lmdG3ZdRMzWSMudYKyAha5NKR6QXM1BW0KH2t8LwdZa17hjgrnFFBC5OLZboomHPlaDNR16HDlRvmvnYwwAbBHKvjgjj8CW32ueC227+2mAKkiSn02Ns1CpFh93TxCqg80XgPdyJCbfYs1K05VgEq1dhsShx/uCtVc9egS8lsl8cBR08NYWSyqG3Boya9mL/g0gxDal4O7gAoD99Lb/LVOU612zb3HgcxoHK0vbb+eh4sadN/V0MZ55K8qsjjNKPkYWFxWMzqJ3AhcPPw9XMtFjJuIdlIaHlVMD/DHpPdgJK7o7gAceZ5aHCAeYsfgo+4oC4m+awVbHCJ+34JkocngcZUedeRI2CjgTvsQy4PUzwq9a0vTlKGvB1om6uXEUv4nyZRmbNvz71BMfzmqH9oLc5QyosmswoNptt07wPVFN9HVvGYF1MTA5T/m2AHIIPWcwxonliHIVaQ0N/A==
+X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(13230028)(4636009)(376002)(396003)(136003)(346002)(39860400002)(451199021)(82310400008)(36840700001)(46966006)(40480700001)(36860700001)(86362001)(33656002)(81166007)(356005)(55016003)(82740400003)(478600001)(110136005)(7696005)(54906003)(70586007)(5660300002)(52536014)(70206006)(316002)(4326008)(2906002)(450100002)(8676002)(8936002)(41300700001)(83380400001)(47076005)(336012)(53546011)(6506007)(9686003)(26005)(186003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 11:19:31.4576
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26920520-3584-451c-d9cd-08db86b7b14b
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-AuthSource: DBAEUR03FT051.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR08MB7341
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yangtao,
-
-thanks,
-
-Acked-by: Angelo Dureghello <angelo.dureghello@timesys.com>
-
-
-On Thu, Jul 13, 2023 at 10:10=E2=80=AFAM Yangtao Li <frank.li@vivo.com> wro=
-te:
->
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is (mostly) ignored
-> and this typically results in resource leaks. To improve here there is a
-> quest to make the remove callback return void. In the first step of this
-> quest all drivers are converted to .remove_new() which already returns
-> void.
->
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
->
-> Cc: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> ---
->  drivers/mmc/host/sdhci-esdhc-mcf.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mmc/host/sdhci-esdhc-mcf.c b/drivers/mmc/host/sdhci-=
-esdhc-mcf.c
-> index 05926bf5ecf9..a07f8333cd6b 100644
-> --- a/drivers/mmc/host/sdhci-esdhc-mcf.c
-> +++ b/drivers/mmc/host/sdhci-esdhc-mcf.c
-> @@ -489,7 +489,7 @@ static int sdhci_esdhc_mcf_probe(struct platform_devi=
-ce *pdev)
->         return err;
->  }
->
-> -static int sdhci_esdhc_mcf_remove(struct platform_device *pdev)
-> +static void sdhci_esdhc_mcf_remove(struct platform_device *pdev)
->  {
->         struct sdhci_host *host =3D platform_get_drvdata(pdev);
->         struct sdhci_pltfm_host *pltfm_host =3D sdhci_priv(host);
-> @@ -502,8 +502,6 @@ static int sdhci_esdhc_mcf_remove(struct platform_dev=
-ice *pdev)
->         clk_disable_unprepare(mcf_data->clk_per);
->
->         sdhci_pltfm_free(pdev);
-> -
-> -       return 0;
->  }
->
->  static struct platform_driver sdhci_esdhc_mcf_driver =3D {
-> @@ -512,7 +510,7 @@ static struct platform_driver sdhci_esdhc_mcf_driver =
-=3D {
->                 .probe_type =3D PROBE_PREFER_ASYNCHRONOUS,
->         },
->         .probe =3D sdhci_esdhc_mcf_probe,
-> -       .remove =3D sdhci_esdhc_mcf_remove,
-> +       .remove_new =3D sdhci_esdhc_mcf_remove,
->  };
->
->  module_platform_driver(sdhci_esdhc_mcf_driver);
-> --
-> 2.39.0
->
-
-
---=20
-Angelo Dureghello
-Timesys
-e. angelo.dureghello@timesys.com
+I've confirmed on QEMU and Arm's FVP that this fixes the issue I was seeing=
+.=0A=
+=0A=
+=0A=
+From: Mark Brown <broonie@kernel.org>=0A=
+Sent: 13 July 2023 21:06=0A=
+To: Catalin Marinas <Catalin.Marinas@arm.com>; Will Deacon <will@kernel.org=
+>; Shuah Khan <shuah@kernel.org>=0A=
+Cc: David Spickett <David.Spickett@arm.com>; linux-arm-kernel@lists.infrade=
+ad.org <linux-arm-kernel@lists.infradead.org>; linux-kernel@vger.kernel.org=
+ <linux-kernel@vger.kernel.org>; linux-kselftest@vger.kernel.org <linux-kse=
+lftest@vger.kernel.org>; Mark Brown <broonie@kernel.org>; stable@vger.kerne=
+l.org <stable@vger.kernel.org>=0A=
+Subject: [PATCH 1/3] arm64/fpsimd: Ensure SME storage is allocated after SV=
+E VL changes =0A=
+=A0=0A=
+When we reconfigure the SVE vector length we discard the backing storage=0A=
+for the SVE vectors and then reallocate on next SVE use, leaving the SME=0A=
+specific state alone. This means that we do not enable SME traps if they=0A=
+were already disabled. That means that userspace code can enter streaming=
+=0A=
+mode without trapping, putting the task in a state where if we try to save=
+=0A=
+the state of the task we will fault.=0A=
+=0A=
+Since the ABI does not specify that changing the SVE vector length disturbs=
+=0A=
+SME state, and since SVE code may not be aware of SME code in the process,=
+=0A=
+we shouldn't simply discard any ZA state. Instead immediately reallocate=0A=
+the storage for SVE if SME is active, and disable SME if we change the SVE=
+=0A=
+vector length while there is no SME state active.=0A=
+=0A=
+Disabling SME traps on SVE vector length changes would make the overall=0A=
+code more complex since we would have a state where we have valid SME state=
+=0A=
+stored but might get a SME trap.=0A=
+=0A=
+Fixes: 9e4ab6c89109 ("arm64/sme: Implement vector length configuration prct=
+l()s")=0A=
+Reported-by: David Spickett <David.Spickett@arm.com>=0A=
+Signed-off-by: Mark Brown <broonie@kernel.org>=0A=
+Cc: stable@vger.kernel.org=0A=
+---=0A=
+=A0arch/arm64/kernel/fpsimd.c | 32 +++++++++++++++++++++++++-------=0A=
+=A01 file changed, 25 insertions(+), 7 deletions(-)=0A=
+=0A=
+diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c=0A=
+index 7a1aeb95d7c3..a527b95c06e7 100644=0A=
+--- a/arch/arm64/kernel/fpsimd.c=0A=
++++ b/arch/arm64/kernel/fpsimd.c=0A=
+@@ -847,6 +847,9 @@ void sve_sync_from_fpsimd_zeropad(struct task_struct *t=
+ask)=0A=
+=A0int vec_set_vector_length(struct task_struct *task, enum vec_type type,=
+=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 unsigned long vl, unsigned long flags)=0A=
+=A0{=0A=
++=A0=A0=A0=A0=A0=A0 bool free_sme =3D false;=0A=
++=A0=A0=A0=A0=A0=A0 bool alloc_sve =3D true;=0A=
++=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0 if (flags & ~(unsigned long)(PR_SVE_VL_INHERIT |=
+=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 PR_SVE_SET_VL_ONEXEC))=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return -EINVAL;=0A=
+@@ -897,22 +900,37 @@ int vec_set_vector_length(struct task_struct *task, e=
+num vec_type type,=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 task->thread.fp_type =3D F=
+P_STATE_FPSIMD;=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0 }=0A=
+=A0=0A=
+-=A0=A0=A0=A0=A0=A0 if (system_supports_sme() && type =3D=3D ARM64_VEC_SME)=
+ {=0A=
+-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 task->thread.svcr &=3D ~(SVCR_S=
+M_MASK |=0A=
+-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 SVCR_ZA_MASK);=0A=
+-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 clear_thread_flag(TIF_SME);=0A=
++=A0=A0=A0=A0=A0=A0 if (system_supports_sme()) {=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (type =3D=3D ARM64_VEC_SME |=
+|=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 !(task->thread.svcr=
+ & (SVCR_SM_MASK | SVCR_ZA_MASK))) {=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 /*=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 * We=
+ are changing the SME VL or weren't using=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 * SM=
+E anyway, discard the state and force a=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 * re=
+allocation.=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 */=
+=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 task->t=
+hread.svcr &=3D ~(SVCR_SM_MASK |=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 SVCR_ZA_MAS=
+K);=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 clear_t=
+hread_flag(TIF_SME);=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 free_sm=
+e =3D true;=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 } else=A0 {=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 alloc_s=
+ve =3D true;=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 }=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0 }=0A=
+=A0=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0 if (task =3D=3D current)=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 put_cpu_fpsimd_context();=
+=0A=
+=A0=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0 /*=0A=
+-=A0=A0=A0=A0=A0=A0=A0 * Force reallocation of task SVE and SME state to th=
+e correct=0A=
+-=A0=A0=A0=A0=A0=A0=A0 * size on next use:=0A=
++=A0=A0=A0=A0=A0=A0=A0 * Free the changed states if they are not in use, th=
+ey will=0A=
++=A0=A0=A0=A0=A0=A0=A0 * be reallocated to the correct size on next use.=A0=
+ If we need=0A=
++=A0=A0=A0=A0=A0=A0=A0 * SVE state due to having untouched SME state then r=
+eallocate=0A=
++=A0=A0=A0=A0=A0=A0=A0 * it immediately.=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0 */=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0 sve_free(task);=0A=
+-=A0=A0=A0=A0=A0=A0 if (system_supports_sme() && type =3D=3D ARM64_VEC_SME)=
+=0A=
++=A0=A0=A0=A0=A0=A0 if (free_sme)=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 sme_free(task);=0A=
++=A0=A0=A0=A0=A0=A0 if (alloc_sve)=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 sve_alloc(task, true);=0A=
+=A0=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0 task_set_vl(task, type, vl);=0A=
+=A0=0A=
+=0A=
+-- =0A=
+2.30.2=0A=
