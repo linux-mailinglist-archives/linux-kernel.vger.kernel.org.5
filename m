@@ -2,87 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 924B075631A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6521675631C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbjGQMti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 08:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
+        id S229932AbjGQMt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 08:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbjGQMtg (ORCPT
+        with ESMTP id S230076AbjGQMtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 08:49:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CD3E49;
-        Mon, 17 Jul 2023 05:49:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 40F876103B;
-        Mon, 17 Jul 2023 12:49:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 843F0C433C8;
-        Mon, 17 Jul 2023 12:49:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689598172;
-        bh=FzCc29B7tSBEcJAG9hiePGHLv8t23C1X2FNVDh8fwck=;
-        h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-        b=GPIVtST5cI3Gk0QPUa/Vbf3KaCgRK+8E/5AZn3ng7ExtBCSEECQ21eAdMLEnfzciB
-         RZDaAthD+8xP0Oi4jsDR+YVstLZXpK3qNn6q3QFaGgT2c1XLBNiCh6eCco8/GTJ+DE
-         ni8P9WBy+ZBfLOlOUjMcwfW9K0um6mIzLetwb5tAiYTqBtO7gH0umKu0+SE5kT7mUB
-         nyOfw9TfxanSw0qk//eQ6hZ85Up/UFJos2Ak7OZS8x3nFOpjgV/41zWhUPkxE47YWO
-         ddOXNGK9BhJJvjnHX6oeFKhtd7ToS8W9dw1iPtf/MwKgiyJwhczpsa+npFovhmT1LL
-         whEntvnwlujoQ==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 17 Jul 2023 12:49:27 +0000
-Message-Id: <CU4GKARPLGU5.1CVBNY9N4K28F@seitikki>
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>,
-        "Haitao Huang" <haitao.huang@linux.intel.com>,
-        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
-        <cgroups@vger.kernel.org>, "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     <kai.huang@intel.com>, <reinette.chatre@intel.com>,
-        <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
-        <seanjc@google.com>
-Subject: Re: [PATCH v3 17/28] x86/sgx: fix a NULL pointer
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
- <20230712230202.47929-18-haitao.huang@linux.intel.com>
- <CU4GJG1NRTUD.275UVHM8W2VED@seitikki>
-In-Reply-To: <CU4GJG1NRTUD.275UVHM8W2VED@seitikki>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Mon, 17 Jul 2023 08:49:55 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE84EE56
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 05:49:53 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-440b54708f2so1418343137.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 05:49:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689598193; x=1692190193;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u6OMvqy130+5/ljzn1mUj/xyoKNjczOFrevPrpn07wc=;
+        b=A31cUzmIkeiVt//YLF1ZLePS6oLNF0i7+jGoT3m3wldh6U3VUAQ+hMa+prRtlNhrBR
+         B1dP3ns5KGRqW+2qJyt2yX4rQn1UYm3QzFuUf40GHVesDHlCtMgP7IkFPXlyyREDBnNu
+         ErXyqTLUFsgs0ptGzdPnpx59jCgnmH097clrcj00a2QVptYa9jRA1DVvygaujB450XD4
+         2cktLmfjNHLcD775UNqTQJVb6hHkETWqKEZjgstW8dnFOB69uNW2NV1UT9T1Q+pCYBn/
+         5LnV/vXwq82vNooqfxiXGaXbwE3t8ADTgHJWDqjoyD2MlWQW/EMJAFSmDecnPPlVfbbN
+         MH/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689598193; x=1692190193;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=u6OMvqy130+5/ljzn1mUj/xyoKNjczOFrevPrpn07wc=;
+        b=C9aA++gR1AzihTz/NeGKgPUrMyTLkukywI6Q+ciAH2Sn6LtUeY0j4NsjMfM7FRTPQW
+         cpzRoy+rvbc73JOxMLhSuyzwd6SY3YfeLFe3xqAfP+qAhElD9hHJsuBAR85MLTjwdQOO
+         kMn3QfO9sQqe9ljcZQqyMh+LHYbpdga3ufp9kQBPyf9thoSYkG+WGXGCHdxOeRrzYexp
+         KROz68mO/+wCiay+SuwaFG5Lhr4MMD4ba2tfPSLwuCS7ncrUvO1Ct1d5bvWXDifI3Vdm
+         fJvsH1BsUnT6pRVQ/oPs/JubP4Blw1uEbxZvqqU04T4ZiUkB5Eilwd4CZKCPFX2/PASf
+         63ow==
+X-Gm-Message-State: ABy/qLbQHdCpHpXI4IdSt6KIC2LWBfPaAt5fFCnUs85cr9txIXzm1+hR
+        h9lzyvSfpPPvwIdCppEA63IyKBWZ5/tQO7wRlec=
+X-Google-Smtp-Source: APBJJlGmwZ5G6vaRkXDR7kg47DoWK4hApAyTmfUvoGOxO85k/r+oaTXlcyKRQydluyp2fuOxCGLFds9TJPfonELbKSQ=
+X-Received: by 2002:a05:6102:d7:b0:444:ca02:98fb with SMTP id
+ u23-20020a05610200d700b00444ca0298fbmr4945851vsp.21.1689598193077; Mon, 17
+ Jul 2023 05:49:53 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:ab0:6508:0:b0:787:5ed1:95d0 with HTTP; Mon, 17 Jul 2023
+ 05:49:52 -0700 (PDT)
+Reply-To: ameenhammadi52@gmail.com
+From:   Ameen Hammadi <interc.delivery@gmail.com>
+Date:   Mon, 17 Jul 2023 13:49:52 +0100
+Message-ID: <CAPCD-=+T=TiLqzdj2-4NWAJU95+Vu2gg3Wh-Yj1mi5ti5TWp+Q@mail.gmail.com>
+Subject: Beneficial
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon Jul 17, 2023 at 12:48 PM UTC, Jarkko Sakkinen wrote:
-> On Wed Jul 12, 2023 at 11:01 PM UTC, Haitao Huang wrote:
-> > Under heavy load, the SGX EPC reclaimers (ksgxd or future EPC cgroup
-> > worker) may reclaim SECS EPC page for an enclave and set
-> > encl->secs.epc_page to NULL. But the SECS EPC page is required for EAUG
-> > in #PF handler and is used without checking for NULL and reloading.
-> >
-> > Fix this by checking if SECS is loaded before EAUG and load it if it wa=
-s
-> > reclaimed.
-> >
-> > Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->
-> A bug fix should be 1/*.
+Hello ,
 
-And a fixes tag.
+My Name is Ameen Hammadi, I want to share a beneficial and
+life-changing information with you. If you are willing to handle this
+business with me, kindly reply immediately for more information.
 
-Or is there a bug that is momentized by the earlier patches? This patch
-feels confusing to say the least.
-
-BR, Jarkko
+Regards
+Ameen
+E-mail: ameen@merit-services.com
