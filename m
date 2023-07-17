@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CE53756DBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34521756DBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbjGQTzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 15:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
+        id S231313AbjGQTy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 15:54:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbjGQTyy (ORCPT
+        with ESMTP id S230260AbjGQTyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 Jul 2023 15:54:54 -0400
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98185136;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A63981B1;
         Mon, 17 Jul 2023 12:54:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1689623693; x=1721159693;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Kt4kovDTwgQsGCAq9S37IK9/fusiBRUnnzI3+ELwo+4=;
-  b=AOxoft/7E6Xe1JMf+LnqXQk32N32WP27CQMu+jgve2V222mBjQjLO3fi
-   HmGZAFJ5Sy0LgIkfwdI++Ix23r32eH/b9hNVk/vWe8L4gMMXMwvJSDxaY
-   waSb+KNKc+Y00ToKW38JWeOgIJ9Rh79CusPJBt2QFg0ZtkZYU5xHKWRUB
-   lw/h0kPW9pKNk6JurMCP6uXtezZVYDKF4+0VWyE5xjNb4OlcBUVvikpzn
-   3jx7fZ03UX+G3qiTDfOumq1hDBga4e6fwPdGqSPS/rBcyINVoVy8CMWg9
-   3bqiUK0JtaqMy2tJqpMWZTXqFurjwXiMoZE+juGOTMLQhjxtpUXf6sH+i
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="366064599"
+  bh=lTo3Yud6uChlFvaxyEtnYv/+Do5A9H0JVT6jB8D4gS8=;
+  b=nO/xRwfUfPbcGt83BIXUM4r+7jXuma8kTmvIGyPG+6x425zpBYfd6SbV
+   2rTcdkwi4466EkoLNvnyVxEvw/K1Xmv+nbCkKMpeXD5o7Kt7usxGbYEP9
+   7ezsLiJP66KmgLqZahOgCHLtQIjUOW4FO+rH/nt0r2aEUyvTV12no2mO4
+   Qiyu615Uaz22Tb824FAtyS36XWVwx63XR/6lAn6U6H91yrebb59BeGS55
+   nWhoVnbLFjKnXbFG0dNBAAY94vcdoS/IL5wAMSLn0htjDiVpyXzEKzjKX
+   hdin0ZOyw4LCZD3QxSHx963IpK7rKK1zfsEtIYVkyR3y/wk68EXM5ZguM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="366064602"
 X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="366064599"
+   d="scan'208";a="366064602"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 12:54:51 -0700
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 12:54:52 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="788770745"
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="788770748"
 X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="788770745"
+   d="scan'208";a="788770748"
 Received: from spandruv-desk.jf.intel.com ([10.54.75.8])
   by fmsmga008.fm.intel.com with ESMTP; 17 Jul 2023 12:54:51 -0700
 From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 To:     daniel.lezcano@linaro.org, rafael@kernel.org, rui.zhang@intel.com
 Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH v2 2/7] thermal: int340x: processor_thermal: Add interrupt configuration
-Date:   Mon, 17 Jul 2023 12:54:00 -0700
-Message-Id: <20230717195405.730869-3-srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH v2 3/7] thermal: int340x: processor_thermal: Use non MSI interrupts
+Date:   Mon, 17 Jul 2023 12:54:01 -0700
+Message-Id: <20230717195405.730869-4-srinivas.pandruvada@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230717195405.730869-1-srinivas.pandruvada@linux.intel.com>
 References: <20230717195405.730869-1-srinivas.pandruvada@linux.intel.com>
@@ -61,176 +61,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some features like workload type prediction and power floor events
-require interrupt support to avoid polling. Here interrupts are enabled
-and disabled via sending mailbox commands. The mailbox command ID is
-0x1E for read and 0x1F for write.
+There are issues in using MSI interrupts for processor thermal device.
+The support is not consistent across generations. But the legacy PCI
+interrupts work on all current generations.
 
-The interrupt configuration will require mutex protection as it involves
-read-modify-write operation. Since mutex are already used in the mailbox
-read/write functions: send_mbox_write_cmd() and send_mbox_read_cmd(),
-there will be double locking. But, this can be avoided by moving mutexes
-from mailbox read/write processing functions to the callers:
-processor_thermal_send_mbox_[read|write]_cmd().
+Hence always use legacy PCI interrupts by default, instead of MSI.
+Add a module param to use of MSI, so that MSI can be still used.
 
 Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 ---
-v2
-Added additional comment in the commit log for the interrupt bit
+v2:
+Changed msi_enabled to type bool
 
- .../processor_thermal_device.h                |  2 +
- .../int340x_thermal/processor_thermal_mbox.c  | 85 ++++++++++++++-----
- 2 files changed, 68 insertions(+), 19 deletions(-)
+ .../processor_thermal_device_pci.c            | 33 ++++++++++++-------
+ 1 file changed, 22 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-index 7cdeca2edc21..defc919cb020 100644
---- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-+++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-@@ -91,6 +91,8 @@ void proc_thermal_wlt_req_remove(struct pci_dev *pdev);
+diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
+index 5a2bcfff0a68..2be9b7f660d1 100644
+--- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
++++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
+@@ -15,6 +15,11 @@
  
- int processor_thermal_send_mbox_read_cmd(struct pci_dev *pdev, u16 id, u64 *resp);
- int processor_thermal_send_mbox_write_cmd(struct pci_dev *pdev, u16 id, u32 data);
-+int processor_thermal_mbox_interrupt_config(struct pci_dev *pdev, bool enable, int enable_bit,
-+					    int time_window);
- int proc_thermal_add(struct device *dev, struct proc_thermal_device *priv);
- void proc_thermal_remove(struct proc_thermal_device *proc_priv);
- int proc_thermal_suspend(struct device *dev);
-diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
-index ec766c5615b7..7ef0af3f5bef 100644
---- a/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
-+++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
-@@ -45,23 +45,16 @@ static int send_mbox_write_cmd(struct pci_dev *pdev, u16 id, u32 data)
- 	int ret;
+ #define DRV_NAME "proc_thermal_pci"
  
- 	proc_priv = pci_get_drvdata(pdev);
++static bool msi_enabled;
++module_param(msi_enabled, bool, 0644);
++MODULE_PARM_DESC(msi_enabled,
++	"Use PCI MSI based interrupts for processor thermal device.");
++
+ struct proc_thermal_pci {
+ 	struct pci_dev *pdev;
+ 	struct proc_thermal_device *proc_priv;
+@@ -219,8 +224,6 @@ static int proc_thermal_pci_probe(struct pci_dev *pdev, const struct pci_device_
+ 		return ret;
+ 	}
+ 
+-	pci_set_master(pdev);
 -
--	mutex_lock(&mbox_lock);
--
- 	ret = wait_for_mbox_ready(proc_priv);
- 	if (ret)
--		goto unlock_mbox;
-+		return ret;
+ 	INIT_DELAYED_WORK(&pci_info->work, proc_thermal_threshold_work_fn);
  
- 	writel(data, (proc_priv->mmio_base + MBOX_OFFSET_DATA));
- 	/* Write command register */
- 	reg_data = BIT_ULL(MBOX_BUSY_BIT) | id;
- 	writel(reg_data, (proc_priv->mmio_base + MBOX_OFFSET_INTERFACE));
+ 	ret = proc_thermal_add(&pdev->dev, proc_priv);
+@@ -248,16 +251,23 @@ static int proc_thermal_pci_probe(struct pci_dev *pdev, const struct pci_device_
+ 		goto err_ret_mmio;
+ 	}
  
--	ret = wait_for_mbox_ready(proc_priv);
--
--unlock_mbox:
--	mutex_unlock(&mbox_lock);
--	return ret;
-+	return wait_for_mbox_ready(proc_priv);
- }
- 
- static int send_mbox_read_cmd(struct pci_dev *pdev, u16 id, u64 *resp)
-@@ -71,12 +64,9 @@ static int send_mbox_read_cmd(struct pci_dev *pdev, u16 id, u64 *resp)
- 	int ret;
- 
- 	proc_priv = pci_get_drvdata(pdev);
--
--	mutex_lock(&mbox_lock);
--
- 	ret = wait_for_mbox_ready(proc_priv);
- 	if (ret)
--		goto unlock_mbox;
-+		return ret;
- 
- 	/* Write command register */
- 	reg_data = BIT_ULL(MBOX_BUSY_BIT) | id;
-@@ -84,28 +74,85 @@ static int send_mbox_read_cmd(struct pci_dev *pdev, u16 id, u64 *resp)
- 
- 	ret = wait_for_mbox_ready(proc_priv);
- 	if (ret)
--		goto unlock_mbox;
-+		return ret;
- 
- 	if (id == MBOX_CMD_WORKLOAD_TYPE_READ)
- 		*resp = readl(proc_priv->mmio_base + MBOX_OFFSET_DATA);
- 	else
- 		*resp = readq(proc_priv->mmio_base + MBOX_OFFSET_DATA);
- 
--unlock_mbox:
--	mutex_unlock(&mbox_lock);
--	return ret;
-+	return 0;
- }
- 
- int processor_thermal_send_mbox_read_cmd(struct pci_dev *pdev, u16 id, u64 *resp)
- {
--	return send_mbox_read_cmd(pdev, id, resp);
-+	int ret;
+-	/* request and enable interrupt */
+-	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
+-	if (ret < 0) {
+-		dev_err(&pdev->dev, "Failed to allocate vectors!\n");
+-		goto err_ret_tzone;
+-	}
+-	if (!pdev->msi_enabled && !pdev->msix_enabled)
++	if (msi_enabled) {
++		pci_set_master(pdev);
++		/* request and enable interrupt */
++		ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
++		if (ret < 0) {
++			dev_err(&pdev->dev, "Failed to allocate vectors!\n");
++			goto err_ret_tzone;
++		}
++		if (!pdev->msi_enabled && !pdev->msix_enabled)
++			irq_flag = IRQF_SHARED;
 +
-+	mutex_lock(&mbox_lock);
-+	ret = send_mbox_read_cmd(pdev, id, resp);
-+	mutex_unlock(&mbox_lock);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_NS_GPL(processor_thermal_send_mbox_read_cmd, INT340X_THERMAL);
- 
- int processor_thermal_send_mbox_write_cmd(struct pci_dev *pdev, u16 id, u32 data)
- {
--	return send_mbox_write_cmd(pdev, id, data);
-+	int ret;
-+
-+	mutex_lock(&mbox_lock);
-+	ret = send_mbox_write_cmd(pdev, id, data);
-+	mutex_unlock(&mbox_lock);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_NS_GPL(processor_thermal_send_mbox_write_cmd, INT340X_THERMAL);
- 
-+#define MBOX_CAMARILLO_RD_INTR_CONFIG	0x1E
-+#define MBOX_CAMARILLO_WR_INTR_CONFIG	0x1F
-+#define WLT_TW_MASK			GENMASK_ULL(30, 24)
-+#define SOC_PREDICTION_TW_SHIFT		24
-+
-+int processor_thermal_mbox_interrupt_config(struct pci_dev *pdev, bool enable,
-+					    int enable_bit, int time_window)
-+{
-+	u64 data;
-+	int ret;
-+
-+	if (!pdev)
-+		return -ENODEV;
-+
-+	mutex_lock(&mbox_lock);
-+
-+	/* Do read modify write for MBOX_CAMARILLO_RD_INTR_CONFIG */
-+
-+	ret = send_mbox_read_cmd(pdev, MBOX_CAMARILLO_RD_INTR_CONFIG,  &data);
-+	if (ret) {
-+		dev_err(&pdev->dev, "MBOX_CAMARILLO_RD_INTR_CONFIG failed\n");
-+		goto unlock;
++		irq =  pci_irq_vector(pdev, 0);
++	} else {
+ 		irq_flag = IRQF_SHARED;
++		irq = pdev->irq;
 +	}
-+
-+	if (time_window >= 0) {
-+		data &= ~WLT_TW_MASK;
-+
-+		/* Program notification delay */
-+		data |= (time_window << SOC_PREDICTION_TW_SHIFT);
-+	}
-+
-+	if (enable)
-+		data |= BIT(enable_bit);
-+	else
-+		data &= ~BIT(enable_bit);
-+
-+	ret = send_mbox_write_cmd(pdev, MBOX_CAMARILLO_WR_INTR_CONFIG, data);
-+	if (ret)
-+		dev_err(&pdev->dev, "MBOX_CAMARILLO_WR_INTR_CONFIG failed\n");
-+
-+unlock:
-+	mutex_unlock(&mbox_lock);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_NS_GPL(processor_thermal_mbox_interrupt_config, INT340X_THERMAL);
-+
- MODULE_LICENSE("GPL v2");
+ 
+-	irq =  pci_irq_vector(pdev, 0);
+ 	ret = devm_request_threaded_irq(&pdev->dev, irq,
+ 					proc_thermal_irq_handler, NULL,
+ 					irq_flag, KBUILD_MODNAME, pci_info);
+@@ -273,7 +283,8 @@ static int proc_thermal_pci_probe(struct pci_dev *pdev, const struct pci_device_
+ 	return 0;
+ 
+ err_free_vectors:
+-	pci_free_irq_vectors(pdev);
++	if (msi_enabled)
++		pci_free_irq_vectors(pdev);
+ err_ret_tzone:
+ 	thermal_zone_device_unregister(pci_info->tzone);
+ err_ret_mmio:
 -- 
 2.38.1
 
