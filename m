@@ -2,91 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 829CB7567B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEB97567BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbjGQPWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 11:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54678 "EHLO
+        id S231556AbjGQPXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 11:23:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231965AbjGQPWF (ORCPT
+        with ESMTP id S231511AbjGQPXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 11:22:05 -0400
+        Mon, 17 Jul 2023 11:23:33 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C38E7F
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:21:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8DB173F;
+        Mon, 17 Jul 2023 08:23:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 85E526111D
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:21:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FEA2C433C8;
-        Mon, 17 Jul 2023 15:21:41 +0000 (UTC)
-Date:   Mon, 17 Jul 2023 11:21:38 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     <kkabe@vega.pgw.jp>
-Cc:     regressions@lists.linux.dev, bagasdotme@gmail.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org
-Subject: Re: radeon.ko/i586: BUG: kernel NULL pointer
- dereference,address:00000004
-Message-ID: <20230717112138.1fd48cca@gandalf.local.home>
-In-Reply-To: <230715113911.M0124687@vega.pgw.jp>
-References: <20230714100019.6bf9b1ab@gandalf.local.home>
-        <230715113911.M0124687@vega.pgw.jp>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A8FA461134;
+        Mon, 17 Jul 2023 15:22:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E725C433CC;
+        Mon, 17 Jul 2023 15:22:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689607345;
+        bh=s72Q/8XYhHQvzmI1VDsEoAqOtnrO5eU9UNP8CV8UKys=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=C0emZjBNCquR9Voe1+urrx1DBzBKr/jIAPVcl7u3QyWptIgTEaYmI2gncVVzCgAS5
+         UsJ3cmZgP5/bjdGONrJUV/8N+Qg3CZcPU9NQ8I231bshDjHFaaq8IRPUKlOty/uLJq
+         asTt8cRYh9EedkxLKjIOeHO6MkHuxL+gwcBMRVq66EArGgNGRm67cPUWwJJvCakvko
+         VkdbEJ8bQWgSTaXdf7jKSuxVfcwLBmk+N8o3hvYCcSK44mUiRfpl0VyIosk4kYBuYA
+         cVoo29w8Fc9X9JkzfvMXlZBP6bz6III07Lk8epOGDkmTQpyYYFGYa5VS408LD0Ocz6
+         miuGXx/6g/rHg==
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2b70bfc8db5so68917131fa.2;
+        Mon, 17 Jul 2023 08:22:25 -0700 (PDT)
+X-Gm-Message-State: ABy/qLb6r7vEQcoB/oVi8BsUDQUTIyc1oM0mclHmSRC2imggsEIpWmC3
+        l6BqYIJiyj62F4aljrvlOBfqsxrJH3Yw34rL0A==
+X-Google-Smtp-Source: APBJJlFjUVuF8cT9Mjizg85yzlG3XoHjjgUIN2M6YkcqSURtLtAQSGtjkKNJqo2G7fj6obony0hWhkxkfR/W6HeRCjA=
+X-Received: by 2002:a2e:9d84:0:b0:2b6:e76b:1e50 with SMTP id
+ c4-20020a2e9d84000000b002b6e76b1e50mr9175045ljj.41.1689607343110; Mon, 17 Jul
+ 2023 08:22:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230714175035.4065508-1-robh@kernel.org> <317a9fd8-0ae9-daa0-012b-3908ca248b74@suse.de>
+In-Reply-To: <317a9fd8-0ae9-daa0-012b-3908ca248b74@suse.de>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 17 Jul 2023 09:22:10 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJ2bkBU0WQG2jt755c_V4x4uR36Dvt2qEeXv52zCWeUmw@mail.gmail.com>
+Message-ID: <CAL_JsqJ2bkBU0WQG2jt755c_V4x4uR36Dvt2qEeXv52zCWeUmw@mail.gmail.com>
+Subject: Re: [PATCH] fb: Explicitly include correct DT includes
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Helge Deller <deller@gmx.de>, Michal Simek <michal.simek@amd.com>,
+        devicetree@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 15 Jul 2023 11:39:11 +0900
-<kkabe@vega.pgw.jp> wrote:
+On Sat, Jul 15, 2023 at 12:34=E2=80=AFPM Thomas Zimmermann <tzimmermann@sus=
+e.de> wrote:
+>
+> Hi
+>
+> Am 14.07.23 um 19:50 schrieb Rob Herring:
+> > The DT of_device.h and of_platform.h date back to the separate
+> > of_platform_bus_type before it as merged into the regular platform bus.
+> > As part of that merge prepping Arm DT support 13 years ago, they
+> > "temporarily" include each other. They also include platform_device.h
+> > and of.h. As a result, there's a pretty much random mix of those includ=
+e
+> > files used throughout the tree. In order to detangle these headers and
+> > replace the implicit includes with struct declarations, users need to
+> > explicitly include the correct includes.
+> >
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> [...]
+> >
+> > @@ -48,7 +48,7 @@ int sbusfb_mmap_helper(struct sbus_mmap_map *map,
+> >       unsigned long map_offset =3D 0;
+> >       unsigned long off;
+> >       int i;
+> > -
+> > +
+>
+> The various whitespace fixes should rather go into a separate patch. You
+> can add
+>
+> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+>
+> to the whitespace fix and the include cleanup.
 
+Indeed. I missed dropping the whitespace change.
 
-> Yes, this is puzzling. That's why I need other people's opinion on this.
-> Does it matter the DUT is a slow machine (Pentium 120MHz)?
-> 
-
-Hmm, I wonder because the workqueue is running __init functions, could it
-possibly be that it didn't finish before the end of boot, where it frees
-all the functions? It shouldn't do that because there's code to make sure
-it's done before it continues further.
-
-But just in case something isn't working as planned, you could try this
-patch to see if the bug goes away.
-
--- Steve
-
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 05c0024815bf..af5a40ef3be4 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -3771,13 +3771,13 @@ static int test_for_valid_rec(struct dyn_ftrace *rec)
- 	return 1;
- }
- 
--static struct workqueue_struct *ftrace_check_wq __initdata;
--static struct work_struct ftrace_check_work __initdata;
-+static struct workqueue_struct *ftrace_check_wq;
-+static struct work_struct ftrace_check_work;
- 
- /*
-  * Scan all the mcount/fentry entries to make sure they are valid.
-  */
--static __init void ftrace_check_work_func(struct work_struct *work)
-+static void ftrace_check_work_func(struct work_struct *work)
- {
- 	struct ftrace_page *pg;
- 	struct dyn_ftrace *rec;
+Rob
