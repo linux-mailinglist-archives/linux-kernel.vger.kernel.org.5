@@ -2,147 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68582755DFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09024755E0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbjGQINM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 04:13:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38416 "EHLO
+        id S231160AbjGQINx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 04:13:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231311AbjGQINE (ORCPT
+        with ESMTP id S230494AbjGQINr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 04:13:04 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9D8129
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:13:02 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3144bf65ce9so3997588f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:13:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689581581; x=1692173581;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VT24UUIzDMth5tPZL5Y5vTEOs+P0BwYmDWZgKveF0+M=;
-        b=K/iJhKX4wID4O6BHCkqoNDeKizzM0ai2C/JJVSYMd+iQ+t5gkYEyqR8OcId9s6Uw/g
-         +AIOCIIHWgQP5i51DcuabWMLSpL4+g4yBFEaNnFvCFvlOvJtDRtBZSsu4q/eyraIhxnF
-         34lFSWsMuYImH0tASUyIG9UN5kV+zySjXP1wgy3I0PiMTd8SGe0bBTaL1/3m+AIDIUri
-         t2pJXylGN30xSlpLDQiAnrflPN5i2wyDLNiZpxqAYVBhvceI1p6Lvuk8qVu8Vmd37D5M
-         py/+IAtS+moAn/+PGdzK6ETPGkvlELAfB3SP0bODnQ1hd3dVHt1OhCJkizrojhSmGnF9
-         2zag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689581581; x=1692173581;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VT24UUIzDMth5tPZL5Y5vTEOs+P0BwYmDWZgKveF0+M=;
-        b=Yt6ydKsLh9jBKyq5QparAGzb6WJXhAanxRZjmc5tCfMRXmzYToT/xBvS8C0uU0Rf0d
-         dvuttyyGBJEwr81i2J3BZV6/bx2cjmk3OgSHnVKVGad0Xpq/+SAjLtrS1ElTJ8HICIiL
-         Zi2JcZ1xZFxT3SHbwjBmep8D9vue2yKJGgnBsmy2s3swoUSWAjIb7/lvahf7Ren2slvG
-         a83RNBPsL/ndbeU8U5unIzrNd46VLqlFVq3fZMv8pVDygau7xU/DqVDnCY8oJ1PDYrfw
-         01KicfqaWLzN56isDkOFQ1mXY0BRoRONl4fMbXMw4cs+yvFyA0D88M0P/ZIDPLOSRuvQ
-         ejgg==
-X-Gm-Message-State: ABy/qLYPNpfWDjpXuTFKjp7W9ekJogP2KUHJiCKKtySlDRCoxkRXP0lk
-        58910U5dzLBUVMIdL0C0aSvuCQ==
-X-Google-Smtp-Source: APBJJlHUSWcZYlPppSbFTXSEdHwpgpaTrSSog0KcOaUXq6539rjFQxsogmQ3Co+Knjkf78qoCa1SzQ==
-X-Received: by 2002:adf:f206:0:b0:314:34dd:aaec with SMTP id p6-20020adff206000000b0031434ddaaecmr9504790wro.8.1689581581381;
-        Mon, 17 Jul 2023 01:13:01 -0700 (PDT)
-Received: from [192.168.69.115] ([176.176.144.39])
-        by smtp.gmail.com with ESMTPSA id b2-20020a5d4b82000000b0031432c2fb95sm18429372wrt.88.2023.07.17.01.12.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 01:13:00 -0700 (PDT)
-Message-ID: <ef2dddcd-f4dd-da9b-c03f-ccd852bb8543@linaro.org>
-Date:   Mon, 17 Jul 2023 10:12:57 +0200
+        Mon, 17 Jul 2023 04:13:47 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B510110E7;
+        Mon, 17 Jul 2023 01:13:29 -0700 (PDT)
+X-UUID: cbf4cabe247911ee9cb5633481061a41-20230717
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=qrbYFQFTULswIVhKXIXxxBSaDew7tCRdcz9YCkBbjFU=;
+        b=DrYPNBzljaB4+MEv+Fw1DjxXv4eOD6290fxfNwMcQbwIQx4R3i1xE06dIg5b2r8SRZOUEh9GzsfHQVFui516xyScSui/45Oiw1rxSp5xqgm4YmNEUMZRAz1QE6ADxgItx+/EODT9oMcgYuMzu6CDRUlqp8bScD/FXEqz5eNAMw4=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.28,REQID:9dfbe633-ab53-4408-8a5e-b62dd7b8eeb1,IP:0,U
+        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+        ON:release,TS:70
+X-CID-INFO: VERSION:1.1.28,REQID:9dfbe633-ab53-4408-8a5e-b62dd7b8eeb1,IP:0,URL
+        :0,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTI
+        ON:quarantine,TS:70
+X-CID-META: VersionHash:176cd25,CLOUDID:7b02aedc-dc79-4898-9235-1134b97257a8,B
+        ulkID:2307171613254T7HCBU9,BulkQuantity:1,Recheck:0,SF:48|38|29|28|17|19,T
+        C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:43,QS:nil,BEC:nil,COL:0,
+        OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,TF_CID_SPAM_FAS,
+        TF_CID_SPAM_FSD
+X-UUID: cbf4cabe247911ee9cb5633481061a41-20230717
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1458464944; Mon, 17 Jul 2023 16:13:22 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 17 Jul 2023 16:13:21 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 17 Jul 2023 16:13:20 +0800
+From:   Yunfei Dong <yunfei.dong@mediatek.com>
+To:     =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
+        <nfraprado@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Nathan Hebert <nhebert@chromium.org>
+CC:     Chen-Yu Tsai <wenst@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Steve Cho <stevecho@chromium.org>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH 1/2] media: mediatek: vcodec: checking decoder ack message parameter
+Date:   Mon, 17 Jul 2023 16:13:18 +0800
+Message-ID: <20230717081319.12542-1-yunfei.dong@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v6 02/11] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Zenghui Yu <zenghui.yu@linux.dev>,
-        Gavin Shan <gshan@redhat.com>
-References: <20230715005405.3689586-1-rananta@google.com>
- <20230715005405.3689586-3-rananta@google.com>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <20230715005405.3689586-3-rananta@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,MAY_BE_FORGED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Raghavendra, David,
+Need to checking all parameters of msg data are valid or not,
+in case of access null pointer or unreasonable value leading
+to kernel reboot.
 
-On 15/7/23 02:53, Raghavendra Rao Ananta wrote:
-> From: David Matlack <dmatlack@google.com>
-> 
-> Use kvm_arch_flush_remote_tlbs() instead of
-> CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL. The two mechanisms solve the same
-> problem, allowing architecture-specific code to provide a non-IPI
-> implementation of remote TLB flushing.
-> 
-> Dropping CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL allows KVM to standardize
-> all architectures on kvm_arch_flush_remote_tlbs() instead of maintaining
-> two mechanisms.
-> 
-> Opt to standardize on kvm_arch_flush_remote_tlbs() since it avoids
-> duplicating the generic TLB stats across architectures that implement
-> their own remote TLB flush.
-> 
-> This adds an extra function call to the ARM64 kvm_flush_remote_tlbs()
-> path, but that is a small cost in comparison to flushing remote TLBs.
-> 
-> In addition, instead of just incrementing remote_tlb_flush_requests
-> stat, the generic interface would also increment the
-> remote_tlb_flush stat.
-> 
-> Signed-off-by: David Matlack <dmatlack@google.com>
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> Reviewed-by: Zenghui Yu <zenghui.yu@linux.dev>
-> Acked-by: Oliver Upton <oliver.upton@linux.dev>
-> Reviewed-by: Gavin Shan <gshan@redhat.com>
-> ---
->   arch/arm64/include/asm/kvm_host.h | 3 +++
->   arch/arm64/kvm/Kconfig            | 1 -
->   arch/arm64/kvm/mmu.c              | 6 +++---
->   virt/kvm/Kconfig                  | 3 ---
->   virt/kvm/kvm_main.c               | 2 --
->   5 files changed, 6 insertions(+), 9 deletions(-)
+Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+---
+ .../vcodec/decoder/mtk_vcodec_dec_drv.h       |  2 +
+ .../mediatek/vcodec/decoder/vdec_vpu_if.c     | 77 ++++++++++++-------
+ 2 files changed, 52 insertions(+), 27 deletions(-)
 
-You are doing 2 changes in the same patch:
-
-- Have ARM use kvm_arch_flush_remote_tlbs() instead of
-   HAVE_KVM_ARCH_TLB_FLUSH_ALL,
-- Drop the now unused HAVE_KVM_ARCH_TLB_FLUSH_ALL.
-
-Commits should be atomic, to allow partial
-revert or cherry-pick.
-
-Preferably splitting this patch in 2:
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
-
-Regards,
-
-Phil.
+diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h
+index c8b4374c5e6c..1ea5dbb475dd 100644
+--- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h
++++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h
+@@ -160,6 +160,7 @@ struct mtk_vcodec_dec_pdata {
+  * @hw_id: hardware index used to identify different hardware.
+  *
+  * @msg_queue: msg queue used to store lat buffer information.
++ * @vpu_inst: vpu instance pointer.
+  */
+ struct mtk_vcodec_dec_ctx {
+ 	enum mtk_instance_type type;
+@@ -202,6 +203,7 @@ struct mtk_vcodec_dec_ctx {
+ 	int hw_id;
+ 
+ 	struct vdec_msg_queue msg_queue;
++	void *vpu_inst;
+ };
+ 
+ /**
+diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c
+index 82c3dc8c4127..23cfe5c6c90b 100644
+--- a/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c
++++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c
+@@ -72,6 +72,21 @@ static void handle_get_param_msg_ack(const struct vdec_vpu_ipi_get_param_ack *ms
+ 	}
+ }
+ 
++static bool vpu_dec_check_ap_inst(struct mtk_vcodec_dec_dev *dec_dev, struct vdec_vpu_inst *vpu)
++{
++	struct mtk_vcodec_dec_ctx *ctx;
++	int ret = false;
++
++	list_for_each_entry(ctx, &dec_dev->ctx_list, list) {
++		if (!IS_ERR_OR_NULL(ctx) && ctx->vpu_inst == vpu) {
++			ret = true;
++			break;
++		}
++	}
++
++	return ret;
++}
++
+ /*
+  * vpu_dec_ipi_handler - Handler for VPU ipi message.
+  *
+@@ -84,44 +99,51 @@ static void handle_get_param_msg_ack(const struct vdec_vpu_ipi_get_param_ack *ms
+  */
+ static void vpu_dec_ipi_handler(void *data, unsigned int len, void *priv)
+ {
++	struct mtk_vcodec_dec_dev *dec_dev;
+ 	const struct vdec_vpu_ipi_ack *msg = data;
+-	struct vdec_vpu_inst *vpu = (struct vdec_vpu_inst *)
+-					(unsigned long)msg->ap_inst_addr;
++	struct vdec_vpu_inst *vpu;
+ 
+-	if (!vpu) {
++	dec_dev = (struct mtk_vcodec_dec_dev *)priv;
++	vpu = (struct vdec_vpu_inst *)(unsigned long)msg->ap_inst_addr;
++	if (!priv || !vpu) {
+ 		mtk_v4l2_vdec_err(vpu->ctx, "ap_inst_addr is NULL, did the SCP hang or crash?");
+ 		return;
+ 	}
+ 
+-	mtk_vdec_debug(vpu->ctx, "+ id=%X", msg->msg_id);
++	if (!vpu_dec_check_ap_inst(dec_dev, vpu) || msg->msg_id < VPU_IPIMSG_DEC_INIT_ACK ||
++	    msg->msg_id > VPU_IPIMSG_DEC_GET_PARAM_ACK) {
++		mtk_v4l2_vdec_err(vpu->ctx, "vdec msg id not correctly => 0x%x", msg->msg_id);
++		vpu->failure = -EINVAL;
++		goto error;
++	}
+ 
+ 	vpu->failure = msg->status;
+-	vpu->signaled = 1;
++	if (msg->status != 0)
++		goto error;
+ 
+-	if (msg->status == 0) {
+-		switch (msg->msg_id) {
+-		case VPU_IPIMSG_DEC_INIT_ACK:
+-			handle_init_ack_msg(data);
+-			break;
++	switch (msg->msg_id) {
++	case VPU_IPIMSG_DEC_INIT_ACK:
++		handle_init_ack_msg(data);
++		break;
+ 
+-		case VPU_IPIMSG_DEC_START_ACK:
+-		case VPU_IPIMSG_DEC_END_ACK:
+-		case VPU_IPIMSG_DEC_DEINIT_ACK:
+-		case VPU_IPIMSG_DEC_RESET_ACK:
+-		case VPU_IPIMSG_DEC_CORE_ACK:
+-		case VPU_IPIMSG_DEC_CORE_END_ACK:
+-			break;
++	case VPU_IPIMSG_DEC_START_ACK:
++	case VPU_IPIMSG_DEC_END_ACK:
++	case VPU_IPIMSG_DEC_DEINIT_ACK:
++	case VPU_IPIMSG_DEC_RESET_ACK:
++	case VPU_IPIMSG_DEC_CORE_ACK:
++	case VPU_IPIMSG_DEC_CORE_END_ACK:
++		break;
+ 
+-		case VPU_IPIMSG_DEC_GET_PARAM_ACK:
+-			handle_get_param_msg_ack(data);
+-			break;
+-		default:
+-			mtk_vdec_err(vpu->ctx, "invalid msg=%X", msg->msg_id);
+-			break;
+-		}
++	case VPU_IPIMSG_DEC_GET_PARAM_ACK:
++		handle_get_param_msg_ack(data);
++		break;
++	default:
++		mtk_vdec_err(vpu->ctx, "invalid msg=%X", msg->msg_id);
++		break;
+ 	}
+ 
+-	mtk_vdec_debug(vpu->ctx, "- id=%X", msg->msg_id);
++error:
++	vpu->signaled = 1;
+ }
+ 
+ static int vcodec_vpu_send_msg(struct vdec_vpu_inst *vpu, void *msg, int len)
+@@ -182,9 +204,10 @@ int vpu_dec_init(struct vdec_vpu_inst *vpu)
+ 
+ 	init_waitqueue_head(&vpu->wq);
+ 	vpu->handler = vpu_dec_ipi_handler;
++	vpu->ctx->vpu_inst = vpu;
+ 
+ 	err = mtk_vcodec_fw_ipi_register(vpu->ctx->dev->fw_handler, vpu->id,
+-					 vpu->handler, "vdec", NULL);
++					 vpu->handler, "vdec", vpu->ctx->dev);
+ 	if (err) {
+ 		mtk_vdec_err(vpu->ctx, "vpu_ipi_register fail status=%d", err);
+ 		return err;
+@@ -193,7 +216,7 @@ int vpu_dec_init(struct vdec_vpu_inst *vpu)
+ 	if (vpu->ctx->dev->vdec_pdata->hw_arch == MTK_VDEC_LAT_SINGLE_CORE) {
+ 		err = mtk_vcodec_fw_ipi_register(vpu->ctx->dev->fw_handler,
+ 						 vpu->core_id, vpu->handler,
+-						 "vdec", NULL);
++						 "vdec", vpu->ctx->dev);
+ 		if (err) {
+ 			mtk_vdec_err(vpu->ctx, "vpu_ipi_register core fail status=%d", err);
+ 			return err;
+-- 
+2.18.0
 
