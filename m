@@ -2,116 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B6F75698D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 18:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65AC756992
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 18:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbjGQQu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 12:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
+        id S231472AbjGQQuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 12:50:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbjGQQuZ (ORCPT
+        with ESMTP id S230156AbjGQQum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 12:50:25 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 508A6F7
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:50:23 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fdbfda94c4so1884913e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:50:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689612621; x=1692204621;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OA9QtUTHDvXEmSCSyfC14bb0EBD3m9CHtlrpuix99a4=;
-        b=EE8CG6Sv797sDpWdfp76eg092cbpOwKYvuxPGZiC0sEyBzEGvakwKBZ+sIhE3ic6j1
-         mij2AAoDBW9LAlbfiXu4mJurTkYfgnFOWuxttIjNqp8Oj8XIsSE+RdXVo+j+i0aCuEVN
-         PNrDbu7TFdk2UuYFT2PNSnwjflFeqItRO3WhAMk0ElRcZ75et1JAZMr/opm/wvgT2ZpE
-         NTMe3H0VAXCKNAOQSMtNMWJpUiqhoEKYm+v8H3nqrdsC1AKGfPU0B6ZqrYTvibGPjlnQ
-         oBjVddzzJfU5KT9g9U56Y5gYM03UlpZSIMOHIsKg+DubuSmuLGthZDHpu4rFVCjeDEwc
-         khqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689612621; x=1692204621;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OA9QtUTHDvXEmSCSyfC14bb0EBD3m9CHtlrpuix99a4=;
-        b=A1ECD14W9g758hipjnt7lFUTP4Zm7+8zKB7ViOoMLEEGcUQY9USZeCWQufws6b6pSc
-         9CpzuAMIHluJPZFd7vh5DiPAMeozQEu7Wx7NRJ85v84O18fU6bPwN8r9dzh+B/daYi7o
-         ktR6UyEvYmzP4mecpFeSoRETq6cSXw7geO5dtyp9L79SR9E/2scchlsVbLzmjB+UxJyX
-         oJ86TJDql1MDovdDuXM4YPT39HdNG+I19ojXgLb+6WcTjppsTKX7TCrUKWrUOAhg8jon
-         HoLcKEY0x6vZ29y36KvUMMWeR1heIcwh0DqLw9B8HoVI0rMG+B3MhUmnv4O3hr9+SLZ+
-         /Hxw==
-X-Gm-Message-State: ABy/qLYHbGJlQdF1NaoqTSvwI7GYGbLrM68+CxLFZnAEVAfXramyU3FE
-        AVux0GKe5UjDNGs8hfQrVejxiA==
-X-Google-Smtp-Source: APBJJlGNzQ4o89/LEOmeUN85mKGWa1WBYa6nh8YlqrrpWkUm/nmaKlS9QbvwYyKYqhjP1FPp1uM5gg==
-X-Received: by 2002:ac2:5337:0:b0:4fb:a0f5:d88d with SMTP id f23-20020ac25337000000b004fba0f5d88dmr10510893lfh.42.1689612621474;
-        Mon, 17 Jul 2023 09:50:21 -0700 (PDT)
-Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
-        by smtp.gmail.com with ESMTPSA id v10-20020ac2592a000000b004f84b36a24fsm848lfi.51.2023.07.17.09.50.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 09:50:21 -0700 (PDT)
-Message-ID: <a193a4dd-0a0a-0d36-6d83-0424cd1dce80@linaro.org>
-Date:   Mon, 17 Jul 2023 18:50:18 +0200
+        Mon, 17 Jul 2023 12:50:42 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C15FA;
+        Mon, 17 Jul 2023 09:50:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=J0V5hV3Q+TS5tLVW5XW3ouizk5qxGr8MqtaRegwhqZc=; b=Z8mq/QYAjoh0dqYla8C9CtAFzt
+        bwLmfk75nM/6hQubJHdZxiixAVS6fndkY2oLmBQ1Cs5X9uGJ7kerjsZnKlTUz4NX+exOVlRoMyYd+
+        xBWNIoc7kz3cT4xZCzuFgTkYIJrXF/OFUzvXowH6x0AvoOpfr+86How26Wvqyy3T1G4Pf1lqmutXN
+        7MDUEn4x0UBrExFVTTeRiDL+LAW4KF5VX5N/ydgLzPc9iiFL8uFF8QkURp99AA0veMm0OHJPTtWQd
+        n2uE5mjgsxSwlQZ8uqbyKvECkdrO0YrtLazppU6eIQoJ1N3Ny9lv2crLlv9tP67fWnn4mU4tEMMVT
+        zopy598Q==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qLRQX-004aby-0S;
+        Mon, 17 Jul 2023 16:50:25 +0000
+Date:   Mon, 17 Jul 2023 09:50:25 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Alessandro Carminati <alessandro.carminati@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Viktor Malik <vmalik@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Nick Alcock <nick.alcock@oracle.com>, eugene.loh@oracle.com,
+        kris.van.hees@oracle.com, live-patching@vger.kernel.org
+Subject: Re: [PATCH v2] scripts/link-vmlinux.sh: Add alias to duplicate
+ symbols for kallsyms
+Message-ID: <ZLVxUQiC5iF+xTPQ@bombadil.infradead.org>
+References: <20230714150326.1152359-1-alessandro.carminati@gmail.com>
+ <20230717105240.3d986331@gandalf.local.home>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 15/15] arm64: dts: qcom: sm6115: Add VDD_CX to GPU_CCC
-Content-Language: en-US
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20230717-topic-branch_aon_cleanup-v1-0-27784d27a4f4@linaro.org>
- <20230717-topic-branch_aon_cleanup-v1-15-27784d27a4f4@linaro.org>
- <ZLVsN40kYsvQm1z6@gerhold.net>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <ZLVsN40kYsvQm1z6@gerhold.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717105240.3d986331@gandalf.local.home>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.07.2023 18:28, Stephan Gerhold wrote:
-> On Mon, Jul 17, 2023 at 05:19:22PM +0200, Konrad Dybcio wrote:
->> The GPU_CC block is powered by VDD_CX. Describe that.
->>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
->>  arch/arm64/boot/dts/qcom/sm6115.dtsi | 2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
->> index 29b5b388cd94..bfaaa1801a4d 100644
->> --- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
->> @@ -1430,6 +1430,8 @@ gpucc: clock-controller@5990000 {
->>  			clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>,
->>  				 <&gcc GCC_GPU_GPLL0_CLK_SRC>,
->>  				 <&gcc GCC_GPU_GPLL0_DIV_CLK_SRC>;
->> +			power-domains = <&rpmpd SM6115_VDDCX>;
->> +			required-opps = <&rpmpd_opp_low_svs>;
-> 
-> Where is this required-opp coming from? The clocks in gpucc seem to have
-> different voltage requirements depending on the rates, but we usually
-> handle that in the OPP tables of the consumer.
-The only lower levels defined for this SoC are VDD_MIN and VDD_RET,
-but quite obviously the GPU won't work then
+On Mon, Jul 17, 2023 at 10:52:40AM -0400, Steven Rostedt wrote:
+> Honestly, I think the "_alias_<some-random-number>" is useless. It doesn't
+> give you any clue to what function you are actually attaching to. 
 
-Konrad
+Agreed.
+
+> There's
+> been other approaches that show module and/or file names. I know there's
+> still some issues with getting those accepted, but I much rather have them
+> than this!
 > 
-> Thanks,
-> Stephan
+> See: https://lore.kernel.org/all/20221205163157.269335-1-nick.alcock@oracle.com/
+
+Yes, please coordinate with Nick and review each other's work, now we
+have two separate efforts with different reasons but hopefully we'll
+come back with one unified solution.
+
+Please Cc live-patching also, as they had suggested before just to
+provide the file filename + line number, that'll make it even more
+valuable.
+
+  Luis
