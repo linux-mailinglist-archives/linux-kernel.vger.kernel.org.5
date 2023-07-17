@@ -2,120 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14DEC75653C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1C675653D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbjGQNkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 09:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48960 "EHLO
+        id S229835AbjGQNkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 09:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbjGQNkS (ORCPT
+        with ESMTP id S231215AbjGQNke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 09:40:18 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAACA6;
-        Mon, 17 Jul 2023 06:40:16 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 426E5E0003;
-        Mon, 17 Jul 2023 13:40:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1689601215;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cIOJ9XDDj8Zlm/dBf+2lrlsSRq6U8W8Z1yTJUmZo32g=;
-        b=PNkPUvNEtYWWK32WmffVTKZFtUbBTJN3EdTEct3h83Ud7UzarKkyL1fG4IOh6koK4wywAn
-        v3A9DRzr4NrWT2pnff+FUBEuz1OGpBAVVNhpSbcTkqAZ53cYcyUhx5LFjQobTaDORhcHSg
-        9G9MbLzndqOOxjwvJuWt6ETQboDZm6yZUrhJs3mdVRG+NgNyB6kH6IHVVwpj2c//vem/As
-        jAaNudTcFF4wq1b8ACbb2czoE0sjbQsTFcVuXw9fEZj3AyR6ZO6yuNQn7waz6snGiuJ21G
-        X7tKU6tDeitGtlkKira46KELxX5JdCqZsc/0jAgx6kmomhqwUWydvXo9GTQ91g==
-Date:   Mon, 17 Jul 2023 15:40:15 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Atul Kumar Pant <atulpant.linux@gmail.com>
-Cc:     a.zummo@towertech.it, shuah@kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-rtc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] selftests: rtc: Improves rtctest error handling.
-Message-ID: <2023071713401551822659@mail.local>
-References: <20230716181825.44337-1-atulpant.linux@gmail.com>
+        Mon, 17 Jul 2023 09:40:34 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8313BC7
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:40:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OjcJNfI+ZFsjHCpKJy4DcI+Lam5MgEbyR3vKrF75hvk=; b=sNqY+OXhxUClUB7xAXZjrPH1lI
+        K8RGdXd/0ZJ0S/l/tgC75d5SD4NAXz2xUVxkjo9mxF4syd2zpTJliExEkS8h2RvcA2/VM3NjJVq6+
+        OrRwUsB5HenSqG+hYhnc7m8xxupgc5Hk+Ii156mpISEZ12TzRtc12zzivIMrPQDE6Ukx52UzIgYih
+        6TbOYeKc8jlO/ZwlcWaPSnFIO82K5RRjLOMxq1DWLq3/lmnm889qsXf6iBofzWh55d42tR32w8o49
+        PS2wTnPuONSl5T+c+oyCKteKMMjBvyOa+IRZZGeBTx5Va+k7KeH4KmG+GIcbDlnIHjsIJoT3JX7m7
+        u9cuIfbQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qLOSe-003xHn-Al; Mon, 17 Jul 2023 13:40:24 +0000
+Date:   Mon, 17 Jul 2023 14:40:24 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peng Zhang <zhangpeng362@huawei.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        sidhartha.kumar@oracle.com, akpm@linux-foundation.org,
+        wangkefeng.wang@huawei.com, sunnanyong@huawei.com,
+        Kent Overstreet <kent.overstreet@gmail.com>
+Subject: Re: [PATCH 2/6] mm/page_io: use a folio in sio_read_complete()
+Message-ID: <ZLVEyG7SZMzgY7ov@casper.infradead.org>
+References: <20230717132602.2202147-1-zhangpeng362@huawei.com>
+ <20230717132602.2202147-3-zhangpeng362@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230716181825.44337-1-atulpant.linux@gmail.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230717132602.2202147-3-zhangpeng362@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/07/2023 23:48:25+0530, Atul Kumar Pant wrote:
-> When running the rtctest if we pass wrong rtc device file as an argument
-> the test fails expectedly, but prints the logs that are not useful
-> to point out the issue.
-> To handle this, the patch adds a checks to verify if the rtc_file is valid.
-> 
-> Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+On Mon, Jul 17, 2023 at 09:25:58PM +0800, Peng Zhang wrote:
+> +++ b/mm/page_io.c
+> @@ -406,19 +406,19 @@ static void sio_read_complete(struct kiocb *iocb, long ret)
+>  
+>  	if (ret == sio->len) {
+>  		for (p = 0; p < sio->pages; p++) {
+> -			struct page *page = sio->bvec[p].bv_page;
+> +			struct folio *folio = page_folio(sio->bvec[p].bv_page);
+>  
+> -			SetPageUptodate(page);
+> -			unlock_page(page);
+> +			folio_mark_uptodate(folio);
+> +			folio_unlock(folio);
+>  		}
 
-> ---
-> 
-> changes since v3:
->     Added Linux-kselftest and Linux-kernel mailing lists.
-> 
-> changes since v2:
->     Changed error message when rtc file does not exist.
-> 
-> changes since v1:
->     Removed check for uid=0
->     If rtc file is invalid, then exit the test.
-> 
->  tools/testing/selftests/rtc/rtctest.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/rtc/rtctest.c b/tools/testing/selftests/rtc/rtctest.c
-> index 63ce02d1d5cc..630fef735c7e 100644
-> --- a/tools/testing/selftests/rtc/rtctest.c
-> +++ b/tools/testing/selftests/rtc/rtctest.c
-> @@ -17,6 +17,7 @@
->  #include <unistd.h>
+I'm kind of shocked this works today.  Usually bvecs coalesce adjacent
+pages into a single entry, so you need to use a real iterator like
+bio_for_each_folio_all() to extract individual pages from a bvec.
+Maybe the sio bvec is constructed inefficiently.
+
+I think Kent had some bvec folio iterators in progress?
+
+>  		count_vm_events(PSWPIN, sio->pages);
+>  	} else {
+>  		for (p = 0; p < sio->pages; p++) {
+> -			struct page *page = sio->bvec[p].bv_page;
+> +			struct folio *folio = page_folio(sio->bvec[p].bv_page);
 >  
->  #include "../kselftest_harness.h"
-> +#include "../kselftest.h"
->  
->  #define NUM_UIE 3
->  #define ALARM_DELTA 3
-> @@ -419,6 +420,8 @@ __constructor_order_last(void)
->  
->  int main(int argc, char **argv)
->  {
-> +	int ret = -1;
-> +
->  	switch (argc) {
->  	case 2:
->  		rtc_file = argv[1];
-> @@ -430,5 +433,11 @@ int main(int argc, char **argv)
->  		return 1;
+> -			SetPageError(page);
+> -			ClearPageUptodate(page);
+> -			unlock_page(page);
+> +			folio_set_error(folio);
+> +			folio_clear_uptodate(folio);
+> +			folio_unlock(folio);
+
+Similar questions to the last patch -- who checks the error flag on this
+page/folio, and isn't the folio already !uptodate?
+
+>  		}
+>  		pr_alert_ratelimited("Read-error on swap-device\n");
 >  	}
->  
-> -	return test_harness_run(argc, argv);
-> +	// Run the test if rtc_file is valid
-> +	if (access(rtc_file, F_OK) == 0)
-> +		ret = test_harness_run(argc, argv);
-> +	else
-> +		ksft_exit_fail_msg("[ERROR]: Cannot access rtc file %s - Exiting\n", rtc_file);
-> +
-> +	return ret;
->  }
 > -- 
 > 2.25.1
 > 
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
