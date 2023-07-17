@@ -2,88 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD5A757041
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 01:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF14757040
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 01:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbjGQXKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 19:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59630 "EHLO
+        id S231211AbjGQXJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 19:09:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231207AbjGQXKD (ORCPT
+        with ESMTP id S231144AbjGQXJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 19:10:03 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9E1B210F9
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:09:24 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D78A4C15
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:09:15 -0700 (PDT)
-Received: from e110455-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1A3063F738
+        Mon, 17 Jul 2023 19:09:09 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21571B6
         for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:08:31 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 00:08:15 +0100
-From:   Liviu Dudau <liviu.dudau@arm.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: versatile: Drop unused includes
-Message-ID: <ZLXJ378ONHFDJI8j@e110455-lin.cambridge.arm.com>
-References: <20230717225513.3212477-1-robh@kernel.org>
+Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3a337ddff16so3709843b6e.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:08:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1689635308; x=1692227308;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=hD4JEP1fqNjsd6/Thhkhf4NODGfDet8t60Eb54LdlhQ=;
+        b=XQ+HW7KBLR6UyEEa71S7PBEisxabnkDtV8i4UE1k0Bf/lAGlMypNtUKMMkujySlgt+
+         jSqgPMIxNi0lkjmbIRoznQ2gstweOycKyIjsItR97KYZpdIOhGmVbu1OClW89cfIEG9G
+         ZpEgk9pZC/NoamEUmZjcXYdcFFMJMwRvyliAFXuWnIsIo2dwWhBZicWfKZAnCKtt7FsD
+         KH2uLj01pTbDFddsxOUbj5IDOdsgkKAYR7nC8MVa2XqN+E2prq5d+zbbYjOQEMrfKWxN
+         vdNvW4I3FN1Yi72np4Rwx8tsEpc0G7sTPWLtWBKq/FODMH9oIQ/6svnSK1GQ4p6gPZc4
+         86sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689635308; x=1692227308;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hD4JEP1fqNjsd6/Thhkhf4NODGfDet8t60Eb54LdlhQ=;
+        b=dlaGuHU3SqfIDbYSa5bGQOEERVzxkD4S1CwZFu38n7jl1DUaHvCEBwr4Il06h1kZoM
+         hMRpNxDi/TuKrU/QP8DsF42MXCMtFCR+xI6x7RbFXg9tX3BaIsB927cR8hBtBpNa9YSA
+         PBFCH9SPae6TUrueqbmvyXHnzAnLd8k/xBsP6JCfpTEhx+qtVcqf2QrvSRKOlB1Cy/au
+         K3wR5x5A2l7NIiupEt+fwfp0UDOdp4xI0r1U1mw0LZ1MnL6lR+/xNLVqk+KdhGZh99g1
+         noverudUxU05QDkRYtBNPmsx8U7Un5ZfvtLsuOyncGjjH1hj+chOVNa+3ODK9bWMAT6e
+         PJRw==
+X-Gm-Message-State: ABy/qLYbTsHcQIV1neR5qRUCDkarQYYSthYXqHxMuKNf1cqwqNnr2G4N
+        mTCGayfpOBBRbo74CcN47Be2hw==
+X-Google-Smtp-Source: APBJJlEboVbmgtnsM3AhS/78nKaTtrHt8yZ4sN8p5ee7PCLeyIx1Czk9YISH+fZrMmQEXiMtxBlvxA==
+X-Received: by 2002:a05:6808:20aa:b0:3a1:eb0e:ddc6 with SMTP id s42-20020a05680820aa00b003a1eb0eddc6mr14001585oiw.29.1689635307772;
+        Mon, 17 Jul 2023 16:08:27 -0700 (PDT)
+Received: from dread.disaster.area (pa49-186-119-116.pa.vic.optusnet.com.au. [49.186.119.116])
+        by smtp.gmail.com with ESMTPSA id x5-20020a63b205000000b005533c53f550sm317793pge.45.2023.07.17.16.08.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 16:08:26 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qLXKJ-007LR9-0R;
+        Tue, 18 Jul 2023 09:08:23 +1000
+Date:   Tue, 18 Jul 2023 09:08:23 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Leesoo Ahn <lsahn@wewakecorp.com>
+Cc:     Leesoo Ahn <lsahn@ooseel.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] fs: inode: return proper error code in bmap()
+Message-ID: <ZLXJ53zUlOUiIsgq@dread.disaster.area>
+References: <20230715082204.1598206-1-lsahn@wewakecorp.com>
+ <ZLMtifV5ta5VTQ2e@dread.disaster.area>
+ <c32d3a3d-c2a7-fd18-9e14-ea5d9e0abb88@wewakecorp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230717225513.3212477-1-robh@kernel.org>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <c32d3a3d-c2a7-fd18-9e14-ea5d9e0abb88@wewakecorp.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 04:55:13PM -0600, Rob Herring wrote:
-> Several includes are not needed, so drop them.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+On Tue, Jul 18, 2023 at 12:08:07AM +0900, Leesoo Ahn wrote:
+> 23. 7. 16. 08:36에 Dave Chinner 이(가) 쓴 글:
+> > On Sat, Jul 15, 2023 at 05:22:04PM +0900, Leesoo Ahn wrote:
+> >  > Return -EOPNOTSUPP instead of -EINVAL which has the meaning of
+> >  > the argument is an inappropriate value. The current error code doesn't
+> >  > make sense to represent that a file system doesn't support bmap
+> > operation.
+> >  >
+> >  > Signed-off-by: Leesoo Ahn <lsahn@wewakecorp.com>
+> >  > ---
+> >  > Changes since v1:
+> >  > - Modify the comments of bmap()
+> >  > - Modify subject and description requested by Markus Elfring
+> >  >
+> > https://lore.kernel.org/lkml/20230715060217.1469690-1-lsahn@wewakecorp.com/
+> >  >
+> >  > fs/inode.c | 4 ++--
+> >  > 1 file changed, 2 insertions(+), 2 deletions(-)
+> >  >
+> >  > diff --git a/fs/inode.c b/fs/inode.c
+> >  > index 8fefb69e1f84..697c51ed226a 100644
+> >  > --- a/fs/inode.c
+> >  > +++ b/fs/inode.c
+> >  > @@ -1831,13 +1831,13 @@ EXPORT_SYMBOL(iput);
+> >  > * 4 in ``*block``, with disk block relative to the disk start that
+> > holds that
+> >  > * block of the file.
+> >  > *
+> >  > - * Returns -EINVAL in case of error, 0 otherwise. If mapping falls
+> > into a
+> >  > + * Returns -EOPNOTSUPP in case of error, 0 otherwise. If mapping
+> > falls into a
+> >  > * hole, returns 0 and ``*block`` is also set to 0.
+> >  > */
+> >  > int bmap(struct inode *inode, sector_t *block)
+> >  > {
+> >  > if (!inode->i_mapping->a_ops->bmap)
+> >  > - return -EINVAL;
+> >  > + return -EOPNOTSUPP;
+> >  >
+> >  > *block = inode->i_mapping->a_ops->bmap(inode->i_mapping, *block);
+> >  > return 0;
+> > 
+> > What about the CONFIG_BLOCK=n wrapper?
+> How does it work? Could you explain that in details, pls?
+> However, as far as I understand, bmap operation could be NULL even though
+> CONFIG_BLOCK is enabled. It totally depends on the implementation of file
+> systems.
 
-Acked-by: Liviu Dudau <liviu.dudau@arm.com>
+That wrapper returns -EINVAL unconditionally. If CONFIG_BLOCK=n,
+then by your reasoning it should return -EOPNOTSUPP, not -EINVAL,
+so you need to fix that as well.
 
-Best regards,
-Liviu
+> > 
+> > Also, all the in kernel consumers squash this error back to 0, -EIO
+> > or -EINVAL, so this change only ever propagates out to userspace via
+> > the return from ioctl(FIBMAP). Do we really need to change this and
+> > risk breaking userspace that handles -EINVAL correctly but not
+> > -EOPNOTSUPP?
+> That's a consideration and we must carefully modify the APIs which
+> communicate to users. But -EINVAL could be interpreted by two cases at this
+> point that the first, for sure an argument from user to kernel is
+> inappropriate, on the other hand, the second case would be that a file
+> system doesn't support bmap operation. However, I don't think there is a
+> proper way to know which one is right from user.
 
-> ---
->  arch/arm/mach-versatile/realview.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/arm/mach-versatile/realview.c b/arch/arm/mach-versatile/realview.c
-> index feab66080ba2..a3933e2373d5 100644
-> --- a/arch/arm/mach-versatile/realview.c
-> +++ b/arch/arm/mach-versatile/realview.c
-> @@ -4,9 +4,7 @@
->   *
->   * Author: Linus Walleij <linus.walleij@linaro.org>
->   */
-> -#include <linux/of_platform.h>
->  #include <asm/mach/arch.h>
-> -#include <asm/hardware/cache-l2x0.h>
->  
->  static const char *const realview_dt_platform_compat[] __initconst = {
->  	"arm,realview-eb",
-> -- 
-> 2.40.1
-> 
+That doesn't matter a whole lot - what matters is if the change of
+return value breaks existing userspace binaries. That's on you to
+audit all known userspace users (e.g. via debian codesearch) to
+determine that nothing in userspace using FIBMAP cares about the
+change of return value.
 
+> For me, the big problem is that user could get confused by these two cases
+> with the same error code.
+
+So you're talking about a theoretical problem, not an actual real
+world issue that is causing an application to do the wrong thing?
+
+-Dave.
 -- 
-====================
-| I would like to |
-| fix the world,  |
-| but they're not |
-| giving me the   |
- \ source code!  /
-  ---------------
-    ¯\_(ツ)_/¯
+Dave Chinner
+david@fromorbit.com
