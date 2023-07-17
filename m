@@ -2,171 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F4F756E10
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECD4756E14
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbjGQUTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 16:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56866 "EHLO
+        id S230201AbjGQUTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 16:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbjGQUTa (ORCPT
+        with ESMTP id S230028AbjGQUTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 16:19:30 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B5BC18B
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:19:27 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b708e49059so76166261fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:19:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689625166; x=1692217166;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QT95tFT96QhXbNqSGHmz3kdxmAgbV5cr95EhcCxQElI=;
-        b=Vc5pvu+yk4BljMbr5NJv2jpJJ4nqpDDtp8yZbaWWa46iN2FTbLxjUo2sZBPWUo4NWJ
-         TIHIpFVQ7igvgeTq5p3sYlZRMLcifNxhad8pGdt1Wqv1EeBGCk7MuKLktBlUVfYFxCRY
-         5d91T1mHEa2uXtcpr3D9qs+LHt57jGj3bu6XlvEZyEC2UnqOnGwnVQXokmzGq8GDx+SE
-         XmYQXapgVOGDhl701QKRSxfup6pida42Xfqu+IFmoznp5PnCVgeY4nDSMYIQPXzBKka3
-         8zqT5rOq0O+5NX9PnUYpneYl8jgrfBjq1mDHGu4Q7NUkWhHwgevBPaXQqs1UioKvMX3i
-         LOxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689625166; x=1692217166;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QT95tFT96QhXbNqSGHmz3kdxmAgbV5cr95EhcCxQElI=;
-        b=RsY+g26V+kwM+19Ds+IWzp0Oj/aLeUNYVu8jGcsA10fB5OEPpNYImRqPePxVVbnAPV
-         UZi9JfIVZRjyucLnT5BNnhEf4QQlmy/Z0+H2x4tmaxcfeMsCU1wx56jN1j/g/HKhCVIf
-         zhNfG14sed/xIR0TKu88uWE+a8euzcl1T2zALy42YiCRSeUl7QotBWIdqyT708DKm2+I
-         HF7CuHkW8ZF0QPqdswVi21x8DBhIzSx9uKrcvLNF/4TEYZ9xdNX9+2WQcrzZouDADNPk
-         jJ0sC/jgF13ro/QVfUIQF2Vw9GtyWMYBZ3NFylXziB31kbWuMmHdj4peK+0hvTVNoXjV
-         knjw==
-X-Gm-Message-State: ABy/qLbGD+0V+hnh3DD0O+Zfh8NIqGftrbBxYdTn4ua/lfgz50smUBU9
-        9QK8aMzGBSSjUvuJ92dNzAtAXA==
-X-Google-Smtp-Source: APBJJlHZktGOsHd5r4797G/opftgBKdZIwBm6vlSanKfUXBVFkeHbs0HGwNdIVnTEYtP4YoTU+PLwQ==
-X-Received: by 2002:a2e:83c9:0:b0:2b6:a057:8098 with SMTP id s9-20020a2e83c9000000b002b6a0578098mr8765102ljh.0.1689625165734;
-        Mon, 17 Jul 2023 13:19:25 -0700 (PDT)
-Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
-        by smtp.gmail.com with ESMTPSA id f3-20020a2e9183000000b002b6d576a257sm84868ljg.96.2023.07.17.13.19.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 13:19:25 -0700 (PDT)
-Message-ID: <81491f7e-bd2c-7e3c-14c4-a7547d76c307@linaro.org>
-Date:   Mon, 17 Jul 2023 22:19:22 +0200
+        Mon, 17 Jul 2023 16:19:44 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBEF199;
+        Mon, 17 Jul 2023 13:19:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689625182; x=1721161182;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=S09jmTQ/NZNijcZ2es5DpthxzTjKbOVrCRQMBqh1UUk=;
+  b=f5GI2ChHAsI/eYh7FM8FcMTumP5BAQHfsXWe1dQdv56XNEZlJnpeS2RT
+   Rpgwbuv9op9jUrpox/BATorW/AX++GGElA+ApM7StOjgNTtCcZsQwrkfp
+   XN3k8NgEeB00/+iPy7sivFJP6D7Lt56EHd/coOyv2OIWZuTLvyG52Kk4U
+   wLkRDN5Q3iZ224BmZMn52QCA3CHUA2ZESfWnvhr32CtlNOOcZC2hO/Hj7
+   e6NQVq4GCOwHcIpsq8i9M8k09Mx+JG8y+p6LI7HLHgVOYARxw1F/7DW94
+   mQh79C0SZ4yr+r/Z65eq5xn+FRnNL4ZK3mCJ/KPh+aQqP+57tNEKPBvIg
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="452404601"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="452404601"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 13:19:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="788774525"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="788774525"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.48.113])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 17 Jul 2023 13:19:40 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "Jarkko Sakkinen" <jarkko@kernel.org>, "Tejun Heo" <tj@kernel.org>,
+        "Haitao Huang" <haitao.huang@linux.intel.com>
+Cc:     dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-sgx@vger.kernel.org, cgroups@vger.kernel.org,
+        "Zefan Li" <lizefan.x@bytedance.com>,
+        "Johannes Weiner" <hannes@cmpxchg.org>, vipinsh@google.com,
+        kai.huang@intel.com, reinette.chatre@intel.com,
+        zhiquan1.li@intel.com, kristen@linux.intel.com
+Subject: Re: [PATCH] cgroup/misc: Fix an overflow
+References: <20230717184719.85523-1-haitao.huang@linux.intel.com>
+ <CU4OCLEHU1S5.359W394902648@seitikki> <ZLWPN_xyGFrqqJkV@slm.duckdns.org>
+ <op.178pr1qewjvjmi@hhuan26-mobl.amr.corp.intel.com>
+Date:   Mon, 17 Jul 2023 15:19:38 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v8 3/4] arm64: dts: qcom: sm6115: Add EUD dt node and dwc3
- connector
-Content-Language: en-US
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org, agross@kernel.org, andersson@kernel.org,
-        linux-kernel@vger.kernel.org, bhupesh.linux@gmail.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        krzysztof.kozlowski@linaro.org, quic_schowdhu@quicinc.com,
-        gregkh@linuxfoundation.org
-References: <20230717103236.1246771-1-bhupesh.sharma@linaro.org>
- <20230717103236.1246771-4-bhupesh.sharma@linaro.org>
- <ZLUbyocjNT2bGvVt@gerhold.net>
- <CAH=2NtzM=jaVtjeHHO0rY0_wHu9==Jpdz4zx5nCK3gBh2kpL=A@mail.gmail.com>
- <ZLWHwnjjMkJx_ACH@gerhold.net>
- <CAH=2NtxHekJVvzaD5SNhZZmAHXhc=7v4Pr7RMEFNTXXH6x_AgQ@mail.gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <CAH=2NtxHekJVvzaD5SNhZZmAHXhc=7v4Pr7RMEFNTXXH6x_AgQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.178te0tbwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.178pr1qewjvjmi@hhuan26-mobl.amr.corp.intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.07.2023 22:09, Bhupesh Sharma wrote:
-> On Mon, 17 Jul 2023 at 23:58, Stephan Gerhold <stephan@gerhold.net> wrote:
->>
->> On Mon, Jul 17, 2023 at 11:33:40PM +0530, Bhupesh Sharma wrote:
->>> On Mon, 17 Jul 2023 at 16:15, Stephan Gerhold <stephan@gerhold.net> wrote:
->>>>
->>>> On Mon, Jul 17, 2023 at 04:02:35PM +0530, Bhupesh Sharma wrote:
->>>>> Add the Embedded USB Debugger(EUD) device tree node for
->>>>> SM6115 / SM4250 SoC.
->>>>>
->>>>> The node contains EUD base register region, EUD mode manager
->>>>> register region and TCSR Base register region along with the
->>>>> interrupt entry.
->>>>>
->>>>> [...]
->>>>>
->>>>> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->>>>> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
->>>>> ---
->>>>>  arch/arm64/boot/dts/qcom/sm6115.dtsi | 50 ++++++++++++++++++++++++++++
->>>>>  1 file changed, 50 insertions(+)
->>>>>
->>>>> diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
->>>>> index 839c603512403..db45337c1082c 100644
->>>>> --- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
->>>>> +++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
->>>>> [...]
->>>>> @@ -789,6 +801,37 @@ gcc: clock-controller@1400000 {
->>>>>                       #power-domain-cells = <1>;
->>>>>               };
->>>>>
->>>>> +             eud: eud@1610000 {
->>>>> +                     compatible = "qcom,sm6115-eud", "qcom,eud";
->>>>> +                     reg = <0x0 0x01610000 0x0 0x2000>,
->>>>> +                           <0x0 0x01612000 0x0 0x1000>,
->>>>> +                           <0x0 0x003c0000 0x0 0x40000>;
->>>>> +                     reg-names = "eud-base", "eud-mode-mgr", "tcsr-base";
->>>>
->>>> TCSR is a separate hardware block unrelated to the EUD. IMHO it
->>>> shouldn't be listed as "reg" here.
->>>>
->>>> Typically we describe it as syscon and then reference it from other
->>>> nodes. See e.g. sm8450.dtsi "tcsr: syscon@1fc0000" referenced in &scm
->>>> "qcom,dload-mode = <&tcsr 0x13000>". This is pretty much exactly the
->>>> same use case as you have. It also uses this to write something with
->>>> qcom_scm_io_writel() at the end.
->>>
->>> That was discussed a bit during v1 patchset review. Basically, if we
->>> use a tcsr syscon approach here, we will need to define a 'qcom,xx'
->>> vendor specific dt-property and use something like this in the eud
->>> node:
->>>
->>> qcom,eud-sec-reg = <&tcsr_reg yyyy>
->>>
->>> which would be then used by the eud driver (via
->>> syscon_regmap_lookup_by_phandle()).
->>>
->>> But for sm6115 / qcm2290 this would be an over complicated solution as
->>> normally the eud driver (say sc7280) doesn't need tcsr based secure
->>> mode manager access. So defining a new soc / vendor specific
->>> dt-property might be an overkill.
->>>
->>
->> IMO a vendor-specific DT property is still better than messing up the
->> device separation in the device tree. The same "tcsr-base" reg would
->> also appear on the actual tcsr syscon device tree node. Having two
->> device tree nodes with the same reg region is generally not valid.
->>
->> Something like qcom,eud-sec-reg = <&tcsr_reg yyyy> would at least make
->> clear that this points into a region that is shared between multiple
->> different devices, while adding it as reg suggests that TCSR belongs
->> exclusively to EUD.
-> 
-> I understand your point but since for sm6115 / qcm2290 devices TCSR is
-> not used for any other purpose than EUD, I still think introducing a
-> new soc / vendor specific dt-property might be an overkill for this
-> changeset.
-Untrue, there's some mumblings around the PHY properties and PSHOLD.
-I think Stephan may be correct here.
+On Mon, 17 Jul 2023 14:01:03 -0500, Haitao Huang  
+<haitao.huang@linux.intel.com> wrote:
 
-Konrad
-> 
-> Thanks,
-> Bhupesh
+> On Mon, 17 Jul 2023 13:57:59 -0500, Tejun Heo <tj@kernel.org> wrote:
+>
+>> On Mon, Jul 17, 2023 at 06:55:32PM +0000, Jarkko Sakkinen wrote:
+>>> On Mon Jul 17, 2023 at 6:47 PM UTC, Haitao Huang wrote:
+>>> > The variable 'new_usage' in misc_cg_try_charge() may overflow if it
+>>> > becomes above INT_MAX. This was observed when I implement the new SGX
+>>> > EPC cgroup[1] as a misc cgroup and test on a platform with large SGX  
+>>> EPC
+>>> > sizes.
+>>> >
+>>> > Change type of new_usage to long from int and check overflow.
+>>> >
+>>> > Fixes: a72232eabdfcf ("cgroup: Add misc cgroup controller")
+>>> > Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>>> >
+>>> > [1]  
+>>> https://lore.kernel.org/linux-sgx/20230712230202.47929-1-haitao.huang@linux.intel.com/
+>>> > ---
+>>> >  kernel/cgroup/misc.c | 6 +++---
+>>> >  1 file changed, 3 insertions(+), 3 deletions(-)
+>>> >
+>>> > diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+>>> > index fe3e8a0eb7ed..ff9f900981a3 100644
+>>> > --- a/kernel/cgroup/misc.c
+>>> > +++ b/kernel/cgroup/misc.c
+>>> > @@ -143,7 +143,7 @@ int misc_cg_try_charge(enum misc_res_type type,  
+>>> struct misc_cg *cg,
+>>> >  	struct misc_cg *i, *j;
+>>> >  	int ret;
+>>> >  	struct misc_res *res;
+>>> > -	int new_usage;
+>>> > +	long new_usage;
+>>> >
+>>> >  	if (!(valid_type(type) && cg &&  
+>>> READ_ONCE(misc_res_capacity[type])))
+>>> >  		return -EINVAL;
+>>> > @@ -153,10 +153,10 @@ int misc_cg_try_charge(enum misc_res_type  
+>>> type, struct misc_cg *cg,
+>>> >
+>>> >  	for (i = cg; i; i = parent_misc(i)) {
+>>> >  		res = &i->res[type];
+>>> > -
+>>>
+>>> This is extra noise in the patch, please remove the change.
+>>
+>> Lemme just revert it. Haitao, can you instead make the resource  
+>> counters and
+>> all related variables explicit 64bit instead?
+>>
+>
+> Will do.
+
+Actually, we are using atomic_long_t for 'current' which is the same width  
+as long defined by arch/compiler. So new_usage should be long to be  
+consistent?
+
+ditto for event counter. Only max is plain unsigned long but I think it is  
+also OK as it only compared with 'current' without any arithmetic ops  
+involved.
+Did I miss something here?
+Thanks
+Haitao
