@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE6B7562A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188367562AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbjGQMYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 08:24:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48744 "EHLO
+        id S230303AbjGQMYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 08:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbjGQMYQ (ORCPT
+        with ESMTP id S229830AbjGQMYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 08:24:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1F5B9;
-        Mon, 17 Jul 2023 05:24:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Mon, 17 Jul 2023 08:24:49 -0400
+Received: from mail.3ffe.de (0001.3ffe.de [159.69.201.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC95D8
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 05:24:47 -0700 (PDT)
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C7F5161042;
-        Mon, 17 Jul 2023 12:24:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2198C433C8;
-        Mon, 17 Jul 2023 12:24:12 +0000 (UTC)
-Date:   Mon, 17 Jul 2023 08:24:10 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ajay Kaher <akaher@vmware.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        Ching-lin Yu <chinglinyu@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-trace-kernel@vger.kernel.org" 
-        <linux-trace-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        "er.ajay.kaher@gmail.com" <er.ajay.kaher@gmail.com>,
-        "srivatsa@csail.mit.edu" <srivatsa@csail.mit.edu>,
-        Tapas Kundu <tkundu@vmware.com>,
-        Vasavi Sirnapalli <vsirnapalli@vmware.com>
-Subject: Re: [PATCH v4 10/10] test: ftrace: Fix kprobe test for eventfs
-Message-ID: <20230717082411.147abfa6@gandalf.local.home>
-In-Reply-To: <54F18849-4C39-4F30-A3D7-969F14EA3810@vmware.com>
-References: <1689248004-8158-1-git-send-email-akaher@vmware.com>
-        <1689248004-8158-11-git-send-email-akaher@vmware.com>
-        <20230713223758.31a1e391@rorschach.local.home>
-        <20230714222705.bc38f83d857473656a45d441@kernel.org>
-        <54F18849-4C39-4F30-A3D7-969F14EA3810@vmware.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mail.3ffe.de (Postfix) with ESMTPSA id CD3A7D5D;
+        Mon, 17 Jul 2023 14:24:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+        t=1689596685;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=547siJi3t85Xcz6ojSNfoOo4b9G05DxMLnvPU7f9uqg=;
+        b=i2E1Hg6bvB2aEIHHkaSipJ/d96HxQwbxf+t9dOTGuXGrsXdlgcWRklfiKSTFRq4sNZAxsx
+        xoUwopAHWv+PKNVeqFkZd9/tMact/MUjj4GRfQ1Qvnl0kb3T2O9ImExk2Y/hDYztlsklIr
+        AtZUCH7xG9lG+FsCMM3MWAFC6YIvpLRjpsfbe/jrF1Brif5d7VmSqWgxMrzBh5FCoB1/s1
+        4L+8HscYqqPvGN1dsANQT8KqzKVpDe5jOtS3j+8wbO1f5DM1U48CNklUujWf9ft0ZTLypd
+        dXzdi02ubd4GAVF4vS8dAvsUj3g+kJhp+xSu1D4u3o0qpwNKuGj4WzeQl+QIhg==
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Date:   Mon, 17 Jul 2023 14:24:45 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v6 3/3] nvmem: core: Expose cells through sysfs
+In-Reply-To: <20230717075147.43326-4-miquel.raynal@bootlin.com>
+References: <20230717075147.43326-1-miquel.raynal@bootlin.com>
+ <20230717075147.43326-4-miquel.raynal@bootlin.com>
+Message-ID: <f85f117a59586dc2e5df33e11b39c69f@walle.cc>
+X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Jul 2023 05:24:43 +0000
-Ajay Kaher <akaher@vmware.com> wrote:
+Hi,
 
-> >> As this patch as is will break when running on older kernels, I was
-> >> wondering if we should do this instead?  
-> > 
-> > +1 since the latest kselftest is used also for checking the older
-> > stable kernels, the test case has to check the environment and
-> > change the parameter (or make it unsupported for new feature)
-> > So below looks good to me.  
-> 
-> +1, many ftrace tests are unsupported in my setup and may few require
-> changes, not sure. Does any auto job takes care of this?
+> There is one limitation though: if a layout is built as a module but is
+> not properly installed in the system and loaded manually with insmod
+> while the nvmem device driver was built-in, the cells won't appear in
+> sysfs. But if done like that, the cells won't be usable by the built-in
+> kernel drivers anyway.
 
-You mean like some kernel CI? Not that I know of.
+What is the difference between manual loading with insmod and automatic
+module loading? Or is the limitation, layout as M and device driver as Y
+doesn't work?
 
-Shuah, do you run these selftests on older kernels to make sure they don't
-fail just because the test is unsupported?
-
--- Steve
+-michael
