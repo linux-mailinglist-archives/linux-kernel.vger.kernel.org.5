@@ -2,114 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 302F47569F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DD47569FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbjGQRQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 13:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36718 "EHLO
+        id S229776AbjGQRRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 13:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbjGQRQB (ORCPT
+        with ESMTP id S229630AbjGQRRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 13:16:01 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6249819F;
-        Mon, 17 Jul 2023 10:16:00 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36HGvqJp030261;
-        Mon, 17 Jul 2023 17:15:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=3tPIZA9DnySEarrlQU8wHxA+hbKEZ2uIUFPiISS7alg=;
- b=RYfKAh0zxDHpCBiTu4PdPp4rlN9EVyUJWD7fdmk9wBUiqtft/nfvr9VHibbkeecE+y3C
- EIVWl0DC5huUe5C0mKjsRHZm7tKpPCZRjXboawfk9/Ti0cKbESKa7u020igZmL5qzK+J
- rN4XUEFtH8vFJwGwcx4jtLBC+ZziFJiZfG/wZfolzXZSBuaSFH8hsQ6zI4GaG8N8aJah
- e6etSzn0iIv1oUGu/OhOzViy00G3Vu1mxd/o7w0UeR8GVGuOQu05aLz3TGQPZpx8yxy5
- 0oSQrME4QBGpchiPWBtd716BemZfw1xQ9ceKSxyaZTDO/gS6U1Su4RK9zRNtj+5Wvqer OA== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rw289s82w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 17:15:50 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36HHFoNK011739
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 17:15:50 GMT
-Received: from [10.216.47.191] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 17 Jul
- 2023 10:15:46 -0700
-Message-ID: <2fc238aa-82c1-383a-9dca-72f979ee3c07@quicinc.com>
-Date:   Mon, 17 Jul 2023 22:45:42 +0530
+        Mon, 17 Jul 2023 13:17:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEE919F
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:16:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689614186;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z93VbPii01qcFcqdbTdmXDRfY7mxwnK6BwZz/0iOPoU=;
+        b=PieVCPXeAXjcwQzHTJUV+yfCq971cqbF/6Z4h2AatSe9lOSKtTaI+1+RVJxPV2JJTgV6V/
+        +uY1fDO1ylNIf15NZI9LnYb4ujoq733MBRHnMgMRJkUj/TJv4WWzLVhbLW7Jb95mR7bATA
+        oxgcPzW4f3no+Xjs0nzpY/5sNQp8Y2E=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-635-2c3X7Id5NfC_wMLcaZJj7w-1; Mon, 17 Jul 2023 13:16:23 -0400
+X-MC-Unique: 2c3X7Id5NfC_wMLcaZJj7w-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3143b277985so3059059f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:16:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689614182; x=1692206182;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z93VbPii01qcFcqdbTdmXDRfY7mxwnK6BwZz/0iOPoU=;
+        b=X9QR+wNYOA2y7+WWoDqmKOth279aBuIVU5NRyOF47bmKQm/VCz9wOG/KBJv0XG5gh6
+         d0R3IQBmYAKfSz1vSLeXEleUVo4G8Blwky1xfgqhrqAxJZ9SHa9s3ncopZMySy+wEJwC
+         IyY37mrlTh2IKI+Mh5TTeoI2BaeeNvQx8Hzy3IoU6KV4uGnY+Q9TRrnHMT/alTdD0R/x
+         enYWq2ZLkwZOyphkzTbSpaonwctyfOwpcgPiQFQDTXf1IXSpAly2zphWoX0oI2xoOZBX
+         k7l+37yF4Q51v+0ZLdPDcEuq5p0gTCPxXZTcKVOhFu6JWLiY/EWSC8oudFWQuvHy2D8a
+         MBiQ==
+X-Gm-Message-State: ABy/qLYsuXTMGyWerbIB2E6vXCEbZyLMcVZ8zVYh0rRhOeKmIGPs7ReV
+        x/7P//otVMVMa+QXk5qDTjd7Nm14rQPlgIMJXN/Cvni9x2Bxdku0mmapNbXH502eThy7wepjYFD
+        t/1wA63ljMF58otZ1QgybNlWB
+X-Received: by 2002:a05:6000:92:b0:314:1b4d:bb27 with SMTP id m18-20020a056000009200b003141b4dbb27mr11078210wrx.64.1689614182463;
+        Mon, 17 Jul 2023 10:16:22 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGgNsttIXjLtwzqBtL5GNsyESvEGI1UI0n6w/ifdIVsxGT4NZG8pq+PeofDnr4R2rgRbGqRYw==
+X-Received: by 2002:a05:6000:92:b0:314:1b4d:bb27 with SMTP id m18-20020a056000009200b003141b4dbb27mr11078190wrx.64.1689614182092;
+        Mon, 17 Jul 2023 10:16:22 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c735:400:2501:5a2e:13c6:88da? (p200300cbc735040025015a2e13c688da.dip0.t-ipconnect.de. [2003:cb:c735:400:2501:5a2e:13c6:88da])
+        by smtp.gmail.com with ESMTPSA id c3-20020a5d4cc3000000b00311299df211sm19820659wrt.77.2023.07.17.10.16.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 10:16:21 -0700 (PDT)
+Message-ID: <d1dc902f-0323-e7d8-ec0d-b00047404c04@redhat.com>
+Date:   Mon, 17 Jul 2023 19:16:20 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH V4] PCI: qcom: Fixing broken pcie bring up for 2_3_3
- configs ops
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3 3/4] mm: FLEXIBLE_THP for improved performance
 Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh@kernel.org>, <mani@kernel.org>,
-        <lpieralisi@kernel.org>, <bhelgaas@google.com>, <kw@linux.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <stable@vger.kernel.org>
-References: <20230717065535.2065582-1-quic_srichara@quicinc.com>
- <2023071729-shamrock-evidence-b698@gregkh>
-From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
-In-Reply-To: <2023071729-shamrock-evidence-b698@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: zh38zpLXZ1BNI7moZ8bAuc7kOwjinL_J
-X-Proofpoint-GUID: zh38zpLXZ1BNI7moZ8bAuc7kOwjinL_J
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-17_13,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
- suspectscore=0 bulkscore=0 mlxscore=0 adultscore=0 spamscore=0
- impostorscore=0 phishscore=0 priorityscore=1501 mlxlogscore=677
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307170159
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20230714160407.4142030-1-ryan.roberts@arm.com>
+ <20230714161733.4144503-3-ryan.roberts@arm.com>
+ <CAOUHufacQ8Vx9WQ3BVjGGWKGhcRkL7u79UMX=O7oePDwZ0iNxw@mail.gmail.com>
+ <82c934af-a777-3437-8d87-ff453ad94bfd@redhat.com>
+ <CAOUHufYnVdxoKgvxFmk7e0KqtOV9=zWQ-vjVX7JOLNM-cRKR9Q@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <CAOUHufYnVdxoKgvxFmk7e0KqtOV9=zWQ-vjVX7JOLNM-cRKR9Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/17/2023 7:09 PM, Greg KH wrote:
-> On Mon, Jul 17, 2023 at 12:25:35PM +0530, Sricharan Ramabadhran wrote:
->> PARF_SLV_ADDR_SPACE_SIZE_2_3_3 macro is used for IPQ8074
->> 2_3_3 post_init ops. PCIe slave addr size was initially set
->> to 0x358, but was wrongly changed to 0x168 as a part of
->> commit 39171b33f652 ("PCI: qcom: Remove PCIE20_ prefix from
->> register definitions"). Fixing it, by using the right macro
->> PARF_SLV_ADDR_SPACE_SIZE and remove the unused
->> PARF_SLV_ADDR_SPACE_SIZE_2_3_3.
+On 17.07.23 19:07, Yu Zhao wrote:
+> On Mon, Jul 17, 2023 at 7:06 AM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 14.07.23 19:17, Yu Zhao wrote:
+>>> On Fri, Jul 14, 2023 at 10:17 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>
+>>>> Introduce FLEXIBLE_THP feature, which allows anonymous memory to be
+>>>> allocated in large folios of a determined order. All pages of the large
+>>>> folio are pte-mapped during the same page fault, significantly reducing
+>>>> the number of page faults. The number of per-page operations (e.g. ref
+>>>> counting, rmap management lru list management) are also significantly
+>>>> reduced since those ops now become per-folio.
+>>>>
+>>>> The new behaviour is hidden behind the new FLEXIBLE_THP Kconfig, which
+>>>> defaults to disabled for now; The long term aim is for this to defaut to
+>>>> enabled, but there are some risks around internal fragmentation that
+>>>> need to be better understood first.
+>>>>
+>>>> When enabled, the folio order is determined as such: For a vma, process
+>>>> or system that has explicitly disabled THP, we continue to allocate
+>>>> order-0. THP is most likely disabled to avoid any possible internal
+>>>> fragmentation so we honour that request.
+>>>>
+>>>> Otherwise, the return value of arch_wants_pte_order() is used. For vmas
+>>>> that have not explicitly opted-in to use transparent hugepages (e.g.
+>>>> where thp=madvise and the vma does not have MADV_HUGEPAGE), then
+>>>> arch_wants_pte_order() is limited by the new cmdline parameter,
+>>>> `flexthp_unhinted_max`. This allows for a performance boost without
+>>>> requiring any explicit opt-in from the workload while allowing the
+>>>> sysadmin to tune between performance and internal fragmentation.
+>>>>
+>>>> arch_wants_pte_order() can be overridden by the architecture if desired.
+>>>> Some architectures (e.g. arm64) can coalsece TLB entries if a contiguous
+>>>> set of ptes map physically contigious, naturally aligned memory, so this
+>>>> mechanism allows the architecture to optimize as required.
+>>>>
+>>>> If the preferred order can't be used (e.g. because the folio would
+>>>> breach the bounds of the vma, or because ptes in the region are already
+>>>> mapped) then we fall back to a suitable lower order; first
+>>>> PAGE_ALLOC_COSTLY_ORDER, then order-0.
+>>>>
+>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>> ---
+>>>>    .../admin-guide/kernel-parameters.txt         |  10 +
+>>>>    mm/Kconfig                                    |  10 +
+>>>>    mm/memory.c                                   | 187 ++++++++++++++++--
+>>>>    3 files changed, 190 insertions(+), 17 deletions(-)
+>>>>
+>>>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+>>>> index a1457995fd41..405d624e2191 100644
+>>>> --- a/Documentation/admin-guide/kernel-parameters.txt
+>>>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+>>>> @@ -1497,6 +1497,16 @@
+>>>>                           See Documentation/admin-guide/sysctl/net.rst for
+>>>>                           fb_tunnels_only_for_init_ns
+>>>>
+>>>> +       flexthp_unhinted_max=
+>>>> +                       [KNL] Requires CONFIG_FLEXIBLE_THP enabled. The maximum
+>>>> +                       folio size that will be allocated for an anonymous vma
+>>>> +                       that has neither explicitly opted in nor out of using
+>>>> +                       transparent hugepages. The size must be a power-of-2 in
+>>>> +                       the range [PAGE_SIZE, PMD_SIZE). A larger size improves
+>>>> +                       performance by reducing page faults, while a smaller
+>>>> +                       size reduces internal fragmentation. Default: max(64K,
+>>>> +                       PAGE_SIZE). Format: size[KMG].
+>>>> +
+>>>
+>>> Let's split this parameter into a separate patch.
+>>>
+>>
+>> Just a general comment after stumbling over patch #2, let's not start
+>> splitting patches into things that don't make any sense on their own;
+>> that just makes review a lot harder.
 > 
-> Note, you do have a full 72 columns to use, no need to make it smaller.
-
-  ok sure
-
+> Sorry to hear this -- but there are also non-subjective reasons we
+> split patches this way.
 > 
->> Without this pcie bring up on IPQ8074 is broken now.
+> Initially we had minimum to no common ground, so we had to divide and
+> conquer by smallest steps.
 > 
-> I do not understand, something that used to work now breaks, or this is
-> preventing a new chip from being "brought up"?
-> 
+> if you look at previous discussions: there was a disagreement on patch
+> 2 in v2 -- that's the patch you asked to be squashed into the main
+> patch 3. Fortunately we've resolved that. If that disagreement had
+> persisted, we would leave patch 2 out rather than let it bog down
+> patch 3, which would work indifferently for all arches except arm and
+> could be merged separately.
 
-  yes, ipq8074 pcie which was previously working is broken now.
-  This patch fixes it.
+All makes sense to me, and squashing it now is most probably the logical 
+step and was different before.
 
+As I said, just a general comment when we talk about splitting stuff out.
 
-Regards,
-  Sricharan
+-- 
+Cheers,
+
+David / dhildenb
+
