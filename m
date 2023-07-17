@@ -2,79 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC8D7564FA
+	by mail.lfdr.de (Postfix) with ESMTP id A2C8A7564FC
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231737AbjGQN3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 09:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37098 "EHLO
+        id S231681AbjGQN3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 09:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbjGQN1u (ORCPT
+        with ESMTP id S231592AbjGQN1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 09:27:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC06710CC
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:26:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689600382;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=s9WO5hDGhuujHdWxv8p8vISy/h5zOWc2CGAYHFNAIuM=;
-        b=KDSpodtF+tq5UHDrOUTT0Sn6MH+nBCOqy7p08kQB+LE6fTPCSmnE2LgCfzSBEneMP+GBND
-        oWrQaf2uscH35vAF0neI41Xtm++q5/gB8KePDF3+UpuK4l83OybT95yP7T9yBQzXFq1P0a
-        QNTor5f9AX1fKmwJzCMmjUvnO0S5CSs=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-86-SkcJlNEnO4uxubZO-XS-Bg-1; Mon, 17 Jul 2023 09:26:20 -0400
-X-MC-Unique: SkcJlNEnO4uxubZO-XS-Bg-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fbcae05906so26376855e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:26:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689600379; x=1692192379;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s9WO5hDGhuujHdWxv8p8vISy/h5zOWc2CGAYHFNAIuM=;
-        b=WSl9V1YqHwSJlQRoqjeBNtTCRpEKLIz8BFwh2G4J2XVdKRCO4Ty4092IA+ISwgk3qC
-         hPNC/33+2cA5VBK2WE5XKs5Iett3s5dBQp76fDoj5eHSQ7oRhgkX1y3o1MHwontOQELf
-         TskRYpy1n13/kaWss+YaIcHDvITr/xkfal7FprkmqcleEvwxvOlAUCd9wKq7fMatr9qh
-         t534PCEz0ALAaycGbhb4l+ssmvNvwHFQBwbNiZIKPILcs0AMVJaZ9RZNKyyi7PkCEjqr
-         WHx/WuDHiMzRwFD635EkXdwiowgsoEpnYJN00fGdJuMQSK6mabH2DUhB+U8jfFgosVZ/
-         mslA==
-X-Gm-Message-State: ABy/qLaPrnyOgHTQi/ICPJaMTxo8zKTAlUfoyVgj1ZGu5kV2vdDqrr4N
-        hHDLv5Bad7I01a0qsVImH1LFgHi558qJc0P5UPsWv3JROObhHUwQOPR3tJYBfNfQTHQVid7Q+LA
-        QxVNxUqrIDUrrqE2fzp2RWytS
-X-Received: by 2002:a7b:c7cf:0:b0:3fb:fa61:a4ea with SMTP id z15-20020a7bc7cf000000b003fbfa61a4eamr11721997wmk.11.1689600379533;
-        Mon, 17 Jul 2023 06:26:19 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlH0XkqpZNgWEkqT/sJv48RxWkauXQhZhkVAj4W0I9tpohJmucIMDv71V+xakvVP36zzMrUCbw==
-X-Received: by 2002:a7b:c7cf:0:b0:3fb:fa61:a4ea with SMTP id z15-20020a7bc7cf000000b003fbfa61a4eamr11721986wmk.11.1689600379241;
-        Mon, 17 Jul 2023 06:26:19 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id o10-20020a05600c510a00b003fbb1ce274fsm13470754wms.0.2023.07.17.06.26.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 06:26:18 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm/ssd130x: Fix an oops when attempting to update a
- disabled plane
-In-Reply-To: <CAMuHMdVYdL0y2-tVfG3BZbCtR-0xOMz9tu4R4=CJqxqwgVVmcw@mail.gmail.com>
-References: <20230713163213.1028952-1-javierm@redhat.com>
- <bbbb18e0-5de1-5155-c6b2-52a2b1d75898@suse.de>
- <CAMuHMdVuLBTBymfEXDgHsDVavH6Ggq53fPep0T=dEWbztBWkjw@mail.gmail.com>
- <87h6q2kh6s.fsf@minerva.mail-host-address-is-not-set>
- <87bkgaken1.fsf@minerva.mail-host-address-is-not-set>
- <CAMuHMdVYdL0y2-tVfG3BZbCtR-0xOMz9tu4R4=CJqxqwgVVmcw@mail.gmail.com>
-Date:   Mon, 17 Jul 2023 15:26:17 +0200
-Message-ID: <878rbek6ti.fsf@minerva.mail-host-address-is-not-set>
+        Mon, 17 Jul 2023 09:27:49 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3EA719AD
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:27:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1689600429; x=1721136429;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=7t6LlG9t4b5pXzU994Z3Da7YoidoG6CVQwl/5jcdR6U=;
+  b=ienGRLMoO4qDv4ckBSTewNO4hjCmZ2E+lSxHouSX275IV7+3hMqOf/ON
+   klc4iXXxSog2+7vGMd6/zn64U7r55v3CAsbXlAdYCT9YH/2xW3eL3yLH2
+   yPTdPfEIXn3ZYAE029r0Dw1+Y0feFa1NPEqeE1yIbIDKlqzccz5344peJ
+   TjVZc4I1yIlM1TAZTZVELPOaQcDr/jbHvbs6E23F3s0sx9EIYwXLsSS9A
+   6Q2R5lSirvtu8CsR8skuP4tC8ewQQMJAxysqRzwVMpUEn1sYjShXvyiYz
+   OUeekDY/cSHwsQPz8bqF8I0b8J4h8W/b0JvTWYfUVQpIwHYuPNLu2NH0c
+   w==;
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="224225635"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Jul 2023 06:26:47 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 17 Jul 2023 06:26:46 -0700
+Received: from [10.159.245.112] (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Mon, 17 Jul 2023 06:26:45 -0700
+Message-ID: <66876484-e287-4d48-41e6-f1bb318a879d@microchip.com>
+Date:   Mon, 17 Jul 2023 15:26:40 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] MAINTAINERS: update Claudiu Beznea's email address
+Content-Language: en-US
+To:     Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        <linux-kernel@vger.kernel.org>
+CC:     <arnd@arndb.de>, <alexandre.belloni@bootlin.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20230714183852.8370-1-claudiu.beznea@tuxon.dev>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+In-Reply-To: <20230714183852.8370-1-claudiu.beznea@tuxon.dev>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,228 +68,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+On 14/07/2023 at 20:38, Claudiu Beznea wrote:
+> Update MAINTAINERS entries with a valid email address as the Microchip
+> one is no longer valid.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@tuxon.dev>
 
-Hello Geert,
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Thanks Claudiu, best regards,
+   Nicolas
 
-Thanks for your review!
-
-> Hi Javier,
-
-[...]
-
->> -       ssd130x->buffer = kcalloc(pitch, ssd130x->height, GFP_KERNEL);
->> -       if (!ssd130x->buffer)
->> -               return -ENOMEM;
->> +               ssd130x->buffer = devm_kcalloc(ssd130x->dev, pitch, ssd130x->height,
->> +                                              GFP_KERNEL);
->
-> This should check if the buffer was allocated before.
-> Else an application creating two or more frame buffers will keep
-> on allocating new buffers.  The same is true for fbdev emulation vs.
-> a userspace application.
->
-
-Yes, you are correct.
-
->> +               if (!ssd130x->buffer)
->> +                       return -ENOMEM;
->> +       }
->>
->> -       ssd130x->data_array = kcalloc(ssd130x->width, pages, GFP_KERNEL);
->> -       if (!ssd130x->data_array) {
->> -               kfree(ssd130x->buffer);
->> +       ssd130x->data_array = devm_kcalloc(ssd130x->dev, ssd130x->width, pages,
->> +                                          GFP_KERNEL);
->
-> Same here.
->
->> +       if (!ssd130x->data_array)
->>                 return -ENOMEM;
->> -       }
->
-> And you still need the data_array buffer for clearing the screen,
-> which is not tied to the creation of a frame buffer, I think?
->
-
-It is indeed. I forgot about that. So what I would do for now is just to
-allocate the two unconditionally and then we can optimize as a follow-up.
-
-But also, this v2 is not correct because as I mentioned the device and
-drm_device lifecycles are not the same and the kernel crashes on poweroff:
-
-[  568.351783]  ssd130x_update_rect.isra.0+0xe0/0x308
-[  568.356881]  ssd130x_primary_plane_helper_atomic_disable+0x54/0x78
-[  568.363475]  drm_atomic_helper_commit_planes+0x1ec/0x288
-[  568.369128]  drm_atomic_helper_commit_tail+0x5c/0xb0
-[  568.374422]  commit_tail+0x168/0x1a0
-[  568.378240]  drm_atomic_helper_commit+0x1c8/0x1e8
-[  568.383265]  drm_atomic_commit+0xa0/0xc8
-[  568.387439]  drm_atomic_helper_disable_all+0x204/0x220
-[  568.392914]  drm_atomic_helper_shutdown+0x98/0x138
-[  568.398033]  ssd130x_shutdown+0x18/0x30
-[  568.402117]  ssd130x_i2c_shutdown+0x1c/0x30
-[  568.406558]  i2c_device_shutdown+0x48/0x78
-[  568.410913]  device_shutdown+0x130/0x238
-[  568.415087]  kernel_restart+0x48/0xd0
-[  568.418996]  __do_sys_reboot+0x14c/0x230
-[  568.423167]  __arm64_sys_reboot+0x2c/0x40
-[  568.427426]  invoke_syscall+0x78/0x100
-[  568.431420]  el0_svc_common.constprop.0+0x68/0x130
-[  568.436531]  do_el0_svc+0x34/0x50
-[  568.440080]  el0_svc+0x48/0x150
-[  568.443455]  el0t_64_sync_handler+0x114/0x120
-[  568.448072]  el0t_64_sync+0x194/0x198
-[  568.451985] Code: 12000949 52800001 52800002 0b830f63 (38634b20) 
-[  568.458502] ---[ end trace 0000000000000000 ]---
-
-Sima also suggested to make the allocation in the plane .prepare_fb, I
-think that the better place is .begin_fb_access for allocation and the
-.end_fb_access for free.
-
-Updated patch below and this is the one that I'm more comfortable now
-as a solution:
-
-From b4d078dd65a04ab61dd9264e982b37321f7a75d9 Mon Sep 17 00:00:00 2001
-From: Javier Martinez Canillas <javierm@redhat.com>
-Date: Mon, 17 Jul 2023 12:30:35 +0200
-Subject: [PATCH v3] drm/ssd130x: Fix an oops when attempting to update a
- disabled plane
-
-Geert reports that the following NULL pointer dereference happens for him
-after commit 49d7d581ceaf ("drm/ssd130x: Don't allocate buffers on each
-plane update"):
-
-    [drm] Initialized ssd130x 1.0.0 20220131 for 0-003c on minor 0
-    ssd130x-i2c 0-003c: [drm] surface width(128), height(32), bpp(1)
-    and format(R1   little-endian (0x20203152))
-    Unable to handle kernel NULL pointer dereference at virtual address 00000000
-    Oops [#1]
-    CPU: 0 PID: 1 Comm: swapper Not tainted
-    6.5.0-rc1-orangecrab-02219-g0a529a1e4bf4 #565
-    epc : ssd130x_update_rect.isra.0+0x13c/0x340
-     ra : ssd130x_update_rect.isra.0+0x2bc/0x340
-    ...
-    status: 00000120 badaddr: 00000000 cause: 0000000f
-    [<c0303d90>] ssd130x_update_rect.isra.0+0x13c/0x340
-    [<c0304200>] ssd130x_primary_plane_helper_atomic_update+0x26c/0x284
-    [<c02f8d54>] drm_atomic_helper_commit_planes+0xfc/0x27c
-    [<c02f9314>] drm_atomic_helper_commit_tail+0x5c/0xb4
-    [<c02f94fc>] commit_tail+0x190/0x1b8
-    [<c02f99fc>] drm_atomic_helper_commit+0x194/0x1c0
-    [<c02c5d00>] drm_atomic_commit+0xa4/0xe4
-    [<c02cce40>] drm_client_modeset_commit_atomic+0x244/0x278
-    [<c02ccef0>] drm_client_modeset_commit_locked+0x7c/0x1bc
-    [<c02cd064>] drm_client_modeset_commit+0x34/0x64
-    [<c0301a78>] __drm_fb_helper_restore_fbdev_mode_unlocked+0xc4/0xe8
-    [<c0303424>] drm_fb_helper_set_par+0x38/0x58
-    [<c027c410>] fbcon_init+0x294/0x534
-    ...
-
-The problem is that fbcon calls fbcon_init() which triggers a DRM modeset
-and this leads to drm_atomic_helper_commit_planes() attempting to commit
-the atomic state for all planes, even the ones whose CRTC is not enabled.
-
-Since the primary plane buffer is allocated in the encoder .atomic_enable
-callback, this happens after that initial modeset commit and leads to the
-mentioned NULL pointer dereference.
-
-Fix this by allocating the buffers in the struct drm_plane_helper_funcs
-.begin_fb_access callback and free them in to .end_fb_access callback,
-instead of doing it when the encoder is enabled.
-
-Fixes: commit 49d7d581ceaf ("drm/ssd130x: Don't allocate buffers on each plane update")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
-
-Changes in v3:
-- Move the buffers allocation to the plane helper funcs .begin_fb_access
-  and the free to .end_fb_access callbacks.
-- Always allocate intermediate buffer because is use in ssd130x_clear_screen().
-- Don't allocate the buffers as device managed resources.
-
-Changes in v2:
-- Move the buffers allocation to .fb_create instead of preventing atomic
-  updates for disable planes.
-- Don't allocate the intermediate buffer when using the native R1 format.
-- Allocate buffers as device managed resources.
-
- drivers/gpu/drm/solomon/ssd130x.c | 33 ++++++++++++++++++++++++-------
- 1 file changed, 26 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/gpu/drm/solomon/ssd130x.c b/drivers/gpu/drm/solomon/ssd130x.c
-index b8c90d507a35..549d78e9985d 100644
---- a/drivers/gpu/drm/solomon/ssd130x.c
-+++ b/drivers/gpu/drm/solomon/ssd130x.c
-@@ -634,6 +634,30 @@ static int ssd130x_fb_blit_rect(struct drm_framebuffer *fb, const struct iosys_m
- 	return ret;
- }
- 
-+static int ssd130x_primary_plane_helper_begin_fb_access(struct drm_plane *plane,
-+							struct drm_plane_state *state)
-+{
-+	struct drm_device *drm = plane->dev;
-+	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
-+	int ret = ssd130x_buf_alloc(ssd130x);
-+
-+	if (ret)
-+		return ret;
-+
-+	return drm_gem_begin_shadow_fb_access(plane, state);
-+}
-+
-+static void ssd130x_primary_plane_helper_end_fb_access(struct drm_plane *plane,
-+						       struct drm_plane_state *state)
-+{
-+	struct drm_device *drm = plane->dev;
-+	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
-+
-+	ssd130x_buf_free(ssd130x);
-+
-+	return drm_gem_end_shadow_fb_access(plane, state);
-+}
-+
- static void ssd130x_primary_plane_helper_atomic_update(struct drm_plane *plane,
- 						       struct drm_atomic_state *state)
- {
-@@ -678,7 +702,8 @@ static void ssd130x_primary_plane_helper_atomic_disable(struct drm_plane *plane,
- }
- 
- static const struct drm_plane_helper_funcs ssd130x_primary_plane_helper_funcs = {
--	DRM_GEM_SHADOW_PLANE_HELPER_FUNCS,
-+	.begin_fb_access = ssd130x_primary_plane_helper_begin_fb_access,
-+	.end_fb_access = ssd130x_primary_plane_helper_end_fb_access,
- 	.atomic_check = drm_plane_helper_atomic_check,
- 	.atomic_update = ssd130x_primary_plane_helper_atomic_update,
- 	.atomic_disable = ssd130x_primary_plane_helper_atomic_disable,
-@@ -741,10 +766,6 @@ static void ssd130x_encoder_helper_atomic_enable(struct drm_encoder *encoder,
- 	if (ret)
- 		goto power_off;
- 
--	ret = ssd130x_buf_alloc(ssd130x);
--	if (ret)
--		goto power_off;
--
- 	ssd130x_write_cmd(ssd130x, 1, SSD130X_DISPLAY_ON);
- 
- 	backlight_enable(ssd130x->bl_dev);
-@@ -766,8 +787,6 @@ static void ssd130x_encoder_helper_atomic_disable(struct drm_encoder *encoder,
- 
- 	ssd130x_write_cmd(ssd130x, 1, SSD130X_DISPLAY_OFF);
- 
--	ssd130x_buf_free(ssd130x);
--
- 	ssd130x_power_off(ssd130x);
- }
- 
--- 
-2.41.0
+> ---
+>   MAINTAINERS | 22 +++++++++++-----------
+>   1 file changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3be1bdfe8ecc..0be71ca1cbb2 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2337,7 +2337,7 @@ F:        drivers/phy/mediatek/
+>   ARM/MICROCHIP (ARM64) SoC support
+>   M:     Conor Dooley <conor@kernel.org>
+>   M:     Nicolas Ferre <nicolas.ferre@microchip.com>
+> -M:     Claudiu Beznea <claudiu.beznea@microchip.com>
+> +M:     Claudiu Beznea <claudiu.beznea@tuxon.dev>
+>   L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>   S:     Supported
+>   T:     git https://git.kernel.org/pub/scm/linux/kernel/git/at91/linux.git
+> @@ -2346,7 +2346,7 @@ F:        arch/arm64/boot/dts/microchip/
+>   ARM/Microchip (AT91) SoC support
+>   M:     Nicolas Ferre <nicolas.ferre@microchip.com>
+>   M:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+> -M:     Claudiu Beznea <claudiu.beznea@microchip.com>
+> +M:     Claudiu Beznea <claudiu.beznea@tuxon.dev>
+>   L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>   S:     Supported
+>   W:     http://www.linux4sam.org
+> @@ -3248,7 +3248,7 @@ F:        include/uapi/linux/atm*
+> 
+>   ATMEL MACB ETHERNET DRIVER
+>   M:     Nicolas Ferre <nicolas.ferre@microchip.com>
+> -M:     Claudiu Beznea <claudiu.beznea@microchip.com>
+> +M:     Claudiu Beznea <claudiu.beznea@tuxon.dev>
+>   S:     Supported
+>   F:     drivers/net/ethernet/cadence/
+> 
+> @@ -13778,7 +13778,7 @@ F:      Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
+>   F:     drivers/spi/spi-at91-usart.c
+> 
+>   MICROCHIP AUDIO ASOC DRIVERS
+> -M:     Claudiu Beznea <claudiu.beznea@microchip.com>
+> +M:     Claudiu Beznea <claudiu.beznea@tuxon.dev>
+>   L:     alsa-devel@alsa-project.org (moderated for non-subscribers)
+>   S:     Supported
+>   F:     Documentation/devicetree/bindings/sound/atmel*
+> @@ -13801,7 +13801,7 @@ S:      Maintained
+>   F:     drivers/crypto/atmel-ecc.*
+> 
+>   MICROCHIP EIC DRIVER
+> -M:     Claudiu Beznea <claudiu.beznea@microchip.com>
+> +M:     Claudiu Beznea <claudiu.beznea@tuxon.dev>
+>   L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>   S:     Supported
+>   F:     Documentation/devicetree/bindings/interrupt-controller/microchip,sama7g5-eic.yaml
+> @@ -13874,7 +13874,7 @@ F:      drivers/video/fbdev/atmel_lcdfb.c
+>   F:     include/video/atmel_lcdc.h
+> 
+>   MICROCHIP MCP16502 PMIC DRIVER
+> -M:     Claudiu Beznea <claudiu.beznea@microchip.com>
+> +M:     Claudiu Beznea <claudiu.beznea@tuxon.dev>
+>   L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>   S:     Supported
+>   F:     Documentation/devicetree/bindings/regulator/mcp16502-regulator.txt
+> @@ -13901,7 +13901,7 @@ F:      Documentation/devicetree/bindings/mtd/atmel-nand.txt
+>   F:     drivers/mtd/nand/raw/atmel/*
+> 
+>   MICROCHIP OTPC DRIVER
+> -M:     Claudiu Beznea <claudiu.beznea@microchip.com>
+> +M:     Claudiu Beznea <claudiu.beznea@tuxon.dev>
+>   L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>   S:     Supported
+>   F:     Documentation/devicetree/bindings/nvmem/microchip,sama7g5-otpc.yaml
+> @@ -13940,7 +13940,7 @@ F:      Documentation/devicetree/bindings/fpga/microchip,mpf-spi-fpga-mgr.yaml
+>   F:     drivers/fpga/microchip-spi.c
+> 
+>   MICROCHIP PWM DRIVER
+> -M:     Claudiu Beznea <claudiu.beznea@microchip.com>
+> +M:     Claudiu Beznea <claudiu.beznea@tuxon.dev>
+>   L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>   L:     linux-pwm@vger.kernel.org
+>   S:     Supported
+> @@ -13956,7 +13956,7 @@ F:      drivers/iio/adc/at91-sama5d2_adc.c
+>   F:     include/dt-bindings/iio/adc/at91-sama5d2_adc.h
+> 
+>   MICROCHIP SAMA5D2-COMPATIBLE SHUTDOWN CONTROLLER
+> -M:     Claudiu Beznea <claudiu.beznea@microchip.com>
+> +M:     Claudiu Beznea <claudiu.beznea@tuxon.dev>
+>   S:     Supported
+>   F:     Documentation/devicetree/bindings/power/reset/atmel,sama5d2-shdwc.yaml
+>   F:     drivers/power/reset/at91-sama5d2_shdwc.c
+> @@ -13973,7 +13973,7 @@ S:      Supported
+>   F:     drivers/spi/spi-atmel.*
+> 
+>   MICROCHIP SSC DRIVER
+> -M:     Claudiu Beznea <claudiu.beznea@microchip.com>
+> +M:     Claudiu Beznea <claudiu.beznea@tuxon.dev>
+>   L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>   S:     Supported
+>   F:     Documentation/devicetree/bindings/misc/atmel-ssc.txt
+> @@ -14002,7 +14002,7 @@ F:      drivers/usb/gadget/udc/atmel_usba_udc.*
+> 
+>   MICROCHIP WILC1000 WIFI DRIVER
+>   M:     Ajay Singh <ajay.kathat@microchip.com>
+> -M:     Claudiu Beznea <claudiu.beznea@microchip.com>
+> +M:     Claudiu Beznea <claudiu.beznea@tuxon.dev>
+>   L:     linux-wireless@vger.kernel.org
+>   S:     Supported
+>   F:     drivers/net/wireless/microchip/wilc1000/
+> --
+> 2.39.2
+> 
 
 -- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+Nicolas Ferre
 
