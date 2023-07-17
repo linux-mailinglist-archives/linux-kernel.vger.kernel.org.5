@@ -2,89 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C96755DDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 703E6755DE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbjGQIHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 04:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
+        id S229725AbjGQIHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 04:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbjGQIHL (ORCPT
+        with ESMTP id S229582AbjGQIHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 04:07:11 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D39E71995
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:06:33 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R4F5b6Y4BzBR7b4
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:06:11 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689581171; x=1692173172; bh=HCbBZb7kJTmDWi3ebtccrSL5d75
-        7N5zS4lsS2prlWPg=; b=HMJGniy9XMp5geCvp2erwRPS115Sp/ay58HDPX855QY
-        KTbDCh4bfoLyh0gyCsmZe+c9dGDmIxPldukRa/4MGiOoK6q5bpMZYyNIPwp1Z/Pu
-        rDs1ndiT8GkjOceqlXGj3+ZLc1s62HJw1T3thGqLQWoL0prFS9gBQpdHDEHphv/N
-        bm6hnHZUsST7rpj2oPEUUrLk/gesN0qdJoO2mcIsvWQplmEiDRScaBg7x7FsnipL
-        ay0sM31+DHu8IAIXiw4C3UZsOCePsaLsOtSXKhSKeqchDvuCvogmXrTpkERrWcdM
-        AYI8h2VNcY87jw4MA88A0IoxHtayy/f8Ouu5gZBlmQw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id OV-t-ra7Q_3K for <linux-kernel@vger.kernel.org>;
-        Mon, 17 Jul 2023 16:06:11 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R4F5b26ShzBQt1h;
-        Mon, 17 Jul 2023 16:06:11 +0800 (CST)
+        Mon, 17 Jul 2023 04:07:43 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B0CF10F
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:07:04 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fbc244d384so38166385e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:07:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1689581222; x=1692173222;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xdLrDwtRVlCiETdHZ9Bg8wBTj0nvCJljrdRPO2EDfCE=;
+        b=GQoSngCNAa6e/H2HL2dco1HWGv/lX7dPI4nmqQkdNYB8VSwivQ0qDPBN1Em8r4F/Tz
+         Nl+2l+3yYYdtPgAjNXT2fFq0ByPdbpUR2Paou9MeItiWYsYDfCIgpB1DTpT1v7sBMK1p
+         cmbEtTJxN2RHARjQdcI/Pg4ZhR4sBPXvgOCwiNXRkXzv9k0QRWytMCHPm06dXzj+Cj6q
+         qxbxCFDGZbarbLghuYHzEbkLf+WuiiCWzbWxawrBRyh/hJphCuIUdURjf6L/UaJyJj5o
+         iPotVfPIop5HCxUqRrsNXZwqAteacSxf+bIrjOmrjC+T/ZCpgjG0O6Zw9iBzWrYNPk2P
+         BrOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689581222; x=1692173222;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xdLrDwtRVlCiETdHZ9Bg8wBTj0nvCJljrdRPO2EDfCE=;
+        b=UcnfwtWrRtnFNk7mdw/Ewbly+S1KI+FWbghIIhfkqJ9cEVTXt6o84NRJJh1XAv50Gp
+         VWC+ZYK5feRgcHw5nY8raWSeBFQENwAPTBnmZyPZAAq5hHTOeEoZp0NWuiKgE29DfRvN
+         Tp9AiZnfTApf8QYXLQLweQK+QHr13gZPs0Vd+2PK2AF4Evs891AHrQkw6T4M8VvKWnV+
+         7qUzSFP2KkIJPiTKb2FDKj+TBJyB0xHyUNcR7ZyJKAEXDn/wHsAQ3lw6fbRd/VrBdDnj
+         nNVpCLd3D9WgbOa028D4ASgmrtByWswl6NsGtQ+Y0oKfdOJmD8tOBIS0xP4T5bJ2/D9S
+         hatg==
+X-Gm-Message-State: ABy/qLZ1GHu487StQ3jMVExb9V67fFXC68WoEsZqXRkw6Yw+5bFHXzPm
+        57dkzgq8KseRBCiVPnZvnS/FNA==
+X-Google-Smtp-Source: APBJJlFIL/TrZRnOtIE+eIdzD/XIjz6sOl9xKdyQxuncr8P30NcMygIGf8e174N3/uK22gqki9TlzA==
+X-Received: by 2002:a7b:cb97:0:b0:3fb:b3aa:1c89 with SMTP id m23-20020a7bcb97000000b003fbb3aa1c89mr8713393wmi.19.1689581222383;
+        Mon, 17 Jul 2023 01:07:02 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:365f:ad52:16de:396c])
+        by smtp.gmail.com with ESMTPSA id a12-20020a5d508c000000b00316f9abf073sm5010660wrt.82.2023.07.17.01.07.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 01:07:01 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [RESEND PATCH v2] arm64: defconfig: enable the SerDes PHY for Qualcomm DWMAC
+Date:   Mon, 17 Jul 2023 10:06:53 +0200
+Message-Id: <20230717080653.116855-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Date:   Mon, 17 Jul 2023 16:06:11 +0800
-From:   hanyu001@208suo.com
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, atishp@rivosinc.com, maz@kernel.org,
-        apatel@ventanamicro.com, guoren@kernel.org,
-        sunilvl@ventanamicro.com, ben-linux@fluff.org, vschneid@redhat.com
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: kernel: insert space before the open parenthesis '('
-In-Reply-To: <tencent_7D5EADDF79970079F568A5C4F801910DED06@qq.com>
-References: <tencent_7D5EADDF79970079F568A5C4F801910DED06@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <b90d162c4fb8062355634fb53b05173d@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix below checkpatch error:
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-/riscv/kernel/smp.c:93:ERROR: space required before the open parenthesis 
-'('
+Enable the SGMII/SerDes PHY driver. This module is required to enable
+ethernet on sa8775p platforms.
 
-Signed-off-by: ztt <1549089851@qq.com>
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
-  arch/riscv/kernel/smp.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+I'm resending this again as suggested by Krzysztof. It's been marked in
+patchwork as "change requested" for some reason.
 
-diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
-index 23e533766a49..1454f2415b7f 100644
---- a/arch/riscv/kernel/smp.c
-+++ b/arch/riscv/kernel/smp.c
-@@ -90,7 +90,7 @@ static inline void ipi_cpu_crash_stop(unsigned int 
-cpu, struct pt_regs *regs)
-          cpu_ops[cpu]->cpu_stop();
-  #endif
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
--    for(;;)
-+    for (;;)
-          wait_for_interrupt();
-  }
-  #else
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index ba9bfd32c741..736cbc1b10ee 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -1386,6 +1386,7 @@ CONFIG_PHY_QCOM_USB_HS=m
+ CONFIG_PHY_QCOM_USB_SNPS_FEMTO_V2=m
+ CONFIG_PHY_QCOM_USB_HS_28NM=m
+ CONFIG_PHY_QCOM_USB_SS=m
++CONFIG_PHY_QCOM_SGMII_ETH=m
+ CONFIG_PHY_R8A779F0_ETHERNET_SERDES=y
+ CONFIG_PHY_RCAR_GEN3_PCIE=y
+ CONFIG_PHY_RCAR_GEN3_USB2=y
+-- 
+2.39.2
+
