@@ -2,106 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 931B4756672
+	by mail.lfdr.de (Postfix) with ESMTP id 4B18E756671
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231821AbjGQOdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
+        id S231705AbjGQOdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbjGQOcr (ORCPT
+        with ESMTP id S232194AbjGQOcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:32:47 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D6819B3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:32:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689604341; x=1721140341;
-  h=date:from:to:subject:message-id:references:mime-version:
-   in-reply-to;
-  bh=giOY3bjV/jdQYlLmF47ANOQu6VLHjsT9DCS4TgFK3MA=;
-  b=hbrAM/1egqS5EnqReMLZknzpjsMwWymQuugyKiyzjmgoPGxoElS0nNi9
-   oRHg4UxajSHav2uYswo86/NXA0CfErPMGY31hcDdGvWNOu9L7U1RxILs5
-   Kffg6zZqDf4qUvZyCaiurhZxNGuXa2d9qc95pKeL34mft7nLWs9AxVbiS
-   uYXzgAxpoWydCfkMMNZNtvlS+wBhS9ovWH0aOOQGEGU/UmCdr6K+FXGu5
-   KtZhkh1i+C0Bp8kStbq2UOB1uvcjQv/JWCwBzagnJGugbYK09v8dvAiZ+
-   9I2DI6/by+KVrcDN7cQ9rkIBZBYkooo3HLz3sbud5oqODmZqyf+DYnjUb
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="368586131"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="368586131"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 07:31:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="969896512"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="969896512"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga006.fm.intel.com with ESMTP; 17 Jul 2023 07:31:47 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qLPGL-000pOm-0i;
-        Mon, 17 Jul 2023 17:31:45 +0300
-Date:   Mon, 17 Jul 2023 17:31:44 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
-        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v3 1/5] lib/bitmap: add bitmap_{set,get}_value()
-Message-ID: <ZLVQ0NCC8SI5F8xR@smile.fi.intel.com>
-References: <20230717113709.328671-1-glider@google.com>
- <20230717113709.328671-2-glider@google.com>
- <ZLU7mkhUiDQodaw1@smile.fi.intel.com>
- <CAG_fn=XNYQC8gKKQr3Mz7CVw8H=Ubmr+QaUu-jraoT4sN550rA@mail.gmail.com>
- <ZLVQOF0F4OfZQ8Qt@smile.fi.intel.com>
+        Mon, 17 Jul 2023 10:32:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83713199C
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:32:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D45AB6105C
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:32:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E20DBC433C8;
+        Mon, 17 Jul 2023 14:32:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689604332;
+        bh=/2I8JbAXNjgUMRStRV5TBGj0in8yPViD7RUzOpxGG3Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M3txzvjoFs2D+qCbuLXByBLpAWrxizOceENLrtprK/wRTK7Bj+3YarOyUSN8j8mRT
+         9GtnJQpfNu2Y4tA4ABr8CeOhyfkqGhFcgnUgIZcSrHfQb99JCnmEBinlUQ6+BMiQoh
+         5FsW/2LWG1JBHK6JBTtLOajZ4VXHn4PXv0dF6t0c=
+Date:   Mon, 17 Jul 2023 16:32:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Michael Walle <michael@walle.cc>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v6 3/3] nvmem: core: Expose cells through sysfs
+Message-ID: <2023071717-channel-supernova-4cc9@gregkh>
+References: <20230717075147.43326-1-miquel.raynal@bootlin.com>
+ <20230717075147.43326-4-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZLVQOF0F4OfZQ8Qt@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230717075147.43326-4-miquel.raynal@bootlin.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 05:29:12PM +0300, Andy Shevchenko wrote:
-> On Mon, Jul 17, 2023 at 04:14:57PM +0200, Alexander Potapenko wrote:
-
-...
-
-> > > > +             map[index] &= ~(GENMASK(nbits + offset - 1, offset));
-> > >
-> > > I remember that this construction may bring horrible code on some architectures
-> > > with some version(s) of the compiler (*).
-> > 
-> > Wow, even the trunk Clang and GCC seem to generate better code for
-> > your version of this line: https://godbolt.org/z/36Kqxhe6j
+On Mon, Jul 17, 2023 at 09:51:47AM +0200, Miquel Raynal wrote:
+> The binary content of nvmem devices is available to the user so in the
+> easiest cases, finding the content of a cell is rather easy as it is
+> just a matter of looking at a known and fixed offset. However, nvmem
+> layouts have been recently introduced to cope with more advanced
+> situations, where the offset and size of the cells is not known in
+> advance or is dynamic. When using layouts, more advanced parsers are
+> used by the kernel in order to give direct access to the content of each
+> cell, regardless of its position/size in the underlying
+> device. Unfortunately, these information are not accessible by users,
+> unless by fully re-implementing the parser logic in userland.
 > 
-> Wow, indeed! Perhaps time to report to clang and GCC people. I believe the root
-> cause is that in the original version compiler can't prove that l is constant
-> for GENMASK().
+> Let's expose the cells and their content through sysfs to avoid these
+> situations. Of course the relevant NVMEM sysfs Kconfig option must be
+> enabled for this support to be available.
 > 
-> > > To fix that I found an easy refactoring:
-> > >
-> > >                 map[index] &= ~(GENMASK(nbits, 0) << offset));
+> Not all nvmem devices expose cells. Indeed, the .bin_attrs attribute
+> group member will be filled at runtime only when relevant and will
+> remain empty otherwise. In this case, as the cells attribute group will
+> be empty, it will not lead to any additional folder/file creation.
+> 
+> Exposed cells are read-only. There is, in practice, everything in the
+> core to support a write path, but as I don't see any need for that, I
+> prefer to keep the interface simple (and probably safer). The interface
+> is documented as being in the "testing" state which means we can later
+> add a write attribute if though relevant.
+> 
+> There is one limitation though: if a layout is built as a module but is
+> not properly installed in the system and loaded manually with insmod
+> while the nvmem device driver was built-in, the cells won't appear in
+> sysfs. But if done like that, the cells won't be usable by the built-in
+> kernel drivers anyway.
 
-nbits - 1 it should be, btw. In any case it seems the code is still better.
+Wait, what?  That should not be an issue here, if so, then this change
+is not correct and should be fixed as this is NOT an issue for sysfs
+(otherwise the whole tree wouldn't work.)
 
-> > I'll take this one.
-> > 
-> > > (*) don't remember the actual versions, though, but anyway...
+Please fix up your dependancies if this is somehow not working properly.
 
--- 
-With Best Regards,
-Andy Shevchenko
+thanks,
 
-
+greg k-h
