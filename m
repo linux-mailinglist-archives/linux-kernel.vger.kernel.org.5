@@ -2,125 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 558BC755FD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4736F755FD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbjGQJvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 05:51:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
+        id S231206AbjGQJvd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Jul 2023 05:51:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231293AbjGQJvQ (ORCPT
+        with ESMTP id S230029AbjGQJva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 05:51:16 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD051A3;
-        Mon, 17 Jul 2023 02:51:15 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-78360b822abso171917839f.2;
-        Mon, 17 Jul 2023 02:51:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689587474; x=1692179474;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tcwB+50WnrsP8py0GmyCczQm2hmYLGk+1hGHK9Qssd8=;
-        b=H2COhlx61z8Ns4BSCqx04DRIvFD+dsah8oj7ScwfTlakaVfK/hmNgyBgCiEZV9wn49
-         lZnRqqSMNGzqDHsfko26Tvdcjvyv5rnEfk1DNATnd1BSJBNRMonWacSi7kVjl0RESo1u
-         K2vJPh3Asy9Iwt2WYiYU6J5/xjDKA9SIkdkFtNAcGPn6mO6yZZYyINZRVUXyq+iOjAJn
-         k+T4GCyqwrVEix9sUBEblydFtWxmzvWWNa2/qj8XIVisN1vP8fOjGM1ERjz55eIobWtS
-         7JZC6SAieh+l+26E9qWgi9cRFu1ERmFGu4dU7jaNzjMO4wbyRajs1wdvfPoszrnCwNU7
-         Y6ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689587474; x=1692179474;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tcwB+50WnrsP8py0GmyCczQm2hmYLGk+1hGHK9Qssd8=;
-        b=a3mO0B4Wn+vnKGHMK7gegs8gZv9JxwZTqKjG2TgRnq9s+Ly2krP7fs3X2sQMbV7EXy
-         Mbn2nkdN8+D01g0DA9zbNUGETdrmtJhGsQUibt28oGWssZ8/BI4hbkhwOzuAsjw1Mqx/
-         Lwvb4fZVnmE0JO2BFCI+37vYVuVbpCpJt4alKZROP+lYcRzCGWwmEOb+W/pNuBjkKjKx
-         ArVVeATpsy0rtpFqwtZKtObszKywIVTt3QzfuRTcR+4eh9MjBE6hgSwo+urMYC/pXJ5K
-         +ItYMvI+ufnSC4UB1YC/hOL25RyTGw0slclEufeLzC8IBuC9exMLoEkx5A5VzYJEycnt
-         Oj5w==
-X-Gm-Message-State: ABy/qLZE5MA4F658/caXPoDelUUfZKfOFzNzhCLgpeBCSitrtzuLRN8a
-        IT5MntGgbajeE6X1FTKcjea7nTQmnj4yxg==
-X-Google-Smtp-Source: APBJJlFdf/+zUrmvf62IEu/h0Ce8005lr+fBlUd78kDZAW2R9nniW9R9S7bI2n8dcGtTrzCuxGWMQQ==
-X-Received: by 2002:a5e:aa14:0:b0:786:4795:30c9 with SMTP id s20-20020a5eaa14000000b00786479530c9mr10485510ioe.20.1689587474435;
-        Mon, 17 Jul 2023 02:51:14 -0700 (PDT)
-Received: from JammyHuang-PC.aspeed.com ([118.99.208.177])
-        by smtp.gmail.com with ESMTPSA id g11-20020a02b70b000000b0042b3ff53458sm4376819jam.169.2023.07.17.02.51.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 02:51:14 -0700 (PDT)
-From:   Jammy Huang <orbit.huang@gmail.com>
-X-Google-Original-From: Jammy Huang <jammy_huang@aspeedtech.com>
-To:     eajames@linux.ibm.com, mchehab@kernel.org, joel@jms.id.au,
-        andrew@aj.id.au, linux-media@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Jammy Huang <jammy_huang@aspeedtech.com>
-Subject: [PATCH v2] media: aspeed: Fix memory overwrite if timing is 1600x900
-Date:   Mon, 17 Jul 2023 17:51:11 +0800
-Message-Id: <20230717095111.1957-1-jammy_huang@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 17 Jul 2023 05:51:30 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE333E56
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:51:28 -0700 (PDT)
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1qLKsw-0006l0-7n; Mon, 17 Jul 2023 11:51:18 +0200
+Message-ID: <862358e67a6f118b11ba16fb94828e9d1635cb66.camel@pengutronix.de>
+Subject: Re: [PATCH v1 3/8] drm/etnaviv: Drop the second argument of the
+ etnaviv_gem_new_impl()
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     loongson-kernel@lists.loongnix.cn,
+        Sui Jingfeng <suijingfeng@loongson.cn>,
+        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 17 Jul 2023 11:51:16 +0200
+In-Reply-To: <20230623100822.274706-4-sui.jingfeng@linux.dev>
+References: <20230623100822.274706-1-sui.jingfeng@linux.dev>
+         <20230623100822.274706-4-sui.jingfeng@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When capturing 1600x900, system could crash when system memory usage is
-tight.
+Hi Jingfeng,
 
-The way to reproduce this issue:
-1. Use 1600x900 to display on host
-2. Mount ISO through 'Virtual media' on OpenBMC's web
-3. Run script as below on host to do sha continuously
-  #!/bin/bash
-  while [ [1] ];
-  do
-	find /media -type f -printf '"%h/%f"\n' | xargs sha256sum
-  done
-4. Open KVM on OpenBMC's web
+Am Freitag, dem 23.06.2023 um 18:08 +0800 schrieb Sui Jingfeng:
+> From: Sui Jingfeng <suijingfeng@loongson.cn>
+> 
+> Because it is not used by the etnaviv_gem_new_impl() function,
+> no functional change.
+> 
+I think it would make sense to move into the opposite direction: in
+both callsites of etnaviv_gem_new_impl we immediately call
+drm_gem_object_init with the size. A better cleanup would be to make
+use of the size parameter and move this object init call into
+etnaviv_gem_new_impl.
 
-The size of macro block captured is 8x8. Therefore, we should make sure
-the height of src-buf is 8 aligned to fix this issue.
+Regards,
+Lucas
 
-Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
----
- v2 changes
-  - Add how to reproduce this issue.
----
- drivers/media/platform/aspeed/aspeed-video.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/media/platform/aspeed/aspeed-video.c b/drivers/media/platform/aspeed/aspeed-video.c
-index 374eb7781936..14594f55a77f 100644
---- a/drivers/media/platform/aspeed/aspeed-video.c
-+++ b/drivers/media/platform/aspeed/aspeed-video.c
-@@ -1130,7 +1130,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
- static void aspeed_video_set_resolution(struct aspeed_video *video)
- {
- 	struct v4l2_bt_timings *act = &video->active_timings;
--	unsigned int size = act->width * act->height;
-+	unsigned int size = act->width * ALIGN(act->height, 8);
- 
- 	/* Set capture/compression frame sizes */
- 	aspeed_video_calc_compressed_size(video, size);
-@@ -1147,7 +1147,7 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
- 		u32 width = ALIGN(act->width, 64);
- 
- 		aspeed_video_write(video, VE_CAP_WINDOW, width << 16 | act->height);
--		size = width * act->height;
-+		size = width * ALIGN(act->height, 8);
- 	} else {
- 		aspeed_video_write(video, VE_CAP_WINDOW,
- 				   act->width << 16 | act->height);
-
-base-commit: 2605e80d3438c77190f55b821c6575048c68268e
--- 
-2.25.1
+> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+> ---
+>  drivers/gpu/drm/etnaviv/etnaviv_gem.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem.c b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+> index b5f73502e3dd..be2f459c66b5 100644
+> --- a/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+> @@ -542,7 +542,7 @@ static const struct drm_gem_object_funcs etnaviv_gem_object_funcs = {
+>  	.vm_ops = &vm_ops,
+>  };
+>  
+> -static int etnaviv_gem_new_impl(struct drm_device *dev, u32 size, u32 flags,
+> +static int etnaviv_gem_new_impl(struct drm_device *dev, u32 flags,
+>  	const struct etnaviv_gem_ops *ops, struct drm_gem_object **obj)
+>  {
+>  	struct etnaviv_gem_object *etnaviv_obj;
+> @@ -591,8 +591,7 @@ int etnaviv_gem_new_handle(struct drm_device *dev, struct drm_file *file,
+>  
+>  	size = PAGE_ALIGN(size);
+>  
+> -	ret = etnaviv_gem_new_impl(dev, size, flags,
+> -				   &etnaviv_gem_shmem_ops, &obj);
+> +	ret = etnaviv_gem_new_impl(dev, flags, &etnaviv_gem_shmem_ops, &obj);
+>  	if (ret)
+>  		goto fail;
+>  
+> @@ -627,7 +626,7 @@ int etnaviv_gem_new_private(struct drm_device *dev, size_t size, u32 flags,
+>  	struct drm_gem_object *obj;
+>  	int ret;
+>  
+> -	ret = etnaviv_gem_new_impl(dev, size, flags, ops, &obj);
+> +	ret = etnaviv_gem_new_impl(dev, flags, ops, &obj);
+>  	if (ret)
+>  		return ret;
+>  
 
