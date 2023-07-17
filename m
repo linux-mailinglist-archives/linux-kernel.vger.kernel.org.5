@@ -2,73 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA79E755FC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50AE4755FC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbjGQJst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 05:48:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51100 "EHLO
+        id S231261AbjGQJtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 05:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbjGQJs0 (ORCPT
+        with ESMTP id S229623AbjGQJsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 05:48:26 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272D5A4
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:48:25 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so12249a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:48:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689587303; x=1692179303;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xcfAMuwOY+oPetXy5qABvv5WWymZbV8JjdfSgt/USaw=;
-        b=P84DhTSzyZDW2DrvdeoORjpxBqoxHEIEega8g9wKlZ9UXX5Rd5HZwc48jZnp3QPFBD
-         yMZ6Atn9BHZiRyvS425DKqZp9zKGPq4dlGK/eGNfEJiv90y7kxnRL5FJtgtkO7FSNRN1
-         BQ32Y+V0stntMjhKObS3+Xhfis2KnVUC7EZDWDG2mFfvljm3l7D54xbNPHWFrd+UmACj
-         eWJw/0Y1bybARKARRhGifrAZgP39Wqm+kCrcVDOclfYdGkD7IHhU9CC0lTat6uhn+XRL
-         dSYu9KPvCBWPFnzP1gNnXYS3N/BNg4BeFLLhmayWbC8D50puIZ98DJ2ENGize8qawdzs
-         ZXKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689587303; x=1692179303;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xcfAMuwOY+oPetXy5qABvv5WWymZbV8JjdfSgt/USaw=;
-        b=IdSEEC9QbfEvgrczuLtgHgMS2WyKqfZdX+T3y///BXM6kmua+umQGKLtjB7OPyuUBG
-         txuVOBWIZwesukaLiRYYNKWu07tspiPBI3X+YvWUo4qatNGjOqc++f5WUJcmVnhOjv04
-         qMrgohjAKbk6c4Yhlp/kRfq2KETbeUx+Fzun93TbwXigxbWh/ZC28zC94cnfYqHcOe+D
-         zjTgSz/SapepSJPV4G2DA0tjrEDwULw2ftN13VSY5g6A+sHust1ddEiOZTPOQxW/fq9a
-         JSpys18Lvs447EapPfAVG5LknVBX5OFl0Vd/9TdPVfnktZa8PBCUGMTAdpkdOSprwbiB
-         oDxw==
-X-Gm-Message-State: ABy/qLatBuO7I28iJVQN1MZk3sVfkdiPuhbmHHLCyyWYG1bLrNBu21tS
-        +TipUTg10BZSk1dWpR+Y33sYoQ==
-X-Google-Smtp-Source: APBJJlG+5dDrquqW2BDi3ZctcLI40czlf8hUMmKlaKfWXwDnH9h988NKHFNTR5bg9i3L2y3YgKm3CQ==
-X-Received: by 2002:a50:c346:0:b0:51e:5773:891d with SMTP id q6-20020a50c346000000b0051e5773891dmr611167edb.4.1689587303303;
-        Mon, 17 Jul 2023 02:48:23 -0700 (PDT)
-Received: from google.com (44.232.78.34.bc.googleusercontent.com. [34.78.232.44])
-        by smtp.gmail.com with ESMTPSA id y17-20020adfee11000000b0031274a184d5sm18752365wrn.109.2023.07.17.02.48.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 02:48:22 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 09:48:18 +0000
-From:   Mostafa Saleh <smostafa@google.com>
-To:     Oliver Upton <oliver.upton@linux.dev>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.linux.dev, maz@kernel.org, suzuki.poulose@arm.com,
-        tabba@google.com, james.morse@arm.com, qperret@google.com,
-        bgardon@google.com, sudeep.holla@arm.com, gshan@redhat.com,
-        yuzenghui@huawei.com, will@kernel.org, catalin.marinas@arm.com
-Subject: Re: [PATCH v2] KVM: arm64: Add missing BTI instructions
-Message-ID: <ZLUOYn8bujcIrgaG@google.com>
-References: <20230706152240.685684-1-smostafa@google.com>
- <168920214959.3096128.780259299986215400.b4-ty@linux.dev>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <168920214959.3096128.780259299986215400.b4-ty@linux.dev>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Mon, 17 Jul 2023 05:48:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DE813D;
+        Mon, 17 Jul 2023 02:48:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 938D761000;
+        Mon, 17 Jul 2023 09:48:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7658C433C8;
+        Mon, 17 Jul 2023 09:48:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689587311;
+        bh=JdKVUUp6m0Uye11so85pYdbz5La3leOelaYQhIMR/ow=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oxoQSO72xKHk5tAprUaf/IoUnkyd4nPgQOmA4cNPs0Pwqvf7arZNFCaNDtXqnKyDm
+         LwriU5lzm7OQtL2/QtWxb4lJPBaQcP6es/8cDYuI5/LTfHYQeR51ECAQHTKLas0eXb
+         5Ti50RDLr5eHNO8fv53d0BeMuugKkPukujsw/g6d+EXMBUE/jG/HVz8UHvb6pT9yN0
+         BELBKLd229ZPw6fnG3ElF2ltYVVFi/ceD5Jb0HVbSlLd9gfNqMDw0e+gsGSiMVVE0n
+         rLX77uGJtjxGAHl/r4PGOFZRfE0GDkyCsAPg058zTd3X4UhPlfVPmlsuEwNKWE1VRw
+         6xSJNGo55N1gA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qLKqC-00DgoU-Ej;
+        Mon, 17 Jul 2023 10:48:28 +0100
+Date:   Mon, 17 Jul 2023 10:48:28 +0100
+Message-ID: <865y6ivpg3.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Anup Patel <anup@brainfault.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Conor Dooley <conor@kernel.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 7/9] irqchip: Add RISC-V advanced PLIC driver
+In-Reply-To: <CAK9=C2UmU_Kvj6x_ZRJ70DAtdpehN9XQ6pdzFJ7-NLA_+XPyZQ@mail.gmail.com>
+References: <20230710094321.1378351-1-apatel@ventanamicro.com>
+        <20230710094321.1378351-8-apatel@ventanamicro.com>
+        <CAGETcx8kH8cJVdhcv5K4qNUo58godFZEBnOfTGKUUQ6VuUguvQ@mail.gmail.com>
+        <86jzv2vpdb.wl-maz@kernel.org>
+        <CAK9=C2ULxsXednwnoyzYKjQFpe_zBSZ4v0FqUYFnxK2TpbiMtg@mail.gmail.com>
+        <86cz0uvcof.wl-maz@kernel.org>
+        <CAAhSdy2sAaA_dmVCt9162kpw8-Ub1wjH_MNKxPOFN_VbW7M7vQ@mail.gmail.com>
+        <868rbfufn2.wl-maz@kernel.org>
+        <CAK9=C2UmU_Kvj6x_ZRJ70DAtdpehN9XQ6pdzFJ7-NLA_+XPyZQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: apatel@ventanamicro.com, anup@brainfault.org, saravanak@google.com, palmer@dabbelt.com, paul.walmsley@sifive.com, tglx@linutronix.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, atishp@atishpatra.org, ajones@ventanamicro.com, sunilvl@ventanamicro.com, conor@kernel.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,26 +87,206 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 10:50:34PM +0000, Oliver Upton wrote:
-> On Thu, 6 Jul 2023 15:22:40 +0000, Mostafa Saleh wrote:
-> > Some bti instructions were missing from
-> > commit b53d4a272349 ("KVM: arm64: Use BTI for nvhe")
-> > 
-> > 1) kvm_host_psci_cpu_entry
-> > kvm_host_psci_cpu_entry is called from __kvm_hyp_init_cpu through "br"
-> > instruction as __kvm_hyp_init_cpu resides in idmap section while
-> > kvm_host_psci_cpu_entry is in hyp .text so the offset is larger than
-> > 128MB range covered by "b".
-> > Which means that this function should start with "bti j" instruction.
-> > 
-> > [...]
-> 
-> Applied to kvmarm/fixes. Sorry this took longer than expected, Mostafa. I
-> was hitting an unrelated issue with pKVM initialization on the only system
-> I have that supports BTI.
-> 
-> [1/1] KVM: arm64: Add missing BTI instructions
->       https://git.kernel.org/kvmarm/kvmarm/c/dcf89d111199
-> 
+On Mon, 17 Jul 2023 10:05:01 +0100,
+Anup Patel <apatel@ventanamicro.com> wrote:
+>=20
+> On Mon, Jul 17, 2023 at 1:35=E2=80=AFPM Marc Zyngier <maz@kernel.org> wro=
+te:
+> >
+> > On Fri, 14 Jul 2023 15:05:07 +0100,
+> > Anup Patel <anup@brainfault.org> wrote:
+> > >
+> > > On Fri, Jul 14, 2023 at 7:05=E2=80=AFPM Marc Zyngier <maz@kernel.org>=
+ wrote:
+> > > >
+> > > > On Fri, 14 Jul 2023 10:35:34 +0100,
+> > > > Anup Patel <apatel@ventanamicro.com> wrote:
+> > > > >
+> > > > > On Fri, Jul 14, 2023 at 2:31=E2=80=AFPM Marc Zyngier <maz@kernel.=
+org> wrote:
+> > > > > >
+> > > > > > Anup,
+> > > > > >
+> > > > > > On Fri, 14 Jul 2023 00:56:22 +0100,
+> > > > > > Saravana Kannan <saravanak@google.com> wrote:
+> > > > > > >
+> > > > > > > On Mon, Jul 10, 2023 at 2:44=E2=80=AFAM Anup Patel <apatel@ve=
+ntanamicro.com> wrote:
+> > > > > > > >
+> > > > > > > > The RISC-V advanced interrupt architecture (AIA) specificat=
+ion defines
+> > > > > > > > a new interrupt controller for managing wired interrupts on=
+ a RISC-V
+> > > > > > > > platform. This new interrupt controller is referred to as a=
+dvanced
+> > > > > > > > platform-level interrupt controller (APLIC) which can forwa=
+rd wired
+> > > > > > > > interrupts to CPUs (or HARTs) as local interrupts OR as mes=
+sage
+> > > > > > > > signaled interrupts.
+> > > > > > > > (For more details refer https://github.com/riscv/riscv-aia)
+> > > > > > > >
+> > > > > > > > This patch adds an irqchip driver for RISC-V APLIC found on=
+ RISC-V
+> > > > > > > > platforms.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > > > > >
+> > > > > > [...]
+> > > > > >
+> > > > > > > > +static int __init aplic_dt_init(struct device_node *node,
+> > > > > > > > +                               struct device_node *parent)
+> > > > > > > > +{
+> > > > > > > > +       /*
+> > > > > > > > +        * The APLIC platform driver needs to be probed ear=
+ly
+> > > > > > > > +        * so for device tree:
+> > > > > > > > +        *
+> > > > > > > > +        * 1) Set the FWNODE_FLAG_BEST_EFFORT flag in fwnod=
+e which
+> > > > > > > > +        *    provides a hint to the device driver core to =
+probe the
+> > > > > > > > +        *    platform driver early.
+> > > > > > > > +        * 2) Clear the OF_POPULATED flag in device_node be=
+cause
+> > > > > > > > +        *    of_irq_init() sets it which prevents creation=
+ of
+> > > > > > > > +        *    platform device.
+> > > > > > > > +        */
+> > > > > > > > +       node->fwnode.flags |=3D FWNODE_FLAG_BEST_EFFORT;
+> > > > > > >
+> > > > > > > Please stop spamming us with broken patches. Already told you=
+ this is
+> > > > > > > not an option.
+> > > > > > >
+> > > > > > > Nack.
+> > > > > >
+> > > > > > What puzzles me here is that *no other arch* requires this sort=
+ of
+> > > > > > hack. What is so special about the APLIC that it requires it? I=
+ see
+> > > > > > nothing in this patch that even hints at it, despite the "discu=
+ssion"
+> > > > > > in the last round.
+> > > > > >
+> > > > > > The rules are simple:
+> > > > > >
+> > > > > > - either the APLIC is so fundamental to the system that it has =
+to be
+> > > > > >   initialised super early, much like the GIC on arm64, at which=
+ point
+> > > > > >   it cannot be a platform device, and the story is pretty simpl=
+e.
+> > > > > >
+> > > > > > - or it isn't that fundamental, and it can be probed as a platf=
+orm
+> > > > > >   device using the dependency infrastructure that is already us=
+ed by
+> > > > > >   multiple other interrupt controller drivers, without any need=
+ to
+> > > > > >   mess with internal flags. Again, this should be simple enough.
+> > > > >
+> > > > > APLIC manages all wired interrupts whereas IMSIC manages all
+> > > > > MSIs. Both APLIC and IMSIC are fundamental devices which need
+> > > > > to be probed super early.
+> > > > >
+> > > > > Now APLIC has two modes of operations:
+> > > > > 1) Direct mode where there is no IMSIC in the system and APLIC
+> > > > >     directly injects interrupt to CPUs
+> > > > > 2) MSI mode where IMSIC is present in the system and APLIC
+> > > > >     converts wired interrupts into MSIs
+> > > > >
+> > > > > The APLIC driver added by this patch is a common driver for
+> > > > > both above modes.
+> > > >
+> > > > Which it doesn't need to be. You are pointlessly making life diffic=
+ult
+> > > > for yourself, and everyone else. The MSI bridge behaviour has *zero*
+> > > > reason to be the same driver as the main "I need it super early"
+> > > > driver. They may be called the same, but they *are* different things
+> > > > in the system.
+> > > >
+> > > > They can share code, but they are fundamentally a different thing in
+> > > > the system. And I guess this silly approach has other ramifications:
+> > > > the IMSIC is also some early driver when it really doesn't need to =
+be.
+> > > > Who needs MSIs that early in the life of the system? I don't buy th=
+is
+> > > > for even a second.
+> > >
+> > > IMSIC also provides IPIs which are required super early so I think
+> > > we can't make IMSIC as a platform driver.
+> >
+> > Then split this part further. Just because the architecture lumps two
+> > completely unrelated concepts together doesn't mean we need to follow
+> > the same organisation.
+>=20
+> IPIs are supported as software injected MSIs. Basically, each HART
+> has its own MSI controller and one HART can inject IPI to other HART
+> by writing its MSI MMIO register.
+>=20
+> >
+> > >
+> > > >
+> > > > Frankly, this whole thing needs to be taken apart and rebuilt from =
+the
+> > > > ground up.
+> > > >
+> > > > > For #2, APLIC needs to be a platform device to create a device
+> > > > > MSI domain using platform_msi_create_device_domain() which
+> > > > > is why the APLIC driver is a platform driver.
+> > > >
+> > > > You can't have your cake and eat it. If needed super early, and it
+> > > > cannot be a platform driver. End of the story.
+> > > >
+> > > > And to my earlier point: IMSIC and APLIC-as-MSI-bridge have no purp=
+ose
+> > > > being early drivers. They must be platform drivers, and only that.
+> > >
+> > > We can have IMSIC and APLIC-Direct-Mode as non-platform driver
+> > > whereas APLIC-as-MSI-bridge will be a platform driver.
+> > >
+> > > Both APLIC-Direct-Mode and APLIC-as-MSI-bridge can share a large
+> > > part of the current driver.
+> > >
+> > > >
+> > > > > > If these rules don't apply to your stuff, please explain what i=
+s so
+> > > > > > different. And I mean actually explain the issue. Which isn't t=
+elling
+> > > > > > us "it doesn't work without it". Because as things stand, there=
+ is no
+> > > > > > way I will even consider taking this ugly mix of probing method=
+s.
+> > > > >
+> > > > > Yes, I don't want this ugly FWNODE_FLAG_BEST_EFFORT hack
+> > > > > in this driver.
+> > > >
+> > > > And yet you are hammering it even when told this is wrong.
+> > > >
+> > > > > I tried several things but setting the FWNODE_FLAG_BEST_EFFORT
+> > > > > flag is the only thing which works right now.
+> > > >
+> > > > How about you take a step back and realise that the way you've
+> > > > architected your drivers makes little sense? I don't think you have
+> > > > tried *that*.
+> > >
+> > > Both APLIC and IMSIC are separate devices as defined by the AIA spec.
+> > >
+> > > There are three possible systems:
+> > > 1) Systems with only APLIC (i.e. only wired interrupts)
+> > > 2) Systems with only IMSIC (i.e. only MSIs)
+> >
+> > How is that possible? Are you saying that even things like timers are
+> > firing as MSIs?
+>=20
+> No, timer interrupts are triggered through INTC.
 
-Thanks Oliver, hopefully everything is sorted out now.
+So all the above is BS. All you need is timers and IPIs to be
+supported early.  Everything else can be postponed until you probe the
+rest of the interrupt hierarchy.
+
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
