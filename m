@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D73756EAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1237E756EAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbjGQVBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 17:01:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46930 "EHLO
+        id S230497AbjGQVBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 17:01:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjGQVBC (ORCPT
+        with ESMTP id S229948AbjGQVBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 17:01:02 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0066DB2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:01:00 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9939fbb7191so1024246466b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:01:00 -0700 (PDT)
+        Mon, 17 Jul 2023 17:01:04 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2AF210CA
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:01:02 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-98de21518fbso690870566b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:01:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689627659; x=1692219659;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AnjHreWF4HQ2gd8gLooLMHw770F6qkj0Sftpoev0l60=;
-        b=Mx6aiakuHMHpp5y7Z2lsRn4qs1q6mwMOt2DvKCjAAGpWr9X3y0w6NcMDsyggz6xYvs
-         E/fhWtYojdu+GexF9HBY7o+YfMNvSQp68xkAezwLpsVueQD/lvqNipteQhz2+fKn6lMy
-         qm3jtb9aJf3OknVRW4gLVQjOrvPsKK12kgsZeNtmzqzutmpcoJdI59HFIhLPGLuYNyOa
-         VUbprYJsRuZJyzBrQyFq/Hd4dV31bI+hBf9+AHuCpZ5l2z/KfXOCfCsW5uRvbx68zIgu
-         2WjQHPGLBOeROn0ir89hqD2qFO16yPmxBsz4J4DTWA08nXN0ogp7csvvyPMOiqGFdB0H
-         Z6AQ==
+        d=linaro.org; s=google; t=1689627661; x=1692219661;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C+DQimrAqq5HrJuayvWKjqIpTBMUfwE2q6SblHTJ6nQ=;
+        b=hig07dFEoE/VRC8eVzIyt4N5BQ9j5Vtqo5SweTa2x9QdauVRXa4mi8yoIN2Bx2yxCu
+         9AKfg4DYMNEf7G2JaS0odJ8yRAU/R7oBxnyZWRv8whWQqK0AbUEK5PExmTYLThLKpeoP
+         MplkJBZ3B5is2ylNwhWPCm5ht2HFIw7Dg7miR+caxMYEFAP0irRaebN909McVjdtcX5J
+         VNKH70w8emiDWt4PnnF8wDciOxoK6zwbj0UlvI6vV9DbC0tXLUloKGmFgnDgqfdVBdBe
+         xEg9iSXWJjFHCVzonONSTe5T0yxTiO0b8pbtD4XUtPsyokevk1BS8m+JdEmjHNXtOEyV
+         F9Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689627659; x=1692219659;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AnjHreWF4HQ2gd8gLooLMHw770F6qkj0Sftpoev0l60=;
-        b=IkK7PoQvcrG6sfhWEFE23i5vBlLyuXzSV4DhbZEv59OHd0n260RbBGFapGmtdmvmVE
-         TuyNksFIHRmpzb/TqV1k9CLHycuXezbi8pHTY+fAdEJqLHg0cpr0jaCUAXP9RqWpREwg
-         z3+5FdYhcsmrORzCnxgP+j20k/PmmxqbRcsH3iwMob8UA1Pv/z3p24BbqC2hLhI1FonS
-         BKZ9ARHVlS25SETMNehXe7CZmf73sCo8Bf3tFK6MR6T6EEZcG3ZRZBomSlfNEvAwaT4M
-         UzGfzQwc3QCPs+ib9Zk42HQXC7QykEHBrIjzXoXAlQX6TIEt38CRwdf/0Br6vz/0/z3G
-         EPHw==
-X-Gm-Message-State: ABy/qLYKAUrqGzxlsOKwhrhOtDS6wIKRji4RV0NmS1pTvSDS8vy6+EhQ
-        DnzTHfC53JAds7mvIaSJkRiokg==
-X-Google-Smtp-Source: APBJJlGMQK28GVmhsl4/oDUPAmhjGFlLEYUSj3Ugct7yLJzUxWoxWzUOQDQNN5cYhh8FnsOtviRl5g==
-X-Received: by 2002:a17:906:9746:b0:98e:3dac:6260 with SMTP id o6-20020a170906974600b0098e3dac6260mr12219537ejy.13.1689627659360;
-        Mon, 17 Jul 2023 14:00:59 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689627661; x=1692219661;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C+DQimrAqq5HrJuayvWKjqIpTBMUfwE2q6SblHTJ6nQ=;
+        b=gD8TScg72lHv4SiFdPYeLy+uJKX2RmLEHLe6eilO4P8DHR7yxJlolZE4bBa/JxEFuo
+         yGPWmlFEPQbrrstAzPn3p8av3DOg3viKg3iJKq9uid8xes0DJKIV5Z/5IoaGXPsAdSSF
+         oFOSE++1ie3CJKKTzXjCYJ6NQGt5KdqsP7RwZ1Xo5NsLFe8cRB2oM1matWjedIMoC1Pt
+         kDbD92SxoiRq3Q3dHgU3hHF/NHJY2/Bjl8oj6Cbw+NLTzQYcVfQFYiTADShmeXVycPoH
+         wToKptDtVmsxM2sjoCGxonSxY+GBV6BGIFv+ZBpqs74p5FWTAjXUyG0SkTwjxrscWKZM
+         Wd+w==
+X-Gm-Message-State: ABy/qLYTlV7JLB5CenMfV31VuksLa4P1hjqHKNfNHfp/e3pu7vWTiLvf
+        uIFu5iT4n9QOwL1uKf/U4r0JUg==
+X-Google-Smtp-Source: APBJJlF/sm1slZ8Xso6i6fpxS7espnblLLE+1R3arjQ+z12DdP8u0owRxflvA2N9wGQaJHupNJW7lQ==
+X-Received: by 2002:a17:906:253:b0:993:eb4b:ed51 with SMTP id 19-20020a170906025300b00993eb4bed51mr499998ejl.27.1689627661213;
+        Mon, 17 Jul 2023 14:01:01 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id rs14-20020a170907036e00b00987e2f84768sm178392ejb.0.2023.07.17.14.00.57
+        by smtp.gmail.com with ESMTPSA id rs14-20020a170907036e00b00987e2f84768sm178392ejb.0.2023.07.17.14.00.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 14:00:58 -0700 (PDT)
+        Mon, 17 Jul 2023 14:01:00 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -59,10 +60,12 @@ To:     Andy Gross <agross@kernel.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 1/2] arm64: dts: qcom: sc8180x-primus: remove superfluous "input-enable"
-Date:   Mon, 17 Jul 2023 23:00:54 +0200
-Message-Id: <20230717210055.21979-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 2/2] arm64: dts: qcom: sm8250-pdx203: add required pin function
+Date:   Mon, 17 Jul 2023 23:00:55 +0200
+Message-Id: <20230717210055.21979-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230717210055.21979-1-krzysztof.kozlowski@linaro.org>
+References: <20230717210055.21979-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,67 +78,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pin configuration property "input-enable" was used with the intention to
-disable the output, but this is done by default by Linux drivers.  Since
-commit c4a48b0df8bf ("dt-bindings: pinctrl: qcom: tlmm should use
-output-disable, not input-enable") the property is not accepted anymore:
+DT bindings expect function in each pin state in the pin configuration:
 
-  sc8180x-primus.dtb: pinctrl@3100000: hall-int-active-state: 'oneOf' conditional failed, one must be fixed:
-    'bias-disable', 'function', 'input-enable', 'pins' do not match any of the regexes: '-pins$', 'pinctrl-[0-9]+'
+  sm8250-sony-xperia-edo-pdx203.dtb: pinctrl@f100000: cam-pwr-b-state: 'oneOf' conditional failed, one must be fixed:
+    'function' is a required property
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
 ---
+ arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dts | 2 ++
+ 1 file changed, 2 insertions(+)
 
-That's my favorite commit.
----
- arch/arm64/boot/dts/qcom/sc8180x-primus.dts | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc8180x-primus.dts b/arch/arm64/boot/dts/qcom/sc8180x-primus.dts
-index 9b8695b92c48..aaac2da69286 100644
---- a/arch/arm64/boot/dts/qcom/sc8180x-primus.dts
-+++ b/arch/arm64/boot/dts/qcom/sc8180x-primus.dts
-@@ -580,7 +580,6 @@ hall_int_active_state: hall-int-active-state {
- 		pins = "gpio121";
- 		function = "gpio";
+diff --git a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dts b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dts
+index f4c4575eb03b..b70bf9261ba9 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dts
++++ b/arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dts
+@@ -366,6 +366,7 @@ &tlmm {
  
--		input-enable;
+ 	cam_pwr_b_cs: cam-pwr-b-state {
+ 		pins = "gpio69";
++		function = "gpio";
+ 		drive-strength = <2>;
  		bias-disable;
- 	};
+ 		output-low;
+@@ -373,6 +374,7 @@ cam_pwr_b_cs: cam-pwr-b-state {
  
-@@ -590,7 +589,6 @@ int-n-pins {
- 			function = "gpio";
- 
- 			bias-pull-up;
--			intput-enable;
- 		};
- 
- 		kp-disable-pins {
-@@ -639,7 +637,6 @@ tp-int-pins {
- 			function = "gpio";
- 
- 			bias-disable;
--			input-enable;
- 		};
- 
- 		tp-close-n-pins {
-@@ -647,7 +644,6 @@ tp-close-n-pins {
- 			function = "gpio";
- 
- 			bias-disable;
--			input-enable;
- 		};
- 	};
- 
-@@ -656,7 +652,6 @@ int-n-pins {
- 			pins = "gpio122";
- 			function = "gpio";
- 
--			input-enable;
- 			bias-disable;
- 		};
- 
+ 	cam_pwr_a_cs: cam-pwr-a-state {
+ 		pins = "gpio71";
++		function = "gpio";
+ 		drive-strength = <2>;
+ 		bias-disable;
+ 		output-low;
 -- 
 2.34.1
 
