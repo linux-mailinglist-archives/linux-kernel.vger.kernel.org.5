@@ -2,199 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A79A756755
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3CD75675D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbjGQPPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 11:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49512 "EHLO
+        id S231298AbjGQPR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 11:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbjGQPPo (ORCPT
+        with ESMTP id S229518AbjGQPRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 11:15:44 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02C9F9;
-        Mon, 17 Jul 2023 08:15:42 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36HCoKJM021976;
-        Mon, 17 Jul 2023 15:15:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=iJVRwGgBDqorv/DdEpo+T+O3KpUQk35Go53H2Mg5u8E=;
- b=TEv12YQJtRqtcBcMQNYjN2fHJr5tQSNHxSPBRbeabR7qC+/GYg5bqGHdJFIeslN6vbqe
- t0r5WUxe61FcITS5uXF8c5h2f2Z1vYQxIHEZlk5OQAUm5wvs4XPjdvx3q6TJ/byYBjK/
- O4kDChun4EJkq6FEjScChAV+6aeWNLEpPVRzW9Aqz66X85l/YBaXVqOsu1Ja8/pokEcm
- 9POr3DvhDDR9UHf/fMtc0KvSxC5p/nrbH+eLbIG0RVpzVy6xAohlB4wr62q6toem/W5j
- Gk31paBt7EENzORSPmP3uazlF3ansNOcGb/muMIlszDKDxHbUdRHkRmhzwowjpda4Ws2 Dg== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3run1jkrc1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 15:15:24 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36HFFNXY009272
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 15:15:23 GMT
-Received: from [10.216.3.135] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 17 Jul
- 2023 08:15:17 -0700
-Message-ID: <02428901-1941-f104-e55b-d197d589a93f@quicinc.com>
-Date:   Mon, 17 Jul 2023 20:45:14 +0530
+        Mon, 17 Jul 2023 11:17:24 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2048.outbound.protection.outlook.com [40.107.243.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B221DA;
+        Mon, 17 Jul 2023 08:17:23 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K5ZbqgeNYRezssN0324HiI+SfFZlq95qNHrt2tBYMix9psensYDp1TqK3yEOmUcBb2HMZY9USakyzltJcmkFNsCIityxMbYPh+k9Bst2d7JOF5FGMg6Knv1z0J32BSXciMx2wXOBXGbvaCBSQA79mnm3xmyFO2ZCaTylmNJN5xMRgMsJP9OOlmTlInrpQZ4jzEfdVo0RB3EmzxCkBeTezrNvRjoLZf7Lzl0gxgK7OnHcRA0NRyAakx5orCTSpdb1Xdeb1SnqyJj4xgWxlGp6OwpCZuU7gJPCvyfSSs2rNt+KEH+7hCfstSkft063D3q6RWaNSarVXukB8rrZyJkBtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ircVmbbilcx6EDilkSKGSo477GpDbZLTm0NNOitGIZs=;
+ b=AYcHIBg3MAa+wvsFEJO3gw4Z8DSKUpW4/VX8XXhYqVte6CWX4wpxC6DCeG72AdN9hj3pFO9pLqj4w192YhvXUfgnVI5pOnXuhQgrv0CEy+sL+2LBmNDlC6tIzRkUcEoq+28eyPEVD7F/IbOZ0obXOAnAj+IZTjbAz1IgAy6SekIrpThLLmXnPfWlWOdFOkNclL2kTWJJSWYch5ua/6OCrVb05I0AIFv0ABZFF0nRmD26Du0XGCQA35hGnKTAS7bEIyAc9sUy4BQtMBAqYT0jWt1+LZG8b5d3qrL796eH3CEnfJ00iq2wJG1saL72e+BciJytcSDPWn4sGOuJ7YU2lg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lwn.net smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ircVmbbilcx6EDilkSKGSo477GpDbZLTm0NNOitGIZs=;
+ b=UtiUAhxo475//eIyF/x/qsl1lQXoLTq4TARbjAsXRL+yd9IlT7m+8kD/JXwrY4ihLPgNz1prralqK/ohRpQYheVjUuVPZKbrEk6PXqiSv7F7FOfwIag1XVjuWzQyNDCBi7+1QNnNA9G/EZ+PjgXSjJvW2TYMLQ8j7aAa6ZKaY9E=
+Received: from BN1PR14CA0027.namprd14.prod.outlook.com (2603:10b6:408:e3::32)
+ by PH7PR12MB6658.namprd12.prod.outlook.com (2603:10b6:510:211::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Mon, 17 Jul
+ 2023 15:17:15 +0000
+Received: from BN8NAM11FT035.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:e3:cafe::1b) by BN1PR14CA0027.outlook.office365.com
+ (2603:10b6:408:e3::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33 via Frontend
+ Transport; Mon, 17 Jul 2023 15:17:14 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN8NAM11FT035.mail.protection.outlook.com (10.13.177.116) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6588.33 via Frontend Transport; Mon, 17 Jul 2023 15:17:14 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Mon, 17 Jul
+ 2023 10:16:42 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
+ (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Mon, 17 Jul
+ 2023 10:16:32 -0500
+Received: from iron-maiden.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.23 via Frontend
+ Transport; Mon, 17 Jul 2023 10:16:32 -0500
+From:   Carlos Bilbao <carlos.bilbao@amd.com>
+To:     <corbet@lwn.net>, <ojeda@kernel.org>
+CC:     <jani.nikula@linux.intel.com>, <rdunlap@infradead.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <konstantin@linuxfoundation.org>,
+        Carlos Bilbao <carlos.bilbao@amd.com>
+Subject: [PATCH v7 0/2] docs: Integrate rustdoc into Rust documentation
+Date:   Mon, 17 Jul 2023 10:16:22 -0500
+Message-ID: <20230717151624.3470714-1-carlos.bilbao@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.1
-Subject: Re: [PATCH v9 06/10] usb: dwc3: qcom: Add support to read IRQ's
- related to multiport
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-To:     Johan Hovold <johan@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        <quic_jackp@quicinc.com>, Wesley Cheng <quic_wcheng@quicinc.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
-        <quic_ppratap@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>
-References: <20230621043628.21485-1-quic_kriskura@quicinc.com>
- <20230621043628.21485-7-quic_kriskura@quicinc.com>
- <ZK6YrLMn9r39zEeB@hovoldconsulting.com>
- <ef29e520-7b9c-f581-e70a-250df80d3821@quicinc.com>
- <ZLEP6Ekh3unSTiCL@hovoldconsulting.com>
- <7c04ebd9-4def-87d6-0640-35fd0ccd20f5@quicinc.com>
- <9a304650-0360-5509-4922-0818e8e306f5@quicinc.com>
-Content-Language: en-US
-In-Reply-To: <9a304650-0360-5509-4922-0818e8e306f5@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: XuMn0I8BfbE4W_gx3_jejELyo-kSgIBF
-X-Proofpoint-GUID: XuMn0I8BfbE4W_gx3_jejELyo-kSgIBF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-17_12,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- bulkscore=0 mlxlogscore=908 priorityscore=1501 mlxscore=0 spamscore=0
- phishscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307170139
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8NAM11FT035:EE_|PH7PR12MB6658:EE_
+X-MS-Office365-Filtering-Correlation-Id: 754758f9-4110-4e29-291e-08db86d8e685
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aS+JbU1n0lutAj8Kqwmk8i1PWeomZva9eI+2RdEMhE9GVM3cdm/OYQL3Xq9WZ4JL5jB5yhiewJXYc0YUqqYRgZuSVyASwwRAO0QWtQ0yDV73P7EgGKYOe8ADBptXSbJFX8tWY5DP6eWBL4QMe6gU3nG0YKLUynQm+tqX4PIWoYKCUt9vaOn6jOuYKmGK8RoCTvh0bqz3Rb18oJ+Bq86X8h6AXBX5dBRPzZucE/GS2L4kklxZtOiOeRSgek5tIqlvWbGAe2Sr+Y9n1f4QdDJVxXHp3ZNeVWDX8CYaSXNAGjH6uhx8RPSVX+KnNGZFlitfqdCaCA7gyWVepXTmnSwyuCv9SJn08tUG0H8uGIZtJshvbh+ojpCv+kDS/M5URIms1JG8bd3Dad2HBNJa1f2Gi8v3jmY1rw/Q3A2AYGG7Jo9vCivfJ+o576HJQxcYxY7LH5GV1Lwsrq91qpHkNShdNxD/2a4UCuYxgKutZaOqKhzcrpAyJehJs+jTe6Yz51HjwB4TxdkvXq0+OamYkDKaJQZ7xsFpCcwZ7W+qorKWsJYU4rt+4dQWRMo/pccbrZ5UQ3FG126KdqfkP5JrDRktGkIxqo0b1vWAFWMnbYy0bypJpOByUQcBDHCL1u5INpHaKRWK4uQVwCsKZ/f58yK24yf7SUCXnaxv2HfKV8KmQgDg774dYUEqtZhkypjswQxpZaWcZwbfGICNbeSzBk8qhOpEg1okdCAtNjGDubPwCeh+BfalGABr8B2YrIxRrwWCjxFzeb6GKyfalf02ut0wXw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(136003)(39860400002)(376002)(396003)(346002)(451199021)(82310400008)(36840700001)(40470700004)(46966006)(26005)(478600001)(82740400003)(1076003)(40480700001)(40460700003)(966005)(7696005)(6666004)(41300700001)(8936002)(8676002)(44832011)(47076005)(5660300002)(70206006)(4326008)(70586007)(316002)(426003)(86362001)(36860700001)(83380400001)(2906002)(81166007)(110136005)(356005)(2616005)(36756003)(186003)(336012)(54906003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 15:17:14.1289
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 754758f9-4110-4e29-291e-08db86d8e685
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT035.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6658
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Include HTML output generated with rustdoc into the Linux kernel
+documentation on Rust.
 
+Carlos Bilbao:
+ docs: Move rustdoc output, cross-reference it
+ docs: Integrate rustdoc generation into htmldocs
 
-On 7/16/2023 12:31 AM, Krishna Kurapati PSSNV wrote:
-> 
-> 
-> On 7/14/2023 4:10 PM, Krishna Kurapati PSSNV wrote:
->>
->>
->> On 7/14/2023 2:35 PM, Johan Hovold wrote:
->>> On Wed, Jul 12, 2023 at 11:56:33PM +0530, Krishna Kurapati PSSNV wrote:
->>>> On 7/12/2023 5:42 PM, Johan Hovold wrote:
->>>>> On Wed, Jun 21, 2023 at 10:06:24AM +0530, Krishna Kurapati wrote:
->>>>>> Add support to read Multiport IRQ's related to quad port controller
->>>>>> of SA8295 Device.
->>>>>>
->>>>>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
->>>>>> ---
->>>>>>    drivers/usb/dwc3/dwc3-qcom.c | 108 
->>>>>> +++++++++++++++++++++++++++++------
->>>>>>    1 file changed, 91 insertions(+), 17 deletions(-)
->>>>>
->>>>>> +static int dwc3_qcom_setup_mp_irq(struct platform_device *pdev)
->>>>>> +{
->>>>>> +    struct dwc3_qcom *qcom = platform_get_drvdata(pdev);
->>>>>> +    char irq_name[15];
->>>>>
->>>>> The interrupt device-name string can not be allocated on the stack or
->>>>> reused as it is stored directly in each irqaction structure.
->>>>>
->>>>> This can otherwise lead to random crashes when accessing
->>>>> /proc/interrupts:
->>>>>
->>>>>     https://lore.kernel.org/lkml/ZK6IV_jJPICX5r53@hovoldconsulting.com/
->>>
->>>>     Sure, will create a static array of names if possible in global
->>>> section of file and use it to read interrupts.
->>>
->>> Or just use devm_kasprintf(), which should allow for a cleaner
->>> implementation.
->>>
->>> I've fixed it up like this for my X13s wip branches:
->>>
->>>     https://github.com/jhovold/linux/commit/0898b54456bc2f4bd4d420480db98e6758771ace
->>>>     Are you fine with seperating out setup_irq and setup_mp_irq 
->>>> functions
->>>> ? Can you please review comments and suggestion on [1].
->>>
->>> I haven't had time to look at your latest replies yet, but as I already
->>> said when reviewing v9, it seems you should be using a common helper for
->>> non-mp and mp.
->>>
->> Hi Johan,
->>
->>   The gist of my mail was to see if I can defer qcom probe when dwc3 
->> probe fails/or doesn't happen on of_plat_pop (which is logical) so 
->> that we can move setup_irq to after dwc3_register_core so that we know 
->> whether we are MP capable or not. This would help us move all IRQ 
->> reading into one function.
->>
-> Hi Johan,
-> 
->   I see it is difficult to write a common helper. To do so, we need to 
-> know whether the device is MP capable or not in advance. And since it is 
-> not possible to know it before of_plat_pop is done, I see only few ways 
-> to do it:
-> 
-> 1. Based on qcom node compatible string, I can read whether the device 
-> is MP capable or not and get IRQ's accordingly.
-> 
-> 2. Read the port_info in advance but it needs me to go through some DT 
-> props and try getting this info. Or read xhci regs like we are doing in 
-> core (which is not good). Also since some Dt props can be missing, is it 
-> difficult to get the MP capability info before of_plat_pop is done.
-> 
-> 3. Remove IRQ handling completely. Just because the device has IRQ's 
-> present, I don't see a point in adding them to bindings, and because we 
-> added them to bindings, we are making a patch to read them (and since 
-> this is a little challenging, the whole of multiport series is blocked 
-> although I don't need wakeup support on these interrupts right away).
-> 
-> Can't we let the rest of the patches go through and let interrupt 
-> handling for 2nd, 3rd and 4rth ports be taken care later ? I am asking 
-> this because I want the rest of the patches which are in good shape now 
-> (after fixing the nits mentioned) to get merged atleast. I will make 
-> sure to add interrupt handling later in a different series once this is 
-> merged once I send v10.
-> 
-> Or if there is a simpler way to do it, I would be happy to take any 
-> suggestions and complete this missing part in this series itself.
->
+---
+V6 is https://lore.kernel.org/lkml/20230127165728.119507-1-carlos.bilbao@amd.com/
+Changes since V6:
+ - Skip Rust document generation entirely if .config doesn't exist.
 
-Hi Konrad, Bjorn,
+Changes since V5:
+ - Continue executing htmldocs even if rustdoc fails.
 
-  Can you also let me know your review on this. Can we add a compatible 
-data to dwc3-qcom to identify whether we need to read MP irq's or non-NP 
-irq's and also if it is better to split this series into two. (One for 
-multiport and one for dwc3-qcom IRQ's)
+Changes since V4:
+ - Limit rustdoc note only to html outputs.
 
-Regards,
-Krishna,
+Changes since V3:
+ - Added Reviewed-Bys from Akira Yokosawa.
+ - PATCH 1/2: Avoid error 404 adding tag `rustdoc` for Sphinx.
+ - PATCH 1/2: Don't use "here" as link text, describe destination instead.
+ - PATCH 2/2: Check CONFIG_RUST in a way that allows us to skip generation.
+ - PATCH 2/2: Reoder Sphinx runs so they complete even if rustdoc fails.
+
+Changes since V2:
+ - Split v2 into two-patch series.
+ - Add "only:: html" directive in Documentation/rust/index.rst reference
+
+Changes since V1:
+ - Work on top of v6.1-rc1.
+ - Don't use rustdoc.rst, instead add link to Documentation/rust/index.rst.
+ - In Documentation/Makefile, replace @make rustdoc for $(Q)$(MAKE) rustdoc.
+ - Don't do LLVM=1 for all rustdoc generation within `make htmldocs`.
+ - Add spaces on definition of RUSTDOC_OUTPUT, for consistency.
+
+---
+ Documentation/Makefile       | 20 ++++++++++++++++++++
+ Documentation/rust/index.rst |  8 ++++++++
+ rust/Makefile                | 15 +++++++++------
+ 3 files changed, 37 insertions(+), 6 deletions(-)
+
