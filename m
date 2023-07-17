@@ -2,189 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D7B756C28
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817D0756C2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbjGQSbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 14:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35388 "EHLO
+        id S230092AbjGQSeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 14:34:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjGQSbj (ORCPT
+        with ESMTP id S229667AbjGQSeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:31:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C0D99;
-        Mon, 17 Jul 2023 11:31:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AE62C611E6;
-        Mon, 17 Jul 2023 18:31:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82AE2C433C8;
-        Mon, 17 Jul 2023 18:31:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689618698;
-        bh=b7VM9RFc+h/oFjhTeBRHaiyt8yHybUrRocsHJcphS54=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Rn72TW03cSRsln9AXMHMWipd4EqEo6NwepcNesH3upaT3nmUArCGqrpOElyY1iuu+
-         CZvXX9fSLSpMNOimNUkd4z6fYYSplkBuhfyb+uk8ZEv9CLKwIiHNOlybq5Gt+NyzAU
-         H+05FJk95QpylT91faGNnKxZhM03w3zxJRkuvF9RXdvb31jdyOzUozgHjjxpCTWo6a
-         KawJKQ6LJUlDwWZuzD616w0r8viaC3X7nYWMTc+Ix9ddZYH/pFIzsbbSA6h7XQVrKj
-         Pi296i/AsFebNCNdpItPLpjRK1DvqT8fNIB9raHyem4ACyocu1P4YWoVJoARAMv19+
-         RMLRZsPPok8DA==
-Date:   Mon, 17 Jul 2023 19:31:33 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Piyush Malgujar <pmalgujar@marvell.com>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        p.zabel@pengutronix.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        yamada.masahiro@socionext.com, devicetree@vger.kernel.org,
-        jannadurai@marvell.com, cchavva@marvell.com
-Subject: Re: [PATCH v4 5/6] dt-bindings: mmc: sdhci-cadence: SD6 support
-Message-ID: <20230717-dirtiness-pardon-a3fbc0925202@spud>
-References: <20230717125146.16791-1-pmalgujar@marvell.com>
- <20230717125146.16791-6-pmalgujar@marvell.com>
+        Mon, 17 Jul 2023 14:34:36 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 429B7A1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 11:34:34 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8AxEvC4ibVkEhIGAA--.15042S3;
+        Tue, 18 Jul 2023 02:34:32 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx_yOsibVk5dAxAA--.31528S3;
+        Tue, 18 Jul 2023 02:34:31 +0800 (CST)
+Message-ID: <e3a05204-61fe-2318-5f06-fd12addfe2e9@loongson.cn>
+Date:   Tue, 18 Jul 2023 02:34:20 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fYdzJ3cGoqsmeGH1"
-Content-Disposition: inline
-In-Reply-To: <20230717125146.16791-6-pmalgujar@marvell.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 3/8] drm/etnaviv: Drop the second argument of the
+ etnaviv_gem_new_impl()
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     loongson-kernel@lists.loongnix.cn, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230623100822.274706-1-sui.jingfeng@linux.dev>
+ <20230623100822.274706-4-sui.jingfeng@linux.dev>
+ <862358e67a6f118b11ba16fb94828e9d1635cb66.camel@pengutronix.de>
+Content-Language: en-US
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <862358e67a6f118b11ba16fb94828e9d1635cb66.camel@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Dx_yOsibVk5dAxAA--.31528S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoWxWFy8WrWDZw4DXr1xWF47Jrc_yoWrWw43pF
+        sayFyjkrW8Z3yDK3s7XFn5Aw1UWr1Igry0yas0ywn8Kw4YgF1kXF1FkFWDCFsxArs7uF13
+        t3W0yF1rK3W5A3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr0_Gr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
+        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
+        twAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
+        k0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l
+        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI
+        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4R6wDUUUU
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,  Lucas
 
---fYdzJ3cGoqsmeGH1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 17, 2023 at 05:51:45AM -0700, Piyush Malgujar wrote:
-> From: Jayanthi Annadurai <jannadurai@marvell.com>
->=20
-> Add support for SD6 controller on Marvell CN10K series SOCs. The
-> existing sd4hc is not compatible with the SD6 changes.
->=20
-> Signed-off-by: Jayanthi Annadurai <jannadurai@marvell.com>
-> Signed-off-by: Piyush Malgujar <pmalgujar@marvell.com>
-> ---
->  .../devicetree/bindings/mmc/cdns,sdhci.yaml   | 52 ++++++++++++++++---
->  1 file changed, 45 insertions(+), 7 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml b/Docu=
-mentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-> index 6c40611405a08717520f4ce3a78a9cb8dd9aac69..51f44c00a50505684c7c7c49c=
-59c1ebd8d85d5d0 100644
-> --- a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-> @@ -4,19 +4,23 @@
->  $id: http://devicetree.org/schemas/mmc/cdns,sdhci.yaml#
->  $schema: http://devicetree.org/meta-schemas/core.yaml#
-> =20
-> -title: Cadence SD/SDIO/eMMC Host Controller (SD4HC)
-> +title: Cadence SD/SDIO/eMMC Host Controller (SD4HC, SD6HC)
-> =20
->  maintainers:
->    - Masahiro Yamada <yamada.masahiro@socionext.com>
-> =20
->  properties:
->    compatible:
-> -    items:
-> -      - enum:
-> -          - amd,pensando-elba-sd4hc
-> -          - microchip,mpfs-sd4hc
-> -          - socionext,uniphier-sd4hc
-> -      - const: cdns,sd4hc
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - amd,pensando-elba-sd4hc
-> +              - microchip,mpfs-sd4hc
-> +              - socionext,uniphier-sd4hc
-> +          - const: cdns,sd4hc
-> +
-> +      - items:
-> +          - const: marvell,cdns-sd6hc
+Thanks for you guidance!
 
-This seems like a strange compatible. Why have you not gone for
-something like:
-compatible =3D "marvell,$socname-sd6hc", "cdns,sd6hc";
-?
 
-> =20
->    reg:
->      minItems: 1
-> @@ -139,6 +143,40 @@ allOf:
->          reg:
->            maxItems: 1
-> =20
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: marvell,cdns-sd6hc
-> +
-> +    then:
-> +      properties:
-> +        marvell,iocell-input-delay-ps:
-> +          description: Delay in ps across the input IO cells
+On 2023/7/17 17:51, Lucas Stach wrote:
+> Hi Jingfeng,
+>
+> Am Freitag, dem 23.06.2023 um 18:08 +0800 schrieb Sui Jingfeng:
+>> From: Sui Jingfeng <suijingfeng@loongson.cn>
+>>
+>> Because it is not used by the etnaviv_gem_new_impl() function,
+>> no functional change.
+>>
+> I think it would make sense to move into the opposite direction: in
+> both callsites of etnaviv_gem_new_impl we immediately call
+> drm_gem_object_init with the size.
 
-Are all of these things marvell specific, or would other (future) sd6hc
-users need these properties too?
+Really?
 
-Thanks,
-Conor.
+But there are multiple call path to the etnaviv_gem_new_impl() function.
 
-> +
-> +        marvell,iocell-output-delay-ps:
-> +          description: Delay in ps across the output IO cells
-> +
-> +        marvell,delay-element-ps:
-> +          description: Delay element in ps used for calculating phy timi=
-ngs
-> +
-> +        marvell,read-dqs-cmd-delay-ps:
-> +          description: Command delay used in HS200 tuning
-> +
-> +        marvell,tune-val-start-ps:
-> +          description: Staring value of data delay used in HS200 tuning
-> +
-> +        marvell,tune-val-step-ps:
-> +          description: Incremental value of data delay used in HS200 tun=
-ing
-> +
-> +      required:
-> +        - marvell,iocell-input-delay-ps
-> +        - marvell,iocell-output-delay-ps
-> +        - marvell,delay-element-ps
-> +        - marvell,read-dqs-cmd-delay-ps
-> +        - marvell,tune-val-start-ps
-> +        - marvell,tune-val-step-ps
-> +
->  unevaluatedProperties: false
-> =20
->  examples:
-> --=20
-> 2.17.1
->=20
 
---fYdzJ3cGoqsmeGH1
-Content-Type: application/pgp-signature; name="signature.asc"
+Code path 1 (PRIME):
 
------BEGIN PGP SIGNATURE-----
+|- etnaviv_gem_prime_import_sg_table()
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLWJBQAKCRB4tDGHoIJi
-0mfaAQDTApvAlStJn77X/J3xS3TnixYN7HlFW7aSinffcJPbewD/W3IbUWlgUyon
-NU+xfPE81NTFNwtq7yiaCuUTfSndmAY=
-=WM19
------END PGP SIGNATURE-----
+|--  etnaviv_gem_new_private()
 
---fYdzJ3cGoqsmeGH1--
+|--- etnaviv_gem_new_impl(dev, size, flags, ops, &obj)
+
+|--- drm_gem_private_object_init(dev, obj, size)
+
+
+Code path 2 (USERPTR):
+
+|- etnaviv_gem_new_userptr()
+
+|--  etnaviv_gem_new_private()
+
+|--- etnaviv_gem_new_impl(dev, size, flags, ops, &obj)
+
+|--- drm_gem_private_object_init(dev, obj, size)
+
+
+Code path 3 (construct a GEM buffer object for the user-space):
+
+|- etnaviv_ioctl_gem_new()
+
+|-- etnaviv_gem_new_handle()
+
+|--- etnaviv_gem_new_impl(dev, size, flags, &etnaviv_gem_shmem_ops, &obj);
+
+|---  drm_gem_object_init(dev, obj, size);
+
+
+If I understand this correctly:
+
+
+Code path 1 is for cross device (and cross driver) buffer-sharing,
+
+Code path 2 is going to share the buffer the userspace,
+
+
+*Only* the code path 3 is to construct a GEM buffer object for the 
+user-space the userspace,
+
+that is say, *only* the code path 3 need to do the backing memory 
+allocation work for the userspace.
+
+thus it need to call drm_gem_object_init() function, which really the 
+shmem do the backing memory
+
+allocation.
+
+
+The code path 1 and the code path 2 do not need the kernel space 
+allocate the backing memory.
+
+Because they are going to share the buffer already allocated by others.
+
+thus, code path 2 and code path 3 should call drm_gem_private_object_init(),
+
+*not* the drm_gem_object_init() function.
+
+
+When import buffer from the a specific KMS driver,
+
+then etnaviv_gem_prime_import_sg_table() will be called.
+
+
+I guess you means that drm_gem_private_object_init() (not the 
+drm_gem_object_init() function)here ?
+
+
+> A better cleanup would be to make
+> use of the size parameter and move this object init call into
+> etnaviv_gem_new_impl.
+
+If I following you guidance, how do I differentiate the cases
+
+when to call drm_gem_private_object_init() not drm_gem_object_init() ?
+
+and when call drm_gem_object_init() not drm_gem_private_object_init()?
+
+
+I don't think you are right here.
+
+>
+> Regards,
+> Lucas
+>
+>> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+>> ---
+>>   drivers/gpu/drm/etnaviv/etnaviv_gem.c | 7 +++----
+>>   1 file changed, 3 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem.c b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+>> index b5f73502e3dd..be2f459c66b5 100644
+>> --- a/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+>> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+>> @@ -542,7 +542,7 @@ static const struct drm_gem_object_funcs etnaviv_gem_object_funcs = {
+>>   	.vm_ops = &vm_ops,
+>>   };
+>>   
+>> -static int etnaviv_gem_new_impl(struct drm_device *dev, u32 size, u32 flags,
+>> +static int etnaviv_gem_new_impl(struct drm_device *dev, u32 flags,
+>>   	const struct etnaviv_gem_ops *ops, struct drm_gem_object **obj)
+>>   {
+>>   	struct etnaviv_gem_object *etnaviv_obj;
+>> @@ -591,8 +591,7 @@ int etnaviv_gem_new_handle(struct drm_device *dev, struct drm_file *file,
+>>   
+>>   	size = PAGE_ALIGN(size);
+>>   
+>> -	ret = etnaviv_gem_new_impl(dev, size, flags,
+>> -				   &etnaviv_gem_shmem_ops, &obj);
+>> +	ret = etnaviv_gem_new_impl(dev, flags, &etnaviv_gem_shmem_ops, &obj);
+>>   	if (ret)
+>>   		goto fail;
+>>   
+>> @@ -627,7 +626,7 @@ int etnaviv_gem_new_private(struct drm_device *dev, size_t size, u32 flags,
+>>   	struct drm_gem_object *obj;
+>>   	int ret;
+>>   
+>> -	ret = etnaviv_gem_new_impl(dev, size, flags, ops, &obj);
+>> +	ret = etnaviv_gem_new_impl(dev, flags, ops, &obj);
+>>   	if (ret)
+>>   		return ret;
+>>   
+
