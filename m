@@ -2,70 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B10E7565ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC097565EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbjGQOLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:11:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
+        id S232019AbjGQOME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231971AbjGQOLl (ORCPT
+        with ESMTP id S231924AbjGQOMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:11:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECE6D3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:11:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 80F9A61086
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:11:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 355FCC433C8;
-        Mon, 17 Jul 2023 14:11:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1689603098;
-        bh=NBAtgqkXsx9MlBOLbsCOWBayr2Tw0LXviJU91cNfA08=;
+        Mon, 17 Jul 2023 10:12:02 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0307138;
+        Mon, 17 Jul 2023 07:11:56 -0700 (PDT)
+Received: from ideasonboard.com (mob-5-90-54-150.net.vodafone.it [5.90.54.150])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CC28F337A;
+        Mon, 17 Jul 2023 16:11:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1689603062;
+        bh=8l7sjCuc/m0acIUfPB6DYxH2Mf8R0n8TyysUiy0vmLk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1xgaXhbuRMyrEPHSh+WJqK37o1UtHFuuYV/rP7DY8qfi3Zw2amnhNkq/lzdM6G6EL
-         JtDK/PMv0rOqS54lR7OAs7gMxuEyRJ5HWWMq7DITuJZYa13SIQkJbfhx8IatMMgXxM
-         chfSRzq46riRGaQJg+ZUZDVoIf3N9pGeFic+QCh8=
-Date:   Mon, 17 Jul 2023 16:11:36 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Luca Boccassi <bluca@debian.org>
-Cc:     Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, lennart@poettering.net,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
-Message-ID: <2023071700-blot-angular-cf6f@gregkh>
-References: <CAMw=ZnRjnxWnmoFuw2prxFS55vAGQ1hpfKeHYFfG5Oa0LB_jYA@mail.gmail.com>
- <2023071233-empirical-overturn-744c@gregkh>
- <CAMw=ZnRRviBNi_LK9VOSUV9PNHe3jurUcLfgLpbTOsp_eE4WyA@mail.gmail.com>
- <2023071350-specked-botanist-6ba8@gregkh>
- <CAMw=ZnQZ9ds3xsa2AZv_F13dB6rR4XzGPrBjJHSga1oU5xRezQ@mail.gmail.com>
- <2023071552-quilt-tranquil-b7bf@gregkh>
- <CAMw=ZnROWgDOiAr1iikTWa7Qm81HoE17NuEdLt8hwGnkKSnoCg@mail.gmail.com>
- <2023071643-broiler-level-afbf@gregkh>
- <ZLUIViihakhyPV1N@redhat.com>
- <CAMw=ZnTOgGcQ70E57H1GEr9yZVG-FVHZZ69JYMFqvsO9mgxdDg@mail.gmail.com>
+        b=i6qEPi5A37JATinZ3Tw3tRzsCH19RlWBfAWT72MqzdW1LFLNEC8rwqTDZrxXuxG4+
+         ZJOa8936/HHlGNC9jLO+rBGWdKO5+oTu+WZni9BtVaWjO/R7Vs6j1Qhi7gjAJ1gM9m
+         mRKAIIjfq6X0O5UqPjFd/xOyaUS0/li0BAXbW0HU=
+Date:   Mon, 17 Jul 2023 16:11:50 +0200
+From:   Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+Subject: Re: [PATCH 1/3] media: subdev: Drop implicit zeroing of stream field
+Message-ID: <rzjtzsvk5q5oobh3khtjopn6ssqyf6akw2z3rswihfec3s3syw@xwjamnaqhplh>
+References: <20230619112707.239565-1-tomi.valkeinen@ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMw=ZnTOgGcQ70E57H1GEr9yZVG-FVHZZ69JYMFqvsO9mgxdDg@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20230619112707.239565-1-tomi.valkeinen@ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,67 +50,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 12:12:18PM +0100, Luca Boccassi wrote:
-> On Mon, 17 Jul 2023 at 10:23, Daniel P. Berrangé <berrange@redhat.com> wrote:
-> >
-> > On Sun, Jul 16, 2023 at 08:28:10PM +0200, Greg KH wrote:
-> > > On Sun, Jul 16, 2023 at 06:41:04PM +0100, Luca Boccassi wrote:
-> > > > On Sat, 15 Jul 2023 at 07:52, Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > If you are not willing to take the time to determine how this proposed
-> > > > > change will affect the kernel developers and infrastructure by doing
-> > > > > some modeling based on our past history, then we have no reason to even
-> > > > > consider accepting this change as you are stating that you have no idea
-> > > > > how it will affect us.
-> > > >
-> > > > There's no need for that to tell you how this will affect you: it will
-> > > > not. Every now and then you'll receive a one-liner patch to apply.
-> > > > What's so terrible about that?
-> >
-> > I think that's not entirely accurate, as this *will* have an impact on
-> > anyone involved in backporting fixes for the kernel stable trees, when
-> > they need to resolve conflicts on the SBAT file. It shouldn't have a
-> > big impact, but we should be honest that it will be a non-zero impact.
-> >
-> > Lets say mainline branch has had 2 security vulnerabilities A and B,
-> > each of which was associated with an increment of the SBAT version
-> > number. The first flaw A changed SBAT from 7 to 8,and then the second
-> > flaw B changed SBAT from 8 to 9.
-> >
-> > If someone wants to backport the fix for bug "B" they will get a
-> > conflict on the SBAT file when cherry-picking the patch. When that
-> > happens they must decide:
-> >
-> >   * It is acceptable to ignore issue A, because it didn't affect
-> >     that branch. The conflict is resolved by having the backported
-> >     patch increase SBAT version from 7 to 9 directly.
-> >
-> >   * It is required to first backport issue A, because that also
-> >     affects that branch. The conflict is resolved by first backporting
-> >     the code fix & SBAT change for A, and then backporting the code
-> >     fix and SBAT change for B. SBAT changes from 7 to 8 to 9 just
-> >     like on master.
-> >
-> > IOW whomever is doing backport patches for stable needs to understand
-> > the semantics of SBAT and how to resolve conflicts on it. If they get
-> > this wrong, then it breaks the protection offered by SBAT, which would
-> > then require a 3rd SBAT change to fix the mistake.
-> >
-> > This likely means that stable tree maintainers themselves need to
-> > understand the SBAT change rules, so they can review conflict resolution
-> > for any proposed changes, to sanity check what is being proposed.
-> 
-> This can be solved by just not changing the generation id in the same
-> patch that fixes a bug, but as the last step in a series, which
-> doesn't add the cc: stable nor the other tags. If we want to bump the
-> generation id in a stable branch, we'll then have to send an
-> appropriately crafted patch targeted at the right place. That way even
-> if the fixes get backported, there is no additional burden on any
-> kernel maintainer.
+Hi Tomi
 
-Who exactly will be "we" in this process and who will be funding this
-effort to ensure that they keep doing this work for the next 20+ years?
+On Mon, Jun 19, 2023 at 02:27:05PM +0300, Tomi Valkeinen wrote:
+> Now that the kernel drivers have been fixed to initialize the stream
+> field, and we have the client capability which the userspace uses to say
 
-thanks,
+Not sure I got this. Isn't the capabilities flag intended for drivers
+to tell userspace it support streams ? This seems to suggest it is
+userspace setting it ?
 
-greg k-h
+> it has initialized the stream field, we can drop the implicit zeroing of
+> the stream field in the various check functions.
+>
+
+I guess this is safe, but I'm not sure why it wasn't before. If a
+driver doesn't support streams (!(sd->flags & V4L2_SUBDEV_FL_STREAMS))
+then it should have ignored the 'stream' field even if it wasn't
+zeroed. So I suspect I am missing the reason for zeroing in first
+place...
+
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+>  drivers/media/v4l2-core/v4l2-subdev.c | 15 ---------------
+>  1 file changed, 15 deletions(-)
+>
+> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
+> index 2ec179cd1264..c1ac6d7a63d2 100644
+> --- a/drivers/media/v4l2-core/v4l2-subdev.c
+> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
+> @@ -200,9 +200,6 @@ static inline int check_format(struct v4l2_subdev *sd,
+>  	if (!format)
+>  		return -EINVAL;
+>
+> -	if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS))
+> -		format->stream = 0;
+> -
+>  	return check_which(format->which) ? : check_pad(sd, format->pad) ? :
+>  	       check_state(sd, state, format->which, format->pad, format->stream);
+>  }
+> @@ -230,9 +227,6 @@ static int call_enum_mbus_code(struct v4l2_subdev *sd,
+>  	if (!code)
+>  		return -EINVAL;
+>
+> -	if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS))
+> -		code->stream = 0;
+> -
+>  	return check_which(code->which) ? : check_pad(sd, code->pad) ? :
+>  	       check_state(sd, state, code->which, code->pad, code->stream) ? :
+>  	       sd->ops->pad->enum_mbus_code(sd, state, code);
+> @@ -245,9 +239,6 @@ static int call_enum_frame_size(struct v4l2_subdev *sd,
+>  	if (!fse)
+>  		return -EINVAL;
+>
+> -	if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS))
+> -		fse->stream = 0;
+> -
+>  	return check_which(fse->which) ? : check_pad(sd, fse->pad) ? :
+>  	       check_state(sd, state, fse->which, fse->pad, fse->stream) ? :
+>  	       sd->ops->pad->enum_frame_size(sd, state, fse);
+> @@ -283,9 +274,6 @@ static int call_enum_frame_interval(struct v4l2_subdev *sd,
+>  	if (!fie)
+>  		return -EINVAL;
+>
+> -	if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS))
+> -		fie->stream = 0;
+> -
+>  	return check_which(fie->which) ? : check_pad(sd, fie->pad) ? :
+>  	       check_state(sd, state, fie->which, fie->pad, fie->stream) ? :
+>  	       sd->ops->pad->enum_frame_interval(sd, state, fie);
+> @@ -298,9 +286,6 @@ static inline int check_selection(struct v4l2_subdev *sd,
+>  	if (!sel)
+>  		return -EINVAL;
+>
+> -	if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS))
+> -		sel->stream = 0;
+> -
+>  	return check_which(sel->which) ? : check_pad(sd, sel->pad) ? :
+>  	       check_state(sd, state, sel->which, sel->pad, sel->stream);
+>  }
+> --
+> 2.34.1
+>
