@@ -2,57 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D89756B46
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C280C756B47
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbjGQSI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 14:08:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39338 "EHLO
+        id S229948AbjGQSIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 14:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjGQSI1 (ORCPT
+        with ESMTP id S229449AbjGQSIm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:08:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDB58E;
-        Mon, 17 Jul 2023 11:08:27 -0700 (PDT)
+        Mon, 17 Jul 2023 14:08:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B7E6AF;
+        Mon, 17 Jul 2023 11:08:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 97AC3611BF;
-        Mon, 17 Jul 2023 18:08:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 675CDC433C7;
-        Mon, 17 Jul 2023 18:08:24 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C47B2611BF;
+        Mon, 17 Jul 2023 18:08:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39BE3C433C8;
+        Mon, 17 Jul 2023 18:08:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689617306;
-        bh=UT9Gp/tMRg3RNCizwduBCQGhjAx6Wg7j44XwEdN/o8s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CsotMPwEhQEWEX27c6AhTe2UvFJoUAcn//oytO90CB57yV/IcO3YRCWBQapnJEvCi
-         7r8lGqiays1uhvk0OZSxSzkLcUuoLDzQvrMo5MsveGHQlP4mv3jhmles1X03HtVB55
-         CvJCWeWycTSx9tQzrvlFaHIw9naCXHEReXmxWy67rt6bYujcO1xqT6alBl0upqozrY
-         hLj1qTHyPiUs/RbkJnv50di6/hhtBi+0ENtf9rl18DDtbc2tdSWHfKl/VXkbgi+rkZ
-         p0+UK5wmjGNukuqDt5Ject6D+8pEa5kc3ci9NyQFBfe6WGZgtVstxU27X7La1k0R27
-         5vkr72xSCFjdQ==
-Date:   Mon, 17 Jul 2023 19:08:21 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64/ptrace: Fix an error handling path in
- sve_set_common()
-Message-ID: <3f78a04c-bafe-4def-8eeb-734589fdaaa0@sirena.org.uk>
-References: <aa61301ed2dfd079b74b37f7fede5f179ac3087a.1689616473.git.christophe.jaillet@wanadoo.fr>
+        s=k20201202; t=1689617321;
+        bh=j3LiqcbdyR4pUyr/8vAguOUbJf46aGe4ZoMPIdgaxWo=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=BgScox2CtKAHHP8gx5IkjM1adHNRwbtYKX9xLv9nd8Eol32/Q5xbv1JvGGa72BPDk
+         Bc1Icg56OA8wJjhpuScHnGmRA+r8HLsT0CpB6h0KvyFJAzIxHSlwePIzOTVjLwS+vu
+         EL0BKmrpomtOeVICBuT3GwCOQ1IX0NkVnqhldLkC1PyCJyzc4s7vcuQn+GBRzjTDet
+         ans4LI8SPV7NFVrcRsQw/aQIB/uvdgikxxfdn1V5demSfKraYYSwIxRgBfTNVCgOYw
+         j6hTX4tAjOThjfTCo0Y5hqe0+pKavBrbV5xErXVEFPZoV+I0I760Y2ccFESgKsoZPW
+         Td9yCZisnCfVg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E011ACE03F1; Mon, 17 Jul 2023 11:08:40 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 11:08:40 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org
+Subject: [PATCH rcu 0/13] RCU update-side scalability test updates for v6.6
+Message-ID: <c5a593d3-abe0-40fd-92bd-28d269042aa1@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NPez/l1+KHinqP20"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aa61301ed2dfd079b74b37f7fede5f179ac3087a.1689616473.git.christophe.jaillet@wanadoo.fr>
-X-Cookie: Not a flying toy.
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,46 +56,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello!
 
---NPez/l1+KHinqP20
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This series contains update-side RCU scalability tests:
 
-On Mon, Jul 17, 2023 at 07:55:05PM +0200, Christophe JAILLET wrote:
-> All error handling paths go to 'out', except this one. Be consistent and
-> also branch to 'out' here.
+1.	Permit blocking delays between writers.
 
-This looks like a reasonable cleanup.
+2.	Add CONFIG_PREEMPT_DYNAMIC=n to NOPREEMPT scenario.
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
+3.	Fix gp_async_max typo: s/reader/writer/.
 
-> Fixes: e12310a0d30f ("arm64/sme: Implement ptrace support for streaming mode SVE registers")
+4.	Fix uninitalized use of wait_queue_head_t, courtesy of Waiman
+	Long.
 
->  		default:
->  			WARN_ON_ONCE(1);
-> -			return -EINVAL;
-> +			ret = -EINVAL;
-> +			goto out;
->  		}
+5.	Add minruntime module parameter.
 
-It's not exactly a fix though (probably not worth backporting for
-example, which tends to get keyed off the fixes tag) since something's
-incredibly confused if this code path ever gets executed, we're setting
-an unknown SVE vector type hence the WARN_ON() there.
+6.	Add a "jiffies" test.
 
---NPez/l1+KHinqP20
-Content-Type: application/pgp-signature; name="signature.asc"
+7.	Print out full set of module parameters.
 
------BEGIN PGP SIGNATURE-----
+8.	Print out full set of kfree_rcu parameters.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS1g5QACgkQJNaLcl1U
-h9A8/Af+JXJu75jwI/gRy39NDWPw+FkhjHQRmj8kzHLuDTOiij8wPld/G/DbE7Hi
-xcZTeLirHTQRX38WBHssHbpyMh8PCsr9UPtmAGNY74WARmvFlNEli0FExVge0DIj
-fPeJ5ljgrq7u9DDF+p01HXAFogOdh4fx5sXRbnJJUdDe9ltAiE2O2guCAkro/p0K
-Da5c0LsGYzMqupJXernIg9rA8E/EVDKoFLweq3CHliRRlsDsSKQAdSffK1r50rW6
-r1brrHk7vtOIzlxzRq8AEIOGigxtj+tSwVyCjxsfcarq0JZRbm/CmnQis2dbX6TZ
-asCtZu1AqqePGzNtecVUS4FG/m6A7g==
-=i1qh
------END PGP SIGNATURE-----
+9.	Measure grace-period kthread CPU time.
 
---NPez/l1+KHinqP20--
+10.	Add kfree_by_call_rcu and kfree_mult to documentation.
+
+11.	Print grace-period kthread CPU time, if recorded.
+
+12.	Measure RCU Tasks Trace grace-period kthread CPU time.
+
+13.	Add RCU Tasks Rude testing.
+
+14.	fix building with RCU_TINY, courtesy of Arnd Bergmann.
+
+15.	Move rcu_scale_writer() schedule_timeout_uninterruptible()
+	to _idle(), courtesy of Zqiang.
+
+16.	Add CONFIG_PREEMPT_DYNAMIC=n to TRACE01 scenario.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.txt                  |   17 +-
+ b/Documentation/admin-guide/kernel-parameters.txt                |    5 
+ b/include/linux/rcupdate_trace.h                                 |    1 
+ b/kernel/rcu/rcu.h                                               |    3 
+ b/kernel/rcu/rcuscale.c                                          |    4 
+ b/kernel/rcu/refscale.c                                          |    3 
+ b/kernel/rcu/tasks.h                                             |    6 
+ b/tools/testing/selftests/rcutorture/bin/kvm-recheck-rcuscale.sh |    8 
+ b/tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon   |    2 
+ b/tools/testing/selftests/rcutorture/configs/rcuscale/TRACE01    |    2 
+ b/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT  |    1 
+ kernel/rcu/rcu.h                                                 |   17 +-
+ kernel/rcu/rcuscale.c                                            |   83 +++++++++-
+ kernel/rcu/refscale.c                                            |   34 +++-
+ kernel/rcu/tasks.h                                               |   13 +
+ 15 files changed, 180 insertions(+), 19 deletions(-)
