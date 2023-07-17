@@ -2,121 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5862D75694E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 18:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F22756952
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 18:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbjGQQgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 12:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44656 "EHLO
+        id S229619AbjGQQhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 12:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231627AbjGQQgK (ORCPT
+        with ESMTP id S229583AbjGQQhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 12:36:10 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AA4E7F
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:36:09 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbca8935bfso43479335e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:36:09 -0700 (PDT)
+        Mon, 17 Jul 2023 12:37:18 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03731B6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:37:16 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-3460770afe2so412605ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:37:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689611768; x=1692203768;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1689611836; x=1690216636;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/BHlMzcHYoIQ/5F2lC99n1rk5D4NCewvebB3dqx2z9A=;
-        b=A/W5XRDhCLcF15wQAwDxezJ+NNw+om7iiYhAd64k/dGNhSkEKU2NRPeiPeIpWH1+C4
-         RgFCIZf0ICfWgH+H22jw0zzAU5r7OV3MCQWh+hSQzV4foAfybe6Vx5g2BO2iWQgHZ+w1
-         QbWCVX9qXxfbCMecyyij6V36Ym+3HIqZ6Z9QULePNMc4ka2o9aoXukLMjaXXlvVgCvxD
-         M/ztYFdQV+pZMCydcuLHuYmT0IyYantJEd6Wmn0YReQpfG8ZzGGKrPIRDn1lhom4mpxU
-         xwHtKEBYDkea2rnTjAZ644g4vAAqGaW0ICM4kOJLQUqSgeAvqmtEOQMwwfsRc0JEjjWY
-         /xcA==
+        bh=9uIEdBE5/V8mtrIJ86bMEt1YlGPQReRHT+9wS4K4FB4=;
+        b=OWHrFN2QTW3UJN0pNRFGTth7sEd5Dw7sjggstuUU7FV9QMT2n63OgPRS5VJJVeGyDl
+         Z1aCxXXSSL7lbOeKaqH9uzgIZoOd3a4cSFlQWY8DAAVk2hVhBktYxB3Cjl0Qr6hg0f2N
+         cbxxuZL/fYo6GBCiyMmZc7+utv9P9s70Y7FI287tO+3wr0A+ZGEOlF49j/9FY9aMyq98
+         SQmF6dsU04+/lJBQcBsO5YwCCOp43Pw83PRsVPqbFJUbzaSBmheT5yPv+dkXMPda7xZ+
+         8g2BcY5k4LYQ+33V19zi2oOHswaaMCCFMEfRQKmssQNIZE4Z/gLXt9l18MBgmieiGH90
+         hTug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689611768; x=1692203768;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689611836; x=1690216636;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/BHlMzcHYoIQ/5F2lC99n1rk5D4NCewvebB3dqx2z9A=;
-        b=JqdeLewKkM8RRNq0M1T7+Irel5opesyJ0Ng5GBsXJaXcikyELSYutF0lN1B/7O9B0X
-         dyawV6yGDYRBjnEiCZodMX4QAhEyiCr705r15QNCwXcV01/PN4Ip5mK5X0lj2m/snZi9
-         oKBtOXn/FYD9U/ACTjYjB4V4Z8ezw2dOXHifOXNiv7fpRTF3zvIVqcx4PbPog7WMgufc
-         IeeHm4wJYFuWwM7KYbE8s1onP8d6q/g3AVKXf6dgKuFUcZGkSTa/zOO021swPKdfE33u
-         ffK+XY000tgLNFPWwat0BHOorDlTN5hTYc+ZLKyfvsBhdmAvKihLCDN5sINkhXKn17z8
-         58NQ==
-X-Gm-Message-State: ABy/qLYgSMVImi55nLVKb4naGg5ROmBUUXX7KsVvGezG4h3okOYejRrQ
-        yukRvih2onkTh7PyWAVjd/YZyg==
-X-Google-Smtp-Source: APBJJlE8De/7VCFQjN/m+Z6kzJXg7MDef5Bg0VJQgMK60QU9AMr+lhTdH3I9BQOr+2oO/tTFBfa/lA==
-X-Received: by 2002:a05:600c:247:b0:3fb:b6fa:9871 with SMTP id 7-20020a05600c024700b003fbb6fa9871mr9299500wmj.14.1689611767777;
-        Mon, 17 Jul 2023 09:36:07 -0700 (PDT)
-Received: from 1.. ([79.115.63.146])
-        by smtp.gmail.com with ESMTPSA id t15-20020a1c770f000000b003fb40f5f553sm8401774wmi.31.2023.07.17.09.36.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 09:36:07 -0700 (PDT)
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-To:     michael@walle.cc, pratyush@kernel.org
-Cc:     miquel.raynal@bootlin.com, ichard@nod.at,
-        Takahiro.Kuwano@infineon.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tudor Ambarus <tudor.ambarus@linaro.org>,
-        stable@vger.kernel.org
-Subject: [PATCH 4/4] mtd: spi-nor: spansion: make sure op does not contain garbage (2)
-Date:   Mon, 17 Jul 2023 19:36:00 +0300
-Message-Id: <20230717163600.29087-4-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230717163600.29087-1-tudor.ambarus@linaro.org>
-References: <20230717163600.29087-1-tudor.ambarus@linaro.org>
+        bh=9uIEdBE5/V8mtrIJ86bMEt1YlGPQReRHT+9wS4K4FB4=;
+        b=Sq8+8yv+nj8g2ucUISpBJpcgeh6rTmhgI/bkEA8a3BiHUBubHly69wgK990n/b/b4h
+         nXk7jHMfQ4KyL+YuTLVQLRhmWK5UzMUVL+uJgLDzgH+/1fqyccwOsXACZXXT1Enllp01
+         Qowa0+ra5pu2Rx0gItmrBbPpubtwY5goHn4yeHBJm29US22JcEtUf/teKin7nYTbOHF8
+         bvjEldK203+jy8QQ2+vh792qfNESNT9hXRgffnEFSWtzmci7DNqujkrmz13U+C9CcNEl
+         Tk/FQk2mwbg2P9gBdei52VPevSr14WPG0PxuxxDqAVlayMOMJHtvqreRbKMQrhuI2rIz
+         rZNw==
+X-Gm-Message-State: ABy/qLbgNOFLrQLqqnfyGCOniqODzvAEmw/63ezxg4saVyx3QKPc2gP/
+        ncYOqL3/d2oIV2C+nQ0eqIGkXS9ck4DKk9ltyh34xw==
+X-Google-Smtp-Source: APBJJlGMfnLl/VH8ZDf7IouzF+AemA7yqLQkI7oavRJWnulUuwCOZ3ikGsNQPfEomUZ5dTddNqkXnqp2ix1LaTkk0TQ=
+X-Received: by 2002:a05:6e02:1c2e:b0:348:72eb:150d with SMTP id
+ m14-20020a056e021c2e00b0034872eb150dmr599165ilh.21.1689611836063; Mon, 17 Jul
+ 2023 09:37:16 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1624; i=tudor.ambarus@linaro.org; h=from:subject; bh=MA05hwZg2zr6d+O9X5q1HLg6NFLm0xJVJqTNBEWaguo=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBktW3wRTw4YeCaxFZJEwY09jToFFH2GI3KkwVoZ un8raZaMTyJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZLVt8AAKCRBLVU9HpY0U 6V5ACADCTsIJ6xwp2xykxCJ4F4a1wBs4RbXl5Dw4ChKIOmWeFsuQxGp+9TopB8e5pBLk5swhaTU KY+obbOAy8ujF5CypB0k9CxxTyGBxaMiSwySSEQZacAWcQviBXILqdJr2GJfNNqwXz7rF/0Q6op szH8UmQZ2UwDRiaVNNdQ81aIqhwT/8Ps/+bO4iRA9f12lXZDA2cikUrG9Yy89EjaoYJwIjplRYd grSzjoxXLO997T/t1fEa7+VA5YbR1pWqeCdd/OTu8mr8La8m35LY500cJ/94MyLNKdIC3OHtFcJ tQK+5AqFBsYOlyrnKWJHo8Dqy3TxY7XixYy8ASrstS7nmxJf
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230715005405.3689586-1-rananta@google.com> <20230715005405.3689586-4-rananta@google.com>
+ <199d18de-1214-7683-b87a-03cc7e49719a@redhat.com>
+In-Reply-To: <199d18de-1214-7683-b87a-03cc7e49719a@redhat.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Mon, 17 Jul 2023 09:37:04 -0700
+Message-ID: <CAJHc60zhVco3uTq97vDHMk8cgg1psPtwHT6MN1eKP1Yr18d9cw@mail.gmail.com>
+Subject: Re: [PATCH v6 03/11] KVM: Allow range-based TLB invalidation from
+ common code
+To:     Shaoqin Huang <shahuang@redhat.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialise local struct spi_mem_op with all zeros at declaration,
-or by memset before the second use, in order to avoid using garbage
-data for fields that are not explicitly set afterwards.
+On Mon, Jul 17, 2023 at 4:40=E2=80=AFAM Shaoqin Huang <shahuang@redhat.com>=
+ wrote:
+>
+>
+>
+> On 7/15/23 08:53, Raghavendra Rao Ananta wrote:
+> > From: David Matlack <dmatlack@google.com>
+> >
+> > Make kvm_flush_remote_tlbs_range() visible in common code and create a
+> > default implementation that just invalidates the whole TLB.
+> >
+> > This paves the way for several future features/cleanups:
+> >
+> >   - Introduction of range-based TLBI on ARM.
+> >   - Eliminating kvm_arch_flush_remote_tlbs_memslot()
+> >   - Moving the KVM/x86 TDP MMU to common code.
+> >
+> > No functional change intended.
+> >
+> > Signed-off-by: David Matlack <dmatlack@google.com>
+> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > Reviewed-by: Gavin Shan <gshan@redhat.com>
+> > ---
+> >   arch/x86/include/asm/kvm_host.h |  3 +++
+> >   arch/x86/kvm/mmu/mmu.c          |  9 ++++-----
+> >   arch/x86/kvm/mmu/mmu_internal.h |  3 ---
+> >   include/linux/kvm_host.h        |  9 +++++++++
+> >   virt/kvm/kvm_main.c             | 13 +++++++++++++
+> >   5 files changed, 29 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm=
+_host.h
+> > index a2d3cfc2eb75..08900afbf2ad 100644
+> > --- a/arch/x86/include/asm/kvm_host.h
+> > +++ b/arch/x86/include/asm/kvm_host.h
+> > @@ -1804,6 +1804,9 @@ static inline int kvm_arch_flush_remote_tlbs(stru=
+ct kvm *kvm)
+> >               return -ENOTSUPP;
+> >   }
+> >
+> > +#define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS_RANGE
+> > +int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm, gfn_t start_gfn,=
+ u64 pages);
+> > +
+> >   #define kvm_arch_pmi_in_guest(vcpu) \
+> >       ((vcpu) && (vcpu)->arch.handling_intr_from_guest)
+> >
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index ec169f5c7dce..aaa5e336703a 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -278,16 +278,15 @@ static inline bool kvm_available_flush_remote_tlb=
+s_range(void)
+> >       return kvm_x86_ops.flush_remote_tlbs_range;
+> >   }
+> >
+> > -void kvm_flush_remote_tlbs_range(struct kvm *kvm, gfn_t start_gfn,
+> > -                              gfn_t nr_pages)
+> > +int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm, gfn_t start_gfn,=
+ u64 pages)
+> >   {
+> >       int ret =3D -EOPNOTSUPP;
+> >
+> >       if (kvm_x86_ops.flush_remote_tlbs_range)
+> >               ret =3D static_call(kvm_x86_flush_remote_tlbs_range)(kvm,=
+ start_gfn,
+> > -                                                                nr_pag=
+es);
+> > -     if (ret)
+> > -             kvm_flush_remote_tlbs(kvm);
+> > +                                                                     p=
+ages);
+> This will be good if parameter pages aligned with parameter kvm.
+>
+Agreed, but pulling 'pages' above brings the char count to 83. If
+that's acceptable, I'm happy to do it in v7.
 
-Fixes: b6b23833fc42 ("mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and fixups")
-Cc: stable@vger.kernel.org
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- drivers/mtd/spi-nor/spansion.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index c03445e46d56..7485b708158f 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -220,7 +220,7 @@ static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
- 
- static int cypress_nor_quad_enable_volatile_reg(struct spi_nor *nor, u64 addr)
- {
--	struct spi_mem_op op;
-+	struct spi_mem_op op = {};
- 	u8 addr_mode_nbytes = nor->params->addr_mode_nbytes;
- 	u8 cfr1v_written;
- 	int ret;
-@@ -237,6 +237,7 @@ static int cypress_nor_quad_enable_volatile_reg(struct spi_nor *nor, u64 addr)
- 		return 0;
- 
- 	/* Update the Quad Enable bit. */
-+	memset(&op, 0, sizeof(op));
- 	nor->bouncebuf[0] |= SPINOR_REG_CYPRESS_CFR1_QUAD_EN;
- 	op = (struct spi_mem_op)
- 		CYPRESS_NOR_WR_ANY_REG_OP(addr_mode_nbytes, addr, 1,
-@@ -248,6 +249,7 @@ static int cypress_nor_quad_enable_volatile_reg(struct spi_nor *nor, u64 addr)
- 	cfr1v_written = nor->bouncebuf[0];
- 
- 	/* Read back and check it. */
-+	memset(&op, 0, sizeof(op));
- 	op = (struct spi_mem_op)
- 		CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes, addr, 0,
- 					  nor->bouncebuf);
--- 
-2.34.1
-
+Thank you.
+Raghavendra
+> Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> > +
+> > +     return ret;
+> >   }
+> >
+> >   static gfn_t kvm_mmu_page_get_gfn(struct kvm_mmu_page *sp, int index)=
+;
+> > diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_int=
+ernal.h
+> > index d39af5639ce9..86cb83bb3480 100644
+> > --- a/arch/x86/kvm/mmu/mmu_internal.h
+> > +++ b/arch/x86/kvm/mmu/mmu_internal.h
+> > @@ -170,9 +170,6 @@ bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm=
+,
+> >                                   struct kvm_memory_slot *slot, u64 gfn=
+,
+> >                                   int min_level);
+> >
+> > -void kvm_flush_remote_tlbs_range(struct kvm *kvm, gfn_t start_gfn,
+> > -                              gfn_t nr_pages);
+> > -
+> >   /* Flush the given page (huge or not) of guest memory. */
+> >   static inline void kvm_flush_remote_tlbs_gfn(struct kvm *kvm, gfn_t g=
+fn, int level)
+> >   {
+> > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> > index e3f968b38ae9..a731967b24ff 100644
+> > --- a/include/linux/kvm_host.h
+> > +++ b/include/linux/kvm_host.h
+> > @@ -1359,6 +1359,7 @@ int kvm_vcpu_yield_to(struct kvm_vcpu *target);
+> >   void kvm_vcpu_on_spin(struct kvm_vcpu *vcpu, bool yield_to_kernel_mod=
+e);
+> >
+> >   void kvm_flush_remote_tlbs(struct kvm *kvm);
+> > +void kvm_flush_remote_tlbs_range(struct kvm *kvm, gfn_t gfn, u64 pages=
+);
+> >
+> >   #ifdef KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE
+> >   int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int m=
+in);
+> > @@ -1486,6 +1487,14 @@ static inline int kvm_arch_flush_remote_tlbs(str=
+uct kvm *kvm)
+> >   }
+> >   #endif
+> >
+> > +#ifndef __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS_RANGE
+> > +static inline int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm,
+> > +                                                gfn_t gfn, u64 pages)
+> > +{
+> > +     return -EOPNOTSUPP;
+> > +}
+> > +#endif
+> > +
+> >   #ifdef __KVM_HAVE_ARCH_NONCOHERENT_DMA
+> >   void kvm_arch_register_noncoherent_dma(struct kvm *kvm);
+> >   void kvm_arch_unregister_noncoherent_dma(struct kvm *kvm);
+> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > index d6b050786155..804470fccac7 100644
+> > --- a/virt/kvm/kvm_main.c
+> > +++ b/virt/kvm/kvm_main.c
+> > @@ -366,6 +366,19 @@ void kvm_flush_remote_tlbs(struct kvm *kvm)
+> >   }
+> >   EXPORT_SYMBOL_GPL(kvm_flush_remote_tlbs);
+> >
+> > +void kvm_flush_remote_tlbs_range(struct kvm *kvm, gfn_t gfn, u64 pages=
+)
+> > +{
+> > +     if (!kvm_arch_flush_remote_tlbs_range(kvm, gfn, pages))
+> > +             return;
+> > +
+> > +     /*
+> > +      * Fall back to a flushing entire TLBs if the architecture range-=
+based
+> > +      * TLB invalidation is unsupported or can't be performed for what=
+ever
+> > +      * reason.
+> > +      */
+> > +     kvm_flush_remote_tlbs(kvm);
+> > +}
+> > +
+> >   static void kvm_flush_shadow_all(struct kvm *kvm)
+> >   {
+> >       kvm_arch_flush_shadow_all(kvm);
+>
+> --
+> Shaoqin
+>
