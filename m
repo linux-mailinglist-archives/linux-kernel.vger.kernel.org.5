@@ -2,123 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAC1756160
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00FA756166
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbjGQLTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 07:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
+        id S229669AbjGQLTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 07:19:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbjGQLTC (ORCPT
+        with ESMTP id S229690AbjGQLTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 07:19:02 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7084E48;
-        Mon, 17 Jul 2023 04:19:00 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-993d1f899d7so635098066b.2;
-        Mon, 17 Jul 2023 04:19:00 -0700 (PDT)
+        Mon, 17 Jul 2023 07:19:33 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3120810D3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:19:27 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b8392076c9so49956111fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:19:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689592739; x=1692184739;
+        d=timesys-com.20221208.gappssmtp.com; s=20221208; t=1689592765; x=1692184765;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QijUibtG40+t5LDtP3Zsswxs5UnjGxpVCNjyPMZLJl8=;
-        b=iq1FnouNw8hu78GVyoQBK0Cv8f50DC2LDmg0E/jmuE7TL2mhCtlpiBtRW3xMyfbiCP
-         s7Um1pL125YQciF26uaBkmJ7Sv3OseJHp+TXcKplLPdFIksRY7LGvs4h6XDKkhAqJKDj
-         1cVJkAHafFI9I8eVtDFdAzjoVq2BV2qTegcJh80HbIKh1fcXi0mXS4gUINK9gDtvx9lb
-         1BggqdiatGURBcKH9MqIzGcMqrzDA2HmJ7LZg+Uxd42pdVngIwYZvd3bvSUzc6gp29zu
-         /wppIfELH8hKqxugJ7ig069072Mlua7HtiKIVE8l/eAqlH7Pv/Qwk3sVouIZ+OkJGU3J
-         ehGg==
+        bh=NP+nVMJjM1Cb7BnxGt2NHvMg7jOq0WlJMksYF5HiLBg=;
+        b=rj025K+C5Z8BE5/YeGBiuH67TsN9ZX0VWnpkXMlbJGWRFWA7fsAqeVxzWp5qVWkG+o
+         pKLE3QgGPjIIIKbq/4imgPdiBukFyVUQM2WSRBis10DSvld98y0jzXBs52dQnS2gMqW4
+         e3pZ9giZgOD88+JCfXi5xAj1PqUhQgFez1ju7pNvDSOI8sMLcyUq4wOVJ2xrlTnl9z8y
+         I1jWJf4EvHo/9Db6L5/jo5ja0RdPD5pPOy1f72RDjAzA6Moe343BLlVGakPJ6DswXJ86
+         Ht/bh+bom0M98bkyd9g8LGtyLsmvJSot8J3P8KsSDyB6dIuJijn0GfiCJDjGOA/VL7F0
+         l88Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689592739; x=1692184739;
+        d=1e100.net; s=20221208; t=1689592765; x=1692184765;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QijUibtG40+t5LDtP3Zsswxs5UnjGxpVCNjyPMZLJl8=;
-        b=W46qXIbH2njzUpLEszAq3bgHyfQdUEWZ105JAZP8xBBxVbj3ebpx7hkXv+JRBaes/g
-         +ESS1577aGyyPhjT9KTZnVT0Sz/E0RPNCR9DPa2fB80mfnf2Mv9xYWEFDj9Y/3YFaeB5
-         pnyJwwE0A6jj03e+1v3rc1LbgObf6ezpmEBoN88p6m0QHkuCT2fsPUeC8ujkfRN4BapQ
-         HeRsO7z7+93eg2/5URrz6cDiFPAp9FRP9vgivlmNdjdfc5DlvMl7BsdbifPbtlqNJ80T
-         IGj1FRmbHmmSUEuIkdORJdh79d9j7dJgVG962ZrAEPop12gfCf2cXdWtUiE1vVHpxn9L
-         oCwQ==
-X-Gm-Message-State: ABy/qLYfzUUYvqzaqrV3AziMI0w5S7GfquJLC6NyGxmL0SNzwNUrYcLc
-        rXSs2K/nbCSIZEhSaMfr67T6R6NOAVy7W3j1dOw=
-X-Google-Smtp-Source: APBJJlFgxJ9kqESM2vJO7AKAUkjY4G9ICt4eSFqnKKc+eDe0rOvAKel/IRN6zzvlQGEnfjkZIXlQpd77OnW6Y8Ra2Yo=
-X-Received: by 2002:a17:906:e213:b0:992:48b7:99e3 with SMTP id
- gf19-20020a170906e21300b0099248b799e3mr10396878ejb.63.1689592739105; Mon, 17
- Jul 2023 04:18:59 -0700 (PDT)
+        bh=NP+nVMJjM1Cb7BnxGt2NHvMg7jOq0WlJMksYF5HiLBg=;
+        b=GGYHpRJ+sw05VNmMajZcIWdkD1qKl7NfPsGRs5DGCGTZi3vira+M2kF9Hk03qmnpRz
+         O8rKkvIX4Z361tNL5OD0WEbirW+24YumNNt2/rAfhyBWa7kH8DuywbhBRSCreyY7JG7G
+         IN7q2t3ciVTuyFu35cOVphsrr9qkz0vUrXcaRWhU/qHJkgTJluL1DwtqD2Latg8qLluo
+         L0D7LWI35WLLRP5Z/7LCQzyj55+qhH7ddkc4Y9j4nOpLSUnKkeERpJePotatPtizYENw
+         HzvfT0WoH2nstoPknONkzJ7jtjmF3VISA7wd6BCw8oO6jGvl48j5mFIgo6ztwZQLFN2G
+         5g9g==
+X-Gm-Message-State: ABy/qLYdL1NLQ/5pn5VUHMgQRg2QmzFuEpc3zMe2QlZ54e63Qne0joJH
+        Rc9klzTq3JmCW57usKeKeTk7AIwQp6SMIaIMRoE3VGaliHYEw5e9
+X-Google-Smtp-Source: APBJJlH4R5Xe/E1R4Dc/dga5xiLgfWGkDb3SuDMXjnAI7QZGce5yHzVql6xy4ermoZmvw25KyymPvezpYrkHnpuFqgc=
+X-Received: by 2002:a2e:3603:0:b0:2b6:d536:1bba with SMTP id
+ d3-20020a2e3603000000b002b6d5361bbamr8490425lja.18.1689592765299; Mon, 17 Jul
+ 2023 04:19:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230715010407.1751715-1-fabrizio.castro.jz@renesas.com>
- <20230715010407.1751715-8-fabrizio.castro.jz@renesas.com> <CAMuHMdUzxQfi2w8dyF8gCitkSKkw_fRE074EUuB+tHKn8WM3=w@mail.gmail.com>
- <TYWPR01MB8775869576E4B3F0FEFCF3DCC23BA@TYWPR01MB8775.jpnprd01.prod.outlook.com>
-In-Reply-To: <TYWPR01MB8775869576E4B3F0FEFCF3DCC23BA@TYWPR01MB8775.jpnprd01.prod.outlook.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 17 Jul 2023 14:18:22 +0300
-Message-ID: <CAHp75VdNvWS04VN58r5VcSJskeVJF0g0_spSRb8f0_OP1P04QQ@mail.gmail.com>
-Subject: Re: [PATCH 07/10] spi: rzv2m-csi: Switch to using {read,write}s{b,w}
-To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mark Brown <broonie@kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Biju Das <biju.das@bp.renesas.com>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>
+References: <20230713080807.69999-1-frank.li@vivo.com> <20230713080807.69999-49-frank.li@vivo.com>
+In-Reply-To: <20230713080807.69999-49-frank.li@vivo.com>
+From:   Angelo Dureghello <angelo.dureghello@timesys.com>
+Date:   Mon, 17 Jul 2023 13:18:39 +0200
+Message-ID: <CALJHbkA1HCubm5b31CQmHtX-UC29LfgoafyzwxpHFydttdOe+g@mail.gmail.com>
+Subject: Re: [PATCH 49/58] mmc: sdhci-esdhc-mcf: Convert to platform remove
+ callback returning void
+To:     Yangtao Li <frank.li@vivo.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 1:36=E2=80=AFPM Fabrizio Castro
-<fabrizio.castro.jz@renesas.com> wrote:
-> > From: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Subject: Re: [PATCH 07/10] spi: rzv2m-csi: Switch to using
-> > {read,write}s{b,w}
-> > On Sat, Jul 15, 2023 at 3:04=E2=80=AFAM Fabrizio Castro
-> > <fabrizio.castro.jz@renesas.com> wrote:
+Hi Yangtao,
 
-...
+thanks,
 
-> > According to the hardware documentation[1], the access size for both
-> > the
-> > CSI_OFIFO and CSI_IFIFO registers is 32 bits, so you must use writel()
-> > resp. readl().  So please check with the hardware people first.
-> >
-> > [1] RZ/V2M User's Manual Hardware, Rev. 1.30.
+Acked-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+
+
+On Thu, Jul 13, 2023 at 10:10=E2=80=AFAM Yangtao Li <frank.li@vivo.com> wro=
+te:
 >
-> You are right, access is 32 bits (and although this patch works fine,
-> we should avoid accessing those regs any other way). Now I remember
-> why I decided to go for the bespoke loops in the first place, writesl
-> and readsl provide the right register access, but the wrong pointer
-> arithmetic for this use case.
-> For this patch I ended up selecting writesw/writesb/readsw/readsb to
-> get the right pointer arithmetic, but the register access is not as
-> per manual.
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is (mostly) ignored
+> and this typically results in resource leaks. To improve here there is a
+> quest to make the remove callback return void. In the first step of this
+> quest all drivers are converted to .remove_new() which already returns
+> void.
 >
-> I can either fallback to using the bespoke loops (I can still
-> remove the unnecessary u8* and u16* casting ;-) ), or I can add
-> new APIs for this sort of access to io.h (e.g. writesbl, writeswl,
-> readsbl, readswl, in order to get the pointer arithmetic right for
-> the type of array handled, while keeping memory access as expected).
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
 >
-> What are your thoughts on that?
+> Cc: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> ---
+>  drivers/mmc/host/sdhci-esdhc-mcf.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-esdhc-mcf.c b/drivers/mmc/host/sdhci-=
+esdhc-mcf.c
+> index 05926bf5ecf9..a07f8333cd6b 100644
+> --- a/drivers/mmc/host/sdhci-esdhc-mcf.c
+> +++ b/drivers/mmc/host/sdhci-esdhc-mcf.c
+> @@ -489,7 +489,7 @@ static int sdhci_esdhc_mcf_probe(struct platform_devi=
+ce *pdev)
+>         return err;
+>  }
+>
+> -static int sdhci_esdhc_mcf_remove(struct platform_device *pdev)
+> +static void sdhci_esdhc_mcf_remove(struct platform_device *pdev)
+>  {
+>         struct sdhci_host *host =3D platform_get_drvdata(pdev);
+>         struct sdhci_pltfm_host *pltfm_host =3D sdhci_priv(host);
+> @@ -502,8 +502,6 @@ static int sdhci_esdhc_mcf_remove(struct platform_dev=
+ice *pdev)
+>         clk_disable_unprepare(mcf_data->clk_per);
+>
+>         sdhci_pltfm_free(pdev);
+> -
+> -       return 0;
+>  }
+>
+>  static struct platform_driver sdhci_esdhc_mcf_driver =3D {
+> @@ -512,7 +510,7 @@ static struct platform_driver sdhci_esdhc_mcf_driver =
+=3D {
+>                 .probe_type =3D PROBE_PREFER_ASYNCHRONOUS,
+>         },
+>         .probe =3D sdhci_esdhc_mcf_probe,
+> -       .remove =3D sdhci_esdhc_mcf_remove,
+> +       .remove_new =3D sdhci_esdhc_mcf_remove,
+>  };
+>
+>  module_platform_driver(sdhci_esdhc_mcf_driver);
+> --
+> 2.39.0
+>
 
-I think that you need to use readsl() / writesl() on the custom buffer
-with something like
-
-*_sparse() / *_condence() APIs added (perhaps locally to this driver)
-as they may be reused by others in the future.
-Having all flavours of read*()/write*() does not scale in my opinion.
 
 --=20
-With Best Regards,
-Andy Shevchenko
+Angelo Dureghello
+Timesys
+e. angelo.dureghello@timesys.com
