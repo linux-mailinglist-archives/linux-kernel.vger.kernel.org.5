@@ -2,55 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD25C756E13
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5350756E1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbjGQUTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 16:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
+        id S229706AbjGQUWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 16:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbjGQUTn (ORCPT
+        with ESMTP id S229518AbjGQUWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 16:19:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6084194;
-        Mon, 17 Jul 2023 13:19:41 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 20:19:39 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1689625180;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=5g+e7Kt7N77MeQFIg5zCypZ5xcAyk/U+HKCYby31Fyo=;
-        b=0Vkkqv6rXDXMJrftEIS7sj/xF2s8HAlmY5tPQsQv9ftbwGa1hyvrFCvbw6HjEW81duQAKQ
-        oM41APpPcBvkJoKb6nZIH9CWx3F2qw8sXwISmA3Xt5jCXaXdzD5gfvZDO5FcnwHlq7Y4CC
-        E8Gv2XpRVCIpA4ZpwObGgZTyctY5TDulHPp3IsC73pysjdEt0O8AfZg9piXAQx143LXFs/
-        rUt4c8JLzwoJVakcIoTgdjknn0l6eQervtWqkmJsyUYdBcuQZki+sPCHVMrdsWnNlVZfrP
-        Kf5q9L1xsQJwJer6p3jJdja6T2c5vps4ES/FaE/+plPV+HtQOX4RuSJWfDB8+g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1689625180;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=5g+e7Kt7N77MeQFIg5zCypZ5xcAyk/U+HKCYby31Fyo=;
-        b=PntMVBuDpiscCrpCJJP7/KmrkK9UkFUvnK/C0M3O9/t6Eriz4+M+p1yGmUtf4awGnJdai1
-        9IlqBoZU1oEETeCg==
-From:   "tip-bot2 for Janusz Krzysztofik" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/mm] x86/mm: Fix PAT bit missing from page protection modify mask
-Cc:     Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andi Shyti <andi.shyti@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        marmarek@invisiblethingslab.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Mon, 17 Jul 2023 16:22:02 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06ACDA
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:22:00 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-5636426c1b3so3150722eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:22:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1689625320; x=1692217320;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LWiE3CkGTDUlj6QCNZoo/WRVOd/qSvpeFml4/GNI1l4=;
+        b=Ovnxdri/2azVGDeU5lzqBST5/chKrc8SVm4zfJ1ZIpx7cAbY9GLgYW3jcUkmuzRrXZ
+         TJp15XjCoBRSz+SwqIsnVjp7s+32BR8O59aTYfOZafrbnu35Q0rYYdUb/FQoyhPBd5Ec
+         8BvNLgEpZKM+tKgA0N1xj77okD4qJYUJ7lngH0Gth/8PUeL8d4VVqoRw7r0RaUPsHH75
+         9BAXe19pLao6COeY4AI9UBU6iTPoizkDNxAjwpzHeXNDf3nK6N+XRkZ4pl/75zxhnl5c
+         Zo28RFxYzG/kSPE4WRtzNH7qcxvWXo/D1CaGaD3GkTnyjCh8qNvS2fx94AR2ITDOJgVF
+         vfJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689625320; x=1692217320;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LWiE3CkGTDUlj6QCNZoo/WRVOd/qSvpeFml4/GNI1l4=;
+        b=SJ/Y+QoN00LlW798YaczlTsOlhwwiRQqDh51GE1iwSP2JykFYW8QTu/YX6B0TPI5Tx
+         A+gr84M63/6CTGeznR3lajSHjTecDpnex8QGou0mgFsuMBjommiBocUlPLOj7zGWbgSY
+         zXEY8WTGvbqOO00n1gXNWN0rcjoqY/1zW8f1wV7Ca3DRCQDGerqNyfu+VDDm66odfwp5
+         bCPU79YrfVQ/FamoFha4Pyma9NXBoM3uwgWrDApaTGBOuFG+aFQmjyvfoRjXlOp2X7a5
+         ueVd83KfaI2fwx+j99Jt+uEQ7DQ9AgFuxZjTIQ9xPfLZ1L7rSuTIv1PXV+zKZRSl3pnY
+         xBEQ==
+X-Gm-Message-State: ABy/qLZSjSXKyI5em08j+rELBSmVqW51v+CeexAACFd0B8kf+rqMa14G
+        HC955IesuLevBJ/LcHUMYDSkmnpgBW95jp7OGATpkqATIF8zxHg=
+X-Google-Smtp-Source: APBJJlFChmprhsDlKpZJ+VXqA7MXSy6U6tiLSsjYS9GovKy+o4Q7IqfJNgEAdV13vfZ/utB4reCljTFOUd7b+KXxjvI=
+X-Received: by 2002:a05:6808:140e:b0:3a4:316b:42c7 with SMTP id
+ w14-20020a056808140e00b003a4316b42c7mr14345026oiv.2.1689625320107; Mon, 17
+ Jul 2023 13:22:00 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <168962517947.28540.12391028567128094902.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+References: <20230706133751.38149-1-cgzones@googlemail.com>
+In-Reply-To: <20230706133751.38149-1-cgzones@googlemail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 17 Jul 2023 16:21:49 -0400
+Message-ID: <CAHC9VhQFn1cE39YuXNxssttu1tU6oXWsYjGLSzD496Wa5-Gs5A@mail.gmail.com>
+Subject: Re: [RFC PATCH] selinux: disable debug functions by default
+To:     =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+Cc:     selinux@vger.kernel.org,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -62,109 +71,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/mm branch of tip:
+On Thu, Jul 6, 2023 at 9:37=E2=80=AFAM Christian G=C3=B6ttsche
+<cgzones@googlemail.com> wrote:
+>
+> avtab_hash_eval() and hashtab_stat() are only used in policydb.c when
+> the debug macro DEBUG_HASHES is defined.
+>
+> Signed-off-by: Christian G=C3=B6ttsche <cgzones@googlemail.com>
+> ---
+>  security/selinux/ss/avtab.c   | 2 ++
+>  security/selinux/ss/avtab.h   | 3 +++
+>  security/selinux/ss/hashtab.c | 3 ++-
+>  security/selinux/ss/hashtab.h | 2 ++
+>  4 files changed, 9 insertions(+), 1 deletion(-)
 
-Commit-ID:     548cb932051fb6232ac983ed6673dae7bdf3cf4c
-Gitweb:        https://git.kernel.org/tip/548cb932051fb6232ac983ed6673dae7bdf=
-3cf4c
-Author:        Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
-AuthorDate:    Mon, 10 Jul 2023 09:36:14 +02:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Mon, 17 Jul 2023 07:41:45 -07:00
+This reminds me that I don't really like the "hidden" and kludgy
+nature of DEBUG_HASHES.  What if we created a proper SELinux debug
+Kconfig flag and used it in place of DEBUG_HASHES?  I'm thinking of
+something like this:
 
-x86/mm: Fix PAT bit missing from page protection modify mask
+config SECURITY_SELINUX_DEBUG
+  bool "NSA SELinux kernel debugging support"
+  depends on SECURITY_SELINUX
+  default n
+  help
+    This enables debugging code designed to help SELinux kernel developers,
+    unless you know what this does in the kernel code you should leave this
+    disabled.
 
-Visible glitches have been observed when running graphics applications on
-Linux under Xen hypervisor.  Those observations have been confirmed with
-failures from kms_pwrite_crc Intel GPU test that verifies data coherency
-of DRM frame buffer objects using hardware CRC checksums calculated by
-display controllers, exposed to userspace via debugfs.  Affected
-processing paths have then been identified with new IGT test variants that
-mmap the objects using different methods and caching modes [1].
+... and then we do all of the usual Kconfig triggered dummy funcs,
+etc.  Thoughts?
 
-When running as a Xen PV guest, Linux uses Xen provided PAT configuration
-which is different from its native one.  In particular, Xen specific PTE
-encoding of write-combining caching, likely used by graphics applications,
-differs from the Linux default one found among statically defined minimal
-set of supported modes.  Since Xen defines PTE encoding of the WC mode as
-_PAGE_PAT, it no longer belongs to the minimal set, depends on correct
-handling of _PAGE_PAT bit, and can be mismatched with write-back caching.
-
-When a user calls mmap() for a DRM buffer object, DRM device specific
-.mmap file operation, called from mmap_region(), takes care of setting PTE
-encoding bits in a vm_page_prot field of an associated virtual memory area
-structure.  Unfortunately, _PAGE_PAT bit is not preserved when the vma's
-.vm_flags are then applied to .vm_page_prot via vm_set_page_prot().  Bits
-to be preserved are determined with _PAGE_CHG_MASK symbol that doesn't
-cover _PAGE_PAT.  As a consequence, WB caching is requested instead of WC
-when running under Xen (also, WP is silently changed to WT, and UC
-downgraded to UC_MINUS).  When running on bare metal, WC is not affected,
-but WP and WT extra modes are unintentionally replaced with WC and UC,
-respectively.
-
-WP and WT modes, encoded with _PAGE_PAT bit set, were introduced by commit
-281d4078bec3 ("x86: Make page cache mode a real type").  Care was taken
-to extend _PAGE_CACHE_MASK symbol with that additional bit, but that
-symbol has never been used for identification of bits preserved when
-applying page protection flags.  Support for all cache modes under Xen,
-including the problematic WC mode, was then introduced by commit
-47591df50512 ("xen: Support Xen pv-domains using PAT").
-
-The issue needs to be fixed by including _PAGE_PAT bit into a bitmask used
-by pgprot_modify() for selecting bits to be preserved.  We can do that
-either internally to pgprot_modify() (as initially proposed), or by making
-_PAGE_PAT a part of _PAGE_CHG_MASK.  If we go for the latter then, since
-_PAGE_PAT is the same as _PAGE_PSE, we need to note that _HPAGE_CHG_MASK
--- a huge pmds' counterpart of _PAGE_CHG_MASK, introduced by commit
-c489f1257b8c ("thp: add pmd_modify"), defined as (_PAGE_CHG_MASK |
-_PAGE_PSE) -- will no longer differ from _PAGE_CHG_MASK.  If such
-modification of _PAGE_CHG_MASK was irrelevant to its users then one might
-wonder why that new _HPAGE_CHG_MASK symbol was introduced instead of
-reusing the existing one with that otherwise irrelevant bit (_PAGE_PSE in
-that case) added.
-
-Add _PAGE_PAT to _PAGE_CHG_MASK and _PAGE_PAT_LARGE to _HPAGE_CHG_MASK for
-symmetry.  Split out common bits from both symbols to a common symbol for
-clarity.
-
-[ dhansen: tweak the solution changelog description ]
-
-[1] https://gitlab.freedesktop.org/drm/igt-gpu-tools/-/commit/0f0754413f14
-
-Fixes: 281d4078bec3 ("x86: Make page cache mode a real type")
-Signed-off-by: Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Tested-by: Marek Marczykowski-G=C3=B3recki <marmarek@invisiblethingslab.com>
-Link: https://gitlab.freedesktop.org/drm/intel/-/issues/7648
-Link: https://lore.kernel.org/all/20230710073613.8006-2-janusz.krzysztofik%40=
-linux.intel.com
----
- arch/x86/include/asm/pgtable_types.h | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgta=
-ble_types.h
-index ba3e255..a6deb67 100644
---- a/arch/x86/include/asm/pgtable_types.h
-+++ b/arch/x86/include/asm/pgtable_types.h
-@@ -125,11 +125,12 @@
-  * instance, and is *not* included in this mask since
-  * pte_modify() does modify it.
-  */
--#define _PAGE_CHG_MASK	(PTE_PFN_MASK | _PAGE_PCD | _PAGE_PWT |		\
--			 _PAGE_SPECIAL | _PAGE_ACCESSED | _PAGE_DIRTY |	\
--			 _PAGE_SOFT_DIRTY | _PAGE_DEVMAP | _PAGE_ENC |  \
--			 _PAGE_UFFD_WP)
--#define _HPAGE_CHG_MASK (_PAGE_CHG_MASK | _PAGE_PSE)
-+#define _COMMON_PAGE_CHG_MASK	(PTE_PFN_MASK | _PAGE_PCD | _PAGE_PWT |	      =
- \
-+				 _PAGE_SPECIAL | _PAGE_ACCESSED | _PAGE_DIRTY |\
-+				 _PAGE_SOFT_DIRTY | _PAGE_DEVMAP | _PAGE_ENC | \
-+				 _PAGE_UFFD_WP)
-+#define _PAGE_CHG_MASK	(_COMMON_PAGE_CHG_MASK | _PAGE_PAT)
-+#define _HPAGE_CHG_MASK (_COMMON_PAGE_CHG_MASK | _PAGE_PSE | _PAGE_PAT_LARGE)
-=20
- /*
-  * The cache modes defined here are used to translate between pure SW usage
+--=20
+paul-moore.com
