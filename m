@@ -2,166 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 616D9756AD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8044B756ADF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbjGQRkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 13:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54832 "EHLO
+        id S231408AbjGQRlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 13:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbjGQRkP (ORCPT
+        with ESMTP id S231139AbjGQRlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 13:40:15 -0400
-Received: from mx4.veeam.com (mx4.veeam.com [104.41.138.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE50E3;
-        Mon, 17 Jul 2023 10:40:14 -0700 (PDT)
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.128.102])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx4.veeam.com (Postfix) with ESMTPS id 6DBDE5EC32;
-        Mon, 17 Jul 2023 20:40:11 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com;
-        s=mx4-2022; t=1689615611;
-        bh=EcUONx2QoC1Q38uHYLn+ll6oxMznhmLp6cVLoRPn580=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To:From;
-        b=ScP3tPuhjukSfnf4MGNVkVElBvt3QBFrjW7LMWC2K89vGmF83REc1fKPDggZtA4IG
-         XfxZ6hKYPZiA6rs1FUfdp0F/tBniPNT3qWGJKjJNRwVYXuSP2LirBmMzT54bZG1rFl
-         cXBVdYlDtvALZWH+HJ8oHFLj3t3YWjxeYj/eSMPOT0e1DZoUYc2Wi2SRQ64izSjVFt
-         ejpDgSFr/fD9Pzk6IJpJOisOh7UgXAwznD+f99OO0or/v7IAvaP1RWGZO+Yyb8gn7s
-         e/OuYqdNkHStKIrizOFyU87YoU6yC2xQ4QlFS2j5cpJDB79U4V4sNOqNhuPng8f/qM
-         S6cqA94JoKibg==
-Received: from [172.24.10.107] (172.24.10.107) by prgmbx01.amust.local
- (172.24.128.102) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.16; Mon, 17 Jul
- 2023 19:40:05 +0200
-Message-ID: <b19b4c51-c769-84f9-7eae-b555ae51d692@veeam.com>
-Date:   Mon, 17 Jul 2023 19:39:55 +0200
+        Mon, 17 Jul 2023 13:41:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BEA10A
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:40:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689615613;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=F4zjgn0cYB98ujXpFEQtfUyI4X2KQIDCSEQefL4BBIc=;
+        b=R7F/xu9Mc8h0fWEtL3oiEqmD1P3ORkVylDqRcBhg1GAVQizQVVQgbf2jQPn/6EL2Y4l+Z8
+        89/7jf4XXrRGtgfukhbw+C6/NOwF+sP5p/euXsmpI0h7sOAZsKfhBXV+yalvGIgUiVxTOF
+        p5fkBFz7z6F931H62q9C4LIvub9BbAI=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-549-_faXw-fpM-Se8vuoT_Qm9A-1; Mon, 17 Jul 2023 13:40:12 -0400
+X-MC-Unique: _faXw-fpM-Se8vuoT_Qm9A-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-31701b27d19so595540f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:40:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689615611; x=1692207611;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=F4zjgn0cYB98ujXpFEQtfUyI4X2KQIDCSEQefL4BBIc=;
+        b=KnnB2rfNHGQblySS9pmPaMym364zT82Td7T3xHF5VQJZOgQq1rbuAGhbvzcgW8AryB
+         B5UpLT5LcScnzgWW6bjabpmlxWp59YJeHNnOlIAM36ReDAFUsYucnG5qceubsQvfbxWw
+         zqA10qoZmbcwO4RBrM3xdkKOK8qDXm7u0gV3OiEj5cO0YY6Dh6WJ0XO3d5IIxD+DME1Z
+         FwGDYbfkilsl9V1Jv0dgCrdD0lyZzhg/iAjYwkL6VEejvi4ktb9C4XoRnAcVNsINGbyA
+         14DO57YxRo8zDVGl2AX1fh+gzesddD2AbRplJC7tH+FmoX7m5XRasWZ+l9yl2/UWC52x
+         t+9g==
+X-Gm-Message-State: ABy/qLbMOFxt97HAmFrtoOtSg/vzcSwcleGgIysHq9uhDhH04SWZypzz
+        mz+wwvSEyBLmLx2m/GcvJIzIu2JPEmMBkJFvD1C8fSLJhtSBq45gGg8RijxZydNLAm9CuLNUWQd
+        7IiffAQcGdFvyYcbV0MPy1MzQdax2vDTm
+X-Received: by 2002:a5d:6a4b:0:b0:314:2d59:c6d5 with SMTP id t11-20020a5d6a4b000000b003142d59c6d5mr8812530wrw.15.1689615611229;
+        Mon, 17 Jul 2023 10:40:11 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHEPgjdDbvTWro3bKwzreEOmxLeSINhxQaDSvP7WJA9cGucuWmHNwMsfnwVewA5GsbLTJHKRQ==
+X-Received: by 2002:a5d:6a4b:0:b0:314:2d59:c6d5 with SMTP id t11-20020a5d6a4b000000b003142d59c6d5mr8812516wrw.15.1689615610882;
+        Mon, 17 Jul 2023 10:40:10 -0700 (PDT)
+Received: from [192.168.3.108] (p5b0c62d6.dip0.t-ipconnect.de. [91.12.98.214])
+        by smtp.gmail.com with ESMTPSA id m3-20020a5d56c3000000b0030ae3a6be4asm42184wrw.72.2023.07.17.10.40.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 10:40:10 -0700 (PDT)
+Message-ID: <20501a7c-19f6-4154-aebc-49df04c9b043@redhat.com>
+Date:   Mon, 17 Jul 2023 19:40:09 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [PATCH v5 02/11] block: Block Device Filtering Mechanism
 Content-Language: en-US
-To:     Yu Kuai <yukuai1@huaweicloud.com>, <axboe@kernel.dk>,
-        <hch@infradead.org>, <corbet@lwn.net>, <snitzer@kernel.org>
-CC:     <viro@zeniv.linux.org.uk>, <brauner@kernel.org>,
-        <dchinner@redhat.com>, <willy@infradead.org>, <dlemoal@kernel.org>,
-        <linux@weissschuh.net>, <jack@suse.cz>, <ming.lei@redhat.com>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        Donald Buczek <buczek@molgen.mpg.de>,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20230612135228.10702-1-sergei.shtepa@veeam.com>
- <20230612135228.10702-3-sergei.shtepa@veeam.com>
- <f935840e-12a7-c37b-183c-27e2d83990ea@huaweicloud.com>
- <eca5a778-6795-fc03-7ae0-fe06f514af85@huaweicloud.com>
- <2ab36e73-a612-76a8-9c20-f5e11c67bcc3@huaweicloud.com>
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-In-Reply-To: <2ab36e73-a612-76a8-9c20-f5e11c67bcc3@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [172.24.10.107]
-X-ClientProxiedBy: colmbx01.amust.local (172.31.112.31) To
- prgmbx01.amust.local (172.24.128.102)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A292403155B677467
-X-Veeam-MMEX: True
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Florent Revest <revest@chromium.org>,
+        Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20230717103152.202078-1-ryan.roberts@arm.com>
+ <20230717103152.202078-7-ryan.roberts@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v2 6/8] selftests/mm: Make migration test robust to
+ failure
+In-Reply-To: <20230717103152.202078-7-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi.
+On 17.07.23 12:31, Ryan Roberts wrote:
+> The `migration` test currently has a number of robustness problems that
+> cause it to hang and leak resources.
+> 
+> Timeout: There are 3 tests, which each previously ran for 60 seconds.
+> However, the timeout in mm/settings for a single test binary was set to
+> 45 seconds. So when run using run_kselftest.sh, the top level timeout
+> would trigger before the test binary was finished. Solve this by meeting
+> in the middle; each of the 3 tests now runs for 20 seconds (for a total
+> of 60), and the top level timeout is set to 90 seconds.
+> 
+> Leaking child processes: the `shared_anon` test fork()s some children
+> but then an ASSERT() fires before the test kills those children. The
+> assert causes immediate exit of the parent and leaking of the children.
+> Furthermore, if run using the run_kselftest.sh wrapper, the wrapper
+> would get stuck waiting for those children to exit, which never happens.
+> Solve this by deferring any asserts until after the children are killed.
+> The same pattern is used for the threaded tests for uniformity.
+> 
+> With these changes, the test binary now runs to completion on arm64,
+> with 2 tests passing and the `shared_anon` test failing.
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+>   tools/testing/selftests/mm/migration.c | 14 ++++++++++----
+>   tools/testing/selftests/mm/settings    |  2 +-
+>   2 files changed, 11 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/mm/migration.c b/tools/testing/selftests/mm/migration.c
+> index 379581567f27..189d7d9070e8 100644
+> --- a/tools/testing/selftests/mm/migration.c
+> +++ b/tools/testing/selftests/mm/migration.c
+> @@ -15,7 +15,7 @@
+>   #include <time.h>
+>   
+>   #define TWOMEG (2<<20)
+> -#define RUNTIME (60)
+> +#define RUNTIME (20)
+>   
+>   #define ALIGN(x, a) (((x) + (a - 1)) & (~((a) - 1)))
+>   
+> @@ -118,6 +118,7 @@ TEST_F_TIMEOUT(migration, private_anon, 2*RUNTIME)
+>   {
+>   	uint64_t *ptr;
+>   	int i;
+> +	int ret;
+>   
+>   	if (self->nthreads < 2 || self->n1 < 0 || self->n2 < 0)
+>   		SKIP(return, "Not enough threads or NUMA nodes available");
+> @@ -131,9 +132,10 @@ TEST_F_TIMEOUT(migration, private_anon, 2*RUNTIME)
+>   		if (pthread_create(&self->threads[i], NULL, access_mem, ptr))
+>   			perror("Couldn't create thread");
+>   
+> -	ASSERT_EQ(migrate(ptr, self->n1, self->n2), 0);
+> +	ret = migrate(ptr, self->n1, self->n2);
+>   	for (i = 0; i < self->nthreads - 1; i++)
+>   		ASSERT_EQ(pthread_cancel(self->threads[i]), 0);
+> +	ASSERT_EQ(ret, 0);
 
-On 7/12/23 14:34, Yu Kuai wrote:
-> Subject:
-> Re: [PATCH v5 02/11] block: Block Device Filtering Mechanism
-> From:
-> Yu Kuai <yukuai1@huaweicloud.com>
-> Date:
-> 7/12/23, 14:34
-> 
-> To:
-> Yu Kuai <yukuai1@huaweicloud.com>, Sergei Shtepa <sergei.shtepa@veeam.com>, axboe@kernel.dk, hch@infradead.org, corbet@lwn.net, snitzer@kernel.org
-> CC:
-> viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com, willy@infradead.org, dlemoal@kernel.org, linux@weissschuh.net, jack@suse.cz, ming.lei@redhat.com, linux-block@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, Donald Buczek <buczek@molgen.mpg.de>, "yukuai (C)" <yukuai3@huawei.com>
-> 
-> 
-> Hi,
-> 
-> 在 2023/07/12 18:04, Yu Kuai 写道:
->> Hi,
->>
->> 在 2023/07/11 10:02, Yu Kuai 写道:
->>
->>>> +static bool submit_bio_filter(struct bio *bio)
->>>> +{
->>>> +    if (bio_flagged(bio, BIO_FILTERED))
->>>> +        return false;
->>>> +
->>>> +    bio_set_flag(bio, BIO_FILTERED);
->>>> +    return bio->bi_bdev->bd_filter->ops->submit_bio(bio);
->>>> +}
->>>> +
->>>>   static void __submit_bio(struct bio *bio)
->>>>   {
->>>> +    /*
->>>> +     * If there is a filter driver attached, check if the BIO needs to go to
->>>> +     * the filter driver first, which can then pass on the bio or consume it.
->>>> +     */
->>>> +    if (bio->bi_bdev->bd_filter && submit_bio_filter(bio))
->>>> +        return;
->>>> +
->>>>       if (unlikely(!blk_crypto_bio_prep(&bio)))
->>>>           return;
->>
->> ...
->>
->>>> +static void __blkfilter_detach(struct block_device *bdev)
->>>> +{
->>>> +    struct blkfilter *flt = bdev->bd_filter;
->>>> +    const struct blkfilter_operations *ops = flt->ops;
->>>> +
->>>> +    bdev->bd_filter = NULL;
->>>> +    ops->detach(flt);
->>>> +    module_put(ops->owner);
->>>> +}
->>>> +
->>>> +void blkfilter_detach(struct block_device *bdev)
->>>> +{
->>>> +    if (bdev->bd_filter) {
->>>> +        blk_mq_freeze_queue(bdev->bd_queue);
->>
->> And this is not sate as well, for bio-based device, q_usage_counter is
->> not grabbed while submit_bio_filter() is called, hence there is a risk
->> of uaf from submit_bio_filter().
-> 
-> And there is another question, can blkfilter_detach() from
-> del_gendisk/delete_partiton and ioctl concurrent? I think it's a
-> problem.
-> 
+Why is that required? This does not involve fork.
 
-Yes, it looks like if two threads execute the blkfilter_detach() function,
-then a problem is possible. The blk_mq_freeze_queue() function does not
-block threads.
-But for this, it is necessary that the IOCTL for the block device and
-its removal are performed simultaneously. Is this possible?
-
-I suppose that using mutex bdev->bd_disk->open_mutex in
-blkfilter_ioctl_attach(), blkfilter_ioctl_detach() and
-blkfilter_ioctl_ctl() can fix the problem. What do you think?
+>   }
+>   
+>   /*
+> @@ -144,6 +146,7 @@ TEST_F_TIMEOUT(migration, shared_anon, 2*RUNTIME)
+>   	pid_t pid;
+>   	uint64_t *ptr;
+>   	int i;
+> +	int ret;
+>   
+>   	if (self->nthreads < 2 || self->n1 < 0 || self->n2 < 0)
+>   		SKIP(return, "Not enough threads or NUMA nodes available");
+> @@ -161,9 +164,10 @@ TEST_F_TIMEOUT(migration, shared_anon, 2*RUNTIME)
+>   			self->pids[i] = pid;
+>   	}
+>   
+> -	ASSERT_EQ(migrate(ptr, self->n1, self->n2), 0);
+> +	ret = migrate(ptr, self->n1, self->n2);
+>   	for (i = 0; i < self->nthreads - 1; i++)
+>   		ASSERT_EQ(kill(self->pids[i], SIGTERM), 0);
+> +	ASSERT_EQ(ret, 0);
 
 
-> Thanks,
-> Kuai
->>
->> Thanks,
->> Kuai
->>
->> .
->>
-> 
+Might be cleaner to also:
+
+diff --git a/tools/testing/selftests/mm/migration.c 
+b/tools/testing/selftests/mm/migration.c
+index 379581567f27..b3f12b9847ec 100644
+--- a/tools/testing/selftests/mm/migration.c
++++ b/tools/testing/selftests/mm/migration.c
+@@ -11,6 +11,7 @@
+  #include <numaif.h>
+  #include <sys/mman.h>
+  #include <sys/types.h>
++#include <sys/prctl.h>
+  #include <signal.h>
+  #include <time.h>
+
+@@ -155,10 +156,12 @@ TEST_F_TIMEOUT(migration, shared_anon, 2*RUNTIME)
+         memset(ptr, 0xde, TWOMEG);
+         for (i = 0; i < self->nthreads - 1; i++) {
+                 pid = fork();
+-               if (!pid)
++               if (!pid) {
++                       prctl(PR_SET_PDEATHSIG, SIGHUP);
+                         access_mem(ptr);
+-               else
++               } else {
+                         self->pids[i] = pid;
++               }
+         }
+
+         ASSERT_EQ(migrate(ptr, self->n1, self->n2), 0);
+
+
+Then, whenever the parent dies, all child processes get zapped.
+
+
+-- 
+Cheers,
+
+David / dhildenb
+
