@@ -2,119 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90212755F22
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C63E755F23
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbjGQJWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 05:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35406 "EHLO
+        id S229635AbjGQJWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 05:22:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbjGQJWM (ORCPT
+        with ESMTP id S229664AbjGQJWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 05:22:12 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E9710E4;
-        Mon, 17 Jul 2023 02:22:07 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2FF9C6606FFD;
-        Mon, 17 Jul 2023 10:22:05 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689585725;
-        bh=7gRjXBVr85XdEEIoKcWzUs1N18XJiB4V4nRdZKFEIPM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ZWZoyUPtIdA6D/Sgu/sDHAYDbIyQ/Lr/wERrFpmc4fyu1uU7Z2VLj6/Z1W/Bv6JIK
-         Rw/7Mxy3QgX5+PRUaSeykfdGnplf1qp+mFYtg8xm4w2tvrSqfK6LONhbkl7FFqKJHi
-         hKc+K81aeoKD2RpKYDDW/tc/dxdcD7xuUFVJI1d1qJMNJCgPN/g7Awb9asKaAup99l
-         7dPhg07JqJvVK5Ok9m17T4U8cVHj4DkKXB1Wb3lx/BRjocC8/SJrHEPapLHh6js5Pm
-         fuRBM/06iPodRm0Zj17hZo/y28ClpndjJkagXbbW43CNvBFJksF82BR2/te55/cAwc
-         QeyNpon2QhM8Q==
-Message-ID: <c45cf91e-60fa-c17e-2ec9-bdd7dd64d2dd@collabora.com>
-Date:   Mon, 17 Jul 2023 11:22:02 +0200
+        Mon, 17 Jul 2023 05:22:47 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D186A10F
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:22:43 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R4Gnr0y1QzBHXhg
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 17:22:40 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689585760; x=1692177761; bh=r52AuiwO6w9aLbUyDgtZmjP53bO
+        eVyomaOlCYxlVI/Y=; b=mPfQmvJlN+mG8PuHh8PlBTIyzFOMTs1uwcjZa5gL/zG
+        eWLr0I8DCraXLeEJ/K63JbcTVmoo38kXzYMlHu66368mOt3jWjeM9Qo2K1mGqEUZ
+        y5iwcbBSXeVCXrod5E72UvqU/o1+nCzbAx4pwqET574WFYm7+fBIbtQ7aV8a4N/W
+        jBkwv3UL8UPIfdWo4yYM4kWTHSbU2WwqDMbZRvURziNo30oHPva0L3X00GwN+C7Q
+        qi9zZp2S6hH53WZ/FUa6mCEqups/tqpxVeKHpE0ZUKIGElwbwyoO13oKP9ui3yAM
+        /yQGOKV/nLpX5m4+NTYGr1cuCAwarVM0FN39LAamb+Q==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 8DOL3asa6b8x for <linux-kernel@vger.kernel.org>;
+        Mon, 17 Jul 2023 17:22:40 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R4Gnq5Gv4zBHXhJ;
+        Mon, 17 Jul 2023 17:22:39 +0800 (CST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] clocksource/drivers/arm_arch_timer: Disable timer before
- programming CVAL
-Content-Language: en-US
-To:     walter.chang@mediatek.com, Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     wsd_upstream@mediatek.com, stanley.chu@mediatek.com,
-        Chun-hung.Wu@mediatek.com, Freddy.Hsin@mediatek.com,
-        stable@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
-References: <20230717090735.19370-1-walter.chang@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230717090735.19370-1-walter.chang@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Date:   Mon, 17 Jul 2023 17:22:39 +0800
+From:   hanyu001@208suo.com
+To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        maninder1.s@samsung.com, nathanl@linux.ibm.com,
+        gustavoars@kernel.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] powerpc: xmon: Remove space after '(' and before ')'
+In-Reply-To: <tencent_C47ED53495F8E338441AB48CB53AE7AF0208@qq.com>
+References: <tencent_C47ED53495F8E338441AB48CB53AE7AF0208@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <f9ba0bd1bc611c999fdd68b53b0d913d@208suo.com>
+X-Sender: hanyu001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 17/07/23 11:07, walter.chang@mediatek.com ha scritto:
-> From: Walter Chang <walter.chang@mediatek.com>
-> 
-> Due to the fact that the use of `writeq_relaxed()` to program CVAL is
-> not guaranteed to be atomic, it is necessary to disable the timer before
-> programming CVAL.
-> 
-> However, if the MMIO timer is already enabled and has not yet expired,
-> there is a possibility of unexpected behavior occurring: when the CPU
-> enters the idle state during this period, and if the CPU's local event
-> is earlier than the broadcast event, the following process occurs:
-> 
-> tick_broadcast_enter()
->    tick_broadcast_oneshot_control(TICK_BROADCAST_ENTER)
->      __tick_broadcast_oneshot_control()
->        ___tick_broadcast_oneshot_control()
->          tick_broadcast_set_event()
->            clockevents_program_event()
->              set_next_event_mem()
-> 
-> During this process, the MMIO timer remains enabled while programming
-> CVAL. To prevent such behavior, disable timer explicitly prior to
-> programming CVAL.
-> 
-> Fixes: 8b82c4f883a7 ("clocksource/drivers/arm_arch_timer: Move MMIO timer programming over to CVAL")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Walter Chang <walter.chang@mediatek.com>
+The patch fixes the following errors detected by checkpatch:
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+./arch/powerpc/xmon/xmon.c:2426: ERROR: space prohibited after that open 
+parenthesis '('
+./arch/powerpc/xmon/xmon.c:2426: ERROR: space prohibited before that 
+close parenthesis ')'
+./arch/powerpc/xmon/xmon.c:2426: ERROR: space required before the open 
+parenthesis '('
 
-> ---
->   drivers/clocksource/arm_arch_timer.c | 7 +++++++
->   1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-> index e733a2a1927a..7dd2c615bce2 100644
-> --- a/drivers/clocksource/arm_arch_timer.c
-> +++ b/drivers/clocksource/arm_arch_timer.c
-> @@ -792,6 +792,13 @@ static __always_inline void set_next_event_mem(const int access, unsigned long e
->   	u64 cnt;
->   
->   	ctrl = arch_timer_reg_read(access, ARCH_TIMER_REG_CTRL, clk);
-> +
-> +	/* Timer must be disabled before programming CVAL */
-> +	if (ctrl & ARCH_TIMER_CTRL_ENABLE) {
-> +		ctrl &= ~ARCH_TIMER_CTRL_ENABLE;
-> +		arch_timer_reg_write(access, ARCH_TIMER_REG_CTRL, ctrl, clk);
-> +	}
-> +
->   	ctrl |= ARCH_TIMER_CTRL_ENABLE;
->   	ctrl &= ~ARCH_TIMER_CTRL_IT_MASK;
->   
+Signed-off-by: ztt <1549089851@qq.com>
+---
+  arch/powerpc/xmon/xmon.c | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index 013b63eb4cd9..c10d9ff02af1 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -1057,7 +1057,7 @@ cmds(struct pt_regs *excp)
+          flush_input();
+          termch = 0;
+          cmd = skipbl();
+-        if(cmd == '\n' ) {
++        if (cmd == '\n') {
+              if (last_cmd == NULL)
+                  continue;
+              take_input(last_cmd);
+@@ -2423,7 +2423,7 @@ memex(void)
+      }
+      last_cmd = "m\n";
+      while ((cmd = skipbl()) != '\n') {
+-        switch( cmd ){
++        switch (cmd) {
+          case 'b':    size = 1;    break;
+          case 'w':    size = 2;    break;
+          case 'l':    size = 4;    break;
