@@ -2,176 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F007F75614A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D31AD75614B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbjGQLLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 07:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35224 "EHLO
+        id S230224AbjGQLMh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Jul 2023 07:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbjGQLLd (ORCPT
+        with ESMTP id S229469AbjGQLMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 07:11:33 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E65EE1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:11:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CTMOEue5i+/+41KVpYou8hDhTmtQ6MkXTaitTVQIf0M=; b=N5UGq2Nvp2MIe+qtMwFQQ36oHk
-        B3/PLiEnp9C87SwS4KYBnLhhdCoJD8VNg3C6ByPsYxbPxGvT8CgWCyZ+BkYG+Gt096NfzgXRv03Nq
-        WbsrrQtJD4Qt2JELbuU+TNkIgblScH6Y/+xJs8iQ1PpFlBuA7f6lK7FTz4zQu20J88cpfMDu0HHOB
-        WOprEYLrK5RoEsyLta2VNHWSy1INXbXnR6B+SLzPn018qKJgxDTZHkFvwhf/DHHmuBlIhRrqBvM1S
-        UmNg+bQ/0dwVyeBIBg+ST2PjBTWqLAK20YXW40S//phD6xbUbsIGakPDAdTzXy9Olt2qjSi9Ln9Uu
-        wala5pQw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qLM80-00962A-2g;
-        Mon, 17 Jul 2023 11:10:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5460130049D;
-        Mon, 17 Jul 2023 13:10:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3CB0E2463D7F2; Mon, 17 Jul 2023 13:10:53 +0200 (CEST)
-Date:   Mon, 17 Jul 2023 13:10:53 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        "Ravi V . Shankar" <ravi.v.shankar@intel.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Len Brown <len.brown@intel.com>, Mel Gorman <mgorman@suse.de>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        naveen.n.rao@linux.vnet.ibm.com,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Barry Song <v-songbaohua@oppo.com>,
-        Chen Yu <yu.c.chen@intel.com>, Hillf Danton <hdanton@sina.com>
-Subject: Re: [Patch v3 1/6] sched/fair: Determine active load balance for SMT
- sched groups
-Message-ID: <20230717111053.GI4253@hirez.programming.kicks-ass.net>
-References: <cover.1688770494.git.tim.c.chen@linux.intel.com>
- <e24f35d142308790f69be65930b82794ef6658a2.1688770494.git.tim.c.chen@linux.intel.com>
- <165778ce-7b8f-1966-af02-90ef481455b9@linux.vnet.ibm.com>
- <a399af19aa8e1291558724509a1de2f52b3bad0a.camel@linux.intel.com>
- <05ed4537-e79b-0ff3-5be5-92cbffaab3ee@linux.vnet.ibm.com>
+        Mon, 17 Jul 2023 07:12:33 -0400
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84CD61B9
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:12:32 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-ca3cc52ee62so4448210276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:12:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689592351; x=1692184351;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i5M3eKlOLXU3pQ7+5774W6+fwrz4LECOlXFjGVOciNs=;
+        b=ZclCCTf7gGY6mLfdIzeO/IzHlVDJQK/Zc9JT5zS3wLeOdqdrWSUySb5cE3W8u6olU1
+         wLPfpmN375obBMuw/iOnTGtEbXDwd4R14AdubLIqYunhuJRgRx1XhHL4eI2KT3jrmySE
+         BlLio5d5ucPGukyZV3NxXDL2Ae/u1iqQuqgTzqvF6jFecSCgMBj5lftivdp5xu+ks5ya
+         OXwA89MbTwEFKe4cKYr1nD92Fx4+S5olzVeMBDzKZ7Gw4kHwB9sZdTpx9uJ7K+uuaXsV
+         EzskzPGCKWktvc+gHQpocCON2O+LOXHXAGcV643qS4JtOp9MNIGN5B8CkiYJKwRpDDje
+         Z/Gw==
+X-Gm-Message-State: ABy/qLZkA5qOc+nR9JfQ5GTaRDJRrl8ZIphnFcdijiMhK0F+u1305kEU
+        04u6qLzrO+6VMA4g1OW16vgWUdmcZhJbHw==
+X-Google-Smtp-Source: APBJJlGSztBpHEV6fjwu3g6gE95WDUqAd9FYjHeJDgiXc39pQLTCOHtcJwx5Z1Hs6szEbwTToNzeQA==
+X-Received: by 2002:a25:aba2:0:b0:bad:125f:9156 with SMTP id v31-20020a25aba2000000b00bad125f9156mr11889592ybi.35.1689592351471;
+        Mon, 17 Jul 2023 04:12:31 -0700 (PDT)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id g4-20020a05690203c400b00bc7c81c3cecsm2849910ybs.14.2023.07.17.04.12.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 04:12:31 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-57764a6bf8cso44226547b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:12:31 -0700 (PDT)
+X-Received: by 2002:a81:5a8b:0:b0:57a:8de8:ef46 with SMTP id
+ o133-20020a815a8b000000b0057a8de8ef46mr13079737ywb.39.1689592350801; Mon, 17
+ Jul 2023 04:12:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <05ed4537-e79b-0ff3-5be5-92cbffaab3ee@linux.vnet.ibm.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <CAMw=ZnSmZTBs+bJsQ_Y2CVO8K3OTuHOZDKW4cbxKpGbo4Vgs7Q@mail.gmail.com>
+ <2023071226-crafty-deviator-12e2@gregkh> <CAMw=ZnRjnxWnmoFuw2prxFS55vAGQ1hpfKeHYFfG5Oa0LB_jYA@mail.gmail.com>
+ <2023071233-empirical-overturn-744c@gregkh> <CAMw=ZnRRviBNi_LK9VOSUV9PNHe3jurUcLfgLpbTOsp_eE4WyA@mail.gmail.com>
+ <2023071350-specked-botanist-6ba8@gregkh> <CAMw=ZnQZ9ds3xsa2AZv_F13dB6rR4XzGPrBjJHSga1oU5xRezQ@mail.gmail.com>
+ <2023071552-quilt-tranquil-b7bf@gregkh> <CAMw=ZnROWgDOiAr1iikTWa7Qm81HoE17NuEdLt8hwGnkKSnoCg@mail.gmail.com>
+ <2023071643-broiler-level-afbf@gregkh> <ZLUIViihakhyPV1N@redhat.com>
+In-Reply-To: <ZLUIViihakhyPV1N@redhat.com>
+From:   Luca Boccassi <bluca@debian.org>
+Date:   Mon, 17 Jul 2023 12:12:18 +0100
+X-Gmail-Original-Message-ID: <CAMw=ZnTOgGcQ70E57H1GEr9yZVG-FVHZZ69JYMFqvsO9mgxdDg@mail.gmail.com>
+Message-ID: <CAMw=ZnTOgGcQ70E57H1GEr9yZVG-FVHZZ69JYMFqvsO9mgxdDg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+To:     =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, lennart@poettering.net,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 01:06:59AM +0530, Shrikanth Hegde wrote:
-> 
-> 
-> On 7/15/23 4:35 AM, Tim Chen wrote:
-> > On Fri, 2023-07-14 at 18:36 +0530, Shrikanth Hegde wrote:
-> > 
-> >>
-> >>
-> >> If we consider symmetric platforms which have SMT4 such as power10. 
-> >> we have a topology like below. multiple such MC will form DIE(PKG)
-> >>
-> >>
-> >> [0 2 4 6][1 3 5 7][8 10 12 14][9 11 13 15]
-> >> [--SMT--][--SMT--][----SMT---][---SMT----]
-> >> [--sg1--][--sg1--][---sg1----][---sg1----]
-> >> [--------------MC------------------------]
-> >>
-> >> In case of SMT4, if there is any group which has 2 or more tasks, that 
-> >> group will be marked as group_smt_balance. previously, if that group had 2
-> >> or 3 tasks, it would have been marked as group_has_spare. Since all the groups have 
-> >> SMT that means behavior would be same fully busy right? That can cause some 
-> >> corner cases. No?
-> > 
-> > You raised a good point. I was looking from SMT2
-> > perspective so group_smt_balance implies group_fully_busy.
-> > That is no longer true for SMT4.
-> > 
-> > I am thinking of the following fix on the current patch
-> > to take care of SMT4. Do you think this addresses
-> 
-> Thanks Tim for taking a look at it again. 
-> 
-> Yes. I think this would address some of the corner cases. 
-> Any SMT4 group having 2,3,4 will have smt_balance as the group type, and busiest one 
-> is the one which has least number of idle cpu's. (same conditions as group_has_spare)
-> 
-> 
-> 
-> 
-> > concerns from you and Tobias?
-> > 
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 294a662c9410..3fc8d3a3bd22 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -9588,6 +9588,17 @@ static bool update_sd_pick_busiest(struct lb_env *env,
-> >                 break;
-> >  
-> >         case group_smt_balance:
-> > +               /* no idle cpus on both groups handled by group_fully_busy below */
-> > +               if (sgs->idle_cpus != 0 || busiest->idle_cpus != 0) {
-> > +                       if (sgs->idle_cpus > busiest->idle_cpus)
-> > +                               return false;
-> > +                       if (sgs->idle_cpus < busiest->idle_cpus)
-> > +                               return true;
-> > +                       if (sgs->sum_nr_running <= busiest_sum_nr_running)
-> > +                               return false;
-> > +                       else
-> > +                               return true;
-> > +               }
-> > 
-> > 
-> > I will be on vacation next three weeks so my response will be slow.
-> > 
-> > Tim
-> > 
-> >>
-> 
-> Small suggestion to above code to avoid compiler warning of switch case falling
-> through and else case can be removed, since update_sd_pick_busiest by default returns true.
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index e5a75c76bcaa..ae364ac6f22e 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -9728,9 +9728,9 @@ static bool update_sd_pick_busiest(struct lb_env *env,
->                                 return true;
->                         if (sgs->sum_nr_running <= busiest->sum_nr_running)
->                                 return false;
-> -                       else
-> -                               return true;
->                 }
-> +               break;
-> +
->         case group_fully_busy:
->                 /*
->                  * Select the fully busy group with highest avg_load. In
-> 
-> 
+On Mon, 17 Jul 2023 at 10:23, Daniel P. Berrangé <berrange@redhat.com> wrote:
+>
+> On Sun, Jul 16, 2023 at 08:28:10PM +0200, Greg KH wrote:
+> > On Sun, Jul 16, 2023 at 06:41:04PM +0100, Luca Boccassi wrote:
+> > > On Sat, 15 Jul 2023 at 07:52, Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > If you are not willing to take the time to determine how this proposed
+> > > > change will affect the kernel developers and infrastructure by doing
+> > > > some modeling based on our past history, then we have no reason to even
+> > > > consider accepting this change as you are stating that you have no idea
+> > > > how it will affect us.
+> > >
+> > > There's no need for that to tell you how this will affect you: it will
+> > > not. Every now and then you'll receive a one-liner patch to apply.
+> > > What's so terrible about that?
+>
+> I think that's not entirely accurate, as this *will* have an impact on
+> anyone involved in backporting fixes for the kernel stable trees, when
+> they need to resolve conflicts on the SBAT file. It shouldn't have a
+> big impact, but we should be honest that it will be a non-zero impact.
+>
+> Lets say mainline branch has had 2 security vulnerabilities A and B,
+> each of which was associated with an increment of the SBAT version
+> number. The first flaw A changed SBAT from 7 to 8,and then the second
+> flaw B changed SBAT from 8 to 9.
+>
+> If someone wants to backport the fix for bug "B" they will get a
+> conflict on the SBAT file when cherry-picking the patch. When that
+> happens they must decide:
+>
+>   * It is acceptable to ignore issue A, because it didn't affect
+>     that branch. The conflict is resolved by having the backported
+>     patch increase SBAT version from 7 to 9 directly.
+>
+>   * It is required to first backport issue A, because that also
+>     affects that branch. The conflict is resolved by first backporting
+>     the code fix & SBAT change for A, and then backporting the code
+>     fix and SBAT change for B. SBAT changes from 7 to 8 to 9 just
+>     like on master.
+>
+> IOW whomever is doing backport patches for stable needs to understand
+> the semantics of SBAT and how to resolve conflicts on it. If they get
+> this wrong, then it breaks the protection offered by SBAT, which would
+> then require a 3rd SBAT change to fix the mistake.
+>
+> This likely means that stable tree maintainers themselves need to
+> understand the SBAT change rules, so they can review conflict resolution
+> for any proposed changes, to sanity check what is being proposed.
 
-Can someone please send a full patch for this? I've already queued Tim's
-patches in tip/sched/core (tip-bot seems to have died somewhere last
-week, it's being worked on).
+This can be solved by just not changing the generation id in the same
+patch that fixes a bug, but as the last step in a series, which
+doesn't add the cc: stable nor the other tags. If we want to bump the
+generation id in a stable branch, we'll then have to send an
+appropriately crafted patch targeted at the right place. That way even
+if the fixes get backported, there is no additional burden on any
+kernel maintainer.
