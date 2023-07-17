@@ -2,73 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B1C756EB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847FA756EB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbjGQVF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 17:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
+        id S230284AbjGQVGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 17:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjGQVF1 (ORCPT
+        with ESMTP id S229541AbjGQVGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 17:05:27 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F636118
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:05:26 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3a412653335so3025122b6e.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:05:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689627926; x=1692219926;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=awzkgsvZFBo842DWA8GT/abxr3wtZvlfdq0myNlPQ4k=;
-        b=mFzPuiGUM3XUBeafgaWUcyhQG0QPZ4O9svf8FTOYItCo8R/TZ59+X/6HzsD1g/WYvy
-         b1KXc/bEpADFYnFcxlzqDV7JkHpJD64k/G4lVHvHu3kRlffFJppqTljN5qcxQ/X+Ow46
-         jN8QK8uNYyHzkFwYEs272eWNzpHYoWjbzb3Nb8pX0MPRBq7F/F9tuWNlFPkNoRR+m19/
-         YqiszErwzKl6l5uWhrsGsS7QquDU5kCtJqY3oSvCHdL8p7RqeJgCkSzMZW9vAJTDIBZx
-         QBQirr29HNXBPlF4mdiXzIdjtr597PNWLiJ7mhVK8UYR7YK9MFqnnxreNrsJtmqK0ZoT
-         N15g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689627926; x=1692219926;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=awzkgsvZFBo842DWA8GT/abxr3wtZvlfdq0myNlPQ4k=;
-        b=NJ29tlObsBAd5EzG64+UkSzOPbjdFWKsL93+MsbkQFKYSQK4EmBaHB6ku+AhgcO1wi
-         bVDrfjqIJDjJfNbdCLUvdNvQO4CQwUp2Fo3Lk7a0heBGNXKEt8QtnAz3PncN9jeqBvnJ
-         bMhBKVlqplTHgy1R2bWOJZdc8drg/3vSrWnonatpqwwvbHMmYsK4UUrawLVawihRt+qy
-         ZK7YF53pUPqLChCHOliNSSNp1fy3giYS6Q65TK+GRMISjzT2VCPWnfC5TtPxzHqz7po/
-         305qBl3A+ynX5G0yIBKPXlhAL7K0OhhGHXqSQjl+dRflob44LBdYHEE3y5v3A4m+yBBo
-         Serg==
-X-Gm-Message-State: ABy/qLbojb3nPxa3YMJNP7SXByNxTsVKGADWBRucWM0lL0UZY34+T+Ir
-        qFq2xSwvmHQenOKazuKm9uAUHP9QpPMdNg==
-X-Google-Smtp-Source: APBJJlFKSOND1F33J/v+4OdmvuxGHksMnvG+758Ztby9qh3hCqyUqoXyGkwOLkpopxnFYkuBPAAUfA==
-X-Received: by 2002:a05:6808:1b24:b0:3a1:ee4b:b8ee with SMTP id bx36-20020a0568081b2400b003a1ee4bb8eemr14664284oib.53.1689627925732;
-        Mon, 17 Jul 2023 14:05:25 -0700 (PDT)
-Received: from geday ([2804:7f2:8006:9fa1:c980:8323:c7fc:1b46])
-        by smtp.gmail.com with ESMTPSA id x9-20020a056808144900b0039ee1de4e6esm127677oiv.38.2023.07.17.14.05.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 14:05:25 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 18:05:15 -0300
-From:   Geraldo Nascimento <geraldogabriel@gmail.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Takashi Iwai <tiwai@suse.de>,
-        syzbot <syzbot+cf8e7fa4eeec59b3d485@syzkaller.appspotmail.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com,
-        syzkaller <syzkaller@googlegroups.com>
-Subject: Re: [syzbot] [alsa?] memory leak in snd_seq_create_port
-Message-ID: <ZLWtCzdW8lbdzZ4Z@geday>
-References: <00000000000098ed3a0600965f89@google.com>
- <87v8ekattg.wl-tiwai@suse.de>
- <ZLQ/zKgTGMHy/6Jn@geday>
- <CACT4Y+bXLZf9iAgiLcxo7coNsOCsn_1C26zuvNBa48qLp2Juxg@mail.gmail.com>
+        Mon, 17 Jul 2023 17:06:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2EE118
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:06:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2852A61277
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 21:06:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49E50C433C8;
+        Mon, 17 Jul 2023 21:06:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689627961;
+        bh=GEH6PeqFEn2W/DaCSHTeq2QGKD26VZbQZSk+OehlT2g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=faaCZCmWlCpPK0T0p4ck4cIgTo3fy4IuuZJI6YrjdctgIBVm9i8JHRhF4kzoz+hLi
+         dTi/kuGv3twJDWHClknJOp1o7LNuP7P3HcFQjCC3OFQocZOdEiGI8F/aZh1+fpjPIM
+         9I5QzXI0OapMVrO68KL19+gMHcC8N9+j+oCgt+IFL1KQD+EceBWDz+xxJj71pdYAeD
+         2RM6+onNFrm17MiqB+mWXvNcKc4FNZ43QgAFL4YRzFz8RtTxr7Ae93oxpYmBIOphHw
+         HmHn2SDRd8ZwuVP5vfIwS1uPwTZbIGgXpRsM3DA8KP0eAcOm2I3V17skkLeWF+CUhR
+         ZpMPxfMlR5oqg==
+Date:   Mon, 17 Jul 2023 22:05:56 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Samuel Holland <samuel.holland@sifive.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regmap-irq: Set IRQCHIP_MASK_ON_SUSPEND if no wake_base
+Message-ID: <adf8e9bf-2783-402e-a8dd-7adeb7e09d5b@sirena.org.uk>
+References: <20230717191654.1303285-1-samuel.holland@sifive.com>
+ <56388e8a-dfc6-4fe7-8aa8-a4b69f201bd0@sirena.org.uk>
+ <1C2DB0DE-016C-4F19-9D6F-5C8A0C003273@sifive.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yXvDM+k88PaiFYSo"
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+bXLZf9iAgiLcxo7coNsOCsn_1C26zuvNBa48qLp2Juxg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+In-Reply-To: <1C2DB0DE-016C-4F19-9D6F-5C8A0C003273@sifive.com>
+X-Cookie: Not a flying toy.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,31 +61,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 09:02:07AM +0200, Dmitry Vyukov wrote:
-> 
-> Hi Geraldo,
-> 
-> What exactly is cryptic in the report? Is there anything that can be
-> done to make it less cryptic?
 
-Hi again, Dmitry.
+--yXvDM+k88PaiFYSo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Perhaps also a bad choice of words. Cryptic borders on the undecipharable
-while esoteric is the more proper word here. Those kernel hackers with
-esoteric C and assembly skills like Takashi Iwai or you will quickly
-infer that a kfree() is missing in such and such scope.
+On Mon, Jul 17, 2023 at 02:54:18PM -0500, Samuel Holland wrote:
 
-In my other message, I meant to say that such esoteric knowledge is
-barely possessed by a novice kernel hacker, and they end up adding noise
-to the lists specially if they are involved in the patch acceptance
-process, specially as author of the patch, which I'm neither in this
-case.
+> The current problem is that if wakeup is enabled for any IRQ in the chip
+> (say, the PMIC's power button), then we enable wakeup for the parent IRQ,
+> and now suddenly all (enabled) IRQs on the PMIC are also inadvertently
+> wakeup-enabled.
 
-Now, if somebody were to apply LLMs to the build and checker bots and
-actually get to a point where they were getting good patch propositions
-from the machine rather than a bunch of hallucinations, that would be
-quite the feat. It's only a faint dream right now, but you did
-specifically ask for the "vision" :)
+Yeah, I can see the issue.
 
-Thank you,
-Geraldo Nascimento
+> But I realize this patch does not actually solve the issue, for a couple
+> of reasons:
+> 1) regmap-irq does not implement .irq_mask, just .irq_disable.
+
+It's possible we're doing the wrong thing here?  It's been a decade or
+something since I wrote this code.
+
+> 2) The __disable_irq() call in suspend_device_irq() should be sufficient,
+>    except that we fail the irq_settings_is_nested_thread() check in
+>    suspend_device_irqs().
+
+> So maybe the real issue is that commit 3c646f2c6aa9 ("genirq: Don't
+> suspend nested_thread irqs over system suspend") missed the case where
+> the child IRQ should be suspended, but the parent IRQ should not.
+
+> If that is fixed, then suspend_device_irq() should do the right thing
+> without any changes to the regmap-irq code.
+
+> Sorry for the noise.
+
+No worries, I can see the logic and it feels like there might be
+something to look at here, I'm just not sure that's it.
+
+--yXvDM+k88PaiFYSo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS1rTQACgkQJNaLcl1U
+h9AzgAf9Ho1g3/WBNj9ViaLy/ONnkgV6I6bcGu0Beww4E8wMDN3yG8C+87Fs1m4h
+oM54umREdffG5E7RbXGhHZYq7hx8LYRarwDwuDJNHEn89R1TuJsD86cm/RXacwwD
+A7VztmSlqehgWyCO6oVj4ikShF6VIqz8tbeCS9dQinpuxuPA9LoO3iTBam0EE7Yj
+eMYZ8oJePCpy30UxAoNqaB4VHiKU4JGNb0ShRW8hyyEEM8QdRIkEYTcRe2lcs0iH
+Fy0X4k84xq8QNLunDupvQicHS1MuR0MVa8iGrcXaYQ7jmAIE86n/D4HoHf3Ib+Ex
+2KdKefZg4agci8EHLTx1f36ARc9HJw==
+=l+qm
+-----END PGP SIGNATURE-----
+
+--yXvDM+k88PaiFYSo--
