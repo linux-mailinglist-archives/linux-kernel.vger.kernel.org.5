@@ -2,321 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 458737561B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9AE7561B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbjGQLhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 07:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47088 "EHLO
+        id S229739AbjGQLif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 07:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbjGQLhg (ORCPT
+        with ESMTP id S229621AbjGQLid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 07:37:36 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FAF170D
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:37:30 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-57704af0e64so40031707b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:37:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689593849; x=1692185849;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rcW4dTWuK29JOsV2I2tZPVBrCL3mh4Imj+/5bJ9CoOk=;
-        b=gdizMM9JyFRaSyLcM5RbfD5tdIJu0mKai4Fl0ObvuOf0O+6+HTWyseniNFOwWjh3Qw
-         fQzlw0f8mj2Ty4njDT81A7x0jBPrrVHBaCiBSek6cmPi9tsBRAxPpJ9cw6SuET75wgY3
-         vk29kv+TX/1lm1/9tHeZLrieK/MaSI+20x0iOVdm3B1NwzNpkjNA4U2+WtNFDuAuRVjo
-         c0+PUisiBVn5cqCUfbCfUyoMEvB5aS8I39dXhgD1Oz6WcuQ1U8FGP6jSXnP79P6zvmB4
-         1q4XuzwuWUCPj7nklypjtmX/4s7wJwxGiIuOOMkuuvKZwTsheaK1x9w0oa6h7LRQdpLZ
-         xhWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689593849; x=1692185849;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rcW4dTWuK29JOsV2I2tZPVBrCL3mh4Imj+/5bJ9CoOk=;
-        b=E4NmBkV2Aog/6Ez8lSOc1V+WWGsKHLjZ65t8GT/G/LFM2k5wNgh/yrmFMjVfSvM3eZ
-         VG7welrcc/FURuIXVB0l8OMfZ3Iz7WrraAhRSR9CJYSGN/KTT44bUfw38U+75sEinBYg
-         SAwSPTcSI6D1yK47VXjOm6t0x+Rm4wdgbZ2J0f3Fv1jfKgQ9D1GGNbAHVG024WayglJ7
-         5KRX9qo6xxa3en+Qq+Rau2IVlelzURR3wWmjm2T/hH1HlJ8xs+3fizdQUi+3IbH6NtJh
-         WyMZBFCJPAYbSAqhXhlX5W60gUw/oLyjdobqY0g3bX3W3sTRjvJDmFYC2yueDhuGkF9b
-         2HlQ==
-X-Gm-Message-State: ABy/qLaRLb0Tnq03jSiZoyUbPaiocW80hGe7Nf0FZPhEID3sf/Tfz16q
-        knb/HQrfGkUd2tbUG8Yg4qI6P6LOeMM=
-X-Google-Smtp-Source: APBJJlF+UsQWSQZQUzOIpfmZAM+dabmEIbY8ZwC+iGCz0HrXVGAIdKlFYy7SilJTzlUaFelBn9r9UMtcmfQ=
-X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:3b6e:8102:6db8:d83f])
- (user=glider job=sendgmr) by 2002:a81:de05:0:b0:576:d9ec:3350 with SMTP id
- k5-20020a81de05000000b00576d9ec3350mr150011ywj.10.1689593849601; Mon, 17 Jul
- 2023 04:37:29 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 13:37:08 +0200
-In-Reply-To: <20230717113709.328671-1-glider@google.com>
-Mime-Version: 1.0
-References: <20230717113709.328671-1-glider@google.com>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230717113709.328671-6-glider@google.com>
-Subject: [PATCH v3 5/5] arm64: mte: add compression support to mteswap.c
-From:   Alexander Potapenko <glider@google.com>
-To:     glider@google.com, catalin.marinas@arm.com, will@kernel.org,
-        pcc@google.com, andreyknvl@gmail.com,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        yury.norov@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        eugenis@google.com, syednwaris@gmail.com, william.gray@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 17 Jul 2023 07:38:33 -0400
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6EB1716
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:38:06 -0700 (PDT)
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230717113758epoutp04a5eaf3bce8b79ed547839b7b069d3e75~ypK427ntu3057830578epoutp04U
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 11:37:58 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230717113758epoutp04a5eaf3bce8b79ed547839b7b069d3e75~ypK427ntu3057830578epoutp04U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1689593878;
+        bh=+14wjOmfGISgMaiKf6FTdHxcFzhaPxAZxa4WsygZgG0=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=eyZoQ68YuhTE4U/KFgJH7FWiFcy8p9/NLWX7lz7OaDLckJFyRtHHcuep2We1y/7T1
+         38trx77gwPsh7UMzw8xly1lnfHC98ACE5oyuDvHtEEIjvWJkWrK/q9svjvTsP8QMIc
+         SI1WRtP1VPY+aL7CNxq4+zOs+2wM/nE61I/YTV6A=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20230717113758epcas5p1cfeb3845c81781bc26eea4a544acdf7b~ypK4ocJr60921709217epcas5p1f;
+        Mon, 17 Jul 2023 11:37:58 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.179]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4R4Knw06Hxz4x9Pq; Mon, 17 Jul
+        2023 11:37:56 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        DA.EA.44250.31825B46; Mon, 17 Jul 2023 20:37:55 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20230717113755epcas5p2c474d62544126f79dac38e6514961ec3~ypK2Z76FI0932109321epcas5p2v;
+        Mon, 17 Jul 2023 11:37:55 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230717113755epsmtrp24d7903f66b3800cbf0341ae463e73218~ypK2ZRNxG2324923249epsmtrp2r;
+        Mon, 17 Jul 2023 11:37:55 +0000 (GMT)
+X-AuditID: b6c32a4a-c4fff7000000acda-60-64b52813ebb0
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        55.77.64355.31825B46; Mon, 17 Jul 2023 20:37:55 +0900 (KST)
+Received: from alimakhtar04 (unknown [107.122.12.5]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20230717113754epsmtip2229a9ca8ff5d6544a45b645362f09243~ypK1VMqXx0308203082epsmtip2C;
+        Mon, 17 Jul 2023 11:37:54 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Rob Herring'" <robh@kernel.org>,
+        "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>
+Cc:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+In-Reply-To: <20230714175147.4068046-1-robh@kernel.org>
+Subject: RE: [PATCH] soc: samsung: Explicitly include correct DT includes
+Date:   Mon, 17 Jul 2023 17:07:53 +0530
+Message-ID: <001d01d9b8a3$20bd7ed0$62387c70$@samsung.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-us
+Thread-Index: AQFvrXnpEE06/lEBy1HujFZ2/GC4HQLREcuCsHtiWfA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplk+LIzCtJLcpLzFFi42LZdlhTU1dYY2uKwculVhbzj5xjtdj7eiu7
+        xabH11gtLu+aw2Yx4/w+Jov/e3awO7B5bFrVyeZx59oeNo/NS+o9Pm+SC2CJyrbJSE1MSS1S
+        SM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvMAdqtpFCWmFMKFApILC5W
+        0rezKcovLUlVyMgvLrFVSi1IySkwKdArTswtLs1L18tLLbEyNDAwMgUqTMjO+P9qPlvBPrGK
+        fT+mMzcw/hXqYuTkkBAwkXhyeRtTFyMXh5DAbkaJjicrGCGcT4wSfza+YoJzdr/7zgTTMufz
+        TRaIxE5GifkfPjCDJIQEXjJKNK/UALHZBHQldixuYwOxRQQSJVruPwYbyyzQzyix4csLVpAE
+        p4C5xN+3F9hBbGEBT4lbP54DNXBwsAioShzu1AYxeQUsJQ6/B9vLKyAocXLmExYQm1lAXmL7
+        2znMEPcoSPx8uowVIi4u8fLoEXaItVYSF3d+ZwNZKyHQySHRfOQm1AMuEo2nTzJC2MISr45v
+        YYewpSQ+v9sLdoKEgIfEoj9SEOEMibfL10OV20scuDKHBaSEWUBTYv0ufYi1fBK9v58wQXTy
+        SnS0QQNXVaL53VUWCFtaYmJ3NyuE7SHxqXke+wRGxVlIHpuF5LFZSJ6ZhbBsASPLKkbJ1ILi
+        3PTUYtMCo7zUcnhsJ+fnbmIEp0strx2MDx980DvEyMTBeIhRgoNZSYT3+6pNKUK8KYmVValF
+        +fFFpTmpxYcYTYFhPZFZSjQ5H5iw80riDU0sDUzMzMxMLI3NDJXEeV+3zk0REkhPLEnNTk0t
+        SC2C6WPi4JRqYBKLmRV6cc6KyXvN5xktPMf67aGv0YQa68N3dFcomrerZv8zsFJS3scx1UE+
+        Y+LGevHw1fsMfzY9l+H/9N4/bu6SKlbXe263ZW3DFrw+vrqlplB/n4y88aUtzy5kb7gkMkHk
+        vVrqXLaFn6SY2cWrjwoadWxLSJAJ9d0g6FyTruN30eLZ5JaOIBaphttt0ad2uhUkyjhMcXHp
+        K/S6lrJt6+rVJez8OyQNInM+nVPZbzd/o3vKeX62roJNc5vnWzm6LvrWVzn79IOOW1/VVVvX
+        r1JTYLncuiAs8YWO8qcH3+4ofb+wSd5JcZGCm07a7j3lt9bHfzvTs2fPvhXuTRIlu2t9b5ZN
+        dJyx0DhvowePhRJLcUaioRZzUXEiAL0+IHcgBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrELMWRmVeSWpSXmKPExsWy7bCSvK6wxtYUg627NSzmHznHarH39VZ2
+        i02Pr7FaXN41h81ixvl9TBb/9+xgd2Dz2LSqk83jzrU9bB6bl9R7fN4kF8ASxWWTkpqTWZZa
+        pG+XwJXx/9V8toJ9YhX7fkxnbmD8K9TFyMkhIWAiMefzTZYuRi4OIYHtjBK7tp1gh0hIS1zf
+        OAHKFpZY+e85O0TRc0aJ5if3mUASbAK6EjsWt7GB2CICiRIX/z1jBCliFpjMKPH9wFomiI4O
+        Ronnc++DVXEKmEv8fXsBbKywgKfErR/PgeIcHCwCqhKHO7VBTF4BS4nD78Hm8woISpyc+YQF
+        JMwsoCfRtpERJMwsIC+x/e0cZojbFCR+Pl3GChEXl3h59Ag7xDlWEhd3fmebwCg8C8mkWQiT
+        ZiGZNAtJ9wJGllWMoqkFxbnpuckFhnrFibnFpXnpesn5uZsYwdGiFbSDcdn6v3qHGJk4GA8x
+        SnAwK4nwfl+1KUWINyWxsiq1KD++qDQntfgQozQHi5I4r3JOZ4qQQHpiSWp2ampBahFMlomD
+        U6qBSVonhTtd+9NbFqnG22wXpDb+1Pbq2pw9/cKPy0YLbes/R71hm5G4PrWY+dDFewIbbYtW
+        Lvaa1puWZ33zkdbZafondx6e+GN/4NP6jbo+IQH8k3u1/pmp8hpn1VRkfrs7cfamh6kJ+Rse
+        TVK6HXdnshWrbMjuS8skZx16/f+GcUTckTTHB4uUKhlfTr/1kun5wh8705geOP9WEJu/hWX7
+        bN7NWQIfFZ+12fxu31yZHcpyas98yykP4514uNTFZdz+3niR0bh0Qb+Om1/nE5tFa9VSNizr
+        WOJeVF5+/2rQjx/9tss3rDHawRxZbZqVMHmbx7v4zAslAcufLkldPMH1cOULpntpEzrX/tJ9
+        +OFo9nslluKMREMt5qLiRAAbijVLBQMAAA==
+X-CMS-MailID: 20230717113755epcas5p2c474d62544126f79dac38e6514961ec3
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230714175226epcas5p2957137e6e0b4a69efb913fe744be827a
+References: <CGME20230714175226epcas5p2957137e6e0b4a69efb913fe744be827a@epcas5p2.samsung.com>
+        <20230714175147.4068046-1-robh@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define the internal mteswap.h interface:
- - _mte_alloc_and_save_tags()
- - _mte_free_saved_tags()
- - _mte_restore_tags()
 
-, that encapsulates saving tags for a struct page (together with memory
-allocation), restoring tags, and deleting the storage allocated for them.
 
-These functions accept opaque pointers, which may point to 128-byte
-tag buffers, as well as smaller buffers containing compressed tags, or
-have compressed tags stored directly in them.
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: Friday, July 14, 2023 11:22 PM
+> To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>; Alim Akhtar
+> <alim.akhtar@samsung.com>
+> Cc: devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
+linux-
+> samsung-soc@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: [PATCH] soc: samsung: Explicitly include correct DT includes
+> 
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+"temporarily"
+> include each other. They also include platform_device.h and of.h. As a
+result,
+> there's a pretty much random mix of those include files used throughout
+the
+> tree. In order to detangle these headers and replace the implicit includes
+with
+> struct declarations, users need to explicitly include the correct
+includes.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
 
-The existing code from mteswap.c operating with uncompressed tags is split
-away into mteswap_nocomp.c, and the newly introduced mteswap_comp.c
-provides compression with the EA0 algorithm. The latter implementation
-is picked if CONFIG_ARM64_MTE_COMP=y.
+Acked-by: Alim Akhtar <alim.akhtar@samsung.com>
 
-Soon after booting Android, tag compression saves ~2.5x memory previously
-spent by mteswap.c on tag allocations. With the growing uptime, the
-savings reach 20x and even more.
+>  drivers/soc/samsung/exynos-chipid.c | 1 -
+>  drivers/soc/samsung/exynos-pmu.c    | 2 +-
+>  drivers/soc/samsung/pm_domains.c    | 3 ++-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/soc/samsung/exynos-chipid.c
+b/drivers/soc/samsung/exynos-
+> chipid.c
+> index 0fb3631e7346..7ba45c4aff97 100644
+> --- a/drivers/soc/samsung/exynos-chipid.c
+> +++ b/drivers/soc/samsung/exynos-chipid.c
+> @@ -17,7 +17,6 @@
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+> -#include <linux/of_device.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regmap.h>
+>  #include <linux/slab.h>
+> diff --git a/drivers/soc/samsung/exynos-pmu.c
+b/drivers/soc/samsung/exynos-
+> pmu.c
+> index 5b2664da9853..250537d7cfd6 100644
+> --- a/drivers/soc/samsung/exynos-pmu.c
+> +++ b/drivers/soc/samsung/exynos-pmu.c
+> @@ -7,9 +7,9 @@
+> 
+>  #include <linux/of.h>
+>  #include <linux/of_address.h>
+> -#include <linux/of_device.h>
+>  #include <linux/mfd/core.h>
+>  #include <linux/mfd/syscon.h>
+> +#include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/delay.h>
+> 
+> diff --git a/drivers/soc/samsung/pm_domains.c
+> b/drivers/soc/samsung/pm_domains.c
+> index d07f3c9d6903..9b502e8751d1 100644
+> --- a/drivers/soc/samsung/pm_domains.c
+> +++ b/drivers/soc/samsung/pm_domains.c
+> @@ -11,11 +11,12 @@
+> 
+>  #include <linux/io.h>
+>  #include <linux/err.h>
+> +#include <linux/platform_device.h>
+>  #include <linux/slab.h>
+>  #include <linux/pm_domain.h>
+>  #include <linux/delay.h>
+> +#include <linux/of.h>
+>  #include <linux/of_address.h>
+> -#include <linux/of_platform.h>
+>  #include <linux/pm_runtime.h>
+> 
+>  struct exynos_pm_domain_config {
+> --
+> 2.40.1
 
-Signed-off-by: Alexander Potapenko <glider@google.com>
-
----
- v3:
-  - Addressed comments by Andy Shevchenko in another patch:
-   - fixed includes order
-   - replaced u64 with unsigned long
-   - added MODULE_IMPORT_NS(MTECOMP)
----
- arch/arm64/mm/Makefile         |  5 ++++
- arch/arm64/mm/mteswap.c        | 20 ++++++-------
- arch/arm64/mm/mteswap.h        | 12 ++++++++
- arch/arm64/mm/mteswap_comp.c   | 52 ++++++++++++++++++++++++++++++++++
- arch/arm64/mm/mteswap_nocomp.c | 38 +++++++++++++++++++++++++
- 5 files changed, 116 insertions(+), 11 deletions(-)
- create mode 100644 arch/arm64/mm/mteswap.h
- create mode 100644 arch/arm64/mm/mteswap_comp.c
- create mode 100644 arch/arm64/mm/mteswap_nocomp.c
-
-diff --git a/arch/arm64/mm/Makefile b/arch/arm64/mm/Makefile
-index 170dc62b010b9..46a798e2b67cb 100644
---- a/arch/arm64/mm/Makefile
-+++ b/arch/arm64/mm/Makefile
-@@ -11,6 +11,11 @@ obj-$(CONFIG_TRANS_TABLE)	+= trans_pgd-asm.o
- obj-$(CONFIG_DEBUG_VIRTUAL)	+= physaddr.o
- obj-$(CONFIG_ARM64_MTE)		+= mteswap.o
- obj-$(CONFIG_ARM64_MTE_COMP)	+= mtecomp.o
-+ifdef CONFIG_ARM64_MTE_COMP
-+obj-$(CONFIG_ARM64_MTE)		+= mteswap_comp.o
-+else
-+obj-$(CONFIG_ARM64_MTE)		+= mteswap_nocomp.o
-+endif
- obj-$(CONFIG_ARM64_MTE_COMP_KUNIT_TEST) += test_mtecomp.o
- KASAN_SANITIZE_physaddr.o	+= n
- 
-diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
-index cd508ba80ab1b..9d8f87fd191a2 100644
---- a/arch/arm64/mm/mteswap.c
-+++ b/arch/arm64/mm/mteswap.c
-@@ -5,8 +5,11 @@
- #include <linux/slab.h>
- #include <linux/swap.h>
- #include <linux/swapops.h>
-+
- #include <asm/mte.h>
- 
-+#include "mteswap.h"
-+
- static DEFINE_XARRAY(mte_pages);
- 
- void *mte_allocate_tag_storage(void)
-@@ -27,20 +30,18 @@ int mte_save_tags(struct page *page)
- 	if (!page_mte_tagged(page))
- 		return 0;
- 
--	tag_storage = mte_allocate_tag_storage();
-+	tag_storage = _mte_alloc_and_save_tags(page);
- 	if (!tag_storage)
- 		return -ENOMEM;
- 
--	mte_save_page_tags(page_address(page), tag_storage);
--
- 	/* page_private contains the swap entry.val set in do_swap_page */
- 	ret = xa_store(&mte_pages, page_private(page), tag_storage, GFP_KERNEL);
- 	if (WARN(xa_is_err(ret), "Failed to store MTE tags")) {
--		mte_free_tag_storage(tag_storage);
-+		_mte_free_saved_tags(tag_storage);
- 		return xa_err(ret);
- 	} else if (ret) {
- 		/* Entry is being replaced, free the old entry */
--		mte_free_tag_storage(ret);
-+		_mte_free_saved_tags(ret);
- 	}
- 
- 	return 0;
-@@ -53,10 +54,7 @@ void mte_restore_tags(swp_entry_t entry, struct page *page)
- 	if (!tags)
- 		return;
- 
--	if (try_page_mte_tagging(page)) {
--		mte_restore_page_tags(page_address(page), tags);
--		set_page_mte_tagged(page);
--	}
-+	_mte_restore_tags(tags, page);
- }
- 
- void mte_invalidate_tags(int type, pgoff_t offset)
-@@ -64,7 +62,7 @@ void mte_invalidate_tags(int type, pgoff_t offset)
- 	swp_entry_t entry = swp_entry(type, offset);
- 	void *tags = xa_erase(&mte_pages, entry.val);
- 
--	mte_free_tag_storage(tags);
-+	_mte_free_saved_tags(tags);
- }
- 
- void mte_invalidate_tags_area(int type)
-@@ -78,7 +76,7 @@ void mte_invalidate_tags_area(int type)
- 	xa_lock(&mte_pages);
- 	xas_for_each(&xa_state, tags, last_entry.val - 1) {
- 		__xa_erase(&mte_pages, xa_state.xa_index);
--		mte_free_tag_storage(tags);
-+		_mte_free_saved_tags(tags);
- 	}
- 	xa_unlock(&mte_pages);
- }
-diff --git a/arch/arm64/mm/mteswap.h b/arch/arm64/mm/mteswap.h
-new file mode 100644
-index 0000000000000..bf25f2b3e75a4
---- /dev/null
-+++ b/arch/arm64/mm/mteswap.h
-@@ -0,0 +1,12 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef ARCH_ARM64_MM_MTESWAP_H_
-+#define ARCH_ARM64_MM_MTESWAP_H_
-+
-+#include <linux/mm_types.h>
-+
-+void *_mte_alloc_and_save_tags(struct page *page);
-+void _mte_free_saved_tags(void *tags);
-+void _mte_restore_tags(void *tags, struct page *page);
-+
-+#endif // ARCH_ARM64_MM_MTESWAP_H_
-diff --git a/arch/arm64/mm/mteswap_comp.c b/arch/arm64/mm/mteswap_comp.c
-new file mode 100644
-index 0000000000000..7a369c3fb9c94
---- /dev/null
-+++ b/arch/arm64/mm/mteswap_comp.c
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/* MTE tag storage management with EA0 compression. */
-+
-+#include <linux/pagemap.h>
-+#include <linux/slab.h>
-+#include <linux/swap.h>
-+#include <linux/swapops.h>
-+#include <linux/xarray.h>
-+
-+#include <asm/mte.h>
-+#include <asm/mtecomp.h>
-+
-+#include "mteswap.h"
-+
-+void *_mte_alloc_and_save_tags(struct page *page)
-+{
-+	u8 tags[128];
-+	unsigned long handle;
-+
-+	mte_save_page_tags(page_address(page), tags);
-+	handle = ea0_compress(tags);
-+	return xa_mk_value(handle);
-+}
-+
-+void _mte_free_saved_tags(void *storage)
-+{
-+	unsigned long handle = xa_to_value(storage);
-+	int size;
-+
-+	if (!handle)
-+		return;
-+	size = ea0_storage_size(handle);
-+	ea0_release_handle(handle);
-+}
-+
-+void _mte_restore_tags(void *tags, struct page *page)
-+{
-+	unsigned long handle = xa_to_value(tags);
-+	u8 tags_decomp[128];
-+
-+	if (!handle)
-+		return;
-+
-+	if (try_page_mte_tagging(page)) {
-+		if (!ea0_decompress(handle, tags_decomp))
-+			return;
-+		mte_restore_page_tags(page_address(page), tags_decomp);
-+		set_page_mte_tagged(page);
-+	}
-+}
-+MODULE_IMPORT_NS(MTECOMP);
-diff --git a/arch/arm64/mm/mteswap_nocomp.c b/arch/arm64/mm/mteswap_nocomp.c
-new file mode 100644
-index 0000000000000..32733998b1879
---- /dev/null
-+++ b/arch/arm64/mm/mteswap_nocomp.c
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/* MTE tag storage management without compression support. */
-+
-+#include <linux/pagemap.h>
-+#include <linux/slab.h>
-+#include <linux/swap.h>
-+#include <linux/swapops.h>
-+#include <linux/xarray.h>
-+
-+#include <asm/mte.h>
-+
-+#include "mteswap.h"
-+
-+void *_mte_alloc_and_save_tags(struct page *page)
-+{
-+	void *storage;
-+
-+	storage = mte_allocate_tag_storage();
-+	if (!storage)
-+		return NULL;
-+
-+	mte_save_page_tags(page_address(page), storage);
-+	return storage;
-+}
-+
-+void _mte_free_saved_tags(void *storage)
-+{
-+	mte_free_tag_storage(storage);
-+}
-+
-+void _mte_restore_tags(void *tags, struct page *page)
-+{
-+	if (try_page_mte_tagging(page)) {
-+		mte_restore_page_tags(page_address(page), tags);
-+		set_page_mte_tagged(page);
-+	}
-+}
--- 
-2.41.0.255.g8b1d071c50-goog
 
