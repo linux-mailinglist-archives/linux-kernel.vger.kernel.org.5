@@ -2,224 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 817D0756C2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE156756C2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbjGQSeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 14:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36326 "EHLO
+        id S230199AbjGQSfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 14:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjGQSeg (ORCPT
+        with ESMTP id S229471AbjGQSfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:34:36 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 429B7A1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 11:34:34 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8AxEvC4ibVkEhIGAA--.15042S3;
-        Tue, 18 Jul 2023 02:34:32 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx_yOsibVk5dAxAA--.31528S3;
-        Tue, 18 Jul 2023 02:34:31 +0800 (CST)
-Message-ID: <e3a05204-61fe-2318-5f06-fd12addfe2e9@loongson.cn>
-Date:   Tue, 18 Jul 2023 02:34:20 +0800
+        Mon, 17 Jul 2023 14:35:02 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C4394;
+        Mon, 17 Jul 2023 11:35:01 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7878e573827so117410739f.1;
+        Mon, 17 Jul 2023 11:35:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689618901; x=1692210901;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=goViAJVjt+VltPBDimAYth5M8v49WVfPG0UW7xjQVYs=;
+        b=m6IuYLbfIdqHXBTmqDzWjN/BPrMu8eNhSlUTEXVXkTUr+Dt9u06nULrTWUdTy4FxKj
+         XEQVoB1xkBIHKzTbsQsvnbskF1lGL3UWOP6eh+bCAiUKIzIngnWRhU12tW/TOdchEBXr
+         kFwG1BBw94pFYxDLc25C9y+UaWEr5+w+B8gbY+t5mBqNE78wysiR9LXxYQNETRrXwb45
+         WNCTq58auz6vSzBSP6eB9QX1DV4GnRq7rNNzBK7psbLgioU1fFqGP2ATSB1U78dyumYz
+         UjJn3KjnqVk/WoatKkTiL9sesGS9NB88H/xe1QP8shzUVEFDohglpnWsTLWGqE8aagZm
+         Kt5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689618901; x=1692210901;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=goViAJVjt+VltPBDimAYth5M8v49WVfPG0UW7xjQVYs=;
+        b=SmyXcTznqU42Um4sj7XjcDF8LKvSokffUxuPRpNrct0MrPyDqGBdjaH5IUracaznrT
+         qyBhIO1J8whGLgZtoY6HiVjOP4EnsbRpja6dJvGPR4I3kzA72FaZlykjIm5CtNK8L2kL
+         kabzXvO3RUVzcbOQoiyIploYmGvZvW2ywtKe7TgfecDquC+WEpFEfV6heJG5uvq1QWXh
+         POJF2kSlnr9AzoEinPJAZ3Ow8zmf17pF6d/QvdXcS7PRJFOlnFAOiNcWMNR0+HrBAFEK
+         5K8612tyQuqsVJdanYwhxvmqDBWqDpVlqHugtBbjxzjuv8/3HlCydzcAj683/8EML4vv
+         aTGA==
+X-Gm-Message-State: ABy/qLasriYYNkK+HNs+GuCWALMKQ/6gZYKiT4xRoihUQOLXpza/EchC
+        QMqmEtLxdUR5iU0mGBrwDL4=
+X-Google-Smtp-Source: APBJJlGVRmDSn3ht4EW/FvoSR7HSHquWs4mYU5kTCDuF49abVKehOriJc7qsTWhC/OvOIgk26PF1zQ==
+X-Received: by 2002:a05:6e02:1788:b0:347:6c77:2c1 with SMTP id y8-20020a056e02178800b003476c7702c1mr744478ilu.13.1689618900667;
+        Mon, 17 Jul 2023 11:35:00 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id d18-20020a92d792000000b003460bb48516sm112233iln.67.2023.07.17.11.34.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 11:35:00 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 17 Jul 2023 08:34:58 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     hannes@cmpxchg.org, lizefan.x@bytedance.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: use cached local variable parent in for loop
+Message-ID: <ZLWJ0jYbNxK0q1Hw@slm.duckdns.org>
+References: <20230715030829.2343109-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 3/8] drm/etnaviv: Drop the second argument of the
- etnaviv_gem_new_impl()
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     loongson-kernel@lists.loongnix.cn, etnaviv@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230623100822.274706-1-sui.jingfeng@linux.dev>
- <20230623100822.274706-4-sui.jingfeng@linux.dev>
- <862358e67a6f118b11ba16fb94828e9d1635cb66.camel@pengutronix.de>
-Content-Language: en-US
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <862358e67a6f118b11ba16fb94828e9d1635cb66.camel@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Dx_yOsibVk5dAxAA--.31528S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxWFy8WrWDZw4DXr1xWF47Jrc_yoWrWw43pF
-        sayFyjkrW8Z3yDK3s7XFn5Aw1UWr1Igry0yas0ywn8Kw4YgF1kXF1FkFWDCFsxArs7uF13
-        t3W0yF1rK3W5A3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
-        twAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-        k0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l
-        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4R6wDUUUU
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230715030829.2343109-1-linmiaohe@huawei.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,  Lucas
+On Sat, Jul 15, 2023 at 11:08:29AM +0800, Miaohe Lin wrote:
+> Use local variable parent to initialize iter tcgrp in for loop so the size
+> of cgroup.o can be reduced by 64 bytes. No functional change intended.
+> 
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
+Applied to cgroup/for-6.6.
 
-Thanks for you guidance!
+Thanks.
 
-
-On 2023/7/17 17:51, Lucas Stach wrote:
-> Hi Jingfeng,
->
-> Am Freitag, dem 23.06.2023 um 18:08 +0800 schrieb Sui Jingfeng:
->> From: Sui Jingfeng <suijingfeng@loongson.cn>
->>
->> Because it is not used by the etnaviv_gem_new_impl() function,
->> no functional change.
->>
-> I think it would make sense to move into the opposite direction: in
-> both callsites of etnaviv_gem_new_impl we immediately call
-> drm_gem_object_init with the size.
-
-Really?
-
-But there are multiple call path to the etnaviv_gem_new_impl() function.
-
-
-Code path 1 (PRIME):
-
-|- etnaviv_gem_prime_import_sg_table()
-
-|--  etnaviv_gem_new_private()
-
-|--- etnaviv_gem_new_impl(dev, size, flags, ops, &obj)
-
-|--- drm_gem_private_object_init(dev, obj, size)
-
-
-Code path 2 (USERPTR):
-
-|- etnaviv_gem_new_userptr()
-
-|--  etnaviv_gem_new_private()
-
-|--- etnaviv_gem_new_impl(dev, size, flags, ops, &obj)
-
-|--- drm_gem_private_object_init(dev, obj, size)
-
-
-Code path 3 (construct a GEM buffer object for the user-space):
-
-|- etnaviv_ioctl_gem_new()
-
-|-- etnaviv_gem_new_handle()
-
-|--- etnaviv_gem_new_impl(dev, size, flags, &etnaviv_gem_shmem_ops, &obj);
-
-|---  drm_gem_object_init(dev, obj, size);
-
-
-If I understand this correctly:
-
-
-Code path 1 is for cross device (and cross driver) buffer-sharing,
-
-Code path 2 is going to share the buffer the userspace,
-
-
-*Only* the code path 3 is to construct a GEM buffer object for the 
-user-space the userspace,
-
-that is say, *only* the code path 3 need to do the backing memory 
-allocation work for the userspace.
-
-thus it need to call drm_gem_object_init() function, which really the 
-shmem do the backing memory
-
-allocation.
-
-
-The code path 1 and the code path 2 do not need the kernel space 
-allocate the backing memory.
-
-Because they are going to share the buffer already allocated by others.
-
-thus, code path 2 and code path 3 should call drm_gem_private_object_init(),
-
-*not* the drm_gem_object_init() function.
-
-
-When import buffer from the a specific KMS driver,
-
-then etnaviv_gem_prime_import_sg_table() will be called.
-
-
-I guess you means that drm_gem_private_object_init() (not the 
-drm_gem_object_init() function)here ?
-
-
-> A better cleanup would be to make
-> use of the size parameter and move this object init call into
-> etnaviv_gem_new_impl.
-
-If I following you guidance, how do I differentiate the cases
-
-when to call drm_gem_private_object_init() not drm_gem_object_init() ?
-
-and when call drm_gem_object_init() not drm_gem_private_object_init()?
-
-
-I don't think you are right here.
-
->
-> Regards,
-> Lucas
->
->> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
->> ---
->>   drivers/gpu/drm/etnaviv/etnaviv_gem.c | 7 +++----
->>   1 file changed, 3 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem.c b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
->> index b5f73502e3dd..be2f459c66b5 100644
->> --- a/drivers/gpu/drm/etnaviv/etnaviv_gem.c
->> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
->> @@ -542,7 +542,7 @@ static const struct drm_gem_object_funcs etnaviv_gem_object_funcs = {
->>   	.vm_ops = &vm_ops,
->>   };
->>   
->> -static int etnaviv_gem_new_impl(struct drm_device *dev, u32 size, u32 flags,
->> +static int etnaviv_gem_new_impl(struct drm_device *dev, u32 flags,
->>   	const struct etnaviv_gem_ops *ops, struct drm_gem_object **obj)
->>   {
->>   	struct etnaviv_gem_object *etnaviv_obj;
->> @@ -591,8 +591,7 @@ int etnaviv_gem_new_handle(struct drm_device *dev, struct drm_file *file,
->>   
->>   	size = PAGE_ALIGN(size);
->>   
->> -	ret = etnaviv_gem_new_impl(dev, size, flags,
->> -				   &etnaviv_gem_shmem_ops, &obj);
->> +	ret = etnaviv_gem_new_impl(dev, flags, &etnaviv_gem_shmem_ops, &obj);
->>   	if (ret)
->>   		goto fail;
->>   
->> @@ -627,7 +626,7 @@ int etnaviv_gem_new_private(struct drm_device *dev, size_t size, u32 flags,
->>   	struct drm_gem_object *obj;
->>   	int ret;
->>   
->> -	ret = etnaviv_gem_new_impl(dev, size, flags, ops, &obj);
->> +	ret = etnaviv_gem_new_impl(dev, flags, ops, &obj);
->>   	if (ret)
->>   		return ret;
->>   
-
+-- 
+tejun
