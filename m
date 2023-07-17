@@ -2,138 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7D1756E09
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F4F756E10
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjGQURc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 16:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56420 "EHLO
+        id S229946AbjGQUTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 16:19:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbjGQURa (ORCPT
+        with ESMTP id S229938AbjGQUTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 16:17:30 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2044.outbound.protection.outlook.com [40.107.92.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF05136;
-        Mon, 17 Jul 2023 13:17:29 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dxbsm8urHMHV+5i99i5K6NoHIzaP3jPvuPtpnQUWrtu/zeTWR0fCAIVbRv0/36xoiJFp47ncm4uwOJQYKy4OtTLGEVp+1XinVwTeMmPBZUuV1gcVwN/9M6W2MB6HFFJxDjZGWF1H/iimqafBZDl6KULN3EjPqw2lY0GrkNoHBD/iCo44QgUqMlHEG83w/2EKENs7duYl8RS7RfZibVvsIIUyCk+cm10yilAFT14hzlOM3AuYcEXfjmBoRWQbhC9K+3Cz+LXorTZNHH2L833uNP+1Sr+dYYWsu8f4RhpCL2U3KMpRsUNi+qGDZ3gy+JSZC30Vlchx9D/XjkH74Rhgeg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VE9o0hv/nbjZB1OM8aYpBrpIPBSq6QBWPXfz6KOhCi4=;
- b=UV163DQivx8c9SjnVT1G8BAQqLp+ch4Y1ql8609mqwgdMl4GO9xX+E43Vm1pV6ctmxT1SepK2TpxJ3+0bUpRBUbAimKuiCoGDQ0pW6AxPVwAoXIgE3OJNgfMArjRUuFoWPXLQqbhLaNPVQkNT6Gjoxh7KxNP2FJHFnAU1aWXgT8kU3xCWJgaBj7olxalx8eTWVOV1qR+La4epujCG3noYqYiFCdGv+FJg4Y0TE6KQ16C0spyVjTPghQcmG99jUCAcw2e3WTy2s7Z8mGuxzrgHEgHTrVER+MBcdKyXJQUqXRERC/fa1gysKxAIYWc5TMdymtckyfR8h01xqG9fpgkqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linaro.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VE9o0hv/nbjZB1OM8aYpBrpIPBSq6QBWPXfz6KOhCi4=;
- b=2P++FXBcvvE7kxgBPuyF/PIewBCMboaWWkwvmLkyBHLFJn6zlhyOW8Ox3hJ6satUjChZbRWTnWdoEpy9FmB3Jqrjlu01OBqDfeTujs8PtjsrH9+pxBi63EYa96u55JHY+FkZi4q2FyO84iCcqcVIGaFuIqnY3Pjvo0Gq3zLFGy4=
-Received: from BN0PR10CA0021.namprd10.prod.outlook.com (2603:10b6:408:143::24)
- by SN7PR12MB7420.namprd12.prod.outlook.com (2603:10b6:806:2a7::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Mon, 17 Jul
- 2023 20:17:23 +0000
-Received: from BN8NAM11FT112.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:143:cafe::cf) by BN0PR10CA0021.outlook.office365.com
- (2603:10b6:408:143::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33 via Frontend
- Transport; Mon, 17 Jul 2023 20:17:23 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT112.mail.protection.outlook.com (10.13.176.210) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6588.33 via Frontend Transport; Mon, 17 Jul 2023 20:17:23 +0000
-Received: from SITE-L-T34-2.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Mon, 17 Jul
- 2023 15:17:10 -0500
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     <linus.walleij@linaro.org>
-CC:     <Basavaraj.Natikar@amd.com>, <Shyam-sundar.S-k@amd.com>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <mario.limonciello@amd.com>
-Subject: [PATCH] pinctrl: amd: Don't show `Invalid config param` errors
-Date:   Mon, 17 Jul 2023 15:16:52 -0500
-Message-ID: <20230717201652.17168-1-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 17 Jul 2023 16:19:30 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B5BC18B
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:19:27 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b708e49059so76166261fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:19:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689625166; x=1692217166;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QT95tFT96QhXbNqSGHmz3kdxmAgbV5cr95EhcCxQElI=;
+        b=Vc5pvu+yk4BljMbr5NJv2jpJJ4nqpDDtp8yZbaWWa46iN2FTbLxjUo2sZBPWUo4NWJ
+         TIHIpFVQ7igvgeTq5p3sYlZRMLcifNxhad8pGdt1Wqv1EeBGCk7MuKLktBlUVfYFxCRY
+         5d91T1mHEa2uXtcpr3D9qs+LHt57jGj3bu6XlvEZyEC2UnqOnGwnVQXokmzGq8GDx+SE
+         XmYQXapgVOGDhl701QKRSxfup6pida42Xfqu+IFmoznp5PnCVgeY4nDSMYIQPXzBKka3
+         8zqT5rOq0O+5NX9PnUYpneYl8jgrfBjq1mDHGu4Q7NUkWhHwgevBPaXQqs1UioKvMX3i
+         LOxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689625166; x=1692217166;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QT95tFT96QhXbNqSGHmz3kdxmAgbV5cr95EhcCxQElI=;
+        b=RsY+g26V+kwM+19Ds+IWzp0Oj/aLeUNYVu8jGcsA10fB5OEPpNYImRqPePxVVbnAPV
+         UZi9JfIVZRjyucLnT5BNnhEf4QQlmy/Z0+H2x4tmaxcfeMsCU1wx56jN1j/g/HKhCVIf
+         zhNfG14sed/xIR0TKu88uWE+a8euzcl1T2zALy42YiCRSeUl7QotBWIdqyT708DKm2+I
+         HF7CuHkW8ZF0QPqdswVi21x8DBhIzSx9uKrcvLNF/4TEYZ9xdNX9+2WQcrzZouDADNPk
+         jJ0sC/jgF13ro/QVfUIQF2Vw9GtyWMYBZ3NFylXziB31kbWuMmHdj4peK+0hvTVNoXjV
+         knjw==
+X-Gm-Message-State: ABy/qLbGD+0V+hnh3DD0O+Zfh8NIqGftrbBxYdTn4ua/lfgz50smUBU9
+        9QK8aMzGBSSjUvuJ92dNzAtAXA==
+X-Google-Smtp-Source: APBJJlHZktGOsHd5r4797G/opftgBKdZIwBm6vlSanKfUXBVFkeHbs0HGwNdIVnTEYtP4YoTU+PLwQ==
+X-Received: by 2002:a2e:83c9:0:b0:2b6:a057:8098 with SMTP id s9-20020a2e83c9000000b002b6a0578098mr8765102ljh.0.1689625165734;
+        Mon, 17 Jul 2023 13:19:25 -0700 (PDT)
+Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
+        by smtp.gmail.com with ESMTPSA id f3-20020a2e9183000000b002b6d576a257sm84868ljg.96.2023.07.17.13.19.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 13:19:25 -0700 (PDT)
+Message-ID: <81491f7e-bd2c-7e3c-14c4-a7547d76c307@linaro.org>
+Date:   Mon, 17 Jul 2023 22:19:22 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT112:EE_|SN7PR12MB7420:EE_
-X-MS-Office365-Filtering-Correlation-Id: 23544864-e083-437e-ec51-08db8702d4e1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jmjcbGwPchXO//OGoEYYqodPvxnUU0mnyN5TANIUFzeB81pwhK380oiPrbp4JfBuZqdUYqGhz5we8T0qhQvvYm4QH7N545JVhmBcWQKHx8UyOwaJCocMv4Agr4E0p8wK/z39z5AGFoXeyG7W3NEZasNGk1QpnI5fdpWAckYcPUbY9woV+oTKvnqbSfaUYp/jYFA0aie6NFfdFOGMNf58KiLnxdim5Ik/Zbx4A0Mx3rjdRtXgGa9nJ4jRLi6rnu92UDjmSdDwD9LY5wOvf8Za4mF6IpsVStRlg0IitasgicMvkIRpb+uTelRGmqK6T0jiFCHKojVr0xbGlVChwqD5amwplYzQnwGoJpIaQaT4c3qsMhG+DxHuxak9cQqzzN9HNjWZFRbuhTsabvWQlipgiS+UsoBWVr0Ep8ktPC2dMpTouchtbWLaZ5o+genY3mB3mUSYJpALZKyn9U60uByJlXW+BBq2XGV1UE+98w3yc23PZn9tjZd2Gb8CWkwTtTBv1KLCFGYhndeqeHLa6hkk6BWxj13scmnuj+T0KGgvMabjKjBtLTasr4NBE0S/SRKwTdceEDqAK8UM5DjtuVGZRcaANW+1q95xzbPujf9C9oSt8WmByrtQOoSMhSQP/YbqKY/ZqmU38SHXfQ5T8z6Xyy2AZQet5Tf6D3TItZbtkSeRgFEg4Ul6gQ0LT6JQhFjD7GXPLJEj1GNl1kclksw9+yvGbHbLBtkcudnkqhvZUXijqxiu8odv0ePVphpeOVtUK5PfcK/SLKj9UZTKX/mfdL1Qxl2ZRgnMh/mxettzfzg=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(136003)(396003)(346002)(82310400008)(451199021)(40470700004)(36840700001)(46966006)(86362001)(2906002)(36756003)(44832011)(40460700003)(40480700001)(186003)(16526019)(336012)(36860700001)(83380400001)(426003)(47076005)(1076003)(26005)(2616005)(82740400003)(356005)(81166007)(70206006)(6666004)(7696005)(54906003)(70586007)(316002)(5660300002)(6916009)(4326008)(478600001)(41300700001)(8936002)(8676002)(81973001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 20:17:23.3848
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23544864-e083-437e-ec51-08db8702d4e1
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT112.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7420
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v8 3/4] arm64: dts: qcom: sm6115: Add EUD dt node and dwc3
+ connector
+Content-Language: en-US
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, agross@kernel.org, andersson@kernel.org,
+        linux-kernel@vger.kernel.org, bhupesh.linux@gmail.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        krzysztof.kozlowski@linaro.org, quic_schowdhu@quicinc.com,
+        gregkh@linuxfoundation.org
+References: <20230717103236.1246771-1-bhupesh.sharma@linaro.org>
+ <20230717103236.1246771-4-bhupesh.sharma@linaro.org>
+ <ZLUbyocjNT2bGvVt@gerhold.net>
+ <CAH=2NtzM=jaVtjeHHO0rY0_wHu9==Jpdz4zx5nCK3gBh2kpL=A@mail.gmail.com>
+ <ZLWHwnjjMkJx_ACH@gerhold.net>
+ <CAH=2NtxHekJVvzaD5SNhZZmAHXhc=7v4Pr7RMEFNTXXH6x_AgQ@mail.gmail.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <CAH=2NtxHekJVvzaD5SNhZZmAHXhc=7v4Pr7RMEFNTXXH6x_AgQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On some systems amd_pinconf_set() is called with parameters
-0x8 (PIN_CONFIG_DRIVE_PUSH_PULL) or 0x14 (PIN_CONFIG_PERSIST_STATE)
-which are not supported by pinctrl-amd.
+On 17.07.2023 22:09, Bhupesh Sharma wrote:
+> On Mon, 17 Jul 2023 at 23:58, Stephan Gerhold <stephan@gerhold.net> wrote:
+>>
+>> On Mon, Jul 17, 2023 at 11:33:40PM +0530, Bhupesh Sharma wrote:
+>>> On Mon, 17 Jul 2023 at 16:15, Stephan Gerhold <stephan@gerhold.net> wrote:
+>>>>
+>>>> On Mon, Jul 17, 2023 at 04:02:35PM +0530, Bhupesh Sharma wrote:
+>>>>> Add the Embedded USB Debugger(EUD) device tree node for
+>>>>> SM6115 / SM4250 SoC.
+>>>>>
+>>>>> The node contains EUD base register region, EUD mode manager
+>>>>> register region and TCSR Base register region along with the
+>>>>> interrupt entry.
+>>>>>
+>>>>> [...]
+>>>>>
+>>>>> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>>>>> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+>>>>> ---
+>>>>>  arch/arm64/boot/dts/qcom/sm6115.dtsi | 50 ++++++++++++++++++++++++++++
+>>>>>  1 file changed, 50 insertions(+)
+>>>>>
+>>>>> diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
+>>>>> index 839c603512403..db45337c1082c 100644
+>>>>> --- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
+>>>>> +++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
+>>>>> [...]
+>>>>> @@ -789,6 +801,37 @@ gcc: clock-controller@1400000 {
+>>>>>                       #power-domain-cells = <1>;
+>>>>>               };
+>>>>>
+>>>>> +             eud: eud@1610000 {
+>>>>> +                     compatible = "qcom,sm6115-eud", "qcom,eud";
+>>>>> +                     reg = <0x0 0x01610000 0x0 0x2000>,
+>>>>> +                           <0x0 0x01612000 0x0 0x1000>,
+>>>>> +                           <0x0 0x003c0000 0x0 0x40000>;
+>>>>> +                     reg-names = "eud-base", "eud-mode-mgr", "tcsr-base";
+>>>>
+>>>> TCSR is a separate hardware block unrelated to the EUD. IMHO it
+>>>> shouldn't be listed as "reg" here.
+>>>>
+>>>> Typically we describe it as syscon and then reference it from other
+>>>> nodes. See e.g. sm8450.dtsi "tcsr: syscon@1fc0000" referenced in &scm
+>>>> "qcom,dload-mode = <&tcsr 0x13000>". This is pretty much exactly the
+>>>> same use case as you have. It also uses this to write something with
+>>>> qcom_scm_io_writel() at the end.
+>>>
+>>> That was discussed a bit during v1 patchset review. Basically, if we
+>>> use a tcsr syscon approach here, we will need to define a 'qcom,xx'
+>>> vendor specific dt-property and use something like this in the eud
+>>> node:
+>>>
+>>> qcom,eud-sec-reg = <&tcsr_reg yyyy>
+>>>
+>>> which would be then used by the eud driver (via
+>>> syscon_regmap_lookup_by_phandle()).
+>>>
+>>> But for sm6115 / qcm2290 this would be an over complicated solution as
+>>> normally the eud driver (say sc7280) doesn't need tcsr based secure
+>>> mode manager access. So defining a new soc / vendor specific
+>>> dt-property might be an overkill.
+>>>
+>>
+>> IMO a vendor-specific DT property is still better than messing up the
+>> device separation in the device tree. The same "tcsr-base" reg would
+>> also appear on the actual tcsr syscon device tree node. Having two
+>> device tree nodes with the same reg region is generally not valid.
+>>
+>> Something like qcom,eud-sec-reg = <&tcsr_reg yyyy> would at least make
+>> clear that this points into a region that is shared between multiple
+>> different devices, while adding it as reg suggests that TCSR belongs
+>> exclusively to EUD.
+> 
+> I understand your point but since for sm6115 / qcm2290 devices TCSR is
+> not used for any other purpose than EUD, I still think introducing a
+> new soc / vendor specific dt-property might be an overkill for this
+> changeset.
+Untrue, there's some mumblings around the PHY properties and PSHOLD.
+I think Stephan may be correct here.
 
-Don't show an err message when called with an invalid parameter,
-downgrade this to debug instead.
-
-Cc: stable@vger.kernel.org # 6.1
-Fixes: 635a750d958e1 ("pinctrl: amd: Use amd_pinconf_set() for all config options")
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
- drivers/pinctrl/pinctrl-amd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
-index 4a8c1b57a90d6..20bd97a603d9c 100644
---- a/drivers/pinctrl/pinctrl-amd.c
-+++ b/drivers/pinctrl/pinctrl-amd.c
-@@ -748,7 +748,7 @@ static int amd_pinconf_get(struct pinctrl_dev *pctldev,
- 		break;
- 
- 	default:
--		dev_err(&gpio_dev->pdev->dev, "Invalid config param %04x\n",
-+		dev_dbg(&gpio_dev->pdev->dev, "Invalid config param %04x\n",
- 			param);
- 		return -ENOTSUPP;
- 	}
-@@ -798,7 +798,7 @@ static int amd_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin,
- 			break;
- 
- 		default:
--			dev_err(&gpio_dev->pdev->dev,
-+			dev_dbg(&gpio_dev->pdev->dev,
- 				"Invalid config param %04x\n", param);
- 			ret = -ENOTSUPP;
- 		}
--- 
-2.34.1
-
+Konrad
+> 
+> Thanks,
+> Bhupesh
