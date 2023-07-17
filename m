@@ -2,237 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA966756C44
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7E8756C49
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbjGQSjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 14:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39484 "EHLO
+        id S231391AbjGQSji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 14:39:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbjGQSjS (ORCPT
+        with ESMTP id S230059AbjGQSjZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:39:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B4BA1;
-        Mon, 17 Jul 2023 11:39:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C8A7611EB;
-        Mon, 17 Jul 2023 18:39:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7012C433C7;
-        Mon, 17 Jul 2023 18:39:15 +0000 (UTC)
-Date:   Mon, 17 Jul 2023 14:39:14 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH v2 2/9] bpf/btf: tracing: Move finding func-proto API
- and getting func-param API to BTF
-Message-ID: <20230717143914.5399a8e4@gandalf.local.home>
-In-Reply-To: <168960741686.34107.6330273416064011062.stgit@devnote2>
-References: <168960739768.34107.15145201749042174448.stgit@devnote2>
-        <168960741686.34107.6330273416064011062.stgit@devnote2>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 17 Jul 2023 14:39:25 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9C0C0;
+        Mon, 17 Jul 2023 11:39:24 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-78362f57500so263605839f.3;
+        Mon, 17 Jul 2023 11:39:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689619164; x=1692211164;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zw4pfToCDzbwKl5whorLOvvLRVs7p/9il+TGwrm7FW4=;
+        b=WbCf7Pvxbd5alM4qarjJypY0xX0G2HGUACwFvzhosxjp9f2/b9QcbmhAf1i2D2b+8q
+         Kj0Qyr843i2e35Pd3EjxM8eWpncjATlCOKkc2sOwGVaCV59Uqa3mF0YZ+4XZp7o705kE
+         8jUGbw/LYWab5l5dBzhRyKfykFo7EJst/cC7TBeLm0ZkyImUZTZNWCBG4bBAQhpg6urv
+         gDI0HZiWpAmlecMbCK21cJmpWHZnu6J/gbQ7LHzMCSfx+BQAlM6JdBD0+6eaaiJEy000
+         VcdpPrsqSTKn2gLgI+Simyj1PwohqhlxcZemESymq0ECseqziwcSHS2DxgeyZtMO3YPq
+         eSyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689619164; x=1692211164;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zw4pfToCDzbwKl5whorLOvvLRVs7p/9il+TGwrm7FW4=;
+        b=QtHK0HKz3fcTct8DDn8Q8avGqTdtk2bxxzhWw1WFhRO4Cw0hToccFdZD82trVQNmxd
+         geYwoN8pnRi3iMSBjjaolnW37cHGdGCDJNqY5t9vKfR8i5wE7jRz0wwyqUewMWk4/dOG
+         cBQlUX4CQhvm6oLK863cCWP71vUv+R2N/u+feZ7MfyUQg4FVQe9d5jYOsHhTCAQDXDKc
+         kvQ7W/JQhAmBrrIWkh65Y2G+67FwG6cS/dhXNdkrqlb60a5oFZIDv3CabLksKqwEjWlR
+         VKtaItiXAvPdPCKI9JGf3o41AVdUOjIoKKPCWME73e+OpfoeNN31C6PZ7LBe6Y7gebjQ
+         rgfg==
+X-Gm-Message-State: ABy/qLbIeJ6sCgLu0fzMuF7ugVjNsa86zs9ATr6K3JssvgeOxyTy8MFF
+        myC4VIUu0wfsFquaTU8+oF8=
+X-Google-Smtp-Source: APBJJlFZfZTN/6UyVJpcgaA2l1NABh19TDAFnCkx4lHehs/IxDNeBuf1zr28OIrts53nQp0FcSxn/Q==
+X-Received: by 2002:a5d:80c4:0:b0:786:f10e:a473 with SMTP id h4-20020a5d80c4000000b00786f10ea473mr443258ior.16.1689619163980;
+        Mon, 17 Jul 2023 11:39:23 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id h3-20020a056602008300b0077e3566a801sm30631iob.29.2023.07.17.11.39.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 11:39:23 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 17 Jul 2023 08:39:22 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     hannes@cmpxchg.org, lizefan.x@bytedance.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: fix obsolete function name
+Message-ID: <ZLWK2q9OVath4J05@slm.duckdns.org>
+References: <20230717112800.2949233-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717112800.2949233-1-linmiaohe@huawei.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 00:23:37 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+On Mon, Jul 17, 2023 at 07:28:00PM +0800, Miaohe Lin wrote:
+> cgroup_taskset_migrate() has been renamed to cgroup_migrate_execute() since
+> commit e595cd706982 ("cgroup: track migration context in cgroup_mgctx").
+> Update the corresponding comment.
 
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> Move generic function-proto find API and getting function parameter API
-> to BTF library code from trace_probe.c. This will avoid redundant efforts
-> on different feature.
+Applied to cgroup/for-6.6.
 
- "different features."
+Thanks.
 
-> 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> ---
->  include/linux/btf.h        |    4 ++++
->  kernel/bpf/btf.c           |   45 ++++++++++++++++++++++++++++++++++++++++
->  kernel/trace/trace_probe.c |   50 +++++++++++++-------------------------------
->  3 files changed, 64 insertions(+), 35 deletions(-)
-> 
-> diff --git a/include/linux/btf.h b/include/linux/btf.h
-> index cac9f304e27a..98fbbcdd72ec 100644
-> --- a/include/linux/btf.h
-> +++ b/include/linux/btf.h
-> @@ -221,6 +221,10 @@ const struct btf_type *
->  btf_resolve_size(const struct btf *btf, const struct btf_type *type,
->  		 u32 *type_size);
->  const char *btf_type_str(const struct btf_type *t);
-> +const struct btf_type *btf_find_func_proto(struct btf *btf,
-> +					   const char *func_name);
-> +const struct btf_param *btf_get_func_param(const struct btf_type *func_proto,
-> +					   s32 *nr);
->  
->  #define for_each_member(i, struct_type, member)			\
->  	for (i = 0, member = btf_type_member(struct_type);	\
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 817204d53372..e015b52956cb 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -1947,6 +1947,51 @@ btf_resolve_size(const struct btf *btf, const struct btf_type *type,
->  	return __btf_resolve_size(btf, type, type_size, NULL, NULL, NULL, NULL);
->  }
->  
-> +/*
-> + * Find a functio proto type by name, and return it.
-
-  "function"
-
-> + * Return NULL if not found, or return -EINVAL if parameter is invalid.
-> + */
-> +const struct btf_type *btf_find_func_proto(struct btf *btf, const char *func_name)
-> +{
-> +	const struct btf_type *t;
-> +	s32 id;
-> +
-> +	if (!btf || !func_name)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	id = btf_find_by_name_kind(btf, func_name, BTF_KIND_FUNC);
-> +	if (id <= 0)
-> +		return NULL;
-> +
-> +	/* Get BTF_KIND_FUNC type */
-> +	t = btf_type_by_id(btf, id);
-> +	if (!t || !btf_type_is_func(t))
-> +		return NULL;
-> +
-> +	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
-> +	t = btf_type_by_id(btf, t->type);
-> +	if (!t || !btf_type_is_func_proto(t))
-> +		return NULL;
-> +
-> +	return t;
-> +}
-> +
-> +/*
-> + * Get function parameter with the number of parameters.
-> + * This can return NULL if the function has no parameters.
-
-  " It can return EINVAL if this function's parameters are NULL."
-
--- Steve
-
-
-> + */
-> +const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s32 *nr)
-> +{
-> +	if (!func_proto || !nr)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	*nr = btf_type_vlen(func_proto);
-> +	if (*nr > 0)
-> +		return (const struct btf_param *)(func_proto + 1);
-> +	else
-> +		return NULL;
-> +}
-> +
->  static u32 btf_resolved_type_id(const struct btf *btf, u32 type_id)
->  {
->  	while (type_id < btf->start_id)
-> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-> index c68a72707852..cd89fc1ebb42 100644
-> --- a/kernel/trace/trace_probe.c
-> +++ b/kernel/trace/trace_probe.c
-> @@ -371,47 +371,23 @@ static const char *type_from_btf_id(struct btf *btf, s32 id)
->  	return NULL;
->  }
->  
-> -static const struct btf_type *find_btf_func_proto(const char *funcname)
-> -{
-> -	struct btf *btf = traceprobe_get_btf();
-> -	const struct btf_type *t;
-> -	s32 id;
-> -
-> -	if (!btf || !funcname)
-> -		return ERR_PTR(-EINVAL);
-> -
-> -	id = btf_find_by_name_kind(btf, funcname, BTF_KIND_FUNC);
-> -	if (id <= 0)
-> -		return ERR_PTR(-ENOENT);
-> -
-> -	/* Get BTF_KIND_FUNC type */
-> -	t = btf_type_by_id(btf, id);
-> -	if (!t || !btf_type_is_func(t))
-> -		return ERR_PTR(-ENOENT);
-> -
-> -	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
-> -	t = btf_type_by_id(btf, t->type);
-> -	if (!t || !btf_type_is_func_proto(t))
-> -		return ERR_PTR(-ENOENT);
-> -
-> -	return t;
-> -}
-> -
->  static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
->  						   bool tracepoint)
->  {
-> +	struct btf *btf = traceprobe_get_btf();
->  	const struct btf_param *param;
->  	const struct btf_type *t;
->  
-> -	if (!funcname || !nr)
-> +	if (!funcname || !nr || !btf)
->  		return ERR_PTR(-EINVAL);
->  
-> -	t = find_btf_func_proto(funcname);
-> -	if (IS_ERR(t))
-> +	t = btf_find_func_proto(btf, funcname);
-> +	if (IS_ERR_OR_NULL(t))
->  		return (const struct btf_param *)t;
->  
-> -	*nr = btf_type_vlen(t);
-> -	param = (const struct btf_param *)(t + 1);
-> +	param = btf_get_func_param(t, nr);
-> +	if (IS_ERR_OR_NULL(param))
-> +		return param;
->  
->  	/* Hide the first 'data' argument of tracepoint */
->  	if (tracepoint) {
-> @@ -490,8 +466,8 @@ static const struct fetch_type *parse_btf_retval_type(
->  	const struct btf_type *t;
->  
->  	if (btf && ctx->funcname) {
-> -		t = find_btf_func_proto(ctx->funcname);
-> -		if (!IS_ERR(t))
-> +		t = btf_find_func_proto(btf, ctx->funcname);
-> +		if (!IS_ERR_OR_NULL(t))
->  			typestr = type_from_btf_id(btf, t->type);
->  	}
->  
-> @@ -500,10 +476,14 @@ static const struct fetch_type *parse_btf_retval_type(
->  
->  static bool is_btf_retval_void(const char *funcname)
->  {
-> +	struct btf *btf = traceprobe_get_btf();
->  	const struct btf_type *t;
->  
-> -	t = find_btf_func_proto(funcname);
-> -	if (IS_ERR(t))
-> +	if (!btf)
-> +		return false;
-> +
-> +	t = btf_find_func_proto(btf, funcname);
-> +	if (IS_ERR_OR_NULL(t))
->  		return false;
->  
->  	return t->type == 0;
-
+-- 
+tejun
