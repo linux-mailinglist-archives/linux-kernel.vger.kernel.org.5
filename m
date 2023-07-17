@@ -2,140 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B33756EF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF76F756F09
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjGQVfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 17:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56880 "EHLO
+        id S230042AbjGQVjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 17:39:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjGQVfx (ORCPT
+        with ESMTP id S229555AbjGQVjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 17:35:53 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC8B136;
-        Mon, 17 Jul 2023 14:35:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689629752; x=1721165752;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=/X3yf/fgnUoNZLjdw4lAL7DnzoCEqFem7VCwiUrXYp4=;
-  b=PsaK8EW7j/NyZL4itkqlfLYyyO61OmblyVm49ngSY1xlHF5SQlLInI4f
-   imRx2E1ezKWdjjwrqjwzJrTsxmMqK6wfWEh+iuiFIPhyZEHy/kcx4ijZC
-   o9O3O8TSdjJpVr1Dr6RdL1CToPD3IH6Bfyme2Bat9wmhL3jWWAZnk1Lnr
-   AwQPATDJHJjTlHBo7ndGWLRl0z+jZWFmXZuYy2NqDtHozeuBcnGV9ekcN
-   NH/OAE8ny5rK219RSLUIgGuA/85PMFcnyCnUyggXIA7R/kz40Yht5ufM3
-   gHGdojXqBdGzyMmuNyHR9xIXAWSbEMnWDV3vCJMAkeupP/OLPFrw9uqse
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="452420991"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="452420991"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 14:35:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="723352048"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="723352048"
-Received: from pakella-mobl.amr.corp.intel.com ([10.212.74.90])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 14:35:50 -0700
-Message-ID: <79989c1537c66a90eca5339028ed447b3805e906.camel@linux.intel.com>
-Subject: Re: [PATCH v7 12/14] crypto: iaa - Add support for deflate-iaa
- compression algorithm
-From:   Tom Zanussi <tom.zanussi@linux.intel.com>
-To:     Rex Zhang <rex.zhang@intel.com>
-Cc:     dave.jiang@intel.com, davem@davemloft.net,
-        dmaengine@vger.kernel.org, fenghua.yu@intel.com,
-        giovanni.cabiddu@intel.com, herbert@gondor.apana.org.au,
-        james.guilford@intel.com, kanchana.p.sridhar@intel.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tony.luck@intel.com, vinodh.gopal@intel.com, vkoul@kernel.org,
-        wajdi.k.feghali@intel.com
-Date:   Mon, 17 Jul 2023 16:35:39 -0500
-In-Reply-To: <20230717021203.3541437-1-rex.zhang@intel.com>
-References: <20230710190654.299639-13-tom.zanussi@linux.intel.com>
-         <20230717021203.3541437-1-rex.zhang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.44.1-0ubuntu1 
+        Mon, 17 Jul 2023 17:39:31 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7729B136;
+        Mon, 17 Jul 2023 14:39:27 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36HLOKPo008177;
+        Mon, 17 Jul 2023 21:39:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=+4plbTc90D++YLJzTRG1ZoFc7z0F4mkxD/R26Skqufc=;
+ b=KAur8DRcUqjhu5TgUyzLCsBYheV5WT2EfhWY23EP+USCxTFW/dPqFIBRBIKLVlgGx9l7
+ 4DHNSiWyPWxPgIyW3/FLC8LNn3DEYTm9G0MX7Ef9POvPqP90+mb4jjdVlVfidVFh2ya7
+ 0ZhAnbSvsKRWIrqrX2XCnKqDlBWwf9crSNq68C2InWt2u0hTW8ZyLuezEhSwHU/nQjrS
+ GxIOXX1cHQ6BvzonNmX0eI4Vd5XHCiBZZBF8J+PgM4V77Ft85wf8xZ/6yRm3KC1dc6zj
+ WNk741ICavLmze93QBWl8N4XwBmQYUZyic7bEtHFbk9rDcMGlKFe5XlE7hXGafAoA14n nQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rw33mhjv7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 21:39:16 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36HLdFk8023193
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 21:39:15 GMT
+Received: from [10.71.108.91] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 17 Jul
+ 2023 14:39:14 -0700
+Message-ID: <db36d4c9-6863-f1ac-258f-4292f5e3700a@quicinc.com>
+Date:   Mon, 17 Jul 2023 14:39:13 -0700
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 2/5] drm/msm/dp: incorporate pm_runtime framework into
+ DP driver
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <andersson@kernel.org>
+CC:     <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
+        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
+        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1688773943-3887-1-git-send-email-quic_khsieh@quicinc.com>
+ <1688773943-3887-3-git-send-email-quic_khsieh@quicinc.com>
+ <c551f77f-804f-3e45-6b15-680c70b86d37@linaro.org>
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+In-Reply-To: <c551f77f-804f-3e45-6b15-680c70b86d37@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Ir9GxSWUGA_QzU90CRkk4eFe0OOUI4Or
+X-Proofpoint-ORIG-GUID: Ir9GxSWUGA_QzU90CRkk4eFe0OOUI4Or
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_15,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 clxscore=1015 lowpriorityscore=0 bulkscore=0
+ adultscore=0 phishscore=0 spamscore=0 mlxlogscore=999 suspectscore=0
+ malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307170195
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUmV4LAoKT24gTW9uLCAyMDIzLTA3LTE3IGF0IDEwOjEyICswODAwLCBSZXggWmhhbmcgd3Jv
-dGU6Cj4gSGksIFRvbSwKPiAKCltzbmlwXQoKPiA+ICsKPiA+ICtzdGF0aWMgaW50IGlhYV9jb21w
-X2Fjb21wcmVzcyhzdHJ1Y3QgYWNvbXBfcmVxICpyZXEpCj4gPiArewo+ID4gK8KgwqDCoMKgwqDC
-oMKgc3RydWN0IGlhYV9jb21wcmVzc2lvbl9jdHggKmNvbXByZXNzaW9uX2N0eDsKPiA+ICvCoMKg
-wqDCoMKgwqDCoHN0cnVjdCBjcnlwdG9fdGZtICp0Zm0gPSByZXEtPmJhc2UudGZtOwo+ID4gK8Kg
-wqDCoMKgwqDCoMKgZG1hX2FkZHJfdCBzcmNfYWRkciwgZHN0X2FkZHI7Cj4gPiArwqDCoMKgwqDC
-oMKgwqBpbnQgbnJfc2dzLCBjcHUsIHJldCA9IDA7Cj4gPiArwqDCoMKgwqDCoMKgwqBzdHJ1Y3Qg
-aWFhX3dxICppYWFfd3E7Cj4gPiArwqDCoMKgwqDCoMKgwqB1MzIgY29tcHJlc3Npb25fY3JjOwo+
-ID4gK8KgwqDCoMKgwqDCoMKgc3RydWN0IGlkeGRfd3EgKndxOwo+ID4gK8KgwqDCoMKgwqDCoMKg
-c3RydWN0IGRldmljZSAqZGV2Owo+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgY29tcHJlc3Npb25f
-Y3R4ID0gY3J5cHRvX3RmbV9jdHgodGZtKTsKPiA+ICsKPiA+ICvCoMKgwqDCoMKgwqDCoGlmICgh
-aWFhX2NyeXB0b19lbmFibGVkKSB7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-cHJfZGVidWcoImlhYV9jcnlwdG8gZGlzYWJsZWQsIG5vdCBjb21wcmVzc2luZ1xuIik7Cj4gPiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIC1FTk9ERVY7Cj4gPiArwqDCoMKg
-wqDCoMKgwqB9Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqBpZiAoIXJlcS0+c3JjIHx8ICFyZXEt
-PnNsZW4pIHsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwcl9kZWJ1ZygiaW52
-YWxpZCBzcmMsIG5vdCBjb21wcmVzc2luZ1xuIik7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgcmV0dXJuIC1FSU5WQUw7Cj4gPiArwqDCoMKgwqDCoMKgwqB9Cj4gPiArCj4gPiAr
-wqDCoMKgwqDCoMKgwqBjcHUgPSBnZXRfY3B1KCk7Cj4gPiArwqDCoMKgwqDCoMKgwqB3cSA9IHdx
-X3RhYmxlX25leHRfd3EoY3B1KTsKPiA+ICvCoMKgwqDCoMKgwqDCoHB1dF9jcHUoKTsKPiA+ICvC
-oMKgwqDCoMKgwqDCoGlmICghd3EpIHsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqBwcl9kZWJ1Zygibm8gd3EgY29uZmlndXJlZCBmb3IgY3B1PSVkXG4iLCBjcHUpOwo+ID4gK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiAtRU5PREVWOwo+ID4gK8KgwqDCoMKg
-wqDCoMKgfQo+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgcmV0ID0gaWFhX3dxX2dldCh3cSk7Cj4g
-PiArwqDCoMKgwqDCoMKgwqBpZiAocmV0KSB7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgcHJfZGVidWcoIm5vIHdxIGF2YWlsYWJsZSBmb3IgY3B1PSVkXG4iLCBjcHUpOwo+ID4g
-K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiAtRU5PREVWOwo+ID4gK8KgwqDC
-oMKgwqDCoMKgfQo+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgaWFhX3dxID0gaWR4ZF93cV9nZXRf
-cHJpdmF0ZSh3cSk7Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqBpZiAoIXJlcS0+ZHN0KSB7Cj4g
-PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZ2ZwX3QgZmxhZ3MgPSByZXEtPmZsYWdz
-ICYgQ1JZUFRPX1RGTV9SRVFfTUFZX1NMRUVQID8gR0ZQX0tFUk5FTCA6IEdGUF9BVE9NSUM7Cj4g
-PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLyogaW5jb21wcmVzc2libGUgZGF0YSB3
-aWxsIGFsd2F5cyBiZSA8IDIgKiBzbGVuICovCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgcmVxLT5kbGVuID0gMiAqIHJlcS0+c2xlbjsKPiAyICogcmVxLT5zbGVuIGlzIGFuIGVz
-dGltYXRlZCBzaXplIGZvciBkc3QgYnVmLiBXaGVuIHNsZW4gaXMgZ3JlYXRlcgo+IHRoYW4gMjA0
-OCBieXRlcywgZGxlbiBpcyBncmVhdGVyIHRoYW4gNDA5NiBieXRlcy4KClJpZ2h0LCBzbyB5b3Un
-cmUgc2F5aW5nIHRoYXQgYmVjYXVzZSBzZ2xfYWxsb2MgdXNlcyBvcmRlciAwLCB0aGlzIGNvdWxk
-CnJlc3VsdCBpbiBucl9zZ3MgPiAxLiAgQ291bGQgYWxzbyBqdXN0IGNoYW5nZSB0aGlzIHRvIHNn
-X2luaXRfb25lIGxpa2UKYWxsIHRoZSBvdGhlciBjYWxsZXJzLgoKPiA+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqByZXEtPmRzdCA9IHNnbF9hbGxvYyhyZXEtPmRsZW4sIGZsYWdzLCBO
-VUxMKTsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoIXJlcS0+ZHN0KSB7
-Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldCA9
-IC1FTk9NRU07Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoGdvdG8gb3V0Owo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoH0KPiA+ICvC
-oMKgwqDCoMKgwqDCoH0KPiA+ICsKPiA+ICvCoMKgwqDCoMKgwqDCoGRldiA9ICZ3cS0+aWR4ZC0+
-cGRldi0+ZGV2Owo+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgbnJfc2dzID0gZG1hX21hcF9zZyhk
-ZXYsIHJlcS0+c3JjLCBzZ19uZW50cyhyZXEtPnNyYyksIERNQV9UT19ERVZJQ0UpOwo+ID4gK8Kg
-wqDCoMKgwqDCoMKgaWYgKG5yX3NncyA8PSAwIHx8IG5yX3NncyA+IDEpIHsKPiA+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXZfZGJnKGRldiwgImNvdWxkbid0IG1hcCBzcmMgc2cg
-Zm9yIGlhYSBkZXZpY2UgJWQsIgo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAiIHdxICVkOiByZXQ9JWRcbiIsIGlhYV93cS0+aWFhX2RldmljZS0+aWR4
-ZC0+aWQsCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oGlhYV93cS0+d3EtPmlkLCByZXQpOwo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oHJldCA9IC1FSU87Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZ290byBvdXQ7
-Cj4gPiArwqDCoMKgwqDCoMKgwqB9Cj4gPiArwqDCoMKgwqDCoMKgwqBzcmNfYWRkciA9IHNnX2Rt
-YV9hZGRyZXNzKHJlcS0+c3JjKTsKPiA+ICvCoMKgwqDCoMKgwqDCoGRldl9kYmcoZGV2LCAiZG1h
-X21hcF9zZywgc3JjX2FkZHIgJWxseCwgbnJfc2dzICVkLCByZXEtPnNyYyAlcCwiCj4gPiArwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIiByZXEtPnNsZW4gJWQsIHNnX2RtYV9sZW4oc2cp
-ICVkXG4iLCBzcmNfYWRkciwgbnJfc2dzLAo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoHJlcS0+c3JjLCByZXEtPnNsZW4sIHNnX2RtYV9sZW4ocmVxLT5zcmMpKTsKPiA+ICsKPiA+
-ICvCoMKgwqDCoMKgwqDCoG5yX3NncyA9IGRtYV9tYXBfc2coZGV2LCByZXEtPmRzdCwgc2dfbmVu
-dHMocmVxLT5kc3QpLCBETUFfRlJPTV9ERVZJQ0UpOwo+ID4gK8KgwqDCoMKgwqDCoMKgaWYgKG5y
-X3NncyA8PSAwIHx8IG5yX3NncyA+IDEpIHsKPiB3aGVuIGRsZW4gaXMgZ3JlYXRlciB0aGFuIDQw
-OTYgYnl0ZXMsIG5yX3NncyBtYXliZSBncmVhdGVyIHRoYW4gMSwKPiBidXQgdGhlIGFjdHVhbCBv
-dXRwdXQgc2l6ZSBtYXliZSBsZXNzIHRoYW4gNDA5NiBieXRlcy4KPiBJbiBvdGhlciB3b3Jkcywg
-dGhlIGNvbmRpdGlvbiBucl9zZ3MgPiAxIG1heSBibG9jayBhIGNhc2Ugd2hpY2ggY291bGQKPiBo
-YXZlIGJlZW4gZG9uZS4KCkN1cnJlbnRseSBhbGwgZXhpc3RpbmcgY2FsbGVycyB1c2Ugc2dfaW5p
-dF9vbmUoKSwgc28gbnJfc2dzIGlzIG5ldmVyID4KMS4gIEJ1dCB5ZXMsIHdlIHNob3VsZCBhZGQg
-Y29kZSB0byBiZSBhYmxlIHRvIGhhbmRsZSA+IDEsIEkgYWdyZWUuCgpUaGFua3MsCgpUb20KCgo=
 
+On 7/7/2023 5:04 PM, Dmitry Baryshkov wrote:
+> On 08/07/2023 02:52, Kuogee Hsieh wrote:
+>> Incorporating pm runtime framework into DP driver so that power
+>> and clock resource handling can be centralized allowing easier
+>> control of these resources in preparation of registering aux bus
+>> uring probe.
+>>
+>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>> ---
+>>   drivers/gpu/drm/msm/dp/dp_aux.c     |  3 ++
+>>   drivers/gpu/drm/msm/dp/dp_display.c | 75 
+>> +++++++++++++++++++++++++++++--------
+>>   2 files changed, 63 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c 
+>> b/drivers/gpu/drm/msm/dp/dp_aux.c
+>> index 8e3b677..c592064 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
+>> @@ -291,6 +291,7 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux 
+>> *dp_aux,
+>>           return -EINVAL;
+>>       }
+>>   +    pm_runtime_get_sync(dp_aux->dev);
+>
+> Let me quote the function's documentation:
+> Consider using pm_runtime_resume_and_get() instead of it, especially 
+> if its return value is checked by the caller, as this is likely to 
+> result in cleaner code.
+>
+> So two notes concerning the whole patch:
+> - error checking is missing
+> - please use pm_runtime_resume_and_get() instead.
+>
+>>       mutex_lock(&aux->mutex);
+>>       if (!aux->initted) {
+>>           ret = -EIO;
+>> @@ -364,6 +365,8 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux 
+>> *dp_aux,
+>>     exit:
+>>       mutex_unlock(&aux->mutex);
+>> +    pm_runtime_mark_last_busy(dp_aux->dev);
+>> +    pm_runtime_put_autosuspend(dp_aux->dev);
+>>         return ret;
+>>   }
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
+>> b/drivers/gpu/drm/msm/dp/dp_display.c
+>> index 76f1395..2c5706a 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>> @@ -309,6 +309,10 @@ static int dp_display_bind(struct device *dev, 
+>> struct device *master,
+>>           goto end;
+>>       }
+>>   +    pm_runtime_enable(dev);
+>
+> devm_pm_runtime_enable() removes need for a cleanup.
+>
+>> +    pm_runtime_set_autosuspend_delay(dev, 1000);
+>> +    pm_runtime_use_autosuspend(dev);
+>
+> Why do you want to use autosuspend here?
+>
+>> +
+>>       return 0;
+>>   end:
+>>       return rc;
+>> @@ -320,9 +324,8 @@ static void dp_display_unbind(struct device *dev, 
+>> struct device *master,
+>>       struct dp_display_private *dp = dev_get_dp_display_private(dev);
+>>       struct msm_drm_private *priv = dev_get_drvdata(master);
+>>   -    /* disable all HPD interrupts */
+>> -    if (dp->core_initialized)
+>> -        dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_INT_MASK, 
+>> false);
+>> +    pm_runtime_dont_use_autosuspend(dev);
+>> +    pm_runtime_disable(dev);
+>>         kthread_stop(dp->ev_tsk);
+>>   @@ -466,10 +469,12 @@ static void dp_display_host_init(struct 
+>> dp_display_private *dp)
+>>           dp->dp_display.connector_type, dp->core_initialized,
+>>           dp->phy_initialized);
+>>   -    dp_power_init(dp->power);
+>> -    dp_ctrl_reset_irq_ctrl(dp->ctrl, true);
+>> -    dp_aux_init(dp->aux);
+>> -    dp->core_initialized = true;
+>> +    if (!dp->core_initialized) {
+>> +        dp_power_init(dp->power);
+>> +        dp_ctrl_reset_irq_ctrl(dp->ctrl, true);
+>> +        dp_aux_init(dp->aux);
+>> +        dp->core_initialized = true;
+>> +    }
+>
+> Is this relevant to PM runtime? I don't think so.
+>
+>>   }
+>>     static void dp_display_host_deinit(struct dp_display_private *dp)
+>> @@ -478,10 +483,12 @@ static void dp_display_host_deinit(struct 
+>> dp_display_private *dp)
+>>           dp->dp_display.connector_type, dp->core_initialized,
+>>           dp->phy_initialized);
+>>   -    dp_ctrl_reset_irq_ctrl(dp->ctrl, false);
+>> -    dp_aux_deinit(dp->aux);
+>> -    dp_power_deinit(dp->power);
+>> -    dp->core_initialized = false;
+>> +    if (dp->core_initialized) {
+>> +        dp_ctrl_reset_irq_ctrl(dp->ctrl, false);
+>> +        dp_aux_deinit(dp->aux);
+>> +        dp_power_deinit(dp->power);
+>> +        dp->core_initialized = false;
+>> +    }
+>>   }
+>>     static int dp_display_usbpd_configure_cb(struct device *dev)
+>> @@ -1304,6 +1311,39 @@ static int dp_display_remove(struct 
+>> platform_device *pdev)
+>>       dp_display_deinit_sub_modules(dp);
+>>         platform_set_drvdata(pdev, NULL);
+>> +    pm_runtime_put_sync_suspend(&pdev->dev);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static int dp_pm_runtime_suspend(struct device *dev)
+>> +{
+>> +    struct platform_device *pdev = to_platform_device(dev);
+>> +    struct msm_dp *dp_display = platform_get_drvdata(pdev);
+>> +    struct dp_display_private *dp;
+>> +
+>> +    dp = container_of(dp_display, struct dp_display_private, 
+>> dp_display);
+>> +
+>> +    dp_display_host_phy_exit(dp);
+>> +    dp_catalog_ctrl_hpd_enable(dp->catalog);
+>
+> What? NO!
+>
+>> +    dp_display_host_deinit(dp);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static int dp_pm_runtime_resume(struct device *dev)
+>> +{
+>> +    struct platform_device *pdev = to_platform_device(dev);
+>> +    struct msm_dp *dp_display = platform_get_drvdata(pdev);
+>> +    struct dp_display_private *dp;
+>> +
+>> +    dp = container_of(dp_display, struct dp_display_private, 
+>> dp_display);
+>> +
+>> +    dp_display_host_init(dp);
+>> +    if (dp_display->is_edp) {
+>> +        dp_catalog_ctrl_hpd_enable(dp->catalog);
+>> +        dp_display_host_phy_init(dp);
+>> +    }
+>>         return 0;
+>>   }
+>> @@ -1409,6 +1449,7 @@ static int dp_pm_suspend(struct device *dev)
+>>   }
+>>     static const struct dev_pm_ops dp_pm_ops = {
+>> +    SET_RUNTIME_PM_OPS(dp_pm_runtime_suspend, dp_pm_runtime_resume, 
+>> NULL)
+>>       .suspend = dp_pm_suspend,
+>>       .resume =  dp_pm_resume,
+>
+> With the runtime PM in place, can we change suspend/resume to use 
+> pm_runtime_force_suspend() and pm_runtime_force_resume() ?
+>
+>
+>>   };
+>> @@ -1493,10 +1534,6 @@ static int dp_display_get_next_bridge(struct 
+>> msm_dp *dp)
+>>       aux_bus = of_get_child_by_name(dev->of_node, "aux-bus");
+>>         if (aux_bus && dp->is_edp) {
+>> -        dp_display_host_init(dp_priv);
+>> -        dp_catalog_ctrl_hpd_enable(dp_priv->catalog);
+>> -        dp_display_host_phy_init(dp_priv);
+>
+> Are you going to populate the AUX bus (which can cause AUX bus access) 
+> without waking up the device?
+
+no,  pm_runtime_get_sync() will be called inside 
+generic_edp_panel_probe() which will trigger dp_pm_runtime_resume() be 
+called to wake up device (initialize dp host) before retrieve
+
+panel_id from edp panel through aux bus.
+
+>
+>> -
+>>           /*
+>>            * The code below assumes that the panel will finish probing
+>>            * by the time devm_of_dp_aux_populate_ep_devices() returns.
+>> @@ -1604,6 +1641,7 @@ void dp_bridge_atomic_enable(struct drm_bridge 
+>> *drm_bridge,
+>>           dp_hpd_plug_handle(dp_display, 0);
+>
+> Nearly the same question. Resume device before accessing registers.
+>
+>> mutex_lock(&dp_display->event_mutex);
+>> +    pm_runtime_get_sync(&dp_display->pdev->dev);
+>>         state = dp_display->hpd_state;
+>>       if (state != ST_DISPLAY_OFF && state != ST_MAINLINK_READY) {
+>> @@ -1684,6 +1722,8 @@ void dp_bridge_atomic_post_disable(struct 
+>> drm_bridge *drm_bridge,
+>>       }
+>>         drm_dbg_dp(dp->drm_dev, "type=%d Done\n", dp->connector_type);
+>> +
+>> +    pm_runtime_put_sync(&dp_display->pdev->dev);
+>>       mutex_unlock(&dp_display->event_mutex);
+>>   }
+>>   @@ -1723,6 +1763,8 @@ void dp_bridge_hpd_enable(struct drm_bridge 
+>> *bridge)
+>>       struct dp_display_private *dp = container_of(dp_display, struct 
+>> dp_display_private, dp_display);
+>>         mutex_lock(&dp->event_mutex);
+>> +    pm_runtime_get_sync(&dp->pdev->dev);
+>> +
+>>       dp_catalog_ctrl_hpd_enable(dp->catalog);
+>>         /* enable HDP interrupts */
+>> @@ -1744,6 +1786,9 @@ void dp_bridge_hpd_disable(struct drm_bridge 
+>> *bridge)
+>>       dp_catalog_ctrl_hpd_disable(dp->catalog);
+>>         dp_display->internal_hpd = false;
+>> +
+>> +    pm_runtime_mark_last_busy(&dp->pdev->dev);
+>> +    pm_runtime_put_autosuspend(&dp->pdev->dev);
+>>       mutex_unlock(&dp->event_mutex);
+>>   }
+>
