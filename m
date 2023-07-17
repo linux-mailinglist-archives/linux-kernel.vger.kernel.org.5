@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A172A7561CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF3D7561C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbjGQLnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 07:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
+        id S230139AbjGQLmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 07:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbjGQLm4 (ORCPT
+        with ESMTP id S229802AbjGQLmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 07:42:56 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D12EE4F;
-        Mon, 17 Jul 2023 04:42:52 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4R4Kqp1Psbz67Lnh;
-        Mon, 17 Jul 2023 19:39:34 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 17 Jul
- 2023 12:42:48 +0100
-Date:   Mon, 17 Jul 2023 12:42:47 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Oleg Nesterov" <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        "Kees Cook" <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-doc@vger.kernel.org>, <kvmarm@lists.linux.dev>,
-        <linux-fsdevel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
-Subject: Re: [PATCH 04/35] arm64/gcs: Document the ABI for Guarded Control
- Stacks
-Message-ID: <20230717124247.00001f1c@Huawei.com>
-In-Reply-To: <20230716-arm64-gcs-v1-4-bf567f93bba6@kernel.org>
-References: <20230716-arm64-gcs-v1-0-bf567f93bba6@kernel.org>
-        <20230716-arm64-gcs-v1-4-bf567f93bba6@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Mon, 17 Jul 2023 07:42:08 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E85ABF
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:42:01 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b741cf99f8so64790871fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:42:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1689594120; x=1692186120;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZKTphFs/0fUMI6x6m+ZFbX49TRFXCAOA52jjQxvzeo8=;
+        b=QYSbwMA+9+0U1iPPhZdTiMrew32RjYNuoUXQ6XvY6T4k4RDyS+EpVKrFJNRbwyLBhm
+         feXtYMeVmswrIvAsVK2UZKlPxXhoLtpKIhZ1zgv3WtUAyQxe4TEmoaVCiALplF8mIWsC
+         4hCW/LKPlzZGxI3cgrxkgXqrUnm0sw2jstpQabiy8OBmcfhY/qRhJLrFWjCBC0BlFZKC
+         e3/mS3uLLida7lprgFw766suZ2akD1y/OfKdrUqsoUKDoGljr2zDC2OyGKgwTjbJwCak
+         Svr+Pu7MxeI148S7BrhN1CSfEYfahmvMM2ysCsZrD0peo/sH0Bba6HJ4H5CnEreKMpWe
+         cuuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689594120; x=1692186120;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZKTphFs/0fUMI6x6m+ZFbX49TRFXCAOA52jjQxvzeo8=;
+        b=Wtk0fO5PvUybaodXuJPpRZPp0jxYHJPYTVOWYiU5pqhgUAJTzGiQMZviP4pCGXGrra
+         O2XUUjfEWkITLgXlgvoeeyLOZXoupPdDmHNvnpgC3l1vQLrUinAuJedB2V4Enjv5yA1/
+         kRll0ioCLLOMVilnNWvbQRnjETBqht3qu1lAJZaMfFf3wqs6JPKvxTrlWwJc5U3e8a8p
+         w04AxT3xAHAs+O61J46ac7pAhiIhz2AvjB39c6udyXWR+GAPiTI51q5JrBAPeXvXy1zq
+         QBeitLSZ4dW1/6Kyq0Rc1kmgb/XFXbheB+wgBSqx/wJwmlJ4maj4wZH+yDXT65/nDMmn
+         CnFw==
+X-Gm-Message-State: ABy/qLYE5vGmYhJnSP9P2s2rKk81hfgPQrRILXiAY4uOCJwMc9oJ10zi
+        J/bmLDF1AHf4fv44PcJMBoLQoQ==
+X-Google-Smtp-Source: APBJJlHeN55tBawncVr5tu42dzS7p0WojvWXsY3Kb4DCWYVOCu2IrI86RSLJaFiFCJGBK57jWHlvgg==
+X-Received: by 2002:a2e:9c93:0:b0:2b6:e618:b593 with SMTP id x19-20020a2e9c93000000b002b6e618b593mr8066901lji.31.1689594119785;
+        Mon, 17 Jul 2023 04:41:59 -0700 (PDT)
+Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id v9-20020a05600c214900b003fbc9371193sm7946725wml.13.2023.07.17.04.41.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 04:41:59 -0700 (PDT)
+From:   Anton Protopopov <aspsk@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Brian Vazquez <brianvv@google.com>,
+        Hou Tao <houtao1@huawei.com>, Joe Stringer <joe@isovalent.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Anton Protopopov <aspsk@isovalent.com>
+Subject: [PATCH bpf-next 0/2] fix setting return values for htab batch ops and docs
+Date:   Mon, 17 Jul 2023 11:43:05 +0000
+Message-Id: <20230717114307.46124-1-aspsk@isovalent.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,29 +79,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 16 Jul 2023 22:51:00 +0100
-Mark Brown <broonie@kernel.org> wrote:
+This is a small follow up to the conversation with Hou in the following
+thread:
 
-> Add some documentation of the userspace ABI for Guarded Control Stacks.
-> 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-Hi Mark,
+  https://lore.kernel.org/bpf/20230705160139.19967-1-aspsk@isovalent.com/T/#u
 
-Nice document.  All I could find on a first read was one typo...
+Namely, the conversation was about that comments in <linux/bpf.h>
+describing the return values from the batch operations are not 100%
+obvious. I tried to make comments more clear. While doing this I also
+found that this is better to patch how __htab_map_lookup_and_delete_batch
+sets return values: the output parameter count could be set to non-zero in
+case of error, which may confuse some userspace apps (as errno && non-zero
+counter is considered a partially successful operation for batch ops).
 
-...
+Anton Protopopov (2):
+  bpf: fix setting return values for htab batch ops
+  bpf: update uapi/linux/bpf.h docs on the batch map ops
 
-> +7.  ptrace extensions
-> +---------------------
-> +
-> +* A new regset NT_ARM_GCS is defined for use with PTRACE_GETREGSET and
-> +  PTRACE_SETREGSET.
-> +
-> +* Due to the complexity surrounding allocation and deallocation of stakcs and
+ include/uapi/linux/bpf.h | 22 ++++++++++++----------
+ kernel/bpf/hashtab.c     | 14 +++++++-------
+ 2 files changed, 19 insertions(+), 17 deletions(-)
 
-stacks
-
-> +  lack of practical application changes to the GCS configuration via ptrace
-> +  are not supported.
-> +
+-- 
+2.34.1
 
