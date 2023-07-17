@@ -2,144 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82AB3756DA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53234756DA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbjGQTvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 15:51:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44294 "EHLO
+        id S230356AbjGQTw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 15:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbjGQTvT (ORCPT
+        with ESMTP id S229634AbjGQTw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 15:51:19 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E0DD3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 12:51:18 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51e28b299adso6886853a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 12:51:18 -0700 (PDT)
+        Mon, 17 Jul 2023 15:52:27 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3ABF126;
+        Mon, 17 Jul 2023 12:52:26 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-78654448524so183423139f.2;
+        Mon, 17 Jul 2023 12:52:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689623476; x=1692215476;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4GRG9iOP216h8hNkp80ef+cG8Pcq3A3Xo2N0WkZohN4=;
-        b=WBKLVtSP2hwmqIJUbeUHRx90hA/4c13UDgRDiVJX62+IGwK1XVtu+iAslMRnlP2KQu
-         2pqZF55bUL9+y/82EQcyV2ZpNd3lQhvT/994ZMo1HyFeoT8Cw9MJwxGe25M8anm3eflr
-         4IFEMwSyw+SfyRZzMnZTdewQSq6CplcsoN46VU8t2oHKAoBIsGqzDJCagebKSfyHRRHQ
-         baqNnxE6pcAcq43PAwkLQfTsAwdn38zMOx+4S0+j1D6fwrXSpn9ehROLyAQK/Ss0rtsY
-         w5tpxc9EFzwLuTOO3n1+wZvTzj92kYIhMs1MbzU3/opKsn2suPZPs0dEoNhNawHMtEWv
-         fr8Q==
+        d=gmail.com; s=20221208; t=1689623546; x=1692215546;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xWoO0TUyoZ+Qmv9rHsFJp85hT+0xnOPhDe/kh1QoW+4=;
+        b=b/OD9dQBwXE1T8MrYijlWFmG5nFgVYLUSGDixvQrh4A+Vyno/KDVv+Pz7WNzBol1c7
+         hgPj6C5a/CdM8V4v9GlJbGJegX4cmUqZhY386PFQo/u2kdOS0H4F+ItE8lvfOabQMBq4
+         B+t9XaxuY0MkH70snVL8s0ePHjc8aFM4oFpf04Gbq9YxNiylU21jGRFT0TNyzjtuCIgC
+         4PuELLmlzmV0xkS9mzXnFdHXNCEkugpQcM7PUci+dtuq5vf475R0VjnGL8r4cmHGgXTo
+         /swLnuNI5MMi1CSwtcMJdKE52LgaAn2tNjyeq/xMKoRE3jD+BOKiRoB2KLYtpMkgvRrm
+         2Nwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689623476; x=1692215476;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4GRG9iOP216h8hNkp80ef+cG8Pcq3A3Xo2N0WkZohN4=;
-        b=IWnv42m+EzmzXF2AbykNbjuPCSVCF457NjnlNdd0IwMa2dUDmNOZptY4fP7vYb3j2e
-         XMFRXKMtdE8FPpCJQE4pyCcXdtGz5S2WEaL6llCuboaKGQnG6IUIQDTl6RA111C633sW
-         PMI+IPRVuNwHpfCmNpMVeeKJNR0S/oV324maa02j1b7E9RBxuuBobBUUAgqEGceqjsp0
-         G9dizblO5Z4kiLILYRYhZu+XBMUFvD6t1icOnu7pQKvkycDj7BS+qRU0U9hWFopz+yfn
-         KZjcMm/6CxJpxfIif9ajyjc0eVdR2MTWkTQ2xZRv/FntNyPxeM8YOyzY6i4ng43ZUWUP
-         /pSw==
-X-Gm-Message-State: ABy/qLa6s0uHUmwl+Grpp0N3gG2ORi2FiDuBiP2X9g9GlZylMjxZk8XE
-        xHrNyXexJdvVqKAY5E/V27kqzDzFeh7g/8tc3RAt4g==
-X-Google-Smtp-Source: APBJJlEuwYvgVCvNXuxA5VjmKkQFBRHYrK+aCkoCeJFej7viXoOkOWaFHp4rCXYYqDysObD2DLg28A==
-X-Received: by 2002:aa7:c709:0:b0:51a:7bcd:a82d with SMTP id i9-20020aa7c709000000b0051a7bcda82dmr11838765edq.23.1689623476573;
-        Mon, 17 Jul 2023 12:51:16 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id y5-20020aa7ccc5000000b0051a1ef536c9sm57733edt.64.2023.07.17.12.51.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 12:51:15 -0700 (PDT)
-Message-ID: <152926f2-3c53-d788-9443-486fb5ed8024@linaro.org>
-Date:   Mon, 17 Jul 2023 21:51:13 +0200
+        d=1e100.net; s=20221208; t=1689623546; x=1692215546;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xWoO0TUyoZ+Qmv9rHsFJp85hT+0xnOPhDe/kh1QoW+4=;
+        b=ffEVZK8lXuDEplQMwal+DoztshOHznxH4dIgMJbuhxfAVZ6CaJpWMfgctgjqcmwMnH
+         TuBKOJwJqeKyWqOn5VNcq+Br71kuNAxomHqB7DYrjyyvOuIcgtcH+9YGgwAdTf87tARs
+         Skh6AHesYnLnt6wNOS3NTOlYhl7BJ+h3Tq3mOP0fKwSlT/Tsc710ay8MNYqSDfwuTC6o
+         nVwEAkHMx0ALXBpLdip6NMigNJG+ctVl4rniLtgXgTrIsH1NM/ZWhGh6gjn4QauvbA3+
+         6DSC/4FhvvPZooqICLNQukwAEf7XUV7EHJvqdd/bi6H44QFaT5VNFiGBiTnpYgIU18yi
+         3BnQ==
+X-Gm-Message-State: ABy/qLZrNQkRj3ce/3YsQ+N/yeax0HxwwsShd6fMEBSIMKMH/v4KgJvw
+        2sZL4clAgDTHb2xwnElw7MA=
+X-Google-Smtp-Source: APBJJlHSUjxifSVrVdCDPxEBiVa/8JHHvBQsZfY+DBkng5FQSGGbHQXRLjsIy6hbVB/K0igUqin82w==
+X-Received: by 2002:a5d:9544:0:b0:780:bf50:32ce with SMTP id a4-20020a5d9544000000b00780bf5032cemr615151ios.19.1689623545792;
+        Mon, 17 Jul 2023 12:52:25 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id t11-20020a6b090b000000b0077e35ffac2fsm68393ioi.32.2023.07.17.12.52.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 12:52:25 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 17 Jul 2023 09:52:24 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Hao Jia <jiahao.os@bytedance.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup/rstat: record the cumulative per-cpu time of
+ cgroup and its descendants
+Message-ID: <ZLWb-LsBD041hMvr@slm.duckdns.org>
+References: <20230717093612.40846-1-jiahao.os@bytedance.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/4] dt-bindings: arm: fsl: fix DEBIX binding
-Content-Language: en-US
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com,
-        laurent.pinchart@ideasonboard.com, dan.scally@ideasonboard.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230717165127.2882535-1-m.felsch@pengutronix.de>
- <20230717165127.2882535-2-m.felsch@pengutronix.de>
- <3d1a260c-bc8c-6347-17be-5558343c85a4@linaro.org>
- <20230717171244.jdqwn5l7tiugxeyo@pengutronix.de>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230717171244.jdqwn5l7tiugxeyo@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717093612.40846-1-jiahao.os@bytedance.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/07/2023 19:12, Marco Felsch wrote:
-> On 23-07-17, Krzysztof Kozlowski wrote:
->> On 17/07/2023 18:51, Marco Felsch wrote:
->>> The current imx8mp-debix-model-a.dts uses all three compatibles. Fix the
->>> corresponding bindings by adding an own entry for it. Mark
->>> polyhex,imx8mp-debix as deprecated but keep it within the dts file since
->>> we already have a user for it [1].
->>>
->>> [1] https://elixir.bootlin.com/barebox/v2023.07.1/source/arch/arm/ \
->>>     boards/polyhex-debix/board.c#L38
+Hello,
 
-Don't wrap links, they are not clickable.
+On Mon, Jul 17, 2023 at 05:36:12PM +0800, Hao Jia wrote:
+> Now the member variable bstat of the structure cgroup_rstat_cpu
 
->>>
->>> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
->>> ---
->>> Changelog:
->>>
->>> v2:
->>> - deprecate polyhex,imx8mp-debix
->>>
->>>  Documentation/devicetree/bindings/arm/fsl.yaml | 10 ++++++++--
->>>  1 file changed, 8 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
->>> index 15d4110840654..b29974e3c30b3 100644
->>> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
->>> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
->>> @@ -1019,8 +1019,6 @@ properties:
->>>                - dmo,imx8mp-data-modul-edm-sbc # i.MX8MP eDM SBC
->>>                - fsl,imx8mp-evk            # i.MX8MP EVK Board
->>>                - gateworks,imx8mp-gw74xx   # i.MX8MP Gateworks Board
->>> -              - polyhex,imx8mp-debix      # Polyhex Debix boards
->>> -              - polyhex,imx8mp-debix-model-a # Polyhex Debix Model A Board
->>>                - toradex,verdin-imx8mp     # Verdin iMX8M Plus Modules
->>>                - toradex,verdin-imx8mp-nonwifi  # Verdin iMX8M Plus Modules without Wi-Fi / BT
->>>                - toradex,verdin-imx8mp-wifi  # Verdin iMX8M Plus Wi-Fi / BT Modules
->>> @@ -1054,6 +1052,14 @@ properties:
->>>            - const: phytec,imx8mp-phycore-som         # phyCORE-i.MX8MP SoM
->>>            - const: fsl,imx8mp
->>>  
->>> +      - description: Polyhex DEBIX i.MX8MP based SBCs
->>> +        items:
->>> +          - enum:
->>> +              - polyhex,imx8mp-debix-model-a        # Polyhex Debix Model A Board
->>> +          - const: polyhex,imx8mp-debix             # Polyhex Debix boards
->>
->> I cannot find patches which add new compatible to the binding and which
->> fix the DTS. :/
+You said "now" indicating that the behavior has changed recently but I don't
+see what changed there. Can you elaborate?
+
+> records the per-cpu time of the cgroup itself, but does not
+> include the per-cpu time of its descendants. The per-cpu time
+
+It does. The per-cpu delta is added to its parent and then that will in turn
+be used to propagate to its parent.
+
+> including descendants is very useful for calculating the
+> per-cpu usage of cgroups.
 > 
-> Please see my commit message, we can't remove the compatible since we
-> already have one user of this compatible.
+> Although we can indirectly obtain the total per-cpu time
+> of the cgroup and its descendants by accumulating the per-cpu
+> bstat of each descendant of the cgroup. But after a child cgroup
+> is removed, we will lose its bstat information. This will cause
+> the cumulative value to be non-monotonic, thus affecting
+> the accuracy of cgroup per-cpu usage.
+> 
+> So we add the cumul_bstat variable to record the total
+> per-cpu time of this cgroup and its descendants, which is
+> similar to "cpuacct.usage*" in cgroup v1. And this is
+> also helpful for the migration from cgroup v1 to cgroup v2.
+> After adding this variable, we can obtain the per-cpu time of
+> cgroup and its descendants in user mode through eBPF, etc.
 
+I think you're misunderstanding how the code works. Can you please double
+check?
 
-Indeed. I wonder then what is the goal of deprecating this compatible
-and what is the plan for dealing with it? There is no cover letter which
-would point me to it.
+Thanks.
 
-Best regards,
-Krzysztof
-
+-- 
+tejun
