@@ -2,248 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FBF756997
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 18:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772A97569B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 18:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbjGQQvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 12:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53258 "EHLO
+        id S229470AbjGQQ4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 12:56:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjGQQvk (ORCPT
+        with ESMTP id S229633AbjGQQz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 12:51:40 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2059.outbound.protection.outlook.com [40.107.93.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1422D1;
-        Mon, 17 Jul 2023 09:51:38 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MFg3VWq8aMtS3hzVnG4eL39oAASGHqQ50qgqctNWa9D9NKO5jcEdIDB4KCFaoneprHoH2W+OVZBCKBv1fICMsrvWpCLNiWIF6INB+ACUVGYTynIPuI0SmeIYK8dcYCRgZyDywUTvTbaF50t2FUxRMQIpqF3faf3KXkYMhb0D8LCw3fHzKebr4eKlEZmzaMKjTN6DTmX6JK/awrf8p4iUXu+WEt2spKqkOSPC/gKVDozq5r+6bVLWYRMWnCAuPmWUtGKobiVNSqt81ldFY1sCYI4QbFP6EaYX5Drmr/YaSoDzjYdLicAyc1g1pEzG41L5lkdqfaFH6fScTHerIfouYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lgfErk+9KAkb4ooO7HiJBpbK3jt5ddPbDs7QbnjBJe8=;
- b=Rk4X7VYsV3o41QsE66sbTbLkugEyNmVpXZW1D5U6SBwxgEcEzQuDza3gleP1mwIEOwNHtk90t7CJlbzz4U47xgTQ1ipE/Ox3+l5ngcw7vGT1Y7m+vKiQFSVnNzb/vHdRwFQ5YxNLvwn5PWxkWATIxKuErxE4Yl+IpdIZ6oEBQRlxjAS1FDFs0RiquCXtK/wdFR/q0s9H57ovLMOuy+fz5CMWa/70ffbETpxI0UHAg9eSfcRdvtPKT7+nIiEpqQZGjgJ3SP+csHlz1Y5moR6M4gQZhslEIc4p+An6vBkZ+T5NThrfVPmzVEJmRg4K1ROiRim+Kb5rdi8xQfQ5k4dANg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lgfErk+9KAkb4ooO7HiJBpbK3jt5ddPbDs7QbnjBJe8=;
- b=fH6MpAhltexfXJaQkxqdv6dtIewEhcdOvgp8GgDGvmp8rYFVNPF3L0HB1tCCV21uHffApSEYb8PR2hSHb+DrBGEm8WBVuVQrxtBW96XCXv80MXjODPEwH99ndI4ej7GNSvIHXH2T6Zh7jFaU/+66GjC9QYi79WrcP4lGaT+HpSg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by MW4PR12MB7334.namprd12.prod.outlook.com (2603:10b6:303:219::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Mon, 17 Jul
- 2023 16:51:36 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::36f9:ffa7:c770:d146]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::36f9:ffa7:c770:d146%7]) with mapi id 15.20.6588.031; Mon, 17 Jul 2023
- 16:51:35 +0000
-Message-ID: <dc44cb41-b306-f18a-c9fc-3d956777f722@amd.com>
-Date:   Mon, 17 Jul 2023 11:51:32 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Intel-wired-lan] [PATCH] PCI/ASPM: Enable ASPM on external PCIe
- devices
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-pci@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org, Vidya Sagar <vidyas@nvidia.com>,
-        Michael Bottini <michael.a.bottini@linux.intel.com>,
-        intel-wired-lan@osuosl.org, bhelgaas@google.com,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-References: <20230705200617.GA72825@bhelgaas>
- <9d1095ab-23e5-3df3-58d6-b2974f87ee72@amd.com>
- <CAAd53p7L27dkzwb_Q9vhENhBye-JTcx2AuCG_YXAgb0F6MG-9w@mail.gmail.com>
- <60b2f5fb-8294-d104-16d8-0acfc70426c1@amd.com>
- <CAAd53p42jiTCOsRZwEY0jtBejMDs1FbTOBNEknijnVNk3ENxuA@mail.gmail.com>
-Content-Language: en-US
-From:   "Limonciello, Mario" <mario.limonciello@amd.com>
-In-Reply-To: <CAAd53p42jiTCOsRZwEY0jtBejMDs1FbTOBNEknijnVNk3ENxuA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SA9PR11CA0013.namprd11.prod.outlook.com
- (2603:10b6:806:6e::18) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+        Mon, 17 Jul 2023 12:55:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11510D1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:55:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689612912;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SErOCFj4weTS4sZHmIFn/shbKetVUK2uoB7gkNus/es=;
+        b=MJaPg87tP7sne1CiFA9/TlF9w4etIoOIQ6RGeHKw2Bux0zLQjh55G1Gl1HP20f90z3r4iM
+        K0PkHkuuBURhCh0VcJmk7k0bf9y1+5iHdCmHfArJTuCusYMi30gLImmXXonACxiDY0SMZG
+        Ye7hbcF6s4TWztwIf1LAabGKO6lVVPM=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-674-BYEWp_JoMgmdTBB0B_OlGw-1; Mon, 17 Jul 2023 12:55:10 -0400
+X-MC-Unique: BYEWp_JoMgmdTBB0B_OlGw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fa8db49267so24915715e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:55:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689612909; x=1692204909;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SErOCFj4weTS4sZHmIFn/shbKetVUK2uoB7gkNus/es=;
+        b=ZlAuxKrD41iZjH5WIrQ8TZg3x3B+H1WsyEATof8FDr2M/e/3iDOwKHI8TuHpYOwIHy
+         IXsBoK+qW0xUY9RDOIC2dkky76sQtEPB1Q6W5snBu+cFW7mGywNvzRX4e2WO4MdUXGkP
+         g+RZELodC1W/FVfMgWuovlXYYGzgKBkDzLUtmIybd6mM3Xb37myPlZEHAWORQaMDf8Yx
+         ITOjbT0UTkg+NydGlS2GW9GhRJ4Zd8P7K1E5EpUC2y5rFUdIgGducOP0GLauhMiVkbgB
+         iW9yrMiWJIbWim4Iire5ORFotXklOy63NjXvlCS8bOqeyWO2c/WjtcpOUdvVTHbhbPnS
+         rTwg==
+X-Gm-Message-State: ABy/qLYAvaN49B7yvGDkCYT0uLIMCHCESR32VbZMhTFzFiX7wQsBlLEo
+        HOZdcNs4f0TT1DHi3XssNdkkmzwmPYLIL26pMtJOSYrPTe1gXaKLnBmk0St7mfL6OnabsSKkNCU
+        DhwEBJvqsJa7yqBD4f4J2mhHI
+X-Received: by 2002:a05:600c:2041:b0:3f8:b6c:84aa with SMTP id p1-20020a05600c204100b003f80b6c84aamr9635466wmg.24.1689612909602;
+        Mon, 17 Jul 2023 09:55:09 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEdE39kPxCYKcRdmZ/FpMQpE1xk4SUcvmrmq80wEX/xClSUfOnQK/ncVsEXvVceL/eSsATFSw==
+X-Received: by 2002:a05:600c:2041:b0:3f8:b6c:84aa with SMTP id p1-20020a05600c204100b003f80b6c84aamr9635448wmg.24.1689612909153;
+        Mon, 17 Jul 2023 09:55:09 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c735:400:2501:5a2e:13c6:88da? (p200300cbc735040025015a2e13c688da.dip0.t-ipconnect.de. [2003:cb:c735:400:2501:5a2e:13c6:88da])
+        by smtp.gmail.com with ESMTPSA id 9-20020a05600c020900b003fbc9b9699dsm183220wmi.45.2023.07.17.09.55.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 09:55:08 -0700 (PDT)
+Message-ID: <6d50e339-bdf9-191a-9389-ea0089fa7118@redhat.com>
+Date:   Mon, 17 Jul 2023 18:55:07 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|MW4PR12MB7334:EE_
-X-MS-Office365-Filtering-Correlation-Id: 53026471-7475-4e40-94cc-08db86e6148a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DB2NZsW6P1iOJ0es5T1n+E8MDWI2XyeR9Z8RjMD3w2axA5l9HIu9PPcSKbXBEyd1ID0JAM3oX8LO/2TobKO0pBnQICltBiQ3lDg3qH+xUT8y0QCXpQ5e5oYday2HyUuMrjCdSOneBbuAUOKLUmILQUN6SiHagyiavgDlR8c7cglpmk9/jOAoeFBP6TeRP6NlUSnINrGs8if/s19ubtvbkl97nwHPkw0w3xPhmWt74z0K4Sa3h9XQ3keD9it7zm/TR2NRYF3sRJYKrdS6f1MZIWMwcZMIF39ob3xKEQPd18a/r+h/mHsfB7cxNoioPBTFI1OCmPmD0C0JhAC8h0Hm8paB/cSgfs4amPQefvVkgRo8wTKNRom1J/Mg9RdCex2wXUIebg9TJe1th995w9UYVJUhO+Nr1YPBa92t1EwbG/OVxxxZ0GQ0MWmIS08xmx0T3uMm4HdFGhBegdWj+ahzqVZNodiGbAz/AFNOjz0vLJVmq0qStfimdSkGVa15b6oj68+b6QjuaNwhhS8VUpXSHTqhHycg2ZtMqnhhfGMhL/TpcH2XQMeXc8CEl9a9sEbIX7u+2gdmjU2lovZ82aDn9POHfQhfYZCsnxOpApYKMa6JWm3dZoLMKzcF6GVCvqCdC7uxW3GvQpz1wE+wTzj+rQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(366004)(396003)(39860400002)(346002)(136003)(451199021)(31686004)(478600001)(6486002)(6666004)(45080400002)(110136005)(54906003)(83380400001)(31696002)(86362001)(2906002)(53546011)(186003)(36756003)(6506007)(6512007)(966005)(2616005)(316002)(26005)(66556008)(38100700002)(66476007)(66946007)(41300700001)(4326008)(8676002)(8936002)(5660300002)(7416002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MENiVTZNNTY5UDUvUC9Eb3ZoWGJaQVJxbG43SlkxTG4rVzg5d2tGQUQ0djNm?=
- =?utf-8?B?b0F2bXljYlVabHdkSGJNMGNnMENSQXBGU0JpaG9HdkFqZU9DK1gwNDM1UWZI?=
- =?utf-8?B?alQ1L1IwZ0NsTlJ0ditRVlRJNURVYm1PcXFCT2Y5anZ1eGhSS3NYR01WcVYy?=
- =?utf-8?B?MjVCeklIMXkzbG5walVueUQxNXlQRURJS1JuSzRiUkpwMmJCWWZybWpJWmhV?=
- =?utf-8?B?UGExVnVqOC9yNCttNXloMUxNcmlUOWJyUnBUMVBHMlUxcUMvNDFKR1JPOWMz?=
- =?utf-8?B?ek5oa0NpcllUS0N4Y000Rm9sV29HbVFYMFJyN0NWVFZBd3E0bE5mSXVMWksz?=
- =?utf-8?B?eTBUTndnK3M5WFRjZ1ZJVWNpcGZOSVJzZ05tb2tVMFFOZmxkZ1NNS0N6dVhw?=
- =?utf-8?B?eG5CVFJPWmxpS0kyRFI2WUhSbFBHTnJGbXBOMXVNcndkc1ZZMml2WUdsam5Y?=
- =?utf-8?B?eUtRN24zMUJUanhzWmJPdUxMVUJHWWxpRDFsb2dVSk9TdEQwVVFQZzNKbXRk?=
- =?utf-8?B?NHlmcCs1Zmk5SEJRTWVNUklyRWlpMmRlYSs5YkV0ZTVZUXpsYUNtZGZSUHQx?=
- =?utf-8?B?QVFmMHJ4bVNSMWxlM0tBQmt1SVF0Q2RRNEVKNFQrVS9hcmZiU05FUVJFYXd1?=
- =?utf-8?B?bktoeXVaM2dndVVraHozY3J1dkp1ZzlkbkRXMUh4ZDhzREVZZnhQT1VMeDJU?=
- =?utf-8?B?Yk1WVnd6WEZxbFZWanFmUWFtVmk0enorMmJyd1FPckt3aVhPMUFSbWIrQnU2?=
- =?utf-8?B?aDFLOSswcTZ1OGluVjM0Q2ZDd2x0TzgyQ2JtMlhxbkI1aUcxZHJTVXZDVndE?=
- =?utf-8?B?Z25kSTdCQzBzL2FLcGVPdi9GeVNtTUJSZDBwaXpqa1JMSjFNb0lkK0ZMZ3M4?=
- =?utf-8?B?RHB3azZGeW5xcDAydENiL3p3K2V6SGVaSW5ER3BZc09VZGN6cU5CS3IrUXp1?=
- =?utf-8?B?dmxoZkIxRXVqU0dzaVpNbzBMVk9DOG91YllJM3JwdWpVQmNBWXZaYlNueGFo?=
- =?utf-8?B?M0hWZ1dhUDlyd0h1NjdLcGc4a3AxRjlSNUNxZFA3MHZZSUJXc0IxSzdZRmVO?=
- =?utf-8?B?V3ZSMEpiUmhNTWVNNE9PMGhhZjc5MjVYUStlVHRIUXhqMGwvNEV2VTVpMWhW?=
- =?utf-8?B?THM1Nk1YN3JlSzhvRUFDdFNuNWIyNE1BU28raGZ3UlFVaCtDVTViNjl1aW9U?=
- =?utf-8?B?WC81TnN6Q2U4ek9ZUGlGZGtMNWxzYllqRVUya0tuMmZESWVZTmJLQ3NUZWEv?=
- =?utf-8?B?NGVtc2V3ekw1bkFqVWJqT3RMcERqSkVpQndsWVhwTjM3MzFUTk9ySXpwQ3Zn?=
- =?utf-8?B?TVJRem9wRmV3dXBObGt3RFNhUVVaaGtkb1p4aVFUcGhhU1FHRVhwSXljVjNT?=
- =?utf-8?B?d0RNUk8reGFhbEFMKytLdkZXSENDZUNZYUtFVFVsbFlBYm02VVdmbGN1Wndt?=
- =?utf-8?B?THNzamdHbnliWXJtQU5tNDFmTzRtdWJ1ZmRuRCtCOEIzdnZGZ2g4S2ZMOWgw?=
- =?utf-8?B?WSs3MXlJVk16R3FuejgwODRTcUZSYzJOdkVpSEVpUmxtdVE3WXZyOVVueWNh?=
- =?utf-8?B?YUd3R3VRRjE3clY3QTFsOFZZSkNoSGdRY3VnRkxaL1RWcXdVSXFlYUdtV2Jl?=
- =?utf-8?B?NU50V0h4WG1Kb2pZMGM2d241NEIzdGFPUjE5Tk0wWXdVcFZPaHhOeEJ3Y1ky?=
- =?utf-8?B?MnhRcHV3OERER01jNHRsOUIwWlV3bkNZS3ExVzA4Vzk2WENNbzl6SHhUQTVa?=
- =?utf-8?B?Q0xDUG52V0VsM01rNnhlaGowdVVhOGhyamJUK0FqTW9TMnAxSHdPMXdQemJK?=
- =?utf-8?B?QVNrNFVGbGJMY1VCY0puWjlOU3Zvb3VhQVMrVHJ2M1hHUzRXLzZhOXJvSndr?=
- =?utf-8?B?UXlqK2NwQ0FHT085M2JTc25XZERHcFo2YmVsVUFsUmtuWGNwNE9FL09HdUpr?=
- =?utf-8?B?TXphQU9rZnZNSGVBMUpoSUhUNEhpT3V4Y0FJU1dSZTEzMmtaMk56YzQ4c1hp?=
- =?utf-8?B?M0hlSXFlKys0YVJzQ2EvNzVMTmlhL2pJbVVnQXdLaUpxVEZYMWR1VXc4c1VS?=
- =?utf-8?B?dnRXQ0UzRWpLcTZlUGZRUGt5c1BvYi9MNFQzTFo3WENkTzBQV3NqVU1YOGVX?=
- =?utf-8?Q?jttqk0ibLLhd2894nFHeORSw6?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 53026471-7475-4e40-94cc-08db86e6148a
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 16:51:35.0896
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: m1ZQkg4PjP+88hbwaoyXLuEk5zOVtFUTAt4jefRTjPrxuDAL9g7S/dEeX/qgJRUqiMuuze8gN81ttQvsVkgCoA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7334
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20230717143110.260162-1-ryan.roberts@arm.com>
+ <20230717143110.260162-2-ryan.roberts@arm.com>
+ <ZLVeeDmPDWupYzSH@casper.infradead.org>
+ <283e4122-c23f-35a1-4782-fddde32f4ad4@arm.com>
+ <c10ae780-c405-b2d2-ecc0-78ef35a892f3@redhat.com>
+ <ZLVkUlQXmPH1BXEx@casper.infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v1 1/3] mm: Allow deferred splitting of arbitrary large
+ anon folios
+In-Reply-To: <ZLVkUlQXmPH1BXEx@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/16/2023 10:34 PM, Kai-Heng Feng wrote:
-> On Sat, Jul 15, 2023 at 12:37 AM Mario Limonciello
-> <mario.limonciello@amd.com> wrote:
->>
->> On 7/14/23 03:17, Kai-Heng Feng wrote:
->>> On Thu, Jul 6, 2023 at 12:07 PM Mario Limonciello
->>> <mario.limonciello@amd.com> wrote:
->>>>
->>>> On 7/5/23 15:06, Bjorn Helgaas wrote:
->>>>> On Wed, Jun 28, 2023 at 01:09:49PM +0800, Kai-Heng Feng wrote:
->>>>>> On Wed, Jun 28, 2023 at 4:54 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->>>>>>> On Tue, Jun 27, 2023 at 04:35:25PM +0800, Kai-Heng Feng wrote:
->>>>>>>> On Fri, Jun 23, 2023 at 7:06 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->>>>>>>>> On Tue, Jun 20, 2023 at 01:36:59PM -0500, Limonciello, Mario wrote:
+On 17.07.23 17:54, Matthew Wilcox wrote:
+> On Mon, Jul 17, 2023 at 05:43:40PM +0200, David Hildenbrand wrote:
+>> On 17.07.23 17:41, Ryan Roberts wrote:
+>>> On 17/07/2023 16:30, Matthew Wilcox wrote:
+>>>> On Mon, Jul 17, 2023 at 03:31:08PM +0100, Ryan Roberts wrote:
+>>>>> In preparation for the introduction of large folios for anonymous
+>>>>> memory, we would like to be able to split them when they have unmapped
+>>>>> subpages, in order to free those unused pages under memory pressure. So
+>>>>> remove the artificial requirement that the large folio needed to be at
+>>>>> least PMD-sized.
 >>>>>
->>>>>>> It's perfectly fine for the IP to support PCI features that are not
->>>>>>> and can not be enabled in a system design.  But I expect that
->>>>>>> strapping or firmware would disable those features so they are not
->>>>>>> advertised in config space.
->>>>>>>
->>>>>>> If BIOS leaves features disabled because they cannot work, but at the
->>>>>>> same time leaves them advertised in config space, I'd say that's a
->>>>>>> BIOS defect.  In that case, we should have a DMI quirk or something to
->>>>>>> work around the defect.
->>>>>>
->>>>>> That means most if not all BIOS are defected.
->>>>>> BIOS vendors and ODM never bothered (and probably will not) to change
->>>>>> the capabilities advertised by config space because "it already works
->>>>>> under Windows".
->>>>>
->>>>> This is what seems strange to me.  Are you saying that Windows never
->>>>> enables these power-saving features?  Or that Windows includes quirks
->>>>> for all these broken BIOSes?  Neither idea seems very convincing.
->>>>>
+>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>>> Reviewed-by: Yu Zhao <yuzhao@google.com>
+>>>>> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
 >>>>
->>>> I see your point.  I was looking through Microsoft documentation for
->>>> hints and came across this:
->>>>
->>>> https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/pci-express-settings-link-state-power-management
->>>>
->>>> They have a policy knob to globally set L0 or L1 for PCIe links.
->>>>
->>>> They don't explicitly say it, but surely it's based on what the devices
->>>> advertise in the capabilities registers.
+>>>> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 >>>
->>> So essentially it can be achieved via boot time kernel parameter
->>> and/or sysfs knob.
->>>
->>> The main point is OS should stick to the BIOS default, which is the
->>> only ASPM setting tested before putting hardware to the market.
->>
->> Unfortunately; I don't think you can jump to this conclusion.
->>
->> A big difference in the Windows world to Linux world is that OEMs ship
->> with a factory Windows image that may set policies like this.  OEM
->> "platform" drivers can set registry keys too.
-> 
-> Thanks. This is new to me.
-> 
->>
->> I think the next ASPM issue that comes up what we (collectively) need to
->> do is compare ASPM policy and PCI registers for:
->> 1) A "clean" Windows install from Microsoft media before all the OEM
->> drivers are installed.
->> 2) A Windows install that the drivers have been installed.
->> 3) A up to date mainline Linux kernel.
->>
->> Actually as this thread started for determining policy for external PCIe
->> devices, maybe that would be good to check with those.
-> 
-> Did that before submitting the patch.
->  From very limited devices I tested, ASPM is enabled for external
-> connected PCIe device via TBT ports.
-> 
-> I wonder if there's any particular modification should be improved for
-> this patch?
-> 
-
-Knowing this information I personally think the original patch that 
-started this thread makes a lot of sense.
-
-Bjorn, what are your thoughts?
-
-> Kai-Heng
-> 
->>
->>>
->>> Kai-Heng
+>>> Thanks!
 >>>
 >>>>
->>>>>>>> So the logic is to ignore the capability and trust the default set
->>>>>>>> by BIOS.
->>>>>>>
->>>>>>> I think limiting ASPM support to whatever BIOS configured at boot-time
->>>>>>> is problematic.  I don't think we can assume that all platforms have
->>>>>>> firmware that configures ASPM as aggressively as possible, and
->>>>>>> obviously firmware won't configure hot-added devices at all (in
->>>>>>> general; I know ACPI _HPX can do some of that).
->>>>>>
->>>>>> Totally agree. I was not suggesting to limiting the setting at all.
->>>>>> A boot-time parameter to flip ASPM setting is very useful. If none has
->>>>>> been set, default to BIOS setting.
->>>>>
->>>>> A boot-time parameter for debugging and workarounds is fine.  IMO,
->>>>> needing a boot-time parameter in the course of normal operation is
->>>>> not OK.
->>>>>
->>>>> Bjorn
+>>>>>    		 */
+>>>>> -		if (folio_test_pmd_mappable(folio) && folio_test_anon(folio))
+>>>>> +		if (folio_test_large(folio) && folio_test_anon(folio))
+>>>>>    			if (!compound || nr < nr_pmdmapped)
+>>>>>    				deferred_split_folio(folio);
 >>>>
+>>>> I wonder if it's worth introducing a folio_test_deferred_split() (better
+>>>> naming appreciated ...) to allow us to allocate order-1 folios and not
+>>>> do horrible things.  Maybe it's not worth supporting order-1 folios;
+>>>> we're always better off going to order-2 immediately.  Just thinking.
+>>>
+>>> There is more than just _deferred_list in the 3rd page; you also have _flags_2a
+>>> and _head_2a. I guess you know much better than me what they store. But I'm
+>>> guessing its harder than jsut not splitting an order-1 page?
+> 
+> Those are page->flags and page->compound_head for the third page in
+> the folio.  They don't really need a name; nothing refers to them,
+> but it's important that space not be reused ;-)
+> 
+> This is slightly different from _flags_1; we do have some flags which
+> reuse the bits (they're labelled as PF_SECOND).  Right now, it's only
+> PF_has_hwpoisoned, but we used to have PF_double_map.  Others may arise.
+> 
+>>> With the direction of large anon folios (_not_ retrying with every order down to
+>>> 0), I'm not sure what the use case would be for order-1 anyway?
 >>
+>> Just noting that we might need some struct-page space for better
+>> mapcount/shared tracking, which might get hard for order-1 pages.
+> 
+> My assumption had been that we'd be able to reuse the _entire_mapcount
+> and _nr_pages_mapped fields and not spill into the third page, but the
+
+We most likely have to keep _entire_mapcount to keep "PMD mapped" 
+working (I don't think we can not account that, some user space relies 
+on that). Reusing _nr_pages_mapped for _total_mapcount would work until 
+we need more bits.
+
+But once we want to sort out some other questions like "is this folio 
+mapped shared or mapped exclusive" we might need more space.
+
+What I am playing with right now to tackle that would most probably not 
+fit in there (but I'll keep trying ;) ).
+
+> third page is definitely available today if we want it.  I'm fine with
+> disallowing order-1 anon/file folios forever.
+
+Yes, let's first sort out the open issues before going down that path 
+(might not really be worth it after all).
+
+-- 
+Cheers,
+
+David / dhildenb
+
