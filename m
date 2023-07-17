@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F29D756722
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F72B75671F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbjGQPE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 11:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43678 "EHLO
+        id S230396AbjGQPEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 11:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbjGQPEz (ORCPT
+        with ESMTP id S230421AbjGQPEe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 11:04:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02276E7F;
-        Mon, 17 Jul 2023 08:04:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Mon, 17 Jul 2023 11:04:34 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D240410DC
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:04:33 -0700 (PDT)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qLPlq-0000FH-8h; Mon, 17 Jul 2023 17:04:18 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 952E26105C;
-        Mon, 17 Jul 2023 15:04:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C921C433C8;
-        Mon, 17 Jul 2023 15:04:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689606294;
-        bh=kRV/xSf86iTldaNK/Wk2zNVVTiDcvdiI33s7jGOYRsM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EKyWMGofhVGHC07otPIzcKxMQP9WkSc0w09sua0P48+YuirRmJ9+cumJ+PYMUZZq6
-         Fmrg2Uhqv8vo79m9hav8qbQTKKilWJNCOo3DmGYEfxybMb/aIsYo+3eVzpJ/BHFI6R
-         9/pKQe75PGK6U7bF+of2BeS/U4in0wIupcYlqX7/dnIDfpS1jyGkCgjUmuNUu34nrO
-         i2QZDIQFGiWGX9QySp2w5ngK86PKv3jU6rr4Vx8WoBUrKCLfMjqHlKBVmVbWumM6jF
-         uIBvHkkLShoM54a9k3A3Pht4DHOFTjiMVrBD8swttw1Rt5t04BINnTJi/uSqdl5qV0
-         hfTisV50GKvkQ==
-Received: (nullmailer pid 1750720 invoked by uid 1000);
-        Mon, 17 Jul 2023 15:04:52 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Nipun Gupta <nipun.gupta@amd.com>,
-        Nikhil Agarwal <nikhil.agarwal@amd.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] cdx: Explicitly include correct DT includes
-Date:   Mon, 17 Jul 2023 09:03:55 -0600
-Message-Id: <20230717150355.1749845-1-robh@kernel.org>
-X-Mailer: git-send-email 2.40.1
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id E0CE11F3756;
+        Mon, 17 Jul 2023 15:04:16 +0000 (UTC)
+Date:   Mon, 17 Jul 2023 17:04:16 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Michal Simek <michal.simek@amd.com>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com,
+        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] can: xilinx_can: Add support for reset
+Message-ID: <20230717-acronym-surging-27c99c0a1aa4-mkl@pengutronix.de>
+References: <cover.1689164442.git.michal.simek@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="i6dff7kuru4cvcda"
+Content-Disposition: inline
+In-Reply-To: <cover.1689164442.git.michal.simek@amd.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DT of_device.h and of_platform.h date back to the separate
-of_platform_bus_type before it as merged into the regular platform bus.
-As part of that merge prepping Arm DT support 13 years ago, they
-"temporarily" include each other. They also include platform_device.h
-and of.h. As a result, there's a pretty much random mix of those include
-files used throughout the tree. In order to detangle these headers and
-replace the implicit includes with struct declarations, users need to
-explicitly include the correct includes.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-Note that drivers/cdx/ is missing a MAINTAINERS entry. Please add one.
+--i6dff7kuru4cvcda
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- drivers/cdx/controller/cdx_controller.c | 3 ++-
- drivers/cdx/controller/cdx_rpmsg.c      | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+On 12.07.2023 14:20:44, Michal Simek wrote:
+> Hi,
+>=20
+> IP core has option reset line which can be wired that's why add support
+> for optional reset.
+>=20
+> Thanks,
+> Michal
+>=20
+> Changes in v2:
+> - Add Conor's ACK
+> - Fix use-after-free in xcan_remove reported by Marc.
 
-diff --git a/drivers/cdx/controller/cdx_controller.c b/drivers/cdx/controller/cdx_controller.c
-index dc52f95f8978..bb4ae7970e21 100644
---- a/drivers/cdx/controller/cdx_controller.c
-+++ b/drivers/cdx/controller/cdx_controller.c
-@@ -5,7 +5,8 @@
-  * Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
-  */
- 
--#include <linux/of_platform.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/cdx/cdx_bus.h>
- 
-diff --git a/drivers/cdx/controller/cdx_rpmsg.c b/drivers/cdx/controller/cdx_rpmsg.c
-index f37e639d6ce3..04b578a0be17 100644
---- a/drivers/cdx/controller/cdx_rpmsg.c
-+++ b/drivers/cdx/controller/cdx_rpmsg.c
-@@ -7,7 +7,8 @@
- 
- #include <linux/rpmsg.h>
- #include <linux/remoteproc.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/cdx/cdx_bus.h>
- #include <linux/module.h>
- 
--- 
-2.40.1
+Added to linux-can-next/testing.
 
+Thanks,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--i6dff7kuru4cvcda
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmS1WG0ACgkQvlAcSiqK
+BOgFNQf/SNgtjQihhGSwxvLoga11wYHClkMTuB7ZGEKSMQMpnvsa/qu5oOE7+pXJ
+bZq8nO9zrrBNsrmv500c8kDZDSGKenZdbT8QBDuCfmirh5YbQqEfBnL8Zos/s7Tq
+QkVzsVj+e6kMeIImbNqHpGqdn9p5zxxWsgb8EDiKMXIoUeU9KUiwPCCIiKRzEjPi
+MgOJpsVvPSYxQ/IRPUcVZ2ebzmuQHbvW1QKlFfRvY/N4AggPgFFPSukTg/jrVdmY
+sZ7M2H9CjZEbMobh8RlNo/+vxeoBRLhEEvuLxE9Ex/6y7Gqh1/4w/uGfxxpqiM7s
+dad1BzbRZp48K21DiDN2QOJnhpOVfA==
+=oPZ5
+-----END PGP SIGNATURE-----
+
+--i6dff7kuru4cvcda--
