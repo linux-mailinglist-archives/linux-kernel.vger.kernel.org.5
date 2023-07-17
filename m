@@ -2,148 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD6E756403
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B1E75640C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbjGQNN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 09:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52570 "EHLO
+        id S230178AbjGQNOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 09:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjGQNN5 (ORCPT
+        with ESMTP id S229496AbjGQNOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 09:13:57 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7242594
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:13:56 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 481F9C15;
+        Mon, 17 Jul 2023 09:14:40 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44711C7;
         Mon, 17 Jul 2023 06:14:39 -0700 (PDT)
-Received: from [10.57.76.30] (unknown [10.57.76.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A63E23F67D;
-        Mon, 17 Jul 2023 06:13:53 -0700 (PDT)
-Message-ID: <fccc8f3e-126f-baab-a14d-387018e5b8b7@arm.com>
-Date:   Mon, 17 Jul 2023 14:13:52 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689599679; x=1721135679;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=WXAAajyq7RVwSRDzE/5hqXM57XC+7i9ZvN34rS3CqAg=;
+  b=YXzQdiEr2vtr6RoAmwmzKNNKFAebqPY8Lvj0Xvk3ad6W7GDIu7ASKxu/
+   m9wFW3Zdhk9Y5fw9KPmOKvuK9L+q+p/3KjP3EyoQ4vGBBqmGlAuX1LXMt
+   jHabnfE1QOfOMp9kDrNcofL1K5HCpVbQJXDdiR29nfSEOBa1vjlvPv8kz
+   10Sxxr42K4nrzjm0FsLLFdrmMgiDwZPaKbd5QA67Mm6eOwS/6fgIX6jK7
+   J6oi6GKEAUQykH0q1T6+5qJw3zpkx1nVEPBBTXILTVOJPNerEFXQb8IAM
+   LppHtpXrm7DWSbo/K3XcIdpJaZ83AMnH7kqBbnB4WemmKJO0MXhdsye8M
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="432095354"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="432095354"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 06:14:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="717230049"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="717230049"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.48.113])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 17 Jul 2023 06:14:34 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "Jarkko Sakkinen" <jarkko@kernel.org>, dave.hansen@linux.intel.com,
+        tj@kernel.org, linux-kernel@vger.kernel.org,
+        linux-sgx@vger.kernel.org, cgroups@vger.kernel.org,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
+        zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com
+Subject: Re: [PATCH v3 17/28] x86/sgx: fix a NULL pointer
+References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
+ <20230712230202.47929-18-haitao.huang@linux.intel.com>
+ <CU4GJG1NRTUD.275UVHM8W2VED@seitikki> <CU4GKARPLGU5.1CVBNY9N4K28F@seitikki>
+Date:   Mon, 17 Jul 2023 08:14:30 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v3 1/4] mm: Non-pmd-mappable, large folios for
- folio_add_new_anon_rmap()
-To:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20230714160407.4142030-1-ryan.roberts@arm.com>
- <20230714161733.4144503-1-ryan.roberts@arm.com>
- <d85c0f04-1792-2a0f-d0be-7fffc7604797@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <d85c0f04-1792-2a0f-d0be-7fffc7604797@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.1779qgkdwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <CU4GKARPLGU5.1CVBNY9N4K28F@seitikki>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/07/2023 14:00, David Hildenbrand wrote:
-> On 14.07.23 18:17, Ryan Roberts wrote:
->> In preparation for FLEXIBLE_THP support, improve
->> folio_add_new_anon_rmap() to allow a non-pmd-mappable, large folio to be
->> passed to it. In this case, all contained pages are accounted using the
->> order-0 folio (or base page) scheme.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> Reviewed-by: Yu Zhao <yuzhao@google.com>
->> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
->> ---
->>   mm/rmap.c | 28 +++++++++++++++++++++-------
->>   1 file changed, 21 insertions(+), 7 deletions(-)
->>
->> diff --git a/mm/rmap.c b/mm/rmap.c
->> index 0c0d8857dfce..f293d072368a 100644
->> --- a/mm/rmap.c
->> +++ b/mm/rmap.c
->> @@ -1278,31 +1278,45 @@ void page_add_anon_rmap(struct page *page, struct
->> vm_area_struct *vma,
->>    * This means the inc-and-test can be bypassed.
->>    * The folio does not have to be locked.
->>    *
->> - * If the folio is large, it is accounted as a THP.  As the folio
->> + * If the folio is pmd-mappable, it is accounted as a THP.  As the folio
->>    * is new, it's assumed to be mapped exclusively by a single process.
->>    */
->>   void folio_add_new_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
->>           unsigned long address)
->>   {
->> -    int nr;
->> +    int nr = folio_nr_pages(folio);
->>
->> -    VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
->> +    VM_BUG_ON_VMA(address < vma->vm_start ||
->> +            address + (nr << PAGE_SHIFT) > vma->vm_end, vma);
->>       __folio_set_swapbacked(folio);
->>
->> -    if (likely(!folio_test_pmd_mappable(folio))) {
->> +    if (!folio_test_large(folio)) {
-> 
-> Why remove the "likely" here? The patch itself does not change anything about
-> that condition.
+On Mon, 17 Jul 2023 07:49:27 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
 
-Good question; I'm not sure why. Will have to put it down to bad copy/paste
-fixup. Will put it back in the next version.
-
-> 
->>           /* increment count (starts at -1) */
->>           atomic_set(&folio->_mapcount, 0);
->> -        nr = 1;
->> +        __page_set_anon_rmap(folio, &folio->page, vma, address, 1);
->> +    } else if (!folio_test_pmd_mappable(folio)) {
->> +        int i;
->> +
->> +        for (i = 0; i < nr; i++) {
->> +            struct page *page = folio_page(folio, i);
->> +
->> +            /* increment count (starts at -1) */
->> +            atomic_set(&page->_mapcount, 0);
->> +            __page_set_anon_rmap(folio, page, vma,
->> +                    address + (i << PAGE_SHIFT), 1);
->> +        }
->> +
->> +        /* increment count (starts at 0) */
-> 
-> That comment is a bit misleading. We're not talking about a mapcount as in the
-> other cases here.
-
-Correct, I'm talking about _nr_pages_mapped, which starts 0, not -1 like
-_mapcount. The comment was intended to be in the style used in other similar
-places in rmap.c. I could change it to: "_nr_pages_mapped is 0-based, so set it
-to the number of pages in the folio" or remove it entirely? What do you prefer?
-
-> 
->> +        atomic_set(&folio->_nr_pages_mapped, nr);
->>       } else {
->>           /* increment count (starts at -1) */
->>           atomic_set(&folio->_entire_mapcount, 0);
->>           atomic_set(&folio->_nr_pages_mapped, COMPOUND_MAPPED);
->> -        nr = folio_nr_pages(folio);
->> +        __page_set_anon_rmap(folio, &folio->page, vma, address, 1);
->>           __lruvec_stat_mod_folio(folio, NR_ANON_THPS, nr);
->>       }
+> On Mon Jul 17, 2023 at 12:48 PM UTC, Jarkko Sakkinen wrote:
+>> On Wed Jul 12, 2023 at 11:01 PM UTC, Haitao Huang wrote:
+>> > Under heavy load, the SGX EPC reclaimers (ksgxd or future EPC cgroup
+>> > worker) may reclaim SECS EPC page for an enclave and set
+>> > encl->secs.epc_page to NULL. But the SECS EPC page is required for  
+>> EAUG
+>> > in #PF handler and is used without checking for NULL and reloading.
+>> >
+>> > Fix this by checking if SECS is loaded before EAUG and load it if it  
+>> was
+>> > reclaimed.
+>> >
+>> > Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
 >>
-> 
-> Apart from that, LGTM.
-> 
+>> A bug fix should be 1/*.
+>
+> And a fixes tag.
+>
+> Or is there a bug that is momentized by the earlier patches? This patch
+> feels confusing to say the least.
+>
+
+It happens in heavy reclaiming cases, just extremely rare when EPC  
+accounting is not partitioned into cgroups. Will add fix tag with the  
+related EDMM patch. And move this as the first patch.
+
+Thanks
+Haitao
 
