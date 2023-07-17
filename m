@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1622F755AE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 07:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109EC755AE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 07:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbjGQFjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 01:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38700 "EHLO
+        id S231230AbjGQFjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 01:39:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjGQFjp (ORCPT
+        with ESMTP id S231218AbjGQFjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 Jul 2023 01:39:45 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11521138;
-        Sun, 16 Jul 2023 22:39:41 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 1F4BA10000C;
-        Mon, 17 Jul 2023 08:39:40 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 1F4BA10000C
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16395E6D;
+        Sun, 16 Jul 2023 22:39:43 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 8297112000F;
+        Mon, 17 Jul 2023 08:39:41 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8297112000F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1689572380;
-        bh=XNCUKPephraCScedRysmNgapBwFbd7StgHlW/gvFIDQ=;
+        s=mail; t=1689572381;
+        bh=ScCXR9HXhnFNVkOIKX8tcXBCrwrwJ57BZ2yHabgHWv4=;
         h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=o0xcu6FrkDBdnRq8E/reweNg2GI3FbrbNSeKU90rKRccX5e5AnykJNbY8pm+MRtm7
-         n6iGODlQr0LfDoQmGNCfD5C9IMzkV3cjORMromNl5LpIgegSyY2ZUEjVI11mHdg296
-         mxgvMveItGF0Q/gT+bZgH9o98dU5XNGAbE+WBMhXGTTHFed8bQxbAos3GuEf3wVkQ+
-         ounmM5tna83Zueq3SkKAU4NGWkUGxPg93xeUZmNWZFNaXrAJqmzNka7KqwKqaKwhxD
-         vtpT5UThYu2WZ4Nhkl8c5sBh8TIZxaLEPuepcePBYJ+WXAr4Wefr8GEQTRevRTLSe+
-         7z8kwCjR+Ci7Q==
+        b=UFyEiHu12dn/4lkzf3Se8v8qAWntQPQCDHu4ABUAdUkPbToc16O1nkVOs/Wd49Y9Y
+         lbwFX5qgkLIy//Y+7nB+n5s0aT2cOcqlp1eUXQQEONKdHbnAGvKtDzCq6uSd0vTlim
+         3KeyL2sw+CH6FGf4Eee3wBJ1zz/R2CZjHu8nMhXJzHx5XSaz/qIylwNleXFOzD7OVN
+         QUX8MUu59bv+wumBN45OmOWzMczeNJwiXEwF0aCHcADv5YTzdZkqpocRFz8gNDCYQE
+         EOBOrKa1S3GVu2duEIqfJx+akqt8KWHoZ7cXwM6JZpgHnTCZwP8OLx4kze0gMRC1pv
+         1YoyB7qYbz3Iw==
 Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Mon, 17 Jul 2023 08:39:39 +0300 (MSK)
+        Mon, 17 Jul 2023 08:39:41 +0300 (MSK)
 Received: from localhost.localdomain (100.64.160.123) by
  p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 17 Jul 2023 08:38:45 +0300
+ 15.2.1118.30; Mon, 17 Jul 2023 08:38:46 +0300
 From:   Arseniy Krasnov <AVKrasnov@sberdevices.ru>
 To:     Liang Yang <liang.yang@amlogic.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -52,13 +52,12 @@ To:     Liang Yang <liang.yang@amlogic.com>,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 CC:     <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
         Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
-        Rob Herring <robh@kernel.org>, <linux-mtd@lists.infradead.org>,
-        <devicetree@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 1/2] dt-bindings: nand: meson: make ECC properties dependent
-Date:   Mon, 17 Jul 2023 08:34:00 +0300
-Message-ID: <20230717053402.1203724-2-AVKrasnov@sberdevices.ru>
+Subject: [PATCH v4 2/2] mtd: rawnand: meson: support for 512B ECC step size
+Date:   Mon, 17 Jul 2023 08:34:01 +0300
+Message-ID: <20230717053402.1203724-3-AVKrasnov@sberdevices.ru>
 X-Mailer: git-send-email 2.35.0
 In-Reply-To: <20230717053402.1203724-1-AVKrasnov@sberdevices.ru>
 References: <20230717053402.1203724-1-AVKrasnov@sberdevices.ru>
@@ -77,7 +76,7 @@ X-KSMG-AntiSpam-Rate: 0
 X-KSMG-AntiSpam-Status: not_detected
 X-KSMG-AntiSpam-Method: none
 X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 523 523 523027ce26ed1d9067f7a52a4756a876e54db27c, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-KSMG-AntiSpam-Info: LuaCore: 523 523 523027ce26ed1d9067f7a52a4756a876e54db27c, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
 X-MS-Exchange-Organization-SCL: -1
 X-KSMG-AntiSpam-Interceptor-Info: scan successful
 X-KSMG-AntiPhishing: Clean
@@ -94,33 +93,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ECC properties 'nand-ecc-strength' and 'nand-ecc-step-size' depends on
-each other, so they must be both either set or not set. In first case
-ECC core will try to use these values if possible (by checking ECC caps
-provided by driver), in second case ECC core will select most optimal
-values for both properties.
+Meson NAND supports both 512B and 1024B ECC step size.
 
 Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/nand/raw/meson_nand.c | 45 +++++++++++++++++++++++--------
+ 1 file changed, 34 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-index a98b5d61ea5d..1c79815e1f7f 100644
---- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-@@ -66,6 +66,10 @@ patternProperties:
+diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+index 91eeac49d18f..9bdea97abe4c 100644
+--- a/drivers/mtd/nand/raw/meson_nand.c
++++ b/drivers/mtd/nand/raw/meson_nand.c
+@@ -135,6 +135,7 @@ struct meson_nfc_nand_chip {
+ struct meson_nand_ecc {
+ 	u32 bch;
+ 	u32 strength;
++	u32 size;
+ };
  
-     unevaluatedProperties: false
+ struct meson_nfc_data {
+@@ -190,7 +191,8 @@ struct meson_nfc {
+ };
  
-+    dependencies:
-+      nand-ecc-strength: ['nand-ecc-step-size']
-+      nand-ecc-step-size: ['nand-ecc-strength']
+ enum {
+-	NFC_ECC_BCH8_1K		= 2,
++	NFC_ECC_BCH8_512	= 1,
++	NFC_ECC_BCH8_1K,
+ 	NFC_ECC_BCH24_1K,
+ 	NFC_ECC_BCH30_1K,
+ 	NFC_ECC_BCH40_1K,
+@@ -198,15 +200,16 @@ enum {
+ 	NFC_ECC_BCH60_1K,
+ };
+ 
+-#define MESON_ECC_DATA(b, s)	{ .bch = (b),	.strength = (s)}
++#define MESON_ECC_DATA(b, s, sz)	{ .bch = (b), .strength = (s), .size = (sz) }
+ 
+ static struct meson_nand_ecc meson_ecc[] = {
+-	MESON_ECC_DATA(NFC_ECC_BCH8_1K, 8),
+-	MESON_ECC_DATA(NFC_ECC_BCH24_1K, 24),
+-	MESON_ECC_DATA(NFC_ECC_BCH30_1K, 30),
+-	MESON_ECC_DATA(NFC_ECC_BCH40_1K, 40),
+-	MESON_ECC_DATA(NFC_ECC_BCH50_1K, 50),
+-	MESON_ECC_DATA(NFC_ECC_BCH60_1K, 60),
++	MESON_ECC_DATA(NFC_ECC_BCH8_512, 8,  512),
++	MESON_ECC_DATA(NFC_ECC_BCH8_1K,  8,  1024),
++	MESON_ECC_DATA(NFC_ECC_BCH24_1K, 24, 1024),
++	MESON_ECC_DATA(NFC_ECC_BCH30_1K, 30, 1024),
++	MESON_ECC_DATA(NFC_ECC_BCH40_1K, 40, 1024),
++	MESON_ECC_DATA(NFC_ECC_BCH50_1K, 50, 1024),
++	MESON_ECC_DATA(NFC_ECC_BCH60_1K, 60, 1024),
+ };
+ 
+ static int meson_nand_calc_ecc_bytes(int step_size, int strength)
+@@ -224,8 +227,27 @@ static int meson_nand_calc_ecc_bytes(int step_size, int strength)
+ 
+ NAND_ECC_CAPS_SINGLE(meson_gxl_ecc_caps,
+ 		     meson_nand_calc_ecc_bytes, 1024, 8, 24, 30, 40, 50, 60);
+-NAND_ECC_CAPS_SINGLE(meson_axg_ecc_caps,
+-		     meson_nand_calc_ecc_bytes, 1024, 8);
 +
++static const int axg_stepinfo_strengths[] = { 8 };
++static const struct nand_ecc_step_info axg_stepinfo_1024 = {
++	.stepsize = 1024,
++	.strengths = axg_stepinfo_strengths,
++	.nstrengths = ARRAY_SIZE(axg_stepinfo_strengths)
++};
++
++static const struct nand_ecc_step_info axg_stepinfo_512 = {
++	.stepsize = 512,
++	.strengths = axg_stepinfo_strengths,
++	.nstrengths = ARRAY_SIZE(axg_stepinfo_strengths)
++};
++
++static const struct nand_ecc_step_info axg_stepinfo[] = { axg_stepinfo_1024, axg_stepinfo_512 };
++
++static const struct nand_ecc_caps meson_axg_ecc_caps = {
++	.stepinfos = axg_stepinfo,
++	.nstepinfos = ARRAY_SIZE(axg_stepinfo),
++	.calc_ecc_bytes = meson_nand_calc_ecc_bytes,
++};
  
- required:
-   - compatible
+ static struct meson_nfc_nand_chip *to_meson_nand(struct nand_chip *nand)
+ {
+@@ -1257,7 +1279,8 @@ static int meson_nand_bch_mode(struct nand_chip *nand)
+ 		return -EINVAL;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(meson_ecc); i++) {
+-		if (meson_ecc[i].strength == nand->ecc.strength) {
++		if (meson_ecc[i].strength == nand->ecc.strength &&
++		    meson_ecc[i].size == nand->ecc.size) {
+ 			meson_chip->bch_mode = meson_ecc[i].bch;
+ 			return 0;
+ 		}
 -- 
 2.35.0
 
