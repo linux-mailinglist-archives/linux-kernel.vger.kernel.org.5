@@ -2,151 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E63B47566F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED607566FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbjGQO7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:59:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
+        id S230310AbjGQO7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:59:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbjGQO7Q (ORCPT
+        with ESMTP id S229762AbjGQO7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:59:16 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE62AB9
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:59:15 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36HEhtPL008059;
-        Mon, 17 Jul 2023 14:58:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=LmURygZlBrerhkIVoF5heWa/27Y6FcJVGdZwY+PeiMw=;
- b=oWla03hKzYHhu3RzVI4y8jqMf3YO/YPF2aEOnFaxqMW5Nq7E3cgWXgptNq4Gf3uSQw7O
- jHaT85AmGRku86XxQlUfAAzBIuwSmnedl0HcyQx1+8FLFVGeyiSEg6zWVR0BJtMrCMFj
- ad5SZu/f04eUny7iTkqQDiX81+82a2zo7jhpH6DW8dkcYSa++JR6i79jVfsclCmScvKp
- 8TmyBW5qUCMuR/3I3qmGWJ7MQAIQesyuwVgd2rjNjX+tNL6+q5f7eR2LngqDpVJNXd3U
- Ldgsof2OmgokPzz3Lne4S08aBtmcFwmPFx8pXoYEUTDyRekQpIy2hvg9DC4LPFBha/CQ Zw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rw77y123r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 14:58:50 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36HEiNDE011834;
-        Mon, 17 Jul 2023 14:58:49 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rw77y1233-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 14:58:49 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36HDwFPW007605;
-        Mon, 17 Jul 2023 14:58:48 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rv80j04tk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 14:58:47 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36HEwkmH44695898
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 Jul 2023 14:58:46 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 379E320049;
-        Mon, 17 Jul 2023 14:58:46 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 464DF20040;
-        Mon, 17 Jul 2023 14:58:40 +0000 (GMT)
-Received: from li-c1fdab4c-355a-11b2-a85c-ef242fe9efb4.ibm.com.com (unknown [9.171.2.235])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 17 Jul 2023 14:58:40 +0000 (GMT)
-From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-To:     peterz@infradead.org, tim.c.chen@linux.intel.com
-Cc:     bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
-        hdanton@sina.com, ionela.voinescu@arm.com, juri.lelli@redhat.com,
-        len.brown@intel.com, linux-kernel@vger.kernel.org, mgorman@suse.de,
-        naveen.n.rao@linux.vnet.ibm.com, rafael.j.wysocki@intel.com,
-        ravi.v.shankar@intel.com, ricardo.neri@intel.com,
-        rostedt@goodmis.org, srikar@linux.vnet.ibm.com,
-        srinivas.pandruvada@linux.intel.com, sshegde@linux.vnet.ibm.com,
-        v-songbaohua@oppo.com, vincent.guittot@linaro.org,
-        vschneid@redhat.com, x86@kernel.org, yangyicong@hisilicon.com,
-        yu.c.chen@intel.com
-Subject: [PATCH] sched/fair: Add SMT4 group_smt_balance handling
-Date:   Mon, 17 Jul 2023 20:28:23 +0530
-Message-Id: <20230717145823.1531759-1-sshegde@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230717133718.GJ4253@hirez.programming.kicks-ass.net>
-References: <20230717133718.GJ4253@hirez.programming.kicks-ass.net>
+        Mon, 17 Jul 2023 10:59:40 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BD410C0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:59:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689605979; x=1721141979;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=+5sdg4L4o9lN19oZp5SNJ8hveenAkZAztlIic/ceuQE=;
+  b=gQ1jwo9tVXNlfw9SjGiRiB5Qa2ELJDzyTyA5+0KqrOG7mFK19+n17KJC
+   IOemjgf4DhOD6PNpKIIeuCKUW/zzPv4Kn4AD0BBx3guvxSFZW717Y7KnI
+   JvDJ3mR8nEOAkPBAkZ6PgcMZuXPgRg0h5HZ8H3x9P1NTE33nzpZTCZnJS
+   OohculOTDFuAQ8D1g4rQNLCPmKiSEexkL+DCoUXAe7RFg+TBpkKmNfgwJ
+   rrkbWfWuyqHtTI0kjUWhi4ElBzNVdKs9r6NwdUI3A9jS/rxXlUorAM0cR
+   IBtq3I3xweg007nPxNVi7MjsY7uAgwUtDDBAqiCalMKe9UWjV62BjhSyR
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="355886294"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="355886294"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 07:59:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="700517094"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="700517094"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga006.jf.intel.com with ESMTP; 17 Jul 2023 07:59:39 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 17 Jul 2023 07:59:38 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Mon, 17 Jul 2023 07:59:38 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Mon, 17 Jul 2023 07:59:38 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nb+fbdL8e5awuFU+h3QZcaood6xvCiCY2AVI/0nZfudhrk2GRhqc0pWcWn/fTEphvYQzwC4UTGZBaYLBC2kAD+jFFXaR7MGD03vVHtHk0eqcfY0FHqmRJTanIQwmER+EFkbsEUdLBdO9inSJimGECd1csLDm59vP6b7wNE+LUmD/0S3vVVdGoDqiMvozzwQdQDepfkTcoxFi8wOZldsn2ZZak/y94C4E40PWWtA5ce5jtY1aj+1STG3bJ99i7d4YhB411/Y7i9IUpghAt4E5mg48ID82VwW5623xAZTI7zz9i6+u9oc+bmYtRiXkBY9mYVZ2v0D8J5b3jta1lvV89A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NYMwSoEWmhxrIiGTHEl0nJSdHL27gYEqKbyZgnbHVa8=;
+ b=PbSjjARK1dBJmZCDHvQeWRQhbKxOPwXmmj6njgLboIXqzloFOqts17CkwQUXdUAl4hyzs0OPAXVcgMivp5H0zEPpELWkUE1CgINHJ7NO2Mxh2k4tZHrZ4Zg2melmjKuYU1DRSwB5joCVTH+Q5qqrcxGAXmJXjDxspGYkhfMXjrNCVs5oNqe1mYH3elGs21YLThz1iLV8sTgo6LTdCt4kXjPz6ebU7itEERtqTvRKFJZYVTpWPz7qihGkiDeeDK3GY7wNqd13kqzb3o+P4cF/bm179Xtlp6ShfVkaiQWaUG6jGFwu4HHW4/qp12U12HEvvDwswpEvreHGKCO2InTvfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6059.namprd11.prod.outlook.com (2603:10b6:208:377::9)
+ by DM6PR11MB4561.namprd11.prod.outlook.com (2603:10b6:5:2ae::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32; Mon, 17 Jul
+ 2023 14:59:36 +0000
+Received: from MN0PR11MB6059.namprd11.prod.outlook.com
+ ([fe80::7f94:b6c4:1ce2:294]) by MN0PR11MB6059.namprd11.prod.outlook.com
+ ([fe80::7f94:b6c4:1ce2:294%5]) with mapi id 15.20.6588.031; Mon, 17 Jul 2023
+ 14:59:36 +0000
+Date:   Mon, 17 Jul 2023 10:59:30 -0400
+From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+CC:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        <intel-gfx@lists.freedesktop.org>,
+        Hamza Mahfooz <hamza.mahfooz@amd.com>,
+        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] drm: Spelling s/sempahore/semaphore/
+Message-ID: <ZLVXUlZJO/cuT4Jw@intel.com>
+References: <8b0542c12a2427f34a792c41ac2d2a2922874bfa.1689600102.git.geert+renesas@glider.be>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <8b0542c12a2427f34a792c41ac2d2a2922874bfa.1689600102.git.geert+renesas@glider.be>
+X-ClientProxiedBy: SJ0PR05CA0201.namprd05.prod.outlook.com
+ (2603:10b6:a03:330::26) To MN0PR11MB6059.namprd11.prod.outlook.com
+ (2603:10b6:208:377::9)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: tTlXGqcHP_YJuXzdxvOaoIeYaVLpk4S8
-X-Proofpoint-ORIG-GUID: JtuPYtP2yaSaEIORV3zR3973jtzx-1xD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-17_11,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 mlxscore=0 mlxlogscore=999 clxscore=1015 adultscore=0
- spamscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307170133
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6059:EE_|DM6PR11MB4561:EE_
+X-MS-Office365-Filtering-Correlation-Id: ca5bf78a-436b-417e-97c8-08db86d66f9c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kzB8LXajxGB7OP6oSg4ZQ9wyah/A+kSX2q/YBVzzN8/jaNsR49Zhx7y3YnzpVpwrnMj0lSdqTfWLxR+zxfRYLqnp+9Tq2kvM3qemu3Ir3jF7ZZ8FzawtdGegQujglvvlV0nJJBGGxrNK4WcxJGAGephClmvr9CbOvRIp0ML8QNsSm67Vx/TvmjPPaUnvnAJBY0SAiGvcp/7O0XD025OP9UUjty+Ey//vH0SaDH34gb0XkOYOOnPHs88wdBckGK+j6UF7QBwo9Q59J5ggzwXLrBEZZYJuNdHjVMKNtvYQK7h1hJF8ZGKo6LHhgfxGskwtoKEZ4xObGRahPlK2g7hLW8zrjy/ApX2YlKF1C+R9MZOz0HTvjyIRmrpbCwNRPvnXU9GnVTeKSGJJu+cW6TWWlnGpOCSrwO55rEvgl2xcVUb+YtvJgUktxG4plau/7KMVpDRrBbgKulDSGfXdA4R9EyfnEYJDFgNKc2bITphoVnItpGN+0tuXlPUnu8BMxZw9aOPN3fn1KpKDjDwaiHg0LypJAVp6Az6HQVLPT3Tk8i0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6059.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(366004)(136003)(346002)(396003)(376002)(451199021)(86362001)(2906002)(36756003)(44832011)(966005)(6512007)(186003)(83380400001)(6506007)(26005)(38100700002)(82960400001)(6486002)(6666004)(54906003)(316002)(66556008)(66476007)(66946007)(2616005)(4326008)(5660300002)(478600001)(41300700001)(8936002)(8676002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?EladRS7q1FGM1Lsnsyjmg7+XfN/OJ2ME7vWop5VwN6PxYK7jJu0d33APX8Ei?=
+ =?us-ascii?Q?3gUBDGGtOG5g+u7+oZ/3EUMq/qzusOStjZyOQtgXU1EuFAgu+Q75wuI3Ddvh?=
+ =?us-ascii?Q?CU7ArlXjMhUPAGo372uszFQHXswRZlbw6kozd5fB9Pi1EGpZDQCzwuei35V2?=
+ =?us-ascii?Q?UtLqkelADeWGeIrZO7xOBgJEs4YBj4y7bgfCw0P3+N9MRNFkB3lSqzcdeWMX?=
+ =?us-ascii?Q?KwiBMHv2f8yThk7lXAZl/danUiSbIy2r6IXh8/h68+8wKDDKqR0hHQzYz2iU?=
+ =?us-ascii?Q?H9mS8ABzGfIM/3+q1Mn8MA+6fFA3jfxxI32s5j8NsC0Tm7OzTDdCNDIMqS4R?=
+ =?us-ascii?Q?z74Iqdaz3qLke8cljTeqPFJ6YYfH5JD7TUGflqQuX330eY3H1oEs3EovNiOl?=
+ =?us-ascii?Q?wskg03jTUlo05OnMmx1AZP4SiaFNwXdiVACDrcmoMaeCnIM/NnKrboV05Myb?=
+ =?us-ascii?Q?7ucfLGwrPMiD7pfAdkkkQPjvScGnbXcmhBSN6Z+0NObdscpiyXL9ZKqk+c+I?=
+ =?us-ascii?Q?aUvxSZP8+/zIYPpg5HOGqpxW6gLB8pa8RAPPT8IkV9pRX+mNxggqvasp4jWm?=
+ =?us-ascii?Q?PZ2SxBGbUXqZf3Buw7EGjzFoMAAsPZiZkDW0yxll43PrL7eNi+6zNcAMfoJ7?=
+ =?us-ascii?Q?obx+tU59v/EB4DYBIdEWkrDZZB3eyF+I/1hXzUtlY/l8ywReGMgA5nBsGMW3?=
+ =?us-ascii?Q?1np6bPkWu8GMPuwrdKbhyUxAVwmma6KZudYZfGA1hYegXOQqFL5a+C3AUwhb?=
+ =?us-ascii?Q?8hIKtnwJ1y5zwJpOwDW4fhtTIJVOdsUk42T1vUylcahhnKxSx2DziesdgvOe?=
+ =?us-ascii?Q?0JVpXalfVNj6+ZGtCdP62rs4cGM5mxwcuamWoP6UBrPBBmc4nzixn+WaY4uC?=
+ =?us-ascii?Q?y7GPoSVMixdzvRvW2IuxM6YcNDPXRvLWkNmlDoI3EtQHYWP4IUpSbi6eaMxF?=
+ =?us-ascii?Q?sfCgQYtMcea4sBYN+HToFxn0MopfElznOwZjnQtKN2Cz4KhwRFwy+oB29WUU?=
+ =?us-ascii?Q?pS7Gav9FJEGVEwgSSwayiTdvQ0epU9wIX2ZlaKRD8bkDp78ze3qfOdI+cyML?=
+ =?us-ascii?Q?mM7KShmQD9boEuqe8KjfEW4h6Ww8BeSjeAJQff+sm/PkFnGD2IcVO4cX8vao?=
+ =?us-ascii?Q?RmF0zxAmUr7s/Dr6zhfCMceXXy2narUnXDzMBbFLRohnzHciqUcZ8KcEmDZ7?=
+ =?us-ascii?Q?9QMhY1RBhDUAxWtnNjkyy/Ia0J2JlOMFJ2ljH9KRMJToix0Uvj0DNUZ9f3Jk?=
+ =?us-ascii?Q?opmhuyGPNCgiScHtGUgnhPOYUpIJLJP14pDzp4mqAB+yLOlhMSZY8ng3ie2O?=
+ =?us-ascii?Q?Bva3kJcPnnymWcPAke6SjxoVqmZ93Rtuu0KarzR2XHc7nnaeoOeT6Ofrl6AO?=
+ =?us-ascii?Q?pbSBCiwqFWo3+ToNLOqB+XmPdy6tXHGV+qaD5GweKkrVAW/QjSaJTNHOFjTr?=
+ =?us-ascii?Q?eBf1d/a/xOvx3T8yEzLZZR1k4eRJ7p6x8Jo+DxGV9dxz3KH8ggqqeeS9yaFM?=
+ =?us-ascii?Q?wiAAzKHsVOhxhpYx6cxV41HgaQVoLmAfREorpg3goWPt+456anKw+3IL+7br?=
+ =?us-ascii?Q?ID+vjjp930xhKUH1b8t5nWb4jIZlEASe31UdCOh9?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca5bf78a-436b-417e-97c8-08db86d66f9c
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6059.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 14:59:36.2725
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l31kFh0DvdK06BR7n2znWN3MrbzkvMOHGrUwP85PO42Y2pUGuN/yD4gk+eAhdYN9Scs0a5WlG2dCYkK366j9KQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4561
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Chen <tim.c.chen@linux.intel.com>
+On Mon, Jul 17, 2023 at 03:23:20PM +0200, Geert Uytterhoeven wrote:
+> Fix misspellings of "semaphore".
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reviewed-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+> ---
+> v2:
+>   - Add Reviewed-by.
+> ---
+>  drivers/gpu/drm/i915/i915_request.c | 2 +-
+>  drivers/gpu/drm/radeon/cik.c        | 2 +-
+>  drivers/gpu/drm/radeon/r600.c       | 2 +-
+>  include/drm/task_barrier.h          | 2 +-
+>  4 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/i915_request.c b/drivers/gpu/drm/i915/i915_request.c
+> index 894068bb37b6f1b6..32323bb801a139b7 100644
+> --- a/drivers/gpu/drm/i915/i915_request.c
+> +++ b/drivers/gpu/drm/i915/i915_request.c
+> @@ -1220,7 +1220,7 @@ emit_semaphore_wait(struct i915_request *to,
+>  	/*
+>  	 * If this or its dependents are waiting on an external fence
+>  	 * that may fail catastrophically, then we want to avoid using
+> -	 * sempahores as they bypass the fence signaling metadata, and we
+> +	 * semaphores as they bypass the fence signaling metadata, and we
+>  	 * lose the fence->error propagation.
+>  	 */
+>  	if (from->sched.flags & I915_SCHED_HAS_EXTERNAL_CHAIN)
 
-For SMT4, any group with more than 2 tasks will be marked as
-group_smt_balance. Retain the behaviour of group_has_spare by marking
-the busiest group as the group which has the least number of idle_cpus.
 
-Also, handle rounding effect of adding (ncores_local + ncores_busy)
-when the local is fully idle and busy group has more than 2 tasks.
-Local group should try to pull at least 1 task in this case.
+Acked-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 
-Originally-by: Tim Chen <tim.c.chen@linux.intel.com>
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
-Signed-off-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
----
- kernel/sched/fair.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+to take this through drm-misc
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 932e7b78894a..9502013abe33 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -9532,7 +9532,7 @@ static inline long sibling_imbalance(struct lb_env *env,
- 	imbalance /= ncores_local + ncores_busiest;
-
- 	/* Take advantage of resource in an empty sched group */
--	if (imbalance == 0 && local->sum_nr_running == 0 &&
-+	if (imbalance <= 1 && local->sum_nr_running == 0 &&
- 	    busiest->sum_nr_running > 1)
- 		imbalance = 2;
-
-@@ -9720,6 +9720,17 @@ static bool update_sd_pick_busiest(struct lb_env *env,
- 		break;
-
- 	case group_smt_balance:
-+		/* no idle cpus on both groups handled by group_fully_busy below */
-+		if (sgs->idle_cpus != 0 || busiest->idle_cpus != 0) {
-+			if (sgs->idle_cpus > busiest->idle_cpus)
-+				return false;
-+			if (sgs->idle_cpus < busiest->idle_cpus)
-+				return true;
-+			if (sgs->sum_nr_running <= busiest->sum_nr_running)
-+				return false;
-+		}
-+		break;
-+
- 	case group_fully_busy:
- 		/*
- 		 * Select the fully busy group with highest avg_load. In
---
-2.31.1
-
+> diff --git a/drivers/gpu/drm/radeon/cik.c b/drivers/gpu/drm/radeon/cik.c
+> index 5819737c21c678d3..5d6b81a6578ef2ba 100644
+> --- a/drivers/gpu/drm/radeon/cik.c
+> +++ b/drivers/gpu/drm/radeon/cik.c
+> @@ -3603,7 +3603,7 @@ void cik_fence_compute_ring_emit(struct radeon_device *rdev,
+>   * @rdev: radeon_device pointer
+>   * @ring: radeon ring buffer object
+>   * @semaphore: radeon semaphore object
+> - * @emit_wait: Is this a sempahore wait?
+> + * @emit_wait: Is this a semaphore wait?
+>   *
+>   * Emits a semaphore signal/wait packet to the CP ring and prevents the PFP
+>   * from running ahead of semaphore waits.
+> diff --git a/drivers/gpu/drm/radeon/r600.c b/drivers/gpu/drm/radeon/r600.c
+> index 382795a8b3c064ba..a17b95eec65fb810 100644
+> --- a/drivers/gpu/drm/radeon/r600.c
+> +++ b/drivers/gpu/drm/radeon/r600.c
+> @@ -2918,7 +2918,7 @@ void r600_fence_ring_emit(struct radeon_device *rdev,
+>   * @rdev: radeon_device pointer
+>   * @ring: radeon ring buffer object
+>   * @semaphore: radeon semaphore object
+> - * @emit_wait: Is this a sempahore wait?
+> + * @emit_wait: Is this a semaphore wait?
+>   *
+>   * Emits a semaphore signal/wait packet to the CP ring and prevents the PFP
+>   * from running ahead of semaphore waits.
+> diff --git a/include/drm/task_barrier.h b/include/drm/task_barrier.h
+> index 087e3f649c52f02d..217c1cf21c1ab7d5 100644
+> --- a/include/drm/task_barrier.h
+> +++ b/include/drm/task_barrier.h
+> @@ -25,7 +25,7 @@
+>  
+>  /*
+>   * Reusable 2 PHASE task barrier (randevouz point) implementation for N tasks.
+> - * Based on the Little book of sempahores - https://greenteapress.com/wp/semaphores/
+> + * Based on the Little book of semaphores - https://greenteapress.com/wp/semaphores/
+>   */
+>  
+>  
+> -- 
+> 2.34.1
+> 
