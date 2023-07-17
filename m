@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A5C756616
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA1575661C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232223AbjGQOPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42282 "EHLO
+        id S232231AbjGQOPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232112AbjGQOOz (ORCPT
+        with ESMTP id S232144AbjGQOOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 Jul 2023 10:14:55 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA4810F1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E64A19A
         for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:14:51 -0700 (PDT)
 Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id CCCD5660706D;
-        Mon, 17 Jul 2023 15:14:48 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A74AA660706F;
+        Mon, 17 Jul 2023 15:14:49 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689603289;
-        bh=CefhFqQ/uXdHAnQ63I1hQJ7LyexCUl3QyjqRS2AFcCA=;
+        s=mail; t=1689603290;
+        bh=MTYqTiXP+9VBPluWnDbRM5Aq8M+c0b3eKDaIxQE6YVQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AK4xXbN33T2/2nMWz2vsx9EJjM6mHcA2ztaFJcKg0UWMS1zcZoQV6NAURVx5D7+zx
-         xMePh/F61DvLmxQjqAvz5kIDFwtRsvj9ZOv3FS3XaAfdjopyE2dNKbwKYf+znv9TxA
-         tmOKJWMVAvgenCdvRRAgO+CFWvc1pjiFhZCmWSIclWe7BBsyps67eV/bnBwi7EGu0/
-         geiKRDPPE9sdD2UKYJPHtDIZtXj6oj7Kimy6XpkvwRDqK2yE01oj4GjhZZ7ZJlZMR9
-         aZregpCBwM2QekulpgNx6+k5dvY8Ov4oGdYWcMNlWb9yryyYBsC90ZxXfl3R2Y0PB5
-         ApKCB2TeqVGJQ==
+        b=dCT0de41LveyRkV8kQF7wB58+3bsMLnhgZTbfJJMh8+st92dT/EX6fAaz2ifNhi/A
+         vp5xffRe0vxRDJAgmmFwkRCddVC0gYz7L5PudUeozMQmxnxZ+oZWC5F2kRejclH6Hu
+         +7w38gRXU3aZAsAOspKlFSPkRoNZ43QL3zAvJn0cNrww6c2uLAemAehf40VMixwCDJ
+         nErJeZERhU0uW0PIM7OC5xLLNf6a86DCFYcXSomvEKcyLYinb1IvW3hY5QZ738NsEB
+         FCQPvCqEV/WNBwXByaD3crhe04KlSshSPjiVnTzgf5igl/d2jTpA8WzQ22Jo4PQ0tJ
+         EYMFQuFiUK0Yw==
 From:   AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
 To:     chunkuang.hu@kernel.org
@@ -41,9 +41,9 @@ Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
         wenst@chromium.org, nfraprado@collabora.com
-Subject: [PATCH v6 07/11] drm/mediatek: dp: Avoid mutex locks if audio is not supported/enabled
-Date:   Mon, 17 Jul 2023 16:14:34 +0200
-Message-Id: <20230717141438.274419-8-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v6 08/11] drm/mediatek: dp: Move PHY registration to new function
+Date:   Mon, 17 Jul 2023 16:14:35 +0200
+Message-Id: <20230717141438.274419-9-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230717141438.274419-1-angelogioacchino.delregno@collabora.com>
 References: <20230717141438.274419-1-angelogioacchino.delregno@collabora.com>
@@ -59,50 +59,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a controller (usually, eDP!) does not support audio, or audio is not
-enabled because the endpoint has no audio support, it's useless to lock
-a mutex only to unlock it right after because there's no .plugged_cb().
+In preparation for adding support for eDP, move the PHY registration
+code to a new mtk_dp_register_phy() function for better readability.
 
-Check if the audio is supported and enabled before locking the mutex in
-mtk_dp_update_plugged_status(): if not, we simply return immediately.
-
-While at it, since the update_plugged_status_lock mutex would not be
-used if the controller doesn't support audio at all, initialize it
-only if `audio_supported` is true.
+This commit brings no functional changes.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- drivers/gpu/drm/mediatek/mtk_dp.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_dp.c | 43 +++++++++++++++++++------------
+ 1 file changed, 26 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/gpu/drm/mediatek/mtk_dp.c b/drivers/gpu/drm/mediatek/mtk_dp.c
-index 83e55f8dc84a..c1d1a882f1db 100644
+index c1d1a882f1db..1b4219e6a00b 100644
 --- a/drivers/gpu/drm/mediatek/mtk_dp.c
 +++ b/drivers/gpu/drm/mediatek/mtk_dp.c
-@@ -1948,6 +1948,9 @@ static int mtk_dp_dt_parse(struct mtk_dp *mtk_dp,
+@@ -2478,6 +2478,29 @@ static int mtk_dp_register_audio_driver(struct device *dev)
+ 	return PTR_ERR_OR_ZERO(mtk_dp->audio_pdev);
+ }
  
- static void mtk_dp_update_plugged_status(struct mtk_dp *mtk_dp)
++static int mtk_dp_register_phy(struct mtk_dp *mtk_dp)
++{
++	struct device *dev = mtk_dp->dev;
++
++	mtk_dp->phy_dev = platform_device_register_data(dev, "mediatek-dp-phy",
++							PLATFORM_DEVID_AUTO,
++							&mtk_dp->regs,
++							sizeof(struct regmap *));
++	if (IS_ERR(mtk_dp->phy_dev))
++		return dev_err_probe(dev, PTR_ERR(mtk_dp->phy_dev),
++				     "Failed to create device mediatek-dp-phy\n");
++
++	mtk_dp_get_calibration_data(mtk_dp);
++
++	mtk_dp->phy = devm_phy_get(&mtk_dp->phy_dev->dev, "dp");
++	if (IS_ERR(mtk_dp->phy)) {
++		platform_device_unregister(mtk_dp->phy_dev);
++		return dev_err_probe(dev, PTR_ERR(mtk_dp->phy), "Failed to get phy\n");
++	}
++
++	return 0;
++}
++
+ static int mtk_dp_probe(struct platform_device *pdev)
  {
-+	if (!mtk_dp->data->audio_supported || !mtk_dp->audio_enable)
-+		return;
-+
- 	mutex_lock(&mtk_dp->update_plugged_status_lock);
- 	if (mtk_dp->plugged_cb && mtk_dp->codec_dev)
- 		mtk_dp->plugged_cb(mtk_dp->codec_dev,
-@@ -2520,11 +2523,11 @@ static int mtk_dp_probe(struct platform_device *pdev)
- 		return dev_err_probe(dev, ret,
- 				     "failed to request mediatek dptx irq\n");
+ 	struct mtk_dp *mtk_dp;
+@@ -2536,23 +2559,9 @@ static int mtk_dp_probe(struct platform_device *pdev)
+ 		}
+ 	}
  
--	mutex_init(&mtk_dp->update_plugged_status_lock);
+-	mtk_dp->phy_dev = platform_device_register_data(dev, "mediatek-dp-phy",
+-							PLATFORM_DEVID_AUTO,
+-							&mtk_dp->regs,
+-							sizeof(struct regmap *));
+-	if (IS_ERR(mtk_dp->phy_dev))
+-		return dev_err_probe(dev, PTR_ERR(mtk_dp->phy_dev),
+-				     "Failed to create device mediatek-dp-phy\n");
 -
- 	platform_set_drvdata(pdev, mtk_dp);
+-	mtk_dp_get_calibration_data(mtk_dp);
+-
+-	mtk_dp->phy = devm_phy_get(&mtk_dp->phy_dev->dev, "dp");
+-
+-	if (IS_ERR(mtk_dp->phy)) {
+-		platform_device_unregister(mtk_dp->phy_dev);
+-		return dev_err_probe(dev, PTR_ERR(mtk_dp->phy),
+-				     "Failed to get phy\n");
+-	}
++	ret = mtk_dp_register_phy(mtk_dp);
++	if (ret)
++		return ret;
  
- 	if (mtk_dp->data->audio_supported) {
-+		mutex_init(&mtk_dp->update_plugged_status_lock);
-+
- 		ret = mtk_dp_register_audio_driver(dev);
- 		if (ret) {
- 			dev_err(dev, "Failed to register audio driver: %d\n",
+ 	mtk_dp->bridge.funcs = &mtk_dp_bridge_funcs;
+ 	mtk_dp->bridge.of_node = dev->of_node;
 -- 
 2.40.1
 
