@@ -2,49 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6085775655C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C083575655F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbjGQNqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 09:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52854 "EHLO
+        id S231129AbjGQNq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 09:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjGQNqS (ORCPT
+        with ESMTP id S230388AbjGQNqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 09:46:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D428F
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:46:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2mbBr1wISc8JCKNOqvm+I2DcHCPVJP4RjwQFJAmpNA8=; b=c5/sx/U50fbG2h9zLVfolw7wxu
-        9BdHny/dmLIhpnUhkcd5dCPx9w7/PrBzgAkHonvolXuEuP+rhk9tbKzD0PY3jtiDQFaclX4L08nrN
-        SPtMlx8DtEyZQFhx63cb0W4pHlj4ito22hwQibC9SGl0qrYCv6l5KRxVOylUZNNy3tleLG/4anF+u
-        msaAMmp4d3fkous7tyv7yJoQntzHtsGmtn9d0EWrGxZgTGztbeNY8lQuQQ6cf0O5wZ+wtN+AzdvtS
-        zeyGL9NJBv03nky1fXe691ZENlOUY9sb7/XLYhrw8Psb7lvDS+B9SXzmaf2g6gteKQY3bmsgEtRnY
-        +pKb/UTg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qLOYF-003xZ6-7N; Mon, 17 Jul 2023 13:46:11 +0000
-Date:   Mon, 17 Jul 2023 14:46:11 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peng Zhang <zhangpeng362@huawei.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        sidhartha.kumar@oracle.com, akpm@linux-foundation.org,
-        wangkefeng.wang@huawei.com, sunnanyong@huawei.com
-Subject: Re: [PATCH 6/6] mm/page_io: convert bio_associate_blkg_from_page()
- to take in a folio
-Message-ID: <ZLVGI8wpIYgs5Vqd@casper.infradead.org>
-References: <20230717132602.2202147-1-zhangpeng362@huawei.com>
- <20230717132602.2202147-7-zhangpeng362@huawei.com>
+        Mon, 17 Jul 2023 09:46:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE6394;
+        Mon, 17 Jul 2023 06:46:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E0BE060F04;
+        Mon, 17 Jul 2023 13:46:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC886C433C7;
+        Mon, 17 Jul 2023 13:46:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689601582;
+        bh=ltbT0neaTI80Kv3uMvqwGiUa139evSlEeXzktSAdHZ8=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=iCp1ic08pw/vUCChN53tyAHS/JocJG8x0BrvsA0ogBciQSPr5Wro3WafJQkmLVGnI
+         AaZl1BtIIYU2LA/I+e/jHTj4VLN9aMea/Lm+q+XKuR0piMIilu1boaflynVLd9yYFk
+         nylTQqnARHhmLHocGJIrKia04qY6ULpO7NXDsOKDHXUicsl58LtJnPry4Y0rkDwhXd
+         aUhFzkCeaU9j5a51j/2g9bM9AVLpotZz5ouhx2GBiEdd49vLnkNqE5+Fm5ZoAO3msy
+         CkAn1IPGLGbERAtjDOnrtk1yH6QPhAWS/rKV3Issu/+20cIV/CPs6AjCuHGNbG/6ce
+         S0B7/ZKPv7vAw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Okan Sahin <okan.sahin@analog.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20230711162751.7094-1-okan.sahin@analog.com>
+References: <20230711162751.7094-1-okan.sahin@analog.com>
+Subject: Re: [PATCH v2 0/2] Add MAX77857/59/MAX77831 Regulator Support
+Message-Id: <168960158041.186271.14250946295408785273.b4-ty@kernel.org>
+Date:   Mon, 17 Jul 2023 14:46:20 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717132602.2202147-7-zhangpeng362@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,10 +60,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 09:26:02PM +0800, Peng Zhang wrote:
-> Convert bio_associate_blkg_from_page() to take in a folio. We can remove
-> two implicit calls to compound_head() by taking in a folio.
+On Tue, 11 Jul 2023 19:27:46 +0300, Okan Sahin wrote:
+> High efficiency buck-boost regulator driver and bindings for
+> MAX77857/59/MAX77831. The patches are required to be applied
+> in sequence.
 > 
-> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+> Changes in v2:
+> * Patch 1: "dt-bindings: regulator: max77857: Add ADI MAX77857/59/MAX77831
+>     Regulator"
+>   * Add max77859 support
+> * Patch 2: "regulator: max77857: Add ADI MAX77857/59/MAX77831 Regulator Support"
+>   * Add max77859 support
+>   * Drop interrupt support
+>   * Change regmap cache_type
+> 
+> [...]
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+
+Thanks!
+
+[1/2] dt-bindings: regulator: max77857: Add ADI MAX77857/59/MAX77831 Regulator
+      (no commit info)
+[2/2] regulator: max77857: Add ADI MAX77857/59/MAX77831 Regulator Support
+      commit: af71cccadecedad3484c2208e2c4fc8eff927d4a
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
