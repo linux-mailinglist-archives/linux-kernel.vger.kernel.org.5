@@ -2,142 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC6875628C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3035E756291
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbjGQMMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 08:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44590 "EHLO
+        id S230167AbjGQMNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 08:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjGQMMj (ORCPT
+        with ESMTP id S229608AbjGQMNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 08:12:39 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7E7D8;
-        Mon, 17 Jul 2023 05:12:34 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4R4LV44VTRz6823d;
-        Mon, 17 Jul 2023 20:09:16 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 17 Jul
- 2023 13:12:30 +0100
-Date:   Mon, 17 Jul 2023 13:12:30 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Oleg Nesterov" <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        "Kees Cook" <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-doc@vger.kernel.org>, <kvmarm@lists.linux.dev>,
-        <linux-fsdevel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
-Subject: Re: [PATCH 17/35] arm64/traps: Handle GCS exceptions
-Message-ID: <20230717131230.00003569@Huawei.com>
-In-Reply-To: <20230716-arm64-gcs-v1-17-bf567f93bba6@kernel.org>
-References: <20230716-arm64-gcs-v1-0-bf567f93bba6@kernel.org>
-        <20230716-arm64-gcs-v1-17-bf567f93bba6@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Mon, 17 Jul 2023 08:13:34 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E662A118;
+        Mon, 17 Jul 2023 05:13:33 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-67ef5af0ce8so4560627b3a.2;
+        Mon, 17 Jul 2023 05:13:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689596013; x=1692188013;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=t7mGkEFG/BBY8i1FxVeGw7e6gM5cItBSc8cgFSjGd4w=;
+        b=YfPGG9my9lEnguT2SNwXZKvSdi8mAM5GSP34OK/6lDn5JVemYBY6UY3iEhQB4+HSwU
+         TFWJThPRrBJdSOifFr7KXTit991XI1d4B3i6+2Vl9zcShrZ9U8uMRi2/ONcAsJob1Xob
+         WieQJrPcwUK3zgSfNhMMbxwItgXdKOBsf3xiF0NphmBNS9wDDCJvvkvJPANQO9EjgC+v
+         6fs+N6RbnLLX2PUdX3gocyQWmBa7vdSuAHON6JuStezrnottWN3UihHJvO/kJOtAmr9w
+         PRZIwH14FoH+CpVb1O3e5yl7SyeorI1v55pQ37Y98ey1h0ZTH0pAMBTOyymFgEFLfjEC
+         XqLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689596013; x=1692188013;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=t7mGkEFG/BBY8i1FxVeGw7e6gM5cItBSc8cgFSjGd4w=;
+        b=OjFvAAi2O+3lyZPqThZqAbZxNHyzNmRrXHUrECo9CRvAbtEdJTG+0zqvxB5jhH9RSP
+         H6uoyHa1Leun2ARe1T454KdqTW5siuwFabmf9AQUWs4SYCLUbAsU6FmoTAaL+OHmuPeT
+         Znewxt0NUqCMRdHSPNTVWlKTsli5NDoSJQ4hj0W0linhwjnMnhngvNfpalpcDMnZ0DxS
+         qFTEmTZ2KScDN6yweiWSK4JfMxxgi6lYwsfTsnRVP4/O0NmhNNkhh5TI/61ai3g7zQIp
+         ptNPTvC9EjLrA5+a/zeniVEhmkmn9OBR1rSy/O7UjGafUPRmpRB39EDtbotLQDpORh7G
+         /1xQ==
+X-Gm-Message-State: ABy/qLa/ICY5z9Qojtjj6+n1uVn6dCO/yMrIdo55QuCQ56PnMsny61rK
+        IagQoYRgy522zN9ywwGsrHCIfU8606E=
+X-Google-Smtp-Source: APBJJlGj0lHYpLdbzSreLZstrO6fHiwNc5WkCSTSq3H+UhbbRMa8JtFWuzafHld+wv5ysTDXEkvFTw==
+X-Received: by 2002:a05:6a00:1353:b0:682:537f:2cb8 with SMTP id k19-20020a056a00135300b00682537f2cb8mr15587596pfu.26.1689596013188;
+        Mon, 17 Jul 2023 05:13:33 -0700 (PDT)
+Received: from zephyrusG14 ([103.251.210.195])
+        by smtp.gmail.com with ESMTPSA id x17-20020aa79191000000b0067738f65039sm11782892pfa.83.2023.07.17.05.13.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 05:13:32 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 17:43:25 +0530
+From:   Yogesh Hegde <yogi.kernel@gmail.com>
+To:     Vincent Legoll <vincent.legoll@gmail.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, heiko@sntech.de, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org, ivan.orlov0322@gmail.com
+Subject: Re: [PATCH] arm64: dts: rockchip: Fix Wifi/Bluetooth on ROCK Pi 4
+ boards
+Message-ID: <ZLUwZTy3Opx/gdIf@zephyrusG14>
+References: <ZLO450xOIQ29VoBT@zephyrusG14>
+ <CAEwRq=rUXpFpkrfKyCG8Eede10cCeo6V3RCDxv0McWA_g9t0CA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEwRq=rUXpFpkrfKyCG8Eede10cCeo6V3RCDxv0McWA_g9t0CA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 16 Jul 2023 22:51:13 +0100
-Mark Brown <broonie@kernel.org> wrote:
-
-> A new exception code is defined for GCS specific faults other than
-> standard load/store faults, for example GCS token validation failures,
-> add handling for this. These faults are reported to userspace as
-> segfaults with code SEGV_CPERR (protection error), mirroring the
-> reporting for x86 shadow stack errors.
+Hi Vincent,
+On Sun, Jul 16, 2023 at 03:53:22PM +0000, Vincent Legoll wrote:
+> Hello,
 > 
-> GCS faults due to memory load/store operations generate data aborts with
-> a flag set, these will be handled separately as part of the data abort
-> handling.
+> On Sun, Jul 16, 2023 at 9:32 AM Yogesh Hegde <yogi.kernel@gmail.com> wrote:
+> > Commit f471b1b2db08 ("arm64: dts: rockchip: Fix Bluetooth
+> > on ROCK Pi 4 boards") introduced a problem with the clock configuration.
 > 
-> Since we do not currently enable GCS for EL1 we should not get any faults
-> there but while we're at it we wire things up there, treating any GCS
-> fault as fatal.
-> 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Maybe you should add a "Fixes:" tag.
+> Look at:
+> Documentation/process/submitting-patches.rst
+> for details.
+Thanks for taking the time to review and provide feedback on the patch. 
+I will send a v2 with the "Fixes:" tag. 
 
-See below.
-
-> ---
->  arch/arm64/include/asm/esr.h       | 26 +++++++++++++++++++++++++-
->  arch/arm64/include/asm/exception.h |  2 ++
->  arch/arm64/kernel/entry-common.c   | 23 +++++++++++++++++++++++
->  arch/arm64/kernel/traps.c          | 11 +++++++++++
->  4 files changed, 61 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/include/asm/esr.h b/arch/arm64/include/asm/esr.h
-> index ae35939f395b..c5a72172fcf1 100644
-> --- a/arch/arm64/include/asm/esr.h
-> +++ b/arch/arm64/include/asm/esr.h
-...
-
-> @@ -382,6 +383,29 @@
->  #define ESR_ELx_MOPS_ISS_SRCREG(esr)	(((esr) & (UL(0x1f) << 5)) >> 5)
->  #define ESR_ELx_MOPS_ISS_SIZEREG(esr)	(((esr) & (UL(0x1f) << 0)) >> 0)
->  
-> +/* ISS field definitions for GCS */
-> +#define ESR_ELx_ExType_SHIFT	(20)
-> +#define ESR_ELx_ExType_MASK	GENMASK(23, 20)
-> +#define ESR_ELx_Raddr_SHIFT	(14)
-
-(10) ?
-
-> +#define ESR_ELx_Raddr_MASK	GENMASK(14, 10)
-> +#define ESR_ELx_Rn_SHIFT	(5)
-> +#define ESR_ELx_Rn_MASK		GENMASK(9, 5)
-
-I think this can also be ESR_ELx_RVALUE_MASK for some ExType
-Worth adding that as well?
-
-> +#define ESR_ELx_IT_SHIFT	(0)
-> +#define ESR_ELx_IT_MASK		GENMASK(4, 0)
-> +
-> +#define ESR_ELx_ExType_DATA_CHECK	0
-> +#define ESR_ELx_ExType_EXLOCK		1
-> +#define ESR_ELx_ExType_STR		2
-> +
-> +#define ESR_ELx_IT_RET			0
-> +#define ESR_ELx_IT_GCSPOPM		1
-> +#define ESR_ELx_IT_RET_KEYA		2
-> +#define ESR_ELx_IT_RET_KEYB		3
-> +#define ESR_ELx_IT_GCSSS1		4
-> +#define ESR_ELx_IT_GCSSS2		5
-> +#define ESR_ELx_IT_GCSPOPCX		6
-> +#define ESR_ELx_IT_GCSPOPX		7
+Thanks & Regards 
+-- Yogesh
