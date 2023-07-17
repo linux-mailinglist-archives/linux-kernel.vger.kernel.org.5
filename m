@@ -2,112 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1D575697B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 18:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315B2756980
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 18:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232084AbjGQQpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 12:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50024 "EHLO
+        id S230075AbjGQQrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 12:47:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231375AbjGQQpo (ORCPT
+        with ESMTP id S229603AbjGQQrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 12:45:44 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B8010D5;
-        Mon, 17 Jul 2023 09:45:42 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 31CA4E0002;
-        Mon, 17 Jul 2023 16:45:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1689612341;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9R0G8NSJjToV+64LK3uPlbmnb/IZocOABxVYbM+R0so=;
-        b=NXv9FuO8QVkPCzHzbbUxvL19fGDuldDfOCcp/EqbAJTxd30SmGFTIvIQ0dqgAzfIRmJCkg
-        q4QPbsI98ghOtTP8Kupk7Y2inf7DpQ/V/Fn1iK/xpBcP3ndf2oLwRusdwXsgYCXCs67aXF
-        ZmaUGX70t+sqj0GZcsDCmRbTtwKCYLl9vDC1eYkhpRNb31Q+xQVFtaNpkJbWf7XpgRGUnA
-        8WRQG+FhESla5CuKYnqkq9S/Tfq6ObxwnSqKXYIsY2L6WKjHXUH292qm/9prS9LjU7qPLG
-        dLAYcj8C8TByxpNOh7ig1piUxMpwiOjWAl481B8EwgtoSbuoq7laHGBRnj8Dpg==
-Date:   Mon, 17 Jul 2023 18:45:37 +0200
-From:   Luca Ceresoli <luca.ceresoli@bootlin.com>
-To:     Francesco Dolcini <francesco@dolcini.it>
-Cc:     Jun Li <jun.li@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        Xu Yang <xu.yang_2@nxp.com>
-Subject: Re: [PATCH v2 2/3] usb: chipidea: imx: support disabling runtime-pm
-Message-ID: <20230717184537.6d6ed607@booty>
-In-Reply-To: <ZKaWL3+ClI7iNr/4@francesco-nb.int.toradex.com>
-References: <20230504162312.1506763-1-luca.ceresoli@bootlin.com>
-        <ZFPiRvoF5l8uGzzZ@francesco-nb.int.toradex.com>
-        <PA4PR04MB96403377F5E37C12AD8C25B389729@PA4PR04MB9640.eurprd04.prod.outlook.com>
-        <20230505120618.2f4cf22c@booty>
-        <ZFThyn/D/dDK9nk3@francesco-nb.int.toradex.com>
-        <PA4PR04MB96405EE2468555EA900B340189739@PA4PR04MB9640.eurprd04.prod.outlook.com>
-        <ZFjaNzY32x8o2XG7@francesco-nb.int.toradex.com>
-        <20230508151756.785ec07e@booty>
-        <20230529121825.71e9b6d6@booty>
-        <PA4PR04MB96405138465D215C34285F02894B9@PA4PR04MB9640.eurprd04.prod.outlook.com>
-        <ZKaWL3+ClI7iNr/4@francesco-nb.int.toradex.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Mon, 17 Jul 2023 12:47:10 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7053CB3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:47:09 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-40371070eb7so3231cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:47:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689612428; x=1692204428;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3+e3D526DKZcQ2/LAze/ywkjnh9HvcdhsT43CIzyhYY=;
+        b=7e7AHSmKQjlPgGKaHQMt+n0aS+VVfmzs90QReaDQ30pWE3QbgvP4dlI/Eq6qWlom3Q
+         tgsW7dq6VqsVnuMLzpC8HXpF6wS+Il45ekw6QnKdbZGn73Q7eC8/Yh5eD4nvIwav25k0
+         YwOK6reB2bI0Y0MYUtSJ/3wNBcYbxZjtYl77R6rmYbgESIxXVNYbIJp4/9xZco/ph3Z3
+         1xDkRJ7QPr6Fa+6zMY8s8mkIcRogUQTKMcJ07Y8d5d7u/ReENB0jfz9bAFol9ZrdAaHu
+         0buWWeiD1Cvhwv2tcdjUP+4ZnYf/SgoRf9Rv7C8mTDJ9tYZGgzFtOaxKX7CzP9FWFygB
+         24gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689612428; x=1692204428;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3+e3D526DKZcQ2/LAze/ywkjnh9HvcdhsT43CIzyhYY=;
+        b=QEFRfGvIdo++/y9mN9x9F1fOKRYgD1JHd67MHFDWllQaL/hejJAuOMuYKhgvbuEv7l
+         oLuLqtnL9ckpxqZao5QL5OXmdYJRVFt2c9VXwAQz7uX+UrLLK59XBOP1LUH50ULHqLa9
+         Gpe4KvXVe8CriK+T9SYS1p0WT/nDYzuvpWCDkSznBce0fW6gIhdbA297cSyl2aSVeMAT
+         eo9iKx6GavL7ruqFpzdl+sTQQcqQrstai/g93bsIVu01oVL6M8wOG0H/S8+71C2/brb7
+         WqdpUD1DwUQsJ48uFR9np3I0zBvyTkFWMLI9xkif4hgEhAIQ9tKqPQ5EOszBg53O5U+T
+         nV/w==
+X-Gm-Message-State: ABy/qLbtXlnLHLCch7s61dxdDpiQ+CCZ6/MjthfSxsx0ztPBD7KCYoKn
+        STP02tzgkPJGi2g6wq2cfi+lX5VUclMHwDoe7jgQ8Q==
+X-Google-Smtp-Source: APBJJlGQHhjBTJOyR4ALML7m1VsuAIj3b+ZyvPRhX6Gs6PxHm6xVz7ix159HwbDQ9XiLkj/CyDwHvjJeQtoFD0rzAw0=
+X-Received: by 2002:ac8:5b44:0:b0:403:96e3:4745 with SMTP id
+ n4-20020ac85b44000000b0040396e34745mr1459522qtw.20.1689612428412; Mon, 17 Jul
+ 2023 09:47:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: luca.ceresoli@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230713112404.2022373-1-imagedong@tencent.com>
+In-Reply-To: <20230713112404.2022373-1-imagedong@tencent.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 17 Jul 2023 18:46:57 +0200
+Message-ID: <CANn89iJMzChaDsB+bPAuCEDUHVApsYs8KtD3oEC+oU_Qvi1KvQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] net: tcp: support to probe tcp receiver OOM
+To:     menglong8.dong@gmail.com
+Cc:     ncardwell@google.com, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, corbet@lwn.net, dsahern@kernel.org,
+        kuniyu@amazon.com, morleyd@google.com, imagedong@tencent.com,
+        mfreemon@cloudflare.com, mubashirq@google.com,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ciao Francesco,
+On Thu, Jul 13, 2023 at 1:24=E2=80=AFPM <menglong8.dong@gmail.com> wrote:
+>
+> From: Menglong Dong <imagedong@tencent.com>
+>
+> For now, skb will be dropped directly if rmem schedule fails, which means
+> tcp_try_rmem_schedule() returns an error. This can happen on following
+> cases:
+>
+> 1. The total memory allocated for TCP protocol is up to tcp_mem[2], and
+>    the receive queue of the tcp socket is not empty.
+> 2. The receive buffer of the tcp socket is full, which can happen on smal=
+l
+>    packet cases.
+>
+> If the user hangs and doesn't take away the packet in the receive queue
+> with recv() or read() for a long time, the sender will keep
+> retransmitting until timeout, and the tcp connection will break.
+>
+> In order to handle such case, we introduce the tcp protocol OOM detection
+> in following steps, as Neal Cardwell suggested:
+>
 
-On Thu, 6 Jul 2023 12:23:43 +0200
-Francesco Dolcini <francesco@dolcini.it> wrote:
+For the record, I dislike this patch. I am not sure what Neal had in mind.
 
-> Hello Luca,
-> 
-> On Tue, May 30, 2023 at 11:22:51AM +0000, Jun Li wrote:
-> > Yes, your understanding is correct, talked with Xu(in CC), he will take this
-> > soon.  
-> 
-> A series was posted
-> https://lore.kernel.org/all/20230627110353.1879477-1-xu.yang_2@nxp.com/,
-> I had no time to try or look at it yet.
+I suggested instead to send an ACK RWIN 0, whenever we were under
+extreme memory pressure,
+and we only could queue one skb in the receive queue.
 
-Thanks for keeping me up to date on this topic, which is still totally
-relevant to me.
+For details, look at the points we call sk_forced_mem_schedule().
+This would be a matter of refactoring code around it, in tcp_data_queue()
 
-I looked at the series, but it does not seem to be addressing the
-problem with USB host not detecting new devices when VBUS is not
-directly connected, e.g. in the Colibri imx6ull SoM.
-
-Xu, do you confirm the series at the link is _not_ solving the problem
-being discussed here?
-
-Best regards,
-
-Luca
-
--- 
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+The patch would be much simpler. Nothing changed at the sender side :/
