@@ -2,122 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2205756ED3
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC506756EDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbjGQVP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 17:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51938 "EHLO
+        id S229669AbjGQVQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 17:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbjGQVP0 (ORCPT
+        with ESMTP id S229765AbjGQVQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 17:15:26 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 896EBF3;
-        Mon, 17 Jul 2023 14:15:24 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BDD0B1BF207;
-        Mon, 17 Jul 2023 21:15:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1689628523;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e3xD3OEdrYlaL+qPG6Bi+cSbmCBZ9vMuc95bgvy+HZI=;
-        b=WfFAT6PbJmDrUoOEyEH3fruRNy5nAe0fHBucJBtMcJDoDaHhs1bGyhhwhht41o5FEixahv
-        U+HR7la6PNs19yMM6Dw9XJpZQKhVnvlA/QK1YgbZbG7yZM8/fYoua1NDSmEjf1hIrhbTdR
-        pen4Bj2apaouo3tfs56uK+1INzeEy92gH8ZFwYDIPDHb4Z+GxUVTVMH8dfeAPnhyB/daw6
-        37gIqZchqK2oCDU9POaIMducRPI1n7pTIzLCABF+2GlWdeZGGMlSVAiDEE3zPu6Ci89p2Z
-        LUkg12cvNG4Elgc3UfgFR0Wbl45c1i0IncpQuMHyOKmcH/qQXCaOf0lf5TgSkQ==
-Date:   Mon, 17 Jul 2023 23:15:22 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Atul Kumar Pant <atulpant.linux@gmail.com>
-Cc:     a.zummo@towertech.it, shuah@kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-rtc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] selftests: rtc: Fixes rtctest error handling.
-Message-ID: <202307172115223bd0669f@mail.local>
-References: <20230717175251.54390-1-atulpant.linux@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717175251.54390-1-atulpant.linux@gmail.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 17 Jul 2023 17:16:13 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B14F3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:16:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689628571; x=1721164571;
+  h=date:from:to:cc:subject:message-id;
+  bh=KO/acAyZxoRrD7/WS3coj0GHyk0FJkchJh9IgLZmYiE=;
+  b=dbbFof18O/tIryvjT60MX/DyYnd6qqBBx0+TTv9MqlJMgt7fXKJR7nxB
+   cFrPyDb3PN1H6eaBs5BaRS1JLbJBqsJ1U8jKc5J+iifiH7aNha9hnL54F
+   qdTt1p7AqRVj8FBFljzOj9o6qfUZvFdtw6d6ZBiy1DPeQatiZB1vjjvn5
+   0VvKpf5jLXIkMVHSfslblsaBBm9ULxKolyoo+CrTINL/m8WZf5Yq4cZjp
+   7Ggon0Kt48BiYF7hhwSwtMhAA6u2Bxw6kTXFzksewD/5oA9aEZFxc8uoI
+   CVXmjoVxDjShj4n5nQl50Fp/4fJttGRXQ4Oj6kZlCLDeig+KMRpbY0nzM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="432216182"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="432216182"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 14:16:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="793387547"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="793387547"
+Received: from lkp-server01.sh.intel.com (HELO c544d7fc5005) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 17 Jul 2023 14:16:09 -0700
+Received: from kbuild by c544d7fc5005 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qLVZg-0009vI-2t;
+        Mon, 17 Jul 2023 21:16:08 +0000
+Date:   Tue, 18 Jul 2023 05:15:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS
+ 2ae2fb98b77339277a2c2f18dfec605dfd8dd321
+Message-ID: <202307180537.1DMxWEJf-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/07/2023 23:22:51+0530, Atul Kumar Pant wrote:
-> Adds a check to verify if the rtc device file is valid or not
-> and prints a useful error message if the file is not accessible.
-> 
-> Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+branch HEAD: 2ae2fb98b77339277a2c2f18dfec605dfd8dd321  sched/headers: Rename task_struct::state to task_strate::__state in the comments too
 
-Please collect and keep the tags you got on previous versions
+elapsed time: 723m
 
-> ---
-> 
-> changes since v4:
->     Updated the commit message.
-> 
-> changes since v3:
->     Added Linux-kselftest and Linux-kernel mailing lists.
-> 
-> changes since v2:
->     Changed error message when rtc file does not exist.
-> 
-> changes since v1:
->     Removed check for uid=0
->     If rtc file is invalid, then exit the test.
-> 
->  tools/testing/selftests/rtc/rtctest.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/rtc/rtctest.c b/tools/testing/selftests/rtc/rtctest.c
-> index 63ce02d1d5cc..630fef735c7e 100644
-> --- a/tools/testing/selftests/rtc/rtctest.c
-> +++ b/tools/testing/selftests/rtc/rtctest.c
-> @@ -17,6 +17,7 @@
->  #include <unistd.h>
->  
->  #include "../kselftest_harness.h"
-> +#include "../kselftest.h"
->  
->  #define NUM_UIE 3
->  #define ALARM_DELTA 3
-> @@ -419,6 +420,8 @@ __constructor_order_last(void)
->  
->  int main(int argc, char **argv)
->  {
-> +	int ret = -1;
-> +
->  	switch (argc) {
->  	case 2:
->  		rtc_file = argv[1];
-> @@ -430,5 +433,11 @@ int main(int argc, char **argv)
->  		return 1;
->  	}
->  
-> -	return test_harness_run(argc, argv);
-> +	// Run the test if rtc_file is valid
-> +	if (access(rtc_file, F_OK) == 0)
-> +		ret = test_harness_run(argc, argv);
-> +	else
-> +		ksft_exit_fail_msg("[ERROR]: Cannot access rtc file %s - Exiting\n", rtc_file);
-> +
-> +	return ret;
->  }
-> -- 
-> 2.25.1
-> 
+configs tested: 122
+configs skipped: 7
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r021-20230717   gcc  
+arc                  randconfig-r043-20230717   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r006-20230717   gcc  
+arm                  randconfig-r046-20230717   clang
+arm                         s3c6400_defconfig   gcc  
+arm                          sp7021_defconfig   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r005-20230717   clang
+csky                                defconfig   gcc  
+csky                 randconfig-r012-20230717   gcc  
+csky                 randconfig-r023-20230717   gcc  
+csky                 randconfig-r031-20230717   gcc  
+hexagon              randconfig-r034-20230717   clang
+hexagon              randconfig-r041-20230717   clang
+hexagon              randconfig-r045-20230717   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230717   clang
+i386         buildonly-randconfig-r005-20230717   clang
+i386         buildonly-randconfig-r006-20230717   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230717   clang
+i386                 randconfig-i002-20230717   clang
+i386                 randconfig-i003-20230717   clang
+i386                 randconfig-i004-20230717   clang
+i386                 randconfig-i005-20230717   clang
+i386                 randconfig-i006-20230717   clang
+i386                 randconfig-i011-20230717   gcc  
+i386                 randconfig-i012-20230717   gcc  
+i386                 randconfig-i013-20230717   gcc  
+i386                 randconfig-i014-20230717   gcc  
+i386                 randconfig-i015-20230717   gcc  
+i386                 randconfig-i016-20230717   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r032-20230717   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                           sun3_defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                        omega2p_defconfig   clang
+nios2                               defconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                generic-64bit_defconfig   gcc  
+parisc               randconfig-r001-20230717   gcc  
+parisc               randconfig-r014-20230717   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                     asp8347_defconfig   gcc  
+powerpc                    ge_imp3a_defconfig   clang
+powerpc               mpc834x_itxgp_defconfig   clang
+powerpc                      pasemi_defconfig   gcc  
+powerpc                     tqm8540_defconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r004-20230717   clang
+riscv                randconfig-r025-20230717   gcc  
+riscv                randconfig-r042-20230717   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230717   gcc  
+sh                               allmodconfig   gcc  
+sh                        dreamcast_defconfig   gcc  
+sh                               j2_defconfig   gcc  
+sh                     magicpanelr2_defconfig   gcc  
+sh                   randconfig-r002-20230717   gcc  
+sh                      rts7751r2d1_defconfig   gcc  
+sh                           se7712_defconfig   gcc  
+sh                          urquell_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r015-20230717   gcc  
+sparc64              randconfig-r003-20230717   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r016-20230717   clang
+um                   randconfig-r035-20230717   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230717   clang
+x86_64       buildonly-randconfig-r002-20230717   clang
+x86_64       buildonly-randconfig-r003-20230717   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-x001-20230717   gcc  
+x86_64               randconfig-x002-20230717   gcc  
+x86_64               randconfig-x003-20230717   gcc  
+x86_64               randconfig-x004-20230717   gcc  
+x86_64               randconfig-x005-20230717   gcc  
+x86_64               randconfig-x006-20230717   gcc  
+x86_64               randconfig-x011-20230717   clang
+x86_64               randconfig-x012-20230717   clang
+x86_64               randconfig-x013-20230717   clang
+x86_64               randconfig-x014-20230717   clang
+x86_64               randconfig-x015-20230717   clang
+x86_64               randconfig-x016-20230717   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                           alldefconfig   gcc  
+xtensa                generic_kc705_defconfig   gcc  
+xtensa               randconfig-r013-20230717   gcc  
+xtensa               randconfig-r024-20230717   gcc  
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
