@@ -2,119 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C928375674D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D21E75674A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbjGQPOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 11:14:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48714 "EHLO
+        id S231189AbjGQPOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 11:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbjGQPOw (ORCPT
+        with ESMTP id S230325AbjGQPOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 11:14:52 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7246A10A
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:14:51 -0700 (PDT)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qLPvj-0001fz-8q; Mon, 17 Jul 2023 17:14:31 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
+        Mon, 17 Jul 2023 11:14:32 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E3BE6;
+        Mon, 17 Jul 2023 08:14:31 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 782A31F3778;
-        Mon, 17 Jul 2023 15:14:28 +0000 (UTC)
-Date:   Mon, 17 Jul 2023 17:14:27 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Francesco Dolcini <francesco@dolcini.it>
-Cc:     Judith Mendez <jm@ti.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Schuyler Patton <spatton@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Simon Horman <simon.horman@corigine.com>
-Subject: Re: [PATCH v10 0/2] Enable multiple MCAN on AM62x
-Message-ID: <20230717-deprecate-happy-34e1dadb8161-mkl@pengutronix.de>
-References: <20230707204714.62964-1-jm@ti.com>
- <20230710-overheat-ruined-12d17707e324-mkl@pengutronix.de>
- <ZLEckxW0oLklkMtn@francesco-nb.int.toradex.com>
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BCA761FDB2;
+        Mon, 17 Jul 2023 15:14:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689606869; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=N6MW5aW5/tskhoIcmGl6SK2Dnqzk5QXBiM+B1KNWi+M=;
+        b=HFN/G3NO2gGRJM0V2tN23lvvf+p8tEX7BxDFYshfltWNgK5bh5HzXMRSmxFALcdh1Zi7sh
+        J2Y/7w91NF7TztNC0eW2dn3TC+4QOyIrbM6IH9sf5ofCljPKSQ7fVaypeBB04kINyIkJpn
+        o2mrAdIWASJ1s+aP+WH90g+UfPUgiHE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689606869;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=N6MW5aW5/tskhoIcmGl6SK2Dnqzk5QXBiM+B1KNWi+M=;
+        b=6V3NV94KetzMZuh2uY0q2C5Z1CjV5Sz2KS4KKoAkMKKJY8AUWGArLTLVLlzQZugD4Gwu8X
+        VmaXOHFG2cfcnYAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9453513276;
+        Mon, 17 Jul 2023 15:14:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id NSioItVatWTACAAAMHmgww
+        (envelope-from <jdelvare@suse.de>); Mon, 17 Jul 2023 15:14:29 +0000
+Date:   Mon, 17 Jul 2023 17:14:28 +0200
+From:   Jean Delvare <jdelvare@suse.de>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>, linux-modules@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] module: print module name on refcount error
+Message-ID: <20230717171428.1b229215@endymion.delvare>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.34; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="m344sizttoq6ws4c"
-Content-Disposition: inline
-In-Reply-To: <ZLEckxW0oLklkMtn@francesco-nb.int.toradex.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If module_put() triggers a refcount error, and the module data is
+still readable, include the culprit module name in the warning
+message, to easy further investigation of the issue.
 
---m344sizttoq6ws4c
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If the module name can't be read, this means the module has already
+been removed while references to it still exist. This is a
+user-after-free situation, so report it as such.
 
-On 14.07.2023 11:59:47, Francesco Dolcini wrote:
-> Hello Mark,
->=20
-> On Mon, Jul 10, 2023 at 11:57:51AM +0200, Marc Kleine-Budde wrote:
-> > On 07.07.2023 15:47:12, Judith Mendez wrote:
-> > > On AM62x there are two MCANs in MCU domain. The MCANs in MCU domain
-> > > were not enabled since there is no hardware interrupt routed to A53
-> > > GIC interrupt controller. Therefore A53 Linux cannot be interrupted
-> > > by MCU MCANs.
-> ...
->=20
-> > Applied to linux-can-next/testing.
->=20
-> Did you forgot to push your changes out? Nothing here
-> git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git
+Signed-off-by: Jean Delvare <jdelvare@suse.de>
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+---
+Hi Luis, this is a different approach to my initial proposal. We no
+longer assume that struct module is still available and instead check
+that the expected module name string is a valid string before printing
+it.
 
-Sorry for the delay. I've not updated the testing branch on
-linux-can-next.
+This is safer, and lets us print a better diagnostics message: include
+the module name if struct module is still there (the most likely case
+IMHO, as rmmod is a relatively rare operation) else explicitly report a
+use after free.
 
-regards,
-Marc
+The downside is that this requires more code, but I think it's worth
+it. What do you think?
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+ kernel/module/main.c |   31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
---m344sizttoq6ws4c
-Content-Type: application/pgp-signature; name="signature.asc"
+--- linux-6.3.orig/kernel/module/main.c
++++ linux-6.3/kernel/module/main.c
+@@ -55,6 +55,7 @@
+ #include <linux/dynamic_debug.h>
+ #include <linux/audit.h>
+ #include <linux/cfi.h>
++#include <linux/ctype.h>
+ #include <uapi/linux/module.h>
+ #include "internal.h"
+ 
+@@ -850,7 +851,35 @@ void module_put(struct module *module)
+ 	if (module) {
+ 		preempt_disable();
+ 		ret = atomic_dec_if_positive(&module->refcnt);
+-		WARN_ON(ret < 0);	/* Failed to put refcount */
++		if (ret < 0) {
++			unsigned char modname_copy[MODULE_NAME_LEN];
++			unsigned char *p, *end;
++			bool sane;
++
++			/*
++			 * Report faulty module if name is still readable.
++			 * We must be careful here as the module may have
++			 * been already freed.
++			 */
++			memcpy(modname_copy, module->name, MODULE_NAME_LEN);
++			end = memchr(modname_copy, '\0', MODULE_NAME_LEN);
++			sane = end != NULL;
++			if (sane) {
++				for (p = modname_copy; p < end; p++)
++					if (!isgraph(*p)) {
++						sane = false;
++						break;
++					}
++			}
++
++			if (sane)
++				WARN(1,
++				     KERN_WARNING "Failed to put refcount for module %s\n",
++				     modname_copy);
++			else
++				WARN(1,
++				     KERN_WARNING "Failed to put refcount, use-after-free detected\n");
++		}
+ 		trace_module_put(module, _RET_IP_);
+ 		preempt_enable();
+ 	}
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmS1WtEACgkQvlAcSiqK
-BOjH6wgAqGk/kA2iQOQJmRGla0/6nu5OmWnaZkx/c/Exxjoyn2oPl6va6xi5Fhwj
-PXt6GIG0O0AZl7h8YeSnd9y9YG2MjQFJAhlhxHbvsPrs9M15Afgra2L1Nca2eO7F
-LX3JfjeZaCrSOk9WcF02x3x7eEQmFdDpZybuJ5AJ3+VCYqsUleoPdbrcPkea7aVQ
-uJwVOj6h+TIasp818Gb4CcxBjFuhekjUTt6BMe/onGavqF8wowdD3g87IeMa+9VJ
-4KoutBVSxkRbCDhIozr0Tl1i1S4muhkt+H/uvYzLn14EMFKgXHZDdRqJ+bOoELSv
-45yGOHP9mDmzBqzMxEDawWibmHemIA==
-=mMf8
------END PGP SIGNATURE-----
-
---m344sizttoq6ws4c--
+-- 
+Jean Delvare
+SUSE L3 Support
