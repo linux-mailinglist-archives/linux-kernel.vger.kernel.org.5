@@ -2,136 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 729E275700D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 00:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03294757024
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 01:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230371AbjGQWwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 18:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49402 "EHLO
+        id S230508AbjGQXAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 19:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjGQWwy (ORCPT
+        with ESMTP id S230497AbjGQXAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 18:52:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFD2128
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:52:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689634329;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8wy84DSSq8n2YYiK0mWellsvoswCFp/2kMAmdZ+UHHc=;
-        b=WSU35uqKWX5qXsL9Eqi4qqS9SCAvtRdUoP1pqlX2O/1cZK2gLwhVZqB5eExNH9bGJCaIvz
-        BDObKB9Pjgy9nnNWI0Mg64rgQFu1m48ni/wL21sFRtdMbxZw6ZsGTbH7RccOeY6fV1KDLB
-        hn5FNoggx6POG5Pi2hj0zNHisqxMXTQ=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-100-SRcjj7x4NJyNjIzHw-p1LA-1; Mon, 17 Jul 2023 18:52:07 -0400
-X-MC-Unique: SRcjj7x4NJyNjIzHw-p1LA-1
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-786596bc0a6so317826839f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:52:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689634327; x=1692226327;
-        h=content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8wy84DSSq8n2YYiK0mWellsvoswCFp/2kMAmdZ+UHHc=;
-        b=QXqEBP1YVJE22WE8LOaNq789jZElqPOSl2VMo6/W+9ivFz3NV4ytbagiVZE8mngbXq
-         KWiCnHfhBf2MaTUQJrDsBLj3KteAxHwfKfT9D6a8ccAxQamX73AApV2yqjhVL1l7E+iz
-         sMSLKHcv54nRDfY99/wBhBZ6xhh27U4rsbwUUsNWmj85EYkrp8ZY89d+SBt11gk9taN5
-         eifdEr+XhrDhH5MN8lSyjgOxoNjahc2FYXHawz1FuEWJkVJr+xPxta1RF7hfyhhMh3DX
-         OKnvfthZ/OxKDm2GOFis99ohsI9L2hHwWfGnx0FCxVdn5Rxqb2wqzEK7p1OOkrk7t19J
-         XeaQ==
-X-Gm-Message-State: ABy/qLbRApyfBSo5WMDlbcHRNK71exrmyRB1ApGOw5Nr1X/MSiZ63lFn
-        MjNSP3FqIpDQrHzB9lrwWkv8+kvLD+I1dGq+pwm6lJaleHga54RFzfxnv1TyaPCWnKc8qG7clsW
-        jjlecrC/LJDF20yMRhhaGyg2I
-X-Received: by 2002:a92:c651:0:b0:347:693a:7300 with SMTP id 17-20020a92c651000000b00347693a7300mr1012026ill.26.1689634327046;
-        Mon, 17 Jul 2023 15:52:07 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGlBYmCdY1EaUds5QDcX7E6PqePOm9wJTOwk2wgOBkeJp+9wxIVvWJlHjSTuTXhWw/m+atXtQ==
-X-Received: by 2002:a92:c651:0:b0:347:693a:7300 with SMTP id 17-20020a92c651000000b00347693a7300mr1012015ill.26.1689634326829;
-        Mon, 17 Jul 2023 15:52:06 -0700 (PDT)
-Received: from redhat.com ([38.15.36.239])
-        by smtp.gmail.com with ESMTPSA id d10-20020a92ddca000000b00341c0710169sm242627ilr.46.2023.07.17.15.52.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 15:52:06 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 16:52:03 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        linux-usb@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
-        Paul Durrant <paul@xen.org>, Tom Rix <trix@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
-        linux-mm@kvack.org, Kirti Wankhede <kwankhede@nvidia.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Fei Li <fei1.li@intel.com>, x86@kernel.org,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        intel-gfx@lists.freedesktop.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        linux-fpga@vger.kernel.org, Zhi Wang <zhi.a.wang@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Jason Herne <jjherne@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-s390@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linuxppc-dev@lists.ozlabs.org, Eric Auger <eric.auger@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>, cgroups@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        virtualization@lists.linux-foundation.org,
-        intel-gvt-dev@lists.freedesktop.org, io-uring@vger.kernel.org,
-        netdev@vger.kernel.org, Tony Krowiak <akrowiak@linux.ibm.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Moritz Fischer <mdf@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Dominik Behr <dbehr@chromium.org>,
-        Marcin Wojtas <mw@semihalf.com>
-Subject: Re: [PATCH 0/2] eventfd: simplify signal helpers
-Message-ID: <20230717165203.4ee6b1e6.alex.williamson@redhat.com>
-In-Reply-To: <ZLW8wEzkhBxd0O0L@ziepe.ca>
-References: <20230630155936.3015595-1-jaz@semihalf.com>
-        <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
-        <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
-        <20230717130831.0f18381a.alex.williamson@redhat.com>
-        <ZLW8wEzkhBxd0O0L@ziepe.ca>
-Organization: Red Hat
+        Mon, 17 Jul 2023 19:00:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE591981
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:00:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 51757612FE
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:00:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68024C433C8;
+        Mon, 17 Jul 2023 23:00:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689634812;
+        bh=MEiv1XO5K8mi2ZdTkf/xnwnFqxVhWUJFvFcGHpWtU+4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LADelvwcPBbRFhDqogEGDousdIMe4Gy/YLiiXw7lbd9i5jfMdvDxcDF59nJeVcX+j
+         iZqSQ9KU9t8fiQHXLcH0hxMPV7fOJwbv/XAMrZexIYUkCf0nHxuox6De1eH6Jf1Wdm
+         MHGsS2j3olh/b1SDVUvYf96tJ+O9qjict5JpjJM//YVqgI7HhK7BYFcLFTYqljzLZk
+         /v03AUZskMrWeHHTSCubWLImMwS+21vbDY3YuTC4tr5wD7yAA3zijiF6Y3ymCJmuij
+         6HvR5PzBD6P1s0QbVPqnbgn2qu6T1Gm0H8mUy6tHgidw/eyLVNP2mUnF6CfVi1NqGb
+         e1mvEOe6fAFqQ==
+Received: (nullmailer pid 3210866 invoked by uid 1000);
+        Mon, 17 Jul 2023 22:54:11 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Russell King <linux@armlinux.org.uk>,
+        Michal Simek <michal.simek@amd.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: zynq: Explicitly include correct DT includes
+Date:   Mon, 17 Jul 2023 16:53:58 -0600
+Message-Id: <20230717225358.3210536-1-robh@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -139,29 +55,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Jul 2023 19:12:16 -0300
-Jason Gunthorpe <jgg@ziepe.ca> wrote:
+The DT of_device.h and of_platform.h date back to the separate
+of_platform_bus_type before it was merged into the regular platform bus.
+As part of that merge prepping Arm DT support 13 years ago, they
+"temporarily" include each other. They also include platform_device.h
+and of.h. As a result, there's a pretty much random mix of those include
+files used throughout the tree. In order to detangle these headers and
+replace the implicit includes with struct declarations, users need to
+explicitly include the correct includes.
 
-> On Mon, Jul 17, 2023 at 01:08:31PM -0600, Alex Williamson wrote:
-> 
-> > What would that mechanism be?  We've been iterating on getting the
-> > serialization and buffering correct, but I don't know of another means
-> > that combines the notification with a value, so we'd likely end up with
-> > an eventfd only for notification and a separate ring buffer for
-> > notification values.  
-> 
-> All FDs do this. You just have to make a FD with custom
-> file_operations that does what this wants. The uAPI shouldn't be able
-> to tell if the FD is backing it with an eventfd or otherwise. Have the
-> kernel return the FD instead of accepting it. Follow the basic design
-> of eg mlx5vf_save_fops
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ arch/arm/mach-zynq/pm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Sure, userspace could poll on any fd and read a value from it, but at
-that point we're essentially duplicating a lot of what eventfd provides
-for a minor(?) semantic difference over how the counter value is
-interpreted.  Using an actual eventfd allows the ACPI notification to
-work as just another interrupt index within the existing vfio IRQ uAPI.
-Thanks,
-
-Alex
+diff --git a/arch/arm/mach-zynq/pm.c b/arch/arm/mach-zynq/pm.c
+index 8ba450ab559c..61ad965ef3ac 100644
+--- a/arch/arm/mach-zynq/pm.c
++++ b/arch/arm/mach-zynq/pm.c
+@@ -8,8 +8,8 @@
+  */
+ 
+ #include <linux/io.h>
++#include <linux/of.h>
+ #include <linux/of_address.h>
+-#include <linux/of_device.h>
+ #include "common.h"
+ 
+ /* register offsets */
+-- 
+2.40.1
 
