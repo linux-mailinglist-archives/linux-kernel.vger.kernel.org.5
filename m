@@ -2,138 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36FF9755B81
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D407D755B86
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231429AbjGQGYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 02:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
+        id S230006AbjGQGYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 02:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231476AbjGQGYN (ORCPT
+        with ESMTP id S231374AbjGQGYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 02:24:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B427FE72;
-        Sun, 16 Jul 2023 23:24:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1FCC260F33;
-        Mon, 17 Jul 2023 06:24:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A093FC433C7;
-        Mon, 17 Jul 2023 06:23:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689575045;
-        bh=mzBDvBJqqLyJpJlXdHHc50ky7DqFeoJEZrmNjEwRYw4=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=cSmXkQBMdVKYM2skEir1bV6wfmjtrQbqO1IJGKuBIhaVowNQUTrTgCxjHIGLjQxrf
-         aC/Mqe8ThUtGNnjeclaKm5yYvx+1VkzQA8Mr9utTM3ZL+DpRjNnGms0i8Owh/zz47+
-         h23rcDa+qzK1c9z1FR8QVJBepzxuuB2xEgqOuOIqx4jooERucg0rTondYvdBHeVIOz
-         bL1wNk7h7Adc3SmCkPC256BY6lJOEvwXhhD9BG3119i3AtN9OvJn0PEErA3fywzUPz
-         Uelr5Xmo7pEGEjZ7k3ZowAQcz2l0sAxbf5yJcE3PDjGEbPdkw3ro5etSrrJpG2MR4S
-         U/6x9udfwh94A==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Justin Chen <justin.chen@broadcom.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Yu Chen <chenyu56@huawei.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Alban Bedel <albeu@free.fr>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Vincent Shih <vincent.sunplus@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        JC Kuo <jckuo@nvidia.com>, Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-can@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-tegra@vger.kernel.org
-In-Reply-To: <20230714174841.4061919-1-robh@kernel.org>
-References: <20230714174841.4061919-1-robh@kernel.org>
-Subject: Re: [PATCH] phy: Explicitly include correct DT includes
-Message-Id: <168957502626.294691.2933301083453115851.b4-ty@kernel.org>
-Date:   Mon, 17 Jul 2023 11:53:46 +0530
-MIME-Version: 1.0
+        Mon, 17 Jul 2023 02:24:16 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2044.outbound.protection.outlook.com [40.107.6.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7AFBE59;
+        Sun, 16 Jul 2023 23:24:07 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BSgKj/ZxCk4dRHpVQaE8PvIg/xdgemPOI6QdQeEEqyLD2hhlI+VSPoCjkfjcD0J/pRyJAzPGkcNvSrdudI4J4NUS7QWOrUV4CfGS8fi0OhipkB4oKlLCxK+RctPBjmRNf+irb8grJrkAi9uqJFyLWvUAVNWgYVWZJhBRBOiog5/qEeYxcIxr+hkLR2I8hroBU/EY+p4C+zfUrnhFaFImHrHYdKZejeQKF+CMoGawFW2YS0jyUelHQrVc4+Nuw187ED2qskijzkJdwCFCFoBZt07y4Tqkk4AcZHPqmASgBWQFluWb+GR5kL3dB3sI9hUA2ObFcyPwsZFQxhvNu40igA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=T9Qb6nPqmsVPuyZY9PDebDW8K3vG/KYaiE90RhsyiuQ=;
+ b=R7H5hjt7M7cHaRmrIg0QfJ8FEgkt59b2kbL0oPN13KuJ6HLSzcxS64KlR3tCAOa9efRJbJohQswmTXt4ybTR0CDEQ+bBuWPlIGKqjBouqL1xgf6p8ng8vH4B999a71EBihPoXLS00vSwR+W/03TWh3nHjOhD4rzH+vB7/JZLGkPa5lBFaox5QdwXGFvJCAC7ClnNNqWwYzvEegSBD0v5W7Xqmi+x/Ofa+KiZ+0lUZupV2Pmt4tOPAkovji2gy6zIJyrC8yioXxUCuk77AKJHIhky5q8lic2TkwnIYS9QkmWKHJiLh+tSiGdhlfFewFqE1QccSQ3qyzAqITBIyS1WMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 194.138.21.75) smtp.rcpttodomain=linux-watchdog.org
+ smtp.mailfrom=siemens.com; dmarc=pass (p=reject sp=reject pct=100)
+ action=none header.from=siemens.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T9Qb6nPqmsVPuyZY9PDebDW8K3vG/KYaiE90RhsyiuQ=;
+ b=g0k3bNWNKpdQMMY9Z0QaC7v1QBPxtzRFqNdWmSWsBWUReQfP2uCUabIK5a8mKV+qEPjxNXwYvXREMMCUaAmzCwbLXneSpLaBmkQJMoOU6HLUxXtrc+13uFSrYp+uWkUINSNWZamGR5R6EGoJnmU5xGVytBwYrwskfcTwK1olI1oDyB87y1E7qAzO+Iuy/c2DB1teYcPxvrxUMHu3Gm9migIQX1Lxpnan7Stx8CV+KnuLgH6+eNhYI520pIJM7zy7ximVZw89TV0+d1yMKRXJcuy8HWSCH5wdQbtMIB8JqDeC6owszgxEyPjXgT6UuT7G6e5NxSVGycLbqrFIhLBClg==
+Received: from FR3P281CA0039.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:4a::11)
+ by AS1PR10MB7958.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:47f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32; Mon, 17 Jul
+ 2023 06:24:05 +0000
+Received: from VE1EUR01FT082.eop-EUR01.prod.protection.outlook.com
+ (2603:10a6:d10:4a:cafe::d2) by FR3P281CA0039.outlook.office365.com
+ (2603:10a6:d10:4a::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.20 via Frontend
+ Transport; Mon, 17 Jul 2023 06:24:05 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 194.138.21.75)
+ smtp.mailfrom=siemens.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=siemens.com;
+Received-SPF: Pass (protection.outlook.com: domain of siemens.com designates
+ 194.138.21.75 as permitted sender) receiver=protection.outlook.com;
+ client-ip=194.138.21.75; helo=hybrid.siemens.com; pr=C
+Received: from hybrid.siemens.com (194.138.21.75) by
+ VE1EUR01FT082.mail.protection.outlook.com (10.152.3.71) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6609.22 via Frontend Transport; Mon, 17 Jul 2023 06:24:05 +0000
+Received: from CNPEK01M10MSX.ad011.siemens.net (139.24.237.228) by
+ DEMCHDC8VRA.ad011.siemens.net (194.138.21.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1118.30; Mon, 17 Jul 2023 08:24:02 +0200
+Received: from CNPEK01M03MSX.ad011.siemens.net (139.24.237.220) by
+ CNPEK01M10MSX.ad011.siemens.net (139.24.237.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 17 Jul 2023 14:24:00 +0800
+Received: from CNPEK01M03MSX.ad011.siemens.net ([139.24.237.220]) by
+ CNPEK01M03MSX.ad011.siemens.net ([139.24.237.220]) with mapi id
+ 15.01.2507.027; Mon, 17 Jul 2023 14:24:00 +0800
+From:   "Li, Hua Qian" <HuaQian.Li@siemens.com>
+To:     "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+CC:     "kristo@kernel.org" <kristo@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "huaqianlee@gmail.com" <huaqianlee@gmail.com>,
+        "nm@ti.com" <nm@ti.com>, "vigneshr@ti.com" <vigneshr@ti.com>,
+        "Kiszka, Jan" <jan.kiszka@siemens.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Su, Bao Cheng" <baocheng.su@siemens.com>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>
+Subject: Re: [PATCH v4 0/3] Add support for WDIOF_CARDRESET on TI AM65x
+Thread-Topic: [PATCH v4 0/3] Add support for WDIOF_CARDRESET on TI AM65x
+Thread-Index: AQHZuGQ+yWzLgdq38k6AjTC46fileq+89ZKAgAACDgA=
+Date:   Mon, 17 Jul 2023 06:24:00 +0000
+Message-ID: <e57e5d8efc3107b5f2c4e66492650b9d0c17b898.camel@siemens.com>
+References: <20230717040723.1306374-1-huaqian.li@siemens.com>
+         <f5ff9616-c71c-f71e-ce4a-7b9fa7055bb4@linaro.org>
+In-Reply-To: <f5ff9616-c71c-f71e-ce4a-7b9fa7055bb4@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [139.24.108.35]
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-ID: <6E95286F8D046C4F91391E9383BB2651@siemens.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1EUR01FT082:EE_|AS1PR10MB7958:EE_
+X-MS-Office365-Filtering-Correlation-Id: 116ae190-4acb-4022-60ed-08db868e6bd1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ONbt2x5ZehuCTw8hLKWYW0W+iq1tHWKZY3UNcjOYD931r/y5EyPdidH8PhKMBTeCHRRmfVT3AaHXwVXCfLIzmLD5HioPvbMbtduEynt6g+3m5CVCejljnQlaSswcGXN6DfTeUzNcZmsDXHAQ0wfPzp1+5wITFfgVnQ83PsK/GdmeELzKIRz3Hr0UDIIW2HM81yTQw0Npju7ynOzQNFzP81/Bdhfk38JmwidHHXwE/sCyJUc7qr7jLnaXSsEN4e6nchLKWmJh3KX6hUbu/P0yYNXIBt5rRVZ+XJjOBhLH4IssV79p9nfX+0qs8y97IrS/zwsUAVk6NhkEKYTnHH+gaz5hzN3Kns7kExoOJKN9eJM4+6cTZUagHgv8KSDZvV4G5JtSEhBd47s9gcgcORb9WIhb5e50nDNOdlicp4zhI1CsGdw8vu70epUE6lpO29bNtC3Gs5r0Gaj/FLUupArFTtrqUNc73ggU2paSuJJcDdywj1Zoxg/Mrep2ES/7JjHroVRASV4nWv8JU4pC2LCpdnMRPFR/tKn4ypcW9hmISLS6GKyfNPD4tUfgQYVM4+r3qryV3E0g/umLjs9tYb0gYmMBi75OK9vJDyZVJdyw5PsrU5dons5oZQrleNDhp1KRKEowqP3+79AMVnRiR5+xBGO2dF2eyVogNmjpCSYp4SI8QGh9tSzKvLTXo+ECJiygjHwTVaiCCUmEMW8l8izsgs/JukJXclNkkcVM3JwTPvm6GPTote1082LxTboZagNNXEL07N+6DcHKuisgDgAhig==
+X-Forefront-Antispam-Report: CIP:194.138.21.75;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:hybrid.siemens.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(39860400002)(136003)(396003)(451199021)(82310400008)(46966006)(40470700004)(36840700001)(40460700003)(26005)(53546011)(966005)(36756003)(36860700001)(47076005)(2616005)(336012)(86362001)(356005)(81166007)(82960400001)(82740400003)(186003)(956004)(40480700001)(8676002)(8936002)(2906002)(41300700001)(478600001)(7416002)(4326008)(5660300002)(316002)(70586007)(70206006)(54906003)(110136005)(45080400002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: siemens.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 06:24:05.4425
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 116ae190-4acb-4022-60ed-08db868e6bd1
+X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;Ip=[194.138.21.75];Helo=[hybrid.siemens.com]
+X-MS-Exchange-CrossTenant-AuthSource: VE1EUR01FT082.eop-EUR01.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR10MB7958
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Fri, 14 Jul 2023 11:48:35 -0600, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
-> 
-> [...]
-
-Applied, thanks!
-
-[1/1] phy: Explicitly include correct DT includes
-      commit: 7559e7572c03e433efec7734af6a674fdd83dd68
-
-Best regards,
--- 
-~Vinod
-
-
+T24gTW9uLCAyMDIzLTA3LTE3IGF0IDA4OjE2ICswMjAwLCBLcnp5c3p0b2YgS296bG93c2tpIHdy
+b3RlOg0KPiBPbiAxNy8wNy8yMDIzIDA2OjA3LCBodWFxaWFuLmxpQHNpZW1lbnMuY29twqB3cm90
+ZToNCj4gPiBGcm9tOiBMaSBIdWEgUWlhbiA8aHVhcWlhbi5saUBzaWVtZW5zLmNvbT4NCj4gPiAN
+Cj4gPiBUaGUgd2F0Y2hkb2cgaGFyZHdhcmUgb2YgVEkgQU02NVggcGxhdGZvcm0gZG9lcyBub3Qg
+c3VwcG9ydA0KPiA+IFdESU9GX0NBUkRSRVNFVCBmZWF0dXJlLCBhZGQgYSByZXNlcnZlZCBtZW1v
+cnkgdG8gc2F2ZSB0aGUgd2F0Y2hkb2cNCj4gPiByZXNldCBjYXVzZSwgdG8ga25vdyBpZiB0aGUg
+Ym9hcmQgcmVib290IGlzIGR1ZSB0byBhIHdhdGNoZG9nDQo+ID4gcmVzZXQuDQo+ID4gDQo+ID4g
+U2lnbmVkLW9mZi1ieTogTGkgSHVhIFFpYW4gPGh1YXFpYW4ubGlAc2llbWVucy5jb20+DQo+ID4g
+LS0tDQo+ID4gQ2hhbmdlcyBpbiB2NDoNCj4gPiAtIEZpeCB0aGUgY29kaW5nIHN0eWxlLg0KPiA+
+IC0gQWRkIHVzYWdlIG5vdGUgZm9yIHRoZSByZXNlcnZlZCBtZW1vcnkuDQo+ID4gLSBMaW5rIHRv
+IHYzOg0KPiA+IMKgDQo+ID4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtd2F0Y2hkb2cv
+MjAyMzA3MTMwOTUxMjcuMTIzMDEwOS0xLWh1YXFpYW4ubGlAc2llbWVucy5jb20NCj4gDQo+IE11
+Y2ggbW9yZSBjaGFuZ2VkLiBZb3UgYWRkZWQgZXhhbXBsZSBpbiB0aGUgYmluZGluZ3Mgd2hpY2gg
+bm8gb25lDQo+IGFza2VkDQo+IGZvci4gVGhlbiB5b3UgYWRkZWQgbXVsdGlwbGUgZmFrZSByZXZp
+ZXcgdGFncyB0byBhbGwgdGhlIHBhdGNoZXMuDQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IEtyenlz
+enRvZg0KPiANCkhpLA0KDQpTb3JyeSBmb3IgdGhlIHdyb25nIHN0YXRlbWVudC4gSSBtaXNzZWQg
+c29tZSBrZXkgaW5mb3JtYXRpb24gYW5kDQptaXNzdW5kZXJzdG9vZCBgUmV2aWV3ZWQtYnlgLCBJ
+IHRyZWF0ZWQgYFJldmlld2VkLWJ5YCBhcyBgV2hvDQpoYXMgcmV2aWV3ZWRgLg0KDQpCZXN0IHJl
+Z2FyZHMsDQpMaSBIdWEgUWlhbg0K
