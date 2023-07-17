@@ -2,199 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC506756EDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8255A756ED5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbjGQVQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 17:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52404 "EHLO
+        id S230341AbjGQVP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 17:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbjGQVQN (ORCPT
+        with ESMTP id S229669AbjGQVPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 17:16:13 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B14F3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:16:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689628571; x=1721164571;
-  h=date:from:to:cc:subject:message-id;
-  bh=KO/acAyZxoRrD7/WS3coj0GHyk0FJkchJh9IgLZmYiE=;
-  b=dbbFof18O/tIryvjT60MX/DyYnd6qqBBx0+TTv9MqlJMgt7fXKJR7nxB
-   cFrPyDb3PN1H6eaBs5BaRS1JLbJBqsJ1U8jKc5J+iifiH7aNha9hnL54F
-   qdTt1p7AqRVj8FBFljzOj9o6qfUZvFdtw6d6ZBiy1DPeQatiZB1vjjvn5
-   0VvKpf5jLXIkMVHSfslblsaBBm9ULxKolyoo+CrTINL/m8WZf5Yq4cZjp
-   7Ggon0Kt48BiYF7hhwSwtMhAA6u2Bxw6kTXFzksewD/5oA9aEZFxc8uoI
-   CVXmjoVxDjShj4n5nQl50Fp/4fJttGRXQ4Oj6kZlCLDeig+KMRpbY0nzM
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="432216182"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="432216182"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 14:16:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="793387547"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="793387547"
-Received: from lkp-server01.sh.intel.com (HELO c544d7fc5005) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 17 Jul 2023 14:16:09 -0700
-Received: from kbuild by c544d7fc5005 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qLVZg-0009vI-2t;
-        Mon, 17 Jul 2023 21:16:08 +0000
-Date:   Tue, 18 Jul 2023 05:15:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 2ae2fb98b77339277a2c2f18dfec605dfd8dd321
-Message-ID: <202307180537.1DMxWEJf-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 17 Jul 2023 17:15:55 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABA4F3;
+        Mon, 17 Jul 2023 14:15:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
+        t=1689628551; bh=aykiJeEyynq6EQjWV0Y3bk+J73cLE6yf17a01KGynCc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qKBTZH8ETNgNA2LVTp75YYVZAURhCrFzye9lWlWKwlEnzi+TEHP0PMbt5+0EwM0tS
+         UqC82dVVd109sAwHtWrfWdMDjI0AYlP0A+ANs79c4lky8ryDsRv9c516If5BhJePV9
+         7Gy3piku64llOz5uRySr+PJRfEOtQSDJkedXOylI=
+Date:   Mon, 17 Jul 2023 23:15:50 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+To:     Leesoo Ahn <lsahn@ooseel.net>
+Cc:     lsahn@wewakecorp.com, Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selinux: optimize major part with a kernel config in
+ selinux_mmap_addr()
+Message-ID: <505b3356-4bb3-42b9-a4fd-92b097a93e1e@t-8ch.de>
+References: <20230710082500.1838896-1-lsahn@wewakecorp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230710082500.1838896-1-lsahn@wewakecorp.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 2ae2fb98b77339277a2c2f18dfec605dfd8dd321  sched/headers: Rename task_struct::state to task_strate::__state in the comments too
+On 2023-07-10 17:25:00+0900, Leesoo Ahn wrote:
+> The major part, the conditional branch in selinux_mmap_addr() is always to be
+> false so long as CONFIG_LSM_MMAP_MIN_ADDR is set to zero at compile time.
+> 
+> This usually happens in some linux distros, for instance Ubuntu, which
+> the config is set to zero in release version. Therefore it could be a bit
+> optimized with '#if <expr>' at compile time.
+> 
+> Signed-off-by: Leesoo Ahn <lsahn@wewakecorp.com>
+> ---
+>  security/selinux/hooks.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> index d06e350fedee..a049aab6524b 100644
+> --- a/security/selinux/hooks.c
+> +++ b/security/selinux/hooks.c
+> @@ -3723,11 +3723,13 @@ static int selinux_mmap_addr(unsigned long addr)
+>  {
+>  	int rc = 0;
+>  
+> +#if CONFIG_LSM_MMAP_MIN_ADDR > 0
+>  	if (addr < CONFIG_LSM_MMAP_MIN_ADDR) {
+>  		u32 sid = current_sid();
+>  		rc = avc_has_perm(sid, sid, SECCLASS_MEMPROTECT,
+>  				  MEMPROTECT__MMAP_ZERO, NULL);
+>  	}
+> +#endif
 
-elapsed time: 723m
+Shouldn't the compiler figure out on its own that "0 < 0" is always
+false and optimize it all away? My gcc 13.1.1 does so.
 
-configs tested: 122
-configs skipped: 7
+Without your change:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+$ ./scripts/bloat-o-meter  security/selinux/hooks.o-min-addr-64k security/selinux/hooks.o-min-addr-0
+add/remove: 0/0 grow/shrink: 0/1 up/down: 0/-65 (-65)
+Function                                     old     new   delta
+selinux_mmap_addr                             81      16     -65
+Total: Before=57673, After=57608, chg -0.11%
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r021-20230717   gcc  
-arc                  randconfig-r043-20230717   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r006-20230717   gcc  
-arm                  randconfig-r046-20230717   clang
-arm                         s3c6400_defconfig   gcc  
-arm                          sp7021_defconfig   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r005-20230717   clang
-csky                                defconfig   gcc  
-csky                 randconfig-r012-20230717   gcc  
-csky                 randconfig-r023-20230717   gcc  
-csky                 randconfig-r031-20230717   gcc  
-hexagon              randconfig-r034-20230717   clang
-hexagon              randconfig-r041-20230717   clang
-hexagon              randconfig-r045-20230717   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230717   clang
-i386         buildonly-randconfig-r005-20230717   clang
-i386         buildonly-randconfig-r006-20230717   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230717   clang
-i386                 randconfig-i002-20230717   clang
-i386                 randconfig-i003-20230717   clang
-i386                 randconfig-i004-20230717   clang
-i386                 randconfig-i005-20230717   clang
-i386                 randconfig-i006-20230717   clang
-i386                 randconfig-i011-20230717   gcc  
-i386                 randconfig-i012-20230717   gcc  
-i386                 randconfig-i013-20230717   gcc  
-i386                 randconfig-i014-20230717   gcc  
-i386                 randconfig-i015-20230717   gcc  
-i386                 randconfig-i016-20230717   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r032-20230717   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                           sun3_defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                        omega2p_defconfig   clang
-nios2                               defconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                generic-64bit_defconfig   gcc  
-parisc               randconfig-r001-20230717   gcc  
-parisc               randconfig-r014-20230717   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                     asp8347_defconfig   gcc  
-powerpc                    ge_imp3a_defconfig   clang
-powerpc               mpc834x_itxgp_defconfig   clang
-powerpc                      pasemi_defconfig   gcc  
-powerpc                     tqm8540_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r004-20230717   clang
-riscv                randconfig-r025-20230717   gcc  
-riscv                randconfig-r042-20230717   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r044-20230717   gcc  
-sh                               allmodconfig   gcc  
-sh                        dreamcast_defconfig   gcc  
-sh                               j2_defconfig   gcc  
-sh                     magicpanelr2_defconfig   gcc  
-sh                   randconfig-r002-20230717   gcc  
-sh                      rts7751r2d1_defconfig   gcc  
-sh                           se7712_defconfig   gcc  
-sh                          urquell_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r015-20230717   gcc  
-sparc64              randconfig-r003-20230717   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r016-20230717   clang
-um                   randconfig-r035-20230717   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230717   clang
-x86_64       buildonly-randconfig-r002-20230717   clang
-x86_64       buildonly-randconfig-r003-20230717   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-x001-20230717   gcc  
-x86_64               randconfig-x002-20230717   gcc  
-x86_64               randconfig-x003-20230717   gcc  
-x86_64               randconfig-x004-20230717   gcc  
-x86_64               randconfig-x005-20230717   gcc  
-x86_64               randconfig-x006-20230717   gcc  
-x86_64               randconfig-x011-20230717   clang
-x86_64               randconfig-x012-20230717   clang
-x86_64               randconfig-x013-20230717   clang
-x86_64               randconfig-x014-20230717   clang
-x86_64               randconfig-x015-20230717   clang
-x86_64               randconfig-x016-20230717   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                           alldefconfig   gcc  
-xtensa                generic_kc705_defconfig   gcc  
-xtensa               randconfig-r013-20230717   gcc  
-xtensa               randconfig-r024-20230717   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The same with your patch and also with the proposal by Paul that
+redefines the whole function to "return 0".
