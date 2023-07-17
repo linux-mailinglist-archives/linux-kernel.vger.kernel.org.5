@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2083D756B64
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75FA756B63
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbjGQSLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 14:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42208 "EHLO
+        id S231276AbjGQSLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 14:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbjGQSLn (ORCPT
+        with ESMTP id S230413AbjGQSLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:11:43 -0400
+        Mon, 17 Jul 2023 14:11:42 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C9EB3;
-        Mon, 17 Jul 2023 11:11:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7FEE55;
+        Mon, 17 Jul 2023 11:11:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8A41D611DC;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A7EAF611E2;
         Mon, 17 Jul 2023 18:11:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDFD4C433C7;
-        Mon, 17 Jul 2023 18:11:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14647C433C9;
+        Mon, 17 Jul 2023 18:11:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689617500;
-        bh=KSPQm/Cmvrwm7nB28Q1Uzn4KOU2brchdwzrXtjJDO4I=;
+        bh=+0fBEhqmyuNH4//E14nuyQmDTxK/vKbTt5dtpbaWLmk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YZLvkrEZah3j+6IePfc6+sLQYSZW0DYR7tEycP5uAqBy1oLpb7FEKAW9bJXhXhvWq
-         qARRbJgs88kzEspRRG8bRPSH8E7M6KXec/rpF3qDYzvite7r3nbGueVWZ/ShuTaOS4
-         r/ZFQErgANur1O0+qeN7HbK5iNja9M7tXuXMnZkPKYJMyxzTWJk0JUAfvajnye9At8
-         BzwfefHuqVEoSNRuZwLXybUNxWyBGx2/q1SkhP03KGkVkg2dNnNHXyQtE3LZpNBDfS
-         7ONTk2MkJT3nz2dfFYOdvrHPdRrN6uHESR4bwXuInQVO8kWhap5SZOhmM+MzxRv/Kd
-         sitT1fFW326Bg==
+        b=C7C0h94+4Ry+wzdtHCk9hU2/NzV7+li6S/BI8OTa+o6I5A3O8KFUPp/YyHj8mb09s
+         F+dAhHtSU/d9DFJbBWkqdlN0Jy3p/4uX8kD5zfNnqm5PZ3ZylyqP9GwiCbUhdhZSz1
+         736DZOggXFfFwi+bpCSGfqtPMKH7pbJq5yZ4uIAjlKYm1fRaROSh+qve9ju2bds6YK
+         0AvuLuQ6NvgYXm7P/bmcFBrFUJQye4UeVla7EFm7qbjTPEC3XXyPv/b8MHHotMtZiE
+         uLCa2aQ21aqJ+2G6CbIkBnkAujmuOpljmGTuhopWJnks91WYmnaoe2yfDu61e/oV05
+         r+/Zyy4XxuO3A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B291FCE0806; Mon, 17 Jul 2023 11:11:39 -0700 (PDT)
+        id B4CC9CE0836; Mon, 17 Jul 2023 11:11:39 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 03/13] rcuscale: Add minruntime module parameter
-Date:   Mon, 17 Jul 2023 11:11:28 -0700
-Message-Id: <20230717181138.1098063-3-paulmck@kernel.org>
+Subject: [PATCH rcu 04/13] rcuscale: Print out full set of module parameters
+Date:   Mon, 17 Jul 2023 11:11:29 -0700
+Message-Id: <20230717181138.1098063-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <c5a593d3-abe0-40fd-92bd-28d269042aa1@paulmck-laptop>
 References: <c5a593d3-abe0-40fd-92bd-28d269042aa1@paulmck-laptop>
@@ -57,73 +57,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By default, rcuscale collects only 100 points of data per writer, but
-arranging for all kthreads to be actively collecting (if not recording)
-data during the time that any kthread might be recording.  This works
-well, but does not allow much time to bring external performance tools
-to bear.  This commit therefore adds a minruntime module parameter
-that specifies a minimum data-collection interval in seconds.
-
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 6 ++++++
- kernel/rcu/rcuscale.c                           | 5 ++++-
- 2 files changed, 10 insertions(+), 1 deletion(-)
+ kernel/rcu/rcuscale.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 5ba231b786f8..a6888e3dfc20 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4953,6 +4953,12 @@
- 			Number of loops doing rcuscale.kfree_alloc_num number
- 			of allocations and frees.
- 
-+	rcuscale.minruntime= [KNL]
-+			Set the minimum test run time in seconds.  This
-+			does not affect the data-collection interval,
-+			but instead allows better measurement of things
-+			like CPU consumption.
-+
- 	rcuscale.nreaders= [KNL]
- 			Set number of RCU readers.  The value -1 selects
- 			N, where N is the number of CPUs.  A value
 diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index 15edd8c82933..7c5bab5a4f19 100644
+index 7c5bab5a4f19..18f1b0e13604 100644
 --- a/kernel/rcu/rcuscale.c
 +++ b/kernel/rcu/rcuscale.c
-@@ -87,6 +87,7 @@ torture_param(bool, gp_async, false, "Use asynchronous GP wait primitives");
- torture_param(int, gp_async_max, 1000, "Max # outstanding waits per writer");
- torture_param(bool, gp_exp, false, "Use expedited GP wait primitives");
- torture_param(int, holdoff, 10, "Holdoff time before test start (s)");
-+torture_param(int, minruntime, 0, "Minimum run time (s)");
- torture_param(int, nreaders, -1, "Number of RCU reader threads");
- torture_param(int, nwriters, -1, "Number of RCU updater threads");
- torture_param(bool, shutdown, RCUSCALE_SHUTDOWN,
-@@ -411,6 +412,7 @@ rcu_scale_writer(void *arg)
+@@ -525,8 +525,8 @@ static void
+ rcu_scale_print_module_parms(struct rcu_scale_ops *cur_ops, const char *tag)
  {
- 	int i = 0;
- 	int i_max;
-+	unsigned long jdone;
- 	long me = (long)arg;
- 	struct rcu_head *rhp = NULL;
- 	bool started = false, done = false, alldone = false;
-@@ -447,6 +449,7 @@ rcu_scale_writer(void *arg)
- 		}
- 	}
+ 	pr_alert("%s" SCALE_FLAG
+-		 "--- %s: nreaders=%d nwriters=%d verbose=%d shutdown=%d\n",
+-		 scale_type, tag, nrealreaders, nrealwriters, verbose, shutdown);
++		 "--- %s: gp_async=%d gp_async_max=%d gp_exp=%d holdoff=%d minruntime=%d nreaders=%d nwriters=%d writer_holdoff=%d writer_holdoff_jiffies=%d verbose=%d shutdown=%d\n",
++		 scale_type, tag, gp_async, gp_async_max, gp_exp, holdoff, minruntime, nrealreaders, nrealwriters, writer_holdoff, writer_holdoff_jiffies, verbose, shutdown);
+ }
  
-+	jdone = jiffies + minruntime * HZ;
- 	do {
- 		if (writer_holdoff)
- 			udelay(writer_holdoff);
-@@ -479,7 +482,7 @@ rcu_scale_writer(void *arg)
- 		if (!started &&
- 		    atomic_read(&n_rcu_scale_writer_started) >= nrealwriters)
- 			started = true;
--		if (!done && i >= MIN_MEAS) {
-+		if (!done && i >= MIN_MEAS && time_after(jiffies, jdone)) {
- 			done = true;
- 			sched_set_normal(current, 0);
- 			pr_alert("%s%s rcu_scale_writer %ld has %d measurements\n",
+ /*
 -- 
 2.40.1
 
