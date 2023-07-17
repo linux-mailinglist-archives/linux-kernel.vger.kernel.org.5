@@ -2,128 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 941F0756834
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6B2756838
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbjGQPmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 11:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43228 "EHLO
+        id S231454AbjGQPnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 11:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbjGQPmu (ORCPT
+        with ESMTP id S231421AbjGQPno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 11:42:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63758A1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:42:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689608525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3g9pjADKRhJ57FMX5gXYkm+ipevq0sMugfTwhHl2pPc=;
-        b=g8ZkUHcELTMiV78+qK8BIe2BC4DXhqORpPmDNXzgpJrNslGPozUWHHoMbiCPRbrnknUDaQ
-        7xLudT1uS7H22DfvmjubZVoqpKK7ShbUmfrd2dNNcxC4tPFMSY9LRhVDfyqrjq7Q7SBQEY
-        wvLI2gY04fmJ+v19FjNyj2ZTpT07bzA=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-652-GKjdDxCaO_ytc4A1sBb9uw-1; Mon, 17 Jul 2023 11:42:04 -0400
-X-MC-Unique: GKjdDxCaO_ytc4A1sBb9uw-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fc07d4c63eso23634785e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:42:04 -0700 (PDT)
+        Mon, 17 Jul 2023 11:43:44 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E37107;
+        Mon, 17 Jul 2023 08:43:42 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6686c74183cso4746473b3a.1;
+        Mon, 17 Jul 2023 08:43:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689608621; x=1692200621;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=wXknWUupf2Lv0cdyZ0Lz4FOv8r0etirYdereLcmpd64=;
+        b=ZHbw/dspuC4p797kY6HncNcFtsWRtqtUxFLv4q1/84el8r8LCeN764PG93qQDeyCFA
+         98MBnhVTZh/FbGab9+OhbG1h1MPEf6NfouIlhVuvsJY5WWuJkG3EG6q+byWG9bzCdTB6
+         hmTTCY2M01vtyQmkjTcsiqPhS1+JCM4kTC3vaoDWDjdLuDwFm+LJdK2eTwxpPELUow+n
+         WP2PTZsP2Eecb7SpaYmJREJ+gU0QysupbxFheZU0iZZO8rGbxJxI+eI0AxlQFUVCcaNe
+         OYesPVKNbk5SYr6X9T9Fc+3Eloj1SU7gX2FeHhs9AuwSP9crdl7NLFLnVdAkvfkho9LD
+         +vLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689608523; x=1692200523;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3g9pjADKRhJ57FMX5gXYkm+ipevq0sMugfTwhHl2pPc=;
-        b=dz1W3tlVjMAfnyQYzVZNyBrCmEdG8FCgnCi9FVT71A/9r4L37igfzWI7wAEJoCg5b8
-         b0W2yYCsML9x3J9qkPi/sPMxjR6KKd+ij3D5PFnmE/iGBnSyDleTIBNaxL+TeAQHD1HF
-         xCEvl4WUCujNd2WAL389F5YWNn2ZyODQZ1/XQWl7sNjJsmQFjPLXJbfM91midiJwG0W5
-         t+yp6tu9H/jbDsoGgYjy8QI7oKb06cAwL12qyh93EMDVHal+FwjaicWEILO2irl2xSWs
-         NS8z7aq4VaHyXJB9JoLFWY/OXGDe3/DPhdfi70eGPUDro34FnEa58nMeTFst14QWfFEW
-         9dww==
-X-Gm-Message-State: ABy/qLYdVVTMde0rhzJX99TrKHnoIs4NXt/xifVEO9RfotPWBMvv7fpt
-        2I/+c3yCW0JEkH0FBQfH62dBpsv5JXZQhjRlCiwoZlEz6t9R3OFZTv63jyNQMPTk/cEdoJPVtKf
-        EfliDNnQTOdbw7ycx/T3JsKlt
-X-Received: by 2002:a05:600c:4509:b0:3fa:8c8b:716 with SMTP id t9-20020a05600c450900b003fa8c8b0716mr8463998wmo.1.1689608523138;
-        Mon, 17 Jul 2023 08:42:03 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGgHpT8XonCi8k2gklP0NjV6dnu3l1DHiQ30N08iWXx3N+/R/nb3+dH8ujqqzommwbME591Jg==
-X-Received: by 2002:a05:600c:4509:b0:3fa:8c8b:716 with SMTP id t9-20020a05600c450900b003fa8c8b0716mr8463989wmo.1.1689608522771;
-        Mon, 17 Jul 2023 08:42:02 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c735:400:2501:5a2e:13c6:88da? (p200300cbc735040025015a2e13c688da.dip0.t-ipconnect.de. [2003:cb:c735:400:2501:5a2e:13c6:88da])
-        by smtp.gmail.com with ESMTPSA id m13-20020a7bce0d000000b003fbaa2903f4sm79979wmc.19.2023.07.17.08.42.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 08:42:02 -0700 (PDT)
-Message-ID: <90b406af-9db4-b668-a7a0-e574e104c84c@redhat.com>
-Date:   Mon, 17 Jul 2023 17:42:01 +0200
+        d=1e100.net; s=20221208; t=1689608621; x=1692200621;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wXknWUupf2Lv0cdyZ0Lz4FOv8r0etirYdereLcmpd64=;
+        b=XEMk89QU/2GWNedaIEvzXa8fJsEIHUmPjLZ1Y7A/ivFxeFiQcqjt9Y8ey/alg2w0oW
+         3EO2mPSUS8zrNS0USxm4mFb8Oo5O2Cdm1HU1tgnQmfTg6NRotlcIgk0mQ8RexKybeE/p
+         W86Hpppm7C9ZbUhBh5LGSiLCUNRkfd5L2lR04usHLnacQbsYJDetAOJae2BKCK4gR5cf
+         axU21GRuPnYLDjf2/hFmzn6pDupKmPQWsJ4UQw+DFXf1frtMlM/sePpMsBzAEUZwTmxI
+         W8uLUW+cB6E6klyBgj3clcN3vzL0oG4I49FypRlmrrDfvLsDklIkdGHY+muCP982jSF8
+         oirw==
+X-Gm-Message-State: ABy/qLYE8TMLpbjyMZeoOkog9J4XBTmuAO1l2LnRzmYxqc1cxLhLprws
+        VkgpszEkyRpGe6eVziEAeu0=
+X-Google-Smtp-Source: APBJJlEFU+d9kORCP9Vq+lfxaDU/9ToIIBdE785NHxnM5lnUDi85gwGD4W1Ew312PAIs9AH2OQ/D1A==
+X-Received: by 2002:a17:90a:8b0c:b0:263:f896:2165 with SMTP id y12-20020a17090a8b0c00b00263f8962165mr11712064pjn.46.1689608621091;
+        Mon, 17 Jul 2023 08:43:41 -0700 (PDT)
+Received: from yoga ([2400:1f00:13:50e2:5893:783e:fde0:1bce])
+        by smtp.gmail.com with ESMTPSA id 21-20020a170902c21500b001b8649e52f8sm26229pll.254.2023.07.17.08.43.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 08:43:40 -0700 (PDT)
+From:   Anup Sharma <anupnewsmail@gmail.com>
+X-Google-Original-From: Anup Sharma <AnupSharma>
+Date:   Mon, 17 Jul 2023 21:13:33 +0530
+To:     Ian Rogers <irogers@google.com>
+Cc:     Anup Sharma <anupnewsmail@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/6] scripts: python: thread sample processing to
+ create thread with schemas
+Message-ID: <ZLVhpexb3rQ/dDUo@yoga>
+References: <cover.1689024635.git.anupnewsmail@gmail.com>
+ <70fd94954a3872caeef5851607b245394149f4a9.1689024635.git.anupnewsmail@gmail.com>
+ <CAP-5=fVC8T+GNQYcQi9sAOcV5YUb5zX2D5AwH72aSvL8_Cn3Zw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v1 1/3] mm: Allow deferred splitting of arbitrary large
- anon folios
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20230717143110.260162-1-ryan.roberts@arm.com>
- <20230717143110.260162-2-ryan.roberts@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230717143110.260162-2-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fVC8T+GNQYcQi9sAOcV5YUb5zX2D5AwH72aSvL8_Cn3Zw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.07.23 16:31, Ryan Roberts wrote:
-> In preparation for the introduction of large folios for anonymous
-> memory, we would like to be able to split them when they have unmapped
-> subpages, in order to free those unused pages under memory pressure. So
-> remove the artificial requirement that the large folio needed to be at
-> least PMD-sized.
+On Wed, Jul 12, 2023 at 10:25:50AM -0700, Ian Rogers wrote:
+> On Mon, Jul 10, 2023 at 4:13 PM Anup Sharma <anupnewsmail@gmail.com> wrote:
+> >
+> > The _addThreadSample function is responsible for adding a sample
+> > to a specific thread. It first checks if the thread exists in
+> > the thread_map dictionary.
+> >
+> > The markers structure defines the schema and data for
+> > thread markers, including fields such as 'name',
+> > 'startTime', 'endTime', 'phase', 'category', and 'data'.
+> >
+> > The samples structure defines the schema and data for thread
+> > samples, including fields such as 'stack', 'time', and
+> > 'responsiveness'.
+> >
+> > The frameTable structure defines the schema and data for frame
+> > information, including fields such as 'location', 'relevantForJS',
+> > 'innerWindowID', 'implementation', 'optimizations', 'line',
+> > 'column', 'category', and 'subcategory'.
+> >
+> > The purpose of this function is to create a new thread structure
+> > These structures provide a framework for storing and organizing
+> > information related to thread markers, samples, frame details,
+> > and stack information.
+> >
+> > The call stack is parsed to include function names and the associated
+> > DSO, which are requires for creating json schema. Also few libaries
+> > has been included which will be used in later commit.
 > 
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> Reviewed-by: Yu Zhao <yuzhao@google.com>
-> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
-> ---
->   mm/rmap.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> nit: s/requires/required.
+> nit: I think the "Also few..." statement is out-of-date.
+
+I apologize. I will ensure to address these in the next version.
+
+> > Signed-off-by: Anup Sharma <anupnewsmail@gmail.com>
+> > ---
+> >  .../scripts/python/firefox-gecko-converter.py | 70 +++++++++++++++++++
+> >  1 file changed, 70 insertions(+)
+> >
+> > diff --git a/tools/perf/scripts/python/firefox-gecko-converter.py b/tools/perf/scripts/python/firefox-gecko-converter.py
+> > index 765f1775cee5..0b8a86bdcab1 100644
+> > --- a/tools/perf/scripts/python/firefox-gecko-converter.py
+> > +++ b/tools/perf/scripts/python/firefox-gecko-converter.py
+> > @@ -21,6 +21,7 @@ sys.path.append(os.environ['PERF_EXEC_PATH'] + \
+> >  from perf_trace_context import *
+> >  from Core import *
+> >
 > 
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 0c0d8857dfce..2baf57d65c23 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1430,7 +1430,7 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
->   		 * page of the folio is unmapped and at least one page
->   		 * is still mapped.
->   		 */
-> -		if (folio_test_pmd_mappable(folio) && folio_test_anon(folio))
-> +		if (folio_test_large(folio) && folio_test_anon(folio))
->   			if (!compound || nr < nr_pmdmapped)
->   				deferred_split_folio(folio);
+> A comment and type information would be useful here. map is another
+> word for a dictionary, which is somewhat implied. So the information
+> here is that this data structure will hold something to do with
+> threads.  Perhaps say, "a map from TID to a Thread." A better variable
+> name may then be tid_to_thread_map, but as map is implied you could
+> do: tid_to_thread: Dict[int, Thread].
 
-!compound will always be true I guess, so nr_pmdmapped == 0 (which will 
-always be the case) will be ignored.
+sure, I will rename this variable to tid_to_thread. However in my case
+this needs to be kept a global variable, and I am not sure if I can
+specify the data type for this variable since it creates a dependency
+loop with the Thread class. I can leave it with just a comment
+mentioning the type of key and value or I can write the type as
+"Dict[int, Any]" which is not very useful.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+> > +thread_map = {}
+> >  start_time = None
+> >
+> >  def trace_end():
+> > @@ -28,6 +29,57 @@ def trace_end():
+> >
+> >  def process_event(param_dict):
+> >         global start_time
+> > +       global thread_map
+> > +
+> > +       def _createThread(name, pid, tid):
+> > +               markers = {
+> > +                       'schema': {
+> > +                               'name': 0,
+> > +                               'startTime': 1,
+> > +                               'endTime': 2,
+> > +                               'phase': 3,
+> > +                               'category': 4,
+> > +                               'data': 5,
+> > +                       },
+> > +                       'data': [],
+> > +               }
+> > +               samples = {
+> > +                       'schema': {
+> > +                               'stack': 0,
+> > +                               'time': 1,
+> > +                               'responsiveness': 2,
+> > +                               },
+> > +                       'data': [],
+> > +               }
+> > +               frameTable = {
+> > +                       'schema': {
+> > +                               'location': 0,
+> > +                               'relevantForJS': 1,
+> > +                               'innerWindowID': 2,
+> > +                               'implementation': 3,
+> > +                               'optimizations': 4,
+> > +                               'line': 5,
+> > +                               'column': 6,
+> > +                               'category': 7,
+> > +                               'subcategory': 8,
+> > +                       },
+> > +                       'data': [],
+> > +               }
+> > +               stackTable = {
+> > +                       'schema': {
+> > +                               'prefix': 0,
+> > +                               'frame': 1,
+> > +                       },
+> > +                       'data': [],
+> > +               }
+> > +               stringTable = []
+> 
+> Is there a missing return here?
 
--- 
-Cheers,
+No, I am not returning anything here.
 
-David / dhildenb
+> > +
+> > +       def _addThreadSample(pid, tid, threadName, time_stamp, stack):
+> > +               thread = thread_map.get(tid)
+> > +               if not thread:
+> > +                       thread = _createThread(threadName, pid, tid)
+> > +                       thread_map[tid] = thread
+> > +
+> >         # Extract relevant information from the event parameters. The event parameters
+> >         # are in a dictionary:
+> >         time_stamp = (param_dict['sample']['time'] // 1000) / 1000
+> > @@ -37,3 +89,21 @@ def process_event(param_dict):
+> >
+> >         # Assume that start time is the time of the first event.
+> >         start_time = time_stamp if not start_time else start_time
+> > +
+> > +       # Parse the callchain of the current sample into a stack array.
+> > +       if param_dict['callchain']:
+> > +               stack = []
+> > +               for call in param_dict['callchain']:
+> > +                       if 'sym' not in call:
+> > +                               continue
+> > +                       stack.append(call['sym']['name'] + f' (in {call["dso"]})')
+> 
+> Rather than mix an append and an f-string, just have the f-string ie:
+> stack.append(f'{call["sym"]["name"]} (in {"call["dso"]})')
 
+Thanks for this suggestion. I will make this change.
+
+> > +               if len(stack) != 0:
+> > +                       stack = stack[::-1]
+> > +                       _addThreadSample(pid, tid, thread_name, time_stamp, stack)
+> > +
+> > +       # During perf record if -g is not used, the callchain is not available.
+> > +       # In that case, the symbol and dso are available in the event parameters.
+> > +       else:
+> > +               func = param_dict['symbol'] if 'symbol' in param_dict else '[unknown]'
+> > +               dso = param_dict['dso'] if 'dso' in param_dict else '[unknown]'
+> > +               _addThreadSample(pid, tid, thread_name, time_stamp, [func + f' (in {dso})'])
+> 
+> Similarly:
+> f'{func} (in {dso})'
+
+Noted.
+
+> Thanks,
+> Ian
+> 
+> > --
+> > 2.34.1
+> >
