@@ -2,90 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B36E1755E8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28F1755E91
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230474AbjGQIdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 04:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
+        id S231203AbjGQIfh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Jul 2023 04:35:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjGQIds (ORCPT
+        with ESMTP id S229537AbjGQIff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 04:33:48 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 311C3AB
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:33:46 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R4FjJ4pbhzBR7Zv
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:33:40 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689582820; x=1692174821; bh=qDEzJDHeLkl5fOCGw+7n0TBDlqx
-        xR3XxrG/mc9PY8lI=; b=gypN3lrlaHSNA4wCXFaOQVAYpDtGRX4q90wB9KeZsR0
-        0f3dDdO/tnDjUa/XQfMMmRwwZka2g1F5l+G0rQVP8BP6qIHsWOaR6masT/WflIcq
-        O4u4q67/dI2+SNxGnnpt0+zcDV9Wi0bSE7Gc0nva171EEut3j1lqBh58g3rA/XXf
-        HTd8jcu4TCq1cZafG8PqsHaUFDYScNsB8f9yzWy+iYAPJGRQZV2cg9wuMeDjDoX8
-        NVuLdtqyKyphv9PzImIOjEX6AQEndS00+EYE5EVo8FRjBcunkkj3HcfHYziToUtR
-        cPeJTqjktOlFxC67Ejsxwt9TjAuG5JpvOFsDZuqQLRw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id yYf6feZ64gAY for <linux-kernel@vger.kernel.org>;
-        Mon, 17 Jul 2023 16:33:40 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R4FjJ2JpCzBR5lS;
-        Mon, 17 Jul 2023 16:33:40 +0800 (CST)
+        Mon, 17 Jul 2023 04:35:35 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1E3D8;
+        Mon, 17 Jul 2023 01:35:33 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id ABF2D24E295;
+        Mon, 17 Jul 2023 16:35:30 +0800 (CST)
+Received: from EXMBX062.cuchost.com (172.16.6.62) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 17 Jul
+ 2023 16:35:30 +0800
+Received: from [192.168.120.43] (171.223.208.138) by EXMBX062.cuchost.com
+ (172.16.6.62) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 17 Jul
+ 2023 16:35:29 +0800
+Message-ID: <c0f533a4-d196-649b-957e-eea6cd9e227c@starfivetech.com>
+Date:   Mon, 17 Jul 2023 16:35:28 +0800
 MIME-Version: 1.0
-Date:   Mon, 17 Jul 2023 16:33:40 +0800
-From:   hanyu001@208suo.com
-To:     benh@kernel.crashing.org, mpe@ellerman.id.au, baihaowen@meizu.com,
-        studentxswpy@163.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers: macintosh: add spaces required around that ':' and
- '?'
-In-Reply-To: <tencent_A7289285160569DAEE7418CF0B205D2C520A@qq.com>
-References: <tencent_A7289285160569DAEE7418CF0B205D2C520A@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <1deebcc233b93769ff1c85c74a432199@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v4 1/2] dt-bindings: net: motorcomm: Add pad driver
+ strength cfg
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, Peter Geis <pgwipeout@gmail.com>,
+        Frank <Frank.Sae@motor-comm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Conor Dooley <conor@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "Heiner Kallweit" <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Yanhong Wang <yanhong.wang@starfivetech.com>
+References: <20230714101406.17686-1-samin.guo@starfivetech.com>
+ <20230714101406.17686-2-samin.guo@starfivetech.com>
+ <20230715024711.GB872287-robh@kernel.org>
+From:   Guo Samin <samin.guo@starfivetech.com>
+In-Reply-To: <20230715024711.GB872287-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Originating-IP: [171.223.208.138]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX062.cuchost.com
+ (172.16.6.62)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds spaces required around that ':' and '?'.
+-------- 原始信息 --------
+主题: Re: [PATCH v4 1/2] dt-bindings: net: motorcomm: Add pad driver strength cfg
+From: Rob Herring <robh@kernel.org>
+收件人: Samin Guo <samin.guo@starfivetech.com>
+日期: 2023/7/15
 
-./drivers/macintosh/macio-adb.c:143: ERROR: spaces required around that 
-'?' (ctx:VxW)
-./drivers/macintosh/macio-adb.c:143: ERROR: spaces required around that 
-':' (ctx:VxW)
+> On Fri, Jul 14, 2023 at 06:14:05PM +0800, Samin Guo wrote:
+>> The motorcomm phy (YT8531) supports the ability to adjust the drive
+>> strength of the rx_clk/rx_data.
+>>
+>> The YT8531 RGMII LDO voltage supports 1.8V/3.3V, and the
+>> LDO voltage can be configured with hardware pull-up resistors to match
+>> the SOC voltage (usually 1.8V). The software can read the registers
+>> 0xA001 obtain the current LDO voltage value.
+>>
+>> When we configure the drive strength, we need to read the current LDO
+>> voltage value to ensure that it is a legal value at that LDO voltage.
+>>
+>> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+>> Signed-off-by: Samin Guo <samin.guo@starfivetech.com>
+>> ---
+>>  .../bindings/net/motorcomm,yt8xxx.yaml        | 46 +++++++++++++++++++
+>>  1 file changed, 46 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/motorcomm,yt8xxx.yaml b/Documentation/devicetree/bindings/net/motorcomm,yt8xxx.yaml
+>> index 157e3bbcaf6f..097bf143af35 100644
+>> --- a/Documentation/devicetree/bindings/net/motorcomm,yt8xxx.yaml
+>> +++ b/Documentation/devicetree/bindings/net/motorcomm,yt8xxx.yaml
+>> @@ -52,6 +52,52 @@ properties:
+>>        for a timer.
+>>      type: boolean
+>>  
+>> +  motorcomm,rx-clk-driver-strength:
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+> 
+> As the units are uA, drop the type and add '-microamp' suffix. 
+> 'motorcomm,rx-clk-drv-microamp' is probably sufficient.
+>
+Thanks for the guidance, will be improved in the next version.
+ 
+>> +    description: |
+>> +      drive strength of rx_clk rgmii pad.
+>> +      |----------------------------------|
+>> +      |        rx_clk ds map table       |
+>> +      |----------------------------------|
+>> +      | DS(3b) |  wol@1.8v  |  wol@3.3v  |
+>> +      |________|_________________________|
+>> +      |        | current(uA)| current(uA)|
+>> +      |   000  |     1200   |    3070    |
+>> +      |   001  |     2100   |    4080    |
+>> +      |   010  |     2700   |    4370    |
+>> +      |   011  |     2910   |    4680    |
+>> +      |   100  |     3110   |    5020    |
+>> +      |   101  |     3600   |    5450    |
+>> +      |   110  |     3970   |    5740    |
+>> +      |   111  |     4350   |    6140    |
+>> +      |--------|------------|------------|
+>> +    enum: [ 1200, 2100, 2700, 2910, 3070, 3110, 3600, 3970,
+>> +            4080, 4350, 4370, 4680, 5020, 5450, 5740, 6140 ]
+>> +    default: 2910
+>> +
+>> +  motorcomm,rx-data-driver-strength:
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    description: |
+>> +      drive strength of rx_data/rx_ctl rgmii pad.
+>> +      |----------------------------------|
+>> +      |        rx_data ds map table      |
+>> +      |----------------------------------|
+>> +      | DS(3b) |  wol@1.8v  |  wol@3.3v  |
+>> +      |________|_________________________|
+>> +      |        | current(uA)| current(uA)|
+>> +      |   000  |     1200   |    3070    |
+>> +      |   001  |     2100   |    4080    |
+>> +      |   010  |     2700   |    4370    |
+>> +      |   011  |     2910   |    4680    |
+>> +      |   100  |     3110   |    5020    |
+>> +      |   101  |     3600   |    5450    |
+>> +      |   110  |     3970   |    5740    |
+>> +      |   111  |     4350   |    6140    |
+>> +      |--------|------------|------------|
+>> +    enum: [ 1200, 2100, 2700, 2910, 3070, 3110, 3600, 3970,
+>> +            4080, 4350, 4370, 4680, 5020, 5450, 5740, 6140 ]
+>> +    default: 2910
+>> +
+>>    motorcomm,tx-clk-adj-enabled:
+>>      description: |
+>>        This configuration is mainly to adapt to VF2 with JH7110 SoC.
+>> -- 
+>> 2.17.1
+>>
 
-Signed-off-by: maqimei <2433033762@qq.com>
----
-  drivers/macintosh/macio-adb.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/macintosh/macio-adb.c 
-b/drivers/macintosh/macio-adb.c
-index 55a9f8c..4de4883 100644
---- a/drivers/macintosh/macio-adb.c
-+++ b/drivers/macintosh/macio-adb.c
-@@ -140,7 +140,7 @@ static int macio_adb_autopoll(int devs)
-      spin_lock_irqsave(&macio_lock, flags);
-      out_8(&adb->active_hi.r, devs >> 8);
-      out_8(&adb->active_lo.r, devs);
--    out_8(&adb->autopoll.r, devs? APE: 0);
-+    out_8(&adb->autopoll.r, devs ? APE : 0);
-      spin_unlock_irqrestore(&macio_lock, flags);
-      return 0;
-  }
+Best regards,
+Samin
