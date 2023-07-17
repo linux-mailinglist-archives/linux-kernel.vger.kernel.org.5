@@ -2,125 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDDD7569E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6C47569E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbjGQRMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 13:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34180 "EHLO
+        id S229953AbjGQRM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 13:12:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjGQRLj (ORCPT
+        with ESMTP id S230405AbjGQRMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 13:11:39 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87579131
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:11:37 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b743161832so71275191fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:11:37 -0700 (PDT)
+        Mon, 17 Jul 2023 13:12:43 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5706E1B5;
+        Mon, 17 Jul 2023 10:12:41 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bb1baf55f5so25365515ad.0;
+        Mon, 17 Jul 2023 10:12:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689613896; x=1692205896;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PdUy8GMTrWucV9wCoA87XadPmnzE11dEz/NCrV18J1Y=;
-        b=dJbijU/dso944TXJCQtlOA2upkp4Btsdngl31G428/moDy7XklV0Tmw5Z4DdWJuyH3
-         8pWgnV1M3XhLgfGmo3e0PEwUN6LsTcNgpuOrt0aCJpK6EmgtPR1KyPEv+9gvRm4mZ4rk
-         PZlCJ+ylonx6GqP9124mrD+ROyYHvEOrr9YiMpkEty4b4np4LzfGlEi0pa/b3zlf3BsG
-         J9BSLtmommkdEIMl6oLA/QJ+Sb74YGbyRDexOSL2m+GSoumPwd94ALZq7qmy4o7g3uS1
-         UFXJiF4OrrI/caD88uKrWdPvunjIRkZ0liM++9sHMudXjl32qjQ3MH79CKsLaoz5ONmz
-         w9Aw==
+        d=gmail.com; s=20221208; t=1689613961; x=1692205961;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Su4c46X8cRa6PHlO4wAUnjVZ+C+9OAGrRoJ7Aqgs5cU=;
+        b=WhyYIPZO2p/YK6SgdYh6KiwmnlwFGuP6x4o8fFwfjzP+k6nWK6x2EQrcUhIMLtG4Mx
+         Whm04pBT4llFHDRUKvbjL0pDnzPiWOCd/ANwoVihiOr3NeNeZHJRYz0SiP5iIDYNIjJg
+         PmgNSHJFfg1lwtCaKM591/qkZ/cYCDZ1TjeOybC+bVwttAqPs6U1Fmle4dPAXzrMlTGS
+         Z6SA5nrmWax6/N8LUJOUjn4e2BsXzJeu0Ksg/n6Joopb4MpWdOyoV/pkAb/95N1JFM5c
+         X6LeAWmt4mA3kiYVq5eRRer7lQUjtG2K7gtpBKq+38Dq2qO1PxQn/EY9BL/t/YMzuFUl
+         GRpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689613896; x=1692205896;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PdUy8GMTrWucV9wCoA87XadPmnzE11dEz/NCrV18J1Y=;
-        b=enuXoQw/QBCzPuYukoMgQZ/IQjKFb+OPsU93/FlQy5DaDqnGDksYJjyYyk9G75W+Jq
-         Oxm3v2azwiKKSV44LuG9fzou7UOtjm6lIbCIcPknnKFVbz5JVl/bIY4My3osIkOrevKx
-         eVjTfWjUbKmAm3YiqlQ+r1n4FriLNyaK/4kZ+iBXIAK8kCEXkDeP0JnS/MmgNJ48qFo1
-         KOJ0Tkb8jJeyHcIaTChrL2CXx1sRPBI29t36KRSzY8IpB6wDBWc8dttH8JyjZFKQNvca
-         dRksnl6sRk70vaE4LY/L6/5a1lVmxb+q8Fk+ztFVjrqsTaxfUj4CJLEJa+DImQoTrqPK
-         ftww==
-X-Gm-Message-State: ABy/qLYKXzvYSkVWQFuTUtTjZY4sWWjeR0Xa1LcEJE354f0A2etghecr
-        XqsHjOc9Cp3ACgEbsCFDsbTG1w==
-X-Google-Smtp-Source: APBJJlFjLae5XLO90WMwuCjsT5AeiwDRBCFEcMfuu3f7z5JblyEioCWHbbcrKv1U59DGlGuSj9ETwQ==
-X-Received: by 2002:a2e:a410:0:b0:2b6:e7ce:4e7d with SMTP id p16-20020a2ea410000000b002b6e7ce4e7dmr8725246ljn.43.1689613895792;
-        Mon, 17 Jul 2023 10:11:35 -0700 (PDT)
-Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
-        by smtp.gmail.com with ESMTPSA id a23-20020a05651c011700b002b94805a043sm452ljb.138.2023.07.17.10.11.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 10:11:35 -0700 (PDT)
-Message-ID: <8c5dc146-c305-bef9-0d97-76a91345ed1a@linaro.org>
-Date:   Mon, 17 Jul 2023 19:11:33 +0200
+        d=1e100.net; s=20221208; t=1689613961; x=1692205961;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Su4c46X8cRa6PHlO4wAUnjVZ+C+9OAGrRoJ7Aqgs5cU=;
+        b=X70VBmRqRHBgjXsHMlk/Sw7cpn5uX7zTa7j+QKZAI1WgIbbdKpj4kHFMn5qk3ADD0v
+         QDTL9X+19KKsi+CLcm5ZkHJL73aKwNVDfpx74GKk06Gi0UBMjspCgo8Qy3Ufas5Sp3fU
+         MNkk1IkS8gDiq0zKX+buuZAI4ZuR0Po1+QtIzW23M2zMcDrrmv+yZAgyD9tQU+zbiGwz
+         t9UxHhxvHmxeYzwDTnGSEvmGsKu0hPpOTUtcFVVF19zImqg3PUgt8oX9kE/1sJzWPFT2
+         RcImfmeZQ4fDZKpXcs5rrNjUjkC4GRYz2M8n9ExaKcUfT+1dNAn9O0bSNbplVP9UHsl2
+         Ii3Q==
+X-Gm-Message-State: ABy/qLaGESUUwe4s17WxxSvzc8huoysC3xenTFqWeuVpOoViyzAKbs6q
+        eXdCIRPm+3ZryBoGMKJzGiVH0Iv2ehc=
+X-Google-Smtp-Source: APBJJlFKrg3zrMVnT4y3lM3F/XIOZCnHovdC25gxGLpXATGcGi9mXUoOJGZ6EIElYox6qUlWKCmNIg==
+X-Received: by 2002:a17:902:e550:b0:1b8:7e53:704 with SMTP id n16-20020a170902e55000b001b87e530704mr14859904plf.27.1689613960688;
+        Mon, 17 Jul 2023 10:12:40 -0700 (PDT)
+Received: from localhost ([192.55.54.50])
+        by smtp.gmail.com with ESMTPSA id j17-20020a170902da9100b001b9d88a4d1asm112268plx.289.2023.07.17.10.12.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 10:12:40 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 10:12:38 -0700
+From:   Isaku Yamahata <isaku.yamahata@gmail.com>
+To:     "Wen, Qian" <qian.wen@intel.com>
+Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sean Christopherson <seanjc@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com
+Subject: Re: [PATCH v14 072/113] KVM: TDX: handle vcpu migration over logical
+ processor
+Message-ID: <20230717171238.GA25699@ls.amr.corp.intel.com>
+References: <cover.1685333727.git.isaku.yamahata@intel.com>
+ <7a57603a0668ec51a7ac324ab3d1a8acb9863e7b.1685333728.git.isaku.yamahata@intel.com>
+ <48951fc1-4e98-b32a-af4f-343b7ea2d44d@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 15/15] arm64: dts: qcom: sm6115: Add VDD_CX to GPU_CCC
-Content-Language: en-US
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20230717-topic-branch_aon_cleanup-v1-0-27784d27a4f4@linaro.org>
- <20230717-topic-branch_aon_cleanup-v1-15-27784d27a4f4@linaro.org>
- <ZLVsN40kYsvQm1z6@gerhold.net>
- <a193a4dd-0a0a-0d36-6d83-0424cd1dce80@linaro.org>
- <ZLVyvHnKPdOfqAck@gerhold.net>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <ZLVyvHnKPdOfqAck@gerhold.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <48951fc1-4e98-b32a-af4f-343b7ea2d44d@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.07.2023 18:56, Stephan Gerhold wrote:
-> On Mon, Jul 17, 2023 at 06:50:18PM +0200, Konrad Dybcio wrote:
->> On 17.07.2023 18:28, Stephan Gerhold wrote:
->>> On Mon, Jul 17, 2023 at 05:19:22PM +0200, Konrad Dybcio wrote:
->>>> The GPU_CC block is powered by VDD_CX. Describe that.
->>>>
->>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->>>> ---
->>>>  arch/arm64/boot/dts/qcom/sm6115.dtsi | 2 ++
->>>>  1 file changed, 2 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
->>>> index 29b5b388cd94..bfaaa1801a4d 100644
->>>> --- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
->>>> +++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
->>>> @@ -1430,6 +1430,8 @@ gpucc: clock-controller@5990000 {
->>>>  			clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>,
->>>>  				 <&gcc GCC_GPU_GPLL0_CLK_SRC>,
->>>>  				 <&gcc GCC_GPU_GPLL0_DIV_CLK_SRC>;
->>>> +			power-domains = <&rpmpd SM6115_VDDCX>;
->>>> +			required-opps = <&rpmpd_opp_low_svs>;
->>>
->>> Where is this required-opp coming from? The clocks in gpucc seem to have
->>> different voltage requirements depending on the rates, but we usually
->>> handle that in the OPP tables of the consumer.
->> The only lower levels defined for this SoC are VDD_MIN and VDD_RET,
->> but quite obviously the GPU won't work then
->>
-> 
-> The levels needed for the GPU clocks to run should be in the GPU OPP
-> table though, just like e.g. sdhc2_opp_table for the SDCC clocks.
-> 
-> I still don't really understand why this is specified here. :)
-The GPU_CC block needs this rail to be at a certain power level for
-register access. This describes that requirement.
+On Wed, Jul 12, 2023 at 02:08:15PM +0800,
+"Wen, Qian" <qian.wen@intel.com> wrote:
 
-Konrad
+> On 5/29/2023 12:19 PM, isaku.yamahata@intel.com wrote:
+> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> > 
+> > For vcpu migration, in the case of VMX, VMCS is flushed on the source pcpu,
+> > and load it on the target pcpu.  There are corresponding TDX SEAMCALL APIs,
+> > call them on vcpu migration.  The logic is mostly same as VMX except the
+> > TDX SEAMCALLs are used.
+> > 
+> > When shutting down the machine, (VMX or TDX) vcpus needs to be shutdown on
+> > each pcpu.  Do the similar for TDX with TDX SEAMCALL APIs.
+> > 
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > ---
+> >  arch/x86/kvm/vmx/main.c    |  32 ++++++-
+> >  arch/x86/kvm/vmx/tdx.c     | 168 +++++++++++++++++++++++++++++++++++++
+> >  arch/x86/kvm/vmx/tdx.h     |   2 +
+> >  arch/x86/kvm/vmx/x86_ops.h |   4 +
+> >  4 files changed, 203 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+> > index 17fb1515e56a..29ebd171dbe3 100644
+> 
+> ...
+> 
+> > @@ -455,6 +606,19 @@ void tdx_vcpu_free(struct kvm_vcpu *vcpu)
+> >  		return;
+> >  	}
+> >  
+> > +	/*
+> > +	 * kvm_free_vcpus()
+> > +	 *   -> kvm_unload_vcpu_mmu()
+> > +	 *
+> > +	 * does vcpu_load() for every vcpu after they already disassociated
+> > +	 * from the per cpu list when tdx_vm_teardown(). So we need to
+> > +	 * disassociate them again, otherwise the freed vcpu data will be
+> > +	 * accessed when do list_{del,add}() on associated_tdvcpus list
+> > +	 * later.
+> > +	 */
+> 
+> Nit: kvm_free_vcpus() and tdx_vm_teardown() are typos? I don't find these functions.
+
+kvm_free_vcpus() => kvm_destroy_vcpus()
+tdx_vm_teardown() => tdx_mmu_release_hkid()
+
+Will fix the comment.
+-- 
+Isaku Yamahata <isaku.yamahata@gmail.com>
