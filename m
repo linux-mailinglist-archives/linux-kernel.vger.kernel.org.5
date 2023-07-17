@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C17E575649A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 937587564A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbjGQNWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 09:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
+        id S231810AbjGQNW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 09:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbjGQNVt (ORCPT
+        with ESMTP id S229924AbjGQNVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 Jul 2023 09:21:49 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0934D1986
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06945E2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:21:42 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3159d5e409dso3557577f8f.0
         for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:21:41 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbc12181b6so47239635e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:21:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares.net; s=google; t=1689600099; x=1692192099;
+        d=tessares.net; s=google; t=1689600100; x=1692192100;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xgCRwe/aMLADqB9Zcz9fBB5yZM5sFyh9DEldcukmYmo=;
-        b=jd+Cex5nHtocq0KU/b4wrGY3R6Pw8s2028bz/c1x3z0ay2vLZx+wIyfD98ztwTPplL
-         h88gw9ffPzoDenGjgwtvnTcFZ3N29WnsFrMWBnU73lwgofY45Cgz9BC4iZ4a/g4iSi4t
-         G5oqDscwZH8cx3A+1oTtZh99s96jq+mYJTGmnLgKDs8wTl9kWTQ/MvImI4JeGSYxjWRN
-         9BNpbWX/d4QqGWIcGzGkrKiNka6An8h9CVAP3zOLVAkn1//1YTHmznMN93p8XtMZOY/p
-         HEz0aUoN3WZcAwuX5bISxfs3HFXzoy1+WyFj2IAXsPaXA+aadmAF+nc/VZkXN8hb8UFD
-         1dhQ==
+        bh=5sFM/s1HCkd2y/ZrvPPAnShJqUMBsuZAAEx2AZaOCcE=;
+        b=kw5iGD4U6Sq9FcNhR3jXMmUdxt0chBpyC8TSKuYHC/lk5VhnuMruHlHGF9pHbMHstz
+         OhnnJ3If0RPnTwlebXxoFcqxa4XG+RhXRZ4xq/HDnCwasT0RvqwGnPfVXL13GFEEnnH9
+         b5OAmR6rGXf4TyP8LVwaQEfq0VAhxD794z1CTr8iCZ69pcU4W1cJxYFpxHmO3KY5YOXA
+         K0fOb8coiaVEEw6Ig5eOH/n8c6eGK8LHbliOUrKy/Xwj/2qlOGQJKgkjLVhYHAuxyNz+
+         n0IWmTR7fw2uyWrcDmqXiZ3oyiolu1kVmA7Lh7lwK8GwOYt/awbzqhEc2S55yICP3nWv
+         7MCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689600099; x=1692192099;
+        d=1e100.net; s=20221208; t=1689600100; x=1692192100;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xgCRwe/aMLADqB9Zcz9fBB5yZM5sFyh9DEldcukmYmo=;
-        b=Q2D2JQCkwEa4xf7a+31UVDEsUT4zXCKTWZ/9qS1H4F0KTbsppxrL9oaJSHYnq2nCEC
-         4fmmeSlzoS1+ogpX5cgn8N+oNh5VWBXAJQ5spmcIqUdB6G7B47ilx++ePA4ywuQBsPIj
-         H9L3dFqs2b0FT1QRX+RkY6khMApjO09owFKDetNlE4ktiEjSuKNwjwO4iPvW63nbJxqC
-         bCgiJW/s8VM9AQabaneM1cbA/iYMED1S9EB0U7ROY2JkJChPx6pQ9kYyMSW4KD6XWSpI
-         gtqktp6LWMBBJ8f8+uq8Te6RqpzlSuza19KpnUceiYQ896I8uEeuZzxo99Chna0eo0l7
-         UILA==
-X-Gm-Message-State: ABy/qLZ753Xn9hx9KpI9+2BoLAmMX1+V0DT8olETrjN3Mi73qO0Z+38q
-        ZgiENYQV9h0f088ERKWcqz+XEA==
-X-Google-Smtp-Source: APBJJlG2vmAPP4DlhcZhqmL+Z8QRHal4MZz8TTpG/CYsXAmIe4ZglDarAT2R5YRbCngAXoDbZupsnw==
-X-Received: by 2002:a7b:c451:0:b0:3fb:ef86:e2e with SMTP id l17-20020a7bc451000000b003fbef860e2emr10188694wmi.19.1689600099504;
-        Mon, 17 Jul 2023 06:21:39 -0700 (PDT)
+        bh=5sFM/s1HCkd2y/ZrvPPAnShJqUMBsuZAAEx2AZaOCcE=;
+        b=Xpt+XZ08oBctra5AVF5MWH43kPpxyqftgdQ/MV0BEUS9I3+gD/pFn+krrILleaO63R
+         cpinsCXHkfaHJwI7HTIVr34UlNoPaX6sv5sh4bTcu3/QOp9Qkl6zOngRF9d4BazDblYn
+         WE7Rynn/EvNqM+3uZ5JDVpUkzSiPoNSQzSRsDNcUVrFMGbmI+wp9Kdrv/gIThZ8tgGRl
+         qocF/WvaxcAJF7HB2oY+fuusIySbN8y7GVUyExXa+PlvsMRYfWekQb9V4V/3K5dHJBrG
+         ZU4sJMX5BQcUsA7ow3wo2Ikv55+vcvD9uovdvXQNKVKiT1XtiPfa7kBau9LxqYdxBNCE
+         sGdw==
+X-Gm-Message-State: ABy/qLZ8EvvGk8FCrxXHMdRq7rM2tnYFIj8TXPxJHHrudx5HZ1Y+cNy6
+        jI9rnk+J9kEsJcN55WcuYZy+Fg==
+X-Google-Smtp-Source: APBJJlGiALHxDwrbtLccbfF7x8XUgCJlF1OCxCsCxPGUxxeQVTarypdgVv8791c8Om+i6UQZjKDByQ==
+X-Received: by 2002:adf:e882:0:b0:314:1b87:b76d with SMTP id d2-20020adfe882000000b003141b87b76dmr8322681wrm.30.1689600100441;
+        Mon, 17 Jul 2023 06:21:40 -0700 (PDT)
 Received: from vdi08.nix.tessares.net (static.219.156.76.144.clients.your-server.de. [144.76.156.219])
-        by smtp.gmail.com with ESMTPSA id r8-20020a056000014800b0030fa3567541sm19249836wrx.48.2023.07.17.06.21.38
+        by smtp.gmail.com with ESMTPSA id r8-20020a056000014800b0030fa3567541sm19249836wrx.48.2023.07.17.06.21.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 06:21:39 -0700 (PDT)
+        Mon, 17 Jul 2023 06:21:40 -0700 (PDT)
 From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Date:   Mon, 17 Jul 2023 15:21:25 +0200
-Subject: [PATCH net-next 05/13] selftests: mptcp: userspace_pm: reduce dup
- code around printf
+Date:   Mon, 17 Jul 2023 15:21:26 +0200
+Subject: [PATCH net-next 06/13] selftests: mptcp: lib: format subtests
+ results in TAP
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230717-upstream-net-next-20230712-selftests-mptcp-subtests-v1-5-695127e0ad83@tessares.net>
+Message-Id: <20230717-upstream-net-next-20230712-selftests-mptcp-subtests-v1-6-695127e0ad83@tessares.net>
 References: <20230717-upstream-net-next-20230712-selftests-mptcp-subtests-v1-0-695127e0ad83@tessares.net>
 In-Reply-To: <20230717-upstream-net-next-20230712-selftests-mptcp-subtests-v1-0-695127e0ad83@tessares.net>
 To:     mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
@@ -69,21 +69,21 @@ Cc:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Matthieu Baerts <matthieu.baerts@tessares.net>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1748;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3366;
  i=matthieu.baerts@tessares.net; h=from:subject:message-id;
- bh=p5++Rak+cK4tA/cugYjcwaWOIkpGzEvf/nU/c+ap5fo=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBktUBd1rDIbZjMBVE1XO2137zJfkHCjI2ZkM4uT
- tEfLR5GPAWJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZLVAXQAKCRD2t4JPQmmg
- cxlxD/4n43jKCiIuunRJHRw5x0V1Yi5E6FEhyuz0fK9nt1GfwwDfGHkiSdojoOpHrPK7gp1D8gv
- 2SzPQgUbjk4zy04jICHtevJ31jPxktZcvHowtXnVbiVx09LyFu5gimofuOlM+9qTTxvFn/dAorS
- CEXIKV/fEP/j/bWU88NB8H7AyvWu/yg8daUg7bSSfpBS0inovt1PnJDXeYUXj0zKIS7w9FjpTYO
- L//KX/jR1pIXZ3mAHa0UQeb6BbBb+3CGY3wVTDdn1lNuCTeUpTZX+mIRdA7vU8TBT0B1TQSrIh1
- jOtRJuqYOTovM/VpIcCRlSwvXjuViUqRsqOA0FlnxUZH5KuMlz+tb96YzmEzKfKG/wgB7481tLn
- deCjaONrzhC+SWv/rrBNxZPfZvAmtJSrh58jpnjq6EbmgXLIB+02d3mY2JBV8UmlBIZAEjeWVz5
- /AAs82a5SX/gRhswbcuYT+ABxoBghQmUT6xY+ZGJ0f/zvMGsG8hfX/6BhHrSHttHWiYDYf+U/ON
- lWyoWVyZOaS7cbgFsEvm7Quw05wNe8wWfTbJcgBY9N2/oY4FK6PfG0g9e5JKNp/1mGNLT7uoH5G
- cvbuEFjrBkh+ERHKu0/KXgJL2CKUqgA2coq98EDM5+/H/LKMd4qGwSao+/iZWenXqnL+/sngD85
- L2uJwJqqENXjUXw==
+ bh=QXvyVB9sLKzsjse1ydzYpcK9r0QZKo1R9dEoREA7hII=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBktUBddDGhfpQo/ZAKz2ol2EKOKbqCPjllS1O8P
+ 6kJeQYWxXiJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZLVAXQAKCRD2t4JPQmmg
+ cw3GD/sGayBZe27cfQlJmwiMT0Vau+FecxDX0sNidQMHpZHPectEiQz8sDu4JjlYK32vbYXxo7L
+ TkQ7goFhVdULvsJmwrDyxcfd7ss+Y2pwZyOl2mf0oIHEC/ZUhpcK/z5IdAFlnWcp438DMYcEaXm
+ Q90D3+gcnIHYf3+h7EBR1SMEsW68MLmSK817XIWsd0dT2BKv+8LhZVeTe+oerxmGn59k6pir1ua
+ xYHq8bdQWnix9nAv0H0s8JaTpxKx/Y90+0hRH4k48S6UR93NOrJFT8FqOgwl/ql24ZyxM0WYZfz
+ yjC1pMCI3kZXNbrD1vVliusy9hxeEhAAZDHdXQdVgDXnTMd5+pehc9I+AuNKZQxqJT8s1Ym4ReM
+ fE4Ua1oXGcWHAJ+/nDGCNnDCRgyK/QTc4UkennWOIcH0KqwHz1hIgUFW5A66DUPBuAhuclnHyta
+ 1OYVHT+vpie0KlLUiShR2AJ4lyPNPkReI0cGwQGPRIHU1V21e5TlzAxVkEM0HzZPgv7xRPWUUzz
+ YABN//gYvz5/whm7PzmCQhDk74lEQ0XECTLlOQtPgi/mG9BrT1wrfgYj+FoPrUcW3qhiOlcIiK1
+ elUQX7Qd3duhXupIOpOBk0PY0uxbTFvPuHtpCoul/jY7hJ2AS8/XVBIVR9Agxz5TZGrG+H1Rpk0
+ 8AmKYYN+Mp5VYqw==
 X-Developer-Key: i=matthieu.baerts@tessares.net; a=openpgp;
  fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -96,76 +96,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In this selftest, "printf" is always used with "stdbuf".
+The current selftests infrastructure formats the results in TAP 13. This
+version doesn't support subtests and only the end result of each
+selftest is taken into account. It means that a single issue in a
+subtest of a selftest containing multiple subtests forces the whole
+selftest to be marked as failed. It also means that subtests results are
+not tracked by CIs executing selftests.
 
-With a new helper, it is possible to call "stdbuf" only from one place.
-This makes the code a bit clearer to read.
+MPTCP selftests run hundreds of various subtests. It is then important
+to track each of them and not one result per selftest.
 
+It is particularly interesting to do that when validating stable kernels
+with the last version of the test suite: tests might fail because a
+feature is not supported but the test didn't skip that part. In this
+case, if subtests are not tracked, the whole selftest will be marked as
+failed making the other subtests useless because their results are
+ignored.
+
+This patch adds some helpers in mptcp_lib.sh to be able to easily format
+subtests results in TAP in the different MPTCP selftests.
+
+Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/368
 Acked-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 ---
- tools/testing/selftests/net/mptcp/userspace_pm.sh | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ tools/testing/selftests/net/mptcp/mptcp_lib.sh | 66 ++++++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
 
-diff --git a/tools/testing/selftests/net/mptcp/userspace_pm.sh b/tools/testing/selftests/net/mptcp/userspace_pm.sh
-index 6b733b97d358..568ddee1d102 100755
---- a/tools/testing/selftests/net/mptcp/userspace_pm.sh
-+++ b/tools/testing/selftests/net/mptcp/userspace_pm.sh
-@@ -59,21 +59,24 @@ rndh=$(printf %x "$sec")-$(mktemp -u XXXXXX)
- ns1="ns1-$rndh"
- ns2="ns2-$rndh"
- ret=0
-+_printf() {
-+	stdbuf -o0 -e0 printf "${@}"
+diff --git a/tools/testing/selftests/net/mptcp/mptcp_lib.sh b/tools/testing/selftests/net/mptcp/mptcp_lib.sh
+index f32045b23b89..b1a0fdd0408b 100644
+--- a/tools/testing/selftests/net/mptcp/mptcp_lib.sh
++++ b/tools/testing/selftests/net/mptcp/mptcp_lib.sh
+@@ -1,8 +1,12 @@
+ #! /bin/bash
+ # SPDX-License-Identifier: GPL-2.0
+ 
++readonly KSFT_PASS=0
+ readonly KSFT_FAIL=1
+ readonly KSFT_SKIP=4
++readonly KSFT_TEST=$(basename "${0}" | sed 's/\.sh$//g')
++
++MPTCP_LIB_SUBTESTS=()
+ 
+ # SELFTESTS_MPTCP_LIB_EXPECT_ALL_FEATURES env var can be set when validating all
+ # features using the last version of the kernel and the selftests to make sure
+@@ -102,3 +106,65 @@ mptcp_lib_kversion_ge() {
+ 
+ 	mptcp_lib_fail_if_expected_feature "kernel version ${1} lower than ${v}"
+ }
++
++__mptcp_lib_result_add() {
++	local result="${1}"
++	shift
++
++	local id=$((${#MPTCP_LIB_SUBTESTS[@]} + 1))
++
++	MPTCP_LIB_SUBTESTS+=("${result} ${id} - ${KSFT_TEST}: ${*}")
 +}
- 
- print_title()
- {
--	stdbuf -o0 -e0 printf "INFO: %s\n" "${1}"
-+	_printf "INFO: %s\n" "${1}"
- }
- 
- # $1: test name
- print_test()
- {
--	stdbuf -o0 -e0 printf "%-63s" "${1}"
-+	_printf "%-63s" "${1}"
- }
- 
- print_results()
- {
--	stdbuf -o0 -e0 printf "[%s]\n" "${1}"
-+	_printf "[%s]\n" "${1}"
- }
- 
- test_pass()
-@@ -93,7 +96,7 @@ test_fail()
- 	ret=1
- 
- 	if [ -n "${1}" ]; then
--		stdbuf -o0 -e0 printf "\t%s\n" "${1}"
-+		_printf "\t%s\n" "${1}"
- 	fi
- }
- 
-@@ -127,7 +130,7 @@ cleanup()
- 
- 	rm -rf $file $client_evts $server_evts
- 
--	stdbuf -o0 -e0 printf "Done\n"
-+	_printf "Done\n"
- }
- 
- trap cleanup EXIT
-@@ -288,7 +291,7 @@ check_expected_one()
- 		test_fail
- 	fi
- 
--	stdbuf -o0 -e0 printf "\tExpected value for '%s': '%s', got '%s'.\n" \
-+	_printf "\tExpected value for '%s': '%s', got '%s'.\n" \
- 		"${var}" "${!exp}" "${!var}"
- 	return 1
- }
++
++# $1: test name
++mptcp_lib_result_pass() {
++	__mptcp_lib_result_add "ok" "${1}"
++}
++
++# $1: test name
++mptcp_lib_result_fail() {
++	__mptcp_lib_result_add "not ok" "${1}"
++}
++
++# $1: test name
++mptcp_lib_result_skip() {
++	__mptcp_lib_result_add "ok" "${1} # SKIP"
++}
++
++# $1: result code ; $2: test name
++mptcp_lib_result_code() {
++	local ret="${1}"
++	local name="${2}"
++
++	case "${ret}" in
++		"${KSFT_PASS}")
++			mptcp_lib_result_pass "${name}"
++			;;
++		"${KSFT_FAIL}")
++			mptcp_lib_result_fail "${name}"
++			;;
++		"${KSFT_SKIP}")
++			mptcp_lib_result_skip "${name}"
++			;;
++		*)
++			echo "ERROR: wrong result code: ${ret}"
++			exit ${KSFT_FAIL}
++			;;
++	esac
++}
++
++mptcp_lib_result_print_all_tap() {
++	local subtest
++
++	if [ ${#MPTCP_LIB_SUBTESTS[@]} -eq 0 ] ||
++	   [ "${SELFTESTS_MPTCP_LIB_NO_TAP:-}" = "1" ]; then
++		return
++	fi
++
++	printf "\nTAP version 13\n"
++	printf "1..%d\n" "${#MPTCP_LIB_SUBTESTS[@]}"
++
++	for subtest in "${MPTCP_LIB_SUBTESTS[@]}"; do
++		printf "%s\n" "${subtest}"
++	done
++}
 
 -- 
 2.40.1
