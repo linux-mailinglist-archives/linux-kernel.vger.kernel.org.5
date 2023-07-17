@@ -2,55 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C05BF75687A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D5775687F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbjGQP6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 11:58:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51562 "EHLO
+        id S231718AbjGQP7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 11:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjGQP6k (ORCPT
+        with ESMTP id S229731AbjGQP7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 11:58:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F8CD8;
-        Mon, 17 Jul 2023 08:58:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 03C1960F12;
-        Mon, 17 Jul 2023 15:58:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51822C433C9;
-        Mon, 17 Jul 2023 15:58:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689609518;
-        bh=oxc0wIrykUcV4lXikRU9sbRAnt1ysqKy15IEX0mqF/Y=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=UbNh4IekhjGWhrn4gvGQf61ZiY2gkxSLo98gAjJ8w8sUTRcyESEZx9fCfW2mEmhCX
-         xb4x3PcxoUlV9iCYsVm/iCyndzYMMx6YSBgKISeXi+Yt64qwvIJGBGto4Ia+5NXAc1
-         +T7DbHWA3ndowqUH0jq5xFTg+6P3HgCLsTELsB/37XY4SQT5JZ8wNubjT6bXYxzqxo
-         CG+24S8iRFy7Hw3TZ3dnIsGdsOnu4/FpK4JPmtTzchaD19cPMZO0y14lD7nxI2g3ZA
-         hN2tRFYVGNMY1v8YiQ2CuEMrO5We3Pnf2nCTgcaD9Go5+PtRGIKuUzLMtOemRVR0VD
-         KKdg6Hua/kt+Q==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the v4l-dvb-fixes tree
-References: <20230714083645.4e587f71@canb.auug.org.au>
-        <ZLTsXUFZy4Iggk5u@kekkonen.localdomain>
-Date:   Mon, 17 Jul 2023 18:58:28 +0300
-In-Reply-To: <ZLTsXUFZy4Iggk5u@kekkonen.localdomain> (Sakari Ailus's message
-        of "Mon, 17 Jul 2023 07:23:09 +0000")
-Message-ID: <87jzuy34yj.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Mon, 17 Jul 2023 11:59:17 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D978DD8;
+        Mon, 17 Jul 2023 08:59:16 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-263374f2f17so2446423a91.0;
+        Mon, 17 Jul 2023 08:59:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689609556; x=1692201556;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=UvHbtMz36nAYwOqM6y1BD7XGn+T3QzVrtohh3Auo9x0=;
+        b=AqylJkL03+2isSpBoKjJFPjXHrvY3UnQ+NrdyeGbO9Z+RIjgH/UsOoHyn9QEjuGtlF
+         Vqht2ZB4fMOwaxyudNPQConB7bg5tD7K1LS8o663X9w0VnN0SpgKq47jeNMsrx9aqmwM
+         kOXSucuBoRct17bUd4VS4wndJmbmMM8zkZxlTla6xMcs6WSS38Dqgr0qmwkJzxYYi0uf
+         dbSmeY1gNX9Po5p5hRGvzWnhXb+I+X1cJEhPdjh9aab1I5AU/3RRMcmq9Nd2VjRarjj2
+         SIIvs3cegsF3e0zcuKTQHSDi+0FB7WKGpqsSP+9IhYElDiWHLT6jqjk7OIz8bHqZTpoW
+         /J2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689609556; x=1692201556;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UvHbtMz36nAYwOqM6y1BD7XGn+T3QzVrtohh3Auo9x0=;
+        b=dXXcVWMJ+yyE0h8USoPAndwsiHJvJXB5RjdgjLYRH079ymeTnY3HWcziNkzBJChna1
+         jQZzQKjNddWvEMybFMAoon5E6jhVmK8fGCUdFsetnzalcVAE7r38lcgPvYLx+P4ju1GH
+         rVIXsExMrR26IoPiJ6RpM+5QAeTpKfKUlsHfaTsvrwyoJ0M8kaRUhnTl8zP7mfC8q8p/
+         H22E/PGSmWiguS9/duUTzJXs8cj3sFLsS0d8/UjPt5s0IW/clm9kDBIvtp0FMAo1/Tow
+         +vishimx4fKeA0EgxQ92hsFFr5dDSUwGjK1ACvRYvZwr07rxqHj/TNXeNXzUjVYOUrmQ
+         o2Mw==
+X-Gm-Message-State: ABy/qLa/15+QZ8J1uvsAcKJsZih3xZqolIqDNLlY6isk40XaZd2fQk4D
+        AvkWp8Q2bZ9tx7aKLfGnPK8=
+X-Google-Smtp-Source: APBJJlF3aQiHedJIInqcUf06kA0JliXD7cxnpC/bL597/rEOko2Dg6Tt2+tGNA+yMV5eCdWDnwCmqQ==
+X-Received: by 2002:a17:90a:38e1:b0:262:e6c6:c2ec with SMTP id x88-20020a17090a38e100b00262e6c6c2ecmr9521732pjb.33.1689609555677;
+        Mon, 17 Jul 2023 08:59:15 -0700 (PDT)
+Received: from yoga ([2400:1f00:13:50e2:5893:783e:fde0:1bce])
+        by smtp.gmail.com with ESMTPSA id j6-20020a17090a840600b002641a9faa01sm5056939pjn.52.2023.07.17.08.59.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 08:59:15 -0700 (PDT)
+From:   Anup Sharma <anupnewsmail@gmail.com>
+X-Google-Original-From: Anup Sharma <AnupSharma>
+Date:   Mon, 17 Jul 2023 21:29:07 +0530
+To:     Ian Rogers <irogers@google.com>
+Cc:     Anup Sharma <anupnewsmail@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/6] scripts: python: Implement add sample function
+ and return finish
+Message-ID: <ZLVlS3xHLZFZjRMq@yoga>
+References: <cover.1689024635.git.anupnewsmail@gmail.com>
+ <8b80f803ffbed4c84c0c63b3e1dae155a66ac1f2.1689024635.git.anupnewsmail@gmail.com>
+ <CAP-5=fVtfHM0NJ-7ogR1wvu3bUMR+2a1o-ndRPT_-BD1o5xdgg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fVtfHM0NJ-7ogR1wvu3bUMR+2a1o-ndRPT_-BD1o5xdgg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,41 +85,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sakari Ailus <sakari.ailus@linux.intel.com> writes:
+On Wed, Jul 12, 2023 at 10:35:16AM -0700, Ian Rogers wrote:
+> On Mon, Jul 10, 2023 at 4:14 PM Anup Sharma <anupnewsmail@gmail.com> wrote:
+> >
+> > The addSample function appends a new entry to the 'samples' data structure.
+> >
+> > The finish function generates a dictionary containing various profile
+> > information such as 'tid', 'pid', 'name', 'markers', 'samples',
+> > 'frameTable', 'stackTable', 'stringTable', 'registerTime',
+> > 'unregisterTime', and 'processType'.
+> >
+> > Signed-off-by: Anup Sharma <anupnewsmail@gmail.com>
+> > ---
+> >  .../scripts/python/firefox-gecko-converter.py | 25 +++++++++++++++++++
+> >  1 file changed, 25 insertions(+)
+> >
+> > diff --git a/tools/perf/scripts/python/firefox-gecko-converter.py b/tools/perf/scripts/python/firefox-gecko-converter.py
+> > index 39818a603265..6c934de1f608 100644
+> > --- a/tools/perf/scripts/python/firefox-gecko-converter.py
+> > +++ b/tools/perf/scripts/python/firefox-gecko-converter.py
+> > @@ -106,11 +106,36 @@ def process_event(param_dict):
+> >                 }
+> >                 stringTable = []
+> >
+> > +               def addSample(threadName, stackArray, time):
+> 
+> I think these aren't following general naming conventions:
+> https://peps.python.org/pep-0008/#function-and-variable-names
+> So use thread_name, stack_array.
 
-> On Fri, Jul 14, 2023 at 08:38:25AM +1000, Stephen Rothwell wrote:
->> Hi all,
->> 
->> In commit
->> 
->>   b0b43354c345 ("media: tc358746: Address compiler warnings")
->> 
->> Fixes tag
->> 
->>   Fixes: 80a21da3605 ("media: tc358746: add Toshiba TC358746 Parallel to CSI-2 bridge driver")
->> 
->> has these problem(s):
->> 
->>   - SHA1 should be at least 12 digits long
->>     This can be fixed for the future by setting core.abbrev to 12 (or
->>     more) or (for git v2.11 or later) just making sure it is not set
->>     (or set to "auto").
->> 
->> Also, please keep all the commit message tags together at the end of
->> the commit message.
+Noted. Will fix in v4.
+
+> > +                       responsiveness = 0
+> > +                       samples['data'].append([stack, time, responsiveness])
+> > +
+> > +               def finish():
+> > +                       return {
+> > +                               "tid": tid,
+> > +                               "pid": pid,
+> > +                               "name": name,
+> > +                               "markers": markers,
+> > +                               "samples": samples,
+> > +                               "frameTable": frameTable,
+> > +                               "stackTable": stackTable,
+> > +                               "stringTable": stringTable,
+> > +                               "registerTime": 0,
+> > +                               "unregisterTime": None,
+> > +                               "processType": 'default'
+> > +                       }
+> > +
+> > +               return {
+> > +                       "addSample": addSample,
+> > +                       "finish": finish
+> > +               }
+> 
+> I think the use of a dictionary here isn't idiomatic. Rather than use
+> a dictionary I think you can make a class Thread, then have functions
+> passed self called addSample and finish. So:
+
+agreed.
+
+> class Thread:
+>   def addSample(self, thread_name: str, stack_array: list[...], time: int):
+>      responsiveness = 0
+>      self.samples['data'] ...
+> ...
+> thread.addSample(threadName, stack, time_stamp)
 >
-> Apologies for this, I guess I've removed one character too many from the
-> hash.
->
-> I'll switch to a script (or alias) to do this. It'd be, though, helpful if
-> git could do this on its own.
+> Should samples be its own class here?
 
-Are you asking for git to create the Fixes tag? The documentation has
-has a tip using --pretty=fixes which is quite handy:
+I have changed the code to use object oriented approach by taking
+reference from simpleperf. I will make class Thread and Sample.
 
-https://docs.kernel.org/process/submitting-patches.html#describe-your-changes
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> Thanks,
+> Ian
+> 
+> > +
+> >         def _addThreadSample(pid, tid, threadName, time_stamp, stack):
+> >                 thread = thread_map.get(tid)
+> >                 if not thread:
+> >                         thread = _createThread(threadName, pid, tid)
+> >                         thread_map[tid] = thread
+> > +               thread['addSample'](threadName, stack, time_stamp)
+> >
+> >         # Extract relevant information from the event parameters. The event parameters
+> >         # are in a dictionary:
+> > --
+> > 2.34.1
+> >
