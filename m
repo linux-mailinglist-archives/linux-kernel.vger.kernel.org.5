@@ -2,148 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E69F755BDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7A5755BDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbjGQGiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 02:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39330 "EHLO
+        id S229743AbjGQGii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 02:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbjGQGiK (ORCPT
+        with ESMTP id S229528AbjGQGig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 02:38:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A3F93;
-        Sun, 16 Jul 2023 23:38:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 275CB60F5D;
-        Mon, 17 Jul 2023 06:38:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE6BBC433C7;
-        Mon, 17 Jul 2023 06:38:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689575888;
-        bh=C3jRACdteb4/FJI80ETxr0hg06nuLiMOWlWqtcyyR88=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=qbSlPk4UFm5zuVpO6zjcXmheQkuQ7VBPv8x/2t6tJ8kndEi0RTVBQ9fyb1O99+wz7
-         8nN0z7eObRyzLX0L8+YcmlRr4zmRj4EltFwAgcvI2ipxWoNH2FZxKIKE1q2rZ6h4BZ
-         wVhDwDoasBXGpf24aIYMKUyjRi8T0Zx4KRSiXVjHOld5DOfugrt+46f5gtBU4MEyLo
-         CIUsNLCDqAHbnZPvIYs5rKdt4foNDRJvfOZSFd4LIdsSicTDpj6elb6H1qqltTRKYm
-         TIH8ItBJj/r8+aKyhX9BSvYBa5MlMADs4sAfn6rXFkIRqaabAMtGZUZDaSCxM14rfQ
-         svcAFm0OYIpWg==
-Message-ID: <bd3890e4-3880-b292-5b9f-e9443185681c@kernel.org>
-Date:   Mon, 17 Jul 2023 08:38:00 +0200
+        Mon, 17 Jul 2023 02:38:36 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 823C7E46
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 23:38:34 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-55ba5bb0bf3so2445989a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 23:38:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1689575914; x=1692167914;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ybENJY+zvZqFFXyYlFQfNam1MA92ybnOKuGRXBpZTAw=;
+        b=QCmRcSURDxmA7WAhnDAKs9KEtswbEiK+GDi2sGhgm2sF4oVeEPotJXy7bchD52ZewX
+         V+kcimAqmBH81vVGQUvF9N+/QkMu66QmZpsSJqzuSolr9jj11KNH+B9n/XLswhDmqr1W
+         h+yKQdOrfglUzYqvAHSRLwmymEn0JqOJXy0z/W5jM8yFnFgBwZqITWakuLV8d6R9VPEn
+         +ryLVL1/KZ/ZX4TrTBwOKhVQHHrFOYNVXWNQKK2Fs+41QOnlSpd08CNS9r7pd/g58L1v
+         4QXgJUhL7ZhA9X2yFhij4AZvoLDWt/Ttk2qNY22rYETOOnEVzc51NwUn8wrSK3golu6e
+         t9qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689575914; x=1692167914;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ybENJY+zvZqFFXyYlFQfNam1MA92ybnOKuGRXBpZTAw=;
+        b=jVpXBU8tTKuXE2mUKjJKF7fVw6nPbO60xj5X4SpSrjf4w4ibJL7g4HibWEtWoFbkrT
+         riw75gnRp47EJFfl5OHWwPXrJmhnBOOxRGsiKY2KaCwnOJnT0gMrtUTGMYmTFPB8QMgE
+         1e9y0dA8oYDwGbYGJ8GOl779xzChQanVQCvsCs+0Y50lKtyXFOyR6wt6QgbqJI041JPg
+         fkVXwjr1UAuwq0MhTOCqsk0cPs1DRN2oXDozklE/mNh/uZNRSV8KSFPSUFyvioU4liDp
+         BKhgV8fRHYKOmtCnsAjjAcEvYYEtYRaSxOQJNNSXcenk6o1gWcWsNnVsf2vBdcD5cihO
+         BFBg==
+X-Gm-Message-State: ABy/qLaBeDSzH5vZ567j6NuOivInHT82PsYzZboQu4jtatVcFk1hsfdC
+        uYtNJrM243PQjTP/u19t0a6SIekR3+xBWgj/gpPwkw==
+X-Google-Smtp-Source: APBJJlEv1WbE1YzG1GrFziFQaVz86XQN0MmrqrUH+8TtyVeujBILdt3jjwOTGy2HvXry3v6SfFxMZzl3/LByxr8nmn4=
+X-Received: by 2002:a17:90b:3143:b0:263:e299:dff9 with SMTP id
+ ip3-20020a17090b314300b00263e299dff9mr11555957pjb.23.1689575913782; Sun, 16
+ Jul 2023 23:38:33 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/2] iio: add mcp4728 I2C DAC driver
-Content-Language: en-US
-To:     Andrea Collamati <andrea.collamati@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
+References: <20230710094321.1378351-1-apatel@ventanamicro.com>
+ <20230710094321.1378351-3-apatel@ventanamicro.com> <20230711-df9211fcae3b67948896b77f@orel>
+In-Reply-To: <20230711-df9211fcae3b67948896b77f@orel>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Mon, 17 Jul 2023 12:08:21 +0530
+Message-ID: <CAK9=C2W0ck_YaZ8MT9W_0Gx4fYRLq_engKCJn9X1hh5s_VrEQw@mail.gmail.com>
+Subject: Re: [PATCH v5 2/9] irqchip/riscv-intc: Add support for RISC-V AIA
+To:     Andrew Jones <ajones@ventanamicro.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        William Breathitt Gray <william.gray@linaro.org>,
-        Angelo Dureghello <angelo.dureghello@timesys.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <cover.1689541455.git.andrea.collamati@gmail.com>
- <75145a12-a85e-e553-d32f-3212357c4a7e@gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <75145a12-a85e-e553-d32f-3212357c4a7e@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Conor Dooley <conor@kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/07/2023 23:26, Andrea Collamati wrote:
-> mcp4728 is a 12-bit quad channel DAC with I2C interface.
-> 
-> support for:
->   * per-channel gain
->   * per-channel power state
->   * per-channel power down mode control
->   * per-channel vref selection internal/vdd
->   * store current state to on-chip EEPROM
-> 
-> Signed-off-by: Andrea Collamati <andrea.collamati@gmail.com>
-> ---
+On Tue, Jul 11, 2023 at 7:42=E2=80=AFPM Andrew Jones <ajones@ventanamicro.c=
+om> wrote:
+>
+> On Mon, Jul 10, 2023 at 03:13:14PM +0530, Anup Patel wrote:
+> > The RISC-V advanced interrupt architecture (AIA) extends the per-HART
+> > local interrupts in following ways:
+> > 1. Minimum 64 local interrupts for both RV32 and RV64
+> > 2. Ability to process multiple pending local interrupts in same
+> >    interrupt handler
+> > 3. Priority configuration for each local interrupts
+> > 4. Special CSRs to configure/access the per-HART MSI controller
+>
+> afaict, we're only doing (1) and (2) from this list in this patch.
 
-What changed? Are you saying you ignored entire review you got?
+Okay, I will update the commit description.
 
->  drivers/iio/dac/Kconfig   |  12 +
->  drivers/iio/dac/Makefile  |   1 +
->  drivers/iio/dac/mcp4728.c | 635 ++++++++++++++++++++++++++++++++++++++
->  3 files changed, 648 insertions(+)
->  create mode 100644 drivers/iio/dac/mcp4728.c
-> 
-> diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
-> index 3acd9c3f388e..fa1516f6a285 100644
-> --- a/drivers/iio/dac/Kconfig
-> +++ b/drivers/iio/dac/Kconfig
-> @@ -389,6 +389,18 @@ config MCP4725
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called mcp4725.
->  
-> +config MCP4728
-> +	tristate "MCP4728 DAC driver"
-> +	depends on I2C
-> +	help
-> +	  Say Y here if you want to build a driver for the Microchip
-> +	  MCP4728 quad channel, 12-bit digital-to-analog converter (DAC)
-> +	  with I2C interface.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called mcp4728.
-> +
-> +
+>
+> >
+> > This patch adds support for RISC-V AIA in the RISC-V intc driver.
+> >
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > ---
+> >  drivers/irqchip/irq-riscv-intc.c | 36 ++++++++++++++++++++++++++------
+> >  1 file changed, 30 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-ris=
+cv-intc.c
+> > index 4adeee1bc391..e235bf1708a4 100644
+> > --- a/drivers/irqchip/irq-riscv-intc.c
+> > +++ b/drivers/irqchip/irq-riscv-intc.c
+> > @@ -17,6 +17,7 @@
+> >  #include <linux/module.h>
+> >  #include <linux/of.h>
+> >  #include <linux/smp.h>
+> > +#include <asm/hwcap.h>
+> >
+> >  static struct irq_domain *intc_domain;
+> >
+> > @@ -30,6 +31,15 @@ static asmlinkage void riscv_intc_irq(struct pt_regs=
+ *regs)
+> >       generic_handle_domain_irq(intc_domain, cause);
+> >  }
+> >
+> > +static asmlinkage void riscv_intc_aia_irq(struct pt_regs *regs)
+> > +{
+> > +     unsigned long topi;
+> > +
+> > +     while ((topi =3D csr_read(CSR_TOPI)))
+> > +             generic_handle_domain_irq(intc_domain,
+> > +                                       topi >> TOPI_IID_SHIFT);
+> > +}
+> > +
+> >  /*
+> >   * On RISC-V systems local interrupts are masked or unmasked by writin=
+g
+> >   * the SIE (Supervisor Interrupt Enable) CSR.  As CSRs can only be wri=
+tten
+> > @@ -39,12 +49,18 @@ static asmlinkage void riscv_intc_irq(struct pt_reg=
+s *regs)
+> >
+> >  static void riscv_intc_irq_mask(struct irq_data *d)
+> >  {
+> > -     csr_clear(CSR_IE, BIT(d->hwirq));
+> > +     if (d->hwirq < BITS_PER_LONG)
+> > +             csr_clear(CSR_IE, BIT(d->hwirq));
+> > +     else
+> > +             csr_clear(CSR_IEH, BIT(d->hwirq - BITS_PER_LONG));
+>
+> We can optimize rv64 by allowing the compiler to remove the branch
+>
+>  if (IS_ENABLED(CONFIG_32BIT) && d->hwirq >=3D 32)
+>     csr_clear(CSR_IEH, BIT(d->hwirq - 32));
+>  else
+>     csr_clear(CSR_IE, BIT(d->hwirq));
+>
 
-Why two blank lines?
+Makes sense, I will update.
 
->  config MCP4922
->  	tristate "MCP4902, MCP4912, MCP4922 DAC driver"
->  	depends on SPI
-> diff --git a/drivers/iio/dac/Makefile b/drivers/iio/dac/Makefile
-> index addd97a78838..5b2bac900d5a 100644
+>
+> >  }
+> >
+> >  static void riscv_intc_irq_unmask(struct irq_data *d)
+> >  {
+> > -     csr_set(CSR_IE, BIT(d->hwirq));
+> > +     if (d->hwirq < BITS_PER_LONG)
+> > +             csr_set(CSR_IE, BIT(d->hwirq));
+> > +     else
+> > +             csr_set(CSR_IEH, BIT(d->hwirq - BITS_PER_LONG));
+>
+> Same comment as above.
 
-...
+Okay, I will update.
 
-> +
-> +static void mcp4728_remove(struct i2c_client *client)
-> +{
-> +	struct iio_dev *indio_dev = i2c_get_clientdata(client);
-> +	struct mcp4728_data *data = iio_priv(indio_dev);
-> +
-> +	iio_device_unregister(indio_dev);
-> +	regulator_disable(data->vdd_reg);
-> +}
-> +
-> +static const struct i2c_device_id mcp4728_id[] = { { "mcp4728", MCP4728 }, {} };
-> +MODULE_DEVICE_TABLE(i2c, mcp4728_id);
+>
+> >  }
+> >
+> >  static void riscv_intc_irq_eoi(struct irq_data *d)
+> > @@ -115,16 +131,22 @@ static struct fwnode_handle *riscv_intc_hwnode(vo=
+id)
+> >
+> >  static int __init riscv_intc_init_common(struct fwnode_handle *fn)
+> >  {
+> > -     int rc;
+> > +     int rc, nr_irqs =3D BITS_PER_LONG;
+> > +
+> > +     if (riscv_isa_extension_available(NULL, SxAIA) && BITS_PER_LONG =
+=3D=3D 32)
+> > +             nr_irqs =3D nr_irqs * 2;
+>
+> The AIA spec states sie and sip are explicitly 64, so how about writing
+> this as
+>
+>  int rc, nr_irqs =3D BITS_PER_LONG;
+>
+>  if (riscv_isa_extension_available(NULL, SxAIA))
+>      nr_irqs =3D 64;
 
-Yeah, my feedback was ignored.
+Okay, I will update.
 
-That's not how it works. Anyway, I doubt that it should be a new driver.
+>
+> >
+> > -     intc_domain =3D irq_domain_create_linear(fn, BITS_PER_LONG,
+> > +     intc_domain =3D irq_domain_create_linear(fn, nr_irqs,
+> >                                              &riscv_intc_domain_ops, NU=
+LL);
+> >       if (!intc_domain) {
+> >               pr_err("unable to add IRQ domain\n");
+> >               return -ENXIO;
+> >       }
+> >
+> > -     rc =3D set_handle_irq(&riscv_intc_irq);
+> > +     if (riscv_isa_extension_available(NULL, SxAIA))
+> > +             rc =3D set_handle_irq(&riscv_intc_aia_irq);
+> > +     else
+> > +             rc =3D set_handle_irq(&riscv_intc_irq);
+>
+> nit: blank line here
 
-If Jonathan agrees to have new/duplicated drivers, then fine with me,
-but then don't ignore the comments. Instead:
+I prefer no blank line here because the "if (rc)" below
+checks for errors for the above calls.
 
-It seems my previous comments were not fully addressed. Maybe my
-feedback got lost between the quotes, maybe you just forgot to apply it.
-Please go back to the previous discussion and either implement all
-requested changes or keep discussing them.
+>
+> >       if (rc) {
+> >               pr_err("failed to set irq handler\n");
+> >               return rc;
+> > @@ -132,7 +154,9 @@ static int __init riscv_intc_init_common(struct fwn=
+ode_handle *fn)
+> >
+> >       riscv_set_intc_hwnode_fn(riscv_intc_hwnode);
+> >
+> > -     pr_info("%d local interrupts mapped\n", BITS_PER_LONG);
+> > +     pr_info("%d local interrupts mapped%s\n",
+> > +             nr_irqs, (riscv_isa_extension_available(NULL, SxAIA)) ?
+>
+> nit: unnecessary ()
 
-Best regards,
-Krzysztof
+Okay, I will update.
 
+>
+> > +                      " using AIA" : "");
+> >
+> >       return 0;
+> >  }
+> > --
+> > 2.34.1
+> >
+>
+> Thanks,
+> drew
+
+Regards,
+Anup
