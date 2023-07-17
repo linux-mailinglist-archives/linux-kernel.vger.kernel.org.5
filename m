@@ -2,151 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB21756648
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4C7756646
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbjGQOZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50570 "EHLO
+        id S230126AbjGQOZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230422AbjGQOZ4 (ORCPT
+        with ESMTP id S229708AbjGQOZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:25:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5CA197
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:25:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689603911;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kg+GsbYLB4O3WTuuQwregxIHX9P5sA4QNLHVsEdZbKc=;
-        b=ab2dzQahp+WSdgYjVlPCB3gd2Wr2cieYk2NlbtLH2dCxtc1iSllWcsXC/8fY8XRM/TL5qs
-        4vQZTQujB8nkbdTnMUu9+6dZROZthDeEGJPETigZIFN0G05p/pZhPNG6fbTJPhGoXBhywW
-        T3loiawFqRjn9UxsbdyNVl3wDlgF1TA=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-1-VgGrmb3tMlm1NKxE1DRPaA-1; Mon, 17 Jul 2023 10:25:09 -0400
-X-MC-Unique: VgGrmb3tMlm1NKxE1DRPaA-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-51836731bfbso2858209a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:25:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689603909; x=1692195909;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kg+GsbYLB4O3WTuuQwregxIHX9P5sA4QNLHVsEdZbKc=;
-        b=EvHXj8u8XPB4kFtD5qN7CJaMRL2Y5d93Tkti64LTT10Cz4vpLC6b4tbqelfp5SOB3n
-         czl375qtWm30N1WbsuEGE2Mw9a2KDlGaKeX50u5Kg5TbKxMtHKir2LyGLVYXtZxFhWLI
-         m2b/rBYuzFg8bGN4ag9CvnJXaBQgcwxmeWe4Hqv7EEeoSJOPCfw/i+zufHYkb5KLjhts
-         PiKeoK/pi5AFxLMqRyaTOJWQQqsU7Txt4WkvSSwPLBeLaxGCU8Z6c9McbPXGn2iHHsBk
-         F+xE3DZW/EDCxga/hpAhuf/LCJVhNMC952jue83Rku9Znbw1ve9UH28tK394xih6NFDC
-         MvKg==
-X-Gm-Message-State: ABy/qLaGqCBqKm2KosFPVh36kmu7vQ6+gG40SRubmtWocL42k1TyTdal
-        0YAaMdgB74gK3gLUIXAytqjIAYWkKk8drmJVQWEUmDmJOQvgK6QMZs8oKS+JZ8QsIjR3oKbOBYL
-        lfKU6h5a5/8bTVtU2VfAHWKQT0qJRsK8GKDn7GZb6
-X-Received: by 2002:aa7:cb52:0:b0:516:af22:bcc6 with SMTP id w18-20020aa7cb52000000b00516af22bcc6mr10499339edt.21.1689603908842;
-        Mon, 17 Jul 2023 07:25:08 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEeRRv4xnmP1QWzxE9nxS6UxsaMMZ6UGX3WY7lj15U4ppSZ6Je25rTk/Td7DbyXDl4JEeQ0BcOx7tC4qAnbgMY=
-X-Received: by 2002:aa7:cb52:0:b0:516:af22:bcc6 with SMTP id
- w18-20020aa7cb52000000b00516af22bcc6mr10499318edt.21.1689603908534; Mon, 17
- Jul 2023 07:25:08 -0700 (PDT)
+        Mon, 17 Jul 2023 10:25:43 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C2ACC0;
+        Mon, 17 Jul 2023 07:25:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689603941; x=1721139941;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=9jbWPEK5mjyl/38fUXJs79bRqfkPrUlRieUxO7KNqQU=;
+  b=hVa19YjndFq/3tAsWltxXJBii71JGM08dLRoRDbeQJuOsgbOBZ71fQhQ
+   NIv4VAUQTB+kZKNXPxyTx03abrE/P9p2QnMce854RbZzO+i+JAN4ORlw9
+   t9dkf3sqmnGFsuHJQ/VvdEfFTWhvRFXzVl17+QBHd6/jlUUB+pBHdTu7Z
+   Csm7kw8EjyZhXd3XD9oBepRRWhtCBehSZ8k3tYQ6q4Sd8aMOez4YMEQQz
+   3VBkll0ZYyzQfjX9ECqTjA7Jcy7SK8IynKTeaNAJ55plkb9pYdOYEpL9+
+   QDwQo8atSFojGFarkNj2Xkoz/E0mazPPoO9XaRuk9Jb23nZcTp+TBqC5l
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="365985440"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="365985440"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 07:25:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="758428944"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="758428944"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.223.8])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 07:25:33 -0700
+Message-ID: <8591416b-77aa-fc9d-fe39-21c718600592@intel.com>
+Date:   Mon, 17 Jul 2023 17:25:28 +0300
 MIME-Version: 1.0
-References: <20230601072043.24439-1-ltao@redhat.com> <20230713100459.GEZK/MS69XbphJa+tN@fat_crate.local>
- <CAO7dBbVMNKTSDi5eP4BseEUexsk0Mo0GWJpyHfOcp+tHs6cSUw@mail.gmail.com> <20230717141409.GGZLVMsU6d/9mpJvMO@fat_crate.local>
-In-Reply-To: <20230717141409.GGZLVMsU6d/9mpJvMO@fat_crate.local>
-From:   Tao Liu <ltao@redhat.com>
-Date:   Mon, 17 Jul 2023 22:24:32 +0800
-Message-ID: <CAO7dBbX4pCO7pd==2P956HFeTVrMfb0oB33EXVxWbFuPFq=Oaw@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/kexec: Add EFI config table identity mapping for
- kexec kernel
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, ardb@kernel.org,
-        linux-kernel@vger.kernel.org, bhe@redhat.com, dyoung@redhat.com,
-        kexec@lists.infradead.org, linux-efi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v2 4/7] perf record: Track sideband events for all CPUs
+ when tracing selected CPUs
+To:     Yang Jihong <yangjihong1@huawei.com>, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com, kan.liang@linux.intel.com,
+        james.clark@arm.com, tmricht@linux.ibm.com, ak@linux.intel.com,
+        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+References: <20230715032915.97146-1-yangjihong1@huawei.com>
+ <20230715032915.97146-5-yangjihong1@huawei.com>
+Content-Language: en-US
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20230715032915.97146-5-yangjihong1@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 10:14=E2=80=AFPM Borislav Petkov <bp@alien8.de> wro=
-te:
->
-> On Mon, Jul 17, 2023 at 09:53:06PM +0800, Tao Liu wrote:
-> > ...snip...
-> > [   21.360763]  nvme0n1: p1 p2 p3
-> > [   21.364207] igc 0000:03:00.0: PTM enabled, 4ns granularity
-> > [   21.421097] pps pps1: new PPS source ptp1
-> > [   21.425396] igc 0000:03:00.0 (unnamed net_device) (uninitialized): P=
-HC added
-> > [   21.457005] igc 0000:03:00.0: 4.000 Gb/s available PCIe bandwidth
-> > (5.0 GT/s PCIe x1 link)
-> > [   21.465210] igc 0000:03:00.0 eth1: MAC: ...snip...
-> > [   21.473424] igc 0000:03:00.0 enp3s0: renamed from eth1
-> > [   21.479446] BUG: kernel NULL pointer dereference, address: 000000000=
-0000008
-> > [   21.486405] #PF: supervisor read access in kernel mode
-> > [   21.491519] mmc1: Failed to initialize a non-removable card
-> > [   21.491538] #PF: error_code(0x0000) - not-present page
-> > [   21.502229] PGD 0 P4D 0
-> > [   21.504773] Oops: 0000 [#1] PREEMPT SMP NOPTI
-> > [   21.509133] CPU: 3 PID: 402 Comm: systemd-udevd Not tainted 6.5.0-rc=
-1+ #1
-> > [   21.515905] Hardware name: ...snip...
-> > [   21.522851] RIP: 0010:kernfs_dop_revalidate+0x2b/0x120
->
-> So something's weird here - my patch should not cause a null ptr deref
-> here.
->
-> > [   21.527995] Code: 1f 44 00 00 83 e6 40 0f 85 07 01 00 00 41 55 41
-> > 54 55 53 48 8b 47 30 48 89 fb 48 85 c0 0f 84 a2 00 00 00 48 8b a87
->
-> This looks weird too. There's no "<>" brackets denoting which byte it
-> was exactly where RIP pointed to when the NULL ptr happened.
->
-> Do
->
-> make fs/kernfs/dir.s
->
-> and upload dir.s and the dir.o file somewhere.
->
-> In any case, my patch shouldn't be causing this. At least I don't see
-> it.
->
-> I'm testing a better version of the patch and it should not cause this
-> thing even less.
->
-OK, thanks for the help. I will re-make, test and update the info.
+On 15/07/23 06:29, Yang Jihong wrote:
+> User space tasks can migrate between CPUs, we need to track side-band
+> events for all CPUs.
+> 
+> The specific scenarios are as follows:
+> 
+>          CPU0                                 CPU1
+>   perf record -C 0 start
+>                               taskA starts to be created and executed
+>                                 -> PERF_RECORD_COMM and PERF_RECORD_MMAP
+>                                    events only deliver to CPU1
+>                               ......
+>                                 |
+>                           migrate to CPU0
+>                                 |
+>   Running on CPU0    <----------/
+>   ...
+> 
+>   perf record -C 0 stop
+> 
+> Now perf samples the PC of taskA. However, perf does not record the
+> PERF_RECORD_COMM and PERF_RECORD_MMAP events of taskA.
+> Therefore, the comm and symbols of taskA cannot be parsed.
+> 
+> The solution is to record sideband events for all CPUs when tracing
+> selected CPUs. Because this modifies the default behavior, add related
+> comments to the perf record man page.
+> 
+> The sys_perf_event_open invoked is as follows:
+> 
+>   # perf --debug verbose=3 record -e cpu-clock -C 1 true
+>   <SNIP>
+>   Opening: cpu-clock
+>   ------------------------------------------------------------
+>   perf_event_attr:
+>     type                             1
+>     size                             136
+>     { sample_period, sample_freq }   4000
+>     sample_type                      IP|TID|TIME|ID|CPU|PERIOD
+>     read_format                      ID|LOST
+>     disabled                         1
+>     inherit                          1
+>     freq                             1
+>     sample_id_all                    1
+>     exclude_guest                    1
+>   ------------------------------------------------------------
+>   sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 5
+>   Opening: dummy:HG
+>   ------------------------------------------------------------
+>   perf_event_attr:
+>     type                             1
+>     size                             136
+>     config                           0x9
+>     { sample_period, sample_freq }   1
+>     sample_type                      IP|TID|TIME|CPU|IDENTIFIER
+>     read_format                      ID|LOST
+>     inherit                          1
+>     exclude_kernel                   1
+>     exclude_hv                       1
+>     mmap                             1
+>     comm                             1
+>     task                             1
+>     sample_id_all                    1
+>     exclude_guest                    1
+>     mmap2                            1
+>     comm_exec                        1
+>     ksymbol                          1
+>     bpf_event                        1
+>   ------------------------------------------------------------
+>   sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 6
+>   sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 7
+>   sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 9
+>   sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 10
+>   sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 11
+>   sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 12
+>   sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 13
+>   sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 14
+>   <SNIP>
+> 
+> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> ---
+>  tools/perf/Documentation/perf-record.txt | 3 +++
+>  tools/perf/builtin-record.c              | 7 ++++++-
+>  2 files changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+> index 680396c56bd1..dac53ece51ab 100644
+> --- a/tools/perf/Documentation/perf-record.txt
+> +++ b/tools/perf/Documentation/perf-record.txt
+> @@ -388,6 +388,9 @@ comma-separated list with no space: 0,1. Ranges of CPUs are specified with -: 0-
+>  In per-thread mode with inheritance mode on (default), samples are captured only when
+>  the thread executes on the designated CPUs. Default is to monitor all CPUs.
+>  
+> +User space tasks can migrate between CPUs, so when tracing selected CPUs,
+> +a dummy event is created to track sideband for all CPUs.
+> +
+>  -B::
+>  --no-buildid::
+>  Do not save the build ids of binaries in the perf.data files. This skips
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index ccbcb005e188..4a15b2e06f45 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -921,7 +921,12 @@ static int record__config_tracking_events(struct record *rec)
+>  	 */
+>  	if (opts->target.initial_delay || target__has_cpu(&opts->target) ||
+>  	    perf_pmus__num_core_pmus() > 1) {
+> -		evsel = evlist__findnew_tracking_event(evlist, false);
+> +
+> +		/*
+> +		 * User space tasks can migrate between CPUs, so when tracing
+> +		 * selected CPUs, sideband for all CPUs is still needed.
 
-> > The stack trace may not be the same all the time, I didn't dive deep
-> > into the root cause, but it looks to me the patch will cause an
-> > unknown issue. Also I tested the patch on kernel-5.14.0-318.el9, it
->
-> This is the upstream kernel mailing list so those Frankenstein kernels
-> are all left to you.
->
-> Good luck. :-)
->
-OK, thanks!
+So if all (non-dummy) evsel have exclude_user, then system_wide is not needed.
 
-Thanks,
-Tao Liu
-
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
->
+> +		 */
+> +		evsel = evlist__findnew_tracking_event(evlist, !!opts->target.cpu_list);
+>  		if (!evsel)
+>  			return -ENOMEM;
+>  
 
