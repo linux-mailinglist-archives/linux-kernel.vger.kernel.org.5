@@ -2,142 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAD17560BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 12:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C94957560C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 12:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbjGQKmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 06:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50358 "EHLO
+        id S230256AbjGQKo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 06:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjGQKmG (ORCPT
+        with ESMTP id S229961AbjGQKoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 06:42:06 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2050.outbound.protection.outlook.com [40.107.243.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0EBBC;
-        Mon, 17 Jul 2023 03:42:03 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gZkYRbxNpwYlF+xjge687qURE0fJuT0maTyQ2rv4yyyd3bUWm+MmIqPPa4bFP+3VnyuS6vdE1aPgw3jHHAeSGx4LHL5JQcjZqosFhc5Byu/pZm2XkcSFZeN9S26DJwuoQt1Ed3+aMKdEajuuiuKS3grQKNfjAtHbPfxDDNOMoRLeYuF/csfyoaXpsfBjUMtKWLXMQbBl0uPSY2rmhQ9KqK1NDGrHIPbc4ZUfUyfOBX7CBE6Pp049lJwZbf8Lvc8+6jaN1/PY7OfJtBKTPuFb8Gl0xSnJjUTzX9LgpaPv6T3HCiRxoq7wAwenyqHTo0oe4sZlZ/kMe91vRfHfIyAYRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HVHj3u4pZxnZCGWyZisfQFsAyK8dZyRoV4PONKVPr4A=;
- b=ferT0Vv3FPWZqtuJiRS8e0kE4tB30QS7AtXZWwb9vbUorvKttcwf1FIiA3qShb7BMA2murwzyDYbezEuB/O1FIpdQEx2ec0wqtkLuwOi8eGzH+QiBysdu9joTr+jLl1abBMOLvlxUtq8fygl7xyFbgdJP523nscXCI0q2ipp4YFH1/5f4qWFUzBRjpQFc/Df6sCcRKV5cl0Np712YKqEfXIHswubwG3/jfp2hdqls4ws47ZQftk2frT13IKSzjBtSuojRoNuZo/p9Ouum3o8EXN828MZo9y5ln2fF2TrngfoGNIlnJyg1tAKS2LiSVosm8ccfz8bEXk20iBSVLr4VQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HVHj3u4pZxnZCGWyZisfQFsAyK8dZyRoV4PONKVPr4A=;
- b=mnA7RFap50n7msL539+viR83W/bVLU2lBOvrRjXMj0N5M/0t1aojFNaRpHhfkc2pGQN0S41eRz/DpedV6Ju0lS5Z9GaBaJQkXUL44p4LjzcZEiGYXz1b2HL8bghVsmAYqmz9MxjQ0gfte6WWA5LxA0wf5QeIv1d9hSY3FeicaVVFJYTXE3D6FAMkL9offBMi6ZZ6HqVlz1Np4VNXN5pJdVTNPG6H7oDGfb8SeQC6wf1CwBuHr6zNY5Yh9mYBWvas6gAKMeBT2eKPxlROwnmmBEDnt+n/RP+PvVCjPPimH+26rze3qpE8Uu0ATFOLlPsMnTke6CzXvoIes33cU+Vong==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB6288.namprd12.prod.outlook.com (2603:10b6:8:93::7) by
- MN0PR12MB6174.namprd12.prod.outlook.com (2603:10b6:208:3c5::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Mon, 17 Jul
- 2023 10:41:59 +0000
-Received: from DS7PR12MB6288.namprd12.prod.outlook.com
- ([fe80::55cf:c134:4296:5ec1]) by DS7PR12MB6288.namprd12.prod.outlook.com
- ([fe80::55cf:c134:4296:5ec1%4]) with mapi id 15.20.6588.031; Mon, 17 Jul 2023
- 10:41:58 +0000
-Message-ID: <7c879ceb-9133-5794-5248-f44160fec62a@nvidia.com>
-Date:   Mon, 17 Jul 2023 13:41:51 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/1] net: gro: fix misuse of CB in udp socket lookup
-Content-Language: en-US
-To:     Richard Gobert <richardbgobert@gmail.com>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        willemdebruijn.kernel@gmail.com, dsahern@kernel.org,
-        tom@herbertland.com, netdev@vger.kernel.org,
+        Mon, 17 Jul 2023 06:44:24 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52CD411F;
+        Mon, 17 Jul 2023 03:44:23 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 923485C00F4;
+        Mon, 17 Jul 2023 06:44:22 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Mon, 17 Jul 2023 06:44:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1689590662; x=1689677062; bh=S0
+        E2ik2Q5WYq90hY6DPf5ttlL5ZI3LD8t/OSQKEdXvg=; b=TQJqH1SA0SqMkDSkPK
+        /k/fILhxOKxIjgcVIvR78ejZ7deNC009+kGS3/gtHkocV+RIRphWLN2KP6nzw78t
+        8wtpI1pcFa35H95KEVb8Whm2WyGOANF5bssAO+HLanfIhE0IDP+k4Tn5OPsDPiMF
+        Zwv47RUSSVw1H+QKc2CYR9/zTGWKaC6T+wxyXUpjJDsD7IOlARSbKDUSLQW2/Q7f
+        x6oRHiWGDbrGujVr11wYcEBuipnOg2EHeFU/HR/iO2FNWYZ2QiHOdjKb/JMSkkcq
+        7YlBBpzdGO8oFeCvtMdJU24DvLmVkjlbnqYQQGPUMx7GrUNUU39L2nDBsvlLCGCT
+        vx8w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1689590662; x=1689677062; bh=S0E2ik2Q5WYq9
+        0hY6DPf5ttlL5ZI3LD8t/OSQKEdXvg=; b=RYvk0kmE/jJKooZK/9/MD/wu196Tg
+        nmvdXAumSbguMpaFVq+sEWW/Cwx0wStb2MVWJpjGbIaZd2QiAyoTAIRjYngGgl2Q
+        ozFGBdsVr7dugcszUu9zxxL2GZwO1lhJye8hSKOLVVqb8iOFXspSC+7KisFMFd3j
+        ctvEaSV3RV1jHlEc0OMjxKKbrU/ueHz0WBUiGA1Ql6D/1xiTQH6BX4/FSG8LsyiM
+        rj2om6Qj+ziWCwOgRYSk6gRSOgtSdmBsB8mMiwDGij/vzG3DwNe33HjS2FQoJTbD
+        4mdyJlJ9545fQlXKGW0/FtLmCyEM6VPq5dl1ZIdi01DqKVT0YPMJHi9wQ==
+X-ME-Sender: <xms:hRu1ZCcw_JOKkCwUkLh7K5cQ5Y7k4AenwS_tSgnBVo0rjqFBui8PMw>
+    <xme:hRu1ZMOmjRN5qJqaiTnbzFaLIPCB-8lfpKOByHMkRZsn9A5GiEC9Asdov5z9WHUCS
+    IVcS6V3F6PFB9qhE4A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrgedvgdefudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:hRu1ZDiLR2RVDesxnOWl8HQqxxzNBFQwWJOgqXZl8yPsI0n2kb2vaA>
+    <xmx:hRu1ZP8CDiaR9ZZ-0XrDhSbnqNECOu1cAgcw1noVHQkz-ebPQ5Ah4A>
+    <xmx:hRu1ZOskAOxlfrMKuxIseLUHreyzJmRVL9b97Q0pXhSzEd4DJNEBNw>
+    <xmx:hhu1ZDPtcM9pLWbfQKyxJNy7TCqXdhWTSAdcqph1wae2PvYKzLjo9g>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 8B15DB60086; Mon, 17 Jul 2023 06:44:21 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-531-gfdfa13a06d-fm-20230703.001-gfdfa13a0
+Mime-Version: 1.0
+Message-Id: <b0f2c4d3-c5d6-4887-b2c1-2d464c918775@app.fastmail.com>
+In-Reply-To: <ZLULjoePQaF+nSk2@smile.fi.intel.com>
+References: <20230705140242.844167-1-arnd@kernel.org>
+ <ZLULjoePQaF+nSk2@smile.fi.intel.com>
+Date:   Mon, 17 Jul 2023 12:44:01 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Andy Shevchenko" <andriy.shevchenko@intel.com>,
+        "Arnd Bergmann" <arnd@kernel.org>
+Cc:     "Jiri Kosina" <jikos@kernel.org>,
+        "Benjamin Tissoires" <benjamin.tissoires@redhat.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        "Haiyang Zhang" <haiyangz@microsoft.com>,
+        "Wei Liu" <wei.liu@kernel.org>, "Dexuan Cui" <decui@microsoft.com>,
+        "Paulo Miguel Almeida" <paulo.miguel.almeida.rodenas@gmail.com>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        "Dawei Li" <set_pte_at@outlook.com>,
+        "Yang Yingliang" <yangyingliang@huawei.com>,
+        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20230707121650.GA17677@debian> <20230707122627.GA17845@debian>
-From:   Gal Pressman <gal@nvidia.com>
-In-Reply-To: <20230707122627.GA17845@debian>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR2P281CA0168.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:99::17) To DS7PR12MB6288.namprd12.prod.outlook.com
- (2603:10b6:8:93::7)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6288:EE_|MN0PR12MB6174:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7a9fa700-7605-4894-44c4-08db86b27253
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nu97Gqd54mWxu8qjC/avpYOAaz4DHzZwDJj6UqSWBv1P3CaLk1rWJBshwaXUTMUqAIFDK03rIlgEPy+FlvGVNVhMWuSON4cc3G3/xMUKdJP5tajc38oaF0D6fftUWCy5z+2pwsVxCVd8LJ+cvsXI6cnOSCfvlk0SmHQgBriht2eot5uiVDG9iAC24lSkg4CqbjJdQn/QmqLl1gg8diWZIuNa1Ppkx5YXhaMifAtoDOeBJqRQNOI8IYBGNSwQtcQd5dn8CaCLp1u298IScJHrpiGMZuMxpybyXDTkQGGrCUGqGMnYFp6CR817zpIbgbvNJHE3n4nirBmHWfwN3RUyiIWZijpLSEtyeWbi4mxcoMDq6+1KIbPupzVy/vgybk4ZiMkPKLPxFXfErEb81/B2MnjQqF4d7zuUGYV5RBbOzZSVPwW1GlfxahdnYi0Pe1bo1QtHP3SUWhVVgtDSVP8+jCqexJih8kRVub0venRF/JfMXSZXfSLhadzEB01sQN9bzo7VV0h2RXpU0sSd0CbEpIfn6XZaI0qh/nq3inm0KHJDATazYAEM4mMYWhOnCBism9tcQAWpEIGQqi+FX/ASF+X/uK+z3KDPrwHt75MOpsv+6RMqjkxDK/wPkH77KP428AothWtJAw0Y7w537jAqqCvjjMr/7/EU8kncbG97XGI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6288.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(136003)(366004)(346002)(376002)(451199021)(2616005)(31686004)(186003)(6506007)(53546011)(26005)(6486002)(6666004)(921005)(478600001)(38100700002)(66476007)(66556008)(66946007)(2906002)(4744005)(8936002)(8676002)(5660300002)(316002)(7416002)(41300700001)(31696002)(86362001)(36756003)(6512007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c2l6b0gxbnU0WGw1azlDaTlpbWdhbnVmcUgzbXgveXFrTFpBZktWYmVnazNH?=
- =?utf-8?B?dTVYcWRJSGJEZU9wb2poL1BUSnNwZVkxdkl0ZWI5aFpqZS9naFp1UXpEellY?=
- =?utf-8?B?MTFIT2E4NmdOQy9ES1JGWlZsZTZVaG9rZ0NwQk5jOFo3TU1MbVlnWmtmTkRm?=
- =?utf-8?B?UFFLNDdGQVhDRy9hUlJXSVI5eEtFWnJVSFlOekYxd3ZFZ1FPR0JGQ3VKQWs1?=
- =?utf-8?B?aGU2cy9Fbm1CaFFEczVYS3p1R1BHM2dxY2M0RU5tYVB2dzRnWUlwTkFGeTdP?=
- =?utf-8?B?SllTeFFBVFkrMklSOGNBeG85a0szYVhIcjVERm8ra1B5QUFaa1Vvck1EbWdP?=
- =?utf-8?B?UDQyRDBsV09LNThseGxZeENYbkxCWTVMZjJRYldOL1I3TlZNYitveUtKNkly?=
- =?utf-8?B?UWlqQWlYVm54NFRVeHVMRTdqMVFFSmttZDJhT3VsRmRiTmErZXdwOTNuWHV6?=
- =?utf-8?B?WGpINFlIWUNIQXM3YjNqZWFJcmxRTHZRajdPdStMVndrNjZtMmxiRXJ5K2dp?=
- =?utf-8?B?ZlFySHphY3E4TVhhVTlOSXU5dlJXVUlibU1JZWtkV3RaZGwvTEt0TEUrU1lG?=
- =?utf-8?B?MlRSblJ5RkxoZlNuQ0F1eTdDVkV4dlhuZHNNU0JoWlV4QlF3Y2pmczhmekVS?=
- =?utf-8?B?TFAvZ2U5QjdWS2hKSjQxOXR6Z1RnZFJEUHRNQWk0MDhza0w2Znp6N1NNbWFs?=
- =?utf-8?B?eHdRWGxDb1VzTHA0STNMZDgwRmZOYkJiY3FCME15K0J6UWUvNlk4THNKUm9C?=
- =?utf-8?B?d0FBRGhxZUtJQ1pLMWR2K3JqMTcvRkxWcldvV3VCYkFQZW9OczJKNkdHc3Rx?=
- =?utf-8?B?WFA5dGRRUWc0MEpOYkJpV1pIcDFMVXBhZER1NDVZOFp3RnZWL1Y0S2JrUHN2?=
- =?utf-8?B?WG9ITWxNbVRBVTNMQ2VmTkZNdFNOY0FGRXY0S1J5VThWRW5ONzhkNjV5MnRW?=
- =?utf-8?B?YzF6WXNxZGp4K2hkc3J3QkluM2t2TE9QcWViaVFLdnpueHBiL0xkZVljQ2lv?=
- =?utf-8?B?Q21DTGpaVE1qU2JzT1NiOTl4bkhrT2lVMjVKVit4WWdVdVpaRzJPb2hsOWIz?=
- =?utf-8?B?MHN5R3EzdVRuZnBtMVU1NmtWa2pOVFk1Vnd6S2hqL2l1SXdiWDE4RUUya3JQ?=
- =?utf-8?B?bWIrc0lMZkExOGsxVTNvM05IcW8yaVJiVkFQblJhZWZyZGlEYjhVVnJleVZM?=
- =?utf-8?B?bWhmcDk3bkdmVERaRmt4ZTlJYkVEd2IydTVsdkE0VU1jTzJvODM1RTAwSVZI?=
- =?utf-8?B?TmZhUWhOMjZ0emN4S21yUWpUWWVNMW95Zkh3MWVQWVE4L3JZaFNtZHNTQldo?=
- =?utf-8?B?TFdJQTVxTUhhUDZoSDhYd01BaUFqY1NxcTBKY3MzMXRWTmlFVEVPeGF5bFpK?=
- =?utf-8?B?SVZyU0ZZbEJ6cU4zOG0yMWd4TWgwL3ljSFhCdjJtSG1Yb3kvejgvQm1ZbDRi?=
- =?utf-8?B?M29ETVJuNzVML0hRRHp5Q050S3FEYWRFdkNkZEdCbGJ3RHczc1NQaE56RVZv?=
- =?utf-8?B?cExkQTR1M1pKT0YyUDVBb2p4U2tUSlRvL2EwK21tUFpwYUNOSkh3cWh5ZUNL?=
- =?utf-8?B?YmtDRjFHYVY1S0RPbG1RUXpVQnRGQUZWYVdaTy9OTGlwK1dSU0N6NUdxZDcv?=
- =?utf-8?B?WWFNbkdWdldkVzg3N2JBU0FGVTlwMUdueXpWL2RtTnQ3VE41dGtmNUhLVmRG?=
- =?utf-8?B?aHpaYVFnYU1rWGhEZkE0RW9XbElKazQ3ZmFMUVFzcjVtQlhQWTh0eWR4c0R3?=
- =?utf-8?B?dFY1VHppRGhuOGwxVDNHWU1iK3lsOXI3NlZSbEdYalQ1Nnh5VWhMcHd1N3Mv?=
- =?utf-8?B?UDRLSGhCc2ttcnNpZlZvbzJ5ZVh5UmlwWUpGRzhXZTdNSm5RMitCZTcxNTZn?=
- =?utf-8?B?ZFo2ZTV2QXMwRWRYTTVCbGJ3UFdPc3IxMzQyNWlvUjZZdVQyWWNhdVFkLy9K?=
- =?utf-8?B?dGNFV0E5ekZydWtraEF2NG9sUHdFMVJLVGxtQjFpc3BkdWgwNkd6aDVTMzFK?=
- =?utf-8?B?eEZrQzltN0FyRHFpRzNuVGZkTlFqZTExQyt6QjVWeVdqb01qMXppTlNyTnZD?=
- =?utf-8?B?Vmg5ejJiNGpScU0rcXczYVFoL3AxdGhSWDYvaUhPTXdZaDA3WkZkSVZ1eEV3?=
- =?utf-8?Q?p9xrykmpXTJzyyLAiN4bIvPbj?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a9fa700-7605-4894-44c4-08db86b27253
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6288.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 10:41:58.7416
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FdLRqw5pGWNmHXOGps115/CwbpIhnFKLg/MLjW0w/P/EqyERb8dfJFu14gQviaQ5
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6174
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Subject: Re: [PATCH] HID: hyperv: avoid struct memcpy overrun warning
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/07/2023 15:26, Richard Gobert wrote:
-> This patch fixes a misuse of IP{6}CB(skb) in GRO, while calling to
-> `udp6_lib_lookup2` when handling udp tunnels. `udp6_lib_lookup2` fetch the
-> device from CB. The fix changes it to fetch the device from `skb->dev`.
-> l3mdev case requires special attention since it has a master and a slave
-> device.
-> 
-> Fixes: a6024562ffd7 ("udp: Add GRO functions to UDP socket")
-> Reported-by: Gal Pressman <gal@nvidia.com>
-> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
+On Mon, Jul 17, 2023, at 11:36, Andy Shevchenko wrote:
+> On Wed, Jul 05, 2023 at 04:02:24PM +0200, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> A previous patch addressed the fortified memcpy warning for most
+>> builds, but I still see this one with gcc-9:
+>
+> JFYI: as of today I have run Linux Next with `make W=1 allmodconfig` on x86_64
+> and it seems there are still tons of similar issues which break the build.
 
-Hi Richard,
-Are you planning to submit a v2 for this patch?
+It's a bit more complex:
+
+- yes, there are lots of warnings for memcpy() read overflow when you
+  build allmodconfig kernels with W=1. I have patches for all of these and
+  plan to submit them over time.
+
+- This particular one is a memcpy /write/ overflow, i.e. the
+  destination type overflows with the length according to gcc's
+  understanding of the structures. This warning is enabled even
+  without W=1, though it may only show up in certain configurations
+  or compiler versions.
+
+      Arnd
