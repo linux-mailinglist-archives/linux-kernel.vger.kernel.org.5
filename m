@@ -2,196 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE3F7569D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0F07569D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbjGQRIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 13:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33128 "EHLO
+        id S229936AbjGQRIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 13:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbjGQRIi (ORCPT
+        with ESMTP id S229884AbjGQRIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 13:08:38 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E1D198
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:08:35 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-40371070eb7so10221cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:08:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689613714; x=1692205714;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LTmM0HfzwvB/Vdx9NPFotbq1yDAXwvaKOMLW0DYioWk=;
-        b=RKUz0mp7peFUWJaRfVmMeTPUwJiwWg2RRd6xfybhZi0aoV3uCuL5V9ayqhg+aCktIa
-         /evz4tT9RgsyK9/uiAQAZ8nKzDwzBsBEYRRU0dIJMxbYnw3j6HUec9UF/zL8OzeKcwHa
-         yFVONWk6iL3/VO2e1PHzJNAYAwhcwP7c1mxxZH9dg8xKmBxbF6jlCZYXGH9p/oZbTM/8
-         1cwtMYiDqKzG6BYu+iPfDeezrwKSjobrJfs60KkC0DP35iNLDYJDjLrwmZJjDjHHXiCM
-         xgYNzPfPxyxxYQLNjABUXyqQgRngivn2l8q3K7EsJwrtvJ+fYPPczJgrEsF2M9Ww8v5c
-         pm9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689613714; x=1692205714;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LTmM0HfzwvB/Vdx9NPFotbq1yDAXwvaKOMLW0DYioWk=;
-        b=FdvghmENbE9bf6QXfbYzLUHgHXD/d4Iiy3jQWiDnvz4M9cPjxOQ22k6GIe/OLx2ff5
-         W3kGY1pX8EPSdmPJFQRKTTaMkLuPu7zqMmeBvdEDxDZi74MH5jS7wiGt75rMi9JcI9lH
-         NdjwdhLzvI+ngRL0M+qm47n1SzNm/Ygd4IcS/G4SQd9T6OJTZuWA9K1fhafxz32S4Af2
-         0B8bPbviDAz8mXPBbthXgSqeexcHYObSMqUrF0xQkWswfbya1phvbtjZmZKh45GXT0mF
-         f6CdI6nD0QBfBaIUrEfBP2vKyhPWKj4NYVlu5Cs8EjhS1SJc7RjzNZk3vMR9D9W0Wyyc
-         8ZXA==
-X-Gm-Message-State: ABy/qLYgyMeXJo0s9ABpXcxcdxzeadlAXktrxs6HYlcOetBhTVdZ+pu4
-        zlfs1L0o3cgmHwiaW6T/nNvZxGgJE57CT9UVvwbmOg==
-X-Google-Smtp-Source: APBJJlEn61y9q4oc3cU7MwZEoRh5a/dJxfP/5I+e8iyg+Ggc7cLgubAm/MLcxlfkG6JbwoDESNcLo+mFPBYlARCt4ik=
-X-Received: by 2002:a05:622a:1009:b0:403:b3ab:393e with SMTP id
- d9-20020a05622a100900b00403b3ab393emr1352364qte.18.1689613714249; Mon, 17 Jul
- 2023 10:08:34 -0700 (PDT)
+        Mon, 17 Jul 2023 13:08:17 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7A0EDA4
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:08:15 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8DxPOt9dbVkpQgGAA--.10719S3;
+        Tue, 18 Jul 2023 01:08:13 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxviN8dbVkMLcxAA--.31462S3;
+        Tue, 18 Jul 2023 01:08:12 +0800 (CST)
+Message-ID: <fbbc08de-043a-2622-7cd4-fa485129edaf@loongson.cn>
+Date:   Tue, 18 Jul 2023 01:08:12 +0800
 MIME-Version: 1.0
-References: <20230714160407.4142030-1-ryan.roberts@arm.com>
- <20230714161733.4144503-3-ryan.roberts@arm.com> <CAOUHufacQ8Vx9WQ3BVjGGWKGhcRkL7u79UMX=O7oePDwZ0iNxw@mail.gmail.com>
- <82c934af-a777-3437-8d87-ff453ad94bfd@redhat.com>
-In-Reply-To: <82c934af-a777-3437-8d87-ff453ad94bfd@redhat.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Mon, 17 Jul 2023 11:07:57 -0600
-Message-ID: <CAOUHufYnVdxoKgvxFmk7e0KqtOV9=zWQ-vjVX7JOLNM-cRKR9Q@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] mm: FLEXIBLE_THP for improved performance
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [05/11] drm/tests: helpers: Create an helper to allocate a
+ locking ctx
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20230710-kms-kunit-actions-rework-v1-5-722c58d72c72@kernel.org>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <20230710-kms-kunit-actions-rework-v1-5-722c58d72c72@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8DxviN8dbVkMLcxAA--.31462S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoWxur1DGF43AF1DXw1rJF4xGrX_yoW5AF4UpF
+        4UAa4vkrWUtFZxCw1Iva4DZa4Skw1xJr4xWr97Zr45ZFWYgFnxua1Dtr13urW5Gr4DXF4I
+        vF1avryUua1qkrXCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr0_Gr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
+        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
+        twAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
+        k0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_
+        Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
+        AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
+        cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
+        8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v2
+        6r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4xR6UUUUU
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 7:06=E2=80=AFAM David Hildenbrand <david@redhat.com=
-> wrote:
+Hi,
+
+On 2023/7/10 15:47, Maxime Ripard wrote:
+> As we get more and more tests, the locking context initialisation
+> creates more and more boilerplate, both at creation and destruction.
 >
-> On 14.07.23 19:17, Yu Zhao wrote:
-> > On Fri, Jul 14, 2023 at 10:17=E2=80=AFAM Ryan Roberts <ryan.roberts@arm=
-.com> wrote:
-> >>
-> >> Introduce FLEXIBLE_THP feature, which allows anonymous memory to be
-> >> allocated in large folios of a determined order. All pages of the larg=
-e
-> >> folio are pte-mapped during the same page fault, significantly reducin=
-g
-> >> the number of page faults. The number of per-page operations (e.g. ref
-> >> counting, rmap management lru list management) are also significantly
-> >> reduced since those ops now become per-folio.
-> >>
-> >> The new behaviour is hidden behind the new FLEXIBLE_THP Kconfig, which
-> >> defaults to disabled for now; The long term aim is for this to defaut =
-to
-> >> enabled, but there are some risks around internal fragmentation that
-> >> need to be better understood first.
-> >>
-> >> When enabled, the folio order is determined as such: For a vma, proces=
-s
-> >> or system that has explicitly disabled THP, we continue to allocate
-> >> order-0. THP is most likely disabled to avoid any possible internal
-> >> fragmentation so we honour that request.
-> >>
-> >> Otherwise, the return value of arch_wants_pte_order() is used. For vma=
-s
-> >> that have not explicitly opted-in to use transparent hugepages (e.g.
-> >> where thp=3Dmadvise and the vma does not have MADV_HUGEPAGE), then
-> >> arch_wants_pte_order() is limited by the new cmdline parameter,
-> >> `flexthp_unhinted_max`. This allows for a performance boost without
-> >> requiring any explicit opt-in from the workload while allowing the
-> >> sysadmin to tune between performance and internal fragmentation.
-> >>
-> >> arch_wants_pte_order() can be overridden by the architecture if desire=
-d.
-> >> Some architectures (e.g. arm64) can coalsece TLB entries if a contiguo=
-us
-> >> set of ptes map physically contigious, naturally aligned memory, so th=
-is
-> >> mechanism allows the architecture to optimize as required.
-> >>
-> >> If the preferred order can't be used (e.g. because the folio would
-> >> breach the bounds of the vma, or because ptes in the region are alread=
-y
-> >> mapped) then we fall back to a suitable lower order; first
-> >> PAGE_ALLOC_COSTLY_ORDER, then order-0.
-> >>
-> >> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> >> ---
-> >>   .../admin-guide/kernel-parameters.txt         |  10 +
-> >>   mm/Kconfig                                    |  10 +
-> >>   mm/memory.c                                   | 187 ++++++++++++++++=
---
-> >>   3 files changed, 190 insertions(+), 17 deletions(-)
-> >>
-> >> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documen=
-tation/admin-guide/kernel-parameters.txt
-> >> index a1457995fd41..405d624e2191 100644
-> >> --- a/Documentation/admin-guide/kernel-parameters.txt
-> >> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> >> @@ -1497,6 +1497,16 @@
-> >>                          See Documentation/admin-guide/sysctl/net.rst =
-for
-> >>                          fb_tunnels_only_for_init_ns
-> >>
-> >> +       flexthp_unhinted_max=3D
-> >> +                       [KNL] Requires CONFIG_FLEXIBLE_THP enabled. Th=
-e maximum
-> >> +                       folio size that will be allocated for an anony=
-mous vma
-> >> +                       that has neither explicitly opted in nor out o=
-f using
-> >> +                       transparent hugepages. The size must be a powe=
-r-of-2 in
-> >> +                       the range [PAGE_SIZE, PMD_SIZE). A larger size=
- improves
-> >> +                       performance by reducing page faults, while a s=
-maller
-> >> +                       size reduces internal fragmentation. Default: =
-max(64K,
-> >> +                       PAGE_SIZE). Format: size[KMG].
-> >> +
-> >
-> > Let's split this parameter into a separate patch.
-> >
+> Let's create a helper that will allocate, initialise a context, and
+> register kunit actions to clean up once the test is done.
 >
-> Just a general comment after stumbling over patch #2, let's not start
-> splitting patches into things that don't make any sense on their own;
-> that just makes review a lot harder.
-
-Sorry to hear this -- but there are also non-subjective reasons we
-split patches this way.
-
-Initially we had minimum to no common ground, so we had to divide and
-conquer by smallest steps.
-
-if you look at previous discussions: there was a disagreement on patch
-2 in v2 -- that's the patch you asked to be squashed into the main
-patch 3. Fortunately we've resolved that. If that disagreement had
-persisted, we would leave patch 2 out rather than let it bog down
-patch 3, which would work indifferently for all arches except arm and
-could be merged separately.
-
-> For this case here, I'd suggest first adding the general infrastructure
-> and then adding tunables we want to have on top.
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> ---
+>   drivers/gpu/drm/tests/drm_kunit_helpers.c | 41 +++++++++++++++++++++++++++++++
+>   include/drm/drm_kunit_helpers.h           |  2 ++
+>   2 files changed, 43 insertions(+)
 >
-> I agree that toggling that at runtime (for example via sysfs as raised
-> by me previously) would be nicer.
+> diff --git a/drivers/gpu/drm/tests/drm_kunit_helpers.c b/drivers/gpu/drm/tests/drm_kunit_helpers.c
+> index 38211fea9ae6..40a27c78d692 100644
+> --- a/drivers/gpu/drm/tests/drm_kunit_helpers.c
+> +++ b/drivers/gpu/drm/tests/drm_kunit_helpers.c
+> @@ -124,5 +124,46 @@ __drm_kunit_helper_alloc_drm_device_with_driver(struct kunit *test,
+>   }
+>   EXPORT_SYMBOL_GPL(__drm_kunit_helper_alloc_drm_device_with_driver);
+>   
+> +static void action_drm_release_context(void *ptr)
+> +{
+> +	struct drm_modeset_acquire_ctx *ctx = ptr;
+> +
+> +	drm_modeset_drop_locks(ctx);
+> +	drm_modeset_acquire_fini(ctx);
+> +}
+> +
+> +/**
+> + * drm_kunit_helper_context_alloc - Allocates an acquire context
+> + * @test: The test context object
+> + *
+> + * Allocates and initializes a modeset acquire context.
+> + *
+> + * The context is tied to the kunit test context, so we must not call
+> + * drm_modeset_acquire_fini() on it, it will be done so automatically.
+> + *
+> + * Returns:
+> + * An ERR_PTR on error, a pointer to the newly allocated context otherwise
+> + */
+> +struct drm_modeset_acquire_ctx *
+> +drm_kunit_helper_acquire_ctx_alloc(struct kunit *test)
+> +{
+> +	struct drm_modeset_acquire_ctx *ctx;
+> +	int ret;
+> +
+> +	ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
+
+Because kunit_kzalloc() is also managed,
+
+Is there any possibility that kfree(ctx) get called before 
+action_drm_release_context(ctx) ?
+
+Currently, I can't find where the order is guaranteed.
+
+> +	KUNIT_ASSERT_NOT_NULL(test, ctx);
+> +
+> +	drm_modeset_acquire_init(ctx, 0);
+> +
+> +	ret = kunit_add_action_or_reset(test,
+> +					action_drm_release_context,
+> +					ctx);
+> +	if (ret)
+> +		return ERR_PTR(ret);
+> +
+> +	return ctx;
+> +}
+> +EXPORT_SYMBOL_GPL(drm_kunit_helper_acquire_ctx_alloc);
+> +
+>   MODULE_AUTHOR("Maxime Ripard <maxime@cerno.tech>");
+>   MODULE_LICENSE("GPL");
+> diff --git a/include/drm/drm_kunit_helpers.h b/include/drm/drm_kunit_helpers.h
+> index ed013fdcc1ff..4ba5e10653c6 100644
+> --- a/include/drm/drm_kunit_helpers.h
+> +++ b/include/drm/drm_kunit_helpers.h
+> @@ -87,5 +87,7 @@ __drm_kunit_helper_alloc_drm_device(struct kunit *test,
+>   						      sizeof(_type),		\
+>   						      offsetof(_type, _member),	\
+>   						      _feat))
+> +struct drm_modeset_acquire_ctx *
+> +drm_kunit_helper_acquire_ctx_alloc(struct kunit *test);
+>   
+>   #endif // DRM_KUNIT_HELPERS_H_
+
