@@ -2,99 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CB6756CF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F54756CFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbjGQTRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 15:17:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55522 "EHLO
+        id S229658AbjGQTSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 15:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjGQTRB (ORCPT
+        with ESMTP id S229540AbjGQTSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 15:17:01 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EC0116
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 12:16:59 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b89cfb4571so39252535ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 12:16:59 -0700 (PDT)
+        Mon, 17 Jul 2023 15:18:10 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FA1ED;
+        Mon, 17 Jul 2023 12:18:09 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6b9d562f776so863701a34.2;
+        Mon, 17 Jul 2023 12:18:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1689621419; x=1692213419;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eJ6YReQN52ePsFxQCiGniW4yULFrXJ1nTk50bawBDOU=;
-        b=QIYXFB0r9Zt37S8ztvgFWTvQOKTaEqO1T7XgB4RZwHDwOzuIiLH0BMTQDA0Fg8oFNX
-         J0We84AOKGsuh7y7YSF0SCTEHJX6ElIex/HCYPrNn1MnDY0RUNDJzEU57GMRxZe0UPO/
-         jQYkb6PhJz7gHgq/2oVqS0rZ2W/TNJSnQFDWage3vtju27KayjWF2gIYFFhtB0lJNoF3
-         2Xflp5+2yU7R3y3jEcKO1wEcP5FO1u53JX80Y8PirHZqKe3Mz4DG2ErZax3ieDJmeP64
-         3/f//R6vGRrthNgOf8OtkAVjpiG2M5jFLrFpH9cPedzjt72ZcMK2tiTBSmXBRPo2s9W4
-         KC3w==
+        d=gmail.com; s=20221208; t=1689621488; x=1692213488;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pD/oZCaJCOJRr2WuaMkYLcpCFfZmO7kAcw4QWPJFCs0=;
+        b=NzeVcJLBnHLhBKfctguPt3mS8ngFJGqsjZWCfpuLI7fAgXT/QLVfgylUk86w5Qf3X5
+         yP49vPtG1W6+tZqV4XUt/U5zVVI4+HQy+ZvKZx3UgL+PWQPvAd9bnkd8vrZlhsUsdVX/
+         Y1lCkUFK/0n4WHFw6urPZkXbRFbl6xOJ/WMVGU2pu0vOUg/rTphyTiiVfIVLbynPtsH/
+         Iuo3tgAzYEs0b3jg/thvAnfYbvB0rcKyLftRSR9lMogF85RRhNTU4Jne9Fe0Y1NNxG7N
+         DzYsdcdBAP602sYgVIsmhPWV912b8ruFJcxMkSsdCYTtg9U6/9mnAPY78xnSvbXU+u5u
+         1Oxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689621419; x=1692213419;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eJ6YReQN52ePsFxQCiGniW4yULFrXJ1nTk50bawBDOU=;
-        b=fJSF/kuwuJUOVMR6ph6fu4Kk016g9tW+7iBz7czzLCgYvPgrUW7vf2aazsvIIetkGu
-         AYvOk0UW6pjPgHfEwFbrfW5RWhJB81w2gF36wx1VdvFqfNXlGwtcF0YC0SEZ8/8t5UXM
-         XtZnkwAkDooKDl3KbNTqlz8kN7Y667oamTipYjB1hazxYsHQyHeOQcT4KJ9JX5si/yWz
-         ihkyxKzxGMZcN0OLYrCButzGE6rqRC6X0CupeDyV30ZfCg6WyXYPUIAky/q05skwtf88
-         Z7IhG1QODsQF8CLKS1kW5HTWjtCKaNEvd3EB/T2wBGDtun6op5Q/6ZINAUKB2iN7lOby
-         wgeg==
-X-Gm-Message-State: ABy/qLYeeZwjx6y/xoJaEHuHpVj7+O5cdsmu1YJQ2ztBItSk38gW5aVI
-        076w3u49qdGMJEAl2Et7q8birmQkeuobsBoWc1+SCg==
-X-Google-Smtp-Source: APBJJlG+4z17qFTqJ4MlykwDUQClmB6anzNe6AMV5XAwfirSq7yaDz/xfl09bk+z7ASM0bD9+u5+aQ==
-X-Received: by 2002:a17:902:ea01:b0:1bb:3e35:6416 with SMTP id s1-20020a170902ea0100b001bb3e356416mr1250281plg.56.1689621419409;
-        Mon, 17 Jul 2023 12:16:59 -0700 (PDT)
-Received: from sw06.internal.sifive.com ([64.62.193.194])
-        by smtp.gmail.com with ESMTPSA id g24-20020a170902869800b001b9df8f14d7sm210296plo.267.2023.07.17.12.16.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 12:16:59 -0700 (PDT)
-From:   Samuel Holland <samuel.holland@sifive.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Samuel Holland <samuel.holland@sifive.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] regmap-irq: Set IRQCHIP_MASK_ON_SUSPEND if no wake_base
-Date:   Mon, 17 Jul 2023 12:16:54 -0700
-Message-Id: <20230717191654.1303285-1-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.40.1
+        d=1e100.net; s=20221208; t=1689621488; x=1692213488;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pD/oZCaJCOJRr2WuaMkYLcpCFfZmO7kAcw4QWPJFCs0=;
+        b=B3B3zTEqEWdradCSn0tk1c4aV9b9LL/EjU5M+c/grfY9k68ucz4Nd8VCCT/5ZTg4es
+         eZWLlRCuoSBeMIPLSXNgUKp+QUp/cZwcwOeBmnXxP4k25ystPPWPkZFufXYbJO1x1nSI
+         TZZf200MxFFlSZI5CdRXsv57gws2xHdhK0h+VTyljP2/tJrIKXbqCGlkiqtVssqcJeOB
+         7IhIYjAc5kWnK+GdCvjeYP+hiAVr4KKqQgYRSab8hzCyi2wc+jyOx4q0xb/h/WN+FE8O
+         IhmAAeX3xdkhizwPtASm9NlSdHfU1z7xBrgp3cP2gA+ChjuLNITHkwd7bErfJAJJBrpH
+         t3bg==
+X-Gm-Message-State: ABy/qLaUrCL5QnPE+IpI6yG31F0b1g7KAWikBEFd7tJy0SuW8Gz304C+
+        /FPcnGcSygHQ6QFaraWyJE8=
+X-Google-Smtp-Source: APBJJlGzBShM3WI3crHaFM1S6Hbpe/XCjVy49B1K121fBw7BDbSbSOkfDvrkh2vf+JNJJyYYYDZDmQ==
+X-Received: by 2002:a05:6808:10d6:b0:3a3:9337:4099 with SMTP id s22-20020a05680810d600b003a393374099mr13876098ois.56.1689621488275;
+        Mon, 17 Jul 2023 12:18:08 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i195-20020a636dcc000000b00514256c05c2sm171727pgc.7.2023.07.17.12.18.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 12:18:07 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <5f514ecc-a0ae-ece1-a212-e392c128fb35@roeck-us.net>
+Date:   Mon, 17 Jul 2023 12:18:05 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20230717185609.886113843@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 6.1 000/585] 6.1.39-rc2 review
+In-Reply-To: <20230717185609.886113843@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If hardware provides no way to control which IRQs are wakeup enabled,
-then software needs to mask non-wakeup-enabled IRQs when going to sleep.
+On 7/17/23 11:57, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.39 release.
+> There are 585 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 19 Jul 2023 18:55:09 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.39-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+> -------------
+> Pseudo-Shortlog of commits:
+> 
+[ ... ]
 
-Fixes: 55ac85e942c6 ("regmap: irq: enable wake support by default")
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
----
+> Sergey Shtylyov <s.shtylyov@omp.ru>
+>      sh: Avoid using IRQ0 on SH3 and SH4
+> 
 
- drivers/base/regmap/regmap-irq.c | 2 ++
- 1 file changed, 2 insertions(+)
+This patch is applied without its fixes. That means almost all sh boards,
+including the one testable with qemu, are broken. Fixes are (at least):
 
-diff --git a/drivers/base/regmap/regmap-irq.c b/drivers/base/regmap/regmap-irq.c
-index ced0dcf86e0b..d7e076cff6e1 100644
---- a/drivers/base/regmap/regmap-irq.c
-+++ b/drivers/base/regmap/regmap-irq.c
-@@ -728,6 +728,8 @@ int regmap_add_irq_chip_fwnode(struct fwnode_handle *fwnode,
- 
- 	d->irq_chip = regmap_irq_chip;
- 	d->irq_chip.name = chip->name;
-+	if (!chip->wake_base)
-+		d->irq_chip.flags |= IRQCHIP_MASK_ON_SUSPEND;
- 	d->irq = irq;
- 	d->map = map;
- 	d->chip = chip;
--- 
-2.40.1
+7c28a35e19fa sh: hd64461: Handle virq offset for offchip IRQ base and HD64461 IRQ
+3d20f7a6eb76 sh: mach-dreamcast: Handle virq offset in cascaded IRQ demux
+a2601b8d8f07 sh: mach-highlander: Handle virq offset in cascaded IRL demux
+ab8aa4f0956d sh: mach-r2d: Handle virq offset in cascaded IRL demux
+
+That list may be incomplete.
+
+The same problem affects v6.4.y.
+
+Guenter
 
