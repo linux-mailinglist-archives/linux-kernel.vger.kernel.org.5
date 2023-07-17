@@ -2,52 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C30A17561C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A172A7561CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbjGQLmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 07:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
+        id S230269AbjGQLnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 07:43:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbjGQLmA (ORCPT
+        with ESMTP id S230261AbjGQLm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 07:42:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F2610E5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:41:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F3E9B60F96
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 11:41:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5D9FC433C8;
-        Mon, 17 Jul 2023 11:41:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689594110;
-        bh=yU4FuU9GBzJLKMMJ6YPMbnokCAVqtjh1LQe6xjck7Bc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rIgz1i0y9VqdA/C3kMpx8OQuNt5OxBgyURL5YQzROLf1QOzDUuYgTP3snLU+RSKXG
-         GE53TKjbVyFddsOPtolkhThfGN2uj4rE++6Oj4qxfa8uBpYNyo58e51S1dQ5jvQSR3
-         Q2xiEvuNBf8JTpQpeFDyN+jt5SvpsSXs+X2SEEUw0UIFIT9q58/IncO0dOAJohhmku
-         GzQwewcuyy+ng2oaabhneXNHYdfzfzrPIQgOZUfM1wuzo/eP/PIyZzkZyU7Mv3FmlY
-         dgEfn5ZyL6K2fWaBKb/7d+7+gfidr0iY2NuGUJjLf2g2Q4HKQpiiKiGruaKH2+Jtp0
-         jGGVe0e5AGfPw==
-Date:   Mon, 17 Jul 2023 14:41:33 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Haifeng Xu <haifeng.xu@shopee.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/mm_init.c: drop node_start_pfn from
- adjust_zone_range_for_zone_movable()
-Message-ID: <20230717114133.GE1901145@kernel.org>
-References: <20230717065811.1262-1-haifeng.xu@shopee.com>
+        Mon, 17 Jul 2023 07:42:56 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D12EE4F;
+        Mon, 17 Jul 2023 04:42:52 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4R4Kqp1Psbz67Lnh;
+        Mon, 17 Jul 2023 19:39:34 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 17 Jul
+ 2023 12:42:48 +0100
+Date:   Mon, 17 Jul 2023 12:42:47 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Oleg Nesterov" <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        "Kees Cook" <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-doc@vger.kernel.org>, <kvmarm@lists.linux.dev>,
+        <linux-fsdevel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
+Subject: Re: [PATCH 04/35] arm64/gcs: Document the ABI for Guarded Control
+ Stacks
+Message-ID: <20230717124247.00001f1c@Huawei.com>
+In-Reply-To: <20230716-arm64-gcs-v1-4-bf567f93bba6@kernel.org>
+References: <20230716-arm64-gcs-v1-0-bf567f93bba6@kernel.org>
+        <20230716-arm64-gcs-v1-4-bf567f93bba6@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717065811.1262-1-haifeng.xu@shopee.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,46 +75,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 06:58:11AM +0000, Haifeng Xu wrote:
-> node_start_pfn is not used in adjust_zone_range_for_zone_movable(), so
-> it is pointless to waste a function argument. Drop the parameter.
-> 
-> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
+On Sun, 16 Jul 2023 22:51:00 +0100
+Mark Brown <broonie@kernel.org> wrote:
 
-Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
-
-> ---
->  mm/mm_init.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+> Add some documentation of the userspace ABI for Guarded Control Stacks.
 > 
-> diff --git a/mm/mm_init.c b/mm/mm_init.c
-> index a313d1828a6c..23d50541e1f7 100644
-> --- a/mm/mm_init.c
-> +++ b/mm/mm_init.c
-> @@ -1105,7 +1105,6 @@ void __ref memmap_init_zone_device(struct zone *zone,
->   */
->  static void __init adjust_zone_range_for_zone_movable(int nid,
->  					unsigned long zone_type,
-> -					unsigned long node_start_pfn,
->  					unsigned long node_end_pfn,
->  					unsigned long *zone_start_pfn,
->  					unsigned long *zone_end_pfn)
-> @@ -1222,9 +1221,8 @@ static unsigned long __init zone_spanned_pages_in_node(int nid,
->  	/* Get the start and end of the zone */
->  	*zone_start_pfn = clamp(node_start_pfn, zone_low, zone_high);
->  	*zone_end_pfn = clamp(node_end_pfn, zone_low, zone_high);
-> -	adjust_zone_range_for_zone_movable(nid, zone_type,
-> -				node_start_pfn, node_end_pfn,
-> -				zone_start_pfn, zone_end_pfn);
-> +	adjust_zone_range_for_zone_movable(nid, zone_type, node_end_pfn,
-> +					   zone_start_pfn, zone_end_pfn);
->  
->  	/* Check that this node has pages within the zone's required range */
->  	if (*zone_end_pfn < node_start_pfn || *zone_start_pfn > node_end_pfn)
-> -- 
-> 2.25.1
-> 
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+Hi Mark,
 
--- 
-Sincerely yours,
-Mike.
+Nice document.  All I could find on a first read was one typo...
+
+...
+
+> +7.  ptrace extensions
+> +---------------------
+> +
+> +* A new regset NT_ARM_GCS is defined for use with PTRACE_GETREGSET and
+> +  PTRACE_SETREGSET.
+> +
+> +* Due to the complexity surrounding allocation and deallocation of stakcs and
+
+stacks
+
+> +  lack of practical application changes to the GCS configuration via ptrace
+> +  are not supported.
+> +
+
