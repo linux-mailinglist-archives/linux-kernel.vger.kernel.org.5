@@ -2,79 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5DB7561C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE687561D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbjGQLmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 07:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50260 "EHLO
+        id S230057AbjGQLpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 07:45:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjGQLmJ (ORCPT
+        with ESMTP id S229621AbjGQLpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 07:42:09 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AF810D8
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:42:03 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b6f97c7115so63101171fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:42:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1689594122; x=1692186122;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P7UHhFAQ1FaPs29fvZX7CYf1ico5jMHSKUYpX+oo8ek=;
-        b=Vh2f2nU9VaVBZJD9ooQnVXSm4T5KSE53a1VWB6uNdNOZenJC/gVkO1VjvS6LAPaOmw
-         R2iEjfb6mF8btLJcWWYCXcLMp2pGD5A/N+7NYA6T9pTRwQwP0IBpJgCQ8WiKIBsoJ4EP
-         Wl0ZPZYxoW0iDBPHnJIun3XY302JfupNFwPVlHSRkg0KeXPiyGPoNlfW9jpYwDGBjYhy
-         2kJpcRyG7wm+qKws+/QLoh3wztG4AzUYb9p/mrPNfL+qf/1jgI46tmpKeA6xyb+EsBQQ
-         Cy1vFb+I1oDViGZJagA1Dl/tjIf0eUNrZrEyiE3LHRraLruiGguoPZ09oNvXeFq8CiI5
-         beXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689594122; x=1692186122;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P7UHhFAQ1FaPs29fvZX7CYf1ico5jMHSKUYpX+oo8ek=;
-        b=Nlbd3eQfKsro+CKxktEWAUcH4qgE0T/IvXAH2B+3/7niLGh7GqgeMqamQDzguHQNmA
-         a7pUq0L5Y+WQIUXjUFcV4CwioKj+KvcJ4z1xhPtakupEUOqWPUXExMdEX93Xo58mmXm+
-         /BeeUniRqihtPECeBtDpVaKHhvTKjzzvXUBO1s4fSXk6LrfEI8CSd7zq4gvh+C5E1OhR
-         RJix4Jl8YtAYEAdSTaZRUQRN/c75FuW5bZ+VUhsdjW8ShANvF7aCkOfU4TCfQ3ivWW4E
-         lcGJaveFoQH4ZyxLSYlW8maOic8Ay2y8ruO4Q+/sl4adITBLy56wlpVRALRWrC6kYlV/
-         xhHQ==
-X-Gm-Message-State: ABy/qLZPm/0acXnz+46PSptcnstwbYqWA3t6NLjL5kkmU+HeQ6nRynkP
-        j95PkoiekB74vl9yuPlvJedTlA==
-X-Google-Smtp-Source: APBJJlGjRSDk4zBMgAQlu/4kYfZ+mQZFT+iyjVQxWs1snlZC2ZAnxz0Xq1LZL+x1qaKrzrLTAasB5g==
-X-Received: by 2002:a2e:9ed3:0:b0:2b4:47ad:8c70 with SMTP id h19-20020a2e9ed3000000b002b447ad8c70mr7446271ljk.11.1689594121908;
-        Mon, 17 Jul 2023 04:42:01 -0700 (PDT)
-Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id v9-20020a05600c214900b003fbc9371193sm7946725wml.13.2023.07.17.04.42.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 04:42:01 -0700 (PDT)
-From:   Anton Protopopov <aspsk@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Brian Vazquez <brianvv@google.com>,
-        Hou Tao <houtao1@huawei.com>, Joe Stringer <joe@isovalent.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Anton Protopopov <aspsk@isovalent.com>
-Subject: [PATCH bpf-next 2/2] bpf: update uapi/linux/bpf.h docs on the batch map ops
-Date:   Mon, 17 Jul 2023 11:43:07 +0000
-Message-Id: <20230717114307.46124-3-aspsk@isovalent.com>
+        Mon, 17 Jul 2023 07:45:23 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A46BF;
+        Mon, 17 Jul 2023 04:45:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689594322; x=1721130322;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=2MHPO+iHuYgAyGNlqYAFRPStgolKWt3w3Dm0eTHpGD4=;
+  b=Jx30VsZLJMMaX2PWgrBAhH63xXVjMsRAnndeBerLxSswM+nNG+USAEMH
+   4Kd3ZPLWp2ZtU36nuOeQQzjA+pkTFehWnpQOBCbUdTGEteMvF1hJfppCK
+   HjJ+we3qp5eW9waH/TldRyj11Tqq6il4Z2QtGolS1gyyT+WxwUq7sc+C/
+   sWOjOV2K9inKQnGOboe5Q5tLHAHxPe7S5marGQVFI110tSRowD2nrrfDU
+   FTVOWwg6sWlo9eOD0jETw+z1k7KJiCJGSXcHllcSX5meJIgegZymgAhBp
+   Ld/hlk0wLk1x7dyGrzjtrmISiGCwE1aiHlXO3EkDPlX8OTOih7xAI6UtW
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="363372705"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="363372705"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 04:45:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="969856460"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="969856460"
+Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
+  by fmsmga006.fm.intel.com with ESMTP; 17 Jul 2023 04:45:18 -0700
+From:   =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH v4 00/15] PCI: Define Intel PCI IDs and use them in drivers
+Date:   Mon, 17 Jul 2023 13:44:56 +0200
+Message-Id: <20230717114511.484999-1-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230717114307.46124-1-aspsk@isovalent.com>
-References: <20230717114307.46124-1-aspsk@isovalent.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,68 +70,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The map_lookup{,_and_delete}_batch operations return same values. Make
-this clear in documentation. Also, update the comments so that this is
-more clear that -ENOENT is a valid return value in case of success. (In
-fact, this is the most common return value, as this is reasonable to do
-map_lookup_batch(MAX_ENTRIES), which, in case of success, will always
-return -ENOENT.)
+PCI IDs for Intel HDA are duplicated across quite a few drivers, due to
+various configurations and historical reasons. Currently almost all uses
+of HDA PCI IDs have corresponding comment telling which platform it is.
+Additionally there are some inconsistencies between drivers about which
+ID corresponds to which device.
 
-Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
----
- include/uapi/linux/bpf.h | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+Simplify things, by adding PCI IDs to global header and make use of them
+in drivers. This allows for removal of comments by having IDs themselves
+being self explanatory. Additionally it allows for removal of existing
+inconsistencies by having one source of truth.
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 600d0caebbd8..9e6e277bedab 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -632,17 +632,19 @@ union bpf_iter_link_info {
-  *			returning the lock. This must be specified if the
-  *			elements contain a spinlock.
-  *
-- *		On success, *count* elements from the map are copied into the
-- *		user buffer, with the keys copied into *keys* and the values
-- *		copied into the corresponding indices in *values*.
-- *
-- *		If an error is returned and *errno* is not **EFAULT**, *count*
-- *		is set to the number of successfully processed elements.
-+ *		On success, up to *count* elements from the map are copied into
-+ *		the user buffer, with the keys copied into *keys* and the
-+ *		values copied into the corresponding indices in *values*.
-  *
-  *	Return
-  *		Returns zero on success. On error, -1 is returned and *errno*
-  *		is set appropriately.
-  *
-+ *		If an error is returned and *errno* is not **EFAULT**, then
-+ *		*count* is set to the number of successfully processed
-+ *		elements. In particular, the *errno* may be set to **ENOENT**
-+ *		in case of success to indicate that the end of map is reached.
-+ *
-  *		May set *errno* to **ENOSPC** to indicate that *keys* or
-  *		*values* is too small to dump an entire bucket during
-  *		iteration of a hash-based map type.
-@@ -655,15 +657,15 @@ union bpf_iter_link_info {
-  *		**BPF_MAP_LOOKUP_BATCH** with two exceptions:
-  *
-  *		* Every element that is successfully returned is also deleted
-- *		  from the map. This is at least *count* elements. Note that
-- *		  *count* is both an input and an output parameter.
-+ *		  from the map. The *count* parameter is set to the number of
-+ *		  returned elements. This value can be less than the actual
-+ *		  number of deleted elements, see the next item.
-  *		* Upon returning with *errno* set to **EFAULT**, up to
-  *		  *count* elements may be deleted without returning the keys
-  *		  and values of the deleted elements.
-  *
-  *	Return
-- *		Returns zero on success. On error, -1 is returned and *errno*
-- *		is set appropriately.
-+ *		Same as the BPF_MAP_LOOKUP_BATCH return values.
-  *
-  * BPF_MAP_UPDATE_BATCH
-  *	Description
+Changes from v3:
+ - Fix double space in commit message title (Ilpo)
+ - Comment ACPI/PCI ID handling in Atom SST driver (Andy)
+ - Rebased once again and used --base this time (Andy)
+
+Changes from v2:
+ - Change CHV to BSW (Andy)
+ - Fix incorrectly rebased patches (Andy)
+ - Fix commit message and add suggestions from Andy to SST patch (Andy)
+ - Rebased on top of Linus tree commit: 4b810bf037e5
+
+Changes from v1:
+ - Remove BXT-T PCI ID as it is not released (Andy)
+ - Reorder macros to start from pci_match_id() (Andy)
+ - Add comment about BXT->APL name change in commit messages (Andy)
+ - Use SST as part of macro name for DSP only devices (Andy)
+ - Add PCI IDs for all SST combinations (Andy)
+
+Changes from RFC:
+ - Sort Intel PCI IDs before adding new ones
+ - Fix ordering of new PCI IDs (Andy)
+ - Define all used Intel IDs (Andy)
+ - Add macros for controller type detection (Andy/Bjorn)
+ - Add set of patches changing to use above macro (Andy/Bjorn)
+ - Use PCI_DEVICE_DATA for Intel IDs in sound/pci/hda/hda_intel.c (Andy)
+ - Commit message wording (Andy)
+ - Remove unnecessary tabs (Andy)
+
+Amadeusz Sławiński (15):
+  PCI: Sort Intel PCI IDs by number
+  PCI: Add Intel Audio DSP devices to pci_ids.h
+  ASoC: SOF: Remove unused Broxton PCI ID
+  ALSA: Remove unused Broxton PCI ID
+  ALSA: hda: Add controller matching macros
+  ALSA: hda: Use global PCI match macro
+  ALSA: hda/i915: Use global PCI match macro
+  ASoC: Intel: Skylake: Use global PCI match macro
+  ALSA: intel-dsp-config: Convert to PCI device IDs defines
+  ALSA: hda: Convert to PCI device IDs defines
+  ASoC: Intel: avs: Convert to PCI device IDs defines
+  ASoC: Intel: avs: Convert to PCI device IDs defines
+  ASoC: Intel: Skylake: Convert to PCI device IDs defines
+  ASoC: SOF: Intel: Convert to PCI device IDs defines
+  ASoC: Intel: sst: Convert to PCI device IDs defines
+
+ include/linux/pci_ids.h                | 105 +++++--
+ include/sound/hda_codec.h              |   3 -
+ include/sound/hdaudio.h                |  26 ++
+ sound/hda/hdac_i915.c                  |   7 +-
+ sound/hda/intel-dsp-config.c           | 124 ++++----
+ sound/pci/hda/hda_intel.c              | 373 ++++++++++---------------
+ sound/soc/intel/atom/sst/sst.c         |  14 +-
+ sound/soc/intel/atom/sst/sst.h         |   7 +-
+ sound/soc/intel/atom/sst/sst_pci.c     |   4 +-
+ sound/soc/intel/avs/board_selection.c  |  10 +-
+ sound/soc/intel/avs/core.c             |  16 +-
+ sound/soc/intel/skylake/skl-messages.c |  16 +-
+ sound/soc/intel/skylake/skl-pcm.c      |   3 +-
+ sound/soc/intel/skylake/skl.c          |  36 +--
+ sound/soc/sof/intel/pci-apl.c          |   8 +-
+ sound/soc/sof/intel/pci-cnl.c          |  15 +-
+ sound/soc/sof/intel/pci-icl.c          |  12 +-
+ sound/soc/sof/intel/pci-mtl.c          |   3 +-
+ sound/soc/sof/intel/pci-skl.c          |   6 +-
+ sound/soc/sof/intel/pci-tgl.c          |  45 +--
+ sound/soc/sof/intel/pci-tng.c          |   3 +-
+ 21 files changed, 391 insertions(+), 445 deletions(-)
+
+
+base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
 -- 
 2.34.1
 
