@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F665756A62
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4DF756A63
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbjGQR31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 13:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45426 "EHLO
+        id S231244AbjGQR3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 13:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjGQR3Z (ORCPT
+        with ESMTP id S230331AbjGQR3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 Jul 2023 13:29:25 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B260D1989;
-        Mon, 17 Jul 2023 10:29:02 -0700 (PDT)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2621720;
+        Mon, 17 Jul 2023 10:29:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689614942; x=1721150942;
+  t=1689614943; x=1721150943;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=zaKwe1xeE0MC6urnhJKPL5m7n74tZLwG88asISfLaWc=;
-  b=KUQxD30dU4icNkpJcqOBEKvwL0+CIE/ujp8yeKwO/ZUAYxRn1t3DHM6W
-   Zc4EuYAvt6CWJ9xiWwW1uis23uEC9wCXKrfp5CyzXpKXPiQJhoELi1CGQ
-   G8F4WrnQidL9Phoq1J9AgCtwVjWYtwvc1K6zLb8FNLDFH2VGzJogkIWas
-   KLOVcS0O3jgi1fvuCt5CVgQq8l6TPxAkgrLyPV/oLqYAicKQue7XPB61T
-   rSj3CDK7/snr/K8HFGrD5TKxZkGqF220ExhBcWmGvGsCbH/K43OxSgX6m
-   WSl1K/1K2tunNr/1zCG5qdDZtMh4rzU33UBmcKUPxzynbVLNhDZ4tOGLf
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="350854467"
+  bh=A3AvUzx2s49E3LPXDYOtdQtMjBaIlG55+jTFghfeQJI=;
+  b=h+/Sv9mjS6ZUK0QhqRuq0Ro9lGFrDR6OTAU0FGWHP2AqpoKho/MBMme5
+   qJGPml4r8z/gupi/Plhh9b21yMvq0LfD8/PPfFEFWKNeYhs2GIXETG9+W
+   L/A1oyGK9mRoXhkNemMIJTAkDyLsLp57eUyj7n9IYp3YcZ9vch4xSJxeL
+   FDwPN908E6GlpR5BO9EJpzqSDUMP9JWopzlNwTEPo9HqlRF0wruda9gBg
+   TMgtsmZzRH7ziefbwcy6FD+nZF1JhcevgRG9VXFTEso/xnr3tOErfB8Ne
+   rgJndV921veHRHO1tnWmuR8oN3bi1UuoY6ZQ0zeW9q3cZ4a+jrNFW3Zqc
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="355926889"
 X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="350854467"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 10:28:40 -0700
+   d="scan'208";a="355926889"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 10:28:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="813426651"
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="673604146"
 X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="813426651"
+   d="scan'208";a="673604146"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by FMSMGA003.fm.intel.com with ESMTP; 17 Jul 2023 10:28:33 -0700
+  by orsmga003.jf.intel.com with ESMTP; 17 Jul 2023 10:28:33 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id DA2B524F; Mon, 17 Jul 2023 20:28:39 +0300 (EEST)
+        id E7315370; Mon, 17 Jul 2023 20:28:39 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Mika Westerberg <mika.westerberg@linux.intel.com>,
@@ -70,16 +70,17 @@ Cc:     Andy Shevchenko <andy@kernel.org>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
-Subject: [PATCH v2 01/10] pm: Introduce DEFINE_NOIRQ_DEV_PM_OPS() helper
-Date:   Mon, 17 Jul 2023 20:28:12 +0300
-Message-Id: <20230717172821.62827-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 02/10] pinctrl: baytrail: Make use of pm_ptr()
+Date:   Mon, 17 Jul 2023 20:28:13 +0300
+Message-Id: <20230717172821.62827-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
 References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,36 +88,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-_DEFINE_DEV_PM_OPS() helps to define PM operations for the system sleep
-and/or runtime PM cases. Some of the existing users want to have _noirq()
-variants to be set. For that purpose introduce a new helper which sets
-up _noirq() callbacks to be set and struct dev_pm_ops be provided.
+Cleaning up the driver to use pm_ptr() and *_PM_OPS() macros that
+make it simpler and allows the compiler to remove those functions
+if built without CONFIG_PM and CONFIG_PM_SLEEP support.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- include/linux/pm.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/pinctrl/intel/pinctrl-baytrail.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/pm.h b/include/linux/pm.h
-index badad7d11f4f..0f19af8d5493 100644
---- a/include/linux/pm.h
-+++ b/include/linux/pm.h
-@@ -448,6 +448,15 @@ const struct dev_pm_ops __maybe_unused name = { \
- 	SET_RUNTIME_PM_OPS(suspend_fn, resume_fn, idle_fn) \
+diff --git a/drivers/pinctrl/intel/pinctrl-baytrail.c b/drivers/pinctrl/intel/pinctrl-baytrail.c
+index 27aef62fc7c0..66aabac6be9c 100644
+--- a/drivers/pinctrl/intel/pinctrl-baytrail.c
++++ b/drivers/pinctrl/intel/pinctrl-baytrail.c
+@@ -1733,7 +1733,6 @@ static int byt_pinctrl_probe(struct platform_device *pdev)
+ 	return 0;
  }
  
-+/*
-+ * Use this if you want to have the suspend and resume callbacks be called
-+ * with disabled IRQs.
-+ */
-+#define DEFINE_NOIRQ_DEV_PM_OPS(name, suspend_fn, resume_fn) \
-+const struct dev_pm_ops name = { \
-+	NOIRQ_SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
-+}
-+
- #define pm_ptr(_ptr) PTR_IF(IS_ENABLED(CONFIG_PM), (_ptr))
- #define pm_sleep_ptr(_ptr) PTR_IF(IS_ENABLED(CONFIG_PM_SLEEP), (_ptr))
+-#ifdef CONFIG_PM_SLEEP
+ static int byt_gpio_suspend(struct device *dev)
+ {
+ 	struct intel_pinctrl *vg = dev_get_drvdata(dev);
+@@ -1817,9 +1816,7 @@ static int byt_gpio_resume(struct device *dev)
+ 	raw_spin_unlock_irqrestore(&byt_lock, flags);
+ 	return 0;
+ }
+-#endif
  
+-#ifdef CONFIG_PM
+ static int byt_gpio_runtime_suspend(struct device *dev)
+ {
+ 	return 0;
+@@ -1829,19 +1826,17 @@ static int byt_gpio_runtime_resume(struct device *dev)
+ {
+ 	return 0;
+ }
+-#endif
+ 
+ static const struct dev_pm_ops byt_gpio_pm_ops = {
+-	SET_LATE_SYSTEM_SLEEP_PM_OPS(byt_gpio_suspend, byt_gpio_resume)
+-	SET_RUNTIME_PM_OPS(byt_gpio_runtime_suspend, byt_gpio_runtime_resume,
+-			   NULL)
++	LATE_SYSTEM_SLEEP_PM_OPS(byt_gpio_suspend, byt_gpio_resume)
++	RUNTIME_PM_OPS(byt_gpio_runtime_suspend, byt_gpio_runtime_resume, NULL)
+ };
+ 
+ static struct platform_driver byt_gpio_driver = {
+ 	.probe          = byt_pinctrl_probe,
+ 	.driver         = {
+ 		.name			= "byt_gpio",
+-		.pm			= &byt_gpio_pm_ops,
++		.pm			= pm_ptr(&byt_gpio_pm_ops),
+ 		.acpi_match_table	= byt_gpio_acpi_match,
+ 		.suppress_bind_attrs	= true,
+ 	},
 -- 
 2.40.0.1.gaa8946217a0b
 
