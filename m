@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F2A7559EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 05:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC0F7559EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 05:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbjGQDLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 23:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38252 "EHLO
+        id S231336AbjGQDLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 23:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231263AbjGQDLb (ORCPT
+        with ESMTP id S231285AbjGQDLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 23:11:31 -0400
+        Sun, 16 Jul 2023 23:11:38 -0400
 Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 74BEFE41;
-        Sun, 16 Jul 2023 20:11:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id BA4DDE76;
+        Sun, 16 Jul 2023 20:11:33 -0700 (PDT)
 Received: from localhost.localdomain (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 5BCED6012605B;
-        Mon, 17 Jul 2023 11:11:22 +0800 (CST)
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 628E76012605B;
+        Mon, 17 Jul 2023 11:11:30 +0800 (CST)
 X-MD-Sfrom: yunchuan@nfschina.com
 X-MD-SrcIP: 180.167.10.98
 From:   Wu Yunchuan <yunchuan@nfschina.com>
-To:     mostrows@earthlink.net, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, xeb@mail.ru
+To:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
 Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-janitors@vger.kernel.org,
         Wu Yunchuan <yunchuan@nfschina.com>,
-        Guillaume Nault <gnault@redhat.com>
-Subject: [PATCH net-next v3 2/9] net: ppp: Remove unnecessary (void*) conversions
-Date:   Mon, 17 Jul 2023 11:11:15 +0800
-Message-Id: <20230717031115.54432-1-yunchuan@nfschina.com>
+        Hao Lan <lanhao@huawei.com>
+Subject: [PATCH net-next v3 3/9] net: hns3: remove unnecessary (void*) conversions.
+Date:   Mon, 17 Jul 2023 11:11:28 +0800
+Message-Id: <20230717031128.54557-1-yunchuan@nfschina.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -42,59 +43,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need cast (void*) to (struct sock *).
+No need cast (void*) to (struct hns3_nic_priv *).
 
 Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
-Reviewed-by: Guillaume Nault <gnault@redhat.com>
+Reviewed-by: Hao Lan <lanhao@huawei.com>
 ---
- drivers/net/ppp/pppoe.c | 4 ++--
- drivers/net/ppp/pptp.c  | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ppp/pppoe.c b/drivers/net/ppp/pppoe.c
-index 3b79c603b936..ba8b6bd8233c 100644
---- a/drivers/net/ppp/pppoe.c
-+++ b/drivers/net/ppp/pppoe.c
-@@ -968,7 +968,7 @@ static int __pppoe_xmit(struct sock *sk, struct sk_buff *skb)
-  ***********************************************************************/
- static int pppoe_xmit(struct ppp_channel *chan, struct sk_buff *skb)
- {
--	struct sock *sk = (struct sock *)chan->private;
-+	struct sock *sk = chan->private;
- 	return __pppoe_xmit(sk, skb);
- }
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
+index 407d30ee55d2..36858a72d771 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
+@@ -569,8 +569,8 @@ static void hns3_get_strings(struct net_device *netdev, u32 stringset, u8 *data)
  
-@@ -976,7 +976,7 @@ static int pppoe_fill_forward_path(struct net_device_path_ctx *ctx,
- 				   struct net_device_path *path,
- 				   const struct ppp_channel *chan)
+ static u64 *hns3_get_stats_tqps(struct hnae3_handle *handle, u64 *data)
  {
--	struct sock *sk = (struct sock *)chan->private;
-+	struct sock *sk = chan->private;
- 	struct pppox_sock *po = pppox_sk(sk);
- 	struct net_device *dev = po->pppoe_dev;
- 
-diff --git a/drivers/net/ppp/pptp.c b/drivers/net/ppp/pptp.c
-index 32183f24e63f..6b3d3df99549 100644
---- a/drivers/net/ppp/pptp.c
-+++ b/drivers/net/ppp/pptp.c
-@@ -148,7 +148,7 @@ static struct rtable *pptp_route_output(struct pppox_sock *po,
- 
- static int pptp_xmit(struct ppp_channel *chan, struct sk_buff *skb)
- {
--	struct sock *sk = (struct sock *) chan->private;
-+	struct sock *sk = chan->private;
- 	struct pppox_sock *po = pppox_sk(sk);
- 	struct net *net = sock_net(sk);
- 	struct pptp_opt *opt = &po->proto.pptp;
-@@ -575,7 +575,7 @@ static int pptp_create(struct net *net, struct socket *sock, int kern)
- static int pptp_ppp_ioctl(struct ppp_channel *chan, unsigned int cmd,
- 	unsigned long arg)
- {
--	struct sock *sk = (struct sock *) chan->private;
-+	struct sock *sk = chan->private;
- 	struct pppox_sock *po = pppox_sk(sk);
- 	struct pptp_opt *opt = &po->proto.pptp;
- 	void __user *argp = (void __user *)arg;
+-	struct hns3_nic_priv *nic_priv = (struct hns3_nic_priv *)handle->priv;
+ 	struct hnae3_knic_private_info *kinfo = &handle->kinfo;
++	struct hns3_nic_priv *nic_priv = handle->priv;
+ 	struct hns3_enet_ring *ring;
+ 	u8 *stat;
+ 	int i, j;
 -- 
 2.30.2
 
