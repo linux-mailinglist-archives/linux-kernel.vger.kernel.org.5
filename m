@@ -2,154 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B09FA7569EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302F47569F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbjGQRP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 13:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36328 "EHLO
+        id S230242AbjGQRQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 13:16:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbjGQRPZ (ORCPT
+        with ESMTP id S229798AbjGQRQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 13:15:25 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A23D18C;
-        Mon, 17 Jul 2023 10:15:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1689614123;
-        bh=t2CvEbHEtJOfQbnv6B7KOOw/16eZp8A7w4FgNzGKoBs=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=Sg0LVlf4wlWK7y06XnkN75VcH9O18A1YWdRSNWvLVkUPeOi7nMr8Lc1v0Fz5za8rO
-         lthLDHyuDGTVb1uS0K4Rba5SURy0V4K0X2hC1BKsm6KcFmIgMFXuFxPMzFupqCoaGv
-         TLhbw/kynnKJ9dAW7GE/Mkh7o8FVIp18R8hD7yBc=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 5B5D0128171B;
-        Mon, 17 Jul 2023 13:15:23 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id tzxoBTS866Qv; Mon, 17 Jul 2023 13:15:23 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1689614123;
-        bh=t2CvEbHEtJOfQbnv6B7KOOw/16eZp8A7w4FgNzGKoBs=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=Sg0LVlf4wlWK7y06XnkN75VcH9O18A1YWdRSNWvLVkUPeOi7nMr8Lc1v0Fz5za8rO
-         lthLDHyuDGTVb1uS0K4Rba5SURy0V4K0X2hC1BKsm6KcFmIgMFXuFxPMzFupqCoaGv
-         TLhbw/kynnKJ9dAW7GE/Mkh7o8FVIp18R8hD7yBc=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 70E0B12816B5;
-        Mon, 17 Jul 2023 13:15:21 -0400 (EDT)
-Message-ID: <0aa647f719103e8620d7209cbde40f04a7334749.camel@HansenPartnership.com>
-Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     "Daniel P." =?ISO-8859-1?Q?Berrang=E9?= <berrange@redhat.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        bluca@debian.org, lennart@poettering.net,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org
-Date:   Mon, 17 Jul 2023 13:15:19 -0400
-In-Reply-To: <ZLVyvAXwtemx1I6p@redhat.com>
-References: <20230711154449.1378385-1-eesposit@redhat.com>
-         <ZK/9MlTh435FP5Ji@gambale.home> <ZLABozIRVGmwuIBf@gambale.home>
-         <ba2354dc63fd741d2d351b18d4312d0771c0935d.camel@HansenPartnership.com>
-         <ZLVyvAXwtemx1I6p@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Mon, 17 Jul 2023 13:16:01 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6249819F;
+        Mon, 17 Jul 2023 10:16:00 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36HGvqJp030261;
+        Mon, 17 Jul 2023 17:15:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=3tPIZA9DnySEarrlQU8wHxA+hbKEZ2uIUFPiISS7alg=;
+ b=RYfKAh0zxDHpCBiTu4PdPp4rlN9EVyUJWD7fdmk9wBUiqtft/nfvr9VHibbkeecE+y3C
+ EIVWl0DC5huUe5C0mKjsRHZm7tKpPCZRjXboawfk9/Ti0cKbESKa7u020igZmL5qzK+J
+ rN4XUEFtH8vFJwGwcx4jtLBC+ZziFJiZfG/wZfolzXZSBuaSFH8hsQ6zI4GaG8N8aJah
+ e6etSzn0iIv1oUGu/OhOzViy00G3Vu1mxd/o7w0UeR8GVGuOQu05aLz3TGQPZpx8yxy5
+ 0oSQrME4QBGpchiPWBtd716BemZfw1xQ9ceKSxyaZTDO/gS6U1Su4RK9zRNtj+5Wvqer OA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rw289s82w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 17:15:50 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36HHFoNK011739
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 17:15:50 GMT
+Received: from [10.216.47.191] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 17 Jul
+ 2023 10:15:46 -0700
+Message-ID: <2fc238aa-82c1-383a-9dca-72f979ee3c07@quicinc.com>
+Date:   Mon, 17 Jul 2023 22:45:42 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH V4] PCI: qcom: Fixing broken pcie bring up for 2_3_3
+ configs ops
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh@kernel.org>, <mani@kernel.org>,
+        <lpieralisi@kernel.org>, <bhelgaas@google.com>, <kw@linux.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20230717065535.2065582-1-quic_srichara@quicinc.com>
+ <2023071729-shamrock-evidence-b698@gregkh>
+From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
+In-Reply-To: <2023071729-shamrock-evidence-b698@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: zh38zpLXZ1BNI7moZ8bAuc7kOwjinL_J
+X-Proofpoint-GUID: zh38zpLXZ1BNI7moZ8bAuc7kOwjinL_J
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_13,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
+ suspectscore=0 bulkscore=0 mlxscore=0 adultscore=0 spamscore=0
+ impostorscore=0 phishscore=0 priorityscore=1501 mlxlogscore=677
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307170159
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-07-17 at 17:56 +0100, Daniel P. Berrangé wrote:
-> On Mon, Jul 17, 2023 at 12:08:26PM -0400, James Bottomley wrote:
-> > On Thu, 2023-07-13 at 15:52 +0200, Ard Biesheuvel wrote:
-> > > (add linux-efi@ cc)
-> > 
-> > Thanks for that, since this is really EFI related rather than x86.
+
+
+On 7/17/2023 7:09 PM, Greg KH wrote:
+> On Mon, Jul 17, 2023 at 12:25:35PM +0530, Sricharan Ramabadhran wrote:
+>> PARF_SLV_ADDR_SPACE_SIZE_2_3_3 macro is used for IPQ8074
+>> 2_3_3 post_init ops. PCIe slave addr size was initially set
+>> to 0x358, but was wrongly changed to 0x168 as a part of
+>> commit 39171b33f652 ("PCI: qcom: Remove PCIE20_ prefix from
+>> register definitions"). Fixing it, by using the right macro
+>> PARF_SLV_ADDR_SPACE_SIZE and remove the unused
+>> PARF_SLV_ADDR_SPACE_SIZE_2_3_3.
 > 
-> snip
+> Note, you do have a full 72 columns to use, no need to make it smaller.
+
+  ok sure
+
 > 
-> > The problem, as I see it, is if the distros give the kernel an
-> > .sbat section, that means any vanilla kernel that's built by a user
-> > and signed by their key now won't work (even if their key is in
-> > MoK) because it won't have an sbat section ... and the sbat
-> > mechanism is component specific, not key specific, so the signer
-> > has no choice but to adopt it.
+>> Without this pcie bring up on IPQ8074 is broken now.
 > 
-> AFAICT, that problem only exists for binaries directly invoked
-> from shim. So that would be a problem for the boot loader (grub),
-> or a kernel image being booted directly without a bootloader
-> present.
-
-Well, currently, yes; that's the in_protocol check in
-shim.c:verify_sbat_section().  However, I was assuming based on this
-thread, that that was being tightened up (either because people are
-moving away from grub or because the shim verifier protocol would
-enforce it) as you imply below.
-
-> For kernel binaries invoked indirectly by the boot loader, the
-> use of SBAT is currently optional. ie missing SBAT record would
-> be treated as success.
+> I do not understand, something that used to work now breaks, or this is
+> preventing a new chip from being "brought up"?
 > 
-> This was a pragmatic way to introduce SBAT support as it only
-> impacted grub at that time.
-> 
-> Once a distro starts adding SBAT to their kenrels too though, we
-> can forsee that they would like to enforce SBAT for the whole
-> boot chain, to prevent rollback to previously signed binaries
-> that lacked SBAT info.
-> 
-> This policy could be enforced per key though. eg require SBAT
-> for anything verified against the vendor key that's compiled into
-> shim, but not require SBAT for binaries verified with the MoK
-> entries.
 
-That might work, but it's not currently in the shim code base.  It also
-wouldn't work for SUSE I suspect: they actually put all of their distro
-keys into MokList (so the machine owner has to approve any SUSE key
-update), so how can shim tell the difference between my key and their
-key?
+  yes, ipq8074 pcie which was previously working is broken now.
+  This patch fixes it.
 
-> The user specific MoK entries don't have such a compelling use
-> case for SBAT, since if they need to revoke old binaries, the
-> end users always have the easy fallback option of just rotating
-> their signing keys and switching out the enrolled key in MoK.
-> 
-> The choice of whether to mandate SBAT for binaries signed with
-> a MoK entry, could be set by the end user themselves at the time
-> their enroll their signing cert in the MoK DB.
 
-Well, I agree with this, since it was my original point.  However, a
-key observation still seems to be that none of this exception proposal
-is actually coded anywhere, so if shim does tighten up sbat
-verification, everyone currently gets caught by it (and if it doesn't
-then the kernel doesn't need an sbat section).
-
-I really think if this exception proposal is what everyone is planning,
-then you can simply leave the upstream kernel alone, since it won't
-require sbat information unless incorporated into a distro.
-
-So the direction forward seems to be to get this exception proposal
-coded up and agreed and then we can decide based on that whether the
-upstream kernel needs to care.
-
-James
-
+Regards,
+  Sricharan
