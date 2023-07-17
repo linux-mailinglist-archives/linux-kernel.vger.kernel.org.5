@@ -2,69 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4507756D06
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 611E4756D0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbjGQTTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 15:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56752 "EHLO
+        id S231245AbjGQTUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 15:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjGQTTF (ORCPT
+        with ESMTP id S231265AbjGQTUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 15:19:05 -0400
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F8618D;
-        Mon, 17 Jul 2023 12:19:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1689621543;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N2cj6nzOloFnUedIE+sqlGYJXKAM8KXP3LA38uvlSgg=;
-        b=aMum8ykNR3O1EyRf6APapE/nrm/XIgEfrpD8ayt6JjIYHc+ZXXuoLqyzwoTFi2PMsEbFo0
-        8F9S9ZtTbKtbVAibRi4zQuAieo9ldUyxhzc5NMkbAJtj94tVSGeV2CfoYzoeBe1keU1UIX
-        0eqds2sfP9zZWoHFmwgWgbxzA1/ATLA=
-Message-ID: <a9c7064df30215878925206751a4017830938ede.camel@crapouillou.net>
-Subject: Re: [PATCH v2 01/10] pm: Introduce DEFINE_NOIRQ_DEV_PM_OPS() helper
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Balsam CHIHI <bchihi@baylibre.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Sean Wang <sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
-Date:   Mon, 17 Jul 2023 21:19:00 +0200
-In-Reply-To: <20230717172821.62827-2-andriy.shevchenko@linux.intel.com>
-References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
-         <20230717172821.62827-2-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 17 Jul 2023 15:20:21 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68511B5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 12:20:19 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b9ecf0cb4cso29289685ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 12:20:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1689621619; x=1692213619;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BxqwFQEaz103YnifoW7TQwaLwgL55Tbq0Xq1x3fktnE=;
+        b=HHmpKiFkCjm8jzgl4DBC6GDyEBq5T45I0kyUdpFpKtrlD+BNBKWjt6o5ew9+Ht9wiJ
+         IZ6bImH/l+xf6Dqijf9XJoKIivqIQ+m+ehaDhaURY8R9Fpu+0dWgPJ9TPWB0eULt3dip
+         4Kx9tXszZSkr9e5p4anTIeTT0SPVfWQJUmyGFwB1RpRQM11ij3+7Tvevjaxp7hGWHPgP
+         A0yvmLvCI3oYQsls6fdKjlyJJjllDdJEnRrIYdo7NGfSaL+s7crWYJ5o5ting0j8Ob2z
+         322tvBMn2llX00gVe6tG2smoODlrHAHE8DKNlSdqxVV+bG4e7iBpbs10dw5Bm59E+jt4
+         5FbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689621619; x=1692213619;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BxqwFQEaz103YnifoW7TQwaLwgL55Tbq0Xq1x3fktnE=;
+        b=hbLy9mmSQOyrrOCJGbLC3xdHUJdygxN+/4tK4GKN+VyZ26RK90HyXwAinyikRX5CsZ
+         7crNpkqpmgi0370/kaAA6W3Es+Lr6rRtd0YrJymwFQhZlHnxXc/KpTU+WGwOrFMVYxys
+         A/0vOLW+fs+2oO/OGmjYEAUrqvIBz8Tsr1ghEtk0oEk0u2oNybOMGu90DHBmOYyVwlqm
+         TrbEpApaUVGEBoV9yOpDw6tDnT8ZcMTQ8Fhyr70kgFGqL6xrrgFfOVyw71CsafMQ2O5D
+         RGm8I/1sE/LYyUnTnwsWmcrSpfHFU5qA5IX5lWtpjdozbwKVNeHl6SzGK/B4sryeovmJ
+         Xo+A==
+X-Gm-Message-State: ABy/qLYYZu567gYgxMPTwL2IhiDaoSA1/iJbXcMj7Hy8Or2uo0MFy5rK
+        DqxtShfZP9ENe0risIdBVzzZbw==
+X-Google-Smtp-Source: APBJJlGpQ4X2bd9Mkelc2f+lFzN3mJwwaLKT8hO7m8OnO26LTRp3GdmtUwkSiRXB1c8xCmnsLgU7EA==
+X-Received: by 2002:a17:90b:4b01:b0:267:a6c5:e601 with SMTP id lx1-20020a17090b4b0100b00267a6c5e601mr519626pjb.1.1689621619335;
+        Mon, 17 Jul 2023 12:20:19 -0700 (PDT)
+Received: from sw06.internal.sifive.com ([64.62.193.194])
+        by smtp.gmail.com with ESMTPSA id y8-20020a17090322c800b001b850c9af71sm210400plg.285.2023.07.17.12.20.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 12:20:18 -0700 (PDT)
+From:   Samuel Holland <samuel.holland@sifive.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Support Opensource <support.opensource@diasemi.com>
+Cc:     Samuel Holland <samuel.holland@sifive.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: da9063 - add wakeup support
+Date:   Mon, 17 Jul 2023 12:20:03 -0700
+Message-Id: <20230717192004.1304287-1-samuel.holland@sifive.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,59 +70,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Mark the IRQ as a wake IRQ so it will be enabled during system suspend.
 
-Le lundi 17 juillet 2023 =C3=A0 20:28 +0300, Andy Shevchenko a =C3=A9crit=
-=C2=A0:
-> _DEFINE_DEV_PM_OPS() helps to define PM operations for the system
-> sleep
-> and/or runtime PM cases. Some of the existing users want to have
-> _noirq()
-> variants to be set. For that purpose introduce a new helper which
-> sets
-> up _noirq() callbacks to be set and struct dev_pm_ops be provided.
->=20
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> =C2=A0include/linux/pm.h | 9 +++++++++
-> =C2=A01 file changed, 9 insertions(+)
->=20
-> diff --git a/include/linux/pm.h b/include/linux/pm.h
-> index badad7d11f4f..0f19af8d5493 100644
-> --- a/include/linux/pm.h
-> +++ b/include/linux/pm.h
-> @@ -448,6 +448,15 @@ const struct dev_pm_ops __maybe_unused name =3D {
-> \
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0SET_RUNTIME_PM_OPS(suspen=
-d_fn, resume_fn, idle_fn) \
-> =C2=A0}
-> =C2=A0
-> +/*
-> + * Use this if you want to have the suspend and resume callbacks be
-> called
-> + * with disabled IRQs.
+Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+---
 
-with disabled IRQs -> with IRQs disabled?
+ drivers/input/misc/da9063_onkey.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-I'm not really sure that we need this macro, but I don't really object
-either. As long as it has callers I guess it's fine, I just don't want
-<linux/pm.h> to become too bloated and confusing.
-
-Anyway:
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-
-Cheers,
--Paul
-
-> + */
-> +#define DEFINE_NOIRQ_DEV_PM_OPS(name, suspend_fn, resume_fn) \
-> +const struct dev_pm_ops name =3D { \
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0NOIRQ_SYSTEM_SLEEP_PM_OPS(susp=
-end_fn, resume_fn) \
-> +}
-> +
-> =C2=A0#define pm_ptr(_ptr) PTR_IF(IS_ENABLED(CONFIG_PM), (_ptr))
-> =C2=A0#define pm_sleep_ptr(_ptr) PTR_IF(IS_ENABLED(CONFIG_PM_SLEEP),
-> (_ptr))
-> =C2=A0
+diff --git a/drivers/input/misc/da9063_onkey.c b/drivers/input/misc/da9063_onkey.c
+index b14a389600c9..74808bae326a 100644
+--- a/drivers/input/misc/da9063_onkey.c
++++ b/drivers/input/misc/da9063_onkey.c
+@@ -10,6 +10,7 @@
+ #include <linux/input.h>
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_wakeirq.h>
+ #include <linux/workqueue.h>
+ #include <linux/regmap.h>
+ #include <linux/of.h>
+@@ -251,6 +252,14 @@ static int da9063_onkey_probe(struct platform_device *pdev)
+ 		return error;
+ 	}
+ 
++	error = dev_pm_set_wake_irq(&pdev->dev, irq);
++	if (error)
++		dev_warn(&pdev->dev,
++			 "Failed to set IRQ %d as a wake IRQ: %d\n",
++			 irq, error);
++	else
++		device_init_wakeup(&pdev->dev, true);
++
+ 	error = input_register_device(onkey->input);
+ 	if (error) {
+ 		dev_err(&pdev->dev,
+-- 
+2.40.1
 
