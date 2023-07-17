@@ -2,66 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E777756F3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721BF756F3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbjGQV7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 17:59:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34316 "EHLO
+        id S229954AbjGQV7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 17:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjGQV7h (ORCPT
+        with ESMTP id S229379AbjGQV7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 17:59:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E223DE52
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:59:35 -0700 (PDT)
+        Mon, 17 Jul 2023 17:59:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1794E4F;
+        Mon, 17 Jul 2023 14:59:40 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6743F612B2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 21:59:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E7A9C433C8;
-        Mon, 17 Jul 2023 21:59:33 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CFAF61291;
+        Mon, 17 Jul 2023 21:59:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E28A5C433C8;
+        Mon, 17 Jul 2023 21:59:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689631174;
-        bh=OWdGYkH1Y1wnTjNRzoIEt/5CVyG2Gp3bhfXqsNkoW0M=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=NDRrpCzxZK/xlB9IdhsJCV4cGza+0iHlqW6RUVfMWZhecHzkSehwR0EMqqACY5PPS
-         Tj84brPayTvK+JmCFrMAbAr0AtHOmOPqMPDcCecfoMMFeuLBUh0MXvzEFHg75LR6Sp
-         9MKOr3JJNEvxOv2q/hmpEcEgd6jn4LSlDA3ZcLeb4R/QWl9nTMazRSpMXeHb65NXEH
-         Ecc3yV7A1ZBJPpae+ymy4Z45uH5T775qrCJyS9txlaT5clcv9usUw8zIF4gumgWzHG
-         zEz3j/Tcoj7R6r5Bv2FZazbPYM2y0iLzjPzgCXci43p8Pv7IG/x9EHZp8UX8O+p2Fy
-         6LaFK4dLMRmOA==
+        s=k20201202; t=1689631179;
+        bh=L4LNILElwEJuIvZsN9V0NhiSCNz4Ki8cQsqwvuJykvo=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=QXKgOwmHlEVnNI7mc/TIk7h7m85AZuTRJ2zI7MzW+kUSv8nw7c0nIfPZw3GdADPXM
+         h6mhCp1iMdTp6ujNMJLWw5wicHgBYOvLa8XCqRzRf3ne0F67BCEovoP2CyOxQo74Rf
+         NIKJ8cHBUKFWgD4CTxM9rbPnQvQjZWcDWiXNchnNHdygR5a0fLkLTJENfTpkG/DAuM
+         v9Y9X7zw9FmaRvTGBTmTR0zH/zlVWhn/P/GjoVdxhhK/2198ujTP/u2Mjms92yQf0D
+         OvkNTk/a9dJgWA9Nm/xUqEZXcBvY6FQJK/qJcKZ5eNGEOhjTf1Fz1PWSsJPj0fCLIa
+         GCvfo8sCDBS6w==
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Yangtao Li <frank.li@vivo.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230711034846.69437-1-frank.li@vivo.com>
-References: <20230711034846.69437-1-frank.li@vivo.com>
-Subject: Re: [PATCH 1/5] ASoC: bcm: bcm63xx-i2s-whistler: Convert to
- devm_platform_ioremap_resource()
-Message-Id: <168963117327.522208.7041227342789834630.b4-ty@kernel.org>
-Date:   Mon, 17 Jul 2023 22:59:33 +0100
+To:     lgirdwood@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        Chancel Liu <chancel.liu@nxp.com>
+In-Reply-To: <20230714092913.1591195-1-chancel.liu@nxp.com>
+References: <20230714092913.1591195-1-chancel.liu@nxp.com>
+Subject: Re: [PATCH 0/2] Add support for rpmsg sound card on i.MX93
+ platform
+Message-Id: <168963117664.522208.15403610708641093351.b4-ty@kernel.org>
+Date:   Mon, 17 Jul 2023 22:59:36 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 Jul 2023 11:48:41 +0800, Yangtao Li wrote:
-> Use devm_platform_ioremap_resource() to simplify code.
+On Fri, 14 Jul 2023 17:29:11 +0800, Chancel Liu wrote:
+> Support rpmsg sound card on i.MX93 platform.
 > 
+> Chancel Liu (2):
+>   ASoC: dt-bindings: fsl_rpmsg: Add compatible string for i.MX93
+>   ASoC: fsl_rpmsg: Add support for i.MX93 platform
 > 
+>  Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml | 1 +
+>  sound/soc/fsl/fsl_rpmsg.c                              | 8 ++++++++
+>  2 files changed, 9 insertions(+)
+> 
+> [...]
 
 Applied to
 
@@ -69,16 +80,10 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: bcm: bcm63xx-i2s-whistler: Convert to devm_platform_ioremap_resource()
-      commit: 7562539e15f1376577d7b62e904b509d17c4bc3f
-[2/5] ASoC: ti: Convert to devm_platform_ioremap_resource_byname()
-      commit: c8b04f008fc33ab2b902a1780c205810d157c849
-[3/5] ASoC: mediatek: mt8186: Convert to devm_platform_ioremap_resource()
-      commit: e1537b59633cc0e30305e498ba9eead45e762910
-[4/5] ASoC: pxa: Use devm_platform_get_and_ioremap_resource()
-      commit: 97b19db1cfb34303101a3f30c26ef0e2ede07d89
-[5/5] ASoC: tegra: tegra20_ac97: Use devm_platform_get_and_ioremap_resource()
-      commit: 976201dd5f597b7c25b9fc5ebeee382b5e6bf8fb
+[1/2] ASoC: dt-bindings: fsl_rpmsg: Add compatible string for i.MX93
+      commit: 143f8c69a27f3fa8ed30c7f6790ea039fff57cfe
+[2/2] ASoC: fsl_rpmsg: Add support for i.MX93 platform
+      commit: 60f38a592efe08e5ced454e8a05f6814e6e221ec
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
