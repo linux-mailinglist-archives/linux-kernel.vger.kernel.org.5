@@ -2,105 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FFC7560FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBC4756103
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbjGQLAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 07:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
+        id S230443AbjGQLBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 07:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjGQLAf (ORCPT
+        with ESMTP id S229566AbjGQLBC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 07:00:35 -0400
-Received: from comms.puri.sm (comms.puri.sm [159.203.221.185])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265611B9;
-        Mon, 17 Jul 2023 04:00:34 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 9B286ECB41;
-        Mon, 17 Jul 2023 04:00:33 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id PHYwhA0G5s6o; Mon, 17 Jul 2023 04:00:32 -0700 (PDT)
-Message-ID: <ae7865575edd11ab9e2bf81c54ee8826e0a2a766.camel@puri.sm>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=puri.sm; s=comms;
-        t=1689591632; bh=TgOupprCXdcHNadU7eli+8swMuQbvJHpJwx/sY+zHHs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=C7DtMBQ1bf7BRHMBMz6w2fo9xm7Tdzco+CDlrpTaijQtsBZI/nIclO2mpFp/dNtjk
-         rMZ8qsEvZwkMt2wmAZoFK78ovfUeiHl5F1QV2/LoalixfRodsbPkMf4e5tX4YPB5yk
-         SjWSBX7X342Xrb6nRRbXDDkV0NiBscp6BJthtNnXxVg1enU92Xc5j0i11uLw+opXDn
-         0GQLqXX9GURUvoGFcnUA2aWt8pBIT2KPBbFthLsWzdl8eA4w1nvRnWVFC38eKO/JJe
-         qFmyrA72CTPlMp1u3aOqRLZBfZTn0zX8ntjJPXmuDfvzX6cEh9BsoGTagmNiuC05Y7
-         ul1Np9SFkqgPg==
-Subject: Re: [PATCH v2] media: imx: Unstage the imx8mq-mipi-csi2 driver
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     mchehab@kernel.org, shawnguo@kernel.org, festevam@gmail.com,
-        slongerbeam@gmail.com, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, rmfrfs@gmail.com, kernel@pengutronix.de,
-        linux-imx@nxp.com, kernel@puri.sm, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Mon, 17 Jul 2023 13:00:26 +0200
-In-Reply-To: <a4b3cf3be9f105adcbcad688f8745556eec4d9df.camel@puri.sm>
-References: <20230425090804.2664466-1-martin.kepplinger@puri.sm>
-         <20230425094346.GA17841@pendragon.ideasonboard.com>
-         <a4b3cf3be9f105adcbcad688f8745556eec4d9df.camel@puri.sm>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1+deb11u2 
+        Mon, 17 Jul 2023 07:01:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7FBA1B9;
+        Mon, 17 Jul 2023 04:01:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 603F46101B;
+        Mon, 17 Jul 2023 11:01:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F55DC433C8;
+        Mon, 17 Jul 2023 11:00:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689591660;
+        bh=MwFQQiUHWTSIvU9GMqKlkjYFECTDe1lUrP0Zudgxm+s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ai5wtIlwCupgpMNHFd8IQe+3WMX0zjtQ6JLxvBF5PiHJQGFcnGpipuuCvZYgsY9tq
+         PDVi4hvpj5V2c4vHWMAzmBD3uB6R516oWJxMUei6lHORGRSv6uYNbB0DhTmqPC5EiH
+         OkcK6KQj5MSrrlWa1hMbWhTFeZlWEQ8DPwKeX55sjpppnZkeH1CfTKL37IDHqT+xxO
+         kyM2MdVi98n3GX2f7Zb+w2zBObUTenQKzyRLgpg3a63yx6OGI+Ci8JBp5WqY4kJBkl
+         /YUXoE4C09AVZkbtb1X3upG5CkMWtqNJMLaKUxvNlFz9vgu8ImDGekxLI9IagCy3x+
+         em1X4etc18Ehw==
+Date:   Mon, 17 Jul 2023 13:00:55 +0200
+From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
+To:     Guanghui Feng <guanghuifeng@linux.alibaba.com>
+Cc:     guohanjun@huawei.com, sudeep.holla@arm.com, rafael@kernel.org,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, baolin.wang@linux.alibaba.com,
+        alikernel-developer@linux.alibaba.com
+Subject: Re: [PATCH v1] ACPI/IORT: fix IORT Reserved Memory Range node
+ mapping error
+Message-ID: <ZLUfZ5n/gKanIims@lpieralisi>
+References: <1689589138-58042-1-git-send-email-guanghuifeng@linux.alibaba.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1689589138-58042-1-git-send-email-guanghuifeng@linux.alibaba.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, dem 16.05.2023 um 09:42 +0200 schrieb Martin Kepplinger:
-> Am Dienstag, dem 25.04.2023 um 12:43 +0300 schrieb Laurent Pinchart:
-> > Hi Martin,
-> > 
-> > Thank you for the patch.
-> > 
-> > On Tue, Apr 25, 2023 at 11:08:04AM +0200, Martin Kepplinger wrote:
-> > > The imx8mq-mipi-csi2 MIPI CSI-2 receiver driver is used and
-> > > maintained.
-> > > There is no reason to keep it in staging. The accompanying CSI
-> > > bridge
-> > > driver that uses it is in drivers/media/platform/nxp as well.
-> > > 
-> > > One TODO is to get rid of csi_state's "state" and "lock"
-> > > variables.
-> > > Especially make sure suspend/resume is working without them. That
-> > > can
-> > > very well be worked on from the new location.
-> > > 
-> > > Also add a MAINTAINERS section for the imx8mq-mipi-csi2 mipi
-> > > receiver
-> > > driver.
-> > > 
-> > > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> > 
-> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> Thanks for reviewing Laurent,
-> 
-> Are there any second thoughts to this? If not: It still applies to
-> todays' next kernel. Who would be able to queue this up?
-> 
-> (This enables Debian and other distributions to use cameras on
-> imx8mq.)
-> 
-> thanks,
-> 
->                        martin
-> 
+This is v2, not v1.
 
-This still applies cleanly and would be helpful. Does anyone want to
-queue this?
+Please update the subject.
 
-thanks,
-                         martin
+"ACPI/IORT: Remove erroneous id_count check in iort_node_get_rmr_info()"
 
+On Mon, Jul 17, 2023 at 06:18:58PM +0800, Guanghui Feng wrote:
+> In the ARM IORT specifications DEN 0049E.d, the recommended ID mapping format：
+> Field		Note Description
+> --------------------------------
+> Input base	The lowest value in the input range
+> Number of IDs	The number of IDs in the range "minus" one
+> 
+> When there is only one id mapping in the Reserved Memory Range
+> (RMR) node, the node filed: "Number of IDs" is zero and
+> iort_node_get_rmr_info will not analyse id mapping. This is
+> not in compliance with the regulations.
+
+Please replace this commit log with:
+
+"According to the ARM IORT specifications DEN 0049 issue E,
+the "Number of IDs" field in the ID mapping format reports
+the number of IDs in the mapping range minus one.
+
+In iort_node_get_rmr_info(), we erroneously skip ID mappings
+whose "Number of IDs" equal to 0, resulting in valid mapping
+nodes with a single ID to map being skipped, which is wrong.
+
+Fix iort_node_get_rmr_info() by removing the bogus id_count
+check".
+
+Add a:
+
+Fixes: 491cf4a6735a ("ACPI/IORT: Add support to retrieve IORT RMR reserved regions")
+
+Bump version up to v3 and resend.
+
+Thanks,
+Lorenzo
+
+> 
+> Signed-off-by: Guanghui Feng <guanghuifeng@linux.alibaba.com>
+> ---
+>  drivers/acpi/arm64/iort.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+> index 3631230..56d8873 100644
+> --- a/drivers/acpi/arm64/iort.c
+> +++ b/drivers/acpi/arm64/iort.c
+> @@ -1007,9 +1007,6 @@ static void iort_node_get_rmr_info(struct acpi_iort_node *node,
+>  	for (i = 0; i < node->mapping_count; i++, map++) {
+>  		struct acpi_iort_node *parent;
+>  
+> -		if (!map->id_count)
+> -			continue;
+> -
+>  		parent = ACPI_ADD_PTR(struct acpi_iort_node, iort_table,
+>  				      map->output_reference);
+>  		if (parent != iommu)
+> -- 
+> 1.8.3.1
+> 
