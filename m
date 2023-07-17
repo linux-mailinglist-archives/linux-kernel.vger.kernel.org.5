@@ -2,80 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C07C756EE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFAD756EEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbjGQVXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 17:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54448 "EHLO
+        id S230039AbjGQVZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 17:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbjGQVXS (ORCPT
+        with ESMTP id S229609AbjGQVY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 17:23:18 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07698E7;
-        Mon, 17 Jul 2023 14:23:16 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36HKi7gZ005639;
-        Mon, 17 Jul 2023 21:23:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=cytvABo84vy7mFR/hVdvACmKWzXDqxPDfu+u5PnjsJo=;
- b=FHxJcVEgoY7dV1lsYEY0EjdxUUqKcZF+3cpWoPMYUgnLIENvJh32oWx/FFqIVdHGxL5g
- 2SOS7HuKU+sXy5RG9dl2wZ6gNwJyO4UB98EweFM/2Dk/ThIT/5uKu7ec4mZTrFTpbzky
- WK4MvZtuaIbcmZyyr2O3yGs/A/uGMpIHcQDawszI6OtohwdtxQhhEEjJeyt5POzWgknc
- LzP5rwuR5CZK90xlDIn4lrTlS7LnngULIZ0Qv2923DLfrBXznyN//N72vgAnFSjEzAL4
- OJ9rUb2l+bstblTrTpfmNkjXFXP4whDQWU5+t8mDbxDeSDoUObIpDrxpARMm/ai/1QLI vA== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3run0avkey-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 21:23:11 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36HLNADK003222
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 21:23:10 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 17 Jul 2023 14:23:10 -0700
-Date:   Mon, 17 Jul 2023 14:23:09 -0700
-From:   Bjorn Andersson <quic_bjorande@quicinc.com>
-To:     Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
-CC:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Jagadeesh Kona <quic_jkona@quicinc.com>,
-        Taniya Das <quic_tdas@quicinc.com>
-Subject: Re: [RESEND] clk: qcom: rcg: Update rcg configuration before
- enabling it
-Message-ID: <20230717212309.GA4176673@hu-bjorande-lv.qualcomm.com>
-References: <20230712014812.3337992-1-quic_skakitap@quicinc.com>
+        Mon, 17 Jul 2023 17:24:59 -0400
+Received: from mail-oa1-f80.google.com (mail-oa1-f80.google.com [209.85.160.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8025E7
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:24:57 -0700 (PDT)
+Received: by mail-oa1-f80.google.com with SMTP id 586e51a60fabf-1b0812d43a0so7199916fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:24:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689629097; x=1692221097;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8F6dYdYGyG77zeOQWkKpbjAt/23bYlsRze36LBs/pcA=;
+        b=MQu5/yh3xXLlkIPxXli+npPs3Puum7GQeTu5zmZUsdOXL6UC3XiXWtI4CabR2B+cmt
+         9hn3wtMuGOc7HN6Dx5yg9ydEwGg1yRbrspmCeHktZ/ZrfhhNdik3XfZZUo5Iy0rZJ/Pg
+         30art7cfrAUzKw9RuBhTdWEzlklspL8cQBfctRthUZTwx05SjK+kOXX179yvU4pd67/W
+         3i9DuUf7snVnTl+zEiN2c3eHVhV42ffRZiKPu4b6z0eK5tzul23Z9sYidQLIc5bqki3g
+         FAttxq5K+WhFspQ+8smL/DPEzPv8cp+SIbnVjwheSs//VZrkMUitStUtqWfh7VYFoevj
+         8nYA==
+X-Gm-Message-State: ABy/qLauKodGf29yHbikGbfonrDMQhDxWPDw91x8jxdzWK0G1qsOBNEy
+        I/FFk2oB/P8kyfwdlbAWZY+vJ/pb3DwDqy+hi5OHLuFbrpT7
+X-Google-Smtp-Source: APBJJlFfnVN0tiw5pMxMIgicNC3ThgxSDip01FdCAkF8cbx4VRdT1egGeb8LP03Vq/GGXE/fqS7cmaGtIZY6a0XvjuJxFqXIZovX
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230712014812.3337992-1-quic_skakitap@quicinc.com>
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: vptW1ctTBT4fQwY_XCWZZB6spRdZSs8r
-X-Proofpoint-ORIG-GUID: vptW1ctTBT4fQwY_XCWZZB6spRdZSs8r
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-17_15,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- mlxlogscore=852 bulkscore=0 priorityscore=1501 mlxscore=0 suspectscore=0
- impostorscore=0 lowpriorityscore=0 clxscore=1011 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307170193
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a05:6870:956a:b0:1a9:85e9:9376 with SMTP id
+ v42-20020a056870956a00b001a985e99376mr9201371oal.0.1689629097183; Mon, 17 Jul
+ 2023 14:24:57 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 14:24:57 -0700
+In-Reply-To: <0000000000001bd66b05fcec6d92@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000023d0c70600b56e47@google.com>
+Subject: Re: [syzbot] [reiserfs?] possible deadlock in vfs_setxattr (2)
+From:   syzbot <syzbot+c98692bac73aedb459c3@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,38 +55,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 07:18:12AM +0530, Satya Priya Kakitapalli wrote:
-> From: Taniya Das <quic_tdas@quicinc.com>
-> 
-> If rcg is in disabled state when clk_rcg2_shared_set_rate is called, the
-> new configuration is written to the configuration register but it won't be
-> effective in h/w yet because update bit won't be set if rcg is in disabled
-> state.
+syzbot has found a reproducer for the following issue on:
 
-Does this take commit '703db1f5da1e ("clk: qcom: rcg2: Cache CFG
-register updates for parked RCGs")', which was merged in v5.19, into
-consideration?
+HEAD commit:    e40939bbfc68 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=117c0fa2a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c4a2640e4213bc2f
+dashboard link: https://syzkaller.appspot.com/bug?extid=c98692bac73aedb459c3
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=107ec3faa80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15bc5646a80000
 
-> Since the new configuration is not yet updated in h/w, dirty bit of
-> configuration register will be set in such case. Clear the dirty bit and
-> update the rcg to proper new configuration by setting the update bit before
-> enabling the rcg.
-> 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/9d87aa312c0e/disk-e40939bb.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/22a11d32a8b2/vmlinux-e40939bb.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/0978b5788b52/Image-e40939bb.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/cd09072f381d/mount_0.gz
 
-For a shared rcg2, which was updated while disabled, updates will be
-carried in the "parked_cfg" variable and the RCG_CFG will be stale so
-invoking update_config() should lead to exactly the problem you describe
-fixing here.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c98692bac73aedb459c3@syzkaller.appspotmail.com
 
-Perhaps I'm missing something here, can you please confirm that this has
-been validated on a recent upstream kernel?
+REISERFS (device loop0): Using tea hash to sort names
+REISERFS (device loop0): Created .reiserfs_priv - reserved for xattr storage.
+======================================================
+WARNING: possible circular locking dependency detected
+6.4.0-rc7-syzkaller-ge40939bbfc68 #0 Not tainted
+------------------------------------------------------
+syz-executor558/5970 is trying to acquire lock:
+ffff0000e0a782e0 (&type->i_mutex_dir_key#6){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:775 [inline]
+ffff0000e0a782e0 (&type->i_mutex_dir_key#6){+.+.}-{3:3}, at: vfs_setxattr+0x17c/0x344 fs/xattr.c:321
 
-> Signed-off-by: Taniya Das <quic_tdas@quicinc.com>
-> ---
-> Resending this patch as there is no review for 2 months.
-> 
+but task is already holding lock:
+ffff0000c67ac460 (sb_writers#8){.+.+}-{0:0}, at: mnt_want_write+0x44/0x9c fs/namespace.c:394
 
-Thanks for bumping the discussion.
+which lock already depends on the new lock.
 
-Regards,
-Bjorn
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (sb_writers#8){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1494 [inline]
+       sb_start_write+0x60/0x2ec include/linux/fs.h:1569
+       mnt_want_write_file+0x64/0x1e8 fs/namespace.c:438
+       reiserfs_ioctl+0x184/0x454 fs/reiserfs/ioctl.c:103
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:870 [inline]
+       __se_sys_ioctl fs/ioctl.c:856 [inline]
+       __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:856
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
+       el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
+       el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+
+-> #1 (&sbi->lock){+.+.}-{3:3}:
+       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:603
+       __mutex_lock kernel/locking/mutex.c:747 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
+       reiserfs_write_lock+0x7c/0xe8 fs/reiserfs/lock.c:27
+       reiserfs_lookup+0x128/0x45c fs/reiserfs/namei.c:364
+       __lookup_slow+0x250/0x374 fs/namei.c:1690
+       lookup_one_len+0x178/0x28c fs/namei.c:2742
+       reiserfs_lookup_privroot+0x8c/0x184 fs/reiserfs/xattr.c:976
+       reiserfs_fill_super+0x1bc0/0x2028 fs/reiserfs/super.c:2174
+       mount_bdev+0x274/0x370 fs/super.c:1380
+       get_super_block+0x44/0x58 fs/reiserfs/super.c:2601
+       legacy_get_tree+0xd4/0x16c fs/fs_context.c:610
+       vfs_get_tree+0x90/0x274 fs/super.c:1510
+       do_new_mount+0x25c/0x8c4 fs/namespace.c:3039
+       path_mount+0x590/0xe04 fs/namespace.c:3369
+       do_mount fs/namespace.c:3382 [inline]
+       __do_sys_mount fs/namespace.c:3591 [inline]
+       __se_sys_mount fs/namespace.c:3568 [inline]
+       __arm64_sys_mount+0x45c/0x594 fs/namespace.c:3568
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
+       el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
+       el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+
+-> #0 (&type->i_mutex_dir_key#6){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3113 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3232 [inline]
+       validate_chain kernel/locking/lockdep.c:3847 [inline]
+       __lock_acquire+0x3308/0x7604 kernel/locking/lockdep.c:5088
+       lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5705
+       down_write+0x50/0xc0 kernel/locking/rwsem.c:1573
+       inode_lock include/linux/fs.h:775 [inline]
+       vfs_setxattr+0x17c/0x344 fs/xattr.c:321
+       do_setxattr fs/xattr.c:630 [inline]
+       setxattr+0x208/0x29c fs/xattr.c:653
+       path_setxattr+0x17c/0x258 fs/xattr.c:672
+       __do_sys_setxattr fs/xattr.c:688 [inline]
+       __se_sys_setxattr fs/xattr.c:684 [inline]
+       __arm64_sys_setxattr+0xbc/0xd8 fs/xattr.c:684
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
+       el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
+       el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+
+other info that might help us debug this:
+
+Chain exists of:
+  &type->i_mutex_dir_key#6 --> &sbi->lock --> sb_writers#8
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  rlock(sb_writers#8);
+                               lock(&sbi->lock);
+                               lock(sb_writers#8);
+  lock(&type->i_mutex_dir_key#6);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor558/5970:
+ #0: ffff0000c67ac460 (sb_writers#8){.+.+}-{0:0}, at: mnt_want_write+0x44/0x9c fs/namespace.c:394
+
+stack backtrace:
+CPU: 1 PID: 5970 Comm: syz-executor558 Not tainted 6.4.0-rc7-syzkaller-ge40939bbfc68 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
+ show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
+ dump_stack+0x1c/0x28 lib/dump_stack.c:113
+ print_circular_bug+0x150/0x1b8 kernel/locking/lockdep.c:2066
+ check_noncircular+0x2cc/0x378 kernel/locking/lockdep.c:2188
+ check_prev_add kernel/locking/lockdep.c:3113 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3232 [inline]
+ validate_chain kernel/locking/lockdep.c:3847 [inline]
+ __lock_acquire+0x3308/0x7604 kernel/locking/lockdep.c:5088
+ lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5705
+ down_write+0x50/0xc0 kernel/locking/rwsem.c:1573
+ inode_lock include/linux/fs.h:775 [inline]
+ vfs_setxattr+0x17c/0x344 fs/xattr.c:321
+ do_setxattr fs/xattr.c:630 [inline]
+ setxattr+0x208/0x29c fs/xattr.c:653
+ path_setxattr+0x17c/0x258 fs/xattr.c:672
+ __do_sys_setxattr fs/xattr.c:688 [inline]
+ __se_sys_setxattr fs/xattr.c:684 [inline]
+ __arm64_sys_setxattr+0xbc/0xd8 fs/xattr.c:684
+ __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+ invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
+ el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
+ do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
+ el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
