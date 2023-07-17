@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1B67562D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D17A7562DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbjGQMdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 08:33:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52858 "EHLO
+        id S230050AbjGQMfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 08:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231355AbjGQMdJ (ORCPT
+        with ESMTP id S229796AbjGQMfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 08:33:09 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5861591;
-        Mon, 17 Jul 2023 05:33:08 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R4Lxk64hxzNmMv;
-        Mon, 17 Jul 2023 20:29:46 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 17 Jul
- 2023 20:33:05 +0800
-Subject: Re: [PATCH v5 RFC 1/6] page_pool: frag API support for 32-bit arch
- with 64-bit DMA
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Yunsheng Lin <yunshenglin0825@gmail.com>,
-        <davem@davemloft.net>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-References: <20230629120226.14854-1-linyunsheng@huawei.com>
- <20230629120226.14854-2-linyunsheng@huawei.com>
- <20230707170157.12727e44@kernel.org>
- <3d973088-4881-0863-0207-36d61b4505ec@gmail.com>
- <20230710113841.482cbeac@kernel.org>
- <8639b838-8284-05a2-dbc3-7e4cb45f163a@intel.com>
- <20230711093705.45454e41@kernel.org>
- <1bec23ff-d38b-3fdf-1bb3-89658c1d465a@intel.com>
- <46ad09d9-6596-cf07-5cab-d6ceb1e36f3c@huawei.com>
- <20230712102603.5038980e@kernel.org>
- <9a5b4c50-2401-b3e7-79aa-33d3ccee41c5@huawei.com>
- <20230714105214.39ad4e4d@kernel.org>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <6c94f7b8-f553-1fce-f3f1-66cdead9e056@huawei.com>
-Date:   Mon, 17 Jul 2023 20:33:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Mon, 17 Jul 2023 08:35:06 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29131E56;
+        Mon, 17 Jul 2023 05:35:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=uI/9G3G7T4f36YRNHmjqAGhqu8fowy7O9r6FIhnzxuA=; b=mo5YxrLeBOo1QV0FDIAUKzpPLZ
+        rmSg1KnJOHE0l1uFKy+rgilUqy/Uo5D1FP5CYLWS5tw5LLV8/VJs/xibJvXFMVvRh/pOGIkU76dV8
+        A0zBQ8i93aH4clGMMVqOjml0jHT5YLYYcBI7DUBwkJN+P93lMlSGQn7YpGNmXWDRq+oQiVLbTsDUR
+        vfIGe5YrsIxbm+lZoawQ1tiXiycRd8Paj784jQrlpgk5i6m3hxtFYLD85qEbZD2PseckDhgoCAiqt
+        zRnK4gT/aVAdxYA7WINAB1/yRD4L3A5dh6qOIMr6vScXAT5S140+GzQ19p6FtMJ2rhbM+4mNQB1x1
+        EVQidmTQ==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qLNQG-004059-2o;
+        Mon, 17 Jul 2023 12:34:27 +0000
+Message-ID: <94068cfc-186a-1cac-0f76-77b3b46a85bd@infradead.org>
+Date:   Mon, 17 Jul 2023 05:33:49 -0700
 MIME-Version: 1.0
-In-Reply-To: <20230714105214.39ad4e4d@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH V1 4/5] ASoC: codecs: aw88261 chip register file, data
+ type file and Kconfig Makefile
 Content-Language: en-US
+To:     wangweidong.a@awinic.com, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, perex@perex.cz, tiwai@suse.com,
+        rf@opensource.cirrus.co, shumingf@realtek.com,
+        herve.codina@bootlin.com, flatmax@flatmax.com,
+        ckeepax@opensource.cirrus.com, doug@schmorgal.com,
+        fido_max@inbox.ru, pierre-louis.bossart@linux.intel.com,
+        kiseok.jo@irondevice.com, liweilei@awinic.com,
+        colin.i.king@gmail.com, trix@redhat.com,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     yijiangtao@awinic.com, zhangjianming@awinic.com
+References: <20230717115845.297991-1-wangweidong.a@awinic.com>
+ <20230717115845.297991-5-wangweidong.a@awinic.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230717115845.297991-5-wangweidong.a@awinic.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/15 1:52, Jakub Kicinski wrote:
-> On Fri, 14 Jul 2023 20:16:34 +0800 Yunsheng Lin wrote:
->>> I should have clarified that "types.h" should also include pure
->>> function declarations (and possibly static line wrappers like
->>> pure get/set functions which only need locally defined types).  
->>
->> So "types.h" is not supposed/allowed to include any header and
->> it can include any function declarations and static line wrappers
->> which do not depend on any other header? It means we need to forward
->> declaring a lot of 'struct' type for function declarations, right?
-> 
-> Only those used in function prototypes. Pointers in structures 
-> are somewhat special and don't require fwd declaration.
 
-I gave it a try to split it, and something as below come out:
 
-https://github.com/gestionlin/linux/commit/11ac8c1959f7eda06a7b987903f37212b490b292
+On 7/17/23 04:58, wangweidong.a@awinic.com wrote:
+> +config SND_SOC_AW88261
+> +	tristate "Soc Audio for awinic aw88261"
 
-As the 'helpers.h' is not really useful when splitting, so only
-'page_pool_types.h' is added, and include 'page_pool_types.h' in
-'page_pool.h', does it make sense?
+	                        Awininc
+(as below)
 
-As Alexander is sending a new RFC for the similar problem, I think
-we need to align on which is the better way to solve the problem.
+> +	depends on I2C
+> +	select CRC8
+> +	select REGMAP_I2C
+> +	select GPIOLIB
+> +	select SND_SOC_AW88261_LIB
+> +	help
+> +	  this option enables support for aw88261 Smart PA.
+
+	  This
+
+> +	  The Awinic AW88261 is an I2S/TDM input, high efficiency
+> +	  digital Smart K audio amplifier with an integrated 10.25V
+> +		smart boost convert.
+
+Less indentation on the last line (align it with the previous line).
+
+-- 
+~Randy
