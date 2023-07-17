@@ -2,69 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFED57566AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299047566B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbjGQOlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34022 "EHLO
+        id S230452AbjGQOpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:45:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbjGQOlg (ORCPT
+        with ESMTP id S229978AbjGQOpd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:41:36 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45084E4C;
-        Mon, 17 Jul 2023 07:41:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689604895; x=1721140895;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=3d/dMArMMvLara8UGSDubQb+jDPmJOD4PUCUjs5TeR0=;
-  b=jeWrHzODizyKKao8MYhCXgdheJmW4TTX31BXXPRKB2bEPJtE6yFq7V6g
-   9bm1DFfO2/FlYED1HzO9LzQ07XTFCryX8qofq7B9srF4OvxZuBodOAks1
-   vYWjrCwSgY4H0f4RHEGoycpmxOrPHHtnpD0nWpE+2kDbNR59FimkpefIA
-   VWJ3s3y46NJo2H97jpnfEzvr4zXTQ4qoLWvP3Fyco/ifPBlj7RB8Fpo5C
-   Ytfd0woDpYAhTSdHnWxqpxZG3Quik4ycDN7x2i1sUKc88u/EeJxHhD3qC
-   gmR1qh+S4iOpcTjXR8FfOX3zubQmfIJf142DMZ7Komb5eWu1+bQaKv8ym
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="345537783"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="345537783"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 07:41:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="1053924534"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="1053924534"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.223.8])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 07:41:29 -0700
-Message-ID: <5797e5a7-a85f-4f7c-1649-88f8f9ff7a6b@intel.com>
-Date:   Mon, 17 Jul 2023 17:41:24 +0300
+        Mon, 17 Jul 2023 10:45:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1CDB2;
+        Mon, 17 Jul 2023 07:45:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 789ED610D5;
+        Mon, 17 Jul 2023 14:45:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5985C433CA;
+        Mon, 17 Jul 2023 14:45:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689605129;
+        bh=6Lh/okJ/tlTuqTU1b/j/uErvTDrdoSJQUHuVEAFETts=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DXcRR896EnZnRLJNO/6oE3vS17JskNmeBySR1a8GBnSZMpK8R09u2GHreDf2c0Dzo
+         JLenvfB83kOgsDGMpX/l4sKSoMCJTkDOcZ1AMcrisUwBT45Hqkbl+XlzoIQD7J44xp
+         BYFUcjgFWWPES+2nt7thJ9TOtx9ok3veYqLmGXwpUvNrkKD9uUi4kuNmjRjO8kvSv/
+         Q22oXxhN3DW4SMHsd2yGH263wD6ee7T8xcq/guGZp7OF4Df7SJdXBFCdPf5RkCCV/3
+         AAiKiz+alTYz/OnLZ5fgffEXHxAlU+vg0JkRSCtx7kTfPpi4mi5LtNw9VoqrLwYgPv
+         lh5ICjbnogAkg==
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2b70bfc8db5so68132651fa.2;
+        Mon, 17 Jul 2023 07:45:29 -0700 (PDT)
+X-Gm-Message-State: ABy/qLbQxh1H3IGPgKmzeioCvLaadaaCJVxLnXr8a0wh6eB6mMSIZdGn
+        pYVMLqKmP76XUPR9BfVt2AaGsNqQw4sflJEr+w==
+X-Google-Smtp-Source: APBJJlFFXYcLka0U2O/B1evPE/8dIeXS+VuPwNFdjWy1LSj2t3dI5YnbEtEP8rRsNBtPkvMxm/lDG3mrsq/u8ZWdw1Y=
+X-Received: by 2002:a2e:9d84:0:b0:2b6:e76b:1e50 with SMTP id
+ c4-20020a2e9d84000000b002b6e76b1e50mr9074981ljj.41.1689605127886; Mon, 17 Jul
+ 2023 07:45:27 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v2 5/7] perf evlist: Skip dummy event sample_type check
- for evlist_config
-Content-Language: en-US
-To:     Yang Jihong <yangjihong1@huawei.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, kan.liang@linux.intel.com,
-        james.clark@arm.com, tmricht@linux.ibm.com, ak@linux.intel.com,
-        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-References: <20230715032915.97146-1-yangjihong1@huawei.com>
- <20230715032915.97146-6-yangjihong1@huawei.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20230715032915.97146-6-yangjihong1@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20230615164113.2270698-1-Frank.Li@nxp.com> <20230615164113.2270698-2-Frank.Li@nxp.com>
+In-Reply-To: <20230615164113.2270698-2-Frank.Li@nxp.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 17 Jul 2023 08:45:14 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqL7o5ipaBkNRECkWZPZDTB1kSFrUV3YjKL6xj02f0x2Sw@mail.gmail.com>
+Message-ID: <CAL_JsqL7o5ipaBkNRECkWZPZDTB1kSFrUV3YjKL6xj02f0x2Sw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PCI: layerscape: Add the workaround for lost link
+ capablities during reset
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     mani@kernel.org, Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
+        <linux-pci@vger.kernel.org>,
+        "moderated list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,38 +75,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/07/23 06:29, Yang Jihong wrote:
-> The dummp event does not contain sampls data. Therefore, sample_type does
-> not need to be checked.
-> 
-> Currently, the sample id format of the actual sampling event may be changed
-> after the dummy event is added.
-> 
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+On Thu, Jun 15, 2023 at 10:41=E2=80=AFAM Frank Li <Frank.Li@nxp.com> wrote:
+>
+> From: Xiaowei Bao <xiaowei.bao@nxp.com>
+>
+> A workaround for the issue where the PCI Express Endpoint (EP) controller
+> loses the values of the Maximum Link Width and Supported Link Speed from
+> the Link Capabilities Register, which initially configured by the Reset
+> Configuration Word (RCW) during a link-down or hot reset event.
+
+What makes this Layerscape specific? Seems like something internal to DWC.
+
+>
+> Signed-off-by: Xiaowei Bao <xiaowei.bao@nxp.com>
+> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 > ---
->  tools/perf/util/record.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
-> index 9eb5c6a08999..0240be3b340f 100644
-> --- a/tools/perf/util/record.c
-> +++ b/tools/perf/util/record.c
-> @@ -128,6 +128,13 @@ void evlist__config(struct evlist *evlist, struct record_opts *opts, struct call
->  		evlist__for_each_entry(evlist, evsel) {
->  			if (evsel->core.attr.sample_type == first->core.attr.sample_type)
->  				continue;
+>  drivers/pci/controller/dwc/pci-layerscape-ep.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>
+> diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci=
+/controller/dwc/pci-layerscape-ep.c
+> index 4e4fdd1dfea7..2ef02d827eeb 100644
+> --- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> +++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> @@ -45,6 +45,7 @@ struct ls_pcie_ep {
+>         struct pci_epc_features         *ls_epc;
+>         const struct ls_pcie_ep_drvdata *drvdata;
+>         int                             irq;
+> +       u32                             lnkcap;
+>         bool                            big_endian;
+>  };
+>
+> @@ -73,6 +74,7 @@ static irqreturn_t ls_pcie_ep_event_handler(int irq, vo=
+id *dev_id)
+>         struct ls_pcie_ep *pcie =3D dev_id;
+>         struct dw_pcie *pci =3D pcie->pci;
+>         u32 val, cfg;
+> +       u8 offset;
+>
+>         val =3D ls_lut_readl(pcie, PEX_PF0_PME_MES_DR);
+>         ls_lut_writel(pcie, PEX_PF0_PME_MES_DR, val);
+> @@ -81,6 +83,13 @@ static irqreturn_t ls_pcie_ep_event_handler(int irq, v=
+oid *dev_id)
+>                 return IRQ_NONE;
+>
+>         if (val & PEX_PF0_PME_MES_DR_LUD) {
 > +
-> +			/*
-> +			 * Skip the sample_type check for the dummy event
-> +			 * because it does not have any samples anyway.
-> +			 */
-> +			if (evsel__is_dummy_event(evsel))
-> +				continue;
-
-Sideband event records have "ID samples" so the sample type still matters.
-
-
->  			use_sample_identifier = perf_can_sample_identifier();
->  			break;
->  		}
-
+> +               offset =3D dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+> +
+> +               dw_pcie_dbi_ro_wr_en(pci);
+> +               dw_pcie_writew_dbi(pci, offset + PCI_EXP_LNKCAP, pcie->ln=
+kcap);
+> +               dw_pcie_dbi_ro_wr_dis(pci);
+> +
+>                 cfg =3D ls_lut_readl(pcie, PEX_PF0_CONFIG);
+>                 cfg |=3D PEX_PF0_CFG_READY;
+>                 ls_lut_writel(pcie, PEX_PF0_CONFIG, cfg);
+> @@ -216,6 +225,7 @@ static int __init ls_pcie_ep_probe(struct platform_de=
+vice *pdev)
+>         struct ls_pcie_ep *pcie;
+>         struct pci_epc_features *ls_epc;
+>         struct resource *dbi_base;
+> +       u8 offset;
+>         int ret;
+>
+>         pcie =3D devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
+> @@ -252,6 +262,9 @@ static int __init ls_pcie_ep_probe(struct platform_de=
+vice *pdev)
+>
+>         platform_set_drvdata(pdev, pcie);
+>
+> +       offset =3D dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+> +       pcie->lnkcap =3D dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
+> +
+>         ret =3D dw_pcie_ep_init(&pci->ep);
+>         if (ret)
+>                 return ret;
+> --
+> 2.34.1
+>
