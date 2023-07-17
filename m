@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B333755D6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DE5755D6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbjGQHt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 03:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51168 "EHLO
+        id S230522AbjGQHtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 03:49:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbjGQHtZ (ORCPT
+        with ESMTP id S229965AbjGQHt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 03:49:25 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C75D01705
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 00:49:09 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        Mon, 17 Jul 2023 03:49:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB2CDE;
+        Mon, 17 Jul 2023 00:49:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0EF636603203;
-        Mon, 17 Jul 2023 08:49:08 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689580148;
-        bh=yObxiZcHxzX5TeLYp8bl5WtcJZJkSQMr2izYqJlgGp8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GVyJjA7RGvEAWbuj+c3CFXrubnOwMnQxmKAcUDQeJNVknemhAfSMgixQwBdQY8nEo
-         IM+kpEyK+FPhKf2VIlEi8+d7K4MwB4E6Wgsg506LTV4VWnXMS8QFXQsmedgOzMLSA7
-         pijbQm4F/LB4qnXsW6frQBVEWDhrE0uKH7RISjr7D/PDgXKnxnk12rQpXGtA9UFcRH
-         xKbA2Shryh26p4kkE+FnvPAsrTtzOpeArW3M2GAW7YFxeFTH/J+2hI6LHxLi8qy8MJ
-         TUC5yf3FGR26NrYY97cmEE0Y3U9ZHZf9DBauy34sEQIMVejPzI5dduuc0kJ9j/JcYO
-         9bUcos0QOoQ7g==
-Date:   Mon, 17 Jul 2023 09:49:05 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v1] drm/panfrost: Sync IRQ by job's timeout handler
-Message-ID: <20230717094905.7a1ee007@collabora.com>
-In-Reply-To: <80de081a-e443-85a2-1a61-6a8885e8d529@collabora.com>
-References: <20230717065254.1061033-1-dmitry.osipenko@collabora.com>
-        <20230717090506.2ded4594@collabora.com>
-        <80de081a-e443-85a2-1a61-6a8885e8d529@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F0C6960F90;
+        Mon, 17 Jul 2023 07:49:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6E2DC433C9;
+        Mon, 17 Jul 2023 07:49:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689580155;
+        bh=waKWJVOAVBelCCI1mB4poaxnZoLxRarS05iTbEu+fGg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ETvDL7REf0/QLPjSciqioJlqT1+t33+n0MsHYt3ZS5nlqHjalFVSULyueWDSepJDZ
+         a46DVAA3dKgwxAjvszYB+hLxtPJD1X/rgMNPtfuf5hdqn2jsiKrzSrJfDhNHwRSJg6
+         V0Uh9d0cJBX0uREL+nV3SHHXKD/coZHG4MNLn11h9ZkEKXvFzKsjo+zSsKHvYkdH3v
+         fHlC6qyQk6G2/u5DWApyL3KQk622YrhFo0WZP/Mibs0WahAhiJlvWHs+726a2EyFVz
+         3ura9Lcwiw7xZvHtGYlm8Xcl0CQ3PuZi0qM9x//tPcN/a7n49IXmpXwBaKsRgV32Qe
+         xgne2JMBU4bAQ==
+Message-ID: <895ed8ae-e93f-b296-330e-356cda698de2@kernel.org>
+Date:   Mon, 17 Jul 2023 09:49:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH docs] docs: maintainer: document expectations of small
+ time maintainers
+Content-Language: en-US
+To:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     corbet@lwn.net, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Mark Brown <broonie@kernel.org>
+References: <20230713223432.1501133-1-kuba@kernel.org>
+ <6f1014cd-f8c5-f935-dcc7-4f5a6b85e473@kernel.org>
+ <20230714101028.337fb39a@kernel.org>
+ <bb8c6476-283c-3bc6-710b-5a8602ccd40e@leemhuis.info>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <bb8c6476-283c-3bc6-710b-5a8602ccd40e@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Jul 2023 10:20:02 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-
-> Hi,
+On 15/07/2023 12:31, Linux regression tracking (Thorsten Leemhuis) wrote:
+> [CCing other people in the thread]
+> How about something like this:
 > 
-> On 7/17/23 10:05, Boris Brezillon wrote:
-> > Hi Dmitry,
-> > 
-> > On Mon, 17 Jul 2023 09:52:54 +0300
-> > Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> >   
-> >> Panfrost IRQ handler may stuck for a long time, for example this happens
-> >> when there is a bad HDMI connection and HDMI handler takes a long time to
-> >> finish processing, holding Panfrost. Make Panfrost's job timeout handler
-> >> to sync IRQ before checking fence signal status in order to prevent
-> >> spurious job timeouts due to a slow IRQ processing.  
-> > 
-> > Feels like the problem should be fixed in the HDMI encoder driver
-> > instead, so it doesn't stall the whole system when processing its
-> > IRQs (use threaded irqs, maybe). I honestly don't think blocking in the
-> > job timeout path to flush IRQs is a good strategy.  
+> ```
+> Bug reports
+> -----------
 > 
-> The syncing is necessary to have for correctness regardless of whether
-> it's HDMI problem or something else, there could be other reasons for
-> CPU to delay IRQ processing. It's wrong to say that hw is hung, while
-> it's not.
+> Maintainers must ensure severe problems in their code reported to them
+> are resolved in a timely manner: security vulnerabilities, regressions,
+> compilation errors, data loss, kernel crashes, and bugs of similar scope.
+> 
+> Maintainers furthermore should respond to reports about other kind of
+> bugs as well, if the report is of reasonable quality or indicates a
+> problem that might be severe -- especially if they have *Supported*
+> status of the codebase in the MAINTAINERS file.
 
-Well, hardware is effectively hung, if not indefinitely, at least
-temporarily. All you do here is block in the timeout handler path
-waiting for the GPU interrupt handlers to finish, handler that's
-probably waiting in the queue, because the raw HDMI handler is blocking
-it somehow. So, in the end, you might just be delaying the time of HWR a
-bit more. I know it's not GPU's fault in that case, and the job could
-have finished in time if the HDMI encoder hadn't stall the interrupt
-handling pipeline, but I'm not sure we should care for that specific
-situation. And more importantly, if it took more than 500ms to get a
-frame rendered (or, in that case, to get the event that a frame is
-rendered), you already lost, so I'm not sure correctness matters:
-rendering didn't make it in time, and the watchdog kicked in to try and
-unblock the situation. Feels like we're just papering over an HDMI
-encoder driver bug here, really.
+I like mentioning the "Supported" part. We should be a bit more
+understanding to all folks who are not paid to do this.
+
+Best regards,
+Krzysztof
+
