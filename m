@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E24C7565FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C150756601
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbjGQOOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41736 "EHLO
+        id S232113AbjGQOOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbjGQOOS (ORCPT
+        with ESMTP id S232098AbjGQOOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:14:18 -0400
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E80EAF7;
-        Mon, 17 Jul 2023 07:14:16 -0700 (PDT)
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-986d8332f50so602793866b.0;
-        Mon, 17 Jul 2023 07:14:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689603255; x=1692195255;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gVQUDvbd72HzDaHvGqRQhZSUCDSNH5EztpgqmZj5nDA=;
-        b=iZDixxI8+iEB0Zic1xhasmqK30siTVVTEHJxunp+qjeQzq+JbIo3dtDCFjvtK3x34d
-         EwHwT8EfIcJTRpzS2IN8lPq2Ct5aE+SQTGnsvv24K71+6CyDTetqQHismO075bmaET9S
-         /qcgt/+34Bmk9/juC2cCq1L+remqikQX6dumcXkvLHQZpoYYtzOSGHwscylqVLESnkrP
-         urojDJ6xNwyOBR8tH1me6Q+mvjC/FdoMEBUtuSB0UXDMrA3q4IpdT/jy7tQijGY/Fsoe
-         YRS/GumCHHfRrFuKMMm2uc1FLlbHsyQnOF/Pf11h4J8K+2QXiugf13aVkiF35NPrPZj5
-         qyBQ==
-X-Gm-Message-State: ABy/qLaymNmlm2j7JsbaroI37YYue8l0R9Yjh3xK4bsDq/LRHDoWuF4e
-        RKBs7opA9E4FeI1FDF9rIXw=
-X-Google-Smtp-Source: APBJJlEiUt/azu00EPizNVjp4L7pGfhIMBhDaPKIATmoDXYE3E+04oQCvGeSItuttfZErZDf65VeIQ==
-X-Received: by 2002:a17:906:d965:b0:992:b020:ce4 with SMTP id rp5-20020a170906d96500b00992b0200ce4mr9741129ejb.51.1689603255066;
-        Mon, 17 Jul 2023 07:14:15 -0700 (PDT)
-Received: from costa-tp.bos2.lab ([77.137.71.188])
-        by smtp.gmail.com with ESMTPSA id c26-20020a170906d19a00b0098e16f8c198sm9381796ejz.18.2023.07.17.07.14.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 07:14:14 -0700 (PDT)
-From:   Costa Shulyupin <costa.shul@redhat.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, Alex Shi <alexs@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Costa Shulyupin <costa.shul@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Wu XiangCheng <bobwxc@email.cn>,
-        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-        linux-kernel@vger.kernel.org (open list),
-        loongarch@lists.linux.dev (open list:LOONGARCH)
-Subject: [PATCH v2] docs: move loongarch under arch
-Date:   Mon, 17 Jul 2023 17:13:13 +0300
-Message-ID: <20230717141345.431342-1-costa.shul@redhat.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <87mszuwt4r.fsf@meer.lwn.net>
-References: <87mszuwt4r.fsf@meer.lwn.net>
+        Mon, 17 Jul 2023 10:14:31 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DCB61A8;
+        Mon, 17 Jul 2023 07:14:30 -0700 (PDT)
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 660F31EC0B09;
+        Mon, 17 Jul 2023 16:14:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1689603268;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=z8ifxq0kveuq3PccC7kM0bj/asO5IGY3QtO4+hrMof8=;
+        b=V/sVrQzUTaaTmkBHvq0+c8/0rGAIYYHToiRb8Q8oFgl60lZAb+ETr8Asjvvs9+GQqqaKGW
+        I2+QZSxRweUsGGWnkQPpVIlZeFdt9oxHAlqpgtuXrWsbF+NmHS9tc7u8a7xrAdwRIqrFU0
+        cxI8OWPz3imilhWcR/N/Nny3xgk4wPA=
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id v5iLYOMiPSGC; Mon, 17 Jul 2023 14:14:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1689603266; bh=z8ifxq0kveuq3PccC7kM0bj/asO5IGY3QtO4+hrMof8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bwJKEkeZlwT5QPB+h41zCnUOu9TMqr9t32QXNywFbkUjGdqnTaNIpKP9yQ2D38CTD
+         QGVbaRAJ1c0YlPhRUNBmwYT9t6buWvtE9lj2k3prOozLviPcM5Fu2wlfPq72rf1jsc
+         6VXf5tXYkZwlxBh4Jjn2LBtlI/spARvNlNADuNnzKQV/YLiNy3rv82Fnbqfye8/SM/
+         y2iCfs7LWPiSw6lHzRVYlZ9YDp7NZpv/kqV5IR/Fc2YnqMlaa6VzBhWkCXNzlyPYLQ
+         YKR+vW1ObeTPiKp6AjgpyHydsytTpjzE6e5F3KIdYxdKsOi5kltg+vTnaKpRwQ6NJ2
+         op72jdKCN8W5uEtPQCquBwOcF/CRz+mPlGFT+TvO0flG9oTsqyscVaFKxfGiSca/6E
+         0/DID+Snh4w9HnsN/UI1ihGJydEHqlbpK8TljM5oGjLGMoCB6mQGpGypvSwkCOW+JU
+         sq657gGTXOe9zHbgZhQjfY5UDoBS1u83uzpGCneB1AOMxegm7BjkOlW235hsBVX3JI
+         hbh8kCS3mr/lqLsSV5m+EnP6XpGOB7qfggC1dAn/M8gATgR5LDgUEyNNqcasrGCOrN
+         e0bPgOC2QGunIeKsUZJNbrlxQ0vFtqNUtjOyFxUQMm4WcOhnvDXuo/pd5joptSVndV
+         eX+Ylnq26dASuPpPjOjD9x5U=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CE31440E019D;
+        Mon, 17 Jul 2023 14:14:13 +0000 (UTC)
+Date:   Mon, 17 Jul 2023 16:14:09 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tao Liu <ltao@redhat.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, ardb@kernel.org,
+        linux-kernel@vger.kernel.org, bhe@redhat.com, dyoung@redhat.com,
+        kexec@lists.infradead.org, linux-efi@vger.kernel.org
+Subject: Re: [PATCH v2] x86/kexec: Add EFI config table identity mapping for
+ kexec kernel
+Message-ID: <20230717141409.GGZLVMsU6d/9mpJvMO@fat_crate.local>
+References: <20230601072043.24439-1-ltao@redhat.com>
+ <20230713100459.GEZK/MS69XbphJa+tN@fat_crate.local>
+ <CAO7dBbVMNKTSDi5eP4BseEUexsk0Mo0GWJpyHfOcp+tHs6cSUw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=true
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAO7dBbVMNKTSDi5eP4BseEUexsk0Mo0GWJpyHfOcp+tHs6cSUw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,212 +82,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-and fix all in-tree references.
+On Mon, Jul 17, 2023 at 09:53:06PM +0800, Tao Liu wrote:
+> ...snip...
+> [   21.360763]  nvme0n1: p1 p2 p3
+> [   21.364207] igc 0000:03:00.0: PTM enabled, 4ns granularity
+> [   21.421097] pps pps1: new PPS source ptp1
+> [   21.425396] igc 0000:03:00.0 (unnamed net_device) (uninitialized): PHC added
+> [   21.457005] igc 0000:03:00.0: 4.000 Gb/s available PCIe bandwidth
+> (5.0 GT/s PCIe x1 link)
+> [   21.465210] igc 0000:03:00.0 eth1: MAC: ...snip...
+> [   21.473424] igc 0000:03:00.0 enp3s0: renamed from eth1
+> [   21.479446] BUG: kernel NULL pointer dereference, address: 0000000000000008
+> [   21.486405] #PF: supervisor read access in kernel mode
+> [   21.491519] mmc1: Failed to initialize a non-removable card
+> [   21.491538] #PF: error_code(0x0000) - not-present page
+> [   21.502229] PGD 0 P4D 0
+> [   21.504773] Oops: 0000 [#1] PREEMPT SMP NOPTI
+> [   21.509133] CPU: 3 PID: 402 Comm: systemd-udevd Not tainted 6.5.0-rc1+ #1
+> [   21.515905] Hardware name: ...snip...
+> [   21.522851] RIP: 0010:kernfs_dop_revalidate+0x2b/0x120
 
-Architecture-specific documentation is being moved into Documentation/arch/
-as a way of cleaning up the top-level documentation directory and making
-the docs hierarchy more closely match the source hierarchy.
+So something's weird here - my patch should not cause a null ptr deref
+here.
 
-Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
----
+> [   21.527995] Code: 1f 44 00 00 83 e6 40 0f 85 07 01 00 00 41 55 41
+> 54 55 53 48 8b 47 30 48 89 fb 48 85 c0 0f 84 a2 00 00 00 48 8b a87
 
-Changes:
-- added fix of MAINTAINERS and drivers/irqchip/Kconfig 
+This looks weird too. There's no "<>" brackets denoting which byte it
+was exactly where RIP pointed to when the NULL ptr happened.
 
-I'll continue with the rest architectures.
-Thank you.
+Do
 
+make fs/kernfs/dir.s
 
- Documentation/arch/index.rst                                  | 2 +-
- Documentation/{ => arch}/loongarch/booting.rst                | 0
- Documentation/{ => arch}/loongarch/features.rst               | 0
- Documentation/{ => arch}/loongarch/index.rst                  | 0
- Documentation/{ => arch}/loongarch/introduction.rst           | 0
- Documentation/{ => arch}/loongarch/irq-chip-model.rst         | 0
- Documentation/translations/zh_CN/arch/index.rst               | 2 +-
- .../translations/zh_CN/{ => arch}/loongarch/booting.rst       | 4 ++--
- .../translations/zh_CN/{ => arch}/loongarch/features.rst      | 4 ++--
- .../translations/zh_CN/{ => arch}/loongarch/index.rst         | 4 ++--
- .../translations/zh_CN/{ => arch}/loongarch/introduction.rst  | 4 ++--
- .../zh_CN/{ => arch}/loongarch/irq-chip-model.rst             | 4 ++--
- MAINTAINERS                                                   | 4 ++--
- drivers/irqchip/Kconfig                                       | 2 +-
- 14 files changed, 15 insertions(+), 15 deletions(-)
- rename Documentation/{ => arch}/loongarch/booting.rst (100%)
- rename Documentation/{ => arch}/loongarch/features.rst (100%)
- rename Documentation/{ => arch}/loongarch/index.rst (100%)
- rename Documentation/{ => arch}/loongarch/introduction.rst (100%)
- rename Documentation/{ => arch}/loongarch/irq-chip-model.rst (100%)
- rename Documentation/translations/zh_CN/{ => arch}/loongarch/booting.rst (94%)
- rename Documentation/translations/zh_CN/{ => arch}/loongarch/features.rst (61%)
- rename Documentation/translations/zh_CN/{ => arch}/loongarch/index.rst (78%)
- rename Documentation/translations/zh_CN/{ => arch}/loongarch/introduction.rst (99%)
- rename Documentation/translations/zh_CN/{ => arch}/loongarch/irq-chip-model.rst (98%)
+and upload dir.s and the dir.o file somewhere.
 
-diff --git a/Documentation/arch/index.rst b/Documentation/arch/index.rst
-index 8458b88e9b79..4b6b1beebad6 100644
---- a/Documentation/arch/index.rst
-+++ b/Documentation/arch/index.rst
-@@ -13,7 +13,7 @@ implementation.
-    arm/index
-    arm64/index
-    ia64/index
--   ../loongarch/index
-+   loongarch/index
-    m68k/index
-    ../mips/index
-    nios2/index
-diff --git a/Documentation/loongarch/booting.rst b/Documentation/arch/loongarch/booting.rst
-similarity index 100%
-rename from Documentation/loongarch/booting.rst
-rename to Documentation/arch/loongarch/booting.rst
-diff --git a/Documentation/loongarch/features.rst b/Documentation/arch/loongarch/features.rst
-similarity index 100%
-rename from Documentation/loongarch/features.rst
-rename to Documentation/arch/loongarch/features.rst
-diff --git a/Documentation/loongarch/index.rst b/Documentation/arch/loongarch/index.rst
-similarity index 100%
-rename from Documentation/loongarch/index.rst
-rename to Documentation/arch/loongarch/index.rst
-diff --git a/Documentation/loongarch/introduction.rst b/Documentation/arch/loongarch/introduction.rst
-similarity index 100%
-rename from Documentation/loongarch/introduction.rst
-rename to Documentation/arch/loongarch/introduction.rst
-diff --git a/Documentation/loongarch/irq-chip-model.rst b/Documentation/arch/loongarch/irq-chip-model.rst
-similarity index 100%
-rename from Documentation/loongarch/irq-chip-model.rst
-rename to Documentation/arch/loongarch/irq-chip-model.rst
-diff --git a/Documentation/translations/zh_CN/arch/index.rst b/Documentation/translations/zh_CN/arch/index.rst
-index 6fa0cb671009..d4c1c729dde2 100644
---- a/Documentation/translations/zh_CN/arch/index.rst
-+++ b/Documentation/translations/zh_CN/arch/index.rst
-@@ -13,7 +13,7 @@
-    ../riscv/index
-    openrisc/index
-    parisc/index
--   ../loongarch/index
-+   loongarch/index
- 
- TODOList:
- 
-diff --git a/Documentation/translations/zh_CN/loongarch/booting.rst b/Documentation/translations/zh_CN/arch/loongarch/booting.rst
-similarity index 94%
-rename from Documentation/translations/zh_CN/loongarch/booting.rst
-rename to Documentation/translations/zh_CN/arch/loongarch/booting.rst
-index fb6440c438f0..d2f55872904e 100644
---- a/Documentation/translations/zh_CN/loongarch/booting.rst
-+++ b/Documentation/translations/zh_CN/arch/loongarch/booting.rst
-@@ -1,8 +1,8 @@
- .. SPDX-License-Identifier: GPL-2.0
- 
--.. include:: ../disclaimer-zh_CN.rst
-+.. include:: ../../disclaimer-zh_CN.rst
- 
--:Original: Documentation/loongarch/booting.rst
-+:Original: Documentation/arch/loongarch/booting.rst
- 
- :翻译:
- 
-diff --git a/Documentation/translations/zh_CN/loongarch/features.rst b/Documentation/translations/zh_CN/arch/loongarch/features.rst
-similarity index 61%
-rename from Documentation/translations/zh_CN/loongarch/features.rst
-rename to Documentation/translations/zh_CN/arch/loongarch/features.rst
-index 3886e635ec06..82bfac180bdc 100644
---- a/Documentation/translations/zh_CN/loongarch/features.rst
-+++ b/Documentation/translations/zh_CN/arch/loongarch/features.rst
-@@ -1,8 +1,8 @@
- .. SPDX-License-Identifier: GPL-2.0
- 
--.. include:: ../disclaimer-zh_CN.rst
-+.. include:: ../../disclaimer-zh_CN.rst
- 
--:Original: Documentation/loongarch/features.rst
-+:Original: Documentation/arch/loongarch/features.rst
- :Translator: Huacai Chen <chenhuacai@loongson.cn>
- 
- .. kernel-feat:: $srctree/Documentation/features loongarch
-diff --git a/Documentation/translations/zh_CN/loongarch/index.rst b/Documentation/translations/zh_CN/arch/loongarch/index.rst
-similarity index 78%
-rename from Documentation/translations/zh_CN/loongarch/index.rst
-rename to Documentation/translations/zh_CN/arch/loongarch/index.rst
-index 0273a08342f7..4bd24f5ffed1 100644
---- a/Documentation/translations/zh_CN/loongarch/index.rst
-+++ b/Documentation/translations/zh_CN/arch/loongarch/index.rst
-@@ -1,8 +1,8 @@
- .. SPDX-License-Identifier: GPL-2.0
- 
--.. include:: ../disclaimer-zh_CN.rst
-+.. include:: ../../disclaimer-zh_CN.rst
- 
--:Original: Documentation/loongarch/index.rst
-+:Original: Documentation/arch/loongarch/index.rst
- :Translator: Huacai Chen <chenhuacai@loongson.cn>
- 
- =================
-diff --git a/Documentation/translations/zh_CN/loongarch/introduction.rst b/Documentation/translations/zh_CN/arch/loongarch/introduction.rst
-similarity index 99%
-rename from Documentation/translations/zh_CN/loongarch/introduction.rst
-rename to Documentation/translations/zh_CN/arch/loongarch/introduction.rst
-index 470c38ae2caf..cba04befc950 100644
---- a/Documentation/translations/zh_CN/loongarch/introduction.rst
-+++ b/Documentation/translations/zh_CN/arch/loongarch/introduction.rst
-@@ -1,8 +1,8 @@
- .. SPDX-License-Identifier: GPL-2.0
- 
--.. include:: ../disclaimer-zh_CN.rst
-+.. include:: ../../disclaimer-zh_CN.rst
- 
--:Original: Documentation/loongarch/introduction.rst
-+:Original: Documentation/arch/loongarch/introduction.rst
- :Translator: Huacai Chen <chenhuacai@loongson.cn>
- 
- =============
-diff --git a/Documentation/translations/zh_CN/loongarch/irq-chip-model.rst b/Documentation/translations/zh_CN/arch/loongarch/irq-chip-model.rst
-similarity index 98%
-rename from Documentation/translations/zh_CN/loongarch/irq-chip-model.rst
-rename to Documentation/translations/zh_CN/arch/loongarch/irq-chip-model.rst
-index fb5d23b49ed5..f1e9ab18206c 100644
---- a/Documentation/translations/zh_CN/loongarch/irq-chip-model.rst
-+++ b/Documentation/translations/zh_CN/arch/loongarch/irq-chip-model.rst
-@@ -1,8 +1,8 @@
- .. SPDX-License-Identifier: GPL-2.0
- 
--.. include:: ../disclaimer-zh_CN.rst
-+.. include:: ../../disclaimer-zh_CN.rst
- 
--:Original: Documentation/loongarch/irq-chip-model.rst
-+:Original: Documentation/arch/loongarch/irq-chip-model.rst
- :Translator: Huacai Chen <chenhuacai@loongson.cn>
- 
- ==================================
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d0ccb621a660..b68512f1b65f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12282,8 +12282,8 @@ R:	WANG Xuerui <kernel@xen0n.name>
- L:	loongarch@lists.linux.dev
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git
--F:	Documentation/loongarch/
--F:	Documentation/translations/zh_CN/loongarch/
-+F:	Documentation/arch/loongarch/
-+F:	Documentation/translations/zh_CN/arch/loongarch/
- F:	arch/loongarch/
- F:	drivers/*/*loongarch*
- 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 4b9036c6d45b..5e54032f07c6 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -567,7 +567,7 @@ config IRQ_LOONGARCH_CPU
- 	help
- 	  Support for the LoongArch CPU Interrupt Controller. For details of
- 	  irq chip hierarchy on LoongArch platforms please read the document
--	  Documentation/loongarch/irq-chip-model.rst.
-+	  Documentation/arch/oongarch/irq-chip-model.rst.
- 
- config LOONGSON_LIOINTC
- 	bool "Loongson Local I/O Interrupt Controller"
+In any case, my patch shouldn't be causing this. At least I don't see
+it.
+
+I'm testing a better version of the patch and it should not cause this
+thing even less.
+
+> The stack trace may not be the same all the time, I didn't dive deep
+> into the root cause, but it looks to me the patch will cause an
+> unknown issue. Also I tested the patch on kernel-5.14.0-318.el9, it
+
+This is the upstream kernel mailing list so those Frankenstein kernels
+are all left to you.
+
+Good luck. :-)
+
 -- 
-2.41.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
