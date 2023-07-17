@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 904BC755E98
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1977755EA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbjGQIhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 04:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
+        id S231357AbjGQIie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 04:38:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjGQIhR (ORCPT
+        with ESMTP id S230231AbjGQIib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 04:37:17 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 657FFE3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:37:14 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8DxPOu4_bRkddsFAA--.10265S3;
-        Mon, 17 Jul 2023 16:37:12 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx_c6l_bRkmEQxAA--.5661S3;
-        Mon, 17 Jul 2023 16:37:11 +0800 (CST)
-Message-ID: <73307b1e-1e0e-6265-0344-171d2700e495@loongson.cn>
-Date:   Mon, 17 Jul 2023 16:36:53 +0800
+        Mon, 17 Jul 2023 04:38:31 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4D2F4
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:38:29 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fc0aecf15bso41611075e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:38:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689583108; x=1692175108;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=z4o4TF/LxZly0vmrx76BwSM2BKqw0I4+/QaBjz9uTXs=;
+        b=JaV92xVDUvovCm+5AOf7VXTT70biF1yo1d8ZNHDTZ7c8s8DJ7s8HFrJ51Pe9GuXZHs
+         2+7R9LUaxFYqKXfjRy9R8w5Zzll+hJLQWKthxlNKNLLHExtWxu/kdoibRd4eNf/Dz9+m
+         86KU/z0VcVrBZfGG8oKSLJ5gTp2hr6Q6fyHGxbQ9WYTzZZimI6hZsdKWkZ5A0T9RjqWb
+         WBi0II2wYy1IYlg2w+X8qvt5GBKIASiTQVWK3KrrzU5d3KKyKDqBJAUomig/PhPUMH8R
+         TZ8AJ6fE6eOxd/kPHP85EbY/JbZ/Zn7/RNOdMcEEdvAKFq3TwfVpdREMsxfzZEUIfLXF
+         42dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689583108; x=1692175108;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z4o4TF/LxZly0vmrx76BwSM2BKqw0I4+/QaBjz9uTXs=;
+        b=PXAmKZilrZAJ9Tp6RsT5i0HRFGA+zafyf7FRMFCrl2O9CQj29Rk4ZH9agWw2PSnjB8
+         mhw7Zv3jhnz7YlVjgW7i572HTeLFXEHcrtkbsSVo1K/DiCux7W2PZT5umLXPI1Y6Nj5L
+         G6oAAx/o604QN99SL5dQbQ8QxrmNxAXqoqLbFGJOgpSawHZGIZn+z0bgn7+zYJQpYXSp
+         UeJHRrkDqppzWGm7jjd0d3zZMKrUi35BtsZnrQ0DLS1GteEah0gMchhpN5zunXx8Jc51
+         oy15KcS25qILrB87Y2/ACf/i+qoYpfI0+Q+mIOjY7Mlv6FPYwQX+ihT6cKO9dM1o0oRH
+         JrcA==
+X-Gm-Message-State: ABy/qLagc0O3weVYV/jb1e9SRW1EmJ9uvULEy9omN+r3nzp09wrHSQxo
+        5egCuDOZTwQj7pRoGzu65QrPFw==
+X-Google-Smtp-Source: APBJJlGx68JBlekO0xvjwT7iigvCwI/s1FOxF/ffNTRgvDyXHyJIZnu+G2GKCpabCXWQUYGMJS6rNA==
+X-Received: by 2002:a05:600c:21c8:b0:3fb:fef3:53f8 with SMTP id x8-20020a05600c21c800b003fbfef353f8mr9724649wmj.25.1689583108129;
+        Mon, 17 Jul 2023 01:38:28 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id y20-20020a05600c20d400b003f91e32b1ebsm7485189wmm.17.2023.07.17.01.38.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 01:38:27 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 09:38:25 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Artur Weber <aweber.kernel@gmail.com>
+Cc:     Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH 1/2] backlight: lp855x: Initialize PWM state on first
+ brightness change
+Message-ID: <20230717083825.GA3448956@aspen.lan>
+References: <20230714121440.7717-1-aweber.kernel@gmail.com>
+ <20230714121440.7717-2-aweber.kernel@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 0/8] drm/etnaviv: Various cleanup
-To:     Sui Jingfeng <sui.jingfeng@linux.dev>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
-References: <20230623100822.274706-1-sui.jingfeng@linux.dev>
-Content-Language: en-US
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <20230623100822.274706-1-sui.jingfeng@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8Cx_c6l_bRkmEQxAA--.5661S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7JF1UWw4ktr43tw1ruF18Xrc_yoWkKrc_CF
-        yqv3srWr43JF1vqF47AryrZFW0kFW8Xan3tw1qqwnag343trZxGF1kCryDXa45JFWUKFn8
-        GF9xJr97Ary7WosvyTuYvTs0mTUanT9S1TB71UUUUj7qnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUbqxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4UJVWxJr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
-        6r1DMcIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
-        1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxG
-        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8Dl1DUUUU
-        U==
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230714121440.7717-2-aweber.kernel@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Dear etnaviv folks
-
-
-Would you like to review this cleanup patch set ?
-
-I am asking because I'm wondering that
-
-if I should re-spin my other patch from the code base
-
-which *with* this series applied or from the code base
-
-*without* this series applied.
-
-
-I think this series looks fine, is it acceptable?
-
-
-On 2023/6/23 18:08, Sui Jingfeng wrote:
-> From: Sui Jingfeng <suijingfeng@loongson.cn>
+On Fri, Jul 14, 2023 at 02:14:39PM +0200, Artur Weber wrote:
+> As pointed out by Uwe Kleine-König[1], the changes introduced in
+> commit c1ff7da03e16 ("video: backlight: lp855x: Get PWM for PWM mode
+> during probe") caused the PWM state set up by the bootloader to be
+> re-set when the driver is probed. This differs from the behavior from
+> before that patch, where the PWM state would be initialized on the
+> first brightness change.
 >
-> No functional change.
+> Fix this by moving the PWM state initialization into the PWM control
+> function. Add a new variable, needs_pwm_init, to the device info struct
+> to allow us to check whether we need the initialization, or whether it
+> has already been done.
 >
-> Sui Jingfeng (8):
->    drm/etnaviv: Using the size_t variable to store the number of pages
->    drm/etnaviv: Using the unsigned int type to count the number of pages
->    drm/etnaviv: Drop the second argument of the etnaviv_gem_new_impl()
->    drm/etnaviv: Remove surplus else after return
->    drm/etnaviv: Keep the curly brace aligned
->    drm/etnaviv: No indentation by double tabs
->    drm/etnaviv: Add dedicated functions to create and destroy platform
->      device
->    drm/etnaviv: Add a helper to get a pointer to the first available node
+> [1] https://lore.kernel.org/lkml/20230614083953.e4kkweddjz7wztby@pengutronix.de/
 >
->   drivers/gpu/drm/etnaviv/etnaviv_drv.c       | 100 +++++++++++++-------
->   drivers/gpu/drm/etnaviv/etnaviv_gem.c       |  14 +--
->   drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c |   7 +-
->   3 files changed, 77 insertions(+), 44 deletions(-)
->
+> Fixes: c1ff7da03e16 ("video: backlight: lp855x: Get PWM for PWM mode during probe")
+> Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
 
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
