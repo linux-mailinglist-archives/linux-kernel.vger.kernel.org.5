@@ -2,128 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AED69756EB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B1C756EB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbjGQVED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 17:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47814 "EHLO
+        id S230161AbjGQVF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 17:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbjGQVEA (ORCPT
+        with ESMTP id S229541AbjGQVF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 17:04:00 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D54121
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:03:59 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6686a05bc66so3613712b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:03:59 -0700 (PDT)
+        Mon, 17 Jul 2023 17:05:27 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F636118
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:05:26 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3a412653335so3025122b6e.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:05:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1689627839; x=1692219839;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IIZEzHVxC1Fx70Cdkz+V0OVQ6Dog78uDmiwE1vZt2q4=;
-        b=BPsBDwWrNKB91DqaWrNhpO/v4ykSqWSBCirIAnuxFvOs77l0rqsU8+TqkOv28d6dXr
-         WmYVAVFOM9vjv+UHSWcME4r1ezRlHwg5UqohAqTvLNhkEnaX5Hcz/xICNS3d7dBZx2Iv
-         GvTFOn4TF4Fw47/Bm6YeEH648hSZrlKW22TNiQ9ZRZR+GIbPaytAhRE0ZhEGwAnWSUOu
-         yZ2+3zkaTUHT/MggTaWj1HOAknAkIdJCOfkXNZXkxX6lAcMXp3eJYHfdKdUaRY4p8sqg
-         3GBwAf99mw6qFjNqVtSdyTeC8uhdwG9Wb9KnEINmXUoKYaNFsm+NslcdAJtzegeo08S9
-         tp2Q==
+        d=gmail.com; s=20221208; t=1689627926; x=1692219926;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=awzkgsvZFBo842DWA8GT/abxr3wtZvlfdq0myNlPQ4k=;
+        b=mFzPuiGUM3XUBeafgaWUcyhQG0QPZ4O9svf8FTOYItCo8R/TZ59+X/6HzsD1g/WYvy
+         b1KXc/bEpADFYnFcxlzqDV7JkHpJD64k/G4lVHvHu3kRlffFJppqTljN5qcxQ/X+Ow46
+         jN8QK8uNYyHzkFwYEs272eWNzpHYoWjbzb3Nb8pX0MPRBq7F/F9tuWNlFPkNoRR+m19/
+         YqiszErwzKl6l5uWhrsGsS7QquDU5kCtJqY3oSvCHdL8p7RqeJgCkSzMZW9vAJTDIBZx
+         QBQirr29HNXBPlF4mdiXzIdjtr597PNWLiJ7mhVK8UYR7YK9MFqnnxreNrsJtmqK0ZoT
+         N15g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689627839; x=1692219839;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IIZEzHVxC1Fx70Cdkz+V0OVQ6Dog78uDmiwE1vZt2q4=;
-        b=cqwy+enLSqsG3G7HbOgWZvhSFh9rPE2Jv0tl8DIribxdMxOEAX+6+EVD+qvem9R//L
-         MlMVAEEPpa5MZ+WHRA2gN0ATs6hhtSY4bmOVHhID6VX5RSdaWtGNIY23E+CYXO3p/BYk
-         XBMm/rfxo2hdBhPrVlO9Qu5a7YoThk1x6awl2/qpwsKV0ojTExVhtPrZEG/ULOZo/wOA
-         dIuNf8TdMkOc39Y0lvovPmQKjAv5JPiXie9aP7UlQ6pPdqvC8BL1noYmiwZNwoer9Oa6
-         AGvUFW4Ltum1zAGN1i4HLeMR1OI1/r/4cGqTglHsmLoQm6Ow4GPJmiOkxqLXBx/DO/Ds
-         MMYw==
-X-Gm-Message-State: ABy/qLbFxV5x1r8APOuDjKOYRAQQRihZxU4l2yLToXa1yFU6iXW/IDAR
-        BOC8QmKLSFVAJJRylO1rkuXQ+g==
-X-Google-Smtp-Source: APBJJlGh2y7l4Mcb4h+KipYMEFcoZHbETqHgVjohsP4Fa5WcrLA/yfUSBTw5rEOHn+qg1Eica/L75Q==
-X-Received: by 2002:a05:6a00:ad1:b0:67d:22a6:2f54 with SMTP id c17-20020a056a000ad100b0067d22a62f54mr790132pfl.31.1689627839264;
-        Mon, 17 Jul 2023 14:03:59 -0700 (PDT)
-Received: from sw06.internal.sifive.com ([64.62.193.194])
-        by smtp.gmail.com with ESMTPSA id j24-20020aa78d18000000b006732786b5f1sm191915pfe.213.2023.07.17.14.03.58
+        d=1e100.net; s=20221208; t=1689627926; x=1692219926;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=awzkgsvZFBo842DWA8GT/abxr3wtZvlfdq0myNlPQ4k=;
+        b=NJ29tlObsBAd5EzG64+UkSzOPbjdFWKsL93+MsbkQFKYSQK4EmBaHB6ku+AhgcO1wi
+         bVDrfjqIJDjJfNbdCLUvdNvQO4CQwUp2Fo3Lk7a0heBGNXKEt8QtnAz3PncN9jeqBvnJ
+         bMhBKVlqplTHgy1R2bWOJZdc8drg/3vSrWnonatpqwwvbHMmYsK4UUrawLVawihRt+qy
+         ZK7YF53pUPqLChCHOliNSSNp1fy3giYS6Q65TK+GRMISjzT2VCPWnfC5TtPxzHqz7po/
+         305qBl3A+ynX5G0yIBKPXlhAL7K0OhhGHXqSQjl+dRflob44LBdYHEE3y5v3A4m+yBBo
+         Serg==
+X-Gm-Message-State: ABy/qLbojb3nPxa3YMJNP7SXByNxTsVKGADWBRucWM0lL0UZY34+T+Ir
+        qFq2xSwvmHQenOKazuKm9uAUHP9QpPMdNg==
+X-Google-Smtp-Source: APBJJlFKSOND1F33J/v+4OdmvuxGHksMnvG+758Ztby9qh3hCqyUqoXyGkwOLkpopxnFYkuBPAAUfA==
+X-Received: by 2002:a05:6808:1b24:b0:3a1:ee4b:b8ee with SMTP id bx36-20020a0568081b2400b003a1ee4bb8eemr14664284oib.53.1689627925732;
+        Mon, 17 Jul 2023 14:05:25 -0700 (PDT)
+Received: from geday ([2804:7f2:8006:9fa1:c980:8323:c7fc:1b46])
+        by smtp.gmail.com with ESMTPSA id x9-20020a056808144900b0039ee1de4e6esm127677oiv.38.2023.07.17.14.05.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 14:03:58 -0700 (PDT)
-From:   Samuel Holland <samuel.holland@sifive.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Samuel Holland <samuel.holland@sifive.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH 2/2] clk: sifive: Allow building the driver as a module
-Date:   Mon, 17 Jul 2023 14:03:56 -0700
-Message-Id: <20230717210356.2794736-2-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230717210356.2794736-1-samuel.holland@sifive.com>
-References: <20230717210356.2794736-1-samuel.holland@sifive.com>
+        Mon, 17 Jul 2023 14:05:25 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 18:05:15 -0300
+From:   Geraldo Nascimento <geraldogabriel@gmail.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        syzbot <syzbot+cf8e7fa4eeec59b3d485@syzkaller.appspotmail.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com,
+        syzkaller <syzkaller@googlegroups.com>
+Subject: Re: [syzbot] [alsa?] memory leak in snd_seq_create_port
+Message-ID: <ZLWtCzdW8lbdzZ4Z@geday>
+References: <00000000000098ed3a0600965f89@google.com>
+ <87v8ekattg.wl-tiwai@suse.de>
+ <ZLQ/zKgTGMHy/6Jn@geday>
+ <CACT4Y+bXLZf9iAgiLcxo7coNsOCsn_1C26zuvNBa48qLp2Juxg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+bXLZf9iAgiLcxo7coNsOCsn_1C26zuvNBa48qLp2Juxg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This can reduce the kernel image size in multiplatform configurations.
+On Mon, Jul 17, 2023 at 09:02:07AM +0200, Dmitry Vyukov wrote:
+> 
+> Hi Geraldo,
+> 
+> What exactly is cryptic in the report? Is there anything that can be
+> done to make it less cryptic?
 
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
----
+Hi again, Dmitry.
 
- drivers/clk/sifive/Kconfig       | 2 +-
- drivers/clk/sifive/sifive-prci.c | 8 +++-----
- 2 files changed, 4 insertions(+), 6 deletions(-)
+Perhaps also a bad choice of words. Cryptic borders on the undecipharable
+while esoteric is the more proper word here. Those kernel hackers with
+esoteric C and assembly skills like Takashi Iwai or you will quickly
+infer that a kfree() is missing in such and such scope.
 
-diff --git a/drivers/clk/sifive/Kconfig b/drivers/clk/sifive/Kconfig
-index 2322f634a910..49597d95602e 100644
---- a/drivers/clk/sifive/Kconfig
-+++ b/drivers/clk/sifive/Kconfig
-@@ -10,7 +10,7 @@ menuconfig CLK_SIFIVE
- if CLK_SIFIVE
- 
- config CLK_SIFIVE_PRCI
--	bool "PRCI driver for SiFive SoCs"
-+	tristate "PRCI driver for SiFive SoCs"
- 	default ARCH_SIFIVE
- 	select RESET_CONTROLLER
- 	select RESET_SIMPLE
-diff --git a/drivers/clk/sifive/sifive-prci.c b/drivers/clk/sifive/sifive-prci.c
-index e317f3454e93..8c67d1a7c8df 100644
---- a/drivers/clk/sifive/sifive-prci.c
-+++ b/drivers/clk/sifive/sifive-prci.c
-@@ -7,6 +7,7 @@
- #include <linux/clkdev.h>
- #include <linux/delay.h>
- #include <linux/io.h>
-+#include <linux/module.h>
- #include <linux/of_device.h>
- #include "sifive-prci.h"
- #include "fu540-prci.h"
-@@ -618,9 +619,6 @@ static struct platform_driver sifive_prci_driver = {
- 	},
- 	.probe = sifive_prci_probe,
- };
-+module_platform_driver(sifive_prci_driver);
- 
--static int __init sifive_prci_init(void)
--{
--	return platform_driver_register(&sifive_prci_driver);
--}
--core_initcall(sifive_prci_init);
-+MODULE_LICENSE("GPL");
--- 
-2.40.1
+In my other message, I meant to say that such esoteric knowledge is
+barely possessed by a novice kernel hacker, and they end up adding noise
+to the lists specially if they are involved in the patch acceptance
+process, specially as author of the patch, which I'm neither in this
+case.
 
+Now, if somebody were to apply LLMs to the build and checker bots and
+actually get to a point where they were getting good patch propositions
+from the machine rather than a bunch of hallucinations, that would be
+quite the feat. It's only a faint dream right now, but you did
+specifically ask for the "vision" :)
+
+Thank you,
+Geraldo Nascimento
