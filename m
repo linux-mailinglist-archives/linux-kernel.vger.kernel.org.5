@@ -2,55 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC497567B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E50A7567B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbjGQPV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 11:21:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54214 "EHLO
+        id S231458AbjGQPVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 11:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231511AbjGQPVp (ORCPT
+        with ESMTP id S229779AbjGQPVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 11:21:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4A8170C
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:21:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E995A610F4
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:20:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 599CFC433C9;
-        Mon, 17 Jul 2023 15:20:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689607214;
-        bh=pmHa+uof/omh9/YyLI+lAkXG8CFJh+ryKNfzwo+yCiI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=GnyILK+xYovKsbVfNzoWkm9663M6Mcp18LctpBhc0uHXIV9W0VXk8z1f5UTmiT0K3
-         gUCuh3yzYqQSxpq55sY9cl8sAsBRxL6y4QWuy+U9Sfhc+cdj5Nyxr+Reud7F9V0Omw
-         z5Yc68k6zZSinDmsBlmELbjXozXBtsd7RRt3XOg6yJpgKCuSf6EuGm47o5+ORNweJV
-         yEGs7xbyn82Zve0ght6k6L0rHslTw38opZ5O8gQ3sD1p9aktjqXzaJ2/qLDq/kW5Jk
-         fl3smMa9rSGLDntzLfiJFqp67kp2DdBmXvxx/MVj8INpzhwDuqFSPruU+BQUcu+Qd8
-         +QUmiX+WqOBKw==
-Message-ID: <e42cbeb5-e890-c8b7-f1f2-1cc04a340edc@kernel.org>
-Date:   Mon, 17 Jul 2023 23:20:11 +0800
+        Mon, 17 Jul 2023 11:21:32 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B7D103
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:21:04 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-66f5faba829so3305356b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:21:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1689607224; x=1692199224;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=G4erhyV5rhAgSTRhQd8/0rL6paDuQerHIfnNF64n4IQ=;
+        b=PyklcFyCG1jvU66nFZo49tfVzOlUIZTMPQGmpxD6Np3mZynRHUY4TUHZybBJ5pHhSK
+         fq0iEEwQnSR9cEMlbMSDlYIZMmYPMtVoq330H29F2nnA6lFRAprwTMnUQpcB5Ae/jFMb
+         LOIjbJfSlUhWvrKQ71ueK0dCC/9fiqrtwTl/Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689607224; x=1692199224;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G4erhyV5rhAgSTRhQd8/0rL6paDuQerHIfnNF64n4IQ=;
+        b=Ir4RF7431JpmS4XzKq96K6MpTPaiaIkauaRO9na0KLkDJbal2N76QtzISOAVEMs+UU
+         3f4J8vJ37jLv7ezrC6CFVye8Q2cQiZHjrrHtpvJ/RX+eRoAsB5CpkycOEWeKFcC7eSs4
+         DnJQL3sACmfowzEbw8f6gkqD8uE24Jb1zjhyKo3BXhZ42Zo4Ym1sNKC8BDaNHDEK6q2B
+         xJFp2B5vZ0AUuvdUWTNp4MaicfPEaV2G/wULX3WlC30PBjmHVpG8zqecdUR1Cfzi343x
+         HLB9J1PzwXUBQYqJHa4tLEjFUQQGJEVuCTJLHEgvjAYsZYHZfdbaIisbXguNJBy3awN7
+         Iekw==
+X-Gm-Message-State: ABy/qLZcCK2jvaju0ZSwzsEWPARq55jjCgjF5ZqBKlvh7LERHk+kaJ7i
+        DU2Kr8+tnArUN0nljB2khmYUQh/DZH6zOMENc2U=
+X-Google-Smtp-Source: APBJJlFK8qLuq+bm7ZIAL2Np1LEcUmDeQtmNwTzG2b/Ge8rh2Mt1VKhO7CFQArc8XMHeJKILIOSSPA==
+X-Received: by 2002:a05:6a00:1409:b0:682:d2af:218 with SMTP id l9-20020a056a00140900b00682d2af0218mr13158098pfu.24.1689607224473;
+        Mon, 17 Jul 2023 08:20:24 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id k10-20020a633d0a000000b0054fe6bae952sm13180487pga.4.2023.07.17.08.20.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 08:20:23 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 08:20:22 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Bob Copeland <me@bobcopeland.com>,
+        linux-karma-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] fs: omfs: Use flexible-array member in struct
+ omfs_extent
+Message-ID: <202307170758.14B5D83D@keescook>
+References: <ZLGodUeD307GlINN@work>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1] f2fs: increase usage of folio_next_index() helper
-Content-Language: en-US
-To:     Minjie Du <duminjie@vivo.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
-        "open list:F2FS FILE SYSTEM" <linux-f2fs-devel@lists.sourceforge.net>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     opensource.kernel@vivo.com
-References: <20230717071109.5663-1-duminjie@vivo.com>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20230717071109.5663-1-duminjie@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZLGodUeD307GlINN@work>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,12 +70,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/17 15:11, Minjie Du wrote:
-> Simplify code pattern of 'folio->index + folio_nr_pages(folio)' by using
-> the existing helper folio_next_index().
-> 
-> Signed-off-by: Minjie Du <duminjie@vivo.com>
+On Fri, Jul 14, 2023 at 01:56:37PM -0600, Gustavo A. R. Silva wrote:
+> There are some binary differences before and after changes, but this are
+> expected due to the change in the size of 'struct omfs_extent' and the
+> necessary adjusments.
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+For binary changes, I think commit logs should have more details. In
+this case, I can figure it out:
 
-Thanks,
+> diff --git a/fs/omfs/file.c b/fs/omfs/file.c
+> index de8f57ee39ec..6b580b9da8e3 100644
+> --- a/fs/omfs/file.c
+> +++ b/fs/omfs/file.c
+> @@ -14,7 +14,7 @@ static u32 omfs_max_extents(struct omfs_sb_info *sbi, int offset)
+>  {
+>  	return (sbi->s_sys_blocksize - offset -
+>  		sizeof(struct omfs_extent)) /
+> -		sizeof(struct omfs_extent_entry) + 1;
+> +		sizeof(struct omfs_extent_entry);
+>  }
+
+I think the original calculation meant to do:
+
+  	return (sbi->s_sys_blocksize - offset -
+  		(sizeof(struct omfs_extent) - sizeof(struct omfs_extent_entry))) /
+		sizeof(struct omfs_extent_entry);
+
+So this binary difference looks correct. I rebuilt before/after this
+patch with omfs_max_extents() marked as noinline, and all the binary
+changes were isolated here, and did exactly as expected: the first half
+is 16 smaller (size of struct omfs_extent_entry), and the final +1 is
+removed:
+
+-     2e1:      lea    -0x20(%rbx),%rax
++     2e1:      lea    -0x10(%rbx),%rax
+      2e5:      pop    %rbx
+      2e6:      pop    %rbp
+      2e7:      shr    $0x4,%rax
+-     2eb:      add    $0x1,%eax
+
+So this looks correct to me. Thanks!
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
