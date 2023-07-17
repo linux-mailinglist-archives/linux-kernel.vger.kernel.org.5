@@ -2,90 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0ECA755DB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E9D755DB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbjGQICE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 04:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58488 "EHLO
+        id S231199AbjGQICZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 04:02:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjGQICD (ORCPT
+        with ESMTP id S231184AbjGQICV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 04:02:03 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 036069D;
-        Mon, 17 Jul 2023 01:02:02 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-991f956fb5aso528493966b.0;
-        Mon, 17 Jul 2023 01:02:01 -0700 (PDT)
+        Mon, 17 Jul 2023 04:02:21 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48EB123
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:02:19 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4f95bf5c493so6465743e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:02:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689580920; x=1692172920;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Md2k3SrB9PFNNZtXw1D5bjJvxlmODL3oFcv29rGU+0w=;
-        b=Tj9ESHlAIEY5Ok+t1+UQEqgXZpFohXw53hftfkkBeDtkJIo0nBvLvFnisMxq5Rj2iQ
-         8PdNEnjyaoS3UOEi9nMjIifEQFGggbFY24svukX5rnVJOCICfNyxM2s59REzz8UWfsIp
-         ZawCt/JduBAq7tD9sQFEtpyhZCVMxmJef/ARUOi/5XgDoiiri8ZVk3Ooe/THn+zFXcTM
-         z4EiPvrbE/5ScWF5My9n5UAxbY+/u23lKTRQJM9dJ7+ItLjDQcSZkrc1jpUqsaxNIZmm
-         zG/iJhwiSZQr96qBLHcF2SeD/Hsp4E00qsw5D1bKsKirfD/yPzGiMrlGRgYG+Tvf2j6d
-         BgYg==
+        d=linaro.org; s=google; t=1689580938; x=1692172938;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ybDWeGYh7QkWqKSuqnHy7+o3sCCASBcWk0Zen0RPF2c=;
+        b=oQS7I5usrfXc9q0gkIN9Y65z8MX729Uvxqkggz/yHgR5zI/SEHh5DYqV2rdAXHZz6S
+         xrXBD9MLtRN+12vp9l0UM+LnEfi6o3Pi+51jaJoKcnUt8mckvAdye4NiO4QMUPytFTk8
+         5VN9v1rLHdxhj1u1Gk82EsVI2IRVURW7KldC3dBbuOsVBCk8nBIV3qqIvLHSJIiH4eH+
+         Y2lOsr+kTeyQdF6QUXGRFSz6/nkz3mBMy5Xn5+uLI8OG2beLLYHveAtf0TC5lx5fuctf
+         mGhsHS38S22KiPxT4CmPMHzmrrVDQUc6snqRe0pDy8L8YgdXFDILzekGXsgw3MNM7uzn
+         eSEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689580920; x=1692172920;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Md2k3SrB9PFNNZtXw1D5bjJvxlmODL3oFcv29rGU+0w=;
-        b=WjAngw8foHGi8aI7Cz75jtYNU+tGbJFMxj6KegN4wMxnG1Sl6hgoXMuNrzYdsYFTvt
-         PaBw5nf2fWRuDw2BGy8zPJ+RGcPgjb24w3imE/H/TnWJyBGeuK63dg+Ds548EygUUczE
-         lBBSuOR644bLhuDdeBvMEz++0Y0pdhbs4WxuR2G2dw7BzkYwE+1YnCZ2QV0lfBxpFQHB
-         q1LqoclTcxTtVjiGMjHaPVEq7RYEvx1rTnamTPNJf5ka+tX2vQQb6i9HdB8sB0U/bBEW
-         jm5Xx35t39y801mGPurknekN8UEtED+8Y+zTKzG7KQsXx3i9ypArvAItz6vqEP8TDprM
-         SDDw==
-X-Gm-Message-State: ABy/qLbd88fBUbG9gCS4PVcxixSoaDaobZqy7bn5qhbmMW2Dpk1px4Yk
-        YhopwWkvP+kyn12YIfc6yEZ/uk//IH7jPRj8INA=
-X-Google-Smtp-Source: APBJJlHZQRmdkq0uytrbJpI4dB8Hr+FJMXkrPe3TaMiMWBSlVina9KNg9TPqxFql3z1+rKwkjMtlLgZZSjtgMCU/25g=
-X-Received: by 2002:a17:906:20d6:b0:994:4e9c:30c6 with SMTP id
- c22-20020a17090620d600b009944e9c30c6mr3743404ejc.57.1689580920270; Mon, 17
- Jul 2023 01:02:00 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689580938; x=1692172938;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ybDWeGYh7QkWqKSuqnHy7+o3sCCASBcWk0Zen0RPF2c=;
+        b=Erjhjy5z4wlRYAYuY4Tu+zEew/q9tZq4cp0UFlKW2y5yBKJRia6WHzRqlC145jwa3L
+         dh5fYC9CZpEyidkb4gPaF3EYLb6jLnoAVygDLKf7m3JLKbMhfE6siBioAAqAyPU5KAph
+         VA/iVN0wcqcfi3DD9yp3DhfcQyFizJPfc8ZTSrFw6Xra8u90X2rBElmbCVGchHrMESsj
+         Tq6AOcmlBzAuGEN3CkEpnSZzqnn2MjGmZ3ffldVkqH6qhg6E4wChH0YE2brk1u/OKZFq
+         DU+hf4yBpVVVwBaPS0jCF3dIOaRyzDT50pHpSUTDZvugTcHToxV0hgSoy+JS9PT42/XI
+         50ZA==
+X-Gm-Message-State: ABy/qLasUMWC+RHoDEGAPmuzhWNfaLaYZVt/ai3rVu+CaSrspE4dNL2i
+        e0sh+8fACWce9yOtES/Q+XqOzg==
+X-Google-Smtp-Source: APBJJlGaWSnDlZyb6JY1n2wdxR3Lgs52I2miQt9O/go6p3/cQ8xCwjp0Gz89lXxwN9nZK8HZKTWn2w==
+X-Received: by 2002:a05:6512:3c92:b0:4fa:5e76:7ad4 with SMTP id h18-20020a0565123c9200b004fa5e767ad4mr9100751lfv.10.1689580937881;
+        Mon, 17 Jul 2023 01:02:17 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id n16-20020a05640206d000b0051e0bf5807bsm9518544edy.49.2023.07.17.01.02.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 01:02:17 -0700 (PDT)
+Message-ID: <128bcf0e-9b74-0df1-6366-d553475fbad7@linaro.org>
+Date:   Mon, 17 Jul 2023 10:02:14 +0200
 MIME-Version: 1.0
-References: <b99a5149-c3d6-2a9b-1298-576a1b4b22c1@gmail.com> <0206e2ce-ff33-6017-15ab-cc89f1eb7485@augustwikerfors.se>
-In-Reply-To: <0206e2ce-ff33-6017-15ab-cc89f1eb7485@augustwikerfors.se>
-From:   Nils Kruse <nilskruse97@gmail.com>
-Date:   Mon, 17 Jul 2023 10:01:49 +0200
-Message-ID: <CAKVFSw+_EFNaYjOjNDQ0zOGoSFMt3yZctR47Rcss2KhkfNQJ9g@mail.gmail.com>
-Subject: Re: [PATCH] nvme-pci: Add quirk for Samsung PM9B1 256G and 512G SSD
-To:     August Wikerfors <git@augustwikerfors.se>
-Cc:     stable@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: (subset) [PATCH v3 00/18] Add basic Minidump kernel driver
+ support
+Content-Language: en-US
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     agross@kernel.org, konrad.dybcio@linaro.org, corbet@lwn.net,
+        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
+        srinivas.kandagatla@linaro.org,
+        Mukesh Ojha <quic_mojha@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org
+References: <1683133352-10046-1-git-send-email-quic_mojha@quicinc.com>
+ <168945921478.1805013.7211960599963339759.b4-ty@kernel.org>
+ <ZLSWTaMtr9UGmrDy@p14s>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <ZLSWTaMtr9UGmrDy@p14s>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 16, 2023 at 9:30=E2=80=AFPM August Wikerfors <git@augustwikerfo=
-rs.se> wrote:
->
-> On 2023-06-11 13:41, Nils Kruse wrote:
-> > Add a quirk for Samsung PM9B1 256G and 512G that reports duplicate ids
-> > for disk.
->
-> Is this the same issue with suspend as [1], [2] and [3] or is it a
-> different case?
->
-> [1] https://lore.kernel.org/all/20221116171727.4083-1-git@augustwikerfors=
-.se/t/
-> [2] https://github.com/tomsom/yoga-linux/issues/9
-> [3] https://lore.kernel.org/all/d0ce0f3b-9407-9207-73a4-3536f0948653@augu=
-stwikerfors.se/
+On 17/07/2023 03:15, Mathieu Poirier wrote:
+> On Sat, Jul 15, 2023 at 03:13:34PM -0700, Bjorn Andersson wrote:
+>>
+>> On Wed, 03 May 2023 22:32:14 +0530, Mukesh Ojha wrote:
+>>> Minidump is a best effort mechanism to collect useful and predefined data
+>>> for first level of debugging on end user devices running on Qualcomm SoCs.
+>>> It is built on the premise that System on Chip (SoC) or subsystem part of
+>>> SoC crashes, due to a range of hardware and software bugs. Hence, the
+>>> ability to collect accurate data is only a best-effort. The data collected
+>>> could be invalid or corrupted, data collection itself could fail, and so on.
+>>>
+>>> [...]
+>>
+>> Applied, thanks!
+>>
+>> [01/18] remoteproc: qcom: Expand MD_* as MINIDUMP_*
+>>         commit: 318da1371246fdc1806011a27138175cfb078687
+>>
+> 
+> Krzysztof asked for modifications on this patch.
 
-Yes, this is the same issue.
+I guess it is fine, no big issue.
+
+Best regards,
+Krzysztof
+
