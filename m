@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48893756D0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F26756D14
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbjGQTUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 15:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
+        id S230342AbjGQTWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 15:22:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjGQTUP (ORCPT
+        with ESMTP id S229471AbjGQTWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 15:20:15 -0400
+        Mon, 17 Jul 2023 15:22:04 -0400
 Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F39EED;
-        Mon, 17 Jul 2023 12:20:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF72A1B1;
+        Mon, 17 Jul 2023 12:22:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1689621612;
+        s=mail; t=1689621722;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VH54V72aOY3ogSKUOINjMnAMtLyl5t2LpD7MwgpBD1k=;
-        b=yP2aG/l/BcAOIH9TVYi+sSms/ywPuGo+vB9qPeY/YWR/dpOVAMFasz5X3Lk79VnXxkuZJA
-        jahCOB2APvNis4xyyvFFGg6gWEuB8dYtA/S3NJHahOWyTmCy4lagb+zsg1mbE5CtfXHQgi
-        RXhFo+EX+9xJaQBIh/7VM7OitWq3rUA=
-Message-ID: <1f77bcc8ec861dc2abb9defb062ed9178d3d292e.camel@crapouillou.net>
-Subject: Re: [PATCH v2 02/10] pinctrl: baytrail: Make use of pm_ptr()
+        bh=JYJF9jUuoH8+OSLTUvKgDFX+MUf4KcBqy49yggghDsQ=;
+        b=oUtYDNGboR/faJdt+5APnkwTfthP6RjP3VjaPaKSTvgHCJAXiUfjanp7jmD1aZrczGxWJg
+        4h2wwFdqw/Gq5YP2uux75jP3mi5Z7BQHSHXbltNX+W/OC8y+fyApzhTIfFV+CIBBIjFF8V
+        t5zXX7QCaIuYrRWE4BnWL3FaDNFov1I=
+Message-ID: <73161288a07eb34a458061151d9d9a5c10d79c1b.camel@crapouillou.net>
+Subject: Re: [PATCH v2 03/10] pinctrl: cherryview: Switch to use
+ DEFINE_NOIRQ_DEV_PM_OPS() helper
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Mika Westerberg <mika.westerberg@linux.intel.com>,
@@ -55,12 +56,12 @@ Cc:     Andy Shevchenko <andy@kernel.org>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
-Date:   Mon, 17 Jul 2023 21:20:09 +0200
-In-Reply-To: <20230717172821.62827-3-andriy.shevchenko@linux.intel.com>
+Date:   Mon, 17 Jul 2023 21:21:59 +0200
+In-Reply-To: <20230717172821.62827-4-andriy.shevchenko@linux.intel.com>
 References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
-         <20230717172821.62827-3-andriy.shevchenko@linux.intel.com>
+         <20230717172821.62827-4-andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -72,50 +73,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQW5keSwKCkxlIGx1bmRpIDE3IGp1aWxsZXQgMjAyMyDDoCAyMDoyOCArMDMwMCwgQW5keSBT
-aGV2Y2hlbmtvIGEgw6ljcml0wqA6Cj4gQ2xlYW5pbmcgdXAgdGhlIGRyaXZlciB0byB1c2UgcG1f
-cHRyKCkgYW5kICpfUE1fT1BTKCkgbWFjcm9zIHRoYXQKPiBtYWtlIGl0IHNpbXBsZXIgYW5kIGFs
-bG93cyB0aGUgY29tcGlsZXIgdG8gcmVtb3ZlIHRob3NlIGZ1bmN0aW9ucwo+IGlmIGJ1aWx0IHdp
-dGhvdXQgQ09ORklHX1BNIGFuZCBDT05GSUdfUE1fU0xFRVAgc3VwcG9ydC4KPiAKPiBTaWduZWQt
-b2ZmLWJ5OiBBbmR5IFNoZXZjaGVua28gPGFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNv
-bT4KClJldmlld2VkLWJ5OiBQYXVsIENlcmN1ZWlsIDxwYXVsQGNyYXBvdWlsbG91Lm5ldD4KCkNo
-ZWVycywKLVBhdWwKCj4gLS0tCj4gwqBkcml2ZXJzL3BpbmN0cmwvaW50ZWwvcGluY3RybC1iYXl0
-cmFpbC5jIHwgMTEgKysrLS0tLS0tLS0KPiDCoDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMo
-KyksIDggZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGluY3RybC9pbnRl
-bC9waW5jdHJsLWJheXRyYWlsLmMKPiBiL2RyaXZlcnMvcGluY3RybC9pbnRlbC9waW5jdHJsLWJh
-eXRyYWlsLmMKPiBpbmRleCAyN2FlZjYyZmM3YzAuLjY2YWFiYWM2YmU5YyAxMDA2NDQKPiAtLS0g
-YS9kcml2ZXJzL3BpbmN0cmwvaW50ZWwvcGluY3RybC1iYXl0cmFpbC5jCj4gKysrIGIvZHJpdmVy
-cy9waW5jdHJsL2ludGVsL3BpbmN0cmwtYmF5dHJhaWwuYwo+IEBAIC0xNzMzLDcgKzE3MzMsNiBA
-QCBzdGF0aWMgaW50IGJ5dF9waW5jdHJsX3Byb2JlKHN0cnVjdAo+IHBsYXRmb3JtX2RldmljZSAq
-cGRldikKPiDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIDA7Cj4gwqB9Cj4gwqAKPiAtI2lmZGVmIENP
-TkZJR19QTV9TTEVFUAo+IMKgc3RhdGljIGludCBieXRfZ3Bpb19zdXNwZW5kKHN0cnVjdCBkZXZp
-Y2UgKmRldikKPiDCoHsKPiDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IGludGVsX3BpbmN0cmwgKnZn
-ID0gZGV2X2dldF9kcnZkYXRhKGRldik7Cj4gQEAgLTE4MTcsOSArMTgxNiw3IEBAIHN0YXRpYyBp
-bnQgYnl0X2dwaW9fcmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRldikKPiDCoMKgwqDCoMKgwqDCoMKg
-cmF3X3NwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmJ5dF9sb2NrLCBmbGFncyk7Cj4gwqDCoMKgwqDC
-oMKgwqDCoHJldHVybiAwOwo+IMKgfQo+IC0jZW5kaWYKPiDCoAo+IC0jaWZkZWYgQ09ORklHX1BN
-Cj4gwqBzdGF0aWMgaW50IGJ5dF9ncGlvX3J1bnRpbWVfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpk
-ZXYpCj4gwqB7Cj4gwqDCoMKgwqDCoMKgwqDCoHJldHVybiAwOwo+IEBAIC0xODI5LDE5ICsxODI2
-LDE3IEBAIHN0YXRpYyBpbnQgYnl0X2dwaW9fcnVudGltZV9yZXN1bWUoc3RydWN0Cj4gZGV2aWNl
-ICpkZXYpCj4gwqB7Cj4gwqDCoMKgwqDCoMKgwqDCoHJldHVybiAwOwo+IMKgfQo+IC0jZW5kaWYK
-PiDCoAo+IMKgc3RhdGljIGNvbnN0IHN0cnVjdCBkZXZfcG1fb3BzIGJ5dF9ncGlvX3BtX29wcyA9
-IHsKPiAtwqDCoMKgwqDCoMKgwqBTRVRfTEFURV9TWVNURU1fU0xFRVBfUE1fT1BTKGJ5dF9ncGlv
-X3N1c3BlbmQsCj4gYnl0X2dwaW9fcmVzdW1lKQo+IC3CoMKgwqDCoMKgwqDCoFNFVF9SVU5USU1F
-X1BNX09QUyhieXRfZ3Bpb19ydW50aW1lX3N1c3BlbmQsCj4gYnl0X2dwaW9fcnVudGltZV9yZXN1
-bWUsCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IE5VTEwpCj4gK8KgwqDCoMKgwqDCoMKgTEFURV9TWVNURU1fU0xFRVBfUE1fT1BTKGJ5dF9ncGlv
-X3N1c3BlbmQsIGJ5dF9ncGlvX3Jlc3VtZSkKPiArwqDCoMKgwqDCoMKgwqBSVU5USU1FX1BNX09Q
-UyhieXRfZ3Bpb19ydW50aW1lX3N1c3BlbmQsCj4gYnl0X2dwaW9fcnVudGltZV9yZXN1bWUsIE5V
-TEwpCj4gwqB9Owo+IMKgCj4gwqBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBieXRfZ3Bp
-b19kcml2ZXIgPSB7Cj4gwqDCoMKgwqDCoMKgwqDCoC5wcm9iZcKgwqDCoMKgwqDCoMKgwqDCoCA9
-IGJ5dF9waW5jdHJsX3Byb2JlLAo+IMKgwqDCoMKgwqDCoMKgwqAuZHJpdmVywqDCoMKgwqDCoMKg
-wqDCoCA9IHsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5uYW1lwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqA9ICJieXRfZ3BpbyIsCj4gLcKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoC5wbcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoD0gJmJ5dF9ncGlvX3BtX29wcywKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgLnBtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgPSBwbV9wdHIo
-JmJ5dF9ncGlvX3BtX29wcyksCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAuYWNw
-aV9tYXRjaF90YWJsZcKgwqDCoMKgwqDCoMKgPSBieXRfZ3Bpb19hY3BpX21hdGNoLAo+IMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLnN1cHByZXNzX2JpbmRfYXR0cnPCoMKgwqDCoD0g
-dHJ1ZSwKPiDCoMKgwqDCoMKgwqDCoMKgfSwKCg==
+Hi Andy,
+
+Le lundi 17 juillet 2023 =C3=A0 20:28 +0300, Andy Shevchenko a =C3=A9crit=
+=C2=A0:
+> Since pm.h provides a helper for system no-IRQ PM callbacks,
+> switch the driver to use it instead of open coded variant.
+>=20
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> =C2=A0drivers/pinctrl/intel/pinctrl-cherryview.c | 9 ++-------
+> =C2=A01 file changed, 2 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/pinctrl/intel/pinctrl-cherryview.c
+> b/drivers/pinctrl/intel/pinctrl-cherryview.c
+> index eee0f9bc3d32..7a2fc9fe175d 100644
+> --- a/drivers/pinctrl/intel/pinctrl-cherryview.c
+> +++ b/drivers/pinctrl/intel/pinctrl-cherryview.c
+> @@ -1793,7 +1793,6 @@ static int chv_pinctrl_remove(struct
+> platform_device *pdev)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
+> =C2=A0}
+> =C2=A0
+> -#ifdef CONFIG_PM_SLEEP
+> =C2=A0static int chv_pinctrl_suspend_noirq(struct device *dev)
+> =C2=A0{
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct intel_pinctrl *pct=
+rl =3D dev_get_drvdata(dev);
+> @@ -1877,12 +1876,8 @@ static int chv_pinctrl_resume_noirq(struct
+> device *dev)
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
+> =C2=A0}
+> -#endif
+> =C2=A0
+> -static const struct dev_pm_ops chv_pinctrl_pm_ops =3D {
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(=
+chv_pinctrl_suspend_noirq,
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chv_p=
+inctrl_resume_noirq)
+> -};
+> +static DEFINE_NOIRQ_DEV_PM_OPS(chv_pinctrl_pm_ops,
+> chv_pinctrl_suspend_noirq, chv_pinctrl_resume_noirq);
+
+That's over 100 characters, please break this line.
+
+Cheers,
+-Paul
+
+> =C2=A0
+> =C2=A0static const struct acpi_device_id chv_pinctrl_acpi_match[] =3D {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0{ "INT33FF", (kernel_ulon=
+g_t)chv_soc_data },
+> @@ -1895,7 +1890,7 @@ static struct platform_driver
+> chv_pinctrl_driver =3D {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.remove =3D chv_pinctrl_r=
+emove,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.driver =3D {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0.name =3D "cherryview-pinctrl",
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0.pm =3D &chv_pinctrl_pm_ops,
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0.pm =3D pm_sleep_ptr(&chv_pinctrl_pm_ops),
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0.acpi_match_table =3D chv_pinctrl_acpi_match,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0},
+> =C2=A0};
 
