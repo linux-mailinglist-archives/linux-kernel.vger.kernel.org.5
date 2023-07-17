@@ -2,64 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBB3756379
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D58756366
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbjGQM4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 08:56:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37640 "EHLO
+        id S229872AbjGQMzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 08:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbjGQM4g (ORCPT
+        with ESMTP id S229379AbjGQMz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 08:56:36 -0400
-Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A724B19A8;
-        Mon, 17 Jul 2023 05:56:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1689598568; x=1721134568;
+        Mon, 17 Jul 2023 08:55:26 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DC8E49;
+        Mon, 17 Jul 2023 05:55:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689598525; x=1721134525;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=6fIrxn0+T/UT77ovNwjs4GlglBbK1dzH+ora1KGfoUw=;
-  b=jlAm9MvaR5RA4UisvBmcadCDym3Dzh+PSKNIikjOL8FvEy7z5VMIhMG8
-   qPtv3svgkKiEAbQdTWweSsfCix53glwYrnLAjCnHU7ksmnmwVygTFPUvI
-   gnnNwNelILJGepYT5dkEkwk1taCFMn2zA2fI73I0kaAUFRFue8iHxdn2e
-   4=;
-X-IronPort-AV: E=Sophos;i="6.01,211,1684800000"; 
-   d="scan'208";a="227224119"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-366646a6.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 12:55:51 +0000
-Received: from EX19MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1a-m6i4x-366646a6.us-east-1.amazon.com (Postfix) with ESMTPS id 52530A42D5;
-        Mon, 17 Jul 2023 12:55:39 +0000 (UTC)
-Received: from EX19MTAUWA001.ant.amazon.com (10.250.64.204) by
- EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 17 Jul 2023 12:55:36 +0000
-Received: from EX19MTAUWA001.ant.amazon.com (10.250.64.204) by
- EX19MTAUWA001.ant.amazon.com (10.250.64.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 17 Jul 2023 12:55:36 +0000
-Received: from dev-dsk-mngyadam-1c-a2602c62.eu-west-1.amazon.com (10.15.1.225)
- by mail-relay.amazon.com (10.250.64.204) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Mon, 17 Jul 2023 12:55:36 +0000
-Received: by dev-dsk-mngyadam-1c-a2602c62.eu-west-1.amazon.com (Postfix, from userid 23907357)
-        id BECC0DCC; Mon, 17 Jul 2023 12:55:35 +0000 (UTC)
-From:   Mahmoud Adam <mngyadam@amazon.com>
-To:     <dhowells@redhat.com>
-CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Mahmoud Adam <mngyadam@amazon.com>
-Subject: [PATCH v4] KEYS: use kfree_sensitive with key
-Date:   Mon, 17 Jul 2023 12:55:09 +0000
-Message-ID: <20230717125509.105015-1-mngyadam@amazon.com>
-X-Mailer: git-send-email 2.40.1
+  bh=b2YtQTOB52EtISwGmNJvxnB+CChgEJ2fe0RvWIVjTAk=;
+  b=NN6T9T4YlDdLb5zvFn5B0l4umAz+elj/wXOvmmHxhBZkuHxWDhYAphIP
+   kJO/S4x5T7yZ/c+gGBzkzqP77gi7yrehM708stTbbmwQmTOBJn3vqK6aH
+   dpDOIbFltpCigFE6SugYuynTdvcGu5v9+rMlqlGKQg8bRhO5kmZCOhteb
+   8a3sCQOab8ZpzZfFI79vNXIy6trEsMjiJoqZ2/OSKvpsNkqpAHdTRwfmI
+   TfWvcMQLmygbmZD7MSVIddEnvK0Ra7IXemxW6xODqTO9WJ9ITwiEPnSWD
+   LcZg2a43AL+2hIZ1TgDloaAkYPWcYv9kRIU5YKA+70YIWfp9SHcNtWKdJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="429680653"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="429680653"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 05:55:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="793234536"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="793234536"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 17 Jul 2023 05:55:17 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id C6EB4256; Mon, 17 Jul 2023 15:55:23 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        David Gow <davidgow@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH v3 0/4] kernel.h: Split out a couple of macros to args.h
+Date:   Mon, 17 Jul 2023 15:55:17 +0300
+Message-Id: <20230717125521.43176-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -68,54 +77,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-key might contain private part of the key, so better use
-kfree_sensitive to free it
+There are macros in kernel.h that can be used outside of that header.
+Split them to args.h and replace open coded variants.
 
-Signed-off-by: Mahmoud Adam <mngyadam@amazon.com>
----
- crypto/asymmetric_keys/public_key.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Test compiled with `make allmodconfig` for x86_64.
 
-diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
-index 773e159dbbcb..abeecb8329b3 100644
---- a/crypto/asymmetric_keys/public_key.c
-+++ b/crypto/asymmetric_keys/public_key.c
-@@ -42,7 +42,7 @@ static void public_key_describe(const struct key *asymmetric_key,
- void public_key_free(struct public_key *key)
- {
- 	if (key) {
--		kfree(key->key);
-+		kfree_sensitive(key->key);
- 		kfree(key->params);
- 		kfree(key);
- 	}
-@@ -263,7 +263,7 @@ static int software_key_query(const struct kernel_pkey_params *params,
- 	else
- 		crypto_free_akcipher(tfm);
- error_free_key:
--	kfree(key);
-+	kfree_sensitive(key);
- 	pr_devel("<==%s() = %d\n", __func__, ret);
- 	return ret;
- }
-@@ -369,7 +369,7 @@ static int software_key_eds_op(struct kernel_pkey_params *params,
- 	else
- 		crypto_free_akcipher(tfm);
- error_free_key:
--	kfree(key);
-+	kfree_sensitive(key);
- 	pr_devel("<==%s() = %d\n", __func__, ret);
- 	return ret;
- }
-@@ -441,7 +441,7 @@ int public_key_verify_signature(const struct public_key *pkey,
- 				sig->digest, sig->digest_size);
- 
- error_free_key:
--	kfree(key);
-+	kfree_sensitive(key);
- error_free_tfm:
- 	crypto_free_sig(tfm);
- 	pr_devel("<==%s() = %d\n", __func__, ret);
+(Note that positive diff statistics is due to documentation being
+updated.)
+
+In v3:
+- split to a series of patches
+- fixed build issue on `make allmodconfig` for x86_64 (Andrew)
+
+In v2:
+- converted existing users at the same time (Andrew, Rasmus)
+- documented how it does work (Andrew, Rasmus)
+
+Andy Shevchenko (4):
+  kernel.h: Split out COUNT_ARGS() and CONCATENATE() to args.h
+  x86/asm: Replace custom COUNT_ARGS() & CONCATENATE() implementations
+  arm64: smccc: Replace custom COUNT_ARGS() & CONCATENATE()
+    implementations
+  genetlink: Replace custom CONCATENATE() implementation
+
+ arch/x86/include/asm/rmwcc.h      | 11 +++--------
+ include/kunit/test.h              |  1 +
+ include/linux/args.h              | 28 ++++++++++++++++++++++++++++
+ include/linux/arm-smccc.h         | 27 ++++++++++-----------------
+ include/linux/genl_magic_func.h   | 27 ++++++++++++++-------------
+ include/linux/genl_magic_struct.h |  8 +++-----
+ include/linux/kernel.h            |  7 -------
+ include/linux/pci.h               |  2 +-
+ include/trace/bpf_probe.h         |  2 ++
+ 9 files changed, 62 insertions(+), 51 deletions(-)
+ create mode 100644 include/linux/args.h
+
 -- 
-2.40.1
+2.40.0.1.gaa8946217a0b
 
