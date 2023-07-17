@@ -2,47 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC097565EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4817565F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbjGQOME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
+        id S232071AbjGQOMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231924AbjGQOMC (ORCPT
+        with ESMTP id S231924AbjGQOMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:12:02 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0307138;
-        Mon, 17 Jul 2023 07:11:56 -0700 (PDT)
-Received: from ideasonboard.com (mob-5-90-54-150.net.vodafone.it [5.90.54.150])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CC28F337A;
-        Mon, 17 Jul 2023 16:11:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1689603062;
-        bh=8l7sjCuc/m0acIUfPB6DYxH2Mf8R0n8TyysUiy0vmLk=;
+        Mon, 17 Jul 2023 10:12:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87619F5;
+        Mon, 17 Jul 2023 07:12:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 25D936109A;
+        Mon, 17 Jul 2023 14:12:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38AFEC433CB;
+        Mon, 17 Jul 2023 14:12:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689603153;
+        bh=qfhbbwJv5aDzSLrzg8XRkxXRcjef0UeV+hzSGXZzqxA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i6qEPi5A37JATinZ3Tw3tRzsCH19RlWBfAWT72MqzdW1LFLNEC8rwqTDZrxXuxG4+
-         ZJOa8936/HHlGNC9jLO+rBGWdKO5+oTu+WZni9BtVaWjO/R7Vs6j1Qhi7gjAJ1gM9m
-         mRKAIIjfq6X0O5UqPjFd/xOyaUS0/li0BAXbW0HU=
-Date:   Mon, 17 Jul 2023 16:11:50 +0200
-From:   Jacopo Mondi <jacopo.mondi@ideasonboard.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jacopo Mondi <jacopo.mondi@ideasonboard.com>
-Subject: Re: [PATCH 1/3] media: subdev: Drop implicit zeroing of stream field
-Message-ID: <rzjtzsvk5q5oobh3khtjopn6ssqyf6akw2z3rswihfec3s3syw@xwjamnaqhplh>
-References: <20230619112707.239565-1-tomi.valkeinen@ideasonboard.com>
+        b=mRhnMJOYfAFW+tpb90d2IMVUZ5kDsagtVxdUvHTg9he9RReFa0TQFixCb+XySbG+1
+         nW/H3p8C/eKLN/0Q3EpLrN2WF3pQ695s/U9PudEaEUdxkop2jcI4yo2ddYCxUG9gcz
+         JfpI3WlkgsdgwYd88nqN/hP0yWO8zB4op6na34xzUKSX9rPKLN60LXJGnQWH9RyCJD
+         pzsr067QfW0v510F3seZG+WaPaMZRxRUs4gLfHh0sMf8DPU/b9oGhrqd3DYfdVQ38U
+         7ntnBGmbvmlVUIOrBrwp1rmFbBoan0DhmmwdO55w8yYD8mB0S4qm4dnieXwc95nSE/
+         qLueazg23c+Ew==
+Date:   Mon, 17 Jul 2023 16:12:30 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Frank Oltmanns <frank@oltmanns.dev>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Roman Beranek <me@crly.cz>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 07/11] clk: sunxi-ng: nm: Support finding closest rate
+Message-ID: <htxtcpqimrloxvebm5iadqzybj3rt5c532smtm62kxeuaejaqw@syknyzrhgf7f>
+References: <20230717-pll-mipi_set_rate_parent-v4-0-04acf1d39765@oltmanns.dev>
+ <20230717-pll-mipi_set_rate_parent-v4-7-04acf1d39765@oltmanns.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="t24u7yc3dj2s45pr"
 Content-Disposition: inline
-In-Reply-To: <20230619112707.239565-1-tomi.valkeinen@ideasonboard.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20230717-pll-mipi_set_rate_parent-v4-7-04acf1d39765@oltmanns.dev>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,85 +63,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomi
 
-On Mon, Jun 19, 2023 at 02:27:05PM +0300, Tomi Valkeinen wrote:
-> Now that the kernel drivers have been fixed to initialize the stream
-> field, and we have the client capability which the userspace uses to say
+--t24u7yc3dj2s45pr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Not sure I got this. Isn't the capabilities flag intended for drivers
-to tell userspace it support streams ? This seems to suggest it is
-userspace setting it ?
-
-> it has initialized the stream field, we can drop the implicit zeroing of
-> the stream field in the various check functions.
->
-
-I guess this is safe, but I'm not sure why it wasn't before. If a
-driver doesn't support streams (!(sd->flags & V4L2_SUBDEV_FL_STREAMS))
-then it should have ignored the 'stream' field even if it wasn't
-zeroed. So I suspect I am missing the reason for zeroing in first
-place...
-
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+On Mon, Jul 17, 2023 at 03:34:31PM +0200, Frank Oltmanns wrote:
+> Use the helper function ccu_is_better_rate() to determine the rate that
+> is closest to the requested rate, thereby supporting rates that are
+> higher than the requested rate if the clock uses the
+> CCU_FEATURE_CLOSEST_RATE.
+>=20
+> Add the macro SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX_CLOSEST which
+> sets CCU_FEATURE_CLOSEST_RATE.
+>=20
+> To avoid code duplication, add the macros
+> SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX_FEAT that allows selecting
+> arbitrary features and use it in the original
+> SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX as well as the newly introduced
+> SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX_CLOSEST macros.
+>=20
+> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
 > ---
->  drivers/media/v4l2-core/v4l2-subdev.c | 15 ---------------
->  1 file changed, 15 deletions(-)
->
-> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-> index 2ec179cd1264..c1ac6d7a63d2 100644
-> --- a/drivers/media/v4l2-core/v4l2-subdev.c
-> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-> @@ -200,9 +200,6 @@ static inline int check_format(struct v4l2_subdev *sd,
->  	if (!format)
->  		return -EINVAL;
->
-> -	if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS))
-> -		format->stream = 0;
-> -
->  	return check_which(format->which) ? : check_pad(sd, format->pad) ? :
->  	       check_state(sd, state, format->which, format->pad, format->stream);
+>  drivers/clk/sunxi-ng/ccu_nm.c | 11 ++++------
+>  drivers/clk/sunxi-ng/ccu_nm.h | 48 +++++++++++++++++++++++++++++++++++++=
++++---
+>  2 files changed, 49 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/drivers/clk/sunxi-ng/ccu_nm.c b/drivers/clk/sunxi-ng/ccu_nm.c
+> index c1fd11542c45..35d00783d748 100644
+> --- a/drivers/clk/sunxi-ng/ccu_nm.c
+> +++ b/drivers/clk/sunxi-ng/ccu_nm.c
+> @@ -28,7 +28,7 @@ static unsigned long ccu_nm_calc_rate(unsigned long par=
+ent,
 >  }
-> @@ -230,9 +227,6 @@ static int call_enum_mbus_code(struct v4l2_subdev *sd,
->  	if (!code)
->  		return -EINVAL;
->
-> -	if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS))
-> -		code->stream = 0;
-> -
->  	return check_which(code->which) ? : check_pad(sd, code->pad) ? :
->  	       check_state(sd, state, code->which, code->pad, code->stream) ? :
->  	       sd->ops->pad->enum_mbus_code(sd, state, code);
-> @@ -245,9 +239,6 @@ static int call_enum_frame_size(struct v4l2_subdev *sd,
->  	if (!fse)
->  		return -EINVAL;
->
-> -	if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS))
-> -		fse->stream = 0;
-> -
->  	return check_which(fse->which) ? : check_pad(sd, fse->pad) ? :
->  	       check_state(sd, state, fse->which, fse->pad, fse->stream) ? :
->  	       sd->ops->pad->enum_frame_size(sd, state, fse);
-> @@ -283,9 +274,6 @@ static int call_enum_frame_interval(struct v4l2_subdev *sd,
->  	if (!fie)
->  		return -EINVAL;
->
-> -	if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS))
-> -		fie->stream = 0;
-> -
->  	return check_which(fie->which) ? : check_pad(sd, fie->pad) ? :
->  	       check_state(sd, state, fie->which, fie->pad, fie->stream) ? :
->  	       sd->ops->pad->enum_frame_interval(sd, state, fie);
-> @@ -298,9 +286,6 @@ static inline int check_selection(struct v4l2_subdev *sd,
->  	if (!sel)
->  		return -EINVAL;
->
-> -	if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS))
-> -		sel->stream = 0;
-> -
->  	return check_which(sel->which) ? : check_pad(sd, sel->pad) ? :
->  	       check_state(sd, state, sel->which, sel->pad, sel->stream);
->  }
-> --
-> 2.34.1
->
+> =20
+>  static unsigned long ccu_nm_find_best(unsigned long parent, unsigned lon=
+g rate,
+> -				      struct _ccu_nm *nm)
+> +				      struct _ccu_nm *nm, struct ccu_common *common)
+
+The common pointer must be the first argument.
+
+Once fixed,
+Acked-by: Maxime Ripard <mripard@kernel.org>
+
+Maxime
+
+--t24u7yc3dj2s45pr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZLVMTgAKCRDj7w1vZxhR
+xTTeAP4knutmR1GxPcDRsDiuskf3/7DgS1IxkgPc6Q8ZlWOs6wD+Kyh9V78+vpqR
+NkvgKKgQRVvoWmJwYa+z0lVEc//OyAU=
+=lLGg
+-----END PGP SIGNATURE-----
+
+--t24u7yc3dj2s45pr--
