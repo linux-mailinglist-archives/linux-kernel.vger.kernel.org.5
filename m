@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3173675691B
+	by mail.lfdr.de (Postfix) with ESMTP id 78BEC75691C
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 18:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbjGQQ31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 12:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39302 "EHLO
+        id S231553AbjGQQ3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 12:29:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231752AbjGQQ3I (ORCPT
+        with ESMTP id S231835AbjGQQ3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 12:29:08 -0400
+        Mon, 17 Jul 2023 12:29:09 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD14191
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:29:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCCA1B6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:29:08 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A2DA6116F
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:29:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BAE7C433CB;
-        Mon, 17 Jul 2023 16:29:06 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7482E61172
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:29:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E34DC433CA;
+        Mon, 17 Jul 2023 16:29:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689611346;
-        bh=J5f/y73gbpYzAPzzqE3aQSPO6NaFKpqMLlK+5QoR/ac=;
+        s=k20201202; t=1689611347;
+        bh=oLQSaca6C3+dC9X6PrVs62lkR/VnjdA0ABRf6CYLTn4=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=Jbsob+5eNtbIFKANOFOdj+SVGklOF2uuGBVENNkiCnH6O4NdsDh1SfnY0TFd4im4E
-         3geBuWgHoO0mRJ5BV/zvHzfnHBFK0wWd0Rhf5FrRn49iDiIvbTIpnw6Qiv0sgDavlV
-         3AJi5EJ+4BJVmhlUhVRPQ7MWLg9oMQkIQ2c5JmFyRVJ/SEfmuHViZl0YYIVc8Xehr7
-         ht1lBOOz6vtH9ZS7eagxjA82K9jzMb+7Bl5A+yxQcPlVr+Q41S/eVgyGUIMUv503Ob
-         D5ZMMMB9oU8VhWC/l1z014kyx9NCc9OFC93JO5cA27UK9MY71Yw4PhTM2q2NuOcqgh
-         2X94XS0ev7iRA==
+        b=mF9WgaFHfh7/nkSXFaUSle/aJPwsbgCYu5sjEaKiau1FgvJi441GhLi7St8cF2Zv5
+         aaKKLmSTuVLFyFwz7u43uPYV96r6oDxm/f1i/1MkrrgqJ0BZIVKtnhHk9JLdVCMUUd
+         g9jjf+sv846mlCkevsR0xcpDPxGsgWfSZ1438VRAYaAcx1SYVbXd/9e3sGuw344kXi
+         AQkOhEcZ2S90xAuftc4/FlcheOY56GVg5ViJ1i4ZmpTAKOB/hmRVRDI77/GfcXa1G4
+         gORF6f9h+Qy4sMNrzcsAE/gzk9SONY5Gd+/os0hx+O1KJvX75JrBaO1P7Hb9AfhT/p
+         Tk5UANY+Y9XVA==
 From:   Eric Van Hensbergen <ericvh@kernel.org>
-Date:   Mon, 17 Jul 2023 16:29:01 +0000
-Subject: [PATCH 2/3] fs/9p: fix typo in comparison logic for cache mode
+Date:   Mon, 17 Jul 2023 16:29:02 +0000
+Subject: [PATCH 3/3] fs/9p: fix type mismatch in file cache mode helper
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230716-fixes-overly-restrictive-mmap-v1-2-0683b283b932@kernel.org>
+Message-Id: <20230716-fixes-overly-restrictive-mmap-v1-3-0683b283b932@kernel.org>
 References: <20230716-fixes-overly-restrictive-mmap-v1-0-0683b283b932@kernel.org>
 In-Reply-To: <20230716-fixes-overly-restrictive-mmap-v1-0-0683b283b932@kernel.org>
 To:     Latchesar Ionkov <lucho@ionkov.net>,
@@ -49,20 +49,20 @@ Cc:     v9fs@lists.linux.dev, linux-kernel@vger.kernel.org,
         kernel@pengutronix.de, Robert Schwebel <r.schwebel@pengutronix.de>,
         Eric Van Hensbergen <ericvh@kernel.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=801; i=ericvh@kernel.org;
- h=from:subject:message-id; bh=J5f/y73gbpYzAPzzqE3aQSPO6NaFKpqMLlK+5QoR/ac=;
- b=owEBbQKS/ZANAwAKAYj/1ftKX/+YAcsmYgBktWxPBdEw2pHkHpJf4Xrs3jq2I1uQxbOZVPS9P
- 0SXZzDTniqJAjMEAAEKAB0WIQSWlvDRlqWQmKTK0VGI/9X7Sl//mAUCZLVsTwAKCRCI/9X7Sl//
- mDCRD/9ikTI1Hr1beF9eb5g7a/YtQi7qfsc5Y7ivQJ7Y1EVQc2SnXcCmMNcL1QMqqPS/Mi9GOmc
- Knfagji4/igxXJxzv5X/3QQfyTsAnHUeU66Lza2/bqXbStwdyrPMxOxd0/DkWjHPe+yEKhZZyTT
- gTFyUze61f5frLrmupDaHkqbum5R8zbpns4UmKMOxcHh40QGfMmwFCJa3lVate72qecFe0HZ2im
- ECX19Mv5XSRJ0CkQu/DyFFyFGGNNRE2Lb12vdoj4jN0Ve4CEsuxIdeLjuSscy/INnPFahg9KOMM
- Q/5NpaPq9VHrAqqgRMM6kqI+W3qzj9FlTg8BtWEeEvKZ48/owazDkYRzwJyT4u93INDREraNfw+
- I/v4QvmgI52LHDB4Bg4Jx4KIMW6iuqD6MOPJJNBrlAayGwhhpWq/r+nSrqWhJQeSsH6/O2J9U7V
- WG3DDqqxeZHzUqJaZNqqNueStcIl4i3qT+T7hHpSREX8d/UYqzw9Pgzfq1EGMpsQ+Rxy+f0FJZd
- YF0EvBRrJyvNfxmcCnwb6KGMHn4ndXYaSSumXr9D7oOag+btXlwjfpYngzhyV7b0BFr72pG+wD2
- Y/vSlcQNXpSEPh1463LeNfg8wEnXGipjJvuo2EhMYPHb3zy/0/Vtefp1y/P0DKgaF8yUOs7pucP
- KwXH+8uf62IF9yw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=868; i=ericvh@kernel.org;
+ h=from:subject:message-id; bh=oLQSaca6C3+dC9X6PrVs62lkR/VnjdA0ABRf6CYLTn4=;
+ b=owEBbQKS/ZANAwAKAYj/1ftKX/+YAcsmYgBktWxPIC0EaLAznACdWpUQZhpLof/8y5QRbyo1C
+ QtxwvZGd9qJAjMEAAEKAB0WIQSWlvDRlqWQmKTK0VGI/9X7Sl//mAUCZLVsTwAKCRCI/9X7Sl//
+ mJsQD/oC9v+6jOyzJWP6TF7YZ4ZbDp44VBwwjLdS+s5gxEipUVbBCq4gn76JX1RR1GLCFwsTOpX
+ HLxAFpWM+XPKORHARacmgzm3S1n74LX6ORqYOX1lyYEkc5kCAUhKOIwi0WVmxdq4NQcEqC9mW/r
+ SGpgBb9vK4ZB9Xh7WFwlXQf64AuVRqTSoRUP2wnv//5bTx3BDnX8k8iY5ouw6Q1HhmUImxmOjO5
+ /shsp0gb385wt1CzlIz7FLS4OInE5cw4rTJsX/imwQCho4B/R48qrW4bWg57niVAjnH7hBIGoLg
+ kvDjO1MPspB57+T/E+jT6OKLN7uBgPv1ruIaaco36A6cVCMOfwoOJwazOBO1h5d5n4FC4kR0Qiq
+ tp29N6A8l58InIH7pN53rd2N3XR9Kxr2kaGtfHOKNltjqA17f5KlKlhK1AKeQYyGPlBq1VUjrIa
+ 71gv44P90Gnee5qmmUSlBS3Dicw4KQCWE53rBn0ed89ATnzma20+cXjlR9WRnA1UuyAesVgueL9
+ VrcuQgOdLzYqGxImS/mEjGTn8Puxap6mbUIPCzpPP922XiLdMGbXNZ/0258Xvk+gc4Nv3GDsDmP
+ sSS7k0l9gayH2basmCQMid1yTv7Fe3/S6P2retom9fo4bEK5FS5BA4flJn2O8iEB1VuwyLld3jt
+ 8We55fT5hyekujQ==
 X-Developer-Key: i=ericvh@kernel.org; a=openpgp;
  fpr=9696F0D196A59098A4CAD15188FFD5FB4A5FFF98
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -75,27 +75,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There appears to be a typo in the comparison statement for the logic
-which sets a file's cache mode based on mount flags.
+There were two flags which had incorrect type in the
+paramaters of the file cache mode helper function.
 
 Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
 ---
- fs/9p/fid.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/9p/fid.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/fs/9p/fid.h b/fs/9p/fid.h
-index 0c51889a60b33..297c2c377e3dd 100644
+index 297c2c377e3dd..29281b7c38870 100644
 --- a/fs/9p/fid.h
 +++ b/fs/9p/fid.h
-@@ -57,7 +57,7 @@ static inline void v9fs_fid_add_modes(struct p9_fid *fid, int s_flags,
- 	   (s_flags & V9FS_DIRECT_IO) || (f_flags & O_DIRECT)) {
- 		fid->mode |= P9L_DIRECT; /* no read or write cache */
- 	} else if ((!(s_cache & CACHE_WRITEBACK)) ||
--				(f_flags & O_DSYNC) | (s_flags & V9FS_SYNC)) {
-+				(f_flags & O_DSYNC) || (s_flags & V9FS_SYNC)) {
- 		fid->mode |= P9L_NOWRITECACHE;
- 	}
- }
+@@ -46,8 +46,8 @@ static inline struct p9_fid *v9fs_fid_clone(struct dentry *dentry)
+  * NOTE: these are set after open so only reflect 9p client not
+  * underlying file system on server.
+  */
+-static inline void v9fs_fid_add_modes(struct p9_fid *fid, int s_flags,
+-	int s_cache, unsigned int f_flags)
++static inline void v9fs_fid_add_modes(struct p9_fid *fid, unsigned int s_flags,
++	unsigned int s_cache, unsigned int f_flags)
+ {
+ 	if (fid->qid.type != P9_QTFILE)
+ 		return;
 
 -- 
 2.39.2
