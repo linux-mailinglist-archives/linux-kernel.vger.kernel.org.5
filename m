@@ -2,85 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8D7755E93
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7C0755E95
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbjGQIgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 04:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        id S229537AbjGQIg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 04:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjGQIgr (ORCPT
+        with ESMTP id S231300AbjGQIg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 04:36:47 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B88D8
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:36:46 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R4Fmm6yfxzBR9sd
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:36:40 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689582998; x=1692174999; bh=BNkHpP52Ps8+FjJEZaBkoygylnC
-        +RgDyNMxsC2jDSm8=; b=Bftt+7EJIKNiKeCTa3OlQgnPjk8gwPWdXyDnP1IniSJ
-        qRvGxN2Y6M9fov5zfBP5t8n3tjaSeCh3sC5cSx24y6UGq65b959At7/IJyIDeYTl
-        0UXjPRd6OzlIHFlk+cHvGumyOVdkt+2p3FWW8dCl5Uxfet7wrQNUJdegJoNccFE4
-        qPInvA6Uf4uv6f5rDZc4FrW7YjwupSU+h5gyE6KHPQxlq+9WsSC5wW82fJV1/Whs
-        rSc/2qZzabDYnUbGEDGY4t5r1sRMtTZXtB9rf63cEKlToKd9uohZcZH3BBlesJcL
-        RFkiBWTBiQGNIwki6VW3mPpSRVyEH53RD2mNOfz0tgw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id seUIgG8igIjA for <linux-kernel@vger.kernel.org>;
-        Mon, 17 Jul 2023 16:36:38 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R4Fmk3fZQzBR5l8;
-        Mon, 17 Jul 2023 16:36:38 +0800 (CST)
+        Mon, 17 Jul 2023 04:36:56 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ADCF6135;
+        Mon, 17 Jul 2023 01:36:51 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1178D75;
+        Mon, 17 Jul 2023 01:37:34 -0700 (PDT)
+Received: from [10.57.76.30] (unknown [10.57.76.30])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C00FC3F73F;
+        Mon, 17 Jul 2023 01:36:49 -0700 (PDT)
+Message-ID: <50687516-987b-75ca-c6be-255ee3091b6c@arm.com>
+Date:   Mon, 17 Jul 2023 09:36:48 +0100
 MIME-Version: 1.0
-Date:   Mon, 17 Jul 2023 16:36:38 +0800
-From:   shijie001@208suo.com
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, jolsa@kernel.org, namhyung@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com
-Subject: [PATCH] perf tools: Fix error in demangle-ocaml.h
-In-Reply-To: <tencent_ECA15CC61879850D3C89CB23F8F3DD32600A@qq.com>
-References: <tencent_ECA15CC61879850D3C89CB23F8F3DD32600A@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <d4736a9417d2e364615d5a0361b1d3b0@208suo.com>
-X-Sender: shijie001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v1 1/9] selftests: Line buffer test program's stdout
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Florent Revest <revest@chromium.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20230713135440.3651409-1-ryan.roberts@arm.com>
+ <20230713135440.3651409-2-ryan.roberts@arm.com>
+ <8a8d077c-55bd-4710-9dfd-1cbb1a9170a8@sirena.org.uk>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <8a8d077c-55bd-4710-9dfd-1cbb1a9170a8@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following checkpatch error is removed:
-ERROR: "foo * bar" should be "foo *bar"
+On 13/07/2023 15:16, Mark Brown wrote:
+> On Thu, Jul 13, 2023 at 02:54:32PM +0100, Ryan Roberts wrote:
+>> The selftests runner pipes the test program's stdout to tap_prefix. The
+>> presence of the pipe means that the test program sets its stdout to be
+>> fully buffered (as aposed to line buffered when directly connected to
+>> the terminal). The block buffering means that there is often content in
+>> the buffer at fork() time, which causes the output to end up duplicated.
+>> This was causing problems for mm:cow where test results were duplicated
+>> 20-30x.
+>>
+>> Solve this by using `stdbuf`, when available to force the test program
+>> to use line buffered mode. This means previously printf'ed results are
+>> flushed out of the program before any fork().
+> 
+> This is going to be useful in general since not all selftests use the
+> kselftest helpers but it'd probably also be good to make
+> ksft_print_header() also make the output unbuffered so that if setbuf
+> isn't installed on the target system or the tests are run standalone we
+> don't run into issues there.  Even if the test isn't corrupting data
+> having things unbuffered is going to be good for making sure we don't
+> drop any output if the test dies.
+> 
+>> +		if [ -x /usr/bin/stdbuf ]; then
+>> +			stdbuf="/usr/bin/stdbuf --output=L "
+>> +		fi
+> 
+> Might be more robust to use type -p to find stdbuf in case it's in /bin
+> or something?
 
-Signed-off-by: Jie Shi <shijie001@208suo.com>
----
-  tools/perf/util/demangle-ocaml.h | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+Just looking at making this change; run_selftest.sh's shebang is for sh, and
+sh's type doesn't support the -p option. So I'm inclined to leave it as is.
+There are multiple other places in the script where /usr/bin is hardcoded when
+looking for programs too. Shout if you violently disagree.
 
-diff --git a/tools/perf/util/demangle-ocaml.h 
-b/tools/perf/util/demangle-ocaml.h
-index 843cc4fa10a6..7fff95ae354e 100644
---- a/tools/perf/util/demangle-ocaml.h
-+++ b/tools/perf/util/demangle-ocaml.h
-@@ -2,6 +2,6 @@
-  #ifndef __PERF_DEMANGLE_OCAML
-  #define __PERF_DEMANGLE_OCAML 1
-
--char * ocaml_demangle_sym(const char *str);
-+char *ocaml_demangle_sym(const char *str);
-
-  #endif /* __PERF_DEMANGLE_OCAML */
