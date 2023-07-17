@@ -2,117 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 163E4756C3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA966756C44
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbjGQShR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 14:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
+        id S231139AbjGQSjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 14:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbjGQShO (ORCPT
+        with ESMTP id S230413AbjGQSjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:37:14 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA0CE55;
-        Mon, 17 Jul 2023 11:37:04 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-51e48e1f6d1so6515169a12.1;
-        Mon, 17 Jul 2023 11:37:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689619023; x=1692211023;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k0ders07hbD+fLOIN4lwSi2Bg6Ivi/QgQpSiutzHFOw=;
-        b=i1BhaG2CTB71FjSsHWDEAULm8zYwNtDHVsW5dVN16IlOeNLLVIM5LhkileG5GFZngJ
-         OcPHvnfa1znLiPWRgG/DHHQDnDjTtjI+F4+t7iBokoUWqU+ljJpg0BI+5Rt3hhI8HNNo
-         Rw4wsV2aBUT4WYR89eDCGiIUJ9QBchy3j68po/3f1HEmOLUSP5MLQtou5BjzhgYK4A+5
-         ZmHT/oayhWO5w4hF2qeIgMWZrOv3vZl5JtsBGLkDwYqeVKOBnj9OGmOdS2/skk4rOfhV
-         wx2rkaQbCMkADbruIUAbfNsQ+Ni9XdJe4VdAJhdYIu1ltH+fxxBVBTN3FwtKrFZL4Bxj
-         BNVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689619023; x=1692211023;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k0ders07hbD+fLOIN4lwSi2Bg6Ivi/QgQpSiutzHFOw=;
-        b=ZKUU7Z5vljTIxs4jdpjPCFW8X1duPpPWpAXz9+tjrBNsmJFjZZ27oGj+eT3Cdzn5Zg
-         SM/GI4iSt+O2+1cCxtlXiCTjV06O1VGk5CzBb8UVYOQNhGZYGUOxW1X8jLh/zCr23iMC
-         LmgS+34/zVSUykwrDnjtw/kBM6tBxPQazGAfy3BEJ2oJjNScU7UayT4/QdaRPdYh6g25
-         tGyVHzLYw4K4juheV8U6rIuNAgtv43HLHaAkLblNm5kf6nJMf4xdDZEODpr0OEsdpkUn
-         +jHvLjC1CwsckbLtMvR38nKE71qj32SiPEHVIeZX8aCNOryRL0P/O0wUz1Vgvxo6iVQ7
-         gvaw==
-X-Gm-Message-State: ABy/qLY3WDx81etOEpnhwcxR0/9lNZqoI6p3I0cmjFJq4bhWt9UvntL3
-        0GllbDcZEw1QRwpeixRI0Vo=
-X-Google-Smtp-Source: APBJJlFeXvQAtut+wH1PDxlZ70Hu6bIJhTKvKKQJ2NZGKrtxmOr5hCcJxiWy1VNsiXtM25QcEreB9g==
-X-Received: by 2002:a50:fb97:0:b0:51e:3d13:4a12 with SMTP id e23-20020a50fb97000000b0051e3d134a12mr11098846edq.34.1689619022695;
-        Mon, 17 Jul 2023 11:37:02 -0700 (PDT)
-Received: from [192.168.0.110] ([77.124.20.250])
-        by smtp.gmail.com with ESMTPSA id o4-20020a056402038400b0051dd1c10c13sm10361653edv.29.2023.07.17.11.37.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 11:37:02 -0700 (PDT)
-Message-ID: <1051f5ae-82de-2e52-64f5-545fa2dedff9@gmail.com>
-Date:   Mon, 17 Jul 2023 21:36:58 +0300
+        Mon, 17 Jul 2023 14:39:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B4BA1;
+        Mon, 17 Jul 2023 11:39:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C8A7611EB;
+        Mon, 17 Jul 2023 18:39:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7012C433C7;
+        Mon, 17 Jul 2023 18:39:15 +0000 (UTC)
+Date:   Mon, 17 Jul 2023 14:39:14 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH v2 2/9] bpf/btf: tracing: Move finding func-proto API
+ and getting func-param API to BTF
+Message-ID: <20230717143914.5399a8e4@gandalf.local.home>
+In-Reply-To: <168960741686.34107.6330273416064011062.stgit@devnote2>
+References: <168960739768.34107.15145201749042174448.stgit@devnote2>
+        <168960741686.34107.6330273416064011062.stgit@devnote2>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH net v3] net: bonding: Fix error checking for
- debugfs_create_dir()
-Content-Language: en-US
-To:     Wang Ming <machel@vivo.com>, Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yufeng Mo <moyufeng@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, jay.vosburgh@canonical.com,
-        Tariq Toukan <tariqt@nvidia.com>
-References: <20230717085313.17188-1-machel@vivo.com>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20230717085313.17188-1-machel@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 18 Jul 2023 00:23:37 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 
-
-On 17/07/2023 11:53, Wang Ming wrote:
-> The debugfs_create_dir() function returns error pointers,
-> it never returns NULL. Most incorrect error checks were fixed,
-> but the one in bond_create_debugfs() was forgotten.
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > 
-> Fixes: 52333512701b ("net: bonding: remove unnecessary braces")
+> Move generic function-proto find API and getting function parameter API
+> to BTF library code from trace_probe.c. This will avoid redundant efforts
+> on different feature.
 
-It's not this commit to blame...
-Issue was there in first place, starting in commit f073c7ca29a4 
-("bonding: add the debugfs facility to the bonding driver").
+ "different features."
 
-
-> Signed-off-by: Wang Ming <machel@vivo.com>
+> 
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > ---
->   drivers/net/bonding/bond_debugfs.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  include/linux/btf.h        |    4 ++++
+>  kernel/bpf/btf.c           |   45 ++++++++++++++++++++++++++++++++++++++++
+>  kernel/trace/trace_probe.c |   50 +++++++++++++-------------------------------
+>  3 files changed, 64 insertions(+), 35 deletions(-)
 > 
-> diff --git a/drivers/net/bonding/bond_debugfs.c b/drivers/net/bonding/bond_debugfs.c
-> index 594094526648..d4a82f276e87 100644
-> --- a/drivers/net/bonding/bond_debugfs.c
-> +++ b/drivers/net/bonding/bond_debugfs.c
-> @@ -88,7 +88,7 @@ void bond_create_debugfs(void)
->   {
->   	bonding_debug_root = debugfs_create_dir("bonding", NULL);
->   
-> -	if (!bonding_debug_root)
-> +	if (IS_ERR(bonding_debug_root))
->   		pr_warn("Warning: Cannot create bonding directory in debugfs\n");
->   }
->   
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index cac9f304e27a..98fbbcdd72ec 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -221,6 +221,10 @@ const struct btf_type *
+>  btf_resolve_size(const struct btf *btf, const struct btf_type *type,
+>  		 u32 *type_size);
+>  const char *btf_type_str(const struct btf_type *t);
+> +const struct btf_type *btf_find_func_proto(struct btf *btf,
+> +					   const char *func_name);
+> +const struct btf_param *btf_get_func_param(const struct btf_type *func_proto,
+> +					   s32 *nr);
+>  
+>  #define for_each_member(i, struct_type, member)			\
+>  	for (i = 0, member = btf_type_member(struct_type);	\
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 817204d53372..e015b52956cb 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -1947,6 +1947,51 @@ btf_resolve_size(const struct btf *btf, const struct btf_type *type,
+>  	return __btf_resolve_size(btf, type, type_size, NULL, NULL, NULL, NULL);
+>  }
+>  
+> +/*
+> + * Find a functio proto type by name, and return it.
+
+  "function"
+
+> + * Return NULL if not found, or return -EINVAL if parameter is invalid.
+> + */
+> +const struct btf_type *btf_find_func_proto(struct btf *btf, const char *func_name)
+> +{
+> +	const struct btf_type *t;
+> +	s32 id;
+> +
+> +	if (!btf || !func_name)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	id = btf_find_by_name_kind(btf, func_name, BTF_KIND_FUNC);
+> +	if (id <= 0)
+> +		return NULL;
+> +
+> +	/* Get BTF_KIND_FUNC type */
+> +	t = btf_type_by_id(btf, id);
+> +	if (!t || !btf_type_is_func(t))
+> +		return NULL;
+> +
+> +	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
+> +	t = btf_type_by_id(btf, t->type);
+> +	if (!t || !btf_type_is_func_proto(t))
+> +		return NULL;
+> +
+> +	return t;
+> +}
+> +
+> +/*
+> + * Get function parameter with the number of parameters.
+> + * This can return NULL if the function has no parameters.
+
+  " It can return EINVAL if this function's parameters are NULL."
+
+-- Steve
+
+
+> + */
+> +const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s32 *nr)
+> +{
+> +	if (!func_proto || !nr)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	*nr = btf_type_vlen(func_proto);
+> +	if (*nr > 0)
+> +		return (const struct btf_param *)(func_proto + 1);
+> +	else
+> +		return NULL;
+> +}
+> +
+>  static u32 btf_resolved_type_id(const struct btf *btf, u32 type_id)
+>  {
+>  	while (type_id < btf->start_id)
+> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+> index c68a72707852..cd89fc1ebb42 100644
+> --- a/kernel/trace/trace_probe.c
+> +++ b/kernel/trace/trace_probe.c
+> @@ -371,47 +371,23 @@ static const char *type_from_btf_id(struct btf *btf, s32 id)
+>  	return NULL;
+>  }
+>  
+> -static const struct btf_type *find_btf_func_proto(const char *funcname)
+> -{
+> -	struct btf *btf = traceprobe_get_btf();
+> -	const struct btf_type *t;
+> -	s32 id;
+> -
+> -	if (!btf || !funcname)
+> -		return ERR_PTR(-EINVAL);
+> -
+> -	id = btf_find_by_name_kind(btf, funcname, BTF_KIND_FUNC);
+> -	if (id <= 0)
+> -		return ERR_PTR(-ENOENT);
+> -
+> -	/* Get BTF_KIND_FUNC type */
+> -	t = btf_type_by_id(btf, id);
+> -	if (!t || !btf_type_is_func(t))
+> -		return ERR_PTR(-ENOENT);
+> -
+> -	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
+> -	t = btf_type_by_id(btf, t->type);
+> -	if (!t || !btf_type_is_func_proto(t))
+> -		return ERR_PTR(-ENOENT);
+> -
+> -	return t;
+> -}
+> -
+>  static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
+>  						   bool tracepoint)
+>  {
+> +	struct btf *btf = traceprobe_get_btf();
+>  	const struct btf_param *param;
+>  	const struct btf_type *t;
+>  
+> -	if (!funcname || !nr)
+> +	if (!funcname || !nr || !btf)
+>  		return ERR_PTR(-EINVAL);
+>  
+> -	t = find_btf_func_proto(funcname);
+> -	if (IS_ERR(t))
+> +	t = btf_find_func_proto(btf, funcname);
+> +	if (IS_ERR_OR_NULL(t))
+>  		return (const struct btf_param *)t;
+>  
+> -	*nr = btf_type_vlen(t);
+> -	param = (const struct btf_param *)(t + 1);
+> +	param = btf_get_func_param(t, nr);
+> +	if (IS_ERR_OR_NULL(param))
+> +		return param;
+>  
+>  	/* Hide the first 'data' argument of tracepoint */
+>  	if (tracepoint) {
+> @@ -490,8 +466,8 @@ static const struct fetch_type *parse_btf_retval_type(
+>  	const struct btf_type *t;
+>  
+>  	if (btf && ctx->funcname) {
+> -		t = find_btf_func_proto(ctx->funcname);
+> -		if (!IS_ERR(t))
+> +		t = btf_find_func_proto(btf, ctx->funcname);
+> +		if (!IS_ERR_OR_NULL(t))
+>  			typestr = type_from_btf_id(btf, t->type);
+>  	}
+>  
+> @@ -500,10 +476,14 @@ static const struct fetch_type *parse_btf_retval_type(
+>  
+>  static bool is_btf_retval_void(const char *funcname)
+>  {
+> +	struct btf *btf = traceprobe_get_btf();
+>  	const struct btf_type *t;
+>  
+> -	t = find_btf_func_proto(funcname);
+> -	if (IS_ERR(t))
+> +	if (!btf)
+> +		return false;
+> +
+> +	t = btf_find_func_proto(btf, funcname);
+> +	if (IS_ERR_OR_NULL(t))
+>  		return false;
+>  
+>  	return t->type == 0;
+
