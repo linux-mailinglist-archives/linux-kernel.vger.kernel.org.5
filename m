@@ -2,126 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED69755BA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E4E755BA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbjGQG0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 02:26:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58856 "EHLO
+        id S230284AbjGQG1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 02:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbjGQG0r (ORCPT
+        with ESMTP id S231161AbjGQG1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 02:26:47 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43B710DA
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 23:26:16 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-51f90f713b2so6279620a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 23:26:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689575133; x=1692167133;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=chypWeQof4eZMpNxOQ7bwpe/4BlH0k2ZjlVM2ysN2ag=;
-        b=tSvUHZ/dfsh2AS1KjJ4+HyHU0yuwHol2XSCRegzesMGf2acJQu3k6klTWKnn1fe0V4
-         DqIzw5vBmKP6sKhTqnhVlfP6wPB0wPGlsvrxeGE1TQNdebWJ611sbU96yb7U/q+wIGey
-         Jh0e4TPnK1/Uswsq70/pyd0+7Gi7S/H8ftQxiCohdS3MXgMXKzc4lcJu7s2BgS5OrHVm
-         gEGCeXjHJ+uCPMNb87clkp2JIPlzOyt+BQAhPpxNc5jrNLJwrCIcijTS/o8y5tIDYHHK
-         FxDxDWaC3JC+3FDz5tjT8/cjpMVxTv5G9FFMVzi69cM46CyI4B8UEl6TX2IdYE0hx2sH
-         DvxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689575133; x=1692167133;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=chypWeQof4eZMpNxOQ7bwpe/4BlH0k2ZjlVM2ysN2ag=;
-        b=dkzS0XjxI3YnkSJp8FybSxppnHLJWscNRWe2LekJ9AlOodf9RTiro2L5GMr/Xm9vjH
-         KZPaPv5NZoT2eJLxQ4Ls2vfLLBvlUONq7wMMrkf9JTN8jz2TjIiKAtPBshmm8Bv3uP6y
-         Lm94XkXX54UGPS/fhniChe8XghH9cpKnVulfbMINHZmXozj2D3fUj3v702HEu1jlHz48
-         JjUUyf4/214ZUKXEP9OZZdms7SBWIEWEQt6enSHCPaJYt3wK4BlyTjgtotDL0fxN6LVS
-         GoRmYUQriuYgt0NrIgwd9hgrtYHojRl5361nkv4oR4jX7oMvz+7X3bOM1FewJ5ZNvuW1
-         Mwiw==
-X-Gm-Message-State: ABy/qLaf6F2zJGzZj5MVnrUpZ11IO9fD8ry34COvMHOs6Q9hFwWbZCau
-        AzVsU8jO8LKwxQQuKNfMzjjqUw==
-X-Google-Smtp-Source: APBJJlHyhzL6nlTig/tpsNYVFy33IRvan6jkBmK6Lnq2glVnJN33Njy1Fz2Md6teFo7t5ql+RPjaIw==
-X-Received: by 2002:a17:906:113:b0:987:fe18:1c56 with SMTP id 19-20020a170906011300b00987fe181c56mr11403416eje.47.1689575133290;
-        Sun, 16 Jul 2023 23:25:33 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id c7-20020a17090654c700b009882e53a42csm8698829ejp.81.2023.07.16.23.25.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 16 Jul 2023 23:25:32 -0700 (PDT)
-Message-ID: <d0682516-28aa-dbfc-81d1-33300c669835@linaro.org>
-Date:   Mon, 17 Jul 2023 08:25:31 +0200
+        Mon, 17 Jul 2023 02:27:47 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F53E58;
+        Sun, 16 Jul 2023 23:27:26 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36H5QpFV019349;
+        Mon, 17 Jul 2023 06:26:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=bAQKx5UD8kYYF/N1qVfbMABzoeBLk7Gfa2Gu5L5eDV8=;
+ b=IFfi2XFFlawlYrPAFzvzZCfgJvhIyIwFPeTZrvZLU5es9X3yvWSFDEdQCpjtTArg+7Th
+ kmBQsL2zaeotphTTrjlAoJBryEVTNWXxXoVLyXiW4rHaVec1frPxKvgaLfEd8vZcLiUZ
+ tEEbWia8hRFQvZFMp2s6YBp6QXKaE4GIZHPXhtvgk5j6nhoKd57tvykuaXZf1RVkkGVY
+ mHvY84biPyPLvZN/BI7ixC6ycUWutEoFbcmqcIVBXM+Iv5qbuovO5xUmjbPyH05AN6J4
+ KRXsQB/1wdP9V3fLLqzjnfnPdhEjfq388jF/tKDIU1hHzKfATOxOh2Bybhc0wxVoakOb vg== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3run0dtkvc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 06:26:28 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36H6QRrC026633
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 06:26:27 GMT
+Received: from fenglinw2-gv.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Sun, 16 Jul 2023 23:26:25 -0700
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+To:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <quic_collinsd@quicinc.com>, <quic_subbaram@quicinc.com>,
+        <quic_fenglinw@quicinc.com>, <quic_kamalw@quicinc.com>,
+        <jestar@qti.qualcomm.com>
+Subject: [PATCH v1 0/2] Add support for vibrator in multiple PMICs
+Date:   Mon, 17 Jul 2023 14:25:45 +0800
+Message-ID: <20230717062547.2086869-1-quic_fenglinw@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: adding MCP3564 ADC
-Content-Language: en-US
-To:     marius.cristea@microchip.com, jic23@kernel.org, lars@metafoo.de,
-        robh+dt@kernel.org
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230714150051.637952-1-marius.cristea@microchip.com>
- <20230714150051.637952-2-marius.cristea@microchip.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230714150051.637952-2-marius.cristea@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: F7TI92YLJYBFmDOedRycs-M-hPIjE0DM
+X-Proofpoint-GUID: F7TI92YLJYBFmDOedRycs-M-hPIjE0DM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_05,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ lowpriorityscore=0 malwarescore=0 adultscore=0 mlxscore=0 mlxlogscore=785
+ spamscore=0 bulkscore=0 impostorscore=0 priorityscore=1501 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307170058
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/2023 17:00, marius.cristea@microchip.com wrote:
-> From: Marius Cristea <marius.cristea@microchip.com>
-> 
-> This is the device tree schema for iio driver for
-> Microchip family of 153.6 ksps, Low-Noise 16/24-Bit
+Add SW support for the vibrator module inside PMI632, PM7250B, PM7325B, PM7550BA.
+It is very similar to the vibrator module inside PM8916 which is supported in
+pm8xxx-vib driver but just the drive amplitude is controlled with 2 registers,
+and the register base offset in each PMIC is different.
 
-...
+Fenglin Wu (2):
+  dt-bindings: input: qcom,pm8xxx-vib: add more PMIC support
+  Input: pm8xxx-vib - Add support for more PMICs
 
-> +
-> +dependencies:
-> +  spi-cpol: [ spi-cpha ]
-> +  spi-cpha: [ spi-cpol ]
+ .../bindings/input/qcom,pm8xxx-vib.yaml       |  4 ++
+ drivers/input/misc/pm8xxx-vibrator.c          | 49 +++++++++++++++++++
+ 2 files changed, 53 insertions(+)
 
-Put dependencies after patternProperties:, before required:.
-
-> +
-> +patternProperties:
-> +  "^channel@([0-9]|([1-7][0-9]))$":
-> +    $ref: adc.yaml
-> +    type: object
-
-Missing unevaluatedProperties: false.
-
-Open other bindings and look how it is done there.
-
-> +    description: Represents the external channels which are connected to the ADC.
-> +
-> +    properties:
-> +      reg:
-> +        description: The channel number in single-ended and differential mode.
-> +        minimum: 0
-> +        maximum: 79
-> +
-> +      diff-channels: true
-
-Why? Drop, unless you want to say there all other ADC properties are
-invalid for this type of device (device, not driver!).
-
-> +
-> +    required:
-> +      - reg
-
-
-
-Best regards,
-Krzysztof
+-- 
+2.25.1
 
