@@ -2,246 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4872E7566E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D823F7566E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbjGQOzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
+        id S230163AbjGQO4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbjGQOzw (ORCPT
+        with ESMTP id S229923AbjGQO4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:55:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C3B10C0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:55:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689605708;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p7ysILThYmwPo2e7W26OOfi15jGsDbCppOEO86p+TmM=;
-        b=OYH1wHxtcW3ILRa2V7kE8KeJOKN69eJpTRmMrUHgRbfLV21ePq5wfkOGcxJqNoUVAkDFup
-        YrJc5ACbmp7FYQOpUS3q85lxpYO31SWSdFbSMMySGuNmWBJ1d8kxc8QpOvTcr4b0P9/KJK
-        KLOMlnR/oqLrHZjFQ9Y0Fo+GoS51gNg=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-231-lRnnD6DgNeW3qEzOhh1TBQ-1; Mon, 17 Jul 2023 10:55:06 -0400
-X-MC-Unique: lRnnD6DgNeW3qEzOhh1TBQ-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fc07d4c2f4so27081845e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:55:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689605702; x=1692197702;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=p7ysILThYmwPo2e7W26OOfi15jGsDbCppOEO86p+TmM=;
-        b=jpeITQxF2dobl9YDinkQlRFI63saa1xqGf/LdIJQMWkY9we1B2MievVf7PcGZiQwcP
-         jxqaxW339eKbRbeMIE9Z6Gb+HhXDCarNsOyhVHg1rwGOR+a3UOo561RR1VUir9oJTC9p
-         IdVIDuxsxjiZ/9OWOMp8wUj3HXmOGsaoNdEAiJCoV8s+cawrmsHbi16PJAVQV+uF6T4N
-         XRVJn3nhe43pe/hDiw04ei4vMk8ieQQpj869y5sBI6rAXP2fshsPDV/Eg5hMjuIMtwIx
-         Rf4qoVODu1uv0eH/EWQlmOWbtXDO/80sr7gUfjcRK4R2XnR3EaiuB3EmY3sZ+cecU5tu
-         zpKw==
-X-Gm-Message-State: ABy/qLaadbiI0ToQ8EOc2yCNv3Yy758NOdVn2TDdNbTidP3eZRGJa+gX
-        WCa1kUGqsmhyPC2DtaCERQg6eyibPti78oCwORm+/cxPC1h/HRiBOfSatuSGTbXCJ/jfoP5YJjU
-        1Kmt+5Y5NAfVeUzlIfX5h+1rf
-X-Received: by 2002:a05:600c:286:b0:3fb:a1d9:ede8 with SMTP id 6-20020a05600c028600b003fba1d9ede8mr10441872wmk.10.1689605702634;
-        Mon, 17 Jul 2023 07:55:02 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGc8KK/Y8awGtA4287mNNnPwJsKgJsu1+GjznfksXzwtT/LrPcTQbk8rkbPxRyWx63N/CBNTw==
-X-Received: by 2002:a05:600c:286:b0:3fb:a1d9:ede8 with SMTP id 6-20020a05600c028600b003fba1d9ede8mr10441856wmk.10.1689605702205;
-        Mon, 17 Jul 2023 07:55:02 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c735:400:2501:5a2e:13c6:88da? (p200300cbc735040025015a2e13c688da.dip0.t-ipconnect.de. [2003:cb:c735:400:2501:5a2e:13c6:88da])
-        by smtp.gmail.com with ESMTPSA id v3-20020a05600c470300b003f7f475c3bcsm15571413wmo.1.2023.07.17.07.55.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 07:55:01 -0700 (PDT)
-Message-ID: <eae81a83-f8df-3619-612c-b74282da1f0b@redhat.com>
-Date:   Mon, 17 Jul 2023 16:55:00 +0200
+        Mon, 17 Jul 2023 10:56:19 -0400
+Received: from mail.a-eberle.de (mail.a-eberle.de [213.95.140.213])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B09BE7F
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:56:17 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.a-eberle.de (Postfix) with ESMTP id B2DF1380233
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:56:15 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at aeberle-mx.softwerk.noris.de
+Received: from mail.a-eberle.de ([127.0.0.1])
+        by localhost (ebl-mx-02.a-eberle.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id OhHegj1fnmwa for <linux-kernel@vger.kernel.org>;
+        Mon, 17 Jul 2023 16:56:14 +0200 (CEST)
+Received: from gateway.a-eberle.de (unknown [178.15.155.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "sg310.eberle.local", Issuer "A. Eberle GmbH & Co. KG WebAdmin CA" (not verified))
+        (Authenticated sender: postmaster@a-eberle.de)
+        by mail.a-eberle.de (Postfix) with ESMTPSA
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:56:11 +0200 (CEST)
+Received: from svr-exch2019.eberle.local ([192.168.1.17]:29457 helo=webmail.a-eberle.de)
+        by gateway.a-eberle.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <Stephan.Wurm@a-eberle.de>)
+        id 1qLPdp-0001AV-1p;
+        Mon, 17 Jul 2023 16:56:01 +0200
+Received: from PC-LX-Wurm (10.10.30.11) by Svr-Exch2019.eberle.local
+ (192.168.1.17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.42; Mon, 17 Jul
+ 2023 16:56:01 +0200
+Date:   Mon, 17 Jul 2023 16:55:58 +0200
+From:   Stephan Wurm <stephan.wurm@a-eberle.de>
+To:     Richard Weinberger <richard@nod.at>
+CC:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Johannes Eigner <johannes.eigner@a-eberle.de>
+Subject: Re: ubiblock: null pointer dereference using scatterlist in
+ work_queue
+Message-ID: <ZLVWfrlEOWT1twpr@PC-LX-Wurm>
+References: <ZLT2qEYjaWgSpRD6@PC-LX-Wurm>
+ <736980270.3262.1689586950735.JavaMail.zimbra@nod.at>
+ <ZLUXruUkYMrPK+GQ@PC-LX-Wurm>
+ <260741266.3681.1689591789332.JavaMail.zimbra@nod.at>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v3 3/4] mm: FLEXIBLE_THP for improved performance
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>, Yu Zhao <yuzhao@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20230714160407.4142030-1-ryan.roberts@arm.com>
- <20230714161733.4144503-3-ryan.roberts@arm.com>
- <CAOUHufacQ8Vx9WQ3BVjGGWKGhcRkL7u79UMX=O7oePDwZ0iNxw@mail.gmail.com>
- <82c934af-a777-3437-8d87-ff453ad94bfd@redhat.com>
- <2c4b2a41-1c98-0782-ac30-80e65bdb2b0c@arm.com>
- <2e7d5692-8ba7-1e56-a03f-449f1671b100@redhat.com>
- <4f89d7bf-2fe2-fa53-c7ca-e4f152ca0edf@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <4f89d7bf-2fe2-fa53-c7ca-e4f152ca0edf@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <260741266.3681.1689591789332.JavaMail.zimbra@nod.at>
+X-Originating-IP: [10.10.30.11]
+X-ClientProxiedBy: Svr-Exch2019.eberle.local (192.168.1.17) To
+ Svr-Exch2019.eberle.local (192.168.1.17)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A298E357D5B677461
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.07.23 16:47, Ryan Roberts wrote:
-> On 17/07/2023 14:56, David Hildenbrand wrote:
->> On 17.07.23 15:20, Ryan Roberts wrote:
->>> On 17/07/2023 14:06, David Hildenbrand wrote:
->>>> On 14.07.23 19:17, Yu Zhao wrote:
->>>>> On Fri, Jul 14, 2023 at 10:17 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>>>
->>>>>> Introduce FLEXIBLE_THP feature, which allows anonymous memory to be
->>>>>> allocated in large folios of a determined order. All pages of the large
->>>>>> folio are pte-mapped during the same page fault, significantly reducing
->>>>>> the number of page faults. The number of per-page operations (e.g. ref
->>>>>> counting, rmap management lru list management) are also significantly
->>>>>> reduced since those ops now become per-folio.
->>>>>>
->>>>>> The new behaviour is hidden behind the new FLEXIBLE_THP Kconfig, which
->>>>>> defaults to disabled for now; The long term aim is for this to defaut to
->>>>>> enabled, but there are some risks around internal fragmentation that
->>>>>> need to be better understood first.
->>>>>>
->>>>>> When enabled, the folio order is determined as such: For a vma, process
->>>>>> or system that has explicitly disabled THP, we continue to allocate
->>>>>> order-0. THP is most likely disabled to avoid any possible internal
->>>>>> fragmentation so we honour that request.
->>>>>>
->>>>>> Otherwise, the return value of arch_wants_pte_order() is used. For vmas
->>>>>> that have not explicitly opted-in to use transparent hugepages (e.g.
->>>>>> where thp=madvise and the vma does not have MADV_HUGEPAGE), then
->>>>>> arch_wants_pte_order() is limited by the new cmdline parameter,
->>>>>> `flexthp_unhinted_max`. This allows for a performance boost without
->>>>>> requiring any explicit opt-in from the workload while allowing the
->>>>>> sysadmin to tune between performance and internal fragmentation.
->>>>>>
->>>>>> arch_wants_pte_order() can be overridden by the architecture if desired.
->>>>>> Some architectures (e.g. arm64) can coalsece TLB entries if a contiguous
->>>>>> set of ptes map physically contigious, naturally aligned memory, so this
->>>>>> mechanism allows the architecture to optimize as required.
->>>>>>
->>>>>> If the preferred order can't be used (e.g. because the folio would
->>>>>> breach the bounds of the vma, or because ptes in the region are already
->>>>>> mapped) then we fall back to a suitable lower order; first
->>>>>> PAGE_ALLOC_COSTLY_ORDER, then order-0.
->>>>>>
->>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>>>> ---
->>>>>>     .../admin-guide/kernel-parameters.txt         |  10 +
->>>>>>     mm/Kconfig                                    |  10 +
->>>>>>     mm/memory.c                                   | 187 ++++++++++++++++--
->>>>>>     3 files changed, 190 insertions(+), 17 deletions(-)
->>>>>>
->>>>>> diff --git a/Documentation/admin-guide/kernel-parameters.txt
->>>>>> b/Documentation/admin-guide/kernel-parameters.txt
->>>>>> index a1457995fd41..405d624e2191 100644
->>>>>> --- a/Documentation/admin-guide/kernel-parameters.txt
->>>>>> +++ b/Documentation/admin-guide/kernel-parameters.txt
->>>>>> @@ -1497,6 +1497,16 @@
->>>>>>                            See Documentation/admin-guide/sysctl/net.rst for
->>>>>>                            fb_tunnels_only_for_init_ns
->>>>>>
->>>>>> +       flexthp_unhinted_max=
->>>>>> +                       [KNL] Requires CONFIG_FLEXIBLE_THP enabled. The
->>>>>> maximum
->>>>>> +                       folio size that will be allocated for an anonymous vma
->>>>>> +                       that has neither explicitly opted in nor out of using
->>>>>> +                       transparent hugepages. The size must be a
->>>>>> power-of-2 in
->>>>>> +                       the range [PAGE_SIZE, PMD_SIZE). A larger size
->>>>>> improves
->>>>>> +                       performance by reducing page faults, while a smaller
->>>>>> +                       size reduces internal fragmentation. Default: max(64K,
->>>>>> +                       PAGE_SIZE). Format: size[KMG].
->>>>>> +
->>>>>
->>>>> Let's split this parameter into a separate patch.
->>>>>
->>>>
->>>> Just a general comment after stumbling over patch #2, let's not start splitting
->>>> patches into things that don't make any sense on their own; that just makes
->>>> review a lot harder.
->>>
->>> ACK
->>>
->>>>
->>>> For this case here, I'd suggest first adding the general infrastructure and then
->>>> adding tunables we want to have on top.
->>>
->>> OK, so 1 patch for the main infrastructure, then a patch to disable for
->>> MADV_NOHUGEPAGE and friends, then a further patch to set flexthp_unhinted_max
->>> via a sysctl?
->>
->> MADV_NOHUGEPAGE handling for me falls under the category "required for
->> correctness to not break existing workloads" and has to be there initially.
->>
->> Anything that is rather a performance tunable (e.g., a sysctl to optimize) can
->> be added on top and discussed separately.>
->> At least IMHO :)
->>
->>>
->>>>
->>>> I agree that toggling that at runtime (for example via sysfs as raised by me
->>>> previously) would be nicer.
->>>
->>> OK, I clearly misunderstood, I thought you were requesting a boot parameter.
->>
->> Oh, sorry about that. I wanted to actually express
->> "/sys/kernel/mm/transparent_hugepage/" sysctls where we can toggle that later at
->> runtime as well.
->>
->>> What's the ABI compat guarrantee for sysctls? I assumed that for a boot
->>> parameter it would be easier to remove in future if we wanted, but for sysctl,
->>> its there forever?
->>
->> sysctl are hard/impossible to remove, yes. So we better make sure what we add
->> has clear semantics.
->>
->> If we ever want some real auto-tunable mode (and can actually implement it
->> without harming performance; and I am skeptical), we might want to allow for
->> setting such a parameter to "auto", for example.
->>
->>>
->>> Also, how do you feel about the naming and behavior of the parameter?
->>
->> Very good question. "flexthp_unhinted_max" naming is a bit suboptimal.
->>
->> For example, I'm not so sure if we should expose the feature to user space as
->> "flexthp" at all. I think we should find a clearer feature name to begin with.
->>
->> ... maybe we can initially get away with dropping that parameter and default to
->> something reasonably small (i.e., 64k as you have above)?
-> 
-> That would certainly get my vote. But it was you who was arguing for a tunable
-> previously ;-). I propose we use the following as the "unhinted ceiling" for
+Am 23-07-17 01:03 schrieb Richard Weinberger:
+> Stephan,
+>
+> ----- Ursprüngliche Mail -----
+> > Von: "Stephan Wurm" <stephan.wurm@a-eberle.de>
+> >> So reading from ubiblock works as long you don't access it via dm-verity?
+> >> How about other stacked devices such as dmcrypt?
+> >
+> > We did not check other stacked devices, but we'll give this a try.
+>
+> Please apply this patch too:
+>
+> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+> index 75eaecc8639f0..795e2d0f61086 100644
+> --- a/drivers/mtd/ubi/block.c
+> +++ b/drivers/mtd/ubi/block.c
+> @@ -304,7 +304,7 @@ static void ubiblock_do_work(struct work_struct *work)
+>          * the number of sg entries is limited to UBI_MAX_SG_COUNT
+>          * and ubi_read_sg() will check that limit.
+>          */
+> -       blk_rq_map_sg(req->q, req, pdu->usgl.sg);
+> +       ubi_assert(blk_rq_map_sg(req->q, req, pdu->usgl.sg) > 0);
+>
+>         ret = ubiblock_read(pdu);
+>
+>
+> I fear the assert will fail. But let's see. :-D
+> At least it would explain the NULL deref.
 
-Yes, I still think having tunables makes sense.
+I have now applied the following patch, including yours and additional debug
+output around the scatterlist:
+
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 75eaecc8639f..fea959a4b0ef 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -96,6 +96,16 @@ static DEFINE_IDR(ubiblock_minor_idr);
+ static DEFINE_MUTEX(devices_mutex);
+ static int ubiblock_major;
+
++static void ubiblock_print_scatterlist(struct ubiblock_pdu *pdu)
++{
++	int ret = sg_nents(&pdu->usgl.sg[0]);
++	for (int i = 0; i < ret; i++) {
++		struct scatterlist *sg = &pdu->usgl.sg[i];
++		pr_warn("sgl[%08d] => %px: page_link=%lu, offset=%d, length=%d",
++			i, sg_virt(sg), sg->page_link, sg->offset, sg->length);
++	}
++}
++
+ static int __init ubiblock_set_param(const char *val,
+ 				     const struct kernel_param *kp)
+ {
+@@ -304,7 +314,9 @@ static void ubiblock_do_work(struct work_struct *work)
+ 	 * the number of sg entries is limited to UBI_MAX_SG_COUNT
+ 	 * and ubi_read_sg() will check that limit.
+ 	 */
+-	blk_rq_map_sg(req->q, req, pdu->usgl.sg);
++	ubi_assert(blk_rq_map_sg(req->q, req, pdu->usgl.sg) > 0);
++
++	ubiblock_print_scatterlist(pdu);
+
+ 	ret = ubiblock_read(pdu);
+
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index 4e1d80746b04..361e4ce44172 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -748,10 +748,15 @@ int ubi_eba_read_leb_sg(struct ubi_device *ubi, struct ubi_volume *vol,
+ 			struct ubi_sgl *sgl, int lnum, int offset, int len,
+ 			int check)
+ {
++	static int count[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+ 	int to_read;
+ 	int ret;
+ 	struct scatterlist *sg;
+
++	count[vol->vol_id]++;
++
++	pr_warn("%dnth call of ubi_ea_read_leb_sg", count[vol->vol_id]);
++
+ 	for (;;) {
+ 		ubi_assert(sgl->list_pos < UBI_MAX_SG_COUNT);
+ 		sg = &sgl->sg[sgl->list_pos];
+
+As you can see in following log excerpt, we are able to pass the new assert:
+
+[   49.830833] sgl[00000000] => c30e9000: page_link=4018515232, offset=0, length=4096
+[   49.835267] sgl[00000001] => c834f000: page_link=4019190242, offset=0, length=4096
+[   49.843009] 46nth call of ubi_ea_read_leb_sg
+[   49.862017] sgl[00000000] => c5948000: page_link=4018845954, offset=0, length=4096
+[   49.866388] 47nth call of ubi_ea_read_leb_sg
+[   49.880518] sgl[00000000] => c5479000: page_link=4018806560, offset=0, length=4096
+[   49.884942] sgl[00000001] => c80f6000: page_link=4019171010, offset=0, length=4096
+[   49.892720] 48nth call of ubi_ea_read_leb_sg
+[   49.913535] sgl[00000000] => c2b1f000: page_link=4018467808, offset=0, length=4096
+[   49.917961] sgl[00000001] => c5544000: page_link=4018813056, offset=0, length=4096
+[   49.925691] sgl[00000002] => c2bae000: page_link=4018472384, offset=0, length=4096
+[   49.933520] sgl[00000003] => c2bad000: page_link=4018472354, offset=0, length=4096
+[   49.941239] 49nth call of ubi_ea_read_leb_sg
+[   49.955981] sgl[00000000] => c5b77000: page_link=4018863840, offset=0, length=4096
+[   49.960476] sgl[00000001] => c834c000: page_link=4019190144, offset=0, length=4096
+[   49.968119] sgl[00000002] => c5547000: page_link=4018813152, offset=0, length=4096
+[   49.975835] sgl[00000003] => c5bb4000: page_link=4018865792, offset=0, length=4096
+[   49.983541] sgl[00000004] => c59e0000: page_link=4018850816, offset=0, length=4096
+[   49.991244] sgl[00000005] => c58b8000: page_link=4018841344, offset=0, length=4096
+[   49.998942] sgl[00000006] => c818d000: page_link=4019175840, offset=0, length=4096
+[   50.006577] sgl[00000007] => c4b3e000: page_link=4018730944, offset=0, length=4096
+[   50.014321] sgl[00000008] => c5895000: page_link=4018840224, offset=0, length=4096
+[   50.022035] sgl[00000009] => c317b000: page_link=4018519904, offset=0, length=4096
+[   50.029735] sgl[00000010] => c52c3000: page_link=4018792544, offset=0, length=4096
+[   50.037372] sgl[00000011] => c5822000: page_link=4018836544, offset=0, length=4096
+[   50.045105] sgl[00000012] => c557d000: page_link=4018814880, offset=0, length=4096
+[   50.052814] sgl[00000013] => c5423000: page_link=4018803808, offset=0, length=4096
+[   50.060513] sgl[00000014] => c8289000: page_link=4019183904, offset=0, length=4096
+[   50.068221] sgl[00000015] => c8398000: page_link=4019192576, offset=0, length=4096
+[   50.075860] sgl[00000016] => c66db000: page_link=4018957152, offset=0, length=4096
+[   50.083561] sgl[00000017] => c585b000: page_link=4018838368, offset=0, length=4096
+[   50.091263] sgl[00000018] => c801c000: page_link=4019164034, offset=0, length=4096
+[   50.098961] 50nth call of ubi_ea_read_leb_sg
+[   50.155499] 51nth call of ubi_ea_read_leb_sg
+[   50.248918] sgl[00000000] => c59a1000: page_link=4018848800, offset=0, length=4096
+[   50.253355] sgl[00000001] => c810c000: page_link=4019171714, offset=0, length=4096
+[   50.261120] 52nth call of ubi_ea_read_leb_sg
+[   50.277054] sgl[00000000] => c5bb2000: page_link=4018865728, offset=0, length=4096
+[   50.281549] sgl[00000001] => c5695000: page_link=4018823840, offset=0, length=4096
+[   50.289255] sgl[00000002] => c80db000: page_link=4019170144, offset=0, length=4096
+[   50.296894] sgl[00000003] => c50f7000: page_link=4018777824, offset=0, length=4096
+[   50.304597] sgl[00000004] => c5c42000: page_link=4018870336, offset=0, length=4096
+[   50.312301] sgl[00000005] => c55b8000: page_link=4018816770, offset=0, length=4096
+[   50.320108] 53nth call of ubi_ea_read_leb_sg
+[   50.333646] sgl[00000000] => c53f2000: page_link=4018802240, offset=0, length=4096
+[   50.338065] sgl[00000001] => c5386000: page_link=4018798784, offset=0, length=4096
+[   50.345882] sgl[00000002] => c56b0000: page_link=4018824704, offset=0, length=4096
+[   50.353646] sgl[00000003] => c6819000: page_link=4018967328, offset=0, length=4096
+[   50.361362] sgl[00000004] => c442e000: page_link=4018673088, offset=0, length=4096
+[   50.369100] sgl[00000005] => c442c000: page_link=4018673024, offset=0, length=4096
+[   50.376736] sgl[00000006] => c4bd6000: page_link=4018735808, offset=0, length=4096
+[   50.384444] sgl[00000007] => c4bd4000: page_link=4018735744, offset=0, length=4096
+[   50.392152] sgl[00000008] => c4b38000: page_link=4018730752, offset=0, length=4096
+[   50.399846] sgl[00000009] => c5cfc000: page_link=4018876290, offset=0, length=4096
+[   50.407485] 54nth call of ubi_ea_read_leb_sg
+[   50.420878] sgl[00000000] => c5348000: page_link=4018796800, offset=0, length=4096
+[   50.425301] sgl[00000001] => c677b000: page_link=4018962272, offset=0, length=4096
+[   50.433072] sgl[00000002] => c441d000: page_link=4018672544, offset=0, length=4096
+[   50.440781] sgl[00000003] => c4b1f000: page_link=4018729952, offset=0, length=4096
+[   50.448486] sgl[00000004] => c4b0f000: page_link=4018729440, offset=0, length=4096
+[   50.456121] sgl[00000005] => c5879000: page_link=4018839328, offset=0, length=4096
+[   50.463826] sgl[00000006] => c59d8000: page_link=4018850560, offset=0, length=4096
+[   50.471528] sgl[00000007] => c566c000: page_link=4018822528, offset=0, length=4096
+[   50.479258] sgl[00000008] => c66e1000: page_link=4018957344, offset=0, length=4096
+[   50.486894] sgl[00000009] => c53f0000: page_link=4018802176, offset=0, length=4096
+[   50.494599] sgl[00000010] => c594e000: page_link=4018846146, offset=0, length=4096
+realpath: /dev/disk/by-partuuid//dev/ubiblock0_2: No such file or directory
+[   50.502309] 55nth call of ubi_ea_read_leb_sg
+[   64.939917] sgl[00000000] => 00000000: page_link=4025764322, offset=0, length=512
+[   64.944292] 56nth call of ubi_ea_read_leb_sg
+[   64.952594] ==================================================================
+[   64.964138] BUG: KASAN: null-ptr-deref in ubi_io_read+0xe8/0x41c
+[   64.970203] Read of size 1 at addr 00000000 by task kworker/0:5/75
+[   64.976416]
+[   64.977930] CPU: 0 PID: 75 Comm: kworker/0:5 Not tainted 6.1.38 #1
+[   64.984150] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+[   64.990708] Workqueue: ubiblock0_2 ubiblock_do_work
+[   64.995654]  unwind_backtrace from show_stack+0x10/0x14
+[   65.000943]  show_stack from dump_stack_lvl+0x34/0x48
+[   65.006063]  dump_stack_lvl from kasan_report+0xb8/0xe8
+[   65.011350]  kasan_report from ubi_io_read+0xe8/0x41c
+[   65.016453]  ubi_io_read from ubi_eba_read_leb+0x180/0x68c
+[   65.021992]  ubi_eba_read_leb from ubi_eba_read_leb_sg+0x158/0x1fc
+[   65.028229]  ubi_eba_read_leb_sg from ubi_leb_read_sg+0x8c/0xdc
+[   65.034202]  ubi_leb_read_sg from ubiblock_do_work+0x194/0x428
+[   65.040092]  ubiblock_do_work from process_one_work+0x46c/0x98c
+[   65.046082]  process_one_work from worker_thread+0x7c/0x7a8
+[   65.051718]  worker_thread from kthread+0x158/0x180
+[   65.056659]  kthread from ret_from_fork+0x14/0x2c
+[   65.061414] Exception stack(0xf0cabfb0 to 0xf0cabff8)
+[   65.066504] bfa0:                                     00000000 00000000 00000000 00000000
+[   65.074719] bfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[   65.082933] bfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[   65.089578] ==================================================================
+[   65.097001] Disabling lock debugging due to kernel taint
 
 
-But it's certainly something to add separately, especially if it makes 
-your work here easier.
+> >> Did you print the LEB number, read length and offset in ubiblock_read()?
+> >> Maybe there is a bug related to setting up the correct device geometry
+> >> and the read request is off.
+> > Here is some excerpt from another try with KASAN enabled and full debug output:
+>
+> Hm, we are within bounds. And looks like other reads worked.
+>
+> >  ==================================================================
+> >  [  293.343675] BUG: KASAN: null-ptr-deref in ubi_io_read+0x1d4/0x46c
+> >  [  293.349822] Read of size 1 at addr 00000000 by task kworker/0:3/18
+> >  [  293.356037]
+> >  [  293.357551] CPU: 0 PID: 18 Comm: kworker/0:3 Not tainted 6.1.36 #1
+> >  [  293.363774] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+> >  [  293.370331] Workqueue: ubiblock0_2 ubiblock_do_work
+> >  [  293.375269]  unwind_backtrace from show_stack+0x10/0x14
+> >  [  293.380557]  show_stack from dump_stack_lvl+0x34/0x48
+> >  [  293.385668]  dump_stack_lvl from kasan_report+0xb8/0xe8
+> >  [  293.390956]  kasan_report from ubi_io_read+0x1d4/0x46c
+> >  [  293.396146]  ubi_io_read from ubi_eba_read_leb+0x3c4/0x5cc
+> >  [  293.401686]  ubi_eba_read_leb from ubi_eba_read_leb_sg+0x84/0x1f8
+> >  [  293.407831]  ubi_eba_read_leb_sg from ubi_leb_read_sg+0xb4/0x110
+>
+> Can you please double check whether the very first call to ubi_eba_read_leb_sg()
+> fails or a later one?
+As you can see in above logs, the first calls to ubi_eba_read_leb_sg() originate
+from ubiblock_create(). Number 55 and 56 belong to read by cryptsetup.
 
-As long as it can be disabled, good enough for me for the initial version.
+>
+> Thanks,
+> //richard
 
--- 
-Cheers,
-
-David / dhildenb
-
+Thanks
+--
+Stephan Wurm <stephan.wurm@a-eberle.de>
