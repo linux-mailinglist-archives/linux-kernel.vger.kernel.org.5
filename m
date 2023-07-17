@@ -2,87 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCDB755EA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7CF755EA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbjGQIjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 04:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
+        id S231366AbjGQIjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 04:39:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjGQIi6 (ORCPT
+        with ESMTP id S229583AbjGQIjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 04:38:58 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C290103
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:38:57 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R4FqL0zMzzBR9sk
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:38:54 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689583131; x=1692175132; bh=B10ONze3Ez4485BlhVM5rp5eqe5
-        DThaXLzSMHECxmf8=; b=aI030ZgR5tRWs0hUo0A0zbulGwJoiK6upGGCvKIazN0
-        wpNO4ASn4NZ1KB/T80Rkbpp6dGqZ1D4T+iZLiX33RvCcXuXUg1MOX3UAF7FstJAg
-        Pc/MMPB29e7AZ63jyrVyMfXVhK/oRr1QS5jiGu10lUljP3PzgJqG7EAEop1yBK+v
-        shyjxABNxbfv9kl01ysMpRlyIXq4Ww8SXqK2L28ddVLjfz1dGmbhs02YDySSCtDo
-        9fCdxd0utaBeDESfNQH3YMH3Q7gIeCJCnawTCP2NfrwchyOcWdaKxDTscjX5WXzK
-        i5/VuVte3wqOzFmcwxBw3lTQJ8vj5NRYcSPeUIaLAAA==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 9seLt_KkdVt6 for <linux-kernel@vger.kernel.org>;
-        Mon, 17 Jul 2023 16:38:51 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R4FqH4kSZzBR5l8;
-        Mon, 17 Jul 2023 16:38:51 +0800 (CST)
+        Mon, 17 Jul 2023 04:39:42 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84E9E3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:39:41 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fc04692e20so43124155e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:39:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689583180; x=1692175180;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GvXy/QD/Pk1wVQOh6YjaEGgI2E+g61IPu7wSGMnkliU=;
+        b=L7QarnmjyFnGGDP+dtzUQ+m9EkC03vr9oMUyRD+RKckUnMK92aQ+1hzqssBvr/VS8t
+         ybG4szpchIROTfFkul5BgUelxLI6lLkqBdpxAQTRPETqHAP2NehvpjUXL880COyw6pqw
+         3Npn5/xMcQn/CD7SxVZqrG+u3uioULXDPh/wgUR4bvGzos0vymTWM4kwgTixw3kFmGA1
+         LnOlykAitHhn2wyaqgUP7mMN2CpUB7Hg6K3uG/SfXntBPe+F9LUl5u6h9FbOzIyd2OeN
+         HyUlKZTruFFbwELpiucIaKZpq4Ix7WZds0o+xJ6g6/XO6mrgq7EfL+I6fjLY0ID2mdUc
+         Z0BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689583180; x=1692175180;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GvXy/QD/Pk1wVQOh6YjaEGgI2E+g61IPu7wSGMnkliU=;
+        b=Mt2uQYAJlgTodhYnoAmy3OFNkJl2Fw1Beuh6lnr42fmtBJv8adohWd1cjahAwnTVq7
+         N9Ig+FrjAx7ovFK8Ez4fHM7w9q0hflXTLveIAScQVI4hcbeke4pYP45qmWphjdwlK9+l
+         qBXpdF4PdOMUWLA58wocVrCBVtmOPh68+qkA1af4OMKUY3RG+4OfObAeqyXdn2TqeiIB
+         Visn8n7SdfYusZQg+JLj15Mn1JsYtoAY/HHrPMbqBn8x6nIZ5bXrNgFqKK9hnEU8cb11
+         G8fNiRAWGWV012IwqARLfw+r+kQV9OupEn9UyGbESH1nrsD5PU5ZLWpCqRo6aks3wLJ1
+         zK4Q==
+X-Gm-Message-State: ABy/qLaudHBTRXG9YLXinN3VKkAVZjbI7TnjuZ2awlMBTyDaN88NqM87
+        fqdEkBCMGcRRxlF8++ogapjNlg==
+X-Google-Smtp-Source: APBJJlHgZ4E1mKTLXPhXfFVpcxT5qb27bMkUkVf2TsNNUrMgy5l8jHfpRhxNmjMn8BqDmr9/iS7uzQ==
+X-Received: by 2002:a7b:c4c7:0:b0:3fb:40ff:1cba with SMTP id g7-20020a7bc4c7000000b003fb40ff1cbamr9475089wmk.6.1689583180223;
+        Mon, 17 Jul 2023 01:39:40 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id i6-20020a5d55c6000000b003145521f4e5sm18523160wrw.116.2023.07.17.01.39.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 01:39:39 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 09:39:38 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Artur Weber <aweber.kernel@gmail.com>
+Cc:     Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH 2/2] backlight: lp855x: Catch errors when changing
+ brightness
+Message-ID: <20230717083938.GB3448956@aspen.lan>
+References: <20230714121440.7717-1-aweber.kernel@gmail.com>
+ <20230714121440.7717-3-aweber.kernel@gmail.com>
 MIME-Version: 1.0
-Date:   Mon, 17 Jul 2023 16:38:51 +0800
-From:   hanyu001@208suo.com
-To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        onkarnath.1@samsung.com, gustavoars@kernel.org,
-        nathanl@linux.ibm.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] powerpc: xmon: insert space before the open parenthesis '('
-In-Reply-To: <tencent_21B998805C354725D838145110ED7A2DD606@qq.com>
-References: <tencent_21B998805C354725D838145110ED7A2DD606@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <643e93ea4109ca0e2e77144060d3ad73@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230714121440.7717-3-aweber.kernel@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes checkpatch error:
+On Fri, Jul 14, 2023 at 02:14:40PM +0200, Artur Weber wrote:
+> The lp855x_bl_update_status function's return type is int, but
+> it always returns 0, without checking for the results of the
+> write_byte/pwm_ctrl functions called within.
+>
+> Make this function return the return values of the functions it
+> calls, and modify the lp855x_pwm_ctrl function to return errors.
+>
+> Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
 
-./arch/powerpc/xmon/xmon.c:1052: ERROR: space required before the open 
-parenthesis '('
-
-Signed-off-by: ztt <1549089851@qq.com>
----
-  arch/powerpc/xmon/xmon.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
-index 70c4c59a1a8f..6a1a2f0b9084 100644
---- a/arch/powerpc/xmon/xmon.c
-+++ b/arch/powerpc/xmon/xmon.c
-@@ -1049,7 +1049,7 @@ cmds(struct pt_regs *excp)
-
-      xmon_show_stack(excp->gpr[1], excp->link, excp->nip);
-
--    for(;;) {
-+    for (;;) {
-  #ifdef CONFIG_SMP
-          printf("%x:", smp_processor_id());
-  #endif /* CONFIG_SMP */
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
