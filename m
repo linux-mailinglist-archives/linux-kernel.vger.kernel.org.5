@@ -2,143 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5013755B9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED69755BA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231203AbjGQG0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 02:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58528 "EHLO
+        id S231400AbjGQG0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 02:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbjGQG0p (ORCPT
+        with ESMTP id S230027AbjGQG0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 02:26:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E781700
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 23:26:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6466860F29
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:25:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB085C433CD
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:25:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689575102;
-        bh=M+aBIDk8gF9TbKt2VjchGrvQUvaXF0DLEWlmQmRl5Y0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Lt79vDcBB8Bf9FDm1uMDifduuXtDspDZPNuAzdr3trzr8ZYcsf8DDnQIUuu8s0+NF
-         EfcXhUU0uejFc4HfhLID39hEwvl0s93zDUdPW3dcy3Bd7inmIP0Qv7l4Nn5cViMFCG
-         IEbel2jura9yKSYbf3A+H2tpeME7/Z/68+C15fJ79MKF/iKk5kfL+onjwTqeA/N012
-         hBmX48I0A7jbuPI31RHSchmZx9yEVRPa+ilg4p1efgzGWCJnmnPvnhV1BTSCciovPw
-         qX4jMxtd1Iwf+uPE5h8lLzrleA/RAYgXtDclgkViyCyhkjU5bKro6gkKHCmcDucUuL
-         AOZFRqeIqXyEw==
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-51e5e4c6026so5794985a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 23:25:02 -0700 (PDT)
-X-Gm-Message-State: ABy/qLbpvyrAfQqUEidvsZoCfxCEm7G2WUKkQLYnuMYXIFW9NrwzaJiO
-        WHt5tuO0b+Y+/bahnYKIRiIIu1Nywvo+SJmsPKE=
-X-Google-Smtp-Source: APBJJlF7jp28QiMSJoC7yf4/D47I4DGMgHllA94w9S0ZyKFkA74MgLbMr5DjNXkOGr/E4tdsv2yDmefglgeWteKKEAM=
-X-Received: by 2002:a17:906:51dd:b0:965:ff38:2fbb with SMTP id
- v29-20020a17090651dd00b00965ff382fbbmr10011057ejk.1.1689575100962; Sun, 16
- Jul 2023 23:25:00 -0700 (PDT)
+        Mon, 17 Jul 2023 02:26:47 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43B710DA
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 23:26:16 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-51f90f713b2so6279620a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 23:26:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689575133; x=1692167133;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=chypWeQof4eZMpNxOQ7bwpe/4BlH0k2ZjlVM2ysN2ag=;
+        b=tSvUHZ/dfsh2AS1KjJ4+HyHU0yuwHol2XSCRegzesMGf2acJQu3k6klTWKnn1fe0V4
+         DqIzw5vBmKP6sKhTqnhVlfP6wPB0wPGlsvrxeGE1TQNdebWJ611sbU96yb7U/q+wIGey
+         Jh0e4TPnK1/Uswsq70/pyd0+7Gi7S/H8ftQxiCohdS3MXgMXKzc4lcJu7s2BgS5OrHVm
+         gEGCeXjHJ+uCPMNb87clkp2JIPlzOyt+BQAhPpxNc5jrNLJwrCIcijTS/o8y5tIDYHHK
+         FxDxDWaC3JC+3FDz5tjT8/cjpMVxTv5G9FFMVzi69cM46CyI4B8UEl6TX2IdYE0hx2sH
+         DvxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689575133; x=1692167133;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=chypWeQof4eZMpNxOQ7bwpe/4BlH0k2ZjlVM2ysN2ag=;
+        b=dkzS0XjxI3YnkSJp8FybSxppnHLJWscNRWe2LekJ9AlOodf9RTiro2L5GMr/Xm9vjH
+         KZPaPv5NZoT2eJLxQ4Ls2vfLLBvlUONq7wMMrkf9JTN8jz2TjIiKAtPBshmm8Bv3uP6y
+         Lm94XkXX54UGPS/fhniChe8XghH9cpKnVulfbMINHZmXozj2D3fUj3v702HEu1jlHz48
+         JjUUyf4/214ZUKXEP9OZZdms7SBWIEWEQt6enSHCPaJYt3wK4BlyTjgtotDL0fxN6LVS
+         GoRmYUQriuYgt0NrIgwd9hgrtYHojRl5361nkv4oR4jX7oMvz+7X3bOM1FewJ5ZNvuW1
+         Mwiw==
+X-Gm-Message-State: ABy/qLaf6F2zJGzZj5MVnrUpZ11IO9fD8ry34COvMHOs6Q9hFwWbZCau
+        AzVsU8jO8LKwxQQuKNfMzjjqUw==
+X-Google-Smtp-Source: APBJJlHyhzL6nlTig/tpsNYVFy33IRvan6jkBmK6Lnq2glVnJN33Njy1Fz2Md6teFo7t5ql+RPjaIw==
+X-Received: by 2002:a17:906:113:b0:987:fe18:1c56 with SMTP id 19-20020a170906011300b00987fe181c56mr11403416eje.47.1689575133290;
+        Sun, 16 Jul 2023 23:25:33 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id c7-20020a17090654c700b009882e53a42csm8698829ejp.81.2023.07.16.23.25.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 Jul 2023 23:25:32 -0700 (PDT)
+Message-ID: <d0682516-28aa-dbfc-81d1-33300c669835@linaro.org>
+Date:   Mon, 17 Jul 2023 08:25:31 +0200
 MIME-Version: 1.0
-References: <MEYP282MB2597514C7A4697A72F829B78D93BA@MEYP282MB2597.AUSP282.PROD.OUTLOOK.COM>
-In-Reply-To: <MEYP282MB2597514C7A4697A72F829B78D93BA@MEYP282MB2597.AUSP282.PROD.OUTLOOK.COM>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Mon, 17 Jul 2023 14:24:48 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H6u5WBVC36OyNsFZVfmZ9_Nk+_ASFrYyxd5fsEEdNRaMQ@mail.gmail.com>
-Message-ID: <CAAhV-H6u5WBVC36OyNsFZVfmZ9_Nk+_ASFrYyxd5fsEEdNRaMQ@mail.gmail.com>
-Subject: Re: [PATCH v4] LoongArch: Make CONFIG_CMDLINE work with
- CONFIG_CMDLINE_EXTEND and CONFIG_CMDLINE_BOOTLOADER
-To:     Dong Zhihong <donmor3000@hotmail.com>
-Cc:     kernel@xen0n.name, ardb@kernel.org, tangyouling@loongson.cn,
-        zhoubinbin@loongson.cn, yangtiezhu@loongson.cn, tglx@linutronix.de,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: adding MCP3564 ADC
+Content-Language: en-US
+To:     marius.cristea@microchip.com, jic23@kernel.org, lars@metafoo.de,
+        robh+dt@kernel.org
+Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230714150051.637952-1-marius.cristea@microchip.com>
+ <20230714150051.637952-2-marius.cristea@microchip.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230714150051.637952-2-marius.cristea@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 12:09=E2=80=AFPM Dong Zhihong <donmor3000@hotmail.c=
-om> wrote:
->
-> Make CONFIG_CMDLINE work with CONFIG_CMDLINE_EXTEND and
-> CONFIG_CMDLINE_BOOTLOADER. The touched function is bootcmdline_init()`.
-> There's already code handling CONFIG_CMDLINE_FORCE, which replaces
-> `boot_command_line` with CONFIG_CMDLINE and immediately`goto out`. It'd b=
-e
-> similar way to handle CONFIG_CMDLINE_EXTEND and CONFIG_CMDLINE_BOOTLOADER=
-,
-> so some code is added after OF_FLATTREE part to handle them.
->
-> Signed-off-by: Dong Zhihong <donmor3000@hotmail.com>
-> ---
->
-> v4 -> v3: Make CONFIG_CMDLINE appended to the end of command line (Huacai=
-);
->         Removed unnecessary #ifdef since CONFIG_CMDLINE is always a strin=
-g on
->         loongarch
-> v3 -> v2: Reworded the commit message again to make it imperative (Ruoyao=
-)
-> v2 -> v1: Reworded the commit message so it's more imperative (Markus);
->         Added `goto out` to FDT part (Huacai)
->
->  arch/loongarch/kernel/setup.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
->
-> diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.=
-c
-> index 78a00359bde3..3cafda1a409e 100644
-> --- a/arch/loongarch/kernel/setup.c
-> +++ b/arch/loongarch/kernel/setup.c
-> @@ -332,7 +332,24 @@ static void __init bootcmdline_init(char **cmdline_p=
-)
->                         strlcat(boot_command_line, " ", COMMAND_LINE_SIZE=
-);
->
->                 strlcat(boot_command_line, init_command_line, COMMAND_LIN=
-E_SIZE);
-> +               goto out;
-> +       }
-> +#endif
-> +
-> +#ifdef CONFIG_CMDLINE
-> +       /*
-> +        * If CONFIG_CMDLINE_BOOTLOADER is enabled then we use thei built=
--in
-> +        * command line if no command line given, or we append given comm=
-and
-> +        * line to the built-in one if CONFIG_CMDLINE_EXTEND is enabled.
-> +        */
-> +       if (IS_ENABLED(CONFIG_CMDLINE_EXTEND)) {
-> +               strscpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE_S=
-IZE);
-> +               strlcat(boot_command_line, " ", COMMAND_LINE_SIZE);
-> +               strlcat(boot_command_line, init_command_line, COMMAND_LIN=
-E_SIZE);
->         }
-> +
-> +       if (IS_ENABLED(CONFIG_CMDLINE_BOOTLOADER) && !boot_command_line[0=
-])
-> +               strscpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE_S=
-IZE);
->  #endif
-???What is the difference between V3 and V4?
-And the title can be "LoongArch: Fix CONFIG_CMDLINE_EXTEND and
-CONFIG_CMDLINE_BOOTLOADER handling"
+On 14/07/2023 17:00, marius.cristea@microchip.com wrote:
+> From: Marius Cristea <marius.cristea@microchip.com>
+> 
+> This is the device tree schema for iio driver for
+> Microchip family of 153.6 ksps, Low-Noise 16/24-Bit
 
-Huacai
+...
 
->
->  out:
-> --
-> 2.25.1
->
+> +
+> +dependencies:
+> +  spi-cpol: [ spi-cpha ]
+> +  spi-cpha: [ spi-cpol ]
+
+Put dependencies after patternProperties:, before required:.
+
+> +
+> +patternProperties:
+> +  "^channel@([0-9]|([1-7][0-9]))$":
+> +    $ref: adc.yaml
+> +    type: object
+
+Missing unevaluatedProperties: false.
+
+Open other bindings and look how it is done there.
+
+> +    description: Represents the external channels which are connected to the ADC.
+> +
+> +    properties:
+> +      reg:
+> +        description: The channel number in single-ended and differential mode.
+> +        minimum: 0
+> +        maximum: 79
+> +
+> +      diff-channels: true
+
+Why? Drop, unless you want to say there all other ADC properties are
+invalid for this type of device (device, not driver!).
+
+> +
+> +    required:
+> +      - reg
+
+
+
+Best regards,
+Krzysztof
+
