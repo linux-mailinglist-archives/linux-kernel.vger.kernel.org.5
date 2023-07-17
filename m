@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D64F756EB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED69756EB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbjGQVEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 17:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
+        id S231246AbjGQVED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 17:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbjGQVD7 (ORCPT
+        with ESMTP id S230463AbjGQVEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 17:03:59 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A989121
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:03:58 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-666edfc50deso3020272b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:03:58 -0700 (PDT)
+        Mon, 17 Jul 2023 17:04:00 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D54121
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:03:59 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6686a05bc66so3613712b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:03:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1689627838; x=1692219838;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=o1J3PrW+KELul59iWMsbn0NuwlLctvPQuEIvtb6UgWY=;
-        b=Ku8I0funEqrw0TX6rYaGXYYIHrttNyMTFVvrgZZGUya0wgLsLsxRwq4M1BtrN7gi6j
-         PCbSF9+xrLXT26UHSIGTbFUp2b1xnr4ITMhmHMJVPsQOblGAQLmEmKV2mdsWTorMTljb
-         JmsVEGyxnFlw4/sOEAReNkqylFfUlMcYHnHgi/7e4ELG/3iJrZ2+KTCIVkNy6+f56CkI
-         xx603jKovuSBX1guw5etp3sUmolhDDjr/apHn5nHypc+NOj+g2iuKidRWC+hxQdjdG5P
-         0EzE2Qih3mmpiiLY3oho1QgNIPLTv4n6B5DKMqNi3hLG/W9LFX2K835TLTMHoTXkMWLk
-         oJFA==
+        d=sifive.com; s=google; t=1689627839; x=1692219839;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IIZEzHVxC1Fx70Cdkz+V0OVQ6Dog78uDmiwE1vZt2q4=;
+        b=BPsBDwWrNKB91DqaWrNhpO/v4ykSqWSBCirIAnuxFvOs77l0rqsU8+TqkOv28d6dXr
+         WmYVAVFOM9vjv+UHSWcME4r1ezRlHwg5UqohAqTvLNhkEnaX5Hcz/xICNS3d7dBZx2Iv
+         GvTFOn4TF4Fw47/Bm6YeEH648hSZrlKW22TNiQ9ZRZR+GIbPaytAhRE0ZhEGwAnWSUOu
+         yZ2+3zkaTUHT/MggTaWj1HOAknAkIdJCOfkXNZXkxX6lAcMXp3eJYHfdKdUaRY4p8sqg
+         3GBwAf99mw6qFjNqVtSdyTeC8uhdwG9Wb9KnEINmXUoKYaNFsm+NslcdAJtzegeo08S9
+         tp2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689627838; x=1692219838;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o1J3PrW+KELul59iWMsbn0NuwlLctvPQuEIvtb6UgWY=;
-        b=WxntL5agXbDGARJQh5cxQIfMOCo6v+haqrI921bzqIZEpzkgIPtdfA5AQRxo1PiO2Y
-         w5aBBMxIwxs8Otl/K8QMYkHH386Cp/OultG3W94g/AuZm2w+pC0dj4MYPDzm1ne+DRWG
-         aXB5zthjb/eEt2d8wbiu9P6agjVt0ozG0TJVJ20ohcolbrQa7iPBFAgdiVu5D/NkwVh/
-         HqTBUKL7fNa7eJxyketcOhGKKUopdYGYqxtRVNIGsBbox5L8Mqs+5EkRPLU3v1X6W/Md
-         qcQTFWjX++WqsoG3nN/IGlPKCPp+k3aPageEjNRl7n7KcPomU0rzqWYDi+A+oxw6y5/p
-         dFow==
-X-Gm-Message-State: ABy/qLbc2m8BWQYCUlJJyCFRNITWtPTk+RDztnW1hQNSAMBbU3beh4Xe
-        UffKK0BF0d3mmQc4GMcq3gaBsA==
-X-Google-Smtp-Source: APBJJlGOS37CqLaBewrjCl5Z0maH1pn80HSmDOUF0nWeAle4VJHXL5qIG15IsIleFsgn4g9p6Ja4Vg==
-X-Received: by 2002:a05:6a20:8425:b0:12b:40d3:aeb1 with SMTP id c37-20020a056a20842500b0012b40d3aeb1mr16273429pzd.25.1689627837974;
-        Mon, 17 Jul 2023 14:03:57 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689627839; x=1692219839;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IIZEzHVxC1Fx70Cdkz+V0OVQ6Dog78uDmiwE1vZt2q4=;
+        b=cqwy+enLSqsG3G7HbOgWZvhSFh9rPE2Jv0tl8DIribxdMxOEAX+6+EVD+qvem9R//L
+         MlMVAEEPpa5MZ+WHRA2gN0ATs6hhtSY4bmOVHhID6VX5RSdaWtGNIY23E+CYXO3p/BYk
+         XBMm/rfxo2hdBhPrVlO9Qu5a7YoThk1x6awl2/qpwsKV0ojTExVhtPrZEG/ULOZo/wOA
+         dIuNf8TdMkOc39Y0lvovPmQKjAv5JPiXie9aP7UlQ6pPdqvC8BL1noYmiwZNwoer9Oa6
+         AGvUFW4Ltum1zAGN1i4HLeMR1OI1/r/4cGqTglHsmLoQm6Ow4GPJmiOkxqLXBx/DO/Ds
+         MMYw==
+X-Gm-Message-State: ABy/qLbFxV5x1r8APOuDjKOYRAQQRihZxU4l2yLToXa1yFU6iXW/IDAR
+        BOC8QmKLSFVAJJRylO1rkuXQ+g==
+X-Google-Smtp-Source: APBJJlGh2y7l4Mcb4h+KipYMEFcoZHbETqHgVjohsP4Fa5WcrLA/yfUSBTw5rEOHn+qg1Eica/L75Q==
+X-Received: by 2002:a05:6a00:ad1:b0:67d:22a6:2f54 with SMTP id c17-20020a056a000ad100b0067d22a62f54mr790132pfl.31.1689627839264;
+        Mon, 17 Jul 2023 14:03:59 -0700 (PDT)
 Received: from sw06.internal.sifive.com ([64.62.193.194])
-        by smtp.gmail.com with ESMTPSA id j24-20020aa78d18000000b006732786b5f1sm191915pfe.213.2023.07.17.14.03.57
+        by smtp.gmail.com with ESMTPSA id j24-20020aa78d18000000b006732786b5f1sm191915pfe.213.2023.07.17.14.03.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 14:03:57 -0700 (PDT)
+        Mon, 17 Jul 2023 14:03:58 -0700 (PDT)
 From:   Samuel Holland <samuel.holland@sifive.com>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>
 Cc:     Samuel Holland <samuel.holland@sifive.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] clk: analogbits: Allow building the library as a module
-Date:   Mon, 17 Jul 2023 14:03:55 -0700
-Message-Id: <20230717210356.2794736-1-samuel.holland@sifive.com>
+        Yang Li <yang.lee@linux.alibaba.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH 2/2] clk: sifive: Allow building the driver as a module
+Date:   Mon, 17 Jul 2023 14:03:56 -0700
+Message-Id: <20230717210356.2794736-2-samuel.holland@sifive.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230717210356.2794736-1-samuel.holland@sifive.com>
+References: <20230717210356.2794736-1-samuel.holland@sifive.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,59 +78,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This library is only used by the SiFive PRCI driver. When that driver is
-built as a module, it makes sense to build this library as a module too.
+This can reduce the kernel image size in multiplatform configurations.
 
 Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 ---
 
- drivers/clk/analogbits/Kconfig          | 2 +-
- drivers/clk/analogbits/wrpll-cln28hpc.c | 6 ++++++
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ drivers/clk/sifive/Kconfig       | 2 +-
+ drivers/clk/sifive/sifive-prci.c | 8 +++-----
+ 2 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/clk/analogbits/Kconfig b/drivers/clk/analogbits/Kconfig
-index 1e291b185438..7d73db0fcd49 100644
---- a/drivers/clk/analogbits/Kconfig
-+++ b/drivers/clk/analogbits/Kconfig
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config CLK_ANALOGBITS_WRPLL_CLN28HPC
--	bool
-+	tristate
-diff --git a/drivers/clk/analogbits/wrpll-cln28hpc.c b/drivers/clk/analogbits/wrpll-cln28hpc.c
-index 09ca82356399..760b51031795 100644
---- a/drivers/clk/analogbits/wrpll-cln28hpc.c
-+++ b/drivers/clk/analogbits/wrpll-cln28hpc.c
-@@ -28,6 +28,7 @@
- #include <linux/math64.h>
- #include <linux/math.h>
- #include <linux/minmax.h>
+diff --git a/drivers/clk/sifive/Kconfig b/drivers/clk/sifive/Kconfig
+index 2322f634a910..49597d95602e 100644
+--- a/drivers/clk/sifive/Kconfig
++++ b/drivers/clk/sifive/Kconfig
+@@ -10,7 +10,7 @@ menuconfig CLK_SIFIVE
+ if CLK_SIFIVE
+ 
+ config CLK_SIFIVE_PRCI
+-	bool "PRCI driver for SiFive SoCs"
++	tristate "PRCI driver for SiFive SoCs"
+ 	default ARCH_SIFIVE
+ 	select RESET_CONTROLLER
+ 	select RESET_SIMPLE
+diff --git a/drivers/clk/sifive/sifive-prci.c b/drivers/clk/sifive/sifive-prci.c
+index e317f3454e93..8c67d1a7c8df 100644
+--- a/drivers/clk/sifive/sifive-prci.c
++++ b/drivers/clk/sifive/sifive-prci.c
+@@ -7,6 +7,7 @@
+ #include <linux/clkdev.h>
+ #include <linux/delay.h>
+ #include <linux/io.h>
 +#include <linux/module.h>
+ #include <linux/of_device.h>
+ #include "sifive-prci.h"
+ #include "fu540-prci.h"
+@@ -618,9 +619,6 @@ static struct platform_driver sifive_prci_driver = {
+ 	},
+ 	.probe = sifive_prci_probe,
+ };
++module_platform_driver(sifive_prci_driver);
  
- #include <linux/clk/analogbits-wrpll-cln28hpc.h>
- 
-@@ -312,6 +313,7 @@ int wrpll_configure_for_rate(struct wrpll_cfg *c, u32 target_rate,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(wrpll_configure_for_rate);
- 
- /**
-  * wrpll_calc_output_rate() - calculate the PLL's target output rate
-@@ -349,6 +351,7 @@ unsigned long wrpll_calc_output_rate(const struct wrpll_cfg *c,
- 
- 	return n;
- }
-+EXPORT_SYMBOL_GPL(wrpll_calc_output_rate);
- 
- /**
-  * wrpll_calc_max_lock_us() - return the time for the PLL to lock
-@@ -366,3 +369,6 @@ unsigned int wrpll_calc_max_lock_us(const struct wrpll_cfg *c)
- {
- 	return MAX_LOCK_US;
- }
-+EXPORT_SYMBOL_GPL(wrpll_calc_max_lock_us);
-+
+-static int __init sifive_prci_init(void)
+-{
+-	return platform_driver_register(&sifive_prci_driver);
+-}
+-core_initcall(sifive_prci_init);
 +MODULE_LICENSE("GPL");
 -- 
 2.40.1
