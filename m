@@ -2,82 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E41756DDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD67756DDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbjGQT61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 15:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49264 "EHLO
+        id S230072AbjGQT6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 15:58:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231432AbjGQT6T (ORCPT
+        with ESMTP id S229844AbjGQT6s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 15:58:19 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8A61738
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 12:58:10 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99342a599e9so697911266b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 12:58:10 -0700 (PDT)
+        Mon, 17 Jul 2023 15:58:48 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9960F136
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 12:58:44 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-668709767b1so3568071b3a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 12:58:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689623888; x=1692215888;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GCWvgKUXfcW1CPS5sL1xeCdhcIZJ7olcj1eoB35DPKY=;
-        b=FYiL78JQFAZQkZuMCP3Kkz2pXDfnIy2mkoW84p24YFfPCUYfyCa1OBXQXkps4rvxc0
-         VVG8IbaU0LhSDVy7/6+1MaAWpftz2fjvsomf+J0PsaBBMXm6wXC2bphsw6ScSzh++TAq
-         udgfArxo5zxNGgenWAZ9xms56ILBGMh25jhzYeaFYzuIEU62KlRSzh4xi3EfNGunnbCc
-         6wcJ2g6LLLlJLc9gZMZlKrlxhuVOsPJ5rLjCH7UPRObW1FZKFcg1ilBr/2lIpxNIypcM
-         wIsQuuPd8I+MHkU9nVqhjM1sayMZ8VHR93pQ46XXVYN81n33+o7FNZarAgcgxRzSGl+g
-         mFoQ==
+        d=gmail.com; s=20221208; t=1689623924; x=1692215924;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rR/WXoMTQWpIUYil39t/+gnlISlq3LT4l8C56BzZmtA=;
+        b=C9A5FyWyJdLMLcgM2nbvMhNVoYyvZsdYr3itLtwGmaidb2E+4aBz/cmsAH33eoyHHm
+         HCpvp/J4RfFDFCtWouqvg1amXx83YA2jxeygypGCjGqAdDJQoWSg1o0iteaJhXtvF84u
+         8LSOvuq1XeK7ByQO2HqaeNflruX/YGmWqgRAd6Gxng5vyPTZVK/6WcGmOBvWakftPVmg
+         1EmdFzrKJuMdpztu4WZICYFzgPU4rq0+fV1Tp+0lHEr5oTCL7ZWi3Wh3rQHGAE0Dpy4k
+         1SmEf1H363eCXej7FKrpIGgv+y7x4oAgCmP0iiEd2Jce5WIQI2xfFeG9amR6qCc9lUC1
+         R2Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689623888; x=1692215888;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GCWvgKUXfcW1CPS5sL1xeCdhcIZJ7olcj1eoB35DPKY=;
-        b=WMJny/dfc0Z5HKfes6hJzbpDudafAmqqGrZAC3d3mnoo56pSHErRuoOE3iza+yZtdZ
-         UtTKiDx8Z1OxtE+fkMCqkKTPrs6JPU4Bu6TvX10wsxlGYamP3g2p5sM4pFvf8qZTZSq+
-         j+mW+WXKquFr+U3YhQXX9s1MtiM7OnsTqK0zCazDmZupwfhFjA4JjAEOKSZiK4lB1cp2
-         TZDG+NipdVfDlmmZIa5gJXFm3SHzaLLStRNyPQlF8EkHTTPGXZgG83eiBtAEhkrF73Q1
-         7NqCXE4dU05elwQSQxsQGQ7NOb2xVGR/tPj6wTwgbwbqWvS/CUeJlSoyVM+jLiOplzSj
-         lBiw==
-X-Gm-Message-State: ABy/qLYjxd2eZwqISfykdoixedr6nXsYUklfjRaLqamOy8z8gdxohDtj
-        0lcg1RhPvsbEZ9822/mdcazEOQ==
-X-Google-Smtp-Source: APBJJlGPH/4WX3gvMsX76UHYK0bLVpi5LnmMFLDa/91Ewd2MMtPkpY4SnQrrAXgEujst5NHSR/yweg==
-X-Received: by 2002:a17:907:7709:b0:94f:3521:394 with SMTP id kw9-20020a170907770900b0094f35210394mr10161706ejc.51.1689623888534;
-        Mon, 17 Jul 2023 12:58:08 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id h10-20020a170906828a00b0094e7d196aa4sm82784ejx.160.2023.07.17.12.58.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 12:58:08 -0700 (PDT)
-Message-ID: <43ecf0b0-4b55-ab11-3b80-b9243b971c2c@linaro.org>
-Date:   Mon, 17 Jul 2023 21:58:06 +0200
+        d=1e100.net; s=20221208; t=1689623924; x=1692215924;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rR/WXoMTQWpIUYil39t/+gnlISlq3LT4l8C56BzZmtA=;
+        b=Hu7TWsWqwbEEPZP5b0ZnzZJl3BH/Qb3xlPdx8pA3tzrLIWyFuH6a31o31M42jHM0QH
+         k68Gm8f530NjIRDfaOxo/RKEjB5AXT4s94RNg8uGP184AffYMi3Hc3y3z8DbLatclB2z
+         v2XvWUQpCULl9ShyixXZPr2HfKRruOd5uIWBHG1wyvvbEsxVBT3vQzUii9Qzdf+gUb2a
+         QOM+X/8/PdR/93K9vKYNWpiFORwf9ZFoZj+76QgsKwu4axIR9oYUUhKbt+ZGwwYKkn3v
+         MYo5wmFck8FmltP4rLCBBhVkMXpsT5yZhVjFaxO1a3nGjawzn0WdBOl5E3S2YZb4tEjr
+         sjpA==
+X-Gm-Message-State: ABy/qLZkheflaYEqJ5+H/CW0VxWM6vJHLUTaV6J0bQatMLgQkSEl4dP7
+        4fMUI2gsBRXESgIO89uUREDb3CmyGe/Bjw==
+X-Google-Smtp-Source: APBJJlFMy4/IrDNwje1azicy2QD5va5DF5szxQAAc7YOt0kfRukNidF+lJUKk5yNJi+cT6gcfNjVRQ==
+X-Received: by 2002:a05:6a20:3c8c:b0:133:cf5c:4d2e with SMTP id b12-20020a056a203c8c00b00133cf5c4d2emr621393pzj.20.1689623923509;
+        Mon, 17 Jul 2023 12:58:43 -0700 (PDT)
+Received: from localhost ([216.228.127.128])
+        by smtp.gmail.com with ESMTPSA id e21-20020a170902d39500b001ac2be26340sm246556pld.222.2023.07.17.12.58.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 12:58:43 -0700 (PDT)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>, oe-kbuild-all@lists.linux.dev
+Subject: [PATCH] lib/bitmap: waive const_eval test as it breaks the build
+Date:   Mon, 17 Jul 2023 12:58:13 -0700
+Message-Id: <20230717195813.29059-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 4/4] arm64: dts: Add MediaTek MT8188 dts and evaluation
- board and Makefile
-Content-Language: en-US
-To:     Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     =?UTF-8?Q?N=c3=adcolas_F_=2e_R_=2e_A_=2e_Prado?= 
-        <nfraprado@collabora.com>, Chen-Yu Tsai <wenst@chromium.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
-References: <20230717120300.21388-1-jason-ch.chen@mediatek.com>
- <20230717120300.21388-5-jason-ch.chen@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230717120300.21388-5-jason-ch.chen@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -86,99 +75,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/07/2023 14:03, Jason-ch Chen wrote:
-> From: jason-ch chen <Jason-ch.Chen@mediatek.com>
-> 
-> MT8188 is a SoC based on 64bit ARMv8 architecture. It contains 6 CA55
-> and 2 CA78 cores. MT8188 share many HW IP with MT65xx series.
-> 
-> We add basic chip support for MediaTek MT8188 on evaluation board.
-> 
-> Signed-off-by: jason-ch chen <Jason-ch.Chen@mediatek.com>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
->  arch/arm64/boot/dts/mediatek/Makefile       |   1 +
->  arch/arm64/boot/dts/mediatek/mt8188-evb.dts | 401 +++++++++
->  arch/arm64/boot/dts/mediatek/mt8188.dtsi    | 951 ++++++++++++++++++++
->  3 files changed, 1353 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8188-evb.dts
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8188.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-> index c99c3372a4b5..9bd2324259a3 100644
-> --- a/arch/arm64/boot/dts/mediatek/Makefile
-> +++ b/arch/arm64/boot/dts/mediatek/Makefile
-> @@ -44,6 +44,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku0.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku176.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-pumpkin.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-evb.dtb
-> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8188-evb.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-asurada-hayato-r1.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-asurada-spherion-r0.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-evb.dtb
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8188-evb.dts b/arch/arm64/boot/dts/mediatek/mt8188-evb.dts
-> new file mode 100644
-> index 000000000000..d8906172390e
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8188-evb.dts
-> @@ -0,0 +1,401 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright (C) 2023 MediaTek Inc.
-> + */
-> +/dts-v1/;
-> +#include "mt8188.dtsi"
-> +#include "mt6359.dtsi"
-> +
-> +/ {
-> +	model = "MediaTek MT8188 evaluation board";
-> +	compatible = "mediatek,mt8188-evb", "mediatek,mt8188";
-> +
-> +	aliases {
-> +		serial0 = &uart0;
-> +		i2c0 = &i2c0;
-> +		i2c1 = &i2c1;
-> +		i2c2 = &i2c2;
-> +		i2c3 = &i2c3;
-> +		i2c4 = &i2c4;
-> +		i2c5 = &i2c5;
-> +		i2c6 = &i2c6;
-> +		mmc0 = &mmc0;
-> +	};
-> +
-> +	chosen: chosen {
-> +		stdout-path = "serial0:115200n8";
-> +		kaslr-seed = <0 0>;
+When building with clang, and when KASAN and GCOV_PROFILE_ALL are both
+enabled, the test fails to build [1]:
 
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
+>> lib/test_bitmap.c:920:2: error: call to '__compiletime_assert_239' declared with 'error' attribute: BUILD_BUG_ON failed: !__builtin_constant_p(res)
+           BUILD_BUG_ON(!__builtin_constant_p(res));
+           ^
+   include/linux/build_bug.h:50:2: note: expanded from macro 'BUILD_BUG_ON'
+           BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+           ^
+   include/linux/build_bug.h:39:37: note: expanded from macro 'BUILD_BUG_ON_MSG'
+   #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+                                       ^
+   include/linux/compiler_types.h:352:2: note: expanded from macro 'compiletime_assert'
+           _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+           ^
+   include/linux/compiler_types.h:340:2: note: expanded from macro '_compiletime_assert'
+           __compiletime_assert(condition, msg, prefix, suffix)
+           ^
+   include/linux/compiler_types.h:333:4: note: expanded from macro '__compiletime_assert'
+                           prefix ## suffix();                             \
+                           ^
+   <scratch space>:185:1: note: expanded from here
+   __compiletime_assert_239
 
-> +	};
-> +
-> +	memory@40000000 {
-> +		device_type = "memory";
-> +		reg = <0 0x40000000 0 0x80000000>;
-> +	};
-> +
-> +	reserved_memory: reserved-memory {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		scp_mem_reserved: scp_mem_region {
+Originally it was attributed to s390, which now looks seemingly wrong. The
+issue is also not related to bitmap code itself, but it breaks build for
+a given configuration. So, disabling the test unless the compiler will
+get fixed.
 
-No underscores in node names.
+[1] https://github.com/ClangBuiltLinux/linux/issues/1874
 
-> +			compatible = "shared-dma-pool";
-> +			reg = <0 0x50000000 0 0x2900000>;
-> +			no-map;
-> +		};
-> +	};
+Fixes: dc34d5036692 ("lib: test_bitmap: add compile-time optimization/evaluations assertions")
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+---
+ lib/test_bitmap.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
 
-
-Best regards,
-Krzysztof
+diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
+index 187f5b2db4cf..a791fdb7a8c9 100644
+--- a/lib/test_bitmap.c
++++ b/lib/test_bitmap.c
+@@ -1163,6 +1163,9 @@ static void __init test_bitmap_print_buf(void)
+ 
+ static void __init test_bitmap_const_eval(void)
+ {
++#if defined(CONFIG_CC_IS_CLANG) && defined(CONFIG_KASAN) && defined(CONFIG_GCOV_PROFILE_ALL)
++#warning "FIXME: Clang breaks compile time evaluations when KASAN and GCOV are enabled"
++#else
+ 	DECLARE_BITMAP(bitmap, BITS_PER_LONG);
+ 	unsigned long initvar = BIT(2);
+ 	unsigned long bitopvar = 0;
+@@ -1177,20 +1180,9 @@ static void __init test_bitmap_const_eval(void)
+ 	 * in runtime.
+ 	 */
+ 
+-	/*
+-	 * Equals to `unsigned long bitmap[1] = { GENMASK(6, 5), }`.
+-	 * Clang on s390 optimizes bitops at compile-time as intended, but at
+-	 * the same time stops treating @bitmap and @bitopvar as compile-time
+-	 * constants after regular test_bit() is executed, thus triggering the
+-	 * build bugs below. So, call const_test_bit() there directly until
+-	 * the compiler is fixed.
+-	 */
++	/* Equals to `unsigned long bitmap[1] = { GENMASK(6, 5), }` */
+ 	bitmap_clear(bitmap, 0, BITS_PER_LONG);
+-#if defined(__s390__) && defined(__clang__)
+-	if (!const_test_bit(7, bitmap))
+-#else
+ 	if (!test_bit(7, bitmap))
+-#endif
+ 		bitmap_set(bitmap, 5, 2);
+ 
+ 	/* Equals to `unsigned long bitopvar = BIT(20)` */
+@@ -1220,6 +1212,7 @@ static void __init test_bitmap_const_eval(void)
+ 	/* ~BIT(25) */
+ 	BUILD_BUG_ON(!__builtin_constant_p(~var));
+ 	BUILD_BUG_ON(~var != ~BIT(25));
++#endif
+ }
+ 
+ static void __init selftest(void)
+-- 
+2.39.2
 
