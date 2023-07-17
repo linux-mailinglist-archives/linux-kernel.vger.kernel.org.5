@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 238B77566D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4606F7566DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbjGQOxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37498 "EHLO
+        id S230053AbjGQOya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:54:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbjGQOxG (ORCPT
+        with ESMTP id S229948AbjGQOy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:53:06 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47EE410DC;
-        Mon, 17 Jul 2023 07:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689605582; x=1721141582;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=PaYQUrnIAw10UGRh51Er0CiQIbO+1qEOK90eqGzlL3M=;
-  b=ktI/SBeSGFeViZ21yY4vkJ1kAny1rLi50XAeE5FPZ9vhc3IQXNmo4xWL
-   VWvHGSuNbns2VWNoParX1QHMV+PjTcOFy7+Nano3GOCKHJmx38NX78Vzr
-   5yrjxvCqX1Me5dNXLOGyvnNyXnNx2iLTa3Pt9dduFGS+evA/HLAZj57UF
-   7ngtF4jo1jX1k0l3NYZBENUmdXHsmNT0pjOKmsDfd0Rg5wLY4Yc4kfRxm
-   Fp59pyYH5UWmp/hbglycrIeVeGJLgUwFN+xF+VeEy3lgHTlhbLIoS/UTS
-   6U/H7Y63aWjMFDVgYk4GC5lHdiQUdM4Passq61Ftb2joVkMWQr77cwRcz
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="432120116"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="432120116"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 07:53:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="788686219"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="788686219"
-Received: from ahajda-mobl.ger.corp.intel.com (HELO [10.213.9.23]) ([10.213.9.23])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 07:52:55 -0700
-Message-ID: <0cae35ea-7635-383d-cae5-2051abbc6d64@intel.com>
-Date:   Mon, 17 Jul 2023 16:52:51 +0200
+        Mon, 17 Jul 2023 10:54:29 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B66E60
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:54:28 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-7835ae70e46so206336239f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:54:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689605668; x=1692197668;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=csVGB2yTlENFqwIyjRsSQ8nMzGX8m4o3gR5+YTnVXNY=;
+        b=dHsucCp3pyz4vWwfgVkq99hhWIShvj2tLIGUejSGFC81+YH0T09D3f6UlxJJP+vUIl
+         0IQnJbV+Xq0stQWpyg0XVRlMRvA5Cr9jND/Qer0oGNNK2YB1VagsmvFU9h3GMh22uLf1
+         lUcEJ1C4dmmjj4pZ2DwFClIEKKp8a8JUasrO/vzmSrho6LoG767IEOxD2PFBR/H7WwyC
+         VZAO6FyN/dBN5VrszFs68ZWs7CJSjzVnvT7XVt9vlfzbD9Kr+wf6pwAo4AsDQfEBVkq6
+         HUsovbFQkIBtZPpwF8TktJTGsvHjdWk8ptDU2Sd77iqtzvpqta9yBGR+vaOnJ+0x/xps
+         bacw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689605668; x=1692197668;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=csVGB2yTlENFqwIyjRsSQ8nMzGX8m4o3gR5+YTnVXNY=;
+        b=YvXKAZh9LES2EQnnFcqc/dPwgFfUXhPMQJtrfq46OjGwsRmbHTHyYhHFbqRGkABafD
+         Tc6yS1u0fhNY3lqbRnc0NLjCAxC8mVx6+171aoOdOkt18mw0jI1HfOuiYVprbouM0UIV
+         M3K82SjYCNknVqJ6AY2UXjAuyDEJ28qlByZx08eWI4LJqhju9KEQzYaUi0Fjb6TrbPne
+         eYjGuVnCkwvPXYlKOWBhn+rYnzi31nhXtMQ3V5GxfJVe4QXgJfVAEmgRzRUucmK5ONNT
+         Q+QetYct6osRtoxY93p/xsFk6zF8UNaCWG5jbyOuAP/O2M28hwkkQMHJW6sQMEZwRYc3
+         Sb6g==
+X-Gm-Message-State: ABy/qLYQoVYTLDVlpfuLaGiTuuNb3xaDTplLESTE5vR7hpUxqe1JFENw
+        5fzS59968IvAXN+SmJq9+OpPHoOh7wWI2NCAvMNgCg==
+X-Google-Smtp-Source: APBJJlEcrQnrJyQT3B05vHJDqGJN37AsfFo4smPvmib1VevffovCA3RTTZt489i7kRAM8gk32f0QId3ubr/Dzw0HJ54=
+X-Received: by 2002:a6b:a0d:0:b0:786:25a3:ef30 with SMTP id
+ z13-20020a6b0a0d000000b0078625a3ef30mr41841ioi.7.1689605667889; Mon, 17 Jul
+ 2023 07:54:27 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH] drm/i915/tv: avoid possible division by zero
-To:     Su Hui <suhui@nfschina.com>, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        tvrtko.ursulin@linux.intel.com, airlied@gmail.com, daniel@ffwll.ch,
-        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com
-Cc:     ville.syrjala@linux.intel.com, mripard@kernel.org,
-        ankit.k.nautiyal@intel.com, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, kernel-janitors@vger.kernel.org
-References: <20230717062209.124106-1-suhui@nfschina.com>
-Content-Language: en-US
-From:   Andrzej Hajda <andrzej.hajda@intel.com>
-Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298
- Gdansk - KRS 101882 - NIP 957-07-52-316
-In-Reply-To: <20230717062209.124106-1-suhui@nfschina.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20230717113709.328671-1-glider@google.com> <20230717113709.328671-2-glider@google.com>
+ <ZLU7mkhUiDQodaw1@smile.fi.intel.com> <CAG_fn=XNYQC8gKKQr3Mz7CVw8H=Ubmr+QaUu-jraoT4sN550rA@mail.gmail.com>
+In-Reply-To: <CAG_fn=XNYQC8gKKQr3Mz7CVw8H=Ubmr+QaUu-jraoT4sN550rA@mail.gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 17 Jul 2023 16:53:51 +0200
+Message-ID: <CAG_fn=Ufo8sWbdtPyaXhvUddRG3k9E+btFVVLTn5Tk91cwAwLw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] lib/bitmap: add bitmap_{set,get}_value()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
+        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,46 +73,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 17.07.2023 08:22, Su Hui wrote:
-> Clang warning: drivers/gpu/drm/i915/display/intel_tv.c:
-> line 991, column 22 Division by zero.
-> Assuming tv_mode->oversample=1 and (!tv_mode->progressive)=1,
-> then division by zero will happen.
+> >
+> > I remember that this construction may bring horrible code on some architectures
+> > with some version(s) of the compiler (*).
 >
-> Fixes: 1bba5543e4fe ("drm/i915: Fix TV encoder clock computation")
-> Signed-off-by: Su Hui <suhui@nfschina.com>
-> ---
->   drivers/gpu/drm/i915/display/intel_tv.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+> Wow, even the trunk Clang and GCC seem to generate better code for
+> your version of this line: https://godbolt.org/z/36Kqxhe6j
+
+Oh wait.
+First, my Godbolt reproducer is incorrect, it is using sizeof(unsigned
+long) instead of 8 * sizeof(unsigned long) for BITS_PER_LONG.
+
 >
-> diff --git a/drivers/gpu/drm/i915/display/intel_tv.c b/drivers/gpu/drm/i915/display/intel_tv.c
-> index 36b479b46b60..82b54af51f23 100644
-> --- a/drivers/gpu/drm/i915/display/intel_tv.c
-> +++ b/drivers/gpu/drm/i915/display/intel_tv.c
-> @@ -988,7 +988,8 @@ intel_tv_mode_to_mode(struct drm_display_mode *mode,
->   		      const struct tv_mode *tv_mode,
->   		      int clock)
->   {
-> -	mode->clock = clock / (tv_mode->oversample >> !tv_mode->progressive);
-> +	mode->clock = clock / (tv_mode->oversample != 1 ?
-> +			tv_mode->oversample >> !tv_mode->progressive : 1);
+> > To fix that I found an easy refactoring:
+> >
+> >                 map[index] &= ~(GENMASK(nbits, 0) << offset));
+> >
 
-Seems too smart to me, why not just:
-mode->clock = clock / tv_mode->oversample;
-if (!tv_mode->progressive)
-     mode->clock <<= 1;
-Or trying being smart:
-mode->clock = clock / tv_mode->oversample << !tv_mode->progressive;
+Second, the line above should probably be:
+  map[index] &= ~(GENMASK(nbits - 1, 0) << offset));
 
-Btw in both cases there is assumption tv_mode->oversample != 0, I guess 
-it is true.
-
-Regards
-Andrzej
-
->   
->   	/*
->   	 * tv_mode horizontal timings:
-
+, right?
