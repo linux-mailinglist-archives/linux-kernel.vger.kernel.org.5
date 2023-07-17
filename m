@@ -2,210 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1E475613E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF20756141
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229680AbjGQLIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 07:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33794 "EHLO
+        id S229514AbjGQLJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 07:09:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjGQLI2 (ORCPT
+        with ESMTP id S229471AbjGQLJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 07:08:28 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9688EB2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:08:21 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 497932189E;
-        Mon, 17 Jul 2023 11:08:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689592100; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jqEfEX4gszBj0JuG9kvDlZ1DtXBV7YZ85SF9eGu1hPw=;
-        b=G744y9AUYcDel5VSACVGjdqeUrriAG/QR0t8QRnJA2rQZKz5PEzcHPUaM2xmHecDH2o9sS
-        rG+Ff2RF9gSrXAH+ODcYPRRdG2ESGYPyFJd7g2XnkbVL26xlyclDlpfXWCBIH+XmvB0gjL
-        PnWaJSus1c5ck9uGXfWKP5yxW0Z3UAY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689592100;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jqEfEX4gszBj0JuG9kvDlZ1DtXBV7YZ85SF9eGu1hPw=;
-        b=EXi+MgGw2bY9Fc2vjvzRmRy523+qdmI97JHlCxyD4Uk8MU7fG+M7ZMz5Qml3b5KQfOavDu
-        LAB8o5myP03SaWCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2EBBD13276;
-        Mon, 17 Jul 2023 11:08:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 4OxCCiQhtWTffwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Mon, 17 Jul 2023 11:08:20 +0000
-Message-ID: <c4cad3e8-56f0-bb08-c9e5-3d7cb94bd19c@suse.de>
-Date:   Mon, 17 Jul 2023 13:08:19 +0200
+        Mon, 17 Jul 2023 07:09:00 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1807FB9
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:08:59 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b70404a5a0so69040821fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:08:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689592137; x=1692184137;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eQuNLrwbJ2AdsFbKd9SBZgt7zHVZW51vp7qPZgcDweg=;
+        b=MtFO/Mvc0xspnkoMEh5fsDNS+VVWirzNRAvB3fitk0Dm1zi/YTGv2jOL7Uk8ZI/7B1
+         Y6xasr3dN+h4JKJOdCQLyigRLxdVVZmSpRwZlVCIzZ4dh5hXKGqTmVkPzvKR0dJV2o6a
+         EwepnhROHZ3tM6JAqt/PxVT3mwA4Ue+IjCJWFwI6spHEqNVvKTBiMdIvwTzydidas5Kc
+         PNKkM8pVa+21nvblq8PkjAdVhSDpEWe6PwVA2Hsyd1jXaENlfmfekeWdHfLssfI0dNmd
+         ROb5AZnYMr7mpnhw+TycOgiWldFHoWZpw8KGneC8ulwk8pm/gC2WYUJbbPnufoiIa4RC
+         85Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689592137; x=1692184137;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eQuNLrwbJ2AdsFbKd9SBZgt7zHVZW51vp7qPZgcDweg=;
+        b=AXipBPn3hNbECag0qJHpvMDZaMFFxPC0V2abOfDFxEOipDKD5EoqsfOhPi5y9SO9RR
+         cggKBpVYgN08Moz8vpCCqxvdLZMdxEWP68y7+TtJOwySvtrXoJAtooVEfG33ZkYohomI
+         xKYo5TGmtnjNUwipOTvtaKArDCiPXhH9aTG+lHax8ywZ+tilb3NNKxrk1GqkpmamSrs7
+         Y2zkw+4BMrF9gfGGzaS1JGfOHm3taMDt2ASZ92WJkmq4c4LeLvetUNd/dyVgFh6Rd6W2
+         RD3wBHcnc61g4y4JUoNIaolKNnzDVKpC1jlHRLknkAG6iweqG4VO019GW7OccgLA5SEP
+         Jqtw==
+X-Gm-Message-State: ABy/qLZiHAPpl4HYsuEIygna52PPa3EpHGOm1cVhJrlXym2qvL6TiogU
+        vioGVm4Zb3AyRH9c+amZKxsKlqm1wyCWP/3GQPs=
+X-Google-Smtp-Source: APBJJlErSTd9piiodlW+ToCtAf2Q4Jwxz8C8FI1Iin32AwNZNKHAg7wzx7U496d2ZHQO+2dysJbLUw==
+X-Received: by 2002:a05:651c:20a:b0:2b6:d8d4:161 with SMTP id y10-20020a05651c020a00b002b6d8d40161mr10907844ljn.43.1689592137230;
+        Mon, 17 Jul 2023 04:08:57 -0700 (PDT)
+Received: from linaro.org ([82.78.74.213])
+        by smtp.gmail.com with ESMTPSA id z3-20020a1709064e0300b00992afee724bsm8989196eju.76.2023.07.17.04.08.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 04:08:56 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 14:08:54 +0300
+From:   Abel Vesa <abel.vesa@linaro.org>
+To:     Taniya Das <quic_tdas@quicinc.com>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        avel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@qti.qualcomm.com>, linux-pm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 2/2] clk: qcom: gdsc: Add support for set_hwmode_dev
+Message-ID: <ZLUhRlm20xlZ3OJj@linaro.org>
+References: <20230628105652.1670316-1-abel.vesa@linaro.org>
+ <20230628105652.1670316-3-abel.vesa@linaro.org>
+ <42b1167d-da60-f6c3-67b6-3f6857327396@linaro.org>
+ <e94f187e-e444-d18d-eba9-b9a699abdb95@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] drm/ssd130x: Fix an oops when attempting to update a
- disabled plane
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230713163213.1028952-1-javierm@redhat.com>
- <bbbb18e0-5de1-5155-c6b2-52a2b1d75898@suse.de>
- <CAMuHMdVuLBTBymfEXDgHsDVavH6Ggq53fPep0T=dEWbztBWkjw@mail.gmail.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <CAMuHMdVuLBTBymfEXDgHsDVavH6Ggq53fPep0T=dEWbztBWkjw@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------rkVxEugDGtXdiKxIGotc6uFk"
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e94f187e-e444-d18d-eba9-b9a699abdb95@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------rkVxEugDGtXdiKxIGotc6uFk
-Content-Type: multipart/mixed; boundary="------------K0CSNl1DVZbDbbfDB3w1xeSH";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Javier Martinez Canillas <javierm@redhat.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Message-ID: <c4cad3e8-56f0-bb08-c9e5-3d7cb94bd19c@suse.de>
-Subject: Re: [PATCH] drm/ssd130x: Fix an oops when attempting to update a
- disabled plane
-References: <20230713163213.1028952-1-javierm@redhat.com>
- <bbbb18e0-5de1-5155-c6b2-52a2b1d75898@suse.de>
- <CAMuHMdVuLBTBymfEXDgHsDVavH6Ggq53fPep0T=dEWbztBWkjw@mail.gmail.com>
-In-Reply-To: <CAMuHMdVuLBTBymfEXDgHsDVavH6Ggq53fPep0T=dEWbztBWkjw@mail.gmail.com>
+On 23-07-10 09:40:14, Taniya Das wrote:
+> Hi Abel,
+> 
+> Thanks for the patch.
+> 
+> On 6/28/2023 10:48 PM, Konrad Dybcio wrote:
+> > On 28.06.2023 12:56, Abel Vesa wrote:
+> > > Implement the GDSC specific genpd set_hwmode_dev callback in order to
+> > > switch the HW control on or off. For any GDSC that supports HW control
+> > > set this callback in order to allow its consumers to control it.
+> > > 
+> > > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > > ---
+> > This still does nothing to prevent the HW_CTRL state being changed in
+> > init, enable and disable functions.
+> > 
+> > Konrad
+> > >   drivers/clk/qcom/gdsc.c | 22 ++++++++++++++++++++++
+> > >   1 file changed, 22 insertions(+)
+> > > 
+> > > diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+> > > index 5358e28122ab..9a04bf2e4379 100644
+> > > --- a/drivers/clk/qcom/gdsc.c
+> > > +++ b/drivers/clk/qcom/gdsc.c
+> > > @@ -314,6 +314,26 @@ static int gdsc_enable(struct generic_pm_domain *domain)
+> > >   	return 0;
+> > >   }
+> > > +static int gdsc_set_hwmode_dev(struct generic_pm_domain *domain,
+> > > +			       struct device *dev, bool enable)
+> > > +{
+> > > +	int ret = gdsc_hwctrl(domain_to_gdsc(domain), enable);
+> > > +
+> > > +	if (ret)
+> > > +		goto out;
+> > > +
+> > > +	/*
+> > > +	 * Wait for the GDSC to go through a power down and
+> > > +	 * up cycle.  In case there is a status polling going on
+> > > +	 * before the power cycle is completed it might read an
+> > > +	 * wrong status value.
+> > > +	 */
+> > > +	udelay(1);
+> > > +
+> > > +out:
+> > > +	return ret;
+> > > +}
+> > > +
+> > >   static int gdsc_disable(struct generic_pm_domain *domain)
+> > >   {
+> > >   	struct gdsc *sc = domain_to_gdsc(domain);
+> > > @@ -451,6 +471,8 @@ static int gdsc_init(struct gdsc *sc)
+> > >   		sc->pd.power_off = gdsc_disable;
+> > >   	if (!sc->pd.power_on)
+> > >   		sc->pd.power_on = gdsc_enable;
+> > > +	if (sc->flags & HW_CTRL)
+> > > +		sc->pd.set_hwmode_dev = gdsc_set_hwmode_dev;
+> We do not want to move to SW mode without consumers wanting to move to this
+> mode.
+> 
+> We want a new flag for the consumers wanting to move to this mode. The mode
+> in which the GDSC would be enabled would be in SW mode only.
+> +	if (sc->flags & HW_CTRL_TRIGGER) {
+> +		sc->pd.set_hwmode_dev = gdsc_set_mode;
+> +	}
+> +
 
---------------K0CSNl1DVZbDbbfDB3w1xeSH
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+OK, maybe I'm missing something here.
 
-SGkNCg0KQW0gMTcuMDcuMjMgdW0gMTE6MDQgc2NocmllYiBHZWVydCBVeXR0ZXJob2V2ZW46
-DQo+IEhpIFRob21hcywNCj4gDQo+IE9uIE1vbiwgSnVsIDE3LCAyMDIzIGF0IDEwOjQ44oCv
-QU0gVGhvbWFzIFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+IHdyb3RlOg0KPj4g
-QW0gMTMuMDcuMjMgdW0gMTg6MzIgc2NocmllYiBKYXZpZXIgTWFydGluZXogQ2FuaWxsYXM6
-DQo+Pj4gR2VlcnQgcmVwb3J0cyB0aGF0IHRoZSBmb2xsb3dpbmcgTlVMTCBwb2ludGVyIGRl
-cmVmZXJlbmNlIGhhcHBlbnMgZm9yIGhpbQ0KPj4+IGFmdGVyIGNvbW1pdCA0OWQ3ZDU4MWNl
-YWYgKCJkcm0vc3NkMTMweDogRG9uJ3QgYWxsb2NhdGUgYnVmZmVycyBvbiBlYWNoDQo+Pj4g
-cGxhbmUgdXBkYXRlIik6DQo+Pj4NCj4+PiAgICAgICBbZHJtXSBJbml0aWFsaXplZCBzc2Qx
-MzB4IDEuMC4wIDIwMjIwMTMxIGZvciAwLTAwM2Mgb24gbWlub3IgMA0KPj4+ICAgICAgIHNz
-ZDEzMHgtaTJjIDAtMDAzYzogW2RybV0gc3VyZmFjZSB3aWR0aCgxMjgpLCBoZWlnaHQoMzIp
-LCBicHAoMSkNCj4+PiAgICAgICBhbmQgZm9ybWF0KFIxICAgbGl0dGxlLWVuZGlhbiAoMHgy
-MDIwMzE1MikpDQo+Pj4gICAgICAgVW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgTlVMTCBwb2lu
-dGVyIGRlcmVmZXJlbmNlIGF0IHZpcnR1YWwgYWRkcmVzcyAwMDAwMDAwMA0KPj4+ICAgICAg
-IE9vcHMgWyMxXQ0KPj4+ICAgICAgIENQVTogMCBQSUQ6IDEgQ29tbTogc3dhcHBlciBOb3Qg
-dGFpbnRlZA0KPj4+ICAgICAgIDYuNS4wLXJjMS1vcmFuZ2VjcmFiLTAyMjE5LWcwYTUyOWEx
-ZTRiZjQgIzU2NQ0KPj4+ICAgICAgIGVwYyA6IHNzZDEzMHhfdXBkYXRlX3JlY3QuaXNyYS4w
-KzB4MTNjLzB4MzQwDQo+Pj4gICAgICAgIHJhIDogc3NkMTMweF91cGRhdGVfcmVjdC5pc3Jh
-LjArMHgyYmMvMHgzNDANCj4+PiAgICAgICAuLi4NCj4+PiAgICAgICBzdGF0dXM6IDAwMDAw
-MTIwIGJhZGFkZHI6IDAwMDAwMDAwIGNhdXNlOiAwMDAwMDAwZg0KPj4+ICAgICAgIFs8YzAz
-MDNkOTA+XSBzc2QxMzB4X3VwZGF0ZV9yZWN0LmlzcmEuMCsweDEzYy8weDM0MA0KPj4+ICAg
-ICAgIFs8YzAzMDQyMDA+XSBzc2QxMzB4X3ByaW1hcnlfcGxhbmVfaGVscGVyX2F0b21pY191
-cGRhdGUrMHgyNmMvMHgyODQNCj4+PiAgICAgICBbPGMwMmY4ZDU0Pl0gZHJtX2F0b21pY19o
-ZWxwZXJfY29tbWl0X3BsYW5lcysweGZjLzB4MjdjDQo+Pj4gICAgICAgWzxjMDJmOTMxND5d
-IGRybV9hdG9taWNfaGVscGVyX2NvbW1pdF90YWlsKzB4NWMvMHhiNA0KPj4+ICAgICAgIFs8
-YzAyZjk0ZmM+XSBjb21taXRfdGFpbCsweDE5MC8weDFiOA0KPj4+ICAgICAgIFs8YzAyZjk5
-ZmM+XSBkcm1fYXRvbWljX2hlbHBlcl9jb21taXQrMHgxOTQvMHgxYzANCj4+PiAgICAgICBb
-PGMwMmM1ZDAwPl0gZHJtX2F0b21pY19jb21taXQrMHhhNC8weGU0DQo+Pj4gICAgICAgWzxj
-MDJjY2U0MD5dIGRybV9jbGllbnRfbW9kZXNldF9jb21taXRfYXRvbWljKzB4MjQ0LzB4Mjc4
-DQo+Pj4gICAgICAgWzxjMDJjY2VmMD5dIGRybV9jbGllbnRfbW9kZXNldF9jb21taXRfbG9j
-a2VkKzB4N2MvMHgxYmMNCj4+PiAgICAgICBbPGMwMmNkMDY0Pl0gZHJtX2NsaWVudF9tb2Rl
-c2V0X2NvbW1pdCsweDM0LzB4NjQNCj4+PiAgICAgICBbPGMwMzAxYTc4Pl0gX19kcm1fZmJf
-aGVscGVyX3Jlc3RvcmVfZmJkZXZfbW9kZV91bmxvY2tlZCsweGM0LzB4ZTgNCj4+PiAgICAg
-ICBbPGMwMzAzNDI0Pl0gZHJtX2ZiX2hlbHBlcl9zZXRfcGFyKzB4MzgvMHg1OA0KPj4+ICAg
-ICAgIFs8YzAyN2M0MTA+XSBmYmNvbl9pbml0KzB4Mjk0LzB4NTM0DQo+Pj4gICAgICAgLi4u
-DQo+Pj4NCj4+PiBUaGUgcHJvYmxlbSBpcyB0aGF0IGZiY29uIGNhbGxzIGZiY29uX2luaXQo
-KSB3aGljaCB0cmlnZ2VycyBhIERSTSBtb2Rlc2V0DQo+Pj4gYW5kIHRoaXMgbGVhZHMgdG8g
-ZHJtX2F0b21pY19oZWxwZXJfY29tbWl0X3BsYW5lcygpIGF0dGVtcHRpbmcgdG8gY29tbWl0
-DQo+Pj4gdGhlIGF0b21pYyBzdGF0ZSBmb3IgYWxsIHBsYW5lcywgZXZlbiB0aGUgb25lcyB3
-aG9zZSBDUlRDIGlzIG5vdCBlbmFibGVkLg0KPj4+DQo+Pj4gU2luY2UgdGhlIHByaW1hcnkg
-cGxhbmUgYnVmZmVyIGlzIGFsbG9jYXRlZCBpbiB0aGUgZW5jb2RlciAuYXRvbWljX2VuYWJs
-ZQ0KPj4+IGNhbGxiYWNrLCB0aGlzIGhhcHBlbnMgYWZ0ZXIgdGhhdCBpbml0aWFsIG1vZGVz
-ZXQgY29tbWl0IGFuZCBsZWFkcyB0byB0aGUNCj4+PiBtZW50aW9uZWQgTlVMTCBwb2ludGVy
-IGRlcmVmZXJlbmNlLg0KPj4+DQo+Pj4gRml4IHRoaXMgYnkgbm90IHVzaW5nIHRoZSBkZWZh
-dWx0IGRybV9hdG9taWNfaGVscGVyX2NvbW1pdF90YWlsKCkgaGVscGVyLA0KPj4+IGJ1dCBp
-bnN0ZWFkIHRoZSBkcm1fYXRvbWljX2hlbHBlcl9jb21taXRfdGFpbF9ycG0oKSBmdW5jdGlv
-biB0aGF0IGRvZXNuJ3QNCj4+PiBhdHRlbXB0IHRvIGNvbW1pdCB0aGUgYXRvbWljIHN0YXRl
-IGZvciBwbGFuZXMgcmVsYXRlZCB0byBpbmFjdGl2ZSBDUlRDcy4NCj4+Pg0KPj4+IFJlcG9y
-dGVkLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0QGxpbnV4LW02OGsub3JnPg0KPj4+
-IFNpZ25lZC1vZmYtYnk6IEphdmllciBNYXJ0aW5leiBDYW5pbGxhcyA8amF2aWVybUByZWRo
-YXQuY29tPg0KPiANCj4+PiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vc29sb21vbi9zc2QxMzB4
-LmMNCj4+PiArKysgYi9kcml2ZXJzL2dwdS9kcm0vc29sb21vbi9zc2QxMzB4LmMNCj4+PiBA
-QCAtNzk1LDYgKzc5NSwxMCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGRybV9tb2RlX2NvbmZp
-Z19mdW5jcyBzc2QxMzB4X21vZGVfY29uZmlnX2Z1bmNzID0gew0KPj4+ICAgICAgICAuYXRv
-bWljX2NvbW1pdCA9IGRybV9hdG9taWNfaGVscGVyX2NvbW1pdCwNCj4+PiAgICB9Ow0KPj4+
-DQo+Pj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgZHJtX21vZGVfY29uZmlnX2hlbHBlcl9mdW5j
-cyBzc2QxMzB4X21vZGVfY29uZmlnX2hlbHBlcnMgPSB7DQo+Pj4gKyAgICAgLmF0b21pY19j
-b21taXRfdGFpbCA9IGRybV9hdG9taWNfaGVscGVyX2NvbW1pdF90YWlsX3JwbSwNCj4+PiAr
-fTsNCj4+PiArDQo+Pg0KPj4gQWZ0ZXIgc29tZSBkaXNjdXNzaW9uIG9uIElSQywgSSdkIHN1
-Z2dlc3QgdG8gYWxsb2NhdGUgdGhlIGJ1ZmZlcg0KPj4gc29tZXdoZXJlIHdpdGhpbiBwcm9i
-ZS4gU28gaXQgd2lsbCBhbHdheXMgYmUgdGhlcmUgd2hlbiB0aGUgcGxhbmUgY29kZSBydW5z
-Lg0KPj4NCj4+IEEgZnVsbCBmaXggd291bGQgYmUgdG8gYWxsb2NhdGUgdGhlIGJ1ZmZlciBt
-ZW1vcnkgYXMgcGFydCBvZiB0aGUgcGxhbmUNCj4+IHN0YXRlIGFuZC9vciB0aGUgcGxhbmUn
-cyBhdG9taWNfY2hlY2suIFRoYXQncyBhIGJpdCBtb3JlIGNvbXBsaWNhdGVkIGlmDQo+PiB5
-b3Ugd2FudCB0byBzaGFyZWQgdGhlIGJ1ZmZlciBtZW1vcnkgYWNyb3NzIHBsYW5lIHVwZGF0
-ZXMuDQo+IA0KPiBOb3RlIHRoYXQgYWN0dWFsbHkgdHdvIGJ1ZmZlcnMgYXJlIGludm9sdmVk
-OiBkYXRhX2FycmF5IChtb25vY2hyb21lLA0KPiBuZWVkZWQgZm9yIGVhY2ggdXBkYXRlKSwg
-YW5kIGJ1ZmZlciAoUjgsIG9ubHkgbmVlZGVkIHdoZW4gY29udmVydGluZw0KPiBmcm9tIFhS
-MjQgdG8gUjEpLg0KPiANCj4gRm9yIHRoZSBmb3JtZXIsIEkgYWdyZWUsIGFzIGl0J3MgYWx3
-YXlzIG5lZWRlZC4NCj4gRm9yIHRoZSBsYXR0ZXIsIEknbSBhZnJhaWQgaXQgd291bGQgc2V0
-IGEgYmFkIGV4YW1wbGU6IHdoaWxlIGFsbG9jYXRpbmcNCj4gYSBwb3NzaWJseS11bnVzZWQg
-YnVmZmVyIGRvZXNuJ3QgaHVydCBmb3Igc21hbGwgZGlzcGxheXMsIGl0IHdvdWxkDQo+IG1l
-YW4gd2FzdGluZyAxIE1pQiBpbiBlLmcuIHRoZSByZXBhcGVyIGRyaXZlciAob25jZSBpdCBo
-YXMgZ2FpbmVkDQo+IHN1cHBvcnQgZm9yIFIxIDteKS4NCg0KTGV0IG1lIGV4cGxhaW46IGEg
-cmVhbCBEUk0taWRlb21hdGljIHNvbHV0aW9uIHdvdWxkIGFsbG9jYXRlIHRoZSANCnJlcXVp
-cmVkIGJ1ZmZlcnMgYXQgdGhlIGNvcnJlY3Qgc2l6ZSBpbiB0aGUgcGxhbmUncyBhdG9taWMg
-Y2hlY2suIFRoZSANCnBvaW50ZXIgd291bGQgYmUgc3RvcmVkIGluIHRoZSBwbGFuZSBzdGF0
-ZSBhbmQgbGF0ZXIgYmUgZnJlZSdkIGFzIHBhcnQgDQpvZiByZWxlYXNpbmcgdGhhdCBwbGFu
-ZV9zdGF0ZS4gQnV0IGFzIHRoaXMgaXMgdGVtcG9yYXJ5IG1lbW9yeSBmb3IgdGhlIA0KcGxh
-bmUgdXBkYXRlLCBzbyBpdCBjYW4gYmUgc2hhcmVkIGFtb25nIHBsYW5lIHN0YXRlcy4gS2Vl
-cGluZyB0cmFjayBvZiANCnRoZSByZWZlcmVuY2VzIHJlcXVpcmVzIGEgYml0IG9mIHdvcmsg
-dGhvdWdoLg0KDQpSZXBhcGVyIGFwcGVhcnMgdG8gYWxsb2NhdGUgYnVmZmVyIG1lbW9yeSBv
-biBlYWNoIHVwZGF0ZSwgc28gYW55dGhpbmcgaXMgDQphbiBpbXByb3ZlbWVudCB0aGVyZS4N
-Cg0KQmVzdCByZWdhcmRzDQpUaG9tc2ENCg0KPiANCj4gR3J7b2V0amUsZWV0aW5nfXMsDQo+
-IA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgR2VlcnQNCj4gDQoNCi0tIA0KVGhvbWFz
-IFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29mdHdhcmUg
-U29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2LCA5MDQ2MSBOdWVy
-bmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVycywgQW5kcmV3IE1j
-RG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVlcm5iZXJnKQ0K
+Do you suggest we have GDSCs that, even though they support HW ctrl,
+should not be controllable by the consumer?
 
---------------K0CSNl1DVZbDbbfDB3w1xeSH--
+Why isn't dev_pm_genpd_set_hwmode good enough? If a consumer doesn't
+want to control it then the consumer can just skip calling the mentioned
+function.
 
---------------rkVxEugDGtXdiKxIGotc6uFk
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+Or maybe you want this all hidden into the genpd provider?
 
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmS1ISMFAwAAAAAACgkQlh/E3EQov+C9
-bg//QZnipjEnE3ylInnr6YusT5rx0bJDB6Hgo08qCH5OB1vtMu5ZJXOhK19wVg7kgUVWR/qy8kZg
-0I4g2EhlEmhCg+DspMA7taj+oz0D8Gz+YabIHYTYRw60/qwbytsD5h2MBavLehiv1B0dGP5iNJEx
-gS76Nhldc38Tswab3TpZ0xIxAVQv10/jEl4xDMsGr8uczOuFzcsALnm3lkzOBh3GIX1nc07xzz8F
-m6iVotZherIpiIvUGeXIlkWylQLlk9cBNZchZqEiv9bZOHVegRq50gLeemo1jAA2yEQZX6fHDSpm
-se6nKwc1UHZtEEW/E8P+aRoM2NT0Xc28iBzEX+ov5k4TI0nswyzBcYWQn+Ay4tjGb5kHNdm85Gxj
-FNZEtJ1IBO+865dxkooR0L0ZdtCbA4dpLlD8zRAJutPwGOwvEqBpjIKT00PuuKPX8G0sukIXiD3J
-JPyktuZzcxEfZnMPy4IlHCRNeR//tY5WuRdbp/9u4YEdasiN56vSdqq7y/1tk5awppyuvFB8+8fQ
-l++MVXLAmITGBdj96Sf6IP80mh6hfCYTYPiNYi2R3UibkfrKlJfq0Ls7nPJK6CqQckOZMO5cJbbi
-IshF4Xq9yhQwyzLW8iPaYrZUrcO60mdDEjwPUBHNRHIGCx1FVv1Xk1yL8cAUIjVCAQdl0P6A+0kp
-Klw=
-=T8Y5
------END PGP SIGNATURE-----
-
---------------rkVxEugDGtXdiKxIGotc6uFk--
+> 
+> > >   	ret = pm_genpd_init(&sc->pd, NULL, !on);
+> > >   	if (ret)
+> 
+> -- 
+> Thanks & Regards,
+> Taniya Das.
