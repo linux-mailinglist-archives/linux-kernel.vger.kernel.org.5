@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFF175702C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 01:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FAA757016
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 00:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbjGQXCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 19:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53548 "EHLO
+        id S230118AbjGQW6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 18:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230526AbjGQXCN (ORCPT
+        with ESMTP id S229449AbjGQW6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 19:02:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E3019BB
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:01:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D56926130A
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:00:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C46BC433C8;
-        Mon, 17 Jul 2023 23:00:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689634850;
-        bh=RvoTzpwKhA1M1r5/nGYeh/awWwbP1a2wP04gRbhYb7s=;
-        h=From:To:Cc:Subject:Date:From;
-        b=f/rIQIYS+Wloa7zQlCa4eTNhkFeBRKjpzsJmQo2tdNl3CvuGIP9cFOvFsZSzoLgNe
-         JAql1+hhhaa6EL8JrVyWHvRAgcXVT2oFefE0hNipW9MRWWYVCPZitZmJqWhLfYqAra
-         RablUZPSlfvNI6YxL0wrD9J4qnSCYHtVt5PZz5RY2R8Ve71P4PuX4cOwvitxeKNn08
-         KgYurGveoWqtA2zRF1I0y+4wVhJKeB/uaB5E6x7sPm+q6MlBrt/Ps0rgcLRnCjY+Q0
-         0XHzCRvoQMqyGm2FYyxZbtubQ6f/azabD+uULKSDNa3k3PPmI7y3+Lglp9u46la/AH
-         cVkZ4W2PAQ5Qw==
-Received: (nullmailer pid 3215911 invoked by uid 1000);
-        Mon, 17 Jul 2023 22:57:20 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Tsahee Zidenberg <tsahee@annapurnalabs.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: alpine: Drop unused includes
-Date:   Mon, 17 Jul 2023 16:57:11 -0600
-Message-Id: <20230717225712.3215695-1-robh@kernel.org>
-X-Mailer: git-send-email 2.40.1
+        Mon, 17 Jul 2023 18:58:36 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F97812D
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:58:32 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-55e04a83465so3235082eaf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:58:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1689634711; x=1692226711;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DXBV/2bjPwiYS8/exEYcrIZKRRy4LswAgUjKyTXo1Qg=;
+        b=BIb1WxzpDndftoSsHfDcuFsuU1AktYDefj1plXXrfhwQnJxz9CG1e85DYQUGj7Hn9a
+         Ns7+VLbARCxMXbMHd/ugfmyWDtilfWM7eZIt3uE2bi7kLlSBdh7DuG532t4i+idiYq+r
+         FAatICz1PyJc1Zy08rlNc0zovdt6m62tvxPGQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689634711; x=1692226711;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DXBV/2bjPwiYS8/exEYcrIZKRRy4LswAgUjKyTXo1Qg=;
+        b=e0kc6+gMlAexcYiNAJU/pUZy+LYApXYIWTZjiVB2dSmow5ZK+ng9EfeC0zXf3k1I9n
+         VZgQkyJS7szP38bA2TWXZ4gr1neHPj0CwkBoIMKNt214yetxVDxJePoPTCUXx7fez0Eu
+         4RGuMN06/n62nmvs3AmN56gwx4/I8BXJ4Au4rT3SRxtG3x0uzEE05fCtt6aeISlwuQ2d
+         Nl/9H89YM5JHXqsitdSQhRpVmEQ0rURaQF75RGeANEdJd4IWLB43cwMCK7EP53KZiZtV
+         lZgc/ge/5+uW+dTm4Iu/WqE8gtFc1Fu7OpeQXG3Ix2HHSo0BnQtlNS7REiOssXO9lbcW
+         scDg==
+X-Gm-Message-State: ABy/qLYJ+flzAQlBwhYV9WIh91XAMhu57zAkI6c8DyK+vijzaj5ftgpg
+        m3XE2reOgDnW3cCzQUo9VOvHjQ9x9iZdahlCSgA=
+X-Google-Smtp-Source: APBJJlHmb/dNiyQOJeC3Ts7HefUDiZyi1y6NEW7+G54thcMrg7Ty39Pdk2XVz2OTyl9esC4YZ7VTNA==
+X-Received: by 2002:a05:6358:7189:b0:135:725f:a8af with SMTP id t9-20020a056358718900b00135725fa8afmr1128909rwt.15.1689634711307;
+        Mon, 17 Jul 2023 15:58:31 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id x15-20020a056a00270f00b0067f2413bf6dsm291057pfv.106.2023.07.17.15.58.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 15:58:30 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 15:58:29 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] seq_file: Replace strncpy()+nul by strscpy()
+Message-ID: <202307171558.09183D81@keescook>
+References: <20230717093332.54236-1-andriy.shevchenko@linux.intel.com>
+ <202307170826.397635AD@keescook>
+ <ZLVm2FLCRSnlYVUC@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZLVm2FLCRSnlYVUC@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-of_platform.h is not needed, drop it.
+On Mon, Jul 17, 2023 at 07:05:44PM +0300, Andy Shevchenko wrote:
+> On Mon, Jul 17, 2023 at 08:43:55AM -0700, Kees Cook wrote:
+> > On Mon, Jul 17, 2023 at 12:33:32PM +0300, Andy Shevchenko wrote:
+> 
+> ...
+> 
+> > I think this doesn't need to use seq_show_option_n() at all.
+> 
+> Quite likely. Nevertheless, it's one of the dozens (?) warnings like this.
+> 
+> ...
+> 
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> 
+> Thank you for the review!
+> 
+> I think it's you who may take it as seq_file.h seems everybody's playground.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- arch/arm/mach-alpine/alpine_machine.c | 2 --
- 1 file changed, 2 deletions(-)
+Ah, good point. :P
 
-diff --git a/arch/arm/mach-alpine/alpine_machine.c b/arch/arm/mach-alpine/alpine_machine.c
-index d256a99e9b99..bc491bbbabf8 100644
---- a/arch/arm/mach-alpine/alpine_machine.c
-+++ b/arch/arm/mach-alpine/alpine_machine.c
-@@ -5,8 +5,6 @@
-  * Copyright (C) 2015 Annapurna Labs Ltd.
-  */
- 
--#include <linux/of_platform.h>
--
- #include <asm/mach/arch.h>
- 
- static const char * const al_match[] __initconst = {
 -- 
-2.40.1
-
+Kees Cook
