@@ -2,126 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3477C756091
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 12:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB654756094
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 12:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbjGQKfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 06:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45322 "EHLO
+        id S229621AbjGQKgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 06:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbjGQKfg (ORCPT
+        with ESMTP id S229379AbjGQKgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 06:35:36 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D3110FF;
-        Mon, 17 Jul 2023 03:35:19 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36HAOv7I012252;
-        Mon, 17 Jul 2023 10:34:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=+WJKVUQzETSuobHPTeZ6ySIH4eDWYngylNx9IetoPb8=;
- b=TQewzPw3+zQ85HuqR6Mg/KGgzKGFnUJSgysemcJhuHqoX8Jrx4GOw0lHCjZzQP9W88Rl
- rNIs4SvcEmCVCIRL85cF2uXaPLHN31ArsCbYQrCLfXeAyjqLo9u0T9UbvcOypCaw9UzM
- LywJjT2N+hfX3nsqt986BaLuwNU5aVOdOs4GDvY39cDhb4d/u2B1YB6pO7Jp/i1BUYv4
- GL7xg7O+9C5RMu2O/6cay2ud0MOdL/+nrMQA9WK73a3eKNvvpFeX2wXS/4ALaQtkqfv+
- zUuKr4+TGqhSzr6gtufjahA/oHAttsPoLbSgXmF9BWiCuxl70cR8GL5BcleDjSwERdXA DQ== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rw3vcr8eh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 10:34:05 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36H9C4OQ016862;
-        Mon, 17 Jul 2023 10:33:59 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rv5srjsgd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 10:33:59 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36HAXveQ27460230
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 Jul 2023 10:33:58 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D6D2D20043;
-        Mon, 17 Jul 2023 10:33:57 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 57B9A20040;
-        Mon, 17 Jul 2023 10:33:57 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 17 Jul 2023 10:33:57 +0000 (GMT)
-Received: from jarvis.ozlabs.ibm.com (haven.au.ibm.com [9.192.254.114])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id DD1D26038E;
-        Mon, 17 Jul 2023 20:33:52 +1000 (AEST)
-Message-ID: <354bd57b2b1047f810d2cf53537f36c3f1b52d20.camel@linux.ibm.com>
-Subject: Re: [PATCH] misc: Explicitly include correct DT includes
-From:   Andrew Donnellan <ajd@linux.ibm.com>
-To:     Rob Herring <robh@kernel.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Amol Maheshwari <amahesh@qti.qualcomm.com>,
-        Eric Piel <eric.piel@tremplin-utc.net>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Derek Kiernan <derek.kiernan@amd.com>,
-        Dragan Cvetic <dragan.cvetic@amd.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Appana Durga Kedareswara rao 
-        <appana.durga.kedareswara.rao@amd.com>
-Cc:     devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Date:   Mon, 17 Jul 2023 20:33:41 +1000
-In-Reply-To: <20230714174735.4060016-1-robh@kernel.org>
-References: <20230714174735.4060016-1-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 17 Jul 2023 06:36:33 -0400
+Received: from out-51.mta1.migadu.com (out-51.mta1.migadu.com [IPv6:2001:41d0:203:375::33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A6CA6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 03:36:28 -0700 (PDT)
+Message-ID: <59365758-a14a-feb6-6a17-729c5b43e581@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1689590187;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qkMjuh1v+2sdz1CZtDe1vdfKbs4DnmbzZ54ExQuiBD0=;
+        b=AnX3rHXJKdWUgnb5Bn5ywZJfJbOtkR6Ij/4aELIBsviIyHp0J99iiSthhNGSuHpdj06Qp2
+        mLz1nDwqr0SjJSZZMuTs2QKAPsX89UWMeSs2NxjIx/CiNdxXNqUTIUl2VMmtDfxVv0L7x1
+        SXF8WtA75aY0V483zNtYXvHLh78yj4Q=
+Date:   Mon, 17 Jul 2023 18:36:23 +0800
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: PxDgm-Jb4UNs-rM6Yu7ywAgdvSWbgEKG
-X-Proofpoint-GUID: PxDgm-Jb4UNs-rM6Yu7ywAgdvSWbgEKG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-17_08,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
- adultscore=0 mlxlogscore=569 suspectscore=0 malwarescore=0 spamscore=0
- impostorscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307170096
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v1 8/8] drm/etnaviv: Add a helper to get a pointer to the
+ first available node
+Content-Language: en-US
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     loongson-kernel@lists.loongnix.cn,
+        Sui Jingfeng <suijingfeng@loongson.cn>,
+        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20230623100822.274706-1-sui.jingfeng@linux.dev>
+ <20230623100822.274706-9-sui.jingfeng@linux.dev>
+ <66749b1b4523d2859b9fbc6e9120e5f1e887d531.camel@pengutronix.de>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <66749b1b4523d2859b9fbc6e9120e5f1e887d531.camel@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-07-14 at 11:47 -0600, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform
-> bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those
-> include
-> files used throughout the tree. In order to detangle these headers
-> and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Hi,
 
-Acked-by: Andrew Donnellan <ajd@linux.ibm.com> # cxl
+On 2023/7/17 18:07, Lucas Stach wrote:
+> Am Freitag, dem 23.06.2023 um 18:08 +0800 schrieb Sui Jingfeng:
+>> From: Sui Jingfeng <suijingfeng@loongson.cn>
+>>
+>> This make the code in etnaviv_pdev_probe() less twisted, drop the reference
+>> to device node after finished. Also kill a double blank line.
+>>
+> I can't spot the double blank line you claim to remove.
+>
+>> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+>> ---
+>>   drivers/gpu/drm/etnaviv/etnaviv_drv.c | 32 ++++++++++++++++++---------
+>>   1 file changed, 22 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+>> index 7d0eeab3e8b7..3446f8eabf59 100644
+>> --- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+>> +++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+>> @@ -27,6 +27,19 @@
+>>    * DRM operations:
+>>    */
+>>   
+>> +/* If the DT contains at least one available GPU, return a pointer to it */
+>> +
+> I think the code in the function is simple enough that we don't need a
+> comment explaining what it does.
 
---=20
-Andrew Donnellan    OzLabs, ADL Canberra
-ajd@linux.ibm.com   IBM Australia Limited
+Because the DT could disable GPU cores by add "status=disabled" property.
+
+So, only the word *available* in this comments is deserved.
+
+But I'm fine to delete the comment for this function, will be fixed at 
+the next version.
+
+Thanks for reviewing.
+
+> Regards,
+> Lucas
+>
+>> +static struct device_node *etnaviv_of_first_node(void)
+>> +{
+>> +	struct device_node *np;
+>> +
+>> +	for_each_compatible_node(np, NULL, "vivante,gc") {
+>> +		if (of_device_is_available(np))
+>> +			return np;
+>> +	}
+>> +
+>> +	return NULL;
+>> +}
+>>   
+>>   static void load_gpu(struct drm_device *dev)
+>>   {
+>> @@ -587,7 +600,7 @@ static const struct component_master_ops etnaviv_master_ops = {
+>>   static int etnaviv_pdev_probe(struct platform_device *pdev)
+>>   {
+>>   	struct device *dev = &pdev->dev;
+>> -	struct device_node *first_node = NULL;
+>> +	struct device_node *first_node;
+>>   	struct component_match *match = NULL;
+>>   
+>>   	if (!dev->platform_data) {
+>> @@ -597,11 +610,10 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
+>>   			if (!of_device_is_available(core_node))
+>>   				continue;
+>>   
+>> -			if (!first_node)
+>> -				first_node = core_node;
+>> -
+>>   			drm_of_component_match_add(&pdev->dev, &match,
+>>   						   component_compare_of, core_node);
+>> +
+>> +			of_node_put(core_node);
+>>   		}
+>>   	} else {
+>>   		char **names = dev->platform_data;
+>> @@ -634,8 +646,11 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
+>>   	 * device as the GPU we found. This assumes that all Vivante
+>>   	 * GPUs in the system share the same DMA constraints.
+>>   	 */
+>> -	if (first_node)
+>> +	first_node = etnaviv_of_first_node();
+>> +	if (first_node) {
+>>   		of_dma_configure(&pdev->dev, first_node, true);
+>> +		of_node_put(first_node);
+>> +	}
+>>   
+>>   	return component_master_add_with_match(dev, &etnaviv_master_ops, match);
+>>   }
+>> @@ -709,17 +724,14 @@ static int __init etnaviv_init(void)
+>>   	 * If the DT contains at least one available GPU device, instantiate
+>>   	 * the DRM platform device.
+>>   	 */
+>> -	for_each_compatible_node(np, NULL, "vivante,gc") {
+>> -		if (!of_device_is_available(np))
+>> -			continue;
+>> +	np = etnaviv_of_first_node();
+>> +	if (np) {
+>>   		of_node_put(np);
+>>   
+>>   		ret = etnaviv_create_platform_device("etnaviv",
+>>   						     &etnaviv_platform_device);
+>>   		if (ret)
+>>   			goto unregister_platform_driver;
+>> -
+>> -		break;
+>>   	}
+>>   
+>>   	return 0;
