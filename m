@@ -2,55 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 770EF755C5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4EA1755C5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbjGQHE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 03:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbjGQHEz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230111AbjGQHEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 17 Jul 2023 03:04:55 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13106F0;
-        Mon, 17 Jul 2023 00:04:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=J3SpWbUvUGuVpILHK2hXPXXEibcgL2uZztFPxd0MnWE=; b=lOFiGkrOfGyoOBFTDPzl7rghfR
-        utk51ktw/y3RzZC5CglFkM4pNhozew1T14IkP8BcVH6FBln7ZDthyEazquzLGU3TbF9KBfnLIveF7
-        iWHKfvP4FV80m/ctoW8h0CUuNQApLL3Bi9og8wQTVY78coT/JwJlUNd8u3jlYm6evSqaW+0Cor5HH
-        c3n0hSb8VywxEY+l/L5WAEE9ozCP5hpCY8GbfZXvr7X4PYepOBTbkMZlaK8idDi1Gx3+QPFrGSi5O
-        ANk80nS6/2h0HVQG9i1xJvtjPH02aC9HZoIq4SlLmZvzNxbtlYn2RiTOb1/pFf4zvX2/YUsXc6S1H
-        lDPRznZg==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qLIHq-003Gpg-0T;
-        Mon, 17 Jul 2023 07:04:51 +0000
-Message-ID: <87abc308-16a9-014c-20a1-46186d49a259@infradead.org>
-Date:   Mon, 17 Jul 2023 00:04:48 -0700
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230057AbjGQHEy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 Jul 2023 03:04:54 -0400
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 1AF02F0;
+        Mon, 17 Jul 2023 00:04:51 -0700 (PDT)
+Received: from [172.30.11.106] (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id 0A497601A1674;
+        Mon, 17 Jul 2023 15:04:49 +0800 (CST)
+Message-ID: <29e3ea89-db2c-0b54-4af1-d8098f011a9e@nfschina.com>
+Date:   Mon, 17 Jul 2023 15:04:49 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 7/7] PCI: endpoint: Add kernel-doc for
- pci_epc_mem_init() API
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH net-next v3 8/9] can: ems_pci: Remove unnecessary (void*)
+ conversions
 Content-Language: en-US
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        lpieralisi@kernel.org, kw@linux.com
-Cc:     kishon@kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <20230717065459.14138-1-manivannan.sadhasivam@linaro.org>
- <20230717065459.14138-8-manivannan.sadhasivam@linaro.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230717065459.14138-8-manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     wg@grandegger.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, uttenthaler@ems-wuensche.com,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+X-MD-Sfrom: yunchuan@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   yunchuan <yunchuan@nfschina.com>
+In-Reply-To: <20230717-staple-uninjured-26bfd8cde5e0-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -58,41 +47,28 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 2023/7/17 14:52, Marc Kleine-Budde wrote:
+> On 17.07.2023 11:12:21, Wu Yunchuan wrote:
+>> No need cast (void*) to (struct ems_pci_card *).
+>>
+>> Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
+>> Acked-by: Marc Kleine-Budde<mkl@pengutronix.de>
+> Please add a space between my name and my e-mail address, so that it
+> reads:
+>
+> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-On 7/16/23 23:54, Manivannan Sadhasivam wrote:
-> Add missing kernel-doc for pci_epc_mem_init() API.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Hi,
 
-Looks good. Thanks.
+Sorry for this, I will resend this patch to add a space.
+>
+> nitpick:
+> You should add your S-o-b as the last trailer.
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Oh, thanks for this reminder!
 
-> ---
->  drivers/pci/endpoint/pci-epc-mem.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/pci/endpoint/pci-epc-mem.c b/drivers/pci/endpoint/pci-epc-mem.c
-> index 7dcf6f480b82..a9c028f58da1 100644
-> --- a/drivers/pci/endpoint/pci-epc-mem.c
-> +++ b/drivers/pci/endpoint/pci-epc-mem.c
-> @@ -115,6 +115,16 @@ int pci_epc_multi_mem_init(struct pci_epc *epc,
->  }
->  EXPORT_SYMBOL_GPL(pci_epc_multi_mem_init);
->  
-> +/**
-> + * pci_epc_mem_init() - Initialize the pci_epc_mem structure
-> + * @epc: the EPC device that invoked pci_epc_mem_init
-> + * @base: Physical address of the window region
-> + * @size: Total Size of the window region
-> + * @page_size: Page size of the window region
-> + *
-> + * Invoke to initialize a single pci_epc_mem structure used by the
-> + * endpoint functions to allocate memory for mapping the PCI host memory
-> + */
->  int pci_epc_mem_init(struct pci_epc *epc, phys_addr_t base,
->  		     size_t size, size_t page_size)
->  {
+Wu Yunchuan
 
--- 
-~Randy
+> regards,
+> Marc
+>
