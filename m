@@ -2,127 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E248755F9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B32D755F9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbjGQJnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 05:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45560 "EHLO
+        id S230235AbjGQJnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 05:43:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230187AbjGQJmb (ORCPT
+        with ESMTP id S230348AbjGQJmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 05:42:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03286E5C
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:42:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4968E6100C
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:42:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7CD5C433C7;
-        Mon, 17 Jul 2023 09:42:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689586938;
-        bh=7djUuK4CaCxbuErINkByzceZuMx0GZNfPOcNnVQNolY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Bg0yktPmRMK5WOrzwMUGsxI4bND332xwWUjzvwP4LVC8cPWizikPosIN8oE+k9PIr
-         YAMjk7FLEfCPE+vPQqgomC8dnrBqyWoBE1UUOeVBVsKyh9+7IQiSN8nBJ87pcCHFnn
-         EQcvzvDvBpLtYGYg6gaPopsSO0SMqId6ss4Hn3EuzMbZRg4sgzoyxABjF8gW+bgtCz
-         CLgYaBrm4uFCFhGjzNaLzOOeV0XxQEw9BepgrMVj4HClrGmLZT+5MftQREetFEvM7m
-         SCkiUJAvZbwz3dgQ8YwFur/xl9uuDY1QchpYZDL8Abn9l9Ffs7iXkdRkclXVhOQLmy
-         dECA/nlh8wdGg==
-Received: from disco-boy.misterjones.org ([217.182.43.188] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1qLKkC-00DghT-CT;
-        Mon, 17 Jul 2023 10:42:16 +0100
+        Mon, 17 Jul 2023 05:42:35 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6471BE3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:42:23 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51e344efd75so8839972a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:42:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689586941; x=1692178941;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jCDAGW2zq1t7/jPzA/fgOnsdSvQf00Y9+7qWRffe9fk=;
+        b=YQpq3KyVlRs3zZwrdMaJspv9qlA3D8BuY+DwXmoIKajt5fTqGLf+QSAZZyyhs82RSN
+         xEgdgoyKHay1QMqkPiG0Ugqgjmm8DSrier9hFO/t83+QPaVQqQupS/dsQQUT5LPiG0mi
+         r4GR6mbRKhyocW0NdKhgNk/6Ub+AHt0nEsrHBvmW4wLwIuvcZmQjL98Sgvo2hZ2B+b5B
+         pe4eRZ9rKcWQTKdNPVWGNOndXXzjW1GrMM5GBDicW8JEZ58fKPfm8H6NyuqSDpymc0Q9
+         UNUWMGlyR+s9MC34KF1v9kDhCTVWZEFQ1X0OGsRo2x9Wy8e6mlK8spIPuGkIIiL7R1db
+         MiAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689586941; x=1692178941;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jCDAGW2zq1t7/jPzA/fgOnsdSvQf00Y9+7qWRffe9fk=;
+        b=Z8S/6agOLHSdKM/hTor12v/40xOSz7gVN/r3Mk8L6PkVqSw3Va4ADESylVrLFPDuMa
+         ZWLCwmO50R/rdatnS+kP0LJLYdmV8xDcujYLBjLizOh8oKKXAB+73IqFh4JEtBStTrso
+         FNKQGfibtNQdpqB8BJLcDtP6nHAQ78V7GQ8w93PXaEpTcQaBxitnr/ClbZCMoYHH9Exd
+         58dYorHNOW1TDwizT1HZHVnb0I7ttuo38cQ3eKP0Resifv7RKOeQhmz0SZLsSg22QwJz
+         QAaE6uqT7Z13ThlTHzquiOXomscDUl8f4oAu5pyDvR1MWFXgLpanlDakNF2V9hZI5Gsr
+         UCUg==
+X-Gm-Message-State: ABy/qLZqVh5FA9MXmGk9a9t0LfIU89lIWG/GR6BZZE/yQI0HMWjdVfei
+        hTr4Rm9DH41X5KwfuKlIlKolQQUqLROd7Usuf6jmTA==
+X-Google-Smtp-Source: APBJJlHbgWepWBWj84txt0/Slx87FDXphJzB1ZHPwKsQE0Dqov00G0ZBqyHLIMdatfRuuxL4VcSOoQ==
+X-Received: by 2002:a05:6402:524e:b0:51d:cf7b:c9f0 with SMTP id t14-20020a056402524e00b0051dcf7bc9f0mr12003216edd.12.1689586941388;
+        Mon, 17 Jul 2023 02:42:21 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id j4-20020a50ed04000000b0051e2a6cef4fsm9734491eds.36.2023.07.17.02.42.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 02:42:20 -0700 (PDT)
+Message-ID: <9a3dc092-7278-cda1-cd4e-c157e0e2c431@linaro.org>
+Date:   Mon, 17 Jul 2023 11:42:18 +0200
 MIME-Version: 1.0
-Date:   Mon, 17 Jul 2023 10:42:15 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: enable dead code elimination
-In-Reply-To: <20230717080739.1000460-1-wangkefeng.wang@huawei.com>
-References: <20230717080739.1000460-1-wangkefeng.wang@huawei.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <801e30a093e41c3eebd675f0d224f8d7@kernel.org>
-X-Sender: maz@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] usb: dwc2: combine platform specific data for Intel
+ Agilex and Stratix10
+Content-Language: en-US
+To:     Meng Li <Meng.Li@windriver.com>, gregkh@linuxfoundation.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, dinguyen@kernel.org, hminas@synopsys.com,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20230717085053.1075077-1-Meng.Li@windriver.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230717085053.1075077-1-Meng.Li@windriver.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 217.182.43.188
-X-SA-Exim-Rcpt-To: wangkefeng.wang@huawei.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-17 09:07, Kefeng Wang wrote:
-> Select CONFIG_HAVE_LD_DEAD_CODE_DATA_ELIMINATION for arm64, allowing 
-> the
-> user to enable dead code elimination. In order for this to work, ensure
-> that we keep the necessary tables by annotating them with KEEP, also it
-> requires further changes to linker script to KEEP some tables and 
-> wildcard
-> compiler generated sections into the right place.
+On 17/07/2023 10:50, Meng Li wrote:
+> Intel Stratix10 is very the same with Agilex platform, the DWC2 IP on
+> the Stratix platform also does not support clock-gating. So, based on
+> commit 3d8d3504d233("usb: dwc2: Add platform specific data for
+> Intel's Agilex"), combine platform specific data for Intel Agilex and
+> Stratix10 together. In additional, in order to avoid breaking the old
+> device tree, keep compatible string "intel,socfpga-agilex-hsotg" unchanged.
 > 
-> The following comparison is based 6.5-rc2 with defconfig,
-> 
-> $ ./scripts/bloat-o-meter vmlinux-base vmlinux-new
-> add/remove: 3/1106 grow/shrink: 4102/6964 up/down: 35704/-99980 
-> (-64276)
-> Function                                     old     new   delta
-> ...
-> Total: Before=17888959, After=17824683, chg -0.36%
-> 
-> add/remove: 0/1 grow/shrink: 0/1 up/down: 0/-44 (-44)
-> Data                                         old     new   delta
-> ...
-> Total: Before=4820808, After=4820764, chg -0.00%
-> 
-> add/remove: 0/1 grow/shrink: 0/1 up/down: 0/-1096 (-1096)
-> RO Data                                      old     new   delta
-> ...
-> Total: Before=5179123, After=5178027, chg -0.02%
-> 
-> $ size vmlinux-base vmlinux
->    text	   data	     bss      dec       hex	filename
-> 25433734  15385766  630656  41450156  2787aac	vmlinux-base
-> 24756738  15360870  629888  40747496  26dc1e8	vmlinux-new
-> 
-> Memory available after booting, saving 704k on qemu,
-> base: 8084532K/8388608K
-> new:  8085236K/8388608K
-> 
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Signed-off-by: Meng Li <Meng.Li@windriver.com>
+> ---
+>  Documentation/devicetree/bindings/usb/dwc2.yaml   | 2 ++
 
-I took this patch for a spin in my tree, and ended up with:
+Bindings are always separate patch.
 
-   CC      .vmlinux.export.o
-   UPD     include/generated/utsversion.h
-   CC      init/version-timestamp.o
-   LD      .tmp_vmlinux.kallsyms1
-ld: init/main.o(__patchable_function_entries): error: need linked-to 
-section for --gc-sections
-make[2]: *** [scripts/Makefile.vmlinux:36: vmlinux] Error 1
-make[1]: *** [/home/maz/hot-poop/arm-platforms/Makefile:1238: vmlinux] 
-Error 2
-make: *** [Makefile:234: __sub-make] Error 2
+>  arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi | 4 ++--
 
-so it's probably not ready for prime time.
+As DTS is.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+>  drivers/usb/dwc2/params.c                         | 6 ++++--
+>  3 files changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
+> index dc4988c0009c..c98ca98d5033 100644
+> --- a/Documentation/devicetree/bindings/usb/dwc2.yaml
+> +++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
+> @@ -51,6 +51,7 @@ properties:
+>                - amlogic,meson-gxbb-usb
+>                - amlogic,meson-g12a-usb
+>                - intel,socfpga-agilex-hsotg
+> +              - intel,socfpga-hsotg
+
+Where is SoC specific compatible?
+
+>            - const: snps,dwc2
+>        - const: amcc,dwc-otg
+>        - const: apm,apm82181-dwc-otg
+> @@ -64,6 +65,7 @@ properties:
+>            - const: snps,dwc2
+>        - const: samsung,s3c6400-hsotg
+>        - const: intel,socfpga-agilex-hsotg
+> +      - const: intel,socfpga-hsotg
+>  
+>    reg:
+>      maxItems: 1
+> diff --git a/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi b/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
+> index ea788a920eab..c5a51636f657 100644
+> --- a/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
+> +++ b/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
+
+...
+
+> diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
+> index 8eab5f38b110..6bb27a24e9e1 100644
+> --- a/drivers/usb/dwc2/params.c
+> +++ b/drivers/usb/dwc2/params.c
+> @@ -93,7 +93,7 @@ static void dwc2_set_s3c6400_params(struct dwc2_hsotg *hsotg)
+>  	p->phy_utmi_width = 8;
+>  }
+>  
+> -static void dwc2_set_socfpga_agilex_params(struct dwc2_hsotg *hsotg)
+> +static void dwc2_set_socfpga_params(struct dwc2_hsotg *hsotg)
+
+Why? Old name was ok...
+
+>  {
+>  	struct dwc2_core_params *p = &hsotg->params;
+>  
+> @@ -266,7 +266,9 @@ const struct of_device_id dwc2_of_match_table[] = {
+>  	{ .compatible = "st,stm32mp15-hsotg",
+>  	  .data = dwc2_set_stm32mp15_hsotg_params },
+>  	{ .compatible = "intel,socfpga-agilex-hsotg",
+> -	  .data = dwc2_set_socfpga_agilex_params },
+> +	  .data = dwc2_set_socfpga_params },
+> +	{ .compatible = "intel,socfpga-hsotg",
+> +	  .data = dwc2_set_socfpga_params },
+
+Aren't they compatible? Why do you need new entry for compatible devices?
+
+Best regards,
+Krzysztof
+
