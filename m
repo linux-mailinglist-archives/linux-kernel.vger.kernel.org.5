@@ -2,115 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C008755B06
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 07:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96DA1755B0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 07:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbjGQFzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 01:55:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45250 "EHLO
+        id S230225AbjGQF7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 01:59:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjGQFzv (ORCPT
+        with ESMTP id S231214AbjGQF67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 01:55:51 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B6B10E
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 22:55:49 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R4BBK6Gqlz18LXn;
-        Mon, 17 Jul 2023 13:55:05 +0800 (CST)
-Received: from [10.174.151.185] (10.174.151.185) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 17 Jul 2023 13:55:46 +0800
-Subject: Re: [PATCH 1/4] mm/swapfile: fix wrong swap entry type for hwpoisoned
- swapcache page
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     <akpm@linux-foundation.org>, <naoya.horiguchi@nec.com>,
-        <shy828301@gmail.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230715031729.2420338-1-linmiaohe@huawei.com>
- <20230715031729.2420338-2-linmiaohe@huawei.com>
- <ZLIXg7BPPAoUYUGV@casper.infradead.org>
- <33748ced-5fd3-f3f7-f358-ca016ca8ba36@huawei.com>
- <ZLStQ5QACPOHJcd2@casper.infradead.org>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <c8e4df9f-190e-5de6-9faf-94599519d26e@huawei.com>
-Date:   Mon, 17 Jul 2023 13:55:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 17 Jul 2023 01:58:59 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37A8E4B
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 22:58:57 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-98e011f45ffso514520366b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 22:58:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689573536; x=1692165536;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=k631ugiro94uqzvQOpxnR6/BSCvO3zY6daW5g9o+b4c=;
+        b=noOLwLxY+8VAm0GPn80Qt4djj2hliItvWMeuYPZ/VfTfgfhYBFycibxIxgGcwk33Lp
+         u/O3HL17SUAbD3NcKuxcc6GjqP8tSLuRaKgSgG1C0grYZbJQGXkDJJjX4j6ZSGYaGHi+
+         RrI2unE/l6vQZUTdCLbShqcRYz09++k5rEqKdfWyJ4FCoBUPP8QLlc4AfAFYENcTPHT3
+         8hE3Vin1cthOnb/8miTb6ChvPIEE/pNB/iIOSunjO8Qc/P1jkAxi/qZraRM2bYVRH0CT
+         LCXha+Mc32qhmi7/0nra1k3eMBcBWDtXkT26BiBP54XoiDsMuRbE4TmkvSThBhHoBMIO
+         1MEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689573536; x=1692165536;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k631ugiro94uqzvQOpxnR6/BSCvO3zY6daW5g9o+b4c=;
+        b=OY4IO/BzphIuDFrDQcZv/yiKS3PMi8dH4PPI0OZoLgHBhwvd8r8ORgiqGYC/gEnBw/
+         cOy6vbpwscReU0bswSxhTPd0NIsiza7vORw0ELAVqGanvvwAYINAutRAMY2P/QJ/sBfq
+         6d3tSt+xhbNO3r3ceVlSWWQUKn4akt7w6sqjBqSqUkJg/QIzbRRgrar47r/Q2s4ScSYq
+         vsxM6yhny8p8UZ9Yp1XEDkqIl0AqyLEyy9lZkCqh8INhrA9ZoXHtxujKBuFLFtt9Q5ud
+         W6sr29RBHOIwRK9ve8JLBwxDmmdbJM0eZ0WQ4SuW0Lm3jk8QQ7Xj7Lg65ncI0Ns9UdPn
+         mR+A==
+X-Gm-Message-State: ABy/qLYhlKz2EfdQ4tN4/sq+545jIOhsmYcZ3qqPZQc7C5frx3JohHIz
+        NaRC53INFyyjeuOQBXhc/n1mzw==
+X-Google-Smtp-Source: APBJJlHgKqIdlmRkFNftYeegIddWrsGKkE5tQaWsbAjoEdQ4qunH1DIhrT2XP16EPef81XkUgI71JQ==
+X-Received: by 2002:a17:906:74c4:b0:993:fba5:cdfa with SMTP id z4-20020a17090674c400b00993fba5cdfamr9395356ejl.26.1689573536167;
+        Sun, 16 Jul 2023 22:58:56 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id s7-20020a1709064d8700b00993004239a4sm8678232eju.215.2023.07.16.22.58.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 Jul 2023 22:58:55 -0700 (PDT)
+Message-ID: <31af3a96-7e98-8bb1-f9e9-53ccb0441310@linaro.org>
+Date:   Mon, 17 Jul 2023 07:58:53 +0200
 MIME-Version: 1.0
-In-Reply-To: <ZLStQ5QACPOHJcd2@casper.infradead.org>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/3] pwm: samsung: Add compatible for ExynosAutov9 SoC
+To:     Jaewon Kim <jaewon02.kim@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        Chanho Park <chanho61.park@samsung.com>
+References: <20230714100929.94563-1-jaewon02.kim@samsung.com>
+ <CGME20230714101434epcas2p3e2475698c527ca72dee797225d3dad37@epcas2p3.samsung.com>
+ <20230714100929.94563-3-jaewon02.kim@samsung.com>
 Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230714100929.94563-3-jaewon02.kim@samsung.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.151.185]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/17 10:53, Matthew Wilcox wrote:
-> On Mon, Jul 17, 2023 at 10:33:14AM +0800, Miaohe Lin wrote:
->> On 2023/7/15 11:50, Matthew Wilcox wrote:
->>> On Sat, Jul 15, 2023 at 11:17:26AM +0800, Miaohe Lin wrote:
->>>> Hwpoisoned dirty swap cache page is kept in the swap cache and there's
->>>> simple interception code in do_swap_page() to catch it. But when trying
->>>> to swapoff, unuse_pte() will wrongly install a general sense of "future
->>>> accesses are invalid" swap entry for hwpoisoned swap cache page due to
->>>> unaware of such type of page. The user will receive SIGBUS signal without
->>>> expected BUS_MCEERR_AR payload.
->>>
->>> Have you observed this, or do you just think it's true?
->>>
->>>> +++ b/mm/swapfile.c
->>>> @@ -1767,7 +1767,8 @@ static int unuse_pte(struct vm_area_struct *vma, pmd_t *pmd,
->>>>  		swp_entry_t swp_entry;
->>>>  
->>>>  		dec_mm_counter(vma->vm_mm, MM_SWAPENTS);
->>>> -		if (hwposioned) {
->>>> +		/* Hwpoisoned swapcache page is also !PageUptodate. */
->>>> +		if (hwposioned || PageHWPoison(page)) {
->>>
->>> This line makes no sense to me.  How do we get here with PageHWPoison()
->>> being true and hwposioned being false?
->>
->> hwposioned will be true iff ksm_might_need_to_copy returns -EHWPOISON.
->> And there's PageUptodate check in ksm_might_need_to_copy before we can return -EHWPOISON:
->>
->>   ksm_might_need_to_copy
->>     if (!PageUptodate(page))
->>       return page;		/* let do_swap_page report the error */
->>     ^^^
->>     Will return here because hwpoisoned swapcache page is !PageUptodate(cleared via me_swapcache_dirty()).
->>
->> Or am I miss something?
+On 14/07/2023 12:09, Jaewon Kim wrote:
+> Add new compatible string to support ExynosAutov9 SoC.
 > 
-> Ah!  So we don't even get to calling copy_mc_to_kernel().  That seems
-> like a bug in ksm_might_need_to_copy(), don't you think?  Maybe this
-
-I'm sorry but could you please explain what the bug is?
-
-> would be a better fix:
+> Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
+> ---
+>  drivers/pwm/pwm-samsung.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> +	if (PageHWPoison(page))
-> +		return ERR_PTR(-EHWPOISON);
+> diff --git a/drivers/pwm/pwm-samsung.c b/drivers/pwm/pwm-samsung.c
+> index e8828f57ab15..50a88565c440 100644
+> --- a/drivers/pwm/pwm-samsung.c
+> +++ b/drivers/pwm/pwm-samsung.c
+> @@ -513,6 +513,7 @@ static const struct of_device_id samsung_pwm_matches[] = {
+>  	{ .compatible = "samsung,s5p6440-pwm", .data = &s5p64x0_variant },
+>  	{ .compatible = "samsung,s5pc100-pwm", .data = &s5pc100_variant },
+>  	{ .compatible = "samsung,exynos4210-pwm", .data = &s5p64x0_variant },
+> +	{ .compatible = "samsung,exynosautov9-pwm", .data = &s5p64x0_variant },
 
-Looks reasonable. We can further avoid accessing contents of hwpoisoned swapcache pages which are
-PageHWPoison() && PageUptodate() at first place.
+That's not what I asked for. You do not need entry here. Devices are
+compatible.
 
-Thanks.
-
-> 	if (!PageUptodate(page))
-> 		return page;
-> 
-> .
-> 
+Best regards,
+Krzysztof
 
