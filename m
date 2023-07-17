@@ -2,110 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB6D755ABB
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 07:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B24B755ABE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 07:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbjGQFFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 01:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60970 "EHLO
+        id S230478AbjGQFGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 01:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjGQFFm (ORCPT
+        with ESMTP id S229476AbjGQFGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 01:05:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671B0E51;
-        Sun, 16 Jul 2023 22:05:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D6E8E60F1D;
-        Mon, 17 Jul 2023 05:05:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4297C433C8;
-        Mon, 17 Jul 2023 05:05:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689570340;
-        bh=f1/1Qm7+ghUulCXlp4Wtc+jVt4wBjXfAiwQ5BfkAqcw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rCB5wKuDjH/kjrepsmuDiFjCX4Rz2GCWQHNp6m7Zz0CLBXHn9+4OpduqfPa9VH0qL
-         oUSk/56nYZFOFbmNxRED2/ahJDTqCjqRah//2YSEbdxP5ui1yDg5oJYONYC6vBAOry
-         bx2QLAYfr2NNJ4EeAd2F40tLsyPuKHadJr6yW7WQxh+3DlUU1+VZNklwZfOQcNiRmP
-         OJ4tQF9YmQZRMJZqyaLaSkIMRiVHgwjjZn4n4gnBEi15YkBse5U8by8bbRZ9Um+G5h
-         czP1kh46Q63RpN3xEOyCY0wCOeIki4hi19WDZCC1urYZD/cPUpbdlqk2H5GYF3AY0l
-         1vly28QLaZ3xQ==
-Date:   Mon, 17 Jul 2023 08:05:37 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tags need some work in the rdma-fixes tree
-Message-ID: <20230717050537.GA9461@unreal>
-References: <20230717073649.5fc71a09@canb.auug.org.au>
+        Mon, 17 Jul 2023 01:06:21 -0400
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E64E54
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 22:06:18 -0700 (PDT)
+Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-791b8525b59so1418247241.1
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 22:06:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689570377; x=1692162377;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xR7Jh7BXNDpu6+2aiq3ZuVrs5oBNof862oaaEGT22kE=;
+        b=K/GmCjSqOYm0KWCBJgUAzYKSJMgtUbsQgdm3le7BCDDPkafCvqTGFvy/h05nnECb3A
+         SXiLbd98PE5p0DHBkyrJHpnDi4u8V/Ls+0mW2DiZhRHrvaogGxeZH67R9I+WAMJaY50P
+         8pej23rGRTwODqWQEVMMd1SMgtf10FCgibO2twTrOfGxcA/8g0nHbKKUFsBcTh+V0Iua
+         kC+e+RKVSmL1ADafHew0B8wA2cozddQug8Fh9JDB0Bgqwh2ShRBoMalH9pf9DIAzi8r+
+         31R2cmR6rsERPaezQDdv3EKRM4/jjsqC84/StexZJTLhJli4BYahal7F2Yfdu16GcEyH
+         7zKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689570377; x=1692162377;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xR7Jh7BXNDpu6+2aiq3ZuVrs5oBNof862oaaEGT22kE=;
+        b=Q5GE5BUumtPMSDHEvQqypUvJpuFkb3yPOgrfZeUU1GOZ6rgJnoDTRcbocTEvIwngQo
+         Z91ax1XnY3Ga1mMZnZpDPThvuz8j+BBhPNax03khvJay02OcvJu5koY5JKo/i1yazhvz
+         1VeIba4yzT/MHWnCSL0L8jbTPX4ZCPJ9fp39MRhwoQcU+QZ/70DZ4+1BeZ0WEubTM5YJ
+         zYHG8+HfOOkjvXx51vTXDmHybOHIk5YA8aqZS4IRdVWkE4qUMzlk8r5ZjRtP/ONHEfK9
+         0F32IhSiz0NHvBZalZ6B5/tJ7rbNZsCSHgXZuuafrENrDJuYXoXGUdn7vyP63RbWkuJx
+         wp3w==
+X-Gm-Message-State: ABy/qLYCzz16FDx14xVugXZo+6nh9GMNilsdqZ9VK8A2ZbzToOnRFrnK
+        NUqxdeyna/VJC0alhiudy9IzmFa/dbdDxs/dD5kQsg==
+X-Google-Smtp-Source: APBJJlFtxcetEBCc4TSfgqF8xL/QIBSc2Drf5I8jWvVjy2toUPb9CBtwXYjXn2M9Pxxq/5xt2wL5YpHpWjFpfJPf2Vg=
+X-Received: by 2002:a67:fd7b:0:b0:444:17aa:df60 with SMTP id
+ h27-20020a67fd7b000000b0044417aadf60mr5035406vsa.13.1689570377332; Sun, 16
+ Jul 2023 22:06:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717073649.5fc71a09@canb.auug.org.au>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CA+G9fYv2FRpLqBZf34ZinR8bU2_ZRAUOjKAD3+tKRFaEQHtt8Q@mail.gmail.com>
+ <20230717043111.GA3842864@mit.edu>
+In-Reply-To: <20230717043111.GA3842864@mit.edu>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 17 Jul 2023 10:36:06 +0530
+Message-ID: <CA+G9fYukSUuNV5usVC1Zmq7uqxu5w2g8dTHgV9WUAA=nGBk20w@mail.gmail.com>
+Subject: Re: next: kernel BUG at fs/ext4/mballoc.c:4369!
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        LTP List <ltp@lists.linux.it>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 07:36:49AM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> In commit
-> 
->   e77ac83ee5fd ("RDMA/irdma: Fix data race on CQP request done")
-> 
-> Fixes tag
-> 
->   Fixes: 915cc7ac0f8 ("RDMA/irdma: Add miscellaneous utility definitions")
-> 
-> has these problem(s):
-> 
->   - SHA1 should be at least 12 digits long
-> 
-> In commit
-> 
->   df56ce725d7c ("RDMA/irdma: Fix data race on CQP completion stats")
-> 
-> Fixes tag
-> 
->   Fixes: 915cc7ac0f8 ("RDMA/irdma: Add miscellaneous utility definitions")
-> 
-> has these problem(s):
-> 
->   - SHA1 should be at least 12 digits long
-> 
-> In commit
-> 
->   13120f2d08fd ("RDMA/irdma: Add missing read barriers")
-> 
-> Fixes tag
-> 
->   Fixes: 3f49d684256 ("RDMA/irdma: Implement HW Admin Queue OPs")
-> 
-> has these problem(s):
-> 
->   - SHA1 should be at least 12 digits long
-> 
-> This can be fixed for the future by setting core.abbrev to 12 (or
-> more) or (for git v2.11 or later) just making sure it is not set
-> (or set to "auto").
+On Mon, 17 Jul 2023 at 10:01, Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Sun, Jul 16, 2023 at 11:32:51AM +0530, Naresh Kamboju wrote:
+> > Following kernel BUG noticed while testing LTP fs testing on x86_64
+> > arch x86_64 on the Linux next-20230716 built with clang toolchain.
+>
+> Hmm, I'm not seeing the next-20230716 tag at:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/
+>
+> or
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next-history.git/
+>
+> I see a tag for next-20230717 and for next-20230714, but not
+> next-20230716.  Was this a typo?  Does it reproduce on the
+> next-20230717 tree?
 
-Thanks, fixed.
+Sorry it is a Typo,
+Here is the kernel version, 6.5.0-rc1-next-20230714
 
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
+>
+> Also, since I don't use LTP, can you give me a trimmed-down
+> reproducer, to save me some time?
+
+Boot images for x86_64,
+I have defconfig + test KConfigs.
+
+   kernel:
+      url:
+        https://storage.tuxsuite.com/public/linaro/lkft/builds/2SY3QjxEGsLoae4uGpfjPnZqwKC/bzImage
+    modules:
+      url:
+        https://storage.tuxsuite.com/public/linaro/lkft/builds/2SY3QjxEGsLoae4uGpfjPnZqwKC/modules.tar.xz
+    nfsrootfs:
+      url:
+        https://storage.tuxsuite.com/public/linaro/lkft/oebuilds/2SPaZ6KtLE32NNDGqKrHtwJJz1g/images/intel-corei7-64/lkft-console-image-intel-corei7-64-20230711051126.rootfs.tar.xz
 
 
+Build and install LTP:
+
+# git clone https://github.com/linux-test-project/ltp.git
+# cd ltp
+# make autotools
+# ./configure
+# make
+# make install
+
+Connect external newly formatted SSD drive via USB and mount.
+This drive will be used by LTP at run time to create temporary test files.
+
+
+Run LTP
+
+  cd /opt/ltp/
+  ./runltp -f fs - d /mount/SSD-external-storage-drive
+
+
+ref:
+ - https://github.com/linux-test-project/ltp
+
+- Naresh
+
+>
+> Thanks!!
+>
+>                                         - Ted
