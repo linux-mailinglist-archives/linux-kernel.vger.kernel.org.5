@@ -2,108 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8B1756E64
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA106756E6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbjGQUhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 16:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
+        id S230522AbjGQUii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 16:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjGQUhM (ORCPT
+        with ESMTP id S229582AbjGQUig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 16:37:12 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1796103;
-        Mon, 17 Jul 2023 13:37:10 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-34884a8f285so10380015ab.0;
-        Mon, 17 Jul 2023 13:37:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689626230; x=1692218230;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2kAwJHiR+H4GDqr7e6nXyr8bmo5EmU5aiLGkOZNmvaM=;
-        b=kmeBqa5MdbvFwdthLNdn6x5K0aMOzpJkcGZV6u06eY00afZa0fY9RvCh6intNP8pXp
-         ova0U7D4MjTIHFXVKb77udj94AQogskNUHixxA7OnLXGJPqGQg6Ye8E8Nr80P7xmVjtH
-         AT+CNgtY69k3C9UANOeU+fLg0WgCyuVlNL42ktb03Tr4Ttm67yY0eM3nIU9UTMc/OHvx
-         59KCftrig2iDJHxr3GXZJA7GmYbli/hP5Gfi8PyDKfKvTV/Uc6F+p1auVV2NYVy0z5kj
-         3RopdAE1ZYsq0E5J5tInZWS6tPHLNKqw1jaKxPBBsjVes2aS1YV/KBTdgWJzhzxViEOO
-         segw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689626230; x=1692218230;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2kAwJHiR+H4GDqr7e6nXyr8bmo5EmU5aiLGkOZNmvaM=;
-        b=QPpwyUtlxd+3/M46cPFcTUr5s41naeuwDX2qra/T0d+MjQf6WhX5an5Vf/2+A5DzwC
-         o5MyVi7cnDoLMAAyb7ernvdZeR/+F4KfM6R85R//UZwI1Y6m4dVH2KEKawEVW9Mc/Ii9
-         MMifR3CrB5WTGEaXsunekiajs7ShtJhQWj0tjPdL5aupEFPpa/xQFP4ySyzY0EnVpSC7
-         BBOxHplYVonVTDajdp1DSuP4v3pMYnSjqlq9h2BtWg6xYdvKcfJtWYNyX5P6gGlQcifr
-         EygUxwQ2/sJ1osOv7oCY4JDdjjlKZObwOKAlV1rYpLl6xmr5v2hmdKyfnzHnVCCB0kzB
-         UPqg==
-X-Gm-Message-State: ABy/qLbh/sTRckKyzlbVPFyKIfAurNbn4YR6h5LRSTfih4QmA02ethDS
-        arXAmG+ISWygXwfN4nAWl4g=
-X-Google-Smtp-Source: APBJJlEKXWlw+c5R6v5A6AbZDdFfolPCLTWSYnbtuLHMsBAPUBd5oy2WlAN/RWB7XzfShnMndpZc1w==
-X-Received: by 2002:a92:c943:0:b0:348:7c4e:2959 with SMTP id i3-20020a92c943000000b003487c4e2959mr644960ilq.23.1689626229961;
-        Mon, 17 Jul 2023 13:37:09 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id a12-20020a92d34c000000b003426356a35asm199726ilh.0.2023.07.17.13.37.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 13:37:09 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 17 Jul 2023 10:37:08 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Haitao Huang <haitao.huang@linux.intel.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, dave.hansen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, vipinsh@google.com,
-        kai.huang@intel.com, reinette.chatre@intel.com,
-        zhiquan1.li@intel.com, kristen@linux.intel.com
-Subject: Re: [PATCH] cgroup/misc: Fix an overflow
-Message-ID: <ZLWmdBfcuPUBtk1K@slm.duckdns.org>
-References: <20230717184719.85523-1-haitao.huang@linux.intel.com>
- <CU4OCLEHU1S5.359W394902648@seitikki>
- <ZLWPN_xyGFrqqJkV@slm.duckdns.org>
- <op.178pr1qewjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <op.178te0tbwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+        Mon, 17 Jul 2023 16:38:36 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9521A191;
+        Mon, 17 Jul 2023 13:38:34 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36HJPEf4024052;
+        Mon, 17 Jul 2023 20:38:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=b3r2s2v9CXAaqUoHFOKo/VJRNxVE1aoRX/gfgtbGECA=;
+ b=E7yeWWgH6Dad7igAu/fMXSwADs4yEgEuonybI6lwBx2OdVwcl+kljpCPJSGBJLxxrFFQ
+ pMrdpP4pkBvgqqw18PTFLO7nbTWAVeDd/hQVQuL16hdVDMVbdTew/jGwe1jF2IFPedrj
+ 54W1RDk0V7wAv7ClUFnAWauVlAP/cez7n67xBHkWS8oOA+r2ya+CJAszU2w9L7/qthaU
+ e8SiPWniCGyx5CRBVo6CtZVJodJbNaPCUQTS7IXYPnJlEzldXy0k7QwDh2nVjPBmG/WE
+ fCbzcpq6NCx+t0EdgSAae2pL98ki9bP6zj4OGPNH9nfXpgNFMLoiQIlOZAPCiUXoeAmk QA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3run1jcfte-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 20:38:24 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36HKcNTk031261
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 20:38:23 GMT
+Received: from [10.71.108.91] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 17 Jul
+ 2023 13:38:22 -0700
+Message-ID: <9b8a01c5-3a82-a9a0-959b-d03e40966f55@quicinc.com>
+Date:   Mon, 17 Jul 2023 13:38:22 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <op.178te0tbwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 4/5] drm/msm/dp: move relevant dp initialization code
+ from bind() to probe()
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <andersson@kernel.org>
+CC:     <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
+        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
+        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1688773943-3887-1-git-send-email-quic_khsieh@quicinc.com>
+ <1688773943-3887-5-git-send-email-quic_khsieh@quicinc.com>
+ <121f82ad-9d5d-6d7f-b4ae-9a371ab49ef7@linaro.org>
+ <9df52052-93fd-75a4-b54c-02ed9554e15f@quicinc.com>
+ <3fa812d6-9222-065a-8b40-95c2f2c808a6@linaro.org>
+ <8bc82b4b-b169-a11b-9f5d-eb821b680af7@quicinc.com>
+ <9a9ec559-769c-d593-6eaa-45daa5966cb8@linaro.org>
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+In-Reply-To: <9a9ec559-769c-d593-6eaa-45daa5966cb8@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: -DEmvVULc15A4HTJMHPJ2WwEv0Rp8Yre
+X-Proofpoint-ORIG-GUID: -DEmvVULc15A4HTJMHPJ2WwEv0Rp8Yre
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_14,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ clxscore=1015 malwarescore=0 adultscore=0 phishscore=0 mlxlogscore=999
+ bulkscore=0 spamscore=0 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307170187
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On Mon, Jul 17, 2023 at 03:19:38PM -0500, Haitao Huang wrote:
-> Actually, we are using atomic_long_t for 'current' which is the same width
-> as long defined by arch/compiler. So new_usage should be long to be
-> consistent?
+On 7/17/2023 10:22 AM, Dmitry Baryshkov wrote:
+> On 17/07/2023 20:16, Kuogee Hsieh wrote:
+>>
+>> On 7/10/2023 11:13 AM, Dmitry Baryshkov wrote:
+>>> On 10/07/2023 19:57, Kuogee Hsieh wrote:
+>>>>
+>>>> On 7/7/2023 5:11 PM, Dmitry Baryshkov wrote:
+>>>>> On 08/07/2023 02:52, Kuogee Hsieh wrote:
+>>>>>> In preparation of moving edp of_dp_aux_populate_bus() to
+>>>>>> dp_display_probe(), move dp_display_request_irq(),
+>>>>>> dp->parser->parse() and dp_power_client_init() to dp_display_probe()
+>>>>>> too.
+>>>>>>
+>>>>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>>>>>> ---
+>>>>>>   drivers/gpu/drm/msm/dp/dp_display.c | 48 
+>>>>>> +++++++++++++++++--------------------
+>>>>>>   drivers/gpu/drm/msm/dp/dp_display.h |  1 -
+>>>>>>   2 files changed, 22 insertions(+), 27 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
+>>>>>> b/drivers/gpu/drm/msm/dp/dp_display.c
+>>>>>> index 44580c2..185f1eb 100644
+>>>>>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>>>>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>>>>>> @@ -290,12 +290,6 @@ static int dp_display_bind(struct device 
+>>>>>> *dev, struct device *master,
+>>>>>>           goto end;
+>>>>>>       }
+>>>>>>   -    rc = dp_power_client_init(dp->power);
+>>>>>> -    if (rc) {
+>>>>>> -        DRM_ERROR("Power client create failed\n");
+>>>>>> -        goto end;
+>>>>>> -    }
+>>>>>> -
+>>>>>>       rc = dp_register_audio_driver(dev, dp->audio);
+>>>>>>       if (rc) {
+>>>>>>           DRM_ERROR("Audio registration Dp failed\n");
+>>>>>> @@ -752,6 +746,12 @@ static int dp_init_sub_modules(struct 
+>>>>>> dp_display_private *dp)
+>>>>>>           goto error;
+>>>>>>       }
+>>>>>>   +    rc = dp->parser->parse(dp->parser);
+>>>>>> +    if (rc) {
+>>>>>> +        DRM_ERROR("device tree parsing failed\n");
+>>>>>> +        goto error;
+>>>>>> +    }
+>>>>>> +
+>>>>>>       dp->catalog = dp_catalog_get(dev, &dp->parser->io);
+>>>>>>       if (IS_ERR(dp->catalog)) {
+>>>>>>           rc = PTR_ERR(dp->catalog);
+>>>>>> @@ -768,6 +768,12 @@ static int dp_init_sub_modules(struct 
+>>>>>> dp_display_private *dp)
+>>>>>>           goto error;
+>>>>>>       }
+>>>>>>   +    rc = dp_power_client_init(dp->power);
+>>>>>> +    if (rc) {
+>>>>>> +        DRM_ERROR("Power client create failed\n");
+>>>>>> +        goto error;
+>>>>>> +    }
+>>>>>> +
+>>>>>>       dp->aux = dp_aux_get(dev, dp->catalog, dp->dp_display.is_edp);
+>>>>>>       if (IS_ERR(dp->aux)) {
+>>>>>>           rc = PTR_ERR(dp->aux);
+>>>>>> @@ -1196,26 +1202,20 @@ static irqreturn_t 
+>>>>>> dp_display_irq_handler(int irq, void *dev_id)
+>>>>>>       return ret;
+>>>>>>   }
+>>>>>>   -int dp_display_request_irq(struct msm_dp *dp_display)
+>>>>>> +static int dp_display_request_irq(struct dp_display_private *dp)
+>>>>>>   {
+>>>>>>       int rc = 0;
+>>>>>> -    struct dp_display_private *dp;
+>>>>>> -
+>>>>>> -    if (!dp_display) {
+>>>>>> -        DRM_ERROR("invalid input\n");
+>>>>>> -        return -EINVAL;
+>>>>>> -    }
+>>>>>> -
+>>>>>> -    dp = container_of(dp_display, struct dp_display_private, 
+>>>>>> dp_display);
+>>>>>> +    struct device *dev = &dp->pdev->dev;
+>>>>>>   -    dp->irq = irq_of_parse_and_map(dp->pdev->dev.of_node, 0);
+>>>>>>       if (!dp->irq) {
+>>>>>> -        DRM_ERROR("failed to get irq\n");
+>>>>>> -        return -EINVAL;
+>>>>>> +        dp->irq = irq_of_parse_and_map(dp->pdev->dev.of_node, 0);
+>>>>>> +        if (!dp->irq) {
+>>>>>> +            DRM_ERROR("failed to get irq\n");
+>>>>>> +            return -EINVAL;
+>>>>>> +        }
+>>>>>>       }
+>>>>>
+>>>>> Use platform_get_irq() from probe() function.
+>>>>>
+>>>>>>   -    rc = devm_request_irq(dp_display->drm_dev->dev, dp->irq,
+>>>>>> -            dp_display_irq_handler,
+>>>>>> +    rc = devm_request_irq(dev, dp->irq, dp_display_irq_handler,
+>>>>>>               IRQF_TRIGGER_HIGH, "dp_display_isr", dp);
+>>>>>
+>>>>>
+>>>>>>       if (rc < 0) {
+>>>>>>           DRM_ERROR("failed to request IRQ%u: %d\n",
+>>>>>> @@ -1290,6 +1290,8 @@ static int dp_display_probe(struct 
+>>>>>> platform_device *pdev)
+>>>>>>         platform_set_drvdata(pdev, &dp->dp_display);
+>>>>>>   +    dp_display_request_irq(dp);
+>>>>>> +
+>>>>>
+>>>>> Error checking?
+>>>>> Are we completely ready to handle interrupts at this point?
+>>>> not until dp_display_host_init() is called which will be called 
+>>>> from pm_runtime_resume() later.
+>>>
+>>> But once you request_irq(), you should be ready for the IRQs to be 
+>>> delivered right away.
+>>
+>> At this point, the DP controller interrupts mask bit is not enabled yet.
+>>
+>> Therefore interrupts will not happen until dp_bridge_hpd_enable() is 
+>> called to initialize dp host controller and then enabled mask bits.
+>
+> Are AUX and CTRL interrupts also disabled? What about any 
+> stray/pending interrupts? Just take it as a rule of thumb. Once 
+> request_irq() has been called without the IRQ_NOAUTOEN flag, the 
+> driver should be prepared to handle the incoming interrupt requests.
 
-We can use atomic64_t, right? It's slower on 32bit machines but I think it'd
-be better to guarantee resource counter range than micro-optimizing charge
-operations. None of the current users are hot enough for this to matter and
-if somebody becomes that hot, the difference between atomic_t and atomic64_t
-isn't gonna matter that much. We'd need to batch allocations per-cpu and so
-on.
+yes, both AUX and CTRL are disabled.
 
-> ditto for event counter. Only max is plain unsigned long but I think it is
-> also OK as it only compared with 'current' without any arithmetic ops
-> involved.
-> Did I miss something here?
+edp population do need irq to handle aux transfer during probe.
 
-I'm saying that it'd be better to make everything explicitly 64bit.
+it should work by checking core_initialized flag at irq handle to filter 
+out stray/pending interrupts.
 
-Thanks.
-
--- 
-tejun
+>
+>>>>>>       rc = component_add(&pdev->dev, &dp_display_comp_ops);
+>>>>>>       if (rc) {
+>>>>>>           DRM_ERROR("component add failed, rc=%d\n", rc);
+>>>>>> @@ -1574,12 +1576,6 @@ int msm_dp_modeset_init(struct msm_dp 
+>>>>>> *dp_display, struct drm_device *dev,
+>>>>>>         dp_priv = container_of(dp_display, struct 
+>>>>>> dp_display_private, dp_display);
+>>>>>>   -    ret = dp_display_request_irq(dp_display);
+>>>>>> -    if (ret) {
+>>>>>> -        DRM_ERROR("request_irq failed, ret=%d\n", ret);
+>>>>>> -        return ret;
+>>>>>> -    }
+>>>>>> -
+>>>>>>       ret = dp_display_get_next_bridge(dp_display);
+>>>>>>       if (ret)
+>>>>>>           return ret;
+>>>>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.h 
+>>>>>> b/drivers/gpu/drm/msm/dp/dp_display.h
+>>>>>> index 1e9415a..b3c08de 100644
+>>>>>> --- a/drivers/gpu/drm/msm/dp/dp_display.h
+>>>>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.h
+>>>>>> @@ -35,7 +35,6 @@ struct msm_dp {
+>>>>>>   int dp_display_set_plugged_cb(struct msm_dp *dp_display,
+>>>>>>           hdmi_codec_plugged_cb fn, struct device *codec_dev);
+>>>>>>   int dp_display_get_modes(struct msm_dp *dp_display);
+>>>>>> -int dp_display_request_irq(struct msm_dp *dp_display);
+>>>>>>   bool dp_display_check_video_test(struct msm_dp *dp_display);
+>>>>>>   int dp_display_get_test_bpp(struct msm_dp *dp_display);
+>>>>>>   void dp_display_signal_audio_start(struct msm_dp *dp_display);
+>>>>>
+>>>
+>
