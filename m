@@ -2,156 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B072755F17
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCA0755F1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbjGQJUA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Jul 2023 05:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34178 "EHLO
+        id S230197AbjGQJUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 05:20:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbjGQJT6 (ORCPT
+        with ESMTP id S230173AbjGQJUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 05:19:58 -0400
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 040C910DC
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:19:58 -0700 (PDT)
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-57012b2973eso42872157b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:19:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689585597; x=1692177597;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iL6H4V2XU8kmGm5fHcmeXtpvI5hQ0R0kS2i0q5dCFTY=;
-        b=ZUYkseGLd2sSg/2oidILxltPD+5QPgunUdy+jFYV7Tv3wf6e5cKuD/dzOqvktFhy0I
-         RLkchAq8hU+MARXOQlS45hnPA9cQ1xCGsC8sUbRg12ii005nubir/lBR/It3nvuc0p2h
-         ztJk0ep7glXq2u9nbEpcX1R3Qp6wn5uVXr7ryCvx9XQPrmaFgJWKxHUuh0dwOeIbaWbP
-         E1+U/duVcRJhbURksKVZQhqDJINkZXNC+JIGUeXe0/2Ask0eLoFfXHhzAfYUuXM9wfnZ
-         zE9E2kweLpmhmcNsMgywx10NlRc3wVwoM+v2TD9BL1jRvZpASeJC5bKycoNMU/5Iou49
-         DFzA==
-X-Gm-Message-State: ABy/qLZTcuDJqV7Ak517ZHcu46Ah1Ui6mCJmjZOnrFX5o3g7d+UrWRGR
-        FuPIJwNqnZ/iBsUQtt2D2OVQZZppfWtCEQ==
-X-Google-Smtp-Source: APBJJlEBC06W7JnHdb82lORTZCrCUdg1I85j73NWJf8qZFgS8Vtgm2w1cHIXlhKGI6ePWrI9clJaVg==
-X-Received: by 2002:a0d:d801:0:b0:56d:824e:d93f with SMTP id a1-20020a0dd801000000b0056d824ed93fmr11753889ywe.38.1689585597012;
-        Mon, 17 Jul 2023 02:19:57 -0700 (PDT)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id s64-20020a0de943000000b005704a372ce7sm3723383ywe.125.2023.07.17.02.19.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 02:19:56 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-cabf1dbafc4so4379488276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:19:56 -0700 (PDT)
-X-Received: by 2002:a25:6ec3:0:b0:c8b:7d63:72b0 with SMTP id
- j186-20020a256ec3000000b00c8b7d6372b0mr10263134ybc.10.1689585596517; Mon, 17
- Jul 2023 02:19:56 -0700 (PDT)
+        Mon, 17 Jul 2023 05:20:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C95510DF
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:20:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CD1CA60FD6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:20:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3261AC433C7;
+        Mon, 17 Jul 2023 09:20:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689585622;
+        bh=Voa/CSNqktkN5jIfp0OuJb79V2cagau1IrqZEU2/c6E=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=bMXLX9AauZcIQsd1rGLfEyN8HlJkSrqwf7M5vMRTLmz2jrSaMcZ2xvumWrC+cQVY5
+         ez/uhDRS7+wAC93nFfUdM8bgONbNsyT8fmesidXOrryn1pT2OTyNy8KR2tEqWpoWMW
+         6UKJDxc5lGuu4I5hj5GleC2BKRcehrtElhO5lbb1bjFT1aueWTC0eqo5CPzqr5ovfx
+         YQoWTx275TbFDFxouASA9yG/LqAu88YQmzhhCOiDCPjWcAFdpjgMhWQLgXCyZO+mR8
+         OPYJsgLCDYYetZ+rJJw/a8UPMJZtDDjOTVvoCgSgpWChiBUJKxM2KhFBXVpPTXqMQx
+         hhfgDsPmCzSZg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2077DE29F32;
+        Mon, 17 Jul 2023 09:20:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <cover.1689252746.git.geert@linux-m68k.org> <87zg3w7zlz.fsf@minerva.mail-host-address-is-not-set>
- <CAMuHMdV_qNfytroBEfqDMe04POt27s9o=FevXht7N4YXRmBz8Q@mail.gmail.com> <87o7kakijn.fsf@minerva.mail-host-address-is-not-set>
-In-Reply-To: <87o7kakijn.fsf@minerva.mail-host-address-is-not-set>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 17 Jul 2023 11:19:45 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdURa8E9cmphbDkTgS2o3ORWd7JAj68PV9bxd3aygKZRJg@mail.gmail.com>
-Message-ID: <CAMuHMdURa8E9cmphbDkTgS2o3ORWd7JAj68PV9bxd3aygKZRJg@mail.gmail.com>
-Subject: Re: [PATCH 0/8] drm: fb-helper/ssd130x: Add support for DRM_FORMAT_R1
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 0/6] net: phy: at803x: support qca8081 1G version chip
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168958562212.29409.8301837233101770893.git-patchwork-notify@kernel.org>
+Date:   Mon, 17 Jul 2023 09:20:22 +0000
+References: <20230716084924.9714-1-quic_luoj@quicinc.com>
+In-Reply-To: <20230716084924.9714-1-quic_luoj@quicinc.com>
+To:     Jie Luo <quic_luoj@quicinc.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Javier,
+Hello:
 
-On Mon, Jul 17, 2023 at 11:13 AM Javier Martinez Canillas
-<javierm@redhat.com> wrote:
-> Geert Uytterhoeven <geert@linux-m68k.org> writes:
-> > On Sun, Jul 16, 2023 at 3:30 PM Javier Martinez Canillas
-> > <javierm@redhat.com> wrote:
-> >> Geert Uytterhoeven <geert@linux-m68k.org> writes:
-> >> > The native display format of ssd1306 OLED displays is monochrome
-> >> > light-on-dark (R1).  This patch series adds support for the R1 buffer
-> >> > format to both the ssd130x DRM driver and the FB helpers, so monochrome
-> >> > applications (including fbdev emulation and the text console) can avoid
-> >> > the overhead of back-and-forth conversions between R1 and XR24.
-> >>
-> >> I've tested your series on a ssd1306 I2C OLED panel and fbcon did work for
-> >> me, but had some issues when trying to run your fbtest suite. Because the
-> >
-> > Thanks, due to the limited userspace environment on my RV32 test system,
-> > I didn't run fbtest myself.
-> >
->
-> You are welcome.
->
-> >> test005 gets killed with a SIGSEGV.
-> >>
-> >> $ ./fbtest -d
-> >> fb_init()
-> >> fb_open()
-> >> fb_get_var()
-> >> fb_get_fix()
-> >> fb_map()
-> >> fb_start = 0, fb_offset = 0, fb_len = 1000
-> >
-> >    [...]
-> >
-> >> Running test test005
-> >> Caught signal 11. Exiting
-> >
-> > Strange.
-> >
-> >> Maybe more tests are missing the minimum num_colors requirement? Also, the
-> >
-> > On monochrome, test005 should make the left half of the screen black,
-> > and the right half white.  It works on ARAnyM, and there don't seem
-> > to be off-by-one errors in the call to fill_rect().
-> > Can you please run this under gdb or valgrind?
-> >
->
-> Sure. I only spent my free time on these panels though so likely will do
-> during the week or more likely the weekend. I believe the bug is somewhere
-> in the test though and not in your kernel patches.
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-OK.
+On Sun, 16 Jul 2023 16:49:18 +0800 you wrote:
+> This patch series add supporting qca8081 1G version chip, the 1G version
+> chip can be identified by the register mmd7.0x901d bit0.
+> 
+> In addition, qca8081 does not support 1000BaseX mode and the sgmii fifo
+> reset is added on the link changed, which assert the fifo on the link
+> down, deassert the fifo on the link up.
+> 
+> [...]
 
-> >> penguin in test004 is not displayed correctly. I was expecting that to be
-> >> working correctly since you mentioned to be using the Linux logo on boot.
-> >
-> > Linux has logos for displays using 2, 16, and 256 colors. Note that the
-> > default logos are 80x80, which is larger than your display, so no logo
-> > is drawn.
-> > Fbtest has only the full color logo, so it will look bad on a monochrome
-> > display.
->
-> I see. Should the test check for minimum num_colors and skip that test then?
+Here is the summary with links:
+  - [v3,1/6] net: phy: at803x: support qca8081 genphy_c45_pma_read_abilities
+    https://git.kernel.org/netdev/net-next/c/8b8bc13d89a7
+  - [v3,2/6] net: phy: at803x: merge qca8081 slave seed function
+    https://git.kernel.org/netdev/net-next/c/f3db55ae860a
+  - [v3,3/6] net: phy: at803x: enable qca8081 slave seed conditionally
+    https://git.kernel.org/netdev/net-next/c/7cc320955800
+  - [v3,4/6] net: phy: at803x: support qca8081 1G chip type
+    https://git.kernel.org/netdev/net-next/c/fea7cfb83d1a
+  - [v3,5/6] net: phy: at803x: remove qca8081 1G fast retrain and slave seed config
+    https://git.kernel.org/netdev/net-next/c/df9401ff3e6e
+  - [v3,6/6] net: phy: at803x: add qca8081 fifo reset on the link changed
+    https://git.kernel.org/netdev/net-next/c/723970affdd8
 
-The test still works (you did see an ugly black-and-white penguin), doesn't it?
-
-> When you post v2, feel free to add:
->
-> Tested-by: Javier Martinez Canillas <javierm@redhat.com>
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+You are awesome, thank you!
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
