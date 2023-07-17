@@ -2,74 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B78756010
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 12:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F250875600F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 12:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbjGQKHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 06:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60540 "EHLO
+        id S229696AbjGQKGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 06:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjGQKG6 (ORCPT
+        with ESMTP id S229470AbjGQKGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 06:06:58 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62C3107
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 03:06:56 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-403f21d3c2dso66141cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 03:06:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689588416; x=1692180416;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U5jr9e8QR2CE+jx7hoK3GYY7WZVYLsVZnNa64/yh+4I=;
-        b=uCnJPisDxbxoSg9iZIjEFb2x+X9zbUG6vyd41nBHxaEmhrNt2YBpuSx3cYUyKHPq74
-         utL0TXKl1roD8amFlbIe3Pc7S9swevZuGTWT2bYRijFOMoWuvNDmeSgPJqChYojFidJZ
-         uAfVmbfZptzUJBTW8Wr4WbInuVICD1E7GjpWmnMgSFcJwm8EfE3fiUkVd79WDAuviW+E
-         9m63548nzRPE2iPsimlvy9WhMaDOawHTUBVdJfCAERtM3zFzDSw5jQB6LdRudG5lMo5I
-         wkRPiYjX9ddjcmHtrAEfzWhDGfj/2wq6OU2NLl7bwH2/x6JBEZio2Aw8p838LokZGgJH
-         DTUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689588416; x=1692180416;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U5jr9e8QR2CE+jx7hoK3GYY7WZVYLsVZnNa64/yh+4I=;
-        b=gU2ct2p8aqMvDXjF2fNFc7ZTBPkElm6tV73MnLkVRLN77miXStEKt/g3dZ93ARTOLr
-         2V1dPE58AmLokdOJngP3llHXXSXxClo/0rGkta4X+uEdFDg2EAPT5FJfhSs6Ax2gfgLI
-         FLhDNtBBXGnWERhmsfEsxmX7B2nrcHsZoUg96cJnE6WJB4SRLH/DdzYvW6kxcjTN7gVS
-         E3WwTgB6Nb5VARZ+i2Jpubq/VeEJEtvhtSCBT97RWi652kUjSWD4tqkZ6dnTmP+LXL7a
-         7EXAzRC90FvZsv269JXbjtUhz65uPQFW7tLt60BYGu4ZM+PlzBVJ36Ox9abgJ+HHgNTM
-         LbPw==
-X-Gm-Message-State: ABy/qLbM/KUHEgZwCJc5GSDJiboUGmD2a9LnAD1iF8tVDiAYjxk2h/0N
-        Lr47hjxKIxGEKRVOgWFCuRtqVu3nWZ36jQYBE9t5WQ==
-X-Google-Smtp-Source: APBJJlHk3I92nOg/KDAqxcg+hjcLwfd3/yj6Vd5EH/l1EKkLJt7jrWGYw4/lnPg102I8xgYoY8Lxr3GVek0aOdLOlIM=
-X-Received: by 2002:a05:622a:1355:b0:403:eeb9:a76 with SMTP id
- w21-20020a05622a135500b00403eeb90a76mr122576qtk.17.1689588415600; Mon, 17 Jul
- 2023 03:06:55 -0700 (PDT)
+        Mon, 17 Jul 2023 06:06:39 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9911E91;
+        Mon, 17 Jul 2023 03:06:38 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 94BCBD75;
+        Mon, 17 Jul 2023 03:07:21 -0700 (PDT)
+Received: from [10.57.31.114] (unknown [10.57.31.114])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4061A3F67D;
+        Mon, 17 Jul 2023 03:06:36 -0700 (PDT)
+Message-ID: <0844022b-cf2a-dadb-9340-9107cd40169b@arm.com>
+Date:   Mon, 17 Jul 2023 11:07:05 +0100
 MIME-Version: 1.0
-References: <20230621063825.268890-1-mshavit@google.com> <20230621063825.268890-3-mshavit@google.com>
- <ZK9RycgNAVrxe343@Asurada-Nvidia> <CAKHBV26wi+xKnNjo-R+QOcVLPH2KJTFP+mF4CW1xE61nOdF5GA@mail.gmail.com>
- <ZLAKQw+DzcpSRSyi@nvidia.com> <CAKHBV25YadRVFiag5z5Yc13L093ScWkCjAOCd=VuGm2RUaDyzA@mail.gmail.com>
- <ZLApQjaqoOshT2TJ@nvidia.com> <CAKHBV25BRWTxXO0YTGq3q1OdMQHAzop8BqJJaa9CHxdQzxnNbg@mail.gmail.com>
- <ZLFLyh1b+wiqb7Ql@nvidia.com>
-In-Reply-To: <ZLFLyh1b+wiqb7Ql@nvidia.com>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Mon, 17 Jul 2023 18:06:19 +0800
-Message-ID: <CAKHBV24zQ+4waZgsYV08LzeMkjze1gTcwvEv5uL8RM1GcBgrzg@mail.gmail.com>
-Subject: Re: [PATCH v4 02/13] iommu/arm-smmu-v3: Add smmu_s1_cfg to smmu_master
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Nicolin Chen <nicolinc@nvidia.com>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>, jean-philippe@linaro.org,
-        baolu.lu@linux.intel.com, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH V5] thermal/core/power_allocator: reset thermal governor
+ when trip point is changed
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Di Shen <di.shen@unisoc.com>, rafael@kernel.org, amitk@kernel.org,
+        rui.zhang@intel.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xuewen.yan@unisoc.com,
+        jeson.gao@unisoc.com, orsonzhai@gmail.com, zhanglyra@gmail.com,
+        Di Shen <cindygm567@gmail.com>
+References: <20230710033234.28641-1-di.shen@unisoc.com>
+ <6d3f24a4-ae70-49eb-6e41-86baa1db6bed@linaro.org>
+ <CAHYJL4og14kQ4ev6QtDQeknJELME7URTN_HmR01P5+2RhpthzQ@mail.gmail.com>
+ <f7cf2153-aa22-d376-f776-54ea940a5e35@linaro.org>
+ <CAHYJL4p7FEjLTZURA6fvVPCmwKodmxWS7fNpi_c0ZFBX7yjDZQ@mail.gmail.com>
+ <33508f0e-414f-a990-29ad-58e43d20374b@linaro.org>
+Content-Language: en-US
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <33508f0e-414f-a990-29ad-58e43d20374b@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,44 +54,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 9:21=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> wr=
-ote:
-> patch 2 should delete arm_smmu_s1_cfg and just put
-> arm_smmu_ctx_desc_cfg directly in the master. arm_smmu_ctx_desc_cfg is
-> a weird name for the contex descriptor table, but it is much less
-> weird than s1_cfg. As you say s1fmt/s1cdmax are redundant.
+Hi Daniel,
 
-s1fmt is fairly trivial to replace but s1cdmax requires inversing
-previous computations. I don't really buy that getting rid of it
-simplifies anything, even if it's technically redundant.
 
-> patch 3 I don't understand, we should not add something called
-> s1_cfg/s2_cfg to the master. The master should have
-> 'arm_smmu_ctx_desc_cfg cd_table' and 'arm_smmu_domain ste_domain'
+On 7/11/23 09:23, Daniel Lezcano wrote:
+> 
+> Hi Di,
+> 
+> On 11/07/2023 05:40, Di Shen wrote:
+> 
+> [ ... ]
+> 
+>>>>>> +static void power_allocator_reset(struct thermal_zone_device *tz)
+>>>>>> +{
+>>>>>> +     struct power_allocator_params *params = tz->governor_data;
+>>>>>> +
+>>>>>> +     reset_pid_controller(params);
+>>>>>> +     allow_maximum_power(tz, true);
+>>>>>
+>>>>> Do you really want to allow the maximum power? What about if the trip
+>>>>> temperature is decreased ?
+>>>>>
+>>>> If the trip temperature is decreased, allow_maximum_power will only
+>>>> be executed once, and then the ipa governor will adapt to the lower 
+>>>> trip
+>>>> temperature and calculate the allocated power for cooling actors again.
+>>>> Right?
+>>>
+>>> Sorry for jumping in this fifth version but I'm not sure about resetting
+>>> the change is the right way (and probably, changing a trip point with
+>>> the power allocator is not a good idea)
+>>>
+>>> The platforms where the IPA is planned to be used are creating a dummy
+>>> trip point where the IPA begins the acquisition without cooling devices
+>>> in order to have the math building the PID schema (eg. hi3660.dtsi).
+>>>
+>>> What about the sustainable power vs the trip point temperature? I mean
+>>> we can change the trip temperature but not the sustainable power which
+>>> is directly related to the target temperature. So the resulting power
+>>> computation will be wrong.
+>>>
+>> I totally agree, thanks for reminding me. Sustainable power is the 
+>> maximum
+>> power available at the target temperature, so it must be updated when 
+>> the trip
+>> point is changed. Sorry for missing this point. How about calling
+>> get_sustainable_power() to update the sustainable_power? Furthermore, 
+>> when
+>> the sustainble_power() is changed, the pid constants tzp->k_* must be 
+>> estimated
+>> again. In get_sustainble_power, it checks that the sustainable_power 
+>> is updated,
+>> it will call the estimate_pid_constants() to renew the tzp->k_*.
+> 
+> Yes and the sustainable power can be set from userspace too.
+> 
+> So here we have to distinguish what is related to the thermal setup and 
+> the thermal usage.
+> 
+> Actually the thermal framework should protect the information from the 
+> firmware. It is not acceptable to have an user being able to change the 
+> trip points provided by the firmware.
+> 
+> The writable trip point should allow only temperature changes below the 
+> ones given in the firmware.
+> 
+>>> The more I think about that, the more I do believe writable trip point
+>>> and IPA are incompatible.
+>>>
+>>> What about forbid that?
+>>>
+>>> For instance, add a set_trip callback instead of resetting in the
+>>> governor and return -EPERM from the IPA?
+>>>
+>> I've seen that you have sent a patch recently which adds the callback
+>> thermal_zone_trips_update(), is that what you said set_trip callback?
+> 
+> Not exactly.
+> 
+> Instead of adding a 'reset' callback, add a 'trip_update' (or whatever 
+> the name) callback.
+> 
+> Then pass the trip point to the callback along with the thermal zone.
+> 
+> int ipa_trip_update(struct thermal_zone_device *tz,
+>              struct thermal_trip *trip)
+> {
+>      // Do more IPA crazy stuff or return -EPERM
+> }
+> 
+> 
+>>> Lukasz ?
+> 
+> Lukasz? what do you think?
+> 
+> 
 
-This was simply meant to be a more convenient way of finding the
-currently active cdtable from the
-arm_smmu_write_ctx_desc/write_strtab_ent functions without having to
-inspect the currently attached domain. But sure, that's easy enough to
-revert.
+My apologies for delay, I was on 2-weeks vacation. I'll catch up and
+respond to those questions.
 
-> patch 5 makes sense, but something seems odd about the order as we
-> somehow half moved it in patch 2?
-Ack; patch 2 can be reordered to come after patch 4, or even squashed
-with 5 if you prefer.
-
-> My suggestion for patch structure is to start by cleaning up the CD
-> table object. Make arm_smmu_ctx_desc_cfg the CD table, remove the
-> redudencies, remove arm_s1_cfg, clean the CD table APIs to only use
-> 'struct arm_smmu_ctx_desc_cfg *', add the 'ste_domain' to the master,
-> and then as the last step just move the arm_smmu_ctx_desc_cfg from the
-> iommu_domain to the master.
->
-> And that is a nice little series on its own - you end up with a shared
-> CD table in the master, and no CD table in any domains.
-
-I don't entirely buy that refactoring s1_cfg is worth the extra
-effort, nor that it should be tied to this patch series. This series
-already makes s1_cfg behave as the CD table; whether we want to
-entirely get rid of pre-computed data useful for writing an STE sounds
-like a separate cleanup.
+Regards,
+Lukasz
