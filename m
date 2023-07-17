@@ -2,259 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EA4755B28
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAB6755B19
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbjGQGGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 02:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
+        id S230479AbjGQGEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 02:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231349AbjGQGGT (ORCPT
+        with ESMTP id S229725AbjGQGEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 02:06:19 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638F9E4B;
-        Sun, 16 Jul 2023 23:06:14 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R4BMZ4S3BztR7q;
-        Mon, 17 Jul 2023 14:03:06 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 17 Jul 2023 14:06:10 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH v2 for-rc 3/3] RDMA/hns: Add check and adjust for function resource values
-Date:   Mon, 17 Jul 2023 14:03:40 +0800
-Message-ID: <20230717060340.453850-4-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230717060340.453850-1-huangjunxian6@hisilicon.com>
-References: <20230717060340.453850-1-huangjunxian6@hisilicon.com>
+        Mon, 17 Jul 2023 02:04:42 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AFD71A2;
+        Sun, 16 Jul 2023 23:04:38 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36H5fVVI029153;
+        Mon, 17 Jul 2023 06:04:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=B9GtKlwnztF0FiPj/X/9qJH2wGXsUE01gQZoOBUtfeY=;
+ b=fvRgA1f4Y4JTR5ywi1bqhwKHTA8Mt3mQv67oOFAxz8hSDedSK071B64IUt5oJyfD0joE
+ A73JytdUEJF+OECffOHPE1/9RBzLeIFMS2nb3q9aPQjc8OSxKl3VNm+ak+vkgbw+Cydo
+ xKrY04zxES+kfIe30FhLeFsI0LWSFOn+sM0VVg6YIe4avx2jeF7fQy254VAvChW3APjZ
+ K7opLks/5tGLqDz0QK9mGYIvzlBHfCT2d/6mQ9vKWI8xsbwsRz9JGxIZxryhQdkaoW6P
+ aQcll0AJmNpn1g/XHO5uRxBvFPT821BnhOb4L9it9cWlz7nSWp0jzpm/0bDCyQf2EVXS jw== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3run1gjjta-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 06:04:29 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36H64SHt008247
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 06:04:28 GMT
+Received: from [10.216.42.53] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sun, 16 Jul
+ 2023 23:04:22 -0700
+Message-ID: <986b0cbe-23b8-9347-8b08-6968c306ec1c@quicinc.com>
+Date:   Mon, 17 Jul 2023 11:34:13 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V3 4/6] clk: qcom: gcc-qdu1000: Update GCC clocks as per
+ the latest hw version
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     Bjorn Andersson <andersson@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Melody Olvera <quic_molvera@quicinc.com>,
+        "Dmitry Baryshkov" <dmitry.baryshkov@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>,
+        Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
+        Ajit Pandey <quic_ajipan@quicinc.com>
+References: <20230706105045.633076-1-quic_imrashai@quicinc.com>
+ <20230706105045.633076-5-quic_imrashai@quicinc.com>
+ <a2d362d0-3a58-0835-5106-fb60f0c3e4d0@linaro.org>
+Content-Language: en-US
+From:   Imran Shaik <quic_imrashai@quicinc.com>
+In-Reply-To: <a2d362d0-3a58-0835-5106-fb60f0c3e4d0@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: HfdmzrGXXC3Gmj2MJLFuzzpdd1pZuSZ2
+X-Proofpoint-GUID: HfdmzrGXXC3Gmj2MJLFuzzpdd1pZuSZ2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_04,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 suspectscore=0 phishscore=0
+ malwarescore=0 clxscore=1015 bulkscore=0 adultscore=0 lowpriorityscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307170054
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, RoCE driver gets function resource values from firmware
-without validity check. As these resources are mostly related to memory,
-an invalid value may lead to serious consequence such as kernel panic.
 
-This patch adds check for these resource values and adjusts the invalid
-ones.
 
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 115 ++++++++++++++++++++-
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h |  37 +++++++
- 2 files changed, 148 insertions(+), 4 deletions(-)
+On 7/15/2023 6:50 PM, Konrad Dybcio wrote:
+> On 6.07.2023 12:50, Imran Shaik wrote:
+>> Update the GCC clocks as per the latest hw version of QDU1000 and
+>> QRU100 SoCs.
+>>
+>> Co-developed-by: Taniya Das <quic_tdas@quicinc.com>
+>> Signed-off-by: Taniya Das <quic_tdas@quicinc.com>
+>> Signed-off-by: Imran Shaik <quic_imrashai@quicinc.com>
+>> ---
+>> Changes since v2:
+>>   - Split the patch as per the review comments
+>>   - Newly added
+>>
+>>   drivers/clk/qcom/gcc-qdu1000.c | 22 ++++++++++++++++++++++
+>>   1 file changed, 22 insertions(+)
+>>
+>> diff --git a/drivers/clk/qcom/gcc-qdu1000.c b/drivers/clk/qcom/gcc-qdu1000.c
+>> index 8df7b7983968..991fb2bc97e9 100644
+>> --- a/drivers/clk/qcom/gcc-qdu1000.c
+>> +++ b/drivers/clk/qcom/gcc-qdu1000.c
+>> @@ -1131,6 +1131,26 @@ static struct clk_branch gcc_ddrss_ecpri_dma_clk = {
+>>   	},
+>>   };
+>>   
+>> +static struct clk_branch gcc_ddrss_ecpri_gsi_clk = {
+>> +	.halt_reg = 0x54298,
+>> +	.halt_check = BRANCH_HALT_VOTED,
+>> +	.hwcg_reg = 0x54298,
+>> +	.hwcg_bit = 1,
+>> +	.clkr = {
+>> +		.enable_reg = 0x54298,
+>> +		.enable_mask = BIT(0),
+>> +		.hw.init = &(const struct clk_init_data) {
+>> +			.name = "gcc_ddrss_ecpri_gsi_clk",
+>> +			.parent_hws = (const struct clk_hw*[]) {
+>> +				&gcc_aggre_noc_ecpri_gsi_clk_src.clkr.hw,
+>> +			},
+>> +			.num_parents = 1,
+>> +			.flags = CLK_SET_RATE_PARENT,
+>> +			.ops = &clk_branch2_aon_ops,
+>> +		},
+>> +	},
+>> +};
+>> +
+>>   static struct clk_branch gcc_ecpri_ahb_clk = {
+>>   	.halt_reg = 0x3a008,
+>>   	.halt_check = BRANCH_HALT_VOTED,
+>> @@ -2521,6 +2541,8 @@ static struct clk_regmap *gcc_qdu1000_clocks[] = {
+>>   	[GCC_AGGRE_NOC_ECPRI_GSI_CLK] = &gcc_aggre_noc_ecpri_gsi_clk.clkr,
+>>   	[GCC_PCIE_0_PHY_AUX_CLK_SRC] = &gcc_pcie_0_phy_aux_clk_src.clkr,
+>>   	[GCC_PCIE_0_PIPE_CLK_SRC] = &gcc_pcie_0_pipe_clk_src.clkr,
+>> +	[GCC_GPLL1_OUT_EVEN] = &gcc_gpll1_out_even.clkr,
+> Looks like you split it too much.. this clock is not being defined in this patch.
+> 
+> Konrad
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index c4b92d8bd98a..f5649fd25042 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1650,6 +1650,97 @@ static int hns_roce_config_global_param(struct hns_roce_dev *hr_dev)
- 	return hns_roce_cmq_send(hr_dev, &desc, 1);
- }
- 
-+static const struct hns_roce_bt_num {
-+	u32 res_offset;
-+	u32 min;
-+	u32 max;
-+	enum hns_roce_res_invalid_flag invalid_flag;
-+	enum hns_roce_res_revision revision;
-+	bool vf_support;
-+} bt_num_table[] = {
-+	{RES_OFFSET_IN_CAPS(qpc_bt_num), 1,
-+	 MAX_QPC_BT_NUM, QPC_BT_NUM_INVALID_FLAG, RES_FOR_ALL, true},
-+	{RES_OFFSET_IN_CAPS(srqc_bt_num), 1,
-+	 MAX_SRQC_BT_NUM, SRQC_BT_NUM_INVALID_FLAG, RES_FOR_ALL, true},
-+	{RES_OFFSET_IN_CAPS(cqc_bt_num), 1,
-+	 MAX_CQC_BT_NUM, CQC_BT_NUM_INVALID_FLAG, RES_FOR_ALL, true},
-+	{RES_OFFSET_IN_CAPS(mpt_bt_num), 1,
-+	 MAX_MPT_BT_NUM, MPT_BT_NUM_INVALID_FLAG, RES_FOR_ALL, true},
-+	{RES_OFFSET_IN_CAPS(sl_num), 1,
-+	 MAX_SL_NUM, QID_NUM_INVALID_FLAG, RES_FOR_ALL, true},
-+	{RES_OFFSET_IN_CAPS(sccc_bt_num), 1,
-+	 MAX_SCCC_BT_NUM, SCCC_BT_NUM_INVALID_FLAG, RES_FOR_ALL, true},
-+	{RES_OFFSET_IN_CAPS(qpc_timer_bt_num), 1,
-+	 MAX_QPC_TIMER_BT_NUM, QPC_TIMER_BT_NUM_INVALID_FLAG,
-+	 RES_FOR_ALL, false},
-+	{RES_OFFSET_IN_CAPS(cqc_timer_bt_num), 1,
-+	 MAX_CQC_TIMER_BT_NUM, CQC_TIMER_BT_NUM_INVALID_FLAG,
-+	 RES_FOR_ALL, false},
-+	{RES_OFFSET_IN_CAPS(gmv_bt_num), 1,
-+	 MAX_GMV_BT_NUM, GMV_BT_NUM_INVALID_FLAG,
-+	 RES_FOR_HIP09, true},
-+	{RES_OFFSET_IN_CAPS(smac_bt_num), 1,
-+	 MAX_SMAC_BT_NUM, SMAC_BT_NUM_INVALID_FLAG,
-+	 RES_FOR_HIP08, true},
-+	{RES_OFFSET_IN_CAPS(sgid_bt_num), 1,
-+	 MAX_SGID_BT_NUM, SGID_BT_NUM_INVALID_FLAG,
-+	 RES_FOR_HIP08, true},
-+};
-+
-+static bool check_res_is_supported(struct hns_roce_dev *hr_dev,
-+				   struct hns_roce_bt_num *bt_num_entry)
-+{
-+	if (!bt_num_entry->vf_support && hr_dev->is_vf)
-+		return false;
-+
-+	if (bt_num_entry->revision == RES_FOR_HIP09 &&
-+	    hr_dev->pci_dev->revision <= PCI_REVISION_ID_HIP08)
-+		return false;
-+
-+	if (bt_num_entry->revision == RES_FOR_HIP08 &&
-+	    hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
-+		return false;
-+
-+	return true;
-+}
-+
-+static void adjust_eqc_bt_num(struct hns_roce_caps *caps, u16 *invalid_flag)
-+{
-+	if (caps->eqc_bt_num < caps->num_comp_vectors + caps->num_aeq_vectors ||
-+	    caps->eqc_bt_num > MAX_EQC_BT_NUM) {
-+		caps->eqc_bt_num = caps->eqc_bt_num > MAX_EQC_BT_NUM ?
-+				   MAX_EQC_BT_NUM : caps->num_comp_vectors +
-+						    caps->num_aeq_vectors;
-+		*invalid_flag |= 1 << EQC_BT_NUM_INVALID_FLAG;
-+	}
-+}
-+
-+static u16 adjust_res_caps(struct hns_roce_dev *hr_dev)
-+{
-+	struct hns_roce_caps *caps = &hr_dev->caps;
-+	u16 invalid_flag = 0;
-+	u32 min, max;
-+	u32 *res;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(bt_num_table); i++) {
-+		if (!check_res_is_supported(hr_dev, &bt_num_table[i]))
-+			continue;
-+
-+		res = (u32 *)((void *)caps + bt_num_table[i].res_offset);
-+		min = bt_num_table[i].min;
-+		max = bt_num_table[i].max;
-+		if (*res < min || *res > max) {
-+			*res = *res < min ? min : max;
-+			invalid_flag |= 1 << bt_num_table[i].invalid_flag;
-+		}
-+	}
-+
-+	adjust_eqc_bt_num(caps, &invalid_flag);
-+
-+	return invalid_flag;
-+}
-+
- static int load_func_res_caps(struct hns_roce_dev *hr_dev, bool is_vf)
- {
- 	struct hns_roce_cmq_desc desc[2];
-@@ -1730,11 +1821,19 @@ static int hns_roce_query_pf_resource(struct hns_roce_dev *hr_dev)
- 	}
- 
- 	ret = load_pf_timer_res_caps(hr_dev);
--	if (ret)
-+	if (ret) {
- 		dev_err(dev, "failed to load pf timer resource, ret = %d.\n",
- 			ret);
-+		return ret;
-+	}
- 
--	return ret;
-+	ret = adjust_res_caps(hr_dev);
-+	if (ret)
-+		dev_warn(dev,
-+			 "invalid resource values have been adjusted, invalid_flag = 0x%x.\n",
-+			 ret);
-+
-+	return 0;
- }
- 
- static int hns_roce_query_vf_resource(struct hns_roce_dev *hr_dev)
-@@ -1743,10 +1842,18 @@ static int hns_roce_query_vf_resource(struct hns_roce_dev *hr_dev)
- 	int ret;
- 
- 	ret = load_func_res_caps(hr_dev, true);
--	if (ret)
-+	if (ret) {
- 		dev_err(dev, "failed to load vf res caps, ret = %d.\n", ret);
-+		return ret;
-+	}
- 
--	return ret;
-+	ret = adjust_res_caps(hr_dev);
-+	if (ret)
-+		dev_warn(dev,
-+			 "invalid resource values have been adjusted, invalid_flag = 0x%x.\n",
-+			 ret);
-+
-+	return 0;
- }
- 
- static int __hns_roce_set_vf_switch_param(struct hns_roce_dev *hr_dev,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index d9693f6cc802..c2d46383c88c 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -972,6 +972,43 @@ struct hns_roce_func_clear {
- #define CFG_GLOBAL_PARAM_1US_CYCLES CMQ_REQ_FIELD_LOC(9, 0)
- #define CFG_GLOBAL_PARAM_UDP_PORT CMQ_REQ_FIELD_LOC(31, 16)
- 
-+enum hns_roce_res_invalid_flag {
-+	QPC_BT_NUM_INVALID_FLAG,
-+	SRQC_BT_NUM_INVALID_FLAG,
-+	CQC_BT_NUM_INVALID_FLAG,
-+	MPT_BT_NUM_INVALID_FLAG,
-+	EQC_BT_NUM_INVALID_FLAG,
-+	SMAC_BT_NUM_INVALID_FLAG,
-+	SGID_BT_NUM_INVALID_FLAG,
-+	QID_NUM_INVALID_FLAG,
-+	SCCC_BT_NUM_INVALID_FLAG,
-+	GMV_BT_NUM_INVALID_FLAG,
-+	QPC_TIMER_BT_NUM_INVALID_FLAG,
-+	CQC_TIMER_BT_NUM_INVALID_FLAG,
-+};
-+
-+enum hns_roce_res_revision {
-+	RES_FOR_HIP08,
-+	RES_FOR_HIP09,
-+	RES_FOR_ALL,
-+};
-+
-+#define RES_OFFSET_IN_CAPS(res) \
-+	(offsetof(struct hns_roce_caps, res))
-+
-+#define MAX_QPC_BT_NUM 2048
-+#define MAX_SRQC_BT_NUM 512
-+#define MAX_CQC_BT_NUM 512
-+#define MAX_MPT_BT_NUM 512
-+#define MAX_EQC_BT_NUM 512
-+#define MAX_SMAC_BT_NUM 256
-+#define MAX_SGID_BT_NUM 256
-+#define MAX_SL_NUM 8
-+#define MAX_SCCC_BT_NUM 512
-+#define MAX_GMV_BT_NUM 256
-+#define MAX_QPC_TIMER_BT_NUM 1728
-+#define MAX_CQC_TIMER_BT_NUM 1600
-+
- /*
-  * Fields of HNS_ROCE_OPC_QUERY_PF_RES, HNS_ROCE_OPC_QUERY_VF_RES
-  * and HNS_ROCE_OPC_ALLOC_VF_RES
--- 
-2.30.0
+This clock was already defined in the initial gcc changes and now adding 
+it to gcc_qdu1000_clocks[] to register it with the clock framework.
 
+Thanks,
+Imran
+
+>> +	[GCC_DDRSS_ECPRI_GSI_CLK] = &gcc_ddrss_ecpri_gsi_clk.clkr,
+>>   };
+>>   
+>>   static const struct qcom_reset_map gcc_qdu1000_resets[] = {
