@@ -2,184 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 924BE756E3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0376E756E40
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbjGQUbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 16:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
+        id S230391AbjGQUbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 16:31:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjGQUbM (ORCPT
+        with ESMTP id S229496AbjGQUbt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 16:31:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FF9188
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:31:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6FF346124A
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 20:31:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 478B5C433C8;
-        Mon, 17 Jul 2023 20:31:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689625867;
-        bh=speJUgxSauJb1B97mFzBthgQeNkIXMJQ46d1kG1IBpc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m5yuNuQ1k00JkD9oSP99xNX3im7OVU9ke1O/ZJxzB5liJ3nS6KJ2q72BNShSb8I7N
-         xppmSyS3mUTrvFrkFzJ6J5Yw3LZXsB9RD6iUirXgxE3ablVVioaCTngcISqjmlozVU
-         gM5C0SHbQBOzZ3Ij/zMvrL9c8QRxdOFSMi+Qp5Zckvnne5ZjBFWrgeyni0U8xyxxok
-         fU7tH/sJXbgeCL7j5rOm0FP8u9kTsuCKd92YiIpBjzWUk2xb01vmp7Ypw8dMNf1LN0
-         dNIGJJxYGwf1mnzOR0t44YMDNIxi2jaFUurlzb8nT6xsXEEMOkm/MQ+LdvDLIWoA+L
-         X4btRRdqJSTvQ==
-Date:   Mon, 17 Jul 2023 13:31:05 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Tom Rix <trix@redhat.com>, oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH] lib/bitmap: waive const_eval test as it breaks the build
-Message-ID: <20230717203105.GA2212488@dev-arch.thelio-3990X>
-References: <20230717195813.29059-1-yury.norov@gmail.com>
+        Mon, 17 Jul 2023 16:31:49 -0400
+Received: from sonic301-38.consmr.mail.ne1.yahoo.com (sonic301-38.consmr.mail.ne1.yahoo.com [66.163.184.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7A318C
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:31:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1689625908; bh=9ph4eCZmhDQ3lr6GTYBorpZ/DsudWvdab7mcX4Jc74g=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=uYL2mCK4ol7FbXJQ4VXftNOTkITyi16WXWkMe8uXJxlv9QmamwFy4fGomBe81+fHk05Q4w3O5Rq8fDiwBaYql8HEZED6w9QFhHob7p15OoYFPOCZCnh1SkGRimktI4FGGiJTrFBm3PokXFTK0Nc3H+x5Xdg4kJ5j+ouH2OAmrVEwKQLmufKA7jE0LyINQBe5UsddjwYgqewWkAu/w46eUYkn1vziLE+4ab5alSHh9Fu3+8Z+ewr+5NZkSFzPxMNJ3fag90u3lBMYfhaqxxfFSWziQ59GUF3A2sPf2RIHreWcNXhklJAscdS7IZM6CgZlrtGangQ18JwlKdQalZtEaA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1689625908; bh=o9DqBOfO9b/ahv1j+U3RJovW0axQHKQhOYXh8AE5EJ/=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=GA1ShMGomWqYlvK1uxw8aHniLqq8sTn2A5w5q4ZXaqpitBBgg6DN2/G8AzWFMwhQ8XUGjtkLZ/ElaosqDarg5RnFam9UrDUhZnVVhTzY5zx+dPMYVuQlJ4qLqJWSBqfsRAsx8z0fv1FhhC1qZUvyDnxlidFfDvudou4x4WUBf0jHhm2DaVaRu92kS9NnLOyXVyWPbDbZRz63dI00jKFecCYx0cSvTi6zqyTpDaotbCyhN3Clph2i85Bd0OeVqa7+ZHHB/CSHKMISoRcFzSrxdiKScnAtUIqYGiaI5hksTl8+/K1uvCyy6qB4dnCf9mCh6SlosDgz9oe8uZDO8Lvp8Q==
+X-YMail-OSG: C334pLkVM1n3mGdfcTaWiTiwcRUmAwhEqYWBzjdmDNeiMkrMORK5qqvQUEQRO0O
+ rbjD.OXukwPPwhgcHu6PLSo5vxQksSBQvbYUpvEBUngpy8IhEqMk3OPNRPAoHvLHg0gG1.j8.dne
+ RDYcvMmRK13ra.4UmFu1GxAXnbRoWtG3ZMjfy0XKkYxz5cUOuvwsw3pK8PrQzhto5NdgdpX2_8Kv
+ JTh8WtXhCFxaAuuf2pqxGK0M0AlmET3_VXttL7DLA2Lzgv31j.vlWh7I.mpNCcI.eXF4DMtmz1WJ
+ WtCI1DrGIYG9_iDhRC0GAMXuRrx9eKXudh3qv_fBZScovOEme324Ef_nwcLIlmL_DG2ix2E39YL4
+ JeYYvuf.OFDYr8B6HJF3F9liNRZV3aNNgtEsBGbKmDyTfMnTWbB0CBwRE3ibylnYd4ZVXn5J5PJR
+ EMh9FLKac88NZCVU_3QDEVHnap.vrfI64oR5TY2W5RY2zxykrOL9NA2wIz9y3yPD.hFIzRSIQoSl
+ TVzfB_2cG5Ugneyl2ujkFb6aY6ADntXDcQvdtBD1_F0AGILkUu0TbEUQg4hJwGqWo_LMNUlmqX5Z
+ hIowkqR0WlkPkT7caqn553eeYvziMuYUmz2STHdY6goplAC1_7zoWXOjll9XwB6FTQBCDwTnCdGf
+ b0Y2rZim_mUU.9D4CZMSnPAiSM35BCZSGWnkgTlCDvrA8ksDBZ_ngZMsUN_J8cWYCof4Q0l8Onca
+ HBqzF4sdbtdPtJy1WYb3KO__FkJwlLv.GuD895RJlNIja5_.inu2vNnnpq4ccijyXPpngXjqgbNq
+ nAyYyRfnSVP5HjdKgUY92ojd6kMr2q3gZSDKrM9gnntFslKf1f5.3_nqPmCtremqqcevKzerobVW
+ V07g1Btka0hsNXy4PGt44oAirRN2YXk7ewC2H3gpQheYRQulRPBMngnCWJ4w6ylfT4pRDfO5Pzc5
+ BOCmi17I.0iVQT7TDQFlH3I7jmThsYwIYBLipiayWIUxfigdETPR6uhRGD_DwUTx6SfUAo0itdT_
+ w59Ek2es29BbwCVqkZPkKXD2ATvdr4e6txfGzKdsXC_.nTK0VfXr4M762rv0ZN3Xe2xGyiodJaDP
+ LDkeN.0U3HmALoJG7woSDtcpQ.JS6ZLMdxddux4lnfmBrTw5I0OdVbpiBb8MDQKlXgt5j0Yu3q7i
+ W5Kr1YKFQCRTlqV.D1VKxC4gMH8cu.A3G9F3uEtO9L6Q.gYS87Sf7HfUDamLavwUdlHfUf86xl2B
+ wh.faRm7AyKuwGlicJ9KBneipftyQbZInTidzmUlYdDj9wuw1AnVS_SA3WiM6814YIvtFEzQ1Ni8
+ l_qdNv0CqwCylfi7teed17VPvdRD2fyj9SyhMne01z4Qc1Womznimbw95hbL98MhITl4JlAcHfTv
+ p1rdIaC3Qj76fMgRYLkJ5qiBzSDzO7uBIHr8vXKtAsgJfkGzru2T4HQX2R4KDS73UUQpAg2PEJil
+ LqWB8P97ba8oJ84euzvfOqNAS5erq1XV8Tjuo.S5RcDSH.77zyIOHk194rftguVQu.DE_RqldlD1
+ ETXZfox4tpTNJzzMyzqbE2GQAcaN.7grGy0zue15l99X9SgMrIxFsMnWbVQcC4boI2AIlrK7hKUK
+ PUNvVCU6HL.SGFXS1gt9UdDVidkuryEJB3RvSxrFAJEQOOkaRZDBKJ6s4IVHmDPs6mu5NlPboE58
+ l5pAMOgkZm7MY1Ivu3LLDGzlmw8mPUgPbk__YCsH8U43KoZP2OnyN_Lf9K1o74L2YcUtG5lOTSr2
+ NByjHWKFWI6C9tIYdiz.3_bVXSXMX.ogAVv9Lq77G5iEKb_Pr9bKDJvgnB10XJ9q3OQ_tAmjA_Wb
+ gcnuwrs.d65CEwjoHozp1PeYEjHfRh4oIkbYmhtJGg.LzJRDvlRDIBxo0_eJYt3C3BDKFB2tXzqh
+ 6vXDpyf8J6gDYkuW58LSy4ZIoNO8haPpoTPJmNQufilgWoShihG0AU4Ik6u5OcCWh39gOnOd43m0
+ eUuHz81Ml_pL4hPm4ivactKG1UauOUOnLKdHd5Fpzwx5RP.OIRePkcUeqWyzpP7BGV6Wz.HVq0Bt
+ VxeudsBGcrMZcRnYEAwfm1esoXr0B0dEMwV6IYJEQ.bRuKywKu0zGrDuVDCj34A6D5bRfDdTqBIR
+ 8CZR3kAiiwGLO0FGZ08YC.BC4KTj761aCzQCOd44jo7nvdjckZgLRcnZi_vKF1R1fnCUfA_GxZaJ
+ a99chuYM.NaF0aLV2wsAixHFSuJF.VCwBkGCesQZsjIty86jCa9a1XvwjR2lBuLxH4V4wuVtE1ZC
+ O5c__uwqUvB0-
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 3365421f-4eaf-4161-bd32-60d398ead7ed
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.ne1.yahoo.com with HTTP; Mon, 17 Jul 2023 20:31:48 +0000
+Received: by hermes--production-bf1-69c9587855-ftxdj (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID be6be41bd27bd00225caf7b38170cf90;
+          Mon, 17 Jul 2023 20:31:46 +0000 (UTC)
+Message-ID: <0fcac6a8-4ab8-91bc-34e0-cbbb81da3973@schaufler-ca.com>
+Date:   Mon, 17 Jul 2023 13:31:41 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717195813.29059-1-yury.norov@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] selinux: optimize major part with a kernel config in
+ selinux_mmap_addr()
+Content-Language: en-US
+To:     Paul Moore <paul@paul-moore.com>, Leesoo Ahn <lsahn@ooseel.net>
+Cc:     lsahn@wewakecorp.com,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20230710082500.1838896-1-lsahn@wewakecorp.com>
+ <CAHC9VhQY0Uq_xQ_AwAuZ8gJbS52nQvRONHvCxiR-dGDg3BviRw@mail.gmail.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <CAHC9VhQY0Uq_xQ_AwAuZ8gJbS52nQvRONHvCxiR-dGDg3BviRw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Mailer: WebService/1.1.21647 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yury,
+On 7/17/2023 1:13 PM, Paul Moore wrote:
+> On Mon, Jul 10, 2023 at 4:25 AM Leesoo Ahn <lsahn@ooseel.net> wrote:
+>> The major part, the conditional branch in selinux_mmap_addr() is always to be
+>> false so long as CONFIG_LSM_MMAP_MIN_ADDR is set to zero at compile time.
+>>
+>> This usually happens in some linux distros, for instance Ubuntu, which
+>> the config is set to zero in release version. Therefore it could be a bit
+>> optimized with '#if <expr>' at compile time.
+>>
+>> Signed-off-by: Leesoo Ahn <lsahn@wewakecorp.com>
+>> ---
+>>  security/selinux/hooks.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+> First, I agree with Stephen's comments that you should ask your distro
+> (you mentioned Debian) to move MIN_ADDR higher.  Beyond that, I have
+> one request, see below ...
+>
+>> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+>> index d06e350fedee..a049aab6524b 100644
+>> --- a/security/selinux/hooks.c
+>> +++ b/security/selinux/hooks.c
+>> @@ -3723,11 +3723,13 @@ static int selinux_mmap_addr(unsigned long addr)
+>>  {
+>>         int rc = 0;
+>>
+>> +#if CONFIG_LSM_MMAP_MIN_ADDR > 0
+>>         if (addr < CONFIG_LSM_MMAP_MIN_ADDR) {
+>>                 u32 sid = current_sid();
+>>                 rc = avc_has_perm(sid, sid, SECCLASS_MEMPROTECT,
+>>                                   MEMPROTECT__MMAP_ZERO, NULL);
+>>         }
+>> +#endif
+>>
+>>         return rc;
+>>  }
+> Pre-processor conditionals inside a function are generally something
+> we don't recommend.  In this case I would suggest doing something like
+> this:
+>
+> #if (MMAP_MIN_ADDR > 0)
+> static int selinux_mmap_addr(...)
+> {
+>   /* current func definition */
+> }
+> #else /* MMAP_MIN_ADDR > 0 */
+> static int selinux_mmap_addr(...)
+> {
+>   return 0;
+> }
+> #endif /* MMAP_MIN_ADDR > 0 */
 
-On Mon, Jul 17, 2023 at 12:58:13PM -0700, Yury Norov wrote:
-> When building with clang, and when KASAN and GCOV_PROFILE_ALL are both
-> enabled, the test fails to build [1]:
-> 
-> >> lib/test_bitmap.c:920:2: error: call to '__compiletime_assert_239' declared with 'error' attribute: BUILD_BUG_ON failed: !__builtin_constant_p(res)
->            BUILD_BUG_ON(!__builtin_constant_p(res));
->            ^
->    include/linux/build_bug.h:50:2: note: expanded from macro 'BUILD_BUG_ON'
->            BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
->            ^
->    include/linux/build_bug.h:39:37: note: expanded from macro 'BUILD_BUG_ON_MSG'
->    #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->                                        ^
->    include/linux/compiler_types.h:352:2: note: expanded from macro 'compiletime_assert'
->            _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->            ^
->    include/linux/compiler_types.h:340:2: note: expanded from macro '_compiletime_assert'
->            __compiletime_assert(condition, msg, prefix, suffix)
->            ^
->    include/linux/compiler_types.h:333:4: note: expanded from macro '__compiletime_assert'
->                            prefix ## suffix();                             \
->                            ^
->    <scratch space>:185:1: note: expanded from here
->    __compiletime_assert_239
-> 
-> Originally it was attributed to s390, which now looks seemingly wrong. The
-> issue is also not related to bitmap code itself, but it breaks build for
-> a given configuration. So, disabling the test unless the compiler will
-> get fixed.
-> 
-> [1] https://github.com/ClangBuiltLinux/linux/issues/1874
-> 
-> Fixes: dc34d5036692 ("lib: test_bitmap: add compile-time optimization/evaluations assertions")
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> ---
->  lib/test_bitmap.c | 17 +++++------------
->  1 file changed, 5 insertions(+), 12 deletions(-)
-> 
-> diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-> index 187f5b2db4cf..a791fdb7a8c9 100644
-> --- a/lib/test_bitmap.c
-> +++ b/lib/test_bitmap.c
-> @@ -1163,6 +1163,9 @@ static void __init test_bitmap_print_buf(void)
->  
->  static void __init test_bitmap_const_eval(void)
->  {
-> +#if defined(CONFIG_CC_IS_CLANG) && defined(CONFIG_KASAN) && defined(CONFIG_GCOV_PROFILE_ALL)
-> +#warning "FIXME: Clang breaks compile time evaluations when KASAN and GCOV are enabled"
+Better yet, skip the #else here and #if out the LSM_HOOK_INIT(mmap_addr, ...).
+No hook at all is faster than a hook that does nothing.
 
-Making this a '#warning' will basically just replace the current error
-with a different one in the face of CONFIG_WERROR, which seems pointless
-to me:
-
-  lib/test_bitmap.c:1167:2: error: "FIXME: Clang breaks compile time evaluations when KASAN and GCOV are enabled" [-Werror,-W#warnings]
-   1167 | #warning "FIXME: Clang breaks compile time evaluations when KASAN and GCOV are enabled"
-        |  ^
-  1 error generated.
-
-Could we just opt out of GCOV for test_bitmap.c if KASAN is enabled with
-clang? That does not seem too bad of a workaround. I highly doubt there
-are many people who are interested in debugging test_bitmap.c with KASAN
-while profiling it with GCOV when building with clang, since they would
-have hit this already and reported it already; as far as I can tell,
-only the Intel robot has reported this with a randconfig.
-
-diff --git a/lib/Makefile b/lib/Makefile
-index 42d307ade225..c6f60ae42769 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -83,6 +83,10 @@ obj-$(CONFIG_TEST_DYNAMIC_DEBUG) += test_dynamic_debug.o
- obj-$(CONFIG_TEST_PRINTF) += test_printf.o
- obj-$(CONFIG_TEST_SCANF) += test_scanf.o
- obj-$(CONFIG_TEST_BITMAP) += test_bitmap.o
-+# https://github.com/ClangBuiltLinux/linux/issues/1874
-+ifeq ($(CONFIG_CC_IS_CLANG)$(CONFIG_KASAN),yy)
-+GCOV_PROFILE_test_bitmap.o := n
-+endif
- obj-$(CONFIG_TEST_UUID) += test_uuid.o
- obj-$(CONFIG_TEST_XARRAY) += test_xarray.o
- obj-$(CONFIG_TEST_MAPLE_TREE) += test_maple_tree.o
-
-Cheers,
-Nathan
-
-> +#else
->  	DECLARE_BITMAP(bitmap, BITS_PER_LONG);
->  	unsigned long initvar = BIT(2);
->  	unsigned long bitopvar = 0;
-> @@ -1177,20 +1180,9 @@ static void __init test_bitmap_const_eval(void)
->  	 * in runtime.
->  	 */
->  
-> -	/*
-> -	 * Equals to `unsigned long bitmap[1] = { GENMASK(6, 5), }`.
-> -	 * Clang on s390 optimizes bitops at compile-time as intended, but at
-> -	 * the same time stops treating @bitmap and @bitopvar as compile-time
-> -	 * constants after regular test_bit() is executed, thus triggering the
-> -	 * build bugs below. So, call const_test_bit() there directly until
-> -	 * the compiler is fixed.
-> -	 */
-> +	/* Equals to `unsigned long bitmap[1] = { GENMASK(6, 5), }` */
->  	bitmap_clear(bitmap, 0, BITS_PER_LONG);
-> -#if defined(__s390__) && defined(__clang__)
-> -	if (!const_test_bit(7, bitmap))
-> -#else
->  	if (!test_bit(7, bitmap))
-> -#endif
->  		bitmap_set(bitmap, 5, 2);
->  
->  	/* Equals to `unsigned long bitopvar = BIT(20)` */
-> @@ -1220,6 +1212,7 @@ static void __init test_bitmap_const_eval(void)
->  	/* ~BIT(25) */
->  	BUILD_BUG_ON(!__builtin_constant_p(~var));
->  	BUILD_BUG_ON(~var != ~BIT(25));
-> +#endif
->  }
->  
->  static void __init selftest(void)
-> -- 
-> 2.39.2
-> 
