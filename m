@@ -2,169 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2747565A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F757565A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbjGQN6H convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Jul 2023 09:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
+        id S229901AbjGQN6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 09:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbjGQN6G (ORCPT
+        with ESMTP id S231796AbjGQN6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 09:58:06 -0400
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB1FD1;
-        Mon, 17 Jul 2023 06:58:05 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-579dfae6855so46121057b3.1;
-        Mon, 17 Jul 2023 06:58:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689602284; x=1692194284;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6GY8g2XJYhobD5XMmXXGSiDcdH93n2WuBZ9x5pzjlb0=;
-        b=R1P33IUvCbB1CyfeeqVN/J7QBLkZ6HY7yWB4XXj4ut7naPKTBJbgB75Pg6Rr2I5HkS
-         dYjZgn5Sr6atxC3wkaPpV53q0ePWntXY6jssH3TyM+Av7vnwQq1SF8s8DXQcNGcJQWaF
-         xyxO7blMYExPOmwHCil4A7VKNTdt18u4RaXhBvn4dVxgDrNc9Qq4xO+dRCSrvOApLQ8L
-         u7SyNU7w+OHnMFjWZTo/PiWgY3+8fOlBvD5o7EKawnw8qqXmgAvKa9oky4Jvs/J5O+1u
-         wfCgMHNBLNuXmuoH5MF01DAtqBcYGmuwQK2NyoqxBIwMyNsgh3Qi4scH1Jqc2s7pF0tf
-         QFFA==
-X-Gm-Message-State: ABy/qLaTFA8/br6jecLtaVxu74Bmc7LI60SPaLki2zxIc5WjzofqT9Nm
-        Y2iBMDNuo8MknaeHjuWICcBfQajKbIVj8A==
-X-Google-Smtp-Source: APBJJlFdT4/Yt2cig2+G2UVzhBFv1G+0PB7y2WmAYl2xvC+kVoF2lI69MNKxbyPzWK24ubSNY2GHNQ==
-X-Received: by 2002:a81:85c7:0:b0:56d:464e:db7e with SMTP id v190-20020a8185c7000000b0056d464edb7emr13549710ywf.13.1689602284050;
-        Mon, 17 Jul 2023 06:58:04 -0700 (PDT)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id x134-20020a0dd58c000000b005832fe29034sm1023710ywd.89.2023.07.17.06.58.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 06:58:03 -0700 (PDT)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-ca3cc52ee62so4604994276.0;
-        Mon, 17 Jul 2023 06:58:03 -0700 (PDT)
-X-Received: by 2002:a25:2105:0:b0:c14:68fd:6e30 with SMTP id
- h5-20020a252105000000b00c1468fd6e30mr9475180ybh.16.1689602283054; Mon, 17 Jul
- 2023 06:58:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1687423204.git.geert+renesas@glider.be> <2259ff548f007afcb5a315a4c95c83a0ee4b7e03.1687423204.git.geert+renesas@glider.be>
- <20230622145213.GA1678457-robh@kernel.org>
-In-Reply-To: <20230622145213.GA1678457-robh@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 17 Jul 2023 15:57:51 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX1Y9jkKv+cOAzs6YibkNoTrvY-qDY4FOzgrSyA4pHynQ@mail.gmail.com>
-Message-ID: <CAMuHMdX1Y9jkKv+cOAzs6YibkNoTrvY-qDY4FOzgrSyA4pHynQ@mail.gmail.com>
-Subject: Re: [PATCH 01/39] dt-bindings: display: Add Renesas SH-Mobile LCDC bindings
-To:     Rob Herring <robh@kernel.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        Mon, 17 Jul 2023 09:58:17 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FA1E1;
+        Mon, 17 Jul 2023 06:58:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689602295; x=1721138295;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=ZegC5DPpSUub8UmMq/EVEnANqCgyQJ+7uEfWodtWc/M=;
+  b=Vvu3Bt5I8Y1CElLctJizdMEtNuu2kr1zl8zFFH7XsnTsh3ZYi0sotLJU
+   UCFb3UJ9q0HHF4Bp5vHJJAEmeAcfmEGvY4nl+0F6d43jpU8FW/AwEv69M
+   SBm5fwhngDF4utARngisiwyl1xiZFp17seAHjwk4pXjFlpeKyXCYZuIlB
+   yaiAi6+GHyazkl8Pd4Xt8IkC+ys8IcFEswb1iZvQ3T0+QTNiUO+o6G3MA
+   Ko2QesNHdD/+e+4nsG2Ir8aebXkQJ2s4p1nH++cWN2yBMedvrTOcVzx5N
+   yiL6ZBLftbUwUGzxY6D6/eAuPzpWeaD8w6t0ae2rKGyeEGucAB1kJzwob
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="396763921"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="396763921"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 06:58:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="726554750"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="726554750"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga007.fm.intel.com with ESMTP; 17 Jul 2023 06:58:10 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1qLOjo-00HBxz-1p;
+        Mon, 17 Jul 2023 16:58:08 +0300
+Date:   Mon, 17 Jul 2023 16:58:08 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= 
+        <amadeuszx.slawinski@linux.intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-pci@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v4 01/15] PCI: Sort Intel PCI IDs by number
+Message-ID: <ZLVI8NuiIZZrhjRg@smile.fi.intel.com>
+References: <20230717114511.484999-1-amadeuszx.slawinski@linux.intel.com>
+ <20230717114511.484999-2-amadeuszx.slawinski@linux.intel.com>
+ <ZLVIGlpoNsr0RRGE@smile.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZLVIGlpoNsr0RRGE@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Mon, Jul 17, 2023 at 04:54:34PM +0300, Andy Shevchenko wrote:
+> On Mon, Jul 17, 2023 at 01:44:57PM +0200, Amadeusz Sławiński wrote:
+> > Some of the PCI IDs are not sorted correctly, reorder them by growing ID
+> > number.
+> 
+> Hmm... I don't see a cover letter...
 
-Thanks for your review!
-
-On Thu, Jun 22, 2023 at 4:52 PM Rob Herring <robh@kernel.org> wrote:
-> On Thu, Jun 22, 2023 at 11:21:13AM +0200, Geert Uytterhoeven wrote:
-> > Add device tree bindings for the LCD Controller (LCDC) found in Renesas
-> > SuperH SH-Mobile and ARM SH/R-Mobile SOCs.
-> >
-> > Based on a plain text prototype by Laurent Pinchart.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/display/renesas,shmobile-lcdc.yaml
-> > @@ -0,0 +1,108 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/display/renesas,shmobile-lcdc.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Renesas SH-Mobile LCD Controller (LCDC)
-> > +
-> > +maintainers:
-> > +  - Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - renesas,r8a7740-lcdc # R-Mobile A1
-> > +      - renesas,sh73a0-lcdc  # SH-Mobile AG5
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    minItems: 1
-> > +    maxItems: 5
-> > +    description:
-> > +      Only the functional clock is mandatory.
-> > +      Some of the optional clocks are model-dependent (e.g. "video" (a.k.a.
-> > +      "vou" or "dv_clk") is available on R-Mobile A1 only).
-> > +
-> > +  clock-names:
-> > +    minItems: 1
-> > +    maxItems: 5
-> > +    items:
-> > +      enum: [ fck, media, lclk, hdmi, video ]
-> > +
-> > +  power-domains:
-> > +    maxItems: 1
-> > +
-> > +  ports:
-> > +    $ref: /schemas/graph.yaml#/properties/ports
-> > +    description: |
-> > +      The connections to the output video ports are modeled using the OF graph
-> > +      bindings specified in Documentation/devicetree/bindings/graph.txt.
->
-> Please read this file.
->
-> > +      The number of ports and their assignment are model-dependent.
-> > +      Each port shall have a single endpoint.
->
-> I'd just drop the whole description.
->
-> > +
-> > +    properties:
-> > +      port@0:
-> > +        $ref: /schemas/graph.yaml#/properties/port
-> > +        description: LCD port (R-Mobile A1 and SH-Mobile AG5)
-> > +        unevaluatedProperties: false
->
-> Don't need this.
-
-You mean the "unevaluatedProperties: false"?
-Or more?
-
-Thanks again!
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Okay, `b4` fetches it. It seems I asked you (or my memory is doing a trick?)
+to avoid using my @intel.com for LKML archives...
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+With Best Regards,
+Andy Shevchenko
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
