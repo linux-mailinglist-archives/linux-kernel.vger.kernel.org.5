@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C9C756C75
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2AA756C79
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbjGQStJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 14:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
+        id S229803AbjGQStl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 14:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbjGQStG (ORCPT
+        with ESMTP id S229450AbjGQSti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:49:06 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1637499;
-        Mon, 17 Jul 2023 11:49:05 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-783698a37beso285029739f.0;
-        Mon, 17 Jul 2023 11:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689619744; x=1692211744;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Pup51R7CH2ewXgPiiOoeKchEJYQ5CnfcD4TroSAHdfw=;
-        b=HbtHz8LpTaLbUyiGKVmkJ3yx78q/6EOH/BHoCgVNYefT47cfEiX4eFj5RLZ3FU01gz
-         H2iPj3N8WFS+D742JGqnELJtE1A6i1+T4VMNihUqrzcMr2ytbFpCGsT1JT7pNgXqxLyd
-         dP6AIjxWfAhib7dl9V2oGhir76M7Z7VT1uiu19AahY4+Ve1rP8un56rBniEvGk6GFf7L
-         Q9LRqBfUKdzfxyz87WOdZKYZvgxpkMNkY/8l7wvtJCep/JEMcKQ3om+flvX9mIECNk4i
-         sxdaOWT0boghIB/XRn7bu3J4Zsy5gnuLR2xnuTyVKhmpFUTpza143v9d6XD6x8UNprtZ
-         RixQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689619744; x=1692211744;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Pup51R7CH2ewXgPiiOoeKchEJYQ5CnfcD4TroSAHdfw=;
-        b=ZtU9lsM4oifldrxC+hPrYd3HeHvCKUi3ZOR4da+/4pMpS96CQ4aLCW72CC5Tw1m+3s
-         ZOKg4lybXPfzF2qV7mzYB8sK2KlK7zI+/cbRP2SZzcSfeBTPsYUaTvSjI4Ix5t6KAu7k
-         JkKwQVvROjR4GZzoPFH26XCFD26xPrXp+cquJIMlR1snJNvug9hELk8tgel+99cSq1sp
-         Be0tGeQVTALpT6KxlALiLbEYSNCN2G2LT9FSuNspM8V/X62YsZ/FkqEQ4lRQI8yIogjk
-         YR3/JN2YWhyApPk09JeaXO7rO0rGQgmo/1tqIZVxLT7b3RKfWu8i8BA1mc8YqM4MXVw0
-         AnGw==
-X-Gm-Message-State: ABy/qLagT58Ye51daLpq79gh6VALxPFcu+5R7v/jcnbH+3F3xRUZbW+a
-        mC60T7DOgjozKYCenDItRJo=
-X-Google-Smtp-Source: APBJJlFmSDDkJdfs3wbDfi2KzEcqLIt0VONezBNx2D/EgTao9rbKdEV+NE0fcA8w50CwiaA5OodZwQ==
-X-Received: by 2002:a6b:dd0b:0:b0:787:8f3:65e7 with SMTP id f11-20020a6bdd0b000000b0078708f365e7mr450415ioc.10.1689619744260;
-        Mon, 17 Jul 2023 11:49:04 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id v12-20020a5d948c000000b00786450bb4edsm35098ioj.35.2023.07.17.11.49.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 11:49:04 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 17 Jul 2023 08:49:02 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Carlos Bilbao <carlos.bilbao@amd.com>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        amd <amd@localhost.localdomain>
-Subject: Re: [PATCH] blk-iocost: fix seq_printf compile type mismatch error
-Message-ID: <ZLWNHuTGk0fy8pjE@slm.duckdns.org>
-References: <20230717141852.153965-1-carlos.bilbao@amd.com>
+        Mon, 17 Jul 2023 14:49:38 -0400
+Received: from smtp.smtpout.orange.fr (smtp-13.smtpout.orange.fr [80.12.242.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C425A9D
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 11:49:37 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id LTHoqBKeeFmkzLTHoqiy4V; Mon, 17 Jul 2023 20:49:35 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1689619775;
+        bh=6EdZ+Gq8+oaEzVh78T6j0Vq20F8gxMukgxRTDtUERro=;
+        h=From:To:Cc:Subject:Date;
+        b=sxNEjaNaSFGblebLhoZgCspR3/b7PMWw5mvvcbiA1JPdCVOiD0EcAzet5fqmrBLF0
+         g1kJA04ScN0oLMVrH4T0js02kJvMR5ByBFj85S3S263Cai7ZlGu9TueW4SLJB59Nxr
+         yNr1SrsLma5wvNJutFL013ubT61mwc2VkIW7B1vS1WgiZEA39BUysRBJDv3H3rLPTb
+         pWvr1ye+zaTo4e7HiCsKYaVJiH9p8aKlYdZ3+ZFyBSC7oBIXCzPJWWFrbUeDnCi/Zc
+         ncTIfUd0VPZ4Pw8VuSOu+/IXZUpeo1Dk6aHUaxZTE3KzUG70NVHYvE+EHhauumpuxY
+         R6XZR7RXCKgVw==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 17 Jul 2023 20:49:35 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH] drm/i915: Fix an error handling path in igt_write_huge()
+Date:   Mon, 17 Jul 2023 20:49:31 +0200
+Message-Id: <7a036b88671312ee9adc01c74ef5b3376f690b76.1689619758.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717141852.153965-1-carlos.bilbao@amd.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 09:18:52AM -0500, Carlos Bilbao wrote:
-> From: amd <amd@localhost.localdomain>
-> 
-> Fix two type mismatch errors encountered while compiling blk-iocost.c with
-> GCC version 13.1.1 that involved constant operator WEIGHT_ONE. Cast the
-> result of the division operation to (unsigned int) to match the expected
-> format specifier %u in two seq_printf invocations.
+All error handling paths go to 'out', except this one. Be consistent and
+also branch to 'out' here.
 
-Can you detail the warnings? Was that on 32bit compiles?
+Fixes: c10a652e239e ("drm/i915/selftests: Rework context handling in hugepages selftests")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+/!\ Speculative /!\
 
-Thanks.
+   This patch is based on analysis of the surrounding code and should be
+   reviewed with care !
 
+   If the patch is wrong, maybe a comment in the code could explain why.
+
+/!\ Speculative /!\
+---
+ drivers/gpu/drm/i915/gem/selftests/huge_pages.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/gem/selftests/huge_pages.c b/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
+index df6c9a84252c..6b9f6cf50bf6 100644
+--- a/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
++++ b/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
+@@ -1246,8 +1246,10 @@ static int igt_write_huge(struct drm_i915_private *i915,
+ 	 * times in succession a possibility by enlarging the permutation array.
+ 	 */
+ 	order = i915_random_order(count * count, &prng);
+-	if (!order)
+-		return -ENOMEM;
++	if (!order) {
++		err = -ENOMEM;
++		goto out;
++	}
+ 
+ 	max_page_size = rounddown_pow_of_two(obj->mm.page_sizes.sg);
+ 	max = div_u64(max - size, max_page_size);
 -- 
-tejun
+2.34.1
+
