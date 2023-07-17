@@ -2,105 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5350756E1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47B3756E1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbjGQUWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 16:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
+        id S229714AbjGQUW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 16:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjGQUWC (ORCPT
+        with ESMTP id S229762AbjGQUW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 16:22:02 -0400
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06ACDA
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:22:00 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-5636426c1b3so3150722eaf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:22:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1689625320; x=1692217320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LWiE3CkGTDUlj6QCNZoo/WRVOd/qSvpeFml4/GNI1l4=;
-        b=Ovnxdri/2azVGDeU5lzqBST5/chKrc8SVm4zfJ1ZIpx7cAbY9GLgYW3jcUkmuzRrXZ
-         TJp15XjCoBRSz+SwqIsnVjp7s+32BR8O59aTYfOZafrbnu35Q0rYYdUb/FQoyhPBd5Ec
-         8BvNLgEpZKM+tKgA0N1xj77okD4qJYUJ7lngH0Gth/8PUeL8d4VVqoRw7r0RaUPsHH75
-         9BAXe19pLao6COeY4AI9UBU6iTPoizkDNxAjwpzHeXNDf3nK6N+XRkZ4pl/75zxhnl5c
-         Zo28RFxYzG/kSPE4WRtzNH7qcxvWXo/D1CaGaD3GkTnyjCh8qNvS2fx94AR2ITDOJgVF
-         vfJw==
+        Mon, 17 Jul 2023 16:22:26 -0400
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D7801A8
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:22:25 -0700 (PDT)
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1ba6eca72e0so3260427fac.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:22:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689625320; x=1692217320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LWiE3CkGTDUlj6QCNZoo/WRVOd/qSvpeFml4/GNI1l4=;
-        b=SJ/Y+QoN00LlW798YaczlTsOlhwwiRQqDh51GE1iwSP2JykFYW8QTu/YX6B0TPI5Tx
-         A+gr84M63/6CTGeznR3lajSHjTecDpnex8QGou0mgFsuMBjommiBocUlPLOj7zGWbgSY
-         zXEY8WTGvbqOO00n1gXNWN0rcjoqY/1zW8f1wV7Ca3DRCQDGerqNyfu+VDDm66odfwp5
-         bCPU79YrfVQ/FamoFha4Pyma9NXBoM3uwgWrDApaTGBOuFG+aFQmjyvfoRjXlOp2X7a5
-         ueVd83KfaI2fwx+j99Jt+uEQ7DQ9AgFuxZjTIQ9xPfLZ1L7rSuTIv1PXV+zKZRSl3pnY
-         xBEQ==
-X-Gm-Message-State: ABy/qLZSjSXKyI5em08j+rELBSmVqW51v+CeexAACFd0B8kf+rqMa14G
-        HC955IesuLevBJ/LcHUMYDSkmnpgBW95jp7OGATpkqATIF8zxHg=
-X-Google-Smtp-Source: APBJJlFChmprhsDlKpZJ+VXqA7MXSy6U6tiLSsjYS9GovKy+o4Q7IqfJNgEAdV13vfZ/utB4reCljTFOUd7b+KXxjvI=
-X-Received: by 2002:a05:6808:140e:b0:3a4:316b:42c7 with SMTP id
- w14-20020a056808140e00b003a4316b42c7mr14345026oiv.2.1689625320107; Mon, 17
- Jul 2023 13:22:00 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689625344; x=1692217344;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BGrQ+szKoMK+EaVan75CnITnplIPv8vValzWkyBMelk=;
+        b=gbhqSZbGKYghGh+RWJCGyaya166Kcrm2i21A/OsvvOtDZU+S8ptcxXERWLib74kEAS
+         Zc4r+7GfB5vtrSTQlfLZzNgQCgPtFzXi9IIjHDKQ1GTGQLCF5d0EwYlIX4SeJSobk6ou
+         +Tv6FQVQVtE8rQPaevrc6zY2sbWNQtfv2S+/odLRfp9rygFGoSIgSN9hRKKJ5A8Rigvy
+         8A9hWSdBUX5HX8oxhEb2YUuXMZeKFHeLkneCxf0ygkSceLBS0PgVIJCEamQdw2+/VsYY
+         IF5FbyWk1JiaYm7c88M0WXJFrayEsBJGCX/3eFv8BoTks8H8oKIMwuk2GGKAOjpnkhrt
+         3ovQ==
+X-Gm-Message-State: ABy/qLaPXnOFaE+FegUmBPRrrZ4FM3nsHaNjt35pSodgKMrPhApeMtbI
+        j4x8JuVKbTUQolQlxNOECYnKmGJ+lG0oUJL4GvAbbbl+Yriq
+X-Google-Smtp-Source: APBJJlH3Timn+OhaHJ/79ZumgdgzTTzyEzblDmWTxmlZfYEFG5zG9Y/2M+u7w8vJLIufO3NBE/Ht7+La67whJbsd8/rLPvXWbJRL
 MIME-Version: 1.0
-References: <20230706133751.38149-1-cgzones@googlemail.com>
-In-Reply-To: <20230706133751.38149-1-cgzones@googlemail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 17 Jul 2023 16:21:49 -0400
-Message-ID: <CAHC9VhQFn1cE39YuXNxssttu1tU6oXWsYjGLSzD496Wa5-Gs5A@mail.gmail.com>
-Subject: Re: [RFC PATCH] selinux: disable debug functions by default
-To:     =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
-Cc:     selinux@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6870:5aa5:b0:1b0:60ff:b748 with SMTP id
+ dt37-20020a0568705aa500b001b060ffb748mr11252238oab.3.1689625344585; Mon, 17
+ Jul 2023 13:22:24 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 13:22:24 -0700
+In-Reply-To: <00000000000049baa505e65e3939@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000077b5650600b48ed0@google.com>
+Subject: Re: [syzbot] [bluetooth?] general protection fault in hci_uart_tty_ioctl
+From:   syzbot <syzbot+c19afa60d78984711078@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, hdanton@sina.com, jiri@nvidia.com,
+        johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
+        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 6, 2023 at 9:37=E2=80=AFAM Christian G=C3=B6ttsche
-<cgzones@googlemail.com> wrote:
->
-> avtab_hash_eval() and hashtab_stat() are only used in policydb.c when
-> the debug macro DEBUG_HASHES is defined.
->
-> Signed-off-by: Christian G=C3=B6ttsche <cgzones@googlemail.com>
-> ---
->  security/selinux/ss/avtab.c   | 2 ++
->  security/selinux/ss/avtab.h   | 3 +++
->  security/selinux/ss/hashtab.c | 3 ++-
->  security/selinux/ss/hashtab.h | 2 ++
->  4 files changed, 9 insertions(+), 1 deletion(-)
+syzbot suspects this issue was fixed by commit:
 
-This reminds me that I don't really like the "hidden" and kludgy
-nature of DEBUG_HASHES.  What if we created a proper SELinux debug
-Kconfig flag and used it in place of DEBUG_HASHES?  I'm thinking of
-something like this:
+commit d772781964415c63759572b917e21c4f7ec08d9f
+Author: Jakub Kicinski <kuba@kernel.org>
+Date:   Fri Jan 6 06:33:54 2023 +0000
 
-config SECURITY_SELINUX_DEBUG
-  bool "NSA SELinux kernel debugging support"
-  depends on SECURITY_SELINUX
-  default n
-  help
-    This enables debugging code designed to help SELinux kernel developers,
-    unless you know what this does in the kernel code you should leave this
-    disabled.
+    devlink: bump the instance index directly when iterating
 
-... and then we do all of the usual Kconfig triggered dummy funcs,
-etc.  Thoughts?
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=136a0414a80000
+start commit:   84368d882b96 Merge tag 'soc-fixes-6.1-3' of git://git.kern..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=24d192d47d02d9e1
+dashboard link: https://syzkaller.appspot.com/bug?extid=c19afa60d78984711078
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=168fc765880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1376e745880000
 
---=20
-paul-moore.com
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: devlink: bump the instance index directly when iterating
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
