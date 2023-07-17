@@ -2,125 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3F57562C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB527562C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbjGQMbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 08:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50996 "EHLO
+        id S230239AbjGQMby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 08:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbjGQMbB (ORCPT
+        with ESMTP id S230210AbjGQMbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 08:31:01 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECAFE4F;
-        Mon, 17 Jul 2023 05:31:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689597060; x=1721133060;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=IALTvRizVydvE6kCecPGFlOXq43R/hzRHUtn5JcSzoA=;
-  b=XKhQ1Kx8mh1NpIchXVoRUS/baSzxn9RgynnBRuoptJMv41q2Woyn/aCJ
-   plrUYXNJTPkKCxYYlf4z+5V/VrSDz/DZ7WN+rIaKbE+YIELDQ+09R2seo
-   A86Sw5/s63/Lzwbs426fXa9VyRyPooOS/tPuPmh781fwG/PGLjwYi+R7j
-   f82K7thkEdhUeupb7wUno4QuYEMRBOdIWebYwBhNt3TYJzcp/awBDi/J3
-   32IjuOaNCB59p9Hc80DloWy8H4OQDYHaXAMXbdOkz42Uyh3oAfTSWQPYh
-   OPCFDH81Vaa2wOgSEDuFE47LYZ3fb2Sx3AF9rCa6oCzkA83vDsa5RgSDI
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="350780158"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="350780158"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 05:31:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="969869426"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="969869426"
-Received: from dkravtso-mobl1.ccr.corp.intel.com ([10.252.45.233])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 05:30:57 -0700
-Date:   Mon, 17 Jul 2023 15:30:52 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>,
-        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 10/19] selftests/resctrl: Express span internally in
- bytes
-In-Reply-To: <f1233835-8c94-e110-531f-13712569b7c0@intel.com>
-Message-ID: <7eef29f6-297b-bb2b-e0d-ccef1aa2f14@linux.intel.com>
-References: <20230713131932.133258-1-ilpo.jarvinen@linux.intel.com> <20230713131932.133258-11-ilpo.jarvinen@linux.intel.com> <1dd10447-b03d-937a-fe55-ff324864c358@intel.com> <0c94daef-3642-9e8e-0e8a-3f8eaa2953e3@intel.com> <fce81fed-592e-16ad-b833-735a7b3a186@linux.intel.com>
- <f1233835-8c94-e110-531f-13712569b7c0@intel.com>
+        Mon, 17 Jul 2023 08:31:53 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21A51B4
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 05:31:50 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-51f64817809so453657a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 05:31:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689597110; x=1690201910;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EhtKDGLkYdLlMzTZE+T1BryE5vukkd/SRUwBcJXGkYE=;
+        b=adSle6S4qsLISaMws72/D7IY0mwUp/nesW94VNVtbmdc6XDZ7TC6TFQwBCdStwhr3F
+         07xlBBvutoTmqDWX/XDMJluLs4bdCB/ow17FqmqN8vaCWz5n7bVCbbsZXfk8EPuCXVwT
+         nd1uhYhy2sZin05dMd8A3na86l/KiYqagH6mb/T15SOtsl/FXwRH1E9HSbj31BkFexdX
+         WvoQ6LdhwlRT1N3j9KU+98wympgjOrdQ0P0Atno/H2W2OOVjQMKTWy1PF3g5cpOs1pVw
+         HUZjoxHjy7yTb5SJf4JvtptbWgVGyLBWKLu0TARWVQ7GwUkoe0YsPdoDm+f1qudH2c3H
+         iquw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689597110; x=1690201910;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EhtKDGLkYdLlMzTZE+T1BryE5vukkd/SRUwBcJXGkYE=;
+        b=LPd1gYEGpw5z3gnLWhEGm/c2RpFuiJw1+Fo5aa8bohX11ssNofboOkFinwHROL0wSh
+         S+lKo/hdGo7nqdvWbiWjjmSZUKpMM78h9EIS6rnxr8iRgiT7Tu81xYNdSuk+UxGrOi8J
+         pavpVzEYPUfPI7Wq9J81rR6IaefCoZtxXNRF9Avk9iPvXjN6UG8R1XinpFUod4eh+V0R
+         eIQ0ibGBIGFRojZ2Roblhdxa5Ib7wXs24QCouPodZM26HBsRD8rVhd94PrEJbG9dnyeJ
+         6dlbcXOkEWjBln+oEuMaft32xz3tevcyDk696pSGewzCrmOHT82VE24wHo7UorebCwQR
+         cLrA==
+X-Gm-Message-State: ABy/qLajR8qhJ1Q1wlnJ5I2eTXSvvqxkKn69RHtbj3A1wwFrbDjHLi5N
+        6NI4Su3lZwqv6og+9T82AnwC/6Nbc3K2JCDvgIA=
+X-Google-Smtp-Source: APBJJlE88ZKilmPeyPMniQza3GQ3pBQrLfygkPj1jJXbn1/AdXpYoB4MvfL+s0Esgs/EA1CzPEUZ7pYqEn2WGR3dgH4=
+X-Received: by 2002:a17:90b:3c43:b0:263:484c:f173 with SMTP id
+ pm3-20020a17090b3c4300b00263484cf173mr11550745pjb.2.1689597110032; Mon, 17
+ Jul 2023 05:31:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-906854338-1689597059=:1907"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230712124934.32232-1-matuszpd@gmail.com>
+In-Reply-To: <20230712124934.32232-1-matuszpd@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 17 Jul 2023 09:31:38 -0300
+Message-ID: <CAOMZO5ATTK7UsTRPTF_7r86WbNmAhtpEphO2u896QqARTk2kpA@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: Disable bit clock with transmitter
+To:     Matus Gajdos <matuszpd@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Wed, Jul 12, 2023 at 9:53=E2=80=AFAM Matus Gajdos <matuszpd@gmail.com> w=
+rote:
+>
+> Otherwise bit clock remains running writing invalid data to the DAC.
+>
+> Signed-off-by: Matus Gajdos <matuszpd@gmail.com>
 
---8323329-906854338-1689597059=:1907
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Fri, 14 Jul 2023, Reinette Chatre wrote:
-> On 7/14/2023 3:22 AM, Ilpo Järvinen wrote:
-> > On Fri, 14 Jul 2023, Wieczor-Retman, Maciej wrote:
-> >> On 14.07.2023 01:00, Reinette Chatre wrote:
-> >>> Hi Ilpo,
-> >>>
-> >>> On 7/13/2023 6:19 AM, Ilpo Järvinen wrote:
-> >>>> MBA and MBM tests to use megabytes to represent span. CMT test uses
-> >>>> bytes. The difference requires run_benchmark() to size the buffer
-> >>>> differently based on the test name, which in turn requires passing the
-> >>>> test name into run_benchmark().
-> >>>>
-> >>>> Convert MBA and MBM tests to use internally bytes like CMT test to
-> >>>> remove the internal inconsistency between the tests. Remove the test
-> >>>> dependent buffer sizing from run_benchmark().
-> >>>
-> >>> If I understand correctly the intention is to always use bytes internally
-> >>> and only convert to megabytes when displayed to user space. The above
-> >>> implies that this takes care of the conversion but there still seems
-> >>> to be places that that do not follow my understanding. For example,
-> >>> resctrl_val.c:measure_vals() converts to megabytes before proceeding.
-> >>
-> >> Doesn't the use case inside resctrl_val.c:measure_vals() satisfy
-> >> the idea of only displaying data to the user space? From my
-> >> understanding it reads the number of bytes and only converts to
-> >> MB when printing the value. Or did I miss some detail there?
-> > 
-> > It's for printing there yes.
-> > 
-> > But it's not about span in the first place so I'm not sure why it is 
-> > related.
-> > 
-> 
-> If this change is just about how "span" is interpreted by the different
-> tests then the changelog could be more specific to not create expectation
-> that with this change there are no longer "bytes vs megabytes" internal
-> inconsistency between MBA, MBM, and CMT tests.
-
-The shortlog and changelog are already pretty specific in mentioning 
-"span" a few times :-). I added yet another "span" into the changelog's 
-2nd paragraph.
-
-Your general observation about the other MB/bytes inconsistency is still
-a good one so I added it also to my todo list, it just doesn't belong to 
-this patch (IMHO).
-
-
--- 
- i.
-
---8323329-906854338-1689597059=:1907--
+Should this contain a Fixes tag so that it could be backported to
+stable kernels?
