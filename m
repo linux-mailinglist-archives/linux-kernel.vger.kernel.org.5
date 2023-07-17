@@ -2,99 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2909E756DF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D5E756DF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbjGQUJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 16:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53600 "EHLO
+        id S230198AbjGQUJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 16:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbjGQUJ3 (ORCPT
+        with ESMTP id S229630AbjGQUJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 16:09:29 -0400
-Received: from smtp.smtpout.orange.fr (smtp-29.smtpout.orange.fr [80.12.242.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D82E7
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:09:27 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id LUX2q5vfabkI3LUX3qnKyX; Mon, 17 Jul 2023 22:09:26 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1689624566;
-        bh=UEj0AXAxlyKrDR2T9dRAsXWpemXdwncxY2h++Qk+qQw=;
-        h=From:To:Cc:Subject:Date;
-        b=d5cNBpyckTzPUqzqnhq0Y8pnMXCGVib/3GQbOzMQQsYxZ3ZYKt+G4E2/m0JKWFX+e
-         qqDGQBU3SKWwxg6+fc7iAiwf/ujP3ncKaZh5EqZ0NlrQbWfy0k6ZMAHR2alnc/RV0O
-         BRWLayHoFfKe22+BCe+9ZH74Rp3Yb4VGTr//1QNai0xaOnpWocQub4BxIKf/4/XYQQ
-         aC6q05JzSPNLdSdhUaYi7DjgHHxT1Idu1MjlUL6CW1hWdXd95uygiX+S50KeqRHdcM
-         t5KbEAcOD6WglubNCuVqoWfi+MZ7NLw0gvaibiq0kYwspynZkdd5yCqTNi6bIdnZRC
-         sbthVNZOAmuLA==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 17 Jul 2023 22:09:26 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Xiaoyong Lu <xiaoyong.lu@mediatek.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH] media: mediatek: vcodec: Fix an error handling path in vdec_msg_queue_init()
-Date:   Mon, 17 Jul 2023 22:09:19 +0200
-Message-Id: <efa0d4910998931a2ec9d933117fa71482d7b33a.1689624542.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Mon, 17 Jul 2023 16:09:33 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0195E7
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:09:31 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b703d7ed3aso76120871fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:09:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689624570; x=1692216570;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fsEmnlMQPV7Fd5Yb95V67Si+MXxbwtnWXXY+l8DoZjo=;
+        b=oU8+D8GDnhaYzrA3Gni30BP/qU8SrINxACQ2xyNa2rCPhDarYG6/fs0siRXa7Yt3PV
+         iCyVbNVcrozP4u8EFEcAg+09B0olC7CHYG934H1hwyjUeRNrLwkmp8/OuY9FNy9NAbp1
+         FMXEZN+i9gLzShxOnTsCe6kVn/umg1f018FckZswUEtS0O4nw4aQPCktqgRHzLAA744W
+         LwcfjeglrvrD3vm1OrdNttY3W+mTlyGYYRzBYxG+PQjZKjOUr6Cc3OZT4Vd0Bb3/8dCz
+         NGhT0KCo3KGAJWzvKf1CNnZ+EX50bR+FUUrklTjSDd2c1tYa3Dw+CRg1MOM7UtbKaylZ
+         rFXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689624570; x=1692216570;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fsEmnlMQPV7Fd5Yb95V67Si+MXxbwtnWXXY+l8DoZjo=;
+        b=Pq2DQRPitnW3lpTz0x+KAlYvko2RqkmvthUwqzhHnpsTtG3l0fKCgNZIybelyOW4jz
+         /wfRrrRZaJtfM4wA1yrBtBWT1HOUGEkI/mWbeRGbeRqhOMSoK1ZoMPcWRbmctdsgfFzE
+         9CF6w/UDf7rV7ABHQskWhlvtAxO8wnui5Og7I1w/I3k7myCnkx4K5zfUbFW12C1TvZTM
+         +5SuqTbmJrpAdjY1/8FxqEm8It/Uru8S14vfWh78z/ZnB+5KRp/qj9vLdshF3J5PkBPn
+         /Bu/Kv24zXUzrBRWwj4O3h+JDXSIgSq65Kt7MjknV4qhqZNg6tQP9VDw6Nx7kypDT5hq
+         0lmw==
+X-Gm-Message-State: ABy/qLa4iZc5gKDqp/nYjOJJv0Wi5uotkrBy7sss2jQGug/8Mn+gi1hl
+        vdh0Gmr2xYWlw1PNL6MBfG0=
+X-Google-Smtp-Source: APBJJlG4Iajle0ADfReJ6a6LzBxYlP+ylGGcYu7WnAvf/t4pEnz9ZPb9/BH2HQh4Y1B+3pu7dT3axw==
+X-Received: by 2002:a2e:3815:0:b0:2b5:1b80:264b with SMTP id f21-20020a2e3815000000b002b51b80264bmr9195833lja.12.1689624569720;
+        Mon, 17 Jul 2023 13:09:29 -0700 (PDT)
+Received: from [127.0.1.1] (i130160.upc-i.chello.nl. [62.195.130.160])
+        by smtp.googlemail.com with ESMTPSA id k13-20020a17090627cd00b00997bd42d210sm84505ejc.205.2023.07.17.13.09.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 13:09:29 -0700 (PDT)
+From:   Jakob Koschel <jkl820.git@gmail.com>
+Date:   Mon, 17 Jul 2023 22:09:27 +0200
+Subject: [PATCH] arch: enable HAS_LTO_CLANG with KASAN and KCOV
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230717-enable-kasan-lto1-v1-1-471e706a5c4e@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAPaftWQC/x2N0QqDMAwAf0XyvIDttIX9ythDWrMZ5upIRAbiv
+ 1v3eBzHbWCswga3ZgPlVUzmUsFdGsgjlRejDJXBt/7aRheRC6WJ8U1GBadldhj6EPsux+A7B7V
+ LZIxJqeTxLD9kC+spvspP+f1n98e+H8rPhil8AAAA
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Jakob Koschel <jkl820.git@gmail.com>
+X-Mailer: b4 0.12.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689624569; l=1432;
+ i=jkl820.git@gmail.com; s=20230112; h=from:subject:message-id;
+ bh=YFPsm2kVtfSehCpbATGIVArV8bDH64E2Vvok0+5hopA=;
+ b=f2qpVn5s2uyo2Brz2l2WY4ke7LkrHMJbyfhfiM/vAB+BSOVaVwuPJ0E5UsQdQLmCVh1SYToKlh2c
+ KC/RmFLDBl0SrGQFOjU8UpzkDGc9D1JNpy4hRr+hcAPu7GBADIRq
+X-Developer-Key: i=jkl820.git@gmail.com; a=ed25519;
+ pk=rcRpP90oZXet9udPj+2yOibfz31aYv8tpf0+ZYOQhyA=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All errors go to the error handling path, except this one. Be consistent
-and also branch to it.
+Both KASAN and KCOV had issues with LTO_CLANG if DEBUG_INFO is enabled.
+With LTO inlinable function calls are required to have debug info if
+they are inlined into a function that has debug info.
 
-Fixes: 2f5d0aef37c6 ("media: mediatek: vcodec: support stateless AV1 decoder")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Starting with LLVM 17 this will be fixed ([1],[2]) and enabling LTO with
+KASAN/KCOV and DEBUG_INFO doesn't cause linker errors anymore.
+
+Signed-off-by: Jakob Koschel <jkl820.git@gmail.com>
+Link: https://github.com/llvm/llvm-project/commit/913f7e93dac67ecff47bade862ba42f27cb68ca9
+Link: https://github.com/llvm/llvm-project/commit/4a8b1249306ff11f229320abdeadf0c215a00400
 ---
- drivers/media/platform/mediatek/vcodec/vdec_msg_queue.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/mediatek/vcodec/vdec_msg_queue.c b/drivers/media/platform/mediatek/vcodec/vdec_msg_queue.c
-index 04e6dc6cfa1d..c6cc2785e0e8 100644
---- a/drivers/media/platform/mediatek/vcodec/vdec_msg_queue.c
-+++ b/drivers/media/platform/mediatek/vcodec/vdec_msg_queue.c
-@@ -338,14 +338,16 @@ int vdec_msg_queue_init(struct vdec_msg_queue *msg_queue,
- 			err = mtk_vcodec_mem_alloc(ctx, &lat_buf->rd_mv_addr);
- 			if (err) {
- 				mtk_v4l2_err("failed to allocate rd_mv_addr buf[%d]", i);
--				return -ENOMEM;
-+				err = -ENOMEM;
-+				goto mem_alloc_err;
- 			}
- 
- 			lat_buf->tile_addr.size = VDEC_LAT_TILE_SZ;
- 			err = mtk_vcodec_mem_alloc(ctx, &lat_buf->tile_addr);
- 			if (err) {
- 				mtk_v4l2_err("failed to allocate tile_addr buf[%d]", i);
--				return -ENOMEM;
-+				err = -ENOMEM;
-+				goto mem_alloc_err;
- 			}
- 		}
- 
+diff --git a/arch/Kconfig b/arch/Kconfig
+index aff2746c8af2..61263ff92271 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -745,7 +745,8 @@ config HAS_LTO_CLANG
+ 	depends on $(success,$(AR) --help | head -n 1 | grep -qi llvm)
+ 	depends on ARCH_SUPPORTS_LTO_CLANG
+ 	depends on !FTRACE_MCOUNT_USE_RECORDMCOUNT
+-	depends on !KASAN || KASAN_HW_TAGS
++	depends on (!KASAN || KASAN_HW_TAGS || CLANG_VERSION >= 170000) || !DEBUG_INFO
++	depends on (!KCOV || CLANG_VERSION >= 170000) || !DEBUG_INFO
+ 	depends on !GCOV_KERNEL
+ 	help
+ 	  The compiler and Kconfig options support building with Clang's
+
+---
+base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
+change-id: 20230717-enable-kasan-lto1-656754c76241
+
+Best regards,
 -- 
-2.34.1
+Jakob Koschel <jkl820.git@gmail.com>
 
