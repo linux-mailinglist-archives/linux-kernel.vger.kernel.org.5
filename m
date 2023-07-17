@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53234756DA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E07756DB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbjGQTw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 15:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44830 "EHLO
+        id S231139AbjGQTyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 15:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjGQTw1 (ORCPT
+        with ESMTP id S230165AbjGQTyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 15:52:27 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3ABF126;
-        Mon, 17 Jul 2023 12:52:26 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-78654448524so183423139f.2;
-        Mon, 17 Jul 2023 12:52:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689623546; x=1692215546;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xWoO0TUyoZ+Qmv9rHsFJp85hT+0xnOPhDe/kh1QoW+4=;
-        b=b/OD9dQBwXE1T8MrYijlWFmG5nFgVYLUSGDixvQrh4A+Vyno/KDVv+Pz7WNzBol1c7
-         hgPj6C5a/CdM8V4v9GlJbGJegX4cmUqZhY386PFQo/u2kdOS0H4F+ItE8lvfOabQMBq4
-         B+t9XaxuY0MkH70snVL8s0ePHjc8aFM4oFpf04Gbq9YxNiylU21jGRFT0TNyzjtuCIgC
-         4PuELLmlzmV0xkS9mzXnFdHXNCEkugpQcM7PUci+dtuq5vf475R0VjnGL8r4cmHGgXTo
-         /swLnuNI5MMi1CSwtcMJdKE52LgaAn2tNjyeq/xMKoRE3jD+BOKiRoB2KLYtpMkgvRrm
-         2Nwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689623546; x=1692215546;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xWoO0TUyoZ+Qmv9rHsFJp85hT+0xnOPhDe/kh1QoW+4=;
-        b=ffEVZK8lXuDEplQMwal+DoztshOHznxH4dIgMJbuhxfAVZ6CaJpWMfgctgjqcmwMnH
-         TuBKOJwJqeKyWqOn5VNcq+Br71kuNAxomHqB7DYrjyyvOuIcgtcH+9YGgwAdTf87tARs
-         Skh6AHesYnLnt6wNOS3NTOlYhl7BJ+h3Tq3mOP0fKwSlT/Tsc710ay8MNYqSDfwuTC6o
-         nVwEAkHMx0ALXBpLdip6NMigNJG+ctVl4rniLtgXgTrIsH1NM/ZWhGh6gjn4QauvbA3+
-         6DSC/4FhvvPZooqICLNQukwAEf7XUV7EHJvqdd/bi6H44QFaT5VNFiGBiTnpYgIU18yi
-         3BnQ==
-X-Gm-Message-State: ABy/qLZrNQkRj3ce/3YsQ+N/yeax0HxwwsShd6fMEBSIMKMH/v4KgJvw
-        2sZL4clAgDTHb2xwnElw7MA=
-X-Google-Smtp-Source: APBJJlHSUjxifSVrVdCDPxEBiVa/8JHHvBQsZfY+DBkng5FQSGGbHQXRLjsIy6hbVB/K0igUqin82w==
-X-Received: by 2002:a5d:9544:0:b0:780:bf50:32ce with SMTP id a4-20020a5d9544000000b00780bf5032cemr615151ios.19.1689623545792;
-        Mon, 17 Jul 2023 12:52:25 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id t11-20020a6b090b000000b0077e35ffac2fsm68393ioi.32.2023.07.17.12.52.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 12:52:25 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 17 Jul 2023 09:52:24 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Hao Jia <jiahao.os@bytedance.com>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup/rstat: record the cumulative per-cpu time of
- cgroup and its descendants
-Message-ID: <ZLWb-LsBD041hMvr@slm.duckdns.org>
-References: <20230717093612.40846-1-jiahao.os@bytedance.com>
+        Mon, 17 Jul 2023 15:54:07 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A68D129;
+        Mon, 17 Jul 2023 12:54:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689623647; x=1721159647;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=55+F8jOsHvNsY85Vpz2l3HY0qmMTBWxPg4dFVbT6WT8=;
+  b=fG3cDEufTzdFoM1mrxgMX02k2YdKeAMu1SwHudClO3uPskpx8deREAOQ
+   2Hget0Yto9rpPyIZVgubfzsLypQFebiTdxlF0pP5iAnSZqbqnDYXZiE8P
+   9gAxkhCfH40oPB2vJdQdsQCU4bK91N/7oGaTVsd77a2s+ID4Hy4YOKZjR
+   VdUEIEQQ9Q5IpgbL14fuJNHxFEH2beqXlKuDOinEx9zH2v4oVfW3Vz/+b
+   OrKPQ4gA2YoVwJ/RFwYq3WZaHOUBs/B1yAporkMTjQ9mk0wxFDeFMjSYB
+   2VSNFTpYDyUpfDGysHATfA+TimgrZ2Pey2nK32ain/O5IO8+CtNRAd8It
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="366064449"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="366064449"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 12:54:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="788770692"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="788770692"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.8])
+  by fmsmga008.fm.intel.com with ESMTP; 17 Jul 2023 12:54:06 -0700
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     daniel.lezcano@linaro.org, rafael@kernel.org, rui.zhang@intel.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH v2 0/7] thermal: processor_thermal: Suport workload hint
+Date:   Mon, 17 Jul 2023 12:53:58 -0700
+Message-Id: <20230717195405.730869-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717093612.40846-1-jiahao.os@bytedance.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add support for Meteor Lake workload hints. Before adding this support,
+some reorganization and clean up is required.
+First four changes are for clean up and to reorganize code to add
+support for workload hint. The last patch adds a test program as part
+of self tests.
 
-On Mon, Jul 17, 2023 at 05:36:12PM +0800, Hao Jia wrote:
-> Now the member variable bstat of the structure cgroup_rstat_cpu
+v2:
+Changes in comments and commit log
+Self test program is improved to disable workloadtype notification
+on exit
 
-You said "now" indicating that the behavior has changed recently but I don't
-see what changed there. Can you elaborate?
+Srinivas Pandruvada (7):
+  thermal: int340x: processor_thermal: Move mailbox code to common
+    module
+  thermal: int340x: processor_thermal: Add interrupt configuration
+  thermal: int340x: processor_thermal: Use non MSI interrupts
+  thermal/drivers/int340x: Remove PROC_THERMAL_FEATURE_WLT_REQ for
+    Meteor Lake
+  thermal: int340x: processor_thermal: Add workload type hint
+  thermal/drivers/int340x: Support workload hint interrupts
+  selftests/thermel/intel: Add test to read workload hint
 
-> records the per-cpu time of the cgroup itself, but does not
-> include the per-cpu time of its descendants. The per-cpu time
-
-It does. The per-cpu delta is added to its parent and then that will in turn
-be used to propagate to its parent.
-
-> including descendants is very useful for calculating the
-> per-cpu usage of cgroups.
-> 
-> Although we can indirectly obtain the total per-cpu time
-> of the cgroup and its descendants by accumulating the per-cpu
-> bstat of each descendant of the cgroup. But after a child cgroup
-> is removed, we will lose its bstat information. This will cause
-> the cumulative value to be non-monotonic, thus affecting
-> the accuracy of cgroup per-cpu usage.
-> 
-> So we add the cumul_bstat variable to record the total
-> per-cpu time of this cgroup and its descendants, which is
-> similar to "cpuacct.usage*" in cgroup v1. And this is
-> also helpful for the migration from cgroup v1 to cgroup v2.
-> After adding this variable, we can obtain the per-cpu time of
-> cgroup and its descendants in user mode through eBPF, etc.
-
-I think you're misunderstanding how the code works. Can you please double
-check?
-
-Thanks.
+ .../driver-api/thermal/intel_dptf.rst         |  38 +++
+ .../thermal/intel/int340x_thermal/Makefile    |   2 +
+ .../processor_thermal_device.c                |  17 +-
+ .../processor_thermal_device.h                |  21 +-
+ .../processor_thermal_device_pci.c            |  76 ++++--
+ .../processor_thermal_device_pci_legacy.c     |   3 +-
+ .../int340x_thermal/processor_thermal_mbox.c  | 179 ++++---------
+ .../processor_thermal_wlt_hint.c              | 238 ++++++++++++++++++
+ .../processor_thermal_wlt_req.c               | 136 ++++++++++
+ tools/testing/selftests/Makefile              |   1 +
+ .../thermal/intel/workload_hint/Makefile      |  12 +
+ .../intel/workload_hint/workload_hint_test.c  | 157 ++++++++++++
+ 12 files changed, 718 insertions(+), 162 deletions(-)
+ create mode 100644 drivers/thermal/intel/int340x_thermal/processor_thermal_wlt_hint.c
+ create mode 100644 drivers/thermal/intel/int340x_thermal/processor_thermal_wlt_req.c
+ create mode 100644 tools/testing/selftests/thermal/intel/workload_hint/Makefile
+ create mode 100644 tools/testing/selftests/thermal/intel/workload_hint/workload_hint_test.c
 
 -- 
-tejun
+2.38.1
+
