@@ -2,63 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1184B756307
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A638B756309
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbjGQMpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 08:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
+        id S230350AbjGQMpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 08:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbjGQMpW (ORCPT
+        with ESMTP id S229986AbjGQMpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 08:45:22 -0400
+        Mon, 17 Jul 2023 08:45:49 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8536091;
-        Mon, 17 Jul 2023 05:45:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6282FDA;
+        Mon, 17 Jul 2023 05:45:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 09E4C6103F;
-        Mon, 17 Jul 2023 12:45:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B46DC433C8;
-        Mon, 17 Jul 2023 12:45:20 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EA1C96104B;
+        Mon, 17 Jul 2023 12:45:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AC90C433C8;
+        Mon, 17 Jul 2023 12:45:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689597920;
-        bh=H13b/kPtnbPNqTkXh0P646Xi0qWC1YULsU7xxoNFXDw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r6K3P5tFClIWpj34d+MHBPFy6UlUBif976s68oHmrLN04lY7LhD7hht47BGRezIUA
-         yUmb7+y1oCmtF1ye936kJU5r8VusBrE86uMb1cFwKXBPZLt82lBIvi2idEfeqKW+0R
-         h8kPNuU9UvT/NFTm4cfdKscK571sWITEM8MuiTat0DUfFydekOW2DeVrfF2/yly3z5
-         aubqxJW0S+73OiYo7yDr/eJ3Ei2f7ceGBWqwQy01U1y/3QaU4XuNKSOx3ekHtfslxP
-         IllGMq3bOABvAcXbfqYw4X9YbiHXjrnJrkh0FcNdSGqX8M7ys9zXmHuwzo6ui/6L7u
-         k43KmZlKtLpNg==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qLNbR-0000Qa-36;
-        Mon, 17 Jul 2023 14:45:26 +0200
-Date:   Mon, 17 Jul 2023 14:45:25 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Robert Foss <rfoss@kernel.org>, Todor Tomov <todor.too@gmail.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Yassine Oudjana <y.oudjana@protonmail.com>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] media: camss: Intepret OF graph connections more
- sensibly
-Message-ID: <ZLU35SucePevwU6i@hovoldconsulting.com>
-References: <20230614-topic-camss_grpah-v2-1-57d9d5e49038@linaro.org>
- <ZLUcaQN6hCjjulTv@hovoldconsulting.com>
- <18f2a5b5-5cc2-6bea-ca08-5da218b3192b@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <18f2a5b5-5cc2-6bea-ca08-5da218b3192b@linaro.org>
+        s=k20201202; t=1689597941;
+        bh=gO1fpIF4DrAPNB+QftjUHUJdhOei+AxWsZlYNQnSN+E=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=tMsP/BQ24EY3ad0FkSEF2GXd7wj/sMcuwrJdufSy1jZNXzcdRqx7rGNvPMwYUezXm
+         zuPMvxT97kn3WQMolnkDvbWiywN5xoSsdCOZQ2Yv5hIHiGv4uyrVW8W9zrtpswA+rk
+         zumJ26mCSHg1oa0pyZKDDTkTk8Wh5ExfiF6CQA/bb7VzFZ/2tzquH81WNw5hiaS7Lw
+         YGttfb3x0HJEoqB0FQUMfUqy/aAzRG/zbgolX8CzyNFgp3eWEfikQbIxR55YrCsudK
+         yRShGGCil31NE7bWJNz0M7meW7BDYJVaLWDGqT2S9To1jLrCUcJs6iRyzpwTJNOI6F
+         K74NG/tTBoZPg==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 17 Jul 2023 12:45:36 +0000
+Message-Id: <CU4GHCJTRKLZ.1RK23NWPHJGNI@seitikki>
+Cc:     <kai.huang@intel.com>, <reinette.chatre@intel.com>,
+        "Kristen Carlson Accardi" <kristen@linux.intel.com>,
+        <zhiquan1.li@intel.com>, <seanjc@google.com>
+Subject: Re: [PATCH v3 03/28] x86/sgx: Add 'struct sgx_epc_lru_lists' to
+ encapsulate lru list(s)
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
+        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+        <cgroups@vger.kernel.org>, "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
+X-Mailer: aerc 0.14.0
+References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
+ <20230712230202.47929-4-haitao.huang@linux.intel.com>
+In-Reply-To: <20230712230202.47929-4-haitao.huang@linux.intel.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -69,43 +64,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 02:40:05PM +0200, Konrad Dybcio wrote:
-> On 17.07.2023 12:48, Johan Hovold wrote:
-> > On Sat, Jul 15, 2023 at 05:37:52PM +0200, Konrad Dybcio wrote:
+On Wed Jul 12, 2023 at 11:01 PM UTC, Haitao Huang wrote:
+> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>
+> Introduce a data structure to wrap the existing reclaimable list
+> and its spinlock in a struct to minimize the code changes needed
+> to handle multiple LRUs as well as reclaimable and non-reclaimable
+> lists. The new structure will be used in a following set of patches to
+> implement SGX EPC cgroups.
+>
+> The changes to the structure needed for unreclaimable lists will be
+> added in later patches.
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+>
+> V3:
+> Removed the helper functions and revised commit messages
+> ---
+>  arch/x86/kernel/cpu/sgx/sgx.h | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+>
+> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.=
+h
+> index f6e3c5810eef..77fceba73a25 100644
+> --- a/arch/x86/kernel/cpu/sgx/sgx.h
+> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
+> @@ -92,6 +92,23 @@ static inline void *sgx_get_epc_virt_addr(struct sgx_e=
+pc_page *page)
+>  	return section->virt_addr + index * PAGE_SIZE;
+>  }
+> =20
+> +/*
+> + * This data structure wraps a list of reclaimable EPC pages, and a list=
+ of
+> + * non-reclaimable EPC pages and is used to implement a LRU policy durin=
+g
+> + * reclamation.
+> + */
+> +struct sgx_epc_lru_lists {
+> +	/* Must acquire this lock to access */
+> +	spinlock_t lock;
 
-> >> diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-> >> index 1ef26aea3eae..8b75197fa5d7 100644
-> >> --- a/drivers/media/platform/qcom/camss/camss.c
-> >> +++ b/drivers/media/platform/qcom/camss/camss.c
-> >> @@ -1084,9 +1084,8 @@ static int camss_of_parse_ports(struct camss *camss)
-> >>  
-> >>  		remote = of_graph_get_remote_port_parent(node);
-> >>  		if (!remote) {
-> >> -			dev_err(dev, "Cannot get remote parent\n");
-> >> -			ret = -EINVAL;
-> >> -			goto err_cleanup;
-> >> +			of_node_put(node);
-> > 
-> > This is broken and could potentially lead to a use after free.
-> > 
-> > Specifically, the iteration macro already takes care of putting this
-> > reference.
+Isn't this self-explanatory, why the inline comment?
 
-> /**
->  * for_each_endpoint_of_node - iterate over every endpoint in a device node
->  * @parent: parent device node containing ports and endpoints
->  * @child: loop variable pointing to the current endpoint node
->  *
->  * When breaking out of the loop, of_node_put(child) has to be called manually.
->  */
+> +	struct list_head reclaimable;
+> +};
+> +
+> +static inline void sgx_lru_init(struct sgx_epc_lru_lists *lrus)
+> +{
+> +	spin_lock_init(&lrus->lock);
+> +	INIT_LIST_HEAD(&lrus->reclaimable);
+> +}
+> +
+>  struct sgx_epc_page *__sgx_alloc_epc_page(void);
+>  void sgx_free_epc_page(struct sgx_epc_page *page);
+> =20
+> --=20
+> 2.25.1
 
-Please read this comment you just pasted here again as it seems you did
-not understand it.
 
-> > 
-> >> +			continue;
-
-And again, please remember to trim your replies. Including context after
-your reply is almost always wrong.
-
-Johan
+BR, Jarkko
