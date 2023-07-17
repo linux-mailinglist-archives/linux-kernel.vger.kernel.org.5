@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 797E8755A12
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 05:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A902755A14
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 05:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbjGQD1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 23:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42758 "EHLO
+        id S231217AbjGQD1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 23:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbjGQD1H (ORCPT
+        with ESMTP id S231195AbjGQD1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 23:27:07 -0400
+        Sun, 16 Jul 2023 23:27:15 -0400
 Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EAA180
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 20:27:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC51218B
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 20:27:13 -0700 (PDT)
 Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R46vV20kQzBHXhP
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 11:27:02 +0800 (CST)
+        by mail.208.org (Postfix) with ESMTP id 4R46vf6hGWzBHXlG
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 11:27:10 +0800 (CST)
 Authentication-Results: mail.208.org (amavisd-new); dkim=pass
         reason="pass (just generated, assumed good)" header.d=208.org
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
         content-transfer-encoding:content-type:message-id:user-agent
         :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689564422; x=1692156423; bh=bKsnKHfPXtzGohNC8T6IptNohj2
-        07rb3bU8n49fAOEM=; b=mV8EyHFpz7UdKkfmhb1HGFpzIr5i6YVRylXxgPOcmmF
-        5HNj6qxZUeKc+aEhr/d4WPQe3lRZIjawG9PBI99/M7gyYchjklPexHkEUZseWODg
-        LNjBBgng+HyRzTPsvXFySNx6C6WnpdIpJDrLHchxmzD9ptKGnN+KZsXmQZbcR75K
-        msk5/2PfYiB+xVv28L+PSjtaZveh0fvHiG0YVEeiz4j+fuSAluXqYYYWm2TyJr2L
-        SvFqxAcMsqTveUlv9ZeaibgQ2mw8YRD/BK4MG+nUhAkK/bkmdxaS/279b8zevLAA
-        A1/LTJgkvw8YkEbx8UfzJJTarw1FFFVNh6fu4MP0C4w==
+        dkim; t=1689564430; x=1692156431; bh=Oyj+TYnFM2nBhAsEqO9sGZFdi1T
+        41zSnIhBu9yxAGig=; b=ceI4ja6mW2skrEWD0o2pcg+KUCD/H0WA9GfGx+bcsEL
+        uvNfgn10YaPtOjeWgzS0m9V4b/j6ZrZKaEZafMlOhmI8k1eCvUKDUNgLJMDeG/9U
+        p/6uDHVH/qWT3l1DDYtCdEtpiWsIWzSqYPNMduQPMuiJgCwctTkqs9Omb54wYGeL
+        44z5rBWCbFmZxGGhKOC1VlwnLQEe81kbCguVaXQWy1Y6ypNTDSbXvCBQri4iEK0f
+        8IOwiV1G4cb0qKsdBxFxxVRSC3jEdsC7pHNGAt+NXLD/jGDvnFO73la4W/xtoPv3
+        qYaBU2BCOCWn7PeLmK68HLaBiXQqxFHw97Uwca1cLPw==
 X-Virus-Scanned: amavisd-new at mail.208.org
 Received: from mail.208.org ([127.0.0.1])
         by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id PYLtDkao0LAf for <linux-kernel@vger.kernel.org>;
-        Mon, 17 Jul 2023 11:27:02 +0800 (CST)
+        with ESMTP id bqrS7_XrNMOW for <linux-kernel@vger.kernel.org>;
+        Mon, 17 Jul 2023 11:27:10 +0800 (CST)
 Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R46vV09vkzBHXR9;
-        Mon, 17 Jul 2023 11:27:01 +0800 (CST)
+        by mail.208.org (Postfix) with ESMTPSA id 4R46vf1jWLzBHXR9;
+        Mon, 17 Jul 2023 11:27:10 +0800 (CST)
 MIME-Version: 1.0
-Date:   Mon, 17 Jul 2023 11:27:01 +0800
-From:   shijie001@208suo.com
-To:     pbonzini@redhat.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: Fix warnings in irqchip.c
-In-Reply-To: <tencent_E7FFD5AD20D6F7A59A915FD8CB1385FC8806@qq.com>
-References: <tencent_E7FFD5AD20D6F7A59A915FD8CB1385FC8806@qq.com>
+Date:   Mon, 17 Jul 2023 11:27:10 +0800
+From:   hanyu001@208suo.com
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] 3c59x: Add space around '='
+In-Reply-To: <tencent_7B6F5BD00E87F90524CC452645A9D0DB2007@qq.com>
+References: <tencent_7B6F5BD00E87F90524CC452645A9D0DB2007@qq.com>
 User-Agent: Roundcube Webmail
-Message-ID: <2ec15b819263c1b9e0ee08da6b605006@208suo.com>
-X-Sender: shijie001@208suo.com
+Message-ID: <304ca645a55aa0affe830bd36edaf24d@208suo.com>
+X-Sender: hanyu001@208suo.com
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
@@ -61,76 +62,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following checkpatch warnings are removed:
-WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
-WARNING: Missing a blank line after declarations
-WARNING: Block comments use * on subsequent lines
-WARNING: Block comments use a trailing */ on a separate line
-WARNING: Prefer __weak over __attribute__((weak))
+Fix checkpatch warnings:
 
-Signed-off-by: Jie Shi <shijie001@208suo.com>
+./drivers/net/ethernet/3com/3c59x.c:716: ERROR: spaces required around 
+that '=' (ctx:VxV)
+./drivers/net/ethernet/3com/3c59x.c:717: ERROR: spaces required around 
+that '=' (ctx:VxV)
+./drivers/net/ethernet/3com/3c59x.c:717: ERROR: spaces required around 
+that '=' (ctx:VxV)
+./drivers/net/ethernet/3com/3c59x.c:717: ERROR: spaces required around 
+that '=' (ctx:VxV)
+./drivers/net/ethernet/3com/3c59x.c:717: ERROR: spaces required around 
+that '=' (ctx:VxV)
+
+Signed-off-by: maqimei <2433033762@qq.com>
 ---
-  virt/kvm/irqchip.c | 15 +++++++++------
-  1 file changed, 9 insertions(+), 6 deletions(-)
+  drivers/net/ethernet/3com/3c59x.c | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/virt/kvm/irqchip.c b/virt/kvm/irqchip.c
-index 1e567d1f6d3d..33721848315f 100644
---- a/virt/kvm/irqchip.c
-+++ b/virt/kvm/irqchip.c
-@@ -37,7 +37,7 @@ int kvm_irq_map_gsi(struct kvm *kvm,
-      return n;
-  }
+diff --git a/drivers/net/ethernet/3com/3c59x.c 
+b/drivers/net/ethernet/3com/3c59x.c
+index 082388b..9aa3244 100644
+--- a/drivers/net/ethernet/3com/3c59x.c
++++ b/drivers/net/ethernet/3com/3c59x.c
+@@ -713,8 +713,8 @@ static void window_set(struct vortex_private *vp, 
+int window)
+     Note that we deviate from the 3Com order by checking 10base2 before 
+AUI.
+   */
+  enum xcvr_types {
+-    XCVR_10baseT=0, XCVR_AUI, XCVR_10baseTOnly, XCVR_10base2, 
+XCVR_100baseTx,
+-    XCVR_100baseFx, XCVR_MII=6, XCVR_NWAY=8, XCVR_ExtMII=9, 
+XCVR_Default=10,
++    XCVR_10baseT = 0, XCVR_AUI, XCVR_10baseTOnly, XCVR_10base2, 
+XCVR_100baseTx,
++    XCVR_100baseFx, XCVR_MII = 6, XCVR_NWAY = 8, XCVR_ExtMII = 9, 
+XCVR_Default = 10,
+  };
 
--int kvm_irq_map_chip_pin(struct kvm *kvm, unsigned irqchip, unsigned 
-pin)
-+int kvm_irq_map_chip_pin(struct kvm *kvm, unsigned int irqchip, 
-unsigned int pin)
-  {
-      struct kvm_irq_routing_table *irq_rt;
-
-@@ -85,6 +85,7 @@ int kvm_set_irq(struct kvm *kvm, int irq_source_id, 
-u32 irq, int level,
-
-      while (i--) {
-          int r;
-+
-          r = irq_set[i].set(&irq_set[i], kvm, irq_source_id, level,
-                     line_status);
-          if (r < 0)
-@@ -118,9 +119,11 @@ static void free_irq_routing_table(struct 
-kvm_irq_routing_table *rt)
-
-  void kvm_free_irq_routing(struct kvm *kvm)
-  {
--    /* Called only during vm destruction. Nobody can use the pointer
--       at this stage */
-+    /* Called only during vm destruction.
-+     * Nobody can use the pointer at this stage.
-+     */
-      struct kvm_irq_routing_table *rt = 
-rcu_access_pointer(kvm->irq_routing);
-+
-      free_irq_routing_table(rt);
-  }
-
-@@ -156,7 +159,7 @@ static int setup_routing_entry(struct kvm *kvm,
-      return 0;
-  }
-
--void __attribute__((weak)) kvm_arch_irq_routing_update(struct kvm *kvm)
-+void __weak kvm_arch_irq_routing_update(struct kvm *kvm)
-  {
-  }
-
-@@ -167,8 +170,8 @@ bool __weak kvm_arch_can_set_irq_routing(struct kvm 
-*kvm)
-
-  int kvm_set_irq_routing(struct kvm *kvm,
-              const struct kvm_irq_routing_entry *ue,
--            unsigned nr,
--            unsigned flags)
-+            unsigned int nr,
-+            unsigned int flags)
-  {
-      struct kvm_irq_routing_table *new, *old;
-      struct kvm_kernel_irq_routing_entry *e;
+  static const struct media_table {
