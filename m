@@ -2,130 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC5A755A5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 05:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7CA755A65
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 06:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbjGQDyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 23:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49520 "EHLO
+        id S230296AbjGQEAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 00:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231181AbjGQDy3 (ORCPT
+        with ESMTP id S229489AbjGQEAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 23:54:29 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D495E67
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 20:54:25 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99342a599e9so585091466b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 20:54:25 -0700 (PDT)
+        Mon, 17 Jul 2023 00:00:18 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996081BC
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 21:00:16 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-3457157a164so16743955ab.1
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 21:00:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20221208.gappssmtp.com; s=20221208; t=1689566064; x=1692158064;
+        d=chromium.org; s=google; t=1689566416; x=1692158416;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IADBk67MmtQgEFrJ4GNzmRMtCsY7zxHXJTj9byIPGyM=;
-        b=zL1UbGQQabWyZVL/qkzQG7J6gpH1aG3NKw0+gfIKICF7guBFe6P4URiTIsry1vB43c
-         bHUACKVpACI3sa7hLDc+WBiVWNj+kEg1hTq47Z14aVk65UIHDCTJQzRNtTCXE5gqY9fE
-         dFA6x/tlagHdw5z49kZ48idi/49e8dL6PaYQ3xMYgVlstvspYP+JESz9EkI3Fd0GzSvk
-         PI8RVW68ilfaKc41gLfEgGunPkP/CCXuXkuPGjmfCL+iSZ6XmRt9j7CHkoa3k9x8ZM1a
-         Zg1xaVfbGaDxBPCsMwFlRlI9VR8+SjEWMk8EgOTEgnMgMcgu/rDj1DeNe9iABrp1Q8Dq
-         H9dQ==
+        bh=rane9LymWOzuf5nVdxKmicrrVi/5Plm4e1af1OJmuGo=;
+        b=DeAi7UPa7J5RPMLgaBGKipqwjcPkkqSSXuEc9ftX8/pT3LdEynyXPvvXHsoBuoweVK
+         K+W20Bcm8gviQ+3+cgoCbuF6wacfW34Xhqm1f6UBpwkNqVso9STiOkM+PAE+xBh3g41G
+         CWCN3iqWakKicn8hjXfGA88G1V9z0WWvgkFxo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689566064; x=1692158064;
+        d=1e100.net; s=20221208; t=1689566416; x=1692158416;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IADBk67MmtQgEFrJ4GNzmRMtCsY7zxHXJTj9byIPGyM=;
-        b=fCACCDZL1zOgvPsDTpbZYsmlJucvyPfI8SK7REfWBu9ASNfbgLig0kndZP9sF5rfTe
-         zU74/WXOc7rDOKjaAQ/ILnVNZYQ1c4ITUKyI9SxWhG3AaftpNx2e7um/hBKBrkmLbJPj
-         1QBPbZggqGbR0zaLG/7gAqhVbMQp6S9RK4bGVhdGzdi8+7DkySylx8FWMC8LBgsdakNs
-         YKnQgqpGhMcRHjlyWyPz0Ni5YDfW5UiM3mvfii8VyxjZ3pWwpkhrFUf1fqU/5hEEO2fw
-         TgHX2MV7nud5jqYgAqa0wAuHUajIbl46a2p6Dh5ChV5XQ16Wwdy47+vIPau3VnsVPc+b
-         eNYQ==
-X-Gm-Message-State: ABy/qLYSAlAxkUR7eteEjq0w0rNmn2El77bML34M5kZOJlxNAkaeUfyU
-        PRjLOOPbh5jA/+h0T0LoC88kq7GcYETHAjJg+Qcsug==
-X-Google-Smtp-Source: APBJJlGMFjbuzvR13okMMKYKW2GKmezRZzN3Ec5qqIvk5Im4E5ilkEl+jfnCM7bLgPcLpNqXz758I9FrRMNgMcy8DR8=
-X-Received: by 2002:a17:906:5185:b0:96f:a891:36cb with SMTP id
- y5-20020a170906518500b0096fa89136cbmr10978298ejk.0.1689566063601; Sun, 16 Jul
- 2023 20:54:23 -0700 (PDT)
+        bh=rane9LymWOzuf5nVdxKmicrrVi/5Plm4e1af1OJmuGo=;
+        b=HP9vusFK8dqKbFHrXHzyQYTGRZSHgG2ZGb0YIYIdtOufpkSeKqEUBinKoOdtqgHBqX
+         EVAtecicqsexE8spgGHIFmxuprEYdWQEETHj2EK+pLoCLN8So4SBjO3wLrgc+wss331S
+         4MhISc0XLcvQb/0lmgNcq5TZVBkIEwso5njxrVd5vmeyPPCp0Hyzn76G6Or3bZQWAD7t
+         c6+zheE/YxBdvx42rldfd8chZcs39odjW16KRQT8kBcfr0K9edUkVZEf5f8CZwjbHyB/
+         jH1/lg3otV9bKsCpByhkPKTDlOfFmz5m3RXbXoHHlGVLn31RlrQP9YR64Y36wdLTdYYC
+         HcHw==
+X-Gm-Message-State: ABy/qLYYjr5pczs20D/oe3YtKJapSpkq7UyOhSwl/NmMgpsAVmwhxLwU
+        cQfX1/8TP4n85/7IGV+aOnpcbKpRftGAh6m5zmw=
+X-Google-Smtp-Source: APBJJlG9qbO0HuuEdkj+rchi5URr7GKN8CbMY1sND4AYhW0Z5oTd4AELs2VmcOmqdigxUdFqEzoCBQ==
+X-Received: by 2002:a05:6e02:1410:b0:345:b923:971b with SMTP id n16-20020a056e02141000b00345b923971bmr9519578ilo.3.1689566415776;
+        Sun, 16 Jul 2023 21:00:15 -0700 (PDT)
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com. [209.85.166.51])
+        by smtp.gmail.com with ESMTPSA id s10-20020a02cf2a000000b0042b37dda71asm4127582jar.136.2023.07.16.21.00.15
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 Jul 2023 21:00:15 -0700 (PDT)
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-78360b822abso160889939f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 21:00:15 -0700 (PDT)
+X-Received: by 2002:a5e:890a:0:b0:77e:288d:f3c1 with SMTP id
+ k10-20020a5e890a000000b0077e288df3c1mr9803357ioj.6.1689566414860; Sun, 16 Jul
+ 2023 21:00:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230712161047.1764756-1-apatel@ventanamicro.com>
-In-Reply-To: <20230712161047.1764756-1-apatel@ventanamicro.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Mon, 17 Jul 2023 09:24:12 +0530
-Message-ID: <CAAhSdy048rUYUj2j+rutCc73=aE0dKgCrt75ohz9tO476+n6Gg@mail.gmail.com>
-Subject: Re: [PATCH 0/7] KVM RISC-V ONE_REG ISA extension improvements
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Samuel Ortiz <sameo@rivosinc.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
+References: <20230421021609.7730-1-nancy.lin@mediatek.com> <ae96299cffaacdbf51beae96e3a257c95a04ac95.camel@mediatek.com>
+In-Reply-To: <ae96299cffaacdbf51beae96e3a257c95a04ac95.camel@mediatek.com>
+From:   Fei Shao <fshao@chromium.org>
+Date:   Mon, 17 Jul 2023 11:59:38 +0800
+X-Gmail-Original-Message-ID: <CAC=S1njEG2sV28XAWDw8FoQ0p5w=-sU4i+D-ESfapHMQC1ZW3Q@mail.gmail.com>
+Message-ID: <CAC=S1njEG2sV28XAWDw8FoQ0p5w=-sU4i+D-ESfapHMQC1ZW3Q@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/mediatek: fix uninitialized symbol
+To:     =?UTF-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
+Cc:     "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        =?UTF-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        =?UTF-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= 
+        <Singo.Chang@mediatek.com>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 9:41=E2=80=AFPM Anup Patel <apatel@ventanamicro.com=
-> wrote:
->
-> This series improves the ISA extension ONE_REG interface in following way=
-s:
-> 1) Move ONE_REG related code to dedicated source file
-> 2) Allow multiple ISA extensions to be enabled/disabled in one ioctl
-> 3) Add more ISA extensions to the ONE_REG interface
->
-> The series has following dependencies:
-> 1) PATCH6 depends on
-> https://lore.kernel.org/linux-riscv/20230712084134.1648008-1-sameo@rivosi=
-nc.com/
-> 2) PATCH7 depends on
-> https://lore.kernel.org/linux-riscv/20230711153743.1970625-1-heiko@sntech=
-.de/
->
-> The PATCH1 to PATCH5 of this series don't depend on any patches.
->
-> These patches can also be found in the riscv_kvm_onereg_imp_v1 branch at:
-> https://github.com/avpatel/linux.git
->
-> Anup Patel (7):
->   RISC-V: KVM: Factor-out ONE_REG related code to its own source file
->   RISC-V: KVM: Extend ONE_REG to enable/disable multiple ISA extensions
->   RISC-V: KVM: Allow Zba and Zbs extensions for Guest/VM
->   RISC-V: KVM: Allow Zicntr, Zicsr, Zifencei, and Zihpm for Guest/VM
->   RISC-V: KVM: Sort ISA extensions alphabetically in ONE_REG interface
->   RISC-V: KVM: Allow Zbc, Zbk* and Zk* extensions for Guest/VM
->   RISC-V: KVM: Allow Zvb* and Zvk* extensions for Guest/VM
+Hi CK,
 
-I have queued PATCH1 to PATCH5 for Linux-6.6 so that other in-flight
-patches can be rebased on the riscv_kvm_queue.
-
-The PATCH6 and PATCH7 will have to wait until required dependencies
-are merged in arch/riscv.
-
-Thanks,
-Anup
-
-
+On Fri, Jul 14, 2023 at 5:27=E2=80=AFPM CK Hu (=E8=83=A1=E4=BF=8A=E5=85=89)=
+ <ck.hu@mediatek.com> wrote:
 >
->  arch/riscv/include/asm/kvm_host.h |   6 +
->  arch/riscv/include/uapi/asm/kvm.h |  35 ++
->  arch/riscv/kvm/Makefile           |   1 +
->  arch/riscv/kvm/vcpu.c             | 529 +----------------------
->  arch/riscv/kvm/vcpu_onereg.c      | 695 ++++++++++++++++++++++++++++++
->  5 files changed, 738 insertions(+), 528 deletions(-)
->  create mode 100644 arch/riscv/kvm/vcpu_onereg.c
+> Hi, Nancy:
 >
-> --
-> 2.34.1
+> On Fri, 2023-04-21 at 10:16 +0800, Nancy.Lin wrote:
+snip
 >
+> In line 566, the statement is
+>
+> if (nodo) {
+>         comp_pdev =3D ...
+> }
+>
+> The comment says that only ovl_adaptoer has no device node, so the
+> checking should be
+>
+> if (type !=3D MTK_DISP_OVL_ADAPTOR) {
+>         comp_pdev =3D ...
+> }
+>
+> and later it would return when type =3D MTK_DISP_OVL_ADAPTOR,
+> so there would be no problem of uninitialized symbol.
+
+That sounds fair, but IIUC what Nancy tries to resolve here is the
+false-positive Smatch warning.
+How about this: given the `if (node)` block was exclusively added for
+ovl_adaptor in [1], plus the init function will immediately return
+after that in this case, it should be safe to do the following
+
+```
+/* Not all drm components have a DTS device node... */
+if (node =3D=3D NULL)
+    return 0;
+
+comp_pdev =3D of_find_device_by_node(node);
+...
+
+if (type =3D=3D MTK_DISP_AAL ||
+...
+```
+
+which is equivalent to adding a `node =3D=3D NULL` check before [1].
+This should suppress the Smatch warning because `comp_pdev` will be
+(again) unconditionally assigned to something, and the `type =3D=3D
+MTK_DISP_OVL_ADAPTOR` line can be dropped also (optional?).
+
+[1]: commit 0d9eee9118b7 ("drm/mediatek: Add drm ovl_adaptor sub
+driver for MT8195")
+
+Regards,
+Fei
