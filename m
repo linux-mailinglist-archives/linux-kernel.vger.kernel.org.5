@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 200147562F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212E77562E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbjGQMlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 08:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55378 "EHLO
+        id S231129AbjGQMkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 08:40:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbjGQMkw (ORCPT
+        with ESMTP id S229476AbjGQMkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 08:40:52 -0400
-Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEF6E56;
-        Mon, 17 Jul 2023 05:40:50 -0700 (PDT)
-Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1b06ea7e7beso3477792fac.0;
-        Mon, 17 Jul 2023 05:40:50 -0700 (PDT)
+        Mon, 17 Jul 2023 08:40:13 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9CBE47
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 05:40:12 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b74310566cso67166981fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 05:40:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689597649; x=1692189649;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NResrH/dwxJIXwvQtz2wBMlaGEhGmTQmAGoAye4iGiI=;
-        b=Nbd+0cMgqaIZOZVN4VrsMWp34BzbhFFNwvhTlMuMffSsup3fWX8AV9ahT/1rQroW1I
-         B3K60HBPRNne9Oqusn95f/yWJtpiDB+H3gzTnwMUmBIhe5voHUEmasN/PlXQcylCx5Xq
-         usxV9PIFcu9cr0yH0X35ed0lNwxKBbBEvhNTfc61Hoj2MBXDeDrKk+nCmMSMvWOriNo4
-         XKA3CbVYTCY0/mxEBkRSKCkjlZ1H8Rtm8MOi2sak8gD7cuLHbPuGwtbomhs4iRvrEJ7W
-         iXglIPogO0kT29aQrqgrWj+k/I1NhpIv3K9qgehqUKu+DvB7Nz80stXwejm3FGSoNYLP
-         B/nA==
+        d=linaro.org; s=google; t=1689597610; x=1692189610;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X1Ez0XiPLy9JQwhDNp6ZwsehdR2q+I+6iiZpL3yjjI4=;
+        b=UiJVgcZc1um0ymdVxx7Qz8YrMbZ5xB4BACi8gz+pwwXnG8SCdz1jr2Kmrp5155iLft
+         IT2KWs79Usr6aAuifgRs20Ig3dYOu+ilq80T5wCQnnmfsRXUyn0UDGvpjJ7RYbEjcL+T
+         26//kyqqXmVmLy72Ruxc9hZ1We8tFvU0vdM/eBQlNfP7KnpeA4CsRY8V6MN1o4cGUen9
+         Vsgi9HEt5XLD73q6OA166zRAxYn92xicwXaIW+UMjNv9RobRn+MLFe40UrrzOFe/K/k+
+         dCUZmUjXDMzYJWuK0IPGjpsccDVacA5uoL2KrvZnsCVpt6p7TqjCAP6DURAykm7Cjf/6
+         mSrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689597649; x=1692189649;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NResrH/dwxJIXwvQtz2wBMlaGEhGmTQmAGoAye4iGiI=;
-        b=Stm4WBNPlmxQ0+35cbI4RRGVM+/xmseCs9S2RNhdzFY2rPeoQoTNycx7IExrhjDL1X
-         CRkhY9tyy7R5YEgpeJWedVbNJO15kZfsQF1ZQc5u18Yas+pS5FpuhCuP40ejbpf3JBWr
-         ZjbKCgR5XVu/vILjr5WyZCM8rp5mxhu2WD/v7QDmIOcKPOnC/en3DKN1kOn9g/bHUW2C
-         lvdGEi2MwigFZkcCZ9BdVNxp9BsEhMha9KIkRQFzAW/bnZIOfsV24wvGVJK1ll2RaWzV
-         HGubB5y8nx05scR3js1G5IboxoV3g7kjq4HY62m/KsYnUQvhdnL+nOQ9B++pkuXCzl4g
-         LqgA==
-X-Gm-Message-State: ABy/qLaTP/IxHKLCRHeUiZArjSTa2cBguiR54VFXpiBqSwgHpK+AMq8d
-        qIXExoE/85Fks2BMxRnxZF0=
-X-Google-Smtp-Source: APBJJlEjR4llcJpJlZj85F1owd8zUWXyMZoIaHXT8X79AbQ/5V/POwh841ShoduTD1EGqLy+2nWvkw==
-X-Received: by 2002:a05:6871:b0c:b0:1b0:3433:7664 with SMTP id fq12-20020a0568710b0c00b001b034337664mr12647885oab.40.1689597649554;
-        Mon, 17 Jul 2023 05:40:49 -0700 (PDT)
-Received: from smeagol.fibertel.com.ar ([201.235.4.68])
-        by smtp.gmail.com with ESMTPSA id em30-20020a0568705b9e00b001b02a3426ddsm7032173oab.14.2023.07.17.05.40.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 05:40:49 -0700 (PDT)
-From:   =?UTF-8?q?Joaqu=C3=ADn=20Ignacio=20Aramend=C3=ADa?= 
-        <samsagax@gmail.com>
-To:     linux@roeck-us.net
-Cc:     =?UTF-8?q?Joaqu=C3=ADn=20Ignacio=20Aramend=C3=ADa?= 
-        <samsagax@gmail.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-Subject: [PATCH 2/3] hwmon: (oxp-sensors) Move board detection to the init function
-Date:   Mon, 17 Jul 2023 09:40:05 -0300
-Message-ID: <20230717124013.38796-4-samsagax@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230717124013.38796-2-samsagax@gmail.com>
-References: <20230717124013.38796-2-samsagax@gmail.com>
+        d=1e100.net; s=20221208; t=1689597610; x=1692189610;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X1Ez0XiPLy9JQwhDNp6ZwsehdR2q+I+6iiZpL3yjjI4=;
+        b=BcLpWmt71CcJAdHGrI1bs4sHY3iolgctOd4ymPnMfD/UJPAHz8qa+p+cc3oiicxIjm
+         94BXaFwqCeL00370PG278DpvF2qida+vy+9XoQQ5Ez+nRbRbsnd79eMrlPqU1mOcpk1h
+         5EbySPxKoVt4u5sFX5S5HjmPChPpjOPu5r82sok/DbViGVRDmFoC3DHVb7FeVTR/lEKG
+         LmCrq9hV5J9OChH7r6GkIPx2iUY1SfDSozFaQ4PoaHJW3ypnCBqwCar++IlGCdLloQL1
+         p2hwaIG5KQSmU4crQM7GqErmAyzaW5uj3mpD1APXQDDeSoKDBcRqcTeOlA3CVBPbCbt0
+         rVkQ==
+X-Gm-Message-State: ABy/qLYhv0ZO5/FCMUELiWcRi5auB7kZDiWpnzfWaoD8++wNy6AqP/YQ
+        8eNJeMafQ5y2cZFeeecNjS3dLw==
+X-Google-Smtp-Source: APBJJlFlrt06OaGdZfNAxWrHT6kvaDJ+IC4DHu/DkSdZ/pXGp9vkEW0W8pzarXiHkMOaSrbKJEzKkg==
+X-Received: by 2002:a05:6512:3e05:b0:4fd:bdf8:930d with SMTP id i5-20020a0565123e0500b004fdbdf8930dmr2076739lfv.22.1689597610213;
+        Mon, 17 Jul 2023 05:40:10 -0700 (PDT)
+Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
+        by smtp.gmail.com with ESMTPSA id w2-20020a05651203c200b004f87024742fsm2791201lfp.235.2023.07.17.05.40.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 05:40:09 -0700 (PDT)
+Message-ID: <18f2a5b5-5cc2-6bea-ca08-5da218b3192b@linaro.org>
+Date:   Mon, 17 Jul 2023 14:40:05 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] media: camss: Intepret OF graph connections more
+ sensibly
+Content-Language: en-US
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Robert Foss <rfoss@kernel.org>, Todor Tomov <todor.too@gmail.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Yassine Oudjana <y.oudjana@protonmail.com>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230614-topic-camss_grpah-v2-1-57d9d5e49038@linaro.org>
+ <ZLUcaQN6hCjjulTv@hovoldconsulting.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <ZLUcaQN6hCjjulTv@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,61 +84,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is not hotpluggable by nature so it makes more sense to
-detect the board on init() instead of on probe().
+On 17.07.2023 12:48, Johan Hovold wrote:
+> On Sat, Jul 15, 2023 at 05:37:52PM +0200, Konrad Dybcio wrote:
+>> Not all endpoints of camss have to be populated. In fact, most of the
+>> time they shouldn't be as n-th auxilliary cameras are usually ewaste.
+>>
+>> Don't fail probing the entire camss even even one endpoint is not
+>> linked and throw an error when none is found.
+>>
+>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>> ---
+>> Changes in v2:
+>> - Use if-else instead of the ternary operator (Bryan)
+>> - Drop "RFC"
+>> - Link to v1: https://lore.kernel.org/r/20230614-topic-camss_grpah-v1-1-5f4b516310fa@linaro.org
+>> ---
+>>  drivers/media/platform/qcom/camss/camss.c | 10 ++++++----
+>>  1 file changed, 6 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+>> index 1ef26aea3eae..8b75197fa5d7 100644
+>> --- a/drivers/media/platform/qcom/camss/camss.c
+>> +++ b/drivers/media/platform/qcom/camss/camss.c
+>> @@ -1084,9 +1084,8 @@ static int camss_of_parse_ports(struct camss *camss)
+>>  
+>>  		remote = of_graph_get_remote_port_parent(node);
+>>  		if (!remote) {
+>> -			dev_err(dev, "Cannot get remote parent\n");
+>> -			ret = -EINVAL;
+>> -			goto err_cleanup;
+>> +			of_node_put(node);
+> 
+> This is broken and could potentially lead to a use after free.
+> 
+> Specifically, the iteration macro already takes care of putting this
+> reference.
+/**
+ * for_each_endpoint_of_node - iterate over every endpoint in a device node
+ * @parent: parent device node containing ports and endpoints
+ * @child: loop variable pointing to the current endpoint node
+ *
+ * When breaking out of the loop, of_node_put(child) has to be called manually.
+ */
 
-Move detection logic to the start of init() function so we won't
-instantiate the driver if the board is not compatible.
----
- drivers/hwmon/oxp-sensors.c | 28 +++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
+> 
+>> +			continue;
+>>  		}
+>>  
+>>  		csd = v4l2_async_nf_add_fwnode(&camss->notifier,
+>> @@ -1105,7 +1104,10 @@ static int camss_of_parse_ports(struct camss *camss)
+>>  		num_subdevs++;
+>>  	}
+>>  
+>> -	return num_subdevs;
+>> +	if (num_subdevs)
+>> +		return num_subdevs;
+>> +
+>> +	return -EINVAL;
+> 
+> Please change this so that you test for the error condition rather than
+> its inverse for symmetry. That is
+> 
+> 	if (!num_subdevs)
+> 		return -EINVAL;
+> 
+> 	return num_subdevs;
+Right, this makes more sense
 
-diff --git a/drivers/hwmon/oxp-sensors.c b/drivers/hwmon/oxp-sensors.c
-index 1e1cc67bcdea..c70d9355eeba 100644
---- a/drivers/hwmon/oxp-sensors.c
-+++ b/drivers/hwmon/oxp-sensors.c
-@@ -438,19 +438,6 @@ static int oxp_platform_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct device *hwdev;
- 
--	/*
--	 * Have to check for AMD processor here because DMI strings are the
--	 * same between Intel and AMD boards, the only way to tell them apart
--	 * is the CPU.
--	 * Intel boards seem to have different EC registers and values to
--	 * read/write.
--	 */
--	dmi_entry = dmi_first_match(dmi_table);
--	if (!dmi_entry || boot_cpu_data.x86_vendor != X86_VENDOR_AMD)
--		return -ENODEV;
--
--	board = (enum oxp_board)(unsigned long)dmi_entry->driver_data;
--
- 	hwdev = devm_hwmon_device_register_with_info(dev, "oxpec", NULL,
- 						     &oxp_ec_chip_info, NULL);
- 
-@@ -469,6 +456,21 @@ static struct platform_device *oxp_platform_device;
- 
- static int __init oxp_platform_init(void)
- {
-+	const struct dmi_system_id *dmi_entry;
-+
-+	/*
-+	 * Have to check for AMD processor here because DMI strings are the
-+	 * same between Intel and AMD boards, the only way to tell them apart
-+	 * is the CPU.
-+	 * Intel boards seem to have different EC registers and values to
-+	 * read/write.
-+	 */
-+	dmi_entry = dmi_first_match(dmi_table);
-+	if (!dmi_entry || boot_cpu_data.x86_vendor != X86_VENDOR_AMD)
-+		return -ENODEV;
-+
-+	board = (enum oxp_board)(unsigned long)dmi_entry->driver_data;
-+
- 	oxp_platform_device =
- 		platform_create_bundle(&oxp_platform_driver,
- 				       oxp_platform_probe, NULL, 0, NULL, 0);
--- 
-2.41.0
-
+Konrad
+> 
+> Returning EINVAL (invalid argument) is perhaps not the best choice, but
+> the driver already does so here and in other places so keeping it for
+> now should be fine.
+> 
+>>  err_cleanup:
+>>  	of_node_put(node);
+> 
+> Johan
