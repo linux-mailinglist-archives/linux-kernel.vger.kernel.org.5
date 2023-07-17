@@ -2,58 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 547F575593F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 03:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAFF755942
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 03:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbjGQBvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 21:51:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
+        id S230251AbjGQByA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 21:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230204AbjGQBve (ORCPT
+        with ESMTP id S230204AbjGQBx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 21:51:34 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA49E52
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 18:51:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689558692; x=1721094692;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=I5cAc2GGU0sfkFkaZE5RI6MOcec8cPsAoTiC/FLB8as=;
-  b=GDZNhyUzhbw+rwMieDGZplh+o6LyMSp0jPBOOi88RV0Kdud7j+PBQLwH
-   qZppOmyQ+qjVkyX3RTCb8EFsQZu/37RsOCqADAjj00HkpNFVibhFL5cQX
-   vlY0LbE9qDRRs/Y4iZGW3en2aXYZcdfPO1VwN7E9jsyK2rNYN/A3piCEU
-   0MwF1z4GTK7iW6t+bH+yNWRBqfZcXZoCyASZ/4oCbH+G6ODZY987jbmfg
-   Pl9b7Bw6fOpF4yO+hqKGxiCETzi76ACmyth3hAcsiw5BnK1ZVydXwPCHL
-   l9dcGPEvrRI2jXvwktjwZNSJ7Lbz4Mvf8kdXuELQcoXFNU14DGfD7JUac
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="350688666"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="350688666"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2023 18:51:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="897030260"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="897030260"
-Received: from unknown (HELO localhost.localdomain) ([10.226.216.117])
-  by orsmga005.jf.intel.com with ESMTP; 16 Jul 2023 18:51:29 -0700
-From:   kah.jing.lee@intel.com
-To:     dinguyen@kernel.org
-Cc:     linux-kernel@vger.kernel.org, radu.bacrau@intel.com,
-        tien.sung.ang@intel.com, Kah Jing Lee <kah.jing.lee@intel.com>
-Subject: [PATCH v3 2/2] firmware: stratix10-rsu: query spt addresses
-Date:   Mon, 17 Jul 2023 09:50:15 +0800
-Message-Id: <e640da0517b1d0de79013fdf4964ea34475f2238.1689524302.git.kah.jing.lee@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1689524302.git.kah.jing.lee@intel.com>
-References: <cover.1689524302.git.kah.jing.lee@intel.com>
+        Sun, 16 Jul 2023 21:53:58 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E337E122
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 18:53:56 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-44504b2141bso1073002137.2
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 18:53:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689558836; x=1692150836;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0/6R0t0MHhqco+8UDZucjwl/aaBXGVqtQLdiuoDLwso=;
+        b=RWXeODKevMU++AlYxd4ioslmKJzbf68u3bThrYPVbGcxKhv8otUEa6+hbfY96qiER5
+         yG9zwdlkb9SErmueuzE9OXzmhX3XF70Uh3CVUci1zN7irgoJZCY2yTYuHF04CTbC5fHt
+         Pc/GRORNx+QAvX5IXD+KIh2mW27JSn+VxVyXd0luS3z0aDbDsFyEF2foCzIfOmSLv/te
+         9EWKMbfGQPjZ9PahTM7UMRyEhmKjXqzwcSvdyiudRatiEGgs4vByaTvCQ6gTCn0Erf+H
+         sZWZqUW06jMRXBDzX3FIu9FV3ztdZxqBBPUjYsdjVsyS3aku/QgvFp1ej+qjjR7UmkpC
+         B8JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689558836; x=1692150836;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0/6R0t0MHhqco+8UDZucjwl/aaBXGVqtQLdiuoDLwso=;
+        b=GnnxugBemE6oPII5q941DZZ0OIoLYu0c5fOVW3EpQZxzZqplvzOVZh6R1OdxiAM+42
+         rjENZIGKuhVyh1NQz+9jw2l3iEQFV5RaHvwhjB2os6uEH9JZKO504V+vg7YJRPnn2SqM
+         eYv7XhUHkQsDBaz4KXiQ699Yduy0vecQocvGjT3tpJkVlGImKfJohYVbE+a+sIQf/S5B
+         ANin2CRTg4fXCVJA9wI38aNP9oBGZBYBtCpDrnUIkpv66alwzpU4iwapjsbwDQiF3wTJ
+         iVAJaT94UkaaOkI6AjfjpflOMp+5MHnxNdf1JuBsqidF11xyJjWfkanG9ysVJHIjC7M+
+         mAwQ==
+X-Gm-Message-State: ABy/qLZwwEOZYQtkFs0do4+/k220jz7+gK58IF4U/+JHs1tKvkQV24eZ
+        OABC+xhwets0Ede0usOxG/AGfOhX3mNqmh6SlNd7ig==
+X-Google-Smtp-Source: APBJJlHOY0MW/V+rSssn0OLz1o8iaRG702aGGIi4O1JDsrONa/dX0S7xy3vLhP7gJGg8cZEpP6lhwBKtRsOeg7xpLmQ=
+X-Received: by 2002:a05:6102:a37:b0:445:209:cac7 with SMTP id
+ 23-20020a0561020a3700b004450209cac7mr4642927vsb.27.1689558835901; Sun, 16 Jul
+ 2023 18:53:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <04187826-8dad-d17b-2469-2837bafd3cd5@kernel.org>
+ <20230711093224.1bf30ed5@kernel.org> <CAHS8izNHkLF0OowU=p=mSNZss700HKAzv1Oxqu2bvvfX_HxttA@mail.gmail.com>
+ <20230711133915.03482fdc@kernel.org> <2263ae79-690e-8a4d-fca2-31aacc5c9bc6@kernel.org>
+ <CAHS8izP=k8CqUZk7bGUx4ctm4m2kRC2MyEJv+N4+b0cHVkTQmA@mail.gmail.com>
+ <ZK6kOBl4EgyYPtaD@ziepe.ca> <CAHS8izNuda2DXKTFAov64F7J2_BbMPaqJg1NuMpWpqGA20+S_Q@mail.gmail.com>
+ <143a7ca4-e695-db98-9488-84cf8b78cf86@amd.com> <CAHS8izPm6XRS54LdCDZVd0C75tA1zHSu6jLVO8nzTLXCc=H7Nw@mail.gmail.com>
+ <ZLFv2PIgdeH8gKmh@ziepe.ca>
+In-Reply-To: <ZLFv2PIgdeH8gKmh@ziepe.ca>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Sun, 16 Jul 2023 18:53:44 -0700
+Message-ID: <CAHS8izNMB-H3w0CE9kj6hT5q_F6_XJy_X_HtZwmisOEDhp31yg@mail.gmail.com>
+Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
+ page_pool: remove PP_FLAG_PAGE_FRAG flag)
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Hari Ramakrishnan <rharix@google.com>,
+        David Ahern <dsahern@kernel.org>,
+        Samiullah Khawaja <skhawaja@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>, logang@deltatee.com,
+        Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,201 +114,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Radu Bacrau <radu.bacrau@intel.com>
+On Fri, Jul 14, 2023 at 8:55=E2=80=AFAM Jason Gunthorpe <jgg@ziepe.ca> wrot=
+e:
+>
+> On Fri, Jul 14, 2023 at 07:55:15AM -0700, Mina Almasry wrote:
+>
+> > Once the skb frags with struct new_abstraction are in the TCP stack,
+> > they will need some special handling in code accessing the frags. But
+> > my RFC already addressed that somewhat because the frags were
+> > inaccessible in that case. In this case the frags will be both
+> > inaccessible and will not be struct pages at all (things like
+> > get_page() will not work), so more special handling will be required,
+> > maybe.
+>
+> It seems sort of reasonable, though there will be interesting concerns
+> about coherence and synchronization with generial purpose DMABUFs that
+> will need tackling.
+>
+> Still it is such a lot of churn and weridness in the netdev side, I
+> think you'd do well to present an actual full application as
+> justification.
+>
+> Yes, you showed you can stick unordered TCP data frags into GPU memory
+> sort of quickly, but have you gone further with this to actually show
+> it is useful for a real world GPU centric application?
+>
+> BTW your cover letter said 96% utilization, the usual server
+> configuation is one NIC per GPU, so you were able to hit 1500Gb/sec of
+> TCP BW with this?
+>
 
-Extend Intel Remote System Update (RSU) driver to get SPT
-(Sub-Partition Table) addresses. The query SPT address can be used
-to determine if the RSU QSPI layout is 32kB or 64kB aligned.
-The alignment can be determined by minus the upper with the lower of
-the SPT addresses.
+I do notice that the number of NICs is missing from our public
+documentation so far, so I will refrain from specifying how many NICs
+are on those A3 VMs until the information is public. But I think I can
+confirm that your general thinking is correct, the perf that we're
+getting is 96.6% line rate of each GPU/NIC pair, and scales linearly
+for each NIC/GPU pair we've tested with so far. Line rate of each
+NIC/GPU pair is 200 Gb/sec.
 
-This patch depends on patch:
-firmware: stratix10-svc: Generic Mailbox Command
+So if we have 8 NIC/GPU pairs we'd be hitting 96.6% * 200 * 8 =3D 1545 GB/s=
+ec.
+If we have, say, 2 NIC/GPU pairs, we'd be hitting 96.6% * 200 * 2 =3D 384 G=
+B/sec
+...
+etc.
 
-Signed-off-by: Radu Bacrau <radu.bacrau@intel.com>
-Signed-off-by: Kah Jing Lee <kah.jing.lee@intel.com>
----
- drivers/firmware/stratix10-rsu.c | 100 ++++++++++++++++++++++++++++++-
- 1 file changed, 99 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/firmware/stratix10-rsu.c b/drivers/firmware/stratix10-rsu.c
-index e51c95f8d445..af71f921be5f 100644
---- a/drivers/firmware/stratix10-rsu.c
-+++ b/drivers/firmware/stratix10-rsu.c
-@@ -34,6 +34,10 @@
- #define INVALID_RETRY_COUNTER		0xFF
- #define INVALID_DCMF_VERSION		0xFF
- #define INVALID_DCMF_STATUS		0xFFFFFFFF
-+#define INVALID_SPT_ADDRESS		0x0
-+
-+#define RSU_GET_SPT_CMD			0x5A
-+#define RSU_GET_SPT_RESP_LEN		(4 * sizeof(unsigned int))
- 
- typedef void (*rsu_callback)(struct stratix10_svc_client *client,
- 			     struct stratix10_svc_cb_data *data);
-@@ -59,6 +63,9 @@ typedef void (*rsu_callback)(struct stratix10_svc_client *client,
-  * @dcmf_status.dcmf3: dcmf3 status
-  * @retry_counter: the current image's retry counter
-  * @max_retry: the preset max retry value
-+ * @spt0_address: address of spt0
-+ * @spt1_address: address of spt1
-+ * @get_spt_response_buf: response from sdm for get_spt command
-  */
- struct stratix10_rsu_priv {
- 	struct stratix10_svc_chan *chan;
-@@ -90,6 +97,11 @@ struct stratix10_rsu_priv {
- 
- 	unsigned int retry_counter;
- 	unsigned int max_retry;
-+
-+	unsigned long spt0_address;
-+	unsigned long spt1_address;
-+
-+	unsigned int *get_spt_response_buf;
- };
- 
- /**
-@@ -259,6 +271,36 @@ static void rsu_dcmf_status_callback(struct stratix10_svc_client *client,
- 	complete(&priv->completion);
- }
- 
-+static void rsu_get_spt_callback(struct stratix10_svc_client *client,
-+				     struct stratix10_svc_cb_data *data)
-+{
-+	struct stratix10_rsu_priv *priv = client->priv;
-+	unsigned long *mbox_err = (unsigned long *)data->kaddr1;
-+	unsigned long *resp_len = (unsigned long *)data->kaddr2;
-+
-+	if ((data->status != BIT(SVC_STATUS_OK)) || (*mbox_err) ||
-+	    (*resp_len != RSU_GET_SPT_RESP_LEN))
-+		goto error;
-+
-+	priv->spt0_address = priv->get_spt_response_buf[0];
-+	priv->spt0_address <<= 32;
-+	priv->spt0_address |= priv->get_spt_response_buf[1];
-+
-+	priv->spt1_address = priv->get_spt_response_buf[2];
-+	priv->spt1_address <<= 32;
-+	priv->spt1_address |= priv->get_spt_response_buf[3];
-+
-+	goto complete;
-+
-+error:
-+	dev_err(client->dev, "failed to get SPTs\n");
-+
-+complete:
-+	stratix10_svc_free_memory(priv->chan, priv->get_spt_response_buf);
-+	priv->get_spt_response_buf = NULL;
-+	complete(&priv->completion);
-+}
-+
- /**
-  * rsu_send_msg() - send a message to Intel service layer
-  * @priv: pointer to rsu private data
-@@ -288,6 +330,14 @@ static int rsu_send_msg(struct stratix10_rsu_priv *priv,
- 	if (arg)
- 		msg.arg[0] = arg;
- 
-+	if (command == COMMAND_MBOX_SEND_CMD) {
-+		msg.arg[1] = 0;
-+		msg.payload = NULL;
-+		msg.payload_length = 0;
-+		msg.payload_output = priv->get_spt_response_buf;
-+		msg.payload_length_output = RSU_GET_SPT_RESP_LEN;
-+	}
-+
- 	ret = stratix10_svc_send(priv->chan, &msg);
- 	if (ret < 0)
- 		goto status_done;
-@@ -572,6 +622,34 @@ static ssize_t notify_store(struct device *dev,
- 	return count;
- }
- 
-+static ssize_t spt0_address_show(struct device *dev,
-+				  struct device_attribute *attr, char *buf)
-+{
-+	struct stratix10_rsu_priv *priv = dev_get_drvdata(dev);
-+
-+	if (!priv)
-+		return -ENODEV;
-+
-+	if (priv->spt0_address == INVALID_SPT_ADDRESS)
-+		return -EIO;
-+
-+	return scnprintf(buf, PAGE_SIZE, "0x%08lx\n", priv->spt0_address);
-+}
-+
-+static ssize_t spt1_address_show(struct device *dev,
-+				  struct device_attribute *attr, char *buf)
-+{
-+	struct stratix10_rsu_priv *priv = dev_get_drvdata(dev);
-+
-+	if (!priv)
-+		return -ENODEV;
-+
-+	if (priv->spt1_address == INVALID_SPT_ADDRESS)
-+		return -EIO;
-+
-+	return scnprintf(buf, PAGE_SIZE, "0x%08lx\n", priv->spt1_address);
-+}
-+
- static DEVICE_ATTR_RO(current_image);
- static DEVICE_ATTR_RO(fail_image);
- static DEVICE_ATTR_RO(state);
-@@ -590,6 +668,8 @@ static DEVICE_ATTR_RO(dcmf2_status);
- static DEVICE_ATTR_RO(dcmf3_status);
- static DEVICE_ATTR_WO(reboot_image);
- static DEVICE_ATTR_WO(notify);
-+static DEVICE_ATTR_RO(spt0_address);
-+static DEVICE_ATTR_RO(spt1_address);
- 
- static struct attribute *rsu_attrs[] = {
- 	&dev_attr_current_image.attr,
-@@ -610,6 +690,8 @@ static struct attribute *rsu_attrs[] = {
- 	&dev_attr_dcmf3_status.attr,
- 	&dev_attr_reboot_image.attr,
- 	&dev_attr_notify.attr,
-+	&dev_attr_spt0_address.attr,
-+	&dev_attr_spt1_address.attr,
- 	NULL
- };
- 
-@@ -639,11 +721,13 @@ static int stratix10_rsu_probe(struct platform_device *pdev)
- 	priv->dcmf_version.dcmf1 = INVALID_DCMF_VERSION;
- 	priv->dcmf_version.dcmf2 = INVALID_DCMF_VERSION;
- 	priv->dcmf_version.dcmf3 = INVALID_DCMF_VERSION;
--	priv->max_retry = INVALID_RETRY_COUNTER;
- 	priv->dcmf_status.dcmf0 = INVALID_DCMF_STATUS;
- 	priv->dcmf_status.dcmf1 = INVALID_DCMF_STATUS;
- 	priv->dcmf_status.dcmf2 = INVALID_DCMF_STATUS;
- 	priv->dcmf_status.dcmf3 = INVALID_DCMF_STATUS;
-+	priv->max_retry = INVALID_RETRY_COUNTER;
-+	priv->spt0_address = INVALID_SPT_ADDRESS;
-+	priv->spt1_address = INVALID_SPT_ADDRESS;
- 
- 	mutex_init(&priv->lock);
- 	priv->chan = stratix10_svc_request_channel_byname(&priv->client,
-@@ -693,6 +777,20 @@ static int stratix10_rsu_probe(struct platform_device *pdev)
- 		stratix10_svc_free_channel(priv->chan);
- 	}
- 
-+	priv->get_spt_response_buf =
-+		stratix10_svc_allocate_memory(priv->chan, RSU_GET_SPT_RESP_LEN);
-+
-+	if (IS_ERR(priv->get_spt_response_buf)) {
-+		dev_err(dev, "failed to allocate get spt buffer\n");
-+	} else {
-+		ret = rsu_send_msg(priv, COMMAND_MBOX_SEND_CMD,
-+				RSU_GET_SPT_CMD, rsu_get_spt_callback);
-+		if (ret) {
-+			dev_err(dev, "Error, getting SPT table %i\n", ret);
-+			stratix10_svc_free_channel(priv->chan);
-+		}
-+	}
-+
- 	return ret;
- }
- 
--- 
-2.25.1
-
+--=20
+Thanks,
+Mina
