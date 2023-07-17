@@ -2,53 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1FF756678
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 834EA75667C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232266AbjGQOdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
+        id S229724AbjGQOea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232199AbjGQOd1 (ORCPT
+        with ESMTP id S231708AbjGQOeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:33:27 -0400
+        Mon, 17 Jul 2023 10:34:16 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA59173A;
-        Mon, 17 Jul 2023 07:33:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467A01BD8;
+        Mon, 17 Jul 2023 07:33:52 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 49C8F60F0B;
-        Mon, 17 Jul 2023 14:32:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 862B2C433C8;
-        Mon, 17 Jul 2023 14:32:45 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CDE37610AB;
+        Mon, 17 Jul 2023 14:33:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40CADC433C7;
+        Mon, 17 Jul 2023 14:33:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689604366;
-        bh=Yva/5MHbcy0bGydQM8nVXYxJtVAjH+L9SZPQ/I541CE=;
+        s=k20201202; t=1689604431;
+        bh=I21ZDliWD7GOdnTUiUm/tPH/YR8Nmd8AOMXf8/BsAhQ=;
         h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=D5ya+EMh9TGJ9ctyqtA7kO4yD9QB2HMhVeFFSJMT4KjpvUGw3trZGZdRm0U8UuGRJ
-         OGathQfjIZo6SQFol7EjO/gmWjYSvBF/0Rv7vMqUPoOjuSjjCXactfsI6HGIInvQwu
-         BGyxbby0qOGThVMHl0eN+8O6MjleA1NXgyFED/pK+U7LbAt/WsEmTizgXxoLepscWx
-         QWr6SYPlhCb2tWXpOSCZx+in3xiFthSF+V7NR8TXpZpdG/cQUsm4UOO9X4NnIDpyDw
-         z+emPx7qTVuDdcOVVIQZbaoWZLDA69/96hpV8cPcT3KaWxi/oFICuZrJRsPzcFesDA
-         i0sQWT4WrIakw==
+        b=IHUkmxqZ8XZmpa+aN5HU8DZORxXMoMRWO+WWbx47YVDPP8qvPcVzhLHh1XeIU1nv8
+         QzuwK0t9DPm/8gU/fnssor4Fkmq/bB8XGYkbHHr7y4nEmeUstm1rRH2EwPj95Ker1K
+         ndQjU7fQqZIg6zCAfCxTzu03K585baZEwR6GK48cFRJRo8r8l0MRQ4w+PA1hZNqEk2
+         rosP4lYUR6++AlrfPC7kpK3RXNhNpJEOgiJy4QIqZNBgQEvsDCtykn/s6ikPHmljVM
+         iwMAYqHp7lpN2ENeBAvgFFQ5uBO42xfrgNcJzvgxERPEFLRFCZbhD5sy8yNFfJ9l7k
+         qM+Ktsgp12Txw==
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 17 Jul 2023 14:32:43 +0000
-Message-Id: <CU4IRD6Z82AN.1NSKWR27ODX5I@seitikki>
-Cc:     "Peter Huewe" <peterhuewe@gmx.de>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        "Lino Sanfilippo" <l.sanfilippo@kunbus.com>,
-        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] tpmdd changes for v6.5-rc2
+Date:   Mon, 17 Jul 2023 14:33:46 +0000
+Message-Id: <CU4IS5XRH3PK.M9DAVXJ7PSSE@seitikki>
+Cc:     <kai.huang@intel.com>, <reinette.chatre@intel.com>,
+        <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
+        <seanjc@google.com>
+Subject: Re: [PATCH v3 17/28] x86/sgx: fix a NULL pointer
 From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Linus Torvalds" <torvalds@linux-foundation.org>
+To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
+        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+        <cgroups@vger.kernel.org>, "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
 X-Mailer: aerc 0.14.0
-References: <20230714181325.3351-1-jarkko@kernel.org>
- <CAHk-=wg6Gv+zbBt7RLN43KD0BaegS=SYkwaHjd_YM5BDsvS08w@mail.gmail.com>
-In-Reply-To: <CAHk-=wg6Gv+zbBt7RLN43KD0BaegS=SYkwaHjd_YM5BDsvS08w@mail.gmail.com>
+References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
+ <20230712230202.47929-18-haitao.huang@linux.intel.com>
+ <CU4GJG1NRTUD.275UVHM8W2VED@seitikki> <CU4GKARPLGU5.1CVBNY9N4K28F@seitikki>
+ <op.1779qgkdwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.1779qgkdwjvjmi@hhuan26-mobl.amr.corp.intel.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -59,30 +65,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun Jul 16, 2023 at 7:11 PM UTC, Linus Torvalds wrote:
-> On Fri, 14 Jul 2023 at 11:14, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+On Mon Jul 17, 2023 at 1:14 PM UTC, Haitao Huang wrote:
+> On Mon, 17 Jul 2023 07:49:27 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
+=20
+> wrote:
+>
+> > On Mon Jul 17, 2023 at 12:48 PM UTC, Jarkko Sakkinen wrote:
+> >> On Wed Jul 12, 2023 at 11:01 PM UTC, Haitao Huang wrote:
+> >> > Under heavy load, the SGX EPC reclaimers (ksgxd or future EPC cgroup
+> >> > worker) may reclaim SECS EPC page for an enclave and set
+> >> > encl->secs.epc_page to NULL. But the SECS EPC page is required for =
+=20
+> >> EAUG
+> >> > in #PF handler and is used without checking for NULL and reloading.
+> >> >
+> >> > Fix this by checking if SECS is loaded before EAUG and load it if it=
+ =20
+> >> was
+> >> > reclaimed.
+> >> >
+> >> > Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> >>
+> >> A bug fix should be 1/*.
 > >
-> > are available in the Git repository at:
+> > And a fixes tag.
 > >
-> >   git://git.kernel.org/pub/scm/linux/kernel/jarkko/linux-tpmdd.git/ tpm=
-dd-v6.5-rc2-fixed
+> > Or is there a bug that is momentized by the earlier patches? This patch
+> > feels confusing to say the least.
+> >
 >
-> No, that still isn't a valid git repo path.
->
-> This all also looks like it should have come in during the merge
-> window, so I'm just going to ignore it.
->
-> Feel free to send in actual fixes - not this massive update - once you
-> have fixed your workflow.
->
-> But don't even bother emailing me until you have actually *verified*
-> what the heck you are sending me.
->
-> No more broken script garbage. No more untested git pull requests that
-> don't actually work.
->
->                 Linus
+> It happens in heavy reclaiming cases, just extremely rare when EPC =20
+> accounting is not partitioned into cgroups. Will add fix tag with the =20
+> related EDMM patch. And move this as the first patch.
 
-NP, I'll cut down the pr, and fix the issues.
+I understand, it is just a good practice to follow, i.e. have prelude
+and then the "real" changes :-)
 
 BR, Jarkko
