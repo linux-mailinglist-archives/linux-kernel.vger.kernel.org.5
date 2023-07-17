@@ -2,128 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA31755FD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 558BC755FD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbjGQJur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 05:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52448 "EHLO
+        id S229796AbjGQJvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 05:51:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbjGQJul (ORCPT
+        with ESMTP id S231293AbjGQJvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 05:50:41 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1047F1985
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:50:28 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbd33a57dcso45028235e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:50:27 -0700 (PDT)
+        Mon, 17 Jul 2023 05:51:16 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD051A3;
+        Mon, 17 Jul 2023 02:51:15 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-78360b822abso171917839f.2;
+        Mon, 17 Jul 2023 02:51:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689587426; x=1692179426;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=e6AskIt6pGpEXyl/+af7zv317MVh1sWSoDRUXWvbhVc=;
-        b=Fw+1GwRvicM3Vt+T5hPWTv1I4io4vyJUrswB9HRPg+TMsLY4TzvDkTokRWKePd3UaX
-         ll0O8dcluZQntO0jzW3kSRzrorSK1V2f8SBVhVItDYextFguvdp3aqZP5IUsbOXcnfYw
-         C/bUs9iiz3HlppXECd6bK9yib6OQ8AbNx2QrdlK+TOb6h34snN+e/JyK2xB10AMHUKOr
-         GW2Qye/vaeGeQ1QsLAqJBvjmE+/tytsd1Pp6iqZYFf1mdBoi/RkgaHqvebLEEL28N22+
-         9pQDPNbG4hwEdFoiwyUGWzK9PHVSkEL8QhmeOV6G95SMcPGwTl1lFbAWFd2xx5vOmRde
-         UupA==
+        d=gmail.com; s=20221208; t=1689587474; x=1692179474;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tcwB+50WnrsP8py0GmyCczQm2hmYLGk+1hGHK9Qssd8=;
+        b=H2COhlx61z8Ns4BSCqx04DRIvFD+dsah8oj7ScwfTlakaVfK/hmNgyBgCiEZV9wn49
+         lZnRqqSMNGzqDHsfko26Tvdcjvyv5rnEfk1DNATnd1BSJBNRMonWacSi7kVjl0RESo1u
+         K2vJPh3Asy9Iwt2WYiYU6J5/xjDKA9SIkdkFtNAcGPn6mO6yZZYyINZRVUXyq+iOjAJn
+         k+T4GCyqwrVEix9sUBEblydFtWxmzvWWNa2/qj8XIVisN1vP8fOjGM1ERjz55eIobWtS
+         7JZC6SAieh+l+26E9qWgi9cRFu1ERmFGu4dU7jaNzjMO4wbyRajs1wdvfPoszrnCwNU7
+         Y6ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689587426; x=1692179426;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e6AskIt6pGpEXyl/+af7zv317MVh1sWSoDRUXWvbhVc=;
-        b=Dm1xj74SWyo5Pxc8MZTNt2LuZ8ZqYwrq3ElN1Wa1kr2e2epkMjvG/Nd1tGnFNubuAU
-         Y5HIYQEHgwJXD1qjbodeCR0RVZbYlcRX0/KW+RoPxlY4VPHoyYjtBHITk3EOfrFaEXbG
-         9e/SvpMNVbkAx8tb9mjQNw8BDloPInta4d5J1IeYhtZ6u48AVOaAF1V9bqQdybHSs9AG
-         iOqGJ20hFUB7OO+sYBkQxFy9DNE3gNycGfqHKNrpw049z+fRxn/paXdydLrQ1ZMttTnB
-         Yn80QH8XnmuLeoeTUdLNJpjs0jgful+y1W/vm/wWgygEshQSpPuSK0GnCob9qCnOqS4E
-         QfHA==
-X-Gm-Message-State: ABy/qLatSePoIPKJEHCOLc4d2XImy3yxd8JXIe3RZfgyGJXEk5otBzM0
-        jGo/dtQyTUIJIeFR9kJ6zVth2JAYArPkwTxNLrY=
-X-Google-Smtp-Source: APBJJlFcO2hUeFTyIiGMBaQOOPJbTFdAWOHHOtL+x6pYTXFTzTLiIOmpOQir+k0qINWk2OhUsNUflQ==
-X-Received: by 2002:adf:f7d0:0:b0:313:f1c8:a963 with SMTP id a16-20020adff7d0000000b00313f1c8a963mr10656889wrq.2.1689587426286;
-        Mon, 17 Jul 2023 02:50:26 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id s15-20020adff80f000000b00313f9a0c521sm18777975wrp.107.2023.07.17.02.50.24
+        d=1e100.net; s=20221208; t=1689587474; x=1692179474;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tcwB+50WnrsP8py0GmyCczQm2hmYLGk+1hGHK9Qssd8=;
+        b=a3mO0B4Wn+vnKGHMK7gegs8gZv9JxwZTqKjG2TgRnq9s+Ly2krP7fs3X2sQMbV7EXy
+         Mbn2nkdN8+D01g0DA9zbNUGETdrmtJhGsQUibt28oGWssZ8/BI4hbkhwOzuAsjw1Mqx/
+         Lwvb4fZVnmE0JO2BFCI+37vYVuVbpCpJt4alKZROP+lYcRzCGWwmEOb+W/pNuBjkKjKx
+         ArVVeATpsy0rtpFqwtZKtObszKywIVTt3QzfuRTcR+4eh9MjBE6hgSwo+urMYC/pXJ5K
+         +ItYMvI+ufnSC4UB1YC/hOL25RyTGw0slclEufeLzC8IBuC9exMLoEkx5A5VzYJEycnt
+         Oj5w==
+X-Gm-Message-State: ABy/qLZE5MA4F658/caXPoDelUUfZKfOFzNzhCLgpeBCSitrtzuLRN8a
+        IT5MntGgbajeE6X1FTKcjea7nTQmnj4yxg==
+X-Google-Smtp-Source: APBJJlFdf/+zUrmvf62IEu/h0Ce8005lr+fBlUd78kDZAW2R9nniW9R9S7bI2n8dcGtTrzCuxGWMQQ==
+X-Received: by 2002:a5e:aa14:0:b0:786:4795:30c9 with SMTP id s20-20020a5eaa14000000b00786479530c9mr10485510ioe.20.1689587474435;
+        Mon, 17 Jul 2023 02:51:14 -0700 (PDT)
+Received: from JammyHuang-PC.aspeed.com ([118.99.208.177])
+        by smtp.gmail.com with ESMTPSA id g11-20020a02b70b000000b0042b3ff53458sm4376819jam.169.2023.07.17.02.51.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 02:50:25 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 12:50:20 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc:     linux1394-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] firewire: core: revert GFP_ATOMIC changes
-Message-ID: <89fe5e6f-d6c3-42d6-bf86-3eb1f4193c1b@kili.mountain>
+        Mon, 17 Jul 2023 02:51:14 -0700 (PDT)
+From:   Jammy Huang <orbit.huang@gmail.com>
+X-Google-Original-From: Jammy Huang <jammy_huang@aspeedtech.com>
+To:     eajames@linux.ibm.com, mchehab@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, linux-media@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Jammy Huang <jammy_huang@aspeedtech.com>
+Subject: [PATCH v2] media: aspeed: Fix memory overwrite if timing is 1600x900
+Date:   Mon, 17 Jul 2023 17:51:11 +0800
+Message-Id: <20230717095111.1957-1-jammy_huang@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was recently changed from GFP_ATOMIC to GFP_KERNEL, but Smatch
-complains that GFP_ATOMIC is still required:
+When capturing 1600x900, system could crash when system memory usage is
+tight.
 
-drivers/firewire/core-topology.c:223 build_tree() warn: sleeping in atomic context
+The way to reproduce this issue:
+1. Use 1600x900 to display on host
+2. Mount ISO through 'Virtual media' on OpenBMC's web
+3. Run script as below on host to do sha continuously
+  #!/bin/bash
+  while [ [1] ];
+  do
+	find /media -type f -printf '"%h/%f"\n' | xargs sha256sum
+  done
+4. Open KVM on OpenBMC's web
 
-The problematic call trees are:
+The size of macro block captured is 8x8. Therefore, we should make sure
+the height of src-buf is 8 aligned to fix this issue.
 
-fw_core_handle_bus_reset() <- spin_lock_irqsave(&card->lock, flags);
--> build_tree()
-   -> fw_node_create() <- sleeping allocation
-
-fw_core_handle_bus_reset() <- spin_lock_irqsave(&card->lock, flags);
--> update_tree()
-   -> fw_node_event()
-
-This second call tree is a bit complicated because we event is not
-FW_NODE_CREATED so we would have to hit a goto create; to hit the
-bug.
-
-Fixes: 06f45435d985 ("firewire: core: obsolete usage of GFP_ATOMIC at building node tree")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
 ---
-From static analysis.  Smatch does not warn about fw_node_event()
-because event can't be FW_NODE_CREATED.
+ v2 changes
+  - Add how to reproduce this issue.
+---
+ drivers/media/platform/aspeed/aspeed-video.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/firewire/core-device.c   | 2 +-
- drivers/firewire/core-topology.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/firewire/core-device.c b/drivers/firewire/core-device.c
-index a3104e35412c..aa597cda0d88 100644
---- a/drivers/firewire/core-device.c
-+++ b/drivers/firewire/core-device.c
-@@ -1211,7 +1211,7 @@ void fw_node_event(struct fw_card *card, struct fw_node *node, int event)
- 		 * without actually having a link.
- 		 */
-  create:
--		device = kzalloc(sizeof(*device), GFP_KERNEL);
-+		device = kzalloc(sizeof(*device), GFP_ATOMIC);
- 		if (device == NULL)
- 			break;
- 
-diff --git a/drivers/firewire/core-topology.c b/drivers/firewire/core-topology.c
-index 88466b663482..f40c81534381 100644
---- a/drivers/firewire/core-topology.c
-+++ b/drivers/firewire/core-topology.c
-@@ -101,7 +101,7 @@ static struct fw_node *fw_node_create(u32 sid, int port_count, int color)
+diff --git a/drivers/media/platform/aspeed/aspeed-video.c b/drivers/media/platform/aspeed/aspeed-video.c
+index 374eb7781936..14594f55a77f 100644
+--- a/drivers/media/platform/aspeed/aspeed-video.c
++++ b/drivers/media/platform/aspeed/aspeed-video.c
+@@ -1130,7 +1130,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+ static void aspeed_video_set_resolution(struct aspeed_video *video)
  {
- 	struct fw_node *node;
+ 	struct v4l2_bt_timings *act = &video->active_timings;
+-	unsigned int size = act->width * act->height;
++	unsigned int size = act->width * ALIGN(act->height, 8);
  
--	node = kzalloc(struct_size(node, ports, port_count), GFP_KERNEL);
-+	node = kzalloc(struct_size(node, ports, port_count), GFP_ATOMIC);
- 	if (node == NULL)
- 		return NULL;
+ 	/* Set capture/compression frame sizes */
+ 	aspeed_video_calc_compressed_size(video, size);
+@@ -1147,7 +1147,7 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
+ 		u32 width = ALIGN(act->width, 64);
  
+ 		aspeed_video_write(video, VE_CAP_WINDOW, width << 16 | act->height);
+-		size = width * act->height;
++		size = width * ALIGN(act->height, 8);
+ 	} else {
+ 		aspeed_video_write(video, VE_CAP_WINDOW,
+ 				   act->width << 16 | act->height);
+
+base-commit: 2605e80d3438c77190f55b821c6575048c68268e
 -- 
-2.39.2
+2.25.1
 
