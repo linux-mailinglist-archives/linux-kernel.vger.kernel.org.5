@@ -2,69 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC5A755E13
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB530755E11
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbjGQIOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 04:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39936 "EHLO
+        id S231324AbjGQIO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 04:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbjGQIOs (ORCPT
+        with ESMTP id S231311AbjGQIOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 04:14:48 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A28129
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:14:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1689581688; x=1721117688;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GiPwvl5IyiPlcPEFo50ZA45sK7nt5VZx1UMduNOcbOg=;
-  b=ONJk6qxb128TUCqG/aQmmSkf8AXz8Eq4MtYspZlzHjEaZYQNkCNjmxur
-   DyekhUDzHHzFAn+AR/xt1kcqcifqLSIdgDzAK0QLdtXUFjWlKTGQIbUpB
-   FWuC760yv5/8FBGSKIG8zEI1jS5RmP7+QK+z0fArmdSBdXW3bhmEuuEQ5
-   30wWV0BsKucwTyW4tNhZxzn/kgAlgjjUfoXiQvPFtrkudFUuwuUH316XJ
-   q0n1bI3KTSKClwAvRnEIHnTeA2g1KGdGGOTR6mwe4FJLqhycJqIKvI59a
-   IqLaoRNNgDFAYVo1tNYSEv9p4RfaDarR/cj/vrQ25i5A16cH1BeVVyZS7
-   w==;
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="asc'?scan'208";a="224157965"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Jul 2023 01:14:47 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 17 Jul 2023 01:14:36 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Mon, 17 Jul 2023 01:14:34 -0700
-Date:   Mon, 17 Jul 2023 09:14:01 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     <hanyu001@208suo.com>
-CC:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>, <atishp@rivosinc.com>, <maz@kernel.org>,
-        <apatel@ventanamicro.com>, <guoren@kernel.org>,
-        <sunilvl@ventanamicro.com>, <ben-linux@fluff.org>,
-        <vschneid@redhat.com>, <linux-riscv@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] riscv: kernel: insert space before the open parenthesis
- '('
-Message-ID: <20230717-scone-stalemate-ec749798275b@wendy>
-References: <tencent_7D5EADDF79970079F568A5C4F801910DED06@qq.com>
- <b90d162c4fb8062355634fb53b05173d@208suo.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="U4xOE9QBFvXHxi7W"
-Content-Disposition: inline
-In-Reply-To: <b90d162c4fb8062355634fb53b05173d@208suo.com>
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Mon, 17 Jul 2023 04:14:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA909E5A
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:14:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 55A8960FB4
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:14:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41158C433C8;
+        Mon, 17 Jul 2023 08:14:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689581651;
+        bh=Sl+QltKLEKMYxs1hQQYrVUaWdIlqz3j/k7mSX0+hia0=;
+        h=Date:From:To:Subject:In-Reply-To:References:Cc:From;
+        b=bn7stKdHRnxERh8ChT9k48Nl7RDqA5KiV5mJzKqwKSoLmkNM3DkwItVrNBIRd9lKE
+         vOZdKC+OEwIPjKfGIL49v9oGrpKiqZ1s/eIoy5rCDr+4+hJXBmHCaMc9FOUy0MLmcs
+         HWFaeD4zwj7R8XPjhP+k3HJacKmw8nRUXtG5DFKtkWu4ooIIrLJRI3gwbcymOVJ763
+         pjJhhRHGncO/25zybkV8OWZOatOvVk1u+Q0Rxhd8bEhGkPadQEdCCr26Mr67UL20ly
+         4PLlMkWGwMY4jODeWw3bHcn6mr7D/NeqbZWm1e5AhI2ZKk1AHfsWP3azvdu/SWUJYZ
+         pgP4exJc8mfBQ==
+Message-ID: <c244d1d525c9582899fcf581b0f6078c.mripard@kernel.org>
+Date:   Mon, 17 Jul 2023 08:14:09 +0000
+From:   "Maxime Ripard" <mripard@kernel.org>
+To:     "Sarah Walker" <sarah.walker@imgtec.com>
+Subject: Re: [PATCH v4 05/17] drm/imagination: Get GPU resources
+In-Reply-To: <20230714142618.111746-1-sarah.walker@imgtec.com>
+References: <20230714142618.111746-1-sarah.walker@imgtec.com>
+Cc:     afd@ti.com, airlied@gmail.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, dakr@redhat.com, daniel@ffwll.ch,
+        donald.robson@imgtec.com, dri-devel@lists.freedesktop.org,
+        faith.ekstrand@collabora.com, frank.binns@imgtec.com,
+        hns@goldelico.com, linux-kernel@vger.kernel.org,
+        luben.tuikov@amd.com, maarten.lankhorst@linux.intel.com,
+        matthew.brost@intel.com, mripard@kernel.org, tzimmermann@suse.de
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,57 +58,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---U4xOE9QBFvXHxi7W
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, 14 Jul 2023 15:26:18 +0100, Sarah Walker wrote:
+> Acquire clock and register resources, and enable/map as appropriate.
+> 
+> Changes since v3:
+> - Remove regulator resource (not used on supported platform)
+> - Use devm helpers
+> 
+> [ ... ]
 
-Hey,
+Reviewed-by: Maxime Ripard <mripard@kernel.org>
 
-On Mon, Jul 17, 2023 at 04:06:11PM +0800, hanyu001@208suo.com wrote:
-> Fix below checkpatch error:
->=20
-> /riscv/kernel/smp.c:93:ERROR: space required before the open parenthesis =
-'('
->=20
-> Signed-off-by: ztt <1549089851@qq.com>
-
-See:
-https://lore.kernel.org/all/20230717-gummy-frisbee-2f7dbe9f9512@wendy/
-
-Also, DKIM is failing for the 208suo address :/
-
-Thanks,
-Conor.
-
-> ---
->  arch/riscv/kernel/smp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
-> index 23e533766a49..1454f2415b7f 100644
-> --- a/arch/riscv/kernel/smp.c
-> +++ b/arch/riscv/kernel/smp.c
-> @@ -90,7 +90,7 @@ static inline void ipi_cpu_crash_stop(unsigned int cpu,
-> struct pt_regs *regs)
->          cpu_ops[cpu]->cpu_stop();
->  #endif
->=20
-> -    for(;;)
-> +    for (;;)
->          wait_for_interrupt();
->  }
->  #else
-
---U4xOE9QBFvXHxi7W
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLT4SQAKCRB4tDGHoIJi
-0nPOAQC0Dfwwdu7s6Z/RZ3lSf0VzTVpe2NTrthyXqwm1LeFymwEAgMiTZZgkfsFl
-txpikNMpNCe2vYXJPFx3ozXOLs5fKgc=
-=2m/o
------END PGP SIGNATURE-----
-
---U4xOE9QBFvXHxi7W--
+Thanks!
+Maxime
