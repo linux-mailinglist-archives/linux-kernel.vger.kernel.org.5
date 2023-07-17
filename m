@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F96A7558DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 02:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716407558E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 02:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbjGQAcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 20:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54740 "EHLO
+        id S230006AbjGQAft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 20:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjGQAcD (ORCPT
+        with ESMTP id S229491AbjGQAfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 20:32:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6E3D9;
-        Sun, 16 Jul 2023 17:32:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DF01D60EE1;
-        Mon, 17 Jul 2023 00:32:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FD69C433C7;
-        Mon, 17 Jul 2023 00:31:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689553921;
-        bh=paHDLzbIxR4t35jchB7wP2+mUhpnQT7MXpvr4zdD+90=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=NGAwd27d2QSwibXdeiJQOvz80aVEcGN2o1X5Hjn3a5g2reDFRFyB8/0fLCXReMZvu
-         OCdiN07ufnxbNjv8XKO9AB3fOzYhNQX9hRRd+h/U1a4skPAGtkOUSbo89sE0UTSZq4
-         MHxDW+6VsYq82Ji4usFwSlv9djC0J4miWFaoqvasAbn6A77yUoHokntrBKnmK+ojeX
-         73TPMhXlvwcSxQFh7SGJ2BMSqaMzIgF+6HqiY1QUz4pygGHzK6d7wKw1w2jlCzhIu+
-         UHgvoPArgFVA7qlBSHffdZr9a/oxJYOdh+fvM2oFhj21Q2AA9ed2m1alBHdtOf000/
-         8V30k5AiPZ+Yg==
-Message-ID: <ec511842-b978-b16d-fec3-248e6af37b07@kernel.org>
-Date:   Mon, 17 Jul 2023 09:31:58 +0900
+        Sun, 16 Jul 2023 20:35:47 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA4ED9
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 17:35:46 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-403b622101bso304521cf.1
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 17:35:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689554146; x=1692146146;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ceHFS68Z8eoyXByi3OzEKWi0O43JJE6aFLe5wsYlfoM=;
+        b=yEIJY3DVqOHs8s97//ML3Qw6AqdTsgExYIRXtv1XIb17Yn6cicVenDWfR03w+17dHn
+         f/1ydEyAuCFpnbjVQkE9KlEBLoEDSMXQZUE/ENQUIAkdNESA/SlmP6fL1KISFgiY5WjU
+         FblGDVq13GLmkgIT/YBYqvTg0J8BGwYwb/4QDri1ntfBKsrwl8ctZKYaYFZhzbck5OvD
+         HhDvoJjtxNF1mlmiwSburiaQZkSW87J4C/GytZK3FbfGd9bChxO2xOY5YmuA9yPpg6L4
+         /cpiqYIi6yfA1MiSz7SP6DSxyC6gIm6rWRnP0IRCA41q1vFC7s4KkQ4yNaKn9pWNj5p1
+         nUUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689554146; x=1692146146;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ceHFS68Z8eoyXByi3OzEKWi0O43JJE6aFLe5wsYlfoM=;
+        b=DadGQcxeGg94xDRDfBsMhjLnwOR5Vv+3ZLFNUecoOtS9PkZAR4ACzZRCqGgmdSmPFp
+         Ucu0v9h5DTdr7Rquz7S7IZSIsBE/vhc7eXINc7g3plI43sZgSHbcodwf+34OLP85xLGH
+         ARb+qd/l493wN5MbF8yd4I29qXB44FwRyyy1Zm/JfilzHgeV82+4kiq0FKbI9Y+FqRV+
+         9uoc5bO7ibjMKlQ8vg0GFXrF31wG6KAc7PieMiiqWysP1dDK4MfccAqMgNj5o4nKm3bf
+         gTjVVMSivpaYjki7iI/wuZDh7jhqukLqTuVH4h/pAJ6/Ve8q9HNbdsedWSzkiOX9OcuP
+         paFg==
+X-Gm-Message-State: ABy/qLaxePCfjVH5C8Gu3CbjUCaLVzAJPPzIqRQLWg6X5OKgZgtfgQZj
+        g1B/p3+GKL/fsP3JTWdBbQngaPWEeC4z8FoCaszWiQ==
+X-Google-Smtp-Source: APBJJlGENDq5+47+ugTUyKQNYlOuSLR/z8TxIj3Eua5o56NWZayheDv1PmFMI7BkYtmNiEMw6YAN8mme0nSaOw5Rkss=
+X-Received: by 2002:ac8:7f11:0:b0:3f6:97b4:1a4d with SMTP id
+ f17-20020ac87f11000000b003f697b41a4dmr1205909qtk.23.1689554145721; Sun, 16
+ Jul 2023 17:35:45 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] ata: Explicitly include correct DT includes
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     devicetree@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-tegra@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-References: <20230714174052.4040857-1-robh@kernel.org>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20230714174052.4040857-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20230712060144.3006358-1-fengwei.yin@intel.com>
+ <20230712060144.3006358-4-fengwei.yin@intel.com> <CAOUHufYef--8MxFettL6fOGjVx2vyZHZQU6EEaTCoW0XBvuC8Q@mail.gmail.com>
+ <CAOUHufZ6=9P_=CAOQyw0xw-3q707q-1FVV09dBNDC-hpcpj2Pg@mail.gmail.com> <40cbc39e-5179-c2f4-3cea-0a98395aaff1@intel.com>
+In-Reply-To: <40cbc39e-5179-c2f4-3cea-0a98395aaff1@intel.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Sun, 16 Jul 2023 18:35:09 -0600
+Message-ID: <CAOUHufZHyEvU-c2O6B6stM_QVMxc22zV4Szn52myYqjdZvptUA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 3/3] mm: mlock: update mlock_pte_range to handle
+ large folio
+To:     "Yin, Fengwei" <fengwei.yin@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, willy@infradead.org, david@redhat.com,
+        ryan.roberts@arm.com, shy828301@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,21 +74,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/23 02:40, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+On Sun, Jul 16, 2023 at 6:00=E2=80=AFPM Yin, Fengwei <fengwei.yin@intel.com=
+> wrote:
+>
+> On 7/15/2023 2:06 PM, Yu Zhao wrote:
+> > There is a problem here that I didn't have the time to elaborate: we
+> > can't mlock() a folio that is within the range but not fully mapped
+> > because this folio can be on the deferred split queue. When the split
+> > happens, those unmapped folios (not mapped by this vma but are mapped
+> > into other vmas) will be stranded on the unevictable lru.
+>
+> This should be fine unless I missed something. During large folio split,
+> the unmap_folio() will be migrate(anon)/unmap(file) folio. Folio will be
+> munlocked in unmap_folio(). So the head/tail pages will be evictable alwa=
+ys.
 
-Applied to for-6.6. Thanks !
-
--- 
-Damien Le Moal
-Western Digital Research
-
+It's close but not entirely accurate: munlock can fail on isolated folios.
