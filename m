@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 490BB756FC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 00:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5FE756FC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 00:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230317AbjGQWZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 18:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40646 "EHLO
+        id S230199AbjGQWZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 18:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbjGQWZm (ORCPT
+        with ESMTP id S230313AbjGQWZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 18:25:42 -0400
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA45A4;
-        Mon, 17 Jul 2023 15:25:41 -0700 (PDT)
-Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1b0156a1c4bso2926574fac.1;
-        Mon, 17 Jul 2023 15:25:41 -0700 (PDT)
+        Mon, 17 Jul 2023 18:25:48 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2592B1;
+        Mon, 17 Jul 2023 15:25:43 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6b9defb366eso578262a34.2;
+        Mon, 17 Jul 2023 15:25:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689632740; x=1692224740;
+        d=gmail.com; s=20221208; t=1689632743; x=1692224743;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=j1qZZ12UUcyh7MC4/8VfW/JbiMsQYzwZiADUBxxW3ZU=;
-        b=WE/g78ykwS8n1IYgJUG/HeBuqdwWrCAUaobsGZPbooyhjGSoo5kAJU/i9M9QQh3whh
-         Tc+x6c9HzzZMapPHepnbiA8ByJ0V6PuNyRHA5B0Dqome6VqyT7INBJWLzu2UEgJUdEZc
-         h0n/EjWAst8hAobLv2fFyxnUlpAobwihzYLEfvtmRmz4Tpl2sb70VJIrW0FoYWGF388n
-         T0oakLW4rV5RB9+YVg8rc2V1Ifou3LS1qxCTBS/YiDXAOZJeCMaIEeuvofw+H8hqqFGE
-         djpeCQJqD0/KGxZb8WMKupDfQp7u/h9DZqsbN+xu413Zfr2D8hRsLmLgamPcOkqmk8+y
-         RqDQ==
+        bh=0ZFSpPeABBzG5XwaWyUoAc/E/gXj2NoOgUk68JvYyRY=;
+        b=WP6VAqBtcBpW6Hrw19ysTmnUuDGdUskCQXcX2Qz1ytlSCUFXustKh+YQhs5ydL6Rju
+         002hnHCV039FxxmavVVUosZ+fwVk+Fg2z/3ys8FRkdmkFJN20xuaO8MzUDLO+vE9lTZD
+         e0jCvKGeweqlABLKO2GzHnk2RkoBZtVbCnpYDJ2VC2MQF2y9r15lCdVoIG5dAOECktNz
+         MZqtfArNw+NE0tenCexfRL5aUDdoUsakEH/olq/Up7xx0DXpNp5dTgA01VITUfHagnHy
+         a80FAp8gVRO3OF2G6qh8b+Tjsrn2ID+3nuiCZ9GuUblrEyoui49LMLKVhTrky+QwZ+SC
+         UNSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689632740; x=1692224740;
+        d=1e100.net; s=20221208; t=1689632743; x=1692224743;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=j1qZZ12UUcyh7MC4/8VfW/JbiMsQYzwZiADUBxxW3ZU=;
-        b=ITy7WDge/2lhv+b9gTy1ycpGq/nzZS2DcfJSj4JEmNdsZj6pAMB0rSemKgt1p0An8c
-         ngk63wgaxtfWJJqEQHtwXDxg0lo+aQlZicZQN0UH/riil6Kp0mezSvPgwQAsyI1uK73V
-         Iv73elkUk1Mhh4Y+XSd++Ycj7SO3z6yumU0wTMio3Gkbm7Z7pUDZBDwTfnjCDhlq6YMR
-         R4hZl5wxigAwJ/tCP67kOPGxhr1bjE0nfUUaYdMs4dnMcP/+SWfWoV5EmO4RI44oehCT
-         /udecN0zj3YjvCsfoXfq5Z8ZWuU9vY9Cf3kN88v/IkakmXrAKKi9U1jq715gq+6A3BY0
-         5vGA==
-X-Gm-Message-State: ABy/qLYT7ndYpECI+m1y76gNJmmL4X9WMhfcKR7MfB9SmRHpK1TZ8KQW
-        XJmzs5zPFhb18/f0HjkDSL0=
-X-Google-Smtp-Source: APBJJlGFbq3U0SsJCN0WYgOqcRXKEo1ZFeXpFc2isxdgsrIT8Z1uxPG0rgbeFxh4XCqckhRhq1wBzg==
-X-Received: by 2002:a05:6870:1496:b0:1ba:1998:c11b with SMTP id k22-20020a056870149600b001ba1998c11bmr11752603oab.55.1689632740467;
-        Mon, 17 Jul 2023 15:25:40 -0700 (PDT)
+        bh=0ZFSpPeABBzG5XwaWyUoAc/E/gXj2NoOgUk68JvYyRY=;
+        b=U5VWleMYCl+L0+saaDTJ1zzsBIN32Vd6+JCQUklpjb0OWrrqpchviWb0MTQo++Bnaz
+         hOmM7bI4mTR4XMipm7zrjqDT/E81c/25FTd1aFCXBSmKtdhhRosYbjDPzip4h0njjutc
+         ml4oV5MUKz4/jxJLexIWpk6/uVrQ1Vx/VY6E6wX0diXRkip9Dz7pT1PUFZw7NHfjFuq0
+         3/2g45QbkyihirqGFU1brGFvyfQkSwmwqE52/b2uwTobSiwkQaXhm1QY6yg13GR+pKUN
+         aW5/i7lNPMRvzyK2t+B1TDsEXU51sL2xu1ru0ubzPeKHudRMa2Vc1wuxVgaUcOiRCx8S
+         ep1g==
+X-Gm-Message-State: ABy/qLa5BeWyprFuuwhllx4sTHDGMVoXoZnb/LWxVziYtaQjM0e02+g/
+        AqGt7Lr9L75YLHKXOMOXkVhZaJ2kAgk=
+X-Google-Smtp-Source: APBJJlG1PnkyQzgUo4lcXtryj5QJWnlr+8+ntS4Vf4URmQNg7t5w3AFD4e/BYAgRZ5zQvM8qxOMsrQ==
+X-Received: by 2002:a05:6870:c8aa:b0:1ad:2e18:7090 with SMTP id er42-20020a056870c8aa00b001ad2e187090mr13026815oab.32.1689632743205;
+        Mon, 17 Jul 2023 15:25:43 -0700 (PDT)
 Received: from smeagol.fibertel.com.ar ([201.235.4.68])
-        by smtp.gmail.com with ESMTPSA id a7-20020a056870374700b001ba72480f2fsm385553oak.43.2023.07.17.15.25.38
+        by smtp.gmail.com with ESMTPSA id a7-20020a056870374700b001ba72480f2fsm385553oak.43.2023.07.17.15.25.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 15:25:40 -0700 (PDT)
+        Mon, 17 Jul 2023 15:25:42 -0700 (PDT)
 From:   =?UTF-8?q?Joaqu=C3=ADn=20Ignacio=20Aramend=C3=ADa?= 
         <samsagax@gmail.com>
 To:     linux@roeck-us.net
 Cc:     =?UTF-8?q?Joaqu=C3=ADn=20Ignacio=20Aramend=C3=ADa?= 
         <samsagax@gmail.com>, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-Subject: [PATCH v2 1/2] hwmon: (oxp-sensors) Move tt_toggle attribute to dev_groups
-Date:   Mon, 17 Jul 2023 19:25:15 -0300
-Message-ID: <20230717222526.229984-2-samsagax@gmail.com>
+Subject: [PATCH v2 2/2] hwmon: (oxp-sensors) Move board detection to the init function
+Date:   Mon, 17 Jul 2023 19:25:16 -0300
+Message-ID: <20230717222526.229984-3-samsagax@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230717222526.229984-1-samsagax@gmail.com>
 References: <20230717222526.229984-1-samsagax@gmail.com>
@@ -75,94 +75,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A driver should not be manually adding groups in its probe function (it will
-race with userspace), so replace the call to devm_device_add_groups() to use
-the platform dev_groups callback instead.
-
-This will allow for removal of the devm_device_add_groups() function.
+Move detection logic to the start of init() function so we won't
+instantiate the driver if the board is not compatible.
 
 Signed-off-by: Joaquín Ignacio Aramendía <samsagax@gmail.com>
 ---
- drivers/hwmon/oxp-sensors.c | 38 +++++++++++++++++++++++--------------
- 1 file changed, 24 insertions(+), 14 deletions(-)
+ drivers/hwmon/oxp-sensors.c | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/hwmon/oxp-sensors.c b/drivers/hwmon/oxp-sensors.c
-index e1a907cae820..1e1cc67bcdea 100644
+index 1e1cc67bcdea..ea9602063eab 100644
 --- a/drivers/hwmon/oxp-sensors.c
 +++ b/drivers/hwmon/oxp-sensors.c
-@@ -220,6 +220,20 @@ static int tt_toggle_disable(void)
- }
- 
- /* Callbacks for turbo toggle attribute */
-+static umode_t tt_toggle_is_visible(struct kobject *kobj,
-+				    struct attribute *attr, int n)
-+{
-+	switch (board) {
-+	case aok_zoe_a1:
-+	case oxp_mini_amd_a07:
-+	case oxp_mini_amd_pro:
-+		return attr->mode;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
- static ssize_t tt_toggle_store(struct device *dev,
- 			       struct device_attribute *attr, const char *buf,
- 			       size_t count)
-@@ -396,7 +410,15 @@ static struct attribute *oxp_ec_attrs[] = {
- 	NULL
- };
- 
--ATTRIBUTE_GROUPS(oxp_ec);
-+static struct attribute_group oxp_ec_attribute_group = {
-+	.is_visible = tt_toggle_is_visible,
-+	.attrs = oxp_ec_attrs,
-+};
-+
-+static const struct attribute_group *oxp_ec_groups[] = {
-+	&oxp_ec_attribute_group,
-+	NULL
-+};
- 
- static const struct hwmon_ops oxp_ec_hwmon_ops = {
- 	.is_visible = oxp_ec_hwmon_is_visible,
-@@ -415,7 +437,6 @@ static int oxp_platform_probe(struct platform_device *pdev)
- 	const struct dmi_system_id *dmi_entry;
+@@ -434,23 +434,9 @@ static const struct hwmon_chip_info oxp_ec_chip_info = {
+ /* Initialization logic */
+ static int oxp_platform_probe(struct platform_device *pdev)
+ {
+-	const struct dmi_system_id *dmi_entry;
  	struct device *dev = &pdev->dev;
  	struct device *hwdev;
--	int ret;
  
- 	/*
- 	 * Have to check for AMD processor here because DMI strings are the
-@@ -430,18 +451,6 @@ static int oxp_platform_probe(struct platform_device *pdev)
- 
- 	board = (enum oxp_board)(unsigned long)dmi_entry->driver_data;
- 
--	switch (board) {
--	case aok_zoe_a1:
--	case oxp_mini_amd_a07:
--	case oxp_mini_amd_pro:
--		ret = devm_device_add_groups(dev, oxp_ec_groups);
--		if (ret)
--			return ret;
--		break;
--	default:
--		break;
--	}
+-	/*
+-	 * Have to check for AMD processor here because DMI strings are the
+-	 * same between Intel and AMD boards, the only way to tell them apart
+-	 * is the CPU.
+-	 * Intel boards seem to have different EC registers and values to
+-	 * read/write.
+-	 */
+-	dmi_entry = dmi_first_match(dmi_table);
+-	if (!dmi_entry || boot_cpu_data.x86_vendor != X86_VENDOR_AMD)
+-		return -ENODEV;
+-
+-	board = (enum oxp_board)(unsigned long)dmi_entry->driver_data;
 -
  	hwdev = devm_hwmon_device_register_with_info(dev, "oxpec", NULL,
  						     &oxp_ec_chip_info, NULL);
  
-@@ -451,6 +460,7 @@ static int oxp_platform_probe(struct platform_device *pdev)
- static struct platform_driver oxp_platform_driver = {
- 	.driver = {
- 		.name = "oxp-platform",
-+		.dev_groups = oxp_ec_groups,
- 	},
- 	.probe = oxp_platform_probe,
- };
+@@ -469,6 +455,21 @@ static struct platform_device *oxp_platform_device;
+ 
+ static int __init oxp_platform_init(void)
+ {
++	const struct dmi_system_id *dmi_entry;
++
++	/*
++	 * Have to check for AMD processor here because DMI strings are the
++	 * same between Intel and AMD boards, the only way to tell them apart
++	 * is the CPU.
++	 * Intel boards seem to have different EC registers and values to
++	 * read/write.
++	 */
++	dmi_entry = dmi_first_match(dmi_table);
++	if (!dmi_entry || boot_cpu_data.x86_vendor != X86_VENDOR_AMD)
++		return -ENODEV;
++
++	board = (enum oxp_board)(unsigned long)dmi_entry->driver_data;
++
+ 	oxp_platform_device =
+ 		platform_create_bundle(&oxp_platform_driver,
+ 				       oxp_platform_probe, NULL, 0, NULL, 0);
 -- 
 2.41.0
 
