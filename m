@@ -2,107 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 406217564D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650BA7564DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbjGQN0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 09:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36134 "EHLO
+        id S231604AbjGQN0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 09:26:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231704AbjGQN0G (ORCPT
+        with ESMTP id S231518AbjGQN0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 09:26:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53024172D;
-        Mon, 17 Jul 2023 06:25:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EA40A6115A;
-        Mon, 17 Jul 2023 13:24:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1806C433C8;
-        Mon, 17 Jul 2023 13:24:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689600268;
-        bh=buEyDtOD+tAaVWRktB28z7fW6D13J5yAHEKQhMLZQu4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L61XKSSxsznWwcDppB67UBRbXxw5UM0mEsoBltz2n5auT1pzJoo8sPFXI80yNg8eQ
-         w0UlFS0z4UQNQNSUlF3vFWKacZp8xkn30u2kOlQ/xnGN1hf6z7Y8hvURby/TGNnhwP
-         XP5sgBvpBukoqJoJphBnmewpOnhOW4zY8mlOT27EfRvVHOVXT8esXI4fiu/ky/67hY
-         LJvAUReEu1iMKiggSpZxoWsTmkbHecl63tQBNF9QOyVfHOCIg5njyJSrzvX203jmOz
-         2gxwXoFfwfGxaKx6wcZlDnE8q9rqQ4cPkB0HAg1qpr4+wcqejc0vTOtJ2tmOoBp5KF
-         wyHeyFIieC5tg==
-Date:   Mon, 17 Jul 2023 06:24:26 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     linux-stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        lkft-triage@lists.linaro.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: stable-rc 6.1: x86: clang build failed -
- block/blk-cgroup.c:1237:6: error: variable 'ret' is used uninitialized
- whenever 'if' condition is true
-Message-ID: <20230717132426.GA2561862@dev-arch.thelio-3990X>
-References: <CA+G9fYs5n6aobE04YZy3Qy1ZMhAvH6-uQRqidgFmSoei91iW8g@mail.gmail.com>
+        Mon, 17 Jul 2023 09:26:22 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F43D1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:26:01 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:5803:2d6d:5bbc:e252])
+        by baptiste.telenet-ops.be with bizsmtp
+        id NDRh2A00S0ucMBo01DRhqK; Mon, 17 Jul 2023 15:25:42 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qLOEG-001fvt-Th;
+        Mon, 17 Jul 2023 15:25:41 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qLOEP-007Qxj-Qe;
+        Mon, 17 Jul 2023 15:25:41 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Russell King <linux@armlinux.org.uk>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Russell King <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH v2 resend 2] drm/armada: Fix off-by-one error in armada_overlay_get_property()
+Date:   Mon, 17 Jul 2023 15:25:40 +0200
+Message-Id: <a4d779d954a7515ddbbf31cb0f0d8184c0e7c879.1689600265.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYs5n6aobE04YZy3Qy1ZMhAvH6-uQRqidgFmSoei91iW8g@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 12:55:42AM +0530, Naresh Kamboju wrote:
-> Linux stable-rc 6.1 build failed x86 and i386 with clang.
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> Build log:
-> -----------
-> block/blk-cgroup.c:1237:6: error: variable 'ret' is used uninitialized
-> whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->         if (init_blkcg_llists(blkcg))
->             ^~~~~~~~~~~~~~~~~~~~~~~~
-> block/blk-cgroup.c:1287:9: note: uninitialized use occurs here
->         return ret;
->                ^~~
-> block/blk-cgroup.c:1237:2: note: remove the 'if' if its condition is
-> always false
->         if (init_blkcg_llists(blkcg))
->         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> block/blk-cgroup.c:1222:33: note: initialize the variable 'ret' to
-> silence this warning
->         struct cgroup_subsys_state *ret;
->                                        ^
->                                         = NULL
-> 1 error generated.
-> 
-> Links,
->  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y-sanity/build/v6.1.38-599-g5071846d06ef/testrun/18327562/suite/build/test/clang-lkftconfig/history/
->  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2SfFoWj9NmKWHRijR0hcoXGjLhr/
-> 
->  tuxmake \
->  --runtime podman --target-arch x86_64 \
->  --toolchain clang-16 \
->  --kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2SfFoWj9NmKWHRijR0hcoXGjLhr/config
-> \
->  LLVM=1 LLVM_IAS=1
-> 
+As ffs() returns one more than the index of the first bit set (zero
+means no bits set), the color key mode value is shifted one position too
+much.
 
-It looks like 6.1 needs commit b5a9adcbd5dc ("blk-cgroup: Return -ENOMEM
-directly in blkcg_css_alloc() error path") if it wants to take commit
-3b8cc6298724 ("blk-cgroup: Optimize blkcg_rstat_flush()").
+Fix this by using FIELD_GET() instead.
 
-Cheers,
-Nathan
+Fixes: c96103b6c49ff9a8 ("drm/armada: move colorkey properties into overlay plane state")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+---
+Compile-tested only.
+
+v2:
+  - Add Reviewed-by.
+---
+ drivers/gpu/drm/armada/armada_overlay.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/armada/armada_overlay.c b/drivers/gpu/drm/armada/armada_overlay.c
+index f21eb8fb76d87285..3b9bd8ecda137f6d 100644
+--- a/drivers/gpu/drm/armada/armada_overlay.c
++++ b/drivers/gpu/drm/armada/armada_overlay.c
+@@ -4,6 +4,8 @@
+  *  Rewritten from the dovefb driver, and Armada510 manuals.
+  */
+ 
++#include <linux/bitfield.h>
++
+ #include <drm/armada_drm.h>
+ #include <drm/drm_atomic.h>
+ #include <drm/drm_atomic_helper.h>
+@@ -445,8 +447,8 @@ static int armada_overlay_get_property(struct drm_plane *plane,
+ 			     drm_to_overlay_state(state)->colorkey_ug,
+ 			     drm_to_overlay_state(state)->colorkey_vb, 0);
+ 	} else if (property == priv->colorkey_mode_prop) {
+-		*val = (drm_to_overlay_state(state)->colorkey_mode &
+-			CFG_CKMODE_MASK) >> ffs(CFG_CKMODE_MASK);
++		*val = FIELD_GET(CFG_CKMODE_MASK,
++				 drm_to_overlay_state(state)->colorkey_mode);
+ 	} else if (property == priv->brightness_prop) {
+ 		*val = drm_to_overlay_state(state)->brightness + 256;
+ 	} else if (property == priv->contrast_prop) {
+-- 
+2.34.1
+
