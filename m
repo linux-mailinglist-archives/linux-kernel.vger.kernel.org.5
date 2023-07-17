@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5026C75676A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2171C756772
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbjGQPTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 11:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
+        id S231383AbjGQPTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 11:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231197AbjGQPTO (ORCPT
+        with ESMTP id S231349AbjGQPTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 11:19:14 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0345EFA
+        Mon, 17 Jul 2023 11:19:15 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4C8129
         for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:19:13 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fb5bcb9a28so7243497e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:19:12 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fdb856482fso2470013e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:19:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689607151; x=1692199151;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XihfBswXwLBU5koXjyBjWrHqV9uRQHPvDY83RX4DoHY=;
-        b=HgNoiuLE84+GinSTqbSdq28VHVz0aj7SX6ISwPKtGCSkCip9kyr3GLq47604WWBAv8
-         cNth2aLEE5jHLMYMV9DucKYHFknTUPUFDrXd64Npsa52KDpwN77j05PkXk/T9P5lLsIQ
-         bVDGqjz7SKEoIaySrn7MYjjTqUssxxHVxC+8/J4Bf/rolR3PgcU8jpXloeGAskzYHxMn
-         yF4bV9Zu1buy2f1RB0ZXG0IM3B5MESdV94Nk1dOek5LWTS0L+qFw8ciFm317216dnrSc
-         m23LVoaYkzs8YewhZOLyCVXNphTcRm4UZIdanL12aAFScNlx/sJqflOG2G7cR2VAgc7+
-         PJQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689607151; x=1692199151;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1689607152; x=1692199152;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=XihfBswXwLBU5koXjyBjWrHqV9uRQHPvDY83RX4DoHY=;
-        b=LkoUeFRxoEJYsqNj/2eWnvYx0ZM7m75FioCzukiryb0aQYurYK/MG0azdEBySBCGIG
-         lJMUYygPm/2MosHuixxJ6ZEw003nRbf/ei+G4yv1+GZ08fk11FGWlHEyIDw4fUE49i03
-         RPtaNTmp8LOLMgVpIJXeWFVOzx6aY/Ow2g1rF/TuULkLk8gy6L6r6GkyJskOrw4dUpoU
-         KcDGFGJDoOOer0ZctWhnVsN6mbhlao6n4/6fwG+mZc2xefyTl8KJK9hVQI4Z1ABkYJKo
-         dh0uqwm3sWP5Shji3EEpBvYkOm5o3XhDhvTnsMcrPTHNTGzrc5B7Aff8yhcElW5GR92A
-         20Tg==
-X-Gm-Message-State: ABy/qLY5pE1iGFz7d2PmOTw9biGjb6I1yGTSNtBMlQsGfeKw7ULdWR/y
-        hT0wY6fLvsML+Hj/qcIX+q/wdg==
-X-Google-Smtp-Source: APBJJlGOtnAOhdCE+iX25a9G72ozcufRcXwg/cOq3fBHzPN/qevvbquyt3zQLNUEg3DI0tdXZVYL+g==
-X-Received: by 2002:a05:6512:446:b0:4fb:8eec:ce49 with SMTP id y6-20020a056512044600b004fb8eecce49mr7627389lfk.31.1689607150886;
-        Mon, 17 Jul 2023 08:19:10 -0700 (PDT)
+        bh=WJ0qGiQRfgozs+tcAPQpQ7XtDjcKLWTvi3TAMjuYVrA=;
+        b=BorbYIYjhnoPCbMKnNPTMh1c348OYLYDpIk3doZl3rYS4nuxYwYZVrVFqy0jeMf/b7
+         XxMGvBrmgas2hOWSWXcwmZhio0h6aONL+FuP9Hqy+4UHKv85hlNzio01ia17Aa1lsxQY
+         LF/fWiN1hhKLA7D3NheFXPuZYNzoNKbqvr8UIV2axQFHsUJpIDxc4foV0pTrssUB2Zlq
+         icogCGQHqDEHsAS5Ha/kyogr/KAcibx9uGoi2TdO9y33RrHRLa39tJlqCbYuOXleC8f7
+         HSUtOLLtrn213X9AGGlBVrQfwj8Wm0VdG2+wsLk4bLBgo2GJk/Htcxm8sysXY+3ne4rF
+         f/Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689607152; x=1692199152;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WJ0qGiQRfgozs+tcAPQpQ7XtDjcKLWTvi3TAMjuYVrA=;
+        b=ZVzhCnKCH+weJpoE46plc/0ipEV3NYTbJJTNplvAZO3NzkX4P30F24i11P1JsB9sod
+         aGdIrMuo4FH+CQ6aKnb+VoyR8F+P0imkImJQiY2hzJ25Ec8OmcfPMySyhQkPa1cnvANl
+         NQwtW8twoQypW/hn6Z7U5x31jDn11P5b5mCC3X36I6/cMzXWoRZ0OBQBDHBGCfVRds1/
+         p5tSzXYaRb2+tbhp9213rgMRqErZXVWZQkQVXlGd6AZI2vBNr5kJHLO+Q/6/bPTc5SYL
+         WlIQ+zpCi/59X/B6RZv+QkJaZkl5Lnvb7pIW0smCvaR373V4n8iGpx2kaKJo9PacAheO
+         RRWA==
+X-Gm-Message-State: ABy/qLadCCyHPrAMu9em1HEFsYYWNImk9iegW+uf+o32ax8apDCnUH2o
+        WiX+xVq1sMR1V0xhIENnKz2HbA==
+X-Google-Smtp-Source: APBJJlE0osC3OIG022PFj5LI3UlPGlKCx1sZ/SosM1vC7Hg2fbgwBS906APZdHnvclQjYil0Xl1txQ==
+X-Received: by 2002:a19:ca52:0:b0:4f8:6d54:72fb with SMTP id h18-20020a19ca52000000b004f86d5472fbmr7170351lfj.62.1689607152302;
+        Mon, 17 Jul 2023 08:19:12 -0700 (PDT)
 Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
-        by smtp.gmail.com with ESMTPSA id z7-20020ac24187000000b004f26d63f823sm2873949lfh.237.2023.07.17.08.19.09
+        by smtp.gmail.com with ESMTPSA id z7-20020ac24187000000b004f26d63f823sm2873949lfh.237.2023.07.17.08.19.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 08:19:10 -0700 (PDT)
+        Mon, 17 Jul 2023 08:19:11 -0700 (PDT)
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Subject: [PATCH 00/15] Unregister critical branch clocks + some RPM
-Date:   Mon, 17 Jul 2023 17:19:07 +0200
-Message-Id: <20230717-topic-branch_aon_cleanup-v1-0-27784d27a4f4@linaro.org>
+Date:   Mon, 17 Jul 2023 17:19:08 +0200
+Subject: [PATCH 01/15] clk: qcom: branch: Add a helper for setting the
+ enable bit
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAOtbtWQC/y2NUQqDMBBEryL73YBRMLRXKUXWda0LYROSKgXx7
- l2kn2+YN3NA5SJc4dEcUHiXKkkN/K0BWlHf7GQ2hq7t+jb44D4pC7mpoNI6YtKRIqNu2Q33MJD
- vFw6ewPQJK/97NqBbjBbmwot8r7/n6zx/sjvjSX8AAAA=
+Message-Id: <20230717-topic-branch_aon_cleanup-v1-1-27784d27a4f4@linaro.org>
+References: <20230717-topic-branch_aon_cleanup-v1-0-27784d27a4f4@linaro.org>
+In-Reply-To: <20230717-topic-branch_aon_cleanup-v1-0-27784d27a4f4@linaro.org>
 To:     Bjorn Andersson <andersson@kernel.org>,
         Andy Gross <agross@kernel.org>,
         Michael Turquette <mturquette@baylibre.com>,
@@ -71,16 +72,16 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689607149; l=3625;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689607149; l=1295;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=Jh2Pm4OQu9lmpeh/JOIF5+88JeDKQ7w+nRxBV+Y9MgU=;
- b=EUeSFSHJFb7La6v+Ca119npp+SUq3EkB5fdllnWXDXVE84/pdVUYqkAtAJPs91wk9a2lCVttW
- /FXQrp+aI4MCK6d/8HsIQGDXlXxfZPcjrC4XZmcYea7s4EPgg4Dpm8I
+ bh=6Bd/Fnfm9Yhx1mDIqJ/W7OC8Bh6MqHAA2H25Y3NFUOA=;
+ b=W+t3CYvKLcbnd3HBI6U4rTbNjkWhWpjjL8PwzInHpYqquxKS67oW2oR9Eq80nBfv1/IheKGNt
+ MivQ+jMFAXVClg3i6dYItzbwkIsd+gg504JipLN5HWewLd5NT3MOQOS
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,80 +89,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Qualcomm SoCs, certain branch clocks either need to be always-on, or
-should be if you're interested in touching some part of the hardware.
-
-Using CLK_IS_CRITICAL for this purpose sounds like a genius idea,
-however that messes with the runtime pm handling - if a clock is
-marked as such, the clock controller device will never enter the
-"suspended" state, leaving the associated resources online, which in
-turn breaks SoC-wide suspend.
-
-This series aims to solve that on a couple SoCs that I could test the
-changes on and it sprinkles some runtime pm enablement atop these drivers.
+We harcode some clocks to be always-on, as they're essential to the
+functioning of the SoC / some peripherals. Add a helper to do so
+to make the writes less magic.
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
-Konrad Dybcio (15):
-      clk: qcom: branch: Add a helper for setting the enable bit
-      clk: qcom: Use qcom_branch_set_clk_en()
-      clk: qcom: gcc-sm6375: Unregister critical clocks
-      clk: qcom: gcc-sm6375: Add runtime PM
-      clk: qcom: gpucc-sm6375: Unregister critical clocks
-      clk: qcom: gpucc-sm6115: Unregister critical clocks
-      clk: qcom: gpucc-sm6115: Add runtime PM
-      clk: qcom: gcc-sm6115: Unregister critical clocks
-      clk: qcom: gcc-sm6115: Add runtime PM
-      clk: qcom: gcc-qcm2290: Unregister critical clocks
-      clk: qcom: gcc-qcm2290: Add runtime PM
-      arm64: dts: qcom: sm6375: Add VDD_CX to GCC
-      arm64: dts: qcom: qcm2290: Add VDD_CX to GCC
-      arm64: dts: qcom: sm6115: Add VDD_CX to GCC
-      arm64: dts: qcom: sm6115: Add VDD_CX to GPU_CCC
+ drivers/clk/qcom/clk-branch.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
- arch/arm64/boot/dts/qcom/qcm2290.dtsi |   1 +
- arch/arm64/boot/dts/qcom/sm6115.dtsi  |   3 +
- arch/arm64/boot/dts/qcom/sm6375.dtsi  |   1 +
- drivers/clk/qcom/clk-branch.h         |   7 ++
- drivers/clk/qcom/dispcc-qcm2290.c     |   2 +-
- drivers/clk/qcom/dispcc-sc7280.c      |   2 +-
- drivers/clk/qcom/dispcc-sc8280xp.c    |   2 +-
- drivers/clk/qcom/dispcc-sm6115.c      |   2 +-
- drivers/clk/qcom/dispcc-sm8250.c      |   2 +-
- drivers/clk/qcom/dispcc-sm8450.c      |   2 +-
- drivers/clk/qcom/dispcc-sm8550.c      |   2 +-
- drivers/clk/qcom/gcc-qcm2290.c        | 136 ++++++++---------------------
- drivers/clk/qcom/gcc-sa8775p.c        |  18 ++--
- drivers/clk/qcom/gcc-sc7180.c         |  16 ++--
- drivers/clk/qcom/gcc-sc7280.c         |  14 +--
- drivers/clk/qcom/gcc-sc8180x.c        |  20 ++---
- drivers/clk/qcom/gcc-sc8280xp.c       |  18 ++--
- drivers/clk/qcom/gcc-sdx55.c          |   2 +-
- drivers/clk/qcom/gcc-sdx65.c          |   2 +-
- drivers/clk/qcom/gcc-sdx75.c          |   4 +-
- drivers/clk/qcom/gcc-sm6115.c         | 155 ++++++++--------------------------
- drivers/clk/qcom/gcc-sm6375.c         |  34 +++++---
- drivers/clk/qcom/gcc-sm7150.c         |  16 ++--
- drivers/clk/qcom/gcc-sm8250.c         |  12 +--
- drivers/clk/qcom/gcc-sm8350.c         |  14 +--
- drivers/clk/qcom/gcc-sm8450.c         |  14 +--
- drivers/clk/qcom/gcc-sm8550.c         |  14 +--
- drivers/clk/qcom/gpucc-sc7280.c       |   4 +-
- drivers/clk/qcom/gpucc-sc8280xp.c     |   4 +-
- drivers/clk/qcom/gpucc-sm6115.c       |  57 ++++++-------
- drivers/clk/qcom/gpucc-sm6375.c       |  38 ++-------
- drivers/clk/qcom/gpucc-sm8550.c       |   4 +-
- drivers/clk/qcom/lpasscorecc-sc7180.c |   2 +-
- drivers/clk/qcom/videocc-sm8250.c     |   4 +-
- drivers/clk/qcom/videocc-sm8350.c     |   4 +-
- drivers/clk/qcom/videocc-sm8450.c     |   6 +-
- drivers/clk/qcom/videocc-sm8550.c     |   6 +-
- 37 files changed, 245 insertions(+), 399 deletions(-)
----
-base-commit: 2205be537aeb1ca2ace998e2fefaa2be04e393e4
-change-id: 20230717-topic-branch_aon_cleanup-6976c13fe71c
+diff --git a/drivers/clk/qcom/clk-branch.h b/drivers/clk/qcom/clk-branch.h
+index 0cf800b9d08d..155818cc8d49 100644
+--- a/drivers/clk/qcom/clk-branch.h
++++ b/drivers/clk/qcom/clk-branch.h
+@@ -47,6 +47,7 @@ struct clk_branch {
+ #define CBCR_FORCE_MEM_PERIPH_OFF	BIT(12)
+ #define CBCR_WAKEUP			GENMASK(11, 8)
+ #define CBCR_SLEEP			GENMASK(7, 4)
++#define CBCR_CLOCK_ENABLE		BIT(0)
+ 
+ static inline void qcom_branch_set_force_mem_core(struct regmap *regmap,
+ 						  struct clk_branch clk, bool on)
+@@ -81,6 +82,12 @@ static inline void qcom_branch_set_sleep(struct regmap *regmap, struct clk_branc
+ 			   FIELD_PREP(CBCR_SLEEP, val));
+ }
+ 
++static inline void qcom_branch_set_clk_en(struct regmap *regmap, u32 cbcr)
++{
++	regmap_update_bits(regmap, cbcr, CBCR_CLOCK_ENABLE,
++			   CBCR_CLOCK_ENABLE);
++}
++
+ extern const struct clk_ops clk_branch_ops;
+ extern const struct clk_ops clk_branch2_ops;
+ extern const struct clk_ops clk_branch_simple_ops;
 
-Best regards,
 -- 
-Konrad Dybcio <konrad.dybcio@linaro.org>
+2.41.0
 
