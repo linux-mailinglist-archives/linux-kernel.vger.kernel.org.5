@@ -2,174 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF50E7559D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 05:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C927559DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 05:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbjGQDIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 23:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37104 "EHLO
+        id S231140AbjGQDKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 23:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjGQDIV (ORCPT
+        with ESMTP id S229489AbjGQDKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 23:08:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1401310C;
-        Sun, 16 Jul 2023 20:08:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A69560E55;
-        Mon, 17 Jul 2023 03:08:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E49F7C433C7;
-        Mon, 17 Jul 2023 03:08:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689563298;
-        bh=DSxcgd+h1hGjsDVfLvnriZE2CKrET78BMSu4MXjeR7M=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=YTijYacIaCLpeCIu4hFMEWWLRsZeU8gUwVXMB8UgLTTK3K17+3iipTywexQpUR9Rf
-         mSDpXwyCUxhaIqhc/oduUcFTSQQFbcBIW/MYnZ26RwP2997OCHeT5mu7AKXsO8ZZyJ
-         FFBEDJFA38Gv5aZdq7T21ljBzICWz3BJbje8hndefWaDVVUTtqRR6zgFYbSOd7qbcj
-         ne7HNlTnPpCH6jgV8g90LL+dOM4ctEikTxj8SWixcIIEHfHphoJ6JiOm3tN5aRyJPA
-         pYQ2F1nGLNmxSeNGyDOH+xhkrH/BDP4j/aog++4OlifwqDe9PvAGS+QFKhXDLqwD2U
-         xBtctmPa6qW/w==
-Message-ID: <765b02a5-2f09-e744-f441-c082fa3987ff@kernel.org>
-Date:   Sun, 16 Jul 2023 21:08:16 -0600
+        Sun, 16 Jul 2023 23:10:52 -0400
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 889A8113;
+        Sun, 16 Jul 2023 20:10:50 -0700 (PDT)
+Received: from localhost.localdomain (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 79B6E6012605B;
+        Mon, 17 Jul 2023 11:09:44 +0800 (CST)
+X-MD-Sfrom: yunchuan@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   Wu Yunchuan <yunchuan@nfschina.com>
+To:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        irusskikh@marvell.com, rmody@marvell.com, skalluru@marvell.com,
+        GR-Linux-NIC-Dev@marvell.com, yisen.zhuang@huawei.com,
+        salil.mehta@huawei.com, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, steve.glendinning@shawell.net,
+        iyappan@os.amperecomputing.com, keyur@os.amperecomputing.com,
+        quan@os.amperecomputing.com, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, mostrows@earthlink.net, xeb@mail.ru
+Cc:     uttenthaler@ems-wuensche.com, yunchuan@nfschina.com,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH net-next v3 0/9] Remove unnecessary (void*) conversions
+Date:   Mon, 17 Jul 2023 11:09:37 +0800
+Message-Id: <20230717030937.53818-1-yunchuan@nfschina.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
- page_pool: remove PP_FLAG_PAGE_FRAG flag)
-Content-Language: en-US
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Hari Ramakrishnan <rharix@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Samiullah Khawaja <skhawaja@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>, logang@deltatee.com,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <20230710215906.49514550@kernel.org>
- <20230711050445.GA19323@lst.de> <ZK1FbjG+VP/zxfO1@ziepe.ca>
- <20230711090047.37d7fe06@kernel.org>
- <04187826-8dad-d17b-2469-2837bafd3cd5@kernel.org>
- <20230711093224.1bf30ed5@kernel.org>
- <CAHS8izNHkLF0OowU=p=mSNZss700HKAzv1Oxqu2bvvfX_HxttA@mail.gmail.com>
- <20230711133915.03482fdc@kernel.org>
- <2263ae79-690e-8a4d-fca2-31aacc5c9bc6@kernel.org>
- <CAHS8izP=k8CqUZk7bGUx4ctm4m2kRC2MyEJv+N4+b0cHVkTQmA@mail.gmail.com>
- <ZK6kOBl4EgyYPtaD@ziepe.ca>
- <CAHS8izNuda2DXKTFAov64F7J2_BbMPaqJg1NuMpWpqGA20+S_Q@mail.gmail.com>
- <143a7ca4-e695-db98-9488-84cf8b78cf86@amd.com>
- <CAHS8izPm6XRS54LdCDZVd0C75tA1zHSu6jLVO8nzTLXCc=H7Nw@mail.gmail.com>
- <9cf3ce79-2d5e-090d-c83e-0c359ace1cb9@kernel.org>
- <CAHS8izOL593X7=9pGaeC1JJ_5hYookZDn7O=fike=e48+myvxA@mail.gmail.com>
-From:   David Ahern <dsahern@kernel.org>
-In-Reply-To: <CAHS8izOL593X7=9pGaeC1JJ_5hYookZDn7O=fike=e48+myvxA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/16/23 8:05 PM, Mina Almasry wrote:
->>
->> For the driver and hardware queue: don't you need a dedicated queue for
->> the flow(s) in question?
-> 
-> In the RFC and the implementation I'm thinking of, the queue is
-> 'dedicated' in that each queue will be a devmem TCP queue or a regular
-> queue. devmem queues generate devmem skbs and non-devmem queues
-> generate non-devmem skbs. We support switching queues between devmem
-> mode and non-devmem mode via a uapi.
+Remove (void*) conversions under "drivers/net" directory.
 
-ethtool APIs or something else?
+Changes in v3:
+	change the author name to my full name "Wu Yunchuan".
+	improve the commit message to be more clearly.
 
-> 
->> If not, how can you properly handle the
->> teardown case (e.g., app crashes and you need to ensure all references
->> to GPU memory are removed from NIC descriptors)?
-> 
-> Jason and Christian will correct me if I'm wrong, but AFAICT the
-> dma-buf API requires the dma-buf provider to keep the attachment
-> mapping alive as long as the importer requires it. The dma-buf API
-> gives the importer dma_buf_map_attachment() and
-> dma_buf_unmap_attachment() APIs, but there is no callback for the
-> exporter to inform the importer that it has to take the mapping away.
+Changes in v2: 
+        move declarations to be reverse xmas tree.
+        compile it in net and net-next branch.
+        remove some error patches in v1. 
 
-Isn't the importer that application that terminated (cleanly or other)?
-That was my thinking but I guess there are other designs that can cross
-a single application.
+PATCH v2 link:
+https://lore.kernel.org/all/20230710063828.172593-1-suhui@nfschina.com/
+PATCH v1 link:
+https://lore.kernel.org/all/20230628024121.1439149-1-yunchuan@nfschina.com/
 
-> The closest thing I saw was the move_notify() callback, but that is
-> optional.
-> 
-> In my mind the way it works is that there will be some uapi that binds
-> a dma-buf to an RX queue, that will create the attachment and the
-> mapping. If the user crashes or closes the dma-buf handle then that
-> will unbind the dma-buf from the RX queue, but the mapping will remain
-> alive (via some refcounting) until all the NIC descriptors are freed
-> and the mapping is not under use anymore. Usually this will happen
-> next driver reset which destroys and recreates rx queues thereby
-> freeing all the NIC descriptors (but could be a new API so that we
-> don't rely on a driver reset).
-> 
->> If you agree on this
->> point, then you can require the dedicated queue management in the driver
->> to use and expect only the alternative frag addressing scheme. ie., it
->> knows the address is not struct page (validates by checking skb flag or
->> frag flag or address magic), but a reference to say a page_pool entry
->> (if you are using page_pool for management of the dmabuf slices) which
->> contains the metadata needed for the use case.
-> 
-> Honestly if my understanding above doesn't match what you want, I
-> could implement 'dedicated queues' instead, just let me know what you
-> want at some future iteration. Now, I'm more worried about this memory
-> format issue and I'm working on an RX prototype without struct pages.
-> So far purely technically speaking it seems possible.
-> 
-> 
+Wu Yunchuan (9):
+  net: atlantic: Remove unnecessary (void*) conversions
+  net: ppp: Remove unnecessary (void*) conversions
+  net: hns3: remove unnecessary (void*) conversions.
+  net: hns: Remove unnecessary (void*) conversions
+  ice: remove unnecessary (void*) conversions
+  ethernet: smsc: remove unnecessary (void*) conversions
+  net: mdio: Remove unnecessary (void*) conversions
+  can: ems_pci: Remove unnecessary (void*) conversions
+  net: bna: Remove unnecessary (void*) conversions
 
-My comment was only a suggestion on how to simplify driver changes. ie.,
-a queue is either pages (based on standard page_pool or alloc_pages) or
-some "special" page_pool (ie., new abstraction) but not mixed. In that
-case it knows how to handle the overloaded 'address' in skb_frag in a
-clean manner.
+ drivers/net/can/sja1000/ems_pci.c                   |  6 +++---
+ .../ethernet/aquantia/atlantic/hw_atl2/hw_atl2.c    | 12 ++++++------
+ .../aquantia/atlantic/hw_atl2/hw_atl2_utils_fw.c    |  2 +-
+ drivers/net/ethernet/brocade/bna/bnad.c             | 13 ++++++-------
+ drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c  |  2 +-
+ drivers/net/ethernet/hisilicon/hns_mdio.c           | 10 +++++-----
+ drivers/net/ethernet/intel/ice/ice_main.c           |  4 ++--
+ drivers/net/ethernet/smsc/smsc911x.c                |  4 ++--
+ drivers/net/ethernet/smsc/smsc9420.c                |  4 ++--
+ drivers/net/mdio/mdio-xgene.c                       |  4 ++--
+ drivers/net/ppp/pppoe.c                             |  4 ++--
+ drivers/net/ppp/pptp.c                              |  4 ++--
+ 12 files changed, 34 insertions(+), 35 deletions(-)
+
+-- 
+2.30.2
+
