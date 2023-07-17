@@ -2,83 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C8F755E84
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8355A755E87
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbjGQIcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 04:32:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47142 "EHLO
+        id S230075AbjGQIcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 04:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjGQIcL (ORCPT
+        with ESMTP id S229537AbjGQIcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 04:32:11 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015EF103
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:32:09 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-307d20548adso4118926f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:32:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares.net; s=google; t=1689582728; x=1692174728;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IGpGIGHpL2BV0gRPe7o+mCUkh562jDYsyKn7ATcWjy4=;
-        b=l/Le4Uw/oENU8MdiPbpVIEgMsUnyY9CAc53RvkdusFs8aue63uMVlB7g8UT3sjQUUw
-         hdwwTGZffSgmh1UknkjyTdyobVcJqGY0j8K8Y+7Yp7K+W4W+FPp7QIevLmXjFv9PM9Fm
-         +AMU4wc35Pjt1wUX3RjjS5VfiD8GdwWXULTOhZWQ2lChyofxd/K2jUrM6hTHKUzumLdj
-         lWuWjk0WJR26ighG14Lk7OvIL4C3buqnJJi22YTx26uI0Yx7RyHgB1hJ9kBflO+/k0Sv
-         a4ZjCrzM+bj6gVl+yMBnAKHS5SqtRXESPDcsW3PLr4la8E5aPH/aYH/yAyKW18voAS4g
-         X3iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689582728; x=1692174728;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IGpGIGHpL2BV0gRPe7o+mCUkh562jDYsyKn7ATcWjy4=;
-        b=BAE5O3paqV+fU6Nzef4RG5ZDxHL0at+HbcyI2CrRKuPNQj/GY5PMHJyEwMzqKK2GAb
-         H+CU3qRkS+08Eo5XFJcWcmOfmhJv15XnOexz5+3s0qfwpCXyzyefZBRQtJtnQlFBPQX9
-         6S5Gze56e6jLrnpWpL6/OKnQV0BD88ZhyZggMiKFIEDdFsR0f7/ikqx+XD8e8cv3Tyxf
-         v6pLIjJ0z+THvKAERrQthCOUMxQYbGhkZbz75JERgSvxabic/jHlyAW0LZYeLJ6/gqre
-         /aUpS+saVNMqA24xfTRW5YD9YAj3Pf2K3S7+LoXcP7QzviI93i33HY1VBgdi5S7yawF3
-         7Usw==
-X-Gm-Message-State: ABy/qLaywCE1IYVcZ3CU+65Ym+18yg56+C2BUTDwa0i4Q+sgt4h2rL0V
-        92Fd/H/kNTTEuTVAqAC8iDKV/A==
-X-Google-Smtp-Source: APBJJlHVVnqlD7iFaIKgrA7nEDnmp8PC4zO1Sf7ESIkL6tmAxD4qBQpsCb0F0cPBPj5NLKAxliKaUQ==
-X-Received: by 2002:a5d:604f:0:b0:315:9c3a:43c3 with SMTP id j15-20020a5d604f000000b003159c3a43c3mr9077329wrt.15.1689582728440;
-        Mon, 17 Jul 2023 01:32:08 -0700 (PDT)
-Received: from [10.44.2.5] ([81.246.10.41])
-        by smtp.gmail.com with ESMTPSA id p5-20020a5d4e05000000b003143d80d11dsm18453833wrt.112.2023.07.17.01.32.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 01:32:08 -0700 (PDT)
-Message-ID: <3a47f676-d661-0b7a-701b-c4cafdc25394@tessares.net>
-Date:   Mon, 17 Jul 2023 10:32:07 +0200
+        Mon, 17 Jul 2023 04:32:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B289D8
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:32:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 30E2D60FC6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:32:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44651C433C7;
+        Mon, 17 Jul 2023 08:32:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689582766;
+        bh=nVdNFaIM5q8yzAM6X+ufMIbwtpAWzqwx9TWlj/9T9a0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eJv8zaXTCskf0rsUA2PcHM5wmjcsMNCwOxRXctje0xqR6ITX+/19lybW3LQiEkOik
+         MpIy+cALmr5EXeHLBSIOU8eiUXQwB3FWADGAd6R5wGWmBYs/oAQNSF6WijrWD9s8XF
+         qOh4yZlrywBH8R5UmZF6jaJjLi4bm5efVj13pMjdwK5Ns63+4gM/ocZ1lHT8Umcv1C
+         5PLma2w6djzqVpWBX2ItlXsp6K4hXtbCG4a2P63f6QMBv4iE6yiMkYOrMqLkJmVWOi
+         8zep+sMwzjH91JwjqeHWZ0crB752mKET/bAXqnLjCriTu/wWU92hbW5dDoZTO36fiz
+         DlGaVHBJ9gQ+Q==
+Date:   Mon, 17 Jul 2023 10:32:44 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Sarah Walker <sarah.walker@imgtec.com>
+Cc:     dri-devel@lists.freedesktop.org, frank.binns@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        faith.ekstrand@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de, afd@ti.com,
+        hns@goldelico.com, matthew.brost@intel.com,
+        christian.koenig@amd.com, luben.tuikov@amd.com, dakr@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 17/17] arm64: dts: ti: k3-am62-main: Add GPU device
+ node [DO NOT MERGE]
+Message-ID: <el4ythd7inzj5emscuoiewh4x2glkyugxxnqd67axloglamtpr@vp26mlv6ocas>
+References: <20230714143033.112624-1-sarah.walker@imgtec.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH net 1/3] selftests: tc: set timeout to 15 minutes
-Content-Language: en-GB
-To:     shaozhengchao <shaozhengchao@huawei.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, Shuah Khan <shuah@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paul Blakey <paulb@mellanox.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        mptcp@lists.linux.dev
-Cc:     Pedro Tammela <pctammela@mojatatu.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, stable@vger.kernel.org
-References: <20230713-tc-selftests-lkft-v1-0-1eb4fd3a96e7@tessares.net>
- <20230713-tc-selftests-lkft-v1-1-1eb4fd3a96e7@tessares.net>
- <bf7f8867-6b14-dd53-a6e4-2addee4a5ad8@huawei.com>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-In-Reply-To: <bf7f8867-6b14-dd53-a6e4-2addee4a5ad8@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mfri3en37qva4g6l"
+Content-Disposition: inline
+In-Reply-To: <20230714143033.112624-1-sarah.walker@imgtec.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -87,73 +62,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhengchao Shao,
 
-On 14/07/2023 04:25, shaozhengchao wrote:
-> 
-> 
-> On 2023/7/14 5:16, Matthieu Baerts wrote:
->> When looking for something else in LKFT reports [1], I noticed that the
->> TC selftest ended with a timeout error:
->>
->>    not ok 1 selftests: tc-testing: tdc.sh # TIMEOUT 45 seconds
->>
->> The timeout had been introduced 3 years ago, see the Fixes commit below.
->>
->> This timeout is only in place when executing the selftests via the
->> kselftests runner scripts. I guess this is not what most TC devs are
->> using and nobody noticed the issue before.
->>
->> The new timeout is set to 15 minutes as suggested by Pedro [2]. It looks
->> like it is plenty more time than what it takes in "normal" conditions.
->>
->> Fixes: 852c8cbf34d3 ("selftests/kselftest/runner.sh: Add 45 second
->> timeout per test")
->> Cc: stable@vger.kernel.org
->> Link:
->> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230711/testrun/18267241/suite/kselftest-tc-testing/test/tc-testing_tdc_sh/log [1]
->> Link:
->> https://lore.kernel.org/netdev/0e061d4a-9a23-9f58-3b35-d8919de332d7@tessares.net/T/ [2]
->> Suggested-by: Pedro Tammela <pctammela@mojatatu.com>
->> Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
->> ---
->>   tools/testing/selftests/tc-testing/settings | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/tools/testing/selftests/tc-testing/settings
->> b/tools/testing/selftests/tc-testing/settings
->> new file mode 100644
->> index 000000000000..e2206265f67c
->> --- /dev/null
->> +++ b/tools/testing/selftests/tc-testing/settings
->> @@ -0,0 +1 @@
->> +timeout=900
->>
-> I remember last year when I tested all the tdc cases（qdisc + filter +
-> action + infra） in my vm machine, it took me nearly 20 minutes.
-> So I think it should be more than 1200 seconds if all cases need to be
-> tested.
+--mfri3en37qva4g6l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thank you for your feedback!
+Hi,
 
-Be careful that here, it is the timeout to run "tdc.sh" only which is
-currently limited to:
+On Fri, Jul 14, 2023 at 03:30:33PM +0100, Sarah Walker wrote:
+> Add the Series AXE GPU node to the AM62 device tree.
+>=20
+> Signed-off-by: Sarah Walker <sarah.walker@imgtec.com>
 
-  ./tdc.py -c actions --nobuildebpf
-  ./tdc.py -c qdisc
+Checkpatch complains about that one because you indented the node with
+spaces instead of tabs.
 
-(not "filter", nor "infra" then)
+Once fixed:
+Reviewed-by: Maxime Ripard <mripard@kernel.org>
 
-I guess for this, 15 minutes is more than enough, no?
+Maxime
 
-At least on my side, I ran it in a i386 VM without KVM and it took less
-than 3 minutes [1].
+--mfri3en37qva4g6l
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Cheers,
-Matt
+-----BEGIN PGP SIGNATURE-----
 
-[1]
-https://tuxapi.tuxsuite.com/v1/groups/community/projects/matthieu.baerts/tests/2SWHb7PJfqkUX1m8rLu3GXbsHE0/logs?format=html
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZLT8qwAKCRDj7w1vZxhR
+xa7fAP9FDt6bwQ/W8zycfYaWUKZ/M9LdF98tonOYw0cebZEB8gD/aOmlzvHgQ9FI
+LdvGl02SvojJp3fIySEVUOc3xWUX5Aw=
+=6+yl
+-----END PGP SIGNATURE-----
+
+--mfri3en37qva4g6l--
