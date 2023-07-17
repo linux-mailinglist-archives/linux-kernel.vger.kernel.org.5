@@ -2,113 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E145E755CE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895FF755CE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbjGQH34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 03:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38916 "EHLO
+        id S230338AbjGQHai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 03:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjGQH3y (ORCPT
+        with ESMTP id S229648AbjGQHag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 03:29:54 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFE8185
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 00:29:53 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-992ca792065so594789766b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 00:29:53 -0700 (PDT)
+        Mon, 17 Jul 2023 03:30:36 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22883F7;
+        Mon, 17 Jul 2023 00:30:35 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51bece5d935so5984525a12.1;
+        Mon, 17 Jul 2023 00:30:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689578991; x=1692170991;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rReCVFYee/yGUM7XZ3iRLWyfw7FhCzkdqRLH9Zjfw6U=;
-        b=PeDIBzoG3C5s0UUNsV9m0040W7pLbmCU1FqLL2czoylDiej5CQypZ+liZSFcaPKm/o
-         2HlsEO+8XBGpAW9vNlAgHhi/NdD+IUqlb5vpON7eifVnAwMBxInWvQPingBGEnyBC3yK
-         QdGbWAFlduX+nUsazjCZ41pJfOKq4oTSbwtBHMQK4Roryv1uxOGDdJ+iW3lPUrzDCXRG
-         sBK/Ylcnpt32q12NdFhD8ptDlDS6I7hji+9yhkMWTukCk88sn1ApkccD7tQFjQ87UeOg
-         cgbZLmm2i4rGJ8vtrZArkAYQoWYWvGsDABPBBjmUjR1QCZec43TY2Jh8/NpiGy2jSPI3
-         uKeA==
+        d=gmail.com; s=20221208; t=1689579033; x=1692171033;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u4GVZUqLECesnO++vcJqOUpxug7iu+l6bIIX+pZ/7ds=;
+        b=pa3cxSO43O5rhLwbjslcgkooBp6j/b2jMD3FV3oA2MtfQ7B6sJaLtbIU/6Tu3bjR+U
+         uA/7f9/iNcqN6eJNAUiqDoSifOCFixsWGJmj8tV8ysY8efeKAEZNzbbNEE8MXoHNPgYd
+         awFph86iUycJHPh2gBjUmnHQcFbZVsx0almr3IlatF4Ovy2v3TuwIyEfpRCiJQBSgJUW
+         NrCMnW7HUD8t22eZTy5eZlbp4KWZKvb+kp9bUbbY7iK/JxdTU188qhNecNivpkHSd3fF
+         K0khN+EVLRQjjY4v0VPeRmGxQd9gnJ77kAk3sxfo6U4fiJmW32TWgxInx/k0H75/JH8U
+         o/VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689578991; x=1692170991;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rReCVFYee/yGUM7XZ3iRLWyfw7FhCzkdqRLH9Zjfw6U=;
-        b=bK2Qe6uJShOVexEsHcses2rT+CKjREq7x4yP21dEgnXoX+3NrlVhdH6gkd3URZ4RX2
-         d6cMbFhqzMayADZFb7GRkrOvdEEl6htXuoVSaYYKC8K1vsM6gNNgo06ADhgsGgTUki/A
-         sGFYDLfi8WuI/TTyeJapLkT8LkrCj1gymA4CdIzcE0Yenk+znXclUZ9HcEdteNNfFWT3
-         ZDGV2nwYwWrsjtQFVvPCy78Cvxds3lE3q6tj1f1crAM93OtG97yMt2Au3sOEJioHAgRR
-         UvMYZ6HTMzHrcJAEhc8TaozT2D5hM+PR1vMtTcLly66TZDch2u0bUD2WYB4n4hixgg2S
-         bldw==
-X-Gm-Message-State: ABy/qLb0AtPnBivaopBe9LHeQZ8eQ4QV700I4Pk1zGZfmhENyYT0x44O
-        87x/ailCkJv5Y1I6c5A4pgEkTQ==
-X-Google-Smtp-Source: APBJJlGqpg7l7AYEFoORxE7kx/O7QvzrLx1fhEfmx+uK+tDkEMYYRhUr4kegL7+LH4+QJ58h1Zwd+A==
-X-Received: by 2002:a17:906:b04:b0:992:d013:1135 with SMTP id u4-20020a1709060b0400b00992d0131135mr10072944ejg.63.1689578991547;
-        Mon, 17 Jul 2023 00:29:51 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id g18-20020a1709064e5200b009930042510csm8830347ejw.222.2023.07.17.00.29.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 00:29:51 -0700 (PDT)
-Message-ID: <19a7dae4-a9bd-187f-49f8-fe9c47f44eff@linaro.org>
-Date:   Mon, 17 Jul 2023 09:29:48 +0200
+        d=1e100.net; s=20221208; t=1689579033; x=1692171033;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u4GVZUqLECesnO++vcJqOUpxug7iu+l6bIIX+pZ/7ds=;
+        b=QSC3gueemqHE8+svPMJhxXL1nTOXzKCLkLdiAIkzSDA0em8w5RqeLc3Fpqmt5bRaBJ
+         4YDmzONFo++64AIsSm67WlpY6WmGFI7dEU+VayeNRxVHWK0a21nSPwX6J21V7yssBp5v
+         Jdkck88gkMzhItvbWbfsFzoW8+Qb2RDPj0+//csl7AhkEaWFCwwCrNuH4XfPRCTVZq6C
+         uJleIcjRVQgO1asfROCHMoTFbjOgoRq5ZLpp0CKdBgM+IwEELJiB+9q20/2Wyhsmcsmq
+         T9aNpsgl5J0QI9KfW3M1Pt/cOFk1gV7NDNCI+Fqkid82zFqa8JWcQiaOqv6zbZDb354C
+         qSSg==
+X-Gm-Message-State: ABy/qLZr3VfU/LMD2TmJyr1jpTdmwjKbdeZR85PYIYJpl6dY+TdX62Py
+        lfkzRMcWeGgz/F6HiWP5Z/QcejgMjEo=
+X-Google-Smtp-Source: APBJJlEKebMHwsWjis1A2PlL7OiBb4/ylj2V9P4gqCP/xh3JvCKXin32nhBCnErW9CQqrvtJKfUALQ==
+X-Received: by 2002:a17:906:46c6:b0:982:89b3:8650 with SMTP id k6-20020a17090646c600b0098289b38650mr9909495ejs.64.1689579033385;
+        Mon, 17 Jul 2023 00:30:33 -0700 (PDT)
+Received: from orome (p200300e41f4b7100f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f4b:7100:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id b21-20020a1709065e5500b009934855d8f1sm8793395eju.34.2023.07.17.00.30.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 00:30:33 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 09:30:31 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Zhang Shurong <zhang_shurong@foxmail.com>
+Cc:     ldewangan@nvidia.com, broonie@kernel.org, jonathanh@nvidia.com,
+        p.zabel@pengutronix.de, linux-spi@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: tegra20-sflash: Fix signedness bug in
+ tegra_sflash_probe
+Message-ID: <ZLTuFyYewf8pUiRw@orome>
+References: <tencent_4D4974DE0CD4266C25819179B42888A3E20A@qq.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 02/17] dt-bindings: gpu: Add Imagination Technologies
- PowerVR GPU
-Content-Language: en-US
-To:     Sarah Walker <sarah.walker@imgtec.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     frank.binns@imgtec.com, donald.robson@imgtec.com,
-        boris.brezillon@collabora.com, faith.ekstrand@collabora.com,
-        airlied@gmail.com, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, afd@ti.com, hns@goldelico.com,
-        matthew.brost@intel.com, christian.koenig@amd.com,
-        luben.tuikov@amd.com, dakr@redhat.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org
-References: <20230714142526.111569-1-sarah.walker@imgtec.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230714142526.111569-1-sarah.walker@imgtec.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="9cyN+Lexs+8sRPGX"
+Content-Disposition: inline
+In-Reply-To: <tencent_4D4974DE0CD4266C25819179B42888A3E20A@qq.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/2023 16:25, Sarah Walker wrote:
-> Add the device tree binding documentation for the Series AXE GPU used in
-> TI AM62 SoCs.
-> 
 
-...
+--9cyN+Lexs+8sRPGX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Sat, Jul 15, 2023 at 05:53:56PM +0800, Zhang Shurong wrote:
+> The "tsd->irq" variable is unsigned so this error handling
+> code will not work.
+>=20
+> Fix this by adding error handling statement
+
+This doesn't really make sense. First you say that the error handling
+will not work and then you say you fix that by adding error handling.
+
+So the bug here is that there is no error checking in the first place,
+so you should probably reword that commit message.
+
+Thierry
+
+>=20
+> Fixes: 8528547bcc33 ("spi: tegra: add spi driver for sflash controller")
+> Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+> ---
+>  drivers/spi/spi-tegra20-sflash.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/spi/spi-tegra20-sflash.c b/drivers/spi/spi-tegra20-s=
+flash.c
+> index 4286310628a2..4c18337de813 100644
+> --- a/drivers/spi/spi-tegra20-sflash.c
+> +++ b/drivers/spi/spi-tegra20-sflash.c
+> @@ -455,7 +455,11 @@ static int tegra_sflash_probe(struct platform_device=
+ *pdev)
+>  		goto exit_free_master;
+>  	}
+> =20
+> -	tsd->irq =3D platform_get_irq(pdev, 0);
+> +	ret =3D platform_get_irq(pdev, 0);
+> +	if (ret < 0)
+> +		goto exit_free_master;
 > +
-> +  clocks:
-> +    minItems: 1
-> +    maxItems: 3
-> +
-> +  clock-names:
-> +    items:
-> +      - const: core
-> +      - const: mem
-> +      - const: sys
-> +    minItems: 1
+> +	tsd->irq =3D ret;
+>  	ret =3D request_irq(tsd->irq, tegra_sflash_isr, 0,
+>  			dev_name(&pdev->dev), tsd);
+>  	if (ret < 0) {
+> --=20
+> 2.30.2
+>=20
 
-Why clocks for this device vary? That's really unusual to have a SoC IP
-block which can have a clock physically disconnected, depending on the
-board (not SoC!).
+--9cyN+Lexs+8sRPGX
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-Best regards,
-Krzysztof
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmS07hQACgkQ3SOs138+
+s6FWsw//ejk+7MtZ9+XJ1pY/45JPEu2E9UgxMwjg2ZEIprSO5LM/gofh7Y0MrKTU
+2yv0deTR+tTqN7Ks8gMLjyt+FkA2wu5KjiMZpuI9YNGZwvbugKL/m4KWsTosXpso
+s5puXPqLAdschSFrIG3L7K+N/G5yziMT6MgZuLhF0KT9HYJE057ABc9ZjjYm+3pq
+6yFubaU7Q5xNB0C3+91Fs71ZB6hoxCYg/3Yw5/WP4byzFXwalM/RftBAHyQlZ6fE
+I+uKpvsuDpnSsCi3iwHPCXMmXmjaiH8Td1lgusGeQUG7taIp7a4stZ09M8vj+doK
+QZAQljCVKX4lA4CB6WjGUXUEUq5GNsdsDbdhD80RJuh82hZ/ekkG9hGoAL+WV1wm
+Hs1AsJr8QyfeQVLL01h0wU5sqDIAIZXjEXEC99HP/GV5H70qu1R1DSXZMOHjPQrP
+BAzlKxrHB1OI6V8EXyq17jkNxrr9J/tk8G3CtQQMt6TEXhq6750MxLeqVUYhaemY
+mynHAXwj5rElzdyQqWQdbg+QJQjDkQJTr56LF6bS8BYYabQAQkgK4uDbGEnPVHpi
+Lj4vJBnGzmOx3MhsSWbg3cK6YWIfza0Nd6pPUv9tQiRZwtkFujHtNXa9VIfFXSCl
+IwekZaVsY3aC/3FHylXy5KLTRDQFZg9D1iEGWPezgXuTbj7s8K0=
+=tho+
+-----END PGP SIGNATURE-----
 
+--9cyN+Lexs+8sRPGX--
