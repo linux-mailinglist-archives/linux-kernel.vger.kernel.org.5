@@ -2,97 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3035E756291
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026DD756293
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbjGQMNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 08:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
+        id S229564AbjGQMOM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Jul 2023 08:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjGQMNe (ORCPT
+        with ESMTP id S229608AbjGQMOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 08:13:34 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E662A118;
-        Mon, 17 Jul 2023 05:13:33 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-67ef5af0ce8so4560627b3a.2;
-        Mon, 17 Jul 2023 05:13:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689596013; x=1692188013;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=t7mGkEFG/BBY8i1FxVeGw7e6gM5cItBSc8cgFSjGd4w=;
-        b=YfPGG9my9lEnguT2SNwXZKvSdi8mAM5GSP34OK/6lDn5JVemYBY6UY3iEhQB4+HSwU
-         TFWJThPRrBJdSOifFr7KXTit991XI1d4B3i6+2Vl9zcShrZ9U8uMRi2/ONcAsJob1Xob
-         WieQJrPcwUK3zgSfNhMMbxwItgXdKOBsf3xiF0NphmBNS9wDDCJvvkvJPANQO9EjgC+v
-         6fs+N6RbnLLX2PUdX3gocyQWmBa7vdSuAHON6JuStezrnottWN3UihHJvO/kJOtAmr9w
-         PRZIwH14FoH+CpVb1O3e5yl7SyeorI1v55pQ37Y98ey1h0ZTH0pAMBTOyymFgEFLfjEC
-         XqLQ==
+        Mon, 17 Jul 2023 08:14:10 -0400
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96BC118;
+        Mon, 17 Jul 2023 05:14:09 -0700 (PDT)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-57688a146ecso44931387b3.2;
+        Mon, 17 Jul 2023 05:14:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689596013; x=1692188013;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=t7mGkEFG/BBY8i1FxVeGw7e6gM5cItBSc8cgFSjGd4w=;
-        b=OjFvAAi2O+3lyZPqThZqAbZxNHyzNmRrXHUrECo9CRvAbtEdJTG+0zqvxB5jhH9RSP
-         H6uoyHa1Leun2ARe1T454KdqTW5siuwFabmf9AQUWs4SYCLUbAsU6FmoTAaL+OHmuPeT
-         Znewxt0NUqCMRdHSPNTVWlKTsli5NDoSJQ4hj0W0linhwjnMnhngvNfpalpcDMnZ0DxS
-         qFTEmTZ2KScDN6yweiWSK4JfMxxgi6lYwsfTsnRVP4/O0NmhNNkhh5TI/61ai3g7zQIp
-         ptNPTvC9EjLrA5+a/zeniVEhmkmn9OBR1rSy/O7UjGafUPRmpRB39EDtbotLQDpORh7G
-         /1xQ==
-X-Gm-Message-State: ABy/qLa/ICY5z9Qojtjj6+n1uVn6dCO/yMrIdo55QuCQ56PnMsny61rK
-        IagQoYRgy522zN9ywwGsrHCIfU8606E=
-X-Google-Smtp-Source: APBJJlGj0lHYpLdbzSreLZstrO6fHiwNc5WkCSTSq3H+UhbbRMa8JtFWuzafHld+wv5ysTDXEkvFTw==
-X-Received: by 2002:a05:6a00:1353:b0:682:537f:2cb8 with SMTP id k19-20020a056a00135300b00682537f2cb8mr15587596pfu.26.1689596013188;
-        Mon, 17 Jul 2023 05:13:33 -0700 (PDT)
-Received: from zephyrusG14 ([103.251.210.195])
-        by smtp.gmail.com with ESMTPSA id x17-20020aa79191000000b0067738f65039sm11782892pfa.83.2023.07.17.05.13.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 05:13:32 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 17:43:25 +0530
-From:   Yogesh Hegde <yogi.kernel@gmail.com>
-To:     Vincent Legoll <vincent.legoll@gmail.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, heiko@sntech.de, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org, ivan.orlov0322@gmail.com
-Subject: Re: [PATCH] arm64: dts: rockchip: Fix Wifi/Bluetooth on ROCK Pi 4
- boards
-Message-ID: <ZLUwZTy3Opx/gdIf@zephyrusG14>
-References: <ZLO450xOIQ29VoBT@zephyrusG14>
- <CAEwRq=rUXpFpkrfKyCG8Eede10cCeo6V3RCDxv0McWA_g9t0CA@mail.gmail.com>
+        d=1e100.net; s=20221208; t=1689596049; x=1692188049;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zbTeCS9i8dp1Bn3oI7/rX6Wt2FAP3Mlu1K2EnaY7mGE=;
+        b=Yo3zC71I6R5RgBn5/yS2dOaHvqHWHY6jWziE92HQ3UVKNNaqwTokuGUuskd/Txu/7F
+         S6dFRbIktWfGnFtgD4YO69OXhTsz2eCY+uXE6A0rlchHWLv9AI2GcLVa/TbEXoNaHete
+         ZB6BBvdh8DGfmhouMBeV8GeSR9JlEdX8vPZ04n8WyUWTqoZThHd9IKjZa+phUXrXl2uP
+         zpvIe1Ap745Dr2Sa/YcaxMkhHkVTt+rORV2PoSoJbM95+AAPggsPzGPCsfCrqX6JXWck
+         Kh9HImiEUNF5EUpi1PF1grxvdRUwvk+iUdbCcK786w21aN2WhkPe+ODdt61cU5oWhXJc
+         a+hQ==
+X-Gm-Message-State: ABy/qLZv31izG3Oe6qKeGCl4e08SJh6QqjkkKUnsghCa5zGJT8qs/eaI
+        Tdoa3HLtC3FhqPYH/kfARoYTwXzxy+Db3g==
+X-Google-Smtp-Source: APBJJlEGXgiwwnaOfsd781OC8hrEPJeuNs0J8kVPKtb3rHR3RvCcEuzqCgL4EMsazc74+9Y76I3foA==
+X-Received: by 2002:a81:5455:0:b0:577:3b66:441 with SMTP id i82-20020a815455000000b005773b660441mr12011672ywb.50.1689596048796;
+        Mon, 17 Jul 2023 05:14:08 -0700 (PDT)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id e1-20020a0df501000000b0057085b18cddsm3815456ywf.54.2023.07.17.05.14.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 05:14:08 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-c15a5ed884dso4474602276.2;
+        Mon, 17 Jul 2023 05:14:08 -0700 (PDT)
+X-Received: by 2002:a25:3491:0:b0:c85:d8b6:c21d with SMTP id
+ b139-20020a253491000000b00c85d8b6c21dmr10139859yba.31.1689596048265; Mon, 17
+ Jul 2023 05:14:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEwRq=rUXpFpkrfKyCG8Eede10cCeo6V3RCDxv0McWA_g9t0CA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <cda2b9ee52a49fa3904d209097754cd757728a4f.1675160668.git.geert+renesas@glider.be>
+ <c82c6308-2b32-fe19-e40b-5853544e1c9d@linaro.org>
+In-Reply-To: <c82c6308-2b32-fe19-e40b-5853544e1c9d@linaro.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 17 Jul 2023 14:13:57 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWLzRL3_3ae3Y+xyN8QQRA0do95T9QhqkCGPa93QZ1LRQ@mail.gmail.com>
+Message-ID: <CAMuHMdWLzRL3_3ae3Y+xyN8QQRA0do95T9QhqkCGPa93QZ1LRQ@mail.gmail.com>
+Subject: Re: [PATCH] thermal: Drop spaces before TABs
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
-On Sun, Jul 16, 2023 at 03:53:22PM +0000, Vincent Legoll wrote:
-> Hello,
-> 
-> On Sun, Jul 16, 2023 at 9:32 AM Yogesh Hegde <yogi.kernel@gmail.com> wrote:
-> > Commit f471b1b2db08 ("arm64: dts: rockchip: Fix Bluetooth
-> > on ROCK Pi 4 boards") introduced a problem with the clock configuration.
-> 
-> Maybe you should add a "Fixes:" tag.
-> Look at:
-> Documentation/process/submitting-patches.rst
-> for details.
-Thanks for taking the time to review and provide feedback on the patch. 
-I will send a v2 with the "Fixes:" tag. 
+Hi Daniel,
 
-Thanks & Regards 
--- Yogesh
+On Tue, Jan 31, 2023 at 2:15 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+> On 31/01/2023 11:26, Geert Uytterhoeven wrote:
+> > There is never a need to have a space before a TAB, but they hurt the
+> > eyes of vim users.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > ---
+>
+> Applied, thanks
+
+I still don't see it in linux-next, though. Shall I resend?
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
