@@ -2,157 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF653756187
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC013756195
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbjGQL0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 07:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41410 "EHLO
+        id S230211AbjGQL3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 07:29:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbjGQLZ7 (ORCPT
+        with ESMTP id S230078AbjGQL3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 07:25:59 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2075.outbound.protection.outlook.com [40.107.20.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A5D7E5A;
-        Mon, 17 Jul 2023 04:25:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n02c6CNfLHYw8dVai09Odi1jMQ/GjTsgL+Eh+rH4el8CYP0WMYi29yb3lZXNc7dwOJgOVqlpVKAX5yeEX1cYKJ6N/X+agNvld7AFiJhld7AHBjBIvJcFFzFhXrtH1ZTvXL/4ANO7w+jl2PEiZCxRW1s8B63mRKTVHMTWaNFXqETeiZKE0LHGF5IV1Nm/mC/KsZ56htyC4DqiEIY7uErumEXbHofLaGELxWM9pcwBHCmCbsAD8nEG3/UeWtmByjQazcMHzZ4mF6y5pZeX3gVxk6aL8DokWu01xcFqZU+pWzGA0rjiAdX2CcPTU5MaxNHvFZMsYVDPBzEXw19ZdgRpgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lEFh8rCo8j/g0eA/IELmHsXKAw+w2FHmTSflRN24JDs=;
- b=J9aVPwvwn9rjYraLmmjL+X+ecK5BeJQndwNW+5vA98AFR2bSCXczfXqZyy7HY29Fdoj9+q7ScxZh1pT8dEzuov3LaANcPuN1mcUrRmoqhFgJoUr9N/xSACtepl5JjgNKi4FUEt9ADLixcQhBeibKZYnLf9PgMosWRLMQyDcIPuwnumq9ymOSdFOMVLxf6VGIYYpvy/6HbcXHRb47jaAj+37IBBHo8JHysFnWB6NFanStKB/WVPjih/D1bU+ZkC8KMVuehqOxsbffaEkTFnkWxiK0j92UrlGUnwonxVCbtg59PbBaV5R4XrREmPFsFPalt2n61trznn9vuTE8bzhpmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lEFh8rCo8j/g0eA/IELmHsXKAw+w2FHmTSflRN24JDs=;
- b=j8Mp4yHMKkbQyxiIYdueLXdD1U6ZVfDwgAFf/BXCCUuF6uQtxQc1D2/zhJf9tLQIpW6xaL4GA3Vs0o6S/N9mG1E+RriaLPj05mzmqJUWQWT+vDCmUM2awriia/5H051MK02HrBBH5HawwJ+bzkQAT2x0Dd8ZRap7piYG5F7UUas=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by GV1PR04MB9101.eurprd04.prod.outlook.com (2603:10a6:150:20::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.20; Mon, 17 Jul
- 2023 11:25:41 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::c680:1128:9d53:24ae]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::c680:1128:9d53:24ae%4]) with mapi id 15.20.6588.031; Mon, 17 Jul 2023
- 11:25:39 +0000
-Date:   Mon, 17 Jul 2023 14:25:34 +0300
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Max Georgiev <glipus@gmail.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        =?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-        Gerhard Engleder <gerhard@engleder-embedded.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        UNGLinuxDriver@microchip.com,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Casper Andersson <casper.casan@gmail.com>,
-        Sergey Organov <sorganov@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 net-next 00/10] Introduce ndo_hwtstamp_get() and
- ndo_hwtstamp_set()
-Message-ID: <20230717112534.nhy7ldeer42r4rz3@skbuf>
-References: <20230713121907.3249291-1-vladimir.oltean@nxp.com>
- <CAP5jrPFbt7vc77wVi5buYM88gDQ-OCHzm3Hg=EzRxJiha7Ur5A@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP5jrPFbt7vc77wVi5buYM88gDQ-OCHzm3Hg=EzRxJiha7Ur5A@mail.gmail.com>
-X-ClientProxiedBy: VI1PR06CA0103.eurprd06.prod.outlook.com
- (2603:10a6:803:8c::32) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
+        Mon, 17 Jul 2023 07:29:31 -0400
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB455E52
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:29:28 -0700 (PDT)
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20230717112924epoutp020640177628aea1e3362de00de10bcec2~ypDaOTy4S0662206622epoutp02P
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 11:29:24 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20230717112924epoutp020640177628aea1e3362de00de10bcec2~ypDaOTy4S0662206622epoutp02P
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1689593364;
+        bh=H2KX3xxqbjqVVqfxb+F/mTUgcUDaR1aEJF+PWgOAHCs=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=VxOX6K0il6r+bFHxEey+vDmIvpa+23qRqbi34jQwIgS0NHPcLRqoYtUwxWoI6Cl5n
+         z2ckqXMbYt7W0HkEWlwyMgZw7tZlVxmjpMYiWC0zo4XPONKd6oZwJgKoFg+Dkkcj32
+         KFmryEhcsv1dhaMNx8sSfIQQccyCr26hlHr2Vn28=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20230717112923epcas2p3a41493ec521d76b7fecbeab6e36eb6b8~ypDY6Pabi1217512175epcas2p3T;
+        Mon, 17 Jul 2023 11:29:23 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.36.69]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4R4Kc2536Kz4x9Pw; Mon, 17 Jul
+        2023 11:29:22 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        13.65.32393.21625B46; Mon, 17 Jul 2023 20:29:22 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20230717112922epcas2p3dab51c237946b72f45579b982607a624~ypDYKtt4Q0748707487epcas2p3A;
+        Mon, 17 Jul 2023 11:29:22 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230717112922epsmtrp1b2b77a121268c9f0ec4e7294705673af~ypDYJ9Oo32008320083epsmtrp1n;
+        Mon, 17 Jul 2023 11:29:22 +0000 (GMT)
+X-AuditID: b6c32a48-87fff70000007e89-12-64b526120d67
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        36.27.64355.21625B46; Mon, 17 Jul 2023 20:29:22 +0900 (KST)
+Received: from [10.229.8.168] (unknown [10.229.8.168]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20230717112921epsmtip11f71a721ab1f8ba35168e37640dc1bf4~ypDX56Dz_0385703857epsmtip1d;
+        Mon, 17 Jul 2023 11:29:21 +0000 (GMT)
+Message-ID: <68aacadd-f27d-76d3-36a1-78f5662ecb97@samsung.com>
+Date:   Mon, 17 Jul 2023 20:26:48 +0900
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|GV1PR04MB9101:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5410b131-2dc2-43b5-9c9e-08db86b88c97
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 40HEx0nTTqwP+0sBRMDOIplA/Mte7F/l2DHEIF4mUNRyJqB/5IfimpctFhOX+SeKdYgyL6nLepp7LoczM+bKKTbPLS+chhBZY+IxXkWu8yBFPY7txjc8VnQF1KUD7S9to7cVXhwOErmh3Z2+KHK4z9HYCRmXgfQgrA6haOPk3KzRbSp6qgEQOlfgAGV0Eh2PFeNk5MNi8P2XUnaiZhw6GxM7Fh2X6wBXDO+HFTxIm+64kWrxU2ioCvjYvBt9YsYmkcasBdrap+CmDizlC6crBhpGVxJ6qFYPNb1UWSJpAXY8lCfppjXBVJiAg9rrRgibJjtwwEzKqC+lY3SMEKd0TtI/lVJS6YHM7iUkGQeLzqktFPSlOlN7DHakypIIpY8D2DiYezigSQ58AXoEtrSGQ5jnAKKtE0JokCsuGrKFnmXk+HR62urjmtLmaj+bW0sbGInj6Afd1nS4Th9Ni3JICEQVnbLnEKHOj6I7TU65P/d6rebF6zGkOXq5RfDl3Mbqfm5/JCSgUHmC5r5cn7VOt7Q5TqNWA+6ObjmLwlxBUCo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(7916004)(396003)(366004)(346002)(39860400002)(136003)(376002)(451199021)(33716001)(2906002)(66556008)(478600001)(54906003)(8936002)(4744005)(41300700001)(7416002)(6486002)(44832011)(66946007)(4326008)(66476007)(6916009)(8676002)(316002)(6512007)(966005)(38100700002)(5660300002)(6666004)(86362001)(9686003)(6506007)(26005)(1076003)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wLdpY8MMUgHedugnqBR5yqyJYdRYETTsU2KcjBR9Nn9QEYBaR9G4Ai3GINM9?=
- =?us-ascii?Q?WA3kBIdf8zHGTonNANEJcNy/EVfEAtcMYzO/EfmXVpUIE7dVBZ1Cdu+naLM9?=
- =?us-ascii?Q?rR7L6BYfh+RhJbq7Wm/IO0X7u6Lur0TYSH9WDkfMyTrZnwGcB6zvLP1Yk1YT?=
- =?us-ascii?Q?IgJTZoJ2WroRMoyaD4fGtBdCXyCiNSbIFNYvAL9mja88IIb5Lr1gSmEOZZ5W?=
- =?us-ascii?Q?stMmSFCu7ib37xkcgLIsdxmKeXphPnDGq8Yv8a0Y43CagPdaofVlQjsKfjoM?=
- =?us-ascii?Q?A9ovSFTI95kz9lZHN/nLIjdKi0uerYY8kySV9Xlz+8tKwQHllLYv2KA+xFI7?=
- =?us-ascii?Q?dCoJrHyFNxPO8D95CvtsSvty8RQXY3x8fJI0QMY0IBQ8G9EkBY4wxhoPE2HE?=
- =?us-ascii?Q?K4DFh8jr3qU8g1jIQwSHnLsfsHsGWsVT1ccu3ETl9z4Id9trDosdzD6bNkTc?=
- =?us-ascii?Q?lUf2JS6qsphcvxIQc0ofRtnul0KfOpQDx6a8tab2Bzz83/5pXfjpFua8RsOR?=
- =?us-ascii?Q?qX6b7bhqYI1/lRWerq/9yPKRo7VJcF8fokyWQJ9Z891tJq5kZTH8PX98TvXm?=
- =?us-ascii?Q?W7Gl/yQD5tN2YKYLsOj90MT4yf74nFMhvkxlyFC7CqyHSLrZDRIQhYfMd56w?=
- =?us-ascii?Q?bOBrl8QFH+VMgbTNyIXHn6LeZGg2AE76sTnBSHNt4I84r+xN+lQQnAlQ7D/r?=
- =?us-ascii?Q?1QPa3d4rjWK/kD+8778qUjaX/tVGEfAd0eAhj69s7JdLYN6H2Zh4lo6wEvxX?=
- =?us-ascii?Q?jY+SJNKI5oPB01gvVnp6ltI3o9JeTuImh6caM9fU3vzcLKb66YJrv2JMhvuN?=
- =?us-ascii?Q?8N8fxUiP5RPrnpeaYEaClsLf3x/p+kKAz31rcEhRTtFbZpOxBFQ1x7YQw1gL?=
- =?us-ascii?Q?tySkAj4dRW/Smctzi4xk56qcstR9mbGF4e3BOaCDLMuc4u1KPR/Dtc1UnZgP?=
- =?us-ascii?Q?oEYNsbXPw/ljnPqsNEeykjyqwTGUnODkqPaTEtiiKp1MKIQq9V+TMNEicW70?=
- =?us-ascii?Q?GxXJAk0pkqKJeG4NXh2FLDJ5FSPGB30HZzxS9gMmotOe8gaTk7RU9BdbMcRy?=
- =?us-ascii?Q?L/8Xb2Lqwge1834XbYpsZw7BxkZLiCCq+HvqJoNEFVSjePPwFJyCpm4rsyL6?=
- =?us-ascii?Q?mOVx1N61D6Tux5e8IMpNHHxFnUFaWZUnKzudmP43tBBpUJ34VN3iBHJiUyKx?=
- =?us-ascii?Q?+PJmIUWet9mcomEK3TLU+vr3CvHu2s6IU7iQixxkTS4OHF+4MII7YJpRUXiM?=
- =?us-ascii?Q?5hKemZDjQaJcmuE1W3hseftDhVVjsc1P6pcv7bncoPypa7rCNBozj+KOnYIU?=
- =?us-ascii?Q?TqwxvvgTjn1CgIMMUXZeTV6TPj3hTNubvL4HDZLQiQUD1snf2+46ND9gsrEV?=
- =?us-ascii?Q?ftZISEHDPpXFwsclBUnIt8rU3lNDuhdxTvZh/nf8CzBsztEbl1gSroJm/h0v?=
- =?us-ascii?Q?VJwBwxft2npTi76MEPzSsiy2vpvMEefLXYXoabUz5OdT11yC5LbJ7zK6r6MK?=
- =?us-ascii?Q?ZEQsVu5GJ2+b0BOY9WCCcGVv/RSLbJR4s0B0kVvVkZ1EgUqJ+o6HBx64RMef?=
- =?us-ascii?Q?r6hKeCQV1OqUTHWTmkgFMaBnCcoXp64AqtM33kA7/aF+cLKdA6VR9TxTcmmp?=
- =?us-ascii?Q?kA=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5410b131-2dc2-43b5-9c9e-08db86b88c97
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 11:25:39.8528
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pKqHIqECTYDIpjaiDGR4AZVwHTHt+55m5WX4abbkLOfkZ+p0oQ9IDmqBcI66UFmN4BjKBYIzKxSPaO+pckRVWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR04MB9101
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+        Thunderbird/102.11.0
+Subject: Re: [PATCH v4 1/2] dt-bindings: pwm: samsung: add exynosautov9
+ compatible
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+From:   Jaewon Kim <jaewon02.kim@samsung.com>
+In-Reply-To: <9b09afec-4e0e-a600-92e1-2104a1b2e36e@linaro.org>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBJsWRmVeSWpSXmKPExsWy7bCmma6Q2tYUg8031SwezNvGZrFm7zkm
+        i/lHzrFa9L14yGyx9/VWdotNj6+xWlzeNYfN4u7dVYwWM87vY7Jo3XuE3eLnrnksFrcnTmZ0
+        4PHYOesuu8emVZ1sHneu7WHz2Lyk3qP/r4FH35ZVjB6fN8kFsEdl22SkJqakFimk5iXnp2Tm
+        pdsqeQfHO8ebmhkY6hpaWpgrKeQl5qbaKrn4BOi6ZeYA3amkUJaYUwoUCkgsLlbSt7Mpyi8t
+        SVXIyC8usVVKLUjJKTAv0CtOzC0uzUvXy0stsTI0MDAyBSpMyM7Y/3k5W8F7vooTHYsYGxi7
+        uLsYOTkkBEwkbsycwNrFyMUhJLCDUeLkjs2sIAkhgU+MEr/uykAkQOzpPYwwHS/WTGaESOxk
+        lPgwbzVU+2tGiZ1HXjGDVPEK2EncPzWdDcRmEVCVaJwynwkiLihxcuYTFhBbVCBaonXZfbAa
+        YYEQiXPd28F6mQXEJW49Aann4hARuMokcXjzJmYQh1lgCaPEg8XP2EGq2AS0Jb6vXwy0moOD
+        E2jb+RYviGZ5ie1v54DVSwjs4ZCY9/AFO8TdLhJXr31nhbCFJV4d3wIVl5J42d8GZWdLtE//
+        A1VTIXFxw2w2CNtYYtazdkaQXcwCmhLrd+mDmBICyhJHbrFArOWT6Dj8lx0izCvR0SYE0agm
+        cX/qOaghMhKTjqxkgrA9JA6t7WWZwKg4CylUZiH5fhaSZ2Yh7F3AyLKKUSy1oDg3PbXYqMAE
+        HtnJ+bmbGMFJWMtjB+Pstx/0DjEycTAeYpTgYFYS4f2+alOKEG9KYmVValF+fFFpTmrxIUZT
+        YNxMZJYSTc4H5oG8knhDE0sDEzMzQ3MjUwNzJXHee61zU4QE0hNLUrNTUwtSi2D6mDg4pRqY
+        ds16VOAf/H5Hv5bmDZENkkvFr7k/Lbw69WPunwPunlOTfA7JT5sXlBY5bdGsM8dLlq/xtfpY
+        cHfGo/Upj85tXPzb+0GqB7eI827ftf/EqlwWuD/OnBjPW+c2MXQll9GCjC0e/wL15L8821E0
+        9+yNd/wMHIKZTTzlbh6uiWWGu5gju2cwH5rrYLrqU/7t51mv7zp/3FMRdo2R7/9FM/lFJcmL
+        DwSYLDJzf6wmK/qxhnNzxW6vI6xJUv9tLuxxeXtN/ttJCy+fR0Gc+0Wbq475Vr284LhmXniN
+        Qar6hOn/K1XZwu/qzPz/+cmGk1d9luiw7u6Rb/u+pDlj19m7eXkpZUF+fO+3s3mn+Vx5cc3C
+        R4mlOCPRUIu5qDgRAHNHUnJLBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKIsWRmVeSWpSXmKPExsWy7bCSnK6Q2tYUgxezOSwezNvGZrFm7zkm
+        i/lHzrFa9L14yGyx9/VWdotNj6+xWlzeNYfN4u7dVYwWM87vY7Jo3XuE3eLnrnksFrcnTmZ0
+        4PHYOesuu8emVZ1sHneu7WHz2Lyk3qP/r4FH35ZVjB6fN8kFsEdx2aSk5mSWpRbp2yVwZez/
+        vJyt4D1fxYmORYwNjF3cXYycHBICJhIv1kxmBLGFBLYzSnw7EAgRl5FY/qyPDcIWlrjfcoS1
+        i5ELqOYlo0Tvzx6wBl4BO4n7p6aDFbEIqEo0TpnPBBEXlDg58wkLiC0qEC2x+vMFVhBbWCBE
+        4lz3dmYQm1lAXOLWE5B6Lg4RgetMEufO3GYEcZgFljBKXH4N0g2y7iejRPvtk+wgLWwC2hLf
+        1y8GGsXBwQm0+nyLF8QkM4murV2MELa8xPa3c5gnMArNQnLILCQLZyFpmYWkZQEjyypG0dSC
+        4tz03OQCQ73ixNzi0rx0veT83E2M4JjTCtrBuGz9X71DjEwcjIcYJTiYlUR4v6/alCLEm5JY
+        WZValB9fVJqTWnyIUZqDRUmcVzmnM0VIID2xJDU7NbUgtQgmy8TBKdXAxNofK+9cxGDa29C2
+        r+/Fcy2rC6EPevWKOM+emPrF3mrTw2sPGXNYjN/1fak1iRBpWJF9/SOXWr3ZXw292aLGj7vr
+        LNMfJ5r+WrPp+GcODR1BUX7+3DMzYs5t9j899QT7utb06acy2j2PBNxd7jRjf6DimT+CUyzm
+        x6RGX3Z9mPX426X1r/g1Yudv2dj8e2N7dWjPNi6z/64vGaZmH691Zvj16r/9jsoDCtMYEqw7
+        278UfH+4p8eMWY1xv7d8Ec9JnuIsLknpzTs+lNhvYlFd8Yv3n/b/Dade8y/jNJrPqL/IWONh
+        ppn4nhqnjcveSkor2exi++H7Kbz7YHCMufH8ntzzZ8Sv9C2TzI8Sc0hQYinOSDTUYi4qTgQA
+        ayMlCCgDAAA=
+X-CMS-MailID: 20230717112922epcas2p3dab51c237946b72f45579b982607a624
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230717094721epcas2p1c5c1254e24d4a1d0fb366e1b4d551536
+References: <20230717094202.18296-1-jaewon02.kim@samsung.com>
+        <CGME20230717094721epcas2p1c5c1254e24d4a1d0fb366e1b4d551536@epcas2p1.samsung.com>
+        <20230717094202.18296-2-jaewon02.kim@samsung.com>
+        <9b09afec-4e0e-a600-92e1-2104a1b2e36e@linaro.org>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxim,
 
-On Sun, Jul 16, 2023 at 07:22:23PM -0600, Max Georgiev wrote:
-> Vladimir, thank you for taking over and improving this patch stack!
-> 
-> I see you dropped the netdevsim patch:
-> https://www.spinics.net/lists/netdev/msg901378.html
-> Do you believe it's not useful any more since the rest of the
-> patches in the stack were tested through other means?
+On 23. 7. 17. 19:59, Krzysztof Kozlowski wrote:
+> On 17/07/2023 11:42, Jaewon Kim wrote:
+>> Add samsung,exynosautov9-pwm compatible string to binding document.
+>>
+>> Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
+>> ---
+>>   .../devicetree/bindings/pwm/pwm-samsung.yaml     | 16 ++++++++++------
+>>   1 file changed, 10 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/pwm/pwm-samsung.yaml b/Documentation/devicetree/bindings/pwm/pwm-samsung.yaml
+>> index fe603fb1b2cc..6f65e2b52f52 100644
+>> --- a/Documentation/devicetree/bindings/pwm/pwm-samsung.yaml
+>> +++ b/Documentation/devicetree/bindings/pwm/pwm-samsung.yaml
+>> @@ -20,12 +20,16 @@ description: |+
+>>   
+>>   properties:
+>>     compatible:
+>> -    enum:
+>> -      - samsung,s3c2410-pwm             # 16-bit, S3C24xx
+>> -      - samsung,s3c6400-pwm             # 32-bit, S3C64xx
+>> -      - samsung,s5p6440-pwm             # 32-bit, S5P64x0
+>> -      - samsung,s5pc100-pwm             # 32-bit, S5PC100, S5PV210, Exynos4210 rev0 SoCs
+>> -      - samsung,exynos4210-pwm          # 32-bit, Exynos
+>> +    oneOf:
+>> +      - const: samsung,s3c2410-pwm        # 16-bit
+>> +      - const: samsung,s3c6400-pwm        # 32-bit, S3C64xx
+>> +      - const: samsung,s5p6440-pwm        # 32-bit, S5P64x0
+>> +      - const: samsung,s5pc100-pwm        # 32-bit, S5PC100, S5PV210, Exynos4210 rev0 SoCs
+>> +      - const: samsung,exynos4210-pwm     # 32-bit, Exynos
+> These are still an enum.
+Okay I will change const to enum.
+>
+>> +      - items:
+>> +          - enum:
+>> +              - samsung,exynosautov9-pwm  # 32-bit, ExynosAutov9
+> Let's drop the comment?
 
-I just didn't consider that adding mock hardware timestamping support to
-netdevsim was necessary or useful, considering the number of other driver
-conversions that will have to be submitted. Just an extra, avoidable effort
-for me.
+Should I just delete this comment or delete all comments in the 
+enum(16-bit,S3C24xx, .....).
+
+>
+>> +          - const: samsung,exynos4210-pwm
+>>   
+> Best regards,
+> Krzysztof
+>
+>
+
+Thanks
+
+Jaewon Kim
+
