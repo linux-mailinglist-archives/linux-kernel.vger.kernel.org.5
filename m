@@ -2,57 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2E375639B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE8375639F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbjGQM6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 08:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38766 "EHLO
+        id S231360AbjGQM6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 08:58:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbjGQM6G (ORCPT
+        with ESMTP id S231319AbjGQM6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 08:58:06 -0400
+        Mon, 17 Jul 2023 08:58:09 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6ED10CF;
-        Mon, 17 Jul 2023 05:57:41 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 12:56:14 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC138170B;
+        Mon, 17 Jul 2023 05:57:42 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 12:56:15 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1689598575;
+        s=2020; t=1689598576;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wyp8SW9fPKvymKp02vvtkcYqY11RKymqENoP2oThiHY=;
-        b=oqLBGxYRO0/tIsKdQnooTlx+mtnPnE9nVYhYqOX2lXiJajGyW5xm20/T/EBQkewdlmoTUr
-        6/QaWs+9heRNy6w3q/GFWmTXkmAv4SDyJvL0WTwTacrDUA9c675N8ft0FuGdKPbGP6STRq
-        7MYrqpw6sDH8HZNJyaZBhgdxDzbmJIdHbAj827yCzxIJzc28S8xjbWDtrCeI1rTSkpGhEz
-        /CZb9lDaTSfeIInPcRANhXbSUQgB317f09P8TP44u+J0U7qRGgoRees8pc2biakYazpTYY
-        x2IytUVNVV07JEWQY0EwZ85YJZ1uoCpzN+eK2XTarLQi58VIcvkahWq+4sbjkg==
+        bh=hrGWQ/SozKA2U/gSKpFPzjk/3d7CNDWfjif8ObmuI28=;
+        b=PeN6jkpP/oXhePh57AvoDMbHlOGh5QGXo60ob7SOC7InBH2TWBE63srX0zFlqDWZm/3Kx0
+        4CtxBVrrHX1gTVZjaunZ0Ozh1upqhtbkMZljInf4Lvo4DYtEF3GLAzY27edj4dlIVfB5tO
+        mZeDRnqwnxj0TxyJUheF1WfsL8Pii4RjEbp3M+1int2REfZTXFIEFq6zANs0e73vQjhFre
+        V8yMrzQS/+tLs2J7qHrHOU+XerxSvsr82Gn9ci4ieAhfGybH9s1vE3SkuNx8C6aT7FHLnJ
+        qEvjHGPCLc47iqj2x/nYyiEPRJeJbRx73EwrUzJvG5ipYUzEC2YvqkpuHNV7sQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1689598575;
+        s=2020e; t=1689598576;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wyp8SW9fPKvymKp02vvtkcYqY11RKymqENoP2oThiHY=;
-        b=p3Dur/RsOl0KCQ3JZhpyW9cjAOrB7KHybvp9rDBGz6B5UmmqJwHUKoNU3hdqEu+Ej2HpCt
-        PaRAQVh07U7KRmCA==
-From:   "tip-bot2 for Cruz Zhao" <tip-bot2@linutronix.de>
+        bh=hrGWQ/SozKA2U/gSKpFPzjk/3d7CNDWfjif8ObmuI28=;
+        b=+FEzc7mIiYQPGgyuh6txMJJAC3Lh/LYPTLg5larEBdCuphjVmaAoXLnO1VXks80LwzLyr+
+        LHYh1JDzUc+GWZAg==
+From:   "tip-bot2 for Josh Don" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/core: introduce sched_core_idle_cpu()
-Cc:     Cruz Zhao <CruzZhao@linux.alibaba.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>, x86@kernel.org,
+Subject: [tip: sched/core] sched: don't account throttle time for empty groups
+Cc:     Josh Don <joshdon@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <1688011324-42406-1-git-send-email-CruzZhao@linux.alibaba.com>
-References: <1688011324-42406-1-git-send-email-CruzZhao@linux.alibaba.com>
+In-Reply-To: <20230620183247.737942-1-joshdon@google.com>
+References: <20230620183247.737942-1-joshdon@google.com>
 MIME-Version: 1.0
-Message-ID: <168959857473.28540.17999305003559332771.tip-bot2@tip-bot2>
+Message-ID: <168959857560.28540.2230904092099852239.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -69,102 +67,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     548796e2e70b44b4661fd7feee6eb239245ff1f8
-Gitweb:        https://git.kernel.org/tip/548796e2e70b44b4661fd7feee6eb239245ff1f8
-Author:        Cruz Zhao <CruzZhao@linux.alibaba.com>
-AuthorDate:    Thu, 29 Jun 2023 12:02:04 +08:00
+Commit-ID:     79462e8c879afc7895b30014d31e2c1fd629bb1f
+Gitweb:        https://git.kernel.org/tip/79462e8c879afc7895b30014d31e2c1fd629bb1f
+Author:        Josh Don <joshdon@google.com>
+AuthorDate:    Tue, 20 Jun 2023 11:32:46 -07:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 13 Jul 2023 15:21:50 +02:00
+CommitterDate: Thu, 13 Jul 2023 15:21:49 +02:00
 
-sched/core: introduce sched_core_idle_cpu()
+sched: don't account throttle time for empty groups
 
-As core scheduling introduced, a new state of idle is defined as
-force idle, running idle task but nr_running greater than zero.
+It is easy for a cfs_rq to become throttled even when it has no enqueued
+entities (for example, if we have just put_prev()'d the last runnable
+task of the cfs_rq, and the cfs_rq is out of quota).
 
-If a cpu is in force idle state, idle_cpu() will return zero. This
-result makes sense in some scenarios, e.g., load balance,
-showacpu when dumping, and judge the RCU boost kthread is starving.
+Avoid accounting this time towards total throttle time, since it
+otherwise falsely inflates the stats.
 
-But this will cause error in other scenarios, e.g., tick_irq_exit():
-When force idle, rq->curr == rq->idle but rq->nr_running > 0, results
-that idle_cpu() returns 0. In function tick_irq_exit(), if idle_cpu()
-is 0, tick_nohz_irq_exit() will not be called, and ts->idle_active will
-not become 1, which became 0 in tick_nohz_irq_enter().
-ts->idle_sleeptime won't update in function update_ts_time_stats(), if
-ts->idle_active is 0, which should be 1. And this bug will result that
-ts->idle_sleeptime is less than the actual value, and finally will
-result that the idle time in /proc/stat is less than the actual value.
+Note that the dequeue path is special, since we normally disallow
+migrations when a task is in a throttled hierarchy (see
+throttled_lb_pair()).
 
-To solve this problem, we introduce sched_core_idle_cpu(), which
-returns 1 when force idle. We audit all users of idle_cpu(), and
-change idle_cpu() into sched_core_idle_cpu() in function
-tick_irq_exit().
-
-v2-->v3: Only replace idle_cpu() with sched_core_idle_cpu() in
-function tick_irq_exit(). And modify the corresponding commit log.
-
-Signed-off-by: Cruz Zhao <CruzZhao@linux.alibaba.com>
+Signed-off-by: Josh Don <joshdon@google.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Peter Zijlstra <peterz@infradead.org>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Reviewed-by: Joel Fernandes <joel@joelfernandes.org>
-Link: https://lore.kernel.org/r/1688011324-42406-1-git-send-email-CruzZhao@linux.alibaba.com
+Link: https://lore.kernel.org/r/20230620183247.737942-1-joshdon@google.com
 ---
- include/linux/sched.h |  2 ++
- kernel/sched/core.c   | 13 +++++++++++++
- kernel/softirq.c      |  2 +-
- 3 files changed, 16 insertions(+), 1 deletion(-)
+ kernel/sched/fair.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 609bde8..efc9f4b 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -2433,9 +2433,11 @@ extern void sched_core_free(struct task_struct *tsk);
- extern void sched_core_fork(struct task_struct *p);
- extern int sched_core_share_pid(unsigned int cmd, pid_t pid, enum pid_type type,
- 				unsigned long uaddr);
-+extern int sched_core_idle_cpu(int cpu);
- #else
- static inline void sched_core_free(struct task_struct *tsk) { }
- static inline void sched_core_fork(struct task_struct *p) { }
-+static inline int sched_core_idle_cpu(int cpu) { return idle_cpu(cpu); }
- #endif
- 
- extern void sched_set_stop_task(int cpu, struct task_struct *stop);
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 2291f9d..83e3654 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7383,6 +7383,19 @@ struct task_struct *idle_task(int cpu)
- 	return cpu_rq(cpu)->idle;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index a80a739..51ccae7 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4787,6 +4787,7 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
  }
  
-+#ifdef CONFIG_SCHED_CORE
-+int sched_core_idle_cpu(int cpu)
-+{
-+	struct rq *rq = cpu_rq(cpu);
-+
-+	if (sched_core_enabled(rq) && rq->curr == rq->idle)
-+		return 1;
-+
-+	return idle_cpu(cpu);
-+}
-+
-+#endif
-+
- #ifdef CONFIG_SMP
- /*
-  * This function computes an effective utilization for the given CPU, to be
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index 807b34c..210cf5f 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -612,7 +612,7 @@ static inline void tick_irq_exit(void)
- 	int cpu = smp_processor_id();
+ static void check_enqueue_throttle(struct cfs_rq *cfs_rq);
++static inline int cfs_rq_throttled(struct cfs_rq *cfs_rq);
  
- 	/* Make sure that timer wheel updates are propagated */
--	if ((idle_cpu(cpu) && !need_resched()) || tick_nohz_full_cpu(cpu)) {
-+	if ((sched_core_idle_cpu(cpu) && !need_resched()) || tick_nohz_full_cpu(cpu)) {
- 		if (!in_hardirq())
- 			tick_nohz_irq_exit();
+ static inline bool cfs_bandwidth_used(void);
+ 
+@@ -4873,8 +4874,14 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 
+ 	if (cfs_rq->nr_running == 1) {
+ 		check_enqueue_throttle(cfs_rq);
+-		if (!throttled_hierarchy(cfs_rq))
++		if (!throttled_hierarchy(cfs_rq)) {
+ 			list_add_leaf_cfs_rq(cfs_rq);
++		} else {
++#ifdef CONFIG_CFS_BANDWIDTH
++			if (cfs_rq_throttled(cfs_rq) && !cfs_rq->throttled_clock)
++				cfs_rq->throttled_clock = rq_clock(rq_of(cfs_rq));
++#endif
++		}
  	}
+ }
+ 
+@@ -5480,7 +5487,9 @@ done:
+ 	 * throttled-list.  rq->lock protects completion.
+ 	 */
+ 	cfs_rq->throttled = 1;
+-	cfs_rq->throttled_clock = rq_clock(rq);
++	SCHED_WARN_ON(cfs_rq->throttled_clock);
++	if (cfs_rq->nr_running)
++		cfs_rq->throttled_clock = rq_clock(rq);
+ 	return true;
+ }
+ 
+@@ -5498,7 +5507,10 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
+ 	update_rq_clock(rq);
+ 
+ 	raw_spin_lock(&cfs_b->lock);
+-	cfs_b->throttled_time += rq_clock(rq) - cfs_rq->throttled_clock;
++	if (cfs_rq->throttled_clock) {
++		cfs_b->throttled_time += rq_clock(rq) - cfs_rq->throttled_clock;
++		cfs_rq->throttled_clock = 0;
++	}
+ 	list_del_rcu(&cfs_rq->throttled_list);
+ 	raw_spin_unlock(&cfs_b->lock);
+ 
