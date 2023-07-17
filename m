@@ -2,107 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E20D755E5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F53755E60
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230477AbjGQIWM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Jul 2023 04:22:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43568 "EHLO
+        id S231295AbjGQIXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 04:23:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjGQIWK (ORCPT
+        with ESMTP id S229449AbjGQIXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 04:22:10 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB2A0E3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:22:09 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-94-pBC7QbWwOeSzpXkXTc7A_g-1; Mon, 17 Jul 2023 09:22:06 +0100
-X-MC-Unique: pBC7QbWwOeSzpXkXTc7A_g-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 17 Jul
- 2023 09:22:06 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 17 Jul 2023 09:22:06 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Russell King' <linux@armlinux.org.uk>,
-        "hanyu001@208suo.com" <hanyu001@208suo.com>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: Fwd: [PATCH] arm: mm: replace snprintf in show functions with
- sysfs_emit
-Thread-Topic: Fwd: [PATCH] arm: mm: replace snprintf in show functions with
- sysfs_emit
-Thread-Index: AQHZtXMxNEAgMD6bokCn2RYqnhTjN6+9pEMg
-Date:   Mon, 17 Jul 2023 08:22:06 +0000
-Message-ID: <9896a3f4009946dda3d0dcbc1d8e8f7a@AcuMS.aculab.com>
-References: <tencent_EFB5DEE75502CBD51C95CFE33D443DB41608@qq.com>
- <72204230a061f7d5bf19f09d524203ce@208suo.com>
- <ZK/O9Dc2aYtXEKHd@shell.armlinux.org.uk>
-In-Reply-To: <ZK/O9Dc2aYtXEKHd@shell.armlinux.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 17 Jul 2023 04:23:33 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1A915E3;
+        Mon, 17 Jul 2023 01:23:32 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 18BA913D5;
+        Mon, 17 Jul 2023 01:24:15 -0700 (PDT)
+Received: from [10.57.76.30] (unknown [10.57.76.30])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 414D13F73F;
+        Mon, 17 Jul 2023 01:23:30 -0700 (PDT)
+Message-ID: <473af190-5c1f-557c-f670-5b045d35dc49@arm.com>
+Date:   Mon, 17 Jul 2023 09:23:28 +0100
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v1 3/9] selftests/mm: Skip soft-dirty tests on arm64
+To:     John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20230713135440.3651409-1-ryan.roberts@arm.com>
+ <20230713135440.3651409-4-ryan.roberts@arm.com>
+ <57995c19-36c5-d868-293a-f03ad507da98@nvidia.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <57995c19-36c5-d868-293a-f03ad507da98@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King <linux@armlinux.org.uk>
-> Sent: 13 July 2023 11:16
-> To: hanyu001@208suo.com
-> Cc: linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org
-> Subject: Re: Fwd: [PATCH] arm: mm: replace snprintf in show functions with sysfs_emit
+On 15/07/2023 01:04, John Hubbard wrote:
+> On 7/13/23 06:54, Ryan Roberts wrote:
+>> arm64 does not support the soft-dirty PTE bit. However there are tests
+>> in `madv_populate` and `soft-dirty` which assume it is supported and
+>> cause spurious failures to be reported when preferred behaviour would be
+>> to mark the tests as skipped.
+>>
+>> Unfortunately, the only way to determine if the soft-dirty dirty bit is
+>> supported is to write to a page, then see if the bit is set in
+>> /proc/self/pagemap. But the tests that we want to conditionally execute
+>> are testing precicesly this. So if we introduced this feature check, we
+>> could accedentally turn a real failure (on a system that claims to
+>> support soft-dirty) into a skip.
 > 
-> On Thu, Jul 13, 2023 at 06:06:15PM +0800, hanyu001@208suo.com wrote:
-> > coccicheck complains about the use of snprintf() in sysfs show functions.
-> >
-> > Fix the coccicheck warning:
-> > WARNING: use scnprintf or sprintf.
-> >
-> > ./arch/arm/mm/cache-l2x0-pmu.c:346:8-16: WARNING: use scnprintf or sprintf
-> >
-> > Signed-off-by: ztt <1549089851@qq.com>
-> > ---
-> >  arch/arm/mm/cache-l2x0-pmu.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm/mm/cache-l2x0-pmu.c b/arch/arm/mm/cache-l2x0-pmu.c
-> > index 993fefdc167a..d20626451a2e 100644
-> > --- a/arch/arm/mm/cache-l2x0-pmu.c
-> > +++ b/arch/arm/mm/cache-l2x0-pmu.c
-> > @@ -343,7 +343,7 @@ static ssize_t l2x0_pmu_event_show(struct device *dev,
-> >      struct l2x0_event_attribute *lattr;
-> >
-> >      lattr = container_of(attr, typeof(*lattr), attr);
-> > -    return snprintf(buf, PAGE_SIZE, "config=0x%x\n", lattr->config);
-> > +    return scnprintf(buf, PAGE_SIZE, "config=0x%x\n", lattr->config);
+> ...
 > 
-> This only serves to shut up a warning. On 32-bit ARM, there is utterly
-> no way what so ever that "config=0x%x\n" could ever overflow 4096 bytes,
-> or even 32 bytes!
+>> diff --git a/tools/testing/selftests/mm/soft-dirty.c
+>> b/tools/testing/selftests/mm/soft-dirty.c
+>> index cc5f144430d4..8a2cd161ec4d 100644
+>> --- a/tools/testing/selftests/mm/soft-dirty.c
+>> +++ b/tools/testing/selftests/mm/soft-dirty.c
+> 
+> Hi Ryan,
+> 
+> Probably very similar to what David is requesting: given that arm64
+> definitively does not support soft dirty, I'd suggest that we not even
+> *build* the soft dirty tests on arm64!
+> 
+> There is no need to worry about counting, skipping or waiving such
+> tests, either. Because it's just a non-issue: one does not care about
+> test status for something that is documented as "this feature is simply
+> unavailable here".
 
-The code also doesn't match the commit message.
-Did you actually send the correct copy of all these patches?
+OK fair enough. I'll follow this approach for v2.
 
-	David
+Thanks for the review!
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+> 
+> 
+> thanks,
 
