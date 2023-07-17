@@ -2,95 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9300375594B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 03:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C540975594F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 04:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbjGQB7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 21:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44740 "EHLO
+        id S230223AbjGQCBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 22:01:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjGQB7i (ORCPT
+        with ESMTP id S229579AbjGQCBw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 21:59:38 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6FC19F
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 18:59:31 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R44yR466kzBHXlG
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:59:27 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689559167; x=1692151168; bh=vAL+WidRa02nINUEn9kYmeUSeJl
-        hPvOGfn7BLzlnckY=; b=sqPm9FBnhy/XZeRmrEcgFSdglOquHI4GsLBTGlhnLyf
-        4WiMRCIpssVCJrWIkjEWGBd9uaaZc8sO0+JE3pEaIkLYUPKtXoY+zRfQ4jq/eoOQ
-        FfO5oPMCAa+wOccU1Gk31yLM8Dtm6iVM/2+RRx8+F9zddHQC0ypuNi1Sz12uUyAF
-        AO0D/Sl5dhCL1J1T/fns40XjfCtG7MeAw9uNyZk5BohHwv/Y4KMQHGensmrDuPMO
-        wYxlMEXEuiA9AlmxpdH+M2CxsUrhnrtvVjiNRiMvmnkmkE7nro4y/KN3OlQpArCh
-        uiPh62OlSwAp5JfBgkKm7KsTsIoLwAP174HI2p26emQ==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 3DOEYdtyzqz1 for <linux-kernel@vger.kernel.org>;
-        Mon, 17 Jul 2023 09:59:27 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R44yR19vyzBHXR9;
-        Mon, 17 Jul 2023 09:59:27 +0800 (CST)
+        Sun, 16 Jul 2023 22:01:52 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E703A19F;
+        Sun, 16 Jul 2023 19:01:50 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36H1Q8gU003025;
+        Mon, 17 Jul 2023 02:01:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=DfJz2VDf1tHd5phO3+tWCj9//S5no9rj8sSeJFbAzzg=;
+ b=ZkQMnvM4lzWdzTG7UCvj2sRU+W85f7UW7H7kuMEN+OkKAOEyMAmMoocAfNF44Y34wTwB
+ zkLFxxGL/qVbbs3ab3SApMPbGPLSSYxTQLrN3Ea8T10f6rB9OddnR54pQYLE6zG+pb4R
+ munQWW0ynXHFSL/g3Qq9zyBRKtJZpIskbndD4+7eKCC4XTqE96EpjtEUGUL67WgttXgC
+ FrB7Dffbm156LNIAigafdfSAOpd6qlWUUhB4V71pqlwMHrS5KSNLHaNRWY0+LWRkr1qI
+ l3pFrR1nKfUSme1TANsS14dWAB9eh/W1ysSqBQHNkeT6KgI8BeRpPl+7k+67CsIjK/Iz aA== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3run0ea8p0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 02:01:34 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36H21YRB012614
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 02:01:34 GMT
+Received: from [10.239.133.73] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sun, 16 Jul
+ 2023 19:01:31 -0700
+Message-ID: <836603c6-16ac-5829-3d16-60aef66dd31b@quicinc.com>
+Date:   Mon, 17 Jul 2023 10:01:28 +0800
 MIME-Version: 1.0
-Date:   Mon, 17 Jul 2023 09:59:27 +0800
-From:   hanyu001@208suo.com
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers/net: space required after that ','
-In-Reply-To: <tencent_86D2297E856205A9DAA674C8CD5B23912C0A@qq.com>
-References: <tencent_86D2297E856205A9DAA674C8CD5B23912C0A@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <9a2f9dac0bd4ec9a110ce66a1f26f6cd@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH] arm64: Add the arm64.nolse_atomics command line option
+To:     Will Deacon <will@kernel.org>
+CC:     Mark Rutland <mark.rutland@arm.com>, <corbet@lwn.net>,
+        <catalin.marinas@arm.com>, <maz@kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_kaushalk@quicinc.com>,
+        <quic_satyap@quicinc.com>, <quic_shashim@quicinc.com>,
+        <quic_songxue@quicinc.com>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230711102510.GA1809@willie-the-truck>
+ <67c2621f-4cad-2495-9785-7737246d3e90@quicinc.com>
+ <ZK5X9bXQT7GBxNHj@FVFF77S0Q05N.emea.arm.com>
+ <604ac52d-4336-744f-2ab8-44d1c93fbaa8@quicinc.com>
+ <ZK_d86ApI1FCHhTL@FVFF77S0Q05N.cambridge.arm.com>
+ <e02b9969-a3ca-a80d-1d32-25d2bf4c72b6@quicinc.com>
+ <ZLBLwG2LJ4gZLfbh@FVFF77S0Q05N.cambridge.arm.com>
+ <6d1a6691-f858-71bf-97fe-97e13fcb93b6@quicinc.com>
+ <20230714082348.GA5240@willie-the-truck>
+ <b76c7a9b-8ed6-97da-bdfa-47cc7db51ff5@quicinc.com>
+ <20230714120946.GA5597@willie-the-truck>
+From:   "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
+In-Reply-To: <20230714120946.GA5597@willie-the-truck>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: m0A_1Z2-64VBmPGbNQLuebqGPLHf4NBN
+X-Proofpoint-ORIG-GUID: m0A_1Z2-64VBmPGbNQLuebqGPLHf4NBN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_01,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 clxscore=1015 mlxscore=0 spamscore=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 impostorscore=0 bulkscore=0 mlxlogscore=819
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307170017
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following checkpatch errors:
+On 7/14/2023 8:09 PM, Will Deacon wrote:
+> On Fri, Jul 14, 2023 at 06:12:02PM +0800, Aiqun(Maria) Yu wrote:
+>> On 7/14/2023 4:23 PM, Will Deacon wrote:
+>>> On Fri, Jul 14, 2023 at 09:56:27AM +0800, Aiqun(Maria) Yu wrote:
+>>>> Try to a detailed summarise of the whole discussions, anyone can ignore some
+>>>> part if you are already know.
+>>>>
+>>>> * Part 1: Solution for this issue.
+>>>> While we still want to have options to let third party and end users can
+>>>> have options:
+>>>>     1.Disable lse atomic cap.
+>>>>     2.*Disallow* far atomic by "CPUECTLR_EL1.atom force near atomic" and
+>>>> non-cachable mappling for lse atomic only.
+>>>
+>>> Sorry, but this still isn't making sense to me. Which CPUs do you have on
+>>> this SoC?
+>> cpu is cortex A78/A55.
+>>>
+>>> My understanding of the CPUs from ARM is that LSE atomics are not supposed
+>>> to be sent to blocks that don't support them. That doesn't mean you have to
+>>> do everything near, however -- you can still execute them at e.g. L2.
+>>>
+>>> For example, the Cortex-X1 TRM states:
+>>>
+>>>     | Atomic instructions to cacheable memory can be performed as either
+>>>     | near atomics or far atomics, depending on where the cache line
+>>>     | containing the data resides.
+>>>     |
+>>>     | When an instruction hits in the L1 data cache in a unique state, then
+>>>     | it is performed as a near atomic in the L1 memory system. If the atomic
+>>>     | operation misses in the L1 cache, or the line is shared with another
+>>>     | core, then the atomic is sent as a far atomic on the core CHI interface.
+>> lse atomic is optional to CHI-B for example, some system may have cpu
+>> feature register have lse atomic feature, but the far atomic is not accpeted
+>> by CHI side. It will be simiar issue that we do.
+> 
+> Again, that should not be a problem. Looking at the A55 TRM, it explicitly
+> says that atomics will be done in the L3 if the interconnect does not
+> support them. The A78 TRM doesn't talk about this at all, so I defer to
+We will check internally to see why it is not happened in current system 
+which have issue.
+> Mark (or anybody else from Arm) on how that works, but one might assume
+> that it does something similar to the other Arm cores.
+I checked other Arm cores like A720 TRM. It seems the similar statement:
+If the operation hits anywhere inside the cluster, or if an interconnect 
+does not support atomics, then the L3 memory system performs the atomic 
+operation. If the line is not already there, it allocates the line into 
+the L3 cache.
 
-./drivers/net/ethernet/myricom/myri10ge/myri10ge.c:354: ERROR: space 
-required after that ',' (ctx:VxV)
-./drivers/net/ethernet/myricom/myri10ge/myri10ge.c:354: ERROR: space 
-required after that ',' (ctx:VxV)
-./drivers/net/ethernet/myricom/myri10ge/myri10ge.c:354: ERROR: space 
-required after that ',' (ctx:VxV)
-./drivers/net/ethernet/myricom/myri10ge/myri10ge.c:354: ERROR: space 
-required after that ',' (ctx:VxV)
+> 
+>>>> * Part 2: Why we need the solution
+>>>> 1. There is also some case far atomic is better performance than near
+>>>> atomic. end user may still can still try to do allow far atomic.
+>>>> while this driver is also use kerenl LSE ATOMIC macro, so it can be running
+>>>> on cpu don't support lse atomic and cpu support lse atomic already.
+>>>> while current system, cpu have feature register said lse atomic is
+>>>> supported, but memory controller is not supported is currently not yet
+>>>> supported.
+>>>
+>>> I think you're forgetting the fact that these instructions can be executed
+>>> by userspace, so the kernel option is completely bogus. If you're saying
+>>> that cacheable atomics can cause external aborts, then I can write an app
+>>> which will crash your device even if you've set this command line option.
+>>>
+>> For apps like userspace also needed to check the system capbility as far as
+> 
+> That's not something you can enforce, so a malicious application can easily
+> crash your system.
+we provide the capability for sotfware to do the runtime compatible 
+check. we surely cannot enforce that. If the software is align the rule, 
+it can also funcational fine on the "intermediate support system".
 
-Signed-off-by: maqimei <2433033762@qq.com>
----
-  drivers/net/ethernet/myricom/myri10ge/myri10ge.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+By the way:
+ALso the A720 TRM doc mentioned the uncachable memory case:
+The Cortex-A720 core supports atomics to Device or Non-cacheable memory, 
+however this relies on the interconnect also supporting atomics. If such 
+an atomic instruction is executed when the interconnect does not support 
+them, then it results in an abort.
 
-diff --git a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c 
-b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-index c5687d9..65d7057 100644
---- a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-+++ b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-@@ -351,7 +351,7 @@ struct myri10ge_priv {
-  (sizeof (X) == 8) ? ((u32)((u64)(X) >> 32)) : (0)
-  #define MYRI10GE_LOWPART_TO_U32(X) ((u32)(X))
+So it is not a single one company's scenario as well, shall we have an 
+option to handle this scenario?
 
--#define myri10ge_pio_copy(to,from,size) 
-__iowrite64_copy(to,from,size/8)
-+#define myri10ge_pio_copy(to, from, size) __iowrite64_copy(to, from, 
-size/8)
+Why the non-cacheable memory is forbiden? Does it only due to limitation 
+of hardware?
 
-  static void myri10ge_set_multicast_list(struct net_device *dev);
-  static netdev_tx_t myri10ge_sw_tso(struct sk_buff *skb,
+> 
+> Will
+
+-- 
+Thx and BRs,
+Aiqun(Maria) Yu
+
