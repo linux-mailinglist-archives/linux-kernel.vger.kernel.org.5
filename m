@@ -2,70 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 060C6756041
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 12:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CCC4756047
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 12:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbjGQKUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 06:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36928 "EHLO
+        id S231154AbjGQKUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 06:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjGQKUU (ORCPT
+        with ESMTP id S230477AbjGQKUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 06:20:20 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BACAFB1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 03:20:18 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8Cx5_HhFbVkUOUFAA--.15878S3;
-        Mon, 17 Jul 2023 18:20:17 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxB83hFbVkdFsxAA--.63881S3;
-        Mon, 17 Jul 2023 18:20:17 +0800 (CST)
-Message-ID: <abc98932-121b-c410-0f51-aab71f2c8a2f@loongson.cn>
-Date:   Mon, 17 Jul 2023 18:20:16 +0800
+        Mon, 17 Jul 2023 06:20:42 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DCCE67
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 03:20:39 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31590e4e27aso3897478f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 03:20:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689589238; x=1692181238;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2xjHSH6JPN242twkYagyCM3b4pHivNarK7/dz84nfUo=;
+        b=Ed1Oon/LLl1kLQVVPM35G/cpdQIIwld+034WiGpAV0AsAfXzNJo8HuzR9CLzKG301r
+         UYdu8sIIYGEyXT5fQwBCCielixfulMCbEyS+80ysDfxQdQKXjfoWKAOj0VihOBys0N+y
+         dH1qR7NQm3hzj0edg1q/47XDLQhlM8c3JhdyNmxQrzLvOs2vaa5Bd5LAwebjx1daqz1U
+         XI3HooTbSo5OPKOhBIDxO4hrbB4WFtEzFuxZL71yluEmyZl/deW8Tg8hLFW7kMJq5Ro3
+         2PqHyr4CQd8A3FPTSiSx9nHGs6YaaXtXgCWleiDHtH0Q4ZuvCgjLUXD9u8LSFJ4wpSAT
+         THzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689589238; x=1692181238;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2xjHSH6JPN242twkYagyCM3b4pHivNarK7/dz84nfUo=;
+        b=iyKFsaw/JTCUIbddIkrQwp3o4mZjrr4Lz6lJUgBHD6tn3x/XsaqFRur1q6NeRdJdBA
+         PL4uRiZEX7135DcL8D9ucpJOGcidvN/20DxJjEZ9t9ZU0Vqfj13C0IXdO35VLYXVPogZ
+         x/lx/zyVbiv7kpw5aRkp6rnuoaXRJK8PYPoSyE5l+L7niaauQywH83ApcR5jHF8wU3Ma
+         om3Wo6oeID2enn0/w6d35NrphRt5s4Ujyb8DaMYF7gqj1GuuaDQHVBqyjtVaX44GofL4
+         dDDsCpjatvcfZKo7m22UTrmOKv+M+Eej25Z3dK29RQa4t0MIvAx0WSfkXLouAKuWnPGJ
+         u1ZA==
+X-Gm-Message-State: ABy/qLYoc8GCzCgX4Yl/YeoTfLCmNuBX9Ropt2NWZtGj1Y9TBT/Ty0Q3
+        yNyyMv+tLNZWKNL/+mdVqO0vPQ==
+X-Google-Smtp-Source: APBJJlGYOxHZkuEqeOeiGNHqrFtQ9ewfMH5QDg09+Jjvucym7gtBd/zyQVew6hrbcd/86yVMl8OR6g==
+X-Received: by 2002:a5d:4b44:0:b0:313:edaa:2505 with SMTP id w4-20020a5d4b44000000b00313edaa2505mr10379451wrs.20.1689589237859;
+        Mon, 17 Jul 2023 03:20:37 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id a3-20020a5d5703000000b003143cb109d5sm18694615wrv.14.2023.07.17.03.20.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 03:20:35 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 13:20:31 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] Bluetooth: hci_conn: clean up some casts
+Message-ID: <5cbde2b4-69b5-4b25-a095-251c8347cb09@kili.mountain>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 8/8] drm/etnaviv: Add a helper to get a pointer to the
- first available node
-Content-Language: en-US
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     loongson-kernel@lists.loongnix.cn, etnaviv@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230623100822.274706-1-sui.jingfeng@linux.dev>
- <20230623100822.274706-9-sui.jingfeng@linux.dev>
- <66749b1b4523d2859b9fbc6e9120e5f1e887d531.camel@pengutronix.de>
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <66749b1b4523d2859b9fbc6e9120e5f1e887d531.camel@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8BxB83hFbVkdFsxAA--.63881S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxur1UKw1fAFyUtr43trWUAwc_yoW5tr47pF
-        W8GFWYkrWkWFyYg34IqFZ8ZFyY9w1Iq3yFk3srtw1vk3s0yryfGryFgr4UCF93AFZ5GF40
-        vr10gr17uF48JrXCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
-        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4SoGDU
-        UUU
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,114 +71,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The ERR_PTR/PTR_ERR() functions are only for error pointers.  They're
+not a generic way to cast pointers to int.
 
-On 2023/7/17 18:07, Lucas Stach wrote:
-> Am Freitag, dem 23.06.2023 um 18:08 +0800 schrieb Sui Jingfeng:
->> From: Sui Jingfeng <suijingfeng@loongson.cn>
->>
->> This make the code in etnaviv_pdev_probe() less twisted, drop the reference
->> to device node after finished. Also kill a double blank line.
->>
-> I can't spot the double blank line you claim to remove.
->
->> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
->> ---
->>   drivers/gpu/drm/etnaviv/etnaviv_drv.c | 32 ++++++++++++++++++---------
->>   1 file changed, 22 insertions(+), 10 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
->> index 7d0eeab3e8b7..3446f8eabf59 100644
->> --- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
->> +++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
->> @@ -27,6 +27,19 @@
->>    * DRM operations:
->>    */
->>   
->> +/* If the DT contains at least one available GPU, return a pointer to it */
->> +
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+We should really create INT_PTR/PTR_INT() functions.  But this is a
+cleanup until someone creates those.
 
-Here is the double blank line my patch remove, it (a blank line) is occupied by
-the comment of "/* If the DT contains at least one available GPU, return a pointer to it */"
+ net/bluetooth/hci_conn.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-
-> I think the code in the function is simple enough that we don't need a
-> comment explaining what it does.
-
-Ok, then I'll remove the comment at the next version. Thanks
-
-
-> Regards,
-> Lucas
->
->> +static struct device_node *etnaviv_of_first_node(void)
->> +{
->> +	struct device_node *np;
->> +
->> +	for_each_compatible_node(np, NULL, "vivante,gc") {
->> +		if (of_device_is_available(np))
->> +			return np;
->> +	}
->> +
->> +	return NULL;
->> +}
->>   
->>   static void load_gpu(struct drm_device *dev)
->>   {
->> @@ -587,7 +600,7 @@ static const struct component_master_ops etnaviv_master_ops = {
->>   static int etnaviv_pdev_probe(struct platform_device *pdev)
->>   {
->>   	struct device *dev = &pdev->dev;
->> -	struct device_node *first_node = NULL;
->> +	struct device_node *first_node;
->>   	struct component_match *match = NULL;
->>   
->>   	if (!dev->platform_data) {
->> @@ -597,11 +610,10 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
->>   			if (!of_device_is_available(core_node))
->>   				continue;
->>   
->> -			if (!first_node)
->> -				first_node = core_node;
->> -
->>   			drm_of_component_match_add(&pdev->dev, &match,
->>   						   component_compare_of, core_node);
->> +
->> +			of_node_put(core_node);
->>   		}
->>   	} else {
->>   		char **names = dev->platform_data;
->> @@ -634,8 +646,11 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
->>   	 * device as the GPU we found. This assumes that all Vivante
->>   	 * GPUs in the system share the same DMA constraints.
->>   	 */
->> -	if (first_node)
->> +	first_node = etnaviv_of_first_node();
->> +	if (first_node) {
->>   		of_dma_configure(&pdev->dev, first_node, true);
->> +		of_node_put(first_node);
->> +	}
->>   
->>   	return component_master_add_with_match(dev, &etnaviv_master_ops, match);
->>   }
->> @@ -709,17 +724,14 @@ static int __init etnaviv_init(void)
->>   	 * If the DT contains at least one available GPU device, instantiate
->>   	 * the DRM platform device.
->>   	 */
->> -	for_each_compatible_node(np, NULL, "vivante,gc") {
->> -		if (!of_device_is_available(np))
->> -			continue;
->> +	np = etnaviv_of_first_node();
->> +	if (np) {
->>   		of_node_put(np);
->>   
->>   		ret = etnaviv_create_platform_device("etnaviv",
->>   						     &etnaviv_platform_device);
->>   		if (ret)
->>   			goto unregister_platform_driver;
->> -
->> -		break;
->>   	}
->>   
->>   	return 0;
+diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
+index cccc2b8b60a8..aea6fa12d954 100644
+--- a/net/bluetooth/hci_conn.c
++++ b/net/bluetooth/hci_conn.c
+@@ -873,7 +873,7 @@ static void bis_cleanup(struct hci_conn *conn)
+ 
+ static int remove_cig_sync(struct hci_dev *hdev, void *data)
+ {
+-	u8 handle = PTR_ERR(data);
++	u8 handle = (unsigned long)data;
+ 
+ 	return hci_le_remove_cig_sync(hdev, handle);
+ }
+@@ -882,7 +882,7 @@ static int hci_le_remove_cig(struct hci_dev *hdev, u8 handle)
+ {
+ 	bt_dev_dbg(hdev, "handle 0x%2.2x", handle);
+ 
+-	return hci_cmd_sync_queue(hdev, remove_cig_sync, ERR_PTR(handle), NULL);
++	return hci_cmd_sync_queue(hdev, remove_cig_sync, (void *)(unsigned long)handle, NULL);
+ }
+ 
+ static void find_cis(struct hci_conn *conn, void *data)
+@@ -1234,7 +1234,7 @@ void hci_conn_failed(struct hci_conn *conn, u8 status)
+ static void create_le_conn_complete(struct hci_dev *hdev, void *data, int err)
+ {
+ 	struct hci_conn *conn;
+-	u16 handle = PTR_ERR(data);
++	u16 handle = (unsigned long)data;
+ 
+ 	conn = hci_conn_hash_lookup_handle(hdev, handle);
+ 	if (!conn)
+@@ -1264,7 +1264,7 @@ static void create_le_conn_complete(struct hci_dev *hdev, void *data, int err)
+ static int hci_connect_le_sync(struct hci_dev *hdev, void *data)
+ {
+ 	struct hci_conn *conn;
+-	u16 handle = PTR_ERR(data);
++	u16 handle = (unsigned long)data;
+ 
+ 	conn = hci_conn_hash_lookup_handle(hdev, handle);
+ 	if (!conn)
+@@ -2854,7 +2854,7 @@ u32 hci_conn_get_phy(struct hci_conn *conn)
+ static int abort_conn_sync(struct hci_dev *hdev, void *data)
+ {
+ 	struct hci_conn *conn;
+-	u16 handle = PTR_ERR(data);
++	u16 handle = (unsigned long)data;
+ 
+ 	conn = hci_conn_hash_lookup_handle(hdev, handle);
+ 	if (!conn)
+-- 
+2.39.2
 
