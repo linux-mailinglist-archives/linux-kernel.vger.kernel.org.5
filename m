@@ -2,152 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D40F755CC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DFA755CC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbjGQHYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 03:24:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35396 "EHLO
+        id S230305AbjGQHZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 03:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjGQHYh (ORCPT
+        with ESMTP id S229450AbjGQHZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 03:24:37 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2049.outbound.protection.outlook.com [40.107.8.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA32188;
-        Mon, 17 Jul 2023 00:24:36 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q1Nr3o2dR8D4cOrHIs9iy+U/HnIZ2nOw1yNVZY9oh634ulhZpCKPMzdl803bJJbCG0cQ7Z7uFm1cJk87SbiugttHtIH4B6as+PO6jQ1exJuYDXHLr8tCjQMCZpachhGZvmrLzLINaTcPLJRmKy/Tpj0kyBNteHs1jTTavRBlY13glPnqlYHt+V5NWVdoRKLA7CuDOI11Cvh6A079Mw+s3JLHr4nrlsbyZ7LTKXiIh6wBvwN6aM05HK6QDyi6tXr23pMkakW637g1HZmXt8eqQLxtz6FRm6B4Kcp9yswIEvN7iBGZiMvZP9lop02YWvrcjwWwYmS2pGoXUNLGU46drA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+J0suTqy6jwkZagohEwRfHjhnhqEKxkOZ92odvKXHPs=;
- b=BBQo/BqhhkD8Dhwg+wh1/dRYFQqvSs1pWFHw1zQj3UBYbDWm0dLB1c+JHTJPZ1R0xUuMXWTQ3s9kaSsSq04spgB2WkvXWRLPRnpSQQnI4a3Me4TNqqO1ZXFpjGMmiBd2RY+jOjWzNgjg1se7bKi1v4/E9s0IFv+tw7MvQxENZzv6/f1NpzdrcmQN9K9qe6R8VPAst2TzAB1awi4VFcoLNW7DTv0v/GUJVhFtUlF+GU6t8l/valLWMPEbFeXfCDQbGQ/NWzC0jnVaGHja9gMpYDCQ9nWTNnRttURfIL1+nVpDANJk0H0OAuPXL2/sBt7g+8RprWxbuEmAduoRjt+OPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 194.138.21.74) smtp.rcpttodomain=microchip.com smtp.mailfrom=siemens.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=siemens.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+J0suTqy6jwkZagohEwRfHjhnhqEKxkOZ92odvKXHPs=;
- b=b/OuGymZydHd8WdYcgpZBPaT5K36ZXYtdruylUn0DBn7ibfAOVfYtlqNBBkDu8tFFkKQgF6D05iLo9kAotCdwnRcPda1byqz3pAAnbF2+WAnGdbbNfH60tSKp0D/NYdUzke65I0mXVzS5n2qdedkxTGm/QNznB3LfHiY7MxL9KXL2PvPwmUaspoIUVjBUoiSA2ksz9B3iHIh04lKy18PvMC58tCCfgpLXNWhlNC5/+nILc5v7hJ0T3c8UT9D3CX5GhOcX65WFJq8T4lK6ZO+RLhnOQi223sENXzXAs+8RygCpdSb7KOfYrbZnDyWo5ZynjuMQ/f7WMX6YVUYjfkV5g==
-Received: from GV3P280CA0102.SWEP280.PROD.OUTLOOK.COM (2603:10a6:150:8::27) by
- GVXPR10MB5791.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:6f::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.32; Mon, 17 Jul 2023 07:24:32 +0000
-Received: from HE1EUR01FT075.eop-EUR01.prod.protection.outlook.com
- (2603:10a6:150:8:cafe::f) by GV3P280CA0102.outlook.office365.com
- (2603:10a6:150:8::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32 via Frontend
- Transport; Mon, 17 Jul 2023 07:24:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 194.138.21.74)
- smtp.mailfrom=siemens.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=siemens.com;
-Received-SPF: Pass (protection.outlook.com: domain of siemens.com designates
- 194.138.21.74 as permitted sender) receiver=protection.outlook.com;
- client-ip=194.138.21.74; helo=hybrid.siemens.com; pr=C
-Received: from hybrid.siemens.com (194.138.21.74) by
- HE1EUR01FT075.mail.protection.outlook.com (10.152.1.38) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6609.20 via Frontend Transport; Mon, 17 Jul 2023 07:24:32 +0000
-Received: from CNPEK01M10MSX.ad011.siemens.net (139.24.237.228) by
- DEMCHDC8VQA.ad011.siemens.net (194.138.21.74) with Microsoft SMTP Server
+        Mon, 17 Jul 2023 03:25:03 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0959F1AE;
+        Mon, 17 Jul 2023 00:25:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1689578700; x=1721114700;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=7oDVZ9jBgPSkk6CKozwTf/y6QtY1k3odHGa8v29rxyM=;
+  b=DaWe62aDUuTe2vnpl4NMXFApmaNze/aDs7OLmd4ieObxrF6Q7PZbmdKe
+   kLfhMPzss3uw44wIDhZwEHSlwtaoOWCenz1tGZ5utYVE+K049DYBOII4p
+   zLcvGIw2PJBB+B5bZ7NETCobg4FT+Xc04qRqbdjxDahogUzjbZOrC8jmh
+   RjelFd55Z7Hhh5STCohQ3QVAdxp26gQE74mpJHFdA3LlLouAQxL0Qmmsz
+   peKvT1V8gZySU7djKWX36XK73t1N/Jq7fJwyOijcOoxZKFnnqKhjwby8/
+   yzQzph0+bcbI98MI6XHECnngCo7Bss/drClKFQrwF8d8wUcdbkx0TLcRp
+   A==;
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="224984545"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Jul 2023 00:24:59 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1118.30; Mon, 17 Jul 2023 09:24:30 +0200
-Received: from CNPEK01M03MSX.ad011.siemens.net (139.24.237.220) by
- CNPEK01M10MSX.ad011.siemens.net (139.24.237.228) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 17 Jul 2023 15:23:58 +0800
-Received: from CNPEK01M03MSX.ad011.siemens.net ([139.24.237.220]) by
- CNPEK01M03MSX.ad011.siemens.net ([139.24.237.220]) with mapi id
- 15.01.2507.027; Mon, 17 Jul 2023 15:23:57 +0800
-From:   "Li, Hua Qian" <HuaQian.Li@siemens.com>
-To:     "conor.dooley@microchip.com" <conor.dooley@microchip.com>
-CC:     "robh@kernel.org" <robh@kernel.org>,
-        "huaqianlee@gmail.com" <huaqianlee@gmail.com>,
-        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "kristo@kernel.org" <kristo@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "Kiszka, Jan" <jan.kiszka@siemens.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "conor@kernel.org" <conor@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "Su, Bao Cheng" <baocheng.su@siemens.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>, "nm@ti.com" <nm@ti.com>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "vigneshr@ti.com" <vigneshr@ti.com>
-Subject: Re: [PATCH v4 1/3] dt-bindings: watchdog: ti,rti-wdt: Add support for
- WDIOF_CARDRESET
-Thread-Topic: [PATCH v4 1/3] dt-bindings: watchdog: ti,rti-wdt: Add support
- for WDIOF_CARDRESET
-Thread-Index: AQHZuGRCLgFX7MXJIkCy/VyJlzKtc6+9BoQAgAAB3oA=
-Date:   Mon, 17 Jul 2023 07:23:57 +0000
-Message-ID: <0fae6c10e6574533b45e59a194b00012db075be0.camel@siemens.com>
-References: <20230717040723.1306374-1-huaqian.li@siemens.com>
-         <20230717040723.1306374-2-huaqian.li@siemens.com>
-         <20230717-napped-resample-b4891bedd913@wendy>
-In-Reply-To: <20230717-napped-resample-b4891bedd913@wendy>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [139.24.108.35]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B2C305979EBACF4CA5A49CA16369740E@siemens.com>
-Content-Transfer-Encoding: base64
+ 15.1.2507.21; Mon, 17 Jul 2023 00:24:45 -0700
+Received: from den-dk-m31857.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Mon, 17 Jul 2023 00:24:40 -0700
+Message-ID: <8f9bb0f73dcff472e019f100b81363a896389124.camel@microchip.com>
+Subject: Re: [PATCH] reset: Explicitly include correct DT includes
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Rob Herring <robh@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        "Kevin Hilman" <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        "Martin Blumenstingl" <martin.blumenstingl@googlemail.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        <UNGLinuxDriver@microchip.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Michal Simek <michal.simek@amd.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>,
+        <linux-amlogic@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>
+Date:   Mon, 17 Jul 2023 09:24:39 +0200
+In-Reply-To: <20230714174939.4063667-1-robh@kernel.org>
+References: <20230714174939.4063667-1-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HE1EUR01FT075:EE_|GVXPR10MB5791:EE_
-X-MS-Office365-Filtering-Correlation-Id: b3bd970f-8f96-4eea-0190-08db8696dd94
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OQvrcEDLsvo21Kth3v4kUIc99/SK6L1WmCHxyfZDU9/fogjEMK2LCCy0eq2WhUuq723vXN2lPI0yH4DxsmuograKwbrm4+q/dbtIDnavM/u8/ELmgbudITx83PG/GmQocZuz839c7pAMxTergwS01W4aAeHcXM4LyD27NvrB1ZEkt862/6JJ438FlARvn2qLzNHVUJyxLi1B7cuhwO2V52PIZPoQVkBNPB2XpGcNZ7jef6zTCjCCfK9c9zVnMzfhemC5remBq8hgWYZMR0QtvSwX7vmpWfi19I4fqSK9Kx9hqUpYyjRa7Uj6jYUykIvognPWFmdX16YK6OtBrskcaWytgQqCVu+kRrMR2WtXEjTZgcf3XP7yJgoi9MBoIa+NSHnhbdT8GV5szMig9eadw8VpmNu5SnN2gOR/4byXd2gGzAXrdUGOIwBDiReZ8aEGlxyf+vf4j+TAbGdBBA1V0gL+fvyqJMlxBIFWc+VykrShYD/9Fsw1qzROZjHgMHAeR5V74N6l+9UaD7Ka24yX/7hkQVao0Nf+aJGQTzCRinqGjtNlXDYd4V7c/0H4wjKL3hiwISADwT6JcxAacG1XkT4vqoNSK2Ign1NSnHtkiEm6w9Xfy09jAIKtZ4oG96pFXMcKAmmyVQxBiyN5o4Y9zorpHIO0BNU5j1Lx0CiklcGNiO8RuIvZTpvRv9k4ix9ecNonwxcXEp/pEf7KqpXQrmyjlow9DvR0eAQdsewaU28GaxcLO2ZJ8eLDDPB2PrJE
-X-Forefront-Antispam-Report: CIP:194.138.21.74;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:hybrid.siemens.com;PTR:hybrid.siemens.com;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(376002)(136003)(396003)(451199021)(82310400008)(46966006)(40470700004)(36840700001)(36860700001)(316002)(41300700001)(336012)(186003)(956004)(2616005)(26005)(47076005)(7596003)(356005)(7636003)(40460700003)(82740400003)(478600001)(82960400001)(54906003)(4326008)(6916009)(70206006)(70586007)(40480700001)(7416002)(86362001)(8676002)(5660300002)(8936002)(36756003)(2906002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 07:24:32.2644
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b3bd970f-8f96-4eea-0190-08db8696dd94
-X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;Ip=[194.138.21.74];Helo=[hybrid.siemens.com]
-X-MS-Exchange-CrossTenant-AuthSource: HE1EUR01FT075.eop-EUR01.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR10MB5791
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIzLTA3LTE3IGF0IDA4OjE3ICswMTAwLCBDb25vciBEb29sZXkgd3JvdGU6DQo+
-IE9uIE1vbiwgSnVsIDE3LCAyMDIzIGF0IDEyOjA3OjIxUE0gKzA4MDAsDQo+IGh1YXFpYW4ubGlA
-c2llbWVucy5jb23CoHdyb3RlOg0KPiA+IEZyb206IExpIEh1YSBRaWFuIDxodWFxaWFuLmxpQHNp
-ZW1lbnMuY29tPg0KPiA+IA0KPiA+IFRJIFJUSSAoUmVhbCBUaW1lIEludGVycnVwdCkgV2F0Y2hk
-b2cgZG9lc24ndCBzdXBwb3J0IHRvIHJlY29yZCB0aGUNCj4gPiB3YXRjaGRvZyBjYXVzZS4gQWRk
-IGEgcmVzZXJ2ZWQgbWVtb3J5IHRvIGtub3cgdGhlIGxhc3QgcmVib290IHdhcw0KPiA+IGNhdXNl
-ZA0KPiA+IGJ5IHRoZSB3YXRjaGRvZyBjYXJkLiBJbiB0aGUgcmVzZXJ2ZWQgbWVtb3J5LCBzb21l
-IHNwZWNpZmljIGluZm8NCj4gPiB3aWxsIGJlDQo+ID4gc2F2ZWQgdG8gaW5kaWNhdGUgd2hldGhl
-ciB0aGUgd2F0Y2hkb2cgcmVzZXQgd2FzIHRyaWdnZXJlZCBpbiBsYXN0DQo+ID4gYm9vdC4NCj4g
-PiANCj4gPiBSZXZpZXdlZC1ieTogS3J6eXN6dG9mIEtvemxvd3NraSA8a3J6eXN6dG9mLmtvemxv
-d3NraUBsaW5hcm8ub3JnPg0KPiANCj4gPiBSZXZpZXdlZC1ieTogQ29ub3IgRG9vbGV5IDxjb25v
-ckBrZXJuZWwub3JnPg0KPiANCj4gSSBkb24ndCByZWNhbGwgYWN0dWFsbHkgcmVwbHlpbmcgdG8g
-dGhlIGVhcmxpZXIgcmV2aXNpb25zIG9mIHRoaXMNCj4gcGF0Y2hzZXQsIGxldCBhbG9uZSBwcm92
-aWRpbmcgYSByZXZpZXcsIGJ1dCB0aGlzIGlzIG5vdCB0aGUgZW1haWwNCj4gYWRkcmVzcyBJIHdv
-dWxkIGhhdmUgdXNlZCwgaGFkIEkgZG9uZSBzby4NCj4gDQo+ID4gUmV2aWV3ZWQtYnk6IFJvYiBI
-ZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+DQo+ID4gU2lnbmVkLW9mZi1ieTogTGkgSHVhIFFpYW4g
-PGh1YXFpYW4ubGlAc2llbWVucy5jb20+DQpCZWNhdXNlIG9mIG15IG1pc3Rha2UgaW4gdjQsIEkg
-ZmVlbCB2ZXJ5IHNhZCBhbmQgc29ycnkuIA0KDQpJIHdhcyB0cnlpbmcgdG8gZml4IGl0IGluIHY1
-LCBwbGVhc2UgaWdub3JlIHRoZSB2NCBhbmQganVtcCB0byB2NS4gTWFueQ0KdGhhbmtzIQ0KDQpC
-ZXN0IHJlZ2FyZHMsDQpMaSBIdWEgUWlhbg0K
+Hi Rob,
+
+On Fri, 2023-07-14 at 11:49 -0600, Rob Herring wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know th=
+e
+> content is safe
+>=20
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> =C2=A0drivers/reset/hisilicon/hi6220_reset.c | 1 -
+> =C2=A0drivers/reset/hisilicon/reset-hi3660.c | 2 +-
+> =C2=A0drivers/reset/reset-imx7.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 2 +-
+> =C2=A0drivers/reset/reset-intel-gw.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 | 2 +-
+> =C2=A0drivers/reset/reset-k210.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 1 -
+> =C2=A0drivers/reset/reset-meson-audio-arb.c=C2=A0 | 3 ++-
+> =C2=A0drivers/reset/reset-meson.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 1 -
+> =C2=A0drivers/reset/reset-microchip-sparx5.c | 3 ++-
+> =C2=A0drivers/reset/reset-mpfs.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 1 +
+> =C2=A0drivers/reset/reset-qcom-aoss.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 | 2 +-
+> =C2=A0drivers/reset/reset-qcom-pdc.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 | 2 +-
+> =C2=A0drivers/reset/reset-simple.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 | 1 -
+> =C2=A0drivers/reset/reset-uniphier-glue.c=C2=A0=C2=A0=C2=A0 | 2 +-
+> =C2=A0drivers/reset/reset-uniphier.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 | 1 -
+> =C2=A0drivers/reset/reset-zynqmp.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 | 1 -
+> =C2=A015 files changed, 11 insertions(+), 14 deletions(-)
+>=20
+> diff --git a/drivers/reset/hisilicon/hi6220_reset.c
+> b/drivers/reset/hisilicon/hi6220_reset.c
+> index 5ca145b64e63..8d1fce18ded7 100644
+> --- a/drivers/reset/hisilicon/hi6220_reset.c
+> +++ b/drivers/reset/hisilicon/hi6220_reset.c
+> @@ -13,7 +13,6 @@
+> =C2=A0#include <linux/module.h>
+> =C2=A0#include <linux/bitops.h>
+> =C2=A0#include <linux/of.h>
+> -#include <linux/of_device.h>
+> =C2=A0#include <linux/regmap.h>
+> =C2=A0#include <linux/mfd/syscon.h>
+> =C2=A0#include <linux/reset-controller.h>
+> diff --git a/drivers/reset/hisilicon/reset-hi3660.c
+> b/drivers/reset/hisilicon/reset-hi3660.c
+> index 965f5ceba7d8..087f28e326ee 100644
+> --- a/drivers/reset/hisilicon/reset-hi3660.c
+> +++ b/drivers/reset/hisilicon/reset-hi3660.c
+> @@ -6,7 +6,7 @@
+> =C2=A0#include <linux/kernel.h>
+> =C2=A0#include <linux/mfd/syscon.h>
+> =C2=A0#include <linux/module.h>
+> -#include <linux/of_device.h>
+> +#include <linux/of.h>
+> =C2=A0#include <linux/platform_device.h>
+> =C2=A0#include <linux/regmap.h>
+> =C2=A0#include <linux/reset-controller.h>
+> diff --git a/drivers/reset/reset-imx7.c b/drivers/reset/reset-imx7.c
+> index d2408725eb2c..dd01fe11c5cb 100644
+> --- a/drivers/reset/reset-imx7.c
+> +++ b/drivers/reset/reset-imx7.c
+> @@ -9,7 +9,7 @@
+>=20
+> =C2=A0#include <linux/mfd/syscon.h>
+> =C2=A0#include <linux/module.h>
+> -#include <linux/of_device.h>
+> +#include <linux/of.h>
+> =C2=A0#include <linux/platform_device.h>
+> =C2=A0#include <linux/reset-controller.h>
+> =C2=A0#include <linux/regmap.h>
+> diff --git a/drivers/reset/reset-intel-gw.c b/drivers/reset/reset-intel-g=
+w.c
+> index effc177db80a..a5a01388ae7f 100644
+> --- a/drivers/reset/reset-intel-gw.c
+> +++ b/drivers/reset/reset-intel-gw.c
+> @@ -6,7 +6,7 @@
+>=20
+> =C2=A0#include <linux/bitfield.h>
+> =C2=A0#include <linux/init.h>
+> -#include <linux/of_device.h>
+> +#include <linux/of.h>
+> =C2=A0#include <linux/platform_device.h>
+> =C2=A0#include <linux/reboot.h>
+> =C2=A0#include <linux/regmap.h>
+> diff --git a/drivers/reset/reset-k210.c b/drivers/reset/reset-k210.c
+> index 1b6e03522b40..b62a2fd44e4e 100644
+> --- a/drivers/reset/reset-k210.c
+> +++ b/drivers/reset/reset-k210.c
+> @@ -3,7 +3,6 @@
+> =C2=A0 * Copyright (c) 2020 Western Digital Corporation or its affiliates=
+.
+> =C2=A0 */
+> =C2=A0#include <linux/of.h>
+> -#include <linux/of_device.h>
+> =C2=A0#include <linux/platform_device.h>
+> =C2=A0#include <linux/reset-controller.h>
+> =C2=A0#include <linux/delay.h>
+> diff --git a/drivers/reset/reset-meson-audio-arb.c b/drivers/reset/reset-
+> meson-audio-arb.c
+> index 6a3f6a6a3bbf..7e46dbc04998 100644
+> --- a/drivers/reset/reset-meson-audio-arb.c
+> +++ b/drivers/reset/reset-meson-audio-arb.c
+> @@ -5,7 +5,8 @@
+> =C2=A0#include <linux/clk.h>
+> =C2=A0#include <linux/io.h>
+> =C2=A0#include <linux/module.h>
+> -#include <linux/of_platform.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> =C2=A0#include <linux/reset-controller.h>
+> =C2=A0#include <linux/spinlock.h>
+>=20
+> diff --git a/drivers/reset/reset-meson.c b/drivers/reset/reset-meson.c
+> index 13878ca2779d..89ac99789a3c 100644
+> --- a/drivers/reset/reset-meson.c
+> +++ b/drivers/reset/reset-meson.c
+> @@ -14,7 +14,6 @@
+> =C2=A0#include <linux/reset-controller.h>
+> =C2=A0#include <linux/slab.h>
+> =C2=A0#include <linux/types.h>
+> -#include <linux/of_device.h>
+>=20
+> =C2=A0#define BITS_PER_REG=C2=A0=C2=A0 32
+>=20
+> diff --git a/drivers/reset/reset-microchip-sparx5.c b/drivers/reset/reset=
+-
+> microchip-sparx5.c
+> index ead25942061d..636e85c388b0 100644
+> --- a/drivers/reset/reset-microchip-sparx5.c
+> +++ b/drivers/reset/reset-microchip-sparx5.c
+> @@ -7,9 +7,10 @@
+> =C2=A0 * https://github.com/microchip-ung/sparx-5_reginfo
+> =C2=A0 */
+> =C2=A0#include <linux/mfd/syscon.h>
+> -#include <linux/of_device.h>
+> +#include <linux/of.h>
+> =C2=A0#include <linux/module.h>
+> =C2=A0#include <linux/platform_device.h>
+> +#include <linux/property.h>
+> =C2=A0#include <linux/regmap.h>
+> =C2=A0#include <linux/reset-controller.h>
+>=20
+> diff --git a/drivers/reset/reset-mpfs.c b/drivers/reset/reset-mpfs.c
+> index e71ab73092ab..7f3fb2d472f4 100644
+> --- a/drivers/reset/reset-mpfs.c
+> +++ b/drivers/reset/reset-mpfs.c
+> @@ -9,6 +9,7 @@
+> =C2=A0#include <linux/auxiliary_bus.h>
+> =C2=A0#include <linux/delay.h>
+> =C2=A0#include <linux/module.h>
+> +#include <linux/of.h>
+> =C2=A0#include <linux/platform_device.h>
+> =C2=A0#include <linux/reset-controller.h>
+> =C2=A0#include <dt-bindings/clock/microchip,mpfs-clock.h>
+> diff --git a/drivers/reset/reset-qcom-aoss.c b/drivers/reset/reset-qcom-a=
+oss.c
+> index 9333b923dda0..f52e90e36194 100644
+> --- a/drivers/reset/reset-qcom-aoss.c
+> +++ b/drivers/reset/reset-qcom-aoss.c
+> @@ -8,7 +8,7 @@
+> =C2=A0#include <linux/reset-controller.h>
+> =C2=A0#include <linux/delay.h>
+> =C2=A0#include <linux/io.h>
+> -#include <linux/of_device.h>
+> +#include <linux/of.h>
+> =C2=A0#include <dt-bindings/reset/qcom,sdm845-aoss.h>
+>=20
+> =C2=A0struct qcom_aoss_reset_map {
+> diff --git a/drivers/reset/reset-qcom-pdc.c b/drivers/reset/reset-qcom-pd=
+c.c
+> index f22bb49a4ac8..a3aae3f902e6 100644
+> --- a/drivers/reset/reset-qcom-pdc.c
+> +++ b/drivers/reset/reset-qcom-pdc.c
+> @@ -4,7 +4,7 @@
+> =C2=A0 */
+>=20
+> =C2=A0#include <linux/module.h>
+> -#include <linux/of_device.h>
+> +#include <linux/of.h>
+> =C2=A0#include <linux/platform_device.h>
+> =C2=A0#include <linux/regmap.h>
+> =C2=A0#include <linux/reset-controller.h>
+> diff --git a/drivers/reset/reset-simple.c b/drivers/reset/reset-simple.c
+> index 361a68314265..7ea5adbf2097 100644
+> --- a/drivers/reset/reset-simple.c
+> +++ b/drivers/reset/reset-simple.c
+> @@ -16,7 +16,6 @@
+> =C2=A0#include <linux/err.h>
+> =C2=A0#include <linux/io.h>
+> =C2=A0#include <linux/of.h>
+> -#include <linux/of_device.h>
+> =C2=A0#include <linux/platform_device.h>
+> =C2=A0#include <linux/reset-controller.h>
+> =C2=A0#include <linux/reset/reset-simple.h>
+> diff --git a/drivers/reset/reset-uniphier-glue.c b/drivers/reset/reset-
+> uniphier-glue.c
+> index 15abac9fc72c..38aa953855aa 100644
+> --- a/drivers/reset/reset-uniphier-glue.c
+> +++ b/drivers/reset/reset-uniphier-glue.c
+> @@ -6,7 +6,7 @@
+>=20
+> =C2=A0#include <linux/clk.h>
+> =C2=A0#include <linux/module.h>
+> -#include <linux/of_device.h>
+> +#include <linux/of.h>
+> =C2=A0#include <linux/platform_device.h>
+> =C2=A0#include <linux/reset.h>
+> =C2=A0#include <linux/reset/reset-simple.h>
+> diff --git a/drivers/reset/reset-uniphier.c b/drivers/reset/reset-uniphie=
+r.c
+> index ff7580f38056..79c43c204d46 100644
+> --- a/drivers/reset/reset-uniphier.c
+> +++ b/drivers/reset/reset-uniphier.c
+> @@ -7,7 +7,6 @@
+> =C2=A0#include <linux/mfd/syscon.h>
+> =C2=A0#include <linux/module.h>
+> =C2=A0#include <linux/of.h>
+> -#include <linux/of_device.h>
+> =C2=A0#include <linux/platform_device.h>
+> =C2=A0#include <linux/regmap.h>
+> =C2=A0#include <linux/reset-controller.h>
+> diff --git a/drivers/reset/reset-zynqmp.c b/drivers/reset/reset-zynqmp.c
+> index 59dc0ff9af9e..f0f64ad3472b 100644
+> --- a/drivers/reset/reset-zynqmp.c
+> +++ b/drivers/reset/reset-zynqmp.c
+> @@ -9,7 +9,6 @@
+> =C2=A0#include <linux/platform_device.h>
+> =C2=A0#include <linux/reset-controller.h>
+> =C2=A0#include <linux/firmware/xlnx-zynqmp.h>
+> -#include <linux/of_device.h>
+>=20
+> =C2=A0#define ZYNQMP_NR_RESETS (ZYNQMP_PM_RESET_END - ZYNQMP_PM_RESET_STA=
+RT)
+> =C2=A0#define ZYNQMP_RESET_ID ZYNQMP_PM_RESET_START
+> --
+> 2.40.1
+>=20
+
+Acked-by: Steen Hegelund <Steen.Hegelund@microchip.com>
+
+BR
+Steen
