@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A4A75707A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 01:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 367BD757092
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 01:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbjGQXYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 19:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42672 "EHLO
+        id S231668AbjGQXgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 19:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231588AbjGQXYc (ORCPT
+        with ESMTP id S231661AbjGQXgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 19:24:32 -0400
+        Mon, 17 Jul 2023 19:36:45 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CB4172B
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:23:54 -0700 (PDT)
-Message-ID: <20230717223225.875917164@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02EFD170D
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:35:56 -0700 (PDT)
+Message-ID: <20230717223225.937554398@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1689635748;
+        s=2020; t=1689635749;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=wxrnNYixn5b66YHMby8R35XHg/cZJKLdob6j5LDKR34=;
-        b=4jbF+loA5MmNcX9xrW2VA1TqlniFCgWOjn2VSmIeFyJROwzIs1VWh7L2OrDZSOKZoTN36a
-        uNU6jSv/ImBp30vC1bCOGXVzjmDpT4D78z9AWgfC5ZJbwIQ3klyiYWmu3tDqO61GdIvo/3
-        z/MhUoMHIyw1izg+1731m01BxU7wnEw9GKNEh+BP2fPbtJOJVX6RdrSjxyMefwkuufEEws
-        2x658UcEL/C+zSeBQs1GJJOzKWxTwydOHbjeEaKKAcj9SzngK2tusRhLWx1jYRlNOPL9vb
-        MDtiUYIEy1rRt1gw8FvRDrcgWmQGen618sHW9uDkhq9TKXd6pZB4A52dfO7iaA==
+         references:references; bh=iCsxfuqhz4Fo6ZGAppoqBTBjAoRzkGry7KPBD+0gZyY=;
+        b=yrod9RYFIU1ubI925w14spnCcuCVMcCr4iYLMcuitbmxUYOOCOL1ggyXrpJaVe7OSOMQV/
+        GyS0JsyZWVl6ksXYnahXR0Abzz8mTq3oAX2/kMtA9s4gTg2OgmczD3ebZ6HweOQJSy4DVw
+        /sS/a0TuD3wO8u31cQBUUkm/fY5WAp7bo3gnXOanrquEecXvFw/NauyD/bId89VhPlG5jI
+        zPmYqfr3lduc60VMumb0j2KVEUxgqwAj/EpHExbehPyLMhIsT7U4yVHRnXNPSIOkQgWHRs
+        ljZca4pdokvOkv89cmNk9aqmAef14s+HdbZI6zAVu+QFL1iCAjLPAh76XVjZsA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1689635748;
+        s=2020e; t=1689635749;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=wxrnNYixn5b66YHMby8R35XHg/cZJKLdob6j5LDKR34=;
-        b=8xP9mF4TT1//H/ZA9IWRe42Gv7ervYBoGOxm491kMFNItU+Dit9gzN4tbijAnY4hCr+PWf
-        6U9QVME66wQFvcAg==
+         references:references; bh=iCsxfuqhz4Fo6ZGAppoqBTBjAoRzkGry7KPBD+0gZyY=;
+        b=KgbgIgIjJ3pCo5ngii+ou3DNwDmhvHcKKy4N4E2rxsuUk4EIhVLtXI3Pph1+1f7vZUrpxD
+        k3gVibrpUT4OIKBA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
@@ -42,11 +42,11 @@ Cc:     x86@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
         Wei Liu <wei.liu@kernel.org>,
         Arjan van de Ven <arjan@linux.intel.com>,
         Juergen Gross <jgross@suse.com>
-Subject: [patch 47/58] x86/apic: Remove pointless arguments from [native_]eoi_write()
+Subject: [patch 48/58] x86/apic: Nuke ack_APIC_irq()
 References: <20230717223049.327865981@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 18 Jul 2023 01:15:47 +0200 (CEST)
+Date:   Tue, 18 Jul 2023 01:15:49 +0200 (CEST)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -57,303 +57,328 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Every callsite hands in the same constants which is a pointless exercise
-and cannot be optimized by the compiler due to the indirect calls.
-
-Use the constants in the eoi() callbacks and remove the arguments.
+Yet another wrapper of a wrapper gone along with the outdated comment
+that this compiles to a single instruction.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/hyperv/hv_apic.c             |    6 +++---
- arch/x86/include/asm/apic.h           |   17 +++++++++++------
- arch/x86/kernel/apic/apic.c           |    8 ++++----
- arch/x86/kernel/apic/apic_flat_64.c   |    4 ++--
- arch/x86/kernel/apic/apic_noop.c      |    3 ++-
- arch/x86/kernel/apic/apic_numachip.c  |    4 ++--
- arch/x86/kernel/apic/bigsmp_32.c      |    2 +-
- arch/x86/kernel/apic/probe_32.c       |    2 +-
- arch/x86/kernel/apic/x2apic_cluster.c |    2 +-
- arch/x86/kernel/apic/x2apic_phys.c    |    2 +-
- arch/x86/kernel/apic/x2apic_uv_x.c    |    2 +-
- arch/x86/kernel/kvm.c                 |    6 +++---
- arch/x86/xen/apic.c                   |    7 ++++++-
- 13 files changed, 38 insertions(+), 27 deletions(-)
+ arch/x86/hyperv/hv_init.c           |    2 +-
+ arch/x86/include/asm/apic.h         |   10 ----------
+ arch/x86/kernel/apic/apic.c         |   10 +++++-----
+ arch/x86/kernel/apic/io_apic.c      |    4 ++--
+ arch/x86/kernel/apic/vector.c       |    4 ++--
+ arch/x86/kernel/cpu/acrn.c          |    2 +-
+ arch/x86/kernel/cpu/mce/amd.c       |    2 +-
+ arch/x86/kernel/cpu/mce/threshold.c |    2 +-
+ arch/x86/kernel/cpu/mshyperv.c      |    4 ++--
+ arch/x86/kernel/irq.c               |   14 +++++++-------
+ arch/x86/kernel/irq_work.c          |    2 +-
+ arch/x86/kernel/kvm.c               |    2 +-
+ arch/x86/kernel/smp.c               |    8 ++++----
+ arch/x86/xen/enlighten_hvm.c        |    2 +-
+ 14 files changed, 29 insertions(+), 39 deletions(-)
 
---- a/arch/x86/hyperv/hv_apic.c
-+++ b/arch/x86/hyperv/hv_apic.c
-@@ -86,14 +86,14 @@ static void hv_apic_write(u32 reg, u32 v
- 	}
- }
+--- a/arch/x86/hyperv/hv_init.c
++++ b/arch/x86/hyperv/hv_init.c
+@@ -161,7 +161,7 @@ static inline bool hv_reenlightenment_av
  
--static void hv_apic_eoi_write(u32 reg, u32 val)
-+static void hv_apic_eoi_write(void)
+ DEFINE_IDTENTRY_SYSVEC(sysvec_hyperv_reenlightenment)
  {
- 	struct hv_vp_assist_page *hvp = hv_vp_assist_page[smp_processor_id()];
- 
- 	if (hvp && (xchg(&hvp->apic_assist, 0) & 0x1))
- 		return;
- 
--	wrmsr(HV_X64_MSR_EOI, val, 0);
-+	wrmsr(HV_X64_MSR_EOI, APIC_EOI_ACK, 0);
+-	ack_APIC_irq();
++	apic_eoi();
+ 	inc_irq_stat(irq_hv_reenlightenment_count);
+ 	schedule_delayed_work(&hv_reenlightenment_work, HZ/10);
  }
- 
- static bool cpu_is_self(int cpu)
-@@ -310,7 +310,7 @@ void __init hv_apic_init(void)
- 		 * lazy EOI when available, but the same accessor works for
- 		 * both xapic and x2apic because the field layout is the same.
- 		 */
--		apic_set_eoi_write(hv_apic_eoi_write);
-+		apic_set_eoi_cb(hv_apic_eoi_write);
- 		if (!x2apic_enabled()) {
- 			apic->read      = hv_apic_read;
- 			apic->write     = hv_apic_write;
 --- a/arch/x86/include/asm/apic.h
 +++ b/arch/x86/include/asm/apic.h
-@@ -98,6 +98,11 @@ static inline u32 native_apic_mem_read(u
- 	return *((volatile u32 *)(APIC_BASE + reg));
- }
+@@ -402,16 +402,6 @@ static inline void apic_set_eoi(void (*e
  
-+static inline void native_apic_mem_eoi(void)
-+{
-+	native_apic_mem_write(APIC_EOI, APIC_EOI_ACK);
-+}
-+
- extern void native_apic_icr_write(u32 low, u32 id);
- extern u64 native_apic_icr_read(void);
+ extern void apic_ack_irq(struct irq_data *data);
  
-@@ -189,7 +194,7 @@ static inline void native_apic_msr_write
- 	wrmsr(APIC_BASE_MSR + (reg >> 4), v, 0);
- }
- 
--static inline void native_apic_msr_eoi_write(u32 reg, u32 v)
-+static inline void native_apic_msr_eoi(void)
+-static inline void ack_APIC_irq(void)
+-{
+-	/*
+-	 * ack_APIC_irq() actually gets compiled as a single instruction
+-	 * ... yummie.
+-	 */
+-	apic_eoi();
+-}
+-
+-
+ static inline bool lapic_vector_set_in_irr(unsigned int vector)
  {
- 	__wrmsr(APIC_BASE_MSR + (APIC_EOI >> 4), APIC_EOI_ACK, 0);
- }
-@@ -250,8 +255,8 @@ struct irq_data;
-  */
- struct apic {
- 	/* Hotpath functions first */
--	void	(*eoi_write)(u32 reg, u32 v);
--	void	(*native_eoi_write)(u32 reg, u32 v);
-+	void	(*eoi)(void);
-+	void	(*native_eoi)(void);
- 	void	(*write)(u32 reg, u32 v);
- 	u32	(*read)(u32 reg);
- 
-@@ -351,7 +356,7 @@ static inline void apic_write(u32 reg, u
- 
- static inline void apic_eoi(void)
- {
--	apic->eoi_write(APIC_EOI, APIC_EOI_ACK);
-+	apic->eoi();
- }
- 
- static inline u64 apic_icr_read(void)
-@@ -380,7 +385,7 @@ static inline bool apic_id_valid(u32 api
- 	return apic_id <= apic->max_apic_id;
- }
- 
--extern void __init apic_set_eoi_write(void (*eoi_write)(u32 reg, u32 v));
-+extern void __init apic_set_eoi_cb(void (*eoi)(void));
- 
- #else /* CONFIG_X86_LOCAL_APIC */
- 
-@@ -391,7 +396,7 @@ static inline u64 apic_icr_read(void) {
- static inline void apic_icr_write(u32 low, u32 high) { }
- static inline void apic_wait_icr_idle(void) { }
- static inline u32 safe_apic_wait_icr_idle(void) { return 0; }
--static inline void apic_set_eoi_write(void (*eoi_write)(u32 reg, u32 v)) {}
-+static inline void apic_set_eoi(void (*eoi)(void)) {}
- 
- #endif /* CONFIG_X86_LOCAL_APIC */
- 
+ 	u32 irr = apic_read(APIC_IRR + (vector / 32 * 0x10));
 --- a/arch/x86/kernel/apic/apic.c
 +++ b/arch/x86/kernel/apic/apic.c
-@@ -2501,15 +2501,15 @@ void __init acpi_wake_cpu_handler_update
-  * interrupts disabled, so we know this does not race with actual APIC driver
-  * use.
-  */
--void __init apic_set_eoi_write(void (*eoi_write)(u32 reg, u32 v))
-+void __init apic_set_eoi_cb(void (*eoi)(void))
+@@ -1076,7 +1076,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_apic_timer
  {
- 	struct apic **drv;
+ 	struct pt_regs *old_regs = set_irq_regs(regs);
  
- 	for (drv = __apicdrivers; drv < __apicdrivers_end; drv++) {
- 		/* Should happen once for each apic */
--		WARN_ON((*drv)->eoi_write == eoi_write);
--		(*drv)->native_eoi_write = (*drv)->eoi_write;
--		(*drv)->eoi_write = eoi_write;
-+		WARN_ON((*drv)->eoi == eoi);
-+		(*drv)->native_eoi = (*drv)->eoi;
-+		(*drv)->eoi = eoi;
+-	ack_APIC_irq();
++	apic_eoi();
+ 	trace_local_timer_entry(LOCAL_TIMER_VECTOR);
+ 	local_apic_timer_interrupt();
+ 	trace_local_timer_exit(LOCAL_TIMER_VECTOR);
+@@ -1480,7 +1480,7 @@ static bool apic_check_and_ack(union api
+ 		 * per set bit.
+ 		 */
+ 		for_each_set_bit(bit, isr->map, APIC_IR_BITS)
+-			ack_APIC_irq();
++			apic_eoi();
+ 		return true;
  	}
+ 
+@@ -1492,7 +1492,7 @@ static bool apic_check_and_ack(union api
+  * interrupt from previous kernel might still have ISR bit set.
+  *
+  * Most probably by now the CPU has serviced that pending interrupt and it
+- * might not have done the ack_APIC_irq() because it thought, interrupt
++ * might not have done the apic_eoi() because it thought, interrupt
+  * came from i8259 as ExtInt. LAPIC did not get EOI so it does not clear
+  * the ISR bit and cpu thinks it has already serviced the interrupt. Hence
+  * a vector might get locked. It was noticed for timer irq (vector
+@@ -2146,7 +2146,7 @@ static noinline void handle_spurious_int
+ 	if (v & (1 << (vector & 0x1f))) {
+ 		pr_info("Spurious interrupt (vector 0x%02x) on CPU#%d. Acked\n",
+ 			vector, smp_processor_id());
+-		ack_APIC_irq();
++		apic_eoi();
+ 	} else {
+ 		pr_info("Spurious interrupt (vector 0x%02x) on CPU#%d. Not pending!\n",
+ 			vector, smp_processor_id());
+@@ -2197,7 +2197,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_error_inte
+ 	if (lapic_get_maxlvt() > 3)	/* Due to the Pentium erratum 3AP. */
+ 		apic_write(APIC_ESR, 0);
+ 	v = apic_read(APIC_ESR);
+-	ack_APIC_irq();
++	apic_eoi();
+ 	atomic_inc(&irq_err_count);
+ 
+ 	apic_printk(APIC_DEBUG, KERN_DEBUG "APIC error on CPU%d: %02x",
+--- a/arch/x86/kernel/apic/io_apic.c
++++ b/arch/x86/kernel/apic/io_apic.c
+@@ -1823,7 +1823,7 @@ static void ioapic_ack_level(struct irq_
+ 	 * We must acknowledge the irq before we move it or the acknowledge will
+ 	 * not propagate properly.
+ 	 */
+-	ack_APIC_irq();
++	apic_eoi();
+ 
+ 	/*
+ 	 * Tail end of clearing remote IRR bit (either by delivering the EOI
+@@ -2046,7 +2046,7 @@ static void unmask_lapic_irq(struct irq_
+ 
+ static void ack_lapic_irq(struct irq_data *data)
+ {
+-	ack_APIC_irq();
++	apic_eoi();
  }
  
---- a/arch/x86/kernel/apic/apic_flat_64.c
-+++ b/arch/x86/kernel/apic/apic_flat_64.c
-@@ -106,7 +106,7 @@ static struct apic apic_flat __ro_after_
- 
- 	.read				= native_apic_mem_read,
- 	.write				= native_apic_mem_write,
--	.eoi_write			= native_apic_mem_write,
-+	.eoi				= native_apic_mem_eoi,
- 	.icr_read			= native_apic_icr_read,
- 	.icr_write			= native_apic_icr_write,
- 	.wait_icr_idle			= apic_mem_wait_icr_idle,
-@@ -182,7 +182,7 @@ static struct apic apic_physflat __ro_af
- 
- 	.read				= native_apic_mem_read,
- 	.write				= native_apic_mem_write,
--	.eoi_write			= native_apic_mem_write,
-+	.eoi				= native_apic_mem_eoi,
- 	.icr_read			= native_apic_icr_read,
- 	.icr_write			= native_apic_icr_write,
- 	.wait_icr_idle			= apic_mem_wait_icr_idle,
---- a/arch/x86/kernel/apic/apic_noop.c
-+++ b/arch/x86/kernel/apic/apic_noop.c
-@@ -29,6 +29,7 @@ static int noop_wakeup_secondary_cpu(int
- static u64 noop_apic_icr_read(void) { return 0; }
- static int noop_phys_pkg_id(int cpuid_apic, int index_msb) { return 0; }
- static unsigned int noop_get_apic_id(unsigned long x) { return 0; }
-+static void noop_apic_eoi(void) { }
- 
- static u32 noop_apic_read(u32 reg)
+ static struct irq_chip lapic_chip __read_mostly = {
+--- a/arch/x86/kernel/apic/vector.c
++++ b/arch/x86/kernel/apic/vector.c
+@@ -885,7 +885,7 @@ static int apic_retrigger_irq(struct irq
+ void apic_ack_irq(struct irq_data *irqd)
  {
-@@ -71,7 +72,7 @@ struct apic apic_noop __ro_after_init =
+ 	irq_move_irq(irqd);
+-	ack_APIC_irq();
++	apic_eoi();
+ }
  
- 	.read				= noop_apic_read,
- 	.write				= noop_apic_write,
--	.eoi_write			= noop_apic_write,
-+	.eoi				= noop_apic_eoi,
- 	.icr_read			= noop_apic_icr_read,
- 	.icr_write			= noop_apic_icr_write,
- };
---- a/arch/x86/kernel/apic/apic_numachip.c
-+++ b/arch/x86/kernel/apic/apic_numachip.c
-@@ -247,7 +247,7 @@ static const struct apic apic_numachip1
+ void apic_ack_edge(struct irq_data *irqd)
+@@ -940,7 +940,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_irq_move_c
+ 	struct apic_chip_data *apicd;
+ 	struct hlist_node *tmp;
  
- 	.read				= native_apic_mem_read,
- 	.write				= native_apic_mem_write,
--	.eoi_write			= native_apic_mem_write,
-+	.eoi				= native_apic_mem_eoi,
- 	.icr_read			= native_apic_icr_read,
- 	.icr_write			= native_apic_icr_write,
- };
-@@ -284,7 +284,7 @@ static const struct apic apic_numachip2
+-	ack_APIC_irq();
++	apic_eoi();
+ 	/* Prevent vectors vanishing under us */
+ 	raw_spin_lock(&vector_lock);
  
- 	.read				= native_apic_mem_read,
- 	.write				= native_apic_mem_write,
--	.eoi_write			= native_apic_mem_write,
-+	.eoi				= native_apic_mem_eoi,
- 	.icr_read			= native_apic_icr_read,
- 	.icr_write			= native_apic_icr_write,
- };
---- a/arch/x86/kernel/apic/bigsmp_32.c
-+++ b/arch/x86/kernel/apic/bigsmp_32.c
-@@ -105,7 +105,7 @@ static struct apic apic_bigsmp __ro_afte
+--- a/arch/x86/kernel/cpu/acrn.c
++++ b/arch/x86/kernel/cpu/acrn.c
+@@ -51,7 +51,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_acrn_hv_ca
+ 	 * will block the interrupt whose vector is lower than
+ 	 * HYPERVISOR_CALLBACK_VECTOR.
+ 	 */
+-	ack_APIC_irq();
++	apic_eoi();
+ 	inc_irq_stat(irq_hv_callback_count);
  
- 	.read				= native_apic_mem_read,
- 	.write				= native_apic_mem_write,
--	.eoi_write			= native_apic_mem_write,
-+	.eoi				= native_apic_mem_eoi,
- 	.icr_read			= native_apic_icr_read,
- 	.icr_write			= native_apic_icr_write,
- 	.wait_icr_idle			= apic_mem_wait_icr_idle,
---- a/arch/x86/kernel/apic/probe_32.c
-+++ b/arch/x86/kernel/apic/probe_32.c
-@@ -60,7 +60,7 @@ static struct apic apic_default __ro_aft
+ 	if (acrn_intr_handler)
+--- a/arch/x86/kernel/cpu/mce/amd.c
++++ b/arch/x86/kernel/cpu/mce/amd.c
+@@ -759,7 +759,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_deferred_e
+ 	inc_irq_stat(irq_deferred_error_count);
+ 	deferred_error_int_vector();
+ 	trace_deferred_error_apic_exit(DEFERRED_ERROR_VECTOR);
+-	ack_APIC_irq();
++	apic_eoi();
+ }
  
- 	.read				= native_apic_mem_read,
- 	.write				= native_apic_mem_write,
--	.eoi_write			= native_apic_mem_write,
-+	.eoi				= native_apic_mem_eoi,
- 	.icr_read			= native_apic_icr_read,
- 	.icr_write			= native_apic_icr_write,
- 	.wait_icr_idle			= apic_mem_wait_icr_idle,
---- a/arch/x86/kernel/apic/x2apic_cluster.c
-+++ b/arch/x86/kernel/apic/x2apic_cluster.c
-@@ -254,7 +254,7 @@ static struct apic apic_x2apic_cluster _
+ /*
+--- a/arch/x86/kernel/cpu/mce/threshold.c
++++ b/arch/x86/kernel/cpu/mce/threshold.c
+@@ -27,5 +27,5 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_threshold)
+ 	inc_irq_stat(irq_threshold_count);
+ 	mce_threshold_vector();
+ 	trace_threshold_apic_exit(THRESHOLD_APIC_VECTOR);
+-	ack_APIC_irq();
++	apic_eoi();
+ }
+--- a/arch/x86/kernel/cpu/mshyperv.c
++++ b/arch/x86/kernel/cpu/mshyperv.c
+@@ -119,7 +119,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_hyperv_cal
+ 		vmbus_handler();
  
- 	.read				= native_apic_msr_read,
- 	.write				= native_apic_msr_write,
--	.eoi_write			= native_apic_msr_eoi_write,
-+	.eoi				= native_apic_msr_eoi,
- 	.icr_read			= native_x2apic_icr_read,
- 	.icr_write			= native_x2apic_icr_write,
- };
---- a/arch/x86/kernel/apic/x2apic_phys.c
-+++ b/arch/x86/kernel/apic/x2apic_phys.c
-@@ -169,7 +169,7 @@ static struct apic apic_x2apic_phys __ro
+ 	if (ms_hyperv.hints & HV_DEPRECATING_AEOI_RECOMMENDED)
+-		ack_APIC_irq();
++		apic_eoi();
  
- 	.read				= native_apic_msr_read,
- 	.write				= native_apic_msr_write,
--	.eoi_write			= native_apic_msr_eoi_write,
-+	.eoi				= native_apic_msr_eoi,
- 	.icr_read			= native_x2apic_icr_read,
- 	.icr_write			= native_x2apic_icr_write,
- };
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -831,7 +831,7 @@ static struct apic apic_x2apic_uv_x __ro
+ 	set_irq_regs(old_regs);
+ }
+@@ -147,7 +147,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_hyperv_sti
+ 	if (hv_stimer0_handler)
+ 		hv_stimer0_handler();
+ 	add_interrupt_randomness(HYPERV_STIMER0_VECTOR);
+-	ack_APIC_irq();
++	apic_eoi();
  
- 	.read				= native_apic_msr_read,
- 	.write				= native_apic_msr_write,
--	.eoi_write			= native_apic_msr_eoi_write,
-+	.eoi				= native_apic_msr_eoi,
- 	.icr_read			= native_x2apic_icr_read,
- 	.icr_write			= native_x2apic_icr_write,
- };
+ 	set_irq_regs(old_regs);
+ }
+--- a/arch/x86/kernel/irq.c
++++ b/arch/x86/kernel/irq.c
+@@ -49,7 +49,7 @@ void ack_bad_irq(unsigned int irq)
+ 	 * completely.
+ 	 * But only ack when the APIC is enabled -AK
+ 	 */
+-	ack_APIC_irq();
++	apic_eoi();
+ }
+ 
+ #define irq_stats(x)		(&per_cpu(irq_stat, x))
+@@ -256,7 +256,7 @@ DEFINE_IDTENTRY_IRQ(common_interrupt)
+ 	if (likely(!IS_ERR_OR_NULL(desc))) {
+ 		handle_irq(desc, regs);
+ 	} else {
+-		ack_APIC_irq();
++		apic_eoi();
+ 
+ 		if (desc == VECTOR_UNUSED) {
+ 			pr_emerg_ratelimited("%s: %d.%u No irq handler for vector\n",
+@@ -280,7 +280,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_x86_platfo
+ {
+ 	struct pt_regs *old_regs = set_irq_regs(regs);
+ 
+-	ack_APIC_irq();
++	apic_eoi();
+ 	trace_x86_platform_ipi_entry(X86_PLATFORM_IPI_VECTOR);
+ 	inc_irq_stat(x86_platform_ipis);
+ 	if (x86_platform_ipi_callback)
+@@ -310,7 +310,7 @@ EXPORT_SYMBOL_GPL(kvm_set_posted_intr_wa
+  */
+ DEFINE_IDTENTRY_SYSVEC_SIMPLE(sysvec_kvm_posted_intr_ipi)
+ {
+-	ack_APIC_irq();
++	apic_eoi();
+ 	inc_irq_stat(kvm_posted_intr_ipis);
+ }
+ 
+@@ -319,7 +319,7 @@ DEFINE_IDTENTRY_SYSVEC_SIMPLE(sysvec_kvm
+  */
+ DEFINE_IDTENTRY_SYSVEC(sysvec_kvm_posted_intr_wakeup_ipi)
+ {
+-	ack_APIC_irq();
++	apic_eoi();
+ 	inc_irq_stat(kvm_posted_intr_wakeup_ipis);
+ 	kvm_posted_intr_wakeup_handler();
+ }
+@@ -329,7 +329,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_kvm_posted
+  */
+ DEFINE_IDTENTRY_SYSVEC_SIMPLE(sysvec_kvm_posted_intr_nested_ipi)
+ {
+-	ack_APIC_irq();
++	apic_eoi();
+ 	inc_irq_stat(kvm_posted_intr_nested_ipis);
+ }
+ #endif
+@@ -401,6 +401,6 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_thermal)
+ 	inc_irq_stat(irq_thermal_count);
+ 	smp_thermal_vector();
+ 	trace_thermal_apic_exit(THERMAL_APIC_VECTOR);
+-	ack_APIC_irq();
++	apic_eoi();
+ }
+ #endif
+--- a/arch/x86/kernel/irq_work.c
++++ b/arch/x86/kernel/irq_work.c
+@@ -16,7 +16,7 @@
+ #ifdef CONFIG_X86_LOCAL_APIC
+ DEFINE_IDTENTRY_SYSVEC(sysvec_irq_work)
+ {
+-	ack_APIC_irq();
++	apic_eoi();
+ 	trace_irq_work_entry(IRQ_WORK_VECTOR);
+ 	inc_irq_stat(apic_irq_work_irqs);
+ 	irq_work_run();
 --- a/arch/x86/kernel/kvm.c
 +++ b/arch/x86/kernel/kvm.c
-@@ -332,7 +332,7 @@ static void kvm_register_steal_time(void
+@@ -291,7 +291,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_kvm_asyncp
+ 	struct pt_regs *old_regs = set_irq_regs(regs);
+ 	u32 token;
  
- static DEFINE_PER_CPU_DECRYPTED(unsigned long, kvm_apic_eoi) = KVM_PV_EOI_DISABLED;
+-	ack_APIC_irq();
++	apic_eoi();
  
--static notrace void kvm_guest_apic_eoi_write(u32 reg, u32 val)
-+static notrace void kvm_guest_apic_eoi_write(void)
+ 	inc_irq_stat(irq_hv_callback_count);
+ 
+--- a/arch/x86/kernel/smp.c
++++ b/arch/x86/kernel/smp.c
+@@ -135,7 +135,7 @@ static int smp_stop_nmi_callback(unsigne
+  */
+ DEFINE_IDTENTRY_SYSVEC(sysvec_reboot)
  {
- 	/**
- 	 * This relies on __test_and_clear_bit to modify the memory
-@@ -343,7 +343,7 @@ static notrace void kvm_guest_apic_eoi_w
- 	 */
- 	if (__test_and_clear_bit(KVM_PV_EOI_BIT, this_cpu_ptr(&kvm_apic_eoi)))
- 		return;
--	apic->native_eoi_write(APIC_EOI, APIC_EOI_ACK);
-+	apic->native_eoi();
+-	ack_APIC_irq();
++	apic_eoi();
+ 	cpu_emergency_disable_virtualization();
+ 	stop_this_cpu(NULL);
  }
- 
- static void kvm_guest_cpu_init(void)
-@@ -825,7 +825,7 @@ static void __init kvm_guest_init(void)
- 	}
- 
- 	if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
--		apic_set_eoi_write(kvm_guest_apic_eoi_write);
-+		apic_set_eoi_cb(kvm_guest_apic_eoi_write);
- 
- 	if (kvm_para_has_feature(KVM_FEATURE_ASYNC_PF_INT) && kvmapf) {
- 		static_branch_enable(&kvm_async_pf_enabled);
---- a/arch/x86/xen/apic.c
-+++ b/arch/x86/xen/apic.c
-@@ -81,6 +81,11 @@ static void xen_apic_write(u32 reg, u32
- 	WARN(1,"register: %x, value: %x\n", reg, val);
- }
- 
-+static void xen_apic_eoi(void)
-+{
-+	WARN_ON_ONCE(1);
-+}
-+
- static u64 xen_apic_icr_read(void)
+@@ -268,7 +268,7 @@ static void native_stop_other_cpus(int w
+  */
+ DEFINE_IDTENTRY_SYSVEC_SIMPLE(sysvec_reschedule_ipi)
  {
- 	return 0;
-@@ -147,7 +152,7 @@ static struct apic xen_pv_apic = {
- #endif
- 	.read				= xen_apic_read,
- 	.write				= xen_apic_write,
--	.eoi_write			= xen_apic_write,
-+	.eoi				= xen_apic_eoi,
+-	ack_APIC_irq();
++	apic_eoi();
+ 	trace_reschedule_entry(RESCHEDULE_VECTOR);
+ 	inc_irq_stat(irq_resched_count);
+ 	scheduler_ipi();
+@@ -277,7 +277,7 @@ DEFINE_IDTENTRY_SYSVEC_SIMPLE(sysvec_res
  
- 	.icr_read 			= xen_apic_icr_read,
- 	.icr_write 			= xen_apic_icr_write,
+ DEFINE_IDTENTRY_SYSVEC(sysvec_call_function)
+ {
+-	ack_APIC_irq();
++	apic_eoi();
+ 	trace_call_function_entry(CALL_FUNCTION_VECTOR);
+ 	inc_irq_stat(irq_call_count);
+ 	generic_smp_call_function_interrupt();
+@@ -286,7 +286,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_call_funct
+ 
+ DEFINE_IDTENTRY_SYSVEC(sysvec_call_function_single)
+ {
+-	ack_APIC_irq();
++	apic_eoi();
+ 	trace_call_function_single_entry(CALL_FUNCTION_SINGLE_VECTOR);
+ 	inc_irq_stat(irq_call_count);
+ 	generic_smp_call_function_single_interrupt();
+--- a/arch/x86/xen/enlighten_hvm.c
++++ b/arch/x86/xen/enlighten_hvm.c
+@@ -132,7 +132,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_xen_hvm_ca
+ 	struct pt_regs *old_regs = set_irq_regs(regs);
+ 
+ 	if (xen_percpu_upcall)
+-		ack_APIC_irq();
++		apic_eoi();
+ 
+ 	inc_irq_stat(irq_hv_callback_count);
+ 
 
