@@ -2,222 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C529375771A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F9A757719
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231664AbjGRIxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
+        id S232064AbjGRIxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232052AbjGRIxF (ORCPT
+        with ESMTP id S232055AbjGRIww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:53:05 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8655F103;
-        Tue, 18 Jul 2023 01:53:03 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R4t4M072Jz18LrN;
-        Tue, 18 Jul 2023 16:52:18 +0800 (CST)
-Received: from M910t.huawei.com (10.110.54.157) by
- kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 18 Jul 2023 16:53:00 +0800
-From:   Changbin Du <changbin.du@huawei.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Changbin Du <changbin.du@huawei.com>
-Subject: [PATCH] perf: doc: fix format of unordered lists
-Date:   Tue, 18 Jul 2023 16:52:42 +0800
-Message-ID: <20230718085242.3090797-1-changbin.du@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 18 Jul 2023 04:52:52 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D712197;
+        Tue, 18 Jul 2023 01:52:48 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DC2701F461;
+        Tue, 18 Jul 2023 08:52:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689670366; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ladtk5EE7xRCj17lvWHXEp8fgnBWJpGnYxeuLN9hPjM=;
+        b=LmNBB5YyrA0gpuG0ODqpGxferTBaxhkt7fLmQ7S6mESFryW4biY9KDmXCAW9Um/iePoHRH
+        GA8A47/HU+WVu6WBnVJ0nN0WgJc6CSSBVo3JkFG39KGt/C3ePg2pxL8AMQ/SlHoOkiAU2c
+        zeF3Lgf/ED1fek9cRCZydlzJYJqcS70=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689670366;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ladtk5EE7xRCj17lvWHXEp8fgnBWJpGnYxeuLN9hPjM=;
+        b=/xYjdUy6nd7+GJ00/UNG3qwwXIn/F4NZ7vhgXxhqfqVJAptcLhBbcKxk6iQ4iZzsVl5Qow
+        oMqh5qQkjcH4UzCA==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 8793C2C142;
+        Tue, 18 Jul 2023 08:52:46 +0000 (UTC)
+Date:   Tue, 18 Jul 2023 10:52:45 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nicolas Schier <nicolas@fjasle.eu>, linux-modules@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Lucas De Marchi <lucas.de.marchi@gmail.com>,
+        Michal =?utf-8?B?S291dG7vv70=?= <mkoutny@suse.com>,
+        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] depmod: Handle installing modules under a prefix
+Message-ID: <20230718085245.GV9196@kitsune.suse.cz>
+References: <20230714143002.GL9196@kitsune.suse.cz>
+ <ZLFhuf95srX2wvJc@fjasle.eu>
+ <20230714151042.GN9196@kitsune.suse.cz>
+ <CAK7LNAT6mQ0EpwmKUCBhv9Acaf_qyGq4hu=XvSWRuZ-pNAFWVw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.110.54.157]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemi500013.china.huawei.com (7.221.188.120)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNAT6mQ0EpwmKUCBhv9Acaf_qyGq4hu=XvSWRuZ-pNAFWVw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the format of unordered lists so the can wrap properly.
+On Tue, Jul 18, 2023 at 04:14:11AM +0900, Masahiro Yamada wrote:
+> On Sat, Jul 15, 2023 at 12:10 AM Michal Suchánek <msuchanek@suse.de> wrote:
+> >
+> > On Fri, Jul 14, 2023 at 04:54:49PM +0200, Nicolas Schier wrote:
+> > > On Fri, Jul 14, 2023 at 04:30:02PM +0200, Michal Such�nek wrote:
+> > > > Hello,
+> > > >
+> > > > On Fri, Jul 14, 2023 at 04:05:10PM +0200, Nicolas Schier wrote:
+> > > > > On Fri, Jul 14, 2023 at 02:21:08PM +0200 Michal Suchanek wrote:
+> > > > > > Some distributions aim at not shipping any files in / outside of usr.
+> > > > >
+> > > > > For me, preventing negation often makes things easier, e.g.: "... aim at
+> > > > > shipping files only below /usr".
+> > > > >
+> > > > > >
+> > > > > > The path under which kernel modules are installed is hardcoded to /lib
+> > > > > > which conflicts with this goal.
+> > > > > >
+> > > > > > When kmod provides the config command, use it to determine the correct
+> > > > > > module installation prefix.
+> > > > > >
+> > > > > > This is a prefix under which the modules are searched by kmod on the
+> > > > > > system, and is separate from the temporary staging location already
+> > > > > > supported by INSTALL_MOD_PATH.
+> > > > > >
+> > > > > > With kmod that does not provide the config command empty prefix is used
+> > > > > > as before.
+> > > > > >
+> > > > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > > > > > ---
+> > > > > > v2: Avoid error on systems with kmod that does not support config
+> > > > > > command
+> > > > > > v3: More verbose commit message
+> > > > > > ---
+> > > > > >  Makefile          | 4 +++-
+> > > > > >  scripts/depmod.sh | 8 ++++----
+> > > > > >  2 files changed, 7 insertions(+), 5 deletions(-)
+> > > > > >
+> > > > > > diff --git a/Makefile b/Makefile
+> > > > > > index 47690c28456a..b1fea135bdec 100644
+> > > > > > --- a/Makefile
+> > > > > > +++ b/Makefile
+> > > > > > @@ -1165,7 +1165,9 @@ export INSTALL_DTBS_PATH ?= $(INSTALL_PATH)/dtbs/$(KERNELRELEASE)
+> > > > > >  # makefile but the argument can be passed to make if needed.
+> > > > > >  #
+> > > > > >
+> > > > > > -MODLIB = $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
+> > > > > > +export KERNEL_MODULE_PREFIX := $(shell kmod config &> /dev/null && kmod config | jq -r .module_prefix)
+> > > > >
+> > > > > All other calls of `jq` that I could find are located at tools/; as this here
+> > > > > is evaluated on each invocation, this should probably be documented in
+> > > > > Documentation/process/changes.rst?
+> > > > >
+> > > > > (Absence of `jq` will cause error messages, even with CONFIG_MODULES=n.)
+> > > >
+> > > > That's a good point.
+> > > >
+> > > > >
+> > > > > > +
+> > > > > > +MODLIB = $(INSTALL_MOD_PATH)$(KERNEL_MODULE_PREFIX)/lib/modules/$(KERNELRELEASE)
+> > > > > >  export MODLIB
+> > > > > >
+> > > > > >  PHONY += prepare0
+> > > > > > diff --git a/scripts/depmod.sh b/scripts/depmod.sh
+> > > > > > index 3643b4f896ed..88ac79056153 100755
+> > > > > > --- a/scripts/depmod.sh
+> > > > > > +++ b/scripts/depmod.sh
+> > > > > > @@ -27,16 +27,16 @@ fi
+> > > > > >  # numbers, so we cheat with a symlink here
+> > > > > >  depmod_hack_needed=true
+> > > > > >  tmp_dir=$(mktemp -d ${TMPDIR:-/tmp}/depmod.XXXXXX)
+> > > > > > -mkdir -p "$tmp_dir/lib/modules/$KERNELRELEASE"
+> > > > > > +mkdir -p "$tmp_dir$KERNEL_MODULE_PREFIX/lib/modules/$KERNELRELEASE"
+> > > > > >  if "$DEPMOD" -b "$tmp_dir" $KERNELRELEASE 2>/dev/null; then
+> > > > > > -       if test -e "$tmp_dir/lib/modules/$KERNELRELEASE/modules.dep" -o \
+> > > > > > -               -e "$tmp_dir/lib/modules/$KERNELRELEASE/modules.dep.bin"; then
+> > > > > > +       if test -e "$tmp_dir$KERNEL_MODULE_PREFIX/lib/modules/$KERNELRELEASE/modules.dep" -o \
+> > > > > > +               -e "$tmp_dir$KERNEL_MODULE_PREFIX/lib/modules/$KERNELRELEASE/modules.dep.bin"; then
+> > > > > >                 depmod_hack_needed=false
+> > > > > >         fi
+> > > > > >  fi
+> > > > >
+> > > > > I'd like to come back to the statement from Masahiro: Is the check above,
+> > > > > against some very old versions of depmod [1], the only reason for this patch?
+> > > > >
+> > > > > If we could remove that, would
+> > > > >
+> > > > >     make INSTALL_MOD_PATH="$(kmod config | jq -r .module_prefix)" modules_install
+> > > > >
+> > > > > be sufficient?
+> > > >
+> > > > No, the INSTALL_MOD_PATH is passed as the -b argument to depmod while
+> > > > the newly added part is not because it's integral part of where the
+> > > > modules are installed on the system, and not the staging area path.
+> > >
+> > > Ah, thanks.  So just for my understanding, could this be a (non-gentle)
+> > > alternative version of your patch, w/o modifying top-level Makefile?
+> > >
+> > > diff --git a/scripts/depmod.sh b/scripts/depmod.sh
+> > > index 3643b4f896ed..72c819de0669 100755
+> > > --- a/scripts/depmod.sh
+> > > +++ b/scripts/depmod.sh
+> > > @@ -1,4 +1,4 @@
+> > > -#!/bin/sh
+> > > +#!/bin/bash
+> > >  # SPDX-License-Identifier: GPL-2.0
+> > >  #
+> > >  # A depmod wrapper used by the toplevel Makefile
+> > > @@ -23,6 +23,8 @@ if [ -z $(command -v $DEPMOD) ]; then
+> > >         exit 0
+> > >  fi
+> > >
+> > > +kmod_version=$(( $(kmod --version | sed -rne 's/^kmod version ([0-9]+).*$/\1/p') ))
+> > > +
+> > >  # older versions of depmod require the version string to start with three
+> > >  # numbers, so we cheat with a symlink here
+> > >  depmod_hack_needed=true
+> > > @@ -35,6 +37,13 @@ if "$DEPMOD" -b "$tmp_dir" $KERNELRELEASE 2>/dev/null; then
+> > >         fi
+> > >  fi
+> > >  rm -rf "$tmp_dir"
+> > > +
+> > > +if [ "${kmod_version}" -gt 32 ]; then
+> > > +       kmod_prefix="$(kmod config | jq -r .module_prefix)"
+> > > +       INSTALL_MOD_PATH="${INSTALL_MOD_PATH#${kmod_prefix}"
+> > > +       depmod_hack_needed=false
+> > > +fi
+> > > +
+> > >  if $depmod_hack_needed; then
+> > >         symlink="$INSTALL_MOD_PATH/lib/modules/99.98.$KERNELRELEASE"
+> > >         ln -s "$KERNELRELEASE" "$symlink"
+> > >
+> > > (untested, and assuming that kmod module prefix is in kmod >= 32)
+> >
+> > It can be detected by running the 'kmod config' command first and
+> > ignoring the output when it fails which the above patch already did.
+> > The version check does not sound very reliable.
+> >
+> > > Or are I am still missing something?
+> >
+> > MODLIB still needs to include the extra prefix so that files are
+> > installed in the correct location. And that's defined in the toplevel
+> > Makefile.
+> >
+> > Thanks
+> >
+> > Michal
+> 
+> 
+> 
+> As Documentation/kbuild/kbuild.rst mentions,
+> you can override MODLIB.
+> 
+> Kbuild already provides the maximum flexibility.
+> 
+> 
+> $ make modules_install \
+>   INSTALL_MOD_PATH=/path/to/whatever/staging/dir \
+>   MODLIB=/path/to/whatever/real/install/destination
 
-Signed-off-by: Changbin Du <changbin.du@huawei.com>
----
- tools/perf/Documentation/perf-ftrace.txt | 16 +++---
- tools/perf/Documentation/perf-record.txt | 73 +++++++++++++-----------
- 2 files changed, 48 insertions(+), 41 deletions(-)
+That's great that we have another workaround for the case when the
+kernel build system and kmod do not agree on the location of the kernel
+modules.
 
-diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
-index df4595563801..d780b93fcf87 100644
---- a/tools/perf/Documentation/perf-ftrace.txt
-+++ b/tools/perf/Documentation/perf-ftrace.txt
-@@ -96,8 +96,9 @@ OPTIONS for 'perf ftrace trace'
- 
- --func-opts::
- 	List of options allowed to set:
--	  call-graph - Display kernel stack trace for function tracer.
--	  irq-info   - Display irq context info for function tracer.
-+
-+	  - call-graph - Display kernel stack trace for function tracer.
-+	  - irq-info   - Display irq context info for function tracer.
- 
- -G::
- --graph-funcs=::
-@@ -118,11 +119,12 @@ OPTIONS for 'perf ftrace trace'
- 
- --graph-opts::
- 	List of options allowed to set:
--	  nosleep-time - Measure on-CPU time only for function_graph tracer.
--	  noirqs       - Ignore functions that happen inside interrupt.
--	  verbose      - Show process names, PIDs, timestamps, etc.
--	  thresh=<n>   - Setup trace duration threshold in microseconds.
--	  depth=<n>    - Set max depth for function graph tracer to follow.
-+
-+	  - nosleep-time - Measure on-CPU time only for function_graph tracer.
-+	  - noirqs       - Ignore functions that happen inside interrupt.
-+	  - verbose      - Show process names, PIDs, timestamps, etc.
-+	  - thresh=<n>   - Setup trace duration threshold in microseconds.
-+	  - depth=<n>    - Set max depth for function graph tracer to follow.
- 
- 
- OPTIONS for 'perf ftrace latency'
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index 9c01076f6c89..8ee5d60225ec 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -523,9 +523,10 @@ CLOCK_BOOTTIME, CLOCK_REALTIME and CLOCK_TAI.
- Select AUX area tracing Snapshot Mode. This option is valid only with an
- AUX area tracing event. Optionally, certain snapshot capturing parameters
- can be specified in a string that follows this option:
--  'e': take one last snapshot on exit; guarantees that there is at least one
-+
-+  - 'e': take one last snapshot on exit; guarantees that there is at least one
-        snapshot in the output file;
--  <size>: if the PMU supports this, specify the desired snapshot size.
-+  - <size>: if the PMU supports this, specify the desired snapshot size.
- 
- In Snapshot Mode trace data is captured only when signal SIGUSR2 is received
- and on exit if the above 'e' option is given.
-@@ -572,8 +573,9 @@ providing implementation for Posix AIO API.
- 
- --affinity=mode::
- Set affinity mask of trace reading thread according to the policy defined by 'mode' value:
--  node - thread affinity mask is set to NUMA node cpu mask of the processed mmap buffer
--  cpu  - thread affinity mask is set to cpu of the processed mmap buffer
-+
-+  - node - thread affinity mask is set to NUMA node cpu mask of the processed mmap buffer
-+  - cpu  - thread affinity mask is set to cpu of the processed mmap buffer
- 
- --mmap-flush=number::
- 
-@@ -625,16 +627,17 @@ Record timestamp boundary (time of first/last samples).
- --switch-output[=mode]::
- Generate multiple perf.data files, timestamp prefixed, switching to a new one
- based on 'mode' value:
--  "signal" - when receiving a SIGUSR2 (default value) or
--  <size>   - when reaching the size threshold, size is expected to
--             be a number with appended unit character - B/K/M/G
--  <time>   - when reaching the time threshold, size is expected to
--             be a number with appended unit character - s/m/h/d
- 
--             Note: the precision of  the size  threshold  hugely depends
--             on your configuration  - the number and size of  your  ring
--             buffers (-m). It is generally more precise for higher sizes
--             (like >5M), for lower values expect different sizes.
-+  - "signal" - when receiving a SIGUSR2 (default value) or
-+  - <size>   - when reaching the size threshold, size is expected to
-+               be a number with appended unit character - B/K/M/G
-+  - <time>   - when reaching the time threshold, size is expected to
-+               be a number with appended unit character - s/m/h/d
-+
-+               Note: the precision of  the size  threshold  hugely depends
-+               on your configuration  - the number and size of  your  ring
-+               buffers (-m). It is generally more precise for higher sizes
-+               (like >5M), for lower values expect different sizes.
- 
- A possible use case is to, given an external event, slice the perf.data file
- that gets then processed, possibly via a perf script, to decide if that
-@@ -680,11 +683,12 @@ choice in this option.  For example, --synth=no would have MMAP events for
- kernel and modules.
- 
- Available types are:
--  'task'    - synthesize FORK and COMM events for each task
--  'mmap'    - synthesize MMAP events for each process (implies 'task')
--  'cgroup'  - synthesize CGROUP events for each cgroup
--  'all'     - synthesize all events (default)
--  'no'      - do not synthesize any of the above events
-+
-+  - 'task'    - synthesize FORK and COMM events for each task
-+  - 'mmap'    - synthesize MMAP events for each process (implies 'task')
-+  - 'cgroup'  - synthesize CGROUP events for each cgroup
-+  - 'all'     - synthesize all events (default)
-+  - 'no'      - do not synthesize any of the above events
- 
- --tail-synthesize::
- Instead of collecting non-sample events (for example, fork, comm, mmap) at
-@@ -736,18 +740,19 @@ ctl-fifo / ack-fifo are opened and used as ctl-fd / ack-fd as follows.
- Listen on ctl-fd descriptor for command to control measurement.
- 
- Available commands:
--  'enable'           : enable events
--  'disable'          : disable events
--  'enable name'      : enable event 'name'
--  'disable name'     : disable event 'name'
--  'snapshot'         : AUX area tracing snapshot).
--  'stop'             : stop perf record
--  'ping'             : ping
--
--  'evlist [-v|-g|-F] : display all events
--                       -F  Show just the sample frequency used for each event.
--                       -v  Show all fields.
--                       -g  Show event group information.
-+
-+  - 'enable'           : enable events
-+  - 'disable'          : disable events
-+  - 'enable name'      : enable event 'name'
-+  - 'disable name'     : disable event 'name'
-+  - 'snapshot'         : AUX area tracing snapshot).
-+  - 'stop'             : stop perf record
-+  - 'ping'             : ping
-+  - 'evlist [-v|-g|-F] : display all events
-+
-+                         -F  Show just the sample frequency used for each event.
-+                         -v  Show all fields.
-+                         -g  Show event group information.
- 
- Measurements can be started with events disabled using --delay=-1 option. Optionally
- send control command completion ('ack\n') to ack-fd descriptor to synchronize with the
-@@ -808,10 +813,10 @@ the second monitors CPUs 1 and 5-7 with the affinity mask 5-7.
- <spec> value can also be a string meaning predefined parallel threads
- layout:
- 
--    cpu    - create new data streaming thread for every monitored cpu
--    core   - create new thread to monitor CPUs grouped by a core
--    package - create new thread to monitor CPUs grouped by a package
--    numa   - create new threed to monitor CPUs grouped by a NUMA domain
-+    - cpu    - create new data streaming thread for every monitored cpu
-+    - core   - create new thread to monitor CPUs grouped by a core
-+    - package - create new thread to monitor CPUs grouped by a package
-+    - numa   - create new threed to monitor CPUs grouped by a NUMA domain
- 
- Predefined layouts can be used on systems with large number of CPUs in
- order not to spawn multiple per-cpu streaming threads but still avoid LOST
--- 
-2.25.1
+However, they should by default agree, and if this feature is merged
+into kmod the kernel should also adapt to make sure the modules are
+installed where kmod expects them.
 
+Thanks
+
+Michal
