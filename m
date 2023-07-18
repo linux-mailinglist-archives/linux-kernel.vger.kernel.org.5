@@ -2,121 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5BD758078
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E279375807B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233086AbjGRPKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 11:10:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47308 "EHLO
+        id S233397AbjGRPKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 11:10:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbjGRPKO (ORCPT
+        with ESMTP id S231501AbjGRPK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 11:10:14 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47BA391;
-        Tue, 18 Jul 2023 08:10:13 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-bad0c4f6f50so8295894276.1;
-        Tue, 18 Jul 2023 08:10:13 -0700 (PDT)
+        Tue, 18 Jul 2023 11:10:27 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB66171A;
+        Tue, 18 Jul 2023 08:10:26 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3a3efee1d44so4313944b6e.3;
+        Tue, 18 Jul 2023 08:10:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689693012; x=1692285012;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=8G72SQQvEAGIOu2XhscKjAI4N+s0xdWDLE6O4dTKvKk=;
-        b=g4DqZ0Q+wouW6Y3R5ZID3YLkCbFZYL71juAB+/HBwZhw2W9Yo/Y4/x+vuJw1cLXVRj
-         cRpQlc6HlMj1rWDxb3tMEajCoKju+eyQPMA3HNO6Vlmm7kslf2OC02xzVVJJZ0vstNtP
-         V4mjRwsN1aLC25kK70UTwVYV4SOrmH6g0dQT9OATCAGzc1dr3XDBpgjXfmTEZKqCu31x
-         TzKA31kFD27F7GPwccQo8QrVVaaZIPP2Q8w+RU/VmoWkzwoB6V6PUN/pBKgrInXrMaSs
-         2+WWMSPxNWNuxgE4cbMhtYJh2BozLzonyJRbp46kiL0aeuxWvqmkSnIjRlA1n9CHpus1
-         y8Bg==
+        d=googlemail.com; s=20221208; t=1689693026; x=1692285026;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=JNQ6/gc5vfGP1wHAlH0r+RXd8q2VGkAv8eOnlipw9dY=;
+        b=CV3ZKEqZWXlKDj1uZ5AVabNJrLd2Eg+AK05DTeuCA+f5zQEMBxYFca0FBmwFTkHcK7
+         3MlmM5lZTYfktW0UF6SbvxyLoTf1TuBv6ZgILXcv8VOuLPDPduWcM5h/tDvlr0ypg5/q
+         smpype/Nr37YgegIwLWzCYWecOynGyznMId0h5Yu07QY99zOYbeNAPhOMiBJCFwdHIg1
+         os2djPgcqhMTtJsBcOr448wqDatFIAol+X13i+uIjse3EoWbTEh8eawvWBB+t+x4nBHX
+         AwOdbRVZlXT+Nd0dKShzXbdAGtZ+nCvMDk4XVNYGLQfeaKo9QT1PyMpwDQCP/QPpHn7V
+         zClA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689693012; x=1692285012;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1689693026; x=1692285026;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8G72SQQvEAGIOu2XhscKjAI4N+s0xdWDLE6O4dTKvKk=;
-        b=KWvZwo0r0DGdKT/JKGVJvzsvwOyJE1q4UNZ5SFa9MDTeH2EzPlrpAlhyI+0ZV7fopl
-         HeUBoWE1A0YsbqNYw9xq/+0ysVZ/JXnasWE1iiOkyefN8YFpi+F6j/BtUKIWe6TSGyMy
-         pttDvfBcohoQHI3ULWKGRHJuAfu8DTYJMoC5o5TBs5I8tueP3WI3DhjWncS6EkBBY5QR
-         vzNH84ljJxEFut22vlx2O+gksWqnkg+uRzBn84bsZZBu6y1np9TtpJ06nvggHsquJ7Bf
-         5KfAyi2eQl+dQVR9qscM1/CDWvZxsR4mHTnQeO2No21Yl4CRzHAo8KFLmAlhZF6CWenA
-         njbw==
-X-Gm-Message-State: ABy/qLaOW4p8euKH1F0+1CeahB6iBoZVjNt+jNBoZS+kCVhlAiXTiQ+v
-        84NlEHvK8C717IuIcV2kfoI=
-X-Google-Smtp-Source: APBJJlG5WwOxAX6LI+YUl4h9lmONGulHjCZNZGbmG958hHvkbXtlNVM4SuR3Oa5zU5VzkwpVVMywGA==
-X-Received: by 2002:a25:ac66:0:b0:cb8:a812:a91 with SMTP id r38-20020a25ac66000000b00cb8a8120a91mr208402ybd.0.1689693012431;
-        Tue, 18 Jul 2023 08:10:12 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z9-20020a056902054900b00be8e8772025sm442631ybs.45.2023.07.18.08.10.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 08:10:11 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <b1528e3d-15f7-7ab2-b803-917f79efe999@roeck-us.net>
-Date:   Tue, 18 Jul 2023 08:10:09 -0700
+        bh=JNQ6/gc5vfGP1wHAlH0r+RXd8q2VGkAv8eOnlipw9dY=;
+        b=LRA0oZN4mUBW4jmsOjoQ2EWbta78mTwljgAYIai1i8OEqEOAEcej0/jugixJtQnbJh
+         P+6ZhYRp3LdX7pcnFhgA+hFRz3Kdo/APSJV+0WNFofoQCfdf4ngsC3XTBLKVOBCM36lz
+         8ujR2MX2n4SrtplsBlPKkNpMPgZZF8DVSgRWiDdWpKk479KXg0UOXyiZ/r7e57NzkS0R
+         kTrGFm5b2UH7uJSFMj6jyucrTQ4vFH/HqF1ZdChzzLcIV3Yn0bsBFn9Ns4iRG+CGOlf1
+         E1yJb4S3trM7GXXGHAFSFEq8tfmejaOzxUH/QxnlSpj1M2o4ezRMxsMePL+pyBlB4dzk
+         9Jjw==
+X-Gm-Message-State: ABy/qLb0JpLIuAhc47AZr08INcMG88PRUX+b51N3aTeoKz8mPAuBFxiC
+        ews8AYOnQ6swl2gsDjFLYBQTu4xWaKdujOAs13tenJbNcBEzWA==
+X-Google-Smtp-Source: APBJJlHDVXGokvOwlHVsvWNoqkFMjjyNFTxOWLqeqnl954tIVvHpuyY0R8psa6PK/CXU+eZaGshpae8nJo4WqnvYlBA=
+X-Received: by 2002:a05:6358:7f0d:b0:134:c37f:4b60 with SMTP id
+ p13-20020a0563587f0d00b00134c37f4b60mr11494410rwn.32.1689693025766; Tue, 18
+ Jul 2023 08:10:25 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] watchdog: make Siemens Simatic watchdog driver
- default on platform
-Content-Language: en-US
-To:     Henning Schild <henning.schild@siemens.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Lee Jones <lee@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Mark Gross <markgross@kernel.org>,
-        Tobias Schaffner <tobias.schaffner@siemens.com>
-References: <20230718105213.1275-1-henning.schild@siemens.com>
- <20230718105213.1275-2-henning.schild@siemens.com>
- <ZLafwOPrw+puH+rF@smile.fi.intel.com>
- <20230718164251.13855c47@md1za8fc.ad001.siemens.net>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230718164251.13855c47@md1za8fc.ad001.siemens.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20230712143831.120701-1-wangkefeng.wang@huawei.com> <20230712143831.120701-2-wangkefeng.wang@huawei.com>
+In-Reply-To: <20230712143831.120701-2-wangkefeng.wang@huawei.com>
+From:   =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+Date:   Tue, 18 Jul 2023 17:10:14 +0200
+Message-ID: <CAJ2a_Dd+CUggq0gtaeuPSP+iCrqUH08cCwU95AYGXxv5TBWSuA@mail.gmail.com>
+Subject: Re: [PATCH 1/5] mm: introduce vma_is_stack() and vma_is_heap()
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+        selinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/18/23 07:42, Henning Schild wrote:
-> Am Tue, 18 Jul 2023 17:20:48 +0300
-> schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
-> 
->> On Tue, Jul 18, 2023 at 12:52:11PM +0200, Henning Schild wrote:
->>> If a user did choose to enable Siemens Simatic platform support they
->>> likely want that driver to be enabled without having to flip more
->>> config switches. So we make the watchdog driver config switch
->>> default to the platform driver switches value.
->>
->> A nit-pick below.
->>
->> ...
->>
->>>   config SIEMENS_SIMATIC_IPC_WDT
->>>   	tristate "Siemens Simatic IPC Watchdog"
->>>   	depends on SIEMENS_SIMATIC_IPC
->>
->>> +	default SIEMENS_SIMATIC_IPC
->>
->> It's more natural to group tristate and default, vs. depends and
->> select.
-> 
-> Will be ignored unless maintainer insists.
-> 
+On Wed, 12 Jul 2023 at 16:25, Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>
+> Introduce the two helpers for general use.
+>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  include/linux/mm.h | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 1462cf15badf..0bbeb31ac750 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -926,6 +926,18 @@ static inline bool vma_is_anonymous(struct vm_area_struct *vma)
+>         return !vma->vm_ops;
+>  }
+>
+> +static inline bool vma_is_heap(struct vm_area_struct *vma)
 
-Maintainer wants to know why "default SIEMENS_SIMATIC_IPC" is needed
-or warranted instead of the much simpler and easier to understand
-"default y".
+What about declaring the parameters const to document in code these
+functions do not modify any state, and allow callers to pass pointers
+to const?
 
-Guenter
-
+> +{
+> +       return vma->vm_start <= vma->vm_mm->brk &&
+> +               vma->vm_end >= vma->vm_mm->start_brk;
+> +}
+> +
+> +static inline bool vma_is_stack(struct vm_area_struct *vma)
+> +{
+> +       return vma->vm_start <= vma->vm_mm->start_stack &&
+> +              vma->vm_end >= vma->vm_mm->start_stack;
+> +}
+> +
+>  static inline bool vma_is_temporary_stack(struct vm_area_struct *vma)
+>  {
+>         int maybe_stack = vma->vm_flags & (VM_GROWSDOWN | VM_GROWSUP);
+> --
+> 2.41.0
+>
