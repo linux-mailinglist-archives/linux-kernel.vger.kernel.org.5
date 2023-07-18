@@ -2,963 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 278C9757170
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 03:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59849757174
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 03:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbjGRBnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 21:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33964 "EHLO
+        id S230513AbjGRBoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 21:44:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjGRBnl (ORCPT
+        with ESMTP id S230293AbjGRBoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 21:43:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2379919B;
-        Mon, 17 Jul 2023 18:43:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A794961377;
-        Tue, 18 Jul 2023 01:43:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C976C433C8;
-        Tue, 18 Jul 2023 01:43:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689644618;
-        bh=NmdHZlo9WPXrSFh9tmoB1mPtR3/xEWvPWLLFdcG9Gag=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=liJ0J36vrMuJcAulQJV81tNdNuDMdFPFcRWTIE5x9IkmWmOM0ClTPeDobfIgionu9
-         DWnGXs89yYvufdsjTZkK3VpNR1jqM2DzsashGTOfIEmtVcbNqXAStNOK2V1IE3eCAh
-         aOEYBi6RCd0Q/B1JwhBpoRuMG4L0IhHMcNqXuzplJDXJCEo+UbZs7X77oKfUoTRq5M
-         Zz9p3MUxuCEF9Y4WQTt2BJDDo/BjEcx124bUW2pnU+ZG+IgNbOCqCoaxT0uHx3tItr
-         9+sHgQkrrSm3yE97V8BsxNLS0FIE5iNEXZIx5xQaDxIjuFTHBqlwSRGGKlfPCQ5ZID
-         EJ4HMk17Xms8A==
-Date:   Tue, 18 Jul 2023 09:43:25 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux@ew.tq-group.com
-Subject: Re: [PATCH v2 2/3] arm64: dts: freescale: add initial device tree
- for MBa93xxLA SBC board
-Message-ID: <20230718014325.GS9559@dragon>
-References: <20230616072005.1781043-1-alexander.stein@ew.tq-group.com>
- <20230616072005.1781043-3-alexander.stein@ew.tq-group.com>
+        Mon, 17 Jul 2023 21:44:13 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25360E55;
+        Mon, 17 Jul 2023 18:44:08 -0700 (PDT)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R4hWP408BzLnp5;
+        Tue, 18 Jul 2023 09:41:37 +0800 (CST)
+Received: from [10.174.178.66] (10.174.178.66) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 18 Jul 2023 09:44:03 +0800
+Message-ID: <6a643bc1-ca7f-a529-ec3c-c9a770b28f3b@huawei.com>
+Date:   Tue, 18 Jul 2023 09:43:54 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230616072005.1781043-3-alexander.stein@ew.tq-group.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+Subject: Re: [PATCH net 1/3] selftests: tc: set timeout to 15 minutes
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>, Shuah Khan <shuah@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paul Blakey <paulb@mellanox.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        <mptcp@lists.linux.dev>
+CC:     Pedro Tammela <pctammela@mojatatu.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20230713-tc-selftests-lkft-v1-0-1eb4fd3a96e7@tessares.net>
+ <20230713-tc-selftests-lkft-v1-1-1eb4fd3a96e7@tessares.net>
+ <bf7f8867-6b14-dd53-a6e4-2addee4a5ad8@huawei.com>
+ <3a47f676-d661-0b7a-701b-c4cafdc25394@tessares.net>
+From:   shaozhengchao <shaozhengchao@huawei.com>
+In-Reply-To: <3a47f676-d661-0b7a-701b-c4cafdc25394@tessares.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.66]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 16, 2023 at 09:20:04AM +0200, Alexander Stein wrote:
-> This adds support for TQMa93xx module and MBa93xxLA SBC board.
-> TQMa93xx is a SOM using i.MX93 SOC. The SOM features PMIC, RAM, e-MMC and
-> some optional peripherals like SPI-NOR, RTC, EEPROM, gyroscope and
-> secure element.
-> TQMa93xxLA is a solder on type SOM and can be used directly on MBa93XXLA.
-> TQMa93xxCA is a feature compatible, socketable type SOM.
+
+
+On 2023/7/17 16:32, Matthieu Baerts wrote:
+> Hi Zhengchao Shao,
 > 
-> Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-> ---
->  arch/arm64/boot/dts/freescale/Makefile        |   1 +
->  .../freescale/imx93-tqma9352-mba93xxla.dts    | 629 ++++++++++++++++++
->  .../boot/dts/freescale/imx93-tqma9352.dtsi    | 213 ++++++
->  3 files changed, 843 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx93-tqma9352-mba93xxla.dts
->  create mode 100644 arch/arm64/boot/dts/freescale/imx93-tqma9352.dtsi
+> On 14/07/2023 04:25, shaozhengchao wrote:
+>>
+>>
+>> On 2023/7/14 5:16, Matthieu Baerts wrote:
+>>> When looking for something else in LKFT reports [1], I noticed that the
+>>> TC selftest ended with a timeout error:
+>>>
+>>>     not ok 1 selftests: tc-testing: tdc.sh # TIMEOUT 45 seconds
+>>>
+>>> The timeout had been introduced 3 years ago, see the Fixes commit below.
+>>>
+>>> This timeout is only in place when executing the selftests via the
+>>> kselftests runner scripts. I guess this is not what most TC devs are
+>>> using and nobody noticed the issue before.
+>>>
+>>> The new timeout is set to 15 minutes as suggested by Pedro [2]. It looks
+>>> like it is plenty more time than what it takes in "normal" conditions.
+>>>
+>>> Fixes: 852c8cbf34d3 ("selftests/kselftest/runner.sh: Add 45 second
+>>> timeout per test")
+>>> Cc: stable@vger.kernel.org
+>>> Link:
+>>> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230711/testrun/18267241/suite/kselftest-tc-testing/test/tc-testing_tdc_sh/log [1]
+>>> Link:
+>>> https://lore.kernel.org/netdev/0e061d4a-9a23-9f58-3b35-d8919de332d7@tessares.net/T/ [2]
+>>> Suggested-by: Pedro Tammela <pctammela@mojatatu.com>
+>>> Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+>>> ---
+>>>    tools/testing/selftests/tc-testing/settings | 1 +
+>>>    1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/tools/testing/selftests/tc-testing/settings
+>>> b/tools/testing/selftests/tc-testing/settings
+>>> new file mode 100644
+>>> index 000000000000..e2206265f67c
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/tc-testing/settings
+>>> @@ -0,0 +1 @@
+>>> +timeout=900
+>>>
+>> I remember last year when I tested all the tdc cases（qdisc + filter +
+>> action + infra） in my vm machine, it took me nearly 20 minutes.
+>> So I think it should be more than 1200 seconds if all cases need to be
+>> tested.
 > 
-> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> index a750be13ace89..2d5e9f495a646 100644
-> --- a/arch/arm64/boot/dts/freescale/Makefile
-> +++ b/arch/arm64/boot/dts/freescale/Makefile
-> @@ -141,6 +141,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8qxp-colibri-iris-v2.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8qxp-mek.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8ulp-evk.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk.dtb
-> +dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
->  
->  imx8mm-venice-gw72xx-0x-imx219-dtbs	:= imx8mm-venice-gw73xx-0x.dtb imx8mm-venice-gw73xx-0x-imx219.dtbo
->  imx8mm-venice-gw72xx-0x-rs232-rts-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-venice-gw72xx-0x-rs232-rts.dtbo
-> diff --git a/arch/arm64/boot/dts/freescale/imx93-tqma9352-mba93xxla.dts b/arch/arm64/boot/dts/freescale/imx93-tqma9352-mba93xxla.dts
-> new file mode 100644
-> index 0000000000000..a98a6592ecd83
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx93-tqma9352-mba93xxla.dts
-> @@ -0,0 +1,629 @@
-> +// SPDX-License-Identifier: (GPL-2.0-or-later OR MIT)
-> +/*
-> + * Copyright (c) 2022-2023 TQ-Systems GmbH <linux@ew.tq-group.com>,
-> + * D-82229 Seefeld, Germany.
-> + * Author: Markus Niebel
-> + * Author: Alexander Stein
-> + */
-> +/dts-v1/;
-> +
-> +#include <dt-bindings/input/input.h>
-> +#include <dt-bindings/leds/common.h>
-> +#include <dt-bindings/net/ti-dp83867.h>
-> +#include <dt-bindings/pwm/pwm.h>
-> +#include <dt-bindings/usb/pd.h>
-> +#include "imx93-tqma9352.dtsi"
-> +
-> +/{
-> +	model = "TQ-Systems i.MX93 TQMa93xxLA on MBa93xxLA SBC";
-> +	compatible = "tq,imx93-tqma9352-mba93xxla",
-> +		     "tq,imx93-tqma9352", "fsl,imx93";
-> +
-> +	chosen {
-> +		stdout-path = &lpuart1;
-> +	};
-> +
-> +	aliases {
-> +		eeprom0 = &eeprom0;
-> +		rtc0 = &pcf85063;
-> +		rtc1 = &bbnsm_rtc;
-> +	};
-> +
-> +	backlight_lvds: backlight {
-> +		compatible = "pwm-backlight";
-> +		pwms = <&tpm5 0 5000000 0>;
-> +		brightness-levels = <0 4 8 16 32 64 128 255>;
-> +		default-brightness-level = <7>;
-> +		power-supply = <&reg_12v0>;
-> +		enable-gpios = <&expander2 2 GPIO_ACTIVE_HIGH>;
-> +		status = "disabled";
-> +	};
-> +
-> +	dp_refclk: dp-refclk {
-
-Can we name the node clock-xxx?
-
-> +		compatible = "fixed-clock";
-> +		#clock-cells = <0>;
-> +		clock-frequency = <26000000>;
-> +	};
-> +
-> +	gpio-keys {
-> +		compatible = "gpio-keys";
-> +		autorepeat;
-> +
-> +		switch-a {
-> +			label = "switcha";
-> +			linux,code = <BTN_0>;
-> +			gpios = <&expander0 6 GPIO_ACTIVE_LOW>;
-> +			wakeup-source;
-> +		};
-> +
-> +		switch-b {
-> +			label = "switchb";
-> +			linux,code = <BTN_1>;
-> +			gpios = <&expander0 7 GPIO_ACTIVE_LOW>;
-> +			wakeup-source;
-> +		};
-> +	};
-> +
-> +	gpio-leds {
-> +		compatible = "gpio-leds";
-> +
-> +		led-1 {
-> +			color = <LED_COLOR_ID_GREEN>;
-> +			function = LED_FUNCTION_STATUS;
-> +			gpios = <&expander2 6 GPIO_ACTIVE_HIGH>;
-> +			linux,default-trigger = "default-on";
-> +		};
-> +
-> +		led-2 {
-> +			color = <LED_COLOR_ID_AMBER>;
-> +			function = LED_FUNCTION_HEARTBEAT;
-> +			gpios = <&expander2 7 GPIO_ACTIVE_HIGH>;
-> +			linux,default-trigger = "heartbeat";
-> +		};
-> +	};
-> +
-> +	iio-hwmon {
-> +		compatible = "iio-hwmon";
-> +		io-channels = <&adc1 0>, <&adc1 1>, <&adc1 2>, <&adc1 3>;
-> +	};
-> +
-> +	reg_3v3: regulator-3v3 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "V_3V3_MB";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +	};
-> +
-> +	reg_3v8: regulator-3v8 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "V_3V8";
-> +		regulator-min-microvolt = <3800000>;
-> +		regulator-max-microvolt = <3800000>;
-> +		gpio = <&expander0 0 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +		/* TODO: this is supply for IOT module */
-> +		regulator-always-on;
-> +	};
-> +
-> +	reg_5v0: regulator-5v0 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "V_5V0_MB";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +	};
-> +
-> +	reg_12v0: regulator-12v0 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "V_12V";
-> +		regulator-min-microvolt = <12000000>;
-> +		regulator-max-microvolt = <12000000>;
-> +		gpio = <&expander1 7 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +	};
-> +};
-> +
-> +&adc1 {
-> +	status = "okay";
-> +};
-> +
-> +&eqos {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_eqos>;
-> +	phy-mode = "rgmii-id";
-> +	phy-handle = <&ethphy_eqos>;
-> +	status = "okay";
-> +
-> +	mdio {
-> +		compatible = "snps,dwmac-mdio";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		ethphy_eqos: ethernet-phy@0 {
-> +			compatible = "ethernet-phy-ieee802.3-c22";
-> +			reg = <0>;
-> +			pinctrl-names = "default";
-> +			pinctrl-0 = <&pinctrl_eqos_phy>;
-> +			reset-gpios = <&expander1 0 GPIO_ACTIVE_LOW>;
-> +			reset-assert-us = <500000>;
-> +			reset-deassert-us = <50000>;
-> +			ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
-> +			ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
-> +			ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-> +			ti,dp83867-rxctrl-strap-quirk;
-> +			ti,clk-output-sel = <DP83867_CLK_O_SEL_OFF>;
-> +			enet-phy-lane-no-swap;
-> +			interrupt-parent = <&gpio3>;
-> +			interrupts = <26 IRQ_TYPE_EDGE_FALLING>;
-
-Place these generic properties before device/vendor specific ones.
-
-> +		};
-> +	};
-> +};
-> +
-> +&fec {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_fec>;
-> +	phy-mode = "rgmii-id";
-> +	phy-handle = <&ethphy_fec>;
-> +	fsl,magic-packet;
-> +	status = "okay";
-> +
-> +	mdio {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		clock-frequency = <5000000>;
-> +
-> +		ethphy_fec: ethernet-phy@0 {
-> +			compatible = "ethernet-phy-ieee802.3-c22";
-> +			reg = <0>;
-> +			pinctrl-names = "default";
-> +			pinctrl-0 = <&pinctrl_fec_phy>;
-> +			reset-gpios = <&expander1 1 GPIO_ACTIVE_LOW>;
-> +			reset-assert-us = <500000>;
-> +			reset-deassert-us = <50000>;
-> +			ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
-> +			ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
-> +			ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-> +			ti,dp83867-rxctrl-strap-quirk;
-> +			ti,clk-output-sel = <DP83867_CLK_O_SEL_OFF>;
-> +			enet-phy-lane-no-swap;
-> +			interrupt-parent = <&gpio3>;
-> +			interrupts = <27 IRQ_TYPE_EDGE_FALLING>;
-> +		};
-> +	};
-> +};
-> +
-> +&flexcan1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_flexcan1>;
-> +	xceiver-supply = <&reg_3v3>;
-> +	status = "okay";
-> +};
-> +
-> +&flexcan2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_flexcan2>;
-> +	xceiver-supply = <&reg_3v3>;
-> +	status = "okay";
-> +};
-> +
-> +&gpio1 {
-> +	expander-irq-hog {
-> +		gpio-hog;
-> +		gpios = <12 GPIO_ACTIVE_LOW>;
-> +		input;
-> +		line-name = "PEX_INT#";
-> +	};
-> +
-> +	rtc-irq-hog {
-> +		gpio-hog;
-> +		gpios = <14 GPIO_ACTIVE_LOW>;
-> +		input;
-> +		line-name = "RTC_EVENT#";
-> +	};
-> +};
-> +
-> +&gpio3 {
-> +	ethphy-eqos-irq-hog {
-> +		gpio-hog;
-> +		gpios = <26 GPIO_ACTIVE_LOW>;
-> +		input;
-> +		line-name = "ENET0_IRQ#";
-> +	};
-> +
-> +	ethphy-fec-irq-hog {
-> +		gpio-hog;
-> +		gpios = <27 GPIO_ACTIVE_LOW>;
-> +		input;
-> +		line-name = "ENET1_IRQ#";
-> +	};
-> +};
-> +
-> +&lpi2c3 {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	clock-frequency = <400000>;
-> +	pinctrl-names = "default", "sleep";
-> +	pinctrl-0 = <&pinctrl_lpi2c3>;
-> +	pinctrl-1 = <&pinctrl_lpi2c3>;
-> +	status = "okay";
-> +
-> +	temperature-sensor@1c {
-> +		compatible = "nxp,se97b", "jedec,jc-42.4-temp";
-> +		reg = <0x1c>;
-> +	};
-> +
-> +	eeprom2: eeprom@54 {
-> +		compatible = "nxp,se97b", "atmel,24c02";
-> +		reg = <0x54>;
-> +		pagesize = <16>;
-> +		vcc-supply = <&reg_3v3>;
-> +	};
-> +
-> +	expander0: gpio@70 {
-> +		compatible = "nxp,pca9538";
-> +		reg = <0x70>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_pexp_irq>;
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +		interrupt-controller;
-> +		#interrupt-cells = <2>;
-> +		interrupt-parent = <&gpio1>;
-> +		interrupts = <12 IRQ_TYPE_LEVEL_LOW>;
-> +		vcc-supply = <&reg_3v3>;
-> +		gpio-line-names = "3V8_EN", "",
-> +				  "", "IOT_PWRKEY",
-> +				  "IOT_RESET", "IOT_W_DISABLE",
-> +				  "BUTTON_A#", "BUTTON_B#";
-> +
-> +		/*
-> +		 * Controls the IOT W_DISABLE pin which is low active
-> +		 * as disable signal but inverted as seen from the CPU.
-> +		 * The output-low states, the signal is
-> +		 * inactive, e.g. not disabled
-> +		 */
-> +		iot_wdisable_hog: iot-wdisable-hog {
-> +			gpio-hog;
-> +			gpios = <5 GPIO_ACTIVE_HIGH>;
-> +			output-low;
-> +			line-name = "IOT_W_DISABLE";
-> +		};
-> +	};
-> +
-> +	expander1: gpio@71 {
-> +		compatible = "nxp,pca9538";
-> +		reg = <0x71>;
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +		vcc-supply = <&reg_3v3>;
-> +		gpio-line-names = "ENET1_RESET#", "ENET2_RESET#",
-> +				  "USB_RESET#", "",
-> +				  "WLAN_PD#", "WLAN_W_DISABLE#",
-> +				  "WLAN_PERST#", "12V_EN";
-> +
-> +		/*
-> +		 * Controls the WiFi card PD pin which is low active
-> +		 * as power down signal. The output-low states, the signal
-> +		 * is inactive, e.g. not power down
-> +		 */
-> +		wlan-pd-hog {
-> +			gpio-hog;
-> +			gpios = <4 GPIO_ACTIVE_LOW>;
-> +			output-low;
-> +			line-name = "WLAN_PD#";
-> +		};
-> +
-> +		/*
-> +		 * Controls the WiFi card disable pin which is low active
-> +		 * as disable signal. The output-low states, the signal
-> +		 * is inactive, e.g. not disabled
-> +		 */
-> +		wlan-wdisable-hog {
-> +			gpio-hog;
-> +			gpios = <5 GPIO_ACTIVE_LOW>;
-> +			output-low;
-> +			line-name = "WLAN_W_DISABLE#";
-> +		};
-> +
-> +		/*
-> +		 * Controls the WiFi card reset pin which is low active
-> +		 * as reset signal. The output-low states, the signal
-> +		 * is inactive, e.g. not in reset
-> +		 */
-> +		wlan-perst-hog {
-> +			gpio-hog;
-> +			gpios = <6 GPIO_ACTIVE_LOW>;
-> +			output-low;
-> +			line-name = "WLAN_PERST#";
-> +		};
-> +	};
-> +
-> +	expander2: gpio@72 {
-> +		compatible = "nxp,pca9538";
-> +		reg = <0x72>;
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +		vcc-supply = <&reg_3v3>;
-> +		gpio-line-names = "LCD_RESET#", "LCD_PWR_EN",
-> +				  "LCD_BL_EN", "DP_EN",
-> +				  "MIPI_CSI_EN", "MIPI_CSI_RST#",
-> +				  "USER_LED1", "USER_LED2";
-> +	};
-> +};
-> +
-> +&lpi2c5 {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	clock-frequency = <400000>;
-> +	pinctrl-names = "default", "sleep";
-> +	pinctrl-0 = <&pinctrl_lpi2c5>;
-> +	pinctrl-1 = <&pinctrl_lpi2c5>;
-> +	status = "okay";
-> +
-> +	dp_bridge: dp-bridge@f {
-> +		compatible = "toshiba,tc358767";
-> +		reg = <0x0f>;
-> +		reset-gpios = <&expander2 3 GPIO_ACTIVE_LOW>;
-> +		clock-names = "ref";
-> +		clocks = <&dp_refclk>;
-> +		toshiba,hpd-pin = <0>;
-> +		status = "disabled";
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			port@0 {
-> +				reg = <0>;
-> +
-> +				dp_dsi_in: endpoint {
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&lpuart1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart1>;
-> +	status = "okay";
-> +};
-> +
-> +&lpuart2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart2>;
-> +	linux,rs485-enabled-at-boot-time;
-> +	status = "okay";
-> +};
-> +
-> +/* disabled per default, console for M33 */
-> +&lpuart3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart3>;
-> +	status = "disabled";
-> +};
-> +
-> +&lpuart6 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart6>;
-> +	status = "okay";
-> +};
-> +
-> +&lpuart8 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart8>;
-> +	status = "okay";
-> +};
-> +
-> +&pcf85063 {
-> +	/* RTC_EVENT# is connected on MBa93xxLA */
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pcf85063>;
-> +	interrupt-parent = <&gpio1>;
-> +	interrupts = <14 IRQ_TYPE_EDGE_FALLING>;
-> +};
-> +
-> +&tpm5 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_tpm5>;
-> +};
-> +
-> +&usdhc2 {
-> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> +	pinctrl-0 = <&pinctrl_usdhc2_hs>, <&pinctrl_usdhc2_gpio>;
-> +	pinctrl-1 = <&pinctrl_usdhc2_uhs>, <&pinctrl_usdhc2_gpio>;
-> +	pinctrl-2 = <&pinctrl_usdhc2_uhs>, <&pinctrl_usdhc2_gpio>;
-> +	cd-gpios = <&gpio3 00 GPIO_ACTIVE_LOW>;
-> +	vmmc-supply = <&reg_usdhc2_vmmc>;
-> +	bus-width = <4>;
-> +	no-sdio;
-> +	no-mmc;
-> +	disable-wp;
-> +	status = "okay";
-> +};
-> +
-> +&iomuxc {
-> +	pinctrl_eqos: eqosgrp {
-> +		fsl,pins = <
-> +			/* PD | FSEL_2 | DSE X4 */
-> +			MX93_PAD_ENET1_MDC__ENET_QOS_MDC		0x51e
-> +			MX93_PAD_ENET1_MDIO__ENET_QOS_MDIO		0x4000051e
-> +			/* PD | FSEL_2 | DSE X6 */
-> +			MX93_PAD_ENET1_RD0__ENET_QOS_RGMII_RD0		0x57e
-> +			MX93_PAD_ENET1_RD1__ENET_QOS_RGMII_RD1		0x57e
-> +			MX93_PAD_ENET1_RD2__ENET_QOS_RGMII_RD2		0x57e
-> +			MX93_PAD_ENET1_RD3__ENET_QOS_RGMII_RD3		0x57e
-> +			/* PD | FSEL_3 | DSE X6 */
-> +			MX93_PAD_ENET1_RXC__CCM_ENET_QOS_CLOCK_GENERATE_RX_CLK	0x5fe
-> +			MX93_PAD_ENET1_RX_CTL__ENET_QOS_RGMII_RX_CTL	0x57e
-> +			/* PD | FSEL_2 | DSE X4 */
-> +			MX93_PAD_ENET1_TD0__ENET_QOS_RGMII_TD0		0x51e
-> +			MX93_PAD_ENET1_TD1__ENET_QOS_RGMII_TD1		0x51e
-> +			MX93_PAD_ENET1_TD2__ENET_QOS_RGMII_TD2		0x51e
-> +			MX93_PAD_ENET1_TD3__ENET_QOS_RGMII_TD3		0x51e
-> +			MX93_PAD_ENET1_TX_CTL__ENET_QOS_RGMII_TX_CTL	0x51e
-> +			/* PD | FSEL_3 | DSE X3 */
-> +			MX93_PAD_ENET1_TXC__CCM_ENET_QOS_CLOCK_GENERATE_TX_CLK	0x58e
-> +		>;
-> +	};
-> +
-> +	pinctrl_eqos_phy: eqosphygrp {
-> +		fsl,pins = <
-> +			MX93_PAD_CCM_CLKO1__GPIO3_IO26		0x1306
-> +		>;
-> +	};
-> +
-> +	pinctrl_fec: fecgrp {
-> +		fsl,pins = <
-> +			/* PD | FSEL_2 | DSE X4 */
-> +			MX93_PAD_ENET2_MDC__ENET1_MDC			0x51e
-> +			MX93_PAD_ENET2_MDIO__ENET1_MDIO			0x4000051e
-> +			/* PD | FSEL_2 | DSE X6 */
-> +			MX93_PAD_ENET2_RD0__ENET1_RGMII_RD0		0x57e
-> +			MX93_PAD_ENET2_RD1__ENET1_RGMII_RD1		0x57e
-> +			MX93_PAD_ENET2_RD2__ENET1_RGMII_RD2		0x57e
-> +			MX93_PAD_ENET2_RD3__ENET1_RGMII_RD3		0x57e
-> +			/* PD | FSEL_3 | DSE X6 */
-> +			MX93_PAD_ENET2_RXC__ENET1_RGMII_RXC		0x5fe
-> +			MX93_PAD_ENET2_RX_CTL__ENET1_RGMII_RX_CTL	0x57e
-> +			/* PD | FSEL_2 | DSE X4 */
-> +			MX93_PAD_ENET2_TD0__ENET1_RGMII_TD0		0x51e
-> +			MX93_PAD_ENET2_TD1__ENET1_RGMII_TD1		0x51e
-> +			MX93_PAD_ENET2_TD2__ENET1_RGMII_TD2		0x51e
-> +			MX93_PAD_ENET2_TD3__ENET1_RGMII_TD3		0x51e
-> +			MX93_PAD_ENET2_TX_CTL__ENET1_RGMII_TX_CTL	0x51e
-> +			/* PD | FSEL_3 | DSE X3 */
-> +			MX93_PAD_ENET2_TXC__ENET1_RGMII_TXC		0x58e
-> +		>;
-> +	};
-> +
-> +	pinctrl_fec_phy: fecphygrp {
-> +		fsl,pins = <
-> +			MX93_PAD_CCM_CLKO2__GPIO3_IO27		0x1306
-> +		>;
-> +	};
-> +
-> +	pinctrl_flexcan1: flexcan1grp {
-> +		fsl,pins = <
-> +			MX93_PAD_PDM_BIT_STREAM0__CAN1_RX	0x139e
-> +			MX93_PAD_PDM_CLK__CAN1_TX		0x139e
-> +		>;
-> +	};
-> +
-> +	pinctrl_flexcan2: flexcan2grp {
-> +		fsl,pins = <
-> +			MX93_PAD_GPIO_IO25__CAN2_TX		0x139e
-> +			MX93_PAD_GPIO_IO27__CAN2_RX		0x139e
-> +		>;
-> +	};
-> +
-> +	pinctrl_lpi2c3: lpi2c3grp {
-> +		fsl,pins = <
-> +			MX93_PAD_GPIO_IO28__LPI2C3_SDA		0x40000b9e
-> +			MX93_PAD_GPIO_IO29__LPI2C3_SCL		0x40000b9e
-> +		>;
-> +	};
-> +
-> +	pinctrl_lpi2c5: lpi2c5grp {
-> +		fsl,pins = <
-> +			MX93_PAD_GPIO_IO22__LPI2C5_SDA		0x40000b9e
-> +			MX93_PAD_GPIO_IO23__LPI2C5_SCL		0x40000b9e
-> +		>;
-> +	};
-> +
-> +	pinctrl_pcf85063: pcf85063grp {
-> +		fsl,pins = <
-> +			MX93_PAD_SAI1_RXD0__GPIO1_IO14		0x1306
-> +		>;
-> +	};
-> +
-> +	pinctrl_pexp_irq: pexpirqgrp {
-> +		fsl,pins = <
-> +			MX93_PAD_SAI1_TXC__GPIO1_IO12		0x1306
-> +		>;
-> +	};
-> +
-> +	pinctrl_tpm5: tpm5grp {
-> +		fsl,pins = <
-> +			MX93_PAD_GPIO_IO06__TPM5_CH0		0x57e
-> +		>;
-> +	};
-> +
-> +	pinctrl_typec: typecgrp {
-> +		fsl,pins = <
-> +			MX93_PAD_I2C2_SCL__GPIO1_IO02		0x1306
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart1: uart1grp {
-> +		fsl,pins = <
-> +			MX93_PAD_UART1_RXD__LPUART1_RX		0x31e
-> +			MX93_PAD_UART1_TXD__LPUART1_TX		0x31e
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart2: uart2grp {
-> +		fsl,pins = <
-> +			MX93_PAD_UART2_TXD__LPUART2_TX		0x31e
-> +			MX93_PAD_UART2_RXD__LPUART2_RX		0x31e
-> +			MX93_PAD_SAI1_TXD0__LPUART2_RTS_B	0x31e
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart3: uart3grp {
-> +		fsl,pins = <
-> +			MX93_PAD_GPIO_IO14__LPUART3_TX		0x31e
-> +			MX93_PAD_GPIO_IO15__LPUART3_RX		0x31e
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart6: uart6grp {
-> +		fsl,pins = <
-> +			MX93_PAD_GPIO_IO04__LPUART6_TX		0x31e
-> +			MX93_PAD_GPIO_IO05__LPUART6_RX		0x31e
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart8: uart8grp {
-> +		fsl,pins = <
-> +			MX93_PAD_GPIO_IO12__LPUART8_TX		0x31e
-> +			MX93_PAD_GPIO_IO13__LPUART8_RX		0x31e
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
-> +		fsl,pins = <
-> +			MX93_PAD_SD2_CD_B__GPIO3_IO00		0x31e
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2_hs: usdhc2hsgrp {
-> +		fsl,pins = <
-> +			/* HYS | PD | PU | FSEL_3 | DSE X5 */
-> +			MX93_PAD_SD2_CLK__USDHC2_CLK		0x17be
-> +			/* HYS | PD | PU | FSEL_3 | DSE X4 */
-> +			MX93_PAD_SD2_CMD__USDHC2_CMD		0x139e
-> +			/* HYS | PD | PU | FSEL_3 | DSE X3 */
-> +			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x138e
-> +			MX93_PAD_SD2_DATA1__USDHC2_DATA1	0x138e
-> +			MX93_PAD_SD2_DATA2__USDHC2_DATA2	0x138e
-> +			MX93_PAD_SD2_DATA3__USDHC2_DATA3	0x138e
-> +			/* PD | PU | FSEL_2 | DSE X3 */
-> +			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x50e
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2_uhs: usdhc2uhsgrp {
-> +		fsl,pins = <
-> +			/* HYS | PD | PU | FSEL_3 | DSE X6 */
-> +			MX93_PAD_SD2_CLK__USDHC2_CLK		0x17fe
-> +			/* HYS | PD | PU | FSEL_3 | DSE X4 */
-> +			MX93_PAD_SD2_CMD__USDHC2_CMD		0x139e
-> +			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x139e
-> +			MX93_PAD_SD2_DATA1__USDHC2_DATA1	0x139e
-> +			MX93_PAD_SD2_DATA2__USDHC2_DATA2	0x139e
-> +			MX93_PAD_SD2_DATA3__USDHC2_DATA3	0x139e
-> +			/* PD | PU | FSEL_2 | DSE X3 */
-> +			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x50e
-> +		>;
-> +	};
-> +};
-> diff --git a/arch/arm64/boot/dts/freescale/imx93-tqma9352.dtsi b/arch/arm64/boot/dts/freescale/imx93-tqma9352.dtsi
-> new file mode 100644
-> index 0000000000000..2f2bb2c49f04c
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx93-tqma9352.dtsi
-> @@ -0,0 +1,213 @@
-> +// SPDX-License-Identifier: (GPL-2.0-or-later OR MIT)
-> +/*
-> + * Copyright (c) 2022 TQ-Systems GmbH <linux@ew.tq-group.com>,
-> + * D-82229 Seefeld, Germany.
-> + * Author: Markus Niebel
-> + */
-> +
-> +#include "imx93.dtsi"
-> +
-> +/{
-> +	model = "TQ-Systems i.MX93 TQMa93xxLA/TQMa93xxCA SOM";
-> +	compatible = "tq,imx93-tqma9352", "fsl,imx93";
-> +
-> +	reserved-memory {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		linux,cma {
-> +			compatible = "shared-dma-pool";
-> +			reusable;
-> +			alloc-ranges = <0 0x60000000 0 0x40000000>;
-> +			size = <0 0x10000000>;
-> +			linux,cma-default;
-> +		};
-> +	};
-> +
-> +	reg_v1v8: regulator-v1v8 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "V_1V8";
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +	};
-> +
-> +	reg_v3v3: regulator-v3v3 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "V_3V3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +	};
-> +
-> +	/* SD2 RST# via PMIC SW_EN */
-> +	reg_usdhc2_vmmc: regulator-usdhc2 {
-> +		compatible = "regulator-fixed";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_reg_usdhc2_vmmc>;
-> +		regulator-name = "VSD_3V3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		vin-supply = <&reg_v3v3>;
-> +		gpio = <&gpio3 7 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +	};
-> +};
-> +
-> +&adc1 {
-> +	vref-supply = <&reg_v1v8>;
-> +};
-> +
-> +&flexspi1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_flexspi1>;
-> +	status = "okay";
-> +
-> +	flash0: flash@0 {
-> +		reg = <0>;
-> +		compatible = "jedec,spi-nor";
-
-We generally start properties with compatible.
-
-Shawn
-
-> +		/*
-> +		 * no DQS, RXCLKSRC internal loop back, max 66 MHz
-> +		 * clk framework uses CLK_DIVIDER_ROUND_CLOSEST
-> +		 * selected value together with root from
-> +		 * IMX93_CLK_SYS_PLL_PFD1 @ 800.000.000 Hz helps to
-> +		 * respect the maximum value.
-> +		 */
-> +		spi-max-frequency = <62000000>;
-> +		spi-tx-bus-width = <4>;
-> +		spi-rx-bus-width = <4>;
-> +	};
-> +};
-> +
-> +&gpio1 {
-> +	pmic-irq-hog {
-> +		gpio-hog;
-> +		gpios = <2 GPIO_ACTIVE_LOW>;
-> +		input;
-> +		line-name = "PMIC_IRQ#";
-> +	};
-> +};
-> +
-> +&lpi2c1 {
-> +	clock-frequency = <400000>;
-> +	pinctrl-names = "default", "sleep";
-> +	pinctrl-0 = <&pinctrl_lpi2c1>;
-> +	pinctrl-1 = <&pinctrl_lpi2c1>;
-> +	status = "okay";
-> +
-> +	se97_som: temperature-sensor@1b {
-> +		compatible = "nxp,se97b", "jedec,jc-42.4-temp";
-> +		reg = <0x1b>;
-> +	};
-> +
-> +	pcf85063: rtc@51 {
-> +		compatible = "nxp,pcf85063a";
-> +		reg = <0x51>;
-> +		quartz-load-femtofarads = <7000>;
-> +	};
-> +
-> +	eeprom0: eeprom@53 {
-> +		compatible = "nxp,se97b", "atmel,24c02";
-> +		reg = <0x53>;
-> +		pagesize = <16>;
-> +		read-only;
-> +		vcc-supply = <&reg_v3v3>;
-> +	};
-> +
-> +	eeprom1: eeprom@57 {
-> +		compatible = "atmel,24c64";
-> +		reg = <0x57>;
-> +		pagesize = <32>;
-> +		vcc-supply = <&reg_v3v3>;
-> +	};
-> +
-> +	/* protectable identification memory (part of M24C64-D @57) */
-> +	eeprom@5f {
-> +		compatible = "st,24c64", "atmel,24c64";
-> +		reg = <0x5f>;
-> +		size = <32>;
-> +		pagesize = <32>;
-> +		vcc-supply = <&reg_v3v3>;
-> +	};
-> +
-> +	imu@6a {
-> +		compatible = "st,ism330dhcx";
-> +		reg = <0x6a>;
-> +		vdd-supply = <&reg_v3v3>;
-> +		vddio-supply = <&reg_v3v3>;
-> +	};
-> +};
-> +
-> +&usdhc1 {
-> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> +	pinctrl-0 = <&pinctrl_usdhc1>;
-> +	pinctrl-1 = <&pinctrl_usdhc1>;
-> +	pinctrl-2 = <&pinctrl_usdhc1>;
-> +	bus-width = <8>;
-> +	non-removable;
-> +	no-sdio;
-> +	no-sd;
-> +	status = "okay";
-> +};
-> +
-> +&wdog3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_wdog>;
-> +	status = "okay";
-> +};
-> +
-> +&iomuxc {
-> +	pinctrl_flexspi1: flexspi1grp {
-> +		fsl,pins = <
-> +			MX93_PAD_SD3_CMD__FLEXSPI1_A_SS0_B	0x3fe
-> +			MX93_PAD_SD3_CLK__FLEXSPI1_A_SCLK	0x3fe
-> +			MX93_PAD_SD3_DATA0__FLEXSPI1_A_DATA00	0x3fe
-> +			MX93_PAD_SD3_DATA1__FLEXSPI1_A_DATA01	0x3fe
-> +			MX93_PAD_SD3_DATA2__FLEXSPI1_A_DATA02	0x3fe
-> +			MX93_PAD_SD3_DATA3__FLEXSPI1_A_DATA03	0x3fe
-> +		>;
-> +	};
-> +
-> +	pinctrl_lpi2c1: lpi2c1grp {
-> +		fsl,pins = <
-> +			MX93_PAD_I2C1_SCL__LPI2C1_SCL		0x40000b9e
-> +			MX93_PAD_I2C1_SDA__LPI2C1_SDA		0x40000b9e
-> +		>;
-> +	};
-> +
-> +	pinctrl_pca9451: pca9451grp {
-> +		fsl,pins = <
-> +			MX93_PAD_I2C2_SDA__GPIO1_IO03		0x1306
-> +		>;
-> +	};
-> +
-> +	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
-> +		fsl,pins = <
-> +			MX93_PAD_SD2_RESET_B__GPIO3_IO07	0x1306
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc1: usdhc1grp {
-> +		fsl,pins = <
-> +			/* HYS | PU | PD | FSEL_3 | X5 */
-> +			MX93_PAD_SD1_CLK__USDHC1_CLK		0x17be
-> +			MX93_PAD_SD1_STROBE__USDHC1_STROBE	0x17be
-> +			/* HYS | PU | FSEL_3 | X5 */
-> +			MX93_PAD_SD1_CMD__USDHC1_CMD		0x13be
-> +			/* HYS | PU | FSEL_3 | X4 */
-> +			MX93_PAD_SD1_DATA0__USDHC1_DATA0	0x139e
-> +			MX93_PAD_SD1_DATA1__USDHC1_DATA1	0x139e
-> +			MX93_PAD_SD1_DATA2__USDHC1_DATA2	0x139e
-> +			MX93_PAD_SD1_DATA3__USDHC1_DATA3	0x139e
-> +			MX93_PAD_SD1_DATA4__USDHC1_DATA4	0x139e
-> +			MX93_PAD_SD1_DATA5__USDHC1_DATA5	0x139e
-> +			MX93_PAD_SD1_DATA6__USDHC1_DATA6	0x139e
-> +			MX93_PAD_SD1_DATA7__USDHC1_DATA7	0x139e
-> +		>;
-> +	};
-> +
-> +	pinctrl_wdog: wdoggrp {
-> +		fsl,pins = <
-> +			MX93_PAD_WDOG_ANY__WDOG1_WDOG_ANY	0x31e
-> +		>;
-> +	};
-> +};
-> -- 
-> 2.34.1
+> Thank you for your feedback!
 > 
+Hi Matthieu:
+> Be careful that here, it is the timeout to run "tdc.sh" only which is
+> currently limited to:
+> 
+>    ./tdc.py -c actions --nobuildebpf
+>    ./tdc.py -c qdisc
+> 
+> (not "filter", nor "infra" then)
+> 
+> I guess for this, 15 minutes is more than enough, no?
+> 
+15 minutes is enough for qdisc and actions. Thanks.
+
+> At least on my side, I ran it in a i386 VM without KVM and it took less
+> than 3 minutes [1].
+> 
+> Cheers,
+> Matt
+> 
+> [1]
+> https://tuxapi.tuxsuite.com/v1/groups/community/projects/matthieu.baerts/tests/2SWHb7PJfqkUX1m8rLu3GXbsHE0/logs?format=html
+
+
+Reviewed-by: Zhengchao Shao <shaozhengchao@huawei.com>
