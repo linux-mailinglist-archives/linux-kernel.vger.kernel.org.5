@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B347583AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB6E7583B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231835AbjGRRnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:43:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
+        id S232545AbjGRRnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:43:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbjGRRnO (ORCPT
+        with ESMTP id S231987AbjGRRnQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:43:14 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B302010FC
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:43:13 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fbf1b82dc7so55921525e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:43:13 -0700 (PDT)
+        Tue, 18 Jul 2023 13:43:16 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C5C10CB
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:43:15 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3158a5e64b6so5710864f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:43:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689702192; x=1692294192;
+        d=linaro.org; s=google; t=1689702194; x=1692294194;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=98ERLGEzzFsSGM5kWcXTpFq/KRJ2f5sxbyycdksneCo=;
-        b=YYm8PUxAVR223qq2FGu7rlknrk0r+PwaSRnJClvpTpXDLBU17aO8J6lCfNRUEE4C7V
-         9ebMljIfMH/fHHANYn+Kxqh3Mw3nq5KvtYn3PKH0b5m1R2a9Ep0YI2NJqSiRtS8uCOFT
-         AKX2y3mOVAbGo9g++6hCqomP+nekoCFFg1VYSOFD2IDDO7y06Ahgr3idr6Csh3Y1TZlD
-         +YZs+XV9oKK2I/wesJ1DQd8pUhXeZZ3Af1lW7JvaHJGKj/ohhDYGnNxlr3WBH4VXDx8c
-         5TAtVsmDeVCGkyp/oZi/A964+NeZvdSiyNkPMB/sDU9WTRV1NeUzs2ITnP/4lKNKGrcZ
-         lhhg==
+        bh=d+k9BdcG6/wKA2WJ+Z1glGS1nq3dMoRFR2hTr195Q+U=;
+        b=PLvVSjnMvyHl1OZDIGH9hu6A+tKXzQyznVfttIiff4Y8nw+DzE7Bp7lfFDNQXwJ9wf
+         dUosAf+mXDdAIe2nv9JD97+sLC+Y1NG/7gTrwGfgXCWp2IyvwYZKDSIt2v3TZg+SbRxE
+         +j4hCOL/wQvXB1MUn3hb104EIoQgO9ycMQvXKHQQBKy7eaxG08pqbDhQA0e2hr/NqJNp
+         CZMMpN2zsbnO4w1zQ+mO5dxRVpy+HzN9Y6yahe+g002Z50dAiTOxNZvjnMbeKPmIg+0E
+         V2BDrlirbymAPXdn8iYZo0qvTNingfTyMFD68W4lVbMcuPU8bDkc+B9zfd50kFY4GSF9
+         kb7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689702192; x=1692294192;
+        d=1e100.net; s=20221208; t=1689702194; x=1692294194;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=98ERLGEzzFsSGM5kWcXTpFq/KRJ2f5sxbyycdksneCo=;
-        b=kWWNv2aUGQG5vOTYqYwGs5bFNCLl6fbk1X/XaY5b8qzTfsya6yCTwKaAwPlOu7KS7/
-         Yl+fgh8gt6gQgQ9wXRXRrxviuWfHg0HwtMGEY7EZTkbgIatNLTRlUN/dswYvf7G8OX2A
-         /ggDzIa8F18cV5G5KEm+kO6b4B26tfVOJq/CGxwDLOpy8jSHzOc3VIWzUdVBGNtWrWVX
-         +EM7rM8OE88q3IpbVjkWaLcxMp8jxGeGC6mF2J1yN/gKFsmyL5tjVI8X/bBrcj4nCcNc
-         fSkq0ReW2Q37C3c1YrJL3DZmehUaLbw5s0FVXseb3aLv58ONd40Z3dLf4XTdi7Dy0LqF
-         AY2Q==
-X-Gm-Message-State: ABy/qLZuCmMlhqDVIWGVBwNMreW7OmPt11BrtqQULPNXvS3wL7/nv0jX
-        E0hpeT8Me5lSbRAX3D9p4AtPKQ==
-X-Google-Smtp-Source: APBJJlHyMltQW8ciWBdPi/f4EOTqO9ZS9c26e5KDJ8Qq+syvkgJ09AZ87262Y9A/jo9xrK8GYhDuVw==
-X-Received: by 2002:a05:600c:ac8:b0:3fc:6b:15d4 with SMTP id c8-20020a05600c0ac800b003fc006b15d4mr2658444wmr.27.1689702192236;
-        Tue, 18 Jul 2023 10:43:12 -0700 (PDT)
+        bh=d+k9BdcG6/wKA2WJ+Z1glGS1nq3dMoRFR2hTr195Q+U=;
+        b=RLp/gDVuxnOuPpMGebNF8XNZ3ExODsjRVT7NgJqyEYxFF7CxGPcX55HqODgTU8wMaj
+         yhx862apOM1iSQX86s9Ptg06eJmu5Ru11/ohTpKMj/Sp20exPMQ0ZLjKu2K81hE80LaY
+         ZIkI0qI5yRb9T+NnUv9JLA/+3zKA9LlCj3uEz3U298FMe79cURP9QH8PN6iMno/6DeR4
+         Cw+kAwh3XrRErQlh8tvSzlPxBoOougNg0wxYOrc88zTZKmzU9FUk5py8YpAt6qdMbXYs
+         rO/pwRpJmBAm4eFFCheUlZQRTCJNvVnrPmzW/wv1SmNwoQn8qk5Py7I7e8htPRREwUgE
+         J5qw==
+X-Gm-Message-State: ABy/qLarGpVAJiAE5hfmfsrWVNaJOyPICrEbzqcI0eQ0zM4bmUlXCj0s
+        doqwGSJJ2td0EkM+/KR9YGZpH8diEZnn25PWH9U=
+X-Google-Smtp-Source: APBJJlHpU5h377RzXJrLYNSB4ttt+B1dMQTiBr3QdTXBVoZ6aerI86g50rdX7YHhRnj/5zYkUn/hqw==
+X-Received: by 2002:a5d:52c5:0:b0:314:545f:6e8e with SMTP id r5-20020a5d52c5000000b00314545f6e8emr11873879wrv.62.1689702194500;
+        Tue, 18 Jul 2023 10:43:14 -0700 (PDT)
 Received: from 1.. ([79.115.63.146])
-        by smtp.gmail.com with ESMTPSA id b5-20020a5d6345000000b003143b14848dsm2951442wrw.102.2023.07.18.10.43.10
+        by smtp.gmail.com with ESMTPSA id b5-20020a5d6345000000b003143b14848dsm2951442wrw.102.2023.07.18.10.43.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 10:43:11 -0700 (PDT)
+        Tue, 18 Jul 2023 10:43:14 -0700 (PDT)
 From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-To:     Pratyush Yadav <pratyush@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v5] mtd: spi-nor: Correct flags for Winbond w25q128
-Date:   Tue, 18 Jul 2023 20:43:06 +0300
-Message-Id: <168970217897.7924.10145147121934448003.b4-ty@linaro.org>
+To:     tkuw584924@gmail.com, takahiro.kuwano@infineon.com,
+        michael@walle.cc, pratyush@kernel.org,
+        Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bacem.daassi@infineon.com, miquel.raynal@bootlin.com,
+        richard@nod.at
+Subject: Re: [PATCH] mtd: spi-nor: rename method for enabling or disabling octal DTR
+Date:   Tue, 18 Jul 2023 20:43:07 +0300
+Message-Id: <168970217898.7924.7478939621103935495.b4-ty@linaro.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230718-spi-nor-winbond-w25q128-v5-1-a73653ee46c3@linaro.org>
-References: <20230718-spi-nor-winbond-w25q128-v5-1-a73653ee46c3@linaro.org>
+In-Reply-To: <20230714150757.15372-1-tudor.ambarus@linaro.org>
+References: <20230616050600.8793-1-Takahiro.Kuwano@infineon.com> <20230714150757.15372-1-tudor.ambarus@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=610; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=yycelzf1xRPrlA4DjYfbz/GMcmdf2Vty6uB2xU9GFBw=; b=owGbwMvMwMXoHervvrRX5CXjabUkhpRt5zV5ePc9n3OFQV3i+da0ixGMHXt+7jgqN6Hj24Z61 Vql1DD/TkZjFgZGLgZZMUUWWSetU+f5TuTGyf67DzOIlQlkCgMXpwBMxCGSg2F1Z5l7nyNjsEFZ 7qUz0nEFgbNaMg1KYxckd1SuLlc+qN02abPGc7GetmOart22S1U0m07NOJcr+8j8pxATg4DJr4K s4kNaEjEnHxw/XLvovliKT2D9tIlFAe5hdyt7FVkvMTPMzk4Ktv12OjxW/q6xbza3q4lH2DHBHQ 3P74ppFv27GSfccS9VUS1jReKh2ac/mIjumO/u9S5NZ/aX9D8zL7YyK7ybuajy9c56vjMcKzMf/ Eo5eMefqS14fbrIb35Zi0srngpuWrKqwuurkO2dS3X6Mqcl6wSNJqTx2k0Obrr3yvtCcQ/H270z VWUq/uRtbH5nZRi0cJ/SC4HFM1+lreVOK/A/FOE1oXoCAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=784; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=O3mGwcG/uRgZe0IXPsDP8xQtTqGuZ1b7Ksp9CjPvyGc=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBkts8ppPuVf7YB2psHt9WHAQSmjLszLMRGZT1zl pwrf0twS+aJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZLbPKQAKCRBLVU9HpY0U 6dmrCACTnsHqsHOTTnpDdSZQpw+DNOz3lEr1iMssZNduZkU7c2aW4JFjSJ8rec13FW2SeAPa5Rh HxSjlKpDowVp2rZWnam0ScHAwzKaK6G1C/A39u+/nrB12e7xgMxq9hqhz+0SAG9D076ih1Mfpnr XPIT8226yJqPHAC+Uqp0ACgt0auAndL3UQknxtZYEBMIuOodQPeyc/+tyMN+gYYFwqfSEOHaojv YZ2lH8xPOgpjLrUkmWAo0+0guGXBrb05bw65e5wjrH7ZO7utAEPg3Og9gM0cB9+Wbe8zeC5uQju X97+QoosIMsWFXevnwPprTUFPjMWDGFOZUMYQRqkMsYk/jUN
 X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -81,21 +78,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 13:56:11 +0200, Linus Walleij wrote:
-> The Winbond "w25q128" (actual vendor name W25Q128JV) has
-> exactly the same flags as the sibling device "w25q128jv".
-> The devices both require unlocking to enable write access.
+On Fri, 14 Jul 2023 18:07:57 +0300, Tudor Ambarus wrote:
+> Having an *_enable(..., bool enable) definition was misleading
+> as the method is used both to enable and to disable the octal DTR
+> mode. Splitting the method in the core in two, one to enable and
+> another to disable the octal DTR mode does not make sense as the
+> method is straight forward and we'd introduce code duplication.
 > 
-> The actual product naming between devices vs the Linux
-> strings in winbond.c:
+> Update the core to use:
+> int (*set_octal_dtr)(struct spi_nor *nor, bool enable);
 > 
 > [...]
 
 Applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
 spi-nor/next branch. Thanks!
 
-[1/1] mtd: spi-nor: Correct flags for Winbond w25q128
-      https://git.kernel.org/mtd/c/83e824a4a595
+[1/1] mtd: spi-nor: rename method for enabling or disabling octal DTR
+      https://git.kernel.org/mtd/c/d4996700abc1
 
 Cheers,
 -- 
