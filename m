@@ -2,257 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C79A77576B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BD17576B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbjGRIgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:36:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54220 "EHLO
+        id S231852AbjGRIhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231787AbjGRIgP (ORCPT
+        with ESMTP id S229670AbjGRIhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:36:15 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2072.outbound.protection.outlook.com [40.107.8.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856DF10E;
-        Tue, 18 Jul 2023 01:36:13 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dDEjEIf7ky0o10tKLiSMc9ynfQK1WhBEaz2Vgd1dcuDQzHl69RXu3ihvqnJzvgGTw+Yr2jppMIxZkIT5b/gtMWWUt2zNhEptESYbtMl6Qv8Zn0ctki+CTzQuX7l7I8MP5iIKApJRmwbCkHjC8QPIfel9Qc649eczIi2jHVu7vdPdpXct6G5o6yTfBJDf6CZipH5XD331vKcCe3oauj5IQPckzAemz8K6kypuJIPIiGNjoph7WS7aF0Y5gyrhaIUhD4yVRPEQKQd5mSACdWp+/+3Ta4PeZLnrEv6B6jyn3qWDQ63kcmBjcoT0UZaQDMzIKt9OCS6hToXcNlGEZcJIPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oM7TtU7VlalJhGuBD4tJ6gu1lu7VYWzRSCKQrQPhkws=;
- b=MWF/RvlzTI2Y/ttkYYmosV0X/cgJPvyerDzFDfW94sJN7r8Gy8EqGZb762nVhJFSeS6NtClLIDpgoiakB3YUQnm2axsekeAa4O3aLO35CTwX6yxAaC0F9DHdkacwxQ9Y+MGR4oB4Eljl6yGURQFfkUaamXj0pyckO8IRW1h1LQIxY3UkIf6tB+xaO2KHEzcoErYv1UiZtjBSRhshEBuMQDIkf4tyQlyGp6jAcOBrmZ8SezaM+vmdF0kCZPBHlxN7zrX3s8Ib2Da+2yOPX743MOdXnqN57k0331Kz7dTEI2viKb2umOCbZvVQQw8ISqaz3jfLDGblr80DIWF6WxXKaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oM7TtU7VlalJhGuBD4tJ6gu1lu7VYWzRSCKQrQPhkws=;
- b=KTEiqKUppJOwLypakR2cLm9+ddFykp2S2ZpK5hT0YTbr/jOxZPLD0/GNicpmATHId3NKn/phd5qdGbFeASXGLJab4nyy5qiTvRzVYWfZrgGTvFK9Z7O0D96Rz3ZHZLS7IA+gEaCDG1/jFwArVH/RrC2NVwjuGtzGA9rsIDjbw1c=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by AS8PR04MB7830.eurprd04.prod.outlook.com (2603:10a6:20b:2ac::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33; Tue, 18 Jul
- 2023 08:36:09 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::c680:1128:9d53:24ae]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::c680:1128:9d53:24ae%4]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
- 08:36:09 +0000
-Date:   Tue, 18 Jul 2023 11:36:03 +0300
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Maxim Georgiev <glipus@gmail.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        =?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-        Gerhard Engleder <gerhard@engleder-embedded.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        UNGLinuxDriver@microchip.com,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Casper Andersson <casper.casan@gmail.com>,
-        Sergey Organov <sorganov@gmail.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 net-next 11/12] net: phy: provide phylib stubs for
- hardware timestamping operations
-Message-ID: <20230718083603.hl33ne4oe7f343py@skbuf>
-References: <20230717152709.574773-1-vladimir.oltean@nxp.com>
- <20230717152709.574773-12-vladimir.oltean@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717152709.574773-12-vladimir.oltean@nxp.com>
-X-ClientProxiedBy: VI1P190CA0028.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:802:2b::41) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
+        Tue, 18 Jul 2023 04:37:21 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E868115
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:37:19 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fc0aecf15bso53948425e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:37:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689669438; x=1692261438;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=K6bRLOVfSwW0qn3SMzPfFP/67dSzOtG9jDmNa7DKFhQ=;
+        b=sSX6dRkYE95JM6tA4E+4JXuPwzYm/8iu/2yxvLVU+PoHPAhUq36r+qNyoqcryZUF6s
+         9QI2OR2B2GTBPE9LPS6ISOc+UnvJHIqWKepy4sB7QUHYfUIbRSqtAy6crsi0r1PLrrSQ
+         zxU9CqmorIZX6iVyoMKwrv/YRa+rA596+MeaLCtsMX+qB1BPAKA4fni4E1XBo5Mkv5Ri
+         IS2A81ThAQwHFbmppOgki2wF7933Oa6eXp/3eZ9GW1t7CNANosZinxJg9rh6XtdUXDwa
+         CqK/V2IoknmmVBp52EUbuC8kp6TgrlOIS7mW/A+g27VtDnfeMH8CX29545o3Z+exdRYn
+         oCng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689669438; x=1692261438;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K6bRLOVfSwW0qn3SMzPfFP/67dSzOtG9jDmNa7DKFhQ=;
+        b=SSVRh0NkIgyXswf2/3dWBNuOECzWHbp4xetipsCToTTmqpFXBSj5fdkkL9zQQetAun
+         iIKA7id0ql+TQjXMH/HB+A23XQyL1OBWZ54veNz/OpK+wtKL0ePRSc3lgQkI2sqmaJr/
+         TutDi74KLmjlsYMeRcT7ZzTnhFCLkVr8PIZ+gnUA2CWkIltg1vs9RpwNdEOl0a6EHgUH
+         9Y12ReAVDutCezP2a2YUfGBLiul24uMDAExNHaNnb1VmKAIM9L+Yy+cTXA1JC8fINwKB
+         rNgtucuuemenBMUVUuqh0RMUDOMJRdxV8ldZtGqGBrqsoRJg7nQ0kCSRaWs8Zy1kGqQJ
+         g4qA==
+X-Gm-Message-State: ABy/qLazz/Y/3pmO80URZ9Y9GsHTpcucMnog7b3tVruXq97oxKpHuf8a
+        qMOgWHjpf3ud3ohOY/79XKs7Tw==
+X-Google-Smtp-Source: APBJJlEooqOWwehp95jYwVjhyi4es64yaNnAecI+7w58zjvmoB3sjpzHREGowtUoSx5lAf04Ecvhdg==
+X-Received: by 2002:a7b:cd0a:0:b0:3fb:a1d9:ede8 with SMTP id f10-20020a7bcd0a000000b003fba1d9ede8mr1172225wmj.10.1689669437674;
+        Tue, 18 Jul 2023 01:37:17 -0700 (PDT)
+Received: from [10.101.1.6] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id p1-20020adff201000000b003141f3843e6sm1677348wro.90.2023.07.18.01.37.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 01:37:17 -0700 (PDT)
+Message-ID: <59a88e00-0758-32b8-7ce4-8dea84a9b0f7@baylibre.com>
+Date:   Tue, 18 Jul 2023 10:37:13 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|AS8PR04MB7830:EE_
-X-MS-Office365-Filtering-Correlation-Id: f6d754aa-78c4-4a59-4516-08db876a089d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ahc8A5qzYobEpoJPVknzcNrdbeTzDfbXYhL6xLEjeTEJU3Fl3yKUEbiEIJGUX07CB8gGpd9/o1QzJZSpDe2rSyVzlQGCyBsj0Fz9sN1wfKgu4m998LS+xbDeoUa2L8JHFJX1s7KNNVD2WoGhE3qsAn50nqqZobIbYDPmkBI6zkccaVWkEvYvF5v5DtLqqK6Si/XYyJjTZxncga3Pan5RH+gvNFqfPYq6gPnL2cdt3mAlTcl3B1pLr1L3WV1IG3W4QUJVKZU393VD/U+uTn8Zr6+dhypcK+F01boBsEUKwgKSiHfUvKCDmCgtwJyMqnD82uVPQONOp99BpiouHmTcOD5aE1Uz94pZ+Cw5xAA+cS0yYoJzo3KEgI7uPxt21hEEtRS8kILn+Wa47QfckQelufC985xaQ7Gq6fCt2eV1PHliWSN5dAlCS2IGl8jBq4yp7j+8voa2/pQ0gwYi1KexDdOaF2fWpgXJ5kGzWYFlJsA2rdwwKcDeD5Znn7ok6A4q/o4QRZ6A5/jlE2QwsrA7YhAyi/ZEUNcchXRAgNRQJ30OScmhWFesuJI1QAfuggv1
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(4636009)(376002)(136003)(346002)(366004)(39860400002)(396003)(451199021)(6666004)(6486002)(478600001)(83380400001)(1076003)(6506007)(9686003)(26005)(6512007)(4326008)(316002)(54906003)(38100700002)(6916009)(66946007)(66556008)(66476007)(186003)(5660300002)(8676002)(8936002)(33716001)(2906002)(41300700001)(7416002)(7406005)(44832011)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?IyItKMnuaLY5wbk1F4F7aKNFgNFL0hK6Uhwj5ow9pbgfK9BwgRjqoP9yESZt?=
- =?us-ascii?Q?cByik8o/KL0AITlt7KKMmffAvnhS6rGIx5cZrNgbxi9Wp8ziBkL/fy/Ni7SY?=
- =?us-ascii?Q?u+9Rjx97o3YGWN23jZHsoA2Bhrg5VyQ4ePqMjEPqp3ipdGJh6oBesF1pXPXi?=
- =?us-ascii?Q?g96ksy/WbEoRKltF5L+XmxJM7DVZ84kxCpb1DsOn73uVsZljffh4Kz5IvfpG?=
- =?us-ascii?Q?9oBC69smrELHBvjjtOX71Osq5lxnGueYb9JoWpy/g1lyPQ697c+RaKwUTcnO?=
- =?us-ascii?Q?U8x9C7ktnq+ypTfVawy9J3t1qd17ljNdg2GKppsSt6Kr8utOnyDzyPMLjBWe?=
- =?us-ascii?Q?zJnCY84MKep0ebfwg/gNMuW9m9Ywgp5W+qiwSPxBbeKT1oZltR0WXXfrv4ku?=
- =?us-ascii?Q?9AFR8UaiQQ05F0b9T+kIH6NHaom23tWrmHuVfCt7OTERYp3cFl/rXkjB3U8M?=
- =?us-ascii?Q?CkQM7urN3AIRLNI37yTU3SeIzxfTpjlDITi9lEjgO4plMChNIQMR4OhE2wNm?=
- =?us-ascii?Q?deeVQj5PSIQaTHBZjrcm1o+/+RWoKAhJgLquLznbELw9Xx1l5CtAs1PCp4tL?=
- =?us-ascii?Q?O92Oj3OuYTG7+pd+PLY9WS1RlUeYwVDfY1n+5TZdRhoapb6pPcfzIGwFpxar?=
- =?us-ascii?Q?551hzpPAYL057kXDvGEZJdYzost3wcO30bu1RegfSD6KAn0mAAUTTvvJnvkI?=
- =?us-ascii?Q?ZoruGxL4TzzsHpmcB6o11gxTlCyzPTjYkcbdZpgDoWuafNYsa4C9DvrQzuqm?=
- =?us-ascii?Q?4zw7gB+2Nld0uxCYnrxLcLF8bOKVviIcUlmWC5ryMoBsO5pN/8jk5EUjMdeB?=
- =?us-ascii?Q?LffyGzveraRzi/fXZkZ3xcAxcPp6RSCH9qdqHhL1bgLqDFIe0TiFZaCbu46d?=
- =?us-ascii?Q?Ew5Spz9f4oWSLdNOp+NH8/W7KhKQDbbr6x4PqjQR/fzZuqVOzRSCBV+2hMZT?=
- =?us-ascii?Q?CIDJOflQ8JIykwsMkMSfj1YT97ldbC3RA6E7r3KM36Eru/BULGkw6LXJdaij?=
- =?us-ascii?Q?fTj/1Y8gBnwGYhcw5uhb8vdStFYzaNp2q+A1OaEyjVhi3kw+qrSYVmPo7jwo?=
- =?us-ascii?Q?Wm9l6TOq8gHGvriCTwhqfsy36G+Hzz7PzB3FStmD+dNrpTuDEw1c2nJvTXxf?=
- =?us-ascii?Q?Aewa4tGIGJV3yGJH0N2/PcchgU7fl3IAWep80Fszh88+zDKOSVuCEg8U/xLs?=
- =?us-ascii?Q?+u0fxR/Cx3JPN7cH3kj9Nm9lQ0NBUw05uyk32N2hbQmVTulnS9esS5qFJteo?=
- =?us-ascii?Q?No6RBmjdELlXuYVo2c46hwcz4sGcBTNJ0S9/6sr0eVyRvo5a2PkqnA5aGYBc?=
- =?us-ascii?Q?GpdiyrU6Su4cDrzJ3srDRC3wMa7GbuYMQ79asmjtfRZJ5RT8dlDhBL5AqLwE?=
- =?us-ascii?Q?J77KpTOUZfyh7qZclNSdZEpm54UvlSN03uJbXft9OTZZLyjcG4Nsf4HMD1ZD?=
- =?us-ascii?Q?LTSmvMb3ZK7SoKkXgj6zs1nXMK5B3mVhmtJl5T0zd7chgfTK8w41ybgE+ImX?=
- =?us-ascii?Q?a3VNisjp1HzM7nnb/2F5ee+VteWAfE8KtStYtELok9tt9di53wj/9Bp0tYns?=
- =?us-ascii?Q?fDh0TnKLcyvDS8ftuHNLw/M6DdOM8LEizliQNViSjPX4iq3fqwq+ZT4Y2oM3?=
- =?us-ascii?Q?sg=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6d754aa-78c4-4a59-4516-08db876a089d
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 08:36:09.5282
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: j2lbcwhq1OZYSj27r3fxg2748uG2Ps6bQgM0ekyr5u3se70J6Au9Gax2YX7rESWlmThPGH2NqcGWPOOEZqrP8w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7830
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/2] clk: mediatek: mt8195-topckgen: Refactor parents for
+ top_dp/edp muxes
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>, sboyd@kernel.org,
+        mturquette@baylibre.com, matthias.bgg@gmail.com, msp@baylibre.com,
+        yangyingliang@huawei.com, u.kleine-koenig@pengutronix.de,
+        miles.chen@mediatek.com, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, kernel@collabora.com
+References: <20230713072138.84117-1-angelogioacchino.delregno@collabora.com>
+ <20230713072138.84117-3-angelogioacchino.delregno@collabora.com>
+ <9a0817c2-4101-5c21-977d-77ac0d83a067@baylibre.com>
+ <CAGXv+5E7YYdkG7GtxG90KzdAG8Kke+74Amtbw4mmyVNZgDZHRA@mail.gmail.com>
+ <jv6daj2w3pwjtde3m3m26yg4wyxbbio4zqra5yqc4gb32ri5ub@noinbbkjovwm>
+ <25724ee3-858a-01eb-352b-3edbfad31c8e@collabora.com>
+ <jxgy2pvns4ri2aj5nmdhb4zbluseuzdejbplh2avwz63df2cfx@grrrdm6ujzi4>
+ <24d17b07-1e8d-05f6-46b7-9da1ff1bed7a@collabora.com>
+Content-Language: en-US
+From:   Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <24d17b07-1e8d-05f6-46b7-9da1ff1bed7a@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 06:27:08PM +0300, Vladimir Oltean wrote:
-> net/core/dev_ioctl.c (built-in code) will want to call phy_mii_ioctl()
-> for hardware timestamping purposes. This is not directly possible,
-> because phy_mii_ioctl() is a symbol provided under CONFIG_PHYLIB.
-> 
-> Do something similar to what was done in DSA in commit 5a17818682cf
-> ("net: dsa: replace NETDEV_PRE_CHANGE_HWTSTAMP notifier with a stub"),
-> and arrange some indirect calls to phy_mii_ioctl() through a stub
-> structure containing function pointers, that's provided by phylib as
-> built-in even when CONFIG_PHYLIB=m, and which phy_init() populates at
-> runtime (module insertion).
-> 
-> Note: maybe the ownership of the ethtool_phy_ops singleton is backwards,
-> and the methods exposed by that should be later merged into phylib_stubs.
-> 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
 
-I should use "git add" on new files more often...
 
-Annex to this patch:
+On 17/07/2023 16:30, AngeloGioacchino Del Regno wrote:
+>>>>> However I'm not sure if that works for parents. It should, given the
+>>>>> original use case was for the sunxi platforms, which like the MediaTek
+>>>>> platform here has 2 PLLs for video related consumers, but I couldn't
+>>>>> find code verifying it.
+>>>>
+>>>> If you want to prevent clocks from ever being reparented, you can use
+>>>> the new clk_hw_determine_rate_no_reparent() determine_rate
+>>>> implementation.
+>>>>
+>>>
+>>> We want the clocks to be reparented, as we need them to switch 
+>>> parents as
+>>> explained before... that's more or less how the tree looks:
+>>>
+>>> TVDPLL(x) -> PLL Divider (fixed) -> MUX -> Gate -> Controller
+>>>
+>>> Besides, I think that forcing *one* parent to the dp/edp mux would 
+>>> produce a
+>>> loss of the flexibility that the clock framework provides.
+>>>
+>>> I again want to emphasize on the fact that TVDPLL1 and TVDPLL2 are 
+>>> *identical*
+>>> in specs, and on that there will never be a MT8195 SoC that has only 
+>>> one of
+>>> the two PLLs, for obvious reasons...
+>>>
+>>> P.S.: If you need more context, I'll be glad to answer to any other 
+>>> question!
+>>
+>> Then I have no idea what the question is :)
+>>
+>> What are you trying to achieve / fix, and how can I help you ? :)
+>>
+> 
+> Chen-Yu, Alexandre had/have questions about if there was any other 
+> solution instead
+> of using the solution of *this* commit, so, if there's any other better 
+> solution
+> than the one that I've sent as this commit.
+> 
+> I'm the one saying that this commit is the best solution :-P
 
-diff --git a/drivers/net/phy/stubs.c b/drivers/net/phy/stubs.c
-new file mode 100644
-index 000000000000..06498de2d16a
---- /dev/null
-+++ b/drivers/net/phy/stubs.c
-@@ -0,0 +1,10 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Stubs for PHY library functionality called by the core network stack.
-+ * These are necessary because CONFIG_PHYLIB can be a module, and built-in
-+ * code cannot directly call symbols exported by modules.
-+ */
-+#include <net/dsa_stubs.h>
-+
-+const struct phylib_stubs *phylib_stubs;
-+EXPORT_SYMBOL_GPL(phylib_stubs);
-diff --git a/include/linux/phylib_stubs.h b/include/linux/phylib_stubs.h
-new file mode 100644
-index 000000000000..1279f48c8a70
---- /dev/null
-+++ b/include/linux/phylib_stubs.h
-@@ -0,0 +1,68 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Stubs for the Network PHY library
-+ */
-+
-+#include <linux/rtnetlink.h>
-+
-+struct kernel_hwtstamp_config;
-+struct netlink_ext_ack;
-+struct phy_device;
-+
-+#if IS_ENABLED(CONFIG_PHYLIB)
-+
-+extern const struct phylib_stubs *phylib_stubs;
-+
-+struct phylib_stubs {
-+	int (*hwtstamp_get)(struct phy_device *phydev,
-+			    struct kernel_hwtstamp_config *config);
-+	int (*hwtstamp_set)(struct phy_device *phydev,
-+			    struct kernel_hwtstamp_config *config,
-+			    struct netlink_ext_ack *extack);
-+};
-+
-+static inline int phy_hwtstamp_get(struct phy_device *phydev,
-+				   struct kernel_hwtstamp_config *config)
-+{
-+	/* phylib_register_stubs() and phylib_unregister_stubs()
-+	 * also run under rtnl_lock().
-+	 */
-+	ASSERT_RTNL();
-+
-+	if (!phylib_stubs)
-+		return -EOPNOTSUPP;
-+
-+	return phylib_stubs->hwtstamp_get(phydev, config);
-+}
-+
-+static inline int phy_hwtstamp_set(struct phy_device *phydev,
-+				   struct kernel_hwtstamp_config *config,
-+				   struct netlink_ext_ack *extack)
-+{
-+	/* phylib_register_stubs() and phylib_unregister_stubs()
-+	 * also run under rtnl_lock().
-+	 */
-+	ASSERT_RTNL();
-+
-+	if (!phylib_stubs)
-+		return -EOPNOTSUPP;
-+
-+	return phylib_stubs->hwtstamp_set(phydev, config, extack);
-+}
-+
-+#else
-+
-+static inline int phy_hwtstamp_get(struct phy_device *phydev,
-+				   struct kernel_hwtstamp_config *config)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline int phy_hwtstamp_set(struct phy_device *phydev,
-+				   struct kernel_hwtstamp_config *config,
-+				   struct netlink_ext_ack *extack)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+#endif
+Hi Angelo,
+
+My solution is based on PLL static allocation, because I missed it could 
+be reparented actually. I think I've a better understanding of this 
+commit now, thanks to your explanations. Looks fine for me.
+
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+
+-- 
+Regards,
+Alexandre
