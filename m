@@ -2,131 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF08A7580FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 043AD7580E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232016AbjGRPdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 11:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        id S233645AbjGRP3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 11:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233682AbjGRPdC (ORCPT
+        with ESMTP id S233653AbjGRP3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 11:33:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0869198A
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:32:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689694325;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Nze9cEhxidO799p4WuWgw+8RBtrm/EbtjYeDGWps2R4=;
-        b=hu8OkiaQs5TQi6/UV7xTWxPPNnfUw1Vq05A6b/tsxJf8MwAg6GlCIzAapRyE6OwGvgmg9w
-        8HjFAu5eu6pinnyIdYAnOqlgovhXVEyb2Nw6RuqVdaQmirJIembGx2MpGrXHRJHEbMJbze
-        XmhUXl68y4JrYOEDO2tPDtEUszHNURI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-262-PHzj08aHPEWzaEUacDIGdw-1; Tue, 18 Jul 2023 11:32:01 -0400
-X-MC-Unique: PHzj08aHPEWzaEUacDIGdw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AB7DE8DC6F6;
-        Tue, 18 Jul 2023 15:30:06 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.34.131.165])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A1E7640C206F;
-        Tue, 18 Jul 2023 15:30:05 +0000 (UTC)
-From:   Milan Zamazal <mzamazal@redhat.com>
-To:     linux-iio@vger.kernel.org
-Cc:     Milan Zamazal <mzamazal@redhat.com>, linux-kernel@vger.kernel.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <noname.nuno@gmail.com>
-Subject: [PATCH v2] iio: core: Prevent invalid memory access when there is no parent
-Date:   Tue, 18 Jul 2023 17:29:17 +0200
-Message-Id: <20230718152917.435962-1-mzamazal@redhat.com>
+        Tue, 18 Jul 2023 11:29:43 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EEA892;
+        Tue, 18 Jul 2023 08:29:42 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-57045429f76so57279257b3.0;
+        Tue, 18 Jul 2023 08:29:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689694181; x=1692286181;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qylrI5TVxU4cjjQW7fNvxJOIHj9MYnraRBa50qVPFyU=;
+        b=pV8EZ+o+R4DDtyzjL1tW2pf9JAE46kSrFekAdm7F94LK3aTvu2h3WE6Ll0ioFcfloy
+         VOsRl81VvhyO73TtpIOTtwQV8FqiLmmQpESRIt4nswjirGZROjBdOkOrvrx3KOagX0aR
+         QOshAYkCDSmkl7CrVwlTjXoG0OxsBbcWpHBXiXYKUQXW8ZGKyfJ6z6CVS7dJwp3IyKR+
+         Jz+67+1JLjJoVf0nmaQMcgxHGZhRcWcugY2DxOBy0yQ6LRUx+gIC5t/6DEpqYCV37jhq
+         e/wys9JzECOw9u/kQP+gNc8qoJnSHL+JfL50eZcMyVYDbJEaFd+azoVBIWMvlRnXbTL3
+         +FdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689694181; x=1692286181;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qylrI5TVxU4cjjQW7fNvxJOIHj9MYnraRBa50qVPFyU=;
+        b=GRyZFwH7r6s4bUXuagSQkg0jTfw4IkeWZ/TQH3YRYp4SBUmQSuBp7t7V20NSER60G3
+         sj3u4geYEVX4NDRAwd2H/GA+PvRWeVydUEe4x7lPz2STO2UKxic9iy1886qcGyJchHWf
+         d/cQBVKOfsvv+Zhn/tzRaL6qir1Lt5K/5BAghRcAI21HW6Nq3/gn2i+dcq0mn857WolW
+         RzQ7SZDBvSpd6DxfSY7+zbOwQZXy+Krg0PmS40WHP6LpISCzETX6vOO6zACAsHaa+Hcy
+         T8HXBJHakTOGX+4/qb+fJXRByWkYRA6vaeohVf3OyXmQ4CvM3uBVksmz9tZgMwHAA240
+         kvkA==
+X-Gm-Message-State: ABy/qLb7Tr5EYY9snJfxYFh4yj1EN22n4rvGLRtHfeKxyaLfKJgsEr1a
+        xCfWRDzrq+Ojjns2/DSRI1M=
+X-Google-Smtp-Source: APBJJlFeVMHJEtLwJn3T5TqvKGlyTvt33hQh2T67a7plN4OTVLB/h0F3UrVYdbxGwbIqHs8H2BdMGQ==
+X-Received: by 2002:a0d:d647:0:b0:573:2e7a:1733 with SMTP id y68-20020a0dd647000000b005732e7a1733mr16851699ywd.45.1689694181332;
+        Tue, 18 Jul 2023 08:29:41 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z80-20020a0dd753000000b00583414320d2sm508081ywd.111.2023.07.18.08.29.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 08:29:40 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 18 Jul 2023 08:29:39 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 6.4 000/801] 6.4.4-rc3 review
+Message-ID: <971fab95-7839-48cb-b3af-3ca18113ef4f@roeck-us.net>
+References: <20230717201608.814406187@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717201608.814406187@linuxfoundation.org>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 813665564b3d ("iio: core: Convert to use firmware node handle
-instead of OF node") switched the kind of nodes to use for label
-retrieval in device registration.  Probably an unwanted change in that
-commit was that if the device has no parent then NULL pointer is
-accessed.  This is what happens in the stock IIO dummy driver when a
-new entry is created in configfs:
+On Mon, Jul 17, 2023 at 10:34:36PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.4 release.
+> There are 801 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 19 Jul 2023 20:14:44 +0000.
+> Anything received after that time might be too late.
+> 
 
-  # mkdir /sys/kernel/config/iio/devices/dummy/foo
-  BUG: kernel NULL pointer dereference, address: ...
-  ...
-  Call Trace:
-  ...
-  asm_exc_page_fault
-  container_offline
-  __iio_device_register
-  krealloc
-  iio_device_attach_buffer
-  iio_simple_dummy_configure_buffer
-  iio_triggered_buffer_setup_ext
-  iio_dummy_probe
-  iio_sw_device_create
-  device_make_group
-  configfs_mkdir
+Build results:
+	total: 157 pass: 157 fail: 0
+Qemu test results:
+	total: 522 pass: 522 fail: 0
 
-Since there seems to be no reason to make a parent device of an IIO
-dummy device mandatory, let’s prevent the invalid memory access in
-__iio_device_register when the parent device is NULL.  With this
-change, the IIO dummy driver works fine with configfs.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Fixes: 813665564b3d ("iio: core: Convert to use firmware node handle instead of OF node")
-Signed-off-by: Milan Zamazal <mzamazal@redhat.com>
----
-Changes in v2:
- - Added a source comment about the dummy IIO device.
- - Adjusted the backtrace cited in the commit message a bit.
- - Replaced `... != NULL' condition with `...'.
- - Dropped the unnecessary `fwnode != NULL' check (the involved calls
-   do the right thing when the argument is NULL).
----
- drivers/iio/industrialio-core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index c117f50d0cf3..adcba832e6fa 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -1888,7 +1888,7 @@ static const struct iio_buffer_setup_ops noop_ring_setup_ops;
- int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
- {
- 	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
--	struct fwnode_handle *fwnode;
-+	struct fwnode_handle *fwnode = NULL;
- 	int ret;
- 
- 	if (!indio_dev->info)
-@@ -1899,7 +1899,8 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
- 	/* If the calling driver did not initialize firmware node, do it here */
- 	if (dev_fwnode(&indio_dev->dev))
- 		fwnode = dev_fwnode(&indio_dev->dev);
--	else
-+	/* The default dummy IIO device has no parent */
-+	else if (indio_dev->dev.parent)
- 		fwnode = dev_fwnode(indio_dev->dev.parent);
- 	device_set_node(&indio_dev->dev, fwnode);
- 
--- 
-2.40.1
-
+Guenter
