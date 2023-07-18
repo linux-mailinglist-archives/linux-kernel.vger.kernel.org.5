@@ -2,78 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB16E758334
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1EA775833C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbjGRREr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:04:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35486 "EHLO
+        id S232158AbjGRRIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbjGRREW (ORCPT
+        with ESMTP id S229518AbjGRRIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:04:22 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBB71FD9
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:03:54 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1b8a44ee159so36484855ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:03:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689699808; x=1692291808;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GT+sqjsBJCrCFnfjlBO9PEjDZvBphMzEEJkH0X1enOQ=;
-        b=XbxFnoY3K8n5MjmOsvk1vk4QDsSBRo9sFeq1bC/f8+42pGBUp6fsTTervq0PZxIP+l
-         DkES1cAEdkigXbFnLUe/1wRMUu7ubjc7VeMnQOC+kZDm6Ar6KEq0oYgQN23ShDICrJtM
-         vw65u2TXA1cRapOGY1n0QnvfLyge1jraFL/29kP2RGN9Je/zxaNoE2y4h9pel3frgDXt
-         RqV6/yISVyARBn6dHG7Y/ruTvDls9BjMZjd9IbF89/XiOVghjc7E/T7kliD6YLtGw3Dv
-         vco9SD/kURWosFNKoyoA7po5lUUuexk+kZEEL7qS4aw7Hm+tFF4NNIGzf6HRmjtqkWEP
-         f8IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689699808; x=1692291808;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GT+sqjsBJCrCFnfjlBO9PEjDZvBphMzEEJkH0X1enOQ=;
-        b=NauJxgP8RCIaLsR55O2zyn3qCf1t7ZkY/CNr4ry06bAFwOSbql2Yp/IiixfVlVSBmq
-         CqWi94em+vPQsPpFOQF8A+1iGUYx2/wPURGz3pFK7C/8uYpeGZocOH1E7d1d5cx1XSoU
-         BUFA9naV3B1oOZnh/aWofD7VlTE4850K3B8f62K4OufMqrl5HqULQ4+XiZgyZ46qHSws
-         PYNlGqZbPts4GnrvCCsGd3SwH5J9ifCN5j0iLXIS70cyX46s/7Ev02fbB6gJ6gD/EalO
-         O2JZWvjtOrJyH+hQIhoYld0yaeG26ghb3SSINCOejdIjiC3fEnaqrO4hLK/G7fTj9CeP
-         rbiA==
-X-Gm-Message-State: ABy/qLYgQs3olS/bh3T49LkE7I53Y70/aL6LU2OVyjmOmGw15VU07jL3
-        P2jxavTtIlT/2EDg2/DjSgc=
-X-Google-Smtp-Source: APBJJlF/FniITLJA/CjL64d6hguVOAGlCPmAwKTX1K2KiD3CBpmX2EtSlV18R6R4JqrH28iHT0ItqQ==
-X-Received: by 2002:a17:902:b68f:b0:1b9:e9f3:44c3 with SMTP id c15-20020a170902b68f00b001b9e9f344c3mr13072448pls.4.1689699807648;
-        Tue, 18 Jul 2023 10:03:27 -0700 (PDT)
-Received: from localhost ([216.228.127.130])
-        by smtp.gmail.com with ESMTPSA id h12-20020a170902eecc00b001a98f844e60sm2091603plb.263.2023.07.18.10.03.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 10:03:27 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 10:03:25 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Alexander Potapenko <glider@google.com>, catalin.marinas@arm.com,
-        will@kernel.org, pcc@google.com, andreyknvl@gmail.com,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v3 1/5] lib/bitmap: add bitmap_{set,get}_value()
-Message-ID: <ZLbF3ZO7TvJGJOeo@yury-ThinkPad>
-References: <20230717113709.328671-1-glider@google.com>
- <20230717113709.328671-2-glider@google.com>
- <ZLVjYzuxlJAQVpIO@yury-ThinkPad>
- <CAG_fn=UPqyFhEMLDz3nhc7fgpCvprLsYrNjUnw3z4KfWCJGTHA@mail.gmail.com>
- <ZLabOHmNQm2EOXWR@smile.fi.intel.com>
+        Tue, 18 Jul 2023 13:08:05 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D920BBE
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:08:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689700084; x=1721236084;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=LowChJyNpWySLgzTtjQDu+vchcaLd6zgP20alhFs/kY=;
+  b=jQ7fVBqnLwS+wCzDQ7hgmZq5yk3u7UVf6Wm/Fai16XV76Sx4Ee1T7kiz
+   22QMMQITscuSzoH0a8GoYxLky/i3TDDlnPxVVI7KBxzRLdopOPZG0WlOj
+   Spn1juwhQ57DzyrqGd8ZdmNtzstQJ58AOGTCH1iIFJxaXb+t1r+/oWbqy
+   AHPWolIrNC5yp17bgLm7aLjLnLrZSld9qbjxhV3K1VMDOOgtJQXjlRlZK
+   ha1zDxAta4vzEA7CUXXe45VfDZgViEWfpohYJe9I9ocvOOZSUwpxL0bKA
+   q4EiGM/YxVXUEPN1aqNtNPZCCmfCWQWwJADKepRv5lAuMxEOMIzIGdHxA
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="430025055"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="430025055"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 10:08:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="717674959"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="717674959"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 10:08:00 -0700
+Date:   Tue, 18 Jul 2023 20:04:41 +0300 (EEST)
+From:   Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+cc:     Alsa-devel <alsa-devel@alsa-project.org>,
+        sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Matthew Auld <matthew.auld@intel.com>
+Subject: Re: [PATCH 6/7] ASoC: SOF: Intel: Remove deferred probe for SOF
+In-Reply-To: <20230718084522.116952-7-maarten.lankhorst@linux.intel.com>
+Message-ID: <alpine.DEB.2.22.394.2307181922160.3532114@eliteleevi.tm.intel.com>
+References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com> <20230718084522.116952-7-maarten.lankhorst@linux.intel.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZLabOHmNQm2EOXWR@smile.fi.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,93 +75,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 05:01:28PM +0300, Andy Shevchenko wrote:
-> On Tue, Jul 18, 2023 at 11:30:00AM +0200, Alexander Potapenko wrote:
-> > On Mon, Jul 17, 2023 at 5:51 PM Yury Norov <yury.norov@gmail.com> wrote:
-> > > On Mon, Jul 17, 2023 at 01:37:04PM +0200, Alexander Potapenko wrote:
-> 
-> ...
-> 
-> > > When nbits == 0, copy-like functions shouldn't touch any memory. See how
-> > > other bitmap and find_bit functions hold it.
-> > 
-> > I think this is different from what other bitmap functions do, but it
-> > should be enough to bail out on !nbits, i.e.:
-> > 
-> >     if (!nbits)
-> >         return 0;
-> > 
-> > You probably meant adding a __builtin_constant_p() (which is used all
-> > over the place in bitmap.h), but:
+Hi,
 
-No, I didn't mean that.
+thank you Maarten for doing the series! I think a lot of people will be 
+happy to get rid of the 60sec timeout. 
 
-> >  - the compiler won't have problem optimizing away the code for a
-> > constant nbits=0;
+I kicked off a CI run SOF public infra for the whole series at
+https://github.com/thesofproject/linux/pull/4478
+Some results still in progress but so far so good.
 
-Look at your code, having nbits == 0 in mind:
+Some concerns inline:
 
-       const size_t index = BIT_WORD(start);
-       const unsigned long offset = start % BITS_PER_LONG;
-       const unsigned long space = BITS_PER_LONG - offset;
-       unsigned long value_low, value_high;
+On Tue, 18 Jul 2023, Maarten Lankhorst wrote:
 
-       if (space >= nbits) // This is always the case
-               return (map[index] >> offset) & GENMASK(nbits - 1, 0);
-       ...             ^^                      ^^
-                       Unconditional fetch     Wshift-count-overflow
+> This was only used to allow modprobing i915, by converting to the
+> -EPROBE_DEFER mechanism, it can be completely removed, and is in
+> fact counterproductive since -EPROBE_DEFER otherwise won't be
+> handled correctly.
 
-Thanks to GENMASK() implementation, you'll be warned by GENMASK_INPUT_CHECK()
-if nbits is a compile-time variable. In case of runtime, it's a pure undef,
-not mentioning useless, expensive and dangerous fetch.
+We actually have a request_module() for the regular HDA codec drivers as 
+well (sof_probe_continue() -> snd_sof_probe() -> hda_dsp_probe() -> 
+hda_init_caps() -> hda_codec_probe_bus(). But right, this is not 
+necessarily a problem on its own, so it looks we indeed can drop the work 
+queue. Nice!
 
-> >  - we anyway need a dynamic check for the case nbits is not constant
-> > (for both bitmap_get_value() and bitmap_set_value(), I assume).
-> > 
-> > What do you think?
+> diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+> index f1fd5b44aaac9..344b61576c0e3 100644
+> --- a/sound/soc/sof/intel/hda-codec.c
+> +++ b/sound/soc/sof/intel/hda-codec.c
+> @@ -415,7 +415,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
+>  		return 0;
+>  
+>  	/* i915 exposes a HDA codec for HDMI audio */
+> -	ret = snd_hdac_i915_init(bus, true);
+> +	ret = snd_hdac_i915_init(bus, false);
+>  	if (ret < 0)
+>  		return ret;
 
-I think that instead of speculations, it's better to cover nbits == 0
-with the explicit tests for run- and compile-time. That way you're
-always on a safe side.
+My only bigger concern is corner cases where the display PCI device is on 
+the bus and visible to kernel, but for some reason there is no working 
+driver in the system or it is disabled.
 
-bitmap_get_val(NULL, 0, 0) shouldn't crash the kernel.
- 
-> The idea behind is to eliminate the code completely for the cases nbits != 0.
-> In your case the dynamic check will be there. That's what we want to avoid.
+With this patch, not having a workign display driver means that there is 
+also no audio in the system as the SOF driver will never get probed.
 
-Alexander is right - we can't avoid testing against 0 if we need to
-test for 0... In case of other functions we have inline and outline
-implementations, controlled by small_const_nbits().
+In current mainline, one will get the 60sec timeout warning and then
+audio driver will proceed to probe and you'll have audio support (minus 
+HDMI/DP).
 
-As you can see, the small_const_nbits() tests against 0 explicitly,
-although it's free at compile time. But if nbits == 0, we pick
-outline version of a function regardless.
+This is mostly an issue with very new hardware (e.g. hw is still 
+behind force_probe flag in xe/i915 driver), but we've had some odd
+cases with e.g. systems with both Intel IGFX and other vendors' DGPU. 
+Audio drivers see the Intel VGA controller in system and will
+call snd_hdac_i915_init(), but the audio component bind will never
+succeed if the the Intel IGFX is not in actual use.
 
-On their turn, outline versions again do their test against nbits == 0,
-but most of the time implicitly.
+Will need a bit of time to think about possible scenarios. Possibly this 
+is not an issue outside early development systems. In theory if IGFX is 
+disabled in BIOS, and not visible to OS, we are good, and if it's visible, 
+the i915/xe driver should be loaded, so we are good again.
 
-In case of bitmap_set_val, we are touching at max 2 words, and there's
-no reason for outline version, so we have to test nbits against 0
-inside inline code. 
-
-Having all that in mind, and because nbits == 0 is most likely an
-error we'd follow the following rules:
- - no memory must be touched as we're potentially in error condition,
-   and pointer may be corrupted;
- - the cost of the check must be as minimal as possible.
-
-So I suggest:
-
-        if (unlikely(nbits == 0))
-                return;
-
-For readers that would literally mean: we don't expect that, and we find
-it suspicious, but we'll handle that as correct as we can.
-
-By the way, Alexander, please drop that 'const' things. Those are for
-pointers or some global variables, not for inline functions with 4
-lines of code. (If you think it helps the code to be safe than no - it's
-unsafe even with consts.)
-
-Thanks,
-Yury
+Br, Kai
