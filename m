@@ -2,86 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57359757520
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A128757628
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbjGRHP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 03:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37710 "EHLO
+        id S231629AbjGRIDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbjGRHP4 (ORCPT
+        with ESMTP id S231991AbjGRICx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 03:15:56 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFCF10B
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 00:15:55 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4R4qWz3yNqz4f3n0K
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:57:35 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgB3a+nfN7Zk36ikOA--.34217S5;
-        Tue, 18 Jul 2023 14:57:37 +0800 (CST)
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-To:     akpm@linux-foundation.org, pasha.tatashin@soleen.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     shikemeng@huaweicloud.com
-Subject: [PATCH 3/3] mm/page_ext: use page_ext_data helper in page_owner
-Date:   Tue, 18 Jul 2023 22:58:12 +0800
-Message-Id: <20230718145812.1991717-4-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230718145812.1991717-1-shikemeng@huaweicloud.com>
-References: <20230718145812.1991717-1-shikemeng@huaweicloud.com>
+        Tue, 18 Jul 2023 04:02:53 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32BC71993
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:02:10 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51e5d9e20ecso7666544a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:02:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689667323; x=1692259323;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QsIxNK0J5zdm7hoTGkqELX9EdWQda/w8CE55dNKdQBI=;
+        b=KdKmYaQBSFl0lVylZviXy1L8wRpdutlz6y72k+fhKifuidOimyIzONwkAlJbbhNg2t
+         c309jLRA4Gz0xvuIe5hAvQ5u3av8x+NIxbiDYlcj15j33wCU8fmcDvTVoP+G7sn6dFRe
+         OrZsPE6+5bCs5lTumVNLsZ2fhSyz7ea2Zdx2nf9YyQaPcK/f6rBEWvraSSJfbQrMmfbd
+         RAOPRMzYs3epeWJIUYd96XrCUsPPOhYlx7eRprG7Vf0f+JmMoCtMDPNGWTnM6F6qScL7
+         0pMeFnnOv8lEmoaMNA93mHM6GCZKDsvDxvjbOysnhP5nGgHUKz95LCy1K6n7iEKTSseW
+         VOEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689667323; x=1692259323;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QsIxNK0J5zdm7hoTGkqELX9EdWQda/w8CE55dNKdQBI=;
+        b=S/nP65kVXYXWxPNb4ujuWa8tz3ZKlSuCWIJRvm309CfSO3r64cZDEqcUayqPT1zT3e
+         flSV45E3UfP8zlA/3OmLmUIIgZ/wC1Y3urlAxIhuOhP1HJCNwqAcUGH8gtYPfBw8qRiI
+         s5V5Ye16X37S7/J6md5U0RUP/nqnTeSmRi2z+QhF7HT+8IPrNojWdzWMdN/9yLJLz6sZ
+         hBBF9RSJQNJ+dgYs/F4Rjb50rOQ3oeyWd2G3ps62c3kYaryaKWd67tFVwR1I3T6v4VJ2
+         cx3G0Gl5KjCx+ZBvDhHJpfHOSOnhWZ2OX0eLlSFkMrWWwlDOW2+5AXPtPW2b1A+XVnlI
+         pdsg==
+X-Gm-Message-State: ABy/qLbCTldAUNIPf9wJIUtZL/Lb1/FURm46O4aV1JWEaQPcB/01EC4u
+        7rijD6JYHrAAplsksC6kNpNhGw==
+X-Google-Smtp-Source: APBJJlFW9DT9BZsr+XSPA2vB4OYCmyLRfrxqABO39xqF1LRjNNFkSnkQk8GPqJZQvi8LFGtx8O/ekQ==
+X-Received: by 2002:a05:6402:68b:b0:521:94f0:9987 with SMTP id f11-20020a056402068b00b0052194f09987mr4209464edy.37.1689667323562;
+        Tue, 18 Jul 2023 01:02:03 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id u25-20020aa7d899000000b0051e19bf66a4sm804060edq.83.2023.07.18.01.02.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 01:02:03 -0700 (PDT)
+Message-ID: <dd5864ee-7df2-eb64-c7f2-0fb234900d6a@linaro.org>
+Date:   Tue, 18 Jul 2023 10:02:00 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgB3a+nfN7Zk36ikOA--.34217S5
-X-Coremail-Antispam: 1UD129KBjvdXoWrZw4kWw18Jr18Zr45Cw4fuFg_yoWxuFgE9w
-        sFvr18ArnIyFWavw4rCan3Jry2y34kCr1kJF1vgrWYkr15ta4kXF9YvwnxGr1kXr43W34D
-        GFy7Zasrtw17WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbqAYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl82
-        xGYIkIc2x26280x7IE14v26r1rM28IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kI
-        II0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7
-        xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
-        z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
-        xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v2
-        6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6I
-        AqYI8I648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
-        x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r
-        1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF
-        7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxV
-        WUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjTR
-        QSdDUUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        KHOP_HELO_FCRDNS,MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 1/2] dt-bindings: input: qcom,pm8xxx-vib: add more PMIC
+ support
+Content-Language: en-US
+To:     Fenglin Wu <quic_fenglinw@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     quic_collinsd@quicinc.com, quic_subbaram@quicinc.com,
+        quic_kamalw@quicinc.com, jestar@qti.qualcomm.com,
+        quic_huliu@quicinc.com
+References: <20230718062639.2339589-1-quic_fenglinw@quicinc.com>
+ <20230718062639.2339589-2-quic_fenglinw@quicinc.com>
+ <cb534cdb-508e-b03e-4e39-50cd6654377a@linaro.org>
+ <4cb9f443-bdea-695a-f1b7-3963747e9a17@quicinc.com>
+ <5b7e624b-5d06-826d-92d1-2a721b7c83b7@quicinc.com>
+ <fec38f3a-f103-ff0f-138c-cffa3a808001@linaro.org>
+ <4210b137-2d5d-a467-ea8c-d047701fdcc2@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <4210b137-2d5d-a467-ea8c-d047701fdcc2@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use page_ext_data helper in page_owner to avoid access offset directly.
+On 18/07/2023 09:59, Fenglin Wu wrote:
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
----
- mm/page_owner.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>>> Just FYI,the change log was updated in the cover letter here:
+>>> https://lore.kernel.org/linux-arm-msm/20230718062639.2339589-1-quic_fenglinw@quicinc.com/T/#m3819b50503ef19e0933a10bf797351a4af35537f
+>>>
+>>> Also the commit text and the driver change were also updated accordingly
+>>> to address your review comment by removing 'pm7550ba-vib' compatible string.
+>>
+>> Removing compatible was never my feedback. Did you read:
+>> https://elixir.bootlin.com/linux/v6.1-rc1/source/Documentation/devicetree/bindings/writing-bindings.rst#L42
+>> ?
+>>
+> Okay, so do you want me to add 'pm7550ba-vib' as a fallback compatible 
+> like this?
+> 
+>   properties:
+>     compatible:
+> -    enum:
+> -      - qcom,pm8058-vib
+> -      - qcom,pm8916-vib
+> -      - qcom,pm8921-vib
+> -      - qcom,pmi632-vib
+> -      - qcom,pm7250b-vib
+> -      - qcom,pm7325b-vib
+> +    oneOf:
+> +      - enum:
+> +          - qcom,pm8058-vib
+> +          - qcom,pm8916-vib
+> +          - qcom,pm8921-vib
+> +          - qcom,pmi632-vib
+> +          - qcom,pm7250b-vib
+> +          - qcom,pm7325b-vib
+> +      - items:
+> +          - enum:
+> +              - qcom,pm7550ba-vib
+> +          - const: qcom,pm7325b-vib
+> 
 
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index c93baef0148f..4e2723e1b300 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -104,7 +104,7 @@ struct page_ext_operations page_owner_ops = {
- 
- static inline struct page_owner *get_page_owner(struct page_ext *page_ext)
- {
--	return (void *)page_ext + page_owner_ops.offset;
-+	return page_ext_data(page_ext, &page_owner_ops);
- }
- 
- static noinline depot_stack_handle_t save_stack(gfp_t flags)
--- 
-2.30.0
+Yes
+
+Best regards,
+Krzysztof
 
