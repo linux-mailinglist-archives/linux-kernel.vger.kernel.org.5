@@ -2,171 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BE4758184
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58777758192
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233848AbjGRP44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 11:56:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49994 "EHLO
+        id S232824AbjGRQAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 12:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233797AbjGRP4q (ORCPT
+        with ESMTP id S230019AbjGRQAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 11:56:46 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09ED619B1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:56:41 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-403b6b7c0f7so42262651cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1689695800; x=1692287800;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tjh+qVHNBsaCt+fpZytXbv4JtN2Kf+QfiKBiC+OQp3c=;
-        b=bYsTsBY1ioUL9k8drjTPCTw/fEJ0EAlGX5g4owJLPMPxN2CHLKUwbHRdsGU8yNpkgq
-         tSJhCUQojCe7iZMsDT/aY34J1oz2QHRzCjLM+KqEBEo9M8BD2KOp45IRPvgTMkckJ6dq
-         H9fFQEgiHBZaevHiGZSqEfXqcoEtLjezHUCteBqtpUndGthYRfcrzEkhL4CGHaIFAcmx
-         6wdKboUdDaPeOVdQT0aOEr8C1+gySsRWrc1UqrjcLLXuhZDet2FHUgbuPzKGfDMScL/V
-         K78x7SFpD7MaWzPqAIp0HWYQyARw7uG7tneLlNjtBlR/Fv5UIeG6Vm/K9G6rR6HJEl7q
-         8oNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689695800; x=1692287800;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tjh+qVHNBsaCt+fpZytXbv4JtN2Kf+QfiKBiC+OQp3c=;
-        b=cDfIwAz+SswXn/adZAb1JjlAOUp8fTkAc3oorJHXqm5A/o+uAzJC8f9ULU8lv4jEgg
-         gvsFjaZxpVQHhniM5GfmhTNlKo7FkTzJjXkyYAoyrYYpahaLoGxeNqyt9lNk28fJ4fQ+
-         reR92OjTiZ+L3697qf7ZzYrmdCx7mIceC5A0lrPu0yUqN4k9ZA05w430tYp0gd9WJvfH
-         78Ofc6/YwRVk61krD4KdMD8x2ECB74gKYuJA+6IcZlbgz6ibbqS/eE7zZ579lKKnn2sQ
-         hrvP7Hz4BIp4qDi6vZL75dMmTKi8WQ6aL/zann5CkoRmJvhMJtUsJAq6yKiF+LzgYuGT
-         qZng==
-X-Gm-Message-State: ABy/qLY7fRrMSP10MnNuepHMskfTmNcCZx1nvsHqO0Uhvz+cHDWLpULe
-        npYGETwAUO4ulqqhdDJ5/1Zc4g==
-X-Google-Smtp-Source: APBJJlFA9677r6PhZxjwKlQ1fKWxhiNMVqP6N1YqyjTADbRS7wwnXs7xld1btAoYMOwt7mM3Vw+c9w==
-X-Received: by 2002:ac8:7dd0:0:b0:403:a814:ef4d with SMTP id c16-20020ac87dd0000000b00403a814ef4dmr21293071qte.49.1689695800050;
-        Tue, 18 Jul 2023 08:56:40 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id s21-20020ac87595000000b003e635f80e72sm727847qtq.48.2023.07.18.08.56.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 08:56:39 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qLn42-002YJT-5I;
-        Tue, 18 Jul 2023 12:56:38 -0300
-Date:   Tue, 18 Jul 2023 12:56:38 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        linux-usb@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
-        Paul Durrant <paul@xen.org>, Tom Rix <trix@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
-        linux-mm@kvack.org, Kirti Wankhede <kwankhede@nvidia.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Fei Li <fei1.li@intel.com>, x86@kernel.org,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        intel-gfx@lists.freedesktop.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        linux-fpga@vger.kernel.org, Zhi Wang <zhi.a.wang@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Jason Herne <jjherne@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-s390@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linuxppc-dev@lists.ozlabs.org, Eric Auger <eric.auger@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>, cgroups@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        virtualization@lists.linux-foundation.org,
-        intel-gvt-dev@lists.freedesktop.org, io-uring@vger.kernel.org,
-        netdev@vger.kernel.org, Tony Krowiak <akrowiak@linux.ibm.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Moritz Fischer <mdf@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Dominik Behr <dbehr@chromium.org>,
-        Marcin Wojtas <mw@semihalf.com>
-Subject: Re: [PATCH 0/2] eventfd: simplify signal helpers
-Message-ID: <ZLa2NmwexoxPkS9a@ziepe.ca>
-References: <20230630155936.3015595-1-jaz@semihalf.com>
- <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
- <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
- <20230717130831.0f18381a.alex.williamson@redhat.com>
- <ZLW8wEzkhBxd0O0L@ziepe.ca>
- <20230717165203.4ee6b1e6.alex.williamson@redhat.com>
+        Tue, 18 Jul 2023 12:00:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E807F1;
+        Tue, 18 Jul 2023 09:00:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E555F61652;
+        Tue, 18 Jul 2023 16:00:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE7A6C433C7;
+        Tue, 18 Jul 2023 16:00:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689696036;
+        bh=jvMVNhdv/97zl9sPMxZQndXVmhxPoD5xlaUndo6zZv8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FteMW5mLmz58s7a9E5NDYgKBur+BL1NbhXkAd4O+2Vti6gO1zw0GdngI1Rj4ZL862
+         pMizkXjotag4O3QHuwSSkFMDZ+QorloBhXZgsq2kItnp4Mqf/N6Wz6AZdJFmJAXell
+         exStooah3RAcIGnY/9HYqsLG1eVkNjtSkeRbSd6NT9ZSNoiM1qRsfdQD+2yQEbhhCG
+         bmhmqjLQuTTCjZ8FgR4UHoNVe7tZoS10M1S67p13ROH9gUucgWZd/9aj/2TgJ5SsJL
+         k62fkbZ7JZU9RcvyuAQ+n95aIb6W5Z3uHSqyybZ5lR4x1Y8Gyxj+JrhpkwDcyyKy6a
+         jOoEZAYeU3TiQ==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     corbet@lwn.net
+Cc:     Jakub Kicinski <kuba@kernel.org>, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, gregkh@linuxfoundation.org,
+        linux@leemhuis.info, broonie@kernel.org, krzk@kernel.org
+Subject: [PATCH docs v2] docs: maintainer: document expectations of small time maintainers
+Date:   Tue, 18 Jul 2023 08:58:14 -0700
+Message-ID: <20230718155814.1674087-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717165203.4ee6b1e6.alex.williamson@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 04:52:03PM -0600, Alex Williamson wrote:
-> On Mon, 17 Jul 2023 19:12:16 -0300
-> Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> 
-> > On Mon, Jul 17, 2023 at 01:08:31PM -0600, Alex Williamson wrote:
-> > 
-> > > What would that mechanism be?  We've been iterating on getting the
-> > > serialization and buffering correct, but I don't know of another means
-> > > that combines the notification with a value, so we'd likely end up with
-> > > an eventfd only for notification and a separate ring buffer for
-> > > notification values.  
-> > 
-> > All FDs do this. You just have to make a FD with custom
-> > file_operations that does what this wants. The uAPI shouldn't be able
-> > to tell if the FD is backing it with an eventfd or otherwise. Have the
-> > kernel return the FD instead of accepting it. Follow the basic design
-> > of eg mlx5vf_save_fops
-> 
-> Sure, userspace could poll on any fd and read a value from it, but at
-> that point we're essentially duplicating a lot of what eventfd provides
-> for a minor(?) semantic difference over how the counter value is
-> interpreted.  Using an actual eventfd allows the ACPI notification to
-> work as just another interrupt index within the existing vfio IRQ
-> uAPI.
+We appear to have a gap in our process docs. We go into detail
+on how to contribute code to the kernel, and how to be a subsystem
+maintainer. I can't find any docs directed towards the thousands
+of small scale maintainers, like folks maintaining a single driver
+or a single network protocol.
 
-Yes, duplicated, sort of, whatever the "ack" is to allow pushing a new
-value can be revised to run as part of the read.
+Document our expectations and best practices. I'm hoping this doc
+will be particularly useful to set expectations with HW vendors.
 
-But I don't really view it as a minor difference. eventfd is a
-counter. It should not be abused otherwise, even if it can be made to
-work.
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+v2:
+ - use Thorsten's wording for bug fixing requirements
+ - put more words into the review/response timeline expectations
+v1: https://lore.kernel.org/all/20230713223432.1501133-1-kuba@kernel.org/
 
-It really isn't an IRQ if it is pushing an async message w/data.
+CC: workflows@vger.kernel.org
+CC: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: gregkh@linuxfoundation.org
+Cc: linux@leemhuis.info
+Cc: broonie@kernel.org
+Cc: krzk@kernel.org
+---
+ .../feature-and-driver-maintainers.rst        | 155 ++++++++++++++++++
+ Documentation/maintainer/index.rst            |   1 +
+ 2 files changed, 156 insertions(+)
+ create mode 100644 Documentation/maintainer/feature-and-driver-maintainers.rst
 
-Jason
+diff --git a/Documentation/maintainer/feature-and-driver-maintainers.rst b/Documentation/maintainer/feature-and-driver-maintainers.rst
+new file mode 100644
+index 000000000000..7064b5de076d
+--- /dev/null
++++ b/Documentation/maintainer/feature-and-driver-maintainers.rst
+@@ -0,0 +1,155 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++==============================
++Feature and driver maintainers
++==============================
++
++The term "maintainer" spans a very wide range of levels of engagement
++from people handling patches and pull requests as almost a full time job
++to people responsible for a small feature or a driver.
++
++Unlike most of the chapter, this section is meant for the latter (more
++populous) group. It provides tips and describes the expectations and
++responsibilities of maintainers of a small(ish) section of the code.
++
++Driver and alike most often do not have their own mailing lists and
++git trees but instead send and review patches on the list of a larger
++subsystem.
++
++Responsibilities
++================
++
++The amount of maintenance work is usually proportional to the size
++and popularity of the code base. Small features and drivers should
++require relatively small amount of care and feeding. Nonetheless
++when the work does arrive (in form of patches which need review,
++user bug reports etc.) it has to be acted upon promptly.
++Even when single driver only sees one patch a month, or a quarter,
++a subsystem could well have a hundred such drivers. Subsystem
++maintainers cannot afford to wait a long time to hear from reviewers.
++
++The exact expectations on the response time will vary by subsystem.
++The patch review SLA the subsystem had set for itself can sometimes
++be found in the subsystem documentation. Failing that as a rule of thumb
++reviewers should try to respond quicker than what is the usual patch
++review delay of the subsystem maintainer. The resulting expectations
++may range from two working days for fast-paced subsystems (e.g. networking)
++to as long as a few weeks in slower moving parts of the kernel.
++
++Mailing list participation
++--------------------------
++
++Linux kernel uses mailing lists as the primary form of communication.
++Maintainers must be subscribed and follow the appropriate subsystem-wide
++mailing list. Either by subscribing to the whole list or using more
++modern, selective setup like
++`lei <https://people.kernel.org/monsieuricon/lore-lei-part-1-getting-started>`_.
++
++Maintainers must know how to communicate on the list (plain text, no invasive
++legal footers, no top posting, etc.)
++
++Reviews
++-------
++
++Maintainers must review *all* patches touching exclusively their drivers,
++no matter how trivial. If the patch is a tree wide change and modifies
++multiple drivers - whether to provide a review is left to the maintainer.
++
++There should be multiple maintainers for any piece of code, an ``Acked-by``
++or ``Reviewed-by`` tag (or review comments) from a single maintainer is
++enough to satisfy this requirement.
++
++If review process or validation for a particular change will take longer
++than the expected review timeline for the subsystem, maintainer should
++reply to the submission indicating that the work is being done, and when
++to expect full results.
++
++Refactoring and core changes
++----------------------------
++
++Occasionally core code needs to be changed to improve the maintainability
++of the kernel as a whole. Maintainers are expected to be present and
++help guide and test changes to their code to fit the new infrastructure.
++
++Bug reports
++-----------
++
++Maintainers must ensure severe problems in their code reported to them
++are resolved in a timely manner: regressions, kernel crashes, kernel warnings,
++compilation errors, lockups, data loss, and other bugs of similar scope.
++
++Maintainers furthermore should respond to reports about other kind of
++bugs as well, if the report is of reasonable quality or indicates a
++problem that might be severe -- especially if they have *Supported*
++status of the codebase in the MAINTAINERS file.
++
++Selecting the maintainer
++========================
++
++The previous section described the expectations of the maintainer,
++this section provides guidance on selecting one and decribes common
++misconceptions.
++
++The author
++----------
++
++Most natural and common choice of a maintainer is the author of the code.
++The author is intimately familiar with the code, so it is the best person
++to take care of it on an ongoing basis.
++
++That said, being a maintainer is an active role. The MAINTAINERS file
++is not a list of credits (in fact a separate CREDITS file exists),
++it is a list of those who will actively help with the code.
++If the author does not have the time, interest or ability to maintain
++the code, a different maintainer must be selected.
++
++Multiple maintainers
++--------------------
++
++Modern best practices dictate that there should be at least two maintainers
++for any piece of code, no matter how trivial. It spreads the burden, helps
++people take vacations and prevents burnout, trains new members of
++the community etc. etc. Even when there is clearly one perfect candidate,
++another maintainer should be found.
++
++Maintainers must be human, however, it is not acceptable to add a mailing
++list or a group email as a maintainer. Trust and understanding are the
++foundation of kernel maintenance and one cannot build trust with a mailing
++list.
++
++Corporate structures
++--------------------
++
++To an outsider the Linux kernel may resemble a hierarchical organization
++with Linus as the CEO. While the code flows in a hierarchical fashion,
++the corporate template does not apply here. Linux is an anarchy held
++together by (rarely expressed) mutual respect, trust and convenience.
++
++All that is to say that managers almost never make good maintainers.
++The maintainer position more closely matches an on-call rotation
++than a position of power.
++
++The following characteristics of a person selected as a maintainer
++are clear red flags:
++
++ - unknown to the community, never sent an email to the list before
++ - did not author any of the code
++ - (when development is contracted) works for a company which paid
++   for the development rather than the company which did the work
++
++Non compliance
++==============
++
++Subsystem maintainers may remove inactive maintainers from the MAINTAINERS
++file. If the maintainer was a significant author or have played an important
++role in the development of the code they should be moved to the CREDITS file.
++
++Removing an inactive maintainer should not be seen as a punitive action.
++Having an inactive maintainer has a real cost as all developeres have
++to remember to include the maintainers in discussions and subsystem
++maintainers spend brain power figuring out how to solicit feedback.
++
++Subsystem maintainers may remove code for lacking maintenance.
++
++Subsystem maintainers may refuse accepting code from companies
++which repeatedly neglected their maintainership duties.
+diff --git a/Documentation/maintainer/index.rst b/Documentation/maintainer/index.rst
+index 3e03283c144e..eeee27f8b18c 100644
+--- a/Documentation/maintainer/index.rst
++++ b/Documentation/maintainer/index.rst
+@@ -9,6 +9,7 @@ additions to this manual.
+ .. toctree::
+    :maxdepth: 2
+ 
++   feature-and-driver-maintainers
+    configure-git
+    rebasing-and-merging
+    pull-requests
+-- 
+2.41.0
+
