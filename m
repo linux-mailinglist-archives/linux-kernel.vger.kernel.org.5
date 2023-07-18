@@ -2,135 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E151D7570B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 02:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CFF7570B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 02:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbjGRAAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 20:00:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35094 "EHLO
+        id S230362AbjGRAAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 20:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjGRAAG (ORCPT
+        with ESMTP id S230159AbjGRAAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 20:00:06 -0400
-Received: from out-56.mta0.migadu.com (out-56.mta0.migadu.com [91.218.175.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E574CF0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 17:00:01 -0700 (PDT)
-Message-ID: <062768e0-90d6-33dc-162a-c4adaa612f67@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689638399;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bhW9hWOzuPO3ascL2TqqhoQF4927LJi53dnYLFnBGSs=;
-        b=SkzjRAxh0UkLbY0uBKTCS5sP9FXnWZKGihuXHKPOF1ffAqOWKdCsk6+ZpM+MVCPSmnPWo5
-        Eyq9IItyWV8dpK/3lig2h85063nUWXxGqyieU99J9i6e67JcYKpJ4MAy7OdtVIor0iorQO
-        JvxkaW6Bb575fVSKPCEETcayyHZlgF8=
-Date:   Tue, 18 Jul 2023 07:59:47 +0800
-MIME-Version: 1.0
-Subject: Re: RE: [PATCH net-next] net: mana: Add page pool for RX buffers
-To:     Haiyang Zhang <haiyangz@microsoft.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     "brouer@redhat.com" <brouer@redhat.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Paul Rosswurm <paulros@microsoft.com>,
-        "olaf@aepfle.de" <olaf@aepfle.de>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Long Li <longli@microsoft.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-References: <1689259687-5231-1-git-send-email-haiyangz@microsoft.com>
- <20230713205326.5f960907@kernel.org>
- <85bfa818-6856-e3ea-ef4d-16646c57d1cc@redhat.com>
- <PH7PR21MB31166EF9DB2F453999D2E92ECA34A@PH7PR21MB3116.namprd21.prod.outlook.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <PH7PR21MB31166EF9DB2F453999D2E92ECA34A@PH7PR21MB3116.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Mon, 17 Jul 2023 20:00:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD506EC;
+        Mon, 17 Jul 2023 17:00:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 732D16135C;
+        Tue, 18 Jul 2023 00:00:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5D72C433C8;
+        Tue, 18 Jul 2023 00:00:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689638435;
+        bh=qcUEcDK6AXqP07t5ytqWFHjiJgDcpFUrQBIZzSKb7T8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TUIFBBNxwYgVURjg535s2o1fErHH/q+Ig56Bb9E+GJ8H8bPrCtcvtFIDe/M9dU2mg
+         6ITNePUfFTvCVJL0UmOE6hX3kF0LUR2iiveh7H/mE0/crh/4Y3zzhBCSGVUGl/V8Xb
+         dseXrP5zHr7HMpQbJ/D4Aw4yg5ElIZjX2ckhQm46+nuI6t6Q9fBhv0ZA+uSaJ6NRhD
+         2R9YyEP2xiq3K6CPV9Ks+UIFgt/w3pHxJ17rNHSYbECUf4y2REFFrqlmBZxTxNyq7O
+         76hvgC6I7Yzvy/3PXsemqk/gUUA8Rkl31AtGwsZt1inZ3o/DeCYQcnk9GszZcyYtT3
+         kXtSLEFqTY0qQ==
+Date:   Tue, 18 Jul 2023 09:00:33 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] tracing/probes: Differentiate BTF support from start of
+ function
+Message-Id: <20230718090033.5f4d0a7df2657b0cc71f9219@kernel.org>
+In-Reply-To: <20230717163947.4969316a@gandalf.local.home>
+References: <20230717163947.4969316a@gandalf.local.home>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2023/7/14 20:51, Haiyang Zhang 写道:
+On Mon, 17 Jul 2023 16:39:47 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
+> Having a typo in the function name to trace one of the arguments using
+> BTF, gave me an error message that BTF was not supported by this kernel:
 > 
->> -----Original Message-----
->> From: Jesper Dangaard Brouer <jbrouer@redhat.com>
->> On 14/07/2023 05.53, Jakub Kicinski wrote:
->>> On Thu, 13 Jul 2023 14:48:45 +0000 Haiyang Zhang wrote:
->>>> Add page pool for RX buffers for faster buffer cycle and reduce CPU
->>>> usage.
->>>>
->>>> Get an extra ref count of a page after allocation, so after upper
->>>> layers put the page, it's still referenced by the pool. We can reuse
->>>> it as RX buffer without alloc a new page.
->>>
->>> Please use the real page_pool API from include/net/page_pool.h
->>> We've moved past every driver reinventing the wheel, sorry.
->>
->> +1
->>
->> Quoting[1]: Documentation/networking/page_pool.rst
->>
->>    Basic use involves replacing alloc_pages() calls with the
->> page_pool_alloc_pages() call.
->>    Drivers should use page_pool_dev_alloc_pages() replacing
->> dev_alloc_pages().
->   
-> Thank Jakub and Jesper for the reviews.
-> I'm aware of the page_pool.rst doc, and actually tried it before this
-> patch, but I got lower perf. If I understand correctly, we should call
-> page_pool_release_page() before passing the SKB to napi_gro_receive().
+> ~# echo 'p:lock __raw_spin_lock lock=lock' > /sys/kernel/tracing/kprobe_events
+> -bash: echo: write error: Invalid argument
+> ~# cat /sys/kernel/tracing/error_log
+> [   34.382149] trace_kprobe: error: BTF is not available or not supported
+>   Command: p:lock __raw_spin_lock lock=lock
+>                                        ^
+> 
+> I added two underscores instead of one underscore for the function
+> _raw_spin_lock(). But I spent too much time trying to figure out why BTF
+> was not supported, because in reality it was! The problem was that the
+> function wasn't found (this could happen if a function offset is used as
+> well).
+
+Thanks for reporting!
+
+> 
+> Instead, add a new error message that gives a better description of the
+> problem.
+> 
+> ~# echo 'p:lock __raw_spin_lock lock=lock' > /sys/kernel/tracing/kprobe_events
+> -bash: echo: write error: Invalid argument
+> ~# cat /sys/kernel/tracing/error_log
+> [   45.922742] trace_kprobe: error: BTF arg can be used only on function entry
+>   Command: p:lock __raw_spin_lock lock=lock
+>                                        ^
+
+This looks good to me.
+
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Thank you!
+
+
+> Fixes: b576e09701c7d ("tracing/probes: Support function parameters if BTF is available")
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/trace_probe.c | 2 +-
+>  kernel/trace/trace_probe.h | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+> index cf504efd0694..328a51b1d068 100644
+> --- a/kernel/trace/trace_probe.c
+> +++ b/kernel/trace/trace_probe.c
+> @@ -1023,7 +1023,7 @@ parse_probe_arg(char *arg, const struct fetch_type *type,
+>  	default:
+>  		if (isalpha(arg[0]) || arg[0] == '_') {	/* BTF variable */
+>  			if (!tparg_is_function_entry(ctx->flags)) {
+> -				trace_probe_log_err(ctx->offset, NOSUP_BTFARG);
+> +				trace_probe_log_err(ctx->offset, NOFENTRY_BTFARG);
+>  				return -EINVAL;
+>  			}
+>  			ret = parse_btf_arg(arg, pcode, end, ctx);
+> diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+> index 604d6fb9c5ff..554fe2995ca1 100644
+> --- a/kernel/trace/trace_probe.h
+> +++ b/kernel/trace/trace_probe.h
+> @@ -493,6 +493,7 @@ extern int traceprobe_define_arg_fields(struct trace_event_call *event_call,
+>  	C(BAD_ATTACH_ARG,	"Attached event does not have this field"),\
+>  	C(NO_EP_FILTER,		"No filter rule after 'if'"),		\
+>  	C(NOSUP_BTFARG,		"BTF is not available or not supported"),	\
+> +	C(NOFENTRY_BTFARG,	"BTF arg can be used only on function entry"),	\
+>  	C(NO_BTFARG,		"This variable is not found at this probe point"),\
+>  	C(NO_BTF_ENTRY,		"No BTF entry for this probe point"),	\
+>  	C(BAD_VAR_ARGS,		"$arg* must be an independent parameter without name etc."),\
+> -- 
+> 2.40.1
 > 
 
-If I get this commit correctly, this commit is to use page pool to get 
-better performance.
 
-IIRC, folio is to make memory optimization. From the performance 
-results, with folio, the performance will get about 10%.
-
-So not sure if the folio can be used in this commit to get better 
-performance.
-
-That is my 2 cent.
-
-Zhu Yanjun
-
-> I found the page_pool_dev_alloc_pages() goes through the slow path,
-> because the page_pool_release_page() let the page leave the pool.
-> 
-> Do we have to call page_pool_release_page() before passing the SKB
-> to napi_gro_receive()? Any better way to recycle the pages from the
-> upper layer of non-XDP case?
-> 
-> Thanks,
-> - Haiyang
-> 
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
