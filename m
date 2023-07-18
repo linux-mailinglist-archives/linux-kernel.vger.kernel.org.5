@@ -2,144 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 974C575878C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A1D75878E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbjGRV5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 17:57:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57670 "EHLO
+        id S230482AbjGRV6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 17:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbjGRV5x (ORCPT
+        with ESMTP id S229670AbjGRV6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 17:57:53 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5081995
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:57:52 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36ILcsCR007145;
-        Tue, 18 Jul 2023 21:57:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=y1Sq4aa1BxBRuguYrChk1qcoYn3CGsLEXoGXBt/56hI=;
- b=gALsVim0H4c0iZ26CEZt+cb5w+V6DYBdL8S/5TNmlzPNAJ7elQD7nbJvV8EpD/WAojj7
- g5suYD/PLk/zWNhxGUohtAm4hClek2xtUqoznESMQvWGWDy3ZuAVixU3GNGJiZhBC+sM
- gUcpQ3nTtnp4AQr6MG1hcZ4svxwnUQiSqvpRPxDR2kDAOqAEjcdCqPICyOl2HhdQQAwu
- kbyhUj1ieJaVIw0ZT4lYeBk4WaqUh5+fI5aT9HL/QCQ53oh97uV4hLf9ZhCWu4rU5NK1
- C5ocOfQbLt7FyxG5eUAG2U1tsuR0k0Yv3kVz37LhRRb6WZFaJbvbWCm/lUP7Q1dkR6mJ gw== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rx24vs8md-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 Jul 2023 21:57:42 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36IJkJpo029057;
-        Tue, 18 Jul 2023 21:57:41 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3rv6smemjm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 Jul 2023 21:57:41 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-        by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36ILveWU66060666
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Jul 2023 21:57:40 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4CBD85805D;
-        Tue, 18 Jul 2023 21:57:40 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D847558053;
-        Tue, 18 Jul 2023 21:57:39 +0000 (GMT)
-Received: from [9.61.1.152] (unknown [9.61.1.152])
-        by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 18 Jul 2023 21:57:39 +0000 (GMT)
-Message-ID: <9b4102fc-b630-8463-aa00-e7d8aab4a2be@linux.ibm.com>
-Date:   Tue, 18 Jul 2023 16:57:39 -0500
+        Tue, 18 Jul 2023 17:58:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C4C198D;
+        Tue, 18 Jul 2023 14:58:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B36B60DC4;
+        Tue, 18 Jul 2023 21:58:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CBA9C433C8;
+        Tue, 18 Jul 2023 21:58:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689717517;
+        bh=hYKF8TnPc/PXhF/gvhdZibUWwFyVjiAJxCWDMaFDQ9E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=KKVKXMCnNwoKRubaOUZ88eDWdCJi3WH/TRbZznj1rmXZ7jN5L2VxgVzjBCrnXxgP7
+         xp8L1Er0CninuX4Y5bbMkRw2hGAmU9EGzfMKEXFqTPb2o21sclEmcOWscUxSb9dqAs
+         w9Pn77JG9HNJg7FVWp8Ruv9OYeij3Zc/SFFF9GZrR/lz/VCM2obgx/SFlr2DE2t8Ji
+         /ZqUPfmAYpfvKRLZC857MS51jwmX5uFzjAbsyhxHWYweAtUsBr/LAatn8owQtUHmmj
+         UhkbfzcrBHdLOGqi4iOn4hKxebDwqsb0kiTkmGqM/apDzYDnZhIjyj5B0hzwyyAANu
+         fjXvEYDpvzryw==
+Date:   Tue, 18 Jul 2023 16:58:35 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/2] PCI: Handle HAS_IOPORT dependencies
+Message-ID: <20230718215835.GA496612@bhelgaas>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2] fsi: Explicitly include correct DT includes
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>, Jeremy Kerr <jk@ozlabs.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Alistar Popple <alistair@popple.id.au>
-Cc:     linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20230718205508.1790932-1-robh@kernel.org>
-From:   Eddie James <eajames@linux.ibm.com>
-In-Reply-To: <20230718205508.1790932-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: a3GsO9wmnPVgiqvr7os23eQ7mATA7bTe
-X-Proofpoint-GUID: a3GsO9wmnPVgiqvr7os23eQ7mATA7bTe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-18_17,2023-07-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 clxscore=1015 malwarescore=0 adultscore=0
- suspectscore=0 mlxlogscore=866 mlxscore=0 impostorscore=0 bulkscore=0
- spamscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2307180196
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230718211224.GA494538@bhelgaas>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 18, 2023 at 04:12:24PM -0500, Bjorn Helgaas wrote:
+> On Mon, Jul 03, 2023 at 08:02:40PM +0200, Niklas Schnelle wrote:
+> > On Mon, 2023-07-03 at 12:42 -0500, Bjorn Helgaas wrote:
+> > > On Mon, Jul 03, 2023 at 03:52:53PM +0200, Niklas Schnelle wrote:
+> > > > Hi Bjorn,
+> > > > 
+> > > > This is a follow up to my ongoing effort of making the inb()/outb() and
+> > > > similar I/O port accessors compile-time optional. Previously I sent this as
+> > > > a complete treewide series titled "treewide: Remove I/O port accessors for
+> > > > HAS_IOPORT=n" with the latest being its 5th version[0]. Now about half of
+> > > > the per-subsystem patches have been merged so I'm changing over to stand
+> > > > alone subsystem patches. These series are stand alone and should be merged
+> > > > via the relevant tree such that with all subsystems complete we can follow
+> > > > this up with the last patch[1] that will make the I/O port accessors
+> > > > compile-time optional.
+> > > 
+> > > Is the merge plan for each subsystem to merge this separately?  I
+> > > acked these so they could be merged along with all the tree-wide
+> > > changes.
+> > 
+> > Hi Björn,
+> > 
+> > Yeah this went back and forth a little, sorry about that. With the
+> > Kconfig introduction of HAS_IOPORT merged about half of the original
+> > patches have been merged via subsystem maintainers or are at least
+> > sitting in linux-next already.  Arnd was anticipating that he'll pick
+> > up some left overs but at the moment the simplest is for subsystems to
+> > pick the patches up themselves ideally and if small enough for v6.5
+> > still.
+> 
+> I didn't merge these in time for the v6.5 merge window.  If you want
+> these in v6.5, it's fine with me, and it would probably make more
+> sense for you to bundle them with any other leftovers.
+> 
+> Otherwise, let me know and I'm happy to queue them for v6.6.
 
-On 7/18/23 15:55, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
+I provisionally put these on pci/ioport for v6.6.  If you pick them up
+for v6.5, let me know and I'll just drop that branch.
 
-
-Thanks,
-
-Reviewed-by: Eddie James <eajames@linux.ibm.com>
-
-
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> v2:
->   - I inadvertently had a dependency in my tree partially updating the
->     headers. That's squashed in now.
-> ---
->   drivers/fsi/fsi-occ.c     | 2 +-
->   drivers/fsi/fsi-sbefifo.c | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/fsi/fsi-occ.c b/drivers/fsi/fsi-occ.c
-> index abdd37d5507f..da35ca9e84a6 100644
-> --- a/drivers/fsi/fsi-occ.c
-> +++ b/drivers/fsi/fsi-occ.c
-> @@ -15,7 +15,7 @@
->   #include <linux/mutex.h>
->   #include <linux/fsi-occ.h>
->   #include <linux/of.h>
-> -#include <linux/of_device.h>
-> +#include <linux/of_platform.h>
->   #include <linux/platform_device.h>
->   #include <linux/sched.h>
->   #include <linux/slab.h>
-> diff --git a/drivers/fsi/fsi-sbefifo.c b/drivers/fsi/fsi-sbefifo.c
-> index 9912b7a6a4b9..4bae52c98620 100644
-> --- a/drivers/fsi/fsi-sbefifo.c
-> +++ b/drivers/fsi/fsi-sbefifo.c
-> @@ -22,8 +22,8 @@
->   #include <linux/module.h>
->   #include <linux/mutex.h>
->   #include <linux/of.h>
-> -#include <linux/of_device.h>
->   #include <linux/of_platform.h>
-> +#include <linux/platform_device.h>
->   #include <linux/sched.h>
->   #include <linux/slab.h>
->   #include <linux/uaccess.h>
+Bjorn
