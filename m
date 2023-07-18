@@ -2,168 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1441775784E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC528757853
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231298AbjGRJnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44536 "EHLO
+        id S231567AbjGRJoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:44:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbjGRJnQ (ORCPT
+        with ESMTP id S230168AbjGRJoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:43:16 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8F5E0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:43:15 -0700 (PDT)
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <bst@pengutronix.de>)
-        id 1qLhEa-0003t9-Bj; Tue, 18 Jul 2023 11:43:08 +0200
-Message-ID: <f673a09e-e212-ee7b-15c3-78afe8c70916@pengutronix.de>
-Date:   Tue, 18 Jul 2023 11:43:02 +0200
+        Tue, 18 Jul 2023 05:44:16 -0400
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E802BE0;
+        Tue, 18 Jul 2023 02:44:14 -0700 (PDT)
+Received: from [192.168.1.103] (31.173.85.68) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Tue, 18 Jul
+ 2023 12:44:04 +0300
+Subject: Re: [PATCH] ata: remove whitespace after '(' and before ')'
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+To:     <hanyu001@208suo.com>, <dlemoal@kernel.org>
+CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <tencent_6714ED434F83826DD33A8EE7B99064165309@qq.com>
+ <07f7ac9c59d027f959a69836fee9940c@208suo.com>
+ <5b055482-1adc-6915-b693-f3a95ebc64a1@gmail.com>
+Organization: Open Mobile Platform
+Message-ID: <f83d3930-ea43-aa19-b060-2658c1612fd6@omp.ru>
+Date:   Tue, 18 Jul 2023 12:44:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] crypto: caam - adjust RNG timing to support more devices
+In-Reply-To: <5b055482-1adc-6915-b693-f3a95ebc64a1@gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-From:   Bastian Krause <bst@pengutronix.de>
-To:     meenakshi.aggarwal@nxp.com, horia.geanta@nxp.com, V.sethi@nxp.com,
-        pankaj.gupta@nxp.com, gaurav.jain@nxp.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Victoria Milhoan <vicki.milhoan@freescale.com>,
-        Dan Douglass <dan.douglass@nxp.com>,
-        Vipul Kumar <vipul_kumar@mentor.com>, kernel@pengutronix.de
-References: <20230612082615.1255357-1-meenakshi.aggarwal@nxp.com>
- <e1f3f073-9d5e-1bae-f4f8-08dc48adad62@pengutronix.de>
-In-Reply-To: <e1f3f073-9d5e-1bae-f4f8-08dc48adad62@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: bst@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Originating-IP: [31.173.85.68]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 07/18/2023 09:20:15
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 178672 [Jul 18 2023]
+X-KSE-AntiSpam-Info: Version: 5.9.59.0
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 523 523 523027ce26ed1d9067f7a52a4756a876e54db27c
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_arrow_text}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.85.68 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.85.68
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 07/18/2023 09:25:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 7/18/2023 5:08:00 AM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/17/23 14:43, Bastian Krause wrote:
-> On 6/12/23 10:26, meenakshi.aggarwal@nxp.com wrote:
->> From: Victoria Milhoan <vicki.milhoan@freescale.com>
+On 7/18/23 12:12 PM, Sergei Shtylyov wrote:
+
+>> This patch fixes the following checkpatch errors:
 >>
->> Adjust RNG timing parameters to support more i.MX6 devices.
+>> ./drivers/ata/pata_sis.c:691: ERROR: space prohibited after that open parenthesis '('
+>> ./drivers/ata/pata_sis.c:691: ERROR: space prohibited before that close parenthesis ')'
 >>
->> Signed-off-by: Victoria Milhoan <vicki.milhoan@freescale.com>
->> Signed-off-by: Dan Douglass <dan.douglass@nxp.com>
->> Signed-off-by: Vipul Kumar <vipul_kumar@mentor.com>
->> Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
->> ---
->>   drivers/crypto/caam/ctrl.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
+>> Signed-off-by: Yu Han <    hanyu001@208suo.com>
 > 
-> This patch seems to breaks CAAM RNG instantiation on an i.MX8MM at my end:
+>    What happened to your email? :-)
 > 
-> caam 30900000.crypto: Entropy delay = 3200
-> caam 30900000.crypto: Entropy delay = 3600
-> [...]
-> caam 30900000.crypto: Entropy delay = 12400
-> caam 30900000.crypto: failed to instantiate RNG
-> caam: probe of 30900000.crypto failed with error -11
+> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 > 
-> If I revert this patch or increase RTSDCTL_ENT_DLY_MAX to a value > 
-> 66800, it works again:
-> 
-> caam 30900000.crypto: Entropy delay = 32800
-> caam 30900000.crypto: Entropy delay = 33200
-> [...]
-> caam 30900000.crypto: Entropy delay = 66800
-> caam 30900000.crypto: Instantiated RNG4 SH0
-> caam 30900000.crypto: Instantiated RNG4 SH1
-> caam 30900000.crypto: device ID = 0x0a16040100000000 (Era 9)
-> caam 30900000.crypto: job rings = 2, qi = 0
-> caam algorithms registered in /proc/crypto
-> caam 30900000.crypto: caam pkc algorithms registered in /proc/crypto
-> caam 30900000.crypto: registering rng-caam
-> Executing RNG SELF-TEST with wait
-> random: crng init done
-> caam 30900000.crypto: rng crypto API alg registered prng-caam
+>    Altho I'm not sure whether Damien would want to apply that...
 
-This ^ was the kernel log for..
+   Oh, and the subject should look like this:
 
+ata: pata_sis: remove whitespace after '(' and before ')'
 
---- a/drivers/crypto/caam/regs.h
-+++ b/drivers/crypto/caam/regs.h
-@@@ -522,7 -522,7 +522,7 @@@ struct rng4tst
-   #define RTSDCTL_ENT_DLY_SHIFT 16
-   #define RTSDCTL_ENT_DLY_MASK (0xffff << RTSDCTL_ENT_DLY_SHIFT)
-   #define RTSDCTL_ENT_DLY_MIN 3200
---#define RTSDCTL_ENT_DLY_MAX 12800
-++#define RTSDCTL_ENT_DLY_MAX 70000
-   #define RTSDCTL_SAMP_SIZE_MASK 0xffff
-   #define RTSDCTL_SAMP_SIZE_VAL 512
-         u32 rtsdctl;            /* seed control register */
-
-
-For completion's sake: Reverting this patch..
-
-
---- a/drivers/crypto/caam/ctrl.c
-+++ b/drivers/crypto/caam/ctrl.c
-@@ -383,7 +383,7 @@ static void kick_trng(struct device *dev, int ent_delay)
-                 /* min. freq. count, equal to 1/4 of the entropy sample length */
-                 wr_reg32(&r4tst->rtfrqmin, val >> 2);
-                 /* max. freq. count, equal to 16 times the entropy sample length */
--               wr_reg32(&r4tst->rtfrqmax, val << 4);
-+               wr_reg32(&r4tst->rtfrqmax, RTFRQMAX_DISABLE);
-         }
-  
-         wr_reg32(&r4tst->rtsdctl, (val << RTSDCTL_ENT_DLY_SHIFT) |
-
-
-..produces this kernel log (without RNG SELF-TEST):
-
-caam 30900000.crypto: Entropy delay = 3200
-caam 30900000.crypto: Entropy delay = 3600
-caam 30900000.crypto: Instantiated RNG4 SH0
-caam 30900000.crypto: Instantiated RNG4 SH1
-caam 30900000.crypto: device ID = 0x0a16040100000000 (Era 9)
-caam 30900000.crypto: job rings = 2, qi = 0
-caam algorithms registered in /proc/crypto
-caam 30900000.crypto: caam pkc algorithms registered in /proc/crypto
-caam 30900000.crypto: registering rng-caam
-caam 30900000.crypto: rng crypto API alg registered prng-caam
-random: crng init done
-
-Regards,
-Bastian
-
->>
->> diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
->> index 5fed3cf354c0..62dd069942e4 100644
->> --- a/drivers/crypto/caam/ctrl.c
->> +++ b/drivers/crypto/caam/ctrl.c
->> @@ -383,8 +383,8 @@ static void kick_trng(struct device *dev, int 
->> ent_delay)
->>       wr_reg32(&r4tst->rtsdctl, val);
->>       /* min. freq. count, equal to 1/4 of the entropy sample length */
->>       wr_reg32(&r4tst->rtfrqmin, ent_delay >> 2);
->> -    /* disable maximum frequency count */
->> -    wr_reg32(&r4tst->rtfrqmax, RTFRQMAX_DISABLE);
->> +    /* max. freq. count, equal to 16 times the entropy sample length */
->> +    wr_reg32(&r4tst->rtfrqmax, ent_delay << 4);
->>       /* read the control register */
->>       val = rd_reg32(&r4tst->rtmctl);
->>   start_rng:
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
+MBR, Sergey
