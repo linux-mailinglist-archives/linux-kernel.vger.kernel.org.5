@@ -2,269 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF61E757177
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 03:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA3875717E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 03:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230117AbjGRBpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 21:45:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
+        id S230372AbjGRBuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 21:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbjGRBpm (ORCPT
+        with ESMTP id S231130AbjGRBue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 21:45:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5A41BE
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 18:45:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689644699;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IhD0+ZBVPYFnTWd85wDpKQlkImyuWRSCaCnKLkybDrg=;
-        b=E/kYxDnJ0O2a/Y5cWy5I+37JheC5qovA4AF/XvWJbctAYXTDw0ulzU4NvuDFTYqzwD/E+l
-        QsvxdXbX9dDg0eXAbkP9lCuDdrXuhXH1YT0dj+XsPtPST6jX7HWpEXXANgVgdFjb8Me2kD
-        qp2cujKyxAPR5QqFhcdQCvgz69RPO1k=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-308-O-p1XdBROtyIeIwQ6pStAQ-1; Mon, 17 Jul 2023 21:44:57 -0400
-X-MC-Unique: O-p1XdBROtyIeIwQ6pStAQ-1
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-666eb721e75so2845508b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 18:44:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689644697; x=1692236697;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IhD0+ZBVPYFnTWd85wDpKQlkImyuWRSCaCnKLkybDrg=;
-        b=CT9cugzG0k8Rwa9aqsyS0r2mO0Zz/HA/zJWihSY+3QstpzJo+d8MCguj/2cfQQU7rB
-         PR9gyHel14wwMOst6LpKsPeZboqglUg47x4x9qcPwzsl4H7c3jL7ZOfLM76vtCipdHfl
-         7lo5qnLbMIEmPrr3gHfz1nd47NkiCcfql/JAetb/OXYe6z0hsexXMKLBBtiaz3E9jIfD
-         j3GHT4XZAzV8TlBE6ruY5/N8nhntyW/XOlFhsMyQpEwUXAmnoE+JxfhlYmjSNsDfGO3x
-         XwoUUOVLVrjeQ13Al8QkJHpR0FxFYTVKZa9UZ9x3cXz1aYnrBwC1bGKruYlmt967SQFs
-         1ruw==
-X-Gm-Message-State: ABy/qLa1vykjckmY40d/ssizwTycpYVB0Bl5IYuWaxgWR6wFi4cqP2NK
-        kUaEdgWKQ73HNTffITb2gBmdyDD1qd2zUs5n60Sm3xw7T+KIR4REsDZapOkA6illYSnd5SHlryw
-        q7blD54zBtTUKhOVXMH2wlvvL
-X-Received: by 2002:a05:6a20:5498:b0:133:6c35:99c1 with SMTP id i24-20020a056a20549800b001336c3599c1mr14562861pzk.16.1689644696852;
-        Mon, 17 Jul 2023 18:44:56 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGxAju5T1UCwQF5/cupW+zXgFeNUcZ+pCUS/8FwaxHZi+FOWZyjLBc5TWNGr2M+mKKpCLUi4Q==
-X-Received: by 2002:a05:6a20:5498:b0:133:6c35:99c1 with SMTP id i24-20020a056a20549800b001336c3599c1mr14562854pzk.16.1689644696521;
-        Mon, 17 Jul 2023 18:44:56 -0700 (PDT)
-Received: from [10.72.12.44] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id jl2-20020a170903134200b001b51b3e84cesm506236plb.166.2023.07.17.18.44.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 18:44:56 -0700 (PDT)
-Message-ID: <8121882a-0823-3a60-e108-0ff7bae5c0c9@redhat.com>
-Date:   Tue, 18 Jul 2023 09:44:49 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v5 00/14] ceph: support idmapped mounts
-To:     Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Cc:     Gregory Farnum <gfarnum@redhat.com>,
-        Christian Brauner <brauner@kernel.org>, stgraber@ubuntu.com,
-        linux-fsdevel@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230608154256.562906-1-aleksandr.mikhalitsyn@canonical.com>
- <f3864ed6-8c97-8a7a-f268-dab29eb2fb21@redhat.com>
- <CAEivzxcRsHveuW3nrPnSBK6_2-eT4XPvza3kN2oogvnbVXBKvQ@mail.gmail.com>
- <20230609-alufolie-gezaubert-f18ef17cda12@brauner>
- <CAEivzxc_LW6mTKjk46WivrisnnmVQs0UnRrh6p0KxhqyXrErBQ@mail.gmail.com>
- <ac1c6817-9838-fcf3-edc8-224ff85691e0@redhat.com>
- <CAJ4mKGby71qfb3gd696XH3AazeR0Qc_VGYupMznRH3Piky+VGA@mail.gmail.com>
- <977d8133-a55f-0667-dc12-aa6fd7d8c3e4@redhat.com>
- <CAEivzxcr99sERxZX17rZ5jW9YSzAWYvAjOOhBH+FqRoso2=yng@mail.gmail.com>
- <626175e2-ee91-0f1a-9e5d-e506aea366fa@redhat.com>
- <64241ff0-9af3-6817-478f-c24a0b9de9b3@redhat.com>
- <CAEivzxeF51ZEKhQ-0M35nooZ7_cZgk1-q75-YbkeWpZ9RuHG4A@mail.gmail.com>
- <4c4f73d8-8238-6ab8-ae50-d83c1441ac05@redhat.com>
- <CAEivzxeQGkemxVwJ148b_+OmntUAWkdL==yMiTMN+GPyaLkFPg@mail.gmail.com>
- <0a42c5d0-0479-e60e-ac84-be3b915c62d9@redhat.com>
- <CAEivzxcskn8WxcOo0PDHMascFRdYTD0Lr5Uo4fj3deBjDviOXA@mail.gmail.com>
-Content-Language: en-US
-From:   Xiubo Li <xiubli@redhat.com>
-In-Reply-To: <CAEivzxcskn8WxcOo0PDHMascFRdYTD0Lr5Uo4fj3deBjDviOXA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Mon, 17 Jul 2023 21:50:34 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 429C010E6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 18:50:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689645032; x=1721181032;
+  h=date:from:to:cc:subject:message-id;
+  bh=WtfE522LljCXxUXQlG/FKLLYkeTKxIiuzazN9XFKQuo=;
+  b=FwZlMWSU0yKxFksJXaQsFCAX/0l+wOTOrg8O0JLape64oPedlguN872X
+   QhWCZ8H05cRgW55TDnDfuIL8KPUSTfhg0nN2niUVfpqIoA0MtUk/w9z3h
+   LjNNMpuc5oP0kOWG3lYng9+KRQygmy5BQ6g38zqct1xlfBo73BZmPg/PF
+   AZKnTHTGMAXX8ttu49geeJFY0kyK4eItGy4KD3q3ZVbvJ5hHWScyCKz/L
+   VvKyHvZVrl9AEBLgGEZq047uqeTQh1vgCEv/Kzmad75KSCBjCCV+3hv1L
+   lHjJI67xTTxvgtMBixQ8NEIgmDKMP35HCGvT0VYwFNsrbaGH5tupVXqGo
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="350947396"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="350947396"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 18:50:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="753123643"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="753123643"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 17 Jul 2023 18:50:28 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qLZr5-00002V-0b;
+        Tue, 18 Jul 2023 01:50:24 +0000
+Date:   Tue, 18 Jul 2023 09:49:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/urgent] BUILD SUCCESS
+ f7853c34241807bb97673a5e97719123be39a09e
+Message-ID: <202307180920.OWcNJ5Yc-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/urgent
+branch HEAD: f7853c34241807bb97673a5e97719123be39a09e  locking/rtmutex: Fix task->pi_waiters integrity
 
-On 7/14/23 20:57, Aleksandr Mikhalitsyn wrote:
-> On Tue, Jul 4, 2023 at 3:09 AM Xiubo Li <xiubli@redhat.com> wrote:
->> Sorry, not sure, why my last reply wasn't sent out.
->>
->> Do it again.
->>
->>
->> On 6/26/23 19:23, Aleksandr Mikhalitsyn wrote:
->>> On Mon, Jun 26, 2023 at 4:12 AM Xiubo Li<xiubli@redhat.com>  wrote:
->>>> On 6/24/23 15:11, Aleksandr Mikhalitsyn wrote:
->>>>> On Sat, Jun 24, 2023 at 3:37 AM Xiubo Li<xiubli@redhat.com>  wrote:
->>>>>> [...]
->>>>>>
->>>>>>     > > >
->>>>>>     > > > I thought about this too and came to the same conclusion, that
->>>>>> UID/GID
->>>>>>     > > > based
->>>>>>     > > > restriction can be applied dynamically, so detecting it on mount-time
->>>>>>     > > > helps not so much.
->>>>>>     > > >
->>>>>>     > > For this you please raise one PR to ceph first to support this, and in
->>>>>>     > > the PR we can discuss more for the MDS auth caps. And after the PR
->>>>>>     > > getting merged then in this patch series you need to check the
->>>>>>     > > corresponding option or flag to determine whether could the idmap
->>>>>>     > > mounting succeed.
->>>>>>     >
->>>>>>     > I'm sorry but I don't understand what we want to support here. Do we
->>>>>> want to
->>>>>>     > add some new ceph request that allows to check if UID/GID-based
->>>>>>     > permissions are applied for
->>>>>>     > a particular ceph client user?
->>>>>>
->>>>>> IMO we should prevent user to set UID/GID-based permisions caps from
->>>>>> ceph side.
->>>>>>
->>>>>> As I know currently there is no way to prevent users to set MDS auth
->>>>>> caps, IMO in ceph side at least we need one flag or option to disable
->>>>>> this once users want this fs cluster sever for idmap mounts use case.
->>>>> How this should be visible from the user side? We introducing a new
->>>>> kernel client mount option,
->>>>> like "nomdscaps", then pass flag to the MDS and MDS should check that
->>>>> MDS auth permissions
->>>>> are not applied (on the mount time) and prevent them from being
->>>>> applied later while session is active. Like that?
->>>>>
->>>>> At the same time I'm thinking about protocol extension that adds 2
->>>>> additional fields for UID/GID. This will allow to correctly
->>>>> handle everything. I wanted to avoid any changes to the protocol or
->>>>> server-side things. But if we want to change MDS side,
->>>>> maybe it's better then to go this way?
->>> Hi Xiubo,
->>>
->>>> There is another way:
->>>>
->>>> For each client it will have a dedicated client auth caps, something like:
->>>>
->>>> client.foo
->>>>      key: *key*
->>>>      caps: [mds] allow r, allow rw path=/bar
->>>>      caps: [mon] allow r
->>>>      caps: [osd] allow rw tag cephfs data=cephfs_a
->>> Do we have any infrastructure to get this caps list on the client side
->>> right now?
->>> (I've taken a quick look through the code and can't find anything
->>> related to this.)
->> I am afraid there is no.
->>
->> But just after the following ceph PR gets merged it will be easy to do this:
->>
->> https://github.com/ceph/ceph/pull/48027
->>
->> This is still under testing.
->>
->>>> When mounting this client with idmap enabled, then we can just check the
->>>> above [mds] caps, if there has any UID/GID based permissions set, then
->>>> fail the mounting.
->>> understood
->>>
->>>> That means this kind client couldn't be mounted with idmap enabled.
->>>>
->>>> Also we need to make sure that once there is a mount with idmap enabled,
->>>> the corresponding client caps couldn't be append the UID/GID based
->>>> permissions. This need a patch in ceph anyway IMO.
->>> So, yeah we will need to effectively block cephx permission changes if
->>> there is a client mounted with
->>> an active idmapped mount. Sounds as something that require massive
->>> changes on the server side.
->> Maybe no need much, it should be simple IMO. But I am not 100% sure.
->>
->>> At the same time this will just block users from using idmapped mounts
->>> along with UID/GID restrictions.
->>>
->>> If you want me to change server-side anyways, isn't it better just to
->>> extend cephfs protocol to properly
->>> handle UID/GIDs with idmapped mounts? (It was originally proposed by Christian.)
->>> What we need to do here is to add a separate UID/GID fields for ceph
->>> requests those are creating a new inodes
->>> (like mknod, symlink, etc).
-> Dear Xiubo,
->
-> I'm sorry for delay with reply, I've missed this message accidentally.
->
->> BTW, could you explain it more ? How could this resolve the issue we are
->> discussing here ?
-> This was briefly mentioned here
-> https://lore.kernel.org/all/20220105141023.vrrbfhti5apdvkz7@wittgenstein/#t
-> by Christian. Let me describe it in detail.
->
-> In the current approach we apply mount idmapping to
-> head->caller_{uid,gid} fields
-> to make mkdir/mknod/symlink operations set a proper inode owner
-> uid/gid in according with an idmapping.
+elapsed time: 821m
 
-Sorry for late.
+configs tested: 140
+configs skipped: 4
 
-I still couldn't get how this could resolve the lookup case.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-For a lookup request the caller_{uid, gid} still will be the mapped 
-{uid, gid}, right ? And also the same for other non-create requests. If 
-so this will be incorrect for the cephx perm checks IMO.
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r003-20230717   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs101_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                     haps_hs_smp_defconfig   gcc  
+arc                            hsdk_defconfig   gcc  
+arc                  randconfig-r006-20230717   gcc  
+arc                  randconfig-r031-20230717   gcc  
+arc                  randconfig-r043-20230717   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                          ep93xx_defconfig   clang
+arm                          pxa910_defconfig   gcc  
+arm                  randconfig-r005-20230717   gcc  
+arm                  randconfig-r046-20230717   clang
+arm                        realview_defconfig   gcc  
+arm                          sp7021_defconfig   clang
+arm                        vexpress_defconfig   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r013-20230717   gcc  
+csky                                defconfig   gcc  
+hexagon              randconfig-r012-20230717   clang
+hexagon              randconfig-r041-20230717   clang
+hexagon              randconfig-r045-20230717   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230717   clang
+i386         buildonly-randconfig-r005-20230717   clang
+i386         buildonly-randconfig-r006-20230717   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230717   clang
+i386                 randconfig-i002-20230717   clang
+i386                 randconfig-i003-20230717   clang
+i386                 randconfig-i004-20230717   clang
+i386                 randconfig-i005-20230717   clang
+i386                 randconfig-i006-20230717   clang
+i386                 randconfig-i011-20230717   gcc  
+i386                 randconfig-i012-20230717   gcc  
+i386                 randconfig-i013-20230717   gcc  
+i386                 randconfig-i014-20230717   gcc  
+i386                 randconfig-i015-20230717   gcc  
+i386                 randconfig-i016-20230717   gcc  
+i386                 randconfig-r004-20230717   clang
+i386                 randconfig-r022-20230717   gcc  
+i386                 randconfig-r033-20230717   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r032-20230717   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                        m5272c3_defconfig   gcc  
+m68k                        stmark2_defconfig   gcc  
+m68k                           sun3_defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                     decstation_defconfig   gcc  
+mips                      fuloong2e_defconfig   gcc  
+mips                          malta_defconfig   clang
+mips                malta_qemu_32r6_defconfig   clang
+mips                        qi_lb60_defconfig   clang
+mips                       rbtx49xx_defconfig   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r035-20230717   gcc  
+openrisc             randconfig-r025-20230717   gcc  
+openrisc             randconfig-r026-20230717   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                generic-64bit_defconfig   gcc  
+parisc               randconfig-r002-20230717   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                     asp8347_defconfig   gcc  
+powerpc                       eiger_defconfig   gcc  
+powerpc                      katmai_defconfig   clang
+powerpc                     ksi8560_defconfig   clang
+powerpc                       maple_defconfig   gcc  
+powerpc                    mvme5100_defconfig   clang
+powerpc                      ppc40x_defconfig   gcc  
+powerpc                         ps3_defconfig   gcc  
+powerpc                     tqm8540_defconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r016-20230717   gcc  
+riscv                randconfig-r021-20230717   gcc  
+riscv                randconfig-r042-20230717   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r001-20230717   clang
+s390                 randconfig-r044-20230717   gcc  
+sh                               allmodconfig   gcc  
+sh                          kfr2r09_defconfig   gcc  
+sh                          lboxre2_defconfig   gcc  
+sh                   randconfig-r034-20230717   gcc  
+sh                   rts7751r2dplus_defconfig   gcc  
+sh                          sdk7786_defconfig   gcc  
+sh                           se7722_defconfig   gcc  
+sh                   sh7724_generic_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r011-20230717   gcc  
+sparc                randconfig-r014-20230717   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230717   clang
+x86_64       buildonly-randconfig-r002-20230717   clang
+x86_64       buildonly-randconfig-r003-20230717   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r024-20230717   gcc  
+x86_64               randconfig-x001-20230717   gcc  
+x86_64               randconfig-x002-20230717   gcc  
+x86_64               randconfig-x003-20230717   gcc  
+x86_64               randconfig-x004-20230717   gcc  
+x86_64               randconfig-x005-20230717   gcc  
+x86_64               randconfig-x006-20230717   gcc  
+x86_64               randconfig-x011-20230717   clang
+x86_64               randconfig-x012-20230717   clang
+x86_64               randconfig-x013-20230717   clang
+x86_64               randconfig-x014-20230717   clang
+x86_64               randconfig-x015-20230717   clang
+x86_64               randconfig-x016-20230717   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r036-20230717   gcc  
 
-Thanks
-
-- Xiubo
-
-
-> This makes a problem with path-based UID/GID restriction mechanism,
-> because it uses head->caller_{uid,gid} fields
-> to check if UID/GID is permitted or not.
->
-> So, the problem is that we have one field in ceph request for two
-> different needs - to control permissions and to set inode owner.
-> Christian pointed that the most saner way is to modify ceph protocol
-> and add a separate field to store inode owner UID/GID,
-> and only this fields should be idmapped, but head->caller_{uid,gid}
-> will be untouched.
->
-> With this approach, we will not affect UID/GID-based permission rules
-> with an idmapped mounts at all.
->
-> Kind regards,
-> Alex
->
->> Thanks
->>
->> - Xiubo
->>
->>
->>> Kind regards,
->>> Alex
->>>
->>>> Thanks
->>>>
->>>> - Xiubo
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>> Thanks,
->>>>> Alex
->>>>>
->>>>>> Thanks
->>>>>>
->>>>>> - Xiubo
->>>>>>
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
