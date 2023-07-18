@@ -2,73 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F3A758179
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BE4758184
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233801AbjGRP4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 11:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49746 "EHLO
+        id S233848AbjGRP44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 11:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233802AbjGRP4o (ORCPT
+        with ESMTP id S233797AbjGRP4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 11:56:44 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085821996
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:56:39 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1689695797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ad66UUVO3pSvlvkox2MT7k2+8Ed+6IONyfoOpiaiMsQ=;
-        b=Rg0d5kKSCd43BjEkyMdTFN67J6jqWri0AVjjiUS6uNMKi04ud9ZpOg8CGEcd2+ikOj43Pu
-        Vlhx+rlZXZDGTv2Y+HN6kIbxTx093nsrdC2VDI0xXubcp3uceOx15bHLo31EpU7OcWghIb
-        aEchJXAN9uxjujSd4RkSs0Ox1g/309du9E8GGufcDCZ+B0bOcC66YrAltE948H334dOSXx
-        3ATRRs/4nTOP4N9aqPxmaN0HRxs3YOT86lw5uGkqf9DtETeNsqBr6aqdFfxFhh/o7Vc89P
-        l0NY0DYI+vlap8o48TXIb5vRen1ISN84mv7CExQXszp1flCCWrKudBUXcKN81w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1689695797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ad66UUVO3pSvlvkox2MT7k2+8Ed+6IONyfoOpiaiMsQ=;
-        b=C2Dd1CsruzP9g3plb51s2N3XB3xjiOkINkIAtHSksmc3925NKlZ+72cSNp6YC4/EqSKMAZ
-        ZG9xWXtVTEc+CGBg==
-To:     Juergen Gross <jgross@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
+        Tue, 18 Jul 2023 11:56:46 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09ED619B1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:56:41 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-403b6b7c0f7so42262651cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:56:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1689695800; x=1692287800;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tjh+qVHNBsaCt+fpZytXbv4JtN2Kf+QfiKBiC+OQp3c=;
+        b=bYsTsBY1ioUL9k8drjTPCTw/fEJ0EAlGX5g4owJLPMPxN2CHLKUwbHRdsGU8yNpkgq
+         tSJhCUQojCe7iZMsDT/aY34J1oz2QHRzCjLM+KqEBEo9M8BD2KOp45IRPvgTMkckJ6dq
+         H9fFQEgiHBZaevHiGZSqEfXqcoEtLjezHUCteBqtpUndGthYRfcrzEkhL4CGHaIFAcmx
+         6wdKboUdDaPeOVdQT0aOEr8C1+gySsRWrc1UqrjcLLXuhZDet2FHUgbuPzKGfDMScL/V
+         K78x7SFpD7MaWzPqAIp0HWYQyARw7uG7tneLlNjtBlR/Fv5UIeG6Vm/K9G6rR6HJEl7q
+         8oNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689695800; x=1692287800;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Tjh+qVHNBsaCt+fpZytXbv4JtN2Kf+QfiKBiC+OQp3c=;
+        b=cDfIwAz+SswXn/adZAb1JjlAOUp8fTkAc3oorJHXqm5A/o+uAzJC8f9ULU8lv4jEgg
+         gvsFjaZxpVQHhniM5GfmhTNlKo7FkTzJjXkyYAoyrYYpahaLoGxeNqyt9lNk28fJ4fQ+
+         reR92OjTiZ+L3697qf7ZzYrmdCx7mIceC5A0lrPu0yUqN4k9ZA05w430tYp0gd9WJvfH
+         78Ofc6/YwRVk61krD4KdMD8x2ECB74gKYuJA+6IcZlbgz6ibbqS/eE7zZ579lKKnn2sQ
+         hrvP7Hz4BIp4qDi6vZL75dMmTKi8WQ6aL/zann5CkoRmJvhMJtUsJAq6yKiF+LzgYuGT
+         qZng==
+X-Gm-Message-State: ABy/qLY7fRrMSP10MnNuepHMskfTmNcCZx1nvsHqO0Uhvz+cHDWLpULe
+        npYGETwAUO4ulqqhdDJ5/1Zc4g==
+X-Google-Smtp-Source: APBJJlFA9677r6PhZxjwKlQ1fKWxhiNMVqP6N1YqyjTADbRS7wwnXs7xld1btAoYMOwt7mM3Vw+c9w==
+X-Received: by 2002:ac8:7dd0:0:b0:403:a814:ef4d with SMTP id c16-20020ac87dd0000000b00403a814ef4dmr21293071qte.49.1689695800050;
+        Tue, 18 Jul 2023 08:56:40 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id s21-20020ac87595000000b003e635f80e72sm727847qtq.48.2023.07.18.08.56.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 08:56:39 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qLn42-002YJT-5I;
+        Tue, 18 Jul 2023 12:56:38 -0300
+Date:   Tue, 18 Jul 2023 12:56:38 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+        linux-usb@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
+        Paul Durrant <paul@xen.org>, Tom Rix <trix@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
+        linux-mm@kvack.org, Kirti Wankhede <kwankhede@nvidia.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Arjan van de Ven <arjan@linux.intel.com>
-Subject: Re: [patch 54/58] x86/xen/apic: Mark apic __ro_after_init
-In-Reply-To: <a89d5dab-4c52-0bff-ad35-080e62a57447@suse.com>
-References: <20230717223049.327865981@linutronix.de>
- <20230717223226.297124390@linutronix.de>
- <a89d5dab-4c52-0bff-ad35-080e62a57447@suse.com>
-Date:   Tue, 18 Jul 2023 17:56:37 +0200
-Message-ID: <875y6hxlfu.ffs@tglx>
+        Jens Axboe <axboe@kernel.dk>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Fei Li <fei1.li@intel.com>, x86@kernel.org,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        intel-gfx@lists.freedesktop.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        linux-fpga@vger.kernel.org, Zhi Wang <zhi.a.wang@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Jason Herne <jjherne@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-s390@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linuxppc-dev@lists.ozlabs.org, Eric Auger <eric.auger@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>, cgroups@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        virtualization@lists.linux-foundation.org,
+        intel-gvt-dev@lists.freedesktop.org, io-uring@vger.kernel.org,
+        netdev@vger.kernel.org, Tony Krowiak <akrowiak@linux.ibm.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Dominik Behr <dbehr@chromium.org>,
+        Marcin Wojtas <mw@semihalf.com>
+Subject: Re: [PATCH 0/2] eventfd: simplify signal helpers
+Message-ID: <ZLa2NmwexoxPkS9a@ziepe.ca>
+References: <20230630155936.3015595-1-jaz@semihalf.com>
+ <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
+ <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
+ <20230717130831.0f18381a.alex.williamson@redhat.com>
+ <ZLW8wEzkhBxd0O0L@ziepe.ca>
+ <20230717165203.4ee6b1e6.alex.williamson@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717165203.4ee6b1e6.alex.williamson@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18 2023 at 17:31, Juergen Gross wrote:
-> On 18.07.23 01:15, Thomas Gleixner wrote:
->> +	.get_apic_id			= xen_get_apic_id,
->> +	.set_apic_id			= xen_set_apic_id, /* Can be NULL on 32-bit. */
->
-> While changing this line, could you please drop the comment here?
->
-> 32-bit is irrelevant, as Xen PV is 64-bit only these days.
+On Mon, Jul 17, 2023 at 04:52:03PM -0600, Alex Williamson wrote:
+> On Mon, 17 Jul 2023 19:12:16 -0300
+> Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> 
+> > On Mon, Jul 17, 2023 at 01:08:31PM -0600, Alex Williamson wrote:
+> > 
+> > > What would that mechanism be?  We've been iterating on getting the
+> > > serialization and buffering correct, but I don't know of another means
+> > > that combines the notification with a value, so we'd likely end up with
+> > > an eventfd only for notification and a separate ring buffer for
+> > > notification values.  
+> > 
+> > All FDs do this. You just have to make a FD with custom
+> > file_operations that does what this wants. The uAPI shouldn't be able
+> > to tell if the FD is backing it with an eventfd or otherwise. Have the
+> > kernel return the FD instead of accepting it. Follow the basic design
+> > of eg mlx5vf_save_fops
+> 
+> Sure, userspace could poll on any fd and read a value from it, but at
+> that point we're essentially duplicating a lot of what eventfd provides
+> for a minor(?) semantic difference over how the counter value is
+> interpreted.  Using an actual eventfd allows the ACPI notification to
+> work as just another interrupt index within the existing vfio IRQ
+> uAPI.
 
-Sure.
+Yes, duplicated, sort of, whatever the "ack" is to allow pushing a new
+value can be revised to run as part of the read.
+
+But I don't really view it as a minor difference. eventfd is a
+counter. It should not be abused otherwise, even if it can be made to
+work.
+
+It really isn't an IRQ if it is pushing an async message w/data.
+
+Jason
