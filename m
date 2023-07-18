@@ -2,47 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8B275724E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2317675724F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbjGRDan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 23:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
+        id S231189AbjGRDaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 23:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjGRDaD (ORCPT
+        with ESMTP id S231181AbjGRDaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 Jul 2023 23:30:03 -0400
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A701705;
-        Mon, 17 Jul 2023 20:29:36 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R661e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0VnfxlTn_1689650971;
-Received: from 30.221.158.122(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VnfxlTn_1689650971)
-          by smtp.aliyun-inc.com;
-          Tue, 18 Jul 2023 11:29:32 +0800
-Message-ID: <47e3e22b-73a6-e2e4-05da-1a1138042d73@linux.alibaba.com>
-Date:   Tue, 18 Jul 2023 11:29:26 +0800
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB9CE1707;
+        Mon, 17 Jul 2023 20:29:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 498B36125A;
+        Tue, 18 Jul 2023 03:29:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7E75C433CA;
+        Tue, 18 Jul 2023 03:29:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689650985;
+        bh=3Sqm4UsEUrMMLjMTfUg/mnuKacyQjOkPpH5Zzh5JPYI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pjQYehnZEkPbSmXprQ38F76j3vceLsXn9BNQWIE2HkLsIfsEx5SdgCW9lVU5m3icP
+         rrQywc8/lgaqhxeBsdJTDRfFSkENo7LH+0M+YM1Lu11t/BqqDsQFF2d1KaRKhmJI/n
+         g9SdsjibJOidXzs4rzKEi3wQS35IMbsV0sab4dthYgBKAMIVoQYQl2CYK9IUrBnr2Y
+         CL0/gp5NlHFI/+WIen5J6YMhLkOD9mCUF1JE8lo0uW8R8lMxtCKMsvr6ximSlNzg+Y
+         6EKp1FysL4hioDgx/99Tkorea9wbEtq5aEH3RfDp/fV57KqhBK9W6wF0GFeN2DZ2nT
+         crKmxrY51gVyA==
+Date:   Tue, 18 Jul 2023 11:29:34 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Han Xu <han.xu@nxp.com>, Haibo Chen <haibo.chen@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH 08/10] arm64: dts: imx8ulp-evk: add spi-nor device support
+Message-ID: <20230718032934.GC9559@dragon>
+References: <20230625124238.4071717-1-peng.fan@oss.nxp.com>
+ <20230625124238.4071717-9-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH net-next V2 3/4] virtio_net: support per queue interrupt
- coalesce command
-To:     Gavin Li <gavinl@nvidia.com>
-Cc:     gavi@nvidia.com, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, dtatulea@nvidia.com, mst@redhat.com,
-        jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, jiri@nvidia.com
-References: <20230717143037.21858-1-gavinl@nvidia.com>
- <20230717143037.21858-4-gavinl@nvidia.com>
-From:   Heng Qi <hengqi@linux.alibaba.com>
-In-Reply-To: <20230717143037.21858-4-gavinl@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230625124238.4071717-9-peng.fan@oss.nxp.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,269 +60,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2023/7/17 下午10:30, Gavin Li 写道:
-> Add interrupt_coalesce config in send_queue and receive_queue to cache user
-> config.
->
-> Send per virtqueue interrupt moderation config to underline device in order
-> to have more efficient interrupt moderation and cpu utilization of guest
-> VM.
->
-> Signed-off-by: Gavin Li <gavinl@nvidia.com>
-> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+On Sun, Jun 25, 2023 at 08:42:36PM +0800, Peng Fan (OSS) wrote:
+> From: Han Xu <han.xu@nxp.com>
+> 
+> Add spi-nor support.
+> - 8 bit mode for RX/TX.
+> - Set the clock rate to 200MHz.
+> - add default/sleep pinctrl.
+> 
+> Co-developed-by: Haibo Chen <haibo.chen@nxp.com>
+> Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
+> Signed-off-by: Han Xu <han.xu@nxp.com>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 > ---
->   drivers/net/virtio_net.c        | 123 ++++++++++++++++++++++++++++----
->   include/uapi/linux/virtio_net.h |  14 ++++
->   2 files changed, 125 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 802ed21453f5..1566c7de9436 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -144,6 +144,8 @@ struct send_queue {
->   
->   	struct virtnet_sq_stats stats;
->   
-> +	struct virtnet_interrupt_coalesce intr_coal;
+>  arch/arm64/boot/dts/freescale/imx8ulp-evk.dts | 34 +++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
+> index d66e31cf83fe..e459dc35e469 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
+> @@ -95,6 +95,23 @@ &cm33 {
+>  	status = "okay";
+>  };
+>  
+> +&flexspi2 {
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-0 = <&pinctrl_flexspi2_ptd>;
+> +	pinctrl-1 = <&pinctrl_flexspi2_ptd>;
+> +	status = "okay";
 > +
->   	struct napi_struct napi;
->   
->   	/* Record whether sq is in reset state. */
-> @@ -161,6 +163,8 @@ struct receive_queue {
->   
->   	struct virtnet_rq_stats stats;
->   
-> +	struct virtnet_interrupt_coalesce intr_coal;
-> +
->   	/* Chain pages by the private ptr. */
->   	struct page *pages;
->   
-> @@ -3078,6 +3082,59 @@ static int virtnet_send_notf_coal_cmds(struct virtnet_info *vi,
->   	return 0;
->   }
->   
-> +static int virtnet_send_ctrl_coal_vq_cmd(struct virtnet_info *vi,
-> +					 u16 vqn, u32 max_usecs, u32 max_packets)
-> +{
-> +	struct virtio_net_ctrl_coal_vq *coal_vq;
-> +	struct scatterlist sgs;
-> +
-> +	coal_vq = kzalloc(sizeof(*coal_vq), GFP_KERNEL);
+> +	mx25uw51345gxdi00: flash@0 {
+> +		reg = <0>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		compatible = "jedec,spi-nor";
 
-I think this should go in the structure control_buf, which serves two 
-purposes, and that's on the heap in init_vqs():
-1. We can have the same form as other control types, such as 
-virtio_net_ctrl_coal_{tx, rx};
-2. Avoid using heap memory here to cause the following memory leaks
+We usually start the property list with 'compatible'.
 
-> +	if (!coal_vq)
-> +		return -ENOMEM;
-> +	coal_vq->vqn = cpu_to_le16(vqn);
-> +	coal_vq->coal.max_usecs = cpu_to_le32(max_usecs);
-> +	coal_vq->coal.max_packets = cpu_to_le32(max_packets);
-> +	sg_init_one(&sgs, coal_vq, sizeof(*coal_vq));
-> +
-> +	if (!virtnet_send_command(vi, VIRTIO_NET_CTRL_NOTF_COAL,
-> +				  VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET,
-> +				  &sgs))
-> +		return -EINVAL;
+Shawn
 
-If this fails, we should free coal_vq, so pls move coal_vq into control_buf.
+> +		spi-max-frequency = <200000000>;
+> +		spi-tx-bus-width = <8>;
+> +		spi-rx-bus-width = <8>;
 
-Thanks.
 
-> +
-> +	return 0;
-> +}
-> +
-> +static int virtnet_send_notf_coal_vq_cmds(struct virtnet_info *vi,
-> +					  struct ethtool_coalesce *ec,
-> +					  u16 queue)
-> +{
-> +	int err;
-> +
-> +	if (ec->rx_coalesce_usecs || ec->rx_max_coalesced_frames) {
-> +		err = virtnet_send_ctrl_coal_vq_cmd(vi, rxq2vq(queue),
-> +						    ec->rx_coalesce_usecs,
-> +						    ec->rx_max_coalesced_frames);
-> +		if (err)
-> +			return err;
-> +		/* Save parameters */
-> +		vi->rq[queue].intr_coal.max_usecs = ec->rx_coalesce_usecs;
-> +		vi->rq[queue].intr_coal.max_packets = ec->rx_max_coalesced_frames;
-> +	}
-> +
-> +	if (ec->tx_coalesce_usecs || ec->tx_max_coalesced_frames) {
-> +		err = virtnet_send_ctrl_coal_vq_cmd(vi, txq2vq(queue),
-> +						    ec->tx_coalesce_usecs,
-> +						    ec->tx_max_coalesced_frames);
-> +		if (err)
-> +			return err;
-> +		/* Save parameters */
-> +		vi->sq[queue].intr_coal.max_usecs = ec->tx_coalesce_usecs;
-> +		vi->sq[queue].intr_coal.max_packets = ec->tx_max_coalesced_frames;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->   static int virtnet_coal_params_supported(struct ethtool_coalesce *ec)
->   {
->   	/* usecs coalescing is supported only if VIRTIO_NET_F_NOTF_COAL
-> @@ -3094,23 +3151,39 @@ static int virtnet_coal_params_supported(struct ethtool_coalesce *ec)
->   }
->   
->   static int virtnet_set_coalesce_one(struct net_device *dev,
-> -				    struct ethtool_coalesce *ec)
-> +				    struct ethtool_coalesce *ec,
-> +				    bool per_queue,
-> +				    u32 queue)
->   {
->   	struct virtnet_info *vi = netdev_priv(dev);
-> -	int ret, i, napi_weight;
-> +	int queue_count = per_queue ? 1 : vi->max_queue_pairs;
-> +	int queue_number = per_queue ? queue : 0;
->   	bool update_napi = false;
-> +	int ret, i, napi_weight;
-> +
-> +	if (queue >= vi->max_queue_pairs)
-> +		return -EINVAL;
->   
->   	/* Can't change NAPI weight if the link is up */
->   	napi_weight = ec->tx_max_coalesced_frames ? NAPI_POLL_WEIGHT : 0;
-> -	if (napi_weight ^ vi->sq[0].napi.weight) {
-> -		if (dev->flags & IFF_UP)
-> -			return -EBUSY;
-> -		else
-> +	for (i = queue_number; i < queue_count; i++) {
-> +		if (napi_weight ^ vi->sq[i].napi.weight) {
-> +			if (dev->flags & IFF_UP)
-> +				return -EBUSY;
-> +
->   			update_napi = true;
-> +			/* All queues that belong to [queue_number, queue_count] will be
-> +			 * updated for the sake of simplicity, which might not be necessary
-> +			 */
-> +			queue_number = i;
-> +			break;
-> +		}
->   	}
->   
-> -	if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL))
-> +	if (!per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL))
->   		ret = virtnet_send_notf_coal_cmds(vi, ec);
-> +	else if (per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_VQ_NOTF_COAL))
-> +		ret = virtnet_send_notf_coal_vq_cmds(vi, ec, queue);
->   	else
->   		ret = virtnet_coal_params_supported(ec);
->   
-> @@ -3118,7 +3191,7 @@ static int virtnet_set_coalesce_one(struct net_device *dev,
->   		return ret;
->   
->   	if (update_napi) {
-> -		for (i = 0; i < vi->max_queue_pairs; i++)
-> +		for (i = queue_number; i < queue_count; i++)
->   			vi->sq[i].napi.weight = napi_weight;
->   	}
->   
-> @@ -3130,19 +3203,29 @@ static int virtnet_set_coalesce(struct net_device *dev,
->   				struct kernel_ethtool_coalesce *kernel_coal,
->   				struct netlink_ext_ack *extack)
->   {
-> -	return virtnet_set_coalesce_one(dev, ec);
-> +	return virtnet_set_coalesce_one(dev, ec, false, 0);
->   }
->   
->   static int virtnet_get_coalesce_one(struct net_device *dev,
-> -				    struct ethtool_coalesce *ec)
-> +				    struct ethtool_coalesce *ec,
-> +				    bool per_queue,
-> +				    u32 queue)
->   {
->   	struct virtnet_info *vi = netdev_priv(dev);
->   
-> -	if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL)) {
-> +	if (queue >= vi->max_queue_pairs)
-> +		return -EINVAL;
-> +
-> +	if (!per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL)) {
->   		ec->rx_coalesce_usecs = vi->intr_coal_rx.max_usecs;
->   		ec->tx_coalesce_usecs = vi->intr_coal_tx.max_usecs;
->   		ec->tx_max_coalesced_frames = vi->intr_coal_tx.max_packets;
->   		ec->rx_max_coalesced_frames = vi->intr_coal_rx.max_packets;
-> +	} else if (per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_VQ_NOTF_COAL)) {
-> +		ec->rx_coalesce_usecs = vi->rq[queue].intr_coal.max_usecs;
-> +		ec->tx_coalesce_usecs = vi->sq[queue].intr_coal.max_usecs;
-> +		ec->tx_max_coalesced_frames = vi->sq[queue].intr_coal.max_packets;
-> +		ec->rx_max_coalesced_frames = vi->rq[queue].intr_coal.max_packets;
->   	} else {
->   		ec->rx_max_coalesced_frames = 1;
->   
-> @@ -3158,7 +3241,21 @@ static int virtnet_get_coalesce(struct net_device *dev,
->   				struct kernel_ethtool_coalesce *kernel_coal,
->   				struct netlink_ext_ack *extack)
->   {
-> -	return virtnet_get_coalesce_one(dev, ec);
-> +	return virtnet_get_coalesce_one(dev, ec, false, 0);
-> +}
-> +
-> +static int virtnet_set_per_queue_coalesce(struct net_device *dev,
-> +					  u32 queue,
-> +					  struct ethtool_coalesce *ec)
-> +{
-> +	return virtnet_set_coalesce_one(dev, ec, true, queue);
-> +}
-> +
-> +static int virtnet_get_per_queue_coalesce(struct net_device *dev,
-> +					  u32 queue,
-> +					  struct ethtool_coalesce *ec)
-> +{
-> +	return virtnet_get_coalesce_one(dev, ec, true, queue);
->   }
->   
->   static void virtnet_init_settings(struct net_device *dev)
-> @@ -3291,6 +3388,8 @@ static const struct ethtool_ops virtnet_ethtool_ops = {
->   	.set_link_ksettings = virtnet_set_link_ksettings,
->   	.set_coalesce = virtnet_set_coalesce,
->   	.get_coalesce = virtnet_get_coalesce,
-> +	.set_per_queue_coalesce = virtnet_set_per_queue_coalesce,
-> +	.get_per_queue_coalesce = virtnet_get_per_queue_coalesce,
->   	.get_rxfh_key_size = virtnet_get_rxfh_key_size,
->   	.get_rxfh_indir_size = virtnet_get_rxfh_indir_size,
->   	.get_rxfh = virtnet_get_rxfh,
-> diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
-> index 12c1c9699935..cc65ef0f3c3e 100644
-> --- a/include/uapi/linux/virtio_net.h
-> +++ b/include/uapi/linux/virtio_net.h
-> @@ -56,6 +56,7 @@
->   #define VIRTIO_NET_F_MQ	22	/* Device supports Receive Flow
->   					 * Steering */
->   #define VIRTIO_NET_F_CTRL_MAC_ADDR 23	/* Set MAC address */
-> +#define VIRTIO_NET_F_VQ_NOTF_COAL 52	/* Device supports virtqueue notification coalescing */
->   #define VIRTIO_NET_F_NOTF_COAL	53	/* Device supports notifications coalescing */
->   #define VIRTIO_NET_F_GUEST_USO4	54	/* Guest can handle USOv4 in. */
->   #define VIRTIO_NET_F_GUEST_USO6	55	/* Guest can handle USOv6 in. */
-> @@ -391,5 +392,18 @@ struct virtio_net_ctrl_coal_rx {
->   };
->   
->   #define VIRTIO_NET_CTRL_NOTF_COAL_RX_SET		1
-> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET		2
-> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_GET		3
-> +
-> +struct virtio_net_ctrl_coal {
-> +	__le32 max_packets;
-> +	__le32 max_usecs;
+> +	};
 > +};
 > +
-> +struct  virtio_net_ctrl_coal_vq {
-> +	__le16 vqn;
-> +	__le16 reserved;
-> +	struct virtio_net_ctrl_coal coal;
-> +};
->   
->   #endif /* _UAPI_LINUX_VIRTIO_NET_H */
-
+>  &lpuart5 {
+>  	/* console */
+>  	pinctrl-names = "default", "sleep";
+> @@ -159,6 +176,23 @@ MX8ULP_PAD_PTF10__ENET0_1588_CLKIN 0x43
+>  		>;
+>  	};
+>  
+> +	pinctrl_flexspi2_ptd: flexspi2ptdgrp {
+> +		fsl,pins = <
+> +
+> +			MX8ULP_PAD_PTD12__FLEXSPI2_A_SS0_B	0x42
+> +			MX8ULP_PAD_PTD13__FLEXSPI2_A_SCLK	0x42
+> +			MX8ULP_PAD_PTD14__FLEXSPI2_A_DATA3	0x42
+> +			MX8ULP_PAD_PTD15__FLEXSPI2_A_DATA2	0x42
+> +			MX8ULP_PAD_PTD16__FLEXSPI2_A_DATA1	0x42
+> +			MX8ULP_PAD_PTD17__FLEXSPI2_A_DATA0	0x42
+> +			MX8ULP_PAD_PTD18__FLEXSPI2_A_DQS	0x42
+> +			MX8ULP_PAD_PTD19__FLEXSPI2_A_DATA7	0x42
+> +			MX8ULP_PAD_PTD20__FLEXSPI2_A_DATA6	0x42
+> +			MX8ULP_PAD_PTD21__FLEXSPI2_A_DATA5	0x42
+> +			MX8ULP_PAD_PTD22__FLEXSPI2_A_DATA4	0x42
+> +		>;
+> +	};
+> +
+>  	pinctrl_lpuart5: lpuart5grp {
+>  		fsl,pins = <
+>  			MX8ULP_PAD_PTF14__LPUART5_TX	0x3
+> -- 
+> 2.37.1
+> 
