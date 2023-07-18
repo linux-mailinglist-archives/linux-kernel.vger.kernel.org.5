@@ -2,251 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B642757962
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C0275795A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbjGRKkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 06:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44472 "EHLO
+        id S231462AbjGRKgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 06:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbjGRKkk (ORCPT
+        with ESMTP id S229583AbjGRKgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 06:40:40 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2076.outbound.protection.outlook.com [40.107.220.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E816F0;
-        Tue, 18 Jul 2023 03:40:37 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QUSMIYEZ/7rn4xR3BHLI9+FgELjI/DSfNmfzT+yo6zK+k5ASx7IU/GIk1xdCryZ6FON9WeJNLPcwEV5E0/mPPUBKOOhE/DfwzAd2jQlt9Wgew4uXFC3NwJjWMdCkSCoqb9IpoGonld/tWjRw8Q4jBOaUP1j0zhtVRMpOzQgl/KXFSBg1Pw6jstSMU5PmWei++aG0vDnlR3CpdaDmWEFlgkak7eoP+eZvbh5MT/cs++kpOAOVsa5wGL7uZOa4XgAUP7u96j0kR9mPyyzNbixsk2hPawfDX7hVMk+/R/3DKe8YsEY0FTJj1fCQX7Y1xzpuVQaOzcssnCYrRehEEIJ+Dw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MgGjT8mwW3EhIU2eBQk9ads3OsAZ4IEpyMHraXD+YxI=;
- b=Mfqncv8xtGxoWpTOODDF7UDE2Bo/2wHKSgS+dGsdrtM16vo/cL/LJ6tgp9lvudR7rbFG+s/FRhpRWbwoXLTkW4DdsaCGSzTF/g1xOKTOW5+gvAMFPzD2536c4G8mr1cytDjrG3hQvrRY2+awavZfAqQYSFfv4EjUxaS1lxwa4hapRp7dPC3mUOu4Icw3G7ycJrJ4x4HO/DLhPJa0WGZm0E7s42aL0k7fJqiybLQgUMPgnuU5rgaiQW7rCleDeepG2W005tWHA3RSccE3j7ulSK1yIJ4Aj5aNwgd4idgC7fb+uH+5jxJ7uHWsWqczRl08ZWqJne+0XUgSaCzf+Co+FA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MgGjT8mwW3EhIU2eBQk9ads3OsAZ4IEpyMHraXD+YxI=;
- b=t6V9xq8QN1hfL/9/1Gto73mtcEk4tZq5WPrx29vDKFfv3Tqi8dWUMeVC2hx1yRyulDVm7Bs4GSZCBOrNhPgA8Niv1U2RshdxRk2nvy2XFwXWHUNFiujEtQV4mSyxDbPefrpX0R727l4a29Hko70effx6wUdaa+0uCqs7dcYwrZ+bzQ5oZa2thSO0sFPVA7v+ZR1fNE+xNzSKRRtHgjn00hDQS8RMAC705UZnYj1CZhaDVQw9NXajUjNEfsOGZ+3mS2Z+7cUjTck1wX2sNFj5s5WtROQm74ROPGEZ7IZAN7L0a0z25aMhpT3S78x/gALc8s6S0mofnSbtKQ9KAVAo9g==
-Received: from DM6PR05CA0039.namprd05.prod.outlook.com (2603:10b6:5:335::8) by
- SJ2PR12MB8953.namprd12.prod.outlook.com (2603:10b6:a03:544::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33; Tue, 18 Jul
- 2023 10:40:35 +0000
-Received: from DM6NAM11FT091.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:335:cafe::2e) by DM6PR05CA0039.outlook.office365.com
- (2603:10b6:5:335::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.23 via Frontend
- Transport; Tue, 18 Jul 2023 10:40:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- DM6NAM11FT091.mail.protection.outlook.com (10.13.173.108) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.33 via Frontend Transport; Tue, 18 Jul 2023 10:40:35 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 18 Jul 2023
- 03:40:18 -0700
-Received: from yaviefel (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Tue, 18 Jul
- 2023 03:40:15 -0700
-References: <856d454e-f83c-20cf-e166-6dc06cbc1543@alu.unizg.hr>
- <ZLY9yiaVwCGy5H3R@shredder>
-User-agent: mu4e 1.8.11; emacs 28.2
-From:   Petr Machata <petrm@nvidia.com>
-To:     Ido Schimmel <idosch@idosch.org>
-CC:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        <netdev@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <petrm@nvidia.com>
-Subject: Re: [PROBLEM] selftests: net/forwarding/*.sh: 'Command line is not
- complete. Try option "help"'
-Date:   Tue, 18 Jul 2023 12:35:18 +0200
-In-Reply-To: <ZLY9yiaVwCGy5H3R@shredder>
-Message-ID: <87edl5a4fm.fsf@nvidia.com>
+        Tue, 18 Jul 2023 06:36:14 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 81BAD1B6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 03:36:13 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B3D622F4;
+        Tue, 18 Jul 2023 03:36:56 -0700 (PDT)
+Received: from [10.1.34.52] (C02Z41KALVDN.cambridge.arm.com [10.1.34.52])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F153A3F67D;
+        Tue, 18 Jul 2023 03:36:10 -0700 (PDT)
+Message-ID: <a7289b0f-466e-1eaa-dae6-3a4e55b46528@arm.com>
+Date:   Tue, 18 Jul 2023 11:36:09 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT091:EE_|SJ2PR12MB8953:EE_
-X-MS-Office365-Filtering-Correlation-Id: c3018247-5273-41a5-61a6-08db877b6b34
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jgt+VkKwndVe1mpvpIXO01y/GEiw+UBizbfCLthGwBfsorxs0YOcSSIMb1A4SBhC1+sIYeBpLm7RtzRfhy2AZ9FxyWc0pR4XMa3XIB9IOI1YoemiUtWnPhdYhRmNJUqrTksGNO4SWG6FSfqKAV8bEXH9WJFTevvhHj076dA7vFCtVdGyZVXAwuqnaEv9P/eSxkw1nXXU1nV8+lBBl0rqe8haf8xt/899nlI7TGSdGDpSPJzSszRRAWLYK8hHV8ExpYuvaTC18BCmbbK01TLo+7lxZGXJBA9/3M57Z04Fpu6H/3Zqk02rMxDvaTkec1DPzsxWNsJPzNw4/4lwMnIiVsaHOUczVxaNRDzDa62c6VOT2sn0r/QyAWfE9K42YQMiPu0SVbBbwb8gES1GxUleOwJ0BsS0k8njXKMIlJZKH1wWeVRaYfVJdO38Glz9n/4cODaLDhHrZTN2L9LSGAhBmdJAotf9UFaXA8qJmP9NstCvtQXWURmlc2ZLIuO5UvYsq/7GF1n+JM8T9bNQQH3Ra7J7BvrcVtIhqroHW0IFj8eCpCeEQ/Ug2kFH28E3AqnJfVSF/P5lVUp6j0AEMpEwUdRxh1Ypb7sJzFppI8bSz2p1/drUvSwabTIjLK8lf4iZIlZGqafjbn2SDXRaPqLQqOtnIakX7M8Kg8UzYSnAUJPa7HTbfDqJPpV7KqNhK0tJErC1zAii33U0RzQ77KH5KCgdfsTfVfGw9XdCH3/JA3uxSf+9SsWMGabdClGyX9YQ
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(396003)(136003)(346002)(451199021)(82310400008)(40470700004)(36840700001)(46966006)(478600001)(54906003)(336012)(186003)(26005)(107886003)(16526019)(70586007)(2906002)(316002)(41300700001)(6916009)(4326008)(82740400003)(5660300002)(7416002)(8936002)(8676002)(70206006)(7636003)(356005)(40460700003)(86362001)(36756003)(36860700001)(426003)(47076005)(2616005)(83380400001)(40480700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 10:40:35.1129
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3018247-5273-41a5-61a6-08db877b6b34
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT091.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8953
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v3 3/4] mm: FLEXIBLE_THP for improved performance
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Yu Zhao <yuzhao@google.com>, Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20230714160407.4142030-1-ryan.roberts@arm.com>
+ <20230714161733.4144503-3-ryan.roberts@arm.com>
+ <CAOUHufacQ8Vx9WQ3BVjGGWKGhcRkL7u79UMX=O7oePDwZ0iNxw@mail.gmail.com>
+ <432490d1-8d1e-1742-295a-d6e60a054ab6@arm.com>
+ <CAOUHufaDfJwF_-zb6zV5COG-KaaGcSyrNmbaEzaWz2UjcGGgHQ@mail.gmail.com>
+ <5df787a0-8e69-2472-cdd6-f96a3f7dfaaf@arm.com>
+ <8bdfd8d8-5662-4615-86dc-d60259bd16d@google.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <8bdfd8d8-5662-4615-86dc-d60259bd16d@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18/07/2023 00:37, Hugh Dickins wrote:
+> On Mon, 17 Jul 2023, Ryan Roberts wrote:
+> 
+>>>>>> +static int alloc_anon_folio(struct vm_fault *vmf, struct folio **folio)
+>>>>>> +{
+>>>>>> +       int i;
+>>>>>> +       gfp_t gfp;
+>>>>>> +       pte_t *pte;
+>>>>>> +       unsigned long addr;
+>>>>>> +       struct vm_area_struct *vma = vmf->vma;
+>>>>>> +       int prefer = anon_folio_order(vma);
+>>>>>> +       int orders[] = {
+>>>>>> +               prefer,
+>>>>>> +               prefer > PAGE_ALLOC_COSTLY_ORDER ? PAGE_ALLOC_COSTLY_ORDER : 0,
+>>>>>> +               0,
+>>>>>> +       };
+>>>>>> +
+>>>>>> +       *folio = NULL;
+>>>>>> +
+>>>>>> +       if (vmf_orig_pte_uffd_wp(vmf))
+>>>>>> +               goto fallback;
+>>>>>> +
+>>>>>> +       for (i = 0; orders[i]; i++) {
+>>>>>> +               addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
+>>>>>> +               if (addr >= vma->vm_start &&
+>>>>>> +                   addr + (PAGE_SIZE << orders[i]) <= vma->vm_end)
+>>>>>> +                       break;
+>>>>>> +       }
+>>>>>> +
+>>>>>> +       if (!orders[i])
+>>>>>> +               goto fallback;
+>>>>>> +
+>>>>>> +       pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
+>>>>>> +       if (!pte)
+>>>>>> +               return -EAGAIN;
+>>>>>
+>>>>> It would be a bug if this happens. So probably -EINVAL?
+>>>>
+>>>> Not sure what you mean? Hugh Dickins' series that went into v6.5-rc1 makes it
+>>>> possible for pte_offset_map() to fail (if I understood correctly) and we have to
+>>>> handle this. The intent is that we will return from the fault without making any
+>>>> change, then we will refault and try again.
+>>>
+>>> Thanks for checking that -- it's very relevant. One detail is that
+>>> that series doesn't affect anon. IOW, collapsing PTEs into a PMD can't
+>>> happen while we are holding mmap_lock for read here, and therefore,
+>>> the race that could cause pte_offset_map() on shmem/file PTEs to fail
+>>> doesn't apply here.
+>>
+>> But Hugh's patches have changed do_anonymous_page() to handle failure from
+>> pte_offset_map_lock(). So I was just following that pattern. If this really
+>> can't happen, then I'd rather WARN/BUG on it, and simplify alloc_anon_folio()'s
+>> prototype to just return a `struct folio *` (and if it's null that means ENOMEM).
+>>
+>> Hugh, perhaps you can comment?
+> 
+> I agree with your use of -EAGAIN there: I find it better to allow for the
+> possibility, than to go to great effort persuading that it's impossible;
+> especially because what's possible tomorrow may differ from today.
+> 
+> And notice that, before my changes, there used to be a pmd_trans_unstable()
+> check above, implying that it is possible for it to fail (for more reasons
+> than corruption causing pmd_bad()) - one scenario would be that the
+> pte_alloc() above succeeded *because* someone else had managed to insert
+> a huge pmd there already (maybe we have MMF_DISABLE_THP but they did not).
+> 
+> But I see from later mail that Yu Zhao now agrees with your -EAGAIN too,
+> so we are all on the same folio.
 
-Ido Schimmel <idosch@idosch.org> writes:
+Thanks for the explanation. I think we are all now agreed that the error case
+needs handling and -EAGAIN is the correct code.
 
-> On Mon, Jul 17, 2023 at 10:51:04PM +0200, Mirsad Todorovac wrote:
->> Tests fail with error message:
->> 
->> Command line is not complete. Try option "help"
->> Failed to create netif
->> 
->> The script
->> 
->> # tools/testing/seltests/net/forwarding/bridge_igmp.sh
->> 
->> bash `set -x` ends with an error:
->> 
->> ++ create_netif_veth
->> ++ local i
->> ++ (( i = 1 ))
->> ++ (( i <= NUM_NETIFS ))
->> ++ local j=2
->> ++ ip link show dev
->> ++ [[ 255 -ne 0 ]]
->> ++ ip link add type veth peer name
->> Command line is not complete. Try option "help"
->> ++ [[ 255 -ne 0 ]]
->> ++ echo 'Failed to create netif'
->> Failed to create netif
->> ++ exit 1
->> 
->> The problem seems to be linked with this piece of code of "lib.sh":
->> 
->> create_netif_veth()
->> {
->>         local i
->> 
->>         for ((i = 1; i <= NUM_NETIFS; ++i)); do
->>                 local j=$((i+1))
->> 
->>                 ip link show dev ${NETIFS[p$i]} &> /dev/null
->>                 if [[ $? -ne 0 ]]; then
->>                         ip link add ${NETIFS[p$i]} type veth \
->>                                 peer name ${NETIFS[p$j]}
->>                         if [[ $? -ne 0 ]]; then
->>                                 echo "Failed to create netif"
->>                                 exit 1
->>                         fi
->>                 fi
->>                 i=$j
->>         done
->> }
->> 
->> Somehow, ${NETIFS[p$i]} is evaluated to an empty string?
->
-> You need to provide a configuration file in
-> tools/testing/selftests/net/forwarding/forwarding.config. See
-> tools/testing/selftests/net/forwarding/forwarding.config.sample for
-> example.
->
-> Another option is to provide the interfaces on the command line.
->
-> ./bridge_igmp.sh veth0 veth1 veth2 veth3
->
-> If no configuration file is present, we can try to assume that the
-> tests are meant to be run with veth pairs and not with physical
-> loopbacks. Something like:
->
-> diff --git a/tools/testing/selftests/net/forwarding/lib.sh b/tools/testing/selftests/net/forwarding/lib.sh
-> index 71f7c0c49677..5b0183013017 100755
-> --- a/tools/testing/selftests/net/forwarding/lib.sh
-> +++ b/tools/testing/selftests/net/forwarding/lib.sh
-> @@ -16,8 +16,6 @@ TEAMD=${TEAMD:=teamd}
->  WAIT_TIME=${WAIT_TIME:=5}
->  PAUSE_ON_FAIL=${PAUSE_ON_FAIL:=no}
->  PAUSE_ON_CLEANUP=${PAUSE_ON_CLEANUP:=no}
-> -NETIF_TYPE=${NETIF_TYPE:=veth}
-> -NETIF_CREATE=${NETIF_CREATE:=yes}
->  MCD=${MCD:=smcrouted}
->  MC_CLI=${MC_CLI:=smcroutectl}
->  PING_COUNT=${PING_COUNT:=10}
-> @@ -30,6 +28,20 @@ REQUIRE_MZ=${REQUIRE_MZ:=yes}
->  REQUIRE_MTOOLS=${REQUIRE_MTOOLS:=no}
->  STABLE_MAC_ADDRS=${STABLE_MAC_ADDRS:=no}
->  TCPDUMP_EXTRA_FLAGS=${TCPDUMP_EXTRA_FLAGS:=}
-> +NETIF_TYPE=${NETIF_TYPE:=veth}
-> +NETIF_CREATE=${NETIF_CREATE:=yes}
-> +declare -A NETIFS=(
-> +       [p1]=veth0
-> +       [p2]=veth1
-> +       [p3]=veth2
-> +       [p4]=veth3
-> +       [p5]=veth4
-> +       [p6]=veth5
-> +       [p7]=veth6
-> +       [p8]=veth7
-> +       [p9]=veth8
-> +       [p10]=veth9
-> +)
->  
->  relative_path="${BASH_SOURCE%/*}"
->  if [[ "$relative_path" == "${BASH_SOURCE}" ]]; then
+> 
+> Hugh
+> 
+> p.s. while giving opinions, I'm one of those against using "THP" for
+> large but not pmd-mappable folios; and was glad to see Matthew arguing
+> the same way when considering THP_SWPOUT in another thread today.
 
-Or maybe this so that we get the exactly right number of interfaces?
+Honestly, I don't have an opinion either way on this (probably because I don't
+have the full context and history of THP like many of you do). So given there is
+a fair bit of opposition to FLEXIBLE_THP, I'll change it back to
+LARGE_ANON_FOLIO (and move it out of the THP sub-menu) in the next revision.
 
-diff --git a/tools/testing/selftests/net/forwarding/lib.sh b/tools/testing/selftests/net/forwarding/lib.sh
-index 8491c97475ab..4fefdf9716dc 100755
---- a/tools/testing/selftests/net/forwarding/lib.sh
-+++ b/tools/testing/selftests/net/forwarding/lib.sh
-@@ -36,6 +36,16 @@ if [[ "$relative_path" == "${BASH_SOURCE}" ]]; then
- 	relative_path="."
- fi
- 
-+if [[ ! -v NUM_NETIFS ]]; then
-+	echo "SKIP: importer does not define \"NUM_NETIFS\""
-+	exit $ksft_skip
-+fi
-+
-+declare -A NETIFS
-+for i in $(seq $NUM_NETIFS); do
-+	NETIFS[p$i]=veth$i
-+done
-+
- if [[ -f $relative_path/forwarding.config ]]; then
- 	source "$relative_path/forwarding.config"
- fi
-@@ -195,11 +205,6 @@ if [[ "$REQUIRE_MTOOLS" = "yes" ]]; then
- 	require_command mreceive
- fi
- 
--if [[ ! -v NUM_NETIFS ]]; then
--	echo "SKIP: importer does not define \"NUM_NETIFS\""
--	exit $ksft_skip
--fi
--
- ##############################################################################
- # Command line options handling
- 
