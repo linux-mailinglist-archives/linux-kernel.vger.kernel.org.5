@@ -2,122 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE417583D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6E17583D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233046AbjGRRtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:49:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37792 "EHLO
+        id S232052AbjGRRud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232704AbjGRRty (ORCPT
+        with ESMTP id S230445AbjGRRub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:49:54 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0837C0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:49:52 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fbc12181b6so62437705e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:49:52 -0700 (PDT)
+        Tue, 18 Jul 2023 13:50:31 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56988F7;
+        Tue, 18 Jul 2023 10:50:28 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fb9ae4cef6so9843421e87.3;
+        Tue, 18 Jul 2023 10:50:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689702591; x=1692294591;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ofXBG0otArMnc0xQL0OFzIyI9NYt0Dof1HcC6jOBs8Y=;
-        b=RmdSF9nfYWZzYHJ21z0iaWahjaKyna5bsyQyHUvlIye253yvu2J9yg6nJv/Fb8jvmy
-         HsXhDXpkgUAGWMK3vrmDCUiH3GlWF3XgsochVvAN+RUAys2SgqPZL0dgWCd07tQtmUpr
-         SvJztgApBqrQ+tvZSNvvIchHyneQBW1T6z2/pPmNC69Kvx76sjslbuzRz5g8+Jnz/gBB
-         zRdcERfYIYR8pPiV2IOl/qNjrg4zgEXxHXFxpM2LJXYSeXNOn6Q4tM+bmiCIs0S+c7qS
-         gTQRyXH0Ph58bMg/Riod3Idp9zvdfDm9yc/4VPQ2A9M1+OsxlC5DmARbKzpcAQpyC28u
-         YDGw==
+        d=gmail.com; s=20221208; t=1689702626; x=1692294626;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j1NrIr5hWlf8puwaKUvqIDmFUDhuYj0CYIrwJtR/mVI=;
+        b=Jfbhkv+K5cMBerWlxqPDCeaTnjEGuDKcVz0bad+6OAW9/bqVjRzzEpctOCWbq0Z7rN
+         ZOUIjVHjQeuwxuah7a16ApaVYhwzRF/OfxHVk6WM0Hkrsf6VwqSmyCWWvxVCn/s2XKcx
+         aULd8jNY6k3i37rGXY4VyRpA6SZ2QCULgRaZh/b9PR6KeB8nQlfCrQu8jZVCdlV50Xso
+         /Wi7o+Uhr2yP4a7pwioK+kUwPKvfbNdzS57U09OubWqkQTdE1AX+vFDWDLSh2b/kwNyj
+         B25xyYQVRb2RwHX0j3gk/Mxh26NCBuzCz2Gkt2bLHHgOszqxtnQRVsNNdGFmicCWaqBA
+         hmcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689702591; x=1692294591;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ofXBG0otArMnc0xQL0OFzIyI9NYt0Dof1HcC6jOBs8Y=;
-        b=RL0bGaNGuz2IKqAeBb9wFPDqqFf/iB5Ad1GoXp96D6S9mUuVbZjG+EYP9mPsffNx06
-         N8YI0v3nPPjXMaqE//iLLG3jq37cqidEPvrQg6w1Zl1zhOBmOfj3i9XkKZCbsMYe2IcQ
-         V005hm3x8r8i+9YehcZ6E/ndHlu4sbV+ZUZQUz5HVEAEhkICTG4BkGOv7r/TfZSU9XWw
-         QVxcjR0kt6KRlKDD59cISOo3kO7EfGHp5bvM2PnBBUo2qDx5XjXPNvZhz1AM9JkE5nVQ
-         ae1O+CS2Mwkc6sSZnd4urEOxlQUd48GzLw2fq9u6o51VQWF1XfUD9kohCazvwymfscgq
-         Tvqw==
-X-Gm-Message-State: ABy/qLbBIKj7nDdha3Jt6nPG3gIFsGceKe3qJz5NPz6skAXxHCFHANzv
-        PLD58XHzo9ZIRfx9D6Jnka71Vw==
-X-Google-Smtp-Source: APBJJlH6bu15zpd8KmGi1f4dcWUKy7fVGvqG5SkHl32pxLFEF7Ic/hK2AzT3FFt3fPEgsvfH0Ij9kQ==
-X-Received: by 2002:a05:600c:b54:b0:3fa:91d2:55b6 with SMTP id k20-20020a05600c0b5400b003fa91d255b6mr2669045wmr.9.1689702591411;
-        Tue, 18 Jul 2023 10:49:51 -0700 (PDT)
-Received: from [192.168.0.173] ([79.115.63.146])
-        by smtp.gmail.com with ESMTPSA id n16-20020a5d4850000000b00313e4d02be8sm2964713wrs.55.2023.07.18.10.49.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 10:49:50 -0700 (PDT)
-Message-ID: <23fd0aed-784d-85a8-1c45-15ac0f8afe91@linaro.org>
-Date:   Tue, 18 Jul 2023 20:49:48 +0300
+        d=1e100.net; s=20221208; t=1689702626; x=1692294626;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j1NrIr5hWlf8puwaKUvqIDmFUDhuYj0CYIrwJtR/mVI=;
+        b=hOIzlTOwjOD2W174jh1rc7pwLTfkg9IpQD2oQ9u8MDat6xlLn9yI1zX6ApakJhAWPV
+         RLlvsA1GxgV7HPgbZZYgptrctRihcQB+QSYy1OkJvjHjE3mewI5K0v65iTsGsYQlYOcc
+         zB4afjyVbmsgBz+IerX49Y0rUGPf8Lj+4/WzuS72JiffJzfzgOLKP3xrnY13cpQThYRd
+         9RYlAmhX7hL0gKOVOF5RxXk9l07kUvlpVc8cM3DEJdGwWlt5E9eYvuwAKj8SXffiOvMf
+         0EbIaYXGJQXNAnaBk8+24qOMrTwm4GqwftuxjiJKyGt26/WmjOHl1qAapw7xSqeA5pgg
+         6w2g==
+X-Gm-Message-State: ABy/qLYAZi9wuE0i8rLSX20jiZcgdG4zkb7VRuulbk7y4KsnxAm801MC
+        I2uu1/YnWTSoOUEuOqRSiACQWWc9gG9rSUvxDKo=
+X-Google-Smtp-Source: APBJJlEUGjLor3gTjMvv45yCty1yYgmc4Ncf4zsT8mew7vP1tguCbmQtcsECbpRpsHR/TMlkZqzErQk+5WqiwyChlrA=
+X-Received: by 2002:a2e:864b:0:b0:2b5:9778:7ce2 with SMTP id
+ i11-20020a2e864b000000b002b597787ce2mr13061113ljj.15.1689702626230; Tue, 18
+ Jul 2023 10:50:26 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] mtd: spi-nor: gigadevice: Add support for gd25lb256
-To:     Hao Yao <hao.yao@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Md Sadre Alam <mdalam@codeaurora.org>
-References: <1612869079-19593-1-git-send-email-mdalam@codeaurora.org>
- <20230613045313.2690342-1-hao.yao@intel.com>
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-Content-Language: en-US
-In-Reply-To: <20230613045313.2690342-1-hao.yao@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230502005218.3627530-1-drosen@google.com> <20230718082615.08448806@kernel.org>
+ <CAADnVQJEEF=nqxo6jHKK=Tn3M_NVXHQjhY=_sry=tE8X4ss25A@mail.gmail.com>
+ <20230718090632.4590bae3@kernel.org> <CAADnVQ+4aehGYPJ2qT_HWWXmOSo4WXf69N=N9-dpzERKfzuSzQ@mail.gmail.com>
+ <20230718101841.146efae0@kernel.org>
+In-Reply-To: <20230718101841.146efae0@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 18 Jul 2023 10:50:14 -0700
+Message-ID: <CAADnVQ+jAo4V-Pa9_LhJEwG0QquL-Ld5S99v3LNUtgkiiYwfzw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Daniel Rosenberg <drosen@google.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Tue, Jul 18, 2023 at 10:18=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> w=
+rote:
+>
+> On Tue, 18 Jul 2023 09:52:24 -0700 Alexei Starovoitov wrote:
+> > On Tue, Jul 18, 2023 at 9:06=E2=80=AFAM Jakub Kicinski <kuba@kernel.org=
+> wrote:
+> > > > This is NOT for safety. You misread the code.
+> > >
+> > > Doesn't matter, safety or optionality. skb_header_pointer() is used
+> > > on the fast paths of the networking stack, adding heavy handed input
+> > > validation to it is not okay. No sane code should be passing NULL
+> > > buffer to skb_header_pointer(). Please move the NULL check to the BPF
+> > > code so the rest of the networking stack does not have to pay the cos=
+t.
+> > >
+> > > This should be common sense. If one caller is doing something..
+> > > "special" the extra code should live in the caller, not the callee.
+> > > That's basic code hygiene.
+> >
+> > you're still missing the point. Pls read the whole patch series.
+>
+> Could you just tell me what the point is then? The "series" is one
+> patch plus some tiny selftests. I don't see any documentation for
+> how dynptrs are supposed to work either.
+>
+> As far as I can grasp this makes the "copy buffer" optional from
+> the kfunc-API perspective (of bpf_dynptr_slice()).
+>
+> > It is _not_ input validation.
+> > skb_copy_bits is a slow path. One extra check doesn't affect
+> > performance at all. So 'fast paths' isn't a valid argument here.
+> > The code is reusing
+> >         if (likely(hlen - offset >=3D len))
+> >                 return (void *)data + offset;
+> > which _is_ the fast path.
+> >
+> > What you're requesting is to copy paste
+> > the whole __skb_header_pointer into __skb_header_pointer2.
+> > Makes no sense.
+>
+> No, Alexei, the whole point of skb_header_pointer() is to pass
+> the secondary buffer, to make header parsing dependable.
 
-On 13.06.2023 07:53, Hao Yao wrote:
+of course. No one argues about that.
 
-You need some commit message here describing your changes. Please read
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html
-before submitting v3.
+> Passing NULL buffer to skb_header_pointer() is absolutely nonsensical.
 
-We require contributors that submit flash additions or updates to dump
-the SFDP tables and do some sanity checks. Here's an example on how to
-do it:
-https://lore.kernel.org/linux-mtd/20230712161503.448024-1-miquel.raynal@bootlin.com/
+Quick grep through the code proves you wrong:
+drivers/net/ethernet/broadcom/bnxt/bnxt.c
+__skb_header_pointer(NULL, start, sizeof(*hp), skb->data,
+                     skb_headlen(skb), NULL);
 
-> Signed-off-by: Hao Yao <hao.yao@intel.com>
-> ---
->  drivers/mtd/spi-nor/gigadevice.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
-> index d57ddaf1525b..d56c1876549f 100644
-> --- a/drivers/mtd/spi-nor/gigadevice.c
-> +++ b/drivers/mtd/spi-nor/gigadevice.c
-> @@ -62,6 +62,10 @@ static const struct flash_info gigadevice_nor_parts[] = {
->  		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
->  			      SPI_NOR_QUAD_READ) },
-> +	{ "gd25lb256", INFO(0xc86719, 0, 64 * 1024, 512)
+was done before this patch. It's using __ variant on purpose
+and explicitly passing skb=3D=3DNULL to exactly trigger that line
+to deliberately avoid the slow path.
 
-INFO(0xc86719, 0, 0, 0) please, those params can be retrieved at SFDP
-parsing time.
+Another example:
+drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
+skb_header_pointer(skb, 0, 0, NULL);
 
+This one I'm not sure about. Looks buggy.
 
-> +		PARSE_SFDP
-> +		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6)
-> +		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+> It should *not* be supported. We had enough prod problems with people
+> thinking that the entire header will be in the linear portion.
+> Then either the NIC can't parse the header, someone enables jumbo,
+> disables GRO, adds new HW, adds encap, etc etc and things implode.
 
-Is the SPI_NOR_4B_OPCODES really needed, isn't the support determined at
-SFDP parsing time?
+I don't see how this is related.
+NULL buffer allows to get a linear pointer and explicitly avoids
+slow path when it's not linear.
 
->  	{ "gd25q256", INFO(0xc84019, 0, 64 * 1024, 512)
->  		PARSE_SFDP
->  		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6)
+> If you want to support it in BPF that's up to you, but I think it's
+> entirely reasonable for me to request that you don't do such things
+> in general networking code. The function is 5 LoC, so a local BPF
+> copy seems fine. Although I'd suggest skb_header_pointer_misguided()
+> rather than __skb_header_pointer2() as the name :)
+
+If you insist we can, but bnxt is an example that buffer=3D=3DNULL is
+a useful concept for networking and not bpf specific.
+It also doesn't make "people think the header is linear" any worse.
