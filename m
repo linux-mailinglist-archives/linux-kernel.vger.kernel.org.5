@@ -2,126 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 757BA757481
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3B8757488
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbjGRGmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 02:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46408 "EHLO
+        id S231433AbjGRGnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 02:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjGRGmL (ORCPT
+        with ESMTP id S231180AbjGRGnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 02:42:11 -0400
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2111.outbound.protection.outlook.com [40.107.114.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD1CFD;
-        Mon, 17 Jul 2023 23:42:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hcvnEG1PkpXqE67NeMPWA2edm7OeXP6bG+wo1d4SbysvQhCe7KL3Qg3HB2e4oA9FCVAkhDF31Y/nyWOF7gPAxhznitFcwrlNfyxtaL6DHy14YUFqrxMVvrVxsSMFvw4RlQ1XVL3GxgTOeWaJyvN4OIg+Im341HJl39pbPCGgOZOSWnAqf6/KOlaiUXMZtmSExlejYB1W9UJEzCw4rafkrNdtEW5tbFmBQZFtixVnvHudhKNwX32FQxQvWSMJ+94hSD0FHb5jn2MKkHawTSxI+R4YPw1f9C2JmHykg+TZQNJiiPYFJ7P3VfiCnsp03sazX9v4lBZdFDogrR1XxrO8Sg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+TfAbINQNCOh0FpZ6w9mUTUGMXCALyF/kj2DBu0i5RQ=;
- b=nwDzLCPdOdrcEDWUwqsOd9z7HMcww5card6Fpjh4rspEU8BtyNhZ5jvppUGKq+MyP0Pg01HtETX+JulMJgztqissX1t7u46dRJisqHrfWm936ZoFFxz9U9/9z6RzaqLaBqbetDerkCZr8ciwpU0qAbxxFe16esXUNMyhcG2m+NXRkPY3PmMr80YttApkxzcxV2DE0SMjCYOskLMHNUdCJE4Xx7WIPgkL/9r15F/p8pou9dw6Hp0r+m/c1A9wlTv6TC3RTew0YnQM7U0LSyBuxoW8WW8/YzqcbxwQYwwvX1pFPDvyxyzDngmoKJLJcNbFMKH/Lbhgg2seqxForENkvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+TfAbINQNCOh0FpZ6w9mUTUGMXCALyF/kj2DBu0i5RQ=;
- b=fKLf7Ov4ek7wEUPHS0g/mhZ7Et5gqNvatrWbUHQURIZHajfETroZGcyBX9/aOhKiYEwL/uIakf/qBcMVTFBJ5stKhQrd9jFCidtR2c3siRsTSSpvk7NYvvpSOVrTcKJN1yLn2v3dq4P3ad8Y/IppF05KQUJznonvJukyze0w7Cw=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by OS0PR01MB5684.jpnprd01.prod.outlook.com (2603:1096:604:be::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32; Tue, 18 Jul
- 2023 06:42:06 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::834b:28df:28dc:7f95]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::834b:28df:28dc:7f95%7]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
- 06:42:06 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Randy Dunlap <rd.dunlab@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>
-CC:     =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: RE: [PATCH] pwm: fi pwm-rz-mtu3.c build errors
-Thread-Topic: [PATCH] pwm: fi pwm-rz-mtu3.c build errors
-Thread-Index: AQHZuTz3JvYeSdheY0298OUyurLS6a+/EjSAgAAAdkA=
-Date:   Tue, 18 Jul 2023 06:42:06 +0000
-Message-ID: <OS0PR01MB5922C3D065F47297A9620A4A8638A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <8a4de6c6-8d7c-a115-2a14-d264d6d28ccf@gmail.com>
- <d31387c2-7411-ae98-93d3-418b9d5b87f6@gmail.com>
-In-Reply-To: <d31387c2-7411-ae98-93d3-418b9d5b87f6@gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|OS0PR01MB5684:EE_
-x-ms-office365-filtering-correlation-id: 1638ff8d-51b7-4823-5caa-08db875a1a6d
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Wm/nywyaJaQionnUkm4Il3VD6u74AQ690pGZ/ZsvTbWxiwy8WcabUGLcpsXga8yzUd2whI8sFMcm9PpHP/FCtvABc+pPPh1rSqnTeB5biEYO8hPEDbRSybU9w2UhNAvVJlxuqXEGe/x0K+Btizwdb5JzJEG4AfeGXSD9tXVaSjREU9MjdkntXdKz26eI4N7PaTIVsls4yF5/kLBswKs9NDrgqbJJc+CxvB5qINduN+ZrwxCiEfSCCSa01Epy8LqN+UVBIOE4oqXP8CTj8/JZo6A1AvyHJkSgzd2e52mK+E5FRzr2RiJn7/lcsNVQC9SfZgcNUNuHGHUvwZ/IrwHyvU2OGEfGcpLZX5/SBM8OO0rrYkcHqetEwljlDCGAkB2H7qa3gcpF8jBBRwEYLEfkZnBRI1WX4Cgw22T35G0aZWZZQoUQliYdmF9J+VtQGYWpEVWBM5CGPzdAkBlSsxBO9U3/37tyKd/ucmvUU34Pbvfb6KA1dT/MnFsW539XWpahHetgsarRvsiOgC5YY+suWMXR2wwUxMeI2rkkkzpdatTprwiUtXXJvo1WXj0sbfvsUzTGOi35VGQWywMJ3Ti0N0JTRuKGqptYEV1Ba9oK3+j5HjBEE5r7Efxuthwc/XE4
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(366004)(396003)(39860400002)(376002)(346002)(451199021)(478600001)(5660300002)(66946007)(66476007)(66446008)(66556008)(64756008)(4326008)(52536014)(316002)(76116006)(8676002)(54906003)(8936002)(55016003)(2906002)(41300700001)(4744005)(110136005)(71200400001)(6506007)(9686003)(53546011)(7696005)(26005)(38100700002)(33656002)(186003)(83380400001)(122000001)(86362001)(38070700005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NWVjazVhL2tNVlIzYzVzMk5wam5vMzM1QmlqN1lraDdMTGtHYlQ2RDhBaGNv?=
- =?utf-8?B?UjRrYXEyNEJqZDFHN3o3VHNsWkRuMmZwK1ZyajQ5MUJjVVJHaEdSRHlidTM0?=
- =?utf-8?B?bEpEbnFNVnhWWEk3aTZxdFNsUjZ0YWlBWXV2Unp0dWZReFVrNDFSV2dMb3JF?=
- =?utf-8?B?a1g1bDQ0TW5nOVVJR3hyT1J3Y3AvcFN3aTFXVlQ5Z25iUTB1Um1sSDhreGdh?=
- =?utf-8?B?amFWK1YrdFJnQ0xURnVKa2VPZWc4ZUpXeXRFb1ZHbm5TSXdtYkNCYSszNmNm?=
- =?utf-8?B?bHJud1lhWDd4SndqMENoL0ttUkd4TVExOG5XOGd2SW9jU29sTSsvVWN5Q3VP?=
- =?utf-8?B?bzUxTzlPS0FVQkNTZEZxYUlnQnFoOG96VDdNQWx4eEk5eUczZzFvQ0JuOHhH?=
- =?utf-8?B?Y1dYV2lpWFJMb2ZOT0MrN2xTNmRlREExd3dPdFdQdnp4OVFvUWY4bDFmNVd5?=
- =?utf-8?B?a1Rsa1QvSzVrOEl3L0kwVlpybS9mcHRhdlVNVzF0R3hzcGc1MXFIbTFiOWtW?=
- =?utf-8?B?VXNyS1dZVGZSR01EVmk1d1hWWkNneHB6UmxEQzJhUG1KeTZuQ2cxNlJyMTlZ?=
- =?utf-8?B?Um1jNzVQRDV1cG1PWHNEcS8xTSt1dkgrbXZ6S2NVclJMb3kxcks3U005aVB2?=
- =?utf-8?B?K1NWUUNXMnFuMHBmNVg3UWloV3RJSHYyNnZobWNha1dNLzVaaFFYdzlqcTVS?=
- =?utf-8?B?M2R0NUZkY3pTNVVkcFF2ZUhEeVJpdVFUTHZlWC9EMnoyd2tYK3BQclZvS0dv?=
- =?utf-8?B?SVFzNlJyYnJ5dEFGK2NpNmtIakpuVzlLUjI0aGQrOTc0SVJKbzVPKzNQTC9N?=
- =?utf-8?B?TjJwOUJnZXZUWVVyL0dFVTRqSHZ5T0I5TUpwRVh1eU53VW1sbUsyMmhDRWVP?=
- =?utf-8?B?TURvSWJzSGI1UzdjcjE4SWdYS0N2VnJWSEM0eENHWUt5YzJubEFOS0RkUDhH?=
- =?utf-8?B?ZG43Tmg5WDRHUFpzUU11eVZzVmEzMkxSOVAyZnRPalM0MzFZNTUwdG41OGk2?=
- =?utf-8?B?MWN5WjdXUkxtV3NWejloQUpmcnZlU2FveFBqMVJWU3I1clg3UUdRcXZMcUNJ?=
- =?utf-8?B?MUJDaHpiOEF3cTd6S3paQ283N0hEWXJGRFpKWHJnZ01UUVB5UXFQWHVjWkVF?=
- =?utf-8?B?WlpiWkVzeDJER1NmR1pWTVc5TndGdHdkZWVuV04vdTFoQ1hjZTJ6ZnlobUs0?=
- =?utf-8?B?Rzhia1JwNGxvczdyRFlSam9yT3BycHlaNHE1anJYLzJrZTNRS0JaL2QyV2RK?=
- =?utf-8?B?WHpoTm9lcEl1d01TZzQxcXFkWWpHbitnVmhNdll6bGxhMmJqczNrTkdaNFlH?=
- =?utf-8?B?VEtKTE9mUUlBYzdkL21kQUZLeW5SV0ZrRFpXVkdvQ1dVakdHREswNjhCYThw?=
- =?utf-8?B?L2JPWnZpblpwYTF0dlRyMm9ET1VXQStuaFdXQ2VGUzA4ejVTOU9ZZWN5RnFy?=
- =?utf-8?B?MjYxR0hRVGt1MVQxc2NiY1R2QkhqK0ZNSkovWWJIWUNKRnpwaUtaQ2ZvdlE2?=
- =?utf-8?B?N251ZDNvWmdnbGxFcHNmMmNQaURnUmRBL3dPVkQ5MVFFbXBoRjdqbzhwcWpj?=
- =?utf-8?B?TC9FdkIzbmRZTlpHa0NkeFRVUUtuRXltdnJHc2xVMGFVbzRiWk81cG5NTGc2?=
- =?utf-8?B?UGowRWtuc3E3bVdLVU1YSk9Tc0JUejF0b2hqY1NKOHBLV2dmZVBDcHYwWWNh?=
- =?utf-8?B?RHNZVHU0dEw3LzNtWlc1aUxFajRnUDVyOWFBNnZ2UkVnaWM0eHhJNXI5NnFu?=
- =?utf-8?B?T0Rod3ZUbkJ1NkdrWUZyTlVlNWtGSmxQMTlPQXJabWtJRXpCU0J3SDd1NkdD?=
- =?utf-8?B?VGRnZUlKVkZCelJybWFYTE9weUFXam8zSndmK2pLemgrUnkwdGVqdHF4S0tW?=
- =?utf-8?B?WkJXTUpzcXZJSHhxMXhVdW9rR1RkK0EwbUZMV1NvQktJbkdxTEZDWGFlNVVE?=
- =?utf-8?B?dGoyOGsxemFmODZBMFhTcEp6ZnJwWlhTWk9zb25HZWFtdzVEL3ZHZUFqUnc0?=
- =?utf-8?B?ZHZrbWlQWkl3cWJDcU5qUUxuL0F6NlA2MXRFbG13S1Y0QkNzWnMxWS9nRkdQ?=
- =?utf-8?B?bytpWFpxU1V4ZzdmTjdiMFpza0VWRS8yeHJGemsrcTMyREE3azh4UHhRaGV5?=
- =?utf-8?Q?pQAGohwHgB+WsyNiwQI273t7u?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 18 Jul 2023 02:43:51 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AF513D;
+        Mon, 17 Jul 2023 23:43:46 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36I5sfnr027126;
+        Tue, 18 Jul 2023 06:43:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=2F24/3+hc5xkFx77OElHqrbBuzSQFF/E4Iqh8N2O8nM=;
+ b=NBWJiCoQNlrFVW3CA1lq9fFdWHu0T0v5GKx5184Li416JPfNOzdiX8JK46TTzkNOi0dx
+ nfcWfABK/4oWKUOGO4nh9gwsdIHWeE+kYh9X1GM1ex6MGSmjQ6mSein5iRIDkshaa5my
+ /5OgFr8Yc0KzDC5vYfq6c7s1w5Shmo77qTaig35zx8I1xBIhAypm8OAqSzHSgiysRFOT
+ kln/xxczzkOOYCtjE+FYX+Nigp6emG+0d3MRCfJen6ewQbw8UQyAs2BXnIlj5ckXD3uJ
+ pIGRUd+1SCE4YhieJlInM4JnxiZEmt5w0juAK8j0t9vFS2rcQQEXz2/cSwA362f1iCoE Uw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rwcg6rxg1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 06:43:42 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36I6hfD2011759
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 06:43:41 GMT
+Received: from hu-ninanaik-blr.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 17 Jul 2023 23:43:37 -0700
+From:   Ninad Naik <quic_ninanaik@quicinc.com>
+To:     <andersson@kernel.org>, <agross@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_ppareek@quicinc.com>,
+        <psodagud@quicinc.com>, <quic_kprasan@quicinc.com>,
+        <quic_ymg@quicinc.com>, Ninad Naik <quic_ninanaik@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>
+Subject: [PATCH v2] pinctrl: qcom: Add intr_target_width field to support increased number of interrupt targets
+Date:   Tue, 18 Jul 2023 12:12:46 +0530
+Message-ID: <20230718064246.12429-1-quic_ninanaik@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1638ff8d-51b7-4823-5caa-08db875a1a6d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jul 2023 06:42:06.2943
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: h7KqjflbeI9vhbqcdU9ERRRtY/hzLun4udhzcY/iopivm0fqMbkvK3+WQ3Rm28MDsDJuILO9hfP4lm8+SgT1zYT5vNpL3Y0RPdrHF1952Ik=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS0PR01MB5684
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: pbCuMIj5oNngFkqZg9UAVWQchXjtHZXi
+X-Proofpoint-GUID: pbCuMIj5oNngFkqZg9UAVWQchXjtHZXi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_15,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 adultscore=0 clxscore=1011 lowpriorityscore=0 bulkscore=0
+ malwarescore=0 spamscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307180060
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -129,20 +80,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUmFuZHkgRHVubGFwIDxy
-ZC5kdW5sYWJAZ21haWwuY29tPg0KPiBTZW50OiBUdWVzZGF5LCBKdWx5IDE4LCAyMDIzIDc6Mzgg
-QU0NCj4gVG86IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LXB3bUB2Z2VyLmtl
-cm5lbC5vcmcNCj4gQ2M6IFV3ZSBLbGVpbmUtS8O2bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0
-cm9uaXguZGU+OyBUaGllcnJ5IFJlZGluZw0KPiA8dGhpZXJyeS5yZWRpbmdAZ21haWwuY29tPjsg
-QmlqdSBEYXMgPGJpanUuZGFzLmp6QGJwLnJlbmVzYXMuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BB
-VENIXSBwd206IGZpIHB3bS1yei1tdHUzLmMgYnVpbGQgZXJyb3JzDQo+IA0KPiBPbiA3LzE3LzIz
-IDIyOjU5LCBSYW5keSBEdW5sYXAgd3JvdGU6DQo+ID4gRnJvbTogUmFuZHkgRHVubGFwIDxyZHVu
-bGFwQGluZnJhZGVhZC5vcmc+DQo+ID4NCj4gPg0KPiA+IEZpeGVzOiAyNTRkM2E3Mjc0MjEgKCJw
-d206IEFkZCBSZW5lc2FzIFJaL0cyTCBNVFUzYSBQV00gZHJpdmVyIikNCj4gPiBTaWduZWQtb2Zm
-LWJ5OiBSYW5keSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFkZWFkLm9yZz4NCj4gDQo+IE9vcHMsIEkg
-c2hvdWxkIHJlc2VuZCB0aGF0IHdpdGggY29ycmVjdGVkIGVtYWlsIGFkZHJlc3Nlcy4gU29ycnku
-DQoNCkFsc28gdHlwbyBpbiBwYXRjaCBoZWFkZXIgInB3bTogZmkgcHdtLXJ6LW10dTMuYyBidWls
-ZCBlcnJvcnMiID8/DQoNCk5vdCBzdXJlIGZpeGVzIHRhZyBzaG91bGQgYmUNCmI4YjI4YjcxOGRk
-ZCAoIm1mZDogQWRkIG1vZHVsZSBidWlsZCBzdXBwb3J0IGZvciBSWi9HMkwgTVRVM2EiKQ0Kb3IN
-CjI1NGQzYTcyNzQyMSAoInB3bTogQWRkIFJlbmVzYXMgUlovRzJMIE1UVTNhIFBXTSBkcml2ZXIi
-KQ0KDQpDaGVlcnMsDQpCaWp1DQo=
+SA8775 and newer target have added support for an increased number of
+interrupt targets. To implement this change, the intr_target field, which
+is used to configure the interrupt target in the interrupt configuration
+register is increased from 3 bits to 4 bits.
+
+In accordance to these updates, a new intr_target_width member is
+introduced in msm_pingroup structure. This member stores the value of
+width of intr_target field in the interrupt configuration register. This
+value is used to dynamically calculate and generate mask for setting the
+intr_target field. By default, this mask is set to 3 bit wide, to ensure
+backward compatibility with the older targets.
+
+Changes in v2 :
+-----------------
+- Changed initial definition of intr_target_mask variable to use GENMASK().
+- Update commit subject appropiately.
+- Add Fixes tag.
+- v1 : https://lore.kernel.org/all/20230714061010.15817-1-quic_ninanaik@quicinc.com/
+
+Fixes: 4b6b18559927 ("pinctrl: qcom: add the tlmm driver sa8775p platforms")
+Tested-by: Andrew Halaney <ahalaney@redhat.com> # sa8775p-ride
+Signed-off-by: Ninad Naik <quic_ninanaik@quicinc.com>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+---
+ drivers/pinctrl/qcom/pinctrl-msm.c     | 9 ++++++---
+ drivers/pinctrl/qcom/pinctrl-msm.h     | 2 ++
+ drivers/pinctrl/qcom/pinctrl-sa8775p.c | 1 +
+ 3 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+index 2585ef2b2793..115b83e2d8e6 100644
+--- a/drivers/pinctrl/qcom/pinctrl-msm.c
++++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+@@ -1038,6 +1038,7 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+ 	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
+ 	const struct msm_pingroup *g;
++	u32 intr_target_mask = GENMASK(2, 0);
+ 	unsigned long flags;
+ 	bool was_enabled;
+ 	u32 val;
+@@ -1074,13 +1075,15 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+ 	 * With intr_target_use_scm interrupts are routed to
+ 	 * application cpu using scm calls.
+ 	 */
++	if (g->intr_target_width)
++		intr_target_mask = GENMASK(g->intr_target_width - 1, 0);
++
+ 	if (pctrl->intr_target_use_scm) {
+ 		u32 addr = pctrl->phys_base[0] + g->intr_target_reg;
+ 		int ret;
+ 
+ 		qcom_scm_io_readl(addr, &val);
+-
+-		val &= ~(7 << g->intr_target_bit);
++		val &= ~(intr_target_mask << g->intr_target_bit);
+ 		val |= g->intr_target_kpss_val << g->intr_target_bit;
+ 
+ 		ret = qcom_scm_io_writel(addr, val);
+@@ -1090,7 +1093,7 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+ 				d->hwirq);
+ 	} else {
+ 		val = msm_readl_intr_target(pctrl, g);
+-		val &= ~(7 << g->intr_target_bit);
++		val &= ~(intr_target_mask << g->intr_target_bit);
+ 		val |= g->intr_target_kpss_val << g->intr_target_bit;
+ 		msm_writel_intr_target(val, pctrl, g);
+ 	}
+diff --git a/drivers/pinctrl/qcom/pinctrl-msm.h b/drivers/pinctrl/qcom/pinctrl-msm.h
+index 5e4410bed823..1d2f2e904da1 100644
+--- a/drivers/pinctrl/qcom/pinctrl-msm.h
++++ b/drivers/pinctrl/qcom/pinctrl-msm.h
+@@ -59,6 +59,7 @@ struct pinctrl_pin_desc;
+  * @intr_status_bit:      Offset in @intr_status_reg for reading and acking the interrupt
+  *                        status.
+  * @intr_target_bit:      Offset in @intr_target_reg for configuring the interrupt routing.
++ * @intr_target_width:    Number of bits used for specifying interrupt routing target.
+  * @intr_target_kpss_val: Value in @intr_target_bit for specifying that the interrupt from
+  *                        this gpio should get routed to the KPSS processor.
+  * @intr_raw_status_bit:  Offset in @intr_cfg_reg for the raw status bit.
+@@ -100,6 +101,7 @@ struct msm_pingroup {
+ 	unsigned intr_ack_high:1;
+ 
+ 	unsigned intr_target_bit:5;
++	unsigned intr_target_width:5;
+ 	unsigned intr_target_kpss_val:5;
+ 	unsigned intr_raw_status_bit:5;
+ 	unsigned intr_polarity_bit:5;
+diff --git a/drivers/pinctrl/qcom/pinctrl-sa8775p.c b/drivers/pinctrl/qcom/pinctrl-sa8775p.c
+index 8a5cd15512b9..8fdea25d8d67 100644
+--- a/drivers/pinctrl/qcom/pinctrl-sa8775p.c
++++ b/drivers/pinctrl/qcom/pinctrl-sa8775p.c
+@@ -46,6 +46,7 @@
+ 		.intr_enable_bit = 0,		\
+ 		.intr_status_bit = 0,		\
+ 		.intr_target_bit = 5,		\
++		.intr_target_width = 4,		\
+ 		.intr_target_kpss_val = 3,	\
+ 		.intr_raw_status_bit = 4,	\
+ 		.intr_polarity_bit = 1,		\
+-- 
+2.41.0
+
