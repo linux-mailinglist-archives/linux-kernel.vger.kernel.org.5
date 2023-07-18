@@ -2,150 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0525757742
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4510757745
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbjGRI75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44300 "EHLO
+        id S231697AbjGRJAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:00:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231378AbjGRI7w (ORCPT
+        with ESMTP id S229972AbjGRJAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:59:52 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD19103;
-        Tue, 18 Jul 2023 01:59:51 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UYGhbMrRHGeeh9wgKfjcr7HDatpqUyHNDTWy5UIlfEWY7My6OCKsyjAvCxYOGTIGTgMhy35V0QNLsk75i0f5H79OKVT8ihN1H5MWDd9S3hSRcFJUsHceFAzHle5UADgTuk3BBc9/gZdcaj2kOYdb+GjvzX3pGnokKZUHquOHRp98YVCDg6D1H9NH9RuESGE6v1kYVpZuf4tq0EdoWCS972ZvTtxfebjBx5eUo8UrLzB1yOYrw9YL3a48Dm/f5gCz7BIzHSEvfUY+PdE3BDEIzpguSPa8DNJHszxxRzbo6QX/26elwNm0NfyjSf0KamsmdB0eLEP0AJn+P7OBels0kQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rnDYwocU4dF3E9Nm/oi5bkAmJcAWzGq46QkOrKVCeW8=;
- b=kxELp+8sxSQneBW0LPIuZ4Fld1MeyCOeUGXvKxfVCwfGcZNNn7ERRsaG6vWWw7L9rpYd+AWV4AQs5mKnkohz4a/bUZ9oFBYJS5FnpEiOZFVMJU99Ov9OEWzLbSJ3KjLgFLXVZYzUIdaDIl2zZZmVdvoXzsTiY+Idg6G4DEfVRSTqSKNsxFRPg0XRW7RPauly4AeHwpxaCLHPf32SGBCPcnYxeqjCH9vvp20G1f3kGJ3E+fOKRxCpU7cb0EE0wBOX7dd5mQ2E56zoPFCerI4Fq2YIo0aykF+GDhVAJ2wY/xt9sorjGaJmiCKb5Uyd27Xc1xVaERxqKDNkLqIYbHKM2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rnDYwocU4dF3E9Nm/oi5bkAmJcAWzGq46QkOrKVCeW8=;
- b=dO7rOX5sthyfUCZ83q4xE6n+FBM1qntDFuw+d77ltM7rW+7h22dqAlI7ttphzx5UYqeJ2ghtNt2aDpm77P0HLdW0cehaidi0MiovU4OUkjlHITraRqjDwEa3PWDrzPokJ12KsUObPAY6hh/9oalRC6r+EUkgbuH/nr6KnwDF226nKGLAlvFsbFDCKkyytQGJtgD34lC9fLB6bZNNPxsB3drC1+PqDj1Nc0JbFhgLReawFijSyDbMF4CoHPef0TCqX0h1EO1d7PYrqiratehzl3R7GWuFzRBF/lSDB7p3K9sJOCjWe3ahpqXPide2CcWm+ujg7tlQnICQ5RLz0twwtA==
-Received: from DS0PR17CA0001.namprd17.prod.outlook.com (2603:10b6:8:191::19)
- by MW6PR12MB8899.namprd12.prod.outlook.com (2603:10b6:303:248::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.31; Tue, 18 Jul
- 2023 08:59:45 +0000
-Received: from DM6NAM11FT107.eop-nam11.prod.protection.outlook.com
- (2603:10b6:8:191:cafe::67) by DS0PR17CA0001.outlook.office365.com
- (2603:10b6:8:191::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.23 via Frontend
- Transport; Tue, 18 Jul 2023 08:59:45 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- DM6NAM11FT107.mail.protection.outlook.com (10.13.172.142) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.33 via Frontend Transport; Tue, 18 Jul 2023 08:59:45 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 18 Jul 2023
- 01:59:31 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Tue, 18 Jul
- 2023 01:59:30 -0700
-Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Tue, 18 Jul 2023 01:59:30 -0700
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>,
-        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 6.4 000/801] 6.4.4-rc3 review
-In-Reply-To: <20230717201608.814406187@linuxfoundation.org>
-References: <20230717201608.814406187@linuxfoundation.org>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Tue, 18 Jul 2023 05:00:31 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEAFE4C
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:00:29 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qLgZI-0006qK-91; Tue, 18 Jul 2023 11:00:28 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qLgZG-000KZF-Sg; Tue, 18 Jul 2023 11:00:26 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qLgZG-005oLv-0G; Tue, 18 Jul 2023 11:00:26 +0200
+Date:   Tue, 18 Jul 2023 11:00:23 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Randy Dunlap <rd.dunlab@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lee Jones <lee@kernel.org>
+Subject: Re: [PATCH] pwm: fi pwm-rz-mtu3.c build errors
+Message-ID: <20230718090023.wo6m6ffzaifgctkj@pengutronix.de>
+References: <8a4de6c6-8d7c-a115-2a14-d264d6d28ccf@gmail.com>
 MIME-Version: 1.0
-Message-ID: <e47ebbf9-f069-46b6-a515-549e1433da5f@rnnvmail204.nvidia.com>
-Date:   Tue, 18 Jul 2023 01:59:30 -0700
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT107:EE_|MW6PR12MB8899:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5a13ada7-782e-4d55-aabf-08db876d5514
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9ZEsYMiSMGtMyvpQdmtmkfNmxzc5bI0jmvFuyUtNoAeKTX70bEecsQRzVx8FCAiFaFsaIFubKPt17RZcKnGz5yErvXntYYchPgU8612eEOqeYBxRMHv93LeT5CYZbBr394tRnAdn64PUMQ4pO0EIZKelojArXkT93iLqthbnfZwPakuPndIvgLa88GcO2jbnjC/FNUKOJbKYc2Nku1UdhIKsFQMKNlen3SwU3aIGRmH4+Bmj47PPK3vH7rJu+XMkG2RVVjmWWO8MLDEMTNIFKoRNXko6lNW8vGH2XaAeSXqjQchLdmW8Du2LQEZPb85ePqncjvielcxxa6RKWZdNg5MImK7G9VraLKpz/cOQwm/4sUi8Nr6fTX+8GeLHYpeWzpVIRzvwEPzM5HF87ET06bNAe4yrLKMXsQ3cM5rcIdjJ65wmMZ9nSFVTKOqfL1ImVkGKat8xGp835RZstJjm+5S1VO9jBbQuzBm8ZIcH4cv72gzfNWelpn8CcdZp9Dw4ECkTgQan4Kb6S1MUbap03w71lzqytoYHIF+G2Otds/BGIt1YBBWwGKYC7l2P8Us5Ityv3zE+1+NRY9RLwnkrjgqx7l8G4K3BZj/sJZlWHLYI6eNTU2k7dGkCc2p3xMcMHuXMlXeTJjqI817QUw0wUG0qwcEUq3o7jSZz2WSYr/qCeoz/iHWAwtkfxIwA4pyppem+sV4sO4T3TvlyqdQb3et/b4cvey0kHn0d2ArGEbVymc2J7dYqq4uMch1TWMoVSBTk2rDeMIMvm+r7NcrutcyPrvbig/qIhYTzh7X3WlQ=
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(39860400002)(376002)(396003)(346002)(451199021)(82310400008)(40470700004)(46966006)(36840700001)(31686004)(2906002)(478600001)(6916009)(4326008)(70206006)(54906003)(86362001)(31696002)(41300700001)(316002)(70586007)(40480700001)(336012)(426003)(186003)(356005)(966005)(82740400003)(7636003)(5660300002)(7416002)(8676002)(8936002)(40460700003)(26005)(47076005)(36860700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 08:59:45.0097
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a13ada7-782e-4d55-aabf-08db876d5514
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT107.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8899
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7oh2zo6fvw2hzrdc"
+Content-Disposition: inline
+In-Reply-To: <8a4de6c6-8d7c-a115-2a14-d264d6d28ccf@gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Jul 2023 22:34:36 +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.4 release.
-> There are 801 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 19 Jul 2023 20:14:44 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.4-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
 
-All tests passing for Tegra ...
+--7oh2zo6fvw2hzrdc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Test results for stable-v6.4:
-    7 builds:	7 pass, 0 fail
-    22 boots:	22 pass, 0 fail
-    104 tests:	104 pass, 0 fail
+Hello,
 
-Linux version:	6.4.4-rc3-g0e8d2fdfb188
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
-                tegra210-p2371-2180, tegra210-p3450-0000,
-                tegra30-cardhu-a04
+On Mon, Jul 17, 2023 at 10:59:02PM -0700, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
+>=20
+> When (MFD) RZ_MTU3=3Dm and PWM_RZ_MTU3=3Dy, there are numerous build erro=
+rs:
+>=20
+> ld: vmlinux.o: in function `rz_mtu3_pwm_config':
+> drivers/pwm/pwm-rz-mtu3.c:374: undefined reference to `rz_mtu3_disable'
+> ld: drivers/pwm/pwm-rz-mtu3.c:377: undefined reference to `rz_mtu3_8bit_c=
+h_write'
+> ld: vmlinux.o: in function `rz_mtu3_pwm_write_tgr_registers':
+> drivers/pwm/pwm-rz-mtu3.c:110: undefined reference to `rz_mtu3_16bit_ch_w=
+rite'
+> ld: vmlinux.o: in function `rz_mtu3_pwm_config':
+> drivers/pwm/pwm-rz-mtu3.c:382: undefined reference to `rz_mtu3_8bit_ch_wr=
+ite'
+> ld: vmlinux.o: in function `rz_mtu3_pwm_write_tgr_registers':
+> drivers/pwm/pwm-rz-mtu3.c:110: undefined reference to `rz_mtu3_16bit_ch_w=
+rite'
+> ld: drivers/pwm/pwm-rz-mtu3.c:111: undefined reference to `rz_mtu3_16bit_=
+ch_write'
+> ld: vmlinux.o: in function `rz_mtu3_pwm_config':
+> drivers/pwm/pwm-rz-mtu3.c:397: undefined reference to `rz_mtu3_enable'
+> ld: vmlinux.o: in function `rz_mtu3_pwm_disable':
+> drivers/pwm/pwm-rz-mtu3.c:259: undefined reference to `rz_mtu3_8bit_ch_wr=
+ite'
+> ld: drivers/pwm/pwm-rz-mtu3.c:264: undefined reference to `rz_mtu3_disabl=
+e'
+> ld: vmlinux.o: in function `rz_mtu3_pwm_enable':
+> drivers/pwm/pwm-rz-mtu3.c:230: undefined reference to `rz_mtu3_8bit_ch_wr=
+ite'
+> ld: drivers/pwm/pwm-rz-mtu3.c:234: undefined reference to `rz_mtu3_8bit_c=
+h_write'
+> ld: drivers/pwm/pwm-rz-mtu3.c:238: undefined reference to `rz_mtu3_enable'
+> ld: vmlinux.o: in function `rz_mtu3_pwm_is_ch_enabled':
+> drivers/pwm/pwm-rz-mtu3.c:155: undefined reference to `rz_mtu3_is_enabled'
+> ld: drivers/pwm/pwm-rz-mtu3.c:162: undefined reference to `rz_mtu3_8bit_c=
+h_read'
+> ld: vmlinux.o: in function `rz_mtu3_pwm_read_tgr_registers':
+> drivers/pwm/pwm-rz-mtu3.c:102: undefined reference to `rz_mtu3_16bit_ch_r=
+ead'
+> ld: drivers/pwm/pwm-rz-mtu3.c:102: undefined reference to `rz_mtu3_16bit_=
+ch_read'
+> ld: drivers/pwm/pwm-rz-mtu3.c:103: undefined reference to `rz_mtu3_16bit_=
+ch_read'
+> ld: vmlinux.o: in function `rz_mtu3_pwm_get_state':
+> drivers/pwm/pwm-rz-mtu3.c:296: undefined reference to `rz_mtu3_8bit_ch_re=
+ad'
+>=20
+> Modify the dependencies of PWM_RZ_MTU3 so that COMPILE_TEST is
+> still allowed but PWM_RZ_MTU3 depends on RZ_MTU3 if it is being built
+> but also allow the latter not to be built.
+>=20
+> Fixes: 254d3a727421 ("pwm: Add Renesas RZ/G2L MTU3a PWM driver")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Biju Das <biju.das.jz@bp.renesas.com>
+> Cc: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: linux-pwm@vger.kernel.org
 
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
+While testing here I hit another (unrelated) problem:
 
-Jon
+drivers/pinctrl/renesas/pinctrl-rzg2l.c: In function =E2=80=98rzg2l_gpio_fr=
+ee=E2=80=99:
+drivers/pinctrl/renesas/pinctrl-rzg2l.c:917:37: error: =E2=80=98struct gpio=
+_chip=E2=80=99 has no member named =E2=80=98irq=E2=80=99
+  917 |         virq =3D irq_find_mapping(chip->irq.domain, offset);
+      |                                     ^~
+
+Did someone address that one already? I guess PINCTRL_RZG2L should
+select GPIOLIB_IRQCHIP. Also RZ_MTU3 should select MFD_CORE as I hit:
+
+	aarch64-linux-gnu-ld: rz-mtu3.c:(.text+0x544): undefined reference to `mfd=
+_remove_devices'
+
+Commit 654c293e1687b31819f9bf1ac71b5a85a8053210 added RZ_MTU3 as bool,
+and it's still bool in 254d3a72742. I think the problem started only
+with b8b28b718ddd ("mfd: Add module build support for RZ/G2L MTU3a").
+
+The patch looks fine, but the commit log needs some adaption.
+
+The following patch would fix the build failure, too:
+
+diff --git a/include/linux/mfd/rz-mtu3.h b/include/linux/mfd/rz-mtu3.h
+index c5173bc06270..4f15c0dead60 100644
+--- a/include/linux/mfd/rz-mtu3.h
++++ b/include/linux/mfd/rz-mtu3.h
+@@ -151,7 +151,7 @@ struct rz_mtu3 {
+ 	void *priv_data;
+ };
+=20
+-#if IS_ENABLED(CONFIG_RZ_MTU3)
++#if IS_REACHABLE(CONFIG_RZ_MTU3)
+ static inline bool rz_mtu3_request_channel(struct rz_mtu3_channel *ch)
+ {
+ 	mutex_lock(&ch->lock);
+
+
+maybe doing that additionally is a good idea? (Well, not entirely sure
+as the above setting then would result in a non-functioning PWM driver.
+Maybe that's worse than a build failure?)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--7oh2zo6fvw2hzrdc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmS2VKYACgkQj4D7WH0S
+/k5r4Qf/WPJW5a1+eaEyMYnF/9wG23kXGfsmgQP6c6rZDe3GkKYVCw41i+9ceMJ0
+J6As+jEdrEiomf9S3i66eik76jYdzI8vTlTPTUdvBtMETrqmDEGoGZHNlqwDGotY
+QrLlUfnf8vnNYGVk6WskAvfgHoPNn2dei/EdptTD1htty3FbUb45l/8L84i4cAof
+cztJOBP/11zTte4Tx1z2l0nhCGtWfEEboqv/c90z7MrecamYkdpgxDoSallD2ckt
+yfY2jUHRcBYm6AwdxeGAjB4jX8NMTaVsIE0ylZRfCX7dYtY2+tBM+uaAPVLTIwsu
+d28eyGChibI5qbwjmQQLdAVISNKs4A==
+=wk8g
+-----END PGP SIGNATURE-----
+
+--7oh2zo6fvw2hzrdc--
