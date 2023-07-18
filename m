@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2014E7585AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 21:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D81567585AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 21:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbjGRTik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 15:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
+        id S230083AbjGRTjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 15:39:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjGRTij (ORCPT
+        with ESMTP id S229678AbjGRTjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 15:38:39 -0400
-Received: from smtp.dudau.co.uk (dliviu.plus.com [80.229.23.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E8C87198D;
-        Tue, 18 Jul 2023 12:38:37 -0700 (PDT)
-Received: from mail.dudau.co.uk (bart.dudau.co.uk [192.168.14.2])
-        by smtp.dudau.co.uk (Postfix) with SMTP id 1735441A7003;
-        Tue, 18 Jul 2023 20:38:36 +0100 (BST)
-Received: by mail.dudau.co.uk (sSMTP sendmail emulation); Tue, 18 Jul 2023 20:38:36 +0100
-Date:   Tue, 18 Jul 2023 20:38:36 +0100
-From:   Liviu Dudau <liviu@dudau.co.uk>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     linux-phy@lists.infradead.org, linux-rockchip@lists.infradead.org,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Simon Xue <xxm@rock-chips.com>, John Clark <inindev@gmail.com>,
-        Qu Wenruo <wqu@suse.com>, devicetree@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-Subject: Re: [PATCH v2 2/2] arm64: dts: rockchip: rk3588: add PCIe3 support
-Message-ID: <ZLbqPB5yP7Kn6FT6@bart.dudau.co.uk>
-References: <20230717173512.65169-1-sebastian.reichel@collabora.com>
- <20230717173512.65169-3-sebastian.reichel@collabora.com>
- <ZLarQUvUK3v3m6Cg@bart.dudau.co.uk>
- <20230718160137.sfitnkl6gmyi75jx@mercury.elektranox.org>
+        Tue, 18 Jul 2023 15:39:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611EB198D;
+        Tue, 18 Jul 2023 12:39:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EF4E060B67;
+        Tue, 18 Jul 2023 19:39:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4A0CC433C8;
+        Tue, 18 Jul 2023 19:39:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689709159;
+        bh=edH1Zr2qH/fjaThXqfpUXzX8pWVRCsemGBHQNSlSqok=;
+        h=From:To:Cc:Subject:Date:From;
+        b=o4wM9mZ0npgKSQDLKS2fgstEeuMrgo+3fH5Tzy0PRVO9VigkaLoYEADgh1spnvD6W
+         jcTl86agH4tnuwVnj5WtJfPinX8GiFwlwFxVS6CzNie64Lu489E5CLIuSPfe951XHG
+         BRQ9NVcb0joSQlElAqd0fQ//yM8xWZ8PGTkf5njDmln25oYfV68KnbrjBop3kQ8Yun
+         TazcmaorIkqSoIdVCjWaMa4UHxHDPqmOqpzKzBtk7aFZPa8fTq2wOo5RU23yAvo8fv
+         NR1WHFiu7TZuHS3FTZSK3vDiF/LrJBBKu/cbcd+YgtnMGSseQqLzOqYDlpKLiGHd3l
+         8JMddIjWwdJaw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Shevchenko <andy@kernel.org>,
+        Marek Vasut <marex@denx.de>, Marc Zyngier <maz@kernel.org>,
+        Dan Carpenter <error27@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] gpio: mxc: fix unused function warnings
+Date:   Tue, 18 Jul 2023 21:39:08 +0200
+Message-Id: <20230718193913.3578660-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230718160137.sfitnkl6gmyi75jx@mercury.elektranox.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,55 +58,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 06:01:37PM +0200, Sebastian Reichel wrote:
-> Hi Liviu,
-> 
-> On Tue, Jul 18, 2023 at 04:09:53PM +0100, Liviu Dudau wrote:
-> > On Mon, Jul 17, 2023 at 07:35:12PM +0200, Sebastian Reichel wrote:
-> > > Add both PCIe3 controllers together with the shared PHY.
-> > > 
-> > > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> > > ---
-> > >  arch/arm64/boot/dts/rockchip/rk3588.dtsi | 120 +++++++++++++++++++++++
-> > >  1 file changed, 120 insertions(+)
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/rockchip/rk3588.dtsi b/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-> > > index 88d702575db2..8f210f002fac 100644
-> > > --- a/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-> > > +++ b/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-> > > @@ -7,6 +7,11 @@
-> > >  #include "rk3588-pinctrl.dtsi"
-> > >  
-> > >  / {
-> > > +	pcie30_phy_grf: syscon@fd5b8000 {
-> > > +		compatible = "rockchip,rk3588-pcie3-phy-grf", "syscon";
-> > > +		reg = <0x0 0xfd5b8000 0x0 0x10000>;
-> > > +	};
-> > > +
-> > >  	pipe_phy1_grf: syscon@fd5c0000 {
-> > >  		compatible = "rockchip,rk3588-pipe-phy-grf", "syscon";
-> > >  		reg = <0x0 0xfd5c0000 0x0 0x100>;
-> > 
-> > What tree is based this on? Even after applying your PCIe2 series I don't have the above
-> > node so the patch doesn't apply to mainline.
-> 
-> You are missing naneng-combphy support:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip.git/commit/?h=v6.6-armsoc/dts64&id=6ebd55b3bba383e0523b0c014f17c97f3ce80708
+From: Arnd Bergmann <arnd@arndb.de>
 
-Thanks! It looks like the PCIe2 commit that adds support to rk3588(s).dtsi
-files is also missing an #include <dt-bindings/phy/phy.h> for the PHY_TYPE_PCIE
-use, otherwise the DTS fail to compile.
+The new runtime PM support causes a harmless warning about
+unused functions when runtime PM is disabled:
 
-Best regards,
-Liviu
+drivers/gpio/gpio-mxc.c:612:12: error: 'mxc_gpio_runtime_resume' defined but not used [-Werror=unused-function]
+drivers/gpio/gpio-mxc.c:602:12: error: 'mxc_gpio_runtime_suspend' defined but not used [-Werror=unused-function]
 
-> 
-> -- Sebastian
+Change the driver to use the more modern helper macros that avoid these
+warnings, and remove the now unnecessary __maybe_unused annotations
 
+Fixes: 3283d820dce64 ("gpio: mxc: add runtime pm support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/gpio/gpio-mxc.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-
+diff --git a/drivers/gpio/gpio-mxc.c b/drivers/gpio/gpio-mxc.c
+index a9fb6bd9aa6f9..e03fc8d375fe1 100644
+--- a/drivers/gpio/gpio-mxc.c
++++ b/drivers/gpio/gpio-mxc.c
+@@ -623,7 +623,7 @@ static int mxc_gpio_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int __maybe_unused mxc_gpio_noirq_suspend(struct device *dev)
++static int mxc_gpio_noirq_suspend(struct device *dev)
+ {
+ 	struct platform_device *pdev = to_platform_device(dev);
+ 	struct mxc_gpio_port *port = platform_get_drvdata(pdev);
+@@ -634,7 +634,7 @@ static int __maybe_unused mxc_gpio_noirq_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int __maybe_unused mxc_gpio_noirq_resume(struct device *dev)
++static int mxc_gpio_noirq_resume(struct device *dev)
+ {
+ 	struct platform_device *pdev = to_platform_device(dev);
+ 	struct mxc_gpio_port *port = platform_get_drvdata(pdev);
+@@ -647,8 +647,8 @@ static int __maybe_unused mxc_gpio_noirq_resume(struct device *dev)
+ }
+ 
+ static const struct dev_pm_ops mxc_gpio_dev_pm_ops = {
+-	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(mxc_gpio_noirq_suspend, mxc_gpio_noirq_resume)
+-	SET_RUNTIME_PM_OPS(mxc_gpio_runtime_suspend, mxc_gpio_runtime_resume, NULL)
++	NOIRQ_SYSTEM_SLEEP_PM_OPS(mxc_gpio_noirq_suspend, mxc_gpio_noirq_resume)
++	RUNTIME_PM_OPS(mxc_gpio_runtime_suspend, mxc_gpio_runtime_resume, NULL)
+ };
+ 
+ static int mxc_gpio_syscore_suspend(void)
 -- 
-Everyone who uses computers frequently has had, from time to time,
-a mad desire to attack the precocious abacus with an axe.
-       	   	      	     	  -- John D. Clark, Ignition!
+2.39.2
+
