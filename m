@@ -2,165 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F15F5757EF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B112757EF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233242AbjGROEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59492 "EHLO
+        id S233249AbjGROFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233231AbjGROEe (ORCPT
+        with ESMTP id S233243AbjGROEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:04:34 -0400
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A27F211F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:03:32 -0700 (PDT)
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-579de633419so53612207b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:03:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689688989; x=1692280989;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IfJdZldamVRoiem+genboss9wXHBkzaKw5u/tIWjMWQ=;
-        b=W2c9O6m1MQ82BoOwTdgUg6eqB6tP4I1TnAvYuZk1HwtQq8CTfvKcYsrvyTVxI3RYkW
-         RCtJaM7B0q0xMUfxJ41/dnowZWNYp9dF9favIybQfqfrPcJuUrUgfZbfBxPNbNj7AuO9
-         X7S3v2Qls1WAAqY2CrNxyQZpyndrQ+tVKkTFLzIuXD8uGxA7ZMV1XmpsRRTqAxJ1ZKTC
-         k+aZGJ7/f2h8ON9QdEyEQG6G+ujllspUdf544KjZmNQLtDAUPCYEGWTq9F9xiNCnw4Eu
-         Oz77g/EQDbkJAfvsbwWdeSnv+5wBL2hYMFJcNpnwI2xx5Sw3wK/gBjgm2L4faAb9bomX
-         kFIg==
-X-Gm-Message-State: ABy/qLY3kXCPu5SiwBRe61wo1ctfIZD4msH16DY7PCw3uHNCm9+ZiddV
-        /cSQbNwmmYo1+nfHBhkxTCg9pmG+l2/unw==
-X-Google-Smtp-Source: APBJJlHqWbXNyx3clWoFZlM4P5wbmDZNRlqS7J4Nx9bZEMcCHyoyE/PFtueov40dxYoWgotAmOPcMQ==
-X-Received: by 2002:a81:dd06:0:b0:57a:6a2c:f4dd with SMTP id e6-20020a81dd06000000b0057a6a2cf4ddmr13545607ywn.36.1689688989217;
-        Tue, 18 Jul 2023 07:03:09 -0700 (PDT)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id b68-20020a0df247000000b005771bb5a25dsm471078ywf.61.2023.07.18.07.03.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 07:03:08 -0700 (PDT)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-bcb6dbc477eso4414255276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:03:08 -0700 (PDT)
-X-Received: by 2002:a25:41d0:0:b0:bc6:377a:d9c7 with SMTP id
- o199-20020a2541d0000000b00bc6377ad9c7mr11296210yba.23.1689688988254; Tue, 18
- Jul 2023 07:03:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230711154449.1378385-1-eesposit@redhat.com> <ZK/9MlTh435FP5Ji@gambale.home>
- <df7941b9-11ea-9abd-e070-4e9926aecdc3@redhat.com>
-In-Reply-To: <df7941b9-11ea-9abd-e070-4e9926aecdc3@redhat.com>
-From:   Luca Boccassi <bluca@debian.org>
-Date:   Tue, 18 Jul 2023 15:02:55 +0100
-X-Gmail-Original-Message-ID: <CAMw=ZnTSyeL4x1o_GVKNsZdCUe2D2H53quK-TSFhOkuONjC73A@mail.gmail.com>
-Message-ID: <CAMw=ZnTSyeL4x1o_GVKNsZdCUe2D2H53quK-TSFhOkuONjC73A@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        lennart@poettering.net, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Tue, 18 Jul 2023 10:04:53 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400261FD3;
+        Tue, 18 Jul 2023 07:04:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Content-Type:Mime-Version:
+        References:In-Reply-To:Message-Id:Cc:To:From:Date:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=DjU8QbWwoYzSGBCbnklVIsE6FxMt00a2BFKbWomZUJc=; b=LnRMIpe7rVTL9UeO05+vSQqoSd
+        K0jcAOh+HhQNmQ5+PyRUU76awBMAhKxcK6Lrk+mzJVOXaKGrGDKP6dWKTbnQ4EJFQCgh/2mpszRt1
+        p9v9wBd4hq7IqnZjhPT2ym2L10N0kB+crm6AEYrpaG78+tumxZx6fSR1PUtdDGDjOC6Q=;
+Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:53212 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qLlIm-0004C8-Rm; Tue, 18 Jul 2023 10:03:45 -0400
+Date:   Tue, 18 Jul 2023 10:03:44 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Message-Id: <20230718100344.ebeae4ee79c299bcd6fee733@hugovil.com>
+In-Reply-To: <20230718063715.GL9559@dragon>
+References: <20230705174932.3652479-1-hugo@hugovil.com>
+        <20230718063715.GL9559@dragon>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 184.161.19.61
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2] arm64: dts: imx8mn-var-som-symphony: fix USB OTG
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 at 14:35, Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> [note: while there is some overlap between the developers and Red Hat
-> employees that are involved in KVM, I was not involved in this work and
-> only learnt about it last Friday]
->
-> On 7/13/23 15:33, Ard Biesheuvel wrote:
-> >> A .sbat is simply a section containing a string with the component name
-> >> and a version number. This version number is compared with the value in
-> >> OVMF_VARS, and if it's less than the variable, the binary is not trusted,
-> >> even if it is correctly signed.
-> >>
-> >
-> > Also, 'version number' is a bit vague, better to stick with existing
-> > terminology that makes this more self explanatory: the component that
-> > authenticates the kernel image keeps a revocation counter, and refuses
-> > to load authentic images whose revocation index is lower than the
-> > revocation counter. This approach removes the need for revoking
-> > individual image hashes or having to rotate the signing keys when a
-> > vulnerability is discovered.
-> >
-> > The argument that we need this in the upstream kernel seems to be
-> > predicated on the assumption that there is one universal signing
-> > authority and revocation domain, but this is not necessarily true.
->
-> I am not sure about this.  I think that a revocation index could _in
-> theory_ make sense as a way to double check that you have backported all
-> the relevant bugfixes.  If you backport the patch that changes the index
-> from 2 to 3 but your tree has index=1, it will conflict and hopefully
-> fix it or lead you to document why that is happening.
->
-> But I'm saying "in theory", because I'm not sure it makes sense to apply
-> the concept to an OS kernel.  A revocation index makes sense for boot
-> loaders, whose purpose is to check something about the next stage and
-> then get out of the way.  When using a bootloader for secure boot there
-> is a limited amount of parsing and basically no user interaction.  With
-> some handwaving, that makes it is possible to say things like "oh no I
-> found the 234th bug in my codebase, let's bump the revocation index to 235".
->
-> If you try to do this for the OS, however, Linux's "vulnerabilities are
-> just bugs" mantra hits hard---more specifically the reverse: all bugs
-> are potential vulnerabilities.  Sure you can hope for the best, which is
-> what we do with module signing and with the (non-upstream) secure boot
-> lockdown patches.  In the end, however, an unpatched code execution or
-> memory write vulnerability is always a potential rootkit.  While we
-> don't have _too_ many of those, there are enough that the idea of a
-> revocation index becomes completely unfeasible, not too mention those
-> that are fixed silently not because "that's the way Linus does it" but
-> rather because we genuinely didn't think of them as security fixes.
+On Tue, 18 Jul 2023 14:37:15 +0800
+Shawn Guo <shawnguo@kernel.org> wrote:
 
-Lockdown is upstream and has been for several years. Apart from that,
-I'm not sure why there is this idea that the kernel is somehow
-'special', but it is not grounded in reality. If you ask the owners of
-any components, 9 times out of 10 they'll tell you their project is
-absolutely unique and special and could not possibly be bundled
-together with <those other things over there>, but it's just
-exceptionalism.
-Grub also gets plenty of bug fixes that are not classed as security
-fixes, and so does Shim, and so does everything else. And they both
-have plenty of user interaction, and plenty of variability. Heck, Grub
-has its own complex configuration language that can take live input at
-boot, _and_ reimplements most of the kernel filesystems!
+> On Wed, Jul 05, 2023 at 01:49:32PM -0400, Hugo Villeneuve wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > USB OTG is currently broken on the Variscite Symphony EVK and imx8mn
+> > nano SOM.
+> > 
+> > The PTN5150 circuitry on newer versions of the Symphony EVK board has
+> > a non-standard configuration in which the PTN5150 IRQ pin is left
+> > unconnected, and the PTN5150 ID pin is connected to GPIO1_IO11. This
+> > requires changes to the ptn5150 driver to support this new mode.
+> > Variscite have indicated their intention to submit those changes
+> > upstream.
+> > 
+> > In the meantime, import device tree changes from linux-5.15 branch of
+> > varigit repos to at least make the USB OTG port operate correctly in
+> > host mode.
+> > 
+> > Fixes: 7358e05bddca ("arm64: dts: imx8mn-var-som-symphony: Add Variscite Symphony board with VAR-SOM-MX8MN")
+> 
+> Has USB OTG been ever worked at all?  If the answer is no, it's not
+> a fix but a new feature, and I would suggest you rework the patch
+> subject and drop the Fixes tag.
 
-But anyway, from the point of view of the 3rd party CA plus Shim
-workflow, they are the same, and can be treated the same - sorry, but
-the kernel is not special in any way. The only thing that matters is
-if, given a bug, somebody either observed it being used as a secure
-boot bypass by bad actors in the wild, or was bothered enough to write
-down a self-contained, real and fully working proof of concept for
-secure boot bypass. If yes, then somebody will send the one-liner to
-bump the generation id, and a new sbat policy will be deployed. If no,
-then most likely nobody will care, and that's fine, and I expect
-that's what will happen most of the time.
+Hi Shawn,
+it never worked for me since commit 7358e05bddca, but it may have
+something to do with the new hardware board version (>=1.4a) that I
+have. It probably worked for older boards (< 1.4a) altough I cannot
+confirm it without old hardware.
 
-> So perhaps there could be some kind of protocol that would let a new
-> kernel tell the bootloader "don't boot an older kernel than me in the
-> future".  It could even be an extension to the SBAT spec itself.  I
-> haven't really thought much about it, tbh.  However, I'm quite positive
-> that a revocation index attached to the kernel image cannot really work
-> as a concept, not even if it is managed by the distro.
+Let me know if you want me to remove the Fixes tag.
 
-You are pretty much describing SBAT there. Except for the detail that
-it can't be the component that can be compromised that tells you
-whether it's compromised and you should trust it... A system's SBAT
-policy is a single entity, managed centrally, and deployed everywhere.
+Hugo.
+
+
+> 
+> Shawn
+> 
+> > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > ---
+> > Link: [v1] https://lkml.org/lkml/2023/7/4/702
+> > 
+> > Changes from v1:
+> > - Add comments about PTN5150 IRQ/ID line connections
+> > - Remove "typec1_con: connector" node
+> > - Change IRQ type to IRQ_TYPE_EDGE_FALLING
+> > 
+> >  .../dts/freescale/imx8mn-var-som-symphony.dts | 32 +++++++++++++++++--
+> >  1 file changed, 30 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts
+> > index 406a711486da..a7a57442cb81 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts
+> > @@ -1,11 +1,14 @@
+> >  // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> >  /*
+> > + * Supports Symphony evaluation board versions >= 1.4a.
+> > + *
+> >   * Copyright 2019-2020 Variscite Ltd.
+> >   * Copyright (C) 2020 Krzysztof Kozlowski <krzk@kernel.org>
+> >   */
+> >  
+> >  /dts-v1/;
+> >  
+> > +#include <dt-bindings/usb/pd.h>
+> >  #include "imx8mn-var-som.dtsi"
+> >  
+> >  / {
+> > @@ -100,14 +103,26 @@ enet-sel-hog {
+> >  		};
+> >  	};
+> >  
+> > +	/*
+> > +	 * For Symphony board version <= 1.4, the PTN5150 IRQ pin is connected
+> > +	 * to GPIO1_IO11 on the SoM (R106 present, R132 absent). From Symphony
+> > +	 * board version >= 1.4a, the PTN5150 ID pin is connected to GPIO1_IO11
+> > +	 * on the SoM (R106 absent, R132 present).
+> > +	 */
+> >  	extcon_usbotg1: typec@3d {
+> >  		compatible = "nxp,ptn5150";
+> >  		reg = <0x3d>;
+> >  		interrupt-parent = <&gpio1>;
+> > -		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+> > +		interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
+> >  		pinctrl-names = "default";
+> >  		pinctrl-0 = <&pinctrl_ptn5150>;
+> >  		status = "okay";
+> > +
+> > +		port {
+> > +			typec1_dr_sw: endpoint {
+> > +				remote-endpoint = <&usb1_drd_sw>;
+> > +			};
+> > +		};
+> >  	};
+> >  };
+> >  
+> > @@ -148,8 +163,21 @@ &uart3 {
+> >  };
+> >  
+> >  &usbotg1 {
+> > +	dr_mode = "otg";
+> > +	hnp-disable;
+> > +	srp-disable;
+> > +	adp-disable;
+> > +	usb-role-switch;
+> >  	disable-over-current;
+> > -	extcon = <&extcon_usbotg1>, <&extcon_usbotg1>;
+> > +	samsung,picophy-pre-emp-curr-control = <3>;
+> > +	samsung,picophy-dc-vol-level-adjust = <7>;
+> > +	status = "okay";
+> > +
+> > +	port {
+> > +		usb1_drd_sw: endpoint {
+> > +			remote-endpoint = <&typec1_dr_sw>;
+> > +		};
+> > +	};
+> >  };
+> >  
+> >  &iomuxc {
+> > 
+> > base-commit: d528014517f2b0531862c02865b9d4c908019dc4
+> > -- 
+> > 2.30.2
+> > 
+> 
