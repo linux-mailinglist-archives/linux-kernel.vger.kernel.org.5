@@ -2,72 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BA0758656
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A115758657
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbjGRU4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 16:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55976 "EHLO
+        id S231173AbjGRU4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 16:56:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbjGRU4a (ORCPT
+        with ESMTP id S231158AbjGRU4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 16:56:30 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F75BD;
-        Tue, 18 Jul 2023 13:56:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689713788; x=1721249788;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=L2CHxsdqnuMK/0tTAv6QiGDs4KnYWikJEDc+5R9q3y0=;
-  b=norCXKuIqDkYtRAyqLibra2b/IiQ8n3fgdGxD5yua8L5UWayNcdmbmIp
-   V2EBSFW4eapd4JsB7C8VAiDS0PBy3E/j51/pngLsG6LLPyhWgRxKILwwl
-   SCpHuUBpJzpKi8dBP0hIDTenwYEcAc0xvWBL7ThU3LakCwFo+t2QKe5GE
-   oIW/MQL6h10hMBpLP32YbDqwpkAi0DNPi5o6D31wOc4nVkhdKxiUpjNfo
-   5mC5qpECu2qVJCPQtN6/ZXsnip859IG3UFIfzfqIZ9zWcYhnfGn87rc7U
-   VA1/lCwYNU4NTtZP1BbSzOngEBnIaPkdQggNdf1oIw7WNfo22fTQIaIyF
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="397158587"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="397158587"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 13:56:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="789203306"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="789203306"
-Received: from unknown (HELO [10.209.37.195]) ([10.209.37.195])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 13:56:28 -0700
-Message-ID: <eb1aea6f-3688-f871-2335-ff911a51ef52@intel.com>
-Date:   Tue, 18 Jul 2023 13:56:27 -0700
+        Tue, 18 Jul 2023 16:56:45 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36553198C
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:56:44 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id 46e09a7af769-6b9ad292819so4944382a34.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:56:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689713803; x=1692305803;
+        h=content-transfer-encoding:in-reply-to:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s97tEr+Yr2ZXFbk9cEJRa0CCfZ19DYvI4BO8yDRKDsY=;
+        b=mRKXbr6Glsi8VBQYVptpWfg3xtc95oVpxwcldhADhXDa3CpOObfBQ+DPczxIZ7GjFp
+         /9eLhXadWP6WG1j6ARFKLTsdRr0YlhqojF7jWw2Kry9DbBGmzraywAojjNwpPv3AaSho
+         OAhARHFg6PqbQ+b+xmCpFJ+eqHIQvmROmKWHxB7+veU0CP/ivhXqoF0nbLFgiYUGHBza
+         uULa3J2fvjQ3zxdCkNG8kjC8aZpD6bM39bAacpJFd1K91LQAdEBHaKSSSEsLn8hxZn18
+         3UWJiz6crj7855/U2FykVFU8azSVajIp7GNkYX0K+VI9Hzv3w/bamac5pucC/5lRH7vk
+         RCXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689713803; x=1692305803;
+        h=content-transfer-encoding:in-reply-to:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s97tEr+Yr2ZXFbk9cEJRa0CCfZ19DYvI4BO8yDRKDsY=;
+        b=Cm4FDho+BkSYxL8ksOF/zX9IQIGl9jfyENQSa/m2PURdENWzvMiQbUXy1cX92oPPXf
+         ebHsHnphfEyir93GNQGRjLCuJAhIwH5YNt4tWeVdrtt6eiy2rQyCejWj5OPxLtsZ5lUV
+         Vsavg8zxr6oJOFQCprGobmw0cmtEGs1QQ/i6+GZhRarJJdQQfSLciSPPIC2H2BaHXr1v
+         BkvDoDx5J15r24eF+L30c9lQAbvmaS4zBtNTe76XngFsrEuTH5TAuAKOPgO8u2ncUuki
+         WyY2uyWMOitH32OEoTyYKWo4d7LtOuvSNg0TlWRrN4oWLKa81Y090sipXnfrbIBHBgiI
+         YIXQ==
+X-Gm-Message-State: ABy/qLZjcKcOuijE/aJXlfsK0CGKFZg0lF57YjF2jMZWN9tppviEH+0P
+        xggCFX1TKKTaaWUuOfZT5dI=
+X-Google-Smtp-Source: APBJJlG1nhVunFoHnJqGi17dy87SbRr3QVG4ZQdEEF+untHwhWMyp70xCdPykYjSIuz44YdOSZelhg==
+X-Received: by 2002:a05:6358:8aa:b0:135:acfd:8786 with SMTP id m42-20020a05635808aa00b00135acfd8786mr5761394rwj.3.1689713803369;
+        Tue, 18 Jul 2023 13:56:43 -0700 (PDT)
+Received: from [127.0.0.1] ([212.107.28.53])
+        by smtp.gmail.com with ESMTPSA id y22-20020a63b516000000b0055b6eb635f2sm2105500pge.65.2023.07.18.13.56.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 13:56:42 -0700 (PDT)
+From:   Celeste Liu <coelacanthushex@gmail.com>
+X-Google-Original-From: Celeste Liu <CoelacanthusHex@gmail.com>
+Message-ID: <c62f16cd-8405-9b05-1c1d-5c776716622d@gmail.com>
+Date:   Wed, 19 Jul 2023 04:56:38 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] x86/sgx: fix a NULL pointer
-Content-Language: en-US
-To:     Haitao Huang <haitao.huang@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
-        kristen@linux.intel.com, seanjc@google.com, stable@vger.kernel.org
-References: <CU4OBQ8MQ2LK.2GRBPLQGVTZ3@seitikki>
- <20230717202938.94989-1-haitao.huang@linux.intel.com>
- <dfb1f233-aebd-50cf-8704-e83b91ee110a@intel.com>
- <op.18ah5mn3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <b5779418-e2a4-ca7a-866f-97e49cd272cb@intel.com>
- <op.18aontlmwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <op.18aontlmwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] riscv: entry: set a0 prior to
+ syscall_enter_from_user_mode
+Content-Language: en-GB-large
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-riscv@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Felix Yan <felixonmars@archlinux.org>,
+        Ruizhe Pan <c141028@gmail.com>,
+        Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
+References: <20230718162940.226118-1-CoelacanthusHex@gmail.com>
+ <87pm4p2et2.fsf@all.your.base.are.belong.to.us>
+ <03206759-8d6a-a410-a8f9-d4678236bdbf@gmail.com>
+ <87r0p5kkpw.fsf@all.your.base.are.belong.to.us>
+In-Reply-To: <87r0p5kkpw.fsf@all.your.base.are.belong.to.us>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,32 +87,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/18/23 13:32, Haitao Huang wrote:
-...
-> Ignore VA pages for now. Say for a system with 10 page EPC, 2 enclaves,
-> each needs 5 pages non-SECS so total demand would be 12 pages. The ksgxd
-> would only need to swap out 2 pages at the most to get one enclave fully
-> loaded with 6 pages, and the other one with 4 pages. There is no chance
-> the ksgxd would swap any one of two SECS pages.
+
+On 2023/7/19 04:50, Björn Töpel wrote:
+> Celeste Liu <coelacanthushex@gmail.com> writes:
 > 
-> We would need at least one enclave A of 10 pages total to squeeze out
-> the other B completely. For that to happen B pretty much has to be
-> sleeping all the time so the LRU based reclaiming would hit it but not
-> pages of A. So no chance to hit #PF on pages of B still.
+>> On 2023/7/19 03:35, Björn Töpel wrote:
+>>> Celeste Liu <coelacanthushex@gmail.com> writes:
+>>>
+>>>> When we test seccomp with 6.4 kernel, we found errno has wrong value.
+>>>> If we deny NETLINK_AUDIT with EAFNOSUPPORT, after f0bddf50586d, we will
+>>>> get ENOSYS instead. We got same result with 9c2598d43510 ("riscv: entry: Save a0
+>>>> prior syscall_enter_from_user_mode()").
+>>>>
+>>>> After analysing code, we think that regs->a0 = -ENOSYS should be advanced before
+>>>> syscall_enter_from_user_mode to fix this problem. In __seccomp_filter, when
+>>>> seccomp rejected this syscall with specified errno, they will set a0 to return
+>>>> number as syscall ABI, and then return -1. This return number is finally pass
+>>>> as return number of syscall_enter_from_user_mode, and then is compared
+>>>> with NR_syscalls after converted to ulong (so it will be ULONG_MAX).
+>>>> The condition syscall < NR_syscalls will always be false, so regs->a0 = -ENOSYS
+>>>> is always executable. It covered a0 set by seccomp, so we always get
+>>>> ENOSYS when match seccomp RET_ERRNO rule.
+>>>
+>>> Isn't something like...
+>>>
+>>> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+>>> index f910dfccbf5d..15a8b4898a6c 100644
+>>> --- a/arch/riscv/kernel/traps.c
+>>> +++ b/arch/riscv/kernel/traps.c
+>>> @@ -297,7 +297,7 @@ asmlinkage __visible __trap_section void do_trap_break(struct pt_regs *regs)
+>>>  asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *regs)
+>>>  {
+>>>  	if (user_mode(regs)) {
+>>> -		ulong syscall = regs->a7;
+>>> +		long syscall = regs->a7;
+>>>  
+>>>  		regs->epc += 4;
+>>>  		regs->orig_a0 = regs->a0;
+>>> @@ -306,7 +306,7 @@ asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *regs)
+>>>  
+>>>  		syscall = syscall_enter_from_user_mode(regs, syscall);
+>>>  
+>>> -		if (syscall < NR_syscalls)
+>>> +		if (syscall > -1 && syscall < NR_syscalls)
+>>>  			syscall_handler(regs, syscall);
+>>>  		else
+>>>  			regs->a0 = -ENOSYS;
+>>>
+>>>
+>>> ...easier to read?
+>>>
+>>>
+>>> Björn
+>>
+>> It seems that your change turn it back to the beginning. If syscall == -1,
+>> it is supposed to go neither first nor else branch. It should do NOTHING.
+>> However it was still a great idea. It may be better to use a set of if-statement
+>> to clarify the logic.
 > 
-> So some minimal pressure is needed to ensure SECS swapped. The higher
-> the pressure the higher the chance to hit #PF while SECS is swapped.
+> Ah, gotcha! (Notice that arch/x86/entry/common.c has
+> 
+>   | 	if (!do_syscall_x64(regs, nr) && !do_syscall_x32(regs, nr) && nr != -1) {
+> 
+> and in do_syscall_x64()
+> 
+>   | 	/*
+>   | 	 * Convert negative numbers to very high and thus out of range
+>   | 	 * numbers for comparisons.
+>   | 	 */
+>   | 	unsigned int unr = nr;
+> 
+> 
+>> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+>> index f910dfccbf5d2..d0bd725244594 100644
+>> --- a/arch/riscv/kernel/traps.c
+>> +++ b/arch/riscv/kernel/traps.c
+>> @@ -306,7 +306,9 @@ asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *regs)
+>>  
+>>  		syscall = syscall_enter_from_user_mode(regs, syscall);
+>>  
+>> -		if (syscall < NR_syscalls)
+>> +		if (syscall == -1)
+>> +			// Do nothing
+>> +		else if (syscall < NR_syscalls)
+>>  			syscall_handler(regs, syscall);
+>>  		else
+>>  			regs->a0 = -ENOSYS;
+> 
+> Maybe something a bit more explicit?
+> 
+> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+> index f910dfccbf5d..5cef72874542 100644
+> --- a/arch/riscv/kernel/traps.c
+> +++ b/arch/riscv/kernel/traps.c
+> @@ -297,6 +297,10 @@ asmlinkage __visible __trap_section void do_trap_break(struct pt_regs *regs)
+>  asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *regs)
+>  {
+>  	if (user_mode(regs)) {
+> +		/*
+> +		 * Convert negative numbers to very high and thus out of range
+> +		 * numbers for comparisons.
+> +		 */
+>  		ulong syscall = regs->a7;
+>  
+>  		regs->epc += 4;
+> @@ -308,7 +312,7 @@ asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *regs)
+>  
+>  		if (syscall < NR_syscalls)
+>  			syscall_handler(regs, syscall);
+> -		else
+> +		else if ((long)syscall != -1L)
+>  			regs->a0 = -ENOSYS;
+>  
+>  		syscall_exit_to_user_mode(regs);
+> 
+> 
+> Björn
 
-What would the second-to-last non-SECS page be?  A thread control page?
-VA page?
-
-As long as *that* page can generate a page fault, then you only need two
-pages for this scenario to happen:
-
-1. Reclaimer takes encl->lock
-2. #PF occurs from another thread, blocks on encl->lock
-3. SECS is reclaimed
-4. encl->lock released
-5. #PF sees reclaimed SECS
-
-
+Ok, I will send v3.
