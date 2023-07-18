@@ -2,201 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB69B757542
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD15757547
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbjGRHZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 03:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42026 "EHLO
+        id S231688AbjGRH0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 03:26:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbjGRHZf (ORCPT
+        with ESMTP id S231673AbjGRH0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 03:25:35 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605B9D1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 00:25:34 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51f7fb9a944so7533508a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 00:25:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689665133; x=1692257133;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JnChA2abQJj2t20iF0rmM2KRjUtf8yEoGrz0epdwIwA=;
-        b=s3KXxn3UjfmySXlb9R13dXwt2vOxldjL+SFerhMavt8UY5Bg4Ap33PKmouxryfUBUL
-         pSsnwc4xPzjpDKC6//dbnxjyd1V9y1wwohrpHJcDqWBqXZtlKTP+q7ElaSrsDN6FNiTt
-         OZ0FxmJjFbNL9+XjsjM9L5WJQ3/AN+Cvc+XGkq3MKZLbqPekyFh+wbG/Elf40koE617j
-         9fWJpVLvHSAZFn1I8XRTs3Q5iFGZbemwwMhyu7YXMnf40jgKJaKCHFOrK2rlrXmob27d
-         E3pB7+hoV/O6S3T6PYN5e8DepW4/IsU9o2CEAba/UTjCYuzypD6cuB9Khf2bBoCqc1Ev
-         wrZQ==
+        Tue, 18 Jul 2023 03:26:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4181B1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 00:26:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689665161;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=a2DjjjM4FGyKHuuM5I0RdnKN+Rz/1iCrCtnKqTggf0w=;
+        b=JDjtQUNQexvhKf0KxMl9aJIlgVp+uDecg9atJ1euo+LjlCfW/oaO1R3+ZOi6CNr2V6mjIT
+        J8reEBgv3RF9J8YAE+WIJ7A/aRPcjBNWEx3mGZUiQ7KNv3VsIRfjgmFAqAqPjdmBDH8OkA
+        sRgIamgBCIOmfg4m7kwhx0WUij6khiM=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-418-ftwGSfs6Pl-UFwH9xfMMUg-1; Tue, 18 Jul 2023 03:25:59 -0400
+X-MC-Unique: ftwGSfs6Pl-UFwH9xfMMUg-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-993b803c391so60399166b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 00:25:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689665133; x=1692257133;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JnChA2abQJj2t20iF0rmM2KRjUtf8yEoGrz0epdwIwA=;
-        b=hr27kfmujIddbrx5vEod8V03778CW4nrLYI2Ai4uYtX/CJg1KzlZ8Igp1nSH2ssH/P
-         2JTR582Flhha5BfBpfWmOvtrQoT41XfvkHrL2YJZ5IIt4z4bbLZ1krs2hi9rUUoSTrAb
-         R8+D5T8DJC+qJBYKfvbLoz5ITTFG4IYV8fGdP+5OZ2pvsrmK9aUzYfbCkKeVali59zGC
-         q41OAgfP0LRna5885FBlEZZoI9LKc9vwoSJGGJJ+CyMWitEPZgQnsnL+M1bsydoS++yp
-         1nHnhAmBZFRvXSZwUi++fXyd1urkQOXbvSiVzB/c5TFQbol9omGJqjscG4Q7K4oALPr+
-         jxWQ==
-X-Gm-Message-State: ABy/qLZWLfp764sBRgz1vWcHpRMutghd4AWnF3+M5JcDDHx/PRJ35/mx
-        MsvLKN4sxD8fl4okEEPA44Q7mw==
-X-Google-Smtp-Source: APBJJlHNIgdPzuJuy0x0YY6gCWMzF3fXiWlCo1CLf7hC2EVud/HeJbKo3c+l/iBnVk4NT6FJHwhTSw==
-X-Received: by 2002:aa7:d986:0:b0:51e:1638:e52f with SMTP id u6-20020aa7d986000000b0051e1638e52fmr11323553eds.40.1689665132900;
-        Tue, 18 Jul 2023 00:25:32 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id x11-20020aa7d6cb000000b0051e0bf5807bsm769716edr.49.2023.07.18.00.25.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 00:25:32 -0700 (PDT)
-Message-ID: <fb19946c-b95c-cfd1-1034-7542d38e554e@linaro.org>
-Date:   Tue, 18 Jul 2023 09:25:30 +0200
+        d=1e100.net; s=20221208; t=1689665158; x=1690269958;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a2DjjjM4FGyKHuuM5I0RdnKN+Rz/1iCrCtnKqTggf0w=;
+        b=C6X7MukboDZjR6P/Gm7ep+zWu7VwUU5MiaxtpCClT5ZQfaDb4iv8HaXtTRCpO0WEAl
+         /B2GzGBDG8M4Mh1PIW9XVSEo4KXO1AP0XjEBTCgCGcBHHeV8aPQDUYm7EFaiP8vDacDk
+         2qARtmt4GLv+mJLrGTaPyaDp0AjjQppMQ5QOIkAQj8+cNIn9+a17kG3DZtoon0qcK0fH
+         8ZtAiZppjcXANjBAz7myFoUtsGYyAN/MNakHOE76Xl6W3RBfH7sgaDCQgMBjQXkjcaEM
+         6OkMnqRYe+uc6fP7mIoR0n4ZAIU8FCcPGB1EGwaW5cvJmtbB3Pk2trC4yJ8K5Q2dxILc
+         Ex/g==
+X-Gm-Message-State: ABy/qLYvmO0/6C7ThCFt47+hyAxlKob+aJPZVmKwCqjvLndZORDZkES6
+        xiu2Xndb1rJuvaJ0CkYkqKlxx8kS544Ldbpt+cO9Jzbm0TTApwwXY47TqTbdVykc+k/xLRCJA0U
+        o07xoAMJdf/3EGbSqwa2qpdM1AXTy+vz6
+X-Received: by 2002:a17:906:54:b0:993:f349:c989 with SMTP id 20-20020a170906005400b00993f349c989mr10269304ejg.7.1689665158578;
+        Tue, 18 Jul 2023 00:25:58 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGrcxToIhvi9pZkYvgvkHEy7/T+z+0ZGTKH6gDMN7h9Tf78M3vRIMAt9t7XyJ2PXGXp2U1Bjw==
+X-Received: by 2002:a17:906:54:b0:993:f349:c989 with SMTP id 20-20020a170906005400b00993f349c989mr10269288ejg.7.1689665158219;
+        Tue, 18 Jul 2023 00:25:58 -0700 (PDT)
+Received: from fedora.fritz.box ([2001:9e8:32ec:1b00:f440:b055:3d37:de8])
+        by smtp.gmail.com with ESMTPSA id n10-20020a170906378a00b00992025654c1sm632721ejc.179.2023.07.18.00.25.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 00:25:57 -0700 (PDT)
+From:   Philipp Stanner <pstanner@redhat.com>
+To:     willy@infradead.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Philipp Stanner <pstanner@redhat.com>
+Subject: [PATCH v2] xarray: Document necessary flag in alloc functions
+Date:   Tue, 18 Jul 2023 09:25:34 +0200
+Message-ID: <20230718072533.4305-2-pstanner@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/2] hwmon: (hs3001) Add driver for Renesas HS3001
-Content-Language: en-US
-To:     Andre Werner <werneazc@gmail.com>, jdelvare@suse.com,
-        linux@roeck-us.net, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, robh+dt@kernel.org
-Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andre Werner <andre.werner@systec-electronic.com>
-References: <20230718070114.3871-1-andre.werner@systec-electronic.com>
- <20230718070114.3871-2-andre.werner@systec-electronic.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230718070114.3871-2-andre.werner@systec-electronic.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/07/2023 09:01, Andre Werner wrote:
-> Add base support for Renesas HS3001 temperature
-> and humidity sensors and its compatibles HS3002,
-> HS3003 and HS3004.
-> 
-> The sensor has a fix I2C address 0x44. The resolution
-> is fixed to 14bit (ref. Missing feature).
-> 
+Adds a new line to the docstrings of functions wrapping __xa_alloc() and
+__xa_alloc_cyclic(), informing about the necessity of flag XA_FLAGS_ALLOC
+being set previously.
 
-> Missing feature:
-> - Accessing non-volatile memory: Custom board has no
->   possibility to control voltage supply of sensor. Thus,
->   we cannot send the necessary control commands within
->   the first 10ms after power-on.
-> 
-> Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
-> 
-> Changelog:
-> v1: Initial version
-> v2: Extensive refactoring following recommendations of reviewers:
->  - Delete unused defines and device properties. These are added in
->    the initial version because the device supports a programming mode,
->    but I was not able to implement it, because the custom board was
->    not able to control the power supply of the device and so I cannot
->    enter the programming mode of the device.
->  - Correct missunderstanding comments for defines.
->  - Delete mutexes for data and I2C bus accesses.
->  - Replace attributes with recommented chip-info structure. In the
->    initial version I followed the sth3x.c implementation that uses
->    files and attributes in sysfs. The show functions are replaced by
->    is_visible and read callbacks from the HWMON ABI. I also  delete pointless
->    function argument checks.
->  - Correct Yoda programming.
->  - Refactor probe function and delete sleep and measurement of humidity
->    and temperature in probe function. I kept an initial I2C
->    communication to ensure that the device is accessible during probe.
->  - Reduce the number of atteributes to humidity and temperature input.
+The documentation so far says that functions wrapping __xa_alloc() and
+__xa_alloc_cyclic() are supposed to return either -ENOMEM or -EBUSY in
+case of an error. If the xarray has been initialized without the flag
+XA_FLAGS_ALLOC, however, they fail with a different, undocumented error
+code.
 
-Also wrong placement of SoB and changelog.
+As hinted at in Documentation/core-api/xarray.rst, wrappers around these
+functions should only be invoked when the flag has been set. The
+functions' documentation should reflect that as well.
 
-> ---
->  Documentation/hwmon/hs3001.rst |  37 +++++
->  MAINTAINERS                    |   6 +
->  drivers/hwmon/Kconfig          |  10 ++
->  drivers/hwmon/Makefile         |   1 +
->  drivers/hwmon/hs3001.c         | 261 +++++++++++++++++++++++++++++++++
->  5 files changed, 315 insertions(+)
->  create mode 100644 Documentation/hwmon/hs3001.rst
->  create mode 100644 drivers/hwmon/hs3001.c
+Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+---
+Version 2 of the proposed documentation update. As Matthew requested, I
+added the sentence to all functions wrapping the above mentioned two
+core functions.
+Additionally, I added it to themselves, too, as these functions can also
+be called by the user directly.
+I also rephrased the commit message so that the implemented change is
+mentioned first.
+---
+ include/linux/xarray.h | 18 ++++++++++++++++++
+ lib/xarray.c           |  6 ++++++
+ 2 files changed, 24 insertions(+)
 
-...
-
-> +/* Definitions for Status Bits of A/D Data */
-> +#define HS3001_DATA_VALID	0x00	/* Valid Data */
-> +#define HS3001_DATA_STALE	0x01	/* Stale Data */
-> +
-> +#define LIMIT_MAX	0
-> +#define LIMIT_MIN	1
-> +
-> +enum hs3001_chips {
-> +	hs3001,
-
-Drop, not effectively used.
-
-> +};
-
-...
-
-> +
-> +/* device ID table */
-> +static const struct i2c_device_id hs3001_ids[] = {
-> +	{ "hs3001", hs3001 },
-
-Drop match data
-
-> +	{ },
-> +};
-> +
-> +MODULE_DEVICE_TABLE(i2c, hs3001_ids);
-> +
-> +static const struct of_device_id hs3001_of_match[] = {
-> +	{.compatible = "renesas,hs3001",
-> +	 .data = (void *)hs3001
-
-Drop
-
-> +	},
-> +	{ },
-> +};
-> +
-> +MODULE_DEVICE_TABLE(of, hs3001_of_match);
-> +
-> +static int hs3001_probe(struct i2c_client *client)
-> +{
-> +	struct hs3001_data *data;
-> +	struct device *hwmon_dev;
-> +	struct device *dev = &client->dev;
-> +	int ret;
-> +
-> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
-> +		return -EOPNOTSUPP;
-> +
-> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	data->client = client;
-> +
-> +	if (client->dev.of_node)
-> +		data->type = (enum hs3001_chips)of_device_get_match_data(&client->dev);
-> +	else
-> +		data->type = i2c_match_id(hs3001_ids, client)->driver_data;
-
-This is useless and dead code. You have only one type of device. Don't
-over-complicate simple things.
-
-
-
-Best regards,
-Krzysztof
+diff --git a/include/linux/xarray.h b/include/linux/xarray.h
+index 741703b45f61..cb571dfcf4b1 100644
+--- a/include/linux/xarray.h
++++ b/include/linux/xarray.h
+@@ -856,6 +856,9 @@ static inline int __must_check xa_insert_irq(struct xarray *xa,
+  * stores the index into the @id pointer, then stores the entry at
+  * that index.  A concurrent lookup will not see an uninitialised @id.
+  *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Any context.  Takes and releases the xa_lock.  May sleep if
+  * the @gfp flags permit.
+  * Return: 0 on success, -ENOMEM if memory could not be allocated or
+@@ -886,6 +889,9 @@ static inline __must_check int xa_alloc(struct xarray *xa, u32 *id,
+  * stores the index into the @id pointer, then stores the entry at
+  * that index.  A concurrent lookup will not see an uninitialised @id.
+  *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Any context.  Takes and releases the xa_lock while
+  * disabling softirqs.  May sleep if the @gfp flags permit.
+  * Return: 0 on success, -ENOMEM if memory could not be allocated or
+@@ -916,6 +922,9 @@ static inline int __must_check xa_alloc_bh(struct xarray *xa, u32 *id,
+  * stores the index into the @id pointer, then stores the entry at
+  * that index.  A concurrent lookup will not see an uninitialised @id.
+  *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Process context.  Takes and releases the xa_lock while
+  * disabling interrupts.  May sleep if the @gfp flags permit.
+  * Return: 0 on success, -ENOMEM if memory could not be allocated or
+@@ -949,6 +958,9 @@ static inline int __must_check xa_alloc_irq(struct xarray *xa, u32 *id,
+  * The search for an empty entry will start at @next and will wrap
+  * around if necessary.
+  *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Any context.  Takes and releases the xa_lock.  May sleep if
+  * the @gfp flags permit.
+  * Return: 0 if the allocation succeeded without wrapping.  1 if the
+@@ -983,6 +995,9 @@ static inline int xa_alloc_cyclic(struct xarray *xa, u32 *id, void *entry,
+  * The search for an empty entry will start at @next and will wrap
+  * around if necessary.
+  *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Any context.  Takes and releases the xa_lock while
+  * disabling softirqs.  May sleep if the @gfp flags permit.
+  * Return: 0 if the allocation succeeded without wrapping.  1 if the
+@@ -1017,6 +1032,9 @@ static inline int xa_alloc_cyclic_bh(struct xarray *xa, u32 *id, void *entry,
+  * The search for an empty entry will start at @next and will wrap
+  * around if necessary.
+  *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Process context.  Takes and releases the xa_lock while
+  * disabling interrupts.  May sleep if the @gfp flags permit.
+  * Return: 0 if the allocation succeeded without wrapping.  1 if the
+diff --git a/lib/xarray.c b/lib/xarray.c
+index 2071a3718f4e..73b3f8b33a56 100644
+--- a/lib/xarray.c
++++ b/lib/xarray.c
+@@ -1802,6 +1802,9 @@ EXPORT_SYMBOL(xa_get_order);
+  * stores the index into the @id pointer, then stores the entry at
+  * that index.  A concurrent lookup will not see an uninitialised @id.
+  *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Any context.  Expects xa_lock to be held on entry.  May
+  * release and reacquire xa_lock if @gfp flags permit.
+  * Return: 0 on success, -ENOMEM if memory could not be allocated or
+@@ -1850,6 +1853,9 @@ EXPORT_SYMBOL(__xa_alloc);
+  * The search for an empty entry will start at @next and will wrap
+  * around if necessary.
+  *
++ * Must only be operated on an xarray initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Any context.  Expects xa_lock to be held on entry.  May
+  * release and reacquire xa_lock if @gfp flags permit.
+  * Return: 0 if the allocation succeeded without wrapping.  1 if the
+-- 
+2.41.0
 
