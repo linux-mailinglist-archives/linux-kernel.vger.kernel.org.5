@@ -2,222 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2E1757E1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3FB757E1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232321AbjGRNsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45430 "EHLO
+        id S231924AbjGRNtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230198AbjGRNse (ORCPT
+        with ESMTP id S230198AbjGRNtk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:48:34 -0400
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F948F;
-        Tue, 18 Jul 2023 06:48:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1689688111;
+        Tue, 18 Jul 2023 09:49:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772BB19F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:48:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689688137;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KihHBXzQ5YscflwfpTqH3zKYKGvYlYBWepP0Q5n+rtU=;
-        b=UNdTDGqa0OtoBQaI2l3ghDjFxpMFaBpM9l/Ykjhq7diTw50XCdiPIhpvvlr1SxESWzw6G6
-        eKk/Z+BPbTVo1rMmomxkPZJtkaxvHfHzhBb4ZpemqpEKMHvEKSuxYE4JJxjQW1a4PGMsWH
-        QtcsjXWqbehZKL69FjxVnejBKvKxNTE=
-Message-ID: <ae93b34812c04e499fae93dde833422c78d86b63.camel@crapouillou.net>
-Subject: Re: [PATCH v2 10/10] pinctrl: tegra: Switch to use
- DEFINE_NOIRQ_DEV_PM_OPS() helper
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Balsam CHIHI <bchihi@baylibre.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
-        Sean Wang <sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
-Date:   Tue, 18 Jul 2023 15:48:27 +0200
-In-Reply-To: <ZLaRlyzkqRLSqjQc@orome>
-References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
-         <20230717172821.62827-11-andriy.shevchenko@linux.intel.com>
-         <13f7153786cfcdc3c6185a3a674686f7fbf480dc.camel@crapouillou.net>
-         <ZLZDL27zzDpY4q8E@orome>
-         <5e4b5bc23f3edb3ed30cb465420a51ffceceb53d.camel@crapouillou.net>
-         <ZLZ6amp5HKUbm5w3@orome>
-         <8f32cb8377808a073b043e0adf3ccf5ae5a84c92.camel@crapouillou.net>
-         <ZLaRlyzkqRLSqjQc@orome>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        bh=LLaxw2NzrWW+r009Dr4j7Rdw/NRY2OqVU5CYMXXm6+8=;
+        b=bNtz4/rE0HhTa5x4M1BpEmWkTfBRu9alR9G3ia7OoAOVcgcSrjry5Nqm9gx2ne+M/mqi7F
+        AN1HRcGTs1oiceYQSDxVwcppDxYVKxm9GtlffwhDprHKERXTaO9tZFbPyiin6qRTgz3Qwb
+        oo9wYHiZ30JzbbgnXFKYZ1MiKJhYCA0=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-144-3ZBPBQrlO1-K1QA0Gyw41w-1; Tue, 18 Jul 2023 09:48:55 -0400
+X-MC-Unique: 3ZBPBQrlO1-K1QA0Gyw41w-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-767564705f5so662449485a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:48:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689688135; x=1690292935;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LLaxw2NzrWW+r009Dr4j7Rdw/NRY2OqVU5CYMXXm6+8=;
+        b=S0hr1mMN1PdwtVo5b8C8zVQ3gyYEp4ExNjVULNV+EUka4P7xyf8bJuBL1sQzDfjU/O
+         5UhHmjcrEdahFEvbuhhfbEzR2ls8GEpviF9vkVjqVWv2DWT//tIJGymTqzkZxC5kZw9N
+         XX44CerNe/9CDkppL4+N+jJZ7cYWGROQ7L79xFm/PP8sbjAWgJAh1qBETh6ITs1taZkN
+         f6eVr2hBPmdrUOVG/dH5UwmwpGA5+/Xv8alGdPEvNJmreUUwny9Pf0pFEpB9UrInMv2t
+         0TmLItrf4aVSGbepM2KhrgzMN/dEIu6nozquOLf5GG/WoJ98U2wXNE4bqIb34pcH3n1t
+         xVCg==
+X-Gm-Message-State: ABy/qLa4fT1KW/9kpOXNeUwN8p4Vuk4FMSg0l8FKqTOHGkeQyBdsvIcY
+        f70iDckRtI4sT2bQ39cN0pD+kdDeLnkDxxi4ZwKxypw0L21+ab6U1oDseGCROGlZZdx35VGia+C
+        KuwewTlMFDsMawao+7KrTloFl
+X-Received: by 2002:a05:620a:6785:b0:767:35bc:540a with SMTP id rr5-20020a05620a678500b0076735bc540amr2159584qkn.17.1689688135504;
+        Tue, 18 Jul 2023 06:48:55 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlG4MukNT5hzLYq1GhLxnnXJi0mdSCeXfoowDToROhwgmWHtxW1zaVxLyYJoJSQVYJMBJ6xHvQ==
+X-Received: by 2002:a05:620a:6785:b0:767:35bc:540a with SMTP id rr5-20020a05620a678500b0076735bc540amr2159561qkn.17.1689688135249;
+        Tue, 18 Jul 2023 06:48:55 -0700 (PDT)
+Received: from sgarzare-redhat (host-79-46-200-94.retail.telecomitalia.it. [79.46.200.94])
+        by smtp.gmail.com with ESMTPSA id pe8-20020a05620a850800b00767502e8601sm606015qkn.35.2023.07.18.06.48.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 06:48:54 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 15:48:50 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v1 1/4] vsock/virtio/vhost: read data from
+ non-linear skb
+Message-ID: <mhpoxo3jsoqp6tnmm2maa47tqlm3bd5sveo4n7aqnnvbh7ryjh@ur54eno5povg>
+References: <20230717210051.856388-1-AVKrasnov@sberdevices.ru>
+ <20230717210051.856388-2-AVKrasnov@sberdevices.ru>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20230717210051.856388-2-AVKrasnov@sberdevices.ru>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thierry,
+On Tue, Jul 18, 2023 at 12:00:48AM +0300, Arseniy Krasnov wrote:
+>This is preparation patch for MSG_ZEROCOPY support. It adds handling of
+>non-linear skbs by replacing direct calls of 'memcpy_to_msg()' with
+>'skb_copy_datagram_iter()'. Main advantage of the second one is that it
+>can handle paged part of the skb by using 'kmap()' on each page, but if
+>there are no pages in the skb, it behaves like simple copying to iov
+>iterator. This patch also adds new field to the control block of skb -
+>this value shows current offset in the skb to read next portion of data
+>(it doesn't matter linear it or not). Idea behind this field is that
+>'skb_copy_datagram_iter()' handles both types of skb internally - it
+>just needs an offset from which to copy data from the given skb. This
+>offset is incremented on each read from skb. This approach allows to
+>avoid special handling of non-linear skbs:
+>1) We can't call 'skb_pull()' on it, because it updates 'data' pointer.
+>2) We need to update 'data_len' also on each read from this skb.
+>
+>Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+>---
+> Changelog:
+> v5(big patchset) -> v1:
+>  * Merge 'virtio_transport_common.c' and 'vhost/vsock.c' patches into
+>    this single patch.
+>  * Commit message update: grammar fix and remark that this patch is
+>    MSG_ZEROCOPY preparation.
+>  * Use 'min_t()' instead of comparison using '<>' operators.
 
-Le mardi 18 juillet 2023 =C3=A0 15:20 +0200, Thierry Reding a =C3=A9crit=C2=
-=A0:
-> On Tue, Jul 18, 2023 at 01:55:05PM +0200, Paul Cercueil wrote:
-> > Le mardi 18 juillet 2023 =C3=A0 13:41 +0200, Thierry Reding a =C3=A9cri=
-t=C2=A0:
-> > > On Tue, Jul 18, 2023 at 10:42:47AM +0200, Paul Cercueil wrote:
-> > > > Hi Thierry,
-> > > >=20
-> > > > Le mardi 18 juillet 2023 =C3=A0 09:45 +0200, Thierry Reding a
-> > > > =C3=A9crit=C2=A0:
-> > > > > On Mon, Jul 17, 2023 at 09:14:12PM +0200, Paul Cercueil
-> > > > > wrote:
-> > > > > > Hi Andy,
-> > > > > >=20
-> > > > > > Le lundi 17 juillet 2023 =C3=A0 20:28 +0300, Andy Shevchenko a
-> > > > > > =C3=A9crit=C2=A0:
-> > > > > > > Since pm.h provides a helper for system no-IRQ PM
-> > > > > > > callbacks,
-> > > > > > > switch the driver to use it instead of open coded
-> > > > > > > variant.
-> > > > > > >=20
-> > > > > > > Signed-off-by: Andy Shevchenko
-> > > > > > > <andriy.shevchenko@linux.intel.com>
-> > > > > > > ---
-> > > > > > > =C2=A0drivers/pinctrl/tegra/pinctrl-tegra.c | 5 +----
-> > > > > > > =C2=A01 file changed, 1 insertion(+), 4 deletions(-)
-> > > > > > >=20
-> > > > > > > diff --git a/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > > > > > b/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > > > > > index 4547cf66d03b..734c71ef005b 100644
-> > > > > > > --- a/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > > > > > +++ b/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > > > > > @@ -747,10 +747,7 @@ static int
-> > > > > > > tegra_pinctrl_resume(struct
-> > > > > > > device
-> > > > > > > *dev)
-> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
-> > > > > > > =C2=A0}
-> > > > > > > =C2=A0
-> > > > > > > -const struct dev_pm_ops tegra_pinctrl_pm =3D {
-> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.suspend_noirq =3D=
- &tegra_pinctrl_suspend,
-> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.resume_noirq =3D =
-&tegra_pinctrl_resume
-> > > > > > > -};
-> > > > > > > +DEFINE_NOIRQ_DEV_PM_OPS(tegra_pinctrl_pm,
-> > > > > > > tegra_pinctrl_suspend,
-> > > > > > > tegra_pinctrl_resume);
-> > > > > > > =C2=A0
-> > > > > > > =C2=A0static bool tegra_pinctrl_gpio_node_has_range(struct
-> > > > > > > tegra_pmx
-> > > > > > > *pmx)
-> > > > > > > =C2=A0{
-> > > > > >=20
-> > > > > > Another driver where using EXPORT_GPL_DEV_PM_OPS() would
-> > > > > > make
-> > > > > > more
-> > > > > > sense.
-> > > > >=20
-> > > > > We don't currently export these PM ops because none of the
-> > > > > Tegra
-> > > > > pinctrl
-> > > > > drivers can be built as a module.
-> > > >=20
-> > > > This doesn't change anything. You'd want to use
-> > > > EXPORT_GPL_DEV_PM_OPS
-> > > > (or better, the namespaced version) so that the PM ops can be
-> > > > defined
-> > > > in one file and referenced in another, while still having them
-> > > > garbage-
-> > > > collected when CONFIG_PM is disabled.
-> > >=20
-> > > Looking at the definition of EXPORT_GPL_DEV_PM_OPS(), it will
-> > > cause
-> > > an
-> > > EXPORT_SYMBOL_GPL() to be added. So there very well is a change.
-> > > And
-> > > it's a completely bogus change because no module is ever going to
-> > > use
-> > > that symbol. If we were to ever support building the pinctrl
-> > > driver
-> > > as
-> > > a module, then this would perhaps make sense, but we don't.
-> >=20
-> > In this particular case the EXPORT_SYMBOL_GPL() isn't really
-> > important,
-> > the rest of EXPORT_GPL_DEV_PM_OPS() is.
-> >=20
-> > I don't think having a symbol exported it is a big deal, TBH, if
-> > you
-> > use the namespaced version. If you really don't want that, we need
-> > a
-> > version of EXPORT_GPL_DEV_PM_OPS() that doesn't export the symbol.
->=20
-> I do think it's a big deal to export a symbol if there's no reason to
-> do
-> so.
->=20
-> And please, can we stop adding these macros for every possible
-> scenario?
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-Yes, as you can read from my other responses, I am not really keen on
-having a multiplication of these macros.
-
-> Maybe I'm just getting old, but I find it increasingly difficult to
-> understand what all of these are supposed to be. I get that people
-> want
-> to get rid of boilerplate, but I think we need to more carefully
-> balance
-> boilerplate vs. simplicity.
-
-The EXPORT_GPL_DEV_PM_OPS() macro does more than get rid of
-boilerplate, it gets rid of dead code.
-
-If we take this driver as an example, before the patch the
-"tegra_pinctrl_pm" struct, as well as the "tegra_pinctrl_suspend" and
-"tegra_pinctrl_resume" functions were always compiled in, even if
-CONFIG_PM_SLEEP is disabled in the config.
-
-The status-quo before the introduction of the new PM macros was to just
-wrap the dev_pm_ops struct + callbacks with a #ifdef CONFIG_PM_SLEEP.
-This was pretty bad as the code was then conditionally compiled. With
-the new PM macros this code is always compiled, independently of any
-Kconfig option; and thanks to that, bugs and regressions are
-subsequently easier to catch.
-
-Cheers,
--Paul
-
-> I'm seeing the same thing with stuff like those mass conversions to
-> atrocities like devm_platform_ioremap_resource() and
-> devm_platform_get_and_ioremap_resource(). There's so much churn
-> involved
-> in getting those merged for usually saving a single line of code. And
-> it's not even mass conversions, but people tend to send these as one
-> patch per driver, which doesn't exactly help (except perhaps for
-> patch
-> statistics).
->=20
-> Thierry
+>
+> drivers/vhost/vsock.c                   | 14 ++++++++-----
+> include/linux/virtio_vsock.h            |  1 +
+> net/vmw_vsock/virtio_transport_common.c | 27 ++++++++++++++++---------
+> 3 files changed, 28 insertions(+), 14 deletions(-)
+>
+>diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+>index 817d377a3f36..8c917be32b5d 100644
+>--- a/drivers/vhost/vsock.c
+>+++ b/drivers/vhost/vsock.c
+>@@ -114,6 +114,7 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+> 		struct sk_buff *skb;
+> 		unsigned out, in;
+> 		size_t nbytes;
+>+		u32 frag_off;
+> 		int head;
+>
+> 		skb = virtio_vsock_skb_dequeue(&vsock->send_pkt_queue);
+>@@ -156,7 +157,8 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+> 		}
+>
+> 		iov_iter_init(&iov_iter, ITER_DEST, &vq->iov[out], in, iov_len);
+>-		payload_len = skb->len;
+>+		frag_off = VIRTIO_VSOCK_SKB_CB(skb)->frag_off;
+>+		payload_len = skb->len - frag_off;
+> 		hdr = virtio_vsock_hdr(skb);
+>
+> 		/* If the packet is greater than the space available in the
+>@@ -197,8 +199,10 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+> 			break;
+> 		}
+>
+>-		nbytes = copy_to_iter(skb->data, payload_len, &iov_iter);
+>-		if (nbytes != payload_len) {
+>+		if (skb_copy_datagram_iter(skb,
+>+					   frag_off,
+>+					   &iov_iter,
+>+					   payload_len)) {
+> 			kfree_skb(skb);
+> 			vq_err(vq, "Faulted on copying pkt buf\n");
+> 			break;
+>@@ -212,13 +216,13 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+> 		vhost_add_used(vq, head, sizeof(*hdr) + payload_len);
+> 		added = true;
+>
+>-		skb_pull(skb, payload_len);
+>+		VIRTIO_VSOCK_SKB_CB(skb)->frag_off += payload_len;
+> 		total_len += payload_len;
+>
+> 		/* If we didn't send all the payload we can requeue the packet
+> 		 * to send it with the next available buffer.
+> 		 */
+>-		if (skb->len > 0) {
+>+		if (VIRTIO_VSOCK_SKB_CB(skb)->frag_off < skb->len) {
+> 			hdr->flags |= cpu_to_le32(flags_to_restore);
+>
+> 			/* We are queueing the same skb to handle
+>diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>index c58453699ee9..17dbb7176e37 100644
+>--- a/include/linux/virtio_vsock.h
+>+++ b/include/linux/virtio_vsock.h
+>@@ -12,6 +12,7 @@
+> struct virtio_vsock_skb_cb {
+> 	bool reply;
+> 	bool tap_delivered;
+>+	u32 frag_off;
+> };
+>
+> #define VIRTIO_VSOCK_SKB_CB(skb) ((struct virtio_vsock_skb_cb *)((skb)->cb))
+>diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>index b769fc258931..1a376f808ae6 100644
+>--- a/net/vmw_vsock/virtio_transport_common.c
+>+++ b/net/vmw_vsock/virtio_transport_common.c
+>@@ -355,7 +355,7 @@ virtio_transport_stream_do_peek(struct vsock_sock *vsk,
+> 	spin_lock_bh(&vvs->rx_lock);
+>
+> 	skb_queue_walk_safe(&vvs->rx_queue, skb,  tmp) {
+>-		off = 0;
+>+		off = VIRTIO_VSOCK_SKB_CB(skb)->frag_off;
+>
+> 		if (total == len)
+> 			break;
+>@@ -370,7 +370,10 @@ virtio_transport_stream_do_peek(struct vsock_sock *vsk,
+> 			 */
+> 			spin_unlock_bh(&vvs->rx_lock);
+>
+>-			err = memcpy_to_msg(msg, skb->data + off, bytes);
+>+			err = skb_copy_datagram_iter(skb, off,
+>+						     &msg->msg_iter,
+>+						     bytes);
+>+
+> 			if (err)
+> 				goto out;
+>
+>@@ -413,25 +416,28 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+> 	while (total < len && !skb_queue_empty(&vvs->rx_queue)) {
+> 		skb = skb_peek(&vvs->rx_queue);
+>
+>-		bytes = len - total;
+>-		if (bytes > skb->len)
+>-			bytes = skb->len;
+>+		bytes = min_t(size_t, len - total,
+>+			      skb->len - VIRTIO_VSOCK_SKB_CB(skb)->frag_off);
+>
+> 		/* sk_lock is held by caller so no one else can dequeue.
+> 		 * Unlock rx_lock since memcpy_to_msg() may sleep.
+> 		 */
+> 		spin_unlock_bh(&vvs->rx_lock);
+>
+>-		err = memcpy_to_msg(msg, skb->data, bytes);
+>+		err = skb_copy_datagram_iter(skb,
+>+					     VIRTIO_VSOCK_SKB_CB(skb)->frag_off,
+>+					     &msg->msg_iter, bytes);
+>+
+> 		if (err)
+> 			goto out;
+>
+> 		spin_lock_bh(&vvs->rx_lock);
+>
+> 		total += bytes;
+>-		skb_pull(skb, bytes);
+>
+>-		if (skb->len == 0) {
+>+		VIRTIO_VSOCK_SKB_CB(skb)->frag_off += bytes;
+>+
+>+		if (skb->len == VIRTIO_VSOCK_SKB_CB(skb)->frag_off) {
+> 			u32 pkt_len = le32_to_cpu(virtio_vsock_hdr(skb)->len);
+>
+> 			virtio_transport_dec_rx_pkt(vvs, pkt_len);
+>@@ -503,7 +509,10 @@ static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
+> 				 */
+> 				spin_unlock_bh(&vvs->rx_lock);
+>
+>-				err = memcpy_to_msg(msg, skb->data, bytes_to_copy);
+>+				err = skb_copy_datagram_iter(skb, 0,
+>+							     &msg->msg_iter,
+>+							     bytes_to_copy);
+>+
+> 				if (err) {
+> 					/* Copy of message failed. Rest of
+> 					 * fragments will be freed without copy.
+>-- 
+>2.25.1
+>
 
