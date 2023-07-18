@@ -2,54 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 554E47578C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616FE7578C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbjGRKBp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 Jul 2023 06:01:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
+        id S229994AbjGRKCb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 Jul 2023 06:02:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232260AbjGRKBf (ORCPT
+        with ESMTP id S232399AbjGRKCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 06:01:35 -0400
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B316E4F;
-        Tue, 18 Jul 2023 03:01:27 -0700 (PDT)
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-1bac0e25891so79814fac.2;
-        Tue, 18 Jul 2023 03:01:27 -0700 (PDT)
+        Tue, 18 Jul 2023 06:02:12 -0400
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996F91B6;
+        Tue, 18 Jul 2023 03:02:11 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-579e5d54e68so59397397b3.1;
+        Tue, 18 Jul 2023 03:02:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689674486; x=1692266486;
+        d=1e100.net; s=20221208; t=1689674530; x=1692266530;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iMWNFsiRP079B5LYbYLQZfm+Mzjz5LU2gLm2aCCBKHU=;
-        b=gQmr3YApxV2Jhjpqyvd72TBslFNKanvStKead9ackCb+XfH1HfKfOeFsWE+MnmHnxd
-         u8ULDNZ+uBzApx/sEdncdt8/3ST1LFWbgKDKgJvUiskmOzlrFfdTeUI0o6E66s8gVfI9
-         QlbziFW7SPaAEaPXcIATqr8xD4H2OUHDd/n/KVsVEGv4fYUC5UQh99FMEKM/47HRxa99
-         lo9WEvv8VBwrvY5Bj1LsOveJdkIpGvmYw1eVBSDsbjprgaQ/9R9sjOjz+9uY5IjCy536
-         YACC/AXrch9DB9bXN6GaKE+yhC0J+AQ/MUfBsCUNsfNGy6zW0vWrtqZXChuLp5APiwhc
-         y71Q==
-X-Gm-Message-State: ABy/qLb1ENz5f2W4v22OqgpZa3UNgv+jEq4yezx2EaOX/92iC1+z/Hzd
-        7ezETDY3+VGvaa0zvc2kUYwh86sAPud+iA==
-X-Google-Smtp-Source: APBJJlGpPMp+VLxaQawE6UPllhsXVy9xKvYavIrRlsmt/g8J7Uxueo9LVlIW53BnfC3abFoolGYlmw==
-X-Received: by 2002:aca:bd06:0:b0:3a4:11a1:4cd8 with SMTP id n6-20020acabd06000000b003a411a14cd8mr11993989oif.4.1689674486551;
-        Tue, 18 Jul 2023 03:01:26 -0700 (PDT)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id w207-20020a8149d8000000b00570589c5aedsm369201ywa.7.2023.07.18.03.01.26
+        bh=fxfecajh7LakVWsGzhfvx2yBPK9ZrfliTdUgb+tNhHc=;
+        b=Gg8L6ytWvcMK4bmQdVqUaan3zGtLk3v27M77tXRNJH+nrV6tKNl8hZDN+w4qkxeKNX
+         3ilIDMOaL3prKYUvIJ8cpDLLo2xJ350kOq/FQfIpQZM7zUEhgIE/afv7GDYJRN4fts/8
+         tCGLKZZfYh/OmI0P0OxqnDWEeZMt/GtLDyRUZxiyKwxQgqQMJJ+aNJ3HrQp8erFkY5iR
+         DUmuG9lFn3aGn55pS6AQWq31kcwlcwM9uzBMgaqo5vvN7B2Rh6vRpc8S/hxyp7qNm4UG
+         dzGrwjEXRrzfxRh8h0xPkOQ4x+EN0ab526QF0KyA4LvoTP9kGWTZUHDJ9yC8j1mzLxvp
+         Akvw==
+X-Gm-Message-State: ABy/qLYP7kb+1OiBivAoZTSQzHkOXUghjT2Ro5u0W/F+28mf5Q6RyLAP
+        H+SiUyTQKgBgwPSkE5x6A6PxalKDFuQBgw==
+X-Google-Smtp-Source: APBJJlEMYLizvb/uPfAFOnhD7hOUEcOM1s3m8Wr4YK+zgNZFIDlAA67/SAwLzWgJgnZUBZJ5zWbEgw==
+X-Received: by 2002:a81:6fc4:0:b0:561:d25b:672a with SMTP id k187-20020a816fc4000000b00561d25b672amr15364245ywc.21.1689674530542;
+        Tue, 18 Jul 2023 03:02:10 -0700 (PDT)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id u75-20020a81844e000000b0057a44e20fb8sm357253ywf.73.2023.07.18.03.02.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 03:01:26 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-bdd069e96b5so5634794276.2;
-        Tue, 18 Jul 2023 03:01:26 -0700 (PDT)
-X-Received: by 2002:a5b:c47:0:b0:ced:271:950a with SMTP id d7-20020a5b0c47000000b00ced0271950amr437150ybr.47.1689674485821;
- Tue, 18 Jul 2023 03:01:25 -0700 (PDT)
+        Tue, 18 Jul 2023 03:02:10 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-bff27026cb0so5647967276.1;
+        Tue, 18 Jul 2023 03:02:09 -0700 (PDT)
+X-Received: by 2002:a25:13c8:0:b0:bcb:9b43:5a89 with SMTP id
+ 191-20020a2513c8000000b00bcb9b435a89mr13444895ybt.61.1689674529762; Tue, 18
+ Jul 2023 03:02:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com> <20230717172821.62827-2-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230717172821.62827-2-andriy.shevchenko@linux.intel.com>
+References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com> <20230717172821.62827-10-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230717172821.62827-10-andriy.shevchenko@linux.intel.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 18 Jul 2023 12:01:14 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVgRDrWwQ6PKtgDE1Kmbp_zsmfrbswvG9Sq30zUVMZRAw@mail.gmail.com>
-Message-ID: <CAMuHMdVgRDrWwQ6PKtgDE1Kmbp_zsmfrbswvG9Sq30zUVMZRAw@mail.gmail.com>
-Subject: Re: [PATCH v2 01/10] pm: Introduce DEFINE_NOIRQ_DEV_PM_OPS() helper
+Date:   Tue, 18 Jul 2023 12:01:58 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX_4wmim_R0oA=4df8-0JKGwTkJJMxEiZSMwtVtv1wuFg@mail.gmail.com>
+Message-ID: <CAMuHMdX_4wmim_R0oA=4df8-0JKGwTkJJMxEiZSMwtVtv1wuFg@mail.gmail.com>
+Subject: Re: [PATCH v2 09/10] pinctrl: renesas: Switch to use
+ DEFINE_NOIRQ_DEV_PM_OPS() helper
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
         Linus Walleij <linus.walleij@linaro.org>,
@@ -80,7 +82,7 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,14 +92,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, Jul 17, 2023 at 7:28 PM Andy Shevchenko
 <andriy.shevchenko@linux.intel.com> wrote:
-> _DEFINE_DEV_PM_OPS() helps to define PM operations for the system sleep
-> and/or runtime PM cases. Some of the existing users want to have _noirq()
-> variants to be set. For that purpose introduce a new helper which sets
-> up _noirq() callbacks to be set and struct dev_pm_ops be provided.
+> Since pm.h provides a helper for system no-IRQ PM callbacks,
+> switch the driver to use it instead of open coded variant.
 >
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
 Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
 Gr{oetje,eeting}s,
 
