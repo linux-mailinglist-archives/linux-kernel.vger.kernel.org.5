@@ -2,196 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D60AA75884B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2D7758850
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbjGRWLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 18:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42756 "EHLO
+        id S231395AbjGRWOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 18:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbjGRWLv (ORCPT
+        with ESMTP id S229820AbjGRWOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 18:11:51 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEFD4BD
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:11:49 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fc04692e20so62854215e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:11:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1689718308; x=1692310308;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GBFuzfdAmNaYm1a7M+xjqXL6se2cAULTKm86TtuRY5Q=;
-        b=YQODveK83sfIFQaoJ9d2zHDCyX1sM75EscthSqX1VQKlA33+o/qSgy2s6aznlG0XY8
-         7fWjzJxVNc0uyMvVShNQ5m8RdzyHyHV1/jromJ5LgLj1ZMxlzZf29yM0IowIbBRdnaRT
-         e6nMJIwJty6B0fD2T7D99k/IRTZgUGndgrsf8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689718308; x=1692310308;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GBFuzfdAmNaYm1a7M+xjqXL6se2cAULTKm86TtuRY5Q=;
-        b=b4SX6iD2TBi4962gH/TnfI/4PavkEzoAbWy7PgwIw/bKQqsTdRzutTDcpKuqG6X6M9
-         EYVSo2Bc1/BB+l9qQ8JOXv2jkdt3guZ9bnMcZGZlQDprNSz9NEMmmZdpg6z6RfEcPEKX
-         jmMgWsyTxfURl3bKzDh+CdchKOCjqOQ+K28JWDOx08InyM7fOYvNadrrQMKehRL7bndh
-         r7eT8tL7M5M/HM9QPSPxMXm+UxnRmlonZe52OOSbB448oQzMdPfGB/dCftAa/R9pUxgo
-         EIbhGwphyIzLRzxtTLnfnUjWo07P2EO/V6X5fnnVtWnW/8BqjLPp4rVKCil45s6s1foy
-         eCDg==
-X-Gm-Message-State: ABy/qLbJS5zxrffLQhOibPJmWomz5lDvYnThFmfGYggt49dz6RMfj+mY
-        NAkRM5chyAshkHVg0lCAbkB0lKj1Nae24oD3kptnfw==
-X-Google-Smtp-Source: APBJJlHcLp3LZZT8ePqg38XVu9BXhK2EmR1zn3gSPLE3NZgfENsHW5sZJR+iNbZcyUFGp2gYHgl19eG9XtgqPXSwOAg=
-X-Received: by 2002:a7b:c347:0:b0:3fb:b637:22a7 with SMTP id
- l7-20020a7bc347000000b003fbb63722a7mr3021125wmj.4.1689718308375; Tue, 18 Jul
- 2023 15:11:48 -0700 (PDT)
+        Tue, 18 Jul 2023 18:14:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD754198D
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:13:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689718396;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WwuWVUhQyLpqyuy0dr6uUxzbIrG4zTsvTGA2l0E3O54=;
+        b=LMdKU4JSOGna4s2HiaZuNer8dJm0izbVxB/Df9bnWx3tLa6S7jZZsHi3pdJ6X5oqh1IlX+
+        nJA7Gc8VJ5qN8P4Yk7EtR0BVoTO9jHyJ7KjmKocZyNGnwJPXK5fJD0mgBYcA4IYmo6CYoB
+        vdwFsSWkdTK04/a4iDI4dqFKM7gQ9Fg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-548-KXs-HZI6OICyYPAqRTHL9g-1; Tue, 18 Jul 2023 18:13:09 -0400
+X-MC-Unique: KXs-HZI6OICyYPAqRTHL9g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CDB0186F124;
+        Tue, 18 Jul 2023 22:13:08 +0000 (UTC)
+Received: from redhat.com (unknown [10.22.16.84])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 523431121314;
+        Tue, 18 Jul 2023 22:13:08 +0000 (UTC)
+Date:   Tue, 18 Jul 2023 17:13:06 -0500
+From:   Bill O'Donnell <billodo@redhat.com>
+To:     Rob Barnes <robbarnes@google.com>
+Cc:     bleung@chromium.org, linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: export emergency_sync
+Message-ID: <ZLcOcr6N+Ty59rBD@redhat.com>
+References: <20230718214540.1.I763efc30c57dcc0284d81f704ef581cded8960c8@changeid>
 MIME-Version: 1.0
-References: <20230711043453.64095-1-ivan@cloudflare.com> <20230711193612.22c9bc04@kernel.org>
- <CAO3-PbrZHn1syvhb3V57oeXigE_roiHCbzYz5Mi4wiymogTg2A@mail.gmail.com>
- <20230712104210.3b86b779@kernel.org> <CABWYdi3VJU7HUxzKJBKgX9wF9GRvmA0TKVpjuHvJyz_EdpxZFA@mail.gmail.com>
- <20230713201427.2c50fc7b@kernel.org> <CABWYdi2BGi=iRCfLhmQCqO=1eaQ1WaCG7F9WsJrz-7==ocZidg@mail.gmail.com>
- <20230718145700.5d6f766d@kernel.org>
-In-Reply-To: <20230718145700.5d6f766d@kernel.org>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Tue, 18 Jul 2023 15:11:37 -0700
-Message-ID: <CABWYdi2sBOTehNRGVhqftqJhAQ6558RtFKbYrXq5PUe=1dPExQ@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next] tcp: add a tracepoint for tcp_listen_queue_drop
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        David Ahern <dsahern@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718214540.1.I763efc30c57dcc0284d81f704ef581cded8960c8@changeid>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 2:57=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Fri, 14 Jul 2023 16:21:08 -0700 Ivan Babrou wrote:
-> > > Just the stacks.
-> >
-> > Here you go: https://lore.kernel.org/netdev/CABWYdi00L+O30Q=3DZah28QwZ_=
-5RU-xcxLFUK2Zj08A8MrLk9jzg@mail.gmail.com/
->
-> Thanks! I'll follow the discussion there. Just the one remaining
-> clarification here:
->
-> > > > Even if I was only interested in one specific reason, I would still
-> > > > have to arm the whole tracepoint and route a ton of skbs I'm not
-> > > > interested in into my bpf code. This seems like a lot of overhead,
-> > > > especially if I'm dropping some attack packets.
-> > >
-> > > That's what I meant with my drop vs exception comment. We already hav=
-e
-> > > two tracepoints on the skb free path (free and consume), adding anoth=
-er
-> > > shouldn't rise too many eyebrows.
-> >
-> > I'm a bit confused. Previously you said:
-> >
-> > > Specifically what I'm wondering is whether we should also have
-> > > a separation between policy / "firewall drops" and error / exception
-> > > drops. Within the skb drop reason codes, I mean.
-> >
-> > My understanding was that you proposed adding more SKB_DROP_REASON_*,
-> > but now you seem to imply that we might want to add another
-> > tracepoint. Could you clarify which path you have in mind?
->
-> What I had in mind was sorting the drop reasons to be able to easily
-> distinguish policy drops from error drops.
->
-> > We can add a few reasons that would satisfy my need by covering
-> > whatever results into tcp_listendrop() calls today. The problem is:
-> > unless we remove some other reasons from kfree_skb, adding more
-> > reasons for firewall drops / exceptions wouldn't change the cost at
-> > all. We'd still have the same number of calls into the tracepoint and
-> > the condition to find "interesting" reasons would be the same:
-> >
-> > if (reason =3D=3D SKB_DROP_REASON_TCP_OVERFLOW_OR_SOMETHING)
-> >
-> > It still seems very expensive to consume a firehose of kfree_skb just
-> > to find some rare nuggets.
->
-> Let me show you a quick mock-up of a diff:
->
-> diff --git a/include/net/dropreason-core.h b/include/net/dropreason-core.=
-h
-> index a2b953b57689..86ee70fcf540 100644
-> --- a/include/net/dropreason-core.h
-> +++ b/include/net/dropreason-core.h
-> @@ -5,12 +5,18 @@
->
->  #define DEFINE_DROP_REASON(FN, FNe)    \
->         FN(NOT_SPECIFIED)               \
-> +       /* Policy-driven/intentional drops: */  \
-> +       FN(NETFILTER_DROP)              \
-> +       FN(BPF_CGROUP_EGRESS)           \
-> +       FN(TC_INGRESS)                  \
-> +       FN(TC_EGRESS)                   \
-> +       FN(XDP)                         \
-> +       /* Errors: */                   \
->         FN(NO_SOCKET)                   \
->         FN(PKT_TOO_SMALL)               \
->         FN(TCP_CSUM)                    \
->         FN(SOCKET_FILTER)               \
->         FN(UDP_CSUM)                    \
-> -       FN(NETFILTER_DROP)              \
->         FN(OTHERHOST)                   \
->         FN(IP_CSUM)                     \
->         FN(IP_INHDR)                    \
-> @@ -41,17 +47,13 @@
->         FN(TCP_OFO_QUEUE_PRUNE)         \
->         FN(TCP_OFO_DROP)                \
->         FN(IP_OUTNOROUTES)              \
-> -       FN(BPF_CGROUP_EGRESS)           \
->         FN(IPV6DISABLED)                \
->         FN(NEIGH_CREATEFAIL)            \
->         FN(NEIGH_FAILED)                \
->         FN(NEIGH_QUEUEFULL)             \
->         FN(NEIGH_DEAD)                  \
-> -       FN(TC_EGRESS)                   \
->         FN(QDISC_DROP)                  \
->         FN(CPU_BACKLOG)                 \
-> -       FN(XDP)                         \
-> -       FN(TC_INGRESS)                  \
->         FN(UNHANDLED_PROTO)             \
->         FN(SKB_CSUM)                    \
->         FN(SKB_GSO_SEG)                 \
-> @@ -80,6 +82,8 @@
->         FN(IPV6_NDISC_NS_OTHERHOST)     \
->         FNe(MAX)
->
-> +#define        __SKB_POLICY_DROP_END   SKB_DROP_REASON_NO_SOCKET
-> +
->  /**
->   * enum skb_drop_reason - the reasons of skb drops
->   *
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 6c5915efbc17..a36c498eb693 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -1031,6 +1031,8 @@ bool __kfree_skb_reason(struct sk_buff *skb, enum s=
-kb_drop_reason reason)
->
->         if (reason =3D=3D SKB_CONSUMED)
->                 trace_consume_skb(skb, __builtin_return_address(0));
-> +       else if (reason < __SKB_POLICY_DROP_END)
-> +               trace_drop_skb(skb, __builtin_return_address(0), reason);
->         else
->                 trace_kfree_skb(skb, __builtin_return_address(0), reason)=
-;
->         return true;
+On Tue, Jul 18, 2023 at 09:45:40PM +0000, Rob Barnes wrote:
+> emergency_sync forces a filesystem sync in emergency situations.
+> Export this function so it can be used by modules.
+> 
+> Signed-off-by: Rob Barnes <robbarnes@google.com>
 
-I see what you mean now. This makes sense.
+Example of an emergency situation?
+Thanks-
+Bill
+
+
+> ---
+> 
+>  fs/sync.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/sync.c b/fs/sync.c
+> index dc725914e1edb..b313db0ebb5ee 100644
+> --- a/fs/sync.c
+> +++ b/fs/sync.c
+> @@ -142,6 +142,7 @@ void emergency_sync(void)
+>  		schedule_work(work);
+>  	}
+>  }
+> +EXPORT_SYMBOL(emergency_sync);
+>  
+>  /*
+>   * sync a single super
+> -- 
+> 2.41.0.255.g8b1d071c50-goog
+> 
+
