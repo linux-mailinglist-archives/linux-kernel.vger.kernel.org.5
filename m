@@ -2,120 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B37E1758046
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83136758034
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233442AbjGRO6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:58:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42418 "EHLO
+        id S232221AbjGROzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:55:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233397AbjGRO6n (ORCPT
+        with ESMTP id S232225AbjGROzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:58:43 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D38171B
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:58:40 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-307d58b3efbso5651789f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:58:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689692318; x=1692284318;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=c7qbajFrTu3xdmlkD7sMCozUhGPFxBZ+VIOGec5FvnU=;
-        b=V1Q75zWF08MtcCWIc+qmruiy1a5sB8RKBM/B61PWKSCB3xA2vTvtFHR9912xPdBXqG
-         bulne4a6GTRE9rcdTLFXbiykp1/QcT6nL32KY7C4VyL+iDus36uL4xUeFcPOm0ER8uIG
-         LNS5n6b7GFAlOcODOevdkhKhaYexj7NXYlR1ST9WU1Yo/VbgHuXf7tZvfPLjmCxXLzmJ
-         fPM0C0q3t4a6g/cgg/isB/FYwtvE+wFZsMPs4Zuh4Np7xOzKC+xIw29zEy39dP5ba+vM
-         9oko0gTRYnipMMOfJN5I6s9BBigpUzh6BJOq8WTILIzLYW9pfo6h3wFC8B+8lZk7pdK8
-         mXXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689692318; x=1692284318;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=c7qbajFrTu3xdmlkD7sMCozUhGPFxBZ+VIOGec5FvnU=;
-        b=ewUEVTY26Er5GenX6xId9oZ9faiwnfiUS9Mt8LsPFLn9obL8lx72wwe38mSC0ze5nF
-         J4KWTcPqKcC39kHgQh3MKUHvXaj+JfCtfRsi8Gqr/hKk/0SrLytLUNwM5XoYDzcRXvnf
-         IR2HAXF2Pc7XMZhHAij4uWjZJg3adL0UiANpdRlXzIfvWCpf/t0ZI/9U37qzB1kvT1h6
-         RztcrDzf721Kvg9SE8aIwrKmGfrvlqnb6Rw6kxyB4D7c/usKiFnU3pP/TUWK8Cy0ew3n
-         PUUB064nAIkYxRRc7uZo8rH7tvzVrahDaXUZyyn8hJvFTJ+m/QvNSp4JOjih7Wdn1NL7
-         BhEg==
-X-Gm-Message-State: ABy/qLblG5g1Y8Ho1X6DQSKbrClKsdkBMCXDDG5fMxObIt/3Nyry9pLf
-        yuvA1Eh7UwfawcY/nz9ZDA5M3Q==
-X-Google-Smtp-Source: APBJJlHlwQZq7zOOpq7KDx/jo79mR9NlyYtg5NASUFKIGCfSDYzmBHgMhFLaVxFVunhexBSDFb5YMQ==
-X-Received: by 2002:a5d:428b:0:b0:314:d31:f7 with SMTP id k11-20020a5d428b000000b003140d3100f7mr12318821wrq.63.1689692318485;
-        Tue, 18 Jul 2023 07:58:38 -0700 (PDT)
-Received: from [127.0.1.1] ([86.71.62.179])
-        by smtp.gmail.com with ESMTPSA id x8-20020adff0c8000000b00317046f21f9sm2602817wro.114.2023.07.18.07.58.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 07:58:38 -0700 (PDT)
-From:   Julien Panis <jpanis@baylibre.com>
-Date:   Tue, 18 Jul 2023 16:58:35 +0200
-Subject: [PATCH v2] ARM: multi_v7_defconfig: Enable OMAP watchdog support
+        Tue, 18 Jul 2023 10:55:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B39E0;
+        Tue, 18 Jul 2023 07:55:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 701E16160E;
+        Tue, 18 Jul 2023 14:55:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27BA7C433C7;
+        Tue, 18 Jul 2023 14:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689692117;
+        bh=min4l/bR2fEVj3vzFg5K0E/Z3Mb/vK8ghVM0zgoNXe0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Sj745agqf7fyXuF0t2aNdV9a39HVkdXPFE510iWq6ryKyoLCBuLwAvigXQ5J23FgA
+         i510E6TmRWATLgfKQ0QSXrmAWlRl8C3U6mlpsva6nALUH+Iue9+a5fxpj+xmZddTgH
+         B6nLwl4CwzMtXLplboRNjxlI7cClbW6wY0WnEtXeV1IBErksi9gBtFCSwzlR2o4/us
+         YMosMVZTS6NOB0O28g8fl3pZtFNKKeLkuo6TORAHAoqIHdG1dzjWD3HfuV2EGLaLPo
+         G2gHyH8JzzzuVR9PxiFYrUWNzXxoCgs5koa5XMLdN6XuhlNT9//8231Bsjh5ijitlW
+         7eVKh8i+cEZxw==
+Date:   Tue, 18 Jul 2023 07:58:41 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>
+Subject: Re: [PATCH 5/8] clk: qcom: lpasscc-sc7280: fix missing resume during
+ probe
+Message-ID: <xbek6yuldy7ck3zlux76hosn4iqt52ocydovuol7geiwapslrd@j7uyxhrkiyaw>
+References: <20230718132902.21430-1-johan+linaro@kernel.org>
+ <20230718132902.21430-6-johan+linaro@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230718-enable-omap-wd-v2-1-921f829bc0a5@baylibre.com>
-X-B4-Tracking: v=1; b=H4sIAJqotmQC/3WNwQ6DIBAFf8Vw7jYCFW1P/Y/Gw4JrJVEwYGiN8
- d+L3nuc9zKZjUUKliJ7FBsLlGy03mUQl4KZAd2bwHaZmSiFLGveADnUI4GfcIZPBworJY1oyro
- SLEsaI4EO6MxwaBPGhcJxzIF6+z1LrzbzYOPiw3qGEz/Wv43EgYO8ybvqhakV4lPjOlod6Gr8x
- Np933+aK3UlyAAAAA==
-To:     Russell King <linux@armlinux.org.uk>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        vigneshr@ti.com, afd@ti.com, Julien Panis <jpanis@baylibre.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689692317; l=1273;
- i=jpanis@baylibre.com; s=20230526; h=from:subject:message-id;
- bh=Fjs0Ne391uULid7nmq/UoMxgWX0s3FwfGN1aefJQ8bo=;
- b=k+ggxpGC2jcIE8lhscoiaStdf/7o8cr6BIN+8Pj5W6BQ3gdocYEoJcWFeBnkqLchF9MXzWDIq
- AnlMwVxZ0ELBAZZ4KYf6IX433KqPiGhUsfo98onFndTX3aYYcpnx0VI
-X-Developer-Key: i=jpanis@baylibre.com; a=ed25519;
- pk=8eSM4/xkiHWz2M1Cw1U3m2/YfPbsUdEJPCWY3Mh9ekQ=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718132902.21430-6-johan+linaro@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Increase build and test coverage by enabling support for OMAP watchdog,
-as used on TI OMAP based boards.
+On Tue, Jul 18, 2023 at 03:28:59PM +0200, Johan Hovold wrote:
+> Drivers that enable runtime PM must make sure that the controller is
+> runtime resumed before accessing its registers to prevent the power
+> domain from being disabled.
+> 
 
-The watchdog timer is an upward counter capable of generating a pulse on
-the reset pin and an interrupt to the device system modules following an
-overflow condition.
+NB: the clock framework will runtime resume the controller surrounding
+operations, even so during probe. But this is not done for resets and
+gdscs - and in some clock drivers we poke registers directly from
+probe...
 
-Signed-off-by: Julien Panis <jpanis@baylibre.com>
----
-Enable OMAP watchdog support in multi_v7_defconfig for TI OMAP based boards.
----
-Changes in v2:
-- Add explanations in commit description.
-- Link to v1: https://lore.kernel.org/r/20230718-enable-omap-wd-v1-1-34396f2c76aa@baylibre.com
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+The one time this really matters is where we associate the ahb clock
+with the runtime state, e.g. in qcs404 turingcc. On most other platforms
+we just mark these clocks always-on in gcc...
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index f0800f806b5f..7d93e21e0cb9 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -554,6 +554,7 @@ CONFIG_SAMA5D4_WATCHDOG=y
- CONFIG_S3C2410_WATCHDOG=m
- CONFIG_DW_WATCHDOG=y
- CONFIG_DAVINCI_WATCHDOG=m
-+CONFIG_OMAP_WATCHDOG=m
- CONFIG_ORION_WATCHDOG=y
- CONFIG_RN5T618_WATCHDOG=y
- CONFIG_SUNXI_WATCHDOG=y
+Regards,
+Bjorn
 
----
-base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
-change-id: 20230718-enable-omap-wd-6a563c280752
-
-Best regards,
--- 
-Julien Panis <jpanis@baylibre.com>
-
+> Fixes: 4ab43d171181 ("clk: qcom: Add lpass clock controller driver for SC7280")
+> Cc: stable@vger.kernel.org      # 5.16
+> Cc: Taniya Das <quic_tdas@quicinc.com>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
+>  drivers/clk/qcom/lpasscc-sc7280.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/clk/qcom/lpasscc-sc7280.c b/drivers/clk/qcom/lpasscc-sc7280.c
+> index 0df2b29e95e3..e6b815aec46a 100644
+> --- a/drivers/clk/qcom/lpasscc-sc7280.c
+> +++ b/drivers/clk/qcom/lpasscc-sc7280.c
+> @@ -118,9 +118,13 @@ static int lpass_cc_sc7280_probe(struct platform_device *pdev)
+>  	ret = pm_clk_add(&pdev->dev, "iface");
+>  	if (ret < 0) {
+>  		dev_err(&pdev->dev, "failed to acquire iface clock\n");
+> -		goto destroy_pm_clk;
+> +		goto err_destroy_pm_clk;
+>  	}
+>  
+> +	ret = pm_runtime_resume_and_get(&pdev->dev);
+> +	if (ret)
+> +		goto err_destroy_pm_clk;
+> +
+>  	if (!of_property_read_bool(pdev->dev.of_node, "qcom,adsp-pil-mode")) {
+>  		lpass_regmap_config.name = "qdsp6ss";
+>  		lpass_regmap_config.max_register = 0x3f;
+> @@ -128,7 +132,7 @@ static int lpass_cc_sc7280_probe(struct platform_device *pdev)
+>  
+>  		ret = qcom_cc_probe_by_index(pdev, 0, desc);
+>  		if (ret)
+> -			goto destroy_pm_clk;
+> +			goto err_put_rpm;
+>  	}
+>  
+>  	lpass_regmap_config.name = "top_cc";
+> @@ -137,11 +141,15 @@ static int lpass_cc_sc7280_probe(struct platform_device *pdev)
+>  
+>  	ret = qcom_cc_probe_by_index(pdev, 1, desc);
+>  	if (ret)
+> -		goto destroy_pm_clk;
+> +		goto err_put_rpm;
+> +
+> +	pm_runtime_put(&pdev->dev);
+>  
+>  	return 0;
+>  
+> -destroy_pm_clk:
+> +err_put_rpm:
+> +	pm_runtime_put_sync(&pdev->dev);
+> +err_destroy_pm_clk:
+>  	pm_clk_destroy(&pdev->dev);
+>  
+>  	return ret;
+> -- 
+> 2.41.0
+> 
