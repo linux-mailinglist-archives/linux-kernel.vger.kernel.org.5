@@ -2,224 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F47757687
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0964F75768E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbjGRIax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:30:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50120 "EHLO
+        id S231302AbjGRIcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:32:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbjGRIav (ORCPT
+        with ESMTP id S231228AbjGRIcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:30:51 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2064.outbound.protection.outlook.com [40.107.21.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D33A10E;
-        Tue, 18 Jul 2023 01:30:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a/ZghBqi6+PQm9uRVQ0v1rxDkkes/z83zcqKX0R1mhMVcnKeaKMYKoCGeZMD7M6Rt/IuArSRsh8UTf3ekIeJIu1z+fRUCYNAzjNsx8ZWOh6JDRtu2bcT9BkvvjfhQ0TjmilDinq2RNTUy9hGf7puclFR9vFr1mNKjm9pGhIE1IZaczGuhlIpxcPL/GBTR1r/IS2MRG6vBrlV0n5+925lqiO8Jj0jS5NPIuwbar9RI7lYtUYiAsyJuTSJ2jNMFu/hJ3p/wQfubkmPwHTuLrOFSo+WCZiysLamUpg6MAUJJuWJ9tEbZbBrQxC39M3Bq5j7iGoePIifwKtWD/gHSKUztQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2x54rjkk5qZCg9moZsZJJltH31B7lmf3N+a0omJr+eY=;
- b=Zi3nTO6wo9pJcB9+mF54uod2x7TW6iFbmBpVTzy240j1B7Wz8vyPu9hfdGKsM0XNQ5N+48TXg1ItmUJePZJ8OPpu0HrUe+MNEeJ6k1ErsqQw2iDDHcMRNh+/9juW48s9SqGrxBjN3yG0lmSIYcGlYg4zSYEY+yv4CEoWsWEnM/pfO7ozVsMiGQNeNBi9A4VhvhSKxNENsq8WWePm14Ma7T/Gw8TITt2aF2ubxG90MmxZS6Y06DT8fIwQonU5w/WHIERfumQW22ss0oqhw3+wWR/2VwT0gl8htkyxIBSuCopkUr95wpcu0CNqwepBV+EfHZlQKxuj/63EQmssbE4RNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2x54rjkk5qZCg9moZsZJJltH31B7lmf3N+a0omJr+eY=;
- b=TRHV/VD+IqKz6tycxQvUGwAh7UOUpsWgUpfyAN64ibk3IkYXPdMVL9ppYTN+/oYUMc9YrO8wG0szWlvRP9ZT3trI8xAi9Z/auBfZZxBMTf6u3saLCTWZbfrVLV1mdX4BbbEjw95aVKZMH5/U/H+ZpYf2hathEWA9bZNb34EZ/28=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DU2PR04MB8774.eurprd04.prod.outlook.com (2603:10a6:10:2e1::21)
- by AM9PR04MB8617.eurprd04.prod.outlook.com (2603:10a6:20b:438::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32; Tue, 18 Jul
- 2023 08:30:46 +0000
-Received: from DU2PR04MB8774.eurprd04.prod.outlook.com
- ([fe80::f1e4:90a0:aabe:ac23]) by DU2PR04MB8774.eurprd04.prod.outlook.com
- ([fe80::f1e4:90a0:aabe:ac23%7]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
- 08:30:46 +0000
-Message-ID: <6fe5691f-67f4-ff70-8350-b4b6c08097b0@nxp.com>
-Date:   Tue, 18 Jul 2023 11:30:43 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] remoteproc: imx_dsp_rproc: add module parameter to
- ignore ready flag from remote processor
-Content-Language: en-US
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "S.J. Wang" <shengjiu.wang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Mpuaudiosw <Mpuaudiosw@nxp.com>, linux-imx <linux-imx@nxp.com>,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        LnxRevLi <LnxRevLi@nxp.com>
-References: <20230712224251.26482-1-iuliana.prodan@oss.nxp.com>
- <ZLV7q9ipDaw4b1Hi@p14s>
-From:   Iuliana Prodan <iuliana.prodan@nxp.com>
-In-Reply-To: <ZLV7q9ipDaw4b1Hi@p14s>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR06CA0111.eurprd06.prod.outlook.com
- (2603:10a6:208:ab::16) To DU2PR04MB8774.eurprd04.prod.outlook.com
- (2603:10a6:10:2e1::21)
+        Tue, 18 Jul 2023 04:32:00 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA99C115
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:31:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689669117; x=1721205117;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Q30+seFw+4eenXaJNG8nbUBfRsSOd1o4oiM6qt7SAxk=;
+  b=DkfEZ8QYoJ7OylZDe7L9+jMqacHLFlEk2V5n5DCaT0n9TcEC4BPiH+8r
+   YSiEZYAY9bvoCKdfg/rRks1H0JsmzxLgW+nNJm0VIYHepgcRVjklc914Y
+   kHgYsq1eR5ySCTOf6F4lMlUMW5dEBKT3PMl+bSLpQNLZUUXN+4DmhjGA/
+   kwf0p/R04HfRe+Pr4q7tswZJUDIty5EppveDawl+m9RUONOlG6pOvXX+D
+   XUVQaiXiZj1tEJ9ORr/M2I+sziYm0SNmL83Kfh1HMZ6JRBMM8igVR2egU
+   ZWyxajKEqpfTUPxXSZrzsDECpUwAVeffDpmdXBGlSiP4Ly1S1+Ao7dMkJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="365021561"
+X-IronPort-AV: E=Sophos;i="6.01,213,1684825200"; 
+   d="scan'208";a="365021561"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 01:31:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="970160595"
+X-IronPort-AV: E=Sophos;i="6.01,213,1684825200"; 
+   d="scan'208";a="970160595"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 18 Jul 2023 01:31:55 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qLg7e-0000MR-2N;
+        Tue, 18 Jul 2023 08:31:54 +0000
+Date:   Tue, 18 Jul 2023 16:31:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:testing/fam01-next20230717 1/5]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_dpia.c:427:17:
+ error: 'dp_decide_lane_settings' accessing 4 bytes in a region of size 1
+Message-ID: <202307181615.iVlmV0s6-lkp@intel.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8774:EE_|AM9PR04MB8617:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4af83cf7-93d1-41b5-3140-08db876948ad
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: M6KvcNyh7mIhlMXRGkpj90ainsLKx8w2QKpgccIv7wyVyvXSKno1CC3xOKA6y/Yypz01B7TKkYpvUBRjZ/yySTpZ0Ha5cGJTbgxtwNzQcknlRRdBM3CnqHf8a3DLGBxjFySH//d1C63YLst3nURfHRO4tFOorOQ2T9yRBlUSy7MjnjGu1Q9OKVQCrKAp0W1S10ecCjGPDOg/wftnZzRNYHQsrxyKkOCSWINshs36GfiktAyTmk/C5zCJWuS40jYhcDAg7yToQ0eLuO/gmHCOqVyEh9R6iSkcB0+3IDJNRh9D7xR+0xMHWfJleXXedv9/6apvr26vVJpegY3ojZENWxtg0RV5vTNXMJLivLLxGu8Q+Gn4/sb9AYP20n3oUG0Te89spC+8hLr8gGdT5TPznwBU6G7oc58G3ksXczxIEpmQFmkxkkm6hmfRofKfFl8jjK09zT0zGAJqgPrAb6WDrDD3OuOTTWFIO/8WVZIFxvVqVd20DdWAFqF2J2N1upCPoRT91BpIg1V45Dd6+sBwhlmX2GXMNA14zwx3mtulloDFwKJq9azlm8q55HX+IQMLaNV3EWBKRpAlMMlgGNbUn8KSw/ii+pJT++2fxkzjGNt0JxirdUr0yT9oFtYldinO8TkNlD21oCKDYTNCtSJ8FA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8774.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(39860400002)(136003)(396003)(346002)(366004)(451199021)(54906003)(110136005)(31686004)(316002)(186003)(8676002)(44832011)(8936002)(478600001)(66556008)(66476007)(41300700001)(66946007)(4326008)(5660300002)(45080400002)(2906002)(966005)(83380400001)(6512007)(6486002)(6666004)(31696002)(86362001)(26005)(6506007)(36756003)(2616005)(53546011)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SW8zTGxzdGRNYTNsYnhRc3VLNEJnOWVVODVyY1poY2grVWRnNFNsMEFZMndn?=
- =?utf-8?B?TmtONERRMFo3M2E0TUNkRzI5TWNZUGlhdWRZenpKOXBNV0dLc21rVnlvK1ZE?=
- =?utf-8?B?VFFqVlBRS3lIcU14Wi9QMTM3TFNXQjBjVGJTTWhGeG05NFczVEV6d2QrYjg1?=
- =?utf-8?B?U1BDYmk0VWNmMHhtTGxCUlkvNGtGUEh2ZzRzRFlNdm5iSFo4c0l0VEcvc0lR?=
- =?utf-8?B?WHk2M2VEaWM0YzZMZmMxNTRRYUl1WU9WVjY0Y05oalQwdkkzelNoTTV1K2ZE?=
- =?utf-8?B?b0Y1S0J5ZEtBZXRGUTF0N0Qwa1VnL3RpRDVyVUI4Qmc5UmFvdkd1bzFtdUZ6?=
- =?utf-8?B?K0pFMzVDNUtGQTFIc1BUcFAxaVgxYW9xendkUVdNRVV2aTRYaFcxbEhkQ3o5?=
- =?utf-8?B?djBEeFEwMEloaUJjc2lXOVZjTzZmNVVtT0JmdXRZSEIxMjJaVG8wYkNqQWlP?=
- =?utf-8?B?RjFmdElqZ1hML21pS3A4RWJLb0FKZW0rdVVrUmNqN0N6UWNYYm81SHN6b2Nw?=
- =?utf-8?B?WGNUUExINkZ2Ris0bUZLdW5XQ2hvUW5uWkpuVkZZUjlVdlR6eUhIQ3JHTDJG?=
- =?utf-8?B?YVo4S1ZQaGREdGJNSFdORUxWSUFnRFh2MWhacUozdHpHYTF1WDRHQmdsUENN?=
- =?utf-8?B?K0x6MzI3ZXFNNFJZTnliZ08zaUhCbFh1S2h6NHZYWXBQYkRNMUNYZnhYZWxZ?=
- =?utf-8?B?bmgvTFRJNFMzMHNpR2c1eGNIZ2RZRUE3MGtWNy9SUEtyQkVUbndXeXhUNU9p?=
- =?utf-8?B?VXlFT2xPbE5UVjFuVCtqaklKTXo4NHNqNTRJUHM3Z2hLQmZITFNZS1ZtVmpr?=
- =?utf-8?B?Tk5pTjlhaU1YQXA1TE1yTVFQOGx1UHZvaGZQTTlWcmF3UXg1VTNxZlFraUd1?=
- =?utf-8?B?Yy9NOGFVZW1zWkR1bGMvVmpVbTUvNFhzYlIxZHNCMWJzSmZoTVdKRWZqNWRi?=
- =?utf-8?B?NkZDbktIU0l6VFd4OW9tdmNyWVNnQ2w4ejJSMDdKWVFHNTZDZFZ1enZiT0ZS?=
- =?utf-8?B?Q1doUTlkcUJUZkFkYXh3Y2h5UFNybFZxNVc4L2xvVFMrYVN2cWVYQXNZOEYz?=
- =?utf-8?B?clRSOG1FY2dvSFVXczVMSW54VFF5ZTc4YTRlZVpOOVlDRTlLNU44cVFQQ3Nm?=
- =?utf-8?B?RXZrSUpVOVlpVFNmNlRSWCtTTUxtZGRJQUNaQmdoZzI4L2hmd3UyMDJObS8v?=
- =?utf-8?B?alNqdFh6ZzFLeng1bUxzRkplSGRSYzZLR0I4NHNvZUJMWjN4cVF2eGhqU2Vy?=
- =?utf-8?B?NmoweEtUWjNSWG9MSWJTRnNQay84SnFoYmZVVXNUbG14bXNLS1RTR2hWclZO?=
- =?utf-8?B?aXZIbGoyMWZQK0M5anRUdkxSd3hqdFcrTE9PZ0tiQS9Lcktnb3I0bkJGT09y?=
- =?utf-8?B?TEtvRGJVNlk3alZJSzhQbW5oMVVlVTFKSkhKeS9hN2MwQUtCdmw4eWNLbmlK?=
- =?utf-8?B?d2lzb2xUZDBSckRXeEt6bVUwTWgwS212RUpiVjJRUmxmWkJsSUc4K0I3L0xq?=
- =?utf-8?B?RGlKYktUdzJPcVBzejhBU0lRYjNFOHkrbDdwVk04N09uUTN3V0JGTDV4QSs3?=
- =?utf-8?B?M2F5cExJb1lNR2xkazhhRENyWHhwRVRyMDdRRW5Gb1IwMVpxUDhGV0w3Tzhv?=
- =?utf-8?B?dGErdlZqR3A3QmFPVTNPSmRZNzJKNzFzNDNDMGZNNlRVa0pYN1N1K3Q5RjNS?=
- =?utf-8?B?QzJPS2IwWEEwR0RJOVNwSlVaOE9IcDd2MjZMeGNKUWYrd3lLbUQ2WHExajR5?=
- =?utf-8?B?b2R6WVN1c3U2QXBZUllGSVdxd1FSZVlXZm9IbzhjdjU1aDZxSjl2eUU0aGN6?=
- =?utf-8?B?MnlXMHV2QUdxd1BGWVBweVNGNTFJVEYwUUdwdXhhR0d1ZHZWWVU3WUxXTzlU?=
- =?utf-8?B?ZnA3MnVDZlgwblk3RVUxS3lDbmdZajc1LzdaYXNsT2dKeFFNSDZrNktyblNN?=
- =?utf-8?B?NEJvNzUxd3oyZzduN25YcDdnRlZ2MHBSc2YveU4rRVdad1QwM2VWNllBa0dq?=
- =?utf-8?B?REhRbmo3RWhPaUxCUGNrVFY1NW5kUzBPeWdTMkxMWURmOHM3R3B2eVFDOVVC?=
- =?utf-8?B?MnFwOXlaekhTWEVYTVI2Y0pEcjhsTjVqNmEvS3FlSWxGd2hWTkhmdFMwVnVE?=
- =?utf-8?B?MVUwWW5HNmQxTHkwMDJHTDM5SUFaQjhBTDNzRkZLRWxTVnk2VGZkVW1Jdk1U?=
- =?utf-8?B?TkE9PQ==?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4af83cf7-93d1-41b5-3140-08db876948ad
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8774.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 08:30:46.5067
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qTAAUnqm40qZLiWXpzFrVeia7lIG3PJI2pTwPAlEfYw/dy3NsBIGiI7gT4cgHRGFJnP3Vh+5j/FZZYcg5CdRUA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8617
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/fam01-next20230717
+head:   584ee211a23e349a6478767544c518f04b6cf2bd
+commit: 1fdc6510f00eba88bc602d8a4482a7c866db4918 [1/5] Makefile: Globally enable -Wstringop-overflow
+config: arm-randconfig-r063-20230716 (https://download.01.org/0day-ci/archive/20230718/202307181615.iVlmV0s6-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230718/202307181615.iVlmV0s6-lkp@intel.com/reproduce)
 
-On 7/17/2023 8:34 PM, Mathieu Poirier wrote:
-> Hi Iuliana,
->
-> On Thu, Jul 13, 2023 at 01:42:51AM +0300, Iuliana Prodan (OSS) wrote:
->> From: Iuliana Prodan <iuliana.prodan@nxp.com>
->>
->> There are cases when we want to test samples that do not
->> reply with FW READY message, after fw is loaded and the
->> remote processor started.
-> This seems like a bug to me - where is this FW comes from?
-The firmware is a generic sample from Zephyr repo: 
-https://github.com/zephyrproject-rtos/zephyr/tree/main/samples/subsys/ipc/openamp_rsc_table
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307181615.iVlmV0s6-lkp@intel.com/
 
-There is no bug, this is how the application was written.
+All errors (new ones prefixed by >>):
 
-Rather than modifying a generic sample for i.MX usecase, I prefer doing 
-an "insmod imx_dsp_rproc.ko ignore_dsp_ready=1" just for this sample.
+   drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_dpia.c: In function 'dpia_training_cr_non_transparent.constprop':
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_dpia.c:427:17: error: 'dp_decide_lane_settings' accessing 4 bytes in a region of size 1 [-Werror=stringop-overflow=]
+     427 |                 dp_decide_lane_settings(lt_settings, dpcd_lane_adjust,
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     428 |                                 lt_settings->hw_lane_settings,
+         |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     429 |                                 lt_settings->dpcd_lane_settings);
+         |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_dpia.c:427:17: note: referencing argument 4 of type 'union dpcd_training_lane[4]'
+   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_dpia.h:29,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_dpia.c:29:
+   drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training.h:110:6: note: in a call to function 'dp_decide_lane_settings'
+     110 | void dp_decide_lane_settings(
+         |      ^~~~~~~~~~~~~~~~~~~~~~~
+   cc1: all warnings being treated as errors
+--
+   drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.c: In function 'dp_perform_fixed_vs_pe_training_sequence_legacy':
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.c:472:25: error: 'dp_decide_lane_settings' accessing 4 bytes in a region of size 1 [-Werror=stringop-overflow=]
+     472 |                         dp_decide_lane_settings(lt_settings, dpcd_lane_adjust,
+         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     473 |                                         lt_settings->hw_lane_settings, lt_settings->dpcd_lane_settings);
+         |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.c:472:25: note: referencing argument 4 of type 'union dpcd_training_lane[4]'
+   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.h:29,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.c:34:
+   drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training.h:110:6: note: in a call to function 'dp_decide_lane_settings'
+     110 | void dp_decide_lane_settings(
+         |      ^~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.c: In function 'dp_perform_fixed_vs_pe_training_sequence':
+   drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.c:835:25: error: 'dp_decide_lane_settings' accessing 4 bytes in a region of size 1 [-Werror=stringop-overflow=]
+     835 |                         dp_decide_lane_settings(lt_settings, dpcd_lane_adjust,
+         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     836 |                                         lt_settings->hw_lane_settings, lt_settings->dpcd_lane_settings);
+         |                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.c:835:25: note: referencing argument 4 of type 'union dpcd_training_lane[4]'
+   drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training.h:110:6: note: in a call to function 'dp_decide_lane_settings'
+     110 | void dp_decide_lane_settings(
+         |      ^~~~~~~~~~~~~~~~~~~~~~~
+   cc1: all warnings being treated as errors
 
-Thanks,
-Iulia
 
->> In these cases, do not wait for a confirmation from the remote processor
->> at start.
->>
->> Added "ignore_dsp_ready" flag while inserting the module to ignore
->> remote processor reply after start.
->> By default, this is off - do not ignore reply from rproc.
->>
->> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
->>
->> ---
->> This was discovered while testing openamp_rsc_table sample from Zephyr
->> repo (https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2Fzephyrproject-rtos%2Fzephyr%2Ftree%2Fmain%2Fsamples%2Fsubsys%2Fipc%2Fopenamp_rsc_table&data=05%7C01%7Ciuliana.prodan%40nxp.com%7C4779cb20393e4af08a9408db86ec191e%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C638252120814415013%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=iCjvv8wr3sQ4CEXFcXDsW0VSw5RXr1ASw7LN2J08SXE%3D&reserved=0).
->>
->> We have IPC, but the remote proc doesn't send a FW_READY reply.
->> ---
->>   drivers/remoteproc/imx_dsp_rproc.c | 15 +++++++++++++++
->>   1 file changed, 15 insertions(+)
->>
->> diff --git a/drivers/remoteproc/imx_dsp_rproc.c b/drivers/remoteproc/imx_dsp_rproc.c
->> index b5634507d953..ed89de2f3b98 100644
->> --- a/drivers/remoteproc/imx_dsp_rproc.c
->> +++ b/drivers/remoteproc/imx_dsp_rproc.c
->> @@ -36,7 +36,13 @@ module_param_named(no_mailboxes, no_mailboxes, int, 0644);
->>   MODULE_PARM_DESC(no_mailboxes,
->>   		 "There is no mailbox between cores, so ignore remote proc reply after start, default is 0 (off).");
->>   
->> +static unsigned int imx_dsp_rproc_ignore_ready;
->> +module_param_named(ignore_dsp_ready, imx_dsp_rproc_ignore_ready, int, 0644);
->> +MODULE_PARM_DESC(ignore_dsp_ready,
->> +		 "Ignore remote proc reply after start, default is 0 (off).");
->> +
->>   #define REMOTE_IS_READY				BIT(0)
->> +#define REMOTE_IGNORE_READY_REPLY	BIT(1)
->>   #define REMOTE_READY_WAIT_MAX_RETRIES		500
->>   
->>   /* att flags */
->> @@ -296,6 +302,12 @@ static int imx_dsp_rproc_ready(struct rproc *rproc)
->>   	if (!priv->rxdb_ch)
->>   		return 0;
->>   
->> +	/*
->> +	 * FW_READY reply is optional/ignored, so don't wait for it.
->> +	 */
->> +	if (priv->flags & REMOTE_IGNORE_READY_REPLY)
->> +		return 0;
->> +
->>   	for (i = 0; i < REMOTE_READY_WAIT_MAX_RETRIES; i++) {
->>   		if (priv->flags & REMOTE_IS_READY)
->>   			return 0;
->> @@ -1119,6 +1131,9 @@ static int imx_dsp_rproc_probe(struct platform_device *pdev)
->>   	else
->>   		imx_dsp_rproc_mbox_init = imx_dsp_rproc_mbox_alloc;
->>   
->> +	if (imx_dsp_rproc_ignore_ready)
->> +		priv->flags |= REMOTE_IGNORE_READY_REPLY;
->> +
->>   	dev_set_drvdata(dev, rproc);
->>   
->>   	INIT_WORK(&priv->rproc_work, imx_dsp_rproc_vq_work);
->> -- 
->> 2.17.1
->>
+vim +/dp_decide_lane_settings +427 drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_dpia.c
+
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  274  
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  275  /* Execute clock recovery phase of link training for specified hop in display
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  276   * path.in non-transparent mode:
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  277   * - Driver issues both DPCD and SET_CONFIG transactions.
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  278   * - TPS1 is transmitted for any hops downstream of DPOA.
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  279   * - Drive (VS/PE) only transmitted for the hop immediately downstream of DPOA.
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  280   * - CR for the first hop (DPTX-to-DPIA) is assumed to be successful.
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  281   *
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  282   * @param link DPIA link being trained.
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  283   * @param lt_settings link_setting and drive settings (voltage swing and pre-emphasis).
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  284   * @param hop Hop in display path. DPRX = 0.
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  285   */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  286  static enum link_training_result dpia_training_cr_non_transparent(
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  287  		struct dc_link *link,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  288  		const struct link_resource *link_res,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  289  		struct link_training_settings *lt_settings,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  290  		uint32_t hop)
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  291  {
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  292  	enum link_training_result result = LINK_TRAINING_CR_FAIL_LANE0;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  293  	uint8_t repeater_cnt = 0; /* Number of hops/repeaters in display path. */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  294  	enum dc_status status;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  295  	uint32_t retries_cr = 0; /* Number of consecutive attempts with same VS or PE. */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  296  	uint32_t retry_count = 0;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  297  	uint32_t wait_time_microsec = TRAINING_AUX_RD_INTERVAL; /* From DP spec, CR read interval is always 100us. */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  298  	enum dc_lane_count lane_count = lt_settings->link_settings.lane_count;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  299  	union lane_status dpcd_lane_status[LANE_COUNT_DP_MAX] = {0};
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  300  	union lane_align_status_updated dpcd_lane_status_updated = {0};
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  301  	union lane_adjust dpcd_lane_adjust[LANE_COUNT_DP_MAX] = {0};
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  302  	uint8_t set_cfg_data;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  303  	enum dpia_set_config_ts ts;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  304  
+d5a43956b73bd78 drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-15  305  	repeater_cnt = dp_parse_lttpr_repeater_count(link->dpcd_caps.lttpr_caps.phy_repeater_cnt);
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  306  
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  307  	/* Cap of LINK_TRAINING_MAX_CR_RETRY attempts at clock recovery.
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  308  	 * Fix inherited from perform_clock_recovery_sequence() -
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  309  	 * the DP equivalent of this function:
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  310  	 * Required for Synaptics MST hub which can put the LT in
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  311  	 * infinite loop by switching the VS between level 0 and level 1
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  312  	 * continuously.
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  313  	 */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  314  	while ((retries_cr < LINK_TRAINING_MAX_RETRY_COUNT) &&
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  315  			(retry_count < LINK_TRAINING_MAX_CR_RETRY)) {
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  316  
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  317  		/* DPTX-to-DPIA */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  318  		if (hop == repeater_cnt) {
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  319  			/* Send SET_CONFIG(SET_LINK:LC,LR,LTTPR) to notify DPOA that
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  320  			 * non-transparent link training has started.
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  321  			 * This also enables the transmission of clk_sync packets.
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  322  			 */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  323  			set_cfg_data = dpia_build_set_config_data(
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  324  					DPIA_SET_CFG_SET_LINK,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  325  					link,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  326  					lt_settings);
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  327  			status = core_link_send_set_config(
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  328  					link,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  329  					DPIA_SET_CFG_SET_LINK,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  330  					set_cfg_data);
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  331  			/* CR for this hop is considered successful as long as
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  332  			 * SET_CONFIG message is acknowledged by DPOA.
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  333  			 */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  334  			if (status == DC_OK)
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  335  				result = LINK_TRAINING_SUCCESS;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  336  			else
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  337  				result = LINK_TRAINING_ABORT;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  338  			break;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  339  		}
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  340  
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  341  		/* DPOA-to-x */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  342  		/* Instruct DPOA to transmit TPS1 then update DPCD. */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  343  		if (retry_count == 0) {
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  344  			status = convert_trng_ptn_to_trng_stg(lt_settings->pattern_for_cr, &ts);
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  345  			if (status != DC_OK) {
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  346  				result = LINK_TRAINING_ABORT;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  347  				break;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  348  			}
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  349  			status = core_link_send_set_config(
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  350  					link,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  351  					DPIA_SET_CFG_SET_TRAINING,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  352  					ts);
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  353  			if (status != DC_OK) {
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  354  				result = LINK_TRAINING_ABORT;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  355  				break;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  356  			}
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  357  			status = dpcd_set_lt_pattern(link, lt_settings->pattern_for_cr, hop);
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  358  			if (status != DC_OK) {
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  359  				result = LINK_TRAINING_ABORT;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  360  				break;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  361  			}
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  362  		}
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  363  
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  364  		/* Update DPOA drive settings then DPCD. DPOA does only adjusts
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  365  		 * drive settings for hops immediately downstream.
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  366  		 */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  367  		if (hop == repeater_cnt - 1) {
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  368  			set_cfg_data = dpia_build_set_config_data(
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  369  					DPIA_SET_CFG_SET_VSPE,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  370  					link,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  371  					lt_settings);
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  372  			status = core_link_send_set_config(
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  373  					link,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  374  					DPIA_SET_CFG_SET_VSPE,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  375  					set_cfg_data);
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  376  			if (status != DC_OK) {
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  377  				result = LINK_TRAINING_ABORT;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  378  				break;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  379  			}
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  380  		}
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  381  		status = dpcd_set_lane_settings(link, lt_settings, hop);
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  382  		if (status != DC_OK) {
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  383  			result = LINK_TRAINING_ABORT;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  384  			break;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  385  		}
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  386  
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  387  		dp_wait_for_training_aux_rd_interval(link, wait_time_microsec);
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  388  
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  389  		/* Read status and adjustment requests from DPCD. */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  390  		status = dp_get_lane_status_and_lane_adjust(
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  391  				link,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  392  				lt_settings,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  393  				dpcd_lane_status,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  394  				&dpcd_lane_status_updated,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  395  				dpcd_lane_adjust,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  396  				hop);
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  397  		if (status != DC_OK) {
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  398  			result = LINK_TRAINING_ABORT;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  399  			break;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  400  		}
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  401  
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  402  		/* Check if clock recovery successful. */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  403  		if (dp_is_cr_done(lane_count, dpcd_lane_status)) {
+88c7ad91e378775 drivers/gpu/drm/amd/display/dc/link/protocols/link_dp_training_dpia.c Srinivasan Shanmugam 2023-04-14  404  			DC_LOG_HW_LINK_TRAINING("%s: Clock recovery OK\n", __func__);
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  405  			result = LINK_TRAINING_SUCCESS;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  406  			break;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  407  		}
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  408  
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  409  		result = dp_get_cr_failure(lane_count, dpcd_lane_status);
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  410  
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  411  		if (dp_is_max_vs_reached(lt_settings))
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  412  			break;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  413  
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  414  		/* Count number of attempts with same drive settings.
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  415  		 * Note: settings are the same for all lanes,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  416  		 * so comparing first lane is sufficient.
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  417  		 */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  418  		if ((lt_settings->dpcd_lane_settings[0].bits.VOLTAGE_SWING_SET ==
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  419  				dpcd_lane_adjust[0].bits.VOLTAGE_SWING_LANE)
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  420  				&& (lt_settings->dpcd_lane_settings[0].bits.PRE_EMPHASIS_SET ==
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  421  						dpcd_lane_adjust[0].bits.PRE_EMPHASIS_LANE))
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  422  			retries_cr++;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  423  		else
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  424  			retries_cr = 0;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  425  
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  426  		/* Update VS/PE. */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14 @427  		dp_decide_lane_settings(lt_settings, dpcd_lane_adjust,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  428  				lt_settings->hw_lane_settings,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  429  				lt_settings->dpcd_lane_settings);
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  430  		retry_count++;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  431  	}
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  432  
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  433  	/* Abort link training if clock recovery failed due to HPD unplug. */
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  434  	if (link->is_hpd_pending)
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  435  		result = LINK_TRAINING_ABORT;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  436  
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  437  	DC_LOG_HW_LINK_TRAINING(
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  438  		"%s\n DPIA(%d) clock recovery\n -hop(%d)\n - result(%d)\n - retries(%d)\n - status(%d)\n",
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  439  		__func__,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  440  		link->link_id.enum_id - ENUM_ID_1,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  441  		hop,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  442  		result,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  443  		retry_count,
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  444  		status);
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  445  
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  446  	return result;
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  447  }
+630168a97314a8f drivers/gpu/drm/amd/display/dc/link/link_dp_training_dpia.c           Wenjing Liu          2022-12-14  448  
+
+:::::: The code at line 427 was first introduced by commit
+:::::: 630168a97314a8f6da9c09d73f5e78c3c1fe3eee drm/amd/display: move dp link training logic to link_dp_training
+
+:::::: TO: Wenjing Liu <wenjing.liu@amd.com>
+:::::: CC: Alex Deucher <alexander.deucher@amd.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
