@@ -2,135 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43949757C09
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE23757C11
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231328AbjGRMno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 08:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57620 "EHLO
+        id S231962AbjGRMoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 08:44:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbjGRMnn (ORCPT
+        with ESMTP id S231268AbjGRMoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 08:43:43 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597CD134
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:43:42 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-668704a5b5bso5667073b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:43:42 -0700 (PDT)
+        Tue, 18 Jul 2023 08:44:17 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CE8170E;
+        Tue, 18 Jul 2023 05:44:13 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9936b3d0286so801042066b.0;
+        Tue, 18 Jul 2023 05:44:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689684222; x=1692276222;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=gM/YgQOHeZ56BBUJtDtFJHEmngLOGV7x/3NVPgw+uwg=;
-        b=w2hgTYFo0jHGi/AdVX7TD2uUbk+BXLb+ZG2Zdw4rHJpk2T64R7srvLTU1EecmWqOqS
-         +2jICAWOFdA3n+NCVvYfHl0gbvmHFdN/TULrzU34DmJFhmBJ7HFP7kD5ELlciAE0SsxV
-         kgKsVcvw9mNvmcXpwZJ5BsgmfldRJD4EnkdtvBbHkjY7R1wkzXZqohfr1f2V2t/auNvo
-         uOLi0T3d6Ic7oVvvNRQKN86yHEsfxfjzgpmHSNnGOf0CgRVMHzyIXHqFgtUkPuw34m6B
-         abB+AOkZ+UV4Q+lnWukzd73MYDLSmt8SFGtfUhAx+cIIkzHJHWVCM1nTKlaOQTXdZ+OC
-         icaw==
+        d=gmail.com; s=20221208; t=1689684252; x=1692276252;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rjafSjwhPYU7xqZqTIKooSTK5vgwuXrvEkZkgBS1tpQ=;
+        b=svWBMpAzUIcAKZFhbHmS1VForkB52Iwtil3hYos/NhMBLkdcnjFkQYfMA27oQkeQ0c
+         J8gz0UU9uTFqvcyqYgZItHaSIGB9kZpwgzHISgERQJAXsUOB2kdPZJk2GEOJ7TvDhA91
+         oltJy+6JfEkrHkOzlR2nmE22d1ttxlNPAs+b7TUOyNW9gwl4anIMdjZab5YvdHSMHCAB
+         rHEv6KI1D7LUHjErwNrACg0CbZeFJmTBkY6pdFswB7i1RrOuBU80ZlNb31wgTtpX+T8C
+         602eYVK4LPPZ+vyCtu0zQWz6sM4CVSq9dFS9vQjUaWIQYCzVmQUPT4HexvKIFyGUEqrM
+         3Prg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689684222; x=1692276222;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gM/YgQOHeZ56BBUJtDtFJHEmngLOGV7x/3NVPgw+uwg=;
-        b=PgqniAAkautx+kYlsbxt7gbLWv+GMM0pnVJh8MtoJTsSFrtLTZR3FWviloYlU8ej1S
-         HlVLnu7tUddxXR8guHQ3gBDNAgLCcR4WjftPdCFZCYNblhIN/sPavTrJP2aqIK9N+46u
-         6HFBDJS2Zf/n97mLu9BacFBcJMRGLTn0IrgiCanWHAkc8XFt9K581afo5g4ofto/kYnj
-         3lqASHhXb8ix6znbHOvZR0pFxBYN8KZe+31r8En+1oYBKGs/yyrGKRaeLg9mAQJMGyip
-         dtxzeO5S2W3u3wrZtPZj84rjfZZ+79P+4boXhQ5ghDwlxPcyPBl9Gn8lOadjLzSrZ1XC
-         giOw==
-X-Gm-Message-State: ABy/qLYYYFodyi268uqWxfeW0M9Z8RwnBMxXY5I+sxSj9aEiNqgvLAXa
-        +xd+Wu/2QypN/KPAeMKNjtxZ
-X-Google-Smtp-Source: APBJJlGIyCLi2xXMxJXvF91GTdpgYQEGsEVobhqGEnYYRfEsOVgBWaJGpPgU4Z2/dyfXjMaz88khfw==
-X-Received: by 2002:a05:6a20:a121:b0:133:249f:2ce2 with SMTP id q33-20020a056a20a12100b00133249f2ce2mr18924689pzk.0.1689684221820;
-        Tue, 18 Jul 2023 05:43:41 -0700 (PDT)
-Received: from thinkpad ([117.217.191.149])
-        by smtp.gmail.com with ESMTPSA id u21-20020aa78395000000b0065434edd521sm1444932pfm.196.2023.07.18.05.43.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 05:43:41 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 18:13:34 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Vivek Pernamitta <quic_vpernami@quicinc.com>
-Cc:     mhi@lists.linux.dev, mrana@quicinc.com, quic_qianyu@quicinc.com,
-        quic_vbadigan@quicinc.com, quic_krichai@quicinc.com,
-        quic_skananth@quicinc.com, linux-arm-msm@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2] net: mhi : Add support to enable ethernet interface
-Message-ID: <20230718124334.GG4771@thinkpad>
-References: <1689660928-12092-1-git-send-email-quic_vpernami@quicinc.com>
+        d=1e100.net; s=20221208; t=1689684252; x=1692276252;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rjafSjwhPYU7xqZqTIKooSTK5vgwuXrvEkZkgBS1tpQ=;
+        b=g8dbbgtcUNI+9LXkfG2uyzjho9Omtf9UaMj+nL0/zvTOG6i6tsa+HvgdDnzPIWqKWI
+         THk0FqlygpI5RUoUf9R+209HKqhzFO8yGAiQeBm4qfaUvBK3vIOYjl9KUgSyJ/u7zjpQ
+         rSZsgDgNmK19Gzd6aWJl790DZOlPZk+MIhQNtfvcxhTB5qq9NtWejt8eARrVRIJsFmwh
+         BfMIyVROPPJXBtmW3wFHz9L4TIVuVnxIc4SqA88fwFT4w+J8ppVfqVB8cemZavbvCVNt
+         HIxWVOzGhVcbWLcqy/xAr+9mx2Le2etxPlobq7ch7SFk5IJJjMeYWhpG2JgZvzolF/Xs
+         u5HA==
+X-Gm-Message-State: ABy/qLbwCkk3sYe7K8DTkbDDg5CsLUdNEC0LZiom8QlevOxCVemRAMlJ
+        XgtKBhnrwXPCzfQEpG8UTjbmrJHfKThYMg29fEA=
+X-Google-Smtp-Source: APBJJlG9m2BdQIW7onW1xnE8sV9rYPKp5JUOVkqIggApCTArboC/1wLbwqqnhKpHXdE0VmBN/AdKoTT/9mSwxAThd1A=
+X-Received: by 2002:a17:906:1054:b0:994:569b:61b4 with SMTP id
+ j20-20020a170906105400b00994569b61b4mr9894424ejj.28.1689684251957; Tue, 18
+ Jul 2023 05:44:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1689660928-12092-1-git-send-email-quic_vpernami@quicinc.com>
+References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
+ <20230717172821.62827-10-andriy.shevchenko@linux.intel.com>
+ <03592cf5d6854dd5e534e0416de946fd38e4380c.camel@crapouillou.net> <CAMuHMdWMHjFdh0Ze9k8gZC_Cjp62zdwDK1cvehHb5WXYw+p1XQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdWMHjFdh0Ze9k8gZC_Cjp62zdwDK1cvehHb5WXYw+p1XQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 18 Jul 2023 15:43:35 +0300
+Message-ID: <CAHp75VeVvUL29KUKaLHMpBnQE+WTkQmp=cC2y=dcjjv_d=D8vQ@mail.gmail.com>
+Subject: Re: [PATCH v2 09/10] pinctrl: renesas: Switch to use
+ DEFINE_NOIRQ_DEV_PM_OPS() helper
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Balsam CHIHI <bchihi@baylibre.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
+        Sean Wang <sean.wang@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 11:45:28AM +0530, Vivek Pernamitta wrote:
-> Add support to enable ethernet interface for MHI SWIP channels.
-> 
+On Tue, Jul 18, 2023 at 1:12=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
+> On Mon, Jul 17, 2023 at 9:12=E2=80=AFPM Paul Cercueil <paul@crapouillou.n=
+et> wrote:
+> > Le lundi 17 juillet 2023 =C3=A0 20:28 +0300, Andy Shevchenko a =C3=A9cr=
+it :
 
-Please add more info in the commit message i.e., why this interface is added and
-how it is going to benefit the users etc..
+...
 
-Since you are modifying the existing mhi_swip interface, this isn't an ABI
-change?
+> > I think you could do:
+> >
+> > .pm =3D IF_PTR(IS_ENABLED(CONFIG_ARM_PSCI_FW), pm_sleep_ptr(&sh_pfc_pm)=
+),
+> >
+> > Then you wouldn't need the #if defined(CONFIG_ARM_PSCI_FW) guard either
+> > (as long as the code still compiles fine when that config option is
+> > disabled), and you wouldn't need those dummy callbacks.
+>
+> Unfortunately not, as the code refers to psci_ops.cpu_suspend.
+>
+> You could create a small wrapper for that, though.
 
-> Signed-off-by: Vivek Pernamitta <quic_vpernami@quicinc.com>
-> Reviewed-by: Daniele Palmas <dnlplm@gmail.com>
-> Reviewed-by: Simon Horman <simon.horman@corigine.com>
-> ---
-> 
-> changes since v1:
-> 	- Moved to net-next from linux-next	
-> 	- moved to eth_hw_addr_random() to assign Ethernet MAC address
-> 	  from eth_random_addr()
-> ---
->  drivers/net/mhi_net.c | 53 ++++++++++++++++++++++++++++++++++++++-------------
->  1 file changed, 40 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/net/mhi_net.c b/drivers/net/mhi_net.c
-> index 3d322ac..5bb8d99 100644
-> --- a/drivers/net/mhi_net.c
-> +++ b/drivers/net/mhi_net.c
+ I think it's already too many wrappers mentioned and since you
+reviewed and acknowledged the change (thanks!) I will stick with my
+initial version.
 
-[...]
-
-> @@ -380,10 +405,12 @@ static void mhi_net_remove(struct mhi_device *mhi_dev)
->  
->  static const struct mhi_device_info mhi_hwip0 = {
->  	.netname = "mhi_hwip%d",
-> +	.ethernet_if = false,
->  };
->  
->  static const struct mhi_device_info mhi_swip0 = {
->  	.netname = "mhi_swip%d",
-> +	.ethernet_if = false,
-
-false?
-
-- Mani
-
->  };
->  
->  static const struct mhi_device_id mhi_net_id_table[] = {
-> -- 
-> 2.7.4
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
+--=20
+With Best Regards,
+Andy Shevchenko
