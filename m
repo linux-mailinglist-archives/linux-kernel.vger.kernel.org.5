@@ -2,197 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8314975864D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42AE758650
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbjGRUu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 16:50:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52954 "EHLO
+        id S230470AbjGRUzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 16:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjGRUuw (ORCPT
+        with ESMTP id S229708AbjGRUzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 16:50:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E081FEC
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:50:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 61B9960F75
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 20:50:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73B9DC433C7;
-        Tue, 18 Jul 2023 20:50:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689713437;
-        bh=gEw8p5anenofWHBZHWKW/M+NiMyaqUqwak/8urPi6d0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=KoWuP96wI+fWF75KtEEfSTM7QZlGgyUN+r99fgZJAOZCbu3s3WepGiN78qpbm23ec
-         ELTNWYXCY6CDlPQg1F8OkTZdxeWP5A9VRfECDCxWwUV52mEfW873IZv1hsrV+tw5i3
-         fb3jJua0QevRiYL+4UX7YS34g6PetCisPQBcr2nLSlv3K3uDSbHcco5tW/9AUFv6dt
-         8v36TclnokUEie2tDstig83bO+u56kGL7ZkzdPbfb66wSuYgf9DXdytSVbxRTvzsfL
-         WFuJ1k/zhiuVDGmnBI3m4fXipJNgg0jGyGprr74eW4lIX3akkuzV//duzrZWov14Vt
-         7Cx6CnyRphAig==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Celeste Liu <coelacanthushex@gmail.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-        =?utf-8?B?QmrDtnJu?= =?utf-8?B?IFTDtnBlbA==?= 
-        <bjorn@rivosinc.com>, Conor Dooley <conor.dooley@microchip.com>,
-        linux-riscv@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Felix Yan <felixonmars@archlinux.org>,
-        Ruizhe Pan <c141028@gmail.com>,
-        Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
-Subject: Re: [PATCH v2] riscv: entry: set a0 prior to
- syscall_enter_from_user_mode
-In-Reply-To: <03206759-8d6a-a410-a8f9-d4678236bdbf@gmail.com>
-References: <20230718162940.226118-1-CoelacanthusHex@gmail.com>
- <87pm4p2et2.fsf@all.your.base.are.belong.to.us>
- <03206759-8d6a-a410-a8f9-d4678236bdbf@gmail.com>
-Date:   Tue, 18 Jul 2023 22:50:35 +0200
-Message-ID: <87r0p5kkpw.fsf@all.your.base.are.belong.to.us>
+        Tue, 18 Jul 2023 16:55:07 -0400
+Received: from finn.localdomain (finn.gateworks.com [108.161.129.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49D9BD;
+        Tue, 18 Jul 2023 13:55:06 -0700 (PDT)
+Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
+        by finn.localdomain with esmtp (Exim 4.93)
+        (envelope-from <tharvey@gateworks.com>)
+        id 1qLrio-007EVW-JH; Tue, 18 Jul 2023 20:55:02 +0000
+From:   Tim Harvey <tharvey@gateworks.com>
+To:     Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Tim Harvey <tharvey@gateworks.com>
+Subject: [PATCH v2] arm64: dts: imx8mm: add imx8mm-venice-gw73xx-0x-rpidsi overlay for display
+Date:   Tue, 18 Jul 2023 13:55:00 -0700
+Message-Id: <20230718205500.4108405-1-tharvey@gateworks.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Celeste Liu <coelacanthushex@gmail.com> writes:
+Add support for the following Raspberry Pi displays:
+ - DFROBOT DRF0678 7in 800x480 TFT DSI capacitive touch
+ - DFROBOT DRF0550 5in 800x480 TFT DSI capacitive touch
 
-> On 2023/7/19 03:35, Bj=C3=B6rn T=C3=B6pel wrote:
->> Celeste Liu <coelacanthushex@gmail.com> writes:
->>=20
->>> When we test seccomp with 6.4 kernel, we found errno has wrong value.
->>> If we deny NETLINK_AUDIT with EAFNOSUPPORT, after f0bddf50586d, we will
->>> get ENOSYS instead. We got same result with 9c2598d43510 ("riscv: entry=
-: Save a0
->>> prior syscall_enter_from_user_mode()").
->>>
->>> After analysing code, we think that regs->a0 =3D -ENOSYS should be adva=
-nced before
->>> syscall_enter_from_user_mode to fix this problem. In __seccomp_filter, =
-when
->>> seccomp rejected this syscall with specified errno, they will set a0 to=
- return
->>> number as syscall ABI, and then return -1. This return number is finall=
-y pass
->>> as return number of syscall_enter_from_user_mode, and then is compared
->>> with NR_syscalls after converted to ulong (so it will be ULONG_MAX).
->>> The condition syscall < NR_syscalls will always be false, so regs->a0 =
-=3D -ENOSYS
->>> is always executable. It covered a0 set by seccomp, so we always get
->>> ENOSYS when match seccomp RET_ERRNO rule.
->>=20
->> Isn't something like...
->>=20
->> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
->> index f910dfccbf5d..15a8b4898a6c 100644
->> --- a/arch/riscv/kernel/traps.c
->> +++ b/arch/riscv/kernel/traps.c
->> @@ -297,7 +297,7 @@ asmlinkage __visible __trap_section void do_trap_bre=
-ak(struct pt_regs *regs)
->>  asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs=
- *regs)
->>  {
->>  	if (user_mode(regs)) {
->> -		ulong syscall =3D regs->a7;
->> +		long syscall =3D regs->a7;
->>=20=20
->>  		regs->epc +=3D 4;
->>  		regs->orig_a0 =3D regs->a0;
->> @@ -306,7 +306,7 @@ asmlinkage __visible __trap_section void do_trap_eca=
-ll_u(struct pt_regs *regs)
->>=20=20
->>  		syscall =3D syscall_enter_from_user_mode(regs, syscall);
->>=20=20
->> -		if (syscall < NR_syscalls)
->> +		if (syscall > -1 && syscall < NR_syscalls)
->>  			syscall_handler(regs, syscall);
->>  		else
->>  			regs->a0 =3D -ENOSYS;
->>=20
->>=20
->> ...easier to read?
->>=20
->>=20
->> Bj=C3=B6rn
->
-> It seems that your change turn it back to the beginning. If syscall =3D=
-=3D -1,
-> it is supposed to go neither first nor else branch. It should do NOTHING.
-> However it was still a great idea. It may be better to use a set of if-st=
-atement
-> to clarify the logic.
+Both have the following hardware:
+ - FocalTech FT5406 10pt touch controller (with no interrupt)
+ - Powertip PH800480T013-IDF02 compatible panel
+ - Toshiba TC358762 compatible DSI to DBI bridge
+ - ATTINY based regulator used for backlight controller and panel enable
 
-Ah, gotcha! (Notice that arch/x86/entry/common.c has
+Support is added via a device-tree overlay. The touch controller is not
+yet supported as polling mode is needed.
 
-  | 	if (!do_syscall_x64(regs, nr) && !do_syscall_x32(regs, nr) && nr !=3D =
--1) {
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+---
+v2:
+ - add newline between properties and child node
+---
+ arch/arm64/boot/dts/freescale/Makefile        |  2 +
+ .../imx8mm-venice-gw73xx-0x-rpidsi.dtso       | 90 +++++++++++++++++++
+ 2 files changed, 92 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx-0x-rpidsi.dtso
 
-and in do_syscall_x64()
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index d1bd1bf02d95..df572cfd0931 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -151,6 +151,7 @@ imx8mm-venice-gw72xx-0x-rs232-rts-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-ven
+ imx8mm-venice-gw72xx-0x-rs422-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-venice-gw72xx-0x-rs422.dtbo
+ imx8mm-venice-gw72xx-0x-rs485-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-venice-gw72xx-0x-rs485.dtbo
+ imx8mm-venice-gw73xx-0x-imx219-dtbs	:= imx8mm-venice-gw73xx-0x.dtb imx8mm-venice-gw73xx-0x-imx219.dtbo
++imx8mm-venice-gw73xx-0x-rpidsi-dtbs	:= imx8mm-venice-gw73xx-0x.dtb imx8mm-venice-gw73xx-0x-rpidsi.dtbo
+ imx8mm-venice-gw73xx-0x-rs232-rts-dtbs	:= imx8mm-venice-gw73xx-0x.dtb imx8mm-venice-gw73xx-0x-rs232-rts.dtbo
+ imx8mm-venice-gw73xx-0x-rs422-dtbs	:= imx8mm-venice-gw73xx-0x.dtb imx8mm-venice-gw73xx-0x-rs422.dtbo
+ imx8mm-venice-gw73xx-0x-rs485-dtbs	:= imx8mm-venice-gw73xx-0x.dtb imx8mm-venice-gw73xx-0x-rs485.dtbo
+@@ -160,6 +161,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw72xx-0x-rs232-rts.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw72xx-0x-rs422.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw72xx-0x-rs485.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw73xx-0x-imx219.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw73xx-0x-rpidsi.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw73xx-0x-rs232-rts.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw73xx-0x-rs422.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw73xx-0x-rs485.dtb
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx-0x-rpidsi.dtso b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx-0x-rpidsi.dtso
+new file mode 100644
+index 000000000000..e0768d408c3b
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx-0x-rpidsi.dtso
+@@ -0,0 +1,90 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2023 Gateworks Corporation
++ */
++
++#include <dt-bindings/gpio/gpio.h>
++
++#include "imx8mm-pinfunc.h"
++
++/dts-v1/;
++/plugin/;
++
++&{/} {
++	compatible = "gw,imx8mm-gw73xx-0x", "fsl,imx8mm";
++
++	panel {
++		compatible = "powertip,ph800480t013-idf02";
++		power-supply = <&attiny>;
++		backlight = <&attiny>;
++
++		port {
++			panel_in: endpoint {
++				remote-endpoint = <&bridge_out>;
++			};
++		};
++	};
++};
++
++&i2c3 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	attiny: regulator@45 {
++		compatible = "raspberrypi,7inch-touchscreen-panel-regulator";
++		reg = <0x45>;
++	};
++};
++
++&lcdif {
++	status = "okay";
++};
++
++&mipi_dsi {
++	samsung,burst-clock-frequency = <891000000>;
++	samsung,esc-clock-frequency = <54000000>;
++	samsung,pll-clock-frequency = <27000000>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++
++	bridge@0 {
++		compatible = "toshiba,tc358762";
++		reg = <0>;
++		vddc-supply = <&attiny>;
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++
++				bridge_in: endpoint {
++					remote-endpoint = <&dsi_out>;
++				};
++			};
++
++			port@1 {
++				reg = <1>;
++
++				bridge_out: endpoint {
++					remote-endpoint = <&panel_in>;
++				};
++			};
++		};
++	};
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@1 {
++			reg = <1>;
++
++			dsi_out: endpoint {
++				remote-endpoint = <&bridge_in>;
++			};
++		};
++	};
++};
+-- 
+2.25.1
 
-  | 	/*
-  | 	 * Convert negative numbers to very high and thus out of range
-  | 	 * numbers for comparisons.
-  | 	 */
-  | 	unsigned int unr =3D nr;
-
-
-> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-> index f910dfccbf5d2..d0bd725244594 100644
-> --- a/arch/riscv/kernel/traps.c
-> +++ b/arch/riscv/kernel/traps.c
-> @@ -306,7 +306,9 @@ asmlinkage __visible __trap_section void do_trap_ecal=
-l_u(struct pt_regs *regs)
->=20=20
->  		syscall =3D syscall_enter_from_user_mode(regs, syscall);
->=20=20
-> -		if (syscall < NR_syscalls)
-> +		if (syscall =3D=3D -1)
-> +			// Do nothing
-> +		else if (syscall < NR_syscalls)
->  			syscall_handler(regs, syscall);
->  		else
->  			regs->a0 =3D -ENOSYS;
-
-Maybe something a bit more explicit?
-
-diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index f910dfccbf5d..5cef72874542 100644
---- a/arch/riscv/kernel/traps.c
-+++ b/arch/riscv/kernel/traps.c
-@@ -297,6 +297,10 @@ asmlinkage __visible __trap_section void do_trap_break=
-(struct pt_regs *regs)
- asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *r=
-egs)
- {
- 	if (user_mode(regs)) {
-+		/*
-+		 * Convert negative numbers to very high and thus out of range
-+		 * numbers for comparisons.
-+		 */
- 		ulong syscall =3D regs->a7;
-=20
- 		regs->epc +=3D 4;
-@@ -308,7 +312,7 @@ asmlinkage __visible __trap_section void do_trap_ecall_=
-u(struct pt_regs *regs)
-=20
- 		if (syscall < NR_syscalls)
- 			syscall_handler(regs, syscall);
--		else
-+		else if ((long)syscall !=3D -1L)
- 			regs->a0 =3D -ENOSYS;
-=20
- 		syscall_exit_to_user_mode(regs);
-
-
-Bj=C3=B6rn
