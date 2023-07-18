@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1E2757DF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9DA757DF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232754AbjGRNlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
+        id S232845AbjGRNl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232771AbjGRNln (ORCPT
+        with ESMTP id S232842AbjGRNlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:41:43 -0400
+        Tue, 18 Jul 2023 09:41:51 -0400
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF8D18E
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:41:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBCCB10CB
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:41:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689687701; x=1721223701;
+  t=1689687705; x=1721223705;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=8F3zASvnELjb+rrDSMq0b/VVlZEErX5L3+l5y/KLAD4=;
-  b=lg0SDFlI9LP3Sgx4BVgQaQ/SyWDkm9qRXKgATSeCH3Gw7idHqaUnz07l
-   ifPJ7284YG2ReUcPkZeBTPboy2dJAkJFQYFz8W+KkgF9BLJ1talROClsV
-   1VXk+fzqizLOzEkbbEtjVFdv151F47aRFKrNAAcHiw2ePU/oZtNRGXgPs
-   H7vr2uot4/koI1YZRPySTaHNMis/IE3l0ljVNby1usFvUMDlm8bsabzSw
-   kziX0H2OCnQu0s2HFlmM+h8+6YFda88aByRhCxV1WzBiWPylrIJ6Ey701
-   lz0oJwhjB5CX0e1kknHlgTUKursVF7Ni1LGMetNQqRvxY3kDg1LOieO9n
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="345800716"
+  bh=RlvrBHFv6Du1879kI3EewacCpf6aQLiFMk7QITrDmtI=;
+  b=nMby4OYaq5z4sAqoYkF7fAxD+rCs82nCNQZ37ezW1tsU3sCqUI5qgKbI
+   d40NPZQeZ67rfWrZ1cU3yqLBNKG/uuos/9kREzD33CQlwVQZSLuFG9Cw1
+   Dju5Hk5m9FwOD1ATHrYFZl/AYJ9g65ggsh1uKnFsJo4sWTJPhCtqYyLNF
+   TggZAVw1/AEvoaTwh9bclrb5t0yENWZApvPpj76u6melQzVVyjGZD4M6k
+   avAwnEm2a/2igRB0Bc75/fSo7fb2o3bnu8vJ/jPesoC+TuvX5Y1mk44KG
+   oM/8shn33G+n/5fqW8kt0noqIXUdKaQS6iGl+0KfcOqwnrCJr2CHBuJtU
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="345800745"
 X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="345800716"
+   d="scan'208";a="345800745"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 06:41:41 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 06:41:45 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="847706530"
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="847706545"
 X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="847706530"
+   d="scan'208";a="847706545"
 Received: from ziqianlu-desk2.sh.intel.com ([10.239.159.54])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 06:41:37 -0700
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 06:41:41 -0700
 From:   Aaron Lu <aaron.lu@intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -54,9 +54,9 @@ Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Nitin Tekchandani <nitin.tekchandani@intel.com>,
         Yu Chen <yu.c.chen@intel.com>,
         Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 3/4] sched/fair: delay update_tg_load_avg() for cfs_rq's removed load
-Date:   Tue, 18 Jul 2023 21:41:19 +0800
-Message-ID: <20230718134120.81199-4-aaron.lu@intel.com>
+Subject: [RFC PATCH 4/4] sched/fair: skip some update_cfs_group() on en/dequeue_entity()
+Date:   Tue, 18 Jul 2023 21:41:20 +0800
+Message-ID: <20230718134120.81199-5-aaron.lu@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230718134120.81199-1-aaron.lu@intel.com>
 References: <20230718134120.81199-1-aaron.lu@intel.com>
@@ -73,33 +73,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a workload involves many wake time task migrations, tg->load_avg
-can be heavily contended among CPUs because every migration involves
-removing the task's load from its src cfs_rq and attach that load to
-its new cfs_rq. Both the remove and attach requires an update to
-tg->load_avg as well as propagating the change up the hierarchy.
+After the previous patch, the cost of update_cfs_group() and
+update_load_avg() has dropped to around 1% for postgres_sysbench on SPR
+but netperf/UDP_RR on SPR still saw ~20% update_cfs_group() and ~10%
+update_load_avg() so this patch is another attempt to further reduce the
+two functions' cost from read side.
 
-E.g. when running postgres_sysbench on a 2sockets/112cores/224cpus Intel
-Sappire Rapids, during a 5s window, the wakeup number is 14millions and
-migration number is 11millions. Since the workload can trigger many
-wakeups and migrations, the access(both read and write) to tg->load_avg
-can be unbound. For the above said workload, the profile shows
-update_cfs_group() costs ~13% and update_load_avg() costs ~10%. With
-netperf/nr_client=nr_cpu/UDP_RR, the wakeup number is 21millions and
-migration number is 14millions; update_cfs_group() costs ~25% and
-update_load_avg() costs ~16%.
+The observation is: if an entity is dequeued, updating its weight isn't
+useful, except that the current code will also update its cfs_rq's
+load_avg using the updated weight...so removing update_cfs_group() on
+dequeue path can reduce cost of accessing tg->load_avg, but it also will
+reduce the tracking accuracy.
 
-This patch is an attempt to reduce the cost of accessing tg->load_avg.
+Another hint I got from an ancient commit 17bc14b767cf("Revert "sched:
+Update_cfs_shares at period edge") is: if an entity is enqueued and it's
+the only entity of its cfs_rq, we do not need immediately update its
+weight since it's not needed to decide if it can preempt curr.
 
-Current logic will immediately do a update_tg_load_avg() if cfs_rq has
-removed load; this patch changes this behavior: if this cfs_rq has
-removed load as discovered by update_cfs_rq_load_avg(), it didn't call
-update_tg_load_avg() or propagate the removed load immediately, instead,
-the update to tg->load_avg and propagated load can be dealed with by a
-following event like task attached to this cfs_rq or in
-update_blocked_averages(). This way, the call to update_tg_load_avg()
-for this cfs_rq and its ancestors can be reduced by about half.
+commit 17bc14b767cf mentioned a latency problem when reducing calling
+frequency of update_cfs_group(): doing a make -j32 in one terminal
+window will cause browsing experience worse. To see how things are now,
+I did a test: two cgroups were created under root and in one group, I did
+"make -j32" and in the meantime, I did "./schbench -m 1 -t 6 -r 300" in
+another group on a 6core/12cpus Intel i7-8700T Coffee lake cpu and the
+wakeup latency reported by schbench for base and this series doesn't look
+much different:
 
+base:
+schbench -m 1 -t 6 -r 300:
+Latency percentiles (usec) runtime 300 (s) (18534 total samples)
+        50.0th: 20 (9491 samples)
+        75.0th: 25 (4768 samples)
+        90.0th: 29 (2552 samples)
+        95.0th: 62 (809 samples)
+        *99.0th: 20320 (730 samples)
+        99.5th: 23392 (92 samples)
+        99.9th: 31392 (74 samples)
+        min=6, max=32032
+
+make -j32:
+real    5m35.950s
+user    47m33.814s
+sys     4m45.470s
+
+this series:
+schbench -m 1 -t 6 -r 300:
+Latency percentiles (usec) runtime 300 (s) (18528 total samples)
+        50.0th: 21 (9920 samples)
+        75.0th: 26 (4756 samples)
+        90.0th: 30 (2100 samples)
+        95.0th: 63 (846 samples)
+        *99.0th: 19040 (722 samples)
+        99.5th: 21920 (92 samples)
+        99.9th: 30048 (81 samples)
+        min=6, max=34873
+
+make -j32:
+real    5m35.185s
+user    47m28.528s
+sys     4m44.705s
+
+As for netperf/UDP_RR/nr_thread=100% on SPR: after this change, the two
+functions' cost dropped to ~2%.
+
+Other test results:
 ================================================
 postgres_sysbench(transaction, higher is better)
 nr_thread=100%/75%/50% were tested on 2 sockets SPR and Icelake and
@@ -109,16 +146,19 @@ nr_thread=100% on SPR:
 base:   90569.11±1.15%
 node:  104152.26±0.34%  +15.0%
 delay: 127309.46±4.25%  +40.6%
+skip:  125501.96±1.83%  +38.6%
 
 nr_thread=75% on SPR:
 base:  100803.96±0.57%
 node:  107333.58±0.44%   +6.5%
 delay: 124332.39±0.51%  +23.3%
+skip:  127676.55±0.03%  +26.7%
 
 nr_thread=75% on ICL:
 base:  61961.26±0.41%
 node:  61585.45±0.50%
 delay: 72420.52±0.14%  +16.9%
+skip:  72413.23±0.30%  +16.9%
 
 =======================================================================
 hackbench/pipe/threads/fd=20/loop=1000000 (throughput, higher is better)
@@ -129,142 +169,112 @@ group=8 on SPR:
 base:  437163±2.6%
 node:  471203±1.2%   +7.8%
 delay: 490780±0.9%  +12.3%
+skip:  493062±1.9%  +12.8%
 
 group=16 on SPR:
 base:  468279±1.9%
 node:  580385±1.7%  +23.9%
 delay: 664422±0.2%  +41.9%
+skip:  697387±0.2%  +48.9%
 
 ================================================
 netperf/TCP_STRAM (throughput, higher is better)
 nr_thread=1/25%/50%/75%/100% were tested on 2 sockets SPR and Cascade
-Lake and results that have a measuable difference are:
+Lake and results that have measuable difference are:
 
-nr_thread=50% on CSL:
+nr_thread=50% on SPR:
 base:  16258±0.7%
 node:  16172±2.9%
 delay: 17729±0.7%  +9.0%
+skip:  17823±1.3%  +9.6%
 
 nr_thread=75% on CSL:
 base:  12923±1.2%
 node:  13011±2.2%
 delay: 15452±1.6%  +19.6%
+skip:  15302±1.7%  +18.4%
 
 nr_thread=75% on SPR:
 base:  16232±11.9%
 node:  13962±5.1%
 delay: 21089±0.8%  +29.9%
+skip:  21251±0.4%  +30.9%
 
 nr_thread=100% on SPR:
 base:  13220±0.6%
 node:  13113±0.0%
 delay: 18258±11.3% +38.1%
+skip:  16974±12.7% +28.4%
 
 =============================================
 netperf/UDP_RR (throughput, higher is better)
 nr_thread=1/25%/50%/75%/100% were tested on 2 sockets SPR and Cascade
 Lake and results that have measuable difference are:
 
-nr_thread=1 on CSL:
-base:  128521±0.5%
-node:  127935±0.6%
-delay: 126317±0.4%  -1.7%
+nr_thread=25% on CSL:
+base:  107269±0.3%
+node:  107226±0.2%
+delay: 106978±0.3%
+skip:  109652±0.3%  +2.2%
+
+nr_thread=50% on CSL:
+base:  74854±0.1%
+node:  74521±0.4%
+delay: 74438±0.2%
+skip:  76431±0.1%  +2.1%
 
 nr_thread=75% on CSL:
 base:  36701±1.7%
 node:  39949±1.4%   +8.8%
 delay: 42516±0.3%  +15.8%
+skip:  45044±0.5%  +22.7%
 
 nr_thread=75% on SPR:
 base:  14249±3.8%
 node:  19890±2.0%   +39.6%
 delay: 31331±0.5%  +119.9%
+skip:  33688±3.5%  +136.4%
 
 nr_thread=100% on CSL:
 base:  52275±0.6%
 node:  53827±0.4%   +3.0%
 delay: 78386±0.7%  +49.9%
+skip:  76926±2.3%  +47.2%
 
 nr_thread=100% on SPR:
 base:   9560±1.6%
 node:  14186±3.9%   +48.4%
 delay: 20779±2.8%  +117.4%
+skip:  32125±2.5%  +236.0%
 
 Signed-off-by: Aaron Lu <aaron.lu@intel.com>
 ---
- kernel/sched/fair.c  | 23 ++++++++++++++++++-----
- kernel/sched/sched.h |  1 +
- 2 files changed, 19 insertions(+), 5 deletions(-)
+ kernel/sched/fair.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index aceb8f5922cb..564ffe3e59c1 100644
+index 564ffe3e59c1..0dbbb92302ad 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -3645,6 +3645,9 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
- 	if (child_cfs_rq_on_list(cfs_rq))
- 		return false;
+@@ -4862,7 +4862,8 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 	 */
+ 	update_load_avg(cfs_rq, se, UPDATE_TG | DO_ATTACH);
+ 	se_update_runnable(se);
+-	update_cfs_group(se);
++	if (cfs_rq->nr_running > 0)
++		update_cfs_group(se);
+ 	account_entity_enqueue(cfs_rq, se);
  
-+	if (cfs_rq->prop_removed_sum)
-+		return false;
-+
- 	return true;
- }
+ 	if (flags & ENQUEUE_WAKEUP)
+@@ -4978,8 +4979,6 @@ dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 	/* return excess runtime on last dequeue */
+ 	return_cfs_rq_runtime(cfs_rq);
  
-@@ -3911,6 +3914,11 @@ static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum
- {
- 	cfs_rq->propagate = 1;
- 	cfs_rq->prop_runnable_sum += runnable_sum;
-+
-+	if (cfs_rq->prop_removed_sum) {
-+		cfs_rq->prop_runnable_sum += cfs_rq->prop_removed_sum;
-+		cfs_rq->prop_removed_sum = 0;
-+	}
- }
- 
- /* Update task and its cfs_rq load average */
-@@ -4133,13 +4141,11 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
- 		 * removed_runnable is the unweighted version of removed_load so we
- 		 * can use it to estimate removed_load_sum.
- 		 */
--		add_tg_cfs_propagate(cfs_rq,
--			-(long)(removed_runnable * divider) >> SCHED_CAPACITY_SHIFT);
+-	update_cfs_group(se);
 -
--		decayed = 1;
-+		cfs_rq->prop_removed_sum +=
-+			-(long)(removed_runnable * divider) >> SCHED_CAPACITY_SHIFT;
- 	}
- 
--	decayed |= __update_load_avg_cfs_rq(now, cfs_rq);
-+	decayed = __update_load_avg_cfs_rq(now, cfs_rq);
- 	u64_u32_store_copy(sa->last_update_time,
- 			   cfs_rq->last_update_time_copy,
- 			   sa->last_update_time);
-@@ -9001,6 +9007,13 @@ static bool __update_blocked_fair(struct rq *rq, bool *done)
- 
- 			if (cfs_rq == &rq->cfs)
- 				decayed = true;
-+
-+			/*
-+			 * If the aggregated removed_sum hasn't been taken care of,
-+			 * deal with it now before this cfs_rq is removed from the list.
-+			 */
-+			if (cfs_rq->prop_removed_sum)
-+				add_tg_cfs_propagate(cfs_rq, 0);
- 		}
- 
- 		/* Propagate pending load changes to the parent, if any: */
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 9cece2dbc95b..ab540b21d071 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -619,6 +619,7 @@ struct cfs_rq {
- 	unsigned long		tg_load_avg_contrib;
- 	long			propagate;
- 	long			prop_runnable_sum;
-+	long			prop_removed_sum;
- 
  	/*
- 	 *   h_load = weight * f(tg)
+ 	 * Now advance min_vruntime if @se was the entity holding it back,
+ 	 * except when: DEQUEUE_SAVE && !DEQUEUE_MOVE, in this case we'll be
 -- 
 2.41.0
 
