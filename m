@@ -2,105 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C11E17588EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 01:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53EEE7588ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 01:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbjGRXLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 19:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
+        id S229689AbjGRXNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 19:13:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjGRXLs (ORCPT
+        with ESMTP id S229458AbjGRXNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 19:11:48 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F887A1;
-        Tue, 18 Jul 2023 16:11:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689721907; x=1721257907;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=epGXauxX0A+NisaFyr7qkRW9M1vL4VeMJkPviHyjRcE=;
-  b=my3UUGzZkLzEl/MQxcGrBrEM5u1mVEWpELidzcZ+q/K+k+RMGFTAm5r4
-   Mty2Kkn62wCIpRnKuxZwcOj6AtCeVp06LhXpWTcSuDHs0W0pQpl6kVkb8
-   WKCwL9i/IfQlc74fJRKmrm6SDmFQeHkqSGoHWBFrLNpXlkpGv+72VmiKp
-   7etawvNsglfiapVc7/OpRzHTmVaFK9crPGhEH/MLaaR13v1TZoDovzwUo
-   w46EJYIG4DFK79H+8yPdBDFPF9fhyNke5dRuepQLSEc3loc7VdpvN/w1l
-   RDARhsu+5FFejTs1sSZTWsc0XfIqI3xKEdA0gNiJZdSHglOWxvn1gm9NO
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="430094615"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="430094615"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 16:11:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="837449283"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="837449283"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.48.113])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 18 Jul 2023 16:11:44 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
-        kristen@linux.intel.com, seanjc@google.com, stable@vger.kernel.org
-Subject: Re: [PATCH] x86/sgx: fix a NULL pointer
-References: <CU4OBQ8MQ2LK.2GRBPLQGVTZ3@seitikki>
- <20230717202938.94989-1-haitao.huang@linux.intel.com>
- <CU5ERP8KIR0W.JN8OYIY3AQI6@suppilovahvero>
-Date:   Tue, 18 Jul 2023 18:11:43 -0500
+        Tue, 18 Jul 2023 19:13:12 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45849ED;
+        Tue, 18 Jul 2023 16:13:09 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b743161832so96829141fa.1;
+        Tue, 18 Jul 2023 16:13:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689721987; x=1692313987;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1NQfBVXDdJBauiDRZhAmRRYJqr7LclnAThyEWYFadCc=;
+        b=b1A78LJBt6GeKcjIel5xGf2nrJ1kcal3jaIcMyCrNrFBd2QzaFoaGdEx4XMZDf8En5
+         dN2BByGDzYfgOY83IL1Uz9WOibbRkj97iSZWD1XUW6xJtNgUNeIAx76gTF5IFKUIaMGz
+         cA6f1HYXlQsqCf2T911C8g3U0dC/W8ym7c8m6UqsNVP2QBJyMtU0k0MkQS3QFnbx1svE
+         tpO3azyX8V297OnfaGCEu+S42Ad4DgZsihGwLSjO24FfQpWWNy0nG/TbEWLLY6OtqOD+
+         nidrtbDAUuKO9hTYzR3WIvP4jtViOxbrCj3j2Ylruk+6Tqwn6P1D8GsvEoAnq9ZRg7Zu
+         okPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689721987; x=1692313987;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1NQfBVXDdJBauiDRZhAmRRYJqr7LclnAThyEWYFadCc=;
+        b=JPBF2zS+2VSavuWS7uITPFqthnrt1GsReO4CXDaH4CGjJU8781lTv3KH0f55SNb+p/
+         57Gm+JvnwbZYSaNChA+yVuaQU/F8HH+DddBGyzKQ+uDLpl5PeoXp+rPmG7WU1S2pLzOi
+         TzPTGef9XMmaHvcikpf8sofBbmNHZ3lhkTNd6jOyx6G9BmbCfwBK4fb7MXlgTamR8SjQ
+         DI7xxjrlZoy5j/4uyG5aUhW42PMUATPU/9WKGqWR31NHC/qXbVJ9aGZr3ZtcQr9jKt7Z
+         0ZanuCJaervtw/bWO8ED0mU5k5kgCDFH3DK0Vt8hHUUe1549uK2GVLhwaXqh5HXVw3CG
+         elQQ==
+X-Gm-Message-State: ABy/qLbmGBNqyXdQ19Mt6AriTa88YJgg0MexsXGx2geRwSgd4vvStpf3
+        doS/p5RtTSKa4zxoUSlhkdCLKocBPLAlLDNiZs8=
+X-Google-Smtp-Source: APBJJlHcskr7dGBo1hyJ2V2TgmSn/6riRb+xxRHJkjhaiOubd2mRACSAjhQFk4IeQdNS9z8xoJn+GoOhScojrsO1bZ4=
+X-Received: by 2002:a2e:7403:0:b0:2b6:fa71:5bae with SMTP id
+ p3-20020a2e7403000000b002b6fa715baemr507830ljc.12.1689721987346; Tue, 18 Jul
+ 2023 16:13:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.18av1t14wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <CU5ERP8KIR0W.JN8OYIY3AQI6@suppilovahvero>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <168960739768.34107.15145201749042174448.stgit@devnote2>
+ <168960741686.34107.6330273416064011062.stgit@devnote2> <CAErzpmuvhrj0HhTpH2m-C-=pFV=Q_mxYC59Hw=dm0pqUvtPm0g@mail.gmail.com>
+ <20230718194431.5653b1e89841e6abd9742ede@kernel.org> <20230718225606.926222723cdd8c2c37294e41@kernel.org>
+ <CAADnVQ+8PuT5tC4q1spefzzCZG9r1UszFv0jenK5+Ed+QNqtsw@mail.gmail.com> <20230719080337.0955a6e77d799daad4c44350@kernel.org>
+In-Reply-To: <20230719080337.0955a6e77d799daad4c44350@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 18 Jul 2023 16:12:55 -0700
+Message-ID: <CAADnVQJNk=3nKk=1U4iGEQ7jQQD4xhObsEthESsMXiLt8Jz0fA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/9] bpf/btf: tracing: Move finding func-proto API and
+ getting func-param API to BTF
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Donglin Peng <dolinux.peng@gmail.com>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 10:37:45 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
+On Tue, Jul 18, 2023 at 4:03=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
+rg> wrote:
+>
+> On Tue, 18 Jul 2023 10:11:01 -0700
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>
+> > On Tue, Jul 18, 2023 at 6:56=E2=80=AFAM Masami Hiramatsu <mhiramat@kern=
+el.org> wrote:
+> > >
+> > > On Tue, 18 Jul 2023 19:44:31 +0900
+> > > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> > >
+> > > > > >  static const struct btf_param *find_btf_func_param(const char =
+*funcname, s32 *nr,
+> > > > > >                                                    bool tracepo=
+int)
+> > > > > >  {
+> > > > > > +       struct btf *btf =3D traceprobe_get_btf();
+> > > > >
+> > > > > I found that traceprobe_get_btf() only returns the vmlinux's btf.=
+ But
+> > > > > if the function is
+> > > > > defined in a kernel module, we should get the module's btf.
+> > > > >
+> > > >
+> > > > Good catch! That should be a separated fix (or improvement?)
+> > > > I think it's better to use btf_get() and btf_put(), and pass btf vi=
+a
+> > > > traceprobe_parse_context.
+> > >
+> > > Hmm, it seems that there is no exposed API to get the module's btf.
+> > > Should I use btf_idr and btf_idr_lock directly to find the correspond=
+ing
+> > > btf? If there isn't yet, I will add it too.
+> >
+> > There is bpf_find_btf_id.
+> > Probably drop 'static' from it and use it.
+>
+> Thanks! BTW, that API seems to search BTF type info by name. If user want=
+ to
+> specify a module name, do we need a new API? (Or expand the function to p=
+arse
+> a module name in given name?)
 
-> On Mon Jul 17, 2023 at 11:29 PM EEST, Haitao Huang wrote:
->> Under heavy load, the SGX EPC reclaimers (current ksgxd or future EPC
->> cgroup worker) may reclaim the SECS EPC page for an enclave and set
->> encl->secs.epc_page to NULL. But the SECS EPC page is used for EAUG in
->> the SGX #PF handler without checking for NULL and reloading.
->>
->> Fix this by checking if SECS is loaded before EAUG and load it if it was
->> reclaimed.
->>
->> Fixes: 5a90d2c3f5ef8 ("x86/sgx: Support adding of pages to an  
->> initialized enclave")
->> Cc: stable@vger.kernel.org
->
-> Given that
->
-> 	$ git describe --contains 5a90d2c3f5ef8
-> 	v6.0-rc1~102^2~16
->
-> You could also describe this as:
->
-> Cc: stable@vger.kernel.org # v6.0+
+We can allow users specify module name, but how would it help?
+Do you want to allow static func names ?
+But module name won't help. There can be many statics with the same name
+in the module. Currently pahole filters out all ambiguous things in BTF.
+Alan is working on better representation of statics in BTF.
+The work is still in progress.
 
-Will add
-
->
-...
->
-> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
->
-
-Thank you.
-Haitao
+For now I don't see a need for an api to specify module, since it's not
+a modifier that can be relied upon to disambiguate.
+Hence bpf_find_btf_id that transparently searches across all should be enou=
+gh.
+At least it was enough for all of bpf use cases.
