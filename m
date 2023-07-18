@@ -2,173 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB4E757C54
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0415E757C59
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232347AbjGRM5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 08:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38066 "EHLO
+        id S232378AbjGRM65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 08:58:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjGRM5j (ORCPT
+        with ESMTP id S232063AbjGRM6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 08:57:39 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA57126;
-        Tue, 18 Jul 2023 05:57:37 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-991f956fb5aso703378466b.0;
-        Tue, 18 Jul 2023 05:57:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689685056; x=1692277056;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r3eRjU9qlc/HtWCZOEqE82aSE5kNybf7RR8ZGMXqc60=;
-        b=g6z0JwGiNFW3lz4PmozRF+XBezdo2jwekkRhUykp1ZwKGIqp1lXzBnDwppLhroX43w
-         +h7R9WRr3XU6YoSKJtYC7dlhGyEi+wEwY0JiHZTH4QElAx6UnaINFkeHyA5F3zwFobtW
-         ozQi7ooh991iba2ndW2C1CW5pi/+b2dNrIR5X6l4AtF24MCyTSeKcxnrJqEF/cGt3o40
-         gEXfN+NQqDibali2B5IkDOKvyC9F5DtUxeXkIqLZVvOVu9R8PiJfnwQVvPYVERVyVPpa
-         uQFLj4rOWqAI+QISNqfVmoJIZLzoFqOZxN8vOESmohzgWtJMPk5Tp4NyDYqe2E4XUZC6
-         S4yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689685056; x=1692277056;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r3eRjU9qlc/HtWCZOEqE82aSE5kNybf7RR8ZGMXqc60=;
-        b=hTAsquloAArJY6KXMvFisNUZW8W68eo0hNqoC39FwUo8TZDJyjitQMpKkjAWRR2hAW
-         oMAOUgrlLdc1Sttiwo9bYnrJIKJS5xVeXGlsSPkAFQboFfVyOKIGodRrByGFn6E9dMe8
-         UgayHXObFLJjgjXuW4eK0f+LMs97qmwo9laDKPAbftKpip5YXrM4OsU5UUwVmoeaeP2a
-         Pl38SIA+uw4HbXI34toDEBRNI0SLB/H/qezSz5IV/ysHrLarTCixQfXDvHE4WJpB3tWY
-         H6g9hGgylq0LeVg4XVfGW9vTpIctUZwI/cGwAbxqRWdJG2u1+3KdynDM0Z4FEA9LscMF
-         AwPg==
-X-Gm-Message-State: ABy/qLamOUduG+uPReI2T25aLi6RgTnVIbnsVnkaRjSPc1e3EzjcJQoM
-        g5/BET2ymOiYL1Zuu7Q/+J/+h//t18yD01JotTs=
-X-Google-Smtp-Source: APBJJlElrlsnM8Wh1LOSDVOQPK6Ij0zGU/u15EPxUjBld0Dc/Kvg0px3zFSARhUXJU3vRjipS2x9YKFDV7eHqZ+urTU=
-X-Received: by 2002:a17:907:3a49:b0:988:f1ec:7400 with SMTP id
- fc9-20020a1709073a4900b00988f1ec7400mr11363213ejc.36.1689685056299; Tue, 18
- Jul 2023 05:57:36 -0700 (PDT)
+        Tue, 18 Jul 2023 08:58:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509851B6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689685085;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ItfF9BAoZCUcd1RLcTAQqHuRpA2rpdDfS5zixcXLgYY=;
+        b=adI4kR7se0wWDlVEOXKyOEFw4qD0CNP/11Y/Jt4xFdk8KnGcxZwpeEA+9sDZGy3N3TO8oF
+        QMJJts9YDGvhHqzLMHdW4ZTAl3MeSfA1A2qslRLu76owfNYow0yyig1YhfFHqOTD+RPILJ
+        5MabbaRUbZO8tozgC/UGLSXpZpo49EE=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-88-tb-lb0aNOoODxxwVESZ8Bw-1; Tue, 18 Jul 2023 08:58:02 -0400
+X-MC-Unique: tb-lb0aNOoODxxwVESZ8Bw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A2C822999B21;
+        Tue, 18 Jul 2023 12:58:01 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.22.9.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0900E40C206F;
+        Tue, 18 Jul 2023 12:58:00 +0000 (UTC)
+Date:   Tue, 18 Jul 2023 08:57:59 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Ben Segall <bsegall@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v3 1/2] sched, cgroup: Restore meaning to
+ hierarchical_quota
+Message-ID: <20230718125759.GA126587@lorien.usersys.redhat.com>
+References: <xm268rbkg4tg.fsf@google.com>
+ <20230714125746.812891-1-pauld@redhat.com>
+ <ZLWIDC2nlG8cb3VE@slm.duckdns.org>
 MIME-Version: 1.0
-References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
- <20230717172821.62827-5-andriy.shevchenko@linux.intel.com>
- <c47c26ba7ea5bcbdcbe1d001b6cc527cee6c7d03.camel@crapouillou.net>
- <CAHp75Vcjq9=Q2_fsGJ9oCw=WYR3p3ot_cNLiDJV93psNcXXHLw@mail.gmail.com> <8c66f79025ddd8388eeb9bdb3f0e789fe9f362d9.camel@crapouillou.net>
-In-Reply-To: <8c66f79025ddd8388eeb9bdb3f0e789fe9f362d9.camel@crapouillou.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 18 Jul 2023 15:57:00 +0300
-Message-ID: <CAHp75VdPNCvhVSeKESbd7VNVPa8GVXVnw04jaE4HMUjK_b8+dA@mail.gmail.com>
-Subject: Re: [PATCH v2 04/10] pinctrl: intel: Switch to use
- DEFINE_NOIRQ_DEV_PM_OPS() helper
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Balsam CHIHI <bchihi@baylibre.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
-        Sean Wang <sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZLWIDC2nlG8cb3VE@slm.duckdns.org>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 10:56=E2=80=AFPM Paul Cercueil <paul@crapouillou.ne=
-t> wrote:
-> Le lundi 17 juillet 2023 =C3=A0 22:33 +0300, Andy Shevchenko a =C3=A9crit=
- :
-> > On Mon, Jul 17, 2023 at 10:02=E2=80=AFPM Paul Cercueil <paul@crapouillo=
-u.net>
-> > wrote:
-> > > Le lundi 17 juillet 2023 =C3=A0 20:28 +0300, Andy Shevchenko a =C3=A9=
-crit :
-
-...
-
-> > > So the correct way to update this driver would be to have a
-> > > conditionally-exported dev_pm_ops structure:
-> > >
-> > > EXPORT_GPL_DEV_PM_OPS(intel_pinctrl_pm_ops) =3D {
-> > >     NOIRQ_SYSTEM_SLEEP_PM_OPS(intel_pinctrl_suspend_noirq,
-> > > intel_pinctrl_resume_noirq),
-> > > };
-> >
-> > This looks ugly. I didn't know that EXPORT*PM_OPS designed that way,
-> > but it seems pm.h in such case needs EXPORT for NOIRQ case as well.
+On Mon, Jul 17, 2023 at 08:27:24AM -1000 Tejun Heo wrote:
+> On Fri, Jul 14, 2023 at 08:57:46AM -0400, Phil Auld wrote:
+> > In cgroupv2 cfs_b->hierarchical_quota is set to -1 for all task
+> > groups due to the previous fix simply taking the min.  It should
+> > reflect a limit imposed at that level or by an ancestor. Even
+> > though cgroupv2 does not require child quota to be less than or
+> > equal to that of its ancestors the task group will still be
+> > constrained by such a quota so this should be shown here. Cgroupv1
+> > continues to set this correctly.
+> > 
+> > In both cases, add initialization when a new task group is created
+> > based on the current parent's value (or RUNTIME_INF in the case of
+> > root_task_group). Otherwise, the field is wrong until a quota is
+> > changed after creation and __cfs_schedulable() is called.
+> > 
+> > Fixes: c53593e5cb69 ("sched, cgroup: Don't reject lower cpu.max on ancestors")
+> 
+> Does this really fix anything observable? I wonder whether this is more
+> misleading than helpful. In cgroup2, the value simply wasn't being used,
+> right?
 >
-> It's designed so that when CONFIG_PM is disabled, the dev_pm_ops is
-> garbage-collected along with all its callbacks.
+
+It wasn't being used but was actively being set wrong. I mean if we are
+going to bother doing the __cfs_schedulable() tg tree walk we might as
+well have not been setting a bogus value. But that said, no it was not
+observable until I tried to use it.
+
+I'm fine if that's dropped. I just wanted it set right going forward :)
+
+
+> > Signed-off-by: Phil Auld <pauld@redhat.com>
+> > Reviewed-by: Ben Segall <bsegall@google.com>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> > Cc: Juri Lelli <juri.lelli@redhat.com>
+> > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> > Cc: Valentin Schneider <vschneid@redhat.com>
+> > Cc: Ben Segall <bsegall@google.com>
+> > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > Cc: Tejun Heo <tj@kernel.org>
+> 
+> Acked-by: Tejun Heo <tj@kernel.org>
 >
-> I know it looks ugly, but we already have 4 variants (regular,
-> namespace, GPL, namespace + GPL), if we start to add macros for
-> specific use-cases then it will become bloated really quick.
 
-Maybe macros can be replaced / changed to make it scale?
+Thanks!
 
-> And the "bloat" I'm trying to avoid here is the extreme expansion of
-> the API which makes it hard for people not familiar to the code to
-> understand what should be used and how.
 
-So far, based on the rest of the messages in the thread the
-EXPORT*PM_OPS() have the following issues:
-1) do not scale (for variants with different scope we need new set of macro=
-s);
-2) do not cover cases with pm_sleep_ptr();
-3) export symbols in case when it's not needed.
+> > +		 * always take the non-RUNTIME_INF min.  On cgroup1, only
+> > +		 * inherit when no limit is set. In both cases this is used
+> > +		 * by the scheduler to determine if a given CFS task has a
+> > +		 * bandwidth constraint at some higher level.
+> 
+> The discussion on this comment is stretching too long and this is fine too
+> but what's worth commenting for cgroup2 is that the limit value itself
+> doesn't mean anything and we're just latching onto the value used by cgroup1
+> to track whether there's any limit active or not.
 
-Am I right?
+I thought that was implied by the wording. "If a given task has a bandwidth
+contraint" not "what a given task's bandwidth constraint is".  In both cases
+that's how the other parts of the scheduler are using it. The actual
+non-RUNTIME_INF value only matters in this function (and only for cgroup1
+indeed).
 
-> > > Then your two callbacks can be "static" and without #ifdef guards.
-> > >
-> > > The resulting "intel_pinctrl_pm_ops" can be marked as "extern" in
-> > > the
-> > > pinctrl-intel.h without any guards, as long as it is only
-> > > referenced
-> > > with the pm_ptr() macro.
-> >
-> > I'm not sure I got this. Currently drivers do not have any guards.
-> > Moreover, the correct one for noirq is pm_sleep_ptr(), isn't it?
->
-> The EXPORT_*_DEV_PM_OPS() macros do export the "dev_pm_ops"
-> conditionally depending on CONFIG_PM. We could add variants that export
-> it conditionally depending on CONFIG_PM_SLEEP, but we're back at the
-> problem of adding bloat.
+But... the value is just as accurate for cgroup2 and cgroup1.  The task is
+still going to be limited by that bandwidth constraint even if its own
+bandwidth limit is nominally higher, right? 
 
-Exactly.
 
-> You could use pm_sleep_ptr() indeed, with the existing macros, with the
-> drawback that in the case where CONFIG_PM && !CONFIG_PM_SLEEP, the
-> dev_pm_ops + callbacks are compiled in but never referenced.
+Cheers,
+Phil
 
-And exactly.
+> 
+> Thanks.
+> 
+> -- 
+> tejun
+> 
 
-I don't think they are ready to use (in the current form). But let's
-see what we may do better here...
+-- 
 
---
-With Best Regards,
-Andy Shevchenko
