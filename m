@@ -2,94 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC8575739C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9DA77573A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbjGRGGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 02:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51626 "EHLO
+        id S231154AbjGRGGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 02:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjGRGGK (ORCPT
+        with ESMTP id S230464AbjGRGGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 02:06:10 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50038A6;
-        Mon, 17 Jul 2023 23:06:06 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 0329224E20D;
-        Tue, 18 Jul 2023 14:06:03 +0800 (CST)
-Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 18 Jul
- 2023 14:06:03 +0800
-Received: from [192.168.120.57] (171.223.208.138) by EXMBX068.cuchost.com
- (172.16.6.68) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 18 Jul
- 2023 14:06:02 +0800
-Message-ID: <6c53310c-1dc0-6623-369b-1a73fc8f63a5@starfivetech.com>
-Date:   Tue, 18 Jul 2023 14:06:01 +0800
+        Tue, 18 Jul 2023 02:06:35 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9B2F1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:06:33 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-51e5e4c6026so7548345a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689660392; x=1692252392;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=r3E/REAd1PY+Cafajtk4h0rH83WVGTGX7hhI9F7Vli0=;
+        b=AnEBkeGg+icA/9lTeVQ2Mt6YiwQ+FOnIiw143u9tuDa0YDZpQ49rej8OzOkYUBhPKK
+         vbrJv+4LowZWShkbAyMF6rQQyRxA8zNryp/wRpFlSIi0249ank4AsA6vP4jIhqDWxs0a
+         k4U+atFg6x/coIIuZDk/LKXzoz8cYvMGcNweMqvP2wR5fHwIHvRNEGDDmJrJVTTFnObE
+         FIGSPOqzQi3AXxcvkfXyPMSeGIXm4FYq39/ATckEeXI/S50jb3+4AUC6iNZmzKvQbS5L
+         lnMz949+C4W0NX7+Z2KTu7N5njLnc1JyoWgLhBrvi4nuQPzniXG1+GmGc2Conr6Rdq32
+         40+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689660392; x=1692252392;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=r3E/REAd1PY+Cafajtk4h0rH83WVGTGX7hhI9F7Vli0=;
+        b=Vf07Tj/L/Oy0HoOxWe6PzpaCNBLIKU6FWcSkxrpND9DqCZ0mGB5Lo999ywdgnR1liM
+         VTNfEnDht6C5/FypTsWIA9FMcCGk4mwGXlxx9wl8boTz2euA/5LauCHdx6eEY9Snj/iO
+         pdE8eXZBPHwzfo7E+7yiMsHWI+J42M/oD5KeRIZsSE+pGZZnhfH2ArooCZK6AoOGg131
+         mDBjNKxTlz1thKqSXp4owGWDuQ4rf5c1+xZB+X41PS/blqoRkORFEeouI5JL8yka37e1
+         YvD4p3DysvGawYUtjWxoE/B3wggIincAXxw2wRghuU+rfvRioYvrNSctOwnoCRcGNJvY
+         h7vg==
+X-Gm-Message-State: ABy/qLapuTCnIzIMi1ZbppBxWTPvEBsn6xz5lSGRomQR/L5tyEfFNogH
+        iqtmKghdnGRQj0bumOv05m+RIA==
+X-Google-Smtp-Source: APBJJlFYm/q1jH0wn2AtcjBZ6ivjdesS6NxsnwNVQYeWFkZoY71A9o2TCsdZjM9mActq7FJOXHme/w==
+X-Received: by 2002:a17:907:20d2:b0:997:bb66:3d1 with SMTP id qq18-20020a17090720d200b00997bb6603d1mr5520876ejb.25.1689660392158;
+        Mon, 17 Jul 2023 23:06:32 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id e9-20020a170906374900b009893650453fsm554206ejc.173.2023.07.17.23.06.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 23:06:31 -0700 (PDT)
+Message-ID: <a62141a9-a2c0-6568-cb05-5ef59250e10f@linaro.org>
+Date:   Tue, 18 Jul 2023 08:06:29 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/3] dt-bindings: spi: constrain minItems of clocks and
- clock-names
-To:     Mark Brown <broonie@kernel.org>
-CC:     Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+Subject: Re: [PATCH v5 2/2] arm64: dts: exynos: add pwm node for
+ exynosautov9-sadk
+Content-Language: en-US
+To:     Jaewon Kim <jaewon02.kim@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        "Emil Renner Berthing" <kernel@esmil.dk>,
-        Linus Walleij <linus.walleij@linaro.org>
-References: <20230713090015.127541-1-william.qiu@starfivetech.com>
- <20230713090015.127541-3-william.qiu@starfivetech.com>
- <c5ad1e1c-58f4-4833-b9c7-8876c1a0dc27@sirena.org.uk>
- <e3fd0d3f-3fe4-2e23-2548-ecbd487e9c9f@linaro.org>
- <20230713145724.GA3975811-robh@kernel.org>
- <df9de3d8-09da-2b80-b2b4-626cd92fe971@starfivetech.com>
- <9891a7e3-0fce-4d05-8ead-3c0ed155d725@sirena.org.uk>
-Content-Language: en-US
-From:   William Qiu <william.qiu@starfivetech.com>
-In-Reply-To: <9891a7e3-0fce-4d05-8ead-3c0ed155d725@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+        Alim Akhtar <alim.akhtar@samsung.com>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+References: <20230718034201.136800-1-jaewon02.kim@samsung.com>
+ <CGME20230718034723epcas2p354fc5502d4ed212c7f748d2849e6b60a@epcas2p3.samsung.com>
+ <20230718034201.136800-3-jaewon02.kim@samsung.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230718034201.136800-3-jaewon02.kim@samsung.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [171.223.208.138]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX068.cuchost.com
- (172.16.6.68)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18/07/2023 05:42, Jaewon Kim wrote:
+> Add pwm node to support fan on exynosautov9-sadk board.
+> PWM channel 3 of ExynosAutov9 is connected to fan for SoC cooling
+> in SADK board.
+> 
+> Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
+> ---
+>  arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts |  6 ++++++
+>  arch/arm64/boot/dts/exynos/exynosautov9.dtsi     | 10 ++++++++++
+>  2 files changed, 16 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts b/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts
+> index 101f51bf565a..bc1815f6ada2 100644
+> --- a/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts
+> +++ b/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts
+> @@ -49,6 +49,12 @@
+>  	};
+>  };
+>  
+> +&pwm {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pwm_tout3>;
+> +	status = "okay";
 
+I think you miss disabling it.
 
-On 2023/7/14 19:52, Mark Brown wrote:
-> On Fri, Jul 14, 2023 at 03:14:59PM +0800, William Qiu wrote:
->> On 2023/7/13 22:57, Rob Herring wrote:
-> 
->> > I suspect that PCLK and SSPCLK are tied to the same clock source. There 
->> > must be an SSPCLK because that is the one used to clock the SPI bus and 
->> > we need to know the frequency of it.
-> 
->> After communicating with colleagues in SoC FE, I learned that PCLK and
->> SSPCLK were homologous on JH7110. He said that SSPCLK would divide the
->> frequency internally anyway, and there was no need for external part frequency,
->> so he directly gave them together.
-> 
->> So, should I call this clock ssp_apb or keep it SSPCLK?
-> 
-> I'd expect this to be handled in the DTS for the SoC - connect both
-> clocks the binding requires to whatever the upstream clock is, it's not
-> clear to me that any binding change is required.
-
-You mean binding two clocks, with the same clock source? Then there is no
-need to modify YAML.
+> +};
 
 Best regards,
-William
+Krzysztof
+
