@@ -2,71 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8067585DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 21:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC267585DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 21:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230447AbjGRTzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 15:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
+        id S230450AbjGRTzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 15:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbjGRTzM (ORCPT
+        with ESMTP id S229504AbjGRTzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 15:55:12 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A339D;
-        Tue, 18 Jul 2023 12:55:11 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51e5d9e20ecso8719632a12.1;
-        Tue, 18 Jul 2023 12:55:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689710110; x=1692302110;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1UWnGFL06djDI18ZDxplYijmA/LhPZTehuJTXj64eeE=;
-        b=PYpqmIsHL0fQtrd3ph7eSnd7uh7yD9uygv+j89ny+cEFFuxF8fT2OyrWvyNsWiMDVC
-         yLoxBll87sLgXYvPT1/oyFUl+Bw1do9Je3tXlzniQirOU9vO4JMMuL+qS/1WHysh7jkx
-         Q8LFBhpX8JDD3wtW3RrNrMCSN1Zg8N8qoS4tF+A4hmHILx29w3nk1nrpa9TRJPEbazyv
-         ElCIuHfDYcyzpAkx5nfZqVWpamk1CiYmK1SHu2TcTrNmaY7e9Esvgq9T9unsM/z9UCtt
-         CBFfFlLeCitD6I3PTEtBWjOBXe9uljZ2+kH5HqI8H6B0VH0hXrmtEH862sflxLFmHllm
-         7OBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689710110; x=1692302110;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1UWnGFL06djDI18ZDxplYijmA/LhPZTehuJTXj64eeE=;
-        b=gYxh9mYkEgYKwyvKcRx2MilL6mS57UKIY3qkgcm9bfGdrkYdaXBNhpOkEur/Twtj4u
-         tkEQvLNSg1LWRtvEUeOOf73r5PnfDJhmFGAXR5pL/sbC4KvbGcKTN2QmhxAQslIS+QCi
-         VNqctRRi6dwN2WrM4xL9qb5WhcjCbjsS/LM8uMU9TdMs5rDLMQgKASN0SoIpW22hVJw6
-         wtEYMQFL2QUOuyIyNh+Mqlhb9V4olHaFveWPEEgBogO48ZN5TDPKgcBH2ryu7fi3K6OT
-         8c5HDUcUw1yMBTbgBITqUJIabJCppwK3hh8hrskZhPPV0tu0pBf3WUbv7zmW/GmqsXoL
-         cvsg==
-X-Gm-Message-State: ABy/qLbRE418uYzVxQLoSeDP9UZOmXND+DCeqbG9/naaE0/zoyWlEILF
-        e9quLMseOC1TBkCelQoMor2X9gKJaXGDMn/lKHU=
-X-Google-Smtp-Source: APBJJlG8StHVSbZUu7JD5afeJfPRR83rioPgDuZbd8H/UHy44fk9sV3w0CUiAi/0oYpNDxZConPQt3H/9iokbVHMQkM=
-X-Received: by 2002:a17:906:7a11:b0:994:56db:cb8d with SMTP id
- d17-20020a1709067a1100b0099456dbcb8dmr786213ejo.14.1689710110022; Tue, 18 Jul
- 2023 12:55:10 -0700 (PDT)
+        Tue, 18 Jul 2023 15:55:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4102E198E;
+        Tue, 18 Jul 2023 12:55:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D196D60B45;
+        Tue, 18 Jul 2023 19:55:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42D68C433C7;
+        Tue, 18 Jul 2023 19:55:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689710142;
+        bh=gshhwkunm0Nkznr6q9yEkdRdIiyNHnhVMZurRxoSIOQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lgSBOvWQdpxF3liRy3mjW5e2MFL87uVxkeVJ1V2wPudywexzVM18dF3ko8cfRL/EH
+         +VwKa8cr4Kojk/tBS5K9Qgl/+UXz39EWbpO3NmAtzd6k3bK6WcfCseH6RjE4b9UEcm
+         mXH6ANOp6IJ5J4HdWrjaWQ2bH7ueTtEr2KM+8PHf40GJni1e8zVZaR9s5f7b4rCTZv
+         jWVCDticxRP5dKAu4n0O0N+dSF/tm9SBR1ORKXtt5NZBYCmt29WxD09jfTvNVNotFL
+         HRTWsdMlFS+2DBMXp81oqy6bufzJUfwty4TFn9hCwiv1zt0UbDxJBxcaLPon+du3S8
+         Cdw8dFvA/BYxQ==
+Date:   Tue, 18 Jul 2023 20:55:37 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     corbet@lwn.net, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, gregkh@linuxfoundation.org,
+        linux@leemhuis.info, krzk@kernel.org
+Subject: Re: [PATCH docs v2] docs: maintainer: document expectations of small
+ time maintainers
+Message-ID: <71224ff9-98d0-4148-afb8-d35b45519c79@sirena.org.uk>
+References: <20230718155814.1674087-1-kuba@kernel.org>
 MIME-Version: 1.0
-References: <20230718193913.3578660-1-arnd@kernel.org>
-In-Reply-To: <20230718193913.3578660-1-arnd@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 18 Jul 2023 22:54:33 +0300
-Message-ID: <CAHp75Ve51WqLoPHnxLf_uAP8zEr=iK2e0s7uLM441gtOqPmQdg@mail.gmail.com>
-Subject: Re: [PATCH] gpio: mxc: fix unused function warnings
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andy@kernel.org>, Marek Vasut <marex@denx.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Dan Carpenter <error27@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="LSdGOUQcgKsH6g7g"
+Content-Disposition: inline
+In-Reply-To: <20230718155814.1674087-1-kuba@kernel.org>
+X-Cookie: You are as I am with You.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,75 +60,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 10:39=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wr=
-ote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The new runtime PM support causes a harmless warning about
-> unused functions when runtime PM is disabled:
->
-> drivers/gpio/gpio-mxc.c:612:12: error: 'mxc_gpio_runtime_resume' defined =
-but not used [-Werror=3Dunused-function]
-> drivers/gpio/gpio-mxc.c:602:12: error: 'mxc_gpio_runtime_suspend' defined=
- but not used [-Werror=3Dunused-function]
->
-> Change the driver to use the more modern helper macros that avoid these
-> warnings, and remove the now unnecessary __maybe_unused annotations
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+--LSdGOUQcgKsH6g7g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Fixes: 3283d820dce64 ("gpio: mxc: add runtime pm support")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/gpio/gpio-mxc.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-mxc.c b/drivers/gpio/gpio-mxc.c
-> index a9fb6bd9aa6f9..e03fc8d375fe1 100644
-> --- a/drivers/gpio/gpio-mxc.c
-> +++ b/drivers/gpio/gpio-mxc.c
-> @@ -623,7 +623,7 @@ static int mxc_gpio_runtime_resume(struct device *dev=
-)
->         return 0;
->  }
->
-> -static int __maybe_unused mxc_gpio_noirq_suspend(struct device *dev)
-> +static int mxc_gpio_noirq_suspend(struct device *dev)
->  {
->         struct platform_device *pdev =3D to_platform_device(dev);
->         struct mxc_gpio_port *port =3D platform_get_drvdata(pdev);
-> @@ -634,7 +634,7 @@ static int __maybe_unused mxc_gpio_noirq_suspend(stru=
-ct device *dev)
->         return 0;
->  }
->
-> -static int __maybe_unused mxc_gpio_noirq_resume(struct device *dev)
-> +static int mxc_gpio_noirq_resume(struct device *dev)
->  {
->         struct platform_device *pdev =3D to_platform_device(dev);
->         struct mxc_gpio_port *port =3D platform_get_drvdata(pdev);
-> @@ -647,8 +647,8 @@ static int __maybe_unused mxc_gpio_noirq_resume(struc=
-t device *dev)
->  }
->
->  static const struct dev_pm_ops mxc_gpio_dev_pm_ops =3D {
-> -       SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(mxc_gpio_noirq_suspend, mxc_gpio_no=
-irq_resume)
-> -       SET_RUNTIME_PM_OPS(mxc_gpio_runtime_suspend, mxc_gpio_runtime_res=
-ume, NULL)
-> +       NOIRQ_SYSTEM_SLEEP_PM_OPS(mxc_gpio_noirq_suspend, mxc_gpio_noirq_=
-resume)
-> +       RUNTIME_PM_OPS(mxc_gpio_runtime_suspend, mxc_gpio_runtime_resume,=
- NULL)
->  };
->
->  static int mxc_gpio_syscore_suspend(void)
-> --
-> 2.39.2
->
+On Tue, Jul 18, 2023 at 08:58:14AM -0700, Jakub Kicinski wrote:
 
+> We appear to have a gap in our process docs. We go into detail
+> on how to contribute code to the kernel, and how to be a subsystem
+> maintainer. I can't find any docs directed towards the thousands
+> of small scale maintainers, like folks maintaining a single driver
+> or a single network protocol.
 
---=20
-With Best Regards,
-Andy Shevchenko
+I'm not super comfortable with all of the musts here but this is
+probably fine so
+
+Reviewed-by: Mark Brown <broonie@kernel.org>
+
+One note:
+
+> +Maintainers must be human, however, it is not acceptable to add a mailing
+> +list or a group email as a maintainer. Trust and understanding are the
+> +foundation of kernel maintenance and one cannot build trust with a mailing
+> +list.
+
+If you're revising this I'd add a note about the L: tag in MAINTAINERS
+here, or possibly just adding a list in addition to humans.  It is
+sensible and often helpful for companies to want to get mail copied to a
+wider distribution list internally but they're not really what we mean
+by list since external people typically can't join them.
+
+--LSdGOUQcgKsH6g7g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS27jgACgkQJNaLcl1U
+h9CIIgf+LLz2FFY+gdDkyU+XJv8nVYZJr7tmYVzdbjT94MAsKgVXjd/DcXrUdISB
+gItU3VHXnC2vXX+rgEUOSZwEBQ2HXi/Grj4As79eV6n29QwE4yMDZ2GIOhcDKqvH
+2GZGDLYaShzkKQNzin2eyCkjVd9ZCquoNCpU8trTaUz56uX3DmuyD2JwqDWnqX1v
+OkPdZHhfAF1jy9XPo1CNXMjgnhP3yNawqptigD7c/bVGY76VjwJ0pphpPij93BQl
+eHMTeQceIZGAPnDtxJAcxFHojjZ9UoHPcit1hMLuIn4xSIIMMOJDVS2fyrcLTynJ
+qg2xILiUbAc4zJlKhCe2eLYe8eM4sg==
+=guc9
+-----END PGP SIGNATURE-----
+
+--LSdGOUQcgKsH6g7g--
