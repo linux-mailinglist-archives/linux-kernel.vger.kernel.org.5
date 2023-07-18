@@ -2,118 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA247576BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFB17576BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231871AbjGRIhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:37:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55416 "EHLO
+        id S231893AbjGRIid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231858AbjGRIhu (ORCPT
+        with ESMTP id S231623AbjGRIic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:37:50 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7040135
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:37:48 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-31438512cafso5507704f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:37:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689669467; x=1692261467;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oqJ9u4SGNXyNg5ofFpDQaS2ayWAUml8z0VaX7hI3krE=;
-        b=OtQl27dbnrPDI7c6OCZexeFM1iYA9d10Zwj0fJcjU/xtspNfbU+DGUpo46ndDA1aIM
-         gZg/OCmSHMHuQuMmvVeoXewgFNsxM0pIz6YgPuvE2vjcY+02CxfSY1UL4s58Ck/orQ1o
-         rYFArvC3gq1tjaq/Ls0ZSpzgjHsBPeY3D5vbiHVrl2WILTRaSuFa8nM1XkvE1CtETZM9
-         XWwbJsgMx7HE8f/oE1sWY419GaCKdr+lXUbKY+6EoISl4wlhMQT/T5YzFDmRxzggXRnj
-         qhUkGGoMXPPBH5sSG3KZe0+qk5qr1Ys7Z9El9iEcXhdSc1GBSVBQVKEGBQdURjhdcgg/
-         5zVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689669467; x=1692261467;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oqJ9u4SGNXyNg5ofFpDQaS2ayWAUml8z0VaX7hI3krE=;
-        b=KoJkuL0WGuQ1BZJGJUwJ1hU368lL2rGsuW7pyF4m7C2wb8b2t/xu33sC3GlMbOJjYN
-         JuGh9uYjvuJhe9/PUeDU1x5ZhWF7iqxlvl4uoKCgtHcE0lvV8HcwHc1om6jtmL9hWpdV
-         NzCk9fsgXrdFYP2u/SG7XpCe8W5Tx91CGFkYhWBwR2A/u+jNoTSbKkgQHs9+jlDGP3Lx
-         xcjO8t6fm5DwkiewGVyn2vCJ2N5XG7+gY6ezg8xuyCHsCDl8i9fuAuqREmoJAo8vK5ks
-         IfTmd0XTT3w2NEjd1Lk411Opoo/pZ/8RsCOcIc/rzST20vUhEKu1Hy/eK42LNFQIvS5J
-         z7tw==
-X-Gm-Message-State: ABy/qLaGq5KtX3ztnIpF5dRIZ96tYNezBtriA1V0gXRMicfCHkqquWyo
-        Ddzu0M9MsFQEBji6Gue39vqoVw==
-X-Google-Smtp-Source: APBJJlFK/PMnPBKxy9LlIGsKQCxu9WTEnU0WFv4qPQ2XmQ7jxfyYmlP+rhkxlTGNQbZ/CrvEDeEwUA==
-X-Received: by 2002:a5d:49d0:0:b0:314:1e47:8bc2 with SMTP id t16-20020a5d49d0000000b003141e478bc2mr13465958wrs.0.1689669467371;
-        Tue, 18 Jul 2023 01:37:47 -0700 (PDT)
-Received: from [10.101.1.6] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id n18-20020adffe12000000b003143be36d99sm1696453wrr.58.2023.07.18.01.37.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 01:37:46 -0700 (PDT)
-Message-ID: <cf31ccd0-f11a-49f6-4e55-457fa78c8b86@baylibre.com>
-Date:   Tue, 18 Jul 2023 10:37:45 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] clk: mediatek: clk-mux: Support custom parent indices
- for muxes
-Content-Language: en-US
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, sboyd@kernel.org
-Cc:     mturquette@baylibre.com, matthias.bgg@gmail.com,
-        wenst@chromium.org, msp@baylibre.com, yangyingliang@huawei.com,
-        u.kleine-koenig@pengutronix.de, miles.chen@mediatek.com,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel@collabora.com
-References: <20230713072138.84117-1-angelogioacchino.delregno@collabora.com>
- <20230713072138.84117-2-angelogioacchino.delregno@collabora.com>
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20230713072138.84117-2-angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Tue, 18 Jul 2023 04:38:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0221E10C
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:38:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7F33D614DA
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:38:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D23BC4160E;
+        Tue, 18 Jul 2023 08:38:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689669509;
+        bh=mBzdz1+zGo4OGF4RbMLBZa0bdU4OVhGULkKCfrVy5gY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=G87Lw1v1/JJWw2Esl16WVFIRDfAkXhiq/r6KeQe1miMPoEtCZSNB1V9ZPRfY/7zA/
+         0LKihbS/qwJByyqtGJhaOzjQ9LHTzyWP3hMUl0cxT6tDik6wb9jJbMftT+tbTc1kqI
+         OWxrIMoayU4qVebK06vh65i0sGPh9jT8QxkTOeyh5v5ECjwgiF7ft/g6c2p2OtWAA4
+         PfibXFfXqG2ZDnEW333Df0d14rdz6TRuMNuwgyWxLEadkRW5aFND5cCg441OfHmsdV
+         eJQMK+rOu/nRb1jp31NUYIJUdxgkU38sUWWLUlPaAJ1DmRRtFLy8dFTcIhfJ7S258I
+         qIu79ls2RsIhw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qLgDy-00DynT-Sa;
+        Tue, 18 Jul 2023 09:38:26 +0100
+Date:   Tue, 18 Jul 2023 09:38:26 +0100
+Message-ID: <86351lvcl9.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Punit Agrawal <punit.agrawal@bytedance.com>
+Cc:     sudeep.holla@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Vikram Sethi <vsethi@nvidia.com>,
+        Shanker Donthineni <sdonthineni@nvidia.com>
+Subject: Re: [PATCH] firmware: smccc: Fix use of uninitialised results structure
+In-Reply-To: <20230717171702.424253-1-punit.agrawal@bytedance.com>
+References: <20230717171702.424253-1-punit.agrawal@bytedance.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: punit.agrawal@bytedance.com, sudeep.holla@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, vsethi@nvidia.com, sdonthineni@nvidia.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 17 Jul 2023 18:17:02 +0100,
+Punit Agrawal <punit.agrawal@bytedance.com> wrote:
+> 
+> Commit 35727af2b15d ("irqchip/gicv3: Workaround for NVIDIA erratum
+> T241-FABRIC-4") moved the initialisation of the SoC version to
+> arm_smccc_version_init() but forgot to update the results structure
+> and it's usage.
+> 
+> Fix the use of the uninitialised results structure and update the
+> error strings.
+> 
+> Fixes: 35727af2b15d ("irqchip/gicv3: Workaround for NVIDIA erratum T241-FABRIC-4")
+> Signed-off-by: Punit Agrawal <punit.agrawal@bytedance.com>
+> Cc: Sudeep Holla <sudeep.holla@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Vikram Sethi <vsethi@nvidia.com>
+> Cc: Shanker Donthineni <sdonthineni@nvidia.com>
+> ---
+>  drivers/firmware/smccc/soc_id.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/firmware/smccc/soc_id.c b/drivers/firmware/smccc/soc_id.c
+> index 890eb454599a..1990263fbba0 100644
+> --- a/drivers/firmware/smccc/soc_id.c
+> +++ b/drivers/firmware/smccc/soc_id.c
+> @@ -34,7 +34,6 @@ static struct soc_device_attribute *soc_dev_attr;
+>  
+>  static int __init smccc_soc_init(void)
+>  {
+> -	struct arm_smccc_res res;
+>  	int soc_id_rev, soc_id_version;
+>  	static char soc_id_str[20], soc_id_rev_str[12];
+>  	static char soc_id_jep106_id_str[12];
+> @@ -49,13 +48,13 @@ static int __init smccc_soc_init(void)
+>  	}
+>  
+>  	if (soc_id_version < 0) {
+> -		pr_err("ARCH_SOC_ID(0) returned error: %lx\n", res.a0);
+> +		pr_err("Invalid SoC Version: %x\n", soc_id_version);
+>  		return -EINVAL;
+>  	}
+>  
+>  	soc_id_rev = arm_smccc_get_soc_id_revision();
+>  	if (soc_id_rev < 0) {
+> -		pr_err("ARCH_SOC_ID(1) returned error: %lx\n", res.a0);
+> +		pr_err("Invalid SoC Revision: %x\n", soc_id_rev);
+>  		return -EINVAL;
+>  	}
+>  
 
+Ah, indeed. Well caught. FWIW:
 
-On 13/07/2023 09:21, AngeloGioacchino Del Regno wrote:
-> Add support for customized parent indices for MediaTek muxes: this is
-> necessary for the case in which we want to exclude some clocks from
-> a mux's parent clocks list, where the exclusions are not from the
-> very bottom of the list but either in the middle or the beginning.
-> 
-> Example:
-> - MUX1 (all parents)
->    - parent1; idx=0
->    - parent2; idx=1
->    - parent3; idx=2
-> 
-> - MUX1 (wanted parents)
->    - parent1; idx=0
->    - parent3; idx=2
-> 
-> To achieve that add a `parent_index` array pointer to struct mtk_mux,
-> then in .set_parent(), .get_parent() callbacks check if this array
-> was populated and eventually get the index from that.
-> 
-> Also, to avoid updating all clock drivers for all SoCs, rename the
-> "main" macro to __GATE_CLR_SET_UPD_FLAGS (so, `__` was added) and
-> add the new member to it; furthermore, GATE_CLK_SET_UPD_FLAGS has
-> been reintroduced as being fully compatible with the older version.
-> 
-> The new parent_index can be specified with the new `_INDEXED`
-> variants of the MUX_GATE_CLR_SET_UPD_xxxx macros.
+Acked-by: Marc Zyngier <maz@kernel.org>
 
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+Sudeep, I assume you'll take that one directly?
+
+Thanks,
+
+	M.
 
 -- 
-Regards,
-Alexandre
+Without deviation from the norm, progress is not possible.
