@@ -2,46 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BDD758105
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6560D758106
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233653AbjGRPeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 11:34:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34306 "EHLO
+        id S233673AbjGRPe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 11:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233674AbjGRPeS (ORCPT
+        with ESMTP id S231582AbjGRPeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 11:34:18 -0400
+        Tue, 18 Jul 2023 11:34:19 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC385E7E
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:33:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 375161B1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:33:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D53F6614CC
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:33:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41155C433C8;
-        Tue, 18 Jul 2023 15:33:46 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E75D76163F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:33:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2F9CC433C7;
+        Tue, 18 Jul 2023 15:33:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689694427;
-        bh=yQK5I0+HMW9nWQ22U27x/b51/ujU5XxLQPYhyGnOtwU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=rY51zBkT/0hoHP7Mm8B5FRNu8nHsPs6l05QAL/UYOYvplcrBu0lt7Ccep8iAUSocT
-         3RyJwkakKLhWOdVG/4JFr2m8pFubJViamN0uMoamjRd8NK5LKCGAuVEjcAT7X7H9/i
-         O5c2pTqj3dhjefvHCQUo/MrqGpOYdT5whSD5Bi0M/lqIg//ALL+bNs4DVXaR6FHry8
-         SK4lm9pSHqpHF/NZzNIwDKXL7UNikdDBUAWtU38fjvhWfcofXKDTdqPsTFCg5UzWsW
-         wjUUJ7U3ImkDyyA5m1+aBja5s7I+OVJiTU1XXDbIwXPwObGfqmhh6a+cLjwbSpiM8k
-         CMo80hx/FvQCA==
+        s=k20201202; t=1689694429;
+        bh=dNhCnd7BRoxmEqrazlgCFOTdL35V2PIvQRzI8MBzvnc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IFQ8InmJBGLXenNwP9TnDxUAeYjLdfDQrr8/wvAJCYqc4mrpPIq0ZDaoObnj9De23
+         Qr6f29az56t/spK0A4QRGSAeLEwJMUgG48Ea3TRX4Mzt7N6F552Zxe6gSg6zzQ4Wu5
+         lc7cKIYgNIRocm20YW0mn47mMNx1yfPpDKXKU3jb2Kzyf9MYBc6RoEv1XSEsdxNufS
+         BbzcZzQWpU0+m0GsJ/TUpMcScleur68RFM+hygwNFuVVfS1j1JfkENZpHBktkkGyn7
+         jK13Hr1rjvd19fBFltYyTB3eo5n3GCF69fWeyK85m+M9rYBo/Wc/QvN/fRAI/PClLG
+         uf+7JdXQJgsFA==
 From:   Jisheng Zhang <jszhang@kernel.org>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>
 Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/2] riscv: Reduce ARCH_KMALLOC_MINALIGN to 8
-Date:   Tue, 18 Jul 2023 23:22:12 +0800
-Message-Id: <20230718152214.2907-1-jszhang@kernel.org>
+Subject: [PATCH v3 1/2] riscv: allow kmalloc() caches aligned to the smallest value
+Date:   Tue, 18 Jul 2023 23:22:13 +0800
+Message-Id: <20230718152214.2907-2-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20230718152214.2907-1-jszhang@kernel.org>
+References: <20230718152214.2907-1-jszhang@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -82,7 +84,7 @@ the underlying HW neither supports ZICBOM nor supports T-HEAD CMO.
 So what about if the CPU supports ZICBOM or T-HEAD CMO, but all the
 devices are dma coherent? Well, we use ARCH_DMA_MINALIGN as the
 kmalloc minimum alignment, nothing changed in this case. This case
-can be improved in the future once we see such platforms in mainline.
+can be improved in the future.
 
 After this patch, a simple test of booting to a small buildroot rootfs
 on qemu shows:
@@ -96,49 +98,96 @@ kmalloc-8           10246   10246      8  ...
 So we save about 1268KB memory. The saving will be much larger in normal
 OS env on real HW platforms.
 
-
-patch1 allows kmalloc() caches aligned to the smallest value.
-patch2 enables DMA_BOUNCE_UNALIGNED_KMALLOC.
-
-After this series:
-
-As for coherent platforms, kmalloc-{8,16,32,96} caches come back on
-coherent both RV32 and RV64 platforms, I.E !ZICBOM and !THEAD_CMO.
-
-As for noncoherent RV32 platforms, nothing changed.
-
-As for noncoherent RV64 platforms, I.E either ZICBOM or THEAD_CMO, the
-above kmalloc caches also come back if > 4GB memory or users pass
-"swiotlb=mmnn,force" to force swiotlb creation if <= 4GB memory. How
-much mmnn should be depends on the specific platform, it needs to be
-tried and tested all possible usage case on the specific hardware. For
-example, I can use the minimal I/O TLB slabs on Sipeed M1S Dock.
-
 Link: https://lore.kernel.org/linux-arm-kernel/20230524171904.3967031-1-catalin.marinas@arm.com/ [1]
 
-Since v2:
- - remove Change-Id
- - use EXPORT_SYMBOL_GPL instead of EXPORT_SYMBOL
- - update Link in commit msg per Conor's suggestion
- - collect reviewed-by tag
-
-Since v1
- - remove preparation patches since they have been merged
- - adjust Kconfig entry to keep entries sorted
- - add new function riscv_set_dma_cache_alignment() to set the
-   dma_cache_alignment var.
-
-Jisheng Zhang (2):
-  riscv: allow kmalloc() caches aligned to the smallest value
-  riscv: enable DMA_BOUNCE_UNALIGNED_KMALLOC for !dma_coherent
-
- arch/riscv/Kconfig                  |  1 +
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
  arch/riscv/include/asm/cache.h      | 14 ++++++++++++++
  arch/riscv/include/asm/cacheflush.h |  2 ++
  arch/riscv/kernel/setup.c           |  1 +
  arch/riscv/mm/dma-noncoherent.c     |  8 ++++++++
- 5 files changed, 26 insertions(+)
+ 4 files changed, 25 insertions(+)
 
+diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
+index d3036df23ccb..2174fe7bac9a 100644
+--- a/arch/riscv/include/asm/cache.h
++++ b/arch/riscv/include/asm/cache.h
+@@ -13,6 +13,7 @@
+ 
+ #ifdef CONFIG_RISCV_DMA_NONCOHERENT
+ #define ARCH_DMA_MINALIGN L1_CACHE_BYTES
++#define ARCH_KMALLOC_MINALIGN	(8)
+ #endif
+ 
+ /*
+@@ -23,4 +24,17 @@
+ #define ARCH_SLAB_MINALIGN	16
+ #endif
+ 
++#ifndef __ASSEMBLY__
++
++#ifdef CONFIG_RISCV_DMA_NONCOHERENT
++extern int dma_cache_alignment;
++#define dma_get_cache_alignment dma_get_cache_alignment
++static inline int dma_get_cache_alignment(void)
++{
++	return dma_cache_alignment;
++}
++#endif
++
++#endif	/* __ASSEMBLY__ */
++
+ #endif /* _ASM_RISCV_CACHE_H */
+diff --git a/arch/riscv/include/asm/cacheflush.h b/arch/riscv/include/asm/cacheflush.h
+index 8091b8bf4883..c640ab6f843b 100644
+--- a/arch/riscv/include/asm/cacheflush.h
++++ b/arch/riscv/include/asm/cacheflush.h
+@@ -55,8 +55,10 @@ void riscv_init_cbo_blocksizes(void);
+ 
+ #ifdef CONFIG_RISCV_DMA_NONCOHERENT
+ void riscv_noncoherent_supported(void);
++void __init riscv_set_dma_cache_alignment(void);
+ #else
+ static inline void riscv_noncoherent_supported(void) {}
++static inline void riscv_set_dma_cache_alignment(void) {}
+ #endif
+ 
+ /*
+diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+index 971fe776e2f8..027879b1557a 100644
+--- a/arch/riscv/kernel/setup.c
++++ b/arch/riscv/kernel/setup.c
+@@ -311,6 +311,7 @@ void __init setup_arch(char **cmdline_p)
+ 	if (IS_ENABLED(CONFIG_RISCV_ISA_ZICBOM) &&
+ 	    riscv_isa_extension_available(NULL, ZICBOM))
+ 		riscv_noncoherent_supported();
++	riscv_set_dma_cache_alignment();
+ }
+ 
+ static int __init topology_init(void)
+diff --git a/arch/riscv/mm/dma-noncoherent.c b/arch/riscv/mm/dma-noncoherent.c
+index d51a75864e53..811227e54bbd 100644
+--- a/arch/riscv/mm/dma-noncoherent.c
++++ b/arch/riscv/mm/dma-noncoherent.c
+@@ -11,6 +11,8 @@
+ #include <asm/cacheflush.h>
+ 
+ static bool noncoherent_supported __ro_after_init;
++int dma_cache_alignment __ro_after_init = ARCH_DMA_MINALIGN;
++EXPORT_SYMBOL_GPL(dma_cache_alignment);
+ 
+ void arch_sync_dma_for_device(phys_addr_t paddr, size_t size,
+ 			      enum dma_data_direction dir)
+@@ -78,3 +80,9 @@ void riscv_noncoherent_supported(void)
+ 	     "Non-coherent DMA support enabled without a block size\n");
+ 	noncoherent_supported = true;
+ }
++
++void __init riscv_set_dma_cache_alignment(void)
++{
++	if (!noncoherent_supported)
++		dma_cache_alignment = 1;
++}
 -- 
 2.40.1
 
