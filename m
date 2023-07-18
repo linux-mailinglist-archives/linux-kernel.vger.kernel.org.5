@@ -2,579 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59202758663
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5548B758668
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbjGRVBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 17:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57972 "EHLO
+        id S230036AbjGRVDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 17:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbjGRVBs (ORCPT
+        with ESMTP id S229504AbjGRVDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 17:01:48 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD34FEC
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:01:45 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4f14865fcc0so5552e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:01:45 -0700 (PDT)
+        Tue, 18 Jul 2023 17:03:40 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84729EC;
+        Tue, 18 Jul 2023 14:03:34 -0700 (PDT)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36IIDxD9018766;
+        Tue, 18 Jul 2023 21:03:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=NN8G0XwCRPtpwFuHCUVPBJcQ9zxa1UboDxvX4keZ6QI=;
+ b=FKq2ApWACfgt3bcuayqslyClIbjEPXSVtsK/OgkCOUcMLz4f4EGtDm1GpL4zTjMF65ni
+ 4lhUmEdfVvHx+qhWopCzgftJnGOGy7ykFDkZe92b2xv3FdA1dQtXv56idisyr7gzrmDK
+ TrKbS9WfRfkZeTSIZg8DFC5fX6mo/DJbv4G0eNtYsJWzQ2I97fuL9mC8ECHOWuC6btfP
+ R4uDPq3CdNsNQq/ktZkxOWHszpD14cn9dKXtGVjsizrL9Z6NYmMMCWYBRMOn8rkhHANo
+ 70lQlhKX7wegnKbsgEC49TRYeg4bKgOe2/cHJByCHEm7g354pLqyZYENY5cKBMkNERE1 Lw== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3run8a6635-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 Jul 2023 21:03:00 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36IKb6Np019218;
+        Tue, 18 Jul 2023 21:02:59 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhw673d9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 Jul 2023 21:02:59 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WN9nE1+3rl037sqZ7+nkln1FGzCvf9k9qDTFOylECwFNnZEQO5WsO+RF+781t50pWRAOqzr+FVyQWbUT/NUo/py9u38dITx0AaRGe/9zFsB5l2OEnxffJcguk3MQq63/4ikP2fTI8pVn3ipfmLERliLQ7EjP7AKMVdIu8Ru24O0fAsLnf+SrLEqLCPaSde66Fw0vl684SXeihnCQkKAuUL+oWCFdkzcmidCJhRzcGkeVh14BbVHVge+ARhuFnfe2Sfx8JpJ0Ud27dbL7vfenv2s+p1hJ4s/AO0jkhS4rTSft/efpnZaKOvCi79sB0L8BAz6JLpawCpwP1QdNqLZ+QQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NN8G0XwCRPtpwFuHCUVPBJcQ9zxa1UboDxvX4keZ6QI=;
+ b=lGBCrWnn5Qnkste82mIYFrTiOL7KSN68P+vrBslWHAYpxxBGcT1+8HBgMSoEXbLUkXSq3zlXQZ/KVH1Se5zL6Ul8J72r593o8miErykUANtMKlQfxwnKpa5eQXbp0n6zVFDniK6narM+8b6rW69hYYxlgdXYfgU6ecl8XmPE2ophk56FiSd3ytXR/tIIRv+NHQb4NH/iLlCJCOfN+rqSi6Uk4Lf8cy00mpILZthAy8Z6Yrr3zNBg+c3CPoSF4GaEteNBIjzrog5msSFIRKeZhqjIbhqmFvHq2ufd2CHkTRkqJlnORRM99kqizg3T4XjafztDzs5k4hT4EhUjP3TKXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689714104; x=1692306104;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YSeAtmxK2ozxMkX1W97pDOi5lgnNWrQJB78BEx5wwuo=;
-        b=IjRvNmFtlPn0r3sT+H04vStVCoPlDKQl53ex466GeRQYr+dQIc0x+rwk7noiEB3Jwr
-         qZVi8XjAzjA8RtIYeZgVYQVGn2QFog+bPJtVIuI+DNc/uQ4DeS/7sFy370xX/si2+X1Q
-         1IrPEBRrTHHyf9vaE+Zo7cHxWi43YUVHDpw7KfxASYnBe9FV9lVT+CbJuceRcMajQpdP
-         cTGdjZ8zk/JFYoexzFtZzQaqP2CJWxmU8r8XvosafECB0KRx4sMCIC0775gOiQydn+/m
-         aMpOyfj6r1e9W2aTCRpRPIHUcy+3gU8/7TYFhxhdSnwi5xSDoUL6Jj4LI79IVBb3DAHT
-         B1OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689714104; x=1692306104;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YSeAtmxK2ozxMkX1W97pDOi5lgnNWrQJB78BEx5wwuo=;
-        b=ijP3svelvUst6R51Uinlk+aeGOHIDcOzHgUEWKJDV7U6XcwFOCqOg/wA3rjg06+Mw0
-         ppMkZlh46oQ17X2BJI+1mXbYQfeZb1wBMVci7pJsa+7oPCAgbns8K5IznUSLwNtpDL3O
-         lgCo4aDlPJeOpPxQkD6GXF+Ctp4LP8THCRrHhNp42q24WiETuI4cPq15gNW9AWE23lOr
-         Cor4L25faAXuwuqWbUFsR0btsfBoYub+Arb5hRgHL2SoVIlar9jOGBINGvE62sEDavgm
-         b7AUyGWjeDmHHs8+b057BgtaApppY/xbtUxJqSSeypQWNLViv5Fj61oA9RtSyhDYnKMs
-         B8fg==
-X-Gm-Message-State: ABy/qLYkdODbUh/2Y0MxJks2RZYfKpMa7D7aMFU3YACEjjvGNTq1zNRS
-        RPxaMUlJ2yfLumMfv6F2eQpX1s0TjvyFk9Pogpzl4g==
-X-Google-Smtp-Source: APBJJlFlVPDF78BNASzD1gAKNvUNQb81r0wEFJnwAIB3I7LO8xrJ5ZkLREIX06Bp7nhPyq3xMX3SU743LX/3XBmJ1iM=
-X-Received: by 2002:ac2:4c14:0:b0:4f2:5b90:7ca9 with SMTP id
- t20-20020ac24c14000000b004f25b907ca9mr125185lfq.4.1689714103902; Tue, 18 Jul
- 2023 14:01:43 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NN8G0XwCRPtpwFuHCUVPBJcQ9zxa1UboDxvX4keZ6QI=;
+ b=c0cNPWnEohck9FvOWz7TVpksJ0r9AifSfQI1yHE20jw1+aWB0LqXxT/4YUQZbVQtSUivatIqjkoaYAc6wSfn6L7YjbUjrVBtq6MTkeap2btjQjpGKjUucPDlYR/Ge9WRcM0Ps0gLW9uoZFVJXbMkmZCwFugI6XrLKdCDgNul53g=
+Received: from MW5PR10MB5738.namprd10.prod.outlook.com (2603:10b6:303:19b::14)
+ by CY5PR10MB6023.namprd10.prod.outlook.com (2603:10b6:930:3d::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33; Tue, 18 Jul
+ 2023 21:02:57 +0000
+Received: from MW5PR10MB5738.namprd10.prod.outlook.com
+ ([fe80::1ad9:6eeb:6c8d:27d3]) by MW5PR10MB5738.namprd10.prod.outlook.com
+ ([fe80::1ad9:6eeb:6c8d:27d3%6]) with mapi id 15.20.6565.028; Tue, 18 Jul 2023
+ 21:02:57 +0000
+Message-ID: <97a9c205-2074-07f8-ae9d-9f2b4aebbf9a@oracle.com>
+Date:   Tue, 18 Jul 2023 16:02:53 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [wireguard?] [jfs?] KASAN: slab-use-after-free Read in
+ wg_noise_keypair_get
+Content-Language: en-US
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        syzbot <syzbot+96eb4e0d727f0ae998a6@syzkaller.appspotmail.com>
+Cc:     broonie@kernel.org, davem@davemloft.net, edumazet@google.com,
+        jfs-discussion@lists.sourceforge.net, kuba@kernel.org,
+        kuninori.morimoto.gx@renesas.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, povik+lin@cutebit.org,
+        syzkaller-bugs@googlegroups.com, wireguard@lists.zx2c4.com
+References: <0000000000002bfa570600c477b3@google.com>
+ <CAHmME9reBny-ufJp58uOg+KdMptircBRhLFd-N2KwxNUp6myTA@mail.gmail.com>
+From:   Dave Kleikamp <dave.kleikamp@oracle.com>
+In-Reply-To: <CAHmME9reBny-ufJp58uOg+KdMptircBRhLFd-N2KwxNUp6myTA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: CH0PR03CA0276.namprd03.prod.outlook.com
+ (2603:10b6:610:e6::11) To MW5PR10MB5738.namprd10.prod.outlook.com
+ (2603:10b6:303:19b::14)
 MIME-Version: 1.0
-References: <20230707210947.1208717-1-rmoar@google.com> <20230707210947.1208717-2-rmoar@google.com>
- <CABVgOSkoKUVHE8=Z0gwsn-SfhgVy8rO62s5mHbfu6GXB54OfWA@mail.gmail.com>
-In-Reply-To: <CABVgOSkoKUVHE8=Z0gwsn-SfhgVy8rO62s5mHbfu6GXB54OfWA@mail.gmail.com>
-From:   Rae Moar <rmoar@google.com>
-Date:   Tue, 18 Jul 2023 17:01:30 -0400
-Message-ID: <CA+GJov73sM+rfYXopfdwBtVcwNJhmqAB3b7dOe6NBh47Mxukgg@mail.gmail.com>
-Subject: Re: [RFC v2 1/9] kunit: Add test attributes API structure
-To:     David Gow <davidgow@google.com>
-Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, keescook@chromium.org,
-        linux-hardening@vger.kernel.org, jstultz@google.com,
-        tglx@linutronix.de, sboyd@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW5PR10MB5738:EE_|CY5PR10MB6023:EE_
+X-MS-Office365-Filtering-Correlation-Id: 616da5ea-75aa-4739-8484-08db87d25c70
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Iuvy15HYKVdHINpbUUFneQIVdRt9mjT05QYj5yhMTH0/PTI/0Sq3Ggk4b7Xuryym1uh4XdxusqghQT8I6fA2LlWInYUBOTHSOZCtihcAFVMVBsDqI4FmdZNDfRDs2s26D7HlceqGxK3W6/IPAfdozTsvRRhxbInsr/lECPy7+P8ejqzeK6CRrhFGt53pZ4FXada7s6Fy2smVOL89QouqxZ8UQSD8jpxzXq0qHO6hsVMadpF+BUFVZ9aioz9b4BbjZmoHaiDsQgGsnw+k6VTtI9PtZ/vrL+tGMx327dDa8GiereJmvXXCm2vvG7wrfHFNN8esRBMeBPvFWdMrYR6EpNR8Awj2M/wk+vH074U4FsD/jvWeO2qInZ8NVi5w2/lbKim48qGqSCsOPV2nFR/DUkJp5ac7N9W/QRFA6DVINgnfDdV16URVRuXTk08MhZ+UudJ3Cxbu1r/MjhAx8/5MNNsMRIbiGJWB4gifABj4bjLh6UfFUxBpwZSRFd3WshXnNaWq+p6x7JZlGyfS8L9eZQcZxMHWMW23oghjLLymIF/WnqKcodaXMzyllv5YTZjgmeFUATxgLqauiionLUwVtRLMB8H98q/hxZMbEqZJJByZDDOzH5tWZ7EUBQfQgElh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR10MB5738.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(346002)(136003)(366004)(376002)(39860400002)(451199021)(8936002)(8676002)(38100700002)(4744005)(2616005)(2906002)(31696002)(36756003)(5660300002)(6506007)(26005)(186003)(66476007)(86362001)(7416002)(66556008)(44832011)(66946007)(4326008)(110136005)(31686004)(6486002)(6666004)(41300700001)(478600001)(966005)(6512007)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RVBVL2NNOS80ZUZYRW9qQ1MyTStGR0pOV0Y3MHhlakdtRUwvNkdDTVg0ZDhu?=
+ =?utf-8?B?QVNCRDhKSCtKb1d6aWU4SDZsZHEwcVF2NTNJcGFSZlA4bmJ5Qkc5SkM0TVhE?=
+ =?utf-8?B?K0UrT2RLOTNnVnNvNkh5cGZYUlphaFJveVhqL0dVWjFKYnhTc3dGd1ZTQ2Rm?=
+ =?utf-8?B?enFhc24rYWhRclVEZTVWZ3JTNzJFUEx5QTkzK1g4bzFTR1VwdjFBb1lxUm5j?=
+ =?utf-8?B?dlVQWUVrdVU5VE1ZWHlTNVQvSHJHTGpQRnV1cXVBWTA0UlFwYUxBK3IxTmI1?=
+ =?utf-8?B?UGwzYjBlUWc3bitQZGFOL2hieHNuY0hoVnVwVGZoNFJ6K3VpREk1R3hFYzlO?=
+ =?utf-8?B?TnprN1dmaElkcTFkMnVaenZPVHA4Z0EweURoUXdkamUxRFRYWUpjdEZuR0hp?=
+ =?utf-8?B?RW9EWmRwN3YyeFdPMS8rL09ZdVczT21uVW5qSWl2bUFGZWRlbkFPRXFSbThY?=
+ =?utf-8?B?WnJmbGNjM1B2YlNVa09sbTIyT0Z0Q0ZtZk9yVDhLR3NjcXhyaUtpaStZWXJy?=
+ =?utf-8?B?SUNVS2JBRnBrRlpXV3NRTS9vRklsRVJpSjVVcGRISTdPRWwyL25WengyYld5?=
+ =?utf-8?B?bWdpTkJ5a2lhT3RqZGVLU01kRnlkbk9kNEFPbWNKMWdnYU8vRDQ2VjlKcG15?=
+ =?utf-8?B?QUcvdW9rcFlhaVRLRWRpcVd5NFdQVmxFTVB3MldiNnRKMDNlaUMySHpScVlQ?=
+ =?utf-8?B?cjJoN1FOS3l3SVFDeFc0eHhyZTF0QTNIdytZSjFOdjV4TEs5YmswdXR3OGJY?=
+ =?utf-8?B?cmhqWEdvN3c0a2s5K0dBT2N4Y3E5VTJOVVRydjZxWXZwVjlKNTVNTXRDcmdj?=
+ =?utf-8?B?c1ZBL1BwZGE2WERyeS9jQkNiZlVXUDZMVXpUdlJNYWQ2RHBhYWc5Z3RJOFAw?=
+ =?utf-8?B?YVBjM3J3a2RoYzlYUTVFVWcxZUZWWVdFTDVYVVEyWGR2YmdCcDhUR1JrOGtj?=
+ =?utf-8?B?MHptMDhrNWhYRktDUElNOG5wRFFpUUp4STJSb1ZlVGxtNHU3WTFVZmR6Y0kw?=
+ =?utf-8?B?eVA5enE0N0J5YytwaWpzTW4ybmlta2RRMWJXaWVtNlhQZTlHVTBYWWZ1T3Qz?=
+ =?utf-8?B?MldzTkd3dU51c0pJNGMwWXhNZGJpQVRoazBlbUV5MWtWb3hENk9KT1ltZmc5?=
+ =?utf-8?B?dW1tcFBZSjJVZGZCanNPVmJkd1RmWXhZbVEvSHdUcTdKMlRMR0daZzNtRktR?=
+ =?utf-8?B?VkVzVnRuZnIzSTJNU2hBVmV6NmVWa0t0dE8wbGp3UytrOFZpL1k5RGpTYUVa?=
+ =?utf-8?B?Y25hT0VlNzlNdnp4eE8xQ3Erb3R1b0R2N3JtMmdKN1VzdkZXdHNzL3dyTkYw?=
+ =?utf-8?B?SS9vTnBBdUlvdjNjc3ZQczBYU0FnTEpmbWd3NVZBU3psV0xLNC90RmhRa3dP?=
+ =?utf-8?B?SW9HVUhmdHRYVDc3M1QvcWFxcTg0aUIxUlFXbElVNFgvTXRvRUxrTkhLTzU2?=
+ =?utf-8?B?dFFtOTlBd0tNNHIxR2l6S3NmUldHL0ZGeEZNNkNJYjhteERWRThNR3dWQll3?=
+ =?utf-8?B?VnM1M1VESXB5RmNmaWJCZmxSNG9oQ2p6emdnLzU2RXhVNFVVb0ZyaS80RnFJ?=
+ =?utf-8?B?cFJPVXYySUhzblRFTlppSW5kMzRWNXExdExoaDgzdTVDYXh5UWJlbzhUTTNT?=
+ =?utf-8?B?VW45N2ZRczd2bHB1dDkyeWxhWTJlYmFFZFRBb0Q3UFNwaDZqNndCTGhYcHFD?=
+ =?utf-8?B?Zmx5SUNDZDYrWVFMdkNSREJ4RmdWNHlvT3lmeXJ5dUxDaW1odmdVMlRwbDRV?=
+ =?utf-8?B?K2NoTVNUTjZHWGZjVTRZV0p1M3VqS20yNWllVUhZWVFuQmdtQk9JZzRvNmts?=
+ =?utf-8?B?NEhMM0NzS0JpeHFwb1RGdmptaDVlWGZIbG40am9zS01tVGRIUlgvUm9XQXVk?=
+ =?utf-8?B?YkgwOGdUQ1FvdkZ0Q2ZRSGNpRkFOOHErSFhLWjl1R2lBZ1BycHdKYnVoaDhX?=
+ =?utf-8?B?YzBJYWdka1RtVDQwcTlsVnVLSDNGQUYvVStEOXR5UUxZdXkyT1JJVTZ4RGJq?=
+ =?utf-8?B?QWVybnNvUmJiekVrQlBtQUZsY2RmRU5qQ3l6MTRVT3MxWklTSmRqdTM1cmI2?=
+ =?utf-8?B?b1k4NWRyWWVXQ2tNdlpUanlXcWovUVJjMVJpd1BpNGhER2dXVFlPRVNqVlVt?=
+ =?utf-8?B?ZFhCQ0FMYk5tYUpTbzVFK21QOS9acFU4dzBUZlhtQ2F3RmpFQWUweVJOWmpO?=
+ =?utf-8?B?UXc9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?SGgwNDY3SEtGMm84aWoybmhvWEZLeGFoL0lSb0tIS2tlRDc3NmtETFBIWGdw?=
+ =?utf-8?B?aDZHSy9JeTAwWmFNandTdCtmeFp6QTVuQ2lrLysycjRqT1ZMam04bC9VSE1C?=
+ =?utf-8?B?b1BZWHNTTTU1NzhOMlE5RmxXbXcxNEF6WHZSMGp5ei8xYTZwRkFPZ0NqcDQw?=
+ =?utf-8?B?WGxCODRibkZIVlVmd3BKNzYxanNEODE4ZUlEbHlseWN3Q2tKYTcwYStmVHQ5?=
+ =?utf-8?B?NWF1NXN5UDdWZ25vbGtvQmxzWEhUQkdrUEJ1SDJGUjlaNGNBUnVRNkVVMk9o?=
+ =?utf-8?B?czA4VmFsbW5SeGg3Wms0L1NvWDZKbVB1dC9scEVRU3JZMVBXZGJSNVVUTWRn?=
+ =?utf-8?B?KzNCTGplQTd4dW43VldobGVWWTdSVzdNTTJ3aFdyNXYwTFB5NkE5b0NVNU94?=
+ =?utf-8?B?Zy90d013Tmg1aTd4dmlHeCtqTkNhY1VBVGZtWHRNRGJvcDNGTXJ0SC9NaXNt?=
+ =?utf-8?B?a0o1Zlp3eGZFVTJsZFg3cE04bWMvbUNMc0ZMdFJBK3NnVkpvNTJGSE8xS1Ro?=
+ =?utf-8?B?TFRlNUx3bzVxM0E1K0s4TjhEUzUwZUtEK2YrbXdKU1BXbldnd3RmaWkxKzFn?=
+ =?utf-8?B?Yk9pOWMxaVZJTzRFQ1Azc1BlS2hnVXBVZFRZdGxXRnRtL1E0aFRJQmhLOXVV?=
+ =?utf-8?B?MjFpTmlLUWJDdGVobGUydEZqV0VIWnFZa3M1Titld2ZkczZLUlFoRmprOW1r?=
+ =?utf-8?B?YnNtRS94d21uWDROV2cxOEtUWTFHNDRsZUNCMytuMEFBMDExUnVCWGhzNGdM?=
+ =?utf-8?B?VGdVeHFaR2NXRmpaZTBoZ3N6cFliZHg4S1hMMkIxWW01bFhDMlpVc2dRMmhH?=
+ =?utf-8?B?Rm1WN3NYVzRhS2ZKNWJVcnNSK0JzWndYcnFidVVjMmMxWnBPZkRWalA0dkhp?=
+ =?utf-8?B?UnJCRG1OL2FodWhwYmxXbHhDVUdWSFRBY0NNU2p1QXhqYUJZYTF3MHZxM2h4?=
+ =?utf-8?B?bnVEdnZuNEUzREFndGdSUGlxWDNMakFnOW5mREVTdVNZUkVZWk9TY3JVSVZU?=
+ =?utf-8?B?VFg4aDcvS1YzM3c0MjVEZFlyTHZqQWNDWUlNOFNveWFBWlhOMExCTGpZY2hL?=
+ =?utf-8?B?OS8reUIxNElvelJONnhhVldWNkdrWlg1U3R0R042VlRYRE5paUlmeDRoaGli?=
+ =?utf-8?B?ZzZCVlhJeTVSVjVuOEcycEFvMmhWbDY4SzBWcDk3K21qekUzc1pmL3ZrMnFV?=
+ =?utf-8?B?bEUxUkVOaU9HYVlCRG1VdVNhZnp6UmhYZWNzVVdvMFdjUm1BVTd2WDNBTGtL?=
+ =?utf-8?B?RFVaQjFPR3c2eTVoRlBiNXJ4VHhpaFlWTjhkTmFGKzJ2VDZ5OGpYTXhNU2tw?=
+ =?utf-8?B?Zm1nUmRoRGRheTVuT3I1VCtPQVNmb0NWMUsrK3VkNnlMU3grdWMwSXFmUlor?=
+ =?utf-8?B?eHNhKzZTSHpOZElDSnpFMHdiTGI3YnozbmM2YnpOQzdjL2t4WXpoR3ZQUEVP?=
+ =?utf-8?B?TDFSb3l1RGpna3hrZHVkQUh6bkh0RG5KQVB1OWtPcmhwakF3ZmtibmRNS044?=
+ =?utf-8?B?Y2J6empqWUo2Qm41eGd5Uno2djJFVzIvd2ZnZlE2VU1hN2xyVTFKZ2RtSUZr?=
+ =?utf-8?Q?EX16Je5HnUaJEQfYtCs7XOgFbUoBJ/JmunJxMoOqGO0mir?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 616da5ea-75aa-4739-8484-08db87d25c70
+X-MS-Exchange-CrossTenant-AuthSource: MW5PR10MB5738.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 21:02:57.0139
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L9moOzAZxsJloIrlV+mNwsN3cv3yjiWiSM4Xoy2uJuLBTLPxzxIQjl8po3Tv9fIX1TOQNDaAPPgf2klW55vp6K4HHi9VyLoL4Ma43wLxBpg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR10MB6023
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-18_16,2023-07-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxscore=0 adultscore=0 spamscore=0 phishscore=0 bulkscore=0
+ mlxlogscore=791 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307180191
+X-Proofpoint-ORIG-GUID: gFF5ggmlqHNSLPIiVkGA2s5JRgvM-6mH
+X-Proofpoint-GUID: gFF5ggmlqHNSLPIiVkGA2s5JRgvM-6mH
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 3:39=E2=80=AFAM David Gow <davidgow@google.com> wro=
-te:
->
-> On Sat, 8 Jul 2023 at 05:09, Rae Moar <rmoar@google.com> wrote:
-> >
-> > Add the basic structure of the test attribute API to KUnit, which can b=
-e
-> > used to save and access test associated data.
-> >
-> > Add attributes.c and attributes.h to hold associated structs and functi=
-ons
-> > for the API.
-> >
-> > Create a struct that holds a variety of associated helper functions for
-> > each test attribute. These helper functions will be used to get the
-> > attribute value, convert the value to a string, and filter based on the
-> > value. This struct is flexible by design to allow for attributes of
-> > numerous types and contexts.
-> >
-> > Add a method to print test attributes in the format of "# [<test_name i=
-f
-> > not suite>.]<attribute_name>: <attribute_value>".
-> >
-> > Example for a suite: "# speed: slow"
-> >
-> > Example for a test case: "# test_case.speed: very_slow"
->
-> So, this is the one thing I'm a little unsure about here, and it's
-> really more of a problem with test names overall.
->
-> As noted in the KTAPv2 attributes and test name proposals, the names
-> and attributes are only really defined for "suites", hence the need to
-> have a different output format for test cases.
->
-> Personally, I'd prefer to keep the formats the same if we can (at
-> least for the actual KTAP output; I'm less concerned with the
-> list_attr option). That might make things a bit more difficult to
-> parse, though.
->
-> One possibility would be to combine the KTAP attributes and test name
-> specs and suggest that every test has a "test name" attribute, which
-> must be the first attribute output.
->
-> The output would then look something like:
-> KTAP version 2
-> # Name: my_suite
-> # Other-Attr: value
-> 1..2
->   KTAP version 2
->   # Name: test_1
->   # Other-Attr: value
->   ok 1 test_1
->   # Name: test_2
->   # Other-Attr: value
->   not ok 2 test_2
-> ok 1 my_suite
->
-> Would there be any problems with something like that?
->
-> I'm less concerned with the list_attr option, as that's not something
-> totally standardised in the way KTAP is.
->
+On 7/18/23 12:57PM, Jason A. Donenfeld wrote:
+> Freed in:
+> 
+>   diUnmount+0xf3/0x100 fs/jfs/jfs_imap.c:195
+>   jfs_umount+0x186/0x3a0 fs/jfs/jfs_umount.c:63
+>   jfs_put_super+0x8a/0x190 fs/jfs/super.c:194
+> 
+> So maybe not a wg issue?
 
-This is a really interesting idea. I like that this standardizes the
-concept of KTAP test metadata for both test suites and test cases. I
-would love to discuss this concept further as KTAP v2 is developed.
+Maybe not. It could possibly fixed by:
+https://github.com/kleikamp/linux-shaggy/commit/6e2bda2c192d0244b5a78b787ef20aa10cb319b7
 
-My main concern would be that there is push back on stating the test
-name when it is already present in the result line. This adds
-potentially unnecessary lines to the output. However, one positive to
-this is that diagnostic data could be printed under this header which
-would reduce any confusion for which test the diagnostic data refers
-to.
-
-I would be interested if anyone else has any opinions on this.
-
-> >
-> > Use this method to report attributes in the KTAP output (KTAP spec:
-> > https://docs.kernel.org/dev-tools/ktap.html) and _list_tests output whe=
-n
-> > kernel's new kunit.action=3Dlist_attr option is used. Note this is deri=
-vative
-> > of the kunit.action=3Dlist option.
-> >
-> > In test.h, add fields and associated helper functions to test cases and
-> > suites to hold user-inputted test attributes.
-> >
-> > Signed-off-by: Rae Moar <rmoar@google.com>
-> > ---
->
-> The only other thing I'd really like to support one day is having
-> attributes for individual parameters in parameterised tests. I think
-> it makes sense as a follow-up, though.
->
-
-That is an exciting idea! I think that would be ideal as a follow-up.
-
-> >
-> > Changes since v1:
-> > - Add list_attr option to only include attribute in the _list_tests out=
-put
-> >   when this module param is set
-> > - Add printing options for attributes to print always, print only for
-> >   suites, or print never.
-> >
-> >  include/kunit/attributes.h | 19 +++++++++
-> >  include/kunit/test.h       | 33 ++++++++++++++++
-> >  lib/kunit/Makefile         |  3 +-
-> >  lib/kunit/attributes.c     | 80 ++++++++++++++++++++++++++++++++++++++
-> >  lib/kunit/executor.c       | 21 ++++++++--
-> >  lib/kunit/test.c           | 17 ++++----
-> >  6 files changed, 161 insertions(+), 12 deletions(-)
-> >  create mode 100644 include/kunit/attributes.h
-> >  create mode 100644 lib/kunit/attributes.c
-> >
-> > diff --git a/include/kunit/attributes.h b/include/kunit/attributes.h
-> > new file mode 100644
-> > index 000000000000..9fcd184cce36
-> > --- /dev/null
-> > +++ b/include/kunit/attributes.h
-> > @@ -0,0 +1,19 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * KUnit API to save and access test attributes
-> > + *
-> > + * Copyright (C) 2023, Google LLC.
-> > + * Author: Rae Moar <rmoar@google.com>
-> > + */
-> > +
-> > +#ifndef _KUNIT_ATTRIBUTES_H
-> > +#define _KUNIT_ATTRIBUTES_H
-> > +
-> > +/*
-> > + * Print all test attributes for a test case or suite.
-> > + * Output format for test cases: "# <test_name>.<attribute>: <value>"
-> > + * Output format for test suites: "# <attribute>: <value>"
-> > + */
-> > +void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int =
-test_level);
-> > +
-> > +#endif /* _KUNIT_ATTRIBUTES_H */
-> > diff --git a/include/kunit/test.h b/include/kunit/test.h
-> > index 23120d50499e..1fc9155988e9 100644
-> > --- a/include/kunit/test.h
-> > +++ b/include/kunit/test.h
-> > @@ -63,12 +63,16 @@ enum kunit_status {
-> >         KUNIT_SKIPPED,
-> >  };
-> >
-> > +/* Holds attributes for each test case and suite */
-> > +struct kunit_attributes {};
->
-> Do we want a separate set of attributes for test cases and suites?
-> (I think probably not, but it's worth making sure.)
->
-
-I'm thinking if our goal is to eventually move to arbitrary nesting
-for tests it would be easiest to try to keep this list the same. But I
-agree. There may definitely be attributes that are more applicable for
-test cases or suites. I'm inclined to keep it this way.
-
-> > +
-> >  /**
-> >   * struct kunit_case - represents an individual test case.
-> >   *
-> >   * @run_case: the function representing the actual test case.
-> >   * @name:     the name of the test case.
-> >   * @generate_params: the generator function for parameterized tests.
-> > + * @attr:     the attributes associated with the test
-> >   *
-> >   * A test case is a function with the signature,
-> >   * ``void (*)(struct kunit *)``
-> > @@ -104,6 +108,7 @@ struct kunit_case {
-> >         void (*run_case)(struct kunit *test);
-> >         const char *name;
-> >         const void* (*generate_params)(const void *prev, char *desc);
-> > +       struct kunit_attributes attr;
-> >
-> >         /* private: internal use only. */
-> >         enum kunit_status status;
-> > @@ -133,6 +138,18 @@ static inline char *kunit_status_to_ok_not_ok(enum=
- kunit_status status)
-> >   */
-> >  #define KUNIT_CASE(test_name) { .run_case =3D test_name, .name =3D #te=
-st_name }
-> >
-> > +/**
-> > + * KUNIT_CASE_ATTR - A helper for creating a &struct kunit_case
-> > + * with attributes
-> > + *
-> > + * @test_name: a reference to a test case function.
-> > + * @attributes: a reference to a struct kunit_attributes object contai=
-ning
-> > + * test attributes
-> > + */
-> > +#define KUNIT_CASE_ATTR(test_name, attributes)                 \
-> > +               { .run_case =3D test_name, .name =3D #test_name,    \
-> > +                 .attr =3D attributes }
-> > +
-> >  /**
-> >   * KUNIT_CASE_PARAM - A helper for creation a parameterized &struct ku=
-nit_case
-> >   *
-> > @@ -154,6 +171,20 @@ static inline char *kunit_status_to_ok_not_ok(enum=
- kunit_status status)
-> >                 { .run_case =3D test_name, .name =3D #test_name,    \
-> >                   .generate_params =3D gen_params }
-> >
-> > +/**
-> > + * KUNIT_CASE_PARAM_ATTR - A helper for creating a parameterized &stru=
-ct
-> > + * kunit_case with attributes
-> > + *
-> > + * @test_name: a reference to a test case function.
-> > + * @gen_params: a reference to a parameter generator function.
-> > + * @attributes: a reference to a struct kunit_attributes object contai=
-ning
-> > + * test attributes
-> > + */
-> > +#define KUNIT_CASE_PARAM_ATTR(test_name, gen_params, attributes)      =
- \
-> > +               { .run_case =3D test_name, .name =3D #test_name,    \
-> > +                 .generate_params =3D gen_params,                     =
-           \
-> > +                 .attr =3D attributes }
-> > +
->
-> I do worry a bit that we'll end up with a huge list of variants of the
-> KUNIT_CASE_* macros if we start adding more things here. I can't think
-> of a better way to handle it at the moment, though.
->
->
-
-I agree. If this becomes an issue, this could be a follow up change?
-
->
-> >  /**
-> >   * struct kunit_suite - describes a related collection of &struct kuni=
-t_case
-> >   *
-> > @@ -163,6 +194,7 @@ static inline char *kunit_status_to_ok_not_ok(enum =
-kunit_status status)
-> >   * @init:      called before every test case.
-> >   * @exit:      called after every test case.
-> >   * @test_cases:        a null terminated array of test cases.
-> > + * @attr:      the attributes associated with the test suite
-> >   *
-> >   * A kunit_suite is a collection of related &struct kunit_case s, such=
- that
-> >   * @init is called before every test case and @exit is called after ev=
-ery
-> > @@ -182,6 +214,7 @@ struct kunit_suite {
-> >         int (*init)(struct kunit *test);
-> >         void (*exit)(struct kunit *test);
-> >         struct kunit_case *test_cases;
-> > +       struct kunit_attributes attr;
-> >
-> >         /* private: internal use only */
-> >         char status_comment[KUNIT_STATUS_COMMENT_SIZE];
-> > diff --git a/lib/kunit/Makefile b/lib/kunit/Makefile
-> > index cb417f504996..46f75f23dfe4 100644
-> > --- a/lib/kunit/Makefile
-> > +++ b/lib/kunit/Makefile
-> > @@ -6,7 +6,8 @@ kunit-objs +=3D                           test.o \
-> >                                         string-stream.o \
-> >                                         assert.o \
-> >                                         try-catch.o \
-> > -                                       executor.o
-> > +                                       executor.o \
-> > +                                       attributes.o
-> >
-> >  ifeq ($(CONFIG_KUNIT_DEBUGFS),y)
-> >  kunit-objs +=3D                          debugfs.o
-> > diff --git a/lib/kunit/attributes.c b/lib/kunit/attributes.c
-> > new file mode 100644
-> > index 000000000000..9bda5a5f4030
-> > --- /dev/null
-> > +++ b/lib/kunit/attributes.c
-> > @@ -0,0 +1,80 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * KUnit API to save and access test attributes
-> > + *
-> > + * Copyright (C) 2023, Google LLC.
-> > + * Author: Rae Moar <rmoar@google.com>
-> > + */
-> > +
-> > +#include <kunit/test.h>
-> > +#include <kunit/attributes.h>
-> > +
-> > +/* Options for printing attributes:
-> > + * PRINT_ALWAYS - attribute is printed for every test case and suite i=
-f set
-> > + * PRINT_SUITE - attribute is printed for every suite if set but not f=
-or test cases
-> > + * PRINT_NEVER - attribute is never printed
-> > + */
-> > +enum print_ops {
-> > +       PRINT_ALWAYS,
-> > +       PRINT_SUITE,
-> > +       PRINT_NEVER,
-> > +};
-> > +
-> > +/**
-> > + * struct kunit_attr - represents a test attribute and holds flexible
-> > + * helper functions to interact with attribute.
-> > + *
-> > + * @name: name of test attribute, eg. speed
-> > + * @get_attr: function to return attribute value given a test
-> > + * @to_string: function to return string representation of given
-> > + * attribute value
-> > + * @filter: function to indicate whether a given attribute value passe=
-s a
-> > + * filter
-> > + */
-> > +struct kunit_attr {
-> > +       const char *name;
-> > +       void *(*get_attr)(void *test_or_suite, bool is_test);
-> > +       const char *(*to_string)(void *attr, bool *to_free);
-> > +       int (*filter)(void *attr, const char *input, int *err);
-> > +       void *attr_default;
-> > +       enum print_ops print;
-> > +};
-> > +
-> > +/* List of all Test Attributes */
-> > +
-> > +static struct kunit_attr kunit_attr_list[] =3D {};
-> > +
-> > +/* Helper Functions to Access Attributes */
-> > +
-> > +void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int =
-test_level)
-> > +{
-> > +       int i;
-> > +       bool to_free;
-> > +       void *attr;
-> > +       const char *attr_name, *attr_str;
-> > +       struct kunit_suite *suite =3D is_test ? NULL : test_or_suite;
-> > +       struct kunit_case *test =3D is_test ? test_or_suite : NULL;
-> > +
-> > +       for (i =3D 0; i < ARRAY_SIZE(kunit_attr_list); i++) {
-> > +               if (kunit_attr_list[i].print =3D=3D PRINT_NEVER ||
-> > +                               (test && kunit_attr_list[i].print =3D=
-=3D PRINT_SUITE))
-> > +                       continue;
-> > +               attr =3D kunit_attr_list[i].get_attr(test_or_suite, is_=
-test);
-> > +               if (attr) {
-> > +                       attr_name =3D kunit_attr_list[i].name;
-> > +                       attr_str =3D kunit_attr_list[i].to_string(attr,=
- &to_free);
-> > +                       if (test) {
-> > +                               kunit_log(KERN_INFO, test, "%*s# %s.%s:=
- %s",
-> > +                                       KUNIT_INDENT_LEN * test_level, =
-"", test->name,
-> > +                                       attr_name, attr_str);
-> > +                       } else {
-> > +                               kunit_log(KERN_INFO, suite, "%*s# %s: %=
-s",
-> > +                                       KUNIT_INDENT_LEN * test_level, =
-"", attr_name, attr_str);
-> > +                       }
-> > +
-> > +                       /* Free to_string of attribute if needed */
-> > +                       if (to_free)
-> > +                               kfree(attr_str);
-> > +               }
-> > +       }
-> > +}
-> > diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-> > index 74982b83707c..12e38a48a5cc 100644
-> > --- a/lib/kunit/executor.c
-> > +++ b/lib/kunit/executor.c
-> > @@ -2,6 +2,7 @@
-> >
-> >  #include <linux/reboot.h>
-> >  #include <kunit/test.h>
-> > +#include <kunit/attributes.h>
-> >  #include <linux/glob.h>
-> >  #include <linux/moduleparam.h>
-> >
-> > @@ -24,7 +25,8 @@ module_param_named(action, action_param, charp, 0);
-> >  MODULE_PARM_DESC(action,
-> >                  "Changes KUnit executor behavior, valid values are:\n"
-> >                  "<none>: run the tests like normal\n"
-> > -                "'list' to list test names instead of running them.\n"=
-);
-> > +                "'list' to list test names instead of running them.\n"
-> > +                "'list_attr' to list test names and attributes instead=
- of running them.\n");
-> >
-> >  /* glob_match() needs NULL terminated strings, so we need a copy of fi=
-lter_glob_param. */
-> >  struct kunit_test_filter {
-> > @@ -172,7 +174,7 @@ static void kunit_exec_run_tests(struct suite_set *=
-suite_set)
-> >         __kunit_test_suites_init(suite_set->start, num_suites);
-> >  }
-> >
-> > -static void kunit_exec_list_tests(struct suite_set *suite_set)
-> > +static void kunit_exec_list_tests(struct suite_set *suite_set, bool in=
-clude_attr)
-> >  {
-> >         struct kunit_suite * const *suites;
-> >         struct kunit_case *test_case;
-> > @@ -180,10 +182,19 @@ static void kunit_exec_list_tests(struct suite_se=
-t *suite_set)
-> >         /* Hack: print a ktap header so kunit.py can find the start of =
-KUnit output. */
-> >         pr_info("KTAP version 1\n");
-> >
-> > -       for (suites =3D suite_set->start; suites < suite_set->end; suit=
-es++)
-> > +       for (suites =3D suite_set->start; suites < suite_set->end; suit=
-es++) {
-> > +               /* Print suite name and suite attributes */
-> > +               pr_info("%s\n", (*suites)->name);
-> > +               if (include_attr)
-> > +                       kunit_print_attr((void *)(*suites), false, 0);
-> > +
-> > +               /* Print test case name and attributes in suite */
-> >                 kunit_suite_for_each_test_case((*suites), test_case) {
-> >                         pr_info("%s.%s\n", (*suites)->name, test_case->=
-name);
-> > +                       if (include_attr)
-> > +                               kunit_print_attr((void *)test_case, tru=
-e, 0);
-> >                 }
-> > +       }
-> >  }
-> >
-> >  int kunit_run_all_tests(void)
-> > @@ -206,7 +217,9 @@ int kunit_run_all_tests(void)
-> >         if (!action_param)
-> >                 kunit_exec_run_tests(&suite_set);
-> >         else if (strcmp(action_param, "list") =3D=3D 0)
-> > -               kunit_exec_list_tests(&suite_set);
-> > +               kunit_exec_list_tests(&suite_set, false);
-> > +       else if (strcmp(action_param, "list_attr") =3D=3D 0)
-> > +               kunit_exec_list_tests(&suite_set, true);
-> >         else
-> >                 pr_err("kunit executor: unknown action '%s'\n", action_=
-param);
-> >
-> > diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> > index 84e4666555c9..9ee55139ecd1 100644
-> > --- a/lib/kunit/test.c
-> > +++ b/lib/kunit/test.c
-> > @@ -9,6 +9,7 @@
-> >  #include <kunit/resource.h>
-> >  #include <kunit/test.h>
-> >  #include <kunit/test-bug.h>
-> > +#include <kunit/attributes.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/module.h>
-> >  #include <linux/moduleparam.h>
-> > @@ -168,6 +169,13 @@ size_t kunit_suite_num_test_cases(struct kunit_sui=
-te *suite)
-> >  }
-> >  EXPORT_SYMBOL_GPL(kunit_suite_num_test_cases);
-> >
-> > +/* Currently supported test levels */
-> > +enum {
-> > +       KUNIT_LEVEL_SUITE =3D 0,
-> > +       KUNIT_LEVEL_CASE,
-> > +       KUNIT_LEVEL_CASE_PARAM,
-> > +};
-> > +
-> >  static void kunit_print_suite_start(struct kunit_suite *suite)
-> >  {
-> >         /*
-> > @@ -181,17 +189,11 @@ static void kunit_print_suite_start(struct kunit_=
-suite *suite)
-> >         pr_info(KUNIT_SUBTEST_INDENT "KTAP version 1\n");
-> >         pr_info(KUNIT_SUBTEST_INDENT "# Subtest: %s\n",
-> >                   suite->name);
-> > +       kunit_print_attr((void *)suite, false, KUNIT_LEVEL_CASE);
-> >         pr_info(KUNIT_SUBTEST_INDENT "1..%zd\n",
-> >                   kunit_suite_num_test_cases(suite));
-> >  }
-> >
-> > -/* Currently supported test levels */
-> > -enum {
-> > -       KUNIT_LEVEL_SUITE =3D 0,
-> > -       KUNIT_LEVEL_CASE,
-> > -       KUNIT_LEVEL_CASE_PARAM,
-> > -};
-> > -
-> >  static void kunit_print_ok_not_ok(struct kunit *test,
-> >                                   unsigned int test_level,
-> >                                   enum kunit_status status,
-> > @@ -651,6 +653,7 @@ int kunit_run_tests(struct kunit_suite *suite)
-> >                         }
-> >                 }
-> >
-> > +               kunit_print_attr((void *)test_case, true, KUNIT_LEVEL_C=
-ASE);
-> >
-> >                 kunit_print_test_stats(&test, param_stats);
-> >
-> > --
-> > 2.41.0.255.g8b1d071c50-goog
-> >
+Shaggy
