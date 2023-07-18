@@ -2,155 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1092B758157
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED11758161
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233741AbjGRPuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 11:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        id S233750AbjGRPxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 11:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233700AbjGRPut (ORCPT
+        with ESMTP id S233743AbjGRPxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 11:50:49 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2054.outbound.protection.outlook.com [40.107.93.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 114A0172B;
-        Tue, 18 Jul 2023 08:50:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IYxFeCkCRsTljNz3FiZz2tjrjmdsJ5H4HLUSZHbnUhELjtm1SUuUUmEN+pdrKtqy0pvVcHSbSjaL2a2BXfCD8ouw23VsH3Kr9cAdmjlp42z1aX+ZRo83t0teu+J/FEke3uMCmrqWSV6j7437Iat+Fm/Ejb/srDHI2SRjNBYUgvR4Hay9ByXjBR2pVDFNUHlEReP1xdkyHZajTWQ9Vr/5aP7IKaptN7IS/C7pB/vPrxfENhrpBP6fg6HottWf/GzGvfu0E6xuzx0YGDllqVgOVXRkWRSVGP5i8BZPa351aLS2dC+0d9PTF6McpOV++qC8osnnCu/NENISR/064joo1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HqVJ4A73agcGt7gS2MNk3R9JOpQ6OImiQhToI6uRVaI=;
- b=asMOZM/4Z8nzzUEgrGa6mxshrghvN5R0NZLIlL5r+eGrDoH9cpLiA5JrplufX3mQ2J8NA1mxbna74wuDDlLh7JYJr9RYJ/DSSWbXItH8Wvm3Nh9j6abAEnXmT+v0JNpw4BddP9bCBlIHbY4INyS8unwPLjeL9BqTL1lg2yOiHUn9jnKLm+pQscfk+aqMf4AjBaWgLfwgAgRGXBHlE6KfaAKbLhz8UrW4Bd0d2yEJ0nW2D3l4bv9git9CZ/AP3cXWekeA2jwEd+9NqAoZ0m3fEUWcmof3c6U6M7iPBKnu/lSVEot61lhkK6TYKPpEqU7u/huPKAb7w9VdzCSrUHXYRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HqVJ4A73agcGt7gS2MNk3R9JOpQ6OImiQhToI6uRVaI=;
- b=bgyBPYX0OBXHswK8PmorUDM0i+4Zytqj9YJsHDcFJ0J45VMIC5SwAGL7NqEs3Xlbm76EVGA9fRTgLS4X5ier+01Igq3tYBdX1kNQXwseomUWeVM9X8VqTdMpkvm05Ykyvruz+69unQ1SAPuSTeo6sDmatFWlE8yP+tPwo8BXhlI=
-Received: from DS7PR03CA0354.namprd03.prod.outlook.com (2603:10b6:8:55::12) by
- SJ2PR12MB8182.namprd12.prod.outlook.com (2603:10b6:a03:4fd::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32; Tue, 18 Jul
- 2023 15:50:42 +0000
-Received: from DM6NAM11FT101.eop-nam11.prod.protection.outlook.com
- (2603:10b6:8:55:cafe::97) by DS7PR03CA0354.outlook.office365.com
- (2603:10b6:8:55::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.23 via Frontend
- Transport; Tue, 18 Jul 2023 15:50:41 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- DM6NAM11FT101.mail.protection.outlook.com (10.13.172.208) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6588.33 via Frontend Transport; Tue, 18 Jul 2023 15:50:41 +0000
-Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Tue, 18 Jul
- 2023 10:50:41 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB08.amd.com
- (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Tue, 18 Jul
- 2023 08:50:40 -0700
-Received: from [172.19.74.144] (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.23 via Frontend
- Transport; Tue, 18 Jul 2023 10:50:40 -0500
-Message-ID: <6fc414de-2693-87b6-719d-e3b168a570e4@amd.com>
-Date:   Tue, 18 Jul 2023 08:50:35 -0700
+        Tue, 18 Jul 2023 11:53:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19CF127
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:52:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689695535;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vCJR11Z8LE62Lpm8j/WH0EMwgBueVBllyGpJYTK0igw=;
+        b=PykKkRImx35xGdEzEbXxM08pIS/G1JZBNoqJBkqFBQExfx2r+GaVgiXX6kreNXsPagqG3l
+        yWMzR7LydS59vT2jgFdCpoUWZtEVlrhTzHSMqNe3L+SxoLq2oY5XHRXJJJq9xcx/21xH0B
+        pWaUlYagSN4x9cGulzoMt6TSb+oXst0=
+Received: from mail-vs1-f72.google.com (mail-vs1-f72.google.com
+ [209.85.217.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-199-gRe12vDbOA6XIwJcCL4AFw-1; Tue, 18 Jul 2023 11:52:12 -0400
+X-MC-Unique: gRe12vDbOA6XIwJcCL4AFw-1
+Received: by mail-vs1-f72.google.com with SMTP id ada2fe7eead31-4409ff60c89so832774137.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:52:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689695528; x=1692287528;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vCJR11Z8LE62Lpm8j/WH0EMwgBueVBllyGpJYTK0igw=;
+        b=bafQYVAhgQJFoDszS262gQdiYmt7cTAFSOw5WkYJS+2hqgR1XssUprM01sKJzAEVix
+         yjELjPKo+aQqoUrnEGGKpTQAU5dHltqp1kz9oKhF8OPT2XCg1xBvYdHBbd2ww5Czmnof
+         QC0eaM0mS1etRp57SPJ4DsdiO0hzFCpVUz4hR7k06h2kpJn3NhD2uaUNyQDVI2fNqbd4
+         G1fAtY4ce5rOQPu9YBND5w5qOSvRatxatyztcxrQZ+b3dq5XNq/6299PQpzFM4zuXNoU
+         6VikTrXkECYyRDzXDdjJGP694+1P3/tBhpku7aLy3EWsCxu7zhYn5JbBx/RWvIWmZRH/
+         exJA==
+X-Gm-Message-State: ABy/qLbDRojM6eETMHHxlbnRlA+lcL8rx5X4ARFOxJohZAvl7BMZk3ax
+        3ozKP5pQgU/KITSLGuqLg8Lds8mtCa+kiEOk6EyjC6NWqePKSN1MXayhVNmZ7WdR+0ccyOLIIs0
+        z/nrT/AzabQivKGxl2p6I6S/Z9Aa3GSHgG4GP//Cx
+X-Received: by 2002:a67:ff01:0:b0:443:791d:b238 with SMTP id v1-20020a67ff01000000b00443791db238mr6483883vsp.9.1689695528403;
+        Tue, 18 Jul 2023 08:52:08 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHx7TnoVha2KQxDUcfbEVH1mqMZlCoaaSbpuFUe/jJOhtq97LtyZ/ltqGMFo5x/i9o+5gqoReLi5dj6ji6SGrI=
+X-Received: by 2002:a67:ff01:0:b0:443:791d:b238 with SMTP id
+ v1-20020a67ff01000000b00443791db238mr6483867vsp.9.1689695528166; Tue, 18 Jul
+ 2023 08:52:08 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH V10 2/5] PCI: Create device tree node for bridge
-Content-Language: en-US
-From:   Lizhi Hou <lizhi.hou@amd.com>
-To:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>
-CC:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <max.zhen@amd.com>,
-        <sonal.santan@amd.com>, <stefano.stabellini@xilinx.com>
-References: <1688059190-4225-3-git-send-email-lizhi.hou@amd.com>
- <20230629225631.GA446944@bhelgaas> <20230629235226.GA92592-robh@kernel.org>
- <9f39fc3d-ae40-e5b1-8d40-8c27fc4e1022@amd.com>
-In-Reply-To: <9f39fc3d-ae40-e5b1-8d40-8c27fc4e1022@amd.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT101:EE_|SJ2PR12MB8182:EE_
-X-MS-Office365-Filtering-Correlation-Id: ddfb7a9b-e98b-4771-f9c1-08db87a6bd8e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kiRyukwepGA5ecx3DmEjZL2vS06Z55EinNQgpE9dV9b+1dq0GOkxnNHApTTs5rqWgaLwJmM8krYrImQF5o2dwkBRldca7r7IBMha0Qz6OUAwyi7446wVPG4NtZZ64DTFwDiYEt5Vwjgrkw0xT14526hiZtBa2iEODbVJeNh7Ds0lo8dTXSymK3nCCnTg1EnEMSNIq7F9dzJMvsAneKcVeTMF5QihISj0sc8usZ5Efqj+3+YOXzZDFaXLAfL1rwRBLMLJD0dJKiMFi1Ld83yu1OkvzTCC+kU59g/ivUmlSGaPqhSb9q4pQB5U5GwLMN5wHf30Px3YZwarLX11TPIK9EHJeG9mkhhP+T5VoXZk9KLr50eDVjZn3h/n65PZbcsL1YPSmh0KyC3IqQndbJ1bAn5rwcqkT08Dh43ky43At/9O51D8zMEYVlVNgysRyak3SsJTrWq3cp6h4kQiToriAB6GnXvM0U1/oJ6YU1nDTOK5iTN9Cs2oUPNrD4NpoOlyB+xvve9MDS6DFK7uIXMca00z1iLF4Dkbto+FPnIbWKFfW3HDNrZ0LoHLzWn6bU7ficmkFBQulGd7Q604w9HtMhMqkbgIYwDR3bjG1xxg7jqQ9UUCrJfMiWsjNvVSecxBQUHJrGdW+z9vR2DSF4tisi93wTEwKbLgKDC3JGx07K6VNwzE1jN8I2n+pc/az/cGNQ8Cs5AH94rp4lbLqPwnXxgadqPSLjPP6Jh/yqK3Vl28oPH+WqYzJZ7ub1q4DIqFST1kzbUVCgSMc/yI/msJ6VTs6IyOgRFiI8JJ/n7UbNsMnyxUv5Xq7kjBxcisZuRd1Fq3VCD4Zlx+zPdmaOpMQA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(136003)(346002)(396003)(82310400008)(451199021)(36840700001)(46966006)(40470700004)(41300700001)(8676002)(70586007)(966005)(2906002)(8936002)(70206006)(6666004)(54906003)(356005)(86362001)(31686004)(16576012)(4326008)(36860700001)(316002)(44832011)(81166007)(47076005)(36756003)(5660300002)(426003)(2616005)(40460700003)(83380400001)(186003)(336012)(26005)(40480700001)(31696002)(82740400003)(53546011)(110136005)(478600001)(43740500002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 15:50:41.6860
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ddfb7a9b-e98b-4771-f9c1-08db87a6bd8e
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT101.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8182
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230711154449.1378385-1-eesposit@redhat.com> <ZK/9MlTh435FP5Ji@gambale.home>
+ <df7941b9-11ea-9abd-e070-4e9926aecdc3@redhat.com> <CAMw=ZnTSyeL4x1o_GVKNsZdCUe2D2H53quK-TSFhOkuONjC73A@mail.gmail.com>
+In-Reply-To: <CAMw=ZnTSyeL4x1o_GVKNsZdCUe2D2H53quK-TSFhOkuONjC73A@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Date:   Tue, 18 Jul 2023 17:51:56 +0200
+Message-ID: <CABgObfb_jGgs-yMSsHtHhEStFDp4f072LN7pW+3dSuVhAP87Ag@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+To:     Luca Boccassi <bluca@debian.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        lennart@poettering.net, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Tue, Jul 18, 2023 at 4:03=E2=80=AFPM Luca Boccassi <bluca@debian.org> wr=
+ote:
+>> If you try to do this for the OS, however, Linux's "vulnerabilities are
+>> just bugs" mantra hits hard---more specifically the reverse: all bugs
+>> are potential vulnerabilities.  Sure you can hope for the best, which is
+>> what we do with module signing and with the (non-upstream) secure boot
+>> lockdown patches.  In the end, however, an unpatched code execution or
+>> memory write vulnerability is always a potential rootkit.  While we
+>> don't have _too_ many of those, there are enough that the idea of a
+>> revocation index becomes completely unfeasible, not too mention those
+>> that are fixed silently not because "that's the way Linus does it" but
+>> rather because we genuinely didn't think of them as security fixes.
+>
+> Lockdown is upstream and has been for several years.
 
-Do you have any comment on this?
+Almost (the missing part is automatically locking down the kernel if
+running under secure boot, which is what I referred to).
 
-Thanks,
+> Grub also gets plenty of bug fixes that are not classed as security
+> fixes, and so does Shim, and so does everything else. And they both
+> have plenty of user interaction, and plenty of variability. Heck, Grub
+> has its own complex configuration language that can take live input at
+> boot, _and_ reimplements most of the kernel filesystems!
+>
+> But anyway, from the point of view of the 3rd party CA plus Shim
+> workflow, they are the same, and can be treated the same - sorry, but
+> the kernel is not special in any way. The only thing that matters is
+> if, given a bug, somebody either observed it being used as a secure
+> boot bypass by bad actors in the wild, or was bothered enough to write
+> down a self-contained, real and fully working proof of concept for
+> secure boot bypass.
 
-Lizhi
+Maybe I'm misunderstanding but this makes no sense to me. Any code
+execution vulnerability by definition lets the attacker run unsigned
+code in the kernel, which is a secure boot bypass. Linux is indeed not
+special in this respect; "wait for someone to exploit it and then bump
+the number" is at least dubious for Grub as well.
 
-On 6/30/23 11:24, Lizhi Hou wrote:
+In my opinion there is still a difference though, in that the amount
+of untrusted/unsigned userspace code that the kernel is exposed to,
+absolutely dwarfs the amount of code and data that a bootloader is
+exposed to. For the case of filesystems, for example, Linux is a lot
+more optimized, it's multithreaded, it's read/write. Grub is a lot
+simpler.
+
+> > So perhaps there could be some kind of protocol that would let a new
+> > kernel tell the bootloader "don't boot an older kernel than me in the
+> > future".  It could even be an extension to the SBAT spec itself.  I
+> > haven't really thought much about it, tbh.  However, I'm quite positive
+> > that a revocation index attached to the kernel image cannot really work
+> > as a concept, not even if it is managed by the distro.
 >
-> On 6/29/23 16:52, Rob Herring wrote:
->>>> +            rp[i].child_addr[0] = j;
->>>> +    ret = of_changeset_add_empty_prop(ocs, np, "dynamic");
->>> It seems slightly confusing to use a "dynamic" property here when we
->>> also have the OF_DYNAMIC dynamic flag above.  I think they have
->>> different meanings, don't they?
->> Hum, what's the property for? It's new in this version. Any DT property
->> needs to be documented, but I don't see why we need it.
->
-> This is mentioned in my previous reply for V9
->
-> https://lore.kernel.org/lkml/af9b6bb3-a98d-4fb6-b51e-b48bca61dada@amd.com/ 
->
->
-> As we discussed before, "interrupt-map" was intended to be used here.
->
-> And after thinking it more, it may not work for the cases where ppnode
->
-> is not dynamically generated and it does not have "interrupt-map".
->
-> For example the IBM ppc system, its device tree has nodes for pci bridge
->
-> and it does not have "interrupt-map".
->
-> Based on previous discussions, OF_DYNAMIC should not be used here.
->
-> So I think adding "dynamic" might be a way to identify the dynamically
->
-> added node. Or we can introduce a new flag e.g OF_IRQ_SWIZZLING.
->
->
-> Thanks,
->
-> Lizhi
->
+> You are pretty much describing SBAT there. Except for the detail that
+> it can't be the component that can be compromised that tells you
+> whether it's compromised and you should trust it... A system's SBAT
+> policy is a single entity, managed centrally, and deployed everywhere.
+
+Fine, so can the SBAT spec be extended to have some kind of version
+that is not a single number? If that is provided, Linux could have the
+mechanism to place the kernel version in the .sbat section. But I
+agree with Borislav, Greg and others that a single revocation index
+simply doesn't cut it.
+
+Paolo
+
