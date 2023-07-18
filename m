@@ -2,110 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE8575720C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75282757210
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbjGRDFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 23:05:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57100 "EHLO
+        id S230231AbjGRDHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 23:07:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjGRDFw (ORCPT
+        with ESMTP id S229670AbjGRDHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 23:05:52 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2109.outbound.protection.outlook.com [40.107.215.109])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B61CE51
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 20:05:50 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H5dA2rPyl908sWkm6R1W4J0o+bsH1WCvvQhNl0RFhFHpnvk9Fmg8RX3IjjBsEjnLbi/PuS92Ypt9NA2JMhjTSuwWMoMNJ0iXdw5vJv3s4PVEw6T2nVDDXVnI83IXFzYuYYGMTDWa9EXphjMnPW+2YV7um68ZdpPvYACf+4yZ2RkXixevEtLgc6FG6XSiH/l1GYH9y5r3ZaOfb4WUVXA1znJN0FJLOpJEwR3iy9P4Ndb5LBASUBa1bruWuXRlmrKGiF9pHVQjiO7vhOZY69ag2/fZWFAYHBlfVZoEDMq6HGVyqHmRCmH/PXVm6ADC6DGascGC5qIuOwdHo7XxUpU0fg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lF3NZ1D4t6CaeybDGr2xaKRipPu7S/MFyxpFfnWpYsg=;
- b=Wvg9JKJZVi77M45Mnh00hNz2uYXcRaFALh5uUlk64uGX4crJMnAqNv70DTXixWW7CY6ZsqXSYvMn2cDm8yqC37iTaknTNSBQKD9RKcSYihui7EKKSfKMKyUleoMv4mYAa+omU3NC0vYuuQ3HKHlFWG8jI4QSb+YrTMrzyDIdHc5zxM/kl10pfMI/veEi4CRypWKwFp80gflmnYpGWsfUSqK9ik3faXr//WGdk5rlrWP8mrYwoj9PbGqZU3XwDPwoFgkdphegM4K9YEwd7BDYCAoXJcawB+68W7ZJSCLkprx7x/onPKsZsWin/zXAlaS9EOeNL+BKPpQXYWhrNFn2/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lF3NZ1D4t6CaeybDGr2xaKRipPu7S/MFyxpFfnWpYsg=;
- b=SKgwAPe/y681j2c5PsUi4bvk6YMfH0eDkV2ZqRfo+OWlNFiPjVW4a2smcVpP0ITjSi5Jr3a5l8dgXNNYr999jeQ9mjJgz3i2nAl4cZ01Q+NeWa1mEttlyiqb1skW8hpfNtWOGJWAKxCQRGokOjqdfUpT/d7j4jEvFIP4kqA+1FAwIcqWxvFJJ8UD8oYZv7WOpXcbk5kYyV+qFSLstmSrSfOPPlm1WsYXsgj+tKmKrfNwHGOC6larz3UEgk9nZyuI5W4oCg5rE0CTK8gqZHtPjv6mrww6fzcN2LeGUK04Ll2sBgDM/uJzjUqwEg0jadS/gaw0KAWtEOKXItScQevb9g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18) by
- SEYPR06MB6181.apcprd06.prod.outlook.com (2603:1096:101:de::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6565.31; Tue, 18 Jul 2023 03:05:44 +0000
-Received: from SG2PR06MB3743.apcprd06.prod.outlook.com
- ([fe80::2a86:a42:b60a:470c]) by SG2PR06MB3743.apcprd06.prod.outlook.com
- ([fe80::2a86:a42:b60a:470c%4]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
- 03:05:44 +0000
-From:   Wang Ming <machel@vivo.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Wang Ming <machel@vivo.com>, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-Subject: [PATCH v1] reset: hisilicon: Use dev_err_probe instead of dev_err
-Date:   Tue, 18 Jul 2023 11:04:56 +0800
-Message-Id: <20230718030511.16065-1-machel@vivo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: TY2PR0101CA0024.apcprd01.prod.exchangelabs.com
- (2603:1096:404:92::36) To SG2PR06MB3743.apcprd06.prod.outlook.com
- (2603:1096:4:d0::18)
+        Mon, 17 Jul 2023 23:07:13 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32110E56;
+        Mon, 17 Jul 2023 20:07:13 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-55fcc15e109so2223025a12.3;
+        Mon, 17 Jul 2023 20:07:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689649632; x=1692241632;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZR7e5E+WmOjH4SVZ3PNZKQQ2pHiOOZ9mhP0U68A34Cw=;
+        b=HUHR94cp0/UyIKqtiyeZR237f5pSW8N8ZgQeHBP69YoNqbDBpIRRspMez7/dR1nSbA
+         D5qJU15tV4LQDuoPeHx89HfUhOvGAvlGJvcEcI929f/Hf7zgzkNWNFGMJzI29PCKoWFZ
+         Q+Q+KjcYKiZkXEef/XVx+m7w17eXuuo5Im6eQtys0XDz671hCNxckfAIvKtd6bREZzaX
+         Vg647wlCoZixVN3W6uwFW4cQrqIaj69+VKx37sM9j6spDuWw3n53TOCC4UA9YYQJFCwe
+         i3LRzJd25ksEZlUmDvDuAD5KJBQn6mWePTI/l+yd0/W8dWubcXYiqlxiqDSzu7zEnaUw
+         Hk7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689649632; x=1692241632;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZR7e5E+WmOjH4SVZ3PNZKQQ2pHiOOZ9mhP0U68A34Cw=;
+        b=fRGdGDCAjFf1oOz8zyFTkfPsgmkcdi4kRB+UHEBz06odEtGssK/yt42MwtzKrwSgYp
+         qE7m2om9nb7uWn1sjGV7Ok71XRqMINp0kmpT0eYO4ee6i4OYox9bmPTt5KdgvOnz5+Ac
+         gZ00/p8zyR2C6uj0Tk498KdapnzbV6n39NCtMGGDpz3oi8A+Ql6T8z6arDdBB4wQPPYw
+         adsXNh3GJRVqws0+AOooB9KWxQJyv/A2cAHr+NZqUNmyhL6mFQC7bsywqBp+diORTo+f
+         b9gc+1rlcz21YcBcppoLXq3Q6j0ShudKkYYjsFE5h0qle1Rd/kia+3Tr1uELpdiVm8fp
+         P4IQ==
+X-Gm-Message-State: ABy/qLYYU7NTv7KqEuMqfc4YNzQPe0U+ap0nZhvnfh5p/V/8fN3mVEMu
+        nZjtQnTZy8eXjME1+pFwsGkBeaU7eva1buz20So=
+X-Google-Smtp-Source: APBJJlEIXk60X1gz7KXtucZl+go0i+pO9jKQGEd+WuXxiukOtcA+L0Dmx90vVupkDTpQaP2XilHviR9/o2lJNd7yl9A=
+X-Received: by 2002:a17:90a:fb83:b0:263:f3ad:64af with SMTP id
+ cp3-20020a17090afb8300b00263f3ad64afmr10685369pjb.45.1689649632428; Mon, 17
+ Jul 2023 20:07:12 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PR06MB3743:EE_|SEYPR06MB6181:EE_
-X-MS-Office365-Filtering-Correlation-Id: dc89e20a-7ccc-4982-e149-08db873be020
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QJaslWgs6wV3JTtlW4/OYZlUH6roS+xn8ty4ZpFQdF3HLau22uZU3391/TKusdQ4BDDOwe+sSDo7e7eUaeE+ePhcwcrK6usAAq6skm+6E37rniNO3+EFHrVVaBVubL996DK62P2rR5rw/9wV3N8faiNVhnPc6RpjLGb0ebCxK54kc33dU8QAml+UvI2ntECHzZ7TIyg9EmTHaQ+Z6UaX1LRhrv1T6LVpvXPR/0e0XosMKrpKGQVG0wKRxxe82AZkj/iPsi0217DIuqVaN9YQ6mXGw8sCRQD16H3NWrYGP+nPHBFSs2R0fxa1W/8mXGYYfwEdA/HNoR7C3Fhfps4ifOuwTYa9AesyrqQV3r+7fspwr+KrfkGc5njEAgyVShaIKweJHBF8q0/bPmP+PL6SBhsuutIlNp9+3qNSLb8lpUNkio1SDyxbW+GLiYl0CFv4J151T8SPXcWdh5/TymMiTl9hEfSTp5I+4934/nNhwRdsgVW5LKVWggk2RBAzljoMYNMnGD3ASeVSrChFPlTGsVyueA24Ywf+2qs/ke74fsr2BDRCG/B/KxopIRubLDY7Q2Wbam1RLAWp3Ux+x6MnpT3+H+jBpUrHXdjK+c86yuuySvIUeAFhcR9L0PH5TiZz
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3743.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(366004)(346002)(396003)(376002)(39860400002)(451199021)(52116002)(6666004)(6512007)(6486002)(1076003)(6506007)(186003)(83380400001)(36756003)(38100700002)(38350700002)(86362001)(2616005)(26005)(107886003)(66476007)(66556008)(4326008)(66946007)(2906002)(41300700001)(316002)(4744005)(8936002)(5660300002)(110136005)(8676002)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: t7fk/uIV0VaQAEjBdTwE/2swNR3hbOVKWun68wCZheXcxdiXheln3IssYI7uaP/RXJUaMmG0KRWEQ2fsKtX/+OHvBcK2hRskRWVzsaXXBDH6wO8lUXfq+yPM/NzQUQVlYbUNKHkRAQ2d20d3UM/RohvVA0l6ZNDQKOhKjLiJKgtm8orWhCcziGy3IAgrA0+I5qncKDuZjXvLEqwUtMGPAN6yTnQ1CbsI/0Nv+3D4EvhuRhkZLtcgqto8RaJljZuss6RvBKThQiP/8Pm4rNqB6HR1TNBftd3FVS6tk8FgdebZMgeWtB9kDXFIb4hz/unAFtguRz6YDoHMHKzDziIinNmVaNjhREwzBzCAV2qSFSJ0AvEWy4OrrjsN00/qAZHHseuHLPkZO2vl48Nm9XZx9PI5H6tTd7WuBx3LFjaGbqU=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc89e20a-7ccc-4982-e149-08db873be020
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3743.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 03:05:43.8172
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wADhQ1l8EiRr+mKEFgHEha1YE/19qGOKEA1bdLkBg0Mc6houItF/ex9BkDW+ggS4YOhLXjKgl/dHENv9FE1NTw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB6181
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230707092414.866760-1-zyytlz.wz@163.com> <538096d2-7b24-e1c7-706d-4d4f952d35eb@baylibre.com>
+ <CAJedcCzR6DzX_aG1KBgrMHDJ1xh=RTA-FrZ+TJ_4KawWpHyYuA@mail.gmail.com>
+In-Reply-To: <CAJedcCzR6DzX_aG1KBgrMHDJ1xh=RTA-FrZ+TJ_4KawWpHyYuA@mail.gmail.com>
+From:   Zheng Hacker <hackerzheng666@gmail.com>
+Date:   Tue, 18 Jul 2023 11:07:01 +0800
+Message-ID: <CAJedcCyKv-hdDhWcogDZrC-kY6qtO-H1fDYqjTXMJvCR19MxYg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2] media: mtk-jpeg: Fix use after free bug due to
+ uncanceled work
+To:     Alexandre Mergnat <amergnat@baylibre.com>
+Cc:     Zheng Wang <zyytlz.wz@163.com>, Kyrie.Wu@mediatek.com,
+        bin.liu@mediatek.com, mchehab@kernel.org, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Irui.Wang@mediatek.com,
+        security@kernel.org, 1395428693sheep@gmail.com,
+        alex000young@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The probe process may generate EPROBE_DEFER. In this case,
-dev_err_probe can still record err information.
-This helps simplify code and standardize error output.
+Friendly ping
 
-Signed-off-by: Wang Ming <machel@vivo.com>
----
- drivers/reset/hisilicon/reset-hi3660.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/reset/hisilicon/reset-hi3660.c b/drivers/reset/hisilicon/reset-hi3660.c
-index 965f5ceba7d8..bc8fee6dc14e 100644
---- a/drivers/reset/hisilicon/reset-hi3660.c
-+++ b/drivers/reset/hisilicon/reset-hi3660.c
-@@ -90,7 +90,7 @@ static int hi3660_reset_probe(struct platform_device *pdev)
- 							  "hisi,rst-syscon");
- 	}
- 	if (IS_ERR(rc->map)) {
--		dev_err(dev, "failed to get hisilicon,rst-syscon\n");
-+		dev_err_probe(dev, "failed to get hisilicon,rst-syscon\n");
- 		return PTR_ERR(rc->map);
- 	}
- 
--- 
-2.25.1
-
+Zheng Hacker <hackerzheng666@gmail.com> =E4=BA=8E2023=E5=B9=B47=E6=9C=8816=
+=E6=97=A5=E5=91=A8=E6=97=A5 00:08=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Hi,
+>
+> This issue has not been resolved for a long time. Is there anyone who can=
+ help?
+>
+> Best regards,
+> Zheng
+>
+> Alexandre Mergnat <amergnat@baylibre.com> =E4=BA=8E2023=E5=B9=B47=E6=9C=
+=887=E6=97=A5=E5=91=A8=E4=BA=94 22:11=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> >
+> >
+> > On 07/07/2023 11:24, Zheng Wang wrote:
+> > > In mtk_jpeg_probe, &jpeg->job_timeout_work is bound with
+> > > mtk_jpeg_job_timeout_work. Then mtk_jpeg_dec_device_run
+> > > and mtk_jpeg_enc_device_run may be called to start the
+> > > work.
+> > > If we remove the module which will call mtk_jpeg_remove
+> > > to make cleanup, there may be a unfinished work. The
+> > > possible sequence is as follows, which will cause a
+> > > typical UAF bug.
+> > >
+> > > Fix it by canceling the work before cleanup in the mtk_jpeg_remove
+> > >
+> > > CPU0                  CPU1
+> > >
+> > >                      |mtk_jpeg_job_timeout_work
+> > > mtk_jpeg_remove     |
+> > >    v4l2_m2m_release  |
+> > >      kfree(m2m_dev); |
+> > >                      |
+> > >                      | v4l2_m2m_get_curr_priv
+> > >                      |   m2m_dev->curr_ctx //use
+> >
+> > Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+> >
+> > --
+> > Regards,
+> > Alexandre
