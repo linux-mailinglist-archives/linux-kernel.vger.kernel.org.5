@@ -2,111 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A72FF757C3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79CDE757C3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231375AbjGRMwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 08:52:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35690 "EHLO
+        id S231450AbjGRMwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 08:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbjGRMwG (ORCPT
+        with ESMTP id S230193AbjGRMwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 08:52:06 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1621D1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:52:04 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-315adee6ac8so5471172f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:52:04 -0700 (PDT)
+        Tue, 18 Jul 2023 08:52:34 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E440810FF
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:52:32 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-63770af327fso39516556d6.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:52:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689684722; x=1692276722;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dAzJmMJnLsLu0Ky/1Y8+HgMSARceM1UpH2sEela1PIE=;
-        b=P7lzdJCvGQdDZRkmvnW6//CRILGhOhslxd2FvGv+UDI+T1Y13OoHpDtcBBhYZsrV+E
-         s5uWrAZUMaDNQ7moCt78f4VWhltJh7uSDemEbSm1+GQW542Re7Pur6Ubknij/t95mbvV
-         Jt+kSKY7A1gJm8sBM7UP6i0dezkhqQzM2ZZGq5Pug/GCK1j1kJy23AXR6KJ4kaiosWYs
-         0jfxto3ZWQceglw0YdllZHI3teC5tajAdgXciYGAHCI8JdZuxtW16uiDw3OhUrvaxn6K
-         1n5dPdPsab+rRKiRu5hB8Wq3tQjnK6AkTMwcN9MMkHW2v+LimUYG8IkcNeMjWLlqEYA2
-         Q50A==
+        d=joelfernandes.org; s=google; t=1689684752; x=1692276752;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D7mBVgIO2/qifoKJSIq5gF8W+IU3YGZfoFF1ujN7rTM=;
+        b=K4el8zaF7GsWp0e/0K51xh7dyYz33FPapKxS1UckiNXGuFtdTwfsQzoMnWpNprO9aI
+         m9+4M+ky7KirepVAMx7e4j2URNiQxFnPT4qkv6kWl909NeuzSj7V04KDrwwXvWgMTDir
+         YezkZuAm9AsXuP/2GigubezbzwdlMquPSHkKs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689684722; x=1692276722;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dAzJmMJnLsLu0Ky/1Y8+HgMSARceM1UpH2sEela1PIE=;
-        b=NCYnvJoaU2sfKMNZ6Cy0CrmMFyivT1SWVthU30N1UbsWbUa+94rO/GWfEodbjG5XLz
-         X9qF9xlkzKTgOp3dJiTBWxPYlDmjIjsbd7ysRjRL5NklUWoIJj49qwyUFFtHWxs0JFyC
-         7iLXY9J3TkSe0jl4hBrpucB8LIixnSvx5zJ6XM3yv8ytRsUDZpXfeCEVvrapuswhRxyN
-         +aCnvaRY72m86ZXuXCOScFgCbvB71oXduqlhpPRtO/x/jT43QOfI7urA1hBUgACoHaJF
-         8eMF5tGCHsgWnWvXpBTBEotWZJfqZ5x7Y9zOpnaq9DY6e1tdSPzcvC4yvGhQfkWFecbZ
-         hoSg==
-X-Gm-Message-State: ABy/qLbdWwIH2gf/dRipsMs0AMMHKI7rhKucXCGG41us/T39/KxxrXgN
-        FDCr6kJ2HflJ/+iZgOaDjzHE8d5Yc9tk8b8XqMxc/g+A
-X-Google-Smtp-Source: APBJJlGs+NiR0pGfLqHWAfd5rBGO3eGAfhaD8rYxuzr4P8nQOPbtcj+pr/Yi3iHBvy7jgsr3lflJsA==
-X-Received: by 2002:adf:e38c:0:b0:313:e456:e64a with SMTP id e12-20020adfe38c000000b00313e456e64amr13156235wrm.21.1689684722505;
-        Tue, 18 Jul 2023 05:52:02 -0700 (PDT)
-Received: from [127.0.1.1] ([86.71.62.179])
-        by smtp.gmail.com with ESMTPSA id k15-20020a056000004f00b003143ba62cf4sm2309656wrx.86.2023.07.18.05.52.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 05:52:02 -0700 (PDT)
-From:   Julien Panis <jpanis@baylibre.com>
-Date:   Tue, 18 Jul 2023 14:51:42 +0200
-Subject: [PATCH] ARM: multi_v7_defconfig: Enable OMAP watchdog support
+        d=1e100.net; s=20221208; t=1689684752; x=1692276752;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D7mBVgIO2/qifoKJSIq5gF8W+IU3YGZfoFF1ujN7rTM=;
+        b=lTsQ4pcM/BKtka64xdtUjsDcV1r/BP6VMUIgI6+MH+nkFiX75Ou8Ycl+zL6Oq6SwPk
+         9QUpi7nuC+9qJCkEtmU7lU5rc/3lbmK5DNuBj7HGcoeomMZ1XYCY6R/0jf5uBeWr/o8h
+         +Lj13HWHcjzVqRTBCdXDcdreZeIxnff3ztKPwRDJOszYgi4AcMbua7aZ0rwRsYP0GSd7
+         1855jE5u5g9p4KaUV48H7wk8YgRYkgcrWGsEoZThclbtbuu2vvOTUL35qmRPp4tR54xK
+         FGDMYuWYbIpfv/CptNe6lU/Wjft/GRwVnIudWxCG03IYi2mESmFbBMF/4B+8hEm4R2Kx
+         bupg==
+X-Gm-Message-State: ABy/qLZx3QoJIT6OaFNln4KL2itWpNGVdthxMs3I9UstaJB+Ef1vZoaN
+        T5tthVK9fqYeO+Lx3yrYpiy0oBO+5TSViw0eCPw=
+X-Google-Smtp-Source: APBJJlEkZiRXxB4ZPx8mBFrErvCSAqCeax0elCpY/p8JEmV9/fR3JLF1NdI7PqcOR3w9eHK329oLAQ==
+X-Received: by 2002:a0c:e0cb:0:b0:635:dcef:b5b7 with SMTP id x11-20020a0ce0cb000000b00635dcefb5b7mr15007890qvk.56.1689684751947;
+        Tue, 18 Jul 2023 05:52:31 -0700 (PDT)
+Received: from [192.168.0.140] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id y6-20020a37e306000000b00767cfac77c3sm543674qki.134.2023.07.18.05.52.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 05:52:31 -0700 (PDT)
+Message-ID: <a11d5ce7-5ee3-fbf7-9adb-4cfc805c6bb7@joelfernandes.org>
+Date:   Tue, 18 Jul 2023 08:52:30 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH rcu 2/6] rcu: Clarify rcu_is_watching() kernel-doc comment
+Content-Language: en-US
+To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, Masami Hiramatsu <mhiramat@kernel.org>
+References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
+ <20230717180317.1097590-2-paulmck@kernel.org>
+From:   Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <20230717180317.1097590-2-paulmck@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230718-enable-omap-wd-v1-1-34396f2c76aa@baylibre.com>
-X-B4-Tracking: v=1; b=H4sIAN2KtmQC/x2NywqDQAwAf0VybmBd8UF/pfSQXVMN6CqJaEH89
- 649DsMwJxirsMGzOEF5F5MlZSgfBcSR0sAofWbwzleuLTvkRGFiXGZa8eixobqpou9cW3vIUSB
- jDEopjnc2k22st1iVP/L9n17v6/oBgWBoqnkAAAA=
-To:     Russell King <linux@armlinux.org.uk>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        vigneshr@ti.com, Julien Panis <jpanis@baylibre.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689684721; l=882;
- i=jpanis@baylibre.com; s=20230526; h=from:subject:message-id;
- bh=7EAr2st4JxHXmrZz8eO09oej24buZlVenfoWQa3B2c4=;
- b=ASkctEOOQlsN7ecEGV7PWy9u/Aseqda5OV1k98h7TedyhEga8bKbBx9sxz7nNx8waP2LVX9dF
- Rhp3FfUuU5wB/GoUEskAiDPOBBqJLWJX1b5JKlqEkm7BQJ3P2uIEHV0
-X-Developer-Key: i=jpanis@baylibre.com; a=ed25519;
- pk=8eSM4/xkiHWz2M1Cw1U3m2/YfPbsUdEJPCWY3Mh9ekQ=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add OMAP watchdog support by enabling
-CONFIG_OMAP_WATCHDOG as module.
+Hi Paul,
 
-Signed-off-by: Julien Panis <jpanis@baylibre.com>
----
-Enable OMAP watchdog support in multi_v7_defconfig.
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+On 7/17/23 14:03, Paul E. McKenney wrote:
+> Make it clear that this function always returns either true or false
+> without other planned failure modes.
+> 
+> Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>   kernel/rcu/tree.c | 12 ++++++++----
+>   1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 1449cb69a0e0..fae9b4e29c93 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -679,10 +679,14 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
+>   /**
+>    * rcu_is_watching - see if RCU thinks that the current CPU is not idle
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index f0800f806b5f..7d93e21e0cb9 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -554,6 +554,7 @@ CONFIG_SAMA5D4_WATCHDOG=y
- CONFIG_S3C2410_WATCHDOG=m
- CONFIG_DW_WATCHDOG=y
- CONFIG_DAVINCI_WATCHDOG=m
-+CONFIG_OMAP_WATCHDOG=m
- CONFIG_ORION_WATCHDOG=y
- CONFIG_RN5T618_WATCHDOG=y
- CONFIG_SUNXI_WATCHDOG=y
+Would it be better to modify the 'not idle' to 'not idle from an RCU viewpoint'? 
+This matches the comments in ct_nmi_enter() as well.
 
----
-base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
-change-id: 20230718-enable-omap-wd-6a563c280752
+>    *
+> - * Return true if RCU is watching the running CPU, which means that this
+> - * CPU can safely enter RCU read-side critical sections.  In other words,
+> - * if the current CPU is not in its idle loop or is in an interrupt or
+> - * NMI handler, return true.
+> + * Return @true if RCU is watching the running CPU and @false otherwise.
+> + * An @true return means that this CPU can safely enter RCU read-side
+> + * critical sections.
+> + *
+> + * More specifically, if the current CPU is not deep within its idle
+> + * loop, return @true.  Note that rcu_is_watching() will return @true if
+> + * invoked from an interrupt or NMI handler, even if that interrupt or
+> + * NMI interrupted the CPU while it was deep within its idle loop.
 
-Best regards,
--- 
-Julien Panis <jpanis@baylibre.com>
+But it is more than the idle loop, for ex. NOHZ_FULL CPUs with single task 
+running could be idle from RCU's viewpoint? Could that be clarified more?
+
+thanks,
+
+  - Joel
+
+
+>    *
+>    * Make notrace because it can be called by the internal functions of
+>    * ftrace, and making this notrace removes unnecessary recursion calls.
 
