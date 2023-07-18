@@ -2,114 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8202D757CDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 184AF757CE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232601AbjGRNJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
+        id S232608AbjGRNJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232621AbjGRNJH (ORCPT
+        with ESMTP id S232569AbjGRNJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:09:07 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC5D1722;
-        Tue, 18 Jul 2023 06:09:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=VQkzO/POrP/pHMh//7Dpmps4+dX6EJ9ax9BemZSO0H4=; b=r4eeY35zsbMpVS+HYlGbkMH+sx
-        ZPY2ZolPXOioWG4hvfJ3qCQZXo+TltBBLCuqc9i00wCbBoBSlljYoZQ21E1mKT+fRpnl+Re+RpZVy
-        NzzMIrhLe+BKO1XUmn3Mdma6sv34F18hNCML/18V6OmxGqvYq/CrwgX4O3fYYzbJlSpA=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qLkRa-001cuI-OB; Tue, 18 Jul 2023 15:08:46 +0200
-Date:   Tue, 18 Jul 2023 15:08:46 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
-Subject: Re: [PATCH net-next 2/2] net: stmmac: platform: add support for
- phy-supply
-Message-ID: <427214fb-6206-47b3-bf5b-8b1cfc8b7677@lunn.ch>
-References: <20230717164307.2868264-1-m.felsch@pengutronix.de>
- <20230717164307.2868264-2-m.felsch@pengutronix.de>
- <accc8d89-7565-460e-a874-a491b755bbb8@lunn.ch>
- <20230718083504.r3znx6iixtq7vkjt@pengutronix.de>
+        Tue, 18 Jul 2023 09:09:12 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F76AF
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:09:05 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5700b15c12fso57409027b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:09:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689685744; x=1690290544;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=arlaxmSPjr+t49XEWI2/MiuInUH3guP7HZZCse70XY8=;
+        b=mxJQziMe1+EUYzx/QahnAIuck+FYWaKf+SVKYZuvBv8cjOo7mfwV+1aMFfaLV39nkX
+         00VfhiSeaaTFXA2xFr4gji6QqOuOSycg/rRdgDmTu4J/eLp5wI1v/dKyWuW38F3W5HCO
+         A6RCKr1zmyX6/5EzgsiM+HU17nQaOAGt1kSFO2GTRPhwDWZYmqpLttF4RStISKpbc3ZV
+         6CxPyVQWkyua2NYR6JbuC2GfM0nWkF/TFG6sFuBfDubLJjWKgf9KFBi4/W0ZnWSe2SI7
+         14lYDcPtfxjZJbWCu2Zzn2rH23x0jGuSezFNU0HvQci/hjfZQCs0ZMJbyVZUnMee/tjo
+         iypw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689685744; x=1690290544;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=arlaxmSPjr+t49XEWI2/MiuInUH3guP7HZZCse70XY8=;
+        b=EEcPKjrkXl0JFeqWAgfZfjwGB/iXc0+USo/JYDhkKH7qBgMgAXkZ0v+fjuAFLM74S/
+         p/WXeKjfJMhbNpjPD8S3BPBLK530H1lnZOaVUU7OGxIh07w3oHrygJzBqAMW18x0QT38
+         SiwrDtMMzGzdZrcuQ8OGO12nIJPzuWyv8M14r7lw9947wM5axLeeDtzLl7Ln73xlf8oj
+         4CvFnv/FDBmFFZgiUpK5B+M21TVtph/Y477eTKv6kv++Y0Uk94iDvCjX+sDfzsVN90/8
+         fmJVu4RuESFY1wphy31NkNtOO948Xhkacgxr+xvFnMXuyr67m8r/A/d1aRYacEohhtnD
+         gVIQ==
+X-Gm-Message-State: ABy/qLb2+vwYNil3a8HWqo3mkO8ABn8Tby+DpAFiOvsftSHbj283EsuD
+        mNAQ05qkHHDgPfsKRNEcljmZWLK33FntqNc5lB1sYA==
+X-Google-Smtp-Source: APBJJlHK6AyLaAaLUSgPySkhrZdE9+hpDzVV8P2eZl0JHEVw4D2MnsNuSQW/tb8MXm2p7mfzFFevlgeh5Hex06CshMU=
+X-Received: by 2002:a25:3446:0:b0:c6d:e3e3:5592 with SMTP id
+ b67-20020a253446000000b00c6de3e35592mr12933036yba.54.1689685744321; Tue, 18
+ Jul 2023 06:09:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718083504.r3znx6iixtq7vkjt@pengutronix.de>
+References: <20230717-topic-branch_aon_cleanup-v1-0-27784d27a4f4@linaro.org>
+ <20230717-topic-branch_aon_cleanup-v1-15-27784d27a4f4@linaro.org>
+ <ZLVsN40kYsvQm1z6@gerhold.net> <a193a4dd-0a0a-0d36-6d83-0424cd1dce80@linaro.org>
+ <ZLVyvHnKPdOfqAck@gerhold.net> <8c5dc146-c305-bef9-0d97-76a91345ed1a@linaro.org>
+ <ZLV5CirE8CZfCjkX@gerhold.net> <9b28a17a-fe9c-3ff0-fa1d-320e75e174d0@linaro.org>
+ <ZLZ94Qc6x1HyjJPQ@gerhold.net> <d087d0df-0bf6-c93a-7999-f9385ebb7a38@linaro.org>
+In-Reply-To: <d087d0df-0bf6-c93a-7999-f9385ebb7a38@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 18 Jul 2023 16:08:53 +0300
+Message-ID: <CAA8EJppFaYPm33Z-_a+AgKYcWsaPE_y=B+agYVQ8z0ncfrvUAw@mail.gmail.com>
+Subject: Re: [PATCH 15/15] arm64: dts: qcom: sm6115: Add VDD_CX to GPU_CCC
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 10:35:04AM +0200, Marco Felsch wrote:
-> On 23-07-18, Andrew Lunn wrote:
-> > On Mon, Jul 17, 2023 at 06:43:07PM +0200, Marco Felsch wrote:
-> > > Add generic phy-supply handling support to control the phy regulator.
-> > > Use the common stmmac_platform code path so all drivers using
-> > > stmmac_probe_config_dt() and stmmac_pltfr_pm_ops can use it.
-> > > 
-> > > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
-> > > ---
-> > >  .../ethernet/stmicro/stmmac/stmmac_platform.c | 51 +++++++++++++++++++
-> > >  include/linux/stmmac.h                        |  1 +
-> > >  2 files changed, 52 insertions(+)
-> > > 
-> > > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> > > index eb0b2898daa3d..6193d42b53fb7 100644
-> > > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> > > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> > > @@ -10,6 +10,7 @@
-> > >  
-> > >  #include <linux/platform_device.h>
-> > >  #include <linux/pm_runtime.h>
-> > > +#include <linux/regulator/consumer.h>
-> > >  #include <linux/module.h>
-> > >  #include <linux/io.h>
-> > >  #include <linux/of.h>
-> > > @@ -423,6 +424,15 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
-> > >  	if (plat->interface < 0)
-> > >  		plat->interface = plat->phy_interface;
-> > >  
-> > > +	/* Optional regulator for PHY */
-> > > +	plat->phy_regulator = devm_regulator_get_optional(&pdev->dev, "phy");
-> > > +	if (IS_ERR(plat->phy_regulator)) {
-> > > +		if (PTR_ERR(plat->phy_regulator) == -EPROBE_DEFER)
-> > > +			return ERR_CAST(plat->phy_regulator);
-> > > +		dev_info(&pdev->dev, "No regulator found\n");
-> > > +		plat->phy_regulator = NULL;
-> > > +	}
-> > > +
-> > 
-> > So this gets the regulator. When do you actually turn it on?
-> 
-> During the suspend/resume logic like the rockchip, sun8i platform
-> integrations did.
+On Tue, 18 Jul 2023 at 15:48, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>
+> On 18.07.2023 13:56, Stephan Gerhold wrote:
+> > On Mon, Jul 17, 2023 at 09:18:21PM +0200, Konrad Dybcio wrote:
+> >> On 17.07.2023 19:23, Stephan Gerhold wrote:
+> >>> On Mon, Jul 17, 2023 at 07:11:33PM +0200, Konrad Dybcio wrote:
+> >>>> On 17.07.2023 18:56, Stephan Gerhold wrote:
+> >>>>> On Mon, Jul 17, 2023 at 06:50:18PM +0200, Konrad Dybcio wrote:
+> >>>>>> On 17.07.2023 18:28, Stephan Gerhold wrote:
+> >>>>>>> On Mon, Jul 17, 2023 at 05:19:22PM +0200, Konrad Dybcio wrote:
+> >>>>>>>> The GPU_CC block is powered by VDD_CX. Describe that.
+> >>>>>>>>
+> >>>>>>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> >>>>>>>> ---
+> >>>>>>>>  arch/arm64/boot/dts/qcom/sm6115.dtsi | 2 ++
+> >>>>>>>>  1 file changed, 2 insertions(+)
+> >>>>>>>>
+> >>>>>>>> diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
+> >>>>>>>> index 29b5b388cd94..bfaaa1801a4d 100644
+> >>>>>>>> --- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
+> >>>>>>>> +++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
+> >>>>>>>> @@ -1430,6 +1430,8 @@ gpucc: clock-controller@5990000 {
+> >>>>>>>>                        clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>,
+> >>>>>>>>                                 <&gcc GCC_GPU_GPLL0_CLK_SRC>,
+> >>>>>>>>                                 <&gcc GCC_GPU_GPLL0_DIV_CLK_SRC>;
+> >>>>>>>> +                      power-domains = <&rpmpd SM6115_VDDCX>;
+> >>>>>>>> +                      required-opps = <&rpmpd_opp_low_svs>;
+> >>>>>>>
+> >>>>>>> Where is this required-opp coming from? The clocks in gpucc seem to have
+> >>>>>>> different voltage requirements depending on the rates, but we usually
+> >>>>>>> handle that in the OPP tables of the consumer.
+> >>>>>> The only lower levels defined for this SoC are VDD_MIN and VDD_RET,
+> >>>>>> but quite obviously the GPU won't work then
+> >>>>>>
+> >>>>>
+> >>>>> The levels needed for the GPU clocks to run should be in the GPU OPP
+> >>>>> table though, just like e.g. sdhc2_opp_table for the SDCC clocks.
+> >>>>>
+> >>>>> I still don't really understand why this is specified here. :)
+> >>>> The GPU_CC block needs this rail to be at a certain power level for
+> >>>> register access. This describes that requirement.
+> >>>>
+> >>>
+> >>> Can you show where this is defined downstream? On a quick look I didn't
+> >>> see something like that anywhere. Or is this from some secret
+> >>> documentation?
+> >> As far as downstream goes, you can notice that no branch's or RCG's
+> >> vdd tables ever define a level lower than the one I mentioned.
+> >>
+> >
+> > As far as I can tell the vdd tables are only used when the clock is
+> > actually enabled though, not for writing to registers while they are
+> > disabled.
+> Maybe, but you can also notice that even XO rates require at least
+> SVS_LOW to function.
 
-So you are assuming the boot loader has turned it on?
+But the vdd tables are related to clock rates, which, in the upstream
+design, should be voted by the consumers, not by the clock driver.
 
-You also might have a difference between the actual state, and what
-kernel thinks the state is, depending on how the regulator is
-implemented.
 
-It would be better to explicitly turn it on before registering the
-MDIO bus.
-
-     Andrew
+-- 
+With best wishes
+Dmitry
