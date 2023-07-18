@@ -2,139 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 675997578BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 554E47578C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbjGRKBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 06:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
+        id S232386AbjGRKBp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 Jul 2023 06:01:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231867AbjGRKBG (ORCPT
+        with ESMTP id S232260AbjGRKBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 06:01:06 -0400
-Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B9B116;
-        Tue, 18 Jul 2023 03:01:02 -0700 (PDT)
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.3ffe.de (Postfix) with ESMTPSA id 4A2363BE;
-        Tue, 18 Jul 2023 12:01:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-        t=1689674460;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TliMGa/AjS5CE9Jf6SZ3Vzpj2EtgwzwZjg72TLl0zqM=;
-        b=1tZ25vKAwvmo1bgrRHA025NmOefVDb6pIPqUrbYMERVCHhTLbGXhBFrA0BGs7RgMtOirHD
-        3zMKlXEtVvZGO/pQaKbZMrgkr5vfgduAnYedFZJXCCmfAvkNZlL3/aqxD1eEsBvZ/V9tHm
-        oWV1nY3Og16O8NvQ1K5Iycqnz4LoIRGM3LggtBwF8LDXzGYn/36SovjHQdsyqu4Nl4iLq3
-        DqYoTFqzSWS4Py5HODIvrWQkSGOEXd1fq2DB8OA3zZqN2O8koZKgNfUsAWSsfZsHOQ0RPq
-        Zo18n8Z3vl2RRYF2cwzIqxFq1yzoEBsZuM0V2vky8MIsGC+GKpiXXO5GcMZrAA==
+        Tue, 18 Jul 2023 06:01:35 -0400
+Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B316E4F;
+        Tue, 18 Jul 2023 03:01:27 -0700 (PDT)
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-1bac0e25891so79814fac.2;
+        Tue, 18 Jul 2023 03:01:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689674486; x=1692266486;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iMWNFsiRP079B5LYbYLQZfm+Mzjz5LU2gLm2aCCBKHU=;
+        b=gQmr3YApxV2Jhjpqyvd72TBslFNKanvStKead9ackCb+XfH1HfKfOeFsWE+MnmHnxd
+         u8ULDNZ+uBzApx/sEdncdt8/3ST1LFWbgKDKgJvUiskmOzlrFfdTeUI0o6E66s8gVfI9
+         QlbziFW7SPaAEaPXcIATqr8xD4H2OUHDd/n/KVsVEGv4fYUC5UQh99FMEKM/47HRxa99
+         lo9WEvv8VBwrvY5Bj1LsOveJdkIpGvmYw1eVBSDsbjprgaQ/9R9sjOjz+9uY5IjCy536
+         YACC/AXrch9DB9bXN6GaKE+yhC0J+AQ/MUfBsCUNsfNGy6zW0vWrtqZXChuLp5APiwhc
+         y71Q==
+X-Gm-Message-State: ABy/qLb1ENz5f2W4v22OqgpZa3UNgv+jEq4yezx2EaOX/92iC1+z/Hzd
+        7ezETDY3+VGvaa0zvc2kUYwh86sAPud+iA==
+X-Google-Smtp-Source: APBJJlGpPMp+VLxaQawE6UPllhsXVy9xKvYavIrRlsmt/g8J7Uxueo9LVlIW53BnfC3abFoolGYlmw==
+X-Received: by 2002:aca:bd06:0:b0:3a4:11a1:4cd8 with SMTP id n6-20020acabd06000000b003a411a14cd8mr11993989oif.4.1689674486551;
+        Tue, 18 Jul 2023 03:01:26 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id w207-20020a8149d8000000b00570589c5aedsm369201ywa.7.2023.07.18.03.01.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 03:01:26 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-bdd069e96b5so5634794276.2;
+        Tue, 18 Jul 2023 03:01:26 -0700 (PDT)
+X-Received: by 2002:a5b:c47:0:b0:ced:271:950a with SMTP id d7-20020a5b0c47000000b00ced0271950amr437150ybr.47.1689674485821;
+ Tue, 18 Jul 2023 03:01:25 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Tue, 18 Jul 2023 12:01:00 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc:     Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>,
-        Mark Brown <broonie@kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, saikrishna12468@gmail.com,
-        git@amd.com
-Subject: Re: [PATCH 0/3] spi: spi-cadence-quadspi: Add Rx tuning support for
- DTR mode
-In-Reply-To: <67e1d3af-d106-bd5c-f8d8-3f43a58975a0@linaro.org>
-References: <20230207060924.265789-1-sai.krishna.potthuri@amd.com>
- <67e1d3af-d106-bd5c-f8d8-3f43a58975a0@linaro.org>
-Message-ID: <85d8e122a236818b162b64b473a3fdc4@walle.cc>
-X-Sender: michael@walle.cc
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com> <20230717172821.62827-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230717172821.62827-2-andriy.shevchenko@linux.intel.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 18 Jul 2023 12:01:14 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVgRDrWwQ6PKtgDE1Kmbp_zsmfrbswvG9Sq30zUVMZRAw@mail.gmail.com>
+Message-ID: <CAMuHMdVgRDrWwQ6PKtgDE1Kmbp_zsmfrbswvG9Sq30zUVMZRAw@mail.gmail.com>
+Subject: Re: [PATCH v2 01/10] pm: Introduce DEFINE_NOIRQ_DEV_PM_OPS() helper
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Balsam CHIHI <bchihi@baylibre.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
+        Sean Wang <sean.wang@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2023-02-07 07:48, schrieb Tudor Ambarus:
-> On 2/7/23 06:09, Sai Krishna Potthuri wrote:
->> Enable PHY and DQS required for Xilinx Versal Octal SPI to operate in 
->> DTR
->> protocol.
->> Add and update device_id field in spi_mem structure with flash id
->> information. Xilinx Versal Octal SPI driver requires the device id
->> information to perform the Rx tuning operation. Since there is no 
->> common
->> Tuning Data Pattern defined across all vendors, controllers like 
->> Xilinx
->> Versal Octal SPI which requires Rx tuning to find out the optimal 
->> sampling
->> point for data lines, this device id information will be used as a 
->> golden
->> data.
-> 
-> Using only 6 bytes as golden pattern seems fragile, but you are aware 
-> of
-> that, as I see that you chose to read the ID 10 times to make the
-> decision whether the tap is valid or not. Other option (which is not
-> perfect) is to use SFDP data as golden pattern. If I remember
-> correctly, JESD216 suggests to use the Read SFDP cmd at 50 MHz, so it
-> won't help you much. In practice SPI NOR uses the Read SFDP command at
-> the flash's maximum speed and we haven't seen problems. But better 
-> would
-> be to use some flash OTP data maybe? I remember Pratyush has submitted 
-> a
-> phy calibration series in the past, I haven't had the chance to read 
-> his
-> proposal. Did you? How's your proposal different than his?
+On Mon, Jul 17, 2023 at 7:28 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> _DEFINE_DEV_PM_OPS() helps to define PM operations for the system sleep
+> and/or runtime PM cases. Some of the existing users want to have _noirq()
+> variants to be set. For that purpose introduce a new helper which sets
+> up _noirq() callbacks to be set and struct dev_pm_ops be provided.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-And its not 6 bytes.. it's usually only three. The last three bytes will
-probably be undefined. So the might return ff or just wrap around and
-return the first three bytes again.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Is there a datasheet where you can read how the calibration is done? Is 
-this
-the same for all i/o pads or individual per i/o pad?
+Gr{oetje,eeting}s,
 
-I cannot see where the op to read the id is coming from. Are you relying
-on the fact that a RDID is the first command which gets executed. If so,
-please don't.
+                        Geert
 
-Do you calibrate only one pad? RDID (9f) is  single bit i/o, right? And
-I guess you are calibrating with the highest frequency, are
-we sure that RDID will work with any frequency (on any flash).
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
->> The reason behind choosing this approach instead of reading the ID 
->> again
->> in the controller driver is to make it generic solution.
->> - Other controller drivers which want to use similar tuning process, 
->> they
->> will make use of this ID instead of reading the ID again in the 
->> driver.
-
-Honestly, I'm not sure this is the way to go. Pratyush proposed solution
-to have a dedicated memory area within the flash array with a know 
-pattern
-seems to make more sense, because you are calibrating on the thing you 
-are going
-to use later, that is quad/ocal read with the fastest frequency.
-
->> - Also, we can avoid hardcoding the command information and initiating 
->> the
->> transfer in the controller driver as this should happen from spi-nor.
-
-So how you know that this is a RDID instruction?
-
--michael
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
