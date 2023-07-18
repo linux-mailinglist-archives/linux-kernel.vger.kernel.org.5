@@ -2,87 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6AF75765D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF6D757665
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbjGRIOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
+        id S231699AbjGRIQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:16:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbjGRIOx (ORCPT
+        with ESMTP id S231652AbjGRIQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:14:53 -0400
-Received: from mail11.truemail.it (mail11.truemail.it [IPv6:2001:4b7e:0:8::81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75621137;
-        Tue, 18 Jul 2023 01:14:50 -0700 (PDT)
-Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-        by mail11.truemail.it (Postfix) with ESMTPA id C846D209AD;
-        Tue, 18 Jul 2023 10:14:44 +0200 (CEST)
-Date:   Tue, 18 Jul 2023 10:14:41 +0200
-From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Luca Ceresoli <luca.ceresoli@bootlin.com>
-Cc:     Francesco Dolcini <francesco@dolcini.it>, Jun Li <jun.li@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        Xu Yang <xu.yang_2@nxp.com>
-Subject: Re: [PATCH v2 2/3] usb: chipidea: imx: support disabling runtime-pm
-Message-ID: <ZLZJ8djqkPIfT/FE@francesco-nb.int.toradex.com>
-References: <PA4PR04MB96403377F5E37C12AD8C25B389729@PA4PR04MB9640.eurprd04.prod.outlook.com>
- <20230505120618.2f4cf22c@booty>
- <ZFThyn/D/dDK9nk3@francesco-nb.int.toradex.com>
- <PA4PR04MB96405EE2468555EA900B340189739@PA4PR04MB9640.eurprd04.prod.outlook.com>
- <ZFjaNzY32x8o2XG7@francesco-nb.int.toradex.com>
- <20230508151756.785ec07e@booty>
- <20230529121825.71e9b6d6@booty>
- <PA4PR04MB96405138465D215C34285F02894B9@PA4PR04MB9640.eurprd04.prod.outlook.com>
- <ZKaWL3+ClI7iNr/4@francesco-nb.int.toradex.com>
- <20230717184537.6d6ed607@booty>
+        Tue, 18 Jul 2023 04:16:02 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD872188
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:15:58 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fb73ba3b5dso8909112e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:15:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689668157; x=1690272957;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iw8rToh05r7bUfycHBeb+uZz00o8lFw7cQSPQLUCF2M=;
+        b=tdM8sAUVKS2LHDZxtM7iRxFyCeKyFP/DhzOJ/LcgkJwYR8tK31PrRanIjDLxCKerFi
+         Azz0AXE1Bv825E9D+/EbPXgtfE0b3ojU6znaC34tqB8U8GnLTnIG3CL+itF0HepL57GV
+         L0LF8vZrF8UM1vUgvgiRpLgB2XXgiWYkxr0Kqt2KJqM8J9aEtD3mJQuaNvHvWmghxJng
+         DjVZvsJjcISaQuZopEULICVLNs053lZBG5qjSo087RcINyWrmaoNUvyo0Q8qqhjjbZUA
+         LZPc6EoevtJBR1R+ahTfTwnIWOMVhauDS6WtldaFOHXUUGJswcOZvMBwtVXrqwJ1iFzN
+         ZUiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689668157; x=1690272957;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iw8rToh05r7bUfycHBeb+uZz00o8lFw7cQSPQLUCF2M=;
+        b=XciM5Inm8uOXYvUlZmZ8/X3eQU0ulaR0KH4jpARgGOgkUfGTuJ1yFUkaUgLill9oCg
+         Qtzq40gkQW+ua5oq3V+Ku/WMKyfZJ9zAyxOi6pxiZkqSAI78x5sIKIbhrc+caNtOXw1Q
+         WahYMsTZrQT1QZ80xuRDue+jxZzvyjWYiUA4KlpGUwxd5AmvKddQKBiZryD/oVeIQILt
+         N58EVAGIpvbiASdvF4nushi8TuSPdak46IBaHqeQgbwEvBVY1jDTZ1QiOqgQMf45LFFl
+         S8zPnxOX58wugQzgiLzo/VVKbJ+J89aj5q9wPOH+BUHG7l27FAFlVLBUL9xRu4qp38vY
+         dW/A==
+X-Gm-Message-State: ABy/qLYWI3DmuC7fI2LBzlbieKMQEaZL1oQWQtbyHGA69sn8ADny1c2v
+        CUvbPBu9EZKGw6Jhlidj2NqBoA==
+X-Google-Smtp-Source: APBJJlG0i+8oZJSxOcAnNcuG+MiAU7YhlOlYb4AgmHWdYRATrnr8cHmgyMEWL/+T3Tpu+68WeMapPQ==
+X-Received: by 2002:a05:6512:b1d:b0:4f8:4719:1f4a with SMTP id w29-20020a0565120b1d00b004f847191f4amr9888796lfu.7.1689668157012;
+        Tue, 18 Jul 2023 01:15:57 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
+        by smtp.gmail.com with ESMTPSA id h8-20020a05651211c800b004f9c44b3e6dsm320705lfr.127.2023.07.18.01.15.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 01:15:56 -0700 (PDT)
+Message-ID: <c17625f5-515e-3c8a-29b8-0bef9f125dc4@linaro.org>
+Date:   Tue, 18 Jul 2023 11:15:56 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717184537.6d6ed607@booty>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] drm/msm/dsi: add missing put_device()
+Content-Language: en-GB
+To:     sunran001@208suo.com, robdclark@gmail.com,
+        quic_abhinavk@quicinc.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230718081139.16918-1-xujianghui@cdjrlc.com>
+ <c07be8cdf5ceceeec6bc7918774c18e0@208suo.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <c07be8cdf5ceceeec6bc7918774c18e0@208suo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 06:45:37PM +0200, Luca Ceresoli wrote:
-> On Thu, 6 Jul 2023 12:23:43 +0200
-> Francesco Dolcini <francesco@dolcini.it> wrote:
-> > On Tue, May 30, 2023 at 11:22:51AM +0000, Jun Li wrote:
-> > > Yes, your understanding is correct, talked with Xu(in CC), he will take this
-> > > soon.  
-> > 
-> > A series was posted
-> > https://lore.kernel.org/all/20230627110353.1879477-1-xu.yang_2@nxp.com/,
-> > I had no time to try or look at it yet.
+On 18/07/2023 11:13, sunran001@208suo.com wrote:
+> The of_find_device_by_node() takes a reference to the underlying device
+> structure, we should release that reference.
 > 
-> Thanks for keeping me up to date on this topic, which is still totally
-> relevant to me.
+> Detected by coccinelle with the following ERROR:
+> ./drivers/gpu/drm/msm/dsi/dsi.c:50:1-7: ERROR: missing put_device; call
+> of_find_device_by_node on line 32, but without a corresponding object
+> release within this function.
 > 
-> I looked at the series, but it does not seem to be addressing the
-> problem with USB host not detecting new devices when VBUS is not
-> directly connected, e.g. in the Colibri imx6ull SoM.
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>   drivers/gpu/drm/msm/dsi/dsi.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi.c b/drivers/gpu/drm/msm/dsi/dsi.c
+> index baab79ab6e74..81461e8852a7 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi.c
+> @@ -46,7 +46,7 @@ static int dsi_get_phy(struct msm_dsi *msm_dsi)
+>           DRM_DEV_ERROR(&pdev->dev, "%s: phy driver is not ready\n", 
+> __func__);
+>           return -EPROBE_DEFER;
+>       }
+> -
+> +    put_device(&pdev->dev);
 
-I recall having tried something similar, it could handle also the
-colibri imx6ull use case. Were you able to try it? These days I am busy
-with other tasks and I was not able to find the time (yet).
+NAK. First, you are putting pdev instead of phy_pdev. Next, the 
+reference to the phy dev is correctly stored and then put in 
+dsi_destroy(). Please do not make blind patches when reviewing static 
+analyser warnings.
 
-Francesco
+>       return 0;
+>   }
+
+-- 
+With best wishes
+Dmitry
 
