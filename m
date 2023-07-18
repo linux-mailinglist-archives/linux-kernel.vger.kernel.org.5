@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A80F757D0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8519757D12
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbjGRNPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
+        id S231174AbjGRNQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231292AbjGRNPh (ORCPT
+        with ESMTP id S229820AbjGRNQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:15:37 -0400
+        Tue, 18 Jul 2023 09:16:16 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592F6B3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:15:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B05C0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:16:15 -0700 (PDT)
 Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <mfe@pengutronix.de>)
-        id 1qLkXq-00057f-Ex; Tue, 18 Jul 2023 15:15:14 +0200
+        id 1qLkYW-0005P3-T3; Tue, 18 Jul 2023 15:15:56 +0200
 Received: from mfe by ptx.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <mfe@pengutronix.de>)
-        id 1qLkXi-0002h3-Rr; Tue, 18 Jul 2023 15:15:06 +0200
-Date:   Tue, 18 Jul 2023 15:15:06 +0200
+        id 1qLkYW-0002nJ-1f; Tue, 18 Jul 2023 15:15:56 +0200
+Date:   Tue, 18 Jul 2023 15:15:56 +0200
 From:   Marco Felsch <m.felsch@pengutronix.de>
 To:     Andrew Lunn <andrew@lunn.ch>
 Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
@@ -37,16 +37,16 @@ Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
         linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
 Subject: Re: [PATCH net-next 2/2] net: stmmac: platform: add support for
  phy-supply
-Message-ID: <20230718131506.ro2o45qhggykwhwc@pengutronix.de>
+Message-ID: <20230718131556.bdp3sykrkkylp4pb@pengutronix.de>
 References: <20230717164307.2868264-1-m.felsch@pengutronix.de>
  <20230717164307.2868264-2-m.felsch@pengutronix.de>
- <cd8c177e-7840-4636-a039-dbe8884b3d2b@lunn.ch>
- <20230718083841.p67wflhjlwnu56j4@pengutronix.de>
- <9214ae14-b501-4d94-9d52-fd7dab2a86af@lunn.ch>
+ <accc8d89-7565-460e-a874-a491b755bbb8@lunn.ch>
+ <20230718083504.r3znx6iixtq7vkjt@pengutronix.de>
+ <427214fb-6206-47b3-bf5b-8b1cfc8b7677@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9214ae14-b501-4d94-9d52-fd7dab2a86af@lunn.ch>
+In-Reply-To: <427214fb-6206-47b3-bf5b-8b1cfc8b7677@lunn.ch>
 User-Agent: NeoMutt/20180716
 X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
 X-SA-Exim-Mail-From: mfe@pengutronix.de
@@ -62,40 +62,60 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 23-07-18, Andrew Lunn wrote:
-> On Tue, Jul 18, 2023 at 10:38:41AM +0200, Marco Felsch wrote:
+> On Tue, Jul 18, 2023 at 10:35:04AM +0200, Marco Felsch wrote:
 > > On 23-07-18, Andrew Lunn wrote:
-> > > > +static int stmmac_phy_power(struct platform_device *pdev,
-> > > > +			    struct plat_stmmacenet_data *plat,
-> > > > +			    bool enable)
-> > > > +{
-> > > > +	struct regulator *regulator = plat->phy_regulator;
-> > > > +	int ret = 0;
-> > > > +
-> > > > +	if (regulator) {
-> > > > +		if (enable)
-> > > > +			ret = regulator_enable(regulator);
-> > > > +		else
-> > > > +			regulator_disable(regulator);
+> > > On Mon, Jul 17, 2023 at 06:43:07PM +0200, Marco Felsch wrote:
+> > > > Add generic phy-supply handling support to control the phy regulator.
+> > > > Use the common stmmac_platform code path so all drivers using
+> > > > stmmac_probe_config_dt() and stmmac_pltfr_pm_ops can use it.
+> > > > 
+> > > > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+> > > > ---
+> > > >  .../ethernet/stmicro/stmmac/stmmac_platform.c | 51 +++++++++++++++++++
+> > > >  include/linux/stmmac.h                        |  1 +
+> > > >  2 files changed, 52 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> > > > index eb0b2898daa3d..6193d42b53fb7 100644
+> > > > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> > > > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> > > > @@ -10,6 +10,7 @@
+> > > >  
+> > > >  #include <linux/platform_device.h>
+> > > >  #include <linux/pm_runtime.h>
+> > > > +#include <linux/regulator/consumer.h>
+> > > >  #include <linux/module.h>
+> > > >  #include <linux/io.h>
+> > > >  #include <linux/of.h>
+> > > > @@ -423,6 +424,15 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
+> > > >  	if (plat->interface < 0)
+> > > >  		plat->interface = plat->phy_interface;
+> > > >  
+> > > > +	/* Optional regulator for PHY */
+> > > > +	plat->phy_regulator = devm_regulator_get_optional(&pdev->dev, "phy");
+> > > > +	if (IS_ERR(plat->phy_regulator)) {
+> > > > +		if (PTR_ERR(plat->phy_regulator) == -EPROBE_DEFER)
+> > > > +			return ERR_CAST(plat->phy_regulator);
+> > > > +		dev_info(&pdev->dev, "No regulator found\n");
+> > > > +		plat->phy_regulator = NULL;
 > > > > +	}
 > > > > +
-> > > > +	if (ret)
-> > > > +		dev_err(&pdev->dev, "Fail to enable regulator\n");
 > > > 
-> > > 'enable' is only correct 50% of the time.
+> > > So this gets the regulator. When do you actually turn it on?
 > > 
-> > You mean to move it under the enable path.
+> > During the suspend/resume logic like the rockchip, sun8i platform
+> > integrations did.
 > 
-> Or don't use the word 'enable'. 'modify' ?
-
-I changed it but kept the 'enable'.
-
-> > Good point didn't consider WOL. Is there a way to check if WOL is
-> > enabled?
+> So you are assuming the boot loader has turned it on?
 > 
-> Yes, plenty of MAC drivers do this. Look around.
+> You also might have a difference between the actual state, and what
+> kernel thinks the state is, depending on how the regulator is
+> implemented.
+> 
+> It would be better to explicitly turn it on before registering the
+> MDIO bus.
 
-Yep, checked the code and found the interesting parts :) Thanks for the
-hint.
+You're right, I changed this. Thanks for the hint.
 
 Regards,
   Marco
