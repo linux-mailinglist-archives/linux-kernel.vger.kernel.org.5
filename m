@@ -2,74 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CA175834A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 901F875834B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbjGRRPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46874 "EHLO
+        id S230445AbjGRRQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbjGRRPV (ORCPT
+        with ESMTP id S229937AbjGRRQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:15:21 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E874BE
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:15:16 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-31441bc0092so5779861f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:15:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689700515; x=1692292515;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0b3Vly9emv1HHVlSd38yfh5xQjrqeAe6ysyE2is2jXc=;
-        b=h6TLwmWojjpbLukjXrGCuGV+GJT1TT3eflwtZw1JiAa8EaHDFqvztGhW2rOBTnNuYv
-         pJscema2DoTzIZ6SqIAO8pYwN2bRJcM1GZf5/HRPmAIzCi3SH+MgPq6WJGz+F0YTm5ix
-         1/M1QprNID/sFMmGTw/BEC/Huj4dB9DHCtirago5WfUCu8GzDP8V2kVYQQvoOcleMNvn
-         ILP8m76TXAt9fIYrQRxuDfpmcqKKDDnlc/xLTClVyED91NVQg62cGrT6aPhPaa/fVrQv
-         Z4/Jc8sShTdbV+3YJmQPb6bdgc9DzTqHk3mInaue1i11gaAOCvI4aHXRm3Kc/SiqVfz1
-         oyzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689700515; x=1692292515;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0b3Vly9emv1HHVlSd38yfh5xQjrqeAe6ysyE2is2jXc=;
-        b=lzQavSG6mGaeIhJlo/NhhesdHSt//oUi4IFzBYlDyszBy5oMCllfZf2tsJI0Hpl5Xl
-         Fz26boBZD/bp8YlnIvAgXtffPuru3lClsoAlb+rfB3qXAAS8ojHJO67NwK+ysFzn60DX
-         cLse5FzaA+/abkpZfAQK4l7Ekz9CQfTAH9CI/cnbywMLekvTKRV1WjPk6+hRkkr+yzpQ
-         LUw0ugprHgngimGnHeb954gu7j3bBm46UJqNz+niID2DK4H92mhzgRonL3fwePzcso1j
-         SaTAr2jRJKjEKiex/08zJyyFEOY0HwX7ZeGT4YDFlQd6IHuCvGRMjS3QCGOQE7rU3HbP
-         mNAg==
-X-Gm-Message-State: ABy/qLaZpvs7kjIKJ+r/yT2LtNBGUsBzL7biI35s032BnkN2Byb6mare
-        X1GAGjouAdq7b9W+rVMIt/65jvMwpZqMnjqHt/k=
-X-Google-Smtp-Source: APBJJlGFqBHV5lb5GSyERvL4mSEEBnqLmVmrcoJt9riZbVC8qBpdqlZlileeT2GgK6ldh6XYCRHibw==
-X-Received: by 2002:a5d:452d:0:b0:315:ad03:a9e0 with SMTP id j13-20020a5d452d000000b00315ad03a9e0mr12487178wra.45.1689700514894;
-        Tue, 18 Jul 2023 10:15:14 -0700 (PDT)
-Received: from [192.168.2.107] ([79.115.63.146])
-        by smtp.gmail.com with ESMTPSA id n8-20020adff088000000b00301a351a8d6sm2937641wro.84.2023.07.18.10.15.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 10:15:14 -0700 (PDT)
-Message-ID: <4e6c4534-896b-8b35-b4c1-dd1359d6f8a1@linaro.org>
-Date:   Tue, 18 Jul 2023 18:15:13 +0100
+        Tue, 18 Jul 2023 13:16:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0412BBE
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:16:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8BFF06165C
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 17:16:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 897CDC433C7;
+        Tue, 18 Jul 2023 17:16:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689700604;
+        bh=hOS8hHZ69rZwffHsfBNU1mv9uSJBfqr7PZFO7Qzp4zc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qvMH347thgaPRQviAhGECvzPYxGLqqeaiSZq+AvaobsLnUSrRYYrfFU67IRwlV+fc
+         VB2BSu88aYZWfVyp7WMlzq8KiHqASv6zNH6AG0fbYYIVoYGG6xD0r5oTifwWjkBZFg
+         xFBBjw0dBOsysTgW9SlW6gYHXQHZK6wrw23yWJEbJtSWsbloanoD1+4HTemMc1iHxg
+         jUYinyOQokWu22RrQxmyJQNknZROW5FVlvtYkC+W0zB15ccSXGjiCR5VqIbX6INhc1
+         Panipjui29c1zyyPdXIh6csBzxmi2XrGF0dI2fOXRkNkK6Zb073igSSZTBJssHQup4
+         9dNkl8kINr9BA==
+Date:   Tue, 18 Jul 2023 18:16:39 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Lee Jones <lee@kernel.org>, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 08/11] mfd: wm5110: Update to use maple tree register
+ cache
+Message-ID: <b7a1884c-77fb-41c7-b660-10d2d5d68aae@sirena.org.uk>
+References: <20230713-mfd-cirrus-maple-v1-0-16dacae402a8@kernel.org>
+ <20230713-mfd-cirrus-maple-v1-8-16dacae402a8@kernel.org>
+ <20230718154200.GG103419@ediswmail.ad.cirrus.com>
+ <20230718170035.GH103419@ediswmail.ad.cirrus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] Add support for XMC
- XM25QH128C/XM25QH256C/XM25QU256C/XM25QH512C/XM25QU512C
-Content-Language: en-US
-To:     SSunk <ssunkkan@gmail.com>, pratyush@kernel.org, michael@walle.cc,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230718145132.3811-1-ssunkkan@gmail.com>
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230718145132.3811-1-ssunkkan@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="s1vFkW2z8enz8TEJ"
+Content-Disposition: inline
+In-Reply-To: <20230718170035.GH103419@ediswmail.ad.cirrus.com>
+X-Cookie: Nothing happens.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -77,8 +63,45 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--s1vFkW2z8enz8TEJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 7/18/23 15:51, SSunk wrote:
-> Add support for XMC XM25QH128C/XM25QH256C/XM25QU256C/XM25QH512C/XM25QU512C and do not use the generic spi nor driver.
+On Tue, Jul 18, 2023 at 05:00:35PM +0000, Charles Keepax wrote:
+> On Tue, Jul 18, 2023 at 03:42:00PM +0000, Charles Keepax wrote:
 
-Why can't you use the generic SPI NOR driver?
+> > This one appears to cause me some issues, seems to get the IRQs
+> > into a weird state when doing compressed stream stuff. The
+> > issue seems to also require commit bfa0b38c1483 ("regmap:
+> > maple: Implement block sync for the maple tree cache") to be
+> > present. So it definitely seems to relate to the cache sync,
+> > but not sure if it is something todo with the device itself,
+> > or the maple tree stuff yet.
+
+> Ah... I think I see the regcache_sync sets async=true, but then
+> the maple tree code immediately deletes the buffer after calling
+> _regmap_raw_write. So its a racy use after free.
+
+> How would we feel about having the maple tree code, clear async
+> again?
+
+I was going to say, it must be a maple tree issue.  I think we should
+push that async down into the rbtree code, that's probably also broken
+for other cache types if used in conjunction with slow buses...
+
+--s1vFkW2z8enz8TEJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS2yPYACgkQJNaLcl1U
+h9Chbgf+IkhQ8KqyZmS/h4BdOV/WW+wNBQIFknq70iMrXrdCnF4wWE820V5uzfxT
+GI1fFTyCYgfvzjrf/SL+av9jBU10AsOaPq2lfXHuQDIH3PFPPayE3yNRSBIIAyyu
+an8AxQMPC1aP6G73M9e9rXD3R3I5XcMa5x74gc83LR/V4hPGfy1PW8kJlRJYLf71
+srdqss69glOvET27EBCtho0eEYv1pH1KZIRXgPawBnJXnuaVzqw7Ppp61XPalERI
+udkzoZvz5mvGb7mfnnYNi9MwYjQf47ycu0qcPoG9VWQbTlaeUwKIXpPEF4/zoYBu
+Vb5Nsk+AtKwFkRtuDLF/NSu6BmHTyQ==
+=EAHj
+-----END PGP SIGNATURE-----
+
+--s1vFkW2z8enz8TEJ--
