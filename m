@@ -2,106 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C2675736B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 07:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF4C757359
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 07:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbjGRFvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 01:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45796 "EHLO
+        id S230136AbjGRFsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 01:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjGRFvk (ORCPT
+        with ESMTP id S229458AbjGRFsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 01:51:40 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89341E55;
-        Mon, 17 Jul 2023 22:51:37 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id F3C1324E280;
-        Tue, 18 Jul 2023 13:51:26 +0800 (CST)
-Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 18 Jul
- 2023 13:51:27 +0800
-Received: from [192.168.125.128] (113.72.147.86) by EXMBX061.cuchost.com
- (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 18 Jul
- 2023 13:51:25 +0800
-Message-ID: <4e4dea7f-639b-71aa-5a47-95ce14d7f1ed@starfivetech.com>
-Date:   Tue, 18 Jul 2023 13:48:09 +0800
+        Tue, 18 Jul 2023 01:48:40 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C9210C4
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 22:48:38 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R4p0K5v0xzBHXhK
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:48:33 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689659313; x=1692251314; bh=Gu+rNwPS98EfN/nf1FC0RCiifB1
+        aY8jnrwiEnASRdE8=; b=EE9jMhICvNSK1FQ2mw27X/8TzYGz/9N+e85ediDPK66
+        aUjzgvRW43o8huQxQ++zTDQIbcwO5g18asEWdTu+MEZZdNHkypXLESequoXemNwr
+        Ul7/AMfWX2WWeetVgoZMAZYdeAeEVXjB5zrh47dxRtkFW6dt8nOKHstnFMk6EMo6
+        JzRwBCccKa5GOHfVH5QF0oZ/RkdiDc+lRiXsiykFsKP8mwPRyPi625k7Jf0fnVkI
+        sNEoNAc/p7I8h9McoFYaI/NqjqAMUqxghM4GM2gq/YB9xjeUolqV1/ScWh0Ykcg8
+        3LBbKzuZChdJVh0fWBAw1c1zjVO+2/aR/ykU1svPgCA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 4w1KxRV-bUUD for <linux-kernel@vger.kernel.org>;
+        Tue, 18 Jul 2023 13:48:33 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R4p0K32QjzBQslS;
+        Tue, 18 Jul 2023 13:48:33 +0800 (CST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v7 0/7] Add PLL clocks driver and syscon for StarFive
- JH7110 SoC
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-CC:     <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        "Michael Turquette" <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Hal Feng <hal.feng@starfivetech.com>,
-        William Qiu <william.qiu@starfivetech.com>,
-        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
-References: <20230717023040.78860-1-xingyu.wu@starfivetech.com>
- <20230717-easel-pessimist-5b7c4e5bed0a@spud>
-From:   Xingyu Wu <xingyu.wu@starfivetech.com>
-In-Reply-To: <20230717-easel-pessimist-5b7c4e5bed0a@spud>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Tue, 18 Jul 2023 13:48:33 +0800
+From:   shijie001@208suo.com
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: Fix errors in af_llc.c
+In-Reply-To: <tencent_4CED92D1C8320CEA29489ED8DFEF3614EB05@qq.com>
+References: <tencent_4CED92D1C8320CEA29489ED8DFEF3614EB05@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <7da2f0c57e848c77ab30a948dc73653a@208suo.com>
+X-Sender: shijie001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [113.72.147.86]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX061.cuchost.com
- (172.16.6.61)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/18 2:14, Conor Dooley wrote:
-> Hey Xingyu,
-> 
-> On Mon, Jul 17, 2023 at 10:30:33AM +0800, Xingyu Wu wrote:
->> This patch serises are to add PLL clocks driver and providers by writing
->> and reading syscon registers for the StarFive JH7110 RISC-V SoC. And add 
->> documentation and nodes to describe StarFive System Controller(syscon)
->> Registers. This patch serises are based on Linux 6.4.
->> 
->> PLLs are high speed, low jitter frequency synthesizers in JH7110.
->> Each PLL clock works in integer mode or fraction mode by some dividers,
->> and the dividers are set in several syscon registers.
->> The formula for calculating frequency is: 
->> Fvco = Fref * (NI + NF) / M / Q1
->> 
->> The first patch adds docunmentation to describe PLL clock bindings,
->> and the second patch adds documentation to decribe syscon registers.
->> The patch 3 modifies the SYSCRG bindings and adds PLL clock inputs.
->> The patch 4 adds driver to support PLL clocks for JH7110.
->> The patch 5 modifies the system clock driver and can select the PLL clock
->> source from PLL clocks driver. And the patch 6 adds the 
->> stg/sys/aon syscon nodes for JH7110 SoC. The last patch modifies the 
->> syscrg node in JH7110 dts file.
-> 
-> Just FYI, I have picked up the binding & clock portions of this series
-> and your other one adding the stg syscon. I've pushed them out here for
-> the test robots to have a look:
-> https://git.kernel.org/pub/scm/linux/kernel/git/conor/linux.git/log/?h=clk-starfive
-> 
-> If that passes, my plan is to send Stephen a PR for the lot, later this
-> week.
-> 
+The following checkpatch errors are removed:
+ERROR: "foo* bar" should be "foo *bar"
+ERROR: space required before the open parenthesis '('
 
-Great. Thank you for everything.
+Signed-off-by: Jie Shi <shijie001@208suo.com>
+---
+  net/llc/af_llc.c | 6 +++---
+  1 file changed, 3 insertions(+), 3 deletions(-)
 
-Best regards,
-Xingyu Wu
+diff --git a/net/llc/af_llc.c b/net/llc/af_llc.c
+index 9ffbc667be6c..f0891088e7be 100644
+--- a/net/llc/af_llc.c
++++ b/net/llc/af_llc.c
+@@ -124,9 +124,9 @@ static inline u8 llc_ui_header_len(struct sock *sk, 
+struct sockaddr_llc *addr)
+   *
+   *    This function always consumes a reference to the skb.
+   */
+-static int llc_ui_send_data(struct sock* sk, struct sk_buff *skb, int 
+noblock)
++static int llc_ui_send_data(struct sock *sk, struct sk_buff *skb, int 
+noblock)
+  {
+-    struct llc_sock* llc = llc_sk(sk);
++    struct llc_sock *llc = llc_sk(sk);
 
+      if (unlikely(llc_data_accept_state(llc->state) ||
+               llc->remote_busy_flag ||
+@@ -1030,7 +1030,7 @@ static int llc_ui_getname(struct socket *sock, 
+struct sockaddr *uaddr,
+          rc = -ENOTCONN;
+          if (sk->sk_state != TCP_ESTABLISHED)
+              goto out;
+-        if(llc->dev)
++        if (llc->dev)
+              sllc.sllc_arphrd = llc->dev->type;
+          sllc.sllc_sap = llc->daddr.lsap;
+          memcpy(&sllc.sllc_mac, &llc->daddr.mac, IFHWADDRLEN);
