@@ -2,98 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 824EE757DA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE67C757DAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbjGRNcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36598 "EHLO
+        id S232729AbjGRNcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbjGRNcC (ORCPT
+        with ESMTP id S231193AbjGRNcG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:32:02 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1924497;
-        Tue, 18 Jul 2023 06:32:00 -0700 (PDT)
-Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8EB1A7F3;
-        Tue, 18 Jul 2023 15:31:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1689687065;
-        bh=CDlQt/aqwwdzSm2yeQRiyABXS9GNnR7K1F2R3sEC9uE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=VpvfGkQ3WeiTuXcwWtmEetaO4KTQ5/OwKr1CuGLEQsENY3Vm0XkTb1SUxBLXC/GD0
-         5131USLBvBFhopUH9hbS9QXTT/mRuZUjOvLs924ljQz8KgwhiuikTxLD4F6Wu/UPZs
-         nuMR37HXVkAPFpHm7/gfgxHc84Npvv+tpdigwZFs=
-Message-ID: <159ca9b9-0702-b347-3e4f-66272dfce55e@ideasonboard.com>
-Date:   Tue, 18 Jul 2023 16:31:54 +0300
+        Tue, 18 Jul 2023 09:32:06 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7480397;
+        Tue, 18 Jul 2023 06:32:05 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA7432F4;
+        Tue, 18 Jul 2023 06:32:48 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B62063F6C4;
+        Tue, 18 Jul 2023 06:32:03 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 14:32:01 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Oza Pawandeep <quic_poza@quicinc.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, jiles@qti.qualcomm.com
+Subject: Re: [PATCH] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast
+ timer
+Message-ID: <20230718133201.qsulwupte6l6bmdm@bogus>
+References: <20230712172458.2507434-1-quic_poza@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH next] media: i2c: fix error handling in
- ub960_rxport_add_serializer()
-Content-Language: en-US
-To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com
-References: <20230718085846.3988564-1-harshit.m.mogalapalli@oracle.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-In-Reply-To: <20230718085846.3988564-1-harshit.m.mogalapalli@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230712172458.2507434-1-quic_poza@quicinc.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 18/07/2023 11:58, Harshit Mogalapalli wrote:
-> Smatch warns:
->   drivers/media/i2c/ds90ub960.c:1671 ub960_rxport_add_serializer():
->   err: 'rxport->ser.client' dereferencing possible ERR_PTR()
+On Wed, Jul 12, 2023 at 10:24:58AM -0700, Oza Pawandeep wrote:
+> Arm® Functional Fixed Hardware Specification defines LPI states,
+> which provides an architectural context loss flags field
+> that can be used to describe the context that might be lost
+> when an LPI state is entered.
 > 
-> i2c_new_client_device() returns error pointers on failure and in
-> dev_dbg statement we are dereferencing error pointer which is a bug.
+> - Core context Lost
+> 	- General purpose registers.
+> 	- Floating point and SIMD registers.
+> 	- System registers, include the System register based
+> 	- generic timer for the core.
+> 	- Debug register in the core power domain.
+> 	- PMU registers in the core power domain.
+> 	- Trace register in the core power domain.
+> - Trace context loss
+> - GICR
+> - GICD
 > 
-> Fix this by using IS_ERR() which checks for error pointers.
+> Qualcomm's custom CPUs preserves the architectural state,
+> including keeping the power domain for local timers active.
+> when core is power gated, the local timers are sufficient to
+> wake the core up without needing broadcast timer.
 > 
-> Fixes: afe267f2d368 ("media: i2c: add DS90UB960 driver")
-> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-> ---
-> Found with static analysis, only compile tested. Although in
-> drivers/media i2c_client_has_driver() checks are present, IS_ERR() would
-> probably be sufficient here.
-> ---
->   drivers/media/i2c/ds90ub960.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> The patch fixes the evaluation of cpuidle arch_flags,
+> and moves only to broadcast timer if core context lost
+> is defined in ACPI LPI.
 > 
-> diff --git a/drivers/media/i2c/ds90ub960.c b/drivers/media/i2c/ds90ub960.c
-> index e101bcf2356a..88144e3ec183 100644
-> --- a/drivers/media/i2c/ds90ub960.c
-> +++ b/drivers/media/i2c/ds90ub960.c
-> @@ -1662,7 +1662,7 @@ static int ub960_rxport_add_serializer(struct ub960_data *priv, u8 nport)
->   	ser_info.addr = rxport->ser.alias;
->   	rxport->ser.client =
->   		i2c_new_client_device(priv->client->adapter, &ser_info);
-> -	if (!rxport->ser.client) {
-> +	if (IS_ERR(rxport->ser.client)) {
->   		dev_err(dev, "rx%u: cannot add %s i2c device", nport,
->   			ser_info.type);
->   		return -EIO;
+> Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
+> 
+> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+> index bd68e1b7f29f..9c335968316c 100644
+> --- a/arch/arm64/include/asm/acpi.h
+> +++ b/arch/arm64/include/asm/acpi.h
+> @@ -42,6 +42,24 @@
+>  #define ACPI_MADT_GICC_SPE  (offsetof(struct acpi_madt_generic_interrupt, \
+>  	spe_interrupt) + sizeof(u16))
+>  
+> +/*
+> + * Arm® Functional Fixed Hardware Specification Version 1.2.
+> + * Table 2: Arm Architecture context loss flags
+> + */
+> +#define CPUIDLE_CORE_CTXT		BIT(0) /* Core context Lost */
+> +
+> +#ifndef arch_acpi_lpi_timer_stopped
+> +static __always_inline bool arch_acpi_lpi_timer_stopped(u32 arch_flags)
 
-Good catch. I think this should be modified to return 
-PTR_ERR(rxport->ser.client) instead of -EIO. Do you want to update the 
-patch or shall I do the change?
+As mentioned by you above, the core context is not just timer context, so
+calling this function so is misleading.
 
-  Tomi
+> +{
+> +  return arch_flags & CPUIDLE_CORE_CTXT;
+> +}
+> +#define arch_acpi_lpi_timer_stopped arch_acpi_lpi_timer_stopped
+> +#endif
+> +
+> +#define CPUIDLE_TRACE_CTXT		BIT(1) /* Trace context loss */
+> +#define CPUIDLE_GICR_CTXT		BIT(2) /* GICR */
+> +#define CPUIDLE_GICD_CTXT		BIT(3) /* GICD */
+> +
 
+Do we really need to define these unused bitfields ? DO you have plans to
+use them ?
+
+>  /* Basic configuration for ACPI */
+>  #ifdef	CONFIG_ACPI
+>  pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
+> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+> index 9718d07cc2a2..8ea1f2b3bf96 100644
+> --- a/drivers/acpi/processor_idle.c
+> +++ b/drivers/acpi/processor_idle.c
+> @@ -1221,7 +1221,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
+>  		strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
+>  		state->exit_latency = lpi->wake_latency;
+>  		state->target_residency = lpi->min_residency;
+> -		if (lpi->arch_flags)
+> +		if (arch_acpi_lpi_timer_stopped(lpi->arch_flags))
+
+While setting CPUIDLE_FLAG_TIMER_STOP if any flags set is already
+questionable, checking for arch specific flag in the generic code is even
+more questionable now. I wonder if it makes more sense to have a arch
+specific helper to update the state->flags based on how arch specific
+interpretation of lpi->arch_flags ?
+
+>  			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
+>  		if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
+>  			state->flags |= CPUIDLE_FLAG_RCU_IDLE;
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index d584f94409e1..b24f1cd1cebb 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -1471,6 +1471,14 @@ static inline int lpit_read_residency_count_address(u64 *address)
+>  }
+>  #endif
+>  
+> +#ifndef arch_acpi_lpi_timer_stopped
+> +static __always_inline bool arch_acpi_lpi_timer_stopped(u32 arch_flags)
+> +{
+> +  return (arch_flags != 0);
+> +}
+> +#define arch_acpi_lpi_timer_stopped arch_acpi_lpi_timer_stopped
+> +#endif
+> +
+
+This looks ugly and main reason for my above comment. I am thinking of
+arch_update_idle_state_flags(lpi->arch_flags, &state->flags) and make
+it do nothing on non arm platforms. I don't think we will be breaking
+anything(i.e. no need to check arch_flags != 0. It is incorrect strictly
+speaking but there are no non-arm users ATM, but that doesn't mean we can
+trickle the arch specific LPI FFH details into the generic code.
+
+-- 
+Regards,
+Sudeep
