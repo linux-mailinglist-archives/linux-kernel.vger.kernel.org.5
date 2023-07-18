@@ -2,80 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB10757A13
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E41757A12
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbjGRLJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:09:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
+        id S230327AbjGRLJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:09:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjGRLJZ (ORCPT
+        with ESMTP id S229512AbjGRLJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:09:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DAFC10EF
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:08:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689678517;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=L/D23IWoSLSFILOueJ1sqkvAVYDlEez/SkBsdzHm8uI=;
-        b=Qwr94Hb4EQDniG06eNej5MzlE63kDHzRMG8lG+AXGLX3Uq+iWkKYE5l0tkDsQOIapYZ2rc
-        /ftXHav8bYKD6Clbh8v/vw8f+8/828kj17cODUsSs1mBs/C431RYipWAd+LNPDvS251JE1
-        Ffnooz3SSp55VQ68iDKSFclXhbEvhSE=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-572-WPuvamrZMOCwZOwHo3bXkw-1; Tue, 18 Jul 2023 07:08:34 -0400
-X-MC-Unique: WPuvamrZMOCwZOwHo3bXkw-1
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-402fa256023so10322051cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:08:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689678514; x=1692270514;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=L/D23IWoSLSFILOueJ1sqkvAVYDlEez/SkBsdzHm8uI=;
-        b=hSQbb7kBpsyXFGYdLpsvT6LjqzeBZAoxhEuNcsBp2PYA2nO46tRatpUuRnGK4WT7dc
-         9we4sCDtG5JQjpZDdO69Xh6nYDq7ot96CykRKIXS1vsh3S6Ivw+TyQ1zO34hR8TeuQoP
-         X2INbcW+ZsXqG2H9Un30wygJmKWZUr4T+dGzjT7y7KNCir2uzngNOLjtVwisj8LPOqAM
-         phy6lFdtlOw+eclirmk8dymYy9oWt6WE4nM8NhTd3jvy9sBLuTd9KwO0rJcG5+Yos1fb
-         ZvVkP6adWiNj/77fuIMb5jNZgP/gRX7X9ttnBgyWIUV3csRO6sunUVEkBR4OFj93a1au
-         wY9A==
-X-Gm-Message-State: ABy/qLZWGOKAX5DLIrCVyXO7dQgYwxEjdaJj0mVEwVxdbcp3bmF2K/86
-        n6WqTU7nXhzP0kX8O91Kpz6VtvrjUcx63y0To1jmHDjpMomho8WJuWZzQvzu+WrZRG+IjpBxrUr
-        zE/tb1PpsQedgscHYBWsFZjfh
-X-Received: by 2002:a05:622a:1813:b0:403:59f8:25d9 with SMTP id t19-20020a05622a181300b0040359f825d9mr10942798qtc.2.1689678514166;
-        Tue, 18 Jul 2023 04:08:34 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFGhFXiTRLs4F3xnaUNh0orK4AP5HoC/bfuuBgboh4MQUDGnGejRCegiLOMSjuGkZVMtRDmDA==
-X-Received: by 2002:a05:622a:1813:b0:403:59f8:25d9 with SMTP id t19-20020a05622a181300b0040359f825d9mr10942769qtc.2.1689678513856;
-        Tue, 18 Jul 2023 04:08:33 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-226-170.dyn.eolo.it. [146.241.226.170])
-        by smtp.gmail.com with ESMTPSA id r15-20020ac85e8f000000b00403cce833eesm572810qtx.27.2023.07.18.04.08.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 04:08:33 -0700 (PDT)
-Message-ID: <02b2a11c2990fdf21e8cd2c582df67d5883f6eea.camel@redhat.com>
-Subject: Re: [net PATCH] octeontx2-af: Adjust Tx credits when MCS external
- bypass is disabled
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Geetha sowjanya <gakula@marvell.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
-        sgoutham@marvell.com, sbhatta@marvell.com, hkelam@marvell.com,
-        ndabilpuram@marvell.com
-Date:   Tue, 18 Jul 2023 13:08:30 +0200
-In-Reply-To: <20230716091621.27844-1-gakula@marvell.com>
-References: <20230716091621.27844-1-gakula@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Tue, 18 Jul 2023 07:09:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0249A10F2;
+        Tue, 18 Jul 2023 04:09:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 82E9861517;
+        Tue, 18 Jul 2023 11:09:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2B93C433C8;
+        Tue, 18 Jul 2023 11:09:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689678555;
+        bh=455lvYV9bPgscAxyzAWQXxft7jceX9o1s3xKXlHBZik=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=aMM3R+fM3DMEEnetyIC2xArN6N0MGT95Q/dz4zsH5s7iBCvPdKdHDUUhKxyciRaEx
+         PR0qBOqXqqqppec3xDWedOQNQ5hG3X4HHPGkRIoo9pSgG7FXiSJ8w99VwQPYcgOMYI
+         3nNE0sBI60OwD/7vyx1NdlvCEZbvaDutB2nGFp2Qaug497sfNJ3ykOD/QkH0iwbttl
+         S0PmEpDbGvojOuimVGLEn8wIbIoXkov51ZzKXQOnistorEzuYGnIJ5ez7p4EYj7L5O
+         kfHWKMv5z+fBvY4dlHiif1CeY9pXOYIW7RAjCnZK5NMZr1PM5Nehuiq5aHbxJKW2ZY
+         qFyQyhXwHlecQ==
+Date:   Tue, 18 Jul 2023 06:09:13 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+        bhelgaas@google.com, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, Sergey.Semin@baikalelectronics.ru,
+        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kthota@nvidia.com,
+        mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Subject: Re: [PATCH V3] Revert "PCI: tegra194: Enable support for 256 Byte
+ payload"
+Message-ID: <20230718110913.GA475601@bhelgaas>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6bc71b88-1c8c-0c2c-d9e1-22096f928ad5@nvidia.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,48 +59,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2023-07-16 at 14:46 +0530, Geetha sowjanya wrote:
-> From: Nithin Dabilpuram <ndabilpuram@marvell.com>
->=20
-> When MCS external bypass is disabled, MCS returns additional
-> 2 credits(32B) for every packet Tx'ed on LMAC. To account for
-> these extra credits, NIX_AF_TX_LINKX_NORM_CREDIT.CC_MCS_CNT
-> needs to be configured as otherwise NIX Tx credits would overflow
-> and will never be returned to idle state credit count
-> causing issues with credit control and MTU change.
->=20
-> This patch fixes the same by configuring CC_MCS_CNT at probe
-> time for MCS enabled SoC's
->=20
-> Fixes: bd69476e86fc ("octeontx2-af: cn10k: mcs: Install a default TCAM fo=
-r normal traffic")
-> Signed-off-by: Nithin Dabilpuram <ndabilpuram@marvell.com>
-> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-> ---
->  drivers/net/ethernet/marvell/octeontx2/af/mbox.h    |  2 +-
->  drivers/net/ethernet/marvell/octeontx2/af/mcs.c     | 12 ++++++++++++
->  drivers/net/ethernet/marvell/octeontx2/af/mcs.h     |  2 ++
->  drivers/net/ethernet/marvell/octeontx2/af/rvu.h     |  1 +
->  drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c |  8 ++++++++
->  5 files changed, 24 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/n=
-et/ethernet/marvell/octeontx2/af/mbox.h
-> index eba307eee2b2..d78d72c0ca18 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-> @@ -1914,7 +1914,7 @@ struct mcs_hw_info {
->  	u8 tcam_entries;	/* RX/TX Tcam entries per mcs block */
->  	u8 secy_entries;	/* RX/TX SECY entries per mcs block */
->  	u8 sc_entries;		/* RX/TX SC CAM entries per mcs block */
-> -	u8 sa_entries;		/* PN table entries =3D SA entries */
-> +	u16 sa_entries;		/* PN table entries =3D SA entries */
+On Tue, Jul 18, 2023 at 08:03:47AM +0530, Vidya Sagar wrote:
+> On 7/14/2023 3:09 AM, Bjorn Helgaas wrote:
+> > On Mon, Jun 19, 2023 at 03:56:04PM +0530, Vidya Sagar wrote:
+> > > This reverts commit 4fb8e46c1bc4 ("PCI: tegra194: Enable
+> > > support for 256 Byte payload").
+> > > 
+> > > Consider a PCIe hierarchy with a PCIe switch and a device connected
+> > > downstream of the switch that has support for MPS which is the minimum in
+> > > the hierarchy, and root port programmed with an MPS in its DevCtl register
+> > > that is greater than the minimum. In this scenario, the default bus
+> > > configuration of the kernel i.e. "PCIE_BUS_DEFAULT" doesn't configure the
+> > > MPS settings in the hierarchy correctly resulting in the device with
+> > > support for minimum MPS in the hierarchy receiving the TLPs of size more
+> > > than that. Although this can be addressed by appending "pci=pcie_bus_safe"
+> > > to the kernel command line, it doesn't seem to be a good idea to always
+> > > have this commandline argument even for the basic functionality to work.
+> > 
+> > I think this has some irrelevant detail (IIUC the problem should
+> > happen even without a switch) and could be more specific (I think the
+> > problem case is RP MPS=256, EP only supports MPS=128).
+>
+> The issue is present only if there is a switch.
 
-This chunk looks like an unrelated bug-fix. Please move it to a
-separate patch or mention in the commit message why it's needed here.
+So if there's no switch, and an EP that only supports MPS=128, the PCI
+core changes the RP MPS setting to 128?  Just based on reading the
+code, I thought we would leave RP MPS=256 and EP MPS=128, which would
+be a problem.  But maybe the PCI core changes the RP down to MPS=128?
 
-Thanks!
-
-Paolo
-
+Bjorn
