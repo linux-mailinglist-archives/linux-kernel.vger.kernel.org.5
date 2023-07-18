@@ -2,76 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37179758133
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAA175813D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232611AbjGRPnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 11:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
+        id S232517AbjGRPqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 11:46:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231947AbjGRPnl (ORCPT
+        with ESMTP id S230320AbjGRPqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 11:43:41 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D068811C;
-        Tue, 18 Jul 2023 08:43:40 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-666e916b880so3842339b3a.2;
-        Tue, 18 Jul 2023 08:43:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689695020; x=1692287020;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s/koSxq77hSR24QtFVNS0QJ26GEEQWB8WVjlFvhSTls=;
-        b=Y959R8Ksn6jMbz80d40aR+I/ovr/QQfOmKWpOZsCRg1h8EeUUrV4kKRgZAEoprEjWA
-         lqwupVOb59uzvYMofQoxtvyjqkrh9X+U4rsmhzVc97sA5rqqbliUTvATfaNoH5EnEuU3
-         +MvaK03sWhodR2X9jzN2O+Rw2XBhgxeNCweQ/f2gi9Z9k6zIuoQ5Tt7lACDExd0YJNYn
-         sdGoHXMoLxvxc2sahFXIEIOke+ituT4EQ6xoV+854mPvCF79gHYsGxcIQuB6dxkM+HI8
-         hWpWBIYNl6WH/SZBuIWRmF9A4wmx+dimSEgW8LyJw+RmzlN6UTdYA2Cm+Kgpwv/OBFLM
-         rmsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689695020; x=1692287020;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=s/koSxq77hSR24QtFVNS0QJ26GEEQWB8WVjlFvhSTls=;
-        b=VV7NKp1gGfIbSQNreivps+k3vmt99AnoMfFr8G0tjgcE0xhSNrtpclIciCHoqLaVgM
-         zIwAZ93+HNzi8CZbqub/7BRxcKHA8J+oXVS+b0GB6OQYh97Any11+rQrkRZm+pUYnHaA
-         ajttSmliOHVbfjAqr7M3/FED1GuLaaA2PUc/DEsTmiBLU9LfAUfkXHggc7r9JFk7hTIb
-         z0psH8X94WMJR2MKiP8ZIymb8xXDL7Iu5AsMpR7pVC+O4iBPG2EKVpszC7mkfKzfuDId
-         AxyOUu6u/CgPvtLwexPepYp83J76pXO00wIFLYSsulCItWM63OCwgFbOdUHFvbdISGfB
-         AZoQ==
-X-Gm-Message-State: ABy/qLaH6WLExxmwoF7QKYxkdQAA3iOpMm2fAmyYrH4uy/FJ4bJ17A38
-        C/UFPEQfxTZRB8DNHy/RrL43pFUVdzc6S4wy
-X-Google-Smtp-Source: APBJJlEW7iBcZqHerCTAnpO9AruUgcaeYq/jAvAkp9Vcv/fLcnPA1w110fM+vFMRpJTaz6nO4rdUzA==
-X-Received: by 2002:a05:6a00:198a:b0:67e:4313:811e with SMTP id d10-20020a056a00198a00b0067e4313811emr16357584pfl.0.1689695019730;
-        Tue, 18 Jul 2023 08:43:39 -0700 (PDT)
-Received: from [10.0.2.15] ([103.37.201.179])
-        by smtp.gmail.com with ESMTPSA id k16-20020aa792d0000000b0063d24fcc2b7sm1698736pfa.1.2023.07.18.08.43.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 08:43:38 -0700 (PDT)
-Message-ID: <59bb83c2-0914-7cee-c1d2-0360cdfbc0ee@gmail.com>
-Date:   Tue, 18 Jul 2023 21:13:35 +0530
+        Tue, 18 Jul 2023 11:46:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E344AA9;
+        Tue, 18 Jul 2023 08:46:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 79B1D61644;
+        Tue, 18 Jul 2023 15:46:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3494C433C7;
+        Tue, 18 Jul 2023 15:46:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689695206;
+        bh=76mVnJR9o74Ma8KmtRmvfVhR/CCcRdmixqoJDHlIGzg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JTqoea1e4JsUd0SgXsF3R8CUlUt42gzMufzNo8YkXur/QdtUJdJ5jhWDr5UneKhQy
+         JLxl3nBJQM80I/OEH5dR+H6AJTnJl9pUcsh7ioARJ1EbCqtgsiZgfUFyvcKkLGV93V
+         zLJ7K/I2ho+eoF1XcUZhSPCLd9k9edyAGCXX/cpl10COVm2lsY3afE/Et/KI+McnaH
+         /s+h6dNU5sXUu4N5BI7p5Buf1GYxt0YALSvDPaC7/xWplza8Cqqv0cqeyYoF/hS8vR
+         Y/aHDeQMGt38kLsWeviLvYz7tGi6C5cGJmdmHpslvjVR1xz5pyopZ/PjLwHMpik1sX
+         hJYpV6TyUgSOQ==
+Date:   Tue, 18 Jul 2023 16:46:42 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] dt-bindings: mtd: nand-controller: add
+ nand-skip-bbtscan and nand-no-bbm-quirk DT options
+Message-ID: <20230718-curfew-jumble-aeafe95c5cc7@spud>
+References: <61c84262-cd98-1e60-d95b-9b0492083994@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     linux-kernel@vger.kernel.org, reiserfs-devel@vger.kernel.org
-From:   Manas Ghandat <ghandatmanas@gmail.com>
-Subject: Fixing syzkaller bugs
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="+7otubzjJ6EFgf8c"
+Content-Disposition: inline
+In-Reply-To: <61c84262-cd98-1e60-d95b-9b0492083994@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I was looking at the following bug 
-https://syzkaller.appspot.com/bug?extid=5184326923f180b9d11a . Adding a 
-null check at line 2556 of fix_node.c should fix this issue but i am 
-unable to understand on how to call reiserfs_panic.
+
+--+7otubzjJ6EFgf8c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Jul 15, 2023 at 12:48:16PM +0200, Johan Jonker wrote:
+> A NAND chip can contain a different data format then the MTD framework
+> expects in the erase blocks for the Bad Block Table(BBT).
+> Result is a failed probe, while nothing wrong with the hardware.
+> Some MTD flags need to be set to gain access again.
+>=20
+> Skip the automatic BBT scan with the NAND_SKIP_BBTSCAN option
+> so that the original content is unchanged during the driver probe.
+> The NAND_NO_BBM_QUIRK option allows us to erase bad blocks with
+> the nand_erase_nand() function and the flash_erase command.
+>=20
+> Add nand-skip-bbtscan and nand-no-bbm-quirk Device Tree options,
+> so the user has the "freedom of choice" by neutral
+> access mode to read and write in whatever format is needed.
+>=20
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> ---
+>=20
+> Previous discussion:
+> [PATCH v3 3/3] mtd: rawnand: rockchip-nand-controller: add skipbbt option
+> https://lore.kernel.org/linux-mtd/1618382560.2326931.1689261435022.JavaMa=
+il.zimbra@nod.at/
+> ---
+>  .../devicetree/bindings/mtd/nand-controller.yaml    | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b=
+/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+> index f70a32d2d9d4..ca04d06a0377 100644
+> --- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+> @@ -103,6 +103,19 @@ patternProperties:
+>            the boot ROM or similar restrictions.
+>          $ref: /schemas/types.yaml#/definitions/flag
+>=20
+> +      nand-no-bbm-quirk:
+> +        description:
+> +          Some controllers with pipelined ECC engines override the BBM m=
+arker with
+> +          data or ECC bytes, thus making bad block detection through bad=
+ block marker
+> +          impossible. Let's flag those chips so the core knows it should=
+n't check the
+> +          BBM and consider all blocks good.
+> +        $ref: /schemas/types.yaml#/definitions/flag
+
+While this seems okay, as it seems to describe facet of the hardware...
+
+> +      nand-skip-bbtscan:
+> +        description:
+> +          This option skips the BBT scan during initialization.
+> +        $ref: /schemas/types.yaml#/definitions/flag
+
+=2E..this seems to be used to control the behaviour of software, and does
+not describe the underlying hardware.
+
+Maybe I'm off, but the description of the property does not hint at the
+aspect of the hardware that this addresses.
+
+Thanks,
+Conor.
+
+> +
+>        nand-rb:
+>          description:
+>            Contains the native Ready/Busy IDs.
+> --
+> 2.30.2
+>=20
+
+--+7otubzjJ6EFgf8c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLaz4gAKCRB4tDGHoIJi
+0g3xAPoCChSgHtJm/s66HpBbvjdcQLRTQYdBP7qBc021LHTnKAD+ML/axLivhd8k
+t9BrKrTs3wFm05P8sJkqLPbYdU9C5gg=
+=07DA
+-----END PGP SIGNATURE-----
+
+--+7otubzjJ6EFgf8c--
