@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8F3757FBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92ED2757FC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233066AbjGROh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55284 "EHLO
+        id S229512AbjGROhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232804AbjGROhY (ORCPT
+        with ESMTP id S232884AbjGROhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:37:24 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D284A1719;
-        Tue, 18 Jul 2023 07:37:23 -0700 (PDT)
+        Tue, 18 Jul 2023 10:37:31 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 928D6EC;
+        Tue, 18 Jul 2023 07:37:28 -0700 (PDT)
 Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 3E23092009D; Tue, 18 Jul 2023 16:37:23 +0200 (CEST)
+        id CE56592009D; Tue, 18 Jul 2023 16:37:27 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 39C7C92009C;
-        Tue, 18 Jul 2023 15:37:23 +0100 (BST)
-Date:   Tue, 18 Jul 2023 15:37:23 +0100 (BST)
+        by angie.orcam.me.uk (Postfix) with ESMTP id CB4C492009C;
+        Tue, 18 Jul 2023 15:37:27 +0100 (BST)
+Date:   Tue, 18 Jul 2023 15:37:27 +0100 (BST)
 From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 cc:     Jan-Benedict Glaw <jbglaw@lug-owl.de>,
         Guillaume Tucker <guillaume.tucker@collabora.com>,
         Huacai Chen <chenhuacai@loongson.cn>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] MIPS: Only fiddle with CHECKFLAGS if `need-compiler'
+Subject: [PATCH 3/3] Revert MIPS: Loongson: Fix build error when make
+ modules_install
 In-Reply-To: <alpine.DEB.2.21.2307180025120.62448@angie.orcam.me.uk>
-Message-ID: <alpine.DEB.2.21.2307181421010.61566@angie.orcam.me.uk>
+Message-ID: <alpine.DEB.2.21.2307181515260.61566@angie.orcam.me.uk>
 References: <alpine.DEB.2.21.2307180025120.62448@angie.orcam.me.uk>
 User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
@@ -43,48 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have originally guarded fiddling with CHECKFLAGS in our arch Makefile 
-by checking for the CONFIG_MIPS variable, not set for targets such as 
-`distclean', etc. that neither include `.config' nor use the compiler.  
+Revert commit 531b3d1195d0 ("MIPS: Loongson: Fix build error when make 
+modules_install"), which made `-march=loongson2e', `-march=loongson2f', 
+and `-march=loongson3a' compilation options probed for even though GCC 
+has supported them since 4.4.0, 4.4.0, and 4.6.0 respectively, which is 
+below our current minimum requirement of 5.1, in an attempt to work 
+around for the `cc-option' `make' function being undefined with `make' 
+targets that do not use the compiler.  The workaround has now been made 
+obsolete, by querying the `need-compiler' variable instead so as to make 
+sure the compiler isn't called for non-build targets.
 
-Starting from commit 805b2e1d427a ("kbuild: include Makefile.compiler 
-only when compiler is needed") we have had a generic `need-compiler' 
-variable explicitly telling us if the compiler will be used and thus its 
-capabilities need to be checked and expressed in the form of compilation
-flags.  If this variable is not set, then `make' functions such as 
-`cc-option' are undefined, causing all kinds of weirdness to happen if 
-we expect specific results to be returned, most recently:
+Verified with `fuloong2e_defconfig' and the `modules_install' target.
 
-cc1: error: '-mloongson-mmi' must be used with '-mhard-float'
-
-messages with configurations such as `fuloong2e_defconfig' and the 
-`modules_install' target, which does include `.config' and yet does not 
-use the compiler.
-
-Replace the check for CONFIG_MIPS with one for `need-compiler' instead, 
-so as to prevent the compiler from being ever called for CHECKFLAGS when 
-not needed.
-
-Reported-by: Guillaume Tucker <guillaume.tucker@collabora.com>
-Closes: https://lore.kernel.org/r/85031c0c-d981-031e-8a50-bc4fad2ddcd8@collabora.com/
 Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Fixes: 805b2e1d427a ("kbuild: include Makefile.compiler only when compiler is needed")
-Cc: stable@vger.kernel.org # v5.13+
 ---
- arch/mips/Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/Makefile |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-linux-mips-checkflags-need-compiler.diff
 Index: linux-macro/arch/mips/Makefile
 ===================================================================
 --- linux-macro.orig/arch/mips/Makefile
 +++ linux-macro/arch/mips/Makefile
-@@ -341,7 +341,7 @@ KBUILD_CFLAGS += -fno-asynchronous-unwin
+@@ -181,12 +181,16 @@ endif
+ cflags-$(CONFIG_CAVIUM_CN63XXP1) += -Wa,-mfix-cn63xxp1
+ cflags-$(CONFIG_CPU_BMIPS)	+= -march=mips32 -Wa,-mips32 -Wa,--trap
  
- KBUILD_LDFLAGS		+= -m $(ld-emul)
+-cflags-$(CONFIG_CPU_LOONGSON2E) += $(call cc-option,-march=loongson2e) -Wa,--trap
+-cflags-$(CONFIG_CPU_LOONGSON2F) += $(call cc-option,-march=loongson2f) -Wa,--trap
+-cflags-$(CONFIG_CPU_LOONGSON64) += $(call cc-option,-march=loongson3a,-march=mips64r2) -Wa,--trap
++cflags-$(CONFIG_CPU_LOONGSON2E) += -march=loongson2e -Wa,--trap
++cflags-$(CONFIG_CPU_LOONGSON2F) += -march=loongson2f -Wa,--trap
+ # Some -march= flags enable MMI instructions, and GCC complains about that
+ # support being enabled alongside -msoft-float. Thus explicitly disable MMI.
+ cflags-$(CONFIG_CPU_LOONGSON2EF) += $(call cc-option,-mno-loongson-mmi)
++ifdef CONFIG_CPU_LOONGSON64
++cflags-$(CONFIG_CPU_LOONGSON64)	+= -Wa,--trap
++cflags-$(CONFIG_CC_IS_GCC) += -march=loongson3a
++cflags-$(CONFIG_CC_IS_CLANG) += -march=mips64r2
++endif
+ cflags-$(CONFIG_CPU_LOONGSON64) += $(call cc-option,-mno-loongson-mmi)
  
--ifdef CONFIG_MIPS
-+ifdef need-compiler
- CHECKFLAGS += $(shell $(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -dM -E -x c /dev/null | \
- 	grep -E -vw '__GNUC_(MINOR_|PATCHLEVEL_)?_' | \
- 	sed -e "s/^\#define /-D'/" -e "s/ /'='/" -e "s/$$/'/" -e 's/\$$/&&/g')
+ cflags-$(CONFIG_CPU_R4000_WORKAROUNDS)	+= $(call cc-option,-mfix-r4000,)
