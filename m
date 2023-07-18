@@ -2,177 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2502375745A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 563B2757454
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbjGRGiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 02:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42920 "EHLO
+        id S230333AbjGRGhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 02:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231130AbjGRGiF (ORCPT
+        with ESMTP id S229765AbjGRGhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 02:38:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D71D10E2;
-        Mon, 17 Jul 2023 23:37:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AF2CE61484;
-        Tue, 18 Jul 2023 06:37:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A2E2C433CA;
-        Tue, 18 Jul 2023 06:37:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689662272;
-        bh=lkqYV4xx86Ti2v26sOBZLYVym3rSZZUqRoPkM+IKoIw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ErVVeclVfGNmw++ELI2ou+/DJlthBIAb8F+aOVs2HNeAeXox2fhR4yU/63Vldz/Ho
-         fX2HnwwDRgt44w5Hxp7h5qjarW2E4bzDoLsCzKwvckViiTKS8rRMXIT7lUpCmBiMQ4
-         cqvAv6Er76p9wv3yLZND7LmDKTf/V40xIEhm9ZE+4//X6h3x4rU8yb+OE/NhajahNH
-         UtbKFVmFqB9NkvULpl+OBVFo66DEdz5hyu0yQ/nNktnKdWXttolPgyewitgThonTCs
-         YxcLZLGCx3c4aEYC5K5N7/rQ7LRoM5fOVpYY7H0fdJ39deYqsa9Qp4FaGKCkH0SGjM
-         W3IKaoLF/9IIg==
-Date:   Tue, 18 Jul 2023 14:37:15 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: dts: imx8mn-var-som-symphony: fix USB OTG
-Message-ID: <20230718063715.GL9559@dragon>
-References: <20230705174932.3652479-1-hugo@hugovil.com>
+        Tue, 18 Jul 2023 02:37:34 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2157113D
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:37:32 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3159da54e95so4774177f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:37:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689662250; x=1692254250;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hIEy3rLqSCnnyzfWlfxqBHFoBDkclU5Mx6T9CUvcNwc=;
+        b=s/o60ezihcuQS79qv7ICzuxOeNZHsBk1ocPusTvEmQhDfwlQYAlH6lPh29nT35oMc9
+         kWXWdWzdLiBagWVLDkOEOAr70zBEOAjUXv21u0EyGSESqdi3AiRh++3nIfineVQLCNEY
+         E/bkEgGZGvOk46nVkgRmbSaX0PyFWlG/CZ9VGRY5mwiuEauNXaWTEi06Lc78qV9zvDzZ
+         BYl53vXNPjD8kI92rfQ3lPkVPqDZgRor8F4AQ4uCwNIQW0JaNk54qdUzR5tLtpChFZ+P
+         HfkkOePjfuCFcKMACymgW2LAHCj8BLDOOXNNsV6CJQEaye0So+InIFaZMqABzrsjM3Kw
+         /jUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689662250; x=1692254250;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hIEy3rLqSCnnyzfWlfxqBHFoBDkclU5Mx6T9CUvcNwc=;
+        b=W1PZUAROuNcVE3FE/V8xGH4hDAkHzwG/VE3MPdRPJK4gtIKpkDLxO6UkCa/Bt1JAok
+         nvmU6+z2zJJ51ryy+sV8s3L+U2HUo5SgycLO0cNs6oonU23EgY6OzInid6pn8WJFxRZE
+         WX6IZ8eXlgiQJXFbM5t8ebQRHefzZ41dsfT6cV/QKRQ8E6l8YBA2poXjqkuVHvldTkYi
+         +FecO+T7i6BxCSyXIVG9N+V/xngEEDX0cbnRCIj89TSXDLnoMWiJX0nnWLmFubD+edgx
+         V743MSrteqvBJboQaoCC4YOX1mcfDW1a0uqPSj9wgTAfpjefVAt/dC6Qwon+Plsoxuug
+         Gbkg==
+X-Gm-Message-State: ABy/qLYZW0QYeSUCpncZ3lJMw0yZbimeXVEMGKv0l5bFM81E88pXyhoG
+        faj4Y4mflsOD/bwvrmWsQIS4vg==
+X-Google-Smtp-Source: APBJJlGdBiXVAKrEH3ChYvLgoNBQHQNzqNno1TY0mbR3+XKzm7LHTa/6LiEmaWdNIuj/vHzsGZ6jSQ==
+X-Received: by 2002:adf:cd11:0:b0:316:e422:38e8 with SMTP id w17-20020adfcd11000000b00316e42238e8mr967530wrm.66.1689662250546;
+        Mon, 17 Jul 2023 23:37:30 -0700 (PDT)
+Received: from [192.168.69.115] ([176.187.222.251])
+        by smtp.gmail.com with ESMTPSA id q7-20020adfea07000000b003140fff4f75sm1408059wrm.17.2023.07.17.23.37.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 23:37:30 -0700 (PDT)
+Message-ID: <ed53e088-f538-3c5e-e870-e07998a09bb0@linaro.org>
+Date:   Tue, 18 Jul 2023 08:37:26 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230705174932.3652479-1-hugo@hugovil.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH] docs: move s390 under arch
+Content-Language: en-US
+To:     Costa Shulyupin <costa.shul@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Yantengsi <siyanteng@loongson.cn>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Mikhail Zaslonko <zaslonko@linux.ibm.com>,
+        Eric DeVolder <eric.devolder@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:S390 ARCHITECTURE" <linux-s390@vger.kernel.org>,
+        "open list:S390 VFIO-CCW DRIVER" <kvm@vger.kernel.org>
+References: <20230718045550.495428-1-costa.shul@redhat.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20230718045550.495428-1-costa.shul@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 05, 2023 at 01:49:32PM -0400, Hugo Villeneuve wrote:
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+On 18/7/23 06:55, Costa Shulyupin wrote:
+> and fix all in-tree references.
 > 
-> USB OTG is currently broken on the Variscite Symphony EVK and imx8mn
-> nano SOM.
+> Architecture-specific documentation is being moved into Documentation/arch/
+> as a way of cleaning up the top-level documentation directory and making
+> the docs hierarchy more closely match the source hierarchy.
 > 
-> The PTN5150 circuitry on newer versions of the Symphony EVK board has
-> a non-standard configuration in which the PTN5150 IRQ pin is left
-> unconnected, and the PTN5150 ID pin is connected to GPIO1_IO11. This
-> requires changes to the ptn5150 driver to support this new mode.
-> Variscite have indicated their intention to submit those changes
-> upstream.
-> 
-> In the meantime, import device tree changes from linux-5.15 branch of
-> varigit repos to at least make the USB OTG port operate correctly in
-> host mode.
-> 
-> Fixes: 7358e05bddca ("arm64: dts: imx8mn-var-som-symphony: Add Variscite Symphony board with VAR-SOM-MX8MN")
-
-Has USB OTG been ever worked at all?  If the answer is no, it's not
-a fix but a new feature, and I would suggest you rework the patch
-subject and drop the Fixes tag.
-
-Shawn
-
-> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
 > ---
-> Link: [v1] https://lkml.org/lkml/2023/7/4/702
-> 
-> Changes from v1:
-> - Add comments about PTN5150 IRQ/ID line connections
-> - Remove "typec1_con: connector" node
-> - Change IRQ type to IRQ_TYPE_EDGE_FALLING
-> 
->  .../dts/freescale/imx8mn-var-som-symphony.dts | 32 +++++++++++++++++--
->  1 file changed, 30 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts
-> index 406a711486da..a7a57442cb81 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts
-> @@ -1,11 +1,14 @@
->  // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
->  /*
-> + * Supports Symphony evaluation board versions >= 1.4a.
-> + *
->   * Copyright 2019-2020 Variscite Ltd.
->   * Copyright (C) 2020 Krzysztof Kozlowski <krzk@kernel.org>
->   */
->  
->  /dts-v1/;
->  
-> +#include <dt-bindings/usb/pd.h>
->  #include "imx8mn-var-som.dtsi"
->  
->  / {
-> @@ -100,14 +103,26 @@ enet-sel-hog {
->  		};
->  	};
->  
-> +	/*
-> +	 * For Symphony board version <= 1.4, the PTN5150 IRQ pin is connected
-> +	 * to GPIO1_IO11 on the SoM (R106 present, R132 absent). From Symphony
-> +	 * board version >= 1.4a, the PTN5150 ID pin is connected to GPIO1_IO11
-> +	 * on the SoM (R106 absent, R132 present).
-> +	 */
->  	extcon_usbotg1: typec@3d {
->  		compatible = "nxp,ptn5150";
->  		reg = <0x3d>;
->  		interrupt-parent = <&gpio1>;
-> -		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
-> +		interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&pinctrl_ptn5150>;
->  		status = "okay";
-> +
-> +		port {
-> +			typec1_dr_sw: endpoint {
-> +				remote-endpoint = <&usb1_drd_sw>;
-> +			};
-> +		};
->  	};
->  };
->  
-> @@ -148,8 +163,21 @@ &uart3 {
->  };
->  
->  &usbotg1 {
-> +	dr_mode = "otg";
-> +	hnp-disable;
-> +	srp-disable;
-> +	adp-disable;
-> +	usb-role-switch;
->  	disable-over-current;
-> -	extcon = <&extcon_usbotg1>, <&extcon_usbotg1>;
-> +	samsung,picophy-pre-emp-curr-control = <3>;
-> +	samsung,picophy-dc-vol-level-adjust = <7>;
-> +	status = "okay";
-> +
-> +	port {
-> +		usb1_drd_sw: endpoint {
-> +			remote-endpoint = <&typec1_dr_sw>;
-> +		};
-> +	};
->  };
->  
->  &iomuxc {
-> 
-> base-commit: d528014517f2b0531862c02865b9d4c908019dc4
-> -- 
-> 2.30.2
-> 
+>   Documentation/admin-guide/kernel-parameters.txt   | 4 ++--
+>   Documentation/arch/index.rst                      | 2 +-
+>   Documentation/{ => arch}/s390/3270.ChangeLog      | 0
+>   Documentation/{ => arch}/s390/3270.rst            | 4 ++--
+>   Documentation/{ => arch}/s390/cds.rst             | 2 +-
+>   Documentation/{ => arch}/s390/common_io.rst       | 2 +-
+>   Documentation/{ => arch}/s390/config3270.sh       | 0
+>   Documentation/{ => arch}/s390/driver-model.rst    | 0
+>   Documentation/{ => arch}/s390/features.rst        | 0
+>   Documentation/{ => arch}/s390/index.rst           | 0
+>   Documentation/{ => arch}/s390/monreader.rst       | 0
+>   Documentation/{ => arch}/s390/pci.rst             | 2 +-
+>   Documentation/{ => arch}/s390/qeth.rst            | 0
+>   Documentation/{ => arch}/s390/s390dbf.rst         | 0
+>   Documentation/{ => arch}/s390/text_files.rst      | 0
+>   Documentation/{ => arch}/s390/vfio-ap-locking.rst | 0
+>   Documentation/{ => arch}/s390/vfio-ap.rst         | 0
+>   Documentation/{ => arch}/s390/vfio-ccw.rst        | 2 +-
+>   Documentation/{ => arch}/s390/zfcpdump.rst        | 0
+>   Documentation/driver-api/s390-drivers.rst         | 4 ++--
+>   MAINTAINERS                                       | 8 ++++----
+>   arch/s390/Kconfig                                 | 4 ++--
+>   arch/s390/include/asm/debug.h                     | 4 ++--
+>   drivers/s390/char/zcore.c                         | 2 +-
+>   kernel/Kconfig.kexec                              | 2 +-
+>   25 files changed, 21 insertions(+), 21 deletions(-)
+>   rename Documentation/{ => arch}/s390/3270.ChangeLog (100%)
+>   rename Documentation/{ => arch}/s390/3270.rst (99%)
+>   rename Documentation/{ => arch}/s390/cds.rst (99%)
+>   rename Documentation/{ => arch}/s390/common_io.rst (98%)
+>   rename Documentation/{ => arch}/s390/config3270.sh (100%)
+>   rename Documentation/{ => arch}/s390/driver-model.rst (100%)
+>   rename Documentation/{ => arch}/s390/features.rst (100%)
+>   rename Documentation/{ => arch}/s390/index.rst (100%)
+>   rename Documentation/{ => arch}/s390/monreader.rst (100%)
+>   rename Documentation/{ => arch}/s390/pci.rst (99%)
+>   rename Documentation/{ => arch}/s390/qeth.rst (100%)
+>   rename Documentation/{ => arch}/s390/s390dbf.rst (100%)
+>   rename Documentation/{ => arch}/s390/text_files.rst (100%)
+>   rename Documentation/{ => arch}/s390/vfio-ap-locking.rst (100%)
+>   rename Documentation/{ => arch}/s390/vfio-ap.rst (100%)
+>   rename Documentation/{ => arch}/s390/vfio-ccw.rst (99%)
+>   rename Documentation/{ => arch}/s390/zfcpdump.rst (100%)
+
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+
