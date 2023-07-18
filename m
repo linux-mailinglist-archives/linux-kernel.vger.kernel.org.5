@@ -2,90 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A586757633
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7A6757637
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbjGRIIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40400 "EHLO
+        id S231588AbjGRIIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231635AbjGRIHx (ORCPT
+        with ESMTP id S231220AbjGRIIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:07:53 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79D2FD
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:07:51 -0700 (PDT)
-Received: from kwepemm600004.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R4s3R0chwzVjDY;
-        Tue, 18 Jul 2023 16:06:27 +0800 (CST)
-Received: from [10.67.103.231] (10.67.103.231) by
- kwepemm600004.china.huawei.com (7.193.23.242) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 18 Jul 2023 16:07:48 +0800
-Message-ID: <2cc391ce-0e87-040f-6a45-d3e128a988f0@huawei.com>
-Date:   Tue, 18 Jul 2023 16:07:47 +0800
+        Tue, 18 Jul 2023 04:08:38 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C77137
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:08:36 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4f58444a410so2587e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:08:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689667715; x=1692259715;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WYqKeDJ/OFzijrnqhNOnKbeJ52Wj9P7m01zeeR73VHA=;
+        b=k6z1zC/4sbbbZHvvGXkdL2XbxgKxiCE8CAPchE6hycvRZ+om6/8DKFaA4HIGHRZGdV
+         Ub2PjAPOlvlaTtOWbfYgsOj0afsJQkmlVYa2UJ58zF6JSxhI/5PYc9DoIwwPTsHiQvJk
+         ReajRetiDIir8mRodO0EsPeliG5rh4qmYxxK1niDEtBm0tGmgfPGNXNY9Uy+RdRBb5Yy
+         ypQV7bzb/xMwQ6qwXlt/1qIfzXc32yiKPrEMNJXkAI/g6y+me5m+Pf0hDYGnZ90Wh03K
+         GmQv/dkl7BWLt6mNeNvQOd5JVk9GthVSod5m1x48BXWqqx6/S4XAw0L8K3rgLnVrSsJC
+         jdHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689667715; x=1692259715;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WYqKeDJ/OFzijrnqhNOnKbeJ52Wj9P7m01zeeR73VHA=;
+        b=IW0jsEdkUCEpB8wmsF5PEUp4r1sNMK8+9dxXQAQRhqeThyazkx4gkhg//mSrqCgtSi
+         FF++B2zNr7V64suI22SbDmqFQK6qkav0PmRM5yjfH4vU883r5jQ7Tnoqvbf2Dkq/rNQR
+         4tKtjEHGRKfEO9zyzM0uKhCEMVtbSzmK6jGNjn1ky6NTgj5AXsW7JGjL+kysKwdfU3K5
+         oiDkOrdNF/d/SusQF3oRE+MAkdstjKTeq4nZe8ia5jFH0D4t8YFRIz3wiJ8/PDAue5dm
+         V4Me450PvgXB5D5V51IOLpBiOQIQDlCIhsyIetN0xU08KdfOiEyl/EqZqGpFv3iupe4R
+         WQpg==
+X-Gm-Message-State: ABy/qLaobjCHpJA7Y5+y7Khkcj2Zo99qJB5PVbaVZJfavA8uDsUX9NZc
+        Tmhc08SGEqF9bGQeynNt16qWxi2y0p+8fEUqJmhQvQ==
+X-Google-Smtp-Source: APBJJlGLaFFk7Vkqi/94iNUIZ9ZVJA4JKr8ckZuOZCbr1qdQbT+2LWbXDDwnaK9Se6fEXbQDvJMOii/1F3GVcwxWXq8=
+X-Received: by 2002:a19:c212:0:b0:4f7:5f7d:2f95 with SMTP id
+ l18-20020a19c212000000b004f75f7d2f95mr49812lfc.1.1689667714876; Tue, 18 Jul
+ 2023 01:08:34 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v3 0/2] soc: hisilicon: Support HCCS driver on Kunpeng SoC
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        "xuwei (O)" <xuwei5@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>, <soc@kernel.org>,
-        <wanghuiqiang@huawei.com>, <tanxiaofei@huawei.com>,
-        <liuyonglong@huawei.com>, <andersson@kernel.org>,
-        <matthias.bgg@gmail.com>,
-        <angelogioacchino.delregno@collabora.com>, <shawnguo@kernel.org>,
-        <arnd@arndb.de>, <sudeep.holla@arm.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230424073020.4039-1-lihuisong@huawei.com>
- <20230530112746.2767-1-lihuisong@huawei.com>
- <02f74b25-2ade-5b87-b316-ab902f08ead2@huawei.com>
- <3e106062-9ceb-eb51-70ba-32734c769bd5@kernel.org>
-From:   "lihuisong (C)" <lihuisong@huawei.com>
-In-Reply-To: <3e106062-9ceb-eb51-70ba-32734c769bd5@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.103.231]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600004.china.huawei.com (7.193.23.242)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230718052752.1045248-1-ojeda@kernel.org> <20230718052752.1045248-2-ojeda@kernel.org>
+In-Reply-To: <20230718052752.1045248-2-ojeda@kernel.org>
+From:   David Gow <davidgow@google.com>
+Date:   Tue, 18 Jul 2023 16:08:22 +0800
+Message-ID: <CABVgOSma4wc6u2fU9SmK0N4EB9djL=TqKU90dzWokL-DqU5Crw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/7] kunit: test-bug.h: include `stddef.h` for `NULL`
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <nmi@metaspace.dk>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000f55db60600be6b87"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+--000000000000f55db60600be6b87
+Content-Type: text/plain; charset="UTF-8"
 
-Thank you for your reply.
-
-
-在 2023/7/17 20:06, Krzysztof Kozlowski 写道:
-> On 14/07/2023 08:17, lihuisong (C) wrote:
->> Hi all,
->>
->> Can you take a look at this series?
-> People you listed in "To:" field are not maintainers of HiSilicon, so
-> why pinging us?
-This "To:" field are from the get_maintainer.pl script.
-./scripts/get_maintainer.pl -f ./drivers/soc/
-The hisilicon in drivers/soc/ is created for the first time. So there 
-are no maintainer of HiSilicon.
-
-Thanks for reminder.
-add HiSilicon SOC maintainer Wei Xu.
+On Tue, 18 Jul 2023 at 13:28, Miguel Ojeda <ojeda@kernel.org> wrote:
 >
-> HiSilicon DTS has numerous issues, so if you want to increase the
-> chances anyone cares about your patch, please contribute to fixing and
-> improving your company DTS. See for example commit b2bbc8687 which is
-> bad (underscores are not allowed) or 1860a51823 which is just wrong. The
-> latter one is being fixed, although I do not see the fix being picked
-> up... my feelings are the platform is just dead.
-The HCCS driver has nothing to do with HiSilicon DTS.
-So I cannot understand why you say DTS.
+> The header uses `NULL` in both `CONFIG_KUNIT=y` and `=n` cases,
+> but does not include it explicitly.
+>
+> When `CONFIG_KUNIT=y`, the header is already getting included via
+> the other headers, so it is not a problem for users.
+>
+> However, when `CONFIG_KUNIT=n`, it is not, and thus a user could hit
+> a build error when including `kunit/test-bug.h`, like we are doing
+> later in this series [1].
+>
+> Thus include `linux/stddef.h`, and do so outside the `#if`, since it
+> is used in both cases.
+>
+> Reported-by: Boqun Feng <boqun.feng@gmail.com>
+> Closes: https://lore.kernel.org/rust-for-linux/ZJ8cNUW3oR2p+gL1@boqun-archlinux/ [1]
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+> ---
 
-/Huisong
+Reviewed-by: David Gow <davidgow@google.com>
+
+Thanks!
+-- David
+
+>  include/kunit/test-bug.h | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/include/kunit/test-bug.h b/include/kunit/test-bug.h
+> index 30ca541b6ff2..47aa8f21ccce 100644
+> --- a/include/kunit/test-bug.h
+> +++ b/include/kunit/test-bug.h
+> @@ -9,6 +9,8 @@
+>  #ifndef _KUNIT_TEST_BUG_H
+>  #define _KUNIT_TEST_BUG_H
+>
+> +#include <linux/stddef.h> /* for NULL */
+> +
+>  #if IS_ENABLED(CONFIG_KUNIT)
+>
+>  #include <linux/jump_label.h> /* For static branch */
+> --
+> 2.41.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20230718052752.1045248-2-ojeda%40kernel.org.
+
+--000000000000f55db60600be6b87
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+9IGQSBx2i4m+hGXJpET+MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCRI3Z4cAidgFcv
+Usqdz765x6KMZSfg/WtFrYg8ewsP2NpCxVM2+EhPyyEQ0k0DhtzdtGoI/Ug+jdFDyCKB9P2+EPLh
+iMjMnFILp7Zs4r18ECHlvZuDZfH9m0BchXIxu5jLIuQyKUWrCRDZZEDNr510ZhhVfYSFPA8ms1nk
+jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
+jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
+FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCr
+mGSr3VwEFgpPPXp5AOQ0e7Fj+m9XQ2chqiffqdWXHDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA3MTgwODA4MzVaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAh02PpzUnpIS7pV8w50uN
+RG7xtgF9aTIdMl1jSWs120EjwUSuR/S6EAAcDGAcuIeT38zxU4oOhynfcDQxrBKCgzSuz+628CiD
+uqh1lOjph+rLZl+33roJnmdGmqytiPGxZnmu51gYByFRONJlwwvFBu9OJWC2vttxfGwEJmtUxw9u
+lvHA2D2c3lnBYLtrJzi/6XWoZO3jn3oBkcZJDvPHsIgrkKw3E/yqQL7AZ/zjcdoOQapuIX2uhjPh
+8eQ/zVCQNytq+nRTn0mluhZWWji6ONlXR5kxAJmZHnJIBRRlYvhq26SRtUoHWrlb/qgt/t5vZmti
+7eH7PFDGsLy2LRmnig==
+--000000000000f55db60600be6b87--
