@@ -2,104 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DAB7583A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938797583A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231179AbjGRRiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59712 "EHLO
+        id S232694AbjGRRjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:39:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjGRRis (ORCPT
+        with ESMTP id S229480AbjGRRjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:38:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4363D3;
-        Tue, 18 Jul 2023 10:38:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Tue, 18 Jul 2023 13:39:17 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9FF91;
+        Tue, 18 Jul 2023 10:39:16 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5880261626;
-        Tue, 18 Jul 2023 17:38:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86057C433C7;
-        Tue, 18 Jul 2023 17:38:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689701926;
-        bh=2HFoHP9WBwjJISPakTGl2gr61R7RJNj7+5SjS9IPgg4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u6QrX9PfTbf0MbOdEz1PlmQx48DsaqbvGwoP8aVgYaYLjgDbuDuhMXwIWvAutDKM0
-         0Zur29Xsc0BcVEStuQGx+Tro2F+z6vQj5XwHOqNUqWm9hFNmdXXFOOY4UpBvGU1ZDt
-         ls3LUkdEYEKSJtgK9wcxy3IVMeOleoS/22ZJfp30Ox7vLPanH9nOSlzYKYTO6PCtFs
-         kLE9TV34sf8EY1CoER5Ng1Bekq9s4xX26jhLIEzQAMPFiREmcoUtJn+H692/NDxiB+
-         ZUdsh+Rjv/Q0nbzE2k7NA2eoMlXMuGVeUae+OTHkmAs7phcIU6kqh1kD3VfysI0FDy
-         0dlb0iTOazkQw==
-Date:   Tue, 18 Jul 2023 18:38:41 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Sahin, Okan" <Okan.Sahin@analog.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "Tilki, Ibrahim" <Ibrahim.Tilki@analog.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
-Subject: Re: [PATCH v3 2/2] regulator: max77857: Add ADI MAX77857/59/MAX77831
- Regulator Support
-Message-ID: <94e1f1c9-df8c-4ce0-8d86-34cef6285954@sirena.org.uk>
-References: <20230717050736.10075-1-okan.sahin@analog.com>
- <20230717050736.10075-3-okan.sahin@analog.com>
- <20230718155502.GA3542993@dev-arch.thelio-3990X>
- <PH7PR03MB7391206E2D2F1FEF3992C354E738A@PH7PR03MB7391.namprd03.prod.outlook.com>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7A4371F45F;
+        Tue, 18 Jul 2023 17:39:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689701955; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xtb9eaTW3MdBWzglgP8jPdI48OuUsG3guGiK3GgqLrA=;
+        b=hDbxh5O4NaGnPhPtMdibbkJC8blH5bHWStorBVQNZ0tHypLJTsYIfWjcQG3AGOtmSGm4uc
+        Prk6LJS6jEBHVFd2KhY9l+cLrl4MY4YTH6s0VWb/se1szdgoN2wTvu6NV/+s9mQhtDVNzj
+        gBNTJ7D0qYzftWJq4nZVtpj7HYKK2EA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689701955;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xtb9eaTW3MdBWzglgP8jPdI48OuUsG3guGiK3GgqLrA=;
+        b=sLfNylR7t6DRDCRrqTEynBTcTRXQskWErQV+1RBeZKzBF5KvkSEp1+XaTz0sWcb46QI9sy
+        +UeiYJSabR3uC2CQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 094C713494;
+        Tue, 18 Jul 2023 17:39:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id cQ96OkLOtmRqbQAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Tue, 18 Jul 2023 17:39:14 +0000
+Received: from localhost (brahms.olymp [local])
+        by brahms.olymp (OpenSMTPD) with ESMTPA id 9f98d451;
+        Tue, 18 Jul 2023 17:39:07 +0000 (UTC)
+From:   =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+Subject: [PATCH] btrfs: turn unpin_extent_cache() into a void function
+Date:   Tue, 18 Jul 2023 18:39:06 +0100
+Message-Id: <20230718173906.12568-1-lhenriques@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lvFYwciWCWUtLyCA"
-Content-Disposition: inline
-In-Reply-To: <PH7PR03MB7391206E2D2F1FEF3992C354E738A@PH7PR03MB7391.namprd03.prod.outlook.com>
-X-Cookie: Nothing happens.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The value of the 'ret' variable is never changed in function
+unpin_extent_cache().  And since the only caller of this function doesn't
+check the return value, it can simply be turned into a void function.
 
---lvFYwciWCWUtLyCA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Luís Henriques <lhenriques@suse.de>
+---
+ fs/btrfs/extent_map.c | 7 ++-----
+ fs/btrfs/extent_map.h | 2 +-
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
-On Tue, Jul 18, 2023 at 05:25:32PM +0000, Sahin, Okan wrote:
-> >From: Nathan Chancellor <nathan@kernel.org>
-> >Sent: Tuesday, July 18, 2023 6:55 PM
-> >To: Sahin, Okan <Okan.Sahin@analog.com>
-> >Cc: Liam Girdwood <lgirdwood@gmail.com>; Mark Brown <broonie@kernel.org>;
-> >Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
-> ><krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>; Tilki,
-> >Ibrahim <Ibrahim.Tilki@analog.com>; linux-kernel@vger.kernel.org;
-
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
-
---lvFYwciWCWUtLyCA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS2ziAACgkQJNaLcl1U
-h9BpxQf9EbN28462LWbk9BzvnLxNM9+L2YjOW+QY3nqGoyLD+29ThpbDzpXNcP4+
-/MppZ6uPPUdM+cSvw0YA0wGuhNQeiItSyXYMexD5g7pDTfUrXSuRfutn+j9TpSuP
-sTBcleT7XXuWEOhdQUFtRReuOujIRMdQyXyuRI1eUHvDV+SbEOcWSvb+NJOJo29P
-El0IERfOqiStkDe8bl91XiF0TLp6NNyEsDJPLg2ao9QomZpwki+T5oozGtDcRWbY
-2/aA4AsYrZzME1aJ669zmF5oiktSMS7BwudSQnmwscmWQwvVQsl+Mq66FjClEi6I
-4W5Fc6UqQ/dm69c5fJHA+rHrhVyVOg==
-=cgpb
------END PGP SIGNATURE-----
-
---lvFYwciWCWUtLyCA--
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index 0cdb3e86f29b..f99c458071a4 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -292,10 +292,9 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
+  * to the generation that actually added the file item to the inode so we know
+  * we need to sync this extent when we call fsync().
+  */
+-int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
+-		       u64 gen)
++void unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
++			u64 gen)
+ {
+-	int ret = 0;
+ 	struct extent_map *em;
+ 	bool prealloc = false;
+ 
+@@ -327,8 +326,6 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
+ 	free_extent_map(em);
+ out:
+ 	write_unlock(&tree->lock);
+-	return ret;
+-
+ }
+ 
+ void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em)
+diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
+index 35d27c756e08..486a8ea798c7 100644
+--- a/fs/btrfs/extent_map.h
++++ b/fs/btrfs/extent_map.h
+@@ -97,7 +97,7 @@ struct extent_map *alloc_extent_map(void);
+ void free_extent_map(struct extent_map *em);
+ int __init extent_map_init(void);
+ void __cold extent_map_exit(void);
+-int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len, u64 gen);
++void unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len, u64 gen);
+ void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em);
+ struct extent_map *search_extent_mapping(struct extent_map_tree *tree,
+ 					 u64 start, u64 len);
