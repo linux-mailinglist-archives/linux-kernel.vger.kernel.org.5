@@ -2,196 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CFF87581BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF2D7581CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbjGRQI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 12:08:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58910 "EHLO
+        id S231916AbjGRQMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 12:12:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231771AbjGRQIx (ORCPT
+        with ESMTP id S229525AbjGRQMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 12:08:53 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B75C4FD
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:08:50 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5599E1F853;
-        Tue, 18 Jul 2023 16:08:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1689696529; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=O+V7Q+dh9Ze+Pqfn3C9q5kX7MnDgFf9VxsRZcF391nQ=;
-        b=fsgy8i5qwah9ebGc5jROcrEXa5s4nzjsrypb+h7IkIeRrFWMi00SPhHRa9KeYp+U2xrcBO
-        Ms/gNsAP312MpxfbyZsu9nGLHXkPgz5zSEgQ61hbKN5nnuH7dv+wzCWhqj1reOoSVifU3O
-        ulE0+P3B5ibTnjMgCzI7IubWOPAYIiE=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1230B13494;
-        Tue, 18 Jul 2023 16:08:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wUznAhG5tmRfQAAAMHmgww
-        (envelope-from <jgross@suse.com>); Tue, 18 Jul 2023 16:08:49 +0000
-Message-ID: <28b3525d-7375-0c17-3530-d364a3ff9c98@suse.com>
-Date:   Tue, 18 Jul 2023 18:08:48 +0200
+        Tue, 18 Jul 2023 12:12:22 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD879B5;
+        Tue, 18 Jul 2023 09:12:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689696741; x=1721232741;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xJz/Q2VPWovJMeTlZg5Nu1AilnZ3M8HZafInk4+HO3I=;
+  b=l8aOHXQ1W1R6I49o3Or8F7ZwR8HRCjKpAJRt0MjNZ45WxUOQzdkybS0h
+   gCiSH/d0nMIb0zlUWEvIbn+VHLMenf9hGEVk1m1JM/EB3ytCVK88+incH
+   AdvivtIawnUKcHhN57MFzUU6Li8BYFfAEHSwMmonyDXO6orifQB37g0do
+   HwtYbIZByA9TJZpp9CPb0F/gnmS1MVsEHGQo+lxyk9D6FcIU+6qF+HgUN
+   j+sbDUxILFLwxAizDwJrG9J3tz1Gg2mrQag77qkIwMtd131cUokXjNVMv
+   Tr+uJ5/65e6W9u4FS2TeX9eKMlb7qH3x5BfqmyX7RTSEXO5TTxiv7r8Qa
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="368890788"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="368890788"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 09:12:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="753382540"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="753382540"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 18 Jul 2023 09:12:16 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qLnJ9-000112-1U;
+        Tue, 18 Jul 2023 16:12:15 +0000
+Date:   Wed, 19 Jul 2023 00:10:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Piyush Malgujar <pmalgujar@marvell.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
+        ulf.hansson@linaro.org, p.zabel@pengutronix.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        yamada.masahiro@socionext.com, devicetree@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, jannadurai@marvell.com,
+        cchavva@marvell.com, Piyush Malgujar <pmalgujar@marvell.com>
+Subject: Re: [PATCH v4 6/6] mmc: sdhci-cadence: Add debug option for SD6
+ controller
+Message-ID: <202307182343.ZsoiCcbg-lkp@intel.com>
+References: <20230717125146.16791-7-pmalgujar@marvell.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [patch 54/58] x86/xen/apic: Mark apic __ro_after_init
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Arjan van de Ven <arjan@linux.intel.com>
-References: <20230717223049.327865981@linutronix.de>
- <20230717223226.297124390@linutronix.de>
-From:   Juergen Gross <jgross@suse.com>
-In-Reply-To: <20230717223226.297124390@linutronix.de>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------PFyYaB33aO0uAoOiREY6Izzo"
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717125146.16791-7-pmalgujar@marvell.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------PFyYaB33aO0uAoOiREY6Izzo
-Content-Type: multipart/mixed; boundary="------------mp1Illmh3CfwMYCIWhSbCR1Z";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
-Cc: x86@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
- Andrew Cooper <andrew.cooper3@citrix.com>,
- Tom Lendacky <thomas.lendacky@amd.com>, Paolo Bonzini <pbonzini@redhat.com>,
- Wei Liu <wei.liu@kernel.org>, Arjan van de Ven <arjan@linux.intel.com>
-Message-ID: <28b3525d-7375-0c17-3530-d364a3ff9c98@suse.com>
-Subject: Re: [patch 54/58] x86/xen/apic: Mark apic __ro_after_init
-References: <20230717223049.327865981@linutronix.de>
- <20230717223226.297124390@linutronix.de>
-In-Reply-To: <20230717223226.297124390@linutronix.de>
+Hi Piyush,
 
---------------mp1Illmh3CfwMYCIWhSbCR1Z
-Content-Type: multipart/mixed; boundary="------------Ipgc94pnmmOeW0aFB05Y8udv"
+kernel test robot noticed the following build errors:
 
---------------Ipgc94pnmmOeW0aFB05Y8udv
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+[auto build test ERROR on ulf-hansson-mmc-mirror/next]
+[also build test ERROR on robh/for-next linus/master v6.5-rc2 next-20230718]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-T24gMTguMDcuMjMgMDE6MTUsIFRob21hcyBHbGVpeG5lciB3cm90ZToNCj4gTm90aGluZyBj
-YW4gY2hhbmdlIGl0IHBvc3QgaW5pdC4NCj4gDQo+IFdoaWxlIGF0IGl0IG1vcCB1cCB0aGUg
-d2hpdGVzcGFjZSBkYW1hZ2Ugd2hpY2ggY2F1c2VzIGV5ZWJsZWVkIGR1ZSB0byBhbg0KPiBl
-ZGl0b3Igd2hpY2ggaXMgaGlnaGxpZ2h0aW5nIGl0Lg0KPiANCj4gU2lnbmVkLW9mZi1ieTog
-VGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxpbnV0cm9uaXguZGU+DQo+IENjOiBKdWVyZ2VuIEdy
-b3NzIDxqZ3Jvc3NAc3VzZS5jb20+DQo+IC0tLQ0KPiAgIGFyY2gveDg2L3hlbi9hcGljLmMg
-fCAgIDI0ICsrKysrKysrKysrKy0tLS0tLS0tLS0tLQ0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAx
-MiBpbnNlcnRpb25zKCspLCAxMiBkZWxldGlvbnMoLSkNCj4gDQo+IC0tLSBhL2FyY2gveDg2
-L3hlbi9hcGljLmMNCj4gKysrIGIvYXJjaC94ODYveGVuL2FwaWMuYw0KPiBAQCAtMTIzLDkg
-KzEyMyw5IEBAIHN0YXRpYyBpbnQgeGVuX2NwdV9wcmVzZW50X3RvX2FwaWNpZChpbnQNCj4g
-ICAJCXJldHVybiBCQURfQVBJQ0lEOw0KPiAgIH0NCj4gICANCj4gLXN0YXRpYyBzdHJ1Y3Qg
-YXBpYyB4ZW5fcHZfYXBpYyA9IHsNCj4gLQkubmFtZSAJCQkJPSAiWGVuIFBWIiwNCj4gLQku
-cHJvYmUgCQkJCT0geGVuX2FwaWNfcHJvYmVfcHYsDQo+ICtzdGF0aWMgc3RydWN0IGFwaWMg
-eGVuX3B2X2FwaWMgX19yb19hZnRlcl9pbml0ID0gew0KPiArCS5uYW1lCQkJCT0gIlhlbiBQ
-ViIsDQo+ICsJLnByb2JlCQkJCT0geGVuX2FwaWNfcHJvYmVfcHYsDQo+ICAgCS5hY3BpX21h
-ZHRfb2VtX2NoZWNrCQk9IHhlbl9tYWR0X29lbV9jaGVjaywNCj4gICANCj4gICAJLyogLmRl
-bGl2ZXJ5X21vZGUgYW5kIC5kZXN0X21vZGVfbG9naWNhbCBub3QgdXNlZCBieSBYRU5QViAq
-Lw0KPiBAQCAtMTM4LDI0ICsxMzgsMjQgQEAgc3RhdGljIHN0cnVjdCBhcGljIHhlbl9wdl9h
-cGljID0gew0KDQpPbmUgYWRkaXRpb25hbCBub3RlOiB5b3UgY291bGQgZHJvcCBpbml0aWFs
-aXppbmcgLmNoZWNrX2FwaWNpZF91c2VkIGFuZA0KLmlvYXBpY19waHlzX2lkX21hcCBpbiB4
-ZW5fcHZfYXBpYyBhcyB3ZWxsLCBhcyB0aG9zZSBhcmUgMzItYml0IG9ubHksIHRvby4NCg0K
-DQpKdWVyZ2VuDQo=
---------------Ipgc94pnmmOeW0aFB05Y8udv
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+url:    https://github.com/intel-lab-lkp/linux/commits/Piyush-Malgujar/mmc-sdhci-cadence-Rename-functions-structures-to-SD4-specific/20230718-175102
+base:   https://git.linaro.org/people/ulf.hansson/mmc-mirror.git next
+patch link:    https://lore.kernel.org/r/20230717125146.16791-7-pmalgujar%40marvell.com
+patch subject: [PATCH v4 6/6] mmc: sdhci-cadence: Add debug option for SD6 controller
+config: csky-randconfig-r023-20230718 (https://download.01.org/0day-ci/archive/20230718/202307182343.ZsoiCcbg-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230718/202307182343.ZsoiCcbg-lkp@intel.com/reproduce)
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307182343.ZsoiCcbg-lkp@intel.com/
 
-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
-jR/i1DG86lem3iBDXzXsZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+All errors (new ones prefixed by >>):
 
---------------Ipgc94pnmmOeW0aFB05Y8udv--
+   drivers/mmc/host/sdhci-cadence.c: In function 'sdhci_cdns_sd6_dump':
+>> drivers/mmc/host/sdhci-cadence.c:1066:9: error: too few arguments to function 'sdhci_cdns_sd6_phy_dump'
+    1066 |         sdhci_cdns_sd6_phy_dump(phy);
+         |         ^~~~~~~~~~~~~~~~~~~~~~~
+   drivers/mmc/host/sdhci-cadence.c:981:6: note: declared here
+     981 | void sdhci_cdns_sd6_phy_dump(struct sdhci_cdns_sd6_phy *phy,
+         |      ^~~~~~~~~~~~~~~~~~~~~~~
+   drivers/mmc/host/sdhci-cadence.c: In function 'sdhci_cdns_probe':
+   drivers/mmc/host/sdhci-cadence.c:1973:9: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+    1973 |         static const u16 version = SDHCI_SPEC_400 << SDHCI_SPEC_VER_SHIFT;
+         |         ^~~~~~
 
---------------mp1Illmh3CfwMYCIWhSbCR1Z--
 
---------------PFyYaB33aO0uAoOiREY6Izzo
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+vim +/sdhci_cdns_sd6_phy_dump +1066 drivers/mmc/host/sdhci-cadence.c
 
------BEGIN PGP SIGNATURE-----
+  1059	
+  1060	static
+  1061	void sdhci_cdns_sd6_dump(struct sdhci_cdns_priv *priv, struct sdhci_host *host)
+  1062	{
+  1063		struct sdhci_cdns_sd6_phy *phy = priv->phy;
+  1064		int id;
+  1065	
+> 1066		sdhci_cdns_sd6_phy_dump(phy);
+  1067	
+  1068		dev_dbg(mmc_dev(host->mmc), "Host controller Register Dump\n");
+  1069		for (id = 0; id < 14; id++) {
+  1070			dev_dbg(mmc_dev(host->mmc), "HRS%d 0x%x\n", id,
+  1071				readl(priv->hrs_addr + (id * 4)));
+  1072		}
+  1073	
+  1074		id = 29;
+  1075		dev_dbg(mmc_dev(host->mmc), "HRS%d 0x%x\n", id,
+  1076			readl(priv->hrs_addr + (id * 4)));
+  1077		id = 30;
+  1078		dev_dbg(mmc_dev(host->mmc), "HRS%d 0x%x\n", id,
+  1079			readl(priv->hrs_addr + (id * 4)));
+  1080	
+  1081		for (id = 0; id < 27; id++) {
+  1082			dev_dbg(mmc_dev(host->mmc), "SRS%d 0x%x\n", id,
+  1083				readl(priv->hrs_addr + 0x200 + (id * 4)));
+  1084		}
+  1085	
+  1086		dev_dbg(mmc_dev(host->mmc), "SDHCI_CDNS_SD6_PHY_DQS_TIMING 0x%x\n",
+  1087			sdhci_cdns_sd6_read_phy_reg(priv,
+  1088						    SDHCI_CDNS_SD6_PHY_DQS_TIMING));
+  1089		dev_dbg(mmc_dev(host->mmc), "SDHCI_CDNS_SD6_PHY_GATE_LPBK 0x%x\n",
+  1090			sdhci_cdns_sd6_read_phy_reg(priv,
+  1091						    SDHCI_CDNS_SD6_PHY_GATE_LPBK));
+  1092		dev_dbg(mmc_dev(host->mmc), "SDHCI_CDNS_SD6_PHY_DLL_MASTER 0x%x\n",
+  1093			sdhci_cdns_sd6_read_phy_reg(priv,
+  1094						    SDHCI_CDNS_SD6_PHY_DLL_MASTER));
+  1095		dev_dbg(mmc_dev(host->mmc), "SDHCI_CDNS_SD6_PHY_DLL_SLAVE 0x%x\n",
+  1096			sdhci_cdns_sd6_read_phy_reg(priv,
+  1097						    SDHCI_CDNS_SD6_PHY_DLL_SLAVE));
+  1098		dev_dbg(mmc_dev(host->mmc), "SDHCI_CDNS_SD6_PHY_CTRL 0x%x\n",
+  1099			sdhci_cdns_sd6_read_phy_reg(priv, SDHCI_CDNS_SD6_PHY_CTRL));
+  1100		dev_dbg(mmc_dev(host->mmc), "SDHCI_CDNS_SD6_PHY_GPIO_CTRL0 0x%x\n",
+  1101			sdhci_cdns_sd6_read_phy_reg(priv,
+  1102						    SDHCI_CDNS_SD6_PHY_GPIO_CTRL0));
+  1103		dev_dbg(mmc_dev(host->mmc), "SDHCI_CDNS_SD6_PHY_DQ_TIMING 0x%x\n",
+  1104			sdhci_cdns_sd6_read_phy_reg(priv,
+  1105						    SDHCI_CDNS_SD6_PHY_DQ_TIMING));
+  1106		dev_dbg(mmc_dev(host->mmc), "SDHCI_CDNS_SD6_PHY_DLL_OBS_REG0 0x%x\n",
+  1107			sdhci_cdns_sd6_read_phy_reg(priv,
+  1108						    SDHCI_CDNS_SD6_PHY_DLL_OBS_REG0));
+  1109		dev_dbg(mmc_dev(host->mmc), "SDHCI_CDNS_SD6_PHY_DLL_OBS_REG1 0x%x\n",
+  1110			sdhci_cdns_sd6_read_phy_reg(priv,
+  1111						    SDHCI_CDNS_SD6_PHY_DLL_OBS_REG1));
+  1112		dev_dbg(mmc_dev(host->mmc), "SDHCI_CDNS_SD6_PHY_DLL_OBS_REG2 0x%x\n",
+  1113			sdhci_cdns_sd6_read_phy_reg(priv,
+  1114						    SDHCI_CDNS_SD6_PHY_DLL_OBS_REG2));
+  1115	}
+  1116	
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmS2uRAFAwAAAAAACgkQsN6d1ii/Ey9c
-8AgAlw5mbzOcIMkpOPShCZWSs8BLvpxoh25M5y8ht0lzUD2t8yn2K4JM1Qe5UY0JGo2TZPktTRrp
-bnzQxg07haZGfpdL9XgsZiSiCo0ppZBOCTt2uLFPwpnoOgbWWfkhe4/xxSqfXzer3FH9ylwq5+uz
-gY2SvvhaCzKLacZrXsJ3SGZ7B0wFMlSoNdWHotdiev2iiywtlS8c6mXdpcR4l096J4zu2TMaDA7i
-c4B9r0a3unE+13yVTgVFXmSRUcg/WJgZEUM7eNVn3uqi9HHepaZw8llHgQhTJqwWikOwfvdjwv+l
-yoHKoxnTLlOed7enMJd/rKWCR1KdP46ZKScDVvIz9Q==
-=90ve
------END PGP SIGNATURE-----
-
---------------PFyYaB33aO0uAoOiREY6Izzo--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
