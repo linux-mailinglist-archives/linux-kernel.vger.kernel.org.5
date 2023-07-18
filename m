@@ -2,214 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F37C7572A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 06:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737287572A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 06:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbjGREAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 00:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48520 "EHLO
+        id S231217AbjGREBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 00:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjGREAU (ORCPT
+        with ESMTP id S229496AbjGREB0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 00:00:20 -0400
-Received: from mail-oo1-f80.google.com (mail-oo1-f80.google.com [209.85.161.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89F510EF
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 21:00:14 -0700 (PDT)
-Received: by mail-oo1-f80.google.com with SMTP id 006d021491bc7-5662c368572so7545367eaf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 21:00:14 -0700 (PDT)
+        Tue, 18 Jul 2023 00:01:26 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D43194;
+        Mon, 17 Jul 2023 21:01:25 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3a43cbb4326so2466140b6e.2;
+        Mon, 17 Jul 2023 21:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689652885; x=1692244885;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TFDsYeU09QyX9nMGiHdFlrICPlkCawySijwdpTw5NLM=;
+        b=fCpfi36ddfNUO4DxSsb38t1Gm9qcZ2cyxe1ho9CTdR0NF3RYOvfxRFg8sjudYuMA35
+         YbfxUYupQDgG7zx/tJKMpfhNlAXcnXKnKu1xoxJeOd362zxKXkWrBRU1KfqYzmif3OuM
+         yaNzfCWTnY5jtYBCPD8/LkyjZIgn1wuVPT6F5YHmK4DWR/VkTpeXKdunCmjQIxdZVknY
+         g9x+RMMYiTVo243FOHcCk/5Jy98HLDIzKYer4s9KRVaLv3052hDn3acFvxHfSrMDlK0t
+         f7vauHUJk9r0tJqPad+Iv4P+drE/i5dirMTQfBoPV+8/VkfMy62mQxYR2YHYrR0Y+2M0
+         F5ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689652814; x=1692244814;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lP5+goy9pCxJ5sdWVBn6QMjehXDutBtDM461BKOsH4Q=;
-        b=I96gKlJtP1syCJiydfZg1VacSlP29gz/Lkh+Jw1YtvQNaLeOBWKhSVIBWdLwdfj9VO
-         YzMg8p9dZaNsCPeseMnBiITpAqEwE8ayz+LYhP21+Tq73AacZz0Yti8ZijNkEVRRYUjz
-         y7wnLKuifaE1qMbGdQDFaAEaFO5X1Vkit7aCzna9PJfJwNOP3bfSEiYAe9MD3iq1VVb4
-         c4OcX+fshe4b3H9xDoV0D9xId2zEVZvva6Ptzzk8I1+vuPCMmXT07TteMkllxk4T0dFc
-         iZhKz0NN527+kMVW3Haep4cBxcga09RhmzNIxxyuRJy2YnWKeWG8S50fsZjDEWhTQHDf
-         RRXQ==
-X-Gm-Message-State: ABy/qLZRYy9OPMxSGsqURiWz5WfDtCMfUYN5Z/ZTepx/HeKnAozbvNA9
-        xIlHC+Z7R9OVq6cfOkC4h7fgITe6DnpGLrJM+QvtsDzp3sXP
-X-Google-Smtp-Source: APBJJlEnh0acS0e8ryzsJVDfdowyHEZgH/0C91/Kn+GMDRUvXpzqdtBF9YNIHKw7d+TzrCaPotNeT29CdsgATj3gZlOvfPPHjgNR
+        d=1e100.net; s=20221208; t=1689652885; x=1692244885;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TFDsYeU09QyX9nMGiHdFlrICPlkCawySijwdpTw5NLM=;
+        b=li1lho2sIO894N4aZBZ/Fk8nXEET5W4AXkHLabgGT2xIykiaXyDW9fne4S7joIr7az
+         Zq20r7kycRo9NdAZC6kcXHUVc9KuMa52tVqv4GQoGPNNWURxAJRZw8q1umeI7cDjdExv
+         kcs1dVefOk46jOreqP3z5JhFnaRnReAArtGSIVbqILHkjJHkqI5DoeY2vhkaUXGAqiW9
+         d8nBGtr8e4pjRcge0MUhQ7AIpsG8Le7pNk/LxNUMV4+nPvLbk+K2pi2K+XsvxHo/nNqy
+         F7acRRtQ5LICAq9Et1HKS1RDaKk3dRB7Wo8M8D75zb9bpyLHxH/lLOHQ90X97RYvCNUC
+         EtiQ==
+X-Gm-Message-State: ABy/qLZSIeFTsL3BjxdWpNmb0oMF4FeSGZZek/eXvVFLo5rMpYe7nqeM
+        /ya9Wf0INmdJAcG3v8fbyvnsnYTVX2o0tZHekysEOnvkEdq5ry4+
+X-Google-Smtp-Source: APBJJlFei5nTsv62G4RI+NBkc29pl0jchtNvubF4SKpPkRcKNsh9fO5zwyBsd/MW55rbHWgSub5On7KihHxl/Remrv4=
+X-Received: by 2002:a05:6808:199c:b0:3a3:ac49:77dc with SMTP id
+ bj28-20020a056808199c00b003a3ac4977dcmr15295760oib.1.1689652884633; Mon, 17
+ Jul 2023 21:01:24 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1529:b0:3a4:1265:312d with SMTP id
- u41-20020a056808152900b003a41265312dmr20705746oiw.5.1689652813980; Mon, 17
- Jul 2023 21:00:13 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 21:00:13 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c56a310600baf342@google.com>
-Subject: [syzbot] [ext4?] INFO: task hung in sync_inodes_sb (5)
-From:   syzbot <syzbot+30476ec1b6dc84471133@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+References: <CAGUgbhCqOJaEPjS96o2au21uW4NhqFScm4Ayd8PzOQvqxQ94SQ@mail.gmail.com>
+ <0b9dd5cf-f4ca-2e6b-624d-0b451bbc2f30@linaro.org> <0ba3767c-d481-6e2c-2d32-b79af0e1efd8@roeck-us.net>
+ <CAGUgbhC34-pUp4ECULc0ScaN7hUF1L-z69h+ji-TiVrv4gKd3Q@mail.gmail.com>
+ <7b198d57-ddec-3074-314a-3e5e5b8f48f9@roeck-us.net> <CAGUgbhDbFedVe-pc+muD_NtDpjHpGqMDdrS3A73C-QbxeHn4oQ@mail.gmail.com>
+ <cf91edc9-1093-495b-48eb-6b05198c2541@linaro.org> <7a69bda1-5f4c-5b1f-8eb6-6fd58917a9b1@roeck-us.net>
+ <CAGUgbhCTDPGt_vpbfaEreX+iuLJ3WUBqt4kppxyaFZQus9Zf0Q@mail.gmail.com> <b22b2ccc-6760-0db6-067b-109c3864d2e8@linaro.org>
+In-Reply-To: <b22b2ccc-6760-0db6-067b-109c3864d2e8@linaro.org>
+From:   =?UTF-8?B?6JSh5om/6YGU?= <billyking19920205@gmail.com>
+Date:   Tue, 18 Jul 2023 12:01:13 +0800
+Message-ID: <CAGUgbhDmXnyxYCL9h9C0P4ByDSTstWnGqW=uFoDVVHeK3BerHA@mail.gmail.com>
+Subject: Re: [v6 2/4] dt-bindings: hwmon: Add ASPEED TACH Control documentation
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "patrick@stwcx.xyz" <patrick@stwcx.xyz>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+>
+> On 17/07/2023 11:01, =E8=94=A1=E6=89=BF=E9=81=94 wrote:
+> > Guenter Roeck <linux@roeck-us.net> =E6=96=BC 2023=E5=B9=B47=E6=9C=8817=
+=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=881:00=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+> >>
+> >> On 7/16/23 09:08, Krzysztof Kozlowski wrote:
+> >>
+> >> [ ... ]
+> >>
+> >>>>
+> >>>> This patch serial doesn't use to binding the fan control h/w. It is
+> >>>> used to binding the two independent h/w blocks.
+> >>>> One is used to provide pwm output and another is used to monitor the
+> >>>> speed of the input.
+> >>>> My patch is used to point out that the pwm and the tach is the
+> >>>> different function and don't need to
+> >>>> bind together. You can not only combine them as the fan usage but al=
+so
+> >>>> treat them as the individual module for
+> >>>> use. For example: the pwm can use to be the beeper (pwm-beeper.c), t=
+he
+> >>>> tach can be used to monitor the heart beat signal.
+> >>>
+> >>> Isn't this exactly the same as in every other SoC? PWMs can be used i=
+n
+> >>> different ways?
+> >>>
+> >>
+> >> ... and in every fan controller. Not that it really makes sense becaus=
+e
+> >> normally the pwm controller part of such chips is tied to the fan inpu=
+t,
+> >> to enable automatic fan control, but it is technically possible.
+> >> In many cases this is also the case in SoCs, for example, in ast2500.
+> >> Apparently this was redesigned in ast2600 where they two blocks are
+> >> only lightly coupled (there are two pwm status bits in the fan status
+> >> register, but I have no idea what those mean). If the blocks are tight=
+ly
+> >> coupled, separate drivers don't really make sense.
+> >>
+> >> There are multiple ways to separate the pwm controller part from the
+> >> fan inputs if that is really necessary. One would be to provide a
+> >> sequence of address mappings, the other would be to pass the memory
+> >> region from an mfd driver. It is not necessary to have N instances
+> >> of the fan controller, even if the address space is not continuous.
+> >>
+> >
+> > Hi Guenter,
+> >
+> > May I ask about the meaning of the sequence of address mappings? It app=
+ears
+> > to consist of multiple tuples within the 'reg' property, indicating
+> > the usage of PWM/Tach
+> > registers within a single instance. After that I can use the dts like f=
+ollowing:
+> >
+> > pwm: pwm@1e610000 {
+> > ...
+> > reg =3D <0x1e610000 0x8
+> > 0x1e610010 0x8
+> > 0x1e610020 0x8
+> > 0x1e610030 0x8
+> > 0x1e610040 0x8
+> > 0x1e610050 0x8
+> > 0x1e610060 0x8
+> > 0x1e610070 0x8
+> > 0x1e610080 0x8
+> > 0x1e610090 0x8
+> > 0x1e6100A0 0x8
+> > 0x1e6100B0 0x8
+> > 0x1e6100C0 0x8
+> > 0x1e6100D0 0x8
+> > 0x1e6100E0 0x8
+> > 0x1e6100F0 0x8>;
+>
+>
+> Uh, no... I mean, why? We keep pointing out that this should not be done
+> differently than any other SoC. Open any other SoC PWM controller and
+> tell me why this is different? Why this cannot be one address space?
 
-syzbot found the following issue on:
+Hi Krzysztof,
 
-HEAD commit:    eb26cbb1a754 Merge tag 'platform-drivers-x86-v6.5-2' of gi..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=11ada364a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6d0f369ef5fb88c9
-dashboard link: https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=132aa6daa80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10994a82a80000
+This is because the register layout for PWM and Tach is not continuous.
+Each PWM/Tach instance has its own set of controller registers, and they
+are independent of each other.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/047c8ae8d831/disk-eb26cbb1.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/94a0f439a3f2/vmlinux-eb26cbb1.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/57025348c668/bzImage-eb26cbb1.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/787828bdc769/mount_0.gz
+For example:
+PWM0 uses registers 0x0 and 0x4, while Tach0 uses registers 0x8 and 0xc.
+PWM1 uses registers 0x10 and 0x14, while Tach1 uses registers 0x18 and 0x1c=
+.
+...
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+30476ec1b6dc84471133@syzkaller.appspotmail.com
+To separate the PWM controller part from the fan inputs, Guenter has
+provided two methods.
+The first method involves passing the memory region from an MFD
+driver, which was the
+initial method I intended to use. However, it seems that this method
+does not make sense to you.
 
-INFO: task syz-executor386:5013 blocked for more than 143 seconds.
-      Not tainted 6.5.0-rc1-syzkaller-00033-geb26cbb1a754 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor386 state:D stack:24968 pid:5013  ppid:5010   flags:0x00004002
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
- schedule+0xc3/0x180 kernel/sched/core.c:6786
- wb_wait_for_completion+0x166/0x290 fs/fs-writeback.c:192
- sync_inodes_sb+0x297/0xab0 fs/fs-writeback.c:2736
- sync_filesystem+0x16f/0x220 fs/sync.c:64
- generic_shutdown_super+0x6f/0x340 fs/super.c:472
- kill_block_super+0x68/0xa0 fs/super.c:1417
- deactivate_locked_super+0xa4/0x110 fs/super.c:330
- cleanup_mnt+0x426/0x4c0 fs/namespace.c:1254
- task_work_run+0x24a/0x300 kernel/task_work.c:179
- ptrace_notify+0x2cd/0x380 kernel/signal.c:2372
- ptrace_report_syscall include/linux/ptrace.h:411 [inline]
- ptrace_report_syscall_exit include/linux/ptrace.h:473 [inline]
- syscall_exit_work kernel/entry/common.c:252 [inline]
- syscall_exit_to_user_mode_prepare kernel/entry/common.c:279 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:284 [inline]
- syscall_exit_to_user_mode+0x157/0x280 kernel/entry/common.c:297
- do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fe49933f507
-RSP: 002b:00007ffc0fbd7288 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fe49933f507
-RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007ffc0fbd7340
-RBP: 00007ffc0fbd7340 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000206 R12: 00007ffc0fbd83b0
-R13: 0000555555f596c0 R14: 431bde82d7b634db R15: 00007ffc0fbd83d0
- </TASK>
+Therefore, I would like to explore the second method suggested by
+Guenter, which involves providing
+a sequence of address mappings.
 
-Showing all locks held in the system:
-1 lock held by rcu_tasks_kthre/13:
- #0: ffffffff8d328af0 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x29/0xd20 kernel/rcu/tasks.h:522
-1 lock held by rcu_tasks_trace/14:
- #0: ffffffff8d328eb0 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x29/0xd20 kernel/rcu/tasks.h:522
-1 lock held by khungtaskd/28:
- #0: ffffffff8d328920 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x0/0x30
-4 locks held by kworker/u4:2/41:
- #0: ffff8880128ee938 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x7e3/0x12c0 kernel/workqueue.c:2569
- #1: ffffc90000b27d20 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x82b/0x12c0 kernel/workqueue.c:2571
- #2: ffff88807c094bd8 (&sbi->s_writepages_rwsem){.+.+}-{0:0}, at: ext4_writepages_down_read fs/ext4/ext4.h:1750 [inline]
- #2: ffff88807c094bd8 (&sbi->s_writepages_rwsem){.+.+}-{0:0}, at: ext4_writepages+0x1bd/0x3e0 fs/ext4/inode.c:2765
- #3: ffff888076550288 (&ei->i_data_sem){++++}-{3:3}, at: ext4_map_blocks+0x959/0x1cb0 fs/ext4/inode.c:614
-2 locks held by getty/4765:
- #0: ffff8880298dc098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc900015902f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b1/0x1dc0 drivers/tty/n_tty.c:2187
-2 locks held by syz-executor386/5013:
- #0: ffff88807c0960e0 (&type->s_umount_key#30){++++}-{3:3}, at: deactivate_super+0xad/0xf0 fs/super.c:360
- #1: ffff88801fed27d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
- #1: ffff88801fed27d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inodes_sb+0x278/0xab0 fs/fs-writeback.c:2734
+Thanks
 
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 PID: 28 Comm: khungtaskd Not tainted 6.5.0-rc1-syzkaller-00033-geb26cbb1a754 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- nmi_cpu_backtrace+0x498/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x187/0x300 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
- watchdog+0xec2/0xf00 kernel/hung_task.c:379
- kthread+0x2b8/0x350 kernel/kthread.c:389
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
- </TASK>
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 47 Comm: kworker/u4:3 Not tainted 6.5.0-rc1-syzkaller-00033-geb26cbb1a754 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
-Workqueue: events_unbound toggle_allocation_gate
-RIP: 0010:update_sd_lb_stats kernel/sched/fair.c:10176 [inline]
-RIP: 0010:find_busiest_group kernel/sched/fair.c:10428 [inline]
-RIP: 0010:load_balance+0x1d30/0x8170 kernel/sched/fair.c:10838
-Code: 00 00 44 89 3b 4c 8b bc 24 50 01 00 00 80 bc 24 a7 00 00 00 00 0f 84 59 01 00 00 48 8b 9c 24 c0 00 00 00 48 89 d8 48 c1 e8 03 <48> b9 00 00 00 00 00 fc ff df 80 3c 08 00 74 08 48 89 df e8 68 da
-RSP: 0018:ffffc90000b87080 EFLAGS: 00000802
-RAX: 1ffff92000170eb3 RBX: ffffc90000b87598 RCX: dffffc0000000000
-RDX: dffffc0000000000 RSI: 1ffff92000170dfc RDI: ffff8880b983c9a0
-RBP: ffffc90000b87730 R08: ffffc90000b875df R09: 0000000000000000
-R10: ffffc90000b87590 R11: fffff52000170ebc R12: dffffc0000000000
-R13: ffffc90000b87520 R14: 0000000000000001 R15: ffffc90000b87528
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fbb9323ba08 CR3: 000000000d130000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- newidle_balance+0x660/0xff0 kernel/sched/fair.c:11891
- pick_next_task_fair+0x289/0xdc0 kernel/sched/fair.c:8182
- __pick_next_task kernel/sched/core.c:6013 [inline]
- pick_next_task kernel/sched/core.c:6088 [inline]
- __schedule+0x7c6/0x48f0 kernel/sched/core.c:6674
- schedule+0xc3/0x180 kernel/sched/core.c:6786
- toggle_allocation_gate+0x16a/0x250 mm/kfence/core.c:833
- process_one_work+0x92c/0x12c0 kernel/workqueue.c:2597
- worker_thread+0xa63/0x1210 kernel/workqueue.c:2748
- kthread+0x2b8/0x350 kernel/kthread.c:389
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
- </TASK>
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.234 msecs
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Best Regards,
+Billy Tsai
