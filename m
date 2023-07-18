@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 867F575740A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A40F757410
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230447AbjGRG0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 02:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
+        id S231244AbjGRG1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 02:27:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbjGRG0q (ORCPT
+        with ESMTP id S231211AbjGRG07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 02:26:46 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296DC126;
-        Mon, 17 Jul 2023 23:26:46 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-3487d75e4c5so14236185ab.0;
-        Mon, 17 Jul 2023 23:26:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689661605; x=1692253605;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=t7CLNl341a6qbr1/+SqD2wU8H0rNBWIA4UoKO2oRkIk=;
-        b=Wl56MJJjwI2mGTf3k92EgT//sXuLO8UWap6B6DnjCHdiDGbk/T/t0FOA41rH9qKBIo
-         hgFX+twXDXU+UPv3h+XZXDGthvIGgMAnjT01HXajCc32OR9aswCnZFxQdvURhkO7KvQI
-         mZY/lCeQASJ+ztY7uVqrIJtC7qnmx1CaHZdwnNNN5/yvmDsHjMoXckiNnA/sj9sV6ycl
-         d2iFmS62V8mLQV55duuSBNM7Q0ImbHFEBePwGLiUDyGlB7jcFmp+gu5m92wHG7W+yuh8
-         2/BESdcUKDN9R5hinjFlpGgVEreT4Vi1D47ygIAzhsyh6AfnOG5s/zZ+xkdSzcbrzS1r
-         fwQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689661605; x=1692253605;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=t7CLNl341a6qbr1/+SqD2wU8H0rNBWIA4UoKO2oRkIk=;
-        b=QN0Wg4F8w2PL3haZhC8u/3qJ6y1CoxOv9K6lnWghKknJG4U/X7ldrBhzAQHcz/36KQ
-         gVk1cpD9g7nGl8+fv+CsCDUzjnWkc6BGlHu/49Zf2UQf8+T4uwe3FQNrnxaaLb35sTM3
-         OKid76wD/ub3M2xmCB90UtJsbCM7+uh8SNwCr4vpXVOp2ez07W4ogbSMF88HsF5u9VxK
-         tYeLXIvXNBCjvvF/mdHKH+ggevG8nt34VDRWIDu04MRcr9HUmpJFPcZxK4rcPH+FWlOC
-         BzXCnLNWYPMslghz7nREqEsNBoE4zwoz00kMD0nUwiuEzy7wwkYYf09K2tby4lelf4gH
-         26Bg==
-X-Gm-Message-State: ABy/qLanL1nD2zkziW6kzOVxr1+xHh8LwhgLw8MpVFCXOWd0fWkaXAAf
-        TdQMHWPMDbgKMTGt0vpVhi4=
-X-Google-Smtp-Source: APBJJlFZCsWQza7bUATlQ8O/mkdlO1GlCu58cJOBj4zgREHIvmUcerlXmnjVsM2gL+P6vDa3yNGz3w==
-X-Received: by 2002:a92:cdaa:0:b0:341:f920:4483 with SMTP id g10-20020a92cdaa000000b00341f9204483mr2038959ild.9.1689661605424;
-        Mon, 17 Jul 2023 23:26:45 -0700 (PDT)
-Received: from localhost.localdomain (211-20-114-70.hinet-ip.hinet.net. [211.20.114.70])
-        by smtp.gmail.com with ESMTPSA id n16-20020a92d9d0000000b00345d154ce58sm467680ilq.12.2023.07.17.23.26.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 23:26:44 -0700 (PDT)
-From:   Dylan Hung <kobedylan@gmail.com>
-X-Google-Original-From: Dylan Hung <dylan_hung@aspeedtech.com>
-To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     BMC-SW@aspeedtech.com, kobedylan@gmail.com,
-        Dylan Hung <dylan_hung@aspeedtech.com>
-Subject: [PATCH v3] dt-bindings: clock: ast2600: Add I3C and MAC reset definitions
-Date:   Tue, 18 Jul 2023 14:26:16 +0800
-Message-Id: <20230718062616.2822339-1-dylan_hung@aspeedtech.com>
+        Tue, 18 Jul 2023 02:26:59 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A114210FE;
+        Mon, 17 Jul 2023 23:26:57 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36I5DUCL007848;
+        Tue, 18 Jul 2023 06:26:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=E+TRH9rtQteKeTrzHkDeOuPQsxcVENc2p5eTBUgQttY=;
+ b=SNV2/ysZNQXoRL/8RN+3q5c/kylW7Mcf14Np6i+zhxPTEQl94/ETAtWsKKUjKyE/Ru7Q
+ nFbjLrdhgS4jbtgxovOWuB0yoVuXBxX26cZKeVNwu4Q0m6c9bQzViAkm7oHE1fvuk+9Y
+ uAeuQ1FqJGlQVbZuNR2YiisotuIzK8pSugEES7QtobUbdCguOKgKIJaY78RmnTBKoC9i
+ uFds52Kxdfv+3yfyOnXnKtKBFdhXbJYITQD530j5vbBnQg80W/3nvNgchqhtylm8rbJQ
+ adKbgYdtAlM8c3yZo+8y+W3Nm+Kb2+rc2sZzd9x5Xna0oazqn7KhyuMIkm3611SRc6g0 lQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rw3yv27vu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 06:26:57 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36I6QuV3029640
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 06:26:56 GMT
+Received: from fenglinw2-gv.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 17 Jul 2023 23:26:54 -0700
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+To:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <quic_collinsd@quicinc.com>, <quic_subbaram@quicinc.com>,
+        <quic_fenglinw@quicinc.com>, <quic_kamalw@quicinc.com>,
+        <jestar@qti.qualcomm.com>
+Subject: [PATCH v2 0/2] Add support for vibrator in multiple PMICs
+Date:   Tue, 18 Jul 2023 14:26:37 +0800
+Message-ID: <20230718062639.2339589-1-quic_fenglinw@quicinc.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: bo8_s8qRXsJwGJojtj8tHSpwYV8sDgB3
+X-Proofpoint-GUID: bo8_s8qRXsJwGJojtj8tHSpwYV8sDgB3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_15,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ spamscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0 malwarescore=0
+ bulkscore=0 phishscore=0 suspectscore=0 priorityscore=1501 mlxlogscore=828
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307180058
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,50 +76,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add reset definitions of AST2600 I3C and MAC controllers. In the case of
-the I3C reset, since there is no reset-line hardware available for
-`ASPEED_RESET_I3C_DMA`, a new macro `ASPEED_RESET_I3C` with the same ID
-is introduced to provide a more accurate representation of the hardware.
-The old macro `ASPEED_RESET_I3C_DMA` is kept to provide backward
-compatibility.
+Add SW support for the vibrator module inside PMI632, PM7250B, PM7325B, PM7550BA.
+It is very similar to the vibrator module inside PM8916 which is supported in
+pm8xxx-vib driver but just the drive amplitude is controlled with 2 registers,
+and the register base offset in each PMIC is different.
 
-Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
----
-changes in v2:
-- Added back ASPEED_RESET_I3C_DMA for backward compatibility
-- link to v1: https://lore.kernel.org/all/20230621094545.707-1-dylan_hung@aspeedtech.com/
+Changes in v2:
+  Remove the "pm7550ba-vib" compatible string as it's compatible with pm7325b.
 
-changes in v3:
-- Added an explaination for adding a duplicate ID in the commit message
-- Link to v2: https://lore.kernel.org/all/20230717075123.1597977-1-dylan_hung@aspeedtech.com/
+Fenglin Wu (2):
+  dt-bindings: input: qcom,pm8xxx-vib: add more PMIC support
+  Input: pm8xxx-vib - Add support for more PMICs
 
- include/dt-bindings/clock/ast2600-clock.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ .../bindings/input/qcom,pm8xxx-vib.yaml       |  3 ++
+ drivers/input/misc/pm8xxx-vibrator.c          | 48 +++++++++++++++++++
+ 2 files changed, 51 insertions(+)
 
-diff --git a/include/dt-bindings/clock/ast2600-clock.h b/include/dt-bindings/clock/ast2600-clock.h
-index e149eee61588..712782177c90 100644
---- a/include/dt-bindings/clock/ast2600-clock.h
-+++ b/include/dt-bindings/clock/ast2600-clock.h
-@@ -90,7 +90,19 @@
- /* Only list resets here that are not part of a clock gate + reset pair */
- #define ASPEED_RESET_ADC		55
- #define ASPEED_RESET_JTAG_MASTER2	54
-+
-+#define ASPEED_RESET_MAC4		53
-+#define ASPEED_RESET_MAC3		52
-+
-+#define ASPEED_RESET_I3C5		45
-+#define ASPEED_RESET_I3C4		44
-+#define ASPEED_RESET_I3C3		43
-+#define ASPEED_RESET_I3C2		42
-+#define ASPEED_RESET_I3C1		41
-+#define ASPEED_RESET_I3C0		40
-+#define ASPEED_RESET_I3C		39
- #define ASPEED_RESET_I3C_DMA		39
-+
- #define ASPEED_RESET_PWM		37
- #define ASPEED_RESET_PECI		36
- #define ASPEED_RESET_MII		35
 -- 
 2.25.1
 
