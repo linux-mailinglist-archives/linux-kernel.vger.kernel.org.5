@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FEF758284
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E6175828A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbjGRQu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 12:50:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56066 "EHLO
+        id S231481AbjGRQwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 12:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbjGRQux (ORCPT
+        with ESMTP id S231352AbjGRQwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 12:50:53 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1E319A;
-        Tue, 18 Jul 2023 09:50:51 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fa86b08efcso9885825e9.1;
-        Tue, 18 Jul 2023 09:50:51 -0700 (PDT)
+        Tue, 18 Jul 2023 12:52:39 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC88199;
+        Tue, 18 Jul 2023 09:52:38 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b6f0508f54so89948591fa.3;
+        Tue, 18 Jul 2023 09:52:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689699050; x=1692291050;
+        d=gmail.com; s=20221208; t=1689699156; x=1692291156;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oB4ZyTPiRMh8uiHtJckpmyXEBsp+YxvtmLWlUvgMk/M=;
-        b=Y1+OUm+KfnhNxz2FsnvadTldRBXR977AylELwvjFF8aABcT5TuWYDrR1jsjviIpW83
-         OAF/Ux11x6X+51dIzA62iasPzvSM4umD/lUeeUAhk/mh0NBfJu1exB+uSFtZfqNQB5Nl
-         eOp8M46GxxHQJ8glNcis3nOErtYTNxsNbh+g0yph0R9gNTj8Y1bQNza+BS2DyBHkJDhg
-         DKxfWVmiQMnyQDGcMAR1QSsQTWU+jK70mdkdhS3O0VgmrMuuA26DcNKXFVA3qy7KhzmU
-         FdV0sPn04MJctdvZDYGSQQ66j/fLDDKiHsLlMJs+9uehKQxagFCXOeWjTlDhRxBwXmFG
-         eT0Q==
+        bh=iemggp/0h14cLCAAyDHhcCwLJhah9OyvESFo1Hs7/uQ=;
+        b=qyylx3cIYmzIoE2RyMD9SETNHrJE31G33ejnX8oLxbM2rt3B07VYRuOv9KZqIwDU1z
+         5ufm52bqxsWSUYkOJJFcf+njn9TrbFDP/ehFquKoMP3eLdJfd4u8YxMhQup/AsXMz8rA
+         3A50PGhJDKIWDWHUA8kwuYlri3feKEgHSgzozIVG+5DtPyHn3+lBTPTfl3GrPhzbpzyd
+         a+ftHoP0S0lX/ldtvRuHojqpnJjmpV7UdraTZxPkX3CGY/r44prbquB0+Orp3tR4xnmH
+         xlt7x/07FJH5a/GlMVWIy84tt+ZmysSzPfXHvFjH6Vuc2X9wLGMB0NpNlJh1wcGEfnUR
+         egGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689699050; x=1692291050;
+        d=1e100.net; s=20221208; t=1689699156; x=1692291156;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oB4ZyTPiRMh8uiHtJckpmyXEBsp+YxvtmLWlUvgMk/M=;
-        b=fTl7lD1skAulnkgDuxESq+p2Zciu/Jt87zh+SFYhYBgaMQ6ZDSDvxzsyFQcokzn7RK
-         5ApUKJM7eEOCHyae4iAlRsAWGVytERmrrV9EK5XGCzQFwvqDFdZlbOXx/4niLs0VU2VG
-         KL+IoncWM0F0AuPE95nTk7FsIuzeWIjbnDMh+dLOddbQKUuf454VOup4dXA1ZtCHtvV1
-         fS/5scNJHtDi6aIrosxOMDQS5OauiQTgdc3sHMklq7bxDCY8J4SzreMX0pYb646J3iWN
-         5Cr73pq+64qjVBnM/i06lfhQ2N5kgAbbQqlxv/RjBDWzbwz0/ykGYJRhgqobpinh/wIy
-         SL4g==
-X-Gm-Message-State: ABy/qLY2VzBhXwunMdTgWGDaQxND4SXsoC7fXE61c2MzP1fGo8d6p/7Q
-        bhjB5evBqHeZC8iIpTXHtKKOh9UOhx1k3AylUk8=
-X-Google-Smtp-Source: APBJJlHv0cXnhyUAmRhq8/SgUT8OUQAJDxLPpI/PxYmchWVx6/iDfgSesWfaOELdt2qAkI5m3P4LygqZPZvXw2DAxkY=
-X-Received: by 2002:a05:600c:3b1d:b0:3f9:bf0e:a312 with SMTP id
- m29-20020a05600c3b1d00b003f9bf0ea312mr22373wms.1.1689699049984; Tue, 18 Jul
- 2023 09:50:49 -0700 (PDT)
+        bh=iemggp/0h14cLCAAyDHhcCwLJhah9OyvESFo1Hs7/uQ=;
+        b=IuMPoLgcN/ENKZg+r/LgEJ3e7BZK/JdVVgV7qe5qPwY3lbhuipAoIVp6RU3CVwJNfH
+         o6XukKr/0T3yr4Y+Hag2cOBz+ARGLiDKWAt6H+hP9dqOxtYvZzbosLA45oj1SjLNHcHg
+         P4gqTIPsh/0b01ZCukKNcRixZeY/8RY4uRS7YOa1yD9ddx6cHV/xoDnzXsK1URkIj4FN
+         se4cusiUz2xOqSpWvO00rcXP3M51B0+sy8YD5iQ7jOJsi3TNKXftX1U2hc387aujUaZ7
+         +0egXSvcYrYSrKlehgFPeHCblsWbru9Zf4ymqVt2wjMaYEkljtguxvGRWHyUGPtp/Csm
+         L2/Q==
+X-Gm-Message-State: ABy/qLZgCHQskNXIMhJUR9IDCXJrqScmyl+ndk3dtp11pQcAFGot6qxR
+        YWWF0wblIDyUcZV9iJXPhqp0YNvMpgJN7dK0hB0=
+X-Google-Smtp-Source: APBJJlGtfIRvoWydC+CLLzgbS6S6yDVAym+kj9+77hjHEG4LTDQ34Jx3Fn5D0r59saL3Fo8htdGPQLd+4iTCW/2q8vs=
+X-Received: by 2002:a2e:84d7:0:b0:2b6:cca1:975f with SMTP id
+ q23-20020a2e84d7000000b002b6cca1975fmr11532284ljh.13.1689699156163; Tue, 18
+ Jul 2023 09:52:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230718-thermal-sun8i-registration-v1-1-c95b1b070340@kernel.org>
-In-Reply-To: <20230718-thermal-sun8i-registration-v1-1-c95b1b070340@kernel.org>
-From:   Vasily Khoruzhick <anarsoul@gmail.com>
-Date:   Tue, 18 Jul 2023 09:50:23 -0700
-Message-ID: <CA+E=qVej1K7x=8-27J-Xw2E5JrJ0hgqf__XRzBdewujFsr2cPw@mail.gmail.com>
-Subject: Re: [PATCH] thermal/drivers/sun8i: Don't fail probe due to zone
- registration failure
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Yangtao Li <tiny.windzz@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Hugh Dickins <hughd@google.com>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
+References: <20230502005218.3627530-1-drosen@google.com> <20230718082615.08448806@kernel.org>
+ <CAADnVQJEEF=nqxo6jHKK=Tn3M_NVXHQjhY=_sry=tE8X4ss25A@mail.gmail.com> <20230718090632.4590bae3@kernel.org>
+In-Reply-To: <20230718090632.4590bae3@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 18 Jul 2023 09:52:24 -0700
+Message-ID: <CAADnVQ+4aehGYPJ2qT_HWWXmOSo4WXf69N=N9-dpzERKfzuSzQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Daniel Rosenberg <drosen@google.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,31 +86,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 8:05=E2=80=AFAM Mark Brown <broonie@kernel.org> wro=
-te:
+On Tue, Jul 18, 2023 at 9:06=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
 >
-> Currently the sun8i thermal driver will fail to probe if any of the
-> thermal zones it is registering fails to register with the thermal core.
-> Since we currently do not define any trip points for the GPU thermal
-> zones on at least A64 or H5 this means that we have no thermal support
-> on these platforms:
+> On Tue, 18 Jul 2023 08:52:55 -0700 Alexei Starovoitov wrote:
+> > On Tue, Jul 18, 2023 at 8:26=E2=80=AFAM Jakub Kicinski <kuba@kernel.org=
+> wrote:
+> > > On Mon,  1 May 2023 17:52:16 -0700 Daniel Rosenberg wrote:
+> > > > --- a/include/linux/skbuff.h
+> > > > +++ b/include/linux/skbuff.h
+> > > > @@ -4033,7 +4033,7 @@ __skb_header_pointer(const struct sk_buff *sk=
+b, int offset, int len,
+> > > >       if (likely(hlen - offset >=3D len))
+> > > >               return (void *)data + offset;
+> > > >
+> > > > -     if (!skb || unlikely(skb_copy_bits(skb, offset, buffer, len) =
+< 0))
+> > > > +     if (!skb || !buffer || unlikely(skb_copy_bits(skb, offset, bu=
+ffer, len) < 0))
+> > > >               return NULL;
+> > >
+> > > First off - please make sure you CC netdev on changes to networking!
+> > >
+> > > Please do not add stupid error checks to core code for BPF safety.
+> > > Wrap the call if you can't guarantee that value is sane, this is
+> > > a very bad precedent.
+> >
+> > This is NOT for safety. You misread the code.
 >
-> [    1.698703] thermal_sys: Failed to find 'trips' node
-> [    1.698707] thermal_sys: Failed to find trip points for thermal-sensor=
- id=3D1
+> Doesn't matter, safety or optionality. skb_header_pointer() is used
+> on the fast paths of the networking stack, adding heavy handed input
+> validation to it is not okay. No sane code should be passing NULL
+> buffer to skb_header_pointer(). Please move the NULL check to the BPF
+> code so the rest of the networking stack does not have to pay the cost.
 >
-> even though the main CPU thermal zone on both SoCs is fully configured.
-> This does not seem ideal, while we may not be able to use all the zones
-> it seems better to have those zones which are usable be operational.
-> Instead just carry on registering zones if we get any non-deferral
-> error, allowing use of those zones which are usable.
->
-> This means that we also need to update the interrupt handler to not
-> attempt to notify the core for events on zones which we have not
-> registered, I didn't see an ability to mask individual interrupts and
-> I would expect that interrupts would still be indicated in the ISR even
-> if they were masked.
->
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+> This should be common sense. If one caller is doing something..
+> "special" the extra code should live in the caller, not the callee.
+> That's basic code hygiene.
 
-Reviewed-by: Vasily Khoruzhick <anarsoul@gmail.com>
+you're still missing the point. Pls read the whole patch series.
+It is _not_ input validation.
+skb_copy_bits is a slow path. One extra check doesn't affect
+performance at all. So 'fast paths' isn't a valid argument here.
+The code is reusing
+        if (likely(hlen - offset >=3D len))
+                return (void *)data + offset;
+which _is_ the fast path.
+
+What you're requesting is to copy paste
+the whole __skb_header_pointer into __skb_header_pointer2.
+Makes no sense.
