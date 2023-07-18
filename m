@@ -2,85 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E1A757F6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3449D757F71
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232528AbjGRO1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:27:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48456 "EHLO
+        id S232115AbjGRO3W convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 Jul 2023 10:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230221AbjGRO1v (ORCPT
+        with ESMTP id S230076AbjGRO3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:27:51 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9860199;
-        Tue, 18 Jul 2023 07:27:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689690470; x=1721226470;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=19XepKsMICRDWf3P5XYy0kL4w0Zj42OXH3hKop15his=;
-  b=GUXOZqR7DHu8BXGN0eOvirYcZIN1ndR7OAfkMzLn5a6BJQdjpgbpovU+
-   jczK68J0dtkrwgIzvcyUnOnl5FVDr1H5efy6Ds+a7sg0Ndh8I4jVTpiCI
-   KkOrPvNFbt2NtnPWZ/47Ij/AxXfzY68HW81xqupJvwF80uI7Ak0vBP/wK
-   /VwkVj4vIzPNFQ8MIzSslX8SgMGxBbXTF6zM5+7gS5TqDfo23+1wFP0aE
-   HqqpqVUsrtlymrk4+58U8gupUyWmTqtqEhb8xWhx5q1KzMTvxQcdej0Vu
-   tolCBGVaYjyNFI2d24HbznLi4+IeV2c1yzAFHXyPa6pkBR+gwmoKSGakf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="366262553"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="366262553"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 07:27:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="726953755"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="726953755"
-Received: from pkarurmo-mobl.amr.corp.intel.com (HELO [10.209.37.195]) ([10.209.37.195])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 07:27:49 -0700
-Message-ID: <dfb1f233-aebd-50cf-8704-e83b91ee110a@intel.com>
-Date:   Tue, 18 Jul 2023 07:27:49 -0700
+        Tue, 18 Jul 2023 10:29:20 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27ADD9E
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:29:20 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1qLlhR-0006sb-1r; Tue, 18 Jul 2023 16:29:13 +0200
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1qLlhP-000OT0-1G; Tue, 18 Jul 2023 16:29:11 +0200
+Received: from pza by lupine with local (Exim 4.96)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1qLlhO-000Eqt-2k;
+        Tue, 18 Jul 2023 16:29:10 +0200
+Message-ID: <6032fcba75d34b0273508166c8b79331cd5c34ef.camel@pengutronix.de>
+Subject: Re: [PATCH] pwm: stm32: Implement .get_state()
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc:     linux-pwm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Tue, 18 Jul 2023 16:29:10 +0200
+In-Reply-To: <dac9c545-fcbc-3aec-c341-abc62f551703@foss.st.com>
+References: <20230608-pwm-stm32-get-state-v1-1-db7e58a7461b@pengutronix.de>
+         <dac9c545-fcbc-3aec-c341-abc62f551703@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] x86/sgx: fix a NULL pointer
-Content-Language: en-US
-To:     Haitao Huang <haitao.huang@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
-        kristen@linux.intel.com, seanjc@google.com, stable@vger.kernel.org
-References: <CU4OBQ8MQ2LK.2GRBPLQGVTZ3@seitikki>
- <20230717202938.94989-1-haitao.huang@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <20230717202938.94989-1-haitao.huang@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/17/23 13:29, Haitao Huang wrote:
-> Under heavy load, the SGX EPC reclaimers (current ksgxd or future EPC
-> cgroup worker) may reclaim the SECS EPC page for an enclave and set
-> encl->secs.epc_page to NULL. But the SECS EPC page is used for EAUG in
-> the SGX #PF handler without checking for NULL and reloading.
+Hi Fabrice,
+
+On Fr, 2023-06-09 at 15:06 +0200, Fabrice Gasnier wrote:
+[...]
+> > @@ -635,7 +675,10 @@ static int stm32_pwm_probe(struct platform_device *pdev)
+> >  
+> >  	priv->chip.dev = dev;
+> >  	priv->chip.ops = &stm32pwm_ops;
+> > -	priv->chip.npwm = stm32_pwm_detect_channels(priv);
+> > +	priv->chip.npwm = stm32_pwm_detect_channels(priv, &n_enabled);
+> > +
 > 
-> Fix this by checking if SECS is loaded before EAUG and load it if it was
-> reclaimed.
+> I'd suggest to comment a bit here, to explain it initializes the PWM
+> counter clock refcount in sync with PWM initial state left by the
+> bootloader.
+> 
+> In all case, this is fine for me, you can add my:
+> Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 
-It would be nice to see a _bit_ more theory of the bug in here.
+Thank you, I'll add a comment here.
 
-What is an SECS page and why is it special in a reclaim context?  Why is
-this so hard to hit?  What led you to discover this issue now?  What is
-EAUG?
+regards
+Philipp
