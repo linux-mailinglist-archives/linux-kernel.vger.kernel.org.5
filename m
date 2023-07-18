@@ -2,68 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7A6757F88
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F8A757F8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232758AbjGROa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:30:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50408 "EHLO
+        id S233040AbjGRObX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232261AbjGROay (ORCPT
+        with ESMTP id S232096AbjGRObV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:30:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6029E;
-        Tue, 18 Jul 2023 07:30:52 -0700 (PDT)
+        Tue, 18 Jul 2023 10:31:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3C1170E;
+        Tue, 18 Jul 2023 07:31:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8856C615F0;
-        Tue, 18 Jul 2023 14:30:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D957C433C9;
-        Tue, 18 Jul 2023 14:30:49 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A511E615A9;
+        Tue, 18 Jul 2023 14:31:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD910C433C9;
+        Tue, 18 Jul 2023 14:30:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689690651;
-        bh=oYbQlPAPjST5dLb2iSP7+pTQX0En+nYQKfG/SDG291Y=;
+        s=k20201202; t=1689690664;
+        bh=HFuY1Cjqgujo0hwfrqnQglAT2HUw2FWQel+8316MUmk=;
         h=From:To:Cc:Subject:Date:From;
-        b=ADBTFBmbc7dNBajlp+i+VMiUc8JlBDADTyImq5Njf21sFa3PqSpXLWbl9JJMr2I2/
-         pcuVUlWhvnPaWrZELXrFRYTu8NpGp24VEFQa4Nj3C92qaehqi/ICoQmqA+ZdRPzQ1l
-         kur6G4R2z4rSWcrSmhUjYHBNvkq40fe7hz2z3Jo3CrhjVw45vyz3Gb4/5EMVUIW0Yb
-         HI632uepsNuxa3iEEgtb0occeQXlytTuhTlhNfDs2+HAw+gHIOzOOIWliB6CNgRWg5
-         GXSn1CEc66xPhGUs7oK8Mp/SVA2gQvmQXSqqvyvahHH1hhuJ0oyljFOUwTswTEym3e
-         bBas8SXJg4zSg==
-Received: (nullmailer pid 1065208 invoked by uid 1000);
-        Tue, 18 Jul 2023 14:30:48 -0000
+        b=c2AMHtG3EDEzhWpumzWjIXtZxVQHy8w8ayUmbYRQ0qKSH6FcauoW8JEL8hwoqi1tu
+         Kj6kwMY23MewN95GtN4Ld/mD34FwOvkZTlwcsFTcHD0AEtkSLEVnICivnenZbSBO9D
+         kRj/joyjG0/U2wvZum6qnC+sIvqBkN1pDy1jmS5RmOoljqCXMTuGTQgpjMnEoYO3sR
+         UlIfEf7kHw5z+npN+BKPgtEXxPB9FBeikeBRO+iwYq93g7cXbDIHRqHhlR8lfnRmpm
+         P6WvQYnK5iMfOkLB+6WER9X5GhxP+xfBCuG6ypcrtVNDuGsTFNLOmBn1ktBfp1CmHV
+         Azq5U9DkaihCA==
+Received: (nullmailer pid 1065421 invoked by uid 1000);
+        Tue, 18 Jul 2023 14:30:58 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
+To:     Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Robert Richter <rric@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Florian Fainel li <florian.fainelli@broadcom.com>,
         Ray Jui <rjui@broadcom.com>,
         Scott Branden <sbranden@broadcom.com>,
         Broadcom internal kernel review list 
         <bcm-kernel-feedback-list@broadcom.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Support Opensource <support.opensource@diasemi.com>,
-        David Lechner <david@lechnology.com>,
-        Iskren Chernev <me@iskren.info>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Matheus Castello <matheus@castello.eng.br>
-Cc:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-oxnas@groups.io
-Subject: [PATCH v2] power: Explicitly include correct DT includes
-Date:   Tue, 18 Jul 2023 08:30:43 -0600
-Message-Id: <20230718143045.1065100-1-robh@kernel.org>
+        Haibo Chen <haibo.chen@nxp.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Eugen Hristev <eugen.hristev@collabora.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ben Dooks <ben-linux@fluff.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-actions@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH v2] mmc: Explicitly include correct DT includes
+Date:   Tue, 18 Jul 2023 08:30:52 -0600
+Message-Id: <20230718143054.1065288-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -79,458 +115,425 @@ files used throughout the tree. In order to detangle these headers and
 replace the implicit includes with struct declarations, users need to
 explicitly include the correct includes.
 
-Acked-by: David Lechner <david@lechnology.com>
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
 v2:
 - Fix double include of of.h
 ---
- drivers/power/reset/as3722-poweroff.c            | 1 -
- drivers/power/reset/brcm-kona-reset.c            | 4 ++--
- drivers/power/reset/gpio-poweroff.c              | 3 ++-
- drivers/power/reset/gpio-restart.c               | 2 +-
- drivers/power/reset/keystone-reset.c             | 3 ++-
- drivers/power/reset/ocelot-reset.c               | 4 ++--
- drivers/power/reset/odroid-go-ultra-poweroff.c   | 3 ++-
- drivers/power/reset/oxnas-restart.c              | 2 --
- drivers/power/reset/st-poweroff.c                | 2 +-
- drivers/power/reset/syscon-poweroff.c            | 3 +--
- drivers/power/reset/syscon-reboot.c              | 3 +--
- drivers/power/reset/xgene-reboot.c               | 2 +-
- drivers/power/supply/axp20x_ac_power.c           | 1 -
- drivers/power/supply/axp20x_battery.c            | 1 -
- drivers/power/supply/axp20x_usb_power.c          | 1 -
- drivers/power/supply/cpcap-battery.c             | 2 +-
- drivers/power/supply/da9150-charger.c            | 2 --
- drivers/power/supply/da9150-fg.c                 | 1 -
- drivers/power/supply/lego_ev3_battery.c          | 2 +-
- drivers/power/supply/ltc2941-battery-gauge.c     | 2 +-
- drivers/power/supply/ltc4162-l-charger.c         | 2 +-
- drivers/power/supply/max14656_charger_detector.c | 2 +-
- drivers/power/supply/max17040_battery.c          | 2 +-
- drivers/power/supply/max8903_charger.c           | 1 -
- drivers/power/supply/rn5t618_power.c             | 1 -
- drivers/power/supply/rt5033_charger.c            | 2 +-
- drivers/power/supply/rt9455_charger.c            | 3 +--
- drivers/power/supply/sbs-battery.c               | 2 +-
- drivers/power/supply/tps65090-charger.c          | 2 +-
- drivers/power/supply/tps65217_charger.c          | 1 -
- drivers/power/supply/twl4030_charger.c           | 1 +
- 31 files changed, 26 insertions(+), 37 deletions(-)
+ drivers/mmc/host/atmel-mci.c                  | 1 -
+ drivers/mmc/host/cavium-octeon.c              | 2 ++
+ drivers/mmc/host/cavium-thunderx.c            | 1 +
+ drivers/mmc/host/davinci_mmc.c                | 1 -
+ drivers/mmc/host/meson-gx-mmc.c               | 2 +-
+ drivers/mmc/host/mtk-sd.c                     | 4 +---
+ drivers/mmc/host/mxcmmc.c                     | 1 -
+ drivers/mmc/host/mxs-mmc.c                    | 1 -
+ drivers/mmc/host/owl-mmc.c                    | 3 ++-
+ drivers/mmc/host/pxamci.c                     | 1 -
+ drivers/mmc/host/renesas_sdhi_internal_dmac.c | 3 ++-
+ drivers/mmc/host/renesas_sdhi_sys_dmac.c      | 3 ++-
+ drivers/mmc/host/sdhci-bcm-kona.c             | 1 -
+ drivers/mmc/host/sdhci-cadence.c              | 2 +-
+ drivers/mmc/host/sdhci-esdhc-imx.c            | 2 +-
+ drivers/mmc/host/sdhci-iproc.c                | 2 +-
+ drivers/mmc/host/sdhci-msm.c                  | 2 +-
+ drivers/mmc/host/sdhci-of-arasan.c            | 4 ++--
+ drivers/mmc/host/sdhci-of-at91.c              | 2 +-
+ drivers/mmc/host/sdhci-of-dwcmshc.c           | 2 +-
+ drivers/mmc/host/sdhci-of-sparx5.c            | 2 +-
+ drivers/mmc/host/sdhci-omap.c                 | 1 -
+ drivers/mmc/host/sdhci-pxav2.c                | 1 -
+ drivers/mmc/host/sdhci-s3c.c                  | 1 -
+ drivers/mmc/host/sdhci-sprd.c                 | 1 -
+ drivers/mmc/host/sdhci-tegra.c                | 1 -
+ drivers/mmc/host/sh_mmcif.c                   | 1 -
+ drivers/mmc/host/uniphier-sd.c                | 1 -
+ drivers/mmc/host/wmt-sdmmc.c                  | 1 -
+ 29 files changed, 20 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/power/reset/as3722-poweroff.c b/drivers/power/reset/as3722-poweroff.c
-index 80edff1a556f..829e0dba2fda 100644
---- a/drivers/power/reset/as3722-poweroff.c
-+++ b/drivers/power/reset/as3722-poweroff.c
-@@ -10,7 +10,6 @@
- #include <linux/mfd/as3722.h>
+diff --git a/drivers/mmc/host/atmel-mci.c b/drivers/mmc/host/atmel-mci.c
+index dd18440a90c5..2fdf352b3d86 100644
+--- a/drivers/mmc/host/atmel-mci.c
++++ b/drivers/mmc/host/atmel-mci.c
+@@ -18,7 +18,6 @@
+ #include <linux/ioport.h>
  #include <linux/module.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
+ #include <linux/of_gpio.h>
  #include <linux/platform_device.h>
- #include <linux/slab.h>
- 
-diff --git a/drivers/power/reset/brcm-kona-reset.c b/drivers/power/reset/brcm-kona-reset.c
-index 3de024e3ceb7..64e241c77f83 100644
---- a/drivers/power/reset/brcm-kona-reset.c
-+++ b/drivers/power/reset/brcm-kona-reset.c
-@@ -2,8 +2,8 @@
- // Copyright (C) 2016 Broadcom
- 
- #include <linux/io.h>
--#include <linux/of_address.h>
--#include <linux/of_platform.h>
-+#include <linux/mod_devicetable.h>
+ #include <linux/scatterlist.h>
+diff --git a/drivers/mmc/host/cavium-octeon.c b/drivers/mmc/host/cavium-octeon.c
+index 12dca91a8ef6..02429f7afb42 100644
+--- a/drivers/mmc/host/cavium-octeon.c
++++ b/drivers/mmc/host/cavium-octeon.c
+@@ -13,7 +13,9 @@
+ #include <linux/mmc/mmc.h>
+ #include <linux/mmc/slot-gpio.h>
+ #include <linux/module.h>
++#include <linux/of.h>
+ #include <linux/of_platform.h>
 +#include <linux/platform_device.h>
- #include <linux/reboot.h>
+ #include <asm/octeon/octeon.h>
+ #include "cavium.h"
  
- #define RSTMGR_REG_WR_ACCESS_OFFSET	0
-diff --git a/drivers/power/reset/gpio-poweroff.c b/drivers/power/reset/gpio-poweroff.c
-index 84b3c3528afa..b28f24da1b3c 100644
---- a/drivers/power/reset/gpio-poweroff.c
-+++ b/drivers/power/reset/gpio-poweroff.c
-@@ -11,8 +11,9 @@
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/gpio/consumer.h>
--#include <linux/of_platform.h>
-+#include <linux/mod_devicetable.h>
+diff --git a/drivers/mmc/host/cavium-thunderx.c b/drivers/mmc/host/cavium-thunderx.c
+index 202b1d6da678..2e2ff984f0b3 100644
+--- a/drivers/mmc/host/cavium-thunderx.c
++++ b/drivers/mmc/host/cavium-thunderx.c
+@@ -14,6 +14,7 @@
  #include <linux/module.h>
- 
- #define DEFAULT_TIMEOUT_MS 3000
-diff --git a/drivers/power/reset/gpio-restart.c b/drivers/power/reset/gpio-restart.c
-index a479d3536eb1..3aa19765772d 100644
---- a/drivers/power/reset/gpio-restart.c
-+++ b/drivers/power/reset/gpio-restart.c
-@@ -12,8 +12,8 @@
- #include <linux/delay.h>
- #include <linux/platform_device.h>
- #include <linux/gpio/consumer.h>
--#include <linux/of_platform.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- 
- struct gpio_restart {
- 	struct gpio_desc *reset_gpio;
-diff --git a/drivers/power/reset/keystone-reset.c b/drivers/power/reset/keystone-reset.c
-index 83a4e1c9bf94..dbc4ff61cd74 100644
---- a/drivers/power/reset/keystone-reset.c
-+++ b/drivers/power/reset/keystone-reset.c
-@@ -10,10 +10,11 @@
- #include <linux/io.h>
- #include <linux/module.h>
- #include <linux/notifier.h>
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
 +#include <linux/platform_device.h>
- #include <linux/reboot.h>
- #include <linux/regmap.h>
- #include <linux/mfd/syscon.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
+ #include <linux/pci.h>
+ #include "cavium.h"
  
- #define RSTYPE_RG			0x0
- #define RSCTRL_RG			0x4
-diff --git a/drivers/power/reset/ocelot-reset.c b/drivers/power/reset/ocelot-reset.c
-index 8caa90cb58fc..44c7730086e4 100644
---- a/drivers/power/reset/ocelot-reset.c
-+++ b/drivers/power/reset/ocelot-reset.c
-@@ -8,10 +8,10 @@
- #include <linux/delay.h>
- #include <linux/io.h>
- #include <linux/notifier.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/mfd/syscon.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/reboot.h>
- #include <linux/regmap.h>
- 
-diff --git a/drivers/power/reset/odroid-go-ultra-poweroff.c b/drivers/power/reset/odroid-go-ultra-poweroff.c
-index f46271da4e8e..9cac7aef77f0 100644
---- a/drivers/power/reset/odroid-go-ultra-poweroff.c
-+++ b/drivers/power/reset/odroid-go-ultra-poweroff.c
-@@ -4,7 +4,8 @@
-  */
- #include <linux/kernel.h>
- #include <linux/init.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/mfd/rk808.h>
- #include <linux/regmap.h>
- #include <linux/module.h>
-diff --git a/drivers/power/reset/oxnas-restart.c b/drivers/power/reset/oxnas-restart.c
-index 13090bec058a..dd321caa28b6 100644
---- a/drivers/power/reset/oxnas-restart.c
-+++ b/drivers/power/reset/oxnas-restart.c
-@@ -13,8 +13,6 @@
- #include <linux/io.h>
- #include <linux/notifier.h>
- #include <linux/mfd/syscon.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/reboot.h>
- #include <linux/regmap.h>
-diff --git a/drivers/power/reset/st-poweroff.c b/drivers/power/reset/st-poweroff.c
-index 5ccaacffab54..56ba21873882 100644
---- a/drivers/power/reset/st-poweroff.c
-+++ b/drivers/power/reset/st-poweroff.c
-@@ -9,7 +9,7 @@
- 
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_platform.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/mfd/syscon.h>
- #include <linux/reboot.h>
-diff --git a/drivers/power/reset/syscon-poweroff.c b/drivers/power/reset/syscon-poweroff.c
-index ed58bdf41e27..430d440d55c6 100644
---- a/drivers/power/reset/syscon-poweroff.c
-+++ b/drivers/power/reset/syscon-poweroff.c
-@@ -10,8 +10,7 @@
- #include <linux/io.h>
- #include <linux/notifier.h>
- #include <linux/mfd/syscon.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm.h>
- #include <linux/regmap.h>
-diff --git a/drivers/power/reset/syscon-reboot.c b/drivers/power/reset/syscon-reboot.c
-index 45e34e6885f7..4d622c19bc48 100644
---- a/drivers/power/reset/syscon-reboot.c
-+++ b/drivers/power/reset/syscon-reboot.c
-@@ -9,8 +9,7 @@
- #include <linux/io.h>
- #include <linux/notifier.h>
- #include <linux/mfd/syscon.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/reboot.h>
- #include <linux/regmap.h>
-diff --git a/drivers/power/reset/xgene-reboot.c b/drivers/power/reset/xgene-reboot.c
-index 0b0d2fd2bd0c..3260bd93158e 100644
---- a/drivers/power/reset/xgene-reboot.c
-+++ b/drivers/power/reset/xgene-reboot.c
-@@ -13,7 +13,7 @@
- #include <linux/delay.h>
- #include <linux/io.h>
- #include <linux/notifier.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/platform_device.h>
- #include <linux/reboot.h>
-diff --git a/drivers/power/supply/axp20x_ac_power.c b/drivers/power/supply/axp20x_ac_power.c
-index 57e50208d537..19a118633115 100644
---- a/drivers/power/supply/axp20x_ac_power.c
-+++ b/drivers/power/supply/axp20x_ac_power.c
-@@ -13,7 +13,6 @@
- #include <linux/mfd/axp20x.h>
- #include <linux/module.h>
+diff --git a/drivers/mmc/host/davinci_mmc.c b/drivers/mmc/host/davinci_mmc.c
+index 7138dfa065bf..17a137f85cbe 100644
+--- a/drivers/mmc/host/davinci_mmc.c
++++ b/drivers/mmc/host/davinci_mmc.c
+@@ -21,7 +21,6 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/mmc/mmc.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm.h>
- #include <linux/power_supply.h>
-diff --git a/drivers/power/supply/axp20x_battery.c b/drivers/power/supply/axp20x_battery.c
-index 9106077c0dbb..6ac5c80cfda2 100644
---- a/drivers/power/supply/axp20x_battery.c
-+++ b/drivers/power/supply/axp20x_battery.c
-@@ -22,7 +22,6 @@
- #include <linux/irq.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/power_supply.h>
- #include <linux/regmap.h>
-diff --git a/drivers/power/supply/axp20x_usb_power.c b/drivers/power/supply/axp20x_usb_power.c
-index 51c3f9b6458d..bde17406c130 100644
---- a/drivers/power/supply/axp20x_usb_power.c
-+++ b/drivers/power/supply/axp20x_usb_power.c
-@@ -15,7 +15,6 @@
- #include <linux/mfd/axp20x.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm.h>
- #include <linux/power_supply.h>
-diff --git a/drivers/power/supply/cpcap-battery.c b/drivers/power/supply/cpcap-battery.c
-index d98d9244e394..5dd76c0ac98d 100644
---- a/drivers/power/supply/cpcap-battery.c
-+++ b/drivers/power/supply/cpcap-battery.c
-@@ -15,7 +15,7 @@
+ #include <linux/mmc/slot-gpio.h>
  #include <linux/interrupt.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/power_supply.h>
- #include <linux/reboot.h>
-diff --git a/drivers/power/supply/da9150-charger.c b/drivers/power/supply/da9150-charger.c
-index a87aeaea38e1..27f897067aa3 100644
---- a/drivers/power/supply/da9150-charger.c
-+++ b/drivers/power/supply/da9150-charger.c
-@@ -11,8 +11,6 @@
- #include <linux/slab.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
--#include <linux/of.h>
--#include <linux/of_platform.h>
- #include <linux/interrupt.h>
- #include <linux/power_supply.h>
- #include <linux/notifier.h>
-diff --git a/drivers/power/supply/da9150-fg.c b/drivers/power/supply/da9150-fg.c
-index 8c5e2c49d6c1..652c1f213af1 100644
---- a/drivers/power/supply/da9150-fg.c
-+++ b/drivers/power/supply/da9150-fg.c
-@@ -11,7 +11,6 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/of.h>
--#include <linux/of_platform.h>
- #include <linux/slab.h>
- #include <linux/interrupt.h>
- #include <linux/delay.h>
-diff --git a/drivers/power/supply/lego_ev3_battery.c b/drivers/power/supply/lego_ev3_battery.c
-index ccb00be38e2c..9085de0ae1b2 100644
---- a/drivers/power/supply/lego_ev3_battery.c
-+++ b/drivers/power/supply/lego_ev3_battery.c
-@@ -20,7 +20,7 @@
- #include <linux/iio/types.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/platform_device.h>
- #include <linux/power_supply.h>
  
-diff --git a/drivers/power/supply/ltc2941-battery-gauge.c b/drivers/power/supply/ltc2941-battery-gauge.c
-index cad39a8f829d..a1ddc4b060ce 100644
---- a/drivers/power/supply/ltc2941-battery-gauge.c
-+++ b/drivers/power/supply/ltc2941-battery-gauge.c
+diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
+index ee9a25b900ae..0669993108ec 100644
+--- a/drivers/mmc/host/meson-gx-mmc.c
++++ b/drivers/mmc/host/meson-gx-mmc.c
 @@ -11,7 +11,7 @@
- #include <linux/devm-helpers.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
+ #include <linux/delay.h>
+ #include <linux/device.h>
+ #include <linux/iopoll.h>
 -#include <linux/of_device.h>
 +#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/ioport.h>
+ #include <linux/dma-mapping.h>
+diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+index 02403ff99e0d..6c68c642ef61 100644
+--- a/drivers/mmc/host/mtk-sd.c
++++ b/drivers/mmc/host/mtk-sd.c
+@@ -12,9 +12,7 @@
+ #include <linux/iopoll.h>
+ #include <linux/ioport.h>
+ #include <linux/irq.h>
+-#include <linux/of_address.h>
+-#include <linux/of_device.h>
+-#include <linux/of_irq.h>
++#include <linux/of.h>
+ #include <linux/of_gpio.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/mmc/host/mxcmmc.c b/drivers/mmc/host/mxcmmc.c
+index 668f865f3efb..226a10202d25 100644
+--- a/drivers/mmc/host/mxcmmc.c
++++ b/drivers/mmc/host/mxcmmc.c
+@@ -31,7 +31,6 @@
+ #include <linux/dmaengine.h>
  #include <linux/types.h>
- #include <linux/errno.h>
- #include <linux/swab.h>
-diff --git a/drivers/power/supply/ltc4162-l-charger.c b/drivers/power/supply/ltc4162-l-charger.c
-index ec5b4a20ad43..f0eace731480 100644
---- a/drivers/power/supply/ltc4162-l-charger.c
-+++ b/drivers/power/supply/ltc4162-l-charger.c
-@@ -6,7 +6,7 @@
- 
- #include <linux/module.h>
- #include <linux/delay.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/pm_runtime.h>
- #include <linux/power_supply.h>
- #include <linux/i2c.h>
-diff --git a/drivers/power/supply/max14656_charger_detector.c b/drivers/power/supply/max14656_charger_detector.c
-index fbdf12cf64eb..89f2af72dfcd 100644
---- a/drivers/power/supply/max14656_charger_detector.c
-+++ b/drivers/power/supply/max14656_charger_detector.c
-@@ -14,8 +14,8 @@
- #include <linux/delay.h>
- #include <linux/i2c.h>
- #include <linux/interrupt.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/slab.h>
--#include <linux/of_device.h>
- #include <linux/workqueue.h>
- #include <linux/power_supply.h>
- #include <linux/devm-helpers.h>
-diff --git a/drivers/power/supply/max17040_battery.c b/drivers/power/supply/max17040_battery.c
-index 22ea7de47a53..ff42db672899 100644
---- a/drivers/power/supply/max17040_battery.c
-+++ b/drivers/power/supply/max17040_battery.c
-@@ -15,7 +15,7 @@
- #include <linux/delay.h>
- #include <linux/interrupt.h>
- #include <linux/power_supply.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
- 
-diff --git a/drivers/power/supply/max8903_charger.c b/drivers/power/supply/max8903_charger.c
-index 54d50b55fbae..e65d0141f260 100644
---- a/drivers/power/supply/max8903_charger.c
-+++ b/drivers/power/supply/max8903_charger.c
-@@ -10,7 +10,6 @@
- #include <linux/interrupt.h>
- #include <linux/module.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
- #include <linux/slab.h>
- #include <linux/power_supply.h>
- #include <linux/platform_device.h>
-diff --git a/drivers/power/supply/rn5t618_power.c b/drivers/power/supply/rn5t618_power.c
-index a5e09ac78a50..ebea3522a2ac 100644
---- a/drivers/power/supply/rn5t618_power.c
-+++ b/drivers/power/supply/rn5t618_power.c
-@@ -14,7 +14,6 @@
- #include <linux/interrupt.h>
- #include <linux/module.h>
- #include <linux/mfd/rn5t618.h>
+ #include <linux/of_dma.h>
+ #include <linux/mmc/slot-gpio.h>
+ 
+diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
+index 8c3655d3be96..951c6c48b4f7 100644
+--- a/drivers/mmc/host/mxs-mmc.c
++++ b/drivers/mmc/host/mxs-mmc.c
+@@ -11,7 +11,6 @@
+ #include <linux/init.h>
+ #include <linux/ioport.h>
+ #include <linux/of.h>
 -#include <linux/of_device.h>
  #include <linux/platform_device.h>
- #include <linux/power_supply.h>
- #include <linux/regmap.h>
-diff --git a/drivers/power/supply/rt5033_charger.c b/drivers/power/supply/rt5033_charger.c
-index 5218dfbf5e1b..c0c516f22c66 100644
---- a/drivers/power/supply/rt5033_charger.c
-+++ b/drivers/power/supply/rt5033_charger.c
-@@ -6,8 +6,8 @@
-  * Author: Beomho Seo <beomho.seo@samsung.com>
+ #include <linux/delay.h>
+ #include <linux/interrupt.h>
+diff --git a/drivers/mmc/host/owl-mmc.c b/drivers/mmc/host/owl-mmc.c
+index 1bf22b08b373..62d2993573d0 100644
+--- a/drivers/mmc/host/owl-mmc.c
++++ b/drivers/mmc/host/owl-mmc.c
+@@ -16,8 +16,9 @@
+ #include <linux/interrupt.h>
+ #include <linux/mmc/host.h>
+ #include <linux/mmc/slot-gpio.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+-#include <linux/of_platform.h>
++#include <linux/platform_device.h>
+ #include <linux/reset.h>
+ #include <linux/spinlock.h>
+ 
+diff --git a/drivers/mmc/host/pxamci.c b/drivers/mmc/host/pxamci.c
+index 2a988f942b6c..d274e4433fc1 100644
+--- a/drivers/mmc/host/pxamci.c
++++ b/drivers/mmc/host/pxamci.c
+@@ -30,7 +30,6 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/gfp.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/soc/pxa/cpu.h>
+ 
+ #include <linux/sizes.h>
+diff --git a/drivers/mmc/host/renesas_sdhi_internal_dmac.c b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
+index 9ab813903b2c..4cc5bcb3213a 100644
+--- a/drivers/mmc/host/renesas_sdhi_internal_dmac.c
++++ b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
+@@ -15,7 +15,8 @@
+ #include <linux/mmc/host.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
+ #include <linux/pagemap.h>
+ #include <linux/scatterlist.h>
+ #include <linux/sys_soc.h>
+diff --git a/drivers/mmc/host/renesas_sdhi_sys_dmac.c b/drivers/mmc/host/renesas_sdhi_sys_dmac.c
+index b559ad38b667..452982e670d2 100644
+--- a/drivers/mmc/host/renesas_sdhi_sys_dmac.c
++++ b/drivers/mmc/host/renesas_sdhi_sys_dmac.c
+@@ -15,7 +15,8 @@
+ #include <linux/mmc/host.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
+ #include <linux/pagemap.h>
+ #include <linux/scatterlist.h>
+ #include <linux/sys_soc.h>
+diff --git a/drivers/mmc/host/sdhci-bcm-kona.c b/drivers/mmc/host/sdhci-bcm-kona.c
+index 6a93a54fe067..ef1fb383e1e7 100644
+--- a/drivers/mmc/host/sdhci-bcm-kona.c
++++ b/drivers/mmc/host/sdhci-bcm-kona.c
+@@ -11,7 +11,6 @@
+ #include <linux/clk.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/mmc/slot-gpio.h>
+ 
+ #include "sdhci-pltfm.h"
+diff --git a/drivers/mmc/host/sdhci-cadence.c b/drivers/mmc/host/sdhci-cadence.c
+index d2f625054689..25d9849ef0d1 100644
+--- a/drivers/mmc/host/sdhci-cadence.c
++++ b/drivers/mmc/host/sdhci-cadence.c
+@@ -11,7 +11,7 @@
+ #include <linux/mmc/host.h>
+ #include <linux/mmc/mmc.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
++#include <linux/platform_device.h>
+ #include <linux/reset.h>
+ 
+ #include "sdhci-pltfm.h"
+diff --git a/drivers/mmc/host/sdhci-esdhc-imx.c b/drivers/mmc/host/sdhci-esdhc-imx.c
+index eebf94604a7f..e767fe058023 100644
+--- a/drivers/mmc/host/sdhci-esdhc-imx.c
++++ b/drivers/mmc/host/sdhci-esdhc-imx.c
+@@ -22,7 +22,7 @@
+ #include <linux/mmc/sdio.h>
+ #include <linux/mmc/slot-gpio.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
++#include <linux/platform_device.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/pm_runtime.h>
+ #include "sdhci-cqhci.h"
+diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
+index 86eb0045515e..6a93b1ee0b30 100644
+--- a/drivers/mmc/host/sdhci-iproc.c
++++ b/drivers/mmc/host/sdhci-iproc.c
+@@ -10,7 +10,7 @@
+ #include <linux/module.h>
+ #include <linux/mmc/host.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
++#include <linux/platform_device.h>
+ #include "sdhci-pltfm.h"
+ 
+ struct sdhci_iproc_data {
+diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+index 1c935b5bafe1..c0ce187e740a 100644
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -6,7 +6,6 @@
   */
  
-+#include <linux/mod_devicetable.h>
  #include <linux/module.h>
 -#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/power_supply.h>
- #include <linux/regmap.h>
-diff --git a/drivers/power/supply/rt9455_charger.c b/drivers/power/supply/rt9455_charger.c
-index ff4dcf77c788..c345a77f9f78 100644
---- a/drivers/power/supply/rt9455_charger.c
-+++ b/drivers/power/supply/rt9455_charger.c
-@@ -8,8 +8,7 @@
- #include <linux/module.h>
- #include <linux/interrupt.h>
  #include <linux/delay.h>
--#include <linux/of_irq.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
+ #include <linux/mmc/mmc.h>
  #include <linux/pm_runtime.h>
- #include <linux/power_supply.h>
- #include <linux/i2c.h>
-diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sbs-battery.c
-index 62a354e01204..cdfc8466d129 100644
---- a/drivers/power/supply/sbs-battery.c
-+++ b/drivers/power/supply/sbs-battery.c
-@@ -16,7 +16,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/property.h>
--#include <linux/of_device.h>
+@@ -15,6 +14,7 @@
+ #include <linux/iopoll.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/interconnect.h>
 +#include <linux/of.h>
- #include <linux/power/sbs-battery.h>
- #include <linux/power_supply.h>
- #include <linux/slab.h>
-diff --git a/drivers/power/supply/tps65090-charger.c b/drivers/power/supply/tps65090-charger.c
-index 0990b2fa6cd8..f96c705e0a9f 100644
---- a/drivers/power/supply/tps65090-charger.c
-+++ b/drivers/power/supply/tps65090-charger.c
-@@ -13,7 +13,7 @@
- #include <linux/kernel.h>
- #include <linux/kthread.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/reset.h>
+ 
+diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+index 294dd605fd2b..2f9de2518942 100644
+--- a/drivers/mmc/host/sdhci-of-arasan.c
++++ b/drivers/mmc/host/sdhci-of-arasan.c
+@@ -18,11 +18,11 @@
+ #include <linux/clk-provider.h>
+ #include <linux/mfd/syscon.h>
  #include <linux/module.h>
 -#include <linux/of_device.h>
 +#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/power_supply.h>
- #include <linux/slab.h>
-diff --git a/drivers/power/supply/tps65217_charger.c b/drivers/power/supply/tps65217_charger.c
-index a4bc9f2a10bc..96341cbde4fa 100644
---- a/drivers/power/supply/tps65217_charger.c
-+++ b/drivers/power/supply/tps65217_charger.c
-@@ -17,7 +17,6 @@
- #include <linux/slab.h>
- #include <linux/err.h>
++#include <linux/platform_device.h>
+ #include <linux/phy/phy.h>
+ #include <linux/regmap.h>
+ #include <linux/reset.h>
+-#include <linux/of.h>
+ #include <linux/firmware/xlnx-zynqmp.h>
+ 
+ #include "cqhci.h"
+diff --git a/drivers/mmc/host/sdhci-of-at91.c b/drivers/mmc/host/sdhci-of-at91.c
+index cd0134580a90..808307a211f2 100644
+--- a/drivers/mmc/host/sdhci-of-at91.c
++++ b/drivers/mmc/host/sdhci-of-at91.c
+@@ -17,7 +17,7 @@
+ #include <linux/mmc/slot-gpio.h>
+ #include <linux/module.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
- #include <linux/power_supply.h>
++#include <linux/platform_device.h>
+ #include <linux/pm.h>
+ #include <linux/pm_runtime.h>
  
- #include <linux/mfd/core.h>
-diff --git a/drivers/power/supply/twl4030_charger.c b/drivers/power/supply/twl4030_charger.c
-index 7adfd69fe649..e78d061d8d32 100644
---- a/drivers/power/supply/twl4030_charger.c
-+++ b/drivers/power/supply/twl4030_charger.c
-@@ -12,6 +12,7 @@
+diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+index e68cd87998c8..55e1e2d0494d 100644
+--- a/drivers/mmc/host/sdhci-of-dwcmshc.c
++++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+@@ -14,7 +14,7 @@
+ #include <linux/kernel.h>
  #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/err.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
++#include <linux/platform_device.h>
+ #include <linux/reset.h>
+ #include <linux/sizes.h>
+ 
+diff --git a/drivers/mmc/host/sdhci-of-sparx5.c b/drivers/mmc/host/sdhci-of-sparx5.c
+index 28e4ee69e100..2e983cf49bc6 100644
+--- a/drivers/mmc/host/sdhci-of-sparx5.c
++++ b/drivers/mmc/host/sdhci-of-sparx5.c
+@@ -13,9 +13,9 @@
+ #include <linux/delay.h>
+ #include <linux/module.h>
+ #include <linux/regmap.h>
+-#include <linux/of_device.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/dma-mapping.h>
 +#include <linux/of.h>
+ 
+ #include "sdhci-pltfm.h"
+ 
+diff --git a/drivers/mmc/host/sdhci-omap.c b/drivers/mmc/host/sdhci-omap.c
+index 8ed9256b83da..2593e3fbd0d9 100644
+--- a/drivers/mmc/host/sdhci-omap.c
++++ b/drivers/mmc/host/sdhci-omap.c
+@@ -11,7 +11,6 @@
+ #include <linux/mmc/slot-gpio.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_irq.h>
  #include <linux/platform_device.h>
- #include <linux/interrupt.h>
- #include <linux/mfd/twl.h>
+ #include <linux/pm_runtime.h>
+diff --git a/drivers/mmc/host/sdhci-pxav2.c b/drivers/mmc/host/sdhci-pxav2.c
+index 91aca8f8d6ef..86b60b0447b3 100644
+--- a/drivers/mmc/host/sdhci-pxav2.c
++++ b/drivers/mmc/host/sdhci-pxav2.c
+@@ -19,7 +19,6 @@
+ #include <linux/platform_data/pxa_sdhci.h>
+ #include <linux/slab.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/mmc/sdio.h>
+ #include <linux/mmc/mmc.h>
+ #include <linux/pinctrl/consumer.h>
+diff --git a/drivers/mmc/host/sdhci-s3c.c b/drivers/mmc/host/sdhci-s3c.c
+index 504015e84308..6245fb4584fe 100644
+--- a/drivers/mmc/host/sdhci-s3c.c
++++ b/drivers/mmc/host/sdhci-s3c.c
+@@ -20,7 +20,6 @@
+ #include <linux/gpio.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_gpio.h>
+ #include <linux/pm.h>
+ #include <linux/pm_runtime.h>
+diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
+index 7f4ee2e12735..a21d6524d7ca 100644
+--- a/drivers/mmc/host/sdhci-sprd.c
++++ b/drivers/mmc/host/sdhci-sprd.c
+@@ -11,7 +11,6 @@
+ #include <linux/iopoll.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_gpio.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
+index bff084f178c9..1e1eac953691 100644
+--- a/drivers/mmc/host/sdhci-tegra.c
++++ b/drivers/mmc/host/sdhci-tegra.c
+@@ -19,7 +19,6 @@
+ #include <linux/mmc/mmc.h>
+ #include <linux/mmc/slot-gpio.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
+ #include <linux/of.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/mmc/host/sh_mmcif.c b/drivers/mmc/host/sh_mmcif.c
+index 5cf53348372a..838dab179724 100644
+--- a/drivers/mmc/host/sh_mmcif.c
++++ b/drivers/mmc/host/sh_mmcif.c
+@@ -46,7 +46,6 @@
+ #include <linux/mmc/slot-gpio.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/mutex.h>
+-#include <linux/of_device.h>
+ #include <linux/pagemap.h>
+ #include <linux/platform_data/sh_mmcif.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/mmc/host/uniphier-sd.c b/drivers/mmc/host/uniphier-sd.c
+index 61acd69fac0e..c1400d616fff 100644
+--- a/drivers/mmc/host/uniphier-sd.c
++++ b/drivers/mmc/host/uniphier-sd.c
+@@ -13,7 +13,6 @@
+ #include <linux/mmc/host.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+diff --git a/drivers/mmc/host/wmt-sdmmc.c b/drivers/mmc/host/wmt-sdmmc.c
+index 68525d900046..f860f363be56 100644
+--- a/drivers/mmc/host/wmt-sdmmc.c
++++ b/drivers/mmc/host/wmt-sdmmc.c
+@@ -21,7 +21,6 @@
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/of_irq.h>
+-#include <linux/of_device.h>
+ 
+ #include <linux/mmc/host.h>
+ #include <linux/mmc/mmc.h>
 -- 
 2.40.1
 
