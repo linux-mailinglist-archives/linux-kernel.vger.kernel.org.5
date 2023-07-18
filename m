@@ -2,289 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA966757966
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD167578CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbjGRKlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 06:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44820 "EHLO
+        id S229819AbjGRKEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 06:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbjGRKlL (ORCPT
+        with ESMTP id S230041AbjGRKE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 06:41:11 -0400
-Received: from 9.mo562.mail-out.ovh.net (9.mo562.mail-out.ovh.net [46.105.72.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76680F0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 03:41:09 -0700 (PDT)
-Received: from director1.derp.mail-out.ovh.net (director1.derp.mail-out.ovh.net [51.68.80.175])
-        by mo562.mail-out.ovh.net (Postfix) with ESMTPS id 9F5E923025;
-        Tue, 18 Jul 2023 09:25:40 +0000 (UTC)
-Received: from director1.derp.mail-out.ovh.net (director1.derp.mail-out.ovh.net. [127.0.0.1])
-        by director1.derp.mail-out.ovh.net (inspect_sender_mail_agent) with SMTP
-        for <conor+dt@kernel.org>; Tue, 18 Jul 2023 09:25:40 +0000 (UTC)
-Received: from pro2.mail.ovh.net (unknown [10.109.138.11])
-        by director1.derp.mail-out.ovh.net (Postfix) with ESMTPS id 46B48200E51;
-        Tue, 18 Jul 2023 09:25:40 +0000 (UTC)
-Received: from traphandler.com (88.161.25.233) by DAG1EX1.emp2.local
- (172.16.2.1) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
- 2023 11:25:39 +0200
-From:   Jean-Jacques Hiblot <jjhiblot@traphandler.com>
-To:     <lee@kernel.org>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Jean-Jacques Hiblot <jjhiblot@traphandler.com>
-Subject: [PATCH v11 5/5] leds: Add a multicolor LED driver to group monochromatic LEDs
-Date:   Tue, 18 Jul 2023 11:25:27 +0200
-Message-ID: <20230718092527.37516-6-jjhiblot@traphandler.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230718092527.37516-1-jjhiblot@traphandler.com>
-References: <20230718092527.37516-1-jjhiblot@traphandler.com>
+        Tue, 18 Jul 2023 06:04:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22083B9;
+        Tue, 18 Jul 2023 03:04:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ABBE4614FD;
+        Tue, 18 Jul 2023 10:04:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49198C433C8;
+        Tue, 18 Jul 2023 10:04:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689674666;
+        bh=9HH4kTQ98mOmfmk0yY7rNImccRI+W5P4UqFEPSZVV+E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VUNa+MHEP8kN+Jbkz9qEImYZfvvRiItufnkud87Y7kCZczsdQfodaFaPh+Dukm72h
+         DxhBsnqDzgX8e99gPyeSARMyfoV/PyJ1W5hkisd11jSmeyKWMHjopJstVT7lTrIVAV
+         l7ioLo0zO6E1uHDZCo8OFR4q2b/VSQrbUQ6WvnurW6TmsjZGWHijxg9zOnq9LUB5b1
+         tvx6y8hTzzeTu2xh89bhDeSSbgq2S99eOBuCZf842dgD075G5YlS6KdcjjJNVfhoJF
+         gO4ftTWuSdCHogV+aAqGWROKE8Czd9lvQ1HERt3u4OP97qZkgTodR65KrPM1g+9gra
+         MfpcymC03zTDQ==
+Date:   Tue, 18 Jul 2023 15:34:00 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        helgaas@kernel.org, imx@lists.linux.dev, bhelgaas@google.com,
+        devicetree@vger.kernel.org, gustavo.pimentel@synopsys.com,
+        kw@linux.com, leoyang.li@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, minghuan.lian@nxp.com,
+        mingkai.hu@nxp.com, robh+dt@kernel.org, roy.zang@nxp.com,
+        shawnguo@kernel.org, zhiqiang.hou@nxp.com
+Subject: Re: [PATCH v3 1/2] PCI: dwc: Implement general suspend/resume
+ functionality for L2/L3 transitions
+Message-ID: <20230718100400.GB4771@thinkpad>
+References: <20230419164118.596300-1-Frank.Li@nxp.com>
+ <20230717164526.GC35455@thinkpad>
+ <ZLWKI1lRqxejfUgK@lizhi-Precision-Tower-5810>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [88.161.25.233]
-X-ClientProxiedBy: DAG1EX1.emp2.local (172.16.2.1) To DAG1EX1.emp2.local
- (172.16.2.1)
-X-Ovh-Tracer-Id: 6526841762023225819
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrgeeggddugecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurhephffvvefufffkofgjfhgggfgtihesthekredtredttdenucfhrhhomheplfgvrghnqdflrggtqhhuvghsucfjihgslhhothcuoehjjhhhihgslhhothesthhrrghphhgrnhgulhgvrhdrtghomheqnecuggftrfgrthhtvghrnhepudetveelveevgffgvdeuffffjefhheehueeitdegtdejgefhheeuuddugeeffeeunecukfhppedtrddtrddtrddtpdekkedrudeiuddrvdehrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpohhuthdphhgvlhhopeguihhrvggtthhorhdurdguvghrphdrmhgrihhlqdhouhhtrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehjjhhhihgslhhothesthhrrghphhgrnhgulhgvrhdrtghomhdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhlvggushesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheeivd
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZLWKI1lRqxejfUgK@lizhi-Precision-Tower-5810>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Grouping multiple monochrome LEDs into a multicolor LED device has a few
-benefits over handling the group in user-space:
-- The state of the LEDs relative to each other is consistent. In other
-  words, if 2 threads competes to set the LED to green and red, the
-  end-result cannot be black or yellow.
-- The multicolor LED as a whole can be driven through the sysfs LED
-  interface.
+On Mon, Jul 17, 2023 at 02:36:19PM -0400, Frank Li wrote:
+> On Mon, Jul 17, 2023 at 10:15:26PM +0530, Manivannan Sadhasivam wrote:
+> > On Wed, Apr 19, 2023 at 12:41:17PM -0400, Frank Li wrote:
+> > > Introduced helper function dw_pcie_get_ltssm to retrieve SMLH_LTSS_STATE.
+> > > Added API pme_turn_off and exit_from_l2 for managing L2/L3 state transitions.
+> > > 
+> > > Typical L2 entry workflow:
+> > > 
+> > > 1. Transmit PME turn off signal to PCI devices.
+> > > 2. Await link entering L2_IDLE state.
+> > 
+> > AFAIK, typical workflow is to wait for PME_To_Ack.
+> 
+> 1 Already wait for PME_to_ACK,  2, just wait for link actual enter L2.
+> I think PCI RC needs some time to set link enter L2 after get ACK from
+> PME.
+> 
+> > 
+> > > 3. Transition Root complex to D3 state.
+> > > 
+> > > Typical L2 exit workflow:
+> > > 
+> > > 1. Transition Root complex to D0 state.
+> > > 2. Issue exit from L2 command.
+> > > 3. Reinitialize PCI host.
+> > > 4. Wait for link to become active.
+> > > 
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > ---
+> > > Change from v2 to v3: 
+> > > - Basic rewrite whole patch according rob herry suggestion. 
+> > >   put common function into dwc, so more soc can share the same logic.
+> > >   
+> > >  .../pci/controller/dwc/pcie-designware-host.c | 80 +++++++++++++++++++
+> > >  drivers/pci/controller/dwc/pcie-designware.h  | 28 +++++++
+> > >  2 files changed, 108 insertions(+)
+> > > 
+> > > diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > index 9952057c8819..ef6869488bde 100644
+> > > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > @@ -8,6 +8,7 @@
+> > >   * Author: Jingoo Han <jg1.han@samsung.com>
+> > >   */
+> > >  
+> > > +#include <linux/iopoll.h>
+> > >  #include <linux/irqchip/chained_irq.h>
+> > >  #include <linux/irqdomain.h>
+> > >  #include <linux/msi.h>
+> > > @@ -807,3 +808,82 @@ int dw_pcie_setup_rc(struct dw_pcie_rp *pp)
+> > >  	return 0;
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(dw_pcie_setup_rc);
+> > > +
+> > > +/*
+> > > + * There are for configuring host controllers, which are bridges *to* PCI devices
+> > > + * but are not PCI devices themselves.
+> > 
+> > None of the functions applicable to the devices. So there is no need for this
+> > comment.
+> 
+> I copy comments in drivers/pci/controller/dwc/pcie-designware.c.
+> 
+> /*
+>  * These interfaces resemble the pci_find_*capability() interfaces, but these
+>  * are for configuring host controllers, which are bridges *to* PCI devices but
+>  * are not PCI devices themselves.
+>  */
+> static u8 __dw_pcie_find_next_cap(struct dw_pcie *pci, u8 cap_ptr,
+>                                   u8 cap)
+> 
+> 
+> I think it is reasonalble because it is too similar with standard API
+> pci_set_power_state();
+> 
 
-Signed-off-by: Jean-Jacques Hiblot <jjhiblot@traphandler.com>
-Reviewed-by: Lee Jones <lee@kernel.org>
----
- drivers/leds/rgb/Kconfig                 |  12 ++
- drivers/leds/rgb/Makefile                |   1 +
- drivers/leds/rgb/leds-group-multicolor.c | 169 +++++++++++++++++++++++
- 3 files changed, 182 insertions(+)
- create mode 100644 drivers/leds/rgb/leds-group-multicolor.c
+Ok, then please add this API similarity in the comment as like
+__dw_pcie_find_next_cap(). Also change "There" to "These".
 
-diff --git a/drivers/leds/rgb/Kconfig b/drivers/leds/rgb/Kconfig
-index 360c8679c6e2..183bccc06cf3 100644
---- a/drivers/leds/rgb/Kconfig
-+++ b/drivers/leds/rgb/Kconfig
-@@ -2,6 +2,18 @@
- 
- if LEDS_CLASS_MULTICOLOR
- 
-+config LEDS_GROUP_MULTICOLOR
-+	tristate "LEDs group multi-color support"
-+	depends on OF || COMPILE_TEST
-+	help
-+	  This option enables support for monochrome LEDs that are grouped
-+	  into multicolor LEDs which is useful in the case where LEDs of
-+	  different colors are physically grouped in a single multi-color LED
-+	  and driven by a controller that doesn't have multi-color support.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called leds-group-multicolor.
-+
- config LEDS_PWM_MULTICOLOR
- 	tristate "PWM driven multi-color LED Support"
- 	depends on PWM
-diff --git a/drivers/leds/rgb/Makefile b/drivers/leds/rgb/Makefile
-index 8c01daf63f61..c11cc56384e7 100644
---- a/drivers/leds/rgb/Makefile
-+++ b/drivers/leds/rgb/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- 
-+obj-$(CONFIG_LEDS_GROUP_MULTICOLOR)	+= leds-group-multicolor.o
- obj-$(CONFIG_LEDS_PWM_MULTICOLOR)	+= leds-pwm-multicolor.o
- obj-$(CONFIG_LEDS_QCOM_LPG)		+= leds-qcom-lpg.o
- obj-$(CONFIG_LEDS_MT6370_RGB)		+= leds-mt6370-rgb.o
-diff --git a/drivers/leds/rgb/leds-group-multicolor.c b/drivers/leds/rgb/leds-group-multicolor.c
-new file mode 100644
-index 000000000000..39f58be32af5
---- /dev/null
-+++ b/drivers/leds/rgb/leds-group-multicolor.c
-@@ -0,0 +1,169 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Multi-color LED built with monochromatic LED devices
-+ *
-+ * This driver groups several monochromatic LED devices in a single multicolor LED device.
-+ *
-+ * Compared to handling this grouping in user-space, the benefits are:
-+ * - The state of the monochromatic LED relative to each other is always consistent.
-+ * - The sysfs interface of the LEDs can be used for the group as a whole.
-+ *
-+ * Copyright 2023 Jean-Jacques Hiblot <jjhiblot@traphandler.com>
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/leds.h>
-+#include <linux/led-class-multicolor.h>
-+#include <linux/math.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
-+
-+struct leds_multicolor {
-+	struct led_classdev_mc mc_cdev;
-+	struct led_classdev **monochromatics;
-+};
-+
-+static int leds_gmc_set(struct led_classdev *cdev, enum led_brightness brightness)
-+{
-+	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(cdev);
-+	struct leds_multicolor *priv = container_of(mc_cdev, struct leds_multicolor, mc_cdev);
-+	const unsigned int group_max_brightness = mc_cdev->led_cdev.max_brightness;
-+	int i;
-+
-+	for (i = 0; i < mc_cdev->num_colors; i++) {
-+		struct led_classdev *mono = priv->monochromatics[i];
-+		const unsigned int mono_max_brightness = mono->max_brightness;
-+		unsigned int intensity = mc_cdev->subled_info[i].intensity;
-+		int mono_brightness;
-+
-+		/*
-+		 * Scale the brightness according to relative intensity of the
-+		 * color AND the max brightness of the monochromatic LED.
-+		 */
-+		mono_brightness = DIV_ROUND_CLOSEST(brightness * intensity * mono_max_brightness,
-+						    group_max_brightness * group_max_brightness);
-+
-+		led_set_brightness(mono, mono_brightness);
-+	}
-+
-+	return 0;
-+}
-+
-+static void restore_sysfs_write_access(void *data)
-+{
-+	struct led_classdev *led_cdev = data;
-+
-+	/* Restore the write acccess to the LED */
-+	mutex_lock(&led_cdev->led_access);
-+	led_sysfs_enable(led_cdev);
-+	mutex_unlock(&led_cdev->led_access);
-+}
-+
-+static int leds_gmc_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct led_init_data init_data = {};
-+	struct led_classdev *cdev;
-+	struct mc_subled *subled;
-+	struct leds_multicolor *priv;
-+	unsigned int max_brightness = 0;
-+	int i, ret, count = 0;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	for (;;) {
-+		struct led_classdev *led_cdev;
-+
-+		led_cdev = devm_of_led_get_optional(dev, count);
-+		if (IS_ERR(led_cdev))
-+			return dev_err_probe(dev, PTR_ERR(led_cdev), "Unable to get LED #%d",
-+					     count);
-+		if (!led_cdev)
-+			break;
-+
-+		priv->monochromatics = devm_krealloc_array(dev, priv->monochromatics,
-+					count + 1, sizeof(*priv->monochromatics),
-+					GFP_KERNEL);
-+		if (!priv->monochromatics)
-+			return -ENOMEM;
-+
-+		priv->monochromatics[count] = led_cdev;
-+
-+		max_brightness = max(max_brightness, led_cdev->max_brightness);
-+
-+		count++;
-+	}
-+
-+	subled = devm_kcalloc(dev, count, sizeof(*subled), GFP_KERNEL);
-+	if (!subled)
-+		return -ENOMEM;
-+	priv->mc_cdev.subled_info = subled;
-+
-+	for (i = 0; i < count; i++) {
-+		struct led_classdev *led_cdev = priv->monochromatics[i];
-+
-+		subled[i].color_index = led_cdev->color;
-+
-+		/* Configure the LED intensity to its maximum */
-+		subled[i].intensity = max_brightness;
-+	}
-+
-+	/* Initialise the multicolor's LED class device */
-+	cdev = &priv->mc_cdev.led_cdev;
-+	cdev->flags = LED_CORE_SUSPENDRESUME;
-+	cdev->brightness_set_blocking = leds_gmc_set;
-+	cdev->max_brightness = max_brightness;
-+	cdev->color = LED_COLOR_ID_MULTI;
-+	priv->mc_cdev.num_colors = count;
-+
-+	init_data.fwnode = dev_fwnode(dev);
-+	ret = devm_led_classdev_multicolor_register_ext(dev, &priv->mc_cdev, &init_data);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "failed to register multicolor LED for %s.\n",
-+				     cdev->name);
-+
-+	ret = leds_gmc_set(cdev, cdev->brightness);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "failed to set LED value for %s.", cdev->name);
-+
-+	for (i = 0; i < count; i++) {
-+		struct led_classdev *led_cdev = priv->monochromatics[i];
-+
-+		/*
-+		 * Make the individual LED sysfs interface read-only to prevent the user
-+		 * to change the brightness of the individual LEDs of the group.
-+		 */
-+		mutex_lock(&led_cdev->led_access);
-+		led_sysfs_disable(led_cdev);
-+		mutex_unlock(&led_cdev->led_access);
-+
-+		/* Restore the write access to the LED sysfs when the group is destroyed */
-+		devm_add_action_or_reset(dev, restore_sysfs_write_access, led_cdev);
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id of_leds_group_multicolor_match[] = {
-+	{ .compatible = "leds-group-multicolor" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, of_leds_group_multicolor_match);
-+
-+static struct platform_driver leds_group_multicolor_driver = {
-+	.probe		= leds_gmc_probe,
-+	.driver		= {
-+		.name	= "leds_group_multicolor",
-+		.of_match_table = of_leds_group_multicolor_match,
-+	}
-+};
-+module_platform_driver(leds_group_multicolor_driver);
-+
-+MODULE_AUTHOR("Jean-Jacques Hiblot <jjhiblot@traphandler.com>");
-+MODULE_DESCRIPTION("LEDs group multicolor driver");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:leds-group-multicolor");
+> > 
+> > > + */
+> > > +static void dw_pcie_set_dstate(struct dw_pcie *pci, u32 dstate)
+> > 
+> > Please use pci_power_t defines for dstates.
+> 
+> Although dwc use the same define, it is difference things. 
+> 
+
+Sorry, what difference? Could you please clarify?
+
+> > 
+> > > +{
+> > > +	u8 offset = dw_pcie_find_capability(pci, PCI_CAP_ID_PM);
+> > > +	u32 val;
+> > > +
+> > > +	val = dw_pcie_readw_dbi(pci, offset + PCI_PM_CTRL);
+> > 
+> > Please use PCI accessors for accessing spec compliant registers.
+> 
+> According to comments in pcie-designware.c, it is difference concept
+> even though register define is the same as PCI spec. It was used to
+> control root bridges.
+> 
+
+Ah, I got slightly confused. This is fine.
+
+> > 
+> > > +	val &= ~PCI_PM_CTRL_STATE_MASK;
+> > > +	val |= dstate;
+> > > +	dw_pcie_writew_dbi(pci, offset + PCI_PM_CTRL, val);
+> > > +}
+> > > +
+> > > +int dw_pcie_suspend_noirq(struct dw_pcie *pci)
+> > > +{
+> > > +	u32 val;
+> > > +	int ret;
+> > > +
+> > > +	if (dw_pcie_get_ltssm(pci) <= DW_PCIE_LTSSM_DETECT_ACT)
+> > > +		return 0;
+> > > +
+> > > +	pci->pp.ops->pme_turn_off(&pci->pp);
+> > 
+> > You should first check for the existence of the callback before invoking. This
+> > applies to all callbacks in this patch.
+> 
+> Yes, I will update.
+> 
+> > 
+> > > +
+> > > +	/*
+> > > +	 * PCI Express Base Specification Rev 4.0
+> > > +	 * 5.3.3.2.1 PME Synchronization
+> > > +	 * Recommand 1ms to 10ms timeout to check L2 ready
+> > > +	 */
+> > > +	ret = read_poll_timeout(dw_pcie_get_ltssm, val, val == DW_PCIE_LTSSM_L2_IDLE,
+> > > +				100, 10000, false, pci);
+> > 
+> > Is there no way to wait for PME_To_Ack TLP?
+> 
+> 
+> Suppose PME_turn_off should wait for ACK before return. 
+
+Ok. I didn't see this behavior in the spec, hence curious.
+
+> Here, just make sure Link enter L2 status. Hardware need some time to put
+> link to L2 after get ACK from bus, even it is very short generally.
+> 
+
+Fine then. But can we check for PM_LINKST_IN_L2 SII System Information Interface
+(SII) instead of LTSSM state?
+
+> > 
+> > > +	if (ret) {
+> > > +		dev_err(pci->dev, "PCIe link enter L2 timeout! ltssm = 0x%x\n", val);
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	dw_pcie_set_dstate(pci, 0x3);
+> > > +
+> > > +	pci->suspended = true;
+> > > +
+> > > +	return ret;
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(dw_pcie_suspend_noirq);
+> > > +
+> > > +int dw_pcie_resume_noirq(struct dw_pcie *pci)
+> > > +{
+> > > +	int ret;
+> > > +
+> > > +	if (!pci->suspended)
+> > > +		return 0;
+> > > +
+> > > +	pci->suspended = false;
+> > > +
+> > > +	dw_pcie_set_dstate(pci, 0x0);
+> > > +
+> > > +	pci->pp.ops->exit_from_l2(&pci->pp);
+> > > +
+> > > +	/* delay 10 ms to access EP */
+> > 
+> > Is this delay as part of the DWC spec? If so, please quote the section.
+> > 
+> > > +	mdelay(10);
+> > > +
+> > > +	ret = pci->pp.ops->host_init(&pci->pp);
+> > > +	if (ret) {
+> > > +		dev_err(pci->dev, "ls_pcie_host_init failed! ret = 0x%x\n", ret);
+> > 
+> > s/ls_pcie_host_init/Host init
+> > 
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	dw_pcie_setup_rc(&pci->pp);
+> > > +
+> > 
+> > Don't you need to configure iATU?
+> > 
+> > > +	ret = dw_pcie_wait_for_link(pci);
+> > 
+> > Don't you need to start the link beforehand?
+> 
+> Suppose need start link, it works at layerscape platform just because dwc
+> have not full power off. some state still kept.
+> 
+
+It may work for your platform but not for all if the power gets removed. So
+please start the link manually.
+
+- Mani
+
+> > 
+> > > +	if (ret) {
+> > > +		dev_err(pci->dev, "wait link up timeout! ret = 0x%x\n", ret);
+> > 
+> > dw_pcie_wait_for_link() itself prints error message on failure. So no need to do
+> > the same here.
+> 
+> Okay
+> 
+> > 
+> > - Mani
+> > 
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	return ret;
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(dw_pcie_resume_noirq);
+> > > diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+> > > index 79713ce075cc..effb07a506e4 100644
+> > > --- a/drivers/pci/controller/dwc/pcie-designware.h
+> > > +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> > > @@ -288,10 +288,21 @@ enum dw_pcie_core_rst {
+> > >  	DW_PCIE_NUM_CORE_RSTS
+> > >  };
+> > >  
+> > > +enum dw_pcie_ltssm {
+> > > +	DW_PCIE_LTSSM_UNKNOWN = 0xFFFFFFFF,
+> > > +	/* Need align PCIE_PORT_DEBUG0 bit0:5 */
+> > > +	DW_PCIE_LTSSM_DETECT_QUIET = 0x0,
+> > > +	DW_PCIE_LTSSM_DETECT_ACT = 0x1,
+> > > +	DW_PCIE_LTSSM_L0 = 0x11,
+> > > +	DW_PCIE_LTSSM_L2_IDLE = 0x15,
+> > > +};
+> > > +
+> > >  struct dw_pcie_host_ops {
+> > >  	int (*host_init)(struct dw_pcie_rp *pp);
+> > >  	void (*host_deinit)(struct dw_pcie_rp *pp);
+> > >  	int (*msi_host_init)(struct dw_pcie_rp *pp);
+> > > +	void (*pme_turn_off)(struct dw_pcie_rp *pp);
+> > > +	void (*exit_from_l2)(struct dw_pcie_rp *pp);
+> > >  };
+> > >  
+> > >  struct dw_pcie_rp {
+> > > @@ -364,6 +375,7 @@ struct dw_pcie_ops {
+> > >  	void    (*write_dbi2)(struct dw_pcie *pcie, void __iomem *base, u32 reg,
+> > >  			      size_t size, u32 val);
+> > >  	int	(*link_up)(struct dw_pcie *pcie);
+> > > +	enum dw_pcie_ltssm (*get_ltssm)(struct dw_pcie *pcie);
+> > >  	int	(*start_link)(struct dw_pcie *pcie);
+> > >  	void	(*stop_link)(struct dw_pcie *pcie);
+> > >  };
+> > > @@ -393,6 +405,7 @@ struct dw_pcie {
+> > >  	struct reset_control_bulk_data	app_rsts[DW_PCIE_NUM_APP_RSTS];
+> > >  	struct reset_control_bulk_data	core_rsts[DW_PCIE_NUM_CORE_RSTS];
+> > >  	struct gpio_desc		*pe_rst;
+> > > +	bool			suspended;
+> > >  };
+> > >  
+> > >  #define to_dw_pcie_from_pp(port) container_of((port), struct dw_pcie, pp)
+> > > @@ -430,6 +443,9 @@ void dw_pcie_iatu_detect(struct dw_pcie *pci);
+> > >  int dw_pcie_edma_detect(struct dw_pcie *pci);
+> > >  void dw_pcie_edma_remove(struct dw_pcie *pci);
+> > >  
+> > > +int dw_pcie_suspend_noirq(struct dw_pcie *pci);
+> > > +int dw_pcie_resume_noirq(struct dw_pcie *pci);
+> > > +
+> > >  static inline void dw_pcie_writel_dbi(struct dw_pcie *pci, u32 reg, u32 val)
+> > >  {
+> > >  	dw_pcie_write_dbi(pci, reg, 0x4, val);
+> > > @@ -501,6 +517,18 @@ static inline void dw_pcie_stop_link(struct dw_pcie *pci)
+> > >  		pci->ops->stop_link(pci);
+> > >  }
+> > >  
+> > > +static inline enum dw_pcie_ltssm dw_pcie_get_ltssm(struct dw_pcie *pci)
+> > > +{
+> > > +	u32 val;
+> > > +
+> > > +	if (pci->ops && pci->ops->get_ltssm)
+> > > +		return pci->ops->get_ltssm(pci);
+> > > +
+> > > +	val = dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG0);
+> > > +
+> > > +	return (enum dw_pcie_ltssm)FIELD_GET(PORT_LOGIC_LTSSM_STATE_MASK, val);
+> > > +}
+> > > +
+> > >  #ifdef CONFIG_PCIE_DW_HOST
+> > >  irqreturn_t dw_handle_msi_irq(struct dw_pcie_rp *pp);
+> > >  int dw_pcie_setup_rc(struct dw_pcie_rp *pp);
+> > > -- 
+> > > 2.34.1
+> > > 
+> > 
+> > -- 
+> > மணிவண்ணன் சதாசிவம்
+
 -- 
-2.34.1
-
+மணிவண்ணன் சதாசிவம்
