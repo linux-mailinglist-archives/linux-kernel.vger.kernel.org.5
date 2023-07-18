@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD9275781C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8068757821
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232304AbjGRJdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38544 "EHLO
+        id S229972AbjGRJde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232351AbjGRJc5 (ORCPT
+        with ESMTP id S232326AbjGRJd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:32:57 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60400E0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:32:55 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-992ca792065so757277966b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:32:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689672774; x=1692264774;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Pd3yVm0mrfKcfVl5M0ryz3v5rdf1EEHWpSBcZtymdlU=;
-        b=AW5DrcxtcrGGsHRQnTVQ8hX5fm0zVqO5DxuuSbzImI7RXL/vFginrgq2VlWLoPk1wL
-         4RhuvOEGMWxi9JzSmngtc378xIpK3FEtWIFnb19Ts/joDsqmVakKpdOgUyPEakkzEF0h
-         ly904FDl3r82RbcFyKIrMxAfde5y+HHh2yJ7dl1O8deQReT/RlmkEFiTaRFh5ze+4KD8
-         GnJEl4ny6ZyR69H4Sgy60nUlvVFS7Y55OSlA641H3OE+ovVfrDn33voMG6b+cwhQXNIm
-         A+3Uz1drvecJ3ylfwgqhLZv+BAyFWSADiQlsw+qRW04OLNpeE8c38diAQAfUtjxnVpw0
-         sSNA==
+        Tue, 18 Jul 2023 05:33:26 -0400
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29902E55;
+        Tue, 18 Jul 2023 02:33:25 -0700 (PDT)
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2b8390003e2so67063441fa.0;
+        Tue, 18 Jul 2023 02:33:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689672774; x=1692264774;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1689672803; x=1692264803;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pd3yVm0mrfKcfVl5M0ryz3v5rdf1EEHWpSBcZtymdlU=;
-        b=eWtLWHrBXhUkOvKhIILNcZfXcMtdXVNBB+D07f0qEwM6NfziLz33nnQWQ0GYvpQQ3E
-         z3nXnPalECsXuZPac20A8DFIVezshU8RDeVHBP3CQa0Hu/jcRXYhEi+3W6El5QXR0xtF
-         Dq2HJ9CVCXvPIEw6ZVVZBV6W7YRcyHb1jVJ6aYC1vaRTmZGQZM0fneC3PUF9QxHwsCcA
-         NxqvgAaFQDn9DSSUua/4ngcE9yW2m9J9ARG2Mcl1FCy6WJ2DoK6NaV4b4kTBo6H2KXMV
-         BDcPBPwMPMFUqyfoiu5SxPUD9xEPBBs/y68nerwPARk3bM3t24o+3FVCYn/dGfo2DCr5
-         OVAA==
-X-Gm-Message-State: ABy/qLYQSzhkVzEiYP2H+h6og4kjq3+EcWR4ftygpsGrjx18dtNJhjm1
-        XOTjFvLCg6IOwu5WNrWgCF/FuQ==
-X-Google-Smtp-Source: APBJJlEABRDq9Db2/fxCOqE/nE3zSjxPwvBI9OkjSAHrygRFjCnMt9tZLOcDggl6TYbuPB4VQWrG+g==
-X-Received: by 2002:a17:906:10ca:b0:994:3395:942f with SMTP id v10-20020a17090610ca00b009943395942fmr12348530ejv.17.1689672773934;
-        Tue, 18 Jul 2023 02:32:53 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id ko1-20020a170907986100b00992e14af9c3sm772954ejc.143.2023.07.18.02.32.52
+        bh=QKSX+1IEj9WwpflsadgWtRaqKWW0KmmUlzdN9e1GQrk=;
+        b=Iqy+vV1SMp9QzpFIlypJEnJcM+7w5vjLpYr+rJsnlMuMOCQrP9/OMRdS2Tu+Po4UNX
+         j4fH5JJKZXpq9nJwHyfeukrryNDB7426uIPow3Ym65CT+ZHiKs70gQnBHa+PoWlSnzXp
+         YGFB20cDNDTdBzsoLBY3B2xfMpIvmzXgI/Z6jmW3/IYlUEhQKjMAmwBhW9WhsRwAdOXo
+         TrnVoX5qQrM36B95QSZy7KDJVyEk0rspaADCUxqUrB+wg4Hllvz4t18myo+COwCLIjF3
+         yIK6PX0YG4mkyojhn5AM7Jj6DVrKYvr7A5GalAbhYj4d4nq3ew5CQwKtqyxzhY8Cjctz
+         /CVg==
+X-Gm-Message-State: ABy/qLarbJUdrKbpI2Xp2GYbxXVDZG1UUlHIgQNQEeKzTEz+EkuLuoiT
+        EV5ksGQiCyx+rbVj2+ap0lU=
+X-Google-Smtp-Source: APBJJlFQKnqZLiX/Zeb73TCKFBNgH+1uPlUO4uXcJWeY/VksFe+ZdTOUXc/jaJeaE0FpwSNyPcVRRA==
+X-Received: by 2002:a2e:9c4d:0:b0:2b6:fcd0:2aa1 with SMTP id t13-20020a2e9c4d000000b002b6fcd02aa1mr1448253ljj.43.1689672803097;
+        Tue, 18 Jul 2023 02:33:23 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id gy11-20020a170906f24b00b009737b8d47b6sm755938ejb.203.2023.07.18.02.33.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 02:32:53 -0700 (PDT)
-Message-ID: <d246292b-c0df-fa70-7561-9523e4db6138@linaro.org>
-Date:   Tue, 18 Jul 2023 11:32:51 +0200
+        Tue, 18 Jul 2023 02:33:22 -0700 (PDT)
+Message-ID: <3652da4b-8ccf-34a8-bdb7-757a3109ac54@kernel.org>
+Date:   Tue, 18 Jul 2023 11:33:21 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v1] led: flash: various minor fixes for leds-qcom-flash
- driver
 Content-Language: en-US
-To:     Fenglin Wu <quic_fenglinw@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lee@kernel.org, pavel@ucw.cz, ChiaEn Wu <chiaen_wu@richtek.com>,
-        Alice Chen <alice_chen@richtek.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Dylan Van Assche <me@dylanvanassche.be>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Tom Rix <trix@redhat.com>, linux-leds@vger.kernel.org
-Cc:     quic_collinsd@quicinc.com, quic_subbaram@quicinc.com
-References: <20230718092439.2482320-1-quic_fenglinw@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230718092439.2482320-1-quic_fenglinw@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Sherry Sun <sherry.sun@nxp.com>, gregkh@linuxfoundation.org,
+        ilpo.jarvinen@linux.intel.com, shenwei.wang@nxp.com
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
+References: <20230718065645.6588-1-sherry.sun@nxp.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH] tty: serial: fsl_lpuart: Fix possible integer overflow
+In-Reply-To: <20230718065645.6588-1-sherry.sun@nxp.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/07/2023 11:24, Fenglin Wu wrote:
-> Update the driver to address following minor issues:
->  - Add a sentence in Kconfig to explain the driver can be compiled
->    as a module
->  - strobe off the LED channel before setting flash current to prevent
->    the flash LED being lit with an incorrect brightness if it was
->    already active in torch mode
->  - put the child node if register any flash LED device failed.
+On 18. 07. 23, 8:56, Sherry Sun wrote:
+> This patch addresses the following Coverity report, fix it by casting
+> sport->port.frame_time to type u64.
+> 
+> CID 32305660: Unintentional integer overflow (OVERFLOW_BEFORE_WIDEN)
+> Potentially overflowing expression sport->port.frame_time * 8U with type
+> unsigned int (32 bits, unsigned) is evaluated using 32-bit arithmetic,
+> and then used in a context that expects an expression of type u64 (64
+> bits, unsigned).
+> 
+> Fixes: cf9aa72d2f91 ("tty: serial: fsl_lpuart: optimize the timer based EOP logic")
+> Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
+> ---
+>   drivers/tty/serial/fsl_lpuart.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
+> index c1980ea52666..07b3b26732db 100644
+> --- a/drivers/tty/serial/fsl_lpuart.c
+> +++ b/drivers/tty/serial/fsl_lpuart.c
+> @@ -1373,7 +1373,7 @@ static inline int lpuart_start_rx_dma(struct lpuart_port *sport)
+>   
+>   	sport->last_residue = 0;
+>   	sport->dma_rx_timeout = max(nsecs_to_jiffies(
+> -		sport->port.frame_time * DMA_RX_IDLE_CHARS), 1UL);
+> +		(u64)sport->port.frame_time * DMA_RX_IDLE_CHARS), 1UL);
 
-Don't mix different fixes and changes in one commit.
+Can you explain how that can overflow? In the worst case (1 start bit, 8 
+data bits, 2 stop bits, parity bit, address bit, 50 bauds), frame_time 
+would contain:
+13*1e9/50 = 260,000,000. (260 ms)
 
-Also, please use scripts/get_maintainers.pl to get a list of necessary
-people and lists to CC (and consider --no-git-fallback argument). I
-really do not see a point why I am cc-ed here.
+Then the multiplication above is:
+260,000,000*8 = 2,080,000,000. (2 seconds)
 
-Best regards,
-Krzysztof
+which is still less than 2^32-1.
+
+thanks,
+-- 
+js
+suse labs
 
