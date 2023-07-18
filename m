@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1974757DF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1E2757DF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232768AbjGRNln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42396 "EHLO
+        id S232754AbjGRNlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232655AbjGRNlj (ORCPT
+        with ESMTP id S232771AbjGRNln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:41:39 -0400
+        Tue, 18 Jul 2023 09:41:43 -0400
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCDBE9
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:41:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF8D18E
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:41:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689687697; x=1721223697;
+  t=1689687701; x=1721223701;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7zyk3JWG0n/NRGusSO5HuAwJo/tzG1af2tLFBafaYXE=;
-  b=Egrhh6nNGnS0m8aVSIPKnKUWoL1czDccNpNvTx/fGvri4U7VTQ7higjI
-   XY7lybfDeeoY+0Wjmzb4SrgaMiLGz0W2928tl8JJN4uxjRRi65Qg1I53v
-   D6HJEE/xB1ofqk1SabxECsCmlbC41O3Eik0ntgdPzh5UUHRxB6BEpY7FK
-   8rV8G1EzFY7UO1Pkv6hhNhaKnL3c4pZolBnti7mBm5ShXRE62d0YlhNfJ
-   Ef9+NMCcabrW1zLZMQIq1KbHchl+qp7kPiWgglnLwj3UVKSk2bX0evPJT
-   T1TU32oL2jmStBOBtwQS2sQ6OaxRA1l55lajOeYs3SzzLpH5WL1ERf3NX
+  bh=8F3zASvnELjb+rrDSMq0b/VVlZEErX5L3+l5y/KLAD4=;
+  b=lg0SDFlI9LP3Sgx4BVgQaQ/SyWDkm9qRXKgATSeCH3Gw7idHqaUnz07l
+   ifPJ7284YG2ReUcPkZeBTPboy2dJAkJFQYFz8W+KkgF9BLJ1talROClsV
+   1VXk+fzqizLOzEkbbEtjVFdv151F47aRFKrNAAcHiw2ePU/oZtNRGXgPs
+   H7vr2uot4/koI1YZRPySTaHNMis/IE3l0ljVNby1usFvUMDlm8bsabzSw
+   kziX0H2OCnQu0s2HFlmM+h8+6YFda88aByRhCxV1WzBiWPylrIJ6Ey701
+   lz0oJwhjB5CX0e1kknHlgTUKursVF7Ni1LGMetNQqRvxY3kDg1LOieO9n
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="345800694"
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="345800716"
 X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="345800694"
+   d="scan'208";a="345800716"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 06:41:37 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 06:41:41 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="847706524"
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="847706530"
 X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="847706524"
+   d="scan'208";a="847706530"
 Received: from ziqianlu-desk2.sh.intel.com ([10.239.159.54])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 06:41:33 -0700
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 06:41:37 -0700
 From:   Aaron Lu <aaron.lu@intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -54,9 +54,9 @@ Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Nitin Tekchandani <nitin.tekchandani@intel.com>,
         Yu Chen <yu.c.chen@intel.com>,
         Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 2/4] sched/fair: Make tg->load_avg per node
-Date:   Tue, 18 Jul 2023 21:41:18 +0800
-Message-ID: <20230718134120.81199-3-aaron.lu@intel.com>
+Subject: [RFC PATCH 3/4] sched/fair: delay update_tg_load_avg() for cfs_rq's removed load
+Date:   Tue, 18 Jul 2023 21:41:19 +0800
+Message-ID: <20230718134120.81199-4-aaron.lu@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230718134120.81199-1-aaron.lu@intel.com>
 References: <20230718134120.81199-1-aaron.lu@intel.com>
@@ -73,35 +73,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using sysbench to benchmark Postgres in a single docker instance
-with sysbench's nr_threads set to nr_cpu, it is observed there are times
-update_cfs_group() and update_load_avg() shows noticeable overhead on
-a 2sockets/112core/224cpu Intel Sapphire Rapids(SPR):
+When a workload involves many wake time task migrations, tg->load_avg
+can be heavily contended among CPUs because every migration involves
+removing the task's load from its src cfs_rq and attach that load to
+its new cfs_rq. Both the remove and attach requires an update to
+tg->load_avg as well as propagating the change up the hierarchy.
 
-        13.75%    13.74%  [kernel.vmlinux]           [k] update_cfs_group
-        10.63%    10.04%  [kernel.vmlinux]           [k] update_load_avg
+E.g. when running postgres_sysbench on a 2sockets/112cores/224cpus Intel
+Sappire Rapids, during a 5s window, the wakeup number is 14millions and
+migration number is 11millions. Since the workload can trigger many
+wakeups and migrations, the access(both read and write) to tg->load_avg
+can be unbound. For the above said workload, the profile shows
+update_cfs_group() costs ~13% and update_load_avg() costs ~10%. With
+netperf/nr_client=nr_cpu/UDP_RR, the wakeup number is 21millions and
+migration number is 14millions; update_cfs_group() costs ~25% and
+update_load_avg() costs ~16%.
 
-Annotate shows the cycles are mostly spent on accessing tg->load_avg
-with update_load_avg() being the write side and update_cfs_group() being
-the read side.
+This patch is an attempt to reduce the cost of accessing tg->load_avg.
 
-Tim Chen told me that PeterZ once mentioned a way to solve a similar
-problem by making a counter per node so do the same for tg->load_avg.
-After this change, the cost of the two functions are reduced and
-sysbench transactions are increased on SPR. Below are test results.
+Current logic will immediately do a update_tg_load_avg() if cfs_rq has
+removed load; this patch changes this behavior: if this cfs_rq has
+removed load as discovered by update_cfs_rq_load_avg(), it didn't call
+update_tg_load_avg() or propagate the removed load immediately, instead,
+the update to tg->load_avg and propagated load can be dealed with by a
+following event like task attached to this cfs_rq or in
+update_blocked_averages(). This way, the call to update_tg_load_avg()
+for this cfs_rq and its ancestors can be reduced by about half.
 
-===============================================
+================================================
 postgres_sysbench(transaction, higher is better)
 nr_thread=100%/75%/50% were tested on 2 sockets SPR and Icelake and
 results that have a measuable difference are:
 
-nr_thread=100% on SPR
-base:  90569.11±1.15%
-node: 104152.26±0.34%  +15.0%
+nr_thread=100% on SPR:
+base:   90569.11±1.15%
+node:  104152.26±0.34%  +15.0%
+delay: 127309.46±4.25%  +40.6%
 
-nr_thread=75% on SPR
-base: 100803.96±0.57%
-node: 107333.58±0.44%   +6.5%
+nr_thread=75% on SPR:
+base:  100803.96±0.57%
+node:  107333.58±0.44%   +6.5%
+delay: 124332.39±0.51%  +23.3%
+
+nr_thread=75% on ICL:
+base:  61961.26±0.41%
+node:  61585.45±0.50%
+delay: 72420.52±0.14%  +16.9%
 
 =======================================================================
 hackbench/pipe/threads/fd=20/loop=1000000 (throughput, higher is better)
@@ -111,198 +128,143 @@ results that have a measuable difference are:
 group=8 on SPR:
 base:  437163±2.6%
 node:  471203±1.2%   +7.8%
+delay: 490780±0.9%  +12.3%
 
 group=16 on SPR:
 base:  468279±1.9%
 node:  580385±1.7%  +23.9%
+delay: 664422±0.2%  +41.9%
 
-=============================================
-netperf/TCP_STRAM
+================================================
+netperf/TCP_STRAM (throughput, higher is better)
 nr_thread=1/25%/50%/75%/100% were tested on 2 sockets SPR and Cascade
-Lake and there is no measuable difference.
+Lake and results that have a measuable difference are:
+
+nr_thread=50% on CSL:
+base:  16258±0.7%
+node:  16172±2.9%
+delay: 17729±0.7%  +9.0%
+
+nr_thread=75% on CSL:
+base:  12923±1.2%
+node:  13011±2.2%
+delay: 15452±1.6%  +19.6%
+
+nr_thread=75% on SPR:
+base:  16232±11.9%
+node:  13962±5.1%
+delay: 21089±0.8%  +29.9%
+
+nr_thread=100% on SPR:
+base:  13220±0.6%
+node:  13113±0.0%
+delay: 18258±11.3% +38.1%
 
 =============================================
 netperf/UDP_RR (throughput, higher is better)
 nr_thread=1/25%/50%/75%/100% were tested on 2 sockets SPR and Cascade
 Lake and results that have measuable difference are:
 
-nr_thread=75% on Cascade lake:
+nr_thread=1 on CSL:
+base:  128521±0.5%
+node:  127935±0.6%
+delay: 126317±0.4%  -1.7%
+
+nr_thread=75% on CSL:
 base:  36701±1.7%
 node:  39949±1.4%   +8.8%
+delay: 42516±0.3%  +15.8%
 
 nr_thread=75% on SPR:
 base:  14249±3.8%
 node:  19890±2.0%   +39.6%
+delay: 31331±0.5%  +119.9%
 
-nr_thread=100% on Cascade lake
+nr_thread=100% on CSL:
 base:  52275±0.6%
 node:  53827±0.4%   +3.0%
+delay: 78386±0.7%  +49.9%
 
-nr_thread=100% on SPR
+nr_thread=100% on SPR:
 base:   9560±1.6%
 node:  14186±3.9%   +48.4%
+delay: 20779±2.8%  +117.4%
 
-Reported-by: Nitin Tekchandani <nitin.tekchandani@intel.com>
 Signed-off-by: Aaron Lu <aaron.lu@intel.com>
 ---
- kernel/sched/debug.c |  2 +-
- kernel/sched/fair.c  | 29 ++++++++++++++++++++++++++---
- kernel/sched/sched.h | 43 +++++++++++++++++++++++++++++++++----------
- 3 files changed, 60 insertions(+), 14 deletions(-)
+ kernel/sched/fair.c  | 23 ++++++++++++++++++-----
+ kernel/sched/sched.h |  1 +
+ 2 files changed, 19 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 066ff1c8ae4e..3af965a18866 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -691,7 +691,7 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
- 	SEQ_printf(m, "  .%-30s: %lu\n", "tg_load_avg_contrib",
- 			cfs_rq->tg_load_avg_contrib);
- 	SEQ_printf(m, "  .%-30s: %ld\n", "tg_load_avg",
--			atomic_long_read(&cfs_rq->tg->load_avg));
-+			tg_load_avg(cfs_rq->tg));
- #endif
- #endif
- #ifdef CONFIG_CFS_BANDWIDTH
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 0f913487928d..aceb8f5922cb 100644
+index aceb8f5922cb..564ffe3e59c1 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -3496,7 +3496,7 @@ static long calc_group_shares(struct cfs_rq *cfs_rq)
+@@ -3645,6 +3645,9 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+ 	if (child_cfs_rq_on_list(cfs_rq))
+ 		return false;
  
- 	load = max(scale_load_down(cfs_rq->load.weight), cfs_rq->avg.load_avg);
- 
--	tg_weight = atomic_long_read(&tg->load_avg);
-+	tg_weight = tg_load_avg(tg);
- 
- 	/* Ensure tg_weight >= load */
- 	tg_weight -= cfs_rq->tg_load_avg_contrib;
-@@ -3665,6 +3665,7 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
- static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
- {
- 	long delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
-+	int node = cpu_to_node(smp_processor_id());
- 
- 	/*
- 	 * No need to update load_avg for root_task_group as it is not used.
-@@ -3673,7 +3674,7 @@ static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
- 		return;
- 
- 	if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
--		atomic_long_add(delta, &cfs_rq->tg->load_avg);
-+		atomic_long_add(delta, &cfs_rq->tg->node_info[node]->load_avg);
- 		cfs_rq->tg_load_avg_contrib = cfs_rq->avg.load_avg;
- 	}
++	if (cfs_rq->prop_removed_sum)
++		return false;
++
+ 	return true;
  }
-@@ -12439,7 +12440,7 @@ int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
- {
- 	struct sched_entity *se;
- 	struct cfs_rq *cfs_rq;
--	int i;
-+	int i, nodes;
  
- 	tg->cfs_rq = kcalloc(nr_cpu_ids, sizeof(cfs_rq), GFP_KERNEL);
- 	if (!tg->cfs_rq)
-@@ -12468,8 +12469,30 @@ int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
- 		init_entity_runnable_average(se);
+@@ -3911,6 +3914,11 @@ static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum
+ {
+ 	cfs_rq->propagate = 1;
+ 	cfs_rq->prop_runnable_sum += runnable_sum;
++
++	if (cfs_rq->prop_removed_sum) {
++		cfs_rq->prop_runnable_sum += cfs_rq->prop_removed_sum;
++		cfs_rq->prop_removed_sum = 0;
++	}
+ }
+ 
+ /* Update task and its cfs_rq load average */
+@@ -4133,13 +4141,11 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
+ 		 * removed_runnable is the unweighted version of removed_load so we
+ 		 * can use it to estimate removed_load_sum.
+ 		 */
+-		add_tg_cfs_propagate(cfs_rq,
+-			-(long)(removed_runnable * divider) >> SCHED_CAPACITY_SHIFT);
+-
+-		decayed = 1;
++		cfs_rq->prop_removed_sum +=
++			-(long)(removed_runnable * divider) >> SCHED_CAPACITY_SHIFT;
  	}
  
-+#ifdef CONFIG_SMP
-+	nodes = num_possible_nodes();
-+	tg->node_info = kcalloc(nodes, sizeof(struct tg_node_info *), GFP_KERNEL);
-+	if (!tg->node_info)
-+		goto err_free;
-+
-+	for_each_node(i) {
-+		tg->node_info[i] = kzalloc_node(sizeof(struct tg_node_info), GFP_KERNEL, i);
-+		if (!tg->node_info[i])
-+			goto err_free_node;
-+	}
-+#endif
-+
- 	return 1;
+-	decayed |= __update_load_avg_cfs_rq(now, cfs_rq);
++	decayed = __update_load_avg_cfs_rq(now, cfs_rq);
+ 	u64_u32_store_copy(sa->last_update_time,
+ 			   cfs_rq->last_update_time_copy,
+ 			   sa->last_update_time);
+@@ -9001,6 +9007,13 @@ static bool __update_blocked_fair(struct rq *rq, bool *done)
  
-+#ifdef CONFIG_SMP
-+err_free_node:
-+	for_each_node(i) {
-+		kfree(tg->node_info[i]);
-+		if (!tg->node_info[i])
-+			break;
-+	}
-+	kfree(tg->node_info);
-+#endif
- err_free:
- 	for_each_possible_cpu(i) {
- 		kfree(tg->cfs_rq[i]);
+ 			if (cfs_rq == &rq->cfs)
+ 				decayed = true;
++
++			/*
++			 * If the aggregated removed_sum hasn't been taken care of,
++			 * deal with it now before this cfs_rq is removed from the list.
++			 */
++			if (cfs_rq->prop_removed_sum)
++				add_tg_cfs_propagate(cfs_rq, 0);
+ 		}
+ 
+ 		/* Propagate pending load changes to the parent, if any: */
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 14dfaafb3a8f..9cece2dbc95b 100644
+index 9cece2dbc95b..ab540b21d071 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -359,6 +359,17 @@ struct cfs_bandwidth {
- #endif
- };
+@@ -619,6 +619,7 @@ struct cfs_rq {
+ 	unsigned long		tg_load_avg_contrib;
+ 	long			propagate;
+ 	long			prop_runnable_sum;
++	long			prop_removed_sum;
  
-+struct tg_node_info {
-+	/*
-+	 * load_avg can be heavily contended at clock tick time and task
-+	 * enqueue/dequeue time, so put it in its own cacheline separated
-+	 * from other fields.
-+	 */
-+	struct {
-+		atomic_long_t		load_avg;
-+	} ____cacheline_aligned_in_smp;
-+};
-+
- /* Task group related information */
- struct task_group {
- 	struct cgroup_subsys_state css;
-@@ -373,15 +384,8 @@ struct task_group {
- 	/* A positive value indicates that this is a SCHED_IDLE group. */
- 	int			idle;
- 
--#ifdef	CONFIG_SMP
--	/*
--	 * load_avg can be heavily contended at clock tick time, so put
--	 * it in its own cacheline separated from the fields above which
--	 * will also be accessed at each tick.
--	 */
--	struct {
--		atomic_long_t		load_avg;
--	} ____cacheline_aligned_in_smp;
-+#ifdef CONFIG_SMP
-+	struct tg_node_info	**node_info;
- #endif
- #endif
- 
-@@ -413,9 +417,28 @@ struct task_group {
- 	/* Effective clamp values used for a task group */
- 	struct uclamp_se	uclamp[UCLAMP_CNT];
- #endif
--
- };
- 
-+#if defined(CONFIG_FAIR_GROUP_SCHED) && defined(CONFIG_SMP)
-+static inline long tg_load_avg(struct task_group *tg)
-+{
-+	long load_avg = 0;
-+	int i;
-+
-+	/*
-+	 * The only path that can give us a root_task_group
-+	 * here is from print_cfs_rq() thus unlikely.
-+	 */
-+	if (unlikely(tg == &root_task_group))
-+		return 0;
-+
-+	for_each_node(i)
-+		load_avg += atomic_long_read(&tg->node_info[i]->load_avg);
-+
-+	return load_avg;
-+}
-+#endif
-+
- #ifdef CONFIG_FAIR_GROUP_SCHED
- #define ROOT_TASK_GROUP_LOAD	NICE_0_LOAD
- 
+ 	/*
+ 	 *   h_load = weight * f(tg)
 -- 
 2.41.0
 
