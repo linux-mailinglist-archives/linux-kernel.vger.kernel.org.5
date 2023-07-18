@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6261E75802E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B7D758030
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232707AbjGROyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
+        id S232839AbjGROy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:54:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbjGROyn (ORCPT
+        with ESMTP id S233433AbjGROyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:54:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE4D115;
-        Tue, 18 Jul 2023 07:54:42 -0700 (PDT)
+        Tue, 18 Jul 2023 10:54:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A95196;
+        Tue, 18 Jul 2023 07:54:49 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F1D9861615;
-        Tue, 18 Jul 2023 14:54:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52C1BC433C7;
-        Tue, 18 Jul 2023 14:54:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0E0676160E;
+        Tue, 18 Jul 2023 14:54:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0821EC433C7;
+        Tue, 18 Jul 2023 14:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689692081;
-        bh=9OaB5dqsAbuBmRO7nPr865+hWKTbzSRKJYIF02YafGU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lTGTF0/dnJXKBhdJ66cxFn5JJeAe3IA5xkOCD6kBzS1taG3uyca7Vz9agtkgUWZ6M
-         QRxfd7V4Jiekj2irkYIvVdbspjsYa7NjH37P39kX8r7lRZOsAIjJPd39RTsXr7LDVF
-         OYPzg8OKkXAyzMhoRb/1cp/MpsDGQNRFU/eD2uYD7K6YwtumV5VTpY7oU5z3g2fcbJ
-         iF5+s5ZgQY4e3niwRRvwk8hw2GKppdNREeML2YihU2ju3nbOG6zx/9cactDiL/CV2/
-         gjYNmztRjhmlfBed52q101+sQ5zsrPcQ9qgLT+7H0beyWwvIXLBQbZ/UUJaedj8/Pl
-         RRnq1uHS0n2cA==
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-51e619bcbf9so8058490a12.3;
-        Tue, 18 Jul 2023 07:54:41 -0700 (PDT)
-X-Gm-Message-State: ABy/qLYzT0TSEsC2ix3id5Wi5htVdRXIsMSWuW0/EJ+0eevqTV+ShBLo
-        4PBCgwRxTtc+FyGUmUhHRN09XG0BeVRPupJ7Pfo=
-X-Google-Smtp-Source: APBJJlEPp/jeYj7ifTq6Z1UeMXDuB13B48p6+HZD4sidUY6d7T/+wMBz2ezjoHGMdXtjKUh0C91ZG9oDc3l/COjBzPA=
-X-Received: by 2002:aa7:da95:0:b0:51e:e67:df4d with SMTP id
- q21-20020aa7da95000000b0051e0e67df4dmr91347eds.38.1689692079543; Tue, 18 Jul
- 2023 07:54:39 -0700 (PDT)
+        s=k20201202; t=1689692088;
+        bh=rgmBgjIDYkzzmlgWFHvXALNdWd95/pbvuzMWirSR12U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=roVjxYhCoL3n+h0sZWq1nlWqUgCLd0Q0TvVYRcrO5/u73XAp+BGt/EcXc77jrduR6
+         ukSZI/Gbwy3oyGxv7EPy2EYqiC81gpLdYFEjuOBkdjNzF7qHqlOstKunFqiuarCfVI
+         XN0BAT1KXbw/Wtbtcj+IjvYO210sb6ZTvsbDPfHj/YoM4db+mDTsDYHCg/cV+9AkLg
+         DbyCTgbFmPXYHkZrAYCxtLWwsXa6n7cITeWJ9ZM6koSLeGDll0OSxjFqrv0qnbsbsa
+         +KCtbPQIF0v2HGmzAJHISVStxv76/tKyP8bIC+WVvPhWNRnCAaxDs2ehtR08MCYSXw
+         TOwyyJ5kSpeww==
+Date:   Tue, 18 Jul 2023 15:54:42 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Alexandre Ghiti <alex@ghiti.fr>
+Subject: Re: [PATCH] selftests: Fix arm64 test installation
+Message-ID: <85526b4e-c2ba-4b19-9c2f-ba39a248a713@sirena.org.uk>
+References: <20230710-kselftest-fix-arm64-v1-1-48e872844f25@kernel.org>
+ <8d944238-1a9a-e93e-fdab-54e74fa12e11@linuxfoundation.org>
+ <785e1c1c-84d8-e87d-f22f-9a53d27f30f6@nvidia.com>
+ <620a5b91-9715-ee28-423c-851506b10832@linuxfoundation.org>
+ <421bebb3-19e9-47a7-8b2b-f69f125df22f@sirena.org.uk>
+ <f479b731-7782-0417-2d4c-31a7c3c9491c@nvidia.com>
+ <20230714112653.0b42d3c9818b038d219b5e41@linux-foundation.org>
+ <68ccfd77-ce2f-857a-37a7-e9b3edcd495d@linuxfoundation.org>
+ <5e5bf5c0-bcda-ec2a-ba4c-5f35dcfbc373@nvidia.com>
+ <d03af9cc-c72e-d23f-73ad-ca0e079c3187@linuxfoundation.org>
 MIME-Version: 1.0
-References: <alpine.DEB.2.21.2307180025120.62448@angie.orcam.me.uk>
-In-Reply-To: <alpine.DEB.2.21.2307180025120.62448@angie.orcam.me.uk>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Tue, 18 Jul 2023 22:54:28 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H4ewzWuZRe0RX+j2x2R_fROVExHuogWNaWBmFA=Tgb=Og@mail.gmail.com>
-Message-ID: <CAAhV-H4ewzWuZRe0RX+j2x2R_fROVExHuogWNaWBmFA=Tgb=Og@mail.gmail.com>
-Subject: Re: [PATCH 0/3] MIPS: Fix build issues from the introduction of `need-compiler'
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jan-Benedict Glaw <jbglaw@lug-owl.de>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="u7HQOWZHHEWX8a1V"
+Content-Disposition: inline
+In-Reply-To: <d03af9cc-c72e-d23f-73ad-ca0e079c3187@linuxfoundation.org>
+X-Cookie: Nothing happens.
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,35 +73,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Maciej,
 
-Even if patch-2 resolves the problem, I don't think patch-3 is
-necessary because the original patch makes code simpler and more
-compact.
+--u7HQOWZHHEWX8a1V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Huacai
+On Fri, Jul 14, 2023 at 01:11:10PM -0600, Shuah Khan wrote:
+> On 7/14/23 12:36, John Hubbard wrote:
 
-On Tue, Jul 18, 2023 at 10:42=E2=80=AFPM Maciej W. Rozycki <macro@orcam.me.=
-uk> wrote:
->
-> Hi,
->
->  With the addition of the `need-compiler' variable the `Makefile.compiler=
-'
-> fragment is not included with no-build targets such as `modules_install',
-> which in turn means $(call cc-option,), etc. are no-ops with these target=
-s
-> and any attempt to evaluate these function calls causes all kinds of weir=
-d
-> behaviour to happen.
->
->  The solution is to avoid making these calls in the first place, as they
-> are surely irrelevant where the compiler is not going to be otherwise
-> invoked.  This small patch series fixes two places known-affected in the
-> MIPS Makefile fragment and also included a follow-up revert of an earlier
-> misguided attempt.  See individual change descriptions for details.
->
->  Verified with `decstation_64_defconfig' and `fuloong2e_defconfig' using
-> `modules_install'.  Please apply.
->
->   Maciej
+> > Just to be clear, when you say you're applying "both", I'm hoping you mean
+> > both of these:
+
+> > [1] https://lore.kernel.org/all/20230711005629.2547838-1-jhubbard@nvidia.com/
+> > [2] https://lore.kernel.org/all/20230712193514.740033-1-jhubbard@nvidia.com/
+
+> Right. The ones you have links to:
+
+> Please check the latest fixes to see if we are all squared away:
+> https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/log/?h=fixes
+
+These didn't seem to make it to -rc2 - it'd be *really* good to get them
+for -rc3, not having the selftests there would be very disruptive to the
+standard arm64 workflow.
+
+--u7HQOWZHHEWX8a1V
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS2p7IACgkQJNaLcl1U
+h9DWSAf+IqfMO1FPLdG3/gWN3HkhIbv+uwXVNBfYuJnTbcH3ndSGl+JRmvPw0nMm
+skZCr0MAJHyDK7TOtEU+oR66J3Zyd9oPBHakol1Ryf+0O2NzmzRYG5vAN7VAivRO
+MZxcsiABHBA+dSJgOpsjxzK+jzdCkC0zT4mxW2gfpubGZ9Nr/bQnVaKI0Z9FAiPh
+7iRNz9eSA3/BlbPZrJYL64EdCxVSRKgNXayngEYWC9nymLi3A2YKzcyIuPM3gUaW
+b+y8JpjYtng0jtOiFLVHXsgjiGp5+1rRC7ctugW9XCVovU+tZbHG5ou/7kOby1uS
+c3B/9I3agaLQyZsDjyDhNmiQVK/wvA==
+=wRzC
+-----END PGP SIGNATURE-----
+
+--u7HQOWZHHEWX8a1V--
