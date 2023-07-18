@@ -2,258 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2C67573FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 001D7757424
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbjGRGW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 02:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60912 "EHLO
+        id S230218AbjGRG1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 02:27:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229779AbjGRGW0 (ORCPT
+        with ESMTP id S230295AbjGRG1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 02:22:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFADB5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:21:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689661303;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RvSmM7MQhdDXRVA2Uryq4YVNwYFzTKNqJe4q9sLr7I8=;
-        b=RKsltFQEpKJNwNhCkujLuLUktKL20+w3x8FvMNRh9bFaduvjSKs16ZhSWj8UTcJ11nlD15
-        CaUrzYXA9fJDm6Tslj/Z76qmKG1iVGE+EgXFLf0ktpWZH1QZEiaMgB4uAQQwLOPJwfGiaL
-        de6GmvxbRm75PSgdWMFpTGo45KSZ2kQ=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-53-zsM4VpSvPQWJ8OCGCC8HTg-1; Tue, 18 Jul 2023 02:21:38 -0400
-X-MC-Unique: zsM4VpSvPQWJ8OCGCC8HTg-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-51b5133ad4dso1450543a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:21:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689661297; x=1690266097;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RvSmM7MQhdDXRVA2Uryq4YVNwYFzTKNqJe4q9sLr7I8=;
-        b=Wl8biCG/c4KhhqSAA1NxEx3kjkcQsj+cM2b2teQSL0+ls6slFZJ4E5Jt9W88N2aXIZ
-         y2DPm7JyH6IzvMx+5nVQWtzGD4ribEL0+2qd4dCcntG06HcGpGmwRF+mjyWAe57t96p/
-         KPE+lOkwdi/Pr/e0ALSkYkwe1iHyS5wiWc5Uq8tFe5ypyICdutNIGXmkB8soNRm18xH3
-         fdAgXyrU8VzSTlosRStYHQ4vsflIBHj9zCywWV/09lQyVF327yxhRc3J1XQNH66aJ9Kv
-         naMHGgV+AqxbuOxa3v5Gc3+MxIwQd3cQZqicYfKTLAEHP6yIf6nx+DvCp+Z0cy4BiO6p
-         6+6Q==
-X-Gm-Message-State: ABy/qLaRGRT97Ll86zRHx/irWtzF9XJiptVqQVjjCpdsWJYxgjov64HH
-        VE/nTKDVb7huqb1IFzsYqwmCAvuGkrda3jj3eLbGQgGoADZlMsrI2/BILh/cq7lFs0J9zbXt9Es
-        QbOwW12h+Xa718hROtCED5UyF
-X-Received: by 2002:a17:902:da85:b0:1b8:9fc4:2733 with SMTP id j5-20020a170902da8500b001b89fc42733mr10753861plx.3.1689661297284;
-        Mon, 17 Jul 2023 23:21:37 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGwK4O80e6YQEGnzMYTYf6ot+mFwRDf85YBN8hCoLDeCfJGnn+lZlhDjDiUb0dFs/RD5ECIfQ==
-X-Received: by 2002:a17:902:da85:b0:1b8:9fc4:2733 with SMTP id j5-20020a170902da8500b001b89fc42733mr10753835plx.3.1689661296887;
-        Mon, 17 Jul 2023 23:21:36 -0700 (PDT)
-Received: from [10.66.61.39] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902c20d00b001b392bf9192sm941082pll.145.2023.07.17.23.21.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 23:21:36 -0700 (PDT)
-Message-ID: <8987d68b-d62a-7a9b-3aa3-cd5cc7ad551c@redhat.com>
-Date:   Tue, 18 Jul 2023 14:21:30 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v6 05/11] arm64: tlb: Refactor the core flush algorithm of
- __flush_tlb_range
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Gavin Shan <gshan@redhat.com>
-References: <20230715005405.3689586-1-rananta@google.com>
- <20230715005405.3689586-6-rananta@google.com>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <20230715005405.3689586-6-rananta@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Tue, 18 Jul 2023 02:27:39 -0400
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50BE170F
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:27:27 -0700 (PDT)
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230718062725epoutp014f7d39e198e5e8efe479521a3f132f24~y4lBkHC-_2199221992epoutp01Z
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:27:25 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230718062725epoutp014f7d39e198e5e8efe479521a3f132f24~y4lBkHC-_2199221992epoutp01Z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1689661645;
+        bh=3bOGiT3ikHTUDaEMZyxt0KawOuLANRDEEEMA3gDYL/A=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=fbSIGsSuwe4qKtnJ/RK2WmHrriCGpRe9/uYYmnyd6XeOevmeKX+egUj0HAnBZafZd
+         qEGtQDAbAfEt+6k1HFf9BVDtHMYUJnuWGmTyiH4+LMv1Uuk1bs/iUEflzDMjhEhELT
+         i68j01mV56otTC7A9Zn+tNs4AQNONMbV5vOn7ZmU=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20230718062724epcas2p2c9c172d740d130b6960882a126f39270~y4lBDlBM61964119641epcas2p23;
+        Tue, 18 Jul 2023 06:27:24 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.36.102]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4R4ps81kmnz4x9Q3; Tue, 18 Jul
+        2023 06:27:24 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        BE.57.32606.CC036B46; Tue, 18 Jul 2023 15:27:24 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+        20230718062723epcas2p4fa1d2b07220c873a4d7de2d1899f1699~y4lAYyf9a3019630196epcas2p4r;
+        Tue, 18 Jul 2023 06:27:23 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230718062723epsmtrp14428f918ae8dacedce08a6eb9280a6fd~y4lAVTYnA2319023190epsmtrp1h;
+        Tue, 18 Jul 2023 06:27:23 +0000 (GMT)
+X-AuditID: b6c32a47-9cbff70000007f5e-35-64b630ccc409
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        EF.F5.34491.BC036B46; Tue, 18 Jul 2023 15:27:23 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.229.9.55]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20230718062723epsmtip260970c94a2b257f909b8515ac14eb87c~y4lADBjtl0240002400epsmtip2W;
+        Tue, 18 Jul 2023 06:27:23 +0000 (GMT)
+From:   Jaewon Kim <jaewon02.kim@samsung.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        Jaewon Kim <jaewon02.kim@samsung.com>
+Subject: [PATCH v6 0/2] support PWM for exynosautov9
+Date:   Tue, 18 Jul 2023 15:21:58 +0900
+Message-Id: <20230718062200.79306-1-jaewon02.kim@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrAKsWRmVeSWpSXmKPExsWy7bCmhe4Zg20pBrc7uSwezNvGZrFm7zkm
+        i/lHzrFa7Gg4wmrR9+Ihs8Wmx9dYLS7vmsNmcffuKkaLGef3MVm07j3CbvFz1zwWi9sTJzM6
+        8HjsnHWX3WPTqk42jzvX9rB5bF5S79H/18Cjb8sqRo/Pm+QC2KOybTJSE1NSixRS85LzUzLz
+        0m2VvIPjneNNzQwMdQ0tLcyVFPISc1NtlVx8AnTdMnOA7lRSKEvMKQUKBSQWFyvp29kU5ZeW
+        pCpk5BeX2CqlFqTkFJgX6BUn5haX5qXr5aWWWBkaGBiZAhUmZGc8WPKRsWAeW8XpHf3sDYy/
+        WboYOTkkBEwkvrStYuti5OIQEtjBKDFv4gx2kISQwCdGif4HcRCJb4wSz5f+YYTpuDljPiNE
+        Yi+jxLLTG5ghnI+MEvPP9TCBVLEJaEt8X7+YFcQWEVjIJPHsfhlIEbPAaUaJtbeegC0XBho1
+        9dpnsH0sAqoSDc/Wgtm8ArYS19+vhFonL7F6wwGwDRIC99glvh48zAqRcJE4+vQ6M4QtLPHq
+        +BZ2CFtK4mV/G5SdLdE+/Q9UfYXExQ2z2SBsY4lZz9qBFnAAXaQpsX6XPogpIaAsceQW2GnM
+        AnwSHYf/skOEeSU62oQgGtUk7k89BzVERmLSkZVMELaHxInWN9CQi5XY//430wRG2VkI8xcw
+        Mq5iFEstKM5NTy02KjCGR1Jyfu4mRnDS03LfwTjj7Qe9Q4xMHIyHGCU4mJVEeL+v2pQixJuS
+        WFmVWpQfX1Sak1p8iNEUGFwTmaVEk/OBaTevJN7QxNLAxMzM0NzI1MBcSZz3XuvcFCGB9MSS
+        1OzU1ILUIpg+Jg5OqQamRbP7Y9/mHbSYHSDid//Yw2unt7ryvp5/Qn7Dk9e3Dzo5Hl3361tT
+        6KmKoobvvCtlDzyJM57fLmZ04r3dPgeGsl3NV+qzNcIKQhe9qrFjWFEmmcFwbrVFwvzveiHH
+        lbcdFoyO/dJw7XkeB9/OwmN2G1xYexelPZhf+L1t/dVsc16meAfFrjDnHbsLk88eT9BP4Lsn
+        OmH/wqI7mec1f9Q8+xG46DBrz6efk1M2OyvfF/o3bVH6Eq1K7k+hoUHmvTevPbiTFePAcELd
+        tJv1+BROl04r6ao4A79ZZj/uS5zmF8k+nRMslOU2xUH+t2n91EeH5nx0Dt9y+NElw5Ldfaxr
+        0uNP1vK0fIlecUfgrHu+EktxRqKhFnNRcSIARmq55AMEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrILMWRmVeSWpSXmKPExsWy7bCSvO5pg20pBruPaFs8mLeNzWLN3nNM
+        FvOPnGO12NFwhNWi78VDZotNj6+xWlzeNYfN4u7dVYwWM87vY7Jo3XuE3eLnrnksFrcnTmZ0
+        4PHYOesuu8emVZ1sHneu7WHz2Lyk3qP/r4FH35ZVjB6fN8kFsEdx2aSk5mSWpRbp2yVwZTxY
+        8pGxYB5bxekd/ewNjL9Zuhg5OSQETCRuzpjP2MXIxSEksJtRYumEiVAJGYnlz/rYIGxhifst
+        R1hBbCGB94wSqw7Xg9hsAtoS39cvZgVpFhFYzCTxpvshmMMscJFR4sSfK+wgVcJAK6Ze+wxm
+        swioSjQ8Wwtm8wrYSlx/v5IRYoO8xOoNB5gnMPIsYGRYxSiZWlCcm55bbFhgmJdarlecmFtc
+        mpeul5yfu4kRHIpamjsYt6/6oHeIkYmD8RCjBAezkgjv91WbUoR4UxIrq1KL8uOLSnNSiw8x
+        SnOwKInzir/oTRESSE8sSc1OTS1ILYLJMnFwSjUw6XB0JphUvyiUC5+r2aWfei4vafHFw8LP
+        wn6or/sheLRh+urZH1lvKeTeOO4tqvSsuC1h6dc9QfbC9geWyizOWH9qUbdK0LKfRW9Cdtbr
+        trQncMzylVx652GTusNlidY72cvFWyQ4jZw/sE91nmmxKaehpIW3yP9qfeVWMfc6nenPFm51
+        E9/Dr+9V7d2azXJBIcLOcraZFOu6d2mbd3dqqDAG8G0wfzLhQEneC82Uu8839yveyXNcFbL/
+        +8UOqcbrNZK2bqJq0kf/1pQr8/i/zttyMujfhqXK2y7I3tq7b3rwglMKWbuWfJSc8rRxx6Et
+        1yfMsrKYFvRgJrPD+R27D+heObcg4Oqe//+XqUi8VmIpzkg01GIuKk4EAJIk+bq0AgAA
+X-CMS-MailID: 20230718062723epcas2p4fa1d2b07220c873a4d7de2d1899f1699
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230718062723epcas2p4fa1d2b07220c873a4d7de2d1899f1699
+References: <CGME20230718062723epcas2p4fa1d2b07220c873a4d7de2d1899f1699@epcas2p4.samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add pwm nodes to support PWM fan on exynosautov9-sadk board.
+
+---
+Changes in v6:
+ - add disabled status to exynosautov9.dtsi
+
+Changes in v5:
+ - change const to enum in dt-bindings document
+ - remove comment for exynosautov9
+
+Changes in v4:
+ - add document file.
+
+Changes in v3:
+ - removed adding compatible to driver.
+
+Changes in v2:
+ - add compatible string to driver.
 
 
-On 7/15/23 08:53, Raghavendra Rao Ananta wrote:
-> Currently, the core TLB flush functionality of __flush_tlb_range()
-> hardcodes vae1is (and variants) for the flush operation. In the
-> upcoming patches, the KVM code reuses this core algorithm with
-> ipas2e1is for range based TLB invalidations based on the IPA.
-> Hence, extract the core flush functionality of __flush_tlb_range()
-> into its own macro that accepts an 'op' argument to pass any
-> TLBI operation, such that other callers (KVM) can benefit.
-> 
-> No functional changes intended.
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> Reviewed-by: Gavin Shan <gshan@redhat.com>
-Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
-> ---
->   arch/arm64/include/asm/tlbflush.h | 109 +++++++++++++++---------------
->   1 file changed, 56 insertions(+), 53 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-> index 412a3b9a3c25..f7fafba25add 100644
-> --- a/arch/arm64/include/asm/tlbflush.h
-> +++ b/arch/arm64/include/asm/tlbflush.h
-> @@ -278,14 +278,62 @@ static inline void flush_tlb_page(struct vm_area_struct *vma,
->    */
->   #define MAX_TLBI_OPS	PTRS_PER_PTE
->   
-> +/* When the CPU does not support TLB range operations, flush the TLB
-> + * entries one by one at the granularity of 'stride'. If the TLB
-> + * range ops are supported, then:
-> + *
-> + * 1. If 'pages' is odd, flush the first page through non-range
-> + *    operations;
-> + *
-> + * 2. For remaining pages: the minimum range granularity is decided
-> + *    by 'scale', so multiple range TLBI operations may be required.
-> + *    Start from scale = 0, flush the corresponding number of pages
-> + *    ((num+1)*2^(5*scale+1) starting from 'addr'), then increase it
-> + *    until no pages left.
-> + *
-> + * Note that certain ranges can be represented by either num = 31 and
-> + * scale or num = 0 and scale + 1. The loop below favours the latter
-> + * since num is limited to 30 by the __TLBI_RANGE_NUM() macro.
-> + */
-> +#define __flush_tlb_range_op(op, start, pages, stride,			\
-> +				asid, tlb_level, tlbi_user)		\
-> +do {									\
-> +	int num = 0;							\
-> +	int scale = 0;							\
-> +	unsigned long addr;						\
-> +									\
-> +	while (pages > 0) {						\
-> +		if (!system_supports_tlb_range() ||			\
-> +		    pages % 2 == 1) {					\
-> +			addr = __TLBI_VADDR(start, asid);		\
-> +			__tlbi_level(op, addr, tlb_level);		\
-> +			if (tlbi_user)					\
-> +				__tlbi_user_level(op, addr, tlb_level);	\
-> +			start += stride;				\
-> +			pages -= stride >> PAGE_SHIFT;			\
-> +			continue;					\
-> +		}							\
-> +									\
-> +		num = __TLBI_RANGE_NUM(pages, scale);			\
-> +		if (num >= 0) {						\
-> +			addr = __TLBI_VADDR_RANGE(start, asid, scale,	\
-> +						  num, tlb_level);	\
-> +			__tlbi(r##op, addr);				\
-> +			if (tlbi_user)					\
-> +				__tlbi_user(r##op, addr);		\
-> +			start += __TLBI_RANGE_PAGES(num, scale) << PAGE_SHIFT; \
-> +			pages -= __TLBI_RANGE_PAGES(num, scale);	\
-> +		}							\
-> +		scale++;						\
-> +	}								\
-> +} while (0)
-> +
->   static inline void __flush_tlb_range(struct vm_area_struct *vma,
->   				     unsigned long start, unsigned long end,
->   				     unsigned long stride, bool last_level,
->   				     int tlb_level)
->   {
-> -	int num = 0;
-> -	int scale = 0;
-> -	unsigned long asid, addr, pages;
-> +	unsigned long asid, pages;
->   
->   	start = round_down(start, stride);
->   	end = round_up(end, stride);
-> @@ -307,56 +355,11 @@ static inline void __flush_tlb_range(struct vm_area_struct *vma,
->   	dsb(ishst);
->   	asid = ASID(vma->vm_mm);
->   
-> -	/*
-> -	 * When the CPU does not support TLB range operations, flush the TLB
-> -	 * entries one by one at the granularity of 'stride'. If the TLB
-> -	 * range ops are supported, then:
-> -	 *
-> -	 * 1. If 'pages' is odd, flush the first page through non-range
-> -	 *    operations;
-> -	 *
-> -	 * 2. For remaining pages: the minimum range granularity is decided
-> -	 *    by 'scale', so multiple range TLBI operations may be required.
-> -	 *    Start from scale = 0, flush the corresponding number of pages
-> -	 *    ((num+1)*2^(5*scale+1) starting from 'addr'), then increase it
-> -	 *    until no pages left.
-> -	 *
-> -	 * Note that certain ranges can be represented by either num = 31 and
-> -	 * scale or num = 0 and scale + 1. The loop below favours the latter
-> -	 * since num is limited to 30 by the __TLBI_RANGE_NUM() macro.
-> -	 */
-> -	while (pages > 0) {
-> -		if (!system_supports_tlb_range() ||
-> -		    pages % 2 == 1) {
-> -			addr = __TLBI_VADDR(start, asid);
-> -			if (last_level) {
-> -				__tlbi_level(vale1is, addr, tlb_level);
-> -				__tlbi_user_level(vale1is, addr, tlb_level);
-> -			} else {
-> -				__tlbi_level(vae1is, addr, tlb_level);
-> -				__tlbi_user_level(vae1is, addr, tlb_level);
-> -			}
-> -			start += stride;
-> -			pages -= stride >> PAGE_SHIFT;
-> -			continue;
-> -		}
-> -
-> -		num = __TLBI_RANGE_NUM(pages, scale);
-> -		if (num >= 0) {
-> -			addr = __TLBI_VADDR_RANGE(start, asid, scale,
-> -						  num, tlb_level);
-> -			if (last_level) {
-> -				__tlbi(rvale1is, addr);
-> -				__tlbi_user(rvale1is, addr);
-> -			} else {
-> -				__tlbi(rvae1is, addr);
-> -				__tlbi_user(rvae1is, addr);
-> -			}
-> -			start += __TLBI_RANGE_PAGES(num, scale) << PAGE_SHIFT;
-> -			pages -= __TLBI_RANGE_PAGES(num, scale);
-> -		}
-> -		scale++;
-> -	}
-> +	if (last_level)
-> +		__flush_tlb_range_op(vale1is, start, pages, stride, asid, tlb_level, true);
-> +	else
-> +		__flush_tlb_range_op(vae1is, start, pages, stride, asid, tlb_level, true);
-> +
->   	dsb(ish);
->   }
->   
+Jaewon Kim (2):
+  dt-bindings: pwm: samsung: add exynosautov9 compatible
+  arm64: dts: exynos: add pwm node for exynosautov9-sadk
+
+ .../devicetree/bindings/pwm/pwm-samsung.yaml    | 17 +++++++++++------
+ .../arm64/boot/dts/exynos/exynosautov9-sadk.dts |  6 ++++++
+ arch/arm64/boot/dts/exynos/exynosautov9.dtsi    | 11 +++++++++++
+ 3 files changed, 28 insertions(+), 6 deletions(-)
 
 -- 
-Shaoqin
+2.17.1
 
