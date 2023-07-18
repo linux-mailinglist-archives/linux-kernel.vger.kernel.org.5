@@ -2,155 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE78757F4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A44E757F4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231868AbjGROUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44528 "EHLO
+        id S233029AbjGROUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232185AbjGROUd (ORCPT
+        with ESMTP id S231360AbjGROUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:20:33 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD10E7E;
-        Tue, 18 Jul 2023 07:20:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=CCWgwOpFRQ5XqsiPbGDMwwFojNqf8ujX2CR9i45zWzI=; b=cUaiaLEwT86VbsrvDDtd3lmfsc
-        6P6lhJsp4LilqQUvzPzwBsNp/DT7K/cdlQlz8og1QXVqJLswf0xjZyJ9/+toh4MpakkQmZ/N2Lb3Y
-        ssgfpIgQ3+5SM22Z9tKYZq7nBk421B0656m1oY50TVHXmMA3p7D8o4sulipB/HHVuvX2qLKRpasfG
-        j9wbyjuQi9djwAN2mZ4NV2ivYzvwk2EGP88VJxPLC09zvDEItY+mXRP22IcOr80xwymzv137lHfnN
-        YOshTBsvJxiTlhnYYzMQWkNxdhIrid39KCCJZ2yfByL+s2dbnv05mSwrqCpUIc9FLz6dOJL1UKLsd
-        wxxLM7MQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51756)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qLlYp-0005nb-1w;
-        Tue, 18 Jul 2023 15:20:19 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qLlYj-00036j-CY; Tue, 18 Jul 2023 15:20:13 +0100
-Date:   Tue, 18 Jul 2023 15:20:13 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Maxim Georgiev <glipus@gmail.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-        Gerhard Engleder <gerhard@engleder-embedded.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        UNGLinuxDriver@microchip.com,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Casper Andersson <casper.casan@gmail.com>,
-        Sergey Organov <sorganov@gmail.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 net-next 06/12] net: fec: convert to
- ndo_hwtstamp_get() and ndo_hwtstamp_set()
-Message-ID: <ZLafnWuAlytSN7B+@shell.armlinux.org.uk>
-References: <20230717152709.574773-1-vladimir.oltean@nxp.com>
- <20230717152709.574773-7-vladimir.oltean@nxp.com>
+        Tue, 18 Jul 2023 10:20:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486F619F;
+        Tue, 18 Jul 2023 07:20:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D2157615D9;
+        Tue, 18 Jul 2023 14:20:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C6F7C433C8;
+        Tue, 18 Jul 2023 14:20:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689690020;
+        bh=69f9Ow7G9SsiOy4AHNxB2+xh70U/bWAt+jbQXiCN9EE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NZb1tcBRDBygRjVyPhSRssQyYE2oHpTYsXiTT1l9pKF1STlu13Iixoi8hJImAoXpO
+         94EpbPYgEi6As3I8DrJtm1WZA0zP8nwvrD7bI+n7IothYlhMAzp55oWNr7XfVBvzFu
+         gG93yC7kuqBdBylkdd+sLY1HzySR82keSAG5daB7knFz9yVH8K8tvDM28FyGjUrQNf
+         AjY82wvZz7CcR96qMnGeM3gn3iYw5eedZfGFyTIAiZSydfHh0A8l+++FgTacwGUbeo
+         TKRn7r3gyn/sn3ENLQKLOq92cw78vQTdmPC027pIcAx4x46BE2Lv0xalXTHo2YIidC
+         R2IcV6i2TNu0g==
+Date:   Tue, 18 Jul 2023 15:20:15 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Hal Feng <hal.feng@starfivetech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 3/3] MAINTAINERS: Add Hal as a maintainer of SFCTEMP
+ HWMON DRIVER
+Message-ID: <20230718-progeny-edge-70b1a395f2aa@spud>
+References: <20230718034937.92999-1-hal.feng@starfivetech.com>
+ <20230718034937.92999-4-hal.feng@starfivetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="+SYy1csup/eV3m/s"
 Content-Disposition: inline
-In-Reply-To: <20230717152709.574773-7-vladimir.oltean@nxp.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230718034937.92999-4-hal.feng@starfivetech.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 06:27:03PM +0300, Vladimir Oltean wrote:
-> -static int fec_enet_ioctl(struct net_device *ndev, struct ifreq *rq, int cmd)
-> -{
-> -	struct fec_enet_private *fep = netdev_priv(ndev);
-> -	struct phy_device *phydev = ndev->phydev;
-> -
-> -	if (!netif_running(ndev))
-> -		return -EINVAL;
-> -
-> -	if (!phydev)
-> -		return -ENODEV;
-> -
-... process hwtstamp calls
 
-So if the network device is not running, ioctl() returns -EINVAL. From
-what I can see in fec_enet_mii_probe() called from fec_enet_open(), we
-guarantee that phydev will not be NULL once the first open has
-succeeded, so I don't think the second if() statement has any effect.
+--+SYy1csup/eV3m/s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +static int fec_hwtstamp_get(struct net_device *ndev,
-> +			    struct kernel_hwtstamp_config *config)
-> +{
-> +	struct fec_enet_private *fep = netdev_priv(ndev);
-> +	struct phy_device *phydev = ndev->phydev;
-> +
-> +	if (phy_has_hwtstamp(phydev))
-> +		return phy_mii_ioctl(phydev, config->ifr, SIOCGHWTSTAMP);
-> +
-> +	if (!fep->bufdesc_ex)
-> +		return -EOPNOTSUPP;
+On Tue, Jul 18, 2023 at 11:49:37AM +0800, Hal Feng wrote:
+> As he is the submitter of this driver, add his mail so he can
+> maintain the driver and easily reply in the mailing list.
+>=20
+> Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index aee340630eca..5056079ade77 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -19256,6 +19256,7 @@ F:	drivers/net/ethernet/sfc/
+> =20
+>  SFCTEMP HWMON DRIVER
+>  M:	Emil Renner Berthing <kernel@esmil.dk>
+> +M:	Hal Feng <hal.feng@starfivetech.com>
+>  L:	linux-hwmon@vger.kernel.org
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/hwmon/starfive,jh71x0-temp.yaml
 
-If the interface hasn't been brought up at least once, then phydev
-here will be NULL, and we'll drop through to this test. If the FEC
-doesn't support extended buffer descriptors, userspace will see
--EOPNOTSUPP rather than -EINVAL. This could be misleading to userspace.
+Whatever about the other patches in this series, this one certainly
+needs an Ack from Emil.
 
-Does this need something like:
+Thanks,
+Conor.
 
-	if (!netif_running(ndev))
-		return -EINVAL;
+--+SYy1csup/eV3m/s
+Content-Type: application/pgp-signature; name="signature.asc"
 
-before, or maybe just after phy_has_hwtstamp() to give equivalent
-behaviour?
+-----BEGIN PGP SIGNATURE-----
 
-> +static int fec_hwtstamp_set(struct net_device *ndev,
-> +			    struct kernel_hwtstamp_config *config,
-> +			    struct netlink_ext_ack *extack)
-> +{
-> +	struct fec_enet_private *fep = netdev_priv(ndev);
-> +	struct phy_device *phydev = ndev->phydev;
-> +
-> +	if (phy_has_hwtstamp(phydev)) {
-> +		fec_ptp_disable_hwts(ndev);
-> +
-> +		return phy_mii_ioctl(phydev, config->ifr, SIOCSHWTSTAMP);
-> +	}
-> +
-> +	if (!fep->bufdesc_ex)
-> +		return -EOPNOTSUPP;
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLafjQAKCRB4tDGHoIJi
+0ieXAPoDb+w2V0FDl4JxOKH09CNgAq/8yBxnBA358gfjau/P9QD/Rw3p/VAyVXD5
+S6E/DUnzFkGfMmqp4BxxVrghLiJKjgk=
+=T5XJ
+-----END PGP SIGNATURE-----
 
-Same comment here.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+--+SYy1csup/eV3m/s--
