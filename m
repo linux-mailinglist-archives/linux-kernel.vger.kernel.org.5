@@ -2,116 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8468F757E53
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D0D757E4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbjGRNzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
+        id S232978AbjGRNzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:55:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232981AbjGRNzp (ORCPT
+        with ESMTP id S232974AbjGRNzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:55:45 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A3D135;
-        Tue, 18 Jul 2023 06:55:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689688543; x=1721224543;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=V7uObewKKMsSFKcANEcQ6EZsbUKYMZQzdkpGT+xME/c=;
-  b=iQsKPcpXfE/c07KBnfQ2BDwNCXr+4+nFDCXSq6yK/qVIn5XJR6KVxx0y
-   9qcRJ999as8l0YPJP2h7nkjxe7YVNW5b6mlvW4v3GPw/IcXr8Sggd1dEP
-   mCoOiJRYdpJVEtHPzCw2MnKua6uQhjWqY5pSTpOMkzvTDJQ2qp57Dck8d
-   dGFBPxbvAUEsEw8REH8lABAOqE9DQYrWShk8H4TuFYioAHPkmSEyzgvZl
-   O1UwFbe4bGSfsXAnvP1N9IV8FhYBjbzp6Jn0NJcjqOtZ0ARYgp9N9IzIH
-   0cA/Vh/WbP5MipJdvdUFyHjIILtHZBUAKDsIUpYs/2V6hN2xLVRRJaBuP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="345803877"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="345803877"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 06:55:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="793630354"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="793630354"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP; 18 Jul 2023 06:55:36 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qLlAr-00FzOP-0Z;
-        Tue, 18 Jul 2023 16:55:33 +0300
-Date:   Tue, 18 Jul 2023 16:55:32 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Tue, 18 Jul 2023 09:55:44 -0400
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1106BEA;
+        Tue, 18 Jul 2023 06:55:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1689688538;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dIIcx1SGAw9uYYN1avMxPsLqak5l24gEpGFmCR8wXQs=;
+        b=MeGV0ommnDXY0bZLzz2aUDd3eORngKqqpm/czs4W5fC56SGEpuHkxL+e3H80XeL4olpT4w
+        1ApOAoo+UVumdCRRcw4QCgk1bWX8vFzXQhxjA1hdPhx0ybjBisPaXhX4AezSFzKDJcy2CL
+        4umq/NBxiWzrvybq7Sv34wmBua/EBa4=
+Message-ID: <d674ed791e4e7a71b671d1a66a03796cd6867fde.camel@crapouillou.net>
+Subject: Re: [PATCH v2 04/10] pinctrl: intel: Switch to use
+ DEFINE_NOIRQ_DEV_PM_OPS() helper
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
         Linus Walleij <linus.walleij@linaro.org>,
         Balsam CHIHI <bchihi@baylibre.com>,
         Claudiu Beznea <claudiu.beznea@microchip.com>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
         Thierry Reding <thierry.reding@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
         linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mediatek@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org,
         linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Len Brown <len.brown@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
+        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
         Sean Wang <sean.wang@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Pavel Machek <pavel@ucw.cz>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
         AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v2 05/10] pinctrl: lynxpoint: Make use of pm_ptr()
-Message-ID: <ZLaZ1NLcACjqB02i@smile.fi.intel.com>
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
+Date:   Tue, 18 Jul 2023 15:55:35 +0200
+In-Reply-To: <CAHp75VdPNCvhVSeKESbd7VNVPa8GVXVnw04jaE4HMUjK_b8+dA@mail.gmail.com>
 References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
- <20230717172821.62827-6-andriy.shevchenko@linux.intel.com>
- <20230718110620.0000218e@Huawei.com>
+         <20230717172821.62827-5-andriy.shevchenko@linux.intel.com>
+         <c47c26ba7ea5bcbdcbe1d001b6cc527cee6c7d03.camel@crapouillou.net>
+         <CAHp75Vcjq9=Q2_fsGJ9oCw=WYR3p3ot_cNLiDJV93psNcXXHLw@mail.gmail.com>
+         <8c66f79025ddd8388eeb9bdb3f0e789fe9f362d9.camel@crapouillou.net>
+         <CAHp75VdPNCvhVSeKESbd7VNVPa8GVXVnw04jaE4HMUjK_b8+dA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718110620.0000218e@Huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 11:06:20AM +0100, Jonathan Cameron wrote:
-> On Mon, 17 Jul 2023 20:28:16 +0300
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> 
-> > Cleaning up the driver to use pm_ptr() and *_PM_OPS() macros that
-> > make it simpler and allows the compiler to remove those functions
-> > if built without CONFIG_PM and CONFIG_PM_SLEEP support.
+Hi Andy,
 
-> Those macros
+Le mardi 18 juillet 2023 =C3=A0 15:57 +0300, Andy Shevchenko a =C3=A9crit=
+=C2=A0:
+> On Mon, Jul 17, 2023 at 10:56=E2=80=AFPM Paul Cercueil <paul@crapouillou.=
+net>
+> wrote:
+> > Le lundi 17 juillet 2023 =C3=A0 22:33 +0300, Andy Shevchenko a =C3=A9cr=
+it :
+> > > On Mon, Jul 17, 2023 at 10:02=E2=80=AFPM Paul Cercueil
+> > > <paul@crapouillou.net>
+> > > wrote:
+> > > > Le lundi 17 juillet 2023 =C3=A0 20:28 +0300, Andy Shevchenko a =C3=
+=A9crit
+> > > > :
+>=20
+> ...
+>=20
+> > > > So the correct way to update this driver would be to have a
+> > > > conditionally-exported dev_pm_ops structure:
+> > > >=20
+> > > > EXPORT_GPL_DEV_PM_OPS(intel_pinctrl_pm_ops) =3D {
+> > > > =C2=A0=C2=A0=C2=A0 NOIRQ_SYSTEM_SLEEP_PM_OPS(intel_pinctrl_suspend_=
+noirq,
+> > > > intel_pinctrl_resume_noirq),
+> > > > };
+> > >=20
+> > > This looks ugly. I didn't know that EXPORT*PM_OPS designed that
+> > > way,
+> > > but it seems pm.h in such case needs EXPORT for NOIRQ case as
+> > > well.
+> >=20
+> > It's designed so that when CONFIG_PM is disabled, the dev_pm_ops is
+> > garbage-collected along with all its callbacks.
+> >=20
+> > I know it looks ugly, but we already have 4 variants (regular,
+> > namespace, GPL, namespace + GPL), if we start to add macros for
+> > specific use-cases then it will become bloated really quick.
+>=20
+> Maybe macros can be replaced / changed to make it scale?
 
-I believe you meant here "The SYSTEM_SLEEP... macro..."
+If you have any ideas, then yes absolutely.
 
-Or is runtime PM also altered? Hmm...
+>=20
+> > And the "bloat" I'm trying to avoid here is the extreme expansion
+> > of
+> > the API which makes it hard for people not familiar to the code to
+> > understand what should be used and how.
+>=20
+> So far, based on the rest of the messages in the thread the
+> EXPORT*PM_OPS() have the following issues:
+> 1) do not scale (for variants with different scope we need new set of
+> macros);
+> 2) do not cover cases with pm_sleep_ptr();
+> 3) export symbols in case when it's not needed.
+>=20
+> Am I right?
 
-> add a load more callbacks... Whilst that may well be fine,
-> you should definitely mention that in this patch description.
+I think that's right yes.
 
-Sure.
+>=20
+> > > > Then your two callbacks can be "static" and without #ifdef
+> > > > guards.
+> > > >=20
+> > > > The resulting "intel_pinctrl_pm_ops" can be marked as "extern"
+> > > > in
+> > > > the
+> > > > pinctrl-intel.h without any guards, as long as it is only
+> > > > referenced
+> > > > with the pm_ptr() macro.
+> > >=20
+> > > I'm not sure I got this. Currently drivers do not have any
+> > > guards.
+> > > Moreover, the correct one for noirq is pm_sleep_ptr(), isn't it?
+> >=20
+> > The EXPORT_*_DEV_PM_OPS() macros do export the "dev_pm_ops"
+> > conditionally depending on CONFIG_PM. We could add variants that
+> > export
+> > it conditionally depending on CONFIG_PM_SLEEP, but we're back at
+> > the
+> > problem of adding bloat.
+>=20
+> Exactly.
+>=20
+> > You could use pm_sleep_ptr() indeed, with the existing macros, with
+> > the
+> > drawback that in the case where CONFIG_PM && !CONFIG_PM_SLEEP, the
+> > dev_pm_ops + callbacks are compiled in but never referenced.
+>=20
+> And exactly.
+>=20
+> I don't think they are ready to use (in the current form). But let's
+> see what we may do better here...
 
--- 
-With Best Regards,
-Andy Shevchenko
+They were OK when Jonathan and myself were updating the IIO drivers -
+but now they definitely show their limitations.
 
-
+Cheers,
+-Paul
