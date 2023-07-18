@@ -2,99 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C7B7581AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9887581A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232940AbjGRQGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 12:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56554 "EHLO
+        id S232076AbjGRQGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 12:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232136AbjGRQGs (ORCPT
+        with ESMTP id S230386AbjGRQGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 12:06:48 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18113F1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:06:47 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-991c786369cso764099466b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:06:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1689696405; x=1692288405;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ge1gUvFCHAi2h+q4Ml9Q9L5Vd55ScJJX2QCIQPKfrag=;
-        b=BqZZOejuiG1Snfz19ZPoCN3/QERwEcYnwkA/+wPTvPGSc6sFNhLbLZGy9G3JTWk8sH
-         lElYzVSqR7AFsR7jnWnkBcn9X1Yw144lhXjYTSeqnfPTOpJkIviKBJeq6gIaAWnpDfxo
-         vlXWmI8LHcov6VJJmd2nW1adN3rMj6mF4RME0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689696405; x=1692288405;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ge1gUvFCHAi2h+q4Ml9Q9L5Vd55ScJJX2QCIQPKfrag=;
-        b=C6HtEvvx24ttoj/zAbQWuolzojpnS2DLOZhaMenHy1j/EIyIMLYRo1yzcKnVB13N5g
-         pwapnYeGCiJNHrHmMVU5zKDdp9UUvZiR54ZThX67u37dpt+8Vhvsv0jE8w5ggHUkI5Jr
-         VBIZkgGWtqNZRL2obnEQ1f6U0rSd3AVcs/vq3sx8fDliNjaiNsxXkd3qT/6K3oCdeage
-         VC7vSCgDAbiBijEwdcNN54Rbn1/86WZbnLXVCb95d4n5XhRTIWBc7HXOLHN2SREhhRya
-         /ZP0/9OiTB6lAgRKJ3W4dkpqa7HwVRDuCab44RJjUlLbNEN9yb2W7valnnYR6/B68JiE
-         XcFQ==
-X-Gm-Message-State: ABy/qLZ2kKqzhckc73dgXJUPPcBjmRSOGBdsno8cn87SdloRozZivYyo
-        nHp8pt5daAFkXL4im8mYyDudMUez5knJXzShuBi/d4m2
-X-Google-Smtp-Source: APBJJlH16F9hJiCftF6996I4z8BT0iMF6pSGocJcxWgONqkmdODSZYC5OrJKRjmUvkxHhMcrTZoKIg==
-X-Received: by 2002:a17:906:20de:b0:997:e9a3:9c54 with SMTP id c30-20020a17090620de00b00997e9a39c54mr421747ejc.0.1689696405268;
-        Tue, 18 Jul 2023 09:06:45 -0700 (PDT)
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
-        by smtp.gmail.com with ESMTPSA id gh5-20020a170906e08500b00992bea2e9d2sm1210788ejb.62.2023.07.18.09.06.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 09:06:44 -0700 (PDT)
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-991c786369cso764095866b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:06:44 -0700 (PDT)
-X-Received: by 2002:a05:6402:1846:b0:521:7181:e8b7 with SMTP id
- v6-20020a056402184600b005217181e8b7mr251331edy.40.1689696404154; Tue, 18 Jul
- 2023 09:06:44 -0700 (PDT)
+        Tue, 18 Jul 2023 12:06:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF36F1AC;
+        Tue, 18 Jul 2023 09:06:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A3EA6165D;
+        Tue, 18 Jul 2023 16:06:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B576C433C7;
+        Tue, 18 Jul 2023 16:06:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689696393;
+        bh=EOkdjFMWH7brfMl6FFZE0qz5Gq2zAqO7jP+yRL3OVlU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qIb3AHg2MbxQcaCcnDObe7IyWQP9EULqWkf332wERinXUyRdCHH/qCNeIigrp5Ycw
+         ydaIfRizs/INJy0ZXVU/+UZxqXbZ1IndtS1QbbNupQjXFCMOZ7s9GtI5Lx1NiLYhed
+         N/TXvdwYWv4fstA72glvLH0cz5taXu9s65LrpLU7ltohhuRGO22kZCO1NSDiaci9Yc
+         TJl7yenY0O0Vr33FHbShSyg4HHSBhu5lDXZoQp2aT3kvY61gJajckRsCIyRPO8GqYb
+         736uydTpvyC9e+RNDJoH0F4C0bAE+h387TX3d2LR2rVDoFVrDCpdJmKatD4hvVsZ17
+         nWLnw8l6c1maQ==
+Date:   Tue, 18 Jul 2023 09:06:32 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Rosenberg <drosen@google.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH v2 1/3] bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
+Message-ID: <20230718090632.4590bae3@kernel.org>
+In-Reply-To: <CAADnVQJEEF=nqxo6jHKK=Tn3M_NVXHQjhY=_sry=tE8X4ss25A@mail.gmail.com>
+References: <20230502005218.3627530-1-drosen@google.com>
+        <20230718082615.08448806@kernel.org>
+        <CAADnVQJEEF=nqxo6jHKK=Tn3M_NVXHQjhY=_sry=tE8X4ss25A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230717223049.327865981@linutronix.de> <20230717223225.515238528@linutronix.de>
- <CAHk-=wh9sDpbCPCekRr-fgWYz=9xa0_BOkEa+5vOr9Co-fNhrQ@mail.gmail.com> <87h6q1y82v.ffs@tglx>
-In-Reply-To: <87h6q1y82v.ffs@tglx>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 18 Jul 2023 09:06:27 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjkmwJB4puU7dn0eTABXGa7WdX=JZFZjqxOEkiA3f+aGQ@mail.gmail.com>
-Message-ID: <CAHk-=wjkmwJB4puU7dn0eTABXGa7WdX=JZFZjqxOEkiA3f+aGQ@mail.gmail.com>
-Subject: Re: [patch 41/58] x86/apic: Add max_apic_id member
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 at 00:47, Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> The confusing part here is the physical APIC ID vs. the destination
-> mode.
+On Tue, 18 Jul 2023 08:52:55 -0700 Alexei Starovoitov wrote:
+> On Tue, Jul 18, 2023 at 8:26=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> =
+wrote:
+> > On Mon,  1 May 2023 17:52:16 -0700 Daniel Rosenberg wrote: =20
+> > > --- a/include/linux/skbuff.h
+> > > +++ b/include/linux/skbuff.h
+> > > @@ -4033,7 +4033,7 @@ __skb_header_pointer(const struct sk_buff *skb,=
+ int offset, int len,
+> > >       if (likely(hlen - offset >=3D len))
+> > >               return (void *)data + offset;
+> > >
+> > > -     if (!skb || unlikely(skb_copy_bits(skb, offset, buffer, len) < =
+0))
+> > > +     if (!skb || !buffer || unlikely(skb_copy_bits(skb, offset, buff=
+er, len) < 0))
+> > >               return NULL; =20
+> >
+> > First off - please make sure you CC netdev on changes to networking!
+> >
+> > Please do not add stupid error checks to core code for BPF safety.
+> > Wrap the call if you can't guarantee that value is sane, this is
+> > a very bad precedent. =20
+>=20
+> This is NOT for safety. You misread the code.
 
-Actually, no, what confused me here ended up being that I didn't see
-any other limit checking at all for the flat mode, and then I was
-"this cannot possibly work up to that limit".
+Doesn't matter, safety or optionality. skb_header_pointer() is used=20
+on the fast paths of the networking stack, adding heavy handed input
+validation to it is not okay. No sane code should be passing NULL
+buffer to skb_header_pointer(). Please move the NULL check to the BPF
+code so the rest of the networking stack does not have to pay the cost.
 
-But it turns out that the limit checking appears to be in the
-"physflat" case, not in the simple flat case.
-
-IOW, the physflat probe function says "I'll take it" whenever
-num_possible_cpus() > 8", and that seems to be what then limits the
-flat mode to a max of 8 cpus. So the limit was just in another place
-than I expected.
-
-            Linus
+This should be common sense. If one caller is doing something..
+"special" the extra code should live in the caller, not the callee.
+That's basic code hygiene.
