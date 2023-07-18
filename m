@@ -2,179 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57207758643
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A759758646
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbjGRUsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 16:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51628 "EHLO
+        id S230330AbjGRUtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 16:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjGRUsK (ORCPT
+        with ESMTP id S229772AbjGRUtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 16:48:10 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49D9C0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:48:08 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id d9443c01a7336-1b8ad356f03so36986995ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:48:08 -0700 (PDT)
+        Tue, 18 Jul 2023 16:49:51 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C96FBD
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:49:50 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbb07e7155so139765e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:49:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689713288; x=1692305288;
-        h=content-transfer-encoding:in-reply-to:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vqOdktV4CNBtKn+gnmv6biZuC3rq/Zlio3rN/V4PHOU=;
-        b=rqCnJR32zTs5TqdKS1/Ufs1UUVAwzfTnwTIjTAvcFtONsiHlD252ljFOl90S2cYvgM
-         ZLKSITp2+G5AW40qtJIZ+MQTegHRta341lU9Ygr4VZgxyk1KYPwQR6YP3ITcdON1PH6N
-         nBkBxfCUyC9q7D1dCyEMqJOIPPFvDDFnHoE/GaSpiTrmftxOUnNcIoIdLQmi/NX0vqTm
-         AASkqHAt5oOw1i09CcjHgfcGXe8UqqaQ9OfNrLp5B4dJnWN/+7yMU3bMeRYukKDthIMc
-         WUh4nLPLLkhH8dJP2dA8ii7XW93gNrkr34MWCYt3URAgyPIY7x7UCH9CUr06dktAzbJs
-         YqAQ==
+        d=google.com; s=20221208; t=1689713389; x=1692305389;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BgQcqwhLTNI8qX6knCzj+hGMtjn0S20ah/hoUWW0q2U=;
+        b=hVKdbNRuovsCs+y0Lf2bjXemqvVB1qeWfMqk5yyraYwCcDvNKtONwM+9XfpFN1W2NA
+         tjgJrVAb3dsXBTNQ49SmM3AwnYOhUE/vqp/wEYLOf83X2W+tDVEXTHfYPKQ2tUo9NPaT
+         dw5ZrZz/j56/coQr2r1iopReeZ+mBe+jfH/39c/vzxbEe4h2YJfXd+fcTPAwN0H0T4cV
+         MBqZJQwb6H1hrxwxIbfv56yZ0fo9pEyNfm1ssTyQdVI+F44curhBWxXdMIR7a+769jzY
+         mh2JTM5D3dwczbjf4t4s/+GLzOEMKj457HnZ9/URUATtGgVJn5v2gsUDhUBv+VENOOLr
+         PzNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689713288; x=1692305288;
-        h=content-transfer-encoding:in-reply-to:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vqOdktV4CNBtKn+gnmv6biZuC3rq/Zlio3rN/V4PHOU=;
-        b=cLooBqXQFLgkeaFZCjiobLwKnmYQwu0Xp7qmuA3RNG4EbpPUuXW9g9Ng1kH3iAg+oW
-         u3SNSDWiKXGAN6nLGhljNTiIumdWLdG1fgZeNOI/54VZKdflMn7Rolszv3hs7seycxRd
-         DmHu+pNJQF8hkiQookmI9N+2P7XqbzMVGmHcNu//kiUfrwlCsfVM3IgTl9k0NC20Zfih
-         WJV+pwkLNyHlHKt+rBjfvVTxaMNfb95eJtLsSBA09I4w/BjYlWB+mjnWicHmEGsZ4CNJ
-         JnyfVus4XIi9jXLJv68Kz8VaUYr2i+LPlvKh7ZKPCXKfG9lXZbf8qstRnFBaYnpV8Coq
-         ytTA==
-X-Gm-Message-State: ABy/qLZRLZMJ+3yNg4RO7bHjI3/0/KyRytV/0NoPaR0N8peXzRnu2IHs
-        DRyqg/ztV1pnrfNxIGoKGkE=
-X-Google-Smtp-Source: APBJJlHOdEC0qdKIljueqvKhAnIWEgKV9mUStxkY1rPzoLUZoY9sN7ahxjF2EtVckZx/noMv3LRlhw==
-X-Received: by 2002:a17:903:110d:b0:1b0:3637:384e with SMTP id n13-20020a170903110d00b001b03637384emr888660plh.25.1689713288277;
-        Tue, 18 Jul 2023 13:48:08 -0700 (PDT)
-Received: from [127.0.0.1] ([212.107.28.53])
-        by smtp.gmail.com with ESMTPSA id c1-20020a170902d48100b001b896d0eb3dsm2321333plg.8.2023.07.18.13.48.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 13:48:07 -0700 (PDT)
-From:   Celeste Liu <coelacanthushex@gmail.com>
-X-Google-Original-From: Celeste Liu <CoelacanthusHex@gmail.com>
-Message-ID: <cd53e03b-c574-dc05-f9c0-1c8271c5a607@gmail.com>
-Date:   Wed, 19 Jul 2023 04:48:02 +0800
+        d=1e100.net; s=20221208; t=1689713389; x=1692305389;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BgQcqwhLTNI8qX6knCzj+hGMtjn0S20ah/hoUWW0q2U=;
+        b=Gl5ppH6PX10ZYdAdJ8Q5mH6+dSro0SZZMYUk0fTOwxvhhKtgjaOQyhGhzbGbbfTU7U
+         Tcy0I1+z79ApoJBDBel7eCxAJJ1cXpILMHTjg3oIvmauqiOk/Pyi8pRpgB5umTp+gref
+         0XJ7XnY0ntl5faHmiZ6V+km8oM+Mb84h6u5PAkLv3g/ytScp9Dx0x3BnzK2CPxCnU1PW
+         ZBGVeEcU+5mXFZJbP8//aZbeHbVr7X6/XxHVMjBvlKrewCXDS9M9kRIgMdQ3VMm9S9vY
+         nN3ilNIKZIriXcZNTGTzmwlIqa9AaUWjXVsz0bcllC5AAPbcwvKmNBKIaeHT10SZ8cor
+         /LXw==
+X-Gm-Message-State: ABy/qLZHlZrwUMjQ7uCM2htPNPH1PXQI8cJELYnFmn3A78yKC0NmJZDT
+        qG6fmQbuUhgKxUi6RgHnl1ToJ2hKfPgtwPWrc+8Esg==
+X-Google-Smtp-Source: APBJJlEXJgViNiRV7+HWXgtPyoNb/rXxkQwn9HrWqWCqXqR19OSLFrNI1QNrW14keUR5xmaeSR91zkFruRzzHPqWgfY=
+X-Received: by 2002:a05:600c:3ca0:b0:3f7:7bd4:3b9d with SMTP id
+ bg32-20020a05600c3ca000b003f77bd43b9dmr162464wmb.6.1689713388786; Tue, 18 Jul
+ 2023 13:49:48 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] riscv: entry: set a0 prior to
- syscall_enter_from_user_mode
-Content-Language: en-GB-large
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-riscv@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Felix Yan <felixonmars@archlinux.org>,
-        Ruizhe Pan <c141028@gmail.com>,
-        Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
-References: <20230718162940.226118-1-CoelacanthusHex@gmail.com>
- <87pm4p2et2.fsf@all.your.base.are.belong.to.us>
- <03206759-8d6a-a410-a8f9-d4678236bdbf@gmail.com>
-In-Reply-To: <03206759-8d6a-a410-a8f9-d4678236bdbf@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230707210947.1208717-1-rmoar@google.com> <20230707210947.1208717-10-rmoar@google.com>
+ <CABVgOS=1kwHn8BtB55i3TMcXB9+RveiyGn4aYja_agkc4_yH-w@mail.gmail.com>
+In-Reply-To: <CABVgOS=1kwHn8BtB55i3TMcXB9+RveiyGn4aYja_agkc4_yH-w@mail.gmail.com>
+From:   Rae Moar <rmoar@google.com>
+Date:   Tue, 18 Jul 2023 16:49:35 -0400
+Message-ID: <CA+GJov4BdZx-5MfbtWCs2jDYOfq8CuZm3FZ4VFPYm8MNTj-mnQ@mail.gmail.com>
+Subject: Re: [RFC v2 9/9] kunit: Add documentation of KUnit test attributes
+To:     David Gow <davidgow@google.com>
+Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, keescook@chromium.org,
+        linux-hardening@vger.kernel.org, jstultz@google.com,
+        tglx@linutronix.de, sboyd@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 18, 2023 at 3:39=E2=80=AFAM David Gow <davidgow@google.com> wro=
+te:
+>
+> On Sat, 8 Jul 2023 at 05:10, Rae Moar <rmoar@google.com> wrote:
+> >
+> > Add documentation on the use of test attributes under the section "Tips=
+ for
+> > Running KUnit Tests" in the KUnit docs.
+> >
+> > Documentation includes three sections on how to mark tests with attribu=
+tes,
+> > how attributes are reported, and how the user can filter tests using te=
+st
+> > attributes.
+> >
+> > Signed-off-by: Rae Moar <rmoar@google.com>
+> > ---
+>
+> Looks good overall. Some nitpicks below.
+>
+> Reviewed-by: David Gow <davidgow@google.com>
+>
+> >
+> > Changes since v1:
+> > - This is a new patch
+> >
+> >  .../dev-tools/kunit/running_tips.rst          | 163 ++++++++++++++++++
+> >  1 file changed, 163 insertions(+)
+> >
+> > diff --git a/Documentation/dev-tools/kunit/running_tips.rst b/Documenta=
+tion/dev-tools/kunit/running_tips.rst
+> > index 8e8c493f17d1..c9bc5a6595d3 100644
+> > --- a/Documentation/dev-tools/kunit/running_tips.rst
+> > +++ b/Documentation/dev-tools/kunit/running_tips.rst
+> > @@ -262,3 +262,166 @@ other code executed during boot, e.g.
+> >         # Reset coverage counters before running the test.
+> >         $ echo 0 > /sys/kernel/debug/gcov/reset
+> >         $ modprobe kunit-example-test
+> > +
+> > +
+> > +Test Attributes and Filtering
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> > +
+> > +Test suites and cases can be marked with test attributes, such as spee=
+d of
+> > +test. These attributes will later be printed in test output and can be=
+ used to
+> > +filter test execution.
+> > +
+> > +Marking Test Attributes
+> > +-----------------------
+> > +
+> > +Tests are marked with an attribute by including a ``kunit_attributes``=
+ object
+> > +in the test definition.
+> > +
+> > +Test cases can be marked using the ``KUNIT_CASE_ATTR(test_name, attrib=
+utes)``
+> > +macro to define the test case instead of ``KUNIT_CASE(test_name)``.
+> > +
+> > +.. code-block:: c
+> > +
+> > +       static const struct kunit_attributes example_attr =3D {
+> > +               .speed =3D KUNIT_VERY_SLOW,
+> > +       };
+> > +
+> > +       static struct kunit_case example_test_cases[] =3D {
+> > +               KUNIT_CASE_ATTR(example_test, example_attr),
+> > +       };
+> > +
+> > +.. note::
+> > +       To mark a test case as slow, you can also use ``KUNIT_CASE_SLOW=
+(test_name)``.
+> > +       This is a helpful macro as the slow attribute is the most commo=
+nly used.
+> > +
+> > +Test suites can be marked with an attribute by setting the "attr" fiel=
+d in the
+> > +suite definition.
+> > +
+> > +.. code-block:: c
+> > +
+> > +       static const struct kunit_attributes example_attr =3D {
+> > +               .speed =3D KUNIT_VERY_SLOW,
+> > +       };
+> > +
+> > +       static struct kunit_suite example_test_suite =3D {
+> > +               ...,
+> > +               .attr =3D example_attr,
+> > +       };
+> > +
+> > +.. note::
+> > +       Not all attributes need to be set in a ``kunit_attributes`` obj=
+ect. Unset
+> > +       attributes will remain uninitialized and act as though the attr=
+ibute is set
+> > +       to 0 or NULL. Thus, if an attribute is set to 0, it is treated =
+as unset.
+> > +       These unset attributes will not be reported and may act as a de=
+fault value
+> > +       for filtering purposes.
+> > +
+> > +Reporting Attributes
+> > +--------------------
+> > +
+> > +When a user runs tests, attributes will be present in kernel output (i=
+n KTAP
+> > +format). This is an example of how test attributes for test cases will=
+ be formatted
+> > +in Kernel output:
+> > +
+> > +.. code-block:: none
+> > +
+> > +       # example_test.speed: slow
+> > +       ok 1 example_test
+> > +
+> > +This is an example of how test attributes for test suites will be form=
+atted in
+> > +Kernel output:
+> > +
+> > +.. code-block:: none
+> > +
+> > +         KTAP version 2
+> > +         # Subtest: example_suite
+> > +         # module: kunit_example_test
+> > +         1..3
+> > +         ...
+> > +       ok 1 example_suite
+> > +
+>
+> Maybe worth noting that kunit.py will hide these for passing tests by
+> default, and --raw_output is needed to see them?
+>
 
-On 2023/7/19 04:35, Celeste Liu wrote:
-> 
-> On 2023/7/19 03:35, Björn Töpel wrote:
->> Celeste Liu <coelacanthushex@gmail.com> writes:
->>
->>> When we test seccomp with 6.4 kernel, we found errno has wrong value.
->>> If we deny NETLINK_AUDIT with EAFNOSUPPORT, after f0bddf50586d, we will
->>> get ENOSYS instead. We got same result with 9c2598d43510 ("riscv: entry: Save a0
->>> prior syscall_enter_from_user_mode()").
->>>
->>> After analysing code, we think that regs->a0 = -ENOSYS should be advanced before
->>> syscall_enter_from_user_mode to fix this problem. In __seccomp_filter, when
->>> seccomp rejected this syscall with specified errno, they will set a0 to return
->>> number as syscall ABI, and then return -1. This return number is finally pass
->>> as return number of syscall_enter_from_user_mode, and then is compared
->>> with NR_syscalls after converted to ulong (so it will be ULONG_MAX).
->>> The condition syscall < NR_syscalls will always be false, so regs->a0 = -ENOSYS
->>> is always executable. It covered a0 set by seccomp, so we always get
->>> ENOSYS when match seccomp RET_ERRNO rule.
->>
->> Isn't something like...
->>
->> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
->> index f910dfccbf5d..15a8b4898a6c 100644
->> --- a/arch/riscv/kernel/traps.c
->> +++ b/arch/riscv/kernel/traps.c
->> @@ -297,7 +297,7 @@ asmlinkage __visible __trap_section void do_trap_break(struct pt_regs *regs)
->>  asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *regs)
->>  {
->>  	if (user_mode(regs)) {
->> -		ulong syscall = regs->a7;
->> +		long syscall = regs->a7;
->>  
->>  		regs->epc += 4;
->>  		regs->orig_a0 = regs->a0;
->> @@ -306,7 +306,7 @@ asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *regs)
->>  
->>  		syscall = syscall_enter_from_user_mode(regs, syscall);
->>  
->> -		if (syscall < NR_syscalls)
->> +		if (syscall > -1 && syscall < NR_syscalls)
->>  			syscall_handler(regs, syscall);
->>  		else
->>  			regs->a0 = -ENOSYS;
->>
->>
->> ...easier to read?
->>
->>
->> Björn
-> 
-> It seems that your change turn it back to the beginning. If syscall == -1,
-> it is supposed to go neither first nor else branch. It should do NOTHING.
-> However it was still a great idea. It may be better to use a set of if-statement
-> to clarify the logic.
-> 
-> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-> index f910dfccbf5d2..d0bd725244594 100644
-> --- a/arch/riscv/kernel/traps.c
-> +++ b/arch/riscv/kernel/traps.c
-> @@ -306,7 +306,9 @@ asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *regs)
->  
->  		syscall = syscall_enter_from_user_mode(regs, syscall);
->  
-> -		if (syscall < NR_syscalls)
-> +		if (syscall == -1)
-> +			// Do nothing
-> +		else if (syscall < NR_syscalls)
->  			syscall_handler(regs, syscall);
->  		else
->  			regs->a0 = -ENOSYS;
-> 
+I will definitely add this in. If attributes are popular in the
+future, I could create a future patch to show attributes in the parser
+output as well.
 
-Oh, it's better to reorder to:
+> > +Additionally, users can output a full attribute report of tests with t=
+heir
+> > +attributes, using the command line flag ``--list_tests_attr``:
+> > +
+> > +.. code-block:: bash
+> > +
+> > +       kunit.py run "example" --list_tests_attr
+> > +
+> > +.. note::
+> > +       This report can be accessed when running KUnit manually by pass=
+ing in the
+> > +       module_param ``kunit.action=3Dlist_attr``.
+> > +
+> > +Filtering
+> > +---------
+> > +
+> > +Users can filter tests using the ``--filter`` command line flag when r=
+unning
+> > +tests. As an example:
+> > +
+> > +.. code-block:: bash
+> > +
+> > +       kunit.py run --filter speed=3Dslow
+> > +
+> > +
+> > +You can also use the following operations on filters: "<", ">", "<=3D"=
+, ">=3D",
+> > +"!=3D", and "=3D". Example:
+> > +
+> > +.. code-block:: bash
+> > +
+> > +       kunit.py run --filter "speed>slow"
+> > +
+> > +This example will run all tests with speeds faster than slow. Note tha=
+t the
+> > +characters < and > are often interpreted by the shell, so they may nee=
+d to be
+> > +quoted or escaped, as above.
+> > +
+> > +Additionally, you can use multiple filters at once. Simply separate fi=
+lters
+> > +using commas. Example:
+> > +
+> > +.. code-block:: bash
+> > +
+> > +       kunit.py run --filter "speed>slow, module=3Dkunit_example_test"
+> > +
+> > +.. note::
+> > +       You can use this filtering feature when running KUnit manually =
+by passing
+> > +       the filter as a module param: ``kunit.filter=3D"speed>slow, spe=
+ed<=3Dnormal"``.
+> > +
+> > +Filtered tests will not run or show up in the test output. You can use=
+ the
+> > +``--filter_skip`` flag to skip filtered tests instead. These tests wil=
+l be
+> > +shown in the test output in the test but will not run. To use this fea=
+ture when
+> > +running KUnit manually, use the ``kunit.filter`` module param with
+> > +``kunit.filter_action=3Dskip``.
+> > +
+> > +Rules of Filtering Procedure
+> > +----------------------------
+> > +
+> > +Since both suites and test cases can have attributes, there may be con=
+flicts
+> > +between attributes during filtering. The process of filtering follows =
+these
+> > +rules:
+> > +
+> > +- Filtering always operates at a per-test level.
+> > +
+> > +- If a test has an attribute set, then the test's value is filtered on=
+.
+> > +
+> > +- Otherwise, the value falls back to the suite's value.
+> > +
+> > +- If neither are set, the attribute has a global "default" value, whic=
+h is used.
+> > +
+> > +List of Current Attributes
+> > +--------------------------
+>
+> I wonder whether this should end up part of the KTAP spec (or as an
+> appendix/supplement to it). Or even as a separate page within the
+> KUnit documentation to avoid running_tips.rst from getting too huge.
 
-diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index f910dfccbf5d2..932814e34ac37 100644
---- a/arch/riscv/kernel/traps.c
-+++ b/arch/riscv/kernel/traps.c
-@@ -308,7 +308,7 @@ asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *regs)
- 
- 		if (syscall < NR_syscalls)
- 			syscall_handler(regs, syscall);
--		else
-+		else if (syscall != -1)
- 			regs->a0 = -ENOSYS;
- 
- 		syscall_exit_to_user_mode(regs);
+I am a bit hesitant to move this as part of the KTAP spec in case
+there will exist KTAP attributes/data that are not supported by the
+KUnit test attributes framework (could be runtime specific attributes
+that use a different framework?).
 
+However, I do worry about the size of this page. Do you think that I
+should move all of the attributes to a new documentation page?
 
-I will send v3 later.
+>
+> > +
+> > +``speed``
+> > +
+> > +This attribute indicates the speed of a test's execution (how slow or =
+fast the
+> > +test is).
+> > +
+> > +This attribute is saved as an enum with the following categories: "nor=
+mal",
+> > +"slow", or "very_slow". The assumed default speed for tests is "normal=
+". This
+> > +indicates that the test takes a relatively trivial amount of time (les=
+s than
+> > +1 second), regardless of the machine it is running on. Any test slower=
+ than
+> > +this could be marked as "slow" or "very_slow".
+>
+> Is it worth noting that "KUNIT_CASE_SLOW()" can be used to easily set
+> this to slow?
+
+This definitely seems important to add. I will add this to the documentatio=
+n.
+
+>
+>
+> > +
+> > +``module``
+> > +
+> > +This attribute indicates the name of the module associated with the te=
+st.
+> > +
+> > +This attribute is automatically saved as a string and is printed for e=
+ach suite.
+> > +Tests can also be filtered using this attribute.
+> > +
+> > --
+> > 2.41.0.255.g8b1d071c50-goog
+>
+> >
+>
+> Error: new blank line at EOF.
+
+Oops. I will change this.
