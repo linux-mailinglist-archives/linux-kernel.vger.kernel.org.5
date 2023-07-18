@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D835757E06
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08630757E07
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232889AbjGRNpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45424 "EHLO
+        id S232727AbjGRNpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232466AbjGRNpI (ORCPT
+        with ESMTP id S232865AbjGRNpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 18 Jul 2023 09:45:08 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A1EFFB
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:45:04 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-56598263d1dso3697303eaf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:45:04 -0700 (PDT)
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0409B13D
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:45:06 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6b9c9089d01so1621491a34.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:45:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689687903; x=1692279903;
+        d=gmail.com; s=20221208; t=1689687904; x=1692279904;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NsmzW3+TOJWaHVqRnCHb10JWPn8aclhCfGzeZRzD6io=;
-        b=ZpTniNHZZhXCH/EIwNBiZB4HUT2XWQ0y1u+qYMbmTahrbxi3rBoPmOnkei+n6l55tx
-         IO7WTM4lL3ME2Ck/EJEGhRA43553gt8vuaoK9WTOZjfmQe32ymNO1UKkGV9lda4ag1tu
-         bp6cQWTNz1at5F09GoY/X/0b018sUpWDg7q7EGHEtDKZ44qPjyXeFc+mtgKjR7wtAG7v
-         ItROc8J8kLLinbWWbefZfk5gBfCB5/wfonr1+yqNfpQqXhza/NzX0TgZvH6RKpPzf/PE
-         DjY/Yd1ac7zCYw3INJ2aIxuSA6Kdl7znXvSidHPmYhxWgIYLcVN8mtWPLi5DRGbPfBR4
-         fJpw==
+        bh=Mhx7ZNTqJJ5S4apOkLmOT04A37Dl3XYqjJCOeSe5i6M=;
+        b=ac/UA9oQieeU7aKWTU7r/VlMO91BsBamlxGWOzMoRGB3MvyWn+GHeyMYYwXQdsCP1r
+         EMr4rzY2EzSci18/H9ze9ypL1Y2iAokvbSVRVzanUX4t88iAwEiadokLF7YgcjLMZ0wq
+         Naks0DCzYb+6dQBs+bujxrxHdwz+QBfxWodCyOj5WU8xUGMcqHbIbRQOIZD47gafJ6t9
+         B13j3+H8mVt+AYmwgf8tafpVWdZYCCsYiXi+o91ANyIKnyIq592P1UY1s9LKHjpkIJfn
+         D4sc5g5gzpJNkgSGoSX1tRfLMDDte6gGP0ucocI9jGm+ADrHf27JPXbf+BsUqfVcBkrh
+         SiWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689687903; x=1692279903;
+        d=1e100.net; s=20221208; t=1689687904; x=1692279904;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NsmzW3+TOJWaHVqRnCHb10JWPn8aclhCfGzeZRzD6io=;
-        b=cMZuSiCbEcdzK5cd52DHM0PW853NMUbsohz2QoOA6ufWQSKHh8zLvKrmIMUEeapz+n
-         VSe+OuRAAiykDWP+WZBlxQpcTlGxbNDU37uuFkmyNb6U2PYDYOlhTUkSwfNxOkjWE+p9
-         D0ol2YZ5YFvngocJuab7gj2ez8LvXS9U2ZI83ouIkzvnUJZ1rsdUL1HZ14o08TW8daZV
-         4AhHuRE9QmL+rw9gJgPBKat2o+BNiRmBuuKm5zijRKeP76sBHEZv4haO6VEb7vZdCcYs
-         tSXr3q5oHf4FNO+EQK2gV2k2f7eLA1f2GQpo7pzOKOylnJJ74LN98IFvRxlb6POa+9/n
-         uc3w==
-X-Gm-Message-State: ABy/qLbNbIFz/MkFXfQsUR+9EsjBG10Qzg516xoBMwVRWqmxAmGuAyvG
-        GZ0sGimna2xTfW03fUZgQRLtg9YxLA==
-X-Google-Smtp-Source: APBJJlEtNly/PjYwGGz4q4Cr/lc3ONuP/hDLEspZvOsn6iVYNDQlFoqxnKEgvLV2N8wM1OgaqTaCFQ==
-X-Received: by 2002:a4a:838a:0:b0:566:f614:20ba with SMTP id h10-20020a4a838a000000b00566f61420bamr5301121oog.4.1689687902889;
-        Tue, 18 Jul 2023 06:45:02 -0700 (PDT)
+        bh=Mhx7ZNTqJJ5S4apOkLmOT04A37Dl3XYqjJCOeSe5i6M=;
+        b=PkvYvBFg5AVY0AcU0oMkGLN1O3HNtoIhG67KTg/YumHdBdzVWroTSYJp2s43Jfyb5a
+         emVgVlHzHd7ii5FyyARfIUsop8K42k8tEjCgY5BM70y3Yw+MgQ0vbEU4m045EUfOGqCI
+         c8nN61AZhvLbMu4o4XC6JMh1lCnbZzf0QAFyc/CfAJWaoh74FQ4PKpfoMQ5YUQid6dL4
+         /4SsNJQGFvKLPFK1dtjJYps8vSzmXWEfjZcII8Op1xFsFFKrxKJTDnST5Im1+ay9N1mX
+         A9pcqjE7FMiJV5kQhS1EL2diiG326rVfWMq0O5duRo8Pgh3A3lJMhLpfQbZgJp3U3gl4
+         XMeg==
+X-Gm-Message-State: ABy/qLbqGbXKT+N1H3+bOCLoX7Ua5vO6vFtsCCO57tHRz/VjYAueUUON
+        jES1YC2PorSQjD5+sMQeyZo43zQw0w==
+X-Google-Smtp-Source: APBJJlHHEpYaPtmPlelVXaPLRa+62+5m60Gw2B6Oe+j+yg61RVtMGwTH/3TcsXAu7Hc9TYTk7dHUtg==
+X-Received: by 2002:a05:6870:9a17:b0:1ad:2b76:c3 with SMTP id fo23-20020a0568709a1700b001ad2b7600c3mr14234488oab.39.1689687904726;
+        Tue, 18 Jul 2023 06:45:04 -0700 (PDT)
 Received: from citadel.. (047-026-243-217.res.spectrum.com. [47.26.243.217])
-        by smtp.gmail.com with ESMTPSA id q7-20020a4aac47000000b005660ed0becesm726778oon.39.2023.07.18.06.45.01
+        by smtp.gmail.com with ESMTPSA id q7-20020a4aac47000000b005660ed0becesm726778oon.39.2023.07.18.06.45.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 06:45:02 -0700 (PDT)
+        Tue, 18 Jul 2023 06:45:03 -0700 (PDT)
 From:   Brian Gerst <brgerst@gmail.com>
 To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -57,9 +57,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "H . Peter Anvin" <hpa@zytor.com>,
         Andy Lutomirski <luto@kernel.org>,
         Brian Gerst <brgerst@gmail.com>
-Subject: [PATCH 4/6] x86/entry/32: Convert do_fast_syscall_32() to bool return type
-Date:   Tue, 18 Jul 2023 09:44:44 -0400
-Message-ID: <20230718134446.168654-5-brgerst@gmail.com>
+Subject: [PATCH 5/6] x86/entry/32: Remove SEP test for SYSEXIT
+Date:   Tue, 18 Jul 2023 09:44:45 -0400
+Message-ID: <20230718134446.168654-6-brgerst@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230718134446.168654-1-brgerst@gmail.com>
 References: <20230718134446.168654-1-brgerst@gmail.com>
@@ -75,89 +75,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+SEP must be already be present in order for do_fast_syscall_32() to be
+called on native 32-bit, so checking it again is unnecessary.
+
 Signed-off-by: Brian Gerst <brgerst@gmail.com>
 ---
- arch/x86/entry/common.c          | 10 +++++-----
- arch/x86/entry/entry_32.S        |  2 +-
- arch/x86/entry/entry_64_compat.S |  2 +-
- arch/x86/include/asm/syscall.h   |  4 ++--
- 4 files changed, 9 insertions(+), 9 deletions(-)
+ arch/x86/entry/common.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index afe79c3f1c5b..15660f936ede 100644
+index 15660f936ede..fca6f2b7daf3 100644
 --- a/arch/x86/entry/common.c
 +++ b/arch/x86/entry/common.c
-@@ -230,8 +230,8 @@ static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
- 	return true;
- }
- 
--/* Returns 0 to return using IRET or 1 to return using SYSEXIT/SYSRETL. */
--__visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
-+/* Returns true to return using SYSEXIT/SYSRETL, or false to use IRET */
-+__visible noinstr bool do_fast_syscall_32(struct pt_regs *regs)
- {
- 	/*
- 	 * Called using the internal vDSO SYSENTER/SYSCALL32 calling
-@@ -249,7 +249,7 @@ __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
- 
- 	/* Invoke the syscall. If it failed, keep it simple: use IRET. */
- 	if (!__do_fast_syscall_32(regs))
--		return 0;
-+		return false;
- 
- #ifdef CONFIG_X86_64
- 	/*
-@@ -282,8 +282,8 @@ __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
+@@ -275,8 +275,7 @@ __visible noinstr bool do_fast_syscall_32(struct pt_regs *regs)
+ 	 * We don't allow syscalls at all from VM86 mode, but we still
+ 	 * need to check VM, because we might be returning from sys_vm86.
+ 	 */
+-	return static_cpu_has(X86_FEATURE_SEP) &&
+-		regs->cs == __USER_CS && regs->ss == __USER_DS &&
++	return regs->cs == __USER_CS && regs->ss == __USER_DS &&
+ 		regs->ip == landing_pad &&
+ 		(regs->flags & (X86_EFLAGS_RF | X86_EFLAGS_TF | X86_EFLAGS_VM)) == 0;
  #endif
- }
- 
--/* Returns 0 to return using IRET or 1 to return using SYSEXIT/SYSRETL. */
--__visible noinstr long do_SYSENTER_32(struct pt_regs *regs)
-+/* Returns true to return using SYSEXIT/SYSRETL, or false to use IRET */
-+__visible noinstr bool do_SYSENTER_32(struct pt_regs *regs)
- {
- 	/* SYSENTER loses RSP, but the vDSO saved it in RBP. */
- 	regs->sp = regs->bp;
-diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
-index 6e6af42e044a..c73047bf9f4b 100644
---- a/arch/x86/entry/entry_32.S
-+++ b/arch/x86/entry/entry_32.S
-@@ -837,7 +837,7 @@ SYM_FUNC_START(entry_SYSENTER_32)
- 
- 	movl	%esp, %eax
- 	call	do_SYSENTER_32
--	testl	%eax, %eax
-+	testb	%al, %al
- 	jz	.Lsyscall_32_done
- 
- 	STACKLEAK_ERASE
-diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
-index b16272395f1a..27c05d08558a 100644
---- a/arch/x86/entry/entry_64_compat.S
-+++ b/arch/x86/entry/entry_64_compat.S
-@@ -212,7 +212,7 @@ SYM_INNER_LABEL(entry_SYSCALL_compat_after_hwframe, SYM_L_GLOBAL)
- 
- sysret32_from_system_call:
- 	/* XEN PV guests always use IRET path */
--	ALTERNATIVE "testl %eax, %eax; jz swapgs_restore_regs_and_return_to_usermode", \
-+	ALTERNATIVE "testb %al, %al; jz swapgs_restore_regs_and_return_to_usermode", \
- 		    "jmp swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
- 
- 	/*
-diff --git a/arch/x86/include/asm/syscall.h b/arch/x86/include/asm/syscall.h
-index be6c5515e0b9..f44e2f9ab65d 100644
---- a/arch/x86/include/asm/syscall.h
-+++ b/arch/x86/include/asm/syscall.h
-@@ -131,7 +131,7 @@ bool do_syscall_64(struct pt_regs *regs, int nr);
- #endif	/* CONFIG_X86_32 */
- 
- void do_int80_syscall_32(struct pt_regs *regs);
--long do_fast_syscall_32(struct pt_regs *regs);
--long do_SYSENTER_32(struct pt_regs *regs);
-+bool do_fast_syscall_32(struct pt_regs *regs);
-+bool do_SYSENTER_32(struct pt_regs *regs);
- 
- #endif	/* _ASM_X86_SYSCALL_H */
 -- 
 2.41.0
 
