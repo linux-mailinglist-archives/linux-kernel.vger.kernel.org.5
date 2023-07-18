@@ -2,65 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68359757C0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F3F757C0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232107AbjGRMn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 08:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57754 "EHLO
+        id S231923AbjGRMoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 08:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231563AbjGRMn4 (ORCPT
+        with ESMTP id S231563AbjGRMn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 08:43:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665FE188
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:43:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0467A61566
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 12:43:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AC30C433CD
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 12:43:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689684234;
-        bh=H69WBcnYOQuCKZB+mMXzbqF5HH219LA2UP0b8Dgf3wI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LUb5Yhz5OZKJByb2qt+0w11sGoO5TvV/dTSlABh7IckZBkMW4olpKvn1WuRDR3YAf
-         cG/xY+346fxreb1oS8dCkCSqQBOAS2hkVMOuh7x2ZWQT74L0ZByK+mRjuv7QExX5jb
-         T8TJykY31EjvCsLS1evAJA0gn91OsITELyMOwMJpEIPun08HeQxw1hnPv9GwxR94La
-         MBNuOYfs+PgYtQnkNC7vtZXZw2FD2A+JsjAnwyWjDZxm3z5S8M8iU4F/nh5Y42Afuy
-         wnSJn9OK3c/v0gzVR1fVztFSbYKI0OkuPTdCvXGKmrNlHocx1UF8s+TnEwQiwTxLuU
-         oUkuSCxwfKORA==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-4fbb281eec6so9026965e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:43:54 -0700 (PDT)
-X-Gm-Message-State: ABy/qLaYITyUrWTuED7gIYk3t8z1b/bSC7XrtDzTPXK8Jd06yQkYAaDf
-        JO9ymk4JZlR78zGx5ALEOhmiITBTM/1ukxq/kjI=
-X-Google-Smtp-Source: APBJJlHdv/ZgRJmVrvBCdU4Ff03xN1zqvkYoiIOy0I+YBVfQzYMxNtWz7MNXye1Afm60aKXs2RpHNVuv6GLzp5POsWE=
-X-Received: by 2002:a19:7918:0:b0:4fb:9050:1d92 with SMTP id
- u24-20020a197918000000b004fb90501d92mr8224508lfc.51.1689684232321; Tue, 18
- Jul 2023 05:43:52 -0700 (PDT)
+        Tue, 18 Jul 2023 08:43:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9D7194
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:43:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZcW9DBwr4Ijp/bqoUv1+6PZVS/5IzJmCDLO0wgYvsIE=; b=som95Apj0wXqjSqN5qyfI/sYRn
+        oEFEx8k+yJAUyIJv3a2sGB+zDU+m5DPqNCcK57zQAkjlXIrZZIk9koVNMMjJG6kA38iRwXLo9wKCN
+        +C2Hmg/wf+1zevj7A5pNlZme3n3cBAb8sfLu9Vsjnon8GtJ9bCVzQ+DeCU9Z2QVx+X6FWATXo6T+1
+        RfJQviPdUzvBtUXeqm6A6Ks4hUVB2H6TfbNd+kVys8IYJev5ysfCzrMpYulVbx6XltGkrv2XGimSX
+        NcPimdranjtJfLATfT4MYdvZCeV+Dz6l1MsirxclabizdS/IUYsglCjxIPvr/uzUsfgxerQHK0Wxc
+        o30eiX5w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qLk3K-004vL5-U8; Tue, 18 Jul 2023 12:43:42 +0000
+Date:   Tue, 18 Jul 2023 13:43:42 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Kemeng Shi <shikemeng@huaweicloud.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/rmap: correct stale comment of rmap_walk_anon and
+ rmap_walk_file
+Message-ID: <ZLaI/jfVLVZfr5pc@casper.infradead.org>
+References: <20230718092136.1935789-1-shikemeng@huaweicloud.com>
+ <76de1682-353b-b8e9-0f09-539988f8ffe0@redhat.com>
 MIME-Version: 1.0
-References: <20230615121016.3731983-1-chenhuacai@loongson.cn>
- <CAAhV-H49AyrG-sH2SXLNg_cX-Wv8vS4Qno_2N4v6ccGGciv-+A@mail.gmail.com> <ZJ9kWqhRCWkLcYyv@bombadil.infradead.org>
-In-Reply-To: <ZJ9kWqhRCWkLcYyv@bombadil.infradead.org>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Tue, 18 Jul 2023 20:43:40 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7qk8wSFt=ZMUSUt4cAmH+-5AsGqszXNW9w+u6Y8vDN+A@mail.gmail.com>
-Message-ID: <CAAhV-H7qk8wSFt=ZMUSUt4cAmH+-5AsGqszXNW9w+u6Y8vDN+A@mail.gmail.com>
-Subject: Re: [PATCH] kthread: Rename user_mode_thread() to kmuser_thread()
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <76de1682-353b-b8e9-0f09-539988f8ffe0@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,34 +51,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Luis,
+On Tue, Jul 18, 2023 at 12:10:27PM +0200, David Hildenbrand wrote:
+> On 18.07.23 11:21, Kemeng Shi wrote:
+> > 1. update page to folio in comment
+> > 2. add comment of new added @locked
+> > 
+> > Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> > ---
+> 
+> 
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 
-On Sat, Jul 1, 2023 at 7:25=E2=80=AFAM Luis Chamberlain <mcgrof@kernel.org>=
- wrote:
->
-> On Sun, Jun 25, 2023 at 04:55:33PM +0800, Huacai Chen wrote:
-> > Friendly ping?
->
-> You want to cc the folks who Nacked your patch. Until then, this
-> probably can't go further.
-Thank you very much. Eric and Andrew are already in the CC list, so
-add Thomas now.
+I didn't get the original email, and it's also not in the lore
+archives:
 
-My brain is a little old-fashioned so I insisted that "a thread
-without mm_struct should be a kernel thread" in the previous patch.
-Unfortunately this makes Eric and Thomas unhappy, I'm very sorry for
-that.
+https://lore.kernel.org/linux-mm/76de1682-353b-b8e9-0f09-539988f8ffe0@redhat.com/T/#u
 
-During the discussion of the previous patch I know I made some
-mistakes about some basic concepts, but I also found the name
-"user_mode_thread()" is somewhat confusing. I think rename it to
-kmuser_thread() is better, because:
-1, it identify init and umh as user threads;
-2, it points out that init and umh are special user threads that run
-in kernel mode before loading a user program.
-
-Sorry for my rudeness again.
-
-Huacai
->
->   Luis
+Can someone send it along?
