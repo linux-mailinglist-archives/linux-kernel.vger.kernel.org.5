@@ -2,103 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA837575BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931797575C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbjGRHwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 03:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56728 "EHLO
+        id S231549AbjGRHz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 03:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231493AbjGRHwX (ORCPT
+        with ESMTP id S229579AbjGRHzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 03:52:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8548E;
-        Tue, 18 Jul 2023 00:52:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C90961446;
-        Tue, 18 Jul 2023 07:52:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1B45C433C8;
-        Tue, 18 Jul 2023 07:52:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689666737;
-        bh=OBIHH19P1Xzv4nT4f72NuFolXMnRwud9KX0ascqhx6o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n4ucQaTnl9zSPNxYU4ZSfeUQZA3KFQTrhy3oPIlUui3lm5knFedsm0obdxqSfTKMV
-         rxx6V9SJdIZQ0u4eRlkIpZQsev1VLhd3Flvh2LQg+alYJCHvR0ZCSEk0TGYEoEUn1L
-         Ak6MAmhd7f2UJvgfecxdLU+0ByY54zS2xd9DVKrK2wi4Zo6QNGvUXFcp85ILLncsiA
-         P1QhRWBuUUlcMKN/DsQepSQbOJWeE1Ocou32/3E1dxia/hu+v/dS2/+5blD2l49fAf
-         oKXdu5IQ8F3ZZ9HhHMCWAiFq/umoH6e6NzfQoSPamAcYqwMW2JLsA+KXkS0LUy+njb
-         tjgF40avqvLXw==
-Date:   Tue, 18 Jul 2023 09:52:11 +0200
-From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
-To:     Guanghui Feng <guanghuifeng@linux.alibaba.com>
-Cc:     guohanjun@huawei.com, sudeep.holla@arm.com, rafael@kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, baolin.wang@linux.alibaba.com,
-        alikernel-developer@linux.alibaba.com, will@kernel.org,
-        catalin.marinas@arm.com, shameerali.kolothum.thodi@huawei.com
-Subject: Re: [PATCH v3] ACPI/IORT: Remove erroneous id_count check in
- iort_node_get_rmr_info()
-Message-ID: <ZLZEq0QBBW4rcxJM@lpieralisi>
-References: <1689593625-45213-1-git-send-email-guanghuifeng@linux.alibaba.com>
+        Tue, 18 Jul 2023 03:55:24 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2AF2DD
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 00:55:21 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-314172bac25so5198861f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 00:55:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689666920; x=1692258920;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NdilMJISR5wvc4vwmBF9SNnKXESfY7+e59Ex0pjjOmw=;
+        b=lAfcYogieoGPmQAFXOi5QWLKTilJpUmp611vykSXyqp+P7EErHzeAUYwtwQ2d37b74
+         YoTXMajaYq7LKIlclzk1CPI1RhuCah4aybodnwSc3YvmaRUW56SBgA+IZOsO3C/zRFev
+         /F+74KwgFQOq4PZHaWX5VkVPcrtVMhM5n6uzhXdZKf92X2eEBLlMmb7AYqRj3Uqz2/qV
+         OOWUy3Sj83Po8zX+e+njnq/T2DhACJSKznfhbU5WkaXXrYIFgfLcVMDGww0d+94VqaUM
+         SY7ckNVN9jIlPti72I17WqPv6haVHl1a4P/kCQ5i1swlHFXqArP9yb/FWl3HXWGi6rSb
+         ycZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689666920; x=1692258920;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NdilMJISR5wvc4vwmBF9SNnKXESfY7+e59Ex0pjjOmw=;
+        b=Hik6mNLqCl/QmIH0LNE52IuUFm7ChPVU5q5+O0Msr3gGg1ivsl6zqETeg0UABqjCFV
+         +fO0ti3DIKuZhVgpYZQMy9jyy7yLLaxI2p1I1WTntnNGuLDgOoB2cUYsBx9TEhtJMRAJ
+         ys+wxVl+VeqtmMIY/ikZ5tpuh6wIeekWFfrNDzpN9Wr6K+G74E8khkmVfLczSzzpPGmi
+         Kvx4b+G/dzkvTyPwZ+IOsyir6K9gkrnAM25imrjTnBAjspR57Das2DiQJMXVlzwlm+Ma
+         cpTlU7w+XXxJiE76OPE6gi++B2vdSKwBM3Zl8iBvwI5pTr9W2bnagYunFj90KFE0bHPB
+         CnVA==
+X-Gm-Message-State: ABy/qLaBWEgYdeG6jMm/WA4zftUA7SacoP8bbTAcggHnu94dS+xwVDnu
+        GV59YTXowoCz0QcryCLWTX4rxA==
+X-Google-Smtp-Source: APBJJlH0Qfpe7l+mV5gquhWpn74L0kv6ijmTHfMV7Q3nHfIQ5xPHd3jMd5jS6RrSydbgNDMpVmMjdg==
+X-Received: by 2002:adf:ed4c:0:b0:313:f347:eea0 with SMTP id u12-20020adfed4c000000b00313f347eea0mr9666351wro.60.1689666920436;
+        Tue, 18 Jul 2023 00:55:20 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id x6-20020adff0c6000000b0030fb828511csm1551650wro.100.2023.07.18.00.55.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 00:55:18 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 10:55:15 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Jorge Lopez <jorge.lopez2@hp.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH] platform/x86: hp-bioscfg: Fix some memory leaks in
+ hp_populate_enumeration_elements_from_package()
+Message-ID: <81fd0ef0-e254-4a24-a88a-459b1d773354@kadam.mountain>
+References: <9770122e4e079dfa87d860ed86ba1a1237bcf944.1689627201.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1689593625-45213-1-git-send-email-guanghuifeng@linux.alibaba.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <9770122e4e079dfa87d860ed86ba1a1237bcf944.1689627201.git.christophe.jaillet@wanadoo.fr>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Catalin, Will, Shameer]
-
-On Mon, Jul 17, 2023 at 07:33:45PM +0800, Guanghui Feng wrote:
-> According to the ARM IORT specifications DEN 0049 issue E,
-> the "Number of IDs" field in the ID mapping format reports
-> the number of IDs in the mapping range minus one.
+On Mon, Jul 17, 2023 at 10:53:37PM +0200, Christophe JAILLET wrote:
+> In the loop in the ENUM_POSSIBLE_VALUES case, we allocate some memory that
+> is never freed.
 > 
-> In iort_node_get_rmr_info(), we erroneously skip ID mappings
-> whose "Number of IDs" equal to 0, resulting in valid mapping
-> nodes with a single ID to map being skipped, which is wrong.
+> While at it, add some "str_value = NULL" to avoid some potential double
+> free.
 > 
-> Fix iort_node_get_rmr_info() by removing the bogus id_count
-> check.
-> 
-> Fixes: 491cf4a6735a ("ACPI/IORT: Add support to retrieve IORT RMR reserved regions")
-> Signed-off-by: Guanghui Feng <guanghuifeng@linux.alibaba.com>
+> Fixes: 6b2770bfd6f9 ("platform/x86: hp-bioscfg: enum-attributes")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
->  drivers/acpi/arm64/iort.c | 3 ---
->  1 file changed, 3 deletions(-)
+> /!\ Speculative /!\
 > 
-> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-> index 3631230..56d8873 100644
-> --- a/drivers/acpi/arm64/iort.c
-> +++ b/drivers/acpi/arm64/iort.c
-> @@ -1007,9 +1007,6 @@ static void iort_node_get_rmr_info(struct acpi_iort_node *node,
->  	for (i = 0; i < node->mapping_count; i++, map++) {
->  		struct acpi_iort_node *parent;
->  
-> -		if (!map->id_count)
-> -			continue;
-> -
->  		parent = ACPI_ADD_PTR(struct acpi_iort_node, iort_table,
->  				      map->output_reference);
->  		if (parent != iommu)
+>    This patch is based on analysis of the surrounding code and should be
+>    reviewed with care !
+> 
+> /!\ Speculative /!\
 
-Shameer, I know this may look like overkill since the hunk we are
-removing is buggy but can you please test this patch on platforms
-with RMR to make sure we are not triggering regressions by removing
-it (by the specs that's what should be done but current firmware
-is always something to reckon with) ?
+I reported these bugs yesterday.  I don't think this is the correct fix.
+I thought about making the str_value local to the for loop.  That's sort
+of like what your patch does.  But I wasn't sure that was necessarily
+correct either.
 
-Thanks,
-Lorenzo
+This code needs more testing as well.  It seems no one has called this
+function.
+
+Smatch complained about uninitialized variables as well.  I didn't
+bother to report that yesterday but I may as well.
+
+regards,
+dan carpenter
+
+drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:188 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:191 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:194 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:197 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:200 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:239 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:242 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:245 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:192 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:195 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:198 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:201 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:204 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:238 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:242 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:262 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'value_len'.
+drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:198 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:201 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:204 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:207 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:246 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:249 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:252 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:255 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c:180 hp_populate_enumeration_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c:183 hp_populate_enumeration_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c:186 hp_populate_enumeration_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c:189 hp_populate_enumeration_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c:192 hp_populate_enumeration_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c:231 hp_populate_enumeration_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c:239 hp_populate_enumeration_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:279 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:282 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:285 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:288 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:291 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:324 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:327 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:330 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:333 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:362 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
