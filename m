@@ -2,98 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D047D758381
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51CFC758384
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232635AbjGRRbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:31:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56140 "EHLO
+        id S232952AbjGRRcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbjGRRbg (ORCPT
+        with ESMTP id S230215AbjGRRcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:31:36 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC81B3;
-        Tue, 18 Jul 2023 10:31:35 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-345f4a3ff76so33059485ab.2;
-        Tue, 18 Jul 2023 10:31:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689701494; x=1692293494;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nN4yUB0jlAYCAuN/np605TVswMMjj5X546vn7r9nwQg=;
-        b=eBzMowJQUx3NctvOkVygaUs5EtWXyo+7DwQpNMhDxk53KiJqP1MU06g3PdkqkcqPlB
-         c5UidITkzoanC1kkTFnMHQkUOrXaK5unKl8aaaC3zzoNIua+0UMYaqoRvGmPPYj5rk+v
-         BwfdI28Qp1dX8sjDEOCS9X7aEsaQw1yJU6arX/NN0Z9s6bEwY9W+fBQ+KJxP09qfuMlA
-         6Uid/792H8vNQCvvbZUkV8dczI93Kh+nCioH9VLx5NOehUOFRo7oNkeo0Ihy9xKwAS/d
-         BBCu8YBZA1ddFrcZKBY/THmPUtBAAD+b953J3kSwwnbxUGzy2SP4Ivrpz2R/lJq7/+xx
-         kWiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689701494; x=1692293494;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nN4yUB0jlAYCAuN/np605TVswMMjj5X546vn7r9nwQg=;
-        b=guZLcKEfTG4cTTabA55/pWVz1HDrLKJlsf/cpvwjruyz1HCECfSveyKbAmBkzkWt6E
-         lf55WTQDbF2NoSI3bAULpO1V1Ta6DSFuWF0c2JnWPGrZ7vNayTTwBG2S6wiUqzUYRebU
-         /fg3sXy2N9atPvy64ejKKjxJlqNKMGB9YFvOMZDoT2TnhPMIgSQGpdT5PvHA8VXQNari
-         tutEHHrRNVfWLjl4h5sxwBl3XpMqltt9NHdSm0mz5E9dlWbW/DYJpBP4ppbOoWW7fJ7a
-         Boh0bNU3xAm2jogx+0QKEUzZle9loiDDjRgAL8Tsn1q5Xy0ph14bRVMyD5XIHeuGFhHb
-         G/0w==
-X-Gm-Message-State: ABy/qLaQkByhDh7247TctBGaA8OTTSZkEbSjRityEc17M47faXLpvNJd
-        opTWlOQtmljYcVJjXWk1DbGJgIJuKEVM6VGdaf8=
-X-Google-Smtp-Source: APBJJlHjIYS54pkZbdWSxIcrJeV6A8rpuGLvZhb8ePllk6IBa/eKWwZ/uUyoyABRnDgxMhaM9yX3ZcCbG5bN88PPhh0=
-X-Received: by 2002:a05:6e02:1c48:b0:346:59ee:bbd with SMTP id
- d8-20020a056e021c4800b0034659ee0bbdmr142586ilg.3.1689701494635; Tue, 18 Jul
- 2023 10:31:34 -0700 (PDT)
+        Tue, 18 Jul 2023 13:32:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9508DB3;
+        Tue, 18 Jul 2023 10:32:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 167DF616A0;
+        Tue, 18 Jul 2023 17:32:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE2FFC433C7;
+        Tue, 18 Jul 2023 17:32:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689701534;
+        bh=axeb2oq3ugfHBp8V7r1e4++IvwdwAuve6L0DU/phV+Y=;
+        h=From:Date:Subject:To:Cc:From;
+        b=RGGHYKAdr9A1pP7KSCiMF8arJ7ePa1xy5wVRsQ8toGSZKsQAX/s28NQG1OYyQ8HNB
+         PXNUg2EZk7ZarV9f3H8m+d1Mhuvi5RDJsUz/xS6829UpLddV73HIdXeRL+D6ZFx32i
+         6X5FrOOHoVaat/QK9pYmYXG+zABEJpxYhyOXyhkXtuTaev+nob1frEnf7vXN06ZxuY
+         8bi+I/QD39orPeSov7EwjGheVsbcnrRTglOk1276rMbEMKnbSRfSFjHqeOFk/oubBl
+         0GBN48lUuOCmLIkochWE3O/XHUQuEzsOe8RHkb6NLGG66ceReDI++GvvwJf2lEha6+
+         Af6eXnBB07d/A==
+From:   Jeff Layton <jlayton@kernel.org>
+Date:   Tue, 18 Jul 2023 13:31:59 -0400
+Subject: [PATCH] ext4: fix the time handling macros when ext4 is using
+ small inodes
 MIME-Version: 1.0
-References: <20230717201608.814406187@linuxfoundation.org>
-In-Reply-To: <20230717201608.814406187@linuxfoundation.org>
-From:   Allen Pais <stable.kernel.dev@gmail.com>
-Date:   Tue, 18 Jul 2023 10:31:23 -0700
-Message-ID: <CAJq+SaCxr6ww-kVFJMaN6QiO1AnCQv1_ONFmp=Xr+GtNgJqLfQ@mail.gmail.com>
-Subject: Re: [PATCH 6.4 000/801] 6.4.4-rc3 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230718-ctime-v1-1-24e2f96dcdf3@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAI7MtmQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDc0ML3eSSzNxU3TRDE4OUxFQLcwvLFCWg2oKi1LTMCrA50bG1tQDzzuw
+ cVwAAAA==
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Christian Brauner <brauner@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2549; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=axeb2oq3ugfHBp8V7r1e4++IvwdwAuve6L0DU/phV+Y=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBktsydVvBKNzDju8jE+b0NYW+NkK39lUgCDtOnh
+ VRGrTTKhBOJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZLbMnQAKCRAADmhBGVaC
+ FV9uEAC+J5EE0zF76pogRmUja2GnRdskqbCVOTmRIXPfWiRGO3E8Kwcl2kEKknqmBO/9oLatu2D
+ vL3C2B4Fbr78VWkpOobK0qveTjWxvnBJk1KAtIASaXWiqzsRN1YztjAYUbT3u3St39996c7EKZe
+ 1mFdjwvrKqQXIpkJSLba41/iw6Snem/3DZNMKgA518hpfyetiwK3+FGg8NQ0TZ9ZSRjjQncklA6
+ LzjjB27Le1dhQ/X8TWViottRwmtWPqciS9tuVz7iQi82ijmxAr852f9ltYCaHYwLbL0h4U9au8U
+ MiO1pwqmjSvsrmLu2blvmMOLWWb/pukEe1rhSbxKuDxNrfCR8I4GP65i9Dxp5tV36Xl+CinlMRP
+ 2qZ/nxPfNKInKqF1tq84Eg8jRxCXJ/qNEqqQdSYjLB+Erpd6HHpJZKejinJyzpPF7rqAAt9hNA8
+ iudm6QXBcKO9WtjPkiiogrBicJPPzyPQ2tGBxcLCcdx8HBrrrBMc10xrNGZrsKPL//h2+5nZ3sU
+ BK2lWiiifimf6rbeG/eXyKU/r8AWxGKwJLyXYRg3iswI+1t4QN4HQMi90sN5ooVZgQAcuONbbUA
+ Lpa35rXQLXwYdP+jGOzUeEhhA57qXH2a2S5HuOjICAIHC1Om9LzqyzzovegzEGjOStTk4t4gPS4
+ 21wFYAISREwI9HA==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> This is the start of the stable review cycle for the 6.4.4 release.
-> There are 801 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 19 Jul 2023 20:14:44 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.4-rc3.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+If ext4 is using small on-disk inodes, then it may not be able to store
+fine grained timestamps. It also can't store the i_crtime at all in that
+case since that fully lives in the extended part of the inode.
 
-Compiled and booted on my x86_64 and ARM64 test systems. No errors or
-regressions.
+979492850abd got the EXT4_EINODE_{GET,SET}_XTIME macros wrong, and would
+still store the tv_sec field of the i_crtime into the raw_inode, even
+when they were small, corrupting adjacent memory.
 
-Tested-by: Allen Pais <apais@linux.microsoft.com>
+This fixes those macros to skip setting anything in the raw_inode if the
+tv_sec field doesn't fit, and to properly return a {0,0} timestamp when
+the raw_inode doesn't support it.
 
-Thanks.
+Cc: Jan Kara <jack@suse.cz>
+Fixes: 979492850abd ("ext4: convert to ctime accessor functions")
+Reported-by: Hugh Dickins <hughd@google.com>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+ fs/ext4/ext4.h | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 2af347669db7..1e2259d9967d 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -900,8 +900,10 @@ do {										\
+ #define EXT4_INODE_SET_CTIME(inode, raw_inode)					\
+ 	EXT4_INODE_SET_XTIME_VAL(i_ctime, inode, raw_inode, inode_get_ctime(inode))
+ 
+-#define EXT4_EINODE_SET_XTIME(xtime, einode, raw_inode)			       \
+-	EXT4_INODE_SET_XTIME_VAL(xtime, &((einode)->vfs_inode), raw_inode, (einode)->xtime)
++#define EXT4_EINODE_SET_XTIME(xtime, einode, raw_inode)				\
++	if (EXT4_FITS_IN_INODE(raw_inode, einode, xtime))			\
++		EXT4_INODE_SET_XTIME_VAL(xtime, &((einode)->vfs_inode),		\
++					 raw_inode, (einode)->xtime)
+ 
+ #define EXT4_INODE_GET_XTIME_VAL(xtime, inode, raw_inode)			\
+ 	(EXT4_FITS_IN_INODE(raw_inode, EXT4_I(inode), xtime ## _extra) ?	\
+@@ -922,9 +924,14 @@ do {										\
+ 		EXT4_INODE_GET_XTIME_VAL(i_ctime, inode, raw_inode));		\
+ } while (0)
+ 
+-#define EXT4_EINODE_GET_XTIME(xtime, einode, raw_inode)			       \
+-do {									       \
+-	(einode)->xtime = EXT4_INODE_GET_XTIME_VAL(xtime, &(einode->vfs_inode), raw_inode);	\
++#define EXT4_EINODE_GET_XTIME(xtime, einode, raw_inode)				\
++do {										\
++	if (EXT4_FITS_IN_INODE(raw_inode, einode, xtime)) 			\
++		(einode)->xtime =						\
++			EXT4_INODE_GET_XTIME_VAL(xtime, &(einode->vfs_inode),	\
++						 raw_inode);			\
++	else									\
++		(einode)->xtime = (struct timespec64){0, 0};			\
+ } while (0)
+ 
+ #define i_disk_version osd1.linux1.l_i_version
+
+---
+base-commit: c62e19541f8bb39f1f340247f651afe4532243df
+change-id: 20230718-ctime-f140dae8789d
+
+Best regards,
+-- 
+Jeff Layton <jlayton@kernel.org>
+
