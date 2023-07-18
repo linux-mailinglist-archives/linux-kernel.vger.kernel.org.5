@@ -2,135 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB4A757AE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD8E757AED
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232273AbjGRLsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55040 "EHLO
+        id S231489AbjGRLvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232127AbjGRLsU (ORCPT
+        with ESMTP id S231611AbjGRLvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:48:20 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F19C0;
-        Tue, 18 Jul 2023 04:48:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1689680892;
-        bh=qkoJ1TZtcbRhGyivE/SKxy/6onKpIFRvIjW5wMAgnBM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=YEPnsELMRu2D63Po1X6IMo2QJZo1eeq40G3q70WNISWlYL4FRhEQ37pMLkjrQ4mBJ
-         5xNE2tapB5aAsebvtRoEMWnJHZJHmRjcjvPQxEzbUGzfGCN0z3SgXv3Uq8G67davGC
-         yCQFDYEKUu6fF7/8ssxM376PlGMPjTbRjCKwtC+uUHfyIGoRvXbuUKPSBkqDIDq5q7
-         JcTEVmEwbilBc37Z9U3ob+DNVY9aeD8LGCJ4AlAZSxnwgoSkhyVSCn7AzDSyxV2WCM
-         az8MGdjlTUrwvozShNmcwBuTGqiXLAPAmWYSKo0MeWf+ZGMWkn85vFDjMsOC12FZ5p
-         SUB7lDSRwQTRQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R4xzG5srnz4wxV;
-        Tue, 18 Jul 2023 21:48:10 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Helge Deller <deller@gmx.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        linux-fbdev@vger.kernel.org,
-        Linux PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Geoff Levand <geoff@infradead.org>
-Subject: Re: linux-next: Tree for Jul 13 (drivers/video/fbdev/ps3fb.c)
-In-Reply-To: <ZLYHtVuS7AElXcCb@debian.me>
-References: <20230713123710.5d7d81e4@canb.auug.org.au>
- <ccc63065-2976-88ef-1211-731330bf2866@infradead.org>
- <ZLYHtVuS7AElXcCb@debian.me>
-Date:   Tue, 18 Jul 2023 21:48:05 +1000
-Message-ID: <874jm1jv9m.fsf@mail.lhotse>
+        Tue, 18 Jul 2023 07:51:46 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84002EC
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:51:45 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6b9c57c4d12so2342700a34.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:51:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1689681105; x=1692273105;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bt8R0yrtkT9HdCJnGP8rK8VrJeyWRFxqKQi//6Da7GE=;
+        b=YJJ7K/0vmJz/f04xwiyuKk8kOag7W4TZdVLfbvYI5skR6c9qDRXJf3IBzhvfNdTKpG
+         QDOG9ERkhsPmY7HObV4nRjWRAs5JHSN0IH9jujsPACREffEOySDcNeJB9c6vgHKTNBNC
+         pYlCYG6LLBBectUmpi+AiEP4U68mTQDH2bZkc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689681105; x=1692273105;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bt8R0yrtkT9HdCJnGP8rK8VrJeyWRFxqKQi//6Da7GE=;
+        b=J+ATaxqb84ty/xmSbyxK7e6oS/67CVCkFGfr61skbx+BNl6LQMmLZ62f6XOyPHspNl
+         xDXdEEFMeRVaq/+cTOfztDUyF7Ihx5yYF5fBkgjRp29ZylJGJTsjlXPJx7HUMJsIeE6B
+         6jWW5vyJOrAk97AiA4Up7ykq6nTAo9kx7gTRRb7LpxhZ3/FwgVw38qrgrfTiLLNErshE
+         qj3ZGQRx/0CjSul1qEn5bJrz55eDKxq6cvd2XTxVBxwf1r1O/MPSAvXZn9/BsGjHNvet
+         ZY0DAkWYOEs5hR/1x9dhh61fKLJZloKv92EVvcPnDaevmhQNgF6QerDOLsBd8CVMqWu3
+         VyCw==
+X-Gm-Message-State: ABy/qLZ6wVD7cJvtcR1B9Q3zvEm29zOK0lLXvsN+YEdYoqCbWCT2EQrP
+        DpESwct5miIpvC/yzG9sl6t98Q==
+X-Google-Smtp-Source: APBJJlGSwNzDZ/D1eNN/xuYf2/U12n4u2seCb7p9PhhFw0d5UTDFarbRz1lof9iuLAPo5qBk1Cw1ig==
+X-Received: by 2002:a05:6358:94a1:b0:131:46b:3953 with SMTP id i33-20020a05635894a100b00131046b3953mr12476851rwb.13.1689681104734;
+        Tue, 18 Jul 2023 04:51:44 -0700 (PDT)
+Received: from google.com (KD124209188001.ppp-bb.dion.ne.jp. [124.209.188.1])
+        by smtp.gmail.com with ESMTPSA id ck23-20020a17090afe1700b00263fd82106asm1258194pjb.35.2023.07.18.04.51.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 04:51:44 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 20:51:39 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Huanpeng Xin <xinhuanpeng9@gmail.com>
+Cc:     minchan@kernel.org, ngupta@vflare.org, axboe@kernel.dk,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        xinhuanpeng <xinhuanpeng@xiaomi.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: [PATCH] zram: set zram bio priority to REQ_PRIO.
+Message-ID: <20230718115139.GC57770@google.com>
+References: <20230718071154.21566-1-xinhuanpeng9@gmail.com>
+ <20230718074929.GD955071@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718074929.GD955071@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bagas Sanjaya <bagasdotme@gmail.com> writes:
-> On Thu, Jul 13, 2023 at 09:11:10AM -0700, Randy Dunlap wrote:
->> on ppc64:
->> 
->> In file included from ../include/linux/device.h:15,
->>                  from ../arch/powerpc/include/asm/io.h:22,
->>                  from ../include/linux/io.h:13,
->>                  from ../include/linux/irq.h:20,
->>                  from ../arch/powerpc/include/asm/hardirq.h:6,
->>                  from ../include/linux/hardirq.h:11,
->>                  from ../include/linux/interrupt.h:11,
->>                  from ../drivers/video/fbdev/ps3fb.c:25:
->> ../drivers/video/fbdev/ps3fb.c: In function 'ps3fb_probe':
->> ../drivers/video/fbdev/ps3fb.c:1172:40: error: 'struct fb_info' has no member named 'dev'
->>  1172 |                  dev_driver_string(info->dev), dev_name(info->dev),
->>       |                                        ^~
->> ../include/linux/dev_printk.h:110:37: note: in definition of macro 'dev_printk_index_wrap'
->>   110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
->>       |                                     ^~~~~~~~~~~
->> ../drivers/video/fbdev/ps3fb.c:1171:9: note: in expansion of macro 'dev_info'
->>  1171 |         dev_info(info->device, "%s %s, using %u KiB of video memory\n",
->>       |         ^~~~~~~~
->> ../drivers/video/fbdev/ps3fb.c:1172:61: error: 'struct fb_info' has no member named 'dev'
->>  1172 |                  dev_driver_string(info->dev), dev_name(info->dev),
->>       |                                                             ^~
->> ../include/linux/dev_printk.h:110:37: note: in definition of macro 'dev_printk_index_wrap'
->>   110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
->>       |                                     ^~~~~~~~~~~
->> ../drivers/video/fbdev/ps3fb.c:1171:9: note: in expansion of macro 'dev_info'
->>  1171 |         dev_info(info->device, "%s %s, using %u KiB of video memory\n",
->>       |         ^~~~~~~~
->> 
->> 
->
-> Hmm, there is no response from Thomas yet. I guess we should go with
-> reverting bdb616479eff419, right? Regardless, I'm adding this build regression
-> to regzbot so that parties involved are aware of it:
->
-> #regzbot ^introduced: bdb616479eff419
-> #regzbot title: build regression in PS3 framebuffer
-
-Does regzbot track issues in linux-next?
-
-They're not really regressions because they're not in a release yet.
-
-Anyway I don't see where bdb616479eff419 comes from.
-
-The issue was introduced by:
-
-  701d2054fa31 fbdev: Make support for userspace interfaces configurable
-
-The driver seems to only use info->dev in that one dev_info() line,
-which seems purely cosmetic, so I think it could just be removed, eg:
-
-diff --git a/drivers/video/fbdev/ps3fb.c b/drivers/video/fbdev/ps3fb.c
-index d4abcf8aff75..a304a39d712b 100644
---- a/drivers/video/fbdev/ps3fb.c
-+++ b/drivers/video/fbdev/ps3fb.c
-@@ -1168,8 +1168,7 @@ static int ps3fb_probe(struct ps3_system_bus_device *dev)
- 
- 	ps3_system_bus_set_drvdata(dev, info);
- 
--	dev_info(info->device, "%s %s, using %u KiB of video memory\n",
--		 dev_driver_string(info->dev), dev_name(info->dev),
-+	dev_info(info->device, "using %u KiB of video memory\n",
- 		 info->fix.smem_len >> 10);
- 
- 	task = kthread_run(ps3fbd, info, DEVICE_NAME);
+On (23/07/18 16:49), Sergey Senozhatsky wrote:
+> On (23/07/18 15:11), Huanpeng Xin wrote:
+> > 
+> > When the system memory pressure is high, set zram bio priority
+> > to REQ_PRIO can quickly swap zarm's memory to backing device,
+> > freeing up more space for zram.
 
 
-cheers
+This is not how zram writeback works. The only time you can be sure
+that writeback frees memory is when you writeback ZRAM_HUGE objects,
+because each such object uses a whole physical page on the zsmalloc
+side. In any other case, compressed objects share physical pages that
+zsmalloc pages consist of, so writeback simply punches wholes in zspages,
+without actually freeing any memory immediately. You either need zspages
+to becomes empty after writeback or pool compaction, otherwise writeback
+does not save any memory, no matter how fast it works.
