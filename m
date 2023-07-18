@@ -2,125 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF7875791F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C36757922
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbjGRKR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 06:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35608 "EHLO
+        id S230303AbjGRKRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 06:17:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjGRKRY (ORCPT
+        with ESMTP id S229458AbjGRKRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 06:17:24 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1D4116;
-        Tue, 18 Jul 2023 03:17:22 -0700 (PDT)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R4vxc0crWzrRn6;
-        Tue, 18 Jul 2023 18:16:36 +0800 (CST)
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 18 Jul 2023 18:17:18 +0800
-Subject: Re: [PATCH v2 5/7] perf evlist: Skip dummy event sample_type check
- for evlist_config
-To:     Adrian Hunter <adrian.hunter@intel.com>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
-        <namhyung@kernel.org>, <irogers@google.com>,
-        <kan.liang@linux.intel.com>, <james.clark@arm.com>,
-        <tmricht@linux.ibm.com>, <ak@linux.intel.com>,
-        <anshuman.khandual@arm.com>, <linux-kernel@vger.kernel.org>,
-        <linux-perf-users@vger.kernel.org>
-References: <20230715032915.97146-1-yangjihong1@huawei.com>
- <20230715032915.97146-6-yangjihong1@huawei.com>
- <5797e5a7-a85f-4f7c-1649-88f8f9ff7a6b@intel.com>
- <44645529-0ee6-fe69-bc03-fefbc6f73d4d@huawei.com>
- <c4b7fb70-7b2e-74e9-576f-33b29e8801cd@intel.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <77ea9309-da6f-f7b9-a822-b371e0f832d3@huawei.com>
-Date:   Tue, 18 Jul 2023 18:17:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Tue, 18 Jul 2023 06:17:46 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 61060132;
+        Tue, 18 Jul 2023 03:17:44 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 974EA2F4;
+        Tue, 18 Jul 2023 03:18:27 -0700 (PDT)
+Received: from pluto.. (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 706C83F67D;
+        Tue, 18 Jul 2023 03:17:42 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org
+Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        f.fainelli@gmail.com, vincent.guittot@linaro.org,
+        lukasz.luba@arm.com, Cristian Marussi <cristian.marussi@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Subject: [PATCH v2] powercap: arm_scmi: Remove recursion while parsing zones
+Date:   Tue, 18 Jul 2023 11:17:26 +0100
+Message-ID: <20230718101726.1864761-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-In-Reply-To: <c4b7fb70-7b2e-74e9-576f-33b29e8801cd@intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.111.205]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Powercap zones can be defined as arranged in a hierarchy of trees and when
+registering a zone with powercap_register_zone(), the kernel powercap
+subsystem expects this to happen starting from the root zones down to the
+leaves; on the other side, de-registration by powercap_deregister_zone()
+must begin from the leaf zones.
 
-On 2023/7/18 17:56, Adrian Hunter wrote:
-> On 18/07/23 12:30, Yang Jihong wrote:
->> Hello,
->>
->> On 2023/7/17 22:41, Adrian Hunter wrote:
->>> On 15/07/23 06:29, Yang Jihong wrote:
->>>> The dummp event does not contain sampls data. Therefore, sample_type does
->>>> not need to be checked.
->>>>
->>>> Currently, the sample id format of the actual sampling event may be changed
->>>> after the dummy event is added.
->>>>
->>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
->>>> ---
->>>>    tools/perf/util/record.c | 7 +++++++
->>>>    1 file changed, 7 insertions(+)
->>>>
->>>> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
->>>> index 9eb5c6a08999..0240be3b340f 100644
->>>> --- a/tools/perf/util/record.c
->>>> +++ b/tools/perf/util/record.c
->>>> @@ -128,6 +128,13 @@ void evlist__config(struct evlist *evlist, struct record_opts *opts, struct call
->>>>            evlist__for_each_entry(evlist, evsel) {
->>>>                if (evsel->core.attr.sample_type == first->core.attr.sample_type)
->>>>                    continue;
->>>> +
->>>> +            /*
->>>> +             * Skip the sample_type check for the dummy event
->>>> +             * because it does not have any samples anyway.
->>>> +             */
->>>> +            if (evsel__is_dummy_event(evsel))
->>>> +                continue;
->>>
->>> Sideband event records have "ID samples" so the sample type still matters.
->>>
->> Okay, will remove this patch in next version.
->>
->> Can I ask a little more about this?
->>
->> Use PERF_SAMPLE_IDENTIFICATION instead of PERF_SAMPLE_ID because for samples of type PERF_RECORD_SAMPLE, there may be different record formats due to different *sample_type* settings, so the fixed SAMPLE_ID  location mode PERF_SAMPLE_NAME is required here.
->>
->> However, for the sideband event, the samples of the PERF_RECORD_SAMPLE type is not recorded (only PERF_RECORD_MMAP, PERF_RECORD_COMM, and so on). Therefore, the "use sample identifier "check can be skipped here.
->>
->> That's my understanding of PERF_SAMPLE_IDENTIFICATION . If there is any error, please help to correct it.
->>
->> *Sideband event records have "ID samples" so the sample type still matters.*
->>
->> Does this mean that sideband will also record samples of type PERF_RECORD_SAMPLE? What exactly is the sampling data?
-> 
-> No.  There are additional members as defined by struct sample_id for PERF_RECORD_MMAP:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/perf_event.h?h=v6.4#n872
-> 
-I'm sorry, maybe my comments didn't make it clear.
-I mean, can we skip the "use_sample_identifier" check here?
+Available SCMI powercap zones are retrieved dynamically from the platform
+at probe time and, while any defined hierarchy between the zones is
+described properly in the zones descriptor, the platform returns the
+availables zones with no particular well-defined order: as a consequence,
+the trees possibly composing the hierarchy of zones have to be somehow
+walked properly to register the retrieved zones from the root.
 
-That is, set sample_type to *XXX|PERF_SAMPLE_ID* instead of 
-*XXX|PERF_SAMPLE_IDENTIFICATION*
+Currently the ARM SCMI Powercap driver walks the zones using a recursive
+algorithm; this approach, even though correct and tested can lead to kernel
+stack overflow when processing a returned hierarchy of zones composed by
+particularly high trees.
 
-Thanks,
-Yang
+Avoid possible kernel stack overflow by substituting the recursive approach
+with an iterative one supported by a dynamically allocated stack-like data
+structure.
+
+Cc: Rafael J. Wysocki <rafael@kernel.org>
+Fixes: b55eef5226b7 ("powercap: arm_scmi: Add SCMI Powercap based driver")
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+---
+Was able to cause a kernel stack overflow on arm64 while processing a set
+of 256 zones organized in a single list returned by SCMI platform in reversed
+order from the last child zone up to the root: this causes 256 recursions and
+hits the kernel stack overflow.
+
+v1 --> v2
+ - Rebased on v6.5-rc2
+---
+ drivers/powercap/arm_scmi_powercap.c | 159 ++++++++++++++++-----------
+ 1 file changed, 92 insertions(+), 67 deletions(-)
+
+diff --git a/drivers/powercap/arm_scmi_powercap.c b/drivers/powercap/arm_scmi_powercap.c
+index 5231f6d52ae3..a081f177e702 100644
+--- a/drivers/powercap/arm_scmi_powercap.c
++++ b/drivers/powercap/arm_scmi_powercap.c
+@@ -12,6 +12,7 @@
+ #include <linux/module.h>
+ #include <linux/powercap.h>
+ #include <linux/scmi_protocol.h>
++#include <linux/slab.h>
+ 
+ #define to_scmi_powercap_zone(z)		\
+ 	container_of(z, struct scmi_powercap_zone, zone)
+@@ -19,6 +20,8 @@
+ static const struct scmi_powercap_proto_ops *powercap_ops;
+ 
+ struct scmi_powercap_zone {
++	bool registered;
++	bool invalid;
+ 	unsigned int height;
+ 	struct device *dev;
+ 	struct scmi_protocol_handle *ph;
+@@ -32,6 +35,7 @@ struct scmi_powercap_root {
+ 	unsigned int num_zones;
+ 	struct scmi_powercap_zone *spzones;
+ 	struct list_head *registered_zones;
++	struct list_head scmi_zones;
+ };
+ 
+ static struct powercap_control_type *scmi_top_pcntrl;
+@@ -271,12 +275,6 @@ static void scmi_powercap_unregister_all_zones(struct scmi_powercap_root *pr)
+ 	}
+ }
+ 
+-static inline bool
+-scmi_powercap_is_zone_registered(struct scmi_powercap_zone *spz)
+-{
+-	return !list_empty(&spz->node);
+-}
+-
+ static inline unsigned int
+ scmi_powercap_get_zone_height(struct scmi_powercap_zone *spz)
+ {
+@@ -295,11 +293,46 @@ scmi_powercap_get_parent_zone(struct scmi_powercap_zone *spz)
+ 	return &spz->spzones[spz->info->parent_id];
+ }
+ 
++static int scmi_powercap_register_zone(struct scmi_powercap_root *pr,
++				       struct scmi_powercap_zone *spz,
++				       struct scmi_powercap_zone *parent)
++{
++	int ret = 0;
++	struct powercap_zone *z;
++
++	if (spz->invalid) {
++		list_del(&spz->node);
++		return -EINVAL;
++	}
++
++	z = powercap_register_zone(&spz->zone, scmi_top_pcntrl, spz->info->name,
++				   parent ? &parent->zone : NULL,
++				   &zone_ops, 1, &constraint_ops);
++	if (!IS_ERR(z)) {
++		spz->height = scmi_powercap_get_zone_height(spz);
++		spz->registered = true;
++		list_move(&spz->node, &pr->registered_zones[spz->height]);
++		dev_dbg(spz->dev, "Registered node %s - parent %s - height:%d\n",
++			spz->info->name, parent ? parent->info->name : "ROOT",
++			spz->height);
++	} else {
++		list_del(&spz->node);
++		ret = PTR_ERR(z);
++		dev_err(spz->dev,
++			"Error registering node:%s - parent:%s - h:%d - ret:%d\n",
++			spz->info->name,
++			parent ? parent->info->name : "ROOT",
++			spz->height, ret);
++	}
++
++	return ret;
++}
++
+ /**
+- * scmi_powercap_register_zone  - Register an SCMI powercap zone recursively
++ * scmi_zones_register- Register SCMI powercap zones starting from parent zones
+  *
++ * @dev: A reference to the SCMI device
+  * @pr: A reference to the root powercap zones descriptors
+- * @spz: A reference to the SCMI powercap zone to register
+  *
+  * When registering SCMI powercap zones with the powercap framework we should
+  * take care to always register zones starting from the root ones and to
+@@ -309,10 +342,10 @@ scmi_powercap_get_parent_zone(struct scmi_powercap_zone *spz)
+  * zones provided by the SCMI platform firmware is built to comply with such
+  * requirement.
+  *
+- * This function, given an SCMI powercap zone to register, takes care to walk
+- * the SCMI powercap zones tree up to the root looking recursively for
+- * unregistered parent zones before registering the provided zone; at the same
+- * time each registered zone height in such a tree is accounted for and each
++ * This function, given the set of SCMI powercap zones to register, takes care
++ * to walk the SCMI powercap zones trees up to the root registering any
++ * unregistered parent zone before registering the child zones; at the same
++ * time each registered-zone height in such a tree is accounted for and each
+  * zone, once registered, is stored in the @registered_zones array that is
+  * indexed by zone height: this way will be trivial, at unregister time, to walk
+  * the @registered_zones array backward and unregister all the zones starting
+@@ -330,57 +363,55 @@ scmi_powercap_get_parent_zone(struct scmi_powercap_zone *spz)
+  *
+  * Return: 0 on Success
+  */
+-static int scmi_powercap_register_zone(struct scmi_powercap_root *pr,
+-				       struct scmi_powercap_zone *spz)
++static int scmi_zones_register(struct device *dev,
++			       struct scmi_powercap_root *pr)
+ {
+ 	int ret = 0;
+-	struct scmi_powercap_zone *parent;
+-
+-	if (!spz->info)
+-		return ret;
++	unsigned int sp = 0, reg_zones = 0;
++	struct scmi_powercap_zone *spz, **zones_stack;
+ 
+-	parent = scmi_powercap_get_parent_zone(spz);
+-	if (parent && !scmi_powercap_is_zone_registered(parent)) {
+-		/*
+-		 * Bail out if a parent domain was marked as unsupported:
+-		 * only domains participating as leaves can be skipped.
+-		 */
+-		if (!parent->info)
+-			return -ENODEV;
++	zones_stack = kcalloc(pr->num_zones, sizeof(spz), GFP_KERNEL);
++	if (!zones_stack)
++		return -ENOMEM;
+ 
+-		ret = scmi_powercap_register_zone(pr, parent);
+-		if (ret)
+-			return ret;
+-	}
++	spz = list_first_entry_or_null(&pr->scmi_zones,
++				       struct scmi_powercap_zone, node);
++	while (spz) {
++		struct scmi_powercap_zone *parent;
+ 
+-	if (!scmi_powercap_is_zone_registered(spz)) {
+-		struct powercap_zone *z;
+-
+-		z = powercap_register_zone(&spz->zone,
+-					   scmi_top_pcntrl,
+-					   spz->info->name,
+-					   parent ? &parent->zone : NULL,
+-					   &zone_ops, 1, &constraint_ops);
+-		if (!IS_ERR(z)) {
+-			spz->height = scmi_powercap_get_zone_height(spz);
+-			list_add(&spz->node,
+-				 &pr->registered_zones[spz->height]);
+-			dev_dbg(spz->dev,
+-				"Registered node %s - parent %s - height:%d\n",
+-				spz->info->name,
+-				parent ? parent->info->name : "ROOT",
+-				spz->height);
+-			ret = 0;
++		parent = scmi_powercap_get_parent_zone(spz);
++		if (parent && !parent->registered) {
++			zones_stack[sp++] = spz;
++			spz = parent;
+ 		} else {
+-			ret = PTR_ERR(z);
+-			dev_err(spz->dev,
+-				"Error registering node:%s - parent:%s - h:%d - ret:%d\n",
+-				 spz->info->name,
+-				 parent ? parent->info->name : "ROOT",
+-				 spz->height, ret);
++			ret = scmi_powercap_register_zone(pr, spz, parent);
++			if (!ret) {
++				reg_zones++;
++			} else if (sp) {
++				/* Failed to register a non-leaf zone.
++				 * Bail-out.
++				 */
++				dev_err(dev,
++					"Failed to register non-leaf zone - ret:%d\n",
++					ret);
++				scmi_powercap_unregister_all_zones(pr);
++				reg_zones = 0;
++				goto out;
++			}
++			/* Pick next zone to process */
++			if (sp)
++				spz = zones_stack[--sp];
++			else
++				spz = list_first_entry_or_null(&pr->scmi_zones,
++							       struct scmi_powercap_zone,
++							       node);
+ 		}
+ 	}
+ 
++out:
++	kfree(zones_stack);
++	dev_info(dev, "Registered %d SCMI Powercap domains !\n", reg_zones);
++
+ 	return ret;
+ }
+ 
+@@ -424,6 +455,8 @@ static int scmi_powercap_probe(struct scmi_device *sdev)
+ 	if (!pr->registered_zones)
+ 		return -ENOMEM;
+ 
++	INIT_LIST_HEAD(&pr->scmi_zones);
++
+ 	for (i = 0, spz = pr->spzones; i < pr->num_zones; i++, spz++) {
+ 		/*
+ 		 * Powercap domains are validate by the protocol layer, i.e.
+@@ -438,6 +471,7 @@ static int scmi_powercap_probe(struct scmi_device *sdev)
+ 		INIT_LIST_HEAD(&spz->node);
+ 		INIT_LIST_HEAD(&pr->registered_zones[i]);
+ 
++		list_add_tail(&spz->node, &pr->scmi_zones);
+ 		/*
+ 		 * Forcibly skip powercap domains using an abstract scale.
+ 		 * Note that only leaves domains can be skipped, so this could
+@@ -448,7 +482,7 @@ static int scmi_powercap_probe(struct scmi_device *sdev)
+ 			dev_warn(dev,
+ 				 "Abstract power scale not supported. Skip %s.\n",
+ 				 spz->info->name);
+-			spz->info = NULL;
++			spz->invalid = true;
+ 			continue;
+ 		}
+ 	}
+@@ -457,21 +491,12 @@ static int scmi_powercap_probe(struct scmi_device *sdev)
+ 	 * Scan array of retrieved SCMI powercap domains and register them
+ 	 * recursively starting from the root domains.
+ 	 */
+-	for (i = 0, spz = pr->spzones; i < pr->num_zones; i++, spz++) {
+-		ret = scmi_powercap_register_zone(pr, spz);
+-		if (ret) {
+-			dev_err(dev,
+-				"Failed to register powercap zone %s - ret:%d\n",
+-				spz->info->name, ret);
+-			scmi_powercap_unregister_all_zones(pr);
+-			return ret;
+-		}
+-	}
++	ret = scmi_zones_register(dev, pr);
++	if (ret)
++		return ret;
+ 
+ 	dev_set_drvdata(dev, pr);
+ 
+-	dev_info(dev, "Registered %d SCMI Powercap domains !\n", pr->num_zones);
+-
+ 	return ret;
+ }
+ 
+-- 
+2.41.0
+
