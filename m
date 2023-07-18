@@ -2,126 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0237577AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FB67577AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232220AbjGRJRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56432 "EHLO
+        id S231704AbjGRJS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjGRJRe (ORCPT
+        with ESMTP id S230159AbjGRJRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:17:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD391985;
-        Tue, 18 Jul 2023 02:17:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3026E614DC;
-        Tue, 18 Jul 2023 09:16:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2729AC433C7;
-        Tue, 18 Jul 2023 09:16:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689671815;
-        bh=X1PB0DZ98HNXgcbNBNhLnxz+WT2Ttfz91vdZj8MqJdQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XEXVjd8A1wrHo2OdsLRY2qh7dp8JAFitJbD/0++C4IYmLBpgshjtfaQ+EanQBdDPS
-         q6IWubOJ6X+Q+uXBW/hswlYp8i6EbnNRCjxx9MeSVi1X2+Xf2grZAfBcz3DaLuA7o+
-         tMXZ7c8l6PkTjQ9+MJIp4tLQIquKIKSURyu6eBsniqUnnMeepF3engRvmX9T+Gau6c
-         pgxHDRnRcLSzoBDAaez5KndjZiFfDlirlhRGepgJyu/uWIqyez8VjNNO8UOTJ3rfUg
-         aQiB8myN+2AUmHJ6dZMAFBd1EtvXIW65Ye+Auu4D9gDzqmsTOIlU2hVZt/oC/cI19N
-         d6LKpVyXVm+Ug==
-Date:   Tue, 18 Jul 2023 11:16:49 +0200
-From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
-To:     "guanghui.fgh" <guanghuifeng@linux.alibaba.com>
-Cc:     guohanjun@huawei.com, sudeep.holla@arm.com, rafael@kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, baolin.wang@linux.alibaba.com,
-        alikernel-developer@linux.alibaba.com, will@kernel.org,
-        catalin.marinas@arm.com, shameerali.kolothum.thodi@huawei.com
-Subject: Re: [PATCH v3] ACPI/IORT: Remove erroneous id_count check in
- iort_node_get_rmr_info()
-Message-ID: <ZLZYgZMnNB0pdycr@lpieralisi>
-References: <1689593625-45213-1-git-send-email-guanghuifeng@linux.alibaba.com>
- <ZLZEq0QBBW4rcxJM@lpieralisi>
- <8e2cfde3-15fa-4e5a-02bf-0763abf10821@linux.alibaba.com>
+        Tue, 18 Jul 2023 05:17:43 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7701919AE
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:17:17 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-637aaaf27f1so7754936d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:17:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689671830; x=1692263830;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gJcVs2LgJCwb5O0XxcSvYoYLi10sNbkUreq5yDMEGUg=;
+        b=MH/Vm+kw49meziT2GYy7ODWOF3LLqPW7nnmlvrwEcPTjw2cDtZ5KIGhRJA1Iz9HsHl
+         2CJIG0ufbKlK8Qg72NmM55dLkCrKVeuUdUy8BrccSApC/QlveC+MqUc0g/SV1coo3B2o
+         iTWx8Kdi4oz/7XeAb4vDqzlU/p1HVpDs0g2BXo9joOl9cv60OyS7ZQMqaVch3nQr0T3s
+         eFWtZ3l/9MaF3hYc5xjbz2uePGELGd8nomEyaAQ2eBbyjYmHbG/85fC00dZudLZgFF2W
+         Yuk1Z4rpjBsqYhKd3mNqaFxqksLY6zN03af1r3xZSqQFZmyNXX5tFVSHnP0dWatDF7ju
+         S83g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689671830; x=1692263830;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gJcVs2LgJCwb5O0XxcSvYoYLi10sNbkUreq5yDMEGUg=;
+        b=anifAtvDJDsOvPvmuiZYABSXpXKsVu/yhtGho+yQxtQ1cGjleDlgRI7ggGgnDqU0KR
+         fSNPdG5gx74gB7JW0XmxoGqRR9saRjem33MYxEtRNB4l4oHxoR8EKNXVXi293XFCIlJa
+         MUB88s9RfQkFMvsuXXStJaotdBq1HQIjUmlYuh0a5KN2ME6nIPEOUJ3ZJTC1yNmelln2
+         rGvNR9rkQa0I235pEpzAY9ibxPu/dAfB9XJ1755xVcHDXSHcre5NvsXN+QLTpvdVBAqE
+         50h7IksSjKm5A7EQPFncbCVFV+OR5USABhYu3he3vlp090mp3HzsgYjkbEMaLoEI3cnu
+         1/og==
+X-Gm-Message-State: ABy/qLbDReigmI16tehzkajK0ny90BYGeEnNDyh0f+3Phv+2QCAYG37g
+        YGs4tcs+en2aX0yRHCF6KrSu8CSrpB6HETTVa4c=
+X-Google-Smtp-Source: APBJJlGeVxT3OiHo/zWCPHVTC9gYgms4ynClc8I6gkukgO8R/TmSV/wUW1vQhUj+zg/z/bBbUKTVONbzrNHgnzcMZOs=
+X-Received: by 2002:a05:6214:2aa8:b0:635:da19:a67f with SMTP id
+ js8-20020a0562142aa800b00635da19a67fmr11015276qvb.1.1689671830421; Tue, 18
+ Jul 2023 02:17:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8e2cfde3-15fa-4e5a-02bf-0763abf10821@linux.alibaba.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CABXGCsNc6mSOLHv1W5qPuvn56Yy0Bsjgg8X13qzg8uUwCaYkjw@mail.gmail.com>
+ <DM5PR12MB24697E6B83397ADD6F8F6556F138A@DM5PR12MB2469.namprd12.prod.outlook.com>
+In-Reply-To: <DM5PR12MB24697E6B83397ADD6F8F6556F138A@DM5PR12MB2469.namprd12.prod.outlook.com>
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Tue, 18 Jul 2023 14:16:58 +0500
+Message-ID: <CABXGCsNXfk32HmEc+45qM7850N1PQhZS=2ypTkZhp9SpBJfxRA@mail.gmail.com>
+Subject: Re: [bug/bisected] commit a2848d08742c8e8494675892c02c0d22acbe3cf8
+ cause general protection fault, probably for non-canonical address
+ 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
+To:     "Chen, Guchun" <Guchun.Chen@amd.com>
+Cc:     "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Pelloux-Prayer, Pierre-Eric" <Pierre-eric.Pelloux-prayer@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 04:54:36PM +0800, guanghui.fgh wrote:
-> 
-> 
-> 在 2023/7/18 15:52, Lorenzo Pieralisi 写道:
-> > [+Catalin, Will, Shameer]
-> > 
-> > On Mon, Jul 17, 2023 at 07:33:45PM +0800, Guanghui Feng wrote:
-> > > According to the ARM IORT specifications DEN 0049 issue E,
-> > > the "Number of IDs" field in the ID mapping format reports
-> > > the number of IDs in the mapping range minus one.
-> > > 
-> > > In iort_node_get_rmr_info(), we erroneously skip ID mappings
-> > > whose "Number of IDs" equal to 0, resulting in valid mapping
-> > > nodes with a single ID to map being skipped, which is wrong.
-> > > 
-> > > Fix iort_node_get_rmr_info() by removing the bogus id_count
-> > > check.
-> > > 
-> > > Fixes: 491cf4a6735a ("ACPI/IORT: Add support to retrieve IORT RMR reserved regions")
-> > > Signed-off-by: Guanghui Feng <guanghuifeng@linux.alibaba.com>
-> > > ---
-> > >   drivers/acpi/arm64/iort.c | 3 ---
-> > >   1 file changed, 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-> > > index 3631230..56d8873 100644
-> > > --- a/drivers/acpi/arm64/iort.c
-> > > +++ b/drivers/acpi/arm64/iort.c
-> > > @@ -1007,9 +1007,6 @@ static void iort_node_get_rmr_info(struct acpi_iort_node *node,
-> > >   	for (i = 0; i < node->mapping_count; i++, map++) {
-> > >   		struct acpi_iort_node *parent;
-> > > -		if (!map->id_count)
-> > > -			continue;
-> > > -
-> > >   		parent = ACPI_ADD_PTR(struct acpi_iort_node, iort_table,
-> > >   				      map->output_reference);
-> > >   		if (parent != iommu)
-> > 
-> > Shameer, I know this may look like overkill since the hunk we are
-> > removing is buggy but can you please test this patch on platforms
-> > with RMR to make sure we are not triggering regressions by removing
-> > it (by the specs that's what should be done but current firmware
-> > is always something to reckon with) ?
-> > 
-> > Thanks,
-> > Lorenzo
-> Thanks for your response.
-> 
-> Firstly, I have tested iort rmr with one ID mapping and works well.
-> 
-> Secondly, When there is more than two id mappings, the buggly id_count check
-> has no effect(for the id_count is larger than zero).
+On Tue, Jul 18, 2023 at 7:13=E2=80=AFAM Chen, Guchun <Guchun.Chen@amd.com> =
+wrote:
+>
+> [Public]
+>
+> Hello Mike,
+>
+> I guess this patch can resolve your problem.
+> https://patchwork.freedesktop.org/patch/547897/
+>
+> Regards,
+> Guchun
+>
 
-Thank you, I wasn't asking you, it is comforting to know you tested the
-patch before sending it though.
+Tested-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Thanks, the issue was gone with this patch.
 
-I asked Shameer to make sure the id_count check did not mask a bug
-in the platforms on which the RMR IORT implementation was initially
-tested - that's it, I don't want to merge a fix and revert it the
-next day.
+I didn't say anything above about how to reproduce this problem.
+Case was like this:
+On a dual GPU laptop, I ran Google Chrome on a discrete graphics card.
+I used for it this command:
+$ DRI_PRIME=3D1 google-chrome-unstable --disable-features=3DVulkan
 
-Thanks,
-Lorenzo
+--=20
+Best Regards,
+Mike Gavrilov.
