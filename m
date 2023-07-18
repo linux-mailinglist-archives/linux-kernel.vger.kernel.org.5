@@ -2,101 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C397757476
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A55E757469
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbjGRGj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 02:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44470 "EHLO
+        id S231322AbjGRGjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 02:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230512AbjGRGjz (ORCPT
+        with ESMTP id S229984AbjGRGjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 02:39:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14916136
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:39:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689662347;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uGWZGJs7iJ0bHkmNYO8V4KcHUQKd/vxJD2N3uDsccto=;
-        b=ZuJAJ03Aj/fuw3xOsSNe3JNbS8PgII33FmcISQ6GJZgsycnnrj4+xED3sqi9+7yKHPxSvd
-        JbzObVey2c0DY67oEu8RL8D449xd+Y1YerzVGae5xn1aC/QpSWYbzYN0W+Sr4HVVeesaKx
-        eXRZbLhv6juivM2lkZCpSTk8jaJxgLc=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-378-GsR9qr1RM32b71Hcv2kA8g-1; Tue, 18 Jul 2023 02:39:05 -0400
-X-MC-Unique: GsR9qr1RM32b71Hcv2kA8g-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-30e6153f0eeso2936042f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:39:05 -0700 (PDT)
+        Tue, 18 Jul 2023 02:39:11 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45956B2;
+        Mon, 17 Jul 2023 23:39:09 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-51cff235226so11020001a12.0;
+        Mon, 17 Jul 2023 23:39:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689662348; x=1692254348;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NY8mkv6Tta1o2JgKQkYOxaVAYeF+Y1zLs9QhRZtEEvw=;
+        b=HsOec0qR701vzASUVqbK11uHMBCwGeIExVLBVHU5+h4BjmddWeB1qsTVF7yqqq0MH5
+         Ixr2rqm+zONxKZccsz5E3FfhNQuaMGFZJTSB/baeawOPcoSU+MKAdnEknXHeuupQUmMg
+         /ssuOWL8Wc5M0EivzeeVsUHiKT9267nAmkNH/I88c3qXeti5w8SBiI9yflzbTTAe71fC
+         ewBssw06qSHUGOBtabcgtz/7zYRLHf3h45S12ikr2x1/CHiTTT7YQ2g9D+BcGfY9vMZe
+         bjZAqnM/HEUSim75nfYErmn6yrquhREMuN6LiC71St6JRE7ArRdKgAla2iCJxg17AW/y
+         BxLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689662344; x=1692254344;
-        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uGWZGJs7iJ0bHkmNYO8V4KcHUQKd/vxJD2N3uDsccto=;
-        b=U03PPQ0bhi6ldyVB4/QL3csZ6ABr4jtLjQ22TLNV2QkuGbHKPhXCM12fSIOX0Vgg2G
-         33paXpoHPD0m4A1mIQonO2UDJ226QBYIytbnEtyziGFvn8WFXApQT8MCwQGG1cGo2I2a
-         9f2/dZk1ob6J+TdoKAyvwPvZKau/Q8DqsT+3MrbhnZ9in3KbempNT2cfkdssdcjgyEgQ
-         UpSnhmW/9BYCVlZo/kc1NyGsh3bWkkcJmxkKX6tg8vOSZBdSIXf/KooQM5FqwpUdzL6w
-         T32kdaZ4nzHcM5au9jN6z5TKB6in495gKe02EDBvfNJMCOjY2T/y5xKvWt5t3WJkDBtg
-         Vxaw==
-X-Gm-Message-State: ABy/qLa0S3tahT6m3tS8B3Aat1qnFG2GRB0H8PDyCPdh6eTersO9ev/F
-        ixyRID9+zhy/vWSu+iNxOIAO9Q264o/b97z+D0I/5xoH/RT1vUN+6xwkOcoU+Iq04pe7qj6f81S
-        T9TOYawq3405pf25RZJ2awsAOOXZioiT7
-X-Received: by 2002:adf:d4c7:0:b0:314:268b:21f1 with SMTP id w7-20020adfd4c7000000b00314268b21f1mr11320611wrk.18.1689662344258;
-        Mon, 17 Jul 2023 23:39:04 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHv18uaI93wFrqmmHeM+/M9p05Ssvf+TiET1HDtjWoK2EEJHqu10sNXHiTb6Zw0EgXCaxftWA==
-X-Received: by 2002:adf:d4c7:0:b0:314:268b:21f1 with SMTP id w7-20020adfd4c7000000b00314268b21f1mr11320599wrk.18.1689662343997;
-        Mon, 17 Jul 2023 23:39:03 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id c7-20020adfe747000000b003143c9beeaesm1393087wrn.44.2023.07.17.23.39.03
+        d=1e100.net; s=20221208; t=1689662348; x=1692254348;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NY8mkv6Tta1o2JgKQkYOxaVAYeF+Y1zLs9QhRZtEEvw=;
+        b=Na2DFv+83vaLU/S6jBy4Xvj2NTY/HT3yAThnaRISFNrnf51idXUj4KokeHtZG9wj89
+         aaySTS0aKEEoXTMSbNWSjh+LvwYpfmGTI/HLKsn+Hy5ZTTpE/Tjq3WBeAhzHP29JWRVU
+         tqrmL9d3dzF8zAdOASpL+HedpilRrctSzgTvLIEz0uQbqeVmNBNWJnLAdvKG0ti+6kML
+         i3HdfO+NWAcuOWJXMiyhJbmOGBwKovsK2cRCBG/I2nPUwPj42tbmvEz/m6oplAiyODIa
+         /bsKFyaxopow1XMzy08r8liEDwf8TldH5VpFPxSsy23Wct6hs7cNbPPAMeL34XYP49RK
+         CQuw==
+X-Gm-Message-State: ABy/qLbiEpCnDunJIgU+x3hGrCuEsS6hPq/tbRu23NGD2ayEfWhYKb+z
+        SDYdLUctZKcWejhjqrwnV1o=
+X-Google-Smtp-Source: APBJJlHyvyAxzWMmSdDheZfwLaIUsEBdPq35pJycwdjBr8gDFrb6A4b9u+g2oZMTR33oVOKD6tDFYw==
+X-Received: by 2002:a05:6402:499:b0:51e:1c5c:b97f with SMTP id k25-20020a056402049900b0051e1c5cb97fmr14919584edv.2.1689662347332;
+        Mon, 17 Jul 2023 23:39:07 -0700 (PDT)
+Received: from orome (p200300e41f4b7100f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f4b:7100:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id d25-20020aa7d5d9000000b0051e0f100c48sm724877eds.22.2023.07.17.23.39.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 23:39:03 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Luc Ma <onion0709@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        onion0709@gmail.com
-Subject: Re: [PATCH] dma-buf: remove unintended hyphen in the sysfs path
-In-Reply-To: <64b5dc93.170a0220.243d5.1d63@mx.google.com>
-References: <64b5dc93.170a0220.243d5.1d63@mx.google.com>
-Date:   Tue, 18 Jul 2023 08:39:03 +0200
-Message-ID: <87zg3tiv08.fsf@minerva.mail-host-address-is-not-set>
+        Mon, 17 Jul 2023 23:39:06 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 08:39:05 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     =?utf-8?B?6JSh5om/6YGU?= <billyking19920205@gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "patrick@stwcx.xyz" <patrick@stwcx.xyz>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
+Subject: Re: [v6 2/4] dt-bindings: hwmon: Add ASPEED TACH Control
+ documentation
+Message-ID: <ZLYziWcIWcNnzMXR@orome>
+References: <0ba3767c-d481-6e2c-2d32-b79af0e1efd8@roeck-us.net>
+ <CAGUgbhC34-pUp4ECULc0ScaN7hUF1L-z69h+ji-TiVrv4gKd3Q@mail.gmail.com>
+ <7b198d57-ddec-3074-314a-3e5e5b8f48f9@roeck-us.net>
+ <CAGUgbhDbFedVe-pc+muD_NtDpjHpGqMDdrS3A73C-QbxeHn4oQ@mail.gmail.com>
+ <cf91edc9-1093-495b-48eb-6b05198c2541@linaro.org>
+ <7a69bda1-5f4c-5b1f-8eb6-6fd58917a9b1@roeck-us.net>
+ <CAGUgbhCTDPGt_vpbfaEreX+iuLJ3WUBqt4kppxyaFZQus9Zf0Q@mail.gmail.com>
+ <b22b2ccc-6760-0db6-067b-109c3864d2e8@linaro.org>
+ <CAGUgbhDmXnyxYCL9h9C0P4ByDSTstWnGqW=uFoDVVHeK3BerHA@mail.gmail.com>
+ <3756dffd-1407-d656-485a-9cf1eefd9ae1@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6M5dd0U91g62xbzr"
+Content-Disposition: inline
+In-Reply-To: <3756dffd-1407-d656-485a-9cf1eefd9ae1@linaro.org>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Luc Ma <onion0709@gmail.com> writes:
 
-> From: Luc Ma <luc@sietium.com>
->
-> Signed-off-by: Luc Ma <luc@sietium.com>
-> ---
+--6M5dd0U91g62xbzr
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Even when is a trivial change I would add something as commit message, i.e:
+On Tue, Jul 18, 2023 at 08:04:24AM +0200, Krzysztof Kozlowski wrote:
+> On 18/07/2023 06:01, =E8=94=A1=E6=89=BF=E9=81=94 wrote:
+> >>
+> >> On 17/07/2023 11:01, =E8=94=A1=E6=89=BF=E9=81=94 wrote:
+> >>> Guenter Roeck <linux@roeck-us.net> =E6=96=BC 2023=E5=B9=B47=E6=9C=881=
+7=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=881:00=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+> >>>>
+> >>>> On 7/16/23 09:08, Krzysztof Kozlowski wrote:
+> >>>>
+> >>>> [ ... ]
+> >>>>
+> >>>>>>
+> >>>>>> This patch serial doesn't use to binding the fan control h/w. It is
+> >>>>>> used to binding the two independent h/w blocks.
+> >>>>>> One is used to provide pwm output and another is used to monitor t=
+he
+> >>>>>> speed of the input.
+> >>>>>> My patch is used to point out that the pwm and the tach is the
+> >>>>>> different function and don't need to
+> >>>>>> bind together. You can not only combine them as the fan usage but =
+also
+> >>>>>> treat them as the individual module for
+> >>>>>> use. For example: the pwm can use to be the beeper (pwm-beeper.c),=
+ the
+> >>>>>> tach can be used to monitor the heart beat signal.
+> >>>>>
+> >>>>> Isn't this exactly the same as in every other SoC? PWMs can be used=
+ in
+> >>>>> different ways?
+> >>>>>
+> >>>>
+> >>>> ... and in every fan controller. Not that it really makes sense beca=
+use
+> >>>> normally the pwm controller part of such chips is tied to the fan in=
+put,
+> >>>> to enable automatic fan control, but it is technically possible.
+> >>>> In many cases this is also the case in SoCs, for example, in ast2500.
+> >>>> Apparently this was redesigned in ast2600 where they two blocks are
+> >>>> only lightly coupled (there are two pwm status bits in the fan status
+> >>>> register, but I have no idea what those mean). If the blocks are tig=
+htly
+> >>>> coupled, separate drivers don't really make sense.
+> >>>>
+> >>>> There are multiple ways to separate the pwm controller part from the
+> >>>> fan inputs if that is really necessary. One would be to provide a
+> >>>> sequence of address mappings, the other would be to pass the memory
+> >>>> region from an mfd driver. It is not necessary to have N instances
+> >>>> of the fan controller, even if the address space is not continuous.
+> >>>>
+> >>>
+> >>> Hi Guenter,
+> >>>
+> >>> May I ask about the meaning of the sequence of address mappings? It a=
+ppears
+> >>> to consist of multiple tuples within the 'reg' property, indicating
+> >>> the usage of PWM/Tach
+> >>> registers within a single instance. After that I can use the dts like=
+ following:
+> >>>
+> >>> pwm: pwm@1e610000 {
+> >>> ...
+> >>> reg =3D <0x1e610000 0x8
+> >>> 0x1e610010 0x8
+> >>> 0x1e610020 0x8
+> >>> 0x1e610030 0x8
+> >>> 0x1e610040 0x8
+> >>> 0x1e610050 0x8
+> >>> 0x1e610060 0x8
+> >>> 0x1e610070 0x8
+> >>> 0x1e610080 0x8
+> >>> 0x1e610090 0x8
+> >>> 0x1e6100A0 0x8
+> >>> 0x1e6100B0 0x8
+> >>> 0x1e6100C0 0x8
+> >>> 0x1e6100D0 0x8
+> >>> 0x1e6100E0 0x8
+> >>> 0x1e6100F0 0x8>;
+> >>
+> >>
+> >> Uh, no... I mean, why? We keep pointing out that this should not be do=
+ne
+> >> differently than any other SoC. Open any other SoC PWM controller and
+> >> tell me why this is different? Why this cannot be one address space?
+> >=20
+> > Hi Krzysztof,
+> >=20
+> > This is because the register layout for PWM and Tach is not continuous.
+> > Each PWM/Tach instance has its own set of controller registers, and they
+> > are independent of each other.
+>=20
+> Register layout is not continuous in many other devices, so again - why
+> this must be different?
+>=20
+> >=20
+> > For example:
+> > PWM0 uses registers 0x0 and 0x4, while Tach0 uses registers 0x8 and 0xc.
+> > PWM1 uses registers 0x10 and 0x14, while Tach1 uses registers 0x18 and =
+0x1c.
+> > ...
+> >=20
+> > To separate the PWM controller part from the fan inputs, Guenter has
+> > provided two methods.
+> > The first method involves passing the memory region from an MFD
+> > driver, which was the
+>=20
+> I have no clue how can you pass memory region
+> (Documentation/devicetree/bindings/reserved-memory/) from MFD and why
+> does it make sense here.
+>=20
+> > initial method I intended to use. However, it seems that this method
+> > does not make sense to you.
+> >=20
+> > Therefore, I would like to explore the second method suggested by
+> > Guenter, which involves providing
+> > a sequence of address mappings.
 
-"The kernel-doc mentions /sys/kernel/dma-buf/buffers but the correct path
-is /sys/kernel/dmabuf/buffers instead. Fix the typo in the documentation".
+At the risk of saying what others have said: given that there's a single
+reset line and a single clock line controlling all of these channels and
+given what I recall of how address demuxers work in chips, everything
+indicates that this is a single hardware block/device.
 
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+So the way that this should be described in DT is:
 
--- 
-Best regards,
+	pwm@1e610000 {
+		reg =3D <0x1e610000 0x100>;
+		clocks =3D ...;
+		resets =3D ...
+	};
 
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+That'd be the most accurate representation of this hardware in DT. It is
+then up to the driver to expose this in any way you see fit. For Linux
+it may make sense to expose this as 16 PWM channels and 16 hardware
+monitoring devices. Other operating systems using the same DT may choose
+to expose this differently, depending on their frameworks, etc. A simple
+operating system may not expose this as separate resources at all but
+instead directly program individual registers from this block.
 
+I'd also like to add that I think trying to split this up into multiple
+drivers in Linux is a bit overkill. In my opinion, though I know not
+everyone shares this view, it's perfectly fine for one driver to expose
+multiple types of resources. There's plenty of use-cases across the
+kernel where tightly coupled devices like this have a single driver that
+registers with multiple subsystems. Going through MFD only because this
+particular hardware doesn't split registers nicely along Linux subsystem
+boundaries.
+
+So FWIW, I'm fine carrying hwmon code in a PWM driver and I'm equally
+fine if PWM code ends up in a hwmon driver (or any other subsystem
+really) if that makes sense for a given hardware.
+
+Thierry
+
+--6M5dd0U91g62xbzr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmS2M4UACgkQ3SOs138+
+s6E3Ww//aHUH2t/BbrFylE5Y9kU3zPSvSNLVmsRJQ2LmD5P/cCBBqa3Yaala1Rkf
+309YuV8mh0tbmDYZZKBpnHsTyGaa/WpVymOS8LP2n2ugzZWdejoO5XNazB1pvXiY
+pTnErP2kiN8yvaVhD5leVgS6YzTF3kkvrtmeQy8s8RecYMpEK0OUOFyTsB+xTWoS
+gtSwD7sNTGJvxshf71/Zif3EAn49j8BZzzY967j+Y2UU+tsfiH+9IKU9ErOBDvHr
+sWNyrZCrxeGY19DJOrci+zmsSn7VV73Ls0+D14J/kJJunvEl5vXWZvWX3sTpaalB
+AETPPmAT3fvvE0nWvG+Aczv8eK5B5vAlt9KYEe/IatMP/vtgPS6fmyY0Zlpw3+S2
+qL8cdM6DdJ2sOo0xuOvRWMzpuAvzI/kqM8+3ekm7EZ8YEI3AzjQt+yKOo8R41Ngu
+w87tmAS7FKGU8azN3i4BZ9CbGhfovJBouAhpGip9C4+7xemIBhOWQd4+5UAagDlK
+dzEDyCCd1WekvHQxIKwCa5D1WySRGo8sKlr7uPlVAdYCNC/E6eB6cv0iTljzlg52
+p42NKSy4V8xeV5OvoimXeu2/iD3cBqQ1tn586TqhR9WM3NnzKzQ10rCKIOpBgaEj
+EfblswZmP4VH2xT9tEZTTx8mGm/EsmNUzopsGsuoOFmRXEYGh/I=
+=iKtB
+-----END PGP SIGNATURE-----
+
+--6M5dd0U91g62xbzr--
