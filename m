@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8683E7585F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352707585FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbjGRUPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 16:15:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
+        id S230313AbjGRUQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 16:16:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjGRUPL (ORCPT
+        with ESMTP id S230333AbjGRUQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 16:15:11 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1034B6
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:15:04 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qLr64-0006QK-Eo; Tue, 18 Jul 2023 22:15:00 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qLr62-000RwL-8V; Tue, 18 Jul 2023 22:14:58 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qLr61-005w3S-HG; Tue, 18 Jul 2023 22:14:57 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        Okan Sahin <okan.sahin@analog.com>
-Subject: [PATCH] regulator: max77857: Switch back to use struct i2c_driver's .probe()
-Date:   Tue, 18 Jul 2023 22:14:53 +0200
-Message-Id: <20230718201453.3953602-1-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
+        Tue, 18 Jul 2023 16:16:54 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312DAF9;
+        Tue, 18 Jul 2023 13:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=JcHNL3a69uZIHkUdSEgchC92wu1+8vIvXIawZDtpUb4=; b=ifjb+2EVEa5UWdvG2Oi7hlfSD2
+        0gv9PHEmRfK71DBmFd+JtmT8JxzqmTdOaMIdpXif9oBeC/yIA85G+fEma7vkL2+y/ZhYUolIhjq3X
+        u5e9j9mGlcrknJCU0pxRCog6h23PaSOe05MOk8Ccd4wWzysTWZWcNAGzfyqvPeHwh5vE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qLr7d-001efI-VJ; Tue, 18 Jul 2023 22:16:37 +0200
+Date:   Tue, 18 Jul 2023 22:16:37 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Michael Walle <mwalle@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Xu Liang <lxu@maxlinear.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Simon Horman <simon.horman@corigine.com>
+Subject: Re: [PATCH net-next v3 03/11] net: phy: replace is_c45 with
+ phy_accces_mode
+Message-ID: <16c19cff-cca7-43fa-97a8-c4e74f033b0b@lunn.ch>
+References: <20230620-feature-c45-over-c22-v3-0-9eb37edf7be0@kernel.org>
+ <20230620-feature-c45-over-c22-v3-3-9eb37edf7be0@kernel.org>
+ <509889a3-f633-40b0-8349-9ef378818cc7@lunn.ch>
+ <66d9daa106d7840e972dba35914e6983@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1371; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=rYLwMHPLHmBaiJ+tsc7QaZqhCDqzQziryzOKvm6BYpI=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBktvK8rQ4KslLbe7lIW2m8Iqdyxgi01atkm6Ia0 ZXZoJz3Y8CJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZLbyvAAKCRCPgPtYfRL+ ToA4B/9ObQ4DVqp4CVXJY3P6PckOUAQ7rONEqjywbBp/TQFsicGgFLlhfsMlh+mJYXt+Hr1a/mb S8gpkniPa7sb6Xq6ijWHxwouvezeDRvdJ5KTfzzKo8Y0+8SpINr2aNTxRrOee0bbVCI/xfdq6ya qH6Nggab83DmEdXQHBr63S8cFby6uMyQK/d9ifMfIEYeA5i3Num6o3N3SiEVgJFVz1rzIoq1feF 0n3DjuxMu2eOk44cppM5+Z+kGNBCf1SC/pqCOjjBFiFMihs3JwOiZMCBKu10dS6r4N0tdmcoy+E YmOuBfVvu3pRICchw2trTbnLotlAOmz0jZcY+RPKNCKzz4Es
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66d9daa106d7840e972dba35914e6983@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit b8a1a4cd5a98 ("i2c: Provide a temporary .probe_new()
-call-back type"), all drivers being converted to .probe_new() and then
-commit 03c835f498b5 ("i2c: Switch .probe() to not take an id parameter")
-convert back to (the new) .probe() to be able to eventually drop
-.probe_new() from struct i2c_driver.
+> Maybe we need to clarify what "has c22/c45 registers space" actually
+> means. Responds to MII c22/c45 access?
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-Hello,
+No. That is not what it means to me. Bus transactions and register
+spaces are different.
 
-this driver is currently added in next and introduces a new usage of
-.probe_new which I intend to remove after the next -rc1.
+There are C22 registers, and there are C45 registers.
 
-To reduce the amount of patches that are necessary to apply together
-with the patch that drops .probe_new() it would be great if you make
-sure that this patch makes it in before v6.6-rc1.
+The bus can do C22 transfers, and it can do C45 transfers.
 
-Thanks
-Uwe
+C22 registers can be access using C22 bus transfers.
 
- drivers/regulator/max77857-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+C45 registers can be accessed using either C45 bus transfers, or
+indirectly via C45 over C22 transfers.
 
-diff --git a/drivers/regulator/max77857-regulator.c b/drivers/regulator/max77857-regulator.c
-index c5482ffd606e..d0fcb080f825 100644
---- a/drivers/regulator/max77857-regulator.c
-+++ b/drivers/regulator/max77857-regulator.c
-@@ -449,7 +449,7 @@ struct i2c_driver max77857_driver = {
- 		.of_match_table = max77857_of_id,
- 	},
- 	.id_table = max77857_id,
--	.probe_new = max77857_probe,
-+	.probe = max77857_probe,
- };
- module_i2c_driver(max77857_driver);
- 
+Currently, there is no C22 over C45, but given the oddball Realtek PHY
+Russell is talking about in an SFP, it might have a proprietary C22
+over C45?
 
-base-commit: af71cccadecedad3484c2208e2c4fc8eff927d4a
--- 
-2.39.2
-
+     Andrew
