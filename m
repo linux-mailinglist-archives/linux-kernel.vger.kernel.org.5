@@ -2,137 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD30757AF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9ED757AFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231949AbjGRLyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:54:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57928 "EHLO
+        id S231748AbjGRLzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:55:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbjGRLyK (ORCPT
+        with ESMTP id S230457AbjGRLzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:54:10 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DB81A6
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:54:09 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-51e429e1eabso8003180a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:54:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689681248; x=1692273248;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZDvfCq2rYjVFo4n3JaAZGwBu1O0j5CMRvxTlhF+phBE=;
-        b=leb66+CLlHF97LLt85yV4SxY9TCEqgEUzNiJkcQh+ihcyBQvwr6uX7ola/6Va4rWOS
-         8x19UvwnxZS53+PVzqyopBZ+2h+GmV15aX5TZ3fAJfUgukyZFWlxcEKowxtAWMHGLNdZ
-         Pl7lwbkHzCOHYnZdKuYEFQG5jwABP23ZlGaj3kJVuHPorvxvfOacGUhNtjVIAkhdBBFA
-         sM+yAbQ00jBvR2OevMUW5XvG7asOhIjplWejK3gQS+dZM430ilhxncncBU5wmeMazpT3
-         vSfyrM1hB5bAOZJ8KXr2KFU2+Fd2dlMLafQKSYG6HisYENb41zP31Tk/sTVJNB9j7PXn
-         VX/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689681248; x=1692273248;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZDvfCq2rYjVFo4n3JaAZGwBu1O0j5CMRvxTlhF+phBE=;
-        b=FLDa0CCYlfTR0L+EaOd0Fng58Xf0P7dLUEZD2kCCxpuiF59pk0/Bu+FlqSJU+YriU8
-         /TJDxD86NiBM/HlcqW4SIbWnAEPpF3OuWGYq8sJ0ffWQCkRH1xH91QMDHGDtHp/7YZDU
-         f+/Zal2pFJh4mdcE7W+BuOMHtaTha3NS+ETCsKNn6PjVviXZRZdm72SQUcjAb23AfpEV
-         FATLg68niPiUBftzpci/4pBsSsgrq/CGDHjDomUdMa7yqq3gvsT8HtZvggA3YJyAMghh
-         j7Z0kK7NDkBMR99iQTR5dOyDxeNTuniU2POafVz/E3559OtaVuH7AtSiFKbfwZiEgwhl
-         nilw==
-X-Gm-Message-State: ABy/qLYQ1clOyj6U0yFazUeNuRfXLqPx6F+FoJkghaXWvtms2OO2LWAQ
-        6j0q3+qAmX8TJBpEVIBQkLIyng==
-X-Google-Smtp-Source: APBJJlGo95nQJFKL792SHJPaSiWKgXJBaPhwi4GdonpOb/yE6DAQNPoWUsd1OUyOwDJJoiXFMUddtg==
-X-Received: by 2002:a05:6402:2048:b0:51e:234:cc51 with SMTP id bc8-20020a056402204800b0051e0234cc51mr13412054edb.17.1689681248020;
-        Tue, 18 Jul 2023 04:54:08 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id w5-20020aa7dcc5000000b005217a24addbsm1124462edu.20.2023.07.18.04.54.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 04:54:07 -0700 (PDT)
-Message-ID: <c674cc0f-087d-3333-65cd-00394aa62d32@linaro.org>
-Date:   Tue, 18 Jul 2023 13:54:05 +0200
+        Tue, 18 Jul 2023 07:55:12 -0400
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4171A5;
+        Tue, 18 Jul 2023 04:55:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1689681308;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cUcNwMpkRou4HoWP59j29IOth9JECxsyonqdKzM916o=;
+        b=3Uf7/QWlCCH5tyFroVybd1Qgx2JU1l06CTuA9m3ghJn+G0lPlIIF/07/Hxm/ZxptzHo46Z
+        h2OZUg6m/lQhQJIB6Il4yacDOBHUwVFFbI50WGHrQQU43CQxBY24dhU5MIPMJCetRF/jeH
+        v8qQUt4kIp37e6JvSTUVskqe2fHxiMw=
+Message-ID: <8f32cb8377808a073b043e0adf3ccf5ae5a84c92.camel@crapouillou.net>
+Subject: Re: [PATCH v2 10/10] pinctrl: tegra: Switch to use
+ DEFINE_NOIRQ_DEV_PM_OPS() helper
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Balsam CHIHI <bchihi@baylibre.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
+        Sean Wang <sean.wang@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
+Date:   Tue, 18 Jul 2023 13:55:05 +0200
+In-Reply-To: <ZLZ6amp5HKUbm5w3@orome>
+References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
+         <20230717172821.62827-11-andriy.shevchenko@linux.intel.com>
+         <13f7153786cfcdc3c6185a3a674686f7fbf480dc.camel@crapouillou.net>
+         <ZLZDL27zzDpY4q8E@orome>
+         <5e4b5bc23f3edb3ed30cb465420a51ffceceb53d.camel@crapouillou.net>
+         <ZLZ6amp5HKUbm5w3@orome>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 02/17] dt-bindings: gpu: Add Imagination Technologies
- PowerVR GPU
-Content-Language: en-US
-To:     Frank Binns <Frank.Binns@imgtec.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Sarah Walker <Sarah.Walker@imgtec.com>
-Cc:     "luben.tuikov@amd.com" <luben.tuikov@amd.com>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "tzimmermann@suse.de" <tzimmermann@suse.de>,
-        "dakr@redhat.com" <dakr@redhat.com>,
-        "matthew.brost@intel.com" <matthew.brost@intel.com>,
-        "afd@ti.com" <afd@ti.com>, "hns@goldelico.com" <hns@goldelico.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "boris.brezillon@collabora.com" <boris.brezillon@collabora.com>,
-        "mripard@kernel.org" <mripard@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        Donald Robson <Donald.Robson@imgtec.com>,
-        "faith.ekstrand@collabora.com" <faith.ekstrand@collabora.com>
-References: <20230714142526.111569-1-sarah.walker@imgtec.com>
- <01f0cf88-4e85-0c92-9723-eb9198782d0d@linaro.org>
- <b6a83ff4ba6ac92af2ab573e200cbf0b5b2847f9.camel@imgtec.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <b6a83ff4ba6ac92af2ab573e200cbf0b5b2847f9.camel@imgtec.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/07/2023 13:47, Frank Binns wrote:
-> Hi Krzysztof,
-> 
-> On Tue, 2023-07-18 at 08:20 +0200, Krzysztof Kozlowski wrote:
->> On 14/07/2023 16:25, Sarah Walker wrote:
->>> Add the device tree binding documentation for the Series AXE GPU used in
->>> TI AM62 SoCs.
->>>
->>
->> ...
->>
->>> +
->>> +additionalProperties: false
->>> +
->>> +examples:
->>> +  - |
->>> +    #include <dt-bindings/interrupt-controller/irq.h>
->>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->>> +
->>> +    gpu: gpu@fd00000 {
->>> +        compatible = "ti,am62-gpu", "img,powervr-seriesaxe";
->>> +        reg = <0x0fd00000 0x20000>;
->>> +        power-domains = <&some_pds 187>;
->>> +        clocks = <&k3_clks 187 0>;
->>> +        clock-names = "core";
->>> +        interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
->>> +        interrupt-names = "gpu";
->>
->> Why does it differ from your DTS?
-> 
-> This is just an oversight on our part. We'll make sure they both match in the
-> next version.
-> 
+Le mardi 18 juillet 2023 =C3=A0 13:41 +0200, Thierry Reding a =C3=A9crit=C2=
+=A0:
+> On Tue, Jul 18, 2023 at 10:42:47AM +0200, Paul Cercueil wrote:
+> > Hi Thierry,
+> >=20
+> > Le mardi 18 juillet 2023 =C3=A0 09:45 +0200, Thierry Reding a =C3=A9cri=
+t=C2=A0:
+> > > On Mon, Jul 17, 2023 at 09:14:12PM +0200, Paul Cercueil wrote:
+> > > > Hi Andy,
+> > > >=20
+> > > > Le lundi 17 juillet 2023 =C3=A0 20:28 +0300, Andy Shevchenko a
+> > > > =C3=A9crit=C2=A0:
+> > > > > Since pm.h provides a helper for system no-IRQ PM callbacks,
+> > > > > switch the driver to use it instead of open coded variant.
+> > > > >=20
+> > > > > Signed-off-by: Andy Shevchenko
+> > > > > <andriy.shevchenko@linux.intel.com>
+> > > > > ---
+> > > > > =C2=A0drivers/pinctrl/tegra/pinctrl-tegra.c | 5 +----
+> > > > > =C2=A01 file changed, 1 insertion(+), 4 deletions(-)
+> > > > >=20
+> > > > > diff --git a/drivers/pinctrl/tegra/pinctrl-tegra.c
+> > > > > b/drivers/pinctrl/tegra/pinctrl-tegra.c
+> > > > > index 4547cf66d03b..734c71ef005b 100644
+> > > > > --- a/drivers/pinctrl/tegra/pinctrl-tegra.c
+> > > > > +++ b/drivers/pinctrl/tegra/pinctrl-tegra.c
+> > > > > @@ -747,10 +747,7 @@ static int tegra_pinctrl_resume(struct
+> > > > > device
+> > > > > *dev)
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
+> > > > > =C2=A0}
+> > > > > =C2=A0
+> > > > > -const struct dev_pm_ops tegra_pinctrl_pm =3D {
+> > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.suspend_noirq =3D &te=
+gra_pinctrl_suspend,
+> > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.resume_noirq =3D &teg=
+ra_pinctrl_resume
+> > > > > -};
+> > > > > +DEFINE_NOIRQ_DEV_PM_OPS(tegra_pinctrl_pm,
+> > > > > tegra_pinctrl_suspend,
+> > > > > tegra_pinctrl_resume);
+> > > > > =C2=A0
+> > > > > =C2=A0static bool tegra_pinctrl_gpio_node_has_range(struct
+> > > > > tegra_pmx
+> > > > > *pmx)
+> > > > > =C2=A0{
+> > > >=20
+> > > > Another driver where using EXPORT_GPL_DEV_PM_OPS() would make
+> > > > more
+> > > > sense.
+> > >=20
+> > > We don't currently export these PM ops because none of the Tegra
+> > > pinctrl
+> > > drivers can be built as a module.
+> >=20
+> > This doesn't change anything. You'd want to use
+> > EXPORT_GPL_DEV_PM_OPS
+> > (or better, the namespaced version) so that the PM ops can be
+> > defined
+> > in one file and referenced in another, while still having them
+> > garbage-
+> > collected when CONFIG_PM is disabled.
+>=20
+> Looking at the definition of EXPORT_GPL_DEV_PM_OPS(), it will cause
+> an
+> EXPORT_SYMBOL_GPL() to be added. So there very well is a change. And
+> it's a completely bogus change because no module is ever going to use
+> that symbol. If we were to ever support building the pinctrl driver
+> as
+> a module, then this would perhaps make sense, but we don't.
 
-Just test your DTS before sending. You would see errors and there is no
-need to involve manual reviewing. It is always better to use tools than
-reviewers time. Otherwise, please kindly donate your time by helping to
-review other patches.
+In this particular case the EXPORT_SYMBOL_GPL() isn't really important,
+the rest of EXPORT_GPL_DEV_PM_OPS() is.
 
-Best regards,
-Krzysztof
+I don't think having a symbol exported it is a big deal, TBH, if you
+use the namespaced version. If you really don't want that, we need a
+version of EXPORT_GPL_DEV_PM_OPS() that doesn't export the symbol.
 
+-Paul
