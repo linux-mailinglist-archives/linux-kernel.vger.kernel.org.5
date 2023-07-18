@@ -2,66 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 247B375886D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC24758870
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbjGRW3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 18:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47982 "EHLO
+        id S230470AbjGRW34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 18:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjGRW3E (ORCPT
+        with ESMTP id S229743AbjGRW3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 18:29:04 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C79B1992;
-        Tue, 18 Jul 2023 15:29:01 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b741cf99f8so96538271fa.0;
-        Tue, 18 Jul 2023 15:29:01 -0700 (PDT)
+        Tue, 18 Jul 2023 18:29:54 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4692BD
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:29:53 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id 4fb4d7f45d1cf-51e429e1eabso8840236a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:29:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689719340; x=1692311340;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qNw+miDO+/vr2NteE7yqKqsKfjVHHAqT8sK5QSW7byk=;
-        b=a2pYDJsFUytmjoOLHzZ3DLS49W/e3L2DLHxvs19CPUjUXpJGPXa1kBPo9kbCok3E2N
-         rleryHy3KrwhRqfZfuMCFFA0CwpSm9SoD9EftpqygB90ifNsixKTV28ce8pZArirwEO7
-         45fx7Sunj4GM22bsLBHa6g/vljqN5bHzR52W0CCXsFYMNvlSyLih4Y/zmsDc6i2LR9nd
-         IUDwqYwbYbsHzszrtkn4gMm7g5SWt2b+G8s5KyQV5iRXv/OYbN5dYl/UV3Zc/yXtBII/
-         5GM00/htoFgEP1lnUEQbH3CqyXSt7e2ZaZIyAjSuFi9bpm4gGqwhmzvuYNKRYVOwHyK2
-         6BmA==
+        d=gmail.com; s=20221208; t=1689719392; x=1692311392;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8VIhdcMpL3OFo2a4tlXJdj92DrXjZBW6xzKr5orA7Nw=;
+        b=jw0dVdjMax3BvwEwSbtcyxlHSq7ibIqrGOYAz10EKUBvJg2NIWpMZ8FzMjnDioKQtA
+         K3adS4O3FNzhc7q74C1Ylfj4c3EAHN5lkJpI88uROj8EyuLj51rviB6wrcSQs/lS1SVa
+         BI2liP5S6A3r5ZTnQKcxb2hGFnJsDMf8Qeqka8T+c6xWokXdZ/CEiyaEqrcb4VyiXmPy
+         Hr8gc0cfqH2OBg14qDBNVJ1M4Rvrm2+0cB+OKJI2HIZjliSlQaUMfZdeh2mxojAadRu2
+         SOpzZH2/4jCSOG/aeX1eG/jAdY8EQ9nqsS8qsUmXQV9I3XmlYIsF/DgPYBqVaGwNV+Ao
+         ADpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689719340; x=1692311340;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qNw+miDO+/vr2NteE7yqKqsKfjVHHAqT8sK5QSW7byk=;
-        b=CEqSs9Z2cty0tgBwTxILDvHfaMq9v28s7wFoInYGvGs588LevWBjFo5W+12L26+8GH
-         ZDcNDBXc0I2Pt44RB39D3RNKjCcQ3nBvSjBZ+UFYr0ywl1upEMfjmzceqh6/ckqaAJOf
-         etwhhzLp7cIjWgQbaXPcYkH4UeB4jvvrup5uxWorpjKpOnzBFw84StlJhG3YQpwW0VrH
-         g5/9liUZHauluHgzTT44FR+wyxxZyF2AsOTfaxUoqUDPQ1sjzEq4sKQsNbQzI5D7Padd
-         hpvzeNWNCbynsUQFiHHio53Ul53dRcbRK/JV8X9pTwzLakUF85d7qujWzRAul7Lmkm5J
-         LY1A==
-X-Gm-Message-State: ABy/qLadviuv1KT799yTWKlLrdUC2+YOEnzJ1AL7jcEQhxkIyplKF8HF
-        Mk4pWEJjsYKoS57YOuGaVV/MeSc9ZVHsXh6LeJ0=
-X-Google-Smtp-Source: APBJJlH4etfU3dbNOp+Zve/q7ONO5kOmWFyi1Rdgcn0iBh8HYYbXtTuVVyfCGgwEE65eHBq0Fz2kzddf7rIaR5oqS00=
-X-Received: by 2002:a2e:9b82:0:b0:2b6:a827:164f with SMTP id
- z2-20020a2e9b82000000b002b6a827164fmr450914lji.10.1689719339348; Tue, 18 Jul
- 2023 15:28:59 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689719392; x=1692311392;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8VIhdcMpL3OFo2a4tlXJdj92DrXjZBW6xzKr5orA7Nw=;
+        b=NtHS8rpRiK1m7ryKoWVYic6OWlgj6Ho1FLvQ+Jet5MKtIiMTHWMMMM69+IZRAyjb6Z
+         qPZ8q+tdKa9/zL+lm42gDE5KTsHscz8aMQX7ZfFsLZpXRle+QLu6yjtykbASIxonDA8F
+         zvZg48z0nTPBAm6Nyucf1nVM3jBXSa5llUXZbvhZyxrqo0STBtVvCMBVeRoZe2sf2fOo
+         au5ghRzBu+tpCIDIJ8fCOBfIYcAlZckLRKWEmiTCaV+5z6GVw/H4NZCRU9IIC/5o+fF8
+         2q8d0BS5tOi/KR4MzpDYDmOuIbnomWUhdDMwhhHYPu+EAvzIfLvswybQV+9dR5lvPFCY
+         XtAA==
+X-Gm-Message-State: ABy/qLa4H0K5ti/RfQ82RRVZH7Zh4gq677Q4b1TWv+XMD96ReFxudFBs
+        GWDh/EqVo0UUIJn4y7mK+PMtMztlfdkOCpgjFi4=
+X-Google-Smtp-Source: APBJJlEWSgvrZAXxa7UB21BD8PlvxNa6Apa8NnlR500y3VVHGXmSmsK2ydkxanRynvQhpW0NAg+dMQ==
+X-Received: by 2002:aa7:da8b:0:b0:51e:1656:bb24 with SMTP id q11-20020aa7da8b000000b0051e1656bb24mr745846eds.26.1689719391936;
+        Tue, 18 Jul 2023 15:29:51 -0700 (PDT)
+Received: from [127.0.1.1] (i130160.upc-i.chello.nl. [62.195.130.160])
+        by smtp.googlemail.com with ESMTPSA id u18-20020aa7d992000000b0051e0cb4692esm1780052eds.17.2023.07.18.15.29.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 15:29:51 -0700 (PDT)
+From:   Jakob Koschel <jkl820.git@gmail.com>
+Date:   Wed, 19 Jul 2023 00:29:12 +0200
+Subject: [PATCH v3] arch: enable HAS_LTO_CLANG with KASAN and KCOV
 MIME-Version: 1.0
-References: <168926677665.316237.9953845318337455525.stgit@ahduyck-xeon-server.home.arpa>
- <ce15b171-897f-bf2e-2897-c0b2b912e709@huaweicloud.com>
-In-Reply-To: <ce15b171-897f-bf2e-2897-c0b2b912e709@huaweicloud.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 18 Jul 2023 15:28:48 -0700
-Message-ID: <CAADnVQK7+cUi2BvwNc+zdYj1SN1iMMe7Vgc5TkE+_MCATAuzUQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf, arm64: Fix BTI type used for freplace attached functions
-To:     Xu Kuohai <xukuohai@huaweicloud.com>
-Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230717-enable-kasan-lto1-v3-1-650e1efc19d1@gmail.com>
+X-B4-Tracking: v=1; b=H4sIADcSt2QC/4WNzQ7CIBAGX8VwFlMoP8aT72E8LHTbElsw0BBN0
+ 3cXevKkx9nNN7OShNFhIpfDSiJml1zwBdrjgdgR/IDUdYUJb3jbaKYpejAT0gck8HRaAqNKKi2
+ F1YoLRsrOQEJqIng71uUMacFYH8+IvXvtsdu98OjSEuJ7b2dWr78ymVFGhWaoGwXSCrwOM7jpZ
+ MNMqi3zvwZeDJ3Qpmdn3kurvg3btn0Af1R3Cw0BAAA=
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Jakob Koschel <jkl820.git@gmail.com>
+X-Mailer: b4 0.12.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689719391; l=1907;
+ i=jkl820.git@gmail.com; s=20230112; h=from:subject:message-id;
+ bh=I+sb36igQn+GpB0emVVoNUcTZ3UMX+hG00en86PNo7o=;
+ b=fJm2OMmevpnG6ytoTYSNd/n9qkyTEvMegdlh3D8x3hje5iBEYR9yBubywlQEVQioqUbi7GpfVjMd
+ 4QqoGy4CDAHWXa2GO8Z4w0Ljne1MId00NsnBBiQEBkM5NLpx+Wwe
+X-Developer-Key: i=jkl820.git@gmail.com; a=ed25519;
+ pk=rcRpP90oZXet9udPj+2yOibfz31aYv8tpf0+ZYOQhyA=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -72,59 +84,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 15, 2023 at 2:03=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.com=
-> wrote:
->
-> On 7/14/2023 12:49 AM, Alexander Duyck wrote:
-> > From: Alexander Duyck <alexanderduyck@fb.com>
-> >
-> > When running an freplace attached bpf program on an arm64 system w were
-> > seeing the following issue:
-> >    Unhandled 64-bit el1h sync exception on CPU47, ESR 0x000000003600000=
-3 -- BTI
-> >
-> > After a bit of work to track it down I determined that what appeared to=
- be
-> > happening is that the 'bti c' at the start of the program was somehow b=
-eing
-> > reached after a 'br' instruction. Further digging pointed me toward the
-> > fact that the function was attached via freplace. This in turn led me t=
-o
-> > build_plt which I believe is invoking the long jump which is triggering
-> > this error.
-> >
-> > To resolve it we can replace the 'bti c' with 'bti jc' and add a commen=
-t
-> > explaining why this has to be modified as such.
-> >
-> > Fixes: b2ad54e1533e ("bpf, arm64: Implement bpf_arch_text_poke() for ar=
-m64")
-> > Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
-> > ---
-> >   arch/arm64/net/bpf_jit_comp.c |    8 +++++++-
-> >   1 file changed, 7 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_com=
-p.c
-> > index 145b540ec34f..ec2174838f2a 100644
-> > --- a/arch/arm64/net/bpf_jit_comp.c
-> > +++ b/arch/arm64/net/bpf_jit_comp.c
-> > @@ -322,7 +322,13 @@ static int build_prologue(struct jit_ctx *ctx, boo=
-l ebpf_from_cbpf)
-> >        *
-> >        */
-> >
-> > -     emit_bti(A64_BTI_C, ctx);
-> > +     /* bpf function may be invoked by 3 instruction types:
-> > +      * 1. bl, attached via freplace to bpf prog via short jump
-> > +      * 2. br, attached via freplace to bpf prog via long jump
-> > +      * 3. blr, working as a function pointer, used by emit_call.
-> > +      * So BTI_JC should used here to support both br and blr.
-> > +      */
-> > +     emit_bti(A64_BTI_JC, ctx);
->
-> LGTM. Thanks for the fixes.
->
-> Acked-by: Xu Kuohai <xukuohai@huawei.com>
+Both KASAN and KCOV had issues with LTO_CLANG if DEBUG_INFO is enabled.
+With LTO inlinable function calls are required to have debug info if
+they are inlined into a function that has debug info.
 
-Applied. Thanks
+Starting with LLVM 17 this will be fixed ([1],[2]) and enabling LTO with
+KASAN/KCOV and DEBUG_INFO doesn't cause linker errors anymore.
+
+Link: https://github.com/llvm/llvm-project/commit/913f7e93dac67ecff47bade862ba42f27cb68ca9
+Link: https://github.com/llvm/llvm-project/commit/4a8b1249306ff11f229320abdeadf0c215a00400
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Jakob Koschel <jkl820.git@gmail.com>
+---
+Changes in v3:
+- Fixed the comment linking to the Github issue
+- Link to v2: https://lore.kernel.org/r/20230717-enable-kasan-lto1-v2-1-d47bf182f5c6@gmail.com
+
+Changes in v2:
+- Added correct To:/Cc:
+- Added comment about required LLVM 17 version dependency
+- Link to v1: https://lore.kernel.org/r/20230717-enable-kasan-lto1-v1-1-471e706a5c4e@gmail.com
+---
+ arch/Kconfig | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/Kconfig b/arch/Kconfig
+index aff2746c8af2..847b52495656 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -745,7 +745,9 @@ config HAS_LTO_CLANG
+ 	depends on $(success,$(AR) --help | head -n 1 | grep -qi llvm)
+ 	depends on ARCH_SUPPORTS_LTO_CLANG
+ 	depends on !FTRACE_MCOUNT_USE_RECORDMCOUNT
+-	depends on !KASAN || KASAN_HW_TAGS
++	# https://github.com/ClangBuiltLinux/linux/issues/1721
++	depends on (!KASAN || KASAN_HW_TAGS || CLANG_VERSION >= 170000) || !DEBUG_INFO
++	depends on (!KCOV || CLANG_VERSION >= 170000) || !DEBUG_INFO
+ 	depends on !GCOV_KERNEL
+ 	help
+ 	  The compiler and Kconfig options support building with Clang's
+
+---
+base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
+change-id: 20230717-enable-kasan-lto1-656754c76241
+
+Best regards,
+-- 
+Jakob Koschel <jkl820.git@gmail.com>
+
