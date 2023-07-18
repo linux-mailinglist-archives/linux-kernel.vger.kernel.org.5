@@ -2,80 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E288A75826F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FEF758284
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbjGRQuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 12:50:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55762 "EHLO
+        id S231224AbjGRQu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 12:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbjGRQuL (ORCPT
+        with ESMTP id S229986AbjGRQux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 12:50:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D072019A;
-        Tue, 18 Jul 2023 09:50:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6267561626;
-        Tue, 18 Jul 2023 16:50:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B3F73C433C7;
-        Tue, 18 Jul 2023 16:50:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689699009;
-        bh=gxE+KOgxABDXVFj+Dky4wtJ8UU6gGn71QxvsgZQTZRQ=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=cuXu0UwNDUrlZou6zs+r30UIay7c4pmYD0oX/bhNxPeZCXfq24+OTUIa8RpU7CNYZ
-         bILTnY0cBuNfL5rC5rNzcM5DmVNCAi/ycWk5Oaca5DZ5mpKuZKl2MJ1UAZ7yAtf0Rw
-         bk2aQaClG7w1YrVMkjbOhWCz4rqAxJ7HDNbjExVSkBCnNwM0UVkt27IRPTYpvsdqcD
-         iMEHuAleisp/CIXjMKs+hX9MM5eeUrTLV+ALS9ctLldOy804YMUkBFdnxhlLnB2b+w
-         f0uyHJKBb67z3VMNxQEruGBLanilPfnNDJnB1LppPa3S863kNSeWbk2JDgh488Wpq0
-         hcrM/phlBNoEA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 938A8C64458;
-        Tue, 18 Jul 2023 16:50:09 +0000 (UTC)
-Subject: Re: [GIT PULL] tpmdd changes for v6.5-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230718164348.35519-1-jarkko@kernel.org>
-References: <20230718164348.35519-1-jarkko@kernel.org>
-X-PR-Tracked-List-Id: <linux-integrity.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230718164348.35519-1-jarkko@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git tags/tpmdd-v6.5-rc3
-X-PR-Tracked-Commit-Id: 481c2d14627de8ecbb54dd125466e4b4a5069b47
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f2f393c385af0635eddb58df8bcd645cb6a18f5d
-Message-Id: <168969900954.22916.14714113029520178655.pr-tracker-bot@kernel.org>
-Date:   Tue, 18 Jul 2023 16:50:09 +0000
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        David Howells <dhowells@redhat.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org, Lino Sanfilippo <l.sanfilippo@kunbus.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 18 Jul 2023 12:50:53 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1E319A;
+        Tue, 18 Jul 2023 09:50:51 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fa86b08efcso9885825e9.1;
+        Tue, 18 Jul 2023 09:50:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689699050; x=1692291050;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oB4ZyTPiRMh8uiHtJckpmyXEBsp+YxvtmLWlUvgMk/M=;
+        b=Y1+OUm+KfnhNxz2FsnvadTldRBXR977AylELwvjFF8aABcT5TuWYDrR1jsjviIpW83
+         OAF/Ux11x6X+51dIzA62iasPzvSM4umD/lUeeUAhk/mh0NBfJu1exB+uSFtZfqNQB5Nl
+         eOp8M46GxxHQJ8glNcis3nOErtYTNxsNbh+g0yph0R9gNTj8Y1bQNza+BS2DyBHkJDhg
+         DKxfWVmiQMnyQDGcMAR1QSsQTWU+jK70mdkdhS3O0VgmrMuuA26DcNKXFVA3qy7KhzmU
+         FdV0sPn04MJctdvZDYGSQQ66j/fLDDKiHsLlMJs+9uehKQxagFCXOeWjTlDhRxBwXmFG
+         eT0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689699050; x=1692291050;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oB4ZyTPiRMh8uiHtJckpmyXEBsp+YxvtmLWlUvgMk/M=;
+        b=fTl7lD1skAulnkgDuxESq+p2Zciu/Jt87zh+SFYhYBgaMQ6ZDSDvxzsyFQcokzn7RK
+         5ApUKJM7eEOCHyae4iAlRsAWGVytERmrrV9EK5XGCzQFwvqDFdZlbOXx/4niLs0VU2VG
+         KL+IoncWM0F0AuPE95nTk7FsIuzeWIjbnDMh+dLOddbQKUuf454VOup4dXA1ZtCHtvV1
+         fS/5scNJHtDi6aIrosxOMDQS5OauiQTgdc3sHMklq7bxDCY8J4SzreMX0pYb646J3iWN
+         5Cr73pq+64qjVBnM/i06lfhQ2N5kgAbbQqlxv/RjBDWzbwz0/ykGYJRhgqobpinh/wIy
+         SL4g==
+X-Gm-Message-State: ABy/qLY2VzBhXwunMdTgWGDaQxND4SXsoC7fXE61c2MzP1fGo8d6p/7Q
+        bhjB5evBqHeZC8iIpTXHtKKOh9UOhx1k3AylUk8=
+X-Google-Smtp-Source: APBJJlHv0cXnhyUAmRhq8/SgUT8OUQAJDxLPpI/PxYmchWVx6/iDfgSesWfaOELdt2qAkI5m3P4LygqZPZvXw2DAxkY=
+X-Received: by 2002:a05:600c:3b1d:b0:3f9:bf0e:a312 with SMTP id
+ m29-20020a05600c3b1d00b003f9bf0ea312mr22373wms.1.1689699049984; Tue, 18 Jul
+ 2023 09:50:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230718-thermal-sun8i-registration-v1-1-c95b1b070340@kernel.org>
+In-Reply-To: <20230718-thermal-sun8i-registration-v1-1-c95b1b070340@kernel.org>
+From:   Vasily Khoruzhick <anarsoul@gmail.com>
+Date:   Tue, 18 Jul 2023 09:50:23 -0700
+Message-ID: <CA+E=qVej1K7x=8-27J-Xw2E5JrJ0hgqf__XRzBdewujFsr2cPw@mail.gmail.com>
+Subject: Re: [PATCH] thermal/drivers/sun8i: Don't fail probe due to zone
+ registration failure
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Yangtao Li <tiny.windzz@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Hugh Dickins <hughd@google.com>, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 18 Jul 2023 19:43:48 +0300:
+On Tue, Jul 18, 2023 at 8:05=E2=80=AFAM Mark Brown <broonie@kernel.org> wro=
+te:
+>
+> Currently the sun8i thermal driver will fail to probe if any of the
+> thermal zones it is registering fails to register with the thermal core.
+> Since we currently do not define any trip points for the GPU thermal
+> zones on at least A64 or H5 this means that we have no thermal support
+> on these platforms:
+>
+> [    1.698703] thermal_sys: Failed to find 'trips' node
+> [    1.698707] thermal_sys: Failed to find trip points for thermal-sensor=
+ id=3D1
+>
+> even though the main CPU thermal zone on both SoCs is fully configured.
+> This does not seem ideal, while we may not be able to use all the zones
+> it seems better to have those zones which are usable be operational.
+> Instead just carry on registering zones if we get any non-deferral
+> error, allowing use of those zones which are usable.
+>
+> This means that we also need to update the interrupt handler to not
+> attempt to notify the core for events on zones which we have not
+> registered, I didn't see an ability to mask individual interrupts and
+> I would expect that interrupts would still be indicated in the ISR even
+> if they were masked.
+>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git tags/tpmdd-v6.5-rc3
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f2f393c385af0635eddb58df8bcd645cb6a18f5d
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Reviewed-by: Vasily Khoruzhick <anarsoul@gmail.com>
