@@ -2,247 +2,1264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3450275819D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF719758195
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232950AbjGRQCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 12:02:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
+        id S230463AbjGRQBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 12:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231395AbjGRQCb (ORCPT
+        with ESMTP id S229573AbjGRQB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 12:02:31 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB7EE47;
-        Tue, 18 Jul 2023 09:02:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689696134; x=1721232134;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=b+DeZ+OCyoCHmI9m5HFUYJ01CoX39Nf1WDBzq10ijV8=;
-  b=iHdR4TygYVdEctQKcoZIPgXfn1cG+z0OyBeQprNEwqN4GJJWM1S6bSXF
-   H84vdSDyh8Q7U1EyPPyIJOBs5lq/lphhhXgd9zfmaEbfqSU8IoDR4cjqJ
-   O4HOwgk2yu/XIKBRcxDsEOlEjjD6vwuung8SfGb8OWU1cnzJ/ed4Udbxt
-   NxCA1eLR+YmM/4ez1HXw3ot+T1eCIUX5kI0uES+5lfpLr29r/u0nRMRYY
-   YkZgp6uVojP9oJBburi7gMJ83udu+UGAanH7lOEDAJB0HGOKBR5KqWeo9
-   wTRxW8YC6VA9Ue2ze3RByoYdaFa/nRrwIvAFNDI+HzRP2Qgdh/xAJ5RBV
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="368886969"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="368886969"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 09:00:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="753379195"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="753379195"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 18 Jul 2023 09:00:47 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qLn82-0000hi-0u;
-        Tue, 18 Jul 2023 16:00:46 +0000
-Date:   Wed, 19 Jul 2023 00:00:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Subject: Re: [PATCH v2 1/3] gpio: bcm-kona: Make driver OF-independent
-Message-ID: <202307182321.w0jEsUc4-lkp@intel.com>
-References: <20230717141845.41415-1-andriy.shevchenko@linux.intel.com>
+        Tue, 18 Jul 2023 12:01:28 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD09CF1;
+        Tue, 18 Jul 2023 09:01:25 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-76547539775so406206085a.3;
+        Tue, 18 Jul 2023 09:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689696085; x=1690300885;
+        h=content-transfer-encoding:organization:mime-version:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=J7jNUNzDHCJvRS6SfOflV2KPR/GxpyLYMd73SQgsYy8=;
+        b=BuJufv50COBLXcWa09y/AelCVRIVZDugdinRFBEtpqSIvkyAEZQBCwUpFoKIcq63FD
+         yBdGhNOVB0dYR5U7yMjCx0bEeDEMEVrZhv+fgS15t0B5aNwA5g+KzKMftUZY3pQFk/hm
+         rU0iWdwJg3+KZpJVMA/4Syd/meWD3o7fqXm8GT7amGzR61xkHX8f9FfcMxXbwkGIXOGu
+         NvU/OpnQilmdhWwp6rmC8hR3LOKHm0B0jkmhOGTX6d3+kUXMyA19aJDzF5k/Ty/WeNtA
+         9Aof3n77n5B6Jtk+xjdNTCi2PUnB6LBqAde1WSUf2hv87upU2MvDYavsMGbkHQBZ14dn
+         koAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689696085; x=1690300885;
+        h=content-transfer-encoding:organization:mime-version:message-id:date
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J7jNUNzDHCJvRS6SfOflV2KPR/GxpyLYMd73SQgsYy8=;
+        b=ciATIle4DcA1qjhlqgRiC73zEZJe8uEG0nQlBo0f/al1kEBUc5oOzYBx2NMqTAQ77Z
+         8I6URe8IqnY6nyidOSFUEqjLXZlsYeNbfG4bSoAw63miPKyajNn3Jw1aYncIzgjEj3+9
+         YgEqwbNG5hoKFGght0r57IhuDH0WjyyIJrzVU15W9XTuAgxBCqiioXpkFqqFpPt2hYR9
+         muP7mY9KcDLCowSyMZVo+dTGpfuLKJ25rXt06OkZfn0EqRHs38hoo8Br0TgakzOEuri7
+         1IMwyPr2YEwBu3ewoypp8Kd7IU0g1WYgJArWfXD343sMAd13E2bkgWNKVIy4GMf+Tblz
+         FzUw==
+X-Gm-Message-State: ABy/qLblSMUaaKWgG2aH9Wfqg11Kph/YHyETsAleyYguMkEQedm1MQUk
+        YnVJSPICprrjyuKd5i24hD8=
+X-Google-Smtp-Source: APBJJlGrqTb96mZpE8txcKUtO1lhtAH/eJYzwqxKJEuZcMgMxncAv2LN95mb2r8gKgfofMklwoVVwQ==
+X-Received: by 2002:a05:620a:4153:b0:767:1bb2:ea7e with SMTP id k19-20020a05620a415300b007671bb2ea7emr15403921qko.68.1689696084480;
+        Tue, 18 Jul 2023 09:01:24 -0700 (PDT)
+Received: from build.adi.eng (173-14-114-226-richmond.hfc.comcastbusiness.net. [173.14.114.226])
+        by smtp.googlemail.com with ESMTPSA id f22-20020a05620a15b600b00767dcf6f4adsm677688qkk.51.2023.07.18.09.01.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 09:01:23 -0700 (PDT)
+From:   Henry Shi <henryshi2018@gmail.com>
+To:     hbshi69@hotmail.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, hdegoede@redhat.com, markgross@kernel.org,
+        jdelvare@suse.com, linux@roeck-us.net,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+Cc:     hb_shi2003@yahoo.com, henrys@silicom-usa.com, wenw@silicom-usa.com
+Subject: [PATCH] Add Silicom Platform Driver
+Date:   Tue, 18 Jul 2023 12:01:04 -0400
+Message-Id: <20230718160104.2716-1-henryshi2018@gmail.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717141845.41415-1-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Organization: Silicom LTD
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+The Silicom platform (silicom-platform) Linux driver for Swisscom
+Business Box (Swisscom BB) as well as Cordoba family products is a 
+software solution designed to facilitate the efficient management
+and control of devices through the integration of various Linux
+frameworks. This platform driver provides seamless support for
+device management via the Linux LED framework, GPIO framework,
+Hardware Monitoring (HWMON), and device attributes. The Silicom
+platform driver's compatibility with these Linux frameworks allows
+applications to access and control Cordoba family devices using
+existing software that is compatible with these frameworks. This
+compatibility simplifies the development process, reduces
+dependencies on proprietary solutions, and promotes
+interoperability with other Linux-based systems and software.
 
-kernel test robot noticed the following build errors:
+Signed-off-by: Henry Shi <henryshi2018@gmail.com>
+---
+ drivers/platform/x86/Kconfig            |   12 +
+ drivers/platform/x86/Makefile           |    1 +
+ drivers/platform/x86/silicom-platform.c | 1123 +++++++++++++++++++++++
+ 3 files changed, 1136 insertions(+)
+ create mode 100644 drivers/platform/x86/silicom-platform.c
 
-[auto build test ERROR on brgl/gpio/for-next]
-[also build test ERROR on linus/master v6.5-rc2 next-20230718]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/gpio-bcm-kona-remove-unneeded-platform_set_drvdata-call/20230718-174129
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio/for-next
-patch link:    https://lore.kernel.org/r/20230717141845.41415-1-andriy.shevchenko%40linux.intel.com
-patch subject: [PATCH v2 1/3] gpio: bcm-kona: Make driver OF-independent
-config: arm-allmodconfig (https://download.01.org/0day-ci/archive/20230718/202307182321.w0jEsUc4-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230718/202307182321.w0jEsUc4-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307182321.w0jEsUc4-lkp@intel.com/
-
-All error/warnings (new ones prefixed by >>):
-
-   drivers/gpio/gpio-bcm-kona.c: In function 'bcm_kona_gpio_set_debounce':
->> drivers/gpio/gpio-bcm-kona.c:266:17: error: implicit declaration of function 'dev_err' [-Werror=implicit-function-declaration]
-     266 |                 dev_err(chip->parent, "Debounce value %u not in range\n",
-         |                 ^~~~~~~
-   drivers/gpio/gpio-bcm-kona.c: In function 'bcm_kona_gpio_probe':
->> drivers/gpio/gpio-bcm-kona.c:559:35: error: invalid use of undefined type 'struct platform_device'
-     559 |         struct device *dev = &pdev->dev;
-         |                                   ^~
->> drivers/gpio/gpio-bcm-kona.c:566:21: error: implicit declaration of function 'devm_kzalloc' [-Werror=implicit-function-declaration]
-     566 |         kona_gpio = devm_kzalloc(dev, sizeof(*kona_gpio), GFP_KERNEL);
-         |                     ^~~~~~~~~~~~
->> drivers/gpio/gpio-bcm-kona.c:566:19: warning: assignment to 'struct bcm_kona_gpio *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     566 |         kona_gpio = devm_kzalloc(dev, sizeof(*kona_gpio), GFP_KERNEL);
-         |                   ^
->> drivers/gpio/gpio-bcm-kona.c:572:15: error: implicit declaration of function 'platform_irq_count' [-Werror=implicit-function-declaration]
-     572 |         ret = platform_irq_count(pdev);
-         |               ^~~~~~~~~~~~~~~~~~
->> drivers/gpio/gpio-bcm-kona.c:577:24: error: implicit declaration of function 'dev_err_probe' [-Werror=implicit-function-declaration]
-     577 |                 return dev_err_probe(dev, ret, "Couldn't determine GPIO banks\n");
-         |                        ^~~~~~~~~~~~~
->> drivers/gpio/gpio-bcm-kona.c:586:28: error: implicit declaration of function 'devm_kcalloc' [-Werror=implicit-function-declaration]
-     586 |         kona_gpio->banks = devm_kcalloc(dev,
-         |                            ^~~~~~~~~~~~
->> drivers/gpio/gpio-bcm-kona.c:586:26: warning: assignment to 'struct bcm_kona_gpio_bank *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     586 |         kona_gpio->banks = devm_kcalloc(dev,
-         |                          ^
-   drivers/gpio/gpio-bcm-kona.c:594:9: error: implicit declaration of function 'platform_set_drvdata' [-Werror=implicit-function-declaration]
-     594 |         platform_set_drvdata(pdev, kona_gpio);
-         |         ^~~~~~~~~~~~~~~~~~~~
->> drivers/gpio/gpio-bcm-kona.c:607:31: error: implicit declaration of function 'devm_platform_ioremap_resource' [-Werror=implicit-function-declaration]
-     607 |         kona_gpio->reg_base = devm_platform_ioremap_resource(pdev, 0);
-         |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/gpio/gpio-bcm-kona.c:607:29: warning: assignment to 'void *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     607 |         kona_gpio->reg_base = devm_platform_ioremap_resource(pdev, 0);
-         |                             ^
->> drivers/gpio/gpio-bcm-kona.c:616:29: error: implicit declaration of function 'platform_get_irq' [-Werror=implicit-function-declaration]
-     616 |                 bank->irq = platform_get_irq(pdev, i);
-         |                             ^~~~~~~~~~~~~~~~
->> drivers/gpio/gpio-bcm-kona.c:625:9: error: implicit declaration of function 'dev_info' [-Werror=implicit-function-declaration]
-     625 |         dev_info(&pdev->dev, "Setting up Kona GPIO\n");
-         |         ^~~~~~~~
-   drivers/gpio/gpio-bcm-kona.c:625:23: error: invalid use of undefined type 'struct platform_device'
-     625 |         dev_info(&pdev->dev, "Setting up Kona GPIO\n");
-         |                       ^~
-   drivers/gpio/gpio-bcm-kona.c: At top level:
->> drivers/gpio/gpio-bcm-kona.c:651:15: error: variable 'bcm_kona_gpio_driver' has initializer but incomplete type
-     651 | static struct platform_driver bcm_kona_gpio_driver = {
-         |               ^~~~~~~~~~~~~~~
->> drivers/gpio/gpio-bcm-kona.c:652:10: error: 'struct platform_driver' has no member named 'driver'
-     652 |         .driver = {
-         |          ^~~~~~
->> drivers/gpio/gpio-bcm-kona.c:652:19: error: extra brace group at end of initializer
-     652 |         .driver = {
-         |                   ^
-   drivers/gpio/gpio-bcm-kona.c:652:19: note: (near initialization for 'bcm_kona_gpio_driver')
->> drivers/gpio/gpio-bcm-kona.c:652:19: warning: excess elements in struct initializer
-   drivers/gpio/gpio-bcm-kona.c:652:19: note: (near initialization for 'bcm_kona_gpio_driver')
->> drivers/gpio/gpio-bcm-kona.c:656:10: error: 'struct platform_driver' has no member named 'probe'
-     656 |         .probe = bcm_kona_gpio_probe,
-         |          ^~~~~
-   drivers/gpio/gpio-bcm-kona.c:656:18: warning: excess elements in struct initializer
-     656 |         .probe = bcm_kona_gpio_probe,
-         |                  ^~~~~~~~~~~~~~~~~~~
-   drivers/gpio/gpio-bcm-kona.c:656:18: note: (near initialization for 'bcm_kona_gpio_driver')
->> drivers/gpio/gpio-bcm-kona.c:658:1: warning: data definition has no type or storage class
-     658 | builtin_platform_driver(bcm_kona_gpio_driver);
-         | ^~~~~~~~~~~~~~~~~~~~~~~
->> drivers/gpio/gpio-bcm-kona.c:658:1: error: type defaults to 'int' in declaration of 'builtin_platform_driver' [-Werror=implicit-int]
->> drivers/gpio/gpio-bcm-kona.c:658:1: warning: parameter names (without types) in function declaration
-   drivers/gpio/gpio-bcm-kona.c:651:31: error: storage size of 'bcm_kona_gpio_driver' isn't known
-     651 | static struct platform_driver bcm_kona_gpio_driver = {
-         |                               ^~~~~~~~~~~~~~~~~~~~
-   drivers/gpio/gpio-bcm-kona.c:651:31: warning: 'bcm_kona_gpio_driver' defined but not used [-Wunused-variable]
-   cc1: some warnings being treated as errors
-
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for SM_GCC_8350
-   Depends on [n]: COMMON_CLK [=y] && COMMON_CLK_QCOM [=m] && (ARM64 || COMPILE_TEST [=n])
-   Selected by [m]:
-   - SM_VIDEOCC_8350 [=m] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=m]
-   WARNING: unmet direct dependencies detected for SM_GCC_8450
-   Depends on [n]: COMMON_CLK [=y] && COMMON_CLK_QCOM [=m] && (ARM64 || COMPILE_TEST [=n])
-   Selected by [m]:
-   - SM_GPUCC_8450 [=m] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=m]
-   - SM_VIDEOCC_8450 [=m] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=m]
-   WARNING: unmet direct dependencies detected for SM_GCC_8550
-   Depends on [n]: COMMON_CLK [=y] && COMMON_CLK_QCOM [=m] && (ARM64 || COMPILE_TEST [=n])
-   Selected by [m]:
-   - SM_GPUCC_8550 [=m] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=m]
-   - SM_VIDEOCC_8550 [=m] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=m]
-
-
-vim +/dev_err +266 drivers/gpio/gpio-bcm-kona.c
-
-757651e3d60e5b Markus Mayer     2013-09-10  253  
-757651e3d60e5b Markus Mayer     2013-09-10  254  static int bcm_kona_gpio_set_debounce(struct gpio_chip *chip, unsigned gpio,
-757651e3d60e5b Markus Mayer     2013-09-10  255  				      unsigned debounce)
-757651e3d60e5b Markus Mayer     2013-09-10  256  {
-757651e3d60e5b Markus Mayer     2013-09-10  257  	struct bcm_kona_gpio *kona_gpio;
-757651e3d60e5b Markus Mayer     2013-09-10  258  	void __iomem *reg_base;
-757651e3d60e5b Markus Mayer     2013-09-10  259  	u32 val, res;
-757651e3d60e5b Markus Mayer     2013-09-10  260  	unsigned long flags;
-757651e3d60e5b Markus Mayer     2013-09-10  261  
-ba4a74485a32c1 Linus Walleij    2015-12-04  262  	kona_gpio = gpiochip_get_data(chip);
-757651e3d60e5b Markus Mayer     2013-09-10  263  	reg_base = kona_gpio->reg_base;
-757651e3d60e5b Markus Mayer     2013-09-10  264  	/* debounce must be 1-128ms (or 0) */
-757651e3d60e5b Markus Mayer     2013-09-10  265  	if ((debounce > 0 && debounce < 1000) || debounce > 128000) {
-58383c78425e4e Linus Walleij    2015-11-04 @266  		dev_err(chip->parent, "Debounce value %u not in range\n",
-757651e3d60e5b Markus Mayer     2013-09-10  267  			debounce);
-757651e3d60e5b Markus Mayer     2013-09-10  268  		return -EINVAL;
-757651e3d60e5b Markus Mayer     2013-09-10  269  	}
-757651e3d60e5b Markus Mayer     2013-09-10  270  
-757651e3d60e5b Markus Mayer     2013-09-10  271  	/* calculate debounce bit value */
-757651e3d60e5b Markus Mayer     2013-09-10  272  	if (debounce != 0) {
-757651e3d60e5b Markus Mayer     2013-09-10  273  		/* Convert to ms */
-757651e3d60e5b Markus Mayer     2013-09-10  274  		debounce /= 1000;
-757651e3d60e5b Markus Mayer     2013-09-10  275  		/* find the MSB */
-757651e3d60e5b Markus Mayer     2013-09-10  276  		res = fls(debounce) - 1;
-757651e3d60e5b Markus Mayer     2013-09-10  277  		/* Check if MSB-1 is set (round up or down) */
-757651e3d60e5b Markus Mayer     2013-09-10  278  		if (res > 0 && (debounce & BIT(res - 1)))
-757651e3d60e5b Markus Mayer     2013-09-10  279  			res++;
-757651e3d60e5b Markus Mayer     2013-09-10  280  	}
-757651e3d60e5b Markus Mayer     2013-09-10  281  
-757651e3d60e5b Markus Mayer     2013-09-10  282  	/* spin lock for read-modify-write of the GPIO register */
-c69fcea57e9d2b Julia Cartwright 2017-03-09  283  	raw_spin_lock_irqsave(&kona_gpio->lock, flags);
-757651e3d60e5b Markus Mayer     2013-09-10  284  
-757651e3d60e5b Markus Mayer     2013-09-10  285  	val = readl(reg_base + GPIO_CONTROL(gpio));
-757651e3d60e5b Markus Mayer     2013-09-10  286  	val &= ~GPIO_GPCTR0_DBR_MASK;
-757651e3d60e5b Markus Mayer     2013-09-10  287  
-757651e3d60e5b Markus Mayer     2013-09-10  288  	if (debounce == 0) {
-757651e3d60e5b Markus Mayer     2013-09-10  289  		/* disable debounce */
-757651e3d60e5b Markus Mayer     2013-09-10  290  		val &= ~GPIO_GPCTR0_DB_ENABLE_MASK;
-757651e3d60e5b Markus Mayer     2013-09-10  291  	} else {
-757651e3d60e5b Markus Mayer     2013-09-10  292  		val |= GPIO_GPCTR0_DB_ENABLE_MASK |
-757651e3d60e5b Markus Mayer     2013-09-10  293  		    (res << GPIO_GPCTR0_DBR_SHIFT);
-757651e3d60e5b Markus Mayer     2013-09-10  294  	}
-757651e3d60e5b Markus Mayer     2013-09-10  295  
-757651e3d60e5b Markus Mayer     2013-09-10  296  	writel(val, reg_base + GPIO_CONTROL(gpio));
-757651e3d60e5b Markus Mayer     2013-09-10  297  
-c69fcea57e9d2b Julia Cartwright 2017-03-09  298  	raw_spin_unlock_irqrestore(&kona_gpio->lock, flags);
-757651e3d60e5b Markus Mayer     2013-09-10  299  
-757651e3d60e5b Markus Mayer     2013-09-10  300  	return 0;
-757651e3d60e5b Markus Mayer     2013-09-10  301  }
-757651e3d60e5b Markus Mayer     2013-09-10  302  
-
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index 22052031c719..8c0988c2b4ce 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -188,6 +188,18 @@ config ACER_WMI
+ 	  If you have an ACPI-WMI compatible Acer/ Wistron laptop, say Y or M
+ 	  here.
+ 
++
++config SILICOM_PLATFORM
++	tristate "Silicom Edge Networking device support"
++	depends on DMI
++	select LEDS_CLASS_MULTICOLOR
++	select GPIOLIB
++	help
++	  This option enables support for the LEDs/GPIO/etc downstream of the
++	  embedded controller on Silicom "Cordoba" hardware and derivatives.
++
++	  If you have a Silicom network appliance, say Y or M here.
++
+ source "drivers/platform/x86/amd/Kconfig"
+ 
+ config ADV_SWBUTTON
+diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+index 2cafe51ec4d8..f2f5743a9e54 100644
+--- a/drivers/platform/x86/Makefile
++++ b/drivers/platform/x86/Makefile
+@@ -113,6 +113,7 @@ obj-$(CONFIG_SERIAL_MULTI_INSTANTIATE)	+= serial-multi-instantiate.o
+ obj-$(CONFIG_MLX_PLATFORM)		+= mlx-platform.o
+ obj-$(CONFIG_TOUCHSCREEN_DMI)		+= touchscreen_dmi.o
+ obj-$(CONFIG_WIRELESS_HOTKEY)		+= wireless-hotkey.o
++obj-$(CONFIG_SILICOM_PLATFORM)          += silicom-platform.o
+ obj-$(CONFIG_X86_ANDROID_TABLETS)	+= x86-android-tablets/
+ 
+ # Intel uncore drivers
+diff --git a/drivers/platform/x86/silicom-platform.c b/drivers/platform/x86/silicom-platform.c
+new file mode 100644
+index 000000000000..90431f733682
+--- /dev/null
++++ b/drivers/platform/x86/silicom-platform.c
+@@ -0,0 +1,1123 @@
++// SPDX-License-Identifier: GPL-2.0+
++//
++// silicom-platform.c - Silicom MEC170x platform driver
++//
++// Copyright (C) 2023 Henry Shi <henrys@silicom-usa.com>
++
++#include <linux/dmi.h>
++#include <linux/gpio/driver.h>
++#include <linux/init.h>
++#include <linux/ioport.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/led-class-multicolor.h>
++#include <linux/module.h>
++#include <linux/hwmon.h>
++#include <linux/mutex.h>
++#include <linux/platform_device.h>
++#include <linux/string.h>
++#include <linux/thermal.h>
++#include <linux/kobject.h>
++#include <linux/sysfs.h>
++
++#define MEC_ADDR ((mec_io_base) + 0x02)
++#define MEC_DATA(byte) ((mec_io_base) + 0x04 + (byte))
++#define EC_ADDR_LSB MEC_ADDR
++#define EC_ADDR_MSB ((mec_io_base) + 0x03)
++#define SILICOM_MEC_MAGIC 0x5a
++#define OFFSET_BIT_TO_CHANNEL(off, bit) ((((off) + 0x014) << 3) | (bit))
++#define CHANNEL_TO_OFFSET(chan) (((chan) >> 3) - 0x14)
++#define CHANNEL_TO_BIT(chan) ((chan) & 0x07)
++
++static DEFINE_MUTEX(mec_io_mutex);
++static int mec_io_base, mec_io_len;
++
++struct silicom_fan_control_data {
++	struct   device *hdev;
++	int      temp;
++	int      fan_speed;
++};
++
++static const struct hwmon_channel_info *silicom_fan_control_info[] = {
++	HWMON_CHANNEL_INFO(fan, HWMON_F_INPUT | HWMON_F_LABEL),
++	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT | HWMON_T_LABEL),
++	NULL
++};
++
++struct silicom_device_control_data {
++	struct   device *my_dev;
++	int      efuse_status;
++	int      uc_version;
++	int      power_cycle;
++};
++static struct silicom_device_control_data my_dev_ctl;
++
++struct silicom_platform_info {
++	int io_base;
++	int io_len;
++	struct led_classdev_mc *led_info;
++	struct gpio_chip *gpiochip;
++	u8 *gpio_channels;
++	u16 ngpio;
++};
++
++static const char * const plat_0222_gpio_names[] = {
++	"AUTOM0_SFP_TX_FAULT",
++	"SLOT2_LED_OUT",
++	"SIM_M2_SLOT2_B_DET",
++	"SIM_M2_SLOT2_A_DET",
++	"SLOT1_LED_OUT",
++	"SIM_M2_SLOT1_B_DET",
++	"SIM_M2_SLOT1_A_DET",
++	"SLOT0_LED_OUT",
++	"WAN_SFP0_RX_LOS",
++	"WAN_SFP0_PRSNT_N",
++	"WAN_SFP0_TX_FAULT",
++	"AUTOM1_SFP_RX_LOS",
++	"AUTOM1_SFP_PRSNT_N",
++	"AUTOM1_SFP_TX_FAULT",
++	"AUTOM0_SFP_RX_LOS",
++	"AUTOM0_SFP_PRSNT_N",
++	"WAN_SFP1_RX_LOS",
++	"WAN_SFP1_PRSNT_N",
++	"WAN_SFP1_TX_FAULT",
++	"SIM_M2_SLOT1_MUX_SEL",
++	"W_DISABLE_M2_SLOT1_N",
++	"W_DISABLE_MPCIE_SLOT0_N",
++	"W_DISABLE_M2_SLOT0_N",
++	"BT_COMMAND_MODE",
++	"WAN_SFP1_TX_DISABLE",
++	"WAN_SFP0_TX_DISABLE",
++	"AUTOM1_SFP_TX_DISABLE",
++	"AUTOM0_SFP_TX_DISABLE",
++	"SIM_M2_SLOT2_MUX_SEL",
++	"W_DISABLE_M2_SLOT2_N",
++	"RST_CTL_M2_SLOT_1_N",
++	"RST_CTL_M2_SLOT_2_N",
++	"PM_USB_PWR_EN_BOT",
++	"PM_USB_PWR_EN_TOP",
++};
++
++static u8 plat_0222_gpio_channels[] = {
++	OFFSET_BIT_TO_CHANNEL(0x00, 0),
++	OFFSET_BIT_TO_CHANNEL(0x00, 1),
++	OFFSET_BIT_TO_CHANNEL(0x00, 2),
++	OFFSET_BIT_TO_CHANNEL(0x00, 3),
++	OFFSET_BIT_TO_CHANNEL(0x00, 4),
++	OFFSET_BIT_TO_CHANNEL(0x00, 5),
++	OFFSET_BIT_TO_CHANNEL(0x00, 6),
++	OFFSET_BIT_TO_CHANNEL(0x00, 7),
++	OFFSET_BIT_TO_CHANNEL(0x01, 0),
++	OFFSET_BIT_TO_CHANNEL(0x01, 1),
++	OFFSET_BIT_TO_CHANNEL(0x01, 2),
++	OFFSET_BIT_TO_CHANNEL(0x01, 3),
++	OFFSET_BIT_TO_CHANNEL(0x01, 4),
++	OFFSET_BIT_TO_CHANNEL(0x01, 5),
++	OFFSET_BIT_TO_CHANNEL(0x01, 6),
++	OFFSET_BIT_TO_CHANNEL(0x01, 7),
++	OFFSET_BIT_TO_CHANNEL(0x02, 0),
++	OFFSET_BIT_TO_CHANNEL(0x02, 1),
++	OFFSET_BIT_TO_CHANNEL(0x02, 2),
++	OFFSET_BIT_TO_CHANNEL(0x09, 0),
++	OFFSET_BIT_TO_CHANNEL(0x09, 1),
++	OFFSET_BIT_TO_CHANNEL(0x09, 2),
++	OFFSET_BIT_TO_CHANNEL(0x09, 3),
++	OFFSET_BIT_TO_CHANNEL(0x0a, 0),
++	OFFSET_BIT_TO_CHANNEL(0x0a, 1),
++	OFFSET_BIT_TO_CHANNEL(0x0a, 2),
++	OFFSET_BIT_TO_CHANNEL(0x0a, 3),
++	OFFSET_BIT_TO_CHANNEL(0x0a, 4),
++	OFFSET_BIT_TO_CHANNEL(0x0a, 5),
++	OFFSET_BIT_TO_CHANNEL(0x0a, 6),
++	OFFSET_BIT_TO_CHANNEL(0x0b, 0),
++	OFFSET_BIT_TO_CHANNEL(0x0b, 1),
++	OFFSET_BIT_TO_CHANNEL(0x0b, 2),
++	OFFSET_BIT_TO_CHANNEL(0x0b, 3),
++};
++
++static int silicom_gpio_get_direction(struct gpio_chip *gc, unsigned int offset);
++static int silicom_gpio_direction_input(struct gpio_chip *gc, unsigned int offset);
++static int silicom_gpio_direction_output(struct gpio_chip *gc, unsigned int offset, int value);
++static int silicom_gpio_get(struct gpio_chip *gc, unsigned int offset);
++static void silicom_gpio_set(struct gpio_chip *gc, unsigned int offset, int value);
++static void silicom_mec_led_mc_brightness_set(struct led_classdev *led_cdev,
++					      enum led_brightness brightness);
++static enum led_brightness silicom_mec_led_mc_brightness_get(struct led_classdev *led_cdev);
++static struct platform_device *silicom_platform_dev;
++static struct led_classdev_mc *silicom_led_info __initdata;
++static struct gpio_chip *silicom_gpiochip __initdata;
++static u8 *silicom_gpio_channels __initdata;
++static struct gpio_chip silicom_gpio_chip = {
++	.label = "silicom-gpio",
++	.get_direction = silicom_gpio_get_direction,
++	.direction_input = silicom_gpio_direction_input,
++	.direction_output = silicom_gpio_direction_output,
++	.get = silicom_gpio_get,
++	.set = silicom_gpio_set,
++	.base = -1,
++	.ngpio = ARRAY_SIZE(plat_0222_gpio_channels),
++	.names = plat_0222_gpio_names,
++	/* We're using a mutex to protect the indirect access, so we can sleep if the lock blocks */
++	.can_sleep = true,
++};
++
++static struct mc_subled plat_0222_wan_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_WHITE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 7),
++	},
++	{
++		.color_index = LED_COLOR_ID_YELLOW,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 6),
++	},
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 5),
++	},
++};
++
++static struct mc_subled plat_0222_sys_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_WHITE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 4),
++	},
++	{
++		.color_index = LED_COLOR_ID_AMBER,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 3),
++	},
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 2),
++	},
++};
++
++static struct mc_subled plat_0222_stat1_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 1),
++	},
++	{
++		.color_index = LED_COLOR_ID_GREEN,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 0),
++	},
++	{
++		.color_index = LED_COLOR_ID_BLUE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 7),
++	},
++	{
++		.color_index = LED_COLOR_ID_YELLOW,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 6),
++	},
++};
++
++static struct mc_subled plat_0222_stat2_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 5),
++	},
++	{
++		.color_index = LED_COLOR_ID_GREEN,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 4),
++	},
++	{
++		.color_index = LED_COLOR_ID_BLUE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 3),
++	},
++	{
++		.color_index = LED_COLOR_ID_YELLOW,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 2),
++	},
++};
++
++static struct mc_subled plat_0222_stat3_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 1),
++	},
++	{
++		.color_index = LED_COLOR_ID_GREEN,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 0),
++	},
++	{
++		.color_index = LED_COLOR_ID_BLUE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0e, 1),
++	},
++	{
++		.color_index = LED_COLOR_ID_YELLOW,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0e, 0),
++	},
++};
++
++static struct led_classdev_mc plat_0222_mc_led_info[] __initdata = {
++	{
++		.led_cdev = {
++			.name = "multicolor:wan",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(plat_0222_wan_mc_subled_info),
++		.subled_info = plat_0222_wan_mc_subled_info,
++	},
++	{
++		.led_cdev = {
++			.name = "multicolor:sys",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(plat_0222_sys_mc_subled_info),
++		.subled_info = plat_0222_sys_mc_subled_info,
++	},
++	{
++		.led_cdev = {
++			.name = "multicolor:stat1",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(plat_0222_stat1_mc_subled_info),
++		.subled_info = plat_0222_stat1_mc_subled_info,
++	},
++	{
++		.led_cdev = {
++			.name = "multicolor:stat2",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(plat_0222_stat2_mc_subled_info),
++		.subled_info = plat_0222_stat2_mc_subled_info,
++	},
++	{
++		.led_cdev = {
++			.name = "multicolor:stat3",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(plat_0222_stat3_mc_subled_info),
++		.subled_info = plat_0222_stat3_mc_subled_info,
++	},
++	{ },
++};
++
++static struct silicom_platform_info silicom_plat_0222_cordoba_info __initdata = {
++	.io_base = 0x800,
++	.io_len = 8,
++	.led_info = plat_0222_mc_led_info,
++	.gpiochip = &silicom_gpio_chip,
++	.gpio_channels = plat_0222_gpio_channels,
++	/* The original generic cordoba does not have the last 4 outputs of the plat_0222 BB variant,
++	 * the rest are the same, so use the same longer list, but ignore the last entries here
++	 */
++	.ngpio = ARRAY_SIZE(plat_0222_gpio_channels),
++
++};
++
++static struct mc_subled cordoba_fp_left_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 6),
++	},
++	{
++		.color_index = LED_COLOR_ID_GREEN,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 5),
++	},
++	{
++		.color_index = LED_COLOR_ID_BLUE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 7),
++	},
++	{
++		.color_index = LED_COLOR_ID_AMBER,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 4),
++	},
++};
++
++static struct mc_subled cordoba_fp_center_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 7),
++	},
++	{
++		.color_index = LED_COLOR_ID_GREEN,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 4),
++	},
++	{
++		.color_index = LED_COLOR_ID_BLUE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 3),
++	},
++	{
++		.color_index = LED_COLOR_ID_AMBER,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 6),
++	},
++};
++
++static struct mc_subled cordoba_fp_right_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 2),
++	},
++	{
++		.color_index = LED_COLOR_ID_GREEN,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 1),
++	},
++	{
++		.color_index = LED_COLOR_ID_BLUE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 0),
++	},
++	{
++		.color_index = LED_COLOR_ID_AMBER,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 5),
++	},
++};
++
++static struct led_classdev_mc cordoba_mc_led_info[] __initdata = {
++	{
++		.led_cdev = {
++			.name = "multicolor:fp_left",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(cordoba_fp_left_mc_subled_info),
++		.subled_info = cordoba_fp_left_mc_subled_info,
++	},
++	{
++		.led_cdev = {
++			.name = "multicolor:fp_center",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(cordoba_fp_center_mc_subled_info),
++		.subled_info = cordoba_fp_center_mc_subled_info,
++	},
++	{
++		.led_cdev = {
++			.name = "multicolor:fp_right",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(cordoba_fp_right_mc_subled_info),
++		.subled_info = cordoba_fp_right_mc_subled_info,
++	},
++	{ },
++};
++
++static struct silicom_platform_info silicom_generic_cordoba_info __initdata = {
++	.io_base = 0x800,
++	.io_len = 8,
++	.led_info = cordoba_mc_led_info,
++	.gpiochip = &silicom_gpio_chip,
++	.gpio_channels = plat_0222_gpio_channels,
++	.ngpio = ARRAY_SIZE(plat_0222_gpio_channels),
++};
++
++static struct platform_driver silicom_platform_driver = {
++	.driver = {
++		.name = "silicom-platform",
++	},
++};
++
++void lock_io_modules(void)
++{
++	mutex_lock(&mec_io_mutex);
++}
++EXPORT_SYMBOL(lock_io_modules);
++
++void unlock_io_modules(void)
++{
++	mutex_unlock(&mec_io_mutex);
++}
++EXPORT_SYMBOL(unlock_io_modules);
++
++static ssize_t efuse_status_show(struct device *dev, struct device_attribute *attr,
++		      char *buf)
++{
++	u32 reg;
++	u32 bank = 0;
++	u32 offset = 0x28;
++	u32 byte_pos = 0;
++
++	mutex_lock(&mec_io_mutex);
++	/* Select memory region */
++	outb(bank, EC_ADDR_MSB);
++	outb(offset, EC_ADDR_LSB);
++
++	/* Get current date from the address */
++	reg = inl(MEC_DATA(byte_pos));
++	mutex_unlock(&mec_io_mutex);
++
++	my_dev_ctl.efuse_status = reg & 0x1;
++
++	return sprintf(buf, "%d\n", my_dev_ctl.efuse_status);
++}
++
++static ssize_t uc_version_show(struct device *dev,
++			       struct device_attribute *attr,
++			       char *buf)
++{
++	u32 reg;
++	u32 bank = 0;
++	u32 offset = 0x0;
++	u32 byte_pos = 0;
++	int uc_version;
++
++	mutex_lock(&mec_io_mutex);
++	outb(bank, EC_ADDR_MSB);
++	outb(offset, EC_ADDR_LSB);
++
++	reg = inl(MEC_DATA(byte_pos));
++	mutex_unlock(&mec_io_mutex);
++
++	uc_version = (reg >> 8) & 0xFF;
++	if (uc_version >= 64 && uc_version < 128) {
++		uc_version = uc_version - 64;
++		if (uc_version < 10)
++			uc_version = 100 + uc_version;
++		else
++			uc_version = 100 + 10 * (uc_version / 10) + uc_version % 10;
++	} else if (uc_version >= 128 && uc_version < 192) {
++		uc_version = uc_version - 128;
++		if (uc_version < 10)
++			uc_version = 200 + uc_version;
++		else
++			uc_version = 200 + 10 * (uc_version / 10) + uc_version % 10;
++	}
++	my_dev_ctl.uc_version = uc_version;
++	return sprintf(buf, "%d\n", my_dev_ctl.uc_version);
++}
++
++static ssize_t power_cycle_show(struct device *dev,
++				struct device_attribute *attr,
++				char *buf)
++{
++	return sprintf(buf, "%d\n", my_dev_ctl.power_cycle);
++}
++
++static void powercycle_uc(void)
++{
++	u32 bank = 0;
++	u32 offset = 0x24;
++	u32 byte_pos = 0;
++
++	mutex_lock(&mec_io_mutex);
++	/* Select memory region */
++	outb(bank, EC_ADDR_MSB);
++	outb(offset, EC_ADDR_LSB);
++
++	/* Set to 1 for current date from the address */
++	outb(1, MEC_DATA(byte_pos));
++	mutex_unlock(&mec_io_mutex);
++}
++
++static ssize_t power_cycle_store(struct device *dev, struct device_attribute *attr,
++				 const char *buf, size_t count)
++{
++	if (sscanf(buf, "%du", &my_dev_ctl.power_cycle) != 1) {
++		dev_err(dev, "Failed to read power_cycle\n");
++		return -EINVAL;
++	}
++	if (my_dev_ctl.power_cycle > 0)
++		powercycle_uc();
++
++	return count;
++}
++
++static struct device_attribute my_dev_attr[] = {
++	{
++		.attr = {.name = "efuse_status", .mode = 0644},
++		.show = efuse_status_show,
++		.store = NULL
++	},
++	{
++		.attr = {.name = "uc_version", .mode = 0644},
++		.show = uc_version_show,
++		.store = NULL
++	},
++	{
++		.attr = {.name = "power_cycle", .mode = 0644},
++		.show = power_cycle_show,
++		.store = power_cycle_store
++	},
++};
++
++static int silicom_gpio_get_direction(struct gpio_chip *gc, unsigned int offset)
++{
++	u8 *channels = gpiochip_get_data(gc);
++
++	/* Input registers have offsets between [0x00, 0x07] */
++	if (CHANNEL_TO_OFFSET(channels[offset]) < 0x08)
++		return GPIO_LINE_DIRECTION_IN;
++
++	return GPIO_LINE_DIRECTION_OUT;
++}
++
++static int silicom_gpio_direction_input(struct gpio_chip *gc, unsigned int offset)
++{
++	int direction = silicom_gpio_get_direction(gc, offset);
++
++	return direction == GPIO_LINE_DIRECTION_IN ? 0 : -EINVAL;
++}
++
++static void silicom_gpio_set(struct gpio_chip *gc, unsigned int offset, int value)
++{
++	u8 *channels = gpiochip_get_data(gc);
++	int direction = silicom_gpio_get_direction(gc, offset);
++	int channel = channels[offset];
++	u8 reg;
++
++	if (direction == GPIO_LINE_DIRECTION_IN)
++		return;
++
++	mutex_lock(&mec_io_mutex);
++	/* Get the dword offset from the channel */
++	outb((channel >> 3) & 0xfc, MEC_ADDR);
++
++	/* Get the current register */
++	reg = inb(MEC_DATA((channel >> 3) & 0x03));
++	if (value == 0)
++		reg &= ~(1 << (channel & 0x7));
++	else if (value > 0)
++		reg |= 1 << (channel & 0x7);
++	else
++		pr_err("Invalid GPIO value: %d\n", value);
++	outb(reg, MEC_DATA((channel >> 3) & 0x03));
++	mutex_unlock(&mec_io_mutex);
++}
++
++static int silicom_gpio_direction_output(struct gpio_chip *gc, unsigned int offset, int value)
++{
++	int direction = silicom_gpio_get_direction(gc, offset);
++
++	if (direction == GPIO_LINE_DIRECTION_IN)
++		return -EINVAL;
++
++	silicom_gpio_set(gc, offset, value);
++
++	return 0;
++}
++
++static int silicom_gpio_get(struct gpio_chip *gc, unsigned int offset)
++{
++	u8 *channels = gpiochip_get_data(gc);
++	int channel = channels[offset];
++	u8 reg;
++
++	mutex_lock(&mec_io_mutex);
++	/* Get the dword offset from the channel */
++	outb((channel >> 3) & 0xfc, MEC_ADDR);
++
++	/* Get the current register */
++	reg = inb(MEC_DATA((channel >> 3) & 0x03));
++	mutex_unlock(&mec_io_mutex);
++
++	return (reg >> (channel & 0x7)) & 0x01;
++}
++
++static int __init silicom_mc_leds_register(struct device *dev,
++					   const struct led_classdev_mc *mc_leds)
++{
++	struct led_classdev_mc *led;
++	int i, err;
++
++	for (i = 0; mc_leds[i].led_cdev.name; i++) {
++		/* allocate and copy data from the init constansts */
++		led = devm_kzalloc(dev, sizeof(struct led_classdev_mc), GFP_KERNEL);
++		if (IS_ERR_OR_NULL(led)) {
++			dev_err(dev, "Failed to alloc led_classdev_mc[%d]: %ld\n", i, PTR_ERR(led));
++			return -ENOMEM;
++		}
++		memcpy(led, &mc_leds[i], sizeof(*led));
++
++		led->subled_info = devm_kzalloc(dev, led->num_colors * sizeof(struct mc_subled),
++						GFP_KERNEL);
++		if (IS_ERR_OR_NULL(led->subled_info)) {
++			dev_err(dev, "Failed to alloc subled_info[%d]: %ld\n",
++				i, PTR_ERR(led->subled_info));
++			return -ENOMEM;
++		}
++		memcpy(led->subled_info, mc_leds[i].subled_info,
++			led->num_colors * sizeof(struct mc_subled));
++
++		err = devm_led_classdev_multicolor_register(dev, led);
++		if (err) {
++			dev_err(dev, "Failed to register[%d]: %d\n", i, err);
++			return err;
++		}
++	}
++
++	return 0;
++}
++
++static void silicom_mec_led_set(int channel, int on)
++{
++	u8 reg;
++
++	mutex_lock(&mec_io_mutex);
++	/* Get the dword offset from the channel */
++	outb((channel >> 3) & 0xfc, MEC_ADDR);
++
++	/* Get the current LED settings */
++	reg = inb(MEC_DATA((channel >> 3) & 0x03));
++
++	/* Outputs are active low, so clear the bit for on, or set it for off */
++	if (on)
++		reg &= ~(1 << (channel & 0x7));
++	else
++		reg |= 1 << (channel & 0x7);
++
++	/* Write back the updated register */
++	outb(reg, MEC_DATA((channel >> 3) & 0x03));
++
++	mutex_unlock(&mec_io_mutex);
++}
++
++static void silicom_mec_led_mc_brightness_set(struct led_classdev *led_cdev,
++					      enum led_brightness brightness)
++{
++	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(led_cdev);
++	int i;
++
++	led_mc_calc_color_components(mc_cdev, brightness);
++
++	for (i = 0; i < mc_cdev->num_colors; i++) {
++		silicom_mec_led_set(mc_cdev->subled_info[i].channel,
++				    mc_cdev->subled_info[i].brightness);
++	}
++}
++
++static enum led_brightness silicom_mec_led_get(int channel)
++{
++	u8 reg;
++
++	mutex_lock(&mec_io_mutex);
++	/* Get the dword offset of the register for this LED from the channel */
++	outb((channel >> 3) & 0xfc, MEC_ADDR);
++	/* Get the current LED settings */
++	reg = inb(MEC_DATA((channel >> 3) & 0x03));
++	mutex_unlock(&mec_io_mutex);
++
++	/* Outputs are active low */
++	return reg & (1 << (channel & 0x7)) ? LED_OFF : LED_ON;
++}
++
++static enum led_brightness silicom_mec_led_mc_brightness_get(struct led_classdev *led_cdev)
++{
++	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(led_cdev);
++	enum led_brightness brightness = LED_OFF;
++	int i;
++
++	for (i = 0; i < mc_cdev->num_colors; i++) {
++		mc_cdev->subled_info[i].brightness =
++			silicom_mec_led_get(mc_cdev->subled_info[i].channel);
++
++		/* Mark the overall brightness as LED_ON if any of the subleds are on */
++		if (mc_cdev->subled_info[i].brightness != LED_OFF)
++			brightness = LED_ON;
++	}
++
++	return brightness;
++}
++
++
++static u32 rpm_get(void)
++{
++	u32 reg;
++	u32 bank = 0;
++	u32 offset = 0xc;
++	u32 byte_pos = 0;
++
++	mutex_lock(&mec_io_mutex);
++	/* Select memory region */
++	outb(bank, EC_ADDR_MSB);
++	outb(offset, EC_ADDR_LSB);
++	/* Get current date from the address */
++	reg = inw(MEC_DATA(byte_pos));
++	mutex_unlock(&mec_io_mutex);
++
++	return reg;
++}
++
++static u32 temp_get(void)
++{
++	u32 reg;
++	u32 bank = 0;
++	u32 offset = 0xc;
++	u32 byte_pos = 0;
++
++	mutex_lock(&mec_io_mutex);
++	/* Select memory region */
++	outb(bank, EC_ADDR_MSB);
++	outb(offset, EC_ADDR_LSB);
++	/* Get current date from the address */
++	reg = inl(MEC_DATA(byte_pos));
++	mutex_unlock(&mec_io_mutex);
++
++	return (reg >> 16) / 10;
++}
++
++static umode_t silicom_fan_control_fan_is_visible(const u32 attr)
++{
++	switch (attr) {
++	case hwmon_fan_input:
++	case hwmon_fan_label:
++		return 0444;
++	default:
++		return 0;
++	}
++}
++
++static umode_t silicom_fan_control_temp_is_visible(const u32 attr)
++{
++	switch (attr) {
++	case hwmon_temp_input:
++	case hwmon_temp_label:
++		return 0444;
++	default:
++		return 0;
++	}
++}
++
++static int silicom_fan_control_read_fan(struct device *dev, u32 attr, long *val)
++{
++	struct silicom_fan_control_data *ctl = dev_get_drvdata(dev);
++
++	switch (attr) {
++	case hwmon_fan_input:
++		ctl->fan_speed = rpm_get();
++		*val = ctl->fan_speed;
++		return 0;
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static int silicom_fan_control_read_temp(struct device *dev, u32 attr, long *val)
++{
++	struct silicom_fan_control_data *ctl = dev_get_drvdata(dev);
++
++	switch (attr) {
++	case hwmon_temp_input:
++		ctl->temp = temp_get();
++		*val = ctl->temp;
++		return 0;
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static umode_t silicom_fan_control_is_visible(const void *data,
++					  enum hwmon_sensor_types type,
++					  u32 attr, int channel)
++{
++	switch (type) {
++	case hwmon_fan:
++		return silicom_fan_control_fan_is_visible(attr);
++	case hwmon_temp:
++		return silicom_fan_control_temp_is_visible(attr);
++	default:
++		return 0;
++	}
++}
++
++static int silicom_fan_control_read(struct device *dev, enum hwmon_sensor_types type,
++				    u32 attr, int channel, long *val)
++{
++	switch (type) {
++	case hwmon_fan:
++		return silicom_fan_control_read_fan(dev, attr, val);
++	case hwmon_temp:
++		return silicom_fan_control_read_temp(dev, attr, val);
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static int silicom_fan_control_read_labels(struct device *dev, enum hwmon_sensor_types type,
++					   u32 attr, int channel, const char **str)
++{
++	switch (type) {
++	case hwmon_fan:
++		*str = "Fan Speed (RPM)";
++		return 0;
++	case hwmon_temp:
++		*str = "Thermostat Sensor";
++		return 0;
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static int silicom_fan_control_write(struct device *dev, enum hwmon_sensor_types type,
++				     u32 attr, int channel, long val)
++{
++	return 0;
++}
++
++static const struct hwmon_ops silicom_fan_control_hwmon_ops = {
++	.is_visible = silicom_fan_control_is_visible,
++	.read = silicom_fan_control_read,
++	.write = silicom_fan_control_write,
++	.read_string = silicom_fan_control_read_labels,
++};
++
++static const struct hwmon_chip_info silicom_chip_info = {
++	.ops = &silicom_fan_control_hwmon_ops,
++	.info = silicom_fan_control_info,
++};
++
++static int __init silicom_platform_probe(struct platform_device *device)
++{
++	int i, err;
++	u8 magic, ver;
++	struct silicom_fan_control_data *ctl;
++	const char *name = "Silocom_Fan_Monitor";
++	const char *dev_name = "Silicom_platform";
++
++	mec_io_base = 0x0800;
++	mec_io_len = 8;
++	if (!devm_request_region(&device->dev, mec_io_base, mec_io_len, "mec")) {
++		dev_err(&device->dev, "couldn't reserve MEC io ports\n");
++		return -EBUSY;
++	}
++
++	/* Sanity check magic number read for EC */
++	outb(0x00, MEC_ADDR);
++	magic = inb(MEC_DATA(0));
++	ver = inb(MEC_DATA(1));
++	dev_dbg(&device->dev, "EC magic 0x%02x, version 0x%02x\n", magic, ver);
++
++	if (magic != SILICOM_MEC_MAGIC) {
++		dev_err(&device->dev, "Bad EC magic 0x%02x!\n", magic);
++		return -ENODEV;
++	}
++
++	if (silicom_led_info) {
++		err = silicom_mc_leds_register(&device->dev, silicom_led_info);
++		if (err) {
++			dev_err(&device->dev, "Failed to register LEDs\n");
++			return err;
++		}
++	}
++
++	if (silicom_gpiochip) {
++		err = devm_gpiochip_add_data(&device->dev, silicom_gpiochip, silicom_gpio_channels);
++		if (err) {
++			dev_err(&device->dev, "Failed to register gpiochip: %d\n", err);
++			return err;
++		}
++	}
++
++	ctl = devm_kzalloc(&device->dev, sizeof(*ctl), GFP_KERNEL);
++	if (!ctl)
++		return -ENOMEM;
++
++	ctl->hdev = devm_hwmon_device_register_with_info(&device->dev, name, ctl,
++				&silicom_chip_info, NULL);
++
++	my_dev_ctl.my_dev = root_device_register(dev_name);
++	for (i = 0; i < ARRAY_SIZE(my_dev_attr); i++) {
++		err = sysfs_create_file(&my_dev_ctl.my_dev->kobj, &my_dev_attr[i].attr);
++		if (err) {
++			pr_debug("failed to create the foo file in /sys/devices/Silicom_platform\n");
++			break;
++		}
++	}
++
++	return err;
++}
++
++static int __init silicom_platform_info_init(const struct dmi_system_id *id)
++{
++	struct silicom_platform_info *info = id->driver_data;
++
++	dev_info(&silicom_platform_dev->dev, "Detected %s\n", id->ident);
++
++	mec_io_base = info->io_base;
++	mec_io_len = info->io_len;
++	silicom_led_info = info->led_info;
++	silicom_gpio_channels = info->gpio_channels;
++	silicom_gpiochip = info->gpiochip;
++	if (silicom_gpiochip)
++		silicom_gpiochip->ngpio = info->ngpio;
++
++	return 1;
++}
++
++static const struct dmi_system_id silicom_dmi_ids[] __initconst = {
++	{
++		.callback = silicom_platform_info_init,
++		.ident = "Silicom Cordoba (Generic)",
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Silicom"),
++			DMI_MATCH(DMI_BOARD_NAME, "80300-0214-G"),
++		},
++		.driver_data = &silicom_generic_cordoba_info,
++	},
++	{
++		.callback = silicom_platform_info_init,
++		.ident = "Silicom Cordoba (Generic)",
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Silicom"),
++			DMI_MATCH(DMI_BOARD_NAME, "80500-0214-G"),
++		},
++		.driver_data = &silicom_generic_cordoba_info,
++	},
++	{
++		 .callback = silicom_platform_info_init,
++		 .ident = "Silicom Cordoba (plat_0222)",
++		 .matches = {
++		       DMI_MATCH(DMI_BOARD_VENDOR, "Silicom"),
++		       DMI_MATCH(DMI_BOARD_NAME, "80300-0222-G"),
++		 },
++		.driver_data = &silicom_plat_0222_cordoba_info,
++	},
++	{ },
++};
++
++static int __init silicom_platform_init(void)
++{
++	struct device *dev;
++	int err;
++
++	/* register a platform device to act as the parent for LEDS, etc. */
++	silicom_platform_dev = platform_device_register_simple("silicom-platform", -1, NULL, 0);
++	if (IS_ERR(silicom_platform_dev)) {
++		err = PTR_ERR(silicom_platform_dev);
++		pr_err("failed to register silicom-platform device: %d\n", err);
++		goto silicom_init_register_err;
++	}
++	dev = &silicom_platform_dev->dev;
++
++	err = dmi_check_system(silicom_dmi_ids);
++	if (err == 0) {
++		dev_err(dev, "No DMI match for this platform\n");
++		err = -ENODEV;
++		goto silicom_init_probe_err;
++	}
++
++	/* Directly probe the platform driver in init since this isn't a
++	 * hotpluggable device.  That means we don't need to register a driver
++	 * that needs to wait around in memory on the chance a matching device
++	 * would get added.  Instead run once in __init so that we can free all
++	 * those resources when the __init region is wiped
++	 */
++	err = platform_driver_probe(&silicom_platform_driver, silicom_platform_probe);
++	if (err) {
++		dev_err(dev, "Failed to probe platform driver %d\n", err);
++		goto silicom_init_probe_err;
++	}
++
++	return 0;
++
++silicom_init_probe_err:
++	if (silicom_platform_dev) {
++		platform_device_unregister(silicom_platform_dev);
++		silicom_platform_dev = NULL;
++	}
++	if (my_dev_ctl.my_dev) {
++		root_device_unregister(my_dev_ctl.my_dev);
++		my_dev_ctl.my_dev = NULL;
++	}
++
++silicom_init_register_err:
++	return err;
++}
++
++static void __exit silicom_platform_exit(void)
++{
++	int i;
++
++	if (silicom_platform_dev) {
++		platform_device_unregister(silicom_platform_dev);
++		platform_driver_unregister(&silicom_platform_driver);
++	}
++
++	if (my_dev_ctl.my_dev) {
++		for (i = 0; i < ARRAY_SIZE(my_dev_attr); i++)
++			sysfs_remove_file(&my_dev_ctl.my_dev->kobj, &my_dev_attr[i].attr);
++		root_device_unregister(my_dev_ctl.my_dev);
++	}
++	mutex_destroy(&mec_io_mutex);
++}
++
++module_init(silicom_platform_init);
++module_exit(silicom_platform_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Henry Shi <henrys@silicom-usa.com>");
++MODULE_DESCRIPTION("Platform driver for Silicom network appliances");
++
++MODULE_DEVICE_TABLE(dmi, silicom_dmi_ids);
++
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.21.3
+
