@@ -2,202 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D446D757A68
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52885757A69
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229496AbjGRLZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40950 "EHLO
+        id S231953AbjGRLZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbjGRLZf (ORCPT
+        with ESMTP id S230046AbjGRLZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:25:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2644E8
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:24:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689679497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6uvmITmSWq5XdrG3a/DkmnJG1vY8QF6IRECe80ErATc=;
-        b=JmLQHADR/SRuybukIt0DXTuMkFgYrHxSGFqzfXjS1x1QNNXY7r91mewSpi+/QLwFFNt3a1
-        EcPcHt3h/sHR9IUOySqBpKdCDnLIZr4Y7vmx98HY01bawnPAo0bjUWinHz/8UgeoB5JUKs
-        PuIRWOwIBZfhAtOsaNwbevzLiZdTiWA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-416-RKmgk7BZMZi9aCoMxZNVmw-1; Tue, 18 Jul 2023 07:24:54 -0400
-X-MC-Unique: RKmgk7BZMZi9aCoMxZNVmw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3158f4d72e9so3116090f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:24:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689679494; x=1692271494;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6uvmITmSWq5XdrG3a/DkmnJG1vY8QF6IRECe80ErATc=;
-        b=YGYTRkQUraXq6L0Fp7VnCK48pzgh8S9qS8XCvY4CNRczUnS5tO+MTL6dEZuReqC6YN
-         auE1GiaAvpLZrEPgEkt9SL5Ncvpkbjqwfop+Jf7MzJnRo6PSrcOgbplB07DgTxchRBlT
-         WgXrKG5zG8jMoM2sWN91PtBFukZC8DYcURFKsZ88XrjeMtkf60Hyb77i567JzOmgCqlV
-         lUPbfS2U7DXzXXy5BY1NgffPrC+srg9RIzW9kA6cEEb6RLsfz65mlG1Jedju7zER4cba
-         6CI+aLrwdleGwBuEzlUf/4RU5H68c6TUtbz0sHdnCzYqKjbNTFk7GNko4aEOfjLB2VW5
-         +HeQ==
-X-Gm-Message-State: ABy/qLajHHBWkmhjQKr2+YbaFs2a1dl9k7BzSufbrHc7mBMUwLX92Y0s
-        E1fMWzKQV8WiQEkOxSbsxHCpFKD6+QnqGPQ6E1cW37eooJHbqYiYSHn7V/7i9gueobo+JcgvjCA
-        PBJ7VLMTyOypsSeN/6nl9jHY3
-X-Received: by 2002:a5d:6603:0:b0:313:ee2e:dae1 with SMTP id n3-20020a5d6603000000b00313ee2edae1mr11776896wru.18.1689679493869;
-        Tue, 18 Jul 2023 04:24:53 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHg7VIZgLtfc+4zjH3bLdSY+veUxJSqkHQDeMhRBUXaInjZYiNoZtklKOQkBINC56GiIEyvYw==
-X-Received: by 2002:a5d:6603:0:b0:313:ee2e:dae1 with SMTP id n3-20020a5d6603000000b00313ee2edae1mr11776882wru.18.1689679493465;
-        Tue, 18 Jul 2023 04:24:53 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c740:6200:84e1:eabc:8e2:7429? (p200300cbc740620084e1eabc08e27429.dip0.t-ipconnect.de. [2003:cb:c740:6200:84e1:eabc:8e2:7429])
-        by smtp.gmail.com with ESMTPSA id n13-20020adff08d000000b0031433443265sm2136504wro.53.2023.07.18.04.24.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 04:24:52 -0700 (PDT)
-Message-ID: <90a8b224-4566-5051-4903-f9ab83b26150@redhat.com>
-Date:   Tue, 18 Jul 2023 13:24:52 +0200
+        Tue, 18 Jul 2023 07:25:36 -0400
+Received: from mx4.veeam.com (mx4.veeam.com [104.41.138.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3354134;
+        Tue, 18 Jul 2023 04:25:34 -0700 (PDT)
+Received: from mail.veeam.com (prgmbx01.amust.local [172.24.128.102])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx4.veeam.com (Postfix) with ESMTPS id 9A21E2B574;
+        Tue, 18 Jul 2023 14:25:31 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com;
+        s=mx4-2022; t=1689679531;
+        bh=0HxCwL7XClDj65r1twmCt4r20koEqWHsoKc1IxOESRU=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To:From;
+        b=BfjxBu9FQIOFK6WtkjLQAN6Scoilhc6Eenjq8FiSTRx2yI8jjz9537XC5lSqmsVpM
+         OWxsf8bvRstmFDpvYngxNohd9XjQicBP0omr/Jn+wK2Qkogaxwlsp3e58dCYCtR1UT
+         OEBHOYqA36HSOoRjJXb9hA/2ud/KJq7uErGUFPIYISIyUVd48DHq5+LNdJXxAKEFk/
+         7qjGm9z7CUsjNJY0knr8HTcM54AiFJj4lRHCRpPjB80r15r5Hp8lsmV4ZIveJpfmI6
+         nYk5I019CBHXjq4xvH/nFwDPwgsu9JCR0wP/gcAfY03hShN9LPdH+33MqCDPOc27lq
+         cYLhLjVXaSHjQ==
+Received: from [172.24.10.107] (172.24.10.107) by prgmbx01.amust.local
+ (172.24.128.102) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.16; Tue, 18 Jul
+ 2023 13:25:25 +0200
+Message-ID: <686b9999-c903-cff1-48ba-21324031da17@veeam.com>
+Date:   Tue, 18 Jul 2023 13:25:16 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [PATCH v2 6/8] selftests/mm: Make migration test robust to
- failure
+Subject: Re: [PATCH v5 02/11] block: Block Device Filtering Mechanism
 Content-Language: en-US
-From:   David Hildenbrand <david@redhat.com>
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Florent Revest <revest@chromium.org>,
-        Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-References: <20230717103152.202078-1-ryan.roberts@arm.com>
- <20230717103152.202078-7-ryan.roberts@arm.com>
- <20501a7c-19f6-4154-aebc-49df04c9b043@redhat.com>
- <2e5baba4-c8ef-9da4-a2d6-3cf383ed05bd@arm.com>
- <1314fe0e-dd32-bf10-0a33-2b571dad70bd@redhat.com>
-Organization: Red Hat
-In-Reply-To: <1314fe0e-dd32-bf10-0a33-2b571dad70bd@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Yu Kuai <yukuai1@huaweicloud.com>, <axboe@kernel.dk>,
+        <hch@infradead.org>, <corbet@lwn.net>, <snitzer@kernel.org>
+CC:     <viro@zeniv.linux.org.uk>, <brauner@kernel.org>,
+        <dchinner@redhat.com>, <willy@infradead.org>, <dlemoal@kernel.org>,
+        <linux@weissschuh.net>, <jack@suse.cz>, <ming.lei@redhat.com>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        Donald Buczek <buczek@molgen.mpg.de>,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230612135228.10702-1-sergei.shtepa@veeam.com>
+ <20230612135228.10702-3-sergei.shtepa@veeam.com>
+ <f935840e-12a7-c37b-183c-27e2d83990ea@huaweicloud.com>
+ <90f79cf3-86a2-02c0-1887-d3490f9848bb@veeam.com>
+ <d929eaa7-61d6-c4c4-aabc-0124c3693e10@huaweicloud.com>
+From:   Sergei Shtepa <sergei.shtepa@veeam.com>
+In-Reply-To: <d929eaa7-61d6-c4c4-aabc-0124c3693e10@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [172.24.10.107]
+X-ClientProxiedBy: colmbx01.amust.local (172.31.112.31) To
+ prgmbx01.amust.local (172.24.128.102)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A292403155B677761
+X-Veeam-MMEX: True
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.07.23 13:23, David Hildenbrand wrote:
-> On 18.07.23 12:49, Ryan Roberts wrote:
->> On 17/07/2023 18:40, David Hildenbrand wrote:
->>> On 17.07.23 12:31, Ryan Roberts wrote:
->>>> The `migration` test currently has a number of robustness problems that
->>>> cause it to hang and leak resources.
->>>>
->>>> Timeout: There are 3 tests, which each previously ran for 60 seconds.
->>>> However, the timeout in mm/settings for a single test binary was set to
->>>> 45 seconds. So when run using run_kselftest.sh, the top level timeout
->>>> would trigger before the test binary was finished. Solve this by meeting
->>>> in the middle; each of the 3 tests now runs for 20 seconds (for a total
->>>> of 60), and the top level timeout is set to 90 seconds.
->>>>
->>>> Leaking child processes: the `shared_anon` test fork()s some children
->>>> but then an ASSERT() fires before the test kills those children. The
->>>> assert causes immediate exit of the parent and leaking of the children.
->>>> Furthermore, if run using the run_kselftest.sh wrapper, the wrapper
->>>> would get stuck waiting for those children to exit, which never happens.
->>>> Solve this by deferring any asserts until after the children are killed.
->>>> The same pattern is used for the threaded tests for uniformity.
->>>>
->>>> With these changes, the test binary now runs to completion on arm64,
->>>> with 2 tests passing and the `shared_anon` test failing.
->>>>
->>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>> ---
->>>>     tools/testing/selftests/mm/migration.c | 14 ++++++++++----
->>>>     tools/testing/selftests/mm/settings    |  2 +-
->>>>     2 files changed, 11 insertions(+), 5 deletions(-)
->>>>
->>>> diff --git a/tools/testing/selftests/mm/migration.c
->>>> b/tools/testing/selftests/mm/migration.c
->>>> index 379581567f27..189d7d9070e8 100644
->>>> --- a/tools/testing/selftests/mm/migration.c
->>>> +++ b/tools/testing/selftests/mm/migration.c
->>>> @@ -15,7 +15,7 @@
->>>>     #include <time.h>
->>>>       #define TWOMEG (2<<20)
->>>> -#define RUNTIME (60)
->>>> +#define RUNTIME (20)
->>>>       #define ALIGN(x, a) (((x) + (a - 1)) & (~((a) - 1)))
->>>>     @@ -118,6 +118,7 @@ TEST_F_TIMEOUT(migration, private_anon, 2*RUNTIME)
->>>>     {
->>>>         uint64_t *ptr;
->>>>         int i;
->>>> +    int ret;
->>>>           if (self->nthreads < 2 || self->n1 < 0 || self->n2 < 0)
->>>>             SKIP(return, "Not enough threads or NUMA nodes available");
->>>> @@ -131,9 +132,10 @@ TEST_F_TIMEOUT(migration, private_anon, 2*RUNTIME)
->>>>             if (pthread_create(&self->threads[i], NULL, access_mem, ptr))
->>>>                 perror("Couldn't create thread");
->>>>     -    ASSERT_EQ(migrate(ptr, self->n1, self->n2), 0);
->>>> +    ret = migrate(ptr, self->n1, self->n2);
->>>>         for (i = 0; i < self->nthreads - 1; i++)
->>>>             ASSERT_EQ(pthread_cancel(self->threads[i]), 0);
->>>> +    ASSERT_EQ(ret, 0);
->>>
->>> Why is that required? This does not involve fork.
+Hi.
+
+On 7/18/23 03:37, Yu Kuai wrote:
+> Subject:
+> Re: [PATCH v5 02/11] block: Block Device Filtering Mechanism
+> From:
+> Yu Kuai <yukuai1@huaweicloud.com>
+> Date:
+> 7/18/23, 03:37
+> 
+> To:
+> Sergei Shtepa <sergei.shtepa@veeam.com>, Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk, hch@infradead.org, corbet@lwn.net, snitzer@kernel.org
+> CC:
+> viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com, willy@infradead.org, dlemoal@kernel.org, linux@weissschuh.net, jack@suse.cz, ming.lei@redhat.com, linux-block@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, Donald Buczek <buczek@molgen.mpg.de>, "yukuai (C)" <yukuai3@huawei.com>
+> 
+> 
+> Hi,
+> 
+> 在 2023/07/17 22:39, Sergei Shtepa 写道:
 >>
->> It's not required. I was just trying to keep everything aligned to the same pattern.
 >>
->>>
->>>>     }
->>>>       /*
->>>> @@ -144,6 +146,7 @@ TEST_F_TIMEOUT(migration, shared_anon, 2*RUNTIME)
->>>>         pid_t pid;
->>>>         uint64_t *ptr;
->>>>         int i;
->>>> +    int ret;
->>>>           if (self->nthreads < 2 || self->n1 < 0 || self->n2 < 0)
->>>>             SKIP(return, "Not enough threads or NUMA nodes available");
->>>> @@ -161,9 +164,10 @@ TEST_F_TIMEOUT(migration, shared_anon, 2*RUNTIME)
->>>>                 self->pids[i] = pid;
->>>>         }
->>>>     -    ASSERT_EQ(migrate(ptr, self->n1, self->n2), 0);
->>>> +    ret = migrate(ptr, self->n1, self->n2);
->>>>         for (i = 0; i < self->nthreads - 1; i++)
->>>>             ASSERT_EQ(kill(self->pids[i], SIGTERM), 0);
->>>> +    ASSERT_EQ(ret, 0);
->>>
->>>
->>> Might be cleaner to also:
+>> On 7/11/23 04:02, Yu Kuai wrote:
+>>> bdev_disk_changed() is not handled, where delete_partition() and
+>>> add_partition() will be called, this means blkfilter for partiton will
+>>> be removed after partition rescan. Am I missing something?
 >>
->> Or instead of? I agree this is neater, so will undo the moving of the ASSERT()
->> and rely on this prctl.
+>> Yes, when the bdev_disk_changed() is called, all disk block devices
+>> are deleted and new ones are re-created. Therefore, the information
+>> about the attached filters will be lost. This is equivalent to
+>> removing the disk and adding it back.
+>>
+>> For the blksnap module, partition rescan will mean the loss of the
+>> change trackers data. If a snapshot was created, then such
+>> a partition rescan will cause the snapshot to be corrupted.
+>>
 > 
-> I was thinking about possible races when our parent process already
-> quits before our child managed to set the prctl. prctl() won't do
-> anything in that case, hmmmm.
+> I haven't review blksnap code yet, but this sounds like a problem.
+
+I can't imagine a case where this could be a problem.
+Partition rescan is possible only if the file system has not been
+mounted on any of the disk partitions. Ioctl BLKRRPART will return
+-EBUSY. Therefore, during normal operation of the system, rescan is
+not performed.
+And if the file systems have not been mounted, it is possible that
+the disk partition structure has changed or the disk in the media
+device has changed. In this case, it is better to detach the
+filter, otherwise it may lead to incorrect operation of the module.
+
+We can add prechange/postchange callback functions so that the
+filter can track rescan process. But at the moment, this is not
+necessary for the blksnap module. 
+
+Therefore, I will refrain from making changes for now.
+
 > 
-> But similarly, existing code might already trigger the migrate() + kill
-> before the child processes even started to access_mem().
+> possible solutions I have in mind:
 > 
-> Racy :)
+> 1. Store blkfilter for each partition from bdev_disk_changed() before
+> delete_partition(), and add blkfilter back after add_partition().
 > 
-
-Maybe what would work, is checking after the prctl() in the child if the 
-parent is already gone.
-
--- 
-Cheers,
-
-David / dhildenb
-
+> 2. Store blkfilter from gendisk as a xarray, and protect it by
+> 'open_mutex' like 'part_tbl', block_device can keep the pointer to
+> reference blkfilter so that performance from fast path is ok, and the
+> lifetime of blkfiter can be managed separately.
+> 
+>> There was an idea to do filtering at the disk level,
+>> but I abandoned it.
+>> .
+>>
+> I think it's better to do filtering at the partition level as well.
+> 
+> Thanks,
+> Kuai
+> 
