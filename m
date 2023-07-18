@@ -2,79 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A6675785B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6E275785E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbjGRJrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45810 "EHLO
+        id S229579AbjGRJrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231405AbjGRJrL (ORCPT
+        with ESMTP id S232027AbjGRJre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:47:11 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBAA810E
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:47:09 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fc02a92dcfso50658715e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:47:09 -0700 (PDT)
+        Tue, 18 Jul 2023 05:47:34 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD6CE60
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:47:31 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so13837055a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:47:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689673628; x=1692265628;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        d=linaro.org; s=google; t=1689673650; x=1692265650;
+        h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=qRC+fUJny3+iV5dLqvSo+20fNwTdI9JyfgDcGN7Kwaw=;
-        b=Y1bqNunI4Va7gwNxV35SrSoD9AXfST1MED6IG2R4qgtO2DQNyoNwfz4vmjCBzPPzXB
-         Z7T6uPnWlSTi6B6ufSbCWDH2b72hPXbCERxd6tYj0+/TqH/j8s6DXyQCYBrMA6vNDtgN
-         LeK22N+X//FG/D2ND2oDZyJJU7cbqRJ6pcEdmqFPZne1awuusKJeaowNYdxu2YI4x7MH
-         omO4NklAG7+t5HiR6G3j4fA+mW1LIwbY4Hb4+F9dXyYX3KhohhICvSXTcjDE3SfrUs0c
-         vzMAfamYS20zlww+o4iS02XJ3K23SI8VXODS7+aZTm7GGotcyu5K5WS+vTFVHhDKX9Z5
-         LY4A==
+        bh=btOylq44qE3hGXl4wQpe3Auk+ZV3+DCDDTN42Bq3TwQ=;
+        b=lHLMOLv5J6z2rjvGcQUyoSNRu5DjFOGb5i7WqJScPEStEZIyvEjtHaLiysLzxSw3aq
+         dPemYOncMtcY9m7o4NljPVxAskxNylokj2/GGfwzCLvtU6AWk34W1HcUAvAyOxCzR5hO
+         n3gYFq6dLS7VHBDo1fpWfVTfbp66KR1ApglvtdkAQO9mr8cjulmRC2ZMK3/D1ICTdzbC
+         pXYnNU1lu1/TLQppkIjAKgIQ6VQuhWg2MwC9wxBiXD1jp8BzfoqIDpGiF3v9UdVZwV0r
+         934LNUBggElPpPeVu6ZsOiN1+GSBL0iIkaVy1ncgZjIHVyR48UWEe2txm5vSR7f1JylL
+         g7IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689673628; x=1692265628;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        d=1e100.net; s=20221208; t=1689673650; x=1692265650;
+        h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qRC+fUJny3+iV5dLqvSo+20fNwTdI9JyfgDcGN7Kwaw=;
-        b=GtXfwrTk7tFJrwatRFrhlHhybP7eQiqWDUSlLjw3Uyrgyb76KuUGc46q7dz4Yw8Y2v
-         fAw7oacPNYS06Czxy49MzjlLhi2ZHTSvyLBKGCtFtcQ6T1gU80D9sgYbvKIIB29kxHe0
-         LRMOyUwMaGmvbzltcVTDSw78Chp2dmcFoX2ZEFJZ5P/TdSJtPxPvocaAu621JFcGN/ET
-         sjHUz6jUvPX+9pcN8JQJY7fHpYsoheHQubn76bywwXCBWI0sQ9Oy4rFSDaLkSwjLP/iP
-         SEoixujtK9xrR7/y7jgsNtaOLke5ctekQ/9rhpFRkU4iU0yTl8lDKYxebeOWCcRJGCGG
-         XTew==
-X-Gm-Message-State: ABy/qLYC+WYEW8gy3G0OqFK/f+k0eD6tawaenRvRqXA790ovqea1ZSiB
-        co28oKXeua6y0aL0S5OU5oJKKA==
-X-Google-Smtp-Source: APBJJlFy0+0RP3/c/Q29tZcuQks1DZkRQ6tQWvpm+qWkFPE4Rgo0/3QbOY/leUi38v+UhHR8ziL1pQ==
-X-Received: by 2002:adf:db42:0:b0:314:53a4:42a5 with SMTP id f2-20020adfdb42000000b0031453a442a5mr1243681wrj.51.1689673628220;
-        Tue, 18 Jul 2023 02:47:08 -0700 (PDT)
-Received: from [192.168.2.107] ([79.115.63.146])
-        by smtp.gmail.com with ESMTPSA id p1-20020adff201000000b003141f3843e6sm1851838wro.90.2023.07.18.02.47.07
+        bh=btOylq44qE3hGXl4wQpe3Auk+ZV3+DCDDTN42Bq3TwQ=;
+        b=Kkp140RCTbt/a5tcEhkd9fpfxQjuYg7U51riRE0JiqrlUMhOLRLOiY/SxxFJfLLgsq
+         pzqDg90HxbOZ07WzRL91OjpaAQMnz5p6iqVIFCTy2KmolmRwf2cD1eJgmR3tMRgxHvtl
+         +8WPV0968n53SDM7HRhM6kur71U2PMpa/NLlPmF2TMUDXrkKc1+nJ2oIgxsizJ0b/+4r
+         azBvqL5aWklpnU5lM9lK/C6904lxSD4ED8oBpEPasN8kgyUSdDvb6wnBP2XqsTU54EOR
+         p52Z5a7sJ5X2WFbW0CHmViy84M/+uwk8GJd3UG/6YwW/rJNFF6BIznN99ozI7k5sxOOx
+         dCaw==
+X-Gm-Message-State: ABy/qLZRRdcVWrW7eIP0ORpk+Kv8wtBd2VV9CMdTfVkB1/ACoFv68Omq
+        ZGg+eyQqTP/Ux6mWDMaHXCvLhg==
+X-Google-Smtp-Source: APBJJlEACjV7y+0+WMDrNxfFGJkjSdUG+4wKfwPLuyevz4IqfWvcvjKI4V63E6+jJNKP4SAIgay07w==
+X-Received: by 2002:a05:6402:3550:b0:51e:5aac:6bad with SMTP id f16-20020a056402355000b0051e5aac6badmr14603995edd.11.1689673649807;
+        Tue, 18 Jul 2023 02:47:29 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id u25-20020aa7d899000000b0051e19bf66a4sm935507edq.83.2023.07.18.02.47.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 02:47:07 -0700 (PDT)
-Message-ID: <ef557792-144e-12ef-ce14-f98982b608dc@linaro.org>
-Date:   Tue, 18 Jul 2023 10:47:06 +0100
+        Tue, 18 Jul 2023 02:47:29 -0700 (PDT)
+Message-ID: <e25fb716-38f3-7f4b-d525-e20455cdae85@linaro.org>
+Date:   Tue, 18 Jul 2023 11:47:27 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2] mtd: spi-nor: Correct flags for Winbond w25q128
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] arm64: dts: qcom: sm8450-hdk: add other analogue
+ microphones
 Content-Language: en-US
-To:     Michael Walle <michael@walle.cc>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20230712-spi-nor-winbond-w25q128-v2-1-50c9f1d58d6c@linaro.org>
- <f00fa2ae-6d4a-90cb-3724-2bedb96cb4fb@linaro.org>
- <0525440a652854a2a575256cd07d3559@walle.cc>
- <d99d87e7-47ba-d6fe-735f-16de2a2ec280@linaro.org>
- <e642ff27fd0bc0f1f0e293972145f680@walle.cc>
- <2d71326c-023e-69af-9337-62672f50fed9@linaro.org>
- <62083227d40d7b631c2eeac1e40c6b56@walle.cc>
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <62083227d40d7b631c2eeac1e40c6b56@walle.cc>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230717143824.203352-1-krzysztof.kozlowski@linaro.org>
+ <76c99543-4f77-38c2-5940-517f2715060d@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <76c99543-4f77-38c2-5940-517f2715060d@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -87,20 +83,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Linus,
+On 18/07/2023 11:40, Srinivas Kandagatla wrote:
+>> diff --git a/arch/arm64/boot/dts/qcom/sm8450-hdk.dts b/arch/arm64/boot/dts/qcom/sm8450-hdk.dts
+>> index bd5e8181f2aa..9bd1ef401ca3 100644
+>> --- a/arch/arm64/boot/dts/qcom/sm8450-hdk.dts
+>> +++ b/arch/arm64/boot/dts/qcom/sm8450-hdk.dts
+>> @@ -915,14 +915,23 @@ &sound {
+>>   			"SpkrRight IN", "WSA_SPK2 OUT",
+>>   			"IN1_HPHL", "HPHL_OUT",
+>>   			"IN2_HPHR", "HPHR_OUT",
+>> +			"AMIC1", "MIC BIAS1",
+>>   			"AMIC2", "MIC BIAS2",
+>> -			"VA DMIC0", "MIC BIAS1",
+>> -			"VA DMIC1", "MIC BIAS1",
+>> -			"VA DMIC2", "MIC BIAS3",
+>> -			"TX DMIC0", "MIC BIAS1",
+>> -			"TX DMIC1", "MIC BIAS2",
+>> -			"TX DMIC2", "MIC BIAS3",
+>> -			"TX SWR_ADC1", "ADC2_OUTPUT";
+>> +			"AMIC3", "MIC BIAS3",
+>> +			"AMIC4", "MIC BIAS3",
+>> +			"AMIC5", "MIC BIAS4",
+> These should reflect the board-level wiring of MIC BIAS, are you sure 
+> that this is how the hdk is wired up?
 
-On 7/18/23 09:32, Michael Walle wrote:
-> FWIW, I'm fine with the removed no_sfdp_flags if INFO(, 0, 0, 0).
+If I read the schematics correctly, then yes. You can double check, if I
+understood this right: page 40 of HDK schematics
 
-We'll need a v5 where you test again the flash with mtd_utils,
-as we want to get rid of n_sectors and sectors_size and instead
-determine them from SFDP. We agreed that the flash entry should
-be defined with the following params:
+Best regards,
+Krzysztof
 
- 	{ "w25q128", INFO(0xef4018, 0, 0, 0)
-		PARSE_SFDP
-		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-	},
-
-Thanks!
-ta
