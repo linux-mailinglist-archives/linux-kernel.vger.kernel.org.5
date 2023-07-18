@@ -2,102 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FD675834F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C563775835D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbjGRRRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
+        id S231239AbjGRRUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233260AbjGRRRH (ORCPT
+        with ESMTP id S233096AbjGRRUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:17:07 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D46199;
-        Tue, 18 Jul 2023 10:17:02 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbc0609cd6so55686335e9.1;
-        Tue, 18 Jul 2023 10:17:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689700621; x=1692292621;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cRDtp/WtEw9mLKqbxe9I85x6ziwi94Y2+xfVDhxRx98=;
-        b=l35yAg6rLbX9bryJRqrdHh0SNSnkU2HjdV1QnN9k+iR1MDEyIHRodrxwx6D5yMd0Ty
-         2riv5zpKPGWr7im5tYE4xWkAUZZiXWQHS7is8BiV43wZSm0Imt2H7poEsA2tsmnHpiJc
-         LCL26sp6cjENNQjqthxsMGkg0DHwmqvkrM93ExyinF4DJZvg+nZTZgJpFTLkVRKjS2Yq
-         jArb202ZSfEuSvOELPqI70eb+5cZVFsVR1RsKihhpHFg8hNmaJbV1haGcWOINg1AmpUy
-         3Mf0mT6/pJ0pcsI7HTn9SB3vivnqCMWFF/Z9jrUnNoKKWuunSfMtEsKn/8OirxPAVkcx
-         8VEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689700621; x=1692292621;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cRDtp/WtEw9mLKqbxe9I85x6ziwi94Y2+xfVDhxRx98=;
-        b=Vt+l6BCOk0qqfi4xurEv4IjXgzpifIhIH+7vYjmqPDiNHlqQcjWmEiNh3g6A1EmlAo
-         uj33+OPhtA6+qu89NlHmxbEyzoctXU1XdKknOaWOiinUTc3ny2RpujUxaMo0YxTyFrQk
-         pYyl7dYADQvGjMUX+Lega42nHkN5Da9WoPcXXaMH8VNPULhCz8a+p/juo1bxz3R7PEAP
-         fxrtnCzuoUf8YrcBrb+9ZVs3OWjS7+9TQtTzgKou5UoKK/xXqt8P0JIVayU0RAFKRNge
-         OmOA1ZjH0fw6rFloHqHZOyjNqmpDoe/3vbvEJ+i0/YXHLQpjVreF8PCVeRa8fVGZ6Vn+
-         WOFw==
-X-Gm-Message-State: ABy/qLZf7XeVGsyntJiID0Vxq0+W4patJocqZz6n/YN7QEqmGcpD/GVe
-        CePiCnEH10k4VaNlwFJo1Vs=
-X-Google-Smtp-Source: APBJJlG6LoYeezjNXpGpd5uIC0J1poUg9o9vS0RrXRrX0PkrfaGrt01RZcKAMG5YfuJpc/XYYaB0ww==
-X-Received: by 2002:a7b:c387:0:b0:3fb:c217:722e with SMTP id s7-20020a7bc387000000b003fbc217722emr21174wmj.33.1689700621245;
-        Tue, 18 Jul 2023 10:17:01 -0700 (PDT)
-Received: from localhost ([37.171.244.194])
-        by smtp.gmail.com with ESMTPSA id y17-20020a1c4b11000000b003fb739d27aesm10877952wma.35.2023.07.18.10.17.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 10:17:00 -0700 (PDT)
-From:   Raphael Gallais-Pou <rgallaispou@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] staging: fbtft: ili9341: use macro FBTFT_REGISTER_SPI_DRIVER
-Date:   Tue, 18 Jul 2023 19:20:24 +0200
-Message-ID: <20230718172024.67488-1-rgallaispou@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 18 Jul 2023 13:20:39 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61836BE
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:20:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689700838; x=1721236838;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gU6GXU89DoVEPPGhanKObMgejkXt3Pfm1XjHlWHVMrg=;
+  b=MX196G+M1h1A7W9TC5o4vVleEyOA9iCw/Jkk6/Zr6C6fz1Nl3kGPKGiO
+   ghMEmI/U9Zz37DFDk0d85F6+5NVMI2zzrLWTjmcuZtNyB2D7aO5CYT4ck
+   BBhIIGVgixJeRV8+H+AMHH/px2S6oML6w1pjdw9p9sfuKk1/FiMLpHjeh
+   VUK0G96Q/8j7GzZ7ndSA1SugqOGLddoQ1XhPHfAu9A/ku6pEbYJszDp0Z
+   FGOB4Irp46+qAsD8L65waR8BP1ZMRZfg3xQKzBuFdM5jJXJT+mVLohQtY
+   8UwxmUnl72Eg7+JCm7x0/g404tgTyKGpPEn3H/jtYsrB4BfCutOMatsC3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="452644692"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="452644692"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 10:20:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="753407725"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="753407725"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga008.jf.intel.com with ESMTP; 18 Jul 2023 10:20:34 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qLoND-005W4T-39;
+        Tue, 18 Jul 2023 20:20:31 +0300
+Date:   Tue, 18 Jul 2023 20:20:31 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Alexander Potapenko <glider@google.com>, catalin.marinas@arm.com,
+        will@kernel.org, pcc@google.com, andreyknvl@gmail.com,
+        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v3 1/5] lib/bitmap: add bitmap_{set,get}_value()
+Message-ID: <ZLbJ3yz1yGtR9pCG@smile.fi.intel.com>
+References: <20230717113709.328671-1-glider@google.com>
+ <20230717113709.328671-2-glider@google.com>
+ <ZLVjYzuxlJAQVpIO@yury-ThinkPad>
+ <CAG_fn=UPqyFhEMLDz3nhc7fgpCvprLsYrNjUnw3z4KfWCJGTHA@mail.gmail.com>
+ <ZLabOHmNQm2EOXWR@smile.fi.intel.com>
+ <ZLbF3ZO7TvJGJOeo@yury-ThinkPad>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZLbF3ZO7TvJGJOeo@yury-ThinkPad>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using FBTFT_REGISTER_DRIVER resolves to a NULL struct spi_device_id. This
-ultimately causes a warning when the module probes. Fixes it.
+On Tue, Jul 18, 2023 at 10:03:25AM -0700, Yury Norov wrote:
+> On Tue, Jul 18, 2023 at 05:01:28PM +0300, Andy Shevchenko wrote:
+> > On Tue, Jul 18, 2023 at 11:30:00AM +0200, Alexander Potapenko wrote:
 
-Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
----
+...
 
-Changes in v3:
-	- added changelog
+> > The idea behind is to eliminate the code completely for the cases nbits != 0.
+> > In your case the dynamic check will be there. That's what we want to avoid.
+> 
+> Alexander is right - we can't avoid testing against 0 if we need to
+> test for 0... In case of other functions we have inline and outline
+> implementations, controlled by small_const_nbits().
+> 
+> As you can see, the small_const_nbits() tests against 0 explicitly,
+> although it's free at compile time. But if nbits == 0, we pick
+> outline version of a function regardless.
+> 
+> On their turn, outline versions again do their test against nbits == 0,
+> but most of the time implicitly.
+> 
+> In case of bitmap_set_val, we are touching at max 2 words, and there's
+> no reason for outline version, so we have to test nbits against 0
+> inside inline code. 
+> 
+> Having all that in mind, and because nbits == 0 is most likely an
+> error we'd follow the following rules:
+>  - no memory must be touched as we're potentially in error condition,
+>    and pointer may be corrupted;
+>  - the cost of the check must be as minimal as possible.
+> 
+> So I suggest:
+> 
+>         if (unlikely(nbits == 0))
+>                 return;
+> 
+> For readers that would literally mean: we don't expect that, and we find
+> it suspicious, but we'll handle that as correct as we can.
 
-Changes in v2:
-	- dropped MODULE_ALIAS changes
-	- changed commit log for more accurate description
+Okay, thank you for elaborated answer.
 
- drivers/staging/fbtft/fb_ili9341.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/fbtft/fb_ili9341.c b/drivers/staging/fbtft/fb_ili9341.c
-index 9ccd0823c3ab..47e72b87d76d 100644
---- a/drivers/staging/fbtft/fb_ili9341.c
-+++ b/drivers/staging/fbtft/fb_ili9341.c
-@@ -145,7 +145,7 @@ static struct fbtft_display display = {
- 	},
- };
- 
--FBTFT_REGISTER_DRIVER(DRVNAME, "ilitek,ili9341", &display);
-+FBTFT_REGISTER_SPI_DRIVER(DRVNAME, "ilitek", "ili9341", &display);
- 
- MODULE_ALIAS("spi:" DRVNAME);
- MODULE_ALIAS("platform:" DRVNAME);
 -- 
-2.41.0
+With Best Regards,
+Andy Shevchenko
+
 
