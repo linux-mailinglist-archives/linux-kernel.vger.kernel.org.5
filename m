@@ -2,65 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2D275871F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2E2758725
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231373AbjGRVZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 17:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42658 "EHLO
+        id S229606AbjGRV3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 17:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231124AbjGRVZZ (ORCPT
+        with ESMTP id S229450AbjGRV3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 17:25:25 -0400
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [5.144.164.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509312129
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:25:02 -0700 (PDT)
-Received: from Marijn-Arch-PC.localdomain (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
+        Tue, 18 Jul 2023 17:29:32 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB16DC0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:29:30 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id F31723F612;
-        Tue, 18 Jul 2023 23:24:58 +0200 (CEST)
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-Date:   Tue, 18 Jul 2023 23:24:51 +0200
-Subject: [PATCH v3 15/15] arm64: dts: qcom: sm6125-seine: Configure MDSS,
- DSI and panel
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4R5Bsx63Gxz9sls;
+        Tue, 18 Jul 2023 23:29:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=keresztesschmidt.de;
+        s=MBO0001; t=1689715765;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S9Df8GqjNPTE2V3Xmvj2wteO34K0hy8AG7QJdN/GObA=;
+        b=BxJtTIAteYW5lZjmJmkgR3zZqsonL/65QFd47C6IozXbL14uqWg9017mEpCOG1oNK9IYNt
+        fz+ewHq+EMBsyOLq7xmzM1GCcZwtEKzgn+QsLTe7SaxspCLVB20oVrtxmWpEZcOhITdQ9i
+        ePOcE+cOJrVko2ys/lXe/i+M/LBqz+q7ZP6c+pgVyiGNJ5NiYJSgs13XS6U8mjF+0/7j//
+        v2yyuOaufljL3BfHYgFQWfIY90ldGovSYhFtG9LqHV7r0BS0i9elBtt6O8z/0JWIKQCM6R
+        itBvbX2FAQj+yJxt9dE2fYC/Rzqt5d80j/OTF8LeXI0FrD8YhvKaUuv8NQlqvg==
+Message-ID: <ffc889de-3181-791e-f985-ce461b992bfc@keresztesschmidt.de>
+Date:   Tue, 18 Jul 2023 23:29:23 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Subject: Re: [patch 50/58] x86/apic: Provide common init infrastructure
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     x86@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Juergen Gross <jgross@suse.com>
+References: <20230717223049.327865981@linutronix.de>
+ <20230717223226.058365439@linutronix.de>
+From:   Peter Keresztes Schmidt <peter@keresztesschmidt.de>
+In-Reply-To: <20230717223226.058365439@linutronix.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230718-sm6125-dpu-v3-15-6c5a56e99820@somainline.org>
-References: <20230718-sm6125-dpu-v3-0-6c5a56e99820@somainline.org>
-In-Reply-To: <20230718-sm6125-dpu-v3-0-6c5a56e99820@somainline.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krishna Manikandan <quic_mkrishn@quicinc.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, Lux Aliaga <they@mint.lgbt>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Rspamd-Queue-Id: 4R5Bsx63Gxz9sls
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,93 +64,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable MDSS and DSI, and configure the Samsung SOFEF01-M ams597ut01
-6.0" 1080x2520 panel.
+Hi Thomas!
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
----
- .../dts/qcom/sm6125-sony-xperia-seine-pdx201.dts   | 59 ++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+On 18.07.23 01:15, Thomas Gleixner wrote:
+> --- a/arch/x86/kernel/apic/bigsmp_32.c
+> +++ b/arch/x86/kernel/apic/bigsmp_32.c
+> @@ -119,10 +119,8 @@ bool __init apic_bigsmp_possible(bool cm
+>  
+>  void __init apic_bigsmp_force(void)
+>  {
+> -	if (apic != &apic_bigsmp) {
+> -		apic = &apic_bigsmp;
+> -		pr_info("Overriding APIC driver with bigsmp\n");
+> -	}
+> +	if (apic != &apic_bigsmp)
+> +		apic_install_driver(&apic_noop);
 
-diff --git a/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
-index 82b0da5bb794..62c3e6d8147c 100644
---- a/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
-+++ b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
-@@ -179,6 +179,43 @@ &i2c3 {
- 	/* Cirrus Logic CS35L41 boosted audio amplifier @ 40 */
- };
- 
-+&mdss {
-+	status = "okay";
-+};
-+
-+&mdss_dsi0 {
-+	vdda-supply = <&pm6125_l18>;
-+	status = "okay";
-+
-+	panel@0 {
-+		compatible = "samsung,sofef01-m-ams597ut01";
-+		reg = <0>;
-+
-+		reset-gpios = <&tlmm 90 GPIO_ACTIVE_LOW>;
-+
-+		vddio-supply = <&pm6125_l12>;
-+
-+		pinctrl-0 = <&mdss_dsi_active &mdss_te_active_sleep>;
-+		pinctrl-1 = <&mdss_dsi_sleep &mdss_te_active_sleep>;
-+		pinctrl-names = "default", "sleep";
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&mdss_dsi0_out>;
-+			};
-+		};
-+	};
-+};
-+
-+&mdss_dsi0_out {
-+	remote-endpoint = <&panel_in>;
-+	data-lanes = <0 1 2 3>;
-+};
-+
-+&mdss_dsi0_phy {
-+	status = "okay";
-+};
-+
- &pm6125_adc {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&camera_flash_therm &emmc_ufs_therm &rf_pa1_therm>;
-@@ -469,6 +506,28 @@ vol_down_n: vol-down-n-state {
- 		drive-strength = <2>;
- 		bias-disable;
- 	};
-+
-+	mdss_te_active_sleep: mdss-te-active-sleep-state {
-+		pins = "gpio89";
-+		function = "mdp_vsync";
-+		drive-strength = <2>;
-+		bias-pull-down;
-+	};
-+
-+	mdss_dsi_active: mdss-dsi-active-state {
-+		pins = "gpio90";
-+		function = "gpio";
-+		drive-strength = <8>;
-+		bias-disable;
-+	};
-+
-+	mdss_dsi_sleep: mdss-dsi-sleep-state {
-+		pins = "gpio90";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-pull-down;
-+	};
-+
- };
- 
- &usb3 {
+Could apic_noop be a typo? Shouldn't it be apic_bigsmp?
 
--- 
-2.41.0
+>  }
+>  
+>  apic_driver(apic_bigsmp);
 
+Thanks,
+Peter
