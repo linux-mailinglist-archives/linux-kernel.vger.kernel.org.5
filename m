@@ -2,118 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC9B757F02
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9814F757EFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233136AbjGROH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36744 "EHLO
+        id S233111AbjGROHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233183AbjGROHQ (ORCPT
+        with ESMTP id S233147AbjGROHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:07:16 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F33CAC;
-        Tue, 18 Jul 2023 07:07:15 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36ID7a5A007119;
-        Tue, 18 Jul 2023 14:07:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-03-30; bh=D94+YwN2kYdoJrrNtKoTdQrD71+sJ3vcCrj5IjqU6OA=;
- b=f10aeQwdJl/i2dOx8kh2uzds4hZ7/qp+sYM1N6P8NZKALV8/iZaA2VnJZ8NMXyX4BiqM
- pIYm2mnpDk9FdUigIWck5QupLuzn1jzVgqOg9Nv57Izg4W6bD7TfPl3H+JxYhh0AWFqA
- 1fxwAub/KFkuRNxSP/mN/0ZGs7+yWzmXor8jMlf4x/nzKtaNIWSIODhxBLqpjI/vcnGI
- p76FC6uesBdvloNGfrZMRAMpiC1YLiHUzbbT1BqRABA7oFxbo1FCSyX5MiBqXGW3HiWc
- Rg34wy9V8RH2cLhseCAr66Pa5iKIgyd3N8v8Lk25mCiBeMeKz0Q8464JQCJi0959GG2G 0Q== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3run88n6tu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Jul 2023 14:07:04 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36ICmXTD000777;
-        Tue, 18 Jul 2023 14:07:03 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhw55b7p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Jul 2023 14:07:03 +0000
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36IE72kF012729;
-        Tue, 18 Jul 2023 14:07:02 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3ruhw55b64-1;
-        Tue, 18 Jul 2023 14:07:02 +0000
-From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com, harshit.m.mogalapalli@oracle.com
-Subject: [PATCH v2 next] media: i2c: fix error handling in ub960_rxport_add_serializer()
-Date:   Tue, 18 Jul 2023 07:06:58 -0700
-Message-ID: <20230718140659.4009167-1-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 18 Jul 2023 10:07:13 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5161995;
+        Tue, 18 Jul 2023 07:07:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1689689229; x=1721225229;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=iwfQy+D3lFiClOhmhcONxSk2bmidb43y8zeZMhjVWhU=;
+  b=zWqIbSNysrpknBi1xi0rQvQS1MDH9QIVQq3m+UiT6Q5cPluB6MVj411A
+   aVMbyla+gVeZHyk+kxhKOO4LatDpP0vFQZVl3wqtpuWo/SYlPtwudkzeI
+   1IatbRXVRiGiIAMLGjnac7sroyw0h8hjwGOTdyHEvUOF8ketpRtsjsVuW
+   nljyKvoGJ6UR9+0zK+/GI4yHeIlYoeig8U/A0Tu45OfqO2n6tg1ht9ml2
+   yFPzjtz3G6h/zJ3qfMNwm2PH+5qZesX5I280kOGTRo7nJZ8WuRAdGKxy+
+   kMxpXE4qDiQtA1A2JUcmQNX8d4OKk2Tct+LOMwPfu/RpyWnBWQANyV2OT
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="225243545"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Jul 2023 07:07:07 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 18 Jul 2023 07:07:05 -0700
+Received: from den-dk-m31857.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Tue, 18 Jul 2023 07:06:59 -0700
+Message-ID: <ed54b9213e698872fb862efb43c3cd2b8852baba.camel@microchip.com>
+Subject: Re: [PATCH v8 net-next 08/12] net: sparx5: convert to
+ ndo_hwtstamp_get() and ndo_hwtstamp_set()
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>, <netdev@vger.kernel.org>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Maxim Georgiev <glipus@gmail.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        =?ISO-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+        Gerhard Engleder <gerhard@engleder-embedded.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        "Russell King" <linux@armlinux.org.uk>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "Jacob Keller" <jacob.e.keller@intel.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        "Andy Gospodarek" <andy@greyhouse.net>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        <UNGLinuxDriver@microchip.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Casper Andersson <casper.casan@gmail.com>,
+        Sergey Organov <sorganov@gmail.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Date:   Tue, 18 Jul 2023 16:06:58 +0200
+In-Reply-To: <20230717152709.574773-9-vladimir.oltean@nxp.com>
+References: <20230717152709.574773-1-vladimir.oltean@nxp.com>
+         <20230717152709.574773-9-vladimir.oltean@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-18_10,2023-07-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- suspectscore=0 phishscore=0 bulkscore=0 mlxscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307180129
-X-Proofpoint-GUID: kASJiyt8DX7WgGJhfJA0P84_AhxqlNOI
-X-Proofpoint-ORIG-GUID: kASJiyt8DX7WgGJhfJA0P84_AhxqlNOI
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Smatch warns:
- drivers/media/i2c/ds90ub960.c:1671 ub960_rxport_add_serializer():
- err: 'rxport->ser.client' dereferencing possible ERR_PTR()
+Hi Vladimir,
 
-i2c_new_client_device() returns error pointers on failure and in
-dev_dbg statement we are dereferencing error pointer which is a bug.
+On Mon, 2023-07-17 at 18:27 +0300, Vladimir Oltean wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know th=
+e
+> content is safe
+>=20
+> The hardware timestamping through ndo_eth_ioctl() is going away.
+> Convert the sparx5 driver to the new API before that can be removed.
+>=20
+> After removing the timestamping logic from sparx5_port_ioctl(), the rest
+> is equivalent to phy_do_ioctl().
+>=20
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+> ---
+> Changes in v8:
+> - Use phy_do_ioctl()
+> Changes in v7:
+> - Patch is new
+>=20
+>=20
 
-Fix this by using IS_ERR() which checks for error pointers.
+...[snip]...
 
-Fixes: afe267f2d368 ("media: i2c: add DS90UB960 driver")
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
----
-This is based on static analysis and only compile tested.
+> =C2=A0static void sparx5_ptp_classify(struct sparx5_port *port, struct sk=
+_buff
+> *skb,
+> --
+> 2.34.1
+>=20
 
-V1->V2: Suggestion from Tomi Valkeinen: Propogate the error code with
-PTR_ERR() instead of -EIO.
----
- drivers/media/i2c/ds90ub960.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reviewed-by: Steen Hegelund <Steen.Hegelund@microchip.com>
 
-diff --git a/drivers/media/i2c/ds90ub960.c b/drivers/media/i2c/ds90ub960.c
-index e101bcf2356a..92aa004a3674 100644
---- a/drivers/media/i2c/ds90ub960.c
-+++ b/drivers/media/i2c/ds90ub960.c
-@@ -1662,10 +1662,10 @@ static int ub960_rxport_add_serializer(struct ub960_data *priv, u8 nport)
- 	ser_info.addr = rxport->ser.alias;
- 	rxport->ser.client =
- 		i2c_new_client_device(priv->client->adapter, &ser_info);
--	if (!rxport->ser.client) {
-+	if (IS_ERR(rxport->ser.client)) {
- 		dev_err(dev, "rx%u: cannot add %s i2c device", nport,
- 			ser_info.type);
--		return -EIO;
-+		return PTR_ERR(rxport->ser.client);
- 	}
- 
- 	dev_dbg(dev, "rx%u: remote serializer at alias 0x%02x (%u-%04x)\n",
--- 
-2.39.3
-
+BR
+Steen
