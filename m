@@ -2,107 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC81D757A8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C43757A8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbjGRLhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46140 "EHLO
+        id S229670AbjGRLiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbjGRLhB (ORCPT
+        with ESMTP id S231858AbjGRLiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:37:01 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3DD1B1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:36:59 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-991f956fb5aso693287766b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:36:59 -0700 (PDT)
+        Tue, 18 Jul 2023 07:38:02 -0400
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11941AC;
+        Tue, 18 Jul 2023 04:38:00 -0700 (PDT)
+Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-794cddcab71so1600879241.1;
+        Tue, 18 Jul 2023 04:38:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689680218; x=1692272218;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jO6ua4X85rMtlHrlvOM6ZeaIO7a3UQyMeLyISBdalqs=;
-        b=oTYrcQsJJlBwD++7RreKiH6HawYxf7leUPok+WCk+33/y20iHM9fw/mPZzfDxIqJey
-         GeRNpq8xBoIAjvJs1JTAEL0VhEb+a/H1Zx5zutNH5kZwqS4dY0KXgoa9sjYDe96vstek
-         lVNKkoUi4vHJpf2UEl1AkxNgFgaBoQS+T52hklsmX6Moc+v9eJXSChNQNnCIWs4xhyaG
-         NM9TKfnsoYmkT/wJnDrquwyLAxO3OdiJCocHuD/DgcWoZ7hfJWuj9d4H8IWmTGBhWdW5
-         x6k1TUKv5KY7zHHASpvhi1T5hrnO23g2kWgSv8usUWJGi+oymQfRCS/6501R8VHagKQB
-         7xsg==
+        d=gmail.com; s=20221208; t=1689680280; x=1692272280;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5jbeHfHwPHH+SDgR4pal5407gINcU5129rjy4niAm4I=;
+        b=RLeELrML8LJOb/+BHNCEb+DOM8te0apNEn6BWKR7Kc6lnE8AlRdTHvVcnXNTLjEnCT
+         I59oAhZ4l1OLRA3/fup63Ey/PEnUwB3RghAiXoRikz7pa+YMwkPzzEK7ZZy4bjVUoSpa
+         CfAX9iLI2ORpTsdqQtyxuNtr+oKQnt9xh0xhvgZV+7PenpfuPEejNG0zFUy6HRCTjBmH
+         lTfFr1jr2+PCz747zKg7Dt79sjqbTRjtOxxjyqz9IoUrNfUZ5EL/2HYPDglmuY9NxOyO
+         1Y0Z7zdX/0iXLrNGLxyH/jy9Su9fpgvA3p0mQdFADU4jXRjQ6QIRWp+fpXXiDoPa65Tk
+         pU8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689680218; x=1692272218;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jO6ua4X85rMtlHrlvOM6ZeaIO7a3UQyMeLyISBdalqs=;
-        b=YaSJulvbR01XhHjcPhxacsm/vkz6Rjh22TI1sNm3U9fbeEZpF7lWWEOcq1cK5AMOIq
-         1Xg5oIHu9ZuH790yQHULs6zNlRRVvjinjmHbWB60H1sPw2zj6oFHL8uHObMr9nl6zWXM
-         LNIlNbzy89aiT5CGntJUMbV83UggV7Y4pEFZ6Jq85N39P/LHWbdCf+RqLjWdLv6crhz+
-         mhmYc26xPiK4aosAvHi0BATfhmyFo73JTREBt64/mTuRwNChwLVdVtgVg1XkOcZTuxqr
-         kqwCCRVMmKd4xqqLe5qlsZyLMUhqSbGyvq4Wo5nfEg2rWNH4x7Y/+ZyriprAEoH/rtJ2
-         lUzg==
-X-Gm-Message-State: ABy/qLYX3ewbgKDV/3dC8qOCiUraXfwngNoUeNSBiz4EQ8UnJi/FWAgk
-        d6I7S3GiL9gKl4AoeXLJoPoaVw==
-X-Google-Smtp-Source: APBJJlFRd9RW4wntElyN0a/crvWTBHVAFZQOzsVP9TrDjczxK2gO/Q3rrQiKZgwATBugMDmHS3+VDg==
-X-Received: by 2002:a17:907:9143:b0:992:47d7:35d7 with SMTP id l3-20020a170907914300b0099247d735d7mr11386417ejs.14.1689680218174;
-        Tue, 18 Jul 2023 04:36:58 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id dx14-20020a170906a84e00b0098884f86e41sm893296ejb.123.2023.07.18.04.36.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 04:36:57 -0700 (PDT)
-Message-ID: <ba7af1a4-155f-cab0-4fd6-1f998ceb4936@linaro.org>
-Date:   Tue, 18 Jul 2023 13:36:55 +0200
+        d=1e100.net; s=20221208; t=1689680280; x=1692272280;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5jbeHfHwPHH+SDgR4pal5407gINcU5129rjy4niAm4I=;
+        b=b9qGnqbyZGXSk9NDNt+eJhLmsaQSS6p3sZ4L1XkL3MmPpoeZMXFEuKkY+bMNLi5eA5
+         72yJP4PsKq6O3puVlLsRYp5teUCWchBMGvTYJ02jZXPcJ12XDO1MScXJJBBMLkDW5JJf
+         r+w9l5cw+FZox6i6u+5y1zdLeQurKPg8TUXxLbcirt/lZ+DD3UhzaQ2YVQA16KXgIka6
+         ouvCq4d67uHUOAFHUPXnqQwjnGKV15ZBqT3RqlFwFMJREijpjzAvCMISGrTT6WsZHyFM
+         JuHjDARdq/1NjHHKOZYPTqLD/OgiwDFaYUEmEV9xnMe4QQ1gvnGRpPuvdOMgxEe8ERzV
+         jH1g==
+X-Gm-Message-State: ABy/qLaWrIcgv3A4qdiXvygx/h9hX2VYtMYCM4FOaQhChnmJG9d3iqjU
+        5oStaCxMm++Av/XzlbYd5jSmaV1yV1Ry+EHsyQDALBiIJy4=
+X-Google-Smtp-Source: APBJJlFAOB53TF5+0bD2ZrmeVuGZqsn/sVtaca+ZKsNLKO6TV1RuYVsQLukOUfVqkCHf58kZ95x9sqU332fjBsRdaJA=
+X-Received: by 2002:a67:e3d1:0:b0:445:2154:746b with SMTP id
+ k17-20020a67e3d1000000b004452154746bmr1094389vsm.4.1689680279701; Tue, 18 Jul
+ 2023 04:37:59 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: Add description for new hwmon
- driver hs3001
-Content-Language: en-US
-To:     Andre Werner <werneazc@gmail.com>, jdelvare@suse.com,
-        linux@roeck-us.net, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, robh+dt@kernel.org
-Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andre Werner <andre.werner@systec-electronic.com>
-References: <20230718112810.21322-1-andre.werner@systec-electronic.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230718112810.21322-1-andre.werner@systec-electronic.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+References: <1689669277-15291-1-git-send-email-yunlong.xing@unisoc.com>
+In-Reply-To: <1689669277-15291-1-git-send-email-yunlong.xing@unisoc.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 18 Jul 2023 14:37:48 +0300
+Message-ID: <CAOQ4uxgLhf8EyticTQUxtzUdVD=UEUTwQnTkujXE1KuaVxNQyQ@mail.gmail.com>
+Subject: Re: [PATCH] ovl: fix mount fail because the upper doesn't have space
+To:     Yunlong Xing <yunlong.xing@unisoc.com>
+Cc:     miklos@szeredi.hu, linux-unionfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        gregkh@linuxfoundation.org, sashal@kernel.org,
+        yunlongxing23@gmail.com, zhiguo.niu@unisoc.com,
+        hongyu.jin@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/07/2023 13:28, Andre Werner wrote:
-> This is the initial description.
-> 
-> Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
-> 
+On Tue, Jul 18, 2023 at 11:35=E2=80=AFAM Yunlong Xing <yunlong.xing@unisoc.=
+com> wrote:
+>
+> The current ovlfs mount flow:
+>
+> ovl_fill_super
+>  |_ovl_get_workdir
+>     |_ovl_make_workdir
+>        |_ovl_check_rename_whiteout
+>
+> In ovl_check_rename_whiteout(), a new file is attempted to create.But if
+> the upper doesn't have space to do this, it will return error -ENOSPC,
+> causing the mount fail. It means that if the upper is full, the overlayfs
+> cannot be mounted.It is not reasonable, so this patch will omit this erro=
+r
+>  and continue mount flow.
+>
+> Fixes: cad218ab3320 ("ovl: check if upper fs supports RENAME_WHITEOUT")
+> Signed-off-by: Yunlong Xing <yunlong.xing@unisoc.com>
+> ---
+>  fs/overlayfs/super.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+> index 5b069f1a1e44..2cf41e978cff 100644
+> --- a/fs/overlayfs/super.c
+> +++ b/fs/overlayfs/super.c
+> @@ -744,9 +744,12 @@ static int ovl_make_workdir(struct super_block *sb, =
+struct ovl_fs *ofs,
+>
+>         /* Check if upper/work fs supports RENAME_WHITEOUT */
+>         err =3D ovl_check_rename_whiteout(ofs);
+> -       if (err < 0)
+> -               goto out;
+> -
+> +       if (err < 0) {
+> +               if (err =3D=3D -ENOSPC)
+> +                       pr_warn("upper fs check RENAME_WHITEOUT fail due =
+to no space.\n");
+> +               else
+> +                       goto out;
+> +       }
+>         rename_whiteout =3D err;
+>         if (!rename_whiteout)
+>                 pr_warn("upper fs does not support RENAME_WHITEOUT.\n");
+> --
 
+This assumes that RENAME_WHITEOUT is supported.
+I rather assume it is not supported if the check fails.
+Like this is shorter (not tested):
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+--- a/fs/overlayfs/super.c
++++ b/fs/overlayfs/super.c
+@@ -744,12 +744,13 @@ static int ovl_make_workdir(struct super_block
+*sb, struct ovl_fs *ofs,
 
+        /* Check if upper/work fs supports RENAME_WHITEOUT */
+        err =3D ovl_check_rename_whiteout(ofs);
+-       if (err < 0)
++       if (err < 0 && err !=3D -ENOSPC)
+                goto out;
 
----
+-       rename_whiteout =3D err;
++       rename_whiteout =3D err > 0;
+        if (!rename_whiteout)
+-               pr_warn("upper fs does not support RENAME_WHITEOUT.\n");
++               pr_warn("upper fs does not support RENAME_WHITEOUT (%i).\n"=
+,
++                       err);
 
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you do not know the process, here is a short
-explanation:
-
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tools like b4 can help
-here. However, there's no need to repost patches *only* to add the tags.
-The upstream maintainer will do that for acks received on the version
-they apply.
-
-https://elixir.bootlin.com/linux/v5.17/source/Documentation/process/submitting-patches.rst#L540
-
-Best regards,
-Krzysztof
-
+Thanks,
+Amir.
