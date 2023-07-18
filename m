@@ -2,113 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2137758443
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451B0758447
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbjGRSLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 14:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49542 "EHLO
+        id S231843AbjGRSMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 14:12:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjGRSLl (ORCPT
+        with ESMTP id S231375AbjGRSMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 14:11:41 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69BEC99;
-        Tue, 18 Jul 2023 11:11:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689703900; x=1721239900;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=p4t3OskS0H/cllBsYG2hIF8dKpFFNElLWh827nNWfh8=;
-  b=WH9YEgeCHFdiMFn1MUkZOmj/eLN53D+JXx3Som75wqjf03K53X4zcUTs
-   3jInRkbZ2rSPgpCkPdsRJRTNy+xoUiRU7juuQS0GuZRD7bvQ4I8aSDVyG
-   +9M147Yae+XZMQbIXiw0gf4wZEBPUnxzoUdtxmUn4kUCLUWhRfpm11Nmn
-   bb82RyWdjHw8FhZbVzLgAue7FBr49fteTguT2zds8DrXJtH+KLPAXIuPG
-   B37GGjtxYH5xAvmMfe+LHhKuE1RsR233m8Dpej9VAaSvntR6vT8dKjc0v
-   SAmMSKxI79wIJIWJ0WZE1iy0oHrA+KYgVvl8cqKAFNhRq4IxrL6AD6hlg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="432458957"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="432458957"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 11:11:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="813860875"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="813860875"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.48.113])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 18 Jul 2023 11:11:37 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>, dave.hansen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Dave Hansen" <dave.hansen@intel.com>
-Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
-        kristen@linux.intel.com, seanjc@google.com, stable@vger.kernel.org
-Subject: Re: [PATCH] x86/sgx: fix a NULL pointer
-References: <CU4OBQ8MQ2LK.2GRBPLQGVTZ3@seitikki>
- <20230717202938.94989-1-haitao.huang@linux.intel.com>
- <dfb1f233-aebd-50cf-8704-e83b91ee110a@intel.com>
-Date:   Tue, 18 Jul 2023 13:11:36 -0500
+        Tue, 18 Jul 2023 14:12:14 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC58DD
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 11:12:11 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-991c786369cso778515566b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 11:12:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689703929; x=1692295929;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=G6/8N7r9NBloAE8WS8tLLSB/dGe92+uxsdAAiPO77KA=;
+        b=oSI5k08opg8zIeSQxaPflm1lUXIVvEVqYOhxD5tQkyFBV9gAnPEVEtqCR7dFYvDnic
+         FKVy0HWkhEdYW+u5H1UtrjyeUd8iz6aKE9BaZ4L+cACl/hpOFCPK+8sPFWdVpJBLV+CL
+         59rLvRBit9BkPeXWDCpWH7hbAJnmN6A1RJBEU5IHrbcZAH2KFldaHd6v7Zh3FknlJRzF
+         eZeruZcmHuJoH0lrGlXVGIqtGXXbsi+mhxw+r11eMPH2QPMay8CHMTq6VpP1Jp3upmoi
+         Qao4AkWOxolfnm2BsSJ9jivCxGsCEjwHObpF4aoxWctu44LdrK7ZYJw8wqQoy2rH7x33
+         R3Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689703929; x=1692295929;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=G6/8N7r9NBloAE8WS8tLLSB/dGe92+uxsdAAiPO77KA=;
+        b=V4NaNpiewUuOFe07435E/BUaDvOt6MhrYMA4SwcdL8t6UPV1RiDe5InphMmhy43byW
+         EP759zE7YpBS8NLy5TzklVsXOta1jKnpqTmx2Xd1cZtNnA3GtEPpLQLGxne5gGTyhC2k
+         MIRvPw/90cjTBthl/ShysXp9UBG+1B594p4KLeo7rcK3zmKA71QAx/A0Yr6RHfrGmW5a
+         0UO54p+nFesb0hHml3Iw97ASrntwyUREnLiuySIPngrw5322BDSLxpxlv/PaobZBcOq7
+         nvk5RqWXWfqY7P9+BYANs5O/tbFW9vWQ0+FDqp+iYVg2GiP6SBTl/DyZ5yDcpIbtU06u
+         SmWA==
+X-Gm-Message-State: ABy/qLbx2K//jHtFrYacofyZqkPXrVCgauMv2ZpaHG/SisQFpoKqM/UE
+        CDznRunTvm6iQbloWS+nogEbVw==
+X-Google-Smtp-Source: APBJJlHUEk+vIobvihIcsA3RE38Sv2dNpXe0EbyH+S5eZL1H+p8M7mY2hqQI/VxXI2DspF2gjXgJTA==
+X-Received: by 2002:a17:907:a48:b0:98a:29ca:c58e with SMTP id be8-20020a1709070a4800b0098a29cac58emr599294ejc.27.1689703929650;
+        Tue, 18 Jul 2023 11:12:09 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id sb6-20020a170906edc600b009888aa1da11sm1272105ejb.188.2023.07.18.11.12.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 11:12:09 -0700 (PDT)
+Message-ID: <d05fcac3-1054-6b52-e9d8-15baba424863@linaro.org>
+Date:   Tue, 18 Jul 2023 20:12:07 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] dt-bindings: arm: Add qcom specific hvc transport for
+ SCMI
+Content-Language: en-US
+To:     Nikunj Kela <quic_nkela@quicinc.com>, sudeep.holla@arm.com
+Cc:     cristian.marussi@arm.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
+ <20230718160833.36397-2-quic_nkela@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230718160833.36397-2-quic_nkela@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.18ah5mn3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <dfb1f233-aebd-50cf-8704-e83b91ee110a@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 09:27:49 -0500, Dave Hansen <dave.hansen@intel.com>  
-wrote:
+On 18/07/2023 18:08, Nikunj Kela wrote:
+> Introduce compatible "qcom,scmi-hvc-shmem" for SCMI
+> transport channel for Qualcomm virtual platforms.
+> The compatible mandates a shared memory channel.
+> 
+> Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
+> ---
+>  .../bindings/firmware/arm,scmi.yaml           | 69 +++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> index b138f3d23df8..605b1e997a85 100644
+> --- a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> +++ b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> @@ -45,6 +45,9 @@ properties:
+>        - description: SCMI compliant firmware with OP-TEE transport
+>          items:
+>            - const: linaro,scmi-optee
+> +      - description: SCMI compliant firmware with Qualcomm hvc/shmem transport
+> +        items:
+> +          - const: qcom,scmi-hvc-shmem
+>  
+>    interrupts:
+>      description:
+> @@ -321,6 +324,16 @@ else:
+>        required:
+>          - linaro,optee-channel-id
+>  
+> +    else:
+> +      if:
+> +        properties:
+> +          compatible:
+> +            contains:
+> +              const: qcom,scmi-hvc-shmem
+> +      then:
+> +        required:
+> +          - shmem
 
-> On 7/17/23 13:29, Haitao Huang wrote:
->> Under heavy load, the SGX EPC reclaimers (current ksgxd or future EPC
->> cgroup worker) may reclaim the SECS EPC page for an enclave and set
->> encl->secs.epc_page to NULL. But the SECS EPC page is used for EAUG in
->> the SGX #PF handler without checking for NULL and reloading.
->>
->> Fix this by checking if SECS is loaded before EAUG and load it if it was
->> reclaimed.
->
-> It would be nice to see a _bit_ more theory of the bug in here.
->
-> What is an SECS page and why is it special in a reclaim context?  Why is
-> this so hard to hit?  What led you to discover this issue now?  What is
-> EAUG?
+Unfortunately this pattern if-else-if-else-if-else does not scale well.
+Please convert all entries first to allOf:if:then,if:then,if:then (in
+new patch), and then add new if:then:
 
-Let me know if this clarify things.
+> +
+>  examples:
+>    - |
+>      firmware {
+> @@ -444,6 +457,62 @@ examples:
+>          };
+>      };
+>  
+> +  - |
+> +    firmware {
+> +        scmi_dpu {
 
-The SECS page holds global states of an enclave, and all reclaimable pages  
-tracked by the SGX EPC reclaimer (ksgxd) are considered 'child' pages of  
-the SECS page corresponding to that enclave.  The reclaimer only reclaims  
-the SECS page when all its children are reclaimed. That can happen on  
-system under high EPC pressure where multiple large enclaves demanding  
-much more EPC page than physically available. In a rare case, the  
-reclaimer may reclaim all EPC pages of an enclave and it SECS page,  
-setting encl->secs.epc_page to NULL, right before the #PF handler get the  
-chance to handle a #PF for that enclave. In that case, if that #PF happens  
-to require kernel to invoke the EAUG instruction to add a new EPC page for  
-the enclave, then a NULL pointer results as current code does not check if  
-encl->secs.epc_page is NULL before using it.
+No underscores in node names.
 
-The bug is easier to reproduce with the EPC cgroup implementation when a  
-low EPC limit is set for a group of enclave hosting processes. Without the  
-EPC cgroup it's hard to trigger the reclaimer to reclaim all child pages  
-of an SECS page. And it'd also require a machine configured with large RAM  
-relative to EPC so no OOM killer triggered before this happens.
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
 
-Thanks
-Haitao
+
+
+> +            compatible = "qcom,scmi-hvc-shmem";
+> +            shmem = <&shmem_dpu>;
+> +
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            scmi_pd_dpu: protocol@11 {
+> +                reg = <0x11>;
+> +                #power-domain-cells = <1>;
+> +            };
+> +        };
+> +
+
+Add only one example, but then only if it differs significantly. I see
+no differences - except compatible - so maybe no point of examples.
+
+
+> +        scmi_gpu {
+> +            compatible = "qcom,scmi-hvc-shmem";
+> +            shmem = <&shmem_gpu>;
+
+This example for sure is not needed - you duplicate above.
+
+> +
+> +            interrupts = <GIC_SPI 931 IRQ_TYPE_EDGE_RISING>;
+> +            interrupt-names = "a2p";
+> +
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            scmi_pd_gpu: protocol@11 {
+> +                reg = <0x11>;
+> +                #power-domain-cells = <1>;
+> +            };
+> +        };
+> +    };
+> +
+> +    soc {
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +
+> +        sram@95c00000 {
+> +            compatible = "mmio-sram";
+> +            reg = <0x95c00000 0x10000>;
+> +
+> +            #address-cells = <1>;
+> +            #size-cells = <1>;
+> +            ranges;
+> +
+> +            shmem_dpu: scmi-sram-dpu@95c00000 {
+> +                compatible = "arm,scmi-shmem";
+> +                reg = <0x95c00000 0x3f0>;
+> +            };
+
+How does these differ from existing example?
+
+Best regards,
+Krzysztof
 
