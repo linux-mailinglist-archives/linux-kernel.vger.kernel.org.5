@@ -2,76 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33877757A58
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F8D757A5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbjGRLWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39406 "EHLO
+        id S231460AbjGRLYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231460AbjGRLWW (ORCPT
+        with ESMTP id S229953AbjGRLYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:22:22 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E1B1732;
-        Tue, 18 Jul 2023 04:22:10 -0700 (PDT)
-X-UUID: 51c7ed4a255d11eeb20a276fd37b9834-20230718
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=LYVZcFdOa+vLBdw8dXkdvjjipS5D4yC942iy/7t6M80=;
-        b=Q/9uJBuu7iMeMrHKhSdaHwf8Z1h98t8TxCIKEZpPJYVNQwfDh9VRI0hJ4rRLOLOVqpOwUFBY7AyLbAv0bwrq5QwCOBbd+vAtccxSm1bi6T9I9x8p+Q3mxRV59Dx2YJR6k6Jov333hLr8fZt76mN2biA9RD539W8CEkQlEiLcgG0=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.28,REQID:71184003-3c33-45e2-a27f-80a322cb2c76,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:100,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:100
-X-CID-INFO: VERSION:1.1.28,REQID:71184003-3c33-45e2-a27f-80a322cb2c76,IP:0,URL
-        :0,TC:0,Content:0,EDM:0,RT:0,SF:100,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTIO
-        N:quarantine,TS:100
-X-CID-META: VersionHash:176cd25,CLOUDID:6504d84c-06c1-468b-847d-5b62d44dbb9b,B
-        ulkID:2307181922058XW8AZY6,BulkQuantity:0,Recheck:0,SF:38|29|28|17|19|48,T
-        C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-        ,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_ASC,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_SNR,
-        TF_CID_SPAM_SDM
-X-UUID: 51c7ed4a255d11eeb20a276fd37b9834-20230718
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
-        (envelope-from <william-tw.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 856485582; Tue, 18 Jul 2023 19:22:02 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 18 Jul 2023 19:21:54 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 18 Jul 2023 19:21:54 +0800
-From:   William-tw Lin <william-tw.lin@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Kevin Hilman <khilman@kernel.org>
-CC:     <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        William-tw Lin <william-tw.lin@mediatek.com>
-Subject: [PATCH 3/3] arm64: dts: Add node for chip info driver
-Date:   Tue, 18 Jul 2023 19:21:43 +0800
-Message-ID: <20230718112143.14036-4-william-tw.lin@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230718112143.14036-1-william-tw.lin@mediatek.com>
-References: <20230718112143.14036-1-william-tw.lin@mediatek.com>
+        Tue, 18 Jul 2023 07:24:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB36AE8
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:23:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689679420;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E25e9dvQIenP2167tOlvP3NdJMvW6/ZDuSZb/NoTrxg=;
+        b=bM/TNRGC6ZNF+H/NKLH7/qBFAomXtYtgN0I9hc8S2oBq+t+SuOgSG04wBv7uUnqpjthJFs
+        9Jl2yoFn2JauAK98psAOstJpM0ijCOxtTeCclwK6GMD+fiXAQ0zMFjrALYtJ9c95G2PuRq
+        aYIXVeJ3/Kh206Hy6S7AXIHS0JddYvE=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-636-Up15ckMIOw2oIbxKX9HNkQ-1; Tue, 18 Jul 2023 07:23:39 -0400
+X-MC-Unique: Up15ckMIOw2oIbxKX9HNkQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3faabd8fd33so29798455e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:23:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689679418; x=1692271418;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E25e9dvQIenP2167tOlvP3NdJMvW6/ZDuSZb/NoTrxg=;
+        b=Cv/jqhPPsqp4i7QU8OOBmoxZe+kIv47juTillvdok7l7KDIFphSPHfDMg1WNqtO7Vl
+         WEm0Cc8JDi0L5VuV5M8i5n6E7YCMjitzTziNPaV0qg16kXeRbUp47wnc1YlcuZ8zVTiu
+         EAwJSvg/F5dhjYciEk3f0iFCdHr6YwmNw2G0bHc/a00GtXjhYMSK4a1CpH24z6m2LNZN
+         64eIkd+yYg5gAlxLnS63/tFvYBp7UtaqZNHHrNkRVDFMEC0/9hLkTDhJVCT0xJMhoD5l
+         1kSlMpBBT8kwHbw6f/GudKRJvH7mxno4sOU94dUsymdfdtEff1vcIfCUhHZcem2DOmys
+         Cumg==
+X-Gm-Message-State: ABy/qLbH2HROooWzOAy66UfhdrV+JK/TVdB6E4r7n17O92QU65YsgyWN
+        d5vCaaawlulKYK3O9WKRmHHbVUxuj4OL+focul6IlX/n1hR/1kuV5Wkp4DApy6EEZ7oVuofPCr5
+        lD6DtM4a12EGqGhrD2VaLS3U7
+X-Received: by 2002:a1c:750a:0:b0:3fb:f926:4937 with SMTP id o10-20020a1c750a000000b003fbf9264937mr1554396wmc.31.1689679417732;
+        Tue, 18 Jul 2023 04:23:37 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHcfZuXNRThSAK3VX4YePcYyb17v2vQFJ2pWXoCB5RExjoYRAh4jCIM+f39eOI/dJI2PCAPGg==
+X-Received: by 2002:a1c:750a:0:b0:3fb:f926:4937 with SMTP id o10-20020a1c750a000000b003fbf9264937mr1554376wmc.31.1689679417344;
+        Tue, 18 Jul 2023 04:23:37 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c740:6200:84e1:eabc:8e2:7429? (p200300cbc740620084e1eabc08e27429.dip0.t-ipconnect.de. [2003:cb:c740:6200:84e1:eabc:8e2:7429])
+        by smtp.gmail.com with ESMTPSA id o18-20020a05600c379200b003fa973e6612sm9994481wmr.44.2023.07.18.04.23.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 04:23:36 -0700 (PDT)
+Message-ID: <1314fe0e-dd32-bf10-0a33-2b571dad70bd@redhat.com>
+Date:   Tue, 18 Jul 2023 13:23:36 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Florent Revest <revest@chromium.org>,
+        Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20230717103152.202078-1-ryan.roberts@arm.com>
+ <20230717103152.202078-7-ryan.roberts@arm.com>
+ <20501a7c-19f6-4154-aebc-49df04c9b043@redhat.com>
+ <2e5baba4-c8ef-9da4-a2d6-3cf383ed05bd@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v2 6/8] selftests/mm: Make migration test robust to
+ failure
+In-Reply-To: <2e5baba4-c8ef-9da4-a2d6-3cf383ed05bd@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,159 +95,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dts node for socinfo retrieval. This includes the following projects:
-MT8173
-MT8183
-MT8186
-MT8192
-MT8195
+On 18.07.23 12:49, Ryan Roberts wrote:
+> On 17/07/2023 18:40, David Hildenbrand wrote:
+>> On 17.07.23 12:31, Ryan Roberts wrote:
+>>> The `migration` test currently has a number of robustness problems that
+>>> cause it to hang and leak resources.
+>>>
+>>> Timeout: There are 3 tests, which each previously ran for 60 seconds.
+>>> However, the timeout in mm/settings for a single test binary was set to
+>>> 45 seconds. So when run using run_kselftest.sh, the top level timeout
+>>> would trigger before the test binary was finished. Solve this by meeting
+>>> in the middle; each of the 3 tests now runs for 20 seconds (for a total
+>>> of 60), and the top level timeout is set to 90 seconds.
+>>>
+>>> Leaking child processes: the `shared_anon` test fork()s some children
+>>> but then an ASSERT() fires before the test kills those children. The
+>>> assert causes immediate exit of the parent and leaking of the children.
+>>> Furthermore, if run using the run_kselftest.sh wrapper, the wrapper
+>>> would get stuck waiting for those children to exit, which never happens.
+>>> Solve this by deferring any asserts until after the children are killed.
+>>> The same pattern is used for the threaded tests for uniformity.
+>>>
+>>> With these changes, the test binary now runs to completion on arm64,
+>>> with 2 tests passing and the `shared_anon` test failing.
+>>>
+>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>> ---
+>>>    tools/testing/selftests/mm/migration.c | 14 ++++++++++----
+>>>    tools/testing/selftests/mm/settings    |  2 +-
+>>>    2 files changed, 11 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/tools/testing/selftests/mm/migration.c
+>>> b/tools/testing/selftests/mm/migration.c
+>>> index 379581567f27..189d7d9070e8 100644
+>>> --- a/tools/testing/selftests/mm/migration.c
+>>> +++ b/tools/testing/selftests/mm/migration.c
+>>> @@ -15,7 +15,7 @@
+>>>    #include <time.h>
+>>>      #define TWOMEG (2<<20)
+>>> -#define RUNTIME (60)
+>>> +#define RUNTIME (20)
+>>>      #define ALIGN(x, a) (((x) + (a - 1)) & (~((a) - 1)))
+>>>    @@ -118,6 +118,7 @@ TEST_F_TIMEOUT(migration, private_anon, 2*RUNTIME)
+>>>    {
+>>>        uint64_t *ptr;
+>>>        int i;
+>>> +    int ret;
+>>>          if (self->nthreads < 2 || self->n1 < 0 || self->n2 < 0)
+>>>            SKIP(return, "Not enough threads or NUMA nodes available");
+>>> @@ -131,9 +132,10 @@ TEST_F_TIMEOUT(migration, private_anon, 2*RUNTIME)
+>>>            if (pthread_create(&self->threads[i], NULL, access_mem, ptr))
+>>>                perror("Couldn't create thread");
+>>>    -    ASSERT_EQ(migrate(ptr, self->n1, self->n2), 0);
+>>> +    ret = migrate(ptr, self->n1, self->n2);
+>>>        for (i = 0; i < self->nthreads - 1; i++)
+>>>            ASSERT_EQ(pthread_cancel(self->threads[i]), 0);
+>>> +    ASSERT_EQ(ret, 0);
+>>
+>> Why is that required? This does not involve fork.
+> 
+> It's not required. I was just trying to keep everything aligned to the same pattern.
+> 
+>>
+>>>    }
+>>>      /*
+>>> @@ -144,6 +146,7 @@ TEST_F_TIMEOUT(migration, shared_anon, 2*RUNTIME)
+>>>        pid_t pid;
+>>>        uint64_t *ptr;
+>>>        int i;
+>>> +    int ret;
+>>>          if (self->nthreads < 2 || self->n1 < 0 || self->n2 < 0)
+>>>            SKIP(return, "Not enough threads or NUMA nodes available");
+>>> @@ -161,9 +164,10 @@ TEST_F_TIMEOUT(migration, shared_anon, 2*RUNTIME)
+>>>                self->pids[i] = pid;
+>>>        }
+>>>    -    ASSERT_EQ(migrate(ptr, self->n1, self->n2), 0);
+>>> +    ret = migrate(ptr, self->n1, self->n2);
+>>>        for (i = 0; i < self->nthreads - 1; i++)
+>>>            ASSERT_EQ(kill(self->pids[i], SIGTERM), 0);
+>>> +    ASSERT_EQ(ret, 0);
+>>
+>>
+>> Might be cleaner to also:
+> 
+> Or instead of? I agree this is neater, so will undo the moving of the ASSERT()
+> and rely on this prctl.
 
-Signed-off-by: William-tw Lin <william-tw.lin@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt8173.dtsi | 15 +++++++++++++++
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 15 +++++++++++++++
- arch/arm64/boot/dts/mediatek/mt8186.dtsi | 10 ++++++++++
- arch/arm64/boot/dts/mediatek/mt8192.dtsi | 14 ++++++++++++++
- arch/arm64/boot/dts/mediatek/mt8195.dtsi |  9 +++++++++
- 5 files changed, 63 insertions(+)
+I was thinking about possible races when our parent process already 
+quits before our child managed to set the prctl. prctl() won't do 
+anything in that case, hmmmm.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-index c47d7d900f28..115f907751c1 100644
---- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-@@ -590,11 +590,26 @@
- 			reg = <0 0x10206000 0 0x1000>;
- 			#address-cells = <1>;
- 			#size-cells = <1>;
-+
-+			socinfo_data1: socinfo-data1 {
-+				reg = <0x040 0x4>;
-+			};
-+
-+			socinfo_data2: socinfo-data2 {
-+				reg = <0x044 0x4>;
-+			};
-+
- 			thermal_calibration: calib@528 {
- 				reg = <0x528 0xc>;
- 			};
- 		};
- 
-+		mtk_socinfo: mtk-socinfo {
-+			compatible = "mediatek,mt8173-socinfo";
-+			nvmem-cells = <&socinfo_data1 &socinfo_data2>;
-+			nvmem-cell-names = "socinfo-data1", "socinfo-data2";
-+		};
-+
- 		apmixedsys: clock-controller@10209000 {
- 			compatible = "mediatek,mt8173-apmixedsys";
- 			reg = <0 0x10209000 0 0x1000>;
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index 5169779d01df..1035c6d7eb91 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -1706,6 +1706,15 @@
- 			reg = <0 0x11f10000 0 0x1000>;
- 			#address-cells = <1>;
- 			#size-cells = <1>;
-+
-+			socinfo_data1: socinfo-data1 {
-+				reg = <0x04C 0x4>;
-+			};
-+
-+			socinfo_data2: socinfo-data2 {
-+				reg = <0x060 0x4>;
-+			};
-+
- 			thermal_calibration: calib@180 {
- 				reg = <0x180 0xc>;
- 			};
-@@ -1719,6 +1728,12 @@
- 			};
- 		};
- 
-+		mtk_socinfo: mtk-socinfo {
-+			compatible = "mediatek,mt8183-socinfo";
-+			nvmem-cells = <&socinfo_data1 &socinfo_data2>;
-+			nvmem-cell-names = "socinfo-data1", "socinfo-data2";
-+		};
-+
- 		u3phy: t-phy@11f40000 {
- 			compatible = "mediatek,mt8183-tphy",
- 				     "mediatek,generic-tphy-v2";
-diff --git a/arch/arm64/boot/dts/mediatek/mt8186.dtsi b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
-index f04ae70c470a..e048e4d994e9 100644
---- a/arch/arm64/boot/dts/mediatek/mt8186.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
-@@ -1660,6 +1660,16 @@
- 				reg = <0x59c 0x4>;
- 				bits = <0 3>;
- 			};
-+
-+			socinfo_data1: socinfo-data1 {
-+				reg = <0x7a0 0x4>;
-+			};
-+		};
-+
-+		mtk_socinfo: socinfo {
-+			compatible = "mediatek,mt8186-socinfo";
-+			nvmem-cells = <&socinfo_data1>;
-+			nvmem-cell-names = "socinfo-data1";
- 		};
- 
- 		mipi_tx0: dsi-phy@11cc0000 {
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index 5e94cb4aeb44..80066faf2b2c 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -1122,6 +1122,14 @@
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 
-+			socinfo_data1: socinfo-data1 {
-+				reg = <0x044 0x4>;
-+			};
-+
-+			socinfo_data2: socinfo-data2 {
-+				reg = <0x050 0x4>;
-+			};
-+
- 			lvts_e_data1: data1@1c0 {
- 				reg = <0x1c0 0x58>;
- 			};
-@@ -1131,6 +1139,12 @@
- 			};
- 		};
- 
-+		mtk_socinfo: mtk-socinfo {
-+			compatible = "mediatek,mt8192-socinfo";
-+			nvmem-cells = <&socinfo_data1 &socinfo_data2>;
-+			nvmem-cell-names = "socinfo-data1", "socinfo-data2";
-+		};
-+
- 		i2c3: i2c@11cb0000 {
- 			compatible = "mediatek,mt8192-i2c";
- 			reg = <0 0x11cb0000 0 0x1000>,
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-index 48b72b3645e1..ec8f2c8888cb 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-@@ -1683,6 +1683,15 @@
- 			lvts_efuse_data2: lvts2-calib@1d0 {
- 				reg = <0x1d0 0x38>;
- 			};
-+			socinfo_data1: socinfo-data1 {
-+				reg = <0x7a0 0x4>;
-+			};
-+		};
-+
-+		mtk_socinfo: socinfo {
-+			compatible = "mediatek,mt8195-socinfo";
-+			nvmem-cells = <&socinfo_data1>;
-+			nvmem-cell-names = "socinfo-data1";
- 		};
- 
- 		u3phy2: t-phy@11c40000 {
+But similarly, existing code might already trigger the migrate() + kill 
+before the child processes even started to access_mem().
+
+Racy :)
+
 -- 
-2.18.0
+Cheers,
+
+David / dhildenb
 
