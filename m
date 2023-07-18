@@ -2,354 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A759758646
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5353D758649
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbjGRUtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 16:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52192 "EHLO
+        id S230439AbjGRUu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 16:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjGRUtv (ORCPT
+        with ESMTP id S229772AbjGRUuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 16:49:51 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C96FBD
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:49:50 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbb07e7155so139765e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:49:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689713389; x=1692305389;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BgQcqwhLTNI8qX6knCzj+hGMtjn0S20ah/hoUWW0q2U=;
-        b=hVKdbNRuovsCs+y0Lf2bjXemqvVB1qeWfMqk5yyraYwCcDvNKtONwM+9XfpFN1W2NA
-         tjgJrVAb3dsXBTNQ49SmM3AwnYOhUE/vqp/wEYLOf83X2W+tDVEXTHfYPKQ2tUo9NPaT
-         dw5ZrZz/j56/coQr2r1iopReeZ+mBe+jfH/39c/vzxbEe4h2YJfXd+fcTPAwN0H0T4cV
-         MBqZJQwb6H1hrxwxIbfv56yZ0fo9pEyNfm1ssTyQdVI+F44curhBWxXdMIR7a+769jzY
-         mh2JTM5D3dwczbjf4t4s/+GLzOEMKj457HnZ9/URUATtGgVJn5v2gsUDhUBv+VENOOLr
-         PzNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689713389; x=1692305389;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BgQcqwhLTNI8qX6knCzj+hGMtjn0S20ah/hoUWW0q2U=;
-        b=Gl5ppH6PX10ZYdAdJ8Q5mH6+dSro0SZZMYUk0fTOwxvhhKtgjaOQyhGhzbGbbfTU7U
-         Tcy0I1+z79ApoJBDBel7eCxAJJ1cXpILMHTjg3oIvmauqiOk/Pyi8pRpgB5umTp+gref
-         0XJ7XnY0ntl5faHmiZ6V+km8oM+Mb84h6u5PAkLv3g/ytScp9Dx0x3BnzK2CPxCnU1PW
-         ZBGVeEcU+5mXFZJbP8//aZbeHbVr7X6/XxHVMjBvlKrewCXDS9M9kRIgMdQ3VMm9S9vY
-         nN3ilNIKZIriXcZNTGTzmwlIqa9AaUWjXVsz0bcllC5AAPbcwvKmNBKIaeHT10SZ8cor
-         /LXw==
-X-Gm-Message-State: ABy/qLZHlZrwUMjQ7uCM2htPNPH1PXQI8cJELYnFmn3A78yKC0NmJZDT
-        qG6fmQbuUhgKxUi6RgHnl1ToJ2hKfPgtwPWrc+8Esg==
-X-Google-Smtp-Source: APBJJlEXJgViNiRV7+HWXgtPyoNb/rXxkQwn9HrWqWCqXqR19OSLFrNI1QNrW14keUR5xmaeSR91zkFruRzzHPqWgfY=
-X-Received: by 2002:a05:600c:3ca0:b0:3f7:7bd4:3b9d with SMTP id
- bg32-20020a05600c3ca000b003f77bd43b9dmr162464wmb.6.1689713388786; Tue, 18 Jul
- 2023 13:49:48 -0700 (PDT)
+        Tue, 18 Jul 2023 16:50:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A227DBD
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:50:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 370A660F61
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 20:50:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9939C433C8;
+        Tue, 18 Jul 2023 20:50:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689713421;
+        bh=wdHcO86GhIiXHF8rYMzNJ7fSVisTzDsPgf8QmB0zTrE=;
+        h=From:Subject:Date:To:Cc:From;
+        b=oxgDB8IrFIoMskhEA9683+Pjhn1hNY8uYX5JFhBunsvS8kI2S0drZu33H/yVHS6nO
+         LukFOdQq+A6k0S6g+3aFhq5GP2MTu3+XN9o33BD8Yy/hRdmMHE9XlSaoLaEJGjXheq
+         XYQ+TugLJUnFbfuLanIVvdhjkPRwZJN8QBb0U2dgIyqF4U8PVpiRcZF0cKjXCrb8Vp
+         KdQtF/jltp3fvRge+lnZahxjWHhjNwkYPOzhozMjpCqucaLhXwf75XHMcdum5HsbAs
+         +bTmcrjFtOQga6MaibR3ri4VSy3WRkEhDdZXMOwDwnunRQCjTl1JvHq6v+zXp6bB5P
+         zrSXi5JVyRlow==
+From:   Eric Van Hensbergen <ericvh@kernel.org>
+Subject: [PATCH v2 0/4] fs/9p: fix mmap regression
+Date:   Tue, 18 Jul 2023 20:50:14 +0000
+Message-Id: <20230716-fixes-overly-restrictive-mmap-v2-0-147d6b93f699@kernel.org>
 MIME-Version: 1.0
-References: <20230707210947.1208717-1-rmoar@google.com> <20230707210947.1208717-10-rmoar@google.com>
- <CABVgOS=1kwHn8BtB55i3TMcXB9+RveiyGn4aYja_agkc4_yH-w@mail.gmail.com>
-In-Reply-To: <CABVgOS=1kwHn8BtB55i3TMcXB9+RveiyGn4aYja_agkc4_yH-w@mail.gmail.com>
-From:   Rae Moar <rmoar@google.com>
-Date:   Tue, 18 Jul 2023 16:49:35 -0400
-Message-ID: <CA+GJov4BdZx-5MfbtWCs2jDYOfq8CuZm3FZ4VFPYm8MNTj-mnQ@mail.gmail.com>
-Subject: Re: [RFC v2 9/9] kunit: Add documentation of KUnit test attributes
-To:     David Gow <davidgow@google.com>
-Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, keescook@chromium.org,
-        linux-hardening@vger.kernel.org, jstultz@google.com,
-        tglx@linutronix.de, sboyd@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAb7tmQC/42OSw6DMAwFr4Kyrtt8VKBd9R4Vi5AaiAoJcqIIh
+ Lh7Ayfowovxs+Z5YwHJYmDPYmOEyQbrXQZ5KZgZtOsR7Cczk1wqXokSOrtgAJ+QxhUIQyRrok0
+ I06RnUFxLdecCq7pi2dHqgNCSdmY4LLnLpOHWeQKHSzwuZsJTmeN3k3mwIXpaz4eSOLb/dicBH
+ HhZq1bmeSj5+iI5HK+eetbs+/4D/XYt4+0AAAA=
+To:     Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>
+Cc:     v9fs@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, Robert Schwebel <r.schwebel@pengutronix.de>,
+        Eric Van Hensbergen <ericvh@kernel.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3777; i=ericvh@kernel.org;
+ h=from:subject:message-id; bh=wdHcO86GhIiXHF8rYMzNJ7fSVisTzDsPgf8QmB0zTrE=;
+ b=owEBbQKS/ZANAwAKAYj/1ftKX/+YAcsmYgBktvsMrcekCj24zWkZnXxLVRFqlqjVKY04bE5XE
+ iVYCi6mEuiJAjMEAAEKAB0WIQSWlvDRlqWQmKTK0VGI/9X7Sl//mAUCZLb7DAAKCRCI/9X7Sl//
+ mNmUD/4/yx7xZG0er5JytNqJ3MLZKALZf1s48ZgC7jHkCVAn+JZlStZgewXeqB+8Iv3KgjahhDc
+ fkpQdoPARCesauILsbEueOYUQNzyhH9oCon9WOl3G5t/EORpyRApKoPGczhMOQXdVmGufqCeOrQ
+ jodQCvD3cSbi9TGiZefSUTxZL86X6wikARFZH0UOfU9/2GUr7+cS01jD2uwXDmKZKhZgpFR8MY/
+ ymJaR1bBk7/EJESGOuGFa2xqPvPM4BDzerwsEz24xs10Pi3mywoTJlE72V4piVxinnHlEn5MUHd
+ xkIpDE7SoRum85MB5K49sOngOh7FA9p2nXkFfgNuzCKuV9jb20aly8pnjHpckJawSUnA3b1g2J6
+ gziuajTTL9pHGKDT8kNpFZZMC9IKf8Em8KuqiNIcYORo+fNErQLYdaUYiApQdYEt+zJ7cNjPy5N
+ EbfzSkIx4BWZO16w1tm+8M/7664iFWmVr8GVUGdj3DepnEJUyT5vvm+YDeATPO23w4J48HmZN79
+ Rr5vzeXaD04sKuLrCs004s+ZcQ1k8QrTM8LIslqM8w0H275KCJBXE45MbEK8MsNtFWxOFHPxGhV
+ jxD17yNyRKAbVRkKiUUtF5R290ex9Htuhj2plY282H5fHOvtzya7BqjU+EoBSVY8jmE2Xgso+RI
+ q+hTj38zAnljIHw==
+X-Developer-Key: i=ericvh@kernel.org; a=openpgp;
+ fpr=9696F0D196A59098A4CAD15188FFD5FB4A5FFF98
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 3:39=E2=80=AFAM David Gow <davidgow@google.com> wro=
-te:
->
-> On Sat, 8 Jul 2023 at 05:10, Rae Moar <rmoar@google.com> wrote:
-> >
-> > Add documentation on the use of test attributes under the section "Tips=
- for
-> > Running KUnit Tests" in the KUnit docs.
-> >
-> > Documentation includes three sections on how to mark tests with attribu=
-tes,
-> > how attributes are reported, and how the user can filter tests using te=
-st
-> > attributes.
-> >
-> > Signed-off-by: Rae Moar <rmoar@google.com>
-> > ---
->
-> Looks good overall. Some nitpicks below.
->
-> Reviewed-by: David Gow <davidgow@google.com>
->
-> >
-> > Changes since v1:
-> > - This is a new patch
-> >
-> >  .../dev-tools/kunit/running_tips.rst          | 163 ++++++++++++++++++
-> >  1 file changed, 163 insertions(+)
-> >
-> > diff --git a/Documentation/dev-tools/kunit/running_tips.rst b/Documenta=
-tion/dev-tools/kunit/running_tips.rst
-> > index 8e8c493f17d1..c9bc5a6595d3 100644
-> > --- a/Documentation/dev-tools/kunit/running_tips.rst
-> > +++ b/Documentation/dev-tools/kunit/running_tips.rst
-> > @@ -262,3 +262,166 @@ other code executed during boot, e.g.
-> >         # Reset coverage counters before running the test.
-> >         $ echo 0 > /sys/kernel/debug/gcov/reset
-> >         $ modprobe kunit-example-test
-> > +
-> > +
-> > +Test Attributes and Filtering
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> > +
-> > +Test suites and cases can be marked with test attributes, such as spee=
-d of
-> > +test. These attributes will later be printed in test output and can be=
- used to
-> > +filter test execution.
-> > +
-> > +Marking Test Attributes
-> > +-----------------------
-> > +
-> > +Tests are marked with an attribute by including a ``kunit_attributes``=
- object
-> > +in the test definition.
-> > +
-> > +Test cases can be marked using the ``KUNIT_CASE_ATTR(test_name, attrib=
-utes)``
-> > +macro to define the test case instead of ``KUNIT_CASE(test_name)``.
-> > +
-> > +.. code-block:: c
-> > +
-> > +       static const struct kunit_attributes example_attr =3D {
-> > +               .speed =3D KUNIT_VERY_SLOW,
-> > +       };
-> > +
-> > +       static struct kunit_case example_test_cases[] =3D {
-> > +               KUNIT_CASE_ATTR(example_test, example_attr),
-> > +       };
-> > +
-> > +.. note::
-> > +       To mark a test case as slow, you can also use ``KUNIT_CASE_SLOW=
-(test_name)``.
-> > +       This is a helpful macro as the slow attribute is the most commo=
-nly used.
-> > +
-> > +Test suites can be marked with an attribute by setting the "attr" fiel=
-d in the
-> > +suite definition.
-> > +
-> > +.. code-block:: c
-> > +
-> > +       static const struct kunit_attributes example_attr =3D {
-> > +               .speed =3D KUNIT_VERY_SLOW,
-> > +       };
-> > +
-> > +       static struct kunit_suite example_test_suite =3D {
-> > +               ...,
-> > +               .attr =3D example_attr,
-> > +       };
-> > +
-> > +.. note::
-> > +       Not all attributes need to be set in a ``kunit_attributes`` obj=
-ect. Unset
-> > +       attributes will remain uninitialized and act as though the attr=
-ibute is set
-> > +       to 0 or NULL. Thus, if an attribute is set to 0, it is treated =
-as unset.
-> > +       These unset attributes will not be reported and may act as a de=
-fault value
-> > +       for filtering purposes.
-> > +
-> > +Reporting Attributes
-> > +--------------------
-> > +
-> > +When a user runs tests, attributes will be present in kernel output (i=
-n KTAP
-> > +format). This is an example of how test attributes for test cases will=
- be formatted
-> > +in Kernel output:
-> > +
-> > +.. code-block:: none
-> > +
-> > +       # example_test.speed: slow
-> > +       ok 1 example_test
-> > +
-> > +This is an example of how test attributes for test suites will be form=
-atted in
-> > +Kernel output:
-> > +
-> > +.. code-block:: none
-> > +
-> > +         KTAP version 2
-> > +         # Subtest: example_suite
-> > +         # module: kunit_example_test
-> > +         1..3
-> > +         ...
-> > +       ok 1 example_suite
-> > +
->
-> Maybe worth noting that kunit.py will hide these for passing tests by
-> default, and --raw_output is needed to see them?
->
+This series attempts to fix a reported exception with mmap
+on newer kernels. 
 
-I will definitely add this in. If attributes are popular in the
-future, I could create a future patch to show attributes in the parser
-output as well.
+original regression report follows:
 
-> > +Additionally, users can output a full attribute report of tests with t=
-heir
-> > +attributes, using the command line flag ``--list_tests_attr``:
-> > +
-> > +.. code-block:: bash
-> > +
-> > +       kunit.py run "example" --list_tests_attr
-> > +
-> > +.. note::
-> > +       This report can be accessed when running KUnit manually by pass=
-ing in the
-> > +       module_param ``kunit.action=3Dlist_attr``.
-> > +
-> > +Filtering
-> > +---------
-> > +
-> > +Users can filter tests using the ``--filter`` command line flag when r=
-unning
-> > +tests. As an example:
-> > +
-> > +.. code-block:: bash
-> > +
-> > +       kunit.py run --filter speed=3Dslow
-> > +
-> > +
-> > +You can also use the following operations on filters: "<", ">", "<=3D"=
-, ">=3D",
-> > +"!=3D", and "=3D". Example:
-> > +
-> > +.. code-block:: bash
-> > +
-> > +       kunit.py run --filter "speed>slow"
-> > +
-> > +This example will run all tests with speeds faster than slow. Note tha=
-t the
-> > +characters < and > are often interpreted by the shell, so they may nee=
-d to be
-> > +quoted or escaped, as above.
-> > +
-> > +Additionally, you can use multiple filters at once. Simply separate fi=
-lters
-> > +using commas. Example:
-> > +
-> > +.. code-block:: bash
-> > +
-> > +       kunit.py run --filter "speed>slow, module=3Dkunit_example_test"
-> > +
-> > +.. note::
-> > +       You can use this filtering feature when running KUnit manually =
-by passing
-> > +       the filter as a module param: ``kunit.filter=3D"speed>slow, spe=
-ed<=3Dnormal"``.
-> > +
-> > +Filtered tests will not run or show up in the test output. You can use=
- the
-> > +``--filter_skip`` flag to skip filtered tests instead. These tests wil=
-l be
-> > +shown in the test output in the test but will not run. To use this fea=
-ture when
-> > +running KUnit manually, use the ``kunit.filter`` module param with
-> > +``kunit.filter_action=3Dskip``.
-> > +
-> > +Rules of Filtering Procedure
-> > +----------------------------
-> > +
-> > +Since both suites and test cases can have attributes, there may be con=
-flicts
-> > +between attributes during filtering. The process of filtering follows =
-these
-> > +rules:
-> > +
-> > +- Filtering always operates at a per-test level.
-> > +
-> > +- If a test has an attribute set, then the test's value is filtered on=
-.
-> > +
-> > +- Otherwise, the value falls back to the suite's value.
-> > +
-> > +- If neither are set, the attribute has a global "default" value, whic=
-h is used.
-> > +
-> > +List of Current Attributes
-> > +--------------------------
->
-> I wonder whether this should end up part of the KTAP spec (or as an
-> appendix/supplement to it). Or even as a separate page within the
-> KUnit documentation to avoid running_tips.rst from getting too huge.
+TL;DR: mmap() seems to be broken on 9pfs on Linux 6.4. setting
+"rootflags=ignoreqv" fixes it as well, but it feels like a regression.
 
-I am a bit hesitant to move this as part of the KTAP spec in case
-there will exist KTAP attributes/data that are not supported by the
-KUnit test attributes framework (could be runtime specific attributes
-that use a different framework?).
+I'm tracking down an issue which recently turned up in DistroKit [1] (an
+embedded Linux distro based on the ptxdist build system). The issue was a bit
+uggly, as my CI didn't find it (systems boot up normally after a while, and I
+only use 9p for virtual qemu machines, while most of the test farm is real
+hardware).
 
-However, I do worry about the size of this page. Do you think that I
-should move all of the attributes to a new documentation page?
+The qemu machine in question is qemu-system-arm, emulating an ARM v7a machine.
 
->
-> > +
-> > +``speed``
-> > +
-> > +This attribute indicates the speed of a test's execution (how slow or =
-fast the
-> > +test is).
-> > +
-> > +This attribute is saved as an enum with the following categories: "nor=
-mal",
-> > +"slow", or "very_slow". The assumed default speed for tests is "normal=
-". This
-> > +indicates that the test takes a relatively trivial amount of time (les=
-s than
-> > +1 second), regardless of the machine it is running on. Any test slower=
- than
-> > +this could be marked as "slow" or "very_slow".
->
-> Is it worth noting that "KUNIT_CASE_SLOW()" can be used to easily set
-> this to slow?
+When starting the systems interactively, I get a lot of error output from
+ldconfig, like this:
 
-This definitely seems important to add. I will add this to the documentatio=
-n.
+[   17.412964] systemd-rc-once[127]: ldconfig: Cannot mmap file /lib/libgcc_s.so.1.
+[   17.418851] systemd-rc-once[127]: ldconfig: Cannot mmap file /lib/libstdc++.so.
+[   17.425009] systemd-rc-once[127]: ldconfig: Cannot mmap file /lib/libstdc++.so.6.0.30.
+[   17.436671] systemd-rc-once[127]: ldconfig: Cannot mmap file /lib/libstdc++.so.6.
+[   17.448451] systemd-rc-once[127]: ldconfig: Cannot mmap file /lib/libatomic.so.
+[   17.456418] systemd-rc-once[127]: ldconfig: Cannot mmap file /lib/libatomic.so.1.2.0.
+...
 
->
->
-> > +
-> > +``module``
-> > +
-> > +This attribute indicates the name of the module associated with the te=
-st.
-> > +
-> > +This attribute is automatically saved as a string and is printed for e=
-ach suite.
-> > +Tests can also be filtered using this attribute.
-> > +
-> > --
-> > 2.41.0.255.g8b1d071c50-goog
->
-> >
->
-> Error: new blank line at EOF.
+Running ldconfig with strace shows this, for all libraries::
 
-Oops. I will change this.
+| statx(AT_FDCWD, "/lib/libnm.so.0", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW|AT_NO_AUTOMOUNT, STATX_BASIC_STATS, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFLNK|0777, stx_size=14, ...}) = 0
+| statx(AT_FDCWD, "/lib/libnm.so.0", AT_STATX_SYNC_AS_STAT|AT_NO_AUTOMOUNT, STATX_BASIC_STATS, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|064 4, stx_size=862228, ...}) = 0
+| openat(AT_FDCWD, "/lib/libnm.so.0", O_RDONLY|O_LARGEFILE) = 4
+| statx(4, "", AT_STATX_SYNC_AS_STAT|AT_NO_AUTOMOUNT|AT_EMPTY_PATH, STATX_BASIC_STATS, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_s ize=862228, ...}) = 0
+| mmap2(NULL, 862228, PROT_READ, MAP_SHARED, 4, 0) = -1 ENODEV (No such device)
+| write(2, "ldconfig: ", 10ldconfig: )              = 10
+| write(2, "Cannot mmap file /lib/libnm.so.0"..., 34Cannot mmap file /lib/libnm.so.0.) = 34
+| write(2, "\n", 1)                       = 1
+| close(4)                                = 0
+
+I could track down the breakage to
+
+  1543b4c5071c54d76aad7a7a26a6e43082269b0c
+
+My test setup has, in addition to the patch above, the following patches also
+reverted on top of a vanilla 6.4 kernel:
+
+  4eb3117888a923f6b9b1ad2dd093641c49a63ae5
+  21e26d5e54ab7cfe6b488fd27d4d70956d07e03b
+
+as 1543b cannot be reverted without those; however, the effect only goes away
+when I also revert 1543b. The kernel has no other patches applied, only these
+three reverts.
+
+Reported-by: Robert Schwebel <r.schwebel@pengutronix.de>
+Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
+---
+Changes in v2:
+- fix requested changes in commit messages
+- add patch to remove unnecessary invalidate_inode_pages in mmap readonly path
+- Link to v1: https://lore.kernel.org/r/20230716-fixes-overly-restrictive-mmap-v1-0-0683b283b932@kernel.org
+
+---
+Eric Van Hensbergen (4):
+      fs/9p: remove unnecessary and overrestrictive check
+      fs/9p: fix typo in comparison logic for cache mode
+      fs/9p: fix type mismatch in file cache mode helper
+      fs/9p: remove unnecessary invalidate_inode_pages2
+
+ fs/9p/fid.h      | 6 +++---
+ fs/9p/vfs_file.c | 3 ---
+ 2 files changed, 3 insertions(+), 6 deletions(-)
+---
+base-commit: 95f41d87810083d8b3dedcce46a4e356cf4a9673
+change-id: 20230716-fixes-overly-restrictive-mmap-30a23501e787
+
+Best regards,
+-- 
+Eric Van Hensbergen <ericvh@kernel.org>
+
