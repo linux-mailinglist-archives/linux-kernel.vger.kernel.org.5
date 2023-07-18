@@ -2,73 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 037B57581E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C6A7581E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbjGRQQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 12:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35388 "EHLO
+        id S232221AbjGRQQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 12:16:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbjGRQQa (ORCPT
+        with ESMTP id S230178AbjGRQQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 12:16:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9758BE2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:16:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=u9BHQvttlzeTCBclAmv6cmgN9khV9hmdF8Tu8zmlFTU=; b=uQm6oxEIquBuljibWe2eg/7ooK
-        3O2yX4DWQ0bQlHX0OzR9gmCw/hGWjVzy+xl9K7Q7YYAK5pOQgu1/aHxgoQZ49pl+ah8UV/OUBJxWU
-        UmQxXrmSGQ8umVKYnzWopkASq20NyuCDsCdJ+7BxU85UyrXN3A9bS36QXUpy3DkhRqOsjPY4fyJya
-        HxJyH+TFE9Gbw+AgNNoUdfIJaUvQQHGeCr6pJmS7hUsJEX1HmVVxrXs/3Vo5Dzz/BF79Y/QoTwmXu
-        Eji9FUkyHXRW0+lMzX64YAi5/TkMdxjGcIiPXmPgHDqCIjBtl9zWKx0h+FItadl3zYJ2YBqMCEytm
-        eWEBJjsg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qLnN1-0054rl-Ja; Tue, 18 Jul 2023 16:16:15 +0000
-Date:   Tue, 18 Jul 2023 17:16:15 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "zhangpeng (AS)" <zhangpeng362@huawei.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        sidhartha.kumar@oracle.com, akpm@linux-foundation.org,
-        wangkefeng.wang@huawei.com, sunnanyong@huawei.com
-Subject: Re: [PATCH 1/6] mm/page_io: use a folio in __end_swap_bio_read()
-Message-ID: <ZLa6z+vhK6aWYePL@casper.infradead.org>
-References: <20230717132602.2202147-1-zhangpeng362@huawei.com>
- <20230717132602.2202147-2-zhangpeng362@huawei.com>
- <ZLVDYjdflF+3oJCG@casper.infradead.org>
- <df29af76-fc8f-b4f1-4a32-a200b5d4ba31@huawei.com>
+        Tue, 18 Jul 2023 12:16:23 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EE74613E
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:16:19 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8AxDOvSurZk99cGAA--.12298S3;
+        Wed, 19 Jul 2023 00:16:18 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxniPRurZkMX0zAA--.35913S3;
+        Wed, 19 Jul 2023 00:16:17 +0800 (CST)
+Message-ID: <06b291d4-9cab-5179-2a90-a73449ddb2dd@loongson.cn>
+Date:   Wed, 19 Jul 2023 00:16:17 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <df29af76-fc8f-b4f1-4a32-a200b5d4ba31@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 3/8] drm/etnaviv: Drop the second argument of the
+ etnaviv_gem_new_impl()
+Content-Language: en-US
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     loongson-kernel@lists.loongnix.cn, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230623100822.274706-1-sui.jingfeng@linux.dev>
+ <20230623100822.274706-4-sui.jingfeng@linux.dev>
+ <862358e67a6f118b11ba16fb94828e9d1635cb66.camel@pengutronix.de>
+ <e3a05204-61fe-2318-5f06-fd12addfe2e9@loongson.cn>
+ <ee96ed1a1ff12656f6e6542ae928fb526a9758fe.camel@pengutronix.de>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <ee96ed1a1ff12656f6e6542ae928fb526a9758fe.camel@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8BxniPRurZkMX0zAA--.35913S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj97XoW5WF1fGFyUKFWUWFy7XFyxp5X_Ary8JoWSv3
+        W3Ja1rGF95tws0k342gFn8A3yUC345Ga4Yq3WDAw4vqay7try7Wa1ftFWIvF10kF47Xwnr
+        Ka43uwsrXFn5l-sFpf9Il3svdjkaLaAFLSUrUUUU0b8apTn2vfkv8UJUUUU8wcxFpf9Il3
+        svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3UjIY
+        CTnIWjp_UUUOj7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcI
+        k0rVWrJVCq3wAFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK
+        021l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r
+        1j6r4UM28EF7xvwVC2z280aVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r1j
+        6r4UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8V
+        C2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv
+        7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xI
+        A0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I
+        3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j5o7tUUUUU=
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 08:56:16PM +0800, zhangpeng (AS) wrote:
-> > >   	if (bio->bi_status) {
-> > > -		SetPageError(page);
-> > > -		ClearPageUptodate(page);
-> > > +		folio_set_error(folio);
-> > I appreciate this is a 1:1 conversion, but maybe we could think about
-> > this a bit.  Is there anybody who checks the
-> > PageError()/folio_test_error() for this page/folio?
-> 
-> Maybe wait_dev_supers() checks the PageError() after write_dev_supers()
-> in fs/btrfs/disk-io.c?
+Hi,
 
-How does _this_ folio end up in btrfs's write_dev_supers()?  This is a
-swap read.  The only folios which are swapped are anonymous and tmpfs.
-btrfs takes care of doing its own I/O.  wait_dev_supers() is looking
-for the error set in btrfs_end_super_write() which is the completion
-routine for write_dev_supers().  The pages involved there are attached
-to a btrfs address_space, not shmem or anon.
+On 2023/7/18 16:12, Lucas Stach wrote:
+> Hi Jingfeng,
+>
+> Am Dienstag, dem 18.07.2023 um 02:34 +0800 schrieb suijingfeng:
+>> Hi,  Lucas
+>>
+>>
+>> Thanks for you guidance!
+>>
+>>
+>> On 2023/7/17 17:51, Lucas Stach wrote:
+>>> Hi Jingfeng,
+>>>
+>>> Am Freitag, dem 23.06.2023 um 18:08 +0800 schrieb Sui Jingfeng:
+>>>> From: Sui Jingfeng <suijingfeng@loongson.cn>
+>>>>
+>>>> Because it is not used by the etnaviv_gem_new_impl() function,
+>>>> no functional change.
+>>>>
+>>> I think it would make sense to move into the opposite direction: in
+>>> both callsites of etnaviv_gem_new_impl we immediately call
+>>> drm_gem_object_init with the size.
+>> Really?
+>>
+>> But there are multiple call path to the etnaviv_gem_new_impl() function.
+>>
+>>
+>> Code path 1 (PRIME):
+>>
+>>> - etnaviv_gem_prime_import_sg_table()
+>>> --  etnaviv_gem_new_private()
+>>> --- etnaviv_gem_new_impl(dev, size, flags, ops, &obj)
+>>> --- drm_gem_private_object_init(dev, obj, size)
+>>
+>> Code path 2 (USERPTR):
+>>
+>>> - etnaviv_gem_new_userptr()
+>>> --  etnaviv_gem_new_private()
+>>> --- etnaviv_gem_new_impl(dev, size, flags, ops, &obj)
+>>> --- drm_gem_private_object_init(dev, obj, size)
+>>
+>> Code path 3 (construct a GEM buffer object for the user-space):
+>>
+>>> - etnaviv_ioctl_gem_new()
+>>> -- etnaviv_gem_new_handle()
+>>> --- etnaviv_gem_new_impl(dev, size, flags, &etnaviv_gem_shmem_ops, &obj);
+>>> ---  drm_gem_object_init(dev, obj, size);
+>>
+>> If I understand this correctly:
+>>
+>>
+>> Code path 1 is for cross device (and cross driver) buffer-sharing,
+>>
+>> Code path 2 is going to share the buffer the userspace,
+>>
+>>
+>> *Only* the code path 3 is to construct a GEM buffer object for the
+>> user-space the userspace,
+>>
+>> that is say, *only* the code path 3 need to do the backing memory
+>> allocation work for the userspace.
+>>
+>> thus it need to call drm_gem_object_init() function, which really the
+>> shmem do the backing memory
+>>
+>> allocation.
+>>
+>>
+>> The code path 1 and the code path 2 do not need the kernel space
+>> allocate the backing memory.
+>>
+>> Because they are going to share the buffer already allocated by others.
+>>
+>> thus, code path 2 and code path 3 should call drm_gem_private_object_init(),
+>>
+>> *not* the drm_gem_object_init() function.
+>>
+>>
+>> When import buffer from the a specific KMS driver,
+>>
+>> then etnaviv_gem_prime_import_sg_table() will be called.
+>>
+>>
+>> I guess you means that drm_gem_private_object_init() (not the
+>> drm_gem_object_init() function)here ?
+>>
+>>
+>>> A better cleanup would be to make
+>>> use of the size parameter and move this object init call into
+>>> etnaviv_gem_new_impl.
+>> If I following you guidance, how do I differentiate the cases
+>>
+>> when to call drm_gem_private_object_init() not drm_gem_object_init() ?
+>>
+>> and when call drm_gem_object_init() not drm_gem_private_object_init()?
+>>
+>>
+>> I don't think you are right here.
+>>
+> Yes, clearly I was not taking into account the differences between
+> drm_gem_private_object_init and drm_gem_object_init properly. Please
+> disregard my comment, this patch is good as-is.
+
+I have study your patch in the past frequently.
+
+As you could solve very complex(and difficulty) bugs.
+
+So I still believe that you know everything about etnaviv.
+
+I'm just wondering that you are designing the traps. But I'm not sure.
+
+Okay, still acceptable.
+
+Because communicate will you is interesting.
+
+Thank you.
+
+> Regards,
+> Lucas
+>
+>>> Regards,
+>>> Lucas
+>>>
+>>>> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+>>>> ---
+>>>>    drivers/gpu/drm/etnaviv/etnaviv_gem.c | 7 +++----
+>>>>    1 file changed, 3 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem.c b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+>>>> index b5f73502e3dd..be2f459c66b5 100644
+>>>> --- a/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+>>>> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+>>>> @@ -542,7 +542,7 @@ static const struct drm_gem_object_funcs etnaviv_gem_object_funcs = {
+>>>>    	.vm_ops = &vm_ops,
+>>>>    };
+>>>>    
+>>>> -static int etnaviv_gem_new_impl(struct drm_device *dev, u32 size, u32 flags,
+>>>> +static int etnaviv_gem_new_impl(struct drm_device *dev, u32 flags,
+>>>>    	const struct etnaviv_gem_ops *ops, struct drm_gem_object **obj)
+>>>>    {
+>>>>    	struct etnaviv_gem_object *etnaviv_obj;
+>>>> @@ -591,8 +591,7 @@ int etnaviv_gem_new_handle(struct drm_device *dev, struct drm_file *file,
+>>>>    
+>>>>    	size = PAGE_ALIGN(size);
+>>>>    
+>>>> -	ret = etnaviv_gem_new_impl(dev, size, flags,
+>>>> -				   &etnaviv_gem_shmem_ops, &obj);
+>>>> +	ret = etnaviv_gem_new_impl(dev, flags, &etnaviv_gem_shmem_ops, &obj);
+>>>>    	if (ret)
+>>>>    		goto fail;
+>>>>    
+>>>> @@ -627,7 +626,7 @@ int etnaviv_gem_new_private(struct drm_device *dev, size_t size, u32 flags,
+>>>>    	struct drm_gem_object *obj;
+>>>>    	int ret;
+>>>>    
+>>>> -	ret = etnaviv_gem_new_impl(dev, size, flags, ops, &obj);
+>>>> +	ret = etnaviv_gem_new_impl(dev, flags, ops, &obj);
+>>>>    	if (ret)
+>>>>    		return ret;
+>>>>    
 
