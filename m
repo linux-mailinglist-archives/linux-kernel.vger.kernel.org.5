@@ -2,85 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE047572BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 06:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE407572B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 06:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbjGREQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 00:16:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
+        id S229917AbjGREOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 00:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbjGREQR (ORCPT
+        with ESMTP id S229481AbjGREOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 00:16:17 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89ED71B9;
-        Mon, 17 Jul 2023 21:16:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1689653771;
-        bh=h+IpXVo9F2SR0WhFVHSVq/IgUmMEiO2utaX7AbKzeek=;
-        h=Date:From:To:Cc:Subject:From;
-        b=SwKxvR5skZBXuA0PAu+HujogKk3GarveH304Vxl2pC8GUUls/PntT+KzgqBz1tVK9
-         Ox9RG5cw9ePqqHiEVIaN+ooQ8bhHKwGNrdeNFICYFjJXEQg0K7W0qtP7JkEruOs6V3
-         3AR9c/9Gph8WCyVkirI2DPEMNWputNh1XwOJfA/76kpilBR+7UX3mbNRotZPiIAeYi
-         P4izgIEfaPTtv0g6qWwQkasxVE8VF6EM2zCO8NMNWxOCN+VjwoxXJTOOMRT0hPr/y2
-         gXWx4UeB1me1ktk/tx5Ohd1w7kgjIeKzwlJ7XZLq64RxjJg2VpOMoknbPOCwQ9qiST
-         Za2+7J226ZOKA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Tue, 18 Jul 2023 00:14:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8F81B5;
+        Mon, 17 Jul 2023 21:13:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R4lxl29Hdz4wxP;
-        Tue, 18 Jul 2023 14:16:11 +1000 (AEST)
-Date:   Tue, 18 Jul 2023 14:16:09 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the imx-mxs tree
-Message-ID: <20230718141609.5326563e@canb.auug.org.au>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 64EF86143F;
+        Tue, 18 Jul 2023 04:13:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22A31C433C8;
+        Tue, 18 Jul 2023 04:13:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689653638;
+        bh=USxk2ZdP2/KgT3pGcYnYgxZvCjfxQ8Ic9alDnz+4y+Y=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=RRaAOzXRvn4+oE45FyjI+hXfK1fvt301lBjYkAYC6f2DYSB2zklngwRUVu5p4HVsF
+         pzvl4UiXDQ7j+MtJPaU1wJinHmEWqS2o2s2h4a5IliASQ9HgDhyKXqxoJNSU/4iKjs
+         N+CIp3y7JxojXR5v+HOEdZtER3wYrw/0c5m42o/s7jV6konoc4lqMiOHwoO33zKwJa
+         Z2mlKx9ULG0fbsbPVvK+S8D58iKJ8dyxnsuyrH+xiQRjVfDpBd078HZtbF79lVPV8X
+         pL1hlVFY6NwTXddEDvDw2URajmirZcsvVOQnemthlfNdOTLxHcVMvgp5sdC9oY5Ct8
+         /tZUHJageY9CA==
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: (subset) [PATCH 1/2] arm64: dts: qcom: sc8180x-primus: remove superfluous "input-enable"
+Date:   Mon, 17 Jul 2023 21:17:22 -0700
+Message-ID: <168965383898.3325964.1624518936272585011.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230717210055.21979-1-krzysztof.kozlowski@linaro.org>
+References: <20230717210055.21979-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/2spV_+iGvrou4JDhXYJfjdR";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/2spV_+iGvrou4JDhXYJfjdR
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Mon, 17 Jul 2023 23:00:54 +0200, Krzysztof Kozlowski wrote:
+> Pin configuration property "input-enable" was used with the intention to
+> disable the output, but this is done by default by Linux drivers.  Since
+> commit c4a48b0df8bf ("dt-bindings: pinctrl: qcom: tlmm should use
+> output-disable, not input-enable") the property is not accepted anymore:
+> 
+>   sc8180x-primus.dtb: pinctrl@3100000: hall-int-active-state: 'oneOf' conditional failed, one must be fixed:
+>     'bias-disable', 'function', 'input-enable', 'pins' do not match any of the regexes: '-pins$', 'pinctrl-[0-9]+'
+> 
+> [...]
 
-Commit
+Applied, thanks!
 
-  1c00bee721da ("ARM: dts: imx: Remove regulators from simple-bus")
+[1/2] arm64: dts: qcom: sc8180x-primus: remove superfluous "input-enable"
+      commit: 37e93c7c99e140584be9cacad598a2c3e274ce99
+[2/2] arm64: dts: qcom: sm8250-pdx203: add required pin function
+      commit: 26834b452f40830011294497788bbc82bf1b14af
 
-is missing a Signed-off-by from its committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/2spV_+iGvrou4JDhXYJfjdR
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmS2EgkACgkQAVBC80lX
-0GyRLwf9HI1H3CQi5s2YAMm7RA+JBeXTVc09Xe4yocVKNlzvmKNM6VL3LTqImw/X
-+005en6pp1ioIAqoci0mFJB1Tt28URqtffmjSD1//DwKJ3HT0mL7+JkIe0tBppKC
-/5zOgcZG1BSr8jBUpGNr+KagIQzufXbmFPseyOB9/MldMI4+RYv/6MF2MOq8cIzr
-E24ZVswt1VoPqqYvMvihRpdIFRdREz4nF37k36m0oaiklw+UBvwxRdOKg3sXPew2
-xkF+nDjnnkmpl8/bbLgw6P6JpursFvfdS15suU/XNXB9Oc1e3jjOIL0GjYpAOy7Q
-/2tzKP6zpv0k8YnBaSK+jjqfksglpw==
-=7aWe
------END PGP SIGNATURE-----
-
---Sig_/2spV_+iGvrou4JDhXYJfjdR--
+Best regards,
+-- 
+Bjorn Andersson <andersson@kernel.org>
