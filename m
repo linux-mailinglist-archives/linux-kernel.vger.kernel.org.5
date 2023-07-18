@@ -2,165 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FB475802C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC425757FF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232993AbjGROyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38208 "EHLO
+        id S233376AbjGROqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbjGROyi (ORCPT
+        with ESMTP id S229660AbjGROqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:54:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E37B5
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:53:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689692032;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=lD9hBi/o5k7aJyF+JJZTpU1vYmPYMPbaaBCJ0qSIHvE=;
-        b=coqGiZnBnTKp8VLUN3MJSLG+wP4cgU2NLSGp9eLvPEDIDaQ4/Ql2oGsdiEjDC7REyPeTcI
-        rDsahQDEXF2jMDf9Aum5RcQMZ8JEgkafKkFo//4kYTfGjoVGdUbhSwMLI/Ry9bJLc65FP/
-        fl4uZk/NvYH91r20RqTjBGreFhtwaEQ=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-642-k5x1fjC5OO6eDSv46nB4WA-1; Tue, 18 Jul 2023 10:53:51 -0400
-X-MC-Unique: k5x1fjC5OO6eDSv46nB4WA-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-635ed42468fso49580426d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:53:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689692030; x=1692284030;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lD9hBi/o5k7aJyF+JJZTpU1vYmPYMPbaaBCJ0qSIHvE=;
-        b=MkLmukDEb8z7Kjpy2jkWP0xE+5IvV6sPRLOoEgPUgSvQ/7/E9A7nOW3F8wjlVSYz8H
-         bpjXNzv+PSaaik+Tm9gHLltguzu8327gvlQxvBKC58NtRXpPzyXv5JSb4VjlDnh6aZJh
-         QS6VhM+K6XC8p7xcVbzWoPVU0SpzqNDbkzzY4HpU/4SrkwmW79t7KiUn1DzZVd2D/3rV
-         e9z5CYvXH5HSk4s62DAqu2aQ/hC/pMfhboFfcUGV+DpQpIns16mVGmJaT3jx7eMpVzsJ
-         HO5i9SUQIHhISFcLMnfc4WafsOvjLD3idUG57m44v2V8yPCSEjP/MqFuEyLEgj0yoSJv
-         E0lw==
-X-Gm-Message-State: ABy/qLav9Ovm/tdMHFv/skFrRgVoa7VSxfHY+2XkYJQJ/UiCrBTDUwQ0
-        hNiynKx1SUJRIX/9DHcj6ubTNmIdUm17oDcMjR29zv1R/I5/e3o08Jcdm4+V+bbGxZQRHa2wsGS
-        z87HuYWPUwWQxrMnIgZiqAvnSY3Yof40p
-X-Received: by 2002:a0c:f2d1:0:b0:632:738:922b with SMTP id c17-20020a0cf2d1000000b006320738922bmr12278675qvm.61.1689692030615;
-        Tue, 18 Jul 2023 07:53:50 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlG6vwmeMAloCaGRcq6VVi3zzI3/WT6q0HTBf2wTfFTTx4ElfWS/d+wNn6BDmIRz5XQ9x7tNsA==
-X-Received: by 2002:a0c:f2d1:0:b0:632:738:922b with SMTP id c17-20020a0cf2d1000000b006320738922bmr12278661qvm.61.1689692030359;
-        Tue, 18 Jul 2023 07:53:50 -0700 (PDT)
-Received: from localhost (pool-71-184-142-128.bstnma.fios.verizon.net. [71.184.142.128])
-        by smtp.gmail.com with ESMTPSA id z18-20020a0cf012000000b0063646f1147asm761735qvk.135.2023.07.18.07.53.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 07:53:49 -0700 (PDT)
-From:   Eric Chanudet <echanude@redhat.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Eric Chanudet <echanude@redhat.com>,
-        Caleb Connolly <caleb.connolly@linaro.org>
-Subject: [PATCH v2] arm64: dts: qcom: sa8540p-ride: enable rtc
-Date:   Tue, 18 Jul 2023 10:46:10 -0400
-Message-ID: <20230718145105.3464105-1-echanude@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 18 Jul 2023 10:46:51 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735AAEC
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:46:50 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36I7kHxC024058;
+        Tue, 18 Jul 2023 09:46:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=0
+        G3ywaHiTI2K4Iq59zz0mJoTcYfX+05Q6H/h75rm73M=; b=PNb+OnjBag/MGfHC0
+        00o37F5KNsBH6vj9JJBzi0ZTOSPfCd/vnL5fP6WVxBwBGf5SZM/WNp7wT39BgF/C
+        FbJakYU0eTtdFtRdhpp0mKO3wlASiMcK53/M38xm2pO22gLlAfXgFVB2EqcN1EFN
+        nfj9WuabIF/loeXPWNDm/fP7pvTwq0pycnPrOS6IxXCs34pfzl4VCIHKuxSj2XKF
+        yOvWb9qGcjgiDTSDunXwESK/9GxufHlX2jrJXBDd2SS4cz74ktBd9Ft4BDP2NyN8
+        vfAD8t4DvpT4pCNmHUrDBV4kKk9alBYLfDeu5LduWqMzklVmF8v8qC5Jp5Bi79Oa
+        cNGpA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3rus62ucu7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 09:46:41 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 18 Jul
+ 2023 15:46:29 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Tue, 18 Jul 2023 15:46:29 +0100
+Received: from work-debian.ad.cirrus.com (unknown [198.61.65.142])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E77DD11AB;
+        Tue, 18 Jul 2023 14:46:28 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <broonie@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH] ASoC: cs35l56: Patch soft registers to defaults
+Date:   Tue, 18 Jul 2023 15:46:25 +0100
+Message-ID: <20230718144625.39634-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Proofpoint-GUID: v5oVImHN2qJH3UiahHtCUQ8k9EC0bKRg
+X-Proofpoint-ORIG-GUID: v5oVImHN2qJH3UiahHtCUQ8k9EC0bKRg
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SA8540P-ride is one of the Qualcomm platforms that does not have access
-to UEFI runtime services and on which the RTC registers are read-only,
-as described in:
-https://lore.kernel.org/all/20230202155448.6715-1-johan+linaro@kernel.org/
+The soft (firmware) registers for volume/mute/posture are not reset by
+a chip soft-reset, so use a regmap patch to set them to defaults.
 
-Reserve four bytes in one of the PMIC registers to hold the RTC offset
-the same way as it was done for sc8280xp-crd which has similar
-limitations:
-    commit e67b45582c5e ("arm64: dts: qcom: sc8280xp-crd: enable rtc")
+cs35l56_reread_firmware_registers() has been removed. Its intent was to
+use whatever the firmware set as a default. But the driver now patches the
+defaults to the registers.
 
-One small difference on SA8540P-ride, the PMIC register bank SDAM6 is
-not writable, so use SDAM7 instead.
-
-Reviewed-by: Caleb Connolly <caleb.connolly@linaro.org>
-Signed-off-by: Eric Chanudet <echanude@redhat.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
-Changes in v2:
-* Default pmm8540a_sdam_7 status to "disabled" in sa8540p-pmics.dtsi.
+ include/sound/cs35l56.h           |  2 +-
+ sound/soc/codecs/cs35l56-shared.c | 38 +++++++++++++------------------
+ sound/soc/codecs/cs35l56.c        |  5 ++--
+ 3 files changed, 20 insertions(+), 25 deletions(-)
 
- arch/arm64/boot/dts/qcom/sa8540p-pmics.dtsi | 11 ++++++++++-
- arch/arm64/boot/dts/qcom/sa8540p-ride.dts   | 15 +++++++++++++++
- 2 files changed, 25 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sa8540p-pmics.dtsi b/arch/arm64/boot/dts/qcom/sa8540p-pmics.dtsi
-index 1221be89b3de..85a077619ae4 100644
---- a/arch/arm64/boot/dts/qcom/sa8540p-pmics.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sa8540p-pmics.dtsi
-@@ -14,7 +14,7 @@ pmm8540a: pmic@0 {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
+diff --git a/include/sound/cs35l56.h b/include/sound/cs35l56.h
+index 1f9713d7ca76..ec672daa36cf 100644
+--- a/include/sound/cs35l56.h
++++ b/include/sound/cs35l56.h
+@@ -260,7 +260,7 @@ extern const struct cs_dsp_region cs35l56_dsp1_regions[CS35L56_NUM_DSP_REGIONS];
+ extern const char * const cs35l56_tx_input_texts[CS35L56_NUM_INPUT_SRC];
+ extern const unsigned int cs35l56_tx_input_values[CS35L56_NUM_INPUT_SRC];
  
--		rtc@6000 {
-+		pmm8540a_rtc: rtc@6000 {
- 			compatible = "qcom,pm8941-rtc";
- 			reg = <0x6000>, <0x6100>;
- 			reg-names = "rtc", "alarm";
-@@ -22,6 +22,15 @@ rtc@6000 {
- 			wakeup-source;
- 		};
+-void cs35l56_reread_firmware_registers(struct device *dev, struct regmap *regmap);
++int cs35l56_set_patch(struct regmap *regmap);
+ int cs35l56_get_bclk_freq_id(unsigned int freq);
+ void cs35l56_fill_supply_names(struct regulator_bulk_data *data);
  
-+		pmm8540a_sdam_7: nvram@b610 {
-+			compatible = "qcom,spmi-sdam";
-+			reg = <0xb610>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges = <0 0xb610 0xb0>;
-+			status = "disabled";
-+		};
-+
- 		pmm8540a_gpios: gpio@c000 {
- 			compatible = "qcom,pm8150-gpio", "qcom,spmi-gpio";
- 			reg = <0xc000>;
-diff --git a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
-index 5a26974dcf8f..608dd71a3f1c 100644
---- a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
-+++ b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
-@@ -407,6 +407,21 @@ &pcie3a_phy {
- 	status = "okay";
- };
+diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
+index 60da8c75b7b9..7126f06b8047 100644
+--- a/sound/soc/codecs/cs35l56-shared.c
++++ b/sound/soc/codecs/cs35l56-shared.c
+@@ -11,6 +11,19 @@
  
-+&pmm8540a_rtc {
-+	nvmem-cells = <&rtc_offset>;
-+	nvmem-cell-names = "offset";
-+
-+	status = "okay";
+ #include "cs35l56.h"
+ 
++static const struct reg_sequence cs35l56_patch[] = {
++	/* These are not reset by a soft-reset, so patch to defaults. */
++	{ CS35L56_MAIN_RENDER_USER_MUTE,	0x00000000 },
++	{ CS35L56_MAIN_RENDER_USER_VOLUME,	0x00000000 },
++	{ CS35L56_MAIN_POSTURE_NUMBER,		0x00000000 },
 +};
 +
-+&pmm8540a_sdam_7 {
-+	status = "okay";
++int cs35l56_set_patch(struct regmap *regmap)
++{
++	return regmap_register_patch(regmap, cs35l56_patch, ARRAY_SIZE(cs35l56_patch));
++}
++EXPORT_SYMBOL_NS_GPL(cs35l56_set_patch, SND_SOC_CS35L56_SHARED);
 +
-+	rtc_offset: rtc-offset@ac {
-+		reg = <0xac 0x4>;
-+	};
-+};
-+
- &qup0 {
- 	status = "okay";
+ static const struct reg_default cs35l56_reg_defaults[] = {
+ 	{ CS35L56_ASP1_ENABLES1,		0x00000000 },
+ 	{ CS35L56_ASP1_CONTROL1,		0x00000028 },
+@@ -35,9 +48,9 @@ static const struct reg_default cs35l56_reg_defaults[] = {
+ 	{ CS35L56_IRQ1_MASK_8,			0xfc000fff },
+ 	{ CS35L56_IRQ1_MASK_18,			0x1f7df0ff },
+ 	{ CS35L56_IRQ1_MASK_20,			0x15c00000 },
+-	/* CS35L56_MAIN_RENDER_USER_MUTE - soft register, no default	*/
+-	/* CS35L56_MAIN_RENDER_USER_VOLUME - soft register, no default	*/
+-	/* CS35L56_MAIN_POSTURE_NUMBER - soft register, no default	*/
++	{ CS35L56_MAIN_RENDER_USER_MUTE,	0x00000000 },
++	{ CS35L56_MAIN_RENDER_USER_VOLUME,	0x00000000 },
++	{ CS35L56_MAIN_POSTURE_NUMBER,		0x00000000 },
  };
+ 
+ static bool cs35l56_is_dsp_memory(unsigned int reg)
+@@ -181,25 +194,6 @@ static bool cs35l56_volatile_reg(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
+-static const u32 cs35l56_firmware_registers[] = {
+-	CS35L56_MAIN_RENDER_USER_MUTE,
+-	CS35L56_MAIN_RENDER_USER_VOLUME,
+-	CS35L56_MAIN_POSTURE_NUMBER,
+-};
+-
+-void cs35l56_reread_firmware_registers(struct device *dev, struct regmap *regmap)
+-{
+-	int i;
+-	unsigned int val;
+-
+-	for (i = 0; i < ARRAY_SIZE(cs35l56_firmware_registers); i++) {
+-		regmap_read(regmap, cs35l56_firmware_registers[i], &val);
+-		dev_dbg(dev, "%s: %d: %#x: %#x\n", __func__,
+-			i, cs35l56_firmware_registers[i], val);
+-	}
+-}
+-EXPORT_SYMBOL_NS_GPL(cs35l56_reread_firmware_registers, SND_SOC_CS35L56_SHARED);
+-
+ const struct cs_dsp_region cs35l56_dsp1_regions[] = {
+ 	{ .type = WMFW_HALO_PM_PACKED,	.base = CS35L56_DSP1_PMEM_0 },
+ 	{ .type = WMFW_HALO_XM_PACKED,	.base = CS35L56_DSP1_XMEM_PACKED_0 },
+diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+index c03f9d3c9a13..e046fdd26b74 100644
+--- a/sound/soc/codecs/cs35l56.c
++++ b/sound/soc/codecs/cs35l56.c
+@@ -1572,8 +1572,9 @@ int cs35l56_init(struct cs35l56_private *cs35l56)
+ 	if (ret)
+ 		return ret;
+ 
+-	/* Populate soft registers in the regmap cache */
+-	cs35l56_reread_firmware_registers(cs35l56->dev, cs35l56->regmap);
++	ret = cs35l56_set_patch(cs35l56->regmap);
++	if (ret)
++		return ret;
+ 
+ 	/* Registers could be dirty after soft reset or SoundWire enumeration */
+ 	regcache_sync(cs35l56->regmap);
 -- 
-2.41.0
+2.30.2
 
