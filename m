@@ -2,235 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B024275801A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E069F758002
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233462AbjGROtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34934 "EHLO
+        id S233398AbjGROrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233454AbjGROs7 (ORCPT
+        with ESMTP id S233243AbjGROrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:48:59 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A619172A;
-        Tue, 18 Jul 2023 07:48:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689691724; x=1721227724;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NC9C7yW/kTTU+3F9Q5fejcKtndiyczEHQJVnzMdH0h0=;
-  b=lBoobJIdta/5K/X+NoN7lr124rNFRVZd/phDMO64OEEyjaMlkub0mGu9
-   QCw1RZK255wlKIjKGKy1sx7geTVhiUkvIdHKSzg3mdaUxeucwqLmXyb/n
-   FUmGzjh5k2RqFHbUmpu8mlhrwffO5a4AkHNGu0WwD2rJZ5C2oGttAAqiR
-   P3jaZk2xLyb1P1wVonYVz5B7sqXIw6ZPk4JvdukemrO97xgTa+S7tBMtD
-   0TdqY4HucvjuXnsN0+HQ7vgyvyZi2H8GYhTenvm7rLi3OBJspnKk9oCFz
-   /03Zzj568+HEQkiMb3h3O11ECEoQDbEKZqFM0AQsRbd+jkMeYWdWB4gvh
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="365103014"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="365103014"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 07:48:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="753347270"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="753347270"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 18 Jul 2023 07:48:41 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qLlzm-0000ef-2P;
-        Tue, 18 Jul 2023 14:48:26 +0000
-Date:   Tue, 18 Jul 2023 22:47:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Steve French <stfrench@microsoft.com>,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] smb: client: Rework memcpy() to avoid compilation
- error
-Message-ID: <202307182238.1EqtTKJu-lkp@intel.com>
-References: <20230717100003.11824-1-andriy.shevchenko@linux.intel.com>
+        Tue, 18 Jul 2023 10:47:43 -0400
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2053.outbound.protection.outlook.com [40.107.15.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36550EC;
+        Tue, 18 Jul 2023 07:47:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C6LP2Nd1bcyDnbYXyuJnjB0OsAB79HuQAQ2XS9j/hFVP4MV68oPxFu+XbFQU/fs43fznSRd3hvnfESK//eD6DLWLiB7A+Kj7DomoeWZ4Q7cQZtwXdttow0jqjbAephqXkn/QsKJXQOb5boNsnCySFxZCeNTl32y2/a1oMbIhHkkOz9VhEcQ0zI9MOYzwZXBMiJHTyLav7sNZDKhuC69R0nniUCeUYXjByNZKejrpPrqgB/BKaMR6798yAnnhQBIVMzeWYYaJOnH/4AxpoczbPHQOVVPsm2aur/xHpQA+7cEmucLKgR8xpSRCD2JkHNBIfhC2iPgDSqknEasXDlwrdw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7Sm0jVsmNt870YUu53mss9e9b/bJqAbyiLG7ear2pQs=;
+ b=Q0cD2Wfd0JuKVVDw9285Ze891R8qyy//znNe1CD4+1OHFnBycmY5RxkPPTBmKeZTEjexpzRWSdGBRxXRsq6mmxSw+GrodYZr/RzBADgkjdVsSzNPQxmRT606x2wx2qR52ezKSviwrAo0FitmtrZgt0IYNI1I6OBPUmgW8v46c2yZyK6QwTSr7DrKszL8vu7Q84GrPCgRAfhKu4ac7+KJa2G18GArT8V9Notz1uUZjINErPVmYqwo9aVgPIMB4/HMSz2oktGIGaUJ+9XqVJrPOOPQIVCLZWT/jplhcmhvhV67m8lzFDUXDWIpOf2hS4mWmbvDVPoZgec0Qi9/RZJU4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
+ dkim=pass header.d=siemens.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7Sm0jVsmNt870YUu53mss9e9b/bJqAbyiLG7ear2pQs=;
+ b=bcemxl/qIgBCnQSZO9yqpAX/xawWweq4whxRPHyeZ3zUagy8wqei+CLfiQd526q2Qm+I5Wqn5TouI/Q6K1g6EzQgww5TNcekfJWx+cWmguPAYbh4RNCJC9P4fa7qbTvKQ7XViADEkVhIQ+toOXbYNVWJh7BqzS8OczYTZ2VknW16ILqQKfXqtPoRNSOoLOFMkV5CKjBmt0gX3PXbY0MokC0PARA6zr7iFTO0NXCOr9iDLL0lEbhO0QGXxrNqfcYbJgKfmKoZrA7ASWQmcv3xatgc5B6IXKPODuby+Eaq9QbIZkObi4Q9cO2Y9MwCOZcHiMSMmJUzSV55hrm4tiNosg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=siemens.com;
+Received: from PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:269::8)
+ by VI1PR10MB7909.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:800:1bc::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Tue, 18 Jul
+ 2023 14:47:37 +0000
+Received: from PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::a171:a3f2:99b7:5f29]) by PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::a171:a3f2:99b7:5f29%6]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
+ 14:47:37 +0000
+Date:   Tue, 18 Jul 2023 16:47:27 +0200
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Lee Jones <lee@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Mark Gross <markgross@kernel.org>,
+        Tobias Schaffner <tobias.schaffner@siemens.com>
+Subject: Re: [PATCH 3/3] platform/x86: Move all simatic ipc drivers to the
+ subdirectory siemens
+Message-ID: <20230718164727.6a89e3da@md1za8fc.ad001.siemens.net>
+In-Reply-To: <ZLagYgJT4cz4jZ5r@smile.fi.intel.com>
+References: <20230718105213.1275-1-henning.schild@siemens.com>
+        <20230718105213.1275-4-henning.schild@siemens.com>
+        <ZLagYgJT4cz4jZ5r@smile.fi.intel.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: CH0PR13CA0031.namprd13.prod.outlook.com
+ (2603:10b6:610:b2::6) To PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:102:269::8)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717100003.11824-1-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR10MB5780:EE_|VI1PR10MB7909:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3b2af034-8376-4bb9-86a9-08db879dedae
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uw64/MxOUMeuX2/0Qbj/y3p1QT/pbu7TKtMiWVzskyoYqSB8LjiqMeprw8f0R55Iqf3jpymNWepLDfyex5Bi18dhnoi3ckjkiNQ/IxSBtq63jNJv4EaZI39oVG7egCupyCA235TdqS0Dhrmiw0eXFDOkIXNRPryRGBnrJtfwYVQk0rw53mSmmhEvCXH5QoE3gJBpLgxmT6iariHMD4ANPVo1MMXB2iXH4RtHP0ate2Gr1WTLDT8gpG22QMP9b0P9SfTnJgkK7Db67iISWV4ExB9mVI/lSxnPwpyRWTBo956iXox6r4VdmcAqYHd/LY15Nxm5XyAXGA+DgPWHVU4frsAnQ8F/j8g0PDlSyCdagF7T4dKzWJUbTaUk6+APRMpcv6ww0ltZ4FTW05My1Nct7XHdW/IThCUvR5OALT6HqK9p5xwmQfKxSJoKm0rbSv78+copGnjXqCP3+zBKcZ4THl5/OBtxULHtJbWvq9YP/3jqtKB3WYHJg766VO3GKFuO18v8fky033+TSb6Qe6J/s1lmExxcs2OtrKnekGpoZnw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(396003)(346002)(366004)(39860400002)(451199021)(966005)(2906002)(9686003)(107886003)(6512007)(6506007)(82960400001)(6916009)(8676002)(316002)(5660300002)(8936002)(4326008)(44832011)(41300700001)(7416002)(38100700002)(6666004)(66946007)(54906003)(66476007)(66556008)(1076003)(478600001)(83380400001)(86362001)(6486002)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wzoJzuOBvfzHhfoJnLD6GtnWXXb7fc3d9irQKJC0iiLAM300MzP4wwEoPcLw?=
+ =?us-ascii?Q?uG483entzeVyDDrzvyG9ZxqZZONegY6FHmCGhEUyXEa1hWSCmZHofGXKp9UF?=
+ =?us-ascii?Q?Gl1kTeLl6qzATL5UGjmu8AmtUvTrsNC8xg3YOWEsVwGEZPvEnjQ/rScWvS86?=
+ =?us-ascii?Q?pvoepoiiverE52k/fromLYifsH7csZ57Ofn/SgQhb4+WHoKPQcVSg0gN81kU?=
+ =?us-ascii?Q?kPEY1YFbx66nQn12MLVqUiln/yai4XNuKt2+5rxt1+oclkbPuGycYiBtWOjU?=
+ =?us-ascii?Q?gaQ7nHWO8NfsPAlVspwpOHKrZEtvIDhqz2V1r97xfifApkBlm73+04x7LFNF?=
+ =?us-ascii?Q?cQ94PIMZOpCV4iHWt0F66GALQFcuZQsvkjJz3HUNrCYpIKdxkzC3+Fq5WERs?=
+ =?us-ascii?Q?+ZQx1HBDmKLZREGrLOXtFSM0X7/TnPjTsFkpUrjhUrHWDWv7ToJkToCbkJjf?=
+ =?us-ascii?Q?bizBBy/oMHA68c9iBQ9lhLb0obCFplZsKFmMfLJ2wLHUXOLizoTza3TjYjq+?=
+ =?us-ascii?Q?JjocQo3De27Gs9dsM5HiA5FgOAglaFp6dLERtDE/tNq+HD38Fp+nSx2bR/I6?=
+ =?us-ascii?Q?eUenuoc8d7ZShYcDUK0GJRIuFWCi9C0yWGiKYhuV5IvZslo5JZrKbjCeFQUF?=
+ =?us-ascii?Q?vFtItVQ1wVkfFRBj5A1KLoUDf+moSCsff6z44p8tOZwSjuegLevMVXpPtVqs?=
+ =?us-ascii?Q?yLjfbgS/TNDvXoWseWODfDDxQOegbO6sWaSVe2wSv2JkTGoJA4Ouk1/JKTtY?=
+ =?us-ascii?Q?AksQyz0m/WFso+OslcWVx8Ikpa9O2hB7wKseHsNU//x+ShR8obO2vyNwGzJ8?=
+ =?us-ascii?Q?Dvv+uPJdQ8yiT50L83DwM7vLn5kx7zCmv+kglLYz2QjGbc00TPJdKcdPn3Ls?=
+ =?us-ascii?Q?5jbmewcefYBaOMMudc9rT7vpV6sLntLA1aGusmMtwYSMDWMVreHV7lMa8uqD?=
+ =?us-ascii?Q?jFLk+ss85bcuEwhVvm4z2q/55nWLGOzXJGWxtS9NVFTLUxbszlQ333WOGVYT?=
+ =?us-ascii?Q?4LDfqvqM5TV/Ld2ITzg/DY0fD0LvFZP2k2DTpRjO6Davm7/L+XSpi9ONdAN6?=
+ =?us-ascii?Q?nRZ+l+dnQBvVl3OKWqOdptK4g2krn4Q0FdtcVSV7cSIFYuEor1qYEB7Lil+5?=
+ =?us-ascii?Q?eO0NLko2TU/JMpzPHGA11T/6QuLazWIVIJ75G4Xdom3QsZntGfQN6NXDS/Bk?=
+ =?us-ascii?Q?lQeIfek2GX+sejpWrCkJoYzaXwLJLRr6J66Sa57mrokhQy13uJ/Rmd2f5i/K?=
+ =?us-ascii?Q?Fe1gIy1Yyny0Bdhtuebky/rxmbbr0evKuNjV5kA9hfIL4RsVc15NrIn6wuCB?=
+ =?us-ascii?Q?WdqOT/yPHsatp/SpF3YoOl3y8YMbMYd6rN4Af1jwB/vabMywDoWDz0HauMXc?=
+ =?us-ascii?Q?qiF9iusuWFNA8jF+IY9oymGM8D9ruXv9Wf3ngnkQ8aUNNnRhOSqzOsRz120H?=
+ =?us-ascii?Q?vHunUsUe7oKCLlVRn+c0UxZimh8+8IZtrpawumr3M/KBzTi1OZNrnidffist?=
+ =?us-ascii?Q?ltLlH9Vent3gdiX4APjeGJiwwx/Rm2Cqs4l5QxT9VQywfRkF4X2RzEZ4d9dz?=
+ =?us-ascii?Q?a92ICnj8ohLymonAQkbPu9ynEQYd7pa7+NJTXw52VFMQPIueH9fIwf2GnkZy?=
+ =?us-ascii?Q?DeaKFS6ZQB6wSvIplTZE4n7BRJ4d10aFtkP5fS78RxVPTAFoJIVjhd9keqq8?=
+ =?us-ascii?Q?Q8H17A=3D=3D?=
+X-OriginatorOrg: siemens.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b2af034-8376-4bb9-86a9-08db879dedae
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 14:47:37.2887
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yejYs4eKLVoCVCC5WfV80e/M8sqD8Ol1wXl8Z+ZKXQReNlFbtXM4M0LkRpsRdZYh8SRCyET1n+I3oGOlp6Zt8UpB5CoNTZZ5IbxSOmzzTLg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR10MB7909
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Am Tue, 18 Jul 2023 17:23:30 +0300
+schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
 
-kernel test robot noticed the following build errors:
+> On Tue, Jul 18, 2023 at 12:52:13PM +0200, Henning Schild wrote:
+> > Users without a Siemens Simatic IPC will not care about any of these
+> > drivers. Users who do care can enable the submenu and all drivers
+> > behind it will be enabled.  
+> 
+> ...
+> 
+> >  # Siemens Simatic Industrial PCs
+> > +obj-$(CONFIG_X86_PLATFORM_DRIVERS_SIEMENS)		+=
+> > siemens/  
+> 
+> Do you need conditional here? We have stumbled over similar for
+> entire intel subfolder, it might affect the rest as well when you
+> don't expect it.
+> 
+> obj-y		+= siemens/
+> 
+> ?
+> 
 
-[auto build test ERROR on cifs/for-next]
-[also build test ERROR on linus/master v6.5-rc2 next-20230718]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+It was requested to be done like that by Hans, he wanted me to do a
+similar thing that
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f1e1ea516721d1ea0b21327ff9e6cb2c2bb86e28
+is doing.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/smb-client-Rework-memcpy-to-avoid-compilation-error/20230718-195935
-base:   git://git.samba.org/sfrench/cifs-2.6.git for-next
-patch link:    https://lore.kernel.org/r/20230717100003.11824-1-andriy.shevchenko%40linux.intel.com
-patch subject: [PATCH v1 1/1] smb: client: Rework memcpy() to avoid compilation error
-config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20230718/202307182238.1EqtTKJu-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230718/202307182238.1EqtTKJu-lkp@intel.com/reproduce)
+And that is what i did. If there was a y ... the whole "one switch to
+rule them all" story would not work out anymore.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307182238.1EqtTKJu-lkp@intel.com/
+Thanks for the review though.
 
-All errors (new ones prefixed by >>):
-
-   fs/smb/client/cifssmb.c: In function 'CIFS_open':
->> fs/smb/client/cifssmb.c:1252:22: error: 'FILE_ALL_INFO' has no member named 'FileAttributes'; did you mean 'Attributes'?
-    1252 |                 buf->FileAttributes = rsp->FileAttributes;
-         |                      ^~~~~~~~~~~~~~
-         |                      Attributes
-
-
-vim +1252 fs/smb/client/cifssmb.c
-
-  1140	
-  1141	int
-  1142	CIFS_open(const unsigned int xid, struct cifs_open_parms *oparms, int *oplock,
-  1143		  FILE_ALL_INFO *buf)
-  1144	{
-  1145		int rc;
-  1146		OPEN_REQ *req = NULL;
-  1147		OPEN_RSP *rsp = NULL;
-  1148		int bytes_returned;
-  1149		int name_len;
-  1150		__u16 count;
-  1151		struct cifs_sb_info *cifs_sb = oparms->cifs_sb;
-  1152		struct cifs_tcon *tcon = oparms->tcon;
-  1153		int remap = cifs_remap(cifs_sb);
-  1154		const struct nls_table *nls = cifs_sb->local_nls;
-  1155		int create_options = oparms->create_options;
-  1156		int desired_access = oparms->desired_access;
-  1157		int disposition = oparms->disposition;
-  1158		const char *path = oparms->path;
-  1159	
-  1160	openRetry:
-  1161		rc = smb_init(SMB_COM_NT_CREATE_ANDX, 24, tcon, (void **)&req,
-  1162			      (void **)&rsp);
-  1163		if (rc)
-  1164			return rc;
-  1165	
-  1166		/* no commands go after this */
-  1167		req->AndXCommand = 0xFF;
-  1168	
-  1169		if (req->hdr.Flags2 & SMBFLG2_UNICODE) {
-  1170			/* account for one byte pad to word boundary */
-  1171			count = 1;
-  1172			name_len = cifsConvertToUTF16((__le16 *)(req->fileName + 1),
-  1173						      path, PATH_MAX, nls, remap);
-  1174			/* trailing null */
-  1175			name_len++;
-  1176			name_len *= 2;
-  1177			req->NameLength = cpu_to_le16(name_len);
-  1178		} else {
-  1179			/* BB improve check for buffer overruns BB */
-  1180			/* no pad */
-  1181			count = 0;
-  1182			name_len = copy_path_name(req->fileName, path);
-  1183			req->NameLength = cpu_to_le16(name_len);
-  1184		}
-  1185	
-  1186		if (*oplock & REQ_OPLOCK)
-  1187			req->OpenFlags = cpu_to_le32(REQ_OPLOCK);
-  1188		else if (*oplock & REQ_BATCHOPLOCK)
-  1189			req->OpenFlags = cpu_to_le32(REQ_BATCHOPLOCK);
-  1190	
-  1191		req->DesiredAccess = cpu_to_le32(desired_access);
-  1192		req->AllocationSize = 0;
-  1193	
-  1194		/*
-  1195		 * Set file as system file if special file such as fifo and server
-  1196		 * expecting SFU style and no Unix extensions.
-  1197		 */
-  1198		if (create_options & CREATE_OPTION_SPECIAL)
-  1199			req->FileAttributes = cpu_to_le32(ATTR_SYSTEM);
-  1200		else
-  1201			req->FileAttributes = cpu_to_le32(ATTR_NORMAL);
-  1202	
-  1203		/*
-  1204		 * XP does not handle ATTR_POSIX_SEMANTICS but it helps speed up case
-  1205		 * sensitive checks for other servers such as Samba.
-  1206		 */
-  1207		if (tcon->ses->capabilities & CAP_UNIX)
-  1208			req->FileAttributes |= cpu_to_le32(ATTR_POSIX_SEMANTICS);
-  1209	
-  1210		if (create_options & CREATE_OPTION_READONLY)
-  1211			req->FileAttributes |= cpu_to_le32(ATTR_READONLY);
-  1212	
-  1213		req->ShareAccess = cpu_to_le32(FILE_SHARE_ALL);
-  1214		req->CreateDisposition = cpu_to_le32(disposition);
-  1215		req->CreateOptions = cpu_to_le32(create_options & CREATE_OPTIONS_MASK);
-  1216	
-  1217		/* BB Expirement with various impersonation levels and verify */
-  1218		req->ImpersonationLevel = cpu_to_le32(SECURITY_IMPERSONATION);
-  1219		req->SecurityFlags = SECURITY_CONTEXT_TRACKING|SECURITY_EFFECTIVE_ONLY;
-  1220	
-  1221		count += name_len;
-  1222		inc_rfc1001_len(req, count);
-  1223	
-  1224		req->ByteCount = cpu_to_le16(count);
-  1225		rc = SendReceive(xid, tcon->ses, (struct smb_hdr *)req,
-  1226				 (struct smb_hdr *)rsp, &bytes_returned, 0);
-  1227		cifs_stats_inc(&tcon->stats.cifs_stats.num_opens);
-  1228		if (rc) {
-  1229			cifs_dbg(FYI, "Error in Open = %d\n", rc);
-  1230			cifs_buf_release(req);
-  1231			if (rc == -EAGAIN)
-  1232				goto openRetry;
-  1233			return rc;
-  1234		}
-  1235	
-  1236		/* 1 byte no need to le_to_cpu */
-  1237		*oplock = rsp->OplockLevel;
-  1238		/* cifs fid stays in le */
-  1239		oparms->fid->netfid = rsp->Fid;
-  1240		oparms->fid->access = desired_access;
-  1241	
-  1242		/* Let caller know file was created so we can set the mode. */
-  1243		/* Do we care about the CreateAction in any other cases? */
-  1244		if (cpu_to_le32(FILE_CREATE) == rsp->CreateAction)
-  1245			*oplock |= CIFS_CREATE_ACTION;
-  1246	
-  1247		if (buf) {
-  1248			buf->CreationTime = rsp->CreationTime;
-  1249			buf->LastAccessTime = rsp->LastAccessTime;
-  1250			buf->LastWriteTime = rsp->LastWriteTime;
-  1251			buf->ChangeTime = rsp->ChangeTime;
-> 1252			buf->FileAttributes = rsp->FileAttributes;
-  1253			/* the file_info buf is endian converted by caller */
-  1254			buf->AllocationSize = rsp->AllocationSize;
-  1255			buf->EndOfFile = rsp->EndOfFile;
-  1256			buf->NumberOfLinks = cpu_to_le32(1);
-  1257			buf->DeletePending = 0;
-  1258		}
-  1259	
-  1260		cifs_buf_release(req);
-  1261		return rc;
-  1262	}
-  1263	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Henning
