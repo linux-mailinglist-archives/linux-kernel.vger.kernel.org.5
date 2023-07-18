@@ -2,107 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C92C757F4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE78757F4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232615AbjGROUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44676 "EHLO
+        id S231868AbjGROUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231325AbjGROUh (ORCPT
+        with ESMTP id S232185AbjGROUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:20:37 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095B6E7E
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:20:34 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36IEJWKc038776;
-        Tue, 18 Jul 2023 09:19:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1689689972;
-        bh=kMkw8ueDniDP2BCSXZP+ZzUwFI288y3WMcdTOTI0lo0=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=FCJAWcxs3guKnhVzwdvQHIg9on2v7DsVczvYepp61ZF1LVNPUijPyCXqMqy9kED1j
-         oAgqBxapU9WGcncAbkuQiuailyzsHPyLV74n8MeG4O9U4tDYk1dxNjL4oO3JKrH24m
-         G7ja2L85R/s7YIuob3IT/1UwDfWHYBqGsiJWurKA=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36IEJWcA026185
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 18 Jul 2023 09:19:32 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 18
- Jul 2023 09:19:32 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 18 Jul 2023 09:19:32 -0500
-Received: from [10.250.32.198] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36IEJVRK028854;
-        Tue, 18 Jul 2023 09:19:32 -0500
-Message-ID: <d56cab4a-ad05-4298-42a8-55d285a5ada3@ti.com>
-Date:   Tue, 18 Jul 2023 09:19:31 -0500
+        Tue, 18 Jul 2023 10:20:33 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD10E7E;
+        Tue, 18 Jul 2023 07:20:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=CCWgwOpFRQ5XqsiPbGDMwwFojNqf8ujX2CR9i45zWzI=; b=cUaiaLEwT86VbsrvDDtd3lmfsc
+        6P6lhJsp4LilqQUvzPzwBsNp/DT7K/cdlQlz8og1QXVqJLswf0xjZyJ9/+toh4MpakkQmZ/N2Lb3Y
+        ssgfpIgQ3+5SM22Z9tKYZq7nBk421B0656m1oY50TVHXmMA3p7D8o4sulipB/HHVuvX2qLKRpasfG
+        j9wbyjuQi9djwAN2mZ4NV2ivYzvwk2EGP88VJxPLC09zvDEItY+mXRP22IcOr80xwymzv137lHfnN
+        YOshTBsvJxiTlhnYYzMQWkNxdhIrid39KCCJZ2yfByL+s2dbnv05mSwrqCpUIc9FLz6dOJL1UKLsd
+        wxxLM7MQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51756)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qLlYp-0005nb-1w;
+        Tue, 18 Jul 2023 15:20:19 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qLlYj-00036j-CY; Tue, 18 Jul 2023 15:20:13 +0100
+Date:   Tue, 18 Jul 2023 15:20:13 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Maxim Georgiev <glipus@gmail.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+        Gerhard Engleder <gerhard@engleder-embedded.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        UNGLinuxDriver@microchip.com,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Casper Andersson <casper.casan@gmail.com>,
+        Sergey Organov <sorganov@gmail.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 net-next 06/12] net: fec: convert to
+ ndo_hwtstamp_get() and ndo_hwtstamp_set()
+Message-ID: <ZLafnWuAlytSN7B+@shell.armlinux.org.uk>
+References: <20230717152709.574773-1-vladimir.oltean@nxp.com>
+ <20230717152709.574773-7-vladimir.oltean@nxp.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] ARM: multi_v7_defconfig: Enable OMAP watchdog support
-Content-Language: en-US
-To:     Julien Panis <jpanis@baylibre.com>,
-        Russell King <linux@armlinux.org.uk>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <vigneshr@ti.com>
-References: <20230718-enable-omap-wd-v1-1-34396f2c76aa@baylibre.com>
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <20230718-enable-omap-wd-v1-1-34396f2c76aa@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717152709.574773-7-vladimir.oltean@nxp.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/18/23 7:51 AM, Julien Panis wrote:
-> Add OMAP watchdog support by enabling
-> CONFIG_OMAP_WATCHDOG as module.
-> 
+On Mon, Jul 17, 2023 at 06:27:03PM +0300, Vladimir Oltean wrote:
+> -static int fec_enet_ioctl(struct net_device *ndev, struct ifreq *rq, int cmd)
+> -{
+> -	struct fec_enet_private *fep = netdev_priv(ndev);
+> -	struct phy_device *phydev = ndev->phydev;
+> -
+> -	if (!netif_running(ndev))
+> -		return -EINVAL;
+> -
+> -	if (!phydev)
+> -		return -ENODEV;
+> -
+... process hwtstamp calls
 
-Commit messages should describe "why", we can figure out the above
-from just looking at the patch.
+So if the network device is not running, ioctl() returns -EINVAL. From
+what I can see in fec_enet_mii_probe() called from fec_enet_open(), we
+guarantee that phydev will not be NULL once the first open has
+succeeded, so I don't think the second if() statement has any effect.
 
-What boards use this? What does this change on those boards?
+> +static int fec_hwtstamp_get(struct net_device *ndev,
+> +			    struct kernel_hwtstamp_config *config)
+> +{
+> +	struct fec_enet_private *fep = netdev_priv(ndev);
+> +	struct phy_device *phydev = ndev->phydev;
+> +
+> +	if (phy_has_hwtstamp(phydev))
+> +		return phy_mii_ioctl(phydev, config->ifr, SIOCGHWTSTAMP);
+> +
+> +	if (!fep->bufdesc_ex)
+> +		return -EOPNOTSUPP;
 
-Wrap lines at 80-100 chars, not 40..
+If the interface hasn't been brought up at least once, then phydev
+here will be NULL, and we'll drop through to this test. If the FEC
+doesn't support extended buffer descriptors, userspace will see
+-EOPNOTSUPP rather than -EINVAL. This could be misleading to userspace.
 
-Andrew
+Does this need something like:
 
-> Signed-off-by: Julien Panis <jpanis@baylibre.com>
-> ---
-> Enable OMAP watchdog support in multi_v7_defconfig.
-> ---
->   arch/arm/configs/multi_v7_defconfig | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-> index f0800f806b5f..7d93e21e0cb9 100644
-> --- a/arch/arm/configs/multi_v7_defconfig
-> +++ b/arch/arm/configs/multi_v7_defconfig
-> @@ -554,6 +554,7 @@ CONFIG_SAMA5D4_WATCHDOG=y
->   CONFIG_S3C2410_WATCHDOG=m
->   CONFIG_DW_WATCHDOG=y
->   CONFIG_DAVINCI_WATCHDOG=m
-> +CONFIG_OMAP_WATCHDOG=m
->   CONFIG_ORION_WATCHDOG=y
->   CONFIG_RN5T618_WATCHDOG=y
->   CONFIG_SUNXI_WATCHDOG=y
-> 
-> ---
-> base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
-> change-id: 20230718-enable-omap-wd-6a563c280752
-> 
-> Best regards,
+	if (!netif_running(ndev))
+		return -EINVAL;
+
+before, or maybe just after phy_has_hwtstamp() to give equivalent
+behaviour?
+
+> +static int fec_hwtstamp_set(struct net_device *ndev,
+> +			    struct kernel_hwtstamp_config *config,
+> +			    struct netlink_ext_ack *extack)
+> +{
+> +	struct fec_enet_private *fep = netdev_priv(ndev);
+> +	struct phy_device *phydev = ndev->phydev;
+> +
+> +	if (phy_has_hwtstamp(phydev)) {
+> +		fec_ptp_disable_hwts(ndev);
+> +
+> +		return phy_mii_ioctl(phydev, config->ifr, SIOCSHWTSTAMP);
+> +	}
+> +
+> +	if (!fep->bufdesc_ex)
+> +		return -EOPNOTSUPP;
+
+Same comment here.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
