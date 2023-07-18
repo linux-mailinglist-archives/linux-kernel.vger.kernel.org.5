@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6AF7570CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 02:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064A27570D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 02:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbjGRAOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 20:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38504 "EHLO
+        id S229708AbjGRAT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 20:19:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229852AbjGRAOV (ORCPT
+        with ESMTP id S229525AbjGRAT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 20:14:21 -0400
-Received: from out-58.mta1.migadu.com (out-58.mta1.migadu.com [95.215.58.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5EC188
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 17:14:19 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 09:14:09 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689639257;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xWgRronsTbYYMQPOpLCjsPDsGzmMvsazH/ZV2Qlt798=;
-        b=c0ZYaIypddAyTOb1ArTgvLjqg0xxoMJvlC8vgqMR1XZLhWx98ZrAFX4YunXguc55jv7Njk
-        /kgzmzSCIkT0WK5WkBLvDeiB9douPncBVXt5oA5nRKPbsUV1urJ0rw94aEXxmTpDOB+lYA
-        L5LouM0DuiAPDZ1PoVCd4KVSxWXm8FM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, willy@infradead.org,
-        linmiaohe@huawei.com, naoya.horiguchi@nec.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] mm/memory-failure: fix hardware poison check in
- unpoison_memory()
-Message-ID: <20230718001409.GA751192@ik1-406-35019.vs.sakura.ne.jp>
-References: <20230717181812.167757-1-sidhartha.kumar@oracle.com>
+        Mon, 17 Jul 2023 20:19:56 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DC1188
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 17:19:55 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99364ae9596so725556566b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 17:19:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1689639594; x=1692231594;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5lx28ElhK+IZcw5jSy5POKWFxZtYmjsFabIngYCTFvk=;
+        b=C/mqU3wkxCjYbpwFwM3opgk6S5XQ7hxterSz2KJjooPfNujlkNp+Yk1vYrN9FpKlr/
+         GaV9nwr+Z4ePewYMgRcu1u/K/RFGMsK+WHitO0Luc/Rky7CRp9agEXHfPUOI0/C1LIWa
+         BDYul3ygNww7i1pe6SclVBcLoHdZ+rBsMVrVY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689639594; x=1692231594;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5lx28ElhK+IZcw5jSy5POKWFxZtYmjsFabIngYCTFvk=;
+        b=aF16OxObf7JnV7DsGDCxKOTpRou4pWpBgVhBy2VLVbapn1qary2Fue0apl87wU8dqr
+         6o/Du03nxwf1OWNtuV1N5IOfzbr7Sz+uUzbTvjar9o3PKaeU0QGPVrSzvaonAboN+1ta
+         YTBEw2aSpbk4TrFHs/ZtQpFZxRMDn+5ACcvbbCNj/SbzK/PyWVxTUrWAGBW3/uk3VZ9c
+         bMqSNTCLbzAWbbnDddEDZQIlvU/udqGEjXS5clL3yoICprzct3+bx9RdILr+3cY/eR/z
+         16G7hsMGsfqnkxnfLx5v1FCK2vXvZBq/YtNIoM5zF2QF+OiZwN+VyTmzLC4HcnFcb8ay
+         kq5w==
+X-Gm-Message-State: ABy/qLbVi0eUMQoBk7+CxsZUxtBr5yUO0oEj+fHj0L7KWR13tHvXrBw8
+        dPEIX4f/DCaai8Tqj0pOOTncNCzFEZ+TGz8Uh+4IAQ==
+X-Google-Smtp-Source: APBJJlF5SESR7IUKswSze7l66dFbj/615NRgH0ZSugpYFQROeoiMTlrw5dVLnFMcYzuvJc6Ofk6HvA==
+X-Received: by 2002:a17:907:3fa8:b0:988:9621:d85f with SMTP id hr40-20020a1709073fa800b009889621d85fmr13342881ejc.58.1689639593864;
+        Mon, 17 Jul 2023 17:19:53 -0700 (PDT)
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
+        by smtp.gmail.com with ESMTPSA id h11-20020a170906828b00b0098860721959sm276408ejx.198.2023.07.17.17.19.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 17:19:50 -0700 (PDT)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-51e2a6a3768so7270698a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 17:19:50 -0700 (PDT)
+X-Received: by 2002:aa7:c75a:0:b0:51e:1656:bb24 with SMTP id
+ c26-20020aa7c75a000000b0051e1656bb24mr11289223eds.26.1689639590195; Mon, 17
+ Jul 2023 17:19:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230717181812.167757-1-sidhartha.kumar@oracle.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230717223049.327865981@linutronix.de> <20230717223225.515238528@linutronix.de>
+In-Reply-To: <20230717223225.515238528@linutronix.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 17 Jul 2023 17:19:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh9sDpbCPCekRr-fgWYz=9xa0_BOkEa+5vOr9Co-fNhrQ@mail.gmail.com>
+Message-ID: <CAHk-=wh9sDpbCPCekRr-fgWYz=9xa0_BOkEa+5vOr9Co-fNhrQ@mail.gmail.com>
+Subject: Re: [patch 41/58] x86/apic: Add max_apic_id member
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 11:18:12AM -0700, Sidhartha Kumar wrote:
-> It was pointed out[1] that using folio_test_hwpoison() is wrong
-> as we need to check the indiviual page that has poison.
-> folio_test_hwpoison() only checks the head page so go back to using
-> PageHWPoison().
-> 
-> Reported-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Fixes: a6fddef49eef ("mm/memory-failure: convert unpoison_memory() to folios")
-> Cc: stable@vger.kernel.org #v6.4
-> Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-> 
-> [1]: https://lore.kernel.org/lkml/ZLIbZygG7LqSI9xe@casper.infradead.org/
-> ---
->  mm/memory-failure.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 02b1d8f104d51..a114c8c3039cd 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -2523,7 +2523,7 @@ int unpoison_memory(unsigned long pfn)
->  		goto unlock_mutex;
->  	}
->  
-> -	if (!folio_test_hwpoison(folio)) {
-> +	if (!PageHWPoison(p)) {
+So all of your patches make sense to me, but the whole apic_flat case
+confuses me.
 
+On Mon, 17 Jul 2023 at 16:15, Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> --- a/arch/x86/kernel/apic/apic_flat_64.c
+> +++ b/arch/x86/kernel/apic/apic_flat_64.c
+> @@ -94,6 +94,7 @@ static struct apic apic_flat __ro_after_
+>         .cpu_present_to_apicid          = default_cpu_present_to_apicid,
+>         .phys_pkg_id                    = flat_phys_pkg_id,
+>
+> +       .max_apic_id                    = 0xFE,
+>         .get_apic_id                    = flat_get_apic_id,
+>         .set_apic_id                    = set_apic_id,
 
-I don't think this works for hwpoisoned hugetlb pages that have PageHWPoison
-set on the head page, rather than on the raw subpage. In the case of
-hwpoisoned thps, PageHWPoison is set on the raw subpage, not on the head
-pages.  (I believe this is not detected because no one considers the
-scenario of unpoisoning hwpoisoned thps, which is a rare case).  Perhaps the
-function is_page_hwpoison() would be useful for this purpose?
+flat_send_IPI_mask() can only deal with a single word mask. How the
+heck can the max apic ID be more than 64?
 
-Thanks,
-Naoya Horiguchi
+I'm probably very confused.
 
->  		unpoison_pr_info("Unpoison: Page was already unpoisoned %#lx\n",
->  				 pfn, &unpoison_rs);
->  		goto unlock_mutex;
-> -- 
-> 2.41.0
-> 
-> 
-> 
+Which is what the APIC code would do to anybody, which is why I'm
+cheering your patch series on despite (or maybe _because_) it confuses
+me.
+
+            Linus
