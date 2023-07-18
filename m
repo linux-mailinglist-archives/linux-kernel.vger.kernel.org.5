@@ -2,160 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7B0757CE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3962757CD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbjGRNIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
+        id S232560AbjGRNI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbjGRNHk (ORCPT
+        with ESMTP id S232636AbjGRNIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:07:40 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3685F1FCF
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:06:10 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51e2a6a3768so8127827a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:06:10 -0700 (PDT)
+        Tue, 18 Jul 2023 09:08:01 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742211731;
+        Tue, 18 Jul 2023 06:07:08 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-51e5e4c6026so8139369a12.0;
+        Tue, 18 Jul 2023 06:07:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689685568; x=1692277568;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6sUHst+qMfvqGd6D4drEgX+385kdv+PYqXOtITReCXQ=;
-        b=FfNEH+WfJctNkYn82YYreYDRI+kPAiyGGv+jM94jGbleg8FgOTkXMCnC+DDEx9cN2M
-         SrmmY1IZCmKQgjgCEsYk9GhoBqidgt7UvwqJkx3aJy8bHmAPFDDrZLmJlXXS7tMmoTDY
-         6h9kMru9B3+o9/8CZdwy/YfELuF2uWeTWqgjo5/yP7q8YP/SLpdqHcgao76c1+yFY78H
-         W6PgaeeuPAkNxk8XVMsOeahh8mpAWz2NzE0FTwYvJnV8ANPvUgAJdHM8Q31NycJTMrPF
-         AAEAQMt5WKsxNyOUcyBNO4EU5bUXwQJnfsAF9iBXaicSXwlSfaP07uea+wbZF1KcDRiA
-         6uRg==
+        d=gmail.com; s=20221208; t=1689685627; x=1692277627;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jeNzcLZcbKq2pijVIKB1EKgYyt490I0ItiXqddVq1sY=;
+        b=rP3r+2F3AtU9GAGdeWWs0YgHxvEURd130cvktz54GM4lnMwxB516TsdaJesy7qaCjI
+         4+/0VA7N1E+xSOrMg/fBoenZaTAxuz/SGcNLFSOIDOm5QPNQEkDUDYxubU1L4nKVeJCT
+         9SlVxT1pcW1UiuADjAqmAQzHTEPvaOG65NnextEZL4bbMPRbdNKjl7BdP5lZxvNAZbKp
+         aKLkq+HHEcl4JTCu5ZsDHiBmEGrGh+BqvSViUWI5WXQ5x6ucFXmHJ2Ro7TNgZawah+n4
+         OcU6DeeXdZaGKG71n+iyijDAz2E7cP/gSjoGVApK3JrKMl+N5whq11HOy6RuYyp/jUys
+         8m0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689685568; x=1692277568;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6sUHst+qMfvqGd6D4drEgX+385kdv+PYqXOtITReCXQ=;
-        b=gRCYCwMsW2rLJfRZCfumzdtwIWhMCtzgWudcuIdsEuxDq6bVx1j78WGrzqLd99MOfN
-         ANY/PLeznA3xtkV6xavu9rxyUtYa2+Ako3E2Gg36azJwON3TgKyQojMwSh86Y9J9NZq8
-         O1sPn6vJJQBhYX1Z11e4syy4TcjZWQNtul1keSH1hWpAt2i/Ikmgb3gHNdvaAK7YWSXR
-         gnJ1DbpdK+N/n19zg8EfI3pjoQRX+WTlmYA0NC4JOg5cw+SGzQn83PsjFE5j++DwsVK7
-         8m7cjqbIrapKmfQUQn0E7Qyyd7A0tJFTcgSPSlWqfaMnhn0UJ1+VUvQb/9lyCY1fq7e0
-         ktrg==
-X-Gm-Message-State: ABy/qLbpI6CQVbzuphnBiBbfcrAijpXnDchINbyjCfw3Zmb7A9WA1CSM
-        TZ5Q2zo5lKv1FvtMWBq01xltYQ==
-X-Google-Smtp-Source: APBJJlHN/ABo/31dZHX/zuzp/ACj1KfAoQbuVnqa49boqYOwScwX4fNTzdd4k6SkhYEzB4GeDz/18g==
-X-Received: by 2002:a17:907:3d5:b0:982:8de1:aad9 with SMTP id su21-20020a17090703d500b009828de1aad9mr12232196ejb.64.1689685568703;
-        Tue, 18 Jul 2023 06:06:08 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id p1-20020a1709061b4100b00982a92a849asm1014398ejg.91.2023.07.18.06.06.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 06:06:08 -0700 (PDT)
-Message-ID: <8c4a488e-8990-8ad2-e82b-8759c9b85447@linaro.org>
-Date:   Tue, 18 Jul 2023 15:06:03 +0200
+        d=1e100.net; s=20221208; t=1689685627; x=1692277627;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jeNzcLZcbKq2pijVIKB1EKgYyt490I0ItiXqddVq1sY=;
+        b=TJKtX6vBv/DzMM1YAl0l6qKcu7pwQKQSDZwCrVrBxMVuHFloNYSRAqwPrLbbAbhFm6
+         mmFPSISIAV65X9vmvcQ28AZc+T8LjjPUoDFHYHaSgfHv/VI29vj+cSWEUEzFdHwQQXmF
+         Wp5iOCiLxVKweO1sPJF91Be1HukdwMxUV/y8wHX09HOIuYWErC1YKUJXyLZ876jSdBK9
+         PuqlXU/CRr1msRuiyh5uPac1j3ssoMP4S7TawMPURwLd/It9s+81+930VfKvuhRHL++D
+         DDEUe3JRF/5ZuPVkk/EzTNpo2hkZ6eQNdcpaAnd1Y8p+M57tMfAEmIDk6DripDN+2sma
+         BShw==
+X-Gm-Message-State: ABy/qLbBqXW2xMNZp4iK3QBtKcYP2/1jB/ou7vK6nyfOsjFpeo4HpuDj
+        Ab//ClsuSEWX61egyGoXDWI=
+X-Google-Smtp-Source: APBJJlEiPfshVtSNYkP8OH436Zpce1Qp7nrenoouEBdZbfLSznRPVQG3AGuGgTjKso3ViGypwJ6d7g==
+X-Received: by 2002:aa7:d38e:0:b0:51d:9dd1:29d0 with SMTP id x14-20020aa7d38e000000b0051d9dd129d0mr14765841edq.23.1689685626590;
+        Tue, 18 Jul 2023 06:07:06 -0700 (PDT)
+Received: from orome (p200300e41f4b7100f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f4b:7100:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id v18-20020aa7dbd2000000b0051e0c0d0a8bsm1218465edt.7.2023.07.18.06.07.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 06:07:06 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 15:07:04 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Balsam CHIHI <bchihi@baylibre.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Len Brown <len.brown@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v2 10/10] pinctrl: tegra: Switch to use
+ DEFINE_NOIRQ_DEV_PM_OPS() helper
+Message-ID: <ZLaOeCI4cp79wfiH@orome>
+References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
+ <20230717172821.62827-11-andriy.shevchenko@linux.intel.com>
+ <20230718111143.000067dc@Huawei.com>
+ <ZLZ5obLK89E1S_2R@orome>
+ <f002fe945307d0904bcee8bd1f21d9e589d32ffb.camel@crapouillou.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 02/17] dt-bindings: gpu: Add Imagination Technologies
- PowerVR GPU
-Content-Language: en-US
-To:     Frank Binns <Frank.Binns@imgtec.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Sarah Walker <Sarah.Walker@imgtec.com>
-Cc:     "luben.tuikov@amd.com" <luben.tuikov@amd.com>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "tzimmermann@suse.de" <tzimmermann@suse.de>,
-        "mripard@kernel.org" <mripard@kernel.org>,
-        "matthew.brost@intel.com" <matthew.brost@intel.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "hns@goldelico.com" <hns@goldelico.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "boris.brezillon@collabora.com" <boris.brezillon@collabora.com>,
-        "dakr@redhat.com" <dakr@redhat.com>,
-        "maarten.lankhorst@linux.intel.com" 
-        <maarten.lankhorst@linux.intel.com>, "afd@ti.com" <afd@ti.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        Donald Robson <Donald.Robson@imgtec.com>,
-        "faith.ekstrand@collabora.com" <faith.ekstrand@collabora.com>
-References: <20230714142526.111569-1-sarah.walker@imgtec.com>
- <19a7dae4-a9bd-187f-49f8-fe9c47f44eff@linaro.org>
- <6eeccb26e09aad67fb30ffcd523c793a43c79c2a.camel@imgtec.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <6eeccb26e09aad67fb30ffcd523c793a43c79c2a.camel@imgtec.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cxQ8UzeWhjJFmiXC"
+Content-Disposition: inline
+In-Reply-To: <f002fe945307d0904bcee8bd1f21d9e589d32ffb.camel@crapouillou.net>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/07/2023 13:32, Frank Binns wrote:
-> Hi Krzysztof,
-> 
-> On Mon, 2023-07-17 at 09:29 +0200, Krzysztof Kozlowski wrote:
->> On 14/07/2023 16:25, Sarah Walker wrote:
->>> Add the device tree binding documentation for the Series AXE GPU used in
->>> TI AM62 SoCs.
->>>
->>
->> ...
->>
->>> +
->>> +  clocks:
->>> +    minItems: 1
->>> +    maxItems: 3
->>> +
->>> +  clock-names:
->>> +    items:
->>> +      - const: core
->>> +      - const: mem
->>> +      - const: sys
->>> +    minItems: 1
->>
->> Why clocks for this device vary? That's really unusual to have a SoC IP
->> block which can have a clock physically disconnected, depending on the
->> board (not SoC!).
-> 
-> By default, this GPU IP (Series AXE) operates on a single clock (the core
-> clock), but the SoC vendor can choose at IP integration time to run the memory
-> and SoC interfaces on separate clocks (mem and sys clocks respectively). We also
-> have IP, such as the Series 6XT, that requires all 3 clocks.
 
-Currently you have only one SoC vendor with only one SoC, so the clocks
-do not vary. Describing the clocks for all possible variants is a good
-idea, but then this should be clear that this implementation uses subset.
+--cxQ8UzeWhjJFmiXC
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> So the situation here is that Series AXE may have 1 or 3 clocks, but the TI
-> implementation being added only has 1.
-> 
-> I guess we need to add something like:
-> 
->   allOf:
->     - if:
->         properties:
->           compatible:
->             contains:
->               const: ti,am62-gpu
->       then:
->         properties:
->           clocks:
->             maxItems: 1
-> 
-> Or should we be doing something else?
+On Tue, Jul 18, 2023 at 02:01:27PM +0200, Paul Cercueil wrote:
+> Hi Thierry,
+>=20
+> Le mardi 18 juillet 2023 =C3=A0 13:38 +0200, Thierry Reding a =C3=A9crit=
+=C2=A0:
+> > On Tue, Jul 18, 2023 at 11:11:43AM +0100, Jonathan Cameron wrote:
+> > > On Mon, 17 Jul 2023 20:28:21 +0300
+> > > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > >=20
+> > > > Since pm.h provides a helper for system no-IRQ PM callbacks,
+> > > > switch the driver to use it instead of open coded variant.
+> > > >=20
+> > > > Signed-off-by: Andy Shevchenko
+> > > > <andriy.shevchenko@linux.intel.com>
+> > >=20
+> > > No pm_sleep_ptr()?
+> >=20
+> > pm_sleep_ptr() is pointless on this driver. This driver is selected
+> > by
+> > ARCH_TEGRA and ARCH_TEGRA also always selects PM.
+>=20
+> If I'm not mistaken, ARCH_TEGRA selects CONFIG_PM, not CONFIG_PM_SLEEP.
 
-Yes. clock-names as well..
+Indeed. I suppose pm_sleep_ptr() would make sense, then.
 
+Thierry
 
-Best regards,
-Krzysztof
+--cxQ8UzeWhjJFmiXC
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmS2jncACgkQ3SOs138+
+s6Ew4hAAl5R17Bggr3INa4txNS6fRJHBAZkJ+mWhS+i2rp5oJ52oHctOukPe3n3x
+pLZ+YCbflBOYqF9kNA5d6t9ij7t6oc5OXj8gfSxn9EB9I8dGfYHA67fX2ul7YyWG
+cWN8YivHIXUJrSl36ZyUbzLx5PIUwQzMPiKnlMs91l3CyiLDDUC57vhhlAkxBjsa
+pS7jTqHWQgv3wvDXq9hPKm5vHioJsaMninnzlicJyPPKEklTJuPt8ztxEuOoKrXJ
+R92uAqURS/sp65HGBajYC/zytjduCjCLCaEphlRRvUpgDzI20LYJ0ozzPCkxMoee
+2J51MbQlOAOur28EjjISkUtU6lPvved5XzWPEvNcya8uwxgfpCOFbXMycYawqkSf
+8+pWkZJAAF9uDchinQwEl82g19NndHZ049YWwlqiluDURZqVAGDitkRBlYRiIhpe
+bApEYaQed5NIDRZ45MohoZR1bcCUcN8SCTYeiM7buOH+JV7fvWIZJHWhcATTCvUj
+kKWgl5fnMPq2a5F5346roojgESbtWuauYKzvGqIMlqr2wTe29hrTY+pzSsqaceSN
+TEwu80frLmy+a/1OzgrQtAhZ14RmpP1XlFDHkipJHNFIRSF6pc2SsRMrRggcKJVA
+LgXuPi7IxBkI763YIoGS8f1k0AkVOduCSe3hTKXM17tRGoKMzY0=
+=JFZa
+-----END PGP SIGNATURE-----
+
+--cxQ8UzeWhjJFmiXC--
