@@ -2,101 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3367757711
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D5D757725
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbjGRIwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36644 "EHLO
+        id S232067AbjGRIwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:52:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjGRIwH (ORCPT
+        with ESMTP id S231821AbjGRIws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:52:07 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11ACDB9;
-        Tue, 18 Jul 2023 01:52:07 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5833695cc67so22055087b3.3;
-        Tue, 18 Jul 2023 01:52:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689670326; x=1692262326;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cyG8fmdJQTl2SyeQjedBG6jEYOaMLAOoJTJLSOWVUuQ=;
-        b=sZaYj3j7Q4gZ0/bzzEgPYToAKItoPUnA1AeCZo/SraM30n2csw5189082i0aAbJlQw
-         VpNJo0ocs0lhS0UTSAf74mc0rk/ZCtXC/HCjW8AtwT2G1Sbm6h6ZEPG4dcSJS3EGZQ5T
-         UF569XzmLNr6WTVrENBNeXTVVrJwm8FGj4fTjNZ949cRO1fGWfUoI0UejoM6DdNwyeb5
-         E4VcXXSRxpwov03eNKGd2m+ESh6rHSTzJ8HeVahc1acgGPsYQXDdaC7A8cBv1iww4+ll
-         BCxNK3nSxLQ0f4ive/zgp4pK8KOlVwyzN0U+O3bzEWlOdX8xxWeYYDnHPx3QAORP1Von
-         QCfw==
+        Tue, 18 Jul 2023 04:52:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DECABF7
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:52:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689670324;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5KOR8rz1HcIaKvEfrXa81rmXVE1uZtoJjHifNrWIaLY=;
+        b=VO+mU3uv0EaA6zXGtBwn69BrK3atslcjn4LP63WEP9gH68H2Hc1qrpuRaKS2n5080fz9td
+        jams7WfiqtijFlirGgp2qpQToGgMPSf5PwOxhrL4x/b1zgeQ78lJ3k15iB8AYHW281I8fV
+        /VGL4DXgtPSJDRV6XlCFpoSm+1iKd8w=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-295-biBte5FlN_C33GzyZp-dEQ-1; Tue, 18 Jul 2023 04:52:03 -0400
+X-MC-Unique: biBte5FlN_C33GzyZp-dEQ-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-765ad67e690so130776885a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:52:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689670326; x=1692262326;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cyG8fmdJQTl2SyeQjedBG6jEYOaMLAOoJTJLSOWVUuQ=;
-        b=luPc3fF5HGs/cDbUGviIN8JhLGr0Q6YOC3j1mdGZ9KKvlmaSJmjx79cSHX6UJ8Irrs
-         AhDyfknog8K7hIdIIhfGCWgooSFmgzi2zVoGPhJos9EzWrJkPScvPWJIAll7zy78Ggb4
-         eFtWWIc2Ist0CkMbq1eu9ibgzeQI4yDXu1ddPNlstxbLMtG9hiT/n17+6F0K9QRaj+cw
-         CzE8xwP4QJjvjyxdn8U4SH8uMtaQn1foGR1xiBqre+v69owcrhTDSUR3RftOfD2EaZ9+
-         2BTRs3upOdDoWHx//9WwkAbnWcDxtYRePicWz8GeGMsBEqZYt51BdJi0ZDUqO7K6B5Mz
-         hOqg==
-X-Gm-Message-State: ABy/qLb6/oUyUnI8BeoMA3R30Rh5EMTx9TsNss7fBuJ4mTodOzalZJnU
-        MY/uu0s2AANJh8zqnS3CJfbCRRJ4uSmORcZv94V+Gg+I
-X-Google-Smtp-Source: APBJJlGsUU6uWGOFT1lECMnsMzz9OhaGf59FO7iZChU8CcjN8ksWgO7Kze3pyuQgBae+c92ju5vTqEcgt/nlTD/naw4=
-X-Received: by 2002:a81:7741:0:b0:577:60d3:e5fd with SMTP id
- s62-20020a817741000000b0057760d3e5fdmr15381454ywc.28.1689670326193; Tue, 18
- Jul 2023 01:52:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230718080812.16801-1-xujianghui@cdjrlc.com> <98a14fa23e4fb81d4630264cba0cecc8@208suo.com>
-In-Reply-To: <98a14fa23e4fb81d4630264cba0cecc8@208suo.com>
-From:   Kjetil Oftedal <oftedal@gmail.com>
-Date:   Tue, 18 Jul 2023 10:51:53 +0200
-Message-ID: <CALMQjD-JB-53dpJ92V4tdmiD_mO0AiyDthRv8obnpw=1FtRJ1g@mail.gmail.com>
-Subject: Re: [PATCH] floppy: add missing put_device()
-To:     sunran001@208suo.com
-Cc:     davem@davemloft.net, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        d=1e100.net; s=20221208; t=1689670322; x=1690275122;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5KOR8rz1HcIaKvEfrXa81rmXVE1uZtoJjHifNrWIaLY=;
+        b=i3Ibkkj5QRnDGtKRvNzss/JxoqFv+75WoK3IJYW9qD6JT4UC8vZx2XVeADUaBhJKrl
+         xTRxunwLibLHrr3cUP0/SLt1ud+cSzNgxXnMtBcs1iPkAr7d2vCiBAWwLmdUfBalpDIE
+         MlLPdym91oVP++y+sxEFnblFoHxPihS/62wIT9Pfrv5fdWVu39j7wBOnHOg8w6AqW4na
+         mFCqdujmQSRulPjqRnuOkBboJqNgsLG5BZBZAHFjN0TCYeP3JvLXTOxfG04fEvUaZ39o
+         t4BbhZa+8+YgQc7QfOJ2bxrgU6uCEARZ0bBnfsyg3MKyG5g6R/9Dgo1YrZiOG5q/KkEp
+         mvmQ==
+X-Gm-Message-State: ABy/qLYfK7jCpzEQVhAQALaQDYN/qD8OxTs34+Te+QsV4auT0qQLS2HY
+        ITMwh5aXvJLDBYENwWOqNJCXP//x5Da01fSI9Ze09XpJuOz0r11C1sfOIv9m6lEQPzg+odEXTmx
+        OQbfsT01plRmcgRd75t9lmtCY
+X-Received: by 2002:a05:6214:29ca:b0:625:77a1:2a5f with SMTP id gh10-20020a05621429ca00b0062577a12a5fmr15751331qvb.5.1689670322557;
+        Tue, 18 Jul 2023 01:52:02 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGyNfUCGibD1hyFQuxDmLGTOedRmloVQAyvYLT0e0Z7YsxX73m1Q+O8jquOzWtrmPF93zyMiA==
+X-Received: by 2002:a05:6214:29ca:b0:625:77a1:2a5f with SMTP id gh10-20020a05621429ca00b0062577a12a5fmr15751310qvb.5.1689670322278;
+        Tue, 18 Jul 2023 01:52:02 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-226-170.dyn.eolo.it. [146.241.226.170])
+        by smtp.gmail.com with ESMTPSA id a24-20020a0cb358000000b0062dfdafa0b7sm564703qvf.136.2023.07.18.01.51.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 01:52:01 -0700 (PDT)
+Message-ID: <befe05762b714948ad1f71a5d038334100f84cd0.camel@redhat.com>
+Subject: Re: [PATCH net v3] net: thunder: bgx: Fix resource leaks in
+ device_for_each_child_node() loops
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Markus Elfring <Markus.Elfring@web.de>,
+        Wang Ming <machel@vivo.com>, opensource.kernel@vivo.com,
+        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        David Daney <david.daney@cavium.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sunil Goutham <sgoutham@marvell.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Minjie Du <duminjie@vivo.com>
+Date:   Tue, 18 Jul 2023 10:51:58 +0200
+In-Reply-To: <be87c113-f975-9607-1f9d-5db304e0b1b9@web.de>
+References: <20230714100010.12035-1-machel@vivo.com>
+         <be87c113-f975-9607-1f9d-5db304e0b1b9@web.de>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 at 10:15, <sunran001@208suo.com> wrote:
->
-> The of_find_device_by_node() takes a reference to the underlying device
-> structure, we should release that reference.
->
-> Detected by coccinelle with the following ERROR:
-> ./arch/sparc/include/asm/floppy_64.h:595:3-9: ERROR: missing put_device;
-> call of_find_device_by_node on line 589, but without a corresponding
-> object release within this function.
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->   arch/sparc/include/asm/floppy_64.h | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/arch/sparc/include/asm/floppy_64.h
-> b/arch/sparc/include/asm/floppy_64.h
-> index 070c8c1f5c8f..e74a4d4e6519 100644
-> --- a/arch/sparc/include/asm/floppy_64.h
-> +++ b/arch/sparc/include/asm/floppy_64.h
-> @@ -592,6 +592,7 @@ static unsigned long __init sun_floppy_init(void)
->
->           state_prop = of_get_property(op->dev.of_node, "status", NULL);
->           if (state_prop && !strncmp(state_prop, "disabled", 8))
-> +            put_device(&op->dev);
+On Fri, 2023-07-14 at 15:06 +0200, Markus Elfring wrote:
+> > The device_for_each_child_node() loop in bgx_init_of_phy()
+> > function should have fwnode_handle_put() before break which could
+> > avoid resource leaks. This patch could fix this bug.
+>=20
+> Are imperative change descriptions still preferred?
 
-From the same domain as "Liubin" earlier, introducing the same kind of error
-(Not adding curly braces)
+Yes. The commit message should be re-phrased.
 
+More importantly, it looks like the relevant reference is already
+released by of_node_put() and the additional fwnode_handle_put() will
+cause a reference underflow.
 
->               return 0;
->
->           FLOPPY_IRQ = op->archdata.irqs[0];
+This patch does not look correct to me.
+
+Cheers,
+
+Paolo
+
