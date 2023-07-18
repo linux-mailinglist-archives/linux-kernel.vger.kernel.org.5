@@ -2,267 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5F9757A4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C50757A51
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbjGRLTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38170 "EHLO
+        id S231196AbjGRLV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbjGRLTp (ORCPT
+        with ESMTP id S230111AbjGRLVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:19:45 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE1B10F5
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:19:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689679184; x=1721215184;
-  h=date:from:to:cc:subject:message-id;
-  bh=X640t2cGX60YkCKudarfxfGg8XyKkrABYMklnQ3eUIM=;
-  b=ZL62FSbDguPOHAQoKMyctJf7xq0iOGQLlqpjslOhlpjH+eTtFImWrOkq
-   lu6/cEdgCgZ+HM8ralpmLmY3PZBYpd0iGFleQBmJEd6IsLhVXlgDuDi4h
-   QQOCSOvqEyRi7Mi5COIAux9a++yOxT5vriAg6DWdNO89UlSQfXMjxLadK
-   ZQ3zB9oyRj5+jROHMLw/wYOWxr5Pe6UrbGKBBFoA8fYpwWxeNZZtRvLUY
-   7jQguyJ/GRw2ALMaU0D7WIfOe08W/j+KafQl31eG09vMzHsaXTL9NodMg
-   Hn6YZj1Yxm02mTXPc03RUGHvKgmEnMbRikx0qhA/+Pq4nDeDDUjTLuGux
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="365053708"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="365053708"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 04:19:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="758755948"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="758755948"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 18 Jul 2023 04:19:42 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qLik2-0000Yp-0J;
-        Tue, 18 Jul 2023 11:19:42 +0000
-Date:   Tue, 18 Jul 2023 19:19:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:testing/fam01-next20230717] BUILD REGRESSION
- 584ee211a23e349a6478767544c518f04b6cf2bd
-Message-ID: <202307181906.wR6z5ime-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        Tue, 18 Jul 2023 07:21:55 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23568E8;
+        Tue, 18 Jul 2023 04:21:53 -0700 (PDT)
+X-UUID: 49b846d6255d11ee9cb5633481061a41-20230718
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=lKkjvXtoAymLFKitwFRjfHiPPpFieshzQX9Gwp7ANeA=;
+        b=ngUI8qlrZk/by8naYx8BOUt+OSW9Mr6tgLbPMReTFSz/mTZMfw8voUaj88pEWqw38f+BtEA8OnCZq7BlKD5PGCtCmIr+uLVndmAEbmFeTH5VtBu6X4oaNcXnJsmfh3WgwCy3UBTAzt/5o0Od6/4gibJ+lM5jlRbPCk2zk6RBC6U=;
+X-CID-UNFAMILIAR: 1
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.28,REQID:ed73ab56-fd64-4012-8f06-06e7d5bca952,IP:0,U
+        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:100,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+        ON:release,TS:95
+X-CID-INFO: VERSION:1.1.28,REQID:ed73ab56-fd64-4012-8f06-06e7d5bca952,IP:0,URL
+        :0,TC:0,Content:-5,EDM:0,RT:0,SF:100,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTI
+        ON:quarantine,TS:95
+X-CID-META: VersionHash:176cd25,CLOUDID:898dc187-44fb-401c-8de7-6a5572f1f5d5,B
+        ulkID:230718192149NV4B6JMX,BulkQuantity:0,Recheck:0,SF:38|29|28|16|19|48,T
+        C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+        ,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,
+        TF_CID_SPAM_USA
+X-UUID: 49b846d6255d11ee9cb5633481061a41-20230718
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
+        (envelope-from <william-tw.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1329607392; Tue, 18 Jul 2023 19:21:49 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 18 Jul 2023 19:21:48 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 18 Jul 2023 19:21:48 +0800
+From:   William-tw Lin <william-tw.lin@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Kevin Hilman <khilman@kernel.org>
+CC:     <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        William-tw Lin <william-tw.lin@mediatek.com>
+Subject: [PATCH 0/3] mtk-socinfo driver implementation
+Date:   Tue, 18 Jul 2023 19:21:40 +0800
+Message-ID: <20230718112143.14036-1-william-tw.lin@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/fam01-next20230717
-branch HEAD: 584ee211a23e349a6478767544c518f04b6cf2bd  fs: omfs: Fix -Wstringop-overflow warning
+This purpose for these patches is to enable soc-related information 
+retrival. Such information includes manufacturer information, SoC name,
+SoC segment name, and SoC marketing name.
 
-Error/Warning reports:
+Based on tag: next-20230718, linux-next/master
 
-https://lore.kernel.org/oe-kbuild-all/202307181615.iVlmV0s6-lkp@intel.com
+William-tw Lin (3):
+  soc: mediatek: mtk-socinfo: Add driver for getting chip information
+  dt-bindings: soc: mediatek: Add mtk-socinfo driver
+  arm64: dts: Add node for chip info driver
 
-Error/Warning: (recently discovered and may have been fixed)
-
-arch/arm64/kernel/setup.c:228:56: warning: array subscript -1 is outside array bounds of 'char[]' [-Warray-bounds]
-arch/parisc/mm/init.c:285:46: warning: array subscript -269484032 is outside array bounds of 'char[2147483647]' [-Warray-bounds]
-arch/s390/include/asm/atomic_ops.h:52:9: warning: array subscript 0 is outside array bounds of 'int[0]' [-Warray-bounds]
-arch/s390/include/asm/ctl_reg.h:45:24: warning: array subscript 0 is outside array bounds of 'addrtype[0]' [-Warray-bounds]
-arch/s390/include/asm/ptrace.h:95:26: warning: array subscript 0 is outside array bounds of 'struct psw_bits[0]' [-Warray-bounds]
-drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_dpia.c:427:17: error: 'dp_decide_lane_settings' accessing 4 bytes in a region of size 1 [-Werror=stringop-overflow=]
-drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_dp_training_fixed_vs_pe_retimer.c:472:25: error: 'dp_decide_lane_settings' accessing 4 bytes in a region of size 1 [-Werror=stringop-overflow=]
-drivers/gpu/drm/nouveau/dispnv04/dac.c:432:39: warning: array subscript -1 is below array bounds of 'uint32_t[4]' {aka 'unsigned int[4]'} [-Warray-bounds]
-drivers/gpu/drm/nouveau/nvif/object.c:161:9: warning: 'memcpy' specified bound between 4294967264 and 4294967287 exceeds maximum object size 2147483647 [-Wstringop-overflow=]
-drivers/hwmon/pc87360.c:341:49: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
-drivers/net/ethernet/qlogic/qed/qed_init_fw_funcs.c:1194:25: warning: array subscript 1 is outside array bounds of 'u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds]
-fs/ext4/mballoc.c:812:33: warning: array subscript -1 is below array bounds of 'ext4_grpblk_t[]' {aka 'int[]'} [-Warray-bounds]
-include/asm-generic/rwonce.h:44:26: warning: array subscript 0 is outside array bounds of 'const volatile int[0]' [-Warray-bounds]
-include/asm-generic/rwonce.h:44:26: warning: array subscript 0 is outside array bounds of 'const volatile long long unsigned int[0]' [-Warray-bounds]
-include/linux/fortify-string.h:59:33: warning: '__builtin_memset' specified bound 18446744073709551615 exceeds maximum object size 9223372036854775807 [-Wstringop-overflow=]
-kernel/cgroup/cgroup.c:1206:16: warning: 'find_existing_css_set' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-kernel/cgroup/cgroup.c:1256:15: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   `-- drivers-hwmon-pc87360.c:warning:writing-byte-into-a-region-of-size
-|-- arm-randconfig-r063-20230716
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training_dpia.c:error:dp_decide_lane_settings-accessing-bytes-in-a-region-of-size
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-link-protocols-link_dp_training_fixed_vs_pe_retimer.c:error:dp_decide_lane_settings-accessing-bytes-in-a-region-of-size
-|-- arm64-randconfig-r024-20230717
-|   |-- arch-arm64-kernel-setup.c:warning:array-subscript-is-outside-array-bounds-of-char
-|   `-- drivers-hwmon-pc87360.c:warning:writing-byte-into-a-region-of-size
-|-- i386-allyesconfig
-|   `-- drivers-net-ethernet-qlogic-qed-qed_init_fw_funcs.c:warning:array-subscript-is-outside-array-bounds-of-u32-aka-unsigned-int
-|-- parisc-generic-32bit_defconfig
-|   |-- arch-parisc-mm-init.c:warning:array-subscript-is-outside-array-bounds-of-char
-|   |-- drivers-gpu-drm-nouveau-nvif-object.c:warning:memcpy-specified-bound-between-and-exceeds-maximum-object-size
-|   |-- kernel-cgroup-cgroup.c:warning:css_set_hash-accessing-bytes-in-a-region-of-size
-|   `-- kernel-cgroup-cgroup.c:warning:find_existing_css_set-accessing-bytes-in-a-region-of-size
-|-- parisc-randconfig-r025-20230717
-|   |-- arch-parisc-mm-init.c:warning:array-subscript-is-outside-array-bounds-of-char
-|   |-- drivers-gpu-drm-nouveau-dispnv04-dac.c:warning:array-subscript-is-below-array-bounds-of-uint32_t-aka-unsigned-int
-|   `-- drivers-gpu-drm-nouveau-nvif-object.c:warning:memcpy-specified-bound-between-and-exceeds-maximum-object-size
-|-- parisc-randconfig-r081-20230717
-|   `-- arch-parisc-mm-init.c:warning:array-subscript-is-outside-array-bounds-of-char
-|-- powerpc-randconfig-r026-20230717
-|   |-- drivers-net-ethernet-qlogic-qed-qed_init_fw_funcs.c:warning:array-subscript-is-outside-array-bounds-of-u32-aka-unsigned-int
-|   `-- fs-ext4-mballoc.c:warning:array-subscript-is-below-array-bounds-of-ext4_grpblk_t-aka-int
-|-- riscv-allyesconfig
-|   |-- drivers-gpu-drm-nouveau-dispnv04-dac.c:warning:array-subscript-is-below-array-bounds-of-uint32_t-aka-unsigned-int
-|   `-- fs-ext4-mballoc.c:warning:array-subscript-is-below-array-bounds-of-ext4_grpblk_t-aka-int
-|-- s390-randconfig-r023-20230717
-|   |-- arch-s390-include-asm-atomic_ops.h:warning:array-subscript-is-outside-array-bounds-of-int
-|   |-- arch-s390-include-asm-ctl_reg.h:warning:array-subscript-is-outside-array-bounds-of-addrtype
-|   |-- arch-s390-include-asm-ptrace.h:warning:array-subscript-is-outside-array-bounds-of-struct-psw_bits
-|   |-- include-asm-generic-rwonce.h:warning:array-subscript-is-outside-array-bounds-of-const-volatile-int
-|   `-- include-asm-generic-rwonce.h:warning:array-subscript-is-outside-array-bounds-of-const-volatile-long-long-unsigned-int
-|-- s390-randconfig-r044-20230717
-|   `-- include-linux-fortify-string.h:warning:__builtin_memset-specified-bound-exceeds-maximum-object-size
-|-- sparc-allmodconfig
-|   `-- drivers-hwmon-pc87360.c:warning:writing-byte-into-a-region-of-size
-`-- sparc-allyesconfig
-    `-- drivers-hwmon-pc87360.c:warning:writing-byte-into-a-region-of-size
-
-elapsed time: 721m
-
-configs tested: 125
-configs skipped: 3
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r002-20230717   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                 nsimosci_hs_smp_defconfig   gcc  
-arc                  randconfig-r033-20230717   gcc  
-arc                  randconfig-r043-20230717   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                       aspeed_g5_defconfig   gcc  
-arm                        clps711x_defconfig   gcc  
-arm                                 defconfig   gcc  
-arm                          exynos_defconfig   gcc  
-arm                           h3600_defconfig   gcc  
-arm                        keystone_defconfig   gcc  
-arm                  randconfig-r046-20230717   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r024-20230717   gcc  
-arm64                randconfig-r031-20230717   clang
-csky                                defconfig   gcc  
-csky                 randconfig-r012-20230717   gcc  
-hexagon              randconfig-r041-20230717   clang
-hexagon              randconfig-r045-20230717   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230717   clang
-i386         buildonly-randconfig-r005-20230717   clang
-i386         buildonly-randconfig-r006-20230717   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230717   clang
-i386                 randconfig-i002-20230717   clang
-i386                 randconfig-i003-20230717   clang
-i386                 randconfig-i004-20230717   clang
-i386                 randconfig-i005-20230717   clang
-i386                 randconfig-i006-20230717   clang
-i386                 randconfig-i011-20230717   gcc  
-i386                 randconfig-i012-20230717   gcc  
-i386                 randconfig-i013-20230717   gcc  
-i386                 randconfig-i014-20230717   gcc  
-i386                 randconfig-i015-20230717   gcc  
-i386                 randconfig-i016-20230717   gcc  
-i386                 randconfig-r005-20230717   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r003-20230717   gcc  
-m68k                 randconfig-r004-20230717   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 decstation_r4k_defconfig   gcc  
-mips                malta_qemu_32r6_defconfig   clang
-mips                        qi_lb60_defconfig   clang
-nios2                               defconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                generic-32bit_defconfig   gcc  
-parisc               randconfig-r014-20230717   gcc  
-parisc               randconfig-r025-20230717   gcc  
-parisc               randconfig-r034-20230717   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                      katmai_defconfig   clang
-powerpc                      ppc6xx_defconfig   gcc  
-powerpc              randconfig-r026-20230717   gcc  
-powerpc                     stx_gp3_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r006-20230717   clang
-riscv                randconfig-r042-20230717   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r023-20230717   gcc  
-s390                 randconfig-r036-20230717   clang
-s390                 randconfig-r044-20230717   gcc  
-sh                               allmodconfig   gcc  
-sh                          r7780mp_defconfig   gcc  
-sh                   randconfig-r032-20230717   gcc  
-sh                   randconfig-r035-20230717   gcc  
-sh                           se7722_defconfig   gcc  
-sh                   secureedge5410_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r001-20230717   gcc  
-sparc                randconfig-r015-20230717   gcc  
-sparc                randconfig-r022-20230717   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r016-20230717   clang
-um                   randconfig-r021-20230717   clang
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230717   clang
-x86_64       buildonly-randconfig-r002-20230717   clang
-x86_64       buildonly-randconfig-r003-20230717   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-x001-20230717   gcc  
-x86_64               randconfig-x002-20230717   gcc  
-x86_64               randconfig-x003-20230717   gcc  
-x86_64               randconfig-x004-20230717   gcc  
-x86_64               randconfig-x005-20230717   gcc  
-x86_64               randconfig-x006-20230717   gcc  
-x86_64               randconfig-x011-20230717   clang
-x86_64               randconfig-x012-20230717   clang
-x86_64               randconfig-x013-20230717   clang
-x86_64               randconfig-x014-20230717   clang
-x86_64               randconfig-x015-20230717   clang
-x86_64               randconfig-x016-20230717   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                  audio_kc705_defconfig   gcc  
-xtensa               randconfig-r013-20230717   gcc  
+ .../bindings/soc/mediatek/mtk-socinfo.yaml    |  58 +++++
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi      |  15 ++
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi      |  15 ++
+ arch/arm64/boot/dts/mediatek/mt8186.dtsi      |  10 +
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi      |  14 ++
+ arch/arm64/boot/dts/mediatek/mt8195.dtsi      |   9 +
+ drivers/soc/mediatek/Kconfig                  |  18 ++
+ drivers/soc/mediatek/Makefile                 |   1 +
+ drivers/soc/mediatek/mtk-socinfo.c            | 203 +++++++++++++++++
+ drivers/soc/mediatek/mtk-socinfo.h            | 213 ++++++++++++++++++
+ 10 files changed, 556 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/mediatek/mtk-socinfo.yaml
+ create mode 100644 drivers/soc/mediatek/mtk-socinfo.c
+ create mode 100644 drivers/soc/mediatek/mtk-socinfo.h
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.18.0
+
