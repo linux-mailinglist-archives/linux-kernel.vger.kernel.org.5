@@ -2,58 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C86757803
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8BB8757805
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbjGRJ3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:29:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
+        id S232294AbjGRJ3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbjGRJ26 (ORCPT
+        with ESMTP id S231420AbjGRJ3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:28:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACC5186
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:28:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DE024614EA
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:28:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79E37C433C8;
-        Tue, 18 Jul 2023 09:28:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689672537;
-        bh=/cGfBekDmE+BR4ZDOyJIAZUw5e6tGf6HSK7pUmBl3oI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=azgiJ+0Ur8pGuAGjT6ILrF9o5NYoWyE/NERtLdI0upCbK62KaTC1hrwpPmBEs5TMK
-         WNst5b5welfijI3kS54b+CP4W1asS3XSpp301vVdnCwbfr4Lhts41Z4YkfCavd8cmq
-         6jaXSylHgqsSBLdbZ1Cehj28Enjr/j6Qt5WCAXMTbSkbfjiRZhK76E0mmMW3w+JIv7
-         vmrhgQi8dVylgvcpqrGpV8k4rKV3mekpNemCtUzLATHrMDGuKHpWMmogUqCcT4Jhad
-         tD42vWNI/Kjs1/N1P4t7T+CEWmSWGQB/WXfXFfgZovT2CrkWE2cARB+q67Ucz2rnaH
-         9lH57D0nlbsvA==
+        Tue, 18 Jul 2023 05:29:41 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B5FE0;
+        Tue, 18 Jul 2023 02:29:40 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4R4tqf0h84z6D9CT;
+        Tue, 18 Jul 2023 17:26:22 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
+ 2023 10:29:38 +0100
+Date:   Tue, 18 Jul 2023 10:29:37 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Dave Jiang <dave.jiang@intel.com>
+CC:     Breno Leitao <leitao@debian.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, <leit@meta.com>,
+        kernel test robot <lkp@intel.com>,
+        "open list:COMPUTE EXPRESS LINK (CXL)" <linux-cxl@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] cxl/acpi: Use printk specifier for resource
+Message-ID: <20230718102937.00001af0@Huawei.com>
+In-Reply-To: <a607c370-030a-2b96-9aca-886a23248e83@intel.com>
+References: <20230717102625.4083462-1-leitao@debian.org>
+        <a607c370-030a-2b96-9aca-886a23248e83@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Date:   Tue, 18 Jul 2023 11:28:53 +0200
-From:   Michael Walle <mwalle@kernel.org>
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc:     tkuw584924@gmail.com, takahiro.kuwano@infineon.com,
-        pratyush@kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, bacem.daassi@infineon.com,
-        miquel.raynal@bootlin.com, richard@nod.at,
-        Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: Re: [PATCH] mtd: spi-nor: rename method for enabling or disabling
- octal DTR
-In-Reply-To: <20230714150757.15372-1-tudor.ambarus@linaro.org>
-References: <20230616050600.8793-1-Takahiro.Kuwano@infineon.com>
- <20230714150757.15372-1-tudor.ambarus@linaro.org>
-Message-ID: <b85368d2e3bf829809344406247193ea@kernel.org>
-X-Sender: mwalle@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,35 +58,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Btw. this was threaded within another thread. At least on the
-netdev (and spi) ML this is discouraged.
+On Mon, 17 Jul 2023 09:28:47 -0700
+Dave Jiang <dave.jiang@intel.com> wrote:
 
-Am 2023-07-14 17:07, schrieb Tudor Ambarus:
-> Having an *_enable(..., bool enable) definition was misleading
-> as the method is used both to enable and to disable the octal DTR
-> mode. Splitting the method in the core in two, one to enable and
-> another to disable the octal DTR mode does not make sense as the
-> method is straight forward and we'd introduce code duplication.
+> On 7/17/23 03:26, Breno Leitao wrote:
+> > Commit 3840e10e8dca ("cxl/acpi: Fix a use-after-free in cxl_parse_cfmws()")
+> > is using %llx to print resources pointers, but it is incorrect on 32-bits
+> > system, causing the following compilation warning on i386:
+> > 
+> > 	 drivers/cxl/acpi.c:300:4: warning: format specifies type 'unsigned long long' but the argument has type 'resource_size_t' (aka 'unsigned int') [-Wformat]
+> > 
+> > Instead of using pointers to the resource, uses the proper printk
+> > specifier that knows how to handle the struct "resources".
+> > 
+> > This is the new format, being printed now:
+> > 
+> > 	Failed to add decode range: [mem 0x4080000000-0x2baffffffff flags 0x200]
+> > 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202307151059.2vvBt55H-lkp@intel.com/
+> > Fixes: 3840e10e8dca ("cxl/acpi: Fix a use-after-free in cxl_parse_cfmws()")
+> > Suggested-by: Dan Williams <dan.j.williams@intel.com>
+> > Signed-off-by: Breno Leitao <leitao@debian.org>  
 > 
-> Update the core to use:
-> int (*set_octal_dtr)(struct spi_nor *nor, bool enable);
+> Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+
+FWIW
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> > ---
+> >   drivers/cxl/acpi.c | 3 +--
+> >   1 file changed, 1 insertion(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
+> > index 815b43859c16..d1c559879dcc 100644
+> > --- a/drivers/cxl/acpi.c
+> > +++ b/drivers/cxl/acpi.c
+> > @@ -296,8 +296,7 @@ static int cxl_parse_cfmws(union acpi_subtable_headers *header, void *arg,
+> >   	else
+> >   		rc = cxl_decoder_autoremove(dev, cxld);
+> >   	if (rc) {
+> > -		dev_err(dev, "Failed to add decode range [%#llx - %#llx]\n",
+> > -			res->start, res->end);
+> > +		dev_err(dev, "Failed to add decode range: %pr", res);
+> >   		return rc;
+> >   	}
+> >   	dev_dbg(dev, "add: %s node: %d range [%#llx - %#llx]\n",  
 > 
-> Manufacturer drivers use different sequences of commands to enable
-> and disable the octal DTR mode, thus for clarity they shall
-> implement it as:
-> static int manufacturer_snor_set_octal_dtr(struct spi_nor *nor, bool 
-> enable)
-> {
-> 	return enable ? manufacturer_snor_octal_dtr_enable() :
-> 			manufacturer_snor_octal_dtr_disable();
-> }
-> 
 
-I don't care much for this naming. I've also seen _enable() functions
-which take a bool and then actually disable something in the kernel.
-
-So I'm fine either way:
-
-Reviewed-by: Michael Walle <mwalle@kernel.org>
-
--michael
