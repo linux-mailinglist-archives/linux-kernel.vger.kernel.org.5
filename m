@@ -2,50 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C7075792D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7556F757932
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbjGRKTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 06:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36790 "EHLO
+        id S231208AbjGRKVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 06:21:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230428AbjGRKTQ (ORCPT
+        with ESMTP id S230286AbjGRKVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 06:19:16 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 477C6128
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 03:19:12 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 859802F4;
-        Tue, 18 Jul 2023 03:19:55 -0700 (PDT)
-Received: from [10.1.34.52] (C02Z41KALVDN.cambridge.arm.com [10.1.34.52])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A4E663F67D;
-        Tue, 18 Jul 2023 03:19:10 -0700 (PDT)
-Message-ID: <f0a50c66-ff21-caf6-1c73-04149d88be8f@arm.com>
-Date:   Tue, 18 Jul 2023 11:19:08 +0100
+        Tue, 18 Jul 2023 06:21:15 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA06128
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 03:21:13 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 97A1A1FDA9;
+        Tue, 18 Jul 2023 10:21:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1689675672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YwF2Nf8weX8GOZqx7IRoWLwhlbkAR6nO1T17tt5sLB4=;
+        b=pZCpWVWkezRTIbLFi8VdLk8MWjn95m+lvAlEFzLjXbSu8NV1OaS0pWRzuCTxQESCE8dKdW
+        41A79gWL0fNbVuWNym5/VGr1Yjv43VV78Wcu38pS/ls6dSbRwSeCOFFWbfyzgqvtrqSyam
+        gUhhmEzvGMcGmDR/4Xul5akp6l3Vwww=
+Received: from suse.cz (unknown [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 2F80F2C142;
+        Tue, 18 Jul 2023 10:21:12 +0000 (UTC)
+Date:   Tue, 18 Jul 2023 12:21:11 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v3 2/7] printk: Reduce console_unblank() usage in
+ unsafe scenarios
+Message-ID: <ZLZnl_UUirKz0DFd@alley>
+References: <20230717194607.145135-1-john.ogness@linutronix.de>
+ <20230717194607.145135-3-john.ogness@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v1 3/3] mm: Batch-zap large anonymous folio PTE mappings
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20230717143110.260162-1-ryan.roberts@arm.com>
- <20230717143110.260162-4-ryan.roberts@arm.com>
- <5A282984-F3AD-41E3-8EF2-BA0A77DD1A3A@nvidia.com>
- <980c4e1f-116b-0113-65ee-4e77fdd3e7b4@arm.com>
- <C8DCA632-EA87-4CC1-A740-F26E49F67649@nvidia.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <C8DCA632-EA87-4CC1-A740-F26E49F67649@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717194607.145135-3-john.ogness@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,215 +57,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/07/2023 17:15, Zi Yan wrote:
-> On 17 Jul 2023, at 11:55, Ryan Roberts wrote:
+On Mon 2023-07-17 21:52:02, John Ogness wrote:
+> A semaphore is not NMI-safe, even when using down_trylock(). Both
+> down_trylock() and up() are using internal spinlocks and up()
+> might even call wake_up_process().
 > 
->> On 17/07/2023 16:25, Zi Yan wrote:
->>> On 17 Jul 2023, at 10:31, Ryan Roberts wrote:
->>>
->>>> This allows batching the rmap removal with folio_remove_rmap_range(),
->>>> which means we avoid spuriously adding a partially unmapped folio to the
->>>> deferrred split queue in the common case, which reduces split queue lock
->>>> contention.
->>>>
->>>> Previously each page was removed from the rmap individually with
->>>> page_remove_rmap(). If the first page belonged to a large folio, this
->>>> would cause page_remove_rmap() to conclude that the folio was now
->>>> partially mapped and add the folio to the deferred split queue. But
->>>> subsequent calls would cause the folio to become fully unmapped, meaning
->>>> there is no value to adding it to the split queue.
->>>>
->>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>> ---
->>>>  mm/memory.c | 119 ++++++++++++++++++++++++++++++++++++++++++++++++++++
->>>>  1 file changed, 119 insertions(+)
->>>>
->>>> diff --git a/mm/memory.c b/mm/memory.c
->>>> index 01f39e8144ef..6facb8c8807a 100644
->>>> --- a/mm/memory.c
->>>> +++ b/mm/memory.c
->>>> @@ -1391,6 +1391,95 @@ zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
->>>>  	pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
->>>>  }
->>>>
->>>> +static inline unsigned long page_addr(struct page *page,
->>>> +				struct page *anchor, unsigned long anchor_addr)
->>>> +{
->>>> +	unsigned long offset;
->>>> +	unsigned long addr;
->>>> +
->>>> +	offset = (page_to_pfn(page) - page_to_pfn(anchor)) << PAGE_SHIFT;
->>>> +	addr = anchor_addr + offset;
->>>> +
->>>> +	if (anchor > page) {
->>>> +		if (addr > anchor_addr)
->>>> +			return 0;
->>>> +	} else {
->>>> +		if (addr < anchor_addr)
->>>> +			return ULONG_MAX;
->>>> +	}
->>>> +
->>>> +	return addr;
->>>> +}
->>>> +
->>>> +static int calc_anon_folio_map_pgcount(struct folio *folio,
->>>> +				       struct page *page, pte_t *pte,
->>>> +				       unsigned long addr, unsigned long end)
->>>> +{
->>>> +	pte_t ptent;
->>>> +	int floops;
->>>> +	int i;
->>>> +	unsigned long pfn;
->>>> +
->>>> +	end = min(page_addr(&folio->page + folio_nr_pages(folio), page, addr),
->>>> +		  end);
->>>> +	floops = (end - addr) >> PAGE_SHIFT;
->>>> +	pfn = page_to_pfn(page);
->>>> +	pfn++;
->>>> +	pte++;
->>>> +
->>>> +	for (i = 1; i < floops; i++) {
->>>> +		ptent = ptep_get(pte);
->>>> +
->>>> +		if (!pte_present(ptent) ||
->>>> +		    pte_pfn(ptent) != pfn) {
->>>> +			return i;
->>>> +		}
->>>> +
->>>> +		pfn++;
->>>> +		pte++;
->>>> +	}
->>>> +
->>>> +	return floops;
->>>> +}
->>>> +
->>>> +static unsigned long zap_anon_pte_range(struct mmu_gather *tlb,
->>>> +					struct vm_area_struct *vma,
->>>> +					struct page *page, pte_t *pte,
->>>> +					unsigned long addr, unsigned long end,
->>>> +					bool *full_out)
->>>> +{
->>>> +	struct folio *folio = page_folio(page);
->>>> +	struct mm_struct *mm = tlb->mm;
->>>> +	pte_t ptent;
->>>> +	int pgcount;
->>>> +	int i;
->>>> +	bool full;
->>>> +
->>>> +	pgcount = calc_anon_folio_map_pgcount(folio, page, pte, addr, end);
->>>> +
->>>> +	for (i = 0; i < pgcount;) {
->>>> +		ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
->>>> +		tlb_remove_tlb_entry(tlb, pte, addr);
->>>> +		full = __tlb_remove_page(tlb, page, 0);
->>>> +
->>>> +		if (unlikely(page_mapcount(page) < 1))
->>>> +			print_bad_pte(vma, addr, ptent, page);
->>>> +
->>>> +		i++;
->>>> +		page++;
->>>> +		pte++;
->>>> +		addr += PAGE_SIZE;
->>>> +
->>>> +		if (unlikely(full))
->>>> +			break;
->>>> +	}
->>>> +
->>>> +	folio_remove_rmap_range(folio, page - i, i, vma);
->>>> +
->>>> +	*full_out = full;
->>>> +	return i;
->>>> +}
->>>> +
->>>>  static unsigned long zap_pte_range(struct mmu_gather *tlb,
->>>>  				struct vm_area_struct *vma, pmd_t *pmd,
->>>>  				unsigned long addr, unsigned long end,
->>>> @@ -1428,6 +1517,36 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
->>>>  			page = vm_normal_page(vma, addr, ptent);
->>>>  			if (unlikely(!should_zap_page(details, page)))
->>>>  				continue;
->>>> +
->>>> +			/*
->>>> +			 * Batch zap large anonymous folio mappings. This allows
->>>> +			 * batching the rmap removal, which means we avoid
->>>> +			 * spuriously adding a partially unmapped folio to the
->>>> +			 * deferrred split queue in the common case, which
->>>> +			 * reduces split queue lock contention. Require the VMA
->>>> +			 * to be anonymous to ensure that none of the PTEs in
->>>> +			 * the range require zap_install_uffd_wp_if_needed().
->>>> +			 */
->>>> +			if (page && PageAnon(page) && vma_is_anonymous(vma)) {
->>>> +				bool full;
->>>> +				int pgcount;
->>>> +
->>>> +				pgcount = zap_anon_pte_range(tlb, vma,
->>>> +						page, pte, addr, end, &full);
->>>
->>> Are you trying to zap as many ptes as possible if all these ptes are
->>> within a folio?
->>
->> Yes.
->>
->>> If so, why not calculate end before calling zap_anon_pte_range()?
->>> That would make zap_anon_pte_range() simpler.
->>
->> I'm not sure I follow. That's currently done in calc_anon_folio_map_pgcount(). I
->> could move it to here, but I'm not sure that makes things simpler, just puts
->> more code in here and less in there?
+> In the panic() code path it gets even worse because the internal
+> spinlocks of the semaphore may have been taken by a CPU that has
+> been stopped.
 > 
-> Otherwise your zap_anon_pte_range() is really zap_anon_pte_in_folio_range() or
-> some other more descriptive name. When I first look at the name, I thought
-> PTEs will be zapped until the end. But that is not the case when I look at the
-> code. And future users can easily be confused too and use it in a wrong way.
-
-OK I see your point. OK let me pull the page count calculation into here and
-pass it to zap_anon_pte_range(). Then I think we can keep the name as is?
-
-
+> To reduce the risk of deadlocks caused by the console semaphore in
+> the panic path, make the following changes:
 > 
-> BTW, page_addr() needs a better name and is easily confused with existing
-> page_address().
-
-Yeah... I'll try to think of something for v2.
-
+> - First check if any consoles have implemented the unblank()
+>   callback. If not, then there is no reason to take the console
+>   semaphore anyway. (This check is also useful for the non-panic
+>   path since the locking/unlocking of the console lock can be
+>   quite expensive due to console printing.)
 > 
->>
->>> Also check if page is part of
->>> a large folio first to make sure you can batch.
->>
->> Yeah that's fair. I'd be inclined to put that in zap_anon_pte_range() to short
->> circuit calc_anon_folio_map_pgcount(). But ultimately zap_anon_pte_range() would
->> still zap the single pte.
->>
->>
->>>
->>>> +
->>>> +				rss[mm_counter(page)] -= pgcount;
->>>> +				pgcount--;
->>>> +				pte += pgcount;
->>>> +				addr += pgcount << PAGE_SHIFT;
->>>> +
->>>> +				if (unlikely(full)) {
->>>> +					force_flush = 1;
->>>> +					addr += PAGE_SIZE;
->>>> +					break;
->>>> +				}
->>>> +				continue;
->>>> +			}
->>>> +
->>>>  			ptent = ptep_get_and_clear_full(mm, addr, pte,
->>>>  							tlb->fullmm);
->>>>  			tlb_remove_tlb_entry(tlb, pte, addr);
->>>> -- 
->>>> 2.25.1
->>>
->>>
->>> --
->>> Best Regards,
->>> Yan, Zi
+> - If the panic path is in NMI context, bail out without attempting
+>   to take the console semaphore or calling any unblank() callbacks.
+>   Bailing out is acceptable because console_unblank() would already
+>   bail out if the console semaphore is contended. The alternative of
+>   ignoring the console semaphore and calling the unblank() callbacks
+>   anyway is a bad idea because these callbacks are also not NMI-safe.
 > 
+> If consoles with unblank() callbacks exist and console_unblank() is
+> called from a non-NMI panic context, it will still attempt a
+> down_trylock(). This could still result in a deadlock if one of the
+> stopped CPUs is holding the semaphore internal spinlock. But this
+> is a risk that the kernel has been (and continues to be) willing
+> to take.
 > 
-> --
-> Best Regards,
-> Yan, Zi
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
