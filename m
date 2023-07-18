@@ -2,233 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EA47580A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5BD758078
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233527AbjGRPSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 11:18:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52212 "EHLO
+        id S233086AbjGRPKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 11:10:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231901AbjGRPSe (ORCPT
+        with ESMTP id S231501AbjGRPKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 11:18:34 -0400
-X-Greylist: delayed 516 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 18 Jul 2023 08:18:31 PDT
-Received: from smtp.dudau.co.uk (dliviu.plus.com [80.229.23.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A3C68C0;
-        Tue, 18 Jul 2023 08:18:31 -0700 (PDT)
-Received: from mail.dudau.co.uk (bart.dudau.co.uk [192.168.14.2])
-        by smtp.dudau.co.uk (Postfix) with SMTP id 5774F41A7003;
-        Tue, 18 Jul 2023 16:09:53 +0100 (BST)
-Received: by mail.dudau.co.uk (sSMTP sendmail emulation); Tue, 18 Jul 2023 16:09:53 +0100
-Date:   Tue, 18 Jul 2023 16:09:53 +0100
-From:   Liviu Dudau <liviu@dudau.co.uk>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     linux-phy@lists.infradead.org, linux-rockchip@lists.infradead.org,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Simon Xue <xxm@rock-chips.com>, John Clark <inindev@gmail.com>,
-        Qu Wenruo <wqu@suse.com>, devicetree@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-Subject: Re: [PATCH v2 2/2] arm64: dts: rockchip: rk3588: add PCIe3 support
-Message-ID: <ZLarQUvUK3v3m6Cg@bart.dudau.co.uk>
-References: <20230717173512.65169-1-sebastian.reichel@collabora.com>
- <20230717173512.65169-3-sebastian.reichel@collabora.com>
+        Tue, 18 Jul 2023 11:10:14 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47BA391;
+        Tue, 18 Jul 2023 08:10:13 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-bad0c4f6f50so8295894276.1;
+        Tue, 18 Jul 2023 08:10:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689693012; x=1692285012;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=8G72SQQvEAGIOu2XhscKjAI4N+s0xdWDLE6O4dTKvKk=;
+        b=g4DqZ0Q+wouW6Y3R5ZID3YLkCbFZYL71juAB+/HBwZhw2W9Yo/Y4/x+vuJw1cLXVRj
+         cRpQlc6HlMj1rWDxb3tMEajCoKju+eyQPMA3HNO6Vlmm7kslf2OC02xzVVJJZ0vstNtP
+         V4mjRwsN1aLC25kK70UTwVYV4SOrmH6g0dQT9OATCAGzc1dr3XDBpgjXfmTEZKqCu31x
+         TzKA31kFD27F7GPwccQo8QrVVaaZIPP2Q8w+RU/VmoWkzwoB6V6PUN/pBKgrInXrMaSs
+         2+WWMSPxNWNuxgE4cbMhtYJh2BozLzonyJRbp46kiL0aeuxWvqmkSnIjRlA1n9CHpus1
+         y8Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689693012; x=1692285012;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8G72SQQvEAGIOu2XhscKjAI4N+s0xdWDLE6O4dTKvKk=;
+        b=KWvZwo0r0DGdKT/JKGVJvzsvwOyJE1q4UNZ5SFa9MDTeH2EzPlrpAlhyI+0ZV7fopl
+         HeUBoWE1A0YsbqNYw9xq/+0ysVZ/JXnasWE1iiOkyefN8YFpi+F6j/BtUKIWe6TSGyMy
+         pttDvfBcohoQHI3ULWKGRHJuAfu8DTYJMoC5o5TBs5I8tueP3WI3DhjWncS6EkBBY5QR
+         vzNH84ljJxEFut22vlx2O+gksWqnkg+uRzBn84bsZZBu6y1np9TtpJ06nvggHsquJ7Bf
+         5KfAyi2eQl+dQVR9qscM1/CDWvZxsR4mHTnQeO2No21Yl4CRzHAo8KFLmAlhZF6CWenA
+         njbw==
+X-Gm-Message-State: ABy/qLaOW4p8euKH1F0+1CeahB6iBoZVjNt+jNBoZS+kCVhlAiXTiQ+v
+        84NlEHvK8C717IuIcV2kfoI=
+X-Google-Smtp-Source: APBJJlG5WwOxAX6LI+YUl4h9lmONGulHjCZNZGbmG958hHvkbXtlNVM4SuR3Oa5zU5VzkwpVVMywGA==
+X-Received: by 2002:a25:ac66:0:b0:cb8:a812:a91 with SMTP id r38-20020a25ac66000000b00cb8a8120a91mr208402ybd.0.1689693012431;
+        Tue, 18 Jul 2023 08:10:12 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z9-20020a056902054900b00be8e8772025sm442631ybs.45.2023.07.18.08.10.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 08:10:11 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <b1528e3d-15f7-7ab2-b803-917f79efe999@roeck-us.net>
+Date:   Tue, 18 Jul 2023 08:10:09 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230717173512.65169-3-sebastian.reichel@collabora.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] watchdog: make Siemens Simatic watchdog driver
+ default on platform
+Content-Language: en-US
+To:     Henning Schild <henning.schild@siemens.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Lee Jones <lee@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Mark Gross <markgross@kernel.org>,
+        Tobias Schaffner <tobias.schaffner@siemens.com>
+References: <20230718105213.1275-1-henning.schild@siemens.com>
+ <20230718105213.1275-2-henning.schild@siemens.com>
+ <ZLafwOPrw+puH+rF@smile.fi.intel.com>
+ <20230718164251.13855c47@md1za8fc.ad001.siemens.net>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230718164251.13855c47@md1za8fc.ad001.siemens.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 07:35:12PM +0200, Sebastian Reichel wrote:
-> Add both PCIe3 controllers together with the shared PHY.
+On 7/18/23 07:42, Henning Schild wrote:
+> Am Tue, 18 Jul 2023 17:20:48 +0300
+> schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
 > 
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> ---
->  arch/arm64/boot/dts/rockchip/rk3588.dtsi | 120 +++++++++++++++++++++++
->  1 file changed, 120 insertions(+)
+>> On Tue, Jul 18, 2023 at 12:52:11PM +0200, Henning Schild wrote:
+>>> If a user did choose to enable Siemens Simatic platform support they
+>>> likely want that driver to be enabled without having to flip more
+>>> config switches. So we make the watchdog driver config switch
+>>> default to the platform driver switches value.
+>>
+>> A nit-pick below.
+>>
+>> ...
+>>
+>>>   config SIEMENS_SIMATIC_IPC_WDT
+>>>   	tristate "Siemens Simatic IPC Watchdog"
+>>>   	depends on SIEMENS_SIMATIC_IPC
+>>
+>>> +	default SIEMENS_SIMATIC_IPC
+>>
+>> It's more natural to group tristate and default, vs. depends and
+>> select.
 > 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3588.dtsi b/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-> index 88d702575db2..8f210f002fac 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-> @@ -7,6 +7,11 @@
->  #include "rk3588-pinctrl.dtsi"
->  
->  / {
-> +	pcie30_phy_grf: syscon@fd5b8000 {
-> +		compatible = "rockchip,rk3588-pcie3-phy-grf", "syscon";
-> +		reg = <0x0 0xfd5b8000 0x0 0x10000>;
-> +	};
-> +
->  	pipe_phy1_grf: syscon@fd5c0000 {
->  		compatible = "rockchip,rk3588-pipe-phy-grf", "syscon";
->  		reg = <0x0 0xfd5c0000 0x0 0x100>;
-
-Hi Sebastian,
-
-What tree is based this on? Even after applying your PCIe2 series I don't have the above
-node so the patch doesn't apply to mainline.
-
-Best regards,
-Liviu
-
-
-> @@ -80,6 +85,108 @@ i2s10_8ch: i2s@fde00000 {
->  		status = "disabled";
->  	};
->  
-> +	pcie3x4: pcie@fe150000 {
-> +		compatible = "rockchip,rk3588-pcie", "rockchip,rk3568-pcie";
-> +		#address-cells = <3>;
-> +		#size-cells = <2>;
-> +		bus-range = <0x00 0x0f>;
-> +		clocks = <&cru ACLK_PCIE_4L_MSTR>, <&cru ACLK_PCIE_4L_SLV>,
-> +			 <&cru ACLK_PCIE_4L_DBI>, <&cru PCLK_PCIE_4L>,
-> +			 <&cru CLK_PCIE_AUX0>, <&cru CLK_PCIE4L_PIPE>;
-> +		clock-names = "aclk_mst", "aclk_slv",
-> +			      "aclk_dbi", "pclk",
-> +			      "aux", "pipe";
-> +		device_type = "pci";
-> +		interrupts = <GIC_SPI 263 IRQ_TYPE_LEVEL_HIGH 0>,
-> +			     <GIC_SPI 262 IRQ_TYPE_LEVEL_HIGH 0>,
-> +			     <GIC_SPI 261 IRQ_TYPE_LEVEL_HIGH 0>,
-> +			     <GIC_SPI 260 IRQ_TYPE_LEVEL_HIGH 0>,
-> +			     <GIC_SPI 259 IRQ_TYPE_LEVEL_HIGH 0>;
-> +		interrupt-names = "sys", "pmc", "msg", "legacy", "err";
-> +		#interrupt-cells = <1>;
-> +		interrupt-map-mask = <0 0 0 7>;
-> +		interrupt-map = <0 0 0 1 &pcie3x4_intc 0>,
-> +				<0 0 0 2 &pcie3x4_intc 1>,
-> +				<0 0 0 3 &pcie3x4_intc 2>,
-> +				<0 0 0 4 &pcie3x4_intc 3>;
-> +		linux,pci-domain = <0>;
-> +		max-link-speed = <3>;
-> +		msi-map = <0x0000 &its1 0x0000 0x1000>;
-> +		num-lanes = <4>;
-> +		phys = <&pcie30phy>;
-> +		phy-names = "pcie-phy";
-> +		power-domains = <&power RK3588_PD_PCIE>;
-> +		ranges = <0x01000000 0x0 0xf0100000 0x0 0xf0100000 0x0 0x00100000>,
-> +			 <0x02000000 0x0 0xf0200000 0x0 0xf0200000 0x0 0x00e00000>,
-> +			 <0x03000000 0x0 0x40000000 0x9 0x00000000 0x0 0x40000000>;
-> +		reg = <0xa 0x40000000 0x0 0x00400000>,
-> +		      <0x0 0xfe150000 0x0 0x00010000>,
-> +		      <0x0 0xf0000000 0x0 0x00100000>;
-> +		reg-names = "dbi", "apb", "config";
-> +		resets = <&cru SRST_PCIE0_POWER_UP>, <&cru SRST_P_PCIE0>;
-> +		reset-names = "pwr", "pipe";
-> +		status = "disabled";
-> +
-> +		pcie3x4_intc: legacy-interrupt-controller {
-> +			interrupt-controller;
-> +			#address-cells = <0>;
-> +			#interrupt-cells = <1>;
-> +			interrupt-parent = <&gic>;
-> +			interrupts = <GIC_SPI 260 IRQ_TYPE_EDGE_RISING 0>;
-> +		};
-> +	};
-> +
-> +	pcie3x2: pcie@fe160000 {
-> +		compatible = "rockchip,rk3588-pcie", "rockchip,rk3568-pcie";
-> +		#address-cells = <3>;
-> +		#size-cells = <2>;
-> +		bus-range = <0x10 0x1f>;
-> +		clocks = <&cru ACLK_PCIE_2L_MSTR>, <&cru ACLK_PCIE_2L_SLV>,
-> +			 <&cru ACLK_PCIE_2L_DBI>, <&cru PCLK_PCIE_2L>,
-> +			 <&cru CLK_PCIE_AUX1>, <&cru CLK_PCIE2L_PIPE>;
-> +		clock-names = "aclk_mst", "aclk_slv",
-> +			      "aclk_dbi", "pclk",
-> +			      "aux", "pipe";
-> +		device_type = "pci";
-> +		interrupts = <GIC_SPI 258 IRQ_TYPE_LEVEL_HIGH 0>,
-> +			     <GIC_SPI 257 IRQ_TYPE_LEVEL_HIGH 0>,
-> +			     <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH 0>,
-> +			     <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH 0>,
-> +			     <GIC_SPI 254 IRQ_TYPE_LEVEL_HIGH 0>;
-> +		interrupt-names = "sys", "pmc", "msg", "legacy", "err";
-> +		#interrupt-cells = <1>;
-> +		interrupt-map-mask = <0 0 0 7>;
-> +		interrupt-map = <0 0 0 1 &pcie3x2_intc 0>,
-> +				<0 0 0 2 &pcie3x2_intc 1>,
-> +				<0 0 0 3 &pcie3x2_intc 2>,
-> +				<0 0 0 4 &pcie3x2_intc 3>;
-> +		linux,pci-domain = <1>;
-> +		max-link-speed = <3>;
-> +		msi-map = <0x1000 &its1 0x1000 0x1000>;
-> +		num-lanes = <2>;
-> +		phys = <&pcie30phy>;
-> +		phy-names = "pcie-phy";
-> +		power-domains = <&power RK3588_PD_PCIE>;
-> +		ranges = <0x01000000 0x0 0xf1100000 0x0 0xf1100000 0x0 0x00100000>,
-> +			 <0x02000000 0x0 0xf1200000 0x0 0xf1200000 0x0 0x00e00000>,
-> +			 <0x03000000 0x0 0x40000000 0x9 0x40000000 0x0 0x40000000>;
-> +		reg = <0xa 0x40400000 0x0 0x00400000>,
-> +		      <0x0 0xfe160000 0x0 0x00010000>,
-> +		      <0x0 0xf1000000 0x0 0x00100000>;
-> +		reg-names = "dbi", "apb", "config";
-> +		resets = <&cru SRST_PCIE1_POWER_UP>, <&cru SRST_P_PCIE1>;
-> +		reset-names = "pwr", "pipe";
-> +		status = "disabled";
-> +
-> +		pcie3x2_intc: legacy-interrupt-controller {
-> +			interrupt-controller;
-> +			#address-cells = <0>;
-> +			#interrupt-cells = <1>;
-> +			interrupt-parent = <&gic>;
-> +			interrupts = <GIC_SPI 255 IRQ_TYPE_EDGE_RISING 0>;
-> +		};
-> +	};
-> +
->  	pcie2x1l0: pcie@fe170000 {
->  		compatible = "rockchip,rk3588-pcie", "rockchip,rk3568-pcie";
->  		#address-cells = <3>;
-> @@ -218,4 +325,17 @@ combphy1_ps: phy@fee10000 {
->  		rockchip,pipe-phy-grf = <&pipe_phy1_grf>;
->  		status = "disabled";
->  	};
-> +
-> +	pcie30phy: phy@fee80000 {
-> +		compatible = "rockchip,rk3588-pcie3-phy";
-> +		reg = <0x0 0xfee80000 0x0 0x20000>;
-> +		#phy-cells = <0>;
-> +		clocks = <&cru PCLK_PCIE_COMBO_PIPE_PHY>;
-> +		clock-names = "pclk";
-> +		resets = <&cru SRST_PCIE30_PHY>;
-> +		reset-names = "phy";
-> +		rockchip,pipe-grf = <&php_grf>;
-> +		rockchip,phy-grf = <&pcie30_phy_grf>;
-> +		status = "disabled";
-> +	};
->  };
-> -- 
-> 2.40.1
+> Will be ignored unless maintainer insists.
 > 
-> 
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
 
--- 
-Everyone who uses computers frequently has had, from time to time,
-a mad desire to attack the precocious abacus with an axe.
-       	   	      	     	  -- John D. Clark, Ignition!
+Maintainer wants to know why "default SIEMENS_SIMATIC_IPC" is needed
+or warranted instead of the much simpler and easier to understand
+"default y".
+
+Guenter
+
