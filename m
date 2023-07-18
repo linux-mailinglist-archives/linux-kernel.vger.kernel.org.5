@@ -2,193 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9FA757F76
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9AFB757F79
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232865AbjGRO3i convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 Jul 2023 10:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
+        id S231512AbjGROaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:30:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232922AbjGRO3f (ORCPT
+        with ESMTP id S230027AbjGROaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:29:35 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB380171A
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:29:31 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1qLlhd-0006wE-C5; Tue, 18 Jul 2023 16:29:25 +0200
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1qLlhc-000OTD-NP; Tue, 18 Jul 2023 16:29:24 +0200
-Received: from pza by lupine with local (Exim 4.96)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1qLlhc-000Ero-17;
-        Tue, 18 Jul 2023 16:29:24 +0200
-Message-ID: <d3df6f565421576bbf06140942593cd4d0af712e.camel@pengutronix.de>
-Subject: Re: [PATCH] pwm: stm32: Implement .get_state()
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pwm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Tue, 18 Jul 2023 16:29:24 +0200
-In-Reply-To: <ZLY_gER7FeEB07cw@orome>
-References: <20230608-pwm-stm32-get-state-v1-1-db7e58a7461b@pengutronix.de>
-         <ZLY_gER7FeEB07cw@orome>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.46.4-2 
+        Tue, 18 Jul 2023 10:30:14 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF8039E;
+        Tue, 18 Jul 2023 07:30:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689690613; x=1721226613;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=VJrp3IJhInZ+SzZ0nDfPX4wCUgu4MkTGZuFgcyrPrfc=;
+  b=gHzc7/xrpK0tLHIRXishGPZQTr5yYnrYO0EB0D/tZvjT3hPEePBrHr2A
+   J3jjgEIjRz0GCrAeTQj8YE9NoISF3HYP7Npkg8HxQEdDwCmJNWaB8HBap
+   afqNXGZ2098ptGMd2N6gtPKWSdjiDBbKYa7ozXTG1v12iJLY8WAV6ktgI
+   0PNRWIj4NJFQSvEK2NdnjxGMbKjn2mLDXUQtRcTy9dvxYAs9RZBIz5r2Y
+   TmqXkNYUnJnGVdr0+DueUsD00Ra9tKTaNSmW8JqzAz8wisne6ETZ2er76
+   MoFLdD2hSxL91FkQXmjiiVJQHXc3IN0olRV+qa5gRuRsq94mA7Z6TqmqP
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="368863511"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="368863511"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 07:30:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="700928252"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="700928252"
+Received: from pkarurmo-mobl.amr.corp.intel.com (HELO [10.209.37.195]) ([10.209.37.195])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 07:30:11 -0700
+Message-ID: <95371eef-73ec-5541-ad97-829954cfb848@intel.com>
+Date:   Tue, 18 Jul 2023 07:30:11 -0700
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] x86/sgx: fix a NULL pointer
+Content-Language: en-US
+To:     Haitao Huang <haitao.huang@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-sgx@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
+        kristen@linux.intel.com, seanjc@google.com, stable@vger.kernel.org
+References: <CU4OBQ8MQ2LK.2GRBPLQGVTZ3@seitikki>
+ <20230717202938.94989-1-haitao.huang@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <20230717202938.94989-1-haitao.huang@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thierry,
+On 7/17/23 13:29, Haitao Huang wrote:
+...
+> @@ -248,11 +258,9 @@ static struct sgx_encl_page *__sgx_encl_load_page(struct sgx_encl *encl,
+>  		return entry;
+>  	}
+>  
+> -	if (!(encl->secs.epc_page)) {
+> -		epc_page = sgx_encl_eldu(&encl->secs, NULL);
+> -		if (IS_ERR(epc_page))
+> -			return ERR_CAST(epc_page);
+> -	}
+> +	epc_page = sgx_encl_load_secs(encl);
+> +	if (IS_ERR(epc_page))
+> +		return ERR_CAST(epc_page);
+>  
+>  	epc_page = sgx_encl_eldu(entry, encl->secs.epc_page);
+>  	if (IS_ERR(epc_page))
+> @@ -339,6 +347,13 @@ static vm_fault_t sgx_encl_eaug_page(struct vm_area_struct *vma,
+>  
+>  	mutex_lock(&encl->lock);
+>  
+> +	epc_page = sgx_encl_load_secs(encl);
+> +	if (IS_ERR(epc_page)) {
+> +		if (PTR_ERR(epc_page) == -EBUSY)
+> +			vmret =  VM_FAULT_NOPAGE;
+> +		goto err_out_unlock;
+> +	}
 
-On Di, 2023-07-18 at 09:30 +0200, Thierry Reding wrote:
-> On Thu, Jun 08, 2023 at 04:06:02PM +0200, Philipp Zabel wrote:
-> > Stop stm32_pwm_detect_channels() from disabling all channels and count
-> > the number of enabled PWMs to keep the clock running. Implement the
-> > &pwm_ops->get_state callback so drivers can inherit PWM state set by
-> > the bootloader.
-> > 
-> > Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-> > ---
-> > Make the necessary changes to allow inheriting PWM state set by the
-> > bootloader, for example to avoid flickering with a pre-enabled PWM
-> > backlight.
-> > ---
-> >  drivers/pwm/pwm-stm32.c | 75 ++++++++++++++++++++++++++++++++++++++-----------
-> >  1 file changed, 59 insertions(+), 16 deletions(-)
-> > 
-> > diff --git a/drivers/pwm/pwm-stm32.c b/drivers/pwm/pwm-stm32.c
-> > index 62e397aeb9aa..e0677c954bdf 100644
-> > --- a/drivers/pwm/pwm-stm32.c
-> > +++ b/drivers/pwm/pwm-stm32.c
-> > @@ -52,6 +52,21 @@ static u32 active_channels(struct stm32_pwm *dev)
-> >  	return ccer & TIM_CCER_CCXE;
-> >  }
-> >  
-> > +static int read_ccrx(struct stm32_pwm *dev, int ch, u32 *value)
-> > +{
-> > +	switch (ch) {
-> > +	case 0:
-> > +		return regmap_read(dev->regmap, TIM_CCR1, value);
-> > +	case 1:
-> > +		return regmap_read(dev->regmap, TIM_CCR2, value);
-> > +	case 2:
-> > +		return regmap_read(dev->regmap, TIM_CCR3, value);
-> > +	case 3:
-> > +		return regmap_read(dev->regmap, TIM_CCR4, value);
-> > +	}
-> > +	return -EINVAL;
-> > +}
-> 
-> Looking at the register definitions we should be able to replace this
-> with a single line and parameterize based on channel.
-> 
-> I realize you probably just copied from write_ccrx(), but might as well
-> improve this while at it. Could be a separate patch, though.
-> 
-> Also, ch should be unsigned int since it comes from pwm->hwpwm.
+Whenever I see one of these "make sure it isn't NULL", I always jump to
+asking what *keeps* it from becoming NULL again.  In both cases here, I
+think that's encl->lock.
 
-Thank you, I'll make both changes separately.
+A comment would be really nice here, maybe on sgx_encl_load_secs().  Maybe:
 
-> >  static int write_ccrx(struct stm32_pwm *dev, int ch, u32 value)
-> >  {
-> >  	switch (ch) {
-> > @@ -486,9 +501,40 @@ static int stm32_pwm_apply_locked(struct pwm_chip *chip, struct pwm_device *pwm,
-> >  	return ret;
-> >  }
-> >  
-> > +static int stm32_pwm_get_state(struct pwm_chip *chip,
-> > +			       struct pwm_device *pwm, struct pwm_state *state)
-> > +{
-> > +	struct stm32_pwm *priv = to_stm32_pwm_dev(chip);
-> > +	int ch = pwm->hwpwm;
-> 
-> This should reflect the type of pwm->hwpwm.
+/*
+ * Ensure the SECS page is not swapped out.  Must be called with
+ * encl->lock to protect _____ and ensure the SECS page is not
+ * swapped out again.
+ */
 
-Ok.
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index 166692f2d501..4662a364ce62 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -257,6 +257,10 @@ static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
+>  
+>  	mutex_lock(&encl->lock);
+>  
+> +	/* Should not be possible */
+> +	if (WARN_ON(!(encl->secs.epc_page)))
+> +		goto out;
 
-> > +	unsigned long rate;
-> > +	u32 ccer, psc, arr, ccr;
-> > +	u64 dty, prd;
-> > +	int ret;
-> > +
-> > +	ret = regmap_read(priv->regmap, TIM_CCER, &ccer);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	state->enabled = ccer & (TIM_CCER_CC1E << (ch * 4));
-> > +	state->polarity = (ccer & (TIM_CCER_CC1P << (ch * 4))) ?
-> > +			  PWM_POLARITY_INVERSED : PWM_POLARITY_NORMAL;
-> > +	regmap_read(priv->regmap, TIM_PSC, &psc);
-> > +	regmap_read(priv->regmap, TIM_ARR, &arr);
-> 
-> We should probably check regmap_read() consistently here.
+That comment isn't super helpful.  We generally don't WARN_ON() things
+that should happen.  *Why* is it not possible?
 
-Will do.
-
-I'll also add locking so we can't PSC/ARR/CCRx in an in-between state.
-
-> > +	read_ccrx(priv, ch, &ccr);
-> > +	rate = clk_get_rate(priv->clk);
-> > +
-> > +	prd = (u64)NSEC_PER_SEC * (psc + 1) * (arr + 1);
-> > +	state->period = DIV_ROUND_UP_ULL(prd, rate);
-> > +	dty = (u64)NSEC_PER_SEC * (psc + 1) * ccr;
-> > +	state->duty_cycle = DIV_ROUND_UP_ULL(dty, rate);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> >  static const struct pwm_ops stm32pwm_ops = {
-> >  	.owner = THIS_MODULE,
-> >  	.apply = stm32_pwm_apply_locked,
-> > +	.get_state = stm32_pwm_get_state,
-> >  	.capture = IS_ENABLED(CONFIG_DMA_ENGINE) ? stm32_pwm_capture : NULL,
-> >  };
-> >  
-> > @@ -579,30 +625,22 @@ static void stm32_pwm_detect_complementary(struct stm32_pwm *priv)
-> >  	priv->have_complementary_output = (ccer != 0);
-> >  }
-> >  
-> > -static int stm32_pwm_detect_channels(struct stm32_pwm *priv)
-> > +static int stm32_pwm_detect_channels(struct stm32_pwm *priv, int *n_enabled)
-> 
-> unsigned int * for n_enabled.
-
-Ok.
-
-> >  {
-> > -	u32 ccer;
-> > -	int npwm = 0;
-> > +	u32 ccer, ccer_backup;
-> > +	int npwm;
-> 
-> Also make this and the return value unsigned int while at it. These can
-> never be negative.
-
-Thanks, I'll split this out into a separate patch.
-
-regards
-Philipp
