@@ -2,223 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FD77580D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBC77580D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbjGRPZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 11:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56442 "EHLO
+        id S233599AbjGRPYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 11:24:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231993AbjGRPZC (ORCPT
+        with ESMTP id S231993AbjGRPYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 11:25:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB44DC0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:24:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689693848;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yHlHwKpoA0bi1nyvFXl3JPkte3c23L/WObN+n1+gtHA=;
-        b=Ap312J/gpK2Tag41yBpv242IB5b76GSO3/ws14xJ7vxAXLa8i7aIeF4ZGaWSCJ48K48WAq
-        jMqDSwx+TwFG4a4btsnRcc08yEoKB0ee05twv60XcA94ev8qJ81qwg1zlZzfAL5qeA4CvI
-        5o/KtHY2H2lpMkvnNnUGgzwj2s3ymmU=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-660-xjj_l5WvO8mVjpktTV-dzQ-1; Tue, 18 Jul 2023 11:24:07 -0400
-X-MC-Unique: xjj_l5WvO8mVjpktTV-dzQ-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fc07d4c63eso29040575e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:24:06 -0700 (PDT)
+        Tue, 18 Jul 2023 11:24:49 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440AFA1;
+        Tue, 18 Jul 2023 08:24:48 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-579dd20b1c8so57077877b3.1;
+        Tue, 18 Jul 2023 08:24:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689693887; x=1692285887;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cqTZ5VtJv8ZipGwySLiNWe25hUa+zEm1zPtVs7gkYp8=;
+        b=sGvk5uwJCoJ2+n2g9dv6bCRgvzQZ6HJiqdlJgIA5/LQy2OGateHELNwdvmd019Eb8v
+         jIg1NzETquzXwkqdtHMSi6UIbGByjGNJnu6O3WepGnyZOSW266SL6RgrG6WxdcJHeTmZ
+         yNHDpnrUYri0oNmbxMn+3V06QY/vAK1XqU0DTQyqedhOcdwRgFO1zrX0BYictIjt5Oai
+         kwR8+SbvAMfkBWTrEpEvLzwPZemcpLI8LxmqTYbuyBcB9MYSieWkNGCbx3jzCv2UhL5K
+         +Xo35tlhJEfvmG/cMyKG7QTT2Zefxvm8hLp92jDvV/w3eqqTYgWflndPPdF7bAJhrJt5
+         eI4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689693846; x=1692285846;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yHlHwKpoA0bi1nyvFXl3JPkte3c23L/WObN+n1+gtHA=;
-        b=AScJ6vSYUcI4DfH2PyKtwaZUPKKoEhai/k9US3joCH3OQrGFI1JZyI75hWuHqZk161
-         P+4FarRV8Vx0ivTQJVDq63meVGus0q1QEeeTRyv3WLYIvLBCcGHFu6ywh1GVngTAT947
-         7wmds644fW7F1+NExSTpCaTowvxLYZAil2Ox4oo28hvK5TMRbgjNfZEZ5ZSraivRL6Qo
-         BxmVaNu9HrlJsGQ+LPbyvQ9uHQzQl1sTGGkrVoKOhOm7rWtfV78gsnUTRq8tLnH8mf/w
-         xPdT87PkbpT75Lg3BEIjg0CS32NBIFpE1o1+NT95FeHzgEHFdtUNniGdIGXlhKxlCNnb
-         6I1Q==
-X-Gm-Message-State: ABy/qLbOClaCvlZVCmBukUInXkQYi0rh20+fROW0GVs3tsLu6et2dn4i
-        VgKFtczHlMOX4J2S56PJ2F/8X3Hqy2FpHUMd8qMV0M0E5Z4qT3Vm42UluJZxPwn8GmXgVxng98m
-        3WtgFOw+gpLJKnJI8PV1ogJeki34yRC4I
-X-Received: by 2002:a05:600c:3ac6:b0:3fa:8c8b:716 with SMTP id d6-20020a05600c3ac600b003fa8c8b0716mr2305399wms.1.1689693845844;
-        Tue, 18 Jul 2023 08:24:05 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFaI7LXpL6rcOJvQX9zLaYidgPaCoCUU3cJIXb0c7WgeTD+VlcmNLJ8Q7eYsOeTfcrz8/0FSw==
-X-Received: by 2002:a05:600c:3ac6:b0:3fa:8c8b:716 with SMTP id d6-20020a05600c3ac600b003fa8c8b0716mr2305379wms.1.1689693845445;
-        Tue, 18 Jul 2023 08:24:05 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c740:6200:84e1:eabc:8e2:7429? (p200300cbc740620084e1eabc08e27429.dip0.t-ipconnect.de. [2003:cb:c740:6200:84e1:eabc:8e2:7429])
-        by smtp.gmail.com with ESMTPSA id f22-20020a7bc8d6000000b003fbb5142c4bsm10735127wml.18.2023.07.18.08.24.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 08:24:04 -0700 (PDT)
-Message-ID: <5cee5039-b641-82f6-547f-12d94057d0ad@redhat.com>
-Date:   Tue, 18 Jul 2023 17:24:03 +0200
+        d=1e100.net; s=20221208; t=1689693887; x=1692285887;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cqTZ5VtJv8ZipGwySLiNWe25hUa+zEm1zPtVs7gkYp8=;
+        b=S4b/l2FMrpwWH5zHGs5cZKLCWFEKDAM2f6TWcpbPzq2tuW9hMi9+b3+gOOYQ6Nvmqo
+         LiEYMGOgBoJVbNwYE+YmrCjlOVf+gigpjAOsGG1cObH1yIawhXb5c6T1DBwYk4BklvCe
+         Q6lrsxLLgCD+SmgED6QrRkFEHx8r1YPmzJ5ebSzZZDVYsxi3ChMRRUsJSpAMOAmkUgh9
+         oaBpbSgi37A+gUoglWzW3l/LdF4O8b/LQO5tYJ/Brknwz533kb2zGty/GBxR2jXbC8Js
+         jQ1EjLI68+EJZuY6IMi0Si5q1CzkyHDC8XlUnyGo3+j0oIi13voqUM40wOeIFp/6DvZk
+         fHZw==
+X-Gm-Message-State: ABy/qLZ8wKN0WLi3Nn24/+DJzH/FEWeIOFnBAQ+RcIsNVOyM5aYL0rDs
+        fVImwTsDAIJ5kyFwQgsqWlUkoBh/4j8xSEme4m0=
+X-Google-Smtp-Source: APBJJlFeoFh8RkvH70huNuLDuA25sSwc5wrkzJ2luG1WKpQiyBBCtvHuCzO2kNaOaZn0g4dlM0x4alr9fYe6EojReT8=
+X-Received: by 2002:a25:d1ca:0:b0:ccd:8a80:e79d with SMTP id
+ i193-20020a25d1ca000000b00ccd8a80e79dmr218335ybg.23.1689693887450; Tue, 18
+ Jul 2023 08:24:47 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Florent Revest <revest@chromium.org>,
-        Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-References: <20230717103152.202078-1-ryan.roberts@arm.com>
- <20230717103152.202078-7-ryan.roberts@arm.com>
- <20501a7c-19f6-4154-aebc-49df04c9b043@redhat.com>
- <2e5baba4-c8ef-9da4-a2d6-3cf383ed05bd@arm.com>
- <1314fe0e-dd32-bf10-0a33-2b571dad70bd@redhat.com>
- <90a8b224-4566-5051-4903-f9ab83b26150@redhat.com>
- <cb2f093e-8312-0147-272d-e6f148f383da@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v2 6/8] selftests/mm: Make migration test robust to
- failure
-In-Reply-To: <cb2f093e-8312-0147-272d-e6f148f383da@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230717151624.3470714-1-carlos.bilbao@amd.com>
+ <20230717151624.3470714-2-carlos.bilbao@amd.com> <CANiq72k+uB4Px=_kGNEiduc0AewC05XO2zTqC3+ABa0hcxui9w@mail.gmail.com>
+ <f75bb80a-e49c-24e5-c897-7c4ecc804f84@amd.com>
+In-Reply-To: <f75bb80a-e49c-24e5-c897-7c4ecc804f84@amd.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 18 Jul 2023 17:24:36 +0200
+Message-ID: <CANiq72nmeXwS06w2AwJ5OdC14x_5Gp-GmksrBJXiUiZuy7y7hg@mail.gmail.com>
+Subject: Re: [PATCH v7 1/2] docs: Move rustdoc output, cross-reference it
+To:     Carlos Bilbao <carlos.bilbao@amd.com>
+Cc:     corbet@lwn.net, ojeda@kernel.org, jani.nikula@linux.intel.com,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, konstantin@linuxfoundation.org,
+        Akira Yokosawa <akiyks@gmail.com>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.07.23 14:42, Ryan Roberts wrote:
-> On 18/07/2023 12:24, David Hildenbrand wrote:
->> On 18.07.23 13:23, David Hildenbrand wrote:
->>> On 18.07.23 12:49, Ryan Roberts wrote:
->>>> On 17/07/2023 18:40, David Hildenbrand wrote:
->>>>> On 17.07.23 12:31, Ryan Roberts wrote:
->>>>>> The `migration` test currently has a number of robustness problems that
->>>>>> cause it to hang and leak resources.
->>>>>>
->>>>>> Timeout: There are 3 tests, which each previously ran for 60 seconds.
->>>>>> However, the timeout in mm/settings for a single test binary was set to
->>>>>> 45 seconds. So when run using run_kselftest.sh, the top level timeout
->>>>>> would trigger before the test binary was finished. Solve this by meeting
->>>>>> in the middle; each of the 3 tests now runs for 20 seconds (for a total
->>>>>> of 60), and the top level timeout is set to 90 seconds.
->>>>>>
->>>>>> Leaking child processes: the `shared_anon` test fork()s some children
->>>>>> but then an ASSERT() fires before the test kills those children. The
->>>>>> assert causes immediate exit of the parent and leaking of the children.
->>>>>> Furthermore, if run using the run_kselftest.sh wrapper, the wrapper
->>>>>> would get stuck waiting for those children to exit, which never happens.
->>>>>> Solve this by deferring any asserts until after the children are killed.
->>>>>> The same pattern is used for the threaded tests for uniformity.
->>>>>>
->>>>>> With these changes, the test binary now runs to completion on arm64,
->>>>>> with 2 tests passing and the `shared_anon` test failing.
->>>>>>
->>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>>>> ---
->>>>>>      tools/testing/selftests/mm/migration.c | 14 ++++++++++----
->>>>>>      tools/testing/selftests/mm/settings    |  2 +-
->>>>>>      2 files changed, 11 insertions(+), 5 deletions(-)
->>>>>>
->>>>>> diff --git a/tools/testing/selftests/mm/migration.c
->>>>>> b/tools/testing/selftests/mm/migration.c
->>>>>> index 379581567f27..189d7d9070e8 100644
->>>>>> --- a/tools/testing/selftests/mm/migration.c
->>>>>> +++ b/tools/testing/selftests/mm/migration.c
->>>>>> @@ -15,7 +15,7 @@
->>>>>>      #include <time.h>
->>>>>>        #define TWOMEG (2<<20)
->>>>>> -#define RUNTIME (60)
->>>>>> +#define RUNTIME (20)
->>>>>>        #define ALIGN(x, a) (((x) + (a - 1)) & (~((a) - 1)))
->>>>>>      @@ -118,6 +118,7 @@ TEST_F_TIMEOUT(migration, private_anon, 2*RUNTIME)
->>>>>>      {
->>>>>>          uint64_t *ptr;
->>>>>>          int i;
->>>>>> +    int ret;
->>>>>>            if (self->nthreads < 2 || self->n1 < 0 || self->n2 < 0)
->>>>>>              SKIP(return, "Not enough threads or NUMA nodes available");
->>>>>> @@ -131,9 +132,10 @@ TEST_F_TIMEOUT(migration, private_anon, 2*RUNTIME)
->>>>>>              if (pthread_create(&self->threads[i], NULL, access_mem, ptr))
->>>>>>                  perror("Couldn't create thread");
->>>>>>      -    ASSERT_EQ(migrate(ptr, self->n1, self->n2), 0);
->>>>>> +    ret = migrate(ptr, self->n1, self->n2);
->>>>>>          for (i = 0; i < self->nthreads - 1; i++)
->>>>>>              ASSERT_EQ(pthread_cancel(self->threads[i]), 0);
->>>>>> +    ASSERT_EQ(ret, 0);
->>>>>
->>>>> Why is that required? This does not involve fork.
->>>>
->>>> It's not required. I was just trying to keep everything aligned to the same
->>>> pattern.
->>>>
->>>>>
->>>>>>      }
->>>>>>        /*
->>>>>> @@ -144,6 +146,7 @@ TEST_F_TIMEOUT(migration, shared_anon, 2*RUNTIME)
->>>>>>          pid_t pid;
->>>>>>          uint64_t *ptr;
->>>>>>          int i;
->>>>>> +    int ret;
->>>>>>            if (self->nthreads < 2 || self->n1 < 0 || self->n2 < 0)
->>>>>>              SKIP(return, "Not enough threads or NUMA nodes available");
->>>>>> @@ -161,9 +164,10 @@ TEST_F_TIMEOUT(migration, shared_anon, 2*RUNTIME)
->>>>>>                  self->pids[i] = pid;
->>>>>>          }
->>>>>>      -    ASSERT_EQ(migrate(ptr, self->n1, self->n2), 0);
->>>>>> +    ret = migrate(ptr, self->n1, self->n2);
->>>>>>          for (i = 0; i < self->nthreads - 1; i++)
->>>>>>              ASSERT_EQ(kill(self->pids[i], SIGTERM), 0);
->>>>>> +    ASSERT_EQ(ret, 0);
->>>>>
->>>>>
->>>>> Might be cleaner to also:
->>>>
->>>> Or instead of? I agree this is neater, so will undo the moving of the ASSERT()
->>>> and rely on this prctl.
->>>
->>> I was thinking about possible races when our parent process already
->>> quits before our child managed to set the prctl. prctl() won't do
->>> anything in that case, hmmmm.
->>>
->>> But similarly, existing code might already trigger the migrate() + kill
->>> before the child processes even started to access_mem().
->>>
->>> Racy :)
->>>
->>
->> Maybe what would work, is checking after the prctl() in the child if the parent
->> is already gone.
-> 
-> 
-> Like this?
-> 
-> 	if (!pid) {
-> 		prctl(PR_SET_PDEATHSIG, SIGHUP);
-> 		/* Parent may have died before prctl so check now. */
-> 		if (getppid() == 1)
-> 			kill(getpid(), SIGHUP);
-> 		access_mem(ptr);
-> 	}
+On Tue, Jul 18, 2023 at 3:50=E2=80=AFPM Carlos Bilbao <carlos.bilbao@amd.co=
+m> wrote:
+>
+> On 7/17/23 11:37, Miguel Ojeda wrote:
+> >
+> > Also, I assume this is intended to be overridable by the user, right?
+> > i.e. that is why you wrote the identifier as uppercase.
+>
+> That's true, I don't see any reason to make this uppercase.
 
-Staring at forget_original_parent(), that order should work.
+I don't know -- perhaps users may want to override the output
+location. `BUILDDIR` is intended to be overridable, so we should
+consider what should be the behavior when one overrides one but not
+the other. Or perhaps this one shouldn't be overridable, like you did
+in v8, in which case we should still make sure things work if that one
+(`BUILDDIR`) is overridden.
 
-I do wonder if there is a nicer way to handle that, but maybe that 
-already is the "nice" way.
-
--- 
 Cheers,
-
-David / dhildenb
-
+Miguel
