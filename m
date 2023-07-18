@@ -2,116 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD74F757521
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A71D757529
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbjGRHQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 03:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37628 "EHLO
+        id S231655AbjGRHTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 03:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbjGRHQK (ORCPT
+        with ESMTP id S230288AbjGRHTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 03:16:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2610AE48
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 00:15:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689664518;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LO/OU3eOEKbiSK+Rpa6237MBQHj5ytyRv/Karly+Uw4=;
-        b=A5ZdXFyoSxGrEJSW68BKFT3EcXOX5u6qf4sZ86vt1ZDDpuAktf7LO+aA1ZdvsISDwZvQdT
-        SVDkqbtj4Ov3TQKE9uqHEFXmyRL+qReG5/QYnKB3a8WV1945H116Y3x0rLZtBJs/NVXBcR
-        V5gsdTxyBlT5ABSunncuXkWNNVihpWk=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-499-MS-F2VMUOkmU9HgVl_EUPQ-1; Tue, 18 Jul 2023 03:15:17 -0400
-X-MC-Unique: MS-F2VMUOkmU9HgVl_EUPQ-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-401e1fc831fso9932041cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 00:15:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689664516; x=1692256516;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LO/OU3eOEKbiSK+Rpa6237MBQHj5ytyRv/Karly+Uw4=;
-        b=ErTAP1TVuCjlAko9X0cf6JijQOiYj6C4c4Lvu0qeNrGOp3RFFxNYqs5kdrofXUZYVZ
-         58eg6AnEeQVSdtN11pygTVMg+GUJ+jbneGB+F8Tbgv2C7Onnkk6a+8SmdFn+pKj4uy6o
-         xEHy9KlHa5LU9pGaUGqKhjW7Nh4nokgDIWzTI9fHrdKHUiHU5vienfgVvi0OYDO50SrN
-         T/EhuRzGlQPSKvQ62h26zsjEDiGqU3NR9t3UEkpC0ddBSJ+yNdrSZH7NDXwRDGXtBknI
-         FV5QjJ+sP8x2gIi7/A0RU2R1zOX+kXiz3BdReAr5L1pSjRstuQSmTSInQszqZP+iU3ZX
-         1S5g==
-X-Gm-Message-State: ABy/qLaQ6hVnjtF5LgFyyKOX1azbp8pet6Kuva9w0TeP14VnyDCE6vkh
-        JafPeFxW0Go8ODePHmqrCt3J02tUj6qFKDO0mNFwvkOvpoKpFqHyodQRvlE6B9yWbtl621AruEB
-        ehmfbqsvRjcTZYsMmt65u0oci
-X-Received: by 2002:a05:622a:145:b0:403:b11f:29f0 with SMTP id v5-20020a05622a014500b00403b11f29f0mr12838200qtw.0.1689664516501;
-        Tue, 18 Jul 2023 00:15:16 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFCnBH5LbDKP5eqb3how4HWFYkMEEbEjoni1XoZY9ApODHPDOx/exsxIFeKjFPBf7UcYJHAUw==
-X-Received: by 2002:a05:622a:145:b0:403:b11f:29f0 with SMTP id v5-20020a05622a014500b00403b11f29f0mr12838190qtw.0.1689664516267;
-        Tue, 18 Jul 2023 00:15:16 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-226-170.dyn.eolo.it. [146.241.226.170])
-        by smtp.gmail.com with ESMTPSA id bt6-20020ac86906000000b003f364778b2bsm482217qtb.4.2023.07.18.00.15.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 00:15:15 -0700 (PDT)
-Message-ID: <6818bc7ffe07c21d415265c00b00cf32c6d2ac6f.camel@redhat.com>
-Subject: Re: [PATCH] net: ftgmac100: support getting MAC address from NVMEM
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Paul Fertser <fercerpav@gmail.com>,
-        Pavan Chebbi <pavan.chebbi@broadcom.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Liang He <windhl@126.com>, Geoff Levand <geoff@infradead.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Tao Ren <rentao.bupt@gmail.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Tue, 18 Jul 2023 09:15:11 +0200
-In-Reply-To: <ZLDas0gsLNkzuUWR@home.paul.comp>
-References: <20230713095743.30517-1-fercerpav@gmail.com>
-         <CALs4sv08GJXexShzkrhhW5CDSgJC0z3om5YJzy_qYRqEtvyMtg@mail.gmail.com>
-         <ZLDas0gsLNkzuUWR@home.paul.comp>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Tue, 18 Jul 2023 03:19:17 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046E2CA
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 00:19:15 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R4r0r4DcHzBQslH
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:19:08 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689664748; x=1692256749; bh=02lJSJPounRmx9NX09cNlIbTqdQ
+        t2nDvqXmaqTCd2+4=; b=OSaKdyaygyk5UVwB5TDspfZI+2QsIZPoG8YKYNH4n0P
+        Q+7lqHcACigBTY0VdJPtRe+5e/nDbPTXNmDN6pADQb6SIk87Iw/qrs6HygFmrAai
+        2EpBi1ZVzoAM1UOk8jVqyJh3WpMpYoSBmnnuWtSQ2jkAZzelfSw+iSekXTkqIGbP
+        UuBPQRKYl+ti/uh8ciQlcjAl73FdWn9HPkQgN2IlV0cgwY0ygCCwqM9nd2xS5sch
+        2cXvokPRcILw719Ml+0XBU/YuJvU4Q1AU1tMRlP7ZH027QsiV6qLSg7x/YwrbWuY
+        WuAXSCmVv58uKwgy1lOhYv+slycEHMfJY5KyieMWe7w==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 9Phu50ufRjbP for <linux-kernel@vger.kernel.org>;
+        Tue, 18 Jul 2023 15:19:08 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R4r0r2LcKzBHXh4;
+        Tue, 18 Jul 2023 15:19:08 +0800 (CST)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Date:   Tue, 18 Jul 2023 15:19:08 +0800
+From:   sunran001@208suo.com
+To:     davem@davemloft.net
+Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] sparc: add missing put_device()
+In-Reply-To: <20230718071735.16312-1-xujianghui@cdjrlc.com>
+References: <20230718071735.16312-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <4a1fd666ef4700ec17d1be60debf016b@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-07-14 at 08:18 +0300, Paul Fertser wrote:
-> Hello Pavan,
->=20
-> On Fri, Jul 14, 2023 at 10:14:02AM +0530, Pavan Chebbi wrote:
-> > On Thu, Jul 13, 2023 at 3:28=E2=80=AFPM Paul Fertser <fercerpav@gmail.c=
-om> wrote:
-> > > Make use of of_get_ethdev_address() to support reading MAC address no=
-t
-> > > only from the usual DT nodes but also from an NVMEM provider (e.g. us=
-ing
-> > > a dedicated area in an FRU EEPROM).
-> >=20
-> > Looks like earlier ftgmac100_probe() would move on with self generated
-> > (random) MAC addr if getting it from the device failed.
-> > Now you will fail the probe in a failure case. Is that OK?
->=20
-> I think the previous behaviour is preserved with this patch in all the
-> cases other than of_get_ethdev_address returning -EPROBE_DEFER. Can
-> you please explain what failure case you have in mind and how the
-> probe is going to be failed in that case?
+The of_find_device_by_node() takes a reference to the underlying device
+structure, we should release that reference.
 
-FTR, I agree with the above: it looks like the old behavior is
-preserved. The patch LGTM, thanks!
+Detected by coccinelle with the following ERRORS:
+./arch/sparc/kernel/of_device_common.c:23:1-7: ERROR: missing
+put_device; call of_find_device_by_node on line 18, but without a
+corresponding object release within this function.
+./arch/sparc/kernel/of_device_common.c:36:1-7: ERROR: missing
+put_device; call of_find_device_by_node on line 30, but without a
+corresponding object release within this function.
+./arch/sparc/kernel/of_device_common.c:50:1-7: ERROR: missing
+put_device; call of_find_device_by_node on line 42, but without a
+corresponding object release within this function.
 
-Paolo
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  arch/sparc/kernel/of_device_common.c | 3 +++
+  1 file changed, 3 insertions(+)
 
+diff --git a/arch/sparc/kernel/of_device_common.c 
+b/arch/sparc/kernel/of_device_common.c
+index 60f86b837658..7851307de6d0 100644
+--- a/arch/sparc/kernel/of_device_common.c
++++ b/arch/sparc/kernel/of_device_common.c
+@@ -20,6 +20,7 @@ unsigned int irq_of_parse_and_map(struct device_node 
+*node, int index)
+      if (!op || index >= op->archdata.num_irqs)
+          return 0;
+
++    put_device(op->dev);
+      return op->archdata.irqs[index];
+  }
+  EXPORT_SYMBOL(irq_of_parse_and_map);
+@@ -32,6 +33,7 @@ int of_address_to_resource(struct device_node *node, 
+int index,
+      if (!op || index >= op->num_resources)
+          return -EINVAL;
+
++    put_device(op->dev);
+      memcpy(r, &op->archdata.resource[index], sizeof(*r));
+      return 0;
+  }
+@@ -45,6 +47,7 @@ void __iomem *of_iomap(struct device_node *node, int 
+index)
+      if (!op || index >= op->num_resources)
+          return NULL;
+
++    put_device(op->dev);
+      r = &op->archdata.resource[index];
+
+      return of_ioremap(r, 0, resource_size(r), (char *) r->name);
