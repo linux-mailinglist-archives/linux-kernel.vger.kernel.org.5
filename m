@@ -2,171 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AED617586AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93487586B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbjGRVP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 17:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
+        id S231266AbjGRVQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 17:16:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjGRVP0 (ORCPT
+        with ESMTP id S229510AbjGRVQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 17:15:26 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8121EC0;
-        Tue, 18 Jul 2023 14:15:24 -0700 (PDT)
-X-QQ-mid: bizesmtp91t1689714915t194m5qj
-Received: from linux-lab-host.localdomain ( [119.123.130.39])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 19 Jul 2023 05:15:13 +0800 (CST)
-X-QQ-SSF: 01200000000000D0X000000A0000000
-X-QQ-FEAT: lO87fmWkX3FnwSGm+p0pup/4ktDW2xqng3XU6uxahpZJpMrHSZkTO/ZQMQKyN
-        UPuxfSq2bT+YWZH8/JoUGxD+9G4acuQLNRp+qxc//cgvPEs5ciLw66XWiRK6yOZO6GK+pdC
-        VqNLE6cAOhHSErPFNvNUtD8uSfxg5uNMNKGRb04urZdjpxUUlDI29ZJLnhZVDBM5IkBkPWt
-        +l7wWNU3VvOqy8p7rVML4Z9szsWyS3l+Q+p1RflMALejBKs/W5+/i245VHuVLToacNizW7U
-        OOtveNPOw3Gs2p8xqw6UM1mgxuYPsoWt9ewH6BzFJdYm4IsXviKAfbpEUPXGalUxPpebOlI
-        C4uyKdE7KancNwnMomkEL3dSAbDJjgSTgB/WASQ8BOJwBj9PIREimeXPGB7cw==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 5940336848902200637
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     thomas@t-8ch.de, arnd@arndb.de, falcon@tinylab.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH v1 5/8] selftests/nolibc: add XARCH and ARCH mapping support
-Date:   Wed, 19 Jul 2023 05:15:13 +0800
-Message-Id: <90c1d88dabf73e100dc840965fbdfe3ad5dc550f.1689713175.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1689713175.git.falcon@tinylab.org>
-References: <cover.1689713175.git.falcon@tinylab.org>
+        Tue, 18 Jul 2023 17:16:28 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF02198C;
+        Tue, 18 Jul 2023 14:16:27 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36IL7KXu015522;
+        Tue, 18 Jul 2023 21:16:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=PqfrqoeAg+0b1g+Sc4EJfTTv6RRn4fSeA06NxQ7vN/E=;
+ b=Onwnnv+g0Jv0RxApQWdDjRJ/jQLGzFw3a4UOipleGW5fQZeSwsC7q9i3GEGQfE8KxMYS
+ 5WEseE3xiYfciHw+h9ID7DCpV3awHxgEpkaXdOIsASeoHoSb3RgrzZCCPvKJ7jW+WyI4
+ zm0L4zQRgCoZsYbKziQ2ld2ljtK4mMkYZFtwpgSyJhLqVUp6+mQDS6Wpc9bc2xiVBeuk
+ UzsSFikb4QvXQmOdUoxwfbvUaaNWkMKqjuGpADZY+LECcn+K311MHIVnf6a/V+4uupmI
+ ERes7+WlzQLI+cduOgXnd31gVYyTBB88al07NduMIn0wnBk48kuMMyuKVgn+O0rsZqC0 iA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rwpphhrr4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 21:16:06 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36ILG56L015128
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 21:16:05 GMT
+Received: from [10.110.49.60] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 18 Jul
+ 2023 14:16:05 -0700
+Message-ID: <e8399fcf-e0d8-cc31-d9a7-b0f4f7cc3e71@quicinc.com>
+Date:   Tue, 18 Jul 2023 14:16:04 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH 2/2] firmware: arm_scmi: Add qcom hvc/shmem transport
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <sudeep.holla@arm.com>
+CC:     <cristian.marussi@arm.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
+ <20230718160833.36397-3-quic_nkela@quicinc.com>
+ <d9d5ffd5-6f85-f091-5d69-12cdd8d04c99@linaro.org>
+ <3ae2d618-490a-06da-b4b6-b5a24b0a9747@quicinc.com>
+ <ec3d7769-8a5f-d938-7f77-351ddfe6fb45@linaro.org>
+Content-Language: en-US
+From:   Nikunj Kela <quic_nkela@quicinc.com>
+In-Reply-To: <ec3d7769-8a5f-d938-7f77-351ddfe6fb45@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: KuPAXTxwQROxCiF9BTqLsOxJIvWxkS5B
+X-Proofpoint-ORIG-GUID: KuPAXTxwQROxCiF9BTqLsOxJIvWxkS5B
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-18_15,2023-07-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 priorityscore=1501 impostorscore=0 spamscore=0 clxscore=1011
+ bulkscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307180194
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To test the architectures not directly supported by kernel, let's add a
-new XARCH as our own test input and map between XARCH and ARCH to make
-sure pass a right ARCH to kernel for a XARCH input and also configure a
-default XARCH for ARCH.
 
-ARCH is a subset of XARCH, to test more architectures than the ARCH
-variable directly supported by kernel, the old architecture specific
-variables used by our test are converted to use XARCH instead of ARCH.
-
-Suggested-by: Willy Tarreau <w@1wt.eu>
-Link: https://lore.kernel.org/lkml/20230702171715.GD16233@1wt.eu/
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- tools/testing/selftests/nolibc/Makefile | 34 +++++++++++++++----------
- 1 file changed, 21 insertions(+), 13 deletions(-)
-
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index 08a5ca5f418b..b17a82efe6de 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -14,6 +14,13 @@ include $(srctree)/scripts/subarch.include
- ARCH = $(SUBARCH)
- endif
- 
-+# XARCH and ARCH mapping
-+# XARCH is specified by user
-+XARCH           ?= $(or $(XARCH_$(ARCH)),$(ARCH))
-+
-+# ARCH is supported by kernel
-+ARCH            := $(or $(ARCH_$(XARCH)),$(XARCH))
-+
- # kernel image names by architecture
- IMAGE_i386       = arch/x86/boot/bzImage
- IMAGE_x86_64     = arch/x86/boot/bzImage
-@@ -24,7 +31,7 @@ IMAGE_mips       = vmlinuz
- IMAGE_riscv      = arch/riscv/boot/Image
- IMAGE_s390       = arch/s390/boot/bzImage
- IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
--IMAGE            = $(IMAGE_$(ARCH))
-+IMAGE            = $(IMAGE_$(XARCH))
- IMAGE_NAME       = $(notdir $(IMAGE))
- 
- # default kernel configurations that appear to be usable
-@@ -37,10 +44,10 @@ DEFCONFIG_mips       = malta_defconfig
- DEFCONFIG_riscv      = defconfig
- DEFCONFIG_s390       = defconfig
- DEFCONFIG_loongarch  = defconfig
--DEFCONFIG            = $(DEFCONFIG_$(ARCH))
-+DEFCONFIG            = $(DEFCONFIG_$(XARCH))
- 
- # extra kernel config files under configs/, include common + architecture specific
--EXTCONFIG            = common.config $(ARCH).config
-+EXTCONFIG            = common.config $(XARCH).config
- 
- # optional tests to run (default = all)
- TEST =
-@@ -55,7 +62,7 @@ QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
- QEMU_ARCH_riscv      = riscv64
- QEMU_ARCH_s390       = s390x
- QEMU_ARCH_loongarch  = loongarch64
--QEMU_ARCH            = $(QEMU_ARCH_$(ARCH))
-+QEMU_ARCH            = $(QEMU_ARCH_$(XARCH))
- 
- # QEMU_ARGS : some arch-specific args to pass to qemu
- QEMU_ARGS_i386       = -M pc -append "console=ttyS0,9600 i8042.noaux panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-@@ -67,7 +74,7 @@ QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
--QEMU_ARGS            = $(QEMU_ARGS_$(ARCH)) $(QEMU_ARGS_EXTRA)
-+QEMU_ARGS            = $(QEMU_ARGS_$(XARCH)) $(QEMU_ARGS_EXTRA)
- 
- # OUTPUT is only set when run from the main makefile, otherwise
- # it defaults to this nolibc directory.
-@@ -84,7 +91,7 @@ CFLAGS_mips = -EL
- CFLAGS_STACKPROTECTOR ?= $(call cc-option,-mstack-protector-guard=global $(call cc-option,-fstack-protector-all))
- CFLAGS  ?= -Os -fno-ident -fno-asynchronous-unwind-tables -std=c89 \
- 		$(call cc-option,-fno-stack-protector) \
--		$(CFLAGS_$(ARCH)) $(CFLAGS_STACKPROTECTOR)
-+		$(CFLAGS_$(XARCH)) $(CFLAGS_STACKPROTECTOR)
- LDFLAGS := -s
- 
- REPORT  ?= awk '/\[OK\][\r]*$$/{p++} /\[FAIL\][\r]*$$/{if (!f) printf("\n"); f++; print;} /\[SKIPPED\][\r]*$$/{s++} \
-@@ -99,24 +106,25 @@ help:
- 	@echo "  sysroot      create the nolibc sysroot here (uses \$$ARCH)"
- 	@echo "  nolibc-test  build the executable (uses \$$CC and \$$CROSS_COMPILE)"
- 	@echo "  libc-test    build an executable using the compiler's default libc instead"
--	@echo "  run-user     runs the executable under QEMU (uses \$$ARCH, \$$TEST)"
-+	@echo "  run-user     runs the executable under QEMU (uses \$$XARCH, \$$TEST)"
- 	@echo "  initramfs    prepare the initramfs with nolibc-test"
--	@echo "  defconfig    create a fresh new default config (uses \$$ARCH)"
--	@echo "  kernel       (re)build the kernel with the initramfs (uses \$$ARCH)"
--	@echo "  run          runs the kernel in QEMU after building it (uses \$$ARCH, \$$TEST)"
--	@echo "  rerun        runs a previously prebuilt kernel in QEMU (uses \$$ARCH, \$$TEST)"
-+	@echo "  defconfig    create a fresh new default config (uses \$$XARCH)"
-+	@echo "  kernel       (re)build the kernel with the initramfs (uses \$$XARCH)"
-+	@echo "  run          runs the kernel in QEMU after building it (uses \$$XARCH, \$$TEST)"
-+	@echo "  rerun        runs a previously prebuilt kernel in QEMU (uses \$$XARCH, \$$TEST)"
- 	@echo "  clean        clean the sysroot, initramfs, build and output files"
- 	@echo ""
- 	@echo "The output file is \"run.out\". Test ranges may be passed using \$$TEST."
- 	@echo ""
- 	@echo "Currently using the following variables:"
- 	@echo "  ARCH          = $(ARCH)"
-+	@echo "  XARCH         = $(XARCH)"
- 	@echo "  CROSS_COMPILE = $(CROSS_COMPILE)"
- 	@echo "  CC            = $(CC)"
- 	@echo "  OUTPUT        = $(OUTPUT)"
- 	@echo "  TEST          = $(TEST)"
--	@echo "  QEMU_ARCH     = $(if $(QEMU_ARCH),$(QEMU_ARCH),UNKNOWN_ARCH) [determined from \$$ARCH]"
--	@echo "  IMAGE_NAME    = $(if $(IMAGE_NAME),$(IMAGE_NAME),UNKNOWN_ARCH) [determined from \$$ARCH]"
-+	@echo "  QEMU_ARCH     = $(if $(QEMU_ARCH),$(QEMU_ARCH),UNKNOWN_ARCH) [determined from \$$XARCH]"
-+	@echo "  IMAGE_NAME    = $(if $(IMAGE_NAME),$(IMAGE_NAME),UNKNOWN_ARCH) [determined from \$$XARCH]"
- 	@echo ""
- 
- all: run
--- 
-2.25.1
-
+On 7/18/2023 11:42 AM, Krzysztof Kozlowski wrote:
+> On 18/07/2023 20:25, Nikunj Kela wrote:
+>>>> +
+>>>> +	scmi_info = devm_kzalloc(dev, sizeof(*scmi_info), GFP_KERNEL);
+>>>> +	if (!scmi_info)
+>>>> +		return -ENOMEM;
+>>>> +
+>>>> +	np = of_parse_phandle(cdev->of_node, "shmem", 0);
+>>>> +	if (!of_device_is_compatible(np, "arm,scmi-shmem"))
+>>> You leak here reference.
+>> Wouldn't the devm_* API take care of that implicitly? It is same in
+>> smc.c as well.
+> Thanks for bringing my attention to this. I sent a fix for smc.c. Fix
+> your patch as well, please.
+Thanks, I thought you were referring to kzalloc cleanup. Will include 
+this fix. BTW, you may need to fix mailbox.c as well.
+>
+>>>> +		return -ENXIO;
+>>>> +
+>>>> +	ret = of_address_to_resource(np, 0, &res);
+>>>> +	of_node_put(np);
+>>>> +	if (ret) {
+>>>> +		dev_err(cdev, "failed to get SCMI Tx shared memory\n");
+>>>> +		return ret;
+>>>> +	}
+>>>> +
+>>>> +	size = resource_size(&res);
+>>>> +
+>>>> +	/* let's map 2 additional ulong since
+>>>> +	 * func-id & capability-id are kept after shmem.
+>>>> +	 *     +-------+
+>>>> +	 *     |       |
+>>>> +	 *     | shmem |
+>>>> +	 *     |       |
+>>>> +	 *     |       |
+>>>> +	 *     +-------+ <-- size
+>>>> +	 *     | funcId|
+>>>> +	 *     +-------+ <-- size + sizeof(ulong)
+>>>> +	 *     | capId |
+>>>> +	 *     +-------+ <-- size + 2*sizeof(ulong)
+>>>> +	 */
+>>>> +
+>>>> +	scmi_info->shmem = devm_ioremap(dev, res.start,
+>>>> +					size + 2 * sizeof(unsigned long));
+>>>> +	if (!scmi_info->shmem) {
+>>>> +		dev_err(dev, "failed to ioremap SCMI Tx shared memory\n");
+>>>> +		return -EADDRNOTAVAIL;
+>>>> +	}
+>>>> +
+>>>> +	func_id = readl((void *)(scmi_info->shmem) + size);
+>>>> +
+>>>> +#ifdef CONFIG_ARM64
+>>>> +	cap_id = readq((void *)(scmi_info->shmem) + size +
+>>>> +		       sizeof(unsigned long));
+>>>> +#else
+>>>> +	cap_id = readl((void *)(scmi_info->shmem) + size +
+>>>> +		       sizeof(unsigned long));
+>>>> +#endif
+>>>> +
+>>>> +	/*
+>>>> +	 * If there is an interrupt named "a2p", then the service and
+>>>> +	 * completion of a message is signaled by an interrupt rather than by
+>>>> +	 * the return of the hvc call.
+>>>> +	 */
+>>>> +	irq = of_irq_get_byname(cdev->of_node, "a2p");
+>>>> +	if (irq > 0) {
+>>>> +		ret = devm_request_irq(dev, irq, qcom_hvc_msg_done_isr,
+>>>> +				       IRQF_NO_SUSPEND,
+>>>> +				       dev_name(dev), scmi_info);
+>>>> +		if (ret) {
+>>>> +			dev_err(dev, "failed to setup SCMI completion irq\n");
+>>> return dev_err_probe, unless this is not called in probe... but then
+>>> using devm-interface raises questions.
+>> This is copied as is from existing smc.c
+> I understand and I hope you understand the code you copied. If there is
+> a bug in existing code, please do not copy it to new code (like leaking
+> OF node reference).
+>
+> Best regards,
+> Krzysztof
+>
