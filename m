@@ -2,154 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 625D9758590
+	by mail.lfdr.de (Postfix) with ESMTP id C0DC0758591
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 21:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbjGRTbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 15:31:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55498 "EHLO
+        id S229881AbjGRTbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 15:31:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjGRTbN (ORCPT
+        with ESMTP id S229997AbjGRTbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 15:31:13 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC76198E;
-        Tue, 18 Jul 2023 12:31:12 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b6fdaf6eefso93029531fa.0;
-        Tue, 18 Jul 2023 12:31:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689708670; x=1692300670;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iTrSAnnMNi3CJrN72jg6c2jFERcFPh+1lB6HHppzE2o=;
-        b=YstOd1W6X1vyeMfDJmOipRaiIKM3IzxuY+kVIN/FOQeM6+H/CIXHfev4VHYQDS7zaR
-         0kkXOJNSctTui42cWYPOOZUpWLOsizTbde2fZeUuqjApV9AYOBavHGPoqPjEihsrceJ9
-         MU3Z0Ghyv+GV5CnWqWUaOH6UijQkEiUHlOEkacpTf5roK4x3DanRGNJCVFPQ9fNmrMqK
-         X4PF/vBNHywJmm+QqMtWs9Y1kHdK5fNHP98DS6PeU48OWxFWe3UTfXSMGN9llTvi3cey
-         /1/1VQeRp1rh86mVF3atw9KlljWG1Yi6ZdEKQZmHZgtt/T4iHKVnul9V8byJrn+GPu4n
-         VglA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689708670; x=1692300670;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iTrSAnnMNi3CJrN72jg6c2jFERcFPh+1lB6HHppzE2o=;
-        b=SFHhAqwEmoy63AGN3qkHJ1jfr7mYtHCwUFT+URt1EE6BpUkzWHtuRQizTnS/b14Oh8
-         bGXRnv0dYUl9aOPxauhLcmc+ARd6J5NfdmGaiVKyY4W4VcPwdXrgx1K1CET/EsuWhL5Z
-         aC3lmXmjwf2KCdfagYzKfV/0D1l3YRUbAygP8x87UHK4jezxkfTDRFEBPiLTO17LXp+y
-         pAMEFeHXBGhlkBAJexqHxPCJ68qzaPNKJBQe4ijpVLku4SO8lDecFNOcWYKFG6AIuyyJ
-         yzRy/eCcVWlbzquAULwKB6LOgO5rK4LWxrmSdqpMsP50ppjOsdRTBOHjmxL400KHK8HA
-         jifg==
-X-Gm-Message-State: ABy/qLYv4gx4IwIOjH74jfoCCqqI+O0lRYMIplKCVXoCgAqzywirTwpm
-        Bc3tb5dEk267RWDUhXvPrpZv1nDpmmFFd38UNCyDfkVq
-X-Google-Smtp-Source: APBJJlHI4rX84tOEoaXYW/2w4q01fgbrq4MG7euNNK4/ARs8hVqH6cIsj+6x6vLLQZutSVqnnyi3aTO0pVXh+qr52LY=
-X-Received: by 2002:a2e:b611:0:b0:2b7:2066:10e1 with SMTP id
- r17-20020a2eb611000000b002b7206610e1mr11095537ljn.0.1689708670027; Tue, 18
- Jul 2023 12:31:10 -0700 (PDT)
+        Tue, 18 Jul 2023 15:31:14 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED76198D;
+        Tue, 18 Jul 2023 12:31:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=4lvrkWb6sfRiU5F2WxbxoLsvFXn2cJ/Sdsc7oIw9b8Y=; b=RxWb4ZqkCJJM4ETLid0VMKIMWf
+        R8wRhiq0A658gKpuMIItkj4B0yqM6ftio+QEER5QhbdX4T4yEVvPTZfgakdg/4+x0nSkmdfr1FRbC
+        ZENuNMykair96x6nZj53SgSp7oYcWGM5LODf9ZgAyXEDefwaH5Ao0Gp4r1nBQ8QqM8KM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qLqPY-001ePh-BG; Tue, 18 Jul 2023 21:31:04 +0200
+Date:   Tue, 18 Jul 2023 21:31:04 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Kees Cook <kees@kernel.org>, justinstitt@google.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH] net: dsa: remove deprecated strncpy
+Message-ID: <dbfb40d7-502e-40c0-bdaf-1616834b64e4@lunn.ch>
+References: <20230718-net-dsa-strncpy-v1-1-e84664747713@google.com>
+ <316E4325-6845-4EFC-AAF8-160622C42144@kernel.org>
+ <20230718121116.72267fff@kernel.org>
 MIME-Version: 1.0
-References: <5cbde2b4-69b5-4b25-a095-251c8347cb09@kili.mountain>
-In-Reply-To: <5cbde2b4-69b5-4b25-a095-251c8347cb09@kili.mountain>
-From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date:   Tue, 18 Jul 2023 12:30:57 -0700
-Message-ID: <CABBYNZK5MfkOSVUBtWLOLt+H-BBdYrQbZv=rmYtn4WtDyvJopw@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: hci_conn: clean up some casts
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718121116.72267fff@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
+On Tue, Jul 18, 2023 at 12:11:16PM -0700, Jakub Kicinski wrote:
+> On Tue, 18 Jul 2023 11:05:23 -0700 Kees Cook wrote:
+> > Honestly I find the entire get_strings API to be very fragile given
+> > the lack of passing the length of the buffer, instead depending on
+> > the string set length lookups in each callback, but refactoring that
+> > looks like a ton of work for an uncertain benefit.
+> 
+> We have been adding better APIs for long term, and a print helper short
+> term - ethtool_sprintf(). Should we use ethtool_sprintf() here?
 
-On Mon, Jul 17, 2023 at 3:20=E2=80=AFAM Dan Carpenter <dan.carpenter@linaro=
-.org> wrote:
->
-> The ERR_PTR/PTR_ERR() functions are only for error pointers.  They're
-> not a generic way to cast pointers to int.
->
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> ---
-> We should really create INT_PTR/PTR_INT() functions.  But this is a
-> cleanup until someone creates those.
+I was wondering about that as well. There is no variable expansion in
+most cases, so the vsnprintf() is a waste of time.
 
-Is there any reason you didn't create such macros? I mean we could
-have it local first, or perhaps we just do HANDLE_PTR/PTR_HANDLE to
-avoid any confusion.
+Maybe we should actually add another helper:
 
->  net/bluetooth/hci_conn.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
-> index cccc2b8b60a8..aea6fa12d954 100644
-> --- a/net/bluetooth/hci_conn.c
-> +++ b/net/bluetooth/hci_conn.c
-> @@ -873,7 +873,7 @@ static void bis_cleanup(struct hci_conn *conn)
->
->  static int remove_cig_sync(struct hci_dev *hdev, void *data)
->  {
-> -       u8 handle =3D PTR_ERR(data);
-> +       u8 handle =3D (unsigned long)data;
->
->         return hci_le_remove_cig_sync(hdev, handle);
->  }
-> @@ -882,7 +882,7 @@ static int hci_le_remove_cig(struct hci_dev *hdev, u8=
- handle)
->  {
->         bt_dev_dbg(hdev, "handle 0x%2.2x", handle);
->
-> -       return hci_cmd_sync_queue(hdev, remove_cig_sync, ERR_PTR(handle),=
- NULL);
-> +       return hci_cmd_sync_queue(hdev, remove_cig_sync, (void *)(unsigne=
-d long)handle, NULL);
->  }
->
->  static void find_cis(struct hci_conn *conn, void *data)
-> @@ -1234,7 +1234,7 @@ void hci_conn_failed(struct hci_conn *conn, u8 stat=
-us)
->  static void create_le_conn_complete(struct hci_dev *hdev, void *data, in=
-t err)
->  {
->         struct hci_conn *conn;
-> -       u16 handle =3D PTR_ERR(data);
-> +       u16 handle =3D (unsigned long)data;
->
->         conn =3D hci_conn_hash_lookup_handle(hdev, handle);
->         if (!conn)
-> @@ -1264,7 +1264,7 @@ static void create_le_conn_complete(struct hci_dev =
-*hdev, void *data, int err)
->  static int hci_connect_le_sync(struct hci_dev *hdev, void *data)
->  {
->         struct hci_conn *conn;
-> -       u16 handle =3D PTR_ERR(data);
-> +       u16 handle =3D (unsigned long)data;
->
->         conn =3D hci_conn_hash_lookup_handle(hdev, handle);
->         if (!conn)
-> @@ -2854,7 +2854,7 @@ u32 hci_conn_get_phy(struct hci_conn *conn)
->  static int abort_conn_sync(struct hci_dev *hdev, void *data)
->  {
->         struct hci_conn *conn;
-> -       u16 handle =3D PTR_ERR(data);
-> +       u16 handle =3D (unsigned long)data;
->
->         conn =3D hci_conn_hash_lookup_handle(hdev, handle);
->         if (!conn)
-> --
-> 2.39.2
->
+ethtool_name_cpy(u8 **data, unsigned int index, const char *name);
 
+Then over the next decade, slowly convert all drivers to it. And then
+eventually replace the u8 with a struct including the length.
 
---=20
-Luiz Augusto von Dentz
+The netlink API is a bit better. It is one kAPI call which does
+everything, and it holds RTNL. So it is less likely the number of
+statistics will change between the calls into the driver.
+
+	Andrew
