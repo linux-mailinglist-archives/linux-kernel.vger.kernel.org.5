@@ -2,160 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A50B7574A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBBE7574AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbjGRGww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 02:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52572 "EHLO
+        id S231358AbjGRGye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 02:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjGRGwu (ORCPT
+        with ESMTP id S229511AbjGRGyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 02:52:50 -0400
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2122.outbound.protection.outlook.com [40.107.113.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72525186;
-        Mon, 17 Jul 2023 23:52:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JFPda4nyqpK+B55XgfiyEsi64yZrj8kDY0NnLxQq/ccHNhRYIMvThRfLrqPvg4mTuhV4NU1RSZfyrkjqFONgqypmv4hudllQJ3u+vLgXz243FyV1hZYflGhm5qp+wWtxsxlTSro+0IQzTTdyAturRAd+nUiHxGRUujm61fnJayrNkIdGk5cPmxVcdp9JiB8xYbAEXYDUaB1m7xbRkUk70cJeGOi2BvF3RBZpnu7h28OeQGIv5M5EbvjuFPhXnFB6nBCnt4HN8aRiG5A6SYox+jh8b5aJaWKCbgzUX/Ssq3H9EOyPyRuu4+HFfddm6ji5rpulGwLIDBdJxlaN1cPltQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cqfq/UZf2JElFzqVDkeYS0zOtz1I1Sq3UAIgxTvjL0c=;
- b=U6INBY5nTwfS9LFATMrBKr6hyaaMt12yFrNsqesJazOZYd64Lo5pRb3lDBij5swYivS2joFsY8MDFEXawOJ9zgCg4F0DisH4qB/3b7+aoCvwu9E82ZtdjIFE/fxF6mGj09EGF8EmeSKTRvL2BZAArlPdx0oLdoQO1qB2CZN4uzC7Bt79ONh+egeI0j+iMvAENAkp5RtrbbVHdbnWWqymVpFPF9WdbhpYx1gTLLndKE6vc0j0akhga/ZDoNLZB7THsJVmTADUQDK5LspoxT/gWSBCXhB66xozgpiuCpmC2hEfQY+Qc14ysEfGtg4gh6vUaf8whJj5vTLhi4vovtlFAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cqfq/UZf2JElFzqVDkeYS0zOtz1I1Sq3UAIgxTvjL0c=;
- b=tPNLnEW03nggVyA8ApSrVoXnX6rBVG3iuDtM5rzjhxksh5UpyjU9PQrodvikYh6h+vhprYVy2eW+ZtFjMSgeb+TwrhGKuSWTe3k2U74rhHBk85GY9egh4rHQpShjA01Kvy9y4vj7aHIuMwmCHzeRACygCkp3rks7mXKoxWcF1lc=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by OS0PR01MB5537.jpnprd01.prod.outlook.com (2603:1096:604:af::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32; Tue, 18 Jul
- 2023 06:52:45 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::834b:28df:28dc:7f95]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::834b:28df:28dc:7f95%7]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
- 06:52:45 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Randy Dunlap <rd.dunlab@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>
-CC:     =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: RE: [PATCH] pwm: fi pwm-rz-mtu3.c build errors
-Thread-Topic: [PATCH] pwm: fi pwm-rz-mtu3.c build errors
-Thread-Index: AQHZuTz3JvYeSdheY0298OUyurLS6a+/EjSAgAAAdkCAAAGDAIAAAEKQ
-Date:   Tue, 18 Jul 2023 06:52:45 +0000
-Message-ID: <OS0PR01MB5922C71E47AC3EE25C74EEE18638A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <8a4de6c6-8d7c-a115-2a14-d264d6d28ccf@gmail.com>
- <d31387c2-7411-ae98-93d3-418b9d5b87f6@gmail.com>
- <OS0PR01MB5922C3D065F47297A9620A4A8638A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <f0586356-c7f2-c8dd-fbac-ab874dc94f23@gmail.com>
-In-Reply-To: <f0586356-c7f2-c8dd-fbac-ab874dc94f23@gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|OS0PR01MB5537:EE_
-x-ms-office365-filtering-correlation-id: 4741d510-4600-4466-540d-08db875b97a4
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fcBTVgQwkmPoqnZr7XTkBSinzLFpHwFzxQp1c4JwAMiVO3X7jbMXobQvedS2LqmmM1h4izVvJnvboZDOgjP2lWhNo6LtL86B96+JpyXLQoLdJED4YN9oRttRRz21FMwO3HuVZDkaUOGPaUQGX6rhMJNFOHScgM6x/P9EG5WmqxdwVlidGQjKP3h+32nZuGWUi7MTnvSW02G1xe3nOe2LQvsOgDQg3D4Jru7JHBTcF2rPK7u28wLakb2sFRRNnJHHhZVWLxxrpJhFjnToVUsFV4YDpAC3yaAJIP7und9fbV0AFlMtRRvIt+DlQk1n5DZRYZo++rGWAzk2Qlw3yGsklJrR1O3BG3CJogyddtIet66Q9VvK0fw8+HU4bi9E2mbh78G/yWsg5bbW/A2oZiWbxnC4Xkh+iAc0st3/Vhyaeg9q6Kxiy2Lq9fWxnzPyM+n2tfp8VMwDGwqRo584MANbmnZDOIH+6ne39Z8HW6cSyiPQU8614XcGRSrUamBNkt9+hcL0rtvIzTSITZXgvC+KeAXKXbtD42aP1x47jI5KE7Koub+uopye8gb6bmISNLxyrt24dr5gsI8aSWupk+PAyVtInvhv+6f/A5KH1yvgGJCVAcMCtMg0la3NMzqxzlW7
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(366004)(396003)(39860400002)(376002)(346002)(451199021)(478600001)(5660300002)(66946007)(66476007)(66446008)(66556008)(64756008)(4326008)(52536014)(316002)(76116006)(8676002)(54906003)(8936002)(55016003)(2906002)(41300700001)(110136005)(71200400001)(6506007)(9686003)(53546011)(7696005)(26005)(38100700002)(33656002)(186003)(83380400001)(122000001)(86362001)(38070700005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cmFVM2QzaEExUnJlZUVWQUdrWEplRlYvLzFOSkdNekh1dVhXNVNkMTFpaE03?=
- =?utf-8?B?bUFRVGlNbFJBWjhVZDN1QW1tV0M4T090T1g1ZCtZek9oVlJ1SW5GcjlIbHpu?=
- =?utf-8?B?aFdUNjBWWXd0TFJZYm0zTnNjZ0VTV2lSU0k2V0dnb3JORFhvanU0OVVDRGZy?=
- =?utf-8?B?Z21WNmpmdDQraDVxaEF1djV1RHJEVXNCN01qaFNlOUdjSmdZWGs2SnZTNXNW?=
- =?utf-8?B?bWFhSmJ4OHJZMGcyaVNTVmdEMWdvRG1JdzBqVlR2VjhRekdPUUdTWlhJMGlq?=
- =?utf-8?B?WU9GZ082c0o3TW11cnJlSlVkOWpNNlJ6RzZieUNWbWMwakJwaHEwL2ZOYW04?=
- =?utf-8?B?NDd0Z0Z5WXF5QmhERGFsMHpsQndoR0tXdmxCVnFIbTRncnE2aVV3THZWUXJH?=
- =?utf-8?B?WmpHZC9jaFRZc0pOMk5OSTlBcHZZUmp6dU5obS9vRk0xWGZidzFmMThxV0Jh?=
- =?utf-8?B?UU1ldVBxK0VaUWl0dCtBL21PSXVZdGdvWVpkL2gxQy9uU05VblZxUU1NTGVm?=
- =?utf-8?B?ZlpsUnFRUnREbDlCN1Y3aEdiY3EvSi9iOGphZ1QwV2JpTXpXVEtMbHpTd0VU?=
- =?utf-8?B?ZjdRUTd3RVg2dlNBd3NGbHFDcmRmL0puOTBQdkhBeG5NTGk1Sk9JOVZZbmk5?=
- =?utf-8?B?MmdKUTFRMkJlTWpCMDZBUVZ6NDlvb1REM2hwTjV1emYzWnovSDVYTEw2bGJ5?=
- =?utf-8?B?K2pybG5hbHBYM3A5TlIxRWZYMmZiZmhFOGQ5dFZ3SmUyd3V3b3AxclBZQUZL?=
- =?utf-8?B?N2YxWnVyUE1HQVd3M05qUVhFYnB3YmNRcFN1TjdpT1lSODJuajZyd0xHL0JE?=
- =?utf-8?B?dXlqRkUrbFdSMU0wZGtyMmphM1l1amtESkw1ZmZBMnJLaUJpTVpZNi9icnV2?=
- =?utf-8?B?bS9LNmUybVR6ZUVWVnZlOFhJZHhGR0pVb2UrTVIxdnRWenl1bUIxbXdzbXZw?=
- =?utf-8?B?bG1COXg1MjBGT3lVWTRRL2VIVXRyQ3NOYXRuSm1JWFpRUzc0ckl3Q2djRXhN?=
- =?utf-8?B?ZUpCZG1SajVSSjlPWHk4RFdsYXRsYmFFWjNLVXZCNUJkZVFqK05LWThNb0Er?=
- =?utf-8?B?d0YzcDB0MmkyYkpyYVkxYXU1TE1td0VzMkdiNjFVNG0vK1Nkb2JmUmJKckhl?=
- =?utf-8?B?M0tnSFZiM2cybHhmYnpxNTZBa25QSy9CUGw4ZGRzRXJBWGd3MjRvTm02aWhu?=
- =?utf-8?B?a1B3ZUE3THI3bXZWZUlsaFZPRldEM29xdEZEalk3OEFORGR4UzNaQTZtRTds?=
- =?utf-8?B?MUdVVVB2QTc5aWhJWFVhWXR5Tnh1TlJmYTRybXhwSURBLzJQM3N4UmJxRnBw?=
- =?utf-8?B?UmIxb3FaVHdCeGcybGlKZytWRWJ3MFVmMW50VEQ4d1QxZUJydkdGK3hnWVlZ?=
- =?utf-8?B?ZDFCOTJ2WHp4ZkFDQnNpdG14RzRlRTBiT3ZEcnNPZHZMd3VuZDNxVTYrTlMx?=
- =?utf-8?B?UEJ5eG51eUdDVG51Qk1Rc3A4NzJSU3ZLdWRYWlRpQkNGNjAxWnRKOW5wWUpI?=
- =?utf-8?B?VFhZcFd1NDFkdGxlT0dDZkxCT0lXSCt0U244UXVBUjB0YnBNNXRFc2ZrYlRJ?=
- =?utf-8?B?MVQ3OTJPOVRKK1g0RGNxQWpPT3dDelFOaU9EeHZ6ODRiWk9TOC9zYnhQQVBl?=
- =?utf-8?B?YWZ3dHB5Z0E0OGdSdjJKUllyTEEvcHUrcndIeURXVVp5djFBbXg0VmtoRlZx?=
- =?utf-8?B?a0U2aTdwU043clBZc09rVXltR3F4blNzMFBZU3JKV2NnMDVlTUkzYTd1emxF?=
- =?utf-8?B?WGc4RFNYd003bmt3RkkxcmhyOEZBUHloVHMyUVBLY2xYS1BlRTluWHlPeXZ6?=
- =?utf-8?B?QnVyblNtVUhWUkFjeVZzdUZ0M0lCVEJjMEhqZFBzdGp5SVFycjFhK0NRNDZ1?=
- =?utf-8?B?MlBid1lRd1BsWmx2ZTBaS25KL09wMW52dmlhUnpMc0cyTnhSVlNsR3dVTTJN?=
- =?utf-8?B?QWgyM0w3eW1WZ3l5d2pzVkZvWElTNGlQR2U4ditmLzZFN2c3VVpXaENYZnQ1?=
- =?utf-8?B?aXl2MVlsTUx1WW8rNmFONDR1STFCK3RKbjJmVVVzZXRXKzFuRWxFSlk4b1or?=
- =?utf-8?B?bkdYMCs5YVNGTDJZVHFMdzVlb3dGUlduWTJWRjZnZ1JCZDFUZXdnNXg0WEQy?=
- =?utf-8?Q?djqW9zXLW+gai5qDHfuWwBa2F?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 18 Jul 2023 02:54:32 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A701A6;
+        Mon, 17 Jul 2023 23:54:31 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-bd61dd9a346so5516377276.2;
+        Mon, 17 Jul 2023 23:54:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689663270; x=1692255270;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sgDGchMF6LAYxhWhPSHJoTeV4E/Z+JNbtA7x+AzWiuU=;
+        b=FKyretqAvz6qN5R7y+kMmkuYlpEmZmg5fIOt9zIVM+/zIGHzw7FlGbZgawcRA7dQwK
+         Pe5qhDZ7G424Vj1QMADCJka6kdqm0nNMQLDFLgrOW9vOXiKWvK/I3+Qo4Cbq5OGBaIbI
+         GYbSlmiDhFL4nDrqz/qO//ERN+dLT1PP00grTkSGK92K1yx201AlcgYQKbeQZpysI68G
+         Zzqmmio50SmDnD7JtIsm7jO/cSpfTlb9Asp+nbfNtpkXLeHAEYw9WCE1/aPkDaRKJeZ6
+         NLjgcWz8RIF3w9Tqyaj8VwxYe3S6pZ6i4PLeT+8QNq8BorQoioPS3+SHcxNWAec0aQoY
+         xgaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689663270; x=1692255270;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sgDGchMF6LAYxhWhPSHJoTeV4E/Z+JNbtA7x+AzWiuU=;
+        b=fTl+Nhf8Aeqej7zC5VdCEvoIths5TidyS4hztTJTJ6yLZTIPQ7pmzRGmEpA/zLh9m2
+         2qW+gwAiGQY/gn7MpNpOAa75GF4RUWdrZjLkVavUl1rY8IrXucDIKfHUOaa/ahtGwN7u
+         jRxx6kdhSr+ooZOpZOoww497Rauo5VPd1iExrGvatF1LJe//peBPD0/sPGTT8KMi4XRG
+         bW3hG7wLdtMHZiXYWDHYjd7bltoPAM9MjuQufSenMXGz2qwpDL/csQVBM5+MDL3fHuj/
+         48vgBB4kFs2/qbgrGBTrAZpK7bTkhEHPanHztyrrE/yy7aQmZFy5Ww5uDoK2Qx5ZcFSh
+         +q4g==
+X-Gm-Message-State: ABy/qLbiv2YfGiK1yC0sYnRLR9NI+PIzvN/GzgpMSUxUBGQqFGptgqA+
+        3nQZxhgskOiZnZKtUeuvbt8=
+X-Google-Smtp-Source: APBJJlGG7jeJfAdlvA3jfevXWNsX7Z6XDnEdzmBFjE/l3f7O0vfTOPwf+XRLDlNSHZlqc8rEVsYa8w==
+X-Received: by 2002:a25:aa74:0:b0:cea:5d93:3cc4 with SMTP id s107-20020a25aa74000000b00cea5d933cc4mr810955ybi.31.1689663270348;
+        Mon, 17 Jul 2023 23:54:30 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j11-20020a25550b000000b00bceb538a275sm303404ybb.21.2023.07.17.23.54.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 23:54:29 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <709d738c-3bf3-d808-4172-468d7ad947d7@roeck-us.net>
+Date:   Mon, 17 Jul 2023 23:54:26 -0700
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4741d510-4600-4466-540d-08db875b97a4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jul 2023 06:52:45.8732
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: t+VJA/F9N+mo/nFH1lZpROJapg2ZynNsJdeyjHPioZVXfYrfwr0uhcstj8mHNw8AhUHrczIKA9vFIRCxkcAWoustqP2jwcFEZWE5V3LPwng=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS0PR01MB5537
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?B?6JSh5om/6YGU?= <billyking19920205@gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "patrick@stwcx.xyz" <patrick@stwcx.xyz>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
+References: <0ba3767c-d481-6e2c-2d32-b79af0e1efd8@roeck-us.net>
+ <CAGUgbhC34-pUp4ECULc0ScaN7hUF1L-z69h+ji-TiVrv4gKd3Q@mail.gmail.com>
+ <7b198d57-ddec-3074-314a-3e5e5b8f48f9@roeck-us.net>
+ <CAGUgbhDbFedVe-pc+muD_NtDpjHpGqMDdrS3A73C-QbxeHn4oQ@mail.gmail.com>
+ <cf91edc9-1093-495b-48eb-6b05198c2541@linaro.org>
+ <7a69bda1-5f4c-5b1f-8eb6-6fd58917a9b1@roeck-us.net>
+ <CAGUgbhCTDPGt_vpbfaEreX+iuLJ3WUBqt4kppxyaFZQus9Zf0Q@mail.gmail.com>
+ <b22b2ccc-6760-0db6-067b-109c3864d2e8@linaro.org>
+ <CAGUgbhDmXnyxYCL9h9C0P4ByDSTstWnGqW=uFoDVVHeK3BerHA@mail.gmail.com>
+ <3756dffd-1407-d656-485a-9cf1eefd9ae1@linaro.org> <ZLYziWcIWcNnzMXR@orome>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [v6 2/4] dt-bindings: hwmon: Add ASPEED TACH Control
+ documentation
+In-Reply-To: <ZLYziWcIWcNnzMXR@orome>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUmFuZHkgRHVubGFwLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206
-IFJhbmR5IER1bmxhcCA8cmQuZHVubGFiQGdtYWlsLmNvbT4NCj4gU2VudDogVHVlc2RheSwgSnVs
-eSAxOCwgMjAyMyA3OjQ1IEFNDQo+IFRvOiBCaWp1IERhcyA8YmlqdS5kYXMuanpAYnAucmVuZXNh
-cy5jb20+OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiBsaW51eC1wd21Admdlci5r
-ZXJuZWwub3JnDQo+IENjOiBVd2UgS2xlaW5lLUvDtm5pZyA8dS5rbGVpbmUta29lbmlnQHBlbmd1
-dHJvbml4LmRlPjsgVGhpZXJyeSBSZWRpbmcNCj4gPHRoaWVycnkucmVkaW5nQGdtYWlsLmNvbT4N
-Cj4gU3ViamVjdDogUmU6IFtQQVRDSF0gcHdtOiBmaSBwd20tcnotbXR1My5jIGJ1aWxkIGVycm9y
-cw0KPiANCj4gT24gNy8xNy8yMyAyMzo0MiwgQmlqdSBEYXMgd3JvdGU6DQo+ID4NCj4gPg0KPiA+
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+PiBGcm9tOiBSYW5keSBEdW5sYXAgPHJk
-LmR1bmxhYkBnbWFpbC5jb20+DQo+ID4+IFNlbnQ6IFR1ZXNkYXksIEp1bHkgMTgsIDIwMjMgNzoz
-OCBBTQ0KPiA+PiBUbzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtcHdtQHZn
-ZXIua2VybmVsLm9yZw0KPiA+PiBDYzogVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5p
-Z0BwZW5ndXRyb25peC5kZT47IFRoaWVycnkgUmVkaW5nDQo+ID4+IDx0aGllcnJ5LnJlZGluZ0Bn
-bWFpbC5jb20+OyBCaWp1IERhcyA8YmlqdS5kYXMuanpAYnAucmVuZXNhcy5jb20+DQo+ID4+IFN1
-YmplY3Q6IFJlOiBbUEFUQ0hdIHB3bTogZmkgcHdtLXJ6LW10dTMuYyBidWlsZCBlcnJvcnMNCj4g
-Pj4NCj4gPj4gT24gNy8xNy8yMyAyMjo1OSwgUmFuZHkgRHVubGFwIHdyb3RlOg0KPiA+Pj4gRnJv
-bTogUmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+DQo+ID4+Pg0KPiA+Pj4NCj4g
-Pj4+IEZpeGVzOiAyNTRkM2E3Mjc0MjEgKCJwd206IEFkZCBSZW5lc2FzIFJaL0cyTCBNVFUzYSBQ
-V00gZHJpdmVyIikNCj4gPj4+IFNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBp
-bmZyYWRlYWQub3JnPg0KPiA+Pg0KPiA+PiBPb3BzLCBJIHNob3VsZCByZXNlbmQgdGhhdCB3aXRo
-IGNvcnJlY3RlZCBlbWFpbCBhZGRyZXNzZXMuIFNvcnJ5Lg0KPiA+DQo+ID4gQWxzbyB0eXBvIGlu
-IHBhdGNoIGhlYWRlciAicHdtOiBmaSBwd20tcnotbXR1My5jIGJ1aWxkIGVycm9ycyIgPz8NCj4g
-DQo+IFllcywgSSBzYXcgJiBmaXhlZCB0aGF0IG9uZS4NCj4gDQo+ID4gTm90IHN1cmUgZml4ZXMg
-dGFnIHNob3VsZCBiZQ0KPiA+IGI4YjI4YjcxOGRkZCAoIm1mZDogQWRkIG1vZHVsZSBidWlsZCBz
-dXBwb3J0IGZvciBSWi9HMkwgTVRVM2EiKSBvcg0KPiA+IDI1NGQzYTcyNzQyMSAoInB3bTogQWRk
-IFJlbmVzYXMgUlovRzJMIE1UVTNhIFBXTSBkcml2ZXIiKQ0KPiANCj4gSXQncyB0aGUgUFdNIEtj
-b25maWcgZW50cnkgdGhhdCBpcyBpbmNvcnJlY3QgQUZBSUNULg0KDQpPSyBnb3QgaXQuDQoNCkNo
-ZWVycywNCkJpanUNCg==
+On 7/17/23 23:39, Thierry Reding wrote:
+> On Tue, Jul 18, 2023 at 08:04:24AM +0200, Krzysztof Kozlowski wrote:
+>> On 18/07/2023 06:01, 蔡承達 wrote:
+>>>>
+>>>> On 17/07/2023 11:01, 蔡承達 wrote:
+>>>>> Guenter Roeck <linux@roeck-us.net> 於 2023年7月17日 週一 上午1:00寫道：
+>>>>>>
+>>>>>> On 7/16/23 09:08, Krzysztof Kozlowski wrote:
+>>>>>>
+>>>>>> [ ... ]
+>>>>>>
+>>>>>>>>
+>>>>>>>> This patch serial doesn't use to binding the fan control h/w. It is
+>>>>>>>> used to binding the two independent h/w blocks.
+>>>>>>>> One is used to provide pwm output and another is used to monitor the
+>>>>>>>> speed of the input.
+>>>>>>>> My patch is used to point out that the pwm and the tach is the
+>>>>>>>> different function and don't need to
+>>>>>>>> bind together. You can not only combine them as the fan usage but also
+>>>>>>>> treat them as the individual module for
+>>>>>>>> use. For example: the pwm can use to be the beeper (pwm-beeper.c), the
+>>>>>>>> tach can be used to monitor the heart beat signal.
+>>>>>>>
+>>>>>>> Isn't this exactly the same as in every other SoC? PWMs can be used in
+>>>>>>> different ways?
+>>>>>>>
+>>>>>>
+>>>>>> ... and in every fan controller. Not that it really makes sense because
+>>>>>> normally the pwm controller part of such chips is tied to the fan input,
+>>>>>> to enable automatic fan control, but it is technically possible.
+>>>>>> In many cases this is also the case in SoCs, for example, in ast2500.
+>>>>>> Apparently this was redesigned in ast2600 where they two blocks are
+>>>>>> only lightly coupled (there are two pwm status bits in the fan status
+>>>>>> register, but I have no idea what those mean). If the blocks are tightly
+>>>>>> coupled, separate drivers don't really make sense.
+>>>>>>
+>>>>>> There are multiple ways to separate the pwm controller part from the
+>>>>>> fan inputs if that is really necessary. One would be to provide a
+>>>>>> sequence of address mappings, the other would be to pass the memory
+>>>>>> region from an mfd driver. It is not necessary to have N instances
+>>>>>> of the fan controller, even if the address space is not continuous.
+>>>>>>
+>>>>>
+>>>>> Hi Guenter,
+>>>>>
+>>>>> May I ask about the meaning of the sequence of address mappings? It appears
+>>>>> to consist of multiple tuples within the 'reg' property, indicating
+>>>>> the usage of PWM/Tach
+>>>>> registers within a single instance. After that I can use the dts like following:
+>>>>>
+>>>>> pwm: pwm@1e610000 {
+>>>>> ...
+>>>>> reg = <0x1e610000 0x8
+>>>>> 0x1e610010 0x8
+>>>>> 0x1e610020 0x8
+>>>>> 0x1e610030 0x8
+>>>>> 0x1e610040 0x8
+>>>>> 0x1e610050 0x8
+>>>>> 0x1e610060 0x8
+>>>>> 0x1e610070 0x8
+>>>>> 0x1e610080 0x8
+>>>>> 0x1e610090 0x8
+>>>>> 0x1e6100A0 0x8
+>>>>> 0x1e6100B0 0x8
+>>>>> 0x1e6100C0 0x8
+>>>>> 0x1e6100D0 0x8
+>>>>> 0x1e6100E0 0x8
+>>>>> 0x1e6100F0 0x8>;
+>>>>
+>>>>
+>>>> Uh, no... I mean, why? We keep pointing out that this should not be done
+>>>> differently than any other SoC. Open any other SoC PWM controller and
+>>>> tell me why this is different? Why this cannot be one address space?
+>>>
+>>> Hi Krzysztof,
+>>>
+>>> This is because the register layout for PWM and Tach is not continuous.
+>>> Each PWM/Tach instance has its own set of controller registers, and they
+>>> are independent of each other.
+>>
+>> Register layout is not continuous in many other devices, so again - why
+>> this must be different?
+>>
+>>>
+>>> For example:
+>>> PWM0 uses registers 0x0 and 0x4, while Tach0 uses registers 0x8 and 0xc.
+>>> PWM1 uses registers 0x10 and 0x14, while Tach1 uses registers 0x18 and 0x1c.
+>>> ...
+>>>
+>>> To separate the PWM controller part from the fan inputs, Guenter has
+>>> provided two methods.
+>>> The first method involves passing the memory region from an MFD
+>>> driver, which was the
+>>
+>> I have no clue how can you pass memory region
+>> (Documentation/devicetree/bindings/reserved-memory/) from MFD and why
+>> does it make sense here.
+>>
+>>> initial method I intended to use. However, it seems that this method
+>>> does not make sense to you.
+>>>
+>>> Therefore, I would like to explore the second method suggested by
+>>> Guenter, which involves providing
+>>> a sequence of address mappings.
+> 
+> At the risk of saying what others have said: given that there's a single
+> reset line and a single clock line controlling all of these channels and
+> given what I recall of how address demuxers work in chips, everything
+> indicates that this is a single hardware block/device.
+> 
+> So the way that this should be described in DT is:
+> 
+> 	pwm@1e610000 {
+> 		reg = <0x1e610000 0x100>;
+> 		clocks = ...;
+> 		resets = ...
+> 	};
+> 
+> That'd be the most accurate representation of this hardware in DT. It is
+> then up to the driver to expose this in any way you see fit. For Linux
+> it may make sense to expose this as 16 PWM channels and 16 hardware
+> monitoring devices. Other operating systems using the same DT may choose
+
+It is single chip. It should be a single hardware monitoring device with
+16 channels. I don't even want to think about the mess we'd get if people
+start modeling a single chip as N hardware monitoring devices, one for
+each monitoring channel supported by that chip. It would be even more messy
+if the driver supporting those N devices would be marked for asynchronous
+probe, which would result in random hwmon device assignments.
+
+> to expose this differently, depending on their frameworks, etc. A simple
+> operating system may not expose this as separate resources at all but
+> instead directly program individual registers from this block.
+> 
+> I'd also like to add that I think trying to split this up into multiple
+> drivers in Linux is a bit overkill. In my opinion, though I know not
+> everyone shares this view, it's perfectly fine for one driver to expose
+> multiple types of resources. There's plenty of use-cases across the
+> kernel where tightly coupled devices like this have a single driver that
+> registers with multiple subsystems. Going through MFD only because this
+> particular hardware doesn't split registers nicely along Linux subsystem
+> boundaries.
+> 
+> So FWIW, I'm fine carrying hwmon code in a PWM driver and I'm equally
+> fine if PWM code ends up in a hwmon driver (or any other subsystem
+> really) if that makes sense for a given hardware.
+> 
+
+I am fine either way as well, as long as we are talking about a single
+hwmon device and not 16 of them.
+
+Guenter
+
