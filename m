@@ -2,152 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 865F775725C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D96D4757260
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbjGRDea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 23:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38842 "EHLO
+        id S230041AbjGRDhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 23:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbjGRDeZ (ORCPT
+        with ESMTP id S229633AbjGRDhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 23:34:25 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80AD6BB;
-        Mon, 17 Jul 2023 20:34:22 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R4l0d4QvyzrRpm;
-        Tue, 18 Jul 2023 11:33:37 +0800 (CST)
-Received: from M910t.huawei.com (10.110.54.157) by
- kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 18 Jul 2023 11:34:19 +0800
-From:   Changbin Du <changbin.du@huawei.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Hui Wang <hw.huiwang@huawei.com>,
-        Changbin Du <changbin.du@huawei.com>
-Subject: [PATCH v3 3/3] perf: replace taskset with --workload-attr option
-Date:   Tue, 18 Jul 2023 11:33:55 +0800
-Message-ID: <20230718033355.2960912-4-changbin.du@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230718033355.2960912-1-changbin.du@huawei.com>
-References: <20230718033355.2960912-1-changbin.du@huawei.com>
+        Mon, 17 Jul 2023 23:37:50 -0400
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B74F1;
+        Mon, 17 Jul 2023 20:37:48 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R511e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0Vng22vg_1689651463;
+Received: from 30.221.158.122(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0Vng22vg_1689651463)
+          by smtp.aliyun-inc.com;
+          Tue, 18 Jul 2023 11:37:45 +0800
+Message-ID: <f88ad438-fb63-beeb-b999-94fb3a75d93d@linux.alibaba.com>
+Date:   Tue, 18 Jul 2023 11:37:40 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.110.54.157]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500013.china.huawei.com (7.221.188.120)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH net-next V2 3/4] virtio_net: support per queue interrupt
+ coalesce command
+To:     Gavin Li <gavinl@nvidia.com>
+Cc:     gavi@nvidia.com, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        xuanzhuo@linux.alibaba.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, jiri@nvidia.com, dtatulea@nvidia.com
+References: <20230717143037.21858-1-gavinl@nvidia.com>
+ <20230717143037.21858-4-gavinl@nvidia.com>
+From:   Heng Qi <hengqi@linux.alibaba.com>
+In-Reply-To: <20230717143037.21858-4-gavinl@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the taskset with our new option --workload-attr.
 
-Signed-off-by: Changbin Du <changbin.du@huawei.com>
----
- tools/perf/Documentation/intel-hybrid.txt        | 2 +-
- tools/perf/Documentation/perf-stat.txt           | 2 +-
- tools/perf/tests/shell/stat_bpf_counters_cgrp.sh | 2 +-
- tools/perf/tests/shell/test_arm_coresight.sh     | 2 +-
- tools/perf/tests/shell/test_data_symbol.sh       | 2 +-
- tools/perf/tests/shell/test_intel_pt.sh          | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/Documentation/intel-hybrid.txt b/tools/perf/Documentation/intel-hybrid.txt
-index e7a776ad25d7..b4adb1eeba3f 100644
---- a/tools/perf/Documentation/intel-hybrid.txt
-+++ b/tools/perf/Documentation/intel-hybrid.txt
-@@ -132,7 +132,7 @@ displayed. The percentage is the event's running time/enabling time.
- One example, 'triad_loop' runs on cpu16 (atom core), while we can see the
- scaled value for core cycles is 160,444,092 and the percentage is 0.47%.
- 
--perf stat -e cycles \-- taskset -c 16 ./triad_loop
-+perf stat -e cycles --workload-attr other,0,16 \-- ./triad_loop
- 
- As previous, two events are created.
- 
-diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-index 18d0f73458b1..fb52ddcea622 100644
---- a/tools/perf/Documentation/perf-stat.txt
-+++ b/tools/perf/Documentation/perf-stat.txt
-@@ -464,7 +464,7 @@ on workload with changing phases.
- 
- To interpret the results it is usually needed to know on which
- CPUs the workload runs on. If needed the CPUs can be forced using
--taskset.
-+--workload-attr option.
- 
- --td-level::
- Print the top-down statistics that equal the input level. It allows
-diff --git a/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh b/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
-index d724855d097c..b13bf391b137 100755
---- a/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
-+++ b/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
-@@ -64,7 +64,7 @@ check_cpu_list_counted()
- {
- 	local output
- 
--	output=$(perf stat -C 1 --bpf-counters --for-each-cgroup ${test_cgroups} -e cpu-clock -x, taskset -c 1 sleep 1  2>&1)
-+	output=$(perf stat -C 1 --bpf-counters --for-each-cgroup ${test_cgroups} -e cpu-clock -x, --workload-attr other,0,1 -- sleep 1 2>&1)
- 	if echo ${output} | grep -q -F "<not "; then
- 		echo "Some CPU events are not counted"
- 		if [ "${verbose}" = "1" ]; then
-diff --git a/tools/perf/tests/shell/test_arm_coresight.sh b/tools/perf/tests/shell/test_arm_coresight.sh
-index f1bf5621160f..e00d04570aa8 100755
---- a/tools/perf/tests/shell/test_arm_coresight.sh
-+++ b/tools/perf/tests/shell/test_arm_coresight.sh
-@@ -38,7 +38,7 @@ record_touch_file() {
- 	echo "Recording trace (only user mode) with path: CPU$2 => $1"
- 	rm -f $file
- 	perf record -o ${perfdata} -e cs_etm/@$1/u --per-thread \
--		-- taskset -c $2 touch $file > /dev/null 2>&1
-+		--workload-attr other,0,$2 -- touch $file > /dev/null 2>&1
- }
- 
- perf_script_branch_samples() {
-diff --git a/tools/perf/tests/shell/test_data_symbol.sh b/tools/perf/tests/shell/test_data_symbol.sh
-index 69bb6fe86c50..02c6a97e3d0f 100755
---- a/tools/perf/tests/shell/test_data_symbol.sh
-+++ b/tools/perf/tests/shell/test_data_symbol.sh
-@@ -50,7 +50,7 @@ echo "Recording workload..."
- # specific CPU and test in per-CPU mode.
- is_amd=$(grep -E -c 'vendor_id.*AuthenticAMD' /proc/cpuinfo)
- if (($is_amd >= 1)); then
--	perf mem record -o ${PERF_DATA} -C 0 -- taskset -c 0 $TEST_PROGRAM &
-+	perf mem record -o ${PERF_DATA} -C 0 --workload-attr other,0,0 -- $TEST_PROGRAM &
- else
- 	perf mem record --all-user -o ${PERF_DATA} -- $TEST_PROGRAM &
- fi
-diff --git a/tools/perf/tests/shell/test_intel_pt.sh b/tools/perf/tests/shell/test_intel_pt.sh
-index 3a8b9bffa022..0dc085c72593 100755
---- a/tools/perf/tests/shell/test_intel_pt.sh
-+++ b/tools/perf/tests/shell/test_intel_pt.sh
-@@ -110,7 +110,7 @@ test_system_wide_side_band()
- 	can_cpu_wide 1 || return $?
- 
- 	# Record on CPU 0 a task running on CPU 1
--	perf_record_no_decode -o "${perfdatafile}" -e intel_pt//u -C 0 -- taskset --cpu-list 1 uname
-+	perf_record_no_decode -o "${perfdatafile}" -e intel_pt//u -C 0 --workload-attr other,0,1 -- uname
- 
- 	# Should get MMAP events from CPU 1 because they can be needed to decode
- 	mmap_cnt=$(perf script -i "${perfdatafile}" --no-itrace --show-mmap-events -C 1 2>/dev/null | grep -c MMAP)
--- 
-2.25.1
+在 2023/7/17 下午10:30, Gavin Li 写道:
+> Add interrupt_coalesce config in send_queue and receive_queue to cache user
+> config.
+>
+> Send per virtqueue interrupt moderation config to underline device in order
+> to have more efficient interrupt moderation and cpu utilization of guest
+> VM.
+>
+> Signed-off-by: Gavin Li <gavinl@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
+>   drivers/net/virtio_net.c        | 123 ++++++++++++++++++++++++++++----
+>   include/uapi/linux/virtio_net.h |  14 ++++
+>   2 files changed, 125 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 802ed21453f5..1566c7de9436 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -144,6 +144,8 @@ struct send_queue {
+>   
+>   	struct virtnet_sq_stats stats;
+>   
+> +	struct virtnet_interrupt_coalesce intr_coal;
+> +
+>   	struct napi_struct napi;
+>   
+>   	/* Record whether sq is in reset state. */
+> @@ -161,6 +163,8 @@ struct receive_queue {
+>   
+>   	struct virtnet_rq_stats stats;
+>   
+> +	struct virtnet_interrupt_coalesce intr_coal;
+> +
+>   	/* Chain pages by the private ptr. */
+>   	struct page *pages;
+>   
+> @@ -3078,6 +3082,59 @@ static int virtnet_send_notf_coal_cmds(struct virtnet_info *vi,
+>   	return 0;
+>   }
+>   
+> +static int virtnet_send_ctrl_coal_vq_cmd(struct virtnet_info *vi,
+> +					 u16 vqn, u32 max_usecs, u32 max_packets)
+> +{
+> +	struct virtio_net_ctrl_coal_vq *coal_vq;
+> +	struct scatterlist sgs;
+> +
+> +	coal_vq = kzalloc(sizeof(*coal_vq), GFP_KERNEL);
+> +	if (!coal_vq)
+> +		return -ENOMEM;
+> +	coal_vq->vqn = cpu_to_le16(vqn);
+> +	coal_vq->coal.max_usecs = cpu_to_le32(max_usecs);
+> +	coal_vq->coal.max_packets = cpu_to_le32(max_packets);
+> +	sg_init_one(&sgs, coal_vq, sizeof(*coal_vq));
+> +
+> +	if (!virtnet_send_command(vi, VIRTIO_NET_CTRL_NOTF_COAL,
+> +				  VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET,
+> +				  &sgs))
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+> +static int virtnet_send_notf_coal_vq_cmds(struct virtnet_info *vi,
+> +					  struct ethtool_coalesce *ec,
+> +					  u16 queue)
+> +{
+> +	int err;
+> +
+> +	if (ec->rx_coalesce_usecs || ec->rx_max_coalesced_frames) {
+> +		err = virtnet_send_ctrl_coal_vq_cmd(vi, rxq2vq(queue),
+> +						    ec->rx_coalesce_usecs,
+> +						    ec->rx_max_coalesced_frames);
+> +		if (err)
+> +			return err;
+> +		/* Save parameters */
+> +		vi->rq[queue].intr_coal.max_usecs = ec->rx_coalesce_usecs;
+> +		vi->rq[queue].intr_coal.max_packets = ec->rx_max_coalesced_frames;
+> +	}
+> +
+> +	if (ec->tx_coalesce_usecs || ec->tx_max_coalesced_frames) {
+> +		err = virtnet_send_ctrl_coal_vq_cmd(vi, txq2vq(queue),
+> +						    ec->tx_coalesce_usecs,
+> +						    ec->tx_max_coalesced_frames);
+> +		if (err)
+> +			return err;
+> +		/* Save parameters */
+> +		vi->sq[queue].intr_coal.max_usecs = ec->tx_coalesce_usecs;
+> +		vi->sq[queue].intr_coal.max_packets = ec->tx_max_coalesced_frames;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   static int virtnet_coal_params_supported(struct ethtool_coalesce *ec)
+>   {
+>   	/* usecs coalescing is supported only if VIRTIO_NET_F_NOTF_COAL
+> @@ -3094,23 +3151,39 @@ static int virtnet_coal_params_supported(struct ethtool_coalesce *ec)
+>   }
+>   
+>   static int virtnet_set_coalesce_one(struct net_device *dev,
+> -				    struct ethtool_coalesce *ec)
+> +				    struct ethtool_coalesce *ec,
+> +				    bool per_queue,
+> +				    u32 queue)
+>   {
+>   	struct virtnet_info *vi = netdev_priv(dev);
+> -	int ret, i, napi_weight;
+> +	int queue_count = per_queue ? 1 : vi->max_queue_pairs;
+> +	int queue_number = per_queue ? queue : 0;
+>   	bool update_napi = false;
+> +	int ret, i, napi_weight;
+> +
+> +	if (queue >= vi->max_queue_pairs)
+> +		return -EINVAL;
+>   
+>   	/* Can't change NAPI weight if the link is up */
+>   	napi_weight = ec->tx_max_coalesced_frames ? NAPI_POLL_WEIGHT : 0;
+> -	if (napi_weight ^ vi->sq[0].napi.weight) {
+> -		if (dev->flags & IFF_UP)
+> -			return -EBUSY;
+> -		else
+> +	for (i = queue_number; i < queue_count; i++) {
+> +		if (napi_weight ^ vi->sq[i].napi.weight) {
+> +			if (dev->flags & IFF_UP)
+> +				return -EBUSY;
+> +
+>   			update_napi = true;
+> +			/* All queues that belong to [queue_number, queue_count] will be
+> +			 * updated for the sake of simplicity, which might not be necessary
+> +			 */
+> +			queue_number = i;
+> +			break;
+> +		}
+>   	}
+>   
+> -	if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL))
+> +	if (!per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL))
+>   		ret = virtnet_send_notf_coal_cmds(vi, ec);
+> +	else if (per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_VQ_NOTF_COAL))
+> +		ret = virtnet_send_notf_coal_vq_cmds(vi, ec, queue);
+>   	else
+>   		ret = virtnet_coal_params_supported(ec);
+>   
+> @@ -3118,7 +3191,7 @@ static int virtnet_set_coalesce_one(struct net_device *dev,
+>   		return ret;
+>   
+>   	if (update_napi) {
+> -		for (i = 0; i < vi->max_queue_pairs; i++)
+> +		for (i = queue_number; i < queue_count; i++)
+>   			vi->sq[i].napi.weight = napi_weight;
+>   	}
+>   
+> @@ -3130,19 +3203,29 @@ static int virtnet_set_coalesce(struct net_device *dev,
+>   				struct kernel_ethtool_coalesce *kernel_coal,
+>   				struct netlink_ext_ack *extack)
+>   {
+> -	return virtnet_set_coalesce_one(dev, ec);
+> +	return virtnet_set_coalesce_one(dev, ec, false, 0);
+>   }
+>   
+>   static int virtnet_get_coalesce_one(struct net_device *dev,
+> -				    struct ethtool_coalesce *ec)
+> +				    struct ethtool_coalesce *ec,
+> +				    bool per_queue,
+> +				    u32 queue)
+>   {
+>   	struct virtnet_info *vi = netdev_priv(dev);
+>   
+> -	if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL)) {
+> +	if (queue >= vi->max_queue_pairs)
+> +		return -EINVAL;
+> +
+> +	if (!per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL)) {
+>   		ec->rx_coalesce_usecs = vi->intr_coal_rx.max_usecs;
+>   		ec->tx_coalesce_usecs = vi->intr_coal_tx.max_usecs;
+>   		ec->tx_max_coalesced_frames = vi->intr_coal_tx.max_packets;
+>   		ec->rx_max_coalesced_frames = vi->intr_coal_rx.max_packets;
+> +	} else if (per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_VQ_NOTF_COAL)) {
+> +		ec->rx_coalesce_usecs = vi->rq[queue].intr_coal.max_usecs;
+> +		ec->tx_coalesce_usecs = vi->sq[queue].intr_coal.max_usecs;
+> +		ec->tx_max_coalesced_frames = vi->sq[queue].intr_coal.max_packets;
+> +		ec->rx_max_coalesced_frames = vi->rq[queue].intr_coal.max_packets;
+>   	} else {
+>   		ec->rx_max_coalesced_frames = 1;
+>   
+> @@ -3158,7 +3241,21 @@ static int virtnet_get_coalesce(struct net_device *dev,
+>   				struct kernel_ethtool_coalesce *kernel_coal,
+>   				struct netlink_ext_ack *extack)
+>   {
+> -	return virtnet_get_coalesce_one(dev, ec);
+> +	return virtnet_get_coalesce_one(dev, ec, false, 0);
+> +}
+> +
+> +static int virtnet_set_per_queue_coalesce(struct net_device *dev,
+> +					  u32 queue,
+> +					  struct ethtool_coalesce *ec)
+
+When \field{max_virtqueue_pairs} is the maximum value, and the user does 
+not carry the queue_mask for 'ethtool -Q',
+we will send same command for all vqs, and the device will receive a 
+large number of the same VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET commands at 
+this time.
+Do we want to alleviate this situation?
+
+Thanks.
+
+> +{
+> +	return virtnet_set_coalesce_one(dev, ec, true, queue);
+> +}
+> +
+> +static int virtnet_get_per_queue_coalesce(struct net_device *dev,
+> +					  u32 queue,
+> +					  struct ethtool_coalesce *ec)
+> +{
+> +	return virtnet_get_coalesce_one(dev, ec, true, queue);
+>   }
+>   
+>   static void virtnet_init_settings(struct net_device *dev)
+> @@ -3291,6 +3388,8 @@ static const struct ethtool_ops virtnet_ethtool_ops = {
+>   	.set_link_ksettings = virtnet_set_link_ksettings,
+>   	.set_coalesce = virtnet_set_coalesce,
+>   	.get_coalesce = virtnet_get_coalesce,
+> +	.set_per_queue_coalesce = virtnet_set_per_queue_coalesce,
+> +	.get_per_queue_coalesce = virtnet_get_per_queue_coalesce,
+>   	.get_rxfh_key_size = virtnet_get_rxfh_key_size,
+>   	.get_rxfh_indir_size = virtnet_get_rxfh_indir_size,
+>   	.get_rxfh = virtnet_get_rxfh,
+> diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
+> index 12c1c9699935..cc65ef0f3c3e 100644
+> --- a/include/uapi/linux/virtio_net.h
+> +++ b/include/uapi/linux/virtio_net.h
+> @@ -56,6 +56,7 @@
+>   #define VIRTIO_NET_F_MQ	22	/* Device supports Receive Flow
+>   					 * Steering */
+>   #define VIRTIO_NET_F_CTRL_MAC_ADDR 23	/* Set MAC address */
+> +#define VIRTIO_NET_F_VQ_NOTF_COAL 52	/* Device supports virtqueue notification coalescing */
+>   #define VIRTIO_NET_F_NOTF_COAL	53	/* Device supports notifications coalescing */
+>   #define VIRTIO_NET_F_GUEST_USO4	54	/* Guest can handle USOv4 in. */
+>   #define VIRTIO_NET_F_GUEST_USO6	55	/* Guest can handle USOv6 in. */
+> @@ -391,5 +392,18 @@ struct virtio_net_ctrl_coal_rx {
+>   };
+>   
+>   #define VIRTIO_NET_CTRL_NOTF_COAL_RX_SET		1
+> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET		2
+> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_GET		3
+> +
+> +struct virtio_net_ctrl_coal {
+> +	__le32 max_packets;
+> +	__le32 max_usecs;
+> +};
+> +
+> +struct  virtio_net_ctrl_coal_vq {
+> +	__le16 vqn;
+> +	__le16 reserved;
+> +	struct virtio_net_ctrl_coal coal;
+> +};
+>   
+>   #endif /* _UAPI_LINUX_VIRTIO_NET_H */
 
