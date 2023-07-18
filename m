@@ -2,148 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70329758045
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7E7758041
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233037AbjGRO6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:58:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41532 "EHLO
+        id S232825AbjGRO6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232649AbjGRO6d (ORCPT
+        with ESMTP id S233534AbjGRO6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:58:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C5F171B
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:57:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689692266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a9UHr3e23b92wXYao3lrSR+Cnwz7ksG5waCAvSeyw2w=;
-        b=J3pqVLSQ6MdU06oa7t6a+qYx4sx5wBPBP8Xi2SO/fvvN5XAwSyeqpNaQsq8/zlmPUweMZw
-        Hdc8PyKE5rijCmZlr0UUrfkmNgkZLMzSpa5GKGBrsvbQ3A7NkZierU8tmPMtH1vSgKP8dV
-        /wn5zQ00OocBJHQGBmDHWbpj44NVstE=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-277-S5H_SoIPOaewMih97kzF7A-1; Tue, 18 Jul 2023 10:57:45 -0400
-X-MC-Unique: S5H_SoIPOaewMih97kzF7A-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-765a6bbdd17so664218485a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:57:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689692264; x=1692284264;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a9UHr3e23b92wXYao3lrSR+Cnwz7ksG5waCAvSeyw2w=;
-        b=AYQODjjvBXSrCn31NhDKzngp+gQO9kIqXSBkG+xSpJ+XaB/a8SK7PutjnJS6n47PQV
-         oXJmfoZPPjDKN0+wlG6Ldg40/0BcE+EM8jqdoSbnMB4JiQXOZLIf7B7fMHD/vcYu62wm
-         uIwptqv8MVAu1Pv2PhpKGs+Z3yasHTLQv1fMq8TuWhCOHWmcVcbzVdFfjF+LTHR5sH6u
-         WkEjhcmdCT126ZgRFa4gf9MW7BKdXgKLX7NkPs7u7FmPyrJa041GP6eWM3TOxrfQzJW0
-         G5+uXSrnYcHaDthOuEQJELY18EF+qFYlROHb64qqvKHjVs7a/DuYf64U3qlMxnSpM0sh
-         Lc2w==
-X-Gm-Message-State: ABy/qLZcEU0aRKPD2mGagGL6Attyp3x1E7pqe17R39eIxxcNbzksreyW
-        B/rSrN9TiDZ1O6rCzUqSxVddAecyfGbqChWgw1/TstgsPfHdaZrOOlMnHFwqLuVGXDh2vjgkWXb
-        w3x8j7pdXkZcz1w2stg2AVhsN
-X-Received: by 2002:a05:620a:2801:b0:767:1a0c:6ed8 with SMTP id f1-20020a05620a280100b007671a0c6ed8mr20676062qkp.60.1689692264105;
-        Tue, 18 Jul 2023 07:57:44 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFiKp8UBgEVLFNJc08vIC3X40UERE1dZL9GdHK5Bo8jOTs8tWCeLcLXwKGDDVlGpTU1U8k8uQ==
-X-Received: by 2002:a05:620a:2801:b0:767:1a0c:6ed8 with SMTP id f1-20020a05620a280100b007671a0c6ed8mr20676046qkp.60.1689692263888;
-        Tue, 18 Jul 2023 07:57:43 -0700 (PDT)
-Received: from localhost (pool-71-184-142-128.bstnma.fios.verizon.net. [71.184.142.128])
-        by smtp.gmail.com with ESMTPSA id g23-20020a05620a109700b00767d2870e39sm646250qkk.41.2023.07.18.07.57.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 07:57:43 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 10:57:42 -0400
-From:   Eric Chanudet <echanude@redhat.com>
-To:     Caleb Connolly <caleb.connolly@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: sa8540p-ride: enable rtc
-Message-ID: <t6kbp4mlqnn5fzc2covhep4hnjzgwdld6af4h5ddfwandrd6mz@zvmhgnqrm242>
-References: <20230717182351.3389252-1-echanude@redhat.com>
- <34a4a052-b76f-b49d-6703-405d65ffd597@linaro.org>
+        Tue, 18 Jul 2023 10:58:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0189F1988;
+        Tue, 18 Jul 2023 07:58:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6EB3061626;
+        Tue, 18 Jul 2023 14:58:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BE7FC433C9;
+        Tue, 18 Jul 2023 14:57:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689692280;
+        bh=hIrsjnhdx+cSgJaXC5WSiVTHcaGG12oAtcPhHcL09+Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eFPkanMqJXC8i85duHuH6SSWDH56zYjhm4PSscaJPFb7ShhJ4an8akumew5xuAJKd
+         RnQd/TlWIuKe2+gshtIoNEWjfLaKQgADvrNoEfkGj+H/pypGZgeQsAbtK1d7Ce8e4A
+         xLIp2ayT/qQDzCcMEhEM5a7UnQHyC68tPZTT3kj3+ZJW+7V1a9rbeLGPYNDPIeujw2
+         Fm2AyflRqID9YyZWfNcbE6jg/yZ14Qjr95bhHKofXJJQxFcAL6/Kkc/ueyIhqh/yo3
+         kkxB+4rP867mbZhiTvysuGmwJpICWcj41T3nABdhb347MZASwWFBKD9adsaJ6zYmlJ
+         Y5w/KawqVqCvg==
+Date:   Tue, 18 Jul 2023 15:57:55 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Alexandre Ghiti <alex@ghiti.fr>
+Subject: Re: [PATCH] selftests: Fix arm64 test installation
+Message-ID: <1ea67208-1dae-4c74-8b64-e0a1029e94be@sirena.org.uk>
+References: <785e1c1c-84d8-e87d-f22f-9a53d27f30f6@nvidia.com>
+ <620a5b91-9715-ee28-423c-851506b10832@linuxfoundation.org>
+ <421bebb3-19e9-47a7-8b2b-f69f125df22f@sirena.org.uk>
+ <f479b731-7782-0417-2d4c-31a7c3c9491c@nvidia.com>
+ <20230714112653.0b42d3c9818b038d219b5e41@linux-foundation.org>
+ <68ccfd77-ce2f-857a-37a7-e9b3edcd495d@linuxfoundation.org>
+ <5e5bf5c0-bcda-ec2a-ba4c-5f35dcfbc373@nvidia.com>
+ <d03af9cc-c72e-d23f-73ad-ca0e079c3187@linuxfoundation.org>
+ <85526b4e-c2ba-4b19-9c2f-ba39a248a713@sirena.org.uk>
+ <d8c8d82d-059c-fa98-09de-9eda61370f7e@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="JV/PjwGPigZIXN6w"
 Content-Disposition: inline
-In-Reply-To: <34a4a052-b76f-b49d-6703-405d65ffd597@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <d8c8d82d-059c-fa98-09de-9eda61370f7e@linuxfoundation.org>
+X-Cookie: Nothing happens.
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 09:28:15PM +0100, Caleb Connolly wrote:
-> On 17/07/2023 19:23, Eric Chanudet wrote:
-> > SA8540P-ride is one of the Qualcomm platforms that does not have access
-> > to UEFI runtime services and on which the RTC registers are read-only,
-> > as described in:
-> > https://lore.kernel.org/all/20230202155448.6715-1-johan+linaro@kernel.org/
-> > 
-> > Reserve four bytes in one of the PMIC registers to hold the RTC offset
-> > the same way as it was done for sc8280xp-crd which has similar
-> > limitations:
-> >     commit e67b45582c5e ("arm64: dts: qcom: sc8280xp-crd: enable rtc")
-> > 
-> > One small difference on SA8540P-ride, the PMIC register bank SDAM6 is
-> > not writable, so use SDAM7 instead.
-> > 
-> > Signed-off-by: Eric Chanudet <echanude@redhat.com>
-> > ---
-> >  arch/arm64/boot/dts/qcom/sa8540p-pmics.dtsi | 10 +++++++++-
-> >  arch/arm64/boot/dts/qcom/sa8540p-ride.dts   | 15 +++++++++++++++
-> >  2 files changed, 24 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/sa8540p-pmics.dtsi b/arch/arm64/boot/dts/qcom/sa8540p-pmics.dtsi
-> > index 1221be89b3de..9c5dcad35cce 100644
-> > --- a/arch/arm64/boot/dts/qcom/sa8540p-pmics.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sa8540p-pmics.dtsi
-> > @@ -14,7 +14,7 @@ pmm8540a: pmic@0 {
-> >  		#address-cells = <1>;
-> >  		#size-cells = <0>;
-> >  
-> > -		rtc@6000 {
-> > +		pmm8540a_rtc: rtc@6000 {
-> >  			compatible = "qcom,pm8941-rtc";
-> >  			reg = <0x6000>, <0x6100>;
-> >  			reg-names = "rtc", "alarm";
-> > @@ -22,6 +22,14 @@ rtc@6000 {
-> >  			wakeup-source;
-> >  		};
-> >  
-> > +		pmm8540a_sdam_7: nvram@b610 {
-> Johan disabled the SDAM node in their series for sc8280xp. Unless it's
-> used on all sa8540p platforms, you should probably also do that here.
-> 
-> 			
-> > +			compatible = "qcom,spmi-sdam";
-> > +			reg = <0xb610>;
-> > +			#address-cells = <1>;
-> > +			#size-cells = <1>;
-> > +			ranges = <0 0xb610 0xb0>;
-> 			status = "disabled";
-> 
-> With that fix,
-> 
-> Reviewed-by: Caleb Connolly <caleb.connolly@linaro.org>
 
-Thank you for the review. Here is the v2 with the requested change:
-https://lore.kernel.org/linux-arm-msm/20230718145105.3464105-1-echanude@redhat.com/
+--JV/PjwGPigZIXN6w
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Best,
+On Tue, Jul 18, 2023 at 08:56:02AM -0600, Shuah Khan wrote:
+> On 7/18/23 08:54, Mark Brown wrote:
 
--- 
-Eric Chanudet
+> > These didn't seem to make it to -rc2 - it'd be *really* good to get them
+> > for -rc3, not having the selftests there would be very disruptive to the
+> > standard arm64 workflow.
 
+> Just about to send the pull request for rc3
+
+Great, thanks!
+
+--JV/PjwGPigZIXN6w
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS2qHIACgkQJNaLcl1U
+h9A4JwgAgVdJvsXv4koBtfkkAwwKXjIVg1KyNCJNIKEV04W8rQBaxGFBhPydtF70
+0lwOEYbe5gWKosZrEdx6Dvx7uuXvYfrfhV3hkq3AXGTgTenfVVlWIsUji6e+j0cq
+/1GKrFjXZJvMILzgeAMUaDNUM3Vjk8dYr8Gw0gXEUk66AXwNeCJUorh7o3o4i3uM
+3FSeTCfGYmdBCC5BmDWyGXWzZxL0T6ieHnegW0X9SKF5RoFv3uSYs8LlZvNoo4Qw
+1SngE/e7AFqgEqq/LYyM+OkorOFv78m6d/DRrkF8q9FMDjaRWQcMinWZH1dlb5Hc
+sATbogkjCsP3uoGLijdeeR4I0pHKQw==
+=jUFb
+-----END PGP SIGNATURE-----
+
+--JV/PjwGPigZIXN6w--
