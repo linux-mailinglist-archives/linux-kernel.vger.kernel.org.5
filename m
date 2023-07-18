@@ -2,107 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2653D757802
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C86757803
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbjGRJ2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35742 "EHLO
+        id S232256AbjGRJ3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232276AbjGRJ2d (ORCPT
+        with ESMTP id S231422AbjGRJ26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:28:33 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631D710C2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:28:27 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R4tsz4Qs2zBR1P3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 17:28:23 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689672503; x=1692264504; bh=hAS+grwZbIyw2t0g0PBTUpkLyXc
-        bK0qGakiu0DaoB3c=; b=FfPFpEqKrEKyiCQ9RAqBWlLjwXKzjMx7fzDngsHIZ+F
-        XRSjxeqcXxcSOk5rteA4BIQrD5zgFn4DMV1G/1tqOKnJ58eFuVucXOhuy2sKIT2p
-        Pv5tjf9WAzr+YZQF3bzRPVHc1QHUszlNayE2rBo3y8kmzW5TiyP+SUIExbvhVCWl
-        PYmHF+67YktZWq0u1UY5aky71qgwLfsoHMDEStBZZCfhbKb2oDCgHvNUWIu8FVAu
-        xRKwy2n549DbElboGJJO9yu+qMvCov36YCe22ErfHAm2PbM/5HVcojDwECCc3NRC
-        h3Nm/jNnGRZnXE0q9goSnaTLEIQmyNCYmFZvvy40wuA==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 9JoDkwa1HKYv for <linux-kernel@vger.kernel.org>;
-        Tue, 18 Jul 2023 17:28:23 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R4tsz21h1zBJBfd;
-        Tue, 18 Jul 2023 17:28:23 +0800 (CST)
+        Tue, 18 Jul 2023 05:28:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACC5186
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:28:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DE024614EA
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:28:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79E37C433C8;
+        Tue, 18 Jul 2023 09:28:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689672537;
+        bh=/cGfBekDmE+BR4ZDOyJIAZUw5e6tGf6HSK7pUmBl3oI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=azgiJ+0Ur8pGuAGjT6ILrF9o5NYoWyE/NERtLdI0upCbK62KaTC1hrwpPmBEs5TMK
+         WNst5b5welfijI3kS54b+CP4W1asS3XSpp301vVdnCwbfr4Lhts41Z4YkfCavd8cmq
+         6jaXSylHgqsSBLdbZ1Cehj28Enjr/j6Qt5WCAXMTbSkbfjiRZhK76E0mmMW3w+JIv7
+         vmrhgQi8dVylgvcpqrGpV8k4rKV3mekpNemCtUzLATHrMDGuKHpWMmogUqCcT4Jhad
+         tD42vWNI/Kjs1/N1P4t7T+CEWmSWGQB/WXfXFfgZovT2CrkWE2cARB+q67Ucz2rnaH
+         9lH57D0nlbsvA==
 MIME-Version: 1.0
-Date:   Tue, 18 Jul 2023 17:28:23 +0800
-From:   hanyu001@208suo.com
-To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] powerpc: platforms: chrp: Add require space after that ','
-In-Reply-To: <tencent_541AA1B260FC8E0892D6A696F01C5600AD05@qq.com>
-References: <tencent_541AA1B260FC8E0892D6A696F01C5600AD05@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <8e586ffecc673079ad58045ddc6e3ea6@208suo.com>
-X-Sender: hanyu001@208suo.com
+Date:   Tue, 18 Jul 2023 11:28:53 +0200
+From:   Michael Walle <mwalle@kernel.org>
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     tkuw584924@gmail.com, takahiro.kuwano@infineon.com,
+        pratyush@kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, bacem.daassi@infineon.com,
+        miquel.raynal@bootlin.com, richard@nod.at,
+        Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: Re: [PATCH] mtd: spi-nor: rename method for enabling or disabling
+ octal DTR
+In-Reply-To: <20230714150757.15372-1-tudor.ambarus@linaro.org>
+References: <20230616050600.8793-1-Takahiro.Kuwano@infineon.com>
+ <20230714150757.15372-1-tudor.ambarus@linaro.org>
+Message-ID: <b85368d2e3bf829809344406247193ea@kernel.org>
+X-Sender: mwalle@kernel.org
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes checkpatch errors:
+Btw. this was threaded within another thread. At least on the
+netdev (and spi) ML this is discouraged.
 
-./arch/powerpc/platforms/chrp/time.c:109: ERROR: space required after 
-that ',' (ctx:VxV)
-./arch/powerpc/platforms/chrp/time.c:110: ERROR: space required after 
-that ',' (ctx:VxV)
-./arch/powerpc/platforms/chrp/time.c:111: ERROR: space required after 
-that ',' (ctx:VxV)
-./arch/powerpc/platforms/chrp/time.c:112: ERROR: space required after 
-that ',' (ctx:VxV)
-./arch/powerpc/platforms/chrp/time.c:113: ERROR: space required after 
-that ',' (ctx:VxV)
-./arch/powerpc/platforms/chrp/time.c:114: ERROR: space required after 
-that ',' (ctx:VxV)
+Am 2023-07-14 17:07, schrieb Tudor Ambarus:
+> Having an *_enable(..., bool enable) definition was misleading
+> as the method is used both to enable and to disable the octal DTR
+> mode. Splitting the method in the core in two, one to enable and
+> another to disable the octal DTR mode does not make sense as the
+> method is straight forward and we'd introduce code duplication.
+> 
+> Update the core to use:
+> int (*set_octal_dtr)(struct spi_nor *nor, bool enable);
+> 
+> Manufacturer drivers use different sequences of commands to enable
+> and disable the octal DTR mode, thus for clarity they shall
+> implement it as:
+> static int manufacturer_snor_set_octal_dtr(struct spi_nor *nor, bool 
+> enable)
+> {
+> 	return enable ? manufacturer_snor_octal_dtr_enable() :
+> 			manufacturer_snor_octal_dtr_disable();
+> }
+> 
 
-Signed-off-by: Yu Han <hanyu001@208suo.com>
----
-  arch/powerpc/platforms/chrp/time.c | 12 ++++++------
-  1 file changed, 6 insertions(+), 6 deletions(-)
+I don't care much for this naming. I've also seen _enable() functions
+which take a bool and then actually disable something in the kernel.
 
-diff --git a/arch/powerpc/platforms/chrp/time.c 
-b/arch/powerpc/platforms/chrp/time.c
-index d46417e3d8e0..6bd40be22c33 100644
---- a/arch/powerpc/platforms/chrp/time.c
-+++ b/arch/powerpc/platforms/chrp/time.c
-@@ -106,12 +106,12 @@ int chrp_set_rtc_time(struct rtc_time *tmarg)
-          tm.tm_mday = bin2bcd(tm.tm_mday);
-          tm.tm_year = bin2bcd(tm.tm_year);
-      }
--    chrp_cmos_clock_write(tm.tm_sec,RTC_SECONDS);
--    chrp_cmos_clock_write(tm.tm_min,RTC_MINUTES);
--    chrp_cmos_clock_write(tm.tm_hour,RTC_HOURS);
--    chrp_cmos_clock_write(tm.tm_mon,RTC_MONTH);
--    chrp_cmos_clock_write(tm.tm_mday,RTC_DAY_OF_MONTH);
--    chrp_cmos_clock_write(tm.tm_year,RTC_YEAR);
-+    chrp_cmos_clock_write(tm.tm_sec, RTC_SECONDS);
-+    chrp_cmos_clock_write(tm.tm_min, RTC_MINUTES);
-+    chrp_cmos_clock_write(tm.tm_hour, RTC_HOURS);
-+    chrp_cmos_clock_write(tm.tm_mon, RTC_MONTH);
-+    chrp_cmos_clock_write(tm.tm_mday, RTC_DAY_OF_MONTH);
-+    chrp_cmos_clock_write(tm.tm_year, RTC_YEAR);
+So I'm fine either way:
 
-      /* The following flags have to be released exactly in this order,
-       * otherwise the DS12887 (popular MC146818A clone with integrated
+Reviewed-by: Michael Walle <mwalle@kernel.org>
+
+-michael
