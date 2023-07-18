@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38705758892
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6AB4758899
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbjGRWf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 18:35:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52800 "EHLO
+        id S231128AbjGRWiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 18:38:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbjGRWfZ (ORCPT
+        with ESMTP id S229614AbjGRWiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 18:35:25 -0400
+        Tue, 18 Jul 2023 18:38:18 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE241993;
-        Tue, 18 Jul 2023 15:35:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F6BC198E;
+        Tue, 18 Jul 2023 15:38:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 24B616126C;
-        Tue, 18 Jul 2023 22:35:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA35BC433C7;
-        Tue, 18 Jul 2023 22:35:18 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A6FE26126C;
+        Tue, 18 Jul 2023 22:38:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73162C433C7;
+        Tue, 18 Jul 2023 22:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689719719;
-        bh=ODQozvnR8L9ZZhidmLsCxqJiGSeoc3vXIawk6TBMUFA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=uq7+j/NOkFLavVsQ/USh6P3IpWSqxBDgXwQYcbV5CX8S7AB8zn2pWNxFlTbLtIMXQ
-         DdjVmmRGkd0tbEukWEbDc3rHWuKnTfw8u+AgnTtKtScYI5G3o/p2xdL88Ey1qR2uei
-         ak6CnY7JRbICwClHNZE+AtRSlN7IsfHuill1aC52pO7zXH5HhNt7+UG3AghWPMbalw
-         Qe/JwxHOZtC2CIY5yFXp0L66uV4wfmbctY3O93+4j/Xl+CApRlllSvFtaw7TKjux9n
-         eboU3TVfT4FBGDKvgh7P7vfQVFOAKYfjBLL/9bOwPmA10iQBRR32d0rVTCd9kwdEIQ
-         yB3+v9Vio5DRw==
-Message-ID: <eb34f812-a866-a1a3-9f9b-7d5054d17609@kernel.org>
-Date:   Tue, 18 Jul 2023 16:35:17 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 00/10] Device Memory TCP
-Content-Language: en-US
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Mina Almasry <almasrymina@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        netdev@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        s=k20201202; t=1689719896;
+        bh=RXO+gAcZm+MhRenqy65hhkLUzlwKRVhTNDHhFXVPjjc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WC8frNZQi3mlQRwzd/1B/o58REsGjVM4bTqKYDGfIE0sdXtSivhP2CyO9GHwyZmUh
+         /fSMjJcqo48S1vnfEmmBEuLJHAJPEWExHLr/fGVg72zBItMXT5mcrGyyeTxbsSA84F
+         6LENyGcMmgizG0XyhLIpTWGmW5LNVmvAW2H++ihnyl/GFL1ab+KbX6AQgQGzKV14bB
+         C7ttE95UTAd7KsoYwEkaDtSAZr6mZGfIVkXp1QrwAzNbs+XmOJRAl2Qpf1itgUpGdz
+         7Xh0infj6g0F2qtc/JkRPt1YQH30JhSn8B77F32PIysiR197GoqrB8XClTi6/Qu1MM
+         4FL5RdcE/3Bqg==
+Date:   Tue, 18 Jul 2023 15:38:13 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kees Cook <keescook@chromium.org>,
+        Haren Myneni <haren@us.ibm.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Richard Weinberger <richard@nod.at>,
+        David Ahern <dsahern@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>
-References: <20230710223304.1174642-1-almasrymina@google.com>
- <12393cd2-4b09-4956-fff0-93ef3929ee37@kernel.org>
- <CAHS8izNPTwtk+zN7XYt-+ycpT+47LMcRrYXYh=suTXCZQ6-rVQ@mail.gmail.com>
- <ZLbUpdNYvyvkD27P@ziepe.ca> <20230718111508.6f0b9a83@kernel.org>
- <35f3ec37-11fe-19c8-9d6f-ae5a789843cb@kernel.org>
- <20230718112940.2c126677@kernel.org>
-From:   David Ahern <dsahern@kernel.org>
-In-Reply-To: <20230718112940.2c126677@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        qat-linux@intel.com, linuxppc-dev@lists.ozlabs.org,
+        linux-mtd@lists.infradead.org, netdev@vger.kernel.org
+Subject: Re: [RFC PATCH 05/21] ubifs: Pass worst-case buffer size to
+ compression routines
+Message-ID: <20230718223813.GC1005@sol.localdomain>
+References: <20230718125847.3869700-1-ardb@kernel.org>
+ <20230718125847.3869700-6-ardb@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718125847.3869700-6-ardb@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/18/23 12:29 PM, Jakub Kicinski wrote:
-> On Tue, 18 Jul 2023 12:20:59 -0600 David Ahern wrote:
->> On 7/18/23 12:15 PM, Jakub Kicinski wrote:
->>> On Tue, 18 Jul 2023 15:06:29 -0300 Jason Gunthorpe wrote:  
->>>> netlink feels like a weird API choice for that, in particular it would
->>>> be really wrong to somehow bind the lifecycle of a netlink object to a
->>>> process.  
->>>
->>> Netlink is the right API, life cycle of objects can be easily tied to
->>> a netlink socket.  
->>
->> That is an untuitive connection -- memory references, h/w queues, flow
->> steering should be tied to the datapath socket, not a control plane socket.
+On Tue, Jul 18, 2023 at 02:58:31PM +0200, Ard Biesheuvel wrote:
+> Currently, the ubifs code allocates a worst case buffer size to
+> recompress a data node, but does not pass the size of that buffer to the
+> compression code. This means that the compression code will never use
+> the additional space, and might fail spuriously due to lack of space.
 > 
-> There's one RSS context for may datapath sockets. Plus a lot of the
-> APIs already exist, and it's more of a question of packaging them up 
-> at the user space level. For things which do not have an API, however,
-> netlink, please.
+> So let's multiply out_len by WORST_COMPR_FACTOR after allocating the
+> buffer. Doing so is guaranteed not to overflow, given that the preceding
+> kmalloc_array() call would have failed otherwise.
+> 
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  fs/ubifs/journal.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+> index dc52ac0f4a345f30..4e5961878f336033 100644
+> --- a/fs/ubifs/journal.c
+> +++ b/fs/ubifs/journal.c
+> @@ -1493,6 +1493,8 @@ static int truncate_data_node(const struct ubifs_info *c, const struct inode *in
+>  	if (!buf)
+>  		return -ENOMEM;
+>  
+> +	out_len *= WORST_COMPR_FACTOR;
+> +
+>  	dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
+>  	data_size = dn_size - UBIFS_DATA_NODE_SZ;
+>  	compr_type = le16_to_cpu(dn->compr_type);
 
-I do not see how 1 RSS context (or more specifically a h/w Rx queue) can
-be used properly with memory from different processes (or dma-buf
-references). When the process dies, that memory needs to be flushed from
-the H/W queues. Queues with interlaced submissions make that more
-complicated.
+This looks like another case where data that would be expanded by compression
+should just be stored uncompressed instead.
 
-I guess the devil is in the details; I look forward to the evolution of
-the patches.
+In fact, it seems that UBIFS does that already.  ubifs_compress() has this:
+
+        /*
+         * If the data compressed only slightly, it is better to leave it
+         * uncompressed to improve read speed.
+         */
+        if (in_len - *out_len < UBIFS_MIN_COMPRESS_DIFF)
+                goto no_compr;
+
+So it's unclear why the WORST_COMPR_FACTOR thing is needed at all.
+
+- Eric
