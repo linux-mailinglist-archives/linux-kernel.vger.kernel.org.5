@@ -2,159 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D777578B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675997578BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbjGRKAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 06:00:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52748 "EHLO
+        id S231822AbjGRKBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 06:01:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232392AbjGRKAH (ORCPT
+        with ESMTP id S231867AbjGRKBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 06:00:07 -0400
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2111.outbound.protection.outlook.com [40.107.114.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875E6173A;
-        Tue, 18 Jul 2023 03:00:03 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vn5MgU5ViPjmO3bGz7rUKcmcAeuI1/aO3D3mN2C9WDbNdhMDIh+fOOdaucd+3Ry0ftYiCGSrZmDbQZ7tyvcq70XFZFi1cFNAb0RLSjC5Rpud8Uess1pjIr/RoA/ioTo0ZQPo2edmYfos2NBC3iVMd7z/eKd30+FWrWc6q4gn9tSSoNBh1N3/18USs0Eh7WUJh7h2oDy3qQllKGvIQdVZrHDKmz7vy1Lha0sbj1QWYQA8wQnXixxaqFmHaJLM1ACwEsYJ0HmNfjkwRVloFiOjgI0SvrHS/z7Qp0GrQP8DDOGRgcQLe1C4Pg3LxM0/yC8tMmTAoDEFDtjLIbRtONKeJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7tLSQkV6/MfipeFalS3Rwl0ZWlJQXQjJ88VytbTTv+E=;
- b=SHoE0XEO7fGJi/udUdFG2I2Mt8XOYQ9QVcHEFZ9yAzajrdUkbiiDg4V1nM+vccOA9qOpXo6AvCiM6TtGkJ2XcTKfwwSrsrTwXoStiRfEtznMVcNXeEpPMg0OvN/72bSmDpyz+WS8gFIX1t2sIVfUotCTvD10Uq7p2gtnM6POjR8NoOJUl5pzEc57Wu4ZVpW0dgYb/d1e5AJOvBnFSK1uIiyxsD3mQRtrF5Ht6zz/t0qnXKjEzz/YXvN0R6wDfjY5fI9nYARInsZb5YjZNvbMNnND2JIXPeEAgkk1LCwq2mdwVA0r9i2cHoqVmY3Cfrao/WUvui39VTEFLJFGDwExGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7tLSQkV6/MfipeFalS3Rwl0ZWlJQXQjJ88VytbTTv+E=;
- b=YMJezIebOJCLvqiDT8HZQ9M+AbdAJ7jS6Kp4lopL5bvRvdc6CG+vj1UG5JzBGsSvNWVm1V4ioafqCJG40Ye9Tw0QkmU1anhcuJYNcrFuKizl+y+YEvIKalcD8MdbwjWz6qmPSWIgnsdE+jNe6U7Y37W534/+G+Dh0+lDQPRhQpM=
-Received: from TY2PR01MB3788.jpnprd01.prod.outlook.com (2603:1096:404:dd::14)
- by OSZPR01MB6200.jpnprd01.prod.outlook.com (2603:1096:604:e9::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32; Tue, 18 Jul
- 2023 10:00:00 +0000
-Received: from TY2PR01MB3788.jpnprd01.prod.outlook.com
- ([fe80::5cff:5d90:9b08:6a7d]) by TY2PR01MB3788.jpnprd01.prod.outlook.com
- ([fe80::5cff:5d90:9b08:6a7d%4]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
- 10:00:00 +0000
-From:   Chris Paterson <Chris.Paterson2@renesas.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-CC:     "patches@lists.linux.dev" <patches@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "patches@kernelci.org" <patches@kernelci.org>,
-        "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>,
-        "pavel@denx.de" <pavel@denx.de>,
-        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "sudipm.mukherjee@gmail.com" <sudipm.mukherjee@gmail.com>,
-        "srw@sladewatkins.net" <srw@sladewatkins.net>,
-        "rwarsow@gmx.de" <rwarsow@gmx.de>,
-        "conor@kernel.org" <conor@kernel.org>
-Subject: RE: [PATCH 6.1 000/589] 6.1.39-rc3 review
-Thread-Topic: [PATCH 6.1 000/589] 6.1.39-rc3 review
-Thread-Index: AQHZuO5JzAfyGjEqakCAZOizC89qha+/Sx9w
-Date:   Tue, 18 Jul 2023 10:00:00 +0000
-Message-ID: <TY2PR01MB3788DB0982243F01F37AB34FB738A@TY2PR01MB3788.jpnprd01.prod.outlook.com>
-References: <20230717201547.359923764@linuxfoundation.org>
-In-Reply-To: <20230717201547.359923764@linuxfoundation.org>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TY2PR01MB3788:EE_|OSZPR01MB6200:EE_
-x-ms-office365-filtering-correlation-id: 1ea6a725-810f-4a0c-1abf-08db8775c027
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pZ/12bw5EIGyXOP3kN3lanc92q/Bk35iGIPyafK0MuT+T36Gyl0Wgo0XlPzv+KnJqG50D2kx6scyVYHp7j4V+80Vw3RhdSMNSg3EnSxCeFREgzFkzk7C2szmb4YQtArEL0J9SA1kkD7uZY77FhKIntqWL+bty18WcmA/PbERcD6MKXdvZXW7jSp/F9KCnjcOqk8M+I6bUeg2d4LWMANH7uEFCRrLmFrLFflhjthiWNqhoh6cDh9x303D9T8ll3n7gMKlGKmCCYSj6wWWCgf8QZlEp5w0yr8Euw7+dhUINs5sH77BxT+COxzn/cBflDdOLNjBomSkxFzJIQreHZyUwyAn5PQAu6SSJ1U7PVe/slv41JcYRdQbGsVttAIedkggXo4yT8KsHMAq0bfFmOsLtglwD9xbMNZXE1Nh58ou5i5ztCAd6rEtte4GuwXBdCjoC4d5FqflAcNBH2ajS6mZd/AMJYEh3bt+4t3MndBWz0yHBKN/cCrreMnWqYLyExwVNcizLUUT1B/NzR8RlcMi9y/olGFbJTYAzY6hSJMUAsMCtezSZ39QzX2tICAR1ZaJgDaS1uiyE66JaiwaaXm8+pAT2exyDSs5WREOr1vOZjqtYmXRZlw4/Pu7CDWdi/WM0VmFnAKjxgCTRqHQ6HLGPQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3788.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(39860400002)(366004)(376002)(396003)(346002)(451199021)(7416002)(86362001)(4744005)(2906002)(33656002)(38070700005)(55016003)(966005)(186003)(9686003)(26005)(6506007)(38100700002)(7696005)(110136005)(54906003)(122000001)(71200400001)(66446008)(316002)(64756008)(5660300002)(76116006)(478600001)(66556008)(66476007)(66946007)(4326008)(41300700001)(8936002)(52536014)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?Windows-1252?Q?XP6ziEKdu6idawS/OdEQu8p2uIjJf9KaOrP/tqesXBBOKFIokGKdg5O/?=
- =?Windows-1252?Q?cGzsypKiRut01FCWgSG4DvtdZkL+ZNeJpduecFPC6eK1CcgKxoZBPRfR?=
- =?Windows-1252?Q?3yjnP9J9aCihfoTM94fSyjGyHhu7KyNEuM/2Q7GjFVpDw+qn15nUjiB+?=
- =?Windows-1252?Q?IVRyv7PlF2VXpsyIobXsv1v7sh3YQg5gQMvrsjfq3X0gO0PZU2S0El2t?=
- =?Windows-1252?Q?iw6Onm1B6zuNeHcOVHykBCcnQhY7czyyfw79FuGsV0dIFQE0OK9lAI6M?=
- =?Windows-1252?Q?aqx9Py5e2Lgd1Ir31aS4ddoZiiXJeHN/UzDHYWQ4oYikTUzBxpQk4f+p?=
- =?Windows-1252?Q?h2SRdnnYB8h/pI1xAQWbXhUCdkAB6n7R+TMgvEzTiAJnBc3YvUzE0WeZ?=
- =?Windows-1252?Q?N7/FTiXUcOio9qyIT4Q4ErVY5T8Z4gFj/3zLj16O140JbRZqKVNfzU/d?=
- =?Windows-1252?Q?Ndxe54o6cXkwi8PaZZXOQsZGQWxY2+eFnZg6r2LvhiTFRjhHgRWqAv2k?=
- =?Windows-1252?Q?c9pXESFDdTBaCKrQDVeR7xXXolF35mEM9qZezxl5VZ7vsCC57sskfZ6J?=
- =?Windows-1252?Q?nrgmZr5TmTrzwmCjWAPtKDiCga88mkTOl6ZdkL6MHzaTzWmraJySn3Gd?=
- =?Windows-1252?Q?Jpg7S+tJP8d/k6c987B20/oQD+wYt6fSPcQUhT36m7EttA71TY445bT/?=
- =?Windows-1252?Q?ACnFcjNpjU6dvhGVZL4BT9DUj5tMGM69sPo/Y5YBkFtbfsqQ8qfUN9DL?=
- =?Windows-1252?Q?0RaAZm0eKhE/91p2KweN3AtL/mCR9NFg1URmlxgc/SnAkMVy+VtV36oQ?=
- =?Windows-1252?Q?ypLVGPBYipkZv+aNEFicIdIf2pFhgc6UOQ//s7lTU/tEsIW1K5/jSuSh?=
- =?Windows-1252?Q?4JqmHYvj2Iq8WBlRLbO3rhvV8T74f3pTgF/IuPyJMyg9n3iB6WGQ4IoN?=
- =?Windows-1252?Q?5PLpieaERdSu899hK+CzYASLgO50WM3xDmnut2KKucZD6JA0mPtlrjz7?=
- =?Windows-1252?Q?mc34KhKQCif/foezqd3/vnQYyc7WvjsGGOWZuMPAUzpVyniBVNJRefir?=
- =?Windows-1252?Q?A7PnWXGktGwJbAEXXXIT3dSrWBbd+OYaINA0bFLxmfVEdrOLL0RXVSWy?=
- =?Windows-1252?Q?WljdGIs78yy9F24/JkgylxEq6kma70fNJ6KZPiWYcQ/w4sbxpp7iTT5Y?=
- =?Windows-1252?Q?u5d+/7EwWY4Z/G12KWhf5bJWgnwmUmMZVp935hlQfKarDZJP/ugI28x9?=
- =?Windows-1252?Q?BxUWuRVpnnrzaLS8lEhlY3HD0Kbe+L19pA2IFZMD3M1sEYw6040MmMka?=
- =?Windows-1252?Q?xQqQI1KwNsi0p0Zc3NZwi5nHgZcq5tTn5SpGigg8t6j51R7eW11cK8k/?=
- =?Windows-1252?Q?g5NsofY47vnrhBeO9JzGWl59cN4nJhXEXSMorfHhH23IK2ClCx+qTxv5?=
- =?Windows-1252?Q?vQBwLJ7KkbJJ068qE6xhR5+WfajM/8NQie3KXGCVkOGuKFPMZT794Vy0?=
- =?Windows-1252?Q?j58Kx7S8Bo8sC0OSrjoAkuG1Pi12vDWZVUsghNt325hM9Q3PYtb3yxe1?=
- =?Windows-1252?Q?D3PdU2CrLr9Xdf1BLd25JsljTC0BjjiOpAeSC6xX7vz8vBDlhXv2II0h?=
- =?Windows-1252?Q?AHc0ZHGiIALPGF9fOtpyKqDy1zYDlLsDlRHgVNkk4Xn37KpwQ27yPUeZ?=
- =?Windows-1252?Q?nroemktSQXPDYvLYXVI2/Nbg3kIt6wIaealQckNJW4mRe9L7ojRN0Q?=
- =?Windows-1252?Q?=3D=3D?=
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 18 Jul 2023 06:01:06 -0400
+Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B9B116;
+        Tue, 18 Jul 2023 03:01:02 -0700 (PDT)
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.3ffe.de (Postfix) with ESMTPSA id 4A2363BE;
+        Tue, 18 Jul 2023 12:01:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+        t=1689674460;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TliMGa/AjS5CE9Jf6SZ3Vzpj2EtgwzwZjg72TLl0zqM=;
+        b=1tZ25vKAwvmo1bgrRHA025NmOefVDb6pIPqUrbYMERVCHhTLbGXhBFrA0BGs7RgMtOirHD
+        3zMKlXEtVvZGO/pQaKbZMrgkr5vfgduAnYedFZJXCCmfAvkNZlL3/aqxD1eEsBvZ/V9tHm
+        oWV1nY3Og16O8NvQ1K5Iycqnz4LoIRGM3LggtBwF8LDXzGYn/36SovjHQdsyqu4Nl4iLq3
+        DqYoTFqzSWS4Py5HODIvrWQkSGOEXd1fq2DB8OA3zZqN2O8koZKgNfUsAWSsfZsHOQ0RPq
+        Zo18n8Z3vl2RRYF2cwzIqxFq1yzoEBsZuM0V2vky8MIsGC+GKpiXXO5GcMZrAA==
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3788.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ea6a725-810f-4a0c-1abf-08db8775c027
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jul 2023 10:00:00.7655
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2KwAcKxPmpq9D8OoC4w72wxn3Osevl0CSflzD8XIn7mEYR2ZqrtUFVoN7D4uZoH2XeGluXmi9D7XeYxNZlTWEEX7TV9vK1dng3IXzlMHVWo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSZPR01MB6200
+Date:   Tue, 18 Jul 2023 12:01:00 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>,
+        Mark Brown <broonie@kernel.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, saikrishna12468@gmail.com,
+        git@amd.com
+Subject: Re: [PATCH 0/3] spi: spi-cadence-quadspi: Add Rx tuning support for
+ DTR mode
+In-Reply-To: <67e1d3af-d106-bd5c-f8d8-3f43a58975a0@linaro.org>
+References: <20230207060924.265789-1-sai.krishna.potthuri@amd.com>
+ <67e1d3af-d106-bd5c-f8d8-3f43a58975a0@linaro.org>
+Message-ID: <85d8e122a236818b162b64b473a3fdc4@walle.cc>
+X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greg,
+Am 2023-02-07 07:48, schrieb Tudor Ambarus:
+> On 2/7/23 06:09, Sai Krishna Potthuri wrote:
+>> Enable PHY and DQS required for Xilinx Versal Octal SPI to operate in 
+>> DTR
+>> protocol.
+>> Add and update device_id field in spi_mem structure with flash id
+>> information. Xilinx Versal Octal SPI driver requires the device id
+>> information to perform the Rx tuning operation. Since there is no 
+>> common
+>> Tuning Data Pattern defined across all vendors, controllers like 
+>> Xilinx
+>> Versal Octal SPI which requires Rx tuning to find out the optimal 
+>> sampling
+>> point for data lines, this device id information will be used as a 
+>> golden
+>> data.
+> 
+> Using only 6 bytes as golden pattern seems fragile, but you are aware 
+> of
+> that, as I see that you chose to read the ID 10 times to make the
+> decision whether the tap is valid or not. Other option (which is not
+> perfect) is to use SFDP data as golden pattern. If I remember
+> correctly, JESD216 suggests to use the Read SFDP cmd at 50 MHz, so it
+> won't help you much. In practice SPI NOR uses the Read SFDP command at
+> the flash's maximum speed and we haven't seen problems. But better 
+> would
+> be to use some flash OTP data maybe? I remember Pratyush has submitted 
+> a
+> phy calibration series in the past, I haven't had the chance to read 
+> his
+> proposal. Did you? How's your proposal different than his?
 
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Sent: Monday, July 17, 2023 9:34 PM
->=20
-> This is the start of the stable review cycle for the 6.1.39 release.
-> There are 589 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
-> Responses should be made by Wed, 19 Jul 2023 20:14:46 +0000.
-> Anything received after that time might be too late.
+And its not 6 bytes.. it's usually only three. The last three bytes will
+probably be undefined. So the might return ff or just wrap around and
+return the first three bytes again.
 
-Thank you for the release!
+Is there a datasheet where you can read how the calibration is done? Is 
+this
+the same for all i/o pads or individual per i/o pad?
 
-CIP configurations built and booted okay with Linux 6.1.39-rc3 (ce7ec101118=
-7):
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/pipelines/9=
-34494457
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/commits/lin=
-ux-6.1.y
+I cannot see where the op to read the id is coming from. Are you relying
+on the fact that a RDID is the first command which gets executed. If so,
+please don't.
 
-Tested-by: Chris Paterson (CIP) <chris.paterson2@renesas.com>
+Do you calibrate only one pad? RDID (9f) is  single bit i/o, right? And
+I guess you are calibrating with the highest frequency, are
+we sure that RDID will work with any frequency (on any flash).
 
-Kind regards, Chris
+
+>> The reason behind choosing this approach instead of reading the ID 
+>> again
+>> in the controller driver is to make it generic solution.
+>> - Other controller drivers which want to use similar tuning process, 
+>> they
+>> will make use of this ID instead of reading the ID again in the 
+>> driver.
+
+Honestly, I'm not sure this is the way to go. Pratyush proposed solution
+to have a dedicated memory area within the flash array with a know 
+pattern
+seems to make more sense, because you are calibrating on the thing you 
+are going
+to use later, that is quad/ocal read with the fastest frequency.
+
+>> - Also, we can avoid hardcoding the command information and initiating 
+>> the
+>> transfer in the controller driver as this should happen from spi-nor.
+
+So how you know that this is a RDID instruction?
+
+-michael
