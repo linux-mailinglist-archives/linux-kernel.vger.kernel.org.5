@@ -2,145 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C43757A8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D342757A92
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229670AbjGRLiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:38:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46576 "EHLO
+        id S231733AbjGRLiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231858AbjGRLiC (ORCPT
+        with ESMTP id S231134AbjGRLiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:38:02 -0400
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11941AC;
-        Tue, 18 Jul 2023 04:38:00 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-794cddcab71so1600879241.1;
-        Tue, 18 Jul 2023 04:38:00 -0700 (PDT)
+        Tue, 18 Jul 2023 07:38:15 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8AD1705;
+        Tue, 18 Jul 2023 04:38:13 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9923833737eso676157866b.3;
+        Tue, 18 Jul 2023 04:38:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689680280; x=1692272280;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1689680292; x=1692272292;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5jbeHfHwPHH+SDgR4pal5407gINcU5129rjy4niAm4I=;
-        b=RLeELrML8LJOb/+BHNCEb+DOM8te0apNEn6BWKR7Kc6lnE8AlRdTHvVcnXNTLjEnCT
-         I59oAhZ4l1OLRA3/fup63Ey/PEnUwB3RghAiXoRikz7pa+YMwkPzzEK7ZZy4bjVUoSpa
-         CfAX9iLI2ORpTsdqQtyxuNtr+oKQnt9xh0xhvgZV+7PenpfuPEejNG0zFUy6HRCTjBmH
-         lTfFr1jr2+PCz747zKg7Dt79sjqbTRjtOxxjyqz9IoUrNfUZ5EL/2HYPDglmuY9NxOyO
-         1Y0Z7zdX/0iXLrNGLxyH/jy9Su9fpgvA3p0mQdFADU4jXRjQ6QIRWp+fpXXiDoPa65Tk
-         pU8Q==
+        bh=ytViiwfcWe6lsyfyDSaN9OoXNWJryJiZznNT0Efms7I=;
+        b=UH6/jNT6G/IyXGm0cDcz8bMGqhWZEcRoDl7YEmT4RLClO5FMO7umKh3Ngtz3zFW8gN
+         I0WNIoLjxncgOP5/cofemL/NG1RKHN4lCDDGPCL6kM3Rj14wSajZzVTnSLX9sE9VO4Y9
+         UQGo5AQBJoFaLQAK8kdRMoVQ+MNoeucfKLjjAXzovOPSdeF8l4P7RtYgS83aaXGJ5suT
+         kLR8SPe9ZSXCoNebACKkqT5ewGJYPxlRQpigC+nB//bkpsVFtd/ULixpqjsXjv6gKog0
+         xaQUKxLw2ODCfSaJnO6d1l4/zCYOMYUXkCl4+UDgjBxPH1DowrrJ0y81D6jo3dMoXRc6
+         fPvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689680280; x=1692272280;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689680292; x=1692272292;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5jbeHfHwPHH+SDgR4pal5407gINcU5129rjy4niAm4I=;
-        b=b9qGnqbyZGXSk9NDNt+eJhLmsaQSS6p3sZ4L1XkL3MmPpoeZMXFEuKkY+bMNLi5eA5
-         72yJP4PsKq6O3puVlLsRYp5teUCWchBMGvTYJ02jZXPcJ12XDO1MScXJJBBMLkDW5JJf
-         r+w9l5cw+FZox6i6u+5y1zdLeQurKPg8TUXxLbcirt/lZ+DD3UhzaQ2YVQA16KXgIka6
-         ouvCq4d67uHUOAFHUPXnqQwjnGKV15ZBqT3RqlFwFMJREijpjzAvCMISGrTT6WsZHyFM
-         JuHjDARdq/1NjHHKOZYPTqLD/OgiwDFaYUEmEV9xnMe4QQ1gvnGRpPuvdOMgxEe8ERzV
-         jH1g==
-X-Gm-Message-State: ABy/qLaWrIcgv3A4qdiXvygx/h9hX2VYtMYCM4FOaQhChnmJG9d3iqjU
-        5oStaCxMm++Av/XzlbYd5jSmaV1yV1Ry+EHsyQDALBiIJy4=
-X-Google-Smtp-Source: APBJJlFAOB53TF5+0bD2ZrmeVuGZqsn/sVtaca+ZKsNLKO6TV1RuYVsQLukOUfVqkCHf58kZ95x9sqU332fjBsRdaJA=
-X-Received: by 2002:a67:e3d1:0:b0:445:2154:746b with SMTP id
- k17-20020a67e3d1000000b004452154746bmr1094389vsm.4.1689680279701; Tue, 18 Jul
- 2023 04:37:59 -0700 (PDT)
+        bh=ytViiwfcWe6lsyfyDSaN9OoXNWJryJiZznNT0Efms7I=;
+        b=Te1isbu0ZxEnKtoNbAuFL2E4nHAwjsxoYoL/YCu+Bu3PLumf7Ln+ubhNbWpcCNqp9b
+         k7Z5DdjL9bx2Vwme8kj2AgiYPt+nyIv8UqdWJxncOco0nIJ+mSYA3X+43BwYypHKXbH+
+         LqVz86Z4Ukrpk/GLIScnWq5TZvr88tDEx1fmhMkLfA8nLzFWDTAEulCZNQGUqNgnxXho
+         1B5l1uQoIs+Uln+YLegAmKfptZWNfsNvbjpEv4mXLtBZpVILIlyvew+zR1tEYeSxeAvt
+         OdYYmftl1TVPBElv9w0HKOnUxchnhNOxm3MLN1ip+7QhPlf5f2Pzi6WWkVsmKEjB4nA/
+         L8aQ==
+X-Gm-Message-State: ABy/qLb6tCMqa2T1i0KXdd1VjPh0rpP8yaLBqvErplb9qZekViIX91au
+        44ZGvXRFHOT3EbxMxCQjaVQ=
+X-Google-Smtp-Source: APBJJlHJRSPDt4M6wS2e1KWsyePiNebOZ7j3ub/iC5nCKSHaAmmccwdmBc9nzeQ3r0OPWw7mcHpIAw==
+X-Received: by 2002:a17:907:7413:b0:96a:2acf:61e1 with SMTP id gj19-20020a170907741300b0096a2acf61e1mr13582422ejc.64.1689680291722;
+        Tue, 18 Jul 2023 04:38:11 -0700 (PDT)
+Received: from orome (p200300e41f4b7100f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f4b:7100:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id y14-20020a1709063a8e00b00988b86d6c7csm903639ejd.132.2023.07.18.04.38.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 04:38:11 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 13:38:09 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Balsam CHIHI <bchihi@baylibre.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Len Brown <len.brown@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v2 10/10] pinctrl: tegra: Switch to use
+ DEFINE_NOIRQ_DEV_PM_OPS() helper
+Message-ID: <ZLZ5obLK89E1S_2R@orome>
+References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
+ <20230717172821.62827-11-andriy.shevchenko@linux.intel.com>
+ <20230718111143.000067dc@Huawei.com>
 MIME-Version: 1.0
-References: <1689669277-15291-1-git-send-email-yunlong.xing@unisoc.com>
-In-Reply-To: <1689669277-15291-1-git-send-email-yunlong.xing@unisoc.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 18 Jul 2023 14:37:48 +0300
-Message-ID: <CAOQ4uxgLhf8EyticTQUxtzUdVD=UEUTwQnTkujXE1KuaVxNQyQ@mail.gmail.com>
-Subject: Re: [PATCH] ovl: fix mount fail because the upper doesn't have space
-To:     Yunlong Xing <yunlong.xing@unisoc.com>
-Cc:     miklos@szeredi.hu, linux-unionfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        gregkh@linuxfoundation.org, sashal@kernel.org,
-        yunlongxing23@gmail.com, zhiguo.niu@unisoc.com,
-        hongyu.jin@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="P74v0JVNv+vvpyMH"
+Content-Disposition: inline
+In-Reply-To: <20230718111143.000067dc@Huawei.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 11:35=E2=80=AFAM Yunlong Xing <yunlong.xing@unisoc.=
-com> wrote:
->
-> The current ovlfs mount flow:
->
-> ovl_fill_super
->  |_ovl_get_workdir
->     |_ovl_make_workdir
->        |_ovl_check_rename_whiteout
->
-> In ovl_check_rename_whiteout(), a new file is attempted to create.But if
-> the upper doesn't have space to do this, it will return error -ENOSPC,
-> causing the mount fail. It means that if the upper is full, the overlayfs
-> cannot be mounted.It is not reasonable, so this patch will omit this erro=
-r
->  and continue mount flow.
->
-> Fixes: cad218ab3320 ("ovl: check if upper fs supports RENAME_WHITEOUT")
-> Signed-off-by: Yunlong Xing <yunlong.xing@unisoc.com>
-> ---
->  fs/overlayfs/super.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-> index 5b069f1a1e44..2cf41e978cff 100644
-> --- a/fs/overlayfs/super.c
-> +++ b/fs/overlayfs/super.c
-> @@ -744,9 +744,12 @@ static int ovl_make_workdir(struct super_block *sb, =
-struct ovl_fs *ofs,
->
->         /* Check if upper/work fs supports RENAME_WHITEOUT */
->         err =3D ovl_check_rename_whiteout(ofs);
-> -       if (err < 0)
-> -               goto out;
-> -
-> +       if (err < 0) {
-> +               if (err =3D=3D -ENOSPC)
-> +                       pr_warn("upper fs check RENAME_WHITEOUT fail due =
-to no space.\n");
-> +               else
-> +                       goto out;
-> +       }
->         rename_whiteout =3D err;
->         if (!rename_whiteout)
->                 pr_warn("upper fs does not support RENAME_WHITEOUT.\n");
-> --
 
-This assumes that RENAME_WHITEOUT is supported.
-I rather assume it is not supported if the check fails.
-Like this is shorter (not tested):
+--P74v0JVNv+vvpyMH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---- a/fs/overlayfs/super.c
-+++ b/fs/overlayfs/super.c
-@@ -744,12 +744,13 @@ static int ovl_make_workdir(struct super_block
-*sb, struct ovl_fs *ofs,
+On Tue, Jul 18, 2023 at 11:11:43AM +0100, Jonathan Cameron wrote:
+> On Mon, 17 Jul 2023 20:28:21 +0300
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+>=20
+> > Since pm.h provides a helper for system no-IRQ PM callbacks,
+> > switch the driver to use it instead of open coded variant.
+> >=20
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>=20
+> No pm_sleep_ptr()?
 
-        /* Check if upper/work fs supports RENAME_WHITEOUT */
-        err =3D ovl_check_rename_whiteout(ofs);
--       if (err < 0)
-+       if (err < 0 && err !=3D -ENOSPC)
-                goto out;
+pm_sleep_ptr() is pointless on this driver. This driver is selected by
+ARCH_TEGRA and ARCH_TEGRA also always selects PM.
 
--       rename_whiteout =3D err;
-+       rename_whiteout =3D err > 0;
-        if (!rename_whiteout)
--               pr_warn("upper fs does not support RENAME_WHITEOUT.\n");
-+               pr_warn("upper fs does not support RENAME_WHITEOUT (%i).\n"=
-,
-+                       err);
+Thierry
 
-Thanks,
-Amir.
+--P74v0JVNv+vvpyMH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmS2eaEACgkQ3SOs138+
+s6HN5g//Ywj/wrs+BJr6VMHiLwbiRkA7v79ehOPzJ4OJUIYi3+1MAwmiWoFhEAcl
+/T/eouCmHEic/yTcPLdI+J281dGNEtUfBocjS2bjIDVmEJLxdEQaj9etacJ45Mcb
+IQYvnbmISFU6pJmF1TGioxkM6hSkHYpp1UNTAj4zZQZHqTGnk/NqOuEDIbht89x0
+wQB0lbP9v0MshiQFj8QQKzDL/Q1nfrMzjAuvi9esT8DDqxNXWObkxqhNsJWxvbzV
+a170XTFD7jE1+aTHyWt6KL2OtbLl4hKm4oyuyJsgGuW/NJRCIdFLyOfjPZ5bDWSS
+tpTQcbvkjeGNSLjbZHB7cq8b8pgfuC+3f1fRL9V+3WLiHv34tTi+KBE1mdtk7oMz
+jtWordkVw1MKp4coQrejaKK3kk24m4Xafa5ESYOJsL8F0CemS0Xqk8lQ+QrSEXGC
+DvUbBTLWCZYopNX1TTD0IN3zy7MAopgsvIoEXjVfUPupR6onNJ5MyriXzDOJEqAq
+P1WgES+vP23KX8uf/SCLCTBXSXMhfjwv1bDV+R2V5dIvVvYAW+SXbWncKxufAk24
+myEePxe0D6lfE3I0pXSJwFOy/1GBu2eMojpkHPAOXS6xalB1tfNA0i5ql0qXwIci
+yxdnnk39QqWv2w7pVnlUC43liVyc8pITB0bYSPspMhPsPFug1ug=
+=Df4E
+-----END PGP SIGNATURE-----
+
+--P74v0JVNv+vvpyMH--
