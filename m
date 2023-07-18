@@ -2,153 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C877584A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA04758412
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbjGRSVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 14:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
+        id S231543AbjGRSED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 14:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjGRSVs (ORCPT
+        with ESMTP id S230005AbjGRSEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 14:21:48 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C17CF7;
-        Tue, 18 Jul 2023 11:21:29 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id bc050e03685f559d; Tue, 18 Jul 2023 20:21:27 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 7BBCE6614F7;
-        Tue, 18 Jul 2023 20:21:27 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH v1 1/7] thermal: core: Add mechanism for connecting trips with driver data
-Date:   Tue, 18 Jul 2023 20:02:45 +0200
-Message-ID: <3251115.aeNJFYEL58@kreacher>
-In-Reply-To: <13318886.uLZWGnKmhe@kreacher>
-References: <13318886.uLZWGnKmhe@kreacher>
+        Tue, 18 Jul 2023 14:04:00 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9904B6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 11:03:56 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-57012b2973eso61146037b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 11:03:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689703436; x=1692295436;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=q4CNF+rFTUAFOsBEhouBKLc7oCXFnNA366elyzGW4JA=;
+        b=MajzVeq2e8H/0R87Xtso03TCRV/nKjiwEOYIrZPU3SQEJt1uJ31zDkTlcgphETFQtc
+         kbXVXF3eMfXaGCvh8xjHPugNVtbqTzh173+DWIjbnHpmiZ4HCxObRngUZV/0vzxmztHE
+         fQWTc2iyxeQXZ3aVIeziT3f8xkFGiWP/vRwIf4jUQ4bAUMuEZ4j1XDGqF57jZesWuPlL
+         JGqC0MEbYkQhWTAIf2kG/Me/1g68qf4aTHINDuTwwKk4KICji1vYXVQ9XFnd8qUkUr4P
+         NF9Wode2GKRWdExle1SRQPqKGtWO3Xbvg57dyEPrF5hGQGM76K2/j4NFEare+tVHjVgv
+         98lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689703436; x=1692295436;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=q4CNF+rFTUAFOsBEhouBKLc7oCXFnNA366elyzGW4JA=;
+        b=OPeCj/8HzQLyoPcgULhnlx24pOW0tLJHFKsM3Wk5zKovGF/dm2yQQFGbl3MY5zI17D
+         Pr037skf4lmGjDQ+DpA2CNB7RXbLOGDs/b4xcv4P9z4RWcv/l98u6dqbDVbZ9NoDzT88
+         0iWypTV5J/Kz5pf4BEZpmU+ZC2IxC3Flwg8p1kj/xJEanu2tc0lE2csQILnMBsQkPS5W
+         jaPz9JosuwGGFrT6dgOTevv5BSFgRQuyoxBOxRWUDceDJpS+1CbgVLbqxVlzCrDyYIf9
+         8fSkHr1emwfG3vhGXWYAVHBVQQbn9Alnk58LKL2qws8Ee9HIR082KJdGRrYWgShB7H6s
+         yPUQ==
+X-Gm-Message-State: ABy/qLYNSiJZibCjB9PzLvEzDh4XJjaQ7uGZ58p/pxCkhU6ye2329RgB
+        IAawGetC9DoHQBEvgcjLN8wWwA==
+X-Google-Smtp-Source: APBJJlGPg7wlRhHKekm0is+KBQAGFMmR19sLA5ULGCY3dMkWHVh1xGMUi0EDnr+UMn8UVh+t+wKWQQ==
+X-Received: by 2002:a0d:f101:0:b0:56c:f8f1:eed5 with SMTP id a1-20020a0df101000000b0056cf8f1eed5mr509779ywf.6.1689703436033;
+        Tue, 18 Jul 2023 11:03:56 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id h18-20020a81b412000000b0057a6e41aad1sm574314ywi.67.2023.07.18.11.03.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 11:03:55 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 11:03:45 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Jeff Layton <jlayton@kernel.org>
+cc:     Hugh Dickins <hughd@google.com>, Theodore Ts'o <tytso@mit.edu>,
+        Christian Brauner <brauner@kernel.org>,
+        Jan Kara <jack@suse.cz>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next ext4 inode size 128 corrupted
+In-Reply-To: <368e567a3a0a1a21ce37f5fba335068c50ab6f29.camel@kernel.org>
+Message-ID: <a51815d0-16fb-201b-77db-e16af4caa8b0@google.com>
+References: <26cd770-469-c174-f741-063279cdf7e@google.com> <368e567a3a0a1a21ce37f5fba335068c50ab6f29.camel@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrgeeggdduvddtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihgthhgrlhdrfihilhgtiiihnhhskhhisehinhhtvghlrdgtohhmpdhr
- tghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Tue, 18 Jul 2023, Jeff Layton wrote:
+> On Mon, 2023-07-17 at 20:43 -0700, Hugh Dickins wrote:
+> > Hi Jeff,
+> > 
+> > I've been unable to run my kernel builds on ext4 on loop0 on tmpfs
+> > swapping load on linux-next recently, on one machine: various kinds
+> > of havoc, most common symptoms being ext4_find_dest_de:2107 errors,
+> > systemd-journald errors, segfaults.  But no problem observed running
+> > on a more recent installation.
+> > 
+> > Bisected yesterday to 979492850abd ("ext4: convert to ctime accessor
+> > functions").
+> > 
+> > I've mostly averted my eyes from the EXT4_INODE macro changes there,
+> > but I think that's where the problem lies.  Reading the comment in
+> > fs/ext4/ext4.h above EXT4_FITS_IN_INODE() led me to try "tune2fs -l"
+> > and look at /etc/mke2fs.conf.  It's an old installation, its own
+> > inodes are 256, but that old mke2fs.conf does default to 128 for small
+> > FSes, and what I use for the load test is small.  Passing -I 256 to the
+> > mkfs makes the problems go away.
+> > 
+> > (What's most alarming about the corruption is that it appears to extend
+> > beyond just the throwaway test filesystem: segfaults on bash and libc.so
+> > from the root filesystem.  But no permanent damage done there.)
+> > 
+> > One oddity I noticed in scrutinizing that commit, didn't help with
+> > the issues above, but there's a hunk in ext4_rename() which changes
+> > -	old.dir->i_ctime = old.dir->i_mtime = current_time(old.dir);
+> > +	old.dir->i_mtime = inode_set_ctime_current(old.inode);
+> > 
+> > 
+> 
+> I suspect the problem here is the i_crtime, which lives wholly in the
+> extended part of the inode. The old macros would just not store anything
+> if the i_crtime didn't fit, but the new ones would still store the
+> tv_sec field in that case, which could be a memory corruptor. This patch
+> should fix it, and I'm testing it now.
 
-Some drivers need to update trip point data (temperature and/or
-hysteresis) upon notifications from the platform firmware or they
-may need to reprogram hardware when trip point parameters are changed
-via sysfs.  For those purposes, they need to connect struct thermal_trip
-to a private data set associated with the trip or the other way around
-and using a trip point index for that may not always work, because the
-core may need to reorder the trips during thermal zone registration (in
-particular, they may need to be sorted).
+That makes sense.
 
-To allow that to be done without using a trip point index, introduce
-a new field in struct thermal_trip that can be pointed by the driver
-to its own data structure containing a trip pointer to be initialized
-by the core during thermal zone registration.  That pointer will then
-have to be updated by the core every time the location of the given
-trip point object in memory changes.
+> 
+> Hugh, if you're able to give this a spin on your setup, then that would
+> be most helpful. This is also in the "ctime" branch in my kernel.org
+> tree if that helps. If this looks good, I'll ask Christian to fold this
+> into the ext4 conversion patch.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/thermal/thermal_core.c |   20 +++++++++++++++++---
- include/linux/thermal.h        |   13 +++++++++++++
- 2 files changed, 30 insertions(+), 3 deletions(-)
+Yes, it's now running fine on the problem machine, and on the no-problem.
 
-Index: linux-pm/include/linux/thermal.h
-===================================================================
---- linux-pm.orig/include/linux/thermal.h
-+++ linux-pm/include/linux/thermal.h
-@@ -76,16 +76,29 @@ struct thermal_zone_device_ops {
- 	void (*critical)(struct thermal_zone_device *);
- };
- 
-+struct thermal_trip_ref {
-+	struct thermal_trip *trip;
-+};
-+
- /**
-  * struct thermal_trip - representation of a point in temperature domain
-  * @temperature: temperature value in miliCelsius
-  * @hysteresis: relative hysteresis in miliCelsius
-  * @type: trip point type
-+ * @driver_ref: driver's reference to this trip point
-+ *
-+ * If @driver_ref is not NULL, the trip pointer in the object pointed to by it
-+ * will be initialized by the core during thermal zone registration and updated
-+ * whenever the location of the given trip object changes.  This allows the
-+ * driver to access the trip point data without knowing the relative ordering
-+ * of trips within the trip table used by the core and, given a trip pointer,
-+ * to get back to its private data associated with the given trip.
-  */
- struct thermal_trip {
- 	int temperature;
- 	int hysteresis;
- 	enum thermal_trip_type type;
-+	struct thermal_trip_ref *driver_ref;
- };
- 
- struct thermal_cooling_device_ops {
-Index: linux-pm/drivers/thermal/thermal_core.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_core.c
-+++ linux-pm/drivers/thermal/thermal_core.c
-@@ -1306,14 +1306,28 @@ thermal_zone_device_register_with_trips(
- 	if (result)
- 		goto release_device;
- 
-+	mutex_lock(&tz->lock);
-+
- 	for (count = 0; count < num_trips; count++) {
--		struct thermal_trip trip;
-+		int temperature = 0;
-+
-+		if (trips) {
-+			temperature = trips[count].temperature;
-+			if (trips[count].driver_ref)
-+				trips[count].driver_ref->trip = &trips[count];
-+		} else {
-+			struct thermal_trip trip;
- 
--		result = thermal_zone_get_trip(tz, count, &trip);
--		if (result || !trip.temperature)
-+			result = __thermal_zone_get_trip(tz, count, &trip);
-+			if (!result)
-+				temperature = trip.temperature;
-+		}
-+		if (!temperature)
- 			set_bit(count, &tz->trips_disabled);
- 	}
- 
-+	mutex_unlock(&tz->lock);
-+
- 	/* Update 'this' zone's governor information */
- 	mutex_lock(&thermal_governor_lock);
- 
+Tested-by: Hugh Dickins <hughd@google.com>
 
+> 
+> Thanks for the bug report!
 
+And thanks for the quick turnaround!
 
+But I'm puzzled by your dismissing that
+-	old.dir->i_ctime = old.dir->i_mtime = current_time(old.dir);
++	old.dir->i_mtime = inode_set_ctime_current(old.inode);
+in ext4_rename() as "actually looks fine".
+
+Different issue, nothing to do with the corruption, sure.  Much less
+important, sure.  But updating ctime on the wrong inode is "fine"?
+
+Hugh
+
+> 
+> ---------------------------8<--------------------------
+> 
+> [PATCH] ext4: fix the time handling macros when ext4 is using small inodes
+> 
+> If ext4 is using small on-disk inodes, then it may not be able to store
+> fine grained timestamps. It also can't store the i_crtime at all in that
+> case since that fully lives in the extended part of the inode.
+> 
+> 979492850abd got the EXT4_EINODE_{GET,SET}_XTIME macros wrong, and would
+> still store the tv_sec field of the i_crtime into the raw_inode, even
+> when they were small, corrupting adjacent memory.
+> 
+> This fixes those macros to skip setting anything in the raw_inode if the
+> tv_sec field doesn't fit. 
+> 
+> Cc: Jan Kara <jack@suse.cz>
+> Fixes: 979492850abd ("ext4: convert to ctime accessor functions")
+> Reported-by: Hugh Dickins <hughd@google.com>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/ext4/ext4.h | 17 ++++++++++++-----
+>  1 file changed, 12 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 2af347669db7..1e2259d9967d 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -900,8 +900,10 @@ do {										\
+>  #define EXT4_INODE_SET_CTIME(inode, raw_inode)					\
+>  	EXT4_INODE_SET_XTIME_VAL(i_ctime, inode, raw_inode, inode_get_ctime(inode))
+>  
+> -#define EXT4_EINODE_SET_XTIME(xtime, einode, raw_inode)			       \
+> -	EXT4_INODE_SET_XTIME_VAL(xtime, &((einode)->vfs_inode), raw_inode, (einode)->xtime)
+> +#define EXT4_EINODE_SET_XTIME(xtime, einode, raw_inode)				\
+> +	if (EXT4_FITS_IN_INODE(raw_inode, einode, xtime))			\
+> +		EXT4_INODE_SET_XTIME_VAL(xtime, &((einode)->vfs_inode),		\
+> +					 raw_inode, (einode)->xtime)
+>  
+>  #define EXT4_INODE_GET_XTIME_VAL(xtime, inode, raw_inode)			\
+>  	(EXT4_FITS_IN_INODE(raw_inode, EXT4_I(inode), xtime ## _extra) ?	\
+> @@ -922,9 +924,14 @@ do {										\
+>  		EXT4_INODE_GET_XTIME_VAL(i_ctime, inode, raw_inode));		\
+>  } while (0)
+>  
+> -#define EXT4_EINODE_GET_XTIME(xtime, einode, raw_inode)			       \
+> -do {									       \
+> -	(einode)->xtime = EXT4_INODE_GET_XTIME_VAL(xtime, &(einode->vfs_inode), raw_inode);	\
+> +#define EXT4_EINODE_GET_XTIME(xtime, einode, raw_inode)				\
+> +do {										\
+> +	if (EXT4_FITS_IN_INODE(raw_inode, einode, xtime)) 			\
+> +		(einode)->xtime =						\
+> +			EXT4_INODE_GET_XTIME_VAL(xtime, &(einode->vfs_inode),	\
+> +						 raw_inode);			\
+> +	else									\
+> +		(einode)->xtime = (struct timespec64){0, 0};			\
+>  } while (0)
+>  
+>  #define i_disk_version osd1.linux1.l_i_version
+> -- 
+> 2.41.0
+> 
+> 
+> 
