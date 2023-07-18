@@ -2,65 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F19E975833A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB16E758334
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbjGRRGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41438 "EHLO
+        id S231461AbjGRREr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232347AbjGRRGf (ORCPT
+        with ESMTP id S230159AbjGRREW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:06:35 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5F21739;
-        Tue, 18 Jul 2023 10:06:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689699967; x=1721235967;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CEwwrjwPfBcE3oHaafHaOcaByORj1Xv2apS2NjCY/9c=;
-  b=IGR5rkqaOeSM7p5JhFVdy+RPyiKbpBG2yODuN9SFU5x6rQ6XddgBXZ53
-   n4uunr3P99/HRbEaKChxTKDql3WYvTGpmo4rKu5Qa10XRNxvbWNqp1lw6
-   Nnc5yzcqd9jyjCbQLrd/7EyGry/ESVF5JBLLYk6l/IRfwJ06uP6M59ekl
-   ynt29aYr9v1BJdW/JDFl+HP3c4jFW4QvgLC1gRwpiruFv8pY5f/B8A4OI
-   xhTVi0aoE6KeL0I7rBS/6JP/kNoheudVkyXhNnIqt7mjlonIFhT0mvarq
-   AyPOPzQ1n2Q06GrT4fN05W+Y9m4Ie5mSBHf37QkxUAAJxv9HROcvTYWDx
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="369818793"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="369818793"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 10:05:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="813831154"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="813831154"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 18 Jul 2023 10:05:24 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qLo7t-0001jn-25;
-        Tue, 18 Jul 2023 17:04:48 +0000
-Date:   Wed, 19 Jul 2023 01:02:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Junxian Huang <huangjunxian6@hisilicon.com>, jgg@nvidia.com,
-        leon@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com, linux-kernel@vger.kernel.org,
-        huangjunxian6@hisilicon.com
-Subject: Re: [PATCH v2 for-rc 3/3] RDMA/hns: Add check and adjust for
- function resource values
-Message-ID: <202307190042.hWzQQIOk-lkp@intel.com>
-References: <20230717060340.453850-4-huangjunxian6@hisilicon.com>
+        Tue, 18 Jul 2023 13:04:22 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBB71FD9
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:03:54 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1b8a44ee159so36484855ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:03:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689699808; x=1692291808;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GT+sqjsBJCrCFnfjlBO9PEjDZvBphMzEEJkH0X1enOQ=;
+        b=XbxFnoY3K8n5MjmOsvk1vk4QDsSBRo9sFeq1bC/f8+42pGBUp6fsTTervq0PZxIP+l
+         DkES1cAEdkigXbFnLUe/1wRMUu7ubjc7VeMnQOC+kZDm6Ar6KEq0oYgQN23ShDICrJtM
+         vw65u2TXA1cRapOGY1n0QnvfLyge1jraFL/29kP2RGN9Je/zxaNoE2y4h9pel3frgDXt
+         RqV6/yISVyARBn6dHG7Y/ruTvDls9BjMZjd9IbF89/XiOVghjc7E/T7kliD6YLtGw3Dv
+         vco9SD/kURWosFNKoyoA7po5lUUuexk+kZEEL7qS4aw7Hm+tFF4NNIGzf6HRmjtqkWEP
+         f8IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689699808; x=1692291808;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GT+sqjsBJCrCFnfjlBO9PEjDZvBphMzEEJkH0X1enOQ=;
+        b=NauJxgP8RCIaLsR55O2zyn3qCf1t7ZkY/CNr4ry06bAFwOSbql2Yp/IiixfVlVSBmq
+         CqWi94em+vPQsPpFOQF8A+1iGUYx2/wPURGz3pFK7C/8uYpeGZocOH1E7d1d5cx1XSoU
+         BUFA9naV3B1oOZnh/aWofD7VlTE4850K3B8f62K4OufMqrl5HqULQ4+XiZgyZ46qHSws
+         PYNlGqZbPts4GnrvCCsGd3SwH5J9ifCN5j0iLXIS70cyX46s/7Ev02fbB6gJ6gD/EalO
+         O2JZWvjtOrJyH+hQIhoYld0yaeG26ghb3SSINCOejdIjiC3fEnaqrO4hLK/G7fTj9CeP
+         rbiA==
+X-Gm-Message-State: ABy/qLYgQs3olS/bh3T49LkE7I53Y70/aL6LU2OVyjmOmGw15VU07jL3
+        P2jxavTtIlT/2EDg2/DjSgc=
+X-Google-Smtp-Source: APBJJlF/FniITLJA/CjL64d6hguVOAGlCPmAwKTX1K2KiD3CBpmX2EtSlV18R6R4JqrH28iHT0ItqQ==
+X-Received: by 2002:a17:902:b68f:b0:1b9:e9f3:44c3 with SMTP id c15-20020a170902b68f00b001b9e9f344c3mr13072448pls.4.1689699807648;
+        Tue, 18 Jul 2023 10:03:27 -0700 (PDT)
+Received: from localhost ([216.228.127.130])
+        by smtp.gmail.com with ESMTPSA id h12-20020a170902eecc00b001a98f844e60sm2091603plb.263.2023.07.18.10.03.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 10:03:27 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 10:03:25 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Alexander Potapenko <glider@google.com>, catalin.marinas@arm.com,
+        will@kernel.org, pcc@google.com, andreyknvl@gmail.com,
+        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v3 1/5] lib/bitmap: add bitmap_{set,get}_value()
+Message-ID: <ZLbF3ZO7TvJGJOeo@yury-ThinkPad>
+References: <20230717113709.328671-1-glider@google.com>
+ <20230717113709.328671-2-glider@google.com>
+ <ZLVjYzuxlJAQVpIO@yury-ThinkPad>
+ <CAG_fn=UPqyFhEMLDz3nhc7fgpCvprLsYrNjUnw3z4KfWCJGTHA@mail.gmail.com>
+ <ZLabOHmNQm2EOXWR@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230717060340.453850-4-huangjunxian6@hisilicon.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZLabOHmNQm2EOXWR@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,70 +81,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Junxian,
+On Tue, Jul 18, 2023 at 05:01:28PM +0300, Andy Shevchenko wrote:
+> On Tue, Jul 18, 2023 at 11:30:00AM +0200, Alexander Potapenko wrote:
+> > On Mon, Jul 17, 2023 at 5:51 PM Yury Norov <yury.norov@gmail.com> wrote:
+> > > On Mon, Jul 17, 2023 at 01:37:04PM +0200, Alexander Potapenko wrote:
+> 
+> ...
+> 
+> > > When nbits == 0, copy-like functions shouldn't touch any memory. See how
+> > > other bitmap and find_bit functions hold it.
+> > 
+> > I think this is different from what other bitmap functions do, but it
+> > should be enough to bail out on !nbits, i.e.:
+> > 
+> >     if (!nbits)
+> >         return 0;
+> > 
+> > You probably meant adding a __builtin_constant_p() (which is used all
+> > over the place in bitmap.h), but:
 
-kernel test robot noticed the following build warnings:
+No, I didn't mean that.
 
-[auto build test WARNING on rdma/for-next]
-[also build test WARNING on linus/master v6.5-rc2 next-20230718]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> >  - the compiler won't have problem optimizing away the code for a
+> > constant nbits=0;
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Junxian-Huang/RDMA-hns-support-get-xrcd-num-from-firmware/20230718-171525
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-patch link:    https://lore.kernel.org/r/20230717060340.453850-4-huangjunxian6%40hisilicon.com
-patch subject: [PATCH v2 for-rc 3/3] RDMA/hns: Add check and adjust for function resource values
-config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20230719/202307190042.hWzQQIOk-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230719/202307190042.hWzQQIOk-lkp@intel.com/reproduce)
+Look at your code, having nbits == 0 in mind:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307190042.hWzQQIOk-lkp@intel.com/
+       const size_t index = BIT_WORD(start);
+       const unsigned long offset = start % BITS_PER_LONG;
+       const unsigned long space = BITS_PER_LONG - offset;
+       unsigned long value_low, value_high;
 
-All warnings (new ones prefixed by >>):
+       if (space >= nbits) // This is always the case
+               return (map[index] >> offset) & GENMASK(nbits - 1, 0);
+       ...             ^^                      ^^
+                       Unconditional fetch     Wshift-count-overflow
 
-   drivers/infiniband/hw/hns/hns_roce_hw_v2.c: In function 'adjust_res_caps':
->> drivers/infiniband/hw/hns/hns_roce_hw_v2.c:1709:53: warning: passing argument 2 of 'check_res_is_supported' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-    1709 |                 if (!check_res_is_supported(hr_dev, &bt_num_table[i]))
-         |                                                     ^~~~~~~~~~~~~~~~
-   drivers/infiniband/hw/hns/hns_roce_hw_v2.c:1673:60: note: expected 'struct hns_roce_bt_num *' but argument is of type 'const struct hns_roce_bt_num *'
-    1673 |                                    struct hns_roce_bt_num *bt_num_entry)
-         |                                    ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+Thanks to GENMASK() implementation, you'll be warned by GENMASK_INPUT_CHECK()
+if nbits is a compile-time variable. In case of runtime, it's a pure undef,
+not mentioning useless, expensive and dangerous fetch.
 
+> >  - we anyway need a dynamic check for the case nbits is not constant
+> > (for both bitmap_get_value() and bitmap_set_value(), I assume).
+> > 
+> > What do you think?
 
-vim +1709 drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+I think that instead of speculations, it's better to cover nbits == 0
+with the explicit tests for run- and compile-time. That way you're
+always on a safe side.
 
-  1699	
-  1700	static u16 adjust_res_caps(struct hns_roce_dev *hr_dev)
-  1701	{
-  1702		struct hns_roce_caps *caps = &hr_dev->caps;
-  1703		u16 invalid_flag = 0;
-  1704		u32 min, max;
-  1705		u32 *res;
-  1706		int i;
-  1707	
-  1708		for (i = 0; i < ARRAY_SIZE(bt_num_table); i++) {
-> 1709			if (!check_res_is_supported(hr_dev, &bt_num_table[i]))
-  1710				continue;
-  1711	
-  1712			res = (u32 *)((void *)caps + bt_num_table[i].res_offset);
-  1713			min = bt_num_table[i].min;
-  1714			max = bt_num_table[i].max;
-  1715			if (*res < min || *res > max) {
-  1716				*res = *res < min ? min : max;
-  1717				invalid_flag |= 1 << bt_num_table[i].invalid_flag;
-  1718			}
-  1719		}
-  1720	
-  1721		adjust_eqc_bt_num(caps, &invalid_flag);
-  1722	
-  1723		return invalid_flag;
-  1724	}
-  1725	
+bitmap_get_val(NULL, 0, 0) shouldn't crash the kernel.
+ 
+> The idea behind is to eliminate the code completely for the cases nbits != 0.
+> In your case the dynamic check will be there. That's what we want to avoid.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Alexander is right - we can't avoid testing against 0 if we need to
+test for 0... In case of other functions we have inline and outline
+implementations, controlled by small_const_nbits().
+
+As you can see, the small_const_nbits() tests against 0 explicitly,
+although it's free at compile time. But if nbits == 0, we pick
+outline version of a function regardless.
+
+On their turn, outline versions again do their test against nbits == 0,
+but most of the time implicitly.
+
+In case of bitmap_set_val, we are touching at max 2 words, and there's
+no reason for outline version, so we have to test nbits against 0
+inside inline code. 
+
+Having all that in mind, and because nbits == 0 is most likely an
+error we'd follow the following rules:
+ - no memory must be touched as we're potentially in error condition,
+   and pointer may be corrupted;
+ - the cost of the check must be as minimal as possible.
+
+So I suggest:
+
+        if (unlikely(nbits == 0))
+                return;
+
+For readers that would literally mean: we don't expect that, and we find
+it suspicious, but we'll handle that as correct as we can.
+
+By the way, Alexander, please drop that 'const' things. Those are for
+pointers or some global variables, not for inline functions with 4
+lines of code. (If you think it helps the code to be safe than no - it's
+unsafe even with consts.)
+
+Thanks,
+Yury
