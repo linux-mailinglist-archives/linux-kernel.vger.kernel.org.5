@@ -2,94 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8CB757D65
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1681C757D68
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbjGRNZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:25:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58828 "EHLO
+        id S231891AbjGRN0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232266AbjGRNZY (ORCPT
+        with ESMTP id S230170AbjGRN0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:25:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F177318E;
-        Tue, 18 Jul 2023 06:25:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Tue, 18 Jul 2023 09:26:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262E919F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:25:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689686733;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/M/qQnMSwnh+97aUq8vDjOoEVfN55OnkfZv67VGG31g=;
+        b=LChU4XjGq0QlL6hx2ras4Gxhh/qpYiR1QuM6Kc5ld1jU5TiAI/64X3nuyo4wIM5tNRqg8z
+        6EOxjuglBX+C6nEaV3H8oGwY+hsKThH35fuktPuogjmQooOYvr79M2UVM+IAjNjGrY3nSv
+        ZFRDzBb5UwQcZ5LTKiq+aUoPc2VtMSU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-19-nJ-UxPPROZGyyjWR7POI3Q-1; Tue, 18 Jul 2023 09:25:31 -0400
+X-MC-Unique: nJ-UxPPROZGyyjWR7POI3Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7E1E06157F;
-        Tue, 18 Jul 2023 13:25:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46C6FC433C8;
-        Tue, 18 Jul 2023 13:25:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1689686719;
-        bh=MKqbN3b2rv/J1xMVTMwrvaZB7Tc3AJ+NAm9r4fkKzTY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=x4yR6Xc/nyqMRzveJsq42U+veA7gOWFvU/wA10gUsKOYuunIQ2ZUGcaUxmnDOyPg9
-         JOjv0Ip3Cj8efbzgdlpe1sUUZejrL6LsuJw9VHC573Bdc7gigSC/Ew8/UxNgH960/i
-         N6cN8IR0liVljLuGmng894OPNi5kTg0uns2EKtEg=
-Date:   Tue, 18 Jul 2023 15:25:15 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     sunran001@208suo.com
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: serial: add missing clk_put()
-Message-ID: <2023071845-playable-snippet-278a@gregkh>
-References: <20230718075401.16668-1-xujianghui@cdjrlc.com>
- <047273ae4e4c25eb7b81fd69d761161e@208suo.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0E050881B25;
+        Tue, 18 Jul 2023 13:25:28 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.22.9.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7E380C2C864;
+        Tue, 18 Jul 2023 13:25:27 +0000 (UTC)
+Date:   Tue, 18 Jul 2023 09:25:25 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Ben Segall <bsegall@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v3 1/2] sched, cgroup: Restore meaning to
+ hierarchical_quota
+Message-ID: <20230718132525.GB126587@lorien.usersys.redhat.com>
+References: <xm268rbkg4tg.fsf@google.com>
+ <20230714125746.812891-1-pauld@redhat.com>
+ <ZLWIDC2nlG8cb3VE@slm.duckdns.org>
+ <20230718125759.GA126587@lorien.usersys.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <047273ae4e4c25eb7b81fd69d761161e@208suo.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230718125759.GA126587@lorien.usersys.redhat.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 03:55:23PM +0800, sunran001@208suo.com wrote:
-> This patch fixes the following Coccinelle error:
-> 
-> ./drivers/tty/serial/bcm63xx_uart.c:854:2-8: ERROR: missing clk_put;
-> clk_get on line 849 and execution via conditional on line 853
-> 
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->  drivers/tty/serial/bcm63xx_uart.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/tty/serial/bcm63xx_uart.c
-> b/drivers/tty/serial/bcm63xx_uart.c
-> index 55e82d0bf92d..7353b683952d 100644
-> --- a/drivers/tty/serial/bcm63xx_uart.c
-> +++ b/drivers/tty/serial/bcm63xx_uart.c
-> @@ -851,6 +851,7 @@ static int bcm_uart_probe(struct platform_device *pdev)
->          clk = of_clk_get(pdev->dev.of_node, 0);
-> 
->      if (IS_ERR(clk))
-> +        clk_put(clk);
->          return -ENODEV;
-> 
->      port->iotype = UPIO_MEM;
+Hi Tejun,
 
-Ran, as was pointed out before, you obviously didn't even test this
-patch, nor any of the other submissions you made.
+On Tue, Jul 18, 2023 at 08:57:59AM -0400 Phil Auld wrote:
+> On Mon, Jul 17, 2023 at 08:27:24AM -1000 Tejun Heo wrote:
+> > On Fri, Jul 14, 2023 at 08:57:46AM -0400, Phil Auld wrote:
+> > > In cgroupv2 cfs_b->hierarchical_quota is set to -1 for all task
+> > > groups due to the previous fix simply taking the min.  It should
+> > > reflect a limit imposed at that level or by an ancestor. Even
+> > > though cgroupv2 does not require child quota to be less than or
+> > > equal to that of its ancestors the task group will still be
+> > > constrained by such a quota so this should be shown here. Cgroupv1
+> > > continues to set this correctly.
+> > > 
+> > > In both cases, add initialization when a new task group is created
+> > > based on the current parent's value (or RUNTIME_INF in the case of
+> > > root_task_group). Otherwise, the field is wrong until a quota is
+> > > changed after creation and __cfs_schedulable() is called.
+> > > 
+> > > Fixes: c53593e5cb69 ("sched, cgroup: Don't reject lower cpu.max on ancestors")
+> > 
+> > Does this really fix anything observable? I wonder whether this is more
+> > misleading than helpful. In cgroup2, the value simply wasn't being used,
+> > right?
+> >
 
-Please take the time to learn C a bit better, and then start out in a
-part of the kernel where basic changes are accepted, like
-drivers/staging/ so that you can learn how to properly send patches
-(this was incorrectly sent as well.)
+(Sorry, my editor bit me...I had added:)
 
-Then you can work up to attempting to fix other changes like this, if
-they are correct, and you will know how to properly test your changes
-instead of just making rote changes like this without understanding the
-implications of them.
+I don't feel strongly about the fixes. What was there seemed broken to me
+so ... "Fixes". But it doesn't matter. 
 
-best of luck!
 
-greg k-h
+> 
+> It wasn't being used but was actively being set wrong. I mean if we are
+> going to bother doing the __cfs_schedulable() tg tree walk we might as
+> well have not been setting a bogus value. But that said, no it was not
+> observable until I tried to use it.
+>
+
+We have a field called hierarchical_quota, that was being unconditionally
+set to -1 for cgroup2. I figured it would be more correct to reflect
+the hieratchical quota. :)
+
+
+> I'm fine if that's dropped. I just wanted it set right going forward :)
+> 
+> 
+> > > Signed-off-by: Phil Auld <pauld@redhat.com>
+> > > Reviewed-by: Ben Segall <bsegall@google.com>
+> > > Cc: Ingo Molnar <mingo@redhat.com>
+> > > Cc: Peter Zijlstra <peterz@infradead.org>
+> > > Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> > > Cc: Juri Lelli <juri.lelli@redhat.com>
+> > > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> > > Cc: Valentin Schneider <vschneid@redhat.com>
+> > > Cc: Ben Segall <bsegall@google.com>
+> > > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > > Cc: Tejun Heo <tj@kernel.org>
+> > 
+> > Acked-by: Tejun Heo <tj@kernel.org>
+> >
+> 
+> Thanks!
+> 
+> 
+> > > +		 * always take the non-RUNTIME_INF min.  On cgroup1, only
+> > > +		 * inherit when no limit is set. In both cases this is used
+> > > +		 * by the scheduler to determine if a given CFS task has a
+> > > +		 * bandwidth constraint at some higher level.
+> > 
+> > The discussion on this comment is stretching too long and this is fine too
+> > but what's worth commenting for cgroup2 is that the limit value itself
+> > doesn't mean anything and we're just latching onto the value used by cgroup1
+> > to track whether there's any limit active or not.
+> 
+> I thought that was implied by the wording. "If a given task has a bandwidth
+> contraint" not "what a given task's bandwidth constraint is".  In both cases
+> that's how the other parts of the scheduler are using it. The actual
+> non-RUNTIME_INF value only matters in this function (and only for cgroup1
+> indeed).
+> 
+> But... the value is just as accurate for cgroup2 and cgroup1.  The task is
+> still going to be limited by that bandwidth constraint even if its own
+> bandwidth limit is nominally higher, right? 
+> 
+> 
+> Cheers,
+> Phil
+> 
+> > 
+> > Thanks.
+> > 
+> > -- 
+> > tejun
+> > 
+> 
+> -- 
+> 
+
+-- 
+
