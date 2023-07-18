@@ -2,102 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2BE7573DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229197573ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbjGRGOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 02:14:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53648 "EHLO
+        id S231513AbjGRGRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 02:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231447AbjGRGOA (ORCPT
+        with ESMTP id S231360AbjGRGQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 02:14:00 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C70A19A5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:13:02 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4f122ff663eso8487409e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:13:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689660769; x=1692252769;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rgbFWSWr6W8QdzbGv+j4ji6jKVEolY8RLpgGW8ZQcUk=;
-        b=qEc7J7XzLk3yZ6Pxd2/40r/WoJdPYmeWrLsUgjcqMlcfY7rOu43o8lem+5oNlRS7wU
-         edQVTiNgVRPTfhjWTFANoqkKWAsuYvLwJph5mn9dNqWzcf57WQXrwyi6SxG/ERdaDeiF
-         Bik0tXddl0iVVt/f3U+M/7otRHoAzjKfWkHgtKmU4hkn5XfXlTEMI2t6wg4oVDPSNL2n
-         kYjL21xTAdE/WDDDdjungWKeJU/pXjNGumWKTHlWdu3yADbzR1ROYuzk0sMeeR9VWotm
-         6chP/AlvhhPQQZCVZcVB9xM0w9sUkGfOdbZiJwT36BxSitNqCl4BCEFfjTjIVuC5oMxO
-         1o6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689660769; x=1692252769;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rgbFWSWr6W8QdzbGv+j4ji6jKVEolY8RLpgGW8ZQcUk=;
-        b=ITjvFDlzf6FflAewuv1c1axnvIB6iZtrku/LqhFJ5qfhN8A5S4VSukQ1qn0YppK9+A
-         5L8Tyk+BEO0+mmBkmXpRxbfMxxWbztSXqTnxX1twxdGbQtwWcLYRvxGMtwCCFyXtJ61s
-         T/b0F0G+c5G+W3HdZJXCtKiQgaGjtZAclX+w4xwLk00oHxOUf4B7rkRgRiZ+PVCu390c
-         5bF0dLc2zbL3GcM8l1YoghpJSTlvLCCjRBxy3H7eCPwq2PrMV/A3S/RfOVOpCWGWJhQi
-         Sju9PG0jY6KFcg8rVsOhv3mMcZp8/D6+4CbAckIkAm2spd2YRO04uBhATI3YoXPM3fdX
-         SdTA==
-X-Gm-Message-State: ABy/qLZKywFx7cF+zZoCOAcnS3l+uVnFuqEW1M01NpKNFVDiyZx6Vbos
-        sSHaNt0mprv9CpLlmqIts+EH+w==
-X-Google-Smtp-Source: APBJJlH3PS0/PK72s53EFLRDXW5H0201i7mmM9m1dz6YPI4GTgTZe76ZXIbpK/bSNjshQs4B6YKGzQ==
-X-Received: by 2002:a05:6512:45a:b0:4f8:5696:6bbc with SMTP id y26-20020a056512045a00b004f856966bbcmr7830812lfk.29.1689660768889;
-        Mon, 17 Jul 2023 23:12:48 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id 2-20020a05600c248200b003faef96ee78sm9596812wms.33.2023.07.17.23.12.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 23:12:46 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 09:12:43 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] driver core: Fix an error handling path in
- fw_devlink_create_devlink()
-Message-ID: <cce2a2ac-e0e7-45ec-9093-88e7acf78865@kadam.mountain>
-References: <858b140b276ceab52a84ce0d4f924b0c411560d1.1689618373.git.christophe.jaillet@wanadoo.fr>
- <CAGETcx91Vm60Os5fw7-kNQ6bGjYaPhOeEutyBy_GLQA62f6vfA@mail.gmail.com>
+        Tue, 18 Jul 2023 02:16:36 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A74198C;
+        Mon, 17 Jul 2023 23:15:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689660953; x=1721196953;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=9g/w+OtA/tXE1l89Sm+GplUHhYROa8NkCFZNpGL+W30=;
+  b=hrji8Rey7ZpD1SqFgrsrIIE66X+5RfkjZcRhT6VZrS0jVExFP4IxlKg7
+   j7CxSe/qz9kFUONXOcHsiIPpqHFDGkOi41lCgvuck5GUcCfJVyXQxIJCB
+   oGB6EqmxfaQpC5YfAnwyMJ6TJ3KEGapRXRKrrkGW9v7/FP+h08Vy5p3au
+   Ft3y014s8Y8UXpQPbXRkFpLGjwjOtvYnr2LedT9go/XVgsYCVVb2B3WFp
+   lnfW1k0jihtofRmSk8NRk8cvltD0aYi1WYoP4ev5W+Zl9bKl6jRgIgZy+
+   OkuOmw6pOfJSW2W0dF9QR8FLNZUF0E6T3gSaKfcSxENzkU7y8sCa7xwnK
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="368763974"
+X-IronPort-AV: E=Sophos;i="6.01,213,1684825200"; 
+   d="scan'208";a="368763974"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 23:13:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="788927576"
+X-IronPort-AV: E=Sophos;i="6.01,213,1684825200"; 
+   d="scan'208";a="788927576"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.223.138])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 23:13:42 -0700
+Message-ID: <b4ef97ba-440a-2641-0811-bb05e630ccb1@intel.com>
+Date:   Tue, 18 Jul 2023 09:13:39 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx91Vm60Os5fw7-kNQ6bGjYaPhOeEutyBy_GLQA62f6vfA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH] mmc: core: Remove FW revision from CID check
+To:     Wenchao Chen <wenchao.chen@unisoc.com>, ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wenchao.chen666@gmail.com, zhenxiong.lai@unisoc.com,
+        chunyan.zhang@unisoc.com, yuelin.tang@unisoc.com
+References: <20230718011504.10947-1-wenchao.chen@unisoc.com>
+Content-Language: en-US
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20230718011504.10947-1-wenchao.chen@unisoc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 11:57:51AM -0700, Saravana Kannan wrote:
-> > ---
-> >  drivers/base/core.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > index 3dff5037943e..854c1fab742c 100644
-> > --- a/drivers/base/core.c
-> > +++ b/drivers/base/core.c
-> > @@ -2107,7 +2107,8 @@ static int fw_devlink_create_devlink(struct device *con,
-> >             fwnode_ancestor_init_without_drv(sup_handle)) {
-> >                 dev_dbg(con, "Not linking %pfwf - might never become dev\n",
-> >                         sup_handle);
-> > -               return -EINVAL;
-> > +               ret = -EINVAL;
-> > +               goto out;
-> >         }
-> >
-> >         ret = -EAGAIN;
+On 18/07/23 04:15, Wenchao Chen wrote:
+> When the card is reset, mmc_card_init() will check if this
+> card is the previous card by comparing the CID.
+> 
+> If the firmware is upgraded, the product version may change,
+> so we remove the product version from the CID check.
 
-It would have been more obvious that put_device() is a no-op if this
-ret = -EAGAIN were changed to "return -EAGAIN;".  That would probably
-silence some sort of static checker warning...
+What is the use-case for this?  I would have thought it is safer
+not to assume anything about the card after the firmware has been
+upgraded.
 
-regards,
-dan carpenter
+> 
+> Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+> ---
+>  drivers/mmc/core/mmc.c | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+> index 89cd48fcec79..32a73378d5c3 100644
+> --- a/drivers/mmc/core/mmc.c
+> +++ b/drivers/mmc/core/mmc.c
+> @@ -32,6 +32,9 @@
+>  #define MIN_CACHE_EN_TIMEOUT_MS 1600
+>  #define CACHE_FLUSH_TIMEOUT_MS 30000 /* 30s */
+>  
+> +#define MMC_CID_PRV_MASK GENMASK(23, 16)
+> +#define MMC_CID_CRC_MASK GENMASK(7, 0)
+> +
+>  static const unsigned int tran_exp[] = {
+>  	10000,		100000,		1000000,	10000000,
+>  	0,		0,		0,		0
+> @@ -126,6 +129,19 @@ static int mmc_decode_cid(struct mmc_card *card)
+>  	return 0;
+>  }
+>  
+> +static int mmc_check_cid(u32 *cid, u32 *raw_cid)
+> +{
+> +	/*
+> +	 * When comparing CID, we need to remove the product
+> +	 * version (Field PRV, offset 55:48) and CRC. Because
+> +	 * the product version will change when the firmware
+> +	 * is upgraded. Also, the new CRC is different.
+> +	 */
+> +	return cid[0] != raw_cid[0] || cid[1] != raw_cid[1] ||
+> +		(cid[2] & ~MMC_CID_PRV_MASK) != (raw_cid[2] & ~MMC_CID_PRV_MASK) ||
+> +		(cid[3] & ~MMC_CID_CRC_MASK) != (raw_cid[3] & ~MMC_CID_CRC_MASK);
+> +}
+> +
+>  static void mmc_set_erase_size(struct mmc_card *card)
+>  {
+>  	if (card->ext_csd.erase_group_def & 1)
+> @@ -1640,7 +1656,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
+>  		goto err;
+>  
+>  	if (oldcard) {
+> -		if (memcmp(cid, oldcard->raw_cid, sizeof(cid)) != 0) {
+> +		if (mmc_check_cid(cid, oldcard->raw_cid)) {
+>  			pr_debug("%s: Perhaps the card was replaced\n",
+>  				mmc_hostname(host));
+>  			err = -ENOENT;
+
