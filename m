@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1021375898C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 01:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AAFC75898E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 01:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbjGRXwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 19:52:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49384 "EHLO
+        id S229908AbjGRXwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 19:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbjGRXv3 (ORCPT
+        with ESMTP id S230133AbjGRXvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 19:51:29 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BAE1BFF
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 16:49:41 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1b8a7734734so32266045ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 16:49:41 -0700 (PDT)
+        Tue, 18 Jul 2023 19:51:31 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011B52D63
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 16:49:45 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-57325434999so61373047b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 16:49:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689724148; x=1692316148;
+        d=google.com; s=20221208; t=1689724150; x=1692316150;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=Op8HHmnUgwupsWBaRFuhvxYPW8xnNAPNdjQWsU6sjr4=;
-        b=QGe2TDZHOQa4Dl//VYNCOYShcTza/1woeu2375n0rkVScAi+cbY/3o7kv0BRcH2AMJ
-         +c/iqHZ3q4qoWQp2d3aei0T6E53l+ZqCNd2m04n3+R0wSNZlGOK1LSjxlHNXzCcomxJY
-         E8j4TlQATKeS/E+fNB5tnRwv8C8AcACbuwNfJJ4GFsEgr7shqPyCnrSeiwO4qSSrmzt7
-         efORpwkrylJDYPQpjxrM/NpVjNFpNVPE0Qd0lMQKpfpNX9QNZ2W1IrXiVTqmpPMaOQWI
-         k1X5M4hUDGgW+QX9Vf1eWMvk3OJKrPnVnj02NJetvqw5q8wS599WGmVh+Grx/YjjjUXB
-         v1/Q==
+        bh=JFyfv7cUwdHBFE0lZxkORbobiGr29Mhkt+V0sNgVMXY=;
+        b=abyqbSNyZycbaxPKt18pqhXSJrOGWpP5TwZf2YgbTCjUsbLuck513ndjv+yHxwR2sk
+         YXcAtOTCPMJ3ZCgUIBa4jnm/lq2OcsNjwC1Fj6Y07OEgH7SysP/bGP2SB4tR/ecVGcu4
+         fEHJP2PX+ioBvlhIrpfr71tiQHQn7HGyc1Vhipg5f5eFk5waSaRXG9UhM9FPVNp/fgfh
+         /x7VksYEZ48UwtM7+maBDxgjLxJDpzdBH28sB/wSc3YOlVD/5LGCB8VT/iGIiYNyhqoK
+         ufXypH8AMhELepjGdX4TlzxygisepfpxvZFIbAVdyACzx065jg7I/3gO6mWtJGLjx91v
+         PwQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689724148; x=1692316148;
+        d=1e100.net; s=20221208; t=1689724150; x=1692316150;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Op8HHmnUgwupsWBaRFuhvxYPW8xnNAPNdjQWsU6sjr4=;
-        b=JS0cpjsohws2+Z2ljWzbpiCvh2l7o7wWUIWmfdPCfdWpnK+xx4R8N9btouRarv5NRC
-         gt0MrGilJqhytdytclU85Az1cplKgZ/hLtkrlxrLx1H72GppE3UiMZ44DqNLqzwMU22B
-         MoDTokEzTiNxvh1UzHBHOvMIqjYnS4g5ahDpjZEjyTN2NW9cZ4sdv6eNzniwkEC1/Z4S
-         Op0xtw2BgfBxJuzw3yMcOvfIr7XymO1vw+gODnm99wCut+VWh9A0kTE90U+X35vI3sEG
-         bAgWWEXT0UYuOuH7a9JJ69Nqqc2qV7MbPn7olfRwsuazOAKbawri8V3zDzavmODPeC9t
-         dFXw==
-X-Gm-Message-State: ABy/qLYvbVaPXADK6WdiXUroMZFq7d4fj2GOxAY2b6rG1AYfpHs2ouMx
-        9m/LaizMVCfvgongknNIVZi9RehtEMI=
-X-Google-Smtp-Source: APBJJlGOkej0m8Idb/suY4iXY9qip/Dep68m1+USICpK/8IAat1dD7w7AsEo2fC/HRINs5tpOYMC/rDWeUE=
+        bh=JFyfv7cUwdHBFE0lZxkORbobiGr29Mhkt+V0sNgVMXY=;
+        b=DSwwvTwxVHB12sq+IVC6XPp8lgkkRrXPCAQpb3laaqYRIhlRcXywKLLqC/ZMu/VrHs
+         2xmM9joU0wMKp+tc5N9O5uapLL4JBMY/5wKTwkt6ur97m+5ELD75kPjYp8kg23VoL2fC
+         uN1HLMb9My8Sws/V/smW6xoE7UtvPPR4aJTk9vy7J54bSGgfR5QBYHMkLsSATrFYmATz
+         y+++fGSYN6rf2vedK6x16HhzivSRz+C1h32SPpc1TlUCVCzTLjfFya1SogTU6KtM6W7D
+         UwfcJEZ5V2GJKXn5DACnlKsEBd8nLpNLkFnwSur278CiM0+QZ1HXwBGGQDXy8LPIdwh7
+         3G1g==
+X-Gm-Message-State: ABy/qLYdQW1v9cW/ihjvd5SvtZ6hVC9pEamxZJNzMB0MEgUUaGm/Ikq2
+        VGLEda82x47+Z+53twnXGLnEwx3MM+I=
+X-Google-Smtp-Source: APBJJlHWr1DY6cVuvCqn9XA/EKnl3Vs3TUUs4H5jlXd8CgpkU85x3MFXTOonALS9aP+w4FK1lG3HeouM/K4=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:ec88:b0:1b9:df8f:888c with SMTP id
- x8-20020a170902ec8800b001b9df8f888cmr16357plg.8.1689724148112; Tue, 18 Jul
- 2023 16:49:08 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1709:b0:c8d:469a:a749 with SMTP id
+ by9-20020a056902170900b00c8d469aa749mr13714ybb.3.1689724150322; Tue, 18 Jul
+ 2023 16:49:10 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 18 Jul 2023 16:45:02 -0700
+Date:   Tue, 18 Jul 2023 16:45:03 -0700
 In-Reply-To: <20230718234512.1690985-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230718234512.1690985-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230718234512.1690985-20-seanjc@google.com>
-Subject: [RFC PATCH v11 19/29] KVM: selftests: Convert lib's mem regions to KVM_SET_USER_MEMORY_REGION2
+Message-ID: <20230718234512.1690985-21-seanjc@google.com>
+Subject: [RFC PATCH v11 20/29] KVM: selftests: Add support for creating
+ private memslots
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Oliver Upton <oliver.upton@linux.dev>,
@@ -104,82 +105,203 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../selftests/kvm/include/kvm_util_base.h      |  2 +-
- tools/testing/selftests/kvm/lib/kvm_util.c     | 18 +++++++++---------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ .../selftests/kvm/include/kvm_util_base.h     | 16 ++++
+ .../testing/selftests/kvm/include/test_util.h |  5 ++
+ tools/testing/selftests/kvm/lib/kvm_util.c    | 85 ++++++++++++-------
+ 3 files changed, 75 insertions(+), 31 deletions(-)
 
 diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
-index 6aeb008dd668..d4a9925d6815 100644
+index d4a9925d6815..f1de6a279561 100644
 --- a/tools/testing/selftests/kvm/include/kvm_util_base.h
 +++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
-@@ -43,7 +43,7 @@ typedef uint64_t vm_paddr_t; /* Virtual Machine (Guest) physical address */
- typedef uint64_t vm_vaddr_t; /* Virtual Machine (Guest) virtual address */
+@@ -407,6 +407,19 @@ static inline uint64_t vm_get_stat(struct kvm_vm *vm, const char *stat_name)
+ }
  
- struct userspace_mem_region {
--	struct kvm_userspace_memory_region region;
-+	struct kvm_userspace_memory_region2 region;
- 	struct sparsebit *unused_phy_pages;
- 	int fd;
- 	off_t offset;
+ void vm_create_irqchip(struct kvm_vm *vm);
++static inline int vm_create_guest_memfd(struct kvm_vm *vm, uint64_t size,
++					uint64_t flags)
++{
++	struct kvm_create_guest_memfd gmem = {
++		.size = size,
++		.flags = flags,
++	};
++
++	int fd = __vm_ioctl(vm, KVM_CREATE_GUEST_MEMFD, &gmem);
++
++	TEST_ASSERT(fd >= 0, KVM_IOCTL_ERROR(KVM_CREATE_GUEST_MEMFD, fd));
++	return fd;
++}
+ 
+ void vm_set_user_memory_region(struct kvm_vm *vm, uint32_t slot, uint32_t flags,
+ 			       uint64_t gpa, uint64_t size, void *hva);
+@@ -416,6 +429,9 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+ 	enum vm_mem_backing_src_type src_type,
+ 	uint64_t guest_paddr, uint32_t slot, uint64_t npages,
+ 	uint32_t flags);
++void vm_mem_add(struct kvm_vm *vm, enum vm_mem_backing_src_type src_type,
++		uint64_t guest_paddr, uint32_t slot, uint64_t npages,
++		uint32_t flags, int gmem_fd, uint64_t gmem_offset);
+ 
+ void vm_mem_region_set_flags(struct kvm_vm *vm, uint32_t slot, uint32_t flags);
+ void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_gpa);
+diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
+index a6e9f215ce70..f3088d27f3ce 100644
+--- a/tools/testing/selftests/kvm/include/test_util.h
++++ b/tools/testing/selftests/kvm/include/test_util.h
+@@ -143,6 +143,11 @@ static inline bool backing_src_is_shared(enum vm_mem_backing_src_type t)
+ 	return vm_mem_backing_src_alias(t)->flag & MAP_SHARED;
+ }
+ 
++static inline bool backing_src_can_be_huge(enum vm_mem_backing_src_type t)
++{
++	return t != VM_MEM_SRC_ANONYMOUS && t != VM_MEM_SRC_SHMEM;
++}
++
+ /* Aligns x up to the next multiple of size. Size must be a power of 2. */
+ static inline uint64_t align_up(uint64_t x, uint64_t size)
+ {
 diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-index 45d21e052db0..c1e4de53d082 100644
+index c1e4de53d082..b93717e62325 100644
 --- a/tools/testing/selftests/kvm/lib/kvm_util.c
 +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-@@ -449,8 +449,8 @@ void kvm_vm_restart(struct kvm_vm *vmp)
- 		vm_create_irqchip(vmp);
+@@ -664,6 +664,8 @@ static void __vm_mem_region_delete(struct kvm_vm *vm,
+ 		TEST_ASSERT(!ret, __KVM_SYSCALL_ERROR("munmap()", ret));
+ 		close(region->fd);
+ 	}
++	if (region->region.gmem_fd >= 0)
++		close(region->region.gmem_fd);
  
- 	hash_for_each(vmp->regions.slot_hash, ctr, region, slot_node) {
--		int ret = ioctl(vmp->fd, KVM_SET_USER_MEMORY_REGION, &region->region);
--		TEST_ASSERT(ret == 0, "KVM_SET_USER_MEMORY_REGION IOCTL failed,\n"
-+		int ret = ioctl(vmp->fd, KVM_SET_USER_MEMORY_REGION2, &region->region);
-+		TEST_ASSERT(ret == 0, "KVM_SET_USER_MEMORY_REGION2 IOCTL failed,\n"
- 			    "  rc: %i errno: %i\n"
- 			    "  slot: %u flags: 0x%x\n"
- 			    "  guest_phys_addr: 0x%llx size: 0x%llx",
-@@ -653,7 +653,7 @@ static void __vm_mem_region_delete(struct kvm_vm *vm,
+ 	free(region);
+ }
+@@ -865,36 +867,15 @@ void vm_set_user_memory_region(struct kvm_vm *vm, uint32_t slot, uint32_t flags,
+ 		    errno, strerror(errno));
+ }
+ 
+-/*
+- * VM Userspace Memory Region Add
+- *
+- * Input Args:
+- *   vm - Virtual Machine
+- *   src_type - Storage source for this region.
+- *              NULL to use anonymous memory.
+- *   guest_paddr - Starting guest physical address
+- *   slot - KVM region slot
+- *   npages - Number of physical pages
+- *   flags - KVM memory region flags (e.g. KVM_MEM_LOG_DIRTY_PAGES)
+- *
+- * Output Args: None
+- *
+- * Return: None
+- *
+- * Allocates a memory area of the number of pages specified by npages
+- * and maps it to the VM specified by vm, at a starting physical address
+- * given by guest_paddr.  The region is created with a KVM region slot
+- * given by slot, which must be unique and < KVM_MEM_SLOTS_NUM.  The
+- * region is created with the flags given by flags.
+- */
+-void vm_userspace_mem_region_add(struct kvm_vm *vm,
+-	enum vm_mem_backing_src_type src_type,
+-	uint64_t guest_paddr, uint32_t slot, uint64_t npages,
+-	uint32_t flags)
++/* FIXME: This thing needs to be ripped apart and rewritten. */
++void vm_mem_add(struct kvm_vm *vm, enum vm_mem_backing_src_type src_type,
++		uint64_t guest_paddr, uint32_t slot, uint64_t npages,
++		uint32_t flags, int gmem_fd, uint64_t gmem_offset)
+ {
+ 	int ret;
+ 	struct userspace_mem_region *region;
+ 	size_t backing_src_pagesz = get_backing_src_pagesz(src_type);
++	size_t mem_size = npages * vm->page_size;
+ 	size_t alignment;
+ 
+ 	TEST_ASSERT(vm_adjust_num_guest_pages(vm->mode, npages) == npages,
+@@ -947,7 +928,7 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+ 	/* Allocate and initialize new mem region structure. */
+ 	region = calloc(1, sizeof(*region));
+ 	TEST_ASSERT(region != NULL, "Insufficient Memory");
+-	region->mmap_size = npages * vm->page_size;
++	region->mmap_size = mem_size;
+ 
+ #ifdef __s390x__
+ 	/* On s390x, the host address must be aligned to 1M (due to PGSTEs) */
+@@ -994,14 +975,47 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+ 	/* As needed perform madvise */
+ 	if ((src_type == VM_MEM_SRC_ANONYMOUS ||
+ 	     src_type == VM_MEM_SRC_ANONYMOUS_THP) && thp_configured()) {
+-		ret = madvise(region->host_mem, npages * vm->page_size,
++		ret = madvise(region->host_mem, mem_size,
+ 			      src_type == VM_MEM_SRC_ANONYMOUS ? MADV_NOHUGEPAGE : MADV_HUGEPAGE);
+ 		TEST_ASSERT(ret == 0, "madvise failed, addr: %p length: 0x%lx src_type: %s",
+-			    region->host_mem, npages * vm->page_size,
++			    region->host_mem, mem_size,
+ 			    vm_mem_backing_src_alias(src_type)->name);
  	}
  
- 	region->region.memory_size = 0;
--	vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION, &region->region);
-+	vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION2, &region->region);
- 
- 	sparsebit_free(&region->unused_phy_pages);
- 	ret = munmap(region->mmap_start, region->mmap_size);
-@@ -1010,8 +1010,8 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
- 	region->region.guest_phys_addr = guest_paddr;
- 	region->region.memory_size = npages * vm->page_size;
- 	region->region.userspace_addr = (uintptr_t) region->host_mem;
--	ret = __vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION, &region->region);
--	TEST_ASSERT(ret == 0, "KVM_SET_USER_MEMORY_REGION IOCTL failed,\n"
-+	ret = __vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION2, &region->region);
-+	TEST_ASSERT(ret == 0, "KVM_SET_USER_MEMORY_REGION2 IOCTL failed,\n"
+ 	region->backing_src_type = src_type;
++
++	if (flags & KVM_MEM_PRIVATE) {
++		if (gmem_fd < 0) {
++			uint32_t gmem_flags = 0;
++
++			/*
++			 * Allow hugepages for the guest memfd backing if the
++			 * "normal" backing is allowed/required to be huge.
++			 */
++			if (src_type != VM_MEM_SRC_ANONYMOUS &&
++			    src_type != VM_MEM_SRC_SHMEM)
++				gmem_flags |= KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
++
++			TEST_ASSERT(!gmem_offset,
++				    "Offset must be zero when creating new guest_memfd");
++			gmem_fd = vm_create_guest_memfd(vm, mem_size, gmem_flags);
++		} else {
++			/*
++			 * Install a unique fd for each memslot so that the fd
++			 * can be closed when the region is deleted without
++			 * needing to track if the fd is owned by the framework
++			 * or by the caller.
++			 */
++			gmem_fd = dup(gmem_fd);
++			TEST_ASSERT(gmem_fd >= 0, __KVM_SYSCALL_ERROR("dup()", gmem_fd));
++		}
++
++		region->region.gmem_fd = gmem_fd;
++		region->region.gmem_offset = gmem_offset;
++	} else {
++		region->region.gmem_fd = -1;
++	}
++
+ 	region->unused_phy_pages = sparsebit_alloc();
+ 	sparsebit_set_num(region->unused_phy_pages,
+ 		guest_paddr >> vm->page_shift, npages);
+@@ -1014,9 +1028,10 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+ 	TEST_ASSERT(ret == 0, "KVM_SET_USER_MEMORY_REGION2 IOCTL failed,\n"
  		"  rc: %i errno: %i\n"
  		"  slot: %u flags: 0x%x\n"
- 		"  guest_phys_addr: 0x%lx size: 0x%lx",
-@@ -1093,9 +1093,9 @@ void vm_mem_region_set_flags(struct kvm_vm *vm, uint32_t slot, uint32_t flags)
+-		"  guest_phys_addr: 0x%lx size: 0x%lx",
++		"  guest_phys_addr: 0x%lx size: 0x%lx guest_memfd: %d\n",
+ 		ret, errno, slot, flags,
+-		guest_paddr, (uint64_t) region->region.memory_size);
++		guest_paddr, (uint64_t) region->region.memory_size,
++		region->region.gmem_fd);
  
- 	region->region.flags = flags;
- 
--	ret = __vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION, &region->region);
-+	ret = __vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION2, &region->region);
- 
--	TEST_ASSERT(ret == 0, "KVM_SET_USER_MEMORY_REGION IOCTL failed,\n"
-+	TEST_ASSERT(ret == 0, "KVM_SET_USER_MEMORY_REGION2 IOCTL failed,\n"
- 		"  rc: %i errno: %i slot: %u flags: 0x%x",
- 		ret, errno, slot, flags);
+ 	/* Add to quick lookup data structures */
+ 	vm_userspace_mem_region_gpa_insert(&vm->regions.gpa_tree, region);
+@@ -1037,6 +1052,14 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+ 	}
  }
-@@ -1123,9 +1123,9 @@ void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_gpa)
  
- 	region->region.guest_phys_addr = new_gpa;
- 
--	ret = __vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION, &region->region);
-+	ret = __vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION2, &region->region);
- 
--	TEST_ASSERT(!ret, "KVM_SET_USER_MEMORY_REGION failed\n"
-+	TEST_ASSERT(!ret, "KVM_SET_USER_MEMORY_REGION2 failed\n"
- 		    "ret: %i errno: %i slot: %u new_gpa: 0x%lx",
- 		    ret, errno, slot, new_gpa);
- }
++void vm_userspace_mem_region_add(struct kvm_vm *vm,
++				 enum vm_mem_backing_src_type src_type,
++				 uint64_t guest_paddr, uint32_t slot,
++				 uint64_t npages, uint32_t flags)
++{
++	vm_mem_add(vm, src_type, guest_paddr, slot, npages, flags, -1, 0);
++}
++
+ /*
+  * Memslot to region
+  *
 -- 
 2.41.0.255.g8b1d071c50-goog
 
