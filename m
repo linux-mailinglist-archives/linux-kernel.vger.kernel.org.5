@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC3975725E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865F775725C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbjGRDec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 23:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38844 "EHLO
+        id S230090AbjGRDea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 23:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbjGRDeZ (ORCPT
+        with ESMTP id S229825AbjGRDeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 Jul 2023 23:34:25 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20979C0;
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80AD6BB;
         Mon, 17 Jul 2023 20:34:22 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R4kxb6vkPzNm84;
-        Tue, 18 Jul 2023 11:30:59 +0800 (CST)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R4l0d4QvyzrRpm;
+        Tue, 18 Jul 2023 11:33:37 +0800 (CST)
 Received: from M910t.huawei.com (10.110.54.157) by
  kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 18 Jul 2023 11:34:18 +0800
+ 15.1.2507.27; Tue, 18 Jul 2023 11:34:19 +0800
 From:   Changbin Du <changbin.du@huawei.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -35,9 +35,9 @@ CC:     Mark Rutland <mark.rutland@arm.com>,
         <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Hui Wang <hw.huiwang@huawei.com>,
         Changbin Du <changbin.du@huawei.com>
-Subject: [PATCH v3 2/3] perf: add new option '--workload-attr' to set workload sched_policy/priority/mask
-Date:   Tue, 18 Jul 2023 11:33:54 +0800
-Message-ID: <20230718033355.2960912-3-changbin.du@huawei.com>
+Subject: [PATCH v3 3/3] perf: replace taskset with --workload-attr option
+Date:   Tue, 18 Jul 2023 11:33:55 +0800
+Message-ID: <20230718033355.2960912-4-changbin.du@huawei.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230718033355.2960912-1-changbin.du@huawei.com>
 References: <20230718033355.2960912-1-changbin.du@huawei.com>
@@ -58,388 +58,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To get consistent benchmarking results, sometimes we need to set the
-sched_policy/priority/mask of the workload to reduce system noise.
-
-For example, CPU binding is required on big.little system.
-
-  $ perf stat -- taskset -c 0 ls
-
-Nevertheless, the 'taskset' is also counted here.
-
-To get away of the middleman, this adds a new option '--workload-attr' to
-do the same jobs for stat and record commands.
-
-  $ sudo perf stat --workload-attr fifo,40,0-3:7 -- ls
-
-Above will make 'ls' run on CPU #0-#3 and #7 with fifo scheduler and
-realtime priority is 40.
+Replace the taskset with our new option --workload-attr.
 
 Signed-off-by: Changbin Du <changbin.du@huawei.com>
-
 ---
-v2: Use cpu list spec instead of cpu mask number.
----
- tools/perf/Documentation/perf-record.txt |   7 ++
- tools/perf/Documentation/perf-stat.txt   |   6 ++
- tools/perf/builtin-record.c              |  26 +++++
- tools/perf/builtin-stat.c                |  18 ++++
- tools/perf/util/evlist.c                 | 117 +++++++++++++++++++++++
- tools/perf/util/evlist.h                 |   3 +
- tools/perf/util/target.h                 |   9 ++
- 7 files changed, 186 insertions(+)
+ tools/perf/Documentation/intel-hybrid.txt        | 2 +-
+ tools/perf/Documentation/perf-stat.txt           | 2 +-
+ tools/perf/tests/shell/stat_bpf_counters_cgrp.sh | 2 +-
+ tools/perf/tests/shell/test_arm_coresight.sh     | 2 +-
+ tools/perf/tests/shell/test_data_symbol.sh       | 2 +-
+ tools/perf/tests/shell/test_intel_pt.sh          | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index 680396c56bd1..9c01076f6c89 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -838,6 +838,13 @@ filtered through the mask provided by -C option.
- 	only, as of now.  So the applications built without the frame
- 	pointer might see bogus addresses.
+diff --git a/tools/perf/Documentation/intel-hybrid.txt b/tools/perf/Documentation/intel-hybrid.txt
+index e7a776ad25d7..b4adb1eeba3f 100644
+--- a/tools/perf/Documentation/intel-hybrid.txt
++++ b/tools/perf/Documentation/intel-hybrid.txt
+@@ -132,7 +132,7 @@ displayed. The percentage is the event's running time/enabling time.
+ One example, 'triad_loop' runs on cpu16 (atom core), while we can see the
+ scaled value for core cycles is 160,444,092 and the percentage is 0.47%.
  
-+--workload-attr <sched_policy[,priority][,cpu-list]>::
-+	setup target workload (the <command>) attributes:
-+
-+	  sched_policy: other|fifo|rr|batch|idle
-+	  priority: scheduling priority for fifo|rr, nice value for other
-+	  cpu-list: CPU affinity. e.g. 1-2:4 is processors #1, #2, and #4
-+
- include::intel-hybrid.txt[]
+-perf stat -e cycles \-- taskset -c 16 ./triad_loop
++perf stat -e cycles --workload-attr other,0,16 \-- ./triad_loop
  
- SEE ALSO
+ As previous, two events are created.
+ 
 diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-index 8f789fa1242e..18d0f73458b1 100644
+index 18d0f73458b1..fb52ddcea622 100644
 --- a/tools/perf/Documentation/perf-stat.txt
 +++ b/tools/perf/Documentation/perf-stat.txt
-@@ -262,6 +262,12 @@ disable events during measurements:
-  wait -n ${perf_pid}
-  exit $?
+@@ -464,7 +464,7 @@ on workload with changing phases.
  
-+--workload-attr <sched_policy[,priority][,cpu-list]>::
-+	setup target workload (the <command>) attributes:
-+
-+	  sched_policy: other|fifo|rr|batch|idle
-+	  priority: scheduling priority for fifo|rr, nice value for other
-+	  cpu-list: CPU affinity. e.g. 1-2:4 is processors #1, #2, and #4
+ To interpret the results it is usually needed to know on which
+ CPUs the workload runs on. If needed the CPUs can be forced using
+-taskset.
++--workload-attr option.
  
- --pre::
- --post::
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index aec18db7ff23..c16e230afcd5 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -3289,6 +3289,17 @@ static int parse_record_synth_option(const struct option *opt,
- 	return 0;
- }
- 
-+static int record_parse_workload_attr_opt(const struct option *opt,
-+					  const char *arg,
-+					  int unset __maybe_unused)
-+{
-+	struct record_opts *opts = opt->value;
-+
-+	return evlist__parse_workload_attr(arg, &opts->target.workload.sched_policy,
-+					   &opts->target.workload.sched_priority,
-+					   &opts->target.workload.cpu_map);
-+}
-+
- /*
-  * XXX Ideally would be local to cmd_record() and passed to a record__new
-  * because we need to have access to it in record__exit, that is called
-@@ -3309,6 +3320,8 @@ static struct record record = {
- 		.target		     = {
- 			.uses_mmap   = true,
- 			.default_per_cpu = true,
-+			.workload.sched_policy = -1,
-+			.workload.sched_priority = 0,
- 		},
- 		.mmap_flush          = MMAP_FLUSH_DEFAULT,
- 		.nr_threads_synthesize = 1,
-@@ -3333,6 +3346,12 @@ static struct record record = {
- const char record_callchain_help[] = CALLCHAIN_RECORD_HELP
- 	"\n\t\t\t\tDefault: fp";
- 
-+const char record_workload_attr_help[] =
-+	"setup target workload (the <command>) attributes:\n\n"
-+	HELP_PAD "sched_policy: other|fifo|rr|batch|idle\n"
-+	HELP_PAD "priority: scheduling priority for fifo|rr, nice value for other\n"
-+	HELP_PAD "cpu-list: CPU affinity. e.g. 1-2:4 is processors #1, #2, and #4";
-+
- static bool dry_run;
- 
- static struct parse_events_option_args parse_events_option_args = {
-@@ -3551,6 +3570,9 @@ static struct option __record_options[] = {
- 			    "write collected trace data into several data files using parallel threads",
- 			    record__parse_threads),
- 	OPT_BOOLEAN(0, "off-cpu", &record.off_cpu, "Enable off-cpu analysis"),
-+	OPT_CALLBACK(0, "workload-attr", &record.opts,
-+		     "sched_policy[,priority][,cpu-list]", record_workload_attr_help,
-+		     &record_parse_workload_attr_opt),
- 	OPT_END()
- };
- 
-@@ -4266,6 +4288,10 @@ int cmd_record(int argc, const char **argv)
- 	record__free_thread_masks(rec, rec->nr_threads);
- 	rec->nr_threads = 0;
- 	evlist__close_control(rec->opts.ctl_fd, rec->opts.ctl_fd_ack, &rec->opts.ctl_fd_close);
-+	if (rec->opts.target.workload.cpu_map) {
-+		perf_cpu_map__put(rec->opts.target.workload.cpu_map);
-+		rec->opts.target.workload.cpu_map = NULL;
-+	}
- 	return err;
- }
- 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 07b48f6df48e..bb755cb44103 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -108,6 +108,8 @@ static bool all_counters_use_bpf = true;
- 
- static struct target target = {
- 	.uid	= UINT_MAX,
-+	.workload.sched_policy = -1,
-+	.workload.sched_priority = 0,
- };
- 
- #define METRIC_ONLY_LEN 20
-@@ -1160,6 +1162,14 @@ static int parse_cache_level(const struct option *opt,
- 	return 0;
- }
- 
-+static int parse_workload_attr_opt(const struct option *opt __maybe_unused, const char *arg,
-+				   int unset __maybe_unused)
-+{
-+	return evlist__parse_workload_attr(arg, &target.workload.sched_policy,
-+					   &target.workload.sched_priority,
-+					   &target.workload.cpu_map);
-+}
-+
- static struct option stat_options[] = {
- 	OPT_BOOLEAN('T', "transaction", &transaction_run,
- 		    "hardware transaction statistics"),
-@@ -1220,6 +1230,9 @@ static struct option stat_options[] = {
- 	OPT_BOOLEAN(0, "append", &append_file, "append to the output file"),
- 	OPT_INTEGER(0, "log-fd", &output_fd,
- 		    "log output to fd, instead of stderr"),
-+	OPT_CALLBACK(0, "workload-attr", &stat_config,
-+		     "sched_policy[,priority][,cpu-list]", record_workload_attr_help,
-+		     &parse_workload_attr_opt),
- 	OPT_STRING(0, "pre", &pre_cmd, "command",
- 			"command to run prior to the measured command"),
- 	OPT_STRING(0, "post", &post_cmd, "command",
-@@ -2893,5 +2906,10 @@ int cmd_stat(int argc, const char **argv)
- 	metricgroup__rblist_exit(&stat_config.metric_events);
- 	evlist__close_control(stat_config.ctl_fd, stat_config.ctl_fd_ack, &stat_config.ctl_fd_close);
- 
-+	if (target.workload.cpu_map) {
-+		perf_cpu_map__put(target.workload.cpu_map);
-+		target.workload.cpu_map = NULL;
-+	}
-+
- 	return status;
- }
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 7ef43f72098e..cbdc2184f8a1 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -46,6 +46,7 @@
- #include <sys/mman.h>
- #include <sys/prctl.h>
- #include <sys/timerfd.h>
-+#include <sys/resource.h>
- 
- #include <linux/bitops.h>
- #include <linux/hash.h>
-@@ -58,6 +59,7 @@
- #include <perf/evsel.h>
- #include <perf/cpumap.h>
- #include <perf/mmap.h>
-+#include <perf/cpumap.h>
- 
- #include <internal/xyarray.h>
- 
-@@ -1398,6 +1400,118 @@ int evlist__open(struct evlist *evlist)
- 	return err;
- }
- 
-+int evlist__parse_workload_attr(const char *str, int *sched_policy, int *sched_priority,
-+				struct perf_cpu_map **cpu_map)
-+{
-+	char *tok, *saveptr = NULL;
-+	char *buf;
-+	int ret = -1;
-+
-+	/* We need buffer that we know we can write to. */
-+	buf = strdup(str);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	tok = strtok_r((char *)buf, ",", &saveptr);
-+	do {
-+		/* sched policy */
-+		if (!strncmp(tok, "other", sizeof("other")))
-+			*sched_policy = SCHED_OTHER;
-+		else if (!strncmp(tok, "fifo", sizeof("fifo"))) {
-+			*sched_policy = SCHED_FIFO;
-+			/* default to lowest priority */
-+			*sched_priority = 99;
-+		} else if (!strncmp(tok, "rr", sizeof("rr"))) {
-+			*sched_policy = SCHED_RR;
-+			*sched_priority = 99;
-+		} else if (!strncmp(tok, "batch", sizeof("batch")))
-+			*sched_policy = SCHED_BATCH;
-+		else if (!strncmp(tok, "idle", sizeof("idle")))
-+			*sched_policy = SCHED_IDLE;
-+		else {
-+			pr_err("workload_attr: unknown sched policy %s\n", tok);
-+			break;
-+		}
-+
-+		/* sched priority */
-+		tok = strtok_r(NULL, ",", &saveptr);
-+		if (tok) {
-+			int priority;
-+			char *endptr;
-+
-+			priority = strtol(tok, &endptr, 0);
-+			if (*endptr) {
-+				pr_err("workload_attr: invalid sched priority %s\n", tok);
-+				break;
-+			}
-+
-+			if (*sched_policy == SCHED_FIFO || *sched_policy == SCHED_RR) {
-+				if (priority < 1 || priority > 99) {
-+					pr_err("workload_attr: invalid priority %d for fifo and rr, allowed [1,99]\n",
-+					       priority);
-+					break;
-+				}
-+			}
-+			*sched_priority = priority;
-+		}
-+
-+		/* cpu list */
-+		tok = strtok_r(NULL, ",", &saveptr);
-+		if (tok) {
-+			*cpu_map = __perf_cpu_map__new(tok, ':');
-+			if (!*cpu_map) {
-+				pr_err("workload_attr: failed to get cpus map from %s\n", tok);
-+				break;
-+			}
-+		}
-+		ret = 0;
-+	} while (0);
-+
-+	free(buf);
-+	return ret;
-+}
-+
-+static int setup_workload_attr(struct target *target)
-+{
-+	struct sched_param param;
-+	int policy = target->workload.sched_policy;
-+	int priority = target->workload.sched_priority;
-+
-+	if (policy >= 0) {
-+		param.sched_priority = (policy == SCHED_FIFO || policy == SCHED_RR) ?
-+					priority : 0;
-+		if (sched_setscheduler(0, policy, &param) != 0) {
-+			perror("failed to set the sched policy");
-+			return -1;
-+		}
-+
-+		if (policy == SCHED_OTHER) {
-+			if (setpriority(PRIO_PROCESS, 0, priority) != 0) {
-+				perror("failed to set the nice value");
-+				return -1;
-+			}
-+		}
-+	}
-+
-+	if (target->workload.cpu_map) {
-+		size_t cpuset_size = -1;
-+		cpu_set_t *cpu_set;
-+
-+		cpu_set = perf_cpu_map__2_cpuset(target->workload.cpu_map, &cpuset_size);
-+		if (!cpu_set)
-+			return -1;
-+
-+		if (sched_setaffinity(0, cpuset_size, cpu_set) != 0) {
-+			perror("failed to set the sched affinity");
-+			CPU_FREE(cpu_set);
-+			return -1;
-+		}
-+		CPU_FREE(cpu_set);
-+	}
-+
-+	return 0;
-+}
-+
- int evlist__prepare_workload(struct evlist *evlist, struct target *target, const char *argv[],
- 			     bool pipe_output, void (*exec_error)(int signo, siginfo_t *info, void *ucontext))
+ --td-level::
+ Print the top-down statistics that equal the input level. It allows
+diff --git a/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh b/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
+index d724855d097c..b13bf391b137 100755
+--- a/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
++++ b/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
+@@ -64,7 +64,7 @@ check_cpu_list_counted()
  {
-@@ -1464,6 +1578,9 @@ int evlist__prepare_workload(struct evlist *evlist, struct target *target, const
- 			exit(ret);
- 		}
+ 	local output
  
-+		if (setup_workload_attr(target) != 0)
-+			exit(-1);
-+
- 		execvp(argv[0], (char **)argv);
- 
- 		if (exec_error) {
-diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-index 664c6bf7b3e0..761ae102dda6 100644
---- a/tools/perf/util/evlist.h
-+++ b/tools/perf/util/evlist.h
-@@ -15,6 +15,7 @@
- #include <pthread.h>
- #include <signal.h>
- #include <unistd.h>
-+#include <sched.h>
- 
- struct pollfd;
- struct thread_map;
-@@ -180,6 +181,8 @@ void evlist__set_id_pos(struct evlist *evlist);
- void evlist__config(struct evlist *evlist, struct record_opts *opts, struct callchain_param *callchain);
- int record_opts__config(struct record_opts *opts);
- 
-+int evlist__parse_workload_attr(const char *str, int *sched_policy, int *sched_priority,
-+				struct perf_cpu_map **cpu_set);
- int evlist__prepare_workload(struct evlist *evlist, struct target *target,
- 			     const char *argv[], bool pipe_output,
- 			     void (*exec_error)(int signo, siginfo_t *info, void *ucontext));
-diff --git a/tools/perf/util/target.h b/tools/perf/util/target.h
-index d582cae8e105..16fe33dda2ef 100644
---- a/tools/perf/util/target.h
-+++ b/tools/perf/util/target.h
-@@ -4,6 +4,7 @@
- 
- #include <stdbool.h>
- #include <sys/types.h>
-+#include <sched.h>
- 
- struct target {
- 	const char   *pid;
-@@ -19,6 +20,12 @@ struct target {
- 	bool	     use_bpf;
- 	int	     initial_delay;
- 	const char   *attr_map;
-+
-+	struct {
-+		int	 sched_policy;
-+		int	 sched_priority;
-+		struct perf_cpu_map *cpu_map;
-+	} workload;
- };
- 
- enum target_errno {
-@@ -103,4 +110,6 @@ static inline bool target__uses_dummy_map(struct target *target)
- 	return use_dummy;
+-	output=$(perf stat -C 1 --bpf-counters --for-each-cgroup ${test_cgroups} -e cpu-clock -x, taskset -c 1 sleep 1  2>&1)
++	output=$(perf stat -C 1 --bpf-counters --for-each-cgroup ${test_cgroups} -e cpu-clock -x, --workload-attr other,0,1 -- sleep 1 2>&1)
+ 	if echo ${output} | grep -q -F "<not "; then
+ 		echo "Some CPU events are not counted"
+ 		if [ "${verbose}" = "1" ]; then
+diff --git a/tools/perf/tests/shell/test_arm_coresight.sh b/tools/perf/tests/shell/test_arm_coresight.sh
+index f1bf5621160f..e00d04570aa8 100755
+--- a/tools/perf/tests/shell/test_arm_coresight.sh
++++ b/tools/perf/tests/shell/test_arm_coresight.sh
+@@ -38,7 +38,7 @@ record_touch_file() {
+ 	echo "Recording trace (only user mode) with path: CPU$2 => $1"
+ 	rm -f $file
+ 	perf record -o ${perfdata} -e cs_etm/@$1/u --per-thread \
+-		-- taskset -c $2 touch $file > /dev/null 2>&1
++		--workload-attr other,0,$2 -- touch $file > /dev/null 2>&1
  }
  
-+extern const char record_workload_attr_help[];
-+
- #endif /* _PERF_TARGET_H */
+ perf_script_branch_samples() {
+diff --git a/tools/perf/tests/shell/test_data_symbol.sh b/tools/perf/tests/shell/test_data_symbol.sh
+index 69bb6fe86c50..02c6a97e3d0f 100755
+--- a/tools/perf/tests/shell/test_data_symbol.sh
++++ b/tools/perf/tests/shell/test_data_symbol.sh
+@@ -50,7 +50,7 @@ echo "Recording workload..."
+ # specific CPU and test in per-CPU mode.
+ is_amd=$(grep -E -c 'vendor_id.*AuthenticAMD' /proc/cpuinfo)
+ if (($is_amd >= 1)); then
+-	perf mem record -o ${PERF_DATA} -C 0 -- taskset -c 0 $TEST_PROGRAM &
++	perf mem record -o ${PERF_DATA} -C 0 --workload-attr other,0,0 -- $TEST_PROGRAM &
+ else
+ 	perf mem record --all-user -o ${PERF_DATA} -- $TEST_PROGRAM &
+ fi
+diff --git a/tools/perf/tests/shell/test_intel_pt.sh b/tools/perf/tests/shell/test_intel_pt.sh
+index 3a8b9bffa022..0dc085c72593 100755
+--- a/tools/perf/tests/shell/test_intel_pt.sh
++++ b/tools/perf/tests/shell/test_intel_pt.sh
+@@ -110,7 +110,7 @@ test_system_wide_side_band()
+ 	can_cpu_wide 1 || return $?
+ 
+ 	# Record on CPU 0 a task running on CPU 1
+-	perf_record_no_decode -o "${perfdatafile}" -e intel_pt//u -C 0 -- taskset --cpu-list 1 uname
++	perf_record_no_decode -o "${perfdatafile}" -e intel_pt//u -C 0 --workload-attr other,0,1 -- uname
+ 
+ 	# Should get MMAP events from CPU 1 because they can be needed to decode
+ 	mmap_cnt=$(perf script -i "${perfdatafile}" --no-itrace --show-mmap-events -C 1 2>/dev/null | grep -c MMAP)
 -- 
 2.25.1
 
