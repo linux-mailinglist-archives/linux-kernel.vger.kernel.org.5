@@ -2,63 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDB07587F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 626A47587FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbjGRWBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 18:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59400 "EHLO
+        id S231404AbjGRWBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 18:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231144AbjGRWBT (ORCPT
+        with ESMTP id S229708AbjGRWBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 18:01:19 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF6C19A9
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:01:17 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-635f1c7412cso38356666d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:01:17 -0700 (PDT)
+        Tue, 18 Jul 2023 18:01:24 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDAB01BC1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:01:20 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-403b6b7c0f7so44436821cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:01:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1689717677; x=1692309677;
+        d=paul-moore.com; s=google; t=1689717680; x=1692309680;
         h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=hmCPaUsgqe0iU0sELPvLMfmcM27GoKLl14VslK7Sk/k=;
-        b=agAH95nuPyZd3BnKh4aoyXd9E22JPaZ3u4lrK7/JdXrTVC4iI4QOT4fkC4CXBkyYxQ
-         eYxvQMnGShXl7lbD5zp9RTjm0Dq4E13iiuydaox57US4G1UZuHkuhcw9jmWHCN+l12+o
-         +OAqVoACmitiIB0f7UyNoQ4dOspITn1HfMEZ0pKMDcaZIqoNeeTdFnGWKaKxRWYcicA5
-         /0REr087Sk3v7abrpF70XWqpH5n2LhAsNxTRHGOAX1RpeR6/HatmMy4zFo/ntZN8cPGF
-         /tBu7uAKKNu7dnQcITvpKJ7/nCFT77PsRvyPh+jTf8HdTvpBZi84LKSfsTRO6HlfANft
-         RSCg==
+        bh=OvXAgibfz88Twe5DWtMIjMHTvNVQ0cptuu2/ShBaOKI=;
+        b=RCy1kHFz1HpIt7I3hzeQODGal8NT1mvWLYncvmcQ1OUfSIZoSKY7hbwKr53DRYCGXQ
+         ICuba3XLSFEFRUAxcvR3npblEEDAWGMRcNyFpebi+Z5V98PBKZbl5C/bxUoDhlRsKR0/
+         zU1SpZFlOZ4uDpcuhLGerIwtgkeO9YD1WPwQgpuqzDEuZIHf+quegRXu6pP6eNHNmO4o
+         kLRDT0KmUprRi4THUxuPfgYWQ2TZzQ+rjRJFWkDo29btXidYj2qceeDutj0xezXJWd11
+         AQzauI+Rsnyb5SWe1gpOc+nNtfziidmqdQfmo7Ebq/2n6X5ogZ4OilyAlOHpU63WgJlP
+         3Rbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689717677; x=1692309677;
+        d=1e100.net; s=20221208; t=1689717680; x=1692309680;
         h=in-reply-to:references:subject:cc:to:from:message-id:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hmCPaUsgqe0iU0sELPvLMfmcM27GoKLl14VslK7Sk/k=;
-        b=L/qPq+xIMKrjnc4KQUhhbk8MixXGywkAhdspd8riVbU8OyabAPWCkSUXPXQlM0CZKY
-         HKUWSaFByQZYHqb5YjgZ79yDOWYPwvJV4iyDj0il4MEmityWs2DQRFjJjOGBHtZtJzjJ
-         YzVkvnhtNihzDYQSCsfZmvznH5yKNyuwrE4QZvnl9biRG5N67IKBfSqn4sgDgdYiFdz2
-         PITUR9EPTEvwE/WBOCN6h9BAX3EkduNB8QvwrwBXsbpYgu2R6gk+/kUomRglP/d8t0gA
-         DMVAbDUegYBz99DhsMK7LTCZtfAcGTH7vxs9xWsijBopiqG1RLOL03Sa9lnxefJ1ERNa
-         3qhQ==
-X-Gm-Message-State: ABy/qLZenqzZv2Mpccd2e5JqGxEIEwVHtNLpwsvx9SbMmSHrwYqKJfXN
-        cTfoNQQmJ3sdzREQRxAD3ObA
-X-Google-Smtp-Source: APBJJlHyg/J3QN6NN93RY6kgpACZZx+SIVR52LijD7BHSLz0P6IehiuiwNjdqFR4wJxXax7wSg91PQ==
-X-Received: by 2002:a0c:f1d3:0:b0:630:16ac:945a with SMTP id u19-20020a0cf1d3000000b0063016ac945amr14924071qvl.59.1689717676839;
-        Tue, 18 Jul 2023 15:01:16 -0700 (PDT)
+        bh=OvXAgibfz88Twe5DWtMIjMHTvNVQ0cptuu2/ShBaOKI=;
+        b=a54j1v6j+8Q7W1C3wpXO59js7eoGlKrq5j3ocnESVQJfjDsjTwGVtmKNP/Rewzz6w6
+         AqF0QxockTGIPIuFgLbx+TxAOQbuypJDc/aES0khEa4G9LMUi34zYLNl5jg7fDDYIPyW
+         uYyTPrF/KTApR6YAT4uF65MR+amoNzBelbfqQJoIBlSZijSH/cLgpVgEvhbyBytWUVjg
+         okEUmkcEZGCPsLowgA02VTlYZ3wFZSbZI6Dp3ZNexcGFW9Li3BJZ9npj+0QjGbE+A9ft
+         pgRHkMzPO7bYlwkPlef6G38L2PWpPL7nJX4gu9P7isZORk3PLUyvH8423L4Mg3ktRiGN
+         TIzg==
+X-Gm-Message-State: ABy/qLYU54cxGrHYNIBeJFiPP6dEHh5zHYwlXs1GPJitWxlyX7h82GFR
+        sEPFc8MuBSdH2nCJg2U11bi6
+X-Google-Smtp-Source: APBJJlEszandnHR1XyofohFdDXATQUDj1sibeWyzqvd4qTxdjOsBAfRtdarqouKU8XiKZ9en2sldQA==
+X-Received: by 2002:ac8:7f07:0:b0:403:b395:33e3 with SMTP id f7-20020ac87f07000000b00403b39533e3mr22252178qtk.52.1689717679905;
+        Tue, 18 Jul 2023 15:01:19 -0700 (PDT)
 Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id x8-20020a0cc508000000b006166d870243sm1023620qvi.43.2023.07.18.15.01.16
+        by smtp.gmail.com with ESMTPSA id z7-20020ac87107000000b003e3918f350dsm922896qto.25.2023.07.18.15.01.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 15:01:16 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 18:01:16 -0400
-Message-ID: <5006016464638ff788697d794137903e.paul@paul-moore.com>
+        Tue, 18 Jul 2023 15:01:19 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 18:01:18 -0400
+Message-ID: <1111b348800451acbf5f5c13db05abef.paul@paul-moore.com>
 From:   Paul Moore <paul@paul-moore.com>
 To:     =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>,
         selinux@vger.kernel.org
 Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
         Eric Paris <eparis@parisplace.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 5/20] selinux: hashtab: use identical iterator type
-References: <20230706132337.15924-5-cgzones@googlemail.com>
-In-Reply-To: <20230706132337.15924-5-cgzones@googlemail.com>
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Xiu Jianfeng <xiujianfeng@huaweicloud.com>,
+        "GONG, Ruiqi" <gongruiqi1@huawei.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 8/20] selinux: services: avoid implicit conversions
+References: <20230706132337.15924-8-cgzones@googlemail.com>
+In-Reply-To: <20230706132337.15924-8-cgzones@googlemail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PP_MIME_FAKE_ASCII_TEXT,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -71,14 +74,24 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Jul  6, 2023 =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com> wrote:
 > 
-> Use the identical type u32 for the loop iterator.
+> Use u32 as the output parameter type in security_get_classes() and
+> security_get_permissions(), based on the type of the symtab nprim
+> member.
+> 
+> Declare the read-only class string parameter of
+> security_get_permissions() const.
+> 
+> Avoid several implicit conversions by using the identical type for the
+> destination.
 > 
 > Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 > ---
->  security/selinux/ss/hashtab.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  security/selinux/include/security.h |  4 ++--
+>  security/selinux/selinuxfs.c        |  7 ++++---
+>  security/selinux/ss/services.c      | 22 +++++++++-------------
+>  3 files changed, 15 insertions(+), 18 deletions(-)
 
-No to the loop iterators declared in the loop.
+More loop iterators ...
 
 --
 paul-moore.com
