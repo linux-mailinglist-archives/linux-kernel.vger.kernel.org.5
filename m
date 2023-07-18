@@ -2,89 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 103FC75771C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6767475771E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231650AbjGRIxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:53:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37650 "EHLO
+        id S231432AbjGRIyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231503AbjGRIxW (ORCPT
+        with ESMTP id S232058AbjGRIyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:53:22 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C7E173C
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:53:14 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R4t5J4H0CzBR9sm
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 16:53:08 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689670388; x=1692262389; bh=NNqVhTvojOR5CkC0Xg6gNOBnmFc
-        On8HQuCGNUFBgEwc=; b=dEq5BbKjUbbKCiBCpcQW/Yd0xYj4PVw90T5OSRiW1Tz
-        VYQAMr1dHfKYuAaIZwUzP2J3Std7JLM2LWHRsZh+/N2I6PofpoabYFMI0yRQVKBO
-        anRrLxK9eSda4II6xLOx4b5fS1e00cIZTxyQnIncYSh9fYNnRqRbvJ/Py9a8R4FO
-        00bjgRnS9HkCwmRWTUyTIu8LRFoDrv1Bs7I2uwilx7qF+PzjbXedpQLf6CBLc574
-        6WK+HkjxeOd40fzADV0s9dacsgkuoTvtzVwv4p7mf8FhkxHjXOwWR4jhFljZN2hn
-        /wiataYnTWoJsTYgEBsLJSazgpp/8W4oG86kR9sIFVQ==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id VBE-6jgVAvmg for <linux-kernel@vger.kernel.org>;
-        Tue, 18 Jul 2023 16:53:08 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R4t5J2VSLzBR7bp;
-        Tue, 18 Jul 2023 16:53:08 +0800 (CST)
+        Tue, 18 Jul 2023 04:54:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E279EE55;
+        Tue, 18 Jul 2023 01:53:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7861B614CA;
+        Tue, 18 Jul 2023 08:53:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C995C433C7;
+        Tue, 18 Jul 2023 08:53:51 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     loongarch@lists.linux.dev, linux-arch@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        WANG Xuerui <git@xen0n.name>
+Subject: [PATCH V2] LoongArch: Cleanup __builtin_constant_p() checking for cpu_has_*
+Date:   Tue, 18 Jul 2023 16:53:27 +0800
+Message-Id: <20230718085327.2691237-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Date:   Tue, 18 Jul 2023 16:53:08 +0800
-From:   hanyu001@208suo.com
-To:     dlemoal@kernel.org
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ata: remove whitespace after '(' and before ')'
-In-Reply-To: <tencent_6714ED434F83826DD33A8EE7B99064165309@qq.com>
-References: <tencent_6714ED434F83826DD33A8EE7B99064165309@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <07f7ac9c59d027f959a69836fee9940c@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the following checkpatch errors:
+In the current configuration, cpu_has_lsx and cpu_has_lasx cannot be
+constants. So cleanup the __builtin_constant_p() checking to reduce the
+complexity.
 
-./drivers/ata/pata_sis.c:691: ERROR: space prohibited after that open 
-parenthesis '('
-./drivers/ata/pata_sis.c:691: ERROR: space prohibited before that close 
-parenthesis ')'
-
-Signed-off-by: Yu Han <	hanyu001@208suo.com>
+Reviewed-by: WANG Xuerui <git@xen0n.name>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
-  drivers/ata/pata_sis.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+V2: Update commit message.
 
-diff --git a/drivers/ata/pata_sis.c b/drivers/ata/pata_sis.c
-index 31de06b..2019777 100644
---- a/drivers/ata/pata_sis.c
-+++ b/drivers/ata/pata_sis.c
-@@ -688,7 +688,7 @@ static void sis_fixup(struct pci_dev *pdev, struct 
-sis_chipset *sis)
+ arch/loongarch/include/asm/fpu.h | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-      if (sis->info == &sis_info33) {
-          pci_read_config_byte(pdev, PCI_CLASS_PROG, &reg);
--        if (( reg & 0x0F ) != 0x00)
-+        if ((reg & 0x0F) != 0x00)
-              pci_write_config_byte(pdev, PCI_CLASS_PROG, reg & 0xF0);
-          /* Fall through to ATA16 fixup below */
-      }
+diff --git a/arch/loongarch/include/asm/fpu.h b/arch/loongarch/include/asm/fpu.h
+index e4193d637f66..b541f6248837 100644
+--- a/arch/loongarch/include/asm/fpu.h
++++ b/arch/loongarch/include/asm/fpu.h
+@@ -218,15 +218,8 @@ static inline void restore_lsx(struct task_struct *t)
+ 
+ static inline void init_lsx_upper(void)
+ {
+-	/*
+-	 * Check cpu_has_lsx only if it's a constant. This will allow the
+-	 * compiler to optimise out code for CPUs without LSX without adding
+-	 * an extra redundant check for CPUs with LSX.
+-	 */
+-	if (__builtin_constant_p(cpu_has_lsx) && !cpu_has_lsx)
+-		return;
+-
+-	_init_lsx_upper();
++	if (cpu_has_lsx)
++		_init_lsx_upper();
+ }
+ 
+ static inline void restore_lsx_upper(struct task_struct *t)
+@@ -294,7 +287,7 @@ static inline void restore_lasx_upper(struct task_struct *t) {}
+ 
+ static inline int thread_lsx_context_live(void)
+ {
+-	if (__builtin_constant_p(cpu_has_lsx) && !cpu_has_lsx)
++	if (!cpu_has_lsx)
+ 		return 0;
+ 
+ 	return test_thread_flag(TIF_LSX_CTX_LIVE);
+@@ -302,7 +295,7 @@ static inline int thread_lsx_context_live(void)
+ 
+ static inline int thread_lasx_context_live(void)
+ {
+-	if (__builtin_constant_p(cpu_has_lasx) && !cpu_has_lasx)
++	if (!cpu_has_lasx)
+ 		return 0;
+ 
+ 	return test_thread_flag(TIF_LASX_CTX_LIVE);
+-- 
+2.39.3
+
