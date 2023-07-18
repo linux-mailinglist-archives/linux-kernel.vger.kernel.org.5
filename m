@@ -2,96 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9BC7578ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637E17578EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231713AbjGRKIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 06:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58866 "EHLO
+        id S230481AbjGRKIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 06:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbjGRKHx (ORCPT
+        with ESMTP id S232449AbjGRKH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 06:07:53 -0400
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9420C10C0;
-        Tue, 18 Jul 2023 03:07:44 -0700 (PDT)
-Received: from [192.168.1.103] (31.173.85.68) by msexch01.omp.ru (10.188.4.12)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Tue, 18 Jul
- 2023 13:07:36 +0300
-Subject: Re: [PATCH] ata: "foo * bar" should be "foo *bar"
-To:     <hanyu001@208suo.com>, <dlemoal@kernel.org>, <s.shtylyov@omp.ru>
-CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <tencent_B3697156112E542F68C876BB0362BE18A905@qq.com>
- <28f4481572293230e84275db48a69462@208suo.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <8dc7934a-6980-83fb-8e71-fccff2472ab9@omp.ru>
-Date:   Tue, 18 Jul 2023 13:07:33 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 18 Jul 2023 06:07:56 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4CFE8;
+        Tue, 18 Jul 2023 03:07:51 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4R4vft5t8Fz6D8X6;
+        Tue, 18 Jul 2023 18:03:50 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
+ 2023 11:07:48 +0100
+Date:   Tue, 18 Jul 2023 11:07:46 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Balsam CHIHI <bchihi@baylibre.com>,
+        "Claudiu Beznea" <claudiu.beznea@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-renesas-soc@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, Andy Shevchenko <andy@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Len Brown <len.brown@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        "Jonathan Hunter" <jonathanh@nvidia.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v2 07/10] pinctrl: mediatek: Switch to use
+ DEFINE_NOIRQ_DEV_PM_OPS() helper
+Message-ID: <20230718110746.00001bdb@Huawei.com>
+In-Reply-To: <20230717172821.62827-8-andriy.shevchenko@linux.intel.com>
+References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
+        <20230717172821.62827-8-andriy.shevchenko@linux.intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <28f4481572293230e84275db48a69462@208suo.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [31.173.85.68]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 07/18/2023 09:20:15
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 178672 [Jul 18 2023]
-X-KSE-AntiSpam-Info: Version: 5.9.59.0
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 523 523 523027ce26ed1d9067f7a52a4756a876e54db27c
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.85.68 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.85.68
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 07/18/2023 09:25:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 7/18/2023 8:14:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-   Your subject should look like:
+On Mon, 17 Jul 2023 20:28:18 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-ata: pata_serverworks: "foo * bar" should be "foo *bar"
+> Since pm.h provides a helper for system no-IRQ PM callbacks,
+> switch the driver to use it instead of open coded variant.
 
-> This patch fixes the checkpatch.pl error:
+Good to mention the renames as well.
+
 > 
-> ./drivers/ata/pata_serverworks.c:305: ERROR: "foo * bar" should be "foo *bar"
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> ---
+>  drivers/pinctrl/mediatek/pinctrl-mtk-common.c | 5 +----
+>  drivers/pinctrl/mediatek/pinctrl-paris.c      | 9 +++------
+>  2 files changed, 4 insertions(+), 10 deletions(-)
 > 
-> Signed-off-by:     Yu Han <hanyu001@208suo.com>
+> diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
+> index 665dec419e7c..2bf5082d3aa9 100644
+> --- a/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
+> +++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
+> @@ -922,10 +922,7 @@ static int mtk_eint_resume(struct device *device)
+>  	return mtk_eint_do_resume(pctl->eint);
+>  }
+>  
+> -const struct dev_pm_ops mtk_eint_pm_ops = {
+> -	.suspend_noirq = mtk_eint_suspend,
+> -	.resume_noirq = mtk_eint_resume,
+> -};
+> +DEFINE_NOIRQ_DEV_PM_OPS(mtk_eint_pm_ops, mtk_eint_suspend, mtk_eint_resume);
+>  
+>  static int mtk_pctrl_build_state(struct platform_device *pdev)
+>  {
+> diff --git a/drivers/pinctrl/mediatek/pinctrl-paris.c b/drivers/pinctrl/mediatek/pinctrl-paris.c
+> index 33d6c3fb7908..b1cbd5bafa2e 100644
+> --- a/drivers/pinctrl/mediatek/pinctrl-paris.c
+> +++ b/drivers/pinctrl/mediatek/pinctrl-paris.c
+> @@ -1119,24 +1119,21 @@ int mtk_paris_pinctrl_probe(struct platform_device *pdev)
+>  }
+>  EXPORT_SYMBOL_GPL(mtk_paris_pinctrl_probe);
+>  
+> -static int mtk_paris_pinctrl_suspend(struct device *device)
+> +static int mtk_paris_suspend(struct device *device)
+>  {
+>  	struct mtk_pinctrl *pctl = dev_get_drvdata(device);
+>  
+>  	return mtk_eint_do_suspend(pctl->eint);
+>  }
+>  
+> -static int mtk_paris_pinctrl_resume(struct device *device)
+> +static int mtk_paris_resume(struct device *device)
+>  {
+>  	struct mtk_pinctrl *pctl = dev_get_drvdata(device);
+>  
+>  	return mtk_eint_do_resume(pctl->eint);
+>  }
+>  
+> -const struct dev_pm_ops mtk_paris_pinctrl_pm_ops = {
+> -	.suspend_noirq = mtk_paris_pinctrl_suspend,
+> -	.resume_noirq = mtk_paris_pinctrl_resume,
+> -};
+> +DEFINE_NOIRQ_DEV_PM_OPS(mtk_paris_pinctrl_pm_ops, mtk_paris_suspend, mtk_paris_resume);
+>  
+>  MODULE_LICENSE("GPL v2");
+>  MODULE_DESCRIPTION("MediaTek Pinctrl Common Driver V2 Paris");
 
-   Aside from the issue with the subject:
-
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-
-MBR, Sergey
