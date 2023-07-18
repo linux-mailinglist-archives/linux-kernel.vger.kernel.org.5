@@ -2,146 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 968F8757915
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF7875791F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbjGRKP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 06:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35130 "EHLO
+        id S230225AbjGRKR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 06:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjGRKP2 (ORCPT
+        with ESMTP id S229458AbjGRKRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 06:15:28 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254B8F7;
-        Tue, 18 Jul 2023 03:15:26 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b74fa5e7d7so84779941fa.2;
-        Tue, 18 Jul 2023 03:15:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689675324; x=1692267324;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5GXe7LFwnlImcwwdc4HmK7zzQjIhvPYwKBh4lGmmYrg=;
-        b=NtnkAJyM/bdvTZLpt2kaVhVDxQ7lAX6OT/W1mXApdOp66sznwDa7JGotYTQU1TdL1I
-         tEMfWIa2oOmEBdEtGq+yxx4Dp8ZxT466V6ByphSYWHKutAES2wNn2G3pd84C9UJcOx57
-         Z/uGouCmgU0L4RBDPkY0pFApaep8Bi4cbyDZ2HmQBAsGnOvNdaZhVCgSfcydjjlm8yVa
-         6sId7tl1vuC2Vyr48h2llpf4AL47MQyFeaOBmScsRX3AODMdPm/b3G0KGZF2eCvz/XbL
-         snFCBfsFsqhV0qaoRnJxLS+2T6BbhqH4qdZx67D9jyvocJ6ANNDFZ5HYc96xLgiYGvML
-         X4sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689675324; x=1692267324;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5GXe7LFwnlImcwwdc4HmK7zzQjIhvPYwKBh4lGmmYrg=;
-        b=I4LapaGbNUulGM7IRROoJAXk0Q0HhYMC5Oum3b6hWui2lub17m+09DvuwxvzPXvSxD
-         mpdTTd4P3GDT/w4H7s1XeyIK8QheztLrPymXEMQPaJFbDsJyXyGyWwP9fHXHq/E+bbLx
-         MTqHCdvLNHuj5AQ+uQiXxD/LM0jd8znNWzOFlCo6qWNEfwJN1SFKsYdEWcF6IYszDt8D
-         GmwN/QNGR0zk1KGplhPOOEFr/6EEi9llAbuYAba8nvvKGktkIZtvljGEIJMYyFgNTNeH
-         j4SD1MPiQhMQsYakS1FchGb9Tbn9znoKFNSxgC692SZmhzR95V/DjmnHl8//TLAHaR/z
-         pGLA==
-X-Gm-Message-State: ABy/qLY33dkP3WzBzsxM2Vij9an3PFoDqKpwVepx/TISVabzaQeTGaWw
-        m39FqilVG5BbITCeWJEiZSz8FlheDzxHK02eciZi3fSFX+k=
-X-Google-Smtp-Source: APBJJlFNnXmjwt743qX/9ZZNGHeS0sB/YYsR5RvgAVpXFPVatqxS540+8A+ue5axcNRrOFyuNSVAfxW7cLXrGkscR3I=
-X-Received: by 2002:a2e:2c05:0:b0:2b6:d89e:74e2 with SMTP id
- s5-20020a2e2c05000000b002b6d89e74e2mr10095689ljs.7.1689675323984; Tue, 18 Jul
- 2023 03:15:23 -0700 (PDT)
+        Tue, 18 Jul 2023 06:17:24 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1D4116;
+        Tue, 18 Jul 2023 03:17:22 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R4vxc0crWzrRn6;
+        Tue, 18 Jul 2023 18:16:36 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 18 Jul 2023 18:17:18 +0800
+Subject: Re: [PATCH v2 5/7] perf evlist: Skip dummy event sample_type check
+ for evlist_config
+To:     Adrian Hunter <adrian.hunter@intel.com>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+        <namhyung@kernel.org>, <irogers@google.com>,
+        <kan.liang@linux.intel.com>, <james.clark@arm.com>,
+        <tmricht@linux.ibm.com>, <ak@linux.intel.com>,
+        <anshuman.khandual@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linux-perf-users@vger.kernel.org>
+References: <20230715032915.97146-1-yangjihong1@huawei.com>
+ <20230715032915.97146-6-yangjihong1@huawei.com>
+ <5797e5a7-a85f-4f7c-1649-88f8f9ff7a6b@intel.com>
+ <44645529-0ee6-fe69-bc03-fefbc6f73d4d@huawei.com>
+ <c4b7fb70-7b2e-74e9-576f-33b29e8801cd@intel.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <77ea9309-da6f-f7b9-a822-b371e0f832d3@huawei.com>
+Date:   Tue, 18 Jul 2023 18:17:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20230718092405.4124345-1-quic_ilial@quicinc.com> <20230718095242.GC8808@unreal>
-In-Reply-To: <20230718095242.GC8808@unreal>
-From:   Ilia Lin <ilia.lin@gmail.com>
-Date:   Tue, 18 Jul 2023 13:15:12 +0300
-Message-ID: <CA+5LGR0q6ut3CRgOx7VUC3MdZ5oJXU6E8RE0QVgN_m8yBxb57A@mail.gmail.com>
-Subject: Re: [PATCH] xfrm: Allow ESP over UDP in packet offload mode
-To:     Ilia Lin <quic_ilial@quicinc.com>
-Cc:     netdev@vger.kernel.org, open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <c4b7fb70-7b2e-74e9-576f-33b29e8801cd@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leon,
+Hello,
 
-Indeed the policy check is checking the sec_path lags set after
-decapsulation, but this has nothing to do with UDP encapsulation, the
-driver will set them anyway.
-Regarding the driver support, each driver may restrict NAT-T support
-in their state_add callback, so in common code it may stay allowed.
+On 2023/7/18 17:56, Adrian Hunter wrote:
+> On 18/07/23 12:30, Yang Jihong wrote:
+>> Hello,
+>>
+>> On 2023/7/17 22:41, Adrian Hunter wrote:
+>>> On 15/07/23 06:29, Yang Jihong wrote:
+>>>> The dummp event does not contain sampls data. Therefore, sample_type does
+>>>> not need to be checked.
+>>>>
+>>>> Currently, the sample id format of the actual sampling event may be changed
+>>>> after the dummy event is added.
+>>>>
+>>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>>>> ---
+>>>>    tools/perf/util/record.c | 7 +++++++
+>>>>    1 file changed, 7 insertions(+)
+>>>>
+>>>> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
+>>>> index 9eb5c6a08999..0240be3b340f 100644
+>>>> --- a/tools/perf/util/record.c
+>>>> +++ b/tools/perf/util/record.c
+>>>> @@ -128,6 +128,13 @@ void evlist__config(struct evlist *evlist, struct record_opts *opts, struct call
+>>>>            evlist__for_each_entry(evlist, evsel) {
+>>>>                if (evsel->core.attr.sample_type == first->core.attr.sample_type)
+>>>>                    continue;
+>>>> +
+>>>> +            /*
+>>>> +             * Skip the sample_type check for the dummy event
+>>>> +             * because it does not have any samples anyway.
+>>>> +             */
+>>>> +            if (evsel__is_dummy_event(evsel))
+>>>> +                continue;
+>>>
+>>> Sideband event records have "ID samples" so the sample type still matters.
+>>>
+>> Okay, will remove this patch in next version.
+>>
+>> Can I ask a little more about this?
+>>
+>> Use PERF_SAMPLE_IDENTIFICATION instead of PERF_SAMPLE_ID because for samples of type PERF_RECORD_SAMPLE, there may be different record formats due to different *sample_type* settings, so the fixed SAMPLE_ID  location mode PERF_SAMPLE_NAME is required here.
+>>
+>> However, for the sideband event, the samples of the PERF_RECORD_SAMPLE type is not recorded (only PERF_RECORD_MMAP, PERF_RECORD_COMM, and so on). Therefore, the "use sample identifier "check can be skipped here.
+>>
+>> That's my understanding of PERF_SAMPLE_IDENTIFICATION . If there is any error, please help to correct it.
+>>
+>> *Sideband event records have "ID samples" so the sample type still matters.*
+>>
+>> Does this mean that sideband will also record samples of type PERF_RECORD_SAMPLE? What exactly is the sampling data?
+> 
+> No.  There are additional members as defined by struct sample_id for PERF_RECORD_MMAP:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/perf_event.h?h=v6.4#n872
+> 
+I'm sorry, maybe my comments didn't make it clear.
+I mean, can we skip the "use_sample_identifier" check here?
+
+That is, set sample_type to *XXX|PERF_SAMPLE_ID* instead of 
+*XXX|PERF_SAMPLE_IDENTIFICATION*
 
 Thanks,
-Ilia
-
-BR,
-Ilia Lin
-
-
-
-On Tue, Jul 18, 2023 at 12:53=E2=80=AFPM Leon Romanovsky <leonro@nvidia.com=
-> wrote:
->
-> On Tue, Jul 18, 2023 at 12:24:05PM +0300, Ilia Lin wrote:
-> > The ESP encapsulation is not supported only in crypto mode.
-> > In packet offload mode, the RX is bypassing the XFRM,
-> > so we can enable the encapsulation.
->
-> It is not accurate. RX is bypassed after XFRM validated packet to ensure
-> that it was really handled by HW.
->
-> However, this patch should come with relevant driver code which should
-> support ESP over UDP. You can see it here:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/leon/linux-rdma.git/log/?=
-h=3Dxfrm-next
->  xfrm: Support UDP encapsulation in packet offload mode
->  net/mlx5e: Support IPsec NAT-T functionality
->  net/mlx5e: Check for IPsec NAT-T support
->  net/mlx5: Add relevant capabilities bits to support NAT-T
->
-> Thanks
->
-> >
-> > Signed-off-by: Ilia Lin <ilia.lin@kernel.org>
-> > ---
-> >  net/xfrm/xfrm_device.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/net/xfrm/xfrm_device.c b/net/xfrm/xfrm_device.c
-> > index 4aff76c6f12e0..3018468d97662 100644
-> > --- a/net/xfrm/xfrm_device.c
-> > +++ b/net/xfrm/xfrm_device.c
-> > @@ -246,8 +246,10 @@ int xfrm_dev_state_add(struct net *net, struct xfr=
-m_state *x,
-> >               return -EINVAL;
-> >       }
-> >
-> > -     /* We don't yet support UDP encapsulation and TFC padding. */
-> > -     if (x->encap || x->tfcpad) {
-> > +     is_packet_offload =3D xuo->flags & XFRM_OFFLOAD_PACKET;
-> > +
-> > +     /* We don't yet support UDP encapsulation except full mode and TF=
-C padding. */
-> > +     if ((!is_packet_offload && x->encap) || x->tfcpad) {
-> >               NL_SET_ERR_MSG(extack, "Encapsulation and TFC padding can=
-'t be offloaded");
-> >               return -EINVAL;
-> >       }
-> > @@ -258,7 +260,6 @@ int xfrm_dev_state_add(struct net *net, struct xfrm=
-_state *x,
-> >               return -EINVAL;
-> >       }
-> >
-> > -     is_packet_offload =3D xuo->flags & XFRM_OFFLOAD_PACKET;
-> >       dev =3D dev_get_by_index(net, xuo->ifindex);
-> >       if (!dev) {
-> >               if (!(xuo->flags & XFRM_OFFLOAD_INBOUND)) {
-> > --
-> >
-> >
+Yang
