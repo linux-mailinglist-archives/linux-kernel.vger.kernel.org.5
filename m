@@ -2,56 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E41757A12
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9CC757A16
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbjGRLJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:09:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
+        id S230100AbjGRLKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjGRLJR (ORCPT
+        with ESMTP id S230400AbjGRLKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:09:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0249A10F2;
-        Tue, 18 Jul 2023 04:09:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 82E9861517;
-        Tue, 18 Jul 2023 11:09:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2B93C433C8;
-        Tue, 18 Jul 2023 11:09:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689678555;
-        bh=455lvYV9bPgscAxyzAWQXxft7jceX9o1s3xKXlHBZik=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=aMM3R+fM3DMEEnetyIC2xArN6N0MGT95Q/dz4zsH5s7iBCvPdKdHDUUhKxyciRaEx
-         PR0qBOqXqqqppec3xDWedOQNQ5hG3X4HHPGkRIoo9pSgG7FXiSJ8w99VwQPYcgOMYI
-         3nNE0sBI60OwD/7vyx1NdlvCEZbvaDutB2nGFp2Qaug497sfNJ3ykOD/QkH0iwbttl
-         S0PmEpDbGvojOuimVGLEn8wIbIoXkov51ZzKXQOnistorEzuYGnIJ5ez7p4EYj7L5O
-         kfHWKMv5z+fBvY4dlHiif1CeY9pXOYIW7RAjCnZK5NMZr1PM5Nehuiq5aHbxJKW2ZY
-         qFyQyhXwHlecQ==
-Date:   Tue, 18 Jul 2023 06:09:13 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, Sergey.Semin@baikalelectronics.ru,
-        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V3] Revert "PCI: tegra194: Enable support for 256 Byte
- payload"
-Message-ID: <20230718110913.GA475601@bhelgaas>
+        Tue, 18 Jul 2023 07:10:00 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F7F10F5;
+        Tue, 18 Jul 2023 04:09:54 -0700 (PDT)
+X-UUID: 9ce95b1c255b11eeb20a276fd37b9834-20230718
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=yTTpFDXHBzezt/x+7guMZG43jyMka9q83yKeSml32eg=;
+        b=TyapCzIAuOa735YjNojlLHN9ptBrvymoKgm4/mBbXN8N4f9bZ4pRQ85Wgs/2deh+vLIPn4oebB1UdssOfurxbhyH+AXK3/D1RIJtMb5fGCADvpXsqIJo1RqSYiYOaze1E8MofwdQct5ztV+p24EQ4NK2i0+Dn6VdSa6WU+Qj1oc=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.28,REQID:9531de23-8a33-414f-a4c0-92262b04561d,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:176cd25,CLOUDID:997abbdc-dc79-4898-9235-1134b97257a8,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 9ce95b1c255b11eeb20a276fd37b9834-20230718
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
+        (envelope-from <jason-ch.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1735787778; Tue, 18 Jul 2023 19:09:49 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 18 Jul 2023 19:09:48 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 18 Jul 2023 19:09:48 +0800
+From:   Jason-ch Chen <jason-ch.chen@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+CC:     =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
+        <nfraprado@collabora.com>, Chen-Yu Tsai <wenst@chromium.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        jason-ch chen <Jason-ch.Chen@mediatek.com>
+Subject: [PATCH v4 0/4] Add basic node support for MediaTek MT8188 SoC
+Date:   Tue, 18 Jul 2023 19:09:43 +0800
+Message-ID: <20230718110947.13426-1-jason-ch.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6bc71b88-1c8c-0c2c-d9e1-22096f928ad5@nvidia.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_TEMPERROR,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,32 +75,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 08:03:47AM +0530, Vidya Sagar wrote:
-> On 7/14/2023 3:09 AM, Bjorn Helgaas wrote:
-> > On Mon, Jun 19, 2023 at 03:56:04PM +0530, Vidya Sagar wrote:
-> > > This reverts commit 4fb8e46c1bc4 ("PCI: tegra194: Enable
-> > > support for 256 Byte payload").
-> > > 
-> > > Consider a PCIe hierarchy with a PCIe switch and a device connected
-> > > downstream of the switch that has support for MPS which is the minimum in
-> > > the hierarchy, and root port programmed with an MPS in its DevCtl register
-> > > that is greater than the minimum. In this scenario, the default bus
-> > > configuration of the kernel i.e. "PCIE_BUS_DEFAULT" doesn't configure the
-> > > MPS settings in the hierarchy correctly resulting in the device with
-> > > support for minimum MPS in the hierarchy receiving the TLPs of size more
-> > > than that. Although this can be addressed by appending "pci=pcie_bus_safe"
-> > > to the kernel command line, it doesn't seem to be a good idea to always
-> > > have this commandline argument even for the basic functionality to work.
-> > 
-> > I think this has some irrelevant detail (IIUC the problem should
-> > happen even without a switch) and could be more specific (I think the
-> > problem case is RP MPS=256, EP only supports MPS=128).
->
-> The issue is present only if there is a switch.
+From: jason-ch chen <Jason-ch.Chen@mediatek.com>
 
-So if there's no switch, and an EP that only supports MPS=128, the PCI
-core changes the RP MPS setting to 128?  Just based on reading the
-code, I thought we would leave RP MPS=256 and EP MPS=128, which would
-be a problem.  But maybe the PCI core changes the RP down to MPS=128?
+MT8188 is a SoC based on 64bit ARMv8 architecture.
+It contains 6 CA55 and 2 CA78 cores.
+MT8188 share many HW IP with MT65xx series.
 
-Bjorn
+This patchset was tested on MT8188 evaluation board to shell.
+
+Based on tag: next-20230718, linux-next/master
+
+Changes in v4:
+- Explain the reason of modifying pwrap binding file, and correct the
+  subject
+- Fix reviewer's comments
+
+Changes in v3:
+- Remove the duplicated part of mt8188 in the pwrap yaml file
+- Fix reviewer's comments about coding style
+
+Changes in v2:
+- Add MT8188 PMIC Wrapper compatible to binding document
+- Fix reviewer's comments
+
+jason-ch chen (4):
+  dt-bindings: arm: Add compatible for MediaTek MT8188
+  dt-bindings: arm: mediatek: Add mt8188 pericfg compatible
+  dt-bindings: soc: mediatek: pwrap: Modify compatible for MT8188
+  arm64: dts: Add MediaTek MT8188 dts and evaluation board and Makefile
+
+ .../devicetree/bindings/arm/mediatek.yaml     |   4 +
+ .../arm/mediatek/mediatek,pericfg.yaml        |   1 +
+ .../bindings/soc/mediatek/mediatek,pwrap.yaml |   6 +-
+ arch/arm64/boot/dts/mediatek/Makefile         |   1 +
+ arch/arm64/boot/dts/mediatek/mt8188-evb.dts   | 400 ++++++++
+ arch/arm64/boot/dts/mediatek/mt8188.dtsi      | 951 ++++++++++++++++++
+ 6 files changed, 1362 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8188-evb.dts
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt8188.dtsi
+
+-- 
+2.18.0
+
