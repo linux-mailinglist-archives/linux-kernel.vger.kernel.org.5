@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B230757384
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D65375734D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 07:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbjGRGBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 02:01:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48900 "EHLO
+        id S230197AbjGRFoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 01:44:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230491AbjGRGBl (ORCPT
+        with ESMTP id S229891AbjGRFoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 02:01:41 -0400
-Received: from germane-culhwch.relay-egress.a.mail.umich.edu (relay-egress-host.us-east-2.a.mail.umich.edu [18.217.159.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D776D1;
-        Mon, 17 Jul 2023 23:01:40 -0700 (PDT)
-Received: from jacinth-ogre.authn-relay.a.mail.umich.edu (ip-10-0-74-216.us-east-2.compute.internal [10.0.74.216])
-        by germane-culhwch.relay-egress.a.mail.umich.edu with ESMTPS
-        id 64B62717.11552E7.18B8CF7B.1115286;
-        Tue, 18 Jul 2023 01:45:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=umich.edu;
-        s=relay-2018-08-29; t=1689659157;
-        bh=32KuaL9XprTSau8shHufKOsqD5/ATF/mtI1/00+YRqo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=s9+fYcCr1NEJtujl318yCSU4k+WYadNcttOxXc/ppCJNAJYF0SlVX/nydtAY5/Brm
-         soSuIGVL8UhFAQj8feVZSllfbzlf1dojWKZYoPDDIrtqLUE8RdTlp467T9Fjzb2mby
-         1bYRI24vge4lU14/E+UHmgN+T+w7PkMo56Dem+DwngdyGcEh1bU0D5IAeUPqGi22y4
-         pAwikZ3aqFOmMG88a/jeDHDwudAOjIQExvGjs61AqDOX6DFOcDlovZh2fkg1Ku3j36
-         ET1Z43nmt1Aos5/mdVC7eBejKFpzHxssAjLbaoqaD2ifXdMtc0dS7oPJ5aQCvbgvow
-         amaotLeZB2B2Q==
-Authentication-Results: jacinth-ogre.authn-relay.a.mail.umich.edu; 
-        iprev=permerror policy.iprev=68.32.216.219 (unknown);
-        auth=pass smtp.auth=tmgross
-Received: from localhost.localdomain (unknown [68.32.216.219])
-        by jacinth-ogre.authn-relay.a.mail.umich.edu with ESMTPSA
-        id 64B62715.21F24970.53FCB6DA.46279;
-        Tue, 18 Jul 2023 01:45:57 -0400
-From:   Trevor Gross <tmgross@umich.edu>
-To:     ojeda@kernel.org, alex.gaynor@gmail.com, wedsonaf@gmail.com,
-        boqun.feng@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com,
-        benno.lossin@proton.me, corbet@lwn.net
-Cc:     linux-doc@vger.kernel.org, rust-for-linux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Trevor Gross <tmgross@umich.edu>
-Subject: [PATCH 2/2] docs: rust: clarify what 'rustup override' does
-Date:   Tue, 18 Jul 2023 01:44:16 -0400
-Message-Id: <20230718054416.861412-3-tmgross@umich.edu>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230718054416.861412-1-tmgross@umich.edu>
-References: <20230718054416.861412-1-tmgross@umich.edu>
+        Tue, 18 Jul 2023 01:44:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B35010C0;
+        Mon, 17 Jul 2023 22:44:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A9F9D6134A;
+        Tue, 18 Jul 2023 05:44:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 329F3C433C7;
+        Tue, 18 Jul 2023 05:44:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689659082;
+        bh=fMxCFJdsUJm8JBt25eJ62JnVPqBMNzOsIhTVtRXpBFg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=AeLUpJrvbntC/9V1r8aaaRBAa4dOcdWTTmtDAdmwEnVw1CN4SGsmmtzsLg1CtUszm
+         JgYZhV9okcXuAMGW8Zl6MDBxesukgHZNL8SVxX2+5hZ2Yxlcg2x/kQU8Tqbpz7wO+L
+         K2nv6XjXC/4cGG3Dqq/vyq2OK1Q3xWy6ItFleXN4gNa+2OvJ4YR9cOuiuNqPZelo1i
+         uC/2QiD37dwh6X8zeH+WSaYEvFUpXFO4ADEVJVbtvYR5BJQmxGoXZQguKIpx4MRCqU
+         nHu31sVaSq89Nrjdr5StYvTDycYQJHMbN1vqi9zwRP+GaaviRQSCE0pbE5lCgndorw
+         Wp9NNcGKcav7w==
+From:   Miguel Ojeda <ojeda@kernel.org>
+To:     Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: [PATCH] MAINTAINERS: add Andreas Hindborg as Rust reviewer
+Date:   Tue, 18 Jul 2023 07:44:25 +0200
+Message-ID: <20230718054426.1048583-1-ojeda@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,32 +60,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The behavior of 'rustup override' is not very well known. This patch is
-a small edit that adds details about what it does, so users have a better
-understanding of how it affects their system toolchain (i.e., it does
-not affect system toolchain and only sets a directory-specific
-override).
+Andreas has been involved with the Rust for Linux project for more than
+a year now. He has been primarily working on the Rust NVMe driver [1],
+presenting it in several places (such as LPC [2][3] and Kangrejos [4]).
 
-Signed-off-by: Trevor Gross <tmgross@umich.edu>
+In addition, he recently submitted the Rust null block driver [5] and
+has been reviewing patches in the mailing list for some months.
+
+Thus add him to the `RUST` entry as reviewer.
+
+Link: https://rust-for-linux.com/nvme-driver [1]
+Link: https://lpc.events/event/16/contributions/1180/attachments/1017/1961/deck.pdf [2]
+Link: https://www.youtube.com/watch?v=BwywU1MqW38 [3]
+Link: https://kangrejos.com/A%20Linux%20(PCI)%20NVMe%20Driver%20in%20Rust.pdf [4]
+Link: https://lore.kernel.org/rust-for-linux/20230503090708.2524310-1-nmi@metaspace.dk/ [5]
+Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 ---
- Documentation/rust/quick-start.rst | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/rust/quick-start.rst b/Documentation/rust/quick-start.rst
-index bb67deb19100..700d37dcff5c 100644
---- a/Documentation/rust/quick-start.rst
-+++ b/Documentation/rust/quick-start.rst
-@@ -38,7 +38,9 @@ and run::
- 
- 	rustup override set $(scripts/min-tool-version.sh rustc)
- 
--Otherwise, fetch a standalone installer from:
-+This will configure your working directory to use the correct version of
-+``rustc`` without affecting your default toolchain. If you are not using
-+``rustup``, fetch a standalone installer from::
- 
- 	https://forge.rust-lang.org/infra/other-installation-methods.html#standalone
- 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 3be1bdfe8ecc..f2f0426258f3 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18542,6 +18542,7 @@ R:	Boqun Feng <boqun.feng@gmail.com>
+ R:	Gary Guo <gary@garyguo.net>
+ R:	Björn Roy Baron <bjorn3_gh@protonmail.com>
+ R:	Benno Lossin <benno.lossin@proton.me>
++R:	Andreas Hindborg <a.hindborg@samsung.com>
+ L:	rust-for-linux@vger.kernel.org
+ S:	Supported
+ W:	https://github.com/Rust-for-Linux/linux
+
+base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
 -- 
-2.34.1
+2.41.0
 
