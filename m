@@ -2,64 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F45A7571D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 04:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B11D7571D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 04:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbjGRCgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 22:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
+        id S230014AbjGRChf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 22:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjGRCgB (ORCPT
+        with ESMTP id S229541AbjGRChd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 22:36:01 -0400
-Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2841F136;
-        Mon, 17 Jul 2023 19:35:58 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: lina@asahilina.net)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 6C4DC424BA;
-        Tue, 18 Jul 2023 02:35:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=asahilina.net;
-        s=default; t=1689647756;
-        bh=DPckD2pcMitjOq4PnGHXF3nMKOQ/JWjAKnEZEzPdo0w=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=OJZUvXtKw3BeyCO8IbXdPGPDd9/x9usKU5vwpZBxXfSCD/0CtaahrxpTvKcvv5l63
-         uL0PG8zcnIfpGypsFWqp2FaOoQLqhWn+7a/ojr9ftuW9K6GVp1dfDwVnl1MIQiaaLI
-         eJ44Qr66EqBKAlqAO+ckO0i8ndFEe4eZDOSjB6MNdLUrzhPSI0gG1OgfAZ4x7mM2RR
-         7EMNbFczDoqxTNf0p5Ktjs7NkpIre2dOd4Ts81y7CGzSRQI8gvM49K9ACtoPzdwEKG
-         inuh5ZiR+S8IZquHycUGJNT8yrNv9r/+Uj63u6OHV9zDUwS2YiNDmJCLd2wi5KJ/fa
-         wM1fVndieLO/w==
-Message-ID: <7b564e55-a9b7-0585-3cf1-d1f132f9a918@asahilina.net>
-Date:   Tue, 18 Jul 2023 11:35:51 +0900
+        Mon, 17 Jul 2023 22:37:33 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9922910C7;
+        Mon, 17 Jul 2023 19:37:31 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36I2W6tp012078;
+        Tue, 18 Jul 2023 02:37:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=T9CKhz+EHs+ldtZocIgatXObTDYOJIeNM4t29hyF+rg=;
+ b=iHlhCcUUruoovGl4bom+HjuQQpWkCYrJhAAZWAG/azsa9M/RTtB3ju/BtBiUDZl9ak33
+ Yn9bICAoIL9bokhuxIwq11lx/AkrugZpifa7w6hiaGxAJh0AMX8ZaxvDvF1RrBRpZJNy
+ NscJr2lhwwomlOa5ifp+4ahxFHC+d09xBaaCiey2KypuLr2Bv9moC49k7PPbyA7V4+3y
+ eWJPMpoKUcoXtFxKyJQ7bu2IsitcZLMrhXE8gcUTOJkbUFhZ3MN/knH3qurysx/fLGer
+ rkITIgHPTHO8tObye+aCUjPFbjuuNrtfJuKvvbereplFOlE73OTUAW6uK+j+FCnpetxS uw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3run1jcxfw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 02:37:27 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36I2bPpb032471
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 02:37:25 GMT
+Received: from [10.239.154.73] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 17 Jul
+ 2023 19:37:22 -0700
+Message-ID: <2b1301e6-fac3-7a06-6716-a65ffd0be7c2@quicinc.com>
+Date:   Tue, 18 Jul 2023 10:37:19 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/3] drm/scheduler: Fix UAF in
- drm_sched_fence_get_timeline_name
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH v1 1/2] dt-bindings: input: qcom,pm8xxx-vib: add more PMIC
+ support
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-input@vger.kernel.org>, <devicetree@vger.kernel.org>
+CC:     <quic_collinsd@quicinc.com>, <quic_subbaram@quicinc.com>,
+        <quic_kamalw@quicinc.com>, <jestar@qti.qualcomm.com>
+References: <20230717062547.2086869-1-quic_fenglinw@quicinc.com>
+ <20230717062547.2086869-2-quic_fenglinw@quicinc.com>
+ <6338cc75-e3fe-ba19-3df7-727b63fec245@linaro.org>
 Content-Language: en-US
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        alyssa@rosenzweig.io, Luben Tuikov <luben.tuikov@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Cc:     Faith Ekstrand <faith.ekstrand@collabora.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, asahi@lists.linux.dev
-References: <9c0cff84-45b1-268f-bdad-38c16316dbc3@amd.com>
- <20230714-drm-sched-fixes-v1-0-c567249709f7@asahilina.net>
- <20230714-drm-sched-fixes-v1-2-c567249709f7@asahilina.net>
- <bef7ef62-3cd9-6ceb-5eb4-5ae0c0236778@amd.com>
- <de502b41-2864-db1e-16a0-8a5d5e0e4ad3@asahilina.net>
- <d9dc2fd5-d054-dbf3-72b7-fe9deaa46350@amd.com>
- <236422117088ca854a6717114de73d99b2b9ba2f@rosenzweig.io>
- <a42bd218-6eb5-6ddb-bbb4-d25118c59f40@amd.com>
-From:   Asahi Lina <lina@asahilina.net>
-In-Reply-To: <a42bd218-6eb5-6ddb-bbb4-d25118c59f40@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+In-Reply-To: <6338cc75-e3fe-ba19-3df7-727b63fec245@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: DfzgLbA65DS-cEQR5qDEIk7iq-SCeqeq
+X-Proofpoint-ORIG-GUID: DfzgLbA65DS-cEQR5qDEIk7iq-SCeqeq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_15,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ clxscore=1011 malwarescore=0 adultscore=0 phishscore=0 mlxlogscore=988
+ bulkscore=0 spamscore=0 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307180022
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -70,157 +90,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/07/2023 00.55, Christian König wrote:
-> Am 15.07.23 um 16:14 schrieb alyssa@rosenzweig.io:
->> 15 July 2023 at 00:03, "Luben Tuikov" <luben.tuikov@amd.com> wrote:
->>> On 2023-07-14 05:57, Christian König wrote:
->>>
->>>> Am 14.07.23 um 11:49 schrieb Asahi Lina:
->>>>
->>>>> On 14/07/2023 17.43, Christian König wrote:
->>>>>
->>>>    Am 14.07.23 um 10:21 schrieb Asahi Lina:
->>>>    A signaled scheduler fence can outlive its scheduler, since fences are
->>>>    independencly reference counted. Therefore, we can't reference the
->>>>    scheduler in the get_timeline_name() implementation.
->>>>
->>>>    Fixes oopses on `cat /sys/kernel/debug/dma_buf/bufinfo` when shared
->>>>    dma-bufs reference fences from GPU schedulers that no longer exist.
->>>>
->>>>    Signed-off-by: Asahi Lina <lina@asahilina.net>
->>>>    ---
->>>>       drivers/gpu/drm/scheduler/sched_entity.c | 7 ++++++-
->>>>       drivers/gpu/drm/scheduler/sched_fence.c  | 4 +++-
->>>>       include/drm/gpu_scheduler.h              | 5 +++++
->>>>       3 files changed, 14 insertions(+), 2 deletions(-)
->>>>
->>>>    diff --git a/drivers/gpu/drm/scheduler/sched_entity.c
->>>>    b/drivers/gpu/drm/scheduler/sched_entity.c
->>>>    index b2bbc8a68b30..17f35b0b005a 100644
->>>>    --- a/drivers/gpu/drm/scheduler/sched_entity.c
->>>>    +++ b/drivers/gpu/drm/scheduler/sched_entity.c
->>>>    @@ -389,7 +389,12 @@ static bool
->>>>    drm_sched_entity_add_dependency_cb(struct drm_sched_entity *entity)
->>>>                  /*
->>>>                * Fence is from the same scheduler, only need to wait for
->>>>    -         * it to be scheduled
->>>>    +         * it to be scheduled.
->>>>    +         *
->>>>    +         * Note: s_fence->sched could have been freed and reallocated
->>>>    +         * as another scheduler. This false positive case is okay,
->>>>    as if
->>>>    +         * the old scheduler was freed all of its jobs must have
->>>>    +         * signaled their completion fences.
->>>>
->>>>    This is outright nonsense. As long as an entity for a scheduler exists
->>>>    it is not allowed to free up this scheduler.
->>>>
->>>>    So this function can't be called like this.
->>>>
->>>>> As I already explained, the fences can outlive their scheduler. That
->>>>>    means *this* entity certainly exists for *this* scheduler, but the
->>>>>    *dependency* fence might have come from a past scheduler that was
->>>>>    already destroyed along with all of its entities, and its address reused.
->>>>>
->>>>    
->>>>    Well this is function is not about fences, this function is a callback
->>>>    for the entity.
->>>>    
->>>>
->>>>> Christian, I'm really getting tired of your tone. I don't appreciate
->>>>>    being told my comments are "outright nonsense" when you don't even
->>>>>    take the time to understand what the issue is and what I'm trying to
->>>>>    do/document. If you aren't interested in working with me, I'm just
->>>>>    going to give up on drm_sched, wait until Rust gets workqueue support,
->>>>>    and reimplement it in Rust. You can keep your broken fence lifetime
->>>>>    semantics and I'll do my own thing.
->>>>>
->>>>    
->>>>    I'm certainly trying to help here, but you seem to have unrealistic
->>>>    expectations.
->>>>    
->>>>    I perfectly understand what you are trying to do, but you don't seem to
->>>>    understand that this functionality here isn't made for your use case.
->>>>    
->>>>    We can adjust the functionality to better match your requirements, but
->>>>    you can't say it is broken because it doesn't work when you use it not
->>>>    in the way it is intended to be used.
->>>>
->>> I believe "adjusting" functionality to fit some external requirements,
->>> may have unintended consequences, requiring yet more and more "adjustments".
->>> (Or may allow (new) drivers to do wild things which may lead to wild results. :-) )
->>>
->>> We need to be extra careful and wary of this.
->> Either drm/scheduler is common code that we should use for our driver, in which case we need to "adjust" it to fit the requirements of a safe Rust abstraction usable for AGX.
-> 
-> Well this is the fundamental disagreement we have. As far as I can see
-> you don't need to adjust anything in the common drm/scheduler code.
-> 
-> That code works with quite a bunch of different drivers, including the
-> Intel XE which has similar requirements to your work here.
-> 
-> We can talk about gradually improving the common code, but as Luben
-> already wrote as well this needs to be done very carefully.
-> 
->>    Or, drm/scheduler is not common code intended for drivers with our requirements, and then we need to be able to write our own scheduler.
->>
->> AMD has NAK'd both options, effectively NAK'ing the driver.
->>
->> I will ask a simple yes/no question: Should we use drm/sched?
-> 
-> Well, yes.
-> 
->>
->> If yes, it will need patches like these,
-> 
-> No, you don't.
-> 
-> First of all you need to try to adjust your driver to match the
-> requirements of drm/scheduler and *not* the other way around.
-> 
->>    and AMD needs to be ok with that and stop NAK'ing them on sight becuase they don't match the existing requirements.
->>
->> If no, we will write our own scheduler in Rust, and AMD needs to be ok with that and not NAK it on sight because it's not drm/sched.
->>
->> Which is it?
->>
->> Note if we write a Rust scheduler, drm/sched and amdgpu will be unaffected. If we do that and AMD comes back and NAKs it -- as said in this thread would "probably" happen -- then it is impossible for us to upstream a driver regardless of whether we use drm/sched.
->>
->> Lina has been polite and accommodating while AMD calls her code "outright nonsense" and gets "outright NAK"s, and puts her into an impossible catch-22 where no matter what she does it's NAK'd.
-> 
-> Well as far as I can see I'm totally polite as well.
-> 
-> Pointing out that approaches doesn't seem to make sense and NAKing
-> patches is a perfectly normal part of the review process.
-> 
-> What you need to to is to take a step back and ask yourself why this
-> here is facing so much rejection from our side. I have to admit that I
-> don't seem to be good at explaining that, cause we are obviously talking
-> past each other, but you don't seem to try hard to understand what I'm
-> pointing out either.
-> 
->> That's not ok.
-> 
-> As far as I can see it is.
-> 
-> As maintainer of a commonly used component my first duty is to preserve
-> the status quo and prevent modifications which are not well thought
-> through. And to be honest those changes here strongly looks like Lina is
-> just adjusting the code to match her requirements without looking left
-> and right first.
-> 
-> Regards,
-> Christian.
-> 
-> 
 
-I give up. You are ignoring everything we say, and rejecting everything 
-we suggest. We've already explained why drm_sched doesn't work for us. 
-I'm tired of repeating the same explanation over and over again only to 
-be ignored and told I'm wrong.
 
-I'll start working on a new, much simpler Rust-native scheduler based on 
-the workqueue Rust abstractions which are in review.
+On 7/18/2023 3:59 AM, Krzysztof Kozlowski wrote:
+> On 17/07/2023 08:25, Fenglin Wu wrote:
+>> Add support for vibrator module inside Qualcomm PMI632, PM7250B, PM7325B
+>> and PM7550BA PMICs.
+>>
+>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+>> ---
+>>   Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml b/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
+>> index c8832cd0d7da..642408e2b35f 100644
+>> --- a/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
+>> +++ b/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
+>> @@ -15,6 +15,10 @@ properties:
+>>         - qcom,pm8058-vib
+>>         - qcom,pm8916-vib
+>>         - qcom,pm8921-vib
+>> +      - qcom,pmi632-vib
+>> +      - qcom,pm7250b-vib
+>> +      - qcom,pm7325b-vib
+>> +      - qcom,pm7550ba-vib
+> 
+> Aren't the last two compatible?
 
-~~ Lina
+There are still every different PMICs even though the vibrator module in 
+PM7325B and PM7550BA are the same and they share the same register base 
+address as well.
 
+> 
+> Best regards,
+> Krzysztof
+> 
