@@ -2,102 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA494757F06
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D162757F08
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232492AbjGROIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
+        id S233160AbjGROIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233413AbjGROIO (ORCPT
+        with ESMTP id S233133AbjGROIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:08:14 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76A2AC
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:08:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689689289; x=1721225289;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YhzlfQtbZbvU7crsK9NP3Zkf40qmEHwn35CPkp07c3s=;
-  b=G2/VPPOUI0gjKrOtr0TG6TGnq/KKz7ElYco+8bzjXszC1CioSJZkS3Wb
-   9Mv4aFVvFVF6oCPkg4T+MI3BEwEFHngDPLXSAJg+lktDqQ/HCfWZO1M4G
-   /UjRDfPDT12C+8US9xECXRpGkzUekTZbxffGdrIi+mv3xcI61rrwzF3/h
-   TT+R0se+lYTIDCJdMz7xov//vEavOaCjwGtukVHIFpvue+LiGO+TAiyk8
-   lScFuU/Z2JFm75XOI3UUPzDVN/N7wMdsos1cpxqKMsRey0iAl65bXwUDk
-   yKzXH1GiyLgCf0rchdG/Sz3yw72425FiSVVCUuXCzzWtW2PShN7VeZwSp
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="397053551"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="397053551"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 07:08:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="758804280"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="758804280"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP; 18 Jul 2023 07:08:06 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qLlMy-00GQUQ-0w;
-        Tue, 18 Jul 2023 17:08:04 +0300
-Date:   Tue, 18 Jul 2023 17:08:04 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     hanyu001@208suo.com
-Cc:     agust@denx.de, mpe@ellerman.id.au, npiggin@gmail.com,
-        christophe.leroy@csgroup.eu, bhelgaas@google.com, kw@linux.com,
-        mika.westerberg@linux.intel.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] platforms: 52xx: Remove space after '(' and before ')'
-Message-ID: <ZLacxHz/IGgketWx@smile.fi.intel.com>
-References: <tencent_ADAD5C6DD5F9824047356B25D53801910A06@qq.com>
- <c5c33e6e390f6784b5599b8ea13b8e01@208suo.com>
+        Tue, 18 Jul 2023 10:08:36 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08D912F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:08:33 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-993a37b79e2so776436766b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:08:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689689312; x=1692281312;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=26kZNX589C4iel7QXWfs4d6fvzGm1fUt/wLrbSdfcEM=;
+        b=hWHpHNHOn2baysENIVLRf3Put9jo2livos4yKD1QUrzec9GAQZWc4SOIr0oRVt2g5+
+         KJ5iafB8yWfAsQovCftGxuIAqn3feQblOqRX/ZATiXJA4Kb6hOvg/MMcNo20SNVry1YJ
+         dR64HQqqj6B9GXDq2cBb6XpBwaoCiloqqXVmPh6Eo21URVexP/vfvJ0qJuDabC/1FOVK
+         37Foib7LnsnpNlG4DHBi1MH/VwoBpyJBjm3Gv2Po7d71DM1r/9sbkhpTGSn9hrjhICZB
+         TE3UkNn4+hMXK1So46SkCIeSTcJoeYwGXj7bY6I5l9jfMj6tLNQ1ggkncuS0hCM1rYkW
+         mPEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689689312; x=1692281312;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=26kZNX589C4iel7QXWfs4d6fvzGm1fUt/wLrbSdfcEM=;
+        b=UgDNjC1kMQnAxRusYK4Ndfd775R16mnJ9yy6vF8q0Gf0lGe8XenNe0KdFhB488C1y5
+         Q0gAe5sRgOVDRSk86G8De0CcaD43JDl8g8mwIE75F0AZB1W9uHp6u1/4wrNXLAGoVyZB
+         CyPC3t16TXBYiDzq2ngTBL+KKU+QDpSD5dglKFcXeWow9DcYMcqeGm51I3XMTp/gVg7P
+         J6T7gfdYzg1Qk+eLBHwZsJ6yyR/MTL+ge3SXgKcc6KNduUSiveEh6BwmEA4VKukGUUjn
+         kv8njAanP+F8DxGsLuae8oiiuQ0Z37rvRmJLbM6M0biPom8XHj+FT08loeoTD37RPoFi
+         OhDQ==
+X-Gm-Message-State: ABy/qLbP6DcujqXxOq67f/wQBT/ZMlrSJPR4R+Unq9tLWAAH6XSlTjlI
+        VJk6aaHX/leBYunJg6zJVjDsCA==
+X-Google-Smtp-Source: APBJJlHCK3uKU2SMKbvO9GDgWvSktEqjCttFrrrr5S6vtW7MEkY/RCJ4htqbv5QoLrYAC2oCyhe2CQ==
+X-Received: by 2002:a17:906:5a45:b0:977:95f4:5cca with SMTP id my5-20020a1709065a4500b0097795f45ccamr13185377ejc.54.1689689312367;
+        Tue, 18 Jul 2023 07:08:32 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id y12-20020a1709064b0c00b009929c39d5c4sm1086470eju.36.2023.07.18.07.08.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 07:08:31 -0700 (PDT)
+Message-ID: <a85a6d11-a3de-958c-bd87-d2fffe446bca@linaro.org>
+Date:   Tue, 18 Jul 2023 16:08:30 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c5c33e6e390f6784b5599b8ea13b8e01@208suo.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] arm64: dts: allwinner: h616: Add Mango Pi MQ-Quad DTS
+Content-Language: en-US
+To:     Matthew Croughan <matthew.croughan@nix.how>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20230718124752.1279094-1-matthew.croughan@nix.how>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230718124752.1279094-1-matthew.croughan@nix.how>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 05:02:39PM +0800, hanyu001@208suo.com wrote:
-> The patch fixes the following errors detected by checkpatch:
-> 
-> platforms/52xx/mpc52xx_pci.c:346:ERROR: space prohibited after that open
-> parenthesis '('
-> platforms/52xx/mpc52xx_pci.c:347:ERROR: space prohibited after that open
-> parenthesis '('
-> platforms/52xx/mpc52xx_pci.c:348:ERROR: space prohibited before that close
-> parenthesis ')'
+On 18/07/2023 14:47, Matthew Croughan wrote:
+> Mango Pi MQ Quad is a H616 based SBC, add basic support for the board
+> and its peripherals
+> ---
 
-First of all, your patch is mangled and may not be applied.
-Second, we usually don't do this kind of patches at all.
-Besides the fact that we don't run checkpatch on the files
-which are already in upstream (esp. so-o-o old as this one).
+Third email within few hours - no, wait a day. There are so many issues
+here that sending immediately won't help you.
 
-NAK.
+1. Missing changelog, so did you ignore entire feedback?
+2. Missing Signed-off-by
 
-...
 
-> +    if ((dev->vendor == PCI_VENDOR_ID_MOTOROLA) &&
-> +         (dev->device == PCI_DEVICE_ID_MOTOROLA_MPC5200
-> +          || dev->device == PCI_DEVICE_ID_MOTOROLA_MPC5200B)) {
+>  arch/arm64/boot/dts/allwinner/Makefile        |   1 +
+>  .../allwinner/sun50i-h616-mangopi-mq-quad.dts | 183 ++++++++++++++++++
 
-Also note, you can move this to use pci_match_id().
-That kind of patch might be approved.
+Yeah, no bindings patch, so you did ignore the feedback.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Sorry, that's a no.
 
+This is a friendly reminder during the review process.
+
+It seems my previous comments were not fully addressed. Maybe my
+feedback got lost between the quotes, maybe you just forgot to apply it.
+Please go back to the previous discussion and either implement all
+requested changes or keep discussing them.
+
+Thank you.
+
+Best regards,
+Krzysztof
 
