@@ -2,225 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86DF7758355
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2945758359
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbjGRRSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:18:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48490 "EHLO
+        id S232869AbjGRRSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232942AbjGRRR6 (ORCPT
+        with ESMTP id S232718AbjGRRSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:17:58 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B39170B
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:17:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689700677; x=1721236677;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=DEWWKPhD3bMLHl0K23L9B74wls/fgC1L701Hhpw8vVA=;
-  b=COwxpX2u2PXovbwfq7MQXi4kUGhsK47KL0xhSg0t9k8BDifn4NhsnKiP
-   FIkYRlBoF5CVRmbiOGI0GNbAU+M5S/KCVpSx5u8hftP+ek3mnaGxBDVkm
-   0TT24QWV/3IDuXwYn7qXPHxpRp4PVsL/J12MB5vEv3PEMhT12YsIG3UEA
-   oEVdYgdH7UJWszZ73thf8+famdeM0Qd273h3QNoQ0dS0iPL6oehOQeBFw
-   vzCLGupv3/Dj4yakwgTI0VNkTvzTkMfXdgyFyjXvXHaXqJPSX2lFTjIY9
-   jAKSDDm9oOprrIfm9ySHbk+D7KVa+8+lgz+zw2R7BB5F6x08ZrHYxH2Co
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="430028058"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="430028058"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 10:17:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="717676698"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="717676698"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 18 Jul 2023 10:17:53 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qLoKd-005QHc-2q;
-        Tue, 18 Jul 2023 20:17:51 +0300
-Date:   Tue, 18 Jul 2023 20:17:51 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
-        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org
-Subject: Re: [PATCH v3 3/5] arm64: mte: implement CONFIG_ARM64_MTE_COMP
-Message-ID: <ZLbJPwdFCdSeur6k@smile.fi.intel.com>
-References: <20230717113709.328671-1-glider@google.com>
- <20230717113709.328671-4-glider@google.com>
- <ZLVG7GCTTBV4odAG@smile.fi.intel.com>
- <CAG_fn=XvoKjYpS2VPnSYBC3t7p7U-M_bfXohbXSvkepzS=6Tvg@mail.gmail.com>
+        Tue, 18 Jul 2023 13:18:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25497CC
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:18:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AE68761689
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 17:18:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4FE7C433C8;
+        Tue, 18 Jul 2023 17:18:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689700695;
+        bh=qllRDtRzTypdZztvcnHwPcbsEQrFc/2Bk+u5pdDyOOo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fhEwSrVAhaV4JxPjCqoHkgK65jNKKiFjp9EvfPDQDnSLS4MgACggBCn0r42wwCInN
+         yRwAf9szLO8IkvkKStI83NQrK05PNXalZqkcuE+j3gYiRjX+W53qhSc6r2xqif2Gds
+         4AnyH6/Q2yWN49dGzC496d9FthaHk8xPwBQX8HYHCJ5AU/Rv5XFF2bcWrLf6MikBJp
+         dOcf+p0sP4UrSvWi9iKVX0KVcu1U/ODblcE9VXrtPfAQBPbMgyLP7dPTmpJFmNjUnK
+         h0h3imKK++hIIcXs+XzllMfBdsECIVPOz2piukDIBCepEceKZonIyh86kYBvI/Tfx5
+         kPrhO7slgTCEg==
+Date:   Tue, 18 Jul 2023 18:18:10 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regmap: maple: Clear async flag when doing a maple tree
+ cache sync
+Message-ID: <563cf3d2-08bd-4768-950a-02e89fa6b6c8@sirena.org.uk>
+References: <20230718171346.1002994-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jX0zQrUA1ZrYLM9B"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG_fn=XvoKjYpS2VPnSYBC3t7p7U-M_bfXohbXSvkepzS=6Tvg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230718171346.1002994-1-ckeepax@opensource.cirrus.com>
+X-Cookie: Nothing happens.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 05:33:37PM +0200, Alexander Potapenko wrote:
-> On Mon, Jul 17, 2023 at 3:49 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Mon, Jul 17, 2023 at 01:37:06PM +0200, Alexander Potapenko wrote:
 
-...
+--jX0zQrUA1ZrYLM9B
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> However it doesn't seem to be very picky.
-> 
->   $ scripts/kernel-doc -v  -none arch/arm64/include/asm/mtecomp.h
-> 
-> warns about e.g. parameter name mismatch, but does not care about the
-> missing return section.
+On Tue, Jul 18, 2023 at 06:13:46PM +0100, Charles Keepax wrote:
+> The normal regcache_sync function sets the async flag on the register
+> map. The maple tree sync code uses a temporary buffer, which is freed
+> after the register is written, however, as the async flag is set the
+> buffer might not be used until after it is freed. Fix this by clearing
+> the async flag in the maple tree sync function.
 
--Wreturn is missing
+It would be better to push this down into the rbtree code which is what
+really wants this.
 
-...
+--jX0zQrUA1ZrYLM9B
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> > Also
-> > why you put the descriptions in to the header file? It's a bit unusual for the
-> > exported ones.
-> 
-> https://docs.kernel.org/doc-guide/kernel-doc.html was not specific on
-> this, and I thought anyone wanting to understand how an interface
-> works would prefer reading the header rather than the implementation.
-> I can move the comments to arch/arm64/mm/mtecomp.c if you think it's a
-> better place for them.
+-----BEGIN PGP SIGNATURE-----
 
-With the kernel doc in the C file you may also comment the internal ones and
-generate documentation only for exported ones. This is not possible with h.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS2yVEACgkQJNaLcl1U
+h9CrLQf/e18FV13uCRRk0ryECfTcb8N093348JVmoJABfUmDeV5wJ1dKE0Q768WH
+4hc0TN7GtZcEs7tUewjrvVgu1DiU70drj/X2o2EYl55CltHYDNVgeVKjGJTD9VoK
+j8SOklqawxR3CdfeOxkglEuPlaoDeeko3KXtKeQ/DzAatjvQFQM7V0DZFjqufTYA
+7OUTVqe9A5ttLx0kn1SX50VeXGhvkZwEEhgKH8elBP6qz5Q8DO1B4YkRekwL/IKX
+ccqTP9luFBLOj5EVL9wh6cNyM/9cch/+lF/UVCgoRS3nbZAvUbxQiAKdgiKOrywG
+CPKa6dhBKpkHrKPZxbVnaJMbS5ZvIQ==
+=e8u1
+-----END PGP SIGNATURE-----
 
-...
-
-> > > +void ea0_ranges_to_tags(u8 *r_tags, short *r_sizes, int r_len, u8 *tags);
-> > In both cases signed integer may be promoted with a sign. Is it a problem here?
-> Not sure if you mean r_len or r_sizes,
-
-Mostly about the latter.
-
-> but all those values are >= 0
-> and <= 256, so there should be no problems.
-> (shorts could have been ints as well, we are just saving some stack
-> space in ea0_compress()/ea0_decompress()).
-
-Then why they are signed? Please, justify that.
-Signdness prone to subtle and hard to hunt errors due to integer promotions.
-
-...
-
-> > > +#include <linux/bits.h>
-> > > +#include <linux/bitmap.h>
-> >
-> > bitmap guarantees that bits.h will be included.
-> 
-> I am following the IWYU principle here, and I believe it's a good thing to do.
-> I've seen cases where these transitive dependencies rotted after some
-> refactoring, but the fact was only noticed in certain configurations.
-> Also, there's an ongoing work by Ingo Molnar to speed up kernel builds
-> by optimizing headers
-> (https://lwn.net/ml/linux-kernel/YdIfz+LMewetSaEB@gmail.com/), and it
-> relies on explicit dependencies which are easier to untangle.
-
-Yes, but we have some guarantees. E.g., we don't include compiler*.h
-when types.h is included, because of the guarantees.
-
-Otherwise your code misses _a lot_ of headers.
-
-...
-
-> > Can you make it unsigned and start from 0?
-> 
-> Changed to start with 0, but I am a bit hesitant about making it
-> unsigned: it is now no more special than a loop variable.
-
-Signdness is a beast in C, needs always an additional justification.
-
-...
-
-> > > +     int i, j, pos = 0;
-> >
-> > Wouldn't be more correct to have this assignment inside the first for-loop?
-> 
-> Do you mean setting it back to 0 on every iteration of the outer loop?
-
-Yes.
-
-> We sure don't want that, since pos is the location in the tags[] array
-> where the next tag is written.
-
-OK!
-
-...
-
-> > > +#define RANGES_INLINE ea0_size_to_ranges(8)
-> >
-> > Don't forget to undef it when not needed.
-> 
-> Ok, will do.
-
-> Shall I undef the constants above as well (e.g. BITS_PER_TAG)?
-> The intuitive answer is "no",
-
-Correct.
-
-> but then there should be some difference between those and RANGES_INLINE?
-
-Yes, one is widely used constant and one is a _localized_ helper.
-
-...
-
-> > > +static void bitmap_write(unsigned long *bitmap, unsigned long value,
-> > > +                      unsigned long *pos, unsigned long bits)
-> >
-> > Please, don't use reserved namespace. Yours is ea0, use it:
-> > ea0_bitmap_write()! Same to other similarly named functions.
-> 
-> Done.
-> However there are two parallel namespaces now: "ea0" for the
-> compression algorithm, and "memcomp" for the module initialization and
-> data structures.
-> Dunno if it makes sense to merge them (and rename the .c file accordingly).
-
-Your choice. Mu point, just do prefix it with something meaningful.
-
-...
-
-> > > +     u8 r_tags[256];
-> > > +     int r_len = ARRAY_SIZE(r_tags);
-> >
-> No, it is the length of the arrays (both r_tags and r_sizes).
-> Below you make a good point it will spare us a kernel.h dependency,
-> but for the sake of keeping the code error-prone we probably shouldn't
-> assume r_tags is a byte array.
-
-It's a common practice even outside of Linux kernel to use sizeof() against
-char arrays. I don't see the point to have the ARRAY_SIZE() complication here.
-
-...
-
-> > > +             snprintf(name, ARRAY_SIZE(name), "mte-tags-%d", size);
-
-You see, if you grep for similar calls I'm pretty sure the order of 2 of power
-of 10 will be the difference between sizeof()/ARRAY_SIZE() if the latter even
-occurs at least once.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+--jX0zQrUA1ZrYLM9B--
