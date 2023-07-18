@@ -2,148 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB4C7576D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F27067576DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231972AbjGRIlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
+        id S231989AbjGRImM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231934AbjGRIlL (ORCPT
+        with ESMTP id S230284AbjGRImK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:41:11 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980EA135
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:41:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689669670; x=1721205670;
-  h=date:from:to:cc:subject:message-id;
-  bh=b5UmKU3ABHGA9eto6Nf5invT9kepy5w8t6z+hWBLuuU=;
-  b=Xp2Pc74USCGChSPqItjR/2bGp4nOXMjy7oHJ4jerpXqbDEv91stDhEV0
-   BvZnYXU544eCJXfi53dAD/ebeHLe3N2k6oLumibs7iwHDzyZmANZICmf3
-   mQU0KzB0rSR3yhAwxKi+SPhpssDoXKMcIOr2W+84RaHQ4RWlDypX8wytA
-   3ZUIRxGxZL9L7j66DSWgUdPtqRaeI86tBmFk4Wk7ePzYMS1qw9PAds8vc
-   2iRqSzSRX+PwYRPaeJ7AiVy/lEIraYbd2gDDlBk9uCsf4fwV7CL9vRTDw
-   6MGqzIhWtrAtLi7kmUuo6/HeBagaFmrllDgM5NaZmabec5zsbgS4nVOZh
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="366189592"
-X-IronPort-AV: E=Sophos;i="6.01,213,1684825200"; 
-   d="scan'208";a="366189592"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 01:41:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="726855155"
-X-IronPort-AV: E=Sophos;i="6.01,213,1684825200"; 
-   d="scan'208";a="726855155"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 18 Jul 2023 01:41:06 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qLgGX-0000N3-2G;
-        Tue, 18 Jul 2023 08:41:05 +0000
-Date:   Tue, 18 Jul 2023 16:40:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/mm] BUILD SUCCESS
- 548cb932051fb6232ac983ed6673dae7bdf3cf4c
-Message-ID: <202307181636.prQXMHzN-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 18 Jul 2023 04:42:10 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE76A6;
+        Tue, 18 Jul 2023 01:42:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=PUFHK/0lkljVDIbxvCvY/jgMbVxQaKpPjRRBnR2abHA=; b=WVdMWGPc/cqXGwQzk2aV/7TJPo
+        8Eevg/IQq9+aDbDRk2L2XIL4yAWSpa4wWorm1rMZAIN6Z7NpUps8HMLAJNnUJWgqsapRs1FJ+Emq7
+        Rz9cbbIYhvVFcoFFPMcKYLcr84+svfcE5KpBYcYTIIHhrxqpgNiwNovPj++/Zasa/iBOWZHmwsMZS
+        EGOgbkbBlu1GRWftmyc+djhXIJN0xy1x0n3mrRTDPn58hkWr03iMnoOlZFjnrsm7rGyIF7NvFENoD
+        C9CJEpyX1VB+qg+UAY5iRlyqBiNIaf9SIF3VprsskFMMUJvw4e2mOhSt1BJoKJiynAKtDtsDLF0Ly
+        q056U4Ow==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52264)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qLgHW-0005ay-1G;
+        Tue, 18 Jul 2023 09:42:06 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qLgHV-0002u4-FG; Tue, 18 Jul 2023 09:42:05 +0100
+Date:   Tue, 18 Jul 2023 09:42:05 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     "Sverdlin, Alexander" <alexander.sverdlin@siemens.com>
+Cc:     "Haener, Michael" <michael.haener@siemens.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "olteanv@gmail.com" <olteanv@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>
+Subject: Re: [PATCH v3 3/3] net: dsa: mv88e632x: Add SERDES ops
+Message-ID: <ZLZQXYvJXl44v7MN@shell.armlinux.org.uk>
+References: <20230718065937.10713-1-michael.haener@siemens.com>
+ <20230718065937.10713-4-michael.haener@siemens.com>
+ <ZLZDi22lqZfHKFUZ@shell.armlinux.org.uk>
+ <ZLZDzXQN3MKfOSwk@shell.armlinux.org.uk>
+ <bd7215b802b114b75de4568cc1642f791b233338.camel@siemens.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd7215b802b114b75de4568cc1642f791b233338.camel@siemens.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/mm
-branch HEAD: 548cb932051fb6232ac983ed6673dae7bdf3cf4c  x86/mm: Fix PAT bit missing from page protection modify mask
+On Tue, Jul 18, 2023 at 08:24:47AM +0000, Sverdlin, Alexander wrote:
+> Hello Russell,
+> 
+> On Tue, 2023-07-18 at 08:48 +0100, Russell King (Oracle) wrote:
+> > On Tue, Jul 18, 2023 at 08:47:23AM +0100, Russell King (Oracle) wrote:
+> > > On Tue, Jul 18, 2023 at 08:59:31AM +0200, M. Haener wrote:
+> > > > From: Michael Haener <michael.haener@siemens.com>
+> > > > 
+> > > > The 88e632x family has several SERDES 100/1000 blocks. By adding these
+> > > > operations, these functionalities can be used.
+> > > > 
+> > > > Signed-off-by: Michael Haener <michael.haener@siemens.com>
+> > > > ---
+> > > > Changelog:
+> > > > v3: rebased onto main branch
+> > > > v2: rebased onto Russell Kings series dsa/88e6xxx/phylink
+> > > 
+> > > I think you're missing something - you seem to be adding support to read
+> > > the statistics from these blocks, but you're not actually driving them
+> > > at all in terms of reading their status or configuring them.
+> > > 
+> > > You need to modify drivers/net/dsa/mv88e6xxx/pcs-6352.c for that.
+> > 
+> > ... and this is why you need to be able to test on recent kernels!
+> 
+> are you absolutely sure about it?
 
-elapsed time: 1033m
+Yes.
 
-configs tested: 71
-configs skipped: 137
+> mv88e6352_serdes_get_stats() remained in serdes.c after your rework and
+> as I see it, your rework is about link status, but you didn't touch
+> registers and statistics.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+What I said was:
 
-tested configs:
-arc                              allyesconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                          pxa910_defconfig   gcc  
-arm                        realview_defconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230717   clang
-i386         buildonly-randconfig-r005-20230717   clang
-i386         buildonly-randconfig-r006-20230717   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230717   clang
-i386                 randconfig-i002-20230717   clang
-i386                 randconfig-i003-20230717   clang
-i386                 randconfig-i004-20230717   clang
-i386                 randconfig-i005-20230717   clang
-i386                 randconfig-i006-20230717   clang
-i386                 randconfig-i011-20230717   gcc  
-i386                 randconfig-i012-20230717   gcc  
-i386                 randconfig-i013-20230717   gcc  
-i386                 randconfig-i014-20230717   gcc  
-i386                 randconfig-i015-20230717   gcc  
-i386                 randconfig-i016-20230717   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                     loongson1b_defconfig   gcc  
-powerpc                       eiger_defconfig   gcc  
-powerpc               mpc834x_itxgp_defconfig   clang
-powerpc                      ppc40x_defconfig   gcc  
-powerpc                         ps3_defconfig   gcc  
-powerpc                     rainier_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                          rv32_defconfig   gcc  
-sh                ecovec24-romimage_defconfig   gcc  
-sh                          lboxre2_defconfig   gcc  
-sh                          sdk7786_defconfig   gcc  
-sh                           se7705_defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230717   clang
-x86_64       buildonly-randconfig-r002-20230717   clang
-x86_64       buildonly-randconfig-r003-20230717   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-x001-20230717   gcc  
-x86_64               randconfig-x002-20230717   gcc  
-x86_64               randconfig-x003-20230717   gcc  
-x86_64               randconfig-x004-20230717   gcc  
-x86_64               randconfig-x005-20230717   gcc  
-x86_64               randconfig-x006-20230717   gcc  
-x86_64               randconfig-x011-20230717   clang
-x86_64               randconfig-x012-20230717   clang
-x86_64               randconfig-x013-20230717   clang
-x86_64               randconfig-x014-20230717   clang
-x86_64               randconfig-x015-20230717   clang
-x86_64               randconfig-x016-20230717   clang
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+"but you're not actually driving them at all in terms of reading their
+status or configuring them"
+
+I was not commenting on obtaining statistics, but the status/control
+of the blocks, which is now in the PCS drivers.
+
+So, right now it looks to me that _all_ this series is doing is
+providing support to read statistics from the PCS blocks and nothing
+more, so the cover message for this series is misleading. It is not
+adding support for the serdes blocks. It is only adding support for
+reading statistics from the serdes blocks.
+
+Either correct the patch series to do what the cover message says it's
+doing, or change the cover message to properly describe what the series
+is doing. It needs to be consistent.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
