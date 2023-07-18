@@ -2,148 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5751275842E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22029758440
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232184AbjGRSIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 14:08:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46434 "EHLO
+        id S231187AbjGRSLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 14:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231139AbjGRSIN (ORCPT
+        with ESMTP id S229524AbjGRSLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 14:08:13 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA17BD
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 11:08:12 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-63c70dc7ed2so33835946d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 11:08:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689703691; x=1692295691;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dZNvffSr0fIaU6E8WHPNUlcFQDdJ3Zz7MDJXSBJ4tKo=;
-        b=tC02Mr7VCA5hfxlpuX429tYQT31A2sFDGB9wKKL88i9zeIA1oX4Af/v7iOqRgSOFPR
-         VVi/nHnWZD0jo6H0IN8b6Dzj0qRdDopEzgGs8vv2muGNKwFCrVwNvWS0E99Q5D8+gu5t
-         HPfhhBE8vYSc+EsrPpdkCt8LANiqsZnPxnhQuxxY/yrgmG0tg/Osh/oIxSIiZsfmZXD/
-         7TGk0LR2akVONtI+CIFVAWRuvuDmJt14a2s3QxOJbhfVe9GW5laXojLLEwiOuWXgpH2s
-         fl1BAVMQDkdy4C760VwNpTZXeWxd2zyhZQJrpXoST2/k8QLxnkvO4JDlGzI4M8r6+YgO
-         hz3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689703691; x=1692295691;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dZNvffSr0fIaU6E8WHPNUlcFQDdJ3Zz7MDJXSBJ4tKo=;
-        b=UqNY7HyHKSM4O+b/6Qv15MsRug4Egi9+oCTr9oQWvbwqQ34LfwdGzjQWB+qjnQPGfW
-         NFHwmtaTY28e6aWuUue6FRKAJq+KdD3OX7XrlFq6zs9Pww3tLbZsih0PGpyMPmVMY/UI
-         51IWWyTg4bjhE2Ea6mLIms34dXtlWgn6AdS8zMT4CFjH/7UDxHEK+4QJ0qe53iXCEmrJ
-         nM9IhoD1xOFa0KTPN0WAyOSDUFKaQREdmwfOhlMQK6ialY+m7bN5Wjdc6QDJLG/xZJTQ
-         PUyi44NjqSuWuThmbMC02C0cUmzMNHP3DQh3d3Pk0nxwjPHx8dQKhXklZkY2T7Ymz8sr
-         x/OQ==
-X-Gm-Message-State: ABy/qLa6ioHq37KQ/pNiXZQfE73Xi4Ok7o9ux1GjbKvRGbPva4y1IwpR
-        5nvra+Iqwg3/tPivsxmAleEfbAjtfqPGqfU8xIGKPg==
-X-Google-Smtp-Source: APBJJlGASSITs1UcfZKqEXMMmodRln9WeyEXwjg9FvMUYmucF+O/V7bPkZvagefw+IL7XN+Hw+Z6zrT6vOduk7nN3/g=
-X-Received: by 2002:a0c:9c42:0:b0:628:2e08:78b7 with SMTP id
- w2-20020a0c9c42000000b006282e0878b7mr16595302qve.31.1689703691528; Tue, 18
- Jul 2023 11:08:11 -0700 (PDT)
+        Tue, 18 Jul 2023 14:11:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B04B6;
+        Tue, 18 Jul 2023 11:11:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 07CA9616A8;
+        Tue, 18 Jul 2023 18:11:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B41A6C433C8;
+        Tue, 18 Jul 2023 18:11:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689703863;
+        bh=aqcG9Vf7IvNK4ef7PMfcSdn/i3BQZS0UfVecmDeGi6s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BjynpWZDiCelBeBxML03iYCKn63HQebwSJW/2ICI5rkz+TZqzqaZ+Q4HZR3RW8JT1
+         kQE2JdVHC7kqFOSbeELi/RHSP7GAhJ0E+STVls1dRl0gwMnWAq6NmEl2UUP8HZFwrW
+         TVa/CXvOVkNsJBwgXxpPkkmqmJWM9Jwa+QD0wVW/oICnTcrMyb1ZOa+ksPo01qz8Qt
+         BLoisRABRJhYju+39Ruro42AdjJYBD2MlooUFP0dbO+eERnHJT5B2qBzfztGMkLX50
+         Fd9jb+Plqc8cnL8Poh4sJyneBR6tvVfqiBYHbqUvPB6lj8TSIYoOdv663xLp00zo7g
+         JtGmxO0lJ820g==
+Date:   Tue, 18 Jul 2023 11:11:01 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Rosenberg <drosen@google.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH v2 1/3] bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
+Message-ID: <20230718111101.57b1d411@kernel.org>
+In-Reply-To: <CAADnVQ+jAo4V-Pa9_LhJEwG0QquL-Ld5S99v3LNUtgkiiYwfzw@mail.gmail.com>
+References: <20230502005218.3627530-1-drosen@google.com>
+        <20230718082615.08448806@kernel.org>
+        <CAADnVQJEEF=nqxo6jHKK=Tn3M_NVXHQjhY=_sry=tE8X4ss25A@mail.gmail.com>
+        <20230718090632.4590bae3@kernel.org>
+        <CAADnVQ+4aehGYPJ2qT_HWWXmOSo4WXf69N=N9-dpzERKfzuSzQ@mail.gmail.com>
+        <20230718101841.146efae0@kernel.org>
+        <CAADnVQ+jAo4V-Pa9_LhJEwG0QquL-Ld5S99v3LNUtgkiiYwfzw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230718-net-dsa-strncpy-v1-1-e84664747713@google.com>
-In-Reply-To: <20230718-net-dsa-strncpy-v1-1-e84664747713@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 18 Jul 2023 11:08:00 -0700
-Message-ID: <CAKwvOdkZjrSDxZOZvEQDoybJbDbuMhWL7BT9fLoRU=-sM8g_UA@mail.gmail.com>
-Subject: Re: [PATCH] net: dsa: remove deprecated strncpy
-To:     justinstitt@google.com
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 5:04=E2=80=AFPM <justinstitt@google.com> wrote:
->
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1]=
-.
->
-> Even call sites utilizing length-bounded destination buffers should
-> switch over to using `strtomem` or `strtomem_pad`. In this case,
-> however, the compiler is unable to determine the size of the `data`
-> buffer which renders `strtomem` unusable. Due to this, `strscpy`
-> should be used.
->
-> It should be noted that most call sites already zero-initialize the
-> destination buffer. However, I've opted to use `strscpy_pad` to maintain
-> the same exact behavior that `strncpy` produced (zero-padded tail up to
-> `len`).
->
-> Also see [3].
->
-> [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nu=
-l-terminated-strings
-> [2]: elixir.bootlin.com/linux/v6.3/source/net/ethtool/ioctl.c#L1944
-> [3]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
->
-> Link: https://github.com/KSPP/linux/issues/90
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
->  net/dsa/slave.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/net/dsa/slave.c b/net/dsa/slave.c
-> index 527b1d576460..c9f77b7e5895 100644
-> --- a/net/dsa/slave.c
-> +++ b/net/dsa/slave.c
-> @@ -1056,10 +1056,10 @@ static void dsa_slave_get_strings(struct net_devi=
-ce *dev,
->         if (stringset =3D=3D ETH_SS_STATS) {
->                 int len =3D ETH_GSTRING_LEN;
->
-> -               strncpy(data, "tx_packets", len);
-> -               strncpy(data + len, "tx_bytes", len);
-> -               strncpy(data + 2 * len, "rx_packets", len);
-> -               strncpy(data + 3 * len, "rx_bytes", len);
-> +               strscpy_pad(data, "tx_packets", len);
-> +               strscpy_pad(data + len, "tx_bytes", len);
-> +               strscpy_pad(data + 2 * len, "rx_packets", len);
-> +               strscpy_pad(data + 3 * len, "rx_bytes", len);
+On Tue, 18 Jul 2023 10:50:14 -0700 Alexei Starovoitov wrote:
+> On Tue, Jul 18, 2023 at 10:18=E2=80=AFAM Jakub Kicinski <kuba@kernel.org>=
+ wrote:
+> > > you're still missing the point. Pls read the whole patch series. =20
+> >
+> > Could you just tell me what the point is then? The "series" is one
+> > patch plus some tiny selftests. I don't see any documentation for
+> > how dynptrs are supposed to work either.
+> >
+> > As far as I can grasp this makes the "copy buffer" optional from
+> > the kfunc-API perspective (of bpf_dynptr_slice()).
+> > =20
+> > > It is _not_ input validation.
+> > > skb_copy_bits is a slow path. One extra check doesn't affect
+> > > performance at all. So 'fast paths' isn't a valid argument here.
+> > > The code is reusing
+> > >         if (likely(hlen - offset >=3D len))
+> > >                 return (void *)data + offset;
+> > > which _is_ the fast path.
+> > >
+> > > What you're requesting is to copy paste
+> > > the whole __skb_header_pointer into __skb_header_pointer2.
+> > > Makes no sense. =20
+> >
+> > No, Alexei, the whole point of skb_header_pointer() is to pass
+> > the secondary buffer, to make header parsing dependable. =20
+>=20
+> of course. No one argues about that.
+>=20
+> > Passing NULL buffer to skb_header_pointer() is absolutely nonsensical. =
+=20
+>=20
+> Quick grep through the code proves you wrong:
+> drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> __skb_header_pointer(NULL, start, sizeof(*hp), skb->data,
+>                      skb_headlen(skb), NULL);
+>=20
+> was done before this patch. It's using __ variant on purpose
+> and explicitly passing skb=3D=3DNULL to exactly trigger that line
+> to deliberately avoid the slow path.
+>=20
+> Another example:
+> drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
+> skb_header_pointer(skb, 0, 0, NULL);
+>=20
+> This one I'm not sure about. Looks buggy.
 
-Thanks for the patch!
+These are both Tx path for setting up offloads, Linux doesn't request
+offloads for headers outside of the linear part. The ixgbevf code is
+completely pointless, as you say.
 
-Consider adding a #include <linux/string.h> so that we stop having
-such an indirect dependency in this TU.
+In general drivers are rarely a source of high quality code examples.
+Having been directly involved in the bugs that lead to the bnxt code
+being written - I was so happy that the driver started parsing Tx
+packets *at all*, so I wasn't too fussed by the minor problems :(
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> > It should *not* be supported. We had enough prod problems with people
+> > thinking that the entire header will be in the linear portion.
+> > Then either the NIC can't parse the header, someone enables jumbo,
+> > disables GRO, adds new HW, adds encap, etc etc and things implode. =20
+>=20
+> I don't see how this is related.
+> NULL buffer allows to get a linear pointer and explicitly avoids
+> slow path when it's not linear.
 
->                 if (ds->ops->get_strings)
->                         ds->ops->get_strings(ds, dp->index, stringset,
->                                              data + 4 * len);
->
-> ---
-> base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
-> change-id: 20230717-net-dsa-strncpy-844ca1111eb2
->
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
->
+Direct packet access via skb->data is there for those who want high
+speed =F0=9F=A4=B7=EF=B8=8F
 
+> > If you want to support it in BPF that's up to you, but I think it's
+> > entirely reasonable for me to request that you don't do such things
+> > in general networking code. The function is 5 LoC, so a local BPF
+> > copy seems fine. Although I'd suggest skb_header_pointer_misguided()
+> > rather than __skb_header_pointer2() as the name :) =20
+>=20
+> If you insist we can, but bnxt is an example that buffer=3D=3DNULL is
+> a useful concept for networking and not bpf specific.
+> It also doesn't make "people think the header is linear" any worse.
 
---=20
-Thanks,
-~Nick Desaulniers
+My worry is that people will think that whether the buffer is needed or
+not depends on _their program_, rather than on the underlying platform.
+So if it works in testing without the buffer - the buffer must not be
+required for their use case.
