@@ -2,141 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 959A27573CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395317573B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231444AbjGRGMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 02:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54486 "EHLO
+        id S231303AbjGRGL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 02:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231417AbjGRGMN (ORCPT
+        with ESMTP id S231253AbjGRGLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 02:12:13 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50751731
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:11:48 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6726d5d92afso3944916b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:11:48 -0700 (PDT)
+        Tue, 18 Jul 2023 02:11:18 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1927DE70
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:11:16 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-51e5da802afso7539197a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:11:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689660700; x=1692252700;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aoaxiWdRTQIjlpKBPFLmbhlJ2o+zAdh4av4kyochmEo=;
-        b=sn5U4MWGxnrt7DhiV2WWKv7dD7NLNlyt1BcEtCXTkOw/Uf8oIJ6PwmKIwF6FtLKPhg
-         8TlIKNSQAyZVe1gfVbgEx2k8bk5LMX+QAuclX+KMIcO0NFJoSrIERmxT118aoGWjIzCc
-         fUmHl4YQZsx/3es7b/IVW1UOf/2CleLxq5vu/8l6FlBARVxbuw+8O7D528NGSBVVihRd
-         Pj7faOnq6na2/+UZbhmoh6Nk4yfgUZ2Qz4qtTekyyv8G6nGfu5sTfSsW2JCbSsqAzq8m
-         +1gff7MypqYM5gumiG3UP0JgnJp+awXH9VN26Zp0jgZTC4al32RLzwDOhW0f4ctfmDwr
-         okbQ==
+        d=linaro.org; s=google; t=1689660674; x=1692252674;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=c7CORbZbL1CJ4lcrQu82rGQOGmmLscmGh8S9udXQn2k=;
+        b=qDnjEVJOSZ5wf6mLTENKLsm+G/tbyEd3ZYE3zj7NOr+UvecUR5THynxr4HFTte0VPJ
+         2mltfQdcELoppCTUxj1LAvOz34Stj28FLM8j88TT7rvNK15zOmu4qkDNsrVP1KHehdul
+         HIhAAdvbVmg3n+uLfiUDNmSU3uj4LZiYlbfpGqOK5hhJHlH1A2QHEb5EbFN2VV0iEjzh
+         wSmTrKuaimvCkg4GKQyM/Ph+eWYihR79BKg2RTFBOaI96PHZQ0TxUVJD6hlWOfbSiG9Y
+         jzXK28uzwQMceUcOvy+bvoe4aSPlDpyP0CmU4Bh8/Em4JtkfWA0lqcnRIvPGCfBBLwTm
+         U1Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689660700; x=1692252700;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aoaxiWdRTQIjlpKBPFLmbhlJ2o+zAdh4av4kyochmEo=;
-        b=czk6pNfhECzoBfdpZZ9lyqCbyMWB05YI6r34PPpXsIQng+/gvxpsdnw/8yD1KmVrOf
-         qw7DBDQg80npT82fqLPdDZTG3umh/OBAFJ+pJNZD9Jgg7wZXkORZLypzyiN2d+l1SmgE
-         OEXUESyN6ss6PV2F69C1AJKA1sn/Hs8LoOKhh4WiEmd27ewGh8qMn8cW3M32LkC1e11t
-         IC1t+nHGb4KqSdRKgWtmg7/sBnjVw/5eP0mhV9MgYZGvfmD4hTPrInQCsUdEGcEz1odN
-         u3NrI1hz4tJU7xOHg16IeZMspZg7tJBrMmhk48pLFrS/aPlEGM05sC1IU8jO6tEWXomc
-         yAog==
-X-Gm-Message-State: ABy/qLYhiiCU/x6RGeB/OR/IqvRh/V3NIiT3TnbCdTCzC2CYS92ocWi8
-        dDrcG8KPeNLg00D29c+Ze3/zFQ==
-X-Google-Smtp-Source: APBJJlEjkKb95SZ3h4MhroX1z4Rb0wFQVD0acfPLpGOo6UMskxiuerWVpHUqtAwqOeu7rT87h9CrJw==
-X-Received: by 2002:a05:6a20:9189:b0:12f:d350:8a12 with SMTP id v9-20020a056a20918900b0012fd3508a12mr15193455pzd.21.1689660700254;
-        Mon, 17 Jul 2023 23:11:40 -0700 (PDT)
-Received: from localhost.localdomain ([223.233.68.54])
-        by smtp.gmail.com with ESMTPSA id h21-20020a62b415000000b0067db7c32419sm778106pfn.15.2023.07.17.23.11.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 23:11:39 -0700 (PDT)
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-To:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-kernel@vger.kernel.org, bhupesh.linux@gmail.com,
-        bhupesh.sharma@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
-        quic_schowdhu@quicinc.com, gregkh@linuxfoundation.org,
-        stephan@gerhold.net
-Subject: [PATCH v9 7/7] arm64: dts: qcom: qrb4210-rb2: Enable EUD debug peripheral
-Date:   Tue, 18 Jul 2023 11:40:52 +0530
-Message-Id: <20230718061052.1332993-8-bhupesh.sharma@linaro.org>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20230718061052.1332993-1-bhupesh.sharma@linaro.org>
-References: <20230718061052.1332993-1-bhupesh.sharma@linaro.org>
+        d=1e100.net; s=20221208; t=1689660674; x=1692252674;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c7CORbZbL1CJ4lcrQu82rGQOGmmLscmGh8S9udXQn2k=;
+        b=jkuEqyygr9DQwqBz7Fg4mkhxNQrb0/vYPnU8vrJZ8fYofy0BOrgzUYj6o/+TenT5om
+         MPzbfM3uYiEEYJUypM+dDee2VccyLU06RdLpIXLuCsxxjz5H/9MNQOB6scA4zsh+T0Az
+         G/KHA1aMW1wbefwBgZ1IZYCqK8N9XuMKZyW+f+ydHtvGcUaJUesEf8zaA5ODra+BT7GG
+         Q8rX69P9Q4Nr32mRmCxykeqWqsxWIesWGVwFPOAKP/AbiNCQ7Z24fbzfrIAUrwMNJYmL
+         rJ36tV8uizXfPbwsAplRrEPetHLbTLz4C+yKwQ6H20M+jSQ9GPj8aNdmI9gd+nwHBBGW
+         PqSg==
+X-Gm-Message-State: ABy/qLbjLhsaURNhXK90BDFYCbdex+IG8VJDUcDdF3hIyh5KqTzjywi9
+        xlLf7ptzzGP7iQTwW1LU5CH6sw==
+X-Google-Smtp-Source: APBJJlFxHH/p4YdYLQncHZKMTqB3MNpMLyBHRgEj3fOz3zOiWt648ZOJqrbNvMFjrTm3f1q1uwtKXA==
+X-Received: by 2002:a05:6402:b33:b0:514:9934:de96 with SMTP id bo19-20020a0564020b3300b005149934de96mr13167801edb.26.1689660674598;
+        Mon, 17 Jul 2023 23:11:14 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id a18-20020aa7d752000000b00521953ce6e0sm686924eds.93.2023.07.17.23.11.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 23:11:14 -0700 (PDT)
+Message-ID: <78b06bf0-ab71-acdf-5799-1f6d849e7ead@linaro.org>
+Date:   Tue, 18 Jul 2023 08:11:12 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] usb: dwc2: add new compatible for Intel SoCFPGA Stratix10
+ platform
+Content-Language: en-US
+To:     Meng Li <Meng.Li@windriver.com>, dinguyen@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20230718030851.2014306-1-Meng.Li@windriver.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230718030851.2014306-1-Meng.Li@windriver.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the USB-C type port on the Qualcomm QRB4210-RB2 board
-can be set primarily in a 'device' configuration (with the default
-DIP switch settings), it makes sense to enable the EUD debug
-peripheral on the board by default by setting the USB 'dr_mode' property
-as 'otg'.
+On 18/07/2023 05:08, Meng Li wrote:
+> Intel Stratix10 is very the same with Agilex platform, the DWC2 IP on
+> the Stratix platform also does not support clock-gating. The commit
+> 3d8d3504d233("usb: dwc2: Add platform specific data for Intel's Agilex")
+> had fixed this issue. So, add the essential compatible to also use the
+> specific data on Stratix10 platform.
+> 
+> Signed-off-by: Meng Li <Meng.Li@windriver.com>
+> ---
+>  arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi b/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
+> index ea788a920eab..b8dd5509c214 100644
+> --- a/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
+> +++ b/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
+> @@ -490,7 +490,7 @@ usbphy0: usbphy@0 {
+>  		};
+>  
+>  		usb0: usb@ffb00000 {
+> -			compatible = "snps,dwc2";
+> +			compatible = "intel,socfpga-agilex-hsotg", "snps,dwc2";
 
-Now, the EUD debug peripheral can be enabled by executing:
- $ echo 1 > /sys/bus/platform/drivers/qcom_eud/1610000.eud/enable
+You miss SoC specific compatible.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
----
- arch/arm64/boot/dts/qcom/qrb4210-rb2.dts | 27 +++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/qrb4210-rb2.dts b/arch/arm64/boot/dts/qcom/qrb4210-rb2.dts
-index a7278a9472ed9..640668960deb0 100644
---- a/arch/arm64/boot/dts/qcom/qrb4210-rb2.dts
-+++ b/arch/arm64/boot/dts/qcom/qrb4210-rb2.dts
-@@ -264,6 +264,10 @@ &pon_resin {
- 	status = "okay";
- };
- 
-+&eud {
-+	status = "okay";
-+};
-+
- &qupv3_id_0 {
- 	status = "okay";
- };
-@@ -518,7 +522,28 @@ &usb {
- 
- &usb_dwc3 {
- 	maximum-speed = "super-speed";
--	dr_mode = "peripheral";
-+
-+	/*
-+	 * There is only one USB DWC3 controller on QRB4210 board and it is connected
-+	 * via a DIP Switch:
-+	 * - to either an USB - C type connector or an USB - A type connector
-+	 *   (via a GL3590-S hub), and
-+	 * - to either an USB - A type connector (via a GL3590-S hub) or a connector
-+	 *   for further connection with a mezzanine board.
-+	 *
-+	 * All of the above hardware muxes would allow us to hook things up in
-+	 * different ways to some potential benefit for static configurations (for e.g.
-+	 * on one hand we can have two USB - A type connectors and a USB - Ethernet
-+	 * connection available and on the other we can use the USB - C type in
-+	 * peripheral mode).
-+	 *
-+	 * Note that since the USB - C type can be used only in peripehral mode,
-+	 * so hardcoding the mode to 'peripheral' here makes sense.
-+	 *
-+	 * However since we want to use the EUD debug device, we set the mode as
-+	 * 'otg' here.
-+	 */
-+	dr_mode = "otg";
- };
- 
- &usb_hsphy {
--- 
-2.38.1
+Best regards,
+Krzysztof
 
