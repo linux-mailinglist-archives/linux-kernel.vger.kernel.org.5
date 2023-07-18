@@ -2,71 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 039FC757931
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C7075792D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbjGRKTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 06:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37212 "EHLO
+        id S230522AbjGRKTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 06:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbjGRKTn (ORCPT
+        with ESMTP id S230428AbjGRKTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 06:19:43 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAFD135
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 03:19:42 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-78666994bc2so257772939f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 03:19:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689675581; x=1692267581;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6KnZqAz+ZSbit1NWu+8ZTkLn2QtMaumYJ7wvLcVZXsk=;
-        b=BpLje/DqieLKVniRvH64FZjfe0YA6dGh3TrjCJ7miJCSVQRHUUeCaZ4mgsgQnoppU+
-         EhTDt+jhE5Ng7zd+Cw4ToyTAxsDkAa3pjhzkm9pyv7Sj+A1/CufNzYMvV3RPez0WKZzs
-         IPLDmdcJCxvfH1BNPWEnl20xElYX98Z0vK5sONn4sK61ex5g7bzOodlDap78irMt0tT9
-         hWMtYJmFwhnrYHpbrzmBaOYuSGf6syGU5bhtR5nqWO59HyegQz0JPBfikiu8S0INaIn+
-         tS6JZ0QO0ebEIw06OC/1oKwZVjw4jVV5d/zGnYu/fne9GGEHo0/nqOOpa8zgyigiNEj4
-         qlCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689675581; x=1692267581;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6KnZqAz+ZSbit1NWu+8ZTkLn2QtMaumYJ7wvLcVZXsk=;
-        b=jt7IJy1k7AtlHSCoqakb8dSpszUs2rPCh6tDdGVS5Di9b0zZUQzuk/NKznwD8bS0Gn
-         L0xq7G0nWhgoEnbRiVe7kvSCYxwmuFbUZknxae9il7MHMzfSrRlMZmScVqx2S+dlS5rk
-         kYUKXLzwwvxXdJNF5MTr8KgaGw5AP2KhebSWt97VWIztM1rZBV1Q6IrElsDRdN2Qml2U
-         bOganyxxjLgMzMVo1gEjlgme9orZPeywh5SlAA4V0jgx5ZFew/TKdDm/gUdzTEqllhd2
-         ypwd8VqTTRAsZBcGgmi/kVMR+zc0yILmBBl/kfdGqwXFgfeSzG49QcLte0MJfAim38cf
-         aRJQ==
-X-Gm-Message-State: ABy/qLa0zPyA+pNsaT//lUD5hIPNDhaE8K3QQWywHZ6WzNO0qgtLR5rw
-        dA3deRY5HPRPilDxLAVCY9nL5Ws3mmREbeUXt2tXKQ==
-X-Google-Smtp-Source: APBJJlF8khGgyh8Xqzu55R/sZ5Jp31RmqvsqGAqDckcqYD5jeXA130LRvLCjFYgnhdOSk7ltbIJy806G2OKl7yOSCj4=
-X-Received: by 2002:a05:6602:3056:b0:785:cdf7:eaee with SMTP id
- p22-20020a056602305600b00785cdf7eaeemr1941256ioy.12.1689675581608; Tue, 18
- Jul 2023 03:19:41 -0700 (PDT)
+        Tue, 18 Jul 2023 06:19:16 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 477C6128
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 03:19:12 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 859802F4;
+        Tue, 18 Jul 2023 03:19:55 -0700 (PDT)
+Received: from [10.1.34.52] (C02Z41KALVDN.cambridge.arm.com [10.1.34.52])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A4E663F67D;
+        Tue, 18 Jul 2023 03:19:10 -0700 (PDT)
+Message-ID: <f0a50c66-ff21-caf6-1c73-04149d88be8f@arm.com>
+Date:   Tue, 18 Jul 2023 11:19:08 +0100
 MIME-Version: 1.0
-References: <20230717113709.328671-1-glider@google.com> <20230717113709.328671-3-glider@google.com>
- <ZLU8QGuFAGxTpbm8@smile.fi.intel.com>
-In-Reply-To: <ZLU8QGuFAGxTpbm8@smile.fi.intel.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Tue, 18 Jul 2023 12:19:05 +0200
-Message-ID: <CAG_fn=V9RDmybXnsf0j=ENeR6H5Vcjx-AJY0KjNG4EFLJmmUJQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] lib/test_bitmap: add tests for bitmap_{set,get}_value()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
-        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v1 3/3] mm: Batch-zap large anonymous folio PTE mappings
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20230717143110.260162-1-ryan.roberts@arm.com>
+ <20230717143110.260162-4-ryan.roberts@arm.com>
+ <5A282984-F3AD-41E3-8EF2-BA0A77DD1A3A@nvidia.com>
+ <980c4e1f-116b-0113-65ee-4e77fdd3e7b4@arm.com>
+ <C8DCA632-EA87-4CC1-A740-F26E49F67649@nvidia.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <C8DCA632-EA87-4CC1-A740-F26E49F67649@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,27 +53,215 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 3:04=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Jul 17, 2023 at 01:37:05PM +0200, Alexander Potapenko wrote:
-> > Add basic tests ensuring that values can be added at arbitrary position=
-s
-> > of the bitmap, including those spanning into the adjacent unsigned
-> > longs.
->
-> I always in favour of a new test case!
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->
-> > Signed-off-by: Alexander Potapenko <glider@google.com>
-> >
-> > ---
-> > This patch was previously called
-> > "lib/test_bitmap: add tests for bitmap_{set,get}_value_unaligned"
->
-> Hint, you may always just link to lore mail archive for easier access and
-> handling. Also with `b4` at hand the lore link can be used to resurrect
-> a discussion (in case it's needed).
+On 17/07/2023 17:15, Zi Yan wrote:
+> On 17 Jul 2023, at 11:55, Ryan Roberts wrote:
+> 
+>> On 17/07/2023 16:25, Zi Yan wrote:
+>>> On 17 Jul 2023, at 10:31, Ryan Roberts wrote:
+>>>
+>>>> This allows batching the rmap removal with folio_remove_rmap_range(),
+>>>> which means we avoid spuriously adding a partially unmapped folio to the
+>>>> deferrred split queue in the common case, which reduces split queue lock
+>>>> contention.
+>>>>
+>>>> Previously each page was removed from the rmap individually with
+>>>> page_remove_rmap(). If the first page belonged to a large folio, this
+>>>> would cause page_remove_rmap() to conclude that the folio was now
+>>>> partially mapped and add the folio to the deferred split queue. But
+>>>> subsequent calls would cause the folio to become fully unmapped, meaning
+>>>> there is no value to adding it to the split queue.
+>>>>
+>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>> ---
+>>>>  mm/memory.c | 119 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+>>>>  1 file changed, 119 insertions(+)
+>>>>
+>>>> diff --git a/mm/memory.c b/mm/memory.c
+>>>> index 01f39e8144ef..6facb8c8807a 100644
+>>>> --- a/mm/memory.c
+>>>> +++ b/mm/memory.c
+>>>> @@ -1391,6 +1391,95 @@ zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
+>>>>  	pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
+>>>>  }
+>>>>
+>>>> +static inline unsigned long page_addr(struct page *page,
+>>>> +				struct page *anchor, unsigned long anchor_addr)
+>>>> +{
+>>>> +	unsigned long offset;
+>>>> +	unsigned long addr;
+>>>> +
+>>>> +	offset = (page_to_pfn(page) - page_to_pfn(anchor)) << PAGE_SHIFT;
+>>>> +	addr = anchor_addr + offset;
+>>>> +
+>>>> +	if (anchor > page) {
+>>>> +		if (addr > anchor_addr)
+>>>> +			return 0;
+>>>> +	} else {
+>>>> +		if (addr < anchor_addr)
+>>>> +			return ULONG_MAX;
+>>>> +	}
+>>>> +
+>>>> +	return addr;
+>>>> +}
+>>>> +
+>>>> +static int calc_anon_folio_map_pgcount(struct folio *folio,
+>>>> +				       struct page *page, pte_t *pte,
+>>>> +				       unsigned long addr, unsigned long end)
+>>>> +{
+>>>> +	pte_t ptent;
+>>>> +	int floops;
+>>>> +	int i;
+>>>> +	unsigned long pfn;
+>>>> +
+>>>> +	end = min(page_addr(&folio->page + folio_nr_pages(folio), page, addr),
+>>>> +		  end);
+>>>> +	floops = (end - addr) >> PAGE_SHIFT;
+>>>> +	pfn = page_to_pfn(page);
+>>>> +	pfn++;
+>>>> +	pte++;
+>>>> +
+>>>> +	for (i = 1; i < floops; i++) {
+>>>> +		ptent = ptep_get(pte);
+>>>> +
+>>>> +		if (!pte_present(ptent) ||
+>>>> +		    pte_pfn(ptent) != pfn) {
+>>>> +			return i;
+>>>> +		}
+>>>> +
+>>>> +		pfn++;
+>>>> +		pte++;
+>>>> +	}
+>>>> +
+>>>> +	return floops;
+>>>> +}
+>>>> +
+>>>> +static unsigned long zap_anon_pte_range(struct mmu_gather *tlb,
+>>>> +					struct vm_area_struct *vma,
+>>>> +					struct page *page, pte_t *pte,
+>>>> +					unsigned long addr, unsigned long end,
+>>>> +					bool *full_out)
+>>>> +{
+>>>> +	struct folio *folio = page_folio(page);
+>>>> +	struct mm_struct *mm = tlb->mm;
+>>>> +	pte_t ptent;
+>>>> +	int pgcount;
+>>>> +	int i;
+>>>> +	bool full;
+>>>> +
+>>>> +	pgcount = calc_anon_folio_map_pgcount(folio, page, pte, addr, end);
+>>>> +
+>>>> +	for (i = 0; i < pgcount;) {
+>>>> +		ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
+>>>> +		tlb_remove_tlb_entry(tlb, pte, addr);
+>>>> +		full = __tlb_remove_page(tlb, page, 0);
+>>>> +
+>>>> +		if (unlikely(page_mapcount(page) < 1))
+>>>> +			print_bad_pte(vma, addr, ptent, page);
+>>>> +
+>>>> +		i++;
+>>>> +		page++;
+>>>> +		pte++;
+>>>> +		addr += PAGE_SIZE;
+>>>> +
+>>>> +		if (unlikely(full))
+>>>> +			break;
+>>>> +	}
+>>>> +
+>>>> +	folio_remove_rmap_range(folio, page - i, i, vma);
+>>>> +
+>>>> +	*full_out = full;
+>>>> +	return i;
+>>>> +}
+>>>> +
+>>>>  static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>>>>  				struct vm_area_struct *vma, pmd_t *pmd,
+>>>>  				unsigned long addr, unsigned long end,
+>>>> @@ -1428,6 +1517,36 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>>>>  			page = vm_normal_page(vma, addr, ptent);
+>>>>  			if (unlikely(!should_zap_page(details, page)))
+>>>>  				continue;
+>>>> +
+>>>> +			/*
+>>>> +			 * Batch zap large anonymous folio mappings. This allows
+>>>> +			 * batching the rmap removal, which means we avoid
+>>>> +			 * spuriously adding a partially unmapped folio to the
+>>>> +			 * deferrred split queue in the common case, which
+>>>> +			 * reduces split queue lock contention. Require the VMA
+>>>> +			 * to be anonymous to ensure that none of the PTEs in
+>>>> +			 * the range require zap_install_uffd_wp_if_needed().
+>>>> +			 */
+>>>> +			if (page && PageAnon(page) && vma_is_anonymous(vma)) {
+>>>> +				bool full;
+>>>> +				int pgcount;
+>>>> +
+>>>> +				pgcount = zap_anon_pte_range(tlb, vma,
+>>>> +						page, pte, addr, end, &full);
+>>>
+>>> Are you trying to zap as many ptes as possible if all these ptes are
+>>> within a folio?
+>>
+>> Yes.
+>>
+>>> If so, why not calculate end before calling zap_anon_pte_range()?
+>>> That would make zap_anon_pte_range() simpler.
+>>
+>> I'm not sure I follow. That's currently done in calc_anon_folio_map_pgcount(). I
+>> could move it to here, but I'm not sure that makes things simpler, just puts
+>> more code in here and less in there?
+> 
+> Otherwise your zap_anon_pte_range() is really zap_anon_pte_in_folio_range() or
+> some other more descriptive name. When I first look at the name, I thought
+> PTEs will be zapped until the end. But that is not the case when I look at the
+> code. And future users can easily be confused too and use it in a wrong way.
 
-Will add the link in v4
-(guess you didn't want it in the final patch description, correct?)
+OK I see your point. OK let me pull the page count calculation into here and
+pass it to zap_anon_pte_range(). Then I think we can keep the name as is?
+
+
+> 
+> BTW, page_addr() needs a better name and is easily confused with existing
+> page_address().
+
+Yeah... I'll try to think of something for v2.
+
+> 
+>>
+>>> Also check if page is part of
+>>> a large folio first to make sure you can batch.
+>>
+>> Yeah that's fair. I'd be inclined to put that in zap_anon_pte_range() to short
+>> circuit calc_anon_folio_map_pgcount(). But ultimately zap_anon_pte_range() would
+>> still zap the single pte.
+>>
+>>
+>>>
+>>>> +
+>>>> +				rss[mm_counter(page)] -= pgcount;
+>>>> +				pgcount--;
+>>>> +				pte += pgcount;
+>>>> +				addr += pgcount << PAGE_SHIFT;
+>>>> +
+>>>> +				if (unlikely(full)) {
+>>>> +					force_flush = 1;
+>>>> +					addr += PAGE_SIZE;
+>>>> +					break;
+>>>> +				}
+>>>> +				continue;
+>>>> +			}
+>>>> +
+>>>>  			ptent = ptep_get_and_clear_full(mm, addr, pte,
+>>>>  							tlb->fullmm);
+>>>>  			tlb_remove_tlb_entry(tlb, pte, addr);
+>>>> -- 
+>>>> 2.25.1
+>>>
+>>>
+>>> --
+>>> Best Regards,
+>>> Yan, Zi
+> 
+> 
+> --
+> Best Regards,
+> Yan, Zi
+
