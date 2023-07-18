@@ -2,129 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 528377581E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEA07581EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232252AbjGRQR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 12:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36442 "EHLO
+        id S231844AbjGRQSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 12:18:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231954AbjGRQRX (ORCPT
+        with ESMTP id S231164AbjGRQSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 12:17:23 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78206F7
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:17:21 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-7653bd3ff2fso653446385a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:17:21 -0700 (PDT)
+        Tue, 18 Jul 2023 12:18:42 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D311B5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:18:33 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fbc5d5742bso59164805e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:18:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20221208.gappssmtp.com; s=20221208; t=1689697040; x=1692289040;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cwQeZoCBMlO2Kz9cPAUDfovWZN7cjEESeJtt2btWvEY=;
-        b=1eHilmKEnyQiqMv8Vo6ArdJMQyWDT7b5OrKeph5FOePQbpe27HYRND4s5PxjJHb3Kr
-         38sAu73YLvSHdWxzirJ/UstU9D8ql+FldVj0SKZKp/37WDKdxik44GTIYjWdKG0PGP0i
-         vq5WzVx88Rntfu3uUOGGvzXvQlZB7zLcAMcut4prXI+nYCVfHpR/VC0CHm4ziLuXX8Jn
-         bf0/jQDMSfgH2dJ+RxbT545sPQF3lw8V+802mi/tuVrqphVtkDeuZWQIyFn2yojo3+Db
-         NMmP+5DRKJ/CCanbcR1RdiunIQhPdEj21G4RBJ87j3uD+lK8zxf3u/qW5nqDSJDNxzyD
-         WF4w==
+        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1689697112; x=1692289112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Z43wO3lAuv7Ej8JmdU3xAafMT/Buibeps2tSW7b8N1o=;
+        b=Ee0LxE0Bdpbd1B94J3qJEvro+18zFFWdsNtiDwePza2hsxKCtrtUd80UETvDpZiddE
+         nVzcG570J0PvnZ6Z2ok3oJXHgBKmPXFy/Je4Mt5mFY6CQbWpy2yFqVG45duqi1wa4Xjf
+         QkopK+ZzhFcqQS9JIvsTxlEjhXRuUgyuYMOg9j4ssoAvIfmhFWcVyc4GwOPUbsE48g5j
+         spQLKNjxmRBVgAhBotcxoNGkICciS3/ig0QOSs7kifWUokTW2mkr4/g8/zswIknxxomo
+         9tCe48CGA1iPkfY0MHrMBghYYTTWXfKtITQSh+6Lyoj6EEaTO70GMmSEZex3zz0Aue3V
+         veZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689697040; x=1692289040;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cwQeZoCBMlO2Kz9cPAUDfovWZN7cjEESeJtt2btWvEY=;
-        b=dWoijmBsIot9zRPT/d1cXfhxoXOYi6o3zw7ea1qPD1H1fsQq+7dUzcFkAcUNjNNuX/
-         yQMunAMAWFJbdczqbPPnWmT36Wf+yeW8YHlYSquukM3T+1+S/Er9DTQvhT5WujvXnVMY
-         MVBkVmvSa5EyN63+xot4jyV7pK3UrSI5Vw0qeOSkqdIsmRyWWOz/Y4ZTo2I+jg9D08L4
-         p2trnS0RZYypesAMlSAlxpq5xDerB+xqCdM8WCgc0vQc2VAfqfgNH7IHjnRPyG5OuuMJ
-         fBhaTTzepZMUvBXwjg9k6MVx3K4bAbgxN/p7HWaucMOKBbKSbYnNdzI5awj6jPWgVx62
-         17jg==
-X-Gm-Message-State: ABy/qLY0FpUPDn2VBRcxg6LwRwtbuwol4yM5+uhO89o5Ma9pdxTClZJ6
-        PrSRgPEhrZO75j4YHVE+uUZA1w==
-X-Google-Smtp-Source: APBJJlFsoKY+woHCMzwvV5W1Cu/3Q5IgoeL9FXNymEogOTKOX+kJMULHzkNOLRYSjMUd7VRENccOJQ==
-X-Received: by 2002:a05:620a:4001:b0:767:f50e:533 with SMTP id h1-20020a05620a400100b00767f50e0533mr21123926qko.77.1689697040616;
-        Tue, 18 Jul 2023 09:17:20 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:11:83d4::7a9])
-        by smtp.gmail.com with ESMTPSA id pe8-20020a05620a850800b00767502e8601sm704062qkn.35.2023.07.18.09.17.19
+        d=1e100.net; s=20221208; t=1689697112; x=1692289112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z43wO3lAuv7Ej8JmdU3xAafMT/Buibeps2tSW7b8N1o=;
+        b=ERkgEB9F7dE5AjRGLMucDUYJKw9a2BOx+r6sMax06+FRW86GFAryr614Hu9FvBJK2S
+         Pmi8gjjGGnafk4Kwhew+ouXAJdPXEH3gvIgkYHW4lrPSAI969AhaUf6858Xnjhoimhqs
+         05UAo+ZWUR5PwXy9zh4gNSVf78vHmsvQgIsAF7vSJua3OvZOZOTK5WLsev6HrCY0gXYZ
+         zEupR+7F+VNdvkngmDtZct8pk0QIUpRaoviSpR04AF5veIABdR0d36aIbohhoEbaMdP+
+         ugePXzrNBVY/FuMJy6YZyhehvzoAmGxJr1DTonWTLCSxPNlnrQ4+AJlmaGH0V+8F2X0v
+         zGYw==
+X-Gm-Message-State: ABy/qLbGc210fHTG3FpEVe9x6AZKbDThZbK8rImnZVjuoypH8aYi2818
+        +iwTEPbcH5O4wHEmYRwMcrTCow==
+X-Google-Smtp-Source: APBJJlGqWxX+9CcE1E5wEmSUEfzM5kNAsDwlu6qqmAKOJF9/OhwcR7dGFCQevKXEaGXif2coI3oOhA==
+X-Received: by 2002:a7b:cd91:0:b0:3fb:b530:a4e4 with SMTP id y17-20020a7bcd91000000b003fbb530a4e4mr2319537wmj.8.1689697111633;
+        Tue, 18 Jul 2023 09:18:31 -0700 (PDT)
+Received: from airbuntu ([104.132.45.110])
+        by smtp.gmail.com with ESMTPSA id y20-20020a05600c365400b003fbfc61d36asm2562025wmq.5.2023.07.18.09.18.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 09:17:20 -0700 (PDT)
-Message-ID: <f8ed402ba1afb88e9e90925333b2e593ba42900e.camel@ndufresne.ca>
-Subject: Re: [EXT] Re: [PATCH] media: amphion: fix some issues reported by
- coverity
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Ming Qian <ming.qian@nxp.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>
-Cc:     "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "X.H. Bao" <xiahong.bao@nxp.com>, Eagle Zhou <eagle.zhou@nxp.com>,
-        Tao Jiang <tao.jiang_2@nxp.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Tue, 18 Jul 2023 12:17:19 -0400
-In-Reply-To: <DB8PR04MB6346BDF7F2E00FC8DBB32CB7E738A@DB8PR04MB6346.eurprd04.prod.outlook.com>
-References: <20230717074006.22372-1-ming.qian@nxp.com>
-         <a40c81a39de214c756a36fde535bfc775d82b922.camel@ndufresne.ca>
-         <DB8PR04MB6346BDF7F2E00FC8DBB32CB7E738A@DB8PR04MB6346.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 18 Jul 2023 09:18:30 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 17:18:29 +0100
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] sched/fair: Fix impossible migrate_util scenario in
+ load balance
+Message-ID: <20230718161829.ws3vn3ufnod6kpxh@airbuntu>
+References: <20230716014125.139577-1-qyousef@layalina.io>
+ <ZLaKFFjY6NWaJdOq@vingu-book>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZLaKFFjY6NWaJdOq@vingu-book>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
+        T_SPF_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mardi 18 juillet 2023 =C3=A0 01:50 +0000, Ming Qian a =C3=A9crit=C2=A0:
-> > > diff --git a/drivers/media/platform/amphion/venc.c
-> > > b/drivers/media/platform/amphion/venc.c
-> > > index 58480e2755ec..4eb57d793a9c 100644
-> > > --- a/drivers/media/platform/amphion/venc.c
-> > > +++ b/drivers/media/platform/amphion/venc.c
-> > > @@ -268,7 +268,7 @@ static int venc_g_parm(struct file *file, void
-> > > *fh, struct v4l2_streamparm *parm=C2=A0 {
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct vpu_inst *inst =3D to_ins=
-t(file);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct venc_t *venc =3D inst->pr=
-iv;
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0 struct v4l2_fract *timeperframe =3D &parm->=
-parm.capture.timeperframe;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct v4l2_fract *timeperframe;
-> >=20
-> > Could be just me, but I feel I'm missing some context to understand why=
- this
-> > change. Perhaps the commit message could be improved ?
-> >=20
-> > All other changes looks like improvement to me, so with a good explanat=
-ion
-> > on this one (and the change seems to be equivalent), you can add:
-> >=20
-> > Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-> >=20
->=20
-> Hi Nicolas,
-> =C2=A0=C2=A0=C2=A0 The Coverity scan report a REVERSE_INULL issue here, t=
-hat directly dereferencing pointer "param", before Null-checking "parm".=
-=20
-> =C2=A0=C2=A0=C2=A0 I'll split this patch into several patches, one topic =
-one patch.
->=20
-> Ming
+On 07/18/23 14:48, Vincent Guittot wrote:
+> Le dimanche 16 juil. 2023 à 02:41:25 (+0100), Qais Yousef a écrit :
+> > We've seen cases while running geekbench that an idle little core never
+> > pulls a task from a bigger overloaded cluster for 100s of ms and
+> > sometimes over a second.
+> > 
+> > It turned out that the load balance identifies this as a migrate_util
+> > type since the local group (little cluster) has a spare capacity and
+> > will try to pull a task. But the little cluster capacity is very small
+> > nowadays (around 200 or less) and if two busy tasks are stuck on a mid
+> > core which has a capacity of over 700, this means the util of each tasks
+> > will be around 350+ range. Which is always bigger than the spare
+> > capacity of the little group with a single idle core.
+> > 
+> > When trying to detach_tasks() we bail out then because of the comparison
+> > of:
+> > 
+> > 	if (util > env->imbalance)
+> > 		goto next;
+> > 
+> > In calculate_imbalance() we convert a migrate_util into migrate_task
+> > type if the CPU trying to do the pull is idle. But we only do this if
+> > env->imbalance is 0; which I can't understand. AFAICT env->imbalance
+> > contains the local group's spare capacity. If it is 0, this means it's
+> > fully busy.
+> > 
+> > Removing this condition fixes the problem, but since I can't fully
+> > understand why it checks for 0, sending this as RFC. It could be a typo
+> > and meant to check for
+> > 
+> > 	env->imbalance != 0
+> > 
+> > instead?
+> > 
+> > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> > ---
+> >  kernel/sched/fair.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index a80a73909dc2..682d9d6a8691 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -10288,7 +10288,7 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
+> >  			 * waiting task in this overloaded busiest group. Let's
+> >  			 * try to pull it.
+> >  			 */
+> > -			if (env->idle != CPU_NOT_IDLE && env->imbalance == 0) {
+> > +			if (env->idle != CPU_NOT_IDLE) {
+> 
+> With this change you completely skip migrate_util for idle and newly idle case
+> and this would be too aggressive.
 
-Make sense now, looking forward a split version with more explanation.
+Yeah I didn't have great confidence in it to be honest.
 
-regards,
-Nicolas
+Could you help me understand the meaning of env->imbalance == 0 though? At this
+stage its value is
 
+	env->imbalance = max(local->group_capacity, local->group_util) - local->group_util;
+
+which AFAICT is calculating the _spare_ capacity, right? So when we check
+env->imbalance == 0 we say if this_cpu is (idle OR newly idle) AND the local
+group is fully utilized? Why it must be fully utilized to do the pull? It's
+counter intuitive to me. I'm probably misinterpreting something but can't see
+it.
+
+> 
+> We can do something similar to migrate_load in detach_tasks():
+> 
+> ---
+>  kernel/sched/fair.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index d3df5b1642a6..64111ac7e137 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -8834,7 +8834,13 @@ static int detach_tasks(struct lb_env *env)
+>  		case migrate_util:
+>  			util = task_util_est(p);
+> 
+> -			if (util > env->imbalance)
+> +			/*
+> +			 * Make sure that we don't migrate too much utilization.
+> +			 * Nevertheless, let relax the constraint if
+> +			 * scheduler fails to find a good waiting task to
+> +			 * migrate.
+> +			 */
+> +			if (shr_bound(util, env->sd->nr_balance_failed) > env->imbalance)
+>  				goto next;
+
+Thanks! This looks better but I still see a 100 or 200 ms delay sometimes.
+Still debugging it but I _think_ it's a combination of two things:
+
+	1. nr_balance_failed doesn't increment as fast - I see a lot of 0s with
+	   occasional 1s and less frequent 2s
+	2. something might wake up briefly on that cpu in between load balance,
+	   and given how small the littles are they make the required
+	   nr_balance_failed to tip the scale even higher
+
+
+Thanks
+
+--
+Qais Yousef
+
+> 
+>  			env->imbalance -= util;
+> --
+> 
+> 
+> 
+> >  				env->migration_type = migrate_task;
+> >  				env->imbalance = 1;
+> >  			}
+> > -- 
+> > 2.25.1
+> > 
