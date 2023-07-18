@@ -2,174 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1681C757D68
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF97E757D6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231891AbjGRN0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:26:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
+        id S232311AbjGRN1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbjGRN0V (ORCPT
+        with ESMTP id S232152AbjGRN05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:26:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262E919F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:25:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689686733;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/M/qQnMSwnh+97aUq8vDjOoEVfN55OnkfZv67VGG31g=;
-        b=LChU4XjGq0QlL6hx2ras4Gxhh/qpYiR1QuM6Kc5ld1jU5TiAI/64X3nuyo4wIM5tNRqg8z
-        6EOxjuglBX+C6nEaV3H8oGwY+hsKThH35fuktPuogjmQooOYvr79M2UVM+IAjNjGrY3nSv
-        ZFRDzBb5UwQcZ5LTKiq+aUoPc2VtMSU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-19-nJ-UxPPROZGyyjWR7POI3Q-1; Tue, 18 Jul 2023 09:25:31 -0400
-X-MC-Unique: nJ-UxPPROZGyyjWR7POI3Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0E050881B25;
-        Tue, 18 Jul 2023 13:25:28 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.22.9.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7E380C2C864;
-        Tue, 18 Jul 2023 13:25:27 +0000 (UTC)
-Date:   Tue, 18 Jul 2023 09:25:25 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Ben Segall <bsegall@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v3 1/2] sched, cgroup: Restore meaning to
- hierarchical_quota
-Message-ID: <20230718132525.GB126587@lorien.usersys.redhat.com>
-References: <xm268rbkg4tg.fsf@google.com>
- <20230714125746.812891-1-pauld@redhat.com>
- <ZLWIDC2nlG8cb3VE@slm.duckdns.org>
- <20230718125759.GA126587@lorien.usersys.redhat.com>
+        Tue, 18 Jul 2023 09:26:57 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321B4115
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:26:55 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b6f0508f54so85989791fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:26:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689686813; x=1692278813;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X351sQi39be8sn4PlHccv90k4MIZd0LiXL0VSGtBHBY=;
+        b=adJhQH40wflwylgBTMYmEPSJkmIONKLfo15lmAlYJzmuhVeO4CyqoC7B1qW4LV40k/
+         HDjLi4LR75pWs+6h0Pd3dpPXgdSmzIZL7ak28XNUiOPLzuAZcOaupsUP4hDLM+HfI1o7
+         umfVNXKZ/mxWdCQs0Vo1TLURs0AVTkSQ+YqVfVTuyzLiMHhcPcqQ3mQ75eAYPEjp6Tdu
+         3mPgp8KcKhJlDZvqNEdQa+mgSr/ztCj2HyZpZKhm3fRecUPRRp5cQwEVBsm+14N78GBh
+         3par62gIFQHgmwOfCEB1UmaV1B660TOxPrFDMOwYFVrqnedANBjVoOk0Yv35wcjrjha9
+         YcHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689686813; x=1692278813;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X351sQi39be8sn4PlHccv90k4MIZd0LiXL0VSGtBHBY=;
+        b=gg/q6tPCRH5nhwZAxAeVutojReXnz5rlty0POzuR3cgs6AIsJDRyM9V6znNWZPuEVI
+         5i0MngPF1+OOnkD/IGA3+DGdmmnlaFOpm+p0/JwDEU7EhFdwQ4hJvv/RoCW53klJTC8p
+         p1HKN/c5LOdnLoXcZv7k4T44ihDqOsOb0hXwZERlU+ZG37r8tjjUDX1U7StqcaTWD6XP
+         xBijjayHQjXtASho8RQlF1G5ZyryFvQ/rr3MWg31UBBxfUVCjA+DoxnmYEq86WeycClk
+         xs569xSb5B60VT4wmVq94xw9Lse9qcec301AZS7himydIHf4tOMSxa0U9kWRpvqN3P4H
+         yQiw==
+X-Gm-Message-State: ABy/qLZHrpBQ5ZtIpTtnA5oKWQNZoBP57KBs/X4VmO2SIwAwFxf2fO7+
+        zsDNOSinTuP5JyqnK+LyvRKsrQ==
+X-Google-Smtp-Source: APBJJlEczm4Ia0tmozpV/Ndhe/taLPhM8dIYFd5Y9BGUB8zs6mFY/pZkwVudwwt68ESVWD+C2ohjMA==
+X-Received: by 2002:a2e:3315:0:b0:2b6:f1ad:d535 with SMTP id d21-20020a2e3315000000b002b6f1add535mr10337890ljc.14.1689686813365;
+        Tue, 18 Jul 2023 06:26:53 -0700 (PDT)
+Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
+        by smtp.gmail.com with ESMTPSA id s7-20020a2e98c7000000b002b840f283a7sm494752ljj.36.2023.07.18.06.26.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 06:26:53 -0700 (PDT)
+Message-ID: <33a26241-026a-9466-5dd6-e3202b29f57c@linaro.org>
+Date:   Tue, 18 Jul 2023 15:26:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718125759.GA126587@lorien.usersys.redhat.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20230717-topic-branch_aon_cleanup-v1-0-27784d27a4f4@linaro.org>
+ <20230717-topic-branch_aon_cleanup-v1-3-27784d27a4f4@linaro.org>
+ <ZLaRtrH85v4kpSvb@hovoldconsulting.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: Re: [PATCH 03/15] clk: qcom: gcc-sm6375: Unregister critical clocks
+In-Reply-To: <ZLaRtrH85v4kpSvb@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tejun,
+On 18.07.2023 15:20, Johan Hovold wrote:
+> On Mon, Jul 17, 2023 at 05:19:10PM +0200, Konrad Dybcio wrote:
+>> Some clocks need to be always-on, but we don't really do anything
+>> with them, other than calling enable() once and telling Linux they're
+>> enabled.
+>>
+>> Unregister them to save a couple of bytes and, perhaps more
+>> importantly, allow for runtime suspend of the clock controller device,
+>> as CLK_IS_CRITICAL prevents the latter.
+> 
+> But this doesn't sound right. How can you disable a controller which
+> still has clocks enabled?
+> 
+> Shouldn't instead these clocks be modelled properly so that they are
+> only enabled when actually needed?
+Hm.. We do have clk_branch2_aon_ops, but something still needs to
+toggle these clocks.
 
-On Tue, Jul 18, 2023 at 08:57:59AM -0400 Phil Auld wrote:
-> On Mon, Jul 17, 2023 at 08:27:24AM -1000 Tejun Heo wrote:
-> > On Fri, Jul 14, 2023 at 08:57:46AM -0400, Phil Auld wrote:
-> > > In cgroupv2 cfs_b->hierarchical_quota is set to -1 for all task
-> > > groups due to the previous fix simply taking the min.  It should
-> > > reflect a limit imposed at that level or by an ancestor. Even
-> > > though cgroupv2 does not require child quota to be less than or
-> > > equal to that of its ancestors the task group will still be
-> > > constrained by such a quota so this should be shown here. Cgroupv1
-> > > continues to set this correctly.
-> > > 
-> > > In both cases, add initialization when a new task group is created
-> > > based on the current parent's value (or RUNTIME_INF in the case of
-> > > root_task_group). Otherwise, the field is wrong until a quota is
-> > > changed after creation and __cfs_schedulable() is called.
-> > > 
-> > > Fixes: c53593e5cb69 ("sched, cgroup: Don't reject lower cpu.max on ancestors")
-> > 
-> > Does this really fix anything observable? I wonder whether this is more
-> > misleading than helpful. In cgroup2, the value simply wasn't being used,
-> > right?
-> >
+I *think* we could leave a permanent vote in probe() without breaking
+runtime pm! I'll give it a spin bit later..
 
-(Sorry, my editor bit me...I had added:)
-
-I don't feel strongly about the fixes. What was there seemed broken to me
-so ... "Fixes". But it doesn't matter. 
-
-
-> 
-> It wasn't being used but was actively being set wrong. I mean if we are
-> going to bother doing the __cfs_schedulable() tg tree walk we might as
-> well have not been setting a bogus value. But that said, no it was not
-> observable until I tried to use it.
->
-
-We have a field called hierarchical_quota, that was being unconditionally
-set to -1 for cgroup2. I figured it would be more correct to reflect
-the hieratchical quota. :)
-
-
-> I'm fine if that's dropped. I just wanted it set right going forward :)
-> 
-> 
-> > > Signed-off-by: Phil Auld <pauld@redhat.com>
-> > > Reviewed-by: Ben Segall <bsegall@google.com>
-> > > Cc: Ingo Molnar <mingo@redhat.com>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> > > Cc: Juri Lelli <juri.lelli@redhat.com>
-> > > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> > > Cc: Valentin Schneider <vschneid@redhat.com>
-> > > Cc: Ben Segall <bsegall@google.com>
-> > > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > > Cc: Tejun Heo <tj@kernel.org>
-> > 
-> > Acked-by: Tejun Heo <tj@kernel.org>
-> >
-> 
-> Thanks!
-> 
-> 
-> > > +		 * always take the non-RUNTIME_INF min.  On cgroup1, only
-> > > +		 * inherit when no limit is set. In both cases this is used
-> > > +		 * by the scheduler to determine if a given CFS task has a
-> > > +		 * bandwidth constraint at some higher level.
-> > 
-> > The discussion on this comment is stretching too long and this is fine too
-> > but what's worth commenting for cgroup2 is that the limit value itself
-> > doesn't mean anything and we're just latching onto the value used by cgroup1
-> > to track whether there's any limit active or not.
-> 
-> I thought that was implied by the wording. "If a given task has a bandwidth
-> contraint" not "what a given task's bandwidth constraint is".  In both cases
-> that's how the other parts of the scheduler are using it. The actual
-> non-RUNTIME_INF value only matters in this function (and only for cgroup1
-> indeed).
-> 
-> But... the value is just as accurate for cgroup2 and cgroup1.  The task is
-> still going to be limited by that bandwidth constraint even if its own
-> bandwidth limit is nominally higher, right? 
-> 
-> 
-> Cheers,
-> Phil
-> 
-> > 
-> > Thanks.
-> > 
-> > -- 
-> > tejun
-> > 
-> 
-> -- 
-> 
-
--- 
-
+Konrad
