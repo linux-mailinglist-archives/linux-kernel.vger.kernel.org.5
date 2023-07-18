@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEDED757AA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2AB757AAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231828AbjGRLkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
+        id S230144AbjGRLmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:42:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbjGRLkt (ORCPT
+        with ESMTP id S230477AbjGRLmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:40:49 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8961A10F1;
-        Tue, 18 Jul 2023 04:40:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1689680437; cv=none;
+        Tue, 18 Jul 2023 07:42:01 -0400
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08BE19BD;
+        Tue, 18 Jul 2023 04:41:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1689680438; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=CxRkUiuk1qoWsNI605971zn6aOa83fSLJnlK9x04FMmEzxkOI6PDfjqZpC70o9MMPe
-    3qXuQ+zA+v1vOSFwUu8fU1MLTGZiwCB15Ng5R2rYeyeujxesxaBecGf8r8PXBM9uuYas
-    DRrCC+VjB3qgbyRoUnoJlvB51rqk5GzlYNeZSXWUKF9/klWN2YJyVpZonAw2v16IScbd
-    6He6pLBWu9GOhw8XuSS2coqDCsU81I0jAFWex/QJZqeELvFuu3LkgNkrQgbuNhJAaurT
-    wQ5neJSJSmze309rDJYLt41M5Ngkbl9lEg/2OPxwkBnNvASz6NcoMS4S5+iRypKlWXCm
-    Ix3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1689680437;
+    b=e+tKi+G+OUCduOiE36fr0hOf70/pDMOhg57WzMnIiGLjiqkrVyOXeBjr+cmMX+BRuP
+    don5r8kXx7r40FG5AEHbFvPbo24XY0UPtOEHxF1iUdeq3Wg//+WOvWTSs2Yl6BTsQdv8
+    iM+fI1h4s7PQ0+bgZSAOu8+dYhxQktOWgnYU+wOirZesdMVoivWLxde8Ylg8jK818YoM
+    FXma+1bGNTn0+STQwzhYS07pT4I3M11BBXwK73otTC5dcm1FtsOta+1qXrTpQnvAuqm+
+    WaEryXWFPOTSY9OFz7p5IBWzT9NxmBlSanG8ldlv+iJ14Wp6wnjidNlyrnAquEWtRI0m
+    SuOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1689680438;
     s=strato-dkim-0002; d=strato.com;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=41FgpaaFBB/EYR10zVy+xYoyinNOFdObIZ1G8lDObro=;
-    b=Ljj59MTlXUpSptntIk7qgpGtJ9/wJz8TXuiMlebtWYdC2GqRktkRoHloriUUcCcKTG
-    RyP3ioano8sUHKMlSSYGYTOAdooBblntcogf31wAOmQPV4UjpEQA3IpiMqQnwr+qYKev
-    QjkZC64H8uonCOQr6b7K9folS57sOreT8bi/mPv5kQ+KkPbc/BIH/5Vvn+ubMIC6J3Rn
-    G1S9imK8bPQnlDnMIRoyLuQ/555amVuC3F4KJOMaXjs5oaNONEyJQAxxZ3plq93s4XiC
-    MkhWWadfPq6GHsF76ym+yUqeGXJH/sYUrZiD/nAA/1/vR1Bfsq6s4+6rFw7Xd4rnBztf
-    DrWg==
+    bh=leKm6XQrXU4OSZeVodhbqX/6PYvddpq/c+MRNpyVB+c=;
+    b=jM7bOn7SHkCta1CeOG3K9XzGSE2v6Kgc4BinVVPKFpauGRWacRkkYzaBFxg10Xp8+N
+    dhXc/Qm8Yh/0j/aGllvzvC6hJ06q7RI7Owt+kMHL0btX94p9qkvHb9YfisBB96gRWd4h
+    fLbH0sewC862yfBAVMhlMFYxKOgB/6CqgVTACVHlHaf8+yS86ldC/zH86KDkJUwFI2tI
+    emJoxFubUjvzt6RsNyyYKOJuEJIYnh/0Oc2JFFdaIda1OfgoOZ/MfHwjzh6HpBNUk8Bd
+    41WSV7qdgJi/mg8i1E1k3NHswa7sLvVheyaDu9ehnoRMx1yiicRlS0ZmIWQ2U7Li7vcd
+    KMpQ==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1689680437;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1689680438;
     s=strato-dkim-0002; d=gerhold.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=41FgpaaFBB/EYR10zVy+xYoyinNOFdObIZ1G8lDObro=;
-    b=b/WA35M2/fd2FL4jEfTcUtLMFQmh9MtQhRnsBew/TPHMvktpS7yAqcL61kG1Ej/5O0
-    54avBcpxuamOYhqrWv0lmp2RNMeFrmR3IURN19qi/o8VXNHHfCa9hiuhzn6TykbAJz0o
-    jQ0mg724wnDdNzWPiAiQgHPK3trOul7AZbjHo01oTJ1AYwtgycwdIA+ZLt4OMgDzj0dz
-    8UcChvECGj+FgBvHvYdoUfvN80rscMg1DHpUzx7QuCOs5wBGFc5LYpbLEo6VkQEDS5n2
-    qQFDcxDVUUsmBQWmwu5BV01DdjUpNj9HPS8w+bodT+bRP+hrLmMwD13CmVNz8CJiXfps
-    bKsQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1689680437;
+    bh=leKm6XQrXU4OSZeVodhbqX/6PYvddpq/c+MRNpyVB+c=;
+    b=pgoGK3Md/dyUiwFPly13Eix0Yue9s6nmSwIhfGdvKF837oshp8dAZv35mtqa7YYSPh
+    wKvilhLIKIFgDJlsmA39ks0dthN41tD2RjWnl/mVDthcyInqVmHAhN2XWz4ZT+/Yl4yC
+    iIPCHdK+YGcdU754BoTiTVlR2pmtTFVpEP2L0KxSvxqxi82YopPdEktNOCDCxS8Z+jx5
+    IAR05KdH4fsKGGKwHJMH+hUI2bFafBZqusQOpfeU+OmDCwH1nbmZXKxW8jcTQk+FPGHP
+    9Nwms6MLR1GHHp5cW9O//9cIq5rZPpI8GPFeCvUaJHpsdLIJkHPjuVaihXjgWXgp8sHU
+    S60A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1689680438;
     s=strato-dkim-0003; d=gerhold.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=41FgpaaFBB/EYR10zVy+xYoyinNOFdObIZ1G8lDObro=;
-    b=DevACCK470s9gV9DOy2GyX8xBNUP/mcmqr+oh+6bVh2dcA2ylyS/kNdJHoFqJxia+u
-    PviK5ps8vPvMzLWOKADg==
+    bh=leKm6XQrXU4OSZeVodhbqX/6PYvddpq/c+MRNpyVB+c=;
+    b=UfW6+4wbdcSNBAw4H5m5PIqRZHem5awRXYHQhZWacO6F2tMrCEYBeLKbcf7+KHkFyv
+    0W/Mhi+VzbSUZed75aAw==
 X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn8u45/mw=="
 Received: from [192.168.244.3]
     by smtp.strato.de (RZmta 49.6.0 DYNA|AUTH)
-    with ESMTPSA id D0d0a8z6IBebbpJ
+    with ESMTPSA id D0d0a8z6IBebbpL
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
     Tue, 18 Jul 2023 13:40:37 +0200 (CEST)
 From:   Stephan Gerhold <stephan@gerhold.net>
-Date:   Tue, 18 Jul 2023 13:40:13 +0200
-Subject: [PATCH 1/6] ASoC: dt-bindings: pm8916-analog-codec: Fix misleading
- example
+Date:   Tue, 18 Jul 2023 13:40:14 +0200
+Subject: [PATCH 2/6] ASoC: dt-bindings: pm8916-analog-codec: Drop pointless
+ reg-names
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230718-pm8916-mclk-v1-1-4b4a58b4240a@gerhold.net>
+Message-Id: <20230718-pm8916-mclk-v1-2-4b4a58b4240a@gerhold.net>
 References: <20230718-pm8916-mclk-v1-0-4b4a58b4240a@gerhold.net>
 In-Reply-To: <20230718-pm8916-mclk-v1-0-4b4a58b4240a@gerhold.net>
 To:     Mark Brown <broonie@kernel.org>
@@ -89,7 +89,7 @@ Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Stephan Gerhold <stephan@gerhold.net>
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -98,124 +98,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SPMI devices typically have a single address cell and no size cell,
-i.e. reg = <0xf000> for the audio codec instead of reg = <0xf000 0x200>.
+pm8916-wcd-analog-codec has just a single reg region, so having a name
+for it provides no additional value.
 
-The example is a bit misleading because it uses the latter. Copying
-this into the device tree would be incorrect and was fixed before for
-pm8916.dtsi in commit c2f0cbb57dba ("arm64: dts: qcom: pm8916: Remove
-invalid reg size from wcd_codec").
-
-Make the example more clear by adding the outer "pmic" node which
-specifies the same #address/size-cells that would be used in the
-real deivce tree.
+Drop it completely from the schema and example. There is not really any
+point in keeping it (even as deprecated) because it was never used. In
+old DTBs it will just be ignored as before.
 
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- .../sound/qcom,pm8916-wcd-analog-codec.yaml        | 92 ++++++++++++----------
- 1 file changed, 50 insertions(+), 42 deletions(-)
+ .../devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml      | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml b/Documentation/devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml
-index c385028c4296..77e3cfba4746 100644
+index 77e3cfba4746..5053799c88b5 100644
 --- a/Documentation/devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml
 +++ b/Documentation/devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml
-@@ -115,46 +115,54 @@ examples:
-   - |
-     #include <dt-bindings/clock/qcom,gcc-msm8916.h>
-     #include <dt-bindings/interrupt-controller/irq.h>
+@@ -19,10 +19,6 @@ properties:
+   reg:
+     maxItems: 1
+ 
+-  reg-names:
+-    items:
+-      - const: pmic-codec-core
 -
--    audio-codec@f000{
--      compatible = "qcom,pm8916-wcd-analog-codec";
--      reg = <0xf000 0x200>;
--      reg-names = "pmic-codec-core";
--      clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
--      clock-names = "mclk";
--      qcom,mbhc-vthreshold-low = <75 150 237 450 500>;
--      qcom,mbhc-vthreshold-high = <75 150 237 450 500>;
--      interrupt-parent = <&spmi_bus>;
--      interrupts = <0x1 0xf0 0x0 IRQ_TYPE_NONE>,
--            <0x1 0xf0 0x1 IRQ_TYPE_NONE>,
--            <0x1 0xf0 0x2 IRQ_TYPE_NONE>,
--            <0x1 0xf0 0x3 IRQ_TYPE_NONE>,
--            <0x1 0xf0 0x4 IRQ_TYPE_NONE>,
--            <0x1 0xf0 0x5 IRQ_TYPE_NONE>,
--            <0x1 0xf0 0x6 IRQ_TYPE_NONE>,
--            <0x1 0xf0 0x7 IRQ_TYPE_NONE>,
--            <0x1 0xf1 0x0 IRQ_TYPE_NONE>,
--            <0x1 0xf1 0x1 IRQ_TYPE_NONE>,
--            <0x1 0xf1 0x2 IRQ_TYPE_NONE>,
--            <0x1 0xf1 0x3 IRQ_TYPE_NONE>,
--            <0x1 0xf1 0x4 IRQ_TYPE_NONE>,
--            <0x1 0xf1 0x5 IRQ_TYPE_NONE>;
--      interrupt-names = "cdc_spk_cnp_int",
--                        "cdc_spk_clip_int",
--                        "cdc_spk_ocp_int",
--                        "mbhc_ins_rem_det1",
--                        "mbhc_but_rel_det",
--                        "mbhc_but_press_det",
--                        "mbhc_ins_rem_det",
--                        "mbhc_switch_int",
--                        "cdc_ear_ocp_int",
--                        "cdc_hphr_ocp_int",
--                        "cdc_hphl_ocp_det",
--                        "cdc_ear_cnp_int",
--                        "cdc_hphr_cnp_int",
--                        "cdc_hphl_cnp_int";
--      vdd-cdc-io-supply = <&pm8916_l5>;
--      vdd-cdc-tx-rx-cx-supply = <&pm8916_l5>;
--      vdd-micbias-supply = <&pm8916_l13>;
--      #sound-dai-cells = <1>;
-+    #include <dt-bindings/spmi/spmi.h>
-+
-+    pmic@1 {
-+      compatible = "qcom,pm8916", "qcom,spmi-pmic";
-+      reg = <0x1 SPMI_USID>;
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      audio-codec@f000 {
-+        compatible = "qcom,pm8916-wcd-analog-codec";
-+        reg = <0xf000>;
-+        reg-names = "pmic-codec-core";
-+        clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
-+        clock-names = "mclk";
-+        qcom,mbhc-vthreshold-low = <75 150 237 450 500>;
-+        qcom,mbhc-vthreshold-high = <75 150 237 450 500>;
-+        interrupt-parent = <&spmi_bus>;
-+        interrupts = <0x1 0xf0 0x0 IRQ_TYPE_NONE>,
-+              <0x1 0xf0 0x1 IRQ_TYPE_NONE>,
-+              <0x1 0xf0 0x2 IRQ_TYPE_NONE>,
-+              <0x1 0xf0 0x3 IRQ_TYPE_NONE>,
-+              <0x1 0xf0 0x4 IRQ_TYPE_NONE>,
-+              <0x1 0xf0 0x5 IRQ_TYPE_NONE>,
-+              <0x1 0xf0 0x6 IRQ_TYPE_NONE>,
-+              <0x1 0xf0 0x7 IRQ_TYPE_NONE>,
-+              <0x1 0xf1 0x0 IRQ_TYPE_NONE>,
-+              <0x1 0xf1 0x1 IRQ_TYPE_NONE>,
-+              <0x1 0xf1 0x2 IRQ_TYPE_NONE>,
-+              <0x1 0xf1 0x3 IRQ_TYPE_NONE>,
-+              <0x1 0xf1 0x4 IRQ_TYPE_NONE>,
-+              <0x1 0xf1 0x5 IRQ_TYPE_NONE>;
-+        interrupt-names = "cdc_spk_cnp_int",
-+                          "cdc_spk_clip_int",
-+                          "cdc_spk_ocp_int",
-+                          "mbhc_ins_rem_det1",
-+                          "mbhc_but_rel_det",
-+                          "mbhc_but_press_det",
-+                          "mbhc_ins_rem_det",
-+                          "mbhc_switch_int",
-+                          "cdc_ear_ocp_int",
-+                          "cdc_hphr_ocp_int",
-+                          "cdc_hphl_ocp_det",
-+                          "cdc_ear_cnp_int",
-+                          "cdc_hphr_cnp_int",
-+                          "cdc_hphl_cnp_int";
-+        vdd-cdc-io-supply = <&pm8916_l5>;
-+        vdd-cdc-tx-rx-cx-supply = <&pm8916_l5>;
-+        vdd-micbias-supply = <&pm8916_l13>;
-+        #sound-dai-cells = <1>;
-+      };
-     };
+   clocks:
+     maxItems: 1
+ 
+@@ -126,7 +122,6 @@ examples:
+       audio-codec@f000 {
+         compatible = "qcom,pm8916-wcd-analog-codec";
+         reg = <0xf000>;
+-        reg-names = "pmic-codec-core";
+         clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
+         clock-names = "mclk";
+         qcom,mbhc-vthreshold-low = <75 150 237 450 500>;
 
 -- 
 2.41.0
