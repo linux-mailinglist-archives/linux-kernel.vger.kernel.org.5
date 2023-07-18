@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5873C7586F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED427586F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231518AbjGRVZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 17:25:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42870 "EHLO
+        id S231463AbjGRVZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 17:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231379AbjGRVY6 (ORCPT
+        with ESMTP id S231445AbjGRVY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 18 Jul 2023 17:24:58 -0400
 Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [5.144.164.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D661BE3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:24:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7711BF0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:24:52 -0700 (PDT)
 Received: from Marijn-Arch-PC.localdomain (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id CB4143F5C7;
-        Tue, 18 Jul 2023 23:24:47 +0200 (CEST)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 564693F67C;
+        Tue, 18 Jul 2023 23:24:49 +0200 (CEST)
 From:   Marijn Suijten <marijn.suijten@somainline.org>
-Date:   Tue, 18 Jul 2023 23:24:43 +0200
-Subject: [PATCH v3 07/15] dt-bindings: display/msm: Add SM6125 MDSS
+Date:   Tue, 18 Jul 2023 23:24:44 +0200
+Subject: [PATCH v3 08/15] drm/msm/dpu: Add SM6125 support
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230718-sm6125-dpu-v3-7-6c5a56e99820@somainline.org>
+Message-Id: <20230718-sm6125-dpu-v3-8-6c5a56e99820@somainline.org>
 References: <20230718-sm6125-dpu-v3-0-6c5a56e99820@somainline.org>
 In-Reply-To: <20230718-sm6125-dpu-v3-0-6c5a56e99820@somainline.org>
 To:     Andy Gross <agross@kernel.org>,
@@ -56,243 +56,327 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht,
         linux-kernel@vger.kernel.org,
         Krzysztof Kozlowski <krzk@kernel.org>,
         linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, Lux Aliaga <they@mint.lgbt>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+        freedreno@lists.freedesktop.org, Lux Aliaga <they@mint.lgbt>
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the SM6125 MDSS.
+Add definitions for the display hardware used on the Qualcomm SM6125
+platform.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
 ---
- .../bindings/display/msm/qcom,sm6125-mdss.yaml     | 211 +++++++++++++++++++++
- 1 file changed, 211 insertions(+)
+ .../gpu/drm/msm/disp/dpu1/catalog/dpu_5_4_sm6125.h | 236 +++++++++++++++++++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c     |   7 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h     |   1 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c            |   1 +
+ 4 files changed, 245 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/msm/qcom,sm6125-mdss.yaml b/Documentation/devicetree/bindings/display/msm/qcom,sm6125-mdss.yaml
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_5_4_sm6125.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_5_4_sm6125.h
 new file mode 100644
-index 000000000000..33a23c303e02
+index 000000000000..5fddfcce6288
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/display/msm/qcom,sm6125-mdss.yaml
-@@ -0,0 +1,211 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/msm/qcom,sm6125-mdss.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_5_4_sm6125.h
+@@ -0,0 +1,236 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (c) 2023 Marijn Suijten <marijn.suijten@somainline.org>. All rights reserved.
++ * Copyright (c) 2022. Qualcomm Innovation Center, Inc. All rights reserved.
++ * Copyright (c) 2015-2018, 2020 The Linux Foundation. All rights reserved.
++ */
 +
-+title: Qualcomm SM6125 Display MDSS
++#ifndef _DPU_5_4_SM6125_H
++#define _DPU_5_4_SM6125_H
 +
-+maintainers:
-+  - Marijn Suijten <marijn.suijten@somainline.org>
++static const struct dpu_caps sm6125_dpu_caps = {
++	.max_mixer_width = DEFAULT_DPU_OUTPUT_LINE_WIDTH,
++	.max_mixer_blendstages = 0x6,
++	.has_dim_layer = true,
++	.has_idle_pc = true,
++	.max_linewidth = 2160,
++	.pixel_ram_size = DEFAULT_PIXEL_RAM_SIZE,
++	.max_hdeci_exp = MAX_HORZ_DECIMATION,
++	.max_vdeci_exp = MAX_VERT_DECIMATION,
++};
 +
-+description:
-+  SM6125 MSM Mobile Display Subsystem (MDSS), which encapsulates sub-blocks
-+  like DPU display controller, DSI and DP interfaces etc.
++static const struct dpu_ubwc_cfg sm6125_ubwc_cfg = {
++	.ubwc_version = DPU_HW_UBWC_VER_10,
++	.highest_bank_bit = 0x1,
++	.ubwc_swizzle = 0x1,
++};
 +
-+$ref: /schemas/display/msm/mdss-common.yaml#
++static const struct dpu_mdp_cfg sm6125_mdp = {
++	.name = "top_0",
++	.base = 0x0, .len = 0x45c,
++	.features = 0,
++	.clk_ctrls = {
++		[DPU_CLK_CTRL_VIG0] = { .reg_off = 0x2ac, .bit_off = 0 },
++		[DPU_CLK_CTRL_DMA0] = { .reg_off = 0x2ac, .bit_off = 8 },
++		[DPU_CLK_CTRL_DMA1] = { .reg_off = 0x2b4, .bit_off = 8 },
++	},
++};
 +
-+properties:
-+  compatible:
-+    const: qcom,sm6125-mdss
++static const struct dpu_ctl_cfg sm6125_ctl[] = {
++	{
++		.name = "ctl_0", .id = CTL_0,
++		.base = 0x1000, .len = 0x1e0,
++		.features = BIT(DPU_CTL_ACTIVE_CFG),
++		.intr_start = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 9),
++	}, {
++		.name = "ctl_1", .id = CTL_1,
++		.base = 0x1200, .len = 0x1e0,
++		.features = BIT(DPU_CTL_ACTIVE_CFG),
++		.intr_start = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 10),
++	}, {
++		.name = "ctl_2", .id = CTL_2,
++		.base = 0x1400, .len = 0x1e0,
++		.features = BIT(DPU_CTL_ACTIVE_CFG),
++		.intr_start = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 11),
++	}, {
++		.name = "ctl_3", .id = CTL_3,
++		.base = 0x1600, .len = 0x1e0,
++		.features = BIT(DPU_CTL_ACTIVE_CFG),
++		.intr_start = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 12),
++	}, {
++		.name = "ctl_4", .id = CTL_4,
++		.base = 0x1800, .len = 0x1e0,
++		.features = BIT(DPU_CTL_ACTIVE_CFG),
++		.intr_start = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 13),
++	}, {
++		.name = "ctl_5", .id = CTL_5,
++		.base = 0x1a00, .len = 0x1e0,
++		.features = BIT(DPU_CTL_ACTIVE_CFG),
++		.intr_start = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 23),
++	},
++};
 +
-+  clocks:
-+    items:
-+      - description: Display AHB clock from gcc
-+      - description: Display AHB clock
-+      - description: Display core clock
++static const struct dpu_sspp_cfg sm6125_sspp[] = {
++	{
++		.name = "sspp_0", .id = SSPP_VIG0,
++		.base = 0x4000, .len = 0x1f0,
++		.features = VIG_SM6125_MASK,
++		.sblk = &sm6125_vig_sblk_0,
++		.xin_id = 0,
++		.type = SSPP_TYPE_VIG,
++		.clk_ctrl = DPU_CLK_CTRL_VIG0,
++	}, {
++		.name = "sspp_8", .id = SSPP_DMA0,
++		.base = 0x24000, .len = 0x1f0,
++		.features = DMA_SDM845_MASK,
++		.sblk = &sdm845_dma_sblk_0,
++		.xin_id = 1,
++		.type = SSPP_TYPE_DMA,
++		.clk_ctrl = DPU_CLK_CTRL_DMA0,
++	}, {
++		.name = "sspp_9", .id = SSPP_DMA1,
++		.base = 0x26000, .len = 0x1f0,
++		.features = DMA_SDM845_MASK,
++		.sblk = &sdm845_dma_sblk_1,
++		.xin_id = 5,
++		.type = SSPP_TYPE_DMA,
++		.clk_ctrl = DPU_CLK_CTRL_DMA1,
++	},
++};
 +
-+  clock-names:
-+    items:
-+      - const: iface
-+      - const: ahb
-+      - const: core
++static const struct dpu_lm_cfg sm6125_lm[] = {
++	{
++		.name = "lm_0", .id = LM_0,
++		.base = 0x44000, .len = 0x320,
++		.features = MIXER_QCM2290_MASK,
++		.sblk = &sdm845_lm_sblk,
++		.pingpong = PINGPONG_0,
++		.dspp = DSPP_0,
++		.lm_pair = LM_1,
++	}, {
++		.name = "lm_1", .id = LM_1,
++		.base = 0x45000, .len = 0x320,
++		.features = MIXER_QCM2290_MASK,
++		.sblk = &sdm845_lm_sblk,
++		.pingpong = PINGPONG_1,
++		.dspp = 0,
++		.lm_pair = LM_0,
++	},
++};
 +
-+  iommus:
-+    maxItems: 1
++static const struct dpu_dspp_cfg sm6125_dspp[] = {
++	{
++		.name = "dspp_0", .id = DSPP_0,
++		.base = 0x54000, .len = 0x1800,
++		.features = DSPP_SC7180_MASK,
++		.sblk = &sdm845_dspp_sblk,
++	},
++};
 +
-+  interconnects:
-+    maxItems: 2
++static const struct dpu_pingpong_cfg sm6125_pp[] = {
++	{
++		.name = "pingpong_0", .id = PINGPONG_0,
++		.base = 0x70000, .len = 0xd4,
++		.features = PINGPONG_SM8150_MASK,
++		.merge_3d = 0,
++		.sblk = &sdm845_pp_sblk,
++		.intr_done = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 8),
++		.intr_rdptr = -1,
++	}, {
++		.name = "pingpong_1", .id = PINGPONG_1,
++		.base = 0x70800, .len = 0xd4,
++		.features = PINGPONG_SM8150_MASK,
++		.merge_3d = 0,
++		.sblk = &sdm845_pp_sblk,
++		.intr_done = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 9),
++		.intr_rdptr = -1,
++	},
++};
 +
-+  interconnect-names:
-+    maxItems: 2
++static const struct dpu_intf_cfg sm6125_intf[] = {
++	{
++		.name = "intf_0", .id = INTF_0,
++		.base = 0x6a000, .len = 0x280,
++		.features = INTF_SC7180_MASK,
++		.type = INTF_DP,
++		.controller_id = MSM_DP_CONTROLLER_0,
++		.prog_fetch_lines_worst_case = 24,
++		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 24),
++		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 25),
++		.intr_tear_rd_ptr = -1,
++	}, {
++		.name = "intf_1", .id = INTF_1,
++		.base = 0x6a800, .len = 0x2c0,
++		.features = INTF_SC7180_MASK,
++		.type = INTF_DSI,
++		.controller_id = 0,
++		.prog_fetch_lines_worst_case = 24,
++		.intr_underrun = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 26),
++		.intr_vsync = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 27),
++		.intr_tear_rd_ptr = DPU_IRQ_IDX(MDP_INTF1_TEAR_INTR, 2),
++	},
++};
 +
-+patternProperties:
-+  "^display-controller@[0-9a-f]+$":
-+    type: object
-+    properties:
-+      compatible:
-+        const: qcom,sm6125-dpu
++static const struct dpu_perf_cfg sm6125_perf_data = {
++	.max_bw_low = 4100000,
++	.max_bw_high = 4100000,
++	.min_core_ib = 2400000,
++	.min_llcc_ib = 0, /* No LLCC on this SoC */
++	.min_dram_ib = 800000,
++	.min_prefill_lines = 24,
++	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff8, 0xf000, 0xffff},
++	.qos_lut_tbl = {
++		{.nentry = ARRAY_SIZE(sm8150_qos_linear),
++		.entries = sm8150_qos_linear
++		},
++		{.nentry = ARRAY_SIZE(sc7180_qos_macrotile),
++		.entries = sc7180_qos_macrotile
++		},
++		{.nentry = ARRAY_SIZE(sc7180_qos_nrt),
++		.entries = sc7180_qos_nrt
++		},
++		/* TODO: macrotile-qseed is different from macrotile */
++	},
++	.cdp_cfg = {
++		{.rd_enable = 1, .wr_enable = 1},
++		{.rd_enable = 1, .wr_enable = 0}
++	},
++	.clk_inefficiency_factor = 105,
++	.bw_inefficiency_factor = 120,
++};
 +
-+  "^dsi@[0-9a-f]+$":
-+    type: object
-+    properties:
-+      compatible:
-+        items:
-+          - const: qcom,sm6125-dsi-ctrl
-+          - const: qcom,mdss-dsi-ctrl
++static const struct dpu_mdss_version sm6125_mdss_ver = {
++	.core_major_ver = 5,
++	.core_minor_ver = 4,
++};
 +
-+  "^phy@[0-9a-f]+$":
-+    type: object
-+    properties:
-+      compatible:
-+        const: qcom,sm6125-dsi-phy-14nm
++const struct dpu_mdss_cfg dpu_sm6125_cfg = {
++	.mdss_ver = &sm6125_mdss_ver,
++	.caps = &sm6125_dpu_caps,
++	.ubwc = &sm6125_ubwc_cfg,
++	.mdp = &sm6125_mdp,
++	.ctl_count = ARRAY_SIZE(sm6125_ctl),
++	.ctl = sm6125_ctl,
++	.sspp_count = ARRAY_SIZE(sm6125_sspp),
++	.sspp = sm6125_sspp,
++	.mixer_count = ARRAY_SIZE(sm6125_lm),
++	.mixer = sm6125_lm,
++	.dspp_count = ARRAY_SIZE(sm6125_dspp),
++	.dspp = sm6125_dspp,
++	.pingpong_count = ARRAY_SIZE(sm6125_pp),
++	.pingpong = sm6125_pp,
++	.intf_count = ARRAY_SIZE(sm6125_intf),
++	.intf = sm6125_intf,
++	.vbif_count = ARRAY_SIZE(sdm845_vbif),
++	.vbif = sdm845_vbif,
++	.perf = &sm6125_perf_data,
++	.mdss_irqs = BIT(MDP_SSPP_TOP0_INTR) | \
++		     BIT(MDP_SSPP_TOP0_INTR2) | \
++		     BIT(MDP_SSPP_TOP0_HIST_INTR) | \
++		     BIT(MDP_INTF0_INTR) | \
++		     BIT(MDP_INTF1_INTR) | \
++		     BIT(MDP_INTF1_TEAR_INTR),
++};
 +
-+unevaluatedProperties: false
++#endif
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+index 4fdef908bde4..f2aa4d7afae4 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+@@ -38,6 +38,9 @@
+ #define VIG_SC7180_MASK \
+ 	(VIG_MASK | BIT(DPU_SSPP_QOS_8LVL) | BIT(DPU_SSPP_SCALER_QSEED4))
+ 
++#define VIG_SM6125_MASK \
++	(VIG_MASK | BIT(DPU_SSPP_QOS_8LVL) | BIT(DPU_SSPP_SCALER_QSEED3LITE))
 +
-+examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,dispcc-sm6125.h>
-+    #include <dt-bindings/clock/qcom,gcc-sm6125.h>
-+    #include <dt-bindings/clock/qcom,rpmcc.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/power/qcom-rpmpd.h>
+ #define VIG_SC7180_MASK_SDMA \
+ 	(VIG_SC7180_MASK | BIT(DPU_SSPP_SMART_DMA_V2))
+ 
+@@ -380,6 +383,9 @@ static const struct dpu_sspp_sub_blks sc7280_vig_sblk_0 =
+ static const struct dpu_sspp_sub_blks sm6115_vig_sblk_0 =
+ 				_VIG_SBLK(2, DPU_SSPP_SCALER_QSEED4);
+ 
++static const struct dpu_sspp_sub_blks sm6125_vig_sblk_0 =
++				_VIG_SBLK(3, DPU_SSPP_SCALER_QSEED3LITE);
 +
-+    display-subsystem@5e00000 {
-+        compatible = "qcom,sm6125-mdss";
-+        reg = <0x05e00000 0x1000>;
-+        reg-names = "mdss";
-+
-+        interrupts = <GIC_SPI 186 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-controller;
-+        #interrupt-cells = <1>;
-+
-+        clocks = <&gcc GCC_DISP_AHB_CLK>,
-+                 <&dispcc DISP_CC_MDSS_AHB_CLK>,
-+                 <&dispcc DISP_CC_MDSS_MDP_CLK>;
-+        clock-names = "iface",
-+                      "ahb",
-+                      "core";
-+
-+        power-domains = <&dispcc MDSS_GDSC>;
-+
-+        iommus = <&apps_smmu 0x400 0x0>;
-+
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        ranges;
-+
-+        display-controller@5e01000 {
-+            compatible = "qcom,sm6125-dpu";
-+            reg = <0x05e01000 0x83208>,
-+                  <0x05eb0000 0x2008>;
-+            reg-names = "mdp", "vbif";
-+
-+            interrupt-parent = <&mdss>;
-+            interrupts = <0>;
-+
-+            clocks = <&gcc GCC_DISP_HF_AXI_CLK>,
-+                     <&dispcc DISP_CC_MDSS_AHB_CLK>,
-+                     <&dispcc DISP_CC_MDSS_ROT_CLK>,
-+                     <&dispcc DISP_CC_MDSS_MDP_LUT_CLK>,
-+                     <&dispcc DISP_CC_MDSS_MDP_CLK>,
-+                     <&dispcc DISP_CC_MDSS_VSYNC_CLK>;
-+            clock-names = "bus",
-+                          "iface",
-+                          "rot",
-+                          "lut",
-+                          "core",
-+                          "vsync";
-+            assigned-clocks = <&dispcc DISP_CC_MDSS_VSYNC_CLK>;
-+            assigned-clock-rates = <19200000>;
-+
-+            operating-points-v2 = <&mdp_opp_table>;
-+            power-domains = <&rpmpd SM6125_VDDCX>;
-+
-+            ports {
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+
-+                port@0 {
-+                    reg = <0>;
-+                    dpu_intf1_out: endpoint {
-+                        remote-endpoint = <&mdss_dsi0_in>;
-+                    };
-+                };
-+            };
-+        };
-+
-+        dsi@5e94000 {
-+            compatible = "qcom,sm6125-dsi-ctrl", "qcom,mdss-dsi-ctrl";
-+            reg = <0x05e94000 0x400>;
-+            reg-names = "dsi_ctrl";
-+
-+            interrupt-parent = <&mdss>;
-+            interrupts = <4>;
-+
-+            clocks = <&dispcc DISP_CC_MDSS_BYTE0_CLK>,
-+                     <&dispcc DISP_CC_MDSS_BYTE0_INTF_CLK>,
-+                     <&dispcc DISP_CC_MDSS_PCLK0_CLK>,
-+                     <&dispcc DISP_CC_MDSS_ESC0_CLK>,
-+                     <&dispcc DISP_CC_MDSS_AHB_CLK>,
-+                     <&gcc GCC_DISP_HF_AXI_CLK>;
-+            clock-names = "byte",
-+                          "byte_intf",
-+                          "pixel",
-+                          "core",
-+                          "iface",
-+                          "bus";
-+            assigned-clocks = <&dispcc DISP_CC_MDSS_BYTE0_CLK_SRC>,
-+                      <&dispcc DISP_CC_MDSS_PCLK0_CLK_SRC>;
-+            assigned-clock-parents = <&mdss_dsi0_phy 0>, <&mdss_dsi0_phy 1>;
-+
-+            operating-points-v2 = <&dsi_opp_table>;
-+            power-domains = <&rpmpd SM6125_VDDCX>;
-+
-+            phys = <&mdss_dsi0_phy>;
-+            phy-names = "dsi";
-+
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+
-+            ports {
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+
-+                port@0 {
-+                    reg = <0>;
-+                    mdss_dsi0_in: endpoint {
-+                        remote-endpoint = <&dpu_intf1_out>;
-+                    };
-+                };
-+
-+                port@1 {
-+                    reg = <1>;
-+                    mdss_dsi0_out: endpoint {
-+                    };
-+                };
-+            };
-+        };
-+
-+        phy@5e94400 {
-+            compatible = "qcom,sm6125-dsi-phy-14nm";
-+            reg = <0x05e94400 0x100>,
-+                  <0x05e94500 0x300>,
-+                  <0x05e94800 0x188>;
-+            reg-names = "dsi_phy",
-+                        "dsi_phy_lane",
-+                        "dsi_pll";
-+
-+            #clock-cells = <1>;
-+            #phy-cells = <0>;
-+
-+            clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-+                     <&rpmcc RPM_SMD_XO_CLK_SRC>;
-+            clock-names = "iface",
-+                          "ref";
-+
-+            required-opps = <&rpmpd_opp_nom>;
-+            power-domains = <&rpmpd SM6125_VDDMX>;
-+        };
-+    };
-+...
+ static const struct dpu_sspp_sub_blks sm8250_vig_sblk_0 =
+ 				_VIG_SBLK(5, DPU_SSPP_SCALER_QSEED4);
+ static const struct dpu_sspp_sub_blks sm8250_vig_sblk_1 =
+@@ -718,6 +724,7 @@ static const struct dpu_qos_lut_entry sc7180_qos_nrt[] = {
+ 
+ #include "catalog/dpu_5_0_sm8150.h"
+ #include "catalog/dpu_5_1_sc8180x.h"
++#include "catalog/dpu_5_4_sm6125.h"
+ 
+ #include "catalog/dpu_6_0_sm8250.h"
+ #include "catalog/dpu_6_2_sc7180.h"
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+index 8d18e535472b..ca2d6d3ed4ac 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+@@ -873,6 +873,7 @@ extern const struct dpu_mdss_cfg dpu_sc8180x_cfg;
+ extern const struct dpu_mdss_cfg dpu_sm8250_cfg;
+ extern const struct dpu_mdss_cfg dpu_sc7180_cfg;
+ extern const struct dpu_mdss_cfg dpu_sm6115_cfg;
++extern const struct dpu_mdss_cfg dpu_sm6125_cfg;
+ extern const struct dpu_mdss_cfg dpu_sm6350_cfg;
+ extern const struct dpu_mdss_cfg dpu_qcm2290_cfg;
+ extern const struct dpu_mdss_cfg dpu_sm6375_cfg;
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+index 34a6f67932d3..7ba9428e943e 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+@@ -1282,6 +1282,7 @@ static const struct of_device_id dpu_dt_match[] = {
+ 	{ .compatible = "qcom,sc8180x-dpu", .data = &dpu_sc8180x_cfg, },
+ 	{ .compatible = "qcom,sc8280xp-dpu", .data = &dpu_sc8280xp_cfg, },
+ 	{ .compatible = "qcom,sm6115-dpu", .data = &dpu_sm6115_cfg, },
++	{ .compatible = "qcom,sm6125-dpu", .data = &dpu_sm6125_cfg, },
+ 	{ .compatible = "qcom,sm6350-dpu", .data = &dpu_sm6350_cfg, },
+ 	{ .compatible = "qcom,sm6375-dpu", .data = &dpu_sm6375_cfg, },
+ 	{ .compatible = "qcom,sm8150-dpu", .data = &dpu_sm8150_cfg, },
 
 -- 
 2.41.0
