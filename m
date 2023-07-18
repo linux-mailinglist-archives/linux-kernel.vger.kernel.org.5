@@ -2,269 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B06E757A7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE7E757A80
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbjGRLbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:31:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44130 "EHLO
+        id S231309AbjGRLcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjGRLbV (ORCPT
+        with ESMTP id S229496AbjGRLcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:31:21 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3095DE8
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:31:20 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6A9852F4;
-        Tue, 18 Jul 2023 04:32:03 -0700 (PDT)
-Received: from e109506.cambridge.arm.com (e109506.cambridge.arm.com [10.1.199.62])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B14773F6C4;
-        Tue, 18 Jul 2023 04:31:18 -0700 (PDT)
-From:   Rahul Singh <rahul.singh@arm.com>
-To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Jane Malalane <jane.malalane@citrix.com>
-Subject: [PATCH v3] xen/evtchn: Introduce new IOCTL to bind static evtchn
-Date:   Tue, 18 Jul 2023 12:31:07 +0100
-Message-Id: <ae7329bf1713f83e4aad4f3fa0f316258c40a3e9.1689677042.git.rahul.singh@arm.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 18 Jul 2023 07:32:22 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50025BD;
+        Tue, 18 Jul 2023 04:32:20 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R4xc51HXrzrRnV;
+        Tue, 18 Jul 2023 19:31:33 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 18 Jul 2023 19:32:15 +0800
+Subject: Re: [PATCH v2 5/7] perf evlist: Skip dummy event sample_type check
+ for evlist_config
+To:     Adrian Hunter <adrian.hunter@intel.com>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+        <namhyung@kernel.org>, <irogers@google.com>,
+        <kan.liang@linux.intel.com>, <james.clark@arm.com>,
+        <tmricht@linux.ibm.com>, <ak@linux.intel.com>,
+        <anshuman.khandual@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linux-perf-users@vger.kernel.org>
+References: <20230715032915.97146-1-yangjihong1@huawei.com>
+ <20230715032915.97146-6-yangjihong1@huawei.com>
+ <5797e5a7-a85f-4f7c-1649-88f8f9ff7a6b@intel.com>
+ <44645529-0ee6-fe69-bc03-fefbc6f73d4d@huawei.com>
+ <c4b7fb70-7b2e-74e9-576f-33b29e8801cd@intel.com>
+ <77ea9309-da6f-f7b9-a822-b371e0f832d3@huawei.com>
+ <ab152551-5e65-c43d-2046-a096a28db913@intel.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <ca64f76f-ccf4-3779-4090-6028b7ee7bef@huawei.com>
+Date:   Tue, 18 Jul 2023 19:32:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <ab152551-5e65-c43d-2046-a096a28db913@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xen 4.17 supports the creation of static evtchns. To allow user space
-application to bind static evtchns introduce new ioctl
-"IOCTL_EVTCHN_BIND_STATIC". Existing IOCTL doing more than binding
-that’s why we need to introduce the new IOCTL to only bind the static
-event channels.
+Hello,
 
-Static evtchns to be available for use during the lifetime of the
-guest. When the application exits, __unbind_from_irq() ends up being
-called from release() file operations because of that static evtchns
-are getting closed. To avoid closing the static event channel, add the
-new bool variable "is_static" in "struct irq_info" to mark the event
-channel static when creating the event channel to avoid closing the
-static evtchn.
+On 2023/7/18 18:29, Adrian Hunter wrote:
+> On 18/07/23 13:17, Yang Jihong wrote:
+>> Hello,
+>>
+>> On 2023/7/18 17:56, Adrian Hunter wrote:
+>>> On 18/07/23 12:30, Yang Jihong wrote:
+>>>> Hello,
+>>>>
+>>>> On 2023/7/17 22:41, Adrian Hunter wrote:
+>>>>> On 15/07/23 06:29, Yang Jihong wrote:
+>>>>>> The dummp event does not contain sampls data. Therefore, sample_type does
+>>>>>> not need to be checked.
+>>>>>>
+>>>>>> Currently, the sample id format of the actual sampling event may be changed
+>>>>>> after the dummy event is added.
+>>>>>>
+>>>>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>>>>>> ---
+>>>>>>     tools/perf/util/record.c | 7 +++++++
+>>>>>>     1 file changed, 7 insertions(+)
+>>>>>>
+>>>>>> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
+>>>>>> index 9eb5c6a08999..0240be3b340f 100644
+>>>>>> --- a/tools/perf/util/record.c
+>>>>>> +++ b/tools/perf/util/record.c
+>>>>>> @@ -128,6 +128,13 @@ void evlist__config(struct evlist *evlist, struct record_opts *opts, struct call
+>>>>>>             evlist__for_each_entry(evlist, evsel) {
+>>>>>>                 if (evsel->core.attr.sample_type == first->core.attr.sample_type)
+>>>>>>                     continue;
+>>>>>> +
+>>>>>> +            /*
+>>>>>> +             * Skip the sample_type check for the dummy event
+>>>>>> +             * because it does not have any samples anyway.
+>>>>>> +             */
+>>>>>> +            if (evsel__is_dummy_event(evsel))
+>>>>>> +                continue;
+>>>>>
+>>>>> Sideband event records have "ID samples" so the sample type still matters.
+>>>>>
+>>>> Okay, will remove this patch in next version.
+>>>>
+>>>> Can I ask a little more about this?
+>>>>
+>>>> Use PERF_SAMPLE_IDENTIFICATION instead of PERF_SAMPLE_ID because for samples of type PERF_RECORD_SAMPLE, there may be different record formats due to different *sample_type* settings, so the fixed SAMPLE_ID  location mode PERF_SAMPLE_NAME is required here.
+>>>>
+>>>> However, for the sideband event, the samples of the PERF_RECORD_SAMPLE type is not recorded (only PERF_RECORD_MMAP, PERF_RECORD_COMM, and so on). Therefore, the "use sample identifier "check can be skipped here.
+>>>>
+>>>> That's my understanding of PERF_SAMPLE_IDENTIFICATION . If there is any error, please help to correct it.
+>>>>
+>>>> *Sideband event records have "ID samples" so the sample type still matters.*
+>>>>
+>>>> Does this mean that sideband will also record samples of type PERF_RECORD_SAMPLE? What exactly is the sampling data?
+>>>
+>>> No.  There are additional members as defined by struct sample_id for PERF_RECORD_MMAP:
+>>>
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/perf_event.h?h=v6.4#n872
+>>>
+>> I'm sorry, maybe my comments didn't make it clear.
+>> I mean, can we skip the "use_sample_identifier" check here?
+>>
+>> That is, set sample_type to *XXX|PERF_SAMPLE_ID* instead of *XXX|PERF_SAMPLE_IDENTIFICATION*
+> 
+> In general, when there are different values of sample_type, the PERF_SAMPLE_ID is needed to determine which is which.
+> But PERF_SAMPLE_ID is not at a fixed position, so the sample_type is needed to find it.  That is why PERF_SAMPLE_IDENTIFIER is better.
+> 
+> Why do want to change it?
 
-Also, take this opportunity to remove the open-coded version of the
-evtchn close in drivers/xen/evtchn.c file and use xen_evtchn_close().
+Without this patch, we now add a system_wide tracking event and modify 
+the sample_type of the  actual sample event.
 
-Signed-off-by: Rahul Singh <rahul.singh@arm.com>
----
-v3:
- * Remove the open-coded version of the evtchn close in drivers/xen/evtchn.c
-v2:
- * Use bool in place u8 to define is_static variable.
- * Avoid closing the static evtchns in error path.
----
- drivers/xen/events/events_base.c | 16 +++++----------
- drivers/xen/evtchn.c             | 35 ++++++++++++++++++++++++--------
- include/uapi/xen/evtchn.h        |  9 ++++++++
- include/xen/events.h             | 11 +++++++++-
- 4 files changed, 50 insertions(+), 21 deletions(-)
+For example, when we run:
+   # perf record -e cycles -C 0
 
-diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
-index c7715f8bd452..3bdd5b59661d 100644
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -112,6 +112,7 @@ struct irq_info {
- 	unsigned int irq_epoch; /* If eoi_cpu valid: irq_epoch of event */
- 	u64 eoi_time;           /* Time in jiffies when to EOI. */
- 	raw_spinlock_t lock;
-+	bool is_static;           /* Is event channel static */
- 
- 	union {
- 		unsigned short virq;
-@@ -815,15 +816,6 @@ static void xen_free_irq(unsigned irq)
- 	irq_free_desc(irq);
- }
- 
--static void xen_evtchn_close(evtchn_port_t port)
--{
--	struct evtchn_close close;
--
--	close.port = port;
--	if (HYPERVISOR_event_channel_op(EVTCHNOP_close, &close) != 0)
--		BUG();
--}
--
- /* Not called for lateeoi events. */
- static void event_handler_exit(struct irq_info *info)
- {
-@@ -982,7 +974,8 @@ static void __unbind_from_irq(unsigned int irq)
- 		unsigned int cpu = cpu_from_irq(irq);
- 		struct xenbus_device *dev;
- 
--		xen_evtchn_close(evtchn);
-+		if (!info->is_static)
-+			xen_evtchn_close(evtchn);
- 
- 		switch (type_from_irq(irq)) {
- 		case IRQT_VIRQ:
-@@ -1574,7 +1567,7 @@ int xen_set_irq_priority(unsigned irq, unsigned priority)
- }
- EXPORT_SYMBOL_GPL(xen_set_irq_priority);
- 
--int evtchn_make_refcounted(evtchn_port_t evtchn)
-+int evtchn_make_refcounted(evtchn_port_t evtchn, bool is_static)
- {
- 	int irq = get_evtchn_to_irq(evtchn);
- 	struct irq_info *info;
-@@ -1590,6 +1583,7 @@ int evtchn_make_refcounted(evtchn_port_t evtchn)
- 	WARN_ON(info->refcnt != -1);
- 
- 	info->refcnt = 1;
-+	info->is_static = is_static;
- 
- 	return 0;
- }
-diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
-index c99415a70051..9139a7364df5 100644
---- a/drivers/xen/evtchn.c
-+++ b/drivers/xen/evtchn.c
-@@ -366,10 +366,10 @@ static int evtchn_resize_ring(struct per_user_data *u)
- 	return 0;
- }
- 
--static int evtchn_bind_to_user(struct per_user_data *u, evtchn_port_t port)
-+static int evtchn_bind_to_user(struct per_user_data *u, evtchn_port_t port,
-+			       bool is_static)
- {
- 	struct user_evtchn *evtchn;
--	struct evtchn_close close;
- 	int rc = 0;
- 
- 	/*
-@@ -402,14 +402,14 @@ static int evtchn_bind_to_user(struct per_user_data *u, evtchn_port_t port)
- 	if (rc < 0)
- 		goto err;
- 
--	rc = evtchn_make_refcounted(port);
-+	rc = evtchn_make_refcounted(port, is_static);
- 	return rc;
- 
- err:
- 	/* bind failed, should close the port now */
--	close.port = port;
--	if (HYPERVISOR_event_channel_op(EVTCHNOP_close, &close) != 0)
--		BUG();
-+	if (!is_static)
-+		xen_evtchn_close(port);
-+
- 	del_evtchn(u, evtchn);
- 	return rc;
- }
-@@ -456,7 +456,7 @@ static long evtchn_ioctl(struct file *file,
- 		if (rc != 0)
- 			break;
- 
--		rc = evtchn_bind_to_user(u, bind_virq.port);
-+		rc = evtchn_bind_to_user(u, bind_virq.port, false);
- 		if (rc == 0)
- 			rc = bind_virq.port;
- 		break;
-@@ -482,7 +482,7 @@ static long evtchn_ioctl(struct file *file,
- 		if (rc != 0)
- 			break;
- 
--		rc = evtchn_bind_to_user(u, bind_interdomain.local_port);
-+		rc = evtchn_bind_to_user(u, bind_interdomain.local_port, false);
- 		if (rc == 0)
- 			rc = bind_interdomain.local_port;
- 		break;
-@@ -507,7 +507,7 @@ static long evtchn_ioctl(struct file *file,
- 		if (rc != 0)
- 			break;
- 
--		rc = evtchn_bind_to_user(u, alloc_unbound.port);
-+		rc = evtchn_bind_to_user(u, alloc_unbound.port, false);
- 		if (rc == 0)
- 			rc = alloc_unbound.port;
- 		break;
-@@ -536,6 +536,23 @@ static long evtchn_ioctl(struct file *file,
- 		break;
- 	}
- 
-+	case IOCTL_EVTCHN_BIND_STATIC: {
-+		struct ioctl_evtchn_bind bind;
-+		struct user_evtchn *evtchn;
-+
-+		rc = -EFAULT;
-+		if (copy_from_user(&bind, uarg, sizeof(bind)))
-+			break;
-+
-+		rc = -EISCONN;
-+		evtchn = find_evtchn(u, bind.port);
-+		if (evtchn)
-+			break;
-+
-+		rc = evtchn_bind_to_user(u, bind.port, true);
-+		break;
-+	}
-+
- 	case IOCTL_EVTCHN_NOTIFY: {
- 		struct ioctl_evtchn_notify notify;
- 		struct user_evtchn *evtchn;
-diff --git a/include/uapi/xen/evtchn.h b/include/uapi/xen/evtchn.h
-index 7fbf732f168f..aef2b75f3413 100644
---- a/include/uapi/xen/evtchn.h
-+++ b/include/uapi/xen/evtchn.h
-@@ -101,4 +101,13 @@ struct ioctl_evtchn_restrict_domid {
- 	domid_t domid;
- };
- 
-+/*
-+ * Bind statically allocated @port.
-+ */
-+#define IOCTL_EVTCHN_BIND_STATIC			\
-+	_IOC(_IOC_NONE, 'E', 7, sizeof(struct ioctl_evtchn_bind))
-+struct ioctl_evtchn_bind {
-+	unsigned int port;
-+};
-+
- #endif /* __LINUX_PUBLIC_EVTCHN_H__ */
-diff --git a/include/xen/events.h b/include/xen/events.h
-index ac1281c5ead6..95970a2f7695 100644
---- a/include/xen/events.h
-+++ b/include/xen/events.h
-@@ -69,7 +69,7 @@ int xen_set_irq_priority(unsigned irq, unsigned priority);
- /*
-  * Allow extra references to event channels exposed to userspace by evtchn
-  */
--int evtchn_make_refcounted(evtchn_port_t evtchn);
-+int evtchn_make_refcounted(evtchn_port_t evtchn, bool is_static);
- int evtchn_get(evtchn_port_t evtchn);
- void evtchn_put(evtchn_port_t evtchn);
- 
-@@ -141,4 +141,13 @@ void xen_init_IRQ(void);
- 
- irqreturn_t xen_debug_interrupt(int irq, void *dev_id);
- 
-+static inline void xen_evtchn_close(evtchn_port_t port)
-+{
-+	struct evtchn_close close;
-+
-+	close.port = port;
-+	if (HYPERVISOR_event_channel_op(EVTCHNOP_close, &close) != 0)
-+		BUG();
-+}
-+
- #endif	/* _XEN_EVENTS_H */
+1. The default sample_type of the "cycles" is IP|TID|TIME|CPU|PERIOD.
+2. Then add a system_wide sideband event whose sample_type is 
+IP|TID|TIME|CPU.
+3. The two sample_types are different.
+4. Therefore, the evlist__config adds a PERF_SAMPLE_IDENTIFICATION to 
+both sample_types instead of PERF_SAMPLE_ID.
 
-base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
--- 
-2.25.1
+evlist__config {
+         ...
+          } else if (evlist->core.nr_entries > 1) {
+          // One is cycles and the other is sideband . 
+
+                  struct evsel *first = evlist__first(evlist); 
+
+ 
+
+                  evlist__for_each_entry(evlist, evsel) { 
+
+                          if (evsel->core.attr.sample_type == 
+first->core.attr.sample_type)
+                                  continue; 
+
+                          use_sample_identifier = 
+perf_can_sample_identifier();
+                          // the sample_type of cycles is different from 
+that of sideband.
+						 // Therefore, use_sample_identifier is set to true.
+                          break; 
+
+                  } 
+
+                  sample_id = true; 
+
+          } 
+
+ 
+
+          if (sample_id) { 
+
+                  evlist__for_each_entry(evlist, evsel) 
+
+                          evsel__set_sample_id(evsel, 
+use_sample_identifier);
+                          // both cycles and sideband set 
+PERF_SAMPLE_IDENTIFICATION  						
+          } 
+
+         ...
+}
+
+The comparison of the sideband event sample_type is skipped so that the 
+sample_type of the original cycles is not changed.
+
+It does not seem necessary to compare the sample_type of sidebband 
+event. It is not an actual sample event, so I'd like to confirm that.
+
+If the change is as expected and necessary, then I'll remove the patch.
+
+Thanks,
+Yang
 
