@@ -2,121 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C563775835D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C16C758360
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbjGRRUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:20:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
+        id S232193AbjGRRV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233096AbjGRRUj (ORCPT
+        with ESMTP id S233284AbjGRRVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:20:39 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61836BE
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:20:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689700838; x=1721236838;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gU6GXU89DoVEPPGhanKObMgejkXt3Pfm1XjHlWHVMrg=;
-  b=MX196G+M1h1A7W9TC5o4vVleEyOA9iCw/Jkk6/Zr6C6fz1Nl3kGPKGiO
-   ghMEmI/U9Zz37DFDk0d85F6+5NVMI2zzrLWTjmcuZtNyB2D7aO5CYT4ck
-   BBhIIGVgixJeRV8+H+AMHH/px2S6oML6w1pjdw9p9sfuKk1/FiMLpHjeh
-   VUK0G96Q/8j7GzZ7ndSA1SugqOGLddoQ1XhPHfAu9A/ku6pEbYJszDp0Z
-   FGOB4Irp46+qAsD8L65waR8BP1ZMRZfg3xQKzBuFdM5jJXJT+mVLohQtY
-   8UwxmUnl72Eg7+JCm7x0/g404tgTyKGpPEn3H/jtYsrB4BfCutOMatsC3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="452644692"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="452644692"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 10:20:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="753407725"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="753407725"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP; 18 Jul 2023 10:20:34 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qLoND-005W4T-39;
-        Tue, 18 Jul 2023 20:20:31 +0300
-Date:   Tue, 18 Jul 2023 20:20:31 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Alexander Potapenko <glider@google.com>, catalin.marinas@arm.com,
-        will@kernel.org, pcc@google.com, andreyknvl@gmail.com,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v3 1/5] lib/bitmap: add bitmap_{set,get}_value()
-Message-ID: <ZLbJ3yz1yGtR9pCG@smile.fi.intel.com>
-References: <20230717113709.328671-1-glider@google.com>
- <20230717113709.328671-2-glider@google.com>
- <ZLVjYzuxlJAQVpIO@yury-ThinkPad>
- <CAG_fn=UPqyFhEMLDz3nhc7fgpCvprLsYrNjUnw3z4KfWCJGTHA@mail.gmail.com>
- <ZLabOHmNQm2EOXWR@smile.fi.intel.com>
- <ZLbF3ZO7TvJGJOeo@yury-ThinkPad>
+        Tue, 18 Jul 2023 13:21:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B679C199;
+        Tue, 18 Jul 2023 10:21:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 334EC614CC;
+        Tue, 18 Jul 2023 17:21:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74FB2C433C7;
+        Tue, 18 Jul 2023 17:21:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689700863;
+        bh=y74BJup/kSru/IUlq3/SqORVbncCOStuvNbNUy0w0p4=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=jxHlP7MJEcCQjDqQ6uuC2LoOuFCY8lt2NvFu1Ya8nDJYsG+u0PiZrGKTdQREkm44k
+         Y8Hhj+eIVkKyjcRoH/liW9Of2PX6ywFq9rSma5TidPGXcQdeLfNXc7riFktmfQHrL9
+         btECcWg18DDEMC2DvtfjbAM0wuEStc6G4IZJ8PDjYjusuoRTjkbS1ZuhcZzozcrz80
+         ySKOGi8ODtI9GFmyXVM2fnVWOABxBdLL+A4M0gJWycAw3Xkor0cp7wTYKaBfP2koda
+         EIhT6YBGbakqI8K7q9aoBBPcXx4rpEQG1N1HghuUqrWkYwNkJjnPPK9h9ro1JnRM/z
+         yu4vcB/gzFFpQ==
+Received: (nullmailer pid 1409636 invoked by uid 1000);
+        Tue, 18 Jul 2023 17:21:01 -0000
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZLbF3ZO7TvJGJOeo@yury-ThinkPad>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Nikunj Kela <quic_nkela@quicinc.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, sudeep.holla@arm.com,
+        devicetree@vger.kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        andersson@kernel.org, linux-arm-msm@vger.kernel.org,
+        conor+dt@kernel.org, cristian.marussi@arm.com
+In-Reply-To: <20230718160833.36397-2-quic_nkela@quicinc.com>
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
+ <20230718160833.36397-2-quic_nkela@quicinc.com>
+Message-Id: <168970086141.1409620.455574714947000571.robh@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: arm: Add qcom specific hvc transport
+ for SCMI
+Date:   Tue, 18 Jul 2023 11:21:01 -0600
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 10:03:25AM -0700, Yury Norov wrote:
-> On Tue, Jul 18, 2023 at 05:01:28PM +0300, Andy Shevchenko wrote:
-> > On Tue, Jul 18, 2023 at 11:30:00AM +0200, Alexander Potapenko wrote:
 
-...
+On Tue, 18 Jul 2023 09:08:32 -0700, Nikunj Kela wrote:
+> Introduce compatible "qcom,scmi-hvc-shmem" for SCMI
+> transport channel for Qualcomm virtual platforms.
+> The compatible mandates a shared memory channel.
+> 
+> Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
+> ---
+>  .../bindings/firmware/arm,scmi.yaml           | 69 +++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+> 
 
-> > The idea behind is to eliminate the code completely for the cases nbits != 0.
-> > In your case the dynamic check will be there. That's what we want to avoid.
-> 
-> Alexander is right - we can't avoid testing against 0 if we need to
-> test for 0... In case of other functions we have inline and outline
-> implementations, controlled by small_const_nbits().
-> 
-> As you can see, the small_const_nbits() tests against 0 explicitly,
-> although it's free at compile time. But if nbits == 0, we pick
-> outline version of a function regardless.
-> 
-> On their turn, outline versions again do their test against nbits == 0,
-> but most of the time implicitly.
-> 
-> In case of bitmap_set_val, we are touching at max 2 words, and there's
-> no reason for outline version, so we have to test nbits against 0
-> inside inline code. 
-> 
-> Having all that in mind, and because nbits == 0 is most likely an
-> error we'd follow the following rules:
->  - no memory must be touched as we're potentially in error condition,
->    and pointer may be corrupted;
->  - the cost of the check must be as minimal as possible.
-> 
-> So I suggest:
-> 
->         if (unlikely(nbits == 0))
->                 return;
-> 
-> For readers that would literally mean: we don't expect that, and we find
-> it suspicious, but we'll handle that as correct as we can.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Okay, thank you for elaborated answer.
+yamllint warnings/errors:
 
--- 
-With Best Regards,
-Andy Shevchenko
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/firmware/arm,scmi.example.dts:194.31-32 syntax error
+FATAL ERROR: Unable to parse input tree
+make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/firmware/arm,scmi.example.dtb] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1500: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
 
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230718160833.36397-2-quic_nkela@quicinc.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
