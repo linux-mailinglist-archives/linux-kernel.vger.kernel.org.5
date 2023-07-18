@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD5E7578DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 455727578E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbjGRKG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 06:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58132 "EHLO
+        id S231378AbjGRKHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 06:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbjGRKGZ (ORCPT
+        with ESMTP id S231801AbjGRKHO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 06:06:25 -0400
+        Tue, 18 Jul 2023 06:07:14 -0400
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68567B9;
-        Tue, 18 Jul 2023 03:06:24 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4R4vf14xf2z67nbv;
-        Tue, 18 Jul 2023 18:03:05 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA29128;
+        Tue, 18 Jul 2023 03:07:09 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4R4vdp31L5z6D8ZD;
+        Tue, 18 Jul 2023 18:02:54 +0800 (CST)
 Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
  (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
- 2023 11:06:21 +0100
-Date:   Tue, 18 Jul 2023 11:06:20 +0100
+ 2023 11:06:51 +0100
+Date:   Tue, 18 Jul 2023 11:06:50 +0100
 From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
@@ -51,11 +51,12 @@ CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
         Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
         AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v2 05/10] pinctrl: lynxpoint: Make use of pm_ptr()
-Message-ID: <20230718110620.0000218e@Huawei.com>
-In-Reply-To: <20230717172821.62827-6-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v2 06/10] pinctrl: at91: Switch to use
+ DEFINE_NOIRQ_DEV_PM_OPS() helper
+Message-ID: <20230718110650.00002f1c@Huawei.com>
+In-Reply-To: <20230717172821.62827-7-andriy.shevchenko@linux.intel.com>
 References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
-        <20230717172821.62827-6-andriy.shevchenko@linux.intel.com>
+        <20230717172821.62827-7-andriy.shevchenko@linux.intel.com>
 Organization: Huawei Technologies Research and Development (UK) Ltd.
 X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
@@ -75,45 +76,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Jul 2023 20:28:16 +0300
+On Mon, 17 Jul 2023 20:28:17 +0300
 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-> Cleaning up the driver to use pm_ptr() and *_PM_OPS() macros that
-> make it simpler and allows the compiler to remove those functions
-> if built without CONFIG_PM and CONFIG_PM_SLEEP support.
+> Since pm.h provides a helper for system no-IRQ PM callbacks,
+> switch the driver to use it instead of open coded variant.
 > 
-
-Those macros add a load more callbacks... Whilst that may well be fine,
-you should definitely mention that in this patch description.
-
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/pinctrl/intel/pinctrl-lynxpoint.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/intel/pinctrl-lynxpoint.c b/drivers/pinctrl/intel/pinctrl-lynxpoint.c
-> index cdace55aaeac..50d92bf80e20 100644
-> --- a/drivers/pinctrl/intel/pinctrl-lynxpoint.c
-> +++ b/drivers/pinctrl/intel/pinctrl-lynxpoint.c
-> @@ -948,9 +948,8 @@ static int lp_gpio_resume(struct device *dev)
->  }
->  
->  static const struct dev_pm_ops lp_gpio_pm_ops = {
-> -	.runtime_suspend = lp_gpio_runtime_suspend,
-> -	.runtime_resume = lp_gpio_runtime_resume,
-> -	.resume = lp_gpio_resume,
-> +	SYSTEM_SLEEP_PM_OPS(NULL, lp_gpio_resume)
-> +	RUNTIME_PM_OPS(lp_gpio_runtime_suspend, lp_gpio_runtime_resume, NULL)
->  };
->  
->  static const struct acpi_device_id lynxpoint_gpio_acpi_match[] = {
-> @@ -965,7 +964,7 @@ static struct platform_driver lp_gpio_driver = {
->  	.remove         = lp_gpio_remove,
->  	.driver         = {
->  		.name   = "lp_gpio",
-> -		.pm	= &lp_gpio_pm_ops,
-> +		.pm	= pm_ptr(&lp_gpio_pm_ops),
->  		.acpi_match_table = lynxpoint_gpio_acpi_match,
->  	},
->  };
-
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
