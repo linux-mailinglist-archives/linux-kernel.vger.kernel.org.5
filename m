@@ -2,174 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD81C757ACD
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E8F757AD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbjGRLqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:46:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
+        id S230470AbjGRLql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:46:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjGRLqI (ORCPT
+        with ESMTP id S231572AbjGRLqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:46:08 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292F51B1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:46:04 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b72161c6e9so85092971fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:46:04 -0700 (PDT)
+        Tue, 18 Jul 2023 07:46:37 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2874010FF
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:46:35 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-992b27e1c55so727162366b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:46:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1689680762; x=1692272762;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1kahMnjiGb0a+BAKQ+PGSCJLgK5Xwr5yNiHBFNUBoTw=;
-        b=vyFCR+ny/btEupQuRxIlDOiNfd1dSyBqFLdX4PL1+tEBLB8u/WdH4NJjw3PcaUWz1D
-         dNOyoFsRg/sRcROztZ06d6I8trHoDGC1eDldxrwPyo6hHr9Hz+gS6SaauPpSO05kfQd1
-         LpVYQkSrnzvyyVgYbdy6sD9+TOVj/lncOrgYwLzM9Prgo0btROG8+EXEFtM9QLSzxeuW
-         jn1o64Lk/UD2bh/lMDdOIP5QwnAL44frwEp+J4RjrReCLc318DTKEKn3UcTIp3RNzTrf
-         foRHPNx0pR2jkjLtujeXjBaYsUbNwufufkUKdONnXJK50Htj9L14Gk2y5sopY8OxZ1kk
-         Rsiw==
+        d=linaro.org; s=google; t=1689680793; x=1692272793;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iuDnJNLg1DSi2IHDv19vszLfxDNRnbsAsLdkpra8x7k=;
+        b=KmZCYYUnlbZx+41kc3ZIroQqHthEIf8tMdv/piRFlvkdADgfygYtXYQ/6wWVzEb/W5
+         mrpURoLoDj/ir8jmXbnHZhThVElMCFH9t+twj/fSuYxMPBiti/SxKH6kiTP8dx138+iX
+         nxsLcbp/qM0YdpvQXY1hGcs4ziQdk4AeQnbPOY39B2fu24RTjN2qDUGwAGhf6LbY5mmo
+         uhhYT+mrGDYjn18UuYIYgp9chFCkT5T7X6sqrZ0HlOKJ0bqgtB/3xbz1jGfIiXKdNOD+
+         AECw2aypwFiZSEiGO8Vsw3dzGTsMmLTbWvtDivpJXi/xw0/2ugQtbJJB2NhgEmBz652P
+         9vHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689680762; x=1692272762;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1kahMnjiGb0a+BAKQ+PGSCJLgK5Xwr5yNiHBFNUBoTw=;
-        b=EgN5/T/KgizFuT4m3dpPwKTWKZ/wgYkJ5wEGratIEhc0Ea8zSaJNvaV6LCBWc2Uzpf
-         3eEczjb9oztsnN4FGvQl1ck/+z8fXtqxgv1k+pYdr/3KU2Oi7JMm5PpZFx3Dot5xlG/g
-         Yk951oEdVG3NFUo5cnyKx8d7xa0v2DUC8B2IW+iyyp5e39lMndC/xFFs39oCtGqbOWKc
-         9a5rmj7NxSXesv3Jml23of8q4goB2odbSi4YLRmByKVGJdJsG28znBd5sYFf8TFkNrBP
-         allkZAAQCGBtOVpTZNLY9ZW3e6mweaL3rhD9VRVqDTr9R9wAxtyvCME17EIzvYO0gS7B
-         nrIA==
-X-Gm-Message-State: ABy/qLYfXvbEDoaZ8cGFv5cghJyeBXRHIPYL+qaw5DcN2hkKOIOXpihv
-        pA2GWZlkGGDBJVE/cTRpmQKmF5J4J6Vogn0ER+Zdzw==
-X-Google-Smtp-Source: APBJJlHFP6SXU1NB/79g7oicNLEruyE/4c19mGoJXPpXQGAUSi9zbmzTwRjfkyxMvFrMCqcm+hhGqkWP5xVT9VedvN4=
-X-Received: by 2002:a05:651c:233:b0:2b6:d47f:2a4 with SMTP id
- z19-20020a05651c023300b002b6d47f02a4mr5142113ljn.13.1689680762245; Tue, 18
- Jul 2023 04:46:02 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689680793; x=1692272793;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iuDnJNLg1DSi2IHDv19vszLfxDNRnbsAsLdkpra8x7k=;
+        b=KaMN/BLURc3LO7LsZ4yHzvGY3kDCjNFeBdVnuCuzpmmVjR9V+2xH4qawATlbSVPR4c
+         wzkhByaNI7dI6gV3Dg5o3ijdmKm02uBv67AvSsxC7xwx1Aomqac2yyuDgBgRLD9r0I+1
+         kgW6e8Jsz020bU63YWZPJyIkVsDz5Km6aymXuAK6JWVOGAG5kqXrqugRPg8HxZZqX9Ao
+         QoS2lWYeLbf7pxCiK+rDWGpA4ioTORhh1HQwdwXmxqWsQqnNWY9DqAH+BmZU36kjJJBZ
+         nP4Mbg3dp6dJpfrULBo9/k1RC/3+NEyDuGLGOgjRtkb98RWXuvkNcza6XEdFROIVPXE+
+         g/Iw==
+X-Gm-Message-State: ABy/qLY4ftOTHFVZM3GRr2RBMTLj74wF5mXe0cSLg8iWuqiDZoe2Eqf/
+        Y8HCupvSXsVqMJMqwG/MsMjnJg==
+X-Google-Smtp-Source: APBJJlGS61+osXViXxDbApOvqLzVXb+fOy9jdzDfgRrkCLEjedJ6+KDyKzAW0phOXuWgXGnT7qqMwg==
+X-Received: by 2002:a17:907:7656:b0:993:f6c8:300f with SMTP id kj22-20020a170907765600b00993f6c8300fmr11821366ejc.15.1689680793651;
+        Tue, 18 Jul 2023 04:46:33 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id y14-20020a1709063a8e00b00988b86d6c7csm913001ejd.132.2023.07.18.04.46.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 04:46:33 -0700 (PDT)
+Message-ID: <24425fcb-608d-e5be-a799-ac839b0b5953@linaro.org>
+Date:   Tue, 18 Jul 2023 13:46:31 +0200
 MIME-Version: 1.0
-References: <20190716131005.761-1-bogdan.togorean@analog.com>
- <20230718084215.12767-1-alex@shruggie.ro> <CAN6tsi5+WV65FSpuzjJY46beHU8SkOMYfZNS3DnXiVft_6MG4A@mail.gmail.com>
-In-Reply-To: <CAN6tsi5+WV65FSpuzjJY46beHU8SkOMYfZNS3DnXiVft_6MG4A@mail.gmail.com>
-From:   Alexandru Ardelean <alex@shruggie.ro>
-Date:   Tue, 18 Jul 2023 14:45:51 +0300
-Message-ID: <CAH3L5QoYgU7HVF-Dc2ZJVcK-paoxwh0ZHWWxBhYudm+Mjvt7tA@mail.gmail.com>
-Subject: Re: [PATCH v3] drm: adv7511: Fix low refresh rate register for ADV7533/5
-To:     Robert Foss <rfoss@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        bogdan.togorean@analog.com, nuno.sa@analog.com, daniel@ffwll.ch,
-        airlied@gmail.com, jonas@kwiboo.se,
-        Laurent.pinchart@ideasonboard.com, neil.armstrong@linaro.org,
-        andrzej.hajda@intel.com, festevam@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] soc: mediatek: mtk-socinfo: Add driver for getting
+ chip information
+Content-Language: en-US
+To:     William-tw Lin <william-tw.lin@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Kevin Hilman <khilman@kernel.org>
+Cc:     Project_Global_Chrome_Upstream_Group@mediatek.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+References: <20230718112143.14036-1-william-tw.lin@mediatek.com>
+ <20230718112143.14036-2-william-tw.lin@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230718112143.14036-2-william-tw.lin@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 11:50=E2=80=AFAM Robert Foss <rfoss@kernel.org> wro=
-te:
->
-> On Tue, Jul 18, 2023 at 10:42=E2=80=AFAM Alexandru Ardelean <alex@shruggi=
-e.ro> wrote:
-> >
-> > From: Bogdan Togorean <bogdan.togorean@analog.com>
-> >
-> > For ADV7533 and ADV7535 low refresh rate is selected using
-> > bits [3:2] of 0x4a main register.
-> > So depending on ADV model write 0xfb or 0x4a register.
-> >
-> > Fixes: 2437e7cd88e8 ("drm/bridge: adv7533: Initial support for ADV7533"=
-)
-> > Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-> > Signed-off-by: Bogdan Togorean <bogdan.togorean@analog.com>
-> > Signed-off-by: Alexandru Ardelean <alex@shruggie.ro>
-> > ---
-> >
-> > Changelog v2 -> v3:
-> > * https://lore.kernel.org/dri-devel/1c3fde3a873b0f948d3c4d37107c5bb67dc=
-9f7bb.camel@gmail.com/T/#u
-> > * Added my S-o-b tag back
-> >
-> > Changelog v1 -> v2:
-> > * https://lore.kernel.org/dri-devel/20190716131005.761-1-bogdan.togorea=
-n@analog.com/
-> > * added Fixes: tag
-> > * added Reviewed-by: tag for Nuno
-> >
-> >
-> >  drivers/gpu/drm/bridge/adv7511/adv7511_drv.c | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu=
-/drm/bridge/adv7511/adv7511_drv.c
-> > index ddceafa7b637..09290a377957 100644
-> > --- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-> > +++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-> > @@ -786,8 +786,13 @@ static void adv7511_mode_set(struct adv7511 *adv75=
-11,
-> >         else
-> >                 low_refresh_rate =3D ADV7511_LOW_REFRESH_RATE_NONE;
-> >
-> > -       regmap_update_bits(adv7511->regmap, 0xfb,
-> > -               0x6, low_refresh_rate << 1);
-> > +       if (adv7511->type =3D=3D ADV7511)
-> > +               regmap_update_bits(adv7511->regmap, 0xfb,
-> > +                       0x6, low_refresh_rate << 1);
-> > +       else
-> > +               regmap_update_bits(adv7511->regmap, 0x4a,
-> > +                       0xc, low_refresh_rate << 2);
-> > +
-> >         regmap_update_bits(adv7511->regmap, 0x17,
-> >                 0x60, (vsync_polarity << 6) | (hsync_polarity << 5));
-> >
-> > --
-> > 2.41.0
-> >
->
-> This looks good, but I'm seeing some checkpatch style warnings, with
-> those fixed feel free to add my r-b.
+On 18/07/2023 13:21, William-tw Lin wrote:
+> Add driver for socinfo retrieval. This patch includes the following:
+> 1. mtk-socinfo driver for chip info retrieval
+> 2. Related changes to Makefile and Kconfig
+> 
+> Signed-off-by: William-tw Lin <william-tw.lin@mediatek.com>
+> ---
 
-Thanks.
-Will do.
-May I ask what options you are using for checkpatch.pl?
-I don't seem to get those warnings.
-And I'm basing on an "exynos-drm-fixes"branch from here
-   https://git.kernel.org/pub/scm/linux/kernel/git/daeinki/drm-exynos.git/
-(I'll admit it may not be the correct branch)
+...
 
-# /scripts/checkpatch.pl
-v3-0001-drm-adv7511-Fix-low-refresh-rate-register-for-ADV.patch
-total: 0 errors, 0 warnings, 15 lines checked
-
-v3-0001-drm-adv7511-Fix-low-refresh-rate-register-for-ADV.patch has no
-obvious style problems and is ready for submission.
+> +#if IS_ENABLED(CONFIG_MTK_SOCINFO_DEBUG)
+> +static int mtk_socinfo_socinfo_debug_show(struct seq_file *m, void *p)
+> +{
+> +	struct mtk_socinfo *mtk_socinfop = (struct mtk_socinfo *)m->private;
+> +
+> +	seq_printf(m, "SOC Manufacturer:   %s\n", soc_manufacturer);
+> +	seq_printf(m, "SOC Name:           %s\n", mtk_socinfop->name_data->soc_name);
+> +	seq_printf(m, "SOC segment Name:   %s\n", mtk_socinfop->name_data->soc_segment_name);
+> +	seq_printf(m, "Marketing Name:     %s\n", mtk_socinfop->name_data->marketing_name);
+> +
+> +	return 0;
+> +}
+> +DEBUG_FOPS_RO(socinfo);
 
 
->
-> CHECK: Alignment should match open parenthesis
-> #32: FILE: drivers/gpu/drm/bridge/adv7511/adv7511_drv.c:791:
-> +        regmap_update_bits(adv7511->regmap, 0xfb,
-> +            0x6, low_refresh_rate << 1);
->
-> CHECK: Alignment should match open parenthesis
-> #35: FILE: drivers/gpu/drm/bridge/adv7511/adv7511_drv.c:794:
-> +        regmap_update_bits(adv7511->regmap, 0x4a,
-> +            0xc, low_refresh_rate << 2);
->
-> total: 0 errors, 0 warnings, 2 checks, 15 lines checked
->
-> NOTE: For some of the reported defects, checkpatch may be able to
->       mechanically convert to the typical style using --fix or --fix-inpl=
-ace.
->
-> Commit 1955dfe734e4 ("drm: adv7511: Fix low refresh rate register for
-> ADV7533/5") has style problems, please review.
->
-> NOTE: If any of the errors are false positives, please report
+No, there is socinfo for this.
+
+...
+
+> +
+> +static int mtk_socinfo_probe(struct platform_device *pdev)
+> +{
+> +	struct mtk_socinfo *mtk_socinfop;
+> +	int ret = 0;
+> +
+> +	mtk_socinfop = devm_kzalloc(&pdev->dev, sizeof(*mtk_socinfop), GFP_KERNEL);
+> +	if (!mtk_socinfop)
+> +		return -ENOMEM;
+> +
+> +	mtk_socinfop->dev = &pdev->dev;
+> +	mtk_socinfop->soc_data = (struct socinfo_data *)of_device_get_match_data(mtk_socinfop->dev);
+
+Why do you need the cast?
+
+> +	if (!mtk_socinfop->soc_data) {
+> +		dev_err(mtk_socinfop->dev, "No mtk-socinfo platform data found\n");
+> +		return -EPERM;
+
+EPERM? Is this correct errno? How is it even possible?
+
+> +	}
+> +
+> +	ret = mtk_socinfo_get_socinfo_data(mtk_socinfop);
+> +	if (ret < 0) {
+> +		dev_err(mtk_socinfop->dev, "Failed to get socinfo data (ret = %d)\n", ret);
+> +		return -EINVAL;
+
+return dev_err_probe
+
+> +	}
+> +
+> +	ret = mtk_socinfo_create_socinfo_node(mtk_socinfop);
+> +	if (ret != 0) {
+> +		dev_err(mtk_socinfop->dev, "Failed to create socinfo node (ret = %d)\n", ret);
+> +		return ret;
+> +	}
+> +
+> +#if IS_ENABLED(CONFIG_MTK_SOCINFO_DEBUG)
+
+Drop #if. If you need to make it conditional, then use standard C code.
+
+
+
+> +	ret = mtk_socinfo_create_debug_cmds(mtk_socinfop);
+> +	if (ret != 0) {
+> +		dev_err(mtk_socinfop->dev, "Failed to create socinfo debug node (ret = %d)\n", ret);
+> +		return ret;
+
+No, we do not print failures and definitely do not fail probing on
+debugfs! Come one...
+
+> +	}
+> +#endif
+> +	return 0;
+> +}
+> +
+> +static int mtk_socinfo_remove(struct platform_device *pdev)
+> +{
+> +	if (soc_dev)
+> +		soc_device_unregister(soc_dev);
+> +#if IS_ENABLED(CONFIG_MTK_SOCINFO_DEBUG)
+
+Same
+
+> +	debugfs_remove(file_entry);
+> +#endif
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver mtk_socinfo = {
+> +	.probe          = mtk_socinfo_probe,
+> +	.remove         = mtk_socinfo_remove,
+> +	.driver         = {
+> +		.name   = "mtk_socinfo",
+> +		.owner  = THIS_MODULE,
+> +		.of_match_table = mtk_socinfo_id_table,
+> +	},
+> +};
+> +module_platform_driver(mtk_socinfo);
+> +MODULE_AUTHOR("William-TW LIN <william-tw.lin@mediatek.com>");
+> +MODULE_DESCRIPTION("Mediatek socinfo driver");
+> +MODULE_LICENSE("GPL");
+> diff --git a/drivers/soc/mediatek/mtk-socinfo.h b/drivers/soc/mediatek/mtk-socinfo.h
+> new file mode 100644
+> index 000000000000..8fd490311c8b
+> --- /dev/null
+> +++ b/drivers/soc/mediatek/mtk-socinfo.h
+> @@ -0,0 +1,213 @@
+> +/* SPDX-License-Identifier: GPL-2.0
+> + *
+> + * Copyright (c) 2023 MediaTek Inc.
+> + */
+> +
+> +#ifndef __MTK_SOCINFO_H__
+> +#define __MTK_SOCINFO_H__
+> +
+> +#define MODULE_NAME	"[mtk-socinfo]"
+
+No, drop.
+
+> +
+> +#define DEBUG_FOPS_RO(name)						\
+> +	static int mtk_socinfo_##name##_debug_open(struct inode *inode,		\
+> +					   struct file *filp)		\
+> +	{								\
+> +		return single_open(filp, mtk_socinfo_##name##_debug_show,	\
+> +				   inode->i_private);			\
+> +	}								\
+> +	static const struct file_operations mtk_socinfo_##name##_debug_fops = {	\
+> +		.owner = THIS_MODULE,					\
+> +		.open = mtk_socinfo_##name##_debug_open,			\
+> +		.read = seq_read,					\
+> +		.llseek = seq_lseek,					\
+> +		.release = single_release,				\
+> +	}
+> +
+> +#define MTK_SOCINFO_DENTRY_DATA(name)	{__stringify(name), &mtk_socinfo_##name##_debug_fops}
+> +
+> +const char *soc_manufacturer = "MediaTek";
+
+global variable in the header? No, drop.
+
+> +
+> +struct soc_device *soc_dev;
+> +struct dentry *mtk_socinfo_dir, *file_entry;
+
+Why do you need them in the header?
+
+> +
+> +struct mtk_socinfo {
+> +	struct device *dev;
+> +	struct name_data *name_data;
+> +	struct socinfo_data *soc_data;
+> +};
+> +
+> +struct efuse_data {
+> +	char *nvmem_cell_name;
+> +	u32 efuse_data;
+> +};
+> +
+> +struct name_data {
+> +	char *soc_name;
+> +	char *soc_segment_name;
+> +	char *marketing_name;
+> +};
+> +
+> +struct socinfo_data {
+> +	char *soc_name;
+> +	struct efuse_data *efuse_data;
+> +	struct name_data *name_data;
+> +	unsigned int efuse_segment_count;
+> +	unsigned int efuse_data_count;
+> +};
+> +
+> +enum socinfo_data_index {
+> +	INDEX_MT8186 = 0,
+> +	INDEX_MT8188,
+> +	INDEX_MT8195,
+> +	INDEX_MT8192,
+> +	INDEX_MT8183,
+> +	INDEX_MT8173,
+> +	SOCINFO_DATA_LAST_INDEX
+> +};
+> +
+> +/* begin 8186 info */
+> +#define mtk_mt8186_EFUSE_DATA_COUNT 1
+> +static struct efuse_data mtk_mt8186_efuse_data_info[][mtk_mt8186_EFUSE_DATA_COUNT] = {
+
+Nope. Don't put variable in the header. This code is not yet ready to
+upstream.
+
+Work with your colleagues to submit something passing basic coding
+style. Please send something reasonable, after doing internal reviews.
+
+Best regards,
+Krzysztof
+
