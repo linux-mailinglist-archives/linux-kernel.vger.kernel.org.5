@@ -2,133 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC24758870
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25412758876
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbjGRW34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 18:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48602 "EHLO
+        id S231409AbjGRWa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 18:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjGRW3y (ORCPT
+        with ESMTP id S231184AbjGRWa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 18:29:54 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4692BD
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:29:53 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id 4fb4d7f45d1cf-51e429e1eabso8840236a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:29:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689719392; x=1692311392;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8VIhdcMpL3OFo2a4tlXJdj92DrXjZBW6xzKr5orA7Nw=;
-        b=jw0dVdjMax3BvwEwSbtcyxlHSq7ibIqrGOYAz10EKUBvJg2NIWpMZ8FzMjnDioKQtA
-         K3adS4O3FNzhc7q74C1Ylfj4c3EAHN5lkJpI88uROj8EyuLj51rviB6wrcSQs/lS1SVa
-         BI2liP5S6A3r5ZTnQKcxb2hGFnJsDMf8Qeqka8T+c6xWokXdZ/CEiyaEqrcb4VyiXmPy
-         Hr8gc0cfqH2OBg14qDBNVJ1M4Rvrm2+0cB+OKJI2HIZjliSlQaUMfZdeh2mxojAadRu2
-         SOpzZH2/4jCSOG/aeX1eG/jAdY8EQ9nqsS8qsUmXQV9I3XmlYIsF/DgPYBqVaGwNV+Ao
-         ADpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689719392; x=1692311392;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8VIhdcMpL3OFo2a4tlXJdj92DrXjZBW6xzKr5orA7Nw=;
-        b=NtHS8rpRiK1m7ryKoWVYic6OWlgj6Ho1FLvQ+Jet5MKtIiMTHWMMMM69+IZRAyjb6Z
-         qPZ8q+tdKa9/zL+lm42gDE5KTsHscz8aMQX7ZfFsLZpXRle+QLu6yjtykbASIxonDA8F
-         zvZg48z0nTPBAm6Nyucf1nVM3jBXSa5llUXZbvhZyxrqo0STBtVvCMBVeRoZe2sf2fOo
-         au5ghRzBu+tpCIDIJ8fCOBfIYcAlZckLRKWEmiTCaV+5z6GVw/H4NZCRU9IIC/5o+fF8
-         2q8d0BS5tOi/KR4MzpDYDmOuIbnomWUhdDMwhhHYPu+EAvzIfLvswybQV+9dR5lvPFCY
-         XtAA==
-X-Gm-Message-State: ABy/qLa4H0K5ti/RfQ82RRVZH7Zh4gq677Q4b1TWv+XMD96ReFxudFBs
-        GWDh/EqVo0UUIJn4y7mK+PMtMztlfdkOCpgjFi4=
-X-Google-Smtp-Source: APBJJlEWSgvrZAXxa7UB21BD8PlvxNa6Apa8NnlR500y3VVHGXmSmsK2ydkxanRynvQhpW0NAg+dMQ==
-X-Received: by 2002:aa7:da8b:0:b0:51e:1656:bb24 with SMTP id q11-20020aa7da8b000000b0051e1656bb24mr745846eds.26.1689719391936;
-        Tue, 18 Jul 2023 15:29:51 -0700 (PDT)
-Received: from [127.0.1.1] (i130160.upc-i.chello.nl. [62.195.130.160])
-        by smtp.googlemail.com with ESMTPSA id u18-20020aa7d992000000b0051e0cb4692esm1780052eds.17.2023.07.18.15.29.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 15:29:51 -0700 (PDT)
-From:   Jakob Koschel <jkl820.git@gmail.com>
-Date:   Wed, 19 Jul 2023 00:29:12 +0200
-Subject: [PATCH v3] arch: enable HAS_LTO_CLANG with KASAN and KCOV
+        Tue, 18 Jul 2023 18:30:56 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F5CBD;
+        Tue, 18 Jul 2023 15:30:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689719455; x=1721255455;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=mQ/XSuCjEEjkILhFj9nOT74zfQbBcNaiX6hcd7hblIs=;
+  b=fWhU4HuqOkm7jMjUnGPGXp4/xqAD+tm9z1xJp13XphqUkAPy2aTFdJ7v
+   fE2mqHDlbmHJaKy2pD3R3Dlmt0HX08jrrLp6hFPlij6eiCxT0FfZPpDIy
+   nw6UH0fY56J5DIJ0oh2Vp4FBGeC9hIBG2TiJojGjOPq3zjlxXjnxyKNGo
+   BecB8Ivj84ZrDrPkmoDQDco8JLZDDHcF6UXxL3gdoIWrT6+sZcEWdE4wL
+   SQuKedpTl+d76Tja1qFRoRP9OPzNhhfmM1EzEIabTmc8EXsM1qRc9iK7D
+   sLdg5g9RswfhaYd5/00lUkvrkIT+IHSKuwQ7qukySkMAK22ZhU75SN0Dk
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="346626709"
+X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
+   d="scan'208";a="346626709"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 15:30:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="727112101"
+X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
+   d="scan'208";a="727112101"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga007.fm.intel.com with ESMTP; 18 Jul 2023 15:30:52 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id E184E16E; Wed, 19 Jul 2023 01:30:58 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>
+Subject: [PATCH v3 1/3] gpio: bcm-kona: Make driver OF-independent
+Date:   Wed, 19 Jul 2023 01:30:53 +0300
+Message-Id: <20230718223055.2809-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230717-enable-kasan-lto1-v3-1-650e1efc19d1@gmail.com>
-X-B4-Tracking: v=1; b=H4sIADcSt2QC/4WNzQ7CIBAGX8VwFlMoP8aT72E8LHTbElsw0BBN0
- 3cXevKkx9nNN7OShNFhIpfDSiJml1zwBdrjgdgR/IDUdYUJb3jbaKYpejAT0gck8HRaAqNKKi2
- F1YoLRsrOQEJqIng71uUMacFYH8+IvXvtsdu98OjSEuJ7b2dWr78ymVFGhWaoGwXSCrwOM7jpZ
- MNMqi3zvwZeDJ3Qpmdn3kurvg3btn0Af1R3Cw0BAAA=
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Jakob Koschel <jkl820.git@gmail.com>
-X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689719391; l=1907;
- i=jkl820.git@gmail.com; s=20230112; h=from:subject:message-id;
- bh=I+sb36igQn+GpB0emVVoNUcTZ3UMX+hG00en86PNo7o=;
- b=fJm2OMmevpnG6ytoTYSNd/n9qkyTEvMegdlh3D8x3hje5iBEYR9yBubywlQEVQioqUbi7GpfVjMd
- 4QqoGy4CDAHWXa2GO8Z4w0Ljne1MId00NsnBBiQEBkM5NLpx+Wwe
-X-Developer-Key: i=jkl820.git@gmail.com; a=ed25519;
- pk=rcRpP90oZXet9udPj+2yOibfz31aYv8tpf0+ZYOQhyA=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both KASAN and KCOV had issues with LTO_CLANG if DEBUG_INFO is enabled.
-With LTO inlinable function calls are required to have debug info if
-they are inlined into a function that has debug info.
+There is nothing in the driver that requires OF APIs,
+make the driver OF independent.
 
-Starting with LLVM 17 this will be fixed ([1],[2]) and enabling LTO with
-KASAN/KCOV and DEBUG_INFO doesn't cause linker errors anymore.
-
-Link: https://github.com/llvm/llvm-project/commit/913f7e93dac67ecff47bade862ba42f27cb68ca9
-Link: https://github.com/llvm/llvm-project/commit/4a8b1249306ff11f229320abdeadf0c215a00400
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Jakob Koschel <jkl820.git@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-Changes in v3:
-- Fixed the comment linking to the Github issue
-- Link to v2: https://lore.kernel.org/r/20230717-enable-kasan-lto1-v2-1-d47bf182f5c6@gmail.com
+v2: new patch
+v3: fixed compilation error (LKP)
+ drivers/gpio/Kconfig         |  2 +-
+ drivers/gpio/gpio-bcm-kona.c | 21 ++++++++-------------
+ 2 files changed, 9 insertions(+), 14 deletions(-)
 
-Changes in v2:
-- Added correct To:/Cc:
-- Added comment about required LLVM 17 version dependency
-- Link to v1: https://lore.kernel.org/r/20230717-enable-kasan-lto1-v1-1-471e706a5c4e@gmail.com
----
- arch/Kconfig | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/Kconfig b/arch/Kconfig
-index aff2746c8af2..847b52495656 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -745,7 +745,9 @@ config HAS_LTO_CLANG
- 	depends on $(success,$(AR) --help | head -n 1 | grep -qi llvm)
- 	depends on ARCH_SUPPORTS_LTO_CLANG
- 	depends on !FTRACE_MCOUNT_USE_RECORDMCOUNT
--	depends on !KASAN || KASAN_HW_TAGS
-+	# https://github.com/ClangBuiltLinux/linux/issues/1721
-+	depends on (!KASAN || KASAN_HW_TAGS || CLANG_VERSION >= 170000) || !DEBUG_INFO
-+	depends on (!KCOV || CLANG_VERSION >= 170000) || !DEBUG_INFO
- 	depends on !GCOV_KERNEL
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index 638f0e771105..a70622d32a3b 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -191,7 +191,7 @@ config GPIO_RASPBERRYPI_EXP
+ 
+ config GPIO_BCM_KONA
+ 	bool "Broadcom Kona GPIO"
+-	depends on OF_GPIO && (ARCH_BCM_MOBILE || COMPILE_TEST)
++	depends on ARCH_BCM_MOBILE || COMPILE_TEST
  	help
- 	  The compiler and Kconfig options support building with Clang's
-
----
-base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
-change-id: 20230717-enable-kasan-lto1-656754c76241
-
-Best regards,
+ 	  Turn on GPIO support for Broadcom "Kona" chips.
+ 
+diff --git a/drivers/gpio/gpio-bcm-kona.c b/drivers/gpio/gpio-bcm-kona.c
+index 70770429ba48..c977144eff10 100644
+--- a/drivers/gpio/gpio-bcm-kona.c
++++ b/drivers/gpio/gpio-bcm-kona.c
+@@ -8,12 +8,14 @@
+ 
+ #include <linux/bitops.h>
+ #include <linux/err.h>
+-#include <linux/io.h>
+ #include <linux/gpio/driver.h>
+-#include <linux/of_device.h>
+ #include <linux/init.h>
++#include <linux/io.h>
+ #include <linux/irqdomain.h>
+ #include <linux/irqchip/chained_irq.h>
++#include <linux/mod_devicetable.h>
++#include <linux/platform_device.h>
++#include <linux/property.h>
+ 
+ #define BCM_GPIO_PASSWD				0x00a5a501
+ #define GPIO_PER_BANK				32
+@@ -556,19 +558,12 @@ static void bcm_kona_gpio_reset(struct bcm_kona_gpio *kona_gpio)
+ static int bcm_kona_gpio_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+-	const struct of_device_id *match;
+ 	struct bcm_kona_gpio_bank *bank;
+ 	struct bcm_kona_gpio *kona_gpio;
+ 	struct gpio_chip *chip;
+ 	int ret;
+ 	int i;
+ 
+-	match = of_match_device(bcm_kona_gpio_of_match, dev);
+-	if (!match) {
+-		dev_err(dev, "Failed to find gpio controller\n");
+-		return -ENODEV;
+-	}
+-
+ 	kona_gpio = devm_kzalloc(dev, sizeof(*kona_gpio), GFP_KERNEL);
+ 	if (!kona_gpio)
+ 		return -ENOMEM;
+@@ -601,10 +596,10 @@ static int bcm_kona_gpio_probe(struct platform_device *pdev)
+ 	chip->parent = dev;
+ 	chip->ngpio = kona_gpio->num_bank * GPIO_PER_BANK;
+ 
+-	kona_gpio->irq_domain = irq_domain_add_linear(dev->of_node,
+-						      chip->ngpio,
+-						      &bcm_kona_irq_ops,
+-						      kona_gpio);
++	kona_gpio->irq_domain = irq_domain_create_linear(dev_fwnode(dev),
++							 chip->ngpio,
++							 &bcm_kona_irq_ops,
++							 kona_gpio);
+ 	if (!kona_gpio->irq_domain) {
+ 		dev_err(dev, "Couldn't allocate IRQ domain\n");
+ 		return -ENXIO;
 -- 
-Jakob Koschel <jkl820.git@gmail.com>
+2.40.0.1.gaa8946217a0b
 
