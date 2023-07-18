@@ -2,224 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EA17580AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDF07580B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbjGRPT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 11:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52750 "EHLO
+        id S233530AbjGRPVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 11:21:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbjGRPTy (ORCPT
+        with ESMTP id S232955AbjGRPU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 11:19:54 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BAADC;
-        Tue, 18 Jul 2023 08:19:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
-        t=1689693591; bh=wOOVEfZTMKWwlZn3+Pnbg3jscwagjwGHpOHnDojt1Cs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hoy6KcId21xs1pKNMbSPWXl1rsbxwRDBbUx+aJEOrupXuK5H1IByYfwKNQfKrCH6p
-         ofTx/ccdxBbRbuu8k/I22FvygZEGY8cw0kZiV4viHEQJVXm17cZDWqMHtQMMiIOS8U
-         VbShqoYt9q+/FONgN1aLCFM9Ozan9c+EPGTIRhr0=
-Date:   Tue, 18 Jul 2023 17:19:50 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     w@1wt.eu, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v1 00/22] selftests/nolibc: add minimal kernel config
- support
-Message-ID: <67eb70d4-c9ff-4afc-bac7-7f36cc2c81bc@t-8ch.de>
-References: <20230711193608.GD31402@1wt.eu>
- <20230718134323.14819-1-falcon@tinylab.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718134323.14819-1-falcon@tinylab.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 18 Jul 2023 11:20:59 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3865DC0;
+        Tue, 18 Jul 2023 08:20:58 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36IFI3JJ008296;
+        Tue, 18 Jul 2023 15:20:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=IscltNk2d68+/+s5NWyxpmimxpfYBboBnnaojrCojfo=;
+ b=LnyrTyVjvsBpNVOadzypkNfy3IGRRm/1oq9IB+eHn6c3ItwTA6tvFk54vuxVwSXuhmUt
+ YJOf5UO6GBwXzdOKzF1IuOsLswCzn0ziqtdpiaK08xTAY5uVtPZnIWBZS0nWk8UuJxKf
+ ysQSvAOuOz5FpbYzNohsMnZeOcceuA5MBB49u0DSyBJlQA5BF7TauxIE187c4iu1uYIs
+ lLRDYjn4UvRbWvjNBV//CIUS2tcF7aw9U2ZM8uFF8qf3qBcEYlq8Ki5moWaZB2W45LjR
+ RSiuTFG6bHaLgbZpo0kUvCEog2fdqlGF4gU22BDFcOOSibkjv5FlyK1b6Mhzzm0o12sh Zg== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rwnrrh7hg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 15:20:53 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 36IFKnLd026248;
+        Tue, 18 Jul 2023 15:20:49 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3rumhkb0g8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 18 Jul 2023 15:20:49 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36IFKnmr026055;
+        Tue, 18 Jul 2023 15:20:49 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-krichai-hyd.qualcomm.com [10.213.110.112])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 36IFKnjq025902;
+        Tue, 18 Jul 2023 15:20:49 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 4058933)
+        id 59F6D4AF6; Tue, 18 Jul 2023 20:50:48 +0530 (+0530)
+From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
+        krzysztof.kozlowski@linaro.org,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Subject: [PATCH v9 0/4] PCI: qcom: ep: Add basic interconnect support
+Date:   Tue, 18 Jul 2023 20:50:41 +0530
+Message-Id: <1689693645-28254-1-git-send-email-quic_krichai@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: aHL3nClpYAwCsjS0zwDqtNhZ6xv1hS1N
+X-Proofpoint-ORIG-GUID: aHL3nClpYAwCsjS0zwDqtNhZ6xv1hS1N
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-18_11,2023-07-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
+ malwarescore=0 suspectscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
+ mlxlogscore=517 priorityscore=1501 impostorscore=0 mlxscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307180141
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-18 21:43:23+0800, Zhangjin Wu wrote:
-> Hi, Willy, Thomas
-> 
-> I have prepared the powerpc + powerpc64 support together with the
-> tinyconfig for them, still have some questions for more discussion.
-> 
-> > On Wed, Jul 12, 2023 at 01:18:26AM +0800, Zhangjin Wu wrote:
-> [...]
-> > 
-> > Reading the beginning of the sentence made me immediately think that it's
-> > what doc is for. You know, if you give a fish to a hungry man he eats one
-> > day, if you teach him to fish he eats every day. Knowing what to download
-> > from where is much more instructive than running "make download" or even
-> > worse, "make" and having the downloads secretly succeed (or fail). If you
-> > think the doc is hard to find I'm also fine with a patch for makefile
-> > and/or nolibc-test passing a pointer to its location as a reminding
-> > comment for example.
-> >
-> 
-> The whole tinyconfig support for every architecture is 'huge', I plan to
-> send them one by one, if required, will document them with the required
-> bios and/or toolchain.
+Add basic support for managing "pcie-mem" interconnect path by setting
+a low constraint before enabling clocks and updating it after the link
+is up based on link speed and width the device got enumerated.
 
-Which part is huge?
-This is surprising.
+changes from v8:
+	- Added cpu to pcie path in dtsi and in dtsi binding.
+changes from v7:
+        - setting icc bw to '0' in disable resources as suggested by mani.
+changes from v6:
+        - addressed the comments as suggested by mani.
+changes from v5:
+        - addressed the comments by mani.
+changes from v4:
+        - rebased with linux-next.
+        - Added comments as suggested by mani.
+        - removed the arm: dts: qcom: sdx55: Add interconnect path
+          as that patch is already applied.
+changes from v3:
+        - ran make DT_CHECKER_FLAGS=-m dt_binding_check and fixed
+         errors.
+        - Added macros in the qcom ep driver patch as suggested by Dmitry
+changes from v2:
+        - changed the logic for getting speed and width as suggested
+         by bjorn.
+        - fixed compilation errors.
 
-> The first architectures plan to support are powerpc + powerpc64, powerpc does
-> require extra kernel config options even with defconfig, so, it is a very good
-> first example, and the extconfig target will be added together.
 
-Are you planning to do powerpc and tinyconfig support in one series?
-Splitting it would be better in my opinion.
+Krishna chaitanya chundru (4):
+  dt-bindings: PCI: qcom: ep: Add interconnects path
+  arm: dts: qcom: sdx65: Add PCIe interconnect path
+  arm: dts: qcom: sdx55: Add CPU PCIe interconnect path
+  PCI: qcom-ep: Add ICC bandwidth voting support
 
-> The left question from me is that if is it ok to just use tinyconfig instead of
-> defconfig after we enable tinyconfig for a new architecture, I mean just add a
-> new DEFCONFIG_<ARCH>=tinyconfig line for the new architecture, don't use the
-> 'defconfig' any more, let's take a look at the powerpc/powerpc64 lines below:
-> 
->     # default kernel configurations that appear to be usable
->     DEFCONFIG_i386       = defconfig
->     DEFCONFIG_x86_64     = defconfig
->     DEFCONFIG_x86        = defconfig
->     DEFCONFIG_arm64      = defconfig
->     DEFCONFIG_arm        = multi_v7_defconfig
->     DEFCONFIG_mips       = malta_defconfig
->     DEFCONFIG_powerpc    = tinyconfig
->     DEFCONFIG_powerpc64  = tinyconfig
->     DEFCONFIG_riscv      = defconfig
->     DEFCONFIG_s390       = defconfig
->     DEFCONFIG_loongarch  = defconfig
->     DEFCONFIG            = $(DEFCONFIG_$(XARCH))
-> 
-> Of course, we need to customize the EXTCONFIG for them (about ~5 options for
-> all of the architectures):
-> 
->     # extra kernel configs by architecture
->     EXTCONFIG_powerpc    = $(addprefix -e ,COMPAT_32BIT_TIME PPC_PMAC PPC_OF_BOOT_TRAMPOLINE SERIAL_PMACZILOG SERIAL_PMACZILOG_TTYS SERIAL_PMACZILOG_CONSOLE)
->     EXTCONFIG_powerpc64  = $(addprefix -e ,PPC64 CPU_LITTLE_ENDIAN PPC_POWERNV HVC_OPAL)
->     EXTCONFIG_XARCH      = $(EXTCONFIG_$(XARCH))
+ .../devicetree/bindings/pci/qcom,pcie-ep.yaml      | 15 +++++
+ arch/arm/boot/dts/qcom/qcom-sdx55.dtsi             |  5 +-
+ arch/arm/boot/dts/qcom/qcom-sdx65.dtsi             |  4 ++
+ drivers/pci/controller/dwc/pcie-qcom-ep.c          | 72 ++++++++++++++++++++++
+ 4 files changed, 94 insertions(+), 2 deletions(-)
 
-These could also be put into dedicated config files. Then they don't
-clutter the makefile and it's easier to maintain.
+-- 
+2.7.4
 
-nolibc.config:       Generic configs on top of tinyconfig
-nolibc.arm64.config: Arch-specific configs for arm64
-
-Also the extra parameter could also be passed via command line arguments to make.
-This way we don't have to modify the configuration options at all.
-The user can provide a config (or we use a tinyconfig) and everything
-required by nolibc-test is enabled on top when building.
-
-make CONFIG_COMPAT_32BIT_TIME=y ...
-
-tools/testing/selftests/wireguard/qemu/ seems to be doing something
-similar as nolibc-test.
-
-> The extra common options (based on default kernel tinyconfig) are also required
-> to make nolibc-test.c passes without failures (~2 skips are procfs related, so,
-> procfs is not added) are minimal:
-> 
->     # extra kernel configs shared among architectures
->     EXTCONFIG_COMMON     = -e BLK_DEV_INITRD --set-str INITRAMFS_SOURCE $(CURDIR)/initramfs
->     EXTCONFIG_COMMON    += -e BINFMT_ELF
->     EXTCONFIG_COMMON    += -e PRINTK -e TTY
-> 
-> Compare to defconfig, tinyconfig not only allows test all of the nolibc
-> functions, but also is faster (around ~1-2 minutes, defconfig may cost ~30
-> minutes and even more) and brings us with smaller image size.
-> 
-> To only test nolibc itself, I do think tinyconfig with the above
-> extconfig support is enough, even if we need more, we can update the
-> EXTCONFIG_COMMON and EXTCONFIG_<ARCH> in the future.
-
-IMO tinyconfig is enough, defconfig doesn't seem to be necessary then.
-
-> I have prepared tinyconfig for all of the supported architectures
-> locally, If you agree with only reserve the DEFCONFIG_<ARCH>=tinyconfig
-> line, I will send a series of patchset to add tinyconfig for every
-> architecture with it, at last, it will become:
-> 
->     # default kernel configurations that appear to be usable
->     DEFCONFIG_i386       = tinyconfig
->     DEFCONFIG_x86_64     = tinyconfig
->     DEFCONFIG_x86        = tinyconfig
->     DEFCONFIG_arm64      = tinyconfig
->     DEFCONFIG_arm        = tinyconfig
->     DEFCONFIG_mips       = tinyconfig
->     DEFCONFIG_powerpc    = tinyconfig
->     DEFCONFIG_powerpc64  = tinyconfig
->     DEFCONFIG_riscv      = tinyconfig
->     DEFCONFIG_s390       = tinyconfig
->     DEFCONFIG_loongarch  = tinyconfig
->     DEFCONFIG            = $(DEFCONFIG_$(XARCH))
-> 
-> So, perhaps it is better to simply use tinyconfig as the default DEFCONFIG, and
-> therefore there is no need to add powerpc and powerpc64 specific lines:
-> 
->     # default kernel configurations that appear to be usable
->     DEFCONFIG_i386       = defconfig
->     DEFCONFIG_x86_64     = defconfig
->     DEFCONFIG_x86        = defconfig
->     DEFCONFIG_arm64      = defconfig
->     DEFCONFIG_arm        = multi_v7_defconfig
->     DEFCONFIG_mips       = malta_defconfig
->     DEFCONFIG_riscv      = defconfig
->     DEFCONFIG_s390       = defconfig
->     DEFCONFIG_loongarch  = defconfig
->     DEFCONFIG            = $(or $(DEFCONFIG_$(XARCH)),tinyconfig)
-> 
-> To support tinyconfig for a new architecture, we can simply remove the
-> 'DEFCONFIG_<ARCH> = defconfig' line and get the core options from
-> defconfig to customize the EXTCONFIG_ARCH, with tinyconfig, it is very
-> fast and easy to verify the run target for a new architecture.
-> 
-> At last, we will have many EXTCONFIG_<ARCH> lines and only a DEFCONFIG line:
-> 
->     # default kernel configurations that appear to be usable
->     DEFCONFIG            = $(or $(DEFCONFIG_$(XARCH)),tinyconfig)
-> 
-> Or at last, we remove the above line and the defconfig target and only reserve
-> a tinyconfig target:
-> 
->     tinyconfig:
-> 	$(Q)$(MAKE_KERNEL) tinyconfig prepare
-> 
-> Welcome your suggestion.
-
-Looks fine to me either way.
-
-> > > > And I think that helping the user
-> > > > prepare certain steps or iterate over architectures *is* useful. When
-> > > > you do it in two layers (the script replacing the user, the makefile
-> > > > doing the build job), it remains easy and convenient to use, and you
-> > > > can pick only what you need (e.g. "please build musl for me"). And if
-> > > > something goes wrong, it's simple for the user to takeover and complete
-> > > > that failed task by changing an arch name, a directory or anything, and
-> > > > have their tools ready. Let's just never make that automatic for the
-> > > > sake of everyone's health!
-> > > 
-> > > Ok, the revision will align with the original Makefile and remove the automatic
-> > > parts and no change about the OUTPUT.
-> > 
-> > Just check that you can force it from your script on the make command
-> > line. If you see that it's not possible, we should do something because
-> > I don't want to force you to make distclean all the time if not needed.
-> > But if you find that passing certain options (O=, OUTPUT= or anything
-> > else) does the job, it only needs to be documented.
-> 
-> Yeah, I have used objtree intead of srctree to fix up the O= argument
-> support, it fills my requirement to build kernel for every architecture
-> in their own output directory.
-> 
-> Best regards,
-> Zhangjin
-> 
-> > 
-> > Thanks,
-> > Willy
