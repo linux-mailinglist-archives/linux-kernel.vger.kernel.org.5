@@ -2,111 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FAF6758781
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3180D758784
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbjGRVxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 17:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
+        id S230401AbjGRVxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 17:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjGRVxa (ORCPT
+        with ESMTP id S229610AbjGRVxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 17:53:30 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93BFA198D;
-        Tue, 18 Jul 2023 14:53:29 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b8b318c5a7so48863515ad.3;
-        Tue, 18 Jul 2023 14:53:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689717209; x=1692309209;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hSi1Ye4tnidz3swlAKJl5aSHuZF44JYEhatv2BKTlOQ=;
-        b=SZ0tTu6wpG2yNC7ys9W1/E8S7xaA6eRzb41+qynFT6suIRQZeKbOi/JHgHB2znyz8z
-         sUXssVqsuJP79/tRbGRSdAxYoaLQyXa6sNibrztdE7BEm/gXgZlwo7jGSTxBQtgBSoNw
-         P4GAbZI5hNvN10ddluCGqgqbmEB5PMDz4Hp1Vj9REZzygM2MS72ejDUlmt+iG5AyPuI/
-         AG+lCdH0/6kVacWDcXfg62XMDmnOA+SE8ABAWGn9ktSCp5k8m5BvLQs5h4qRVA/ecBvP
-         xY1uHKVfNHWnUQ1SkV7uDA8afxAbyaeycd4JwPnApcmgJjFSv4xHlIM9djPegdDlI8G3
-         kQbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689717209; x=1692309209;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hSi1Ye4tnidz3swlAKJl5aSHuZF44JYEhatv2BKTlOQ=;
-        b=JjPj7yX1EpbwodrMlcWhUYt/NiP/VphX5LV9A+KBHY/c+lkqy9bxzCpwswa5qYgmbO
-         FU9tBrmAjrBfyzDMd8HMaQyZhG8C7gI3t0zXpgz1LeZbGdVFRqcdOsJM6bYqVUZhePot
-         KTUK/eT+/zqMFAMpJKzEiCiTINLa1ntZf7oa4boCTbbEJb9O/FB/023mA4t2c/sf9DOz
-         m39OmECpJuU28DucekbxOqMvIY3zVCdWFBbaEtIZZzilbffb9y/wEajsK6PYOqSqDWH/
-         cRrfbL1D4a0L4GC+segu6C9/seTbefb+v+fHG9/csl08goxthuIi/8isll5Qnzr8/cnH
-         DNUw==
-X-Gm-Message-State: ABy/qLZGXCb65wIFiL2ZwBKKRFp+Vatx4FcQVJsT67kjjdZE2ExMtBcm
-        QdwAt70XX5O6Q39HKzJNhdU=
-X-Google-Smtp-Source: APBJJlFDubl46qLGjElNRyd43o2ozFLnEgGSoc65gpvHAIJMaXhgd6Sy50PIiZ8T02wR0h102on01w==
-X-Received: by 2002:a17:902:a409:b0:1b9:be2e:2b40 with SMTP id p9-20020a170902a40900b001b9be2e2b40mr13780928plq.50.1689717208786;
-        Tue, 18 Jul 2023 14:53:28 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:fbd8])
-        by smtp.gmail.com with ESMTPSA id jf6-20020a170903268600b001b8918da8d1sm2366011plb.80.2023.07.18.14.53.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 14:53:28 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 18 Jul 2023 11:53:26 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Hao Jia <jiahao.os@bytedance.com>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [External] Re: [PATCH] cgroup/rstat: record the cumulative
- per-cpu time of cgroup and its descendants
-Message-ID: <ZLcJ1nH8KzWzoQWj@slm.duckdns.org>
-References: <20230717093612.40846-1-jiahao.os@bytedance.com>
- <ZLWb-LsBD041hMvr@slm.duckdns.org>
- <2655026d-6ae4-c14c-95b0-4177eefa434f@bytedance.com>
+        Tue, 18 Jul 2023 17:53:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6926198E;
+        Tue, 18 Jul 2023 14:53:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6335C611DC;
+        Tue, 18 Jul 2023 21:53:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C036C433C7;
+        Tue, 18 Jul 2023 21:53:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689717212;
+        bh=9GJl9BKrVBmnHdnk/r5SFl8lXAj76tW1SzBJ1JufEKQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=YAjBS1M031nA14Fa/+wmtGpYOPqBIh3RNDv+pn4g3wxGkaqCmBIZUbitjOcLMvebc
+         b4ieU90GREd6txCNYrbaJ/nbL6xYCCa5oBnh/mkSpaY1bls6aYVucKYaQjxgFY00SZ
+         ztXr+CFA6rddV09Y1bXytjQlNlMZIjvqhFe2uMqOnTf7sOnxA6koGVP+2sDTLvFGcZ
+         e3E31wYwmAE3JUeJueS6pr5NthXVr5UDJpBM1YSIRgUJw9aRsQbgeVRfbh0Riv/fnP
+         464PIjgFtQ7XgLNHw3LfgOJ2ELoTUPlwzVRVyYmd1SP+nSmghocSjx3b8q/a0hg3fp
+         fI3O+3klcMCNQ==
+Date:   Tue, 18 Jul 2023 16:53:30 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Colin Ian King <colin.i.king@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] PCI: ibmphp: make read-only arrays static
+Message-ID: <20230718215330.GA496036@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2655026d-6ae4-c14c-95b0-4177eefa434f@bytedance.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230627125612.724764-1-colin.i.king@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 06:08:50PM +0800, Hao Jia wrote:
-> https://github.com/jiaozhouxiaojia/cgv2-stat-percpu_test/tree/main
+On Tue, Jun 27, 2023 at 01:56:12PM +0100, Colin Ian King wrote:
+> Don't populate the arrays on the stack, instead make them static const.
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-Isn't that just adding the same numbers twice and verifying that? Maybe I'm
-misunderstanding you. Here's a simpler case:
+Applied to pci/hotplug for v6.6, thanks!
 
-  # cd /sys/fs/cgroup
-  # mkdir -p asdf/test0
-  # grep usage_usec asdf/test0/cpu.stat
-  usage_usec 0
-  # echo $$ > asdf/test0/cgroup.procs
-  # stress -c 1 & sleep 1; kill %%
-  [1] 122329
-  stress: info: [122329] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
-  # grep usage_usec asdf/test0/cpu.stat
-  usage_usec 1000956
-  [1]+  Terminated              stress -c 1
-  # grep usage_usec asdf/cpu.stat
-  usage_usec 1002548
-  # echo $$ > /sys/fs/cgroup/cgroup.procs
-  # rmdir asdf/test0
-  # grep usage_usec asdf/cpu.stat
-  usage_usec 1006338
-
-So, we run `stress -c 1` for 1 second in the asdf/test0 cgroup and
-asdf/cpu.stat correctly reports the cumulative usage. After removing
-asdf/test0 cgroup, asdf's usage_usec is still there. What's missing here?
-What are you adding?
-
-Thanks.
-
--- 
-tejun
+> ---
+>  drivers/pci/hotplug/ibmphp_pci.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/pci/hotplug/ibmphp_pci.c b/drivers/pci/hotplug/ibmphp_pci.c
+> index 754c3f23282e..50038e5f9ca4 100644
+> --- a/drivers/pci/hotplug/ibmphp_pci.c
+> +++ b/drivers/pci/hotplug/ibmphp_pci.c
+> @@ -329,7 +329,7 @@ int ibmphp_configure_card(struct pci_func *func, u8 slotno)
+>  static int configure_device(struct pci_func *func)
+>  {
+>  	u32 bar[6];
+> -	u32 address[] = {
+> +	static const u32 address[] = {
+>  		PCI_BASE_ADDRESS_0,
+>  		PCI_BASE_ADDRESS_1,
+>  		PCI_BASE_ADDRESS_2,
+> @@ -564,7 +564,7 @@ static int configure_bridge(struct pci_func **func_passed, u8 slotno)
+>  	struct resource_node *pfmem = NULL;
+>  	struct resource_node *bus_pfmem[2] = {NULL, NULL};
+>  	struct bus_node *bus;
+> -	u32 address[] = {
+> +	static const u32 address[] = {
+>  		PCI_BASE_ADDRESS_0,
+>  		PCI_BASE_ADDRESS_1,
+>  		0
+> @@ -1053,7 +1053,7 @@ static struct res_needed *scan_behind_bridge(struct pci_func *func, u8 busno)
+>  	int howmany = 0;	/*this is to see if there are any devices behind the bridge */
+>  
+>  	u32 bar[6], class;
+> -	u32 address[] = {
+> +	static const u32 address[] = {
+>  		PCI_BASE_ADDRESS_0,
+>  		PCI_BASE_ADDRESS_1,
+>  		PCI_BASE_ADDRESS_2,
+> @@ -1182,7 +1182,7 @@ static struct res_needed *scan_behind_bridge(struct pci_func *func, u8 busno)
+>  static int unconfigure_boot_device(u8 busno, u8 device, u8 function)
+>  {
+>  	u32 start_address;
+> -	u32 address[] = {
+> +	static const u32 address[] = {
+>  		PCI_BASE_ADDRESS_0,
+>  		PCI_BASE_ADDRESS_1,
+>  		PCI_BASE_ADDRESS_2,
+> @@ -1310,7 +1310,7 @@ static int unconfigure_boot_bridge(u8 busno, u8 device, u8 function)
+>  	struct resource_node *mem = NULL;
+>  	struct resource_node *pfmem = NULL;
+>  	struct bus_node *bus;
+> -	u32 address[] = {
+> +	static const u32 address[] = {
+>  		PCI_BASE_ADDRESS_0,
+>  		PCI_BASE_ADDRESS_1,
+>  		0
+> -- 
+> 2.39.2
+> 
