@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0DC0758591
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 21:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BF3758592
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 21:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbjGRTbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 15:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55506 "EHLO
+        id S229630AbjGRTbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 15:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229997AbjGRTbO (ORCPT
+        with ESMTP id S230049AbjGRTbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 15:31:14 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED76198D;
-        Tue, 18 Jul 2023 12:31:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=4lvrkWb6sfRiU5F2WxbxoLsvFXn2cJ/Sdsc7oIw9b8Y=; b=RxWb4ZqkCJJM4ETLid0VMKIMWf
-        R8wRhiq0A658gKpuMIItkj4B0yqM6ftio+QEER5QhbdX4T4yEVvPTZfgakdg/4+x0nSkmdfr1FRbC
-        ZENuNMykair96x6nZj53SgSp7oYcWGM5LODf9ZgAyXEDefwaH5Ao0Gp4r1nBQ8QqM8KM=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qLqPY-001ePh-BG; Tue, 18 Jul 2023 21:31:04 +0200
-Date:   Tue, 18 Jul 2023 21:31:04 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Kees Cook <kees@kernel.org>, justinstitt@google.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] net: dsa: remove deprecated strncpy
-Message-ID: <dbfb40d7-502e-40c0-bdaf-1616834b64e4@lunn.ch>
-References: <20230718-net-dsa-strncpy-v1-1-e84664747713@google.com>
- <316E4325-6845-4EFC-AAF8-160622C42144@kernel.org>
- <20230718121116.72267fff@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718121116.72267fff@kernel.org>
+        Tue, 18 Jul 2023 15:31:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14D019A9;
+        Tue, 18 Jul 2023 12:31:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BDF0616E3;
+        Tue, 18 Jul 2023 19:31:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A68FAC433C7;
+        Tue, 18 Jul 2023 19:31:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1689708692;
+        bh=k6ybf95Kck6r/aYDJhF/8qTRpOXpZ9otsT5FxLWYk3E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rHg3+Uj72PRb9m+HAMI7ZCFfoKX3r2MPg9XQFHXiEktgWRpngxreC13ddXGTPHc/Q
+         HNPPMPoMSAPpFt97j581kSs2+1vKVfo2hLGCCUB42GimTB7seblEA7bua06vyJx4EY
+         IlnC/n0qqTSRWKmOBUcOgK05nHqiWp4CFJLI1TOE=
+Date:   Tue, 18 Jul 2023 12:31:31 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     mm-commits@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] hotfixes for 6.5-rc2
+Message-Id: <20230718123131.5ec065527c2127a568e5754c@linux-foundation.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 12:11:16PM -0700, Jakub Kicinski wrote:
-> On Tue, 18 Jul 2023 11:05:23 -0700 Kees Cook wrote:
-> > Honestly I find the entire get_strings API to be very fragile given
-> > the lack of passing the length of the buffer, instead depending on
-> > the string set length lookups in each callback, but refactoring that
-> > looks like a ton of work for an uncertain benefit.
-> 
-> We have been adding better APIs for long term, and a print helper short
-> term - ethtool_sprintf(). Should we use ethtool_sprintf() here?
 
-I was wondering about that as well. There is no variable expansion in
-most cases, so the vsnprintf() is a waste of time.
+Linus, please merge this batch of hotfixes, thanks.
 
-Maybe we should actually add another helper:
 
-ethtool_name_cpy(u8 **data, unsigned int index, const char *name);
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
-Then over the next decade, slowly convert all drivers to it. And then
-eventually replace the u8 with a struct including the length.
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
 
-The netlink API is a bit better. It is one kAPI call which does
-everything, and it holds RTNL. So it is less likely the number of
-statistics will change between the calls into the driver.
+are available in the Git repository at:
 
-	Andrew
+  git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2023-07-18-12-28
+
+for you to fetch changes up to ef5c3de5211b5a3a8102b25aa83eb4cde65ac2fd:
+
+  maple_tree: fix node allocation testing on 32 bit (2023-07-17 12:53:22 -0700)
+
+----------------------------------------------------------------
+Seven hotfixes, six of which are cc:stable and one of which addresses a
+post-6.5 issue.
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      selftests/mm: mkdirty: fix incorrect position of #endif
+
+Liam R. Howlett (3):
+      mm/mlock: fix vma iterator conversion of apply_vma_lock_flags()
+      maple_tree: fix 32 bit mas_next testing
+      maple_tree: fix node allocation testing on 32 bit
+
+Miguel Ojeda (1):
+      prctl: move PR_GET_AUXV out of PR_MCE_KILL
+
+Peng Zhang (1):
+      maple_tree: set the node limit when creating a new root node
+
+Ryan Roberts (1):
+      selftests/mm: give scripts execute permission
+
+ kernel/sys.c                                           | 10 +++++-----
+ lib/maple_tree.c                                       |  3 ++-
+ lib/test_maple_tree.c                                  |  5 ++++-
+ mm/mlock.c                                             |  9 +++++----
+ tools/testing/radix-tree/maple.c                       |  6 +++---
+ tools/testing/selftests/mm/charge_reserved_hugetlb.sh  |  0
+ tools/testing/selftests/mm/check_config.sh             |  0
+ tools/testing/selftests/mm/hugetlb_reparenting_test.sh |  0
+ tools/testing/selftests/mm/mkdirty.c                   |  2 +-
+ tools/testing/selftests/mm/run_vmtests.sh              |  0
+ tools/testing/selftests/mm/test_hmm.sh                 |  0
+ tools/testing/selftests/mm/test_vmalloc.sh             |  0
+ tools/testing/selftests/mm/va_high_addr_switch.sh      |  0
+ tools/testing/selftests/mm/write_hugetlb_memory.sh     |  0
+ 14 files changed, 20 insertions(+), 15 deletions(-)
+ mode change 100644 => 100755 tools/testing/selftests/mm/charge_reserved_hugetlb.sh
+ mode change 100644 => 100755 tools/testing/selftests/mm/check_config.sh
+ mode change 100644 => 100755 tools/testing/selftests/mm/hugetlb_reparenting_test.sh
+ mode change 100644 => 100755 tools/testing/selftests/mm/run_vmtests.sh
+ mode change 100644 => 100755 tools/testing/selftests/mm/test_hmm.sh
+ mode change 100644 => 100755 tools/testing/selftests/mm/test_vmalloc.sh
+ mode change 100644 => 100755 tools/testing/selftests/mm/va_high_addr_switch.sh
+ mode change 100644 => 100755 tools/testing/selftests/mm/write_hugetlb_memory.sh
+
