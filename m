@@ -2,70 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CDE757C3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94868757C45
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbjGRMwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 08:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
+        id S232243AbjGRMxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 08:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbjGRMwe (ORCPT
+        with ESMTP id S230193AbjGRMxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 08:52:34 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E440810FF
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:52:32 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-63770af327fso39516556d6.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:52:32 -0700 (PDT)
+        Tue, 18 Jul 2023 08:53:49 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25441126;
+        Tue, 18 Jul 2023 05:53:48 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9936b3d0286so802452466b.0;
+        Tue, 18 Jul 2023 05:53:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1689684752; x=1692276752;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D7mBVgIO2/qifoKJSIq5gF8W+IU3YGZfoFF1ujN7rTM=;
-        b=K4el8zaF7GsWp0e/0K51xh7dyYz33FPapKxS1UckiNXGuFtdTwfsQzoMnWpNprO9aI
-         m9+4M+ky7KirepVAMx7e4j2URNiQxFnPT4qkv6kWl909NeuzSj7V04KDrwwXvWgMTDir
-         YezkZuAm9AsXuP/2GigubezbzwdlMquPSHkKs=
+        d=gmail.com; s=20221208; t=1689684826; x=1692276826;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=79kLUvgjaFzQrWOgx008zsF/7GOXg8shTx0H5AGYDQw=;
+        b=Tks5q0JcRPcKf7Kf/5sMNv0WyprOQ5QOCm+wFinM49VOX0OPVPh+czO3QBSvYJlbZs
+         99Dqxi9UZ0XzbWLIpQssTKSRP/ibR01+OZ6gPO8G735PMobOMqBZMJ7ItLKFDJGq4mVE
+         L6Gp/kXJT7E60Vbz13h+JeVrhe9nq31SBP6WJDXk2r0HxYjdmtAFAR1q+X0fPT1ysJ1n
+         U0CKU/xFTsOavOkaJci2k1okA1j1f+aPXviX7pPeDadhzYYPlWWG65eFqNiNGRDyv3yU
+         WK2LkwXO09tPOZ/uycvS/9DAn9g1M57tOccnl5zRlWN8fD6udXDPzl//1L/4NA4OHolo
+         Lb2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689684752; x=1692276752;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D7mBVgIO2/qifoKJSIq5gF8W+IU3YGZfoFF1ujN7rTM=;
-        b=lTsQ4pcM/BKtka64xdtUjsDcV1r/BP6VMUIgI6+MH+nkFiX75Ou8Ycl+zL6Oq6SwPk
-         9QUpi7nuC+9qJCkEtmU7lU5rc/3lbmK5DNuBj7HGcoeomMZ1XYCY6R/0jf5uBeWr/o8h
-         +Lj13HWHcjzVqRTBCdXDcdreZeIxnff3ztKPwRDJOszYgi4AcMbua7aZ0rwRsYP0GSd7
-         1855jE5u5g9p4KaUV48H7wk8YgRYkgcrWGsEoZThclbtbuu2vvOTUL35qmRPp4tR54xK
-         FGDMYuWYbIpfv/CptNe6lU/Wjft/GRwVnIudWxCG03IYi2mESmFbBMF/4B+8hEm4R2Kx
-         bupg==
-X-Gm-Message-State: ABy/qLZx3QoJIT6OaFNln4KL2itWpNGVdthxMs3I9UstaJB+Ef1vZoaN
-        T5tthVK9fqYeO+Lx3yrYpiy0oBO+5TSViw0eCPw=
-X-Google-Smtp-Source: APBJJlEkZiRXxB4ZPx8mBFrErvCSAqCeax0elCpY/p8JEmV9/fR3JLF1NdI7PqcOR3w9eHK329oLAQ==
-X-Received: by 2002:a0c:e0cb:0:b0:635:dcef:b5b7 with SMTP id x11-20020a0ce0cb000000b00635dcefb5b7mr15007890qvk.56.1689684751947;
-        Tue, 18 Jul 2023 05:52:31 -0700 (PDT)
-Received: from [192.168.0.140] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id y6-20020a37e306000000b00767cfac77c3sm543674qki.134.2023.07.18.05.52.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 05:52:31 -0700 (PDT)
-Message-ID: <a11d5ce7-5ee3-fbf7-9adb-4cfc805c6bb7@joelfernandes.org>
-Date:   Tue, 18 Jul 2023 08:52:30 -0400
+        d=1e100.net; s=20221208; t=1689684826; x=1692276826;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=79kLUvgjaFzQrWOgx008zsF/7GOXg8shTx0H5AGYDQw=;
+        b=DeVLYelu2269a8Pkj8YNJ3JE28qpVpkxS8oppNTaxtomOywRICn/r68lXAuE+hWCH1
+         2jrv3N+CTNxOh3SEXyVN1QhE1yBFZWX7Oq4Lq5EKFBduYygOq5vsx9T/HwrYNy7t1b46
+         +pSZI392SwKkV4Obg1ouQQmNpLVPmi0r/cQUlKGEvCFanYVJMWPHT1Zf9ZKYOwg7Dpla
+         tQLYS/HxE/JouKEgXYgi1fdSzaYQJDPIzaSf7DnMwwb4IhIspl/HTCBskCv2VKquH0AZ
+         UJjQQTwmQqwZZBKbmUDUFaLMtw8bDm+HSNG7eLexbRMVR/1BouFLtPYPV5CMZrdlKoWC
+         vOug==
+X-Gm-Message-State: ABy/qLYMBUhWJY32F7UZgSnd67zl7nJTkafeZNP/Ow7B3zoVjt8B/yX/
+        s57SNiwPAqQCeevjT98Uur6VlbMgfGL1oKzbW8Q=
+X-Google-Smtp-Source: APBJJlEiNMwdGUgpHIKMmnEgRY+QNSS28oQH2q/Czd9HAANojvR1sxg1GKNIsNiHyHioOrvxRuwFkor+DKPaLczWNdQ=
+X-Received: by 2002:a17:906:109:b0:967:e015:f542 with SMTP id
+ 9-20020a170906010900b00967e015f542mr12775335eje.44.1689684826263; Tue, 18 Jul
+ 2023 05:53:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH rcu 2/6] rcu: Clarify rcu_is_watching() kernel-doc comment
-Content-Language: en-US
-To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Masami Hiramatsu <mhiramat@kernel.org>
-References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
- <20230717180317.1097590-2-paulmck@kernel.org>
-From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <20230717180317.1097590-2-paulmck@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
+ <20230717172821.62827-11-andriy.shevchenko@linux.intel.com>
+ <13f7153786cfcdc3c6185a3a674686f7fbf480dc.camel@crapouillou.net>
+ <ZLZDL27zzDpY4q8E@orome> <5e4b5bc23f3edb3ed30cb465420a51ffceceb53d.camel@crapouillou.net>
+In-Reply-To: <5e4b5bc23f3edb3ed30cb465420a51ffceceb53d.camel@crapouillou.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 18 Jul 2023 15:53:10 +0300
+Message-ID: <CAHp75Vf3mijhiS6JNhD4Dq4EpbKmok5m8MYNaguUgpUBak9hTA@mail.gmail.com>
+Subject: Re: [PATCH v2 10/10] pinctrl: tegra: Switch to use
+ DEFINE_NOIRQ_DEV_PM_OPS() helper
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Balsam CHIHI <bchihi@baylibre.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
+        Sean Wang <sean.wang@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,52 +97,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Tue, Jul 18, 2023 at 11:43=E2=80=AFAM Paul Cercueil <paul@crapouillou.ne=
+t> wrote:
+> Le mardi 18 juillet 2023 =C3=A0 09:45 +0200, Thierry Reding a =C3=A9crit =
+:
 
-On 7/17/23 14:03, Paul E. McKenney wrote:
-> Make it clear that this function always returns either true or false
-> without other planned failure modes.
-> 
-> Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->   kernel/rcu/tree.c | 12 ++++++++----
->   1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 1449cb69a0e0..fae9b4e29c93 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -679,10 +679,14 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
->   /**
->    * rcu_is_watching - see if RCU thinks that the current CPU is not idle
+...
 
-Would it be better to modify the 'not idle' to 'not idle from an RCU viewpoint'? 
-This matches the comments in ct_nmi_enter() as well.
+> (or better, the namespaced version)
 
->    *
-> - * Return true if RCU is watching the running CPU, which means that this
-> - * CPU can safely enter RCU read-side critical sections.  In other words,
-> - * if the current CPU is not in its idle loop or is in an interrupt or
-> - * NMI handler, return true.
-> + * Return @true if RCU is watching the running CPU and @false otherwise.
-> + * An @true return means that this CPU can safely enter RCU read-side
-> + * critical sections.
-> + *
-> + * More specifically, if the current CPU is not deep within its idle
-> + * loop, return @true.  Note that rcu_is_watching() will return @true if
-> + * invoked from an interrupt or NMI handler, even if that interrupt or
-> + * NMI interrupted the CPU while it was deep within its idle loop.
+I am all for consistency, I agree on this whenever the driver is
+_already_ using namespaces. Having one macro with namespace and
+disrupting tons of the drivers (MediaTek case?) is not an option in my
+opinion.
 
-But it is more than the idle loop, for ex. NOHZ_FULL CPUs with single task 
-running could be idle from RCU's viewpoint? Could that be clarified more?
-
-thanks,
-
-  - Joel
-
-
->    *
->    * Make notrace because it can be called by the internal functions of
->    * ftrace, and making this notrace removes unnecessary recursion calls.
-
+--=20
+With Best Regards,
+Andy Shevchenko
