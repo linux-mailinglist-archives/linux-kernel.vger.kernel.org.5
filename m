@@ -2,167 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C42C675854C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 21:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A199D758550
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 21:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbjGRTDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 15:03:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46878 "EHLO
+        id S229479AbjGRTEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 15:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjGRTDT (ORCPT
+        with ESMTP id S229541AbjGRTEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 15:03:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D0FEF0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 12:03:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1E87B61549
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 19:03:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 843E6C433CB
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 19:03:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689706997;
-        bh=R8QJXFnQbLJybVy/WRm+yC3t7Ld2l0V2RXkTonYfxa0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=G5TCIPcW8BcvC5jbNzcPO6QKQt7WsxbnuYncE97G3IJwIOubmwZ8rqMYTBrY6NcgX
-         a7BqGpPIfw58yii+50qQJ8cADhJjx+OcwzywWJCds+mc7Egnpi98ncewsHmoIjY/SG
-         jWMz2QnW/PJ28Z5D6eHdRkzKE+PfMDB3RIsD0JmKd7SDGH1eL1KFh7jjArU0TftVkM
-         +2lhfULd3UDW1oyiNi+vgaePQyQhKkWgyyf/Dq7EoFpfJcWuaI5qTh352HgrXStMVo
-         TRL6Obe/bZEb6L6gWU0KZM9juuc1tspeYLW9HteSfgmAzDcYBYnqrItLvutSN7K6gM
-         7cwbI2n74jLVg==
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2b708e49059so95313291fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 12:03:17 -0700 (PDT)
-X-Gm-Message-State: ABy/qLb3Ez8RKToeEZGmevA/b2Kz4LAqIkM0Hdm+xKGch7WJsvJ1BLjA
-        bnbwXC9+OLYkInFPQWSpUFIc8RWy2TUzUIeM/Q==
-X-Google-Smtp-Source: APBJJlF6qwLdMOlHzoChTNfNvOVkECtMUu95cucOarCwIF/EJZ+FdXxptw1FJFLeEm6bNlQ3EAoJ43Rm/qMS3Uk8+pM=
-X-Received: by 2002:a2e:a410:0:b0:2b6:e13f:cfd7 with SMTP id
- p16-20020a2ea410000000b002b6e13fcfd7mr11445466ljn.4.1689706995524; Tue, 18
- Jul 2023 12:03:15 -0700 (PDT)
+        Tue, 18 Jul 2023 15:04:36 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF4EF9
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 12:04:34 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-4036bd4fff1so434111cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 12:04:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689707073; x=1692299073;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UP4E+krXJUqcP/XL8AvesdP7FQu4JyJQ3RJDPmgOZF8=;
+        b=21v6dXrULsCH8KDeCheN7Pz5gu95bHxPXaU2t1wV8WDWMJA77Iz6q0xb8xHeB8eBNK
+         zBajR7tCwfn41oLjzTQRqjX4Hxyfa3QqUZKBAGEuS24b0VN+RcHrf+aNZjohziD/rmKw
+         9vJBch+0p3qJNDmsj+Twj5JT7Y/zjc5mpzoknWLforM903oigoaouaveKT4ZgDFuBtGl
+         MsyxmPg4xZberTUdczm/quU9iQabGH6LJ4h5gtlztS2pkC/5JC3xJmGf79W1tVmrpxJG
+         qNt+YDelDSvg7wVBL2a4tJ6l6o3+BAKSN8yEWd7GUIcw/UQtBVFPNsS53HB5hg/1z/u2
+         qomQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689707073; x=1692299073;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UP4E+krXJUqcP/XL8AvesdP7FQu4JyJQ3RJDPmgOZF8=;
+        b=G0ZP+8u8HLw8VWGwJVNlLExMD81wJpzq9AxLpAiBmxo6HKhDxRc7rqv8s1YDMdQ1Bh
+         nnmAbs5cidogJt61hc+LC76Srh6iOSfnJzJD51Ut2uACqkU1hz/vZn835/+G6A4yZ4W8
+         yvyaNZR51rm8yQXpeGLbGulVwR6d//D5yQTKp1yVLgx11i93PTApdZrqwCbtJCW2rZPJ
+         NPeRuX0nR+PyvYkt2bpn8+1A6D2pCtlYxrF9rCquSFx18wFsFY5E83xHCYTFXQ4Bt7KZ
+         Psi8ulwbctvQdjnEDF3SEapd/9VVDi5HBS3vLfcG4FNocH83xWHW/x1S1JV9vTwv0WQq
+         Z3zQ==
+X-Gm-Message-State: ABy/qLZaTqEsOD82gkZSaEPnLU8Y7vUlSRG0ZFmn0yqfydQF0ewbWbc+
+        IVO5QIl3T/C4LbUlqif1AfFF7kYZMcA7yEYsktZ0uQ==
+X-Google-Smtp-Source: APBJJlEqTCm929lAwWSFDX8sdYEaCp3/sAVGWtRDWQbwohxt/YNaKGxUn5vTLiOLRpmy5hemXBjhYQqtkuV9q1y42Xc=
+X-Received: by 2002:a05:622a:1882:b0:3f2:2c89:f1ef with SMTP id
+ v2-20020a05622a188200b003f22c89f1efmr288088qtc.5.1689707073502; Tue, 18 Jul
+ 2023 12:04:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230609183056.1765183-1-robh@kernel.org> <CAL_JsqLTc_9Yujp=wJjjn7P5YwAFZ9fn2SU6ey1q_gY3MFp9TA@mail.gmail.com>
-In-Reply-To: <CAL_JsqLTc_9Yujp=wJjjn7P5YwAFZ9fn2SU6ey1q_gY3MFp9TA@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 18 Jul 2023 13:03:03 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLNg00Z81cpSAOtwVWnfuQMoy2veBcHUHNby1Qh35mLTw@mail.gmail.com>
-Message-ID: <CAL_JsqLNg00Z81cpSAOtwVWnfuQMoy2veBcHUHNby1Qh35mLTw@mail.gmail.com>
-Subject: Re: [PATCH] fsi: Use of_property_read_reg() to parse "reg"
-To:     Jeremy Kerr <jk@ozlabs.org>, Joel Stanley <joel@jms.id.au>,
-        Alistar Popple <alistair@popple.id.au>,
-        Eddie James <eajames@linux.ibm.com>
-Cc:     linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20230714114753.170814-1-david@readahead.eu>
+In-Reply-To: <20230714114753.170814-1-david@readahead.eu>
+From:   Jeff Xu <jeffxu@google.com>
+Date:   Tue, 18 Jul 2023 12:03:57 -0700
+Message-ID: <CALmYWFsjy2jOfKyM3Gd3Ag+p6u5ejDoBp6RhqcXkcAkMiby4SA@mail.gmail.com>
+Subject: Re: [PATCH] memfd: support MFD_NOEXEC alongside MFD_EXEC
+To:     David Rheinsberg <david@readahead.eu>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Verkamp <dverkamp@chromium.org>, linux-mm@kvack.org,
+        Peter Xu <peterx@redhat.com>, linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 30, 2023 at 3:02=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
->
-> On Fri, Jun 9, 2023 at 12:31=E2=80=AFPM Rob Herring <robh@kernel.org> wro=
-te:
-> >
-> > Use the recently added of_property_read_reg() helper to get the
-> > untranslated "reg" address value.
-> >
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  drivers/fsi/fsi-core.c | 39 +++++++++------------------------------
-> >  1 file changed, 9 insertions(+), 30 deletions(-)
->
-> Ping!
+Hi David
 
-Is FSI still maintained or should we just remove it?
+Thanks email and patch for discussion.
 
+On Fri, Jul 14, 2023 at 4:48=E2=80=AFAM David Rheinsberg <david@readahead.e=
+u> wrote:
 >
-> >
-> > diff --git a/drivers/fsi/fsi-core.c b/drivers/fsi/fsi-core.c
-> > index 0b927c9f4267..19c4d5b3bde9 100644
-> > --- a/drivers/fsi/fsi-core.c
-> > +++ b/drivers/fsi/fsi-core.c
-> > @@ -16,6 +16,7 @@
-> >  #include <linux/idr.h>
-> >  #include <linux/module.h>
-> >  #include <linux/of.h>
-> > +#include <linux/of_address.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/bitops.h>
-> >  #include <linux/cdev.h>
-> > @@ -415,28 +416,18 @@ EXPORT_SYMBOL_GPL(fsi_slave_release_range);
-> >  static bool fsi_device_node_matches(struct device *dev, struct device_=
-node *np,
-> >                 uint32_t addr, uint32_t size)
-> >  {
-> > -       unsigned int len, na, ns;
-> > -       const __be32 *prop;
-> > -       uint32_t psize;
-> > +       u64 paddr, psize;
-> >
-> > -       na =3D of_n_addr_cells(np);
-> > -       ns =3D of_n_size_cells(np);
-> > -
-> > -       if (na !=3D 1 || ns !=3D 1)
-> > -               return false;
-> > -
-> > -       prop =3D of_get_property(np, "reg", &len);
-> > -       if (!prop || len !=3D 8)
-> > +       if (of_property_read_reg(np, 0, &paddr, &psize))
-> >                 return false;
-> >
-> > -       if (of_read_number(prop, 1) !=3D addr)
-> > +       if (paddr !=3D addr)
-> >                 return false;
-> >
-> > -       psize =3D of_read_number(prop + 1, 1);
-> >         if (psize !=3D size) {
-> >                 dev_warn(dev,
-> > -                       "node %s matches probed address, but not size (=
-got 0x%x, expected 0x%x)",
-> > -                       of_node_full_name(np), psize, size);
-> > +                       "node %pOF matches probed address, but not size=
- (got 0x%llx, expected 0x%x)",
-> > +                       np, psize, size);
-> >         }
-> >
-> >         return true;
-> > @@ -653,24 +644,12 @@ static void fsi_slave_release(struct device *dev)
-> >  static bool fsi_slave_node_matches(struct device_node *np,
-> >                 int link, uint8_t id)
-> >  {
-> > -       unsigned int len, na, ns;
-> > -       const __be32 *prop;
-> > -
-> > -       na =3D of_n_addr_cells(np);
-> > -       ns =3D of_n_size_cells(np);
-> > -
-> > -       /* Ensure we have the correct format for addresses and sizes in
-> > -        * reg properties
-> > -        */
-> > -       if (na !=3D 2 || ns !=3D 0)
-> > -               return false;
-> > +       u64 addr;
-> >
-> > -       prop =3D of_get_property(np, "reg", &len);
-> > -       if (!prop || len !=3D 8)
-> > +       if (of_property_read_reg(np, 0, &addr, NULL))
-> >                 return false;
-> >
-> > -       return (of_read_number(prop, 1) =3D=3D link) &&
-> > -               (of_read_number(prop + 1, 1) =3D=3D id);
-> > +       return addr =3D=3D (((u64)link << 32) | id);
-> >  }
-> >
-> >  /* Find a matching node for the slave at (link, id). Returns NULL if n=
-one
-> > --
-> > 2.39.2
-> >
+> Add a new flag for memfd_create() called MFD_NOEXEC, which has the
+> opposite effect as MFD_EXEC (i.e., it strips the executable bits from
+> the inode file mode).
+>
+I previously thought about having the symmetric flags, such as
+MFD_NOEXEC/MFD_EXEC/MFD_NOEXEC_SEAL/MFD_EXEC_SEAL, but decided against
+it. The app shall decide beforehand what the memfd is created for, if
+it is no-executable, then it should be sealed, such that it can't be
+chmod to enable "X" bit.
+
+> The default mode for memfd_create() has historically been to use 0777 as
+> file modes. The new `MFD_EXEC` flag has now made this explicit, paving
+> the way to reduce the default to 0666 and thus dropping the executable
+> bits for security reasons. Additionally, the `MFD_NOEXEC_SEAL` flag has
+> been added which allows this without changing the default right now.
+>
+> Unfortunately, `MFD_NOEXEC_SEAL` enforces `MFD_ALLOW_SEALING` and
+> `F_SEAL_EXEC`, with no alternatives available. This leads to multiple
+> issues:
+>
+>  * Applications that do not want to allow sealing either have to use
+>    `MFD_EXEC` (which we don't want, unless they actually need the
+>    executable bits), or they must add `F_SEAL_SEAL` immediately on
+>    return of memfd_create(2) with `MFD_NOEXEC_SEAL`, since this
+>    implicitly enables sealing.
+>
+>    Note that we explicitly added `MFD_ALLOW_SEALING` when creating
+>    memfd_create(2), because enabling seals on existing users of shmem
+>    without them knowing about it can easily introduce DoS scenarios.
+
+The application that doesn't want MFD_NOEXEC_SEAL can use MFD_EXEC,
+the kernel won't add MFD_ALLOW_SEALING implicitly. MFD_EXEC makes the
+kernel behave the same as before, this is also  why sysctl
+vm.memfd_noexec=3D0 can work seamlessly.
+
+>   It
+>    is unclear why `MFD_NOEXEC_SEAL` was designed to enable seals, and
+>    this is especially dangerous with `MEMFD_NOEXEC_SCOPE_NOEXEC_SEAL`
+>    set via sysctl, since it will silently enable sealing on every memfd
+>    created.
+>
+Without sealing, chmod(2) can modify the mfd to be executable, that is
+the consideration that MFD_NOEXEC is not provided as an option.
+Indeed, current design is "biased" towards promoting MFD_NOEXEC_SEAL
+as the safest approach, and try to avoid the pitfall that dev
+accidently uses "MFD_NOEXEC" without realizing it can still be
+chmod().
+
+
+>  * Applications that do not want `MFD_EXEC`, but rely on
+>    `F_GET_SEALS` to *NOT* return `F_SEAL_EXEC` have no way of achieving
+>    this other than using `MFD_EXEC` and clearing the executable bits
+>    manually via fchmod(2). Using `MFD_NOEXEC_SEAL` will set
+>    `F_SEAL_EXEC` and thus break existing code that hard-codes the
+>    seal-set.
+>
+>    This is already an issue when sending log-memfds to systemd-journald
+>    today, which verifies the seal-set of the received FD and fails if
+>    unknown seals are set. Hence, you have to use `MFD_EXEC` when
+>    creating memfds for this purpose, even though you really do not need
+>    the executable bits set.
+>
+>  * Applications that want to enable the executable bit later on,
+>    currently have no way to create the memfd without it. They have to
+>    clear the bits immediately after creating it via fchmod(2), or just
+>    leave them set.
+>
+Is it OK to do what you want in two steps ? What is the concern there ? i.e=
+.
+memfd_create(MFD_EXEC), then chmod to remove the "X" bit.
+
+I imagine this is probably already what the application does for
+creating no-executable mfd before my patch, i.e.:
+memfd_create(), then chmod() to remove "X" to remove "X" bit.
+
+Thanks!
+-Jeff
+
+
+
+-Jeff
+
+> By adding MFD_NOEXEC, user-space is now able to clear the executable
+> bits on all memfds immediately, clearly stating their intention, without
+> requiring fixups after creating the memfd. In particular, it is highly
+> useful for existing use-cases that cannot allow new seals to appear on
+> memfds.
+>
+> Signed-off-by: David Rheinsberg <david@readahead.eu>
+> ---
+>  include/linux/pid_namespace.h |  4 ++--
+>  include/uapi/linux/memfd.h    |  1 +
+>  mm/memfd.c                    | 29 ++++++++++++++---------------
+>  3 files changed, 17 insertions(+), 17 deletions(-)
+>
+> diff --git a/include/linux/pid_namespace.h b/include/linux/pid_namespace.=
+h
+> index c758809d5bcf..02f8acf94512 100644
+> --- a/include/linux/pid_namespace.h
+> +++ b/include/linux/pid_namespace.h
+> @@ -19,9 +19,9 @@ struct fs_pin;
+>  #if defined(CONFIG_SYSCTL) && defined(CONFIG_MEMFD_CREATE)
+>  /*
+>   * sysctl for vm.memfd_noexec
+> - * 0: memfd_create() without MFD_EXEC nor MFD_NOEXEC_SEAL
+> + * 0: memfd_create() without MFD_EXEC nor MFD_NOEXEC
+>   *     acts like MFD_EXEC was set.
+> - * 1: memfd_create() without MFD_EXEC nor MFD_NOEXEC_SEAL
+> + * 1: memfd_create() without MFD_EXEC nor MFD_NOEXEC
+>   *     acts like MFD_NOEXEC_SEAL was set.
+>   * 2: memfd_create() without MFD_NOEXEC_SEAL will be
+>   *     rejected.
+> diff --git a/include/uapi/linux/memfd.h b/include/uapi/linux/memfd.h
+> index 273a4e15dfcf..b9e13bd65817 100644
+> --- a/include/uapi/linux/memfd.h
+> +++ b/include/uapi/linux/memfd.h
+> @@ -12,6 +12,7 @@
+>  #define MFD_NOEXEC_SEAL                0x0008U
+>  /* executable */
+>  #define MFD_EXEC               0x0010U
+> +#define MFD_NOEXEC             0x0020U
+>
+>  /*
+>   * Huge page size encoding when MFD_HUGETLB is specified, and a huge pag=
+e
+> diff --git a/mm/memfd.c b/mm/memfd.c
+> index e763e76f1106..2afe49368fc5 100644
+> --- a/mm/memfd.c
+> +++ b/mm/memfd.c
+> @@ -266,7 +266,9 @@ long memfd_fcntl(struct file *file, unsigned int cmd,=
+ unsigned int arg)
+>  #define MFD_NAME_PREFIX_LEN (sizeof(MFD_NAME_PREFIX) - 1)
+>  #define MFD_NAME_MAX_LEN (NAME_MAX - MFD_NAME_PREFIX_LEN)
+>
+> -#define MFD_ALL_FLAGS (MFD_CLOEXEC | MFD_ALLOW_SEALING | MFD_HUGETLB | M=
+FD_NOEXEC_SEAL | MFD_EXEC)
+> +#define MFD_ALL_FLAGS \
+> +       (MFD_CLOEXEC | MFD_ALLOW_SEALING | MFD_HUGETLB | \
+> +        MFD_NOEXEC_SEAL | MFD_EXEC | MFD_NOEXEC)
+>
+>  SYSCALL_DEFINE2(memfd_create,
+>                 const char __user *, uname,
+> @@ -289,11 +291,13 @@ SYSCALL_DEFINE2(memfd_create,
+>                         return -EINVAL;
+>         }
+>
+> -       /* Invalid if both EXEC and NOEXEC_SEAL are set.*/
+> -       if ((flags & MFD_EXEC) && (flags & MFD_NOEXEC_SEAL))
+> +       if (flags & MFD_NOEXEC_SEAL)
+> +               flags |=3D MFD_ALLOW_SEALING | MFD_NOEXEC;
+> +
+> +       if ((flags & MFD_EXEC) && (flags & MFD_NOEXEC))
+>                 return -EINVAL;
+>
+> -       if (!(flags & (MFD_EXEC | MFD_NOEXEC_SEAL))) {
+> +       if (!(flags & (MFD_EXEC | MFD_NOEXEC))) {
+>  #ifdef CONFIG_SYSCTL
+>                 int sysctl =3D MEMFD_NOEXEC_SCOPE_EXEC;
+>                 struct pid_namespace *ns;
+> @@ -366,20 +370,15 @@ SYSCALL_DEFINE2(memfd_create,
+>         file->f_mode |=3D FMODE_LSEEK | FMODE_PREAD | FMODE_PWRITE;
+>         file->f_flags |=3D O_LARGEFILE;
+>
+> -       if (flags & MFD_NOEXEC_SEAL) {
+> -               struct inode *inode =3D file_inode(file);
+> +       if (flags & MFD_NOEXEC)
+> +               file_inode(file)->i_mode &=3D ~0111;
+>
+> -               inode->i_mode &=3D ~0111;
+> -               file_seals =3D memfd_file_seals_ptr(file);
+> -               if (file_seals) {
+> +       file_seals =3D memfd_file_seals_ptr(file);
+> +       if (file_seals) {
+> +               if (flags & MFD_ALLOW_SEALING)
+>                         *file_seals &=3D ~F_SEAL_SEAL;
+> +               if (flags & MFD_NOEXEC_SEAL)
+>                         *file_seals |=3D F_SEAL_EXEC;
+> -               }
+> -       } else if (flags & MFD_ALLOW_SEALING) {
+> -               /* MFD_EXEC and MFD_ALLOW_SEALING are set */
+> -               file_seals =3D memfd_file_seals_ptr(file);
+> -               if (file_seals)
+> -                       *file_seals &=3D ~F_SEAL_SEAL;
+>         }
+>
+>         fd_install(fd, file);
+> --
+> 2.41.0
+>
