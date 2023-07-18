@@ -2,226 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B83E77584C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECD47584C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbjGRS0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 14:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59622 "EHLO
+        id S229849AbjGRS1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 14:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbjGRS0d (ORCPT
+        with ESMTP id S229504AbjGRS1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 14:26:33 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB11FC;
-        Tue, 18 Jul 2023 11:26:30 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36IGoKek032161;
-        Tue, 18 Jul 2023 18:26:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=BSrLai2wncHUqnDVDJ09aM2N+hA9aLEkz6kD+pP08pE=;
- b=kV1DaExHhCZpgT6J8zqIEVuBQlHx8fWy5NTq1clVszwiZn0+8+FfBOJt1IufA2rqVRSE
- YmGDmvvnS6V4yRP/dojgBiVzsOUmPYGb/2bKVWPkgWuUaE37BtiYqbWxMg7NFbpkfU30
- KwnZx/CeQtm6bQH+mjlh9lMMgG9gstzPgFAYwpD0LTVlLmgUHnEuMa9pe0JImjU70ihd
- hOE3GGphsLB6I0FoDDSFiMSxdch4RXDo0ExbrI1ol4VR1gSndSQoUGNwtD17Qm0Ge2Xp
- 8vZobPy8Awpt/lQH2GNOnOWRqfKWvkpzHVKuLm6fLGzCAlFEy9TRodt7ti0+kuSZpzsz 2Q== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rwxknr69f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 Jul 2023 18:25:56 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36IIPt9u006948
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 Jul 2023 18:25:55 GMT
-Received: from [10.110.49.60] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 18 Jul
- 2023 11:25:54 -0700
-Message-ID: <3ae2d618-490a-06da-b4b6-b5a24b0a9747@quicinc.com>
-Date:   Tue, 18 Jul 2023 11:25:48 -0700
+        Tue, 18 Jul 2023 14:27:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEDFB6;
+        Tue, 18 Jul 2023 11:27:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8D1DE616A8;
+        Tue, 18 Jul 2023 18:27:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 344B5C433C7;
+        Tue, 18 Jul 2023 18:27:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689704849;
+        bh=uNk0XUkdDBUHQlqednb/jEUGmxpFPqSLJgCZ0SHSywA=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ATBHZKnA6K3s7qp0wC9FoKKdLm8GN8TwCjn20vt11Xo/Rp44a3FuZiHkE7kCVFdLF
+         Idtw0XGj+HcRZm8frnVjt0aWvAmc1VnRQIG6VQXLEvFTyfIR8Io2HaP9tIpjd8R6iC
+         7YrmeydcowvlHarjkWzzu3H9SHpIhineZA0RmgYw/QYq6pjVDsQuYR6X6sM61i0/2F
+         DcjtrgQi7XEVLka8acDvqZKcS9t1HFalcCxGsBHyNKFbX2vYQH/YmVMmbOtho6T7t7
+         LpMjhcJRvb/fm/nGvdXUPf+umv7L6beeIa20+PqbRIuGdQNhfDsjMl10VHNKblVwcY
+         /p0LFfpF3JhTw==
+Message-ID: <a77881074b9710399fd2ad43e17fa26bf9b397cb.camel@kernel.org>
+Subject: Re: linux-next ext4 inode size 128 corrupted
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Christian Brauner <brauner@kernel.org>,
+        Jan Kara <jack@suse.cz>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Tue, 18 Jul 2023 14:27:26 -0400
+In-Reply-To: <a51815d0-16fb-201b-77db-e16af4caa8b0@google.com>
+References: <26cd770-469-c174-f741-063279cdf7e@google.com>
+         <368e567a3a0a1a21ce37f5fba335068c50ab6f29.camel@kernel.org>
+         <a51815d0-16fb-201b-77db-e16af4caa8b0@google.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH 2/2] firmware: arm_scmi: Add qcom hvc/shmem transport
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <sudeep.holla@arm.com>
-CC:     <cristian.marussi@arm.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <20230718160833.36397-3-quic_nkela@quicinc.com>
- <d9d5ffd5-6f85-f091-5d69-12cdd8d04c99@linaro.org>
-From:   Nikunj Kela <quic_nkela@quicinc.com>
-In-Reply-To: <d9d5ffd5-6f85-f091-5d69-12cdd8d04c99@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 4pS1xj5kdpdeAj6wF-jhNf1GlnXQ29Ry
-X-Proofpoint-GUID: 4pS1xj5kdpdeAj6wF-jhNf1GlnXQ29Ry
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-18_13,2023-07-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- spamscore=0 adultscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0
- suspectscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2307180167
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2023-07-18 at 11:03 -0700, Hugh Dickins wrote:
+> On Tue, 18 Jul 2023, Jeff Layton wrote:
+> > On Mon, 2023-07-17 at 20:43 -0700, Hugh Dickins wrote:
+> > > Hi Jeff,
+> > >=20
+> > > I've been unable to run my kernel builds on ext4 on loop0 on tmpfs
+> > > swapping load on linux-next recently, on one machine: various kinds
+> > > of havoc, most common symptoms being ext4_find_dest_de:2107 errors,
+> > > systemd-journald errors, segfaults.  But no problem observed running
+> > > on a more recent installation.
+> > >=20
+> > > Bisected yesterday to 979492850abd ("ext4: convert to ctime accessor
+> > > functions").
+> > >=20
+> > > I've mostly averted my eyes from the EXT4_INODE macro changes there,
+> > > but I think that's where the problem lies.  Reading the comment in
+> > > fs/ext4/ext4.h above EXT4_FITS_IN_INODE() led me to try "tune2fs -l"
+> > > and look at /etc/mke2fs.conf.  It's an old installation, its own
+> > > inodes are 256, but that old mke2fs.conf does default to 128 for smal=
+l
+> > > FSes, and what I use for the load test is small.  Passing -I 256 to t=
+he
+> > > mkfs makes the problems go away.
+> > >=20
+> > > (What's most alarming about the corruption is that it appears to exte=
+nd
+> > > beyond just the throwaway test filesystem: segfaults on bash and libc=
+.so
+> > > from the root filesystem.  But no permanent damage done there.)
+> > >=20
+> > > One oddity I noticed in scrutinizing that commit, didn't help with
+> > > the issues above, but there's a hunk in ext4_rename() which changes
+> > > -	old.dir->i_ctime =3D old.dir->i_mtime =3D current_time(old.dir);
+> > > +	old.dir->i_mtime =3D inode_set_ctime_current(old.inode);
+> > >=20
+> > >=20
+> >=20
+> > I suspect the problem here is the i_crtime, which lives wholly in the
+> > extended part of the inode. The old macros would just not store anythin=
+g
+> > if the i_crtime didn't fit, but the new ones would still store the
+> > tv_sec field in that case, which could be a memory corruptor. This patc=
+h
+> > should fix it, and I'm testing it now.
+>=20
+> That makes sense.
+>=20
+> >=20
+> > Hugh, if you're able to give this a spin on your setup, then that would
+> > be most helpful. This is also in the "ctime" branch in my kernel.org
+> > tree if that helps. If this looks good, I'll ask Christian to fold this
+> > into the ext4 conversion patch.
+>=20
+> Yes, it's now running fine on the problem machine, and on the no-problem.
+>=20
+> Tested-by: Hugh Dickins <hughd@google.com>
+>=20
+> >=20
+> > Thanks for the bug report!
+>=20
+> And thanks for the quick turnaround!
+>=20
+> But I'm puzzled by your dismissing that
+> -	old.dir->i_ctime =3D old.dir->i_mtime =3D current_time(old.dir);
+> +	old.dir->i_mtime =3D inode_set_ctime_current(old.inode);
+> in ext4_rename() as "actually looks fine".
+>=20
+> Different issue, nothing to do with the corruption, sure.  Much less
+> important, sure.  But updating ctime on the wrong inode is "fine"?
 
-On 7/18/2023 11:17 AM, Krzysztof Kozlowski wrote:
-> On 18/07/2023 18:08, Nikunj Kela wrote:
->> Add a new transport channel to the SCMI firmware interface driver for
->> SCMI message exchange on Qualcomm virtual platforms.
->>
->> The hypervisor associates an object-id also known as capability-id
->> with each hvc doorbell object. The capability-id is used to identify the
->> doorbell from the VM's capability namespace, similar to a file-descriptor.
->>
-> ...
->
->> +
->> +static bool qcom_hvc_chan_available(struct device_node *of_node, int idx)
->> +{
->> +	struct device_node *np = of_parse_phandle(of_node, "shmem", 0);
->> +
->> +	if (!np)
->> +		return false;
->> +
->> +	of_node_put(np);
->> +	return true;
->> +}
->> +
->> +static inline void qcom_hvc_channel_lock_init(struct scmi_qcom_hvc *scmi_info)
->> +{
->> +	mutex_init(&scmi_info->shmem_lock);
->> +}
->> +
->> +static inline void
->> +qcom_hvc_channel_lock_acquire(struct scmi_qcom_hvc *scmi_info,
->> +			      struct scmi_xfer *xfer __maybe_unused)
-> Why do you pass unused arguments?
-I mimic the same behavior as in smc.c. At the moment, we don't have a 
-use case for atomicity but was trying to keep the same skeleton in case 
-we need to add the atomic support in future. But you are right, I don't 
-need wrapper at the moment.
->
->> +{
->> +	mutex_lock(&scmi_info->shmem_lock);
-> Why do you need these wrappers? Why not using mutexes directly?
-> If they are needed, then add lock __acquires annotation.
->
-Will remove the wrappers.
->> +}
->> +
->> +static inline void qcom_hvc_channel_lock_release(struct scmi_qcom_hvc
->> +						 *scmi_info)
-> Same comments.
->
->> +{
->> +	mutex_unlock(&scmi_info->shmem_lock);
->> +}
->> +
->> +static int qcom_hvc_chan_setup(struct scmi_chan_info *cinfo,
->> +			       struct device *dev, bool tx)
->> +{
->> +	struct device *cdev = cinfo->dev;
->> +	struct scmi_qcom_hvc *scmi_info;
->> +	resource_size_t size;
->> +	struct resource res;
->> +	struct device_node *np;
->> +	unsigned long cap_id;
->> +	u32 func_id;
->> +	int ret, irq;
->> +
->> +	if (!tx)
->> +		return -ENODEV;
->> +
->> +	scmi_info = devm_kzalloc(dev, sizeof(*scmi_info), GFP_KERNEL);
->> +	if (!scmi_info)
->> +		return -ENOMEM;
->> +
->> +	np = of_parse_phandle(cdev->of_node, "shmem", 0);
->> +	if (!of_device_is_compatible(np, "arm,scmi-shmem"))
-> You leak here reference.
-Wouldn't the devm_* API take care of that implicitly? It is same in 
-smc.c as well.
->> +		return -ENXIO;
->> +
->> +	ret = of_address_to_resource(np, 0, &res);
->> +	of_node_put(np);
->> +	if (ret) {
->> +		dev_err(cdev, "failed to get SCMI Tx shared memory\n");
->> +		return ret;
->> +	}
->> +
->> +	size = resource_size(&res);
->> +
->> +	/* let's map 2 additional ulong since
->> +	 * func-id & capability-id are kept after shmem.
->> +	 *     +-------+
->> +	 *     |       |
->> +	 *     | shmem |
->> +	 *     |       |
->> +	 *     |       |
->> +	 *     +-------+ <-- size
->> +	 *     | funcId|
->> +	 *     +-------+ <-- size + sizeof(ulong)
->> +	 *     | capId |
->> +	 *     +-------+ <-- size + 2*sizeof(ulong)
->> +	 */
->> +
->> +	scmi_info->shmem = devm_ioremap(dev, res.start,
->> +					size + 2 * sizeof(unsigned long));
->> +	if (!scmi_info->shmem) {
->> +		dev_err(dev, "failed to ioremap SCMI Tx shared memory\n");
->> +		return -EADDRNOTAVAIL;
->> +	}
->> +
->> +	func_id = readl((void *)(scmi_info->shmem) + size);
->> +
->> +#ifdef CONFIG_ARM64
->> +	cap_id = readq((void *)(scmi_info->shmem) + size +
->> +		       sizeof(unsigned long));
->> +#else
->> +	cap_id = readl((void *)(scmi_info->shmem) + size +
->> +		       sizeof(unsigned long));
->> +#endif
->> +
->> +	/*
->> +	 * If there is an interrupt named "a2p", then the service and
->> +	 * completion of a message is signaled by an interrupt rather than by
->> +	 * the return of the hvc call.
->> +	 */
->> +	irq = of_irq_get_byname(cdev->of_node, "a2p");
->> +	if (irq > 0) {
->> +		ret = devm_request_irq(dev, irq, qcom_hvc_msg_done_isr,
->> +				       IRQF_NO_SUSPEND,
->> +				       dev_name(dev), scmi_info);
->> +		if (ret) {
->> +			dev_err(dev, "failed to setup SCMI completion irq\n");
-> return dev_err_probe, unless this is not called in probe... but then
-> using devm-interface raises questions.
-This is copied as is from existing smc.c
->
-> Best regards,
-> Krzysztof
->
+Ahh , sorry I wasn't looking at that properly. I think you're correct.
+The right fix is probably to move ext4 to use generic_rename_timestamp.
+I'll test and send another patch for that.
+
+Thanks again!
+--=20
+Jeff Layton <jlayton@kernel.org>
