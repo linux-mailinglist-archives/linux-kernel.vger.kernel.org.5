@@ -2,188 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC969758362
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F76A758326
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232160AbjGRRWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51404 "EHLO
+        id S233830AbjGRRAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230362AbjGRRV6 (ORCPT
+        with ESMTP id S229481AbjGRRAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:21:58 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45345FD
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:21:57 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qLo0m-00010G-OY; Tue, 18 Jul 2023 18:57:20 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qLo0l-000PjC-M0; Tue, 18 Jul 2023 18:57:19 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qLo0l-005tiu-0o; Tue, 18 Jul 2023 18:57:19 +0200
-Date:   Tue, 18 Jul 2023 18:57:16 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Randy Dunlap <rd.dunlab@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-pwm@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH v2] pwm: fix pwm-rz-mtu3.c build errors
-Message-ID: <20230718165716.77hllvxiwia542fu@pengutronix.de>
-References: <ac8d6190-06ae-b538-1293-07efedbfe94e@gmail.com>
- <CAMuHMdV-wu_XHy_qYGM+_UOAXN8etip731WxmgEmbQdv+SPwbw@mail.gmail.com>
- <ZLaSqhsJr2qH5Y6E@orome>
+        Tue, 18 Jul 2023 13:00:15 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8984E3AA9;
+        Tue, 18 Jul 2023 09:59:00 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b700e85950so87808401fa.3;
+        Tue, 18 Jul 2023 09:59:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689699489; x=1692291489;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=piv6yKOZr5H8L6Z/MbrhVqXE/T2un3gN3bixhhcUgIQ=;
+        b=sLfjoWtxXgfmoCM5uzN+QiAV7s5rvyuzl0uF1pmtgPoTK3sCb2Lg4bDEZBGyqBlmpE
+         arbksOOJ6sSphZBdsJqH9NBXCDYADqXDtveYunhtiv2SYLJ5dAZINEEco98eiY3kqqLU
+         11PLXOgsJwCPx2/Bn4Q2molGMAH1Z2YdiLXWUyNfAP+MFKRXp5oopBaboPTFTLuryl7z
+         9kAjnHQww6CHF/rP5Wte/mtC9466XO7FoJlg6qzgt5GLrE4wlwQsSmRqUBCljeL/dzoq
+         q4gP7MITlAp84eNr8F/ZzvO3iciZhmTSFJqaVEaZVDZv3/qCJwb+B3vdhU4bVTir96Mh
+         WvYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689699489; x=1692291489;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=piv6yKOZr5H8L6Z/MbrhVqXE/T2un3gN3bixhhcUgIQ=;
+        b=b53J3fpbpUx80ngCbZifNrpBlNCG1kDsAr9kftNcEwtJ9vDuI6/3tjKNqCTn4p8vDN
+         2iH2HOGljNQesqZvPkWp8FkIEAVEN04P9sWQNkcF6cnTzjfyi+3754KqcMaPS1jqOAXP
+         pBahdtm70ner/VkkOMJ6xGB1Wkp+iz3FmzUkHog4w3+XKC+5QXp6aywbeiwXPmkv1WdK
+         q1rvmaF6inPkabi611jHpglAA7S81y/E7F0kokfNLFhSxvxkEnQx4UFYyyJNbiEqgWjL
+         /xGM3UGFLIdcKWNoM7JgtHQ1ZHoh+4qSMwkn4fSBnNS03twRUncjHZhwxk8J0PC30+5j
+         q7kA==
+X-Gm-Message-State: ABy/qLaT1PdxeEkppnqwwoKO89ubZ90QRa62pcE6PzrtQ/gTE+coFbVR
+        vTO10y4PYyO7WXBArXdHQ3c=
+X-Google-Smtp-Source: APBJJlG5yyD8I8l6zeLQe93Zg8PVfJF/JTKVcMdHGj6BJR9ybouT9eDKpFSOEWA1LVLrxTx7lbfEdA==
+X-Received: by 2002:a2e:9643:0:b0:2b6:bb08:91c4 with SMTP id z3-20020a2e9643000000b002b6bb0891c4mr2392746ljh.42.1689699488508;
+        Tue, 18 Jul 2023 09:58:08 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id rp25-20020a170906d97900b009786ae9ed50sm1224355ejb.194.2023.07.18.09.58.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 09:58:07 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 0F75427C0054;
+        Tue, 18 Jul 2023 12:58:06 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 18 Jul 2023 12:58:06 -0400
+X-ME-Sender: <xms:ncS2ZOoddD4MhECzZzMmALo3k_mSuMVLeqj8Iw6m9j9ofRCLZVDQ-g>
+    <xme:ncS2ZMoU_7FqoUBAZNS_Wa2ZBOItFbr7PmJYvyZmpoVQqJRCVcG_RQCZEgXmndIbS
+    Ph_cRRLjHjUkemqvg>
+X-ME-Received: <xmr:ncS2ZDOu4UPtZkmTvGLPwQd-2pY4aVidryZbJeIY1a2xxMwxlwJjNo9zGuw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrgeeggddutdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeortddttddunecuhfhrohhmpeeuohhq
+    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
+    grthhtvghrnhepvdekueeuleeigfejffeiieefudejjeekkeejjefgfedvtdekfffgvdfh
+    uefghfetnecuffhomhgrihhnpehruhhsthdqfhhorhdqlhhinhhugidrtghomhdplhhptg
+    drvghvvghnthhspdihohhuthhusggvrdgtohhmpdhkrghnghhrvghjohhsrdgtohhmpdhk
+    vghrnhgvlhdrohhrghdpghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgv
+    rhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfh
+    gvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:ncS2ZN5pgL-baAFhBQB5R8_BurpKGxSLmCpsqOUmx8kEkKIfIU14RA>
+    <xmx:ncS2ZN5LtkFr5RKnMGhGo7COHTaJO288OW1pDa-DF3rGYBdAYFe4pQ>
+    <xmx:ncS2ZNhdVrgVyU4fat3nOrD9zint1eAcL4fuFfqI9QRWfbRg5ch58w>
+    <xmx:nsS2ZKyR30zW5LJwXpSeJKWjkwySGO7ZRewaiemCvjrXrkAUTIbqgw>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 18 Jul 2023 12:58:04 -0400 (EDT)
+Date:   Tue, 18 Jul 2023 09:58:01 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: Re: [PATCH] MAINTAINERS: add Andreas Hindborg as Rust reviewer
+Message-ID: <ZLbEmdMcAjQUmOFF@boqun-archlinux>
+References: <20230718054426.1048583-1-ojeda@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="54k5bi5rqes63ekj"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ZLaSqhsJr2qH5Y6E@orome>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230718054426.1048583-1-ojeda@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 18, 2023 at 07:44:25AM +0200, Miguel Ojeda wrote:
+> Andreas has been involved with the Rust for Linux project for more than
+> a year now. He has been primarily working on the Rust NVMe driver [1],
+> presenting it in several places (such as LPC [2][3] and Kangrejos [4]).
+> 
+> In addition, he recently submitted the Rust null block driver [5] and
+> has been reviewing patches in the mailing list for some months.
+> 
+> Thus add him to the `RUST` entry as reviewer.
+> 
+> Link: https://rust-for-linux.com/nvme-driver [1]
+> Link: https://lpc.events/event/16/contributions/1180/attachments/1017/1961/deck.pdf [2]
+> Link: https://www.youtube.com/watch?v=BwywU1MqW38 [3]
+> Link: https://kangrejos.com/A%20Linux%20(PCI)%20NVMe%20Driver%20in%20Rust.pdf [4]
+> Link: https://lore.kernel.org/rust-for-linux/20230503090708.2524310-1-nmi@metaspace.dk/ [5]
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 
---54k5bi5rqes63ekj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Boqun Feng <boqun.feng@gmail.com>
 
-On Tue, Jul 18, 2023 at 03:24:58PM +0200, Thierry Reding wrote:
-> On Tue, Jul 18, 2023 at 02:05:42PM +0200, Geert Uytterhoeven wrote:
-> > Hi Randy,
-> >=20
-> > On Tue, Jul 18, 2023 at 8:44=E2=80=AFAM Randy Dunlap <rd.dunlab@gmail.c=
-om> wrote:
-> > > From: Randy Dunlap <rd.dunlab@gmail.com>
-> > >
-> > > When (MFD) RZ_MTU3=3Dm and PWM_RZ_MTU3=3Dy, there are numerous build =
-errors:
-> > >
-> > > ld: vmlinux.o: in function `rz_mtu3_pwm_config':
-> > > drivers/pwm/pwm-rz-mtu3.c:374: undefined reference to `rz_mtu3_disabl=
-e'
-> > > ld: drivers/pwm/pwm-rz-mtu3.c:377: undefined reference to `rz_mtu3_8b=
-it_ch_write'
-> > > ld: vmlinux.o: in function `rz_mtu3_pwm_write_tgr_registers':
-> > > drivers/pwm/pwm-rz-mtu3.c:110: undefined reference to `rz_mtu3_16bit_=
-ch_write'
-> > > ld: vmlinux.o: in function `rz_mtu3_pwm_config':
-> > > drivers/pwm/pwm-rz-mtu3.c:382: undefined reference to `rz_mtu3_8bit_c=
-h_write'
-> > > ld: vmlinux.o: in function `rz_mtu3_pwm_write_tgr_registers':
-> > > drivers/pwm/pwm-rz-mtu3.c:110: undefined reference to `rz_mtu3_16bit_=
-ch_write'
-> > > ld: drivers/pwm/pwm-rz-mtu3.c:111: undefined reference to `rz_mtu3_16=
-bit_ch_write'
-> > > ld: vmlinux.o: in function `rz_mtu3_pwm_config':
-> > > drivers/pwm/pwm-rz-mtu3.c:397: undefined reference to `rz_mtu3_enable'
-> > > ld: vmlinux.o: in function `rz_mtu3_pwm_disable':
-> > > drivers/pwm/pwm-rz-mtu3.c:259: undefined reference to `rz_mtu3_8bit_c=
-h_write'
-> > > ld: drivers/pwm/pwm-rz-mtu3.c:264: undefined reference to `rz_mtu3_di=
-sable'
-> > > ld: vmlinux.o: in function `rz_mtu3_pwm_enable':
-> > > drivers/pwm/pwm-rz-mtu3.c:230: undefined reference to `rz_mtu3_8bit_c=
-h_write'
-> > > ld: drivers/pwm/pwm-rz-mtu3.c:234: undefined reference to `rz_mtu3_8b=
-it_ch_write'
-> > > ld: drivers/pwm/pwm-rz-mtu3.c:238: undefined reference to `rz_mtu3_en=
-able'
-> > > ld: vmlinux.o: in function `rz_mtu3_pwm_is_ch_enabled':
-> > > drivers/pwm/pwm-rz-mtu3.c:155: undefined reference to `rz_mtu3_is_ena=
-bled'
-> > > ld: drivers/pwm/pwm-rz-mtu3.c:162: undefined reference to `rz_mtu3_8b=
-it_ch_read'
-> > > ld: vmlinux.o: in function `rz_mtu3_pwm_read_tgr_registers':
-> > > drivers/pwm/pwm-rz-mtu3.c:102: undefined reference to `rz_mtu3_16bit_=
-ch_read'
-> > > ld: drivers/pwm/pwm-rz-mtu3.c:102: undefined reference to `rz_mtu3_16=
-bit_ch_read'
-> > > ld: drivers/pwm/pwm-rz-mtu3.c:103: undefined reference to `rz_mtu3_16=
-bit_ch_read'
-> > > ld: vmlinux.o: in function `rz_mtu3_pwm_get_state':
-> > > drivers/pwm/pwm-rz-mtu3.c:296: undefined reference to `rz_mtu3_8bit_c=
-h_read'
-> > >
-> > > Modify the dependencies of PWM_RZ_MTU3 so that COMPILE_TEST is
-> > > still allowed but PWM_RZ_MTU3 depends on RZ_MTU3 if it is being built
-> > > but also allow the latter not to be built.
-> > >
-> > > Fixes: 254d3a727421 ("pwm: Add Renesas RZ/G2L MTU3a PWM driver")
-> > > Signed-off-by: Randy Dunlap <rd.dunlab@gmail.com
-> >=20
-> > Thanks for your patch!
-> >=20
-> > > --- a/drivers/pwm/Kconfig
-> > > +++ b/drivers/pwm/Kconfig
-> > > @@ -505,7 +505,8 @@ config PWM_ROCKCHIP
-> > >
-> > >  config PWM_RZ_MTU3
-> > >         tristate "Renesas RZ/G2L MTU3a PWM Timer support"
-> > > -       depends on RZ_MTU3 || COMPILE_TEST
-> > > +       depends on COMPILE_TEST
-> >=20
-> > This makes the driver always depend on COMPILE_TEST,
-> > which is definitely not what we want.
->=20
-> Honestly, do we really need all of this complexity? I have specific
-> configurations to test all of the PWM drivers to make sure they build.
-> There's probably edge cases that don't get tested, but sooner or later I
-> expect some build bot will encounter those and then we can rectify
-> things. But in many cases that I've seen COMPILE_TEST just happens to do
-> more harm than good.
+Welcome!
 
-Without COMPILE_TEST you'd need to build at least for the following
-archs to build all pwm drivers:
+Regards,
+Boqun
 
-	armv4+5
-	armv7
-	armv7m
-	arm64
-	mips
-	riscv
-	shmobile
-	x86
-
-I personally like COMPILE_TEST as it reduces the number of needed test
-builds to 1 (I think).
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
-   |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---54k5bi5rqes63ekj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmS2xGsACgkQj4D7WH0S
-/k6QfQf/cz/mg3s7MJLDt06TZRSQSOGXB3fuXFca4y1SOz5MRbyLXnNvW892Dp44
-LG0v9KqKn9yvbSG0LDPpZvU30DBbaC0oToeT8kVWPi/Y0iu3PJPGgdfBMotUW4Ws
-fCaSua0JGRKINb8c7Fdsx0EMWSg5xYjz+T8ztg9ISB5ax7W2HSHu6N/UvBq4SbPz
-V7/mtbrlhJJDBA4oc4Sb2BhpIXiPtfVJWC73oYd7gzhu65SgLfD1NoTYSp7UqPJa
-n4UYBuZJir9JMgG7dtrC8R+fkND99BMUl5VOY+YzyivAnHUav5c/7Z0TK3GIT+ew
-0ZDNRbL6xZqcdbjM2AWSs9x2Z6zS5Q==
-=zKgn
------END PGP SIGNATURE-----
-
---54k5bi5rqes63ekj--
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3be1bdfe8ecc..f2f0426258f3 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -18542,6 +18542,7 @@ R:	Boqun Feng <boqun.feng@gmail.com>
+>  R:	Gary Guo <gary@garyguo.net>
+>  R:	Björn Roy Baron <bjorn3_gh@protonmail.com>
+>  R:	Benno Lossin <benno.lossin@proton.me>
+> +R:	Andreas Hindborg <a.hindborg@samsung.com>
+>  L:	rust-for-linux@vger.kernel.org
+>  S:	Supported
+>  W:	https://github.com/Rust-for-Linux/linux
+> 
+> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+> -- 
+> 2.41.0
+> 
