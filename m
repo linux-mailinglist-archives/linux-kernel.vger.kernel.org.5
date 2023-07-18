@@ -2,164 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A902E757C29
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E3C757C32
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231657AbjGRMs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 08:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60904 "EHLO
+        id S232081AbjGRMtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 08:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbjGRMsZ (ORCPT
+        with ESMTP id S231435AbjGRMtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 08:48:25 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC92E194
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:48:23 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbab0d0b88so42373985e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:48:23 -0700 (PDT)
+        Tue, 18 Jul 2023 08:49:46 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F78198
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:49:44 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fbf1f6c771so9287454e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:49:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689684502; x=1692276502;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=uX+Tm1S/tnom3XGxR87d/YDaIyrI7WNCyv7dHeUgar8=;
-        b=rPtLlpfCY5uRfKv4WLFlgxHGk0E/X0NxAHcgtaCfIhmyjZi3CKWW+FVV2O9ab0KXxI
-         FsW3dphdwFZsZatIr+4GufrKqr5lmzixo5CHukaefQdJJMhW47D6OuFyAXsMxxgA+9cc
-         tyqg11FFi+lPHCuaRFXO2K2VKEZ41ApXnIGbDvyUQ6zCZA14RgYUJ0c16LLQiKQVvqog
-         OAjKhfX8KxPGB2Kw7SkFstCWJJagSQtLZihPGbKYh3ro0vj6ArUuhOGAu7qYs2Ikf25X
-         71D01yIy+4env9FFQWD6OuzgVjNDUPx9kixCk59M79p0ODiMMonsO5Pc/YtVydfrvkV5
-         H3eQ==
+        d=linaro.org; s=google; t=1689684583; x=1692276583;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Fx88Y8ylLpGMnec9BSD55VgDeuGfnAWt7EEQ/PtHDpc=;
+        b=koqsTf9JZBAUJF7/UVBzKuGMxqH9qIu3JA4uLuPxD87jLK6y30SqI9JH5CUvO96/eA
+         px1f4wC1o8IvE/I7Few5mIzN34j1PCsZo3xIti9KbRzvsephQi37px7sde4+KuZY/+jh
+         dXDdHZ7cl7YiOeL4CZ9G4vFWro9GLDuiaZmzFt2lcjAKlbIoVM5yyHqs1XpfkqijunDl
+         NBlVRAlXaZrbhrQQ9aRNQ5jT70hAiKmr/dKiWEIY0bQmSqP0i3SHGZf3baH+I6vL3L8j
+         hKZcDyYEhZprHVX5Rdd4DFZ/oUjTcmG6kiRu1GtfAtxKhuv9yU+4sMup8lIEAEUx3d2m
+         dFNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689684502; x=1692276502;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20221208; t=1689684583; x=1692276583;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uX+Tm1S/tnom3XGxR87d/YDaIyrI7WNCyv7dHeUgar8=;
-        b=UrOTe2isF90EdZlqtHEuxII0fRqUEpH2LMUkGLfLR0653HHBJfB121IqZhEiU10TZJ
-         MF2m/xCYGRjWj1h3ToxO6DYP54M5Qb/4Xa43Yh2bC/EHjkY1hXxrPV0WAJ4BXE0oDQKF
-         9RVjVY/nHwg0jrt2KZSdMglroAWgN1wIBRz0czTve9yp+fjsCx30cdyulrk1j5hFCT1o
-         ncfNTFy6O3HDMFrgScdYw5HJ4QHJav5YG/+72YkKwclqqu0sRmcx6hZqRr31dnvONVED
-         qBLF8Rc7kwh175ra2IAd2scfaSsbrOruUWg+k0Psrz+AfL3P2ThcZpf5Vm8iQwTb3UQa
-         ZblA==
-X-Gm-Message-State: ABy/qLYnELPrZJChz9diIlIAZS7Tv2fCEMAz+TQTDa9/8dWqkz/tDeUe
-        nwzwTyLDlmb6eJm5w5pPc+mDAKnsqBt2c75bpDQ=
-X-Google-Smtp-Source: APBJJlEbAsiaG+QahUEcokUaw3+g0S17as4Ee/SE8xEjC15PlGXPAyGOMONkZsVbGypYLt4SV+hJHw==
-X-Received: by 2002:a05:6000:7:b0:314:914:66cc with SMTP id h7-20020a056000000700b00314091466ccmr10612523wrx.8.1689684502388;
-        Tue, 18 Jul 2023 05:48:22 -0700 (PDT)
-Received: from vingu-book ([2a01:e0a:f:6020:48e9:698d:5e54:4632])
-        by smtp.gmail.com with ESMTPSA id h10-20020a5d4fca000000b00314172ba213sm2269823wrw.108.2023.07.18.05.48.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 05:48:21 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 14:48:20 +0200
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     Qais Yousef <qyousef@layalina.io>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] sched/fair: Fix impossible migrate_util scenario in
- load balance
-Message-ID: <ZLaKFFjY6NWaJdOq@vingu-book>
-References: <20230716014125.139577-1-qyousef@layalina.io>
+        bh=Fx88Y8ylLpGMnec9BSD55VgDeuGfnAWt7EEQ/PtHDpc=;
+        b=itnsjnfUJaQ7yq+wnkIW3d/AxCHEBHW0/pX+MOyLmEFew+gUJ4KHIMaDAeTuAA/gVf
+         vznSmw2ZvmYo4wzNmMBsIxrv9XEDjBgp0UCMsXAjOXttmqNY2Z8od5rmWPoXVOe2gpv4
+         z1RBXk0qt9qBy4iv4PhTkXWVypto1w3yGYNKfKgD+q5XAdNa0zHt5s+ZeLYPFib0pcEk
+         8q7hCs7JUbF1bsUGWEc9RF8u9fXKICwOHX6aEvDYl07hEDPWlp5k0sjFtvFnOo0X4fvi
+         L3dJPQyP/pgRViudVImIjxmIpLOwDTINXohwuu6CiCYKL7s0ZfEYCL4W+DolVwhauQrt
+         TSvA==
+X-Gm-Message-State: ABy/qLZyOElN7jqpuO2f/xnrX38WU9dXKEa4M+qsDrm2hnqTE60/atNy
+        HyQ6DNd0xa0WttyDW86thKIAPA==
+X-Google-Smtp-Source: APBJJlFQjh+0nmNmA5FTBnkDIQZOdmKm8Oi8kw6dVTUbNrpst5WEY+YTzAEUBE4GyrQFJ7Wdjdz1Hw==
+X-Received: by 2002:ac2:4461:0:b0:4f8:75af:e917 with SMTP id y1-20020ac24461000000b004f875afe917mr9567492lfl.41.1689684583024;
+        Tue, 18 Jul 2023 05:49:43 -0700 (PDT)
+Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
+        by smtp.gmail.com with ESMTPSA id d21-20020ac24c95000000b004db1a7e6decsm420016lfl.205.2023.07.18.05.49.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 05:49:42 -0700 (PDT)
+Message-ID: <a930fa66-4ee4-88ef-6351-acbcadd2481e@linaro.org>
+Date:   Tue, 18 Jul 2023 14:49:41 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230716014125.139577-1-qyousef@layalina.io>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 04/15] clk: qcom: gcc-sm6375: Add runtime PM
+Content-Language: en-US
+To:     Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20230717-topic-branch_aon_cleanup-v1-0-27784d27a4f4@linaro.org>
+ <20230717-topic-branch_aon_cleanup-v1-4-27784d27a4f4@linaro.org>
+ <ZLVru50N2ukdXnsW@gerhold.net>
+ <pv7pcn5xc7xdjigefrwzvbjvp5lmgfziywfpvxn2nl7hjnvyre@kukniawnm5rm>
+ <ZLaAcELnsldc98Uk@gerhold.net>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <ZLaAcELnsldc98Uk@gerhold.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le dimanche 16 juil. 2023 à 02:41:25 (+0100), Qais Yousef a écrit :
-> We've seen cases while running geekbench that an idle little core never
-> pulls a task from a bigger overloaded cluster for 100s of ms and
-> sometimes over a second.
+On 18.07.2023 14:07, Stephan Gerhold wrote:
+> On Mon, Jul 17, 2023 at 09:02:29PM -0700, Bjorn Andersson wrote:
+>> On Mon, Jul 17, 2023 at 06:26:35PM +0200, Stephan Gerhold wrote:
+>>> On Mon, Jul 17, 2023 at 05:19:11PM +0200, Konrad Dybcio wrote:
+>>>> The GCC block on SM6375 is powered by the VDD_CX rail. We need to ensure
+>>>> that it's enabled to prevent unwanted power collapse.
+>>>>
+>>>> Enable runtime PM to keep the power flowing only when necessary.
+>>>>
+>>>
+>>> Are you sure this is necessary? If VDD_CX was really possible to fully
+>>> "power collapse" then I would expect that you lose all register
+>>> settings. This is not something we want or can even handle for GCC.
+>>> You would need to restore all frequency settings, branch bits etc etc.
+>>>
+>>
+>> This differ between platforms, some allow us to completely power down CX
+>> while keeping registers state using MX, others require that CX stays in
+>> retention at least.
+>>
+>> So, CX isn't the only rail powering GCC. For the most part though, we
+>> have a relationship between frequencies votes for by clients and the
+>> corner of CX, and hence I think the current description is ok...
+>>
 > 
-> It turned out that the load balance identifies this as a migrate_util
-> type since the local group (little cluster) has a spare capacity and
-> will try to pull a task. But the little cluster capacity is very small
-> nowadays (around 200 or less) and if two busy tasks are stuck on a mid
-> core which has a capacity of over 700, this means the util of each tasks
-> will be around 350+ range. Which is always bigger than the spare
-> capacity of the little group with a single idle core.
+> This patch is just about sending enable/disable votes for the power
+> domains though, based on runtime PM which triggers when all the clocks
+> are disabled.
 > 
-> When trying to detach_tasks() we bail out then because of the comparison
-> of:
+> It's unrelated to voting for CX corners required by certain clock
+> frequencies (we handle those in the OPP tables of the consumers).
+> And it's also unrelated to ensuring rentention of register contents
+> since we actually release all votes when the clocks are idle.
 > 
-> 	if (util > env->imbalance)
-> 		goto next;
-> 
-> In calculate_imbalance() we convert a migrate_util into migrate_task
-> type if the CPU trying to do the pull is idle. But we only do this if
-> env->imbalance is 0; which I can't understand. AFAICT env->imbalance
-> contains the local group's spare capacity. If it is 0, this means it's
-> fully busy.
-> 
-> Removing this condition fixes the problem, but since I can't fully
-> understand why it checks for 0, sending this as RFC. It could be a typo
-> and meant to check for
-> 
-> 	env->imbalance != 0
-> 
-> instead?
-> 
-> Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
-> ---
->  kernel/sched/fair.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index a80a73909dc2..682d9d6a8691 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10288,7 +10288,7 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
->  			 * waiting task in this overloaded busiest group. Let's
->  			 * try to pull it.
->  			 */
-> -			if (env->idle != CPU_NOT_IDLE && env->imbalance == 0) {
-> +			if (env->idle != CPU_NOT_IDLE) {
+> So while adding runtime PM to all the clock drivers sounds nice, I'm
+> a bit confused what problem we're actually solving with this patch. :)
+In a very specific and unfortunate situation, there could be no other
+CX votes, and trying to access (perhaps at least parts of) GCC would
+result in a failure.
 
-With this change you completely skip migrate_util for idle and newly idle case
-and this would be too aggressive.
-
-We can do something similar to migrate_load in detach_tasks():
-
----
- kernel/sched/fair.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index d3df5b1642a6..64111ac7e137 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -8834,7 +8834,13 @@ static int detach_tasks(struct lb_env *env)
- 		case migrate_util:
- 			util = task_util_est(p);
-
--			if (util > env->imbalance)
-+			/*
-+			 * Make sure that we don't migrate too much utilization.
-+			 * Nevertheless, let relax the constraint if
-+			 * scheduler fails to find a good waiting task to
-+			 * migrate.
-+			 */
-+			if (shr_bound(util, env->sd->nr_balance_failed) > env->imbalance)
- 				goto next;
-
- 			env->imbalance -= util;
---
-
-
-
->  				env->migration_type = migrate_task;
->  				env->imbalance = 1;
->  			}
-> -- 
-> 2.25.1
-> 
+Konrad
