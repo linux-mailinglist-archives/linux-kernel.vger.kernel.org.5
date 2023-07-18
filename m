@@ -2,67 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B7D758030
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54896758036
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbjGROy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:54:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38790 "EHLO
+        id S232913AbjGROze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233433AbjGROyv (ORCPT
+        with ESMTP id S231636AbjGROzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:54:51 -0400
+        Tue, 18 Jul 2023 10:55:32 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A95196;
-        Tue, 18 Jul 2023 07:54:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BBDF9;
+        Tue, 18 Jul 2023 07:55:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0E0676160E;
-        Tue, 18 Jul 2023 14:54:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0821EC433C7;
-        Tue, 18 Jul 2023 14:54:45 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C80E3615E0;
+        Tue, 18 Jul 2023 14:55:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2CEFC433C7;
+        Tue, 18 Jul 2023 14:55:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689692088;
-        bh=rgmBgjIDYkzzmlgWFHvXALNdWd95/pbvuzMWirSR12U=;
+        s=k20201202; t=1689692130;
+        bh=fdekGA583gB2J0NLQfIQ21KSthQ1S9fIdLfU2PzPdJM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=roVjxYhCoL3n+h0sZWq1nlWqUgCLd0Q0TvVYRcrO5/u73XAp+BGt/EcXc77jrduR6
-         ukSZI/Gbwy3oyGxv7EPy2EYqiC81gpLdYFEjuOBkdjNzF7qHqlOstKunFqiuarCfVI
-         XN0BAT1KXbw/Wtbtcj+IjvYO210sb6ZTvsbDPfHj/YoM4db+mDTsDYHCg/cV+9AkLg
-         DbyCTgbFmPXYHkZrAYCxtLWwsXa6n7cITeWJ9ZM6koSLeGDll0OSxjFqrv0qnbsbsa
-         +KCtbPQIF0v2HGmzAJHISVStxv76/tKyP8bIC+WVvPhWNRnCAaxDs2ehtR08MCYSXw
-         TOwyyJ5kSpeww==
-Date:   Tue, 18 Jul 2023 15:54:42 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Alexandre Ghiti <alex@ghiti.fr>
-Subject: Re: [PATCH] selftests: Fix arm64 test installation
-Message-ID: <85526b4e-c2ba-4b19-9c2f-ba39a248a713@sirena.org.uk>
-References: <20230710-kselftest-fix-arm64-v1-1-48e872844f25@kernel.org>
- <8d944238-1a9a-e93e-fdab-54e74fa12e11@linuxfoundation.org>
- <785e1c1c-84d8-e87d-f22f-9a53d27f30f6@nvidia.com>
- <620a5b91-9715-ee28-423c-851506b10832@linuxfoundation.org>
- <421bebb3-19e9-47a7-8b2b-f69f125df22f@sirena.org.uk>
- <f479b731-7782-0417-2d4c-31a7c3c9491c@nvidia.com>
- <20230714112653.0b42d3c9818b038d219b5e41@linux-foundation.org>
- <68ccfd77-ce2f-857a-37a7-e9b3edcd495d@linuxfoundation.org>
- <5e5bf5c0-bcda-ec2a-ba4c-5f35dcfbc373@nvidia.com>
- <d03af9cc-c72e-d23f-73ad-ca0e079c3187@linuxfoundation.org>
+        b=endu9Fe+8olkfUD5V+sCOj02eDLxV8bpVyVv0CYN66ZkWx/E+fB7v0H2nF+4IblBK
+         XVc1jQxhyHM+IWvwgjAvpJmW3pYAoWP+APV+U0onWFoBQV8p4HrVLWZqnJfPjpLRM8
+         Xu4DD4C3ergG80wocFy2zXdXXsythAe/UXEKR1TjmMxLseoWzWjEMrudj7/gO4U7NG
+         RDFxQVk/OZorT3S9z9JzLfrQOHRVqnRbKF6C/Njg1Mrsn3hCfyOSSdwCqMBjJJK/i/
+         uMxi5mYmw1mpR+Uq3Qq2FHbStwJ1Wphhj4ztU3rivYqDYYB2oTePUn22hQ0WES8NHE
+         YE6PMJXec4LUQ==
+Date:   Tue, 18 Jul 2023 15:55:25 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     palmer@dabbelt.com, paul.walmsley@sifive.com,
+        aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
+        davem@davemloft.net, conor.dooley@microchip.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, christoph.muellner@vrull.eu,
+        ebiggers@kernel.org, Heiko Stuebner <heiko.stuebner@vrull.eu>
+Subject: Re: [PATCH v4 04/12] RISC-V: add vector crypto extension detection
+Message-ID: <20230718-jittery-unwashed-cd2781c74351@spud>
+References: <20230711153743.1970625-1-heiko@sntech.de>
+ <20230711153743.1970625-5-heiko@sntech.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="u7HQOWZHHEWX8a1V"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="N/lcl/YjF4hhSyY+"
 Content-Disposition: inline
-In-Reply-To: <d03af9cc-c72e-d23f-73ad-ca0e079c3187@linuxfoundation.org>
-X-Cookie: Nothing happens.
+In-Reply-To: <20230711153743.1970625-5-heiko@sntech.de>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -74,41 +62,100 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---u7HQOWZHHEWX8a1V
+--N/lcl/YjF4hhSyY+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 14, 2023 at 01:11:10PM -0600, Shuah Khan wrote:
-> On 7/14/23 12:36, John Hubbard wrote:
+Hey Heiko,
 
-> > Just to be clear, when you say you're applying "both", I'm hoping you mean
-> > both of these:
+On Tue, Jul 11, 2023 at 05:37:35PM +0200, Heiko Stuebner wrote:
+> From: Heiko Stuebner <heiko.stuebner@vrull.eu>
+>=20
+> Add detection for some extensions of the vector-crypto specification:
+> - Zvkb: Vector Bit-manipulation used in Cryptography
+> - Zvkg: Vector GCM/GMAC
+> - Zvknha and Zvknhb: NIST Algorithm Suite
+> - Zvkns: AES-128, AES-256 Single Round Suite
+> - Zvksed: ShangMi Algorithm Suite
+> - Zvksh: ShangMi Algorithm Suite
+>=20
+> As their use is very specific and will likely be limited to special places
+> we expect current code to just pre-encode those instructions, so right now
+> we don't introduce toolchain requirements.
+>=20
+> Signed-off-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
+> ---
+>  arch/riscv/include/asm/hwcap.h |  9 ++++++
+>  arch/riscv/kernel/cpu.c        |  8 ++++++
+>  arch/riscv/kernel/cpufeature.c | 50 ++++++++++++++++++++++++++++++++++
+>  3 files changed, 67 insertions(+)
+>=20
+> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwca=
+p.h
+> index b80ca6e77088..0f5172fa87b0 100644
+> --- a/arch/riscv/include/asm/hwcap.h
+> +++ b/arch/riscv/include/asm/hwcap.h
+> @@ -64,6 +64,15 @@
+>  #define RISCV_ISA_EXT_ZKSED		51
+>  #define RISCV_ISA_EXT_ZKSH		52
+>  #define RISCV_ISA_EXT_ZKT		53
+> +#define RISCV_ISA_EXT_ZVBB		54
+> +#define RISCV_ISA_EXT_ZVBC		55
+> +#define RISCV_ISA_EXT_ZVKG		56
+> +#define RISCV_ISA_EXT_ZVKNED		57
+> +#define RISCV_ISA_EXT_ZVKNHA		58
+> +#define RISCV_ISA_EXT_ZVKNHB		59
+> +#define RISCV_ISA_EXT_ZVKSED		60
+> +#define RISCV_ISA_EXT_ZVKSH		61
+> +#define RISCV_ISA_EXT_ZVKT		62
+> =20
+>  #define RISCV_ISA_EXT_MAX		64
+>  #define RISCV_ISA_EXT_NAME_LEN_MAX	32
+> diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
+> index 10524322a4c0..925241e25db2 100644
+> --- a/arch/riscv/kernel/cpu.c
+> +++ b/arch/riscv/kernel/cpu.c
+> @@ -227,6 +227,14 @@ static struct riscv_isa_ext_data isa_ext_arr[] =3D {
+>  	__RISCV_ISA_EXT_DATA(zksed, RISCV_ISA_EXT_ZKSED),
+>  	__RISCV_ISA_EXT_DATA(zksh, RISCV_ISA_EXT_ZKSH),
+>  	__RISCV_ISA_EXT_DATA(zkt, RISCV_ISA_EXT_ZKT),
+> +	__RISCV_ISA_EXT_DATA(zvbb, RISCV_ISA_EXT_ZVBB),
+> +	__RISCV_ISA_EXT_DATA(zvbc, RISCV_ISA_EXT_ZVBC),
+> +	__RISCV_ISA_EXT_DATA(zvkg, RISCV_ISA_EXT_ZVKG),
+> +	__RISCV_ISA_EXT_DATA(zvkned, RISCV_ISA_EXT_ZVKNED),
+> +	__RISCV_ISA_EXT_DATA(zvknha, RISCV_ISA_EXT_ZVKNHA),
+> +	__RISCV_ISA_EXT_DATA(zvknhb, RISCV_ISA_EXT_ZVKNHB),
+> +	__RISCV_ISA_EXT_DATA(zvksed, RISCV_ISA_EXT_ZVKSED),
+> +	__RISCV_ISA_EXT_DATA(zvksh, RISCV_ISA_EXT_ZVKSH),
+>  	__RISCV_ISA_EXT_DATA(smaia, RISCV_ISA_EXT_SMAIA),
+>  	__RISCV_ISA_EXT_DATA(ssaia, RISCV_ISA_EXT_SSAIA),
+>  	__RISCV_ISA_EXT_DATA(sscofpmf, RISCV_ISA_EXT_SSCOFPMF),
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
+e.c
+> index 9a872a2007a5..13556fd16bf6 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -343,6 +343,56 @@ void __init riscv_fill_hwcap(void)
 
-> > [1] https://lore.kernel.org/all/20230711005629.2547838-1-jhubbard@nvidia.com/
-> > [2] https://lore.kernel.org/all/20230712193514.740033-1-jhubbard@nvidia.com/
+All of these need to be documented in dt-bindings.
 
-> Right. The ones you have links to:
+At least one of these lists will go away iff Palmer merges my rework of
+this stuff & hopefully we'll get one of the ways to avoid repeating the
+SET_ISA_EXT_MAP stuff ad nauseam.
 
-> Please check the latest fixes to see if we are all squared away:
-> https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/log/?h=fixes
+Cheers,
+Conor.
 
-These didn't seem to make it to -rc2 - it'd be *really* good to get them
-for -rc3, not having the selftests there would be very disruptive to the
-standard arm64 workflow.
-
---u7HQOWZHHEWX8a1V
+--N/lcl/YjF4hhSyY+
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS2p7IACgkQJNaLcl1U
-h9DWSAf+IqfMO1FPLdG3/gWN3HkhIbv+uwXVNBfYuJnTbcH3ndSGl+JRmvPw0nMm
-skZCr0MAJHyDK7TOtEU+oR66J3Zyd9oPBHakol1Ryf+0O2NzmzRYG5vAN7VAivRO
-MZxcsiABHBA+dSJgOpsjxzK+jzdCkC0zT4mxW2gfpubGZ9Nr/bQnVaKI0Z9FAiPh
-7iRNz9eSA3/BlbPZrJYL64EdCxVSRKgNXayngEYWC9nymLi3A2YKzcyIuPM3gUaW
-b+y8JpjYtng0jtOiFLVHXsgjiGp5+1rRC7ctugW9XCVovU+tZbHG5ou/7kOby1uS
-c3B/9I3agaLQyZsDjyDhNmiQVK/wvA==
-=wRzC
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLan3QAKCRB4tDGHoIJi
+0nR6AQD+C1pKTvPcCyHR4byAsK4aADmAqre/etI69jkZYRvW0AD9FZrbcgUCbpyE
+/zlL/+i+mICAk4upff5+MFvKZxM6QQE=
+=1eeh
 -----END PGP SIGNATURE-----
 
---u7HQOWZHHEWX8a1V--
+--N/lcl/YjF4hhSyY+--
