@@ -2,139 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDE375867E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE65758683
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbjGRVGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 17:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
+        id S230042AbjGRVHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 17:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjGRVGG (ORCPT
+        with ESMTP id S229525AbjGRVHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 17:06:06 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BEA198C;
-        Tue, 18 Jul 2023 14:06:05 -0700 (PDT)
-Received: from mercury (unknown [185.209.196.239])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 88FAE6607069;
-        Tue, 18 Jul 2023 22:06:03 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689714363;
-        bh=P8NfQ7uDwtPYApAvymtjd67EMP/MgNzxJCZGTG1lf9U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ck5xHUSxGTBnWjiwmCdofgUj66JYAJkf7+mfvFzo89gNFmGrCkzFbdpvcWCdTer4Y
-         2V0O0M1lPNqa/+2k+Do8oVAIF0N3seNqhGFnavwoS7HskyI/u3gbIvqEXxUB7OKyO9
-         /Sodz0w4oBY4OQczw+7S9juPU26NIzbQCelnw7D6wQ3qDu0IH9LjebDQpVlk2Ugu6I
-         Dd0+NV6vdK54FeSCOM8M9P9iDbOAuri7xMUQc8r0rYUYT3Py3Wsz8OBCB2t2iHFAQd
-         Zm/fxII+Wd6aNAwJfvTsrRsXZG9XzYCYLqgjpMcbJArUUTK06neDsSuu0i8G78M6B4
-         r64RzPKNEqsgA==
-Received: by mercury (Postfix, from userid 1000)
-        id 9867710607FA; Tue, 18 Jul 2023 23:06:01 +0200 (CEST)
-Date:   Tue, 18 Jul 2023 23:06:01 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Liviu Dudau <liviu@dudau.co.uk>
-Cc:     linux-phy@lists.infradead.org, linux-rockchip@lists.infradead.org,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Simon Xue <xxm@rock-chips.com>, John Clark <inindev@gmail.com>,
-        Qu Wenruo <wqu@suse.com>, devicetree@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-Subject: Re: [PATCH v2 2/2] arm64: dts: rockchip: rk3588: add PCIe3 support
-Message-ID: <20230718210601.6hrmnl5lbtl6vinp@mercury.elektranox.org>
-References: <20230717173512.65169-1-sebastian.reichel@collabora.com>
- <20230717173512.65169-3-sebastian.reichel@collabora.com>
- <ZLarQUvUK3v3m6Cg@bart.dudau.co.uk>
- <20230718160137.sfitnkl6gmyi75jx@mercury.elektranox.org>
- <ZLbqPB5yP7Kn6FT6@bart.dudau.co.uk>
+        Tue, 18 Jul 2023 17:07:43 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8FCEC;
+        Tue, 18 Jul 2023 14:07:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689714463; x=1721250463;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ootxdXDE5uMtvxtWujNgqbk4Aj9V+Z+d5RmLRHxw5Bc=;
+  b=U0jOwkb1rXjVe4itcTgbwrTFYhfHhwlavzeYKVeeICx9lzF2jOawu9h8
+   5YNr234/kRgXLvNbSv8tZpjzmukG89KYEm7YGNQrXBN5VThJUmw1v0yv8
+   gMduMlGpr8lGeSf2shpDKhCAmSV9mWk8H78aLT2Scdpa8q8ddFc3Z1MHP
+   y21+1GzVfDqrDKpR5nOHrJ0DBdW5NGkulhd1QpnUjU1UXmoIvdMbGgxk/
+   8/RfrvFZPqUraFEct4G8D/+YrUbo6r4TsGD61JRHMPkOi/2PVV02eQ9+J
+   G5T61O6wlkzE0AQNFyggsfgfC1BNOuaPOEyqASf1LKM+/pM/qA+FoeFID
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="356261387"
+X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
+   d="scan'208";a="356261387"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 14:07:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="758927100"
+X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
+   d="scan'208";a="758927100"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga001.jf.intel.com with ESMTP; 18 Jul 2023 14:07:41 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qLrv1-00DMHs-1X;
+        Wed, 19 Jul 2023 00:07:39 +0300
+Date:   Wed, 19 Jul 2023 00:07:39 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the mm tree
+Message-ID: <ZLb/GzwqI6tkzLv6@smile.fi.intel.com>
+References: <20230718100257.1ed9290e@canb.auug.org.au>
+ <ZLaXC29UH3SuTJtP@smile.fi.intel.com>
+ <20230718103430.f5062ce13b63171e418c94f3@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="negfuutklnlaveud"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZLbqPB5yP7Kn6FT6@bart.dudau.co.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230718103430.f5062ce13b63171e418c94f3@linux-foundation.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 18, 2023 at 10:34:30AM -0700, Andrew Morton wrote:
+> On Tue, 18 Jul 2023 16:43:39 +0300 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > On Tue, Jul 18, 2023 at 10:02:57AM +1000, Stephen Rothwell wrote:
+> > > Hi all,
+> > > 
+> > > After merging the mm tree, today's linux-next build (arm
+> > > multi_v7_defconfig) failed like this:
+> > 
+> > Thank you for this report!
+> > 
+> > Andrew, since it's in a separate patch, can you drop the change to
+> > include/linux/arm-smccc.h?
+> 
+> I actually dropped the whole series.
 
---negfuutklnlaveud
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Okay, I fixed that locally and soon send a v4.
 
-Hi,
+-- 
+With Best Regards,
+Andy Shevchenko
 
-On Tue, Jul 18, 2023 at 08:38:36PM +0100, Liviu Dudau wrote:
-> On Tue, Jul 18, 2023 at 06:01:37PM +0200, Sebastian Reichel wrote:
-> > On Tue, Jul 18, 2023 at 04:09:53PM +0100, Liviu Dudau wrote:
-> > > On Mon, Jul 17, 2023 at 07:35:12PM +0200, Sebastian Reichel wrote:
-> > > >  	pipe_phy1_grf: syscon@fd5c0000 {
-> > > >  		compatible =3D "rockchip,rk3588-pipe-phy-grf", "syscon";
-> > > >  		reg =3D <0x0 0xfd5c0000 0x0 0x100>;
-> > >=20
-> > > What tree is based this on? Even after applying your PCIe2 series I d=
-on't have the above
-> > > node so the patch doesn't apply to mainline.
-> >=20
-> > You are missing naneng-combphy support:
-> >=20
-> > https://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip.gi=
-t/commit/?h=3Dv6.6-armsoc/dts64&id=3D6ebd55b3bba383e0523b0c014f17c97f3ce807=
-08
->=20
-> Thanks! It looks like the PCIe2 commit that adds support to rk3588(s).dtsi
-> files is also missing an #include <dt-bindings/phy/phy.h> for the PHY_TYP=
-E_PCIE
-> use, otherwise the DTS fail to compile.
 
-Yes, that's also already in linux-next:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip.git/co=
-mmit/?h=3Dv6.6-armsoc/dts64&id=3D34d6c15d8e86256ef2456c604b1c8d8242720871
-
-Greetings,
-
--- Sebastian
-
---negfuutklnlaveud
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmS2/rUACgkQ2O7X88g7
-+poRUQ//bWq65lFTU9ZY7ptS5NZJgJGv19zMVv12ex71HIVrPglf+IXlKlCG76yv
-HygNtK+lU7MnATs9ZcTMf0oW95sr/6GQRwsnAOlqspsdx3vnpqVZASdAYYiF64jI
-9MBjsXXey4VbvnLqSUO6KyORxWpIQV/rT6ppewTxdRU02b5T9WmGUmKsFXcnAewL
-Y5+rLhfPncD9RuSewzXeBoY4S337sZB7q8CzOzZrtEq2hTiZQUcNFd8LF7EgF+er
-PnoVgC1mhuYbnmaphfTW1A9lP7TBLvRcGi6EiI4Qa9i0PLcaWPdZ3zEbnqjBeZdP
-nVOTVr4Z8ZgP9JG6em5lcQBOQPO/Ae1ne9A8n98kmc6xQqpiFkx38XCwOgwqBxHT
-gOXj8qFI022fWG8VmS7pBest26nZ6/TYNlHXxdq2FtA9fG8+Pk029pDHUpX6yLNw
-zpIj3zkaPHzdFywJ0aFJH2zTHxQFTCkgvfDjlqWOjfSzR2v4yNr5uurVEE+nEDo0
-o2SoEUXX53l0Pcbewa6tTgD+pnVNgsDnydXsN6qvhXK7/4m5aNGBsJqI5hvFbELF
-D9iu3XUkcUI2sin1c8SO+OwBsBfFem24u/0ODDqkx87wyzXSnbXR0NzDF+DwD5Wm
-8h1cyB2ja3yC3/+YSsXtovn1sxuJlOOM+rtHJe2Ht/N/OJk59Y0=
-=Brsb
------END PGP SIGNATURE-----
-
---negfuutklnlaveud--
