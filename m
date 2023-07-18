@@ -2,111 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 616FE7578C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9BEC7578C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbjGRKCb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 Jul 2023 06:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55448 "EHLO
+        id S231971AbjGRKDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 06:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232399AbjGRKCM (ORCPT
+        with ESMTP id S232531AbjGRKDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 06:02:12 -0400
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996F91B6;
-        Tue, 18 Jul 2023 03:02:11 -0700 (PDT)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-579e5d54e68so59397397b3.1;
-        Tue, 18 Jul 2023 03:02:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689674530; x=1692266530;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fxfecajh7LakVWsGzhfvx2yBPK9ZrfliTdUgb+tNhHc=;
-        b=Gg8L6ytWvcMK4bmQdVqUaan3zGtLk3v27M77tXRNJH+nrV6tKNl8hZDN+w4qkxeKNX
-         3ilIDMOaL3prKYUvIJ8cpDLLo2xJ350kOq/FQfIpQZM7zUEhgIE/afv7GDYJRN4fts/8
-         tCGLKZZfYh/OmI0P0OxqnDWEeZMt/GtLDyRUZxiyKwxQgqQMJJ+aNJ3HrQp8erFkY5iR
-         DUmuG9lFn3aGn55pS6AQWq31kcwlcwM9uzBMgaqo5vvN7B2Rh6vRpc8S/hxyp7qNm4UG
-         dzGrwjEXRrzfxRh8h0xPkOQ4x+EN0ab526QF0KyA4LvoTP9kGWTZUHDJ9yC8j1mzLxvp
-         Akvw==
-X-Gm-Message-State: ABy/qLYP7kb+1OiBivAoZTSQzHkOXUghjT2Ro5u0W/F+28mf5Q6RyLAP
-        H+SiUyTQKgBgwPSkE5x6A6PxalKDFuQBgw==
-X-Google-Smtp-Source: APBJJlEMYLizvb/uPfAFOnhD7hOUEcOM1s3m8Wr4YK+zgNZFIDlAA67/SAwLzWgJgnZUBZJ5zWbEgw==
-X-Received: by 2002:a81:6fc4:0:b0:561:d25b:672a with SMTP id k187-20020a816fc4000000b00561d25b672amr15364245ywc.21.1689674530542;
-        Tue, 18 Jul 2023 03:02:10 -0700 (PDT)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id u75-20020a81844e000000b0057a44e20fb8sm357253ywf.73.2023.07.18.03.02.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 03:02:10 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-bff27026cb0so5647967276.1;
-        Tue, 18 Jul 2023 03:02:09 -0700 (PDT)
-X-Received: by 2002:a25:13c8:0:b0:bcb:9b43:5a89 with SMTP id
- 191-20020a2513c8000000b00bcb9b435a89mr13444895ybt.61.1689674529762; Tue, 18
- Jul 2023 03:02:09 -0700 (PDT)
+        Tue, 18 Jul 2023 06:03:02 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D1BE997
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 03:03:00 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11EF32F4;
+        Tue, 18 Jul 2023 03:03:44 -0700 (PDT)
+Received: from [10.1.34.52] (C02Z41KALVDN.cambridge.arm.com [10.1.34.52])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 306493F67D;
+        Tue, 18 Jul 2023 03:02:59 -0700 (PDT)
+Message-ID: <1aada499-4bb3-668c-10d0-06e0845efca1@arm.com>
+Date:   Tue, 18 Jul 2023 11:02:57 +0100
 MIME-Version: 1.0
-References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com> <20230717172821.62827-10-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230717172821.62827-10-andriy.shevchenko@linux.intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 18 Jul 2023 12:01:58 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX_4wmim_R0oA=4df8-0JKGwTkJJMxEiZSMwtVtv1wuFg@mail.gmail.com>
-Message-ID: <CAMuHMdX_4wmim_R0oA=4df8-0JKGwTkJJMxEiZSMwtVtv1wuFg@mail.gmail.com>
-Subject: Re: [PATCH v2 09/10] pinctrl: renesas: Switch to use
- DEFINE_NOIRQ_DEV_PM_OPS() helper
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Balsam CHIHI <bchihi@baylibre.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
-        Sean Wang <sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v1 2/3] mm: Implement folio_remove_rmap_range()
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
+        Zi Yan <ziy@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20230717143110.260162-1-ryan.roberts@arm.com>
+ <20230717143110.260162-3-ryan.roberts@arm.com>
+ <87zg3tbsn0.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <87zg3tbsn0.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 7:28 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> Since pm.h provides a helper for system no-IRQ PM callbacks,
-> switch the driver to use it instead of open coded variant.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On 18/07/2023 08:12, Huang, Ying wrote:
+> Ryan Roberts <ryan.roberts@arm.com> writes:
+> 
+>> Like page_remove_rmap() but batch-removes the rmap for a range of pages
+>> belonging to a folio. This can provide a small speedup due to less
+>> manipuation of the various counters. But more crucially, if removing the
+>> rmap for all pages of a folio in a batch, there is no need to
+>> (spuriously) add it to the deferred split list, which saves significant
+>> cost when there is contention for the split queue lock.
+>>
+>> All contained pages are accounted using the order-0 folio (or base page)
+>> scheme.
+>>
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>> ---
+>>  include/linux/rmap.h |  2 ++
+>>  mm/rmap.c            | 65 ++++++++++++++++++++++++++++++++++++++++++++
+>>  2 files changed, 67 insertions(+)
+>>
+>> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+>> index b87d01660412..f578975c12c0 100644
+>> --- a/include/linux/rmap.h
+>> +++ b/include/linux/rmap.h
+>> @@ -200,6 +200,8 @@ void page_add_file_rmap(struct page *, struct vm_area_struct *,
+>>  		bool compound);
+>>  void page_remove_rmap(struct page *, struct vm_area_struct *,
+>>  		bool compound);
+>> +void folio_remove_rmap_range(struct folio *folio, struct page *page,
+>> +		int nr, struct vm_area_struct *vma);
+>>  
+>>  void hugepage_add_anon_rmap(struct page *, struct vm_area_struct *,
+>>  		unsigned long address, rmap_t flags);
+>> diff --git a/mm/rmap.c b/mm/rmap.c
+>> index 2baf57d65c23..1da05aca2bb1 100644
+>> --- a/mm/rmap.c
+>> +++ b/mm/rmap.c
+>> @@ -1359,6 +1359,71 @@ void page_add_file_rmap(struct page *page, struct vm_area_struct *vma,
+>>  	mlock_vma_folio(folio, vma, compound);
+>>  }
+>>  
+>> +/*
+>> + * folio_remove_rmap_range - take down pte mappings from a range of pages
+>> + * belonging to a folio. All pages are accounted as small pages.
+>> + * @folio:	folio that all pages belong to
+>> + * @page:       first page in range to remove mapping from
+>> + * @nr:		number of pages in range to remove mapping from
+>> + * @vma:        the vm area from which the mapping is removed
+>> + *
+>> + * The caller needs to hold the pte lock.
+>> + */
+>> +void folio_remove_rmap_range(struct folio *folio, struct page *page,
+>> +					int nr, struct vm_area_struct *vma)
+> 
+> Can we call folio_remove_ramp_range() in page_remove_rmap() if
+> !compound?  This can give us some opportunities to reduce code
+> duplication?
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
+I considered that, but if felt like the savings were pretty small so my opinion
+was that it was cleaner not to do this. This is the best I came up with. Perhaps
+you can see further improvements?
 
-Gr{oetje,eeting}s,
+void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
+		bool compound)
+{
+	struct folio *folio = page_folio(page);
+	atomic_t *mapped = &folio->_nr_pages_mapped;
+	int nr = 0, nr_pmdmapped = 0;
+	bool last;
+	enum node_stat_item idx;
 
-                        Geert
+	VM_BUG_ON_PAGE(compound && !PageHead(page), page);
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+	/* Hugetlb pages are not counted in NR_*MAPPED */
+	if (unlikely(folio_test_hugetlb(folio))) {
+		/* hugetlb pages are always mapped with pmds */
+		atomic_dec(&folio->_entire_mapcount);
+		return;
+	}
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+	/* Is page being unmapped by PTE? Is this its last map to be removed? */
+	if (likely(!compound)) {
+		folio_remove_rmap_range(folio, page, 1, vma);
+		return;
+	} else if (folio_test_pmd_mappable(folio)) {
+		/* That test is redundant: it's for safety or to optimize out */
+
+		last = atomic_add_negative(-1, &folio->_entire_mapcount);
+		if (last) {
+			nr = atomic_sub_return_relaxed(COMPOUND_MAPPED, mapped);
+			if (likely(nr < COMPOUND_MAPPED)) {
+				nr_pmdmapped = folio_nr_pages(folio);
+				nr = nr_pmdmapped - (nr & FOLIO_PAGES_MAPPED);
+				/* Raced ahead of another remove and an add? */
+				if (unlikely(nr < 0))
+					nr = 0;
+			} else {
+				/* An add of COMPOUND_MAPPED raced ahead */
+				nr = 0;
+			}
+		}
+	}
+
+	if (nr_pmdmapped) {
+		if (folio_test_anon(folio))
+			idx = NR_ANON_THPS;
+		else if (folio_test_swapbacked(folio))
+			idx = NR_SHMEM_PMDMAPPED;
+		else
+			idx = NR_FILE_PMDMAPPED;
+		__lruvec_stat_mod_folio(folio, idx, -nr_pmdmapped);
+	}
+	if (nr) {
+		idx = folio_test_anon(folio) ? NR_ANON_MAPPED : NR_FILE_MAPPED;
+		__lruvec_stat_mod_folio(folio, idx, -nr);
+
+		/*
+		 * Queue anon THP for deferred split if at least one
+		 * page of the folio is unmapped and at least one page
+		 * is still mapped.
+		 */
+		if (folio_test_anon(folio) && nr < nr_pmdmapped)
+			deferred_split_folio(folio);
+	}
+
+	/*
+	 * It would be tidy to reset folio_test_anon mapping when fully
+	 * unmapped, but that might overwrite a racing page_add_anon_rmap
+	 * which increments mapcount after us but sets mapping before us:
+	 * so leave the reset to free_pages_prepare, and remember that
+	 * it's only reliable while mapped.
+	 */
+
+	munlock_vma_folio(folio, vma, compound);
+}
+
+> 
+> Best Regards,
+> Huang, Ying
+> 
