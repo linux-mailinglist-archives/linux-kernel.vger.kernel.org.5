@@ -2,54 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E118C75782A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85849757830
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbjGRJeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39786 "EHLO
+        id S231432AbjGRJgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbjGRJee (ORCPT
+        with ESMTP id S229540AbjGRJgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:34:34 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C48E0;
-        Tue, 18 Jul 2023 02:34:33 -0700 (PDT)
-Received: from mercury (dyndsl-091-248-212-239.ewe-ip-backbone.de [91.248.212.239])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E103A660703C;
-        Tue, 18 Jul 2023 10:34:31 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689672872;
-        bh=pDdoHgD/R4j/O2UCXvRlSSP9z0NmI3OdmRQNP6aFg30=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OfHkRS1Fnn2sxv+9ZYTgwkAvWjw4/zzVsMiwQ/4Gdpil0vhSHhiMpF70TpvqNPRCx
-         czb43+nlO876FJId7eHvLkuwNv6XEl/S6KOT68IL8Fcjnob0znAhqOdrmilUseyPyF
-         paXOpv93DV1txJfP089cQv2Am6jjhnAVapnajoZwekrfj1bT5eewHDaFZdM48oGVCb
-         MlzuY8rPaDY4UWxlhgVSFcwKUIHazMS5FFU/t5xQm3nWKJohWUUxGqAPjvowUioQnp
-         R8MdzbuPa1jyx/Jq1SGdRLfQ79aIynMdmkAoX19cfJSVUhqrUNCXIZF4bSACbuGZZY
-         /zsNQJjMMkXLg==
-Received: by mercury (Postfix, from userid 1000)
-        id EEF551060D95; Tue, 18 Jul 2023 11:34:28 +0200 (CEST)
-Date:   Tue, 18 Jul 2023 11:34:28 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Eugen Hristev <eugen.hristev@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, david.wu@rock-chips.com, heiko@sntech.de,
-        krzysztof.kozlowski+dt@linaro.org, kernel@collabora.com
-Subject: Re: [PATCH] dt-bindings: net: rockchip-dwmac: add default 'input'
- for clock_in_out
-Message-ID: <20230718093428.ofld4ywhwbpmnw5w@mercury.elektranox.org>
-References: <20230718090914.282293-1-eugen.hristev@collabora.com>
+        Tue, 18 Jul 2023 05:36:14 -0400
+X-Greylist: delayed 1105 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 18 Jul 2023 02:36:13 PDT
+Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7711B5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:36:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        Content-ID:Content-Description;
+        bh=AOCh2pECVFkA2m0PgCMpjH4E1B+tTEN/qI4vKGlwX54=; b=X+CpZ7PHoRJv/rJiDqA1H20lZO
+        ieil5mjS9FIPe9GSCjWWPi2MQwATquhizUhraXCHkU9ZDJmZzW6xbjWZZcDVWZxks4qKp/2fMs8IT
+        jmKjBbqUAOaLoUJmG175sYZz5rVLsVWszjtEkLV7aybXD1JgX5y5hdcJ85HR2tiVHD2YfcKZ5hccd
+        WlbeKDPhf8/BsSnI5My9YTk8Mb5Vq4QhV0P/+RvX5anZ8j9T8tVcVKEr9hS4RQa2z/NU4+K1LUsk/
+        GinU1pCh4teENnqiHNAOU4MaIJIjftxXm5lwW9AtTLC7tb3zUKsTaSsGCc+68me314MywADbQOsmN
+        UOISuRcZ+tI2wZKcxCR5iTfxAcMd3x29YbuCGebWWKv95kmeKIivDGyjSpRQEiedLHqidHrYpCNFs
+        22qFwxscC+77L7loZnBt7Txg57+/HhVhwtzzdE1uVUxxKj8uWePlEQXkjzeej2YhCxvLp6jXYAwAL
+        RclbrqFs2gXDdIik/soqenNMmda6IVixNxLdTsyroGjiIZDPC81a1eFR8aBjohqa6qZk/h/wiQhrR
+        kMtyZoescLFy6p+z8kjTMLCQVOuPvTLqatVUy7z11OZZwlSEOFrtfQukjk60ITp5ha5Ie1eKSOGng
+        FSRs5x5ITF56HCWU4OxhpjeD66BVfEqhPZYBDr+SM=;
+From:   Christian Schoenebeck <linux_oss@crudebyte.com>
+To:     Eric Van Hensbergen <ericvh@kernel.org>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Latchesar Ionkov <lucho@ionkov.net>, v9fs@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        Robert Schwebel <r.schwebel@pengutronix.de>
+Subject: Re: [PATCH 2/3] fs/9p: fix typo in comparison logic for cache mode
+Date:   Tue, 18 Jul 2023 11:34:53 +0200
+Message-ID: <2377968.dzquyXH1nE@silver>
+In-Reply-To: <ZLX9lUnIwLYT-Oc4@codewreck.org>
+References: <20230716-fixes-overly-restrictive-mmap-v1-0-0683b283b932@kernel.org>
+ <20230716-fixes-overly-restrictive-mmap-v1-2-0683b283b932@kernel.org>
+ <ZLX9lUnIwLYT-Oc4@codewreck.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="p4uagyzg7ikm4k3p"
-Content-Disposition: inline
-In-Reply-To: <20230718090914.282293-1-eugen.hristev@collabora.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -60,69 +56,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tuesday, July 18, 2023 4:48:53 AM CEST Dominique Martinet wrote:
+> Eric Van Hensbergen wrote on Mon, Jul 17, 2023 at 04:29:01PM +0000:
+> > There appears to be a typo in the comparison statement for the logic
+> > which sets a file's cache mode based on mount flags.
+> 
+> Shouldn't break anything, but good fix nevertheless, thanks!
+> 
+> Reviewed-by: Dominique Martinet <asmadeus@codewreck.org>
 
---p4uagyzg7ikm4k3p
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Right, at least AFAICS I would not expect any visible behaviour change by this
+patch at all. So this patch is probably just a formal fix.
 
-Hi,
+BTW there are a bunch of unnecessary braces in this function:
 
-On Tue, Jul 18, 2023 at 12:09:14PM +0300, Eugen Hristev wrote:
-> 'clock_in_out' property is optional, and it can be one of two enums.
-> The binding does not specify what is the behavior when the property is
-> missing altogether.
-> Hence, add a default value that the driver can use.
->=20
-> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
-> ---
+  (!s_cache) -> !s_cache
 
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+  (fid->qid.version == 0) -> fid->qid.version == 0
 
--- Sebastian
+  (!(s_cache & CACHE_WRITEBACK)) -> !(s_cache & CACHE_WRITEBACK)
 
->  Documentation/devicetree/bindings/net/rockchip-dwmac.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/rockchip-dwmac.yaml b/=
-Documentation/devicetree/bindings/net/rockchip-dwmac.yaml
-> index 176ea5f90251..bb943c96c196 100644
-> --- a/Documentation/devicetree/bindings/net/rockchip-dwmac.yaml
-> +++ b/Documentation/devicetree/bindings/net/rockchip-dwmac.yaml
-> @@ -80,6 +80,7 @@ properties:
->        "output" means GMAC provides the reference clock.
->      $ref: /schemas/types.yaml#/definitions/string
->      enum: [input, output]
-> +    default: input
-> =20
->    rockchip,grf:
->      description: The phandle of the syscon node for the general register=
- file.
-> --=20
-> 2.34.1
->=20
->=20
-> --=20
-> To unsubscribe, send mail to kernel-unsubscribe@lists.collabora.co.uk.
+These could be wiped in a separate patch as well. Anyway ...
 
---p4uagyzg7ikm4k3p
-Content-Type: application/pgp-signature; name="signature.asc"
+Reviewed-by: Christian Schoenebeck <linux_oss@crudebyte.com>
 
------BEGIN PGP SIGNATURE-----
+> > 
+> > Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
+> > ---
+> >  fs/9p/fid.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/9p/fid.h b/fs/9p/fid.h
+> > index 0c51889a60b33..297c2c377e3dd 100644
+> > --- a/fs/9p/fid.h
+> > +++ b/fs/9p/fid.h
+> > @@ -57,7 +57,7 @@ static inline void v9fs_fid_add_modes(struct p9_fid *fid, int s_flags,
+> >  	   (s_flags & V9FS_DIRECT_IO) || (f_flags & O_DIRECT)) {
+> >  		fid->mode |= P9L_DIRECT; /* no read or write cache */
+> >  	} else if ((!(s_cache & CACHE_WRITEBACK)) ||
+> > -				(f_flags & O_DSYNC) | (s_flags & V9FS_SYNC)) {
+> > +				(f_flags & O_DSYNC) || (s_flags & V9FS_SYNC)) {
+> >  		fid->mode |= P9L_NOWRITECACHE;
+> >  	}
+> >  }
+> > 
+> 
+> 
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmS2XKEACgkQ2O7X88g7
-+prE4xAAmh5G/otIOOGE3B28pMwGVdmjdOwa1BRNEfNCHvSeWkh12GQ+Eswe5kqG
-BSB2DE/QqMNTqcrBTOlarZ0BWEMGKnWlpm2W0cBzDHro9ASDyikGy5MyNFtb6Pa2
-kc8L9JGhZB8NN/GD+qWLTnkg0HB056GGBcZF4pediWVSjJERDM8WXEVkEMjxARa2
-PRMpAknIO5kZpHzsekietpLOW4RpfuYCiVVmnCQpURUNK0FH3+la4hLWjvzuiEcM
-rUyTJ9MZwx73KEuKDrCPhRfS8bk6gC+QwSbtjTiIn/ZsUOWbcz0ovkzSpEg3ytrM
-pwLOCNM127Pvhitp9hV3lqad1yn5cioVfM4lmHjBNKxGxBPdQdiFBVWlczWT//p0
-Mg90MJtmkWMqF5OzLQ5UZhRS9Vf9rFROwnrGo6Pl++zAzIesUe62+oSvv2hMo/XG
-0UKo1Xwnl8edOORpjuSMtHbyJXIcpQ+hXRF+C21gZT268wWmxC6mBJi5r6Iunp/I
-uxqYNAxd3Jtd4Kq3D8omE6f0fewzQL+t4cegcKqEdngl9c+a8FwzkEOHa2RDRReB
-1t6XWKsHbgRbrWjt+PmatvnN8Ei/V4gFszQSIWYMhalviQCwqcqBqDKOi33kpFfh
-OZFltVUI6Fj1SZCMsAGBaozAXQ+FZF73haMosgXiWPUwQmr52EM=
-=9u/K
------END PGP SIGNATURE-----
 
---p4uagyzg7ikm4k3p--
+
+
