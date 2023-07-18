@@ -2,115 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15FE27578A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 113437578AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232455AbjGRJ5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:57:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
+        id S230126AbjGRJ5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbjGRJ4g (ORCPT
+        with ESMTP id S232462AbjGRJ5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:56:36 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 653D810E0;
-        Tue, 18 Jul 2023 02:55:47 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4R4vQf6KT9z6J6rL;
-        Tue, 18 Jul 2023 17:53:14 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
- 2023 10:55:44 +0100
-Date:   Tue, 18 Jul 2023 10:55:43 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Balsam CHIHI <bchihi@baylibre.com>,
-        "Claudiu Beznea" <claudiu.beznea@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-renesas-soc@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, Andy Shevchenko <andy@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Len Brown <len.brown@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        "Jonathan Hunter" <jonathanh@nvidia.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v2 01/10] pm: Introduce DEFINE_NOIRQ_DEV_PM_OPS() helper
-Message-ID: <20230718105543.00006395@Huawei.com>
-In-Reply-To: <20230717172821.62827-2-andriy.shevchenko@linux.intel.com>
-References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
-        <20230717172821.62827-2-andriy.shevchenko@linux.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 18 Jul 2023 05:57:06 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99261735;
+        Tue, 18 Jul 2023 02:56:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689674189; x=1721210189;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=kT+WCGrXIntkSsi5bhLytk40kQrUFODgYPeYw5k0HEc=;
+  b=auZQ3noyM/lkFfLBiUNfkzT7eHLN9LlLp+5leHYFqSltEVgUj+nO9Lw6
+   hj3WVDCVbxM3vzQv7R5EO0etMgu/Lt7y88eQgRbfbUWfm1qByW15sfReG
+   wdNeDWLTygCEgMi6ar7rpmjEEyMaReYHuKEU7VgUGux5i3pVt2tQW3gT8
+   Gs9ahjb8jYvrhNCUWFCv1jv8mTKynBx3cgHuEhIXm/IZQnoVP7tD7TapX
+   W4e8yU1accLGmkKruBVSw+sMbnV3zVCW66UMdhSejbHmA5JYfdjgn8RHc
+   fkZY56Sa0KHgWQL5MHNLRy4kDd6I5gEk5C10xBOjpT7C9oTEtYAh+mV5X
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="368804780"
+X-IronPort-AV: E=Sophos;i="6.01,213,1684825200"; 
+   d="scan'208";a="368804780"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 02:56:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="673847895"
+X-IronPort-AV: E=Sophos;i="6.01,213,1684825200"; 
+   d="scan'208";a="673847895"
+Received: from ijarvine-mobl2.ger.corp.intel.com ([10.252.47.53])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 02:56:26 -0700
+Date:   Tue, 18 Jul 2023 12:56:20 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Sherry Sun <sherry.sun@nxp.com>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        shenwei.wang@nxp.com, linux-serial <linux-serial@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-imx@nxp.com,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH] tty: serial: fsl_lpuart: Fix possible integer overflow
+In-Reply-To: <3652da4b-8ccf-34a8-bdb7-757a3109ac54@kernel.org>
+Message-ID: <e0fe2036-e22-3bb4-a5a-afab1a5869e@linux.intel.com>
+References: <20230718065645.6588-1-sherry.sun@nxp.com> <3652da4b-8ccf-34a8-bdb7-757a3109ac54@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Jul 2023 20:28:12 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+On Tue, 18 Jul 2023, Jiri Slaby wrote:
 
-> _DEFINE_DEV_PM_OPS() helps to define PM operations for the system sleep
-> and/or runtime PM cases. Some of the existing users want to have _noirq()
-> variants to be set. For that purpose introduce a new helper which sets
-> up _noirq() callbacks to be set and struct dev_pm_ops be provided.
+> On 18. 07. 23, 8:56, Sherry Sun wrote:
+> > This patch addresses the following Coverity report, fix it by casting
+> > sport->port.frame_time to type u64.
+> > 
+> > CID 32305660: Unintentional integer overflow (OVERFLOW_BEFORE_WIDEN)
+> > Potentially overflowing expression sport->port.frame_time * 8U with type
+> > unsigned int (32 bits, unsigned) is evaluated using 32-bit arithmetic,
+> > and then used in a context that expects an expression of type u64 (64
+> > bits, unsigned).
+> > 
+> > Fixes: cf9aa72d2f91 ("tty: serial: fsl_lpuart: optimize the timer based EOP
+> > logic")
+> > Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
+> > ---
+> >   drivers/tty/serial/fsl_lpuart.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/tty/serial/fsl_lpuart.c
+> > b/drivers/tty/serial/fsl_lpuart.c
+> > index c1980ea52666..07b3b26732db 100644
+> > --- a/drivers/tty/serial/fsl_lpuart.c
+> > +++ b/drivers/tty/serial/fsl_lpuart.c
+> > @@ -1373,7 +1373,7 @@ static inline int lpuart_start_rx_dma(struct
+> > lpuart_port *sport)
+> >     	sport->last_residue = 0;
+> >   	sport->dma_rx_timeout = max(nsecs_to_jiffies(
+> > -		sport->port.frame_time * DMA_RX_IDLE_CHARS), 1UL);
+> > +		(u64)sport->port.frame_time * DMA_RX_IDLE_CHARS), 1UL);
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-Seems reasonable to me given it is fairly common
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> ---
->  include/linux/pm.h | 9 +++++++++
->  1 file changed, 9 insertions(+)
+> Can you explain how that can overflow? In the worst case (1 start bit, 8 data
+> bits, 2 stop bits, parity bit, address bit, 50 bauds), frame_time would
+> contain:
+> 13*1e9/50 = 260,000,000. (260 ms)
 > 
-> diff --git a/include/linux/pm.h b/include/linux/pm.h
-> index badad7d11f4f..0f19af8d5493 100644
-> --- a/include/linux/pm.h
-> +++ b/include/linux/pm.h
-> @@ -448,6 +448,15 @@ const struct dev_pm_ops __maybe_unused name = { \
->  	SET_RUNTIME_PM_OPS(suspend_fn, resume_fn, idle_fn) \
->  }
->  
-> +/*
-> + * Use this if you want to have the suspend and resume callbacks be called
-> + * with disabled IRQs.
-> + */
-> +#define DEFINE_NOIRQ_DEV_PM_OPS(name, suspend_fn, resume_fn) \
-> +const struct dev_pm_ops name = { \
-> +	NOIRQ_SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
-> +}
-> +
->  #define pm_ptr(_ptr) PTR_IF(IS_ENABLED(CONFIG_PM), (_ptr))
->  #define pm_sleep_ptr(_ptr) PTR_IF(IS_ENABLED(CONFIG_PM_SLEEP), (_ptr))
->  
+> Then the multiplication above is:
+> 260,000,000*8 = 2,080,000,000. (2 seconds)
+> 
+> which is still less than 2^32-1.
 
+I was wondering the same thing.
+
+This isn't a real bug. All findings from code analysis tools must be 
+carefully evaluated to filter wheat out of chaff and this falls into the 
+latter category. Please make sure next time you understand and explain 
+also in the changelog how the problem can be manifested for real before 
+sending this kind of patches.
+
+
+-- 
+ i.
