@@ -2,191 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9BEC7578C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA966757966
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231971AbjGRKDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 06:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56130 "EHLO
+        id S231404AbjGRKlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 06:41:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232531AbjGRKDC (ORCPT
+        with ESMTP id S231215AbjGRKlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 06:03:02 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D1BE997
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 03:03:00 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11EF32F4;
-        Tue, 18 Jul 2023 03:03:44 -0700 (PDT)
-Received: from [10.1.34.52] (C02Z41KALVDN.cambridge.arm.com [10.1.34.52])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 306493F67D;
-        Tue, 18 Jul 2023 03:02:59 -0700 (PDT)
-Message-ID: <1aada499-4bb3-668c-10d0-06e0845efca1@arm.com>
-Date:   Tue, 18 Jul 2023 11:02:57 +0100
+        Tue, 18 Jul 2023 06:41:11 -0400
+Received: from 9.mo562.mail-out.ovh.net (9.mo562.mail-out.ovh.net [46.105.72.114])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76680F0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 03:41:09 -0700 (PDT)
+Received: from director1.derp.mail-out.ovh.net (director1.derp.mail-out.ovh.net [51.68.80.175])
+        by mo562.mail-out.ovh.net (Postfix) with ESMTPS id 9F5E923025;
+        Tue, 18 Jul 2023 09:25:40 +0000 (UTC)
+Received: from director1.derp.mail-out.ovh.net (director1.derp.mail-out.ovh.net. [127.0.0.1])
+        by director1.derp.mail-out.ovh.net (inspect_sender_mail_agent) with SMTP
+        for <conor+dt@kernel.org>; Tue, 18 Jul 2023 09:25:40 +0000 (UTC)
+Received: from pro2.mail.ovh.net (unknown [10.109.138.11])
+        by director1.derp.mail-out.ovh.net (Postfix) with ESMTPS id 46B48200E51;
+        Tue, 18 Jul 2023 09:25:40 +0000 (UTC)
+Received: from traphandler.com (88.161.25.233) by DAG1EX1.emp2.local
+ (172.16.2.1) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
+ 2023 11:25:39 +0200
+From:   Jean-Jacques Hiblot <jjhiblot@traphandler.com>
+To:     <lee@kernel.org>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC:     <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Jean-Jacques Hiblot <jjhiblot@traphandler.com>
+Subject: [PATCH v11 5/5] leds: Add a multicolor LED driver to group monochromatic LEDs
+Date:   Tue, 18 Jul 2023 11:25:27 +0200
+Message-ID: <20230718092527.37516-6-jjhiblot@traphandler.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230718092527.37516-1-jjhiblot@traphandler.com>
+References: <20230718092527.37516-1-jjhiblot@traphandler.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v1 2/3] mm: Implement folio_remove_rmap_range()
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
-        Zi Yan <ziy@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20230717143110.260162-1-ryan.roberts@arm.com>
- <20230717143110.260162-3-ryan.roberts@arm.com>
- <87zg3tbsn0.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <87zg3tbsn0.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [88.161.25.233]
+X-ClientProxiedBy: DAG1EX1.emp2.local (172.16.2.1) To DAG1EX1.emp2.local
+ (172.16.2.1)
+X-Ovh-Tracer-Id: 6526841762023225819
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrgeeggddugecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurhephffvvefufffkofgjfhgggfgtihesthekredtredttdenucfhrhhomheplfgvrghnqdflrggtqhhuvghsucfjihgslhhothcuoehjjhhhihgslhhothesthhrrghphhgrnhgulhgvrhdrtghomheqnecuggftrfgrthhtvghrnhepudetveelveevgffgvdeuffffjefhheehueeitdegtdejgefhheeuuddugeeffeeunecukfhppedtrddtrddtrddtpdekkedrudeiuddrvdehrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpohhuthdphhgvlhhopeguihhrvggtthhorhdurdguvghrphdrmhgrihhlqdhouhhtrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehjjhhhihgslhhothesthhrrghphhgrnhgulhgvrhdrtghomhdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhlvggushesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheeivd
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/07/2023 08:12, Huang, Ying wrote:
-> Ryan Roberts <ryan.roberts@arm.com> writes:
-> 
->> Like page_remove_rmap() but batch-removes the rmap for a range of pages
->> belonging to a folio. This can provide a small speedup due to less
->> manipuation of the various counters. But more crucially, if removing the
->> rmap for all pages of a folio in a batch, there is no need to
->> (spuriously) add it to the deferred split list, which saves significant
->> cost when there is contention for the split queue lock.
->>
->> All contained pages are accounted using the order-0 folio (or base page)
->> scheme.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>  include/linux/rmap.h |  2 ++
->>  mm/rmap.c            | 65 ++++++++++++++++++++++++++++++++++++++++++++
->>  2 files changed, 67 insertions(+)
->>
->> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
->> index b87d01660412..f578975c12c0 100644
->> --- a/include/linux/rmap.h
->> +++ b/include/linux/rmap.h
->> @@ -200,6 +200,8 @@ void page_add_file_rmap(struct page *, struct vm_area_struct *,
->>  		bool compound);
->>  void page_remove_rmap(struct page *, struct vm_area_struct *,
->>  		bool compound);
->> +void folio_remove_rmap_range(struct folio *folio, struct page *page,
->> +		int nr, struct vm_area_struct *vma);
->>  
->>  void hugepage_add_anon_rmap(struct page *, struct vm_area_struct *,
->>  		unsigned long address, rmap_t flags);
->> diff --git a/mm/rmap.c b/mm/rmap.c
->> index 2baf57d65c23..1da05aca2bb1 100644
->> --- a/mm/rmap.c
->> +++ b/mm/rmap.c
->> @@ -1359,6 +1359,71 @@ void page_add_file_rmap(struct page *page, struct vm_area_struct *vma,
->>  	mlock_vma_folio(folio, vma, compound);
->>  }
->>  
->> +/*
->> + * folio_remove_rmap_range - take down pte mappings from a range of pages
->> + * belonging to a folio. All pages are accounted as small pages.
->> + * @folio:	folio that all pages belong to
->> + * @page:       first page in range to remove mapping from
->> + * @nr:		number of pages in range to remove mapping from
->> + * @vma:        the vm area from which the mapping is removed
->> + *
->> + * The caller needs to hold the pte lock.
->> + */
->> +void folio_remove_rmap_range(struct folio *folio, struct page *page,
->> +					int nr, struct vm_area_struct *vma)
-> 
-> Can we call folio_remove_ramp_range() in page_remove_rmap() if
-> !compound?  This can give us some opportunities to reduce code
-> duplication?
+Grouping multiple monochrome LEDs into a multicolor LED device has a few
+benefits over handling the group in user-space:
+- The state of the LEDs relative to each other is consistent. In other
+  words, if 2 threads competes to set the LED to green and red, the
+  end-result cannot be black or yellow.
+- The multicolor LED as a whole can be driven through the sysfs LED
+  interface.
 
-I considered that, but if felt like the savings were pretty small so my opinion
-was that it was cleaner not to do this. This is the best I came up with. Perhaps
-you can see further improvements?
+Signed-off-by: Jean-Jacques Hiblot <jjhiblot@traphandler.com>
+Reviewed-by: Lee Jones <lee@kernel.org>
+---
+ drivers/leds/rgb/Kconfig                 |  12 ++
+ drivers/leds/rgb/Makefile                |   1 +
+ drivers/leds/rgb/leds-group-multicolor.c | 169 +++++++++++++++++++++++
+ 3 files changed, 182 insertions(+)
+ create mode 100644 drivers/leds/rgb/leds-group-multicolor.c
 
-void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
-		bool compound)
-{
-	struct folio *folio = page_folio(page);
-	atomic_t *mapped = &folio->_nr_pages_mapped;
-	int nr = 0, nr_pmdmapped = 0;
-	bool last;
-	enum node_stat_item idx;
+diff --git a/drivers/leds/rgb/Kconfig b/drivers/leds/rgb/Kconfig
+index 360c8679c6e2..183bccc06cf3 100644
+--- a/drivers/leds/rgb/Kconfig
++++ b/drivers/leds/rgb/Kconfig
+@@ -2,6 +2,18 @@
+ 
+ if LEDS_CLASS_MULTICOLOR
+ 
++config LEDS_GROUP_MULTICOLOR
++	tristate "LEDs group multi-color support"
++	depends on OF || COMPILE_TEST
++	help
++	  This option enables support for monochrome LEDs that are grouped
++	  into multicolor LEDs which is useful in the case where LEDs of
++	  different colors are physically grouped in a single multi-color LED
++	  and driven by a controller that doesn't have multi-color support.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called leds-group-multicolor.
++
+ config LEDS_PWM_MULTICOLOR
+ 	tristate "PWM driven multi-color LED Support"
+ 	depends on PWM
+diff --git a/drivers/leds/rgb/Makefile b/drivers/leds/rgb/Makefile
+index 8c01daf63f61..c11cc56384e7 100644
+--- a/drivers/leds/rgb/Makefile
++++ b/drivers/leds/rgb/Makefile
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
++obj-$(CONFIG_LEDS_GROUP_MULTICOLOR)	+= leds-group-multicolor.o
+ obj-$(CONFIG_LEDS_PWM_MULTICOLOR)	+= leds-pwm-multicolor.o
+ obj-$(CONFIG_LEDS_QCOM_LPG)		+= leds-qcom-lpg.o
+ obj-$(CONFIG_LEDS_MT6370_RGB)		+= leds-mt6370-rgb.o
+diff --git a/drivers/leds/rgb/leds-group-multicolor.c b/drivers/leds/rgb/leds-group-multicolor.c
+new file mode 100644
+index 000000000000..39f58be32af5
+--- /dev/null
++++ b/drivers/leds/rgb/leds-group-multicolor.c
+@@ -0,0 +1,169 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Multi-color LED built with monochromatic LED devices
++ *
++ * This driver groups several monochromatic LED devices in a single multicolor LED device.
++ *
++ * Compared to handling this grouping in user-space, the benefits are:
++ * - The state of the monochromatic LED relative to each other is always consistent.
++ * - The sysfs interface of the LEDs can be used for the group as a whole.
++ *
++ * Copyright 2023 Jean-Jacques Hiblot <jjhiblot@traphandler.com>
++ */
++
++#include <linux/err.h>
++#include <linux/leds.h>
++#include <linux/led-class-multicolor.h>
++#include <linux/math.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/platform_device.h>
++#include <linux/property.h>
++
++struct leds_multicolor {
++	struct led_classdev_mc mc_cdev;
++	struct led_classdev **monochromatics;
++};
++
++static int leds_gmc_set(struct led_classdev *cdev, enum led_brightness brightness)
++{
++	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(cdev);
++	struct leds_multicolor *priv = container_of(mc_cdev, struct leds_multicolor, mc_cdev);
++	const unsigned int group_max_brightness = mc_cdev->led_cdev.max_brightness;
++	int i;
++
++	for (i = 0; i < mc_cdev->num_colors; i++) {
++		struct led_classdev *mono = priv->monochromatics[i];
++		const unsigned int mono_max_brightness = mono->max_brightness;
++		unsigned int intensity = mc_cdev->subled_info[i].intensity;
++		int mono_brightness;
++
++		/*
++		 * Scale the brightness according to relative intensity of the
++		 * color AND the max brightness of the monochromatic LED.
++		 */
++		mono_brightness = DIV_ROUND_CLOSEST(brightness * intensity * mono_max_brightness,
++						    group_max_brightness * group_max_brightness);
++
++		led_set_brightness(mono, mono_brightness);
++	}
++
++	return 0;
++}
++
++static void restore_sysfs_write_access(void *data)
++{
++	struct led_classdev *led_cdev = data;
++
++	/* Restore the write acccess to the LED */
++	mutex_lock(&led_cdev->led_access);
++	led_sysfs_enable(led_cdev);
++	mutex_unlock(&led_cdev->led_access);
++}
++
++static int leds_gmc_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct led_init_data init_data = {};
++	struct led_classdev *cdev;
++	struct mc_subled *subled;
++	struct leds_multicolor *priv;
++	unsigned int max_brightness = 0;
++	int i, ret, count = 0;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	for (;;) {
++		struct led_classdev *led_cdev;
++
++		led_cdev = devm_of_led_get_optional(dev, count);
++		if (IS_ERR(led_cdev))
++			return dev_err_probe(dev, PTR_ERR(led_cdev), "Unable to get LED #%d",
++					     count);
++		if (!led_cdev)
++			break;
++
++		priv->monochromatics = devm_krealloc_array(dev, priv->monochromatics,
++					count + 1, sizeof(*priv->monochromatics),
++					GFP_KERNEL);
++		if (!priv->monochromatics)
++			return -ENOMEM;
++
++		priv->monochromatics[count] = led_cdev;
++
++		max_brightness = max(max_brightness, led_cdev->max_brightness);
++
++		count++;
++	}
++
++	subled = devm_kcalloc(dev, count, sizeof(*subled), GFP_KERNEL);
++	if (!subled)
++		return -ENOMEM;
++	priv->mc_cdev.subled_info = subled;
++
++	for (i = 0; i < count; i++) {
++		struct led_classdev *led_cdev = priv->monochromatics[i];
++
++		subled[i].color_index = led_cdev->color;
++
++		/* Configure the LED intensity to its maximum */
++		subled[i].intensity = max_brightness;
++	}
++
++	/* Initialise the multicolor's LED class device */
++	cdev = &priv->mc_cdev.led_cdev;
++	cdev->flags = LED_CORE_SUSPENDRESUME;
++	cdev->brightness_set_blocking = leds_gmc_set;
++	cdev->max_brightness = max_brightness;
++	cdev->color = LED_COLOR_ID_MULTI;
++	priv->mc_cdev.num_colors = count;
++
++	init_data.fwnode = dev_fwnode(dev);
++	ret = devm_led_classdev_multicolor_register_ext(dev, &priv->mc_cdev, &init_data);
++	if (ret)
++		return dev_err_probe(dev, ret, "failed to register multicolor LED for %s.\n",
++				     cdev->name);
++
++	ret = leds_gmc_set(cdev, cdev->brightness);
++	if (ret)
++		return dev_err_probe(dev, ret, "failed to set LED value for %s.", cdev->name);
++
++	for (i = 0; i < count; i++) {
++		struct led_classdev *led_cdev = priv->monochromatics[i];
++
++		/*
++		 * Make the individual LED sysfs interface read-only to prevent the user
++		 * to change the brightness of the individual LEDs of the group.
++		 */
++		mutex_lock(&led_cdev->led_access);
++		led_sysfs_disable(led_cdev);
++		mutex_unlock(&led_cdev->led_access);
++
++		/* Restore the write access to the LED sysfs when the group is destroyed */
++		devm_add_action_or_reset(dev, restore_sysfs_write_access, led_cdev);
++	}
++
++	return 0;
++}
++
++static const struct of_device_id of_leds_group_multicolor_match[] = {
++	{ .compatible = "leds-group-multicolor" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, of_leds_group_multicolor_match);
++
++static struct platform_driver leds_group_multicolor_driver = {
++	.probe		= leds_gmc_probe,
++	.driver		= {
++		.name	= "leds_group_multicolor",
++		.of_match_table = of_leds_group_multicolor_match,
++	}
++};
++module_platform_driver(leds_group_multicolor_driver);
++
++MODULE_AUTHOR("Jean-Jacques Hiblot <jjhiblot@traphandler.com>");
++MODULE_DESCRIPTION("LEDs group multicolor driver");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:leds-group-multicolor");
+-- 
+2.34.1
 
-	VM_BUG_ON_PAGE(compound && !PageHead(page), page);
-
-	/* Hugetlb pages are not counted in NR_*MAPPED */
-	if (unlikely(folio_test_hugetlb(folio))) {
-		/* hugetlb pages are always mapped with pmds */
-		atomic_dec(&folio->_entire_mapcount);
-		return;
-	}
-
-	/* Is page being unmapped by PTE? Is this its last map to be removed? */
-	if (likely(!compound)) {
-		folio_remove_rmap_range(folio, page, 1, vma);
-		return;
-	} else if (folio_test_pmd_mappable(folio)) {
-		/* That test is redundant: it's for safety or to optimize out */
-
-		last = atomic_add_negative(-1, &folio->_entire_mapcount);
-		if (last) {
-			nr = atomic_sub_return_relaxed(COMPOUND_MAPPED, mapped);
-			if (likely(nr < COMPOUND_MAPPED)) {
-				nr_pmdmapped = folio_nr_pages(folio);
-				nr = nr_pmdmapped - (nr & FOLIO_PAGES_MAPPED);
-				/* Raced ahead of another remove and an add? */
-				if (unlikely(nr < 0))
-					nr = 0;
-			} else {
-				/* An add of COMPOUND_MAPPED raced ahead */
-				nr = 0;
-			}
-		}
-	}
-
-	if (nr_pmdmapped) {
-		if (folio_test_anon(folio))
-			idx = NR_ANON_THPS;
-		else if (folio_test_swapbacked(folio))
-			idx = NR_SHMEM_PMDMAPPED;
-		else
-			idx = NR_FILE_PMDMAPPED;
-		__lruvec_stat_mod_folio(folio, idx, -nr_pmdmapped);
-	}
-	if (nr) {
-		idx = folio_test_anon(folio) ? NR_ANON_MAPPED : NR_FILE_MAPPED;
-		__lruvec_stat_mod_folio(folio, idx, -nr);
-
-		/*
-		 * Queue anon THP for deferred split if at least one
-		 * page of the folio is unmapped and at least one page
-		 * is still mapped.
-		 */
-		if (folio_test_anon(folio) && nr < nr_pmdmapped)
-			deferred_split_folio(folio);
-	}
-
-	/*
-	 * It would be tidy to reset folio_test_anon mapping when fully
-	 * unmapped, but that might overwrite a racing page_add_anon_rmap
-	 * which increments mapcount after us but sets mapping before us:
-	 * so leave the reset to free_pages_prepare, and remember that
-	 * it's only reliable while mapped.
-	 */
-
-	munlock_vma_folio(folio, vma, compound);
-}
-
-> 
-> Best Regards,
-> Huang, Ying
-> 
