@@ -2,130 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D88BD75746E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C397757476
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbjGRGjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 02:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44628 "EHLO
+        id S231411AbjGRGj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 02:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbjGRGjQ (ORCPT
+        with ESMTP id S230512AbjGRGjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 02:39:16 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A1113E;
-        Mon, 17 Jul 2023 23:39:15 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36I4vp9R016256;
-        Tue, 18 Jul 2023 06:39:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=hyUTSBFEaC4pcaQjUEgZ+kmj7N64pmXpQ975HOmlxVs=;
- b=FrEbUbDOxWgTeAiVbS3QRfEfz1uenwMhodliTsi2N5Vk4HypsA23qaBoN2P5N+N5ynMA
- iWaxqRqtfgHgZcUjlFLlCpARUlnr7jmGnCj1w+GE+JqAg5xPhPB53J81YeCp7s5xMGzd
- wA7dXqp+U+rCt0FAKSns2YVU0/K+4uZpdSU2qACSZf0yHCLqv+vajrKJT2E2vy+6mf+Q
- oNHWu2dXgfl+NeyE67rOOR2mZoqqO0Jb+USFgVPIXtETRrUwtYneIwgcbI1nglodknT5
- Wlx2umlkgXZS+mFgWezt1nCQnnBcEBJIW88iNSmt2kPd0GBxRi6RUYswrs+GriSHqzdy pw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rwfj78nvt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 Jul 2023 06:39:05 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36I6d4wt025710
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 Jul 2023 06:39:04 GMT
-Received: from [10.239.154.73] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 17 Jul
- 2023 23:39:01 -0700
-Message-ID: <4cb9f443-bdea-695a-f1b7-3963747e9a17@quicinc.com>
-Date:   Tue, 18 Jul 2023 14:38:59 +0800
+        Tue, 18 Jul 2023 02:39:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14916136
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:39:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689662347;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uGWZGJs7iJ0bHkmNYO8V4KcHUQKd/vxJD2N3uDsccto=;
+        b=ZuJAJ03Aj/fuw3xOsSNe3JNbS8PgII33FmcISQ6GJZgsycnnrj4+xED3sqi9+7yKHPxSvd
+        JbzObVey2c0DY67oEu8RL8D449xd+Y1YerzVGae5xn1aC/QpSWYbzYN0W+Sr4HVVeesaKx
+        eXRZbLhv6juivM2lkZCpSTk8jaJxgLc=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-378-GsR9qr1RM32b71Hcv2kA8g-1; Tue, 18 Jul 2023 02:39:05 -0400
+X-MC-Unique: GsR9qr1RM32b71Hcv2kA8g-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-30e6153f0eeso2936042f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:39:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689662344; x=1692254344;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uGWZGJs7iJ0bHkmNYO8V4KcHUQKd/vxJD2N3uDsccto=;
+        b=U03PPQ0bhi6ldyVB4/QL3csZ6ABr4jtLjQ22TLNV2QkuGbHKPhXCM12fSIOX0Vgg2G
+         33paXpoHPD0m4A1mIQonO2UDJ226QBYIytbnEtyziGFvn8WFXApQT8MCwQGG1cGo2I2a
+         9f2/dZk1ob6J+TdoKAyvwPvZKau/Q8DqsT+3MrbhnZ9in3KbempNT2cfkdssdcjgyEgQ
+         UpSnhmW/9BYCVlZo/kc1NyGsh3bWkkcJmxkKX6tg8vOSZBdSIXf/KooQM5FqwpUdzL6w
+         T32kdaZ4nzHcM5au9jN6z5TKB6in495gKe02EDBvfNJMCOjY2T/y5xKvWt5t3WJkDBtg
+         Vxaw==
+X-Gm-Message-State: ABy/qLa0S3tahT6m3tS8B3Aat1qnFG2GRB0H8PDyCPdh6eTersO9ev/F
+        ixyRID9+zhy/vWSu+iNxOIAO9Q264o/b97z+D0I/5xoH/RT1vUN+6xwkOcoU+Iq04pe7qj6f81S
+        T9TOYawq3405pf25RZJ2awsAOOXZioiT7
+X-Received: by 2002:adf:d4c7:0:b0:314:268b:21f1 with SMTP id w7-20020adfd4c7000000b00314268b21f1mr11320611wrk.18.1689662344258;
+        Mon, 17 Jul 2023 23:39:04 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHv18uaI93wFrqmmHeM+/M9p05Ssvf+TiET1HDtjWoK2EEJHqu10sNXHiTb6Zw0EgXCaxftWA==
+X-Received: by 2002:adf:d4c7:0:b0:314:268b:21f1 with SMTP id w7-20020adfd4c7000000b00314268b21f1mr11320599wrk.18.1689662343997;
+        Mon, 17 Jul 2023 23:39:03 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id c7-20020adfe747000000b003143c9beeaesm1393087wrn.44.2023.07.17.23.39.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 23:39:03 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Luc Ma <onion0709@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        onion0709@gmail.com
+Subject: Re: [PATCH] dma-buf: remove unintended hyphen in the sysfs path
+In-Reply-To: <64b5dc93.170a0220.243d5.1d63@mx.google.com>
+References: <64b5dc93.170a0220.243d5.1d63@mx.google.com>
+Date:   Tue, 18 Jul 2023 08:39:03 +0200
+Message-ID: <87zg3tiv08.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH v2 1/2] dt-bindings: input: qcom,pm8xxx-vib: add more PMIC
- support
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-input@vger.kernel.org>, <devicetree@vger.kernel.org>
-CC:     <quic_collinsd@quicinc.com>, <quic_subbaram@quicinc.com>,
-        <quic_kamalw@quicinc.com>, <jestar@qti.qualcomm.com>
-References: <20230718062639.2339589-1-quic_fenglinw@quicinc.com>
- <20230718062639.2339589-2-quic_fenglinw@quicinc.com>
- <cb534cdb-508e-b03e-4e39-50cd6654377a@linaro.org>
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-In-Reply-To: <cb534cdb-508e-b03e-4e39-50cd6654377a@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: H4ihGK6GLTZg_Z684aYn1fh5h_ehedZl
-X-Proofpoint-ORIG-GUID: H4ihGK6GLTZg_Z684aYn1fh5h_ehedZl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-17_15,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- mlxlogscore=999 impostorscore=0 clxscore=1015 phishscore=0 spamscore=0
- lowpriorityscore=0 priorityscore=1501 mlxscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307180060
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Luc Ma <onion0709@gmail.com> writes:
 
+> From: Luc Ma <luc@sietium.com>
+>
+> Signed-off-by: Luc Ma <luc@sietium.com>
+> ---
 
-On 7/18/2023 2:33 PM, Krzysztof Kozlowski wrote:
-> On 18/07/2023 08:26, Fenglin Wu wrote:
->> Add support for vibrator module inside Qualcomm PMI632, PM7250B, PM7325B
->> PMICs.
->>
->> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
->> ---
-> 
-> I don't see changelog. No changes then?
-> 
-Sorry, I updated the change log in the cover letter which didn't seems 
-to be sent to a wider audience, I will resend it by adding more 
-receivers in the to list
+Even when is a trivial change I would add something as commit message, i.e:
 
-Fenglin
->>   Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml b/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
->> index c8832cd0d7da..481163105d24 100644
->> --- a/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
->> +++ b/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
->> @@ -15,6 +15,9 @@ properties:
->>         - qcom,pm8058-vib
->>         - qcom,pm8916-vib
->>         - qcom,pm8921-vib
->> +      - qcom,pmi632-vib
->> +      - qcom,pm7250b-vib
->> +      - qcom,pm7325b-vib
-> 
-> Not much improved. With missing changelog, it seems you ignored the
-> feedback.
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
+"The kernel-doc mentions /sys/kernel/dma-buf/buffers but the correct path
+is /sys/kernel/dmabuf/buffers instead. Fix the typo in the documentation".
+
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
