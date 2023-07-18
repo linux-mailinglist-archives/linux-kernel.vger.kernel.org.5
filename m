@@ -2,124 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD1C7572FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 06:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E442757305
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 07:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbjGRE7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 00:59:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
+        id S230173AbjGRFFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 01:05:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjGRE7t (ORCPT
+        with ESMTP id S229449AbjGRFFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 00:59:49 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2061.outbound.protection.outlook.com [40.107.92.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFBEAD;
-        Mon, 17 Jul 2023 21:59:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ecwH5F5G0HsJ0GQbtls/lm3gB5+K0dgSKhw+zJvI0kVOwgoH3ypkC9rLhNljKncx8aOMY1HuxWbaU4SdkyoRLvN0XGc8irVlyeKPaWcui5tjXJVtcCln8F8EBEOQ2a5gKtRaOvUfYKjM7xU0fbiD3N+mu9XfF/Bd6kW/gpFjN/ptEiihuaPZi/SU5hem/YhKVpPEP5SwyBwBhnvq+GXXY175HR/h1EkTSt1t2k/SRR0SDBsT6kAckzTXnNF3fZMe1JRpPOztfPtR6n/n4enwJrQ8hDkr0SmggcOULzIx3joGmRy4HWOX/VZv9tMTQQQLkGk4d5ic9BxAHISh45jr7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JDcQo2uZjqFuFfUjjL+8t6lPX1lggpaJvEf5Ae1RVBY=;
- b=Oh3+IIzqi+ueYRkWHm8j3rAA9tli4ho0yNZbk28XrXjTq+/ftuc3j7HwzTnpks/A0JSKdXlVuIKd3fxzt0oQGuKR58xJvqK3tXhrL97rZ1rwsp3CGa8QCkzb3vhEBpkHseQNb+nTBH7iD6aP7zVZS1NW6I2KOY7e9kouXODJi9K3R0BVB8P8XHumze/WYHuCod11eWiwCHO6SSqH7VyyZGnM/8ZhaVsvv0K+9uWt6PH6MuN5uCR6y1lKUcZIDzKprGtHat7zKnBLoOrX2lGr+pzQBeBiU11K7znTxGooXT5TT6m496Xj8uQPY1ZJjHJafiyR02sTPAk7UWqRgjFADg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JDcQo2uZjqFuFfUjjL+8t6lPX1lggpaJvEf5Ae1RVBY=;
- b=XX94qIyRcrJ9aVfUW1PjbfuWQKjjgYv+M+O6o9XnKsQ4jEbqcMRXlCpDlZ0SDLCc5WvvaSTOHSURbPJmZy8DX8U+0zY4eM8vIzEWCV7bRhV5vYpraf4sopDHp7YtS2npJIgS3uHtRSRQFiCHzdqrnkBT8wdPaIFQAo6j7yij5bE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CH3PR12MB8308.namprd12.prod.outlook.com (2603:10b6:610:131::8)
- by PH7PR12MB6492.namprd12.prod.outlook.com (2603:10b6:510:1f3::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32; Tue, 18 Jul
- 2023 04:59:45 +0000
-Received: from CH3PR12MB8308.namprd12.prod.outlook.com
- ([fe80::e6:191b:9eb8:e73a]) by CH3PR12MB8308.namprd12.prod.outlook.com
- ([fe80::e6:191b:9eb8:e73a%6]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
- 04:59:44 +0000
-Message-ID: <8ef1b112-c213-0a2d-6603-e8d4c2a4529f@amd.com>
-Date:   Tue, 18 Jul 2023 10:29:32 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] cdx: Explicitly include correct DT includes
-To:     Rob Herring <robh@kernel.org>,
-        Nikhil Agarwal <nikhil.agarwal@amd.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230717150355.1749845-1-robh@kernel.org>
-Content-Language: en-US
-From:   "Gupta, Nipun" <nipun.gupta@amd.com>
-In-Reply-To: <20230717150355.1749845-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN3PR01CA0072.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:99::19) To CH3PR12MB8308.namprd12.prod.outlook.com
- (2603:10b6:610:131::8)
+        Tue, 18 Jul 2023 01:05:02 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6890812F;
+        Mon, 17 Jul 2023 22:05:01 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36I2pOR7019061;
+        Tue, 18 Jul 2023 05:03:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=1flk7jxvxDsjJkwUB+uLvNS/121vaIX+FNpTZXRPiXk=;
+ b=UP6yPqpr1zCIHyUAbAa/qFIpoT4d2NnugNIRIemVOmP9k76W8DuitoL+ddmfxVa92Da/
+ 0Tq8BER+F1sfiV2hTVDzgr2TUREvqhi5XzKMzv1z2n0bzpZzCuzhSiEiCAGmWHFT5RfV
+ FyW241X/HAyinxuLqHe32xaEXE8x8xvHqWS9rZGlHeVHFSWe9CAtUAUr3XPl0HBEtS2A
+ hIP9QWQWpXWMgN31Z7HDBJkF3xjduFUzgbUesTJT96NJfQ8xksWoTQnNs8K3+2rNb+tx
+ iXU2k7JvYCG+RoG04Nxon++X+WRhBSpAUZV+Ul3yn1YendLo39SIjnK45Ik3hB+yzJBG kA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rw7eeshm7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 05:03:30 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36I53Ttw006442
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 05:03:29 GMT
+Received: from [10.50.3.220] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 17 Jul
+ 2023 22:03:25 -0700
+Message-ID: <c91e1aad-b81f-8afd-6ee1-c83ed4844b04@quicinc.com>
+Date:   Tue, 18 Jul 2023 10:33:09 +0530
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8308:EE_|PH7PR12MB6492:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7a319c70-d39a-4534-438c-08db874bcd41
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yOaXcxjI6s0GzappXTXib+bcE2bov3Lamnfc3GaiUkphMFiLp7bJFWlgXF5tT+lTw2u3E1jUi1fQT6rDccWzDZAfYsFVQhODaqlW5b+rnLfw4Om8mwsJPDgXniPdBP74viF0IUqCFl3zs0E6UkDxeJq0WkoDizCHIBwDZfNLoPvMep46Wqk5OcQbknj8njJhNmnrGe1UoG5Gy4Yt+Jynwyb6RnsYPEBT0jZ14Xjqz51fDbjU0LRxxHw4hCW91U/kei2PlMFyAGdwpRjCa9IYHO9aiLR6TWpSjGOOg0jNtAozPsueAjuYZPxC4WTEcRwUT5t0t7AeaJ0JZe48i7LG7aa9kPHG25wcWqt6h1MOJfLiBdC+bTH11M7wywbXpjmueebvoc/xSy/q5In0mi4DHu58/5dbvt9b0VO6Sv8RMkHe6Sd5DNmrRc4UppODt9QN272XOhD77O2jg8R0ZYZ/q7pAKg2nQet004Ivzxm+DUNRTwXzHJb9yQO14lwZx1eKhhPLo7RAVJdCglvwpXoh54ihvqjcm8kPOaWfpy2HCozT9RH6uMeLQzSUWyZrHngMrS6lHdvRqQ/+qhpMXgoLVLpG5EdAyW8+HgISmwqq2rBzS8lKNA+YotQrrdyK23bq2Zz+3RXZ/ukKipWjhv9RsA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8308.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(39860400002)(366004)(396003)(136003)(451199021)(31686004)(6486002)(6666004)(478600001)(110136005)(83380400001)(2616005)(31696002)(86362001)(4744005)(2906002)(186003)(6506007)(53546011)(6512007)(26005)(38100700002)(66476007)(41300700001)(66946007)(66556008)(4326008)(316002)(36756003)(8676002)(5660300002)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MzNLa0JmRlFicG53VzN0bjZyUGljQ3Q0YUF4YjdmVUR1NjV6K2xRV25PdXVh?=
- =?utf-8?B?MzdNeWlidWNjUU1KamZjQWxKTmw0YW9BY0lHbzJUWDc5YmNtdzIybVorbDhx?=
- =?utf-8?B?cVFMck45TFJUUE1ZUzZ4aytWbWl0MS9JeWQ1WThOM2VtV1FzZG8zS09wdUJo?=
- =?utf-8?B?SW9SYmlZQitmc2p2RzN2RnBKKzkyZCs1TDh3aTFtMHA0L3pvRk1xUzc0MVNT?=
- =?utf-8?B?LzZ2dVpaalFwY2RBeDhNWFM0T2hDb2l6QytoMlUzVmxOVGEvMEtEOGJsQ1NI?=
- =?utf-8?B?YzFBQmFKTllPQkloTE1TTUxUKzZuM0pkRkl3MnN4TDE2cUplNVpWQXVsNXJr?=
- =?utf-8?B?YThpRFZWNlFNdjFjeDV2cGY5UWRiaWNrb0dUb0xKZVI3WVEyZGg3bTFSek5y?=
- =?utf-8?B?RWxyRWZHQ3l3cnhjdHhIZzU3YzVzQ2dVK0pySXBLUFowNHdUcDVkaCtJWC9m?=
- =?utf-8?B?bzRWa0dReEI2Qnc1OXloT3JZakRaMFBEQ0xRTVFMUElrMVZTZEJKaXNNTllO?=
- =?utf-8?B?amQ0Mytqa29JSzFxQzJVNHhjUTZ4Y0tVVjl3U1VocWh3djFJOG5hUDI0Q09Y?=
- =?utf-8?B?ZWdLNjVJR2QvUFNjTitrRkxHelNpZ1lJSVRNL2FMM0U4TGhpUnhLRVo4dlJT?=
- =?utf-8?B?Q1EyUVJoTU0rOGVlaUUzU3l6TVpBOUxzdUEzTFQ4NklhdUZldmloTk1mQVRt?=
- =?utf-8?B?WmJSMHBJcjBPU2tCT1RibXpaak5iNE5KNXFnb2xTb0I3amx1aDBEL1lucWI3?=
- =?utf-8?B?ZmVJakJMbzBkNmVhdUxzcXlYZnRlcnpEcFE5bURjd2VvUTc5clJVaTNyYVkv?=
- =?utf-8?B?ZjZNVWhINDg2U0szS3BYY1JWSktRZytoeDNaM1V0ZjdsOUZ6OGdjUTZONHJ2?=
- =?utf-8?B?cnI2Z0ZaMm1UMHJlQjh0NzRxdXdsQzFMdGtoVTlLeFVmdXptMjF0TGdMVE9S?=
- =?utf-8?B?T0hEZU5Bb2VLbkUxTHVwT2dsd3ZTblVOeE85cmZBUTBnODV6TE1NdDVpaHF5?=
- =?utf-8?B?QjlraWhNRVVUcVdmUTd4TkVZVE4vbkR3U0VqWXNhSm1GR21HMzJCZVVSSTRk?=
- =?utf-8?B?MGtOT1NDS1dLMlc0VEd1WXpIY2p1SEhpSzNjOUlKRHJxWHZ5Tk9uYVJUN1Zk?=
- =?utf-8?B?ckFDQk02djVIK016QXphbG05SGc3UklkbjFRS0xUM0VGbGEwSENXTWoxMFJL?=
- =?utf-8?B?ZlRybzgxd1VBTnlxUkozRFVJcTJkRmhhYW16QlpOZ2NlU00xd2lpdTZTTVo2?=
- =?utf-8?B?enI0b3Uxd0NjOHB2OG9SNGRhQ1ZodVUvSG1JSy9uRlI2dFdGWDVvRTJaVU1j?=
- =?utf-8?B?WUdEd09CUThuTUFBZm9SMndjRTBWVGxnbmpKUFNsamRuL3BwWTVzejBpb2Nw?=
- =?utf-8?B?UEVhb0VLSDR0YldlT0xja1lPeTc4K2d3T09FOWFRUnEyQWwvaHlBNGR5Qzl5?=
- =?utf-8?B?MzlwWmlybXpSTks5a1RmRlBreG5FNSs3OXhuOTB1dytrb2lXZHI4SSt2UHNM?=
- =?utf-8?B?Q1lqb29IUk9NVFZ5SFoyeDBFd3B1WTNFeDdlVFE4WDQ4cll5enc0R21aK2Nk?=
- =?utf-8?B?YXVNd3phK05tMVEvcit3RHJ3VEFUZkxVbWdVQjRTMW5yUitBakhSZm5mdWJn?=
- =?utf-8?B?U0ovSmg2aTZIYjRsTmZMMnlSSTUwcENBZjhtVXhGWXBrQ3piSTNJMTg1Nmo2?=
- =?utf-8?B?Q0o2cExCSnRuSTJKS1Zoa1gzY013TTNFaGhIQkJ5TVZZUVlPM29vb056RlpT?=
- =?utf-8?B?T0EwaHIwUnB2NU4zbDU4RXFraFFBclVBV0Vwb0hwWS9pK0did0RyN1loc2Rn?=
- =?utf-8?B?dThMNktnWkxYcTBYQmFseS84YnhtMDkvM1I3V2VuTG1aL0VQdTMzUHM1UHU1?=
- =?utf-8?B?c1R6Z1JwMGNKRzNPb1lCdUVmWEtudjFHc3c2ZmlEbGZhQTJ3d2kvb3ZObWNO?=
- =?utf-8?B?bTllWU5CbnJOT0E5djlzQkJyMWlFSXFTUmU1WHJuaVFhS3pGQXdxUkRaaUhv?=
- =?utf-8?B?eGVUMnpQaDF1enYvSEtBeHhjTWwrVlRhUVJUTFgwVThUZThrRHFnMkkwNHRl?=
- =?utf-8?B?TmhjckdoTHBVWHVGVVI0cHRVZTc1SGhYTXR4NUtyZkJKVzh4MmE4R2IzcTJV?=
- =?utf-8?Q?ErH+yLabOY/Y2lIhDyak+x29B?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a319c70-d39a-4534-438c-08db874bcd41
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8308.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 04:59:44.3847
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kl/bZkMBJCf0JP3x/GA0pcQHerGL9HKQy6WrN5c0LrKZzSjmHznlgq8WvZTi193v
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6492
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH V25 0/3] misc: Add driver support for Data Capture and
+ Compare unit(DCC)
+To:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Alex Elder <elder@ieee.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Sibi Sankar <quic_sibis@quicinc.com>,
+        Rajendra Nayak <quic_rjendra@quicinc.com>
+References: <cover.1687945879.git.quic_schowdhu@quicinc.com>
+Content-Language: en-US
+From:   Souradeep Chowdhury <quic_schowdhu@quicinc.com>
+In-Reply-To: <cover.1687945879.git.quic_schowdhu@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: G646Ird-UNiDLMSC4MXcM3_Ql8xvE2Zu
+X-Proofpoint-GUID: G646Ird-UNiDLMSC4MXcM3_Ql8xvE2Zu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_15,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 spamscore=0 lowpriorityscore=0 clxscore=1011
+ mlxlogscore=999 adultscore=0 bulkscore=0 phishscore=0 impostorscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307180046
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -128,16 +90,134 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 7/17/2023 8:33 PM, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
+On 6/28/2023 3:53 PM, Souradeep Chowdhury wrote:
+> DCC(Data Capture and Compare) is a DMA engine designed for debugging purposes.
+> In case of a system crash or manual software triggers by the user the DCC hardware
+> stores the value at the register addresses which can be used for debugging purposes.
+> The DCC driver provides the user with debugfs interface to configure the register
+> addresses. The options that the DCC hardware provides include reading from registers,
+> writing to registers, first reading and then writing to registers and looping
+> through the values of the same register.
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> In certain cases a register write needs to be executed for accessing the rest of the
+> registers, also the user might want to record the changing values of a register with
+> time for which he has the option to use the loop feature.
+> 
+> The options mentioned above are exposed to the user by debugfs files once the driver
+> is probed. The details and usage of this debugfs files are documented in
+> Documentation/ABI/testing/debugfs-driver-dcc.
+> 
+> As an example let us consider a couple of debug scenarios where DCC has been proved to be
+> effective for debugging purposes:-
+> 
+> i)TimeStamp Related Issue
+> 
+> On SC7180, there was a coresight timestamp issue where it would occasionally be all 0
+> instead of proper timestamp values.
+> 
+> Proper timestamp:
+> Idx:3373; ID:10; I_TIMESTAMP : Timestamp.; Updated val = 0x13004d8f5b7aa; CC=0x9e
+> 
+> Zero timestamp:
+> Idx:3387; ID:10; I_TIMESTAMP : Timestamp.; Updated val = 0x0; CC=0xa2
+> 
+> Now this is a non-fatal issue and doesn't need a system reset, but still needs
+> to be rootcaused and fixed for those who do care about coresight etm traces.
+> Since this is a timestamp issue, we would be looking for any timestamp related
+> clocks and such.
+> 
+> We get all the clk register details from IP documentation and configure it
+> via DCC config_read debugfs node. Before that we set the current linked list.
+> 
+> /* Program the linked list with the addresses */
+> echo R 0x10c004 > /sys/kernel/debug/qcom-dcc/../3/config
+> echo R 0x10c008 > /sys/kernel/debug/qcom-dcc/../3/config
+> echo R 0x10c00c > /sys/kernel/debug/qcom-dcc/../3/config
+> echo R 0x10c010 > /sys/kernel/debug/qcom-dcc/../3/config
+> ..... and so on for other timestamp related clk registers
+> 
+> /* Other way of specifying is in "addr len" pair, in below case it
+> specifies to capture 4 words starting 0x10C004 */
+> 
+> echo R 0x10C004 4 > /sys/kernel/debug/qcom-dcc/../3/config_read
+> 
+> /* Enable DCC */
+> echo 1 > /sys/kernel/debug/qcom-dcc/../3/enable
+> 
+> /* Run the timestamp test for working case */
+> 
+> /* Send SW trigger */
+> echo 1 > /sys/kernel/debug/qcom-dcc/../trigger
+> 
+> /* Read SRAM */
+> cat /dev/dcc_sram > dcc_sram1.bin
+> 
+> /* Run the timestamp test for non-working case */
+> 
+> /* Send SW trigger */
+> echo 1 > /sys/kernel/debug/qcom-dcc/../trigger
+> 
+> /* Read SRAM */
+> cat /dev/dcc_sram > dcc_sram2.bin
+> 
+> Get the parser from [1] and checkout the latest branch.
+> 
+> /* Parse the SRAM bin */
+> python dcc_parser.py -s dcc_sram1.bin --v2 -o output/
+> python dcc_parser.py -s dcc_sram2.bin --v2 -o output/
+> 
+> Sample parsed output of dcc_sram1.bin:
+> 
+> <hwioDump version="1">
+>           <timestamp>03/14/21</timestamp>
+>               <generator>Linux DCC Parser</generator>
+>                   <chip name="None" version="None">
+>                   <register address="0x0010c004" value="0x80000000" />
+>                   <register address="0x0010c008" value="0x00000008" />
+>                   <register address="0x0010c00c" value="0x80004220" />
+>                   <register address="0x0010c010" value="0x80000000" />
+>               </chip>
+>       <next_ll_offset>next_ll_offset : 0x1c </next_ll_offset>
+> </hwioDump>
+> 
+> ii)NOC register errors
+> 
+> A particular class of registers called NOC which are functional registers was reporting
+> errors while logging the values.To trace these errors the DCC has been used effectively.
+> The steps followed were similar to the ones mentioned above.
+> In addition to NOC registers a few other dependent registers were configured in DCC to
+> monitor it's values during a crash. A look at the dependent register values revealed that
+> the crash was happening due to a secured access to one of these dependent registers.
+> All these debugging activity and finding the root cause was achieved using DCC.
+> 
+> DCC parser is available at the following open source location
+> 
+> https://git.codelinaro.org/clo/le/platform/vendor/qcom-opensource/tools/-/tree/opensource-tools.lnx.1.0.r176-rel/dcc_parser
+> 
+> Changes in v25
+> 
+> * Updated the documentation of the structure dcc_config_entry as per the comments in V23
+> * Updated the documentation of the dcc Kconfig definition as per comment in V24
+> * Used u64 where applicable
+> * Removed the mutex locks where it is not needed
+> * Removed the use of unlikely keyword
+> * Renamed "nr_link_list" to "max_link_list"
+> 
+> Souradeep Chowdhury (3):
+>    dt-bindings: misc: qcom,dcc: Add the dtschema
+>    misc: dcc: Add driver support for Data Capture and Compare unit(DCC)
+>    MAINTAINERS: Add the entry for DCC(Data Capture and Compare) driver
+>      support
+> 
+>   Documentation/ABI/testing/debugfs-driver-dcc  |   10 +-
+>   .../devicetree/bindings/misc/qcom,dcc.yaml    |   44 +
+>   MAINTAINERS                                   |    8 +
+>   drivers/misc/Kconfig                          |    8 +
+>   drivers/misc/Makefile                         |    1 +
+>   drivers/misc/qcom-dcc.c                       | 1312 +++++++++++++++++
+>   6 files changed, 1378 insertions(+), 5 deletions(-)
+>   create mode 100644 Documentation/devicetree/bindings/misc/qcom,dcc.yaml
+>   create mode 100644 drivers/misc/qcom-dcc.c
+> 
 
-Acked-by: Nipun Gupta <nipun.gupta@amd.com>
+Gentle ping
