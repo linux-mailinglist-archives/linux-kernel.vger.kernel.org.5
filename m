@@ -2,177 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A19A758788
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741A375878B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbjGRV5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 17:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56912 "EHLO
+        id S230497AbjGRV51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 17:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGRV5D (ORCPT
+        with ESMTP id S230453AbjGRV5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 17:57:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98097198D
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:57:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2FF05611E1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 21:57:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BB83C433C8;
-        Tue, 18 Jul 2023 21:57:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689717421;
-        bh=Wo4I4cr9gdcSh0tE9VozsMVfVY5BjPp2OtQmdbI2bgw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SRaR7TUrsVM04PiUfqWevP4oNgJsftX3cNM2tGjYhpRYWg2t3HOq+v4YkGMe8VfbN
-         NzNw/TpIFaH48d7pVVVSe96rATGxmryJ65ZPkMA+l7e/PmkkkepzMszlLDpR7vM43F
-         Ll72D7Adw1Wt3UEMWcuhl/CH+pBv7HTI73vkMuUT+UqlF5sJxDx9vcpAJc9AZWwqHd
-         1vgmNN04mhrh9Vqdt+SNtoAmI6aBGqg8D7/HRhQfsjya4Kx8I/NHM3qvTasW0/OSKd
-         IYJ0SQR+ik/p5485M5P4aE5wB1Wz2paF+M3B0Ix819vad8dObIhLaXYz9Ppm+Mh6vN
-         j/Oj0TFk8u09Q==
-Date:   Tue, 18 Jul 2023 14:57:00 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ivan Babrou <ivan@cloudflare.com>
-Cc:     Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        David Ahern <dsahern@kernel.org>
-Subject: Re: [RFC PATCH net-next] tcp: add a tracepoint for
- tcp_listen_queue_drop
-Message-ID: <20230718145700.5d6f766d@kernel.org>
-In-Reply-To: <CABWYdi2BGi=iRCfLhmQCqO=1eaQ1WaCG7F9WsJrz-7==ocZidg@mail.gmail.com>
-References: <20230711043453.64095-1-ivan@cloudflare.com>
-        <20230711193612.22c9bc04@kernel.org>
-        <CAO3-PbrZHn1syvhb3V57oeXigE_roiHCbzYz5Mi4wiymogTg2A@mail.gmail.com>
-        <20230712104210.3b86b779@kernel.org>
-        <CABWYdi3VJU7HUxzKJBKgX9wF9GRvmA0TKVpjuHvJyz_EdpxZFA@mail.gmail.com>
-        <20230713201427.2c50fc7b@kernel.org>
-        <CABWYdi2BGi=iRCfLhmQCqO=1eaQ1WaCG7F9WsJrz-7==ocZidg@mail.gmail.com>
+        Tue, 18 Jul 2023 17:57:23 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF6119B3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:57:19 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36IJpWSE005541;
+        Tue, 18 Jul 2023 21:57:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=GVaq+PdwX2VNJlf8NniGRbxdpezOsxIk6YErOSJFz58=;
+ b=SNL8GGJMnzWWdRnEJDRq0Jg/hUNpooktQLd+nWK5JSJF5fJYVcIYb1GaIYbOL1Hzp63j
+ kZyuJBNwkOkmd1MX+A8fvUhp1ILFglZH2uOTMKsC2q58gXIvAMEjla8YeYHJKciuZ4EL
+ GVH8sRBhxyRGC+WfzWPyJ2HthoGp7cXgt/eqNuQfrPqaYYiiO7qgsWxOeTvdgq330otN
+ 7v1ygmAtVM0rPw/H+oJ/5Jb2uetehT04IOEHdXw59c564fRFRGgTQDkPgk6i4qE2PyQl
+ hoPCcPWBwzSNSOYBQyffPdsEpv1P7cvsSD/Tdnq0Vp02yPM5pnb0RxZw3ygLmh99QE3K vQ== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rx05mceav-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 21:57:04 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36IIShDP007434;
+        Tue, 18 Jul 2023 21:57:03 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rv80j4acj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 21:57:03 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36ILv28P2032304
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 Jul 2023 21:57:03 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 906F658061;
+        Tue, 18 Jul 2023 21:57:02 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2E69558043;
+        Tue, 18 Jul 2023 21:57:02 +0000 (GMT)
+Received: from [9.61.1.152] (unknown [9.61.1.152])
+        by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 18 Jul 2023 21:57:02 +0000 (GMT)
+Message-ID: <ac9bff47-8e2f-a6f3-8a59-e92fc7eb1199@linux.ibm.com>
+Date:   Tue, 18 Jul 2023 16:57:01 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] fsi: Use of_property_read_reg() to parse "reg"
+To:     Rob Herring <robh@kernel.org>, Jeremy Kerr <jk@ozlabs.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Alistar Popple <alistair@popple.id.au>
+Cc:     linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20230609183056.1765183-1-robh@kernel.org>
+ <CAL_JsqLTc_9Yujp=wJjjn7P5YwAFZ9fn2SU6ey1q_gY3MFp9TA@mail.gmail.com>
+ <CAL_JsqLNg00Z81cpSAOtwVWnfuQMoy2veBcHUHNby1Qh35mLTw@mail.gmail.com>
+Content-Language: en-US
+From:   Eddie James <eajames@linux.ibm.com>
+In-Reply-To: <CAL_JsqLNg00Z81cpSAOtwVWnfuQMoy2veBcHUHNby1Qh35mLTw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: q9QNyFgEN1FmzDRqApVTlobi5fK-Sq9J
+X-Proofpoint-GUID: q9QNyFgEN1FmzDRqApVTlobi5fK-Sq9J
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-18_17,2023-07-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
+ mlxscore=0 bulkscore=0 mlxlogscore=999 adultscore=0 spamscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307180196
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Jul 2023 16:21:08 -0700 Ivan Babrou wrote:
-> > Just the stacks.  
-> 
-> Here you go: https://lore.kernel.org/netdev/CABWYdi00L+O30Q=Zah28QwZ_5RU-xcxLFUK2Zj08A8MrLk9jzg@mail.gmail.com/
 
-Thanks! I'll follow the discussion there. Just the one remaining
-clarification here:
+On 7/18/23 14:03, Rob Herring wrote:
+> On Fri, Jun 30, 2023 at 3:02 PM Rob Herring <robh@kernel.org> wrote:
+>> On Fri, Jun 9, 2023 at 12:31 PM Rob Herring <robh@kernel.org> wrote:
+>>> Use the recently added of_property_read_reg() helper to get the
+>>> untranslated "reg" address value.
+>>>
+>>> Signed-off-by: Rob Herring <robh@kernel.org>
+>>> ---
+>>>   drivers/fsi/fsi-core.c | 39 +++++++++------------------------------
+>>>   1 file changed, 9 insertions(+), 30 deletions(-)
+>> Ping!
+> Is FSI still maintained or should we just remove it?
 
-> > > Even if I was only interested in one specific reason, I would still
-> > > have to arm the whole tracepoint and route a ton of skbs I'm not
-> > > interested in into my bpf code. This seems like a lot of overhead,
-> > > especially if I'm dropping some attack packets.  
-> >
-> > That's what I meant with my drop vs exception comment. We already have
-> > two tracepoints on the skb free path (free and consume), adding another
-> > shouldn't rise too many eyebrows.  
-> 
-> I'm a bit confused. Previously you said:
-> 
-> > Specifically what I'm wondering is whether we should also have
-> > a separation between policy / "firewall drops" and error / exception
-> > drops. Within the skb drop reason codes, I mean.  
-> 
-> My understanding was that you proposed adding more SKB_DROP_REASON_*,
-> but now you seem to imply that we might want to add another
-> tracepoint. Could you clarify which path you have in mind?
 
-What I had in mind was sorting the drop reasons to be able to easily
-distinguish policy drops from error drops.
+Yes, it is.
 
-> We can add a few reasons that would satisfy my need by covering
-> whatever results into tcp_listendrop() calls today. The problem is:
-> unless we remove some other reasons from kfree_skb, adding more
-> reasons for firewall drops / exceptions wouldn't change the cost at
-> all. We'd still have the same number of calls into the tracepoint and
-> the condition to find "interesting" reasons would be the same:
-> 
-> if (reason == SKB_DROP_REASON_TCP_OVERFLOW_OR_SOMETHING)
-> 
-> It still seems very expensive to consume a firehose of kfree_skb just
-> to find some rare nuggets.
 
-Let me show you a quick mock-up of a diff:
+Reviewed-by: Eddie James <eajames@linux.ibm.com>
 
-diff --git a/include/net/dropreason-core.h b/include/net/dropreason-core.h
-index a2b953b57689..86ee70fcf540 100644
---- a/include/net/dropreason-core.h
-+++ b/include/net/dropreason-core.h
-@@ -5,12 +5,18 @@
- 
- #define DEFINE_DROP_REASON(FN, FNe)	\
- 	FN(NOT_SPECIFIED)		\
-+	/* Policy-driven/intentional drops: */	\
-+	FN(NETFILTER_DROP)		\
-+	FN(BPF_CGROUP_EGRESS)		\
-+	FN(TC_INGRESS)			\
-+	FN(TC_EGRESS)			\
-+	FN(XDP)				\
-+	/* Errors: */			\
- 	FN(NO_SOCKET)			\
- 	FN(PKT_TOO_SMALL)		\
- 	FN(TCP_CSUM)			\
- 	FN(SOCKET_FILTER)		\
- 	FN(UDP_CSUM)			\
--	FN(NETFILTER_DROP)		\
- 	FN(OTHERHOST)			\
- 	FN(IP_CSUM)			\
- 	FN(IP_INHDR)			\
-@@ -41,17 +47,13 @@
- 	FN(TCP_OFO_QUEUE_PRUNE)		\
- 	FN(TCP_OFO_DROP)		\
- 	FN(IP_OUTNOROUTES)		\
--	FN(BPF_CGROUP_EGRESS)		\
- 	FN(IPV6DISABLED)		\
- 	FN(NEIGH_CREATEFAIL)		\
- 	FN(NEIGH_FAILED)		\
- 	FN(NEIGH_QUEUEFULL)		\
- 	FN(NEIGH_DEAD)			\
--	FN(TC_EGRESS)			\
- 	FN(QDISC_DROP)			\
- 	FN(CPU_BACKLOG)			\
--	FN(XDP)				\
--	FN(TC_INGRESS)			\
- 	FN(UNHANDLED_PROTO)		\
- 	FN(SKB_CSUM)			\
- 	FN(SKB_GSO_SEG)			\
-@@ -80,6 +82,8 @@
- 	FN(IPV6_NDISC_NS_OTHERHOST)	\
- 	FNe(MAX)
- 
-+#define	__SKB_POLICY_DROP_END	SKB_DROP_REASON_NO_SOCKET
-+
- /**
-  * enum skb_drop_reason - the reasons of skb drops
-  *
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 6c5915efbc17..a36c498eb693 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -1031,6 +1031,8 @@ bool __kfree_skb_reason(struct sk_buff *skb, enum skb_drop_reason reason)
- 
- 	if (reason == SKB_CONSUMED)
- 		trace_consume_skb(skb, __builtin_return_address(0));
-+	else if (reason < __SKB_POLICY_DROP_END)
-+		trace_drop_skb(skb, __builtin_return_address(0), reason);
- 	else
- 		trace_kfree_skb(skb, __builtin_return_address(0), reason);
- 	return true;
+
+>
+>>> diff --git a/drivers/fsi/fsi-core.c b/drivers/fsi/fsi-core.c
+>>> index 0b927c9f4267..19c4d5b3bde9 100644
+>>> --- a/drivers/fsi/fsi-core.c
+>>> +++ b/drivers/fsi/fsi-core.c
+>>> @@ -16,6 +16,7 @@
+>>>   #include <linux/idr.h>
+>>>   #include <linux/module.h>
+>>>   #include <linux/of.h>
+>>> +#include <linux/of_address.h>
+>>>   #include <linux/slab.h>
+>>>   #include <linux/bitops.h>
+>>>   #include <linux/cdev.h>
+>>> @@ -415,28 +416,18 @@ EXPORT_SYMBOL_GPL(fsi_slave_release_range);
+>>>   static bool fsi_device_node_matches(struct device *dev, struct device_node *np,
+>>>                  uint32_t addr, uint32_t size)
+>>>   {
+>>> -       unsigned int len, na, ns;
+>>> -       const __be32 *prop;
+>>> -       uint32_t psize;
+>>> +       u64 paddr, psize;
+>>>
+>>> -       na = of_n_addr_cells(np);
+>>> -       ns = of_n_size_cells(np);
+>>> -
+>>> -       if (na != 1 || ns != 1)
+>>> -               return false;
+>>> -
+>>> -       prop = of_get_property(np, "reg", &len);
+>>> -       if (!prop || len != 8)
+>>> +       if (of_property_read_reg(np, 0, &paddr, &psize))
+>>>                  return false;
+>>>
+>>> -       if (of_read_number(prop, 1) != addr)
+>>> +       if (paddr != addr)
+>>>                  return false;
+>>>
+>>> -       psize = of_read_number(prop + 1, 1);
+>>>          if (psize != size) {
+>>>                  dev_warn(dev,
+>>> -                       "node %s matches probed address, but not size (got 0x%x, expected 0x%x)",
+>>> -                       of_node_full_name(np), psize, size);
+>>> +                       "node %pOF matches probed address, but not size (got 0x%llx, expected 0x%x)",
+>>> +                       np, psize, size);
+>>>          }
+>>>
+>>>          return true;
+>>> @@ -653,24 +644,12 @@ static void fsi_slave_release(struct device *dev)
+>>>   static bool fsi_slave_node_matches(struct device_node *np,
+>>>                  int link, uint8_t id)
+>>>   {
+>>> -       unsigned int len, na, ns;
+>>> -       const __be32 *prop;
+>>> -
+>>> -       na = of_n_addr_cells(np);
+>>> -       ns = of_n_size_cells(np);
+>>> -
+>>> -       /* Ensure we have the correct format for addresses and sizes in
+>>> -        * reg properties
+>>> -        */
+>>> -       if (na != 2 || ns != 0)
+>>> -               return false;
+>>> +       u64 addr;
+>>>
+>>> -       prop = of_get_property(np, "reg", &len);
+>>> -       if (!prop || len != 8)
+>>> +       if (of_property_read_reg(np, 0, &addr, NULL))
+>>>                  return false;
+>>>
+>>> -       return (of_read_number(prop, 1) == link) &&
+>>> -               (of_read_number(prop + 1, 1) == id);
+>>> +       return addr == (((u64)link << 32) | id);
+>>>   }
+>>>
+>>>   /* Find a matching node for the slave at (link, id). Returns NULL if none
+>>> --
+>>> 2.39.2
+>>>
