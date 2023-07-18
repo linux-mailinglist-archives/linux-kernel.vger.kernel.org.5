@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37657758571
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 21:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A78758578
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 21:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbjGRTY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 15:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51774 "EHLO
+        id S230227AbjGRTZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 15:25:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjGRTY5 (ORCPT
+        with ESMTP id S229749AbjGRTZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 15:24:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADAF198D;
-        Tue, 18 Jul 2023 12:24:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9FDB0616B9;
-        Tue, 18 Jul 2023 19:24:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9E60C433C7;
-        Tue, 18 Jul 2023 19:24:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689708293;
-        bh=qdAhpK1XWeLAN71lc0Y9kyyM+NLhNWrfXG4CFOZK0OA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=n6TT8nZLi9Pu6qYPkbR79iGdZf/xTelKI4ID1ZvYs+ryvcky461erRgFpveupe0bW
-         vQlmqTc2yT6Wv5QvPjbNK6zf6FKtcfgdb1cnVzLFFqhaakQe/2YIlYuhSlmDktNMU5
-         D9jLWi+YFgLffoeWTZiOlduz+2+zJIz9TR6A8GLxl6CIqv1GdV9Wf0pwGhYDNMpckK
-         6ffhu3AN24Jo1+5iUtdo2a81G01f6QOx/E8hdQhHwIeBWoTOXNZFPheEvoeDedkEgT
-         i8eLcdxr2B//lGlpmdc9D++BTG1+NbR7HM0530JhdzFOabGgVfNfZTIRiphDD1VOOR
-         V/79lOQ+fkd2g==
-Date:   Tue, 18 Jul 2023 14:24:50 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Limonciello, Mario" <mario.limonciello@amd.com>
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-pci@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org, Vidya Sagar <vidyas@nvidia.com>,
-        Michael Bottini <michael.a.bottini@linux.intel.com>,
-        intel-wired-lan@osuosl.org, bhelgaas@google.com,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [Intel-wired-lan] [PATCH] PCI/ASPM: Enable ASPM on external PCIe
- devices
-Message-ID: <20230718192450.GA489825@bhelgaas>
+        Tue, 18 Jul 2023 15:25:09 -0400
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0F51D19AF;
+        Tue, 18 Jul 2023 12:25:06 -0700 (PDT)
+X-IronPort-AV: E=Sophos;i="6.01,214,1684767600"; 
+   d="scan'208";a="169810329"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie5.idc.renesas.com with ESMTP; 19 Jul 2023 04:25:05 +0900
+Received: from mulinux.home (unknown [10.226.93.62])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id CD2E44067F07;
+        Wed, 19 Jul 2023 04:25:02 +0900 (JST)
+From:   Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Biju Das <biju.das@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        linux-renesas-soc@vger.kernel.org
+Subject: [PATCH v2 1/4] spi: rzv2m-csi: Squash timing settings into one statement
+Date:   Tue, 18 Jul 2023 20:24:50 +0100
+Message-Id: <20230718192453.543549-2-fabrizio.castro.jz@renesas.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230718192453.543549-1-fabrizio.castro.jz@renesas.com>
+References: <20230718192453.543549-1-fabrizio.castro.jz@renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <dc44cb41-b306-f18a-c9fc-3d956777f722@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 11:51:32AM -0500, Limonciello, Mario wrote:
-> On 7/16/2023 10:34 PM, Kai-Heng Feng wrote:
-> > On Sat, Jul 15, 2023 at 12:37 AM Mario Limonciello <mario.limonciello@amd.com> wrote:
-> > > On 7/14/23 03:17, Kai-Heng Feng wrote:
+Register CLKSEL hosts the configuration for both clock polarity
+and data phase, and both values can be set in one write operation.
 
-> > > > The main point is OS should stick to the BIOS default, which is the
-> > > > only ASPM setting tested before putting hardware to the market.
-> > > 
-> > > Unfortunately; I don't think you can jump to this conclusion.
+Squash the clock polarity and data phase register writes into
+one statement, for efficiency.
 
-I think using the BIOS default as a limit is problematic.  I think it
-would be perfectly reasonable for a BIOS to (a) configure only devices
-it needs for console and boot, leaving others at power-on defaults,
-and (b) configure devices in the safest configuration possible on the
-assumption that an OS can decide the runtime policy itself.
+Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+---
 
-Obviously I'm not a BIOS writer (though I sure wish I could talk to
-some!), so maybe these are bad assumptions.
+v2: No change.
 
-> > > A big difference in the Windows world to Linux world is that OEMs ship
-> > > with a factory Windows image that may set policies like this.  OEM
-> > > "platform" drivers can set registry keys too.
+ drivers/spi/spi-rzv2m-csi.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-I suppose this means that the OEM image contains drivers that aren't
-in the Microsoft media, and those drivers may set constraints on ASPM
-usage?
+diff --git a/drivers/spi/spi-rzv2m-csi.c b/drivers/spi/spi-rzv2m-csi.c
+index 038f1486b7d7..faf5898bc3e0 100644
+--- a/drivers/spi/spi-rzv2m-csi.c
++++ b/drivers/spi/spi-rzv2m-csi.c
+@@ -38,6 +38,7 @@
+ /* CSI_CLKSEL */
+ #define CSI_CLKSEL_CKP		BIT(17)
+ #define CSI_CLKSEL_DAP		BIT(16)
++#define CSI_CLKSEL_MODE		(CSI_CLKSEL_CKP|CSI_CLKSEL_DAP)
+ #define CSI_CLKSEL_SLAVE	BIT(15)
+ #define CSI_CLKSEL_CKS		GENMASK(14, 1)
+ 
+@@ -408,10 +409,8 @@ static int rzv2m_csi_setup(struct spi_device *spi)
+ 	writel(CSI_MODE_SETUP, csi->base + CSI_MODE);
+ 
+ 	/* Setup clock polarity and phase timing */
+-	rzv2m_csi_reg_write_bit(csi, CSI_CLKSEL, CSI_CLKSEL_CKP,
+-				!(spi->mode & SPI_CPOL));
+-	rzv2m_csi_reg_write_bit(csi, CSI_CLKSEL, CSI_CLKSEL_DAP,
+-				!(spi->mode & SPI_CPHA));
++	rzv2m_csi_reg_write_bit(csi, CSI_CLKSEL, CSI_CLKSEL_MODE,
++				~spi->mode & SPI_MODE_X_MASK);
+ 
+ 	/* Setup serial data order */
+ 	rzv2m_csi_reg_write_bit(csi, CSI_MODE, CSI_MODE_DIR,
+-- 
+2.34.1
 
-If you boot the Microsoft media that lacks those drivers, maybe it
-doesn't bother to configure ASPM for those devices?  Linux currently
-configures ASPM for everything at enumeration-time, so we do it even
-if there's no driver.
-
-> > I wonder if there's any particular modification should be improved for
-> > this patch?
-> 
-> Knowing this information I personally think the original patch that started
-> this thread makes a lot of sense.
-
-I'm still opposed to using dev_is_removable() as a predicate because I
-don't think it has any technical connection to ASPM configuration.
-
-Bjorn
