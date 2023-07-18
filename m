@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26952758814
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E39C2758815
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbjGRWCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 18:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
+        id S229532AbjGRWCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 18:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231441AbjGRWCF (ORCPT
+        with ESMTP id S231442AbjGRWCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 18 Jul 2023 18:02:05 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC532100
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:01:31 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-6378cec43ddso32756976d6.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:01:31 -0700 (PDT)
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7990210E
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:01:32 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-403ea0a50f7so20957141cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:01:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1689717690; x=1692309690;
+        d=paul-moore.com; s=google; t=1689717691; x=1692309691;
         h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=Q4Z5WjiQYpjKKIHMmiUkMvLecKSdsud95ripsYJYW2c=;
-        b=QBsSyIZKaJE90Dtf17zQLs/VEtM8h6oEKDB9Lvpz8F68B87gaBMsnAxtqdmOiUpgSX
-         XnAvKCwxtxQgTdBDWlHf6SkmpaS3wc06CUFz2SbN1DmmDUDHh16L/21NreuiMdmlNLiO
-         M+mNXiI7wk/4yCqK59a/88lOmmQF+QCCAIl3g4N+nsjQxg4LW5p4kJ2QgMyW+TGcIF9j
-         WxxagWvidCFM0xSAM/5alVabK3VH/PAfXv9iiZYCvlHvFbsm9Z39Fgj3NwnAL6oKVzyA
-         NKTTWcVZ9GM8ywDhMcsBHQL6+otdp5oVOjaJLr0mlMx/sK83qlSw23cZJnGI3DSbCrbg
-         fZUQ==
+        bh=iB17Jv7PgvBBPUCqrI904aat99RgLB9MM/LvaZNwOgk=;
+        b=MYcK6JaYHAX0r3neYL0Kkn06nMaHO/DZdTsjDcFU5+/rIOVbP2RLLNOVKkNKcIId9k
+         0F8OUwyTcZ9RVNrKw62Ckw5uW6OOC4xtqFFOkP5WTcr6P5jKDbj9z8NuLoRj+1LTTZbA
+         vdDVdi8gBhZZ5io6cRq4WTX+telf2TWQBRxUN4axhhjryBAdW2eXv9Dx+4cJlewsHFYw
+         8X9JNKA4yBk1GWSfR/s8aEyTYjAaNlxO31XVCzuS0Ssjr+B9m9rKFngAS5N9Ms3cvEYe
+         VRa3GNPnolJoBP1E7AGE4WZB9OPKymYpwGneIWv+JnODGa67ks9gIAbQx/N6m7VVyhan
+         YZIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689717690; x=1692309690;
+        d=1e100.net; s=20221208; t=1689717691; x=1692309691;
         h=in-reply-to:references:subject:cc:to:from:message-id:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q4Z5WjiQYpjKKIHMmiUkMvLecKSdsud95ripsYJYW2c=;
-        b=j3eX5hBwVOMGxY7J7T7LCFfVcf9z8FZFYphAeqanCoqGJL1aE9n409Sc1EkJ7FFhil
-         cIH/MOoCDcbqeMfXvsKx2zZj3Bi7P6hXQcw1xPV1PW+P09P97Kpu9NanUuPGVh0CeuSq
-         5fkpEA4nSJM6AjvGAdV97z2t0hWxXG6eZTXf5V8/roNQ5ksafejN8df7qWG7T6Erkd2t
-         JGrAsS/EyXcWrn1nT+P/mjKMXLw1P1KMFsAPdU6pc2ZEIYY0+gWbKU//Rj6lRhB4a7Bd
-         jr7sGH6zUXtAVBDYcgszONti8NzffOo5b2YadO7G+v01C5G0G6nIgEoPdV3TGtn1cFEi
-         tU2Q==
-X-Gm-Message-State: ABy/qLbAvDcjfLDU9L0dYtafQFelhJHdf0fBPTxotap57bkHNMaf2R36
-        FFbKANVQZogUMv6OS5a6/eAl
-X-Google-Smtp-Source: APBJJlER8N9WfHQ6ncGSyNkwD8mvrvpnlHeOqVt86lvZVSCe8wYjB7PdwEBMyjUEvGsdm8uKxWw9rg==
-X-Received: by 2002:a0c:f54e:0:b0:636:277f:4165 with SMTP id p14-20020a0cf54e000000b00636277f4165mr349296qvm.21.1689717690268;
-        Tue, 18 Jul 2023 15:01:30 -0700 (PDT)
+        bh=iB17Jv7PgvBBPUCqrI904aat99RgLB9MM/LvaZNwOgk=;
+        b=FSHxyPH6DHqTKgQ4qSwCHxrzHYMcna3KE5hGw1npcf9A4PG9iAaVJyaLReDgMV8Vr+
+         9dWk+MFFzGeeS/vY9bVb9EnYjIgUSRqFfeNtYsUEvdcqUiUjGNGg1IF2aIT/05LJJRpZ
+         0Hqifv2IcyyxVvQxPt23+rIUxE3+2PvqETSI+oZi9LoHmfX9/RxQfsdpJfIsxxJBnqKV
+         55D283DENTRuvtBqcAjICtOl5NVraEz8nKS+rRdfkmeDp2e5drzzIx1AJZG8nl/LJ5dI
+         wXObP1tM/e1GvJFD5eFEQon/4Z6lwvmAZeZjq17VQwV9oktwuwDw8I8+foO0pOxWuQ7V
+         l6fw==
+X-Gm-Message-State: ABy/qLabpop0/9TpidXuVqbC5//or+XQl3Bi1PWte9I7SB8V684GUF23
+        iH7HQQtGyvyC8wQFgrHNaSgEuuEb3vTC8v8cJQ==
+X-Google-Smtp-Source: APBJJlESDXO0qHMTm9i0eA4VEKzte/GwD08DCTjWQ1XgIDusoRm5StlwTyCbsLFfK/MBtka1mTVPzA==
+X-Received: by 2002:a05:622a:138d:b0:403:6fe6:3160 with SMTP id o13-20020a05622a138d00b004036fe63160mr19894246qtk.61.1689717691201;
+        Tue, 18 Jul 2023 15:01:31 -0700 (PDT)
 Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id s12-20020a0ce30c000000b0062ffcda34c6sm1005353qvl.137.2023.07.18.15.01.29
+        by smtp.gmail.com with ESMTPSA id bw15-20020a05622a098f00b00403fa130c60sm687317qtb.55.2023.07.18.15.01.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 15:01:29 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 18:01:29 -0400
-Message-ID: <ee7408412dd3e1725ae9ef0eeb26e4a4.paul@paul-moore.com>
+        Tue, 18 Jul 2023 15:01:30 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 18:01:30 -0400
+Message-ID: <43e37428022b198986e232da34c65e26.paul@paul-moore.com>
 From:   Paul Moore <paul@paul-moore.com>
 To:     =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>,
         selinux@vger.kernel.org
 Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
         Eric Paris <eparis@parisplace.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Xiu Jianfeng <xiujianfeng@huaweicloud.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 19/20] selinux: status: avoid implicit conversions  regarding enforcing status
-References: <20230706132337.15924-19-cgzones@googlemail.com>
-In-Reply-To: <20230706132337.15924-19-cgzones@googlemail.com>
+Subject: Re: [PATCH RFC 20/20] selinux: selinuxfs: avoid implicit conversions
+References: <20230706132337.15924-20-cgzones@googlemail.com>
+In-Reply-To: <20230706132337.15924-20-cgzones@googlemail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PP_MIME_FAKE_ASCII_TEXT,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -73,19 +71,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Jul  6, 2023 =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com> wrote:
 > 
-> Use the type bool as parameter type in
-> selinux_status_update_setenforce().  The related function
-> enforcing_enabled() returns the type bool, while the struct
-> selinux_kernel_status member enforcing uses an u32.
+> Use unsigned loop counters where the upper bound is of unsigned
+> type.
 > 
 > Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 > ---
->  security/selinux/include/security.h | 2 +-
->  security/selinux/selinuxfs.c        | 7 ++++---
->  security/selinux/status.c           | 4 ++--
->  3 files changed, 7 insertions(+), 6 deletions(-)
+>  security/selinux/selinuxfs.c | 14 +++++---------
+>  1 file changed, 5 insertions(+), 9 deletions(-)
 
-Merged into selinux/next, thanks.
+More loop iterator declarations inside the loop, see my previous
+comments.
 
 --
 paul-moore.com
