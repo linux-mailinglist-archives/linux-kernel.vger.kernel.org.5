@@ -2,278 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BCB1757293
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B75757295
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbjGRDzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 23:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46498 "EHLO
+        id S231154AbjGRD5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 23:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230096AbjGRDys (ORCPT
+        with ESMTP id S230096AbjGRD5K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 23:54:48 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2048.outbound.protection.outlook.com [40.107.93.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF3A137;
-        Mon, 17 Jul 2023 20:54:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZZcebAYNkR3hFLiCIo+vbn/098RGslg0TJG/cKtNrU50blUD9cWmBra+t+6dlPHux1ljzgCSd2jx5rtcUQZI9j1WncTmEkAOPNPFYHtQLL9KTaHGJSgpUhJ3Gy5nR+CXhw4sfcj6T+VgWKwcGwL5732Tj+x7Jt8Fe/rDY4g+xwaoFqE+SvCww8VfomJ8JKdaGCaqXOLCANxizgM4r7GsGpaZDQjhOpbPz6wLISqpa/CWe8b3l8OEIi68F0Yzlc2Qx25yxJdxAAGn/TFN3TwO/5MkxnsIfYuuD6jypzF9DPd33yHFK0cRNokfWpYCsXcwWFwq0cMPWrT3FnfSLFGvGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fFnSBUl6vj+O52WxjLAZGlwprE3WebCqsDrmYeixGKU=;
- b=IUvN2pi4RbQXcJ0EBiyZDw7wbapSLJ2nMLnduDX+omO4aKOzFt2LavAA7ZnHNvJ/axUOxu80CpJmLj6TJCOmk2+NUUiK11OVWxBRJFfkqbO6lnwzYcGf94Vz9GSR+sm5bLrit5VavpNVrFQz4nRwbk7y9Weu5+fQHnSjxtBHodTGt46Ha0Tgi4wP6N09VtPh0iBI3OTvM7IRF6xU8vMhgKkdWz1NLGQoFE0Luu5Cxbg5AcTzOoPjpZtcQnCuK7/PjJdUnf59FbuImtUwrKrrU2pVa3FE80p6yfFapIbNG+2Tv1dRnqHaCuGtugnKfcTsbrGev9g8t/ZkVDoGnUGlZw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fFnSBUl6vj+O52WxjLAZGlwprE3WebCqsDrmYeixGKU=;
- b=GqhUc9drPtX7z+l8vCD9rF35KpXOZscR1jMb60riq5ZdTXnbeVtyz7RpdlW/adIDnEUi68kwrWaGpB2BoNWKZ4UEWoGo34IQ4OtrIXD/WK8Rq9MLWa2Srr0z5G7vM1WmO4UYFc6oDR75ThWVxgRLGZvKLb60+q1vOHGEFruCjX4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=synaptics.com;
-Received: from MN2PR03MB5199.namprd03.prod.outlook.com (2603:10b6:208:1e9::11)
- by SA3PR03MB7491.namprd03.prod.outlook.com (2603:10b6:806:3a0::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Tue, 18 Jul
- 2023 03:54:44 +0000
-Received: from MN2PR03MB5199.namprd03.prod.outlook.com
- ([fe80::4abf:734:8ae6:a75c]) by MN2PR03MB5199.namprd03.prod.outlook.com
- ([fe80::4abf:734:8ae6:a75c%4]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
- 03:54:43 +0000
-Message-ID: <96b044b3-a2bb-2044-7f22-f6eefaab2d26@synaptics.com>
-Date:   Tue, 18 Jul 2023 11:53:25 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 2/2] media: v4l2-mem2mem: add a list for buf used by hw
-Content-Language: en-GB
-To:     Nicolas Dufresne <nicolas@ndufresne.ca>
-Cc:     linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
-        ayaka@soulik.info, hans.verkuil@cisco.com, mchehab@kernel.org,
-        laurent.pinchart@ideasonboard.com, hiroh@chromium.org,
-        hverkuil@xs4all.nl, linux-kernel@vger.kernel.org
-References: <20230704040044.681850-1-randy.li@synaptics.com>
- <20230704040044.681850-3-randy.li@synaptics.com>
- <20230712093301.nkj2vok2x7esdhb3@chromium.org>
- <f8f766c0166c502e29b06cda71f6531e44a91a17.camel@ndufresne.ca>
-From:   Hsia-Jun Li <Randy.Li@synaptics.com>
-In-Reply-To: <f8f766c0166c502e29b06cda71f6531e44a91a17.camel@ndufresne.ca>
+        Mon, 17 Jul 2023 23:57:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC9118C
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 20:57:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EA97561388
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 03:57:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63B2DC433C7;
+        Tue, 18 Jul 2023 03:57:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689652628;
+        bh=NYrYHBhUhSrGSV8daixGuOC87c6t5hd72Ghpf6rRueo=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=LU4U46ReOyGBloy747KuT7hUNDtCzoXoXxV0OWSqVQ3DIPuvIlO8fv5JOsx65MscZ
+         D4cb3MIkWuLC2rLuUXKMd8bvmxqTCQAch8VmtZDxp8p8yNaFVOb0jrN9XxmHnDIDd8
+         2q63OL7dbvCTE7kmRUQ5HEgqA7CU3FJBmmz5wj4Uuy8E6Z+Ei6H4hZxxPCGUUtMdFF
+         97PlVbNjshZs8swggXUExkhebz3W2vrY87Iz7PsmU9CDFWD66fAIqGDcJk2F2uH7Y2
+         pM0ZpXXVXpYAJ8OXTBQzsg4Sd4jca3BTJwpcULdgKAFUe8j/uKrzrvQUKa40gEmi0d
+         /Hgnq4q2ddimQ==
+Message-ID: <e84a88a6-ff2f-1c52-ffb7-8e34a14590b5@kernel.org>
+Date:   Tue, 18 Jul 2023 11:57:05 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: do not issue small discard commands
+ during checkpoint
+Content-Language: en-US
+From:   Chao Yu <chao@kernel.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <20230613203947.2745943-1-jaegeuk@kernel.org>
+ <ZInmkgjDnAUD5Nk0@google.com>
+ <50d5fa8c-4fe9-8a03-be78-0b5383e55b62@kernel.org>
+ <ZKP6EJ5dZ4f4wScp@google.com>
+ <65143701-4c19-ab66-1500-abd1162639cd@kernel.org>
+ <ZKWovWZDiHjMavtB@google.com>
+ <cadfb8d7-f5d0-a3ec-cafb-a0c06ad7d290@kernel.org>
+ <ZK2FT9CUjxXvQ2K5@google.com>
+ <330c96f7-fbad-dd17-6368-f1378b3b5375@kernel.org>
+ <ZK7M6EkLkV8UbqUl@google.com>
+ <87acf602-1587-0615-909d-6e60c66c3cda@kernel.org>
+In-Reply-To: <87acf602-1587-0615-909d-6e60c66c3cda@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR13CA0111.namprd13.prod.outlook.com
- (2603:10b6:a03:2c5::26) To MN2PR03MB5199.namprd03.prod.outlook.com
- (2603:10b6:208:1e9::11)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR03MB5199:EE_|SA3PR03MB7491:EE_
-X-MS-Office365-Filtering-Correlation-Id: ee41be7d-9379-4e59-5538-08db8742b7da
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QqnqaXrUuk7I0GEuhIIv18M/pT/n5jkx5HUCvg9hiAGhLKJmmhquUcdIflB33SKe0GIbPikwVov4PKFiiPHJemJzhSOsFoJrexVzD2w9Mqt+GPGe7sgH+MkyVN2gkEYy7Sbbr80v877GfBmL9tIuUtx/+45miFvPDhIB6PBOUw5SzLp8cIK+RAcQ37mJclgyUqncEwpzhx7adhVIZcDjVCHf2KyTEuW/6Nq3tgQpGfm0TAMaKREo424tF1hyghwctGYI2oqL7WLHjlt0dz+hfgNtepAhCtS4MfZkjKQDJlTIV/MnjqbsnDPkCcJ+H7mUyeuWYw73F8eyTG8UO85luuW291hrf8JRMLU4rne3z55NX1D0EwORJVxeaqQZn8z0dyjU2rkRFDuXZ4nP9q+u0+38g7djz2AYNIixvhg9HBEtOWWLa/bw51FiTfFIiw0rMo4eYSIbfFj5r7Bo/s+wHPO4BjDg8MH8tx/pZrFx4YL8MalHJkKwwVMeoP6ngu9aGWfhJ/PZPttZhU09ickXx94Fr0WBgyfnWCtag1SwUeUS7vukHZXbbP0i7NEk8qSVtrxWE+HGh6VrbGDSKBd4oIyaKLkx8UWZ6iGLdklen+29Emtkg4vWpSI/oSWlhs1uo2yjdtt0ApHtzlsDYFvS3axBjspDm8n7g62+kiwFGOnCUSYTrX2wnFFNVt7U5Lwl
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR03MB5199.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(376002)(39860400002)(366004)(396003)(136003)(451199021)(31686004)(66899021)(6486002)(52116002)(6666004)(478600001)(83380400001)(2616005)(31696002)(86362001)(66574015)(2906002)(186003)(6506007)(53546011)(6512007)(26005)(38100700002)(38350700002)(6916009)(66476007)(41300700001)(66946007)(66556008)(4326008)(316002)(7416002)(36756003)(8676002)(5660300002)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MkI2OHlWOVJYaVhubXhhRkI0bWlmZHdweGljSWowL3VWQnpzU3VndUNwZHBQ?=
- =?utf-8?B?SHNrZEg2cjNFbkE4Y21VVVRWM0R5VDh1V2FSL1l3Uko0SGdkbk5LK2srY1Bh?=
- =?utf-8?B?SWw0UE16RXNycVRidTgydU8rczZ4c09NTUtTVzEwUERjVGdBRGJOb2t3MWM5?=
- =?utf-8?B?SW9PWjdaV2luMVplMzA4TW1mMEJXdXZ5RklqR0tGcFBoR28wNFU4NGFSa2tU?=
- =?utf-8?B?MVd0UEsvTGFoQ0tLd0VtRHBVems0a3hPZHViTmFSYkVqVzFmbWozMEN3RXZk?=
- =?utf-8?B?R241MFpkc1h1TEhXM0FVUERqMGFBVWZRQURLVjFNZkJrZURsRnQrYXlCOXdU?=
- =?utf-8?B?aFUzVXZsUEE0N1JqdHVrZnlEUDRmVGhmRmpLUXRjeWF2aW5CZFFkWTBGTlgx?=
- =?utf-8?B?WmFJSjdxM1dPYmoyMHUvRUErd0crNlRKQWpiNC9adCtRd0FDMk9kYnhFMS8x?=
- =?utf-8?B?VUdOTU5EYmZvb3FPOTR5RUVhSUlRb25nZ0o3bHR6VEFHOHBYWERtRkxOTFBM?=
- =?utf-8?B?WE9PZFR4a1hONGVWdU1kb3BSQ083cHhrMGNTc2VYYUxiR1pEVy9NUUh2YVgz?=
- =?utf-8?B?dmVUbDhhZVNKbDk2ZW05RTJUaWljV1NQUUVmRzhtRERHZkREdTdBWEJqVmdH?=
- =?utf-8?B?UlpXQjIvZUhab2Z2R1oyUjIrU21ycWlaZGFoYzlERGlIeld1b01TVUxQRktZ?=
- =?utf-8?B?bDdGS2o3VXhuSDhNbjI5UzBsbnFVTkRraEl6WFFNL0VrTGpJWGpGbXVuekZI?=
- =?utf-8?B?dFZ4OFVyeEREeFNJK3FvUmoyQndjdDBWQjg5aU90MU9kd2F5eE1zemtDUDd2?=
- =?utf-8?B?bDNxVWJib1BNT1NDaGRhQUFENTFUUXNQcDNQSHJIeW42UENFVVRSNHdsOXEv?=
- =?utf-8?B?UTZ0ejc2ejFUUW5GcTNwSEdtYW13a3FlU3Y1ZERkdEpxNVZGOTVJVnJ6WThW?=
- =?utf-8?B?eEZuOXRmY2hqb3NtVTlrL2NGUTU0K05CY3BGWVpVeE1VUEtsRVVUL2o2L3NP?=
- =?utf-8?B?ZHhQZ3ZtYkJYZnY4dkIxcitYODRpWnNQRWxNcy81Mi9ySnJqSEtqUUZveGtx?=
- =?utf-8?B?VzB3cVM0WEw3WWpwSCtVY2Y2dzgvdTFyK3piUXdsU3BRN0dxUkxCdGczM1g5?=
- =?utf-8?B?b3N6V1R2cmhiN0ZRVUdTa2I0MkJSZy9RaFFjTFVkMFhJQm01SjJQQlZWeVhY?=
- =?utf-8?B?V1dYTlhNdS9CbUZZVkM1ZVVoSG5yVnRKc0ZzeTJRZWk0MVZiWHpFSlRLdzFE?=
- =?utf-8?B?TjVadU9XbE9SUE1FS2FYMEVhSDFYODZ4SHlqeWZlRmkxN1UzWUF4ZERESlZP?=
- =?utf-8?B?T3k4cjdHTCtpZ2ZZZEZzOG5wWlJaZFprOG5Fam9WNVloYkUwTFEvSmsrZG5X?=
- =?utf-8?B?TWVEaHE4N0NEaFNYMWtRS2wrWFFFZGNOQ0FSb0JoUGF4NEVESlhEUmk1NG83?=
- =?utf-8?B?eGo2cmhLK1ZLbGI1UWcxUUN1d0FBRlNLUGdUTXIvMDNwSmtwOUxQNWJOY1l4?=
- =?utf-8?B?aDFsVU5ITlNZUjJBM1dteUx6b01PQzZ1UU5ITE03T01ZM3Q1MDNSVGUreGJT?=
- =?utf-8?B?MWFHUEJnK2RSQTVodjZhVVhBS3l6Y3ZEZWoyNGk0b1JwczQxWElKNTJZRW4z?=
- =?utf-8?B?bmtEY291OHdDRXJKQXQzblZ3TzVaejNFNTBhbmora1lkZllLclBha25ETXVH?=
- =?utf-8?B?UkJkZFI5aWlDYkE5MHJsMWRCTG54bzJBalpRUzdwYjg4eDFSamVoa214MENm?=
- =?utf-8?B?U3NlQlhKa0pDeDRVZlhQMVU5VWw5R3VQdnovZWpzVEw2dGRVV3pJbEk5NVVw?=
- =?utf-8?B?Qmc1KzNlNjBmbE1qZW1jU2ZPbDYyNlU3K2FnM1hNbWJGK0s0VUlBcVRkbGwv?=
- =?utf-8?B?MFBmNkNrdmh4c0c5V3pqMDJRdlR1bUM5RlBGbXBaMXUvWFlNZW1jV3B1RWhX?=
- =?utf-8?B?SExKWmNVSG5XQnRrWDN6R1U5M3hvaW5EOU84MVFLZHZjNWhESnRPcHA0eHBy?=
- =?utf-8?B?K3BoQTlDcnRnbVY5MitSZzM0VmhNQTd3T1VSc3Uxb3haT3NSMy9MSHY3NkhM?=
- =?utf-8?B?ZFJqMUZYT3IxdmU4bkR6UlV6Q2p5SmNtUlJiV290VnhuVDgvcDNjSURKU0ZL?=
- =?utf-8?Q?v6zJgdym0pcj7PB1Itcg5m6Wb?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee41be7d-9379-4e59-5538-08db8742b7da
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR03MB5199.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 03:54:42.7138
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uj0HTuUTWGAIReEAT8RW5arohk7b7df3KSBLcn2IcomUx83p6UCjmYjKcRe5myz+9+03I76gPq6SpM/vbPsIaw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR03MB7491
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Comments?
 
-On 7/17/23 22:07, Nicolas Dufresne wrote:
-> CAUTION: Email originated externally, do not click links or open attachments unless you recognize the sender and know the content is safe.
->
->
-> Le mercredi 12 juillet 2023 à 09:33 +0000, Tomasz Figa a écrit :
->> On Tue, Jul 04, 2023 at 12:00:38PM +0800, Hsia-Jun Li wrote:
->>> From: "Hsia-Jun(Randy) Li" <randy.li@synaptics.com>
+On 2023/7/13 9:31, Chao Yu wrote:
+> On 2023/7/12 23:55, Jaegeuk Kim wrote:
+>> On 07/12, Chao Yu wrote:
+>>> On 2023/7/12 0:37, Jaegeuk Kim wrote:
+>>>> On 07/06, Chao Yu wrote:
+>>>>> On 2023/7/6 1:30, Jaegeuk Kim wrote:
+>>>>>> On 07/04, Chao Yu wrote:
+>>>>>>> On 2023/7/4 18:53, Jaegeuk Kim wrote:
+>>>>>>>> On 07/03, Chao Yu wrote:
+>>>>>>>>> On 2023/6/15 0:10, Jaegeuk Kim wrote:
+>>>>>>>>>> If there're huge # of small discards, this will increase checkpoint latency
+>>>>>>>>>> insanely. Let's issue small discards only by trim.
+>>>>>>>>>>
+>>>>>>>>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>>>>>>>>>> ---
+>>>>>>>>>>
+>>>>>>>>>>       Change log from v1:
+>>>>>>>>>>        - move the skip logic to avoid dangling objects
+>>>>>>>>>>
+>>>>>>>>>>       fs/f2fs/segment.c | 2 +-
+>>>>>>>>>>       1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>>>>>
+>>>>>>>>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>>>>>>>>>> index 8c7af8b4fc47..0457d620011f 100644
+>>>>>>>>>> --- a/fs/f2fs/segment.c
+>>>>>>>>>> +++ b/fs/f2fs/segment.c
+>>>>>>>>>> @@ -2193,7 +2193,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+>>>>>>>>>>                   len = next_pos - cur_pos;
+>>>>>>>>>>                   if (f2fs_sb_has_blkzoned(sbi) ||
+>>>>>>>>>> -                (force && len < cpc->trim_minlen))
+>>>>>>>>>> +                    !force || len < cpc->trim_minlen)
+>>>>>>>>>>                       goto skip;
+>>>>>>>>>
+>>>>>>>>> Sorry for late reply.
+>>>>>>>>>
+>>>>>>>>> We have a configuration for such case, what do you think of setting
+>>>>>>>>> max_small_discards to zero? otherwise, w/ above change, max_small_discards
+>>>>>>>>> logic may be broken?
+>>>>>>>>>
+>>>>>>>>> What:           /sys/fs/f2fs/<disk>/max_small_discards
+>>>>>>>>> Date:           November 2013
+>>>>>>>>> Contact:        "Jaegeuk Kim" <jaegeuk.kim@samsung.com>
+>>>>>>>>> Description:    Controls the issue rate of discard commands that consist of small
+>>>>>>>>>                     blocks less than 2MB. The candidates to be discarded are cached until
+>>>>>>>>>                     checkpoint is triggered, and issued during the checkpoint.
+>>>>>>>>>                     By default, it is disabled with 0.
+>>>>>>>>>
+>>>>>>>>> Or, if we prefer to disable small_discards by default, what about below change:
+>>>>>>>>
+>>>>>>>> I think small_discards is fine, but need to avoid long checkpoint latency only.
+>>>>>>>
+>>>>>>> I didn't get you, do you mean we can still issue small discard by
+>>>>>>> fstrim, so small_discards functionality is fine?
+>>>>>>
+>>>>>> You got the point.
+>>>>>
+>>>>> Well, actually, what I mean is max_small_discards sysfs entry's functionality
+>>>>> is broken. Now, the entry can not be used to control number of small discards
+>>>>> committed by checkpoint.
+>>>>
+>>>> Could you descrbie this problem first?
 >>>
->>> Many drivers have to create its own buf_struct for a
->>> vb2_queue to track such a state. Also driver has to
->>> iterate over rdy_queue every times to find out a buffer
->>> which is not sent to hardware(or firmware), this new
->>> list just offers the driver a place to store the buffer
->>> that hardware(firmware) has acknowledged.
+>>> Oh, alright, actually, I've described this problem literally, but maybe it's not
+>>> clear, let me give some examples as below:
 >>>
->>> One important advance about this list, it doesn't like
->>> rdy_queue which both bottom half of the user calling
->>> could operate it, while the v4l2 worker would as well.
->>> The v4l2 core could only operate this queue when its
->>> v4l2_context is not running, the driver would only
->>> access this new hw_queue in its own worker.
->> Could you describe in what case such a list would be useful for a
->> mem2mem driver?
-> Today all driver must track buffers that are "owned by the hardware". This is a
-> concept dictated by the m2m framework and enforced through the ACTIVE flag.
-
-I think that flag is confusing, the m2m framework would only set this 
-flag when a buffer is enqueue into v4l2 (__enqueue_in_driver()).
-
-The application can't know whether the driver(or hardware) would still 
-use it when that buffer is dequeued(__vb2_dqbuf() would override the 
-state here).
-
-I was trying to suggest a flag for the new DELETE_BUF ioctl() or it 
-could delete a buffer which the hardware could still use in the future, 
-if we are not in the case for non-secure stateless codec.
-
-> All
-> buffers from this list must be mark as done/error/queued after streamoff of the
-> respective queue in order to acknowledge that they are no longer in use by the
-> HW. Not doing so will warn:
->
->    videobuf2_common: driver bug: stop_streaming operation is leaving buf ...
->
-> Though, there is no queue to easily iterate them. All driver endup having their
-> own queue, or just leaving the buffers in the rdy_queue (which isn't better).
->
-> Nicolas
->>> Signed-off-by: Hsia-Jun(Randy) Li <randy.li@synaptics.com>
->>> ---
->>>   drivers/media/v4l2-core/v4l2-mem2mem.c | 25 +++++++++++++++++--------
->>>   include/media/v4l2-mem2mem.h           | 10 +++++++++-
->>>   2 files changed, 26 insertions(+), 9 deletions(-)
+>>> echo 0 > /sys/fs/f2fs/vdb/max_small_discards
+>>> xfs_io -f /mnt/f2fs/file -c "pwrite 0 2m" -c "fsync"
+>>> xfs_io /mnt/f2fs/file -c "fpunch 0 4k"
+>>> sync
+>>> cat /proc/fs/f2fs/vdb/discard_plist_info |head -2
 >>>
->>> diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
->>> index c771aba42015..b4151147d5bd 100644
->>> --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
->>> +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
->>> @@ -321,15 +321,21 @@ static void __v4l2_m2m_try_queue(struct v4l2_m2m_dev *m2m_dev,
->>>              goto job_unlock;
->>>      }
+>>> echo 100 > /sys/fs/f2fs/vdb/max_small_discards
+>>> rm /mnt/f2fs/file
+>>> xfs_io -f /mnt/f2fs/file -c "pwrite 0 2m" -c "fsync"
+>>> xfs_io /mnt/f2fs/file -c "fpunch 0 4k"
+>>> sync
+>>> cat /proc/fs/f2fs/vdb/discard_plist_info |head -2
 >>>
->>> -   src = v4l2_m2m_next_src_buf(m2m_ctx);
->>> -   dst = v4l2_m2m_next_dst_buf(m2m_ctx);
->>> -   if (!src && !m2m_ctx->out_q_ctx.buffered) {
->>> -           dprintk("No input buffers available\n");
->>> -           goto job_unlock;
->>> +   if (list_empty(&m2m_ctx->out_q_ctx.hw_queue)) {
->>> +           src = v4l2_m2m_next_src_buf(m2m_ctx);
->>> +
->>> +           if (!src && !m2m_ctx->out_q_ctx.buffered) {
->>> +                   dprintk("No input buffers available\n");
->>> +                   goto job_unlock;
->>> +           }
->>>      }
->>> -   if (!dst && !m2m_ctx->cap_q_ctx.buffered) {
->>> -           dprintk("No output buffers available\n");
->>> -           goto job_unlock;
->>> +
->>> +   if (list_empty(&m2m_ctx->cap_q_ctx.hw_queue)) {
->>> +           dst = v4l2_m2m_next_dst_buf(m2m_ctx);
->>> +           if (!dst && !m2m_ctx->cap_q_ctx.buffered) {
->>> +                   dprintk("No output buffers available\n");
->>> +                   goto job_unlock;
->>> +           }
->>>      }
->> src and dst would be referenced unitialized below if neither of the
->> above ifs hits...
+>>> Before the patch:
+>>>
+>>> Discard pend list(Show diacrd_cmd count on each entry, .:not exist):
+>>>    0         .       .       .       .       .       .       .       .
+>>>
+>>> Discard pend list(Show diacrd_cmd count on each entry, .:not exist):
+>>>    0         3       1       .       .       .       .       .       .
+>>>
+>>> After the patch:
+>>> Discard pend list(Show diacrd_cmd count on each entry, .:not exist):
+>>>    0         .       .       .       .       .       .       .       .
+>>>
+>>> Discard pend list(Show diacrd_cmd count on each entry, .:not exist):
+>>>    0         .       .       .       .       .       .       .       .
+>>>
+>>> So, now max_small_discards can not be used to control small discard number
+>>> cached by checkpoint.
+> 
+> Let me explain more:
+> 
+> Previously, we have two mechanisms to cache & submit small discards:
+> 
+> a) set max small discard number in /sys/fs/f2fs/vdb/max_small_discards, and checkpoint
+> will cache small discard candidates w/ configured maximum number.
+> 
+> b) call FITRIM ioctl, also, checkpoint in f2fs_trim_fs() will cache small discard
+> candidates w/ configured discard granularity, but w/o limitation of number. FSTRIM
+> interface is asynchronized, so it won't submit discard directly.
+> 
+> Finally, discard thread will submit them in background periodically.
+> 
+> So what I mean is the mechanism a) is broken, since no matter how we configure the
+> sysfs entry /sys/fs/f2fs/vdb/max_small_discards, checkpoint will not cache small
+> discard candidates any more.
+> 
+> So, it needs to fix max_small_discards sysfs functionality? or just drop the
+> functionality?
+> 
 >>
->> Best regards,
->> Tomasz
+>> Since we do not submit small discards anymore during checkpoint. Why not relying
+>> on the discard thread to issue them?
+> 
+> Sorry, I'm not sure I get your point, do you mean max_small_discards functionality
+> is obsoleted, so it recommended to use fstrim to cache & submit small discards?
+> 
+> Let me know, if I'm missing something or misunderstanding the point.
+> 
+> Thanks,
+> 
 >>
->>>      m2m_ctx->new_frame = true;
->>> @@ -896,6 +902,7 @@ int v4l2_m2m_streamoff(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
->>>      INIT_LIST_HEAD(&q_ctx->rdy_queue);
->>>      q_ctx->num_rdy = 0;
->>>      spin_unlock_irqrestore(&q_ctx->rdy_spinlock, flags);
->>> +   INIT_LIST_HEAD(&q_ctx->hw_queue);
 >>>
->>>      if (m2m_dev->curr_ctx == m2m_ctx) {
->>>              m2m_dev->curr_ctx = NULL;
->>> @@ -1234,6 +1241,8 @@ struct v4l2_m2m_ctx *v4l2_m2m_ctx_init(struct v4l2_m2m_dev *m2m_dev,
+>>> Thanks,
 >>>
->>>      INIT_LIST_HEAD(&out_q_ctx->rdy_queue);
->>>      INIT_LIST_HEAD(&cap_q_ctx->rdy_queue);
->>> +   INIT_LIST_HEAD(&out_q_ctx->hw_queue);
->>> +   INIT_LIST_HEAD(&cap_q_ctx->hw_queue);
->>>      spin_lock_init(&out_q_ctx->rdy_spinlock);
->>>      spin_lock_init(&cap_q_ctx->rdy_spinlock);
->>>
->>> diff --git a/include/media/v4l2-mem2mem.h b/include/media/v4l2-mem2mem.h
->>> index d6c8eb2b5201..2342656e582d 100644
->>> --- a/include/media/v4l2-mem2mem.h
->>> +++ b/include/media/v4l2-mem2mem.h
->>> @@ -53,9 +53,16 @@ struct v4l2_m2m_dev;
->>>    * processed
->>>    *
->>>    * @q:             pointer to struct &vb2_queue
->>> - * @rdy_queue:     List of V4L2 mem-to-mem queues
->>> + * @rdy_queue:     List of V4L2 mem-to-mem queues. If v4l2_m2m_buf_queue() is
->>> + *         called in struct vb2_ops->buf_queue(), the buffer enqueued
->>> + *         by user would be added to this list.
->>>    * @rdy_spinlock: spin lock to protect the struct usage
->>>    * @num_rdy:       number of buffers ready to be processed
->>> + * @hw_queue:      A list for tracking the buffer is occupied by the hardware
->>> + *                 (or device's firmware). A buffer could only be in either
->>> + *                 this list or @rdy_queue.
->>> + *                 Driver may choose not to use this list while uses its own
->>> + *                 private data to do this work.
->>>    * @buffered:      is the queue buffered?
->>>    *
->>>    * Queue for buffers ready to be processed as soon as this
->>> @@ -68,6 +75,7 @@ struct v4l2_m2m_queue_ctx {
->>>      struct list_head        rdy_queue;
->>>      spinlock_t              rdy_spinlock;
->>>      u8                      num_rdy;
->>> +   struct list_head        hw_queue;
->>>      bool                    buffered;
->>>   };
->>>
->>> --
->>> 2.17.1
->>>
--- 
-Hsia-Jun(Randy) Li
-
+>>>>
+>>>>>
+>>>>> I think there is another way to achieve "avoid long checkpoint latency caused
+>>>>> by committing huge # of small discards", the way is we can set max_small_discards
+>>>>> to small value or zero, w/ such configuration, it will take checkpoint much less
+>>>>> time or no time to committing small discard due to below control logic:
+>>>>>
+>>>>> f2fs_flush_sit_entries()
+>>>>> {
+>>>>> ...
+>>>>>             if (!(cpc->reason & CP_DISCARD)) {
+>>>>>                 cpc->trim_start = segno;
+>>>>>                 add_discard_addrs(sbi, cpc, false);
+>>>>>             }
+>>>>> ...
+>>>>> }
+>>>>>
+>>>>> add_discard_addrs()
+>>>>> {
+>>>>> ...
+>>>>>     while (force || SM_I(sbi)->dcc_info->nr_discards <=
+>>>>>                 SM_I(sbi)->dcc_info->max_discards) {
+>>>>>
+>>>>> It will break the loop once nr_discards is larger than max_discards, if
+>>>>> max_discards is set to zero, checkpoint won't take time to handle small discards.
+>>>>>
+>>>>> ...
+>>>>>         if (!de) {
+>>>>>             de = f2fs_kmem_cache_alloc(discard_entry_slab,
+>>>>>                         GFP_F2FS_ZERO, true, NULL);
+>>>>>             de->start_blkaddr = START_BLOCK(sbi, cpc->trim_start);
+>>>>>             list_add_tail(&de->list, head);
+>>>>>         }
+>>>>> ...
+>>>>>     }
+>>>>> ...
+>>>>>
+>>>>> Thanks,
+>>>>>
+>>>>>>
+>>>>>>>
+>>>>>>> Thanks,
+>>>>>>>
+>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>     From eb89d9b56e817e3046d7fa17165b12416f09d456 Mon Sep 17 00:00:00 2001
+>>>>>>>>> From: Chao Yu <chao@kernel.org>
+>>>>>>>>> Date: Mon, 3 Jul 2023 09:06:53 +0800
+>>>>>>>>> Subject: [PATCH] Revert "f2fs: enable small discard by default"
+>>>>>>>>>
+>>>>>>>>> This reverts commit d618ebaf0aa83d175658aea5291e0c459d471d39 in order
+>>>>>>>>> to disable small discard by default, so that if there're huge number of
+>>>>>>>>> small discards, it will decrease checkpoint's latency obviously.
+>>>>>>>>>
+>>>>>>>>> Also, this patch reverts 9ac00e7cef10 ("f2fs: do not issue small discard
+>>>>>>>>> commands during checkpoint"), due to it breaks small discard feature which
+>>>>>>>>> may be configured via sysfs entry max_small_discards.
+>>>>>>>>>
+>>>>>>>>> Fixes: 9ac00e7cef10 ("f2fs: do not issue small discard commands during checkpoint")
+>>>>>>>>> Signed-off-by: Chao Yu <chao@kernel.org>
+>>>>>>>>> ---
+>>>>>>>>>      fs/f2fs/segment.c | 4 ++--
+>>>>>>>>>      1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>>>>>>>>> index 14c822e5c9c9..0a313368f18b 100644
+>>>>>>>>> --- a/fs/f2fs/segment.c
+>>>>>>>>> +++ b/fs/f2fs/segment.c
+>>>>>>>>> @@ -2193,7 +2193,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+>>>>>>>>>                  len = next_pos - cur_pos;
+>>>>>>>>>
+>>>>>>>>>                  if (f2fs_sb_has_blkzoned(sbi) ||
+>>>>>>>>> -                    !force || len < cpc->trim_minlen)
+>>>>>>>>> +                (force && len < cpc->trim_minlen))
+>>>>>>>>>                      goto skip;
+>>>>>>>>>
+>>>>>>>>>                  f2fs_issue_discard(sbi, entry->start_blkaddr + cur_pos,
+>>>>>>>>> @@ -2269,7 +2269,7 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
+>>>>>>>>>          atomic_set(&dcc->queued_discard, 0);
+>>>>>>>>>          atomic_set(&dcc->discard_cmd_cnt, 0);
+>>>>>>>>>          dcc->nr_discards = 0;
+>>>>>>>>> -    dcc->max_discards = MAIN_SEGS(sbi) << sbi->log_blocks_per_seg;
+>>>>>>>>> +    dcc->max_discards = 0;
+>>>>>>>>>          dcc->max_discard_request = DEF_MAX_DISCARD_REQUEST;
+>>>>>>>>>          dcc->min_discard_issue_time = DEF_MIN_DISCARD_ISSUE_TIME;
+>>>>>>>>>          dcc->mid_discard_issue_time = DEF_MID_DISCARD_ISSUE_TIME;
+>>>>>>>>> -- 
+>>>>>>>>> 2.40.1
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>>                   f2fs_issue_discard(sbi, entry->start_blkaddr + cur_pos,
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
