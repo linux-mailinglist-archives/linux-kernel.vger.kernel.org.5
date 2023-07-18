@@ -2,57 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA5075816F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE19758171
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbjGRPzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 11:55:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48892 "EHLO
+        id S233773AbjGRP42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 11:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233763AbjGRPzV (ORCPT
+        with ESMTP id S232069AbjGRP41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 11:55:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4781705;
-        Tue, 18 Jul 2023 08:55:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D76A61632;
-        Tue, 18 Jul 2023 15:55:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A56FC433B9;
-        Tue, 18 Jul 2023 15:55:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689695717;
-        bh=XkxaNzMQrlndpmaZ6Ahex4//qnr2RKplzVyK9NA4FAs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=bX5cTij+x74/dC4QWY3+zwYhnrlKfd4bd+c6mzDOa1cLDbU2o7xP5r85fBjHD2z9I
-         l8TmTQP14ByqW0OOZzgqxP0yQ4VCdLyacPMuTzUQYHnWsP3oJujRfnJHnbtNyOcLFy
-         b8gCnLR3hqFkOXSNmDgQWr9gqJxdrnyzkh0GoR9B6zBxq/d8yGXnMwmliYrvOmzgJ3
-         6Igf/XmWqlfRWEfIFOgaVN6lkZFLONHsUmCqxq0l15oTbyqqbXsLg2q3OjAu8lctd9
-         aI3mVU9RGSMJisZFb2m48ABZzssm9K5kx0nd6TanKixpFU/aqPWbrM8P83HLAWlr+p
-         +jQiEa1Ec8lsA==
-Date:   Tue, 18 Jul 2023 10:55:15 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Achal Verma <a-verma1@ti.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof Wilczy_ski <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] PCI: j721e: Delay 100ms T_PVPERL from power stable to
- PERST# inactive
-Message-ID: <20230718155515.GA483233@bhelgaas>
+        Tue, 18 Jul 2023 11:56:27 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9790A9;
+        Tue, 18 Jul 2023 08:56:25 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51e619bcbf9so8148001a12.3;
+        Tue, 18 Jul 2023 08:56:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689695784; x=1692287784;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Xl9bZKgSzS15J7X7my6aXFKONUtvaDuDxqByit5t6Q=;
+        b=EmOhnUMO+7tMBy/jkg7S0CAz8HDl9naZAONo2wPwnViMQTIbb5Fv7zLpXBhU6CbCVW
+         VlddVe3zA8Dd/zSmHZZe9EdQsj2d2y7kxo11f8uX8ynFjRwrLZ9qVNCA2tFopHIwCA6B
+         yDYUSGnZ2CtM6NKVK6kdNZx804ko4s5YWej1S1aLXwchkO2GVTH6eMIZikPHyGfLusHj
+         B41Bkgo7w4O2pJWaWEzJdH9TRg6W/Jq5t4AWM1rhaUy5BKvSU2oOAYnMa3kHx+OKbhA/
+         mH7lg/DQyPf9MRzi9Jz5eOl4A895bP74sSmi9/gyqf9weU0r8opPCl0o9dhD4FV6UlRu
+         JmIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689695784; x=1692287784;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/Xl9bZKgSzS15J7X7my6aXFKONUtvaDuDxqByit5t6Q=;
+        b=TWCGlsKEXNvx8umPDzh4G5aa1IwLtix6vzY53Jug9yulPExrG4Tjazf2o7JTNZDeVG
+         IuBp67n+rD7dNCFs94HRHKjlAhZ6U5TQBOG0dIFEWEbZLY1WPRuYISOn/LyPINSttI0b
+         0n7BmUcRVed0Z6hs2Pz2AL85UtT8G9JP06zgmjNDItC9zXfwlS+9Gai+bABTwT1kN8ut
+         4fQGqUBoAKpbWXGT6DVF/eTInCGb6t2oTo21sD9NL6oTsiIJZw8E+T4uLDDp6V0Ao/Bx
+         cE+yejvZaUnR9N6YS70+msOPl6+w595Ck7beEluenCnG+pM+1v7tWkO2Tct2FKQxbqC4
+         HwVw==
+X-Gm-Message-State: ABy/qLY/pbk3T8BQtv/H72XxjhlLcS/yCbGn8cIiHQwHihDmXx5C8F01
+        znuDCgojgXy7d4Q9BPol8zo=
+X-Google-Smtp-Source: APBJJlGY5EUXk+L0bGBzfzBP2tkksipSow3COZNEwQuFLJEE4Ab/VBrBxfzD6Kz/SZmeGQdzJ5hMIw==
+X-Received: by 2002:aa7:d043:0:b0:521:ab99:89f9 with SMTP id n3-20020aa7d043000000b00521ab9989f9mr141431edo.14.1689695784191;
+        Tue, 18 Jul 2023 08:56:24 -0700 (PDT)
+Received: from skbuf ([188.25.175.105])
+        by smtp.gmail.com with ESMTPSA id l25-20020aa7d959000000b0051a4c1dc813sm1378842eds.82.2023.07.18.08.56.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 08:56:23 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 18:56:21 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Ante Knezic <ante.knezic@helmholz.de>
+Cc:     andrew@lunn.ch, davem@davemloft.net, edumazet@google.com,
+        f.fainelli@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com
+Subject: Re: [PATCH net-next v2] net: dsa: mv88e6xxx: Add erratum 3.14 for
+ 88E6390X and 88E6190X
+Message-ID: <20230718155621.3jenfn7rqtgouny7@skbuf>
+References: <20230718150133.4wpnmtks46yxg5lz@skbuf>
+ <20230718152512.6848-1-ante.knezic@helmholz.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230707095119.447952-1-a-verma1@ti.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+In-Reply-To: <20230718152512.6848-1-ante.knezic@helmholz.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,114 +75,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 07, 2023 at 03:21:19PM +0530, Achal Verma wrote:
-> As per the PCIe Card Electromechanical specification REV. 5.0, PERST#
-> signal should be de-asserted after minimum 100ms from the time power-rails
-> become stable. So, to ensure 100ms delay to give sufficient time for
-> power-rails and refclk to become stable, change delay from 100us to 100ms.
+On Tue, Jul 18, 2023 at 05:25:12PM +0200, Ante Knezic wrote:
+> > > > It does not apply cleanly to net-next. Please respin. You can retain
+> > > > Andrew's Reviewed-by tag.
+> > > 
+> > > Respin might need a complete rework of the patch as with the
+> > > conversion of 88e639x to phylink_pcs (introduced with commit
+> > > e5b732a275f5fae0f1342fb8cf76de654cd51e50) the original code flow
+> > > has completely changed so it will not be as simple as finding a new
+> > > place to stick the patch. 
+> > > The new phylink mostly hides away mv88e6xxx_chip struct which is needed 
+> > > to identify the correct device and writing to relevant registers has also
+> > > changed in favor of mv88e639x_pcs struct etc.
+> > > I think you can see where I am going with this. In this sense I am not sure 
+> > > about keeping the Reviewed-by tag, more likely a complete rewrite 
+> > > should be done.
+> > > I will repost V3 once I figure out how to make it work with the new
+> > > framework.
+> > > 
+> > 
+> > Can't you simply replicate the positioning of mv88e6393x_erratum_4_6()
+> > from mv88e6393x_pcs_init()?
 > 
-> From PCIe Card Electromechanical specification REV. 5.0 section 2.9.2:
-> TPVPERL: Power stable to PERST# inactive - 100ms
-> 
-> Fixes: f3e25911a430 ("PCI: j721e: Add TI J721E PCIe driver")
-> Signed-off-by: Achal Verma <a-verma1@ti.com>
-> ---
-> 
-> Changes from v2:
-> * Fix commit message.
-> 
-> Change from v1:
-> * Add macro for delay value.
-> 
->  drivers/pci/controller/cadence/pci-j721e.c | 11 +++++------
->  drivers/pci/pci.h                          |  2 ++
->  2 files changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-> index e70213c9060a..32b6a7dc3cff 100644
-> --- a/drivers/pci/controller/cadence/pci-j721e.c
-> +++ b/drivers/pci/controller/cadence/pci-j721e.c
-> @@ -498,14 +498,13 @@ static int j721e_pcie_probe(struct platform_device *pdev)
->  
->  		/*
->  		 * "Power Sequencing and Reset Signal Timings" table in
-> -		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 3.0
-> -		 * indicates PERST# should be deasserted after minimum of 100us
-> -		 * once REFCLK is stable. The REFCLK to the connector in RC
-> -		 * mode is selected while enabling the PHY. So deassert PERST#
-> -		 * after 100 us.
-> +		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 5.0
-> +		 * indicates PERST# should be deasserted after minimum of 100ms
-> +		 * after power rails achieve specified operating limits and
-> +		 * within this period reference clock should also become stable.
-
-I think the problem is not that the current code is *wrong*, because
-we do need to observe T_PERST-CLK, but that it failed to *also*
-account for T_PVPERL.
-
-There are two delays before deasserting PERST#:
-
-  T_PVPERL: delay after power becomes stable
-  T_PERST-CLK: delay after REFCLK becomes stable
-
-I assume power is enabled by phy_power_on(), and REFCLK is enabled by
-clk_prepare_enable():
-
-  cdns_pcie_init_phy
-    cdns_pcie_enable_phy
-      phy_power_on             <-- power becomes stable
-  clk_prepare_enable           <-- REFCLK becomes stable
-  if (gpiod)
-    usleep_range
-    gpiod_set_value_cansleep(gpiod, 1)   <-- deassert PERST#
-
-I don't actually know if phy_power_on() guarantees that power is
-stable before it returns.  But I guess that's our assumption?
-Similarly for clk_prepare_enable().
-
-In any case, we have to observe both delays.  They overlap, and
-T_PVPERL is 1000 times longer than T_PERST-CLK, so there might be
-enough slop in an msleep(100) to cover both, but I think I would do
-the simple-minded:
-
-  msleep(PCIE_TPVPERL_MS);
-  usleep_range(PCIE_TPERST_CLK_US, 2 * PCIE_TPERST_CLK_US);
-
-This is slightly more conservative than necessary because they
-overlap, but at least it shows that we thought about both of them.
-
->  		if (gpiod) {
-> -			usleep_range(100, 200);
-> +			msleep(PCIE_TPVPERL_DELAY_MS);
->  			gpiod_set_value_cansleep(gpiod, 1);
-
-I wish this local variable were named something like "perst_gpiod"
-instead of "gpiod".  We already know from its use in
-gpiod_set_value_cansleep() that it's a GPIO.  What's NOT obvious from
-the context is that this is the PERST# signal.
-
-Tangent: it looks like the DT "reset" property that I'm assuming
-controls PERST# is optional.  How do we enforce these delays if that
-property is missing?
-
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index a4c397434057..6ab2367e5867 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -13,6 +13,8 @@
->  
->  #define PCIE_LINK_RETRAIN_TIMEOUT_MS	1000
->  
-> +#define PCIE_TPVPERL_DELAY_MS	100	/* see PCIe CEM r5.0, sec 2.9.2 */
-> +
->  extern const unsigned char pcie_link_speed[];
->  extern bool pci_early_dump;
->  
-> -- 
-> 2.25.1
+> I don't think so. The erratum from the patch needs to be applied on each
+> SERDES reconfiguration or reset. For example, when replugging different 
+> SFPs (sgmii - 10g - sgmii interface). Erratum 4_6 is done only once? 
+> My guess is to put it in mv88e639x_sgmii_pcs_post_config but still I 
+> need the device product number - maybe embedding a pointer to the 
+> mv88e6xxx_chip chip inside the mv88e639x_pcs struct would be the cleanest way.
 > 
 > 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+It needs to be implemented exactly as posted here? After mv88e6390_serdes_power()
+is called on any port/lane, mv88e6390x_serdes_erratum_3_14() needs to run
+for all lanes? That might be a problem.
+
+Do we know if the register writes are disruptive for the ports which are
+already up and running?
