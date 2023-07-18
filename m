@@ -2,85 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 449ED7578F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62367578F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbjGRKIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 06:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59738 "EHLO
+        id S230150AbjGRKJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 06:09:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232119AbjGRKIY (ORCPT
+        with ESMTP id S230259AbjGRKJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 06:08:24 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382CD10E0;
-        Tue, 18 Jul 2023 03:08:22 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4R4vj946yhz6J67G;
-        Tue, 18 Jul 2023 18:05:49 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
- 2023 11:08:19 +0100
-Date:   Tue, 18 Jul 2023 11:08:18 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Balsam CHIHI <bchihi@baylibre.com>,
-        "Claudiu Beznea" <claudiu.beznea@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-renesas-soc@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, Andy Shevchenko <andy@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Len Brown <len.brown@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        "Jonathan Hunter" <jonathanh@nvidia.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v2 08/10] pinctrl: mvebu: Switch to use
- DEFINE_NOIRQ_DEV_PM_OPS() helper
-Message-ID: <20230718110818.0000140c@Huawei.com>
-In-Reply-To: <20230717172821.62827-9-andriy.shevchenko@linux.intel.com>
-References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
-        <20230717172821.62827-9-andriy.shevchenko@linux.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 18 Jul 2023 06:09:28 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E651996
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 03:08:57 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bb119be881so36896325ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 03:08:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1689674937; x=1692266937;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V/5gRpkxT+kOgGiftiK7jx1s41nMMWH8tu708xIUfYw=;
+        b=e29uBYrQhBw4fVZyXQO7maKHrmGmHqN+r7Pfwwyw8qN9L6QCG6qasmVYpauU/7y7NX
+         V1X4gAJCY8eMMHCZ6WctiEW3goRs8B6TcI3b+mYc0KIKrLxLOeTJRRMitQXRYx9PU0hU
+         xSSWULc1KTRrdRMIQwft32MH3hqNk315E3+JLhLH/sXfdIbL3x+zsjwNwqs3Hk1HUWMb
+         F7eLpqoe+75AjdzbXqk512b2wDlLhX0JV6O3mp4qSguIX3Rfwn2jkEyijkJgyjFqNUrL
+         G9HD9+OO++W4mpIMQzFx1HP9oFlTa1ZHh7Dx9dO57Y3PiP7cdWJWnBfe6/QfwZk2S2a9
+         joaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689674937; x=1692266937;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=V/5gRpkxT+kOgGiftiK7jx1s41nMMWH8tu708xIUfYw=;
+        b=Jfgw7b0qJn9jqa4J8SFaSbcSO6L0W6c44Smq7mB8KSpiR1RudN9j2190YjmkLE/tSL
+         m+sJUb2l/mCB2yubpelUXAY3BvFGKdKK02D/lLKE2rDhohBvhyhAlzd3FxO3Ez8evPKf
+         1QLFD/i5HJCrBP4fWzbg0iwYhM3MvjnyAjPyKnta5kOLQibXP2/pij2BXMZvCtv2y0UK
+         cFn3p5SfNHWTGLLrBjtDIqgssdoAkcgd0irbu9HdQp1CMRarjRG0ZiwzvR/QI+GNeUiR
+         WHW0yE8tk0qvHIe1i7fmSjZ+NIrlgLW58DaZOmK/AOkBirWsuaTpgCA9IfuLE0N6ZpJe
+         Q/hQ==
+X-Gm-Message-State: ABy/qLZCsPfouRAcChwLpakqiVSlGQ93MBNi8OYKDuKbnBH67IFRs/+L
+        IubWiQ5wE9sFMyqTzFb2Oo5Zb652xvCjXOD6n+U=
+X-Google-Smtp-Source: APBJJlEFg/kl/7XTuskKHo9ULsTb5Xfc2Qrbc6pjFZUAFHmaDKM1g7Mio3hVCETS9ghgb3jUUr8Kdw==
+X-Received: by 2002:a17:902:ce84:b0:1b8:3e15:46a1 with SMTP id f4-20020a170902ce8400b001b83e1546a1mr16185279plg.67.1689674937417;
+        Tue, 18 Jul 2023 03:08:57 -0700 (PDT)
+Received: from [10.85.115.102] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id a4-20020a170902ecc400b001b869410ed2sm1464369plh.72.2023.07.18.03.08.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 03:08:57 -0700 (PDT)
+Message-ID: <2655026d-6ae4-c14c-95b0-4177eefa434f@bytedance.com>
+Date:   Tue, 18 Jul 2023 18:08:50 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [External] Re: [PATCH] cgroup/rstat: record the cumulative
+ per-cpu time of cgroup and its descendants
+To:     Tejun Heo <tj@kernel.org>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230717093612.40846-1-jiahao.os@bytedance.com>
+ <ZLWb-LsBD041hMvr@slm.duckdns.org>
+From:   Hao Jia <jiahao.os@bytedance.com>
+In-Reply-To: <ZLWb-LsBD041hMvr@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Jul 2023 20:28:19 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-> Since pm.h provides a helper for system no-IRQ PM callbacks,
-> switch the driver to use it instead of open coded variant.
+Hello,
+On 2023/7/18 Tejun Heo wrote:
+
+> On Mon, Jul 17, 2023 at 05:36:12PM +0800, Hao Jia wrote:
+>> Now the member variable bstat of the structure cgroup_rstat_cpu
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> You said "now" indicating that the behavior has changed recently but I don't
+> see what changed there. Can you elaborate?
+
+Thank you for your review, sorry for confusing you with my expression, 
+it is true that it has not changed, bstat has always recorded the 
+per-cpu time of cgroup itself.
+
+> 
+>> records the per-cpu time of the cgroup itself, but does not
+>> include the per-cpu time of its descendants. The per-cpu time
+> 
+> It does. The per-cpu delta is added to its parent and then that will in turn
+> be used to propagate to its parent.
+>Yes, so only cgrp->bstat contains the cpu time of the cgroup and its 
+descendants. rstatc->bstat only records the per-cpu time of cgroup itself.
+
+> 
+> I think you're misunderstanding how the code works. Can you please double
+> check?
+
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -361,11 +361,15 @@ static void cgroup_base_stat_flush(struct cgroup 
+*cgrp, int cpu)
+  	cgroup_base_stat_sub(&delta, &rstatc->last_bstat);
+  	cgroup_base_stat_add(&cgrp->bstat, &delta);
+  	cgroup_base_stat_add(&rstatc->last_bstat, &delta);
+
+We add the current cgroup's per-cpu delta to its per-cpu variable 
+(cumul_bstat).
+
++	cgroup_base_stat_add(&rstatc->cumul_bstat, &delta);
+
+  	/* propagate global delta to parent (unless that's root) */
+  	if (cgroup_parent(parent)) {
+  		delta = cgrp->bstat;
++		rstatc = cgroup_rstat_cpu(parent, cpu);
++
+  		cgroup_base_stat_sub(&delta, &cgrp->last_bstat);
+
+Since we hold the global cgroup_rstat_lock and disable interrupts in 
+cgroup_base_stat_flush() and we only update cgrp->bstat here.
+So the global delta at this time is equal to the increment of this 
+cgroup and its descendants on this cpu (unless root cgroup), so we can 
+add the global delta to the cumul_bstat of its parent and propagate it 
+upward.
+
++		cgroup_base_stat_add(&rstatc->cumul_bstat, &delta);
+  		cgroup_base_stat_add(&parent->bstat, &delta);
+  		cgroup_base_stat_add(&cgrp->last_bstat, &delta);
+  	}
+
+
+I wrote a kernel module to verify and test the above kernel code,
+The kernel module adds a cpu.stat_percpu_all file for each cgroup, which 
+can output the per-cpu time information of the cgroup and its 
+descendants calculated in two ways:
+1. Cumulatively add the per-cpu bstat of cgroup and each of its descendants.
+2. Directly output @cumul_bstat read in the kernel (patch has been applied).
+When the child cgroup is not removed, the results calculated by the two 
+methods should be equal.
+
+NOTE: We need to flush the data before "cat cpu.stat_percpu_all", such 
+as "cat cpu.stat".
+
+Code link:
+https://github.com/jiaozhouxiaojia/cgv2-stat-percpu_test/tree/main
+
+The testing procedure is in README.
+
+I installed the 6.5.0-rc1 kernel on my machine (an Intel Xeon(R) 
+Platinum 8260 machine 96 CPUs in total.) and did some tests.
+So far I haven't found anything unusual, if I'm wrong, please point it 
+out, it's very helpful to me, thanks again!
+
+Thanks,
+Hao
