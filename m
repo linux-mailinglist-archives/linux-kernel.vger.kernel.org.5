@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 768187588DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 01:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA76B7588E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 01:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbjGRXGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 19:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37128 "EHLO
+        id S231185AbjGRXHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 19:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbjGRXGQ (ORCPT
+        with ESMTP id S231208AbjGRXHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 19:06:16 -0400
+        Tue, 18 Jul 2023 19:07:09 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E593A1;
-        Tue, 18 Jul 2023 16:06:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C633A1;
+        Tue, 18 Jul 2023 16:07:08 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B247061316;
-        Tue, 18 Jul 2023 23:06:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 680D9C433C8;
-        Tue, 18 Jul 2023 23:06:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B53E661372;
+        Tue, 18 Jul 2023 23:07:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22736C433AB;
+        Tue, 18 Jul 2023 23:07:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689721574;
-        bh=FRBVwYwMTH6DRU2yrJWUYe8eJeOEgS3bml4SVg7PNv0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iXOJgUVurChgFDetfjkgCXYdQd4Ql0w1h3kC+ujYEntHyJs5s179RrLIz2Cq0PguO
-         2CmYdNomq/OQ/IXK/IzTrWWIpu3uvoWIBnCbjn92elYM6UPygsk6nRRyypBDXwq5Zw
-         ovtjZoq0XnD2Agg+fywfoE2rj++jUuRuVfS7H5sPXkUjDH78IHM+z5fS5VJYNG39bR
-         zq15evNi+lGQsKIk0OYwl/YYHm1nn9Npx+tOoMd2R23YGCsdsBJQtL80jQVA4nl7Mf
-         pWMRuQtPcfmMAjYfggWpjAsxuaZo7H8UnfMueznFvpfpMYxC7iNoGfPYdSGdw9jLV/
-         YZBccR8Vl3FJw==
-Date:   Tue, 18 Jul 2023 16:06:12 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Rosenberg <drosen@google.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH v2 1/3] bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
-Message-ID: <20230718160612.71f09752@kernel.org>
-In-Reply-To: <CAADnVQLJBiB7pWDTDNgQW_an+YoB61xkNEsa5g8p6zTy-mAG7Q@mail.gmail.com>
-References: <20230502005218.3627530-1-drosen@google.com>
-        <20230718082615.08448806@kernel.org>
-        <CAADnVQJEEF=nqxo6jHKK=Tn3M_NVXHQjhY=_sry=tE8X4ss25A@mail.gmail.com>
-        <20230718090632.4590bae3@kernel.org>
-        <CAADnVQ+4aehGYPJ2qT_HWWXmOSo4WXf69N=N9-dpzERKfzuSzQ@mail.gmail.com>
-        <20230718101841.146efae0@kernel.org>
-        <CAADnVQ+jAo4V-Pa9_LhJEwG0QquL-Ld5S99v3LNUtgkiiYwfzw@mail.gmail.com>
-        <20230718111101.57b1d411@kernel.org>
-        <CAADnVQLJBiB7pWDTDNgQW_an+YoB61xkNEsa5g8p6zTy-mAG7Q@mail.gmail.com>
+        s=k20201202; t=1689721627;
+        bh=+Pd8n6b3Bgde2sfLuTMJEdG3inSaboDgyN2R66pO+Cc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rbODd0eCkMojMdEsT2JG+DPQ5FfVcqjO+7TpaLSAITlHBKbP8U5e58LV5FWFBRUVd
+         WfqtFLFPPQLBI+WPyuMGATfmm8+J0uFQJTLKlLbH9TiCN9639o12nq+YJVNSQMYjF3
+         FGmaUehU1XG17oDii9iC9SAEy4rTkasUr+Y04Pcv/VZ+0YArgAhZB99N8buGKADRBJ
+         LYRHsl2hQRSIsn8KC+LLc8NDcS7nrGUW9UGRFo1Q8ScX1Afl7wGan1l3BVCFlU6WkM
+         vGsLFim7pfqlnxvDigXrfzxNxmdbDg2Bt/X2KpPLyeaCtSy8DvI3aGq9xkLL6VVsa3
+         nN1xZb5T64iiQ==
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2b70bfc8db5so96446021fa.2;
+        Tue, 18 Jul 2023 16:07:07 -0700 (PDT)
+X-Gm-Message-State: ABy/qLYTqMOKKDuXbXPae+TkVvIBHii04NLL6oWZ3NaBL/5Qi+7Br2Fg
+        c5nvwOCmp+hymOSvFXr6KDal+Fhmc/vR2DtYc2E=
+X-Google-Smtp-Source: APBJJlE2SEtdQ0viGgTX1RHV1Jf09uAG1PnJ2kbrstQtKT8l+bPM54I0W1KpO3/vBtrnR6qoOuKC/wwAZ5RCUS+NTqM=
+X-Received: by 2002:a2e:968c:0:b0:2b5:8f85:bf67 with SMTP id
+ q12-20020a2e968c000000b002b58f85bf67mr476772lji.53.1689721624966; Tue, 18 Jul
+ 2023 16:07:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20230718125847.3869700-1-ardb@kernel.org> <20230718125847.3869700-2-ardb@kernel.org>
+ <20230718223239.GB1005@sol.localdomain> <20230718225450.GD1005@sol.localdomain>
+In-Reply-To: <20230718225450.GD1005@sol.localdomain>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 19 Jul 2023 01:06:53 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGR=1vA5T+iiRBSiabMqZxdCar_mXLOfcWPW0G1eHiXPA@mail.gmail.com>
+Message-ID: <CAMj1kXGR=1vA5T+iiRBSiabMqZxdCar_mXLOfcWPW0G1eHiXPA@mail.gmail.com>
+Subject: Re: [RFC PATCH 01/21] crypto: scomp - Revert "add support for deflate
+ rfc1950 (zlib)"
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kees Cook <keescook@chromium.org>,
+        Haren Myneni <haren@us.ibm.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Richard Weinberger <richard@nod.at>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        qat-linux@intel.com, linuxppc-dev@lists.ozlabs.org,
+        linux-mtd@lists.infradead.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -79,71 +81,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 13:34:06 -0700 Alexei Starovoitov wrote:
-> > Direct packet access via skb->data is there for those who want high
-> > speed =F0=9F=A4=B7=EF=B8=8F =20
->=20
-> skb->data/data_end approach unfortunately doesn't work that well.
-> Too much verifier fighting. That's why dynptr was introduced.
+On Wed, 19 Jul 2023 at 00:54, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Tue, Jul 18, 2023 at 03:32:39PM -0700, Eric Biggers wrote:
+> > On Tue, Jul 18, 2023 at 02:58:27PM +0200, Ard Biesheuvel wrote:
+> > > This reverts commit a368f43d6e3a001e684e9191a27df384fbff12f5.
+> > >
+> > > "zlib-deflate" was introduced 6 years ago, but it does not have any
+> > > users. So let's remove the generic implementation and the test vectors,
+> > > but retain the "zlib-deflate" entry in the testmgr code to avoid
+> > > introducing warning messages on systems that implement zlib-deflate in
+> > > hardware.
+> > >
+> > > Note that RFC 1950 which forms the basis of this algorithm dates back to
+> > > 1996, and predates RFC 1951, on which the existing IPcomp is based and
+> > > which we have supported in the kernel since 2003. So it seems rather
+> > > unlikely that we will ever grow the need to support zlib-deflate.
+> > >
+> > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > > ---
+> > >  crypto/deflate.c | 61 +++++-----------
+> > >  crypto/testmgr.c |  8 +--
+> > >  crypto/testmgr.h | 75 --------------------
+> > >  3 files changed, 18 insertions(+), 126 deletions(-)
+> >
+> > So if this is really unused, it's probably fair to remove it on that basis.
+> > However, it's not correct to claim that DEFLATE is obsoleted by zlib (the data
+> > format).  zlib is just DEFLATE plus a checksum, as is gzip.
+> >
+> > Many users of zlib or gzip use an external checksum and therefore would be
+> > better served by DEFLATE, avoiding a redundant builtin checksum.  Typically,
+> > people have chosen zlib or gzip simply because their compression library
+> > defaulted to it, they didn't understand the difference, and they overlooked that
+> > they're paying the price for a redundant builtin checksum.
+> >
+> > An example of someone doing it right is EROFS, which is working on adding
+> > DEFLATE support (not zlib or gzip!):
+> > https://lore.kernel.org/r/20230713001441.30462-1-hsiangkao@linux.alibaba.com
+> >
+> > Of course, they are using the library API instead of the clumsy crypto API.
+> >
+>
+> Ah, I misread this patch, sorry.  It's actually removing support for zlib (the
+> data format) from the scomp API, leaving just DEFLATE.  That's fine too; again,
+> it ultimately just depends on what is actually being used via the scomp API.
+> But similarly you can't really claim that zlib is obsoleted by DEFLATE just
+> because of the RFC dates.  As I mentioned, many people do use zlib (the data
+> format), often just because it's the default of zlib (the library) and they
+> didn't know any better.  For example, btrfs compression supports zlib.
+>
 
-I wish Daniel told us more about the use case.
-
-> > My worry is that people will think that whether the buffer is needed or
-> > not depends on _their program_, rather than on the underlying platform.
-> > So if it works in testing without the buffer - the buffer must not be
-> > required for their use case. =20
->=20
-> Are you concerned about bpf progs breaking this way?
-
-Both, BPF progs breaking and netdev code doing things which don't make
-sense. But I won't argue too hard about the former, i.e. the BPF API.
-
-> I thought you're worried about the driver misusing
-> skb_header_pointer() with buffer=3D=3DNULL.
->=20
-> We can remove !buffer check as in the attached patch,
-> but I don't quite see how it would improve driver quality.
-
-The drivers may not be pretty but they aren't buggy AFAICT.
-
-> [0001-bpf-net-Introduce-skb_pointer_if_linear.patch  application/octet-st=
-ream (2873 bytes)]=20
-
-Or we can simply pretend we don't have the skb:
-
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 91ed66952580..217447f01d56 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -4023,7 +4023,7 @@ __skb_header_pointer(const struct sk_buff *skb, int o=
-ffset, int len,
- 	if (likely(hlen - offset >=3D len))
- 		return (void *)data + offset;
-=20
--	if (!skb || !buffer || unlikely(skb_copy_bits(skb, offset, buffer, len) <=
- 0))
-+	if (!skb || unlikely(skb_copy_bits(skb, offset, buffer, len) < 0))
- 		return NULL;
-=20
- 	return buffer;
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 9e80efa59a5d..8bc4622cc1df 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2239,7 +2239,13 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_=
-dynptr_kern *ptr, u32 offset
- 	case BPF_DYNPTR_TYPE_RINGBUF:
- 		return ptr->data + ptr->offset + offset;
- 	case BPF_DYNPTR_TYPE_SKB:
--		return skb_header_pointer(ptr->data, ptr->offset + offset, len, buffer__=
-opt);
-+	{
-+		const struct sk_buff *skb =3D ptr->data;
-+
-+		return __skb_header_pointer(NULL, ptr->offset + offset, len,
-+					    skb->data, skb_headlen(skb),
-+					    buffer__opt);
-+	}
- 	case BPF_DYNPTR_TYPE_XDP:
- 	{
- 		void *xdp_ptr =3D bpf_xdp_pointer(ptr->data, ptr->offset + offset, len);
+I am not suggesting either is obsolete. I am merely pointing out that
+zlib-deflate is as old as plain deflate, and so we could have
+implemented both at the same time when IPcomp support was added, but
+we never bothered.
