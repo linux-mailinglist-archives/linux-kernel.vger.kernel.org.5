@@ -2,100 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3962757CD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8202D757CDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbjGRNI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:08:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
+        id S232601AbjGRNJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232636AbjGRNIB (ORCPT
+        with ESMTP id S232621AbjGRNJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:08:01 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742211731;
-        Tue, 18 Jul 2023 06:07:08 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-51e5e4c6026so8139369a12.0;
-        Tue, 18 Jul 2023 06:07:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689685627; x=1692277627;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jeNzcLZcbKq2pijVIKB1EKgYyt490I0ItiXqddVq1sY=;
-        b=rP3r+2F3AtU9GAGdeWWs0YgHxvEURd130cvktz54GM4lnMwxB516TsdaJesy7qaCjI
-         4+/0VA7N1E+xSOrMg/fBoenZaTAxuz/SGcNLFSOIDOm5QPNQEkDUDYxubU1L4nKVeJCT
-         9SlVxT1pcW1UiuADjAqmAQzHTEPvaOG65NnextEZL4bbMPRbdNKjl7BdP5lZxvNAZbKp
-         aKLkq+HHEcl4JTCu5ZsDHiBmEGrGh+BqvSViUWI5WXQ5x6ucFXmHJ2Ro7TNgZawah+n4
-         OcU6DeeXdZaGKG71n+iyijDAz2E7cP/gSjoGVApK3JrKMl+N5whq11HOy6RuYyp/jUys
-         8m0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689685627; x=1692277627;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jeNzcLZcbKq2pijVIKB1EKgYyt490I0ItiXqddVq1sY=;
-        b=TJKtX6vBv/DzMM1YAl0l6qKcu7pwQKQSDZwCrVrBxMVuHFloNYSRAqwPrLbbAbhFm6
-         mmFPSISIAV65X9vmvcQ28AZc+T8LjjPUoDFHYHaSgfHv/VI29vj+cSWEUEzFdHwQQXmF
-         Wp5iOCiLxVKweO1sPJF91Be1HukdwMxUV/y8wHX09HOIuYWErC1YKUJXyLZ876jSdBK9
-         PuqlXU/CRr1msRuiyh5uPac1j3ssoMP4S7TawMPURwLd/It9s+81+930VfKvuhRHL++D
-         DDEUe3JRF/5ZuPVkk/EzTNpo2hkZ6eQNdcpaAnd1Y8p+M57tMfAEmIDk6DripDN+2sma
-         BShw==
-X-Gm-Message-State: ABy/qLbBqXW2xMNZp4iK3QBtKcYP2/1jB/ou7vK6nyfOsjFpeo4HpuDj
-        Ab//ClsuSEWX61egyGoXDWI=
-X-Google-Smtp-Source: APBJJlEiPfshVtSNYkP8OH436Zpce1Qp7nrenoouEBdZbfLSznRPVQG3AGuGgTjKso3ViGypwJ6d7g==
-X-Received: by 2002:aa7:d38e:0:b0:51d:9dd1:29d0 with SMTP id x14-20020aa7d38e000000b0051d9dd129d0mr14765841edq.23.1689685626590;
-        Tue, 18 Jul 2023 06:07:06 -0700 (PDT)
-Received: from orome (p200300e41f4b7100f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f4b:7100:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id v18-20020aa7dbd2000000b0051e0c0d0a8bsm1218465edt.7.2023.07.18.06.07.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 06:07:06 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 15:07:04 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Balsam CHIHI <bchihi@baylibre.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Len Brown <len.brown@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v2 10/10] pinctrl: tegra: Switch to use
- DEFINE_NOIRQ_DEV_PM_OPS() helper
-Message-ID: <ZLaOeCI4cp79wfiH@orome>
-References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
- <20230717172821.62827-11-andriy.shevchenko@linux.intel.com>
- <20230718111143.000067dc@Huawei.com>
- <ZLZ5obLK89E1S_2R@orome>
- <f002fe945307d0904bcee8bd1f21d9e589d32ffb.camel@crapouillou.net>
+        Tue, 18 Jul 2023 09:09:07 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC5D1722;
+        Tue, 18 Jul 2023 06:09:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=VQkzO/POrP/pHMh//7Dpmps4+dX6EJ9ax9BemZSO0H4=; b=r4eeY35zsbMpVS+HYlGbkMH+sx
+        ZPY2ZolPXOioWG4hvfJ3qCQZXo+TltBBLCuqc9i00wCbBoBSlljYoZQ21E1mKT+fRpnl+Re+RpZVy
+        NzzMIrhLe+BKO1XUmn3Mdma6sv34F18hNCML/18V6OmxGqvYq/CrwgX4O3fYYzbJlSpA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qLkRa-001cuI-OB; Tue, 18 Jul 2023 15:08:46 +0200
+Date:   Tue, 18 Jul 2023 15:08:46 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marco Felsch <m.felsch@pengutronix.de>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
+Subject: Re: [PATCH net-next 2/2] net: stmmac: platform: add support for
+ phy-supply
+Message-ID: <427214fb-6206-47b3-bf5b-8b1cfc8b7677@lunn.ch>
+References: <20230717164307.2868264-1-m.felsch@pengutronix.de>
+ <20230717164307.2868264-2-m.felsch@pengutronix.de>
+ <accc8d89-7565-460e-a874-a491b755bbb8@lunn.ch>
+ <20230718083504.r3znx6iixtq7vkjt@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cxQ8UzeWhjJFmiXC"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f002fe945307d0904bcee8bd1f21d9e589d32ffb.camel@crapouillou.net>
-User-Agent: Mutt/2.2.10 (2023-03-25)
+In-Reply-To: <20230718083504.r3znx6iixtq7vkjt@pengutronix.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -103,57 +59,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 18, 2023 at 10:35:04AM +0200, Marco Felsch wrote:
+> On 23-07-18, Andrew Lunn wrote:
+> > On Mon, Jul 17, 2023 at 06:43:07PM +0200, Marco Felsch wrote:
+> > > Add generic phy-supply handling support to control the phy regulator.
+> > > Use the common stmmac_platform code path so all drivers using
+> > > stmmac_probe_config_dt() and stmmac_pltfr_pm_ops can use it.
+> > > 
+> > > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+> > > ---
+> > >  .../ethernet/stmicro/stmmac/stmmac_platform.c | 51 +++++++++++++++++++
+> > >  include/linux/stmmac.h                        |  1 +
+> > >  2 files changed, 52 insertions(+)
+> > > 
+> > > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> > > index eb0b2898daa3d..6193d42b53fb7 100644
+> > > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> > > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> > > @@ -10,6 +10,7 @@
+> > >  
+> > >  #include <linux/platform_device.h>
+> > >  #include <linux/pm_runtime.h>
+> > > +#include <linux/regulator/consumer.h>
+> > >  #include <linux/module.h>
+> > >  #include <linux/io.h>
+> > >  #include <linux/of.h>
+> > > @@ -423,6 +424,15 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
+> > >  	if (plat->interface < 0)
+> > >  		plat->interface = plat->phy_interface;
+> > >  
+> > > +	/* Optional regulator for PHY */
+> > > +	plat->phy_regulator = devm_regulator_get_optional(&pdev->dev, "phy");
+> > > +	if (IS_ERR(plat->phy_regulator)) {
+> > > +		if (PTR_ERR(plat->phy_regulator) == -EPROBE_DEFER)
+> > > +			return ERR_CAST(plat->phy_regulator);
+> > > +		dev_info(&pdev->dev, "No regulator found\n");
+> > > +		plat->phy_regulator = NULL;
+> > > +	}
+> > > +
+> > 
+> > So this gets the regulator. When do you actually turn it on?
+> 
+> During the suspend/resume logic like the rockchip, sun8i platform
+> integrations did.
 
---cxQ8UzeWhjJFmiXC
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So you are assuming the boot loader has turned it on?
 
-On Tue, Jul 18, 2023 at 02:01:27PM +0200, Paul Cercueil wrote:
-> Hi Thierry,
->=20
-> Le mardi 18 juillet 2023 =C3=A0 13:38 +0200, Thierry Reding a =C3=A9crit=
-=C2=A0:
-> > On Tue, Jul 18, 2023 at 11:11:43AM +0100, Jonathan Cameron wrote:
-> > > On Mon, 17 Jul 2023 20:28:21 +0300
-> > > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > >=20
-> > > > Since pm.h provides a helper for system no-IRQ PM callbacks,
-> > > > switch the driver to use it instead of open coded variant.
-> > > >=20
-> > > > Signed-off-by: Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com>
-> > >=20
-> > > No pm_sleep_ptr()?
-> >=20
-> > pm_sleep_ptr() is pointless on this driver. This driver is selected
-> > by
-> > ARCH_TEGRA and ARCH_TEGRA also always selects PM.
->=20
-> If I'm not mistaken, ARCH_TEGRA selects CONFIG_PM, not CONFIG_PM_SLEEP.
+You also might have a difference between the actual state, and what
+kernel thinks the state is, depending on how the regulator is
+implemented.
 
-Indeed. I suppose pm_sleep_ptr() would make sense, then.
+It would be better to explicitly turn it on before registering the
+MDIO bus.
 
-Thierry
-
---cxQ8UzeWhjJFmiXC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmS2jncACgkQ3SOs138+
-s6Ew4hAAl5R17Bggr3INa4txNS6fRJHBAZkJ+mWhS+i2rp5oJ52oHctOukPe3n3x
-pLZ+YCbflBOYqF9kNA5d6t9ij7t6oc5OXj8gfSxn9EB9I8dGfYHA67fX2ul7YyWG
-cWN8YivHIXUJrSl36ZyUbzLx5PIUwQzMPiKnlMs91l3CyiLDDUC57vhhlAkxBjsa
-pS7jTqHWQgv3wvDXq9hPKm5vHioJsaMninnzlicJyPPKEklTJuPt8ztxEuOoKrXJ
-R92uAqURS/sp65HGBajYC/zytjduCjCLCaEphlRRvUpgDzI20LYJ0ozzPCkxMoee
-2J51MbQlOAOur28EjjISkUtU6lPvved5XzWPEvNcya8uwxgfpCOFbXMycYawqkSf
-8+pWkZJAAF9uDchinQwEl82g19NndHZ049YWwlqiluDURZqVAGDitkRBlYRiIhpe
-bApEYaQed5NIDRZ45MohoZR1bcCUcN8SCTYeiM7buOH+JV7fvWIZJHWhcATTCvUj
-kKWgl5fnMPq2a5F5346roojgESbtWuauYKzvGqIMlqr2wTe29hrTY+pzSsqaceSN
-TEwu80frLmy+a/1OzgrQtAhZ14RmpP1XlFDHkipJHNFIRSF6pc2SsRMrRggcKJVA
-LgXuPi7IxBkI763YIoGS8f1k0AkVOduCSe3hTKXM17tRGoKMzY0=
-=JFZa
------END PGP SIGNATURE-----
-
---cxQ8UzeWhjJFmiXC--
+     Andrew
