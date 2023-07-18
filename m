@@ -2,238 +2,579 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBC975866A
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59202758663
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbjGRVDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 17:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
+        id S230164AbjGRVBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 17:01:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjGRVDr (ORCPT
+        with ESMTP id S229939AbjGRVBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 17:03:47 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD9CDC0;
-        Tue, 18 Jul 2023 14:03:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hdrCY3j1LOF987MlsQPtIHdoZThiHcH2lk95JRfixczSGZTTxhqvgWV1DrxDrzsEiqF6SxhoR4JTHqWxcY5RG7t5qyR3RKNkjv3AbbPOcVD7m8tWgGQdYKlq+edg8g8S9e5hgRDuRqVniMIUcrdHVoZ4epmxzQN8Ok4NTW4Z5vpvbxMnQdyCBeeERpTcObK5QEpL71Q95+L4SyIkCTxzytd8TZtQex0D+aYBlYkBl9iS7CgVuSREQcs7zSbOCY+j8BM4Qz2YBW+iB++caz0v9r/4qMMLRY/KE8zLkgwgCTAp70aKIK9z+ZPWlAOKSaLwXCAGA4jUyrDPTJYZbhkyGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=732s8hCenZ2uI8bN9F3NsEmzykefme6Vz2jBT0usn6M=;
- b=VOWwbZYDO8xXH4iEQkBDxhuYIIb2orgOpGG8fiRo7hgyXCYxuMKQm3BCfQrBc/aiqGMSULcLtd+RwlOsUagxLDhP53iG9Lgcl7biP8u5nGG6gYAWMSNAph1dAtj3ROlJMVwCllmFZvKAMs0bdBQyxHIR9fxSscNyzt4uB1/2Mmq67vc/XsPwMf3odcInficen5RfSUkx/sPc4nVVoRrxyXwSdOsdqIlj/H42RuXXjLyxEJbyKoHQarMQ41r4DB0SS1c5khCoIZLP/U6VxIVgb61C8HE4hgj7xd80Pf2UMdzYepqgJQWYf6mU83aKr/0QDYlgxR0EDEOoiSVhwzc9vA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=732s8hCenZ2uI8bN9F3NsEmzykefme6Vz2jBT0usn6M=;
- b=ps0rpxzbrabkqzDEpIo2ZtwgdnPTy5mNHsSblF73DvVj8VHC2Tah7jAoOijDotpZhvtzeoqagZ+V47GeawotpZ0ca06W7DgUeOv5ZvzeyONhBNxHG7kgZ8PIzfqU3xmUdZ1Duye/zMNb3m7U9ZZM9X0clqVR/MHtuFSOfbrUxnE=
-Received: from MW2PR16CA0017.namprd16.prod.outlook.com (2603:10b6:907::30) by
- SA0PR12MB4543.namprd12.prod.outlook.com (2603:10b6:806:9d::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.31; Tue, 18 Jul 2023 21:03:43 +0000
-Received: from CO1NAM11FT037.eop-nam11.prod.protection.outlook.com
- (2603:10b6:907:0:cafe::c5) by MW2PR16CA0017.outlook.office365.com
- (2603:10b6:907::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33 via Frontend
- Transport; Tue, 18 Jul 2023 21:03:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT037.mail.protection.outlook.com (10.13.174.91) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6588.20 via Frontend Transport; Tue, 18 Jul 2023 21:03:43 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Tue, 18 Jul
- 2023 16:03:42 -0500
-Date:   Tue, 18 Jul 2023 16:00:19 -0500
-From:   Michael Roth <michael.roth@amd.com>
-To:     Isaku Yamahata <isaku.yamahata@gmail.com>
-CC:     <isaku.yamahata@intel.com>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        "Sean Christopherson" <seanjc@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>, <chen.bo@intel.com>,
-        Sagi Shahar <sagis@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [RFC PATCH] KVM: x86: Make struct sev_cmd common for
- KVM_MEM_ENC_OP
-Message-ID: <20230718210019.rqdk2azgf546b3qq@amd.com>
-References: <2f296c5a255936b92cffde5e7d6414edfb93f660.1689645293.git.isaku.yamahata@intel.com>
- <20230718193918.rgluetgaiuib662g@amd.com>
- <20230718202930.GB25699@ls.amr.corp.intel.com>
+        Tue, 18 Jul 2023 17:01:48 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD34FEC
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:01:45 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4f14865fcc0so5552e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:01:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689714104; x=1692306104;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YSeAtmxK2ozxMkX1W97pDOi5lgnNWrQJB78BEx5wwuo=;
+        b=IjRvNmFtlPn0r3sT+H04vStVCoPlDKQl53ex466GeRQYr+dQIc0x+rwk7noiEB3Jwr
+         qZVi8XjAzjA8RtIYeZgVYQVGn2QFog+bPJtVIuI+DNc/uQ4DeS/7sFy370xX/si2+X1Q
+         1IrPEBRrTHHyf9vaE+Zo7cHxWi43YUVHDpw7KfxASYnBe9FV9lVT+CbJuceRcMajQpdP
+         cTGdjZ8zk/JFYoexzFtZzQaqP2CJWxmU8r8XvosafECB0KRx4sMCIC0775gOiQydn+/m
+         aMpOyfj6r1e9W2aTCRpRPIHUcy+3gU8/7TYFhxhdSnwi5xSDoUL6Jj4LI79IVBb3DAHT
+         B1OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689714104; x=1692306104;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YSeAtmxK2ozxMkX1W97pDOi5lgnNWrQJB78BEx5wwuo=;
+        b=ijP3svelvUst6R51Uinlk+aeGOHIDcOzHgUEWKJDV7U6XcwFOCqOg/wA3rjg06+Mw0
+         ppMkZlh46oQ17X2BJI+1mXbYQfeZb1wBMVci7pJsa+7oPCAgbns8K5IznUSLwNtpDL3O
+         lgCo4aDlPJeOpPxQkD6GXF+Ctp4LP8THCRrHhNp42q24WiETuI4cPq15gNW9AWE23lOr
+         Cor4L25faAXuwuqWbUFsR0btsfBoYub+Arb5hRgHL2SoVIlar9jOGBINGvE62sEDavgm
+         b7AUyGWjeDmHHs8+b057BgtaApppY/xbtUxJqSSeypQWNLViv5Fj61oA9RtSyhDYnKMs
+         B8fg==
+X-Gm-Message-State: ABy/qLYkdODbUh/2Y0MxJks2RZYfKpMa7D7aMFU3YACEjjvGNTq1zNRS
+        RPxaMUlJ2yfLumMfv6F2eQpX1s0TjvyFk9Pogpzl4g==
+X-Google-Smtp-Source: APBJJlFlVPDF78BNASzD1gAKNvUNQb81r0wEFJnwAIB3I7LO8xrJ5ZkLREIX06Bp7nhPyq3xMX3SU743LX/3XBmJ1iM=
+X-Received: by 2002:ac2:4c14:0:b0:4f2:5b90:7ca9 with SMTP id
+ t20-20020ac24c14000000b004f25b907ca9mr125185lfq.4.1689714103902; Tue, 18 Jul
+ 2023 14:01:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230718202930.GB25699@ls.amr.corp.intel.com>
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT037:EE_|SA0PR12MB4543:EE_
-X-MS-Office365-Filtering-Correlation-Id: a64cbc83-be74-4b1e-a458-08db87d2783d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: E0SkmskceijA87Ofn6P32AIjqXuk9Dqw6CpoAlfIFR7fxMEPFvdvYh1A+IsuqfxKz7pm8FQRkprc/9uCEMgnytmv0hvvkZXnHAfKRHklxrsRbTtpOIoYpgGfbDBaCyVosJxmUZeR27agP243Ac8I5Lh2C7qoGp4KcehJvMpkaeysLokep7+Gktb/0sm359z/fePQr5dEwcWon7dHDwuLPvBAlz0C/ZO5Ln0zHGHl2gBauRnE7VfUNwdhhenkgthSEewjTQhDisCg0LGShPyqAWyw/pcVDhjFljWbmVli9Y3pDbVToMLTj1bM51Nqizg4uWGVAtYnqzzdvTV7fanFl2ZGcR/cIYrlRD2y8lL4/6XAmDTdrXiT5VRMFe322viRBWNLw5a78fMqNUrp0inP9fQ9hl3OsuTrypiTYLOMU9HHhqkTJYo8ijg6TtVzQkwMptp4iVxCU+av3WPXhfueOidgsLOsbA2a2FC2MuyoV8mHqePHdYNNIrOdDJECUhX7kek7ca2zF+kCgtLepq4Keyv+8/XvmjTb/cuc4aNKOU+psbWF6zR+PHCKbDJqjt0EKDaQfT63a88FDN4PhgTf5xrVHh1r3KZ4WDfNGc8X1T/9i5fZz23O1kJq+2Gc5H9tcOV7EmjjR9ODj75boPHRwNKSEy2QFFn0FXgtbxnHJHQGEQC4JoR+MJ+VkvkxrdhAGz5a741QhHv2fCJGyaMtdRiiHaBrMf7FbsI8Pws63Yog+LjPB0cj4yCKlM4y0LG3lKZZRX4+jhQHU9x1yoN2dA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(39860400002)(136003)(396003)(451199021)(82310400008)(40470700004)(36840700001)(46966006)(54906003)(6666004)(478600001)(82740400003)(2616005)(36860700001)(83380400001)(47076005)(426003)(86362001)(40460700003)(40480700001)(2906002)(70586007)(44832011)(16526019)(186003)(1076003)(26005)(356005)(81166007)(336012)(70206006)(41300700001)(4326008)(316002)(6916009)(36756003)(8676002)(5660300002)(8936002)(7416002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 21:03:43.1682
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a64cbc83-be74-4b1e-a458-08db87d2783d
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT037.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4543
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230707210947.1208717-1-rmoar@google.com> <20230707210947.1208717-2-rmoar@google.com>
+ <CABVgOSkoKUVHE8=Z0gwsn-SfhgVy8rO62s5mHbfu6GXB54OfWA@mail.gmail.com>
+In-Reply-To: <CABVgOSkoKUVHE8=Z0gwsn-SfhgVy8rO62s5mHbfu6GXB54OfWA@mail.gmail.com>
+From:   Rae Moar <rmoar@google.com>
+Date:   Tue, 18 Jul 2023 17:01:30 -0400
+Message-ID: <CA+GJov73sM+rfYXopfdwBtVcwNJhmqAB3b7dOe6NBh47Mxukgg@mail.gmail.com>
+Subject: Re: [RFC v2 1/9] kunit: Add test attributes API structure
+To:     David Gow <davidgow@google.com>
+Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, keescook@chromium.org,
+        linux-hardening@vger.kernel.org, jstultz@google.com,
+        tglx@linutronix.de, sboyd@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 01:29:30PM -0700, Isaku Yamahata wrote:
-> On Tue, Jul 18, 2023 at 02:39:18PM -0500,
-> Michael Roth <michael.roth@amd.com> wrote:
-> 
-> > On Mon, Jul 17, 2023 at 06:58:54PM -0700, isaku.yamahata@intel.com wrote:
-> > > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > > 
-> > > TDX KVM will use KVM_MEM_ENC_OP.  Make struct sev_cmd common both for
-> > > vendor backend, SEV and TDX, with rename.  Make the struct common uABI for
-> > > KVM_MEM_ENC_OP.  TDX backend wants to return 64 bit error code instead of
-> > > 32 bit. To keep ABI for SEV backend, use union to accommodate 64 bit
-> > > member.
-> > > 
-> > > Some data structures for sub-commands could be common.  The current
-> > > candidate would be KVM_SEV{,_ES}_INIT, KVM_SEV_LAUNCH_FINISH,
-> > > KVM_SEV_LAUNCH_UPDATE_VMSA, KVM_SEV_DBG_DECRYPT, and KVM_SEV_DBG_ENCRYPT.
-> > > 
-> > > Only compile tested for SEV code.
-> > > 
-> > > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > > ---
-> > >  arch/x86/include/asm/kvm_host.h |  2 +-
-> > >  arch/x86/include/uapi/asm/kvm.h | 22 +++++++++++
-> > >  arch/x86/kvm/svm/sev.c          | 68 ++++++++++++++++++---------------
-> > >  arch/x86/kvm/svm/svm.h          |  2 +-
-> > >  arch/x86/kvm/x86.c              | 16 +++++++-
-> > >  5 files changed, 76 insertions(+), 34 deletions(-)
-> > > 
-> > > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> > > index 28bd38303d70..f14c8df707ac 100644
-> > > --- a/arch/x86/include/asm/kvm_host.h
-> > > +++ b/arch/x86/include/asm/kvm_host.h
-> > > @@ -1706,7 +1706,7 @@ struct kvm_x86_ops {
-> > >  	void (*enable_smi_window)(struct kvm_vcpu *vcpu);
-> > >  #endif
-> > >  
-> > > -	int (*mem_enc_ioctl)(struct kvm *kvm, void __user *argp);
-> > > +	int (*mem_enc_ioctl)(struct kvm *kvm, struct kvm_mem_enc_cmd *cmd);
-> > >  	int (*mem_enc_register_region)(struct kvm *kvm, struct kvm_enc_region *argp);
-> > >  	int (*mem_enc_unregister_region)(struct kvm *kvm, struct kvm_enc_region *argp);
-> > >  	int (*vm_copy_enc_context_from)(struct kvm *kvm, unsigned int source_fd);
-> > > diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-> > > index 1a6a1f987949..c458c38bb0cb 100644
-> > > --- a/arch/x86/include/uapi/asm/kvm.h
-> > > +++ b/arch/x86/include/uapi/asm/kvm.h
-> > > @@ -562,4 +562,26 @@ struct kvm_pmu_event_filter {
-> > >  /* x86-specific KVM_EXIT_HYPERCALL flags. */
-> > >  #define KVM_EXIT_HYPERCALL_LONG_MODE	BIT(0)
-> > >  
-> > > +struct kvm_mem_enc_cmd {
-> > > +	/* sub-command id of KVM_MEM_ENC_OP. */
-> > > +	__u32 id;
-> > > +	/* Auxiliary flags for sub-command. */
-> > > +	__u32 flags;
-> > 
-> > struct kvm_sev_cmd doesn't have this flags field, so this would break for
-> > older userspaces that try to pass it in instead of the struct kvm_mem_enc_cmd
-> > proposed by this patch. Maybe move it to the end of the struct? Or
-> > make it part of a TDX-specific union field.
-> 
-> Please notice the padding. We don't have __packed attribute.
-> 
-> struct kvm_sev_cmd {
->         __u32 id;
->         <<<<< 32bit padding here
->         __u64 data;
->         __u32 error;
->         __u32 sev_fd;
-> };
+On Tue, Jul 18, 2023 at 3:39=E2=80=AFAM David Gow <davidgow@google.com> wro=
+te:
+>
+> On Sat, 8 Jul 2023 at 05:09, Rae Moar <rmoar@google.com> wrote:
+> >
+> > Add the basic structure of the test attribute API to KUnit, which can b=
+e
+> > used to save and access test associated data.
+> >
+> > Add attributes.c and attributes.h to hold associated structs and functi=
+ons
+> > for the API.
+> >
+> > Create a struct that holds a variety of associated helper functions for
+> > each test attribute. These helper functions will be used to get the
+> > attribute value, convert the value to a string, and filter based on the
+> > value. This struct is flexible by design to allow for attributes of
+> > numerous types and contexts.
+> >
+> > Add a method to print test attributes in the format of "# [<test_name i=
+f
+> > not suite>.]<attribute_name>: <attribute_value>".
+> >
+> > Example for a suite: "# speed: slow"
+> >
+> > Example for a test case: "# test_case.speed: very_slow"
+>
+> So, this is the one thing I'm a little unsure about here, and it's
+> really more of a problem with test names overall.
+>
+> As noted in the KTAPv2 attributes and test name proposals, the names
+> and attributes are only really defined for "suites", hence the need to
+> have a different output format for test cases.
+>
+> Personally, I'd prefer to keep the formats the same if we can (at
+> least for the actual KTAP output; I'm less concerned with the
+> list_attr option). That might make things a bit more difficult to
+> parse, though.
+>
+> One possibility would be to combine the KTAP attributes and test name
+> specs and suggest that every test has a "test name" attribute, which
+> must be the first attribute output.
+>
+> The output would then look something like:
+> KTAP version 2
+> # Name: my_suite
+> # Other-Attr: value
+> 1..2
+>   KTAP version 2
+>   # Name: test_1
+>   # Other-Attr: value
+>   ok 1 test_1
+>   # Name: test_2
+>   # Other-Attr: value
+>   not ok 2 test_2
+> ok 1 my_suite
+>
+> Would there be any problems with something like that?
+>
+> I'm less concerned with the list_attr option, as that's not something
+> totally standardised in the way KTAP is.
+>
 
-Ah, true, I didn't notice that. I guess I don't see issues with the
-proposed format then. This flags field could allow for new fields to be
-added over time without breaking old userspaces, so it seems like we
-still have some flexibility in the future as well.
+This is a really interesting idea. I like that this standardizes the
+concept of KTAP test metadata for both test suites and test cases. I
+would love to discuss this concept further as KTAP v2 is developed.
 
-> 
-> 
-> 
-> > But then you might also run into issues if you copy_to_user() with
-> > sizeof(struct kvm_mem_enc_cmd) instead of sizeof(struct kvm_sev_cmd),
-> > since the former might copy an additional 4 bytes more than what userspace
-> > allocated.
-> > 
-> > So maybe only common bits should be copy_to_user()'d by common KVM code,
-> > and the platform-specific fields in the union should be separately copied
-> > by platform code?
-> > 
-> > E.g.
-> > 
-> >   struct kvm_mem_enc_sev_cmd {
-> >       __u32 error;
-> >       __u32 sev_fd;
-> >   }
-> > 
-> >   struct kvm_mem_enc_tdx_cmd {
-> >       __u64 error;
-> >       __u32 flags;
-> >   }
-> > 
-> >   struct kvm_mem_enc_cmd {
-> >       __u32 id;
-> >       __u64 data;
-> >       union {
-> >         struct kvm_mem_enc_sev_cmd sev_cmd;
-> >         struct kvm_mem_enc_tdx_cmd tdx_cmd;
-> >       }
-> >   };
-> > 
-> > But then we'd need to copy_from_user() for common header, then for
-> > platform-specific sub-command metadata like sev_fd, then for the
-> > sub-command-specific parameters themselves.
-> > 
-> > Make me wonder if this warrants a KVM_MEM_ENC_OP2 (or whatever) that
-> > uses the new structure from the start so that legacy constaints aren't
-> > an issue.
-> 
-> I'm fine with a new ioctl and deprecating the existing one.  I'm looking
-> for the least painful way to avoid unnecessary divergence.
-> Not only for creation/attestation, but also for debug, migration, etc in near
-> future.  Thoughts?
+My main concern would be that there is push back on stating the test
+name when it is already present in the result line. This adds
+potentially unnecessary lines to the output. However, one positive to
+this is that diagnostic data could be printed under this header which
+would reduce any confusion for which test the diagnostic data refers
+to.
 
-Based on the above doesn't seem like we need to deprecate just yet. If
-there's some major benefit we'd gain in doing so then maybe, but if
-current approach still allows for backward-compatibility and future
-extension then it doesn't seem like there's much to gain there.
+I would be interested if anyone else has any opinions on this.
 
--Mike
+> >
+> > Use this method to report attributes in the KTAP output (KTAP spec:
+> > https://docs.kernel.org/dev-tools/ktap.html) and _list_tests output whe=
+n
+> > kernel's new kunit.action=3Dlist_attr option is used. Note this is deri=
+vative
+> > of the kunit.action=3Dlist option.
+> >
+> > In test.h, add fields and associated helper functions to test cases and
+> > suites to hold user-inputted test attributes.
+> >
+> > Signed-off-by: Rae Moar <rmoar@google.com>
+> > ---
+>
+> The only other thing I'd really like to support one day is having
+> attributes for individual parameters in parameterised tests. I think
+> it makes sense as a follow-up, though.
+>
 
-> -- 
-> Isaku Yamahata <isaku.yamahata@gmail.com>
+That is an exciting idea! I think that would be ideal as a follow-up.
+
+> >
+> > Changes since v1:
+> > - Add list_attr option to only include attribute in the _list_tests out=
+put
+> >   when this module param is set
+> > - Add printing options for attributes to print always, print only for
+> >   suites, or print never.
+> >
+> >  include/kunit/attributes.h | 19 +++++++++
+> >  include/kunit/test.h       | 33 ++++++++++++++++
+> >  lib/kunit/Makefile         |  3 +-
+> >  lib/kunit/attributes.c     | 80 ++++++++++++++++++++++++++++++++++++++
+> >  lib/kunit/executor.c       | 21 ++++++++--
+> >  lib/kunit/test.c           | 17 ++++----
+> >  6 files changed, 161 insertions(+), 12 deletions(-)
+> >  create mode 100644 include/kunit/attributes.h
+> >  create mode 100644 lib/kunit/attributes.c
+> >
+> > diff --git a/include/kunit/attributes.h b/include/kunit/attributes.h
+> > new file mode 100644
+> > index 000000000000..9fcd184cce36
+> > --- /dev/null
+> > +++ b/include/kunit/attributes.h
+> > @@ -0,0 +1,19 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * KUnit API to save and access test attributes
+> > + *
+> > + * Copyright (C) 2023, Google LLC.
+> > + * Author: Rae Moar <rmoar@google.com>
+> > + */
+> > +
+> > +#ifndef _KUNIT_ATTRIBUTES_H
+> > +#define _KUNIT_ATTRIBUTES_H
+> > +
+> > +/*
+> > + * Print all test attributes for a test case or suite.
+> > + * Output format for test cases: "# <test_name>.<attribute>: <value>"
+> > + * Output format for test suites: "# <attribute>: <value>"
+> > + */
+> > +void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int =
+test_level);
+> > +
+> > +#endif /* _KUNIT_ATTRIBUTES_H */
+> > diff --git a/include/kunit/test.h b/include/kunit/test.h
+> > index 23120d50499e..1fc9155988e9 100644
+> > --- a/include/kunit/test.h
+> > +++ b/include/kunit/test.h
+> > @@ -63,12 +63,16 @@ enum kunit_status {
+> >         KUNIT_SKIPPED,
+> >  };
+> >
+> > +/* Holds attributes for each test case and suite */
+> > +struct kunit_attributes {};
+>
+> Do we want a separate set of attributes for test cases and suites?
+> (I think probably not, but it's worth making sure.)
+>
+
+I'm thinking if our goal is to eventually move to arbitrary nesting
+for tests it would be easiest to try to keep this list the same. But I
+agree. There may definitely be attributes that are more applicable for
+test cases or suites. I'm inclined to keep it this way.
+
+> > +
+> >  /**
+> >   * struct kunit_case - represents an individual test case.
+> >   *
+> >   * @run_case: the function representing the actual test case.
+> >   * @name:     the name of the test case.
+> >   * @generate_params: the generator function for parameterized tests.
+> > + * @attr:     the attributes associated with the test
+> >   *
+> >   * A test case is a function with the signature,
+> >   * ``void (*)(struct kunit *)``
+> > @@ -104,6 +108,7 @@ struct kunit_case {
+> >         void (*run_case)(struct kunit *test);
+> >         const char *name;
+> >         const void* (*generate_params)(const void *prev, char *desc);
+> > +       struct kunit_attributes attr;
+> >
+> >         /* private: internal use only. */
+> >         enum kunit_status status;
+> > @@ -133,6 +138,18 @@ static inline char *kunit_status_to_ok_not_ok(enum=
+ kunit_status status)
+> >   */
+> >  #define KUNIT_CASE(test_name) { .run_case =3D test_name, .name =3D #te=
+st_name }
+> >
+> > +/**
+> > + * KUNIT_CASE_ATTR - A helper for creating a &struct kunit_case
+> > + * with attributes
+> > + *
+> > + * @test_name: a reference to a test case function.
+> > + * @attributes: a reference to a struct kunit_attributes object contai=
+ning
+> > + * test attributes
+> > + */
+> > +#define KUNIT_CASE_ATTR(test_name, attributes)                 \
+> > +               { .run_case =3D test_name, .name =3D #test_name,    \
+> > +                 .attr =3D attributes }
+> > +
+> >  /**
+> >   * KUNIT_CASE_PARAM - A helper for creation a parameterized &struct ku=
+nit_case
+> >   *
+> > @@ -154,6 +171,20 @@ static inline char *kunit_status_to_ok_not_ok(enum=
+ kunit_status status)
+> >                 { .run_case =3D test_name, .name =3D #test_name,    \
+> >                   .generate_params =3D gen_params }
+> >
+> > +/**
+> > + * KUNIT_CASE_PARAM_ATTR - A helper for creating a parameterized &stru=
+ct
+> > + * kunit_case with attributes
+> > + *
+> > + * @test_name: a reference to a test case function.
+> > + * @gen_params: a reference to a parameter generator function.
+> > + * @attributes: a reference to a struct kunit_attributes object contai=
+ning
+> > + * test attributes
+> > + */
+> > +#define KUNIT_CASE_PARAM_ATTR(test_name, gen_params, attributes)      =
+ \
+> > +               { .run_case =3D test_name, .name =3D #test_name,    \
+> > +                 .generate_params =3D gen_params,                     =
+           \
+> > +                 .attr =3D attributes }
+> > +
+>
+> I do worry a bit that we'll end up with a huge list of variants of the
+> KUNIT_CASE_* macros if we start adding more things here. I can't think
+> of a better way to handle it at the moment, though.
+>
+>
+
+I agree. If this becomes an issue, this could be a follow up change?
+
+>
+> >  /**
+> >   * struct kunit_suite - describes a related collection of &struct kuni=
+t_case
+> >   *
+> > @@ -163,6 +194,7 @@ static inline char *kunit_status_to_ok_not_ok(enum =
+kunit_status status)
+> >   * @init:      called before every test case.
+> >   * @exit:      called after every test case.
+> >   * @test_cases:        a null terminated array of test cases.
+> > + * @attr:      the attributes associated with the test suite
+> >   *
+> >   * A kunit_suite is a collection of related &struct kunit_case s, such=
+ that
+> >   * @init is called before every test case and @exit is called after ev=
+ery
+> > @@ -182,6 +214,7 @@ struct kunit_suite {
+> >         int (*init)(struct kunit *test);
+> >         void (*exit)(struct kunit *test);
+> >         struct kunit_case *test_cases;
+> > +       struct kunit_attributes attr;
+> >
+> >         /* private: internal use only */
+> >         char status_comment[KUNIT_STATUS_COMMENT_SIZE];
+> > diff --git a/lib/kunit/Makefile b/lib/kunit/Makefile
+> > index cb417f504996..46f75f23dfe4 100644
+> > --- a/lib/kunit/Makefile
+> > +++ b/lib/kunit/Makefile
+> > @@ -6,7 +6,8 @@ kunit-objs +=3D                           test.o \
+> >                                         string-stream.o \
+> >                                         assert.o \
+> >                                         try-catch.o \
+> > -                                       executor.o
+> > +                                       executor.o \
+> > +                                       attributes.o
+> >
+> >  ifeq ($(CONFIG_KUNIT_DEBUGFS),y)
+> >  kunit-objs +=3D                          debugfs.o
+> > diff --git a/lib/kunit/attributes.c b/lib/kunit/attributes.c
+> > new file mode 100644
+> > index 000000000000..9bda5a5f4030
+> > --- /dev/null
+> > +++ b/lib/kunit/attributes.c
+> > @@ -0,0 +1,80 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * KUnit API to save and access test attributes
+> > + *
+> > + * Copyright (C) 2023, Google LLC.
+> > + * Author: Rae Moar <rmoar@google.com>
+> > + */
+> > +
+> > +#include <kunit/test.h>
+> > +#include <kunit/attributes.h>
+> > +
+> > +/* Options for printing attributes:
+> > + * PRINT_ALWAYS - attribute is printed for every test case and suite i=
+f set
+> > + * PRINT_SUITE - attribute is printed for every suite if set but not f=
+or test cases
+> > + * PRINT_NEVER - attribute is never printed
+> > + */
+> > +enum print_ops {
+> > +       PRINT_ALWAYS,
+> > +       PRINT_SUITE,
+> > +       PRINT_NEVER,
+> > +};
+> > +
+> > +/**
+> > + * struct kunit_attr - represents a test attribute and holds flexible
+> > + * helper functions to interact with attribute.
+> > + *
+> > + * @name: name of test attribute, eg. speed
+> > + * @get_attr: function to return attribute value given a test
+> > + * @to_string: function to return string representation of given
+> > + * attribute value
+> > + * @filter: function to indicate whether a given attribute value passe=
+s a
+> > + * filter
+> > + */
+> > +struct kunit_attr {
+> > +       const char *name;
+> > +       void *(*get_attr)(void *test_or_suite, bool is_test);
+> > +       const char *(*to_string)(void *attr, bool *to_free);
+> > +       int (*filter)(void *attr, const char *input, int *err);
+> > +       void *attr_default;
+> > +       enum print_ops print;
+> > +};
+> > +
+> > +/* List of all Test Attributes */
+> > +
+> > +static struct kunit_attr kunit_attr_list[] =3D {};
+> > +
+> > +/* Helper Functions to Access Attributes */
+> > +
+> > +void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int =
+test_level)
+> > +{
+> > +       int i;
+> > +       bool to_free;
+> > +       void *attr;
+> > +       const char *attr_name, *attr_str;
+> > +       struct kunit_suite *suite =3D is_test ? NULL : test_or_suite;
+> > +       struct kunit_case *test =3D is_test ? test_or_suite : NULL;
+> > +
+> > +       for (i =3D 0; i < ARRAY_SIZE(kunit_attr_list); i++) {
+> > +               if (kunit_attr_list[i].print =3D=3D PRINT_NEVER ||
+> > +                               (test && kunit_attr_list[i].print =3D=
+=3D PRINT_SUITE))
+> > +                       continue;
+> > +               attr =3D kunit_attr_list[i].get_attr(test_or_suite, is_=
+test);
+> > +               if (attr) {
+> > +                       attr_name =3D kunit_attr_list[i].name;
+> > +                       attr_str =3D kunit_attr_list[i].to_string(attr,=
+ &to_free);
+> > +                       if (test) {
+> > +                               kunit_log(KERN_INFO, test, "%*s# %s.%s:=
+ %s",
+> > +                                       KUNIT_INDENT_LEN * test_level, =
+"", test->name,
+> > +                                       attr_name, attr_str);
+> > +                       } else {
+> > +                               kunit_log(KERN_INFO, suite, "%*s# %s: %=
+s",
+> > +                                       KUNIT_INDENT_LEN * test_level, =
+"", attr_name, attr_str);
+> > +                       }
+> > +
+> > +                       /* Free to_string of attribute if needed */
+> > +                       if (to_free)
+> > +                               kfree(attr_str);
+> > +               }
+> > +       }
+> > +}
+> > diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> > index 74982b83707c..12e38a48a5cc 100644
+> > --- a/lib/kunit/executor.c
+> > +++ b/lib/kunit/executor.c
+> > @@ -2,6 +2,7 @@
+> >
+> >  #include <linux/reboot.h>
+> >  #include <kunit/test.h>
+> > +#include <kunit/attributes.h>
+> >  #include <linux/glob.h>
+> >  #include <linux/moduleparam.h>
+> >
+> > @@ -24,7 +25,8 @@ module_param_named(action, action_param, charp, 0);
+> >  MODULE_PARM_DESC(action,
+> >                  "Changes KUnit executor behavior, valid values are:\n"
+> >                  "<none>: run the tests like normal\n"
+> > -                "'list' to list test names instead of running them.\n"=
+);
+> > +                "'list' to list test names instead of running them.\n"
+> > +                "'list_attr' to list test names and attributes instead=
+ of running them.\n");
+> >
+> >  /* glob_match() needs NULL terminated strings, so we need a copy of fi=
+lter_glob_param. */
+> >  struct kunit_test_filter {
+> > @@ -172,7 +174,7 @@ static void kunit_exec_run_tests(struct suite_set *=
+suite_set)
+> >         __kunit_test_suites_init(suite_set->start, num_suites);
+> >  }
+> >
+> > -static void kunit_exec_list_tests(struct suite_set *suite_set)
+> > +static void kunit_exec_list_tests(struct suite_set *suite_set, bool in=
+clude_attr)
+> >  {
+> >         struct kunit_suite * const *suites;
+> >         struct kunit_case *test_case;
+> > @@ -180,10 +182,19 @@ static void kunit_exec_list_tests(struct suite_se=
+t *suite_set)
+> >         /* Hack: print a ktap header so kunit.py can find the start of =
+KUnit output. */
+> >         pr_info("KTAP version 1\n");
+> >
+> > -       for (suites =3D suite_set->start; suites < suite_set->end; suit=
+es++)
+> > +       for (suites =3D suite_set->start; suites < suite_set->end; suit=
+es++) {
+> > +               /* Print suite name and suite attributes */
+> > +               pr_info("%s\n", (*suites)->name);
+> > +               if (include_attr)
+> > +                       kunit_print_attr((void *)(*suites), false, 0);
+> > +
+> > +               /* Print test case name and attributes in suite */
+> >                 kunit_suite_for_each_test_case((*suites), test_case) {
+> >                         pr_info("%s.%s\n", (*suites)->name, test_case->=
+name);
+> > +                       if (include_attr)
+> > +                               kunit_print_attr((void *)test_case, tru=
+e, 0);
+> >                 }
+> > +       }
+> >  }
+> >
+> >  int kunit_run_all_tests(void)
+> > @@ -206,7 +217,9 @@ int kunit_run_all_tests(void)
+> >         if (!action_param)
+> >                 kunit_exec_run_tests(&suite_set);
+> >         else if (strcmp(action_param, "list") =3D=3D 0)
+> > -               kunit_exec_list_tests(&suite_set);
+> > +               kunit_exec_list_tests(&suite_set, false);
+> > +       else if (strcmp(action_param, "list_attr") =3D=3D 0)
+> > +               kunit_exec_list_tests(&suite_set, true);
+> >         else
+> >                 pr_err("kunit executor: unknown action '%s'\n", action_=
+param);
+> >
+> > diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> > index 84e4666555c9..9ee55139ecd1 100644
+> > --- a/lib/kunit/test.c
+> > +++ b/lib/kunit/test.c
+> > @@ -9,6 +9,7 @@
+> >  #include <kunit/resource.h>
+> >  #include <kunit/test.h>
+> >  #include <kunit/test-bug.h>
+> > +#include <kunit/attributes.h>
+> >  #include <linux/kernel.h>
+> >  #include <linux/module.h>
+> >  #include <linux/moduleparam.h>
+> > @@ -168,6 +169,13 @@ size_t kunit_suite_num_test_cases(struct kunit_sui=
+te *suite)
+> >  }
+> >  EXPORT_SYMBOL_GPL(kunit_suite_num_test_cases);
+> >
+> > +/* Currently supported test levels */
+> > +enum {
+> > +       KUNIT_LEVEL_SUITE =3D 0,
+> > +       KUNIT_LEVEL_CASE,
+> > +       KUNIT_LEVEL_CASE_PARAM,
+> > +};
+> > +
+> >  static void kunit_print_suite_start(struct kunit_suite *suite)
+> >  {
+> >         /*
+> > @@ -181,17 +189,11 @@ static void kunit_print_suite_start(struct kunit_=
+suite *suite)
+> >         pr_info(KUNIT_SUBTEST_INDENT "KTAP version 1\n");
+> >         pr_info(KUNIT_SUBTEST_INDENT "# Subtest: %s\n",
+> >                   suite->name);
+> > +       kunit_print_attr((void *)suite, false, KUNIT_LEVEL_CASE);
+> >         pr_info(KUNIT_SUBTEST_INDENT "1..%zd\n",
+> >                   kunit_suite_num_test_cases(suite));
+> >  }
+> >
+> > -/* Currently supported test levels */
+> > -enum {
+> > -       KUNIT_LEVEL_SUITE =3D 0,
+> > -       KUNIT_LEVEL_CASE,
+> > -       KUNIT_LEVEL_CASE_PARAM,
+> > -};
+> > -
+> >  static void kunit_print_ok_not_ok(struct kunit *test,
+> >                                   unsigned int test_level,
+> >                                   enum kunit_status status,
+> > @@ -651,6 +653,7 @@ int kunit_run_tests(struct kunit_suite *suite)
+> >                         }
+> >                 }
+> >
+> > +               kunit_print_attr((void *)test_case, true, KUNIT_LEVEL_C=
+ASE);
+> >
+> >                 kunit_print_test_stats(&test, param_stats);
+> >
+> > --
+> > 2.41.0.255.g8b1d071c50-goog
+> >
