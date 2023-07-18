@@ -2,286 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B21757F74
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67146757F77
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231280AbjGRO32 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 Jul 2023 10:29:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48944 "EHLO
+        id S232869AbjGRO3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232392AbjGRO30 (ORCPT
+        with ESMTP id S232931AbjGRO3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:29:26 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7410199
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:29:24 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1qLlhV-0006tl-VW; Tue, 18 Jul 2023 16:29:18 +0200
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1qLlhV-000OT8-9t; Tue, 18 Jul 2023 16:29:17 +0200
-Received: from pza by lupine with local (Exim 4.96)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1qLlhV-000ErN-07;
-        Tue, 18 Jul 2023 16:29:17 +0200
-Message-ID: <7c0a264a9a70fbb49e8024acdbc3aaa56f76441a.camel@pengutronix.de>
-Subject: Re: [PATCH] pwm: stm32: Implement .get_state()
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pwm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Tue, 18 Jul 2023 16:29:16 +0200
-In-Reply-To: <20230614073345.5ejzkbcdiel5v7zg@pengutronix.de>
-References: <20230608-pwm-stm32-get-state-v1-1-db7e58a7461b@pengutronix.de>
-         <20230614073345.5ejzkbcdiel5v7zg@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.46.4-2 
+        Tue, 18 Jul 2023 10:29:39 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C1B198D
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:29:36 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-bc379e4c1cbso6111126276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:29:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689690576; x=1690295376;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bryOwiknWUwevUDRi31Hq1FKRURS8yHR/1muX0AXWyg=;
+        b=gdgjSmK5j29S70GlL+c8ZQouFA8dEbeqlcpRKOx8mL1lIJBRamXv+LKgwiDywV8quf
+         iIy/LrUwLgTBsRUnfUOEDAZJLBlrrOPW0BUift1PCkKQdaEEzhs7Y5naPs+oNIDYDSuq
+         kyC1Y54Tb5Hf6Lu9dHGYTUApB5/bKHOcAu269nImuhrAUgRD4xBa+f34CPpdZFC3RkLO
+         gPU/quayPb+vxcxwhQv0YzGUjIUmFhvOSfnowOs1qJpqH3l9AnDeZecjG0kA20v63vQJ
+         RG+vopVgTAdOYjB/cNxhkJcWEMJWxjizVOTOKuLlqTAPqcy1+VyCoQoIwd8/tb+bn88L
+         RvUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689690576; x=1690295376;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bryOwiknWUwevUDRi31Hq1FKRURS8yHR/1muX0AXWyg=;
+        b=XP/JymN3NvF7DpuDq8cUrj0cpN5p0vWy4m3Q8BbzUyffPcWF+5HJUSwZHwTbxBcCYv
+         4qr5UNuTGPHnvU3ChJqwpKMayqW/8KYGh0SKvqI4BNRrLrIXwgyRoNA5jTaqnWrFuaHr
+         LP07dk016RKdHQiBp8GCrdMYe2hXFyzokq2n5+Ls4S6F76qY/4NobutSlvXu/a7F50bp
+         0ZvAEjMpZXhjRDoG/tlMQYmq8jq4dcVpVLiXICk9bZg4O/nxH2nkaD69KiiE/OjAARc5
+         fGk5q2V69oyxa1sH+in8w0RgFNfn3/I66i+n5f46924bMB0NggV2j/Fbd3KJB5cJlrNH
+         nJBA==
+X-Gm-Message-State: ABy/qLYqV6YiWGXXYLR2zF8ENkG539r4aqHaqC6kysysFNxyiLrXt1+Z
+        cQxZtRvcBFSheaknKmtUVJ3cxuoANBtXGJ4Ky9hH5A==
+X-Google-Smtp-Source: APBJJlHjApAsPpZDTVZJiTmpFY3wlhCJ5+3CoO0/LyGtCKZ7eR1ZMW5//Lib0UubQbiQxgUN/vmR1pU9nAGU+sPEQkQ=
+X-Received: by 2002:a25:ad1e:0:b0:c11:d5a9:d260 with SMTP id
+ y30-20020a25ad1e000000b00c11d5a9d260mr17616ybi.49.1689690575780; Tue, 18 Jul
+ 2023 07:29:35 -0700 (PDT)
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230717223049.327865981@linutronix.de>
+In-Reply-To: <20230717223049.327865981@linutronix.de>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 18 Jul 2023 16:29:23 +0200
+Message-ID: <CACRpkda2T2gxfjmHYqMNk-De7phRzeMFvenH84XJMK7BXbdv0Q@mail.gmail.com>
+Subject: Re: [patch 00/58] x86/apic: Decrapification and static calls
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Uwe,
+On Tue, Jul 18, 2023 at 1:14=E2=80=AFAM Thomas Gleixner <tglx@linutronix.de=
+> wrote:
 
-On Mi, 2023-06-14 at 09:33 +0200, Uwe Kleine-König wrote:
-> On Thu, Jun 08, 2023 at 04:06:02PM +0200, Philipp Zabel wrote:
-> > Stop stm32_pwm_detect_channels() from disabling all channels and count
-> > the number of enabled PWMs to keep the clock running. Implement the
-> > &pwm_ops->get_state callback so drivers can inherit PWM state set by
-> > the bootloader.
-> > 
-> > Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-> > ---
-> > Make the necessary changes to allow inheriting PWM state set by the
-> > bootloader, for example to avoid flickering with a pre-enabled PWM
-> > backlight.
-> > ---
-> >  drivers/pwm/pwm-stm32.c | 75 ++++++++++++++++++++++++++++++++++++++-----------
-> >  1 file changed, 59 insertions(+), 16 deletions(-)
-> > 
-> > diff --git a/drivers/pwm/pwm-stm32.c b/drivers/pwm/pwm-stm32.c
-> > index 62e397aeb9aa..e0677c954bdf 100644
-> > --- a/drivers/pwm/pwm-stm32.c
-> > +++ b/drivers/pwm/pwm-stm32.c
-> > @@ -52,6 +52,21 @@ static u32 active_channels(struct stm32_pwm *dev)
-> >  	return ccer & TIM_CCER_CCXE;
-> >  }
-> >  
-> > +static int read_ccrx(struct stm32_pwm *dev, int ch, u32 *value)
-> > +{
-> > +	switch (ch) {
-> > +	case 0:
-> > +		return regmap_read(dev->regmap, TIM_CCR1, value);
-> > +	case 1:
-> > +		return regmap_read(dev->regmap, TIM_CCR2, value);
-> > +	case 2:
-> > +		return regmap_read(dev->regmap, TIM_CCR3, value);
-> > +	case 3:
-> > +		return regmap_read(dev->regmap, TIM_CCR4, value);
-> > +	}
-> > +	return -EINVAL;
-> > +}
-> 
-> I'd prefer having something like:
-> 
-> 	#define TIM_CCR(i)	(0x30 + 4 * (i))	/* Capt/Comp Register i, for i in 1 .. 4 */
-> 	#define TIM_CCR1	TIM_CCR(1)
-> 	#define TIM_CCR2	TIM_CCR(2)
-> 	#define TIM_CCR3	TIM_CCR(3)
-> 	#define TIM_CCR4	TIM_CCR(4)
+> This builds and boots on 32bit and 64bit, but obviously needs a larger te=
+st
+> base especially on those old 32bit systems which are just museum pieces.
 
-I find this a bit confusing due to the 1-based register numbering. For
-example, 0x30 is not one of the CCR registers at all.
-When TIM_CCR(i) is used in the code, it's not evident that the valid
-range is 1...4.
+These things are indeed museum pieces if you think servers, desktops
+and laptops. They will at max be glorified terminals.
 
-I'd prefer to leave this as is ...
+What we noticed on ARM32 is that it used for:
+1. Running 32-bit kernels as guests in virtual machines (I don't know if
+  x86 has this problem, sorry I'm ignorant there)
+2. Embedded systems with very long support cycles
 
-> and then read_ccrx could be simplified to:
-> 
-> 	return regmap_read(dev->regmap, TIM_CCR(i + 1), value);
+For x86 there is PC104, I think William Breathitt Gray knows more about
+those, scope and usage etc. The typical usecase is industrial embedded
+(I've seen quite a few e.g biochemical lab equipment set-ups) which are
+running on a "it works don't fix it"-basis but they are network connected
+so they may need new kernels for security reasons, or to fix bugs.
+https://en.wikipedia.org/wiki/PC/104
 
-... and just turn this into
+These things have lifecycles that easily outspans any server, desktop or
+laptop. 30+ years easily. They are just sitting there, making whatever
+blood cleaning agent or medical.
 
-	regmap_read(regmap, TIM_CCR1 + 4 * ch, value);
+I think the automation people have mostly switched over to using
+ARM things such as RaspberryXYZ for new plants, but there is some
+poor guy with the job of keeping all the PC104 plants running on recent
+kernels for the next 20 years or so.
 
-> . (Not sure if passing an invalid channel really needs handling.)
-
-I think it is not necessary.
-
-ch is set to pwm->hwpwm, which is < pwm->npwm, which is <= 4.
-
-> But given that write_ccrx looks the same, I'm ok with that.
-
-I'd like to drop read/write_ccrx altogether and replace them with a
-single regmap_read/write.
-
-> > +
-> >  static int write_ccrx(struct stm32_pwm *dev, int ch, u32 value)
-> >  {
-> >  	switch (ch) {
-> > @@ -486,9 +501,40 @@ static int stm32_pwm_apply_locked(struct pwm_chip *chip, struct pwm_device *pwm,
-> >  	return ret;
-> >  }
-> >  
-> > +static int stm32_pwm_get_state(struct pwm_chip *chip,
-> > +			       struct pwm_device *pwm, struct pwm_state *state)
-> > +{
-> > +	struct stm32_pwm *priv = to_stm32_pwm_dev(chip);
-> > +	int ch = pwm->hwpwm;
-> > +	unsigned long rate;
-> > +	u32 ccer, psc, arr, ccr;
-> > +	u64 dty, prd;
-> > +	int ret;
-> > +
-> > +	ret = regmap_read(priv->regmap, TIM_CCER, &ccer);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	state->enabled = ccer & (TIM_CCER_CC1E << (ch * 4));
-> 
-> Other parts of the driver use the macros from <linux/bitfield.h>. With a
-> similar approach as suggested for TIM_CCR above, this could be made to
-> read as:
-> 
-> 	state->enabled = FIELD_GET(TIM_CCER_CCxE(ch + 1), ccer);
-
-Again this feels like an unnecessary indirection to me. I think it
-doesn't work like this either, the mask has to be a compile time
-constant.
-
-There's already a few examples of the (TIM_CCER_CC1E << (ch * 4))
-pattern in the driver. If they must be converted to something else, I'd
-prefer this to be done separately, for all of them.
-
-> > +	state->polarity = (ccer & (TIM_CCER_CC1P << (ch * 4))) ?
-> > +			  PWM_POLARITY_INVERSED : PWM_POLARITY_NORMAL;
-> > +	regmap_read(priv->regmap, TIM_PSC, &psc);
-> > +	regmap_read(priv->regmap, TIM_ARR, &arr);
-> > +	read_ccrx(priv, ch, &ccr);
-> 
-> You don't use the return value of read_ccrx(), so make it void (or check
-> it)? If you check it, also do it for regmap_read().
-
-Yes, thanks.
-
-> > +	rate = clk_get_rate(priv->clk);
-> > +
-> > +	prd = (u64)NSEC_PER_SEC * (psc + 1) * (arr + 1);
-> 
-> This might overflow?!
-
-In practice this can't happen because PSC, ARR, and CCRx fields are
-only 16-bit.
-Although I'm not sure whether this will be true for future designs.
-
-> > +	state->period = DIV_ROUND_UP_ULL(prd, rate);
-> > +	dty = (u64)NSEC_PER_SEC * (psc + 1) * ccr;
-> > +	state->duty_cycle = DIV_ROUND_UP_ULL(dty, rate);
-> > +
-> > +	return ret;
-> > +}
-> 
-> While looking at stm32_pwm_config() to check if it matches your
-> stm32_pwm_get_state() implementation, I noticed that for small values of
-> period_ns, prd might become 0 which than yields surprising effects in
-> combination with
-> 
-> 	regmap_write(priv->regmap, TIM_ARR, prd - 1);
-
-What to do about this, "prd = max(1, div);"?
-This should probably be fixed separately.
-
-> Also the driver needs locking because of the PSC and ARR registers are
-> shared for all channels
-
-I'll lock priv->lock in get_state.
-
-> and there are rounding issues (prd is used for
-> the calculation of dty).
-
-This should be fixed separately as well.
-
-> > +
-> >  static const struct pwm_ops stm32pwm_ops = {
-> >  	.owner = THIS_MODULE,
-> >  	.apply = stm32_pwm_apply_locked,
-> > +	.get_state = stm32_pwm_get_state,
-> >  	.capture = IS_ENABLED(CONFIG_DMA_ENGINE) ? stm32_pwm_capture : NULL,
-> >  };
-> >  
-> > @@ -579,30 +625,22 @@ static void stm32_pwm_detect_complementary(struct stm32_pwm *priv)
-> >  	priv->have_complementary_output = (ccer != 0);
-> >  }
-> >  
-> > -static int stm32_pwm_detect_channels(struct stm32_pwm *priv)
-> > +static int stm32_pwm_detect_channels(struct stm32_pwm *priv, int *n_enabled)
-> >  {
-> > -	u32 ccer;
-> > -	int npwm = 0;
-> > +	u32 ccer, ccer_backup;
-> > +	int npwm;
-> >  
-> >  	/*
-> >  	 * If channels enable bits don't exist writing 1 will have no
-> >  	 * effect so we can detect and count them.
-> >  	 */
-> > +	regmap_read(priv->regmap, TIM_CCER, &ccer_backup);
-> >  	regmap_set_bits(priv->regmap, TIM_CCER, TIM_CCER_CCXE);
-> >  	regmap_read(priv->regmap, TIM_CCER, &ccer);
-> > -	regmap_clear_bits(priv->regmap, TIM_CCER, TIM_CCER_CCXE);
-> > +	regmap_write(priv->regmap, TIM_CCER, ccer_backup);
-> >  
-> > -	if (ccer & TIM_CCER_CC1E)
-> > -		npwm++;
-> > -
-> > -	if (ccer & TIM_CCER_CC2E)
-> > -		npwm++;
-> > -
-> > -	if (ccer & TIM_CCER_CC3E)
-> > -		npwm++;
-> > -
-> > -	if (ccer & TIM_CCER_CC4E)
-> > -		npwm++;
-> > +	npwm = hweight32(ccer & TIM_CCER_CCXE);
-> > +	*n_enabled = hweight32(ccer_backup & TIM_CCER_CCXE);
-> 
-> hweight32 returns an unsigned int. While there is probably no problem
-> with values that don't fit, using unsigned for *n_enabled (and also
-> npwm) looks better IMHO. Maybe split making npwm unsigned and using
-> hweight32 to assign it to a separate preparing patch?
-
-Yes, I'll do that.
-
-> The inconsistency
-> between "npwm" (without underscore) and "n_enabled" (with underscore)
-> strikes me a bit. given that struct pwm_chip has "npwm", too, maybe drop
-> the _ from "n_enabled"?
-
-I can't properly read "nenabled", I'll turn it into "num_enabled"
-(there's precedence with "priv->num_breakinputs") and drop "npwm"
-altogether, as the value can be returned directly.
-
-> 
-regards
-Philipp
+Yours,
+Linus Walleij
