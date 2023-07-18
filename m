@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9E3757D9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82902757DA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232795AbjGRNaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:30:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34218 "EHLO
+        id S232760AbjGRNaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232743AbjGRN3y (ORCPT
+        with ESMTP id S232755AbjGRN3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:29:54 -0400
+        Tue, 18 Jul 2023 09:29:55 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B6211B;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFDF189;
         Tue, 18 Jul 2023 06:29:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B71761587;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C77061597;
         Tue, 18 Jul 2023 13:29:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6512BC433BF;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72DBEC433BC;
         Tue, 18 Jul 2023 13:29:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689686984;
-        bh=AMYMGf2yRrBIwpwEoaP+5FFAHqopIdp6a4vZOTfLp5I=;
+        bh=TWOyAxfNhR4md46HxCIq50axByCSHW3XcE6ta0uMwtg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ex9idKA8p5sN2VEyTfwNb61UYDj5uVpAcQdb5smc0jpORoL4EMU14KRkF5SAkOcpX
-         G6C10iuoIbnQ4FECss5qDWmdsPQ7qXWEmoR03qF6q/GqGuVy7RBujAyd2FhX7+VFlj
-         /U/miA14VIfLyY/jsMwzdVVmNcYSHCUOByy7EqKDG9Fz4N2D82Lajxbqsj1dyYU+9i
-         ElMcUbcJ6BzpBINyqGXHWb7/RbUTu/fLHJ/c8u/qd5Z6sG6kQGy00mzdNJkDYS7hPv
-         7GSpqNt+4KsQ3PKNbaQ4gZqzx79l96f+D3i4bQ1Kf6JYBC16a5VAttZbPN6NTupcr+
-         vwja/NYeC0HfQ==
+        b=YfHQkFwQfi8YLq8YSNNy7VDMP3T+yg5w9ohrxjGP//LfylrsN+lthlU2Hh2P1KjMA
+         BANpdbpwXY5bLliAYJZm+8duVGx6quRWFzEOFNnxUqkxI/CCey3sCpsolTNo9bxxNr
+         b+fLTE3fb9wbqs53vDk7Dp+UFSCeyLBqmwm6MH2sarUsP+iW6QKxa1F0hWASFYW1ZL
+         Gq08MG0/Oqfc4vuISwo5IFyoxBoJTZwKJ7QvjWlQn2U0tBpSyWFRNxy7kbqBxtgoI1
+         qrFjHyqEL/R/qb7ps+OtKjkKRXF3/FalLIkFl+ZPlejFHgBSRbtr1jbBO0Py7pxbCZ
+         qckg15REayTWg==
 Received: from johan by xi.lan with local (Exim 4.96)
         (envelope-from <johan+linaro@kernel.org>)
-        id 1qLkm2-0005cB-0a;
+        id 1qLkm2-0005cF-0r;
         Tue, 18 Jul 2023 15:29:54 +0200
 From:   Johan Hovold <johan+linaro@kernel.org>
 To:     Bjorn Andersson <andersson@kernel.org>
@@ -44,10 +44,11 @@ Cc:     Andy Gross <agross@kernel.org>,
         Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
         linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH 6/8] clk: qcom: q6sstop-qcs404: fix missing resume during probe
-Date:   Tue, 18 Jul 2023 15:29:00 +0200
-Message-ID: <20230718132902.21430-7-johan+linaro@kernel.org>
+        Johan Hovold <johan+linaro@kernel.org>, stable@vger.kernel.org,
+        Taniya Das <quic_tdas@quicinc.com>
+Subject: [PATCH 7/8] clk: qcom: mss-sc7180: fix missing resume during probe
+Date:   Tue, 18 Jul 2023 15:29:01 +0200
+Message-ID: <20230718132902.21430-8-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230718132902.21430-1-johan+linaro@kernel.org>
 References: <20230718132902.21430-1-johan+linaro@kernel.org>
@@ -67,18 +68,19 @@ Drivers that enable runtime PM must make sure that the controller is
 runtime resumed before accessing its registers to prevent the power
 domain from being disabled.
 
-Fixes: 6cdef2738db0 ("clk: qcom: Add Q6SSTOP clock controller for QCS404")
-Cc: stable@vger.kernel.org      # 5.5
+Fixes: 8def929c4097 ("clk: qcom: Add modem clock controller driver for SC7180")
+Cc: stable@vger.kernel.org      # 5.7
+Cc: Taniya Das <quic_tdas@quicinc.com>
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- drivers/clk/qcom/q6sstop-qcs404.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ drivers/clk/qcom/mss-sc7180.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/qcom/q6sstop-qcs404.c b/drivers/clk/qcom/q6sstop-qcs404.c
-index 780074e05841..26e2d63614ac 100644
---- a/drivers/clk/qcom/q6sstop-qcs404.c
-+++ b/drivers/clk/qcom/q6sstop-qcs404.c
-@@ -174,21 +174,32 @@ static int q6sstopcc_qcs404_probe(struct platform_device *pdev)
+diff --git a/drivers/clk/qcom/mss-sc7180.c b/drivers/clk/qcom/mss-sc7180.c
+index 5a1407440662..d106bc65470e 100644
+--- a/drivers/clk/qcom/mss-sc7180.c
++++ b/drivers/clk/qcom/mss-sc7180.c
+@@ -87,11 +87,22 @@ static int mss_sc7180_probe(struct platform_device *pdev)
  		return ret;
  	}
  
@@ -86,19 +88,8 @@ index 780074e05841..26e2d63614ac 100644
 +	if (ret)
 +		return ret;
 +
- 	q6sstop_regmap_config.name = "q6sstop_tcsr";
- 	desc = &tcsr_qcs404_desc;
- 
- 	ret = qcom_cc_probe_by_index(pdev, 1, desc);
- 	if (ret)
--		return ret;
-+		goto err_put_rpm;
- 
- 	q6sstop_regmap_config.name = "q6sstop_cc";
- 	desc = &q6sstop_qcs404_desc;
- 
- 	ret = qcom_cc_probe_by_index(pdev, 0, desc);
- 	if (ret)
+ 	ret = qcom_cc_probe(pdev, &mss_sc7180_desc);
+ 	if (ret < 0)
 -		return ret;
 +		goto err_put_rpm;
 +
@@ -112,7 +103,7 @@ index 780074e05841..26e2d63614ac 100644
 +	return ret;
  }
  
- static const struct dev_pm_ops q6sstopcc_pm_ops = {
+ static const struct dev_pm_ops mss_sc7180_pm_ops = {
 -- 
 2.41.0
 
