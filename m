@@ -2,131 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A577576EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2957576EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbjGRInR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60012 "EHLO
+        id S232016AbjGRInV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232030AbjGRIm7 (ORCPT
+        with ESMTP id S232053AbjGRInE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:42:59 -0400
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B77F1A6;
-        Tue, 18 Jul 2023 01:42:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1689669770;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Tue, 18 Jul 2023 04:43:04 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64969FA;
+        Tue, 18 Jul 2023 01:43:03 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1C586218BB;
+        Tue, 18 Jul 2023 08:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689669782; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=lvBHRW1hX7jSHUc5Dd1yf8Vt754q3/Qv7wxhKNRg9lU=;
-        b=maEuuMJ23VwXgPP1BYNWDWH9FoDi8ssbRkcHwVHdHZ+2liVDNNtSFXoi/Ucm7tD8fFcWkz
-        Y1+1pyzlgXX8KdYt9Wa7GKYCY48VbAbD6BnoH3PHwrKdfGz5uVVGeT1MlJH1yeEkON6JDi
-        BIcoju3Ka9xM3kidK/COzZ4sCOkXIp0=
-Message-ID: <5e4b5bc23f3edb3ed30cb465420a51ffceceb53d.camel@crapouillou.net>
-Subject: Re: [PATCH v2 10/10] pinctrl: tegra: Switch to use
- DEFINE_NOIRQ_DEV_PM_OPS() helper
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Balsam CHIHI <bchihi@baylibre.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
-        Sean Wang <sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
-Date:   Tue, 18 Jul 2023 10:42:47 +0200
-In-Reply-To: <ZLZDL27zzDpY4q8E@orome>
-References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
-         <20230717172821.62827-11-andriy.shevchenko@linux.intel.com>
-         <13f7153786cfcdc3c6185a3a674686f7fbf480dc.camel@crapouillou.net>
-         <ZLZDL27zzDpY4q8E@orome>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        bh=UmZNxaOE9WdI5cQjddt15xDrk872x/oU18U9Nk98KSg=;
+        b=f+dFVOm/4QVXMzGLzXUb4eQQ1GKgTuZP0EVzy7/BdVoUrgrMqRcEPRXWAp7MNXc7UVCx60
+        2a0s5O4NVE5FN/BbyEq1lY0SH53IOPmqJQKiLfWCEpkSr1TKE0SWI8AyTKyAy/2aDSAGH4
+        jiOoPHonJLUHTkka6BvPm/7P45+jMe8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689669782;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UmZNxaOE9WdI5cQjddt15xDrk872x/oU18U9Nk98KSg=;
+        b=36fhTgkkcWOWVytO88TXvO1ozHe2+5oc8tMrzpz8PezOjZhO8mLekp/NYSnmtAPRY7jmNJ
+        Xhh5EFUZkYrJE5BQ==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id BA2DB2C142;
+        Tue, 18 Jul 2023 08:43:01 +0000 (UTC)
+Date:   Tue, 18 Jul 2023 10:43:00 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     linux-modules@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Lucas De Marchi <lucas.de.marchi@gmail.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Jiri Slaby <jslaby@suse.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH kmod v4 4/4] libkmod, depmod, modprobe: Make directory
+ for kernel modules configurable
+Message-ID: <20230718084300.GU9196@kitsune.suse.cz>
+References: <20230711153126.28876-1-msuchanek@suse.de>
+ <cover.1689589902.git.msuchanek@suse.de>
+ <cc04472084dc016679598fcffafc788bbb6d9c0f.1689589902.git.msuchanek@suse.de>
+ <76o21q7n-8qo8-37p6-oqno-q08nqpos471@vanv.qr>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <76o21q7n-8qo8-37p6-oqno-q08nqpos471@vanv.qr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thierry,
+Hello,
 
-Le mardi 18 juillet 2023 =C3=A0 09:45 +0200, Thierry Reding a =C3=A9crit=C2=
-=A0:
-> On Mon, Jul 17, 2023 at 09:14:12PM +0200, Paul Cercueil wrote:
-> > Hi Andy,
-> >=20
-> > Le lundi 17 juillet 2023 =C3=A0 20:28 +0300, Andy Shevchenko a =C3=A9cr=
-it=C2=A0:
-> > > Since pm.h provides a helper for system no-IRQ PM callbacks,
-> > > switch the driver to use it instead of open coded variant.
-> > >=20
-> > > Signed-off-by: Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com>
-> > > ---
-> > > =C2=A0drivers/pinctrl/tegra/pinctrl-tegra.c | 5 +----
-> > > =C2=A01 file changed, 1 insertion(+), 4 deletions(-)
-> > >=20
-> > > diff --git a/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > b/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > index 4547cf66d03b..734c71ef005b 100644
-> > > --- a/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > +++ b/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > @@ -747,10 +747,7 @@ static int tegra_pinctrl_resume(struct
-> > > device
-> > > *dev)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
-> > > =C2=A0}
-> > > =C2=A0
-> > > -const struct dev_pm_ops tegra_pinctrl_pm =3D {
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.suspend_noirq =3D &tegra_=
-pinctrl_suspend,
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.resume_noirq =3D &tegra_p=
-inctrl_resume
-> > > -};
-> > > +DEFINE_NOIRQ_DEV_PM_OPS(tegra_pinctrl_pm, tegra_pinctrl_suspend,
-> > > tegra_pinctrl_resume);
-> > > =C2=A0
-> > > =C2=A0static bool tegra_pinctrl_gpio_node_has_range(struct tegra_pmx
-> > > *pmx)
-> > > =C2=A0{
-> >=20
-> > Another driver where using EXPORT_GPL_DEV_PM_OPS() would make more
-> > sense.
->=20
-> We don't currently export these PM ops because none of the Tegra
-> pinctrl
-> drivers can be built as a module.
+On Mon, Jul 17, 2023 at 09:28:30PM +0200, Jan Engelhardt wrote:
+> 
+> On Monday 2023-07-17 12:39, Michal Suchanek wrote:
+> 
+> >modprobe.d is now searched under ${prefix}/lib, add ${module_directory} to
+> >specify the directory where to search for kernel modules.
+> >
+> >With this distributions that do not want to ship files in /lib can also
+> >move kernel modules to /usr while others can keep them in /lib.
+> 
+> This patch breaks kernel builds/installation.
+> 
+>  * assume $distro has given me a kmod that has your submission included,
+>    and such kmod was ./configure'd --with-module-directory=/usr/lib/modules
+> 
+> With such a kmod, the module installation of current and past kernels
+> is not possible, in other words, ** bisecting kernels ** is broken:
 
-This doesn't change anything. You'd want to use EXPORT_GPL_DEV_PM_OPS
-(or better, the namespaced version) so that the PM ops can be defined
-in one file and referenced in another, while still having them garbage-
-collected when CONFIG_PM is disabled.
+It might be nice to provide backwads compatibility with earlier
+configurations.
 
-Cheers,
--Paul
+However, if it comes at the cost of making the implementation more
+complex and future maintenance more difficult it might not be such a
+great idea. So far I have not seen a proposal how to do it nicely.
+
+You can use any of the number of workarounds that have been used for
+installing kernels on usrmerged distributions up until now.
+
+sed -i -e s,/lib/modules,/usr/lib/modules, Makefile scripts/depmod.sh is
+one.
+
+Failing depmod is not critical, you can fix it up after the fact once
+the modules are deployed on the test system.
+
+You can also build a differently configured kmod for the purpose and
+pass it with DEPMOD= to the kernel build.
+
+Thanks
+
+Michal
