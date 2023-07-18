@@ -2,74 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4B47586B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230FA7586BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbjGRVQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 17:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39434 "EHLO
+        id S231327AbjGRVRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 17:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbjGRVQk (ORCPT
+        with ESMTP id S229510AbjGRVRr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 17:16:40 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E2E1998
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:16:37 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-992ace062f3so865427666b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:16:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gateworks-com.20221208.gappssmtp.com; s=20221208; t=1689714996; x=1692306996;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E3l5b6fjCqYkc1Ou+xz9fDA/3zqE2Nao7Y82ogOypK4=;
-        b=1GbbTX1wQ3HyzN+6JhzVk6tFEqPdThi7ya6ZBYCaSoPmTyIEciobKI0uKW3LqmbW2O
-         UnSBey/amOqVMKOeYKN++L33D+YcyCVvlFlciAAKZ3lo5Xo9NvJH0aYxD/Mu41p+ViXX
-         my0AxuJEqpfkhh/Wt7PB2tsG7PrkO+HDGAPrUcIFyq/zepnMtgsV9nnTSXUwZFo88M+6
-         ALdVi6gds82qtmYx+bruYddSKcUcWPuJe/5+BRNThgpzp05F6qp+T3B8yc3F5ooQVyvG
-         cTPglpBcSykd02PuH//Dz8uWtxStGt1zGyRHebduaMXxQd3bfH5kKfCraH0L8SHyc2zb
-         QsSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689714996; x=1692306996;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E3l5b6fjCqYkc1Ou+xz9fDA/3zqE2Nao7Y82ogOypK4=;
-        b=LPzf5Rjr0JVWBw6NHnsSKRcqNhIvAGlUVi+JmghDjtN3k3YYiMsjcJD5Y7161/9sa3
-         ibwZ+zAnLM+flOH/po3FaBQUFxR4C5cRU0uTCZX2uCb3edd9S6takpLNEl5RwGQrVZZS
-         Ly+5/Hpqmru3MDd3KuFCrjfwP/1XDWlnw4lsffqq5AMAtpPfI1OIJm+K286ALqh21tYA
-         SkklyBeoN88IwJuFeymHHLo+prLNHCXv2gt32KjkUCIBjlVlXal6aONsH2xxc2yK/hIZ
-         NLfQq2gy4ci+Eqh/f6N3NMv6yo7DHrggCOt/P31HUehZKyT1hnQYlmdEw5QlS463Kps2
-         dgxA==
-X-Gm-Message-State: ABy/qLbVWbvlfD7N9fntMW0AZwSrQMt6x9SCsE2LpRLdUGubx9/5GNQs
-        NG53SecI/Z0Y9XUUCN/s/UHcYyqzIPQCLsMsFourWw==
-X-Google-Smtp-Source: APBJJlE+HnXXcT07j8t7C89/yxNlvYSRHCuNfd0fNYCV4MuOQPdATMP1uBMS49Yd4Ei7HXNOLMnKrT1/MHWtcviG0Kw=
-X-Received: by 2002:a17:906:51:b0:994:577:f9df with SMTP id
- 17-20020a170906005100b009940577f9dfmr737739ejg.4.1689714995726; Tue, 18 Jul
- 2023 14:16:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230607170724.2016988-1-tharvey@gateworks.com>
- <20230607170724.2016988-2-tharvey@gateworks.com> <20230717002717.GI9559@dragon>
-In-Reply-To: <20230717002717.GI9559@dragon>
-From:   Tim Harvey <tharvey@gateworks.com>
-Date:   Tue, 18 Jul 2023 14:16:22 -0700
-Message-ID: <CAJ+vNU2Wn0jf8QyZsGiw3f=XThZEfXajhGJTmZz2mnJXgprAhQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: freescale: Add imx8mp-venice-gw71xx-2x
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 18 Jul 2023 17:17:47 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA3F1995;
+        Tue, 18 Jul 2023 14:17:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689715065; x=1721251065;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Sktf3a7hMiwwC1SqTQSc62guPtfPJu8fgsWvCzPl9Vk=;
+  b=DTsHAfJWgpIRH/22QanCmpZNKcgrFIHCsb7WApkdvADXCYEdmxWKIMI1
+   NJwMAlPmAZLTz7WZZE4CZeP5HdnPzBEfnqypN/x3LVUQiwTLYNbAa/88B
+   bDtFyxNcycUuMPqAoy38Nf8I4OYc58so4uiqZBh0DPspOE58m01o/YHLq
+   rlHrjUADYWTsQiwq6uzzVP5wy6ECHatkFIddqEJJ8pfqgfTPbROvS4GrA
+   4SB1Hjx8OZ0kDEKJ/dW4oApxzDm6ccWSb4jU2KJDh7blyocC9cs/H7JEa
+   XCxbCLFY+3ZXgoE3Q1c8E/o0h8i0nTdrp8LUPVwG3s6oop9Kr49EfRK9L
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="397162993"
+X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
+   d="scan'208";a="397162993"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 14:17:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="837417851"
+X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
+   d="scan'208";a="837417851"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga002.fm.intel.com with ESMTP; 18 Jul 2023 14:17:38 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 18 Jul 2023 14:17:38 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 18 Jul 2023 14:17:38 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.172)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 18 Jul 2023 14:17:19 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J5tuYH0aEeQphgfJY+ZH9LLqmNisgFNM2gXbZamWYN550p+DzRVh/ecZCxXoFI/wzw52Rsa9NBaxSvTc9VQLd4H16rC4G7f+5yxM1aGw9qmZGtJmqBpT/0st7Na3ctxoeTpVPHkNZzwojmYcSea5Xr1f5i9uHzTaFoHptvOH7PZKiyYmD7J8Sc28jBn+f9DXMFId3LVCz67331MH7w4W7kkFRB5GmoNvbO2Q8iBlMKMk7uAL17tYIMfbOUUh4rJu1lvH8WGjFxIZqFg3UaZL4RecqVLUbhv7dkKGb1d+MEp2JRY3YYC7HiaQPeWHqxRtSOcrZzrvZj1CUws93bhVAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eSKqDH6NeqMQqLfp9KGwGEoWlQKpzwvGT/b8jZYG7ls=;
+ b=EfYFJsvuif0XkMZCnPlSo6P7IvFseHohneXT8eKNSRGUnFXCvTg+hK3Em4jVmWpw4VnekuJEtGRQegd4tnE7o930K0AUSETuzqp6vZXtRCZGpVbhaOx3a5pgP9NFFIDdsViiJSFjcbuTxW0EPEHNA0Jzh4eCto8hq1G6NItyCviTlD0GwFcZG53iUfW3PJjV/bu8/e8uujCmTUMyE2t/w9y+Ik8ygxeqJ77vBEsG1sfiKAAI+80Iidr2EMXmeI74Aq/Qocv3K1iAEWX7oZ2125usctfdZXJnGu7L7RD1J6P1w7+XcX5IHD9rEyBzC4sUHKclACs/CwoAnV8vTnW3zQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MWHPR11MB0029.namprd11.prod.outlook.com (2603:10b6:301:67::25)
+ by CY8PR11MB6940.namprd11.prod.outlook.com (2603:10b6:930:58::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32; Tue, 18 Jul
+ 2023 21:17:18 +0000
+Received: from MWHPR11MB0029.namprd11.prod.outlook.com
+ ([fe80::d640:6dfd:c759:1c0e]) by MWHPR11MB0029.namprd11.prod.outlook.com
+ ([fe80::d640:6dfd:c759:1c0e%5]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
+ 21:17:18 +0000
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        "Devale, Sindhu" <sindhu.devale@intel.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] RDMA/irdma: fix building without IPv6
+Thread-Topic: [PATCH] RDMA/irdma: fix building without IPv6
+Thread-Index: AQHZua9+pH4mO804dUWGwvttR0llLq/ABrtw
+Date:   Tue, 18 Jul 2023 21:17:18 +0000
+Message-ID: <MWHPR11MB0029128131B076B77BA55078E938A@MWHPR11MB0029.namprd11.prod.outlook.com>
+References: <20230718193835.3546684-1-arnd@kernel.org>
+In-Reply-To: <20230718193835.3546684-1-arnd@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MWHPR11MB0029:EE_|CY8PR11MB6940:EE_
+x-ms-office365-filtering-correlation-id: 76282bf0-eae0-4f48-c1a4-08db87d45e05
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3haMC7FbEZc6bocgWl65YkTaGO0v+yP+0jb5umE2lUtHBnL6+/4NFuBSLh866gEHKA5XiZ1IATS4EbEH/vN8IbgrLEq2CkKph8q81PQ0seWxuhh0wwTj5BQND46KFt2lObsvmvVCd142GJ/OCi7NzWlGkiBcdTSw2515ZtoKV+Oei6oBC3Zk+UV3HyPDULEXabZZpxq+luVyKnNz5Ni8nx7d7SPgYq3395bnkff21H9+TI/RlhDrlGAAudzCZmGR4At7f8DytNqEppetLFXBIG/RnnAOSk/sd/e9rUi9pOC+zq4tJgfqBXUmikX9oBNBtqaJU4GV5UEi1SCseToWF7kewBaEnr5dtqSBfeISTIUwxDwN/6txb6XHtn1mdvfx5eBxFlzt1ECiUJ5yiO2vJGmOm5x9BcxxQ/R18zkqcdAbk3LZjjUe4sm7UTZ0N27tWXaBvjSt/HbVDzmk2z6T6pxZ6GbBZheaDHCXrTg19BRQdX/eGoc9t6P2tlq3yvwQBsgNk+DpIfrvJfOIXx5WvfYn20p4wMlV9YkhC2MpwLXTqy6dsDsP/lPuKb3kXC4aaTbdWfodbYta+vFkU5J004HoK0QqE4giMEYgS23o1DRnAig/y4krnvpAXgYbpMNA
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB0029.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(136003)(396003)(376002)(346002)(39860400002)(451199021)(110136005)(2906002)(478600001)(7696005)(54906003)(71200400001)(8676002)(4326008)(316002)(66476007)(66556008)(64756008)(41300700001)(66446008)(66946007)(8936002)(76116006)(82960400001)(83380400001)(55016003)(38100700002)(122000001)(9686003)(33656002)(52536014)(38070700005)(86362001)(26005)(186003)(6506007)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?OlyoxaUw5mPmIEPvtyLfWiS1DZxxQxH6kuUQqpzuGj7Lv0qH4wFY16QD+sKC?=
+ =?us-ascii?Q?+SpoUvPLBJvwnVzwNdZ+OSsO6FqTgUM3GQ2bJR2so395K/yhqwSE3nKmSPLR?=
+ =?us-ascii?Q?msdMF6F5Sg6SVtOc/OU8vS/Rg0IULz2OXibuLZVJ/kekQIRMoEodfUmM1Uir?=
+ =?us-ascii?Q?ZHGz25SeVqfP8zH2a7j2uCDMob19JcmHzRdazsQly7KkOEdGK9cu0pJ6Iqhq?=
+ =?us-ascii?Q?QjRE7VpKqo1lR+V0HVPnKMWVmpBRA1uTvgsa9jvzr+3Q71uc6q/UCcJxokFD?=
+ =?us-ascii?Q?K/VMbfNoWacQkO12opW0TbwGP1bGjIisL2RJ3kR5vjD71g7Sum3o4fbk/e5n?=
+ =?us-ascii?Q?LAOuQoD4xZ6i2eD1YbZIqb1m3SOjec0pA2QVWo+Mqo2EePqyyAcGG//zaWeH?=
+ =?us-ascii?Q?pi8BIsbZK/WvtTfjQOr8nLZsViLyk/T48PEDWOlklWJMPabb6qYxWoO87fIs?=
+ =?us-ascii?Q?GQR9xtYZVHMCtQBggeeDZ2XILGSA8jDI/XPAqWRyw2/IQ4GI4cd4q+moZf3H?=
+ =?us-ascii?Q?Qb3SvgR4NbXFPLaUo5EfwZEa4WT2k+EDEy+5Mge/LxBYVaU04kv3yOGdF45O?=
+ =?us-ascii?Q?WKExQ7D+zmqEuvmxcLWDfVJUdCZQxnnM/PnZjnSEG12zdu/qR0wo4FKt+Etl?=
+ =?us-ascii?Q?fxJRblRUb6sgQuiwZ5LNglL8nmSZJ4CmJRFY/FrtJM812s2JDAB/BKrMkk40?=
+ =?us-ascii?Q?CeOYdulByjAoGibTLo07gjyvXOmk0TzUwG4UufHSct8QzcfkPFWWTtzouNi2?=
+ =?us-ascii?Q?LDqvRWrtLkPAS9wezSxLtlPMhJjByGA+9zfnDc3tRWqxQJAyTmctm8D+867S?=
+ =?us-ascii?Q?pEeS4hoDNIAzTOR7yIe0Oix0ZGaRbkppkhfcJeIeQq2ilkjw8LupzY9gkao1?=
+ =?us-ascii?Q?rk7Nf0Z/0hERzgfSg3b1mJojUkQWuOFoHyU8dzD2t39Y8E3liaBnuW2SPQHQ?=
+ =?us-ascii?Q?YkjEvle7PD4e8pnC1MSRyplgrmTldyu8+69355idnnElOFQ6+X9Ztzvc/O1U?=
+ =?us-ascii?Q?RQfPhqdxG2l6o/zNrIf6mHfdOY2RBdck/O6t80pJQukjMKp/sSC0Jrnqjj/d?=
+ =?us-ascii?Q?kXIj+tt/W/Bkx21jgvtS2Wd9Kmk//2/YHph5k2BYXsT7sfVI9QcToa5LjQw6?=
+ =?us-ascii?Q?LFMhOSNg6/gpts1adz4rBO5FopR9pQq7Epi9+NNfucz9wQEuouL4E7yqoG7s?=
+ =?us-ascii?Q?3+a62mLO72x7pFhFHGsJ0lxKPHSDVG0jbYjtLuTBSr+RU3rGOlCuE6kbHNNT?=
+ =?us-ascii?Q?kkfjGQ0Vgv6i/7QIF7NYnfOs5gei1H6Xh+Hq6Mw6krH3dScmiJbObKWXgGip?=
+ =?us-ascii?Q?salvFEquO8+KQKcBWOXL62WF9gOGQH21MwU4R9L+Q+gDljfrst7XDiJFFqxx?=
+ =?us-ascii?Q?Bu6BFuMUjoG1YC0Sma+Q+nLGRngNHj0bKlj1PkzYT8ouuJ5eokI2ICVHgeWw?=
+ =?us-ascii?Q?D1npL9PuVSSghYC8CKW+3Q4oyJcuJNswVj1/87eX0eCvEH3tRJZhzJCmHjBp?=
+ =?us-ascii?Q?y+4Xa4XVSbQmO1LLO4VKLe9hotp7ClDCamUVuLXCqNjCa2GQ39fDt6yo/mVG?=
+ =?us-ascii?Q?+nI+Cfc+OeSfVDk+bD2DO9OzSCVpra1nJ73j9zgs?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB0029.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76282bf0-eae0-4f48-c1a4-08db87d45e05
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jul 2023 21:17:18.3303
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mQSTbLb7nipcVTCW5/EqRXbDYoIdikdRda9XvGSLMofayvkrLr8M3rV9LTwlNzzBpycz1F8okDyCx76W5BVj2A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6940
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,368 +153,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 16, 2023 at 5:27=E2=80=AFPM Shawn Guo <shawnguo@kernel.org> wro=
-te:
->
-> On Wed, Jun 07, 2023 at 10:07:24AM -0700, Tim Harvey wrote:
-> > The Gateworks imx8mp-venice-gw71xx-2x consists of a SOM + baseboard.
-> >
-> > The GW702x SOM contains the following:
-> >  - i.MX8M Plus SoC
-> >  - LPDDR4 memory
-> >  - eMMC Boot device
-> >  - Gateworks System Controller (GSC) with integrated EEPROM, button
-> >    controller, and ADC's
-> >  - PMIC
-> >  - SOM connector providing:
-> >   - eQoS GbE MII
-> >   - 1x SPI
-> >   - 2x I2C
-> >   - 4x UART
-> >   - 2x USB 3.0
-> >   - 1x PCI
-> >   - 1x SDIO (4-bit 3.3V)
-> >   - 1x SDIO (4-bit 3.3V/1.8V)
-> >   - GPIO
-> >
-> > The GW71xx Baseboard contains the following:
-> >  - GPS
-> >  - RJ45 GbE (eQoS)
-> >  - off-board I/O connector with UART, I2C, SPI, GPIO
-> >  - EERPOM
-> >  - PCIe clock generator
-> >  - full-length miniPCIe socket with PCI/USB3 (via mux) and USB2.0
-> >  - USB Type-C with USB 2.0 host and peripheral support
-> >  - Wide range DC input supply
-> >
-> > Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> > ---
-> >  arch/arm64/boot/dts/freescale/Makefile        |   1 +
-> >  .../dts/freescale/imx8mp-venice-gw71xx-2x.dts |  19 ++
-> >  .../dts/freescale/imx8mp-venice-gw71xx.dtsi   | 236 ++++++++++++++++++
-> >  3 files changed, 256 insertions(+)
-> >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx-=
-2x.dts
-> >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx.=
-dtsi
-> >
-> > diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/d=
-ts/freescale/Makefile
-> > index 62f22b77b38b..b3bb823d0168 100644
-> > --- a/arch/arm64/boot/dts/freescale/Makefile
-> > +++ b/arch/arm64/boot/dts/freescale/Makefile
-> > @@ -101,6 +101,7 @@ dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-icore-mx8mp-edim=
-m2.2.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-msc-sm2s-ep1.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-phyboard-pollux-rdk.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-tqma8mpql-mba8mpxl.dtb
-> > +dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-venice-gw71xx-2x.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-venice-gw74xx.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-venice-gw7905-2x.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-verdin-nonwifi-dahlia.dtb
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx-2x.dts =
-b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx-2x.dts
-> > new file mode 100644
-> > index 000000000000..53120fc9cd7f
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx-2x.dts
-> > @@ -0,0 +1,19 @@
-> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> > +/*
-> > + * Copyright 2023 Gateworks Corporation
-> > + */
-> > +
-> > +/dts-v1/;
-> > +
-> > +#include "imx8mp.dtsi"
-> > +#include "imx8mp-venice-gw702x.dtsi"
-> > +#include "imx8mp-venice-gw71xx.dtsi"
-> > +
-> > +/ {
-> > +     model =3D "Gateworks Venice GW71xx-2x i.MX8MP Development Kit";
-> > +     compatible =3D "gateworks,imx8mp-gw71xx-2x", "fsl,imx8mp";
-> > +
-> > +     chosen {
-> > +             stdout-path =3D &uart2;
-> > +     };
-> > +};
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx.dtsi b/=
-arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx.dtsi
-> > new file mode 100644
-> > index 000000000000..86999f52d4b2
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx.dtsi
-> > @@ -0,0 +1,236 @@
-> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> > +/*
-> > + * Copyright 2023 Gateworks Corporation
-> > + */
-> > +
-> > +#include <dt-bindings/gpio/gpio.h>
-> > +#include <dt-bindings/leds/common.h>
-> > +#include <dt-bindings/phy/phy-imx8-pcie.h>
-> > +
-> > +/ {
-> > +     led-controller {
-> > +             compatible =3D "gpio-leds";
-> > +             pinctrl-names =3D "default";
-> > +             pinctrl-0 =3D <&pinctrl_gpio_leds>;
-> > +
-> > +             led-0 {
-> > +                     function =3D LED_FUNCTION_STATUS;
-> > +                     color =3D <LED_COLOR_ID_GREEN>;
-> > +                     gpios =3D <&gpio4 1 GPIO_ACTIVE_HIGH>;
-> > +                     default-state =3D "on";
-> > +                     linux,default-trigger =3D "heartbeat";
-> > +             };
-> > +
-> > +             led-1 {
-> > +                     function =3D LED_FUNCTION_STATUS;
-> > +                     color =3D <LED_COLOR_ID_RED>;
-> > +                     gpios =3D <&gpio4 5 GPIO_ACTIVE_HIGH>;
-> > +                     default-state =3D "off";
-> > +             };
-> > +     };
-> > +
-> > +     pcie0_refclk: pcie0-refclk {
->
-> Can we name the node clock-xxx?
->
-> > +             compatible =3D "fixed-clock";
-> > +             #clock-cells =3D <0>;
-> > +             clock-frequency =3D <100000000>;
-> > +     };
-> > +
-> > +     pps {
-> > +             compatible =3D "pps-gpio";
-> > +             pinctrl-names =3D "default";
-> > +             pinctrl-0 =3D <&pinctrl_pps>;
-> > +             gpios =3D <&gpio4 3 GPIO_ACTIVE_HIGH>;
-> > +             status =3D "okay";
-> > +     };
-> > +};
-> > +
-> > +/* off-board header */
-> > +&ecspi2 {
-> > +     pinctrl-names =3D "default";
-> > +     pinctrl-0 =3D <&pinctrl_spi2>;
-> > +     cs-gpios =3D <&gpio5 13 GPIO_ACTIVE_LOW>;
-> > +     status =3D "okay";
-> > +};
-> > +
-> > +&gpio4 {
-> > +     gpio-line-names =3D
-> > +             "", "", "", "",
-> > +             "", "", "", "",
-> > +             "dio1", "", "", "dio0",
-> > +             "", "", "pci_usb_sel", "",
-> > +             "", "", "", "",
-> > +             "", "", "", "",
-> > +             "dio3", "", "dio2", "",
-> > +             "pci_wdis#", "", "", "";
-> > +};
-> > +
-> > +&i2c2 {
-> > +     clock-frequency =3D <400000>;
-> > +     pinctrl-names =3D "default";
-> > +     pinctrl-0 =3D <&pinctrl_i2c2>;
-> > +     status =3D "okay";
-> > +
-> > +     accelerometer@19 {
-> > +             pinctrl-names =3D "default";
-> > +             pinctrl-0 =3D <&pinctrl_accel>;
-> > +             compatible =3D "st,lis2de12";
-> > +             reg =3D <0x19>;
->
-> Can we start the property list from these two?
->
-> > +             st,drdy-int-pin =3D <1>;
-> > +             interrupt-parent =3D <&gpio4>;
-> > +             interrupts =3D <21 IRQ_TYPE_LEVEL_LOW>;
-> > +             interrupt-names =3D "INT1";
-> > +     };
-> > +};
-> > +
-> > +&pcie_phy {
-> > +     fsl,refclk-pad-mode =3D <IMX8_PCIE_REFCLK_PAD_INPUT>;
-> > +     fsl,clkreq-unsupported;
-> > +     clocks =3D <&pcie0_refclk>;
-> > +     clock-names =3D "ref";
-> > +     status =3D "okay";
-> > +};
-> > +
-> > +&pcie {
-> > +     pinctrl-names =3D "default";
-> > +     pinctrl-0 =3D <&pinctrl_pcie0>;
-> > +     reset-gpio =3D <&gpio4 29 GPIO_ACTIVE_LOW>;
-> > +     status =3D "okay";
-> > +};
-> > +
-> > +/* GPS */
-> > +&uart1 {
-> > +     pinctrl-names =3D "default";
-> > +     pinctrl-0 =3D <&pinctrl_uart1>;
-> > +     status =3D "okay";
-> > +};
-> > +
-> > +/* off-board header */
-> > +&uart3 {
-> > +     pinctrl-names =3D "default";
-> > +     pinctrl-0 =3D <&pinctrl_uart3>;
-> > +     status =3D "okay";
-> > +};
-> > +
-> > +/* USB1 Type-C front panel */
-> > +&usb3_0 {
-> > +     pinctrl-names =3D "default";
-> > +     pinctrl-0 =3D <&pinctrl_usb1>;
-> > +     fsl,over-current-active-low;
-> > +     status =3D "okay";
-> > +};
-> > +
-> > +&usb3_phy0 {
-> > +     status =3D "okay";
-> > +};
-> > +
-> > +&usb_dwc3_0 {
-> > +     /* dual role is implemented but not a full featured OTG */
-> > +     adp-disable;
-> > +     hnp-disable;
-> > +     srp-disable;
-> > +     dr_mode =3D "otg";
-> > +     usb-role-switch;
-> > +     role-switch-default-mode =3D "peripheral";
-> > +     status =3D "okay";
-> > +
-> > +     connector {
-> > +             pinctrl-names =3D "default";
-> > +             pinctrl-0 =3D <&pinctrl_usbcon1>;
-> > +             compatible =3D "gpio-usb-b-connector", "usb-b-connector";
->
-> Start the properties from 'compatible'?
->
-> Shawn
->
+> Subject: [PATCH] RDMA/irdma: fix building without IPv6
+>=20
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> The new irdma_iw_get_vlan_prio() function requires IPv6 support to build:
+>=20
+> x86_64-linux-ld: drivers/infiniband/hw/irdma/cm.o: in function
+> `irdma_iw_get_vlan_prio':
+> cm.c:(.text+0x2832): undefined reference to `ipv6_chk_addr'
+>=20
+> Add a compile-time check in the same way as elsewhere in this file to avo=
+id this by
+> conditionally leaving out the ipv6 specific bits.
+>=20
+> Fixes: f877f22ac1e9b ("RDMA/irdma: Implement egress VLAN priority")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/infiniband/hw/irdma/cm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/infiniband/hw/irdma/cm.c b/drivers/infiniband/hw/ird=
+ma/cm.c
+> index 6b71b67ce9ff0..8ea55c6a3fba5 100644
+> --- a/drivers/infiniband/hw/irdma/cm.c
+> +++ b/drivers/infiniband/hw/irdma/cm.c
+> @@ -1562,7 +1562,7 @@ static u8 irdma_iw_get_vlan_prio(u32 *loc_addr, u8
+> prio, bool ipv4)
+>  	rcu_read_lock();
+>  	if (ipv4) {
+>  		ndev =3D ip_dev_find(&init_net, htonl(loc_addr[0]));
+> -	} else {
+> +	} else if (IS_ENABLED(CONFIG_IPV6)) {
+>  		struct net_device *ip_dev;
+>  		struct in6_addr laddr6;
+>=20
+> --
+> 2.39.2
 
-Hi Shawn,
+Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
 
-My notes say that pinctrl should come first (if needed) followed by
-compatible, reg, other props, and finally status (if needed). Assuming
-I'm wrong about that where in the list should pinctrl be and is this
-documented anywhere for future reference?
-
-Best regards,
-
-Tim
-
-> > +             type =3D "micro";
-> > +             label =3D "Type-C";
-> > +             id-gpios =3D <&gpio3 21 GPIO_ACTIVE_HIGH>;
-> > +     };
-> > +};
-> > +
-> > +/* USB2 - MiniPCIe socket */
-> > +&usb3_1 {
-> > +     fsl,permanently-attached;
-> > +     fsl,disable-port-power-control;
-> > +     status =3D "okay";
-> > +};
-> > +
-> > +&usb3_phy1 {
-> > +     status =3D "okay";
-> > +};
-> > +
-> > +&usb_dwc3_1 {
-> > +     dr_mode =3D "host";
-> > +     status =3D "okay";
-> > +};
-> > +
-> > +&iomuxc {
-> > +     pinctrl-names =3D "default";
-> > +     pinctrl-0 =3D <&pinctrl_hog>;
-> > +
-> > +     pinctrl_hog: hoggrp {
-> > +             fsl,pins =3D <
-> > +                     MX8MP_IOMUXC_SAI1_RXD6__GPIO4_IO08      0x4000014=
-6 /* DIO1 */
-> > +                     MX8MP_IOMUXC_SAI1_TXC__GPIO4_IO11       0x4000014=
-6 /* DIO0 */
-> > +                     MX8MP_IOMUXC_SAI1_TXD2__GPIO4_IO14      0x4000010=
-6 /* PCIE_USBSEL */
-> > +                     MX8MP_IOMUXC_SAI2_TXD0__GPIO4_IO26      0x4000014=
-6 /* DIO2 */
-> > +                     MX8MP_IOMUXC_SAI2_TXFS__GPIO4_IO24      0x4000014=
-6 /* DIO3 */
-> > +                     MX8MP_IOMUXC_SAI3_RXFS__GPIO4_IO28      0x4000010=
-6 /* PCIE_WDIS# */
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_accel: accelgrp {
-> > +             fsl,pins =3D <
-> > +                     MX8MP_IOMUXC_SAI2_RXFS__GPIO4_IO21      0x150   /=
-* IRQ */
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_gpio_leds: gpioledgrp {
-> > +             fsl,pins =3D <
-> > +                     MX8MP_IOMUXC_SAI1_RXC__GPIO4_IO01       0x6     /=
-* LEDG */
-> > +                     MX8MP_IOMUXC_SAI1_RXD3__GPIO4_IO05      0x6     /=
-* LEDR */
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_pcie0: pcie0grp {
-> > +             fsl,pins =3D <
-> > +                     MX8MP_IOMUXC_SAI3_RXC__GPIO4_IO29       0x106
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_pps: ppsgrp {
-> > +             fsl,pins =3D <
-> > +                     MX8MP_IOMUXC_SAI1_RXD1__GPIO4_IO03      0x146
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_usb1: usb1grp {
-> > +             fsl,pins =3D <
-> > +                     MX8MP_IOMUXC_GPIO1_IO13__USB1_OTG_OC    0x140 /* =
-USB1_FLT# */
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_usbcon1: usbcon1grp {
-> > +             fsl,pins =3D <
-> > +                     MX8MP_IOMUXC_SAI5_RXD0__GPIO3_IO21      0x140 /* =
-USB1_ID */
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_spi2: spi2grp {
-> > +             fsl,pins =3D <
-> > +                     MX8MP_IOMUXC_ECSPI2_SCLK__ECSPI2_SCLK   0x140
-> > +                     MX8MP_IOMUXC_ECSPI2_MOSI__ECSPI2_MOSI   0x140
-> > +                     MX8MP_IOMUXC_ECSPI2_MISO__ECSPI2_MISO   0x140
-> > +                     MX8MP_IOMUXC_ECSPI2_SS0__GPIO5_IO13     0x140
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_uart1: uart1grp {
-> > +             fsl,pins =3D <
-> > +                     MX8MP_IOMUXC_UART1_RXD__UART1_DCE_RX    0x140
-> > +                     MX8MP_IOMUXC_UART1_TXD__UART1_DCE_TX    0x140
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_uart3: uart3grp {
-> > +             fsl,pins =3D <
-> > +                     MX8MP_IOMUXC_UART3_RXD__UART3_DCE_RX    0x140
-> > +                     MX8MP_IOMUXC_UART3_TXD__UART3_DCE_TX    0x140
-> > +             >;
-> > +     };
-> > +};
-> > --
-> > 2.25.1
-> >
