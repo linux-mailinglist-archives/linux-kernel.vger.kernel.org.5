@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9A575740E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6508D757428
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231130AbjGRG0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 02:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34512 "EHLO
+        id S230144AbjGRG25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 02:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230464AbjGRG0u (ORCPT
+        with ESMTP id S230076AbjGRG2w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 02:26:50 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C75A132
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:26:49 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-992b2249d82so749656866b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:26:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689661607; x=1692253607;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=szAN6NYzvhN3ASqUWafz2JxFxR4dH9afImQ7y60YO2E=;
-        b=E0JyVuFuCBb4peQQ0mT0mID1+ZZoCN1HJ8ibGl0OJDdzKRrLBdnZ6SDkFTFU+00ABU
-         tM61HPH6r1LEakPG84iwVmxvUJL/jqBD20qtHsMyJAuIEANZNBKvE4jPUe9KiY96+1na
-         J+QTDkhx9E5cb+5WZe5t0OYiolQKIW4HzUw8aVwA+fZmFImNus3bkKq9I6x9lCCCVZ/s
-         7k+MEk9FE5OBw/sgtipzGpDhync959QOqxV+v3mlsGa4hruoqiQzeFmsM/FgSTUd0LIr
-         IcDhNIbL1tGAXUVZVlTXzA5yVddUo+jCOnjuq8R7K79q/d+WTy2r3JfDXzNlhSpRmo3p
-         UbjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689661607; x=1692253607;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=szAN6NYzvhN3ASqUWafz2JxFxR4dH9afImQ7y60YO2E=;
-        b=BHtja8BnKZ9pj5hfOUQDTPpEZC9i1YGroB5bjKg6FXq918pfLU3R2H0Ms64Mwd3C5m
-         Uy2VO//yCs6d52A64O/kFTPsHpADdLRHmoXMtzpQhJCPxnn5XsDWB49LaJ4Hb7A7GqxX
-         V72JU9357cPe3XpoYDkEN+M1ueDd34Er8CwOXjQbAG7v8Gs3MbYJQ9gEfxD1iIhAQFGQ
-         pnsx6vc1kJe4R+gLF9Fsql3nZ8ldXU17zWf//H0UjL+jUjpg3feiVCkZFZT/fTv+ABnY
-         r1u/htwq3N59HO1jeO6I9IQ0G8Up0tNW0eUbkDBMdL6meM9UoNU+B/goM9qGC1bjQwm+
-         6Ivg==
-X-Gm-Message-State: ABy/qLZlDRsAXyIrb29w8x2AAF7nRf0bQRq16aQlE8dZCSgrVnDAuHB7
-        /zxszaivubTRVoaPjAiho705rw==
-X-Google-Smtp-Source: APBJJlGgvuKsyZAcprltA4X0+Cto4HGQ00PxjW4f9QBYWcSXBe12JZDUy0xv9GffbNJiNd41CRPnpQ==
-X-Received: by 2002:a17:906:20a:b0:98b:dc6c:b304 with SMTP id 10-20020a170906020a00b0098bdc6cb304mr13222395ejd.38.1689661607642;
-        Mon, 17 Jul 2023 23:26:47 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id m11-20020a1709062b8b00b00991bba473e1sm599800ejg.3.2023.07.17.23.26.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 23:26:46 -0700 (PDT)
-Message-ID: <4e2b6fae-7638-ae20-9de0-c14c16577726@linaro.org>
-Date:   Tue, 18 Jul 2023 08:26:44 +0200
+        Tue, 18 Jul 2023 02:28:52 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7CB55100;
+        Mon, 17 Jul 2023 23:28:36 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB5D4D75;
+        Mon, 17 Jul 2023 23:29:19 -0700 (PDT)
+Received: from [10.163.50.249] (unknown [10.163.50.249])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5E0393F6C4;
+        Mon, 17 Jul 2023 23:28:20 -0700 (PDT)
+Message-ID: <5f7841ad-6bb5-dffd-b1ac-e6d198933075@arm.com>
+Date:   Tue, 18 Jul 2023 11:58:13 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v9 2/7] dt-bindings: soc: qcom: eud: Document
- vendor-specific 'secure mode' property
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] arm64/ptrace: Fix an error handling path in
+ sve_set_common()
 Content-Language: en-US
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-kernel@vger.kernel.org, bhupesh.linux@gmail.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        quic_schowdhu@quicinc.com, gregkh@linuxfoundation.org,
-        stephan@gerhold.net
-References: <20230718061052.1332993-1-bhupesh.sharma@linaro.org>
- <20230718061052.1332993-3-bhupesh.sharma@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230718061052.1332993-3-bhupesh.sharma@linaro.org>
+To:     Mark Brown <broonie@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <aa61301ed2dfd079b74b37f7fede5f179ac3087a.1689616473.git.christophe.jaillet@wanadoo.fr>
+ <3f78a04c-bafe-4def-8eeb-734589fdaaa0@sirena.org.uk>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <3f78a04c-bafe-4def-8eeb-734589fdaaa0@sirena.org.uk>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/07/2023 08:10, Bhupesh Sharma wrote:
-> On some SoCs (like the SM6115 / SM4250 SoC), the enable bit inside
-> 'tcsr_check_reg' needs to be set first to 'enable' EUD mode.
+
+
+On 7/17/23 23:38, Mark Brown wrote:
+> On Mon, Jul 17, 2023 at 07:55:05PM +0200, Christophe JAILLET wrote:
+>> All error handling paths go to 'out', except this one. Be consistent and
+>> also branch to 'out' here.
 > 
-> So introduce a vendor-specific dt-property 'qcom,secure-eud-reg'
-> which specifies the base address of the TCSR reg space and the offset
-> of the 'tcsr_check_reg'.
+> This looks like a reasonable cleanup.
+> 
+> Reviewed-by: Mark Brown <broonie@kernel.org>
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-Best regards,
-Krzysztof
+> 
+>> Fixes: e12310a0d30f ("arm64/sme: Implement ptrace support for streaming mode SVE registers")
+> 
+>>  		default:
+>>  			WARN_ON_ONCE(1);
+>> -			return -EINVAL;
+>> +			ret = -EINVAL;
+>> +			goto out;
+>>  		}
+> 
+> It's not exactly a fix though (probably not worth backporting for
 
++1
+
+> example, which tends to get keyed off the fixes tag) since something's
+> incredibly confused if this code path ever gets executed, we're setting
+> an unknown SVE vector type hence the WARN_ON() there.
+
+Agreed.
