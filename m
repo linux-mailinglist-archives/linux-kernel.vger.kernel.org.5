@@ -2,95 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 211FA7587E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F8D7587EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbjGRWBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 18:01:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59306 "EHLO
+        id S231145AbjGRWBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 18:01:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjGRWBG (ORCPT
+        with ESMTP id S231134AbjGRWBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 18:01:06 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E02B198D;
-        Tue, 18 Jul 2023 15:01:05 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b8bd586086so49972035ad.2;
-        Tue, 18 Jul 2023 15:01:05 -0700 (PDT)
+        Tue, 18 Jul 2023 18:01:15 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF081997
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:01:11 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-7836272f36eso294087239f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:01:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689717664; x=1692309664;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/DBv5NGK1dmc+CZMq0/WXS3utH3EmBQl9zIKDmjQ1i4=;
-        b=cathwXRCdEL7wvuiZ7bcMAHF2YkxTm1Pa99hNgy2x+3oEKy8vP5p1pu9MijkOsOxyc
-         jVjO8T1YTkH454Bng4g8CC+ThLmAff8Zub0Wh44Fl8hmA3B+pz1cCE8AhFvDJSoUkJID
-         NS7KV1XDtpxLbe2HWUcgGi+EM6yjEGw6Sq2n/Qnwk0U558oV9/CsEMgkI+jF8M4J14Bl
-         j/CISxZtgmOZEeF8ngbj99zwzx/DpIifrqP3yzGJWnNbKrjb9QyRTvPr1aPJ88+oJ9jy
-         batIZ/8swsAtixDHJfvcm05Qd0arLM9+ER1NC94CBHpMmwXt1e8Hdw90O3brBFBThqFk
-         WTSw==
+        d=google.com; s=20221208; t=1689717670; x=1692309670;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CvXtdjiTdSu7pRelEcHGOcRS4iWAssoWYQyugv4oWIQ=;
+        b=zQOyvfMDZir+7hpHfKayyWYecVl7ZFPqcSf2Yq2eh9hlGt8SxPV0tbJZZfI6jcCUSk
+         I2N3wzhtJOlYCu/Iaoi1pYGCU21nxKnlXrbJVD8/LAs96v2ehgagcDFNHce450Grl8+Q
+         h4kXyTuMfmlSKEDp0pCLXAswN7AEnU8iInHqh/eT+viITxM65pLHB44Oz8Ux4OvRE085
+         OjLtmXN73t5fdHTMKLxV3qR6n75Aws6IVQRUMVIlYh2wuiIsoS0LP9c7trwsyHJ3Pth7
+         8EFFDcttjDJ7ClHaWPVqJWfbTAZYHnXanhKPqQ8CO4yyTq6+P+7MH8zr+hhR9E28u/7L
+         XilA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689717664; x=1692309664;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/DBv5NGK1dmc+CZMq0/WXS3utH3EmBQl9zIKDmjQ1i4=;
-        b=F/tUQgnLIUh7k4cfUVhIpjDliLqZwwf0l41Huwl4zjXkQA0JKojnj2mFfHcFN90heM
-         ZNbtYX3rUTK3Nol+nW4v4BHKcgNmwO8xMX7lkLLXW1z5OYg0rBbtYNeufujSJz0LudmE
-         ap9YOyYtsubLNUtxkhGuddJbAgc/nUy1cvxsrNN+KIPG/ZbvETsLH6xukHX8VlDZ3k5v
-         MyMC5tQd+mF/VtpXuLOImcgLrPZFCR6j/kcY2F88npPbhsrgio1+cn7GrLyRJuqWkitc
-         1UDaQ1QcWVifKaNcMEl7zHrT7scCcyHv8E04X3vVdoUvgB8dLJ1QIhgSp3NuPs1SkXgs
-         JIIw==
-X-Gm-Message-State: ABy/qLY304gpiS7wb5vBgM1nPYoUGsg7u5ovfsOTbAjHNu9NVn6WTmIk
-        +62EVgK6e1cxGvCCLb8O2xk=
-X-Google-Smtp-Source: APBJJlEKmijXIQPxNbeLXXqgtsMDd/YUFQr0MtJ3gF/quDqVxbtlCH7F50lGttR5T6rSx/zqeT1Vfg==
-X-Received: by 2002:a17:902:768c:b0:1ba:ff05:d8b1 with SMTP id m12-20020a170902768c00b001baff05d8b1mr982129pll.19.1689717664188;
-        Tue, 18 Jul 2023 15:01:04 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:fbd8])
-        by smtp.gmail.com with ESMTPSA id g15-20020a1709029f8f00b001b8b2a6c4a4sm2354458plq.172.2023.07.18.15.01.03
+        d=1e100.net; s=20221208; t=1689717670; x=1692309670;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CvXtdjiTdSu7pRelEcHGOcRS4iWAssoWYQyugv4oWIQ=;
+        b=l+yS2RonV3tx5+6XrOrQAiHl0ZQObuD5s6pjdX5ni0k0+GUxS8cSLJ/SJ7wPMHKNAn
+         nDXmEg7iO6khOCTlJt7StBMp9SZclP1fAXn96avVof6PaOGlS5WmicYtEsAEiemuoxly
+         TtOOAOcDCAZNYpPCth7xPEPFUB3qxJxnWjS5rn4c3CSdehNpaRtDLMxI5Z+TlP0/OUGI
+         2DAN1RgNZzzwvJBVlgoAo59Pa5J0ggzr3IBBmB6uI7sKlqzRbapcK34Alwwz9djDwxyb
+         keTLXcdKP5ujym97x7j0V8NSXzdTQfyHRybKQzGX44MVl/L4+zlidTsBrxaK5JLTmiz/
+         S19A==
+X-Gm-Message-State: ABy/qLbmG3Iy6B9URilC/UYgRoauJ4DqYxaccV/8oEkYJDYIh4PuGfEX
+        0haj4La1JadaHHcIjiGqPUWPnrKoJ4MCCd2v+Yx4sw==
+X-Google-Smtp-Source: APBJJlEIvyhsuAY/IAmmsxTlJjteq7JzxRm+oSSx0aQac6TD2PdPOPWHCK5RTKNhyDnxcXMM++CBeA==
+X-Received: by 2002:a5d:9ada:0:b0:785:fbe8:1da0 with SMTP id x26-20020a5d9ada000000b00785fbe81da0mr3178779ion.15.1689717670404;
+        Tue, 18 Jul 2023 15:01:10 -0700 (PDT)
+Received: from google.com ([2620:15c:183:200:1ddf:dfe:d771:e9d2])
+        by smtp.gmail.com with ESMTPSA id h8-20020a6bfb08000000b0077e24ace3edsm865699iog.52.2023.07.18.15.01.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 15:01:03 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 18 Jul 2023 12:01:02 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-team@meta.com, Linux PM list <linux-pm@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rtc@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Subject: Re: Consider switching to WQ_UNBOUND messages (was: Re: [PATCH v2
- 6/7] workqueue: Report work funcs that trigger automatic CPU_INTENSIVE
- mechanism)
-Message-ID: <ZLcLnoAoJmQ9WTuM@slm.duckdns.org>
-References: <20230511181931.869812-1-tj@kernel.org>
- <20230511181931.869812-7-tj@kernel.org>
- <ZF6WsSVGX3O1d0pL@slm.duckdns.org>
- <CAMuHMdVCQmh6V182q4g---jvsWiTOP2hBPZKvma6oUN6535LEg@mail.gmail.com>
- <CAMuHMdW1kxZ1RHKTRVRqDNAbj1Df2=v0fPn5KYK3kfX_kiXR6A@mail.gmail.com>
- <ZK3MBfPS-3-tJgjO@slm.duckdns.org>
- <ZK30CR196rs-OWLq@slm.duckdns.org>
- <CAMuHMdUCXPi+aS-7bR3qRetKF9T3W9jk_HKjvaXmfHv5SEeuFg@mail.gmail.com>
- <ZLXIvXBvhsnL-ik_@slm.duckdns.org>
- <CAMuHMdU8CGhsU-1PZNdWH1xjbWcWSg2s2RFAegXi+vs=d-0t8Q@mail.gmail.com>
+        Tue, 18 Jul 2023 15:01:09 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 16:01:06 -0600
+From:   Ross Zwisler <zwisler@google.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>
+Subject: collision between ZONE_MOVABLE and memblock allocations
+Message-ID: <20230718220106.GA3117638@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdU8CGhsU-1PZNdWH1xjbWcWSg2s2RFAegXi+vs=d-0t8Q@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -99,143 +76,165 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello,
 
-On Tue, Jul 18, 2023 at 11:54:58AM +0200, Geert Uytterhoeven wrote:
-> I gave it a try on a system with an 800 MHz Cortex A9, only to discover
-> it makes no difference, as that machine has 1600 BogoMIPS:
+I've been trying to use the 'movablecore=' kernel command line option to create
+a ZONE_MOVABLE memory zone on my x86_64 systems, and have noticed that
+offlining the resulting ZONE_MOVABLE area consistently fails in my setups
+because that zone contains unmovable pages.  My testing has been in a x86_64
+QEMU VM with a single NUMA node and 4G, 8G or 16G of memory, all of which fail
+100% of the time.
 
-Oops.
+Digging into it a bit, these unmovable pages are Reserved pages which were
+allocated in early boot as part of the memblock allocator.  Many of these
+allocations are for data structures for the SPARSEMEM memory model, including
+'struct mem_section' objects.  These memblock allocations can be tracked by
+setting the 'memblock=debug' kernel command line parameter, and are marked as
+reserved in:
 
-> workqueue: blk_mq_run_work_fn hogged CPU for >10000us 4 times,
-> consider switching to WQ_UNBOUND
+	memmap_init_reserved_pages()
+		reserve_bootmem_region()
 
-It could be that we actually want to switch to UNBOUND for some reports but
-the above triggering most likely indicates that the threshold is too
-aggressive.
+With the command line params 'movablecore=256M memblock=debug' and a v6.5.0-rc2
+kernel I get the following on my 4G system:
 
-> Artificially low BogoMIPS numbers only happen on systems that have
-> the related timers (Cortex A7/A15 and later, Cortex A9 MPCore,
-> and arm64).
+  # lsmem --split ZONES --output-all
+  RANGE                                  SIZE  STATE REMOVABLE BLOCK NODE   ZONES
+  0x0000000000000000-0x0000000007ffffff  128M online       yes     0    0    None
+  0x0000000008000000-0x00000000bfffffff  2.9G online       yes  1-23    0   DMA32
+  0x0000000100000000-0x000000012fffffff  768M online       yes 32-37    0  Normal
+  0x0000000130000000-0x000000013fffffff  256M online       yes 38-39    0 Movable
+  
+  Memory block size:       128M
+  Total online memory:       4G
+  Total offline memory:      0B
 
-Ah, I see. Thanks for the explanation.
+And when I try to offline memory block 39, I get:
 
-> I will test on more systems, but that will probably not happen until
-> next week...
+  # echo 0 > /sys/devices/system/memory/memory39/online
+  bash: echo: write error: Device or resource busy
 
-Thanks, really appreciate it. Can you try the following instead when you
-have time? I just pushed up the lower boundary to 4000 MIPS. The scaling is
-still capped at 1s.
+with dmesg saying:
 
-From 8555cbd4b22e5f85eb2bdcb84fd1d1f519a0a0d3 Mon Sep 17 00:00:00 2001
-From: Tejun Heo <tj@kernel.org>
-Date: Mon, 17 Jul 2023 12:50:02 -1000
-Subject: [PATCH] workqueue: Scale up wq_cpu_intensive_thresh_us if BogoMIPS is
- below 4000
+  [   57.439849] page:0000000076a3e320 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x13ff00
+  [   57.444073] flags: 0x1fffffc0001000(reserved|node=0|zone=3|lastcpupid=0x1fffff)
+  [   57.447301] page_type: 0xffffffff()
+  [   57.448754] raw: 001fffffc0001000 ffffdd6384ffc008 ffffdd6384ffc008 0000000000000000
+  [   57.450383] raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
+  [   57.452011] page dumped because: unmovable page
 
-wq_cpu_intensive_thresh_us is used to detect CPU-hogging per-cpu work items.
-Once detected, they're excluded from concurrency management to prevent them
-from blocking other per-cpu work items. If CONFIG_WQ_CPU_INTENSIVE_REPORT is
-enabled, repeat offenders are also reported so that the code can be updated.
+Looking back at the memblock allocations, I can see that the physical address for
+pfn:0x13ff00 was used in a memblock allocation:
 
-The default threshold is 10ms which is long enough to do fair bit of work on
-modern CPUs while short enough to be usually not noticeable. This
-unfortunately leads to a lot of, arguable spurious, detections on very slow
-CPUs. Using the same threshold across CPUs whose performance levels may be
-apart by multiple levels of magnitude doesn't make whole lot of sense.
+  [    0.395180] memblock_reserve: [0x000000013ff00000-0x000000013ffbffff] memblock_alloc_range_nid+0xe0/0x150
 
-This patch scales up wq_cpu_intensive_thresh_us upto 1 second when BogoMIPS
-is below 4000. This is obviously very inaccurate but it doesn't have to be
-accurate to be useful. The mechanism is still useful when the threshold is
-fully scaled up and the benefits of reports are usually shared with everyone
-regardless of who's reporting, so as long as there are sufficient number of
-fast machines reporting, we don't lose much.
+The full dmesg output can be found here: https://pastebin.com/cNztqa4u
 
-Some (or is it all?) ARM CPUs systemtically report significantly lower
-BogoMIPS. While this doesn't break anything, given how widespread ARM CPUs
-are, it's at least a missed opportunity and it probably would be a good idea
-to teach workqueue about it.
+The 'movablecore=' command line parameter is handled in
+'find_zone_movable_pfns_for_nodes()', which decides where ZONE_MOVABLE should
+start and end.  Currently ZONE_MOVABLE is always located at the end of a NUMA
+node.
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
----
- kernel/workqueue.c | 43 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 42 insertions(+), 1 deletion(-)
+The issue is that the memblock allocator and the processing of the movablecore=
+command line parameter don't know about one another, and in my x86_64 testing
+they both always use memory at the end of the NUMA node and have collisions.
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 02a8f402eeb5..0d7a3d29762f 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -52,6 +52,7 @@
- #include <linux/sched/debug.h>
- #include <linux/nmi.h>
- #include <linux/kvm_para.h>
-+#include <linux/delay.h>
- 
- #include "workqueue_internal.h"
- 
-@@ -338,8 +339,10 @@ static cpumask_var_t *wq_numa_possible_cpumask;
-  * Per-cpu work items which run for longer than the following threshold are
-  * automatically considered CPU intensive and excluded from concurrency
-  * management to prevent them from noticeably delaying other per-cpu work items.
-+ * ULONG_MAX indicates that the user hasn't overridden it with a boot parameter.
-+ * The actual value is initialized in wq_cpu_intensive_thresh_init().
-  */
--static unsigned long wq_cpu_intensive_thresh_us = 10000;
-+static unsigned long wq_cpu_intensive_thresh_us = ULONG_MAX;
- module_param_named(cpu_intensive_thresh_us, wq_cpu_intensive_thresh_us, ulong, 0644);
- 
- static bool wq_disable_numa;
-@@ -6513,6 +6516,42 @@ void __init workqueue_init_early(void)
- 	       !system_freezable_power_efficient_wq);
- }
- 
-+static void __init wq_cpu_intensive_thresh_init(void)
-+{
-+	unsigned long thresh;
-+	unsigned long mips;
-+
-+	/* if the user set it to a specific value, keep it */
-+	if (wq_cpu_intensive_thresh_us != ULONG_MAX)
-+		return;
-+
-+	/*
-+	 * The default of 10ms is derived from the fact that most modern (as of
-+	 * 2023) processors can do a lot in 10ms and that it's just below what
-+	 * most consider human-perceivable. However, the kernel also runs on a
-+	 * lot slower CPUs including microcontrollers where the threshold is way
-+	 * too low.
-+	 *
-+	 * Let's scale up the threshold upto 1 second if BogoMips is below 4000.
-+	 * This is by no means accurate but it doesn't have to be. The mechanism
-+	 * is still useful even when the threshold is fully scaled up. Also, as
-+	 * the reports would usually be applicable to everyone, some machines
-+	 * operating on longer thresholds won't significantly diminish their
-+	 * usefulness.
-+	 */
-+	thresh = 10 * USEC_PER_MSEC;
-+
-+	/* see init/calibrate.c for lpj -> BogoMIPS calculation */
-+	mips = max_t(unsigned long, loops_per_jiffy / 500000 * HZ, 1);
-+	if (mips < 4000)
-+		thresh = min_t(unsigned long, thresh * 4000 / mips, USEC_PER_SEC);
-+
-+	pr_debug("wq_cpu_intensive_thresh: lpj=%lu mips=%lu thresh_us=%lu\n",
-+		 loops_per_jiffy, mips, thresh);
-+
-+	wq_cpu_intensive_thresh_us = thresh;
-+}
-+
- /**
-  * workqueue_init - bring workqueue subsystem fully online
-  *
-@@ -6528,6 +6567,8 @@ void __init workqueue_init(void)
- 	struct worker_pool *pool;
- 	int cpu, bkt;
- 
-+	wq_cpu_intensive_thresh_init();
-+
- 	/*
- 	 * It'd be simpler to initialize NUMA in workqueue_init_early() but
- 	 * CPU to node mapping may not be available that early on some
--- 
-2.41.0
+From several comments in the code I believe that this is a known issue:
 
+https://elixir.bootlin.com/linux/v6.5-rc2/source/mm/page_isolation.c#L59
+	/*
+	 * Both, bootmem allocations and memory holes are marked
+	 * PG_reserved and are unmovable. We can even have unmovable
+	 * allocations inside ZONE_MOVABLE, for example when
+	 * specifying "movablecore".
+	 */
+
+https://elixir.bootlin.com/linux/v6.5-rc2/source/include/linux/mmzone.h#L765
+	 * 2. memblock allocations: kernelcore/movablecore setups might create
+	 *    situations where ZONE_MOVABLE contains unmovable allocations
+	 *    after boot. Memory offlining and allocations fail early.
+
+We check for these unmovable pages by scanning for 'PageReserved()' in the area
+we are trying to offline, which happens in has_unmovable_pages().
+
+Interestingly, the boot timing works out like this:
+
+1. Allocate memblock areas to set up the SPARSEMEM model.
+  [    0.369990] Call Trace:
+  [    0.370404]  <TASK>
+  [    0.370759]  ? dump_stack_lvl+0x43/0x60
+  [    0.371410]  ? sparse_init_nid+0x2dc/0x560
+  [    0.372116]  ? sparse_init+0x346/0x450
+  [    0.372755]  ? paging_init+0xa/0x20
+  [    0.373349]  ? setup_arch+0xa6a/0xfc0
+  [    0.373970]  ? slab_is_available+0x5/0x20
+  [    0.374651]  ? start_kernel+0x5e/0x770
+  [    0.375290]  ? x86_64_start_reservations+0x14/0x30
+  [    0.376109]  ? x86_64_start_kernel+0x71/0x80
+  [    0.376835]  ? secondary_startup_64_no_verify+0x167/0x16b
+  [    0.377755]  </TASK>
+
+2. Process movablecore= kernel command line parameter and set up memory zones
+  [    0.489382] Call Trace:
+  [    0.489818]  <TASK>
+  [    0.490187]  ? dump_stack_lvl+0x43/0x60
+  [    0.490873]  ? free_area_init+0x115/0xc80
+  [    0.491588]  ? __printk_cpu_sync_put+0x5/0x30
+  [    0.492354]  ? dump_stack_lvl+0x48/0x60
+  [    0.493002]  ? sparse_init_nid+0x2dc/0x560
+  [    0.493697]  ? zone_sizes_init+0x60/0x80
+  [    0.494361]  ? setup_arch+0xa6a/0xfc0
+  [    0.494981]  ? slab_is_available+0x5/0x20
+  [    0.495674]  ? start_kernel+0x5e/0x770
+  [    0.496312]  ? x86_64_start_reservations+0x14/0x30
+  [    0.497123]  ? x86_64_start_kernel+0x71/0x80
+  [    0.497847]  ? secondary_startup_64_no_verify+0x167/0x16b
+  [    0.498768]  </TASK>
+
+3. Mark memblock areas as Reserved.
+  [    0.761136] Call Trace:
+  [    0.761534]  <TASK>
+  [    0.761876]  dump_stack_lvl+0x43/0x60
+  [    0.762474]  reserve_bootmem_region+0x1e/0x170
+  [    0.763201]  memblock_free_all+0xe3/0x250
+  [    0.763862]  ? swiotlb_init_io_tlb_mem.constprop.0+0x11a/0x130
+  [    0.764812]  ? swiotlb_init_remap+0x195/0x2c0
+  [    0.765519]  mem_init+0x19/0x1b0
+  [    0.766047]  mm_core_init+0x9c/0x3d0
+  [    0.766630]  start_kernel+0x264/0x770
+  [    0.767229]  x86_64_start_reservations+0x14/0x30
+  [    0.767987]  x86_64_start_kernel+0x71/0x80
+  [    0.768666]  secondary_startup_64_no_verify+0x167/0x16b
+  [    0.769534]  </TASK>
+
+So, during ZONE_MOVABLE setup we currently can't do the same
+has_unmovable_pages() scan looking for PageReserved() to check for overlap
+because the pages have not yet been marked as Reserved.
+
+I do think that we need to fix this collision between ZONE_MOVABLE and memmap
+allocations, because this issue essentially makes the movablecore= kernel
+command line parameter useless in many cases, as the ZONE_MOVABLE region it
+creates will often actually be unmovable.
+
+Here are the options I currently see for resolution:
+
+1. Change the way ZONE_MOVABLE memory is allocated so that it is allocated from
+the beginning of the NUMA node instead of the end. This should fix my use case,
+but again is prone to breakage in other configurations (# of NUMA nodes, other
+architectures) where ZONE_MOVABLE and memblock allocations might overlap.  I
+think that this should be relatively straightforward and low risk, though.
+
+2. Make the code which processes the movablecore= command line option aware of
+the memblock allocations, and have it choose a region for ZONE_MOVABLE which
+does not have these allocations. This might be done by checking for
+PageReserved() as we do with offlining memory, though that will take some boot
+time reordering, or we'll have to figure out the overlap in another way. This
+may also result in us having two ZONE_NORMAL zones for a given NUMA node, with
+a ZONE_MOVABLE section in between them.  I'm not sure if this is allowed?  If
+we can get it working, this seems like the most correct solution to me, but
+also the most difficult and risky because it involves significant changes in
+the code for memory setup at early boot.
+
+Am I missing anything are there other solutions we should consider, or do you
+have an opinion on which solution we should pursue?
+
+Thanks,
+- Ross
