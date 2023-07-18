@@ -2,165 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0743875824E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 695AC75824A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233223AbjGRQk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 12:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
+        id S231513AbjGRQkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 12:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233259AbjGRQkQ (ORCPT
+        with ESMTP id S233287AbjGRQkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 12:40:16 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94362171C;
-        Tue, 18 Jul 2023 09:40:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689698409; x=1721234409;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=UD4tx2ko1Ntid4p2qUjYdfLq2O8toM+6lgpiCZu5QuE=;
-  b=PAIMvxwwyrULQCWvkXKiUzmDKJM86RRoFTRhDfxmz838paZdN7Rjs8J9
-   m+rQH2AGJzIF1VzW8aEc4ra4aNbYrk4usrQGDEMy6U5rOMwnotk+S/dD6
-   i7EHPO0xsrTGY1Cqr/FeBCufs1OZdg0U3mn5xBjZBGAJSzGXy22HTopcF
-   aA1mOkD/8J5g8GIwZw9ROOO+MloCxXvzUJVneKfLrPEHgfs7hLyJCNiQN
-   HM25LEQKzlLPbI2BQpIlfNyqzY05ZCzkT2NzgZhKNTtYlx4/DwuFg0Mik
-   XQhLRoYuOwNJH2RLEXlTp04y5HtsI0kn/P0x221JSALFL+ehzZVUlBgcq
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="397096521"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="397096521"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 09:40:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="700975518"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="700975518"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.48.113])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 18 Jul 2023 09:39:57 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>, dave.hansen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Dave Hansen" <dave.hansen@intel.com>
-Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
-        kristen@linux.intel.com, seanjc@google.com, stable@vger.kernel.org
-Subject: Re: [PATCH] x86/sgx: fix a NULL pointer
-References: <CU4OBQ8MQ2LK.2GRBPLQGVTZ3@seitikki>
- <20230717202938.94989-1-haitao.huang@linux.intel.com>
- <95371eef-73ec-5541-ad97-829954cfb848@intel.com>
-Date:   Tue, 18 Jul 2023 11:39:56 -0500
+        Tue, 18 Jul 2023 12:40:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03750173A
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:40:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5C28B61689
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 16:40:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 462E5C433C7;
+        Tue, 18 Jul 2023 16:40:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689698406;
+        bh=zJAHBL0kr+xwS0Z4Zf2nP/H5EVn5MoYr1bw/XeI+P8E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A6AAfLrj61c1f1fsgHzwS3WcoL9Cqxq2jdaPpzeMw0VEg9cA1m3Y5QVg5v834uekO
+         YWt3+B59N7mRWSIAY7qe6LvBdnE3IUXoyHojEPqrGzR+PJG5nYFtQqVbTt4o7pQga4
+         NR/oQb9Qje78d7b5Pm4zwnOm+QWT5gK4x2suPzvk=
+Date:   Tue, 18 Jul 2023 18:40:03 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     pangzizhen001@208suo.com
+Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers/tty: Fix typos in comments
+Message-ID: <2023071815-battle-surrender-60e7@gregkh>
+References: <20230718162025.64358-1-wangjianli@cdjrlc.com>
+ <ffa4ee5ba65722fe52481638ab20e068@208suo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.18adwup7wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <95371eef-73ec-5541-ad97-829954cfb848@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ffa4ee5ba65722fe52481638ab20e068@208suo.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 09:30:11 -0500, Dave Hansen <dave.hansen@intel.com>  
-wrote:
+On Wed, Jul 19, 2023 at 12:22:25AM +0800, pangzizhen001@208suo.com wrote:
+> Delete duplicate word "the"
+> 
+> Signed-off-by: wangjianli <wangjianli@cdjrlc.com>
+> ---
+>  drivers/tty/n_gsm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+> index b411a26cc092..e8cd1e07eafe 100644
+> --- a/drivers/tty/n_gsm.c
+> +++ b/drivers/tty/n_gsm.c
+> @@ -1148,7 +1148,7 @@ static void __gsm_data_queue(struct gsm_dlci *dlci,
+> struct gsm_msg *msg)
+>   *
+>   *    Add data to the transmit queue and try and get stuff moving
+>   *    out of the mux tty if not already doing so. Take the
+> - *    the gsm tx lock and dlci lock.
+> + *    gsm tx lock and dlci lock.
+>   */
+> 
+>  static void gsm_data_queue(struct gsm_dlci *dlci, struct gsm_msg *msg)
 
-> On 7/17/23 13:29, Haitao Huang wrote:
-> ...
->> @@ -248,11 +258,9 @@ static struct sgx_encl_page  
->> *__sgx_encl_load_page(struct sgx_encl *encl,
->>  		return entry;
->>  	}
->>
->> -	if (!(encl->secs.epc_page)) {
->> -		epc_page = sgx_encl_eldu(&encl->secs, NULL);
->> -		if (IS_ERR(epc_page))
->> -			return ERR_CAST(epc_page);
->> -	}
->> +	epc_page = sgx_encl_load_secs(encl);
->> +	if (IS_ERR(epc_page))
->> +		return ERR_CAST(epc_page);
->>
->>  	epc_page = sgx_encl_eldu(entry, encl->secs.epc_page);
->>  	if (IS_ERR(epc_page))
->> @@ -339,6 +347,13 @@ static vm_fault_t sgx_encl_eaug_page(struct  
->> vm_area_struct *vma,
->>
->>  	mutex_lock(&encl->lock);
->>
->> +	epc_page = sgx_encl_load_secs(encl);
->> +	if (IS_ERR(epc_page)) {
->> +		if (PTR_ERR(epc_page) == -EBUSY)
->> +			vmret =  VM_FAULT_NOPAGE;
->> +		goto err_out_unlock;
->> +	}
->
-> Whenever I see one of these "make sure it isn't NULL", I always jump to
-> asking what *keeps* it from becoming NULL again.  In both cases here, I
-> think that's encl->lock.
->
-Yes, encl->lock protects all enclave states, the xarray holding  
-encl_pages, SECS, VAs, etc.
+Please learn how to get involved in kernel development by working in
+drivers/staging/* first, as the developers there are used to simple
+errors like what you did here, and will work to help you out.
 
-> A comment would be really nice here, maybe on sgx_encl_load_secs().   
-> Maybe:
->
-> /*
->  * Ensure the SECS page is not swapped out.  Must be called with
->  * encl->lock to protect _____ and ensure the SECS page is not
->  * swapped out again.
->  */
->
-Thanks for the suggestion. Lock should be held for the duration of SECS  
-usage.
-So something like this?
-/*
-  * Ensure the SECS page is not swapped out.  Must be called with
-  * encl->lock to protect the enclave states including SECS and
-  * ensure the SECS page is not swapped out again while being used.
-  */
+Otherwise, patches like this are just going to cause developers to get
+grumpy when you have obvious errors.
 
+good luck!
 
->> diff --git a/arch/x86/kernel/cpu/sgx/main.c  
->> b/arch/x86/kernel/cpu/sgx/main.c
->> index 166692f2d501..4662a364ce62 100644
->> --- a/arch/x86/kernel/cpu/sgx/main.c
->> +++ b/arch/x86/kernel/cpu/sgx/main.c
->> @@ -257,6 +257,10 @@ static void sgx_reclaimer_write(struct  
->> sgx_epc_page *epc_page,
->>
->>  	mutex_lock(&encl->lock);
->>
->> +	/* Should not be possible */
->> +	if (WARN_ON(!(encl->secs.epc_page)))
->> +		goto out;
->
-> That comment isn't super helpful.  We generally don't WARN_ON() things
-> that should happen.  *Why* is it not possible?
->
-
-When this part of code is reached, the reclaimer is holding at least one  
-reclaimable EPC page to reclaim for the enclave and the code below only  
-reclaims SECS when no reclaimable EPCs (number of SECS children being  
-zero) of the enclave left. So it should not be possible.
-I'll remove this change because this is really not needed for fixing the  
-bug as Kai pointed out.
-
-I added this for sanity check when implementing multiple EPC tracking  
-lists for cgroups. At one point there were list corruption issues if  
-moving EPCs between lists not managed well. With those straightened out,  
-and clear definitions of EPC states for moving them from one list to  
-another, I no longer see much value to keep this even in later cgroup  
-patches.
-
-Thanks
-Haitao
+greg k-h
