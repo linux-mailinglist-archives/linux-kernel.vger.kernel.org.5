@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD45757CA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF7B757CAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232592AbjGRNC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
+        id S231481AbjGRNDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:03:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232561AbjGRNB6 (ORCPT
+        with ESMTP id S232560AbjGRNB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 18 Jul 2023 09:01:58 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8D21702;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8441736;
         Tue, 18 Jul 2023 06:00:54 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CB51C6157D;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 994B76157F;
+        Tue, 18 Jul 2023 13:00:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA35DC433C7;
         Tue, 18 Jul 2023 13:00:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB034C433D9;
-        Tue, 18 Jul 2023 13:00:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689685249;
-        bh=WuS8tfuWkadsvD2O2V7rKFd8MWT1OV3T8mJ+98LYJNo=;
+        s=k20201202; t=1689685254;
+        bh=XPV4TqBofI5Mv/9FxSzW2w9wDpjRH3FBmnl+elNmQmI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KOZE5JKHBMLH4xqPAmknZzizKFbAuar0MPatAbTbxfzMgM5F5T2bWDuqhBqimvbvz
-         lL8hhy704b+vsQ7ELuSTbnm0o+LG6XhaXxD2+jg3ZW5eKrVf8KmyHroHTD/A0WJi1T
-         IO9OZ5y5F6F8zaIlybvZh8jj/PSBfYkamLIW9WAM9UbsrwUOh2UVDvpvxgoeo3FiO2
-         PNREjtTL8co/91NVDg2fCgO9x/ldAFrNNClD995an4PNN8CKiRbviBGXGxB0yoMOdu
-         eg/X244yURv0/5iP21yB3b2VC8M1/IQLwA0dUHEC3KFSc5FY/P23Iwzf+7Zv44j0vw
-         +UtrZYwAMxGfw==
+        b=ISjla2n56YlijkAfztYf+g/V55gbC1NwHuZxMobak7dzq1xFYwC2FOjLzG7BhGk39
+         WElaQlZCvERhLtfdZN6U1NTa89maaiB/EROatQGBz3Tf+2R0fxGm7Mz2CwC19whuMX
+         ujukHX5uc0QUGdmNauZEsgc+XRWigo+HTrRhHh/XQV3Lg2DIjDtQD7ngcClNZQzThu
+         Ko41ly0UE0C9pfmRdwaPFsb6Gf5mwmNkCbbova/2+c4P5r9ZHJoRynlewW/aQwNEdd
+         +wNcHpk9se26dAHR8lWvDp9i/MsFjfKPDw90Z4ePMA82jrNu75a/IUzbYcr5SjzBcx
+         Au5HmuXBKW+SQ==
 From:   Ard Biesheuvel <ardb@kernel.org>
 To:     linux-crypto@vger.kernel.org
 Cc:     Ard Biesheuvel <ardb@kernel.org>,
@@ -54,14 +54,14 @@ Cc:     Ard Biesheuvel <ardb@kernel.org>,
         linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
         qat-linux@intel.com, linuxppc-dev@lists.ozlabs.org,
         linux-mtd@lists.infradead.org, netdev@vger.kernel.org
-Subject: [RFC PATCH 17/21] crypto: cavium/zip - drop obsolete 'comp' implementation
-Date:   Tue, 18 Jul 2023 14:58:43 +0200
-Message-Id: <20230718125847.3869700-18-ardb@kernel.org>
+Subject: [RFC PATCH 18/21] crypto: compress_null - drop obsolete 'comp' implementation
+Date:   Tue, 18 Jul 2023 14:58:44 +0200
+Message-Id: <20230718125847.3869700-19-ardb@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230718125847.3869700-1-ardb@kernel.org>
 References: <20230718125847.3869700-1-ardb@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5435; i=ardb@kernel.org; h=from:subject; bh=WuS8tfuWkadsvD2O2V7rKFd8MWT1OV3T8mJ+98LYJNo=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIWVbT1PjcQb7M0e4sxP2uX86f9CqYGqijYXnfN2/hx5Zb lTb9qino5SFQYyDQVZMkUVg9t93O09PlKp1niULM4eVCWQIAxenAEzEz5+R4U3W3HV3XrUuW1jP e89tUQxfqvjH+U5PWp5/XLB8+ZnPE7sY/nDf+Zybn1Z3+YrA3H0LbsTY3ZHcZ/ntd+PM41/jvux jWMUJAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3053; i=ardb@kernel.org; h=from:subject; bh=XPV4TqBofI5Mv/9FxSzW2w9wDpjRH3FBmnl+elNmQmI=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIWVbT/O57bKCxz/9vLss0pfr+Jm/e61X1XTMfSsSULYue u/2p0xfOkpZGMQ4GGTFFFkEZv99t/P0RKla51myMHNYmUCGMHBxCsBE+MwY/odZ3Irasizr+IVT X0s6Prw8+Ytn0b/OLRkMdSdmL343SdCNkWHWzl16hVIP5jypnaLLdu2tadOnOdt63cPaO1PuCd/ ZfJQNAA==
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -79,167 +79,101 @@ implementation.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- drivers/crypto/cavium/zip/zip_crypto.c | 40 ----------------
- drivers/crypto/cavium/zip/zip_crypto.h | 10 ----
- drivers/crypto/cavium/zip/zip_main.c   | 50 +-------------------
- 3 files changed, 1 insertion(+), 99 deletions(-)
+ crypto/crypto_null.c | 31 ++++----------------
+ crypto/testmgr.c     |  3 --
+ 2 files changed, 5 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/crypto/cavium/zip/zip_crypto.c b/drivers/crypto/cavium/zip/zip_crypto.c
-index 1046a746d36f551c..5edad3b1d1dc8398 100644
---- a/drivers/crypto/cavium/zip/zip_crypto.c
-+++ b/drivers/crypto/cavium/zip/zip_crypto.c
-@@ -195,46 +195,6 @@ static int zip_decompress(const u8 *src, unsigned int slen,
- 	return ret;
- }
+diff --git a/crypto/crypto_null.c b/crypto/crypto_null.c
+index 5b84b0f7cc178fcd..75e73b1d6df01cc6 100644
+--- a/crypto/crypto_null.c
++++ b/crypto/crypto_null.c
+@@ -24,16 +24,6 @@ static DEFINE_MUTEX(crypto_default_null_skcipher_lock);
+ static struct crypto_sync_skcipher *crypto_default_null_skcipher;
+ static int crypto_default_null_skcipher_refcnt;
  
--/* Legacy Compress framework start */
--int zip_alloc_comp_ctx_deflate(struct crypto_tfm *tfm)
+-static int null_compress(struct crypto_tfm *tfm, const u8 *src,
+-			 unsigned int slen, u8 *dst, unsigned int *dlen)
 -{
--	struct zip_kernel_ctx *zip_ctx = crypto_tfm_ctx(tfm);
--
--	return zip_ctx_init(zip_ctx, 0);
+-	if (slen > *dlen)
+-		return -EINVAL;
+-	memcpy(dst, src, slen);
+-	*dlen = slen;
+-	return 0;
 -}
 -
--int zip_alloc_comp_ctx_lzs(struct crypto_tfm *tfm)
--{
--	struct zip_kernel_ctx *zip_ctx = crypto_tfm_ctx(tfm);
--
--	return zip_ctx_init(zip_ctx, 1);
--}
--
--void zip_free_comp_ctx(struct crypto_tfm *tfm)
--{
--	struct zip_kernel_ctx *zip_ctx = crypto_tfm_ctx(tfm);
--
--	zip_ctx_exit(zip_ctx);
--}
--
--int  zip_comp_compress(struct crypto_tfm *tfm,
--		       const u8 *src, unsigned int slen,
--		       u8 *dst, unsigned int *dlen)
--{
--	struct zip_kernel_ctx *zip_ctx = crypto_tfm_ctx(tfm);
--
--	return zip_compress(src, slen, dst, dlen, zip_ctx);
--}
--
--int  zip_comp_decompress(struct crypto_tfm *tfm,
--			 const u8 *src, unsigned int slen,
--			 u8 *dst, unsigned int *dlen)
--{
--	struct zip_kernel_ctx *zip_ctx = crypto_tfm_ctx(tfm);
--
--	return zip_decompress(src, slen, dst, dlen, zip_ctx);
--} /* Legacy compress framework end */
--
- /* SCOMP framework start */
- void *zip_alloc_scomp_ctx_deflate(struct crypto_scomp *tfm)
+ static int null_init(struct shash_desc *desc)
  {
-diff --git a/drivers/crypto/cavium/zip/zip_crypto.h b/drivers/crypto/cavium/zip/zip_crypto.h
-index b59ddfcacd34447e..a1ae3825fb65c3b6 100644
---- a/drivers/crypto/cavium/zip/zip_crypto.h
-+++ b/drivers/crypto/cavium/zip/zip_crypto.h
-@@ -57,16 +57,6 @@ struct zip_kernel_ctx {
- 	struct zip_operation zip_decomp;
+ 	return 0;
+@@ -121,7 +111,7 @@ static struct skcipher_alg skcipher_null = {
+ 	.decrypt		=	null_skcipher_crypt,
  };
  
--int  zip_alloc_comp_ctx_deflate(struct crypto_tfm *tfm);
--int  zip_alloc_comp_ctx_lzs(struct crypto_tfm *tfm);
--void zip_free_comp_ctx(struct crypto_tfm *tfm);
--int  zip_comp_compress(struct crypto_tfm *tfm,
--		       const u8 *src, unsigned int slen,
--		       u8 *dst, unsigned int *dlen);
--int  zip_comp_decompress(struct crypto_tfm *tfm,
--			 const u8 *src, unsigned int slen,
--			 u8 *dst, unsigned int *dlen);
--
- void *zip_alloc_scomp_ctx_deflate(struct crypto_scomp *tfm);
- void *zip_alloc_scomp_ctx_lzs(struct crypto_scomp *tfm);
- void  zip_free_scomp_ctx(struct crypto_scomp *tfm, void *zip_ctx);
-diff --git a/drivers/crypto/cavium/zip/zip_main.c b/drivers/crypto/cavium/zip/zip_main.c
-index dc5b7bf7e1fd9867..abd58de4343ddd8e 100644
---- a/drivers/crypto/cavium/zip/zip_main.c
-+++ b/drivers/crypto/cavium/zip/zip_main.c
-@@ -371,36 +371,6 @@ static struct pci_driver zip_driver = {
+-static struct crypto_alg null_algs[] = { {
++static struct crypto_alg cipher_null = {
+ 	.cra_name		=	"cipher_null",
+ 	.cra_driver_name	=	"cipher_null-generic",
+ 	.cra_flags		=	CRYPTO_ALG_TYPE_CIPHER,
+@@ -134,19 +124,8 @@ static struct crypto_alg null_algs[] = { {
+ 	.cia_setkey		= 	null_setkey,
+ 	.cia_encrypt		=	null_crypt,
+ 	.cia_decrypt		=	null_crypt } }
+-}, {
+-	.cra_name		=	"compress_null",
+-	.cra_driver_name	=	"compress_null-generic",
+-	.cra_flags		=	CRYPTO_ALG_TYPE_COMPRESS,
+-	.cra_blocksize		=	NULL_BLOCK_SIZE,
+-	.cra_ctxsize		=	0,
+-	.cra_module		=	THIS_MODULE,
+-	.cra_u			=	{ .compress = {
+-	.coa_compress		=	null_compress,
+-	.coa_decompress		=	null_compress } }
+-} };
++};
  
- /* Kernel Crypto Subsystem Interface */
+-MODULE_ALIAS_CRYPTO("compress_null");
+ MODULE_ALIAS_CRYPTO("digest_null");
+ MODULE_ALIAS_CRYPTO("cipher_null");
  
--static struct crypto_alg zip_comp_deflate = {
--	.cra_name		= "deflate",
--	.cra_driver_name	= "deflate-cavium",
--	.cra_flags		= CRYPTO_ALG_TYPE_COMPRESS,
--	.cra_ctxsize		= sizeof(struct zip_kernel_ctx),
--	.cra_priority           = 300,
--	.cra_module		= THIS_MODULE,
--	.cra_init		= zip_alloc_comp_ctx_deflate,
--	.cra_exit		= zip_free_comp_ctx,
--	.cra_u			= { .compress = {
--		.coa_compress	= zip_comp_compress,
--		.coa_decompress	= zip_comp_decompress
--		 } }
--};
--
--static struct crypto_alg zip_comp_lzs = {
--	.cra_name		= "lzs",
--	.cra_driver_name	= "lzs-cavium",
--	.cra_flags		= CRYPTO_ALG_TYPE_COMPRESS,
--	.cra_ctxsize		= sizeof(struct zip_kernel_ctx),
--	.cra_priority           = 300,
--	.cra_module		= THIS_MODULE,
--	.cra_init		= zip_alloc_comp_ctx_lzs,
--	.cra_exit		= zip_free_comp_ctx,
--	.cra_u			= { .compress = {
--		.coa_compress	= zip_comp_compress,
--		.coa_decompress	= zip_comp_decompress
--		 } }
--};
--
- static struct scomp_alg zip_scomp_deflate = {
- 	.alloc_ctx		= zip_alloc_scomp_ctx_deflate,
- 	.free_ctx		= zip_free_scomp_ctx,
-@@ -431,22 +401,10 @@ static int zip_register_compression_device(void)
+@@ -189,7 +168,7 @@ static int __init crypto_null_mod_init(void)
  {
- 	int ret;
+ 	int ret = 0;
  
--	ret = crypto_register_alg(&zip_comp_deflate);
--	if (ret < 0) {
--		zip_err("Deflate algorithm registration failed\n");
--		return ret;
--	}
--
--	ret = crypto_register_alg(&zip_comp_lzs);
--	if (ret < 0) {
--		zip_err("LZS algorithm registration failed\n");
--		goto err_unregister_alg_deflate;
--	}
--
- 	ret = crypto_register_scomp(&zip_scomp_deflate);
- 	if (ret < 0) {
- 		zip_err("Deflate scomp algorithm registration failed\n");
--		goto err_unregister_alg_lzs;
-+		return ret;
- 	}
+-	ret = crypto_register_algs(null_algs, ARRAY_SIZE(null_algs));
++	ret = crypto_register_alg(&cipher_null);
+ 	if (ret < 0)
+ 		goto out;
  
- 	ret = crypto_register_scomp(&zip_scomp_lzs);
-@@ -459,18 +417,12 @@ static int zip_register_compression_device(void)
- 
- err_unregister_scomp_deflate:
- 	crypto_unregister_scomp(&zip_scomp_deflate);
--err_unregister_alg_lzs:
--	crypto_unregister_alg(&zip_comp_lzs);
--err_unregister_alg_deflate:
--	crypto_unregister_alg(&zip_comp_deflate);
- 
+@@ -206,14 +185,14 @@ static int __init crypto_null_mod_init(void)
+ out_unregister_shash:
+ 	crypto_unregister_shash(&digest_null);
+ out_unregister_algs:
+-	crypto_unregister_algs(null_algs, ARRAY_SIZE(null_algs));
++	crypto_unregister_alg(&cipher_null);
+ out:
  	return ret;
  }
  
- static void zip_unregister_compression_device(void)
+ static void __exit crypto_null_mod_fini(void)
  {
--	crypto_unregister_alg(&zip_comp_deflate);
--	crypto_unregister_alg(&zip_comp_lzs);
- 	crypto_unregister_scomp(&zip_scomp_deflate);
- 	crypto_unregister_scomp(&zip_scomp_lzs);
+-	crypto_unregister_algs(null_algs, ARRAY_SIZE(null_algs));
++	crypto_unregister_alg(&cipher_null);
+ 	crypto_unregister_shash(&digest_null);
+ 	crypto_unregister_skcipher(&skcipher_null);
  }
+diff --git a/crypto/testmgr.c b/crypto/testmgr.c
+index 4971351f55dbabb9..e4b6d67233763193 100644
+--- a/crypto/testmgr.c
++++ b/crypto/testmgr.c
+@@ -4633,9 +4633,6 @@ static const struct alg_test_desc alg_test_descs[] = {
+ 		.suite = {
+ 			.hash = __VECS(sm4_cmac128_tv_template)
+ 		}
+-	}, {
+-		.alg = "compress_null",
+-		.test = alg_test_null,
+ 	}, {
+ 		.alg = "crc32",
+ 		.test = alg_test_hash,
 -- 
 2.39.2
 
