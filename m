@@ -2,137 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EA775833C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F2F75833B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbjGRRIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42736 "EHLO
+        id S232635AbjGRRGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjGRRIF (ORCPT
+        with ESMTP id S231190AbjGRRGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:08:05 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D920BBE
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:08:04 -0700 (PDT)
+        Tue, 18 Jul 2023 13:06:47 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2E61B6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:06:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689700084; x=1721236084;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=LowChJyNpWySLgzTtjQDu+vchcaLd6zgP20alhFs/kY=;
-  b=jQ7fVBqnLwS+wCzDQ7hgmZq5yk3u7UVf6Wm/Fai16XV76Sx4Ee1T7kiz
-   22QMMQITscuSzoH0a8GoYxLky/i3TDDlnPxVVI7KBxzRLdopOPZG0WlOj
-   Spn1juwhQ57DzyrqGd8ZdmNtzstQJ58AOGTCH1iIFJxaXb+t1r+/oWbqy
-   AHPWolIrNC5yp17bgLm7aLjLnLrZSld9qbjxhV3K1VMDOOgtJQXjlRlZK
-   ha1zDxAta4vzEA7CUXXe45VfDZgViEWfpohYJe9I9ocvOOZSUwpxL0bKA
-   q4EiGM/YxVXUEPN1aqNtNPZCCmfCWQWwJADKepRv5lAuMxEOMIzIGdHxA
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="430025055"
+  t=1689699997; x=1721235997;
+  h=subject:to:cc:from:date:message-id;
+  bh=6W9dgRQIg29x+a1B64mqmcheEofd6Qnr8fs53Afs4Tw=;
+  b=GwcNHcmEaEGJeiTaPhWg/AMjk/5c+NVKsI0VYe8O1DHnedblQsLpOCQX
+   1RDtoomToIoMjCWO0AI4FO9oBlPqhLQ//R5LJDlnLNKcKR+fp9NvSoLwg
+   U1CIjvzNW3BWSl4vbWb/eXV5+b3H6UMoE5Z8Z8iYPhpL9vtOHWyUQe3jQ
+   is/VlYrhUtleq/tj1zs5nOZIrelP449+ISdHtjEx2uqEJHKczaAf36FHX
+   w4pqtwoMUBdx8VP+/fWDPKJd4/rhnz0eM6akgR3s9zsP+uL58hQl7m919
+   jcYU8zyYlMB+4zrQI9kLH1WDrzuf5JtZveO7g/B/w8GhtXoX/DFFn9DWa
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="397105368"
 X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="430025055"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 10:08:04 -0700
+   d="scan'208";a="397105368"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 10:06:36 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="717674959"
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="673998968"
 X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="717674959"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 10:08:00 -0700
-Date:   Tue, 18 Jul 2023 20:04:41 +0300 (EEST)
-From:   Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-cc:     Alsa-devel <alsa-devel@alsa-project.org>,
-        sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Matthew Auld <matthew.auld@intel.com>
-Subject: Re: [PATCH 6/7] ASoC: SOF: Intel: Remove deferred probe for SOF
-In-Reply-To: <20230718084522.116952-7-maarten.lankhorst@linux.intel.com>
-Message-ID: <alpine.DEB.2.22.394.2307181922160.3532114@eliteleevi.tm.intel.com>
-References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com> <20230718084522.116952-7-maarten.lankhorst@linux.intel.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+   d="scan'208";a="673998968"
+Received: from davehans-spike.ostc.intel.com (HELO localhost.localdomain) ([10.165.164.11])
+  by orsmga003.jf.intel.com with ESMTP; 18 Jul 2023 10:06:33 -0700
+Subject: [PATCH] [v2] x86/mm: Remove "INVPCID single" feature tracking
+To:     linux-kernel@vger.kernel.org
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>, jannh@google.com,
+        x86@kernel.org, luto@kernel.org, peterz@infradead.org,
+        andrew.cooper3@citrix.com
+From:   Dave Hansen <dave.hansen@linux.intel.com>
+Date:   Tue, 18 Jul 2023 10:06:30 -0700
+Message-Id: <20230718170630.7922E235@davehans-spike.ostc.intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-thank you Maarten for doing the series! I think a lot of people will be 
-happy to get rid of the 60sec timeout. 
+Changes from v1:
+ * Move both 'cpu_tlbstate' references down in the function.  Neither
+   is used in the !PTI path.  The invlpg is both a fully serializing
+   instruction and compiler barrier.  The compiler can't optimize
+   these references, so do it the hard way instead.
 
-I kicked off a CI run SOF public infra for the whole series at
-https://github.com/thesofproject/linux/pull/4478
-Some results still in progress but so far so good.
+--
 
-Some concerns inline:
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
-On Tue, 18 Jul 2023, Maarten Lankhorst wrote:
+tl;dr: Replace a synthetic X86_FEATURE with a hardware X86_FEATURE
+       and check of existing per-cpu state.
 
-> This was only used to allow modprobing i915, by converting to the
-> -EPROBE_DEFER mechanism, it can be completely removed, and is in
-> fact counterproductive since -EPROBE_DEFER otherwise won't be
-> handled correctly.
+== Background ==
 
-We actually have a request_module() for the regular HDA codec drivers as 
-well (sof_probe_continue() -> snd_sof_probe() -> hda_dsp_probe() -> 
-hda_init_caps() -> hda_codec_probe_bus(). But right, this is not 
-necessarily a problem on its own, so it looks we indeed can drop the work 
-queue. Nice!
+There are three features in play here:
+ 1. Good old Page Table Isolation (PTI)
+ 2. Process Context IDentifiers (PCIDs) which allow entries from
+    multiple address spaces to be in the TLB at once.
+ 3. Support for the "Invalidate PCID" (INVPCID) instruction,
+    specifically the "individual address" mode (aka. mode 0).
 
-> diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-> index f1fd5b44aaac9..344b61576c0e3 100644
-> --- a/sound/soc/sof/intel/hda-codec.c
-> +++ b/sound/soc/sof/intel/hda-codec.c
-> @@ -415,7 +415,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
->  		return 0;
->  
->  	/* i915 exposes a HDA codec for HDMI audio */
-> -	ret = snd_hdac_i915_init(bus, true);
-> +	ret = snd_hdac_i915_init(bus, false);
->  	if (ret < 0)
->  		return ret;
+When all *three* of these are in place, INVPCID can and should be used
+to flush out individual addresses in the PTI user address space.
 
-My only bigger concern is corner cases where the display PCI device is on 
-the bus and visible to kernel, but for some reason there is no working 
-driver in the system or it is disabled.
+But there's a wrinkle or two: First, this INVPCID mode is dependent on
+CR4.PCIDE.  Even if X86_FEATURE_INVPCID==1, the instruction may #GP
+without setting up CR4.  Second, TLB flushing is done very early, even
+before CR4 is fully set up.  That means even if PTI, PCID and INVPCID
+are supported, there is *still* a window where INVPCID can #GP.
 
-With this patch, not having a workign display driver means that there is 
-also no audio in the system as the SOF driver will never get probed.
+== Problem ==
 
-In current mainline, one will get the 60sec timeout warning and then
-audio driver will proceed to probe and you'll have audio support (minus 
-HDMI/DP).
+The current code seems to work, but mostly by chance and there are a
+bunch of ways it can go wrong.  It's also somewhat hard to follow
+since X86_FEATURE_INVPCID_SINGLE is set far away from its lone user.
 
-This is mostly an issue with very new hardware (e.g. hw is still 
-behind force_probe flag in xe/i915 driver), but we've had some odd
-cases with e.g. systems with both Intel IGFX and other vendors' DGPU. 
-Audio drivers see the Intel VGA controller in system and will
-call snd_hdac_i915_init(), but the audio component bind will never
-succeed if the the Intel IGFX is not in actual use.
+== Solution ==
 
-Will need a bit of time to think about possible scenarios. Possibly this 
-is not an issue outside early development systems. In theory if IGFX is 
-disabled in BIOS, and not visible to OS, we are good, and if it's visible, 
-the i915/xe driver should be loaded, so we are good again.
+Make "INVPCID single" more robust and easier to follow by placing all
+the logic in one place.  Remove X86_FEATURE_INVPCID_SINGLE.
 
-Br, Kai
+Make two explicit checks before using INVPCID:
+ 1. Check that the system supports INVPCID itself (boot_cpu_has())
+ 2. Then check the CR4.PCIDE shadow to ensures that the CPU
+    can safely use INVPCID for individual address invalidation.
+
+The CR4 check *always* works and is not affected by any X86_FEATURE_*
+twiddling or inconsistencies between the boot and secondary CPUs.
+
+This has been tested on non-Meltdown hardware by using pti=on and
+then flipping PCID and INVPCID support with qemu.
+
+== Aside ==
+
+How does this code even work today?  By chance, I think.  First, PTI
+is initialized around the same time that the boot CPU sets
+CR4.PCIDE=1.  There are currently no TLB invalidations when PTI=1 but
+CR4.PCIDE=0.  That means that the X86_FEATURE_INVPCID_SINGLE check is
+never even reached.
+
+this_cpu_has() is also very nasty to use in this context because the
+boot CPU reaches here before cpu_data(0) has been initialized.  It
+happens to work for X86_FEATURE_INVPCID_SINGLE since it's a
+software-defined feature but it would fall over for a hardware-
+derived X86_FEATURE.
+
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reported-by: Jann Horn <jannh@google.com>
+Cc: x86@kernel.org
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Andrew Cooper <andrew.cooper3@citrix.com>
+---
+
+ b/arch/x86/include/asm/cpufeatures.h |    1 -
+ b/arch/x86/mm/init.c                 |    9 ---------
+ b/arch/x86/mm/tlb.c                  |   19 +++++++++++++------
+ 3 files changed, 13 insertions(+), 16 deletions(-)
+
+diff -puN arch/x86/include/asm/cpufeatures.h~remove-invpcid-single arch/x86/include/asm/cpufeatures.h
+--- a/arch/x86/include/asm/cpufeatures.h~remove-invpcid-single	2023-07-17 17:14:37.509036132 -0700
++++ b/arch/x86/include/asm/cpufeatures.h	2023-07-17 17:14:37.525036135 -0700
+@@ -198,7 +198,6 @@
+ #define X86_FEATURE_CAT_L3		( 7*32+ 4) /* Cache Allocation Technology L3 */
+ #define X86_FEATURE_CAT_L2		( 7*32+ 5) /* Cache Allocation Technology L2 */
+ #define X86_FEATURE_CDP_L3		( 7*32+ 6) /* Code and Data Prioritization L3 */
+-#define X86_FEATURE_INVPCID_SINGLE	( 7*32+ 7) /* Effectively INVPCID && CR4.PCIDE=1 */
+ #define X86_FEATURE_HW_PSTATE		( 7*32+ 8) /* AMD HW-PState */
+ #define X86_FEATURE_PROC_FEEDBACK	( 7*32+ 9) /* AMD ProcFeedbackInterface */
+ #define X86_FEATURE_XCOMPACTED		( 7*32+10) /* "" Use compacted XSTATE (XSAVES or XSAVEC) */
+diff -puN arch/x86/mm/init.c~remove-invpcid-single arch/x86/mm/init.c
+--- a/arch/x86/mm/init.c~remove-invpcid-single	2023-07-17 17:14:37.513036133 -0700
++++ b/arch/x86/mm/init.c	2023-07-17 17:14:37.525036135 -0700
+@@ -307,15 +307,6 @@ static void setup_pcid(void)
+ 		 * start_secondary().
+ 		 */
+ 		cr4_set_bits(X86_CR4_PCIDE);
+-
+-		/*
+-		 * INVPCID's single-context modes (2/3) only work if we set
+-		 * X86_CR4_PCIDE, *and* we INVPCID support.  It's unusable
+-		 * on systems that have X86_CR4_PCIDE clear, or that have
+-		 * no INVPCID support at all.
+-		 */
+-		if (boot_cpu_has(X86_FEATURE_INVPCID))
+-			setup_force_cpu_cap(X86_FEATURE_INVPCID_SINGLE);
+ 	} else {
+ 		/*
+ 		 * flush_tlb_all(), as currently implemented, won't work if
+diff -puN arch/x86/mm/tlb.c~remove-invpcid-single arch/x86/mm/tlb.c
+--- a/arch/x86/mm/tlb.c~remove-invpcid-single	2023-07-17 17:14:37.517036133 -0700
++++ b/arch/x86/mm/tlb.c	2023-07-17 17:14:37.525036135 -0700
+@@ -1140,21 +1140,28 @@ void flush_tlb_one_kernel(unsigned long
+  */
+ STATIC_NOPV void native_flush_tlb_one_user(unsigned long addr)
+ {
+-	u32 loaded_mm_asid = this_cpu_read(cpu_tlbstate.loaded_mm_asid);
++	u32 loaded_mm_asid;
++	bool cpu_pcide;
+ 
++	/* Flush 'addr' from the kernel PCID: */
+ 	asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
+ 
++	/* If PTI is off there is no user PCID and nothing to flush. */
+ 	if (!static_cpu_has(X86_FEATURE_PTI))
+ 		return;
+ 
++	loaded_mm_asid = this_cpu_read(cpu_tlbstate.loaded_mm_asid);
++	cpu_pcide      = this_cpu_read(cpu_tlbstate.cr4) & X86_CR4_PCIDE;
++
+ 	/*
+-	 * Some platforms #GP if we call invpcid(type=1/2) before CR4.PCIDE=1.
+-	 * Just use invalidate_user_asid() in case we are called early.
++	 * invpcid_flush_one(pcid>0) will #GP if CR4.PCIDE==0.  Check
++	 * 'cpu_pcide' to ensure that *this* CPU will not trigger those
++	 * #GP's even if called before CR4.PCIDE has been initialized.
+ 	 */
+-	if (!this_cpu_has(X86_FEATURE_INVPCID_SINGLE))
+-		invalidate_user_asid(loaded_mm_asid);
+-	else
++	if (boot_cpu_has(X86_FEATURE_INVPCID) && cpu_pcide)
+ 		invpcid_flush_one(user_pcid(loaded_mm_asid), addr);
++	else
++		invalidate_user_asid(loaded_mm_asid);
+ }
+ 
+ void flush_tlb_one_user(unsigned long addr)
+_
