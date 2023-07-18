@@ -2,150 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0686757A3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2DB757A41
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbjGRLQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35974 "EHLO
+        id S231131AbjGRLQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjGRLQV (ORCPT
+        with ESMTP id S230450AbjGRLQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:16:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB29410FC
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:15:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689678942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BqFBTcreB9uM7bVA+oKgdwOheFXwxzAShQOYP1vaHLs=;
-        b=UoJkDCTCW3UbiMxhNVm7orufGMKqQxto60k8XmQ6T3l3WIMdcoid0v25kanO0d9DeMIlR6
-        P/3NaRf6S0R59TyKYGHGnpdMI+o4AABukG080M3tH08A8oh6uiJX7mhaOmMblCSIVwClRB
-        Chl+DOesqjiQ8nnB5d6vsPNhmdT89Ss=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-125-P15JMUbXPxGW9KY6aZXA4A-1; Tue, 18 Jul 2023 07:15:40 -0400
-X-MC-Unique: P15JMUbXPxGW9KY6aZXA4A-1
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-66d7911409dso422440b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:15:40 -0700 (PDT)
+        Tue, 18 Jul 2023 07:16:45 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B5F1705;
+        Tue, 18 Jul 2023 04:16:43 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-26586e824e7so2840358a91.3;
+        Tue, 18 Jul 2023 04:16:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689679003; x=1692271003;
+        h=content-disposition:mime-version:subject:to:date:from:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RDqCEtPP7u4lUuZ9Np/PNRIOxRGuU6kZQY2tiFjWesI=;
+        b=R1b13mbfqdYlno1rEzfx5LoSkAJSZ4myTZ4145u7gLU7tIkMZ1H6QkP+AcW+MbaE6T
+         c+Dkoeor41D1nkVFvRVfUjUXUWep5edmRb0sWAnhxGUyr0GUblOQPo+m+4SQxOSRxx2S
+         rDVuQD0rjNVHptG3czYEL1GTpHsWpeAIF4QL9do43kt2ri2v5Af/qhIOF/+WFbf6rEF9
+         UrI92NJo+RAWtgWxqedqpE76x9zyxAcC5bT81uVLVvDnZGjNcFRyOPKJwWvOzdHsOy5m
+         sVIrhakF1Tfjg7YmUmKgcP8DU6K8Mc3g54JVP7RSe0HT5JbHvg/i/6BCNGt7TOebLKVS
+         1mrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689678940; x=1690283740;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1689679003; x=1692271003;
+        h=content-disposition:mime-version:subject:to:date:from:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BqFBTcreB9uM7bVA+oKgdwOheFXwxzAShQOYP1vaHLs=;
-        b=Dt4gB40ZnTBebwC39Syq1qLQ9g64haGfLSZrJubUjOCNrCIkVlM4JPT67n5iBve3Ld
-         /dExSfF2OlTAHwpe4DU91NHgURjHr5Fo6ZQuD9dquHQkAMsG65w7uVsB93mLZyyR8mMX
-         EL0KAiiXjmW/22ufOXVLHaCrYa3BxIDZ587VlzohhB6tiW64PBpud1Kz7fw8IehwLc0B
-         lADLcLejS9V1Xex/oMu81+FXa1PPOOkR1nu7a5wj1Gn6/cjnyrEGlp5z2acopj+Zeyzs
-         HRfF4yow33v/YI7w05SyPjt3Cx7LhQ9aT3Z/frtU1Frs1BAtwjJv5bopZy9+BBERg8Zx
-         4DLg==
-X-Gm-Message-State: ABy/qLZeAcipoUj3lr6wJjL5opgIMVIWXBh0KCGUT/XM6/QhfHEgnLjX
-        anLc4b8teDrHDHul1E1ojnm7+vlMD4JHDnkrtjuMlKkqdu7Z94eKF/Zrui92a7+wGfTXfrVmN/h
-        tMBMz3d8i8VlKvTnPTDc+vKDc
-X-Received: by 2002:a05:6a00:2d06:b0:679:a1f1:a5f8 with SMTP id fa6-20020a056a002d0600b00679a1f1a5f8mr11345521pfb.3.1689678939737;
-        Tue, 18 Jul 2023 04:15:39 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEpw9FbepMwI4i8WQLrfFCcRWK4bQzZOcI8bUuVzeTHVwddSiiqvjUkmkgPmHYZSjCF3HQUxg==
-X-Received: by 2002:a05:6a00:2d06:b0:679:a1f1:a5f8 with SMTP id fa6-20020a056a002d0600b00679a1f1a5f8mr11345498pfb.3.1689678939458;
-        Tue, 18 Jul 2023 04:15:39 -0700 (PDT)
-Received: from [10.72.112.40] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id s1-20020a63af41000000b00528db73ed70sm1476638pgo.3.2023.07.18.04.15.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 04:15:39 -0700 (PDT)
-Message-ID: <5b2c03a5-5887-d951-6c3d-f71b49e683fc@redhat.com>
-Date:   Tue, 18 Jul 2023 19:15:32 +0800
+        bh=RDqCEtPP7u4lUuZ9Np/PNRIOxRGuU6kZQY2tiFjWesI=;
+        b=j3FVJoX2ych7RqdDKAXP7fiWVeAbJ967NE2tspMEhDc/NeOSpq0qVZZnpsCqG7dqEO
+         9VUrPvDT0d+fdg2ygcWCVAmZJLrPJVQJvfMmaeA/3uBCozCjMKSEW2EdAg0AQdhRSYDP
+         zTesHnHPOFhyFU+qiAJx578MCBQgSK6+5vwzgUlX25q2R1pfSpkxKqJl3ts8jFAUngvu
+         2aFgzVepPIJ3QMszlmvO7K5o5n0rc2W+y15iGK6stwalcQ+9liQMv+KGUXTgR8CPPECs
+         4IcULzYWqMBkTTwbzD9L4kSPJatdn0/ewz9zFu+bquUQ0X1dB/wK85rXelomMK83+O1m
+         ys2w==
+X-Gm-Message-State: ABy/qLb2c8JpKdqRXgGE6HVgS/ogFT5P2CfL1pwh/MUgL1a4XfM0tC4e
+        VZe/PA4WgXQG/pdEWS/XBPE=
+X-Google-Smtp-Source: APBJJlEst8u9Az2C8TF7X1huLYbv/7A043tSS9ngGKSY788TupNY8qhUi2D7L/U93exBd4YXJmFbjw==
+X-Received: by 2002:a17:90a:62c5:b0:262:d19c:4fee with SMTP id k5-20020a17090a62c500b00262d19c4feemr11645410pjs.19.1689679003309;
+        Tue, 18 Jul 2023 04:16:43 -0700 (PDT)
+Received: from sie-luc. ([1.85.36.133])
+        by smtp.gmail.com with ESMTPSA id 6-20020a17090a194600b00263d3448141sm1329482pjh.8.2023.07.18.04.16.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 04:16:42 -0700 (PDT)
+Message-ID: <64b6749a.170a0220.3acab.2af9@mx.google.com>
+X-Google-Original-Message-ID: <20230718111634.GA8462@sie-luc.>
+From:   Luc Ma <onion0709@gmail.com>
+X-Google-Original-From: Luc Ma <luc@sietium.com>
+Date:   Tue, 18 Jul 2023 19:16:34 +0800
+To:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        javierm@redhat.com, onion0709@gmail.com
+Subject: [PATCH v2] dma-buf: Fix the typo in DMA-BUF statistics doc
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v6 08/11] KVM: arm64: Implement
- kvm_arch_flush_remote_tlbs_range()
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>
-References: <20230715005405.3689586-1-rananta@google.com>
- <20230715005405.3689586-9-rananta@google.com>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <20230715005405.3689586-9-rananta@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Luc Ma <luc@sietium.com>
 
+The kernel-doc for DMA-BUF statistics mentions /sys/kernel/dma-buf/buffers
+but the correct path is /sys/kernel/dmabuf/buffers instead.
 
-On 7/15/23 08:54, Raghavendra Rao Ananta wrote:
-> Implement kvm_arch_flush_remote_tlbs_range() for arm64
-> to invalidate the given range in the TLB.
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> Reviewed-by: Gavin Shan <gshan@redhat.com>
-Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
-> ---
->   arch/arm64/include/asm/kvm_host.h | 3 +++
->   arch/arm64/kvm/mmu.c              | 7 +++++++
->   2 files changed, 10 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 7281222f24ef..52d3ed918893 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -1114,6 +1114,9 @@ struct kvm *kvm_arch_alloc_vm(void);
->   #define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS
->   int kvm_arch_flush_remote_tlbs(struct kvm *kvm);
->   
-> +#define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS_RANGE
-> +int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm, gfn_t start_gfn, u64 pages);
-> +
->   static inline bool kvm_vm_is_protected(struct kvm *kvm)
->   {
->   	return false;
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 0ac721fa27f1..387f2215fde7 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -172,6 +172,13 @@ int kvm_arch_flush_remote_tlbs(struct kvm *kvm)
->   	return 0;
->   }
->   
-> +int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm, gfn_t start_gfn, u64 pages)
-> +{
-> +	kvm_tlb_flush_vmid_range(&kvm->arch.mmu,
-> +				start_gfn << PAGE_SHIFT, pages << PAGE_SHIFT);
-> +	return 0;
-> +}
-> +
->   static bool kvm_is_device_pfn(unsigned long pfn)
->   {
->   	return !pfn_is_map_memory(pfn);
+Signed-off-by: Luc Ma <luc@sietium.com>
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+---
+ drivers/dma-buf/dma-buf-sysfs-stats.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/dma-buf/dma-buf-sysfs-stats.c b/drivers/dma-buf/dma-buf-sysfs-stats.c
+index 6cfbbf0720bd..b5b62e40ccc1 100644
+--- a/drivers/dma-buf/dma-buf-sysfs-stats.c
++++ b/drivers/dma-buf/dma-buf-sysfs-stats.c
+@@ -33,7 +33,7 @@
+  * into their address space. This necessitated the creation of the DMA-BUF sysfs
+  * statistics interface to provide per-buffer information on production systems.
+  *
+- * The interface at ``/sys/kernel/dma-buf/buffers`` exposes information about
++ * The interface at ``/sys/kernel/dmabuf/buffers`` exposes information about
+  * every DMA-BUF when ``CONFIG_DMABUF_SYSFS_STATS`` is enabled.
+  *
+  * The following stats are exposed by the interface:
 -- 
-Shaoqin
+2.25.1
 
