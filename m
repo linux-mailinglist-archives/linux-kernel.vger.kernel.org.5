@@ -2,102 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E26487585FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CA2758607
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbjGRUQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 16:16:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40798 "EHLO
+        id S230122AbjGRUXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 16:23:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjGRUQp (ORCPT
+        with ESMTP id S229479AbjGRUXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 16:16:45 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955431995
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:16:44 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-785ccd731a7so68816239f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:16:44 -0700 (PDT)
+        Tue, 18 Jul 2023 16:23:15 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3741992
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:23:14 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-cea6b429d05so1147345276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:23:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1689711403; x=1690316203;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oVimXmbmZTbISW+7n71WjspppK5V6kmtNbt/YEu7vIA=;
-        b=XQBKteELQXQuORaGgRT8MImSS86ueNUmG6KmdfwU/IYB/3xX2bftT3kU9krYco4iBf
-         2EY8gyAq93spVBZSeqNYbMhhVAusjsvMI1i+kW9/79nxRDHJWUZIUOeXBLQUo4ITiaKl
-         hN8dttzbEUwpb9easpzanAVhKCsCH1l3TletOmmAzhY0OFJkRLieHyvIBykbFUElb0ey
-         TEyR95wK6S7ITaK/cyhFaVEkXNH5ouo6FD5Ijo1bJ8LI7BXHVca0G0EVijlMgl2+bk7e
-         b6nyPVioInukFXEV/ytCqgQ5BKwCPXvEK6nzq5B/tYyL2ovFrPSa6xDzNIFvb7ztxnEk
-         pByg==
+        d=gmail.com; s=20221208; t=1689711794; x=1692303794;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qw5CFaI3X+N6BThRXsBy//48rBDBwT2177YsdbP2ly0=;
+        b=FZL81m21Q9xAkone+3OQV7LM+rdNKwR5RN0TvybT3y41ihLx8JieZUO9M4Ppd3xh0K
+         xji+MZZ5IhChh9kKzKjra5Wboh/qIPlPzq9wQILkj33/uoOMk6ggGSvZNaJTDgZj/rJs
+         KjCXynE4ddzacBKpZ4Cv/Jw85M9z++urogdmL6V+wMyK53GulVWY5YHp32ru7jtJszPj
+         9x7xk7PJY4gFB2jVN2oiyXGNaNu5kh5gHU7xZEH/RUSpLSe/uTcLjGW1bSDqUP40Ufir
+         H+XY5Sf5Itt25NW+SkfMwpmdbpxm1P5BKIstFZlztEgU0Hfb0I/oJehSHgItOJK7q24+
+         neDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689711403; x=1690316203;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oVimXmbmZTbISW+7n71WjspppK5V6kmtNbt/YEu7vIA=;
-        b=N4NAaQFJfwCPIEMBkUN8fVG6Sh3kulKh3a+lO4n23BDwmwJFIUIdA8TBYpou2jm/XB
-         EGXnI+eu7OsyT9WTzhJL9qj6EAVGiGc4Pt7DXHNONjUYn+vvFO9zvSCyVLQeXHRZGqUN
-         G+qwp9DMx33Om1+vFlJ8e58eB4xEF3okgfxj2U7CFTe8v9mLz8HENdCsHyxfErFZnf8d
-         WioQZAwv4jkjXBrXGmVo6w/4MkCvGPdSLH87o5bVEAeQS1u6SUyxdXLRCsA0K4RQ3TV/
-         emGI5ZS5Zg3TQey6IN2++0XYZFFzmHL9wz2/2N5KXFRaQt50x2ZqQE4a9DqDjR0C/CL3
-         oa9Q==
-X-Gm-Message-State: ABy/qLY3W5zKf0NgbSi+AGJ1BDchNLmzj1AvT7E3KOvjnJmdi8rZuPiN
-        hLve88NHirm8v6LtrqTYvg3x29JWZY7/XjMZH/8=
-X-Google-Smtp-Source: APBJJlG3LsH0V59+W63s/Sd5XTnlN8wuLVAG/nWDa1vOSLOvAlH/dGdy3BqBw/xqRu9m5tl1VqoSyg==
-X-Received: by 2002:a05:6602:3f04:b0:780:d65c:d78f with SMTP id em4-20020a0566023f0400b00780d65cd78fmr3674323iob.2.1689711403339;
-        Tue, 18 Jul 2023 13:16:43 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id x7-20020a5e8f47000000b00785cfdd968bsm845993iop.5.2023.07.18.13.16.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 13:16:42 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230718115607.65652-1-omosnace@redhat.com>
-References: <20230718115607.65652-1-omosnace@redhat.com>
-Subject: Re: [PATCH] io_uring: don't audit the capability check in
- io_uring_create()
-Message-Id: <168971140212.1482414.1220631096211660246.b4-ty@kernel.dk>
-Date:   Tue, 18 Jul 2023 14:16:42 -0600
+        d=1e100.net; s=20221208; t=1689711794; x=1692303794;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qw5CFaI3X+N6BThRXsBy//48rBDBwT2177YsdbP2ly0=;
+        b=ZpCjAsPxosON0X+NG+JMcvjKH6bBVaYOOEa/prcK6BjwDRxyoBY5Iu1APBnb1HqZOD
+         hCmRLLo+FRC6DkmAkJOUNp+WsfUVcouKvFAHPcGCWUusDkOVAxvxnEtWamJJpEilbylZ
+         HUUfzIAKlLOiS+geIaZNogvP+VifySxQ/RB9ZHH75GEPfTd9m2kaTzBmQL9zY05pQSyx
+         Rcfe6WU5u+oXzxm2KSWp4Y+eaUU8Hd0/w4z7KrW2a8omwvY/MOXtdUD7B1P0g1dOBXpu
+         b0mq+4uYbEReckBGxpsloh4tj3sB1N2TmJfXLtO28rMUE2Jo/fL0uk2oybOsdkP3bwTH
+         24Ww==
+X-Gm-Message-State: ABy/qLal5kR4d9oCgmaJuCl9sCFjaA+ib/sg4vhV9XiYEtqXeBLwmU7s
+        DtyqoZT8xvhZ9iLsSj+tCELBhYYiIelxmFeK8ZU=
+X-Google-Smtp-Source: APBJJlHvAUo0qXccr8ZRg5DFZh/pinnXhadK3OsXD3YirCzeWY/d7B7N1bOZiKipnJuvSQJ88+hGa2yr5f+cPkpQ+30=
+X-Received: by 2002:a25:fc10:0:b0:cf0:8fde:c325 with SMTP id
+ v16-20020a25fc10000000b00cf08fdec325mr930925ybd.4.1689711793897; Tue, 18 Jul
+ 2023 13:23:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+From:   Amelia Lucas <datalistsdask@gmail.com>
+Date:   Tue, 18 Jul 2023 15:22:40 -0500
+Message-ID: <CADvfT5YGOUV+rAoCMqt5cuxi-PkdYaNsOkQVZEa+DYvrFYR+9A@mail.gmail.com>
+Subject: RE: PACK EXPO Shows Attendees Email List- 2023
+To:     Amelia Lucas <datalistsdask@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_20,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+PACK EXPO Shows 2023
 
-On Tue, 18 Jul 2023 13:56:07 +0200, Ondrej Mosnacek wrote:
-> The check being unconditional may lead to unwanted denials reported by
-> LSMs when a process has the capability granted by DAC, but denied by an
-> LSM. In the case of SELinux such denials are a problem, since they can't
-> be effectively filtered out via the policy and when not silenced, they
-> produce noise that may hide a true problem or an attack.
-> 
-> Since not having the capability merely means that the created io_uring
-> context will be accounted against the current user's RLIMIT_MEMLOCK
-> limit, we can disable auditing of denials for this check by using
-> ns_capable_noaudit() instead of capable().
-> 
-> [...]
+Would you be interested in acquiring PACK EXPO Shows Attendees Email List?
 
-Applied, thanks!
+EVENTS                           Contacts     Costs:
+PACK EXPO West             40,368        $2,289
+PACK EXPO Las Vegas    17,367        $1,626
+PACK EXPO East              18,379        $1,518
 
-[1/1] io_uring: don't audit the capability check in io_uring_create()
-      commit: 6adc2272aaaf84f34b652cf77f770c6fcc4b8336
+Number of Contacts: 76,382 Discounted Costs: $3,299
 
-Best regards,
--- 
-Jens Axboe
+Interested? Email me back; I would love to provide more information on the list.
 
-
-
+[Amelia Lucas]
