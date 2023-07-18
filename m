@@ -2,247 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB9C75811D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 596E375811E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232674AbjGRPjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 11:39:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
+        id S233102AbjGRPjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 11:39:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231325AbjGRPjK (ORCPT
+        with ESMTP id S233688AbjGRPjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 11:39:10 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E271E1726
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:38:52 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-51e6113437cso7980537a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:38:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689694731; x=1692286731;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eLioVgA1gUOrbornlU5isW1iy/mYKUMhb3XwnGxISqM=;
-        b=BzugDmWybXG2LrJG1qrtQETWyKAh9ufRsq+N1Zj8JniX0fCV7aqopO/5FPQ2KWaa1R
-         RK/H508Mym1XQBCtY0AEclIQ0hQJjA6OTMmtmbzfHkX6aNRkgaLbeEQvAHBUXSW0pyp8
-         u/aE6Epy5RO5a7j9oVVUKHIsGPvzvyPaREFlESg255uL2gHCotlyyfO0gQbYwXjJD/jR
-         htDUqhGhNAftoa6b5p5otcwcp/OQAaEju5qL9s3FKBsmNGchPaa3A9SZj2ZXvEqhYC/k
-         pxckryTPgj7u4wwCrC6wQM2piqV5tY/BXXDJkbyawzI2F0wgnMNiB+AKP904nDuOPPej
-         lsYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689694731; x=1692286731;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eLioVgA1gUOrbornlU5isW1iy/mYKUMhb3XwnGxISqM=;
-        b=j9x6MSRjY+KRNvaooO3egudnQss4ZNP7lwgc9S90HogIxGj32Zs4n3mScHPJGRWryI
-         Zgr0NZ04nALz7wEIUbGYoHtTsjYyqi6kl97aK5ofguxfEZz9k4/OSljTZHZvHL2lvsbi
-         i66lAFAI70u7Fb3zLabDgbn2GOb/ByR6KeLFiNRV5W0iJn/PBaGA6WVzxhQewvmNiPP9
-         a+Lj7JZ5UXarIaABodOAEa6Fv4qWOu3CHQnhrW5XOJr31lUPHSrInesGp8yHZoyOs/C5
-         1LQlhmxP5i5Isdn/RF0aj4Uz6mfkAFNWoAGNu2pBYzgf77HUcL/c1JPERyqQxWpHvz+V
-         OqfQ==
-X-Gm-Message-State: ABy/qLZpogeqUpunCv5+zo20kaSX1g1pjlFAKzoothTzysnYf6MkU5kj
-        eG+ITn9Dzxgktp+ETiOx1k0pX4xiz6FX8NyDfFvYcg==
-X-Google-Smtp-Source: APBJJlEhaj4EMbuNXR+5V2FXW2eoMOaK2lG9dG/p2NP/RlQMJ2MU1iasTF1aYVc3PWjBSe6nvMN3ccShiGxt1LR6T5k=
-X-Received: by 2002:a05:6402:882:b0:51f:e92a:62ba with SMTP id
- e2-20020a056402088200b0051fe92a62bamr269135edy.9.1689694730940; Tue, 18 Jul
- 2023 08:38:50 -0700 (PDT)
+        Tue, 18 Jul 2023 11:39:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899F31702
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:39:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1D61461644
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:39:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80965C433CA
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:39:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689694746;
+        bh=7rHfs2GMogQauEkq0epPnmohdkROdKonN2mtJ7v19TQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DsjDNIaoPYi54KEa07jHVq9vV3+RgKR6lDiRSlFSe/xuDHotq4E4OYlaByFN9IwUe
+         rlIOh0ZbESrVJ7/wVhAt6k1oDoSvcxliWmKMXSs0FCe2/fDoonnOADYBA/qskdMS/Y
+         beD1eWaqH2XiXuWeN6u3iNzb3UGRHRVPVFZr9UQvQKBqXUPKVGeqtlBezgVwHhUpQy
+         S+p38pt7M/fpKIXie9MZlImXVZbrTvd73FHbgDESu7omi16lCFwYJ/avLrn3AFd6KK
+         bNzoFxYAqfg3bfoBYaSabOnmW7W4uR8WQNYoZZaVjoig1KcFBsbRcGuM4Q8mKR7/5a
+         ywjYe4inOsJyQ==
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5217ad95029so4775299a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:39:06 -0700 (PDT)
+X-Gm-Message-State: ABy/qLYBGB/gXWx/Id8kiIzLdS4tZe7AvYrpCXivY4sXR8Fj8uAKNkEl
+        QlhQyAU3nzNG3O+6Hwq3pUNzhvXedHH8dqMn+Kw=
+X-Google-Smtp-Source: APBJJlGaLOuKJwTGrsmgv+ATI4sOFUwlNFrsjaQBkOlAH/HEEJau0+QlY6ZbLUiBC25LbSXOXW2csk0/hv+PUwAydI0=
+X-Received: by 2002:aa7:d787:0:b0:521:9d92:5863 with SMTP id
+ s7-20020aa7d787000000b005219d925863mr64329edq.42.1689694744717; Tue, 18 Jul
+ 2023 08:39:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230717201608.814406187@linuxfoundation.org>
-In-Reply-To: <20230717201608.814406187@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 18 Jul 2023 21:08:38 +0530
-Message-ID: <CA+G9fYs56L1OzJA=kmXmtTGXnhfjX0Va0bu5An-b5Fxcjnioqw@mail.gmail.com>
-Subject: Re: [PATCH 6.4 000/801] 6.4.4-rc3 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
+References: <MEYP282MB259720FF3C1683A75881EF02D93BA@MEYP282MB2597.AUSP282.PROD.OUTLOOK.COM>
+ <CAAhV-H6dn9iRxaGGoD+=7YHiDEmt_Be4_v8d1oY7+dmhrJBUMw@mail.gmail.com>
+In-Reply-To: <CAAhV-H6dn9iRxaGGoD+=7YHiDEmt_Be4_v8d1oY7+dmhrJBUMw@mail.gmail.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 18 Jul 2023 23:38:53 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6hY=Y_DagrHJzNY5wn8JkCzheAR2JnjrOQf5DUHES1Tg@mail.gmail.com>
+Message-ID: <CAAhV-H6hY=Y_DagrHJzNY5wn8JkCzheAR2JnjrOQf5DUHES1Tg@mail.gmail.com>
+Subject: Re: [PATCH v4] LoongArch: Fix CONFIG_CMDLINE_EXTEND and
+ CONFIG_CMDLINE_BOOTLOADER handling
+To:     Dong Zhihong <donmor3000@hotmail.com>
+Cc:     kernel@xen0n.name, ardb@kernel.org, tangyouling@loongson.cn,
+        zhoubinbin@loongson.cn, yangtiezhu@loongson.cn, tglx@linutronix.de,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 at 02:04, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Hi, Zhihong,
+
+On Mon, Jul 17, 2023 at 3:05=E2=80=AFPM Huacai Chen <chenhuacai@kernel.org>=
+ wrote:
 >
-> This is the start of the stable review cycle for the 6.4.4 release.
-> There are 801 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Mon, Jul 17, 2023 at 2:51=E2=80=AFPM Dong Zhihong <donmor3000@hotmail.=
+com> wrote:
+> >
+> > Make CONFIG_CMDLINE work with CONFIG_CMDLINE_EXTEND and
+> > CONFIG_CMDLINE_BOOTLOADER. The touched function is bootcmdline_init()`.
+> > There's already code handling CONFIG_CMDLINE_FORCE, which replaces
+> > `boot_command_line` with CONFIG_CMDLINE and immediately`goto out`. It'd=
+ be
+> > similar way to handle CONFIG_CMDLINE_EXTEND and CONFIG_CMDLINE_BOOTLOAD=
+ER,
+> > so some code is added after OF_FLATTREE part to handle them.
+> >
+> > Signed-off-by: Dong Zhihong <donmor3000@hotmail.com>
+> > ---
+> >
+> > v4 -> v3: Make CONFIG_CMDLINE appended to the end of command line (Huac=
+ai);
+> >         Removed unnecessary #ifdef since CONFIG_CMDLINE is always a str=
+ing on
+> >         LoongArch
+> >         Reworded comments
+> >         Reworded the subject of commit message (Huacai)
+> > v3 -> v2: Reworded the commit message again to make it imperative (Ruoy=
+ao)
+> > v2 -> v1: Reworded the commit message so it's more imperative (Markus);
+> >         Added `goto out` to FDT part (Huacai)
+> >
+> >  arch/loongarch/kernel/setup.c | 17 +++++++++++++++++
+> >  1 file changed, 17 insertions(+)
+> >
+> > diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setu=
+p.c
+> > index 78a00359bde3..a98f33553acf 100644
+> > --- a/arch/loongarch/kernel/setup.c
+> > +++ b/arch/loongarch/kernel/setup.c
+> > @@ -332,9 +332,26 @@ static void __init bootcmdline_init(char **cmdline=
+_p)
+> >                         strlcat(boot_command_line, " ", COMMAND_LINE_SI=
+ZE);
+> >
+> >                 strlcat(boot_command_line, init_command_line, COMMAND_L=
+INE_SIZE);
+> > +               goto out;
+> >         }
+> >  #endif
+> >
+> > +       /*
+> > +        * Append built-in command to the retrieved one if
+> > +        * CONFIG_CMDLINE_EXTEND is enabled.
+> > +        */
+> > +       if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) && CONFIG_CMDLINE[0]) {
+> Don't need to check CONFIG_CMDLINE[0], this simplifies the conditions.
 >
-> Responses should be made by Wed, 19 Jul 2023 20:14:44 +0000.
-> Anything received after that time might be too late.
+> > +               strlcat(boot_command_line, " ", COMMAND_LINE_SIZE);
+> > +               strlcat(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE=
+_SIZE);
+> > +               goto out;
+> Remove this line and in the next line using the old method
+> (IS_ENABLED(CONFIG_CMDLINE_BOOTLOADER) && !boot_command_line[0]) is
+> better.
+To save everyone's time, I adjust the logic and send v5 [1]. If you
+have no objections, I'll apply that one to loongarch-next.
+
+[1] https://lore.kernel.org/loongarch/20230718153348.3340811-1-chenhuacai@l=
+oongson.cn/T/#u
+
+Huacai
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.4.4-rc3.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
-
-
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 6.4.4-rc3
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.4.y
-* git commit: 0e8d2fdfb18871a5de031927a37af3cacbaf1d16
-* git describe: v6.4.3-802-g0e8d2fdfb188
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.4.y/build/v6.4.3=
--802-g0e8d2fdfb188
-
-## Test Regressions (compared to v6.4.1-22-g3e37df3ffd9a)
-
-## Metric Regressions (compared to v6.4.1-22-g3e37df3ffd9a)
-
-## Test Fixes (compared to v6.4.1-22-g3e37df3ffd9a)
-
-## Metric Fixes (compared to v6.4.1-22-g3e37df3ffd9a)
-
-## Test result summary
-total: 175129, pass: 150209, fail: 2026, skip: 22723, xfail: 171
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 145 total, 145 passed, 0 failed
-* arm64: 54 total, 53 passed, 1 failed
-* i386: 41 total, 41 passed, 0 failed
-* mips: 30 total, 28 passed, 2 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 38 total, 36 passed, 2 failed
-* riscv: 26 total, 25 passed, 1 failed
-* s390: 16 total, 14 passed, 2 failed
-* sh: 14 total, 12 passed, 2 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 46 total, 46 passed, 0 failed
-
-## Test suites summary
-* boot
-* fwts
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-* vdso
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> Huacai
+> > +       }
+> > +
+> > +       /*
+> > +        * Use built-in command line if nothing is retrieved from boot =
+loader.
+> > +        */
+> > +       if (!boot_command_line[0])
+> > +               strscpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE=
+_SIZE);
+> > +
+> >  out:
+> >         *cmdline_p =3D boot_command_line;
+> >  }
+> > --
+> > 2.25.1
+> >
