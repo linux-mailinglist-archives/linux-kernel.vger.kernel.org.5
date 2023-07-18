@@ -2,48 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3DF758336
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19E975833A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233514AbjGRREz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35406 "EHLO
+        id S230214AbjGRRGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234246AbjGRRDk (ORCPT
+        with ESMTP id S232347AbjGRRGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:03:40 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E531FF5;
-        Tue, 18 Jul 2023 10:03:03 -0700 (PDT)
-X-QQ-mid: bizesmtp76t1689699719tn30wwui
-Received: from linux-lab-host.localdomain ( [119.123.130.39])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 19 Jul 2023 01:01:57 +0800 (CST)
-X-QQ-SSF: 01200000000000D0X000000A0000000
-X-QQ-FEAT: TXoNPSSaW4k3TYo/907NMGUmPQ0LS9KHCkNksMrpIgyV+2rw8GfsAWQkEToWA
-        KKlNUju2LGCRxLi4wnpIrRzO1C88BKa7K7r9J09BQeDnvWvs9k4yMQNJGYfxm61QOUJUC7a
-        hI+2dZIDzE+tF5s7oGLIG4ubOOyIuIYnnwoXb74f4JeafCE2WyJAcH7Eu5v2kmtlYAhCsOH
-        uZgZrbkhdJNWkgPiL9QE80BVm1DhF6YuwlLUTqzsioHhhU4mjhPhp7xviP9CcY6HVqiKx6H
-        KPfIVxyGlED/UKKv9jXKKLtzkASD8CYgFsGFOnlWw7F/kb6tvr/sr5THgRRaGFUylNyWm1a
-        cCuP5RyUPnX1u+2mq60rx6LdEWOwQ==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 4518450584097450988
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     thomas@t-8ch.de
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, w@1wt.eu
-Subject: Re: [PATCH v1 00/22] selftests/nolibc: add minimal kernel config support
-Date:   Wed, 19 Jul 2023 01:01:53 +0800
-Message-Id: <20230718170153.35765-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <67eb70d4-c9ff-4afc-bac7-7f36cc2c81bc@t-8ch.de>
-References: <67eb70d4-c9ff-4afc-bac7-7f36cc2c81bc@t-8ch.de>
+        Tue, 18 Jul 2023 13:06:35 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5F21739;
+        Tue, 18 Jul 2023 10:06:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689699967; x=1721235967;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CEwwrjwPfBcE3oHaafHaOcaByORj1Xv2apS2NjCY/9c=;
+  b=IGR5rkqaOeSM7p5JhFVdy+RPyiKbpBG2yODuN9SFU5x6rQ6XddgBXZ53
+   n4uunr3P99/HRbEaKChxTKDql3WYvTGpmo4rKu5Qa10XRNxvbWNqp1lw6
+   Nnc5yzcqd9jyjCbQLrd/7EyGry/ESVF5JBLLYk6l/IRfwJ06uP6M59ekl
+   ynt29aYr9v1BJdW/JDFl+HP3c4jFW4QvgLC1gRwpiruFv8pY5f/B8A4OI
+   xhTVi0aoE6KeL0I7rBS/6JP/kNoheudVkyXhNnIqt7mjlonIFhT0mvarq
+   AyPOPzQ1n2Q06GrT4fN05W+Y9m4Ie5mSBHf37QkxUAAJxv9HROcvTYWDx
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="369818793"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="369818793"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 10:05:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="813831154"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="813831154"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 18 Jul 2023 10:05:24 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qLo7t-0001jn-25;
+        Tue, 18 Jul 2023 17:04:48 +0000
+Date:   Wed, 19 Jul 2023 01:02:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Junxian Huang <huangjunxian6@hisilicon.com>, jgg@nvidia.com,
+        leon@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com, linux-kernel@vger.kernel.org,
+        huangjunxian6@hisilicon.com
+Subject: Re: [PATCH v2 for-rc 3/3] RDMA/hns: Add check and adjust for
+ function resource values
+Message-ID: <202307190042.hWzQQIOk-lkp@intel.com>
+References: <20230717060340.453850-4-huangjunxian6@hisilicon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717060340.453850-4-huangjunxian6@hisilicon.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,226 +68,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Thomas
+Hi Junxian,
 
-> On 2023-07-18 21:43:23+0800, Zhangjin Wu wrote:
-> > Hi, Willy, Thomas
-> > 
-> > I have prepared the powerpc + powerpc64 support together with the
-> > tinyconfig for them, still have some questions for more discussion.
-> > 
-> > > On Wed, Jul 12, 2023 at 01:18:26AM +0800, Zhangjin Wu wrote:
-> > [...]
-> > > 
-> > > Reading the beginning of the sentence made me immediately think that it's
-> > > what doc is for. You know, if you give a fish to a hungry man he eats one
-> > > day, if you teach him to fish he eats every day. Knowing what to download
-> > > from where is much more instructive than running "make download" or even
-> > > worse, "make" and having the downloads secretly succeed (or fail). If you
-> > > think the doc is hard to find I'm also fine with a patch for makefile
-> > > and/or nolibc-test passing a pointer to its location as a reminding
-> > > comment for example.
-> > >
-> > 
-> > The whole tinyconfig support for every architecture is 'huge', I plan to
-> > send them one by one, if required, will document them with the required
-> > bios and/or toolchain.
-> 
-> Which part is huge?
+kernel test robot noticed the following build warnings:
 
-Actually, we only need to add ~30 lines for all of them ;-)
+[auto build test WARNING on rdma/for-next]
+[also build test WARNING on linus/master v6.5-rc2 next-20230718]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-But some architectures require extra operations, for example,
+url:    https://github.com/intel-lab-lkp/linux/commits/Junxian-Huang/RDMA-hns-support-get-xrcd-num-from-firmware/20230718-171525
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+patch link:    https://lore.kernel.org/r/20230717060340.453850-4-huangjunxian6%40hisilicon.com
+patch subject: [PATCH v2 for-rc 3/3] RDMA/hns: Add check and adjust for function resource values
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20230719/202307190042.hWzQQIOk-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230719/202307190042.hWzQQIOk-lkp@intel.com/reproduce)
 
-- x86 requires extra "tsc=unstable noapic" kernel cmdline to save the
-  CONFIG_ACPI options, if we only reserve tinyconfig target, it is ok to
-  add it directly to the original QEMU_ARGS_<ARCH>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307190042.hWzQQIOk-lkp@intel.com/
 
-- x86 and some other architectures may fail to poweroff due to save some
-  time-cost options or due to missing kernel poweroff support, they
-  require qemu-poweroff timeout support
+All warnings (new ones prefixed by >>):
 
-- some architectures have no built-in firmware for qemu, we need to
-  document them carefully
+   drivers/infiniband/hw/hns/hns_roce_hw_v2.c: In function 'adjust_res_caps':
+>> drivers/infiniband/hw/hns/hns_roce_hw_v2.c:1709:53: warning: passing argument 2 of 'check_res_is_supported' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+    1709 |                 if (!check_res_is_supported(hr_dev, &bt_num_table[i]))
+         |                                                     ^~~~~~~~~~~~~~~~
+   drivers/infiniband/hw/hns/hns_roce_hw_v2.c:1673:60: note: expected 'struct hns_roce_bt_num *' but argument is of type 'const struct hns_roce_bt_num *'
+    1673 |                                    struct hns_roce_bt_num *bt_num_entry)
+         |                                    ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
 
-- some architectures have no available toolchain in any Linux
-  distributions, we need to document them carefully
 
-...
+vim +1709 drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 
-> This is surprising.
->
+  1699	
+  1700	static u16 adjust_res_caps(struct hns_roce_dev *hr_dev)
+  1701	{
+  1702		struct hns_roce_caps *caps = &hr_dev->caps;
+  1703		u16 invalid_flag = 0;
+  1704		u32 min, max;
+  1705		u32 *res;
+  1706		int i;
+  1707	
+  1708		for (i = 0; i < ARRAY_SIZE(bt_num_table); i++) {
+> 1709			if (!check_res_is_supported(hr_dev, &bt_num_table[i]))
+  1710				continue;
+  1711	
+  1712			res = (u32 *)((void *)caps + bt_num_table[i].res_offset);
+  1713			min = bt_num_table[i].min;
+  1714			max = bt_num_table[i].max;
+  1715			if (*res < min || *res > max) {
+  1716				*res = *res < min ? min : max;
+  1717				invalid_flag |= 1 << bt_num_table[i].invalid_flag;
+  1718			}
+  1719		}
+  1720	
+  1721		adjust_eqc_bt_num(caps, &invalid_flag);
+  1722	
+  1723		return invalid_flag;
+  1724	}
+  1725	
 
-For one architecture, it is not that hard, but for all of the supported
-architectures, weird bugs came out one by one ;-)
-
-> > The first architectures plan to support are powerpc + powerpc64, powerpc does
-> > require extra kernel config options even with defconfig, so, it is a very good
-> > first example, and the extconfig target will be added together.
-> 
-> Are you planning to do powerpc and tinyconfig support in one series?
-> Splitting it would be better in my opinion.
->
-
-Ok, as Willy replied in another thread, let's add powerpc support with
-defconfig as the first patchset.
-
-Since, even with defconfig, we still need extra console options to make
-the test print normally, so, the extra options support code will be
-added anyway, adding tinyconfig support is a fastforward step.
-
-> > The left question from me is that if is it ok to just use tinyconfig instead of
-> > defconfig after we enable tinyconfig for a new architecture, I mean just add a
-> > new DEFCONFIG_<ARCH>=tinyconfig line for the new architecture, don't use the
-> > 'defconfig' any more, let's take a look at the powerpc/powerpc64 lines below:
-> > 
-> >     # default kernel configurations that appear to be usable
-> >     DEFCONFIG_i386       = defconfig
-> >     DEFCONFIG_x86_64     = defconfig
-> >     DEFCONFIG_x86        = defconfig
-> >     DEFCONFIG_arm64      = defconfig
-> >     DEFCONFIG_arm        = multi_v7_defconfig
-> >     DEFCONFIG_mips       = malta_defconfig
-> >     DEFCONFIG_powerpc    = tinyconfig
-> >     DEFCONFIG_powerpc64  = tinyconfig
-> >     DEFCONFIG_riscv      = defconfig
-> >     DEFCONFIG_s390       = defconfig
-> >     DEFCONFIG_loongarch  = defconfig
-> >     DEFCONFIG            = $(DEFCONFIG_$(XARCH))
-> > 
-> > Of course, we need to customize the EXTCONFIG for them (about ~5 options for
-> > all of the architectures):
-> > 
-> >     # extra kernel configs by architecture
-> >     EXTCONFIG_powerpc    = $(addprefix -e ,COMPAT_32BIT_TIME PPC_PMAC PPC_OF_BOOT_TRAMPOLINE SERIAL_PMACZILOG SERIAL_PMACZILOG_TTYS SERIAL_PMACZILOG_CONSOLE)
-> >     EXTCONFIG_powerpc64  = $(addprefix -e ,PPC64 CPU_LITTLE_ENDIAN PPC_POWERNV HVC_OPAL)
-> >     EXTCONFIG_XARCH      = $(EXTCONFIG_$(XARCH))
-> 
-> These could also be put into dedicated config files. Then they don't
-> clutter the makefile and it's easier to maintain.
-> 
-> nolibc.config:       Generic configs on top of tinyconfig
-> nolibc.arm64.config: Arch-specific configs for arm64
->
-
-Thanks, xxx.config files should work well with the merge tool:
-scripts/kconfig/merge_config.sh.
-
-Since in all of the supported architectures, the maximum extra options
-required by tinyconfig is 8, the others is around 5 options (some even
-less), all of them can be put in one line, at the same time, the
-initramfs source can use the same EXTCONFIG_COMMON logic, so, the
-oneline EXTCONFIG_<ARCH> is used without any new files.
-
-Will take a look at the xxx.config files method.
-
-But unfortunately, powerpc defconfig doesn't print by default, it also
-require extra console options, to apply the xxx.config files method, we
-need wait more time to restruct the powerpc support.
-
-> Also the extra parameter could also be passed via command line arguments to make.
-> This way we don't have to modify the configuration options at all.
-> The user can provide a config (or we use a tinyconfig) and everything
-> required by nolibc-test is enabled on top when building.
-> 
-> make CONFIG_COMPAT_32BIT_TIME=y ...
->
-
-This doesn't work sometimes especially when we want to disable an
-option, that's why we eventually use scripts/config instead.
-
-> tools/testing/selftests/wireguard/qemu/ seems to be doing something
-> similar as nolibc-test.
-> 
-> > The extra common options (based on default kernel tinyconfig) are also required
-> > to make nolibc-test.c passes without failures (~2 skips are procfs related, so,
-> > procfs is not added) are minimal:
-> > 
-> >     # extra kernel configs shared among architectures
-> >     EXTCONFIG_COMMON     = -e BLK_DEV_INITRD --set-str INITRAMFS_SOURCE $(CURDIR)/initramfs
-> >     EXTCONFIG_COMMON    += -e BINFMT_ELF
-> >     EXTCONFIG_COMMON    += -e PRINTK -e TTY
-> > 
-> > Compare to defconfig, tinyconfig not only allows test all of the nolibc
-> > functions, but also is faster (around ~1-2 minutes, defconfig may cost ~30
-> > minutes and even more) and brings us with smaller image size.
-> > 
-> > To only test nolibc itself, I do think tinyconfig with the above
-> > extconfig support is enough, even if we need more, we can update the
-> > EXTCONFIG_COMMON and EXTCONFIG_<ARCH> in the future.
-> 
-> IMO tinyconfig is enough, defconfig doesn't seem to be necessary then.
->
-
-As Willy replied in another thread, tinyconfig may fail sometimes
-because many developers only use defconfig for tests, I did find
-tinyconfig fail on powerpc [1] and riscv64 [2], although later, both of
-them have been fixed.
-
-I reported the 2nd one, the 1st one has just been fixed up by somebody
-else before I plan to send the patch, so, our nolibc tinyconfig support
-may function as a very good coverage test for kernel ;-)
-
-[1]: https://lore.kernel.org/lkml/20230629124500.1.I55e2f4e7903d686c4484cb23c033c6a9e1a9d4c4@changeid/
-[2]: https://lore.kernel.org/linux-riscv/20230716001506.3506041-1-guoren@kernel.org/
-
-> > I have prepared tinyconfig for all of the supported architectures
-> > locally, If you agree with only reserve the DEFCONFIG_<ARCH>=tinyconfig
-> > line, I will send a series of patchset to add tinyconfig for every
-> > architecture with it, at last, it will become:
-> > 
-> >     # default kernel configurations that appear to be usable
-> >     DEFCONFIG_i386       = tinyconfig
-> >     DEFCONFIG_x86_64     = tinyconfig
-> >     DEFCONFIG_x86        = tinyconfig
-> >     DEFCONFIG_arm64      = tinyconfig
-> >     DEFCONFIG_arm        = tinyconfig
-> >     DEFCONFIG_mips       = tinyconfig
-> >     DEFCONFIG_powerpc    = tinyconfig
-> >     DEFCONFIG_powerpc64  = tinyconfig
-> >     DEFCONFIG_riscv      = tinyconfig
-> >     DEFCONFIG_s390       = tinyconfig
-> >     DEFCONFIG_loongarch  = tinyconfig
-> >     DEFCONFIG            = $(DEFCONFIG_$(XARCH))
-> > 
-> > So, perhaps it is better to simply use tinyconfig as the default DEFCONFIG, and
-> > therefore there is no need to add powerpc and powerpc64 specific lines:
-> > 
-> >     # default kernel configurations that appear to be usable
-> >     DEFCONFIG_i386       = defconfig
-> >     DEFCONFIG_x86_64     = defconfig
-> >     DEFCONFIG_x86        = defconfig
-> >     DEFCONFIG_arm64      = defconfig
-> >     DEFCONFIG_arm        = multi_v7_defconfig
-> >     DEFCONFIG_mips       = malta_defconfig
-> >     DEFCONFIG_riscv      = defconfig
-> >     DEFCONFIG_s390       = defconfig
-> >     DEFCONFIG_loongarch  = defconfig
-> >     DEFCONFIG            = $(or $(DEFCONFIG_$(XARCH)),tinyconfig)
-> > 
-> > To support tinyconfig for a new architecture, we can simply remove the
-> > 'DEFCONFIG_<ARCH> = defconfig' line and get the core options from
-> > defconfig to customize the EXTCONFIG_ARCH, with tinyconfig, it is very
-> > fast and easy to verify the run target for a new architecture.
-> > 
-> > At last, we will have many EXTCONFIG_<ARCH> lines and only a DEFCONFIG line:
-> > 
-> >     # default kernel configurations that appear to be usable
-> >     DEFCONFIG            = $(or $(DEFCONFIG_$(XARCH)),tinyconfig)
-> > 
-> > Or at last, we remove the above line and the defconfig target and only reserve
-> > a tinyconfig target:
-> > 
-> >     tinyconfig:
-> > 	$(Q)$(MAKE_KERNEL) tinyconfig prepare
-> > 
-> > Welcome your suggestion.
-> 
-> Looks fine to me either way.
-
-Ok, so, let's reserve defconfig as a backup although tinyconfig should
-work at most of the time.
-
-Best regards,
-Zhangjin
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
