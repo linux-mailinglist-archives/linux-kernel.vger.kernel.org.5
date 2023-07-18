@@ -2,137 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E77B07570BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 02:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B108A7570C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 02:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230412AbjGRAEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 20:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36618 "EHLO
+        id S230432AbjGRAHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 20:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229852AbjGRAEf (ORCPT
+        with ESMTP id S229852AbjGRAHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 20:04:35 -0400
-Received: from mail-oo1-xc49.google.com (mail-oo1-xc49.google.com [IPv6:2607:f8b0:4864:20::c49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E7BA102
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 17:04:32 -0700 (PDT)
-Received: by mail-oo1-xc49.google.com with SMTP id 006d021491bc7-56662adc40bso6740126eaf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 17:04:32 -0700 (PDT)
+        Mon, 17 Jul 2023 20:07:47 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265EBFA
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 17:07:43 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-345d6dc271dso27276355ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 17:07:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689638672; x=1692230672;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=MPNHw59Y2ag4IkzmSNpZisnjn27L/MlDJm7h5idWBn8=;
-        b=S65TZVHPcH6uRPZb/fHNfGAcZ4q2fX3J8TeaIkzb9hjk1r9RK5GCc7gxTU1gT7BVFb
-         2mtAd5EN9chZTfUcFc7hL2MrdAfuUv0ZKe+RCCjPVqIAfcm1rxtQ2Nee3GWXlKLKGvvT
-         j0uABVfAF88xKqp15sbUj4Guyba5QkCxOXgSVFDvrttBZVEfL4Gj9ySNzwqjVCdKKVc+
-         O3aHFsAlTQIz7RcfgqMhiL0dmlCF+b9PMWN5yevf8JJP30j7wYHo0ofvbJlgfAJTeSC8
-         emqYu0USrNG9OIhDCdgyyPcjNH3d9ONnvURLC6m0T2VDt4Y5QkKgBt2JOQgFfe75oSIh
-         TSyg==
+        d=cloudflare.com; s=google; t=1689638862; x=1692230862;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5A7RBP0ulBeus/Dr/u1dt97uJhS/urrd6iaA4GMRuJs=;
+        b=UgCL6BkrsuqpYPHxFkIh7zo+xkSqambpQ2uzj0Pg09bsPkJJX7jsV1Sn5smi9o64Br
+         FAg6QOInWJEiVzCdKJIdaDLsWpeWUe4LSGtrdYEPuN2wfLY1xbnoe8Qczsx8odrHVXJf
+         qW2uFvPRufkQ/RB1HOGjXOU+dn9XvN3Rp8Mtw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689638672; x=1692230672;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MPNHw59Y2ag4IkzmSNpZisnjn27L/MlDJm7h5idWBn8=;
-        b=fYrPw2SDs1vZIOmwQBgZqpQjyNOmdzQ1Y+5ys+HMW4KHGhmnjn4doxDWEtmQ3Ca+gw
-         aM1oZ7EUL4b9mykxe/R503aTY53qbQ76GeY0EddnVOzQK77dXNR1ef5h7ojpgv0bKg20
-         yz773RSVhqA1AYnSIi19Ddak/8MiSUYUWGVKFrRlpKor5pjvLv14p/MuuhSxPKJojY/D
-         57I49sUXUHEGzoQI+UrMAlljpnSHZPCi5CudA2RaHi682cLXXmhleHjVnZprCcZBW3Cy
-         rP8wxIh/WQHXnR4/UMOI6BDIW4NYGxtweZSXihOrdp3lPURlCpg5KYk9TX3V6luaoKV7
-         XHGQ==
-X-Gm-Message-State: ABy/qLYv3HArYZ881ZKMr3axOkjMBju9EFNZU5OtWjoremJBN76JWwcZ
-        cjaZoPniFEwjbTYuGsz7LL/UxRDOEE5JSCzHWA==
-X-Google-Smtp-Source: APBJJlH9/sYwjrw0dkrjUb9VX/Yq4xUQpwZ/U3IgrKelC5j/eN2Ak33Hd62xQYSUtM5Qs+CsxWEtQXLiE6OotuPBeQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a4a:d0b7:0:b0:547:54e2:688a with SMTP
- id t23-20020a4ad0b7000000b0054754e2688amr613648oor.0.1689638672021; Mon, 17
- Jul 2023 17:04:32 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 00:04:19 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAALXtWQC/5WNQQ6DIBBFr2JYlwYYKbar3qNxgTAqSQsGjKkx3
- r3oqps2cXZvkvf+QhJGh4ncioVEnFxywWfgp4KYXvsOqbOZiWACmOKKehypTZqmMXozzLQqS6N
- 5PmwEydYQsXXvvfioM/cujSHO+8DEt+/v1sQpp0IoBVLzqwV570Lonng24bW1/4tKGNuW7VVaW x0SNUh1AUAQzcFFUwEY0Fwy9i3W67p+ALpXh7taAQAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689638671; l=1971;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=4lIe4DSxFXAQphj2dJbrjzQzYQVdZZkIiaZbjRvA4y0=; b=qL/KVpwldCbzLT8NKNpxMObelj3cI09HIcE678bPAe5u640yOLnrfVvF3yT6wO3JK+6CyNe1h
- MsYgBS679IdA4jOGv1+uPHc9bJJ8WOrcQCpXcEPYjQGKWCnJqtfsGoa
-X-Mailer: b4 0.12.3
-Message-ID: <20230718-net-dsa-strncpy-v1-1-e84664747713@google.com>
-Subject: [PATCH] net: dsa: remove deprecated strncpy
-From:   justinstitt@google.com
-To:     Justin Stitt <justinstitt@google.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20221208; t=1689638862; x=1692230862;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5A7RBP0ulBeus/Dr/u1dt97uJhS/urrd6iaA4GMRuJs=;
+        b=joKduxptK89EZWHSDM/bbj5F8EkM7Eb/EtaH2Ucb0bv/fRtnoMAaan0hfPSid1De+N
+         ZWGJQd5GyVNs7zuWStkgdA0+eO4pHI8kbGzQqFD5gU7K4smDiG+/KSFXFtyumX9161xR
+         gFgPJYMAjHvGu4esLuh8gnu9FORPWQAvRXxM1Fw+K2chtliMOXJKgLfu2S0Im2X6eNPT
+         yl/pESGIizgb0AplvHrS6pEUY2jfIuSNbfTpMOZWBgbqPBGK1qlEM0YxrpOEn58DK6Rv
+         kUuxV0eUMm55xeoHjsQQRweqNZ0CYlMI/kWypdCNCY7/XzAJEszfOFhia+G/NGs9NcBf
+         qo3Q==
+X-Gm-Message-State: ABy/qLbCzeNlvgmFkuKzhZPCw72HHhuj6hewpZ6qPcvOtuMinAbIzX3H
+        0ftJwC4tNSO82LJjasuRsVUCrw==
+X-Google-Smtp-Source: APBJJlE5aF9X6yI5/KIE4LqPbssfBBVRFzlSCcckiOZyPAc8NoJ1W/u/o+kETCAVgtxswFX1KLw+PA==
+X-Received: by 2002:a05:6e02:219b:b0:345:a818:ed3b with SMTP id j27-20020a056e02219b00b00345a818ed3bmr1293537ila.7.1689638862515;
+        Mon, 17 Jul 2023 17:07:42 -0700 (PDT)
+Received: from localhost ([2601:644:200:aea:b8fa:bd5a:9379:3b89])
+        by smtp.gmail.com with ESMTPSA id 16-20020a17090a199000b00267a487f01bsm356703pji.48.2023.07.17.17.07.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 17:07:42 -0700 (PDT)
+From:   Ivan Babrou <ivan@cloudflare.com>
+To:     linux-perf-users@vger.kernel.org
+Cc:     kernel-team@cloudflare.com, linux-kernel@vger.kernel.org,
+        Ivan Babrou <ivan@cloudflare.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: [PATCH] perf script: print cgroup on the same line as comm
+Date:   Mon, 17 Jul 2023 17:07:37 -0700
+Message-ID: <20230718000737.49077-1-ivan@cloudflare.com>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+Commit 3fd7a168bf51 ("perf script: Add 'cgroup' field for output")
+added support for printing cgroup path in perf script output.
 
-Even call sites utilizing length-bounded destination buffers should
-switch over to using `strtomem` or `strtomem_pad`. In this case,
-however, the compiler is unable to determine the size of the `data`
-buffer which renders `strtomem` unusable. Due to this, `strscpy`
-should be used.
+It was okay if you didn't want any stacks:
 
-It should be noted that most call sites already zero-initialize the
-destination buffer. However, I've opted to use `strscpy_pad` to maintain
-the same exact behavior that `strncpy` produced (zero-padded tail up to
-`len`).
+    $ sudo perf script --comms jpegtran:23f4bf -F comm,tid,cpu,time,cgroup
+    jpegtran:23f4bf 3321915 [013] 404718.587488:  /idle.slice/polish.service
+    jpegtran:23f4bf 3321915 [031] 404718.592073:  /idle.slice/polish.service
 
-Also see [3].
+With stacks it gets messier as cgroup is printed after the stack:
 
-[1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
-[2]: elixir.bootlin.com/linux/v6.3/source/net/ethtool/ioctl.c#L1944
-[3]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+    $ perf script --comms jpegtran:23f4bf -F comm,tid,cpu,time,cgroup,ip,sym
+    jpegtran:23f4bf 3321915 [013] 404718.587488:
+                    5c554 compress_output
+                    570d9 jpeg_finish_compress
+                    3476e jpegtran_main
+                    330ee jpegtran::main
+                    326e2 core::ops::function::FnOnce::call_once (inlined)
+                    326e2 std::sys_common::backtrace::__rust_begin_short_backtrace
+    /idle.slice/polish.service
+    jpegtran:23f4bf 3321915 [031] 404718.592073:
+                    8474d jsimd_encode_mcu_AC_first_prepare_sse2.PADDING
+                55af68e62fff [unknown]
+    /idle.slice/polish.service
 
-Link: https://github.com/KSPP/linux/issues/90
-Signed-off-by: Justin Stitt <justinstitt@google.com>
+Let's instead print cgroup on the same line as comm:
+
+    $ perf script --comms jpegtran:23f4bf -F comm,tid,cpu,time,cgroup,ip,sym
+    jpegtran:23f4bf 3321915 [013] 404718.587488:  /idle.slice/polish.service
+                    5c554 compress_output
+                    570d9 jpeg_finish_compress
+                    3476e jpegtran_main
+                    330ee jpegtran::main
+                    326e2 core::ops::function::FnOnce::call_once (inlined)
+                    326e2 std::sys_common::backtrace::__rust_begin_short_backtrace
+
+    jpegtran:23f4bf 3321915 [031] 404718.592073:  /idle.slice/polish.service
+                    8474d jsimd_encode_mcu_AC_first_prepare_sse2.PADDING
+                55af68e62fff [unknown]
+
+Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
+Fixes: 3fd7a168bf51 ("perf script: Add 'cgroup' field for output")
 ---
- net/dsa/slave.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ tools/perf/builtin-script.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/net/dsa/slave.c b/net/dsa/slave.c
-index 527b1d576460..c9f77b7e5895 100644
---- a/net/dsa/slave.c
-+++ b/net/dsa/slave.c
-@@ -1056,10 +1056,10 @@ static void dsa_slave_get_strings(struct net_device *dev,
- 	if (stringset == ETH_SS_STATS) {
- 		int len = ETH_GSTRING_LEN;
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index 200b3e7ea8da..517bf25750c8 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -2199,6 +2199,17 @@ static void process_event(struct perf_script *script,
+ 	if (PRINT_FIELD(RETIRE_LAT))
+ 		fprintf(fp, "%16" PRIu16, sample->retire_lat);
  
--		strncpy(data, "tx_packets", len);
--		strncpy(data + len, "tx_bytes", len);
--		strncpy(data + 2 * len, "rx_packets", len);
--		strncpy(data + 3 * len, "rx_bytes", len);
-+		strscpy_pad(data, "tx_packets", len);
-+		strscpy_pad(data + len, "tx_bytes", len);
-+		strscpy_pad(data + 2 * len, "rx_packets", len);
-+		strscpy_pad(data + 3 * len, "rx_bytes", len);
- 		if (ds->ops->get_strings)
- 			ds->ops->get_strings(ds, dp->index, stringset,
- 					     data + 4 * len);
-
----
-base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
-change-id: 20230717-net-dsa-strncpy-844ca1111eb2
-
-Best regards,
++	if (PRINT_FIELD(CGROUP)) {
++		const char *cgrp_name;
++		struct cgroup *cgrp = cgroup__find(machine->env,
++						   sample->cgroup);
++		if (cgrp != NULL)
++			cgrp_name = cgrp->name;
++		else
++			cgrp_name = "unknown";
++		fprintf(fp, " %s", cgrp_name);
++	}
++
+ 	if (PRINT_FIELD(IP)) {
+ 		struct callchain_cursor *cursor = NULL;
+ 
+@@ -2243,17 +2254,6 @@ static void process_event(struct perf_script *script,
+ 	if (PRINT_FIELD(CODE_PAGE_SIZE))
+ 		fprintf(fp, " %s", get_page_size_name(sample->code_page_size, str));
+ 
+-	if (PRINT_FIELD(CGROUP)) {
+-		const char *cgrp_name;
+-		struct cgroup *cgrp = cgroup__find(machine->env,
+-						   sample->cgroup);
+-		if (cgrp != NULL)
+-			cgrp_name = cgrp->name;
+-		else
+-			cgrp_name = "unknown";
+-		fprintf(fp, " %s", cgrp_name);
+-	}
+-
+ 	perf_sample__fprintf_ipc(sample, attr, fp);
+ 
+ 	fprintf(fp, "\n");
 -- 
-Justin Stitt <justinstitt@google.com>
+2.41.0
 
