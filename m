@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EDD75756B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE4E757570
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbjGRHfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 03:35:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46064 "EHLO
+        id S231285AbjGRHiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 03:38:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbjGRHfU (ORCPT
+        with ESMTP id S229476AbjGRHiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 03:35:20 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86064116;
-        Tue, 18 Jul 2023 00:35:18 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9922d6f003cso745732366b.0;
-        Tue, 18 Jul 2023 00:35:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689665717; x=1692257717;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DR4V+aJkLkCM/JmLo15q5+va3R94sRKLeNW/ZLFTIUI=;
-        b=Pp1hHkfi/Vv9ZqXwqD6RoytdWryBzgLJuLp5Um9ru109TzbWCyJ8c8nzgut3r3wj3i
-         9mI07koNLBXrrTUxktLP9Os+bUaffRRjSAidFZVHHUZPTiY4SPvHPVdlX+Yizlyviqoi
-         hJtLDurb8uJDgGUzFt1T12pLyq17exk/XLp3OAe+6QLCr8ubXd1K7l6e9wFZhVOakO3j
-         Qeqz/W/QJbEC4DuL3LtUBVlArCXYiAKqB5X0BWzTxn3lIIZPDF7pJA8lz5Tqajj4HNgm
-         SU1SkN78LwnTL/u4CFJQi8sSrr10VhQEB6c7wVAXhwk3l2HMf5RoMTqRm6lm24CvacWG
-         K46Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689665717; x=1692257717;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DR4V+aJkLkCM/JmLo15q5+va3R94sRKLeNW/ZLFTIUI=;
-        b=OVeR+uLbiJ2w83FbTk7ThcdDluKo79UZH4KVt73nzQec4Y1g77eDcYqmKwM5o1y0QL
-         BK/xcTnLDdcRzyyWg5psY9tV+Vqk0iiwcgwH3958PREkUVajswc1TlTV4IO4/5Rv3pa1
-         gxhlec3FX1PY4i8XxsEhrvQfwjwmGj2v/TVWNh+Y0tJbuZ8OnEfv9POHZlfFXNXZACML
-         cBcFJPgMGlo+PatkvX0Euoyxthbxj2Q7TT0Ut7BEQ2VwH024/OmIpvk5Ocy5G9Pg6ZU1
-         OP3p/FFfcnLMwSkvPIMmcBXksSOlD5bm50pOHpBsbhCCdkawMCafZQdSjLXYZgJnGtyT
-         DSjQ==
-X-Gm-Message-State: ABy/qLZFX4KYYu2aenUaI89cFojm0A8MYyujgdJsHueJgGi1lRucE4B5
-        c2x/eQnWtioYOkf7LhE45HvFRLCj064=
-X-Google-Smtp-Source: APBJJlHe/1AMuJmS6dry+PYpYsby+JNjUJxqCaFQSHts6iBUDi2tuT3m9Lhpyp4FXYYHELg6qxiYAw==
-X-Received: by 2002:a17:906:7393:b0:993:f6db:1589 with SMTP id f19-20020a170906739300b00993f6db1589mr13119982ejl.2.1689665716888;
-        Tue, 18 Jul 2023 00:35:16 -0700 (PDT)
-Received: from orome (p200300e41f4b7100f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f4b:7100:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id qn5-20020a170907210500b009937e7c4e54sm659618ejb.39.2023.07.18.00.35.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 00:35:16 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 09:35:14 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Haotien Hsu <haotienh@nvidia.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        inux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Wayne Chang <waynec@nvidia.com>,
-        JC Kuo <jckuo@nvidia.com>, WK Tsai <wtsai@nvidia.com>,
-        Henry Lin <henryl@nvidia.com>
-Subject: Re: [PATCH] usb: xhci: tegra: Add shutdown callback for Tegra XUSB
-Message-ID: <ZLZAso-kaNwCbWCT@orome>
-References: <20230718072057.233011-1-haotienh@nvidia.com>
+        Tue, 18 Jul 2023 03:38:51 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A54198;
+        Tue, 18 Jul 2023 00:38:50 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36I7Osnl014391;
+        Tue, 18 Jul 2023 07:38:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=32InxsPJC+q1pq44FtbN1Nmf3gbhoM2dKizSnMtxqJE=;
+ b=olSFM+N8pfNmav1wL3r93rWw61Z2WnqyngIeawkyn06y1P1RfofBI8bJRr/NR0Nsp5kP
+ iZhZG39FvOHX/4j5nvr5VgmW93qeA8dbC1mk++cy5tRZWP/L+hOf+8NdICt54eKk6fQj
+ 8lo2r9zUAtBmlkbTnS1VXZzmqNkexMa5GFTGzBq5HWqIrbJ/JPbnvBpC4RqD5k/p4Owc
+ pVL5zlIl7+QQ1e5I1r23R8i7/QFLsh2C9h3Dn67dUxT+Mbx2Kz0buJqFMi+AwZJ2zXOC
+ jJCuZpe4gfJFRzyUES7gObydipA+tRUWdCRRE52jO4qeFIG/drrPC5R9mnm3f+OdvLuY XA== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rwpaugd72-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 07:38:47 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36I51uN4007106;
+        Tue, 18 Jul 2023 07:38:46 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rv80j24qa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 07:38:46 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36I7chov11141874
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 Jul 2023 07:38:43 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3C711201A4;
+        Tue, 18 Jul 2023 07:38:43 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E3883201A3;
+        Tue, 18 Jul 2023 07:38:42 +0000 (GMT)
+Received: from osiris (unknown [9.152.212.233])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue, 18 Jul 2023 07:38:42 +0000 (GMT)
+Date:   Tue, 18 Jul 2023 09:38:42 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Wang Ming <machel@vivo.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH v1] arch: s390: Use kfree_sensitive instead of kfree
+Message-ID: <ZLZBgocu7f2u+2j8@osiris>
+References: <20230717094533.18418-1-machel@vivo.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="QfX9Jz0QAjHjoW3v"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230718072057.233011-1-haotienh@nvidia.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230717094533.18418-1-machel@vivo.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: foG5Ej1fuh2k90gbTaMpq8-6guRWHawx
+X-Proofpoint-ORIG-GUID: foG5Ej1fuh2k90gbTaMpq8-6guRWHawx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_15,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ adultscore=0 priorityscore=1501 impostorscore=0 suspectscore=0 spamscore=0
+ lowpriorityscore=0 mlxlogscore=287 malwarescore=0 clxscore=1011
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307180067
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---QfX9Jz0QAjHjoW3v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jul 18, 2023 at 03:20:57PM +0800, Haotien Hsu wrote:
-> From: Henry Lin <henryl@nvidia.com>
->=20
-> If memory accesses by the Tegra XUSB controller are translated through
-> the SMMU (System MMU), the hardware may continue accessing memory even
-> after the SMMU translations have been disabled during the shutdown
-> process and this can in turn cause unpredictable crashes.
-> Fix this by adding a shutdown implementation that ensures the hardware
-> is turned off during system reboot or shutdown.
->=20
-> Signed-off-by: Henry Lin <henryl@nvidia.com>
-> Signed-off-by: Haotien Hsu <haotienh@nvidia.com>
+On Mon, Jul 17, 2023 at 05:45:19PM +0800, Wang Ming wrote:
+> key might contain private part of the key, so better use
+> kfree_sensitive to free it.
+> 
+> Signed-off-by: Wang Ming <machel@vivo.com>
 > ---
->  drivers/usb/host/xhci-tegra.c | 28 +++++++++++++++++++++-------
->  1 file changed, 21 insertions(+), 7 deletions(-)
+>  arch/s390/crypto/paes_s390.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---QfX9Jz0QAjHjoW3v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmS2QLIACgkQ3SOs138+
-s6E2EA//Ti2gGtziy55L8HXPtNfWoeobc4xQ5CSAGfFVAyzYBTSnz+iRmeBY6j3k
-zuz8OvbMLy7w83wGuuQ8XPPrVoPcuF2kJGa1Qy+IenUWIe6SXq11I7xRCmCCDmTh
-wx4n/dxooOV6ol6TbbeswYDYKklpupVfrvYCMm5DChNRpYTC7feDtCl+hOda4Mxp
-nPvu05tzxlP4w6DGJnsKT3Zm29RJxfGHZdTiJGq32YAYrtVHcyoez2z6UX2Fa/dw
-glk//oe0XBZ7BeygGe2maWYICOALVWRNAOqQ5hMLYsOTEMpz+zx2KxHIv7ipfcJG
-p9pFfjCeBUEQKnLAKKO3b7o0uBxN18EumteasHQXXjJmLRQj77hSGtaUcGoJYRUl
-f6gLI+wmNUzhmD8vZA93M9uazLVmE6Tu8xAf2RpeucCxuWzPQH+R5+AWBr742Ba/
-jntEFbyCZpy+jOvyfiVDkAn9e4gDY14RM5N3XBqQSiovSeSmno/RQ1nL3iPBdHZf
-SUtkiD4fuXSnLMdljUu0gQw9odvK3MNiCiHK29pKZ3A6GHU3u5gpnq0p1Pa+I3bF
-rSpS1AZ9so+9EEQIK/HNif/d7bGl6Z9ZsY35npKkvzGZXRK7tIWUOrVruc2CuEtC
-GatyLzpWSLvXkiBeHMSsAOOVzWU2Puy8+xGzNewzANueEoS4wR8=
-=t53d
------END PGP SIGNATURE-----
-
---QfX9Jz0QAjHjoW3v--
+Applied, thanks.
