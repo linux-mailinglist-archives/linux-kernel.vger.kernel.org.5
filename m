@@ -2,99 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDED75803F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70329758045
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbjGRO5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:57:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41410 "EHLO
+        id S233037AbjGRO6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231268AbjGRO5j (ORCPT
+        with ESMTP id S232649AbjGRO6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:57:39 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FCC170B
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:57:36 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1b055511f8bso3549662fac.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google; t=1689692256; x=1692284256;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2ajGnbQm/rLYXuNtWUbCODJbO/kcfV5H/sqF7rkfA50=;
-        b=Msx4QTQtSnVJ9XtUxSqqTdJ0CRSQW04CPD3u9jeJGkFbeTt4zs0Nvyew7U1OJGEVjZ
-         RrTu/YNaBBiYru30zFQNB19eD3V+Z0YKjZjd0JthlwVNmcmMofXdv9c0iAbYDqDh6YYz
-         kipF2gHUbJjsb7PljnF0HRUrQie7KVZXYc22o=
+        Tue, 18 Jul 2023 10:58:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C5F171B
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:57:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689692266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a9UHr3e23b92wXYao3lrSR+Cnwz7ksG5waCAvSeyw2w=;
+        b=J3pqVLSQ6MdU06oa7t6a+qYx4sx5wBPBP8Xi2SO/fvvN5XAwSyeqpNaQsq8/zlmPUweMZw
+        Hdc8PyKE5rijCmZlr0UUrfkmNgkZLMzSpa5GKGBrsvbQ3A7NkZierU8tmPMtH1vSgKP8dV
+        /wn5zQ00OocBJHQGBmDHWbpj44NVstE=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-277-S5H_SoIPOaewMih97kzF7A-1; Tue, 18 Jul 2023 10:57:45 -0400
+X-MC-Unique: S5H_SoIPOaewMih97kzF7A-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-765a6bbdd17so664218485a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:57:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689692256; x=1692284256;
+        d=1e100.net; s=20221208; t=1689692264; x=1692284264;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2ajGnbQm/rLYXuNtWUbCODJbO/kcfV5H/sqF7rkfA50=;
-        b=SNk3q6XMWlN9uZuQ179qBy+y2qiyDXvDoziyp+c2Z6pbdnIMsvwhhkPxfTwuIyrHIQ
-         vMTKADqwcAsf1mjKJYDMGet6ZICdDzKoUL9oG6+xMYD+Mis4II76W6ivSv3ZpcXeqIRL
-         6sTeAhw1QaxbC4p/fV/qCXuy5aqmDBloEriY0n+wXJuQoEChJ2HzSXdGygYU7ha6NyJv
-         1EJ/zQmZRnvF6t4oZ/Jm4IAIE2yk+YA7PevUmrN4fmB5PXH4pwu8mXdv9W5jjhPsVgFh
-         +jLaPa1I9Q3pLosiVEbW0nSA9xpx/f5tH7c4zK7Jn6Qr2fbAdOO1HV7aQ1TDCSkPsN2i
-         D6/w==
-X-Gm-Message-State: ABy/qLZJjMWQX0afabFmtTMz4pN2fZ0vI9e2nHpMIaXYZfh2SPbrD0QE
-        KYIQZimSzh3dHhqDbmUebs7Fdw==
-X-Google-Smtp-Source: APBJJlGZ/mf6wjS6YG1j3smF6gpBVoDg0/l1WxbJHkjurwV48aiML6HbMqZw5++oYLIn1hZ4MmLjYw==
-X-Received: by 2002:a05:6870:d209:b0:1b7:5ea8:1fb with SMTP id g9-20020a056870d20900b001b75ea801fbmr8939199oac.14.1689692255657;
-        Tue, 18 Jul 2023 07:57:35 -0700 (PDT)
-Received: from fedora64.linuxtx.org ([99.47.93.78])
-        by smtp.gmail.com with ESMTPSA id t12-20020a9d66cc000000b006b93d1e8e7esm879561otm.69.2023.07.18.07.57.34
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a9UHr3e23b92wXYao3lrSR+Cnwz7ksG5waCAvSeyw2w=;
+        b=AYQODjjvBXSrCn31NhDKzngp+gQO9kIqXSBkG+xSpJ+XaB/a8SK7PutjnJS6n47PQV
+         oXJmfoZPPjDKN0+wlG6Ldg40/0BcE+EM8jqdoSbnMB4JiQXOZLIf7B7fMHD/vcYu62wm
+         uIwptqv8MVAu1Pv2PhpKGs+Z3yasHTLQv1fMq8TuWhCOHWmcVcbzVdFfjF+LTHR5sH6u
+         WkEjhcmdCT126ZgRFa4gf9MW7BKdXgKLX7NkPs7u7FmPyrJa041GP6eWM3TOxrfQzJW0
+         G5+uXSrnYcHaDthOuEQJELY18EF+qFYlROHb64qqvKHjVs7a/DuYf64U3qlMxnSpM0sh
+         Lc2w==
+X-Gm-Message-State: ABy/qLZcEU0aRKPD2mGagGL6Attyp3x1E7pqe17R39eIxxcNbzksreyW
+        B/rSrN9TiDZ1O6rCzUqSxVddAecyfGbqChWgw1/TstgsPfHdaZrOOlMnHFwqLuVGXDh2vjgkWXb
+        w3x8j7pdXkZcz1w2stg2AVhsN
+X-Received: by 2002:a05:620a:2801:b0:767:1a0c:6ed8 with SMTP id f1-20020a05620a280100b007671a0c6ed8mr20676062qkp.60.1689692264105;
+        Tue, 18 Jul 2023 07:57:44 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFiKp8UBgEVLFNJc08vIC3X40UERE1dZL9GdHK5Bo8jOTs8tWCeLcLXwKGDDVlGpTU1U8k8uQ==
+X-Received: by 2002:a05:620a:2801:b0:767:1a0c:6ed8 with SMTP id f1-20020a05620a280100b007671a0c6ed8mr20676046qkp.60.1689692263888;
+        Tue, 18 Jul 2023 07:57:43 -0700 (PDT)
+Received: from localhost (pool-71-184-142-128.bstnma.fios.verizon.net. [71.184.142.128])
+        by smtp.gmail.com with ESMTPSA id g23-20020a05620a109700b00767d2870e39sm646250qkk.41.2023.07.18.07.57.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 07:57:34 -0700 (PDT)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-Date:   Tue, 18 Jul 2023 09:57:33 -0500
-From:   Justin Forbes <jforbes@fedoraproject.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 6.4 000/801] 6.4.4-rc3 review
-Message-ID: <ZLaoXb7K1O+19CEa@fedora64.linuxtx.org>
-References: <20230717201608.814406187@linuxfoundation.org>
+        Tue, 18 Jul 2023 07:57:43 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 10:57:42 -0400
+From:   Eric Chanudet <echanude@redhat.com>
+To:     Caleb Connolly <caleb.connolly@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sa8540p-ride: enable rtc
+Message-ID: <t6kbp4mlqnn5fzc2covhep4hnjzgwdld6af4h5ddfwandrd6mz@zvmhgnqrm242>
+References: <20230717182351.3389252-1-echanude@redhat.com>
+ <34a4a052-b76f-b49d-6703-405d65ffd597@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230717201608.814406187@linuxfoundation.org>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <34a4a052-b76f-b49d-6703-405d65ffd597@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 10:34:36PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.4 release.
-> There are 801 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Jul 17, 2023 at 09:28:15PM +0100, Caleb Connolly wrote:
+> On 17/07/2023 19:23, Eric Chanudet wrote:
+> > SA8540P-ride is one of the Qualcomm platforms that does not have access
+> > to UEFI runtime services and on which the RTC registers are read-only,
+> > as described in:
+> > https://lore.kernel.org/all/20230202155448.6715-1-johan+linaro@kernel.org/
+> > 
+> > Reserve four bytes in one of the PMIC registers to hold the RTC offset
+> > the same way as it was done for sc8280xp-crd which has similar
+> > limitations:
+> >     commit e67b45582c5e ("arm64: dts: qcom: sc8280xp-crd: enable rtc")
+> > 
+> > One small difference on SA8540P-ride, the PMIC register bank SDAM6 is
+> > not writable, so use SDAM7 instead.
+> > 
+> > Signed-off-by: Eric Chanudet <echanude@redhat.com>
+> > ---
+> >  arch/arm64/boot/dts/qcom/sa8540p-pmics.dtsi | 10 +++++++++-
+> >  arch/arm64/boot/dts/qcom/sa8540p-ride.dts   | 15 +++++++++++++++
+> >  2 files changed, 24 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/qcom/sa8540p-pmics.dtsi b/arch/arm64/boot/dts/qcom/sa8540p-pmics.dtsi
+> > index 1221be89b3de..9c5dcad35cce 100644
+> > --- a/arch/arm64/boot/dts/qcom/sa8540p-pmics.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sa8540p-pmics.dtsi
+> > @@ -14,7 +14,7 @@ pmm8540a: pmic@0 {
+> >  		#address-cells = <1>;
+> >  		#size-cells = <0>;
+> >  
+> > -		rtc@6000 {
+> > +		pmm8540a_rtc: rtc@6000 {
+> >  			compatible = "qcom,pm8941-rtc";
+> >  			reg = <0x6000>, <0x6100>;
+> >  			reg-names = "rtc", "alarm";
+> > @@ -22,6 +22,14 @@ rtc@6000 {
+> >  			wakeup-source;
+> >  		};
+> >  
+> > +		pmm8540a_sdam_7: nvram@b610 {
+> Johan disabled the SDAM node in their series for sc8280xp. Unless it's
+> used on all sa8540p platforms, you should probably also do that here.
 > 
-> Responses should be made by Wed, 19 Jul 2023 20:14:44 +0000.
-> Anything received after that time might be too late.
+> 			
+> > +			compatible = "qcom,spmi-sdam";
+> > +			reg = <0xb610>;
+> > +			#address-cells = <1>;
+> > +			#size-cells = <1>;
+> > +			ranges = <0 0xb610 0xb0>;
+> 			status = "disabled";
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.4-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
+> With that fix,
 > 
-> thanks,
-> 
-> greg k-h
+> Reviewed-by: Caleb Connolly <caleb.connolly@linaro.org>
 
-Tested rc3 against the Fedora build system (aarch64, ppc64le, s390x,
-x86_64), and boot tested x86_64. No regressions noted.
+Thank you for the review. Here is the v2 with the requested change:
+https://lore.kernel.org/linux-arm-msm/20230718145105.3464105-1-echanude@redhat.com/
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+Best,
+
+-- 
+Eric Chanudet
+
