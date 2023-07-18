@@ -2,99 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94AFA757620
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2947575C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231941AbjGRICb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60782 "EHLO
+        id S230388AbjGRHzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 03:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjGRICP (ORCPT
+        with ESMTP id S229579AbjGRHzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:02:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB721FD6;
-        Tue, 18 Jul 2023 01:01:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D77F614A3;
-        Tue, 18 Jul 2023 08:00:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55606C433C9;
-        Tue, 18 Jul 2023 08:00:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689667217;
-        bh=VO2jH8lq8taVP1DYJhkjKHmKZeUs79kd9zAM6eUj1VM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=jFBVCfxqYkp6qCZHpNS4tOUgJ2OiyVnHOa4U3/8Lmi4P7KkoNaVJIKYQuJ5MJENwg
-         rp931Bc1sz5AxmXZuubfogoVSDTsUgfW9WtFGMZqhTS0QY8ybYas+Wbmc49IpGx9qC
-         FCqSY3xP6SZ5GwC/v5hR3oLznBvYg3ccyN7c95PFKk6Wyq8CQt2cPTagGhBenUfMlb
-         H9gl07XcxPqqjumiiKH4IXxuHKRK4R1HJqOzWaBYf8krczKrcb3Jfvm36RKKOpZs0R
-         SdkTnmFy9z4gxrwCed3iP0upDhdEMlpzQMYclcDJrVV+yeX6v+0Qe9rKtrtlbnFsu2
-         sc02S/EzlROHw==
-Message-ID: <c43fbdfb-520a-14fb-6dba-4d8b5ef1716a@kernel.org>
-Date:   Tue, 18 Jul 2023 17:00:15 +0900
+        Tue, 18 Jul 2023 03:55:11 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D408E;
+        Tue, 18 Jul 2023 00:55:09 -0700 (PDT)
+Received: from dggpeml500019.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R4rkT0rt8zNmPG;
+        Tue, 18 Jul 2023 15:51:45 +0800 (CST)
+Received: from localhost.localdomain (10.90.76.33) by
+ dggpeml500019.china.huawei.com (7.185.36.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 18 Jul 2023 15:55:04 +0800
+From:   Chenyuan Mi <michenyuan@huawei.com>
+To:     <jic23@kernel.org>
+CC:     <lars@metafoo.de>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] tools: iio: iio_generic_buffer: Fix some integer type and calculation
+Date:   Tue, 18 Jul 2023 08:15:42 +0000
+Message-ID: <20230718081542.2892453-1-michenyuan@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] wifi: ata: pata_parport: epat.c Added missing spaces
-To:     hanyu001@208suo.com
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <tencent_DAE8C1D6AAA3633E096977B14E5133F42705@qq.com>
- <5a75c59282fbe38bc4637c95c66f9151@208suo.com>
-Content-Language: en-US
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <5a75c59282fbe38bc4637c95c66f9151@208suo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.90.76.33]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500019.china.huawei.com (7.185.36.137)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/18/23 16:57, hanyu001@208suo.com wrote:
-> Added spaces needed in the proper places to address:
+In function size_from_channelarray(), the return value 'bytes' is defined
+as int type. However, the calcution of 'bytes' in this function is designed
+to use the unsigned int type. So it is necessary to change 'bytes' type to
+unsigned int to avoid integer overflow.
 
-wifi ? I do not think so. Please fix the patch title.
+The size_from_channelarray() is called in main() function, its return value
+is directly multipled by 'buf_len' and then used as the malloc() parameter.
+The 'buf_len' is completely controllable by user, thus a multiplication
+overflow may occur here. This could allocate an unexpected small area.
 
-> 
-> ./drivers/ata/pata_parport/epat.c:283: ERROR: spaces required around 
-> that '=' (ctx:VxV)
-> ./drivers/ata/pata_parport/epat.c:283: ERROR: space required after that 
-> ';' (ctx:VxV)
-> ./drivers/ata/pata_parport/epat.c:283: ERROR: spaces required around 
-> that '<' (ctx:VxV)
-> ./drivers/ata/pata_parport/epat.c:283: ERROR: space required after that 
-> ';' (ctx:VxV)
-> 
-> Signed-off-by: Yu Han <hanyu001@208suo.com>
-> ---
->   drivers/ata/pata_parport/epat.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/ata/pata_parport/epat.c 
-> b/drivers/ata/pata_parport/epat.c
-> index 016bd96..efc18e2 100644
-> --- a/drivers/ata/pata_parport/epat.c
-> +++ b/drivers/ata/pata_parport/epat.c
-> @@ -280,7 +280,7 @@ static int epat_test_proto(struct pi_adapter *pi)
->       epat_disconnect(pi);
-> 
->       epat_connect(pi);
-> -    for (j=0;j<2;j++) {
-> +    for (j = 0; j < 2; j++) {
->           WRi(6, 0xa0 + j * 0x10);
->           for (k = 0; k < 256; k++) {
->               WRi(2, k ^ 0xaa);
+Signed-off-by: Chenyuan Mi <michenyuan@huawei.com>
+---
+ tools/iio/iio_generic_buffer.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
+diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
+index f8deae4e26a1..dc7d19c179ca 100644
+--- a/tools/iio/iio_generic_buffer.c
++++ b/tools/iio/iio_generic_buffer.c
+@@ -51,9 +51,9 @@ enum autochan {
+  * Has the side effect of filling the channels[i].location values used
+  * in processing the buffer output.
+  **/
+-static int size_from_channelarray(struct iio_channel_info *channels, int num_channels)
++static unsigned int size_from_channelarray(struct iio_channel_info *channels, int num_channels)
+ {
+-	int bytes = 0;
++	unsigned int bytes = 0;
+ 	int i = 0;
+ 
+ 	while (i < num_channels) {
+@@ -348,7 +348,7 @@ int main(int argc, char **argv)
+ 	ssize_t read_size;
+ 	int dev_num = -1, trig_num = -1;
+ 	char *buffer_access = NULL;
+-	int scan_size;
++	unsigned int scan_size;
+ 	int noevents = 0;
+ 	int notrigger = 0;
+ 	char *dummy;
+@@ -674,7 +674,14 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	scan_size = size_from_channelarray(channels, num_channels);
+-	data = malloc(scan_size * buf_len);
++
++	size_t total_buf_len = scan_size * buf_len;
++
++	if (scan_size > 0 && total_buf_len / scan_size != buf_len) {
++		ret = -EFAULT;
++		perror("Integer overflow happened when calculate scan_size * buf_len");
++		goto error;
++	}
++
++	data = malloc(total_buf_len);
+ 	if (!data) {
+ 		ret = -ENOMEM;
+ 		goto error;
 -- 
-Damien Le Moal
-Western Digital Research
+2.25.1
 
