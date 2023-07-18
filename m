@@ -2,120 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8519757D12
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28492757D19
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbjGRNQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:16:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53442 "EHLO
+        id S231608AbjGRNRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbjGRNQQ (ORCPT
+        with ESMTP id S229820AbjGRNRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:16:16 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B05C0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:16:15 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1qLkYW-0005P3-T3; Tue, 18 Jul 2023 15:15:56 +0200
-Received: from mfe by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1qLkYW-0002nJ-1f; Tue, 18 Jul 2023 15:15:56 +0200
-Date:   Tue, 18 Jul 2023 15:15:56 +0200
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
-Subject: Re: [PATCH net-next 2/2] net: stmmac: platform: add support for
- phy-supply
-Message-ID: <20230718131556.bdp3sykrkkylp4pb@pengutronix.de>
-References: <20230717164307.2868264-1-m.felsch@pengutronix.de>
- <20230717164307.2868264-2-m.felsch@pengutronix.de>
- <accc8d89-7565-460e-a874-a491b755bbb8@lunn.ch>
- <20230718083504.r3znx6iixtq7vkjt@pengutronix.de>
- <427214fb-6206-47b3-bf5b-8b1cfc8b7677@lunn.ch>
+        Tue, 18 Jul 2023 09:17:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E91D1;
+        Tue, 18 Jul 2023 06:17:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8884161575;
+        Tue, 18 Jul 2023 13:17:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA7A9C433C8;
+        Tue, 18 Jul 2023 13:17:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689686232;
+        bh=qiZEsBLuyn7ftK0cVXK4PBiVHo7kAZkPBubS+oSwY4M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kOSxNOBzd2L8ywiaU0Ah+j3nqB0ZucdARCkZNofstHevNu1vx6O4qDfXSoCm9JIyP
+         hoWOberHUqN8FSV55Q3IN/lG/sf0KtIAK0kj0jFkjaPIJuXwlpFgb1AADc3YC5kiZD
+         UnrWY+mk7JD0Dpq0UsfVehxPYQLq3vw48AYQPiFwavywQE7gesluKeeIJJ9KG/74y9
+         utZX+QDLbUlYzdjgU5wIm5cLGxvmbi1N0Ep0EDnQfM4YcDSM3KieTp3K5779B0c1YB
+         g5x8Y6KXOAuYpuHiVH4PRvsbZWTaGREP5FR3FkFH1oxcYYtCy33wwwzX2ebbOEgl//
+         ghfrzWh6wwPfQ==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qLkZt-0005Vk-1W;
+        Tue, 18 Jul 2023 15:17:22 +0200
+Date:   Tue, 18 Jul 2023 15:17:21 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 01/15] clk: qcom: branch: Add a helper for setting the
+ enable bit
+Message-ID: <ZLaQ4ShWwZLAACAI@hovoldconsulting.com>
+References: <20230717-topic-branch_aon_cleanup-v1-0-27784d27a4f4@linaro.org>
+ <20230717-topic-branch_aon_cleanup-v1-1-27784d27a4f4@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <427214fb-6206-47b3-bf5b-8b1cfc8b7677@lunn.ch>
-User-Agent: NeoMutt/20180716
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230717-topic-branch_aon_cleanup-v1-1-27784d27a4f4@linaro.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-07-18, Andrew Lunn wrote:
-> On Tue, Jul 18, 2023 at 10:35:04AM +0200, Marco Felsch wrote:
-> > On 23-07-18, Andrew Lunn wrote:
-> > > On Mon, Jul 17, 2023 at 06:43:07PM +0200, Marco Felsch wrote:
-> > > > Add generic phy-supply handling support to control the phy regulator.
-> > > > Use the common stmmac_platform code path so all drivers using
-> > > > stmmac_probe_config_dt() and stmmac_pltfr_pm_ops can use it.
-> > > > 
-> > > > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
-> > > > ---
-> > > >  .../ethernet/stmicro/stmmac/stmmac_platform.c | 51 +++++++++++++++++++
-> > > >  include/linux/stmmac.h                        |  1 +
-> > > >  2 files changed, 52 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> > > > index eb0b2898daa3d..6193d42b53fb7 100644
-> > > > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> > > > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> > > > @@ -10,6 +10,7 @@
-> > > >  
-> > > >  #include <linux/platform_device.h>
-> > > >  #include <linux/pm_runtime.h>
-> > > > +#include <linux/regulator/consumer.h>
-> > > >  #include <linux/module.h>
-> > > >  #include <linux/io.h>
-> > > >  #include <linux/of.h>
-> > > > @@ -423,6 +424,15 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
-> > > >  	if (plat->interface < 0)
-> > > >  		plat->interface = plat->phy_interface;
-> > > >  
-> > > > +	/* Optional regulator for PHY */
-> > > > +	plat->phy_regulator = devm_regulator_get_optional(&pdev->dev, "phy");
-> > > > +	if (IS_ERR(plat->phy_regulator)) {
-> > > > +		if (PTR_ERR(plat->phy_regulator) == -EPROBE_DEFER)
-> > > > +			return ERR_CAST(plat->phy_regulator);
-> > > > +		dev_info(&pdev->dev, "No regulator found\n");
-> > > > +		plat->phy_regulator = NULL;
-> > > > +	}
-> > > > +
-> > > 
-> > > So this gets the regulator. When do you actually turn it on?
-> > 
-> > During the suspend/resume logic like the rockchip, sun8i platform
-> > integrations did.
-> 
-> So you are assuming the boot loader has turned it on?
-> 
-> You also might have a difference between the actual state, and what
-> kernel thinks the state is, depending on how the regulator is
-> implemented.
-> 
-> It would be better to explicitly turn it on before registering the
-> MDIO bus.
+On Mon, Jul 17, 2023 at 05:19:08PM +0200, Konrad Dybcio wrote:
+> We harcode some clocks to be always-on, as they're essential to the
 
-You're right, I changed this. Thanks for the hint.
+typo: hardcode
 
-Regards,
-  Marco
+> functioning of the SoC / some peripherals. Add a helper to do so
+> to make the writes less magic.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+
+Looks good otherwise:
+
+Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
