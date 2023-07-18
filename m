@@ -2,66 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 573A0757BD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D13C757BD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbjGRMau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 08:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50536 "EHLO
+        id S231436AbjGRMbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 08:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229862AbjGRMas (ORCPT
+        with ESMTP id S231420AbjGRMbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 08:30:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA90E7E;
-        Tue, 18 Jul 2023 05:30:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Tue, 18 Jul 2023 08:31:07 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FACF10E6;
+        Tue, 18 Jul 2023 05:31:06 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CF126144F;
-        Tue, 18 Jul 2023 12:30:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0B30C433D9;
-        Tue, 18 Jul 2023 12:30:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689683445;
-        bh=ewBvEu3q9fdxRVZ/bOTc4sTub/GNdXq5mm9ihivpNys=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KPoQSk+l91vqDjLdjbP3A+VDUiOMWV03en0RSX0+HvbPqDaIq93gf6jBhlsCpC0f2
-         9vF5yJr1X3gjSp6NHJjs8tSW8aMZ5fFuIFkgbbzY6Gy4/rXnSXFbQorO2Qt7HKPLlD
-         ew48CUEYwfwWbJWDwpy18XE6gDd0mtns4nnNVjzW3Yuncosonl6iqutYxAd3UDZ6R9
-         XTl3l04KGg8zKhXKM3pmfgbdQNmzTzP1GzP86RVEdcYR3yH0regjvVla4yvndAZ/AC
-         PS+2MAgEEWl+KET/CHymrR0kWxmLS94YQ2y2tlZZYjitPV57/V7loCnQcRPz/ahSfw
-         gz9pdfKGAwmFg==
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-52165886aa3so6311324a12.3;
-        Tue, 18 Jul 2023 05:30:45 -0700 (PDT)
-X-Gm-Message-State: ABy/qLYaBvMpeC7SQxZaBMPwOAS8zwhkN8EAtRcwCJoEI2Ok/SR5y6LZ
-        DwsgFGMgOAqEJLRn53EKL73e2RHO110WU5C1DbI=
-X-Google-Smtp-Source: APBJJlHe8TFtJFZ8Y9DNXuWysT+cvI4iLtDBMsWB/iiVEYkEaNurr05NLxvwGqtvK5ROH/nhX2YKPgHH7a10svBalFQ=
-X-Received: by 2002:a17:906:7c44:b0:969:93f2:259a with SMTP id
- g4-20020a1709067c4400b0096993f2259amr12930730ejp.73.1689683443851; Tue, 18
- Jul 2023 05:30:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230714103659.3146949-1-guoren@kernel.org> <ad6e6873-5555-624b-6050-dbbcefb91e5a@ghiti.fr>
-In-Reply-To: <ad6e6873-5555-624b-6050-dbbcefb91e5a@ghiti.fr>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 18 Jul 2023 20:30:31 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTR72W4oA3L+138Hdenf9kASO17aMTPCkrJfcafcJ2bUKw@mail.gmail.com>
-Message-ID: <CAJF2gTR72W4oA3L+138Hdenf9kASO17aMTPCkrJfcafcJ2bUKw@mail.gmail.com>
-Subject: Re: [PATCH V4] riscv: kexec: Fixup synchronization problem between
- init_mm and active_mm
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     palmer@rivosinc.com, paul.walmsley@sifive.com, zong.li@sifive.com,
-        atishp@atishpatra.org, jszhang@kernel.org, bjorn@kernel.org,
-        xingxg2008@163.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        by smtp-out1.suse.de (Postfix) with ESMTPS id F40C22195A;
+        Tue, 18 Jul 2023 12:31:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689683465; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KbjvdsHsS1PmNV4JGwm/IUUOXq5JvVmOTqBck+EzJEk=;
+        b=RymDNfSaGPwdSqtX2PwhA7GLLqrSo7DFLn8fHZrcCEzTV4W0ZDaLLD+PJ1FRHPXu5SMgGc
+        nCt9BxL8UUn0v7vXkgWrRRGXhKvEMpKGEpZhbTzb4J41+Iy1tapHlLc4WgIvZLfYjgCvd4
+        UxZ0GdERj5YY6gJk8lQL9178OX7pnZk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689683465;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KbjvdsHsS1PmNV4JGwm/IUUOXq5JvVmOTqBck+EzJEk=;
+        b=uLYybcIKIBzGtKobmZyQ05Z9kjWOjiLzlEKIt6RmL5oXEsuCP67rph5FANpRa2tXuOmTyU
+        l4Wi0hxzHCF52gDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AEE8F134B0;
+        Tue, 18 Jul 2023 12:31:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id sCHNKQiGtmQUSAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 18 Jul 2023 12:31:04 +0000
+Date:   Tue, 18 Jul 2023 14:31:04 +0200
+Message-ID: <87351lo0zb.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Amadeusz =?ISO-8859-2?Q?S=B3awi=F1ski?= 
+        <amadeuszx.slawinski@linux.intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v4 00/15] PCI: Define Intel PCI IDs and use them in drivers
+In-Reply-To: <20230717114511.484999-1-amadeuszx.slawinski@linux.intel.com>
+References: <20230717114511.484999-1-amadeuszx.slawinski@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,205 +81,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 9:17=E2=80=AFPM Alexandre Ghiti <alex@ghiti.fr> wro=
-te:
->
->
-> On 14/07/2023 12:36, guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > The machine_kexec() uses set_memory_x to modify the direct mapping
-> > attributes from RW to RWX. The current implementation of set_memory_x
-> > does not split hugepages in the linear mapping and then when a PGD
-> > mapping is used, the whole PGD is marked as executable. But changing
-> > the permissions at the PGD level must be propagated to all the page
-> > tables. When kexec jumps into control_buffer, the instruction page
-> > fault happens, and there is no minor_pagefault for it, then panic.
-> >
-> > The bug is found on an MMU_sv39 machine, and the direct mapping used a
-> > 1GB PUD, the pgd entries. Here is the bug output:
-> >
-> >   kexec_core: Starting new kernel
-> >   Will call new kernel at 00300000 from hart id 0
-> >   FDT image at 747c7000
-> >   Bye...
-> >   Unable to handle kernel paging request at virtual address ffffffda23b=
-0d000
-> >   Oops [#1]
-> >   Modules linked in:
-> >   CPU: 0 PID: 53 Comm: uinit Not tainted 6.4.0-rc6 #15
-> >   Hardware name: Sophgo Mango (DT)
-> >   epc : 0xffffffda23b0d000
-> >    ra : machine_kexec+0xa6/0xb0
-> >   epc : ffffffda23b0d000 ra : ffffffff80008272 sp : ffffffc80c173d10
-> >    gp : ffffffff8150e1e0 tp : ffffffd9073d2c40 t0 : 0000000000000000
-> >    t1 : 0000000000000042 t2 : 6567616d69205444 s0 : ffffffc80c173d50
-> >    s1 : ffffffd9076c4800 a0 : ffffffd9076c4800 a1 : 0000000000300000
-> >    a2 : 00000000747c7000 a3 : 0000000000000000 a4 : ffffffd800000000
-> >    a5 : 0000000000000000 a6 : ffffffd903619c40 a7 : ffffffffffffffff
-> >    s2 : ffffffda23b0d000 s3 : 0000000000300000 s4 : 00000000747c7000
-> >    s5 : 0000000000000000 s6 : 0000000000000000 s7 : 0000000000000000
-> >    s8 : 0000000000000000 s9 : 0000000000000000 s10: 0000000000000000
-> >    s11: 0000003f940001a0 t3 : ffffffff815351af t4 : ffffffff815351af
-> >    t5 : ffffffff815351b0 t6 : ffffffc80c173b50
-> >   status: 0000000200000100 badaddr: ffffffda23b0d000 cause: 00000000000=
-0000c
-> >
-> > Given the current flaw in the set_memory_x implementation, the simplest
-> > solution is to fix machine_kexec() to remap control code page outside
-> > the linear mapping. Because the control code buffer was moved from the
-> > direct mapping area to the vmalloc location, we need an additional
-> > va_va_offset to fix up va_pa_offset.
-> >
-> > Fixes: 3335068f8721 ("riscv: Use PUD/P4D/PGD pages for the linear mappi=
-ng")
-> > Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > Reported-by: Xing XiaoGuang <xingxg2008@163.com>
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > ---
-> > Changelog:
-> > V4:
-> >   - Fixup va_pa_offset with additional va_va_offset.
-> >   - Add Reported-by tag.
-> >
-> > V3:
-> >   - Resume set_memory_x to set the _PAGE_EXEC attribute
-> >   - Optimize the commit log with Alexandre advice
-> >
-> > V2:
-> >   - Use vm_map_ram instead of modifying set_memory_x
-> >   - Correct Fixes tag
-> > ---
-> >   arch/riscv/include/asm/kexec.h    |  1 +
-> >   arch/riscv/kernel/machine_kexec.c | 18 +++++++++++++++---
-> >   2 files changed, 16 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/riscv/include/asm/kexec.h b/arch/riscv/include/asm/ke=
-xec.h
-> > index 2b56769cb530..17456e91476e 100644
-> > --- a/arch/riscv/include/asm/kexec.h
-> > +++ b/arch/riscv/include/asm/kexec.h
-> > @@ -41,6 +41,7 @@ crash_setup_regs(struct pt_regs *newregs,
-> >   struct kimage_arch {
-> >       void *fdt; /* For CONFIG_KEXEC_FILE */
-> >       unsigned long fdt_addr;
-> > +     void *control_code_buffer;
-> >   };
-> >
-> >   extern const unsigned char riscv_kexec_relocate[];
-> > diff --git a/arch/riscv/kernel/machine_kexec.c b/arch/riscv/kernel/mach=
-ine_kexec.c
-> > index 2d139b724bc8..60c1ef3c2232 100644
-> > --- a/arch/riscv/kernel/machine_kexec.c
-> > +++ b/arch/riscv/kernel/machine_kexec.c
-> > @@ -86,7 +86,14 @@ machine_kexec_prepare(struct kimage *image)
-> >
-> >       /* Copy the assembler code for relocation to the control page */
-> >       if (image->type !=3D KEXEC_TYPE_CRASH) {
-> > -             control_code_buffer =3D page_address(image->control_code_=
-page);
-> > +             control_code_buffer =3D vm_map_ram(&image->control_code_p=
-age,
-> > +                                              KEXEC_CONTROL_PAGE_SIZE/=
-PAGE_SIZE,
-> > +                                              NUMA_NO_NODE);
-> > +             if (control_code_buffer =3D=3D NULL) {
-> > +                     pr_err("Failed to vm_map control page\n");
-> > +                     return -ENOMEM;
-> > +             }
-> > +
-> >               control_code_buffer_sz =3D page_size(image->control_code_=
-page);
-> >
-> >               if (unlikely(riscv_kexec_relocate_size > control_code_buf=
-fer_sz)) {
-> > @@ -99,6 +106,8 @@ machine_kexec_prepare(struct kimage *image)
-> >
-> >               /* Mark the control page executable */
-> >               set_memory_x((unsigned long) control_code_buffer, 1);
-> > +
-> > +             internal->control_code_buffer =3D control_code_buffer;
-> >       }
-> >
-> >       return 0;
-> > @@ -211,7 +220,10 @@ machine_kexec(struct kimage *image)
-> >       unsigned long this_cpu_id =3D __smp_processor_id();
-> >       unsigned long this_hart_id =3D cpuid_to_hartid_map(this_cpu_id);
-> >       unsigned long fdt_addr =3D internal->fdt_addr;
-> > -     void *control_code_buffer =3D page_address(image->control_code_pa=
-ge);
-> > +     void *control_code_buffer =3D internal->control_code_buffer;
-> > +     unsigned long va_va_offset =3D
-> > +                     (unsigned long) page_address(image->control_code_=
-page)
-> > +                   - (unsigned long) control_code_buffer;
-> >       riscv_kexec_method kexec_method =3D NULL;
-> >
-> >   #ifdef CONFIG_SMP
-> > @@ -234,6 +246,6 @@ machine_kexec(struct kimage *image)
-> >       /* Jump to the relocation code */
-> >       pr_notice("Bye...\n");
-> >       kexec_method(first_ind_entry, jump_addr, fdt_addr,
-> > -                  this_hart_id, kernel_map.va_pa_offset);
-> > +                  this_hart_id, kernel_map.va_pa_offset - va_va_offset=
-);
-> >       unreachable();
-> >   }
->
->
-> I started working on the set_memory fix and the first thing to do is to
-> prevent the use of PGD mapping, it's too cumbersome to propagate changes
-> at this level: IIRC x86 keeps a list of page tables to go through
-> whenever that happens, that's why Bjorn pre-allocated all the PGD
-> entries to cover the vmalloc region.
->
-> So, to me, the simple fix for this issue is to prevent the use of PGD
-> mapping. What do you think? Does the following patch work?
-The PGD mapping is necessary (especially for Sv32, Sv39), and it has
-been solved under your first advice. I think limit set_memory_x usage
-is the smart choice for now.
+On Mon, 17 Jul 2023 13:44:56 +0200,
+Amadeusz S³awiñski wrote:
+> 
+> PCI IDs for Intel HDA are duplicated across quite a few drivers, due to
+> various configurations and historical reasons. Currently almost all uses
+> of HDA PCI IDs have corresponding comment telling which platform it is.
+> Additionally there are some inconsistencies between drivers about which
+> ID corresponds to which device.
+> 
+> Simplify things, by adding PCI IDs to global header and make use of them
+> in drivers. This allows for removal of comments by having IDs themselves
+> being self explanatory. Additionally it allows for removal of existing
+> inconsistencies by having one source of truth.
+> 
+> Changes from v3:
+>  - Fix double space in commit message title (Ilpo)
+>  - Comment ACPI/PCI ID handling in Atom SST driver (Andy)
+>  - Rebased once again and used --base this time (Andy)
+> 
+> Changes from v2:
+>  - Change CHV to BSW (Andy)
+>  - Fix incorrectly rebased patches (Andy)
+>  - Fix commit message and add suggestions from Andy to SST patch (Andy)
+>  - Rebased on top of Linus tree commit: 4b810bf037e5
+> 
+> Changes from v1:
+>  - Remove BXT-T PCI ID as it is not released (Andy)
+>  - Reorder macros to start from pci_match_id() (Andy)
+>  - Add comment about BXT->APL name change in commit messages (Andy)
+>  - Use SST as part of macro name for DSP only devices (Andy)
+>  - Add PCI IDs for all SST combinations (Andy)
+> 
+> Changes from RFC:
+>  - Sort Intel PCI IDs before adding new ones
+>  - Fix ordering of new PCI IDs (Andy)
+>  - Define all used Intel IDs (Andy)
+>  - Add macros for controller type detection (Andy/Bjorn)
+>  - Add set of patches changing to use above macro (Andy/Bjorn)
+>  - Use PCI_DEVICE_DATA for Intel IDs in sound/pci/hda/hda_intel.c (Andy)
+>  - Commit message wording (Andy)
+>  - Remove unnecessary tabs (Andy)
+> 
+> Amadeusz S³awiñski (15):
+>   PCI: Sort Intel PCI IDs by number
+>   PCI: Add Intel Audio DSP devices to pci_ids.h
+>   ASoC: SOF: Remove unused Broxton PCI ID
+>   ALSA: Remove unused Broxton PCI ID
+>   ALSA: hda: Add controller matching macros
+>   ALSA: hda: Use global PCI match macro
+>   ALSA: hda/i915: Use global PCI match macro
+>   ASoC: Intel: Skylake: Use global PCI match macro
+>   ALSA: intel-dsp-config: Convert to PCI device IDs defines
+>   ALSA: hda: Convert to PCI device IDs defines
+>   ASoC: Intel: avs: Convert to PCI device IDs defines
+>   ASoC: Intel: avs: Convert to PCI device IDs defines
+>   ASoC: Intel: Skylake: Convert to PCI device IDs defines
+>   ASoC: SOF: Intel: Convert to PCI device IDs defines
+>   ASoC: Intel: sst: Convert to PCI device IDs defines
+
+Now applied all to sound.git tree, merged to for-next branch.
+
+I pushed a signed tag hda-pci-ids including those (based on 6.5-rc2).
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/hda-pci-ids
+
+Feel free to merge to other trees.
 
 
->
->
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 70fb31960b63..6dd12443bfa4 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -662,13 +662,12 @@ void __init create_pgd_mapping(pgd_t *pgdp,
->   static uintptr_t __init best_map_size(phys_addr_t pa, uintptr_t va,
->                                        phys_addr_t size)
->   {
-> -       if (!(pa & (PGDIR_SIZE - 1)) && !(va & (PGDIR_SIZE - 1)) && size
->  >=3D PGDIR_SIZE)
-> -               return PGDIR_SIZE;
-> -
-> -       if (!(pa & (P4D_SIZE - 1)) && !(va & (P4D_SIZE - 1)) && size >=3D
-> P4D_SIZE)
-> +       if (pgtable_l5_enabled &&
-> +           !(pa & (P4D_SIZE - 1)) && !(va & (P4D_SIZE - 1)) && size >=3D
-> P4D_SIZE)
->                  return P4D_SIZE;
->
-> -       if (!(pa & (PUD_SIZE - 1)) && !(va & (PUD_SIZE - 1)) && size >=3D
-> PUD_SIZE)
-> +       if (pgtable_l4_enabled &&
-> +           !(pa & (PUD_SIZE - 1)) && !(va & (PUD_SIZE - 1)) && size >=3D
-> PUD_SIZE)
->                  return PUD_SIZE;
->
->          if (!(pa & (PMD_SIZE - 1)) && !(va & (PMD_SIZE - 1)) && size >=
-=3D
-> PMD_SIZE)
->
->
-> Thanks,
->
-> Alex
->
+thanks,
 
-
---=20
-Best Regards
- Guo Ren
+Takashi
