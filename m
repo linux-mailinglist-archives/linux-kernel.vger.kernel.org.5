@@ -2,109 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D5D757725
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94CF2757712
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbjGRIwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36634 "EHLO
+        id S231715AbjGRIwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:52:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231821AbjGRIws (ORCPT
+        with ESMTP id S229458AbjGRIwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:52:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DECABF7
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:52:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689670324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5KOR8rz1HcIaKvEfrXa81rmXVE1uZtoJjHifNrWIaLY=;
-        b=VO+mU3uv0EaA6zXGtBwn69BrK3atslcjn4LP63WEP9gH68H2Hc1qrpuRaKS2n5080fz9td
-        jams7WfiqtijFlirGgp2qpQToGgMPSf5PwOxhrL4x/b1zgeQ78lJ3k15iB8AYHW281I8fV
-        /VGL4DXgtPSJDRV6XlCFpoSm+1iKd8w=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-295-biBte5FlN_C33GzyZp-dEQ-1; Tue, 18 Jul 2023 04:52:03 -0400
-X-MC-Unique: biBte5FlN_C33GzyZp-dEQ-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-765ad67e690so130776885a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:52:02 -0700 (PDT)
+        Tue, 18 Jul 2023 04:52:38 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3CEE197
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:52:36 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-403f21d3c2dso173481cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:52:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689670356; x=1692262356;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pYiyuxt/N5ReOBp+6DLzcnLSJb59cmexqlxBPjdaU+I=;
+        b=CgDv/w4umtpcqM4lU+wjtzqvMOW5k5wCdeUDfhXa/lCNH0hulr4DpFxCOrol2sLw0Y
+         wK7ZwWhs/92u9acenAT3PRZOkN2anHV2YA9+EhNwWAu8GTe+piNIWX/ZOmVDjpxg/XoS
+         gNaUn5/uisOslv5SOisanOuajIHCT2XAqit2hR5Xdii+IvbI2wodDL+GFJwEK1M+xvQ8
+         mve8s6mp6CNpw3m+qTOtxDnGXTJWgeZvU+VRQh78/NablesAbjmgR6fgayTn3m14U5T6
+         eNiZtAqZKnE8xly41lvmYJlcdmVDwLM+8oxVyJU384hZ8WUVSpszi+gF4xNqRxrC3FIY
+         aDnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689670322; x=1690275122;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5KOR8rz1HcIaKvEfrXa81rmXVE1uZtoJjHifNrWIaLY=;
-        b=i3Ibkkj5QRnDGtKRvNzss/JxoqFv+75WoK3IJYW9qD6JT4UC8vZx2XVeADUaBhJKrl
-         xTRxunwLibLHrr3cUP0/SLt1ud+cSzNgxXnMtBcs1iPkAr7d2vCiBAWwLmdUfBalpDIE
-         MlLPdym91oVP++y+sxEFnblFoHxPihS/62wIT9Pfrv5fdWVu39j7wBOnHOg8w6AqW4na
-         mFCqdujmQSRulPjqRnuOkBboJqNgsLG5BZBZAHFjN0TCYeP3JvLXTOxfG04fEvUaZ39o
-         t4BbhZa+8+YgQc7QfOJ2bxrgU6uCEARZ0bBnfsyg3MKyG5g6R/9Dgo1YrZiOG5q/KkEp
-         mvmQ==
-X-Gm-Message-State: ABy/qLYfK7jCpzEQVhAQALaQDYN/qD8OxTs34+Te+QsV4auT0qQLS2HY
-        ITMwh5aXvJLDBYENwWOqNJCXP//x5Da01fSI9Ze09XpJuOz0r11C1sfOIv9m6lEQPzg+odEXTmx
-        OQbfsT01plRmcgRd75t9lmtCY
-X-Received: by 2002:a05:6214:29ca:b0:625:77a1:2a5f with SMTP id gh10-20020a05621429ca00b0062577a12a5fmr15751331qvb.5.1689670322557;
-        Tue, 18 Jul 2023 01:52:02 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGyNfUCGibD1hyFQuxDmLGTOedRmloVQAyvYLT0e0Z7YsxX73m1Q+O8jquOzWtrmPF93zyMiA==
-X-Received: by 2002:a05:6214:29ca:b0:625:77a1:2a5f with SMTP id gh10-20020a05621429ca00b0062577a12a5fmr15751310qvb.5.1689670322278;
-        Tue, 18 Jul 2023 01:52:02 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-226-170.dyn.eolo.it. [146.241.226.170])
-        by smtp.gmail.com with ESMTPSA id a24-20020a0cb358000000b0062dfdafa0b7sm564703qvf.136.2023.07.18.01.51.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 01:52:01 -0700 (PDT)
-Message-ID: <befe05762b714948ad1f71a5d038334100f84cd0.camel@redhat.com>
-Subject: Re: [PATCH net v3] net: thunder: bgx: Fix resource leaks in
- device_for_each_child_node() loops
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Markus Elfring <Markus.Elfring@web.de>,
-        Wang Ming <machel@vivo.com>, opensource.kernel@vivo.com,
-        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        David Daney <david.daney@cavium.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sunil Goutham <sgoutham@marvell.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Minjie Du <duminjie@vivo.com>
-Date:   Tue, 18 Jul 2023 10:51:58 +0200
-In-Reply-To: <be87c113-f975-9607-1f9d-5db304e0b1b9@web.de>
-References: <20230714100010.12035-1-machel@vivo.com>
-         <be87c113-f975-9607-1f9d-5db304e0b1b9@web.de>
+        d=1e100.net; s=20221208; t=1689670356; x=1692262356;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pYiyuxt/N5ReOBp+6DLzcnLSJb59cmexqlxBPjdaU+I=;
+        b=bEEZO7ZtEqKoRA2IEoQSVSjS+bEstXcjs/F6MnuonZFxhvXEk3oLEYFcmAbMOr4BAM
+         ixmIgMjLrctZOg2BSAzuDc386hqczJkERb6uL+GNaXiCQ+6JJwoRGjjENJU5dZ5OuPQt
+         RLf1rqiZhTQvPJ/mn9KaAKb2v6v14BU7qRJnpXxIapNRdOIAkjTJHwb2D1XwXq9hTtOF
+         rG3X7df0phNkK2nklSbyl9qFsgFG/5bvEgMxIxU7K+vdJGU/qxGWmn++bA996T03Ti3R
+         aPTKUUW6LN6hX/hWyAu5ZVkz+ktgPhOghffeyP/TZoiyLdqq6HYAAd/uV0EqBJtfF1pd
+         lTtw==
+X-Gm-Message-State: ABy/qLbq0uM7Oo8vLpcqswPhmqbCjUfQmF/PUS7/giP2tX4f9Nydg6Mm
+        /uNPcbGu7DyNr8Yfe0rZMSXmK6qvg1RsjCrGuMeqSg==
+X-Google-Smtp-Source: APBJJlFCj+g3+yVxx0XuWKRe0hkfwk4QruUfGKVc61L++n23uTaYOm9vYpWIeIZwwyFWo8ewaQZirqcfdmjyHbLVtks=
+X-Received: by 2002:ac8:5b02:0:b0:403:e1d1:8b63 with SMTP id
+ m2-20020ac85b02000000b00403e1d18b63mr207657qtw.24.1689670355892; Tue, 18 Jul
+ 2023 01:52:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230621063825.268890-1-mshavit@google.com> <20230621063825.268890-8-mshavit@google.com>
+ <ZK+BZhwbo8JLMPI2@Asurada-Nvidia> <CAKHBV27idVJ-8YgpekezaQP2n+Oz6OpKnDmYiu_cSOFh6z1S+Q@mail.gmail.com>
+ <ZLHp0r1g1lroGYlN@Asurada-Nvidia>
+In-Reply-To: <ZLHp0r1g1lroGYlN@Asurada-Nvidia>
+From:   Michael Shavit <mshavit@google.com>
+Date:   Tue, 18 Jul 2023 16:51:59 +0800
+Message-ID: <CAKHBV25ButEYJLxqRHo1V+KrwoDAGqfJGSh1G1Pe3f3_djE_TA@mail.gmail.com>
+Subject: Re: [PATCH v4 07/13] iommu/arm-smmu-v3: Keep track of attached ssids
+To:     Nicolin Chen <nicolinc@nvidia.com>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>, jean-philippe@linaro.org,
+        jgg@nvidia.com, baolu.lu@linux.intel.com,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-07-14 at 15:06 +0200, Markus Elfring wrote:
-> > The device_for_each_child_node() loop in bgx_init_of_phy()
-> > function should have fwnode_handle_put() before break which could
-> > avoid resource leaks. This patch could fix this bug.
->=20
-> Are imperative change descriptions still preferred?
+On Sat, Jul 15, 2023 at 8:35=E2=80=AFAM Nicolin Chen <nicolinc@nvidia.com> =
+wrote:
+> Well, firstly it's kinda odd to have this optimization hidden in
+> a big rework patch. And I am not sure if it alone would work for
+> all use cases, as it impacts the arm_smmu_atc_inv_domain() that
+> passes in a zero ssid, in which case the affected function is not
+> used by a pasid case all the time:
 
-Yes. The commit message should be re-phrased.
+To clarify, we haven't changed anything for the existing flow. Before
+the latter set_dev_pasid patch is introduced, there's only ever a
+single {master,domain} pair in the attached_domain list. When
+arm_smmu_atc_inv_domain() is called on a non-pasid domain, it issues a
+single atc inv command with substream_valid=3Dfalse, same as before.
+When SVA wants to invalidate a domain, it calls
+arm_smmu_atc_inv_domain_ssid to issue a single atc inv command with
+that specific PASID, same as before. At no point does the driver ever
+rely on the fact that invalidating with substream_valid=3Dfalse would
+invalidate all PASIDs.
 
-More importantly, it looks like the relevant reference is already
-released by of_node_put() and the additional fwnode_handle_put() will
-cause a reference underflow.
-
-This patch does not look correct to me.
-
-Cheers,
-
-Paolo
-
+This patch series simply follows the precedent set by SVA: when a
+domain is attached with a pasid, invalidates those specific pasids.
+It'd feel kinda hacky to rely on the fact that invalidating with
+substream_valid=3Dfalse would invalidate all PASIDs.
