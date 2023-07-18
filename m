@@ -2,95 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AB5758024
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 646AC758023
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233416AbjGROwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
+        id S232834AbjGROwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:52:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232683AbjGROwG (ORCPT
+        with ESMTP id S232989AbjGROwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:52:06 -0400
-Received: from mailrelay5-1.pub.mailoutpod2-cph3.one.com (mailrelay5-1.pub.mailoutpod2-cph3.one.com [46.30.211.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA4013E
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:52:05 -0700 (PDT)
+        Tue, 18 Jul 2023 10:52:01 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DD71719
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:51:59 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-77ac14ff51bso243334739f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:51:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=rsa1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=wWgPiAi3r8Uoj6fgS4VBko5gDpbk+heLZMX3BKMQnlc=;
-        b=cYwVBLk6x0dNlQ4TwuImlDXzw18490N+Yox9cRihC1zTZof+5fPoklBQcV6A5UKayINuug7gpms8r
-         iSzJsRqixhfuDjC6wGdcQ4fW/PFcxSYQrQSK9sue1TjjdEvRKg1znE+QYnz//NF1Wf7THit/7+Ef+9
-         OiitKePAso/MmQrVAIUToMqaNKoEULTFjtFuY/spxBNVFkoOK5QrkBkxQn/Tv+sr6qbYQtrHzn7BoH
-         PLmHye7gdsIvBud7I/yKbDI9hILqCVuDPSRvqN5rUlGBi10LivIIAXMT30DHlZ/4XkiuaVF0tt2HTz
-         rSHuqrn1NKZsJUHZFbZPDEZVvgU38dg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=ed1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=wWgPiAi3r8Uoj6fgS4VBko5gDpbk+heLZMX3BKMQnlc=;
-        b=OknKNSAp+MRCUvmmDY0cbgkV2AP6UmhzWS72S/lediTvmLzNmqyomBbf6fUftbyLJWoYwov23wYrS
-         J6qCCFGCQ==
-X-HalOne-ID: 827803b1-257a-11ee-b422-55333ba73462
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-        by mailrelay5 (Halon) with ESMTPSA
-        id 827803b1-257a-11ee-b422-55333ba73462;
-        Tue, 18 Jul 2023 14:51:01 +0000 (UTC)
-Date:   Tue, 18 Jul 2023 16:51:00 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     sunran001@208suo.com
-Cc:     davem@davemloft.net, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] floppy: add missing put_device()
-Message-ID: <20230718145100.GA688726@ravnborg.org>
-References: <20230718090203.17548-1-xujianghui@cdjrlc.com>
- <8d2649460d95597d2d4de3777b2043f7@208suo.com>
+        d=gmail.com; s=20221208; t=1689691919; x=1692283919;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2GIqnnpdKb7I9nNR85AQsWNWcw2qSeUJtV+n6+XhZgY=;
+        b=FgiACD5bcvZA+6cd5ApfIEjwVfwqozr0Q2kG/sudwiMboo9Obq3PgIQ5kQm9EmAFWv
+         qNZYg+shgkYPyz7ogVTMOLKIi9OwRcFvlqNCluUuvaQUTLoB7R1GX8CUPbDywt/qKGDq
+         Y0DA98mNxKrMsoaiGj158YRgEWUB0wCQB8fIY0PSEUJZA5n5lWJJ0DN0GdYqwXjCrgty
+         D14g03A/8/lx5ediTE0yCfK1XXPMrqBD876GUt2CowZBA2HpzU7J3J5vz1jY3QQHxpss
+         GslAAeMeXYQ4JeCQNilrLYkUte373Qd7z5CkF89IAGNM+Ey/etyQl+JAaYXf1qGPZw1U
+         Pe1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689691919; x=1692283919;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2GIqnnpdKb7I9nNR85AQsWNWcw2qSeUJtV+n6+XhZgY=;
+        b=ULx9BXxZ+J0j8mRE1KUpt2o7KT/LEfaOQZTyqhd0sr5dXeoATeaktMWnXaT3yR5Yl1
+         2A9oo3Yexd+jc+vHfeNaV/CYukf+2nANscc5QsQH5+1lcxXojLjkYICf2MMFqOD4uAcj
+         U0FkLgisJmaNFEK2Biirdmky44teGuiUFDvVWsLfERUhytfMl8e+iLbwxyTottk34ce0
+         jdjUsozFDUmU0M25BXf+1VFVTo5JG19LE/jTTBvt2MiZzr2mKT6Yd++STs1hkt0z8QKd
+         A0Zv8pIXVu82PTmEONZOBpj53Sqh6NDls0Q99xsFhBilYq7DKnKeUdt6mHP5ALgRx9bF
+         IBdw==
+X-Gm-Message-State: ABy/qLZIafAUXMl/qVeAYDMKYVt06FBbkRxfE22vsKTlIqkbPDROwoyD
+        bOcBSO3kZEpreY1H48Z7bJU=
+X-Google-Smtp-Source: APBJJlECvO3EIaJ3EtRZb/2Cg7Zv8tKC1ifI6mf15CtrBD+LtSh97R9MErvVDrgsCD10vQ/acmV+8Q==
+X-Received: by 2002:a5e:c113:0:b0:786:26f0:3092 with SMTP id v19-20020a5ec113000000b0078626f03092mr2691239iol.3.1689691918977;
+        Tue, 18 Jul 2023 07:51:58 -0700 (PDT)
+Received: from sun-virtual-machine.localdomain ([103.149.144.245])
+        by smtp.gmail.com with ESMTPSA id o5-20020a02cc25000000b0042b4f9ddecasm589106jap.85.2023.07.18.07.51.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 07:51:58 -0700 (PDT)
+From:   SSunk <ssunkkan@gmail.com>
+To:     tudor.ambarus@linaro.org, pratyush@kernel.org, michael@walle.cc,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        SSunk <ssunkkan@gmail.com>
+Subject: [PATCH] Add support for XMC XM25QH128C/XM25QH256C/XM25QU256C/XM25QH512C/XM25QU512C
+Date:   Tue, 18 Jul 2023 22:51:32 +0800
+Message-Id: <20230718145132.3811-1-ssunkkan@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8d2649460d95597d2d4de3777b2043f7@208suo.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ran Sun,
+Add support for XMC XM25QH128C/XM25QH256C/XM25QU256C/XM25QH512C/XM25QU512C and do not use the generic spi nor driver.
 
-On Tue, Jul 18, 2023 at 05:02:54PM +0800, sunran001@208suo.com wrote:
-> The of_find_device_by_node() takes a reference to the underlying device
-> structure, we should release that reference.
-> 
-> ./arch/sparc/include/asm/floppy_64.h:562:1-22: WARNING: Function
-> "for_each_node_by_name" should have of_node_put() before break around
-> line 567.
-> 
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->  arch/sparc/include/asm/floppy_64.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/sparc/include/asm/floppy_64.h
-> b/arch/sparc/include/asm/floppy_64.h
-> index 53e77c0974f9..619255e8c9ac 100644
-> --- a/arch/sparc/include/asm/floppy_64.h
-> +++ b/arch/sparc/include/asm/floppy_64.h
-> @@ -594,7 +594,7 @@ static unsigned long __init sun_floppy_init(void)
->          if (state_prop && !strncmp(state_prop, "disabled", 8)) {
->              put_device(&op->dev);
->              return 0;
-> -        }
-> +        }
-> 
->          FLOPPY_IRQ = op->archdata.irqs[0];
+Signed-off-by: Kankan Sun <ssunkkan@gmail.com>
+---
+ drivers/mtd/spi-nor/xmc.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-The patch does not include any changes. Please redo.
-
-	Sam
+diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
+index 051411e86339..b2374187ec4f 100644
+--- a/drivers/mtd/spi-nor/xmc.c
++++ b/drivers/mtd/spi-nor/xmc.c
+@@ -16,6 +16,22 @@ static const struct flash_info xmc_nor_parts[] = {
+ 	{ "XM25QH128A", INFO(0x207018, 0, 64 * 1024, 256)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+ 			      SPI_NOR_QUAD_READ) },
++	{ "XM25QH128C", INFO(0x204018, 0, 64 * 1024, 256)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
++			      SPI_NOR_QUAD_READ) },
++	{ "XM25QH256C", INFO(0x204019, 0, 64 * 1024, 512)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
++			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
++	{ "XM25QU256C", INFO(0x204119, 0, 64 * 1024, 512)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
++			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
++	{ "XM25QH512C", INFO(0x204020, 0, 64 * 1024, 1024)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
++			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
++	{ "XM25QU512C", INFO(0x204120, 0, 64 * 1024, 1024)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
++			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
++
+ };
+ 
+ const struct spi_nor_manufacturer spi_nor_xmc = {
+-- 
+2.34.1
 
