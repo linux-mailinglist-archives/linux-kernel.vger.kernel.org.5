@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACA4757FED
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B412757FF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233366AbjGROoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59826 "EHLO
+        id S232991AbjGROpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:45:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233322AbjGROoO (ORCPT
+        with ESMTP id S229868AbjGROpl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:44:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF051719
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:44:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D07C8615FA
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:44:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C501EC433C7;
-        Tue, 18 Jul 2023 14:44:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1689691452;
-        bh=Dpa0BBJY0usbW6MS1PGwRNsH0/TgQbisQVfWeOxQRoI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=x0Ti1SlmzgnshUF8UNksWpJy8hprTQUEHUkxeCZ8AjWsdN28Wqp8URpMHY0+bKRwD
-         VUPtAQ2a6mPqoEDwxY5AseB5uWCIf8XI6+C4rxPaH8CqeXfpyNj/gtyRBc0HTxPS7+
-         /D+g/K3JwWAXtOyf5/V64e3/GBrFJjAWil5DzECg=
-Date:   Tue, 18 Jul 2023 16:44:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] nvmem: core: append offset to cell name in sysfs
-Message-ID: <2023071830-ruby-atop-99e6@gregkh>
-References: <ZLaZ7fzUSsa0Igx1@makrotopia.org>
+        Tue, 18 Jul 2023 10:45:41 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59402EC;
+        Tue, 18 Jul 2023 07:45:36 -0700 (PDT)
+Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 69EBA899;
+        Tue, 18 Jul 2023 16:44:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1689691481;
+        bh=669G/reeV5KFCerQAHZbVYzVd6yogImIgY+avsAUZgA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=lw2ofPbweF/ExKF68LdNOerYwFT3RXdUenU1XGFHJUibAciq+0suXIiKfxSVyRjBn
+         CUIOeB4Xv9VMAcxvBZNDIqREKEby/wKcV1x2tl4GMG3XvNGJqvrHUKpfD9wy83bsnD
+         JMna4WSZcluc/y94xFkhtO8//xF+4qGcYdw55sOc=
+Message-ID: <0f37556d-629b-93bd-6c6d-60126d714a65@ideasonboard.com>
+Date:   Tue, 18 Jul 2023 17:45:30 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZLaZ7fzUSsa0Igx1@makrotopia.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 next] media: i2c: fix error handling in
+ ub960_rxport_add_serializer()
+Content-Language: en-US
+To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com
+References: <20230718140659.4009167-1-harshit.m.mogalapalli@oracle.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+In-Reply-To: <20230718140659.4009167-1-harshit.m.mogalapalli@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 02:55:57PM +0100, Daniel Golle wrote:
-> The device tree node names are not required to be unique. Append the
-> offset to the name to make cell nodes with identical names become
-> accessible via sysfs and avoid kernel stackdump caused by
-> sysfs: cannot create duplicate filename '...'
+On 18/07/2023 17:06, Harshit Mogalapalli wrote:
+> Smatch warns:
+>   drivers/media/i2c/ds90ub960.c:1671 ub960_rxport_add_serializer():
+>   err: 'rxport->ser.client' dereferencing possible ERR_PTR()
 > 
-> Fixes: 757f8b3835c9 ("nvmem: core: Expose cells through sysfs")
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> i2c_new_client_device() returns error pointers on failure and in
+> dev_dbg statement we are dereferencing error pointer which is a bug.
+> 
+> Fix this by using IS_ERR() which checks for error pointers.
+> 
+> Fixes: afe267f2d368 ("media: i2c: add DS90UB960 driver")
+> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
 > ---
->  drivers/nvmem/core.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> This is based on static analysis and only compile tested.
 > 
-> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-> index 70e951088826d..90fe9dc30f8ba 100644
-> --- a/drivers/nvmem/core.c
-> +++ b/drivers/nvmem/core.c
-> @@ -480,7 +480,9 @@ static int nvmem_populate_sysfs_cells(struct nvmem_device *nvmem)
->  	/* Initialize each attribute to take the name and size of the cell */
->  	list_for_each_entry(entry, &nvmem->cells, node) {
->  		sysfs_bin_attr_init(&attrs[i]);
-> -		attrs[i].attr.name = devm_kstrdup(&nvmem->dev, entry->name, GFP_KERNEL);
-> +		attrs[i].attr.name = devm_kasprintf(&nvmem->dev, GFP_KERNEL,
-> +						    "%s@%d", entry->name,
-> +						    entry->offset);
+> V1->V2: Suggestion from Tomi Valkeinen: Propogate the error code with
+> PTR_ERR() instead of -EIO.
+> ---
+>   drivers/media/i2c/ds90ub960.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/ds90ub960.c b/drivers/media/i2c/ds90ub960.c
+> index e101bcf2356a..92aa004a3674 100644
+> --- a/drivers/media/i2c/ds90ub960.c
+> +++ b/drivers/media/i2c/ds90ub960.c
+> @@ -1662,10 +1662,10 @@ static int ub960_rxport_add_serializer(struct ub960_data *priv, u8 nport)
+>   	ser_info.addr = rxport->ser.alias;
+>   	rxport->ser.client =
+>   		i2c_new_client_device(priv->client->adapter, &ser_info);
+> -	if (!rxport->ser.client) {
+> +	if (IS_ERR(rxport->ser.client)) {
+>   		dev_err(dev, "rx%u: cannot add %s i2c device", nport,
+>   			ser_info.type);
+> -		return -EIO;
+> +		return PTR_ERR(rxport->ser.client);
+>   	}
+>   
+>   	dev_dbg(dev, "rx%u: remote serializer at alias 0x%02x (%u-%04x)\n",
 
-No documenatation update to show the new naming scheme?
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-And again, I don't see that git id in Linus's tree, am I just not up to
-date properly?
+  Tomi
 
-thanks,
-
-greg k-h
