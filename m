@@ -2,195 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A65C77571C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 04:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349A27571DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 04:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbjGRCd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 22:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47854 "EHLO
+        id S229921AbjGRCkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 22:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjGRCdZ (ORCPT
+        with ESMTP id S229541AbjGRCk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 22:33:25 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2053.outbound.protection.outlook.com [40.107.8.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC495136
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 19:33:23 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iewuECT7ppY6KZiKxXTR2QWCQ37j72NYRfejS1qLzRMlisdicF8f6WvpJ6AtmX7jgqsUbtETYaMd4uOoJFibETncfoeWANbNaLRnmT4glq0GJ3yVQ3aBTDCEoiZxTnFEV+1nxFGRrm1J3xKLphWBlesbJWVbO2mVLs/B/izoC32Cv5atm9wDs9kbarwzIpYftniHhav4Z1FAhuG8hVWZad87T2awzto3KhW/dV3li2tziSQ7U/asToXyirGQM/45VpGHYbt9a6+vvsYfCr572K5/FFd6Lyi+FjkDNSfopuvThMGJPnnprUVFeRHvrYdNtT6pnhPADxDzXQJ2qGqaMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+CkhQG70gS4F9+jpP91MKsEQqyjg2c5ITbiObK4B0Ws=;
- b=LqV908PUDOGhaigOuTb7qKJidaIML+Brf78yt/ag6jRjm5B4gZ5zb7mX0PlmIXAQtEr/pHkkLxy01b6zBuGddzZXDVyCDXlJZ/2FKppKANdcExrq9z6yQ6zWVJbKav4ZEbSj/ZjKKHfmUlDF5L2fJCp0rYhP5bg0KaPQAxq2ocjAvfGBsbca8dfcaUAcZWNS0F85Az2Md6oSIeMWe+uZq3jelQYgZpRelu7W0KlKMrNOHXKkqmEKEJsCjKksdyz73BmFiG9ONtMrNomeiobMTo/ENU8ieRhMlpCVXqjxE7wBPUhyuqMik/GrOmQyz9X+V1ZaXMKLO1eM3rQ+Kaz1dA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+CkhQG70gS4F9+jpP91MKsEQqyjg2c5ITbiObK4B0Ws=;
- b=Z0n6C2mNpfu+Y7t30DKrPEycZVhybtlO6gRCLJKUtn2MFxLkVUDAlykvFgCvMxBG+xDUaSZN2vi9KwTpeLhcJOF/t+Lp6D/Y3lDFXt73mKCTWJLz6P/Wx6fpbrdWiRnhiS22s1CqeP8n0zjQ009fpHd77woc6MolPTcPnRRAUXc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM7PR04MB7046.eurprd04.prod.outlook.com (2603:10a6:20b:113::22)
- by PA4PR04MB7680.eurprd04.prod.outlook.com (2603:10a6:102:f3::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Tue, 18 Jul
- 2023 02:33:21 +0000
-Received: from AM7PR04MB7046.eurprd04.prod.outlook.com
- ([fe80::7af:d8d5:d0ce:f68e]) by AM7PR04MB7046.eurprd04.prod.outlook.com
- ([fe80::7af:d8d5:d0ce:f68e%2]) with mapi id 15.20.6588.027; Tue, 18 Jul 2023
- 02:33:21 +0000
-From:   Liu Ying <victor.liu@nxp.com>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     andrzej.hajda@intel.com, neil.armstrong@linaro.org,
-        rfoss@kernel.org, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@gmail.com,
-        daniel@ffwll.ch, Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v2] drm/bridge: panel: Add a device link between drm device and panel device
-Date:   Tue, 18 Jul 2023 10:38:03 +0800
-Message-Id: <20230718023803.2157021-1-victor.liu@nxp.com>
-X-Mailer: git-send-email 2.37.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG3P274CA0009.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::21)
- To AM7PR04MB7046.eurprd04.prod.outlook.com (2603:10a6:20b:113::22)
+        Mon, 17 Jul 2023 22:40:29 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70B9189;
+        Mon, 17 Jul 2023 19:40:27 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fb9ae4cef6so8360208e87.3;
+        Mon, 17 Jul 2023 19:40:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689648026; x=1692240026;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Cran8qgdQ9kbuzPnsHeCd+k7q1iRuxP3B3YP8nMjL34=;
+        b=U/kWRP5EPDxi3j6sixpCB8+OuOPpd9nWrMYLmj9PwHbkg+iahW80idm3Ga5IgyP5t1
+         S+YjKI3tcP4ByLSaXlDPN4Z/hY+yfT8F4zVsI7xTrbiAE8M7ELEBT9Ur8Zix9BlqanRj
+         Z2lKwQKNr9UXTEXmVQadJb9iAwJ9wi8PBk53lXkklL3dHFlJRmRxMxw6j/6wB3yzPQJY
+         VSTpoKccWdU3kKv3a2u/DaLs01aaGHiHsJ0rPJjWIMNe2GVIJWj4P1911ZHhfyrTY/Xx
+         Xw6PHRYmef3lIhSQQpcWYHun8CzMc4+gztbVP8b7L9WBByFbX0GIpYc8CA8xXh2Pn88B
+         wzjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689648026; x=1692240026;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Cran8qgdQ9kbuzPnsHeCd+k7q1iRuxP3B3YP8nMjL34=;
+        b=R+glik5MxoPB9ZNGqAgy2WPn4myu11zJdwmsBjoDpVTq41gTLnRtj0kHvm711WEGHp
+         2YoccWwKupm66Y5PLmOH1xZzr7aLUeXqr1V+K49MP0fTmd68amQZ7Uz9qXbyPU/hhua/
+         uj2+hbxU207InFNECMHiuopPCzqanUjiflHNFeWm+ag7PGkoJ0uCXcFsST4RVau4Kktd
+         5vmuiNobZk23eRZSVhSeZpj9StpViaNLcM+1Cj67EmYkh/xEi4FXnTETeFFaTTT/zpyG
+         f15Z789v88ET6rjvWs6dDSPrflu17PmJlcafKq3MZ/DCAoEgMBfgcHUDYRFaqWBVGVx7
+         SAYw==
+X-Gm-Message-State: ABy/qLa2AY1znxgmN4tSLHBcgHAni4OGUmMqwET7Ftne6T+KT+4qsD7D
+        mnz4s4lqI3hywh7YsrImteDkPsUVI47I/ngqEjs=
+X-Google-Smtp-Source: APBJJlGdZyV3Emffg0WnmEtnrU4uNkwMNeHhptUht0XrvrI3U4XBTQBd9vciTXhRsDxjLQXolD8bGNjqkf+TMbIGXl0=
+X-Received: by 2002:a05:6512:234a:b0:4fb:8b2a:5e09 with SMTP id
+ p10-20020a056512234a00b004fb8b2a5e09mr9821535lfu.43.1689648025397; Mon, 17
+ Jul 2023 19:40:25 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM7PR04MB7046:EE_|PA4PR04MB7680:EE_
-X-MS-Office365-Filtering-Correlation-Id: 11058cbb-e523-4daa-1448-08db87375a31
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +9JN4prbxxSi7G+GA3G7ZlgizxNhp8ac+XFZyMT0pt/6eokLpbkK4+nvGmUk8A3DOs3zIS8KK5bOWJgBX5rON/AAsVNJWXJQ604M2hDTYOspLnI6pQjrBwRNphCRH3mDfpu3YkSUETuraeQXH7cemn4GQXpWLRQiyIYP5PZdSAHJwme3ONNeYLkejB7SXSCBf+efq1S7SYxhp3O1v3c2WHzHc9rSHeQBTa5axruybu2sHWTK0KK51h3On6NjmvVhz3VgYtKb7lqN3gkSviC5Y29HyfclloQPUaBwCJ9DQfhyHISkybllZYuSwwbUBI7zMGaZj8kRAyqNK1hA3G1/5vwhZCWAXXdXWNQ+TKvQjt9/NW+l20xdkqIw7MBhv43YtuKaMD8D0PuFah6dj6C8wsGVN5mw2pKKUz8jMAUoU9qCMArK5GBedq92j+FPD1fQXD9rLTLOUQ33Pip5RcNHqxsWQlQEveyzTENSPl71UbTvMg8032JG8N3UxVdShP3vMwvNylwjHtBWnKaWyNzXE77NKS8+ZuW2TB15WPJqCQ7p7W30K20uIINTFnXYbNZYKzs9tmiqRI4aK4KcNCb4eN1Q6WgT29JHF/r+kInvJng=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(39860400002)(346002)(136003)(396003)(366004)(451199021)(6486002)(52116002)(26005)(6506007)(966005)(6512007)(1076003)(36756003)(2616005)(83380400001)(38350700002)(86362001)(38100700002)(186003)(8936002)(8676002)(41300700001)(2906002)(478600001)(5660300002)(7416002)(4326008)(316002)(66946007)(66476007)(66556008)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?x7HWZWwMCDSD+wLBekoYbJqI2sUYhmA6VMrW+PCS4g8R6ljTAF6LtkHiYw/G?=
- =?us-ascii?Q?UmLrnszuEmNgEn3PVwfmtID9DowKYk36Y0neuAm09OzZ6amyFPfK2ZGzXHf1?=
- =?us-ascii?Q?p4IsBReL8GGNejXYzieiUWx+9/Tcwd8/XToeyucFmttDYL7DlNi6405IL9tF?=
- =?us-ascii?Q?E3BA/VZMgXyZ9EuSTMhNDCiGtMVhY4zpLjHehZQ4jTv6eURa12c/Q/WsE1Cu?=
- =?us-ascii?Q?dTvokvsq9GcXN5wTJtw8DT1G6hSrX1fXwW+YeDYRtyKSQFrtcyQof8fhI7rV?=
- =?us-ascii?Q?I9mxcodtxDgSD20zz7McwAwaHw9JXPzhqD5CFTCuG764o1JBb0zFXz1QSdbh?=
- =?us-ascii?Q?Ju+y/z8rZoA4RMlr26oNDpX2hSKfoAtd2ug28+nsS77sZD4y2NEWLCZzNEQm?=
- =?us-ascii?Q?TtFZ67/AxFZPPyCY1XeIiJA1ruUIXrVW0zyJ3iz+0T2QYS9ryzL5rT9VFppf?=
- =?us-ascii?Q?BqpCozvdYb2f3Szz0OoQsbcKJ1jMxPbmq+QVMFy14hD03I+QiST1cQVk3NIP?=
- =?us-ascii?Q?Jp9giFqN+xqxFR9aKPAIWY+NbLp3H4iLnl8N+Czy6SwtYbg1qN4qUu2pKEpE?=
- =?us-ascii?Q?sqVq4LZ1acE40pDHtS2My7mhyX0/nzah7YbQvLA7MfwJ3NlUQzZJ+njga2jT?=
- =?us-ascii?Q?ARWft2w0+fvpalkKl1VuAHO00FciDPWqRSN+RtPU7nqYo6MJ/vXZ29vnoumV?=
- =?us-ascii?Q?7OHVB7fCAi9lrn0hCAsiMx0n2gvDGL506Y+F/R+pKU53a4YZ/v8+jQVMwTkw?=
- =?us-ascii?Q?aQ2sfMSEtPBaL6GPdvX8q7Ws0W7jmdamP1xIOnsiM8CZDqdfJ++wHtXLy1aq?=
- =?us-ascii?Q?gup4nqVlDv3LzZLqolVZsHzmOEwYl/Fctg9a7LSQBHhp1aKsz9lfqn72r0zZ?=
- =?us-ascii?Q?8hVALwGpcocX8O3xZP9Qx/MkRRoRbLzs0LtCgLaJPTUK2rZYWZNuRCc2mOlt?=
- =?us-ascii?Q?w/pY2uUxveyuG0YGCCYg0DfuWVJgILft75pTN3DNe1DFhsRXLDeyqbmKy/2+?=
- =?us-ascii?Q?zTtp9eDkRv5pXvTSU2K1gdoqoon+9dn2hpgqAZpnJvK7x70wpOpyboFrQL89?=
- =?us-ascii?Q?qtojpty/I9gaqWevFT8pvkmDbtZ0BIDRqLmQ3h9kR6eZaSb230G3pigTIZws?=
- =?us-ascii?Q?SPQkii2dpsWBb7kTTV+StW7OEiJPO0dJvR+5o2qST1bkPqg/pbaiA+FbhNMh?=
- =?us-ascii?Q?DC711yK9LF4MZMlx0kQhHdjJFr0vk3/xy0IJ77eTrBP3LfBukpYBDaa5k6zS?=
- =?us-ascii?Q?epE4hCRgo9Fodx+hX1Vt9/hotm9zDcMTl980qRht318/Ojlp4SlL4YQg5bKG?=
- =?us-ascii?Q?n8gK6vKasyBNYVX+83z16A8wU+9ALMEZJICs4T0u81+sMrLs1NXyF4SrgVI0?=
- =?us-ascii?Q?ngQGd5cS6GevinS/jd/OZsXPxeTBtOuaidWycXE5Ad3BqJ4oxW3EL1JFg0pT?=
- =?us-ascii?Q?wQv7YWTCcVuAFZCmLx6l5hPw6D3ALTZJiz/rY89FMP6iTG9MqBECw61JfQbn?=
- =?us-ascii?Q?/aX2P9CfT0rEE7OeqDTQIcaYL+Ney+BcMBpMBxQPbbwOJK4Jcnjr5CjiVXRC?=
- =?us-ascii?Q?8B8lKPFE3R85+Uv5ZMpcRM9YfSZOfUZN+YAfcqod?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 11058cbb-e523-4daa-1448-08db87375a31
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB7046.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 02:33:21.1888
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AGE+jeGzDJWmVwBLr/3evewRbQu9tEKwVFpg6swC2LVdqzbXoufKGMNtFAvU/ZsLwC0ZYooCYJPaWkcwg7F/wg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7680
+References: <168960739768.34107.15145201749042174448.stgit@devnote2> <168960741686.34107.6330273416064011062.stgit@devnote2>
+In-Reply-To: <168960741686.34107.6330273416064011062.stgit@devnote2>
+From:   Donglin Peng <dolinux.peng@gmail.com>
+Date:   Tue, 18 Jul 2023 10:40:09 +0800
+Message-ID: <CAErzpmuvhrj0HhTpH2m-C-=pFV=Q_mxYC59Hw=dm0pqUvtPm0g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/9] bpf/btf: tracing: Move finding func-proto API and
+ getting func-param API to BTF
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the device link when panel bridge is attached and delete the link
-when panel bridge is detached.  The drm device is the consumer while
-the panel device is the supplier.  This makes sure that the drm device
-suspends eariler and resumes later than the panel device, hence resolves
-problems where the order is swapped, like the problematic case mentioned
-in the below link.
+On Mon, Jul 17, 2023 at 11:24=E2=80=AFPM Masami Hiramatsu (Google)
+<mhiramat@kernel.org> wrote:
+>
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>
+> Move generic function-proto find API and getting function parameter API
+> to BTF library code from trace_probe.c. This will avoid redundant efforts
+> on different feature.
+>
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  include/linux/btf.h        |    4 ++++
+>  kernel/bpf/btf.c           |   45 ++++++++++++++++++++++++++++++++++++++=
+++
+>  kernel/trace/trace_probe.c |   50 +++++++++++++-------------------------=
+------
+>  3 files changed, 64 insertions(+), 35 deletions(-)
+>
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index cac9f304e27a..98fbbcdd72ec 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -221,6 +221,10 @@ const struct btf_type *
+>  btf_resolve_size(const struct btf *btf, const struct btf_type *type,
+>                  u32 *type_size);
+>  const char *btf_type_str(const struct btf_type *t);
+> +const struct btf_type *btf_find_func_proto(struct btf *btf,
+> +                                          const char *func_name);
+> +const struct btf_param *btf_get_func_param(const struct btf_type *func_p=
+roto,
+> +                                          s32 *nr);
+>
+>  #define for_each_member(i, struct_type, member)                        \
+>         for (i =3D 0, member =3D btf_type_member(struct_type);      \
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 817204d53372..e015b52956cb 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -1947,6 +1947,51 @@ btf_resolve_size(const struct btf *btf, const stru=
+ct btf_type *type,
+>         return __btf_resolve_size(btf, type, type_size, NULL, NULL, NULL,=
+ NULL);
+>  }
+>
+> +/*
+> + * Find a functio proto type by name, and return it.
+> + * Return NULL if not found, or return -EINVAL if parameter is invalid.
+> + */
+> +const struct btf_type *btf_find_func_proto(struct btf *btf, const char *=
+func_name)
+> +{
+> +       const struct btf_type *t;
+> +       s32 id;
+> +
+> +       if (!btf || !func_name)
+> +               return ERR_PTR(-EINVAL);
+> +
+> +       id =3D btf_find_by_name_kind(btf, func_name, BTF_KIND_FUNC);
+> +       if (id <=3D 0)
+> +               return NULL;
+> +
+> +       /* Get BTF_KIND_FUNC type */
+> +       t =3D btf_type_by_id(btf, id);
+> +       if (!t || !btf_type_is_func(t))
+> +               return NULL;
+> +
+> +       /* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
+> +       t =3D btf_type_by_id(btf, t->type);
+> +       if (!t || !btf_type_is_func_proto(t))
+> +               return NULL;
+> +
+> +       return t;
+> +}
+> +
+> +/*
+> + * Get function parameter with the number of parameters.
+> + * This can return NULL if the function has no parameters.
+> + */
+> +const struct btf_param *btf_get_func_param(const struct btf_type *func_p=
+roto, s32 *nr)
+> +{
+> +       if (!func_proto || !nr)
+> +               return ERR_PTR(-EINVAL);
+> +
+> +       *nr =3D btf_type_vlen(func_proto);
+> +       if (*nr > 0)
+> +               return (const struct btf_param *)(func_proto + 1);
+> +       else
+> +               return NULL;
+> +}
+> +
+>  static u32 btf_resolved_type_id(const struct btf *btf, u32 type_id)
+>  {
+>         while (type_id < btf->start_id)
+> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+> index c68a72707852..cd89fc1ebb42 100644
+> --- a/kernel/trace/trace_probe.c
+> +++ b/kernel/trace/trace_probe.c
+> @@ -371,47 +371,23 @@ static const char *type_from_btf_id(struct btf *btf=
+, s32 id)
+>         return NULL;
+>  }
+>
+> -static const struct btf_type *find_btf_func_proto(const char *funcname)
+> -{
+> -       struct btf *btf =3D traceprobe_get_btf();
+> -       const struct btf_type *t;
+> -       s32 id;
+> -
+> -       if (!btf || !funcname)
+> -               return ERR_PTR(-EINVAL);
+> -
+> -       id =3D btf_find_by_name_kind(btf, funcname, BTF_KIND_FUNC);
+> -       if (id <=3D 0)
+> -               return ERR_PTR(-ENOENT);
+> -
+> -       /* Get BTF_KIND_FUNC type */
+> -       t =3D btf_type_by_id(btf, id);
+> -       if (!t || !btf_type_is_func(t))
+> -               return ERR_PTR(-ENOENT);
+> -
+> -       /* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
+> -       t =3D btf_type_by_id(btf, t->type);
+> -       if (!t || !btf_type_is_func_proto(t))
+> -               return ERR_PTR(-ENOENT);
+> -
+> -       return t;
+> -}
+> -
+>  static const struct btf_param *find_btf_func_param(const char *funcname,=
+ s32 *nr,
+>                                                    bool tracepoint)
+>  {
+> +       struct btf *btf =3D traceprobe_get_btf();
 
-Link: https://lore.kernel.org/lkml/CAPDyKFr0XjrU_udKoUKQ_q8RWaUkyqL+8fV-7s1CTMqi7u3-Rg@mail.gmail.com/T/
-Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
----
-v1->v2:
-* Fix bailout for panel_bridge_attach() in case device_link_add() fails.
+I found that traceprobe_get_btf() only returns the vmlinux's btf. But
+if the function is
+defined in a kernel module, we should get the module's btf.
 
- drivers/gpu/drm/bridge/panel.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+-- Donglin
 
-diff --git a/drivers/gpu/drm/bridge/panel.c b/drivers/gpu/drm/bridge/panel.c
-index 9316384b4474..a6587d233505 100644
---- a/drivers/gpu/drm/bridge/panel.c
-+++ b/drivers/gpu/drm/bridge/panel.c
-@@ -4,6 +4,8 @@
-  * Copyright (C) 2017 Broadcom
-  */
- 
-+#include <linux/device.h>
-+
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_bridge.h>
- #include <drm/drm_connector.h>
-@@ -19,6 +21,7 @@ struct panel_bridge {
- 	struct drm_bridge bridge;
- 	struct drm_connector connector;
- 	struct drm_panel *panel;
-+	struct device_link *link;
- 	u32 connector_type;
- };
- 
-@@ -60,6 +63,8 @@ static int panel_bridge_attach(struct drm_bridge *bridge,
- {
- 	struct panel_bridge *panel_bridge = drm_bridge_to_panel_bridge(bridge);
- 	struct drm_connector *connector = &panel_bridge->connector;
-+	struct drm_panel *panel = panel_bridge->panel;
-+	struct drm_device *drm_dev = bridge->dev;
- 	int ret;
- 
- 	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)
-@@ -70,6 +75,14 @@ static int panel_bridge_attach(struct drm_bridge *bridge,
- 		return -ENODEV;
- 	}
- 
-+	panel_bridge->link = device_link_add(drm_dev->dev, panel->dev,
-+					     DL_FLAG_STATELESS);
-+	if (!panel_bridge->link) {
-+		DRM_ERROR("Failed to add device link between %s and %s\n",
-+			  dev_name(drm_dev->dev), dev_name(panel->dev));
-+		return -EINVAL;
-+	}
-+
- 	drm_connector_helper_add(connector,
- 				 &panel_bridge_connector_helper_funcs);
- 
-@@ -78,6 +91,7 @@ static int panel_bridge_attach(struct drm_bridge *bridge,
- 				 panel_bridge->connector_type);
- 	if (ret) {
- 		DRM_ERROR("Failed to initialize connector\n");
-+		device_link_del(panel_bridge->link);
- 		return ret;
- 	}
- 
-@@ -100,6 +114,8 @@ static void panel_bridge_detach(struct drm_bridge *bridge)
- 	struct panel_bridge *panel_bridge = drm_bridge_to_panel_bridge(bridge);
- 	struct drm_connector *connector = &panel_bridge->connector;
- 
-+	device_link_del(panel_bridge->link);
-+
- 	/*
- 	 * Cleanup the connector if we know it was initialized.
- 	 *
--- 
-2.37.1
-
+>         const struct btf_param *param;
+>         const struct btf_type *t;
+>
+> -       if (!funcname || !nr)
+> +       if (!funcname || !nr || !btf)
+>                 return ERR_PTR(-EINVAL);
+>
+> -       t =3D find_btf_func_proto(funcname);
+> -       if (IS_ERR(t))
+> +       t =3D btf_find_func_proto(btf, funcname);
+> +       if (IS_ERR_OR_NULL(t))
+>                 return (const struct btf_param *)t;
+>
+> -       *nr =3D btf_type_vlen(t);
+> -       param =3D (const struct btf_param *)(t + 1);
+> +       param =3D btf_get_func_param(t, nr);
+> +       if (IS_ERR_OR_NULL(param))
+> +               return param;
+>
+>         /* Hide the first 'data' argument of tracepoint */
+>         if (tracepoint) {
+> @@ -490,8 +466,8 @@ static const struct fetch_type *parse_btf_retval_type=
+(
+>         const struct btf_type *t;
+>
+>         if (btf && ctx->funcname) {
+> -               t =3D find_btf_func_proto(ctx->funcname);
+> -               if (!IS_ERR(t))
+> +               t =3D btf_find_func_proto(btf, ctx->funcname);
+> +               if (!IS_ERR_OR_NULL(t))
+>                         typestr =3D type_from_btf_id(btf, t->type);
+>         }
+>
+> @@ -500,10 +476,14 @@ static const struct fetch_type *parse_btf_retval_ty=
+pe(
+>
+>  static bool is_btf_retval_void(const char *funcname)
+>  {
+> +       struct btf *btf =3D traceprobe_get_btf();
+>         const struct btf_type *t;
+>
+> -       t =3D find_btf_func_proto(funcname);
+> -       if (IS_ERR(t))
+> +       if (!btf)
+> +               return false;
+> +
+> +       t =3D btf_find_func_proto(btf, funcname);
+> +       if (IS_ERR_OR_NULL(t))
+>                 return false;
+>
+>         return t->type =3D=3D 0;
+>
+>
