@@ -2,209 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7A6757637
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DECE75763B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231588AbjGRIIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
+        id S231724AbjGRIJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:09:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbjGRIIi (ORCPT
+        with ESMTP id S229553AbjGRIJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:08:38 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C77137
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:08:36 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4f58444a410so2587e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:08:36 -0700 (PDT)
+        Tue, 18 Jul 2023 04:09:32 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6D111C
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:09:32 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-78372b896d0so251316439f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:09:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689667715; x=1692259715;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WYqKeDJ/OFzijrnqhNOnKbeJ52Wj9P7m01zeeR73VHA=;
-        b=k6z1zC/4sbbbZHvvGXkdL2XbxgKxiCE8CAPchE6hycvRZ+om6/8DKFaA4HIGHRZGdV
-         Ub2PjAPOlvlaTtOWbfYgsOj0afsJQkmlVYa2UJ58zF6JSxhI/5PYc9DoIwwPTsHiQvJk
-         ReajRetiDIir8mRodO0EsPeliG5rh4qmYxxK1niDEtBm0tGmgfPGNXNY9Uy+RdRBb5Yy
-         ypQV7bzb/xMwQ6qwXlt/1qIfzXc32yiKPrEMNJXkAI/g6y+me5m+Pf0hDYGnZ90Wh03K
-         GmQv/dkl7BWLt6mNeNvQOd5JVk9GthVSod5m1x48BXWqqx6/S4XAw0L8K3rgLnVrSsJC
-         jdHw==
+        d=chromium.org; s=google; t=1689667771; x=1692259771;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mUZL14WYA0DLZ0DKyW91vgmsuwYwiL4W9V/M4FZV2mU=;
+        b=lvLEx2hLpY2H0FHWFky1bIMahN5KEjJKoFm5Gx0swmpHj5nKgFiAlseWKhFYVmQRxb
+         lxKdCMa27BhJ7prdrxdrHlYSrPcissRX7WwfaaAEIwJ6Y6li9I0DcdNvQcPg1ucnWq0+
+         iQ25cRSkGFVCpr89DPgeaIuklynoskxzrKzyE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689667715; x=1692259715;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WYqKeDJ/OFzijrnqhNOnKbeJ52Wj9P7m01zeeR73VHA=;
-        b=IW0jsEdkUCEpB8wmsF5PEUp4r1sNMK8+9dxXQAQRhqeThyazkx4gkhg//mSrqCgtSi
-         FF++B2zNr7V64suI22SbDmqFQK6qkav0PmRM5yjfH4vU883r5jQ7Tnoqvbf2Dkq/rNQR
-         4tKtjEHGRKfEO9zyzM0uKhCEMVtbSzmK6jGNjn1ky6NTgj5AXsW7JGjL+kysKwdfU3K5
-         oiDkOrdNF/d/SusQF3oRE+MAkdstjKTeq4nZe8ia5jFH0D4t8YFRIz3wiJ8/PDAue5dm
-         V4Me450PvgXB5D5V51IOLpBiOQIQDlCIhsyIetN0xU08KdfOiEyl/EqZqGpFv3iupe4R
-         WQpg==
-X-Gm-Message-State: ABy/qLaobjCHpJA7Y5+y7Khkcj2Zo99qJB5PVbaVZJfavA8uDsUX9NZc
-        Tmhc08SGEqF9bGQeynNt16qWxi2y0p+8fEUqJmhQvQ==
-X-Google-Smtp-Source: APBJJlGLaFFk7Vkqi/94iNUIZ9ZVJA4JKr8ckZuOZCbr1qdQbT+2LWbXDDwnaK9Se6fEXbQDvJMOii/1F3GVcwxWXq8=
-X-Received: by 2002:a19:c212:0:b0:4f7:5f7d:2f95 with SMTP id
- l18-20020a19c212000000b004f75f7d2f95mr49812lfc.1.1689667714876; Tue, 18 Jul
- 2023 01:08:34 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689667771; x=1692259771;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mUZL14WYA0DLZ0DKyW91vgmsuwYwiL4W9V/M4FZV2mU=;
+        b=VLUvF99XqOXJzDZztybiEnLaBMMxsyi038q2xAe21FPUMmCogD9OM3BdlN/kMK+36v
+         VX5gZfkOQNcwMyBnYK2d2QibLjkAPuU7w9mBWlz/Jc9SpEhs2+SbzbzuO1TEE4uTCut/
+         j1YcuqS8oG9lOsjKw0jOAFygv/QuSFvB60sYhOJjhFBjRQ9Qb84mccM1hf0faHThLJBz
+         2J/0Kw8IfyXdDseG2G47LRhP3LK9dXCPL3aCvkVfwLIZfr4HjR7Wbr69p6HOeBTZPdMZ
+         wuYVkZzJCK3ysDY3yzCs+kjK6VjlJUpSHIVzym1XggL6AWQWRGzysfPbXXqJFSLSga92
+         jFHQ==
+X-Gm-Message-State: ABy/qLY1+814jBPYAoxwo27NOxpvqsp9prbmrcVNudhwTT/h7DPKAqfi
+        xmSq58p5JHEYy7Qr2xKrSrgiuyThUK/3TY6S/YI=
+X-Google-Smtp-Source: APBJJlEVv2tr6+8KrSDD7esFlRt5xT2/BNgG3sYO+hCa9bvlTJf7/V7AYHJGCJzHHRtMVK2NTCrvNQ==
+X-Received: by 2002:a05:6602:220d:b0:787:8cf:fd8e with SMTP id n13-20020a056602220d00b0078708cffd8emr1837286ion.11.1689667771459;
+        Tue, 18 Jul 2023 01:09:31 -0700 (PDT)
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com. [209.85.166.170])
+        by smtp.gmail.com with ESMTPSA id y14-20020a02a38e000000b0042b37080b23sm378012jak.73.2023.07.18.01.09.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 01:09:30 -0700 (PDT)
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-345a8a78bcfso26570175ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:09:30 -0700 (PDT)
+X-Received: by 2002:a05:6e02:2144:b0:348:8aec:179c with SMTP id
+ d4-20020a056e02214400b003488aec179cmr2013630ilv.32.1689667770016; Tue, 18 Jul
+ 2023 01:09:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230718052752.1045248-1-ojeda@kernel.org> <20230718052752.1045248-2-ojeda@kernel.org>
-In-Reply-To: <20230718052752.1045248-2-ojeda@kernel.org>
-From:   David Gow <davidgow@google.com>
-Date:   Tue, 18 Jul 2023 16:08:22 +0800
-Message-ID: <CABVgOSma4wc6u2fU9SmK0N4EB9djL=TqKU90dzWokL-DqU5Crw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/7] kunit: test-bug.h: include `stddef.h` for `NULL`
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <nmi@metaspace.dk>,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000f55db60600be6b87"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+References: <20230627063946.14935-1-shawn.sung@mediatek.com>
+In-Reply-To: <20230627063946.14935-1-shawn.sung@mediatek.com>
+From:   Fei Shao <fshao@chromium.org>
+Date:   Tue, 18 Jul 2023 16:08:53 +0800
+X-Gmail-Original-Message-ID: <CAC=S1ng0sLRt0vhB2Rpk_vetQLu9Kro+JREWf-wpkkO6dNKiwg@mail.gmail.com>
+Message-ID: <CAC=S1ng0sLRt0vhB2Rpk_vetQLu9Kro+JREWf-wpkkO6dNKiwg@mail.gmail.com>
+Subject: Re: [PATCH v5 00/14] Add display driver for MT8188 VDOSYS1
+To:     Hsiao Chien Sung <shawn.sung@mediatek.com>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Singo Chang <singo.chang@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>,
+        Jason-JH Lin <jason-jh.lin@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000f55db60600be6b87
-Content-Type: text/plain; charset="UTF-8"
+Hi Hsiao-Chien,
 
-On Tue, 18 Jul 2023 at 13:28, Miguel Ojeda <ojeda@kernel.org> wrote:
+On Tue, Jun 27, 2023 at 2:50=E2=80=AFPM Hsiao Chien Sung
+<shawn.sung@mediatek.com> wrote:
 >
-> The header uses `NULL` in both `CONFIG_KUNIT=y` and `=n` cases,
-> but does not include it explicitly.
->
-> When `CONFIG_KUNIT=y`, the header is already getting included via
-> the other headers, so it is not a problem for users.
->
-> However, when `CONFIG_KUNIT=n`, it is not, and thus a user could hit
-> a build error when including `kunit/test-bug.h`, like we are doing
-> later in this series [1].
->
-> Thus include `linux/stddef.h`, and do so outside the `#if`, since it
-> is used in both cases.
->
-> Reported-by: Boqun Feng <boqun.feng@gmail.com>
-> Closes: https://lore.kernel.org/rust-for-linux/ZJ8cNUW3oR2p+gL1@boqun-archlinux/ [1]
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-> ---
+> Support MT8188 VDOSYS1 in display driver.
 
-Reviewed-by: David Gow <davidgow@google.com>
+I'm testing this series with my local MT8188 setup + an external 4K
+display, and I feel there is something missing in it.
+With these patches the external display can be lit up on my end, but I
+only see glitches and no meaningful content is rendered.
+Could you check again and send the updated series with the fix?
 
-Thanks!
--- David
-
->  include/kunit/test-bug.h | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/include/kunit/test-bug.h b/include/kunit/test-bug.h
-> index 30ca541b6ff2..47aa8f21ccce 100644
-> --- a/include/kunit/test-bug.h
-> +++ b/include/kunit/test-bug.h
-> @@ -9,6 +9,8 @@
->  #ifndef _KUNIT_TEST_BUG_H
->  #define _KUNIT_TEST_BUG_H
->
-> +#include <linux/stddef.h> /* for NULL */
-> +
->  #if IS_ENABLED(CONFIG_KUNIT)
->
->  #include <linux/jump_label.h> /* For static branch */
-> --
-> 2.41.0
->
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20230718052752.1045248-2-ojeda%40kernel.org.
-
---000000000000f55db60600be6b87
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-9IGQSBx2i4m+hGXJpET+MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCRI3Z4cAidgFcv
-Usqdz765x6KMZSfg/WtFrYg8ewsP2NpCxVM2+EhPyyEQ0k0DhtzdtGoI/Ug+jdFDyCKB9P2+EPLh
-iMjMnFILp7Zs4r18ECHlvZuDZfH9m0BchXIxu5jLIuQyKUWrCRDZZEDNr510ZhhVfYSFPA8ms1nk
-jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
-jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
-FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCr
-mGSr3VwEFgpPPXp5AOQ0e7Fj+m9XQ2chqiffqdWXHDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzA3MTgwODA4MzVaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAh02PpzUnpIS7pV8w50uN
-RG7xtgF9aTIdMl1jSWs120EjwUSuR/S6EAAcDGAcuIeT38zxU4oOhynfcDQxrBKCgzSuz+628CiD
-uqh1lOjph+rLZl+33roJnmdGmqytiPGxZnmu51gYByFRONJlwwvFBu9OJWC2vttxfGwEJmtUxw9u
-lvHA2D2c3lnBYLtrJzi/6XWoZO3jn3oBkcZJDvPHsIgrkKw3E/yqQL7AZ/zjcdoOQapuIX2uhjPh
-8eQ/zVCQNytq+nRTn0mluhZWWji6ONlXR5kxAJmZHnJIBRRlYvhq26SRtUoHWrlb/qgt/t5vZmti
-7eH7PFDGsLy2LRmnig==
---000000000000f55db60600be6b87--
+Thanks,
+Fei
