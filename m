@@ -2,193 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C76AE75839B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03895758395
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233260AbjGRRhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
+        id S232218AbjGRRhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbjGRRhH (ORCPT
+        with ESMTP id S231173AbjGRRhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:37:07 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C27B1130
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:37:04 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-440ad576d87so1886948137.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:37:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689701824; x=1692293824;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OF7u0tkhZuJp+iYGmAnUNlyXY8n4e2wtaxsLwo/TJ0U=;
-        b=GvhF9so1mjJXiE/TvurKZcRANx4xoduJ12AI7tyQuLMZKhF+GAimJJ6+jOxa5DbOxx
-         ZkKgtoehuKyPuCc90EiNAJ7pAoNst0vuc7x1Og0cjyuGCU9w9PV4qgvI/S0aUPiFGuJN
-         mD9GvO3+AxzbtHsvl3FCd6C1r9kxBvaANizWpS6BgtwFPbXsGnY4AxbcWpXVCkfMIi+y
-         vk6k/qLV/s43NfR1l7h6bopJ1DTN9YfxIMYUn8Q74BKBmDVKGcFTYtfFK1Mp2c3EpZK/
-         sQWDMvHJls5znmpTUiPK/gD2WQSSwyZ2dzp5+poQJH75Bvsz9D3Yg4w7yp8IzQL6IPsD
-         j/2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689701824; x=1692293824;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OF7u0tkhZuJp+iYGmAnUNlyXY8n4e2wtaxsLwo/TJ0U=;
-        b=F3O1YZNvn4/C3OwbVpohI8lSEfIglpXE24/+5c0bGCckC3zjeTzoLN7sE5PHBtoWvH
-         VVCIbr92+HqxF18baTbQjo7nF833IyW+4wXf/3atXWoiXJfQVVP4Bt6KuGX68a6uMHf1
-         7ge+5sgnmINhmztO7x5IfzcU+0AdaEk/Fx3GPCoHYTLmT1fX7qKPOCVTlm+b4Y5fh8HV
-         Sj4zULEb46BamCCVQJJf4FnojpuY4Qze6W5mC/bpEgJmLfbXBP0bAd05B7wayMp87Jns
-         1ehTwCfjmYHm0bBsapjwV/L9nHWTO7207bJR0MhpAojKql8vxZjhAYOfDC6qzh5d+6j8
-         8tVQ==
-X-Gm-Message-State: ABy/qLZ2n2VF602BS26+dGGY+gCL3X002Lw4Rx9BAcM80vHjbIsXL1lR
-        I/jfMDdvcysFKpZfh6Yo57tadC7Qy4aBzlTw9egdrw==
-X-Google-Smtp-Source: APBJJlGybULcU+7z4JGO9VYtEkqhuSOGFBtDCY9RmNEp4loR/4Bx729tLJCCF1e3TIymnhgxCELYGS33nBdmUH493Xw=
-X-Received: by 2002:a05:6102:391:b0:443:6052:43ae with SMTP id
- m17-20020a056102039100b00443605243aemr9163796vsq.24.1689701823762; Tue, 18
- Jul 2023 10:37:03 -0700 (PDT)
+        Tue, 18 Jul 2023 13:37:00 -0400
+Received: from smtp.smtpout.orange.fr (smtp-28.smtpout.orange.fr [80.12.242.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66D4F7
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:36:57 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id Lod3qCbotZWkDLod3qY9dM; Tue, 18 Jul 2023 19:36:55 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1689701815;
+        bh=lsbpuBE8VHQOk+U0aT8eLugmaMO5aLTU5RhBZUcQCX8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=mEo2o3dOjfpSc7tohZnxrCKfQQXNP+wPQNnWeSxlxysT4XHzZDYOFaoNEDfD6EgF7
+         ukEPqxO4BonkifqpWMW6vT9kpUGZjdYK9UrcvIRdpBMv7kwLnGaXbbD85MVoRfe2Lk
+         CWCWiL7WFr5kuomFPXCZqtTp8fV3YsoCMxmBKvmsOtkYRz4gpK0ikmKjUnl8Ldggpr
+         1D7ATER6Nuwouc0n+I6da0sj0UHZ+A0Xiw9vd3GtPXML/B4ZtsmbkL1+6w202PxEj5
+         qY1cKEn4BfLlP8+zBAklk56kyYvJEPXT2ztE16dR6kFcjmvkaLP/0onbPNgir7iZJy
+         TlXy+o4QsbEkg==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 18 Jul 2023 19:36:55 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <8d98b544-6191-53ce-fcb7-07d932c40f82@wanadoo.fr>
+Date:   Tue, 18 Jul 2023 19:36:53 +0200
 MIME-Version: 1.0
-References: <20230710223304.1174642-1-almasrymina@google.com> <12393cd2-4b09-4956-fff0-93ef3929ee37@kernel.org>
-In-Reply-To: <12393cd2-4b09-4956-fff0-93ef3929ee37@kernel.org>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Tue, 18 Jul 2023 10:36:52 -0700
-Message-ID: <CAHS8izNPTwtk+zN7XYt-+ycpT+47LMcRrYXYh=suTXCZQ6-rVQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/10] Device Memory TCP
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        netdev@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, jgg@ziepe.ca
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] platform/x86: hp-bioscfg: Fix some memory leaks in
+ hp_populate_enumeration_elements_from_package()
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Jorge Lopez <jorge.lopez2@hp.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+References: <9770122e4e079dfa87d860ed86ba1a1237bcf944.1689627201.git.christophe.jaillet@wanadoo.fr>
+ <81fd0ef0-e254-4a24-a88a-459b1d773354@kadam.mountain>
+Content-Language: fr
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <81fd0ef0-e254-4a24-a88a-459b1d773354@kadam.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 16, 2023 at 7:41=E2=80=AFPM Andy Lutomirski <luto@kernel.org> w=
-rote:
->
-> On 7/10/23 15:32, Mina Almasry wrote:
-> > * TL;DR:
-> >
-> > Device memory TCP (devmem TCP) is a proposal for transferring data to a=
-nd/or
-> > from device memory efficiently, without bouncing the data to a host mem=
-ory
-> > buffer.
->
-> (I'm writing this as someone who might plausibly use this mechanism, but
-> I don't think I'm very likely to end up working on the kernel side,
-> unless I somehow feel extremely inspired to implement it for i40e.)
->
-> I looked at these patches and the GVE tree, and I'm trying to wrap my
-> head around the data path.  As I understand it, for RX:
->
-> 1. The GVE driver notices that the queue is programmed to use devmem,
-> and it programs the NIC to copy packet payloads to the devmem that has
-> been programmed.
-> 2. The NIC receives the packet and copies the header to kernel memory
-> and the payload to dma-buf memory.
-> 3. The kernel tells userspace where in the dma-buf the data is.
-> 4. Userspace does something with the data.
-> 5. Userspace does DONTNEED to recycle the memory and make it available
-> for new received packets.
->
-> Did I get this right?
->
+Le 18/07/2023 à 09:55, Dan Carpenter a écrit :
+> On Mon, Jul 17, 2023 at 10:53:37PM +0200, Christophe JAILLET wrote:
+>> In the loop in the ENUM_POSSIBLE_VALUES case, we allocate some memory that
+>> is never freed.
+>>
+>> While at it, add some "str_value = NULL" to avoid some potential double
+>> free.
+>>
+>> Fixes: 6b2770bfd6f9 ("platform/x86: hp-bioscfg: enum-attributes")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>> /!\ Speculative /!\
+>>
+>>     This patch is based on analysis of the surrounding code and should be
+>>     reviewed with care !
+>>
+>> /!\ Speculative /!\
+> 
+> I reported these bugs yesterday.
 
-Sorry for the late reply. I'm a bit buried working on the follow up to
-this proposal: exploring using dma-bufs without pages.
+Ok, seen now...
+... but I don't read platform-driver-x86@vger.kernel.org :)
 
-Yes, this is completely correct.
+CJ
 
-> This seems a bit awkward if there's any chance that packets not intended
-> for the target device end up in the rxq.
->
+> I don't think this is the correct fix.
+> I thought about making the str_value local to the for loop.  That's sort
+> of like what your patch does.  But I wasn't sure that was necessarily
+> correct either.
+> 
+> This code needs more testing as well.  It seems no one has called this
+> function.
+> 
+> Smatch complained about uninitialized variables as well.  I didn't
+> bother to report that yesterday but I may as well.
+> 
+> regards,
+> dan carpenter
+> 
+> drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:188 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:191 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:194 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:197 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:200 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:239 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:242 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/string-attributes.c:245 hp_populate_string_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:192 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:195 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:198 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:201 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:204 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:238 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:242 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c:262 hp_populate_ordered_list_elements_from_package() error: uninitialized symbol 'value_len'.
+> drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:198 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:201 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:204 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:207 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:246 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:249 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:252 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/int-attributes.c:255 hp_populate_integer_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c:180 hp_populate_enumeration_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c:183 hp_populate_enumeration_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c:186 hp_populate_enumeration_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c:189 hp_populate_enumeration_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c:192 hp_populate_enumeration_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c:231 hp_populate_enumeration_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/enum-attributes.c:239 hp_populate_enumeration_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:279 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:282 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:285 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:288 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:291 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:324 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:327 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:330 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:333 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+> drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:362 hp_populate_password_elements_from_package() error: uninitialized symbol 'int_value'.
+> 
 
-It does a bit. What happens in practice is that we use RSS to steer
-general traffic away from the devmem queues, and we use flow steering
-to steer specific flows to devem queues.
-
-In the case where the RSS/flow steering configuration is done
-incorrectly, the user would call recvmsg() on a devmem skb and if they
-haven't specified the MSG_SOCK_DEVMEM flag they'd get an error.
-
-> I'm wondering if a more capable if somewhat higher latency model could
-> work where the NIC stores received packets in its own device memory.
-> Then userspace (or the kernel or a driver or whatever) could initiate a
-> separate DMA from the NIC to the final target *after* reading the
-> headers.  Can the hardware support this?
->
-
-Not that I know of. I guess Jakub also responded with the same.
-
-> Another way of putting this is: steering received data to a specific
-> device based on the *receive queue* forces the logic selecting a
-> destination device to be the same as the logic selecting the queue.  RX
-> steering logic is pretty limited on most hardware (as far as I know --
-> certainly I've never had much luck doing anything especially intelligent
-> with RX flow steering, and I've tried on a couple of different brands of
-> supposedly fancy NICs).  But Linux has very nice capabilities to direct
-> packets, in software, to where they are supposed to go, and it would be
-> nice if all that logic could just work, scalably, with device memory.
-> If Linux could examine headers *before* the payload gets DMAed to
-> wherever it goes, I think this could plausibly work quite nicely.  One
-> could even have an easy-to-use interface in which one directs a *socket*
-> to a PCIe device.  I expect, although I've never looked at the
-> datasheets, that the kernel could even efficiently make rx decisions
-> based on data in device memory on upcoming CXL NICs where device memory
-> could participate in the host cache hierarchy.
->
-> My real ulterior motive is that I think it would be great to use an
-> ability like this for DPDK-like uses.  Wouldn't it be nifty if I could
-> open a normal TCP socket, then, after it's open, ask the kernel to
-> kindly DMA the results directly to my application memory (via udmabuf,
-> perhaps)?  Or have a whole VLAN or macvlan get directed to a userspace
-> queue, etc?
->
->
-> It also seems a bit odd to me that the binding from rxq to dma-buf is
-> established by programming the dma-buf.
-
-That is specific to this proposal, and will likely be very different
-in future ones. I thought the dma-buf pages approach was extensible
-and the uapi belonged somewhere in dma-buf. Clearly not. The next
-proposal, I think, will program the rxq via some net uapi and will
-take the dma-buf as input. Probably some netlink api (not sure if
-ethtool family or otherwise). I'm working out details of this
-non-paged networking first.
-
-> This makes the security model
-> (and the mental model) awkward -- this binding is a setting on the
-> *queue*, not the dma-buf, and in a containerized or privilege-separated
-> system, a process could have enough privilege to make a dma-buf
-> somewhere but not have any privileges on the NIC.  (And may not even
-> have the NIC present in its network namespace!)
->
-> --Andy
-
-
-
---
-Thanks,
-Mina
