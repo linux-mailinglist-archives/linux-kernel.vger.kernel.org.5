@@ -2,107 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE25757DA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB760757D7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232805AbjGRNaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34256 "EHLO
+        id S232559AbjGRN3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232738AbjGRN3z (ORCPT
+        with ESMTP id S230170AbjGRN3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:29:55 -0400
+        Tue, 18 Jul 2023 09:29:35 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D317126;
-        Tue, 18 Jul 2023 06:29:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F025D1;
+        Tue, 18 Jul 2023 06:29:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6CA156159B;
-        Tue, 18 Jul 2023 13:29:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 973BBC611A4;
-        Tue, 18 Jul 2023 13:29:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689686984;
-        bh=JucSCYtIeP5pXopgua1lk2Xc676zWfRI0jmWjsoIoAA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IPt1QeLuHYln0zGpgeG6CKT9HWvuhbmHwGTpIXkbmij14VLQi1bThBx7Nxu9eUJ/m
-         mpJINpbRgLUzsCnYs0bKDViLnSDhHGidlDtm0L0A6qaJ5j2eQIw9jy/i6wvUrCpoCE
-         mfa59OWFZSxu2Rvv8urGx73xU+GNT1Y/O0LkIhRKbQrp5NfmmToXfRu4WWpiTEQJNr
-         Cu/kQXq9n9lyf5eHWp+lTLigA4QfxD56UUeD2J26IFADSUZc+ON5uo0C4v6AzBVuqi
-         8L6AD2i3TY9oZWoECc2lyVLnQyQoMHdP+fvwaXFhv6eWcfT2I8Fd7kRmEhxopTz9jQ
-         s171x5qIZUNyg==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan+linaro@kernel.org>)
-        id 1qLkm2-0005cH-1A;
-        Tue, 18 Jul 2023 15:29:54 +0200
-From:   Johan Hovold <johan+linaro@kernel.org>
-To:     Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH 8/8] clk: qcom: turingcc-qcs404: fix missing resume during probe
-Date:   Tue, 18 Jul 2023 15:29:02 +0200
-Message-ID: <20230718132902.21430-9-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230718132902.21430-1-johan+linaro@kernel.org>
-References: <20230718132902.21430-1-johan+linaro@kernel.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F102761584;
+        Tue, 18 Jul 2023 13:29:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1461C433C8;
+        Tue, 18 Jul 2023 13:29:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689686973;
+        bh=6iTjVARF9WmVKMhxOcPS9qZIC1LR6nJSeaSCWdPXC4I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QITOC1h3eFOnv1ebHrmktrNSZuNoKjXl88x44EkSlWqmOVY0Be0pwWe7ibFyZka9J
+         zRLK+VYwQIjc7w92ClrzExG35ZS3H9GL+mcrccbVtVNb0BZTtXuWvImvIfqUPzB7Hs
+         jx5ZlxnOHnALrNHrYv8ONDO9w+YzlYkCziBdNhOQ=
+Date:   Tue, 18 Jul 2023 15:29:28 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        heikki.krogerus@linux.intel.com, pmalani@chromium.org,
+        bleung@chromium.org
+Subject: Re: [PATCH v4 2/2] usb: typec: intel_pmc_mux: Configure Active and
+ Retimer Cable type
+Message-ID: <2023071800-roaming-automated-5404@gregkh>
+References: <20230718024703.1013367-1-utkarsh.h.patel@intel.com>
+ <20230718024703.1013367-3-utkarsh.h.patel@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718024703.1013367-3-utkarsh.h.patel@intel.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers that enable runtime PM must make sure that the controller is
-runtime resumed before accessing its registers to prevent the power
-domain from being disabled.
+On Mon, Jul 17, 2023 at 07:47:03PM -0700, Utkarsh Patel wrote:
+> Cable type such as active and retimer received as a part of Thunderbolt3
+> or Thunderbolt4 cable discover mode VDO needs to be configured in the
+> thunderbolt alternate mode.
+> 
+> Configuring the register bits for this cable type is changed with Intel
+> Meteor Lake platform. BIT2 for Retimer/Redriver cable and BIT22 for
+> Active/Passive cable.
+> 
+> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
+> ---
+> Changes in v4:
+>  - No changes.
+> 
+> Changes in v3:
+>  - No changes.
+> 
+> Changes in v2:
+>  - No changes.
+> ---
+> ---
+>  drivers/usb/typec/mux/intel_pmc_mux.c | 28 +++++++++++++++++++++++----
+>  1 file changed, 24 insertions(+), 4 deletions(-)
 
-Fixes: 892df0191b29 ("clk: qcom: Add QCS404 TuringCC")
-Cc: stable@vger.kernel.org      # 5.2
-Cc: Bjorn Andersson <andersson@kernel.org>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- drivers/clk/qcom/turingcc-qcs404.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+Why the 2 --- lines?
 
-diff --git a/drivers/clk/qcom/turingcc-qcs404.c b/drivers/clk/qcom/turingcc-qcs404.c
-index 43184459228f..2cd288d6c3e4 100644
---- a/drivers/clk/qcom/turingcc-qcs404.c
-+++ b/drivers/clk/qcom/turingcc-qcs404.c
-@@ -125,11 +125,22 @@ static int turingcc_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	ret = pm_runtime_resume_and_get(&pdev->dev);
-+	if (ret)
-+		return ret;
-+
- 	ret = qcom_cc_probe(pdev, &turingcc_desc);
- 	if (ret < 0)
--		return ret;
-+		goto err_put_rpm;
-+
-+	pm_runtime_put(&pdev->dev);
- 
- 	return 0;
-+
-+err_put_rpm:
-+	pm_runtime_put_sync(&pdev->dev);
-+
-+	return ret;
- }
- 
- static const struct dev_pm_ops turingcc_pm_ops = {
--- 
-2.41.0
+And why are you not cc:ing all the proper people (i.e. the person that
+can actually apply this...)?
 
+confused,
+
+greg k-h
