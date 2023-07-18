@@ -2,71 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CFC758384
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 238AD758389
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232952AbjGRRcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:32:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56554 "EHLO
+        id S233062AbjGRRck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:32:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbjGRRcQ (ORCPT
+        with ESMTP id S231719AbjGRRch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:32:16 -0400
+        Tue, 18 Jul 2023 13:32:37 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9508DB3;
-        Tue, 18 Jul 2023 10:32:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C40E4C;
+        Tue, 18 Jul 2023 10:32:37 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 167DF616A0;
-        Tue, 18 Jul 2023 17:32:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE2FFC433C7;
-        Tue, 18 Jul 2023 17:32:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8CB196169B;
+        Tue, 18 Jul 2023 17:32:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B41EC433C8;
+        Tue, 18 Jul 2023 17:32:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689701534;
-        bh=axeb2oq3ugfHBp8V7r1e4++IvwdwAuve6L0DU/phV+Y=;
-        h=From:Date:Subject:To:Cc:From;
-        b=RGGHYKAdr9A1pP7KSCiMF8arJ7ePa1xy5wVRsQ8toGSZKsQAX/s28NQG1OYyQ8HNB
-         PXNUg2EZk7ZarV9f3H8m+d1Mhuvi5RDJsUz/xS6829UpLddV73HIdXeRL+D6ZFx32i
-         6X5FrOOHoVaat/QK9pYmYXG+zABEJpxYhyOXyhkXtuTaev+nob1frEnf7vXN06ZxuY
-         8bi+I/QD39orPeSov7EwjGheVsbcnrRTglOk1276rMbEMKnbSRfSFjHqeOFk/oubBl
-         0GBN48lUuOCmLIkochWE3O/XHUQuEzsOe8RHkb6NLGG66ceReDI++GvvwJf2lEha6+
-         Af6eXnBB07d/A==
-From:   Jeff Layton <jlayton@kernel.org>
-Date:   Tue, 18 Jul 2023 13:31:59 -0400
-Subject: [PATCH] ext4: fix the time handling macros when ext4 is using
- small inodes
+        s=k20201202; t=1689701556;
+        bh=5sr+yjwLVU6f+lqMOfWoGq5NUJvs6qsaMrWv5HRb0zE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=idOxW7Wfi/M22qWhbX0ZuMGzGLMpVBG26F9PGqW02cBDx+a8kPduaXPCNyv2gJLAO
+         YIOzIg2DhjzuNdLVitTUITjJC45H8l1WtTyq8YlyoDV2wLe9w+3JKxi6+JhB5+ZsKZ
+         9wq43VR+kOlkL3WhN7OM8HWIv3hpicw2TuPpxSe7Nbwo9qllmCwRpgp+ILSXD1jsQ3
+         LuBZYWJJMChc1JlbmkOyU1EVCZhj+II1qEFbMJMMf/l+EmZIulzA5dxUNwwo+q+91y
+         93fOXY6mg7tjd6adh1mHOcqT/q72z1++d3bJbyeWA/p6lEm9COrpwzKTq+VKWBFhOg
+         DU4JRoJhnIYPQ==
+Date:   Tue, 18 Jul 2023 10:32:34 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        netdev@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, jgg@ziepe.ca
+Subject: Re: [RFC PATCH 00/10] Device Memory TCP
+Message-ID: <20230718103234.711d7e4f@kernel.org>
+In-Reply-To: <12393cd2-4b09-4956-fff0-93ef3929ee37@kernel.org>
+References: <20230710223304.1174642-1-almasrymina@google.com>
+        <12393cd2-4b09-4956-fff0-93ef3929ee37@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230718-ctime-v1-1-24e2f96dcdf3@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAI7MtmQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDc0ML3eSSzNxU3TRDE4OUxFQLcwvLFCWg2oKi1LTMCrA50bG1tQDzzuw
- cVwAAAA==
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Christian Brauner <brauner@kernel.org>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Hugh Dickins <hughd@google.com>,
-        Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2549; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=axeb2oq3ugfHBp8V7r1e4++IvwdwAuve6L0DU/phV+Y=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBktsydVvBKNzDju8jE+b0NYW+NkK39lUgCDtOnh
- VRGrTTKhBOJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZLbMnQAKCRAADmhBGVaC
- FV9uEAC+J5EE0zF76pogRmUja2GnRdskqbCVOTmRIXPfWiRGO3E8Kwcl2kEKknqmBO/9oLatu2D
- vL3C2B4Fbr78VWkpOobK0qveTjWxvnBJk1KAtIASaXWiqzsRN1YztjAYUbT3u3St39996c7EKZe
- 1mFdjwvrKqQXIpkJSLba41/iw6Snem/3DZNMKgA518hpfyetiwK3+FGg8NQ0TZ9ZSRjjQncklA6
- LzjjB27Le1dhQ/X8TWViottRwmtWPqciS9tuVz7iQi82ijmxAr852f9ltYCaHYwLbL0h4U9au8U
- MiO1pwqmjSvsrmLu2blvmMOLWWb/pukEe1rhSbxKuDxNrfCR8I4GP65i9Dxp5tV36Xl+CinlMRP
- 2qZ/nxPfNKInKqF1tq84Eg8jRxCXJ/qNEqqQdSYjLB+Erpd6HHpJZKejinJyzpPF7rqAAt9hNA8
- iudm6QXBcKO9WtjPkiiogrBicJPPzyPQ2tGBxcLCcdx8HBrrrBMc10xrNGZrsKPL//h2+5nZ3sU
- BK2lWiiifimf6rbeG/eXyKU/r8AWxGKwJLyXYRg3iswI+1t4QN4HQMi90sN5ooVZgQAcuONbbUA
- Lpa35rXQLXwYdP+jGOzUeEhhA57qXH2a2S5HuOjICAIHC1Om9LzqyzzovegzEGjOStTk4t4gPS4
- 21wFYAISREwI9HA==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -77,67 +70,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If ext4 is using small on-disk inodes, then it may not be able to store
-fine grained timestamps. It also can't store the i_crtime at all in that
-case since that fully lives in the extended part of the inode.
+On Sun, 16 Jul 2023 19:41:28 -0700 Andy Lutomirski wrote:
+> I'm wondering if a more capable if somewhat higher latency model could 
+> work where the NIC stores received packets in its own device memory. 
+> Then userspace (or the kernel or a driver or whatever) could initiate a 
+> separate DMA from the NIC to the final target *after* reading the 
+> headers.  Can the hardware support this?
 
-979492850abd got the EXT4_EINODE_{GET,SET}_XTIME macros wrong, and would
-still store the tv_sec field of the i_crtime into the raw_inode, even
-when they were small, corrupting adjacent memory.
+No, no, that's impossible. SW response times are in 100s of usec (at
+best) which at 200Gbps already means megabytes of data _per-queue_. 
+Way more than the amount of buffer NICs will have.
 
-This fixes those macros to skip setting anything in the raw_inode if the
-tv_sec field doesn't fit, and to properly return a {0,0} timestamp when
-the raw_inode doesn't support it.
+The Rx application can bind to a IP addr + Port and then install
+a one-sided-3-tuple (dst IP+proto+port) rule in the HW. Worst case
+a full 5-tuple per flow.
 
-Cc: Jan Kara <jack@suse.cz>
-Fixes: 979492850abd ("ext4: convert to ctime accessor functions")
-Reported-by: Hugh Dickins <hughd@google.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/ext4/ext4.h | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+Most NICs support OvS offloads with 100s of thousands of flows.
+The steering should be bread and butter.
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 2af347669db7..1e2259d9967d 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -900,8 +900,10 @@ do {										\
- #define EXT4_INODE_SET_CTIME(inode, raw_inode)					\
- 	EXT4_INODE_SET_XTIME_VAL(i_ctime, inode, raw_inode, inode_get_ctime(inode))
- 
--#define EXT4_EINODE_SET_XTIME(xtime, einode, raw_inode)			       \
--	EXT4_INODE_SET_XTIME_VAL(xtime, &((einode)->vfs_inode), raw_inode, (einode)->xtime)
-+#define EXT4_EINODE_SET_XTIME(xtime, einode, raw_inode)				\
-+	if (EXT4_FITS_IN_INODE(raw_inode, einode, xtime))			\
-+		EXT4_INODE_SET_XTIME_VAL(xtime, &((einode)->vfs_inode),		\
-+					 raw_inode, (einode)->xtime)
- 
- #define EXT4_INODE_GET_XTIME_VAL(xtime, inode, raw_inode)			\
- 	(EXT4_FITS_IN_INODE(raw_inode, EXT4_I(inode), xtime ## _extra) ?	\
-@@ -922,9 +924,14 @@ do {										\
- 		EXT4_INODE_GET_XTIME_VAL(i_ctime, inode, raw_inode));		\
- } while (0)
- 
--#define EXT4_EINODE_GET_XTIME(xtime, einode, raw_inode)			       \
--do {									       \
--	(einode)->xtime = EXT4_INODE_GET_XTIME_VAL(xtime, &(einode->vfs_inode), raw_inode);	\
-+#define EXT4_EINODE_GET_XTIME(xtime, einode, raw_inode)				\
-+do {										\
-+	if (EXT4_FITS_IN_INODE(raw_inode, einode, xtime)) 			\
-+		(einode)->xtime =						\
-+			EXT4_INODE_GET_XTIME_VAL(xtime, &(einode->vfs_inode),	\
-+						 raw_inode);			\
-+	else									\
-+		(einode)->xtime = (struct timespec64){0, 0};			\
- } while (0)
- 
- #define i_disk_version osd1.linux1.l_i_version
-
----
-base-commit: c62e19541f8bb39f1f340247f651afe4532243df
-change-id: 20230718-ctime-f140dae8789d
-
-Best regards,
--- 
-Jeff Layton <jlayton@kernel.org>
-
+It does require splitting flows into separate data and control channels,
+but it's the right trade-off - complexity should be on the SW side.
