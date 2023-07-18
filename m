@@ -2,66 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA92575763D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98150757661
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbjGRILV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:11:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42396 "EHLO
+        id S231562AbjGRIPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjGRILU (ORCPT
+        with ESMTP id S229923AbjGRIPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:11:20 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8C58E;
-        Tue, 18 Jul 2023 01:11:19 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fb96e2b573so8815584e87.3;
-        Tue, 18 Jul 2023 01:11:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689667878; x=1692259878;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HpSa3JuGu2F5rDkHmeBs8MJOc0K66x3Zvji8Ik/U/dU=;
-        b=luKqgmR6miKDMTlzg9Q2mfg05kLQVXqLLBIjOFAOZiqm/QFsGNS7EihK1lq6wdpGWK
-         rN8dc7CyYvzwroWLp6nOzy68lFyoRSWA+IALFI/K0LTISsud6I4u5w4O4l6rPiIMxX4g
-         ytol2K7xSb2FpFwt0fiariP4YYLdGarplXSD4pYyoirOO8FpxNzn6WfHJm9iTdQvHZXC
-         ri0Qbm4chtUws3WnZzaacn0akPcMS6RW8JHvzq8ccsntzStBwGiH4/bsgvPhxiPQAc3f
-         GJh4ipwqlcsVErqM1phGfJd1o7dOQdQJOz+iSYmmfCh6VYaUPZcOEF95E8+h/OMlU369
-         wCxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689667878; x=1692259878;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HpSa3JuGu2F5rDkHmeBs8MJOc0K66x3Zvji8Ik/U/dU=;
-        b=aBtw89fMRW4gzSbx0qTy2JyEa2Kox72PgOJu0prR8o/+BXNP5n1l48xUQG6T13+m5x
-         HKpx5P1j/Zk5yKXesyQ7zJ8pBUxiVnb4BhfCFpHmGEM4PUBBquoeBZ1z+jUiI8KLTs48
-         iEOJTUdsvD+/5388KxyyMGvJjIL0hVjrET4d7H8kBC/jB29l6kcp+2bCE9vfi/Filq8X
-         6/mjkpNxoUoj31osEyWkIXXlZv0/LNUNRskXRzZfUvQuhopMTmGE2uQSR4Wtf/+bpCoZ
-         fb62lQtg6FKTAXPjY3kgKzSXAIdKHbUZbQdnfLV90v7GBWA4N4fSXRaVPMJyHJTJLkq/
-         mwwQ==
-X-Gm-Message-State: ABy/qLYI9zIc9u65mivDsIXrFez1Zm1cD16wb22+LptanuGkVkBS22gR
-        8h3b/QRAhhLr1TEcFp0rFkI=
-X-Google-Smtp-Source: APBJJlHwD5T0hI02QFCRKs9CDtc0FTWE17lYnAwkmOzKvsDjYMJ9puMNcByCKr+Z7+Gf22wp4xWuzA==
-X-Received: by 2002:a05:6512:3694:b0:4fb:8dcc:59e5 with SMTP id d20-20020a056512369400b004fb8dcc59e5mr1001179lfs.39.1689667877381;
-        Tue, 18 Jul 2023 01:11:17 -0700 (PDT)
-Received: from localhost ([37.174.75.194])
-        by smtp.gmail.com with ESMTPSA id g15-20020adff40f000000b00316f9abf073sm1627560wro.82.2023.07.18.01.11.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 01:11:17 -0700 (PDT)
-From:   Raphael Gallais-Pou <rgallaispou@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] staging: fbtft: ili9341: use macro FBTFT_REGISTER_SPI_DRIVER
-Date:   Tue, 18 Jul 2023 10:14:18 +0200
-Message-ID: <20230718081418.28225-1-rgallaispou@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 18 Jul 2023 04:15:42 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB75137;
+        Tue, 18 Jul 2023 01:15:40 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36I7wSXc013480;
+        Tue, 18 Jul 2023 08:14:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=QlUaxF4lNsiBTdcU49lZ8jFbRsh1z2SpxDDTLFj5kCE=;
+ b=Cse8vtDex3891zr+cs17ubIS2jDDrfDgVBuYr8dzniwX7H77thfgTqjtPbhJmupdCMqY
+ 6ZEcogEQUp0U0HTQmrpRwwCqtpSeNLovjdUT95rMEDuCePYEsHFkVhg6YPkEgnKVs/d0
+ 6J8JZ3VmGPtzDtN4wwu+oN0CeY8somBMZzLrNOKWlHxBnlH1j3D7Z7e7Q7OyWaH+r+BY
+ QTHZEoTzj5tbB7imfIUCktQnbSfkUwhvd2ZNbLGccGz/mpCCQ8+e0G5gA/AV6CLx9Rz/
+ g9ZYWrz2P6eRDy/6sRFoNwgV2fUoCnaeOWG77E2R0ksWMj21JG1Dc79MEXyIn2mxH5SX /Q== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rwps581rc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 08:14:49 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36I8Eleb031853
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 08:14:47 GMT
+Received: from varda-linux.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 18 Jul 2023 01:14:39 -0700
+Date:   Tue, 18 Jul 2023 13:44:35 +0530
+From:   Varadarajan Narayanan <quic_varada@quicinc.com>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+CC:     <agross@kernel.org>, <andersson@kernel.org>, <vkoul@kernel.org>,
+        <kishon@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <gregkh@linuxfoundation.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <p.zabel@pengutronix.de>, <arnd@arndb.de>,
+        <geert+renesas@glider.be>, <neil.armstrong@linaro.org>,
+        <nfraprado@collabora.com>, <rafal@milecki.pl>,
+        <quic_srichara@quicinc.com>, <quic_varada@quicinc.org>,
+        <quic_wcheng@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4 4/6] arm64: dts: qcom: ipq5332: Add USB related nodes
+Message-ID: <20230718081434.GA5012@varda-linux.qualcomm.com>
+References: <cover.1689160067.git.quic_varada@quicinc.com>
+ <1f99805b6437aa8d6eaa4663e8d27b98ee595f00.1689160067.git.quic_varada@quicinc.com>
+ <cfafdde2-4ded-517f-7c69-a751e53984e3@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <cfafdde2-4ded-517f-7c69-a751e53984e3@linaro.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: O5yMJKbLUQKlQN6oq9z6uvLMPJAk0ldF
+X-Proofpoint-ORIG-GUID: O5yMJKbLUQKlQN6oq9z6uvLMPJAk0ldF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_15,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ mlxlogscore=784 lowpriorityscore=0 suspectscore=0 bulkscore=0
+ priorityscore=1501 adultscore=0 impostorscore=0 phishscore=0 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307180073
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,27 +88,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using FBTFT_REGISTER_DRIVER resolves to a NULL struct spi_device_id. This
-ultimately causes a warning when the module probes. Fixes it.
+On Sat, Jul 15, 2023 at 02:36:18PM +0200, Konrad Dybcio wrote:
+> On 12.07.2023 13:38, Varadarajan Narayanan wrote:
+> > Add USB phy and controller nodes.
+> >
+> > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> > ---
+> > v4:
+> > 	Change node name
+> > 	Remove blank line
+> > 	'make CHECK_DTBS=y DT_SCHEMA_FILES=qcom qcom/ipq5332-rdp441.dtb' passed
+> DT_SCHEMA_FILES accepts yaml files
 
-Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
----
- drivers/staging/fbtft/fb_ili9341.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I followed the example given in https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
 
-diff --git a/drivers/staging/fbtft/fb_ili9341.c b/drivers/staging/fbtft/fb_ili9341.c
-index 9ccd0823c3ab..47e72b87d76d 100644
---- a/drivers/staging/fbtft/fb_ili9341.c
-+++ b/drivers/staging/fbtft/fb_ili9341.c
-@@ -145,7 +145,7 @@ static struct fbtft_display display = {
- 	},
- };
- 
--FBTFT_REGISTER_DRIVER(DRVNAME, "ilitek,ili9341", &display);
-+FBTFT_REGISTER_SPI_DRIVER(DRVNAME, "ilitek", "ili9341", &display);
- 
- MODULE_ALIAS("spi:" DRVNAME);
- MODULE_ALIAS("platform:" DRVNAME);
--- 
-2.41.0
+		make CHECK_DTBS=y DT_SCHEMA_FILES=trivial-devices.yaml qcom/sm8450-hdk.dtb
+		make CHECK_DTBS=y DT_SCHEMA_FILES=/gpio/ qcom/sm8450-hdk.dtb
+	---->	make CHECK_DTBS=y DT_SCHEMA_FILES=qcom qcom/sm8450-hdk.dtb
 
+Will include the yaml from next time.
+
+Thanks
+Varada
+
+> Konrad
+> > v1:
+> > 	Rename phy node
+> > 	Change compatible from m31,ipq5332-usb-hsphy -> qcom,ipq5332-usb-hsphy
+> > 	Remove 'qscratch' from phy node
+> > 	Fix alignment and upper-case hex no.s
+> > 	Add clock definition for the phy
+> > 	Remove snps,ref-clock-period-ns as it is not used. dwc3_ref_clk_period()
+> > 	in dwc3/core.c takes the frequency from ref clock and calculates fladj
+> > 	as appropriate.
+> > ---
+> >  arch/arm64/boot/dts/qcom/ipq5332.dtsi | 53 +++++++++++++++++++++++++++++++++++
+> >  1 file changed, 53 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+> > index 8bfc2db..8118356 100644
+> > --- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+> > @@ -405,6 +405,59 @@
+> >  				status = "disabled";
+> >  			};
+> >  		};
+> > +
+> > +		usbphy0: usb-phy@7b000 {
+> > +			compatible = "qcom,ipq5332-usb-hsphy";
+> > +			reg = <0x0007b000 0x12c>;
+> > +
+> > +			clocks = <&gcc GCC_USB0_PHY_CFG_AHB_CLK>;
+> > +			clock-names = "cfg_ahb";
+> > +
+> > +			resets = <&gcc GCC_QUSB2_0_PHY_BCR>;
+> > +
+> > +			status = "disabled";
+> > +		};
+> > +
+> > +		usb2: usb2@8a00000 {
+> > +			compatible = "qcom,ipq5332-dwc3", "qcom,dwc3";
+> > +			reg = <0x08af8800 0x400>;
+> > +
+> > +			interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
+> > +			interrupt-names = "hs_phy_irq";
+> > +
+> > +			clocks = <&gcc GCC_USB0_MASTER_CLK>,
+> > +				 <&gcc GCC_SNOC_USB_CLK>,
+> > +				 <&gcc GCC_USB0_SLEEP_CLK>,
+> > +				 <&gcc GCC_USB0_MOCK_UTMI_CLK>;
+> > +			clock-names = "core",
+> > +				      "iface",
+> > +				      "sleep",
+> > +				      "mock_utmi";
+> > +
+> > +			resets = <&gcc GCC_USB_BCR>;
+> > +
+> > +			qcom,select-utmi-as-pipe-clk;
+> > +
+> > +			#address-cells = <1>;
+> > +			#size-cells = <1>;
+> > +			ranges;
+> > +
+> > +			status = "disabled";
+> > +
+> > +			usb2_0_dwc: usb@8a00000 {
+> > +				compatible = "snps,dwc3";
+> > +				reg = <0x08a00000 0xe000>;
+> > +				clocks = <&gcc GCC_USB0_MOCK_UTMI_CLK>;
+> > +				clock-names = "ref";
+> > +				interrupts = <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>;
+> > +				usb-phy = <&usbphy0>;
+> > +				tx-fifo-resize;
+> > +				snps,is-utmi-l1-suspend;
+> > +				snps,hird-threshold = /bits/ 8 <0x0>;
+> > +				snps,dis_u2_susphy_quirk;
+> > +				snps,dis_u3_susphy_quirk;
+> > +			};
+> > +		};
+> >  	};
+> >
+> >  	timer {
