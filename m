@@ -2,238 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C6A7581E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D516C7581E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbjGRQQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 12:16:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35338 "EHLO
+        id S231993AbjGRQRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 12:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbjGRQQX (ORCPT
+        with ESMTP id S232131AbjGRQRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 12:16:23 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EE74613E
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:16:19 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8AxDOvSurZk99cGAA--.12298S3;
-        Wed, 19 Jul 2023 00:16:18 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxniPRurZkMX0zAA--.35913S3;
-        Wed, 19 Jul 2023 00:16:17 +0800 (CST)
-Message-ID: <06b291d4-9cab-5179-2a90-a73449ddb2dd@loongson.cn>
-Date:   Wed, 19 Jul 2023 00:16:17 +0800
+        Tue, 18 Jul 2023 12:17:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 358FF132
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:16:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A4A8561632
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 16:16:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A21CBC433C7;
+        Tue, 18 Jul 2023 16:16:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689697018;
+        bh=gjPI6IYvNwE6IlPyT0VcSbZTdDCqABRF1V0+Aiy19nw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=rtLZsrvG3V844S0NtHi5bZj4DXmZL2FnVVLvVnvuc2Nav8IjzSaTUgCI0cGNN2wtC
+         XCnySBLwGOXuaO1LIEIQ94oqLdLrd7Vi1b8YgCI6fvbbl/h4PouklTaw+gmCxum575
+         6VSF2uO5PeFYPtCAbtz/ayqh+itGf5aSh8bKDZe2pF7URzFvaHdF3zlgb41vGjTzda
+         /6eFbObFX6Xdz4V6GcMUDf1+WJkq7POaQhr+ykdLw1YWkzWHzL91IePR9Yqd7OIEFG
+         8gmY2mrb9CjKjb3Iq2I9ctgyQk9ogGYY1CqFp/1G5f/ke3QQwUHbRQ5SlW59/idIbN
+         hG90uZw5NNIxA==
+From:   SeongJae Park <sj@kernel.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/damon/core-test: Initialise context before test in damon_test_set_attrs()
+Date:   Tue, 18 Jul 2023 16:16:56 +0000
+Message-Id: <20230718161656.78877-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230718052811.1065173-1-feng.tang@intel.com>
+References: 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 3/8] drm/etnaviv: Drop the second argument of the
- etnaviv_gem_new_impl()
-Content-Language: en-US
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     loongson-kernel@lists.loongnix.cn, etnaviv@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230623100822.274706-1-sui.jingfeng@linux.dev>
- <20230623100822.274706-4-sui.jingfeng@linux.dev>
- <862358e67a6f118b11ba16fb94828e9d1635cb66.camel@pengutronix.de>
- <e3a05204-61fe-2318-5f06-fd12addfe2e9@loongson.cn>
- <ee96ed1a1ff12656f6e6542ae928fb526a9758fe.camel@pengutronix.de>
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <ee96ed1a1ff12656f6e6542ae928fb526a9758fe.camel@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxniPRurZkMX0zAA--.35913S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj97XoW5WF1fGFyUKFWUWFy7XFyxp5X_Ary8JoWSv3
-        W3Ja1rGF95tws0k342gFn8A3yUC345Ga4Yq3WDAw4vqay7try7Wa1ftFWIvF10kF47Xwnr
-        Ka43uwsrXFn5l-sFpf9Il3svdjkaLaAFLSUrUUUU0b8apTn2vfkv8UJUUUU8wcxFpf9Il3
-        svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3UjIY
-        CTnIWjp_UUUOj7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcI
-        k0rVWrJVCq3wAFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK
-        021l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UM28EF7xvwVC2z280aVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r1j
-        6r4UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8V
-        C2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv
-        7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xI
-        A0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I
-        3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j5o7tUUUUU=
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Feng Tang,
 
-On 2023/7/18 16:12, Lucas Stach wrote:
-> Hi Jingfeng,
->
-> Am Dienstag, dem 18.07.2023 um 02:34 +0800 schrieb suijingfeng:
->> Hi,  Lucas
->>
->>
->> Thanks for you guidance!
->>
->>
->> On 2023/7/17 17:51, Lucas Stach wrote:
->>> Hi Jingfeng,
->>>
->>> Am Freitag, dem 23.06.2023 um 18:08 +0800 schrieb Sui Jingfeng:
->>>> From: Sui Jingfeng <suijingfeng@loongson.cn>
->>>>
->>>> Because it is not used by the etnaviv_gem_new_impl() function,
->>>> no functional change.
->>>>
->>> I think it would make sense to move into the opposite direction: in
->>> both callsites of etnaviv_gem_new_impl we immediately call
->>> drm_gem_object_init with the size.
->> Really?
->>
->> But there are multiple call path to the etnaviv_gem_new_impl() function.
->>
->>
->> Code path 1 (PRIME):
->>
->>> - etnaviv_gem_prime_import_sg_table()
->>> --  etnaviv_gem_new_private()
->>> --- etnaviv_gem_new_impl(dev, size, flags, ops, &obj)
->>> --- drm_gem_private_object_init(dev, obj, size)
->>
->> Code path 2 (USERPTR):
->>
->>> - etnaviv_gem_new_userptr()
->>> --  etnaviv_gem_new_private()
->>> --- etnaviv_gem_new_impl(dev, size, flags, ops, &obj)
->>> --- drm_gem_private_object_init(dev, obj, size)
->>
->> Code path 3 (construct a GEM buffer object for the user-space):
->>
->>> - etnaviv_ioctl_gem_new()
->>> -- etnaviv_gem_new_handle()
->>> --- etnaviv_gem_new_impl(dev, size, flags, &etnaviv_gem_shmem_ops, &obj);
->>> ---  drm_gem_object_init(dev, obj, size);
->>
->> If I understand this correctly:
->>
->>
->> Code path 1 is for cross device (and cross driver) buffer-sharing,
->>
->> Code path 2 is going to share the buffer the userspace,
->>
->>
->> *Only* the code path 3 is to construct a GEM buffer object for the
->> user-space the userspace,
->>
->> that is say, *only* the code path 3 need to do the backing memory
->> allocation work for the userspace.
->>
->> thus it need to call drm_gem_object_init() function, which really the
->> shmem do the backing memory
->>
->> allocation.
->>
->>
->> The code path 1 and the code path 2 do not need the kernel space
->> allocate the backing memory.
->>
->> Because they are going to share the buffer already allocated by others.
->>
->> thus, code path 2 and code path 3 should call drm_gem_private_object_init(),
->>
->> *not* the drm_gem_object_init() function.
->>
->>
->> When import buffer from the a specific KMS driver,
->>
->> then etnaviv_gem_prime_import_sg_table() will be called.
->>
->>
->> I guess you means that drm_gem_private_object_init() (not the
->> drm_gem_object_init() function)here ?
->>
->>
->>> A better cleanup would be to make
->>> use of the size parameter and move this object init call into
->>> etnaviv_gem_new_impl.
->> If I following you guidance, how do I differentiate the cases
->>
->> when to call drm_gem_private_object_init() not drm_gem_object_init() ?
->>
->> and when call drm_gem_object_init() not drm_gem_private_object_init()?
->>
->>
->> I don't think you are right here.
->>
-> Yes, clearly I was not taking into account the differences between
-> drm_gem_private_object_init and drm_gem_object_init properly. Please
-> disregard my comment, this patch is good as-is.
+On Tue, 18 Jul 2023 13:28:11 +0800 Feng Tang <feng.tang@intel.com> wrote:
 
-I have study your patch in the past frequently.
+> Running kunit test for 6.5-rc1 hits one bug:
+> 
+>         ok 10 damon_test_update_monitoring_result
+>     general protection fault, probably for non-canonical address 0x1bffa5c419cfb81: 0000 [#1] PREEMPT SMP NOPTI
+>     CPU: 1 PID: 110 Comm: kunit_try_catch Tainted: G                 N 6.5.0-rc2 #15
+>     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+>     RIP: 0010:damon_set_attrs+0xb9/0x120
+>     Code: f8 00 00 00 4c 8d 58 e0 48 39 c3 74 ba 41 ba 59 17 b7 d1 49 8b 43 10 4d
+>     8d 4b 10 48 8d 70 e0 49 39 c1 74 50 49 8b 40 08 31 d2 <69> 4e 18 10 27 00 00
+>     49 f7 30 31 d2 48 89 c5 89 c8 f7 f5 31 d2 89
+>     RSP: 0000:ffffc900005bfd40 EFLAGS: 00010246
+>     RAX: ffffffff81159fc0 RBX: ffffc900005bfeb8 RCX: 0000000000000000
+>     RDX: 0000000000000000 RSI: 01bffa5c419cfb69 RDI: ffffc900005bfd70
+>     RBP: ffffc90000013c10 R08: ffffc900005bfdc0 R09: ffffffff81ff10ed
+>     R10: 00000000d1b71759 R11: ffffffff81ff10dd R12: ffffc90000013a78
+>     R13: ffff88810eb78180 R14: ffffffff818297c0 R15: ffffc90000013c28
+>     FS:  0000000000000000(0000) GS:ffff88813bd00000(0000) knlGS:0000000000000000
+>     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     CR2: 0000000000000000 CR3: 0000000002a1c001 CR4: 0000000000370ee0
+>     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>     Call Trace:
+>      <TASK>
+>      damon_test_set_attrs+0x63/0x1f0
+>      kunit_generic_run_threadfn_adapter+0x17/0x30
+>      kthread+0xfd/0x130
 
-As you could solve very complex(and difficulty) bugs.
+Great.  But it would be even greater if you could this kind of output after
+decoding the addreses using 'scripts/decode_stacktrace.sh` or
+'scripts/faddr2line' from next time if possible.
 
-So I still believe that you know everything about etnaviv.
+> 
+> The problem seems to be related with the damon_ctx was used without
+> being initialized. Fix it by adding the initialization.
 
-I'm just wondering that you are designing the traps. But I'm not sure.
+Somehow the test always passed on my test machine, but maybe that's due to some
+different behavior of my compiler.  I agree that could be the root cause
+because 'damon_set_attrs()' calls 'damon_update_monitoring_results()', which
+accesses the context's fields including the targets list.  Since the list is
+not initialized in this test code, it would cause such error.
 
-Okay, still acceptable.
+> 
+> Fixes: aa13779be6b7 ("mm/damon/core-test: add a test for damon_set_attrs()")
+> Signed-off-by: Feng Tang <feng.tang@intel.com>
 
-Because communicate will you is interesting.
+Reviewed-by: SeongJae Park <sj@kernel.org>
 
-Thank you.
 
-> Regards,
-> Lucas
->
->>> Regards,
->>> Lucas
->>>
->>>> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
->>>> ---
->>>>    drivers/gpu/drm/etnaviv/etnaviv_gem.c | 7 +++----
->>>>    1 file changed, 3 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem.c b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
->>>> index b5f73502e3dd..be2f459c66b5 100644
->>>> --- a/drivers/gpu/drm/etnaviv/etnaviv_gem.c
->>>> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
->>>> @@ -542,7 +542,7 @@ static const struct drm_gem_object_funcs etnaviv_gem_object_funcs = {
->>>>    	.vm_ops = &vm_ops,
->>>>    };
->>>>    
->>>> -static int etnaviv_gem_new_impl(struct drm_device *dev, u32 size, u32 flags,
->>>> +static int etnaviv_gem_new_impl(struct drm_device *dev, u32 flags,
->>>>    	const struct etnaviv_gem_ops *ops, struct drm_gem_object **obj)
->>>>    {
->>>>    	struct etnaviv_gem_object *etnaviv_obj;
->>>> @@ -591,8 +591,7 @@ int etnaviv_gem_new_handle(struct drm_device *dev, struct drm_file *file,
->>>>    
->>>>    	size = PAGE_ALIGN(size);
->>>>    
->>>> -	ret = etnaviv_gem_new_impl(dev, size, flags,
->>>> -				   &etnaviv_gem_shmem_ops, &obj);
->>>> +	ret = etnaviv_gem_new_impl(dev, flags, &etnaviv_gem_shmem_ops, &obj);
->>>>    	if (ret)
->>>>    		goto fail;
->>>>    
->>>> @@ -627,7 +626,7 @@ int etnaviv_gem_new_private(struct drm_device *dev, size_t size, u32 flags,
->>>>    	struct drm_gem_object *obj;
->>>>    	int ret;
->>>>    
->>>> -	ret = etnaviv_gem_new_impl(dev, size, flags, ops, &obj);
->>>> +	ret = etnaviv_gem_new_impl(dev, flags, ops, &obj);
->>>>    	if (ret)
->>>>    		return ret;
->>>>    
+Thanks,
+SJ
 
+> ---
+>  mm/damon/core-test.h | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/damon/core-test.h b/mm/damon/core-test.h
+> index c11210124344..bb07721909e1 100644
+> --- a/mm/damon/core-test.h
+> +++ b/mm/damon/core-test.h
+> @@ -320,25 +320,25 @@ static void damon_test_update_monitoring_result(struct kunit *test)
+>  
+>  static void damon_test_set_attrs(struct kunit *test)
+>  {
+> -	struct damon_ctx ctx;
+> +	struct damon_ctx *c = damon_new_ctx();
+>  	struct damon_attrs valid_attrs = {
+>  		.min_nr_regions = 10, .max_nr_regions = 1000,
+>  		.sample_interval = 5000, .aggr_interval = 100000,};
+>  	struct damon_attrs invalid_attrs;
+>  
+> -	KUNIT_EXPECT_EQ(test, damon_set_attrs(&ctx, &valid_attrs), 0);
+> +	KUNIT_EXPECT_EQ(test, damon_set_attrs(c, &valid_attrs), 0);
+>  
+>  	invalid_attrs = valid_attrs;
+>  	invalid_attrs.min_nr_regions = 1;
+> -	KUNIT_EXPECT_EQ(test, damon_set_attrs(&ctx, &invalid_attrs), -EINVAL);
+> +	KUNIT_EXPECT_EQ(test, damon_set_attrs(c, &invalid_attrs), -EINVAL);
+>  
+>  	invalid_attrs = valid_attrs;
+>  	invalid_attrs.max_nr_regions = 9;
+> -	KUNIT_EXPECT_EQ(test, damon_set_attrs(&ctx, &invalid_attrs), -EINVAL);
+> +	KUNIT_EXPECT_EQ(test, damon_set_attrs(c, &invalid_attrs), -EINVAL);
+>  
+>  	invalid_attrs = valid_attrs;
+>  	invalid_attrs.aggr_interval = 4999;
+> -	KUNIT_EXPECT_EQ(test, damon_set_attrs(&ctx, &invalid_attrs), -EINVAL);
+> +	KUNIT_EXPECT_EQ(test, damon_set_attrs(c, &invalid_attrs), -EINVAL);
+>  }
+>  
+>  static struct kunit_case damon_test_cases[] = {
+> -- 
+> 2.34.1
+> 
+> 
+> 
