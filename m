@@ -2,99 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A581D75724C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8B275724E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbjGRDaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 23:30:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36588 "EHLO
+        id S229481AbjGRDan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 23:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbjGRD3v (ORCPT
+        with ESMTP id S230451AbjGRDaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 23:29:51 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C9419A0;
-        Mon, 17 Jul 2023 20:28:23 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b8c364ad3bso10724075ad.1;
-        Mon, 17 Jul 2023 20:28:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689650903; x=1692242903;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=psBP24l7zlb5k0jEystqFOMehQF8hRtk/uG9lxnBgBQ=;
-        b=XAnXgt3B8RD4u5xrk0zG82Hk6LEKPGGoCqISAfbI3dK7ctg+m1DWgYz8wr+dQ/0NoT
-         3nWtB0t2DKCjlzg0k/7dgSHTl7P87e1kS3urOv2FJbGkV29mzOuU6Aj/EkH6il341UXH
-         ICQjR1048trzcyXPuGSk/exPUAiVj2EEd84rfavYsai5maJ0fYdjq46R0KBuLAWddwO1
-         ik6ERx3hJMlLpLDbZpQ0o8kd2OqIKNjVMTEdFPPS4KnK82hNIJx40XBH6z7lmafkCZn/
-         iOcwQSLkpfi1IeTUzpMyEdf5Kh3OgOLhw/QJqifwaWEq+OLCkrxzRQ9djIef0CFToahi
-         SSQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689650903; x=1692242903;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=psBP24l7zlb5k0jEystqFOMehQF8hRtk/uG9lxnBgBQ=;
-        b=WjK1A8Ae2o4hcTtZXdVJwfMcgzDp+e3G84fJf9KlBwWe5n+wX6Nxjxa5SPwtWzrrAh
-         JxFEuPTvztEOFBDbjB/Vwd+rGzMjDQ2pFOoa81paPTU4VzA6+q7retYAzSvJucwbyd3O
-         EaSsYdY3ppXqwJFLBM7bvfEZR9CYB8G/+8NjiTi51/gKM3Mnbo+bfLkXwKt7dCI/59TY
-         w4bfFUOeChYBoI5+CkmOgXn72cSoii7/6DN/P9iBBU5F7B3e7lwx4QNiet3efGxzzyIL
-         TqB3Nbe37tZO1ksSs+rkqcJxSIoD2KrIHkleGdanYJfcoDDTvSs/sarxMq62BUCvCXzM
-         krxQ==
-X-Gm-Message-State: ABy/qLZzLc2lU+FDVPYNxZcjdE9JXrEyHZLpED3bZ2f7lkELpzjkdl4E
-        IKRI/BOGjKr0k+HREYIi9Es=
-X-Google-Smtp-Source: APBJJlH/LxAG9wfB0qXauFE3c0hRH9osU27co+0/TEO32WfnGe5PDqNa0thcqtzx8qKYTAxTvWG0Iw==
-X-Received: by 2002:a17:902:e883:b0:1b8:1591:9f81 with SMTP id w3-20020a170902e88300b001b815919f81mr9634860plg.4.1689650902887;
-        Mon, 17 Jul 2023 20:28:22 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:640:8000:54:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id l12-20020a170903244c00b001b9e9edbf43sm601461pls.171.2023.07.17.20.28.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 20:28:22 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 20:28:13 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Jacob Keller <jacob.e.keller@intel.com>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Max Georgiev <glipus@gmail.com>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-        Gerhard Engleder <gerhard@engleder-embedded.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        UNGLinuxDriver@microchip.com,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Casper Andersson <casper.casan@gmail.com>,
-        Sergey Organov <sorganov@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 net-next 00/10] Introduce ndo_hwtstamp_get() and
- ndo_hwtstamp_set()
-Message-ID: <ZLYGzUQRyjE689tW@hoboy.vegasvil.org>
-References: <20230713121907.3249291-1-vladimir.oltean@nxp.com>
- <CAP5jrPFbt7vc77wVi5buYM88gDQ-OCHzm3Hg=EzRxJiha7Ur5A@mail.gmail.com>
- <20230717112534.nhy7ldeer42r4rz3@skbuf>
- <5f8da155-736e-cdd8-35bf-0f68385c6117@intel.com>
+        Mon, 17 Jul 2023 23:30:03 -0400
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A701705;
+        Mon, 17 Jul 2023 20:29:36 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R661e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0VnfxlTn_1689650971;
+Received: from 30.221.158.122(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VnfxlTn_1689650971)
+          by smtp.aliyun-inc.com;
+          Tue, 18 Jul 2023 11:29:32 +0800
+Message-ID: <47e3e22b-73a6-e2e4-05da-1a1138042d73@linux.alibaba.com>
+Date:   Tue, 18 Jul 2023 11:29:26 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f8da155-736e-cdd8-35bf-0f68385c6117@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH net-next V2 3/4] virtio_net: support per queue interrupt
+ coalesce command
+To:     Gavin Li <gavinl@nvidia.com>
+Cc:     gavi@nvidia.com, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, dtatulea@nvidia.com, mst@redhat.com,
+        jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, jiri@nvidia.com
+References: <20230717143037.21858-1-gavinl@nvidia.com>
+ <20230717143037.21858-4-gavinl@nvidia.com>
+From:   Heng Qi <hengqi@linux.alibaba.com>
+In-Reply-To: <20230717143037.21858-4-gavinl@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,10 +50,269 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 01:23:02PM -0700, Jacob Keller wrote:
 
-> For a mock device thats not really an issue. However, I'd prefer to
-> avoid such in the kernel so that its not available for copying when
-> someone without such knowledge comes along to write a new driver.
 
-+1
+在 2023/7/17 下午10:30, Gavin Li 写道:
+> Add interrupt_coalesce config in send_queue and receive_queue to cache user
+> config.
+>
+> Send per virtqueue interrupt moderation config to underline device in order
+> to have more efficient interrupt moderation and cpu utilization of guest
+> VM.
+>
+> Signed-off-by: Gavin Li <gavinl@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
+>   drivers/net/virtio_net.c        | 123 ++++++++++++++++++++++++++++----
+>   include/uapi/linux/virtio_net.h |  14 ++++
+>   2 files changed, 125 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 802ed21453f5..1566c7de9436 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -144,6 +144,8 @@ struct send_queue {
+>   
+>   	struct virtnet_sq_stats stats;
+>   
+> +	struct virtnet_interrupt_coalesce intr_coal;
+> +
+>   	struct napi_struct napi;
+>   
+>   	/* Record whether sq is in reset state. */
+> @@ -161,6 +163,8 @@ struct receive_queue {
+>   
+>   	struct virtnet_rq_stats stats;
+>   
+> +	struct virtnet_interrupt_coalesce intr_coal;
+> +
+>   	/* Chain pages by the private ptr. */
+>   	struct page *pages;
+>   
+> @@ -3078,6 +3082,59 @@ static int virtnet_send_notf_coal_cmds(struct virtnet_info *vi,
+>   	return 0;
+>   }
+>   
+> +static int virtnet_send_ctrl_coal_vq_cmd(struct virtnet_info *vi,
+> +					 u16 vqn, u32 max_usecs, u32 max_packets)
+> +{
+> +	struct virtio_net_ctrl_coal_vq *coal_vq;
+> +	struct scatterlist sgs;
+> +
+> +	coal_vq = kzalloc(sizeof(*coal_vq), GFP_KERNEL);
+
+I think this should go in the structure control_buf, which serves two 
+purposes, and that's on the heap in init_vqs():
+1. We can have the same form as other control types, such as 
+virtio_net_ctrl_coal_{tx, rx};
+2. Avoid using heap memory here to cause the following memory leaks
+
+> +	if (!coal_vq)
+> +		return -ENOMEM;
+> +	coal_vq->vqn = cpu_to_le16(vqn);
+> +	coal_vq->coal.max_usecs = cpu_to_le32(max_usecs);
+> +	coal_vq->coal.max_packets = cpu_to_le32(max_packets);
+> +	sg_init_one(&sgs, coal_vq, sizeof(*coal_vq));
+> +
+> +	if (!virtnet_send_command(vi, VIRTIO_NET_CTRL_NOTF_COAL,
+> +				  VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET,
+> +				  &sgs))
+> +		return -EINVAL;
+
+If this fails, we should free coal_vq, so pls move coal_vq into control_buf.
+
+Thanks.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int virtnet_send_notf_coal_vq_cmds(struct virtnet_info *vi,
+> +					  struct ethtool_coalesce *ec,
+> +					  u16 queue)
+> +{
+> +	int err;
+> +
+> +	if (ec->rx_coalesce_usecs || ec->rx_max_coalesced_frames) {
+> +		err = virtnet_send_ctrl_coal_vq_cmd(vi, rxq2vq(queue),
+> +						    ec->rx_coalesce_usecs,
+> +						    ec->rx_max_coalesced_frames);
+> +		if (err)
+> +			return err;
+> +		/* Save parameters */
+> +		vi->rq[queue].intr_coal.max_usecs = ec->rx_coalesce_usecs;
+> +		vi->rq[queue].intr_coal.max_packets = ec->rx_max_coalesced_frames;
+> +	}
+> +
+> +	if (ec->tx_coalesce_usecs || ec->tx_max_coalesced_frames) {
+> +		err = virtnet_send_ctrl_coal_vq_cmd(vi, txq2vq(queue),
+> +						    ec->tx_coalesce_usecs,
+> +						    ec->tx_max_coalesced_frames);
+> +		if (err)
+> +			return err;
+> +		/* Save parameters */
+> +		vi->sq[queue].intr_coal.max_usecs = ec->tx_coalesce_usecs;
+> +		vi->sq[queue].intr_coal.max_packets = ec->tx_max_coalesced_frames;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   static int virtnet_coal_params_supported(struct ethtool_coalesce *ec)
+>   {
+>   	/* usecs coalescing is supported only if VIRTIO_NET_F_NOTF_COAL
+> @@ -3094,23 +3151,39 @@ static int virtnet_coal_params_supported(struct ethtool_coalesce *ec)
+>   }
+>   
+>   static int virtnet_set_coalesce_one(struct net_device *dev,
+> -				    struct ethtool_coalesce *ec)
+> +				    struct ethtool_coalesce *ec,
+> +				    bool per_queue,
+> +				    u32 queue)
+>   {
+>   	struct virtnet_info *vi = netdev_priv(dev);
+> -	int ret, i, napi_weight;
+> +	int queue_count = per_queue ? 1 : vi->max_queue_pairs;
+> +	int queue_number = per_queue ? queue : 0;
+>   	bool update_napi = false;
+> +	int ret, i, napi_weight;
+> +
+> +	if (queue >= vi->max_queue_pairs)
+> +		return -EINVAL;
+>   
+>   	/* Can't change NAPI weight if the link is up */
+>   	napi_weight = ec->tx_max_coalesced_frames ? NAPI_POLL_WEIGHT : 0;
+> -	if (napi_weight ^ vi->sq[0].napi.weight) {
+> -		if (dev->flags & IFF_UP)
+> -			return -EBUSY;
+> -		else
+> +	for (i = queue_number; i < queue_count; i++) {
+> +		if (napi_weight ^ vi->sq[i].napi.weight) {
+> +			if (dev->flags & IFF_UP)
+> +				return -EBUSY;
+> +
+>   			update_napi = true;
+> +			/* All queues that belong to [queue_number, queue_count] will be
+> +			 * updated for the sake of simplicity, which might not be necessary
+> +			 */
+> +			queue_number = i;
+> +			break;
+> +		}
+>   	}
+>   
+> -	if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL))
+> +	if (!per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL))
+>   		ret = virtnet_send_notf_coal_cmds(vi, ec);
+> +	else if (per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_VQ_NOTF_COAL))
+> +		ret = virtnet_send_notf_coal_vq_cmds(vi, ec, queue);
+>   	else
+>   		ret = virtnet_coal_params_supported(ec);
+>   
+> @@ -3118,7 +3191,7 @@ static int virtnet_set_coalesce_one(struct net_device *dev,
+>   		return ret;
+>   
+>   	if (update_napi) {
+> -		for (i = 0; i < vi->max_queue_pairs; i++)
+> +		for (i = queue_number; i < queue_count; i++)
+>   			vi->sq[i].napi.weight = napi_weight;
+>   	}
+>   
+> @@ -3130,19 +3203,29 @@ static int virtnet_set_coalesce(struct net_device *dev,
+>   				struct kernel_ethtool_coalesce *kernel_coal,
+>   				struct netlink_ext_ack *extack)
+>   {
+> -	return virtnet_set_coalesce_one(dev, ec);
+> +	return virtnet_set_coalesce_one(dev, ec, false, 0);
+>   }
+>   
+>   static int virtnet_get_coalesce_one(struct net_device *dev,
+> -				    struct ethtool_coalesce *ec)
+> +				    struct ethtool_coalesce *ec,
+> +				    bool per_queue,
+> +				    u32 queue)
+>   {
+>   	struct virtnet_info *vi = netdev_priv(dev);
+>   
+> -	if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL)) {
+> +	if (queue >= vi->max_queue_pairs)
+> +		return -EINVAL;
+> +
+> +	if (!per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL)) {
+>   		ec->rx_coalesce_usecs = vi->intr_coal_rx.max_usecs;
+>   		ec->tx_coalesce_usecs = vi->intr_coal_tx.max_usecs;
+>   		ec->tx_max_coalesced_frames = vi->intr_coal_tx.max_packets;
+>   		ec->rx_max_coalesced_frames = vi->intr_coal_rx.max_packets;
+> +	} else if (per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_VQ_NOTF_COAL)) {
+> +		ec->rx_coalesce_usecs = vi->rq[queue].intr_coal.max_usecs;
+> +		ec->tx_coalesce_usecs = vi->sq[queue].intr_coal.max_usecs;
+> +		ec->tx_max_coalesced_frames = vi->sq[queue].intr_coal.max_packets;
+> +		ec->rx_max_coalesced_frames = vi->rq[queue].intr_coal.max_packets;
+>   	} else {
+>   		ec->rx_max_coalesced_frames = 1;
+>   
+> @@ -3158,7 +3241,21 @@ static int virtnet_get_coalesce(struct net_device *dev,
+>   				struct kernel_ethtool_coalesce *kernel_coal,
+>   				struct netlink_ext_ack *extack)
+>   {
+> -	return virtnet_get_coalesce_one(dev, ec);
+> +	return virtnet_get_coalesce_one(dev, ec, false, 0);
+> +}
+> +
+> +static int virtnet_set_per_queue_coalesce(struct net_device *dev,
+> +					  u32 queue,
+> +					  struct ethtool_coalesce *ec)
+> +{
+> +	return virtnet_set_coalesce_one(dev, ec, true, queue);
+> +}
+> +
+> +static int virtnet_get_per_queue_coalesce(struct net_device *dev,
+> +					  u32 queue,
+> +					  struct ethtool_coalesce *ec)
+> +{
+> +	return virtnet_get_coalesce_one(dev, ec, true, queue);
+>   }
+>   
+>   static void virtnet_init_settings(struct net_device *dev)
+> @@ -3291,6 +3388,8 @@ static const struct ethtool_ops virtnet_ethtool_ops = {
+>   	.set_link_ksettings = virtnet_set_link_ksettings,
+>   	.set_coalesce = virtnet_set_coalesce,
+>   	.get_coalesce = virtnet_get_coalesce,
+> +	.set_per_queue_coalesce = virtnet_set_per_queue_coalesce,
+> +	.get_per_queue_coalesce = virtnet_get_per_queue_coalesce,
+>   	.get_rxfh_key_size = virtnet_get_rxfh_key_size,
+>   	.get_rxfh_indir_size = virtnet_get_rxfh_indir_size,
+>   	.get_rxfh = virtnet_get_rxfh,
+> diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
+> index 12c1c9699935..cc65ef0f3c3e 100644
+> --- a/include/uapi/linux/virtio_net.h
+> +++ b/include/uapi/linux/virtio_net.h
+> @@ -56,6 +56,7 @@
+>   #define VIRTIO_NET_F_MQ	22	/* Device supports Receive Flow
+>   					 * Steering */
+>   #define VIRTIO_NET_F_CTRL_MAC_ADDR 23	/* Set MAC address */
+> +#define VIRTIO_NET_F_VQ_NOTF_COAL 52	/* Device supports virtqueue notification coalescing */
+>   #define VIRTIO_NET_F_NOTF_COAL	53	/* Device supports notifications coalescing */
+>   #define VIRTIO_NET_F_GUEST_USO4	54	/* Guest can handle USOv4 in. */
+>   #define VIRTIO_NET_F_GUEST_USO6	55	/* Guest can handle USOv6 in. */
+> @@ -391,5 +392,18 @@ struct virtio_net_ctrl_coal_rx {
+>   };
+>   
+>   #define VIRTIO_NET_CTRL_NOTF_COAL_RX_SET		1
+> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET		2
+> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_GET		3
+> +
+> +struct virtio_net_ctrl_coal {
+> +	__le32 max_packets;
+> +	__le32 max_usecs;
+> +};
+> +
+> +struct  virtio_net_ctrl_coal_vq {
+> +	__le16 vqn;
+> +	__le16 reserved;
+> +	struct virtio_net_ctrl_coal coal;
+> +};
+>   
+>   #endif /* _UAPI_LINUX_VIRTIO_NET_H */
+
