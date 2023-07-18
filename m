@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8D075721E
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5FB75721F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbjGRDR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 23:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59884 "EHLO
+        id S230109AbjGRDS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 23:18:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbjGRDRv (ORCPT
+        with ESMTP id S229974AbjGRDSx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 23:17:51 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9E010C7
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 20:17:50 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-666ecf9a081so5259583b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 20:17:50 -0700 (PDT)
+        Mon, 17 Jul 2023 23:18:53 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D02E6C
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 20:18:52 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-55adfa72d3fso2931144a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 20:18:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689650270; x=1692242270;
+        d=chromium.org; s=google; t=1689650332; x=1692242332;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yy16q5TeRc5Xpxn792wak9YIx7PrjIz4AMAo6HIm/uU=;
-        b=bjzpg/dmrKQ7en4RExJgK2NeBCKWufb1iiQUkwHAA0lKNt876Vaog/+3HYPCXw6TQo
-         KdawwsZ2IpbGN2tT2zNMWrUBwIfzf65d55MoA5qhp2Ws3AMdNNCh8ImTBwm0wxIQDWig
-         YwXpc3cbvIVwEjsByWJS93dxC6Pva7HCTTG90=
+        bh=qocaf1Ps72Y5X78MMqEBO1Mf3QN4QabQiTaMiLaTMtw=;
+        b=ONjclki5nvVeHG0HQUbxOSuwrcQZelNicBRPkz+i3ubokewQamj3zUXhYTrt/NBIHp
+         /6CLjsvSg0goevOLAHTXSPr67sxp0sfcVDFecwpdUUZS9KsyamsZspNgoGGcclDAkPff
+         5jHe1sX2KRGY4yMEojm6fg2LsrxTaTQ4xTrTk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689650270; x=1692242270;
+        d=1e100.net; s=20221208; t=1689650332; x=1692242332;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Yy16q5TeRc5Xpxn792wak9YIx7PrjIz4AMAo6HIm/uU=;
-        b=lLwS6rBw7OuX/rJTiv1Ctd0fYUnpksnLZtCb6gKvNByB/EIWlDacKY88UAFjl3cLnW
-         tbgLaSkA9Pp5IRe79VHw/JicOZVVp7/p4WKISfm89VNByMu14OKvp+6OqvifVOamkIj+
-         YwLm71iVlhCjwr+MGttFNvPWMmvJNVOmrgCwAYKeIJRq33F7CLV01LxDH6TC3yNZzqks
-         xeLkZqhXNUhqqAa3D5PJPe0cB7Huilrnkn6gn3aH+kW96zXy6FNpPwTOQTsmtE5hd3/h
-         bXnBnSQp74V/zu8IFIKoMPa1dl09t8yx5MgSjw1Y/Q6nAs2NyM9U0qzF5BqtuIBxtpnw
-         xRHA==
-X-Gm-Message-State: ABy/qLYbI+olBuzdmFUNIWoDGyj7dUw2P6YETQNgVPaOvQyGhH8NHkkN
-        UUj07BYFJWuclRGC4BR7+QU9lPgOpAkS2MCpknw=
-X-Google-Smtp-Source: APBJJlF9tK9QhFtIibfhZiESityrKnMVOR6fMYRLQU053J88bZMsild3MUEjSaAv93HeACpG//oAkw==
-X-Received: by 2002:a05:6a20:8f11:b0:134:38e5:d146 with SMTP id b17-20020a056a208f1100b0013438e5d146mr8403315pzk.16.1689650269707;
-        Mon, 17 Jul 2023 20:17:49 -0700 (PDT)
+        bh=qocaf1Ps72Y5X78MMqEBO1Mf3QN4QabQiTaMiLaTMtw=;
+        b=ZIJhZLXuIGGizIZxKx2TJHruE1m2YXj/j0dPI32Rb1dJFgx0wA3GiEaPPnElM7gCIG
+         8c2G/OKsM21ehWIlIPdTHyZ2WEuO3luaNEm/K79aoSeARHZQzfv2P9KRARLk9Ya6TMQl
+         cmEGOj+KRhvlgDtEKql//cirrDf5EA5gZdweJsMvlXuK79LxkPEPtbXeqxHUTCv0sOMB
+         ZcsDr6IT2es0SNoHOOmiWiq0ae3teKJdQJa6FEZhMz038qjJx//ceFnE79XJrIc8NDwf
+         RcNN7ZW2QMneIqJhHUPDXmZwZZ5fMcWNoospPVxx8oC6tV2YgTbNy66bii96Oyi5QiMu
+         UDcA==
+X-Gm-Message-State: ABy/qLar6VJ1oZ2T+0Kn6cOCc6+tL76QJLfL688uMclxNnfYKEYS/qn6
+        gnxGbkQ/7y3jxpBvtTj9i8t8VQ==
+X-Google-Smtp-Source: APBJJlGUXNK5h3Xud1a4INFphWinfJKPRBPaoWo7exwOd9TI/NWDXBxA41Z1wq6jLs5HjF+dh13PoA==
+X-Received: by 2002:a17:90a:e693:b0:25e:7fdd:f39c with SMTP id s19-20020a17090ae69300b0025e7fddf39cmr11817276pjy.16.1689650332180;
+        Mon, 17 Jul 2023 20:18:52 -0700 (PDT)
 Received: from google.com ([2401:fa00:8f:203:49d1:35f7:f76f:e7b1])
-        by smtp.gmail.com with ESMTPSA id l12-20020a170903244c00b001b9e9edbf43sm589740pls.171.2023.07.17.20.17.47
+        by smtp.gmail.com with ESMTPSA id 4-20020a17090a1a4400b00263f8915aa3sm5966598pjl.31.2023.07.17.20.18.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 20:17:49 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 12:17:45 +0900
+        Mon, 17 Jul 2023 20:18:51 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 12:18:47 +0900
 From:   Sergey Senozhatsky <senozhatsky@chromium.org>
 To:     John Ogness <john.ogness@linutronix.de>
 Cc:     Petr Mladek <pmladek@suse.com>,
@@ -54,15 +54,15 @@ Cc:     Petr Mladek <pmladek@suse.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v3 3/7] printk: Keep non-panic-CPUs out of console
- lock
-Message-ID: <20230718031745.GA955071@google.com>
+Subject: Re: [PATCH printk v3 4/7] printk: Do not take console lock for
+ console_flush_on_panic()
+Message-ID: <20230718031847.GB955071@google.com>
 References: <20230717194607.145135-1-john.ogness@linutronix.de>
- <20230717194607.145135-4-john.ogness@linutronix.de>
+ <20230717194607.145135-5-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230717194607.145135-4-john.ogness@linutronix.de>
+In-Reply-To: <20230717194607.145135-5-john.ogness@linutronix.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -75,14 +75,25 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On (23/07/17 21:52), John Ogness wrote:
 > 
-> When in a panic situation, non-panic CPUs should avoid holding the
-> console lock so as not to contend with the panic CPU. This is already
-> implemented with abandon_console_lock_in_panic(), which is checked
-> after each printed line. However, non-panic CPUs should also avoid
-> trying to acquire the console lock during a panic.
+> Currently console_flush_on_panic() will attempt to acquire the
+> console lock when flushing the buffer on panic. If it fails to
+> acquire the lock, it continues anyway because this is the last
+> chance to get any pending records printed.
 > 
-> Modify console_trylock() to fail and console_lock() to block() when
-> called from a non-panic CPU during a panic.
+> The reason why the console lock was attempted at all was to
+> prevent any other CPUs from acquiring the console lock for
+> printing while the panic CPU was printing. But as of the
+> previous commit, non-panic CPUs will no longer attempt to
+> acquire the console lock in a panic situation. Therefore it is
+> no longer strictly necessary for a panic CPU to acquire the
+> console lock.
+> 
+> Avoiding taking the console lock when flushing in panic has
+> the additional benefit of avoiding possible deadlocks due to
+> semaphore usage in NMI context (semaphores are not NMI-safe)
+> and avoiding possible deadlocks if another CPU accesses the
+> semaphore and is stopped while holding one of the semaphore's
+> internal spinlocks.
 > 
 > Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
