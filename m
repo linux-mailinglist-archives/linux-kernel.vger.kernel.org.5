@@ -2,297 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 470DA758540
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 21:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6B875853F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 21:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbjGRTAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 15:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45692 "EHLO
+        id S230219AbjGRTAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 15:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbjGRTAS (ORCPT
+        with ESMTP id S229848AbjGRTAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 15:00:18 -0400
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EE5FD
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 12:00:16 -0700 (PDT)
-Received: by mail-vk1-xa2f.google.com with SMTP id 71dfb90a1353d-47e36c35285so1932155e0c.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 12:00:16 -0700 (PDT)
+        Tue, 18 Jul 2023 15:00:17 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA417F4
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 12:00:14 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fb9ae4cef6so9962321e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 12:00:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1689706816; x=1692298816;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kr1xFECZrsAfFudB/oMaSbrGfr4I2aPgz6TBVVMxCmI=;
-        b=lz0z8BHLUK812Oe+Ep1RD8zVu2128ZCpp5rAo1gfP7CCJctHIKUIc+fgeGyFxdJFVU
-         elP/t+DmkRjTondq97Gn9hJJN8plTf+IuAowxPPXCArcP05cz65paPItRTNMnSW1zbOP
-         ZjRheORL1w6oOTnEzGi76xX3B29ujvmOxz5Xhhy9I7ouFblkfT7LZfZv7OUNL+rY7eVt
-         6l/Nd4dk1TfhFtbExXouVFRkY5eZylZbdsaItMJudxVET0Ds+nahRJKMViapYu6wlvWB
-         OccncIBy44qm5vgopJRBjoCc7DgmXsrY+nP9/KPKGljOd1kk6C9fbn/AMCwt2UFnttW9
-         UumQ==
+        d=linaro.org; s=google; t=1689706813; x=1692298813;
+        h=user-agent:in-reply-to:content-transfer-encoding
+         :content-disposition:mime-version:references:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6UbOGCU2/JGXoj2+oYnNloy150wr1V36J9pa6wEHF6Q=;
+        b=ReM/8JSrD9IBRqRHHryPL5pkEeoRbzf9A7tzhmtpEPj3bM2iEzmMEVig5Ew4iwrLlb
+         nDsW5YSKMNDkPws0esXwKg1IMhTcenNXmD/KxoTJF/HJhnnQy5iTbf5U+c2x9TEtKaKt
+         P+0lYopzWUkgxRiXcjWCVsugPjQtIQF6NQDZyWZMGx4cZa2Di6fFOw0UlEuMsT7tNTIb
+         g9NaVimaTXufRm3nrGAujuBP8GCGa44WaU0ntukhcO53KWiMPmxs2z8Pdn7NkaMv+5qA
+         cuaBSzG4XpCkAsgSHpdVcVujQbr30FRlRX97lnIzjbwWxmec8RH0keuGTDEodFpgfbp7
+         pYCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689706816; x=1692298816;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kr1xFECZrsAfFudB/oMaSbrGfr4I2aPgz6TBVVMxCmI=;
-        b=Mqe0CYXssiSNZLJIu2TndClpPz1ZS2PqVMBsP6zM4RNsvGKmWHB4W4XW4/3aKdBChR
-         xR3MSmOS5B7ZKhbRWMWf1rW/EzfzYVg0y60MhfCAE4WW+JcIayQXzz+ywJUCFQXkapHW
-         ObBkcrY0KK94zO61fpIm6FABHXf8O5enDpSYRfaD+Lu4/zR7bJ3fE0cRRqJGkKY5w24Z
-         /JZO1lWGNbgvkUckETce2TL9nSfouRUcyjWwAyIukaGxTq7UWnY68m0XAOA3yyFf4K/c
-         NzldjUn1minb6+sRcbkx8SnVW0CJXRtdmRcOYwtu9ILtxEPZ4kw2CaW7Q+IsBM7y4q+w
-         lNDA==
-X-Gm-Message-State: ABy/qLasz5usoHc67joHYn2ZbFQ+gU1Eo56SvOZpjRBKFZ1zbsKL6C2Z
-        KzbSmlX2ymHL75DibCAzc/EDDTFjY51VEgJ1VUVKBA==
-X-Google-Smtp-Source: APBJJlF869L4eV2yvmfEqas1IZbGxZuYy82XGdmJnwZq/4VKOwLSLa1SZV4li9TCzxLXptzfkNfFBvpE4kpjGaWjKXA=
-X-Received: by 2002:a67:ea0b:0:b0:443:4f72:fd35 with SMTP id
- g11-20020a67ea0b000000b004434f72fd35mr7802159vso.1.1689706815872; Tue, 18 Jul
- 2023 12:00:15 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689706813; x=1692298813;
+        h=user-agent:in-reply-to:content-transfer-encoding
+         :content-disposition:mime-version:references:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6UbOGCU2/JGXoj2+oYnNloy150wr1V36J9pa6wEHF6Q=;
+        b=bSUWdfZmQurAV3ACd1dwS1NWLaY+ChMks9EBPFsQjmqxYOxqkMza5w+VyhvTM/PI5+
+         zuAhLruNLIcCByA/cB1Z6q1MOlJZwgioxQkLC1EWDPZ321bcKiNxHbO0nSN8PcggQ0kX
+         0KZWh4DtUQxlZ0qpsY6ixC/qNWADDCGStE2gjgzC5UyyA3uZAmqMFJKfVpVkeG8FUXf+
+         pVCkKQgeXK/yqbvPxR0bs0dojHGj0UTH+weEgQZ9ZBCbeavh5jFBpxtv31/AHLjifXLm
+         vVRL+9YBZAwE9uytVhEK64ZNsvZc3+BlUcH3u5SA0wrGALGX2gAeCsa4J14cJOJ7wEWw
+         0AUQ==
+X-Gm-Message-State: ABy/qLaLuq5zI6d721dm0dJBoHyQbbEWIWJUxBNU3QE/B5UlNvDG/Ml3
+        jlYOde92jKNa/I7dCnCgURI8gA==
+X-Google-Smtp-Source: APBJJlGkI/KZ8Tn983mRZDpMU0a5NKPZS7pJXHGg9aJRe2c+CWIbDdUGjyeXv4q9P45Zm+QKTtH84g==
+X-Received: by 2002:a05:6512:3e26:b0:4fd:cd11:2df9 with SMTP id i38-20020a0565123e2600b004fdcd112df9mr2353124lfv.64.1689706812849;
+        Tue, 18 Jul 2023 12:00:12 -0700 (PDT)
+Received: from mutt (c-9b0ee555.07-21-73746f28.bbcust.telenor.se. [85.229.14.155])
+        by smtp.gmail.com with ESMTPSA id g20-20020ac25394000000b004fb79feb288sm564647lfh.152.2023.07.18.12.00.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 12:00:11 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 21:00:10 +0200
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     Ian Kent <raven@themaw.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        elver@google.com, imran.f.khan@oracle.com
+Subject: Re: [PATCH 1/2] kernfs: dont take i_lock on inode attr read
+Message-ID: <20230718190009.GC411@mutt>
+References: <166606025456.13363.3829702374064563472.stgit@donald.themaw.net>
+ <166606036215.13363.1288735296954908554.stgit@donald.themaw.net>
+ <Y2BMonmS0SdOn5yh@slm.duckdns.org>
+ <20221221133428.GE69385@mutt>
+ <7815c8da-7d5f-c2c5-9dfd-7a77ac37c7f7@themaw.net>
+ <e25ee08c-7692-4042-9961-a499600f0a49@app.fastmail.com>
+ <9e35cf66-79ef-1f13-dc6b-b013c73a9fc6@themaw.net>
+ <db933d76-1432-f671-8712-d94de35277d8@themaw.net>
 MIME-Version: 1.0
-References: <20230711151248.4750-1-asmaa@nvidia.com> <CH2PR12MB389544F08A0A20AAB06123D3D738A@CH2PR12MB3895.namprd12.prod.outlook.com>
-In-Reply-To: <CH2PR12MB389544F08A0A20AAB06123D3D738A@CH2PR12MB3895.namprd12.prod.outlook.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 18 Jul 2023 21:00:05 +0200
-Message-ID: <CAMRc=Me30rRG7GY-aZfapcNZPc3BWJBBjC4BLoaVr0CjnidiUA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] gpio: mmio: handle "ngpios" properly in bgpio_init()
-To:     Asmaa Mnebhi <asmaa@nvidia.com>
-Cc:     "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        David Thompson <davthompson@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <db933d76-1432-f671-8712-d94de35277d8@themaw.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 8:38=E2=80=AFPM Asmaa Mnebhi <asmaa@nvidia.com> wro=
-te:
->
->  > bgpio_init() uses "sz" argument to populate ngpio, which is not accura=
-te.
-> > Instead, read the "ngpios" property from the DT and if it doesn't exist=
-, use the
-> > "sz" argument. With this change, drivers no longer need to overwrite th=
-e ngpio
-> > variable after calling bgpio_init().
-> >
-> > If the "ngpios" property is specified, bgpio_bits is calculated as the =
-round up
-> > value of ngpio. At the moment, the only requirement specified is that t=
-he round
-> > up value must be a multiple of 8 but it should also be a power of 2 bec=
-ause we
-> > provide accessors based on the bank size in bgpio_setup_accessors().
-> >
-> > Signed-off-by: Asmaa Mnebhi <asmaa@nvidia.com>
-> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > ---
-> > The following 2 patches were approved in March 2023 but didn't make it =
-into
-> > the tree:
-> > [PATCH v4] gpio: mmio: handle "ngpios" properly in bgpio_init() [PATCH =
-v1]
-> > gpio: mmio: fix calculation of bgpio_bits
-> >
-> > They needed a rebase and were combined into a single patch since
-> > "gpio: mmio: fix calculation of bgpio_bits" fixes a bug in
-> > "gpio: mmio: handle "ngpios" properly in bgpio_init()"
-> >
-> > v1->v2:
-> > - Added the tags
-> > - Updated the changelog
-> >
-> >  drivers/gpio/gpio-mmio.c |  9 +++++-
-> >  drivers/gpio/gpiolib.c   | 68 ++++++++++++++++++++++------------------
-> >  drivers/gpio/gpiolib.h   |  1 +
-> >  3 files changed, 46 insertions(+), 32 deletions(-)
-> >
-> > diff --git a/drivers/gpio/gpio-mmio.c b/drivers/gpio/gpio-mmio.c index
-> > d9dff3dc92ae..74fdf0d87b2c 100644
-> > --- a/drivers/gpio/gpio-mmio.c
-> > +++ b/drivers/gpio/gpio-mmio.c
-> > @@ -60,6 +60,8 @@ o        `                     ~~~~\___/~~~~    ` con=
-troller in FPGA
-> > is ,.`
-> >  #include <linux/of.h>
-> >  #include <linux/of_device.h>
-> >
-> > +#include "gpiolib.h"
-> > +
-> >  static void bgpio_write8(void __iomem *reg, unsigned long data)  {
-> >       writeb(data, reg);
-> > @@ -614,10 +616,15 @@ int bgpio_init(struct gpio_chip *gc, struct devic=
-e
-> > *dev,
-> >       gc->parent =3D dev;
-> >       gc->label =3D dev_name(dev);
-> >       gc->base =3D -1;
-> > -     gc->ngpio =3D gc->bgpio_bits;
-> >       gc->request =3D bgpio_request;
-> >       gc->be_bits =3D !!(flags & BGPIOF_BIG_ENDIAN);
-> >
-> > +     ret =3D gpiochip_get_ngpios(gc, dev);
-> > +     if (ret)
-> > +             gc->ngpio =3D gc->bgpio_bits;
-> > +     else
-> > +             gc->bgpio_bits =3D roundup_pow_of_two(round_up(gc->ngpio,
-> > 8));
-> > +
-> >       ret =3D bgpio_setup_io(gc, dat, set, clr, flags);
-> >       if (ret)
-> >               return ret;
-> > diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c index
-> > 251c875b5c34..7dac8bb9905a 100644
-> > --- a/drivers/gpio/gpiolib.c
-> > +++ b/drivers/gpio/gpiolib.c
-> > @@ -700,6 +700,40 @@ void *gpiochip_get_data(struct gpio_chip *gc)  }
-> > EXPORT_SYMBOL_GPL(gpiochip_get_data);
-> >
-> > +int gpiochip_get_ngpios(struct gpio_chip *gc, struct device *dev) {
-> > +     u32 ngpios =3D gc->ngpio;
-> > +     int ret;
-> > +
-> > +     if (ngpios =3D=3D 0) {
-> > +             ret =3D device_property_read_u32(dev, "ngpios", &ngpios);
-> > +             if (ret =3D=3D -ENODATA)
-> > +                     /*
-> > +                      * -ENODATA means that there is no property found
-> > and
-> > +                      * we want to issue the error message to the user=
-.
-> > +                      * Besides that, we want to return different erro=
-r code
-> > +                      * to state that supplied value is not valid.
-> > +                      */
-> > +                     ngpios =3D 0;
-> > +             else if (ret)
-> > +                     return ret;
-> > +
-> > +             gc->ngpio =3D ngpios;
-> > +     }
-> > +
-> > +     if (gc->ngpio =3D=3D 0) {
-> > +             chip_err(gc, "tried to insert a GPIO chip with zero lines=
-\n");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     if (gc->ngpio > FASTPATH_NGPIO)
-> > +             chip_warn(gc, "line cnt %u is greater than fast path cnt =
-%u\n",
-> > +                     gc->ngpio, FASTPATH_NGPIO);
-> > +
-> > +     return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(gpiochip_get_ngpios);
-> > +
-> >  int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
-> >                              struct lock_class_key *lock_key,
-> >                              struct lock_class_key *request_key) @@ -70=
-7,7
-> > +741,6 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *da=
-ta,
-> >       struct gpio_device *gdev;
-> >       unsigned long flags;
-> >       unsigned int i;
-> > -     u32 ngpios =3D 0;
-> >       int base =3D 0;
-> >       int ret =3D 0;
-> >
-> > @@ -753,36 +786,9 @@ int gpiochip_add_data_with_key(struct gpio_chip *g=
-c,
-> > void *data,
-> >       else
-> >               gdev->owner =3D THIS_MODULE;
-> >
-> > -     /*
-> > -      * Try the device properties if the driver didn't supply the numb=
-er
-> > -      * of GPIO lines.
-> > -      */
-> > -     ngpios =3D gc->ngpio;
-> > -     if (ngpios =3D=3D 0) {
-> > -             ret =3D device_property_read_u32(&gdev->dev, "ngpios",
-> > &ngpios);
-> > -             if (ret =3D=3D -ENODATA)
-> > -                     /*
-> > -                      * -ENODATA means that there is no property found
-> > and
-> > -                      * we want to issue the error message to the user=
-.
-> > -                      * Besides that, we want to return different erro=
-r code
-> > -                      * to state that supplied value is not valid.
-> > -                      */
-> > -                     ngpios =3D 0;
-> > -             else if (ret)
-> > -                     goto err_free_dev_name;
-> > -
-> > -             gc->ngpio =3D ngpios;
-> > -     }
-> > -
-> > -     if (gc->ngpio =3D=3D 0) {
-> > -             chip_err(gc, "tried to insert a GPIO chip with zero lines=
-\n");
-> > -             ret =3D -EINVAL;
-> > +     ret =3D gpiochip_get_ngpios(gc, &gdev->dev);
-> > +     if (ret)
-> >               goto err_free_dev_name;
-> > -     }
-> > -
-> > -     if (gc->ngpio > FASTPATH_NGPIO)
-> > -             chip_warn(gc, "line cnt %u is greater than fast path cnt =
-%u\n",
-> > -                       gc->ngpio, FASTPATH_NGPIO);
-> >
-> >       gdev->descs =3D kcalloc(gc->ngpio, sizeof(*gdev->descs), GFP_KERN=
-EL);
-> >       if (!gdev->descs) {
-> > @@ -947,7 +953,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc=
-,
-> > void *data,
-> >       /* failures here can mean systems won't boot... */
-> >       if (ret !=3D -EPROBE_DEFER) {
-> >               pr_err("%s: GPIOs %d..%d (%s) failed to register, %d\n",
-> > __func__,
-> > -                    base, base + (int)ngpios - 1,
-> > +                    base, base + (int)gc->ngpio - 1,
-> >                      gc->label ? : "generic", ret);
-> >       }
-> >       return ret;
-> > diff --git a/drivers/gpio/gpiolib.h b/drivers/gpio/gpiolib.h index
-> > cca81375f127..8de748a16d13 100644
-> > --- a/drivers/gpio/gpiolib.h
-> > +++ b/drivers/gpio/gpiolib.h
-> > @@ -217,6 +217,7 @@ int gpiod_configure_flags(struct gpio_desc *desc, c=
-onst
-> > char *con_id,  int gpio_set_debounce_timeout(struct gpio_desc *desc,
-> > unsigned int debounce);  int gpiod_hog(struct gpio_desc *desc, const ch=
-ar
-> > *name,
-> >               unsigned long lflags, enum gpiod_flags dflags);
-> > +int gpiochip_get_ngpios(struct gpio_chip *gc, struct device *dev);
-> >
-> >  /*
-> >   * Return the GPIO number of the passed descriptor relative to its chi=
-p
-> > --
-> > 2.30.1
->
-> Hi Bart,
->
-> This is the final approved patch by both Linus and Andy. Please discard a=
-ll others.
->
+On 2023-01-23 11:11, Ian Kent wrote:
+> 
+> On 29/12/22 21:07, Ian Kent wrote:
+> > 
+> > On 29/12/22 17:20, Arnd Bergmann wrote:
+> > > On Fri, Dec 23, 2022, at 00:11, Ian Kent wrote:
+> > > > On 21/12/22 21:34, Anders Roxell wrote:
+> > > > > On 2022-10-31 12:30, Tejun Heo wrote:
+> > > > > > On Tue, Oct 18, 2022 at 10:32:42AM +0800, Ian Kent wrote:
+> > > > > > > The kernfs write lock is held when the kernfs node inode attributes
+> > > > > > > are updated. Therefore, when either kernfs_iop_getattr() or
+> > > > > > > kernfs_iop_permission() are called the kernfs node inode attributes
+> > > > > > > won't change.
+> > > > > > > 
+> > > > > > > Consequently concurrent kernfs_refresh_inode() calls always copy the
+> > > > > > > same values from the kernfs node.
+> > > > > > > 
+> > > > > > > So there's no need to take the inode i_lock to get consistent values
+> > > > > > > for generic_fillattr() and generic_permission(), the
+> > > > > > > kernfs read lock
+> > > > > > > is sufficient.
+> > > > > > > 
+> > > > > > > Signed-off-by: Ian Kent <raven@themaw.net>
+> > > > > > Acked-by: Tejun Heo <tj@kernel.org>
+> > > > > Hi,
+> > > > > 
+> > > > > Building an allmodconfig arm64 kernel on yesterdays next-20221220 and
+> > > > > booting that in qemu I see the following "BUG: KCSAN: data-race in
+> > > > > set_nlink / set_nlink".
+> > > > 
+> > > > I'll check if I missed any places where set_link() could be
+> > > > called where the link count could be different.
+> > > > 
+> > > > 
+> > > > If there aren't any the question will then be can writing the
+> > > > same value to this location in multiple concurrent threads
+> > > > corrupt it?
+> > > I think the race that is getting reported for set_nlink()
+> > > is about this bit getting called simulatenously on multiple
+> > > CPUs with only the read lock held for the inode:
+> > > 
+> > >       /* Yes, some filesystems do change nlink from zero to one */
+> > >       if (inode->i_nlink == 0)
+> > > atomic_long_dec(&inode->i_sb->s_remove_count);
+> > >       inode->__i_nlink = nlink;
+> > > 
+> > > Since i_nlink and __i_nlink refer to the same memory location,
+> > > the 'inode->i_nlink == 0' check can be true for all of them
+> > > before the nonzero nlink value gets set, and this results in
+> > > s_remove_count being decremented more than once.
+> > 
+> > 
+> > Thanks for the comment Arnd.
+> 
+> 
+> Hello all,
+> 
+> 
+> I've been looking at this and after consulting Miklos and his pointing
+> 
+> out that it looks like a false positive the urgency dropped off a bit. So
+> 
+> apologies for taking so long to report back.
+> 
+> 
+> Anyway it needs some description of conclusions reached so far.
+> 
+> 
+> I'm still looking around but in short, kernfs will set directories to <# of
+> 
+> directory entries> + 2 unconditionally for directories. I can't yet find
+> 
+> any other places where i_nlink is set or changed and if there are none
+> 
+> then i_nlink will never be set to zero so the race should not occur.
+> 
+> 
+> Consequently my claim is this is a real false positive.
+> 
+> 
+> There are the file system operations that may be passed at mount time
+> 
+> but given the way kernfs sets i_nlink it pretty much dictates those
+> operations
+> 
+> (if there were any that modify it and there don't appear to be any) leave it
+> 
+> alone.
+> 
+> 
+> So it just doesn't make sense for users of kernfs to fiddle with i_nlink ...
 
-Ok, I applied this one but you need to get your patch versioning in
-order next time.
+On todays next tag, next-20230718 this KCSAN BUG poped up again. When I
+built an allmodconfig arm64 kernel and booted it in QEMU. Full log can
+be found http://ix.io/4AUd
 
-Bart
+[ 1694.987789][  T137] BUG: KCSAN: data-race in inode_permission / kernfs_refresh_inode
+[ 1694.992912][  T137] 
+[ 1694.994532][  T137] write to 0xffff00000bab6070 of 2 bytes by task 104 on cpu 0:
+[ 1694.999269][ T137] kernfs_refresh_inode (/home/anders/src/kernel/next/fs/kernfs/inode.c:171) 
+[ 1695.002707][ T137] kernfs_iop_permission (/home/anders/src/kernel/next/fs/kernfs/inode.c:289) 
+[ 1695.006148][ T137] inode_permission (/home/anders/src/kernel/next/fs/namei.c:461 /home/anders/src/kernel/next/fs/namei.c:528) 
+[ 1695.009420][ T137] link_path_walk (/home/anders/src/kernel/next/fs/namei.c:1720 /home/anders/src/kernel/next/fs/namei.c:2267) 
+[ 1695.012643][ T137] path_lookupat (/home/anders/src/kernel/next/fs/namei.c:2478 (discriminator 2)) 
+[ 1695.015781][ T137] filename_lookup (/home/anders/src/kernel/next/fs/namei.c:2508) 
+[ 1695.019059][ T137] vfs_statx (/home/anders/src/kernel/next/fs/stat.c:238) 
+[ 1695.022024][ T137] vfs_fstatat (/home/anders/src/kernel/next/fs/stat.c:276) 
+[ 1695.025067][ T137] __do_sys_newfstatat (/home/anders/src/kernel/next/fs/stat.c:446) 
+[ 1695.028497][ T137] __arm64_sys_newfstatat (/home/anders/src/kernel/next/fs/stat.c:440 /home/anders/src/kernel/next/fs/stat.c:440) 
+[ 1695.032080][ T137] el0_svc_common.constprop.0 (/home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:38 /home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:52 /home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:139) 
+[ 1695.035916][ T137] do_el0_svc (/home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:188) 
+[ 1695.038796][ T137] el0_svc (/home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:133 /home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:144 /home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:648) 
+[ 1695.041468][ T137] el0t_64_sync_handler (/home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:666) 
+[ 1695.044889][ T137] el0t_64_sync (/home/anders/src/kernel/next/arch/arm64/kernel/entry.S:591) 
+[ 1695.047904][  T137] 
+[ 1695.049511][  T137] 1 lock held by systemd-udevd/104:
+[ 1695.052837][ T137] #0: ffff000006681e08 (&root->kernfs_iattr_rwsem){++++}-{3:3}, at: kernfs_iop_permission (/home/anders/src/kernel/next/fs/kernfs/inode.c:288) 
+[ 1695.060241][  T137] irq event stamp: 82902
+[ 1695.063006][ T137] hardirqs last enabled at (82901): _raw_spin_unlock_irqrestore (/home/anders/src/kernel/next/arch/arm64/include/asm/alternative-macros.h:250 /home/anders/src/kernel/next/arch/arm64/include/asm/irqflags.h:27 /home/anders/src/kernel/next/arch/arm64/include/asm/irqflags.h:140 /home/anders/src/kernel/next/include/linux/spinlock_api_smp.h:151 /home/anders/src/kernel/next/kernel/locking/spinlock.c:194) 
+[ 1695.069673][ T137] hardirqs last disabled at (82902): el1_interrupt (/home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:472 /home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:488) 
+[ 1695.075474][ T137] softirqs last enabled at (82792): fpsimd_restore_current_state (/home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:264 /home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:1791) 
+[ 1695.082319][ T137] softirqs last disabled at (82790): fpsimd_restore_current_state (/home/anders/src/kernel/next/include/linux/bottom_half.h:20 /home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:242 /home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:1784) 
+[ 1695.089049][  T137] 
+[ 1695.090659][  T137] read to 0xffff00000bab6070 of 2 bytes by task 137 on cpu 0:
+[ 1695.095374][ T137] inode_permission (/home/anders/src/kernel/next/fs/namei.c:532) 
+[ 1695.098655][ T137] link_path_walk (/home/anders/src/kernel/next/fs/namei.c:1720 /home/anders/src/kernel/next/fs/namei.c:2267) 
+[ 1695.101857][ T137] path_openat (/home/anders/src/kernel/next/fs/namei.c:3789 (discriminator 2)) 
+[ 1695.104885][ T137] do_filp_open (/home/anders/src/kernel/next/fs/namei.c:3820) 
+[ 1695.108006][ T137] do_sys_openat2 (/home/anders/src/kernel/next/fs/open.c:1418) 
+[ 1695.111290][ T137] __arm64_sys_openat (/home/anders/src/kernel/next/fs/open.c:1433) 
+[ 1695.114825][ T137] el0_svc_common.constprop.0 (/home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:38 /home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:52 /home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:139) 
+[ 1695.118662][ T137] do_el0_svc (/home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:188) 
+[ 1695.121555][ T137] el0_svc (/home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:133 /home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:144 /home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:648) 
+[ 1695.124207][ T137] el0t_64_sync_handler (/home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:666) 
+[ 1695.127590][ T137] el0t_64_sync (/home/anders/src/kernel/next/arch/arm64/kernel/entry.S:591) 
+[ 1695.130641][  T137] 
+[ 1695.132241][  T137] no locks held by systemd-udevd/137.
+[ 1695.135618][  T137] irq event stamp: 3246
+[ 1695.138519][ T137] hardirqs last enabled at (3245): seqcount_lockdep_reader_access (/home/anders/src/kernel/next/include/linux/seqlock.h:105) 
+[ 1695.145825][ T137] hardirqs last disabled at (3246): el1_interrupt (/home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:472 /home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:488) 
+[ 1695.151942][ T137] softirqs last enabled at (3208): fpsimd_restore_current_state (/home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:264 /home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:1791) 
+[ 1695.158950][ T137] softirqs last disabled at (3206): fpsimd_restore_current_state (/home/anders/src/kernel/next/include/linux/bottom_half.h:20 /home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:242 /home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:1784) 
+[ 1695.166036][  T137] 
+[ 1695.167621][  T137] Reported by Kernel Concurrency Sanitizer on:
+[ 1695.179990][  T137] Hardware name: linux,dummy-virt (DT)
+[ 1695.183687][  T137] ==================================================================
+
+[...]
+
+[ 1738.053819][  T104] BUG: KCSAN: data-race in set_nlink / set_nlink
+[ 1738.058223][  T104] 
+[ 1738.059865][  T104] read to 0xffff00000bab6918 of 4 bytes by task 108 on cpu 0:
+[ 1738.064916][ T104] set_nlink (/home/anders/src/kernel/next/fs/inode.c:369) 
+[ 1738.067845][ T104] kernfs_refresh_inode (/home/anders/src/kernel/next/fs/kernfs/inode.c:180) 
+[ 1738.071607][ T104] kernfs_iop_permission (/home/anders/src/kernel/next/fs/kernfs/inode.c:289) 
+[ 1738.075467][ T104] inode_permission (/home/anders/src/kernel/next/fs/namei.c:461 /home/anders/src/kernel/next/fs/namei.c:528) 
+[ 1738.078868][ T104] link_path_walk (/home/anders/src/kernel/next/fs/namei.c:1720 /home/anders/src/kernel/next/fs/namei.c:2267) 
+[ 1738.082270][ T104] path_lookupat (/home/anders/src/kernel/next/fs/namei.c:2478 (discriminator 2)) 
+[ 1738.085488][ T104] filename_lookup (/home/anders/src/kernel/next/fs/namei.c:2508) 
+[ 1738.089101][ T104] user_path_at_empty (/home/anders/src/kernel/next/fs/namei.c:2907) 
+[ 1738.092469][ T104] do_readlinkat (/home/anders/src/kernel/next/fs/stat.c:477) 
+[ 1738.095970][ T104] __arm64_sys_readlinkat (/home/anders/src/kernel/next/fs/stat.c:504 /home/anders/src/kernel/next/fs/stat.c:501 /home/anders/src/kernel/next/fs/stat.c:501) 
+[ 1738.099529][ T104] el0_svc_common.constprop.0 (/home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:38 /home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:52 /home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:139) 
+[ 1738.103696][ T104] do_el0_svc (/home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:188) 
+[ 1738.106560][ T104] el0_svc (/home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:133 /home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:144 /home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:648) 
+[ 1738.109613][ T104] el0t_64_sync_handler (/home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:666) 
+[ 1738.113035][ T104] el0t_64_sync (/home/anders/src/kernel/next/arch/arm64/kernel/entry.S:591) 
+[ 1738.116346][  T104] 
+[ 1738.117924][  T104] 1 lock held by systemd-udevd/108:
+[ 1738.121580][ T104] #0: ffff000006681e08 (&root->kernfs_iattr_rwsem){++++}-{3:3}, at: kernfs_iop_permission (/home/anders/src/kernel/next/fs/kernfs/inode.c:288) 
+[ 1738.129355][  T104] irq event stamp: 31000
+[ 1738.132088][ T104] hardirqs last enabled at (31000): seqcount_lockdep_reader_access (/home/anders/src/kernel/next/include/linux/seqlock.h:105) 
+[ 1738.139417][ T104] hardirqs last disabled at (30999): seqcount_lockdep_reader_access (/home/anders/src/kernel/next/include/linux/seqlock.h:104) 
+[ 1738.146781][ T104] softirqs last enabled at (30973): fpsimd_restore_current_state (/home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:264 /home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:1791) 
+[ 1738.153891][ T104] softirqs last disabled at (30971): fpsimd_restore_current_state (/home/anders/src/kernel/next/include/linux/bottom_half.h:20 /home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:242 /home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:1784) 
+[ 1738.161012][  T104] 
+[ 1738.162663][  T104] write to 0xffff00000bab6918 of 4 bytes by task 104 on cpu 0:
+[ 1738.167730][ T104] set_nlink (/home/anders/src/kernel/next/fs/inode.c:372) 
+[ 1738.170559][ T104] kernfs_refresh_inode (/home/anders/src/kernel/next/fs/kernfs/inode.c:180) 
+[ 1738.174355][ T104] kernfs_iop_permission (/home/anders/src/kernel/next/fs/kernfs/inode.c:289) 
+[ 1738.177829][ T104] inode_permission (/home/anders/src/kernel/next/fs/namei.c:461 /home/anders/src/kernel/next/fs/namei.c:528) 
+[ 1738.181403][ T104] link_path_walk (/home/anders/src/kernel/next/fs/namei.c:1720 /home/anders/src/kernel/next/fs/namei.c:2267) 
+[ 1738.184738][ T104] path_lookupat (/home/anders/src/kernel/next/fs/namei.c:2478 (discriminator 2)) 
+[ 1738.188268][ T104] filename_lookup (/home/anders/src/kernel/next/fs/namei.c:2508) 
+[ 1738.191865][ T104] vfs_statx (/home/anders/src/kernel/next/fs/stat.c:238) 
+[ 1738.196236][ T104] vfs_fstatat (/home/anders/src/kernel/next/fs/stat.c:276) 
+[ 1738.200120][ T104] __do_sys_newfstatat (/home/anders/src/kernel/next/fs/stat.c:446) 
+[ 1738.204095][ T104] __arm64_sys_newfstatat (/home/anders/src/kernel/next/fs/stat.c:440 /home/anders/src/kernel/next/fs/stat.c:440) 
+[ 1738.207676][ T104] el0_svc_common.constprop.0 (/home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:38 /home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:52 /home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:139) 
+[ 1738.211820][ T104] do_el0_svc (/home/anders/src/kernel/next/arch/arm64/kernel/syscall.c:188) 
+[ 1738.214815][ T104] el0_svc (/home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:133 /home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:144 /home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:648) 
+[ 1738.217709][ T104] el0t_64_sync_handler (/home/anders/src/kernel/next/arch/arm64/kernel/entry-common.c:666) 
+[ 1738.221239][ T104] el0t_64_sync (/home/anders/src/kernel/next/arch/arm64/kernel/entry.S:591) 
+[ 1738.224502][  T104] 
+[ 1738.226090][  T104] 1 lock held by systemd-udevd/104:
+[ 1738.229747][ T104] #0: ffff000006681e08 (&root->kernfs_iattr_rwsem){++++}-{3:3}, at: kernfs_iop_permission (/home/anders/src/kernel/next/fs/kernfs/inode.c:288) 
+[ 1738.237504][  T104] irq event stamp: 108353
+[ 1738.240262][ T104] hardirqs last enabled at (108353): seqcount_lockdep_reader_access (/home/anders/src/kernel/next/include/linux/seqlock.h:105) 
+[ 1738.247443][ T104] hardirqs last disabled at (108352): seqcount_lockdep_reader_access (/home/anders/src/kernel/next/include/linux/seqlock.h:104) 
+[ 1738.254510][ T104] softirqs last enabled at (108326): fpsimd_restore_current_state (/home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:264 /home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:1791) 
+[ 1738.262187][ T104] softirqs last disabled at (108324): fpsimd_restore_current_state (/home/anders/src/kernel/next/include/linux/bottom_half.h:20 /home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:242 /home/anders/src/kernel/next/arch/arm64/kernel/fpsimd.c:1784) 
+[ 1738.270239][  T104] 
+[ 1738.272140][  T104] Reported by Kernel Concurrency Sanitizer on:
+[ 1738.285185][  T104] Hardware name: linux,dummy-virt (DT)
+[ 1738.288703][  T104] ==================================================================
+
+
+Cheers,
+Anders
