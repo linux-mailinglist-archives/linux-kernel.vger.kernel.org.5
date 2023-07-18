@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD767575CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EC47575CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231545AbjGRHzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 03:55:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58126 "EHLO
+        id S231508AbjGRH4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 03:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231342AbjGRHzd (ORCPT
+        with ESMTP id S229946AbjGRH4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 03:55:33 -0400
+        Tue, 18 Jul 2023 03:56:00 -0400
 Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A5010E3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 00:55:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D6E2FD
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 00:55:57 -0700 (PDT)
 Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R4rpg5TxWzBQslf
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:55:23 +0800 (CST)
+        by mail.208.org (Postfix) with ESMTP id 4R4rqG2khjzBQslH
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:55:54 +0800 (CST)
 Authentication-Results: mail.208.org (amavisd-new); dkim=pass
         reason="pass (just generated, assumed good)" header.d=208.org
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
         content-transfer-encoding:content-type:message-id:user-agent
         :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689666923; x=1692258924; bh=n941bsO1050Sy4x8o1CeSfhHj64
-        suA3ZJc6fKjpS3K4=; b=XZWNtzOpvIrl3nMBaw+wVal0chvmvovmr9DOaYhlEa7
-        35OTuqeb+YyqctOlgy7o3+GfTDfUtkW3Z0rWFMqwVCXNw0IB1E/JVbpfNw+bPAoP
-        32CfwNzbDmutQV8ZssLPVqxSmweGQTk07YpjvDTswSvt3mF+hRWLi5ymkXU0ANh8
-        PwHurBwkO/pYkiSNZ/qaCO/+KXTWFYG2gXm56hExtTkX7DJRg0J6dZrj0htZP6DI
-        tCnzHRGckxQeO8zj4w5zRCgEoA0k80fyCpGgawP/EoiciaI5rdVHv1JN3PrAq1jY
-        YXSQMr6mpVCQs9TedrNzNjipAuJacS1zXdK41AMdwHg==
+        dkim; t=1689666954; x=1692258955; bh=zWNni/qECU+wKhB4Mx0VGVeY3nW
+        IHBQLKgy0+7TuklE=; b=IHtLeQZUhGryuLc1l44IuMr+WR86/I9bbmn8+dq9rzj
+        uzRAvy1lXohHrI74wvKZIZw1ZyPPgHWaykBx2bN0ECWub3H3zlmdWzqFPGCbHiBc
+        eKErWeIEccWeCVXyVNMVl/hmnO0X+Q3+dPljWpyq+6ct+NesntN5HnCZACi/CIce
+        icDbEQMGkUQG61PlUbN4yjDZB+IL5xPCqqL6TumNlobHokk5Fl05qqqBZAYhwujQ
+        cSJwEMHAyw8BsDTpajghGon9Ycr0O7OaWPKkSHl2jtV8DL83WbD2j67Rh4ShMj0L
+        Bxn+ypOcTN9eF5GLOE7ZnS5TEI3dXfiL3IjL3tNa16w==
 X-Virus-Scanned: amavisd-new at mail.208.org
 Received: from mail.208.org ([127.0.0.1])
         by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id eqzqOUMCKRdt for <linux-kernel@vger.kernel.org>;
-        Tue, 18 Jul 2023 15:55:23 +0800 (CST)
+        with ESMTP id dv4_XWaIS2la for <linux-kernel@vger.kernel.org>;
+        Tue, 18 Jul 2023 15:55:54 +0800 (CST)
 Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R4rpg3KgpzBJDj9;
-        Tue, 18 Jul 2023 15:55:23 +0800 (CST)
+        by mail.208.org (Postfix) with ESMTPSA id 4R4rqG0jShzBHXh4;
+        Tue, 18 Jul 2023 15:55:54 +0800 (CST)
 MIME-Version: 1.0
-Date:   Tue, 18 Jul 2023 15:55:23 +0800
-From:   sunran001@208suo.com
-To:     gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] tty: serial: add missing clk_put()
-In-Reply-To: <20230718075401.16668-1-xujianghui@cdjrlc.com>
-References: <20230718075401.16668-1-xujianghui@cdjrlc.com>
+Date:   Tue, 18 Jul 2023 15:55:54 +0800
+From:   hanyu001@208suo.com
+To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?=5BPATCH=5D_powerpc=3A_boot=3A=C2=A0insert_space_befor?=
+ =?UTF-8?Q?e_the_open_parenthesis_=27=28=27?=
+In-Reply-To: <tencent_66874A8B7152A23DDA815AEB731181CFEA07@qq.com>
+References: <tencent_66874A8B7152A23DDA815AEB731181CFEA07@qq.com>
 User-Agent: Roundcube Webmail
-Message-ID: <047273ae4e4c25eb7b81fd69d761161e@208suo.com>
-X-Sender: sunran001@208suo.com
+Message-ID: <b1818ba6b3b305311f992885748494c9@208suo.com>
+X-Sender: hanyu001@208suo.com
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
@@ -61,27 +62,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the following Coccinelle error:
+Fixes checkpatch error:
 
-./drivers/tty/serial/bcm63xx_uart.c:854:2-8: ERROR: missing clk_put;
-clk_get on line 849 and execution via conditional on line 853
+./arch/powerpc/boot/main.c:273: ERROR: space required before the open 
+parenthesis '('
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
+Signed-off-by: Yu Han <hanyu001@208suo.com>
 ---
-  drivers/tty/serial/bcm63xx_uart.c | 1 +
-  1 file changed, 1 insertion(+)
+  arch/powerpc/boot/main.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/bcm63xx_uart.c 
-b/drivers/tty/serial/bcm63xx_uart.c
-index 55e82d0bf92d..7353b683952d 100644
---- a/drivers/tty/serial/bcm63xx_uart.c
-+++ b/drivers/tty/serial/bcm63xx_uart.c
-@@ -851,6 +851,7 @@ static int bcm_uart_probe(struct platform_device 
-*pdev)
-          clk = of_clk_get(pdev->dev.of_node, 0);
+diff --git a/arch/powerpc/boot/main.c b/arch/powerpc/boot/main.c
+index 64a3d6586321..c8ebd552d1e8 100644
+--- a/arch/powerpc/boot/main.c
++++ b/arch/powerpc/boot/main.c
+@@ -270,7 +270,7 @@ void start(void)
 
-      if (IS_ERR(clk))
-+        clk_put(clk);
-          return -ENODEV;
-
-      port->iotype = UPIO_MEM;
+      kentry = (kernel_entry_t) vmlinux.addr;
+      if (ft_addr) {
+-        if(platform_ops.kentry)
++        if (platform_ops.kentry)
+              platform_ops.kentry(ft_addr, vmlinux.addr);
+          else
+              kentry(ft_addr, 0, NULL);
