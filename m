@@ -2,396 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 259C17585ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB427585F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbjGRUGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 16:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
+        id S230187AbjGRUI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 16:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjGRUGm (ORCPT
+        with ESMTP id S229504AbjGRUIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 16:06:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBC79D
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:06:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D004560CFA
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 20:06:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABC02C433C8;
-        Tue, 18 Jul 2023 20:06:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689710800;
-        bh=qfpmhLMrS6QORXM3Xjd7lWMjzf7nk3c04e5lJQkrGhI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=pn2R1kqWXQrwBfO+NqPq/oSI8rte6bD9B+KHJdk3LYkgd2pCuMZfhIScI5tloPlhi
-         jpai6yXGQn9PEAEamXHdX+BUYyich/cOpnBhzc3uSgapk6V5wk2cAAOsKUSfcbq6nW
-         YuPnEA8+F7qwH6r0yT408RojtEJFHs4iJ4gVJlI63zLJtMjjjKO2aYG7kEYJT5fFxD
-         X+JTgv5pkSEer07J108tSYJJ7rwqbvHpGZCVrB6SwLK9ocv70osLbYxn9uXkfLgcDT
-         E1EOjPOpmWZCoE6WSn0rGvTj1I7NgEGSZ2zF0s+FubxK/qK6WEe8XimCRJPQN6HiSa
-         KDjxRzcKGOYCg==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Guo Ren <guoren@kernel.org>,
-        Song Shuai <suagrfillet@gmail.com>,
-        Pu Lehui <pulehui@huawei.com>,
-        Pu Lehui <pulehui@huaweicloud.com>
-Subject: Re: [PATCH bpf] riscv, bpf: Adapt bpf trampoline to optimized riscv
- ftrace framework
-In-Reply-To: <20230715090137.2141358-1-pulehui@huaweicloud.com>
-References: <20230715090137.2141358-1-pulehui@huaweicloud.com>
-Date:   Tue, 18 Jul 2023 22:06:37 +0200
-Message-ID: <87lefdougi.fsf@all.your.base.are.belong.to.us>
+        Tue, 18 Jul 2023 16:08:24 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF5C79D;
+        Tue, 18 Jul 2023 13:08:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=vHDY6HY38evaUcgIwYMLfID7qjHOzGa9+X/2C1VlfUg=; b=47hKy9sUtWUOWpRN9TkFLue1Hg
+        rhkA8PNF6qT40PAGwNLf/Q40VUYCepAUDRjcEBcdjPdghmVfYu3Udz4/ahwEEqcqUNtNZMZZaG+UW
+        ilVmrs5R3mpzHOdCU3Oa90EuvhFnvSolYTaydGfDhbN9GAW/r/nRJ624FYs6XDUVjgHU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qLqz2-001ebh-O2; Tue, 18 Jul 2023 22:07:44 +0200
+Date:   Tue, 18 Jul 2023 22:07:44 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Michael Walle <mwalle@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Xu Liang <lxu@maxlinear.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Simon Horman <simon.horman@corigine.com>
+Subject: Re: [PATCH net-next v3 02/11] net: phy: introduce
+ phy_has_c45_registers()
+Message-ID: <7be8b305-f287-4e99-bddd-55646285c427@lunn.ch>
+References: <20230620-feature-c45-over-c22-v3-0-9eb37edf7be0@kernel.org>
+ <20230620-feature-c45-over-c22-v3-2-9eb37edf7be0@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230620-feature-c45-over-c22-v3-2-9eb37edf7be0@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pu Lehui <pulehui@huaweicloud.com> writes:
-
-> From: Pu Lehui <pulehui@huawei.com>
->
-> Commit 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to
-> half") optimizes the detour code size of kernel functions to half with
-> T0 register and the upcoming DYNAMIC_FTRACE_WITH_DIRECT_CALLS of riscv
-> is based on this optimization, we need to adapt riscv bpf trampoline
-> based on this. One thing to do is to reduce detour code size of bpf
-> programs, and the second is to deal with the return address after the
-> execution of bpf trampoline. Meanwhile, add more comments and rename
-> some variables to make more sense. The related tests have passed.
->
-> This adaptation needs to be merged before the upcoming
-> DYNAMIC_FTRACE_WITH_DIRECT_CALLS of riscv, otherwise it will crash due
-> to a mismatch in the return address. So we target this modification to
-> bpf tree and add fixes tag for locating.
-
-Thank you for working on this!
-
-> Fixes: 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to half")
-
-This is not a fix. Nothing is broken. Only that this patch much come
-before or as part of the ftrace series.
-
-> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+On Wed, Jul 12, 2023 at 05:07:02PM +0200, Michael Walle wrote:
+> Provide a helper to determine if the PHY has a C45 register space. This
+> is a preparation patch to remove the is_c45 field. No functional change.
+> 
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
 > ---
->  arch/riscv/net/bpf_jit_comp64.c | 110 ++++++++++++++------------------
->  1 file changed, 47 insertions(+), 63 deletions(-)
->
-> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
-p64.c
-> index c648864c8cd1..ffc9aa42f918 100644
-> --- a/arch/riscv/net/bpf_jit_comp64.c
-> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> @@ -241,7 +241,7 @@ static void __build_epilogue(bool is_tail_call, struc=
-t rv_jit_context *ctx)
->  	if (!is_tail_call)
->  		emit_mv(RV_REG_A0, RV_REG_A5, ctx);
->  	emit_jalr(RV_REG_ZERO, is_tail_call ? RV_REG_T3 : RV_REG_RA,
-> -		  is_tail_call ? 20 : 0, /* skip reserved nops and TCC init */
-> +		  is_tail_call ? 12 : 0, /* skip reserved nops and TCC init */
+> v3:
+>  - rename to phy_has_c45_registers()
+> ---
+>  drivers/net/ethernet/hisilicon/hns/hns_ethtool.c |  4 ++--
+>  drivers/net/phy/bcm84881.c                       |  2 +-
+>  drivers/net/phy/marvell10g.c                     |  2 +-
+>  drivers/net/phy/mxl-gpy.c                        |  2 +-
+>  drivers/net/phy/phy-core.c                       |  4 ++--
+>  drivers/net/phy/phy.c                            |  8 +++++---
+>  drivers/net/phy/phy_device.c                     |  6 +++---
+>  drivers/net/phy/phylink.c                        | 12 +++++++-----
+>  include/linux/phy.h                              |  5 +++++
+>  9 files changed, 27 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c b/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
+> index b54f3706fb97..387d24f195aa 100644
+> --- a/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
+> +++ b/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
+> @@ -916,7 +916,7 @@ static void hns_get_strings(struct net_device *netdev, u32 stringset, u8 *data)
+>  					hns_nic_test_strs[MAC_INTERNALLOOP_MAC]);
+>  		ethtool_sprintf(&buff,
+>  				hns_nic_test_strs[MAC_INTERNALLOOP_SERDES]);
+> -		if ((netdev->phydev) && (!netdev->phydev->is_c45))
+> +		if (netdev->phydev && !phy_has_c45_registers(netdev->phydev))
+>  			ethtool_sprintf(&buff,
+>  					hns_nic_test_strs[MAC_INTERNALLOOP_PHY]);
+>  
+> @@ -976,7 +976,7 @@ static int hns_get_sset_count(struct net_device *netdev, int stringset)
+>  		if (priv->ae_handle->phy_if == PHY_INTERFACE_MODE_XGMII)
+>  			cnt--;
+>  
+> -		if ((!netdev->phydev) || (netdev->phydev->is_c45))
+> +		if (!netdev->phydev || phy_has_c45_registers(netdev->phydev))
+>  			cnt--;
 
-Maybe be explicit, and use the "DETOUR_INSNS" from below (and convert to
-bytes)?
+These two look to be phy_has_c22_registers(). Probably. It calls
+phy_loopback() and it seems to assume that only works for C22
+registers, because of the genphy_loopback() call.
 
->  		  ctx);
->  }
->=20=20
-> @@ -618,32 +618,7 @@ static int add_exception_handler(const struct bpf_in=
-sn *insn,
->  	return 0;
->  }
->=20=20
-> -static int gen_call_or_nops(void *target, void *ip, u32 *insns)
-> -{
-> -	s64 rvoff;
-> -	int i, ret;
-> -	struct rv_jit_context ctx;
-> -
-> -	ctx.ninsns =3D 0;
-> -	ctx.insns =3D (u16 *)insns;
-> -
-> -	if (!target) {
-> -		for (i =3D 0; i < 4; i++)
-> -			emit(rv_nop(), &ctx);
-> -		return 0;
-> -	}
-> -
-> -	rvoff =3D (s64)(target - (ip + 4));
-> -	emit(rv_sd(RV_REG_SP, -8, RV_REG_RA), &ctx);
-> -	ret =3D emit_jump_and_link(RV_REG_RA, rvoff, false, &ctx);
-> -	if (ret)
-> -		return ret;
-> -	emit(rv_ld(RV_REG_RA, -8, RV_REG_SP), &ctx);
-> -
-> -	return 0;
-> -}
-> -
-> -static int gen_jump_or_nops(void *target, void *ip, u32 *insns)
-> +static int gen_jump_or_nops(void *target, void *ip, u32 *insns, bool is_=
-call)
->  {
->  	s64 rvoff;
->  	struct rv_jit_context ctx;
-> @@ -658,38 +633,38 @@ static int gen_jump_or_nops(void *target, void *ip,=
- u32 *insns)
->  	}
->=20=20
->  	rvoff =3D (s64)(target - ip);
-> -	return emit_jump_and_link(RV_REG_ZERO, rvoff, false, &ctx);
-> +	return emit_jump_and_link(is_call ? RV_REG_T0 : RV_REG_ZERO,
-> +				  rvoff, false, &ctx);
+>  
+>  		return cnt;
+> diff --git a/drivers/net/phy/bcm84881.c b/drivers/net/phy/bcm84881.c
+> index 9717a1626f3f..857344260230 100644
+> --- a/drivers/net/phy/bcm84881.c
+> +++ b/drivers/net/phy/bcm84881.c
+> @@ -47,7 +47,7 @@ static int bcm84881_probe(struct phy_device *phydev)
+>  	/* This driver requires PMAPMD and AN blocks */
+>  	const u32 mmd_mask = MDIO_DEVS_PMAPMD | MDIO_DEVS_AN;
+>  
+> -	if (!phydev->is_c45 ||
+> +	if (!phy_has_c45_registers(phydev) ||
+>  	    (phydev->c45_ids.devices_in_package & mmd_mask) != mmd_mask)
+>  		return -ENODEV;
 
-Nit: Please use the full 100 char width.
+The comment indicates it. phy_has_c45_registers() is correct, and how
+you access them does not matter.
 
->  }
->=20=20
-> +#define DETOUR_NINSNS	2
-
-Better name? Maybe call this patchable function entry something? Also,
-to catch future breaks like this -- would it make sense to have a
-static_assert() combined with something tied to
--fpatchable-function-entry=3D from arch/riscv/Makefile?
-
-> +
->  int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
->  		       void *old_addr, void *new_addr)
->  {
-> -	u32 old_insns[4], new_insns[4];
-> +	u32 old_insns[DETOUR_NINSNS], new_insns[DETOUR_NINSNS];
->  	bool is_call =3D poke_type =3D=3D BPF_MOD_CALL;
-> -	int (*gen_insns)(void *target, void *ip, u32 *insns);
-> -	int ninsns =3D is_call ? 4 : 2;
+> diff --git a/drivers/net/phy/marvell10g.c b/drivers/net/phy/marvell10g.c
+> index 55d9d7acc32e..d1c12843462f 100644
+> --- a/drivers/net/phy/marvell10g.c
+> +++ b/drivers/net/phy/marvell10g.c
+> @@ -499,7 +499,7 @@ static int mv3310_probe(struct phy_device *phydev)
+>  	u32 mmd_mask = MDIO_DEVS_PMAPMD | MDIO_DEVS_AN;
 >  	int ret;
->=20=20
-> -	if (!is_bpf_text_address((unsigned long)ip))
-> +	if (!is_kernel_text((unsigned long)ip) &&
-> +	    !is_bpf_text_address((unsigned long)ip))
->  		return -ENOTSUPP;
->=20=20
-> -	gen_insns =3D is_call ? gen_call_or_nops : gen_jump_or_nops;
-> -
-> -	ret =3D gen_insns(old_addr, ip, old_insns);
-> +	ret =3D gen_jump_or_nops(old_addr, ip, old_insns, is_call);
->  	if (ret)
->  		return ret;
->=20=20
-> -	if (memcmp(ip, old_insns, ninsns * 4))
-> +	if (memcmp(ip, old_insns, DETOUR_NINSNS * 4))
->  		return -EFAULT;
->=20=20
-> -	ret =3D gen_insns(new_addr, ip, new_insns);
-> +	ret =3D gen_jump_or_nops(new_addr, ip, new_insns, is_call);
->  	if (ret)
->  		return ret;
->=20=20
->  	cpus_read_lock();
->  	mutex_lock(&text_mutex);
-> -	if (memcmp(ip, new_insns, ninsns * 4))
-> -		ret =3D patch_text(ip, new_insns, ninsns);
-> +	if (memcmp(ip, new_insns, DETOUR_NINSNS * 4))
-> +		ret =3D patch_text(ip, new_insns, DETOUR_NINSNS);
->  	mutex_unlock(&text_mutex);
->  	cpus_read_unlock();
->=20=20
-> @@ -717,7 +692,7 @@ static void restore_args(int nregs, int args_off, str=
-uct rv_jit_context *ctx)
->  }
->=20=20
->  static int invoke_bpf_prog(struct bpf_tramp_link *l, int args_off, int r=
-etval_off,
-> -			   int run_ctx_off, bool save_ret, struct rv_jit_context *ctx)
-> +			   int run_ctx_off, bool save_retval, struct rv_jit_context *ctx)
+>  
+> -	if (!phydev->is_c45 ||
+> +	if (!phy_has_c45_registers(phydev) ||
+>  	    (phydev->c45_ids.devices_in_package & mmd_mask) != mmd_mask)
+>  		return -ENODEV;
 
-Why the save_retval name change? This churn is not needed IMO
-(especially since you keep using the _ret name below). Please keep the
-old name.
+Correct, we need the C45 registers. How we access them does not
+matter.
 
+> diff --git a/drivers/net/phy/mxl-gpy.c b/drivers/net/phy/mxl-gpy.c
+> index ea1073adc5a1..b4ddb9a003d9 100644
+> --- a/drivers/net/phy/mxl-gpy.c
+> +++ b/drivers/net/phy/mxl-gpy.c
+> @@ -281,7 +281,7 @@ static int gpy_probe(struct phy_device *phydev)
+>  	int fw_version;
+>  	int ret;
+>  
+> -	if (!phydev->is_c45) {
+> +	if (!phy_has_c45_registers(phydev)) {
+>  		ret = phy_get_c45_ids(phydev);
+>  		if (ret < 0)
+>  			return ret;
+
+This is i think the oddball case which gits a patch of its own
+later. This is about, did we discover the PHY via C22. If so, we need
+to promote to C45. So i actually think this should be expressed
+something like
+
+	  if (phy_has_c22_registers(phydev) &&
+	      !phy_has_c45_registers(phydev))
+
+> diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
+> index a64186dc53f8..686a57d56885 100644
+> --- a/drivers/net/phy/phy-core.c
+> +++ b/drivers/net/phy/phy-core.c
+> @@ -556,7 +556,7 @@ int __phy_read_mmd(struct phy_device *phydev, int devad, u32 regnum)
+>  
+>  	if (phydev->drv && phydev->drv->read_mmd) {
+>  		val = phydev->drv->read_mmd(phydev, devad, regnum);
+> -	} else if (phydev->is_c45) {
+> +	} else if (phy_has_c45_registers(phydev)) {
+
+This i would say should be
+
+phy_has_c45_transfers(phydev). This is about, can we do C45 transfers
+on the bus, and if not, fall back to C45 over C22.
+
+>  		val = __mdiobus_c45_read(phydev->mdio.bus, phydev->mdio.addr,
+>  					 devad, regnum);
+>  	} else {
+> @@ -612,7 +612,7 @@ int __phy_write_mmd(struct phy_device *phydev, int devad, u32 regnum, u16 val)
+>  
+>  	if (phydev->drv && phydev->drv->write_mmd) {
+>  		ret = phydev->drv->write_mmd(phydev, devad, regnum, val);
+> -	} else if (phydev->is_c45) {
+> +	} else if (phy_has_c45_registers(phydev)) {
+
+same as above.
+
+>  		ret = __mdiobus_c45_write(phydev->mdio.bus, phydev->mdio.addr,
+>  					  devad, regnum, val);
+>  	} else {
+> diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
+> index bdf00b2b2c1d..c6059ba8b9e6 100644
+> --- a/drivers/net/phy/phy.c
+> +++ b/drivers/net/phy/phy.c
+> @@ -182,7 +182,8 @@ int phy_restart_aneg(struct phy_device *phydev)
 >  {
->  	int ret, branch_off;
->  	struct bpf_prog *p =3D l->link.prog;
-> @@ -757,7 +732,7 @@ static int invoke_bpf_prog(struct bpf_tramp_link *l, =
-int args_off, int retval_of
->  	if (ret)
->  		return ret;
->=20=20
-> -	if (save_ret)
-> +	if (save_retval)
->  		emit_sd(RV_REG_FP, -retval_off, regmap[BPF_REG_0], ctx);
->=20=20
->  	/* update branch with beqz */
-> @@ -787,20 +762,19 @@ static int __arch_prepare_bpf_trampoline(struct bpf=
-_tramp_image *im,
->  	int i, ret, offset;
->  	int *branches_off =3D NULL;
->  	int stack_size =3D 0, nregs =3D m->nr_args;
-> -	int retaddr_off, fp_off, retval_off, args_off;
-> -	int nregs_off, ip_off, run_ctx_off, sreg_off;
-> +	int fp_off, retval_off, args_off, nregs_off, ip_off, run_ctx_off, sreg_=
-off;
->  	struct bpf_tramp_links *fentry =3D &tlinks[BPF_TRAMP_FENTRY];
->  	struct bpf_tramp_links *fexit =3D &tlinks[BPF_TRAMP_FEXIT];
->  	struct bpf_tramp_links *fmod_ret =3D &tlinks[BPF_TRAMP_MODIFY_RETURN];
->  	void *orig_call =3D func_addr;
-> -	bool save_ret;
-> +	bool save_retval, traced_ret;
->  	u32 insn;
->=20=20
->  	/* Generated trampoline stack layout:
->  	 *
->  	 * FP - 8	    [ RA of parent func	] return address of parent
->  	 *					  function
-> -	 * FP - retaddr_off [ RA of traced func	] return address of traced
-> +	 * FP - 16	    [ RA of traced func	] return address of
->  	traced
+>  	int ret;
+>  
+> -	if (phydev->is_c45 && !(phydev->c45_ids.devices_in_package & BIT(0)))
+> +	if (phy_has_c45_registers(phydev) &&
+> +	    !(phydev->c45_ids.devices_in_package & BIT(0)))
+>  		ret = genphy_c45_restart_aneg(phydev);
+>  	else
+>  		ret = genphy_restart_aneg(phydev);
 
-BPF code uses frame pointers. Shouldn't the trampoline frame look like a
-regular frame [1], i.e. start with return address followed by previous
-frame pointer?
+Correct.
 
->  	 *					  function
->  	 * FP - fp_off	    [ FP of parent func ]
->  	 *
-> @@ -833,17 +807,20 @@ static int __arch_prepare_bpf_trampoline(struct bpf=
-_tramp_image *im,
->  	if (nregs > 8)
->  		return -ENOTSUPP;
->=20=20
-> -	/* room for parent function return address */
-> +	/* room for return address of parent function */
->  	stack_size +=3D 8;
->=20=20
-> -	stack_size +=3D 8;
-> -	retaddr_off =3D stack_size;
-> +	/* whether return to return address of traced function after bpf trampo=
-line */
-> +	traced_ret =3D func_addr && !(flags & BPF_TRAMP_F_SKIP_FRAME);
-> +	/* room for return address of traced function */
-> +	if (traced_ret)
-> +		stack_size +=3D 8;
->=20=20
->  	stack_size +=3D 8;
->  	fp_off =3D stack_size;
->=20=20
-> -	save_ret =3D flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FENTRY_RE=
-T);
-> -	if (save_ret) {
-> +	save_retval =3D flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FENTRY=
-_RET);
-> +	if (save_retval) {
->  		stack_size +=3D 8;
->  		retval_off =3D stack_size;
+> @@ -203,7 +204,7 @@ int phy_aneg_done(struct phy_device *phydev)
+>  {
+>  	if (phydev->drv && phydev->drv->aneg_done)
+>  		return phydev->drv->aneg_done(phydev);
+> -	else if (phydev->is_c45)
+> +	else if (phy_has_c45_registers(phydev))
+>  		return genphy_c45_aneg_done(phydev);
+>  	else
+>  		return genphy_aneg_done(phydev);
+
+Correct.
+
+> @@ -896,7 +897,8 @@ int phy_config_aneg(struct phy_device *phydev)
+>  	/* Clause 45 PHYs that don't implement Clause 22 registers are not
+>  	 * allowed to call genphy_config_aneg()
+>  	 */
+> -	if (phydev->is_c45 && !(phydev->c45_ids.devices_in_package & BIT(0)))
+> +	if (phy_has_c45_registers(phydev) &&
+> +	    !(phydev->c45_ids.devices_in_package & BIT(0)))
+>  		return genphy_c45_config_aneg(phydev);
+
+Correct.
+
+>  	return genphy_config_aneg(phydev);
+> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> index 226d5507c865..44968ea447fc 100644
+> --- a/drivers/net/phy/phy_device.c
+> +++ b/drivers/net/phy/phy_device.c
+> @@ -533,7 +533,7 @@ static int phy_bus_match(struct device *dev, struct device_driver *drv)
+>  	if (phydrv->match_phy_device)
+>  		return phydrv->match_phy_device(phydev);
+>  
+> -	if (phydev->is_c45) {
+> +	if (phy_has_c45_registers(phydev)) {
+>  		for (i = 1; i < num_ids; i++) {
+>  			if (phydev->c45_ids.device_ids[i] == 0xffffffff)
+>  				continue;
+
+Correct, do we have C45 ID registers, and does not matter how we got
+them.
+
+> @@ -1452,7 +1452,7 @@ int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
+>  	 * exist, and we should use the genphy driver.
+>  	 */
+>  	if (!d->driver) {
+> -		if (phydev->is_c45)
+> +		if (phy_has_c45_registers(phydev))
+>  			d->driver = &genphy_c45_driver.mdiodrv.driver;
+>  		else
+>  			d->driver = &genphy_driver.mdiodrv.driver;
+
+Correct.
+
+> @@ -3227,7 +3227,7 @@ static int phy_probe(struct device *dev)
 >  	}
-> @@ -869,7 +846,11 @@ static int __arch_prepare_bpf_trampoline(struct bpf_=
-tramp_image *im,
->=20=20
->  	emit_addi(RV_REG_SP, RV_REG_SP, -stack_size, ctx);
->=20=20
-> -	emit_sd(RV_REG_SP, stack_size - retaddr_off, RV_REG_RA, ctx);
-> +	/* store return address of parent function */
-> +	emit_sd(RV_REG_SP, stack_size - 8, RV_REG_RA, ctx);
-> +	/* store return address of traced function */
-> +	if (traced_ret)
-> +		emit_sd(RV_REG_SP, stack_size - 16, RV_REG_T0, ctx);
->  	emit_sd(RV_REG_SP, stack_size - fp_off, RV_REG_FP, ctx);
->=20=20
->  	emit_addi(RV_REG_FP, RV_REG_SP, stack_size, ctx);
-> @@ -890,7 +871,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_t=
-ramp_image *im,
->=20=20
->  	/* skip to actual body of traced function */
->  	if (flags & BPF_TRAMP_F_SKIP_FRAME)
-> -		orig_call +=3D 16;
-> +		orig_call +=3D 8;
+>  	else if (phydrv->get_features)
+>  		err = phydrv->get_features(phydev);
+> -	else if (phydev->is_c45)
+> +	else if (phy_has_c45_registers(phydev))
+>  		err = genphy_c45_pma_read_abilities(phydev);
+>  	else
+>  		err = genphy_read_abilities(phydev);
 
-Use the define above so it's obvious what you're skipping.
+Correct.
 
->=20=20
->  	if (flags & BPF_TRAMP_F_CALL_ORIG) {
->  		emit_imm(RV_REG_A0, (const s64)im, ctx);
-> @@ -962,22 +943,25 @@ static int __arch_prepare_bpf_trampoline(struct bpf=
-_tramp_image *im,
->  	if (flags & BPF_TRAMP_F_RESTORE_REGS)
->  		restore_args(nregs, args_off, ctx);
->=20=20
-> -	if (save_ret)
-> +	if (save_retval)
->  		emit_ld(RV_REG_A0, -retval_off, RV_REG_FP, ctx);
->=20=20
->  	emit_ld(RV_REG_S1, -sreg_off, RV_REG_FP, ctx);
->=20=20
-> -	if (flags & BPF_TRAMP_F_SKIP_FRAME)
-> -		/* return address of parent function */
-> +	if (traced_ret) {
-> +		/* restore return address of parent function */
->  		emit_ld(RV_REG_RA, stack_size - 8, RV_REG_SP, ctx);
-> -	else
-> -		/* return address of traced function */
-> -		emit_ld(RV_REG_RA, stack_size - retaddr_off, RV_REG_SP, ctx);
-> +		/* restore return address of traced function */
-> +		emit_ld(RV_REG_T0, stack_size - 16, RV_REG_SP, ctx);
-> +	} else {
-> +		/* restore return address of parent function */
-> +		emit_ld(RV_REG_T0, stack_size - 8, RV_REG_SP, ctx);
-> +	}
->=20=20
->  	emit_ld(RV_REG_FP, stack_size - fp_off, RV_REG_SP, ctx);
->  	emit_addi(RV_REG_SP, RV_REG_SP, stack_size, ctx);
->=20=20
-> -	emit_jalr(RV_REG_ZERO, RV_REG_RA, 0, ctx);
-> +	emit_jalr(RV_REG_ZERO, RV_REG_T0, 0, ctx);
->=20=20
->  	ret =3D ctx->ninsns;
->  out:
-> @@ -1664,7 +1648,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, =
-struct rv_jit_context *ctx,
->=20=20
->  void bpf_jit_build_prologue(struct rv_jit_context *ctx)
+> diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
+> index d0aaa5cad853..54fde8252079 100644
+> --- a/drivers/net/phy/phylink.c
+> +++ b/drivers/net/phy/phylink.c
+> @@ -1726,7 +1726,8 @@ static int phylink_bringup_phy(struct phylink *pl, struct phy_device *phy,
+>  	 * against all interface modes, which may lead to more ethtool link
+>  	 * modes being advertised than are actually supported.
+>  	 */
+> -	if (phy->is_c45 && config.rate_matching == RATE_MATCH_NONE &&
+> +	if (phy_has_c45_registers(phy) &&
+> +	    config.rate_matching == RATE_MATCH_NONE &&
+>  	    interface != PHY_INTERFACE_MODE_RXAUI &&
+>  	    interface != PHY_INTERFACE_MODE_XAUI &&
+>  	    interface != PHY_INTERFACE_MODE_USXGMII)
+
+I would say correct. The comment above this is:
+
+	/* Clause 45 PHYs may switch their Serdes lane between, e.g. 10GBASE-R,
+	 * 5GBASE-R, 2500BASE-X and SGMII if they are not using rate matching.
+
+I suppose a C22 PHY could as well, but none currently do, and actually
+implementing anything faster than 1G without C45 is pretty difficult.
+
+> @@ -2673,7 +2674,7 @@ static int phylink_phy_read(struct phylink *pl, unsigned int phy_id,
+>  					reg);
+>  	}
+>  
+> -	if (phydev->is_c45) {
+> +	if (phy_has_c45_registers(phydev)) {
+>  		switch (reg) {
+>  		case MII_BMCR:
+>  		case MII_BMSR:
+
+This one is less clear. It ends up doing:
+
+		return mdiobus_c45_read(pl->phydev->mdio.bus, prtad, devad,
+					reg);
+
+which is a C45 bus transaction. So i would actually say this should be
+phy_has_c45_transfers(phydev). And maybe at some point in the future
+this gets changed to use a higher level function which can do either
+C45 or C45 over C22, and then the condition changed to
+phy_has_c45_registers(phydev).
+
+> @@ -2715,7 +2716,7 @@ static int phylink_phy_write(struct phylink *pl, unsigned int phy_id,
+>  					 reg, val);
+>  	}
+>  
+> -	if (phydev->is_c45) {
+> +	if (phy_has_c45_registers(phydev)) {
+>  		switch (reg) {
+>  		case MII_BMCR:
+>  		case MII_BMSR:
+
+This is the same as the previous.
+
+> @@ -3188,8 +3189,9 @@ static void phylink_sfp_link_up(void *upstream)
+>   */
+>  static bool phylink_phy_no_inband(struct phy_device *phy)
 >  {
-> -	int i, stack_adjust =3D 0, store_offset, bpf_stack_adjust;
-> +	int stack_adjust =3D 0, store_offset, bpf_stack_adjust;
->=20=20
->  	bpf_stack_adjust =3D round_up(ctx->prog->aux->stack_depth, 16);
->  	if (bpf_stack_adjust)
-> @@ -1691,9 +1675,9 @@ void bpf_jit_build_prologue(struct rv_jit_context *=
-ctx)
->=20=20
->  	store_offset =3D stack_adjust - 8;
->=20=20
-> -	/* reserve 4 nop insns */
-> -	for (i =3D 0; i < 4; i++)
-> -		emit(rv_nop(), ctx);
-> +	/* 2 nops reserved for auipc+jalr pair */
-> +	emit(rv_nop(), ctx);
-> +	emit(rv_nop(), ctx);
+> -	return phy->is_c45 && phy_id_compare(phy->c45_ids.device_ids[1],
+> -					     0xae025150, 0xfffffff0);
+> +	return phy_has_c45_registers(phy) &&
+> +	       phy_id_compare(phy->c45_ids.device_ids[1],
+> +			      0xae025150, 0xfffffff0);
+>  }
 
-Use the define above, instead of hardcoding two nops.
+Correct, we are looking at a C45 ID.
 
+>  static int phylink_sfp_connect_phy(void *upstream, struct phy_device *phy)
+> diff --git a/include/linux/phy.h b/include/linux/phy.h
+> index 11c1e91563d4..fdb3774e99fc 100644
+> --- a/include/linux/phy.h
+> +++ b/include/linux/phy.h
+> @@ -766,6 +766,11 @@ static inline struct phy_device *to_phy_device(const struct device *dev)
+>  	return container_of(to_mdio_device(dev), struct phy_device, mdio);
+>  }
+>  
+> +static inline bool phy_has_c45_registers(struct phy_device *phydev)
+> +{
+> +	return phydev->is_c45;
+> +}
 
-Thanks,
-Bj=C3=B6rn
+And this is where it gets interesting. I think as a first step, you
+should implement the four functions:
 
-[1] https://github.com/riscv-non-isa/riscv-elf-psabi-doc/blob/master/riscv-=
-cc.adoc#frame-pointer-convention
+phy_has_c22_registers()
+phy_has_c45_registers()
+phy_has_c22_transfers()
+phy_has_c45_transfers()
+
+based on this. So there is initially no functional change.
+
+You can then change the implementation of _transfers() based on what
+the MDIO bus can do, plus the quirk for if a FUBAR microchip PHY has
+been found.
+
+Then change the implementation of _registers() based on the results of
+probing for the ID registers.
+
+That should give us a basis for a clean separation between register
+spaces and bus transaction, and then adding C45 over C22 should be
+more obviously correct.
+
+	Andrew
