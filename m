@@ -2,161 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD00275883A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4421B758843
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbjGRWGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 18:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
+        id S231368AbjGRWJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 18:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231567AbjGRWGf (ORCPT
+        with ESMTP id S231221AbjGRWJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 18:06:35 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C601BE3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:06:16 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b743161832so96141941fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:06:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689717965; x=1690322765;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Fw0nFX/fe3uOfziao1TwEAT5+JrlGsI5lSuoy2n9tBA=;
-        b=hDWc2AUJzQ07ReGrR9QzoD1bK5CxJFbwb6tMUeWdEZH9ulfIK3oJ5sNqZE2YwsdVkY
-         fBKne73uv9V8fmHcnhfdLe2oHV9STUropH2Eh2RvDcjWxFpdIwfm/38kSqDRiEDIjGnl
-         HzSKj/AXg98gs2Mviyay/eSmxXBWU3OPDs/FFHHAVfEAxC7oaI2lY5BPJpLbAa/pUZuW
-         v+mK5yh1P08TRXMvOF5m/GBi7VPTYtepmuIdBJ9GTs4DMZKKtKdCRylWz0mS7t+Mthbi
-         F6NJ1e52wQ3FJA5GUBS9VahZ06OZyTT17HhdFjZgcn0u0sJxOo2ZXzhZ2H1Px6gd3LLg
-         QqPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689717965; x=1690322765;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fw0nFX/fe3uOfziao1TwEAT5+JrlGsI5lSuoy2n9tBA=;
-        b=ZW1Z6B2tVNEfA1VA4jD1dO0lz9rpU55YpYtP1WSb/40EFu5ra9yBEn7rOG0o+Gg61/
-         I77eA9ekiiXmWPygcUXNotGDwxEyHAZYvsYNxm4oLyXr7qg0IAwHzQVkkT8TcU4WO98a
-         QIZ5n6po4o9Oj9H/PhY+EsPU2aO8sZdTacTvzKglKNHON3+IxPkyUeTGNYFZ7uyVR8Jp
-         HU1cv7EF0SUd3BKO9qi5yDEOherlwbun3ZyxOwjOOrPA4oLdNZkYm5Exs9kfR892hyL9
-         WFAuoxASb0dWuCiwv2MW4Zk4VnuSjByQSE41rsExlmqtJKPBHCxWiSpTeIQZWWfQ5FlC
-         kKPw==
-X-Gm-Message-State: ABy/qLYzOPRlcKhjrlxYgl11yDEg+wV5LEyCvRXhGdnLMGgDgg4oZtg6
-        56Ho6/W+4sKYfskYUnXY0JQ+Sw==
-X-Google-Smtp-Source: APBJJlFUHOXrYvXL54F5FwWX6WaokAPWGX+iRFN+3v7wQZ8Z23s/9SURLXYMPk0WyuY3+4IW2m7geg==
-X-Received: by 2002:a2e:b052:0:b0:2b6:d9da:3d7e with SMTP id d18-20020a2eb052000000b002b6d9da3d7emr392042ljl.45.1689717965146;
-        Tue, 18 Jul 2023 15:06:05 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
-        by smtp.gmail.com with ESMTPSA id s6-20020a2e83c6000000b002b71a928c63sm695068ljh.115.2023.07.18.15.06.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 15:06:04 -0700 (PDT)
-Message-ID: <3ce19d8f-97d8-15b6-5148-78e200b112e9@linaro.org>
-Date:   Wed, 19 Jul 2023 01:06:03 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 06/15] dt-bindings: display/msm: sc7180-dpu: Describe
- SM6125
-Content-Language: en-GB
-To:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        Tue, 18 Jul 2023 18:09:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9421FEA;
+        Tue, 18 Jul 2023 15:09:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 11AAC61240;
+        Tue, 18 Jul 2023 22:08:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9CECC433C7;
+        Tue, 18 Jul 2023 22:08:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689718126;
+        bh=BcSJ+APt15bxTEa2qIWY+dbSjXSa6zCDNvGS//Pq2Bw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Mrz2Gd2AHkJMrJ6fkA1itsrLXUW7EkYGZ0A0UFy/PU40f2AVA4OvFVWYJYmZrX1GL
+         fuDhQK+hM7XWG0gIqwYoWOQuvpKPWE3s2Cm2o8aBFO2sd2kZN5o9aqWuunbxoSS2ey
+         yXiooGgGiNovpynYnVnQ3ea1VDeh2tmZlSjnRHCNNqMWPQ6fRwN2N6J7b5bIzBlURK
+         wub6eymDeU1uRAyRbWXe2rzwv8gOJRt41q47jm90N77uC6309g2YfXf0LbVwjhgN2f
+         eSsaZZ/ni74+OpmzyDoB/S73mm7utxpptKLuw8qcYVxJN+lLLByWSlf8Xh1vxRnZ42
+         zib9oxJRH4Z0w==
+Received: (nullmailer pid 1979772 invoked by uid 1000);
+        Tue, 18 Jul 2023 22:08:43 -0000
+Date:   Tue, 18 Jul 2023 16:08:43 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Maxim Kochetkov <fido_max@inbox.ru>
+Cc:     alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krishna Manikandan <quic_mkrishn@quicinc.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, Lux Aliaga <they@mint.lgbt>,
-        Rob Herring <robh@kernel.org>
-References: <20230718-sm6125-dpu-v3-0-6c5a56e99820@somainline.org>
- <20230718-sm6125-dpu-v3-6-6c5a56e99820@somainline.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20230718-sm6125-dpu-v3-6-6c5a56e99820@somainline.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Astrid Rost <astrid.rost@axis.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Herve Codina <herve.codina@bootlin.com>,
+        Aidan MacDonald <aidanmacdonald.0x0@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ASoC: dt-bindings: simple-card: add triggers
+ properties
+Message-ID: <20230718220843.GA1944897-robh@kernel.org>
+References: <20230715083046.108674-1-fido_max@inbox.ru>
+ <20230715083046.108674-3-fido_max@inbox.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230715083046.108674-3-fido_max@inbox.ru>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/2023 00:24, Marijn Suijten wrote:
-> SM6125 is identical to SM6375 except that while downstream also defines
-> a throttle clock, its presence results in timeouts whereas SM6375
-> requires it to not observe any timeouts.  This is represented by
-> reducing the clock array length to 6 so that it cannot be passed.  Note
-> that any SoC other than SM6375 (currently SC7180 and SM6350) are
-> unconstrained and could either pass or leave out this "throttle" clock.
+On Sat, Jul 15, 2023 at 11:30:43AM +0300, Maxim Kochetkov wrote:
+> The trigger-start/stop properties allows to specify DAI link
+> trigger ordering method.
 
-Could you please describe, what kind of timeouts do you observe? Is this 
-the DSI underruns issue? If so, it might be fixed by the MDSS 
-interconnect fix ([1]).
+Obviously. Why do you need these? What problem does it solve?
 
-[1] https://patchwork.freedesktop.org/series/116576/
+I don't think these belong in simple-card. What's next? What if you need 
+delays between each step? This is the problem with 'simple' or 'generic' 
+bindings. It's a never ending addition of properties which are not well 
+thought out.
 
 > 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
 > ---
->   .../devicetree/bindings/display/msm/qcom,sc7180-dpu.yaml   | 14 ++++++++++++++
->   1 file changed, 14 insertions(+)
+>  .../bindings/sound/simple-card.yaml           | 31 +++++++++++++++++++
+>  1 file changed, 31 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/display/msm/qcom,sc7180-dpu.yaml b/Documentation/devicetree/bindings/display/msm/qcom,sc7180-dpu.yaml
-> index 630b11480496..37f66940c5e3 100644
-> --- a/Documentation/devicetree/bindings/display/msm/qcom,sc7180-dpu.yaml
-> +++ b/Documentation/devicetree/bindings/display/msm/qcom,sc7180-dpu.yaml
-> @@ -15,6 +15,7 @@ properties:
->     compatible:
->       enum:
->         - qcom,sc7180-dpu
-> +      - qcom,sm6125-dpu
->         - qcom,sm6350-dpu
->         - qcom,sm6375-dpu
->   
-> @@ -73,6 +74,19 @@ allOf:
->           clock-names:
->             minItems: 7
->   
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          const: qcom,sm6125-dpu
+> diff --git a/Documentation/devicetree/bindings/sound/simple-card.yaml b/Documentation/devicetree/bindings/sound/simple-card.yaml
+> index 59ac2d1d1ccf..f1878d470d83 100644
+> --- a/Documentation/devicetree/bindings/sound/simple-card.yaml
+> +++ b/Documentation/devicetree/bindings/sound/simple-card.yaml
+> @@ -99,6 +99,28 @@ definitions:
+>      description: the widget names for which pin switches must be created.
+>      $ref: /schemas/types.yaml#/definitions/string-array
+>  
+> +  trigger-start:
+> +    description: |-
+> +      Start trigger ordering method:
+> +      default: Link->Component->DAI
+> +      ldc: Link->DAI->Component
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    items:
+> +      enum:
+> +        - default
+
+Why do you need a value of 'default'? What's the default when the 
+property is not present?
+
+> +        - ldc
 > +
-> +    then:
-> +      properties:
-> +        clocks:
-> +          maxItems: 6
+> +  trigger-stop:
+> +    description: |-
+> +      Stop trigger ordering method:
+> +      default: DAI->Component->Link
+> +      ldc: Component->DAI->Link
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    items:
+> +      enum:
+> +        - default
+> +        - ldc
 > +
-> +        clock-names:
-> +          maxItems: 6
+>    format:
+>      description: audio format.
+>      items:
+> @@ -210,6 +232,10 @@ properties:
+>      maxItems: 1
+>    simple-audio-card,mic-det-gpio:
+>      maxItems: 1
+> +  simple-audio-card,trigger-start:
+> +    $ref: "#/definitions/trigger-start"
+> +  simple-audio-card,trigger-stop:
+> +    $ref: "#/definitions/trigger-stop"
+
+Don't continue this 'simple-audio-card,' prefix pattern. With it, no 
+other binding can use these properties.
+
+>  
+>  patternProperties:
+>    "^simple-audio-card,cpu(@[0-9a-f]+)?$":
+> @@ -259,6 +285,11 @@ patternProperties:
+>          maxItems: 1
+>        mic-det-gpio:
+>          maxItems: 1
+> +      trigger-start:
+> +        $ref: "#/definitions/trigger-start"
+> +      trigger-stop:
+> +        $ref: "#/definitions/trigger-stop"
 > +
->   examples:
->     - |
->       #include <dt-bindings/clock/qcom,dispcc-sc7180.h>
+>  
+>      patternProperties:
+>        "^cpu(-[0-9]+)?$":
+> -- 
+> 2.40.1
 > 
-
--- 
-With best wishes
-Dmitry
-
