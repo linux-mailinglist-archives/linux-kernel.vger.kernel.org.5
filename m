@@ -2,133 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1387757F91
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A97757F9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbjGROb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50952 "EHLO
+        id S233290AbjGROcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233011AbjGRObW (ORCPT
+        with ESMTP id S233185AbjGROcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:31:22 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910261BC6;
-        Tue, 18 Jul 2023 07:31:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=XL5HpWpvSZ6bXIocoWJRq1XHyxJYL5lSUA7SoP9MkaA=; b=1T01Z0VtbWfEgVQgd7NQ64UAZh
-        EOzIk/fiDOXv1fS+d/KyaJdEnbIoVXqbVX0dcJgReaJfVk4wPhZewzegSQwKtKTXgtQxmqnNn+CFw
-        IKdDKxYI2BUTcyJ9MHPTDbcHzYeJKoVuatsHjFv6/fITu/IKRAysCnqotbNGmObz9MG6L2a5ud7w+
-        ZrA72n/yuWglqXXdVZOLgRrkuca/EOOHZjENHlcH94soqFtkSn77PF86iNTnhMGNBzcvRjjLouJBh
-        JG1njiXJJg98GleMFHzYQ9YlNo4X8kmXcsZLUYq1vEh/ROK6hgUtLRuIDaROIoegCb3xUI3qk849M
-        CRfqNvjg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49238)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qLljE-0005oW-1J;
-        Tue, 18 Jul 2023 15:31:04 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qLljD-00036w-Cz; Tue, 18 Jul 2023 15:31:03 +0100
-Date:   Tue, 18 Jul 2023 15:31:03 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Maxim Georgiev <glipus@gmail.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-        Gerhard Engleder <gerhard@engleder-embedded.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        UNGLinuxDriver@microchip.com,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Casper Andersson <casper.casan@gmail.com>,
-        Sergey Organov <sorganov@gmail.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 net-next 10/12] net: transfer rtnl_lock() requirement
- from ethtool_set_ethtool_phy_ops() to caller
-Message-ID: <ZLaiJ4G6TaJYGJyU@shell.armlinux.org.uk>
-References: <20230717152709.574773-1-vladimir.oltean@nxp.com>
- <20230717152709.574773-11-vladimir.oltean@nxp.com>
+        Tue, 18 Jul 2023 10:32:08 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029D71FC6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:31:32 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-cc7863e7b82so3742154276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 07:31:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689690691; x=1692282691;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rjpIeqow7KavnD0/SRlgq73LQricx6uLDxJMeUQiZ4Q=;
+        b=PPKZxxlbX67hKoW02aRYjLt7DnZCbtwFM52WyDMWojmxap2OFcv4VhrJtfyoOPmaY5
+         K3dJSnLIcwzPAUuVeAVZE15JOcbVf/Qk9xdCGyrEZo01HRCrRhKm9glg7WIENRWIlzkW
+         1HXFRWSXZ2Fd8fnQpyJVPZFoZ46mf5PgkuFBA6+w2T2zku8i2GfGbTAe81O7LAsxB8A6
+         kXkizNhQjyq3zL101Xsj2UU6LDY34TOft7WkNZNGNcEoEQwO84n5ZOBk2ijX78886e8/
+         I66q5/Avp/9sseOt8mtApcdHGoPNhCPiUukAB3GtCkY6OGImiwuASUlXC0o61p15M4k8
+         sYqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689690691; x=1692282691;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rjpIeqow7KavnD0/SRlgq73LQricx6uLDxJMeUQiZ4Q=;
+        b=bke0xqtRQHT3LfYS352QXtRafTgeDI0GHmp9TTfVS2izfgouDKZ2Is5rWGGKvh/X6x
+         +aB2ZigX08YOAnKW74NCaEkvLyIimdLdHmh4IPEh4hJhgrCzOlzDdqB1y5HQQ13xZTzL
+         2ah6rZ8c/i3ivhUeDZbCzDCIE8n/91+AGM1cX4ZS+22/77rLnYhE0Tb5bsPRu48u5Zed
+         C1GpypdKjhkCEn9v6HxrOspp8L693rBMMpMjX1nCqYc2n103mRFnulwvp3Tza+T5y2Ln
+         JwiUNJ9nzeuES4y3CEH+oMXJU1rrzwbzoLV3Mf24JBqJ19muONb46mE2fZUZ8oVsNymL
+         6fkQ==
+X-Gm-Message-State: ABy/qLZ998rjZpjMcA7Yj6R/x9H9Vr8/rKQXaCTzNmgrGc74WxBwcr7n
+        K8eUBz8QPZtF4a2T15nO7wpgK5KTBnLPdJhNimiYqBJN6ho=
+X-Google-Smtp-Source: APBJJlHbP2K9+0wdcMRs1ip81cmcwyNZLOlC7o4iriCt43sinSc0iTV9tvvNKQBkROzB3Os0KlriLnI/3+rVCADyVIc=
+X-Received: by 2002:a5b:4d2:0:b0:cf0:8fde:c326 with SMTP id
+ u18-20020a5b04d2000000b00cf08fdec326mr35365ybp.42.1689690691401; Tue, 18 Jul
+ 2023 07:31:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717152709.574773-11-vladimir.oltean@nxp.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230710141408.9998-1-zhiguangni01@gmail.com>
+In-Reply-To: <20230710141408.9998-1-zhiguangni01@gmail.com>
+From:   Liam Ni <zhiguangni01@gmail.com>
+Date:   Tue, 18 Jul 2023 22:31:20 +0800
+Message-ID: <CACZJ9cXGhMhmVCJ6Yn9GHGjY3KAGi+Px9Sr63_+inwU6Fg99nA@mail.gmail.com>
+Subject: Re: [PATCH V3] [PATCH V3] NUMA:Improve the efficiency of calculating
+ pages loss
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        loongarch@lists.linux.dev
+Cc:     zhoubinbin@loongson.cn, chenfeiyang@loongson.cn,
+        jiaxun.yang@flygoat.com, rppt@kernel.org,
+        akpm@linux-foundation.org, hpa@zytor.com, x86@kernel.org,
+        bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
+        peterz@infradead.org, luto@kernel.org, dave.hansen@linux.intel.com,
+        kernel@xen0n.name, chenhuacai@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 06:27:07PM +0300, Vladimir Oltean wrote:
-> phy_init() and phy_exit() will have to do more stuff under rtnl_lock()
-> in a future change. Since rtnl_unlock() -> netdev_run_todo() does a lot
-> of stuff under the hood, it's a pity to lock and unlock the rtnetlink
-> mutex twice in a row.
-> 
-> Change the calling convention such that the only caller of
-> ethtool_set_ethtool_phy_ops(), phy_device.c, provides a context where
-> the rtnl_mutex is already acquired.
-> 
-> Note that phy_exit() wasn't performing the opposite teardown of
-> phy_init(). Reverse mdio_bus_init() with ethtool_set_ethtool_phy_ops(),
-> so that this is now the case.
+Friendly ping
 
-To me, this looks buggy.
-
-> @@ -3451,11 +3452,14 @@ static int __init phy_init(void)
+On Mon, 10 Jul 2023 at 22:14, Liam Ni <zhiguangni01@gmail.com> wrote:
+>
+> The number of pages in memblock that doesn't have the node
+> assigned,which also means that these pages are not in numa_info.
+> So these pages can represent the number of lose pages.
+>
+> V2:https://lore.kernel.org/all/20230619075315.49114-1-zhiguangni01@gmail.com/
+> V1:https://lore.kernel.org/all/20230615142016.419570-1-zhiguangni01@gmail.com/
+>
+> Signed-off-by: Liam Ni <zhiguangni01@gmail.com>
+> ---
+>  arch/loongarch/kernel/numa.c | 23 ++++++++---------------
+>  arch/x86/mm/numa.c           | 26 +++++++-------------------
+>  include/linux/mm.h           |  1 +
+>  mm/mm_init.c                 | 20 ++++++++++++++++++++
+>  4 files changed, 36 insertions(+), 34 deletions(-)
+>
+> diff --git a/arch/loongarch/kernel/numa.c b/arch/loongarch/kernel/numa.c
+> index 708665895b47..0239891e4d19 100644
+> --- a/arch/loongarch/kernel/numa.c
+> +++ b/arch/loongarch/kernel/numa.c
+> @@ -262,25 +262,18 @@ static void __init node_mem_init(unsigned int node)
+>   * Sanity check to catch more bad NUMA configurations (they are amazingly
+>   * common).  Make sure the nodes cover all memory.
+>   */
+> -static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
+> +static bool __init memblock_validate_numa_coverage(const u64 limit)
 >  {
->  	int rc;
->  
-> +	rtnl_lock();
-> +	ethtool_set_ethtool_phy_ops(&phy_ethtool_phy_ops);
-> +	rtnl_unlock();
+> -       int i;
+> -       u64 numaram, biosram;
+> +       u64 lo_pg;
+>
+> -       numaram = 0;
+> -       for (i = 0; i < mi->nr_blks; i++) {
+> -               u64 s = mi->blk[i].start >> PAGE_SHIFT;
+> -               u64 e = mi->blk[i].end >> PAGE_SHIFT;
+> +       lo_pg = max_pfn - calculate_without_node_pages_in_range();
+>
+> -               numaram += e - s;
+> -               numaram -= __absent_pages_in_range(mi->blk[i].nid, s, e);
+> -               if ((s64)numaram < 0)
+> -                       numaram = 0;
+> +       /* We seem to lose 3 pages somewhere. Allow 1M of slack. */
+> +       if (lo_pg >= limit) {
+> +               pr_err("NUMA: We lost 1m size page.\n");
+> +               return false;
+>         }
+> -       max_pfn = max_low_pfn;
+> -       biosram = max_pfn - absent_pages_in_range(0, max_pfn);
+>
+> -       BUG_ON((s64)(biosram - numaram) >= (1 << (20 - PAGE_SHIFT)));
+>         return true;
+>  }
+>
+> @@ -428,7 +421,7 @@ int __init init_numa_memory(void)
+>                 return -EINVAL;
+>
+>         init_node_memblock();
+> -       if (numa_meminfo_cover_memory(&numa_meminfo) == false)
+> +       if (memblock_validate_numa_coverage(SZ_1M) == false)
+>                 return -EINVAL;
+>
+>         for_each_node_mask(node, node_possible_map) {
+> diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
+> index 2aadb2019b4f..14feec144675 100644
+> --- a/arch/x86/mm/numa.c
+> +++ b/arch/x86/mm/numa.c
+> @@ -451,30 +451,18 @@ EXPORT_SYMBOL(__node_distance);
+>   * Sanity check to catch more bad NUMA configurations (they are amazingly
+>   * common).  Make sure the nodes cover all memory.
+>   */
+> -static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
+> +static bool __init memblock_validate_numa_coverage(const u64 limit)
+>  {
+> -       u64 numaram, e820ram;
+> -       int i;
+> +       u64 lo_pg;
+>
+> -       numaram = 0;
+> -       for (i = 0; i < mi->nr_blks; i++) {
+> -               u64 s = mi->blk[i].start >> PAGE_SHIFT;
+> -               u64 e = mi->blk[i].end >> PAGE_SHIFT;
+> -               numaram += e - s;
+> -               numaram -= __absent_pages_in_range(mi->blk[i].nid, s, e);
+> -               if ((s64)numaram < 0)
+> -                       numaram = 0;
+> -       }
+> -
+> -       e820ram = max_pfn - absent_pages_in_range(0, max_pfn);
+> +       lo_pg = max_pfn - calculate_without_node_pages_in_range();
+>
+>         /* We seem to lose 3 pages somewhere. Allow 1M of slack. */
+> -       if ((s64)(e820ram - numaram) >= (1 << (20 - PAGE_SHIFT))) {
+> -               printk(KERN_ERR "NUMA: nodes only cover %LuMB of your %LuMB e820 RAM. Not used.\n",
+> -                      (numaram << PAGE_SHIFT) >> 20,
+> -                      (e820ram << PAGE_SHIFT) >> 20);
+> +       if (lo_pg >= limit) {
+> +               pr_err("NUMA: We lost 1m size page.\n");
+>                 return false;
+>         }
 > +
->  	rc = mdio_bus_init();
->  	if (rc)
->  		return rc;
-
-If mdio_bus_init() fails, and phylib is built as a module, then we
-leave ethtool_phy_ops pointing into module space that has potentially
-been freed or re-used for another module. This error path needs to
-properly clean up.
-
-The same is also true for the other failure paths in phy_init() which
-already do not cater for their failures leaving a dangling pointer in
-ethtool_phy_ops. This should probably be fixed first in a separate
-patch for the net tree.
-
-Thanks.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+>         return true;
+>  }
+>
+> @@ -583,7 +571,7 @@ static int __init numa_register_memblks(struct numa_meminfo *mi)
+>                         return -EINVAL;
+>                 }
+>         }
+> -       if (!numa_meminfo_cover_memory(mi))
+> +       if (!memblock_validate_numa_coverage(SZ_1M))
+>                 return -EINVAL;
+>
+>         /* Finally register nodes. */
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 0daef3f2f029..b32457ad1ae3 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -3043,6 +3043,7 @@ unsigned long __absent_pages_in_range(int nid, unsigned long start_pfn,
+>                                                 unsigned long end_pfn);
+>  extern unsigned long absent_pages_in_range(unsigned long start_pfn,
+>                                                 unsigned long end_pfn);
+> +extern unsigned long calculate_without_node_pages_in_range(void);
+>  extern void get_pfn_range_for_nid(unsigned int nid,
+>                         unsigned long *start_pfn, unsigned long *end_pfn);
+>
+> diff --git a/mm/mm_init.c b/mm/mm_init.c
+> index 3ddd18a89b66..13a4883787e3 100644
+> --- a/mm/mm_init.c
+> +++ b/mm/mm_init.c
+> @@ -1132,6 +1132,26 @@ static void __init adjust_zone_range_for_zone_movable(int nid,
+>         }
+>  }
+>
+> +/**
+> + * @start_pfn: The start PFN to start searching for holes
+> + * @end_pfn: The end PFN to stop searching for holes
+> + *
+> + * Return: Return the number of page frames without node assigned within a range.
+> + */
+> +unsigned long __init calculate_without_node_pages_in_range(void)
+> +{
+> +       unsigned long num_pages;
+> +       unsigned long start_pfn, end_pfn;
+> +       int nid, i;
+> +
+> +       for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn, &nid) {
+> +               if (nid == NUMA_NO_NODE)
+> +                       num_pages += end_pfn - start_pfn;
+> +       }
+> +
+> +       return num_pages;
+> +}
+> +
+>  /*
+>   * Return the number of holes in a range on a node. If nid is MAX_NUMNODES,
+>   * then all holes in the requested range will be accounted for.
+> --
+> 2.25.1
+>
