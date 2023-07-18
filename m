@@ -2,55 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A30FD757B9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA86757B9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbjGRMRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 08:17:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44470 "EHLO
+        id S229736AbjGRMRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 08:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbjGRMRn (ORCPT
+        with ESMTP id S230440AbjGRMRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 08:17:43 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0932EE43;
-        Tue, 18 Jul 2023 05:17:41 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qLje3-0001Gz-HV; Tue, 18 Jul 2023 14:17:35 +0200
-Message-ID: <2148b246-96e8-3beb-c21d-904df215cded@leemhuis.info>
-Date:   Tue, 18 Jul 2023 14:17:34 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: linux-next: Tree for Jul 13 (drivers/video/fbdev/ps3fb.c)
-Content-Language: en-US, de-DE
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Helge Deller <deller@gmx.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        linux-fbdev@vger.kernel.org,
-        Linux PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Geoff Levand <geoff@infradead.org>
-References: <20230713123710.5d7d81e4@canb.auug.org.au>
- <ccc63065-2976-88ef-1211-731330bf2866@infradead.org>
- <ZLYHtVuS7AElXcCb@debian.me> <874jm1jv9m.fsf@mail.lhotse>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <874jm1jv9m.fsf@mail.lhotse>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1689682662;87baaa02;
-X-HE-SMSGID: 1qLje3-0001Gz-HV
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Tue, 18 Jul 2023 08:17:42 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BBEE77
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:17:37 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1345221954;
+        Tue, 18 Jul 2023 12:17:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689682656; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4TdEhciiSwsv5vinAbnDrmrQzodZb9a+RU42WAAQt0M=;
+        b=xynSjjn5vO58svXXYtRPzXTmqfuY8J/pBE2ZwCwpX6QGrZsy64IEF81aYnFjt8ghkcL1I2
+        8nVyxCoz1z+tHbV4Tx/r2p4j1ZihUw244OmvgBT7HvA9Fdjy9GHF/dm76wrUedFQc0CvWA
+        6bdeul9ncCG8FKuQnj7GzkBMPot/VxU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689682656;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4TdEhciiSwsv5vinAbnDrmrQzodZb9a+RU42WAAQt0M=;
+        b=6vItAQ41n5VLJt25wmWVdXqagnbDSsn7dzfymZpluHCe/p20Cnhrn/aFlX86UgESy2LzkJ
+        ZDrcARvCW4EKOlAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B7127134B0;
+        Tue, 18 Jul 2023 12:17:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id FhivK9+CtmTnQAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 18 Jul 2023 12:17:35 +0000
+Date:   Tue, 18 Jul 2023 14:17:35 +0200
+Message-ID: <877cqxo1ls.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org,
+        linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Subject: Re: [v2 PATCH 1/2] ALSA: hda/intel: Fix error handling in azx_probe()
+In-Reply-To: <2a727311-46d8-e999-1461-2ed2f1b704e0@linux.intel.com>
+References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com>
+        <20230718084522.116952-6-maarten.lankhorst@linux.intel.com>
+        <87h6q1o82l.wl-tiwai@suse.de>
+        <2a727311-46d8-e999-1461-2ed2f1b704e0@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,69 +82,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael, thx for looking into this!
-
-On 18.07.23 13:48, Michael Ellerman wrote:
-> Bagas Sanjaya <bagasdotme@gmail.com> writes:
->> On Thu, Jul 13, 2023 at 09:11:10AM -0700, Randy Dunlap wrote:
->>> on ppc64:
->>>
->>> In file included from ../include/linux/device.h:15,
->>>                  from ../arch/powerpc/include/asm/io.h:22,
->>>                  from ../include/linux/io.h:13,
->>>                  from ../include/linux/irq.h:20,
->>>                  from ../arch/powerpc/include/asm/hardirq.h:6,
->>>                  from ../include/linux/hardirq.h:11,
->>>                  from ../include/linux/interrupt.h:11,
->>>                  from ../drivers/video/fbdev/ps3fb.c:25:
->>> ../drivers/video/fbdev/ps3fb.c: In function 'ps3fb_probe':
->>> ../drivers/video/fbdev/ps3fb.c:1172:40: error: 'struct fb_info' has no member named 'dev'
->>>  1172 |                  dev_driver_string(info->dev), dev_name(info->dev),
->>>       |                                        ^~
->>> ../include/linux/dev_printk.h:110:37: note: in definition of macro 'dev_printk_index_wrap'
->>>   110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
->>>       |                                     ^~~~~~~~~~~
->>> ../drivers/video/fbdev/ps3fb.c:1171:9: note: in expansion of macro 'dev_info'
->>>  1171 |         dev_info(info->device, "%s %s, using %u KiB of video memory\n",
->>>       |         ^~~~~~~~
->>> ../drivers/video/fbdev/ps3fb.c:1172:61: error: 'struct fb_info' has no member named 'dev'
->>>  1172 |                  dev_driver_string(info->dev), dev_name(info->dev),
->>>       |                                                             ^~
->>> ../include/linux/dev_printk.h:110:37: note: in definition of macro 'dev_printk_index_wrap'
->>>   110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
->>>       |                                     ^~~~~~~~~~~
->>> ../drivers/video/fbdev/ps3fb.c:1171:9: note: in expansion of macro 'dev_info'
->>>  1171 |         dev_info(info->device, "%s %s, using %u KiB of video memory\n",
->>>       |         ^~~~~~~~
->>>
->>>
->>
->> Hmm, there is no response from Thomas yet. I guess we should go with
->> reverting bdb616479eff419, right? Regardless, I'm adding this build regression
->> to regzbot so that parties involved are aware of it:
->>
->> #regzbot ^introduced: bdb616479eff419
->> #regzbot title: build regression in PS3 framebuffer
+On Tue, 18 Jul 2023 13:57:33 +0200,
+Maarten Lankhorst wrote:
 > 
-> Does regzbot track issues in linux-next?
-
-It can, I made sure of that in case somebody want to use this sooner or
-later (and it wasn't much work), but I don't actively use this
-functionally right now and do not plan to do so, there are more
-important issues to spend time on.
-
-> They're not really regressions because they're not in a release yet.
 > 
-> Anyway I don't see where bdb616479eff419 comes from.
-
-That makes two of us :-D
-
-> The issue was introduced by:
+> Make sure azx is freed after azx_create() succeeded and an error was
+> encountered.
 > 
->   701d2054fa31 fbdev: Make support for userspace interfaces configurable
+> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> ---
+>  sound/pci/hda/hda_intel.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 5af1138e745bc..196ca76ac43ad 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -2150,7 +2150,7 @@ static int azx_probe(struct pci_dev *pci,
+>                       err = register_vga_switcheroo(chip);
+>                       if (err < 0) {
+>                                             dev_err(card->dev, "Error registering vga_switcheroo client\n");
+> -                                           goto out_free;
+> +                                           goto out_azx_free;
+>                       }
+>  
+>                       if (check_hdmi_disabled(pci)) {
+> @@ -2169,7 +2169,7 @@ static int azx_probe(struct pci_dev *pci,
+>                                                                                                                     &pci->dev, GFP_KERNEL, card,
+>                                                                                                                     azx_firmware_cb);
+>                                             if (err < 0)
+> -                                                                 goto out_free;
+> +                                                                 goto out_azx_free;
+>                                             schedule_probe = false; /* continued in azx_firmware_cb() */
+>                       }
+>  #endif /* CONFIG_SND_HDA_PATCH_LOADER */
+> @@ -2187,6 +2187,9 @@ static int azx_probe(struct pci_dev *pci,
+>                                             complete_all(&hda->probe_wait);
+>                       return 0;
+>  
+> +out_azx_free:
+> +                     azx_free(chip);
 
-Ahh, that makes a lot more sense. While at it, let me tell regzbot:
+This is superfluous.  Once when azx_create() succeeds, azx_free() is
+called from snd_card_free().  That is...
 
-#regzbot introduced: 701d2054fa31
+> +                     pci_set_drvdata(pci, NULL);
 
-Ciao, Thorsten
+... only this call was missing.  And this can be put under out_free 
+label, as this is safe to call at any exit path.  So, it'll be a
+oneliner patch.
+
+
+thanks,
+
+Takashi
+
+>  out_free:
+>                       snd_card_free(card);
+>                       return err;
+> -- 
+> 2.39.2
+> 
