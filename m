@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C68D757C5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 458B3757C5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232389AbjGRM7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 08:59:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39406 "EHLO
+        id S232408AbjGRM7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 08:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbjGRM7X (ORCPT
+        with ESMTP id S229886AbjGRM72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 08:59:23 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A63A1B6
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:59:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1689685159;
-        bh=acJNVov+LEY5vzZF2D/HTZd1dJc8QADqtfbwJQh2Skg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=r6tVW/RcSC1U72NGhCYDHUMHKZKIGJOXGCJF/+RE0O2c7z8GdbGwX+kdyMO7zpQ2f
-         /Po1Ds78wdOzXCGnpUIWeq4QT3eK7sHRnw55x/yplEJmP+GKIRuZs+1GGDPJeXrBSG
-         g80rRSEIA7UuDQGJQpYVWVpVXrOwfZ4sj5yzQ3LUbyQv7lJJEsAsfB4efJECmnsW53
-         wYXt+0iaGhrzbSqp9i50Ro0ka6Cr0lq1BxJMSaOwmh5I94RRhd8SmVdI7FsAcHsNG/
-         HBzsk2S/hwigjyGp/tJbp+s+vqjqJJ4a8Dt/TA2tsdr6t1iRqXTBzqPlA90UEtwqZB
-         pEo9BOidgT9PA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R4zYM5xYRz4wZt;
-        Tue, 18 Jul 2023 22:59:19 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     John Ogness <john.ogness@linutronix.de>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/build: vdso linker warning for orphan sections
-In-Reply-To: <871qh6wcgb.fsf@jogness.linutronix.de>
-References: <20230609051002.3342-1-npiggin@gmail.com>
- <871qh6wcgb.fsf@jogness.linutronix.de>
-Date:   Tue, 18 Jul 2023 22:59:13 +1000
-Message-ID: <871qh5jrz2.fsf@mail.lhotse>
+        Tue, 18 Jul 2023 08:59:28 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0D61B6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:59:26 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-4039f7e1d3aso46987451cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:59:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1689685166; x=1692277166;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=p5tt9zeLQ2+OjFi48j9FEVf0rh+9eU5vhKKJxQtews0=;
+        b=micTBVpm101CT2ld66mNBx1Untcd57oicFHLWr+1pRSRAr10iA6mnsKePo8SwbMu/9
+         QfYj7peQd/ZXjHarnUwV57tPXAsZTwrRbvZkFTJtQndf2jWQWNKOPZz1b+LsqBA6V6rN
+         LzLOdXxzRBT8m/oKr5vGFIxE4i1J9YfA9wVFs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689685166; x=1692277166;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p5tt9zeLQ2+OjFi48j9FEVf0rh+9eU5vhKKJxQtews0=;
+        b=FuI/mKW+iGbSc8Mmva05AAMbHwgh8hL3FBy1EETrywsK4w/cO/kzLWIW9nQsbrBtFc
+         mgsPwFAXxH15ChakaHbRDV4dVHjbxFm08N1wDG9LX4DBAQT2HTvSWAXv7pTvtgI2QxN6
+         brCROpVu7noOPtJ2Gc0phDk437XmOLGiiGcSRCUo87J0JiYsX4VsffG8vTU40akgCjRQ
+         qZVPpLdubHFApLWBDsYq/EBeVF9HnLCcduN2P+UoQnzhZkOW7/URLBy908sasFoC3PfP
+         XjQFT+AnQa0c8hr0fymR1hXW9gDHipDe0MEr1vxvbKxIynLE9wwONhuJUV06sBYVH45M
+         iGIw==
+X-Gm-Message-State: ABy/qLbdGJSaS5Jgfb/11zI2P/DiwhbYH2s6rxGAtKXxtRgXeUY1pFnw
+        wtMYtZogc5v0B5F81zX4bhuHug==
+X-Google-Smtp-Source: APBJJlEKkEI93fkUaO7eGvqCh1NR0xKX97RJyb9wB2iBrJqsMrY/hnaXb20JZ68zoLZiEiIj0P3M/w==
+X-Received: by 2002:ac8:580f:0:b0:403:ebb2:dd4f with SMTP id g15-20020ac8580f000000b00403ebb2dd4fmr9621394qtg.59.1689685166040;
+        Tue, 18 Jul 2023 05:59:26 -0700 (PDT)
+Received: from [192.168.0.140] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id gd25-20020a05622a5c1900b004033992e2dbsm625884qtb.45.2023.07.18.05.59.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 05:59:25 -0700 (PDT)
+Message-ID: <e6ba1856-f54b-943e-d01d-097e88900846@joelfernandes.org>
+Date:   Tue, 18 Jul 2023 08:59:24 -0400
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH rcu 1/6] rcu: Update synchronize_rcu_mult() comment for
+ call_rcu_hurry()
+Content-Language: en-US
+To:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org
+References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
+ <20230717180317.1097590-1-paulmck@kernel.org>
+From:   Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <20230717180317.1097590-1-paulmck@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-John Ogness <john.ogness@linutronix.de> writes:
-> Hi Nicholas,
->
-> On 2023-06-09, Nicholas Piggin <npiggin@gmail.com> wrote:
->> Add --orphan-handlin for vdsos, and adjust vdso linker scripts to deal
->> with orphan sections.
->
-> I'm reporting that I am getting a linker warning with 6.5-rc2. The
-> warning message is:
->
-> ld: warning: discarding dynamic section .rela.opd
->
-> and bisects to:
->
-> 8ad57add77d3 ("powerpc/build: vdso linker warning for orphan sections")
->
-> Despite the warning, my ppc64 system seems to run fine. Let me know if
-> you need any other information from me.
+On 7/17/23 14:03, Paul E. McKenney wrote:
+> Those who have worked with RCU for some time will naturally think in
+> terms of the long-standing call_rcu() API rather than the much newer
+> call_rcu_hurry() API.  But it is call_rcu_hurry() that you should normally
+> pass to synchronize_rcu_mult().  This commit therefore updates the header
+> comment to point this out.
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>   include/linux/rcupdate_wait.h | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
+> index 699b938358bf..5e0f74f2f8ca 100644
+> --- a/include/linux/rcupdate_wait.h
+> +++ b/include/linux/rcupdate_wait.h
+> @@ -42,6 +42,11 @@ do {									\
+>    * call_srcu() function, with this wrapper supplying the pointer to the
+>    * corresponding srcu_struct.
+>    *
+> + * Note that call_rcu_hurry() should be used instead of call_rcu()
+> + * because in kernels built with CONFIG_RCU_LAZY=y the delay between the
+> + * invocation of call_rcu() and that of the corresponding RCU callback
+> + * can be multiple seconds.
+> + *
+>    * The first argument tells Tiny RCU's _wait_rcu_gp() not to
+>    * bother waiting for RCU.  The reason for this is because anywhere
+>    * synchronize_rcu_mult() can be called is automatically already a full
 
-We already discard .opd and .rela*, so I guess we should also be
-discarding .rela.opd.
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Can you test with a newer compiler/binutils?
+thanks,
 
-cheers
+  - Joel
+
