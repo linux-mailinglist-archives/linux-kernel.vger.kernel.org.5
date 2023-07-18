@@ -2,101 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF746758246
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0743875824E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233300AbjGRQkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 12:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49964 "EHLO
+        id S233223AbjGRQk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 12:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbjGRQj7 (ORCPT
+        with ESMTP id S233259AbjGRQkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 12:39:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6795210D2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:39:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E916161662
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 16:39:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E21CC433C8;
-        Tue, 18 Jul 2023 16:39:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689698396;
-        bh=eWaZcHsWI81n6SkQbS3KA6jeCLJ0Qmcg3VQycKfRq14=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=irVoVVtkRxdHhOFSKnVqtgvZ3OYBf/wX7sWiliHa85pGShBit+Mf6fuVvJjNhvpzJ
-         NKq7zG53XEXYkMAOnXwMJzAOc5bYfz0VwhLdJORlF+eHibjZ9XVxwXRv/A7398a/cf
-         P8wSN7Lfx1Blu7po8WM1dV067ahejkuV3ySjdHVZJ85pudBuayaYLHhcL1gfgwkhgs
-         nK/3QXNeN5feJoTzN5ZP0McIx/Fk6FxTYxBhZLDrPRMdb3G0JAXAhqK+nC4kdIcBVJ
-         3RoKHDpPxComNB/XK2HaazBV9lBxmi8j2vwAHBiBG4tXj3JGGYJsKpJsYcRcNSPyxE
-         Oe3QBcQurZjZw==
-Date:   Tue, 18 Jul 2023 09:39:53 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Samuel Holland <samuel.holland@sifive.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>, Tom Rix <trix@redhat.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] drm/amd/display: Allow building DC with clang on RISC-V
-Message-ID: <20230718163953.GA1279879@dev-arch.thelio-3990X>
-References: <20230717222923.3026018-1-samuel.holland@sifive.com>
+        Tue, 18 Jul 2023 12:40:16 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94362171C;
+        Tue, 18 Jul 2023 09:40:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689698409; x=1721234409;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=UD4tx2ko1Ntid4p2qUjYdfLq2O8toM+6lgpiCZu5QuE=;
+  b=PAIMvxwwyrULQCWvkXKiUzmDKJM86RRoFTRhDfxmz838paZdN7Rjs8J9
+   m+rQH2AGJzIF1VzW8aEc4ra4aNbYrk4usrQGDEMy6U5rOMwnotk+S/dD6
+   i7EHPO0xsrTGY1Cqr/FeBCufs1OZdg0U3mn5xBjZBGAJSzGXy22HTopcF
+   aA1mOkD/8J5g8GIwZw9ROOO+MloCxXvzUJVneKfLrPEHgfs7hLyJCNiQN
+   HM25LEQKzlLPbI2BQpIlfNyqzY05ZCzkT2NzgZhKNTtYlx4/DwuFg0Mik
+   XQhLRoYuOwNJH2RLEXlTp04y5HtsI0kn/P0x221JSALFL+ehzZVUlBgcq
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="397096521"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="397096521"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 09:40:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="700975518"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="700975518"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.48.113])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 18 Jul 2023 09:39:57 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "Jarkko Sakkinen" <jarkko@kernel.org>, dave.hansen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Dave Hansen" <dave.hansen@intel.com>
+Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
+        kristen@linux.intel.com, seanjc@google.com, stable@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: fix a NULL pointer
+References: <CU4OBQ8MQ2LK.2GRBPLQGVTZ3@seitikki>
+ <20230717202938.94989-1-haitao.huang@linux.intel.com>
+ <95371eef-73ec-5541-ad97-829954cfb848@intel.com>
+Date:   Tue, 18 Jul 2023 11:39:56 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717222923.3026018-1-samuel.holland@sifive.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.18adwup7wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <95371eef-73ec-5541-ad97-829954cfb848@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 03:29:23PM -0700, Samuel Holland wrote:
-> clang on RISC-V appears to be unaffected by the bug causing excessive
-> stack usage in calculate_bandwidth(). clang 16 with -fstack-usage
-> reports a 304 byte stack frame size with CONFIG_ARCH_RV32I, and 512
-> bytes with CONFIG_ARCH_RV64I.
-> 
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+On Tue, 18 Jul 2023 09:30:11 -0500, Dave Hansen <dave.hansen@intel.com>  
+wrote:
 
-I built ARCH=riscv allmodconfig drivers/gpu/drm/amd/amdgpu/ (confirming
-that CONFIG_DRM_AMD_DC gets enabled) with LLVM 11 through 17 with and
-without CONFIG_KASAN=y and I never saw the -Wframe-larger-than instance
-that this was disabled for, so I agree.
+> On 7/17/23 13:29, Haitao Huang wrote:
+> ...
+>> @@ -248,11 +258,9 @@ static struct sgx_encl_page  
+>> *__sgx_encl_load_page(struct sgx_encl *encl,
+>>  		return entry;
+>>  	}
+>>
+>> -	if (!(encl->secs.epc_page)) {
+>> -		epc_page = sgx_encl_eldu(&encl->secs, NULL);
+>> -		if (IS_ERR(epc_page))
+>> -			return ERR_CAST(epc_page);
+>> -	}
+>> +	epc_page = sgx_encl_load_secs(encl);
+>> +	if (IS_ERR(epc_page))
+>> +		return ERR_CAST(epc_page);
+>>
+>>  	epc_page = sgx_encl_eldu(entry, encl->secs.epc_page);
+>>  	if (IS_ERR(epc_page))
+>> @@ -339,6 +347,13 @@ static vm_fault_t sgx_encl_eaug_page(struct  
+>> vm_area_struct *vma,
+>>
+>>  	mutex_lock(&encl->lock);
+>>
+>> +	epc_page = sgx_encl_load_secs(encl);
+>> +	if (IS_ERR(epc_page)) {
+>> +		if (PTR_ERR(epc_page) == -EBUSY)
+>> +			vmret =  VM_FAULT_NOPAGE;
+>> +		goto err_out_unlock;
+>> +	}
+>
+> Whenever I see one of these "make sure it isn't NULL", I always jump to
+> asking what *keeps* it from becoming NULL again.  In both cases here, I
+> think that's encl->lock.
+>
+Yes, encl->lock protects all enclave states, the xarray holding  
+encl_pages, SECS, VAs, etc.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+> A comment would be really nice here, maybe on sgx_encl_load_secs().   
+> Maybe:
+>
+> /*
+>  * Ensure the SECS page is not swapped out.  Must be called with
+>  * encl->lock to protect _____ and ensure the SECS page is not
+>  * swapped out again.
+>  */
+>
+Thanks for the suggestion. Lock should be held for the duration of SECS  
+usage.
+So something like this?
+/*
+  * Ensure the SECS page is not swapped out.  Must be called with
+  * encl->lock to protect the enclave states including SECS and
+  * ensure the SECS page is not swapped out again while being used.
+  */
 
-> 
->  drivers/gpu/drm/amd/display/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/Kconfig b/drivers/gpu/drm/amd/display/Kconfig
-> index bf0a655d009e..901d1961b739 100644
-> --- a/drivers/gpu/drm/amd/display/Kconfig
-> +++ b/drivers/gpu/drm/amd/display/Kconfig
-> @@ -5,7 +5,7 @@ menu "Display Engine Configuration"
->  config DRM_AMD_DC
->  	bool "AMD DC - Enable new display engine"
->  	default y
-> -	depends on BROKEN || !CC_IS_CLANG || X86_64 || SPARC64 || ARM64
-> +	depends on BROKEN || !CC_IS_CLANG || ARM64 || RISCV || SPARC64 || X86_64
->  	select SND_HDA_COMPONENT if SND_HDA_CORE
->  	# !CC_IS_CLANG: https://github.com/ClangBuiltLinux/linux/issues/1752
->  	select DRM_AMD_DC_FP if (X86 || LOONGARCH || (PPC64 && ALTIVEC) || (ARM64 && KERNEL_MODE_NEON && !CC_IS_CLANG))
-> -- 
-> 2.40.1
-> 
+
+>> diff --git a/arch/x86/kernel/cpu/sgx/main.c  
+>> b/arch/x86/kernel/cpu/sgx/main.c
+>> index 166692f2d501..4662a364ce62 100644
+>> --- a/arch/x86/kernel/cpu/sgx/main.c
+>> +++ b/arch/x86/kernel/cpu/sgx/main.c
+>> @@ -257,6 +257,10 @@ static void sgx_reclaimer_write(struct  
+>> sgx_epc_page *epc_page,
+>>
+>>  	mutex_lock(&encl->lock);
+>>
+>> +	/* Should not be possible */
+>> +	if (WARN_ON(!(encl->secs.epc_page)))
+>> +		goto out;
+>
+> That comment isn't super helpful.  We generally don't WARN_ON() things
+> that should happen.  *Why* is it not possible?
+>
+
+When this part of code is reached, the reclaimer is holding at least one  
+reclaimable EPC page to reclaim for the enclave and the code below only  
+reclaims SECS when no reclaimable EPCs (number of SECS children being  
+zero) of the enclave left. So it should not be possible.
+I'll remove this change because this is really not needed for fixing the  
+bug as Kai pointed out.
+
+I added this for sanity check when implementing multiple EPC tracking  
+lists for cgroups. At one point there were list corruption issues if  
+moving EPCs between lists not managed well. With those straightened out,  
+and clear definitions of EPC states for moving them from one list to  
+another, I no longer see much value to keep this even in later cgroup  
+patches.
+
+Thanks
+Haitao
