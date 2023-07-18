@@ -2,59 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECD47584C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F447584D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbjGRS1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 14:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60118 "EHLO
+        id S230155AbjGRSaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 14:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjGRS1b (ORCPT
+        with ESMTP id S230112AbjGRSaB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 14:27:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEDFB6;
-        Tue, 18 Jul 2023 11:27:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8D1DE616A8;
-        Tue, 18 Jul 2023 18:27:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 344B5C433C7;
-        Tue, 18 Jul 2023 18:27:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689704849;
-        bh=uNk0XUkdDBUHQlqednb/jEUGmxpFPqSLJgCZ0SHSywA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ATBHZKnA6K3s7qp0wC9FoKKdLm8GN8TwCjn20vt11Xo/Rp44a3FuZiHkE7kCVFdLF
-         Idtw0XGj+HcRZm8frnVjt0aWvAmc1VnRQIG6VQXLEvFTyfIR8Io2HaP9tIpjd8R6iC
-         7YrmeydcowvlHarjkWzzu3H9SHpIhineZA0RmgYw/QYq6pjVDsQuYR6X6sM61i0/2F
-         DcjtrgQi7XEVLka8acDvqZKcS9t1HFalcCxGsBHyNKFbX2vYQH/YmVMmbOtho6T7t7
-         LpMjhcJRvb/fm/nGvdXUPf+umv7L6beeIa20+PqbRIuGdQNhfDsjMl10VHNKblVwcY
-         /p0LFfpF3JhTw==
-Message-ID: <a77881074b9710399fd2ad43e17fa26bf9b397cb.camel@kernel.org>
-Subject: Re: linux-next ext4 inode size 128 corrupted
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Christian Brauner <brauner@kernel.org>,
-        Jan Kara <jack@suse.cz>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Tue, 18 Jul 2023 14:27:26 -0400
-In-Reply-To: <a51815d0-16fb-201b-77db-e16af4caa8b0@google.com>
-References: <26cd770-469-c174-f741-063279cdf7e@google.com>
-         <368e567a3a0a1a21ce37f5fba335068c50ab6f29.camel@kernel.org>
-         <a51815d0-16fb-201b-77db-e16af4caa8b0@google.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 18 Jul 2023 14:30:01 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8465BF9;
+        Tue, 18 Jul 2023 11:29:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689704995; x=1721240995;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=6M8pvxXSIBJcwdMTji3D1F0RplxaQgVL5aJ/E2oH860=;
+  b=fT5zXBzAXPV8Ut8hzbgmJA5Vggm8eyViBdj5VLegXRw6KUr/EZWZCGoR
+   s7W8ouHegCRa13F+TuNkdqqnlHoc1pVQTbybHq/2U4FvjcMe/g0Y2E4Zf
+   eo7fmDUBRPiMaEHaoZNFFnRiKp8gNcVRr0g++Wxp6wAiQhsVoW4n6I7KR
+   ZEaicjE7JR8y7iE2uMOJjXDHquoJrcNtiPJVdR2dtwNC/+34JkqbobeHS
+   I1/Lq6voBVggcBJWQVdgmA4+SxJ29zsOrDRTe7jfooehaP+267bmQUzX7
+   jCarteJBRo2L2QzC4krkXz3WUF09P4RydVpFsnqS+BtB2Q+MMOPQcd+Z2
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="351151008"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="351151008"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 11:29:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="701006208"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="701006208"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga006.jf.intel.com with ESMTP; 18 Jul 2023 11:29:54 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 18 Jul 2023 11:29:54 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 18 Jul 2023 11:29:54 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.172)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 18 Jul 2023 11:29:53 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U489tFc8EyxQosTchnr47LV5EYHvSh7rRiVLrG5hcQF0fLi+E6ay0nbALTZr0LlPozPJNHmEBZAd7OQ9hxdzGs4u5723+JF08sg2VjaLnmjBOIpzgw92xxpweOEJBGxIWf21hPGdav1uhpFU9Zith0q/0b9p6yAG5plwhipzVPM47I++TxqSZGMDdBztuE1CVLICj8ZenYChf7WDedNUnNb/c+mPNecv+s3rpjxWLdIgkvalbL5eJG/a/hHqbo4njMrp27MHc6yETpfrq+ACYHVY6cjBiMrqHF1ffUltPLM7C5vpNJ37mz67s8x7zRsgj5832940qLL9f7PD63Lkfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3u5nk8/I2irqXslZcbvKNR0zuDUc26cxiFdBqY4/nmc=;
+ b=VVlnL0S6u9S93adZ04wzKf7j4Sn4MSX/zXFIdQ3xNAreViqUETXdJHCTkydi3X5uDlS9chgW/Efa2TO3FRV9Sep36c0hNb0J8BYTy8oUZL4z+k6RNqBCffCPhBR/BGXCxxzpnZR6hUV00j9MCIMQjXdz0nGBeJZVzE9IU4ykhrIhudlcZCdw/oa6N6P2fwuzGJuHA5RPGvId4NMwjndP204e1Rf0MCYOWLyri9lpperjhXJZiY37BiQNM9k027yRSyejqlnQPhotcq/mjoPOBOGquXwRXD5aMQVTHwtPOGhVEATyWATme0gdkdqZzVqzZNTFLLqliOG2HWaFYZ19aA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by DS0PR11MB7733.namprd11.prod.outlook.com (2603:10b6:8:dc::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Tue, 18 Jul
+ 2023 18:29:46 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a%7]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
+ 18:29:46 +0000
+Message-ID: <9dc9674c-9aea-6e57-a7ec-2de954e12a90@intel.com>
+Date:   Tue, 18 Jul 2023 20:28:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v5 RFC 1/6] page_pool: frag API support for 32-bit arch
+ with 64-bit DMA
+Content-Language: en-US
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+CC:     Jakub Kicinski <kuba@kernel.org>,
+        Yunsheng Lin <yunshenglin0825@gmail.com>,
+        <davem@davemloft.net>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jesper Dangaard Brouer" <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>
+References: <20230629120226.14854-1-linyunsheng@huawei.com>
+ <20230629120226.14854-2-linyunsheng@huawei.com>
+ <20230707170157.12727e44@kernel.org>
+ <3d973088-4881-0863-0207-36d61b4505ec@gmail.com>
+ <20230710113841.482cbeac@kernel.org>
+ <8639b838-8284-05a2-dbc3-7e4cb45f163a@intel.com>
+ <20230711093705.45454e41@kernel.org>
+ <1bec23ff-d38b-3fdf-1bb3-89658c1d465a@intel.com>
+ <46ad09d9-6596-cf07-5cab-d6ceb1e36f3c@huawei.com>
+ <20230712102603.5038980e@kernel.org>
+ <9a5b4c50-2401-b3e7-79aa-33d3ccee41c5@huawei.com>
+ <20230714105214.39ad4e4d@kernel.org>
+ <6c94f7b8-f553-1fce-f3f1-66cdead9e056@huawei.com>
+ <20230718111621.35a64a0b@kernel.org>
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <20230718111621.35a64a0b@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BE1P281CA0219.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:88::7) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|DS0PR11MB7733:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1324b9a2-3f22-44ec-82ae-08db87bcf694
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5EkUy/tpupdNM37iG1S09iXb1HJI21O1gC9hIai1n6vAnAKJNR7nydKYEs0lF/AQGTSaUg33nKVYcB03Z0nXTDV37RJGUIxr5liVuml7bRzUJVqypeQtvuGXj6faXRx0GiEBohaz+qo2bfjClOuwrK9p8MktqlpT5rKkCIl/2XCvJEMzxWpYlizhoawUCLlwut+wBJGC5fgM9vuuJjLef3PFeH1p5IT+hDmu1t5fiau1rBt5oyv5BtMTjALOJk8vWCKVkESNp3tsZyJ4sNuMtCGGtzIIMO10e6B7EOPYWp4TS32DuByo9KZtuOLJSIMYg/tS6QFAUi0WxzPSlDwc/2JjkaEN62crrqTV1JF4RMN76XdvWDEFCkGCPlCdcDJY/vqSKzbdz1LdvTc+wfC8wyEVsyYYiRfd7BRSCvWsfE8xa571iu/w+0OxM/MGhnxFju1CyM9xPSxP0oHfdOkLPkLT2kafJ1cXgzpm/45wYfOzoiXN9srJN7nkNXj2XJVUNdbxYSxNOtYMdt7Z+6xHqiONATCF+CJiECnhUkls/w2bibO5S52XiJoM7J6ErurqPTdFyKFLNcLaA5qWcImDA/S/G3Itgwh5eFFmhQCgGWncTY8ydXlOxj4Kvof7mwsZ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(396003)(366004)(39860400002)(346002)(376002)(451199021)(66556008)(54906003)(478600001)(6486002)(6666004)(966005)(6506007)(36756003)(186003)(2616005)(316002)(6512007)(2906002)(4326008)(66476007)(66946007)(41300700001)(5660300002)(7416002)(8936002)(8676002)(82960400001)(6916009)(38100700002)(26005)(86362001)(31696002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SXUwYjZTR25US1RPaXF4ZlpQaCtnQ3JrZmdOeFR1ZFdEWkVNd3hldXl0WVEr?=
+ =?utf-8?B?bkFsNmNGYTVESW5jWFlaeEozaStFL2FtRjRCTmFIc2paYkZJUzQxb2JKR2cx?=
+ =?utf-8?B?dFRuQzVvQW1CclJCZXFBR0VLRDZkSGlOSW5CYStUZENqY05MWGYwSVRhUm53?=
+ =?utf-8?B?ZStHNGVsRU55SVJScFpQTHY2MVRxT2NNaXlXTXZOYUszVHRZMzJOYkpTM2tj?=
+ =?utf-8?B?REw2My9MMGIrZ1lRMGZDSFhIdWxiVmR0RWJWY0NwWFJFYTlhRTkxSThMZEkv?=
+ =?utf-8?B?UWZwY1BOWFpybzNVWUlTUG1iN0FLcjZReE1hZ1JqTnBzZEgxNkh6WmQzV3N6?=
+ =?utf-8?B?ZTh1b3dkdVVvMXAyZ3ZoM1ZXYkEzaTkzK0ZyYzNaSkp3Y3lzSDFNNmIzSm82?=
+ =?utf-8?B?TVg3UWswc0V2NEEyTHBzTW9sd0dQVXdMZHRRSWlldlJvWlF3TDV3YUJiY2RP?=
+ =?utf-8?B?THhGOXNDRTEzQVZndjdKQVF4c2UxZWlDa1ZBN0o4U290OUNPbngyMEdLa1px?=
+ =?utf-8?B?WlNwWlFBMDltTWx6cEd3SUgrNnB6TWpJOU1BQ2NrekhyaFFheDBxd0tDalJu?=
+ =?utf-8?B?VU9YaloyMUlOT1c5d3RJQ0hPZUdtKy95eDN1WVhKb0k3RVFPZjV2dkRKN2ZK?=
+ =?utf-8?B?U1FwWndsT1JGWWMwWjBnTEZQaS9TalIraHdDV2pBOVZ5RThKMVVVVm9QQkx1?=
+ =?utf-8?B?MGl3Rk1ncytFMTFVcE1hSGlLQ2FmaUo0ajlPQzk1YXZlNkV1VHQvdm5tQ0dN?=
+ =?utf-8?B?TTBORXlOVFhQdklxY2FKS2xqdUZRM1gxeExvRGdweUJyZHpuUzdGbWU2eWtN?=
+ =?utf-8?B?ZUtob0VmNnB6RDVxc1VPNjVrQkVlNys5YVFDNVJPZ3cveStUUTc5YTJHdWs3?=
+ =?utf-8?B?RXEyNEtseXdIR05ONHBtYk52Uzc4ZTdFWFFJYVRWb3paUGcyNXBySnE0blJO?=
+ =?utf-8?B?bitidm9aa1VvMCtHdU42OGphQXBZaGp5eGREZ1cwUHphQXNFbGFqVm1lMTYw?=
+ =?utf-8?B?N0NwVkt2SXh1NEVYblZoeTlBY3oxY0dvcHBnanVjTDFsbnFtWWFxNDVNMHZw?=
+ =?utf-8?B?dVU2L0pXdCsxZzdNT0JPdkU0NUd2R3ZpZXRQcEo5ZWMxaTlka2lFWjR6R0pF?=
+ =?utf-8?B?eGtyVWlDaVhwcFAvMC9vUC9vVGJ0RlBFOUJNMmVJNnd6dCtpZ0pkeU82clpV?=
+ =?utf-8?B?TjZiN1RXSUNycitVZ04rZGpYaWxYd2RBQlhwYTY5ZXFyQ0RhUVV2RmtiWnI4?=
+ =?utf-8?B?Z0tTSkRBN3E4amVUSTB4RnJ0Ty9rc2RSdG5ZNW9vVTBLcWFEb2c5cUlubHJU?=
+ =?utf-8?B?QnE4OEdwUjdBRFZoQXlrWnZxRU56R1NDOHVTL0ZWWUhSQ0hrd0xSSzJ1SU1O?=
+ =?utf-8?B?Q3QydjY2blJFNFpGM1BtZmowMmJXdjNremhRVmx3bFJGNmNYZDlGMkpkajVD?=
+ =?utf-8?B?S2ZURTJ4M2RTTHc4cHRTNjVDa0F4NURkN0crekNrVnplcEZYS0h1amc0eVVa?=
+ =?utf-8?B?bEplOFdjaVI2MDB4ODg2K1BYaUkvMndUWXg2TE1WQ3EyelJXV2IxM0dPb3Ar?=
+ =?utf-8?B?eGJRWkN3WXBvZnNQNmFZeXlFaUE1YmlPNW1nK3ovTUFEZGFFeFU4NDlIZFd2?=
+ =?utf-8?B?ZE56cHd0N0VJTkthRk0zZkJRUEZ2dzUrclZ2S2JKamJveW5CenJ6Sm9OSHZB?=
+ =?utf-8?B?ZDUrY1JHMTc4TU53N2dXa3dTQVJ1aGw2dS9mR3VMdkpVRllNbjNtZC9IbHA4?=
+ =?utf-8?B?TU1LNVJlalZwbDhsSzZKQ3I3bnJ1dW93NHpuVHJRS3N4SlRoeVR0OGVlZHlo?=
+ =?utf-8?B?RDJFTjFRclpDOGtWMzd2TVB3U3IwNHlxeDJ5a1JFTVludHAxZlVGS0lJdm1Z?=
+ =?utf-8?B?eXJIaWdDd2JUSVFVUnRHaFJIOWtmMmtPWEI0cEJPOUE4eWY2eFRxM0hTSUFw?=
+ =?utf-8?B?T255UXNmTUFvK3k0Rm1CcnJnTnNpYStBK1ZneE8zSmh5OWpaVXNwVk1SYmh0?=
+ =?utf-8?B?ZkV1OW1BUkJDR3RJeHVsTjRhSG4yZnpLNU53bXVUSFN4RHVDOTJvaU4vUWNi?=
+ =?utf-8?B?cGpyQjVZYW8vK0dlSTh3K1d0MmVNSGpRaVEzT2JSeFBINGdiU1ZZbFowT0tU?=
+ =?utf-8?B?eWpvR291OHplZzNTWFJEbnlWSXdmdS9JMWxqbFNmYjMzZE1nOHIwOE5Nb1BZ?=
+ =?utf-8?B?TVE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1324b9a2-3f22-44ec-82ae-08db87bcf694
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 18:29:46.6063
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: M+b/zIthomf3DsEREialqdotkgYmDG/YWStYXLtwx3128d9JATuoBpfLVuwtuqg/ihqZVJATqaYPuXS+0jlFb5NHHVpcS57uJQKELJKC7io=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7733
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,80 +182,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-07-18 at 11:03 -0700, Hugh Dickins wrote:
-> On Tue, 18 Jul 2023, Jeff Layton wrote:
-> > On Mon, 2023-07-17 at 20:43 -0700, Hugh Dickins wrote:
-> > > Hi Jeff,
-> > >=20
-> > > I've been unable to run my kernel builds on ext4 on loop0 on tmpfs
-> > > swapping load on linux-next recently, on one machine: various kinds
-> > > of havoc, most common symptoms being ext4_find_dest_de:2107 errors,
-> > > systemd-journald errors, segfaults.  But no problem observed running
-> > > on a more recent installation.
-> > >=20
-> > > Bisected yesterday to 979492850abd ("ext4: convert to ctime accessor
-> > > functions").
-> > >=20
-> > > I've mostly averted my eyes from the EXT4_INODE macro changes there,
-> > > but I think that's where the problem lies.  Reading the comment in
-> > > fs/ext4/ext4.h above EXT4_FITS_IN_INODE() led me to try "tune2fs -l"
-> > > and look at /etc/mke2fs.conf.  It's an old installation, its own
-> > > inodes are 256, but that old mke2fs.conf does default to 128 for smal=
-l
-> > > FSes, and what I use for the load test is small.  Passing -I 256 to t=
-he
-> > > mkfs makes the problems go away.
-> > >=20
-> > > (What's most alarming about the corruption is that it appears to exte=
-nd
-> > > beyond just the throwaway test filesystem: segfaults on bash and libc=
-.so
-> > > from the root filesystem.  But no permanent damage done there.)
-> > >=20
-> > > One oddity I noticed in scrutinizing that commit, didn't help with
-> > > the issues above, but there's a hunk in ext4_rename() which changes
-> > > -	old.dir->i_ctime =3D old.dir->i_mtime =3D current_time(old.dir);
-> > > +	old.dir->i_mtime =3D inode_set_ctime_current(old.inode);
-> > >=20
-> > >=20
-> >=20
-> > I suspect the problem here is the i_crtime, which lives wholly in the
-> > extended part of the inode. The old macros would just not store anythin=
-g
-> > if the i_crtime didn't fit, but the new ones would still store the
-> > tv_sec field in that case, which could be a memory corruptor. This patc=
-h
-> > should fix it, and I'm testing it now.
->=20
-> That makes sense.
->=20
-> >=20
-> > Hugh, if you're able to give this a spin on your setup, then that would
-> > be most helpful. This is also in the "ctime" branch in my kernel.org
-> > tree if that helps. If this looks good, I'll ask Christian to fold this
-> > into the ext4 conversion patch.
->=20
-> Yes, it's now running fine on the problem machine, and on the no-problem.
->=20
-> Tested-by: Hugh Dickins <hughd@google.com>
->=20
-> >=20
-> > Thanks for the bug report!
->=20
-> And thanks for the quick turnaround!
->=20
-> But I'm puzzled by your dismissing that
-> -	old.dir->i_ctime =3D old.dir->i_mtime =3D current_time(old.dir);
-> +	old.dir->i_mtime =3D inode_set_ctime_current(old.inode);
-> in ext4_rename() as "actually looks fine".
->=20
-> Different issue, nothing to do with the corruption, sure.  Much less
-> important, sure.  But updating ctime on the wrong inode is "fine"?
+From: Jakub Kicinski <kuba@kernel.org>
+Date: Tue, 18 Jul 2023 11:16:21 -0700
 
-Ahh , sorry I wasn't looking at that properly. I think you're correct.
-The right fix is probably to move ext4 to use generic_rename_timestamp.
-I'll test and send another patch for that.
+> On Mon, 17 Jul 2023 20:33:05 +0800 Yunsheng Lin wrote:
+>>> Only those used in function prototypes. Pointers in structures 
+>>> are somewhat special and don't require fwd declaration.  
+>>
+>> I gave it a try to split it, and something as below come out:
+>>
+>> https://github.com/gestionlin/linux/commit/11ac8c1959f7eda06a7b987903f37212b490b292
+>>
+>> As the 'helpers.h' is not really useful when splitting, so only
+>> 'page_pool_types.h' is added, and include 'page_pool_types.h' in
+>> 'page_pool.h', does it make sense?
+>>
+>> As Alexander is sending a new RFC for the similar problem, I think
+>> we need to align on which is the better way to solve the problem.
+> 
+> LGTM, thanks!
 
-Thanks again!
---=20
-Jeff Layton <jlayton@kernel.org>
+Looks nice to me as well.
+Re "which way is better" -- they can coexist actually. skbuff.h won't
+lose anything if doesn't include any PP headers at all after my commit,
+while yours also adds some future-proofing, as you never know when the
+same story happens to some other header file.
+
+(BTW it would be nice to inspect page_pool.h users whether each of them
+ needs the full-blown header)
+
+Thanks,
+Olek
