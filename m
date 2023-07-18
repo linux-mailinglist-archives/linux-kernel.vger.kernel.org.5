@@ -2,154 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3426F757B08
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A49757B0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231985AbjGRL5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59796 "EHLO
+        id S232152AbjGRL6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbjGRL5q (ORCPT
+        with ESMTP id S232148AbjGRL6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:57:46 -0400
-Received: from mo4-p03-ob.smtp.rzone.de (mo4-p03-ob.smtp.rzone.de [85.215.255.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A541A5;
-        Tue, 18 Jul 2023 04:57:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1689681462; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Q39R8bTMaXXKb81rUIVKJYBY8FV6VF4CobR7EBjfvs801tAZD34lSjDOxTPNa9+4GU
-    2jEUzFY9B2rmUGipYDfFm3Iv0NxU2amM44iMA9X2m8OsYVs2MaOzbuG6TujEizeqrx4H
-    CsZNCGf1kQvr0gBM/FFFySvxtXmB/F8TJiz+TBdGvbEDiDvjZOtuD4CXEYVg6R6DoCZ0
-    eSY/HvWwPrUWpoLeBt1rzZufhvhAv/roVR62K13gODNi7GT43JQdxxMJE+5amL58oV4M
-    0bIcgOJ/6MxfouKGRlDvOdo9XtkFRguBCOmeb5TvgrSEhv92n/gNpGk0uN6hWzY5jIHg
-    f/VA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1689681462;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Sb0pqlb1077vNwse8z8g8xfC2iPAIQzF3zf4V9j8Ktc=;
-    b=iz39F9q96LypRzGabbiUfTFskYA6oaJCjDtgH8GbLMJo/1gPmV3yrfNIhIr8WkH02r
-    lH6Co18PFi5hH90fiBRRDw9en2UCK6W1WK47/5fsJLmvjZNpsPw83PQAS9iLYj2jbttv
-    pZDbNmFQldlRZ32OklvPuHld7m67pancgCkfbB0qZp1Spu3Ssr8ieJajZrnPkrFLGGvT
-    Wp/VM9oIgLMq48zmSFM89eJh8dvcoKie3A23fyedovf37bu6mMYtSltvRYWqgKNtm5bG
-    lvyad7XjlsA/tOfiw112oSTbhnuzYEb/XruD4pGyIKyl/qGEJHLpAZoNAK/peo/nuAas
-    bHsg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo03
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1689681462;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Sb0pqlb1077vNwse8z8g8xfC2iPAIQzF3zf4V9j8Ktc=;
-    b=VynGfbgdQsUP/am6BUpvjuBX8C6FysttYQ2ECREV/hwC3VqLJeKZOSCk5JHHsguzOy
-    Amn4BygG90sNBGnMz/WZe7PFq5E0qcN9EzYysQ2mcYUMABET4CFx5T4mrcinuRSyUsEt
-    E6Nd8UtTHrzle5HhtgD96Nyxs0ZNv+GkycOjFpDhTc69XGu0302KJbuF6peN2zMQYKxq
-    7VYvnkPe0gmCK1Fg5gWxQzoiShHZB4N2ybQstRl2r7fHDXdNlqNCxRK7ENBQvAhXusvR
-    vi0nP5jTETQfUuQ1ftMsS6413uCjxdEOyignBxGIEU2xqv9EA9LqSz2r7vCH3NF1SpoO
-    OnmA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1689681462;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Sb0pqlb1077vNwse8z8g8xfC2iPAIQzF3zf4V9j8Ktc=;
-    b=1/lQ9gZSgnOq7n3U0Nhl9yk9LY03oFl3fMvQMKXsXiui9VLD/vCz19S6pWQHWIaAOO
-    buWtDRqqKWH1rGoJHDBQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA9Zfh"
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.6.0 DYNA|AUTH)
-    with ESMTPSA id D0d0a8z6IBvgbuN
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 18 Jul 2023 13:57:42 +0200 (CEST)
-Date:   Tue, 18 Jul 2023 13:56:45 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 15/15] arm64: dts: qcom: sm6115: Add VDD_CX to GPU_CCC
-Message-ID: <ZLZ94Qc6x1HyjJPQ@gerhold.net>
-References: <20230717-topic-branch_aon_cleanup-v1-0-27784d27a4f4@linaro.org>
- <20230717-topic-branch_aon_cleanup-v1-15-27784d27a4f4@linaro.org>
- <ZLVsN40kYsvQm1z6@gerhold.net>
- <a193a4dd-0a0a-0d36-6d83-0424cd1dce80@linaro.org>
- <ZLVyvHnKPdOfqAck@gerhold.net>
- <8c5dc146-c305-bef9-0d97-76a91345ed1a@linaro.org>
- <ZLV5CirE8CZfCjkX@gerhold.net>
- <9b28a17a-fe9c-3ff0-fa1d-320e75e174d0@linaro.org>
+        Tue, 18 Jul 2023 07:58:15 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36EA1A6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:58:13 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5774098f16eso59226997b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:58:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689681493; x=1690286293;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=59ojG0gIJMBH787QYkyMNNJwFmMukWGw4ED2w5fU/lw=;
+        b=uVHPntbViJbo4FXUJwPfzVmJ/yERr5p349TtlmHMxs3snOTfUAUq4P7O6zQn0tAJMH
+         e0J6puyQbNPjrvu2ZalcoW+qRx3WyWbS4h5nvKjkbLqKmthGRBp0ioafrKE3lUIBxPKr
+         hu7AQzOPk7e85nbuQEL666+eBjqPghmCIeR9txiR6w0HMuGMF+TCulfUnpnCOh7tsLzE
+         9HFd3oHCTCyQ9fUfjMwC7VDQIQR865BA6XbJYY963/YjiedLGqD+Ho2gLjie6K7kDtTc
+         1fBYRsHmoEFO/cwKBhmDJwLAqmoQX8mCrPTgFs6JbX2DOTERftyRBv+UHAOXxU1lxrrV
+         HfaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689681493; x=1690286293;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=59ojG0gIJMBH787QYkyMNNJwFmMukWGw4ED2w5fU/lw=;
+        b=QNUl8lVdm5/JYG2fPaRcwqWUpQqZnmfOp7YEW8GSxeqko3v6A1TrGwkPI3NLdeKUjF
+         BZpKb8X6Ayw9N3NDufIlOSOv2rFt+bBpn0R/AqASHks4/n8xFrBabJS6gLYsCvsFMGxu
+         srqsA53DqlSGSwkT+ERMxmXzcd7soDBhMhbNxGA9ydWzG1siU2jJaoLHvaAwtB8zAub9
+         bZu/plm01pDzuOztR8/Lor8nftPEUjgnkLhlioiDbQd8NEeM995a1+ClpQ2WR2nEt10e
+         q8HbvZjgCU9dL/xfnaW0kryCqdgl27F+1fGNMhC/CTd5WwQo33tDPFh/0bDi0SKcCW4N
+         Wp1A==
+X-Gm-Message-State: ABy/qLbj8oPBeulVRlsGKfh4Wh9BpASiYX4UZYidumf355C806q2gSgD
+        G7fPbFbVpz1iKI63ZoLYKYBvHH3qO7V3R5kDR/Apfg==
+X-Google-Smtp-Source: APBJJlG4qHhUdXHN3k0Odt/kIDusXhPoRU4F4Y7yU9rMcm8SVfcidsaPlWaChO7XfVB9BAR4jvh6BOmTHOxKGY0eKKc=
+X-Received: by 2002:a0d:dd45:0:b0:576:98e0:32a6 with SMTP id
+ g66-20020a0ddd45000000b0057698e032a6mr15306374ywe.14.1689681493112; Tue, 18
+ Jul 2023 04:58:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9b28a17a-fe9c-3ff0-fa1d-320e75e174d0@linaro.org>
-Content-Transfer-Encoding: 7bit
+References: <20230712-spi-nor-winbond-w25q128-v2-1-50c9f1d58d6c@linaro.org>
+ <f00fa2ae-6d4a-90cb-3724-2bedb96cb4fb@linaro.org> <0525440a652854a2a575256cd07d3559@walle.cc>
+ <d99d87e7-47ba-d6fe-735f-16de2a2ec280@linaro.org> <e642ff27fd0bc0f1f0e293972145f680@walle.cc>
+ <2d71326c-023e-69af-9337-62672f50fed9@linaro.org> <62083227d40d7b631c2eeac1e40c6b56@walle.cc>
+ <ef557792-144e-12ef-ce14-f98982b608dc@linaro.org>
+In-Reply-To: <ef557792-144e-12ef-ce14-f98982b608dc@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 18 Jul 2023 13:58:01 +0200
+Message-ID: <CACRpkdY_3Ecw06ECVx3=xB9G1zUBDqmjuhwbaS8k3+RKNErwnA@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: spi-nor: Correct flags for Winbond w25q128
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     Michael Walle <michael@walle.cc>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 09:18:21PM +0200, Konrad Dybcio wrote:
-> On 17.07.2023 19:23, Stephan Gerhold wrote:
-> > On Mon, Jul 17, 2023 at 07:11:33PM +0200, Konrad Dybcio wrote:
-> >> On 17.07.2023 18:56, Stephan Gerhold wrote:
-> >>> On Mon, Jul 17, 2023 at 06:50:18PM +0200, Konrad Dybcio wrote:
-> >>>> On 17.07.2023 18:28, Stephan Gerhold wrote:
-> >>>>> On Mon, Jul 17, 2023 at 05:19:22PM +0200, Konrad Dybcio wrote:
-> >>>>>> The GPU_CC block is powered by VDD_CX. Describe that.
-> >>>>>>
-> >>>>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> >>>>>> ---
-> >>>>>>  arch/arm64/boot/dts/qcom/sm6115.dtsi | 2 ++
-> >>>>>>  1 file changed, 2 insertions(+)
-> >>>>>>
-> >>>>>> diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
-> >>>>>> index 29b5b388cd94..bfaaa1801a4d 100644
-> >>>>>> --- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
-> >>>>>> +++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
-> >>>>>> @@ -1430,6 +1430,8 @@ gpucc: clock-controller@5990000 {
-> >>>>>>  			clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>,
-> >>>>>>  				 <&gcc GCC_GPU_GPLL0_CLK_SRC>,
-> >>>>>>  				 <&gcc GCC_GPU_GPLL0_DIV_CLK_SRC>;
-> >>>>>> +			power-domains = <&rpmpd SM6115_VDDCX>;
-> >>>>>> +			required-opps = <&rpmpd_opp_low_svs>;
-> >>>>>
-> >>>>> Where is this required-opp coming from? The clocks in gpucc seem to have
-> >>>>> different voltage requirements depending on the rates, but we usually
-> >>>>> handle that in the OPP tables of the consumer.
-> >>>> The only lower levels defined for this SoC are VDD_MIN and VDD_RET,
-> >>>> but quite obviously the GPU won't work then
-> >>>>
-> >>>
-> >>> The levels needed for the GPU clocks to run should be in the GPU OPP
-> >>> table though, just like e.g. sdhc2_opp_table for the SDCC clocks.
-> >>>
-> >>> I still don't really understand why this is specified here. :)
-> >> The GPU_CC block needs this rail to be at a certain power level for
-> >> register access. This describes that requirement.
-> >>
-> > 
-> > Can you show where this is defined downstream? On a quick look I didn't
-> > see something like that anywhere. Or is this from some secret
-> > documentation?
-> As far as downstream goes, you can notice that no branch's or RCG's
-> vdd tables ever define a level lower than the one I mentioned.
-> 
+On Tue, Jul 18, 2023 at 11:47=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linar=
+o.org> wrote:
 
-As far as I can tell the vdd tables are only used when the clock is
-actually enabled though, not for writing to registers while they are
-disabled.
+> Hi, Linus,
+>
+> On 7/18/23 09:32, Michael Walle wrote:
+> > FWIW, I'm fine with the removed no_sfdp_flags if INFO(, 0, 0, 0).
+>
+> We'll need a v5 where you test again the flash with mtd_utils,
+> as we want to get rid of n_sectors and sectors_size and instead
+> determine them from SFDP. We agreed that the flash entry should
+> be defined with the following params:
+>
+>         { "w25q128", INFO(0xef4018, 0, 0, 0)
+>                 PARSE_SFDP
+>                 FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+>         },
 
-Stephan
+Roger that!
+
+I sent a v5 which does this, tested by taking the reported
+size in dmesg and divide by reported (correct) eraseblock size and
+it results in the same number of sectors as well.
+
+I put the details into the commit message.
+
+Yours,
+Linus Walleij
