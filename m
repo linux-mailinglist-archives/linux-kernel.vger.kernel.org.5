@@ -2,206 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5767A75876C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDF17758770
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbjGRVpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 17:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53314 "EHLO
+        id S230002AbjGRVqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 17:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjGRVpk (ORCPT
+        with ESMTP id S229596AbjGRVqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 17:45:40 -0400
-Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42ED6198C;
-        Tue, 18 Jul 2023 14:45:39 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1E5B95802F2;
-        Tue, 18 Jul 2023 17:45:36 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 18 Jul 2023 17:45:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1689716736; x=1689723936; bh=uD
-        sDK041yg1GWCX+vHUCiSTd/14RpAua7/p4WDM2U2w=; b=l4pUQHhBDbItq74CZI
-        hsQjElDCxkVCXPR0g7HAnQ6+3focB2iVFovFuzCHwe0Y02OECbUXx7s86cgtVQW/
-        RzhE7Rhd9RdRA24SewI3hUuzsot8s09va6iHBR4FzHAs25jdOnNZpiqtK/Zxs2xQ
-        MjWtJd2c1/dZUGXNHxlBZCfjs2OK1iXAUjWBJFBWFyCThD/83M2Q4x3R+MD9ie+o
-        JndwLIECP+YSWqmrLTnQojgRwAzo7eDDesWYQBYlX49iOoqDzEwkReGer05sOG/6
-        sFfo6WeUYQ29tPVF4VS2bCrrn12fzDLpDushXhupoad4zZaUjYmsB1p4Iu52c9Pl
-        LdEw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1689716736; x=1689723936; bh=uDsDK041yg1GW
-        CX+vHUCiSTd/14RpAua7/p4WDM2U2w=; b=KUWb1QenPKil0C6Cw9Jo1EMwp+N0C
-        dF1qytWLyNgSAd5Jx2HgrgeIg1wcWkCP95e8nC1pCHwV1kYTjZQE4Kbcw68aWbuD
-        iB3pCvjIUyJrosBMYL6p4z+HNwv6egp/dVWyaORDZ7ROZnMI/iEvaKoiRc3zRzSy
-        sPw57IBZ93h1Nq8fby+HCTyqLXSqRTGrSj3h3YeY3/UzehBOYplfLOE2d/GbyfLi
-        zyZSpVXGdBINYLFyAO4JLJ0aWGOy7N/vN/KoTSZ9vlGH1HesLIXmUUrl+6+h9X08
-        gqMGDD75rx2J1Ab1kPUtGz9reBhfsVl6wmlzjy1w7YGWGsqKlz5rW788Q==
-X-ME-Sender: <xms:_we3ZPHVR7lCTvVgpag5PAhv8YqG9pgJJSFndeJ6pVudjpFPTXAXvQ>
-    <xme:_we3ZMW57u0KODVlsn8ifsYWyJM4QaSHuZpL1PSEUyPhHILn-HGNzTcR8oKR0bflp
-    412_ZtGbaw-k55Cog>
-X-ME-Received: <xmr:_we3ZBJviNjEyIcnnd87HfdU_dMDfh61e7PyTJ61qTZflTaRX71onH2EYxsbRYwPzjhq5sGaWUA7dkjhH2iOXHRMDrUBsDzXkfrG>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrgeehgddtvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
-    hrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtsfdttddt
-    vdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqeenuc
-    ggtffrrghtthgvrhhnpedvfeekteduudefieegtdehfeffkeeuudekheduffduffffgfeg
-    iedttefgvdfhvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:_we3ZNHiXAu_pXYHrB4e9sWxdijdluirm7JTTVqinPexzOtfp0wzMw>
-    <xmx:_we3ZFUdRN2bIsClY4oI0HhqKg6rWlmDmr_fVRHBdQIfH0E5A1K3vQ>
-    <xmx:_we3ZIN3nakgap87xh5VJsM1314_SAQGaayjCkDXp6jrr9GTcfEFoA>
-    <xmx:AAi3ZD3w9P0TUi9niFO7ONGlvj_n9te545u08NhHn091q8v_CIj6ug>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 18 Jul 2023 17:45:33 -0400 (EDT)
-Date:   Tue, 18 Jul 2023 15:45:32 -0600
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        coreteam@netfilter.org,
-        Network Development <netdev@vger.kernel.org>,
-        David Ahern <dsahern@kernel.org>
-Subject: Re: [PATCH bpf-next v4 2/6] netfilter: bpf: Support
- BPF_F_NETFILTER_IP_DEFRAG in netfilter link
-Message-ID: <6av46ydgbufp5x23lempwmutcsjuy6efpysbvnqxjoirng43tr@gcyqxhln2x6f>
-References: <cover.1689203090.git.dxu@dxuuu.xyz>
- <d3b0ff95c58356192ea3b50824f8cdbf02c354e3.1689203090.git.dxu@dxuuu.xyz>
- <CAADnVQKKfEtZYZxihxvG3aQ34E1m95qTZ=jTD7yd0qvOASpAjQ@mail.gmail.com>
- <kwiwaeaijj6sxwz5fhtxyoquhz2kpujbsbeajysufgmdjgyx5c@f6lqrd23xr5f>
- <CAADnVQLcAoN5z+HD_44UKgJJc6t5TPW8+Ai9We0qJpau4NtEzA@mail.gmail.com>
- <wltfmammaf5g4gumsbna4kmwo6dtd24g472o7kgkug42dhwcy2@32fmd7q6kvg4>
- <CAADnVQJQZ2jQSWByVvi3N2ZOoL0XDSJzx5biSVvq=inS7OSW7A@mail.gmail.com>
- <t6wypww537golmoosbikfuombrqq555fh5mbycwl4whto6joo4@hcqlospkgqyr>
- <20230714094741.GA7912@breakpoint.cc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230714094741.GA7912@breakpoint.cc>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 18 Jul 2023 17:46:07 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BDD1992
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:46:06 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-56fffdea2d0so41613857b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:46:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689716765; x=1692308765;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=oZyVDwK3otNe1aFKsK5m2BlqgA8vBaRGLZSB3UKDdYk=;
+        b=27sKt4FtC5mBSw5HOqwhYxE7xcBLqL/RurhtYGIoVYuuW1U7lCRJ1wgIvn1NlqMGFz
+         +JUUgEkNRfYbj540DkK1jFVh5fEmOQ/jDHwgQtzx4CgSQizFaO0RcmwBBws17uhkYhOQ
+         FLYCxHw6jFZ1li6J2pDfZoGcM5MKlQHuipDNS84IWaWx6xhmt2nFbnkF2GHcV9rWreYH
+         NzpH/uqCkSCrZDq0IHKV8zigb4KT+ZsSGGe/ohjN/hIoL/7evqrgH5THd+MhJvMAURZR
+         kwqBHb2U1ASLj71z5H2oCTc6GBf+Pwob4ljeHfuK9dWPk+5whLWQ3vYH7VVGZq+OkEGa
+         b9+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689716765; x=1692308765;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oZyVDwK3otNe1aFKsK5m2BlqgA8vBaRGLZSB3UKDdYk=;
+        b=jRXX1Yyf3vjHz38o2s5+fTZyh9DndE7srqe9FeAFV04Op/NhNqc4nhKJDkVAVGRN+3
+         sy2bjg8Bw2C6g4dwQgI1MJKpMr8AM93v19uZWnhJdg5a2KTCs9etTfF7BCSDeUrXs04G
+         IY16Aq8k1vtR+l8N3NxBOqL0mJYfbtf1LHn8q1RxF9Uvv3oLKywkQQgKC6JZYeRrFsKE
+         meBm5ViB2LfX2WJAnHv2GmX0rZmboFJUyIyQlu+jrRxrlLYDO1zaOrgmoDPsnSDkCSFo
+         tcCGjIgq0t3J00rWxfgRqrsGEapKpO8X2JCi0h2LA9W0KP4gZ1VOn3C0fxvZZkidBZJp
+         oidQ==
+X-Gm-Message-State: ABy/qLYuCYnWf0/M7lhFK8STc9zuLiT2nKUH3wXxd1y4M4LZ8JSm87qL
+        ckEAQ6Y3kEGFAKjw9QxNlTLp42fsREHKEJ8=
+X-Google-Smtp-Source: APBJJlHdSd7OCAh4bUiKCrr5Fzb8ctcbPN9KVGaTCOvQpuKSQKH/lagJ588BacwVRKe8a2DfX/MHUTHa7Mxrl8A=
+X-Received: from robbarnes3.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:6451])
+ (user=robbarnes job=sendgmr) by 2002:a81:e448:0:b0:573:87b9:7ee9 with SMTP id
+ t8-20020a81e448000000b0057387b97ee9mr181676ywl.4.1689716765754; Tue, 18 Jul
+ 2023 14:46:05 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 21:45:40 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
+Message-ID: <20230718214540.1.I763efc30c57dcc0284d81f704ef581cded8960c8@changeid>
+Subject: [PATCH] fs: export emergency_sync
+From:   Rob Barnes <robbarnes@google.com>
+To:     bleung@chromium.org, linux-fsdevel@vger.kernel.org
+Cc:     Rob Barnes <robbarnes@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+emergency_sync forces a filesystem sync in emergency situations.
+Export this function so it can be used by modules.
 
-On Fri, Jul 14, 2023 at 11:47:41AM +0200, Florian Westphal wrote:
-> Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > On Thu, Jul 13, 2023 at 04:10:03PM -0700, Alexei Starovoitov wrote:
-> > > Why is rcu_assign_pointer() used?
-> > > If it's not RCU protected, what is the point of rcu_*() accessors
-> > > and rcu_read_lock() ?
-> > > 
-> > > In general, the pattern:
-> > > rcu_read_lock();
-> > > ptr = rcu_dereference(...);
-> > > rcu_read_unlock();
-> > > ptr->..
-> > > is a bug. 100%.
-> 
-> FWIW, I agree with Alexei, it does look... dodgy.
-> 
-> > The reason I left it like this is b/c otherwise I think there is a race
-> > with module unload and taking a refcnt. For example:
-> > 
-> > ptr = READ_ONCE(global_var)
-> >                                              <module unload on other cpu>
-> > // ptr invalid
-> > try_module_get(ptr->owner) 
-> >
-> 
-> Yes, I agree.
-> 
-> > I think the the synchronize_rcu() call in
-> > kernel/module/main.c:free_module() protects against that race based on
-> > my reading.
-> > 
-> > Maybe the ->enable() path can store a copy of the hook ptr in
-> > struct bpf_nf_link to get rid of the odd rcu_dereference()?
-> > 
-> > Open to other ideas too -- would appreciate any hints.
-> 
-> I would suggest the following:
-> 
-> - Switch ordering of patches 2 and 3.
->   What is currently patch 3 would add the .owner fields only.
-> 
-> Then, what is currently patch #2 would document the rcu/modref
-> interaction like this (omitting error checking for brevity):
-> 
-> rcu_read_lock();
-> v6_hook = rcu_dereference(nf_defrag_v6_hook);
-> if (!v6_hook) {
->         rcu_read_unlock();
->         err = request_module("nf_defrag_ipv6");
->         if (err)
->                  return err < 0 ? err : -EINVAL;
->         rcu_read_lock();
-> 	v6_hook = rcu_dereference(nf_defrag_v6_hook);
-> }
-> 
-> if (v6_hook && try_module_get(v6_hook->owner))
-> 	v6_hook = rcu_pointer_handoff(v6_hook);
-> else
-> 	v6_hook = NULL;
-> 
-> rcu_read_unlock();
-> 
-> if (!v6_hook)
-> 	err();
-> v6_hook->enable();
-> 
-> 
-> I'd store the v4/6_hook pointer in the nf bpf link struct, its probably more
-> self-explanatory for the disable side in that we did pick up a module reference
-> that we still own at delete time, without need for any rcu involvement.
-> 
-> Because above handoff is repetitive for ipv4 and ipv6,
-> I suggest to add an agnostic helper for this.
-> 
-> I know you added distinct structures for ipv4 and ipv6 but if they would use
->  the same one you could add
-> 
-> static const struct nf_defrag_hook *get_proto_frag_hook(const struct nf_defrag_hook __rcu *hook,
-> 							const char *modulename);
-> 
-> And then use it like:
-> 
-> v4_hook = get_proto_frag_hook(nf_defrag_v4_hook, "nf_defrag_ipv4");
-> 
-> Without a need to copy the modprobe and handoff part.
-> 
-> What do you think?
+Signed-off-by: Rob Barnes <robbarnes@google.com>
+---
 
-That sounds reasonable to me. I'll give it a shot. Thanks for the input!
+ fs/sync.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Daniel
+diff --git a/fs/sync.c b/fs/sync.c
+index dc725914e1edb..b313db0ebb5ee 100644
+--- a/fs/sync.c
++++ b/fs/sync.c
+@@ -142,6 +142,7 @@ void emergency_sync(void)
+ 		schedule_work(work);
+ 	}
+ }
++EXPORT_SYMBOL(emergency_sync);
+ 
+ /*
+  * sync a single super
+-- 
+2.41.0.255.g8b1d071c50-goog
+
