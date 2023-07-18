@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 547FE7587F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A679B7587F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 00:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbjGRWBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 18:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59402 "EHLO
+        id S231285AbjGRWBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 18:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230308AbjGRWBQ (ORCPT
+        with ESMTP id S231135AbjGRWBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 18:01:16 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10CD19B3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:01:13 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-7659c6cae2cso421805285a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:01:13 -0700 (PDT)
+        Tue, 18 Jul 2023 18:01:17 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D191BC1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:01:15 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-7679ea01e16so565235585a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 15:01:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1689717673; x=1692309673;
+        d=paul-moore.com; s=google; t=1689717674; x=1692309674;
         h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=Z0/uf5AvHD3Ad9NS83FZnzRuH3oiKZoLYaLQ80T3/84=;
-        b=Be6zVOCErHmcczCO6fqOr11lh9Xyzw7rJ7oPkz/UXLYHG4MTP+IhvLNL26Q0V4eMH6
-         OLG2EBrwnWD5iYXvs0uuxaUJFT3E1Fc3O78lusGJF2KBKgaYeeSkKDyzmCrAfyiJGP0S
-         dv76BfQ2bFT+DjoV1+4LJL9WFyolS4/2Pxz9NC4RHsLIWCb7dl9on8XIYOF6yS4IVF+9
-         BKeokHt3R78is4+UjwIerhOpSQKhlLO7cOhwmWHD8ijMP+GuDCr+uFdw14BAYnHbHPDi
-         /oLO1EfP6nHwbX3dfFWcAHCsXO2XTQGkg5zWgXCZLAOqURbBPJWFe861glRe1Xp1/GIB
-         TpVg==
+        bh=q0cxD0bDSBI3iXwBbGCEOOB62CAlIgStj1niGo6wUfs=;
+        b=BEjayJIVSjPLP6rBRHfpaDVYX4HBSO9IEJ7V8XaZQecA/tokegyGgh/hWaMya6lmgM
+         f4MAHmrEhKWn1W12y01ExDcysvIfQZd9vwHJ6d6lsgjFcH/wBrOvLlogCe65uopXU7Bi
+         wGLw7XlWSdo+Td4SmXwckU1U2KdjdXzJhNI8YgGm/rJMjZczcUT26s7K1h/TEsYcNLBC
+         EySKNW/Se5SBqTp/CLDPrBLhi8PBkCuSn/B5sQJ5TF+Z1qMxzIAB2eG9Z9/D7rMDxJkb
+         j+tgLC6JnqiKJ3M/VRR1gUhBz884H+a2G4bJGOzMOYq6vRQ2c0mzcte5AzudV5efuVG9
+         5UmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689717673; x=1692309673;
+        d=1e100.net; s=20221208; t=1689717674; x=1692309674;
         h=in-reply-to:references:subject:cc:to:from:message-id:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z0/uf5AvHD3Ad9NS83FZnzRuH3oiKZoLYaLQ80T3/84=;
-        b=LKggEDTzmoPkyNxw6VxqYY1USs9ygRNAxulv4nlUogfDM5Ux+YqphQNeQDokiAmjU4
-         f5cv0USwGQFJpSNcyZQa/qXvW8/tNdM6ENC3swilZlhqTRjSmKvuAmKzNx3iVDsi7mLk
-         b5lQTRwREj1z0/zFKcSEdwj37SOrROGu//yktZYZUauv6oUhkzrLOab0xOvIsS00M911
-         VyqTTUkD0T6hAhpF5R88U8UFNTzIKCRbkH6JJzSTUp6NR7WaeV1nTlv7c+eacNXpmd8o
-         r4Lc0VKRax29DV5ZmM+1g+DNgBxCkDkkqwszBoWzz0LmQP21FfwAnH6gCiAq7z5M0Ozq
-         iYdQ==
-X-Gm-Message-State: ABy/qLZ3/4FDaW4+wAexjkdBpB/UVG23Ar6R6s+PjSiQryjnOfc20/cl
-        zDiHjCnLPwYPgmuJuYmxEVty
-X-Google-Smtp-Source: APBJJlHFnLy5PH2r2LCdf+C6Xe1C4n2YBqesF57TOIq56DDmQRQbh04seW3hlYl3u+MrP4i9FEQdeQ==
-X-Received: by 2002:a05:620a:1a84:b0:767:e57f:6fe with SMTP id bl4-20020a05620a1a8400b00767e57f06femr1115499qkb.61.1689717673041;
-        Tue, 18 Jul 2023 15:01:13 -0700 (PDT)
+        bh=q0cxD0bDSBI3iXwBbGCEOOB62CAlIgStj1niGo6wUfs=;
+        b=A71Er80ksBtYVFg+0TaO4S19iJBwlJJQ5ToetK5EHPSRzga9Qo51P0qkslLpJqAqID
+         V1FhLzIJj7CDEusfqQRU3hA+5346byUgGovjR+TcRASYCdYmgxubMRtUObxGprtwR4Vo
+         rBnL7y3EIYqZBxzkDHZt6fo4pcqhw6MSk4bXIOei5Ks3GyW+hmkGWb827Z6vA+2ofxlc
+         Q8ZDP9ZC2K7z0lVLc2fei0JCE28Q0v4zx7/uvll3Z0Cwu/xGH8pRL8OYBqZGxUxcHxFB
+         nFW0ZBeiJjaL/3hem2Wv3bvGfdizAKku9JDtwEjp5bits7mD3+PAdmC1ED7atFqIUS39
+         Oogw==
+X-Gm-Message-State: ABy/qLbM746sTs87N2HfI3oW96/NqjptthjIAfeU43gasN7VcL/+ttBA
+        ylIxzct7hz1vmZd9heN2/lwxLMkzDeKnRQiGHw==
+X-Google-Smtp-Source: APBJJlEtgaOZvqlrgGbcYhiLUehU1+h01BWuQ7CUTaLh/SAIqW1VqePSRHvS4qtWm2e2Xyn8g8sqBA==
+X-Received: by 2002:a05:620a:2d87:b0:768:14ee:234c with SMTP id tr7-20020a05620a2d8700b0076814ee234cmr9010116qkn.50.1689717674012;
+        Tue, 18 Jul 2023 15:01:14 -0700 (PDT)
 Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id i2-20020a05620a074200b00767fbfea21dsm877906qki.69.2023.07.18.15.01.12
+        by smtp.gmail.com with ESMTPSA id d23-20020a05620a159700b00767c8308329sm893121qkk.25.2023.07.18.15.01.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 15:01:12 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 18:01:12 -0400
-Message-ID: <6fcffe16a17c4e1b28daa23f3c6ca49f.paul@paul-moore.com>
+        Tue, 18 Jul 2023 15:01:13 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 18:01:13 -0400
+Message-ID: <50ff9fb2fb463d74065580e41c4cc194.paul@paul-moore.com>
 From:   Paul Moore <paul@paul-moore.com>
-To:     Gong Ruiqi <gongruiqi1@huawei.com>,
-        =?UTF-8?Q?Christian_G=c3=b6ttsche?= <cgzones@googlemail.com>
+To:     =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>,
+        selinux@vger.kernel.org
 Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
         Eric Paris <eparis@parisplace.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>
-Subject: Re: [PATCH RFC 1/20] selinux: check for multiplication overflow in  put_entry()
-References: <20230706132337.15924-1-cgzones@googlemail.com>
-In-Reply-To: <20230706132337.15924-1-cgzones@googlemail.com>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 2/20] selinux: avtab: avoid implicit conversions
+References: <20230706132337.15924-2-cgzones@googlemail.com>
+In-Reply-To: <20230706132337.15924-2-cgzones@googlemail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PP_MIME_FAKE_ASCII_TEXT,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jul  6, 2023 Gong Ruiqi <gongruiqi1@huawei.com> wrote:
+On Jul  6, 2023 =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com> wrote:
 > 
-> The function is always inlined and most of the time both relevant
-> arguments are compile time constants, allowing compilers to elide the
-> check.  Also the function is part of outputting the policy, which is not
-> performance critical.
+> Return u32 from avtab_hash() instead of int, since the hashing is done
+> on u32 and the result is used as an index on the hash array.
 > 
-> Also convert the type of the third parameter into a size_t, since it
-> should always be a non-negative number of elements.
+> Use the type of the limit in for loops.
+> 
+> Avoid signed to unsigned conversion of multiplication result in
+> avtab_hash_eval().
+> 
+> Use unsigned loop iterator for index operations, to avoid sign
+> extension.
 > 
 > Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 > ---
->  security/selinux/ss/policydb.h | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+>  security/selinux/ss/avtab.c | 38 ++++++++++++++++++-------------------
+>  1 file changed, 18 insertions(+), 20 deletions(-)
 
-Merged into selinux/next, thanks.
+See my previous comment about loop iterators.
 
 --
 paul-moore.com
