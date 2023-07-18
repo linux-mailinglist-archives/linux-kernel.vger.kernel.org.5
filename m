@@ -2,193 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2776B757AB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E6F757AB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbjGRLmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:42:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49598 "EHLO
+        id S229774AbjGRLmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231547AbjGRLmL (ORCPT
+        with ESMTP id S231896AbjGRLmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:42:11 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AD31BD9;
-        Tue, 18 Jul 2023 04:41:40 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51e57874bfdso7984164a12.0;
-        Tue, 18 Jul 2023 04:41:40 -0700 (PDT)
+        Tue, 18 Jul 2023 07:42:35 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BBD19B2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:42:15 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-986d8332f50so729893066b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:42:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689680493; x=1692272493;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CUEJZ2jnO99PUeS7JxBs0K24keSEFO0PJQdiqMWdwp8=;
-        b=VAGPw4lI/UWtguFE5auxk6/N3bRlE0BGGpjfGEueMrR8A8Lk4nDBbRJO1VOi9axlYW
-         luXRULT+HgEWGzBIwfrbzNf4a+2e/D2yWMUp/LgyDr33Q7EZ5r6H4EN+Dn7WQIQNEG9V
-         YzTZ2J/IJ9iumAT6z3fWSF51WAuwstix2rz3kVvAMGvh6wXY0ztBEd6V3LZISyfPzceT
-         akJqUAB7aVSeZHFAVL1dDc047YBOlQHESqNnA8dEEaVnP2XnrGO01ejUV5ESDARd8zmG
-         eht00EsGL1es7DMDlKkLL6EUZKYqe2mZPTqWlD2XfwwYP0o+7xrT1ju4Vn4gXEmHw/jS
-         v6ng==
+        d=linaro.org; s=google; t=1689680532; x=1692272532;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EK+VTwTdErg5iekBiaTeYX5r7dT6fD+apvm8qmzsbyc=;
+        b=voyAqL/BTsrNt3HDNRmbRDHgSrt/GORWFQdAFHOHVQqONTRIr+g5TQSVqxfLjF+Ozv
+         9wGzzi6OWeLozlp2c0O1nwswzsNvFVR9NQFDRp1h5tVX82fFbpcGWLZcsUGIqjCeKdbC
+         Cm6z/bmm+X4PNNdjUArZx4WfQfI3JwZ95uhn8lrv0yaFyJgk/nry1fZolo9ek9AHY3mU
+         PGfVsElxK+0jBG9duHBBpzcn3YuTUxrNdRI/XUYIRON1jHqdIKIwR7Cj9eJcl1oP8IOy
+         LWn39/AdwLPhObwPc6/n1KvCS4BUjstNsJ6dCPVRHa9fw3RuS+TwyH9Qb9LE3n46YiHh
+         8h3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689680493; x=1692272493;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CUEJZ2jnO99PUeS7JxBs0K24keSEFO0PJQdiqMWdwp8=;
-        b=j33sI+tdCZlBC8GcMU+MAK9Q+qbSagRPlm7sQClq1MXeCC5567XyHyCY1c+fHbNBcg
-         25yTC4K3A51jZuOAClU8vzwOfKYJr+rjM7+gjCpgVBt1mhOhS6ZoZ2uGqgIPGQ/J8JYK
-         vOfDtamRVpqEBWvRXZA19UPGGzjUFDN40j3NTPBGs8JXc127pYJwBFr4CrB2f90n4M3S
-         d7u4rdXNYn+h+WMPhDLSTHnJcZ95FhU6HIEniv3ZSD6+AIv9RFtBy5LHLRygZmn82Mko
-         N3d2c2QBg6DEfjElyeNUN3nq2EzV0mbE4ASxPgwrUL5VxF+PikaafhhF+cxJyIcY8MnQ
-         5Ikw==
-X-Gm-Message-State: ABy/qLaxzhfyVC5KPquCJy5oXUnPCKrNsV+qglPpqp08UQC1WQdI91cF
-        kPsLLV4pnBE3V/mFkvnBez4=
-X-Google-Smtp-Source: APBJJlHObGKiuPqLOj8t4fatzc4FfNv5s5It0UjWbyLNieALj1jP3ypjcJeB75XYTDs5dKOHj12dJw==
-X-Received: by 2002:a05:6402:1856:b0:51d:9110:4b11 with SMTP id v22-20020a056402185600b0051d91104b11mr13215284edy.12.1689680493119;
-        Tue, 18 Jul 2023 04:41:33 -0700 (PDT)
-Received: from orome (p200300e41f4b7100f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f4b:7100:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id w5-20020aa7dcc5000000b005217a24addbsm1107974edu.20.2023.07.18.04.41.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 04:41:32 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 13:41:30 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Balsam CHIHI <bchihi@baylibre.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
-        Sean Wang <sean.wang@kernel.org>,
+        d=1e100.net; s=20221208; t=1689680532; x=1692272532;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EK+VTwTdErg5iekBiaTeYX5r7dT6fD+apvm8qmzsbyc=;
+        b=VWZa6QcsB7S01IHdYh1ijIJO+feWhKfg4h0DrJU0yaLJ25Vn8VwDSpeuY7uG5UZim7
+         fETk/mjfQRdgqtmMf+tfua90yAIYcx+C0jmcT1/SmPaYiwTQ4I+4N9hbwLJX3o7yUTeY
+         5oAiiXJIl8PdjkxVmglCdXMhAvxjrUZ7qecPir9bpXNdMVwglQT1UENUWqEqTtjQJXi7
+         YNqk/Gq5knDDPqAhnPVDaz1tAUrh+OfCiehmyKM2iNYa+1NjsGKszgADwZDFh/dtSeoS
+         MJeLQSEHmLZVIUE6vTq0YGQrk+dxM8daHubMnRIGq+4B+0LUMCEN5PGM1k6Etbif4jrs
+         r5cQ==
+X-Gm-Message-State: ABy/qLbxZ7ZzBcUGzuT7lhbjRFovMKYqeFtrKBfPjQv0CpkWwyiMU5eu
+        0D+48V003ajUbacjUxMROgAi9g==
+X-Google-Smtp-Source: APBJJlHEPY03BmEn7p4RayPmGdhzkVvZpcfhx9g9ys0BJCFXp8fGzQQDkatuBE5ckYJw5eR7d0RtzA==
+X-Received: by 2002:a17:906:739e:b0:977:befe:d888 with SMTP id f30-20020a170906739e00b00977befed888mr14595037ejl.13.1689680530844;
+        Tue, 18 Jul 2023 04:42:10 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id l5-20020a1709065a8500b00992c92af6easm904900ejq.161.2023.07.18.04.42.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 04:42:10 -0700 (PDT)
+Message-ID: <b974af38-af5d-5d09-0e18-791769c95522@linaro.org>
+Date:   Tue, 18 Jul 2023 13:42:08 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/3] dt-bindings: soc: mediatek: Add mtk-socinfo driver
+Content-Language: en-US
+To:     William-tw Lin <william-tw.lin@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v2 10/10] pinctrl: tegra: Switch to use
- DEFINE_NOIRQ_DEV_PM_OPS() helper
-Message-ID: <ZLZ6amp5HKUbm5w3@orome>
-References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
- <20230717172821.62827-11-andriy.shevchenko@linux.intel.com>
- <13f7153786cfcdc3c6185a3a674686f7fbf480dc.camel@crapouillou.net>
- <ZLZDL27zzDpY4q8E@orome>
- <5e4b5bc23f3edb3ed30cb465420a51ffceceb53d.camel@crapouillou.net>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Jp/MchPym/cMz+Qh"
-Content-Disposition: inline
-In-Reply-To: <5e4b5bc23f3edb3ed30cb465420a51ffceceb53d.camel@crapouillou.net>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Kevin Hilman <khilman@kernel.org>
+Cc:     Project_Global_Chrome_Upstream_Group@mediatek.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+References: <20230718112143.14036-1-william-tw.lin@mediatek.com>
+ <20230718112143.14036-3-william-tw.lin@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230718112143.14036-3-william-tw.lin@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18/07/2023 13:21, William-tw Lin wrote:
+> dt-binding documentation for mtk-socinfo driver.
+> mtk-socinfo driver provides SoC-related information.
+> Such information includes manufacturer information, SoC name,
+> SoC segment name, and SoC marketing name.
+> 
+> Signed-off-by: William-tw Lin <william-tw.lin@mediatek.com>
+> ---
+>  .../bindings/soc/mediatek/mtk-socinfo.yaml    | 58 +++++++++++++++++++
 
---Jp/MchPym/cMz+Qh
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Put it in appropriate place - hwinfo.
 
-On Tue, Jul 18, 2023 at 10:42:47AM +0200, Paul Cercueil wrote:
-> Hi Thierry,
->=20
-> Le mardi 18 juillet 2023 =C3=A0 09:45 +0200, Thierry Reding a =C3=A9crit=
-=C2=A0:
-> > On Mon, Jul 17, 2023 at 09:14:12PM +0200, Paul Cercueil wrote:
-> > > Hi Andy,
-> > >=20
-> > > Le lundi 17 juillet 2023 =C3=A0 20:28 +0300, Andy Shevchenko a =C3=A9=
-crit=C2=A0:
-> > > > Since pm.h provides a helper for system no-IRQ PM callbacks,
-> > > > switch the driver to use it instead of open coded variant.
-> > > >=20
-> > > > Signed-off-by: Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com>
-> > > > ---
-> > > > =C2=A0drivers/pinctrl/tegra/pinctrl-tegra.c | 5 +----
-> > > > =C2=A01 file changed, 1 insertion(+), 4 deletions(-)
-> > > >=20
-> > > > diff --git a/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > > b/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > > index 4547cf66d03b..734c71ef005b 100644
-> > > > --- a/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > > +++ b/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > > @@ -747,10 +747,7 @@ static int tegra_pinctrl_resume(struct
-> > > > device
-> > > > *dev)
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
-> > > > =C2=A0}
-> > > > =C2=A0
-> > > > -const struct dev_pm_ops tegra_pinctrl_pm =3D {
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.suspend_noirq =3D &tegr=
-a_pinctrl_suspend,
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.resume_noirq =3D &tegra=
-_pinctrl_resume
-> > > > -};
-> > > > +DEFINE_NOIRQ_DEV_PM_OPS(tegra_pinctrl_pm, tegra_pinctrl_suspend,
-> > > > tegra_pinctrl_resume);
-> > > > =C2=A0
-> > > > =C2=A0static bool tegra_pinctrl_gpio_node_has_range(struct tegra_pmx
-> > > > *pmx)
-> > > > =C2=A0{
-> > >=20
-> > > Another driver where using EXPORT_GPL_DEV_PM_OPS() would make more
-> > > sense.
-> >=20
-> > We don't currently export these PM ops because none of the Tegra
-> > pinctrl
-> > drivers can be built as a module.
->=20
-> This doesn't change anything. You'd want to use EXPORT_GPL_DEV_PM_OPS
-> (or better, the namespaced version) so that the PM ops can be defined
-> in one file and referenced in another, while still having them garbage-
-> collected when CONFIG_PM is disabled.
+>  1 file changed, 58 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/mediatek/mtk-socinfo.yaml
 
-Looking at the definition of EXPORT_GPL_DEV_PM_OPS(), it will cause an
-EXPORT_SYMBOL_GPL() to be added. So there very well is a change. And
-it's a completely bogus change because no module is ever going to use
-that symbol. If we were to ever support building the pinctrl driver as
-a module, then this would perhaps make sense, but we don't.
+Wrong filename: missing vendor prefix, not matching compatibles.
 
-Thierry
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/mediatek/mtk-socinfo.yaml b/Documentation/devicetree/bindings/soc/mediatek/mtk-socinfo.yaml
+> new file mode 100644
+> index 000000000000..4420430a9bca
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/mediatek/mtk-socinfo.yaml
+> @@ -0,0 +1,58 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/mediatek/mtk-socinfo.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek SOC information
+> +
+> +maintainers:
+> +  - William Lin <william-tw.lin@mediatek.com>
+> +  - Matthias Brugger <matthias.bgg@gmail.com>
+> +  - Kevin Hilman <khilman@kernel.org>
+> +
+> +description:
+> +  The MTK socinfo driver can retrieve several
 
---Jp/MchPym/cMz+Qh
-Content-Type: application/pgp-signature; name="signature.asc"
+Driver? As in Linux driver? Drop. Describe hardware instead.
 
------BEGIN PGP SIGNATURE-----
+> +  SoC related information based on settings in eFuse.
+> +  Such information include manufacturer information, SoC name,
+> +  SoC segment name, and SoC marketing name.
+> +
+> +
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmS2emoACgkQ3SOs138+
-s6G2GQ/+LZ0mO7AXXnFYUmyFkwZZsRzeaYA9YsgzEvgcS7Jffuq2kY3X7XzRakJw
-tA7ONWE7TdtsS2a0vrIWn6EnREV/cW9LH7LyCLfBrkI0VBK2NUML6v9ZtRYz+1/k
-5PJv8z3y9sB5lvQ56g1/9SiUseqJ+6uxrGDoWHDpMlwyxe2AW29M2xFfiYXSAe/i
-tYzjEZEq2Xa2hsJP9WUiFqWhu7LGg9G6LK1O9ZJ0LgbMfgqconOgN0lQb+MMxOwj
-opr9YZaz/MQPc3jNnljqsh4HSw9dk7p4K0Z6XEjRy/AYF9vVEa9f2avcB92azr+V
-xgD/YCRJJsnB8PUXtRRBIllIhrcUrpPYoLfEwOz6wzNpQhV8SQP4IrviU/SrNOSK
-bBRq3ym+Ib0s1DQKipgVyfr9CEoSNB+k3ztYxr+kfw5AI2T2ai/aMCQ7A7UGUN4O
-fTdO+w2DLmqrCDBK4ffBki7WAPlwghbC8/YpsUkFxksBMuslo3si5/kUeyg7q69P
-SQ8cz7RefitY5aod67stvmdb/YXtk9EbOsLHvQntaBiJOBxLWK8W40xAK6Kt7Wvk
-3rpz+zuRSIkZqcLF16p5LdeDQkJM6lRSjTUqkQT4qzrx+wcnYJqLL4z8kYuaxdDX
-CR+nV22Lk+YYApuQDe+Xl7n/NEVhuOLFHyrm36Gos+GEYNxM8Bs=
-=45Cn
------END PGP SIGNATURE-----
+Just one blank line.
 
---Jp/MchPym/cMz+Qh--
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - mediatek,mt8173-socinfo
+> +      - mediatek,mt8183-socinfo
+> +      - mediatek,mt8186-socinfo
+> +      - mediatek,mt8188-socinfo
+> +      - mediatek,mt8192-socinfo
+> +      - mediatek,mt8195-socinfo
+> +
+> +
+
+Ditto...
+
+
+> +  nvmem-cells:
+> +    description:
+> +      Phandle to the eFuse data for SoC differentiation.
+> +    items:
+> +      - description: eFuse data that mtk-socinfo driver uses for SoC differentiation
+> +
+> +  nvmem-cell-names:
+> +    minItems: 1
+> +    items:
+> +      - const: socinfo-data1
+> +      - const: socinfo-data2
+
+This does not match your cells.
+
+> +
+> +required:
+> +  - compatible
+> +  - nvmem-cells
+> +  - nvmem-cell-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +        mtk_socinfo: socinfo {
+
+Broken indentation.
+
+> +            compatible = "mediatek,mt8186-socinfo";
+> +            nvmem-cells = <&socinfo_data1>;
+> +            nvmem-cell-names = "socinfo-data1";
+
+No other resources? So this is just DT description of driver? Does not
+look like suitable for DT in the first place.
+
+
+
+Best regards,
+Krzysztof
+
