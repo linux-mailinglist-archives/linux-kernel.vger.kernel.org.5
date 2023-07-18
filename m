@@ -2,173 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 757B1757301
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 07:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92574757309
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 07:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbjGRFER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 01:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59754 "EHLO
+        id S230097AbjGRFJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 01:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjGRFEQ (ORCPT
+        with ESMTP id S229449AbjGRFJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 01:04:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF2A132;
-        Mon, 17 Jul 2023 22:04:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C17D861418;
-        Tue, 18 Jul 2023 05:04:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83D7CC433C7;
-        Tue, 18 Jul 2023 05:04:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689656654;
-        bh=QCK4V4hDtJGQLnp4sGW8ftod2l3sAzUjJYomCPofwno=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KgZpLAS9q7ytfh87v/z6cQJRO9pkuSykk/2ibzEUpJzhDYQliDqk/fqXMrdHS4Rik
-         ZJ8PuS33pvz3HFI0Wv3LjDAvAU+OZBmpeeEM3uo1ISBIdU7c9pHhY4nIKAb3EdsSSw
-         Jc9Oxbsmfipnzi8MsEh+STtVdQBjBTM9UtXe+XWEll4ERCcsQ9amk8BaFPOPCVd29z
-         /DDOWqlu9ocJBYx4gku9O2st+Vn+Qrl24/5+NyC/xvn5VGYokPw9GsNr20h3HRt/GO
-         r8DzBCwMhV99j6S5N9Ds6Qmjtq/+e/jBpkmmzJakpLe+4XRS75brwn+Gs0EbMikpr5
-         y1YA2Iq/HWQRA==
-Date:   Tue, 18 Jul 2023 10:33:59 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Frank Li <Frank.li@nxp.com>
-Cc:     Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-pci@vger.kernel.org>,
-        "moderated list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-Subject: Re: [PATCH 2/2] PCI: layerscape: Add the workaround for lost link
- capablities during reset
-Message-ID: <20230718050359.GA4771@thinkpad>
-References: <20230615164113.2270698-1-Frank.Li@nxp.com>
- <20230615164113.2270698-2-Frank.Li@nxp.com>
- <20230717155910.GB35455@thinkpad>
- <ZLWMQ0w/QDdsL7yF@lizhi-Precision-Tower-5810>
+        Tue, 18 Jul 2023 01:09:12 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A47012F;
+        Mon, 17 Jul 2023 22:09:11 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36I3FCU2022182;
+        Tue, 18 Jul 2023 05:09:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : from : subject : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=I1DxiGEZyd8QbRErBmMkW95iq3qQZEgJgDYHG45ZqJk=;
+ b=DcelHJ+bHOLHzNtcztT678xFnsF61sBV0FnmR5rcOooiKmrhQJD2zDbbveKqdpbSw6Hm
+ er+GW3ZOVWnwI5uW4sjE8s5k1miZKygnFA4q1DYbePhbH1OYFOvM3e+yfI5QBIHjPclf
+ BdVxEsqDhFRBP+DHv/hQr5A75nfc/k8KJ9beyftgIPtkTZ3cn5bTOk56jGjXRZFr+7Sw
+ AH+nYwBm5GmLoeadP/sHLXftQq+Lmbi5pxeA1rlqIwsCqasce5Zu80fly/wJ3sRwlmEc
+ ilnuFCZu/xZ7r03SIq4QK4LHZm0OhFBdhkCSlKo/4f8HdKPYoAjRCkrafwSJYYvzsbdS dA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rwcg6rs3d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 05:09:07 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36I596eP011767
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Jul 2023 05:09:06 GMT
+Received: from [10.50.15.149] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 17 Jul
+ 2023 22:09:03 -0700
+Message-ID: <760778dc-b0af-2adb-fa9e-4059a17a2cdf@quicinc.com>
+Date:   Tue, 18 Jul 2023 10:38:53 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZLWMQ0w/QDdsL7yF@lizhi-Precision-Tower-5810>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Ninad Naik <quic_ninanaik@quicinc.com>
+Subject: Re: [PATCH] pinctrl: qcom: Add intr_target_width to define
+ intr_target_bit field width
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
+        <konrad.dybcio@linaro.org>, <andersson@kernel.org>
+CC:     <agross@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_ppareek@quicinc.com>, <psodagud@quicinc.com>,
+        <quic_kprasan@quicinc.com>
+References: <20230714061010.15817-1-quic_ninanaik@quicinc.com>
+ <20230714203802.GA3972960@hu-bjorande-lv.qualcomm.com>
+Content-Language: en-US
+In-Reply-To: <20230714203802.GA3972960@hu-bjorande-lv.qualcomm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Tkq62HP2qQF8XeHOFrjPa39bLqdJjfK7
+X-Proofpoint-GUID: Tkq62HP2qQF8XeHOFrjPa39bLqdJjfK7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_15,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 adultscore=0 clxscore=1015 lowpriorityscore=0 bulkscore=0
+ malwarescore=0 spamscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307180047
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 02:45:23PM -0400, Frank Li wrote:
-> On Mon, Jul 17, 2023 at 09:29:10PM +0530, Manivannan Sadhasivam wrote:
-> > On Thu, Jun 15, 2023 at 12:41:12PM -0400, Frank Li wrote:
-> > > From: Xiaowei Bao <xiaowei.bao@nxp.com>
-> > > 
-> > > A workaround for the issue where the PCI Express Endpoint (EP) controller
-> > > loses the values of the Maximum Link Width and Supported Link Speed from
-> > > the Link Capabilities Register, which initially configured by the Reset
-> > > Configuration Word (RCW) during a link-down or hot reset event.
-> > > 
-> > 
-> > If this fixes an issue, then there should be a Fixes tag.
+Hi,
+
+Thank you all for the reviews.
+
+On 7/15/2023 2:08 AM, Bjorn Andersson wrote:
+> On Fri, Jul 14, 2023 at 11:40:09AM +0530, Ninad Naik wrote:
+>> SA8775 and newer target have added support for an increased number of
+>> interrupt targets. To implement this change, the intr_target field, which
+>> is used to configure the interrupt target in the interrupt configuration
+>> register is increased from 3 bits to 4 bits.
+>>
+>> In accordance to these updates, a new intr_target_width member is
+>> introduced in msm_pingroup structure. This member stores the value of
+>> width of intr_target field in the interrupt configuration register. This
+>> value is used to dynamically calculate and generate mask for setting the
+>> intr_target field. By default, this mask is set to 3 bit wide, to ensure
+>> backward compatibility with the older targets.
+>>
+>> Signed-off-by: Ninad Naik <quic_ninanaik@quicinc.com>
 > 
-> It is not fixed a exist software issue, just workaround a hardwre errata.
+> Very nice, Ninad.
 > 
+> Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> 
+>> ---
+>>   drivers/pinctrl/qcom/pinctrl-msm.c     | 9 ++++++---
+>>   drivers/pinctrl/qcom/pinctrl-msm.h     | 2 ++
+>>   drivers/pinctrl/qcom/pinctrl-sa8775p.c | 1 +
+>>   3 files changed, 9 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+>> index 2585ef2b2793..6ebcaa2220af 100644
+>> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
+>> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+>> @@ -1038,6 +1038,7 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+>>   	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+>>   	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
+>>   	const struct msm_pingroup *g;
+>> +	u32 intr_target_mask = 0x7;
+> 
+> I like Konrad's suggestion about making this GENMASK(2, 0).
+> 
+> Please update that and include our R-b tags in v2.
+> 
+Sure, I'll change this to GENMASK and update all the relevant tags 
+(Fixes and R-b) as suggested in the review comments.
+> Regards,
+> Bjorn
 
-But the hardware errata is there from the start, right? So technically this
-driver doesn't address that so far and so this patch looks like a fix to me.
-
-Plus adding a fixes tag and CCing stable list will allow this patch to be
-backported to stable kernels.
-
-- Mani
-
-> > 
-> > > Signed-off-by: Xiaowei Bao <xiaowei.bao@nxp.com>
-> > > Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > >  drivers/pci/controller/dwc/pci-layerscape-ep.c | 13 +++++++++++++
-> > >  1 file changed, 13 insertions(+)
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-> > > index 4e4fdd1dfea7..2ef02d827eeb 100644
-> > > --- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
-> > > +++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-> > > @@ -45,6 +45,7 @@ struct ls_pcie_ep {
-> > >  	struct pci_epc_features		*ls_epc;
-> > >  	const struct ls_pcie_ep_drvdata *drvdata;
-> > >  	int				irq;
-> > > +	u32				lnkcap;
-> > >  	bool				big_endian;
-> > >  };
-> > >  
-> > > @@ -73,6 +74,7 @@ static irqreturn_t ls_pcie_ep_event_handler(int irq, void *dev_id)
-> > >  	struct ls_pcie_ep *pcie = dev_id;
-> > >  	struct dw_pcie *pci = pcie->pci;
-> > >  	u32 val, cfg;
-> > > +	u8 offset;
-> > >  
-> > >  	val = ls_lut_readl(pcie, PEX_PF0_PME_MES_DR);
-> > >  	ls_lut_writel(pcie, PEX_PF0_PME_MES_DR, val);
-> > > @@ -81,6 +83,13 @@ static irqreturn_t ls_pcie_ep_event_handler(int irq, void *dev_id)
-> > >  		return IRQ_NONE;
-> > >  
-> > >  	if (val & PEX_PF0_PME_MES_DR_LUD) {
-> > > +
-> > 
-> > Please add a comment on why the LNKCAP is being restored here.
-> > 
-> > > +		offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-> > > +
-> > > +		dw_pcie_dbi_ro_wr_en(pci);
-> > > +		dw_pcie_writew_dbi(pci, offset + PCI_EXP_LNKCAP, pcie->lnkcap);
-> > 
-> > lnkcap is a 32-bit variable, so you should use dw_pcie_writel_dbi().
-> > 
-> > - Mani
-> > 
-> > > +		dw_pcie_dbi_ro_wr_dis(pci);
-> > > +
-> > >  		cfg = ls_lut_readl(pcie, PEX_PF0_CONFIG);
-> > >  		cfg |= PEX_PF0_CFG_READY;
-> > >  		ls_lut_writel(pcie, PEX_PF0_CONFIG, cfg);
-> > > @@ -216,6 +225,7 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
-> > >  	struct ls_pcie_ep *pcie;
-> > >  	struct pci_epc_features *ls_epc;
-> > >  	struct resource *dbi_base;
-> > > +	u8 offset;
-> > >  	int ret;
-> > >  
-> > >  	pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
-> > > @@ -252,6 +262,9 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
-> > >  
-> > >  	platform_set_drvdata(pdev, pcie);
-> > >  
-> > > +	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-> > > +	pcie->lnkcap = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
-> > > +
-> > >  	ret = dw_pcie_ep_init(&pci->ep);
-> > >  	if (ret)
-> > >  		return ret;
-> > > -- 
-> > > 2.34.1
-> > > 
-> > 
-> > -- 
-> > மணிவண்ணன் சதாசிவம்
-
--- 
-மணிவண்ணன் சதாசிவம்
+Thanks a lot!
+Regards,
+Ninad
