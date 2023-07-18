@@ -2,441 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0847572FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 06:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD1C7572FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 06:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbjGRE5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 00:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
+        id S230095AbjGRE7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 00:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjGRE5G (ORCPT
+        with ESMTP id S229449AbjGRE7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 00:57:06 -0400
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41A3AD;
-        Mon, 17 Jul 2023 21:57:04 -0700 (PDT)
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-635f48814b4so23451916d6.1;
-        Mon, 17 Jul 2023 21:57:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689656224; x=1692248224;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7AhZtM4OMt6o7599l1/0NMVnInKAbK6B7fnvu1ECUNA=;
-        b=S0aGp8XTMYZmLQTKU2tQVEKbR8fC2dSzdvNcvj+4H58hsuilYdT5HlU+uCdGslxKvL
-         QU3RKnvKyyiG3kaJd6/guKNp3J3+VJ7V/P0wS9PYxlfX3aaU/jSHGRyU8Bs1yv1kp0ei
-         xz+Om2nbavHFM0thOE/6CwhwF00K6WNI9q8QfcXyPRtGSpCo2UVI3YLvo0s/6LGn7j8b
-         y2lW46kxDaxz9FA7pwvJWOKNftAUiUxAGpjiKDEIRLeFG2Og22aFghQc5CBBXt/Ef5Kq
-         gMKm16hiylZw7Vof3wP94CZSvdSWLBqidwS3Woz+tIYEJWLvZG7M4fuYehYyAABd1Fwn
-         T4eQ==
-X-Gm-Message-State: ABy/qLbFHCycMtBVv/waETOs8skSNAFlXo7x/T4lwimLgbmAtn3dXtkK
-        Rb2f2dRXzbYbrM7IanCLu28=
-X-Google-Smtp-Source: APBJJlGkqe3Lz591t11y2dYqm4sK9Ry50tZouGCDJ9NZypddKx/XyD6aY4cUfVFKbr94nfQaPkktrg==
-X-Received: by 2002:a05:620a:2225:b0:761:fbb5:7421 with SMTP id n5-20020a05620a222500b00761fbb57421mr10643950qkh.77.1689656223635;
-        Mon, 17 Jul 2023 21:57:03 -0700 (PDT)
-Received: from costa-tp.bos2.lab ([5.29.20.9])
-        by smtp.gmail.com with ESMTPSA id j6-20020a05620a146600b0076745f352adsm332914qkl.59.2023.07.17.21.56.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 21:57:03 -0700 (PDT)
-From:   Costa Shulyupin <costa.shul@redhat.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Yantengsi <siyanteng@loongson.cn>,
-        Costa Shulyupin <costa.shul@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Mikhail Zaslonko <zaslonko@linux.ibm.com>,
-        Eric DeVolder <eric.devolder@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-        linux-kernel@vger.kernel.org (open list),
-        linux-s390@vger.kernel.org (open list:S390 ARCHITECTURE),
-        kvm@vger.kernel.org (open list:S390 VFIO-CCW DRIVER)
-Subject: [PATCH] docs: move s390 under arch
-Date:   Tue, 18 Jul 2023 07:55:02 +0300
-Message-ID: <20230718045550.495428-1-costa.shul@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 18 Jul 2023 00:59:49 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2061.outbound.protection.outlook.com [40.107.92.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFBEAD;
+        Mon, 17 Jul 2023 21:59:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ecwH5F5G0HsJ0GQbtls/lm3gB5+K0dgSKhw+zJvI0kVOwgoH3ypkC9rLhNljKncx8aOMY1HuxWbaU4SdkyoRLvN0XGc8irVlyeKPaWcui5tjXJVtcCln8F8EBEOQ2a5gKtRaOvUfYKjM7xU0fbiD3N+mu9XfF/Bd6kW/gpFjN/ptEiihuaPZi/SU5hem/YhKVpPEP5SwyBwBhnvq+GXXY175HR/h1EkTSt1t2k/SRR0SDBsT6kAckzTXnNF3fZMe1JRpPOztfPtR6n/n4enwJrQ8hDkr0SmggcOULzIx3joGmRy4HWOX/VZv9tMTQQQLkGk4d5ic9BxAHISh45jr7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JDcQo2uZjqFuFfUjjL+8t6lPX1lggpaJvEf5Ae1RVBY=;
+ b=Oh3+IIzqi+ueYRkWHm8j3rAA9tli4ho0yNZbk28XrXjTq+/ftuc3j7HwzTnpks/A0JSKdXlVuIKd3fxzt0oQGuKR58xJvqK3tXhrL97rZ1rwsp3CGa8QCkzb3vhEBpkHseQNb+nTBH7iD6aP7zVZS1NW6I2KOY7e9kouXODJi9K3R0BVB8P8XHumze/WYHuCod11eWiwCHO6SSqH7VyyZGnM/8ZhaVsvv0K+9uWt6PH6MuN5uCR6y1lKUcZIDzKprGtHat7zKnBLoOrX2lGr+pzQBeBiU11K7znTxGooXT5TT6m496Xj8uQPY1ZJjHJafiyR02sTPAk7UWqRgjFADg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JDcQo2uZjqFuFfUjjL+8t6lPX1lggpaJvEf5Ae1RVBY=;
+ b=XX94qIyRcrJ9aVfUW1PjbfuWQKjjgYv+M+O6o9XnKsQ4jEbqcMRXlCpDlZ0SDLCc5WvvaSTOHSURbPJmZy8DX8U+0zY4eM8vIzEWCV7bRhV5vYpraf4sopDHp7YtS2npJIgS3uHtRSRQFiCHzdqrnkBT8wdPaIFQAo6j7yij5bE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CH3PR12MB8308.namprd12.prod.outlook.com (2603:10b6:610:131::8)
+ by PH7PR12MB6492.namprd12.prod.outlook.com (2603:10b6:510:1f3::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32; Tue, 18 Jul
+ 2023 04:59:45 +0000
+Received: from CH3PR12MB8308.namprd12.prod.outlook.com
+ ([fe80::e6:191b:9eb8:e73a]) by CH3PR12MB8308.namprd12.prod.outlook.com
+ ([fe80::e6:191b:9eb8:e73a%6]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
+ 04:59:44 +0000
+Message-ID: <8ef1b112-c213-0a2d-6603-e8d4c2a4529f@amd.com>
+Date:   Tue, 18 Jul 2023 10:29:32 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] cdx: Explicitly include correct DT includes
+To:     Rob Herring <robh@kernel.org>,
+        Nikhil Agarwal <nikhil.agarwal@amd.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230717150355.1749845-1-robh@kernel.org>
+Content-Language: en-US
+From:   "Gupta, Nipun" <nipun.gupta@amd.com>
+In-Reply-To: <20230717150355.1749845-1-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0072.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:99::19) To CH3PR12MB8308.namprd12.prod.outlook.com
+ (2603:10b6:610:131::8)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.9 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8308:EE_|PH7PR12MB6492:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7a319c70-d39a-4534-438c-08db874bcd41
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yOaXcxjI6s0GzappXTXib+bcE2bov3Lamnfc3GaiUkphMFiLp7bJFWlgXF5tT+lTw2u3E1jUi1fQT6rDccWzDZAfYsFVQhODaqlW5b+rnLfw4Om8mwsJPDgXniPdBP74viF0IUqCFl3zs0E6UkDxeJq0WkoDizCHIBwDZfNLoPvMep46Wqk5OcQbknj8njJhNmnrGe1UoG5Gy4Yt+Jynwyb6RnsYPEBT0jZ14Xjqz51fDbjU0LRxxHw4hCW91U/kei2PlMFyAGdwpRjCa9IYHO9aiLR6TWpSjGOOg0jNtAozPsueAjuYZPxC4WTEcRwUT5t0t7AeaJ0JZe48i7LG7aa9kPHG25wcWqt6h1MOJfLiBdC+bTH11M7wywbXpjmueebvoc/xSy/q5In0mi4DHu58/5dbvt9b0VO6Sv8RMkHe6Sd5DNmrRc4UppODt9QN272XOhD77O2jg8R0ZYZ/q7pAKg2nQet004Ivzxm+DUNRTwXzHJb9yQO14lwZx1eKhhPLo7RAVJdCglvwpXoh54ihvqjcm8kPOaWfpy2HCozT9RH6uMeLQzSUWyZrHngMrS6lHdvRqQ/+qhpMXgoLVLpG5EdAyW8+HgISmwqq2rBzS8lKNA+YotQrrdyK23bq2Zz+3RXZ/ukKipWjhv9RsA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8308.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(39860400002)(366004)(396003)(136003)(451199021)(31686004)(6486002)(6666004)(478600001)(110136005)(83380400001)(2616005)(31696002)(86362001)(4744005)(2906002)(186003)(6506007)(53546011)(6512007)(26005)(38100700002)(66476007)(41300700001)(66946007)(66556008)(4326008)(316002)(36756003)(8676002)(5660300002)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MzNLa0JmRlFicG53VzN0bjZyUGljQ3Q0YUF4YjdmVUR1NjV6K2xRV25PdXVh?=
+ =?utf-8?B?MzdNeWlidWNjUU1KamZjQWxKTmw0YW9BY0lHbzJUWDc5YmNtdzIybVorbDhx?=
+ =?utf-8?B?cVFMck45TFJUUE1ZUzZ4aytWbWl0MS9JeWQ1WThOM2VtV1FzZG8zS09wdUJo?=
+ =?utf-8?B?SW9SYmlZQitmc2p2RzN2RnBKKzkyZCs1TDh3aTFtMHA0L3pvRk1xUzc0MVNT?=
+ =?utf-8?B?LzZ2dVpaalFwY2RBeDhNWFM0T2hDb2l6QytoMlUzVmxOVGEvMEtEOGJsQ1NI?=
+ =?utf-8?B?YzFBQmFKTllPQkloTE1TTUxUKzZuM0pkRkl3MnN4TDE2cUplNVpWQXVsNXJr?=
+ =?utf-8?B?YThpRFZWNlFNdjFjeDV2cGY5UWRiaWNrb0dUb0xKZVI3WVEyZGg3bTFSek5y?=
+ =?utf-8?B?RWxyRWZHQ3l3cnhjdHhIZzU3YzVzQ2dVK0pySXBLUFowNHdUcDVkaCtJWC9m?=
+ =?utf-8?B?bzRWa0dReEI2Qnc1OXloT3JZakRaMFBEQ0xRTVFMUElrMVZTZEJKaXNNTllO?=
+ =?utf-8?B?amQ0Mytqa29JSzFxQzJVNHhjUTZ4Y0tVVjl3U1VocWh3djFJOG5hUDI0Q09Y?=
+ =?utf-8?B?ZWdLNjVJR2QvUFNjTitrRkxHelNpZ1lJSVRNL2FMM0U4TGhpUnhLRVo4dlJT?=
+ =?utf-8?B?Q1EyUVJoTU0rOGVlaUUzU3l6TVpBOUxzdUEzTFQ4NklhdUZldmloTk1mQVRt?=
+ =?utf-8?B?WmJSMHBJcjBPU2tCT1RibXpaak5iNE5KNXFnb2xTb0I3amx1aDBEL1lucWI3?=
+ =?utf-8?B?ZmVJakJMbzBkNmVhdUxzcXlYZnRlcnpEcFE5bURjd2VvUTc5clJVaTNyYVkv?=
+ =?utf-8?B?ZjZNVWhINDg2U0szS3BYY1JWSktRZytoeDNaM1V0ZjdsOUZ6OGdjUTZONHJ2?=
+ =?utf-8?B?cnI2Z0ZaMm1UMHJlQjh0NzRxdXdsQzFMdGtoVTlLeFVmdXptMjF0TGdMVE9S?=
+ =?utf-8?B?T0hEZU5Bb2VLbkUxTHVwT2dsd3ZTblVOeE85cmZBUTBnODV6TE1NdDVpaHF5?=
+ =?utf-8?B?QjlraWhNRVVUcVdmUTd4TkVZVE4vbkR3U0VqWXNhSm1GR21HMzJCZVVSSTRk?=
+ =?utf-8?B?MGtOT1NDS1dLMlc0VEd1WXpIY2p1SEhpSzNjOUlKRHJxWHZ5Tk9uYVJUN1Zk?=
+ =?utf-8?B?ckFDQk02djVIK016QXphbG05SGc3UklkbjFRS0xUM0VGbGEwSENXTWoxMFJL?=
+ =?utf-8?B?ZlRybzgxd1VBTnlxUkozRFVJcTJkRmhhYW16QlpOZ2NlU00xd2lpdTZTTVo2?=
+ =?utf-8?B?enI0b3Uxd0NjOHB2OG9SNGRhQ1ZodVUvSG1JSy9uRlI2dFdGWDVvRTJaVU1j?=
+ =?utf-8?B?WUdEd09CUThuTUFBZm9SMndjRTBWVGxnbmpKUFNsamRuL3BwWTVzejBpb2Nw?=
+ =?utf-8?B?UEVhb0VLSDR0YldlT0xja1lPeTc4K2d3T09FOWFRUnEyQWwvaHlBNGR5Qzl5?=
+ =?utf-8?B?MzlwWmlybXpSTks5a1RmRlBreG5FNSs3OXhuOTB1dytrb2lXZHI4SSt2UHNM?=
+ =?utf-8?B?Q1lqb29IUk9NVFZ5SFoyeDBFd3B1WTNFeDdlVFE4WDQ4cll5enc0R21aK2Nk?=
+ =?utf-8?B?YXVNd3phK05tMVEvcit3RHJ3VEFUZkxVbWdVQjRTMW5yUitBakhSZm5mdWJn?=
+ =?utf-8?B?U0ovSmg2aTZIYjRsTmZMMnlSSTUwcENBZjhtVXhGWXBrQ3piSTNJMTg1Nmo2?=
+ =?utf-8?B?Q0o2cExCSnRuSTJKS1Zoa1gzY013TTNFaGhIQkJ5TVZZUVlPM29vb056RlpT?=
+ =?utf-8?B?T0EwaHIwUnB2NU4zbDU4RXFraFFBclVBV0Vwb0hwWS9pK0did0RyN1loc2Rn?=
+ =?utf-8?B?dThMNktnWkxYcTBYQmFseS84YnhtMDkvM1I3V2VuTG1aL0VQdTMzUHM1UHU1?=
+ =?utf-8?B?c1R6Z1JwMGNKRzNPb1lCdUVmWEtudjFHc3c2ZmlEbGZhQTJ3d2kvb3ZObWNO?=
+ =?utf-8?B?bTllWU5CbnJOT0E5djlzQkJyMWlFSXFTUmU1WHJuaVFhS3pGQXdxUkRaaUhv?=
+ =?utf-8?B?eGVUMnpQaDF1enYvSEtBeHhjTWwrVlRhUVJUTFgwVThUZThrRHFnMkkwNHRl?=
+ =?utf-8?B?TmhjckdoTHBVWHVGVVI0cHRVZTc1SGhYTXR4NUtyZkJKVzh4MmE4R2IzcTJV?=
+ =?utf-8?Q?ErH+yLabOY/Y2lIhDyak+x29B?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a319c70-d39a-4534-438c-08db874bcd41
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8308.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 04:59:44.3847
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kl/bZkMBJCf0JP3x/GA0pcQHerGL9HKQy6WrN5c0LrKZzSjmHznlgq8WvZTi193v
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6492
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-and fix all in-tree references.
 
-Architecture-specific documentation is being moved into Documentation/arch/
-as a way of cleaning up the top-level documentation directory and making
-the docs hierarchy more closely match the source hierarchy.
 
-Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
----
- Documentation/admin-guide/kernel-parameters.txt   | 4 ++--
- Documentation/arch/index.rst                      | 2 +-
- Documentation/{ => arch}/s390/3270.ChangeLog      | 0
- Documentation/{ => arch}/s390/3270.rst            | 4 ++--
- Documentation/{ => arch}/s390/cds.rst             | 2 +-
- Documentation/{ => arch}/s390/common_io.rst       | 2 +-
- Documentation/{ => arch}/s390/config3270.sh       | 0
- Documentation/{ => arch}/s390/driver-model.rst    | 0
- Documentation/{ => arch}/s390/features.rst        | 0
- Documentation/{ => arch}/s390/index.rst           | 0
- Documentation/{ => arch}/s390/monreader.rst       | 0
- Documentation/{ => arch}/s390/pci.rst             | 2 +-
- Documentation/{ => arch}/s390/qeth.rst            | 0
- Documentation/{ => arch}/s390/s390dbf.rst         | 0
- Documentation/{ => arch}/s390/text_files.rst      | 0
- Documentation/{ => arch}/s390/vfio-ap-locking.rst | 0
- Documentation/{ => arch}/s390/vfio-ap.rst         | 0
- Documentation/{ => arch}/s390/vfio-ccw.rst        | 2 +-
- Documentation/{ => arch}/s390/zfcpdump.rst        | 0
- Documentation/driver-api/s390-drivers.rst         | 4 ++--
- MAINTAINERS                                       | 8 ++++----
- arch/s390/Kconfig                                 | 4 ++--
- arch/s390/include/asm/debug.h                     | 4 ++--
- drivers/s390/char/zcore.c                         | 2 +-
- kernel/Kconfig.kexec                              | 2 +-
- 25 files changed, 21 insertions(+), 21 deletions(-)
- rename Documentation/{ => arch}/s390/3270.ChangeLog (100%)
- rename Documentation/{ => arch}/s390/3270.rst (99%)
- rename Documentation/{ => arch}/s390/cds.rst (99%)
- rename Documentation/{ => arch}/s390/common_io.rst (98%)
- rename Documentation/{ => arch}/s390/config3270.sh (100%)
- rename Documentation/{ => arch}/s390/driver-model.rst (100%)
- rename Documentation/{ => arch}/s390/features.rst (100%)
- rename Documentation/{ => arch}/s390/index.rst (100%)
- rename Documentation/{ => arch}/s390/monreader.rst (100%)
- rename Documentation/{ => arch}/s390/pci.rst (99%)
- rename Documentation/{ => arch}/s390/qeth.rst (100%)
- rename Documentation/{ => arch}/s390/s390dbf.rst (100%)
- rename Documentation/{ => arch}/s390/text_files.rst (100%)
- rename Documentation/{ => arch}/s390/vfio-ap-locking.rst (100%)
- rename Documentation/{ => arch}/s390/vfio-ap.rst (100%)
- rename Documentation/{ => arch}/s390/vfio-ccw.rst (99%)
- rename Documentation/{ => arch}/s390/zfcpdump.rst (100%)
+On 7/17/2023 8:33 PM, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a921507e7c32..aa8389262e31 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -553,7 +553,7 @@
- 			others).
- 
- 	ccw_timeout_log	[S390]
--			See Documentation/s390/common_io.rst for details.
-+			See Documentation/arch/s390/common_io.rst for details.
- 
- 	cgroup_disable=	[KNL] Disable a particular controller or optional feature
- 			Format: {name of the controller(s) or feature(s) to disable}
-@@ -598,7 +598,7 @@
- 			Setting checkreqprot to 1 is deprecated.
- 
- 	cio_ignore=	[S390]
--			See Documentation/s390/common_io.rst for details.
-+			See Documentation/arch/s390/common_io.rst for details.
- 
- 	clearcpuid=X[,X...] [X86]
- 			Disable CPUID feature X for the kernel. See
-diff --git a/Documentation/arch/index.rst b/Documentation/arch/index.rst
-index 4b6b1beebad6..d39504fae12c 100644
---- a/Documentation/arch/index.rst
-+++ b/Documentation/arch/index.rst
-@@ -21,7 +21,7 @@ implementation.
-    parisc/index
-    ../powerpc/index
-    ../riscv/index
--   ../s390/index
-+   s390/index
-    sh/index
-    sparc/index
-    x86/index
-diff --git a/Documentation/s390/3270.ChangeLog b/Documentation/arch/s390/3270.ChangeLog
-similarity index 100%
-rename from Documentation/s390/3270.ChangeLog
-rename to Documentation/arch/s390/3270.ChangeLog
-diff --git a/Documentation/s390/3270.rst b/Documentation/arch/s390/3270.rst
-similarity index 99%
-rename from Documentation/s390/3270.rst
-rename to Documentation/arch/s390/3270.rst
-index e09e77954238..467eace91473 100644
---- a/Documentation/s390/3270.rst
-+++ b/Documentation/arch/s390/3270.rst
-@@ -116,7 +116,7 @@ Here are the installation steps in detail:
- 	as a 3270, not a 3215.
- 
- 	5. Run the 3270 configuration script config3270.  It is
--	distributed in this same directory, Documentation/s390, as
-+	distributed in this same directory, Documentation/arch/s390, as
- 	config3270.sh.  Inspect the output script it produces,
- 	/tmp/mkdev3270, and then run that script.  This will create the
- 	necessary character special device files and make the necessary
-@@ -125,7 +125,7 @@ Here are the installation steps in detail:
- 	Then notify /sbin/init that /etc/inittab has changed, by issuing
- 	the telinit command with the q operand::
- 
--		cd Documentation/s390
-+		cd Documentation/arch/s390
- 		sh config3270.sh
- 		sh /tmp/mkdev3270
- 		telinit q
-diff --git a/Documentation/s390/cds.rst b/Documentation/arch/s390/cds.rst
-similarity index 99%
-rename from Documentation/s390/cds.rst
-rename to Documentation/arch/s390/cds.rst
-index 7006d8209d2e..bcad2a14244a 100644
---- a/Documentation/s390/cds.rst
-+++ b/Documentation/arch/s390/cds.rst
-@@ -39,7 +39,7 @@ some of them are ESA/390 platform specific.
- 
- Note:
-   In order to write a driver for S/390, you also need to look into the interface
--  described in Documentation/s390/driver-model.rst.
-+  described in Documentation/arch/s390/driver-model.rst.
- 
- Note for porting drivers from 2.4:
- 
-diff --git a/Documentation/s390/common_io.rst b/Documentation/arch/s390/common_io.rst
-similarity index 98%
-rename from Documentation/s390/common_io.rst
-rename to Documentation/arch/s390/common_io.rst
-index 846485681ce7..6dcb40cb7145 100644
---- a/Documentation/s390/common_io.rst
-+++ b/Documentation/arch/s390/common_io.rst
-@@ -136,5 +136,5 @@ debugfs entries
- 
-   The level of logging can be changed to be more or less verbose by piping to
-   /sys/kernel/debug/s390dbf/cio_*/level a number between 0 and 6; see the
--  documentation on the S/390 debug feature (Documentation/s390/s390dbf.rst)
-+  documentation on the S/390 debug feature (Documentation/arch/s390/s390dbf.rst)
-   for details.
-diff --git a/Documentation/s390/config3270.sh b/Documentation/arch/s390/config3270.sh
-similarity index 100%
-rename from Documentation/s390/config3270.sh
-rename to Documentation/arch/s390/config3270.sh
-diff --git a/Documentation/s390/driver-model.rst b/Documentation/arch/s390/driver-model.rst
-similarity index 100%
-rename from Documentation/s390/driver-model.rst
-rename to Documentation/arch/s390/driver-model.rst
-diff --git a/Documentation/s390/features.rst b/Documentation/arch/s390/features.rst
-similarity index 100%
-rename from Documentation/s390/features.rst
-rename to Documentation/arch/s390/features.rst
-diff --git a/Documentation/s390/index.rst b/Documentation/arch/s390/index.rst
-similarity index 100%
-rename from Documentation/s390/index.rst
-rename to Documentation/arch/s390/index.rst
-diff --git a/Documentation/s390/monreader.rst b/Documentation/arch/s390/monreader.rst
-similarity index 100%
-rename from Documentation/s390/monreader.rst
-rename to Documentation/arch/s390/monreader.rst
-diff --git a/Documentation/s390/pci.rst b/Documentation/arch/s390/pci.rst
-similarity index 99%
-rename from Documentation/s390/pci.rst
-rename to Documentation/arch/s390/pci.rst
-index a1a72a47dc96..d5755484d8e7 100644
---- a/Documentation/s390/pci.rst
-+++ b/Documentation/arch/s390/pci.rst
-@@ -40,7 +40,7 @@ For example:
-   Change the level of logging to be more or less verbose by piping
-   a number between 0 and 6 to  /sys/kernel/debug/s390dbf/pci_*/level. For
-   details, see the documentation on the S/390 debug feature at
--  Documentation/s390/s390dbf.rst.
-+  Documentation/arch/s390/s390dbf.rst.
- 
- Sysfs entries
- =============
-diff --git a/Documentation/s390/qeth.rst b/Documentation/arch/s390/qeth.rst
-similarity index 100%
-rename from Documentation/s390/qeth.rst
-rename to Documentation/arch/s390/qeth.rst
-diff --git a/Documentation/s390/s390dbf.rst b/Documentation/arch/s390/s390dbf.rst
-similarity index 100%
-rename from Documentation/s390/s390dbf.rst
-rename to Documentation/arch/s390/s390dbf.rst
-diff --git a/Documentation/s390/text_files.rst b/Documentation/arch/s390/text_files.rst
-similarity index 100%
-rename from Documentation/s390/text_files.rst
-rename to Documentation/arch/s390/text_files.rst
-diff --git a/Documentation/s390/vfio-ap-locking.rst b/Documentation/arch/s390/vfio-ap-locking.rst
-similarity index 100%
-rename from Documentation/s390/vfio-ap-locking.rst
-rename to Documentation/arch/s390/vfio-ap-locking.rst
-diff --git a/Documentation/s390/vfio-ap.rst b/Documentation/arch/s390/vfio-ap.rst
-similarity index 100%
-rename from Documentation/s390/vfio-ap.rst
-rename to Documentation/arch/s390/vfio-ap.rst
-diff --git a/Documentation/s390/vfio-ccw.rst b/Documentation/arch/s390/vfio-ccw.rst
-similarity index 99%
-rename from Documentation/s390/vfio-ccw.rst
-rename to Documentation/arch/s390/vfio-ccw.rst
-index 37026fa18179..42960b7b0d70 100644
---- a/Documentation/s390/vfio-ccw.rst
-+++ b/Documentation/arch/s390/vfio-ccw.rst
-@@ -440,6 +440,6 @@ Reference
- 1. ESA/s390 Principles of Operation manual (IBM Form. No. SA22-7832)
- 2. ESA/390 Common I/O Device Commands manual (IBM Form. No. SA22-7204)
- 3. https://en.wikipedia.org/wiki/Channel_I/O
--4. Documentation/s390/cds.rst
-+4. Documentation/arch/s390/cds.rst
- 5. Documentation/driver-api/vfio.rst
- 6. Documentation/driver-api/vfio-mediated-device.rst
-diff --git a/Documentation/s390/zfcpdump.rst b/Documentation/arch/s390/zfcpdump.rst
-similarity index 100%
-rename from Documentation/s390/zfcpdump.rst
-rename to Documentation/arch/s390/zfcpdump.rst
-diff --git a/Documentation/driver-api/s390-drivers.rst b/Documentation/driver-api/s390-drivers.rst
-index 5158577bc29b..8c0845c4eee7 100644
---- a/Documentation/driver-api/s390-drivers.rst
-+++ b/Documentation/driver-api/s390-drivers.rst
-@@ -27,7 +27,7 @@ not strictly considered I/O devices. They are considered here as well,
- although they are not the focus of this document.
- 
- Some additional information can also be found in the kernel source under
--Documentation/s390/driver-model.rst.
-+Documentation/arch/s390/driver-model.rst.
- 
- The css bus
- ===========
-@@ -38,7 +38,7 @@ into several categories:
- * Standard I/O subchannels, for use by the system. They have a child
-   device on the ccw bus and are described below.
- * I/O subchannels bound to the vfio-ccw driver. See
--  Documentation/s390/vfio-ccw.rst.
-+  Documentation/arch/s390/vfio-ccw.rst.
- * Message subchannels. No Linux driver currently exists.
- * CHSC subchannels (at most one). The chsc subchannel driver can be used
-   to send asynchronous chsc commands.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b68512f1b65f..2649dffe9f46 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18642,7 +18642,7 @@ L:	linux-s390@vger.kernel.org
- S:	Supported
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git
- F:	Documentation/driver-api/s390-drivers.rst
--F:	Documentation/s390/
-+F:	Documentation/arch/s390/
- F:	arch/s390/
- F:	drivers/s390/
- F:	drivers/watchdog/diag288_wdt.c
-@@ -18703,7 +18703,7 @@ M:	Niklas Schnelle <schnelle@linux.ibm.com>
- M:	Gerald Schaefer <gerald.schaefer@linux.ibm.com>
- L:	linux-s390@vger.kernel.org
- S:	Supported
--F:	Documentation/s390/pci.rst
-+F:	Documentation/arch/s390/pci.rst
- F:	arch/s390/pci/
- F:	drivers/pci/hotplug/s390_pci_hpc.c
- 
-@@ -18720,7 +18720,7 @@ M:	Halil Pasic <pasic@linux.ibm.com>
- M:	Jason Herne <jjherne@linux.ibm.com>
- L:	linux-s390@vger.kernel.org
- S:	Supported
--F:	Documentation/s390/vfio-ap*
-+F:	Documentation/arch/s390/vfio-ap*
- F:	drivers/s390/crypto/vfio_ap*
- 
- S390 VFIO-CCW DRIVER
-@@ -18730,7 +18730,7 @@ R:	Halil Pasic <pasic@linux.ibm.com>
- L:	linux-s390@vger.kernel.org
- L:	kvm@vger.kernel.org
- S:	Supported
--F:	Documentation/s390/vfio-ccw.rst
-+F:	Documentation/arch/s390/vfio-ccw.rst
- F:	drivers/s390/cio/vfio_ccw*
- F:	include/uapi/linux/vfio_ccw.h
- 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 736548e4163e..286c1f9fb37c 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -264,9 +264,9 @@ config ARCH_SUPPORTS_KEXEC_PURGATORY
- config ARCH_SUPPORTS_CRASH_DUMP
- 	def_bool y
- 	help
--	  Refer to <file:Documentation/s390/zfcpdump.rst> for more details on this.
-+	  Refer to <file:Documentation/arch/s390/zfcpdump.rst> for more details on this.
- 	  This option also enables s390 zfcpdump.
--	  See also <file:Documentation/s390/zfcpdump.rst>
-+	  See also <file:Documentation/arch/s390/zfcpdump.rst>
- 
- menu "Processor type and features"
- 
-diff --git a/arch/s390/include/asm/debug.h b/arch/s390/include/asm/debug.h
-index ac665b9670c5..ccd4e148b5ed 100644
---- a/arch/s390/include/asm/debug.h
-+++ b/arch/s390/include/asm/debug.h
-@@ -222,7 +222,7 @@ static inline debug_entry_t *debug_text_event(debug_info_t *id, int level,
- 
- /*
-  * IMPORTANT: Use "%s" in sprintf format strings with care! Only pointers are
-- * stored in the s390dbf. See Documentation/s390/s390dbf.rst for more details!
-+ * stored in the s390dbf. See Documentation/arch/s390/s390dbf.rst for more details!
-  */
- extern debug_entry_t *
- __debug_sprintf_event(debug_info_t *id, int level, char *string, ...)
-@@ -350,7 +350,7 @@ static inline debug_entry_t *debug_text_exception(debug_info_t *id, int level,
- 
- /*
-  * IMPORTANT: Use "%s" in sprintf format strings with care! Only pointers are
-- * stored in the s390dbf. See Documentation/s390/s390dbf.rst for more details!
-+ * stored in the s390dbf. See Documentation/arch/s390/s390dbf.rst for more details!
-  */
- extern debug_entry_t *
- __debug_sprintf_exception(debug_info_t *id, int level, char *string, ...)
-diff --git a/drivers/s390/char/zcore.c b/drivers/s390/char/zcore.c
-index 942c73a11ca3..bc3be0330f1d 100644
---- a/drivers/s390/char/zcore.c
-+++ b/drivers/s390/char/zcore.c
-@@ -3,7 +3,7 @@
-  * zcore module to export memory content and register sets for creating system
-  * dumps on SCSI/NVMe disks (zfcp/nvme dump).
-  *
-- * For more information please refer to Documentation/s390/zfcpdump.rst
-+ * For more information please refer to Documentation/arch/s390/zfcpdump.rst
-  *
-  * Copyright IBM Corp. 2003, 2008
-  * Author(s): Michael Holzheu
-diff --git a/kernel/Kconfig.kexec b/kernel/Kconfig.kexec
-index ff72e45cfaef..fa45726d5619 100644
---- a/kernel/Kconfig.kexec
-+++ b/kernel/Kconfig.kexec
-@@ -111,6 +111,6 @@ config CRASH_DUMP
- 	  For more details see Documentation/admin-guide/kdump/kdump.rst
- 
- 	  For s390, this option also enables zfcpdump.
--	  See also <file:Documentation/s390/zfcpdump.rst>
-+	  See also <file:Documentation/arch/s390/zfcpdump.rst>
- 
- endmenu
--- 
-2.41.0
-
+Acked-by: Nipun Gupta <nipun.gupta@amd.com>
