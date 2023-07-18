@@ -2,85 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6E17583D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783157583DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbjGRRud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38152 "EHLO
+        id S233319AbjGRRui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230445AbjGRRub (ORCPT
+        with ESMTP id S232342AbjGRRue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:50:31 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56988F7;
-        Tue, 18 Jul 2023 10:50:28 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fb9ae4cef6so9843421e87.3;
-        Tue, 18 Jul 2023 10:50:28 -0700 (PDT)
+        Tue, 18 Jul 2023 13:50:34 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD840C0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:50:33 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-635dd1b52a2so31416056d6.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 10:50:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689702626; x=1692294626;
+        d=google.com; s=20221208; t=1689702633; x=1692294633;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=j1NrIr5hWlf8puwaKUvqIDmFUDhuYj0CYIrwJtR/mVI=;
-        b=Jfbhkv+K5cMBerWlxqPDCeaTnjEGuDKcVz0bad+6OAW9/bqVjRzzEpctOCWbq0Z7rN
-         ZOUIjVHjQeuwxuah7a16ApaVYhwzRF/OfxHVk6WM0Hkrsf6VwqSmyCWWvxVCn/s2XKcx
-         aULd8jNY6k3i37rGXY4VyRpA6SZ2QCULgRaZh/b9PR6KeB8nQlfCrQu8jZVCdlV50Xso
-         /Wi7o+Uhr2yP4a7pwioK+kUwPKvfbNdzS57U09OubWqkQTdE1AX+vFDWDLSh2b/kwNyj
-         B25xyYQVRb2RwHX0j3gk/Mxh26NCBuzCz2Gkt2bLHHgOszqxtnQRVsNNdGFmicCWaqBA
-         hmcw==
+        bh=FakhO3efxXs79fOL17bUjDsDDzuXwblSHaFpqeVimdw=;
+        b=bTuSMkUBvr4fylgeHAiAN25RP9JNHB7zTbDbqfWscsW2JgPB8o/8BeqWZQO/eXySTO
+         slzdF+ITVkW8uOs8DMMyUiQdCVU1wjDg0vTuOvYmRLlVe9KNyOG3PNVGEEilR+9sUvxE
+         VmqMGsuv3b9C0SNBB4uK3Og7dysZddca/g1zuNtjMVdk/r07Z2xTFkgTPL0VJAREIYmi
+         28JrcRod5na0FQm1k1l8AEa2IshKh1vWVfPS5hpNUkb6YeLhVny8G+aJr49jF1mrjAdI
+         sy2GvtCPN74I9Y4Ggd0UK+bW2+OhUDYsSytk/fWCG1oazheZguiZAS9aSVWUK2VdWYlp
+         lnLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689702626; x=1692294626;
+        d=1e100.net; s=20221208; t=1689702633; x=1692294633;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=j1NrIr5hWlf8puwaKUvqIDmFUDhuYj0CYIrwJtR/mVI=;
-        b=hOIzlTOwjOD2W174jh1rc7pwLTfkg9IpQD2oQ9u8MDat6xlLn9yI1zX6ApakJhAWPV
-         RLlvsA1GxgV7HPgbZZYgptrctRihcQB+QSYy1OkJvjHjE3mewI5K0v65iTsGsYQlYOcc
-         zB4afjyVbmsgBz+IerX49Y0rUGPf8Lj+4/WzuS72JiffJzfzgOLKP3xrnY13cpQThYRd
-         9RYlAmhX7hL0gKOVOF5RxXk9l07kUvlpVc8cM3DEJdGwWlt5E9eYvuwAKj8SXffiOvMf
-         0EbIaYXGJQXNAnaBk8+24qOMrTwm4GqwftuxjiJKyGt26/WmjOHl1qAapw7xSqeA5pgg
-         6w2g==
-X-Gm-Message-State: ABy/qLYAZi9wuE0i8rLSX20jiZcgdG4zkb7VRuulbk7y4KsnxAm801MC
-        I2uu1/YnWTSoOUEuOqRSiACQWWc9gG9rSUvxDKo=
-X-Google-Smtp-Source: APBJJlEUGjLor3gTjMvv45yCty1yYgmc4Ncf4zsT8mew7vP1tguCbmQtcsECbpRpsHR/TMlkZqzErQk+5WqiwyChlrA=
-X-Received: by 2002:a2e:864b:0:b0:2b5:9778:7ce2 with SMTP id
- i11-20020a2e864b000000b002b597787ce2mr13061113ljj.15.1689702626230; Tue, 18
- Jul 2023 10:50:26 -0700 (PDT)
+        bh=FakhO3efxXs79fOL17bUjDsDDzuXwblSHaFpqeVimdw=;
+        b=QoVNcU8N0qxyej7i07GG1ko+kPBLaN2EADvl6/vX5cGDwc6EivU7IxGERwDT+/kxBr
+         znnfHJbCIuoylc9UoyupkFrSKlzklg/3WJAge5g7OCdOVqB5rprJ8i77LewKuwqIN37v
+         4YTeqEvVKXUghGM7FKhjKWxx8RJZyw8oNnhU/IGcsjSeuWrbGkVUpTw+Cw2YaKu90VOk
+         Ae+/01h8hJTWvp2T6hCCi3niH/8IpWw8AjYHiDfVoJUHNZqHhEL6RoSy4XX1JYU4cckW
+         hwxubkgFF3zfEK/N8+mZ1zfgLVqx2HIu8Vew5N7qq04Ga9r1SSRlBlUnlKz7H6psa2P9
+         QJkw==
+X-Gm-Message-State: ABy/qLbFsXn/HkWSFmgNHhoRAH6Y/2UgqNPEHeMu8x/L4aZaczREPz6Y
+        8mjVCm6l77WqYdZK8/e0RzzoZhJYiqBvA8hpqKCWuw==
+X-Google-Smtp-Source: APBJJlFBlB2IMN6wQ9ljyKuk9C2ygg7N2wP9HjsaHvyNMgk7s3uVNoO1IdE3mpPvcaRxPv6noi+S8RXvGCinQtcL+Z4=
+X-Received: by 2002:a0c:d990:0:b0:635:f23e:ef97 with SMTP id
+ y16-20020a0cd990000000b00635f23eef97mr14273252qvj.7.1689702632732; Tue, 18
+ Jul 2023 10:50:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230502005218.3627530-1-drosen@google.com> <20230718082615.08448806@kernel.org>
- <CAADnVQJEEF=nqxo6jHKK=Tn3M_NVXHQjhY=_sry=tE8X4ss25A@mail.gmail.com>
- <20230718090632.4590bae3@kernel.org> <CAADnVQ+4aehGYPJ2qT_HWWXmOSo4WXf69N=N9-dpzERKfzuSzQ@mail.gmail.com>
- <20230718101841.146efae0@kernel.org>
-In-Reply-To: <20230718101841.146efae0@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 18 Jul 2023 10:50:14 -0700
-Message-ID: <CAADnVQ+jAo4V-Pa9_LhJEwG0QquL-Ld5S99v3LNUtgkiiYwfzw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Daniel Rosenberg <drosen@google.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
+References: <20230717-enable-kasan-lto1-v2-1-d47bf182f5c6@gmail.com>
+In-Reply-To: <20230717-enable-kasan-lto1-v2-1-d47bf182f5c6@gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 18 Jul 2023 10:50:21 -0700
+Message-ID: <CAKwvOdmjzgPF9g2e5fXtM=_bkGdYdhK21iuwR7EdZJUnCxRc_w@mail.gmail.com>
+Subject: Re: [PATCH v2] arch: enable HAS_LTO_CLANG with KASAN and KCOV
+To:     Jakob Koschel <jkl820.git@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>, Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,83 +72,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 10:18=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> w=
-rote:
+On Mon, Jul 17, 2023 at 11:49=E2=80=AFPM Jakob Koschel <jkl820.git@gmail.co=
+m> wrote:
 >
-> On Tue, 18 Jul 2023 09:52:24 -0700 Alexei Starovoitov wrote:
-> > On Tue, Jul 18, 2023 at 9:06=E2=80=AFAM Jakub Kicinski <kuba@kernel.org=
-> wrote:
-> > > > This is NOT for safety. You misread the code.
-> > >
-> > > Doesn't matter, safety or optionality. skb_header_pointer() is used
-> > > on the fast paths of the networking stack, adding heavy handed input
-> > > validation to it is not okay. No sane code should be passing NULL
-> > > buffer to skb_header_pointer(). Please move the NULL check to the BPF
-> > > code so the rest of the networking stack does not have to pay the cos=
-t.
-> > >
-> > > This should be common sense. If one caller is doing something..
-> > > "special" the extra code should live in the caller, not the callee.
-> > > That's basic code hygiene.
-> >
-> > you're still missing the point. Pls read the whole patch series.
+> Both KASAN and KCOV had issues with LTO_CLANG if DEBUG_INFO is enabled.
+> With LTO inlinable function calls are required to have debug info if
+> they are inlined into a function that has debug info.
 >
-> Could you just tell me what the point is then? The "series" is one
-> patch plus some tiny selftests. I don't see any documentation for
-> how dynptrs are supposed to work either.
+> Starting with LLVM 17 this will be fixed ([1],[2]) and enabling LTO with
+> KASAN/KCOV and DEBUG_INFO doesn't cause linker errors anymore.
 >
-> As far as I can grasp this makes the "copy buffer" optional from
-> the kfunc-API perspective (of bpf_dynptr_slice()).
+> Link: https://github.com/llvm/llvm-project/commit/913f7e93dac67ecff47bade=
+862ba42f27cb68ca9
+> Link: https://github.com/llvm/llvm-project/commit/4a8b1249306ff11f229320a=
+bdeadf0c215a00400
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Jakob Koschel <jkl820.git@gmail.com>
+> ---
+> Changes in v2:
+> - Added correct To:/Cc:
+> - Added comment about required LLVM 17 version dependency
+> - Link to v1: https://lore.kernel.org/r/20230717-enable-kasan-lto1-v1-1-4=
+71e706a5c4e@gmail.com
+> ---
+>  arch/Kconfig | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 >
-> > It is _not_ input validation.
-> > skb_copy_bits is a slow path. One extra check doesn't affect
-> > performance at all. So 'fast paths' isn't a valid argument here.
-> > The code is reusing
-> >         if (likely(hlen - offset >=3D len))
-> >                 return (void *)data + offset;
-> > which _is_ the fast path.
-> >
-> > What you're requesting is to copy paste
-> > the whole __skb_header_pointer into __skb_header_pointer2.
-> > Makes no sense.
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index aff2746c8af2..d722bcfcc870 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -745,7 +745,10 @@ config HAS_LTO_CLANG
+>         depends on $(success,$(AR) --help | head -n 1 | grep -qi llvm)
+>         depends on ARCH_SUPPORTS_LTO_CLANG
+>         depends on !FTRACE_MCOUNT_USE_RECORDMCOUNT
+> -       depends on !KASAN || KASAN_HW_TAGS
+> +       # KASAN & KCOV were missing necessary debug information prior to =
+LLVM 17
+> +       # which are required with LTO.
+
+Hi Jakob,
+Thanks for follow up with a v2.  I think Nathan meant he was literally
+looking for a link here in the comment, like:
+
+# https://github.com/ClangBuiltLinux/linux/issues/1721
+
+Mind sending a v3 with that? You can replace the comment you added to
+arch/Kconfig in v2 outright with that link.
+
+If folks need to know more they can follow that link or run git blame on it=
+.
+
+> +       depends on (!KASAN || KASAN_HW_TAGS || CLANG_VERSION >=3D 170000)=
+ || !DEBUG_INFO
+> +       depends on (!KCOV || CLANG_VERSION >=3D 170000) || !DEBUG_INFO
+>         depends on !GCOV_KERNEL
+>         help
+>           The compiler and Kconfig options support building with Clang's
 >
-> No, Alexei, the whole point of skb_header_pointer() is to pass
-> the secondary buffer, to make header parsing dependable.
+> ---
+> base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
+> change-id: 20230717-enable-kasan-lto1-656754c76241
+>
+> Best regards,
+> --
+> Jakob Koschel <jkl820.git@gmail.com>
+>
 
-of course. No one argues about that.
 
-> Passing NULL buffer to skb_header_pointer() is absolutely nonsensical.
-
-Quick grep through the code proves you wrong:
-drivers/net/ethernet/broadcom/bnxt/bnxt.c
-__skb_header_pointer(NULL, start, sizeof(*hp), skb->data,
-                     skb_headlen(skb), NULL);
-
-was done before this patch. It's using __ variant on purpose
-and explicitly passing skb=3D=3DNULL to exactly trigger that line
-to deliberately avoid the slow path.
-
-Another example:
-drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
-skb_header_pointer(skb, 0, 0, NULL);
-
-This one I'm not sure about. Looks buggy.
-
-> It should *not* be supported. We had enough prod problems with people
-> thinking that the entire header will be in the linear portion.
-> Then either the NIC can't parse the header, someone enables jumbo,
-> disables GRO, adds new HW, adds encap, etc etc and things implode.
-
-I don't see how this is related.
-NULL buffer allows to get a linear pointer and explicitly avoids
-slow path when it's not linear.
-
-> If you want to support it in BPF that's up to you, but I think it's
-> entirely reasonable for me to request that you don't do such things
-> in general networking code. The function is 5 LoC, so a local BPF
-> copy seems fine. Although I'd suggest skb_header_pointer_misguided()
-> rather than __skb_header_pointer2() as the name :)
-
-If you insist we can, but bnxt is an example that buffer=3D=3DNULL is
-a useful concept for networking and not bpf specific.
-It also doesn't make "people think the header is linear" any worse.
+--=20
+Thanks,
+~Nick Desaulniers
