@@ -2,132 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F54757245
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D64E7757247
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbjGRDYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 23:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33600 "EHLO
+        id S231241AbjGRD0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 23:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231229AbjGRDYA (ORCPT
+        with ESMTP id S231187AbjGRD0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 23:24:00 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18538172B;
-        Mon, 17 Jul 2023 20:23:22 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3a426e70575so2813334b6e.0;
-        Mon, 17 Jul 2023 20:23:22 -0700 (PDT)
+        Mon, 17 Jul 2023 23:26:08 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105522701
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 20:24:21 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fc0aecf15bso51932225e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 20:24:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689650602; x=1692242602;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0I/GN1swVut2u8gwwzCTgr8mdA5BefsHiacF2Dh1Kwk=;
-        b=Xb4B6R3ynym2umsUFxuGCu0WcTP+WZwAHDaNB8j84egirjurOsbBigr1Itn8O1ZkU0
-         jTMsLxxogjG6KtbyeVEZ2nbAarYn7CZURH08pmB3LYfXLk3UKASx1PwFfNJqDquKS5qL
-         B2jxGQeXj9EO/a1FtDb/2mdHkFy9usUNCBUyA9BCy1x0+/bFCvSj4GjENlwoqe0J9M8m
-         zdyl/6+Q8HgB6NGZBWBj01uHxYn6GJ1IRdXtRr+lHd7AC1b7qPpCKWYHR8QHGgEkBjlK
-         lylWiLkEfil0sXZejoJWePv5gJOeGP5KiJxJuN9lx1F3oaQ9zC3s6+D1S1NOm7/8MPdV
-         paaw==
+        d=linaro.org; s=google; t=1689650638; x=1692242638;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8Yaw/su3dm4lGxJq+uDwrFmIvx/782XRsFqzx0jPx1s=;
+        b=IOuykNH0+ZMFFZ7k3TlbVOJ/Pa6tE/WgWM+W0l7P09FJuYempieSJwdlPHh9K3znTF
+         /3XE0ajAJ0H8RM2IfRskU7qmPxnjl9VFq+QEoL676a5BXTLgAeSgZvb8IU0zBjnLaZyz
+         Tt3gIgXCmdic49WDgEuzmzl/pAP7xL58jO/7NOqaLg6z1WN0y8TPR5Z7CvIPz1Opt7JC
+         DKeAkPBUXp9TMCFbbDNMK3VKB2+Ir1OQ588YHIcdIDehW71lzT5hszK5YsQbtd8SlmJt
+         t44GnfFbTFzBHBBXcK+czgSZSIOcGj/3Jq/Cl98VsK5OYGS62Gvjupd4vlFMTYLZmGm1
+         UlvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689650602; x=1692242602;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0I/GN1swVut2u8gwwzCTgr8mdA5BefsHiacF2Dh1Kwk=;
-        b=XmUN7X6bp8asqXojQ2sKiBSSETcc+eqNo2NOZiGzAOiWmCCxat7+sltKVfsN5XegNp
-         /ZFMRMnNf6Do8YgAbEtF+6eMX6XILvr7BdVOYQT0BOUfIpubx8KFfww8QymQ/s85FAnQ
-         9nFgAGeZCB3YVSGduIDLiaoAiC0koObqWIfJH5xFav5OKLjOygNepXbkBgdXSqMB3doD
-         Neov4ce/IVVFFy8hiw32DC2SNwVAh3fL0QozNkKLLYGUDjuotG1OSMiwNtPuJdB6t7ji
-         COXtzYo7XqmPzLr/BoM4RZ6SMNNLIsFOXuNs3sIwTh6F2puKqfgUYHZEAv/K69J3ngUc
-         cbtg==
-X-Gm-Message-State: ABy/qLa8S7Sgpf+tI1mxPaN6UFt/2YxctWw20IDO/MI7vYUlBGGLGJc3
-        vwUvPKMfTd275CbIYCPjKlQ=
-X-Google-Smtp-Source: APBJJlGnK3nLoRwNnXojGTfSDgadrI983B8Sf+lYUd5Dmv/nYJ57v9JGON04uf6naKUnlKHxZa44Pw==
-X-Received: by 2002:a05:6808:13cf:b0:3a3:820e:2f05 with SMTP id d15-20020a05680813cf00b003a3820e2f05mr14716706oiw.1.1689650602206;
-        Mon, 17 Jul 2023 20:23:22 -0700 (PDT)
-Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:37:c5e9:2003:6c97:8057])
-        by smtp.gmail.com with ESMTPSA id s92-20020a17090a2f6500b00263f41a655esm504040pjd.43.2023.07.17.20.23.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 20:23:21 -0700 (PDT)
-From:   Tianyu Lan <ltykernel@gmail.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, daniel.lezcano@linaro.org, arnd@arndb.de,
-        michael.h.kelley@microsoft.com
-Cc:     Tianyu Lan <tiala@microsoft.com>, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vkuznets@redhat.com, Michael Kelley <mikelley@microsoft.com>
-Subject: [PATCH V3 9/9] x86/hyperv: Add hyperv-specific handling for VMMCALL under SEV-ES
-Date:   Mon, 17 Jul 2023 23:23:03 -0400
-Message-Id: <20230718032304.136888-10-ltykernel@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230718032304.136888-1-ltykernel@gmail.com>
-References: <20230718032304.136888-1-ltykernel@gmail.com>
+        d=1e100.net; s=20221208; t=1689650638; x=1692242638;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8Yaw/su3dm4lGxJq+uDwrFmIvx/782XRsFqzx0jPx1s=;
+        b=j1DyndjEPhiweXZhlEdGFMWHh9RpcUIxN1eiJOyC2dG5McSmhHv+CO6MLmnD/2oa8O
+         26ogNnw5d9WOXQ/E7P08HNYcxRMCLfvLzWwv9vc+UQ28+s9u0hazGW+peWuGEgYrF3nc
+         to4CIRigY9ggC3ZKO1fKkKEpeSprW/Zi6v8QJUXBLp/OoiumYeLgrcJ0DcIoI27rw6iR
+         dFWFBNX63lLtUg7lQfOMrQ72rZ6pwa6oicBugR/PWNs0SPi5Di5jAcBH3SbsPPFFzy2t
+         0fzOXQwCHjTVfTg37h84EoOBn39marFu6pZbcnIZv4Qi+Kh9cfEhm8LpRIuYaF8wRFuA
+         1FOQ==
+X-Gm-Message-State: ABy/qLby9o8bFHpoghhgob7vqv2wqzz0tl4q197KnXx0DusMSgmHVOqP
+        A0OqBMZXyHzpyqMXQY6oPObd7Q==
+X-Google-Smtp-Source: APBJJlEMo+94zfYvjjd0ST7tSjDvYxqx+bPRJDBcTj1MpaxD5e0ocYFgQRm385+XmJ39W4C80uucLg==
+X-Received: by 2002:a1c:e90d:0:b0:3fc:524:e80a with SMTP id q13-20020a1ce90d000000b003fc0524e80amr776137wmc.18.1689650638531;
+        Mon, 17 Jul 2023 20:23:58 -0700 (PDT)
+Received: from [192.168.2.173] ([79.115.63.146])
+        by smtp.gmail.com with ESMTPSA id m17-20020a7bce11000000b003fc07e17d4esm9223656wmc.2.2023.07.17.20.23.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 20:23:58 -0700 (PDT)
+Message-ID: <d99d87e7-47ba-d6fe-735f-16de2a2ec280@linaro.org>
+Date:   Tue, 18 Jul 2023 06:23:55 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] mtd: spi-nor: Correct flags for Winbond w25q128
+To:     Michael Walle <michael@walle.cc>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Pratyush Yadav <pratyush@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20230712-spi-nor-winbond-w25q128-v2-1-50c9f1d58d6c@linaro.org>
+ <f00fa2ae-6d4a-90cb-3724-2bedb96cb4fb@linaro.org>
+ <0525440a652854a2a575256cd07d3559@walle.cc>
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+Content-Language: en-US
+In-Reply-To: <0525440a652854a2a575256cd07d3559@walle.cc>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <tiala@microsoft.com>
 
-Add Hyperv-specific handling for faults caused by VMMCALL
-instructions.
 
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Signed-off-by: Tianyu Lan <tiala@microsoft.com>
----
- arch/x86/kernel/cpu/mshyperv.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+On 13.07.2023 10:01, Michael Walle wrote:
+> Hi,
+> 
+> Am 2023-07-13 05:32, schrieb Tudor Ambarus:
+>> Hi, Linus,
+>>
+>> On 13.07.2023 00:59, Linus Walleij wrote:
+>>> The Winbond "w25q128" (actual vendor name W25Q128JV)
+>>> has exactly the same flags as the sibling device
+>>> "w25q128jv". The devices both require unlocking to
+>>> enable write access.
+>>>
+>>> The actual product naming between devices vs the
+>>> Linux strings in winbond.c:
+>>>
+>>> 0xef4018: "w25q128"   W25Q128JV-IM/JM
+>>> 0xef7018: "w25q128jv" W25Q128JV-IN/IQ/JQ
+>>>
+>>> The latter device, "w25q128jv" supports features
+>>> named DTQ and QPI, otherwise it is the same.
+>>>
+>>> Not having the right flags has the annoying side
+>>> effect that write access does not work.
+>>
+>> I guess you refer to the locking flags. Probably your flash has the non
+>> volatile block protection (BP) bits from the Status Register set, which
+>> means the entire flash is write protected. The factory default for these
+>> bits is 0/disabled on this flash so someone must have played with them.
+>> The reason why one may want write protection set is to avoid inadvertent
+>> writes during power-up.
+>> One can control whether to disable the software write protection at boot
+>> time with the MTD_SPI_NOR_SWP_ configs.
+>>>
+>>> After this patch I can write to the flash on the
+>>> Inteno XG6846 router.
+>>>
+>>> The flash memory also supports dual and quad SPI
+>>> modes. This does not currently manifest, but by
+>>
+>> The fasted mode is chosen after SFDP parsing, so you should use quad
+>> reads if your controller also supports 4 I/O lines.
+>>> turning on SFDP parsing, the right SPI modes are
+>>> emitted in
+>>> /sys/kernel/debug/spi-nor/spi1.0/capabilities
+>>> for this chip, so we also turn on this.
+>>>
+>>> Cc: stable@vger.kernel.org
+>>> Suggested-by: Michael Walle <michael@walle.cc>
+>>> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+>>> ---
+>>> Changes in v2:
+>>> - Only add the write access flags.
+>>> - Use SFDP parsing to properly detect the various
+>>>   available SPI modes.
+>>> - Link to v1:
+>>> https://lore.kernel.org/r/20230712-spi-nor-winbond-w25q128-v1-1-f78f3bb42a1c@linaro.org
+>>> ---
+>>>  drivers/mtd/spi-nor/winbond.c | 3 ++-
+>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/winbond.c
+>>> b/drivers/mtd/spi-nor/winbond.c
+>>> index 834d6ba5ce70..6c82e525c801 100644
+>>> --- a/drivers/mtd/spi-nor/winbond.c
+>>> +++ b/drivers/mtd/spi-nor/winbond.c
+>>> @@ -121,7 +121,8 @@ static const struct flash_info
+>>> winbond_nor_parts[] = {
+>>>      { "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16)
+>>>          NO_SFDP_FLAGS(SECT_4K) },
+>>>      { "w25q128", INFO(0xef4018, 0, 64 * 1024, 256)
+>>
+>> while here try, using INFO with INFO(0xef4018, 0, 0, 0), those
+>> parameters shall be discovered at run-time, so we prepare to get rid of
+>> explicitly setting them sooner or later.
+> 
+> This is an entry matching various flash families from Winbond, see my
+> reply in v1. I'm not sure we should remove these as we could break the
+> older ones, which might or might not have SFDP tables. We don't know.
 
-diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-index 8e1d9ed6a1e0..ba9a3a65f664 100644
---- a/arch/x86/kernel/cpu/mshyperv.c
-+++ b/arch/x86/kernel/cpu/mshyperv.c
-@@ -32,6 +32,7 @@
- #include <asm/nmi.h>
- #include <clocksource/hyperv_timer.h>
- #include <asm/numa.h>
-+#include <asm/svm.h>
- 
- /* Is Linux running as the root partition? */
- bool hv_root_partition;
-@@ -577,6 +578,20 @@ static bool __init ms_hyperv_msi_ext_dest_id(void)
- 	return eax & HYPERV_VS_PROPERTIES_EAX_EXTENDED_IOAPIC_RTE;
- }
- 
-+static void hv_sev_es_hcall_prepare(struct ghcb *ghcb, struct pt_regs *regs)
-+{
-+	/* RAX and CPL are already in the GHCB */
-+	ghcb_set_rcx(ghcb, regs->cx);
-+	ghcb_set_rdx(ghcb, regs->dx);
-+	ghcb_set_r8(ghcb, regs->r8);
-+}
-+
-+static bool hv_sev_es_hcall_finish(struct ghcb *ghcb, struct pt_regs *regs)
-+{
-+	/* No checking of the return state needed */
-+	return true;
-+}
-+
- const __initconst struct hypervisor_x86 x86_hyper_ms_hyperv = {
- 	.name			= "Microsoft Hyper-V",
- 	.detect			= ms_hyperv_platform,
-@@ -584,4 +599,6 @@ const __initconst struct hypervisor_x86 x86_hyper_ms_hyperv = {
- 	.init.x2apic_available	= ms_hyperv_x2apic_available,
- 	.init.msi_ext_dest_id	= ms_hyperv_msi_ext_dest_id,
- 	.init.init_platform	= ms_hyperv_init_platform,
-+	.runtime.sev_es_hcall_prepare = hv_sev_es_hcall_prepare,
-+	.runtime.sev_es_hcall_finish = hv_sev_es_hcall_finish,
- };
--- 
-2.25.1
+I'd take the risk and break the older ones if there are some that don't
+define SFDP indeed, just to handle the conflict properly. We can't
+encourage code based on assumptions otherwise we'll get back to the
+knotted spi-nor code that we tried to untie in the last years.
+
+> 
+>>
+>>> -        NO_SFDP_FLAGS(SECT_4K) },
+> 
+> Thus, I'd also keep this one.
+> 
+
+Keeping this one does not have the effect that you want as SECT_4K is
+used in spi_nor_no_sfdp_init_params() which is not called when
+PARSE_SFDP is set, which makes perfectly sense. Let's drop this and if
+bugs will be reported, I commit I'll fix them in the same release cycle.
+
+If both of you agree, I'll amend Linus's v4 patch when applying.
+
+Cheers,
+ta
 
