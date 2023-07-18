@@ -2,145 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 184AF757CE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E19B2757CE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232608AbjGRNJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:09:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
+        id S232438AbjGRNIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232569AbjGRNJM (ORCPT
+        with ESMTP id S232784AbjGRNIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:09:12 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F76AF
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:09:05 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5700b15c12fso57409027b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:09:05 -0700 (PDT)
+        Tue, 18 Jul 2023 09:08:14 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFD51BE4;
+        Tue, 18 Jul 2023 06:07:39 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fbb281eec6so9077019e87.1;
+        Tue, 18 Jul 2023 06:07:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689685744; x=1690290544;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=arlaxmSPjr+t49XEWI2/MiuInUH3guP7HZZCse70XY8=;
-        b=mxJQziMe1+EUYzx/QahnAIuck+FYWaKf+SVKYZuvBv8cjOo7mfwV+1aMFfaLV39nkX
-         00VfhiSeaaTFXA2xFr4gji6QqOuOSycg/rRdgDmTu4J/eLp5wI1v/dKyWuW38F3W5HCO
-         A6RCKr1zmyX6/5EzgsiM+HU17nQaOAGt1kSFO2GTRPhwDWZYmqpLttF4RStISKpbc3ZV
-         6CxPyVQWkyua2NYR6JbuC2GfM0nWkF/TFG6sFuBfDubLJjWKgf9KFBi4/W0ZnWSe2SI7
-         14lYDcPtfxjZJbWCu2Zzn2rH23x0jGuSezFNU0HvQci/hjfZQCs0ZMJbyVZUnMee/tjo
-         iypw==
+        d=gmail.com; s=20221208; t=1689685658; x=1692277658;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=GA6QwU20lGhp2Bev/70UXYufsOZZR1jEJ5AU1SEFOiQ=;
+        b=q3z5eTwcNE4siHOx4yyXpbx3/eKKVNk0SJyP4BZVLNpByDlJGHQOChuJSOlnkIWsix
+         cFYsbSugckBau4cOp68VS9trIkBZ0nU74Yf4lTQ7hjhKuJEGXvLTI0ucAIh4lRA3+43D
+         cEm/BlYntgJesDxUHBkOQ/X0GN4oC67yMs+qrMHubEOWDZtto+/RXv5Epeod/xqQ0ioK
+         AO4eah06jsKr1rX2tJrD7kYYrcoQ7+KelC3RT7KAHqJ0c5NUO4w3IFxoE8MfQ2QUD7vY
+         3xi/Ktaefi24MzhSYfC6KeB8sW2wd6coFzyw4C8UaV/YMJsjJV/oCRr3HR+rLbWCVRtF
+         pWOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689685744; x=1690290544;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=arlaxmSPjr+t49XEWI2/MiuInUH3guP7HZZCse70XY8=;
-        b=EEcPKjrkXl0JFeqWAgfZfjwGB/iXc0+USo/JYDhkKH7qBgMgAXkZ0v+fjuAFLM74S/
-         p/WXeKjfJMhbNpjPD8S3BPBLK530H1lnZOaVUU7OGxIh07w3oHrygJzBqAMW18x0QT38
-         SiwrDtMMzGzdZrcuQ8OGO12nIJPzuWyv8M14r7lw9947wM5axLeeDtzLl7Ln73xlf8oj
-         4CvFnv/FDBmFFZgiUpK5B+M21TVtph/Y477eTKv6kv++Y0Uk94iDvCjX+sDfzsVN90/8
-         fmJVu4RuESFY1wphy31NkNtOO948Xhkacgxr+xvFnMXuyr67m8r/A/d1aRYacEohhtnD
-         gVIQ==
-X-Gm-Message-State: ABy/qLb2+vwYNil3a8HWqo3mkO8ABn8Tby+DpAFiOvsftSHbj283EsuD
-        mNAQ05qkHHDgPfsKRNEcljmZWLK33FntqNc5lB1sYA==
-X-Google-Smtp-Source: APBJJlHK6AyLaAaLUSgPySkhrZdE9+hpDzVV8P2eZl0JHEVw4D2MnsNuSQW/tb8MXm2p7mfzFFevlgeh5Hex06CshMU=
-X-Received: by 2002:a25:3446:0:b0:c6d:e3e3:5592 with SMTP id
- b67-20020a253446000000b00c6de3e35592mr12933036yba.54.1689685744321; Tue, 18
- Jul 2023 06:09:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230717-topic-branch_aon_cleanup-v1-0-27784d27a4f4@linaro.org>
- <20230717-topic-branch_aon_cleanup-v1-15-27784d27a4f4@linaro.org>
- <ZLVsN40kYsvQm1z6@gerhold.net> <a193a4dd-0a0a-0d36-6d83-0424cd1dce80@linaro.org>
- <ZLVyvHnKPdOfqAck@gerhold.net> <8c5dc146-c305-bef9-0d97-76a91345ed1a@linaro.org>
- <ZLV5CirE8CZfCjkX@gerhold.net> <9b28a17a-fe9c-3ff0-fa1d-320e75e174d0@linaro.org>
- <ZLZ94Qc6x1HyjJPQ@gerhold.net> <d087d0df-0bf6-c93a-7999-f9385ebb7a38@linaro.org>
-In-Reply-To: <d087d0df-0bf6-c93a-7999-f9385ebb7a38@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 18 Jul 2023 16:08:53 +0300
-Message-ID: <CAA8EJppFaYPm33Z-_a+AgKYcWsaPE_y=B+agYVQ8z0ncfrvUAw@mail.gmail.com>
-Subject: Re: [PATCH 15/15] arm64: dts: qcom: sm6115: Add VDD_CX to GPU_CCC
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+        d=1e100.net; s=20221208; t=1689685658; x=1692277658;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GA6QwU20lGhp2Bev/70UXYufsOZZR1jEJ5AU1SEFOiQ=;
+        b=DBngB2VUtUJ4wuG2LzYlIlYpHLQytYW7We5RnxgCv/vCA8vYLkiQZi4wqBJJ7mqrzj
+         T1LdA5a62qmiaKfcguuh21TZMHGyLg+wu72hMPfwVSlfvmw/IOcPZbvAP/hzss28Ef2C
+         DZHfyWp+S521Ryy+Medl4z0T9TRsM62n1FfmunkGNglZ8tXmL0cAU/DmaYccjZQ5rgb0
+         z+Mt/gZO8StxHXpPD0jWctXB7ldlJ9IAN06+oKaZk5+I7WoeOqjyLvNynXT0SRcF9AmA
+         IgtNzmev5IVN99FUiQkfIDXRvhpI3Ne1ctJ1kjhXUsb6vMzb1fGrl3jAEsStLHjMLN1Y
+         gNHA==
+X-Gm-Message-State: ABy/qLbOsJ6h+nN78k5kGQ6RKYhPr9N2hB/1xMcRvUqnE7nOgB3JGgxm
+        a7yYydVXo6U+WmWMn/GJ9YgMHPbv+0SKK2s9zkY=
+X-Google-Smtp-Source: APBJJlHkU1AeRsmyGGYifR4UECYS+DLo/3SPD/NocVe/DcpSI0WmlGIH+LOT7eJEbiOW53qYeyQTag==
+X-Received: by 2002:a05:6512:3d89:b0:4fd:c23b:959d with SMTP id k9-20020a0565123d8900b004fdc23b959dmr4198501lfv.34.1689685657725;
+        Tue, 18 Jul 2023 06:07:37 -0700 (PDT)
+Received: from ?IPv6:2003:f6:ef05:8700:4ac8:4223:8b53:53c1? (p200300f6ef0587004ac842238b5353c1.dip0.t-ipconnect.de. [2003:f6:ef05:8700:4ac8:4223:8b53:53c1])
+        by smtp.gmail.com with ESMTPSA id m15-20020aa7d34f000000b0050bc4600d38sm1211045edr.79.2023.07.18.06.07.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 06:07:37 -0700 (PDT)
+Message-ID: <4a5d6ca0e2c9529d5eb0bbacbaed56e2645719c6.camel@gmail.com>
+Subject: Re: [PATCH] iio: core: Prevent invalid memory access when there is
+ no parent
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     Milan Zamazal <mzamazal@redhat.com>, linux-iio@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date:   Tue, 18 Jul 2023 15:10:07 +0200
+In-Reply-To: <20230718120700.132579-1-mzamazal@redhat.com>
+References: <20230718120700.132579-1-mzamazal@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 
+MIME-Version: 1.0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 at 15:48, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->
-> On 18.07.2023 13:56, Stephan Gerhold wrote:
-> > On Mon, Jul 17, 2023 at 09:18:21PM +0200, Konrad Dybcio wrote:
-> >> On 17.07.2023 19:23, Stephan Gerhold wrote:
-> >>> On Mon, Jul 17, 2023 at 07:11:33PM +0200, Konrad Dybcio wrote:
-> >>>> On 17.07.2023 18:56, Stephan Gerhold wrote:
-> >>>>> On Mon, Jul 17, 2023 at 06:50:18PM +0200, Konrad Dybcio wrote:
-> >>>>>> On 17.07.2023 18:28, Stephan Gerhold wrote:
-> >>>>>>> On Mon, Jul 17, 2023 at 05:19:22PM +0200, Konrad Dybcio wrote:
-> >>>>>>>> The GPU_CC block is powered by VDD_CX. Describe that.
-> >>>>>>>>
-> >>>>>>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> >>>>>>>> ---
-> >>>>>>>>  arch/arm64/boot/dts/qcom/sm6115.dtsi | 2 ++
-> >>>>>>>>  1 file changed, 2 insertions(+)
-> >>>>>>>>
-> >>>>>>>> diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
-> >>>>>>>> index 29b5b388cd94..bfaaa1801a4d 100644
-> >>>>>>>> --- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
-> >>>>>>>> +++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
-> >>>>>>>> @@ -1430,6 +1430,8 @@ gpucc: clock-controller@5990000 {
-> >>>>>>>>                        clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>,
-> >>>>>>>>                                 <&gcc GCC_GPU_GPLL0_CLK_SRC>,
-> >>>>>>>>                                 <&gcc GCC_GPU_GPLL0_DIV_CLK_SRC>;
-> >>>>>>>> +                      power-domains = <&rpmpd SM6115_VDDCX>;
-> >>>>>>>> +                      required-opps = <&rpmpd_opp_low_svs>;
-> >>>>>>>
-> >>>>>>> Where is this required-opp coming from? The clocks in gpucc seem to have
-> >>>>>>> different voltage requirements depending on the rates, but we usually
-> >>>>>>> handle that in the OPP tables of the consumer.
-> >>>>>> The only lower levels defined for this SoC are VDD_MIN and VDD_RET,
-> >>>>>> but quite obviously the GPU won't work then
-> >>>>>>
-> >>>>>
-> >>>>> The levels needed for the GPU clocks to run should be in the GPU OPP
-> >>>>> table though, just like e.g. sdhc2_opp_table for the SDCC clocks.
-> >>>>>
-> >>>>> I still don't really understand why this is specified here. :)
-> >>>> The GPU_CC block needs this rail to be at a certain power level for
-> >>>> register access. This describes that requirement.
-> >>>>
-> >>>
-> >>> Can you show where this is defined downstream? On a quick look I didn't
-> >>> see something like that anywhere. Or is this from some secret
-> >>> documentation?
-> >> As far as downstream goes, you can notice that no branch's or RCG's
-> >> vdd tables ever define a level lower than the one I mentioned.
-> >>
-> >
-> > As far as I can tell the vdd tables are only used when the clock is
-> > actually enabled though, not for writing to registers while they are
-> > disabled.
-> Maybe, but you can also notice that even XO rates require at least
-> SVS_LOW to function.
+On Tue, 2023-07-18 at 14:07 +0200, Milan Zamazal wrote:
+> Commit 813665564b3d ("iio: core: Convert to use firmware node handle
+> instead of OF node") switched the kind of nodes to use for label
+> retrieval in device registration.=C2=A0 Probably an unwanted change in th=
+at
+> commit was that if the device has no parent then NULL pointer is
+> accessed.=C2=A0 This is what happens in the stock IIO dummy driver when a
+> new entry is created in configfs:
+>=20
+> =C2=A0 # mkdir /sys/kernel/config/iio/devices/dummy/foo
+> =C2=A0 BUG: kernel NULL pointer dereference, address: 0000000000000278
+> =C2=A0 ...
+> =C2=A0 ? asm_exc_page_fault+0x22/0x30
+> =C2=A0 ? container_offline+0x20/0x20
+> =C2=A0 __iio_device_register+0x45/0xc10
+> =C2=A0 ? krealloc+0x73/0xa0
+> =C2=A0 ? iio_device_attach_buffer+0x31/0xc0
+> =C2=A0 ? iio_simple_dummy_configure_buffer+0x20/0x20
+> =C2=A0 ? iio_triggered_buffer_setup_ext+0xb4/0x100
+> =C2=A0 iio_dummy_probe+0x112/0x190
+> =C2=A0 iio_sw_device_create+0xa8/0xd0
+> =C2=A0 device_make_group+0xe/0x40
+> =C2=A0 configfs_mkdir+0x1a6/0x440
+>=20
+> Since there seems to be no reason to make a parent device of an IIO
+> dummy device mandatory, let=E2=80=99s prevent the invalid memory access i=
+n
+> __iio_device_register when the parent device is NULL.=C2=A0 With this
+> change, the IIO dummy driver works fine with configfs.
+>=20
+> Fixes: 813665564b3d ("iio: core: Convert to use firmware node handle inst=
+ead
+> of OF node")
+> Signed-off-by: Milan Zamazal <mzamazal@redhat.com>
+> ---
 
-But the vdd tables are related to clock rates, which, in the upstream
-design, should be voted by the consumers, not by the clock driver.
+LGTM (just one minor question below...)
+
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+
+> =C2=A0drivers/iio/industrialio-core.c | 11 ++++++-----
+> =C2=A01 file changed, 6 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-c=
+ore.c
+> index c117f50d0cf3..229527b3434a 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -1888,7 +1888,7 @@ static const struct iio_buffer_setup_ops
+> noop_ring_setup_ops;
+> =C2=A0int __iio_device_register(struct iio_dev *indio_dev, struct module =
+*this_mod)
+> =C2=A0{
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct iio_dev_opaque *ii=
+o_dev_opaque =3D to_iio_dev_opaque(indio_dev);
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct fwnode_handle *fwnode;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct fwnode_handle *fwnode =
+=3D NULL;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int ret;
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!indio_dev->info)
+> @@ -1899,11 +1899,12 @@ int __iio_device_register(struct iio_dev *indio_d=
+ev,
+> struct module *this_mod)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* If the calling driver =
+did not initialize firmware node, do it here
+> */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (dev_fwnode(&indio_dev=
+->dev))
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0fwnode =3D dev_fwnode(&indio_dev->dev);
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else if (indio_dev->dev.parent=
+ !=3D NULL)
+
+Maybe this is odd enough that it could have an explicit comment referencing=
+ the
+iio-dummy device? Not sure if there's any other place where this can actual=
+ly
+happen...
+
+Apparently there are also some dev_err() on the parent device (even though
+dev_err() handles it) but yeah, unrelated with this.
 
 
--- 
-With best wishes
-Dmitry
+- Nuno S=C3=A1
