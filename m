@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C56757721
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57B8757724
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232055AbjGRIy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:54:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38388 "EHLO
+        id S232112AbjGRIyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232048AbjGRIyR (ORCPT
+        with ESMTP id S232052AbjGRIyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:54:17 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF561E60
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:54:15 -0700 (PDT)
-Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R4t5l1z9Hz18LXj;
-        Tue, 18 Jul 2023 16:53:31 +0800 (CST)
+        Tue, 18 Jul 2023 04:54:18 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8076BE76
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:54:16 -0700 (PDT)
+Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R4t5k6shWzrRhY;
+        Tue, 18 Jul 2023 16:53:30 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggpemm500009.china.huawei.com
  (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
@@ -27,9 +27,9 @@ To:     <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
 CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
         <chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>,
         <yi.zhang@huawei.com>
-Subject: [PATCH V2 3/5] ubi: Add six fault injection type for testing
-Date:   Tue, 18 Jul 2023 16:51:17 +0800
-Message-ID: <20230718085119.3885747-4-wangzhaolong1@huawei.com>
+Subject: [PATCH V2 4/5] ubi: Reserve sufficient buffer length for the input mask
+Date:   Tue, 18 Jul 2023 16:51:18 +0800
+Message-ID: <20230718085119.3885747-5-wangzhaolong1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20230718085119.3885747-1-wangzhaolong1@huawei.com>
 References: <20230718085119.3885747-1-wangzhaolong1@huawei.com>
@@ -49,411 +49,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds six fault injection type for testing to cover the
-abnormal path of the UBI driver.
-
-Inject the following faults when the UBI reads the LEB:
- +----------------------------+-----------------------------------+
- |    Interface name          |       emulate behavior            |
- +----------------------------+-----------------------------------+
- |  emulate_eccerr            | ECC error                         |
- +----------------------------+-----------------------------------+
- |  emulate_read_failure      | read failure                      |
- |----------------------------+-----------------------------------+
- |  emulate_io_ff             | read content as all FF            |
- |----------------------------+-----------------------------------+
- |  emulate_io_ff_bitflips    | content FF with MTD err reported  |
- +----------------------------+-----------------------------------+
- |  emulate_bad_hdr           | bad leb header                    |
- |----------------------------+-----------------------------------+
- |  emulate_bad_hdr_ebadmsg   | bad header with ECC err           |
- +----------------------------+-----------------------------------+
+Because the mask received by the emulate_failures interface
+is a 32-bit unsigned integer, ensure that there is sufficient
+buffer length to receive and display this value.
 
 Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
 ---
- drivers/mtd/ubi/debug.c |  30 +++++++++
- drivers/mtd/ubi/debug.h | 132 ++++++++++++++++++++++++++++++++++++++--
- drivers/mtd/ubi/io.c    |  75 ++++++++++++++++++++++-
- drivers/mtd/ubi/ubi.h   |  31 ++++++----
- 4 files changed, 248 insertions(+), 20 deletions(-)
+V2:
+  - A 16-byte buffer is reserved, as implemented by other interfaces.
+
+ drivers/mtd/ubi/debug.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index 7826bc8166e8..016a861c5029 100644
+index 016a861c5029..1c3f1a2436e5 100644
 --- a/drivers/mtd/ubi/debug.c
 +++ b/drivers/mtd/ubi/debug.c
-@@ -13,10 +13,16 @@
- #include <linux/fault-inject.h>
+@@ -332,7 +332,7 @@ static ssize_t dfs_file_read(struct file *file, char __user *user_buf,
+ 	struct dentry *dent = file->f_path.dentry;
+ 	struct ubi_device *ubi;
+ 	struct ubi_debug_info *d;
+-	char buf[8];
++	char buf[16];
+ 	int val;
  
- #ifdef CONFIG_MTD_UBI_FAULT_INJECTION
-+static DECLARE_FAULT_ATTR(fault_eccerr_attr);
- static DECLARE_FAULT_ATTR(fault_bitflips_attr);
-+static DECLARE_FAULT_ATTR(fault_read_failure_attr);
- static DECLARE_FAULT_ATTR(fault_write_failure_attr);
- static DECLARE_FAULT_ATTR(fault_erase_failure_attr);
- static DECLARE_FAULT_ATTR(fault_power_cut_attr);
-+static DECLARE_FAULT_ATTR(fault_io_ff_attr);
-+static DECLARE_FAULT_ATTR(fault_io_ff_bitflips_attr);
-+static DECLARE_FAULT_ATTR(fault_bad_hdr_attr);
-+static DECLARE_FAULT_ATTR(fault_bad_hdr_ebadmsg_attr);
+ 	ubi = ubi_get_device(ubi_num);
+@@ -400,7 +400,7 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
+ 	struct ubi_device *ubi;
+ 	struct ubi_debug_info *d;
+ 	size_t buf_size;
+-	char buf[8] = {0};
++	char buf[16] = {0};
+ 	int val;
  
- #define FAIL_ACTION(name, fault_attr)			\
- bool should_fail_##name(void)				\
-@@ -24,10 +30,16 @@ bool should_fail_##name(void)				\
- 	return should_fail(&fault_attr, 1);		\
- }
- 
-+FAIL_ACTION(eccerr,		fault_eccerr_attr)
- FAIL_ACTION(bitflips,		fault_bitflips_attr)
-+FAIL_ACTION(read_failure,	fault_read_failure_attr)
- FAIL_ACTION(write_failure,	fault_write_failure_attr)
- FAIL_ACTION(erase_failure,	fault_erase_failure_attr)
- FAIL_ACTION(power_cut,		fault_power_cut_attr)
-+FAIL_ACTION(io_ff,		fault_io_ff_attr)
-+FAIL_ACTION(io_ff_bitflips,	fault_io_ff_bitflips_attr)
-+FAIL_ACTION(bad_hdr,		fault_bad_hdr_attr)
-+FAIL_ACTION(bad_hdr_ebadmsg,	fault_bad_hdr_ebadmsg_attr)
- #endif
- 
- /**
-@@ -244,6 +256,12 @@ static void dfs_create_fault_entry(struct dentry *parent)
- 		return;
- 	}
- 
-+	fault_create_debugfs_attr("emulate_eccerr", dir,
-+				  &fault_eccerr_attr);
-+
-+	fault_create_debugfs_attr("emulate_read_failure", dir,
-+				  &fault_read_failure_attr);
-+
- 	fault_create_debugfs_attr("emulate_bitflips", dir,
- 				  &fault_bitflips_attr);
- 
-@@ -255,6 +273,18 @@ static void dfs_create_fault_entry(struct dentry *parent)
- 
- 	fault_create_debugfs_attr("emulate_power_cut", dir,
- 				  &fault_power_cut_attr);
-+
-+	fault_create_debugfs_attr("emulate_io_ff", dir,
-+				  &fault_io_ff_attr);
-+
-+	fault_create_debugfs_attr("emulate_io_ff_bitflips", dir,
-+				  &fault_io_ff_bitflips_attr);
-+
-+	fault_create_debugfs_attr("emulate_bad_hdr", dir,
-+				  &fault_bad_hdr_attr);
-+
-+	fault_create_debugfs_attr("emulate_bad_hdr_ebadmsg", dir,
-+				  &fault_bad_hdr_ebadmsg_attr);
- }
- #endif
- 
-diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
-index 6bc698b38e35..29fbd971964a 100644
---- a/drivers/mtd/ubi/debug.h
-+++ b/drivers/mtd/ubi/debug.h
-@@ -85,20 +85,47 @@ static inline int ubi_dbg_erase_failure(const struct ubi_device *ubi)
-  * precisely control the type and process of fault injection.
-  */
- /* Emulate a power cut when writing EC/VID header */
--#define MASK_POWER_CUT_EC	(1 << 1)
--#define MASK_POWER_CUT_VID	(1 << 2)
-+#define MASK_POWER_CUT_EC		(1 << 0)
-+#define MASK_POWER_CUT_VID		(1 << 1)
- 
- #ifdef CONFIG_MTD_UBI_FAULT_INJECTION
-+/* Emulate a power cut when writing data*/
-+#define MASK_POWER_CUT_DATA		(1 << 2)
- /* Emulate bit-flips */
--#define MASK_BITFLIPS		(1 << 3)
--/* Emulates -EIO during write/erase */
--#define MASK_WRITE_FAILURE	(1 << 4)
--#define MASK_ERASE_FAILURE	(1 << 5)
-+#define MASK_BITFLIPS			(1 << 3)
-+/* Emulate ecc error */
-+#define MASK_ECCERR			(1 << 4)
-+/* Emulates -EIO during data read */
-+#define MASK_READ_FAILURE		(1 << 5)
-+#define MASK_READ_FAILURE_EC		(1 << 6)
-+#define MASK_READ_FAILURE_VID		(1 << 7)
-+/* Emulates -EIO during data write */
-+#define MASK_WRITE_FAILURE		(1 << 8)
-+/* Emulates -EIO during erase a PEB*/
-+#define MASK_ERASE_FAILURE		(1 << 9)
-+/* Return UBI_IO_FF when reading EC/VID header */
-+#define MASK_IO_FF_EC			(1 << 10)
-+#define MASK_IO_FF_VID			(1 << 11)
-+/* Return UBI_IO_FF_BITFLIPS when reading EC/VID header */
-+#define MASK_IO_FF_BITFLIPS_EC		(1 << 12)
-+#define MASK_IO_FF_BITFLIPS_VID		(1 << 13)
-+/* Return UBI_IO_BAD_HDR when reading EC/VID header */
-+#define MASK_BAD_HDR_EC			(1 << 14)
-+#define MASK_BAD_HDR_VID		(1 << 15)
-+/* Return UBI_IO_BAD_HDR_EBADMSG when reading EC/VID header */
-+#define MASK_BAD_HDR_EBADMSG_EC		(1 << 16)
-+#define MASK_BAD_HDR_EBADMSG_VID	(1 << 17)
- 
-+extern bool should_fail_eccerr(void);
- extern bool should_fail_bitflips(void);
-+extern bool should_fail_read_failure(void);
- extern bool should_fail_write_failure(void);
- extern bool should_fail_erase_failure(void);
- extern bool should_fail_power_cut(void);
-+extern bool should_fail_io_ff(void);
-+extern bool should_fail_io_ff_bitflips(void);
-+extern bool should_fail_bad_hdr(void);
-+extern bool should_fail_bad_hdr_ebadmsg(void);
- 
- static inline bool ubi_dbg_fail_bitflip(const struct ubi_device *ubi)
- {
-@@ -192,6 +219,99 @@ static inline bool ubi_dbg_is_erase_failure(const struct ubi_device *ubi)
- 	return ubi_dbg_fail_erase(ubi);
- }
- 
-+#ifdef CONFIG_MTD_UBI_FAULT_INJECTION
-+/**
-+ * ubi_dbg_is_eccerr - if it is time to emulate ECC error.
-+ * @ubi: UBI device description object
-+ *
-+ * Returns true if a ECC error should be emulated, otherwise returns false.
-+ */
-+static inline bool ubi_dbg_is_eccerr(const struct ubi_device *ubi)
-+{
-+	if (ubi->dbg.emulate_failures & MASK_ECCERR)
-+		return should_fail_eccerr();
-+	return false;
-+}
-+
-+/**
-+ * ubi_dbg_is_read_failure - if it is time to emulate a read failure.
-+ * @ubi: UBI device description object
-+ *
-+ * Returns true if a read failure should be emulated, otherwise returns
-+ * false.
-+ */
-+static inline bool ubi_dbg_is_read_failure(const struct ubi_device *ubi,
-+					   unsigned int caller)
-+{
-+	if (ubi->dbg.emulate_failures & caller)
-+		return should_fail_read_failure();
-+	return false;
-+}
-+
-+/**
-+ * ubi_dbg_is_ff - if it is time to emulate that read region is only 0xFF.
-+ * @ubi: UBI device description object
-+ *
-+ * Returns true if read region should be emulated 0xFF, otherwise
-+ * returns false.
-+ */
-+static inline bool ubi_dbg_is_ff(const struct ubi_device *ubi,
-+				 unsigned int caller)
-+{
-+	if (ubi->dbg.emulate_failures & caller)
-+		return should_fail_io_ff();
-+	return false;
-+}
-+
-+/**
-+ * ubi_dbg_is_ff_bitflips - if it is time to emulate that read region is only 0xFF
-+ * with error reported by the MTD driver
-+ *
-+ * @ubi: UBI device description object
-+ *
-+ * Returns true if read region should be emulated 0xFF and error
-+ * reported by the MTD driver, otherwise returns false.
-+ */
-+static inline bool ubi_dbg_is_ff_bitflips(const struct ubi_device *ubi,
-+					  unsigned int caller)
-+{
-+	if (ubi->dbg.emulate_failures & caller)
-+		return should_fail_io_ff_bitflips();
-+	return false;
-+}
-+
-+/**
-+ * ubi_dbg_is_bad_hdr - if it is time to emulate a bad header
-+ * @ubi: UBI device description object
-+ *
-+ * Returns true if a bad header error should be emulated, otherwise
-+ * returns false.
-+ */
-+static inline bool ubi_dbg_is_bad_hdr(const struct ubi_device *ubi,
-+				      unsigned int caller)
-+{
-+	if (ubi->dbg.emulate_failures & caller)
-+		return should_fail_bad_hdr();
-+	return false;
-+}
-+
-+/**
-+ * ubi_dbg_is_bad_hdr_ebadmsg - if it is time to emulate a bad header with
-+ * ECC error.
-+ *
-+ * @ubi: UBI device description object
-+ *
-+ * Returns true if a bad header with ECC error should be emulated, otherwise
-+ * returns false.
-+ */
-+static inline bool ubi_dbg_is_bad_hdr_ebadmsg(const struct ubi_device *ubi,
-+					      unsigned int caller)
-+{
-+	if (ubi->dbg.emulate_failures & caller)
-+		return should_fail_bad_hdr_ebadmsg();
-+	return false;
-+}
-+#endif
- /**
-  * ubi_dbg_is_bgt_disabled - if the background thread is disabled.
-  * @ubi: UBI device description object
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index ffa7bbf27bc2..059032132bdd 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -197,6 +197,19 @@ int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
- 			dbg_gen("bit-flip (emulated)");
- 			err = UBI_IO_BITFLIPS;
- 		}
-+#ifdef CONFIG_MTD_UBI_FAULT_INJECTION
-+		if (ubi_dbg_is_read_failure(ubi, MASK_READ_FAILURE)) {
-+			ubi_warn(ubi, "cannot read %d bytes from PEB %d:%d (emulated)",
-+				 len, pnum, offset);
-+			return -EIO;
-+		}
-+
-+		if (ubi_dbg_is_eccerr(ubi)) {
-+			ubi_warn(ubi, "ECC error (emulated) while reading %d bytes from PEB %d:%d, read %zd bytes",
-+				 len, pnum, offset, read);
-+			return -EBADMSG;
-+		}
-+#endif
- 	}
- 
- 	return err;
-@@ -782,7 +795,36 @@ int ubi_io_read_ec_hdr(struct ubi_device *ubi, int pnum,
- 	 * If there was %-EBADMSG, but the header CRC is still OK, report about
- 	 * a bit-flip to force scrubbing on this PEB.
- 	 */
--	return read_err ? UBI_IO_BITFLIPS : 0;
-+	if (read_err)
-+		return UBI_IO_BITFLIPS;
-+#ifdef CONFIG_MTD_UBI_FAULT_INJECTION
-+	if (ubi_dbg_is_read_failure(ubi, MASK_READ_FAILURE_EC)) {
-+		ubi_warn(ubi, "cannot read EC header from PEB %d(emulated)",
-+			 pnum);
-+		return -EIO;
-+	}
-+
-+	if (ubi_dbg_is_ff(ubi, MASK_IO_FF_EC)) {
-+		ubi_warn(ubi, "bit-all-ff (emulated)");
-+		return UBI_IO_FF;
-+	}
-+
-+	if (ubi_dbg_is_ff_bitflips(ubi, MASK_IO_FF_BITFLIPS_EC)) {
-+		ubi_warn(ubi, "bit-all-ff with error reported by MTD driver (emulated)");
-+		return UBI_IO_FF_BITFLIPS;
-+	}
-+
-+	if (ubi_dbg_is_bad_hdr(ubi, MASK_BAD_HDR_EC)) {
-+		ubi_warn(ubi, "bad_hdr (emulated)");
-+		return UBI_IO_BAD_HDR;
-+	}
-+
-+	if (ubi_dbg_is_bad_hdr_ebadmsg(ubi, MASK_BAD_HDR_EBADMSG_EC)) {
-+		ubi_warn(ubi, "bad_hdr with ECC error (emulated)");
-+		return UBI_IO_BAD_HDR_EBADMSG;
-+	}
-+#endif
-+	return 0;
- }
- 
- /**
-@@ -1032,7 +1074,36 @@ int ubi_io_read_vid_hdr(struct ubi_device *ubi, int pnum,
- 		return -EINVAL;
- 	}
- 
--	return read_err ? UBI_IO_BITFLIPS : 0;
-+	if (read_err)
-+		return UBI_IO_BITFLIPS;
-+#ifdef CONFIG_MTD_UBI_FAULT_INJECTION
-+	if (ubi_dbg_is_read_failure(ubi, MASK_READ_FAILURE_VID)) {
-+		ubi_warn(ubi, "cannot read VID header from PEB %d(emulated)",
-+			 pnum);
-+		return -EIO;
-+	}
-+
-+	if (ubi_dbg_is_ff(ubi, MASK_IO_FF_VID)) {
-+		ubi_warn(ubi, "bit-all-ff (emulated)\n");
-+		return UBI_IO_FF;
-+	}
-+
-+	if (ubi_dbg_is_ff_bitflips(ubi, MASK_IO_FF_BITFLIPS_VID)) {
-+		ubi_warn(ubi, "bit-all-ff with error reported by MTD driver (emulated)\n");
-+		return UBI_IO_FF_BITFLIPS;
-+	}
-+
-+	if (ubi_dbg_is_bad_hdr(ubi, MASK_BAD_HDR_VID)) {
-+		ubi_warn(ubi, "bad_hdr (emulated)\n");
-+		return UBI_IO_BAD_HDR;
-+	}
-+
-+	if (ubi_dbg_is_bad_hdr_ebadmsg(ubi, MASK_BAD_HDR_EBADMSG_VID)) {
-+		ubi_warn(ubi, "bad_hdr with ECC error (emulated)\n");
-+		return UBI_IO_BAD_HDR_EBADMSG;
-+	}
-+#endif
-+	return 0;
- }
- 
- /**
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 41f57d5717b2..36d46425ed4c 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -1117,18 +1117,6 @@ static inline struct ubi_vid_hdr *ubi_get_vid_hdr(struct ubi_vid_io_buf *vidb)
- 	return vidb->hdr;
- }
- 
--/*
-- * This function is equivalent to 'ubi_io_read()', but @offset is relative to
-- * the beginning of the logical eraseblock, not to the beginning of the
-- * physical eraseblock.
-- */
--static inline int ubi_io_read_data(const struct ubi_device *ubi, void *buf,
--				   int pnum, int offset, int len)
--{
--	ubi_assert(offset >= 0);
--	return ubi_io_read(ubi, buf, pnum, offset + ubi->leb_start, len);
--}
--
- /*
-  * This function is equivalent to 'ubi_io_write()', but @offset is relative to
-  * the beginning of the logical eraseblock, not to the beginning of the
-@@ -1154,6 +1142,25 @@ static inline void ubi_ro_mode(struct ubi_device *ubi)
- 	}
- }
- 
-+/*
-+ * This function is equivalent to 'ubi_io_read()', but @offset is relative to
-+ * the beginning of the logical eraseblock, not to the beginning of the
-+ * physical eraseblock.
-+ */
-+static inline int ubi_io_read_data(struct ubi_device *ubi, void *buf,
-+				   int pnum, int offset, int len)
-+{
-+	ubi_assert(offset >= 0);
-+#ifdef CONFIG_MTD_UBI_FAULT_INJECTION
-+	if (ubi_dbg_power_cut(ubi, MASK_POWER_CUT_DATA)) {
-+		ubi_warn(ubi, "XXXXX emulating a power cut when writing data XXXXX");
-+		ubi_ro_mode(ubi);
-+		return -EROFS;
-+	}
-+#endif
-+	return ubi_io_read(ubi, buf, pnum, offset + ubi->leb_start, len);
-+}
-+
- /**
-  * vol_id2idx - get table index by volume ID.
-  * @ubi: UBI device description object
+ 	ubi = ubi_get_device(ubi_num);
 -- 
 2.31.1
 
