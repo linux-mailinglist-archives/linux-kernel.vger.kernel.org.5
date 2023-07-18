@@ -2,230 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE58757D35
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D910757D36
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232297AbjGRNUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:20:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55562 "EHLO
+        id S232307AbjGRNUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230336AbjGRNU3 (ORCPT
+        with ESMTP id S231512AbjGRNUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:20:29 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C26F0;
-        Tue, 18 Jul 2023 06:20:27 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51bece5d935so8146565a12.1;
-        Tue, 18 Jul 2023 06:20:27 -0700 (PDT)
+        Tue, 18 Jul 2023 09:20:31 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2423011C
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:20:28 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51ff0e3d8c1so7705584a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:20:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689686426; x=1692278426;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s6bMFs3dhJn8nNDuRaeyVuYgLqQef3PoJkMgo84MWzg=;
-        b=VeIyGT+CNlTrpnm5CuMZu8qUpTBS1Y22zH+Q9/OyXCw3g9jVbAxgOxy77L3s+ewAeY
-         WmrZ73UK5s+gVYPYrGDRUgpW+mm6BDfB/xCNvfZ9QNgi8nEWCjQeDolc/5UE3hTFr9Ec
-         OJnutotesC6zxC4/6T9nrieBezPZp0zL24PuodGIxWzggke7CcD4tXIYdCwSJwVNooRV
-         f34cZoa00JbECIiLlGgzjBWeWvSG1LDhewHA1//rXBp7BWk+Jb7hD+B0en2jp9qabIkh
-         m/ZOtljpfMCr1SOFb/L0qOU+PLiFvcNNGW/Z2osFM4OT2EPISTtf2Y3En5sI/q4/xFHh
-         +p3Q==
+        d=linaro.org; s=google; t=1689686426; x=1692278426;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cWOtIA2FOFVa8PRRZ9oT4YgXxX5Q0c4ZWH1V2fHFko8=;
+        b=tuCv5nNpIgNZNOk9InN3JuvIrDKEMvTFVXBhXyPskz8m/khI6AYxDlmAvvbwlMYeRO
+         ZQq0+SnvDnXAIxwUeskNXgZB2AEMQf/Ge2t10snnrlfjD530P+xx3ZRqNeS9XzMEeedz
+         T+AEKGFrwYJQQT4pgUzKmKXVw/pPXKurgcdhDpZ4ZJw/o1BRb5diEiGFgeBmTPia0D8c
+         UMEHbm19zUUF5FNb192xqmCkGSGjTeAm8oQ353MQoVXSzx8kOO2EbwO5GBAtBlfGEZoS
+         kSQ+X9qxyWYGn0itaFOuy2fsSXqlbDPoa6Bj/X/V7VpdHlobyxnZaaHxF8F/eHqMMbIo
+         eFTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1689686426; x=1692278426;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s6bMFs3dhJn8nNDuRaeyVuYgLqQef3PoJkMgo84MWzg=;
-        b=DZMEz6LrxdI626TzzIkZAOi7JrUSPvXJF7/re3dYs3Q1NkB5Pyt5hRMFqK0O8wXv1d
-         hQMvJZp0I45DLoJJSe3j3Eg2Z4A9Oh9ba9JviNnQqo71H3ZfOA6M07sujq7vkhankhwI
-         r4we6N8fLCbNLRrp3KDofPmOGOn5Qx6B6Kn+oy4c9taKxx5GPt+IAc1FkWkiTxzCvgXC
-         gpQg7m3kWxj88pmdKVUXQWyxNezfEA71yKAE7zYQqWD+JsiTa6sRBGFQJIM/OcyNPByZ
-         YJ4pvwVQ5amUPQvdy6K42zg1F/YRbmCTWXMThKfU3UuQ9y4PRIBnFt6AFnoxsjvVX6ll
-         ZfsQ==
-X-Gm-Message-State: ABy/qLZHpUPniQwSLEYpVCrW3IrWeJ9mOWsbrdLVGWwEyZ2pqy5BwQc+
-        hgfA/AroI6cyccTFc58yd9S4QlJlQLw=
-X-Google-Smtp-Source: APBJJlFdWnkfLFRDytz3siL9gZwOqzq3nojzvKygMkdop/GIQIx+J12ZgrKGLYzkRmLKHsW6XjOrBA==
-X-Received: by 2002:a17:906:109b:b0:988:6526:beaa with SMTP id u27-20020a170906109b00b009886526beaamr15645302eju.40.1689686425590;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cWOtIA2FOFVa8PRRZ9oT4YgXxX5Q0c4ZWH1V2fHFko8=;
+        b=ed8NAArz8TfRn3lkeHB8bf6xNxBCdgipZwAKW/sszlCl3CgCHvTcyQ2owoirCenNno
+         Ht7QV+nBiWeEG1K7dzXZdkJFYHTEdKwfTTU2h2KxGTaFa5WFQXCKj/u6Lt7YQqwL+emE
+         S/zgkKC1+C2jWLirmc1q9UxTeok3Ux6lIWrxprP5/XIhXyOCWW2AEXzEIze+QiyTn/h7
+         +st4UQNpahkHKlqca6V5yj6vXlLjBQAuIEpWFmqITt8YTheHYE/TjLqGR2NOiZI0FSjP
+         eXxaHMYyddNA5c/uOSXE+JtFaEm4yHMrXQ2Rwe/WNSzliCegaaqZrf0L6sLf7wBVqMr3
+         QKyw==
+X-Gm-Message-State: ABy/qLafPpvOiK28/DC8cYa1UEML2WNZnYTA6S4xX8uTMjEslYbJWl6W
+        uLKAgviBrFlNalo/U+S3Lk2pkg==
+X-Google-Smtp-Source: APBJJlGmSDTqKT1bqClQ7VNG9peQWayYbYAKzZ52ByeEncXh9CsvydwFEyqgGiZGFAQdygdkc8BpqA==
+X-Received: by 2002:aa7:da51:0:b0:51e:22dd:5e90 with SMTP id w17-20020aa7da51000000b0051e22dd5e90mr11657748eds.4.1689686426505;
+        Tue, 18 Jul 2023 06:20:26 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id c18-20020aa7c752000000b00514a5f7a145sm1232174eds.37.2023.07.18.06.20.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Tue, 18 Jul 2023 06:20:25 -0700 (PDT)
-Received: from orome (p200300e41f4b7100f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f4b:7100:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id m23-20020aa7c2d7000000b0051def9be785sm1214188edp.85.2023.07.18.06.20.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 06:20:25 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 15:20:23 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Balsam CHIHI <bchihi@baylibre.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
-        Sean Wang <sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v2 10/10] pinctrl: tegra: Switch to use
- DEFINE_NOIRQ_DEV_PM_OPS() helper
-Message-ID: <ZLaRlyzkqRLSqjQc@orome>
-References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
- <20230717172821.62827-11-andriy.shevchenko@linux.intel.com>
- <13f7153786cfcdc3c6185a3a674686f7fbf480dc.camel@crapouillou.net>
- <ZLZDL27zzDpY4q8E@orome>
- <5e4b5bc23f3edb3ed30cb465420a51ffceceb53d.camel@crapouillou.net>
- <ZLZ6amp5HKUbm5w3@orome>
- <8f32cb8377808a073b043e0adf3ccf5ae5a84c92.camel@crapouillou.net>
+Message-ID: <22e7dc73-2411-5cb1-6cef-daa5f2af8297@linaro.org>
+Date:   Tue, 18 Jul 2023 15:20:24 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="aHHyfbgV8z9OlP4F"
-Content-Disposition: inline
-In-Reply-To: <8f32cb8377808a073b043e0adf3ccf5ae5a84c92.camel@crapouillou.net>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] dt-bindings: reset: Updated binding for Versal-NET
+ reset driver
+To:     Michal Simek <michal.simek@amd.com>,
+        Conor Dooley <conor@kernel.org>,
+        Piyush Mehta <piyush.mehta@amd.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, p.zabel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        git@amd.com
+References: <20230717112348.1381367-1-piyush.mehta@amd.com>
+ <20230717112348.1381367-2-piyush.mehta@amd.com>
+ <20230717-explode-caucus-82c12e340e39@spud>
+ <ee81e955-32be-66ea-377b-263ee60a2632@linaro.org>
+ <e8f48a30-9aff-bc2f-d03f-793840a192c9@amd.com>
+ <694a1314-0b25-ff5e-b19f-5a0efe07bf64@linaro.org>
+ <cae162d0-843d-ca1f-80d3-5a0dfe1e3d0f@amd.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <cae162d0-843d-ca1f-80d3-5a0dfe1e3d0f@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18/07/2023 15:11, Michal Simek wrote:
+>>>
+>>> That numbers in DT are virtual no matter if you use ID from 0 to max or random
+>>> values it is up to code to handle them. Checking nr_pins against ID is done in
+>>> core but it is up to drivers.
+>>
+>> No, you confuse "virtual" and "ID". IDs are not virtual. IDs are real
+>> and have representation in Linux driver. You do not need to define
+>> anything virtual in the bindings.
+> 
+> Not sure how you define ID itself. But HW doesn't know ID. HW knows only 
+> register which you can use to perform the reset. It is not really 128bit 
+> register where every bit targets to different IP.
+> 
+> And this is SW-firmware interface like SCMI reset driver.
+> 
+> Firmware is saying that ID 0 is QSPI, ID 1 is MMC.
+> Their Linux driver is asking for nr_reset via firmware call which can be 
+> different for different SOC and that's fine and I have no problem with it.
+> But only SCMI server is dictating that ID 0 is QSPI and ID 1 is MMC. Different 
+> SCMI server implementation can map it differently.
 
---aHHyfbgV8z9OlP4F
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sure, and all this points to: no need for bindings.
 
-On Tue, Jul 18, 2023 at 01:55:05PM +0200, Paul Cercueil wrote:
-> Le mardi 18 juillet 2023 =C3=A0 13:41 +0200, Thierry Reding a =C3=A9crit=
-=C2=A0:
-> > On Tue, Jul 18, 2023 at 10:42:47AM +0200, Paul Cercueil wrote:
-> > > Hi Thierry,
-> > >=20
-> > > Le mardi 18 juillet 2023 =C3=A0 09:45 +0200, Thierry Reding a =C3=A9c=
-rit=C2=A0:
-> > > > On Mon, Jul 17, 2023 at 09:14:12PM +0200, Paul Cercueil wrote:
-> > > > > Hi Andy,
-> > > > >=20
-> > > > > Le lundi 17 juillet 2023 =C3=A0 20:28 +0300, Andy Shevchenko a
-> > > > > =C3=A9crit=C2=A0:
-> > > > > > Since pm.h provides a helper for system no-IRQ PM callbacks,
-> > > > > > switch the driver to use it instead of open coded variant.
-> > > > > >=20
-> > > > > > Signed-off-by: Andy Shevchenko
-> > > > > > <andriy.shevchenko@linux.intel.com>
-> > > > > > ---
-> > > > > > =C2=A0drivers/pinctrl/tegra/pinctrl-tegra.c | 5 +----
-> > > > > > =C2=A01 file changed, 1 insertion(+), 4 deletions(-)
-> > > > > >=20
-> > > > > > diff --git a/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > > > > b/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > > > > index 4547cf66d03b..734c71ef005b 100644
-> > > > > > --- a/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > > > > +++ b/drivers/pinctrl/tegra/pinctrl-tegra.c
-> > > > > > @@ -747,10 +747,7 @@ static int tegra_pinctrl_resume(struct
-> > > > > > device
-> > > > > > *dev)
-> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
-> > > > > > =C2=A0}
-> > > > > > =C2=A0
-> > > > > > -const struct dev_pm_ops tegra_pinctrl_pm =3D {
-> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.suspend_noirq =3D &=
-tegra_pinctrl_suspend,
-> > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.resume_noirq =3D &t=
-egra_pinctrl_resume
-> > > > > > -};
-> > > > > > +DEFINE_NOIRQ_DEV_PM_OPS(tegra_pinctrl_pm,
-> > > > > > tegra_pinctrl_suspend,
-> > > > > > tegra_pinctrl_resume);
-> > > > > > =C2=A0
-> > > > > > =C2=A0static bool tegra_pinctrl_gpio_node_has_range(struct
-> > > > > > tegra_pmx
-> > > > > > *pmx)
-> > > > > > =C2=A0{
-> > > > >=20
-> > > > > Another driver where using EXPORT_GPL_DEV_PM_OPS() would make
-> > > > > more
-> > > > > sense.
-> > > >=20
-> > > > We don't currently export these PM ops because none of the Tegra
-> > > > pinctrl
-> > > > drivers can be built as a module.
-> > >=20
-> > > This doesn't change anything. You'd want to use
-> > > EXPORT_GPL_DEV_PM_OPS
-> > > (or better, the namespaced version) so that the PM ops can be
-> > > defined
-> > > in one file and referenced in another, while still having them
-> > > garbage-
-> > > collected when CONFIG_PM is disabled.
-> >=20
-> > Looking at the definition of EXPORT_GPL_DEV_PM_OPS(), it will cause
-> > an
-> > EXPORT_SYMBOL_GPL() to be added. So there very well is a change. And
-> > it's a completely bogus change because no module is ever going to use
-> > that symbol. If we were to ever support building the pinctrl driver
-> > as
-> > a module, then this would perhaps make sense, but we don't.
->=20
-> In this particular case the EXPORT_SYMBOL_GPL() isn't really important,
-> the rest of EXPORT_GPL_DEV_PM_OPS() is.
->=20
-> I don't think having a symbol exported it is a big deal, TBH, if you
-> use the namespaced version. If you really don't want that, we need a
-> version of EXPORT_GPL_DEV_PM_OPS() that doesn't export the symbol.
+> 
+> 
+>>> In our case that IDs are coming from firmware and driver itself is just matching
+>>> them.
+>>
+>> So they are the same as if coming from hardware - no need for IDs.
+> 
+> It is hard to say what hardware here exactly is. From my perspective and I am 
+> not advocating not using IDs from 0 to max, it is just a number.
+> 
+> If my firmware knows that QSPI reset is 0xc10402dU then I will just pass it to 
+> reach my goal which is reset QSPI IP.
+> 
+> If you think that we should use IDs from 0 to max NR I am happy to pass this 
+> message to PM team and we should extend any SW to do translation between.
 
-I do think it's a big deal to export a symbol if there's no reason to do
-so.
+When we talk about IDs and bindings, we mean IDs meaningful to Linux.
+Whatever is ignored by Linux and passed to anyone else - hardware or
+firmware - is not a ID anymore from bindings point of view. It's just
+some value.
 
-And please, can we stop adding these macros for every possible scenario?
-Maybe I'm just getting old, but I find it increasingly difficult to
-understand what all of these are supposed to be. I get that people want
-to get rid of boilerplate, but I think we need to more carefully balance
-boilerplate vs. simplicity.
+Best regards,
+Krzysztof
 
-I'm seeing the same thing with stuff like those mass conversions to
-atrocities like devm_platform_ioremap_resource() and
-devm_platform_get_and_ioremap_resource(). There's so much churn involved
-in getting those merged for usually saving a single line of code. And
-it's not even mass conversions, but people tend to send these as one
-patch per driver, which doesn't exactly help (except perhaps for patch
-statistics).
-
-Thierry
-
---aHHyfbgV8z9OlP4F
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmS2kZQACgkQ3SOs138+
-s6HgBhAAhwAuon633pi8BN94xr1dLYcAne5Jv2QcWubv151gBKj5trk8auLuyQWD
-WQdoJQaGLTpDrNMimkynGjao7RiohRGBdQ1ZkEwP1wr8GtZOv3o6FS+WJ7ZI2rbt
-FlzEB+YQb07OV9nHuz7mijpAsqJ3AafUGeorGVof2v/8E/1x1O7alAz1jlgcW7Pv
-Imqk9ZyufK/JUkaQEBMPKdPPdi65gHBhl/Zk1Cf4IXgy+W7kClmSQn8lZxwubUHT
-EMMnLIZVBtcC49ovLz6EFRnSd9GjScemPO8n4JfyBr1y9Np65ykjTdd4LyVb+mKu
-IzrExYTE0sxA2DWWUIaDAHbOgbnEs5P0R8SAZVo9rT85pypwM+fMBpZd0tyin3bB
-wzQ0haUdoNeCMH7BOgiRFqSlNNS2hVzOYRs6G7heyPqzfLpxrgU6pJfUpzhlgMlF
-C3a2VaiGoytFcSWUGbsmESvasICDB0zouJAiFiQamTNVf87hJQRzDgaE4Q6/MRdr
-Nj9KpT1meTP8tgjxZIFVX7jmqMM9WoIotZYuHA91fOokFjNRvVPauurSplm9eHDO
-kMTRHmyEGOi7J3aDkD0fGCBXIR+GBWd0CQOAnzemWo35fbXnyjuZFxcdJwfLni8c
-TUkJEBMdHRY8gWSAnrQJUtGu7/7iUJKnnCvSU4N1YWEzVPJljsE=
-=31l4
------END PGP SIGNATURE-----
-
---aHHyfbgV8z9OlP4F--
