@@ -2,144 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0967577E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504DF7577F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbjGRJZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33756 "EHLO
+        id S232251AbjGRJ1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232209AbjGRJZo (ORCPT
+        with ESMTP id S232310AbjGRJ0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:25:44 -0400
-Received: from 7.mo562.mail-out.ovh.net (7.mo562.mail-out.ovh.net [46.105.55.234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0EE3E69
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:25:41 -0700 (PDT)
-Received: from director1.derp.mail-out.ovh.net (director1.derp.mail-out.ovh.net [51.68.80.175])
-        by mo562.mail-out.ovh.net (Postfix) with ESMTPS id 691D72301C;
-        Tue, 18 Jul 2023 09:25:40 +0000 (UTC)
-Received: from director1.derp.mail-out.ovh.net (director1.derp.mail-out.ovh.net. [127.0.0.1])
-        by director1.derp.mail-out.ovh.net (inspect_sender_mail_agent) with SMTP
-        for <conor+dt@kernel.org>; Tue, 18 Jul 2023 09:25:40 +0000 (UTC)
-Received: from pro2.mail.ovh.net (unknown [10.109.138.11])
-        by director1.derp.mail-out.ovh.net (Postfix) with ESMTPS id EF6112011E0;
-        Tue, 18 Jul 2023 09:25:39 +0000 (UTC)
-Received: from traphandler.com (88.161.25.233) by DAG1EX1.emp2.local
- (172.16.2.1) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
- 2023 11:25:39 +0200
-From:   Jean-Jacques Hiblot <jjhiblot@traphandler.com>
-To:     <lee@kernel.org>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v11 4/5] dt-bindings: leds: Add binding for a multicolor group of LEDs
-Date:   Tue, 18 Jul 2023 11:25:26 +0200
-Message-ID: <20230718092527.37516-5-jjhiblot@traphandler.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230718092527.37516-1-jjhiblot@traphandler.com>
-References: <20230718092527.37516-1-jjhiblot@traphandler.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [88.161.25.233]
-X-ClientProxiedBy: DAG1EX1.emp2.local (172.16.2.1) To DAG1EX1.emp2.local
- (172.16.2.1)
-X-Ovh-Tracer-Id: 6526841760296155601
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrgeeggddugecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfggfgtghisehtkeertdertddtnecuhfhrohhmpeflvggrnhdqlfgrtghquhgvshcujfhisghlohhtuceojhhjhhhisghlohhtsehtrhgrphhhrghnughlvghrrdgtohhmqeenucggtffrrghtthgvrhhnpedttdffveeljeetleeijefhffevtdffleejheejiefgjeeludefvdevjedutdejhfenucffohhmrghinhepuggvvhhitggvthhrvggvrdhorhhgnecukfhppedtrddtrddtrddtpdekkedrudeiuddrvdehrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpohhuthdphhgvlhhopeguihhrvggtthhorhdurdguvghrphdrmhgrihhlqdhouhhtrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehjjhhhihgslhhothesthhrrghphhgrnhgulhgvrhdrtghomhdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhlvggushesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheeivd
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 18 Jul 2023 05:26:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0F610C0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:26:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0ED6D614BD
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:26:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 668A2C433C7;
+        Tue, 18 Jul 2023 09:26:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689672400;
+        bh=P+0tnFAUBpCUj8Mt4/Kizy81HhkyMlHz8rGGSKFzB80=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PzHrKGNoAnNHwZTX0kXJ+CtXWEHZ90ZBM0nVxjNaze18v3HxVDzpvWeqZ2Nm1P5Q3
+         XGQlWjlBcGk3l9fzer/2KUe5tcU1XIgs0cQvRj7nNWPICvAZiatzzRiS6MuBo814cS
+         CiiijCcJU5aZzKOc3SI+bmBzcsqadN/Cv2E9UNnTMjvbrHBviKa+l3rgnP6fKzF8H6
+         703N+S1EaKCGNIEkf9xsvV8aKDDWOCN2YG4jo8l4E5s62kKgLW+Eh4nULUAP3GyKmb
+         DAew9SljnHOKh7Hz2zxN3rTtNVLLMYjex+KwRrFs2nTkhFPs1UuWZDvhlip9OKjBFI
+         G9ld7vh9LM6jQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qLgyc-00Dzh1-03;
+        Tue, 18 Jul 2023 10:26:38 +0100
+Date:   Tue, 18 Jul 2023 10:26:37 +0100
+Message-ID: <86zg3ttvsi.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Samuel Holland <samuel.holland@sifive.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH] irqchip/sifive-plic: Avoid clearing the per-hart enable bits
+In-Reply-To: <20230717185841.1294425-1-samuel.holland@sifive.com>
+References: <20230717185841.1294425-1-samuel.holland@sifive.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: samuel.holland@sifive.com, palmer@dabbelt.com, paul.walmsley@sifive.com, samuel@sholland.org, tglx@linutronix.de, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows to group multiple monochromatic LEDs into a multicolor
-LED, e.g. RGB LEDs.
+On Mon, 17 Jul 2023 19:58:40 +0100,
+Samuel Holland <samuel.holland@sifive.com> wrote:
+> 
+> Writes to the PLIC completion register are ignored if the enable bit for
+> that (interrupt, hart) combination is cleared. This leaves the interrupt
+> in a claimed state, preventing it from being triggered again.
+> 
+> Originally, the enable bit was cleared in the .irq_mask operation, and
+> commit 69ea463021be ("irqchip/sifive-plic: Fixup EOI failed when masked")
+> added a workaround for this issue. Later, commit a1706a1c5062
+> ("irqchip/sifive-plic: Separate the enable and mask operations") moved
+> toggling the enable bit to the .irq_enable/.irq_disable operations and
+> removed the workaround.
+> 
+> However, there are still places where .irq_disable can be called from
+> inside the hard IRQ handler, for example in irq_pm_check_wakeup(). As a
+> result, this issue causes an interrupt to get stuck in a claimed state
+> after being used to wake the system from s2idle.
+> 
+> There is no real benefit to implementing the .irq_enable/.irq_disable
+> operations using the enable bits. In fact, the existing mask/unmask
+> implementation using the threshold register is already more efficient,
+> as it requires no read/modify/write cycles. So let's leave the enable
+> bits set for the lifetime of the IRQ, using them only to control its
+> affinity.
 
-Signed-off-by: Jean-Jacques Hiblot <jjhiblot@traphandler.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../bindings/leds/leds-group-multicolor.yaml  | 64 +++++++++++++++++++
- 1 file changed, 64 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/leds/leds-group-multicolor.yaml
+Side question, which doesn't affect this patch: what happens with
+interrupts that are firing while the interrupt is in a disabled state?
+It's fine for levels, but what of edge interrupts?
 
-diff --git a/Documentation/devicetree/bindings/leds/leds-group-multicolor.yaml b/Documentation/devicetree/bindings/leds/leds-group-multicolor.yaml
-new file mode 100644
-index 000000000000..8ed059a5a724
---- /dev/null
-+++ b/Documentation/devicetree/bindings/leds/leds-group-multicolor.yaml
-@@ -0,0 +1,64 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/leds/leds-group-multicolor.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Multi-color LED built with monochromatic LEDs
-+
-+maintainers:
-+  - Jean-Jacques Hiblot <jjhiblot@traphandler.com>
-+
-+description: |
-+  This driver combines several monochromatic LEDs into one multi-color
-+  LED using the multicolor LED class.
-+
-+properties:
-+  compatible:
-+    const: leds-group-multicolor
-+
-+  leds:
-+    description:
-+      An aray of monochromatic leds
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+
-+required:
-+  - leds
-+
-+allOf:
-+  - $ref: leds-class-multicolor.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/leds/common.h>
-+
-+    monochromatic-leds {
-+        compatible = "gpio-leds";
-+
-+        led0: led-0 {
-+            gpios = <&mcu_pio 0 GPIO_ACTIVE_LOW>;
-+            color = <LED_COLOR_ID_RED>;
-+        };
-+
-+        led1: led-1 {
-+            gpios = <&mcu_pio 1 GPIO_ACTIVE_HIGH>;
-+            color = <LED_COLOR_ID_GREEN>;
-+        };
-+
-+        led2: led-2 {
-+            gpios = <&mcu_pio 2 GPIO_ACTIVE_HIGH>;
-+            color = <LED_COLOR_ID_BLUE>;
-+        };
-+    };
-+
-+    multi-led {
-+        compatible = "leds-group-multicolor";
-+        color = <LED_COLOR_ID_RGB>;
-+        function = LED_FUNCTION_INDICATOR;
-+        leds = <&led0>, <&led1>, <&led2>;
-+    };
-+
-+...
+My reading of the spec is that it is the role of the "gateway" to hold
+the signal, and that this is upstream of the PLIC itself, so it
+*should* be fine, but I'd like confirmation on that.
+
+Thanks,
+
+	M.
+
 -- 
-2.34.1
-
+Without deviation from the norm, progress is not possible.
