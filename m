@@ -2,62 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC9E757373
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 07:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF71757376
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 07:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbjGRFxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 01:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46520 "EHLO
+        id S230414AbjGRFyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 01:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbjGRFw7 (ORCPT
+        with ESMTP id S230058AbjGRFx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 01:52:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64ADE56;
-        Mon, 17 Jul 2023 22:52:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Tue, 18 Jul 2023 01:53:59 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F35BE56
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 22:53:59 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 84EB96145F;
-        Tue, 18 Jul 2023 05:52:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40276C433C7;
-        Tue, 18 Jul 2023 05:52:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689659577;
-        bh=PlSlsqHDqw67L6N41kdBC8ML9MQoqYiPEiBjjydxhOg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bKhQPfEDuI1pDq4l9wyUuymLSoTsnxo1GvrG/Es/WawS5X4hE9bWy9pTJh4yA3Nj3
-         MxlVo6XX6Gj8/xnDHz2Y1Ci9vcWiEF6yrrf7zj0A/O6vSRnU+YUfpuxxTV4cyWbiO2
-         J7Vnz71dErFpjiDiYSwddt5vEsl5o/pyV/pJO6s5SYBb5VVZymmk4LTXqMHo4d8mCt
-         5qPlnoKxOUTnr9/2jYQsbrXI+BnP8M7CBgaucPTRkZlw80JmvS5k7fODlR4/RXA331
-         iFxBLNeqLscvckubTDjfnFkDez1N1FU+N5cnW/t/jOTILQgUsENboSXYOozQDoo1cx
-         Z5Uqa6u1j1Ktg==
-From:   Miguel Ojeda <ojeda@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        linux-kbuild@vger.kernel.org, rust-for-linux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Raphael Nestler <raphael.nestler@gmail.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] kbuild: rust: avoid creating temporary files
-Date:   Tue, 18 Jul 2023 07:52:35 +0200
-Message-ID: <20230718055235.1050223-1-ojeda@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D89911FDBC;
+        Tue, 18 Jul 2023 05:53:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689659637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UCLOTf2hbmBQ7VXmMo8xek3j0+xDVDn5PQb5yQkrSaw=;
+        b=r3WJK/pVT3X+QlofulmwZfnD6S7b/y6AdvWggXtAP2hbEwvzhTyp4ffcqx1SQsDyOg0Xeu
+        flFACuqw4bUmEykjf/F7xDQ/V36ahfjN/qsJ0EKOU0NtanxYuXwD4jojJH2kIzjQWY+6bR
+        k5QHsTOxnr1TpLnRuwlw2+vGKYND68E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689659637;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UCLOTf2hbmBQ7VXmMo8xek3j0+xDVDn5PQb5yQkrSaw=;
+        b=J3VjlxzncFlFwOhWsJy3O4jyPd960oktQ8nOJlJG3YpBo0NZ20N6xNFU200tD1pmo3Eyiv
+        iFZKTq2YxOhGVyDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 941A4133FE;
+        Tue, 18 Jul 2023 05:53:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id LU4kI/UotmT8dgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 18 Jul 2023 05:53:57 +0000
+Date:   Tue, 18 Jul 2023 07:53:57 +0200
+Message-ID: <87wmyxojd6.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     shijie001@208suo.com
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: gus: Fix errors in gus_mem.c
+In-Reply-To: <49700e1a2452104bb89fcdca291fd429@208suo.com>
+References: <tencent_A8FDB76658AA971B46D1614E4FE8F214FE08@qq.com>
+        <49700e1a2452104bb89fcdca291fd429@208suo.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,53 +70,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`rustc` outputs by default the temporary files (i.e. the ones saved
-by `-Csave-temps`, such as `*.rcgu*` files) in the current working
-directory when `-o` and `--out-dir` are not given (even if
-`--emit=x=path` is given, i.e. it does not use those for temporaries).
+On Tue, 18 Jul 2023 03:02:11 +0200,
+shijie001@208suo.com wrote:
+> 
+> The following checkpatch errors are removed:
+> ERROR: trailing whitespace
+> ERROR: "foo * bar" should be "foo *bar"
+> 
+> Signed-off-by: Jie Shi <shijie001@208suo.com>
 
-Since out-of-tree modules are compiled from the `linux` tree,
-`rustc` then tries to create them there, which may not be accessible.
+Thanks for the patch.  But we don't take such a white-space only
+change unless you work on further to fix any real bugs or more
+fundamental improvements.
 
-Thus pass `--out-dir` explicitly, even if it is just for the temporary
-files.
+Ditto for ps3 driver.
 
-Reported-by: Raphael Nestler <raphael.nestler@gmail.com>
-Closes: https://github.com/Rust-for-Linux/linux/issues/1015
-Reported-by: Andrea Righi <andrea.righi@canonical.com>
-Tested-by: Raphael Nestler <raphael.nestler@gmail.com>
-Tested-by: Andrea Righi <andrea.righi@canonical.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
----
- scripts/Makefile.build | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 6413342a03f4..82e3fb19fdaf 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -264,6 +264,9 @@ $(obj)/%.lst: $(src)/%.c FORCE
- 
- rust_allowed_features := new_uninit
- 
-+# `--out-dir` is required to avoid temporaries being created by `rustc` in the
-+# current working directory, which may be not accessible in the out-of-tree
-+# modules case.
- rust_common_cmd = \
- 	RUST_MODFILE=$(modfile) $(RUSTC_OR_CLIPPY) $(rust_flags) \
- 	-Zallow-features=$(rust_allowed_features) \
-@@ -272,7 +275,7 @@ rust_common_cmd = \
- 	--extern alloc --extern kernel \
- 	--crate-type rlib -L $(objtree)/rust/ \
- 	--crate-name $(basename $(notdir $@)) \
--	--emit=dep-info=$(depfile)
-+	--out-dir $(dir $@) --emit=dep-info=$(depfile)
- 
- # `--emit=obj`, `--emit=asm` and `--emit=llvm-ir` imply a single codegen unit
- # will be used. We explicitly request `-Ccodegen-units=1` in any case, and
-
-base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
--- 
-2.41.0
-
+Takashi
