@@ -2,128 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 071D57578AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE7E7578AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbjGRJ6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53092 "EHLO
+        id S232475AbjGRJ7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232498AbjGRJ5z (ORCPT
+        with ESMTP id S230515AbjGRJ66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:57:55 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC5E19A3;
-        Tue, 18 Jul 2023 02:56:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689674217; x=1721210217;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=qbLXGWFFYEJCgQzOxVWO4TdnwGiMCCXFlEgS+DMnSY8=;
-  b=D35mX2wcPpFRdvSOcLPTJzME/t0oAeBAEUGzkF1sZbsTjAxTMsyb9Dcm
-   lA0hA7lgv1aYaHy/Zf7esoOol+uhlJXE5fY5DyAFy+8oqikOEkVrgH4D2
-   Fa/mD/JYm+11zeWtVSlMu2RUYV4QH1Y4f60N68mB0ZbCHJUszGAYMCWs3
-   vezNdi1P0zKUyC8PGz1OMKFl/QY2e3WTHCVtOHaKwvu5memBSAVgXJ8nf
-   qFvBE08Mb9Q9Kq9/mQQkYCUMaI7YaUzHAyggGVo8p7pMhvwxplPxQTWis
-   EVGubmbUJIcrZNXyH8gIOIg8Na4j4lfYdtmEU/Z2/LJKzlxm90Cxt19xT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="368804826"
-X-IronPort-AV: E=Sophos;i="6.01,213,1684825200"; 
-   d="scan'208";a="368804826"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 02:56:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="673847913"
-X-IronPort-AV: E=Sophos;i="6.01,213,1684825200"; 
-   d="scan'208";a="673847913"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.223.138])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 02:56:52 -0700
-Message-ID: <c4b7fb70-7b2e-74e9-576f-33b29e8801cd@intel.com>
-Date:   Tue, 18 Jul 2023 12:56:48 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v2 5/7] perf evlist: Skip dummy event sample_type check
- for evlist_config
-Content-Language: en-US
-To:     Yang Jihong <yangjihong1@huawei.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, kan.liang@linux.intel.com,
-        james.clark@arm.com, tmricht@linux.ibm.com, ak@linux.intel.com,
-        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-References: <20230715032915.97146-1-yangjihong1@huawei.com>
- <20230715032915.97146-6-yangjihong1@huawei.com>
- <5797e5a7-a85f-4f7c-1649-88f8f9ff7a6b@intel.com>
- <44645529-0ee6-fe69-bc03-fefbc6f73d4d@huawei.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <44645529-0ee6-fe69-bc03-fefbc6f73d4d@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 18 Jul 2023 05:58:58 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF3BE4F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:57:56 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 55FAE1F461;
+        Tue, 18 Jul 2023 09:57:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689674275; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lwIxpcfnyfN+KZS/1z2ZFiDuJVrbeqjicTOWKPtxSG0=;
+        b=Zog+VIVWq11HVDTBNsOYrxvvKRdCA8JWasflPIKt3qpnx6IrhjnR+9Wzfm4+3q9bn3rIQX
+        PnTPWKf/qfPWBlOY13CX103A5wTR8IgYvKj9m1EMVqCaUPTVFQo99xH9Sn7FY5+LzoQFGK
+        X+KETTWAWdfyQ7pIym92oHjr1YlFoHU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689674275;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lwIxpcfnyfN+KZS/1z2ZFiDuJVrbeqjicTOWKPtxSG0=;
+        b=syDuMOgOIwBZCCOsED6KHN1Zknk1kspsD4yZpBAYUa4WndhNcKfD0tQ+9fd/ymSZFV2wdO
+        IMF7eSlodqIsMTDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 06E0D134B0;
+        Tue, 18 Jul 2023 09:57:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id wTeiACNitmQzcwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 18 Jul 2023 09:57:55 +0000
+Date:   Tue, 18 Jul 2023 11:57:54 +0200
+Message-ID: <87h6q1o82l.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org,
+        linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Subject: Re: [PATCH 5/7] ALSA: hda/intel: Move snd_hdac_i915_init to before probe_work.
+In-Reply-To: <20230718084522.116952-6-maarten.lankhorst@linux.intel.com>
+References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com>
+        <20230718084522.116952-6-maarten.lankhorst@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/07/23 12:30, Yang Jihong wrote:
-> Hello,
+On Tue, 18 Jul 2023 10:45:20 +0200,
+Maarten Lankhorst wrote:
 > 
-> On 2023/7/17 22:41, Adrian Hunter wrote:
->> On 15/07/23 06:29, Yang Jihong wrote:
->>> The dummp event does not contain sampls data. Therefore, sample_type does
->>> not need to be checked.
->>>
->>> Currently, the sample id format of the actual sampling event may be changed
->>> after the dummy event is added.
->>>
->>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
->>> ---
->>>   tools/perf/util/record.c | 7 +++++++
->>>   1 file changed, 7 insertions(+)
->>>
->>> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
->>> index 9eb5c6a08999..0240be3b340f 100644
->>> --- a/tools/perf/util/record.c
->>> +++ b/tools/perf/util/record.c
->>> @@ -128,6 +128,13 @@ void evlist__config(struct evlist *evlist, struct record_opts *opts, struct call
->>>           evlist__for_each_entry(evlist, evsel) {
->>>               if (evsel->core.attr.sample_type == first->core.attr.sample_type)
->>>                   continue;
->>> +
->>> +            /*
->>> +             * Skip the sample_type check for the dummy event
->>> +             * because it does not have any samples anyway.
->>> +             */
->>> +            if (evsel__is_dummy_event(evsel))
->>> +                continue;
->>
->> Sideband event records have "ID samples" so the sample type still matters.
->>
-> Okay, will remove this patch in next version.
+> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
+> the snd_hdac_i915_init into a workqueue.
 > 
-> Can I ask a little more about this?
+> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
+> probe function.
 > 
-> Use PERF_SAMPLE_IDENTIFICATION instead of PERF_SAMPLE_ID because for samples of type PERF_RECORD_SAMPLE, there may be different record formats due to different *sample_type* settings, so the fixed SAMPLE_ID  location mode PERF_SAMPLE_NAME is required here.
+> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> ---
+>  sound/pci/hda/hda_intel.c | 58 +++++++++++++++++++++------------------
+>  1 file changed, 31 insertions(+), 27 deletions(-)
 > 
-> However, for the sideband event, the samples of the PERF_RECORD_SAMPLE type is not recorded (only PERF_RECORD_MMAP, PERF_RECORD_COMM, and so on). Therefore, the "use sample identifier "check can be skipped here.
-> 
-> That's my understanding of PERF_SAMPLE_IDENTIFICATION . If there is any error, please help to correct it.
-> 
-> *Sideband event records have "ID samples" so the sample type still matters.*
-> 
-> Does this mean that sideband will also record samples of type PERF_RECORD_SAMPLE? What exactly is the sampling data?
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 5af1138e745bc..d40345a0088d8 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -213,6 +213,7 @@ MODULE_DESCRIPTION("Intel HDA driver");
+>  #endif
+>  #endif
+>  
+> +static DECLARE_BITMAP(probed_devs, SNDRV_CARDS);
+>  
+>  /*
+>   */
+> @@ -2094,8 +2095,6 @@ static const struct hda_controller_ops pci_hda_ops = {
+>  	.position_check = azx_position_check,
+>  };
+>  
+> -static DECLARE_BITMAP(probed_devs, SNDRV_CARDS);
+> -
+>  static int azx_probe(struct pci_dev *pci,
+>  		     const struct pci_device_id *pci_id)
+>  {
 
-No.  There are additional members as defined by struct sample_id for PERF_RECORD_MMAP:
+Any specific reason to move the definition?  Otherwise let's
+concentrate on the needed change.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/perf_event.h?h=v6.4#n872
+> @@ -2174,7 +2173,36 @@ static int azx_probe(struct pci_dev *pci,
+>  	}
+>  #endif /* CONFIG_SND_HDA_PATCH_LOADER */
+>  
+> -#ifndef CONFIG_SND_HDA_I915
+> +#ifdef CONFIG_SND_HDA_I915
+> +	/* bind with i915 if needed */
+> +	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
+> +		err = snd_hdac_i915_init(azx_bus(chip), false);
+> +		if (err < 0) {
+> +			/* if the controller is bound only with HDMI/DP
+> +			 * (for HSW and BDW), we need to abort the probe;
+> +			 * for other chips, still continue probing as other
+> +			 * codecs can be on the same link.
+> +			 */
+> +			if (CONTROLLER_IN_GPU(pci)) {
+> +				if (err != -EPROBE_DEFER)
+> +					dev_err(card->dev,
+> +						"HSW/BDW HD-audio HDMI/DP requires binding with gfx driver\n");
+> +
+> +				clear_bit(chip->dev_index, probed_devs);
+> +				pci_set_drvdata(pci, NULL);
+> +				snd_device_free(card, chip);
+> +				return err;
 
+This may leak resources, I'm afraid.
+
+Here you just need to "goto out_free;" instead of manual resource
+releases, which eventually calls snd_card_free(), and that's all.
+
+(Though, pci_set_drvdata(pci, NULL) might be still missing; but it's
+ not only for this change, and we'll need to address it in another
+ patch.)
+
+
+thanks,
+
+Takashi
