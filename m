@@ -2,121 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 938797583A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919B97583A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 19:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232694AbjGRRjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 13:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60126 "EHLO
+        id S231218AbjGRRlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 13:41:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjGRRjR (ORCPT
+        with ESMTP id S229480AbjGRRlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 13:39:17 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9FF91;
-        Tue, 18 Jul 2023 10:39:16 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7A4371F45F;
-        Tue, 18 Jul 2023 17:39:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689701955; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=xtb9eaTW3MdBWzglgP8jPdI48OuUsG3guGiK3GgqLrA=;
-        b=hDbxh5O4NaGnPhPtMdibbkJC8blH5bHWStorBVQNZ0tHypLJTsYIfWjcQG3AGOtmSGm4uc
-        Prk6LJS6jEBHVFd2KhY9l+cLrl4MY4YTH6s0VWb/se1szdgoN2wTvu6NV/+s9mQhtDVNzj
-        gBNTJ7D0qYzftWJq4nZVtpj7HYKK2EA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689701955;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=xtb9eaTW3MdBWzglgP8jPdI48OuUsG3guGiK3GgqLrA=;
-        b=sLfNylR7t6DRDCRrqTEynBTcTRXQskWErQV+1RBeZKzBF5KvkSEp1+XaTz0sWcb46QI9sy
-        +UeiYJSabR3uC2CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 094C713494;
-        Tue, 18 Jul 2023 17:39:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cQ96OkLOtmRqbQAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Tue, 18 Jul 2023 17:39:14 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id 9f98d451;
-        Tue, 18 Jul 2023 17:39:07 +0000 (UTC)
-From:   =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
-Subject: [PATCH] btrfs: turn unpin_extent_cache() into a void function
-Date:   Tue, 18 Jul 2023 18:39:06 +0100
-Message-Id: <20230718173906.12568-1-lhenriques@suse.de>
+        Tue, 18 Jul 2023 13:41:11 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F0CB3;
+        Tue, 18 Jul 2023 10:41:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=3918YmLdUBB4GYWEtCfYavXvLujdLfhM5ZbLxQDFZQM=; b=6PthlviAF6BZw3Gc3+bpp1LHuo
+        ovOJnWYb7m6KQLesheBYu7lSQkXk/GtNR+iuzAqmUSsPQWewzk9eQvgW37grCvSmlR63xW0n0DPlO
+        RryE0v45L6mGEiQBdv8vMLNEXGlP7MwUmrt0Wj1YsNz26eb1kcM67Al7owsahHfoKRsI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qLogr-001drs-MB; Tue, 18 Jul 2023 19:40:49 +0200
+Date:   Tue, 18 Jul 2023 19:40:49 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Michael Walle <mwalle@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Xu Liang <lxu@maxlinear.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Simon Horman <simon.horman@corigine.com>
+Subject: Re: [PATCH net-next v3 03/11] net: phy: replace is_c45 with
+ phy_accces_mode
+Message-ID: <509889a3-f633-40b0-8349-9ef378818cc7@lunn.ch>
+References: <20230620-feature-c45-over-c22-v3-0-9eb37edf7be0@kernel.org>
+ <20230620-feature-c45-over-c22-v3-3-9eb37edf7be0@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230620-feature-c45-over-c22-v3-3-9eb37edf7be0@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The value of the 'ret' variable is never changed in function
-unpin_extent_cache().  And since the only caller of this function doesn't
-check the return value, it can simply be turned into a void function.
+>  static inline bool phy_has_c45_registers(struct phy_device *phydev)
+>  {
+> -	return phydev->is_c45;
+> +	return phydev->access_mode != PHY_ACCESS_C22;
+>  }
 
-Signed-off-by: Luís Henriques <lhenriques@suse.de>
----
- fs/btrfs/extent_map.c | 7 ++-----
- fs/btrfs/extent_map.h | 2 +-
- 2 files changed, 3 insertions(+), 6 deletions(-)
+So this is making me wounder if we have a clean separation between
+register spaces and access methods.
 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 0cdb3e86f29b..f99c458071a4 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -292,10 +292,9 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
-  * to the generation that actually added the file item to the inode so we know
-  * we need to sync this extent when we call fsync().
-  */
--int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
--		       u64 gen)
-+void unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
-+			u64 gen)
- {
--	int ret = 0;
- 	struct extent_map *em;
- 	bool prealloc = false;
- 
-@@ -327,8 +326,6 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
- 	free_extent_map(em);
- out:
- 	write_unlock(&tree->lock);
--	return ret;
--
- }
- 
- void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em)
-diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
-index 35d27c756e08..486a8ea798c7 100644
---- a/fs/btrfs/extent_map.h
-+++ b/fs/btrfs/extent_map.h
-@@ -97,7 +97,7 @@ struct extent_map *alloc_extent_map(void);
- void free_extent_map(struct extent_map *em);
- int __init extent_map_init(void);
- void __cold extent_map_exit(void);
--int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len, u64 gen);
-+void unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len, u64 gen);
- void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em);
- struct extent_map *search_extent_mapping(struct extent_map_tree *tree,
- 					 u64 start, u64 len);
+Should there be a phy_has_c22_registers() ?
+
+A PHY can have both C22 registers and C45 registers. It is up to the
+driver to decide which it wants to access when.
+
+Should phydev->access_mode really be phydev->access_mode_c45_registers
+to indicate how to access the C45 registers if phy_has_c45_registers()
+is true?
+
+Has there been a review of all uses of phydev->is_c45 to determine if
+the user wants to know if C45 registers exist,
+a.k.a. phy_has_c45_registers(), or if C45 bus transactions can be
+performed, and then later in this series, additionally if C45 over C22
+can be performed. These are different things.
+
+I need to keep reading the patches...
+
+  Andrew
