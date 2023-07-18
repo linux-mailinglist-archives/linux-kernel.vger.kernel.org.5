@@ -2,79 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D64E7757247
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16AB2757248
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 05:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231241AbjGRD0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 23:26:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34438 "EHLO
+        id S229990AbjGRD2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 23:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231187AbjGRD0I (ORCPT
+        with ESMTP id S229665AbjGRD1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 23:26:08 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105522701
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 20:24:21 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fc0aecf15bso51932225e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 20:24:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689650638; x=1692242638;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8Yaw/su3dm4lGxJq+uDwrFmIvx/782XRsFqzx0jPx1s=;
-        b=IOuykNH0+ZMFFZ7k3TlbVOJ/Pa6tE/WgWM+W0l7P09FJuYempieSJwdlPHh9K3znTF
-         /3XE0ajAJ0H8RM2IfRskU7qmPxnjl9VFq+QEoL676a5BXTLgAeSgZvb8IU0zBjnLaZyz
-         Tt3gIgXCmdic49WDgEuzmzl/pAP7xL58jO/7NOqaLg6z1WN0y8TPR5Z7CvIPz1Opt7JC
-         DKeAkPBUXp9TMCFbbDNMK3VKB2+Ir1OQ588YHIcdIDehW71lzT5hszK5YsQbtd8SlmJt
-         t44GnfFbTFzBHBBXcK+czgSZSIOcGj/3Jq/Cl98VsK5OYGS62Gvjupd4vlFMTYLZmGm1
-         UlvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689650638; x=1692242638;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8Yaw/su3dm4lGxJq+uDwrFmIvx/782XRsFqzx0jPx1s=;
-        b=j1DyndjEPhiweXZhlEdGFMWHh9RpcUIxN1eiJOyC2dG5McSmhHv+CO6MLmnD/2oa8O
-         26ogNnw5d9WOXQ/E7P08HNYcxRMCLfvLzWwv9vc+UQ28+s9u0hazGW+peWuGEgYrF3nc
-         to4CIRigY9ggC3ZKO1fKkKEpeSprW/Zi6v8QJUXBLp/OoiumYeLgrcJ0DcIoI27rw6iR
-         dFWFBNX63lLtUg7lQfOMrQ72rZ6pwa6oicBugR/PWNs0SPi5Di5jAcBH3SbsPPFFzy2t
-         0fzOXQwCHjTVfTg37h84EoOBn39marFu6pZbcnIZv4Qi+Kh9cfEhm8LpRIuYaF8wRFuA
-         1FOQ==
-X-Gm-Message-State: ABy/qLby9o8bFHpoghhgob7vqv2wqzz0tl4q197KnXx0DusMSgmHVOqP
-        A0OqBMZXyHzpyqMXQY6oPObd7Q==
-X-Google-Smtp-Source: APBJJlEMo+94zfYvjjd0ST7tSjDvYxqx+bPRJDBcTj1MpaxD5e0ocYFgQRm385+XmJ39W4C80uucLg==
-X-Received: by 2002:a1c:e90d:0:b0:3fc:524:e80a with SMTP id q13-20020a1ce90d000000b003fc0524e80amr776137wmc.18.1689650638531;
-        Mon, 17 Jul 2023 20:23:58 -0700 (PDT)
-Received: from [192.168.2.173] ([79.115.63.146])
-        by smtp.gmail.com with ESMTPSA id m17-20020a7bce11000000b003fc07e17d4esm9223656wmc.2.2023.07.17.20.23.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 20:23:58 -0700 (PDT)
-Message-ID: <d99d87e7-47ba-d6fe-735f-16de2a2ec280@linaro.org>
-Date:   Tue, 18 Jul 2023 06:23:55 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] mtd: spi-nor: Correct flags for Winbond w25q128
-To:     Michael Walle <michael@walle.cc>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Pratyush Yadav <pratyush@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20230712-spi-nor-winbond-w25q128-v2-1-50c9f1d58d6c@linaro.org>
- <f00fa2ae-6d4a-90cb-3724-2bedb96cb4fb@linaro.org>
- <0525440a652854a2a575256cd07d3559@walle.cc>
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-Content-Language: en-US
-In-Reply-To: <0525440a652854a2a575256cd07d3559@walle.cc>
-Content-Type: text/plain; charset=UTF-8
+        Mon, 17 Jul 2023 23:27:34 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2094.outbound.protection.outlook.com [40.107.215.94])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52EDE19B5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 20:25:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BiavIkHtPulMgV8uqxRJUWIwK/Q4NOI3gc2wiCJmK4QOlhs933Ri3wIVA8ODc5Tor6pgS5RA0DexrndCe6zDQqHiHwP72praTsJf2+am1pP9wbVBrGoNZ00QbV40BilsMNlWQMcbaLRfHcFNV39SwVCdFX1i5yiT5RP5agq1g77xmVLpi6DOK1W4rrlUeegDUIeQwjepOZqYSxBmTq1cJGOoMqULOz/i7jUqPjyulqwp+zWJRhAC565PbeWFWuGPEjA7632rGBt49KhrgzsJGpHzM4KYmXp/oEpdaEs4k2UaYDxLTmIaz2sY8dImcNO1CqVWRVuifEPVqBv20rvl9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oVwciaBlemwynmnommsPsCO/7FxJBCgDLAsFVxM2ByY=;
+ b=etMDU4rx/7hbf7+Oe/qxqnU+Qln0bh/yC2q644rGBIoGujgwVJnJt/nvA3VXJKPmdwhNDywhJEGJhY/OePEQqlzbMRsmoeD7sstFQncJOkd7UZ/IPwIfMfCvFeMlQxP/eypqre94SCp8tFMTWM0fwy11/lW1wmzI6YF0k13PRIU8UcphZyCrahSEwTt6xvGRFTMZNxtFvZTTvpyS8H9FAQyYlQwv06STTpvZcmMTUKg5TYL3nGNMn0w52UPWqVz6fiPg6F4k9hC9oAIScU+fcU/11kFlG/dK2Sowr/7241qFUOito2gDt6jxWdK3EtHSa0miA1liU2b9/xUiQ1SAMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oVwciaBlemwynmnommsPsCO/7FxJBCgDLAsFVxM2ByY=;
+ b=j1Dpj6kQUthxHjZ9X1SF0lnKfdmqdfPxvI3RB605ztufz/yjKQXQJ9HxZ4Zrc/RGfbqtkzJxRUBHOz9NatxweCJuAZ3u1Ght3bVIoYhKvY7lPyvd21ohhsuqQGqXzomvE0vb8l5b750oms7CE/C+hqXqbAVZ6aH1SQTIKpqN/9l9qQKMnYBokCc9qAc8jEIElEglkL0Xs7p5FfmVYaoLrV+KYh3knPeTZUveYWqNMfJ9Z5osAdrSDqh1Ggzen7QyKtoctm9M6G07HdBLjBiCXkV10hfnDhyqyVeyo8aAJZ6VGqSsKXvl896zLlwx6YF9g36VSPPINiEKKkxpsDxlSg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18) by
+ PUZPR06MB6172.apcprd06.prod.outlook.com (2603:1096:301:107::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Tue, 18 Jul
+ 2023 03:24:55 +0000
+Received: from SG2PR06MB3743.apcprd06.prod.outlook.com
+ ([fe80::2a86:a42:b60a:470c]) by SG2PR06MB3743.apcprd06.prod.outlook.com
+ ([fe80::2a86:a42:b60a:470c%4]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
+ 03:24:55 +0000
+From:   Wang Ming <machel@vivo.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Wang Ming <machel@vivo.com>, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+Subject: [PATCH v2] reset: hisilicon: Use dev_err_probe instead of dev_err
+Date:   Tue, 18 Jul 2023 11:24:31 +0800
+Message-Id: <20230718032443.16355-1-machel@vivo.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+Content-Type: text/plain
+X-ClientProxiedBy: TYCPR01CA0040.jpnprd01.prod.outlook.com
+ (2603:1096:405:1::28) To SG2PR06MB3743.apcprd06.prod.outlook.com
+ (2603:1096:4:d0::18)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PR06MB3743:EE_|PUZPR06MB6172:EE_
+X-MS-Office365-Filtering-Correlation-Id: 992b217a-cd26-477f-ad3d-08db873e8e38
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ihCbnB/n6Ry1MEbjckAQjQs6ludjrbEGdkdUH94QpVqC0Q6PeRL4SdSrk5625HgYKtYRqONLoFA9ObS4SKzRKLOy1TDQ9AGPDvIgb08qdX3Bg2oSUyfUV9wznqiDT4+jff5pA2uk1B8wPIxVi+bB7yTc7PawNgiyzrUOEQzRL4YXhwSZ8GDYcWcerUq6XoxX7RSBYgUHLvznasSz4Uj5I6r6Kgm16yYx8lLjVYfOxuN0GPIleIL0idqYC93I5RzmGch3ffhEM/aU2RgilpnSAfvMCQuyAgE5Lfyd4f/l8Hn5zqiXG2epatRStpCBR4sFdc7jOSPLdYrShSXV3ZdxTS45qS1+RjbIXIis+qQE73rOquS3FkTKcPZfPsVp9XkzQuI3LgUF2ApLYtO2y/ri15weBHyx0yntU3p27sQ+XrIPCDbluAbxmUTEwKR0A5nf++TfDRQpYSfCF1OseLgOmGJMknHDqKutqeqPjrfXvT5z9xbzdPNTvMeOxheVM2SWdjocWpYxJKyFv2xrkXApc8OHUO/3eCq/SHV96w0tKdssiCPlUaEBrjWcQfIIdX98mfJU6/c+dDmNSz3ScigME8GIKkee7UAm+XBNHvfl4aGW7O/gcmA/aXTMoQTvFxXT
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3743.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(39860400002)(366004)(346002)(396003)(451199021)(86362001)(2906002)(4744005)(36756003)(2616005)(6512007)(83380400001)(186003)(6506007)(1076003)(26005)(107886003)(38350700002)(52116002)(6486002)(38100700002)(6666004)(110136005)(4326008)(66946007)(66476007)(66556008)(5660300002)(478600001)(316002)(8676002)(41300700001)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZtW04YZ3xUOTUfcHFu/wQKQmoS2XR9UPg+BY7TCtKBdncbRbT41KJ0ZSkp6n?=
+ =?us-ascii?Q?9u9DQmXftYiCKtfx+TRoh0WUVTNSCeePP1xdYoceXzitg3GYD5HPWy3zeFgW?=
+ =?us-ascii?Q?UyKCnKecCBB1SCUOa2ahxx173VMu5M4Yeq8UrEAn3Y7G4Ps6g1lxCzHD+VU+?=
+ =?us-ascii?Q?Ui01NJ2yLpDED8LTaYPaxzhCPPTaVrgZk+xQW1pzdZG6yew/b4zmFycBT7v4?=
+ =?us-ascii?Q?MV/73Q0obANgQUaIDyZ4uqyS51fwz70PJzPqiJBMhzjzaYpDW23Onada1zBY?=
+ =?us-ascii?Q?2HOz9X5GoYoNM8YGQttWu2TY1mRWHNLH2JG92iQ26/srX2lIOgJFtzrWuvTd?=
+ =?us-ascii?Q?V4kbtTm0/C/HzXh5n4fvCeszbdlXb4G2Y7mSSo3Al3x0AqLdPsQ9XViL8uv9?=
+ =?us-ascii?Q?41Ho31h0XpKQxhlQbcQzk04u9WjKYYkfQ5rwcuGhNnWVS0L8jqxHk6mW2KQx?=
+ =?us-ascii?Q?YjjRFEpEAr/cZ3HD9tI53+l+FkoD8Sz1L7t4NnNKQCww7XIKS3Iw7PvcH5hQ?=
+ =?us-ascii?Q?MaQ/NVgz4AEBgoSug1kePMCT5TyF3FK1gf/Xk3eDX9lezHAdWSyBKGS08APW?=
+ =?us-ascii?Q?6FqqQ9+GJ9bf4lqHdXyCDBDu2D4rHE/Z0kk5kYXwC6Vt/MFWFydOosMxRwQk?=
+ =?us-ascii?Q?3VCV+eXoYZ0/uoLd95sqkz01wIHOAhXpb3OAzDqYBrTgUkqoTHLFTx3W1N4g?=
+ =?us-ascii?Q?aeWHW+PYzI5jDKsHFuI6IQa/N4emmlwQ3rtlIXRV71LEJw1ks41ymsWf0LyI?=
+ =?us-ascii?Q?V90vFuxopByBmwvaFiI4exCBO5xkeBq143c8cZcu9sM1JK6B4eNznDEdmTdz?=
+ =?us-ascii?Q?EXHXGN2H93b5u2A0dFjwtNHmy4lVWkmKStL3pPrCBdpEEQFqc62YpV2LaBeH?=
+ =?us-ascii?Q?QO46nN0eSy3F9emYgMIWHhsx21IpcSnygfN2cfHih97U8fWy8ieXk0xo6o3c?=
+ =?us-ascii?Q?snVPSpf2l6M0vOrjOzAFgwrYuA3Kiy2OGs+s8DyGEJHUcHo5pGanCGahXhUu?=
+ =?us-ascii?Q?3WxTcxX3MXObiJR2o+bvJtrQZ1DQAOKWrTU+pSe3F4iwEhnHnOBTrsPCyRp5?=
+ =?us-ascii?Q?sPcgBuZRorZCLUEvkiONg9PiKzu5rDyXHTGHuIkyDJSaDgw70jvAzx6ExJPf?=
+ =?us-ascii?Q?1DzibLiKUMYR5J7753GWqhoXmLX/BOc6d86BDsnMbuGD/VyBxgiPm3kWbkPV?=
+ =?us-ascii?Q?HCeye8f2Qq/Yochfe/Z17IZX2aubs9OT0MbZweF4DeH+v0o5lvd7vp+De9FF?=
+ =?us-ascii?Q?DHgc+vuP3ykOgX/k5JqQw7ask5982kzJTarpAEBzshSsNkRJj+2UvMS3uEl9?=
+ =?us-ascii?Q?2F/TvgzT7sDXKWz32cHTE6yP1MGCtbv5Ei9dTt1ZgdUwArPT0S11UkIQa28j?=
+ =?us-ascii?Q?XmAncKKzauqpiDS9kgvyRtjiWa7zuFgFnaTq+YsJdUAKFbh+zCVnw4eTfqLQ?=
+ =?us-ascii?Q?fJhVNZOk8F/yCz2XW03UDZpByZywFV89v/OMF0S3NpQMgEL9MgzLcVUTePJU?=
+ =?us-ascii?Q?gHHbyCwyudEdFL0BuNKEEITxRHDdV+7SDRNiInDHaWdBIwH248T8Z7MYm2Db?=
+ =?us-ascii?Q?KjOJypwwmFHcHQNZp/h9SoIQwhpe/JgTwtuOr/Yn?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 992b217a-cd26-477f-ad3d-08db873e8e38
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3743.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 03:24:55.2511
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MGtI7xke/5Bwf/jlA4XCkYfW+Kfu0zYD7Ed1Cj665ysv5eRNSXwIdNyeBQk2B6fWnH1VUUD2mvqgNbUIbQw0rA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZPR06MB6172
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,106 +111,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The probe process may generate EPROBE_DEFER. In this case,
+dev_err_probe can still record err information.
+This helps simplify code and standardize error output.
 
+Signed-off-by: Wang Ming <machel@vivo.com>
+---
+ drivers/reset/hisilicon/reset-hi3660.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On 13.07.2023 10:01, Michael Walle wrote:
-> Hi,
-> 
-> Am 2023-07-13 05:32, schrieb Tudor Ambarus:
->> Hi, Linus,
->>
->> On 13.07.2023 00:59, Linus Walleij wrote:
->>> The Winbond "w25q128" (actual vendor name W25Q128JV)
->>> has exactly the same flags as the sibling device
->>> "w25q128jv". The devices both require unlocking to
->>> enable write access.
->>>
->>> The actual product naming between devices vs the
->>> Linux strings in winbond.c:
->>>
->>> 0xef4018: "w25q128"   W25Q128JV-IM/JM
->>> 0xef7018: "w25q128jv" W25Q128JV-IN/IQ/JQ
->>>
->>> The latter device, "w25q128jv" supports features
->>> named DTQ and QPI, otherwise it is the same.
->>>
->>> Not having the right flags has the annoying side
->>> effect that write access does not work.
->>
->> I guess you refer to the locking flags. Probably your flash has the non
->> volatile block protection (BP) bits from the Status Register set, which
->> means the entire flash is write protected. The factory default for these
->> bits is 0/disabled on this flash so someone must have played with them.
->> The reason why one may want write protection set is to avoid inadvertent
->> writes during power-up.
->> One can control whether to disable the software write protection at boot
->> time with the MTD_SPI_NOR_SWP_ configs.
->>>
->>> After this patch I can write to the flash on the
->>> Inteno XG6846 router.
->>>
->>> The flash memory also supports dual and quad SPI
->>> modes. This does not currently manifest, but by
->>
->> The fasted mode is chosen after SFDP parsing, so you should use quad
->> reads if your controller also supports 4 I/O lines.
->>> turning on SFDP parsing, the right SPI modes are
->>> emitted in
->>> /sys/kernel/debug/spi-nor/spi1.0/capabilities
->>> for this chip, so we also turn on this.
->>>
->>> Cc: stable@vger.kernel.org
->>> Suggested-by: Michael Walle <michael@walle.cc>
->>> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
->>> ---
->>> Changes in v2:
->>> - Only add the write access flags.
->>> - Use SFDP parsing to properly detect the various
->>>   available SPI modes.
->>> - Link to v1:
->>> https://lore.kernel.org/r/20230712-spi-nor-winbond-w25q128-v1-1-f78f3bb42a1c@linaro.org
->>> ---
->>>  drivers/mtd/spi-nor/winbond.c | 3 ++-
->>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mtd/spi-nor/winbond.c
->>> b/drivers/mtd/spi-nor/winbond.c
->>> index 834d6ba5ce70..6c82e525c801 100644
->>> --- a/drivers/mtd/spi-nor/winbond.c
->>> +++ b/drivers/mtd/spi-nor/winbond.c
->>> @@ -121,7 +121,8 @@ static const struct flash_info
->>> winbond_nor_parts[] = {
->>>      { "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16)
->>>          NO_SFDP_FLAGS(SECT_4K) },
->>>      { "w25q128", INFO(0xef4018, 0, 64 * 1024, 256)
->>
->> while here try, using INFO with INFO(0xef4018, 0, 0, 0), those
->> parameters shall be discovered at run-time, so we prepare to get rid of
->> explicitly setting them sooner or later.
-> 
-> This is an entry matching various flash families from Winbond, see my
-> reply in v1. I'm not sure we should remove these as we could break the
-> older ones, which might or might not have SFDP tables. We don't know.
-
-I'd take the risk and break the older ones if there are some that don't
-define SFDP indeed, just to handle the conflict properly. We can't
-encourage code based on assumptions otherwise we'll get back to the
-knotted spi-nor code that we tried to untie in the last years.
-
-> 
->>
->>> -        NO_SFDP_FLAGS(SECT_4K) },
-> 
-> Thus, I'd also keep this one.
-> 
-
-Keeping this one does not have the effect that you want as SECT_4K is
-used in spi_nor_no_sfdp_init_params() which is not called when
-PARSE_SFDP is set, which makes perfectly sense. Let's drop this and if
-bugs will be reported, I commit I'll fix them in the same release cycle.
-
-If both of you agree, I'll amend Linus's v4 patch when applying.
-
-Cheers,
-ta
+diff --git a/drivers/reset/hisilicon/reset-hi3660.c b/drivers/reset/hisilicon/reset-hi3660.c
+index 965f5ceba7d8..22a9f87b4979 100644
+--- a/drivers/reset/hisilicon/reset-hi3660.c
++++ b/drivers/reset/hisilicon/reset-hi3660.c
+@@ -90,8 +90,8 @@ static int hi3660_reset_probe(struct platform_device *pdev)
+ 							  "hisi,rst-syscon");
+ 	}
+ 	if (IS_ERR(rc->map)) {
+-		dev_err(dev, "failed to get hisilicon,rst-syscon\n");
+-		return PTR_ERR(rc->map);
++		return dev_err_probe(dev, PTR_ERR(rc->map),
++					"failed to get hisilicon,rst-syscon\n");
+ 	}
+ 
+ 	rc->rst.ops = &hi3660_reset_ops,
+-- 
+2.25.1
 
