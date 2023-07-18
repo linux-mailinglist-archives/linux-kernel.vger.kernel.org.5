@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6AE675803D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817D0758064
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232039AbjGRO4c convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 18 Jul 2023 10:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40680 "EHLO
+        id S233049AbjGRPGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 11:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbjGRO4a (ORCPT
+        with ESMTP id S232920AbjGRPGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:56:30 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04359B5;
-        Tue, 18 Jul 2023 07:56:26 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qLm7V-000wcH-MK; Tue, 18 Jul 2023 16:56:09 +0200
-Received: from p57bd98fd.dip0.t-ipconnect.de ([87.189.152.253] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qLm7V-002uyA-Eu; Tue, 18 Jul 2023 16:56:09 +0200
-Message-ID: <6e037c2051816deaa0e4361c4fb517ba7d33dc0b.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH v2] sparc: Explicitly include correct DT includes
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Rob Herring <robh@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     devicetree@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-        linux-crypto@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 18 Jul 2023 16:56:08 +0200
-In-Reply-To: <20230718143211.1066810-1-robh@kernel.org>
-References: <20230718143211.1066810-1-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Tue, 18 Jul 2023 11:06:22 -0400
+X-Greylist: delayed 533 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 18 Jul 2023 08:06:20 PDT
+Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03A010F5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:06:20 -0700 (PDT)
+Received: from wse.fritz.box (unknown [24.134.105.141])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by mail.tuxedocomputers.com (Postfix) with ESMTPA id 64B9E2FC004A;
+        Tue, 18 Jul 2023 16:57:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
+        s=default; t=1689692245;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=J0wH3xEshvQGIG1GmT2WBF77V9pRpAS+2p8ii7k9Y4k=;
+        b=mWq9nzDEkvCD1Dmyj453JbHjnd4prvHZaEbWqMSP4ZxQRljNu8CrWEkg+4YEtaPsA1cE2F
+        pjFWSYByrhmdsNDq4ngNGBDkhrxQFh/Y44IwLI+HCNiK2gOqE4Oc4VZYw424KJTmF7SWzR
+        I3sEYBOpyhiRYtwBZn6pF7OoTa53gEg=
+Authentication-Results: mail.tuxedocomputers.com;
+        auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     Christoffer Sandberg <cs@tuxedo.de>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for Clevo NS70AU
+Date:   Tue, 18 Jul 2023 16:57:22 +0200
+Message-Id: <20230718145722.10592-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.152.253
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob!
+From: Christoffer Sandberg <cs@tuxedo.de>
 
-On Tue, 2023-07-18 at 08:32 -0600, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
+Fixes headset detection on Clevo NS70AU.
 
-I would suggest rephrasing the subject to
+Co-developed-by: Werner Sembach <wse@tuxedocomputers.com>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+Signed-off-by: Christoffer Sandberg <cs@tuxedo.de>
+Cc: <stable@vger.kernel.org>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-	sparc: Explicitly include correct DT headers
-
-as " ... include ... includes" sounds a bit awkward ;-).
-
-Adrian
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index e2f8b608de82b..770b2953f0412 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9727,6 +9727,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1558, 0x5157, "Clevo W517GU1", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x51a1, "Clevo NS50MU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x51b1, "Clevo NS50AU", ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1558, 0x51b3, "Clevo NS70AU", ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x5630, "Clevo NP50RNJS", ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x70a1, "Clevo NB70T[HJK]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x70b3, "Clevo NK70SB", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.34.1
+
