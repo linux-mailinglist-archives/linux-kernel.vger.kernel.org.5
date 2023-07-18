@@ -2,52 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CA4757826
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E118C75782A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbjGRJeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39364 "EHLO
+        id S230100AbjGRJeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:34:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbjGRJeD (ORCPT
+        with ESMTP id S230479AbjGRJee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:34:03 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ED51DE60
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:34:01 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 26E332F4;
-        Tue, 18 Jul 2023 02:34:45 -0700 (PDT)
-Received: from [10.1.34.52] (C02Z41KALVDN.cambridge.arm.com [10.1.34.52])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4533C3F67D;
-        Tue, 18 Jul 2023 02:34:00 -0700 (PDT)
-Message-ID: <225cbb00-9759-3547-8073-3b08b458c73e@arm.com>
-Date:   Tue, 18 Jul 2023 10:33:58 +0100
+        Tue, 18 Jul 2023 05:34:34 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C48E0;
+        Tue, 18 Jul 2023 02:34:33 -0700 (PDT)
+Received: from mercury (dyndsl-091-248-212-239.ewe-ip-backbone.de [91.248.212.239])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id E103A660703C;
+        Tue, 18 Jul 2023 10:34:31 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689672872;
+        bh=pDdoHgD/R4j/O2UCXvRlSSP9z0NmI3OdmRQNP6aFg30=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OfHkRS1Fnn2sxv+9ZYTgwkAvWjw4/zzVsMiwQ/4Gdpil0vhSHhiMpF70TpvqNPRCx
+         czb43+nlO876FJId7eHvLkuwNv6XEl/S6KOT68IL8Fcjnob0znAhqOdrmilUseyPyF
+         paXOpv93DV1txJfP089cQv2Am6jjhnAVapnajoZwekrfj1bT5eewHDaFZdM48oGVCb
+         MlzuY8rPaDY4UWxlhgVSFcwKUIHazMS5FFU/t5xQm3nWKJohWUUxGqAPjvowUioQnp
+         R8MdzbuPa1jyx/Jq1SGdRLfQ79aIynMdmkAoX19cfJSVUhqrUNCXIZF4bSACbuGZZY
+         /zsNQJjMMkXLg==
+Received: by mercury (Postfix, from userid 1000)
+        id EEF551060D95; Tue, 18 Jul 2023 11:34:28 +0200 (CEST)
+Date:   Tue, 18 Jul 2023 11:34:28 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Eugen Hristev <eugen.hristev@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, david.wu@rock-chips.com, heiko@sntech.de,
+        krzysztof.kozlowski+dt@linaro.org, kernel@collabora.com
+Subject: Re: [PATCH] dt-bindings: net: rockchip-dwmac: add default 'input'
+ for clock_in_out
+Message-ID: <20230718093428.ofld4ywhwbpmnw5w@mercury.elektranox.org>
+References: <20230718090914.282293-1-eugen.hristev@collabora.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v1 1/3] mm: Allow deferred splitting of arbitrary large
- anon folios
-To:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20230717143110.260162-1-ryan.roberts@arm.com>
- <20230717143110.260162-2-ryan.roberts@arm.com>
- <90b406af-9db4-b668-a7a0-e574e104c84c@redhat.com>
- <028c5f5b-b67c-9ccc-bc06-468f47362999@arm.com>
- <0250a2d7-c79b-0e0f-8161-bf475daf1c82@redhat.com>
- <7319a1aa-7c72-82e9-f26d-eeccb6fdf35b@arm.com>
- <7b0e691d-b224-20d0-a90a-bb659fbb3e1a@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <7b0e691d-b224-20d0-a90a-bb659fbb3e1a@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="p4uagyzg7ikm4k3p"
+Content-Disposition: inline
+In-Reply-To: <20230718090914.282293-1-eugen.hristev@collabora.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,83 +60,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/07/2023 10:08, David Hildenbrand wrote:
-> On 18.07.23 10:58, Ryan Roberts wrote:
->> On 17/07/2023 17:48, David Hildenbrand wrote:
->>> On 17.07.23 18:01, Ryan Roberts wrote:
->>>> On 17/07/2023 16:42, David Hildenbrand wrote:
->>>>> On 17.07.23 16:31, Ryan Roberts wrote:
->>>>>> In preparation for the introduction of large folios for anonymous
->>>>>> memory, we would like to be able to split them when they have unmapped
->>>>>> subpages, in order to free those unused pages under memory pressure. So
->>>>>> remove the artificial requirement that the large folio needed to be at
->>>>>> least PMD-sized.
->>>>>>
->>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>>>> Reviewed-by: Yu Zhao <yuzhao@google.com>
->>>>>> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
->>>>>> ---
->>>>>>     mm/rmap.c | 2 +-
->>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/mm/rmap.c b/mm/rmap.c
->>>>>> index 0c0d8857dfce..2baf57d65c23 100644
->>>>>> --- a/mm/rmap.c
->>>>>> +++ b/mm/rmap.c
->>>>>> @@ -1430,7 +1430,7 @@ void page_remove_rmap(struct page *page, struct
->>>>>> vm_area_struct *vma,
->>>>>>              * page of the folio is unmapped and at least one page
->>>>>>              * is still mapped.
->>>>>>              */
->>>>>> -        if (folio_test_pmd_mappable(folio) && folio_test_anon(folio))
->>>>>> +        if (folio_test_large(folio) && folio_test_anon(folio))
->>>>>>                 if (!compound || nr < nr_pmdmapped)
->>>>>>                     deferred_split_folio(folio);
->>>>>
->>>>> !compound will always be true I guess, so nr_pmdmapped == 0 (which will always
->>>>> be the case) will be ignored.
->>>>
->>>> I don't follow why !compound will always be true. This function is
->>>> page_remove_rmap() (not folio_remove_rmap_range() which I add in a later
->>>> patch).
->>>> page_remove_rmap() can work on pmd-mapped pages where compound=true is
->>>> passed in.
->>>
->>> I was talking about the folio_test_pmd_mappable() -> folio_test_large() change.
->>> For folio_test_large() && !folio_test_pmd_mappable() I expect that we'll never
->>> pass in "compound=true".
->>>
->>
->> Sorry David, I've been staring at the code and your comment, and I still don't
->> understand your point. I assumed you were trying to say that compound is always
->> false and therefore "if (!compound || nr < nr_pmdmapped)" can be removed? But
->> its not the case that compound is always false; it will be true when called to
->> remove a pmd-mapped compound page.
-> 
-> Let me try again:
-> 
-> Assume, as I wrote, that we are given a folio that is "folio_test_large() &&
-> !folio_test_pmd_mappable()". That is, a folio that is *not* pmd mappable.
-> 
-> If it's not pmd-mappable, certainly, nr_pmdmapped == 0, and therefore, "nr <
-> nr_pmdmapped" will never ever trigger.
-> 
-> The only way to have it added to the deferred split queue is, therefore "if
-> (!compound)".
-> 
-> So *for these folios*, we will always pass "compound == false" to make that "if
-> (!compound)" succeed.
-> 
-> 
-> Does that make sense?
 
-Yes I agree with all of this. I thought you were pointing out an issue or
-proposing a change to the logic. Hence my confusion.
+--p4uagyzg7ikm4k3p
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
->> What change are you suggesting, exactly?
-> 
-> Oh, I never suggested a change (I even gave you my RB). I was just thinking out
-> loud.
-> 
+Hi,
 
+On Tue, Jul 18, 2023 at 12:09:14PM +0300, Eugen Hristev wrote:
+> 'clock_in_out' property is optional, and it can be one of two enums.
+> The binding does not specify what is the behavior when the property is
+> missing altogether.
+> Hence, add a default value that the driver can use.
+>=20
+> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+> ---
+
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+
+-- Sebastian
+
+>  Documentation/devicetree/bindings/net/rockchip-dwmac.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/rockchip-dwmac.yaml b/=
+Documentation/devicetree/bindings/net/rockchip-dwmac.yaml
+> index 176ea5f90251..bb943c96c196 100644
+> --- a/Documentation/devicetree/bindings/net/rockchip-dwmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/rockchip-dwmac.yaml
+> @@ -80,6 +80,7 @@ properties:
+>        "output" means GMAC provides the reference clock.
+>      $ref: /schemas/types.yaml#/definitions/string
+>      enum: [input, output]
+> +    default: input
+> =20
+>    rockchip,grf:
+>      description: The phandle of the syscon node for the general register=
+ file.
+> --=20
+> 2.34.1
+>=20
+>=20
+> --=20
+> To unsubscribe, send mail to kernel-unsubscribe@lists.collabora.co.uk.
+
+--p4uagyzg7ikm4k3p
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmS2XKEACgkQ2O7X88g7
++prE4xAAmh5G/otIOOGE3B28pMwGVdmjdOwa1BRNEfNCHvSeWkh12GQ+Eswe5kqG
+BSB2DE/QqMNTqcrBTOlarZ0BWEMGKnWlpm2W0cBzDHro9ASDyikGy5MyNFtb6Pa2
+kc8L9JGhZB8NN/GD+qWLTnkg0HB056GGBcZF4pediWVSjJERDM8WXEVkEMjxARa2
+PRMpAknIO5kZpHzsekietpLOW4RpfuYCiVVmnCQpURUNK0FH3+la4hLWjvzuiEcM
+rUyTJ9MZwx73KEuKDrCPhRfS8bk6gC+QwSbtjTiIn/ZsUOWbcz0ovkzSpEg3ytrM
+pwLOCNM127Pvhitp9hV3lqad1yn5cioVfM4lmHjBNKxGxBPdQdiFBVWlczWT//p0
+Mg90MJtmkWMqF5OzLQ5UZhRS9Vf9rFROwnrGo6Pl++zAzIesUe62+oSvv2hMo/XG
+0UKo1Xwnl8edOORpjuSMtHbyJXIcpQ+hXRF+C21gZT268wWmxC6mBJi5r6Iunp/I
+uxqYNAxd3Jtd4Kq3D8omE6f0fewzQL+t4cegcKqEdngl9c+a8FwzkEOHa2RDRReB
+1t6XWKsHbgRbrWjt+PmatvnN8Ei/V4gFszQSIWYMhalviQCwqcqBqDKOi33kpFfh
+OZFltVUI6Fj1SZCMsAGBaozAXQ+FZF73haMosgXiWPUwQmr52EM=
+=9u/K
+-----END PGP SIGNATURE-----
+
+--p4uagyzg7ikm4k3p--
