@@ -2,88 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 664AB757639
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8A3757650
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbjGRIJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
+        id S231228AbjGRIM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:12:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbjGRIJI (ORCPT
+        with ESMTP id S229553AbjGRIM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:09:08 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1801311C
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:09:06 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R4s6R6p6DzBQskq
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 16:09:03 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689667743; x=1692259744; bh=ZhffnlSd+6JbLRwdRLYVfu2pikG
-        Dw7nl33ahQKmhj1Y=; b=K1KYRQdAvqYQMuaHnwEZNSDDQx1wNGX2jp0LUd9PVdL
-        T7lSm1k6xobK7tVsZPLTj+0xsNfMy6MXBVkInzKABehf/Me0GV3Crgvbdwz2sLud
-        Ib5qujc6CwjxB8X6GZNvfl7zJoiy/CDxf/3UGk1I0janFA9z9l/sppHth2uqoOJE
-        qKZhmeBKRgf+ghCB1tYoi0u6sDQRRx79n++Uyo5D8R/R+nfIqZSWRkfcm9znRRyg
-        Wd14bkYduBfpMAa7jF2ZiJyG86Busjid9QoSXO3ZaVwX/ug1+aPYA+vHYbAZ4jky
-        ulrMkRy7J7N5IDYzT5HXWd0+xOsjz6V3e4QBfiKNzOw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ZnaWbATf5eqt for <linux-kernel@vger.kernel.org>;
-        Tue, 18 Jul 2023 16:09:03 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R4s6R5CLpzBJBf8;
-        Tue, 18 Jul 2023 16:09:03 +0800 (CST)
+        Tue, 18 Jul 2023 04:12:27 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E821095;
+        Tue, 18 Jul 2023 01:12:26 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3143b88faebso5751336f8f.3;
+        Tue, 18 Jul 2023 01:12:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689667945; x=1692259945;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=CrCUDL1/u3mCyL3fGovIg+T0/y0vvq0Eia4n2zK2lnk=;
+        b=mrvtzP7y++IAJhXNObvpvgH+Bj7GBGTnOVzezoX0XUaZb7wY5J26L2LGnLUfgUpeJq
+         U0Vbh79pvI49N3K4VDPiw100DuDTtwzL8XCIcJ/6yULsnEiF4vVQMEjyZJxlollOB0y6
+         e6dSGnc6Yn+fq7tQLCqQmsokAt5GcCdzfjEREES9GoN1kfZGnHTFSG132fl/OnzQhSQm
+         eFajZStYK8OfjFSuDecABBEmypW9ybTmxj8NDIWgGAQI8MaKlfCB1eYlwmc8292WulaD
+         QYhe/ddLsrltdQG5GsPPI1dY0pu66rCe3EGo39cCGBfVNmRaD/fCOt1AzWV0W9/+/5e3
+         wjFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689667945; x=1692259945;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CrCUDL1/u3mCyL3fGovIg+T0/y0vvq0Eia4n2zK2lnk=;
+        b=cCh6JBW0tY63mD7whljXieF7NRhQXkzU2FdpsBLoHISeSlvp5huHEi2J9xrw/v/MFM
+         /IEv/zc5mMyjE6b9xN2Dmqm6H078kHHucJhW3MbUMncaSyDWScvEQ15vGFVnvK3J3nzi
+         8t1gXX9X/0kQHoOBggVYrYOL7UdXUXllhS045qKafY3vznaaejfdjrvmMWx/6wn6GxT+
+         XR7nC9Eb7KMDfyImVfDZ0UejtVpZYQqMjpagt62iFJz9RgVxDVSf5vJkFpMwyHe5a5I6
+         c+H848AvhsVxPblw+B47S7ZwQRDCUqb8rNBOif6zZ3kvi37F/YVkkkrt9SnckhJ2tNc1
+         SvqQ==
+X-Gm-Message-State: ABy/qLaLr7ZFvYMrw/k7Rs2D2+JRhGluXKI65X0hXrjNzDNlFIjFmDq7
+        ZRp70ARheb0CVnNIL213Zq5Q6cAa50cpufCsH36FlErVyJoLEQ==
+X-Google-Smtp-Source: APBJJlErHmWgmXD8tMAdDqQ+40pbtQTCSP9J2HZonySWv0bfi4lfmf0Y2PO9DFS0cASf66YAAw8zXEFcMb4AHgbpaVA=
+X-Received: by 2002:adf:cd87:0:b0:313:fa0f:3a05 with SMTP id
+ q7-20020adfcd87000000b00313fa0f3a05mr12263634wrj.14.1689667945314; Tue, 18
+ Jul 2023 01:12:25 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Tue, 18 Jul 2023 16:09:03 +0800
-From:   sunran001@208suo.com
-To:     davem@davemloft.net
-Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] floppy: add missing put_device()
-In-Reply-To: <20230718080812.16801-1-xujianghui@cdjrlc.com>
-References: <20230718080812.16801-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <98a14fa23e4fb81d4630264cba0cecc8@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+References: <20230627160817.47353-1-dg573847474@gmail.com>
+In-Reply-To: <20230627160817.47353-1-dg573847474@gmail.com>
+From:   Chengfeng Ye <dg573847474@gmail.com>
+Date:   Tue, 18 Jul 2023 16:12:14 +0800
+Message-ID: <CAAo+4rUnXwto6CLNDz79DJCFn5OMdE+BOFSxJsf3rsh9vraetA@mail.gmail.com>
+Subject: Re: [PATCH] dmaengine: k3dma: fix potential deadlock on &d->lock
+To:     vkoul@kernel.org
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The of_find_device_by_node() takes a reference to the underlying device
-structure, we should release that reference.
+Dear Maintainers,
 
-Detected by coccinelle with the following ERROR:
-./arch/sparc/include/asm/floppy_64.h:595:3-9: ERROR: missing put_device;
-call of_find_device_by_node on line 589, but without a corresponding
-object release within this function.
+I hope this message finds you well.
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  arch/sparc/include/asm/floppy_64.h | 1 +
-  1 file changed, 1 insertion(+)
+The patch was submitted during last merged windows and
+I think maybe it is buried under other patches. If you've had
+a chance to look at it and have any feedback, I would be
+very appreciative.
 
-diff --git a/arch/sparc/include/asm/floppy_64.h 
-b/arch/sparc/include/asm/floppy_64.h
-index 070c8c1f5c8f..e74a4d4e6519 100644
---- a/arch/sparc/include/asm/floppy_64.h
-+++ b/arch/sparc/include/asm/floppy_64.h
-@@ -592,6 +592,7 @@ static unsigned long __init sun_floppy_init(void)
-
-          state_prop = of_get_property(op->dev.of_node, "status", NULL);
-          if (state_prop && !strncmp(state_prop, "disabled", 8))
-+            put_device(&op->dev);
-              return 0;
-
-          FLOPPY_IRQ = op->archdata.irqs[0];
+Best regards,
+Chengfeng
