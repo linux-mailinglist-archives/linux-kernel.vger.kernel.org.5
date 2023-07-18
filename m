@@ -2,140 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC3F757187
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 03:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2FC75718C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 03:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbjGRB6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 21:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37670 "EHLO
+        id S230383AbjGRB72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 21:59:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjGRB6O (ORCPT
+        with ESMTP id S229714AbjGRB7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 21:58:14 -0400
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2058.outbound.protection.outlook.com [40.107.14.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8810AE6F;
-        Mon, 17 Jul 2023 18:58:12 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ngVemi+jLbAcSFIq3m1FJOQGuFW+cbQcBH6pDnQr1c0DXi1c2PEZSaS+Me3jd7xLUdC1p+3cO6ck9z50UEC0rTBee+rjLPG7JqL3VOHq27TSRXN0yMQRiMZ4iw+nfwSNnIkmeL15IIWzQ+wFVL9QKom4lKNCx6O3gho5WWeStRuB3PV7qj1lzeLyaRIOvgGkkGguV0Bj9lhXeZWL/y+JTijfCHRSmceZMIln4uEEU9xow6CVjsIxjZzlDgJuew51UAdf4LI7sUmF/sAuWcbW4x42C/LyCARfsxybZMrXLRLh67s2wNr8qrjc58qd+VLG7NcltniGGObLx0k5Myn1Xw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9o6m1UXERem9yKtWStw+Hpklq987nMnos05QsWdKUss=;
- b=M9mY1HfQLoDdOsVApugJOjUcUzQ/G6JplpDL3dR/FkKkZsFW0ATO/97UtWzGXJGTNAuMvYMA80CyKdXo+kYGWPXmlv6edwqBgikHI5NxuDwERfd4zF4Fj7IDayXBs8QBnJs9kg3Wg8+VVJEofmb2ftHWyzrBTAKNFrvxDMvKWDkahD2aMCIZq6y9lrK5R64UkQnoLxyMdZYbrDg+jpK/uRzDbezRxcefq5vcoCPeTi6sE8AUHiKJj3JjMX6Eq6JULeEgbrVf4gdpYlL1bl4H24rtLRQxTcILWvNvQQ1NVU058PZYNbcCVJqoXoEScfa26AivloR5emfsy3P/9+jEMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9o6m1UXERem9yKtWStw+Hpklq987nMnos05QsWdKUss=;
- b=BFHl5PkpDy92UkvahkknKTjGUfEzVhDZKDZ9ta+x+RmvjI/HELfkEkEqUkn+ck9+6i5woI2NCxK4mnOrq62CpF3JRFbhOr8bPWo74heOldpTIQZUNhxYAePNKNcYPl0GpWW0EZSf4djhL31chaz2uquzwGuJhAFJsSAhiUkTk7A=
-Received: from PAXPR04MB9448.eurprd04.prod.outlook.com (2603:10a6:102:2b1::21)
- by PAWPR04MB10030.eurprd04.prod.outlook.com (2603:10a6:102:387::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Tue, 18 Jul
- 2023 01:58:09 +0000
-Received: from PAXPR04MB9448.eurprd04.prod.outlook.com
- ([fe80::3505:c499:96d4:1429]) by PAXPR04MB9448.eurprd04.prod.outlook.com
- ([fe80::3505:c499:96d4:1429%4]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
- 01:58:09 +0000
-From:   Sandor Yu <sandor.yu@nxp.com>
-To:     Alexander Stein <alexander.stein@ew.tq-group.com>,
-        "andrzej.hajda@intel.com" <andrzej.hajda@intel.com>,
-        "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>
-CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Oliver Brown <oliver.brown@nxp.com>,
-        "sam@ravnborg.org" <sam@ravnborg.org>
-Subject: RE: [EXT] Re: [PATCH v7 3/7] dt-bindings: display: bridge: Add
- Cadence MHDP850
-Thread-Topic: [EXT] Re: [PATCH v7 3/7] dt-bindings: display: bridge: Add
- Cadence MHDP850
-Thread-Index: AQHZuIUePa/zOSPAXUe6/zQl/U27da+9sp2AgAERxRA=
-Date:   Tue, 18 Jul 2023 01:58:09 +0000
-Message-ID: <PAXPR04MB94483425E2BC17597B7E555AF438A@PAXPR04MB9448.eurprd04.prod.outlook.com>
-References: <cover.1689580812.git.Sandor.yu@nxp.com>
- <3646ea4d279838c78e00af1d746e3de34351b083.1689580812.git.Sandor.yu@nxp.com>
- <5693162.DvuYhMxLoT@steina-w>
-In-Reply-To: <5693162.DvuYhMxLoT@steina-w>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PAXPR04MB9448:EE_|PAWPR04MB10030:EE_
-x-ms-office365-filtering-correlation-id: 5930d55d-5799-43b2-2734-08db87326fbe
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rNFVd+aCNZEbT/FhcZWfyJ5RrEgT710VK9cno8r7bDb53dWYOlGmtMwzQY27I18DO8DRgP5RzBJy8VFe2nQhPPsgBOfSX0Y+eC+xh2XvX1YUK2ndDMUMvK3/Py5IS356qZ2feVo4epkzeGpjFVh1Q7yIpplsUBH6yw6N5M6v+j4OO4Sv/FJDftvRluKHtceDYEa0KTIQ98fzuPAU6lnAgVfqqxXjqisejaN5vPnOIRo0Ttbfs3B5cEcbzAL0eAQdERQ2DMIygwG0U4Gx3hFvEXKbuSJzv0DSDP7bbF/eI5Sn059anXNn3qV9vQ8J2awU9dUPDcIS6GNrYpT4vTDkhCmva8zxQ3xpzX9n3IoY1g+t2QWUGHWkpaKneyZb1jhfbKsvLTOx67kY2gQtaDrE+pn8NqjrWZpQvVwC+hTBNm7bA100Zj8hzlH8g3KjFhmbCLkgdsyznUZVUEfKae6vnYBat1MaB0u0c9dA5aVliD3yF9zTeq5BjCRmk5Q2Y08KgHmBxpe7ulgd+jDX+B4Y+cpLNN+TGgDs6pmJmLK8i2X7Ufvp3iZFaYtUOsV3bpDWE25aqANTYNOz3AQNEJHlcdnjwV2cEYAyo2Lj6XdHzyaP7MYniwXy8dl8K5MKZiij
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9448.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(376002)(366004)(39860400002)(136003)(451199021)(55016003)(54906003)(122000001)(110136005)(921005)(7696005)(5660300002)(478600001)(8936002)(45080400002)(8676002)(41300700001)(52536014)(76116006)(66946007)(316002)(71200400001)(4326008)(66446008)(64756008)(38100700002)(66556008)(66476007)(66574015)(186003)(83380400001)(966005)(6506007)(26005)(9686003)(86362001)(33656002)(44832011)(38070700005)(2906002)(7416002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?vo2vCz/YFvz7tMiN9mw91kl7fO1Us3mahQSGoeuc2dyxC/9ov31WgYIc8p?=
- =?iso-8859-1?Q?zbMEVaUzygDBH0Ua8gkSkUSgnelOvYtfi5z2t2Fc9fhT99QnUt+AyJlRcl?=
- =?iso-8859-1?Q?DDCUINPR0cnQ24/NH7r7V3Pn10pRiZXMTm3Mb/tqg+OGDKKDY5S5FwjrAo?=
- =?iso-8859-1?Q?dZ/LhpM+1YbFbFGPyU27rxCodaj/6Giw9jP+r7D3QFuZhJjrjTldtP8sZ2?=
- =?iso-8859-1?Q?f6JkfFM2RL2c0IiHYshnsGYoAPR8Y1o15oxu2y2LbHgo9zarJcI3kURtRb?=
- =?iso-8859-1?Q?LIQQ4Vu/k1svDdagQDfcmr15MQeI5fRIXHTv3gHATqBjdTMPB1xfseBu6e?=
- =?iso-8859-1?Q?KWdmtgA35YC1MyKENG3DST3J5qu0kz5cbmjOomukUlL2XyUvRv3cQnFUXZ?=
- =?iso-8859-1?Q?ZT2zRv42WortqxE7OfSl4TVQycDsVRV9HfCn1Q1CP30FoGZBJYPCj4t3fg?=
- =?iso-8859-1?Q?39DzlUTL5cWyCfS36P89uV7hDX5ZnqbHqfuaZ2OihqIv7eaQs2SfbEL9Tv?=
- =?iso-8859-1?Q?9kPr1FqN3sjCHJX0X6BhkX1mpEZEA/rc0jyg1TrD+NKDY/1riK7okqRowz?=
- =?iso-8859-1?Q?0P2FY5+u8Xu/bcDu5FQKq6q/Imuy3Y+FJjIOf95H6B4mobZfi+i9yVcFLF?=
- =?iso-8859-1?Q?9YVy8HDtG459ZICZsAbP2Qfm1U8Ji0gIbw1h34dtnApwyLEBqwrXdJSGf2?=
- =?iso-8859-1?Q?FY6z9bFd+pTJ4K+jGVeYdNSuFBWTFy/o2BzZbaJNET8Le83JhCBxHbyEE4?=
- =?iso-8859-1?Q?sWtrchR658jk97pd6Xa4lt+9bS4x3mIypDhyDInClYqIdrQpU7gAd4rhQt?=
- =?iso-8859-1?Q?WBhzPedCN+KnXpObCS0qPuLwWY5krRzHN2UAMmcN21lw4tUq2hta0B8yZK?=
- =?iso-8859-1?Q?DhLTf1oi4YEdx7yUlbTDcDD1AvuUK4qWsEsK0f9LMendcWNwY2cQIqL5mU?=
- =?iso-8859-1?Q?dFdkSXUL5hz0NWM8/Gh2JTiuukbscy2YhOJtldBwRpcR4BSmlfnr77fHTz?=
- =?iso-8859-1?Q?Eyuvqn43yNrMbeXXtDV+8rN5l9VoC+X2BS3WNdaSd4q1+/3acdpxYRjOPZ?=
- =?iso-8859-1?Q?0ChRmWTOC3kFPXWactyDsAecGgncakYIApUDXBF+knGngSz65cKNZIIZCu?=
- =?iso-8859-1?Q?vx87cec1TUa3X2i+j5bQJaDwVCWj82dTYOlUBltg1aHuxqXdciJGI9Qvuo?=
- =?iso-8859-1?Q?hZZBjGZ0ttOm4/OW162Qkiv6QqoheCuj6U7WRcjlRTW7XpM0mddEfG4ZzC?=
- =?iso-8859-1?Q?MYFP5aKqaNZx9Ex0K2G7Sl6a739Eeu5+54NTOnqfxdx5eJGcQI4QKC1rMU?=
- =?iso-8859-1?Q?wYrjlfxgGi0Ate5GauWf7zPTt9PvzrRuPkYSwpxmwCiAGZTr+Se3mqEfCp?=
- =?iso-8859-1?Q?OQawKEWjCYLoWoVYCsQAQWte0awhMJ6BLei2uOVYiKv6z7K0g/IOsFAHXV?=
- =?iso-8859-1?Q?I/svMY023pHgpKCZz71npguXK63Gvhm8aUfEDSHSktlzkpxCtafNGvONbH?=
- =?iso-8859-1?Q?11RvS87YilXgIF5t81693mAorN/EsO8OLRtPSV81XUtoUKvQnKh3RcrI3J?=
- =?iso-8859-1?Q?8q5TsTugOSXvnfaO1tlN6feHO8yJHmI0fvrQ3iJ4KwUmVpqjnMHHBoyLhk?=
- =?iso-8859-1?Q?qN7cvohW2VfP0=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 17 Jul 2023 21:59:24 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA2C3E76;
+        Mon, 17 Jul 2023 18:59:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689645562; x=1721181562;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=C+UYYS9cur3L9L8VTlag6+jhTNIfmTouTpEXsaYzuWk=;
+  b=VhWtncg+Rkve8f5C5OCrD/6Fd/VACLAW7cy/r45Aa3ZJ5k7SvZ5Xh1ky
+   eUI6NoZZe81+Q5BNDWvanAImPOOOC1/47rcpT01aa0oaMnAoyG9dzMTrV
+   /nRMdErPfVir0zcUFbo0oDdTaFuCypUVnq14PQHp+KtIZxiAGujQphldW
+   LYktefnJwUni+AwCYZLxytajrC7T70rfqkHp8HhiYb4uShTAQx0ym4tDd
+   +LzyQWkkbWJ8uPuB0DEQcWIqrSXFJUx6FqjVPIV0R5SSM/gu9yAgAmAuV
+   CkZq81/UC8wlMHYikXV8QUtxOMWNn8mVYL8Ez0iJ2ENOXiteLnNBet8Rx
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="350948334"
+X-IronPort-AV: E=Sophos;i="6.01,213,1684825200"; 
+   d="scan'208";a="350948334"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 18:59:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="753125087"
+X-IronPort-AV: E=Sophos;i="6.01,213,1684825200"; 
+   d="scan'208";a="753125087"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 18:59:21 -0700
+From:   isaku.yamahata@intel.com
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Michael Roth <michael.roth@amd.com>
+Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>, chen.bo@intel.com,
+        Sagi Shahar <sagis@google.com>
+Subject: [RFC PATCH] KVM: x86: Make struct sev_cmd common for KVM_MEM_ENC_OP
+Date:   Mon, 17 Jul 2023 18:58:54 -0700
+Message-Id: <2f296c5a255936b92cffde5e7d6414edfb93f660.1689645293.git.isaku.yamahata@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9448.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5930d55d-5799-43b2-2734-08db87326fbe
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jul 2023 01:58:09.5845
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5f/DmCtjryd3QLJ5GI63sgjPcLGm1UM1vZlHg65d6iOgTfgDIn8Oq4304K6wkhbM01YOHtBs1vGVQhuTj6mgKA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR04MB10030
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -143,203 +65,259 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
+From: Isaku Yamahata <isaku.yamahata@intel.com>
 
-Thanks for your comments,
+TDX KVM will use KVM_MEM_ENC_OP.  Make struct sev_cmd common both for
+vendor backend, SEV and TDX, with rename.  Make the struct common uABI for
+KVM_MEM_ENC_OP.  TDX backend wants to return 64 bit error code instead of
+32 bit. To keep ABI for SEV backend, use union to accommodate 64 bit
+member.
 
->
-> Am Montag, 17. Juli 2023, 10:03:49 CEST schrieb Sandor Yu:
-> > ********************
-> > Achtung externe E-Mail: =D6ffnen Sie Anh=E4nge und Links nur, wenn Sie
-> > wissen, dass diese aus einer sicheren Quelle stammen und sicher sind.
-> > Leiten Sie die E-Mail im Zweifelsfall zur Pr=FCfung an den IT-Helpdesk =
-weiter.
-> > Attention external email: Open attachments and links only if you know
-> > that they are from a secure source and are safe. In doubt forward the
-> > email to the IT-Helpdesk to check it. ********************
-> >
-> > Add bindings for Cadence MHDP8501 DisplayPort/HDMI bridge..
-> >
-> > Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
-> > ---
-> >  .../display/bridge/cdns,mhdp8501.yaml         | 105
-> ++++++++++++++++++
-> >  1 file changed, 105 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/display/bridge/cdns,mhdp8501.yaml
-> >
-> > diff --git
-> > a/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8501.yaml
-> > b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8501.yaml
-> > new file mode 100644 index 000000000000..b983ee765f54
-> > --- /dev/null
-> > +++
-> b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp8501.y
-> > +++ aml
-> > @@ -0,0 +1,105 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) %YAML 1.2
-> > +---
-> > +$id:
-> > +http://devi/
-> >
-> +cetree.org%2Fschemas%2Fdisplay%2Fbridge%2Fcdns%2Cmhdp8501.yaml%
-> 23&dat
-> >
-> +a=3D05%7C01%7CSandor.yu%40nxp.com%7C603a90f3f3c34d32a1e708db86a
-> 8f868%7C
-> >
-> +686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C63825183250590544
-> 2%7CUnkno
-> >
-> +wn%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1
-> haWwi
-> >
-> +LCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=3DJnbufeZplo%2B6JGW4HaK
-> %2BLyC0MESK
-> > +GsV%2FtjfeXCXqK4U%3D&reserved=3D0
-> > +$schema:
-> > +http://devi/
-> >
-> +cetree.org%2Fmeta-schemas%2Fcore.yaml%23&data=3D05%7C01%7CSandor.
-> yu%40n
-> >
-> +xp.com%7C603a90f3f3c34d32a1e708db86a8f868%7C686ea1d3bc2b4c6fa9
-> 2cd99c5
-> >
-> +c301635%7C0%7C0%7C638251832505905442%7CUnknown%7CTWFpbGZs
-> b3d8eyJWIjoi
-> >
-> +MC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3
-> 000%7C%
-> >
-> +7C%7C&sdata=3DrdOyjVz4gGnToVC40Rcfp%2Fk925yC%2F6xNwGbBAnOtcDQ
-> %3D&reserv
-> > +ed=3D0
-> > +
-> > +title: Cadence MHDP8501 DP/HDMI bridge
-> > +
-> > +maintainers:
-> > +  - Sandor Yu <Sandor.yu@nxp.com>
-> > +
-> > +description:
-> > +  Cadence MHDP8501 DisplayPort/HDMI interface.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - cdns,mhdp8501
-> > +      - fsl,imx8mq-mhdp8501
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    maxItems: 1
-> > +    description: MHDP8501 DP/HDMI APB clock.
-> > +
-> > +  phys:
-> > +    maxItems: 1
-> > +    description:
-> > +      phandle to the DisplayPort or HDMI PHY
-> > +
-> > +  interrupts:
-> > +    items:
-> > +      - description: Hotplug cable plugin.
-> > +      - description: Hotplug cable plugout.
-> > +
-> > +  interrupt-names:
-> > +    items:
-> > +      - const: plug_in
-> > +      - const: plug_out
-> > +
-> > +  ports:
-> > +    $ref: /schemas/graph.yaml#/properties/ports
-> > +
-> > +    properties:
-> > +      port@0:
-> > +        $ref: /schemas/graph.yaml#/properties/port
-> > +        description:
-> > +          Input port from display controller output.
-> > +      port@1:
-> > +        $ref: /schemas/graph.yaml#/properties/port
-> > +        description:
-> > +          Output port to DisplayPort or HDMI connector.
-> > +
-> > +    required:
-> > +      - port@0
-> > +      - port@1
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - clocks
-> > +  - interrupts
-> > +  - interrupt-names
-> > +  - phys
-> > +  - ports
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/clock/imx8mq-clock.h>
-> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +
-> > +    mhdp_dp: dp-bridge@32c00000 {
->
-> I'm not sure, but I would name this node just 'bridge', because it can be=
- either
-> DP or HDMI depending on the connector. But DT folks will know better than
-> me.
-This name should update too after DP and HDMI driver combined.
-I will change to "mhdp: mhdp-bridge@32c00000" in the next version.
-B.R
-Sandor
->
-> Best regards,
-> Alexander
->
-> > +        compatible =3D "fsl,imx8mq-mhdp8501";
-> > +        reg =3D <0x32c00000 0x100000>;
-> > +        interrupts =3D <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>,
-> > +                     <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
-> > +        interrupt-names =3D "plug_in", "plug_out";
-> > +        clocks =3D <&clk IMX8MQ_CLK_DISP_APB_ROOT>;
-> > +        phys =3D <&dp_phy>;
-> > +
-> > +        ports {
-> > +            #address-cells =3D <1>;
-> > +            #size-cells =3D <0>;
-> > +
-> > +            port@0 {
-> > +                reg =3D <0>;
-> > +
-> > +                mhdp_in: endpoint {
-> > +                    remote-endpoint =3D <&dcss_out>;
-> > +                };
-> > +            };
-> > +
-> > +            port@1 {
-> > +                reg =3D <1>;
-> > +
-> > +                mhdp_out: endpoint {
-> > +                    remote-endpoint =3D <&dp_connector>;
-> > +                };
-> > +            };
-> > +        };
-> > +    };
->
->
-> --
-> TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-> Amtsgericht M=FCnchen, HRB 105018
-> Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-> http://www.tq/
-> -group.com%2F&data=3D05%7C01%7CSandor.yu%40nxp.com%7C603a90f3f3c3
-> 4d32a1e708db86a8f868%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C
-> 0%7C638251832505905442%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4w
-> LjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C
-> %7C%7C&sdata=3Dm1JbdOzu8sx6h6fP2Q8OpyLAmvpguKFUj6ddCSB3OCs%3D&
-> reserved=3D0
->
+Some data structures for sub-commands could be common.  The current
+candidate would be KVM_SEV{,_ES}_INIT, KVM_SEV_LAUNCH_FINISH,
+KVM_SEV_LAUNCH_UPDATE_VMSA, KVM_SEV_DBG_DECRYPT, and KVM_SEV_DBG_ENCRYPT.
+
+Only compile tested for SEV code.
+
+Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+---
+ arch/x86/include/asm/kvm_host.h |  2 +-
+ arch/x86/include/uapi/asm/kvm.h | 22 +++++++++++
+ arch/x86/kvm/svm/sev.c          | 68 ++++++++++++++++++---------------
+ arch/x86/kvm/svm/svm.h          |  2 +-
+ arch/x86/kvm/x86.c              | 16 +++++++-
+ 5 files changed, 76 insertions(+), 34 deletions(-)
+
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 28bd38303d70..f14c8df707ac 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1706,7 +1706,7 @@ struct kvm_x86_ops {
+ 	void (*enable_smi_window)(struct kvm_vcpu *vcpu);
+ #endif
+ 
+-	int (*mem_enc_ioctl)(struct kvm *kvm, void __user *argp);
++	int (*mem_enc_ioctl)(struct kvm *kvm, struct kvm_mem_enc_cmd *cmd);
+ 	int (*mem_enc_register_region)(struct kvm *kvm, struct kvm_enc_region *argp);
+ 	int (*mem_enc_unregister_region)(struct kvm *kvm, struct kvm_enc_region *argp);
+ 	int (*vm_copy_enc_context_from)(struct kvm *kvm, unsigned int source_fd);
+diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
+index 1a6a1f987949..c458c38bb0cb 100644
+--- a/arch/x86/include/uapi/asm/kvm.h
++++ b/arch/x86/include/uapi/asm/kvm.h
+@@ -562,4 +562,26 @@ struct kvm_pmu_event_filter {
+ /* x86-specific KVM_EXIT_HYPERCALL flags. */
+ #define KVM_EXIT_HYPERCALL_LONG_MODE	BIT(0)
+ 
++struct kvm_mem_enc_cmd {
++	/* sub-command id of KVM_MEM_ENC_OP. */
++	__u32 id;
++	/* Auxiliary flags for sub-command. */
++	__u32 flags;
++	/* Data for sub-command. Typically __user pointer to actual parameter. */
++	__u64 data;
++	/* Supplemental error code in error case. */
++	union {
++		struct {
++			__u32 error;
++			/*
++			 * KVM_SEV_LAUNCH_START and KVM_SEV_RECEIVE_START
++			 * require extra data. Not included in struct
++			 * kvm_sev_launch_start or struct kvm_sev_receive_start.
++			 */
++			__u32 sev_fd;
++		};
++		__u64 error64;
++	};
++};
++
+ #endif /* _ASM_X86_KVM_H */
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 07756b7348ae..94e13bb49c86 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -1835,30 +1835,39 @@ int sev_vm_move_enc_context_from(struct kvm *kvm, unsigned int source_fd)
+ 	return ret;
+ }
+ 
+-int sev_mem_enc_ioctl(struct kvm *kvm, void __user *argp)
++int sev_mem_enc_ioctl(struct kvm *kvm, struct kvm_mem_enc_cmd *cmd)
+ {
+-	struct kvm_sev_cmd sev_cmd;
++	struct kvm_sev_cmd *sev_cmd = (struct kvm_sev_cmd *)cmd;
+ 	int r;
+ 
++	/* TODO: replace struct kvm_sev_cmd with kvm_mem_enc_cmd. */
++	BUILD_BUG_ON(sizeof(*sev_cmd) != sizeof(*cmd));
++	BUILD_BUG_ON(offsetof(struct kvm_sev_cmd, id) !=
++		     offsetof(struct kvm_mem_enc_cmd, id));
++	BUILD_BUG_ON(sizeof(sev_cmd->id) != sizeof(cmd->id));
++	BUILD_BUG_ON(offsetof(struct kvm_sev_cmd, data) !=
++		     offsetof(struct kvm_mem_enc_cmd, data));
++	BUILD_BUG_ON(sizeof(sev_cmd->data) != sizeof(cmd->data));
++	BUILD_BUG_ON(offsetof(struct kvm_sev_cmd, error) !=
++		     offsetof(struct kvm_mem_enc_cmd, error));
++	BUILD_BUG_ON(sizeof(sev_cmd->error) != sizeof(cmd->error));
++	BUILD_BUG_ON(offsetof(struct kvm_sev_cmd, sev_fd) !=
++		     offsetof(struct kvm_mem_enc_cmd, sev_fd));
++	BUILD_BUG_ON(sizeof(sev_cmd->sev_fd) != sizeof(cmd->sev_fd));
++
+ 	if (!sev_enabled)
+ 		return -ENOTTY;
+ 
+-	if (!argp)
+-		return 0;
+-
+-	if (copy_from_user(&sev_cmd, argp, sizeof(struct kvm_sev_cmd)))
+-		return -EFAULT;
+-
+ 	mutex_lock(&kvm->lock);
+ 
+ 	/* Only the enc_context_owner handles some memory enc operations. */
+ 	if (is_mirroring_enc_context(kvm) &&
+-	    !is_cmd_allowed_from_mirror(sev_cmd.id)) {
++	    !is_cmd_allowed_from_mirror(sev_cmd->id)) {
+ 		r = -EINVAL;
+ 		goto out;
+ 	}
+ 
+-	switch (sev_cmd.id) {
++	switch (sev_cmd->id) {
+ 	case KVM_SEV_ES_INIT:
+ 		if (!sev_es_enabled) {
+ 			r = -ENOTTY;
+@@ -1866,67 +1875,64 @@ int sev_mem_enc_ioctl(struct kvm *kvm, void __user *argp)
+ 		}
+ 		fallthrough;
+ 	case KVM_SEV_INIT:
+-		r = sev_guest_init(kvm, &sev_cmd);
++		r = sev_guest_init(kvm, sev_cmd);
+ 		break;
+ 	case KVM_SEV_LAUNCH_START:
+-		r = sev_launch_start(kvm, &sev_cmd);
++		r = sev_launch_start(kvm, sev_cmd);
+ 		break;
+ 	case KVM_SEV_LAUNCH_UPDATE_DATA:
+-		r = sev_launch_update_data(kvm, &sev_cmd);
++		r = sev_launch_update_data(kvm, sev_cmd);
+ 		break;
+ 	case KVM_SEV_LAUNCH_UPDATE_VMSA:
+-		r = sev_launch_update_vmsa(kvm, &sev_cmd);
++		r = sev_launch_update_vmsa(kvm, sev_cmd);
+ 		break;
+ 	case KVM_SEV_LAUNCH_MEASURE:
+-		r = sev_launch_measure(kvm, &sev_cmd);
++		r = sev_launch_measure(kvm, sev_cmd);
+ 		break;
+ 	case KVM_SEV_LAUNCH_FINISH:
+-		r = sev_launch_finish(kvm, &sev_cmd);
++		r = sev_launch_finish(kvm, sev_cmd);
+ 		break;
+ 	case KVM_SEV_GUEST_STATUS:
+-		r = sev_guest_status(kvm, &sev_cmd);
++		r = sev_guest_status(kvm, sev_cmd);
+ 		break;
+ 	case KVM_SEV_DBG_DECRYPT:
+-		r = sev_dbg_crypt(kvm, &sev_cmd, true);
++		r = sev_dbg_crypt(kvm, sev_cmd, true);
+ 		break;
+ 	case KVM_SEV_DBG_ENCRYPT:
+-		r = sev_dbg_crypt(kvm, &sev_cmd, false);
++		r = sev_dbg_crypt(kvm, sev_cmd, false);
+ 		break;
+ 	case KVM_SEV_LAUNCH_SECRET:
+-		r = sev_launch_secret(kvm, &sev_cmd);
++		r = sev_launch_secret(kvm, sev_cmd);
+ 		break;
+ 	case KVM_SEV_GET_ATTESTATION_REPORT:
+-		r = sev_get_attestation_report(kvm, &sev_cmd);
++		r = sev_get_attestation_report(kvm, sev_cmd);
+ 		break;
+ 	case KVM_SEV_SEND_START:
+-		r = sev_send_start(kvm, &sev_cmd);
++		r = sev_send_start(kvm, sev_cmd);
+ 		break;
+ 	case KVM_SEV_SEND_UPDATE_DATA:
+-		r = sev_send_update_data(kvm, &sev_cmd);
++		r = sev_send_update_data(kvm, sev_cmd);
+ 		break;
+ 	case KVM_SEV_SEND_FINISH:
+-		r = sev_send_finish(kvm, &sev_cmd);
++		r = sev_send_finish(kvm, sev_cmd);
+ 		break;
+ 	case KVM_SEV_SEND_CANCEL:
+-		r = sev_send_cancel(kvm, &sev_cmd);
++		r = sev_send_cancel(kvm, sev_cmd);
+ 		break;
+ 	case KVM_SEV_RECEIVE_START:
+-		r = sev_receive_start(kvm, &sev_cmd);
++		r = sev_receive_start(kvm, sev_cmd);
+ 		break;
+ 	case KVM_SEV_RECEIVE_UPDATE_DATA:
+-		r = sev_receive_update_data(kvm, &sev_cmd);
++		r = sev_receive_update_data(kvm, sev_cmd);
+ 		break;
+ 	case KVM_SEV_RECEIVE_FINISH:
+-		r = sev_receive_finish(kvm, &sev_cmd);
++		r = sev_receive_finish(kvm, sev_cmd);
+ 		break;
+ 	default:
+ 		r = -EINVAL;
+ 		goto out;
+ 	}
+ 
+-	if (copy_to_user(argp, &sev_cmd, sizeof(struct kvm_sev_cmd)))
+-		r = -EFAULT;
+-
+ out:
+ 	mutex_unlock(&kvm->lock);
+ 	return r;
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index 18af7e712a5a..74ecab20c24b 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -716,7 +716,7 @@ void avic_refresh_virtual_apic_mode(struct kvm_vcpu *vcpu);
+ extern unsigned int max_sev_asid;
+ 
+ void sev_vm_destroy(struct kvm *kvm);
+-int sev_mem_enc_ioctl(struct kvm *kvm, void __user *argp);
++int sev_mem_enc_ioctl(struct kvm *kvm, struct kvm_mem_enc_cmd *cmd);
+ int sev_mem_enc_register_region(struct kvm *kvm,
+ 				struct kvm_enc_region *range);
+ int sev_mem_enc_unregister_region(struct kvm *kvm,
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index a6b9bea62fb8..14cfbc3266dd 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -7018,11 +7018,25 @@ int kvm_arch_vm_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
+ 		goto out;
+ 	}
+ 	case KVM_MEMORY_ENCRYPT_OP: {
++		struct kvm_mem_enc_cmd cmd;
++
+ 		r = -ENOTTY;
+ 		if (!kvm_x86_ops.mem_enc_ioctl)
+ 			goto out;
+ 
+-		r = static_call(kvm_x86_mem_enc_ioctl)(kvm, argp);
++		if (!argp) {
++			r = 0;
++			goto out;
++		}
++
++		if (copy_from_user(&cmd, argp, sizeof(cmd))) {
++			r = -EFAULT;
++			goto out;
++		}
++		r = static_call(kvm_x86_mem_enc_ioctl)(kvm, &cmd);
++		if (copy_to_user(argp, &cmd, sizeof(cmd)))
++			r = -EFAULT;
++
+ 		break;
+ 	}
+ 	case KVM_MEMORY_ENCRYPT_REG_REGION: {
+
+base-commit: 831fe284d8275987596b7d640518dddba5735f61
+-- 
+2.25.1
 
