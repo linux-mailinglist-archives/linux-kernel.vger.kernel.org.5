@@ -2,108 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D869A7577BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE1B7578A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbjGRJUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58164 "EHLO
+        id S232465AbjGRJ5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232249AbjGRJTq (ORCPT
+        with ESMTP id S232396AbjGRJ4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:19:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D247198B;
-        Tue, 18 Jul 2023 02:19:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B046A614E1;
-        Tue, 18 Jul 2023 09:19:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EA20C433C8;
-        Tue, 18 Jul 2023 09:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689671977;
-        bh=hO5EzDtJUJpNoHo8brEsTUnqJsLjzJEcU/q1SwyRLAg=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=G56zDGJUEcogP2ywZ1hWd4eZlOhgeum0fkFqMvVLjUBMvMeBD/Ra4HoOUf8TZNRG1
-         ybcNSfb9qapMSJcvPNxkS1hMnFUoRZH6sPraUu58jpWdvcQwxdPf7YfjG6L57EsGLI
-         vjOLfJFPOmUAWGWBZT+M0ZUTnXHQo7uOwCNxXzUCOj5j+QR1R43Xl6Rn4J1jB6f/is
-         6JcGQyt/5fY5o0Wfyoal8JK2IGeknYAq8XUPpR1F2oxFsveIO2RvZM1RS7pGgio87s
-         vj0ygsqaXsxa01NOaWzph8jCShGnlmyaJ8AuE7gHzuHuGwM3WDdpPltZ0/R7fVwFFC
-         v46/gweYqgvxQ==
-Received: (nullmailer pid 343549 invoked by uid 1000);
-        Tue, 18 Jul 2023 09:19:35 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Tue, 18 Jul 2023 05:56:50 -0400
+X-Greylist: delayed 2164 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 18 Jul 2023 02:56:01 PDT
+Received: from 11.mo584.mail-out.ovh.net (11.mo584.mail-out.ovh.net [46.105.34.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3877DAC
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:56:01 -0700 (PDT)
+Received: from director2.ghost.mail-out.ovh.net (unknown [10.108.16.160])
+        by mo584.mail-out.ovh.net (Postfix) with ESMTP id CE0FE24B20
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:19:55 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-mn4ct (unknown [10.109.138.229])
+        by director2.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 9177E1FEB2;
+        Tue, 18 Jul 2023 09:19:49 +0000 (UTC)
+Received: from RCM-web4.webmail.mail.ovh.net ([176.31.235.81])
+        by ghost-submission-6684bf9d7b-mn4ct with ESMTPSA
+        id gQ79HjVZtmSJDgAAInjvQA
+        (envelope-from <rafal@milecki.pl>); Tue, 18 Jul 2023 09:19:49 +0000
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Viktar Simanenka <viteosen@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org
-In-Reply-To: <20230718080727.323426-1-viteosen@gmail.com>
-References: <20230718080727.323426-1-viteosen@gmail.com>
-Message-Id: <168967197544.343533.16496491344005174471.robh@kernel.org>
-Subject: Re: [PATCH] TinyDRM display driver for Philips PCD8544 display
- controller
-Date:   Tue, 18 Jul 2023 03:19:35 -0600
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Date:   Tue, 18 Jul 2023 11:19:49 +0200
+From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        linux-mtd@lists.infradead.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Evgeniy Polyakov <zbr@ioremap.net>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Heiko Stuebner <heiko@sntech.de>, linux-rtc@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>,
+        Richard Weinberger <richard@nod.at>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-rockchip@lists.infradead.org, Chen-Yu Tsai <wens@csie.org>,
+        Andy Gross <agross@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Vincent Shih <vincent.sunplus@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-sunxi@lists.linux.dev, asahi@lists.linux.dev,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Sven Peter <sven@svenpeter.dev>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-arm-msm@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-mediatek@lists.infradead.org,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Walle <michael@walle.cc>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: Re: [Linux-stm32] [PATCH V4] nvmem: add explicit config option to
+ read old syntax fixed OF cells
+In-Reply-To: <e5a8524c-8961-9ff0-db30-3b648345319e@pengutronix.de>
+References: <20230403225540.1931-1-zajec5@gmail.com>
+ <e5a8524c-8961-9ff0-db30-3b648345319e@pengutronix.de>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <d51234ebc05d2b9fe44625299c103caa@milecki.pl>
+X-Sender: rafal@milecki.pl
+X-Originating-IP: 31.11.218.106
+X-Webmail-UserID: rafal@milecki.pl
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Ovh-Tracer-Id: 6429732894367460296
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrgeeggdduvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfffhvfevufgjfhgfkfigihgtgfesthejjhdttdervdenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepgfeuleeuteetfeeuhefhhffgtedvgeejfeelffeuvdfhueffvdehgeeuveeuhfelnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpfedurdduuddrvddukedruddtiedpudejiedrfedurddvfeehrdekudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehrrghfrghlsehmihhlvggtkhhirdhplheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehkeegpdhmohguvgepshhmthhpohhuth
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Ahmad,
 
-On Tue, 18 Jul 2023 11:07:27 +0300, Viktar Simanenka wrote:
-> Support for common monochrome LCD displays based on PCD8544 (such as Nokia 5110/3310 LCD) SPI controlled displays.
+On 2023-07-18 11:08, Ahmad Fatoum wrote:
+>> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+>> index 60670b2f70b9..334adbae3690 100644
+>> --- a/drivers/mtd/mtdcore.c
+>> +++ b/drivers/mtd/mtdcore.c
+>> @@ -522,6 +522,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
+>>  	config.dev = &mtd->dev;
+>>  	config.name = dev_name(&mtd->dev);
+>>  	config.owner = THIS_MODULE;
+>> +	config.add_legacy_fixed_of_cells = of_device_is_compatible(node, 
+>> "nvmem-cells");
 > 
-> Signed-off-by: Viktar Simanenka <viteosen@gmail.com>
-> ---
->  .../bindings/display/philips,pcd8544.yaml     |  92 ++++
->  drivers/gpu/drm/tiny/Kconfig                  |  11 +
->  drivers/gpu/drm/tiny/pcd8544.c                | 506 ++++++++++++++++++
->  3 files changed, 609 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/philips,pcd8544.yaml
->  create mode 100644 drivers/gpu/drm/tiny/pcd8544.c
+> How does the new binding look like in this situation?
 > 
+> Before it was:
+> 
+> &{flash/partitions} {
+> 	compatible = "fixed-partitions";
+> 	#address-cells = <1>;
+> 	#size-cells = <1>;
+> 
+> 	partition@0 {
+> 		compatible = "nvmem-cells";
+> 		reg = <0 0x100>;
+> 		#address-cells = <1>;
+> 		#size-cells = <1>;
+> 
+> 		calib@1 {
+> 			reg = <1 1>;
+> 		};
+> 	}
+> };
+> 
+> It it now the same, but s/"nvmem-cells"/"fixed-layout"/ ?
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Please take a look at those commits and examples:
 
-yamllint warnings/errors:
+bd912c991d2e ("dt-bindings: nvmem: layouts: add fixed-layout")
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bd912c991d2ef079a32558f057b8663bcf1fb6fc
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/display/philips,pcd8544.example.dts:21.13-23: Warning (reg_format): /example-0/display@0:reg: property has invalid length (4 bytes) (#address-cells == 1, #size-cells == 1)
-Documentation/devicetree/bindings/display/philips,pcd8544.example.dtb: Warning (pci_device_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/display/philips,pcd8544.example.dtb: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/display/philips,pcd8544.example.dtb: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/display/philips,pcd8544.example.dtb: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/display/philips,pcd8544.example.dtb: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/philips,pcd8544.example.dtb: display@0: Unevaluated properties are not allowed ('write-only' was unexpected)
-	from schema $id: http://devicetree.org/schemas/display/philips,pcd8544.yaml#
+fa7fbe53ecdc ("dt-bindings: nvmem: convert base example to use NVMEM 
+fixed cells layout")
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fa7fbe53ecdc4e7d549a9f73a40e257b0046b4b9
 
-doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230718080727.323426-1-viteosen@gmail.com
+Basically you need a "nvmem-layout" node with:
+compatible = "fixed-layout";
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+So in your case that would be:
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+&{flash/partitions} {
+	compatible = "fixed-partitions";
 
-pip3 install dtschema --upgrade
+	partition@0 {
+		reg = <0 0x100>;
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+		nvmem-layout {
+			compatible = "fixed-layout";
+			#address-cells = <1>;
+			#size-cells = <1>;
 
+			calib@1 {
+				reg = <1 1>;
+			};
+		};
+	}
+};
