@@ -2,152 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3BA757557
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D9775755A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbjGRHaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 03:30:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43814 "EHLO
+        id S231206AbjGRHaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 03:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjGRHaK (ORCPT
+        with ESMTP id S231686AbjGRHaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 03:30:10 -0400
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2052.outbound.protection.outlook.com [40.107.13.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE321707;
-        Tue, 18 Jul 2023 00:30:05 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L55QCq6xZ3Wsoc0U7GjdFC/FZkTwwNLDL4VDf1Xrq/eGgBpP1YKOVzEZaF0QvFY3/ploexcWPQVvAeIMsX1sQD+qCUKJlYY9omk0gS89Eai+x/a7FLu+XcAYrr4LHPIKY99JeMfuGgJdzJYmOu/od3lNG3atRE45aot4sbeu9605pTVX9VGSCkdi9kVnN5ZhLg0jmzfFqeEf9VNcTxm1TK43hRcXo+VVUZvud/WKnwmZjeKZbRaSl7zgOX6WIF2eZSvrTNBlYfqLJjRZLImZXDKnX6dpbncrXGpR+yb9NAza3j8Ka4q2w7/rzNFSQXyv2bLK+Z7G6/sPCcjOV8A+yQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+/w7Gtyq46r2CxP+NTS4TNGvi7d0rbd1BZ+8tCatOAw=;
- b=eP95JMpLC1wSyfW++wz0OicuuD74ecYQ7mVVqOUzcgOKPX9Tvzvr6gK6fVt40GZydIBOq88CxXUIFI2RYsRoRUfiaZo8R7iRLyJTkc5ZgXdWCFcwjULXGvxrP9J42/vP5LNiElyxnziWdlSJxBhp50wI6LwiR6Gewi8MTfO1ZAS8jez1z9mrSBt1HxWUBGta6iS1WhaDV7TYNauC6sQQPZUrIDKLE74W/s2Tf6OnAUap1ehtlDfEvYGs6wkBmMbytKQMNpZhROEd38vnJlgVSMhPzGzcS0VhByUhJAwt//CBVJ2NQB2IO48bsBS+E5Rm9MoKrPnLmaTQfMjMJZEppw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+/w7Gtyq46r2CxP+NTS4TNGvi7d0rbd1BZ+8tCatOAw=;
- b=oNpY4O8pB6t3VSZYo5Vg55xjQ5RCXy02xJ31ChJ60Vy1m+mADMP7Hm4QtW42gJ/fxt9Sbp2JyaJc+X0F+k2J0fxmF8FDXo56ZKt1choPxlvijy+J/cR/dqgXPb5k/10dWmTIx/1rCmP+bW2N9Wl+wBzYNJqmi5fq93ny0IA06dQJh8dvPYn+vVfSNnjcAYGiWSgVSXM8efShK9XNFefzK3TZqWpUwVUJmcxReqZuphktFVedV5m4BfaAc93znvwzr3Yzuv3SiCYb+n9BUhgCSb9XoZp/OnIQAhVmSlVwRueBRcIOgJO8rZ8v8zHC4ktCyKGgG/pAe7sg933R3vVKUg==
-Received: from AS8PR10MB6867.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:5b6::22)
- by PAVPR10MB7236.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:31b::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.28; Tue, 18 Jul
- 2023 07:30:02 +0000
-Received: from AS8PR10MB6867.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::c056:6a8e:6bed:d7e1]) by AS8PR10MB6867.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::c056:6a8e:6bed:d7e1%7]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
- 07:30:02 +0000
-From:   "Sverdlin, Alexander" <alexander.sverdlin@siemens.com>
-To:     "Haener, Michael" <michael.haener@siemens.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     "andrew@lunn.ch" <andrew@lunn.ch>,
-        "olteanv@gmail.com" <olteanv@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>
-Subject: Re: [PATCH v3 2/3] net: dsa: mv88e632x: Refactor serdes write
-Thread-Topic: [PATCH v3 2/3] net: dsa: mv88e632x: Refactor serdes write
-Thread-Index: AQHZuUV/M+tKl3Ek20GYmmhOLEd8RK+/IMeA
-Date:   Tue, 18 Jul 2023 07:30:02 +0000
-Message-ID: <69b618b8bd5555ac6085995c14a84982949455cb.camel@siemens.com>
-References: <20230718065937.10713-1-michael.haener@siemens.com>
-         <20230718065937.10713-3-michael.haener@siemens.com>
-In-Reply-To: <20230718065937.10713-3-michael.haener@siemens.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siemens.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS8PR10MB6867:EE_|PAVPR10MB7236:EE_
-x-ms-office365-filtering-correlation-id: 72600ac1-c3a3-4bf4-b21c-08db8760cc84
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: karPbbV+EMwkmV/wsvx+uCgKfq8CYzBxqqeoTDnvyd7p6twho/1o/KcqR+KFlWUe7KA1WwMVHbuyukq+iIAVFbkNOtXs8CjGPe3vPD+Q0DyNUJE3tysA/SfuAQPXEQZvuoTovpFmnyrjdMTAmjQN+CB8DORghNWPTDYXgjbKqg+SZcjUZ6G2zheMMcyloVSIdjZZMXge4o07l+uCBykrmkwh5Ei25a61MUSy8lRWxEPK1cCct+EaAhwPfOJ1UnOLEW1/P24wq+I0QW8TG2pCH8pXtVFU0E+PWUy2KPZZ/SJ/S7RarxJD8fFpTvOX13j2oEzT46vDupYufrbI24Duct/Z7BayA4+dspgC5YDfw+oU/kZr6ClxTN/UI/XEl3LOmSuIMhymysoJD8CbwZhMkN7HrM2VZTbpQWZhHiXINPtlRkCkEjXkl7Ur7oQuWhSdliK59nn7JNwTCHF41YYVWdGgC0/GYI8Vhzo2ql1ZI0pN3zccRzBKEPv/jPeV45B4QbbEt7YVuocj4RBn2rUYZwBSmK9f4LNcjTFrMiLaBg4GOBLtxHd+2fFnl1A/vID+d6b3VP2Wr8yaYjyYY3VtdP/ozkHOF3Bzs9p0mczDnxUMUnrkl59rH06u6yLOUQKWU3p5LH6RIVDjf/fRc/CAVg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR10MB6867.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(39860400002)(366004)(376002)(396003)(451199021)(86362001)(2906002)(8936002)(478600001)(110136005)(71200400001)(36756003)(7416002)(4744005)(54906003)(66446008)(91956017)(316002)(41300700001)(64756008)(76116006)(4326008)(6486002)(66556008)(66476007)(66946007)(82960400001)(83380400001)(38100700002)(122000001)(6512007)(5660300002)(55236004)(15974865002)(38070700005)(2616005)(26005)(6506007)(186003)(8676002)(18886075002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RE5RZHViNmNHZEJSOWlDbERMUkFSNmsrMktPeFdYRzlNTERqdDQzbG1aRWNu?=
- =?utf-8?B?UExraXNra1VTeEF3WVRpdkJsN3I5VWhiYkptUndMd0J6MGpwbVpXRlAzb1Nj?=
- =?utf-8?B?citJYTc2L0JrU2U2UnkzOGcvZlhIbFMvSC80L0YwV3g1YzNwaU9YNkVadUNX?=
- =?utf-8?B?OHNybTNQV0dnV1hOdDA0dFU4WFF2YUIrS01EYUZ2OVdlZ3V6d3Rxem4wazYy?=
- =?utf-8?B?OWIxcjYvYVA3bHhTRnc0NXExZVN3NXJoUVFNSW1lT3g3bDQwc3hsSEplMDIx?=
- =?utf-8?B?eUlmc21FVFVLSWZ4K0pqWnUzZ1ZKSmYrQ3htZGFzVzF4YjcyTzMzQWp1WFAr?=
- =?utf-8?B?Tk82VytPSWpOY1hGWS9oWGpCU3lQdWM3NTlubEZpUzRxNWFhSjdTZUFIUU5P?=
- =?utf-8?B?S2drQTZvRlEvYUFPbEk4bGdueVpFTzAyOWxLNGNCNG1lbFBtMmtVa01ON2RX?=
- =?utf-8?B?OU90dVBKdU9tTndyeXZ5ZHJKdDhVdWJJcTI1aHR2TGFFWkFsTDJlelJVS2Jy?=
- =?utf-8?B?bEVkRkk0VWdlb1NVNmdDZFpIUzFyN3pKNWhZa3gxYXcxNDVIT28zNHdxMHRG?=
- =?utf-8?B?Q25Edm1aMDZwMS9nWThNdDJmV29Pai9pYUpnMjcxVzlKSzBSaDBpS1k4YnNq?=
- =?utf-8?B?dnR1ZVdKSEJmckV6ekcvam9NWVBzQmVGWjBXQlB3ejZzOERUcXBsM0VXdkNK?=
- =?utf-8?B?V0hYY2xEWkZKd3Bha2xQbWR4OWpWMVF0ODl2TWZLT1ZYMElzUXNKcFBLZGdz?=
- =?utf-8?B?OEg2V3l1cHNIem80K1hUT0lOUHBZK1dTaFFGVFpnMENNbWtTOVJvNzYrQzA1?=
- =?utf-8?B?QWtYeHZPZldaK0RwenhVa3JnLzRFSlpwM1pVQlJrd251UEgwZ0h6ODg0UVdN?=
- =?utf-8?B?d0JQS3Z1U1Y1U2xvWkZEWkxxTFFRdWxkUHZSeWhvalpubE9mTmpvY3RlMCtu?=
- =?utf-8?B?YkNIdzJpeDhNRkd2WE9Rd0R0MkxoUmhwbzBDcUxLQ3QxcmZVTWZMNHVPUis3?=
- =?utf-8?B?QU9aR0hocUE3a0RaT2xZM0U4UEYxbFhUOE1DWGl2aWRDY1FlMGFoOXA5VHhn?=
- =?utf-8?B?TDQzWVcvRXRVWC9mdTFOV1dsb09aSDJjU0Q2QURLek1SSENVVXNvTlozQ0hi?=
- =?utf-8?B?UEMvVHN0MmN2VGFFTXlxYk5JNGZEN2grT244WVJGeVZQZUxtRGZ5b0ZlUDh4?=
- =?utf-8?B?eUU3MjZ0SHVHcUZBY243UjBZR3N1Mlo4TzdUTmoxQUp6VnNpSlNsR1RYVHFk?=
- =?utf-8?B?VE4zcXVTZjljUGZ3eldadlVHb1M3SlpUbUNOTHBPbmlmTzlqNE9scnZqc1RU?=
- =?utf-8?B?Y05GNytQNG1xbTZOTDRXck1SYkYyYmVNU3dLbVZTcThjOFlLRHJuTDdCazFH?=
- =?utf-8?B?M3BIWG9ubUtha0tIT0IxZ044S3MzK3FNSHY4UUpGSzJYcFVsNkFsUWZ0My96?=
- =?utf-8?B?RmhxMmFUcFMrZFYvdzVvY1o0U3YrUjArb2sxK1Y1ZnR1VkpUUHIvV044T2dz?=
- =?utf-8?B?bmY3TkFaZjBQbitMZUNSRStWUlVhZkVnWjFISVVNRU1rbXVJWW9zZGxKd3pO?=
- =?utf-8?B?RVpZK3RMSTdaU0ppRGsvWGhHSlZzMGJCMGhlTTN6YkF4MXFQRWI2UmZSTi9C?=
- =?utf-8?B?VFBrUGtjajhMUkVXMS96N1A2dUdqTFFFVTlkZEdwQlliMTgyTE12dmhFUEp4?=
- =?utf-8?B?dWVkVE04aVBrU1VFcGJrMVFXbTdHT0lsYTE3Z1UwQ0VOeWlCamQxTVp6U25a?=
- =?utf-8?B?VFNlcks5Q21Ua2RvbFg5VktNTmdZMzg4M2VGL2FMUnVZYzFyNDlsbWRQb2pO?=
- =?utf-8?B?Mzl4dnZDaTIrN3UyTmxBcUlpRFJMbW5FZE9vdzZGYUxuT2MySFUxdDlGNUVC?=
- =?utf-8?B?dzdNVVdvT1pLRmhPSTU0RFdoNGxkc0hnclJsMUdDeTdBUUhieFJ0UTIwaTZY?=
- =?utf-8?B?WTFUNXlBM0M5TUJUSGl6NnpSSlNRSG9LckpPR3B4dXMzNDB2U0FwWTZmcmZG?=
- =?utf-8?B?NXd6OTBwKy9OaHI2bmRvK2M5NnFKc1QvOVRKS0RsRWNMcnBiU1AwOU8yNitj?=
- =?utf-8?B?cGJ6eDI3Nm1uYjFGWllML05LMVVYSSs0SmErZjFNV1dhMUo0ZTh0QytJcm11?=
- =?utf-8?B?bVdZZC95OWpzTmRraU54ZUJkTURSWmFOVVNUKzVMTGhhdkNuU1JMT0lvSVVD?=
- =?utf-8?Q?tyulo27oWeWEV7yd05INUGs=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <40E696B0B33E5A45B6308C307A5D0AC6@EURPRD10.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Tue, 18 Jul 2023 03:30:16 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8B1AC;
+        Tue, 18 Jul 2023 00:30:12 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-31441bc0092so5197956f8f.1;
+        Tue, 18 Jul 2023 00:30:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689665410; x=1692257410;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UOxv6RlPtRQPUg3pZ2EfLHp019vUXq6b634A2+YLSY4=;
+        b=WUX+f9s6Q4AOZv2hEfP8NWA/Dv+c/KHTGJPIizE1JcrqhVt9rkKdPsmDSNs+/GqbeH
+         YPfdYrsN9b38BtshtUlEfJXw8sIHuin5ZGORF9tNMHkw1R8WXtBaADujgiIXledPYS5J
+         v2CMXIeOT6tltKzLbRFoCLtIpURZXNhjDyFQb0nVhf6TuPs9ov2rUW06xFoK5lVX5S5/
+         D5uIQoYeaGu3kgM3RpDkJTVKqbRSuXBkPa6SO2RGKTt5kWy3m/pEXDVwizVHm+T5XFcV
+         5q4n+DD4EjBGbb9pWWKFZXNHsb8nF56x2Nn9A6OTlP+lh/Aba6gLDyHH5cPYXPBUKsU3
+         WpoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689665410; x=1692257410;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UOxv6RlPtRQPUg3pZ2EfLHp019vUXq6b634A2+YLSY4=;
+        b=iY0yt3kQQtLSpPxRBpNYRc5iar2MHdi3bKAa5cye2HgLSFqcXqpBeVW1qAVte7U8Fi
+         okPJqOjeIyG7Zghv2ktcwQPHpEUlk1dmG6LmfrC35hdlpJzyQ/MrJkBZNqcjbo3GbB3X
+         XqE0sFBD4/z9qlu0ia1JbkfjhTkB8M3P+9etmZfcBIDMxJZGVLByKqlIr+jqJ+21sTuA
+         pJNt2GzNSAudZJmyMSgup/8CYRO2PG9bLDiQWaxj2K+Wn7J6TPEWUZSayAdj8FnFoU4t
+         hQYrs2Yj+C0HPCYCBGBl/IA7V8aCdGjFqV58ernA3bt9LR8SGYlAd52SWARXqMgmILej
+         9Nnw==
+X-Gm-Message-State: ABy/qLY0sJbyacFadW/hnsFW81GykNK1vy4+fi2PW3+y0ICdPg8bKCeR
+        OfdJchI00x1L7uBDxpcJtWA=
+X-Google-Smtp-Source: APBJJlGd2Ifui1poUv1aZUdKI8gYX8iEPIxgqJJtVIVEhide0moYe92EeJy/EuFeYdYGfH3NA/AJ5g==
+X-Received: by 2002:a5d:428b:0:b0:314:d31:f7 with SMTP id k11-20020a5d428b000000b003140d3100f7mr11254090wrq.63.1689665410245;
+        Tue, 18 Jul 2023 00:30:10 -0700 (PDT)
+Received: from orome (p200300e41f4b7100f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f4b:7100:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id t7-20020a5d5347000000b003143add4396sm1526055wrv.22.2023.07.18.00.30.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 00:30:09 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 09:30:08 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pwm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pwm: stm32: Implement .get_state()
+Message-ID: <ZLY_gER7FeEB07cw@orome>
+References: <20230608-pwm-stm32-get-state-v1-1-db7e58a7461b@pengutronix.de>
 MIME-Version: 1.0
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR10MB6867.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72600ac1-c3a3-4bf4-b21c-08db8760cc84
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jul 2023 07:30:02.0630
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: U/eQhApxR6rs7Ec3+zXqJ6RbsLY2az/qjYLzupOeRA2AG+yP1yuIiSwqKJuy/Xr8K67q9Azdg6GKwZn4cN2s/IJN6qIwKQpE6OHeSQQ3kQg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAVPR10MB7236
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pr3XEzmve5GXh8Qb"
+Content-Disposition: inline
+In-Reply-To: <20230608-pwm-stm32-get-state-v1-1-db7e58a7461b@pengutronix.de>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIzLTA3LTE4IGF0IDA4OjU5ICswMjAwLCBNLiBIYWVuZXIgd3JvdGU6DQo+IEZy
-b206IE1pY2hhZWwgSGFlbmVyIDxtaWNoYWVsLmhhZW5lckBzaWVtZW5zLmNvbT4NCj4gDQo+IFRv
-IGF2b2lkIGNvZGUgZHVwbGljYXRpb24sIHRoZSBzZXJkZXMgd3JpdGUgZnVuY3Rpb25zDQo+IGhh
-dmUgYmVlbiBjb21iaW5lZC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IE1pY2hhZWwgSGFlbmVyIDxt
-aWNoYWVsLmhhZW5lckBzaWVtZW5zLmNvbT4NCg0KUmV2aWV3ZWQtYnk6IEFsZXhhbmRlciBTdmVy
-ZGxpbiA8YWxleGFuZGVyLnN2ZXJkbGluQHNpZW1lbnMuY29tPg0KDQo+IC0tLQ0KPiBDaGFuZ2Vs
-b2c6DQo+IHYzOiByZWJhc2VkIG9udG8gbWFpbiBicmFuY2gNCj4gdjI6IHJlYmFzZWQgb250byBS
-dXNzZWxsIEtpbmdzIHNlcmllcyBkc2EvODhlNnh4eC9waHlsaW5rDQo+IA0KPiDCoGRyaXZlcnMv
-bmV0L2RzYS9tdjg4ZTZ4eHgvY2hpcC5jwqDCoCB8wqAgNCArKysrDQo+IMKgZHJpdmVycy9uZXQv
-ZHNhL212ODhlNnh4eC9jaGlwLmjCoMKgIHzCoCAyICsrDQo+IMKgZHJpdmVycy9uZXQvZHNhL212
-ODhlNnh4eC9zZXJkZXMuYyB8wqAgNiArKystLS0NCj4gwqBkcml2ZXJzL25ldC9kc2EvbXY4OGU2
-eHh4L3NlcmRlcy5oIHwgMTEgKysrKysrKysrKysNCj4gwqA0IGZpbGVzIGNoYW5nZWQsIDIwIGlu
-c2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQoNCi0tIA0KQWxleGFuZGVyIFN2ZXJkbGluDQpT
-aWVtZW5zIEFHDQp3d3cuc2llbWVucy5jb20NCg==
+
+--pr3XEzmve5GXh8Qb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Jun 08, 2023 at 04:06:02PM +0200, Philipp Zabel wrote:
+> Stop stm32_pwm_detect_channels() from disabling all channels and count
+> the number of enabled PWMs to keep the clock running. Implement the
+> &pwm_ops->get_state callback so drivers can inherit PWM state set by
+> the bootloader.
+>=20
+> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+> ---
+> Make the necessary changes to allow inheriting PWM state set by the
+> bootloader, for example to avoid flickering with a pre-enabled PWM
+> backlight.
+> ---
+>  drivers/pwm/pwm-stm32.c | 75 ++++++++++++++++++++++++++++++++++++++-----=
+------
+>  1 file changed, 59 insertions(+), 16 deletions(-)
+>=20
+> diff --git a/drivers/pwm/pwm-stm32.c b/drivers/pwm/pwm-stm32.c
+> index 62e397aeb9aa..e0677c954bdf 100644
+> --- a/drivers/pwm/pwm-stm32.c
+> +++ b/drivers/pwm/pwm-stm32.c
+> @@ -52,6 +52,21 @@ static u32 active_channels(struct stm32_pwm *dev)
+>  	return ccer & TIM_CCER_CCXE;
+>  }
+> =20
+> +static int read_ccrx(struct stm32_pwm *dev, int ch, u32 *value)
+> +{
+> +	switch (ch) {
+> +	case 0:
+> +		return regmap_read(dev->regmap, TIM_CCR1, value);
+> +	case 1:
+> +		return regmap_read(dev->regmap, TIM_CCR2, value);
+> +	case 2:
+> +		return regmap_read(dev->regmap, TIM_CCR3, value);
+> +	case 3:
+> +		return regmap_read(dev->regmap, TIM_CCR4, value);
+> +	}
+> +	return -EINVAL;
+> +}
+
+Looking at the register definitions we should be able to replace this
+with a single line and parameterize based on channel.
+
+I realize you probably just copied from write_ccrx(), but might as well
+improve this while at it. Could be a separate patch, though.
+
+Also, ch should be unsigned int since it comes from pwm->hwpwm.
+
+> +
+>  static int write_ccrx(struct stm32_pwm *dev, int ch, u32 value)
+>  {
+>  	switch (ch) {
+> @@ -486,9 +501,40 @@ static int stm32_pwm_apply_locked(struct pwm_chip *c=
+hip, struct pwm_device *pwm,
+>  	return ret;
+>  }
+> =20
+> +static int stm32_pwm_get_state(struct pwm_chip *chip,
+> +			       struct pwm_device *pwm, struct pwm_state *state)
+> +{
+> +	struct stm32_pwm *priv =3D to_stm32_pwm_dev(chip);
+> +	int ch =3D pwm->hwpwm;
+
+This should reflect the type of pwm->hwpwm.
+
+> +	unsigned long rate;
+> +	u32 ccer, psc, arr, ccr;
+> +	u64 dty, prd;
+> +	int ret;
+> +
+> +	ret =3D regmap_read(priv->regmap, TIM_CCER, &ccer);
+> +	if (ret)
+> +		return ret;
+> +
+> +	state->enabled =3D ccer & (TIM_CCER_CC1E << (ch * 4));
+> +	state->polarity =3D (ccer & (TIM_CCER_CC1P << (ch * 4))) ?
+> +			  PWM_POLARITY_INVERSED : PWM_POLARITY_NORMAL;
+> +	regmap_read(priv->regmap, TIM_PSC, &psc);
+> +	regmap_read(priv->regmap, TIM_ARR, &arr);
+
+We should probably check regmap_read() consistently here.
+
+> +	read_ccrx(priv, ch, &ccr);
+> +	rate =3D clk_get_rate(priv->clk);
+> +
+> +	prd =3D (u64)NSEC_PER_SEC * (psc + 1) * (arr + 1);
+> +	state->period =3D DIV_ROUND_UP_ULL(prd, rate);
+> +	dty =3D (u64)NSEC_PER_SEC * (psc + 1) * ccr;
+> +	state->duty_cycle =3D DIV_ROUND_UP_ULL(dty, rate);
+> +
+> +	return ret;
+> +}
+> +
+>  static const struct pwm_ops stm32pwm_ops =3D {
+>  	.owner =3D THIS_MODULE,
+>  	.apply =3D stm32_pwm_apply_locked,
+> +	.get_state =3D stm32_pwm_get_state,
+>  	.capture =3D IS_ENABLED(CONFIG_DMA_ENGINE) ? stm32_pwm_capture : NULL,
+>  };
+> =20
+> @@ -579,30 +625,22 @@ static void stm32_pwm_detect_complementary(struct s=
+tm32_pwm *priv)
+>  	priv->have_complementary_output =3D (ccer !=3D 0);
+>  }
+> =20
+> -static int stm32_pwm_detect_channels(struct stm32_pwm *priv)
+> +static int stm32_pwm_detect_channels(struct stm32_pwm *priv, int *n_enab=
+led)
+
+unsigned int * for n_enabled.
+
+>  {
+> -	u32 ccer;
+> -	int npwm =3D 0;
+> +	u32 ccer, ccer_backup;
+> +	int npwm;
+
+Also make this and the return value unsigned int while at it. These can
+never be negative.
+
+Thierry
+
+--pr3XEzmve5GXh8Qb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmS2P30ACgkQ3SOs138+
+s6FVgQ/8DwHqcWHq8jW8Cj3oeOb2zx0zcFsabJGySzaN0DEG0+tG6QRqqaUj+kSy
+J5G81hoLnLTiO3xyvFFM/5rh6LQe2cUUqiDJ3scER7YUGYShE6ay9tBfLY+jrPlw
+rGI37WyPb8XgrnaHJLaHRBGGMkNhHWJu5mf4CEq+XW8NcsbS7mK+lPgDBjHMX5MC
+rCk5a43je5potHQUmh+Cn+1JEz9S/RrulvneiA2J7AktjSWWPLkX4Ul9ALSqUXUh
+cUDQsZxX7zk0TloXSUDfMlW+/E9ZlhYxDD1x1w1fXy8yEg95Le1v1YTJmejSNo8c
+HAvjh4RDa//dsI+nEQJqmaE7VNdUhxODs4udliCy9RUsAzk7cMAShbCAAIvBuZ2v
+dvvfxXdRv0gWIukq5B75bpYUsbs0k3liRL8E+McbWmoHBl6JJ2u7mSXU4m27ogIO
+MFgCEhc1rVhd5sqVc+vuPMGkjAdFHYsjxX2lfWJLEYnb7lVvQbq5ee44+QYDmN4a
+KL5vOwR0TFfWmVTzARSEI4P35Ls9nxFemdSj7zZ4FChTQ/VvHRVg/2NnYRJ2YEk/
+wymb4HeIgBu6R0GUoZdhzs1NTYgz0PLgCYE/Yp0tW9q7R6wuoT4Ml4lJbSF8yyyv
+Du2MFCxrqMnemzC8NB60GQDAlEHT3N9CgViwElAfzXUnzwEvhpc=
+=6iB+
+-----END PGP SIGNATURE-----
+
+--pr3XEzmve5GXh8Qb--
