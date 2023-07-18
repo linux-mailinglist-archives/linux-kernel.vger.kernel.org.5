@@ -2,110 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B29757339
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 07:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC9F75733C
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 07:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbjGRFdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 01:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38830 "EHLO
+        id S230022AbjGRFer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 01:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjGRFdr (ORCPT
+        with ESMTP id S229845AbjGRFeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 01:33:47 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061ADE43
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 22:33:44 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R4ng64vGRzBQslT
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:33:38 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689658418; x=1692250419; bh=4NxoUZnBIAc5dK/IDIJeyTieNoN
-        ojCUHKVE8ajj90Xc=; b=LBcikYA+AqgTBO442BIpLgFkCnKUAELplQsg9psX6O2
-        gwGWEdcIr7e3rn40nolJneTSqu2qv+/BCfjbVl+Q00HogbjsuN67aPm6Xsk9FCRZ
-        wPs88NxlH723QywVsLOywl6k4JGHZ+sSJHlXDk1h+GhZPJG2hjxC4DR2d0ijV1n7
-        rpKwcm+/IPcLV6w6XjnM46Z55to2LSAHM+QNi2OeYvJlGafeUVep4VSr1j3d/X9g
-        NBilnAM3fChUoWm6fmPa8QS/80lZvLDa/7akL58ROwunipyUlaYNckB3QrPyp7gG
-        u781XjSLVXmQR8yXjWC/O4alIGKGsCf7KKIBR6GInOw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id WHlbQuF3wHx5 for <linux-kernel@vger.kernel.org>;
-        Tue, 18 Jul 2023 13:33:38 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R4ng63w2PzBQslL
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:33:38 +0800 (CST)
+        Tue, 18 Jul 2023 01:34:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63AB2E43;
+        Mon, 17 Jul 2023 22:34:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F3162612ED;
+        Tue, 18 Jul 2023 05:34:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6862C433C7;
+        Tue, 18 Jul 2023 05:34:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689658481;
+        bh=M8JLZ0QR47SqxJa/J4XXXk1uEeaKLT3sFbyi7Z1T74w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AinEzFzjRMVE+ENvkGF+GrrjhXHGEbmt678SVpAy6cA017j0tDgMdEACItxBeT5HT
+         v8ntwYYBMpTpvJuaQk/XoC1x5zPEZFj+hxtSeXuJRmztHCkASVBl4dzXf2mp30dTzq
+         /Ufuu7NnwpayS/2yjnz6pjxROBuvVAOmZa2SVVCw=
+Date:   Tue, 18 Jul 2023 07:34:38 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Souradeep Chowdhury <quic_schowdhu@quicinc.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Alex Elder <elder@ieee.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Sibi Sankar <quic_sibis@quicinc.com>,
+        Rajendra Nayak <quic_rjendra@quicinc.com>
+Subject: Re: [PATCH V25 0/3] misc: Add driver support for Data Capture and
+ Compare unit(DCC)
+Message-ID: <2023071848-blend-acquire-d7d0@gregkh>
+References: <cover.1687945879.git.quic_schowdhu@quicinc.com>
+ <c91e1aad-b81f-8afd-6ee1-c83ed4844b04@quicinc.com>
 MIME-Version: 1.0
-Date:   Tue, 18 Jul 2023 13:33:38 +0800
-From:   shijie001@208suo.com
-To:     linux-kernel@vger.kernel.org
-Subject: [PATCH] auxdisplay: Fix errors in cfag12864b-example.c
-In-Reply-To: <tencent_657C88BFFDAD2116DFE593516118DBD3BF06@qq.com>
-References: <tencent_657C88BFFDAD2116DFE593516118DBD3BF06@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <e642ae32a3c9fba43a72e5d6509776b4@208suo.com>
-X-Sender: shijie001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c91e1aad-b81f-8afd-6ee1-c83ed4844b04@quicinc.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following checkpatch errors are removed:
-ERROR: "foo * bar" should be "foo *bar"
-ERROR: space prohibited before that '++' (ctx:WxB)
-ERROR: trailing statements should be on next line
+On Tue, Jul 18, 2023 at 10:33:09AM +0530, Souradeep Chowdhury wrote:
+> On 6/28/2023 3:53 PM, Souradeep Chowdhury wrote:
+> > Souradeep Chowdhury (3):
+> >    dt-bindings: misc: qcom,dcc: Add the dtschema
+> >    misc: dcc: Add driver support for Data Capture and Compare unit(DCC)
+> >    MAINTAINERS: Add the entry for DCC(Data Capture and Compare) driver
+> >      support
+> > 
+> >   Documentation/ABI/testing/debugfs-driver-dcc  |   10 +-
+> >   .../devicetree/bindings/misc/qcom,dcc.yaml    |   44 +
+> >   MAINTAINERS                                   |    8 +
+> >   drivers/misc/Kconfig                          |    8 +
+> >   drivers/misc/Makefile                         |    1 +
+> >   drivers/misc/qcom-dcc.c                       | 1312 +++++++++++++++++
+> >   6 files changed, 1378 insertions(+), 5 deletions(-)
+> >   create mode 100644 Documentation/devicetree/bindings/misc/qcom,dcc.yaml
+> >   create mode 100644 drivers/misc/qcom-dcc.c
+> > 
+> 
+> Gentle ping
 
-Signed-off-by: Jie Shi <shijie001@208suo.com>
----
-  samples/auxdisplay/cfag12864b-example.c | 7 ++++---
-  1 file changed, 4 insertions(+), 3 deletions(-)
+$ mdfrm -c mail/todo/
+1480 messages in todo/
 
-diff --git a/samples/auxdisplay/cfag12864b-example.c 
-b/samples/auxdisplay/cfag12864b-example.c
-index 2e3bb7375c99..247789c09eb1 100644
---- a/samples/auxdisplay/cfag12864b-example.c
-+++ b/samples/auxdisplay/cfag12864b-example.c
-@@ -38,7 +38,7 @@
-  #endif
+Please relax, and help out by reviewing other patches on the mailing
+lists in order to relieve the burden of maintainers and move your
+patches higher up the list.
 
-  int cfag12864b_fd;
--unsigned char * cfag12864b_mem;
-+unsigned char *cfag12864b_mem;
-  unsigned char cfag12864b_buffer[CFAG12864B_SIZE];
+thanks,
 
-  /*
-@@ -148,7 +148,7 @@ static void cfag12864b_clear(void)
-   * Pixel off: src[i] = 0
-   * Pixel on:  src[i] > 0
-   */
--static void cfag12864b_format(unsigned char * matrix)
-+static void cfag12864b_format(unsigned char *matrix)
-  {
-      unsigned char i, j, n;
-
-@@ -231,7 +231,7 @@ static void example(unsigned char n)
-      case 6:
-          printf("Do negative not-ing all bits");
-          for (i = 0; i < CFAG12864B_WIDTH; i++)
--            for (j = 0; j < CFAG12864B_HEIGHT; j ++)
-+            for (j = 0; j < CFAG12864B_HEIGHT; j++)
-                  cfag12864b_not(i, j);
-          break;
-      }
-@@ -258,6 +258,7 @@ int main(int argc, char *argv[])
-      for (n = 1; n <= EXAMPLES; n++) {
-          example(n);
-          cfag12864b_blit();
-+
-          while (getchar() != '\n');
-      }
+greg k-h
