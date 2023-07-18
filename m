@@ -2,113 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 098A875773B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E1875773F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbjGRI7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43500 "EHLO
+        id S231953AbjGRI7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbjGRI7H (ORCPT
+        with ESMTP id S231378AbjGRI7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:59:07 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE131705;
-        Tue, 18 Jul 2023 01:59:03 -0700 (PDT)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36I7DvZC007782;
-        Tue, 18 Jul 2023 08:58:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-03-30; bh=I4YvKVAWslmj3NSZw8/OO+TP7pVCUvJA9u3h5VipoFs=;
- b=P6w4e6BdxiSTMD86PlFPeKGtPNAKSvyB4OIGtUZiCkn1UXl1vqxgjexcsqkEEN60z+6K
- KamMMYocRLxNBMUphs5GviDrdJ6GALLN6ZtIE3udUs/cRf0m+HH5TG4wzcUWL6YPcA7t
- sBvm8bqG2M7rcbBkNCEWEo4FCEANwB+kt+alZtqmJDXRIhFJC35Y+jxllnhHtcXXE9Pt
- 19s+Kynx+8Qjb+Dq9AVj+UoGx8ZubdRXOMfvk8c3HfsmTXwoMqn/PSreSNJV738U/fAF
- 6i714VZKYjo8Q7aqsVRKUUA8ZPQatVzFaC4iYY9uIFKrmXwXVjlCgq04wbJDdF00VbQU iw== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3run78ck1f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Jul 2023 08:58:53 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36I8JiZ5038203;
-        Tue, 18 Jul 2023 08:58:52 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhw4sdpt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Jul 2023 08:58:52 +0000
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36I8wqcv000485;
-        Tue, 18 Jul 2023 08:58:52 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3ruhw4sdp7-1;
-        Tue, 18 Jul 2023 08:58:52 +0000
-From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com, harshit.m.mogalapalli@oracle.com
-Subject: [PATCH next] media: i2c: fix error handling in ub960_rxport_add_serializer()
-Date:   Tue, 18 Jul 2023 01:58:46 -0700
-Message-ID: <20230718085846.3988564-1-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 18 Jul 2023 04:59:42 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2043.outbound.protection.outlook.com [40.107.237.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF09EB5;
+        Tue, 18 Jul 2023 01:59:41 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eTAi8LlDcl6MRWEy0bQdDl5n6WxAAKnzT9yVH6Yo9o6i8Sb14WsfLFM3jo7jJK6DmJhx47qE2biPpVsdldE0hH9kopH0/IHbL4lvklIlkutj8jlV+W937y/hu7jXDIoCV66iDTORApauG2D3nneHzgK4lqEziSuPcsyFms6xmrbq2AQs3NTzPxj/nUvl+QdeSjYoQcfGpsUJl7T9EyCu5EfDE6afraU7Hn+lgfrJMs/Y2P5f2I1Yz5VEPwvG1hHSkLByAD/3dzkXya3qkkHVSlBRERqcw6R/av2VcoKv8YfvkSWGSVsBT+3dA6fxJn5jQopFS3E5109L+bdIpOuXsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bIyIRjGKx7PJh2GUtj2zTJGRUlziKpwjHPbwd92fsHg=;
+ b=l+/33Har2GdjLeQk5OV22+8TyERIXJ1uXERk/k0N++lYJ2d7WdAqQytOaeFaMJzrz31RT+XA6BBSkqHPziYzaxrEFETNJIyd18j1K4pvhXpBcBRRaBcQ4fbHsQt2tIT7GLqItYsnK9iJ7k4n0SOkI7nIHGHkjZoMw77/oZNLQRx8CEJArNvUZ6tVaAdOnweVqg+6H10wt6UuWYCgeTfS8k9P6U0SlgI/AqEP+oOBuIZ45o1/0oARjiZuMRa5lMysP/OOI+qs7dmUt9ZypXDitmitSocZ6ARcHplugpKCsi6rstxj/ta6jticCBmnx52tpT7otZFoBcgIy3R+phulrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bIyIRjGKx7PJh2GUtj2zTJGRUlziKpwjHPbwd92fsHg=;
+ b=UV62iY4OV+uh4ZVxXjSUBgkJU0G5bcTTClIxl/oyD3PJcldz6SxdiFfbGJpD5yd5fDUiOw4nVNpEhXt1FJYMR/z4DQ6kAjk4A3l/1itPs2yJfchJzroEMz81Hwce8zI6+4i6flVXB/Dug+N5XANCloOsXxBLOXusbKVnD3yNodfzOHOisqFCkzOOcXiv7S26h9gZmqZCGuMhcRKiamIwDMPlfmU8KIZKeE5/7LPmUtV9/sywmUnFZVYJhDU6ZGYJi1n+0ziNiJNdO2pAZC/rZh12R74SelVuSFcMLq5YTlBqkTio77UHFQqZAwnXI3jn8Cz3Tmp0t3jtzVbkpFAu/g==
+Received: from BN9PR03CA0197.namprd03.prod.outlook.com (2603:10b6:408:f9::22)
+ by PH7PR12MB7284.namprd12.prod.outlook.com (2603:10b6:510:20b::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Tue, 18 Jul
+ 2023 08:59:39 +0000
+Received: from BN8NAM11FT007.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:f9:cafe::2e) by BN9PR03CA0197.outlook.office365.com
+ (2603:10b6:408:f9::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33 via Frontend
+ Transport; Tue, 18 Jul 2023 08:59:39 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ BN8NAM11FT007.mail.protection.outlook.com (10.13.177.109) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6588.33 via Frontend Transport; Tue, 18 Jul 2023 08:59:39 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 18 Jul 2023
+ 01:59:29 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Tue, 18 Jul 2023 01:59:28 -0700
+Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Tue, 18 Jul 2023 01:59:28 -0700
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+        <rwarsow@gmx.de>, <conor@kernel.org>,
+        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH 6.1 000/589] 6.1.39-rc3 review
+In-Reply-To: <20230717201547.359923764@linuxfoundation.org>
+References: <20230717201547.359923764@linuxfoundation.org>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-17_15,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
- adultscore=0 spamscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307180081
-X-Proofpoint-ORIG-GUID: VxS-YW0pBrAOpdbSXyfINvVpZYq5PWlJ
-X-Proofpoint-GUID: VxS-YW0pBrAOpdbSXyfINvVpZYq5PWlJ
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <f6955e78-c23b-457e-a635-126f5fdab4ca@drhqmail202.nvidia.com>
+Date:   Tue, 18 Jul 2023 01:59:28 -0700
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8NAM11FT007:EE_|PH7PR12MB7284:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6f4455f6-1d45-4a96-595b-08db876d51a6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Q5jD7IkTggOaNab+fjVDXI6p6MEpaBpEDnmLc2W0I4x4GkWh558H6hZw78HY+BzNOuxQtS7e20bX7PayRTFWe1q1Ue9KcqgZDMLMEnUtWqZrMEVur6GN+ws+zwe16W+NmNaCalgWHhCvVwJZFy13qMPC7W0KQbwoQalkjbXV3CNQrL8kdP4sPyPmK6sQcYl2nimTfDDEs+tA+0IGTqfd9CrKgUe/1Y8rZz1OCpzJiI/ABQUJVSbHY81HqVXnqJ8PkRJDZcaAOm6ZxNcIdPjM2ryjdsjSZIwycJ/OVwCHF07C1JHyWL+bh8omQaYN1PU0WYiuOCBe/IJ4WP/msTRdHikTkKu17RoYgjEC47ZPUULEBctJhY9rgPsNu0zsdTibd4ky1HgCzZvJx0XVrDCBkWOgcV3+qganrRQ85ixIlOExEfdeqOjfFH3XeBBi1By62Ncm5I+ijQsJjN7CBLCN0nrnsMbC7QsWtP4rhebQznYL0IcnqClkyvZZoToOdEDFqpiGMtqHpN5jKo3AEwO58MrqHjrAHyIPByEIBgnuL4fITA51v5E9tNat87ylkh6cKO9l8MJyNpGD3EGRbcvhDA0UqDGMBc9j1QSURr/b8e7qXoi2ABkg3OwhWTLThOp4hcdMeXYL7BGbWU29rsq6OLVfbPR8KUGTTQqtDBYl2rslxJdngZBc9hbhPK7Eu3hEj8ZkN6xlRADzgU5XsdRn+r+6BqSQY2WfJ4y4/+5cMRYFOIqVGxQej1oOwqcVOFowXAcWLWFyFYoKmaMTObSiYQZu94SUTHWkMj+RpGJAhzQ=
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(346002)(39860400002)(376002)(82310400008)(451199021)(46966006)(40470700004)(36840700001)(966005)(40480700001)(26005)(40460700003)(70206006)(70586007)(5660300002)(54906003)(7416002)(31696002)(2906002)(316002)(41300700001)(4326008)(8676002)(8936002)(6916009)(86362001)(478600001)(82740400003)(7636003)(356005)(31686004)(36860700001)(47076005)(426003)(186003)(336012);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 08:59:39.2223
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6f4455f6-1d45-4a96-595b-08db876d51a6
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT007.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7284
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Smatch warns:
- drivers/media/i2c/ds90ub960.c:1671 ub960_rxport_add_serializer():
- err: 'rxport->ser.client' dereferencing possible ERR_PTR()
+On Mon, 17 Jul 2023 22:34:23 +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.39 release.
+> There are 589 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 19 Jul 2023 20:14:46 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.39-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-i2c_new_client_device() returns error pointers on failure and in
-dev_dbg statement we are dereferencing error pointer which is a bug.
+All tests passing for Tegra ...
 
-Fix this by using IS_ERR() which checks for error pointers.
+Test results for stable-v6.1:
+    7 builds:	7 pass, 0 fail
+    22 boots:	22 pass, 0 fail
+    104 tests:	104 pass, 0 fail
 
-Fixes: afe267f2d368 ("media: i2c: add DS90UB960 driver")
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
----
-Found with static analysis, only compile tested. Although in
-drivers/media i2c_client_has_driver() checks are present, IS_ERR() would
-probably be sufficient here.
----
- drivers/media/i2c/ds90ub960.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Linux version:	6.1.39-rc3-gce7ec1011187
+Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
+                tegra210-p2371-2180, tegra210-p3450-0000,
+                tegra30-cardhu-a04
 
-diff --git a/drivers/media/i2c/ds90ub960.c b/drivers/media/i2c/ds90ub960.c
-index e101bcf2356a..88144e3ec183 100644
---- a/drivers/media/i2c/ds90ub960.c
-+++ b/drivers/media/i2c/ds90ub960.c
-@@ -1662,7 +1662,7 @@ static int ub960_rxport_add_serializer(struct ub960_data *priv, u8 nport)
- 	ser_info.addr = rxport->ser.alias;
- 	rxport->ser.client =
- 		i2c_new_client_device(priv->client->adapter, &ser_info);
--	if (!rxport->ser.client) {
-+	if (IS_ERR(rxport->ser.client)) {
- 		dev_err(dev, "rx%u: cannot add %s i2c device", nport,
- 			ser_info.type);
- 		return -EIO;
--- 
-2.39.3
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
 
+Jon
