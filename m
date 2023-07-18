@@ -2,138 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 528EA758660
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B645875865E
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbjGRVBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 17:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
+        id S229926AbjGRVAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 17:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbjGRVBA (ORCPT
+        with ESMTP id S229888AbjGRVAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 17:01:00 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02794198C
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:00:59 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 41be03b00d2f7-55b1238a013so4723995a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:00:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689714058; x=1692306058;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OHHcOhkbsv1p/qZwif2W/kSpl8RMjgRTDPZDHV7WrBw=;
-        b=LOkbMmif5Ycr4XzhJft2CzhA9qbAeEjYa/Cr0ll2csDNgcvG/NXmoNZXISITQglpRj
-         hhtX/VRxsa2hxIDKzNTyFAN++h5tdTzFUqqtIFcjQIHCj6Qq2zobuQLE/fBu/qw4+9uq
-         KRjCEp33u2nXN0u+0H1XJGVL6NqeU3WZrWgnYRV3gc0ZAxp803ROYs0SKZ2VXffz8JLE
-         xc97gI3pIYHq4XW72UVvcf3uVT8pn43z6plpgB5LFvwKGuee6miTf9TRMpipJglmdmAd
-         RnU2XIrpwa1voPrQqUppPno9Bpmwtr7nz3oimKRWZIhB/dFSrlBzrIcfo+GK8654aZ4b
-         FLgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689714058; x=1692306058;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OHHcOhkbsv1p/qZwif2W/kSpl8RMjgRTDPZDHV7WrBw=;
-        b=jQD0nw6mRZiXqZOK0ibrdJPEqXrCkhiaV8mwH532Mkaq3MHvL3FQ/lLyCQhuApTEIF
-         oFcvgoRrmUcjtcEQYN4mAvp1mwutDyByXn4iU53B4Fl9tuNvEAoSgPJshfFANVLkQpYC
-         ytccMHktRcVp3cg66jsVp+41DKA7lhU1nNA0oW3f3NllsdF37nSMWDuC9PoRGFiN8NwY
-         1c54njz436wb/xkrnvz7AKrboH/YB03v7EsrwFlLnXUn1F8jC4TPrHB1HYOscK7lHSps
-         tVuBBx/yIva9qimaOKGYBtRgVf2NzY/cmcVLdeoU/2/ctSeEN+yR+K7UgR0NtI/ljoGU
-         cteQ==
-X-Gm-Message-State: ABy/qLZ9FUF84mIyKom/mBnGQJXJC356iB7TMVvQJSt/GD+R/Q/S6ECN
-        vzabJOCCwqRLu+9VdAyFpfU=
-X-Google-Smtp-Source: APBJJlGtYn6KzK28oMCE0qYWdPXLgvr+4ng4J+CyxMR+FL2Vlo5llyfi1/hx5fY2V82w7q/P8bwraA==
-X-Received: by 2002:a17:90b:788:b0:264:2e2:7be8 with SMTP id l8-20020a17090b078800b0026402e27be8mr13566948pjz.18.1689714058379;
-        Tue, 18 Jul 2023 14:00:58 -0700 (PDT)
-Received: from localhost ([212.107.28.53])
-        by smtp.gmail.com with ESMTPSA id 14-20020a17090a0cce00b00262e5449dbcsm20590pjt.24.2023.07.18.14.00.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 14:00:58 -0700 (PDT)
-From:   Celeste Liu <coelacanthushex@gmail.com>
-X-Google-Original-From: Celeste Liu <CoelacanthusHex@gmail.com>
-To:     Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-riscv@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Celeste Liu <CoelacanthusHex@gmail.com>,
-        Felix Yan <felixonmars@archlinux.org>,
-        Ruizhe Pan <c141028@gmail.com>,
-        Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
-Subject: [PATCH v3] riscv: entry: set a0 = -ENOSYS only when syscall != -1
-Date:   Wed, 19 Jul 2023 04:57:30 +0800
-Message-ID: <20230718210037.250665-1-CoelacanthusHex@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 18 Jul 2023 17:00:20 -0400
+Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [5.144.164.167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985A4198D
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:00:17 -0700 (PDT)
+Received: from SoMainline.org (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id B80FB3F78F;
+        Tue, 18 Jul 2023 23:00:12 +0200 (CEST)
+Date:   Tue, 18 Jul 2023 23:00:10 +0200
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Krishna Manikandan <quic_mkrishn@quicinc.com>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, Lux Aliaga <they@mint.lgbt>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2 10/15] dt-bindings: msm: dsi-phy-14nm: Document SM6125
+ variant
+Message-ID: <yzz4dddlh2no3lmuxrkuxhsuaf3brruo635pgfpnaxwffmnl6j@uk3jxtoarg7w>
+References: <20230627-sm6125-dpu-v2-0-03e430a2078c@somainline.org>
+ <20230627-sm6125-dpu-v2-10-03e430a2078c@somainline.org>
+ <285facd1-bf20-aff2-b680-f796e8830038@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <285facd1-bf20-aff2-b680-f796e8830038@linaro.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we test seccomp with 6.4 kernel, we found errno has wrong value.
-If we deny NETLINK_AUDIT with EAFNOSUPPORT, after f0bddf50586d, we will
-get ENOSYS instead. We got same result with commit 9c2598d43510 ("riscv: entry:
-Save a0 prior syscall_enter_from_user_mode()").
+On 2023-06-29 13:54:13, Dmitry Baryshkov wrote:
+> On 27/06/2023 23:14, Marijn Suijten wrote:
+> > Document availability of the 14nm DSI PHY on SM6125.  Note that this
+> > compatible uses the SoC-suffix variant, intead of postfixing an
+> > arbitrary number without the sm/sdm portion.  The PHY is not powered by
+> > a vcca regulator like on most SoCs, but by the MX power domain that is
+> > provided via the power-domains property and a single corresponding
+> > required-opps.
+> > 
+> > Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> > ---
+> >   .../devicetree/bindings/display/msm/dsi-phy-14nm.yaml         | 11 +++++++++++
+> >   1 file changed, 11 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml b/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml
+> > index a43e11d3b00d..183a26f8a6dc 100644
+> > --- a/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml
+> > +++ b/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml
+> > @@ -19,6 +19,7 @@ properties:
+> >         - qcom,dsi-phy-14nm-2290
+> >         - qcom,dsi-phy-14nm-660
+> >         - qcom,dsi-phy-14nm-8953
+> > +      - qcom,sm6125-dsi-phy-14nm
+> >   
+> >     reg:
+> >       items:
+> > @@ -35,6 +36,16 @@ properties:
+> >     vcca-supply:
+> >       description: Phandle to vcca regulator device node.
+> >   
+> > +  power-domains:
+> > +    description:
+> > +      A phandle and PM domain specifier for an optional power domain.
+> > +    maxItems: 1
+> > +
+> > +  required-opps:
+> > +    description:
+> > +      A phandle to an OPP node describing an optional performance point.
+> 
+> I'd rephrase this to be something more exact, like 'desribing power 
+> domain's performance point'.
 
-After analysing code, we think that regs->a0 = -ENOSYS should only be executed
-when syscall != -1 In __seccomp_filter, when seccomp rejected this syscall with
-specified errno, they will set a0 to return number as syscall ABI, and then
-return -1. This return number is finally pass as return number of
-syscall_enter_from_user_mode, and then is compared with NR_syscalls after
-converted to ulong (so it will be ULONG_MAX). The condition
-syscall < NR_syscalls will always be false, so regs->a0 = -ENOSYS is always
-executed. It covered a0 set by seccomp, so we always get ENOSYS when match
-seccomp RET_ERRNO rule.
+Sure.  I'll leave out the word "optional", that becomes obvious from
+maxItems:1 without minItems, together with referencing a PM which itself
+is already optional.
 
-Fixes: f0bddf50586d ("riscv: entry: Convert to generic entry")
-Reported-by: Felix Yan <felixonmars@archlinux.org>
-Co-developed-by: Ruizhe Pan <c141028@gmail.com>
-Signed-off-by: Ruizhe Pan <c141028@gmail.com>
-Co-developed-by: Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
-Signed-off-by: Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
-Signed-off-by: Celeste Liu <CoelacanthusHex@gmail.com>
-Tested-by: Felix Yan <felixonmars@archlinux.org>
----
+- Marijn
 
-v2 -> v3: use if-statement instead of set default value,
-          clarify the type of syscall
-v1 -> v2: added explanation on why always got ENOSYS
-
- arch/riscv/kernel/traps.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index f910dfccbf5d2..5cef728745420 100644
---- a/arch/riscv/kernel/traps.c
-+++ b/arch/riscv/kernel/traps.c
-@@ -297,6 +297,10 @@ asmlinkage __visible __trap_section void do_trap_break(struct pt_regs *regs)
- asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *regs)
- {
- 	if (user_mode(regs)) {
-+		/*
-+		 * Convert negative numbers to very high and thus out of range
-+		 * numbers for comparisons.
-+		 */
- 		ulong syscall = regs->a7;
- 
- 		regs->epc += 4;
-@@ -308,7 +312,7 @@ asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *regs)
- 
- 		if (syscall < NR_syscalls)
- 			syscall_handler(regs, syscall);
--		else
-+		else if ((long)syscall != -1L)
- 			regs->a0 = -ENOSYS;
- 
- 		syscall_exit_to_user_mode(regs);
--- 
-2.41.0
-
+> > +    maxItems: 1
+> > +
+> >   required:
+> >     - compatible
+> >     - reg
+> > 
+> 
+> -- 
+> With best wishes
+> Dmitry
+> 
