@@ -2,102 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEEC7584EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B2A7584F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbjGRSj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 14:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36960 "EHLO
+        id S230348AbjGRSjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 14:39:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbjGRSjY (ORCPT
+        with ESMTP id S230322AbjGRSjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 14:39:24 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C9AF0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 11:39:23 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-51cff235226so10907a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 11:39:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689705562; x=1692297562;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jkb55HhAbN5nQxp124JO5CgyYp5FwsBzn/8eguMNO/I=;
-        b=vo5NZKlbXQn4Jl6b8UAEOHnqb04wgASw6MkQZM+pF3hTs01Y0VzlGrVz8NYsDNXcPB
-         smn7BGtYuxNMkXvFUouYasWjGuNLoRZjcMnan244Wbya7Mzsfc8ItrplIUBL9Mhkspac
-         9Oo1r54niZZC+ITU302GiMZGUvwaQbse/RPw4WsdMWIqh0Ke2HBBkygdlSZ33ijXXcBk
-         OBiDSbdTvbmiQJpm56qq778Q6ijwlCTqPeTqJo8SkVFZzP+x3UdrAOL3UkAHgsKyYmVx
-         CKo9yr9BEhDiUQVXbOmQrphU1dat7sTEJ5uf+Uqe4hldnVEj+0c+moHnjXglHo7uUeSF
-         oYMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689705562; x=1692297562;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Jkb55HhAbN5nQxp124JO5CgyYp5FwsBzn/8eguMNO/I=;
-        b=G9HOeENiYDUH8UPcJcmWG2w+/avjnk24Y9se+tRH0JK1WQfg7VJaODb69J8WPz4syG
-         tH2kWIBSQkg+ttwdOMrObVAxDdZ4ASokZhJmEWHFIU/0oxO51zmwTywzIbycr4ngl9bK
-         P5bbgh4aO0UDGI5uPu3HqB3dZ1CkxXVBEYX0kRnZMlP4gVvZaoPk+grZWdFPZJQ7RiTC
-         t91sCzQ/cqhJZsvodfzyB8HcRbhSkznERnQYMZ/pu9xdIOQmQx8ST9CqTXTl7PVxRGGv
-         oR0bV01/OC0siXvpiazVB+2hUN32ITyT/VnARfnG69W/3Qij1q2KB+gcvwMLTX7K1Eqz
-         Hv2g==
-X-Gm-Message-State: ABy/qLbf1Gm1rQtFv+eO/SlDBs0ihxZ4Xs1q8CaXGKQlDsxAqMHzYoJQ
-        jtNrzXfbBwBNqz1dcQg87KtPig==
-X-Google-Smtp-Source: APBJJlELhwGyjrv7JKi503vZ44u3uhfj4GPWlLn4zkwX+p1EKl4j1+y/9UEV5+hm++H5sG8LkZHJ7w==
-X-Received: by 2002:a05:6402:40c5:b0:51e:588b:20ca with SMTP id z5-20020a05640240c500b0051e588b20camr1010538edb.8.1689705561993;
-        Tue, 18 Jul 2023 11:39:21 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id c19-20020aa7c993000000b0051e1a4454b2sm1564460edt.67.2023.07.18.11.39.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 11:39:21 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] firmware: arm_scmi: drop OF node reference in smc_chan_setup
-Date:   Tue, 18 Jul 2023 20:39:16 +0200
-Message-Id: <20230718183916.44439-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Tue, 18 Jul 2023 14:39:46 -0400
+Received: from smtp.smtpout.orange.fr (smtp-27.smtpout.orange.fr [80.12.242.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AECF7
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 11:39:44 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id LpbhqgTmDgEYrLpbhqs7UZ; Tue, 18 Jul 2023 20:39:42 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1689705582;
+        bh=tdlBUHWUDeKcYw0WXmCHBGLh8IA7flKlmSo8k4y0V60=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=ZQcVTd5KpaeF4EOE+fysig0lBxjfUmgJO3PowpFkNTGclDydzH+tYki8gEi+Imi5u
+         GkIbpmer1NKaH9M0eWIT1ZN2NADE/n9oQfzomnZbCavOjN5nNUqy0UpIEHc5n8Q1vg
+         5fq4ctk6/ZQ2JbRENF82CDW+oSr+cPd+noFMKqSeCxM7jysC5pbssV5dXpesa3A5pi
+         2ILIlsUoiO61Bq59piNwXMNArZnQ/2s6sz4a4qynqKcYOe9d5BycztLKblt7MlhLcs
+         VN1maZ3TcEOlXqOEKaF6s1+J/Qm86/IMmb0MrsGAuuFsuVxP6EamKutSk9sms1MJXR
+         iAPTcIILmSPGg==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 18 Jul 2023 20:39:42 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <60305a76-4e41-8e51-a394-dc55c0ba05da@wanadoo.fr>
+Date:   Tue, 18 Jul 2023 20:39:32 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] media: mediatek: vcodec: Fix an error handling path in
+ vdec_msg_queue_init()
+Content-Language: fr, en-US
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Xiaoyong Lu <xiaoyong.lu@mediatek.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <efa0d4910998931a2ec9d933117fa71482d7b33a.1689624542.git.christophe.jaillet@wanadoo.fr>
+ <1dcd0fab-eee3-4693-a7d2-4a72baef5c97@kadam.mountain>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <1dcd0fab-eee3-4693-a7d2-4a72baef5c97@kadam.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The OF node reference obtained from of_parse_phandle() should be dropped
-if node is not compatible with arm,scmi-shmem.
+Le 18/07/2023 à 08:58, Dan Carpenter a écrit :
+> On Mon, Jul 17, 2023 at 10:09:19PM +0200, Christophe JAILLET wrote:
+>> All errors go to the error handling path, except this one. Be consistent
+>> and also branch to it.
+>>
+>> Fixes: 2f5d0aef37c6 ("media: mediatek: vcodec: support stateless AV1 decoder")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+> 
+> I sent this one a month ago but it hasn't been applied.
+> 
+> https://lore.kernel.org/all/b8948d9a-65bc-4f3f-aa90-60addd064819@moroto.mountain/
+> 
+> regards,
+> dan carpenter
+> 
+> 
 
-Fixes: 507cd4d2c5eb ("firmware: arm_scmi: Add compatibility checks for shmem node")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/firmware/arm_scmi/smc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Hi Dan,
 
-diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
-index 621c37efe3ec..2d8c510fbf52 100644
---- a/drivers/firmware/arm_scmi/smc.c
-+++ b/drivers/firmware/arm_scmi/smc.c
-@@ -137,8 +137,10 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
- 		return -ENOMEM;
- 
- 	np = of_parse_phandle(cdev->of_node, "shmem", 0);
--	if (!of_device_is_compatible(np, "arm,scmi-shmem"))
-+	if (!of_device_is_compatible(np, "arm,scmi-shmem")) {
-+		of_node_put(np);
- 		return -ENXIO;
-+	}
- 
- 	ret = of_address_to_resource(np, 0, &res);
- 	of_node_put(np);
--- 
-2.34.1
+your patch is better than mine.
+Less verbose and more complete.
 
+CJ
