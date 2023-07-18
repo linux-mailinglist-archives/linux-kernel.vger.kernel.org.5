@@ -2,93 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE65758683
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4014E758686
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbjGRVHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 17:07:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60514 "EHLO
+        id S230106AbjGRVJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 17:09:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjGRVHn (ORCPT
+        with ESMTP id S230226AbjGRVJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 17:07:43 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8FCEC;
-        Tue, 18 Jul 2023 14:07:43 -0700 (PDT)
+        Tue, 18 Jul 2023 17:09:01 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34EF4EC;
+        Tue, 18 Jul 2023 14:08:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689714463; x=1721250463;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ootxdXDE5uMtvxtWujNgqbk4Aj9V+Z+d5RmLRHxw5Bc=;
-  b=U0jOwkb1rXjVe4itcTgbwrTFYhfHhwlavzeYKVeeICx9lzF2jOawu9h8
-   5YNr234/kRgXLvNbSv8tZpjzmukG89KYEm7YGNQrXBN5VThJUmw1v0yv8
-   gMduMlGpr8lGeSf2shpDKhCAmSV9mWk8H78aLT2Scdpa8q8ddFc3Z1MHP
-   y21+1GzVfDqrDKpR5nOHrJ0DBdW5NGkulhd1QpnUjU1UXmoIvdMbGgxk/
-   8/RfrvFZPqUraFEct4G8D/+YrUbo6r4TsGD61JRHMPkOi/2PVV02eQ9+J
-   G5T61O6wlkzE0AQNFyggsfgfC1BNOuaPOEyqASf1LKM+/pM/qA+FoeFID
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="356261387"
+  t=1689714539; x=1721250539;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=jD0ikaOVy5BVJjtayK1+12kc2csGinS7MH/OORdIRbU=;
+  b=Ta+4ekeOGc4j6LAY/vSAA8G+cW/QsDKG6zsqQ16h9GGrHcNpXVOnZkg2
+   9QgEsCm5h/jdPOlzz6zSoaElZgGiU45RcXFeVlgyGi/NuT3kBFaiWnNZ7
+   UWfbb4hTeDpMFmx23gyQTFWWc53Sy9Ad+nhpnpGJmsOZhqpiQFFovu5hW
+   y8NQtLnX/FmQa/w+fvbDB4plCvCM0e+DRiY5XupSaz00g6Flz6IuLMu28
+   C2zOr+pQzlivXyUuUwSsWQbJfZ58HUAiYBi1nGKRuM88vcn7pamUluXG5
+   sKKu/r/rsKqNc72LdGZI0470paUyoyxtL7jaJVzPfQ2t0M+4JCiUmf7Ll
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="369872196"
 X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="356261387"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 14:07:42 -0700
+   d="scan'208";a="369872196"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 14:08:58 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="758927100"
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="813897793"
 X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="758927100"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP; 18 Jul 2023 14:07:41 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qLrv1-00DMHs-1X;
-        Wed, 19 Jul 2023 00:07:39 +0300
-Date:   Wed, 19 Jul 2023 00:07:39 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the mm tree
-Message-ID: <ZLb/GzwqI6tkzLv6@smile.fi.intel.com>
-References: <20230718100257.1ed9290e@canb.auug.org.au>
- <ZLaXC29UH3SuTJtP@smile.fi.intel.com>
- <20230718103430.f5062ce13b63171e418c94f3@linux-foundation.org>
+   d="scan'208";a="813897793"
+Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 14:08:58 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
+        Smita.KoralahalliChannabasappa@amd.com,
+        dave.hansen@linux.intel.com, x86@kernel.org,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v7 0/3] Handle corrected machine check interrupt storms
+Date:   Tue, 18 Jul 2023 14:08:10 -0700
+Message-Id: <20230718210813.291190-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230616182744.17632-1-tony.luck@intel.com>
+References: <20230616182744.17632-1-tony.luck@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718103430.f5062ce13b63171e418c94f3@linux-foundation.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 10:34:30AM -0700, Andrew Morton wrote:
-> On Tue, 18 Jul 2023 16:43:39 +0300 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > On Tue, Jul 18, 2023 at 10:02:57AM +1000, Stephen Rothwell wrote:
-> > > Hi all,
-> > > 
-> > > After merging the mm tree, today's linux-next build (arm
-> > > multi_v7_defconfig) failed like this:
-> > 
-> > Thank you for this report!
-> > 
-> > Andrew, since it's in a separate patch, can you drop the change to
-> > include/linux/arm-smccc.h?
-> 
-> I actually dropped the whole series.
+Linux CMCI storm mitigation is a big hammer that just disables the CMCI
+interrupt globally and switches to polling all banks.
 
-Okay, I fixed that locally and soon send a v4.
+There are two problems with this:
+1) It really is a big hammer. It means that errors reported in other
+banks from different functional units are all subject to the same
+polling delay before being processed.
+2) Intel systems signal some uncorrected errors using CMCI (e.g.
+memory controller patrol scrub on Icelake Xeon and newer). Delaying
+processing these error reports negates some of the benefit of the patrol
+scrubber providing early notice of errors before they are consumed and
+cause a machine check.
 
+This series throws away the old storm implementation and replaces it
+with one that keeps track of the weather on each separate machine check
+bank. When a storm is detected from a bank. On Intel the storm is
+mitigated by setting a very high threshold for corrected errors to
+signal CMCI. This threshold does not affect signaling CMCI for
+uncorrected errors.
+
+Changes since last version:
+
+0) Rebased to v6.5-rc2
+1) Yazen & Boris - dropped AMD patch pending integration of AMD
+   machine check bank scanning with the core machine_check_poll()
+   function.
+2) Boris - rename track_cmci_storm() as track_storm() in prep for
+   the day when AMD joins in - they don't call the interrupt "CMCI".
+   This function is now "static" and local to core.c.
+3) Boris - Define new "struct storm_bank" for all the storm tracking
+   arrays.
+4) Move the storm_poll_mode per-CPU tracker into the storm_desc
+   structure.
+5) Define STORM_END_POLL_THRESHOLD as "29" instead of "30" with comment
+   that it is used as high end of a bitmask that counts from zero. Drop
+   the " - 1" where it is used.
+6) Don't user kernel-doc format comments in mce/internal.h.
+
+Suggested change NOT taken:
+> +      * If this is the first bank on this CPU to enter storm mode
+> +      * start polling
+> +      */
+> +     if (++storm->stormy_bank_count == 1)
+
+        if (++storm->stormy_bank_count)
+
+> +             mce_timer_kick(true);
+
+As the comment above this code says, only want to "kick" the timer when
+first bank on a core goes into storm mode. If another bank also goes
+into storm while the first storm is active, then no need to "start
+polling" that's already happening for the first storm.
+
+Tony Luck (3):
+  x86/mce: Remove old CMCI storm mitigation code
+  x86/mce: Add per-bank CMCI storm mitigation
+  x86/mce: Handle Intel threshold interrupt storms
+
+ arch/x86/kernel/cpu/mce/internal.h |  49 ++++-
+ arch/x86/kernel/cpu/mce/core.c     | 131 +++++++++---
+ arch/x86/kernel/cpu/mce/intel.c    | 333 +++++++++++++----------------
+ 3 files changed, 290 insertions(+), 223 deletions(-)
+
+
+base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.40.1
 
