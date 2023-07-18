@@ -2,137 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 587377576F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C22D77576F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231876AbjGRIpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32940 "EHLO
+        id S232018AbjGRIpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjGRIpt (ORCPT
+        with ESMTP id S231575AbjGRIpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 18 Jul 2023 04:45:49 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E91103;
-        Tue, 18 Jul 2023 01:45:48 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-66869feb7d1so3583333b3a.3;
-        Tue, 18 Jul 2023 01:45:48 -0700 (PDT)
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43141FA
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:45:48 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fb7373dd35so8213908e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:45:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689669948; x=1692261948;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=CR1YngAZBQYUPSsbWejwgz5QcYsHxChch/OgGgwh/aE=;
-        b=XpKAALYMr2citfX+e/SmXXIynMoEuO1elLYhLylxzdDh/aDs0bn16jOM/k+WD6aygo
-         YeFhe4uGE5R0ObMd7Zj5MxuMr6TCUna+1MV2omkjFYr7t5gINWMQ7N7gOOxClYqkVEpq
-         98GegC2OykOQT6S5b5G5i0py8/jsxa6TwWQA9AwFBQKvql5Lb1UD6HgVi6tP2FvrsK+V
-         KFZikVmEZaiCMnb4igIc6pQDK0FbEj6zzTuWgiwwBa+RhV2QZPDIPQ3tRUrAuJFyY8aw
-         DuLndeUqphULYnLRH5Sb9JyetLe5CFsl3JMGrSljV92JfBT/j0ToQNaKhC/EwRVk2d/f
-         i0uw==
+        d=linaro.org; s=google; t=1689669946; x=1690274746;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Z9Y9Pg8GYAj1Bq7hDWPPHyY4wzFItCVRYd5Xl6htUGY=;
+        b=JpC7rmKsDQfmOY+u/kU7z8i0+1uT29zXmfsZEiNKcCbkpYf26JDQ1aHaix86K77fg1
+         JTNZJziZGYYYPGOiZIz7lU9ABGCEkEUGFBFlozJEoUsE5AhSiCuGGk/q161gNFSgyuL9
+         VTktivDjruIdaJPFCNR5o/8tViI+rDGdze78cJMK3CRjVZmJrlq0GCfRjmKzEpgbP00E
+         f3OwvXzMzjudH00XUrfl2VPgZF/w6mEF6G3mpW81B8qRzvEFt5LJBZu8Y7FbVgSLpQp1
+         R2iXPnR04//rJ/HigeLPldiS/jTKO6/SmYAl2kqaA+uxruCZ63Pn7KXHNvQHO44loGiP
+         0MvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689669948; x=1692261948;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
+        d=1e100.net; s=20221208; t=1689669946; x=1690274746;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CR1YngAZBQYUPSsbWejwgz5QcYsHxChch/OgGgwh/aE=;
-        b=luyjSYIbWxZHXBChvkDlF5hajstRUQ1eydOYLrXZ5h+r/tDUzhlJ/V2M110muT3/2S
-         fmYi4ppJgvxC7ioaopNKyjKSxR5iff9vCmA0DIi1EOYpa19Sw1Vk9pO8vG+iHbLakfLb
-         IH3zyOq+bNwrB/vEfFksmnJ10zdorXNAuEaHgvGRmmXXT/f00FDUXDHlfVzURlszUa52
-         tXs6N1gLHKIFPq207xdD3elPisvegnO0FeUkoPi4oGfX8/kkbby8YmSwYf0f2j7yOP34
-         qe/FPv1VRi70Bq3eKmDTkS+LpEihRQR8l5NVxv/3zUWPPAJKmBzGNx8n1eEsGe70B89X
-         wLJg==
-X-Gm-Message-State: ABy/qLa+6DyT5vCEu7PIRnlS1iPhJC+7VTSdpMw/5UGdALBBQkHa6Mi+
-        kty+o/3fd5OWhWbfMKFclfY=
-X-Google-Smtp-Source: APBJJlEWSej+ZWhjTej9FxL8Z6XsJo4GJFMvstgh7d6+tutmfzdaZG5J+lF6+xRlGdLmjZb3k4Jqhg==
-X-Received: by 2002:a05:6a20:7d83:b0:131:44f2:8691 with SMTP id v3-20020a056a207d8300b0013144f28691mr17769623pzj.37.1689669948289;
-        Tue, 18 Jul 2023 01:45:48 -0700 (PDT)
-Received: from localhost.localdomain (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
-        by smtp.gmail.com with ESMTPSA id w13-20020a170902d3cd00b001b9fef7f454sm1291516plb.73.2023.07.18.01.45.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 01:45:48 -0700 (PDT)
-From:   Mia Lin <mimi05633@gmail.com>
-To:     avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
-        venture@google.com, yuenn@google.com, benjaminfair@google.com,
-        a.zummo@towertech.it, alexandre.belloni@bootlin.com,
-        KWLIU@nuvoton.com, JJLIU0@nuvoton.com, KFLIN@nuvoton.com,
-        YHYANG2@nuvoton.com, mylin1@nuvoton.com
-Cc:     openbmc@lists.ozlabs.org, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mia Lin <mimi05633@gmail.com>
-Subject: [PATCH 1/1] RTC: nuvoton: Modify the setting timing of write ownership
-Date:   Tue, 18 Jul 2023 16:45:35 +0800
-Message-Id: <20230718084535.11081-2-mimi05633@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230718084535.11081-1-mimi05633@gmail.com>
-References: <20230718084535.11081-1-mimi05633@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        bh=Z9Y9Pg8GYAj1Bq7hDWPPHyY4wzFItCVRYd5Xl6htUGY=;
+        b=kcMLfVwaln36JaUlATw3C44j3wzjEcZ0qDoOJJHB2RgcNrkzWMGYFuf0DOX8PW7i90
+         ihoeTJQowoyCw5w31fDdjQnBAnPZVci+J4UDxBEaPCvKqY4vtMprvQP5/xSdfz2g2pse
+         7MnBKK+5eJZTxvWtTbAwmM+qKhyme0f7Ipib9ZQ6a0HlNIKU5iyaSFeSwiqJOydlZ2T+
+         qDk8F6WwhBZ5pEh5kmvkjJw6G1JhIj/K/E9Z67fiAQlN0oE6YI2yvj2HHDx/Ee+xjnBh
+         T6SKqN1mPrWub1v93Nuza3caTBqYYU69f1XaBSIgbfwfeUefNMoJ3e+4YD+UAHgb2z6b
+         xotg==
+X-Gm-Message-State: ABy/qLZj5diPBwEqz2lWLcH6pFXvG/+SvlKfIDn6YVQgMehfVr6rs2mO
+        IT43ym0cHecyzfke6Dy6z2Ndew==
+X-Google-Smtp-Source: APBJJlFS0aKSozVnVDDjqTi1y2ONkMtOUitE926Na0mWMo42ptOgTCjKp8dQwzsO+AdhmGEwWnR66A==
+X-Received: by 2002:a05:6512:3b25:b0:4fb:7bf8:51c8 with SMTP id f37-20020a0565123b2500b004fb7bf851c8mr4503058lfv.1.1689669946524;
+        Tue, 18 Jul 2023 01:45:46 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
+        by smtp.gmail.com with ESMTPSA id w13-20020a19c50d000000b004fdb6d3ac96sm330333lfe.280.2023.07.18.01.45.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 01:45:45 -0700 (PDT)
+Message-ID: <7df84e50-f152-c58d-bd1c-fdb25dbb550c@linaro.org>
+Date:   Tue, 18 Jul 2023 11:45:45 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] sparc: add missing put_device()
+Content-Language: en-GB
+To:     sunran001@208suo.com, davem@davemloft.net
+Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230718071735.16312-1-xujianghui@cdjrlc.com>
+ <4a1fd666ef4700ec17d1be60debf016b@208suo.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <4a1fd666ef4700ec17d1be60debf016b@208suo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Change the write ownership to default.
-- Set the TWO bit to gain write ownership for BMC before it updates time.
-- Restore the TWO bit after BMC updates the time.
-- Set 24-Hour Format.
+On 18/07/2023 10:19, sunran001@208suo.com wrote:
+> The of_find_device_by_node() takes a reference to the underlying device
+> structure, we should release that reference.
+> 
+> Detected by coccinelle with the following ERRORS:
+> ./arch/sparc/kernel/of_device_common.c:23:1-7: ERROR: missing
+> put_device; call of_find_device_by_node on line 18, but without a
+> corresponding object release within this function.
+> ./arch/sparc/kernel/of_device_common.c:36:1-7: ERROR: missing
+> put_device; call of_find_device_by_node on line 30, but without a
+> corresponding object release within this function.
+> ./arch/sparc/kernel/of_device_common.c:50:1-7: ERROR: missing
+> put_device; call of_find_device_by_node on line 42, but without a
+> corresponding object release within this function.
+> 
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>   arch/sparc/kernel/of_device_common.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/sparc/kernel/of_device_common.c 
+> b/arch/sparc/kernel/of_device_common.c
+> index 60f86b837658..7851307de6d0 100644
+> --- a/arch/sparc/kernel/of_device_common.c
+> +++ b/arch/sparc/kernel/of_device_common.c
+> @@ -20,6 +20,7 @@ unsigned int irq_of_parse_and_map(struct device_node 
+> *node, int index)
+>       if (!op || index >= op->archdata.num_irqs)
+>           return 0;
+> 
+> +    put_device(op->dev);
+>       return op->archdata.irqs[index];
 
-Signed-off-by: Mia Lin <mimi05633@gmail.com>
----
- drivers/rtc/rtc-nct3018y.c | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+Device can be gone and freed after the put_device() call. So at least 
+put_device() should come after the op->archdata access.
 
-diff --git a/drivers/rtc/rtc-nct3018y.c b/drivers/rtc/rtc-nct3018y.c
-index a4e3f924837e..e6b06724cdef 100644
---- a/drivers/rtc/rtc-nct3018y.c
-+++ b/drivers/rtc/rtc-nct3018y.c
-@@ -178,7 +178,19 @@ static int nct3018y_rtc_set_time(struct device *dev, struct rtc_time *tm)
- {
- 	struct i2c_client *client = to_i2c_client(dev);
- 	unsigned char buf[4] = {0};
--	int err;
-+	int err, flags, restore_flags = 0;
-+
-+	/* Check and set TWO bit */
-+	flags = i2c_smbus_read_byte_data(client, NCT3018Y_REG_CTRL);
-+	if (!(flags & NCT3018Y_BIT_TWO)) {
-+		restore_flags = 1;
-+		flags |= NCT3018Y_BIT_TWO;
-+		err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
-+		if (err < 0) {
-+			dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL\n");
-+			return err;
-+		}
-+	}
- 
- 	buf[0] = bin2bcd(tm->tm_sec);
- 	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_SC, buf[0]);
-@@ -212,6 +224,16 @@ static int nct3018y_rtc_set_time(struct device *dev, struct rtc_time *tm)
- 		return -EIO;
- 	}
- 
-+	/* Restore TWO bit */
-+	if (restore_flags) {
-+		flags &= ~NCT3018Y_BIT_TWO;
-+		err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
-+		if (err < 0) {
-+			dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL\n");
-+			return err;
-+		}
-+	}
-+
- 	return err;
- }
- 
-@@ -479,7 +501,7 @@ static int nct3018y_probe(struct i2c_client *client)
- 		dev_dbg(&client->dev, "%s: NCT3018Y_BIT_TWO is set\n", __func__);
- 	}
- 
--	flags = NCT3018Y_BIT_TWO;
-+	flags = NCT3018Y_BIT_HF;
- 	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
- 	if (err < 0) {
- 		dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL\n");
+Same applies to all the cases below.
+
+>   }
+>   EXPORT_SYMBOL(irq_of_parse_and_map);
+> @@ -32,6 +33,7 @@ int of_address_to_resource(struct device_node *node, 
+> int index,
+>       if (!op || index >= op->num_resources)
+>           return -EINVAL;
+> 
+> +    put_device(op->dev);
+>       memcpy(r, &op->archdata.resource[index], sizeof(*r));
+>       return 0;
+>   }
+> @@ -45,6 +47,7 @@ void __iomem *of_iomap(struct device_node *node, int 
+> index)
+>       if (!op || index >= op->num_resources)
+>           return NULL;
+> 
+> +    put_device(op->dev);
+>       r = &op->archdata.resource[index];
+> 
+>       return of_ioremap(r, 0, resource_size(r), (char *) r->name);
+
 -- 
-2.17.1
+With best wishes
+Dmitry
 
