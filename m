@@ -2,164 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA4D758059
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914E9758055
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232543AbjGRPFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 11:05:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44414 "EHLO
+        id S233041AbjGRPCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 11:02:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbjGRPFB (ORCPT
+        with ESMTP id S232827AbjGRPCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 11:05:01 -0400
+        Tue, 18 Jul 2023 11:02:50 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFA7FC;
-        Tue, 18 Jul 2023 08:05:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44ED171A;
+        Tue, 18 Jul 2023 08:02:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DBDCF61616;
-        Tue, 18 Jul 2023 15:04:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F4045C433C7;
-        Tue, 18 Jul 2023 15:04:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7318261627;
+        Tue, 18 Jul 2023 15:02:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D706BC433C7;
+        Tue, 18 Jul 2023 15:02:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689692699;
-        bh=dC6xVfoZAu1dLbggSONL4fKCtfqFkZexMTtlfTvKgfQ=;
-        h=From:Date:Subject:To:Cc:From;
-        b=gxNRHk6jXJH/sG6nAzOBErvD+wxObBarcDNUB6t09I3NPMoYDs8QMY/+xAlDmLZpZ
-         HrBgUUGG9jB+y8aiTLSQ1wXsLnpNVB6j6mmkzC1H3NycyIxBQ83ra7piSD8fOl5N7y
-         6+l7IyikBmGQoBJcXg8WJU7UmOQjl5RkMMHVDRdWRsnxy+oX2wXy1tXDpqlrle//BO
-         t/19NuIW5ZYvCKAqHhpmB0oeialXBbX/ZWLqVwb7zAxby2FJxD4wCEdbxPSUn4ukDX
-         M2UTDfSYcEcoXlXKOXLBcsFEvgYbuf5lqJMSXxWPdRiMUyJrmhwxexp9GhAAi5v5PM
-         A/+EPCsgpEyUA==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Tue, 18 Jul 2023 16:04:22 +0100
-Subject: [PATCH] thermal/drivers/sun8i: Don't fail probe due to zone
- registration failure
+        s=k20201202; t=1689692567;
+        bh=sy7DCojCRG8d7aqK80NuXkkijlk7Z0axQrX85V5IRrg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jnSKhCaobgOyjj4OaIVde77zX9hr/BJiYdfIQd3KHcHYfRZY/b4Kn//JZry0UGtaU
+         o8vdAOJBpAGQ4xEhieCd+t+yfrjgSIt71X5oAM2v/wu7sEaX9myytOKHGJguXzLMwZ
+         OhYkTbnj6BhHwXoicueU/T1WQgGb5L2PKGY6A7xIqLOsQ6gHEgsA6FPGW+hD8LT7lP
+         cIcZ8XqIVwHDv7dJTSnm3ihjAHZMBaXMQ3fXIe3nZX7wAwzb8MeL9IPhdYCXDW9q7f
+         kYkB0CHyyDajGAfR+omS7E6B3IZUafuxwy7uSmRHLeP6xRFSHvOHJGc6KjjCvvPNDy
+         XBBubkYth0XUg==
+Date:   Tue, 18 Jul 2023 08:06:11 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Stephan Gerhold <stephan@gerhold.net>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 15/15] arm64: dts: qcom: sm6115: Add VDD_CX to GPU_CCC
+Message-ID: <yk4xiydi47e7dn3zhasmnhgjc3l23napvznioshm2xx7uf5ziw@b7htk7ixes5b>
+References: <20230717-topic-branch_aon_cleanup-v1-0-27784d27a4f4@linaro.org>
+ <20230717-topic-branch_aon_cleanup-v1-15-27784d27a4f4@linaro.org>
+ <ZLVsN40kYsvQm1z6@gerhold.net>
+ <a193a4dd-0a0a-0d36-6d83-0424cd1dce80@linaro.org>
+ <ZLVyvHnKPdOfqAck@gerhold.net>
+ <8c5dc146-c305-bef9-0d97-76a91345ed1a@linaro.org>
+ <zha5rmva3zhvvknnmeso6errwhkdjomk6r5d72an7moimdvymq@skow5jqtps5g>
+ <18e192cb-eafe-3aa9-6602-b1a9dbe020d5@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230718-thermal-sun8i-registration-v1-1-c95b1b070340@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAPWptmQC/x3MQQqEMAxA0atI1hOwFlS8irgINdWAdoakI4J4d
- 4vLt/j/AmMVNhiqC5QPMfmmAvepIKyUFkaZi6GpG193rse8su60of1TL6i8iGWlXDKcoyfn2xA
- oEpTBTznK+c7H6b4fh5UeimwAAAA=
-To:     Vasily Khoruzhick <anarsoul@gmail.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     Hugh Dickins <hughd@google.com>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3509; i=broonie@kernel.org;
- h=from:subject:message-id; bh=dC6xVfoZAu1dLbggSONL4fKCtfqFkZexMTtlfTvKgfQ=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBktqoWNHLFaGMbLnk71Po+ikg0HmEFb2Er2KcvO
- TdEj449f3GJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZLaqFgAKCRAk1otyXVSH
- 0LBjB/9h8x5fbbbKuVsnCClJlyBKWsag8KbTFfpYMqgbuOYaRUZZEvIbLBoNKoSImBBiumXjCkP
- haBO3wVDrdvIpH90ub6r0UBAN7Z8F6ncmgNkWN7TlZwqymZdzXpucPHXbubWMT7BiiIirajZHvs
- D6A1s9yzq1Ac2htEyg4MraFxIM0Ew5LHtzTT/as0yE1VFUGzuuwl84dItvJu4N8XMAwIzlYfkIU
- Yrw0HUMNKWviJgjPcTjNvktREwhEjTNu5P/3XsEs6nklQCNk5JxbA7XnP6lbXoeHF6tH+e2Wx4k
- ofnYisR3/Q80C3IFmHKy6u09jteOqH0mYOw/KTG/6gHbxoDc
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <18e192cb-eafe-3aa9-6602-b1a9dbe020d5@linaro.org>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the sun8i thermal driver will fail to probe if any of the
-thermal zones it is registering fails to register with the thermal core.
-Since we currently do not define any trip points for the GPU thermal
-zones on at least A64 or H5 this means that we have no thermal support
-on these platforms:
+On Tue, Jul 18, 2023 at 02:21:31PM +0200, Konrad Dybcio wrote:
+> On 18.07.2023 06:25, Bjorn Andersson wrote:
+> > On Mon, Jul 17, 2023 at 07:11:33PM +0200, Konrad Dybcio wrote:
+> >> On 17.07.2023 18:56, Stephan Gerhold wrote:
+> >>> On Mon, Jul 17, 2023 at 06:50:18PM +0200, Konrad Dybcio wrote:
+> >>>> On 17.07.2023 18:28, Stephan Gerhold wrote:
+> >>>>> On Mon, Jul 17, 2023 at 05:19:22PM +0200, Konrad Dybcio wrote:
+> >>>>>> The GPU_CC block is powered by VDD_CX. Describe that.
+> >>>>>>
+> >>>>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> >>>>>> ---
+> >>>>>>  arch/arm64/boot/dts/qcom/sm6115.dtsi | 2 ++
+> >>>>>>  1 file changed, 2 insertions(+)
+> >>>>>>
+> >>>>>> diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
+> >>>>>> index 29b5b388cd94..bfaaa1801a4d 100644
+> >>>>>> --- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
+> >>>>>> +++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
+> >>>>>> @@ -1430,6 +1430,8 @@ gpucc: clock-controller@5990000 {
+> >>>>>>  			clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>,
+> >>>>>>  				 <&gcc GCC_GPU_GPLL0_CLK_SRC>,
+> >>>>>>  				 <&gcc GCC_GPU_GPLL0_DIV_CLK_SRC>;
+> >>>>>> +			power-domains = <&rpmpd SM6115_VDDCX>;
+> >>>>>> +			required-opps = <&rpmpd_opp_low_svs>;
+> >>>>>
+> >>>>> Where is this required-opp coming from? The clocks in gpucc seem to have
+> >>>>> different voltage requirements depending on the rates, but we usually
+> >>>>> handle that in the OPP tables of the consumer.
+> >>>> The only lower levels defined for this SoC are VDD_MIN and VDD_RET,
+> >>>> but quite obviously the GPU won't work then
+> >>>>
+> >>>
+> >>> The levels needed for the GPU clocks to run should be in the GPU OPP
+> >>> table though, just like e.g. sdhc2_opp_table for the SDCC clocks.
+> >>>
+> >>> I still don't really understand why this is specified here. :)
+> >> The GPU_CC block needs this rail to be at a certain power level for
+> >> register access. This describes that requirement.
+> >>
+> > 
+> > And that is not the lowest level reported by command db?
+> > Please describe this part in the commit message as well.
+> command-what? ;)
+> 
 
-[    1.698703] thermal_sys: Failed to find 'trips' node
-[    1.698707] thermal_sys: Failed to find trip points for thermal-sensor id=1
+Apparently doesn't matter that I read that line multiple times, my brain
+really wanted a 'h' in there.
 
-even though the main CPU thermal zone on both SoCs is fully configured.
-This does not seem ideal, while we may not be able to use all the zones
-it seems better to have those zones which are usable be operational.
-Instead just carry on registering zones if we get any non-deferral
-error, allowing use of those zones which are usable.
+> RPM exports VDD_NONE (off), VDD_MIN (the lowest state before collapse)
+> and then low_svs is usually the lowest "actually on" state for all
+> consumers.
+> 
 
-This means that we also need to update the interrupt handler to not
-attempt to notify the core for events on zones which we have not
-registered, I didn't see an ability to mask individual interrupts and
-I would expect that interrupts would still be indicated in the ISR even
-if they were masked.
+In rpmhpd I changed it such that the minimal enabled state would be
+!disabled (so that the automatic enablement during probe would be
+sufficient to access registers), but talking to Ulf this is
+provider-specific.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
-I noticed this while trying to debug an issue with memory corruption on
-boot which since the merge window has prevented Pine64 Plus (an A64)
-from booting at all:
+So unless you can figure out a acceptable lowest non-disabled state this
+is what has to be done...
 
-   https://storage.kernelci.org/mainline/master/v6.5-rc2/arm64/defconfig/gcc-10/lab-baylibre/baseline-sun50i-a64-pine64-plus.txt
 
-(which I bisected to a random memory management change that clearly
-wasn't at fault) and has been causing less consistent but still very
-severe boot issues on Libretech Tritium (a H3).  The corruption appears
-to happen when unbinding a the one thermal zone that does register, I've
-not figured out exactly where.
+PS. My ask for mentioning this in the commit message still stands.
 
-The memory corruption issue obviously needs to be dealt with properly
-(I'm still digging into it) but this does allow both platforms to boot
-reliably and seems like a sensible thing to do independently, ideally we
-could get this in as a fix.
----
- drivers/thermal/sun8i_thermal.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/thermal/sun8i_thermal.c b/drivers/thermal/sun8i_thermal.c
-index 195f3c5d0b38..b69134538867 100644
---- a/drivers/thermal/sun8i_thermal.c
-+++ b/drivers/thermal/sun8i_thermal.c
-@@ -190,6 +190,9 @@ static irqreturn_t sun8i_irq_thread(int irq, void *data)
- 	int i;
- 
- 	for_each_set_bit(i, &irq_bitmap, tmdev->chip->sensor_num) {
-+		/* We allow some zones to not register. */
-+		if (IS_ERR(tmdev->sensor[i].tzd))
-+			continue;
- 		thermal_zone_device_update(tmdev->sensor[i].tzd,
- 					   THERMAL_EVENT_UNSPECIFIED);
- 	}
-@@ -465,8 +468,17 @@ static int sun8i_ths_register(struct ths_device *tmdev)
- 						      i,
- 						      &tmdev->sensor[i],
- 						      &ths_ops);
--		if (IS_ERR(tmdev->sensor[i].tzd))
--			return PTR_ERR(tmdev->sensor[i].tzd);
-+
-+		/*
-+		 * If an individual zone fails to register for reasons
-+		 * other than probe deferral (eg, a bad DT) then carry
-+		 * on, other zones might register successfully.
-+		 */
-+		if (IS_ERR(tmdev->sensor[i].tzd)) {
-+			if (PTR_ERR(tmdev->sensor[i].tzd) == -EPROBE_DEFER)
-+				return PTR_ERR(tmdev->sensor[i].tzd);
-+			continue;
-+		}
- 
- 		devm_thermal_add_hwmon_sysfs(tmdev->dev, tmdev->sensor[i].tzd);
- 	}
-
----
-base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
-change-id: 20230718-thermal-sun8i-registration-df3a136ccafa
-
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
-
+Regards,
+Bjorn
