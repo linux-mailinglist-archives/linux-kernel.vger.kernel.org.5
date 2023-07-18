@@ -2,68 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9967574E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 965977574E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 09:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbjGRHD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 03:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59382 "EHLO
+        id S231180AbjGRHEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 03:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbjGRHD4 (ORCPT
+        with ESMTP id S231388AbjGRHET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 03:03:56 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FAA1AC
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 00:03:55 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fbf1b82d9cso48836515e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 00:03:55 -0700 (PDT)
+        Tue, 18 Jul 2023 03:04:19 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289391BE;
+        Tue, 18 Jul 2023 00:04:18 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1b8bbce9980so31220425ad.2;
+        Tue, 18 Jul 2023 00:04:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689663834; x=1692255834;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bKhUip0PnDfA0irAdbFiKaOHVjUbRVp4s07pXzgNeRM=;
-        b=IdoKdKMiMvD6TslkQXBIJ08QGkKo/w8prfMGKneCYH+NO5ZXbZ9ksBMV4URFvkdQS+
-         kUR+OZhnupRenFbuOMkbfcMOPFQzhLG/k5dFSSj6VrfHI4p1neG9eyNDHvwJpQrxemMy
-         jpz/C4bNm0aOFT/i5paPxrMP//mFdgXpkOYOX+dBb4/9f9TpFtEbJ/iSqyN2nxhAFqvW
-         SRk6LPJJlXsIU3TcyNja5lnOqwN/pAUP7DSr0RzztuzRZpdway2LVhUbyLmVcu4u/q+J
-         wdVsgu3YA0AeEy0XA+7gNZcZynRwqzkLdJkXZ/9FeeOhPNFg+eLg3jh1iPrL+FfEPMaz
-         SL9w==
+        d=gmail.com; s=20221208; t=1689663857; x=1692255857;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Axjn/sYToZar4H60yNlZc/j45/MEqGujqOR5kJMzvQ0=;
+        b=syzFUPiuhKsHj/zRkF4XZWy3HiXxr1fNbAK0cu1r4Jl0h56tac84Lll2SB1AN7aPCn
+         mTv5xSMW3CQBvvKoNc0KDskxHstGj7iIyJS1f8oJaztk95QjaDhhgPmQkc9zekHrlAXz
+         IePwGL70kBs11M9sdeJGusbs/4livWRpu+nlIIAospZpRfEgjAUNweonSW6belL4MeS1
+         bzxDry1QiGyqxPhr26G85KiasmJvkWxLToROvKpPZ5DIwhWrQrDHpaXZXQGi5T5iUSek
+         q86SCq12X5DnfziKkGg7nC10pHX6EgGm74coSguJo1zOIHSe63GNYXRyn2xmn9peuxe8
+         DnWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689663834; x=1692255834;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bKhUip0PnDfA0irAdbFiKaOHVjUbRVp4s07pXzgNeRM=;
-        b=AGLZJsSlZUsmYgWA30M3nUHISg+TQVNnLVx2PrA5XtIBxBElVrkW5ztS6a8LbJa+YD
-         RIBExY1AA93nFpxWQY4VB6o4cdgeU+a48NrDnA2xlDTP+IgwxtaxHs2hCQLKfgCrVLTl
-         TKhzzYuQ7aJ99mgxetKAO5ddYcUp7Fc3q7//JkxlkkYRQvAICf45BrPR/VPFluqqvLrV
-         /yTisTH6LFa92EY1IRc9Mrkc2EDkGdiA6TKrb0w0MXizp5ESk7UELOOHE110n1su6mbh
-         tCb3FTO5Sm+4kKwhLbGJHHfbAuKY5R9uzgS3dPdKdvWa0Z39uijuPp5mZgIApyFOhhJr
-         yrJg==
-X-Gm-Message-State: ABy/qLZNsPFxOLMpCQqEZ7VRbqsPfnsa/7vBh2hyx3lhMwqvCUvOlCPn
-        ozzGXDuykavB1jiA4qmJZV8Fkw==
-X-Google-Smtp-Source: APBJJlHfvHNEoZg8IkGxubThfVC+Ptja0xZZWZ7+R5eOiDUWfpCkd0ddPHNKcaxISr0g0kVD+rRX+A==
-X-Received: by 2002:a7b:c846:0:b0:3f8:fc2a:c7eb with SMTP id c6-20020a7bc846000000b003f8fc2ac7ebmr1014417wml.5.1689663833802;
-        Tue, 18 Jul 2023 00:03:53 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id 20-20020a05600c22d400b003fbc9d178a8sm9513810wmg.4.2023.07.18.00.03.51
+        d=1e100.net; s=20221208; t=1689663857; x=1692255857;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Axjn/sYToZar4H60yNlZc/j45/MEqGujqOR5kJMzvQ0=;
+        b=WjD0sex//KpqMQe1BPw5Re2NnZpwDKcr/yssJXYqhCkQn5gn7CG/JU3fdqBkQK5ok9
+         tTr38e+8McorP3K0JTYWe4sHf71H/4xUljv2GWIcQDXCo2walDBontPWq/lyRcmQ3zPG
+         aYcrB8bT483T0cJjZtPsIdGE8SmXwkSs07j1VG7NYUDcVZzh6UHLz8QZpMWaIUH+DtGu
+         Bd7vZWBAFX1GhaDrtlSe6g9LKkPAEvCdpgzAvQN59w9m9m2lWx1AGGNB80YiDpWCaSjg
+         kf+DVvO8vNb88lm89ffqO9NeP8oGvSJ+DE6A/SPe1X8Tf9G4/VvLqETuUik4Lz9PTqkp
+         5xWQ==
+X-Gm-Message-State: ABy/qLYgq7960Pcau2wvLKw6L4dnytqoFVtim9MXamW/Nhjv8BivfDwH
+        7cDFzhzuNvWb9zoiMKLSaJo=
+X-Google-Smtp-Source: APBJJlFWRwBzYYJtipfyQ3793K1v9vPM0jcqBgO6bDamwOYRvtq2qTt+gU9+hQGIPLxW03UhNqBcjQ==
+X-Received: by 2002:a17:902:d3c6:b0:1b8:9552:2249 with SMTP id w6-20020a170902d3c600b001b895522249mr12243330plb.43.1689663857458;
+        Tue, 18 Jul 2023 00:04:17 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id a22-20020a170902b59600b001b86dd825e7sm1053041pls.108.2023.07.18.00.04.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 00:03:52 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 10:03:49 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Chen Zhongjin <chenzhongjin@huawei.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] driver core: test_async: fix an error code
-Message-ID: <1e11ed19-e1f6-43d8-b352-474134b7c008@moroto.mountain>
+        Tue, 18 Jul 2023 00:04:16 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 985AA8191864; Tue, 18 Jul 2023 14:04:13 +0700 (WIB)
+Date:   Tue, 18 Jul 2023 14:04:12 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 6.4 000/801] 6.4.4-rc3 review
+Message-ID: <ZLY5bHubtrAsw1MF@debian.me>
+References: <20230717201608.814406187@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1sg3vSecY7TDSFAN"
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+In-Reply-To: <20230717201608.814406187@linuxfoundation.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,28 +79,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The test_platform_device_register_node() function should return error
-pointers instead of NULL.  That is what the callers are expecting.
 
-Fixes: 57ea974fb871 ("driver core: Rewrite test_async_driver_probe to cover serialization and NUMA affinity")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/base/test/test_async_driver_probe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--1sg3vSecY7TDSFAN
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/base/test/test_async_driver_probe.c b/drivers/base/test/test_async_driver_probe.c
-index 929410d0dd6f..3465800baa6c 100644
---- a/drivers/base/test/test_async_driver_probe.c
-+++ b/drivers/base/test/test_async_driver_probe.c
-@@ -84,7 +84,7 @@ test_platform_device_register_node(char *name, int id, int nid)
- 
- 	pdev = platform_device_alloc(name, id);
- 	if (!pdev)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
- 
- 	if (nid != NUMA_NO_NODE)
- 		set_dev_node(&pdev->dev, nid);
--- 
-2.39.2
+On Mon, Jul 17, 2023 at 10:34:36PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.4 release.
+> There are 801 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
 
+Successfully compiled and installed bindeb-pkgs on my computer (Acer
+Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--1sg3vSecY7TDSFAN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZLY5ZwAKCRD2uYlJVVFO
+o58xAQCNWexAdaOo/Wb5FVc2wvy9z6YkjgytmGLRAcgWggQmpAD+Ml/DN22Di3F3
+Zd/xTggvE2JYL0wtbF3i9CyU7mYJzg4=
+=usL+
+-----END PGP SIGNATURE-----
+
+--1sg3vSecY7TDSFAN--
