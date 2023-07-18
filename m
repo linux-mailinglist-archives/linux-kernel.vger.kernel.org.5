@@ -2,77 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E39CB758119
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C472758121
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbjGRPiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 11:38:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37848 "EHLO
+        id S233407AbjGRPjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 11:39:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233682AbjGRPiV (ORCPT
+        with ESMTP id S232849AbjGRPjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 11:38:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B54719A0;
-        Tue, 18 Jul 2023 08:37:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B98066163F;
-        Tue, 18 Jul 2023 15:37:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8838C433C8;
-        Tue, 18 Jul 2023 15:37:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689694674;
-        bh=4lzpTYj2kIXHXWaJYs/83EbVi/o1EKnwum3LfzARXr8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cNzyHRvyhQo8fy2tY5qhlfauywDksEZ+wW+jlrLSvyw0CUNqEW+spb+JpKUeB2vOF
-         XRpuWyi5psLzSvAtrML+E9fp18f+Wxveel+SbkG2kyrEQIi1sELC0TkdIjv8SKOj6E
-         HvfhLomkv0Sc67piLn6lGkvzrpMvQz7GqNiKqfkczbT1uZnRHaCUYs7u4O3MUvUPeQ
-         rP7waYDkAeKoM0V0LAbaZjfjyY+bD8tj/zX3/bJBJtCrOHshOjfjNsx8x45l1cEGDE
-         37ios2bSMjDt03MW1wvDgqPoxSzZVqBJqMqK2DNaN3mYtVo/gjp/77YoiLOgZpOhX2
-         XoHMPrp44k96A==
-Date:   Tue, 18 Jul 2023 08:37:53 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        Krzysztof Kozlowski <krzk@kernel.org>, corbet@lwn.net,
-        workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH docs] docs: maintainer: document expectations of small
- time maintainers
-Message-ID: <20230718083753.2d1e003a@kernel.org>
-In-Reply-To: <bb8c6476-283c-3bc6-710b-5a8602ccd40e@leemhuis.info>
-References: <20230713223432.1501133-1-kuba@kernel.org>
-        <6f1014cd-f8c5-f935-dcc7-4f5a6b85e473@kernel.org>
-        <20230714101028.337fb39a@kernel.org>
-        <bb8c6476-283c-3bc6-710b-5a8602ccd40e@leemhuis.info>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 18 Jul 2023 11:39:42 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B42B0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:39:40 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-262dc0ba9ceso4461674a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 08:39:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689694779; x=1692286779;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wGGkQ93IrX/9raMIEPjF/6hOzBaxFMRVgXqy35n2HSE=;
+        b=KyQeYVzk+K7gK1oqThDjsWR9LCO7EnjRY1G1/yz2WnYrK/fkZgDCsGnQBd9IX/GOGR
+         iQ8f5J6QyrquJGh3kja5Ey/Ga6ZvFcIomujIVZEJ5YVsosOwkHkUL9wMMQA1cAGyAWGX
+         FERgIPhfquufTAfTUl2uLgINmRfEkasAo4RpkWWDqiunvUpXP2vvLsNsDr0R/ynvDioE
+         7LXHHyooxZ2eYKvJYQT9/byUuj/f8kQU6N7a9fPp4bc7OcDOG+VwqJ6HnWwqC+0ZNlbi
+         ahHtg7BosB+Swt2i8eKv+YgU6R8Fs3nSx1FseOWnU7jgVtPWVrk82FAXpQHU215xeDzY
+         2hZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689694779; x=1692286779;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wGGkQ93IrX/9raMIEPjF/6hOzBaxFMRVgXqy35n2HSE=;
+        b=KrX7wAsoK+QjSO2gqypB68kSbpH5NA6oK2g+MbT+GFq/gael14wvg+IgIAZVpIYp2t
+         NFMAT8WrzPVgMTbj397yBtDeMUSkBW3wPM2LuI+mvXx4509PjbdXqKrHT9HZYkBgESXy
+         ZkLDp1p/2P/6JQ3azgpx25d1vTUqo36MV+vsuBvb3Hrawwd4LCN3bxwkHgk/fk0cQkV+
+         Kj+gsLmp31Tyy3kKur/uMqFot2sCvFVY4AO2euZCqu9j9U6Ot52TfqEyhdtZZApBNzZz
+         iFXlNlR0jEgEVwF3jfMXBLItT3KkYwO06Hagus5mMgZKu0j9HOP9wOAN1abLADDDBnsO
+         C4/A==
+X-Gm-Message-State: ABy/qLYMfqLXkmHnFUrlIGnbWPm9+xfmVWczeAyR8rCM6ajeSSOcL3ve
+        1NHdp2gz0cOKjuhl3KpDdqSHhdC4+dE=
+X-Google-Smtp-Source: APBJJlHZt7kp73Z7e3TtDTE2aH9PlAuzBAHS8EzXh/6Sg6h/6nchnKopI6IxRXZJiyn5TPijVukeYHsZXV0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90a:c20c:b0:262:d1ce:e06c with SMTP id
+ e12-20020a17090ac20c00b00262d1cee06cmr118559pjt.9.1689694779499; Tue, 18 Jul
+ 2023 08:39:39 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue, 18 Jul 2023 08:38:28 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
+Message-ID: <20230718153828.1469689-1-seanjc@google.com>
+Subject: [ANNOUNCE] PUCK Agenda - 2023.07.19 - LPC MC format + guest_memfd
+From:   Sean Christopherson <seanjc@google.com>
+To:     kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 15 Jul 2023 12:31:02 +0200 Linux regression tracking (Thorsten
-Leemhuis) wrote:
-> Maintainers must ensure severe problems in their code reported to them
-> are resolved in a timely manner: security vulnerabilities, regressions,
-> compilation errors, data loss, kernel crashes, and bugs of similar scope.
+Topic #1:   KVM MC format at LPC 2023 (~15 minutes)
+Objective:  Discuss and (mostly) finalize format of KVM MC
+Background: https://lore.kernel.org/all/ZJ3zU52uK0N+uoDn@google.com
 
-SG, thanks for the suggestion!
+Topic #2:   guest_memfd development sync (~45 minutes)
+Objective:  Identify known issues, build list of todos (and identify owners)
+            that must be completed before merging, and hash out how to
+            (efficiently) maintain and iterate on code while it's out-of-tree
+Background: https://lore.kernel.org/all/ZEM5Zq8oo+xnApW9@google.com
 
-One edit - I'd like to remove "security vulnerabilities" from the list.
-Security implications are an axis on which bug can be evaluated, one of
-many. All kernel bugs have some security implications. Placing them as
-a category like crashes, lockups or compiler errors could deepen the
-confusion.
+Date:  2023.07.19 (July 19th)
+Time:  6am PDT
+Video: https://meet.google.com/vdb-aeqo-knk
+Phone: https://tel.meet/vdb-aeqo-knk?pin=3003112178656
+
+Calendar: https://calendar.google.com/calendar/u/0?cid=Y182MWE1YjFmNjQ0NzM5YmY1YmVkN2U1ZWE1ZmMzNjY5Y2UzMmEyNTQ0YzVkYjFjN2M4OTE3MDJjYTUwOTBjN2Q1QGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20
+Drive:    https://drive.google.com/drive/folders/1aTqCrvTsQI9T4qLhhLs_l986SngGlhPH?resourcekey=0-FDy0ykM3RerZedI8R-zj4A&usp=drive_link
+
+Future Schedule:
+July 26th   - Available
+August 2nd  - Available
+August 9th  - Available
+August 16th - Available
