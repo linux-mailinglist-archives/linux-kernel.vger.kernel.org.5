@@ -2,94 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FE23757C11
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68359757C0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 14:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbjGRMoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 08:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
+        id S232107AbjGRMn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 08:43:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231268AbjGRMoR (ORCPT
+        with ESMTP id S231563AbjGRMn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 08:44:17 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CE8170E;
-        Tue, 18 Jul 2023 05:44:13 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9936b3d0286so801042066b.0;
-        Tue, 18 Jul 2023 05:44:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689684252; x=1692276252;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rjafSjwhPYU7xqZqTIKooSTK5vgwuXrvEkZkgBS1tpQ=;
-        b=svWBMpAzUIcAKZFhbHmS1VForkB52Iwtil3hYos/NhMBLkdcnjFkQYfMA27oQkeQ0c
-         J8gz0UU9uTFqvcyqYgZItHaSIGB9kZpwgzHISgERQJAXsUOB2kdPZJk2GEOJ7TvDhA91
-         oltJy+6JfEkrHkOzlR2nmE22d1ttxlNPAs+b7TUOyNW9gwl4anIMdjZab5YvdHSMHCAB
-         rHEv6KI1D7LUHjErwNrACg0CbZeFJmTBkY6pdFswB7i1RrOuBU80ZlNb31wgTtpX+T8C
-         602eYVK4LPPZ+vyCtu0zQWz6sM4CVSq9dFS9vQjUaWIQYCzVmQUPT4HexvKIFyGUEqrM
-         3Prg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689684252; x=1692276252;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rjafSjwhPYU7xqZqTIKooSTK5vgwuXrvEkZkgBS1tpQ=;
-        b=g8dbbgtcUNI+9LXkfG2uyzjho9Omtf9UaMj+nL0/zvTOG6i6tsa+HvgdDnzPIWqKWI
-         THk0FqlygpI5RUoUf9R+209HKqhzFO8yGAiQeBm4qfaUvBK3vIOYjl9KUgSyJ/u7zjpQ
-         rSZsgDgNmK19Gzd6aWJl790DZOlPZk+MIhQNtfvcxhTB5qq9NtWejt8eARrVRIJsFmwh
-         BfMIyVROPPJXBtmW3wFHz9L4TIVuVnxIc4SqA88fwFT4w+J8ppVfqVB8cemZavbvCVNt
-         HIxWVOzGhVcbWLcqy/xAr+9mx2Le2etxPlobq7ch7SFk5IJJjMeYWhpG2JgZvzolF/Xs
-         u5HA==
-X-Gm-Message-State: ABy/qLbwCkk3sYe7K8DTkbDDg5CsLUdNEC0LZiom8QlevOxCVemRAMlJ
-        XgtKBhnrwXPCzfQEpG8UTjbmrJHfKThYMg29fEA=
-X-Google-Smtp-Source: APBJJlG9m2BdQIW7onW1xnE8sV9rYPKp5JUOVkqIggApCTArboC/1wLbwqqnhKpHXdE0VmBN/AdKoTT/9mSwxAThd1A=
-X-Received: by 2002:a17:906:1054:b0:994:569b:61b4 with SMTP id
- j20-20020a170906105400b00994569b61b4mr9894424ejj.28.1689684251957; Tue, 18
- Jul 2023 05:44:11 -0700 (PDT)
+        Tue, 18 Jul 2023 08:43:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665FE188
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:43:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0467A61566
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 12:43:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AC30C433CD
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 12:43:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689684234;
+        bh=H69WBcnYOQuCKZB+mMXzbqF5HH219LA2UP0b8Dgf3wI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LUb5Yhz5OZKJByb2qt+0w11sGoO5TvV/dTSlABh7IckZBkMW4olpKvn1WuRDR3YAf
+         cG/xY+346fxreb1oS8dCkCSqQBOAS2hkVMOuh7x2ZWQT74L0ZByK+mRjuv7QExX5jb
+         T8TJykY31EjvCsLS1evAJA0gn91OsITELyMOwMJpEIPun08HeQxw1hnPv9GwxR94La
+         MBNuOYfs+PgYtQnkNC7vtZXZw2FD2A+JsjAnwyWjDZxm3z5S8M8iU4F/nh5Y42Afuy
+         wnSJn9OK3c/v0gzVR1fVztFSbYKI0OkuPTdCvXGKmrNlHocx1UF8s+TnEwQiwTxLuU
+         oUkuSCxwfKORA==
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-4fbb281eec6so9026965e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 05:43:54 -0700 (PDT)
+X-Gm-Message-State: ABy/qLaYITyUrWTuED7gIYk3t8z1b/bSC7XrtDzTPXK8Jd06yQkYAaDf
+        JO9ymk4JZlR78zGx5ALEOhmiITBTM/1ukxq/kjI=
+X-Google-Smtp-Source: APBJJlHdv/ZgRJmVrvBCdU4Ff03xN1zqvkYoiIOy0I+YBVfQzYMxNtWz7MNXye1Afm60aKXs2RpHNVuv6GLzp5POsWE=
+X-Received: by 2002:a19:7918:0:b0:4fb:9050:1d92 with SMTP id
+ u24-20020a197918000000b004fb90501d92mr8224508lfc.51.1689684232321; Tue, 18
+ Jul 2023 05:43:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
- <20230717172821.62827-10-andriy.shevchenko@linux.intel.com>
- <03592cf5d6854dd5e534e0416de946fd38e4380c.camel@crapouillou.net> <CAMuHMdWMHjFdh0Ze9k8gZC_Cjp62zdwDK1cvehHb5WXYw+p1XQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdWMHjFdh0Ze9k8gZC_Cjp62zdwDK1cvehHb5WXYw+p1XQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 18 Jul 2023 15:43:35 +0300
-Message-ID: <CAHp75VeVvUL29KUKaLHMpBnQE+WTkQmp=cC2y=dcjjv_d=D8vQ@mail.gmail.com>
-Subject: Re: [PATCH v2 09/10] pinctrl: renesas: Switch to use
- DEFINE_NOIRQ_DEV_PM_OPS() helper
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Balsam CHIHI <bchihi@baylibre.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
-        Sean Wang <sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
+References: <20230615121016.3731983-1-chenhuacai@loongson.cn>
+ <CAAhV-H49AyrG-sH2SXLNg_cX-Wv8vS4Qno_2N4v6ccGGciv-+A@mail.gmail.com> <ZJ9kWqhRCWkLcYyv@bombadil.infradead.org>
+In-Reply-To: <ZJ9kWqhRCWkLcYyv@bombadil.infradead.org>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 18 Jul 2023 20:43:40 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7qk8wSFt=ZMUSUt4cAmH+-5AsGqszXNW9w+u6Y8vDN+A@mail.gmail.com>
+Message-ID: <CAAhV-H7qk8wSFt=ZMUSUt4cAmH+-5AsGqszXNW9w+u6Y8vDN+A@mail.gmail.com>
+Subject: Re: [PATCH] kthread: Rename user_mode_thread() to kmuser_thread()
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,32 +68,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 1:12=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
-> On Mon, Jul 17, 2023 at 9:12=E2=80=AFPM Paul Cercueil <paul@crapouillou.n=
-et> wrote:
-> > Le lundi 17 juillet 2023 =C3=A0 20:28 +0300, Andy Shevchenko a =C3=A9cr=
-it :
+Hi, Luis,
 
-...
-
-> > I think you could do:
-> >
-> > .pm =3D IF_PTR(IS_ENABLED(CONFIG_ARM_PSCI_FW), pm_sleep_ptr(&sh_pfc_pm)=
-),
-> >
-> > Then you wouldn't need the #if defined(CONFIG_ARM_PSCI_FW) guard either
-> > (as long as the code still compiles fine when that config option is
-> > disabled), and you wouldn't need those dummy callbacks.
+On Sat, Jul 1, 2023 at 7:25=E2=80=AFAM Luis Chamberlain <mcgrof@kernel.org>=
+ wrote:
 >
-> Unfortunately not, as the code refers to psci_ops.cpu_suspend.
+> On Sun, Jun 25, 2023 at 04:55:33PM +0800, Huacai Chen wrote:
+> > Friendly ping?
 >
-> You could create a small wrapper for that, though.
+> You want to cc the folks who Nacked your patch. Until then, this
+> probably can't go further.
+Thank you very much. Eric and Andrew are already in the CC list, so
+add Thomas now.
 
- I think it's already too many wrappers mentioned and since you
-reviewed and acknowledged the change (thanks!) I will stick with my
-initial version.
+My brain is a little old-fashioned so I insisted that "a thread
+without mm_struct should be a kernel thread" in the previous patch.
+Unfortunately this makes Eric and Thomas unhappy, I'm very sorry for
+that.
 
---=20
-With Best Regards,
-Andy Shevchenko
+During the discussion of the previous patch I know I made some
+mistakes about some basic concepts, but I also found the name
+"user_mode_thread()" is somewhat confusing. I think rename it to
+kmuser_thread() is better, because:
+1, it identify init and umh as user threads;
+2, it points out that init and umh are special user threads that run
+in kernel mode before loading a user program.
+
+Sorry for my rudeness again.
+
+Huacai
+>
+>   Luis
