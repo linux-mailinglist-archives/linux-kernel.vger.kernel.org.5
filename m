@@ -2,139 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44809757A4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9DF757A94
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbjGRLSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:18:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37112 "EHLO
+        id S231252AbjGRLjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:39:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbjGRLST (ORCPT
+        with ESMTP id S229797AbjGRLjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:18:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3615BD8
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:17:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689679055;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OtPAFim1cDpcp/PLXUaQwLiMk8Vxwyxo/NiSi3JW/f0=;
-        b=TjVjCONXNajXgq5t1XpGWWJwqQE3zgXQjCg0K8E+SWHmIxEnOwq4QE6xQ9T6ov3dnKM26S
-        pFKwtlZH559Cbh0V8UIaezc9Kxd+hXAuJ5ZTu1478VQg1xefgwE42jCOUzfeOHM8W5PPMq
-        rhrvzYxbt/XtWrIZPffGjlRoEzuj9oE=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-371-bhKiPUwEMnuTFMM-Fyavsg-1; Tue, 18 Jul 2023 07:17:34 -0400
-X-MC-Unique: bhKiPUwEMnuTFMM-Fyavsg-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-543c2538071so769019a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:17:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689679053; x=1692271053;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OtPAFim1cDpcp/PLXUaQwLiMk8Vxwyxo/NiSi3JW/f0=;
-        b=TB0qXSjBNVxsX7+stGUeAfk++aHVBwXdnG5sOWBFJLze+YxzpckXPiLtH0b3r7a4v/
-         qGZyIZXdrj3k9fANrPdYR0un0TEwVV9ls4AipWSgvfeeEK8A53JuGyzg8dKAYnyYzWjf
-         tyg7R6Hh34YUHjSw1nMrEqmLv3pbSWKNEL0nCd6IjktGl7/OIUZ0uUT7eXb/YXE8ZxkD
-         baW+sRgNOukRqIhuKsaWfS/mhb3unG1vX/Ea7LzpSqJHtey/sjRJRFItX7HBZ3vvIN4u
-         9I6hM7WSuWORuIun2KP2JBmr/3x02wdo4Lf1vGkIqCEZeh3mT5C8r3mVwv7NoqGn1HaN
-         pPsQ==
-X-Gm-Message-State: ABy/qLYciQQzjUR8pWuI6nWuPCrMVmJ+pkdtZJsYcHFNXXGjia+WXk+I
-        gYHj6V08f6n4/Sdc+Kw3kY9n3khj7flR0qXMICtHn3LIMKbtGjhUfBn0QGWPlEz52QRLq/rBfHP
-        rrBNRA0aWpyUDWsDEJN5jzIY1
-X-Received: by 2002:a05:6a20:3d07:b0:133:89e:bf1a with SMTP id y7-20020a056a203d0700b00133089ebf1amr12988284pzi.4.1689679053257;
-        Tue, 18 Jul 2023 04:17:33 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGlX4aGknKfPCjhtPs4zbhCwYUKXUWNkmQcI4lBrRW+0354cqKkBfpbN1eJEAJfM+P9UQWRbQ==
-X-Received: by 2002:a05:6a20:3d07:b0:133:89e:bf1a with SMTP id y7-20020a056a203d0700b00133089ebf1amr12988260pzi.4.1689679052990;
-        Tue, 18 Jul 2023 04:17:32 -0700 (PDT)
-Received: from [10.72.112.40] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id k22-20020aa792d6000000b00682868714fdsm1369203pfa.95.2023.07.18.04.17.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 04:17:32 -0700 (PDT)
-Message-ID: <a8a43069-ca4c-07e6-3b65-de749f295365@redhat.com>
-Date:   Tue, 18 Jul 2023 19:17:26 +0800
+        Tue, 18 Jul 2023 07:39:35 -0400
+X-Greylist: delayed 598 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 18 Jul 2023 04:39:33 PDT
+Received: from mail.croughan.sh (mail.croughan.sh [135.181.193.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4833E1AC;
+        Tue, 18 Jul 2023 04:39:33 -0700 (PDT)
+From:   Matthew Croughan <matthew.croughan@nix.how>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nix.how; s=mail;
+        t=1689679185; bh=EKwrix3EnhCGzCZ8LjEib/k02rDGeBqZS8NBwK4dCTE=;
+        h=From:To:Cc:Subject:Date;
+        b=dINMv/x9Xr89p1+jJC/hdQO1KTNVn1y+DsetZkQ2nOA4uhz7ngz1/iQIbg9/7rSnX
+         s5U7Lb8jANJpWWSyixmHakirWlfkm0lblBgxTRvQVrbOPRe1Foxry0AP3wJUcsnUaz
+         lA46FVu/kdJqbaycBVrZbbLsQ4qRb2GwqdzlO9wA=
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>
+Cc:     Matthew Croughan <matthew.croughan@nix.how>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: allwinner: h616: Add Mango Pi MQ-Quad DTS
+Date:   Tue, 18 Jul 2023 12:19:07 +0100
+Message-ID: <20230718111908.1178727-1-matthew.croughan@nix.how>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v6 10/11] KVM: arm64: Invalidate the table entries upon a
- range
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>
-References: <20230715005405.3689586-1-rananta@google.com>
- <20230715005405.3689586-11-rananta@google.com>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <20230715005405.3689586-11-rananta@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Mango Pi MQ Quad is a H616 based SBC, add basic support for the board
+and its peripherals
+---
+ arch/arm64/boot/dts/allwinner/Makefile        |   1 +
+ .../allwinner/sun50i-h616-mangopi-mq-quad.dts | 183 ++++++++++++++++++
+ 2 files changed, 184 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts
 
-
-On 7/15/23 08:54, Raghavendra Rao Ananta wrote:
-> Currently, during the operations such as a hugepage collapse,
-> KVM would flush the entire VM's context using 'vmalls12e1is'
-> TLBI operation. Specifically, if the VM is faulting on many
-> hugepages (say after dirty-logging), it creates a performance
-> penalty for the guest whose pages have already been faulted
-> earlier as they would have to refill their TLBs again.
-> 
-> Instead, leverage kvm_tlb_flush_vmid_range() for table entries.
-> If the system supports it, only the required range will be
-> flushed. Else, it'll fallback to the previous mechanism.
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> Reviewed-by: Gavin Shan <gshan@redhat.com>
-Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
-> ---
->   arch/arm64/kvm/hyp/pgtable.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index 5d14d5d5819a..5ef098af1736 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -806,7 +806,8 @@ static bool stage2_try_break_pte(const struct kvm_pgtable_visit_ctx *ctx,
->   		 * evicted pte value (if any).
->   		 */
->   		if (kvm_pte_table(ctx->old, ctx->level))
-> -			kvm_call_hyp(__kvm_tlb_flush_vmid, mmu);
-> +			kvm_tlb_flush_vmid_range(mmu, ctx->addr,
-> +						kvm_granule_size(ctx->level));
->   		else if (kvm_pte_valid(ctx->old))
->   			kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, mmu,
->   				     ctx->addr, ctx->level);
-
+diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
+index 6a96494a2e0a..fbc64885ef79 100644
+--- a/arch/arm64/boot/dts/allwinner/Makefile
++++ b/arch/arm64/boot/dts/allwinner/Makefile
+@@ -40,3 +40,4 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
++dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-mangopi-mq-quad.dtb
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts
+new file mode 100644
+index 000000000000..752e5296c4af
+--- /dev/null
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts
+@@ -0,0 +1,183 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++// Copyright (C) 2020 Arm Ltd.
++/*
++ * Copyright (C) 2023 Matthew Croughan <matthew.croughan@nix.how>
++ */
++
++/dts-v1/;
++
++#include "sun50i-h616.dtsi"
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/leds/common.h>
++
++/ {
++	model = "MangoPi MQ-Quad";
++	compatible = "allwinner,sun50i-h616";
++
++	aliases {
++		serial0 = &uart0;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led-0 {
++			function = LED_FUNCTION_STATUS;
++			color = <LED_COLOR_ID_GREEN>;
++			gpios = <&pio 2 13 GPIO_ACTIVE_HIGH>; /* PC13 */
++		};
++	};
++
++	reg_vcc5v: vcc5v {
++		/* board wide 5V supply directly from the USB-C socket */
++		compatible = "regulator-fixed";
++		regulator-name = "vcc-5v";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		regulator-always-on;
++	};
++
++	reg_vcc3v3: vcc3v3 {
++		/* board wide 3V3 supply directly from SY8008 regulator */
++		compatible = "regulator-fixed";
++		regulator-name = "vcc-3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-always-on;
++	};
++
++	wifi_pwrseq: wifi-pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&pio 6 18 GPIO_ACTIVE_LOW>; /* PG18 */
++	};
++};
++
++&ehci1 {
++	status = "okay";
++};
++
++/* USB 2 & 3 are on headers only. */
++
++&mmc0 {
++	vmmc-supply = <&reg_vcc3v3>;
++	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>;	/* PF6 */
++	bus-width = <4>;
++	status = "okay";
++};
++
++&mmc1 {
++	bus-width = <4>;
++	mmc-pwrseq = <&wifi_pwrseq>;
++	non-removable;
++	vmmc-supply = <&reg_vcc3v3>;
++	vqmmc-supply = <&reg_vcc3v3>;
++	pinctrl-0 = <&mmc1_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	rtl8723ds: wifi@1 {
++		reg = <1>;
++		interrupt-parent = <&pio>;
++		interrupts = <6 15 IRQ_TYPE_LEVEL_LOW>; /* PG15 */
++		interrupt-names = "host-wake";
++	};
++};
++
++
++&uart1 {
++	uart-has-rtscts;
++	pinctrl-0 = <&uart1_pins>, <&uart1_rts_cts_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	bluetooth {
++		compatible = "realtek,rtl8723ds-bt";
++		device-wake-gpios = <&pio 6 17 GPIO_ACTIVE_HIGH>; /* PG17 */
++		enable-gpios = <&pio 6 19 GPIO_ACTIVE_HIGH>; /* PG19 */
++		host-wake-gpios = <&pio 6 16 GPIO_ACTIVE_HIGH>; /* PG16 */
++	};
++};
++
++&ohci1 {
++	status = "okay";
++};
++
++&r_i2c {
++	status = "okay";
++
++	axp313a: pmic@36 {
++		compatible = "x-powers,axp313a";
++		reg = <0x36>;
++		x-powers,self-working-mode;
++		regulators {
++			reg_aldo1: aldo1 {
++				regulator-always-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-name = "vcc-1v8";
++			};
++
++			reg_dldo1: dldo1 {
++				regulator-always-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-name = "vcc-3v3-pmic";
++			};
++
++			reg_dcdc1: dcdc1 {
++				regulator-always-on;
++				regulator-min-microvolt = <810000>;
++				regulator-max-microvolt = <990000>;
++				regulator-name = "vdd-gpu-sys";
++			};
++
++			reg_dcdc2: dcdc2 {
++				regulator-always-on;
++				regulator-min-microvolt = <810000>;
++				regulator-max-microvolt = <1100000>;
++				regulator-name = "vdd-cpu";
++			};
++
++			reg_dcdc3: dcdc3 {
++				regulator-always-on;
++				regulator-min-microvolt = <1500000>;
++				regulator-max-microvolt = <1500000>;
++				regulator-name = "vdd-dram";
++			};
++
++		};
++	};
++};
++
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_ph_pins>;
++	status = "okay";
++};
++
++&usbotg {
++	/*
++	 * PHY0 pins are connected to a USB-C socket, but a role switch
++	 * is not implemented: both CC pins are pulled to GND.
++	 * The VBUS pins power the device, so a fixed peripheral mode
++	 * is the best choice.
++	 * The board can be powered via GPIOs, in this case port0 *can*
++	 * act as a host (with a cable/adapter ignoring CC), as VBUS is
++	 * then provided by the GPIOs. Any user of this setup would
++	 * need to adjust the DT accordingly: dr_mode set to "host",
++	 * enabling OHCI0 and EHCI0.
++	 */
++	dr_mode = "peripheral";
++	status = "okay";
++};
++
++&usbphy {
++	usb1_vbus-supply = <&reg_vcc5v>;
++	status = "okay";
++};
 -- 
-Shaoqin
+2.41.0
 
