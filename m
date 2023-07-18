@@ -2,103 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DECE75763B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664AB757639
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231724AbjGRIJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:09:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41652 "EHLO
+        id S231651AbjGRIJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjGRIJc (ORCPT
+        with ESMTP id S230473AbjGRIJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:09:32 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6D111C
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:09:32 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-78372b896d0so251316439f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689667771; x=1692259771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mUZL14WYA0DLZ0DKyW91vgmsuwYwiL4W9V/M4FZV2mU=;
-        b=lvLEx2hLpY2H0FHWFky1bIMahN5KEjJKoFm5Gx0swmpHj5nKgFiAlseWKhFYVmQRxb
-         lxKdCMa27BhJ7prdrxdrHlYSrPcissRX7WwfaaAEIwJ6Y6li9I0DcdNvQcPg1ucnWq0+
-         iQ25cRSkGFVCpr89DPgeaIuklynoskxzrKzyE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689667771; x=1692259771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mUZL14WYA0DLZ0DKyW91vgmsuwYwiL4W9V/M4FZV2mU=;
-        b=VLUvF99XqOXJzDZztybiEnLaBMMxsyi038q2xAe21FPUMmCogD9OM3BdlN/kMK+36v
-         VX5gZfkOQNcwMyBnYK2d2QibLjkAPuU7w9mBWlz/Jc9SpEhs2+SbzbzuO1TEE4uTCut/
-         j1YcuqS8oG9lOsjKw0jOAFygv/QuSFvB60sYhOJjhFBjRQ9Qb84mccM1hf0faHThLJBz
-         2J/0Kw8IfyXdDseG2G47LRhP3LK9dXCPL3aCvkVfwLIZfr4HjR7Wbr69p6HOeBTZPdMZ
-         wuYVkZzJCK3ysDY3yzCs+kjK6VjlJUpSHIVzym1XggL6AWQWRGzysfPbXXqJFSLSga92
-         jFHQ==
-X-Gm-Message-State: ABy/qLY1+814jBPYAoxwo27NOxpvqsp9prbmrcVNudhwTT/h7DPKAqfi
-        xmSq58p5JHEYy7Qr2xKrSrgiuyThUK/3TY6S/YI=
-X-Google-Smtp-Source: APBJJlEVv2tr6+8KrSDD7esFlRt5xT2/BNgG3sYO+hCa9bvlTJf7/V7AYHJGCJzHHRtMVK2NTCrvNQ==
-X-Received: by 2002:a05:6602:220d:b0:787:8cf:fd8e with SMTP id n13-20020a056602220d00b0078708cffd8emr1837286ion.11.1689667771459;
-        Tue, 18 Jul 2023 01:09:31 -0700 (PDT)
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com. [209.85.166.170])
-        by smtp.gmail.com with ESMTPSA id y14-20020a02a38e000000b0042b37080b23sm378012jak.73.2023.07.18.01.09.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 01:09:30 -0700 (PDT)
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-345a8a78bcfso26570175ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:09:30 -0700 (PDT)
-X-Received: by 2002:a05:6e02:2144:b0:348:8aec:179c with SMTP id
- d4-20020a056e02214400b003488aec179cmr2013630ilv.32.1689667770016; Tue, 18 Jul
- 2023 01:09:30 -0700 (PDT)
+        Tue, 18 Jul 2023 04:09:08 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1801311C
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:09:06 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R4s6R6p6DzBQskq
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 16:09:03 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689667743; x=1692259744; bh=ZhffnlSd+6JbLRwdRLYVfu2pikG
+        Dw7nl33ahQKmhj1Y=; b=K1KYRQdAvqYQMuaHnwEZNSDDQx1wNGX2jp0LUd9PVdL
+        T7lSm1k6xobK7tVsZPLTj+0xsNfMy6MXBVkInzKABehf/Me0GV3Crgvbdwz2sLud
+        Ib5qujc6CwjxB8X6GZNvfl7zJoiy/CDxf/3UGk1I0janFA9z9l/sppHth2uqoOJE
+        qKZhmeBKRgf+ghCB1tYoi0u6sDQRRx79n++Uyo5D8R/R+nfIqZSWRkfcm9znRRyg
+        Wd14bkYduBfpMAa7jF2ZiJyG86Busjid9QoSXO3ZaVwX/ug1+aPYA+vHYbAZ4jky
+        ulrMkRy7J7N5IDYzT5HXWd0+xOsjz6V3e4QBfiKNzOw==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ZnaWbATf5eqt for <linux-kernel@vger.kernel.org>;
+        Tue, 18 Jul 2023 16:09:03 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R4s6R5CLpzBJBf8;
+        Tue, 18 Jul 2023 16:09:03 +0800 (CST)
 MIME-Version: 1.0
-References: <20230627063946.14935-1-shawn.sung@mediatek.com>
-In-Reply-To: <20230627063946.14935-1-shawn.sung@mediatek.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Tue, 18 Jul 2023 16:08:53 +0800
-X-Gmail-Original-Message-ID: <CAC=S1ng0sLRt0vhB2Rpk_vetQLu9Kro+JREWf-wpkkO6dNKiwg@mail.gmail.com>
-Message-ID: <CAC=S1ng0sLRt0vhB2Rpk_vetQLu9Kro+JREWf-wpkkO6dNKiwg@mail.gmail.com>
-Subject: Re: [PATCH v5 00/14] Add display driver for MT8188 VDOSYS1
-To:     Hsiao Chien Sung <shawn.sung@mediatek.com>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Jason-JH Lin <jason-jh.lin@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Date:   Tue, 18 Jul 2023 16:09:03 +0800
+From:   sunran001@208suo.com
+To:     davem@davemloft.net
+Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] floppy: add missing put_device()
+In-Reply-To: <20230718080812.16801-1-xujianghui@cdjrlc.com>
+References: <20230718080812.16801-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <98a14fa23e4fb81d4630264cba0cecc8@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hsiao-Chien,
+The of_find_device_by_node() takes a reference to the underlying device
+structure, we should release that reference.
 
-On Tue, Jun 27, 2023 at 2:50=E2=80=AFPM Hsiao Chien Sung
-<shawn.sung@mediatek.com> wrote:
->
-> Support MT8188 VDOSYS1 in display driver.
+Detected by coccinelle with the following ERROR:
+./arch/sparc/include/asm/floppy_64.h:595:3-9: ERROR: missing put_device;
+call of_find_device_by_node on line 589, but without a corresponding
+object release within this function.
 
-I'm testing this series with my local MT8188 setup + an external 4K
-display, and I feel there is something missing in it.
-With these patches the external display can be lit up on my end, but I
-only see glitches and no meaningful content is rendered.
-Could you check again and send the updated series with the fix?
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  arch/sparc/include/asm/floppy_64.h | 1 +
+  1 file changed, 1 insertion(+)
 
-Thanks,
-Fei
+diff --git a/arch/sparc/include/asm/floppy_64.h 
+b/arch/sparc/include/asm/floppy_64.h
+index 070c8c1f5c8f..e74a4d4e6519 100644
+--- a/arch/sparc/include/asm/floppy_64.h
++++ b/arch/sparc/include/asm/floppy_64.h
+@@ -592,6 +592,7 @@ static unsigned long __init sun_floppy_init(void)
+
+          state_prop = of_get_property(op->dev.of_node, "status", NULL);
+          if (state_prop && !strncmp(state_prop, "disabled", 8))
++            put_device(&op->dev);
+              return 0;
+
+          FLOPPY_IRQ = op->archdata.irqs[0];
