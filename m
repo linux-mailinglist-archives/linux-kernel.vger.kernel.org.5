@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95811757F60
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA1B757F65
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbjGROXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46622 "EHLO
+        id S232458AbjGROZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbjGROXg (ORCPT
+        with ESMTP id S229724AbjGROZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:23:36 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DACBC123;
-        Tue, 18 Jul 2023 07:23:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689690215; x=1721226215;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hYCr8FDXxRjThtXOv2d9yz4QI6g518XqEPlLA9Ia2Sc=;
-  b=FAaB8Jdjq7ZAZmLsg/pvMLlhjr1toacQQUWX2phYe8vYg+UVHbRHUHdM
-   yKMuI/5M1Wv6u99u8U2VyPxTFScRujNvRW0OMq7H2qIxEtjgw8BFGF/Bt
-   6qWuTAZk1/1AyU4B4mPpDXhddWr1QAwyAGoasr8iSDhE7R2my/PD/zdXA
-   mJmCxSN9cPHWXHiaAazbEhuI35z7ZaCIOZjSqwZQW46hvru4CRzBh3sfN
-   OykdP13OeoNK/LDv4qUdZPBEcEpxHnf6Bu8Y8geWPEh2aDa7T4S+7pJN4
-   u56BtByWOa5ArqDtVf9DYUz4iEYlsVlBvxacEwJXjoZkOx9Zt7iOJgsv1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="369773478"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="369773478"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 07:23:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="847713172"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="847713172"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP; 18 Jul 2023 07:23:32 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qLlbu-00GxaK-0l;
-        Tue, 18 Jul 2023 17:23:30 +0300
-Date:   Tue, 18 Jul 2023 17:23:30 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Lee Jones <lee@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Mark Gross <markgross@kernel.org>,
-        Tobias Schaffner <tobias.schaffner@siemens.com>
-Subject: Re: [PATCH 3/3] platform/x86: Move all simatic ipc drivers to the
- subdirectory siemens
-Message-ID: <ZLagYgJT4cz4jZ5r@smile.fi.intel.com>
-References: <20230718105213.1275-1-henning.schild@siemens.com>
- <20230718105213.1275-4-henning.schild@siemens.com>
+        Tue, 18 Jul 2023 10:25:28 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B512199;
+        Tue, 18 Jul 2023 07:25:27 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1b8baa836a5so45179815ad.1;
+        Tue, 18 Jul 2023 07:25:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689690327; x=1692282327;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RecCA8vAFQXqohj5TOPR9rOC0edp+q0SVjbjIuPLS2c=;
+        b=Gw2kPAo65Kv8O7eN2R3imSArpp3sl+zwXomh/gx/glI7B/aOOkZRdJYBo9niQUcWUs
+         cxiLx/U1ALQC33BgIDYK5UpG9UV4Tcv1X/R5w5EFtphYvzbXh8QfuimjDQp5y1k5sx+x
+         zJGn3juBl49+O+GoqubCevXG3mUHDriuufo3xQDGHvtelOtA4Kuf/rhnI2HmvpV/S8Lo
+         BZ9RaiGs37K4zzLSc1dGFAHFXDIr21RKayxi5q68ielyUMVpcNXPNz5NUI5I2X2p8n/A
+         Vb9eyqxtFG/0qO4N8sqKhlPGD+OciG51JX4xiUu/6OrWkPXr0Pej73u3HkfbBGRqBsm1
+         N49w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689690327; x=1692282327;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RecCA8vAFQXqohj5TOPR9rOC0edp+q0SVjbjIuPLS2c=;
+        b=Gjd7FukDEbKsH7g7C8j571t7/pqNJXgCG39LkSX1mdjwORYkeiECc3ptydlzXkUScp
+         1Su8sFWz2NXJLe1qA5oUNTEkAgGlOVezBPJIVipZ6doB3jNZXFrNAuala54GyDC9ROOb
+         q1SDDH+trLC/ygvDp/tAZAsVvCtKQ3q9H143OMm5+iFjGTgBZikB+aL4gPb3AgpvzBpx
+         2wjYw2bGKB4roaMX32UWdMfg3s+QCGmQMiXOQ2GX26qBjlwDUuGH4v4KNnuD9f76qHXx
+         RDg7Fpy5eMYF4x2YenNknURZka25rzdquDaNRvxYTWxA4R08zdZQlF9NZchBmWlro34W
+         xZeQ==
+X-Gm-Message-State: ABy/qLZWcQlPM2/8qGmQTcHr8NtRNoN8OAcUCGq/wMst6C61feGlQovZ
+        1MLXdHfXww5U5PqF7YUpLvI=
+X-Google-Smtp-Source: APBJJlGTNBTi10xRnLxTNvbAGliZrTe+7oB/h3WGBUx3s26ABAxe3uDi+qg37LchChzL4lbfZStnfg==
+X-Received: by 2002:a17:902:ce81:b0:1b9:e23a:f761 with SMTP id f1-20020a170902ce8100b001b9e23af761mr18256106plg.63.1689690327104;
+        Tue, 18 Jul 2023 07:25:27 -0700 (PDT)
+Received: from ?IPV6:2601:1c2:980:9ec0::2764? ([2601:1c2:980:9ec0::2764])
+        by smtp.gmail.com with ESMTPSA id k10-20020a170902ba8a00b001b50cbc0b4fsm1952851pls.111.2023.07.18.07.25.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 07:25:26 -0700 (PDT)
+Message-ID: <f52eb3fe-e141-5fc7-047f-185ff6e74735@gmail.com>
+Date:   Tue, 18 Jul 2023 07:25:20 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718105213.1275-4-henning.schild@siemens.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] TinyDRM display driver for Philips PCD8544 display
+ controller
+Content-Language: en-US
+To:     Viktar Simanenka <viteosen@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230718080727.323426-1-viteosen@gmail.com>
+From:   Randy Dunlap <rd.dunlab@gmail.com>
+In-Reply-To: <20230718080727.323426-1-viteosen@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,25 +81,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 12:52:13PM +0200, Henning Schild wrote:
-> Users without a Siemens Simatic IPC will not care about any of these
-> drivers. Users who do care can enable the submenu and all drivers behind
-> it will be enabled.
+On 7/18/23 01:07, Viktar Simanenka wrote:
+> Support for common monochrome LCD displays based on PCD8544 (such as Nokia 5110/3310 LCD) SPI controlled displays.
+> 
+> Signed-off-by: Viktar Simanenka <viteosen@gmail.com>
+> ---
+>  .../bindings/display/philips,pcd8544.yaml     |  92 ++++
+>  drivers/gpu/drm/tiny/Kconfig                  |  11 +
+>  drivers/gpu/drm/tiny/pcd8544.c                | 506 ++++++++++++++++++
+>  3 files changed, 609 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/philips,pcd8544.yaml
+>  create mode 100644 drivers/gpu/drm/tiny/pcd8544.c
 
-...
 
->  # Siemens Simatic Industrial PCs
-> +obj-$(CONFIG_X86_PLATFORM_DRIVERS_SIEMENS)		+= siemens/
-
-Do you need conditional here? We have stumbled over similar for entire intel
-subfolder, it might affect the rest as well when you don't expect it.
-
-obj-y		+= siemens/
-
-?
+Why is there no change to the Makefile?
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+~Randy
 
