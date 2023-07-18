@@ -2,130 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D2F758518
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1BA758523
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbjGRSyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 14:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42324 "EHLO
+        id S230480AbjGRSyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 14:54:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230459AbjGRSyC (ORCPT
+        with ESMTP id S230465AbjGRSyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 14:54:02 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF52411C;
-        Tue, 18 Jul 2023 11:53:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689706429; x=1721242429;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=UU2P+3ZsQXzcmH+F69dxcKHPXFKakkdB8q53cPswhJA=;
-  b=m2t1mNm+c8vv+noVFrNalW1BAr0JQ1RsOvHFQv8bnPqD3OMfpanrnyAj
-   cI/E0C7TXV5I1RTF58IZHhDr9UG2xMUwY9TOjpv7taQx6mHlKE4l1W/gO
-   vPx4n9XXab/O4NjAOt21uH9UZknaasw8YMl4kF7auayxfeB8s26Jk0RSt
-   7bgqrNaeZ0uXyBzgIrhMKWaldiWAj5shJS6PkV8uY28Zn/9XZLm/V2kFq
-   /Bqw4Pyz/gHfikD6fZBOXvq6Wr5fCm9BmUzpl0eIklKR3/i4iApituW8M
-   zcnw5hfwSeu+GRfMoGDFAv/h9O29MBijxzbBomXeQRY54cscF//xnaWTg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="351156310"
-X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
-   d="scan'208";a="351156310"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 11:53:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="867201456"
-Received: from unknown (HELO [10.209.37.195]) ([10.209.37.195])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 11:53:49 -0700
-Message-ID: <b5779418-e2a4-ca7a-866f-97e49cd272cb@intel.com>
-Date:   Tue, 18 Jul 2023 11:53:47 -0700
+        Tue, 18 Jul 2023 14:54:21 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89FE134
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 11:54:07 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-51e5e4c6026so8655833a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 11:54:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689706446; x=1692298446;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u//A+GlhAlttSgwEt3gkumyAtdqzMVpBDzjR8GDGYAA=;
+        b=E1wLf8L6/nbq8aJQ//pWBjId0ztDeKMPvJHWR0fIfH1VudG2o0yfado1tfuN5ez38G
+         La8OCLd2zvzmH5Kny3W0JmyjVw81V1WTjRaKe2iGpBYjNH0kd6ui2JJESG1OeC4dUkAz
+         jtmdMFHeG33b8CxIKyfHcaObV0ECbnmaKi/VfZuj3g3+/vIKodcHsdF4iGvRlxEW0Oes
+         Yn0F1/kcO8+hTpM8wvi9FgmnWmz1mbjtmNhfboEAewnbn0jQsw0zQgIiHf2hpirB+DWW
+         W0JU0YpMbkeYpMBmxYDSTZean9Sl00XVSq5+Tuz3/L5aVS89MgzR35LCEY/ko0zEy2hL
+         BxSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689706446; x=1692298446;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u//A+GlhAlttSgwEt3gkumyAtdqzMVpBDzjR8GDGYAA=;
+        b=exTDPS0ysdSw/0Ed2YRbum4Nt07DlZuzLn4mi5Ih4BpP15AUu7KbXmKAdM/XFUQVMS
+         307P7ChCPOJys9p4ujnv5gqm/Hb0BSkYD4WanzAH73t2D3xnKfwo5cGKTHPVRRCWZ0yK
+         UyOGpFpi0A2Ctp3rVy1ot87LhbPFLwzquD4PdqAL5I5G7r2caHjad9meyLRmGIW0bYse
+         vSmFPqhP78D42AAC9l+e2aE/NMoCEl6SBC2KwcRCIZ7h4NVlClKAONmYFQ84VP9oyQf+
+         KP7VSeTuyfylLOt5DQ6m4gF9gkGxmTXRXzojKllJps5L3Axt1usndgTiu/567kya9QWP
+         SJjg==
+X-Gm-Message-State: ABy/qLbX3eG07bktilESLc3cnKDx3z+M16YbtwmnsTYvX6ZfwllyfTQx
+        NywEj08IaEBRQLPDAjCtnRWJWw==
+X-Google-Smtp-Source: APBJJlGXFOM+q8PW+p7H7DQdXaQwtsgl2vlU/eN/+0hkask5hluI60Ev0R+CAPak/xBgH7zgN5YpYA==
+X-Received: by 2002:aa7:d991:0:b0:51d:e7b5:547d with SMTP id u17-20020aa7d991000000b0051de7b5547dmr655552eds.34.1689706446085;
+        Tue, 18 Jul 2023 11:54:06 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id z11-20020aa7cf8b000000b0051df13f1d8fsm1608611edx.71.2023.07.18.11.54.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 11:54:05 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Marek Vasut <marex@denx.de>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 0/3] dt-bindings: net: davicom,dm9000: convert to DT schema
+Date:   Tue, 18 Jul 2023 20:53:54 +0200
+Message-Id: <168970643389.118933.12401444775795846915.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230713152848.82752-1-krzysztof.kozlowski@linaro.org>
+References: <20230713152848.82752-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] x86/sgx: fix a NULL pointer
-Content-Language: en-US
-To:     Haitao Huang <haitao.huang@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
-        kristen@linux.intel.com, seanjc@google.com, stable@vger.kernel.org
-References: <CU4OBQ8MQ2LK.2GRBPLQGVTZ3@seitikki>
- <20230717202938.94989-1-haitao.huang@linux.intel.com>
- <dfb1f233-aebd-50cf-8704-e83b91ee110a@intel.com>
- <op.18ah5mn3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <op.18ah5mn3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/18/23 11:11, Haitao Huang wrote:
-> On Tue, 18 Jul 2023 09:27:49 -0500, Dave Hansen <dave.hansen@intel.com>
-> wrote:
+
+On Thu, 13 Jul 2023 17:28:45 +0200, Krzysztof Kozlowski wrote:
+> Memory controller bindings have to be updated before we can convert
+> davicom,dm9000 to DT schema.
 > 
->> On 7/17/23 13:29, Haitao Huang wrote:
->>> Under heavy load, the SGX EPC reclaimers (current ksgxd or future EPC
->>> cgroup worker) may reclaim the SECS EPC page for an enclave and set
->>> encl->secs.epc_page to NULL. But the SECS EPC page is used for EAUG in
->>> the SGX #PF handler without checking for NULL and reloading.
->>>
->>> Fix this by checking if SECS is loaded before EAUG and load it if it was
->>> reclaimed.
->>
->> It would be nice to see a _bit_ more theory of the bug in here.
->>
->> What is an SECS page and why is it special in a reclaim context?  Why is
->> this so hard to hit?  What led you to discover this issue now?  What is
->> EAUG?
+> Please take it via net-next.
 > 
-> Let me know if this clarify things.
+> Best regards,
+> Krzysztof
 > 
-> The SECS page holds global states of an enclave, and all reclaimable
-> pages tracked by the SGX EPC reclaimer (ksgxd) are considered 'child'
-> pages of the SECS page corresponding to that enclave.  The reclaimer
-> only reclaims the SECS page when all its children are reclaimed. That
-> can happen on system under high EPC pressure where multiple large
-> enclaves demanding much more EPC page than physically available. In a
-> rare case, the reclaimer may reclaim all EPC pages of an enclave and it
-> SECS page, setting encl->secs.epc_page to NULL, right before the #PF
-> handler get the chance to handle a #PF for that enclave. In that case,
-> if that #PF happens to require kernel to invoke the EAUG instruction to
-> add a new EPC page for the enclave, then a NULL pointer results as
-> current code does not check if encl->secs.epc_page is NULL before using it.
+> [...]
 
-Better, but that's *REALLY* verbose and really imprecise.  It doesn't
-_require_ "high pressure".  It could literally happen at very, very low
-pressures over a long period of time.  Please stick to the facts and
-it'll actually simplify the description.
+Applied, thanks!
 
-	The SECS page holds global enclave metadata.  It can only be
-	reclaimed when there are no other enclave pages remaining.  At
-	that point, virtually nothing can be done with the enclave until
-	the SECS page is paged back in.
+[1/3] dt-bindings: memory-controllers: ingenic,nemc: reference peripheral properties
+      https://git.kernel.org/krzk/linux-mem-ctrl/c/00e20f9ecde2c3131553de44ab832b486e8720a8
+[2/3] dt-bindings: memory-controllers: reference TI GPMC peripheral properties
+      https://git.kernel.org/krzk/linux-mem-ctrl/c/d9711707dc781ea6a397c5aa986ba3c05d1b875f
+[3/3] dt-bindings: net: davicom,dm9000: convert to DT schema
+      https://git.kernel.org/krzk/linux-mem-ctrl/c/b71da9105a81066f3a911beeb307751f904e00ce
 
-	An enclave can not run nor generate page faults without without
-	a resident SECS page.  But it is still possible for a #PF for a
-	non-SECS page to race with paging out the SECS page.
-
-	Hitting this bug requires triggering that race.
-
-> The bug is easier to reproduce with the EPC cgroup implementation when a
-> low EPC limit is set for a group of enclave hosting processes. Without
-> the EPC cgroup it's hard to trigger the reclaimer to reclaim all child
-> pages of an SECS page. And it'd also require a machine configured with
-> large RAM relative to EPC so no OOM killer triggered before this happens.
-
-Isn't this the _normal_ case?  EPC is relatively tiny compared to RAM
-normally.
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
