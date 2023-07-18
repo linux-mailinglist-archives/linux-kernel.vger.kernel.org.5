@@ -2,61 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2E2758725
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 187A7758727
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbjGRV3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 17:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47228 "EHLO
+        id S229736AbjGRVa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 17:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGRV3c (ORCPT
+        with ESMTP id S229450AbjGRVa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 17:29:32 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB16DC0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:29:30 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4R5Bsx63Gxz9sls;
-        Tue, 18 Jul 2023 23:29:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=keresztesschmidt.de;
-        s=MBO0001; t=1689715765;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S9Df8GqjNPTE2V3Xmvj2wteO34K0hy8AG7QJdN/GObA=;
-        b=BxJtTIAteYW5lZjmJmkgR3zZqsonL/65QFd47C6IozXbL14uqWg9017mEpCOG1oNK9IYNt
-        fz+ewHq+EMBsyOLq7xmzM1GCcZwtEKzgn+QsLTe7SaxspCLVB20oVrtxmWpEZcOhITdQ9i
-        ePOcE+cOJrVko2ys/lXe/i+M/LBqz+q7ZP6c+pgVyiGNJ5NiYJSgs13XS6U8mjF+0/7j//
-        v2yyuOaufljL3BfHYgFQWfIY90ldGovSYhFtG9LqHV7r0BS0i9elBtt6O8z/0JWIKQCM6R
-        itBvbX2FAQj+yJxt9dE2fYC/Rzqt5d80j/OTF8LeXI0FrD8YhvKaUuv8NQlqvg==
-Message-ID: <ffc889de-3181-791e-f985-ce461b992bfc@keresztesschmidt.de>
-Date:   Tue, 18 Jul 2023 23:29:23 +0200
+        Tue, 18 Jul 2023 17:30:27 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA8FBC0;
+        Tue, 18 Jul 2023 14:30:24 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qLsGe-0001Jh-1v;
+        Tue, 18 Jul 2023 21:30:00 +0000
+Date:   Tue, 18 Jul 2023 22:29:48 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Ungerer <gerg@kernel.org>,
+        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH net-next v3 0/9] net: ethernet: mtk_eth_soc: add basic
+ support for MT7988 SoC
+Message-ID: <cover.1689714290.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-Subject: Re: [patch 50/58] x86/apic: Provide common init infrastructure
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     x86@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Juergen Gross <jgross@suse.com>
-References: <20230717223049.327865981@linutronix.de>
- <20230717223226.058365439@linutronix.de>
-From:   Peter Keresztes Schmidt <peter@keresztesschmidt.de>
-In-Reply-To: <20230717223226.058365439@linutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 4R5Bsx63Gxz9sls
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,27 +59,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas!
+The MediaTek MT7988 SoC introduces a new version (3) of the NETSYS
+block and comes with three instead of two MACs.
 
-On 18.07.23 01:15, Thomas Gleixner wrote:
-> --- a/arch/x86/kernel/apic/bigsmp_32.c
-> +++ b/arch/x86/kernel/apic/bigsmp_32.c
-> @@ -119,10 +119,8 @@ bool __init apic_bigsmp_possible(bool cm
->  
->  void __init apic_bigsmp_force(void)
->  {
-> -	if (apic != &apic_bigsmp) {
-> -		apic = &apic_bigsmp;
-> -		pr_info("Overriding APIC driver with bigsmp\n");
-> -	}
-> +	if (apic != &apic_bigsmp)
-> +		apic_install_driver(&apic_noop);
+The first MAC can be internally connected to a built-in Gigabit
+Ethernet switch with four 1000M/100M/10M twisted pair user ports.
 
-Could apic_noop be a typo? Shouldn't it be apic_bigsmp?
+The second MAC can be internally connected to a built-in 2500Base-T
+Ethernet PHY.
 
->  }
->  
->  apic_driver(apic_bigsmp);
+There are two SerDes units which can be operated in USXGMII, 10GBase-(K)R,
+5GBase-R, 2500Base-X, 1000Base-X or SGMII interface mode.
 
-Thanks,
-Peter
+This series adds initial support for NETSYS v3 and the first MAC of the
+MT7988 SoC connecting the built-in DSA switch.
+
+The switch is supported since commit 110c18bfed414 ("net: dsa: mt7530:
+introduce driver for MT7988 built-in switch").
+
+Basic support for the 1000M/100M/10M built-in PHYs connected to the
+switch ports is present since commit ("98c485eaf509b net: phy: add
+driver for MediaTek SoC built-in GE PHYs").
+
+Changes since v2:
+  * Use version number instead of feature bits for NETSYS version
+  * Remove unneeded check for NULL when calling mtk_pcs_lynxi_destroy
+  * Reduce dt-bindings to what is actually needed at this point for
+    the driver to work.
+
+Changes since v1:
+  * Set MTK_MAX_DEVS to 3 instead of converting to dynamic number of
+    Ethernet MACs.
+  * use mtk_m32 when ever possible
+  * more small improvements and minor comments addressed
+
+Daniel Golle (3):
+  dt-bindings: net: mediatek,net: add missing mediatek,mt7621-eth
+  dt-bindings: net: mediatek,net: add mt7988-eth binding
+  net: ethernet: mtk_eth_soc: convert clock bitmap to u64
+
+Lorenzo Bianconi (6):
+  net: ethernet: mtk_eth_soc: add version in mtk_soc_data
+  net: ethernet: mtk_eth_soc: increase MAX_DEVS to 3
+  net: ethernet: mtk_eth_soc: rely on MTK_MAX_DEVS and remove
+    MTK_MAC_COUNT
+  net: ethernet: mtk_eth_soc: add NETSYS_V3 version support
+  net: ethernet: mtk_eth_soc: convert caps in mtk_soc_data struct to u64
+  net: ethernet: mtk_eth_soc: add basic support for MT7988 SoC
+
+ .../devicetree/bindings/net/mediatek,net.yaml | 101 ++++-
+ drivers/net/ethernet/mediatek/mtk_eth_path.c  |  36 +-
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c   | 398 ++++++++++++++----
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h   | 327 +++++++++-----
+ drivers/net/ethernet/mediatek/mtk_ppe.c       |  18 +-
+ .../net/ethernet/mediatek/mtk_ppe_offload.c   |   2 +-
+ drivers/net/ethernet/mediatek/mtk_wed.c       |   4 +-
+ 7 files changed, 661 insertions(+), 225 deletions(-)
+
+-- 
+2.41.0
