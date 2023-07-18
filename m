@@ -2,81 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 723617577C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581EA7577CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbjGRJXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60886 "EHLO
+        id S231645AbjGRJYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:24:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbjGRJXv (ORCPT
+        with ESMTP id S231558AbjGRJYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:23:51 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07340E0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:23:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=z6h9Kl+9Vn52HeLrb8U7V39ZQEjyvP9ofUEU3VJOKM4=; b=p6tX8I/FflCvX1OocBMEQgWHyN
-        5fEdj7K/XikooyEOuomVsAtPZ3S2HVox+MEJK30c3ftkXtTK5AGQzwibltql+ZlP5NkYGbotYvbJM
-        W+DpupPpT/d8bstd9DrhQOaYG8Pag4KP+5MyJwf0GprVSmfILDveHrbizdcDdGSHsoYPSBOQutzB9
-        nFABpFGkpZA2C7f96j4DO1puwkPZfGiE2DjX6/c+M22nPvLVtQwCwxyRZfQRMBbtLyhjQeHwfyRED
-        gdka5+0QIqREb+Q351NvTC81s5vQ825urNftymyPMkc7wolvmW8qU4KWFYaWEKmlfQUXz8DYWjZUt
-        e1p6Inmw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qLgvb-00BM6U-0G;
-        Tue, 18 Jul 2023 09:23:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Tue, 18 Jul 2023 05:24:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3C4E4F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:24:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 26EFB30007E;
-        Tue, 18 Jul 2023 11:23:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0CD3A213727BB; Tue, 18 Jul 2023 11:23:30 +0200 (CEST)
-Date:   Tue, 18 Jul 2023 11:23:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: Re: [patch 00/58] x86/apic: Decrapification and static calls
-Message-ID: <20230718092329.GB3472843@hirez.programming.kicks-ass.net>
-References: <20230717223049.327865981@linutronix.de>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 54FB0614E9
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:24:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10489C433C8;
+        Tue, 18 Jul 2023 09:24:07 +0000 (UTC)
+From:   Ilia Lin <quic_ilial@quicinc.com>
+To:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        leonro@nvidia.com, Ilia Lin <ilia.lin@kernel.org>
+Subject: [PATCH] xfrm: Allow ESP over UDP in packet offload mode
+Date:   Tue, 18 Jul 2023 12:24:05 +0300
+Message-Id: <20230718092405.4124345-1-quic_ilial@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717223049.327865981@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 01:14:33AM +0200, Thomas Gleixner wrote:
+The ESP encapsulation is not supported only in crypto mode.
+In packet offload mode, the RX is bypassing the XFRM,
+so we can enable the encapsulation.
 
-> So 58 patches and a lot of cursing later:
+Signed-off-by: Ilia Lin <ilia.lin@kernel.org>
+---
+ net/xfrm/xfrm_device.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Hehe, and you've not even posted the topology bits yet :-)
-
->  58 files changed, 744 insertions(+), 1348 deletions(-)
-
-(add another 24 lines of comments, and we have 58 patches, 58 files
-changed and 580 lines removed)
-
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-
-
+diff --git a/net/xfrm/xfrm_device.c b/net/xfrm/xfrm_device.c
+index 4aff76c6f12e0..3018468d97662 100644
+--- a/net/xfrm/xfrm_device.c
++++ b/net/xfrm/xfrm_device.c
+@@ -246,8 +246,10 @@ int xfrm_dev_state_add(struct net *net, struct xfrm_state *x,
+ 		return -EINVAL;
+ 	}
+ 
+-	/* We don't yet support UDP encapsulation and TFC padding. */
+-	if (x->encap || x->tfcpad) {
++	is_packet_offload = xuo->flags & XFRM_OFFLOAD_PACKET;
++
++	/* We don't yet support UDP encapsulation except full mode and TFC padding. */
++	if ((!is_packet_offload && x->encap) || x->tfcpad) {
+ 		NL_SET_ERR_MSG(extack, "Encapsulation and TFC padding can't be offloaded");
+ 		return -EINVAL;
+ 	}
+@@ -258,7 +260,6 @@ int xfrm_dev_state_add(struct net *net, struct xfrm_state *x,
+ 		return -EINVAL;
+ 	}
+ 
+-	is_packet_offload = xuo->flags & XFRM_OFFLOAD_PACKET;
+ 	dev = dev_get_by_index(net, xuo->ifindex);
+ 	if (!dev) {
+ 		if (!(xuo->flags & XFRM_OFFLOAD_INBOUND)) {
+-- 
 
