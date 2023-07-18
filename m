@@ -2,62 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C303757404
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867F575740A
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbjGRGZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 02:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34148 "EHLO
+        id S230447AbjGRG0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 02:26:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbjGRGZn (ORCPT
+        with ESMTP id S229986AbjGRG0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 02:25:43 -0400
-Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB9E126;
-        Mon, 17 Jul 2023 23:25:41 -0700 (PDT)
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.3ffe.de (Postfix) with ESMTPSA id C07D23C3;
-        Tue, 18 Jul 2023 08:25:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-        t=1689661539;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vwy+Rk+DpWgKqRl/5W9li4fim9nVcS+KSVDMqOOga0w=;
-        b=ZFlYDESTV91bDpjpp/nK4NchulbycORk27MdDVBlJYrImYDMQzO2LmWhfX9jveUYMvi+EZ
-        /hoPhwCsC9r6JH60O1UT2Un4xvhfiR66BznPTLZm/tjfVdtQtWKmEaIE3OceRqPoUlrh+N
-        Kyb/UsbP45UCgllP2HCzY1VouJ/0uN+4v/BiWNpdOzBFabBlYyWtNgHmvYIEWf4hSQPykG
-        ae9lPqXmd2FFFotC3p3qvyyPuw8deil5/guhRGKFtgEybwzP1SzKidgLiWCJ0xxVj6IefX
-        /TrnE9bVQKjbD/0GrSNEJD7n16e8oExEGD2RFaFbfnoWf9ah/bitQnJVjF4eTQ==
+        Tue, 18 Jul 2023 02:26:46 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296DC126;
+        Mon, 17 Jul 2023 23:26:46 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-3487d75e4c5so14236185ab.0;
+        Mon, 17 Jul 2023 23:26:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689661605; x=1692253605;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=t7CLNl341a6qbr1/+SqD2wU8H0rNBWIA4UoKO2oRkIk=;
+        b=Wl56MJJjwI2mGTf3k92EgT//sXuLO8UWap6B6DnjCHdiDGbk/T/t0FOA41rH9qKBIo
+         hgFX+twXDXU+UPv3h+XZXDGthvIGgMAnjT01HXajCc32OR9aswCnZFxQdvURhkO7KvQI
+         mZY/lCeQASJ+ztY7uVqrIJtC7qnmx1CaHZdwnNNN5/yvmDsHjMoXckiNnA/sj9sV6ycl
+         d2iFmS62V8mLQV55duuSBNM7Q0ImbHFEBePwGLiUDyGlB7jcFmp+gu5m92wHG7W+yuh8
+         2/BESdcUKDN9R5hinjFlpGgVEreT4Vi1D47ygIAzhsyh6AfnOG5s/zZ+xkdSzcbrzS1r
+         fwQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689661605; x=1692253605;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t7CLNl341a6qbr1/+SqD2wU8H0rNBWIA4UoKO2oRkIk=;
+        b=QN0Wg4F8w2PL3haZhC8u/3qJ6y1CoxOv9K6lnWghKknJG4U/X7ldrBhzAQHcz/36KQ
+         gVk1cpD9g7nGl8+fv+CsCDUzjnWkc6BGlHu/49Zf2UQf8+T4uwe3FQNrnxaaLb35sTM3
+         OKid76wD/ub3M2xmCB90UtJsbCM7+uh8SNwCr4vpXVOp2ez07W4ogbSMF88HsF5u9VxK
+         tYeLXIvXNBCjvvF/mdHKH+ggevG8nt34VDRWIDu04MRcr9HUmpJFPcZxK4rcPH+FWlOC
+         BzXCnLNWYPMslghz7nREqEsNBoE4zwoz00kMD0nUwiuEzy7wwkYYf09K2tby4lelf4gH
+         26Bg==
+X-Gm-Message-State: ABy/qLanL1nD2zkziW6kzOVxr1+xHh8LwhgLw8MpVFCXOWd0fWkaXAAf
+        TdQMHWPMDbgKMTGt0vpVhi4=
+X-Google-Smtp-Source: APBJJlFZCsWQza7bUATlQ8O/mkdlO1GlCu58cJOBj4zgREHIvmUcerlXmnjVsM2gL+P6vDa3yNGz3w==
+X-Received: by 2002:a92:cdaa:0:b0:341:f920:4483 with SMTP id g10-20020a92cdaa000000b00341f9204483mr2038959ild.9.1689661605424;
+        Mon, 17 Jul 2023 23:26:45 -0700 (PDT)
+Received: from localhost.localdomain (211-20-114-70.hinet-ip.hinet.net. [211.20.114.70])
+        by smtp.gmail.com with ESMTPSA id n16-20020a92d9d0000000b00345d154ce58sm467680ilq.12.2023.07.17.23.26.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 23:26:44 -0700 (PDT)
+From:   Dylan Hung <kobedylan@gmail.com>
+X-Google-Original-From: Dylan Hung <dylan_hung@aspeedtech.com>
+To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     BMC-SW@aspeedtech.com, kobedylan@gmail.com,
+        Dylan Hung <dylan_hung@aspeedtech.com>
+Subject: [PATCH v3] dt-bindings: clock: ast2600: Add I3C and MAC reset definitions
+Date:   Tue, 18 Jul 2023 14:26:16 +0800
+Message-Id: <20230718062616.2822339-1-dylan_hung@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Date:   Tue, 18 Jul 2023 08:25:39 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: spi-nor: Correct flags for Winbond w25q128
-In-Reply-To: <d99d87e7-47ba-d6fe-735f-16de2a2ec280@linaro.org>
-References: <20230712-spi-nor-winbond-w25q128-v2-1-50c9f1d58d6c@linaro.org>
- <f00fa2ae-6d4a-90cb-3724-2bedb96cb4fb@linaro.org>
- <0525440a652854a2a575256cd07d3559@walle.cc>
- <d99d87e7-47ba-d6fe-735f-16de2a2ec280@linaro.org>
-Message-ID: <e642ff27fd0bc0f1f0e293972145f680@walle.cc>
-X-Sender: michael@walle.cc
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,70 +73,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add reset definitions of AST2600 I3C and MAC controllers. In the case of
+the I3C reset, since there is no reset-line hardware available for
+`ASPEED_RESET_I3C_DMA`, a new macro `ASPEED_RESET_I3C` with the same ID
+is introduced to provide a more accurate representation of the hardware.
+The old macro `ASPEED_RESET_I3C_DMA` is kept to provide backward
+compatibility.
 
->>> while here try, using INFO with INFO(0xef4018, 0, 0, 0), those
->>> parameters shall be discovered at run-time, so we prepare to get rid 
->>> of
->>> explicitly setting them sooner or later.
->> 
->> This is an entry matching various flash families from Winbond, see my
->> reply in v1. I'm not sure we should remove these as we could break the
->> older ones, which might or might not have SFDP tables. We don't know.
-> 
-> I'd take the risk and break the older ones if there are some that don't
-> define SFDP indeed, just to handle the conflict properly. We can't
-> encourage code based on assumptions otherwise we'll get back to the
-> knotted spi-nor code that we tried to untie in the last years.
+Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
+---
+changes in v2:
+- Added back ASPEED_RESET_I3C_DMA for backward compatibility
+- link to v1: https://lore.kernel.org/all/20230621094545.707-1-dylan_hung@aspeedtech.com/
 
-Wait a minute, now I'm the more conservative one of the both of
-us? (:
+changes in v3:
+- Added an explaination for adding a duplicate ID in the commit message
+- Link to v2: https://lore.kernel.org/all/20230717075123.1597977-1-dylan_hung@aspeedtech.com/
 
-Jokes aside, basically you are saying that if there are two flashes
-with the same id, one supports JEDEC one doesn't, we can brake the
-latter one.
+ include/dt-bindings/clock/ast2600-clock.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
->>>> -        NO_SFDP_FLAGS(SECT_4K) },
->> 
->> Thus, I'd also keep this one.
->> 
-> 
-> Keeping this one does not have the effect that you want as SECT_4K is
-> used in spi_nor_no_sfdp_init_params() which is not called when
-> PARSE_SFDP is set, which makes perfectly sense. Let's drop this and if
-> bugs will be reported, I commit I'll fix them in the same release 
-> cycle.
+diff --git a/include/dt-bindings/clock/ast2600-clock.h b/include/dt-bindings/clock/ast2600-clock.h
+index e149eee61588..712782177c90 100644
+--- a/include/dt-bindings/clock/ast2600-clock.h
++++ b/include/dt-bindings/clock/ast2600-clock.h
+@@ -90,7 +90,19 @@
+ /* Only list resets here that are not part of a clock gate + reset pair */
+ #define ASPEED_RESET_ADC		55
+ #define ASPEED_RESET_JTAG_MASTER2	54
++
++#define ASPEED_RESET_MAC4		53
++#define ASPEED_RESET_MAC3		52
++
++#define ASPEED_RESET_I3C5		45
++#define ASPEED_RESET_I3C4		44
++#define ASPEED_RESET_I3C3		43
++#define ASPEED_RESET_I3C2		42
++#define ASPEED_RESET_I3C1		41
++#define ASPEED_RESET_I3C0		40
++#define ASPEED_RESET_I3C		39
+ #define ASPEED_RESET_I3C_DMA		39
++
+ #define ASPEED_RESET_PWM		37
+ #define ASPEED_RESET_PECI		36
+ #define ASPEED_RESET_MII		35
+-- 
+2.25.1
 
-Mhh, I should have been more curious to why Linus needed the PARSE_SFDP
-flag in the first place. Taking a closer look, that is because in the
-legacy behavior, the SFDP is only read if the chip supports dual or
-quad read (whatever the rationale was for that).
-
-Also, if PARSE_SFDP is set, none of the no_sfdp_flags are ever handled.
-If the chip doesn't support the SFDP is will just fail probing.
-
-As I'm reading the code right now, for the new behavior
-it is either
-  * expect the flash supports SFDP, if not, probe fails
-  * expect the flash to don't support SFDP, no SFDP is ever read at all
-
-Shouldn't we handle the third case in the new behavior, too:
-  * start with the static data we have and try reading SFDP to 
-amend/correct it.
-
-If not, will you accept breakage for future flashes, too? Looking at 
-winbond.c
-for example, I guess all chips with 0xef40.. 0xef50.. and 0xef60.. 
-supports
-SFDP nowadays and most of them only have SECT_4K set.
-
-> If both of you agree, I'll amend Linus's v4 patch when applying.
-
-So it would be the first chip without flags at all? Then we could
-drop the entry entirely :) And if we do this, then we should also
-drop all the other entries for the newer winbond flashes.
-
-If you decide to break older flashes, then I'd prefer to also drop
-the n_sectors and sector_size, i.e. INFO(0xef...., 0, 0, 0).
-
--michael
