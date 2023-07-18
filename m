@@ -2,46 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 035BB757A55
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33877757A58
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231655AbjGRLWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:22:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
+        id S231748AbjGRLWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231460AbjGRLV7 (ORCPT
+        with ESMTP id S231460AbjGRLWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:21:59 -0400
+        Tue, 18 Jul 2023 07:22:22 -0400
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B04BE8;
-        Tue, 18 Jul 2023 04:21:58 -0700 (PDT)
-X-UUID: 4c2ae040255d11eeb20a276fd37b9834-20230718
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E1B1732;
+        Tue, 18 Jul 2023 04:22:10 -0700 (PDT)
+X-UUID: 51c7ed4a255d11eeb20a276fd37b9834-20230718
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=FFdnLI10SYOIFcwMRjs55L6+be52n5AbFQ2Gw8StAjo=;
-        b=dmYK94FF1qR+OYgKdQ8eqN8D/9eqc5ky4Unz/8QwqA4+pCw27PccyLPpPH7q5YMoCuEjvcXF2vtKuy/MuTcEgvggLhI/rIs+Jur8PJIBg/LqpBINT3iFSBfdn8z/NU+ed9P7HBLs1LVf0kyeKBy+Ca6/H2RQUNyjDJ0wLUHBQ5M=;
+        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=LYVZcFdOa+vLBdw8dXkdvjjipS5D4yC942iy/7t6M80=;
+        b=Q/9uJBuu7iMeMrHKhSdaHwf8Z1h98t8TxCIKEZpPJYVNQwfDh9VRI0hJ4rRLOLOVqpOwUFBY7AyLbAv0bwrq5QwCOBbd+vAtccxSm1bi6T9I9x8p+Q3mxRV59Dx2YJR6k6Jov333hLr8fZt76mN2biA9RD539W8CEkQlEiLcgG0=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.28,REQID:7f57e5f7-1434-4081-8217-d25933b47e95,IP:0,U
-        RL:25,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:20
-X-CID-META: VersionHash:176cd25,CLOUDID:6f6ecc8e-7caa-48c2-8dbb-206f0389473c,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 4c2ae040255d11eeb20a276fd37b9834-20230718
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
+X-CID-O-INFO: VERSION:1.1.28,REQID:71184003-3c33-45e2-a27f-80a322cb2c76,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:100,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:100
+X-CID-INFO: VERSION:1.1.28,REQID:71184003-3c33-45e2-a27f-80a322cb2c76,IP:0,URL
+        :0,TC:0,Content:0,EDM:0,RT:0,SF:100,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTIO
+        N:quarantine,TS:100
+X-CID-META: VersionHash:176cd25,CLOUDID:6504d84c-06c1-468b-847d-5b62d44dbb9b,B
+        ulkID:2307181922058XW8AZY6,BulkQuantity:0,Recheck:0,SF:38|29|28|17|19|48,T
+        C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+        ,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_ASC,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_SNR,
+        TF_CID_SPAM_SDM
+X-UUID: 51c7ed4a255d11eeb20a276fd37b9834-20230718
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
         (envelope-from <william-tw.lin@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1268309920; Tue, 18 Jul 2023 19:21:53 +0800
+        with ESMTP id 856485582; Tue, 18 Jul 2023 19:22:02 +0800
 Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 18 Jul 2023 19:21:52 +0800
+ 15.2.1118.26; Tue, 18 Jul 2023 19:21:54 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 18 Jul 2023 19:21:52 +0800
+ 15.2.1118.26 via Frontend Transport; Tue, 18 Jul 2023 19:21:54 +0800
 From:   William-tw Lin <william-tw.lin@mediatek.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -56,9 +60,9 @@ CC:     <Project_Global_Chrome_Upstream_Group@mediatek.com>,
         <linux-kernel@vger.kernel.org>,
         <linux-mediatek@lists.infradead.org>,
         William-tw Lin <william-tw.lin@mediatek.com>
-Subject: [PATCH 2/3] dt-bindings: soc: mediatek: Add mtk-socinfo driver
-Date:   Tue, 18 Jul 2023 19:21:42 +0800
-Message-ID: <20230718112143.14036-3-william-tw.lin@mediatek.com>
+Subject: [PATCH 3/3] arm64: dts: Add node for chip info driver
+Date:   Tue, 18 Jul 2023 19:21:43 +0800
+Message-ID: <20230718112143.14036-4-william-tw.lin@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20230718112143.14036-1-william-tw.lin@mediatek.com>
 References: <20230718112143.14036-1-william-tw.lin@mediatek.com>
@@ -75,81 +79,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dt-binding documentation for mtk-socinfo driver.
-mtk-socinfo driver provides SoC-related information.
-Such information includes manufacturer information, SoC name,
-SoC segment name, and SoC marketing name.
+Add dts node for socinfo retrieval. This includes the following projects:
+MT8173
+MT8183
+MT8186
+MT8192
+MT8195
 
 Signed-off-by: William-tw Lin <william-tw.lin@mediatek.com>
 ---
- .../bindings/soc/mediatek/mtk-socinfo.yaml    | 58 +++++++++++++++++++
- 1 file changed, 58 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/soc/mediatek/mtk-socinfo.yaml
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi | 15 +++++++++++++++
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi | 15 +++++++++++++++
+ arch/arm64/boot/dts/mediatek/mt8186.dtsi | 10 ++++++++++
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi | 14 ++++++++++++++
+ arch/arm64/boot/dts/mediatek/mt8195.dtsi |  9 +++++++++
+ 5 files changed, 63 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/soc/mediatek/mtk-socinfo.yaml b/Documentation/devicetree/bindings/soc/mediatek/mtk-socinfo.yaml
-new file mode 100644
-index 000000000000..4420430a9bca
---- /dev/null
-+++ b/Documentation/devicetree/bindings/soc/mediatek/mtk-socinfo.yaml
-@@ -0,0 +1,58 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/soc/mediatek/mtk-socinfo.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+index c47d7d900f28..115f907751c1 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+@@ -590,11 +590,26 @@
+ 			reg = <0 0x10206000 0 0x1000>;
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
 +
-+title: MediaTek SOC information
++			socinfo_data1: socinfo-data1 {
++				reg = <0x040 0x4>;
++			};
 +
-+maintainers:
-+  - William Lin <william-tw.lin@mediatek.com>
-+  - Matthias Brugger <matthias.bgg@gmail.com>
-+  - Kevin Hilman <khilman@kernel.org>
++			socinfo_data2: socinfo-data2 {
++				reg = <0x044 0x4>;
++			};
 +
-+description:
-+  The MTK socinfo driver can retrieve several
-+  SoC related information based on settings in eFuse.
-+  Such information include manufacturer information, SoC name,
-+  SoC segment name, and SoC marketing name.
+ 			thermal_calibration: calib@528 {
+ 				reg = <0x528 0xc>;
+ 			};
+ 		};
+ 
++		mtk_socinfo: mtk-socinfo {
++			compatible = "mediatek,mt8173-socinfo";
++			nvmem-cells = <&socinfo_data1 &socinfo_data2>;
++			nvmem-cell-names = "socinfo-data1", "socinfo-data2";
++		};
 +
+ 		apmixedsys: clock-controller@10209000 {
+ 			compatible = "mediatek,mt8173-apmixedsys";
+ 			reg = <0 0x10209000 0 0x1000>;
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+index 5169779d01df..1035c6d7eb91 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+@@ -1706,6 +1706,15 @@
+ 			reg = <0 0x11f10000 0 0x1000>;
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
 +
-+properties:
-+  compatible:
-+    enum:
-+      - mediatek,mt8173-socinfo
-+      - mediatek,mt8183-socinfo
-+      - mediatek,mt8186-socinfo
-+      - mediatek,mt8188-socinfo
-+      - mediatek,mt8192-socinfo
-+      - mediatek,mt8195-socinfo
++			socinfo_data1: socinfo-data1 {
++				reg = <0x04C 0x4>;
++			};
 +
++			socinfo_data2: socinfo-data2 {
++				reg = <0x060 0x4>;
++			};
 +
-+  nvmem-cells:
-+    description:
-+      Phandle to the eFuse data for SoC differentiation.
-+    items:
-+      - description: eFuse data that mtk-socinfo driver uses for SoC differentiation
+ 			thermal_calibration: calib@180 {
+ 				reg = <0x180 0xc>;
+ 			};
+@@ -1719,6 +1728,12 @@
+ 			};
+ 		};
+ 
++		mtk_socinfo: mtk-socinfo {
++			compatible = "mediatek,mt8183-socinfo";
++			nvmem-cells = <&socinfo_data1 &socinfo_data2>;
++			nvmem-cell-names = "socinfo-data1", "socinfo-data2";
++		};
 +
-+  nvmem-cell-names:
-+    minItems: 1
-+    items:
-+      - const: socinfo-data1
-+      - const: socinfo-data2
+ 		u3phy: t-phy@11f40000 {
+ 			compatible = "mediatek,mt8183-tphy",
+ 				     "mediatek,generic-tphy-v2";
+diff --git a/arch/arm64/boot/dts/mediatek/mt8186.dtsi b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
+index f04ae70c470a..e048e4d994e9 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8186.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
+@@ -1660,6 +1660,16 @@
+ 				reg = <0x59c 0x4>;
+ 				bits = <0 3>;
+ 			};
 +
-+required:
-+  - compatible
-+  - nvmem-cells
-+  - nvmem-cell-names
++			socinfo_data1: socinfo-data1 {
++				reg = <0x7a0 0x4>;
++			};
++		};
 +
-+additionalProperties: false
++		mtk_socinfo: socinfo {
++			compatible = "mediatek,mt8186-socinfo";
++			nvmem-cells = <&socinfo_data1>;
++			nvmem-cell-names = "socinfo-data1";
+ 		};
+ 
+ 		mipi_tx0: dsi-phy@11cc0000 {
+diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+index 5e94cb4aeb44..80066faf2b2c 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+@@ -1122,6 +1122,14 @@
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+ 
++			socinfo_data1: socinfo-data1 {
++				reg = <0x044 0x4>;
++			};
 +
-+examples:
-+  - |
-+        mtk_socinfo: socinfo {
-+            compatible = "mediatek,mt8186-socinfo";
-+            nvmem-cells = <&socinfo_data1>;
-+            nvmem-cell-names = "socinfo-data1";
-+        };
++			socinfo_data2: socinfo-data2 {
++				reg = <0x050 0x4>;
++			};
 +
+ 			lvts_e_data1: data1@1c0 {
+ 				reg = <0x1c0 0x58>;
+ 			};
+@@ -1131,6 +1139,12 @@
+ 			};
+ 		};
+ 
++		mtk_socinfo: mtk-socinfo {
++			compatible = "mediatek,mt8192-socinfo";
++			nvmem-cells = <&socinfo_data1 &socinfo_data2>;
++			nvmem-cell-names = "socinfo-data1", "socinfo-data2";
++		};
++
+ 		i2c3: i2c@11cb0000 {
+ 			compatible = "mediatek,mt8192-i2c";
+ 			reg = <0 0x11cb0000 0 0x1000>,
+diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
+index 48b72b3645e1..ec8f2c8888cb 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
+@@ -1683,6 +1683,15 @@
+ 			lvts_efuse_data2: lvts2-calib@1d0 {
+ 				reg = <0x1d0 0x38>;
+ 			};
++			socinfo_data1: socinfo-data1 {
++				reg = <0x7a0 0x4>;
++			};
++		};
++
++		mtk_socinfo: socinfo {
++			compatible = "mediatek,mt8195-socinfo";
++			nvmem-cells = <&socinfo_data1>;
++			nvmem-cell-names = "socinfo-data1";
+ 		};
+ 
+ 		u3phy2: t-phy@11c40000 {
 -- 
 2.18.0
 
