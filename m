@@ -2,57 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D4F75816C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA5075816F
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 17:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233723AbjGRPzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 11:55:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48828 "EHLO
+        id S232116AbjGRPzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 11:55:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232116AbjGRPzO (ORCPT
+        with ESMTP id S233763AbjGRPzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 11:55:14 -0400
+        Tue, 18 Jul 2023 11:55:21 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 000D9170F;
-        Tue, 18 Jul 2023 08:55:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4781705;
+        Tue, 18 Jul 2023 08:55:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 73F706160B;
-        Tue, 18 Jul 2023 15:55:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41CC6C433C8;
-        Tue, 18 Jul 2023 15:55:04 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D76A61632;
+        Tue, 18 Jul 2023 15:55:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A56FC433B9;
+        Tue, 18 Jul 2023 15:55:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689695704;
-        bh=qcGNAr1jchfDbWvX3HJAvkAl3q4hU00rnSQ/oAYYq0w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XvD/CW7LDkBf4rR1yrjIuE/6EYlHUVwJtEpe/+O6ilMCOihTkTt4V1vV2Cx9OAy0S
-         EXcZPcHpc1PaP4fXcajiGF7nY50QGI/1ErzrT8pywq/g0lgYDwXoYVwOj2cOTHPfHs
-         q5Uw9SwI0YvjJAzqbcIyopnapMW5y3hr7nuCo4673KjSvlphNsyydIJ1bXrUPOMuEv
-         SpLCoGV76mWqYHtZCR2fw2AwWicj1Ihs4ZblTY+m3sJZGX3F64QA7Riks3oCL5xN8k
-         2LU+jomI32wHgkJ9A59txlF5fy45vAbcELaRcF02ufZAvoX48hI+Mr7ndI64j/fFR2
-         dA8eQ8wEgvbog==
-Date:   Tue, 18 Jul 2023 08:55:02 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Okan Sahin <okan.sahin@analog.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v3 2/2] regulator: max77857: Add ADI MAX77857/59/MAX77831
- Regulator Support
-Message-ID: <20230718155502.GA3542993@dev-arch.thelio-3990X>
-References: <20230717050736.10075-1-okan.sahin@analog.com>
- <20230717050736.10075-3-okan.sahin@analog.com>
+        s=k20201202; t=1689695717;
+        bh=XkxaNzMQrlndpmaZ6Ahex4//qnr2RKplzVyK9NA4FAs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=bX5cTij+x74/dC4QWY3+zwYhnrlKfd4bd+c6mzDOa1cLDbU2o7xP5r85fBjHD2z9I
+         l8TmTQP14ByqW0OOZzgqxP0yQ4VCdLyacPMuTzUQYHnWsP3oJujRfnJHnbtNyOcLFy
+         b8gCnLR3hqFkOXSNmDgQWr9gqJxdrnyzkh0GoR9B6zBxq/d8yGXnMwmliYrvOmzgJ3
+         6Igf/XmWqlfRWEfIFOgaVN6lkZFLONHsUmCqxq0l15oTbyqqbXsLg2q3OjAu8lctd9
+         aI3mVU9RGSMJisZFb2m48ABZzssm9K5kx0nd6TanKixpFU/aqPWbrM8P83HLAWlr+p
+         +jQiEa1Ec8lsA==
+Date:   Tue, 18 Jul 2023 10:55:15 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Achal Verma <a-verma1@ti.com>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof Wilczy_ski <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] PCI: j721e: Delay 100ms T_PVPERL from power stable to
+ PERST# inactive
+Message-ID: <20230718155515.GA483233@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230717050736.10075-3-okan.sahin@analog.com>
+In-Reply-To: <20230707095119.447952-1-a-verma1@ti.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -63,552 +60,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Okan,
-
-On Mon, Jul 17, 2023 at 08:07:35AM +0300, Okan Sahin wrote:
-> Regulator driver for  MAX77857/59 and MAX77831.
-> The MAX77857 is a high-efficiency, high-performance
-> buck-boost converter targeted for systems requiring
-> a wide input voltage range (2.5V to 16V).
+On Fri, Jul 07, 2023 at 03:21:19PM +0530, Achal Verma wrote:
+> As per the PCIe Card Electromechanical specification REV. 5.0, PERST#
+> signal should be de-asserted after minimum 100ms from the time power-rails
+> become stable. So, to ensure 100ms delay to give sufficient time for
+> power-rails and refclk to become stable, change delay from 100us to 100ms.
 > 
-> The MAX77859 is high-Efficiency Buck-Boost Converter
-> for USB-PD/PPS Applications. It has wide input range
-> (2.5V to 22V)
+> From PCIe Card Electromechanical specification REV. 5.0 section 2.9.2:
+> TPVPERL: Power stable to PERST# inactive - 100ms
 > 
-> The MAX77831 is a high-efficiency, high-performance
-> buck-boost converter targeted for systems requiring
-> wide input voltage range (2.5V to 16V).
-> 
-> Signed-off-by: Okan Sahin <okan.sahin@analog.com>
+> Fixes: f3e25911a430 ("PCI: j721e: Add TI J721E PCIe driver")
+> Signed-off-by: Achal Verma <a-verma1@ti.com>
 > ---
->  drivers/regulator/Kconfig              |  10 +
->  drivers/regulator/Makefile             |   1 +
->  drivers/regulator/max77857-regulator.c | 459 +++++++++++++++++++++++++
->  3 files changed, 470 insertions(+)
->  create mode 100644 drivers/regulator/max77857-regulator.c
 > 
-> diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-> index e5f3613c15fa..09eaa1cd90de 100644
-> --- a/drivers/regulator/Kconfig
-> +++ b/drivers/regulator/Kconfig
-> @@ -573,6 +573,16 @@ config REGULATOR_MAX77650
->  	  Semiconductor. This device has a SIMO with three independent
->  	  power rails and an LDO.
+> Changes from v2:
+> * Fix commit message.
+> 
+> Change from v1:
+> * Add macro for delay value.
+> 
+>  drivers/pci/controller/cadence/pci-j721e.c | 11 +++++------
+>  drivers/pci/pci.h                          |  2 ++
+>  2 files changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+> index e70213c9060a..32b6a7dc3cff 100644
+> --- a/drivers/pci/controller/cadence/pci-j721e.c
+> +++ b/drivers/pci/controller/cadence/pci-j721e.c
+> @@ -498,14 +498,13 @@ static int j721e_pcie_probe(struct platform_device *pdev)
 >  
-> +config REGULATOR_MAX77857
-> +	tristate "ADI MAX77857/MAX77831 regulator support"
-> +	depends on I2C
-> +	select REGMAP_I2C
-> +	help
-> +	  This driver controls a ADI MAX77857 and MAX77831 regulators.
-> +	  via I2C bus. MAX77857 and MAX77831 are high efficiency buck-boost
-> +	  converters with input voltage range (2.5V to 16V). Say Y here to
-> +	  enable the regulator driver
-> +
->  config REGULATOR_MAX8649
->  	tristate "Maxim 8649 voltage regulator"
->  	depends on I2C
-> diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-> index 58dfe0147cd4..e7230846b680 100644
-> --- a/drivers/regulator/Makefile
-> +++ b/drivers/regulator/Makefile
-> @@ -85,6 +85,7 @@ obj-$(CONFIG_REGULATOR_MAX77686) += max77686-regulator.o
->  obj-$(CONFIG_REGULATOR_MAX77693) += max77693-regulator.o
->  obj-$(CONFIG_REGULATOR_MAX77802) += max77802-regulator.o
->  obj-$(CONFIG_REGULATOR_MAX77826) += max77826-regulator.o
-> +obj-$(CONFIG_REGULATOR_MAX77857) += max77857-regulator.o
->  obj-$(CONFIG_REGULATOR_MC13783) += mc13783-regulator.o
->  obj-$(CONFIG_REGULATOR_MC13892) += mc13892-regulator.o
->  obj-$(CONFIG_REGULATOR_MC13XXX_CORE) +=  mc13xxx-regulator-core.o
-> diff --git a/drivers/regulator/max77857-regulator.c b/drivers/regulator/max77857-regulator.c
-> new file mode 100644
-> index 000000000000..c5482ffd606e
-> --- /dev/null
-> +++ b/drivers/regulator/max77857-regulator.c
-> @@ -0,0 +1,459 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2023 Analog Devices, Inc.
-> + * ADI Regulator driver for the MAX77857
-> + * MAX77859 and MAX77831.
-> + */
-> +#include <linux/bitfield.h>
-> +#include <linux/i2c.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/module.h>
-> +#include <linux/regmap.h>
-> +#include <linux/regulator/driver.h>
-> +#include <linux/regulator/machine.h>
-> +#include <linux/regulator/of_regulator.h>
-> +#include <linux/util_macros.h>
-> +
-> +#define MAX77857_REG_INT_SRC		0x10
-> +#define MAX77857_REG_INT_MASK		0x11
-> +#define MAX77857_REG_CONT1		0x12
-> +#define MAX77857_REG_CONT2		0x13
-> +#define MAX77857_REG_CONT3		0x14
-> +
-> +#define MAX77857_INT_SRC_OCP		BIT(0)
-> +#define MAX77857_INT_SRC_THS		BIT(1)
-> +#define MAX77857_INT_SRC_HARDSHORT	BIT(2)
-> +#define MAX77857_INT_SRC_OVP		BIT(3)
-> +#define MAX77857_INT_SRC_POK		BIT(4)
-> +
-> +#define MAX77857_ILIM_MASK		GENMASK(2, 0)
-> +#define MAX77857_CONT1_FREQ		GENMASK(4, 3)
-> +#define MAX77857_CONT3_FPWM		BIT(5)
-> +
-> +#define MAX77859_REG_INT_SRC		0x11
-> +#define MAX77859_REG_CONT1		0x13
-> +#define MAX77859_REG_CONT2		0x14
-> +#define MAX77859_REG_CONT3		0x15
-> +#define MAX77859_REG_CONT5		0x17
-> +#define MAX77859_CONT2_FPWM		BIT(2)
-> +#define MAX77859_CONT2_INTB		BIT(3)
-> +#define MAX77859_CONT3_DVS_START	BIT(2)
-> +#define MAX77859_VOLTAGE_SEL_MASK	GENMASK(9, 0)
-> +
-> +#define MAX77859_CURRENT_MIN		1000000
-> +#define MAX77859_CURRENT_MAX		5000000
-> +#define MAX77859_CURRENT_STEP		50000
-> +
-> +enum max77857_id {
-> +	ID_MAX77831 = 1,
-> +	ID_MAX77857,
-> +	ID_MAX77859,
-> +	ID_MAX77859A,
-> +};
-> +
-> +static bool max77857_volatile_reg(struct device *dev, unsigned int reg)
-> +{
-> +	enum max77857_id id = (enum max77857_id)dev_get_drvdata(dev);
-> +
-> +	switch (id) {
-> +	case ID_MAX77831:
-> +	case ID_MAX77857:
-> +		return reg == MAX77857_REG_INT_SRC;
-> +	case ID_MAX77859:
-> +	case ID_MAX77859A:
-> +		return reg == MAX77859_REG_INT_SRC;
-> +	default:
-> +		return true;
-> +	}
-> +}
-> +
-> +struct regmap_config max77857_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +	.cache_type = REGCACHE_MAPLE,
-> +	.volatile_reg = max77857_volatile_reg,
-> +};
-> +
-> +static int max77857_get_status(struct regulator_dev *rdev)
-> +{
-> +	unsigned int val;
-> +	int ret;
-> +
-> +	ret = regmap_read(rdev->regmap, MAX77857_REG_INT_SRC, &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (FIELD_GET(MAX77857_INT_SRC_POK, val))
-> +		return REGULATOR_STATUS_ON;
-> +
-> +	return REGULATOR_STATUS_ERROR;
-> +}
-> +
-> +static unsigned int max77857_get_mode(struct regulator_dev *rdev)
-> +{
-> +	enum max77857_id id = (enum max77857_id)rdev_get_drvdata(rdev);
-> +	unsigned int regval;
-> +	int ret;
-> +
-> +	switch (id) {
-> +	case ID_MAX77831:
-> +	case ID_MAX77857:
-> +		ret = regmap_read(rdev->regmap, MAX77857_REG_CONT3, &regval);
-> +		if (ret)
-> +			return ret;
-> +
-> +		if (FIELD_GET(MAX77857_CONT3_FPWM, regval))
-> +			return REGULATOR_MODE_FAST;
-> +
-> +		break;
-> +	case ID_MAX77859:
-> +	case ID_MAX77859A:
-> +		ret = regmap_read(rdev->regmap, MAX77859_REG_CONT2, &regval);
-> +		if (ret)
-> +			return ret;
-> +
-> +		if (FIELD_GET(MAX77859_CONT2_FPWM, regval))
-> +			return REGULATOR_MODE_FAST;
-> +
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return REGULATOR_MODE_NORMAL;
-> +}
-> +
-> +static int max77857_set_mode(struct regulator_dev *rdev, unsigned int mode)
-> +{
-> +	enum max77857_id id = (enum max77857_id)rdev_get_drvdata(rdev);
-> +	unsigned int reg, val;
-> +
-> +	switch (id) {
-> +	case ID_MAX77831:
-> +	case ID_MAX77857:
-> +		reg = MAX77857_REG_CONT3;
-> +		val = MAX77857_CONT3_FPWM;
-> +		break;
-> +	case ID_MAX77859:
-> +	case ID_MAX77859A:
-> +		reg = MAX77859_REG_CONT2;
-> +		val = MAX77859_CONT2_FPWM;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	switch (mode) {
-> +	case REGULATOR_MODE_FAST:
-> +		return regmap_set_bits(rdev->regmap, reg, val);
-> +	case REGULATOR_MODE_NORMAL:
-> +		return regmap_clear_bits(rdev->regmap, reg, val);
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int max77857_get_error_flags(struct regulator_dev *rdev,
-> +				    unsigned int *flags)
-> +{
-> +	unsigned int val;
-> +	int ret;
-> +
-> +	ret = regmap_read(rdev->regmap, MAX77857_REG_INT_SRC, &val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	*flags = 0;
-> +
-> +	if (FIELD_GET(MAX77857_INT_SRC_OVP, val))
-> +		*flags |= REGULATOR_ERROR_OVER_VOLTAGE_WARN;
-> +
-> +	if (FIELD_GET(MAX77857_INT_SRC_OCP, val) ||
-> +	    FIELD_GET(MAX77857_INT_SRC_HARDSHORT, val))
-> +		*flags |= REGULATOR_ERROR_OVER_CURRENT;
-> +
-> +	if (FIELD_GET(MAX77857_INT_SRC_THS, val))
-> +		*flags |= REGULATOR_ERROR_OVER_TEMP;
-> +
-> +	if (!FIELD_GET(MAX77857_INT_SRC_POK, val))
-> +		*flags |= REGULATOR_ERROR_FAIL;
-> +
-> +	return 0;
-> +}
-> +
-> +static struct linear_range max77859_lin_ranges[] = {
-> +	REGULATOR_LINEAR_RANGE(3200000, 0x0A0, 0x320, 20000)
-> +};
-> +
-> +static const unsigned int max77859_ramp_table[4] = {
-> +	1000, 500, 250, 125
-> +};
-> +
-> +static int max77859_set_voltage_sel(struct regulator_dev *rdev,
-> +				    unsigned int sel)
-> +{
-> +	__be16 reg;
-> +	int ret;
-> +
-> +	reg = cpu_to_be16(sel);
-> +
-> +	ret = regmap_bulk_write(rdev->regmap, MAX77859_REG_CONT3, &reg, 2);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* actually apply new voltage */
-> +	return regmap_set_bits(rdev->regmap, MAX77859_REG_CONT3,
-> +			       MAX77859_CONT3_DVS_START);
-> +}
-> +
-> +int max77859_get_voltage_sel(struct regulator_dev *rdev)
-> +{
-> +	__be16 reg;
-> +	int ret;
-> +
-> +	ret = regmap_bulk_read(rdev->regmap, MAX77859_REG_CONT3, &reg, 2);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return FIELD_GET(MAX77859_VOLTAGE_SEL_MASK, __be16_to_cpu(reg));
-> +}
-> +
-> +int max77859_set_current_limit(struct regulator_dev *rdev, int min_uA, int max_uA)
-> +{
-> +	u32 selector;
-> +
-> +	if (max_uA < MAX77859_CURRENT_MIN)
-> +		return -EINVAL;
-> +
-> +	selector = 0x12 + (max_uA - MAX77859_CURRENT_MIN) / MAX77859_CURRENT_STEP;
-> +
-> +	selector = clamp_val(selector, 0x00, 0x7F);
-> +
-> +	return regmap_write(rdev->regmap, MAX77859_REG_CONT5, selector);
-> +}
-> +
-> +int max77859_get_current_limit(struct regulator_dev *rdev)
-> +{
-> +	u32 selector;
-> +	int ret;
-> +
-> +	ret = regmap_read(rdev->regmap, MAX77859_REG_CONT5, &selector);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (selector <= 0x12)
-> +		return MAX77859_CURRENT_MIN;
-> +
-> +	if (selector >= 0x64)
-> +		return MAX77859_CURRENT_MAX;
-> +
-> +	return MAX77859_CURRENT_MIN + (selector - 0x12) * MAX77859_CURRENT_STEP;
-> +}
-> +
-> +static const struct regulator_ops max77859_regulator_ops = {
-> +	.list_voltage = regulator_list_voltage_linear_range,
-> +	.set_voltage_sel = max77859_set_voltage_sel,
-> +	.get_voltage_sel = max77859_get_voltage_sel,
-> +	.set_ramp_delay = regulator_set_ramp_delay_regmap,
-> +	.get_status = max77857_get_status,
-> +	.set_mode = max77857_set_mode,
-> +	.get_mode = max77857_get_mode,
-> +	.get_error_flags = max77857_get_error_flags,
-> +};
-> +
-> +static const struct regulator_ops max77859a_regulator_ops = {
-> +	.list_voltage = regulator_list_voltage_linear_range,
-> +	.set_voltage_sel = max77859_set_voltage_sel,
-> +	.get_voltage_sel = max77859_get_voltage_sel,
-> +	.set_current_limit = max77859_set_current_limit,
-> +	.get_current_limit = max77859_get_current_limit,
-> +	.set_ramp_delay = regulator_set_ramp_delay_regmap,
-> +	.get_status = max77857_get_status,
-> +	.set_mode = max77857_set_mode,
-> +	.get_mode = max77857_get_mode,
-> +	.get_error_flags = max77857_get_error_flags,
-> +};
-> +
-> +static const struct regulator_ops max77857_regulator_ops = {
-> +	.list_voltage = regulator_list_voltage_linear_range,
-> +	.set_voltage_sel = regulator_set_voltage_sel_regmap,
-> +	.get_voltage_sel = regulator_get_voltage_sel_regmap,
-> +	.set_ramp_delay = regulator_set_ramp_delay_regmap,
-> +	.get_status = max77857_get_status,
-> +	.set_mode = max77857_set_mode,
-> +	.get_mode = max77857_get_mode,
-> +	.get_error_flags = max77857_get_error_flags,
-> +};
-> +
-> +static struct linear_range max77857_lin_ranges[] = {
-> +	REGULATOR_LINEAR_RANGE(4485000, 0x3D, 0xCC, 73500)
-> +};
-> +
-> +static const unsigned int max77857_switch_freq[] = {
-> +	1200000, 1500000, 1800000, 2100000
-> +};
-> +
-> +static const unsigned int max77857_ramp_table[2][4] = {
-> +	{ 1333, 667, 333, 227 }, /* when switch freq is 1.8MHz or 2.1MHz */
-> +	{ 1166, 667, 333, 167 }, /* when switch freq is 1.2MHz or 1.5MHz */
-> +};
-> +
-> +static struct regulator_desc max77857_regulator_desc = {
-> +	.ops = &max77857_regulator_ops,
-> +	.name = "max77857",
-> +	.linear_ranges = max77857_lin_ranges,
-> +	.n_linear_ranges = ARRAY_SIZE(max77857_lin_ranges),
-> +	.vsel_mask = 0xFF,
-> +	.vsel_reg = MAX77857_REG_CONT2,
-> +	.ramp_delay_table = max77857_ramp_table[0],
-> +	.n_ramp_values = ARRAY_SIZE(max77857_ramp_table[0]),
-> +	.ramp_reg = MAX77857_REG_CONT3,
-> +	.ramp_mask = GENMASK(1, 0),
-> +	.ramp_delay = max77857_ramp_table[0][0],
+>  		/*
+>  		 * "Power Sequencing and Reset Signal Timings" table in
+> -		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 3.0
+> -		 * indicates PERST# should be deasserted after minimum of 100us
+> -		 * once REFCLK is stable. The REFCLK to the connector in RC
+> -		 * mode is selected while enabling the PHY. So deassert PERST#
+> -		 * after 100 us.
+> +		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 5.0
+> +		 * indicates PERST# should be deasserted after minimum of 100ms
+> +		 * after power rails achieve specified operating limits and
+> +		 * within this period reference clock should also become stable.
 
-This breaks the build with GCC 5.x through 7.x:
+I think the problem is not that the current code is *wrong*, because
+we do need to observe T_PERST-CLK, but that it failed to *also*
+account for T_PVPERL.
 
-  drivers/regulator/max77857-regulator.c:312:16: error: initializer element is not constant
-    .ramp_delay = max77857_ramp_table[0][0],
-                  ^~~~~~~~~~~~~~~~~~~
-  drivers/regulator/max77857-regulator.c:312:16: note: (near initialization for 'max77857_regulator_desc.ramp_delay')
+There are two delays before deasserting PERST#:
 
-and clang:
+  T_PVPERL: delay after power becomes stable
+  T_PERST-CLK: delay after REFCLK becomes stable
 
-  drivers/regulator/max77857-regulator.c:312:16: error: initializer element is not a compile-time constant
-    312 |         .ramp_delay = max77857_ramp_table[0][0],
-        |                       ^~~~~~~~~~~~~~~~~~~~~~~~~
-  1 error generated.
+I assume power is enabled by phy_power_on(), and REFCLK is enabled by
+clk_prepare_enable():
 
-This relies on a GCC 8.x+ change that accepts more things as
-compile-time constants, which is being worked on in clang
-(https://reviews.llvm.org/D76096). Since the kernel supports older
-compilers, this will have to be worked around somehow. Perhaps a define
-that can be used in both places?
+  cdns_pcie_init_phy
+    cdns_pcie_enable_phy
+      phy_power_on             <-- power becomes stable
+  clk_prepare_enable           <-- REFCLK becomes stable
+  if (gpiod)
+    usleep_range
+    gpiod_set_value_cansleep(gpiod, 1)   <-- deassert PERST#
 
-Cheers,
-Nathan
+I don't actually know if phy_power_on() guarantees that power is
+stable before it returns.  But I guess that's our assumption?
+Similarly for clk_prepare_enable().
 
-> +	.owner = THIS_MODULE,
-> +};
+In any case, we have to observe both delays.  They overlap, and
+T_PVPERL is 1000 times longer than T_PERST-CLK, so there might be
+enough slop in an msleep(100) to cover both, but I think I would do
+the simple-minded:
+
+  msleep(PCIE_TPVPERL_MS);
+  usleep_range(PCIE_TPERST_CLK_US, 2 * PCIE_TPERST_CLK_US);
+
+This is slightly more conservative than necessary because they
+overlap, but at least it shows that we thought about both of them.
+
+>  		if (gpiod) {
+> -			usleep_range(100, 200);
+> +			msleep(PCIE_TPVPERL_DELAY_MS);
+>  			gpiod_set_value_cansleep(gpiod, 1);
+
+I wish this local variable were named something like "perst_gpiod"
+instead of "gpiod".  We already know from its use in
+gpiod_set_value_cansleep() that it's a GPIO.  What's NOT obvious from
+the context is that this is the PERST# signal.
+
+Tangent: it looks like the DT "reset" property that I'm assuming
+controls PERST# is optional.  How do we enforce these delays if that
+property is missing?
+
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index a4c397434057..6ab2367e5867 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -13,6 +13,8 @@
+>  
+>  #define PCIE_LINK_RETRAIN_TIMEOUT_MS	1000
+>  
+> +#define PCIE_TPVPERL_DELAY_MS	100	/* see PCIe CEM r5.0, sec 2.9.2 */
 > +
-> +static void max77857_calc_range(struct device *dev, enum max77857_id id)
-> +{
-> +	struct linear_range *range;
-> +	unsigned long vref_step;
-> +	u32 rtop = 0;
-> +	u32 rbot = 0;
-> +
-> +	device_property_read_u32(dev, "adi,rtop-ohms", &rtop);
-> +	device_property_read_u32(dev, "adi,rbot-ohms", &rbot);
-> +
-> +	if (!rbot || !rtop)
-> +		return;
-> +
-> +	switch (id) {
-> +	case ID_MAX77831:
-> +	case ID_MAX77857:
-> +		range = max77857_lin_ranges;
-> +		vref_step = 4900UL;
-> +		break;
-> +	case ID_MAX77859:
-> +	case ID_MAX77859A:
-> +		range = max77859_lin_ranges;
-> +		vref_step = 1250UL;
-> +		break;
-> +	}
-> +
-> +	range->step = DIV_ROUND_CLOSEST(vref_step * (rbot + rtop), rbot);
-> +	range->min = range->step * range->min_sel;
-> +}
-> +
-> +static int max77857_probe(struct i2c_client *client)
-> +{
-> +	const struct i2c_device_id *i2c_id;
-> +	struct device *dev = &client->dev;
-> +	struct regulator_config cfg = { };
-> +	struct regulator_dev *rdev;
-> +	struct regmap *regmap;
-> +	enum max77857_id id;
-> +	u32 switch_freq = 0;
-> +	int ret;
-> +
-> +	i2c_id = i2c_client_get_device_id(client);
-> +	if (!i2c_id)
-> +		return -EINVAL;
-> +
-> +	id = i2c_id->driver_data;
-> +
-> +	dev_set_drvdata(dev, (void *)id);
-> +
-> +	if (id == ID_MAX77859 || id == ID_MAX77859A) {
-> +		max77857_regulator_desc.ops = &max77859_regulator_ops;
-> +		max77857_regulator_desc.linear_ranges = max77859_lin_ranges;
-> +		max77857_regulator_desc.ramp_delay_table = max77859_ramp_table;
-> +		max77857_regulator_desc.ramp_delay = max77859_ramp_table[0];
-> +	}
-> +
-> +	if (id == ID_MAX77859A)
-> +		max77857_regulator_desc.ops = &max77859a_regulator_ops;
-> +
-> +	max77857_calc_range(dev, id);
-> +
-> +	regmap = devm_regmap_init_i2c(client, &max77857_regmap_config);
-> +	if (IS_ERR(regmap))
-> +		return dev_err_probe(dev, PTR_ERR(regmap),
-> +				     "cannot initialize regmap\n");
-> +
-> +	device_property_read_u32(dev, "adi,switch-frequency-hz", &switch_freq);
-> +	if (switch_freq) {
-> +		switch_freq = find_closest(switch_freq, max77857_switch_freq,
-> +					   ARRAY_SIZE(max77857_switch_freq));
-> +
-> +		if (id == ID_MAX77831 && switch_freq == 3)
-> +			switch_freq = 2;
-> +
-> +		switch (id) {
-> +		case ID_MAX77831:
-> +		case ID_MAX77857:
-> +			ret = regmap_update_bits(regmap, MAX77857_REG_CONT1,
-> +						 MAX77857_CONT1_FREQ, switch_freq);
-> +
-> +			if (switch_freq >= 2)
-> +				break;
-> +
-> +			max77857_regulator_desc.ramp_delay_table = max77857_ramp_table[1];
-> +			max77857_regulator_desc.ramp_delay = max77857_ramp_table[1][0];
-> +			break;
-> +		case ID_MAX77859:
-> +		case ID_MAX77859A:
-> +			ret = regmap_update_bits(regmap, MAX77859_REG_CONT1,
-> +						 MAX77857_CONT1_FREQ, switch_freq);
-> +			break;
-> +		}
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	cfg.dev = dev;
-> +	cfg.driver_data = (void *)id;
-> +	cfg.regmap = regmap;
-> +	cfg.init_data = of_get_regulator_init_data(dev, dev->of_node,
-> +						   &max77857_regulator_desc);
-> +	if (!cfg.init_data)
-> +		return -ENOMEM;
-> +
-> +	rdev = devm_regulator_register(dev, &max77857_regulator_desc, &cfg);
-> +	if (IS_ERR(rdev))
-> +		return dev_err_probe(dev, PTR_ERR(rdev),
-> +				     "cannot register regulator\n");
-> +
-> +	return 0;
-> +}
-> +
-> +const struct i2c_device_id max77857_id[] = {
-> +	{ "max77831", ID_MAX77831 },
-> +	{ "max77857", ID_MAX77857 },
-> +	{ "max77859", ID_MAX77859 },
-> +	{ "max77859a", ID_MAX77859A },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(i2c, max77857_id);
-> +
-> +static const struct of_device_id max77857_of_id[] = {
-> +	{ .compatible = "adi,max77831", .data = (void *)ID_MAX77831 },
-> +	{ .compatible = "adi,max77857", .data = (void *)ID_MAX77857 },
-> +	{ .compatible = "adi,max77859", .data = (void *)ID_MAX77859 },
-> +	{ .compatible = "adi,max77859a", .data = (void *)ID_MAX77859A },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, max77857_of_id);
-> +
-> +struct i2c_driver max77857_driver = {
-> +	.driver = {
-> +		.name = "max77857",
-> +		.of_match_table = max77857_of_id,
-> +	},
-> +	.id_table = max77857_id,
-> +	.probe_new = max77857_probe,
-> +};
-> +module_i2c_driver(max77857_driver);
-> +
-> +MODULE_DESCRIPTION("Analog Devices MAX77857 Buck-Boost Converter Driver");
-> +MODULE_AUTHOR("Ibrahim Tilki <Ibrahim.Tilki@analog.com>");
-> +MODULE_AUTHOR("Okan Sahin <Okan.Sahin@analog.com>");
-> +MODULE_LICENSE("GPL");
+>  extern const unsigned char pcie_link_speed[];
+>  extern bool pci_early_dump;
+>  
 > -- 
-> 2.30.2
+> 2.25.1
 > 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
