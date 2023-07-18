@@ -2,88 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E503758908
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 01:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E06C75890F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 01:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbjGRXW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 19:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42768 "EHLO
+        id S230180AbjGRXbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 19:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbjGRXWw (ORCPT
+        with ESMTP id S229480AbjGRXbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 19:22:52 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20C0EC;
-        Tue, 18 Jul 2023 16:22:51 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b933bbd3eeso62163061fa.1;
-        Tue, 18 Jul 2023 16:22:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689722570; x=1692314570;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2owPjOsknzvkS4L5ZSPonWRfNu9HLT/sQNV5ahQc2RA=;
-        b=Q82+ha22FbALhLDWrrhpK9q5yMPG07MW8A2B5DYAvE9QNdMmkNHG8ZCQ2QNjwGPOYq
-         4iwCYgaYSz0Sjpr/BrsOlMBV7Xo99Yh5FDSS4s/xj/cCCKV3U1D2vdzm6g6DfwwgSRCu
-         6LnpYWW9mHhSN1CIErqmBNlS0g90YJIy7Z/UEUxNgSVzJXxyPvCnhtLWV2LjHTpf/rHi
-         4oXiNRRLNecG9RNKDzM9wl+6iqQb+U1DkAt99x7ANLE8t64/LH06O5309AXv8OV8DuNa
-         4en/Vq/3weqoGCge6bhdXi/LdWOA1zcDnKmpwHp7M9Zu3XM0M0uE3v0QAJm6OmoqV2sT
-         XyHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689722570; x=1692314570;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2owPjOsknzvkS4L5ZSPonWRfNu9HLT/sQNV5ahQc2RA=;
-        b=V3eHn3LiaXiZRZoD6ZQXGnD8KNhjXKAO2A4QWNDA6O0khP4jl/hxkMrEO1vDkHuopX
-         N1CyqbteQ4yeB7wrVq1L4o1vjS6pxtH3E7Ku2tsUzanFOSGNmtZ0g9JabwWaH66R5X5J
-         pZ/TzoRJO/pKSMMCOYjNQSgFGxCMz8ArDNzqrfJC04urAYjFietGOF6qRDV7c8C6xc3h
-         irimVrjubBfCmoxN9nsgUJlQpJVl/5/Jdm6karK4nLqN6ds5GA+JMbZH6dBnKUOpbLGU
-         omQ+/4Xxv2eJeLQ8+H7xlIO/gc16d34W89GKBTxO9a1Ek/9JUfsYPuKnAx/nbW4OmKi/
-         HNAw==
-X-Gm-Message-State: ABy/qLYD59CKGAa/Ys8++oWLthPW5YIl7GAdfUGY+JBo6G6JkA+2Sab1
-        jTo4HCPePuDAe+RPAWaH0s/9IPajZOP+/z6wsyk=
-X-Google-Smtp-Source: APBJJlGpzSgPClsd2m+CYvKqmu/ee+SbsjKc1wf/vDbxh3cDC5D1so2fh0hZrPZfcx1svTrzHWUgIayRTAbGxwzhdoc=
-X-Received: by 2002:a2e:80ca:0:b0:2b4:6eb0:2a27 with SMTP id
- r10-20020a2e80ca000000b002b46eb02a27mr15608676ljg.17.1689722569556; Tue, 18
- Jul 2023 16:22:49 -0700 (PDT)
+        Tue, 18 Jul 2023 19:31:07 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C208D134;
+        Tue, 18 Jul 2023 16:30:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=cENNk0DUwEVttvnmoBqq817jhXxYEJLMGNEsGNnVoM8=; b=UoB2zwRdDo3OKW92kxcnnaC0mo
+        U+mFSc8P5miVWXac4Do2m4iPei5L0AKUEjhS1IYapjv79+zZjcWeIuWPK1yZRhYCkLSJysaIiXOBj
+        9wHFcVz9/rL3UAtrE8k63aEsYf2NeWoE1d9g9iA+/d67sPTmI9w8RBfCyakxNBHXDTfc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qLu9B-001fie-Cs; Wed, 19 Jul 2023 01:30:25 +0200
+Date:   Wed, 19 Jul 2023 01:30:25 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Michael Walle <mwalle@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Xu Liang <lxu@maxlinear.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Simon Horman <simon.horman@corigine.com>
+Subject: Re: [PATCH net-next v3 03/11] net: phy: replace is_c45 with
+ phy_accces_mode
+Message-ID: <26d16266-83e2-4494-8c29-ca4879be28d4@lunn.ch>
+References: <20230620-feature-c45-over-c22-v3-0-9eb37edf7be0@kernel.org>
+ <20230620-feature-c45-over-c22-v3-3-9eb37edf7be0@kernel.org>
+ <509889a3-f633-40b0-8349-9ef378818cc7@lunn.ch>
+ <ZLbRTLRbHW/Xt2hL@shell.armlinux.org.uk>
+ <6afc205e-b525-44df-b81b-ef7cfdfb6680@lunn.ch>
+ <ZLcIRYb4Ak+nW557@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <20230502005218.3627530-1-drosen@google.com> <20230718082615.08448806@kernel.org>
- <CAADnVQJEEF=nqxo6jHKK=Tn3M_NVXHQjhY=_sry=tE8X4ss25A@mail.gmail.com>
- <20230718090632.4590bae3@kernel.org> <CAADnVQ+4aehGYPJ2qT_HWWXmOSo4WXf69N=N9-dpzERKfzuSzQ@mail.gmail.com>
- <20230718101841.146efae0@kernel.org> <CAADnVQ+jAo4V-Pa9_LhJEwG0QquL-Ld5S99v3LNUtgkiiYwfzw@mail.gmail.com>
- <20230718111101.57b1d411@kernel.org> <CAADnVQLJBiB7pWDTDNgQW_an+YoB61xkNEsa5g8p6zTy-mAG7Q@mail.gmail.com>
- <20230718160612.71f09752@kernel.org> <CAADnVQ+3Bmm0DgGBgh_zkA1JeK7uApo_nnJ+=Sgf4ojGX2KrHQ@mail.gmail.com>
- <20230718162138.24329391@kernel.org>
-In-Reply-To: <20230718162138.24329391@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 18 Jul 2023 16:22:38 -0700
-Message-ID: <CAADnVQKD6T2AL1xgJgmXfyXqeTWQwNV0KBNd4Apiyfqg0aQ1vQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Daniel Rosenberg <drosen@google.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZLcIRYb4Ak+nW557@shell.armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,16 +67,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 4:21=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Tue, 18 Jul 2023 16:17:24 -0700 Alexei Starovoitov wrote:
-> > Which would encourage bnxt-like hacks.
-> > I don't like it tbh.
-> > At least skb_pointer_if_linear() has a clear meaning.
-> > It's more run-time overhead, since buffer__opt is checked early,
-> > but that's ok.
->
-> Alright, your version fine by me, too. Thanks!
+> Why would it be two drivers?
 
-ok. will send it officially soon.
+I'm assuming there is no C22 over C45. So phy_read() is not going to
+work. I'm also assuming the current driver is using the C22 register
+space.
+
+So either the driver needs re-writing to use only the C45 register
+space, maybe using C45 over C22, or it needs a second parallel driver
+using just the C45 register space when only C45 bus transfers are
+available.
+
+	Andrew
