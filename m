@@ -2,271 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51068758406
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1018F758402
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 20:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231444AbjGRSBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 14:01:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        id S231905AbjGRSAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 14:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbjGRSBA (ORCPT
+        with ESMTP id S230348AbjGRSAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 14:01:00 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 04A581722;
-        Tue, 18 Jul 2023 11:00:55 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-        id 5902621C4506; Tue, 18 Jul 2023 11:00:54 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5902621C4506
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1689703254;
-        bh=2EtqkbDML7oSfMbtE2vBfMQ9qbiYn/gMi6DTcnH66S0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=UU0wJTw3xTZzKiLiCButWWRHugpqky6Kf/2OKf1FlXlFsud8OWv5zLQQiQQQJswGD
-         fs2+v7peejuwH9kzecdyv1hfXFVUtf5S4qco0xdVL5Ls3sQYqDZG1xlqNBjC6cb6ZQ
-         JUvd1TBxur75PEUPwXmqZwI20w6rENkp9rCNqwUI=
-From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     schakrabarti@microsoft.com,
-        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Subject: [PATCH V4 net-next] net: mana: Configure hwc timeout from hardware
-Date:   Tue, 18 Jul 2023 11:00:32 -0700
-Message-Id: <1689703232-24858-1-git-send-email-schakrabarti@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 18 Jul 2023 14:00:49 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9A8A1;
+        Tue, 18 Jul 2023 11:00:47 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9926623e367so845538766b.0;
+        Tue, 18 Jul 2023 11:00:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689703246; x=1692295246;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PyN7LRdxuJ3+3m6qyMY/Pn72VV1r0UZI32fa8KhLFbY=;
+        b=qG0/1wSnOmHRcShWCFotbPYMGXIVlK+nE2fNftS6Hnjs7APhWfde2eLblRn58gqJcg
+         Xg5JiJ3QRA4VSUc1FA2MAJ1Q6VZ+e9GAohGP9+aMiHpmrXArIrsJxQJdVoJQF+omjfqo
+         YckPrfZ3z1idGNOr08WkkrgXwb4wqnM4AV6pvpQ+1D18wEpP0aFIOlRyCrIAI97jqs1C
+         xKyHZVmmFzHFg/g4GoNsY1kKqQ5a8/OA5FSyR4roa5i8W8MhkkPlI8J3tIUMRBmeqFh6
+         D0S7JNHXSEySo1uDJcJVhLa3GcXM6uNtu/N4ta6TLf7IFV8Tbcls23zqgiSwA4ZUQ9a7
+         MgRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689703246; x=1692295246;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PyN7LRdxuJ3+3m6qyMY/Pn72VV1r0UZI32fa8KhLFbY=;
+        b=P9lFvzTokCjWRHtKH6tlMmcg74v1rhigwO8hJwEZLJZR7VgB4omHHR3wtWM5NxM69w
+         8pFxF/nWfeq44t1h/MjtQabesK7QkJBBFMKstBzJunLjxUzAj8ZWd5YELo8Vy7SidLZg
+         IFwj1HauyJNY7yj0giT6b9P0WyNQt9qVpjrfRycbW3x/MS+YR2dc4HWLoeUSKMf0Gu8F
+         SVYgCRwV7/LpPzdjRO3fM7jsGDcixrKc/wS4wjZUHMFgLBSr/Sv6k6KsmVzYRZVlOILJ
+         35IUOLkKha6RnBJ26px2EOpkhMwkSNqeH+Mylph/jvOdjjM2Go+mNefv1VscfsmEmxjs
+         Xrtw==
+X-Gm-Message-State: ABy/qLaahy7da3TQTK/Ud4LQ4lI8FfgfZ0pViK2T2X66MQVp9G3cmCkd
+        AFrwzHN7gBIr+6polFVfNfY=
+X-Google-Smtp-Source: APBJJlHuALfP05nJMTIaDtdhR6Sc7rP0zzWHX5XYkV6ZoFC0W1Om+XGykCwePD8QM5XRktKYvRjLYA==
+X-Received: by 2002:a17:907:720b:b0:98e:3cef:68ff with SMTP id dr11-20020a170907720b00b0098e3cef68ffmr362435ejc.43.1689703245941;
+        Tue, 18 Jul 2023 11:00:45 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id ko1-20020a170907986100b00992e14af9c3sm1282331ejc.143.2023.07.18.11.00.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 11:00:45 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 448F827C0054;
+        Tue, 18 Jul 2023 14:00:42 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 18 Jul 2023 14:00:43 -0400
+X-ME-Sender: <xms:SdO2ZGHiNe30w3XA54gEUIwNq-L_kZRh0N6BjvHRBHS3CEbGvaW4LA>
+    <xme:SdO2ZHWltoCr-Lopue2uDNfUCy8KD52QKyBdPUQlXW7uqOzlXkUNjnjtS9SJlWKLv
+    j8nvAIGJXjo1Ivk-A>
+X-ME-Received: <xmr:SdO2ZALpp9spxMmbbfX4ni-yEcN8rEp85jtQBPktBNn3AhIa-CXy5Q-Q1BGOVw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrgeeggdduudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtrodttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeejffegieejvddtgfekkefhjeegjeevuedugfehfedtkeffjedtleeiuefh
+    vdefgeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
+    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:SdO2ZAFukTBpGc-J96GoU5Tvd0BJkqMTTNoydMwUjv6bEElqmKt3GA>
+    <xmx:SdO2ZMWA8Nma3GAn0pTWOH1jy9CGnlB8YCJrIC4uhJ9E-16ltWDk0g>
+    <xmx:SdO2ZDNumuv-FMPowJk8KBjIAgT-MI7KWKeg9njwOuFopXmQge8iSg>
+    <xmx:StO2ZNsjkQKXwZiy-l0E2qp7sgCNgE_y93HBwchpLgvIHey-h29EaQ>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 18 Jul 2023 14:00:40 -0400 (EDT)
+Date:   Tue, 18 Jul 2023 11:00:37 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     David Gow <davidgow@google.com>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <nmi@metaspace.dk>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: Re: [PATCH v2 0/7] KUnit integration for Rust doctests
+Message-ID: <ZLbTRZMjcFNAamit@boqun-archlinux>
+References: <20230718052752.1045248-1-ojeda@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718052752.1045248-1-ojeda@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At present hwc timeout value is a fixed value. This patch sets the hwc
-timeout from the hardware. It now uses a new hardware capability
-GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG to query and set the value
-in hwc_timeout.
+On Tue, Jul 18, 2023 at 07:27:45AM +0200, Miguel Ojeda wrote:
+[...]
+> 
+>   - Collected `Reviewed-by`s and `Tested-by`s, except for the main
+>     commit due to the substantial changes.
 
-Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
----
-V3 -> V4:
-* Changing branch to net-next.
-* Changed the commit message to 75 chars per line.
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 30 ++++++++++++++++++-
- .../net/ethernet/microsoft/mana/hw_channel.c  | 25 +++++++++++++++-
- include/net/mana/gdma.h                       | 20 ++++++++++++-
- include/net/mana/hw_channel.h                 |  5 ++++
- 4 files changed, 77 insertions(+), 3 deletions(-)
+I've applied the series and run the following command:
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 8f3f78b68592..4537a70e30d4 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -106,6 +106,25 @@ static int mana_gd_query_max_resources(struct pci_dev *pdev)
- 	return 0;
- }
- 
-+static int mana_gd_query_hwc_timeout(struct pci_dev *pdev, u32 *timeout_val)
-+{
-+	struct gdma_context *gc = pci_get_drvdata(pdev);
-+	struct gdma_query_hwc_timeout_resp resp = {};
-+	struct gdma_query_hwc_timeout_req req = {};
-+	int err;
-+
-+	mana_gd_init_req_hdr(&req.hdr, GDMA_QUERY_HWC_TIMEOUT,
-+			     sizeof(req), sizeof(resp));
-+	req.timeout_ms = *timeout_val;
-+	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-+	if (err || resp.hdr.status)
-+		return err ? err : -EPROTO;
-+
-+	*timeout_val = resp.timeout_ms;
-+
-+	return 0;
-+}
-+
- static int mana_gd_detect_devices(struct pci_dev *pdev)
- {
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
-@@ -879,8 +898,11 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
- 	struct gdma_verify_ver_resp resp = {};
- 	struct gdma_verify_ver_req req = {};
-+	struct hw_channel_context *hwc;
- 	int err;
- 
-+	hwc = gc->hwc.driver_data;
-+
- 	mana_gd_init_req_hdr(&req.hdr, GDMA_VERIFY_VF_DRIVER_VERSION,
- 			     sizeof(req), sizeof(resp));
- 
-@@ -907,7 +929,13 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
- 			err, resp.hdr.status);
- 		return err ? err : -EPROTO;
- 	}
--
-+	if (resp.pf_cap_flags1 & GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG) {
-+		err = mana_gd_query_hwc_timeout(pdev, &hwc->hwc_timeout);
-+		if (err) {
-+			dev_err(gc->dev, "Failed to set the hwc timeout %d\n", err);
-+			return err;
-+		}
-+	}
- 	return 0;
- }
- 
-diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-index 2bd1d74021f7..db433501e5e6 100644
---- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-+++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-@@ -174,7 +174,25 @@ static void mana_hwc_init_event_handler(void *ctx, struct gdma_queue *q_self,
- 		complete(&hwc->hwc_init_eqe_comp);
- 		break;
- 
-+	case GDMA_EQE_HWC_SOC_RECONFIG_DATA:
-+		type_data.as_uint32 = event->details[0];
-+		type = type_data.type;
-+		val = type_data.value;
-+
-+		switch (type) {
-+		case HWC_DATA_CFG_HWC_TIMEOUT:
-+			hwc->hwc_timeout = val;
-+			break;
-+
-+		default:
-+			dev_warn(hwc->dev, "Received unknown reconfig type %u\n", type);
-+			break;
-+		}
-+
-+		break;
-+
- 	default:
-+		dev_warn(hwc->dev, "Received unknown gdma event %u\n", event->type);
- 		/* Ignore unknown events, which should never happen. */
- 		break;
- 	}
-@@ -704,6 +722,7 @@ int mana_hwc_create_channel(struct gdma_context *gc)
- 	gd->pdid = INVALID_PDID;
- 	gd->doorbell = INVALID_DOORBELL;
- 
-+	hwc->hwc_timeout = HW_CHANNEL_WAIT_RESOURCE_TIMEOUT_MS;
- 	/* mana_hwc_init_queues() only creates the required data structures,
- 	 * and doesn't touch the HWC device.
- 	 */
-@@ -770,6 +789,8 @@ void mana_hwc_destroy_channel(struct gdma_context *gc)
- 	hwc->gdma_dev->doorbell = INVALID_DOORBELL;
- 	hwc->gdma_dev->pdid = INVALID_PDID;
- 
-+	hwc->hwc_timeout = 0;
-+
- 	kfree(hwc);
- 	gc->hwc.driver_data = NULL;
- 	gc->hwc.gdma_context = NULL;
-@@ -818,6 +839,7 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
- 		dest_vrq = hwc->pf_dest_vrq_id;
- 		dest_vrcq = hwc->pf_dest_vrcq_id;
- 	}
-+	dev_err(hwc->dev, "HWC: timeout %u ms\n", hwc->hwc_timeout);
- 
- 	err = mana_hwc_post_tx_wqe(txq, tx_wr, dest_vrq, dest_vrcq, false);
- 	if (err) {
-@@ -825,7 +847,8 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
- 		goto out;
- 	}
- 
--	if (!wait_for_completion_timeout(&ctx->comp_event, 30 * HZ)) {
-+	if (!wait_for_completion_timeout(&ctx->comp_event,
-+					 (hwc->hwc_timeout / 1000) * HZ)) {
- 		dev_err(hwc->dev, "HWC: Request timed out!\n");
- 		err = -ETIMEDOUT;
- 		goto out;
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 96c120160f15..88b6ef7ce1a6 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -33,6 +33,7 @@ enum gdma_request_type {
- 	GDMA_DESTROY_PD			= 30,
- 	GDMA_CREATE_MR			= 31,
- 	GDMA_DESTROY_MR			= 32,
-+	GDMA_QUERY_HWC_TIMEOUT		= 84, /* 0x54 */
- };
- 
- #define GDMA_RESOURCE_DOORBELL_PAGE	27
-@@ -57,6 +58,8 @@ enum gdma_eqe_type {
- 	GDMA_EQE_HWC_INIT_EQ_ID_DB	= 129,
- 	GDMA_EQE_HWC_INIT_DATA		= 130,
- 	GDMA_EQE_HWC_INIT_DONE		= 131,
-+	GDMA_EQE_HWC_SOC_RECONFIG	= 132,
-+	GDMA_EQE_HWC_SOC_RECONFIG_DATA	= 133,
- };
- 
- enum {
-@@ -531,10 +534,12 @@ enum {
-  * so the driver is able to reliably support features like busy_poll.
-  */
- #define GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX BIT(2)
-+#define GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG BIT(3)
- 
- #define GDMA_DRV_CAP_FLAGS1 \
- 	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
--	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX)
-+	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
-+	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG)
- 
- #define GDMA_DRV_CAP_FLAGS2 0
- 
-@@ -664,6 +669,19 @@ struct gdma_disable_queue_req {
- 	u32 alloc_res_id_on_creation;
- }; /* HW DATA */
- 
-+/* GDMA_QUERY_HWC_TIMEOUT */
-+struct gdma_query_hwc_timeout_req {
-+	struct gdma_req_hdr hdr;
-+	u32 timeout_ms;
-+	u32 reserved;
-+};
-+
-+struct gdma_query_hwc_timeout_resp {
-+	struct gdma_resp_hdr hdr;
-+	u32 timeout_ms;
-+	u32 reserved;
-+};
-+
- enum atb_page_size {
- 	ATB_PAGE_SIZE_4K,
- 	ATB_PAGE_SIZE_8K,
-diff --git a/include/net/mana/hw_channel.h b/include/net/mana/hw_channel.h
-index 6a757a6e2732..3d3b5c881bc1 100644
---- a/include/net/mana/hw_channel.h
-+++ b/include/net/mana/hw_channel.h
-@@ -23,6 +23,10 @@
- #define HWC_INIT_DATA_PF_DEST_RQ_ID	10
- #define HWC_INIT_DATA_PF_DEST_CQ_ID	11
- 
-+#define HWC_DATA_CFG_HWC_TIMEOUT 1
-+
-+#define HW_CHANNEL_WAIT_RESOURCE_TIMEOUT_MS 30000
-+
- /* Structures labeled with "HW DATA" are exchanged with the hardware. All of
-  * them are naturally aligned and hence don't need __packed.
-  */
-@@ -182,6 +186,7 @@ struct hw_channel_context {
- 
- 	u32 pf_dest_vrq_id;
- 	u32 pf_dest_vrcq_id;
-+	u32 hwc_timeout;
- 
- 	struct hwc_caller_ctx *caller_ctx;
- };
--- 
-2.34.1
+	./tools/testing/kunit/kunit.py run --make_options LLVM=1 --arch x86_64 --kconfig_add CONFIG_RUST=y	
 
+everything works as expected, and I also tried modifying one of the
+`assert!` to trigger it, all looks good to me. Feel free to add:
+
+Tested-by: Boqun Feng <boqun.feng@gmail.com>
+
+Regards,
+Boqun
+
+> 
+> Miguel Ojeda (7):
+>   kunit: test-bug.h: include `stddef.h` for `NULL`
+>   rust: init: make doctests compilable/testable
+>   rust: str: make doctests compilable/testable
+>   rust: sync: make doctests compilable/testable
+>   rust: types: make doctests compilable/testable
+>   rust: support running Rust documentation tests as KUnit ones
+>   MAINTAINERS: add Rust KUnit files to the KUnit entry
+> 
+>  MAINTAINERS                       |   2 +
+>  include/kunit/test-bug.h          |   2 +
+>  lib/Kconfig.debug                 |  13 ++
+>  rust/.gitignore                   |   2 +
+>  rust/Makefile                     |  29 ++++
+>  rust/bindings/bindings_helper.h   |   1 +
+>  rust/helpers.c                    |   7 +
+>  rust/kernel/init.rs               |  26 +--
+>  rust/kernel/kunit.rs              | 163 +++++++++++++++++++
+>  rust/kernel/lib.rs                |   2 +
+>  rust/kernel/str.rs                |   4 +-
+>  rust/kernel/sync/arc.rs           |   9 +-
+>  rust/kernel/sync/lock/mutex.rs    |   1 +
+> v1: https://lore.kernel.org/rust-for-linux/20230614180837.630180-1-ojeda@kernel.org/
+> v2:
+> 
+>   - Rebased on top of v6.5-rc1, which requires a change from
+>     `kunit_do_failed_assertion` to `__kunit_do_failed_assertion` (since
+>     the former became a macro) and the addition of a call to
+>     `__kunit_abort` (since previously the call was done by the old
+>     function which we cannot use anymore since it is a macro). (David)
+> 
+>   - Added prerequisite patch to KUnit header to include `stddef.h` to
+>     support the `KUNIT=y` case. (Reported by Boqun)
+> 
+>   - Added comment on the purpose of `trait FromErrno`. (Martin asked
+>     about it)
+> 
+>   - Simplify code to use `std::fs::write` instead of `write!`, which
+>     improves code size too. (Suggested by Alice)
+> 
+>   - Fix copy-paste type in docs from "error" to "info" and, to make it
+>     proper English, copy the `printk` docs style, i.e. from "info"
+>     to "info-level message" -- and same for the "error" one. (Miguel)
+> 
+>   - Swap `FILE` and `LINE` `static`s to keep the same order as done
+>     elsewhere. (Miguel)
+> 
+>   - Rename config option from `RUST_KERNEL_KUNIT_TEST` to
+>     `RUST_KERNEL_DOCTESTS` (and update its title), so that we can use
+>     the former for the "normal" (i.e. non-doctests, e.g. `#[test]` ones)
+>     tests in the future. (David)
+> 
+>   - Follow the syntax proposed for declaring test metadata in the KTAP
+>     v2 spec, which may also get used for the KUnit test attributes API.
+> 
+>     Thus, instead of "# Doctest from line {line}", use
+>     "# {test_name}.location: {file}.{line}", which ideally will allow to
+>     migrate to a KUnit attribute later.
+> 
+>     This is done in all cases, i.e. when the tests succeeds, because
+>     it may be useful for users running KUnit manually, or when passing
+>     `--raw_output` to `kunit.py`. (David)
+> 
+>     David: I used "location" instead of your suggested "line" alone, in
+>     order to have both in a single line, which looked nice and closer to
+>     the "ASSERTION FAILURE" case/line, since now we do have the original
+>     file (please see below).
+> 
+>   - Figure out the original line. This is done by deploying an anchor
+>     so that the difference in lines between the beginning of the test
+>     and the assert, in the generated file, can be computed. Then, we
+>     offset the line number of the original test, which is given by
+>     `rustdoc`. (developed by Boqun)
+> 
+>   - Figure out the original file. This is done by walking the
+>     filesystem, checking directory prefixes to reduce the amount of
+>     combinations to check, and it is only done once per file (rather
+>     than per test).
+> 
+>     Ambiguities are detected and reported. It does limit the filenames
+>     (module names) we can use, but it is unlikely we will hit it soon
+>     and this should be temporary anyway until `rustdoc` provides us
+>     with the real path. (Miguel)
+> 
+>     Tested with both in-tree and `O=` builds, but I would appreciate
+>     extra testing on this one, including via the `kunit.py` script.
+> 
+>   - The three last items combined means that we now see this output even
+>     for successful cases:
+> 
+>         # rust_doctest_kernel_sync_locked_by_rs_0.location: rust/kernel/sync/locked_by.rs:28
+>         ok 53 rust_doctest_kernel_sync_locked_by_rs_0
+> 
+>     Which basically gives the user all the information they need to go
+>     back to the source code of the doctest, while keeping them fairly
+>     stable for bisection, and while avoiding to require users to write
+>     test names manually. (David + Boqun + Miguel)
+> 
+>     David: from what I saw in v2 of the RFC for the test attributes API,
+>     the syntax still contains the test name when it is not a suite, so
+>     I followed that, but if you prefer to omit it, please feel free to
+>     do so (for me either way it is fine, and if this is the expected
+>     attribute syntax, I guess it is worth to follow it to make migration
+>     easier later on):
+> 
+>         # location: rust/kernel/sync/locked_by.rs:28
+>         ok 53 rust_doctest_kernel_sync_locked_by_rs_0
+>  rust/kernel/sync/lock/spinlock.rs |   1 +
+>  rust/kernel/types.rs              |   6 +-
+>  scripts/.gitignore                |   2 +
+>  scripts/Makefile                  |   4 +
+>  scripts/rustdoc_test_builder.rs   |  72 +++++++++
+>  scripts/rustdoc_test_gen.rs       | 260 ++++++++++++++++++++++++++++++
+>  19 files changed, 591 insertions(+), 15 deletions(-)
+>  create mode 100644 rust/kernel/kunit.rs
+>  create mode 100644 scripts/rustdoc_test_builder.rs
+>  create mode 100644 scripts/rustdoc_test_gen.rs
+> 
+> 
+> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+> -- 
+> 2.41.0
+> 
