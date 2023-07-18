@@ -2,300 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CFC757884
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C68D875788B
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbjGRJy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
+        id S232424AbjGRJy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232260AbjGRJyE (ORCPT
+        with ESMTP id S231248AbjGRJyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:54:04 -0400
-Received: from mail-ot1-f77.google.com (mail-ot1-f77.google.com [209.85.210.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FB81BF8
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:53:02 -0700 (PDT)
-Received: by mail-ot1-f77.google.com with SMTP id 46e09a7af769-6b9ba4c1164so6141317a34.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:53:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689673966; x=1692265966;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=S6aK/PnlOk+5A8db/y7O71xsJ9Bt36+rJ9Njyeo0Rvo=;
-        b=IGSuy5oMXFY5NSl9e89yqFIBNH2cgZT9DagSJ60gA65612QNN12nKQr8wQQOI5NDgE
-         8j0HkWdoEund88lhT6jGhFsqp7LcYDWNnpmCRHExlmwMVe6gTpgePPOYP4hdH5n3/NA5
-         LWg42LSjwNkbGlKaI0AhdaIjNBqoRCIcQY1VouFnxmnMdERm94vVeOzNCPDv157I1aEj
-         C5JjobI7gv446/TqxH66PTAEmpSzBVacwWQz2Ux2f2dpEYoP9x7iP0I4nao3eJUJtqa0
-         bA66mUyLMWANNy6MTIV76fcKCenUzwDwkpxgdCSoJP2tXPE2E+XirhpmMivKB0gq8S8C
-         dIQA==
-X-Gm-Message-State: ABy/qLbzB0JnmBJS5mFII3lV/yjaj2nrKwEEzwQpRSBMXVUIwYRJWmet
-        taB13K/9FPQOSB8AMOTWnhTVb6hUHDP3giP2q+ODxYqLrIVh
-X-Google-Smtp-Source: APBJJlHKaduHEA79KSBPd5VUFVtk65p5tuWKzEnDAhY47EBa70omZhtsjaDCJpB7ucRt7bF3/iddCvc4iLLW69af43e2Hc7zzodD
+        Tue, 18 Jul 2023 05:54:17 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEE61715;
+        Tue, 18 Jul 2023 02:53:27 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4R4vMx5rg8z6J6ts;
+        Tue, 18 Jul 2023 17:50:53 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
+ 2023 10:53:23 +0100
+Date:   Tue, 18 Jul 2023 10:53:22 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Balsam CHIHI <bchihi@baylibre.com>,
+        "Claudiu Beznea" <claudiu.beznea@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-renesas-soc@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, Andy Shevchenko <andy@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Len Brown <len.brown@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        "Jonathan Hunter" <jonathanh@nvidia.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v2 02/10] pinctrl: baytrail: Make use of pm_ptr()
+Message-ID: <20230718105322.000074ca@Huawei.com>
+In-Reply-To: <20230717172821.62827-3-andriy.shevchenko@linux.intel.com>
+References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
+        <20230717172821.62827-3-andriy.shevchenko@linux.intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:13d1:b0:6b7:54aa:d72e with SMTP id
- e17-20020a05683013d100b006b754aad72emr12750203otq.4.1689673966443; Tue, 18
- Jul 2023 02:52:46 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 02:52:46 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008e62f40600bfe080@google.com>
-Subject: [syzbot] [mm?] possible deadlock in shmem_uncharge (2)
-From:   syzbot <syzbot+38ca19393fb3344f57e6@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, cem@kernel.org, cmaiolino@redhat.com,
-        hughd@google.com, jack@suse.cz, lczerner@redhat.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 17 Jul 2023 20:28:13 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-syzbot found the following issue on:
+> Cleaning up the driver to use pm_ptr() and *_PM_OPS() macros that
+> make it simpler and allows the compiler to remove those functions
+> if built without CONFIG_PM and CONFIG_PM_SLEEP support.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-HEAD commit:    7c2878be5732 Add linux-next specific files for 20230714
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=14b77fd8a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3baff2936ac3cefa
-dashboard link: https://syzkaller.appspot.com/bug?extid=38ca19393fb3344f57e6
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=153eea12a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1169adeca80000
+LGTM but why is it in a set that claims to be about NOIRQ PM helper?
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/bfdfa043f096/disk-7c2878be.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/cf7a97f69e2a/vmlinux-7c2878be.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/8366b63af2c6/bzImage-7c2878be.xz
+FWIW
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-The issue was bisected to:
+> ---
+>  drivers/pinctrl/intel/pinctrl-baytrail.c | 11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/intel/pinctrl-baytrail.c b/drivers/pinctrl/intel/pinctrl-baytrail.c
+> index 27aef62fc7c0..66aabac6be9c 100644
+> --- a/drivers/pinctrl/intel/pinctrl-baytrail.c
+> +++ b/drivers/pinctrl/intel/pinctrl-baytrail.c
+> @@ -1733,7 +1733,6 @@ static int byt_pinctrl_probe(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> -#ifdef CONFIG_PM_SLEEP
+>  static int byt_gpio_suspend(struct device *dev)
+>  {
+>  	struct intel_pinctrl *vg = dev_get_drvdata(dev);
+> @@ -1817,9 +1816,7 @@ static int byt_gpio_resume(struct device *dev)
+>  	raw_spin_unlock_irqrestore(&byt_lock, flags);
+>  	return 0;
+>  }
+> -#endif
+>  
+> -#ifdef CONFIG_PM
+>  static int byt_gpio_runtime_suspend(struct device *dev)
+>  {
+>  	return 0;
+> @@ -1829,19 +1826,17 @@ static int byt_gpio_runtime_resume(struct device *dev)
+>  {
+>  	return 0;
+>  }
+> -#endif
+>  
+>  static const struct dev_pm_ops byt_gpio_pm_ops = {
+> -	SET_LATE_SYSTEM_SLEEP_PM_OPS(byt_gpio_suspend, byt_gpio_resume)
+> -	SET_RUNTIME_PM_OPS(byt_gpio_runtime_suspend, byt_gpio_runtime_resume,
+> -			   NULL)
+> +	LATE_SYSTEM_SLEEP_PM_OPS(byt_gpio_suspend, byt_gpio_resume)
+> +	RUNTIME_PM_OPS(byt_gpio_runtime_suspend, byt_gpio_runtime_resume, NULL)
+>  };
+>  
+>  static struct platform_driver byt_gpio_driver = {
+>  	.probe          = byt_pinctrl_probe,
+>  	.driver         = {
+>  		.name			= "byt_gpio",
+> -		.pm			= &byt_gpio_pm_ops,
+> +		.pm			= pm_ptr(&byt_gpio_pm_ops),
+>  		.acpi_match_table	= byt_gpio_acpi_match,
+>  		.suppress_bind_attrs	= true,
+>  	},
 
-commit 1a93dd24f1bee98ca121e68ce5c0de4a60a0a0b6
-Author: Carlos Maiolino <cem@kernel.org>
-Date:   Thu Jul 13 13:48:47 2023 +0000
-
-    shmem: quota support
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11af3afaa80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=13af3afaa80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15af3afaa80000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+38ca19393fb3344f57e6@syzkaller.appspotmail.com
-Fixes: 1a93dd24f1be ("shmem: quota support")
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.5.0-rc1-next-20230714-syzkaller #0 Not tainted
-------------------------------------------------------
-/5027 is trying to acquire lock:
-ffff88807dbd8758 (&info->lock){....}-{2:2}, at: shmem_uncharge+0x28/0x2b0 mm/shmem.c:450
-
-but task is already holding lock:
-ffff88801526c068 (&lruvec->lru_lock){....}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
-ffff88801526c068 (&lruvec->lru_lock){....}-{2:2}, at: folio_lruvec_lock+0x1ba/0x3b0 mm/memcontrol.c:1323
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #3 (&lruvec->lru_lock){....}-{2:2}:
-       __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
-       _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
-       spin_lock include/linux/spinlock.h:351 [inline]
-       folio_lruvec_lock+0x1ba/0x3b0 mm/memcontrol.c:1323
-       __split_huge_page mm/huge_memory.c:2538 [inline]
-       split_huge_page_to_list+0x103b/0x49e0 mm/huge_memory.c:2772
-       split_folio_to_list include/linux/huge_mm.h:400 [inline]
-       split_folio include/linux/huge_mm.h:405 [inline]
-       truncate_inode_partial_folio+0x544/0x760 mm/truncate.c:242
-       shmem_undo_range+0x723/0x1190 mm/shmem.c:1026
-       shmem_truncate_range mm/shmem.c:1120 [inline]
-       shmem_setattr+0xd43/0x1050 mm/shmem.c:1205
-       notify_change+0x742/0x11c0 fs/attr.c:485
-       do_truncate+0x15c/0x220 fs/open.c:66
-       do_sys_ftruncate+0x6a2/0x790 fs/open.c:194
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #2 (&xa->xa_lock#7){..-.}-{2:2}:
-       __raw_spin_lock_irq include/linux/spinlock_api_smp.h:119 [inline]
-       _raw_spin_lock_irq+0x36/0x50 kernel/locking/spinlock.c:170
-       spin_lock_irq include/linux/spinlock.h:376 [inline]
-       filemap_remove_folio+0xbf/0x250 mm/filemap.c:259
-       truncate_inode_folio+0x49/0x70 mm/truncate.c:195
-       shmem_undo_range+0x363/0x1190 mm/shmem.c:1004
-       shmem_truncate_range mm/shmem.c:1120 [inline]
-       shmem_evict_inode+0x334/0xb10 mm/shmem.c:1250
-       evict+0x2ed/0x6b0 fs/inode.c:665
-       iput_final fs/inode.c:1791 [inline]
-       iput.part.0+0x55e/0x7a0 fs/inode.c:1817
-       iput+0x5c/0x80 fs/inode.c:1807
-       dentry_unlink_inode+0x292/0x430 fs/dcache.c:401
-       __dentry_kill+0x3b8/0x640 fs/dcache.c:607
-       dentry_kill fs/dcache.c:745 [inline]
-       dput+0x703/0xfd0 fs/dcache.c:913
-       do_renameat2+0xc4c/0xdc0 fs/namei.c:5011
-       __do_sys_rename fs/namei.c:5055 [inline]
-       __se_sys_rename fs/namei.c:5053 [inline]
-       __x64_sys_rename+0x81/0xa0 fs/namei.c:5053
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #1 (&sb->s_type->i_lock_key){+.+.}-{2:2}:
-       __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
-       _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
-       spin_lock include/linux/spinlock.h:351 [inline]
-       inode_sub_bytes+0x28/0x100 fs/stat.c:816
-       __dquot_free_space+0x8f7/0xaf0 fs/quota/dquot.c:1881
-       dquot_free_space_nodirty include/linux/quotaops.h:379 [inline]
-       dquot_free_block_nodirty include/linux/quotaops.h:390 [inline]
-       shmem_inode_unacct_blocks mm/shmem.c:243 [inline]
-       shmem_recalc_inode+0x196/0x350 mm/shmem.c:420
-       shmem_undo_range+0x558/0x1190 mm/shmem.c:1114
-       shmem_truncate_range mm/shmem.c:1120 [inline]
-       shmem_evict_inode+0x334/0xb10 mm/shmem.c:1250
-       evict+0x2ed/0x6b0 fs/inode.c:665
-       iput_final fs/inode.c:1791 [inline]
-       iput.part.0+0x55e/0x7a0 fs/inode.c:1817
-       iput+0x5c/0x80 fs/inode.c:1807
-       dentry_unlink_inode+0x292/0x430 fs/dcache.c:401
-       __dentry_kill+0x3b8/0x640 fs/dcache.c:607
-       dentry_kill fs/dcache.c:745 [inline]
-       dput+0x703/0xfd0 fs/dcache.c:913
-       do_renameat2+0xc4c/0xdc0 fs/namei.c:5011
-       __do_sys_rename fs/namei.c:5055 [inline]
-       __se_sys_rename fs/namei.c:5053 [inline]
-       __x64_sys_rename+0x81/0xa0 fs/namei.c:5053
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #0 (&info->lock){....}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:3142 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3261 [inline]
-       validate_chain kernel/locking/lockdep.c:3876 [inline]
-       __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5144
-       lock_acquire kernel/locking/lockdep.c:5761 [inline]
-       lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
-       shmem_uncharge+0x28/0x2b0 mm/shmem.c:450
-       __split_huge_page mm/huge_memory.c:2549 [inline]
-       split_huge_page_to_list+0x3832/0x49e0 mm/huge_memory.c:2772
-       split_folio_to_list include/linux/huge_mm.h:400 [inline]
-       split_folio include/linux/huge_mm.h:405 [inline]
-       truncate_inode_partial_folio+0x544/0x760 mm/truncate.c:242
-       shmem_undo_range+0x723/0x1190 mm/shmem.c:1026
-       shmem_truncate_range mm/shmem.c:1120 [inline]
-       shmem_setattr+0xd43/0x1050 mm/shmem.c:1205
-       notify_change+0x742/0x11c0 fs/attr.c:485
-       do_truncate+0x15c/0x220 fs/open.c:66
-       do_sys_ftruncate+0x6a2/0x790 fs/open.c:194
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-other info that might help us debug this:
-
-Chain exists of:
-  &info->lock --> &xa->xa_lock#7 --> &lruvec->lru_lock
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&lruvec->lru_lock);
-                               lock(&xa->xa_lock#7);
-                               lock(&lruvec->lru_lock);
-  lock(&info->lock);
-
- *** DEADLOCK ***
-
-5 locks held by /5027:
- #0: ffff8880762b4410 (sb_writers#5){.+.+}-{0:0}, at: do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- #0: ffff8880762b4410 (sb_writers#5){.+.+}-{0:0}, at: do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- #1: ffff88807dbd8a50 (&sb->s_type->i_mutex_key#12){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:771 [inline]
- #1: ffff88807dbd8a50 (&sb->s_type->i_mutex_key#12){+.+.}-{3:3}, at: do_truncate+0x14b/0x220 fs/open.c:64
- #2: ffff88807dbd8cf0 (&mapping->i_mmap_rwsem){++++}-{3:3}, at: i_mmap_lock_read include/linux/fs.h:501 [inline]
- #2: ffff88807dbd8cf0 (&mapping->i_mmap_rwsem){++++}-{3:3}, at: split_huge_page_to_list+0x7d5/0x49e0 mm/huge_memory.c:2712
- #3: ffff88807dbd8b60 (&xa->xa_lock#7){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
- #3: ffff88807dbd8b60 (&xa->xa_lock#7){..-.}-{2:2}, at: split_huge_page_to_list+0x980/0x49e0 mm/huge_memory.c:2744
- #4: ffff88801526c068 (&lruvec->lru_lock){....}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
- #4: ffff88801526c068 (&lruvec->lru_lock){....}-{2:2}, at: folio_lruvec_lock+0x1ba/0x3b0 mm/memcontrol.c:1323
-
-stack backtrace:
-CPU: 0 PID: 5027 Comm:  Not tainted 6.5.0-rc1-next-20230714-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- check_noncircular+0x311/0x3f0 kernel/locking/lockdep.c:2195
- check_prev_add kernel/locking/lockdep.c:3142 [inline]
- check_prevs_add kernel/locking/lockdep.c:3261 [inline]
- validate_chain kernel/locking/lockdep.c:3876 [inline]
- __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5144
- lock_acquire kernel/locking/lockdep.c:5761 [inline]
- lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
- shmem_uncharge+0x28/0x2b0 mm/shmem.c:450
- __split_huge_page mm/huge_memory.c:2549 [inline]
- split_huge_page_to_list+0x3832/0x49e0 mm/huge_memory.c:2772
- split_folio_to_list include/linux/huge_mm.h:400 [inline]
- split_folio include/linux/huge_mm.h:405 [inline]
- truncate_inode_partial_folio+0x544/0x760 mm/truncate.c:242
- shmem_undo_range+0x723/0x1190 mm/shmem.c:1026
- shmem_truncate_range mm/shmem.c:1120 [inline]
- shmem_setattr+0xd43/0x1050 mm/shmem.c:1205
- notify_change+0x742/0x11c0 fs/attr.c:485
- do_truncate+0x15c/0x220 fs/open.c:66
- do_sys_ftruncate+0x6a2/0x790 fs/open.c:194
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fcc0ae38b99
-Code: 48 83 c4 28 c3 e8 67 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffcd4272e58 EFLAGS: 00000246 ORIG_RAX: 000000000000004d
-RAX: ffffffffffffffda RBX: 00007ffcd4272e60 RCX: 00007fcc0ae38b99
-RDX: 00007fcc0ae38b99 RSI: 0000000000008979 RDI: 0000000000000003
-RBP: 00007ffcd4272e68 R08: 00007fcc0ae05c10 R09: 00007fcc0ae05c10
-R10: 0000000000000000 R11: 000000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
