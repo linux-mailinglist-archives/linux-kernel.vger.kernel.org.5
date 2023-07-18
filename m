@@ -2,65 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 954E07573E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2B77573F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 08:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbjGRGQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 02:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
+        id S231405AbjGRGRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 02:17:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbjGRGQc (ORCPT
+        with ESMTP id S231370AbjGRGQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 02:16:32 -0400
+        Tue, 18 Jul 2023 02:16:38 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB48F2103;
-        Mon, 17 Jul 2023 23:15:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293C11993;
+        Mon, 17 Jul 2023 23:15:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 31BFE6146C;
-        Tue, 18 Jul 2023 06:15:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A470C433C8;
-        Tue, 18 Jul 2023 06:15:37 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9E9D361467;
+        Tue, 18 Jul 2023 06:15:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4FA4C433C7;
+        Tue, 18 Jul 2023 06:15:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689660944;
-        bh=cUbtQFwtfNqfULDCUbv0nOM8BYXs2LTWrJLdZvxDQA8=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=KJMbAtyc6I4UHt7JFBVCvT14hZFxEuSn4EUlSOeJYjfmbE5T15HppBRoUbJax/Vtm
-         869HTzQvKifHDgR2O6mXMZPwr9FNPI53GvIY3GS2y1ZXAk84W5q/JxvSiYhQPN6N/4
-         2pdCEkamrgQOIO6ksvmJ1MVA4wNMZ+QvYssZwsUmSTEZCR6yiSJq7yut8GDT5tNhUZ
-         hZsMUuT+RqvRZX4kJfQYgJn9iFHaasyZU3hPQPOsoVupT7pDyG2vOzZ7Vv9UMqPMBq
-         /POpr7jpl0bocB0WIjrTURwiWpsuZMWyF/GB8IzpM7p8HpMfIDZSJ6on4t0eynysl6
-         RRyyt8RJGyA1A==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     linux-phy@lists.infradead.org, linux-rockchip@lists.infradead.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
+        s=k20201202; t=1689660954;
+        bh=m6TNtiSSdr7NEHVUmCfp2rBAYfJpD9ldZcI2OBMUi7M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LME1uDz5zz0EASXHY6yhdacg6B7fduJ2359XAmmYVudDrF8o86va+aukdcS+LZqMG
+         ve0J0Z3ToB6YSNk+19J0umYoTqgzyJwLXTXzSvU8ZriIQltFa/fsAFdzplekMltTJ2
+         HJCcyw7sz7SitoLoVyaFrTVtiCTC+y19R1POXm3Q5INOvB08yKlKvYIg07L9O+7lAp
+         9WNfv4EobVXCQG7KoqebT9yCDlv+c+UtfS8Gg3bhNkhemz9h5Ag3/LQt0r3Ni9uIcQ
+         atFneK6P+c/68cfsHEHhF4a5ErX72wvpkMFu/u2SU8kyB7DXmHUGQOAPO8ZMWkAqGR
+         Lh2O+FVcQ7NEw==
+Date:   Tue, 18 Jul 2023 14:15:41 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Simon Xue <xxm@rock-chips.com>, John Clark <inindev@gmail.com>,
-        Qu Wenruo <wqu@suse.com>, devicetree@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-In-Reply-To: <20230717173512.65169-1-sebastian.reichel@collabora.com>
-References: <20230717173512.65169-1-sebastian.reichel@collabora.com>
-Subject: Re: (subset) [PATCH v2 0/2] RK3588 PCIe3 support
-Message-Id: <168966093703.340315.14184672794247667224.b4-ty@kernel.org>
-Date:   Tue, 18 Jul 2023 11:45:37 +0530
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: imx8mn-var-som: add missing pull-up for
+ onboard PHY reset pinmux
+Message-ID: <20230718061541.GJ9559@dragon>
+References: <20230704134800.204542-1-hugo@hugovil.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230704134800.204542-1-hugo@hugovil.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -71,29 +65,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Mon, 17 Jul 2023 19:35:10 +0200, Sebastian Reichel wrote:
-> This adds PCIe v3 support for RK3588. The series depends on the PCIe
-> v2 series [0], since the the same binding is used. It has been tested
-> on Rockchip EVB1 and Radxa Rock 5B.
+On Tue, Jul 04, 2023 at 09:48:00AM -0400, Hugo Villeneuve wrote:
+> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 > 
-> Note, that the PCIe3 PHY driver is currently missing bifurcation
-> support for RK3588. Thus after this series only PCIe3x4 is usable
-> (in aggregated x4 mode) without adding support for the PHY's
-> "rockchip,pcie30-phymode" DT property, which allows configuring
-> how the lanes are distributed. Aggregated 3x4 mode seems to be the
-> most common configuration. Both EVB1 and Rock 5B use it, so I
-> cannot test anything else anyways.
+> For SOMs with an onboard PHY, the RESET_N pull-up resistor is
+> currently deactivated in the pinmux configuration. When the pinmux
+> code selects the GPIO function for this pin, with a default direction
+> of input, this prevents the RESET_N pin from being taken to the proper
+> 3.3V level (deasserted), and this results in the PHY being not
+> detected since it is held in reset.
 > 
-> [...]
+> Taken from RESET_N pin description in ADIN13000 datasheet:
+>     This pin requires a 1K pull-up resistor to AVDD_3P3.
+> 
+> Activate the pull-up resistor to fix the issue.
+> 
+> Fixes: ade0176dd8a0 ("arm64: dts: imx8mn-var-som: Add Variscite VAR-SOM-MX8MN System on Module")
+> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
 Applied, thanks!
-
-[1/2] dt-bindings: phy: rockchip: add RK3588 PCIe v3 phy
-      commit: f66782cff479807ad7e98f0cf6a0c0babfe0159b
-
-Best regards,
--- 
-~Vinod
-
-
