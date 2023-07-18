@@ -2,56 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A205757A45
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317D0757A49
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 13:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbjGRLRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 07:17:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36540 "EHLO
+        id S231180AbjGRLSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 07:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231355AbjGRLRH (ORCPT
+        with ESMTP id S231857AbjGRLR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 07:17:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55ED1701;
-        Tue, 18 Jul 2023 04:17:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D0D161518;
-        Tue, 18 Jul 2023 11:17:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FF81C433C8;
-        Tue, 18 Jul 2023 11:17:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689679024;
-        bh=yneGdhfPaEZqEjHMF7Bs2b9Z1dwhqcI/jj2kSWtUNoc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=gPeSsNTgMruHk9A+fr5WRJTky0iJD1ezQpAlhLcLkRHHOP6SqfbohsWVjxEsCkRlt
-         EkmBGlS4Odb86PO4tChrEZB8y8OKdnm4miohb26X27G1SFTEV3/ZRwvdXiWiOFa6L5
-         ggi5wHmvB6/p5ikIOd5Oal8t28QGlczYmIq2GNUaLRJyZADvCRY2tnBV9GGVpJRWYd
-         urPhJIWTkGeXTUg9Z9J++KNh0/uRKvi4iQhfs+NxwY1SEP8hrsf2vl/maX5+wK7lrN
-         4bTVAy2rvm0uuXdWiDKeIszGE2gobh7l/y76QAo1kGzJWpuKtcb0d5eXK855uN3Oc5
-         LrnYpRYaWGYUA==
-Date:   Tue, 18 Jul 2023 06:17:02 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     bhelgaas@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-        linuxppc-dev@lists.ozlabs.org,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, koba.ko@canonical.com,
-        Oliver O'Halloran <oohall@gmail.com>,
-        linux-pci@vger.kernel.org, mika.westerberg@linux.intel.com,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v6 2/3] PCI/AER: Disable AER interrupt on suspend
-Message-ID: <20230718111702.GA354713@bhelgaas>
+        Tue, 18 Jul 2023 07:17:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DC11703
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:17:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689679031;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FMvWdQ8jDtgrg4TmzvreNToMG0I25+6piVG21WnWmLI=;
+        b=GNDC88KVUTJweVOzPVxzaYyZIBlIbmRI9ilI3yaJqqQPdCT7gZryBnUaBr0inMzK0sF8zP
+        Iot4QMjQbKr8BoMEr04prStR84fI8gdEsTZXPgSRaFsbuywFKa20m7XHn9Zi0/qY3zyaeq
+        FD93AgAegcs1onmml9dMhf7Pqpu2VUI=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-455-uwbYkqjiPcGYcr6B4YS1ng-1; Tue, 18 Jul 2023 07:17:09 -0400
+X-MC-Unique: uwbYkqjiPcGYcr6B4YS1ng-1
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-262d2cae3efso643722a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 04:17:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689679029; x=1690283829;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FMvWdQ8jDtgrg4TmzvreNToMG0I25+6piVG21WnWmLI=;
+        b=CMm0KhSexg6QSf4CjG3nZkoPs2dPIobDlFFOnHg5qO/FXmVV72fv85WDg5wwElpQLD
+         8kHRD3uDO6K9pMoHOChTLNxjinZdgNtr7gv/TKPCo9SugFhOVpalmn7Ie7jrtpgVqyvh
+         lu82/HP6xkySzcYcqYBCuHFox4SiUlrYdztRWcPzZkbQbhUodzqy9h8EWQ5ciTFKjSwr
+         PlYlLC12NJ4210+GndSNKY/5L0J6IUXqQygCHhsuKf0wO66RUOp0Eg6ze853fv6VEvbP
+         mO2ZDp8XxKYiqwcBXtpPth6PpeNVyWWnesMFxXZx/vqaVGcCmV8ywD1JwsTgM4X/PttR
+         ToCw==
+X-Gm-Message-State: ABy/qLZuBXRYAFw6vkappqi553D2kR+PB2LC1Ho9pkeVG2ozxuRfCLEB
+        mie0OR+4UaetxAJkTg6o2IubNwjZn9o2DMEZemD7wDw/IDAc11H2lP28VYWR7dO9NHvWAO3vqTV
+        NZ+LA8bt5QxnlaCTFmyZRN2KU
+X-Received: by 2002:a17:903:230b:b0:1b8:b0c4:2e3d with SMTP id d11-20020a170903230b00b001b8b0c42e3dmr11266974plh.4.1689679028960;
+        Tue, 18 Jul 2023 04:17:08 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlH5kvIm7BO6HgOwtAhzPPJqnxdHrdyX/BVtSHl74wvgT6sMhv7vpU6zAkVVa8mgoPsZbPZuzQ==
+X-Received: by 2002:a17:903:230b:b0:1b8:b0c4:2e3d with SMTP id d11-20020a170903230b00b001b8b0c42e3dmr11266944plh.4.1689679028672;
+        Tue, 18 Jul 2023 04:17:08 -0700 (PDT)
+Received: from [10.72.112.40] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id l18-20020a170902eb1200b001a80ad9c599sm1576337plb.294.2023.07.18.04.17.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 04:17:08 -0700 (PDT)
+Message-ID: <4f02d91a-acd8-afa5-03b0-fd8ec29328dd@redhat.com>
+Date:   Tue, 18 Jul 2023 19:17:02 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230512000014.118942-2-kai.heng.feng@canonical.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v6 09/11] KVM: arm64: Flush only the memslot after
+ write-protect
+Content-Language: en-US
+To:     Raghavendra Rao Ananta <rananta@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>
+References: <20230715005405.3689586-1-rananta@google.com>
+ <20230715005405.3689586-10-rananta@google.com>
+From:   Shaoqin Huang <shahuang@redhat.com>
+In-Reply-To: <20230715005405.3689586-10-rananta@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,99 +99,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Rafael]
 
-On Fri, May 12, 2023 at 08:00:13AM +0800, Kai-Heng Feng wrote:
-> PCIe services that share an IRQ with PME, such as AER or DPC, may cause a
-> spurious wakeup on system suspend. To prevent this, disable the AER interrupt
-> notification during the system suspend process.
 
-I see that in this particular BZ dmesg log, PME, AER, and DPC do share
-the same IRQ, but I don't think this is true in general.
-
-Root Ports usually use MSI or MSI-X.  PME and hotplug events use the
-Interrupt Message Number in the PCIe Capability, but AER uses the one
-in the AER Root Error Status register, and DPC uses the one in the DPC
-Capability register.  Those potentially correspond to three distinct
-MSI/MSI-X vectors.
-
-I think this probably has nothing to do with the IRQ being *shared*,
-but just that putting the downstream component into D3cold, where the
-link state is L3, may cause the upstream component to log and signal a
-link-related error as the link goes completely down.
-
-I don't think D0-D3hot should be relevant here because in all those
-states, the link should be active because the downstream config space
-remains accessible.  So I'm not sure if it's possible, but I wonder if
-there's a more targeted place we could do this, e.g., in the path that
-puts downstream devices in D3cold.
-
-> As Per PCIe Base Spec 5.0, section 5.2, titled "Link State Power Management",
-> TLP and DLLP transmission are disabled for a Link in L2/L3 Ready (D3hot), L2
-> (D3cold with aux power) and L3 (D3cold) states. So disabling the AER
-> notification during suspend and re-enabling them during the resume process
-> should not affect the basic functionality.
+On 7/15/23 08:54, Raghavendra Rao Ananta wrote:
+> After write-protecting the region, currently KVM invalidates
+> the entire TLB entries using kvm_flush_remote_tlbs(). Instead,
+> scope the invalidation only to the targeted memslot. If
+> supported, the architecture would use the range-based TLBI
+> instructions to flush the memslot or else fallback to flushing
+> all of the TLBs.
 > 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=216295
-> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
 > ---
-> v6:
-> v5:
->  - Wording.
+>   arch/arm64/kvm/mmu.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> v4:
-> v3:
->  - No change.
-> 
-> v2:
->  - Only disable AER IRQ.
->  - No more check on PME IRQ#.
->  - Use helper.
-> 
->  drivers/pci/pcie/aer.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index 1420e1f27105..9c07fdbeb52d 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -1356,6 +1356,26 @@ static int aer_probe(struct pcie_device *dev)
->  	return 0;
->  }
->  
-> +static int aer_suspend(struct pcie_device *dev)
-> +{
-> +	struct aer_rpc *rpc = get_service_data(dev);
-> +	struct pci_dev *pdev = rpc->rpd;
-> +
-> +	aer_disable_irq(pdev);
-> +
-> +	return 0;
-> +}
-> +
-> +static int aer_resume(struct pcie_device *dev)
-> +{
-> +	struct aer_rpc *rpc = get_service_data(dev);
-> +	struct pci_dev *pdev = rpc->rpd;
-> +
-> +	aer_enable_irq(pdev);
-> +
-> +	return 0;
-> +}
-> +
->  /**
->   * aer_root_reset - reset Root Port hierarchy, RCEC, or RCiEP
->   * @dev: pointer to Root Port, RCEC, or RCiEP
-> @@ -1420,6 +1440,8 @@ static struct pcie_port_service_driver aerdriver = {
->  	.service	= PCIE_PORT_SERVICE_AER,
->  
->  	.probe		= aer_probe,
-> +	.suspend	= aer_suspend,
-> +	.resume		= aer_resume,
->  	.remove		= aer_remove,
->  };
->  
-> -- 
-> 2.34.1
-> 
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 387f2215fde7..985f605e2abc 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -1082,7 +1082,7 @@ static void kvm_mmu_wp_memory_region(struct kvm *kvm, int slot)
+>   	write_lock(&kvm->mmu_lock);
+>   	stage2_wp_range(&kvm->arch.mmu, start, end);
+>   	write_unlock(&kvm->mmu_lock);
+> -	kvm_flush_remote_tlbs(kvm);
+> +	kvm_flush_remote_tlbs_memslot(kvm, memslot);
+>   }
+>   
+>   /**
+
+-- 
+Shaoqin
+
