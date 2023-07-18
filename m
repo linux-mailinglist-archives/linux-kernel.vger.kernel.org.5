@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA46758319
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19ED758315
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 18:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232236AbjGRQ5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 12:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58056 "EHLO
+        id S233450AbjGRQ5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 12:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232633AbjGRQzO (ORCPT
+        with ESMTP id S233151AbjGRQzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 12:55:14 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0335E173D
+        Tue, 18 Jul 2023 12:55:08 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D191998
         for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 09:54:54 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:5803:2d6d:5bbc:e252])
-        by baptiste.telenet-ops.be with bizsmtp
-        id Ngur2A00G0ucMBo01gurDG; Tue, 18 Jul 2023 18:54:52 +0200
+        by xavier.telenet-ops.be with bizsmtp
+        id Ngur2A00H0ucMBo01gur1R; Tue, 18 Jul 2023 18:54:52 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qLnyD-001nY1-6K;
+        id 1qLnyD-001nY4-6q;
         Tue, 18 Jul 2023 18:54:51 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qLnyN-000gbn-7S;
+        id 1qLnyN-000gbs-86;
         Tue, 18 Jul 2023 18:54:51 +0200
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
 To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
@@ -38,9 +38,9 @@ Cc:     linux-renesas-soc@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>,
         Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Subject: [PATCH v2 09/41] drm: renesas: shmobile: Use %p4cc to print fourcc code
-Date:   Tue, 18 Jul 2023 18:54:14 +0200
-Message-Id: <90aaa3ebdb2bdce1d1f259cb8dc6c28890dc652a.1689698048.git.geert+renesas@glider.be>
+Subject: [PATCH v2 10/41] drm: renesas: shmobile: Add missing YCbCr formats
+Date:   Tue, 18 Jul 2023 18:54:15 +0200
+Message-Id: <744ce1151d7d92ab0e28ab82d72a99097b03f935.1689698048.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1689698048.git.geert+renesas@glider.be>
 References: <cover.1689698048.git.geert+renesas@glider.be>
@@ -56,8 +56,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the last printing of an hexadecimal fourcc format code by a
-pretty-printed format name, using the "%p4cc" format specifier.
+The primary plane supports various YCbCr formats, and the CRTC code
+already knows how to handle them.  Enable support for the missing
+formats by adding them to the table of supported modes.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
@@ -65,24 +66,26 @@ Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
 v2:
   - Add Reviewed-by.
 ---
- drivers/gpu/drm/renesas/shmobile/shmob_drm_plane.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/gpu/drm/renesas/shmobile/shmob_drm_plane.c b/drivers/gpu/drm/renesas/shmobile/shmob_drm_plane.c
-index 7e49e2873da1bb6f..36fedb2b74c8b7a2 100644
---- a/drivers/gpu/drm/renesas/shmobile/shmob_drm_plane.c
-+++ b/drivers/gpu/drm/renesas/shmobile/shmob_drm_plane.c
-@@ -184,8 +184,8 @@ shmob_drm_plane_update(struct drm_plane *plane, struct drm_crtc *crtc,
+diff --git a/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c b/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c
+index 2d9ae0c6ab7b18a8..a0e1a49c84d5691a 100644
+--- a/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c
++++ b/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c
+@@ -460,6 +460,12 @@ static const uint32_t modeset_formats[] = {
+ 	DRM_FORMAT_RGB888,
+ 	DRM_FORMAT_ARGB8888,
+ 	DRM_FORMAT_XRGB8888,
++	DRM_FORMAT_NV12,
++	DRM_FORMAT_NV21,
++	DRM_FORMAT_NV16,
++	DRM_FORMAT_NV61,
++	DRM_FORMAT_NV24,
++	DRM_FORMAT_NV42,
+ };
  
- 	format = shmob_drm_format_info(fb->format->format);
- 	if (format == NULL) {
--		dev_dbg(sdev->dev, "update_plane: unsupported format %08x\n",
--			fb->format->format);
-+		dev_dbg(sdev->dev, "update_plane: unsupported format %p4cc\n",
-+			&fb->format->format);
- 		return -EINVAL;
- 	}
- 
+ static const struct drm_plane_funcs primary_plane_funcs = {
 -- 
 2.34.1
 
