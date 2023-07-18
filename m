@@ -2,100 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8489E75864C
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8314975864D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 22:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbjGRUug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 16:50:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52578 "EHLO
+        id S230320AbjGRUu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 16:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbjGRUu1 (ORCPT
+        with ESMTP id S229772AbjGRUuw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 16:50:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D07C0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:50:26 -0700 (PDT)
+        Tue, 18 Jul 2023 16:50:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E081FEC
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 13:50:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 21C3D60F7F
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 20:50:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEACFC433CB;
-        Tue, 18 Jul 2023 20:50:24 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 61B9960F75
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 20:50:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73B9DC433C7;
+        Tue, 18 Jul 2023 20:50:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689713425;
-        bh=scxEmsmSS3yAw8Pb9vs+lLcPVOwcbwDaNQFx5fsoDzg=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=gQLfe2sZU78/8tGyOQjHfsxtD3oQUv+Px5p2nKSG2zOFChi/ssTKr3JBCzye1qq+8
-         7VNbb0lJBrjlbHvzinxbFVOanGpdbgiFHSIpmwpcfz6sOowDLYcJFdexcC5UZQl2rc
-         SIWcIec7RA+pcZhOZbMmxW1u/MvG+Q55kF3HcCJ4d2fWg+ORaLXnpXhqrJATV5Jpvc
-         KfFkXep5yxpZYkcOYus1diAFXr7sFso2FEF81FqQIm89o1eGkiPbDOy+41kVGnGr5w
-         peJolAYeeC7dwcwWHCBKcGrmv9x7qJfarLKKD29P63QWodHBhllrC+vUff5TJ5SVm8
-         HgB8WgpmNxWwg==
-From:   Eric Van Hensbergen <ericvh@kernel.org>
-Date:   Tue, 18 Jul 2023 20:50:18 +0000
-Subject: [PATCH v2 4/4] fs/9p: remove unnecessary invalidate_inode_pages2
+        s=k20201202; t=1689713437;
+        bh=gEw8p5anenofWHBZHWKW/M+NiMyaqUqwak/8urPi6d0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=KoWuP96wI+fWF75KtEEfSTM7QZlGgyUN+r99fgZJAOZCbu3s3WepGiN78qpbm23ec
+         ELTNWYXCY6CDlPQg1F8OkTZdxeWP5A9VRfECDCxWwUV52mEfW873IZv1hsrV+tw5i3
+         fb3jJua0QevRiYL+4UX7YS34g6PetCisPQBcr2nLSlv3K3uDSbHcco5tW/9AUFv6dt
+         8v36TclnokUEie2tDstig83bO+u56kGL7ZkzdPbfb66wSuYgf9DXdytSVbxRTvzsfL
+         WFuJ1k/zhiuVDGmnBI3m4fXipJNgg0jGyGprr74eW4lIX3akkuzV//duzrZWov14Vt
+         7Cx6CnyRphAig==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     Celeste Liu <coelacanthushex@gmail.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+        =?utf-8?B?QmrDtnJu?= =?utf-8?B?IFTDtnBlbA==?= 
+        <bjorn@rivosinc.com>, Conor Dooley <conor.dooley@microchip.com>,
+        linux-riscv@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Felix Yan <felixonmars@archlinux.org>,
+        Ruizhe Pan <c141028@gmail.com>,
+        Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
+Subject: Re: [PATCH v2] riscv: entry: set a0 prior to
+ syscall_enter_from_user_mode
+In-Reply-To: <03206759-8d6a-a410-a8f9-d4678236bdbf@gmail.com>
+References: <20230718162940.226118-1-CoelacanthusHex@gmail.com>
+ <87pm4p2et2.fsf@all.your.base.are.belong.to.us>
+ <03206759-8d6a-a410-a8f9-d4678236bdbf@gmail.com>
+Date:   Tue, 18 Jul 2023 22:50:35 +0200
+Message-ID: <87r0p5kkpw.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230716-fixes-overly-restrictive-mmap-v2-4-147d6b93f699@kernel.org>
-References: <20230716-fixes-overly-restrictive-mmap-v2-0-147d6b93f699@kernel.org>
-In-Reply-To: <20230716-fixes-overly-restrictive-mmap-v2-0-147d6b93f699@kernel.org>
-To:     Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>
-Cc:     v9fs@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Robert Schwebel <r.schwebel@pengutronix.de>,
-        Eric Van Hensbergen <ericvh@kernel.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=634; i=ericvh@kernel.org;
- h=from:subject:message-id; bh=scxEmsmSS3yAw8Pb9vs+lLcPVOwcbwDaNQFx5fsoDzg=;
- b=owEBbQKS/ZANAwAKAYj/1ftKX/+YAcsmYgBktvsM6EaD3uQIChje/362palMFSayDgR3qaOWO
- dsMdF9cc6qJAjMEAAEKAB0WIQSWlvDRlqWQmKTK0VGI/9X7Sl//mAUCZLb7DAAKCRCI/9X7Sl//
- mLrFEACWjUV9pX/ivEzfBsAWNxyETtVIY4AVufEY6ephLHNpEIegrcmzupnJ+Jz7uFRLdTLMF7c
- 9GQPcjG9oq8tu7JxTsvRJd5dRRDunPi+caDam+5BmpVMVJ4JjJEoTyX/EwSylM7BX8zGcYtgcBc
- BOYOTznWqLKc7O6QGewfAl19EbsbZL8d6EFAo19p/LEo7sMR1Jy0u4c0/9gPniZ+3HDMZtz3Hs0
- SXLwNi9gr06sAlxc2jBFyy7cgSbXWHzD/+Wp4WWsIqeL7h7jUHKfH6WYmsIbYi2fPMejghZeNsI
- IDyxbaHm4jSNYnLulLDuTK7JeO/03t1zyZryLh4UfVBeYSXSotY9HycOXQWjDGue0ScZddviXU4
- hxV9+wq5j6Zn2AIpej8C07r5xQ1oNAYRG7xtmbETUYSDUQP+D5fTJHI4JWnZCbRZriNzbgW0TyF
- d6sh9ARoaoyUNabFuzxwobOkuS9w78MPfA7WNOfje2aGsul9v4YT497597CijRYqnRsnudf8Wsg
- ay0c2ME8h8RatfPVZV1GtmqrOTDf5ZzQdforHXTSl99X9VzlunbiDn3dJa50gVc27bOuQ7w6eHi
- m8jBvuxPu6Sb7gDTRshrje4uv32/pYL+0vwN17BLFnq6bYlMSmKqW2ejcx5MNQouF33jBJaX18e
- hUNzK/SW/afmSsg==
-X-Developer-Key: i=ericvh@kernel.org; a=openpgp;
- fpr=9696F0D196A59098A4CAD15188FFD5FB4A5FFF98
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There was an invalidate_inode_pages2
-added to mmap that is unnecessary.
+Celeste Liu <coelacanthushex@gmail.com> writes:
 
-Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
----
- fs/9p/vfs_file.c | 1 -
- 1 file changed, 1 deletion(-)
+> On 2023/7/19 03:35, Bj=C3=B6rn T=C3=B6pel wrote:
+>> Celeste Liu <coelacanthushex@gmail.com> writes:
+>>=20
+>>> When we test seccomp with 6.4 kernel, we found errno has wrong value.
+>>> If we deny NETLINK_AUDIT with EAFNOSUPPORT, after f0bddf50586d, we will
+>>> get ENOSYS instead. We got same result with 9c2598d43510 ("riscv: entry=
+: Save a0
+>>> prior syscall_enter_from_user_mode()").
+>>>
+>>> After analysing code, we think that regs->a0 =3D -ENOSYS should be adva=
+nced before
+>>> syscall_enter_from_user_mode to fix this problem. In __seccomp_filter, =
+when
+>>> seccomp rejected this syscall with specified errno, they will set a0 to=
+ return
+>>> number as syscall ABI, and then return -1. This return number is finall=
+y pass
+>>> as return number of syscall_enter_from_user_mode, and then is compared
+>>> with NR_syscalls after converted to ulong (so it will be ULONG_MAX).
+>>> The condition syscall < NR_syscalls will always be false, so regs->a0 =
+=3D -ENOSYS
+>>> is always executable. It covered a0 set by seccomp, so we always get
+>>> ENOSYS when match seccomp RET_ERRNO rule.
+>>=20
+>> Isn't something like...
+>>=20
+>> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+>> index f910dfccbf5d..15a8b4898a6c 100644
+>> --- a/arch/riscv/kernel/traps.c
+>> +++ b/arch/riscv/kernel/traps.c
+>> @@ -297,7 +297,7 @@ asmlinkage __visible __trap_section void do_trap_bre=
+ak(struct pt_regs *regs)
+>>  asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs=
+ *regs)
+>>  {
+>>  	if (user_mode(regs)) {
+>> -		ulong syscall =3D regs->a7;
+>> +		long syscall =3D regs->a7;
+>>=20=20
+>>  		regs->epc +=3D 4;
+>>  		regs->orig_a0 =3D regs->a0;
+>> @@ -306,7 +306,7 @@ asmlinkage __visible __trap_section void do_trap_eca=
+ll_u(struct pt_regs *regs)
+>>=20=20
+>>  		syscall =3D syscall_enter_from_user_mode(regs, syscall);
+>>=20=20
+>> -		if (syscall < NR_syscalls)
+>> +		if (syscall > -1 && syscall < NR_syscalls)
+>>  			syscall_handler(regs, syscall);
+>>  		else
+>>  			regs->a0 =3D -ENOSYS;
+>>=20
+>>=20
+>> ...easier to read?
+>>=20
+>>=20
+>> Bj=C3=B6rn
+>
+> It seems that your change turn it back to the beginning. If syscall =3D=
+=3D -1,
+> it is supposed to go neither first nor else branch. It should do NOTHING.
+> However it was still a great idea. It may be better to use a set of if-st=
+atement
+> to clarify the logic.
 
-diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
-index bda3abd6646b8..3809f3a531499 100644
---- a/fs/9p/vfs_file.c
-+++ b/fs/9p/vfs_file.c
-@@ -506,7 +506,6 @@ v9fs_file_mmap(struct file *filp, struct vm_area_struct *vma)
- 
- 	if (!(v9ses->cache & CACHE_WRITEBACK)) {
- 		p9_debug(P9_DEBUG_CACHE, "(no mmap mode)");
--		invalidate_inode_pages2(filp->f_mapping);
- 		return generic_file_readonly_mmap(filp, vma);
- 	}
- 
+Ah, gotcha! (Notice that arch/x86/entry/common.c has
 
--- 
-2.39.2
+  | 	if (!do_syscall_x64(regs, nr) && !do_syscall_x32(regs, nr) && nr !=3D =
+-1) {
 
+and in do_syscall_x64()
+
+  | 	/*
+  | 	 * Convert negative numbers to very high and thus out of range
+  | 	 * numbers for comparisons.
+  | 	 */
+  | 	unsigned int unr =3D nr;
+
+
+> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+> index f910dfccbf5d2..d0bd725244594 100644
+> --- a/arch/riscv/kernel/traps.c
+> +++ b/arch/riscv/kernel/traps.c
+> @@ -306,7 +306,9 @@ asmlinkage __visible __trap_section void do_trap_ecal=
+l_u(struct pt_regs *regs)
+>=20=20
+>  		syscall =3D syscall_enter_from_user_mode(regs, syscall);
+>=20=20
+> -		if (syscall < NR_syscalls)
+> +		if (syscall =3D=3D -1)
+> +			// Do nothing
+> +		else if (syscall < NR_syscalls)
+>  			syscall_handler(regs, syscall);
+>  		else
+>  			regs->a0 =3D -ENOSYS;
+
+Maybe something a bit more explicit?
+
+diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+index f910dfccbf5d..5cef72874542 100644
+--- a/arch/riscv/kernel/traps.c
++++ b/arch/riscv/kernel/traps.c
+@@ -297,6 +297,10 @@ asmlinkage __visible __trap_section void do_trap_break=
+(struct pt_regs *regs)
+ asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *r=
+egs)
+ {
+ 	if (user_mode(regs)) {
++		/*
++		 * Convert negative numbers to very high and thus out of range
++		 * numbers for comparisons.
++		 */
+ 		ulong syscall =3D regs->a7;
+=20
+ 		regs->epc +=3D 4;
+@@ -308,7 +312,7 @@ asmlinkage __visible __trap_section void do_trap_ecall_=
+u(struct pt_regs *regs)
+=20
+ 		if (syscall < NR_syscalls)
+ 			syscall_handler(regs, syscall);
+-		else
++		else if ((long)syscall !=3D -1L)
+ 			regs->a0 =3D -ENOSYS;
+=20
+ 		syscall_exit_to_user_mode(regs);
+
+
+Bj=C3=B6rn
