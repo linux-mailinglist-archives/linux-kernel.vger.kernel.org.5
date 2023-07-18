@@ -2,129 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C8B757781
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDDE757782
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbjGRJND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52634 "EHLO
+        id S231834AbjGRJNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbjGRJMy (ORCPT
+        with ESMTP id S232145AbjGRJM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:12:54 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D76D2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:12:52 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R4tX20RK5zBR0gv
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 17:12:50 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689671569; x=1692263570; bh=wY7exn7O8/75pPLXp4GPcV17LqA
-        3JdtXsrjYJFcOJv4=; b=vkDAPT1dW2JHYhf7B198dzviIOkyyRRK9i6wVZv+n8l
-        bwV8dVQdRGJUPFCpDqrFKmxztgHEnw/f7QSDdDiBctAPXKDvAdQAq7HzeeRHB+Ss
-        ZE+Vs3Y4S46tQMDcSXpJNHgfuLnVBsBJPCsaqIHzwuutFUy2dxCOw6no/GNeS4lv
-        BxHxQdxcvDiMTCnbAMFD/aJxgEokMwpqKkrKHEX+Wsvq3FgbX9nEA2pNOQqGY7MX
-        a42C0Tk7M5QwXixkDxXQwyiivPzpnx+LRrV3eioYzpfkjfTM+6dl+8krZlttZWpE
-        sL3aXMOTF4CG+QW6vsS8Tl6CLZDWhRmHDu4UJNJ78sQ==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id PA7QV3Cqkgwm for <linux-kernel@vger.kernel.org>;
-        Tue, 18 Jul 2023 17:12:49 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R4tX161GzzBJBfd;
-        Tue, 18 Jul 2023 17:12:49 +0800 (CST)
-MIME-Version: 1.0
-Date:   Tue, 18 Jul 2023 17:12:49 +0800
-From:   hanyu001@208suo.com
-To:     dlemoal@kernel.org
+        Tue, 18 Jul 2023 05:12:56 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF0E186;
+        Tue, 18 Jul 2023 02:12:55 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fb7589b187so8766462e87.1;
+        Tue, 18 Jul 2023 02:12:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689671573; x=1690276373;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ddz5Teg3F/Td50LbJBAOhN/pYgovWCgEfCfYdK31aFE=;
+        b=WrJ/4DJrAueAMkZpdITv8UUlp10+QeDa/Jklo1H2g3VbMLsLgQbOl0qaQq9jH6DEZg
+         3A6A1mEfoqSNaA51JuJKjs9akhbgRqg7J0px44aDMbgB/0Hfd1YbFwnbY4fY4xtNd8ei
+         x03DxeRpGhktwUBMmk9orNWp8/5W0Oft2Cq2rChZAYbFQmp3WHieCX05j5cd5n/4agkP
+         6Dn049MuV4hPIgW/ONjui44dCw9tLVLxZL5G11GXcCoPb/tsKTsriHV1k9eNu5BpKyaY
+         graAayYKPO0UyjDjxG+LAIHqXeiuawEtCOGVZMnjYChxf88VsFLC6BN44jW6W3Jx86fp
+         bqGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689671573; x=1690276373;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ddz5Teg3F/Td50LbJBAOhN/pYgovWCgEfCfYdK31aFE=;
+        b=E6qIbhxK57+bXVEZnnHyekNnrwYN7ZZ/aj0FQ6pbZB3FAp6p7ZyCy0mQfc/T+R/y10
+         /XJi7ofJf48bFfDvYIWqirHSow1atEglLSu2mELur5H2SxhsjL+ayXCrx0fQQAGxZTQ4
+         cKVShK0geQchceDcGpsWl5/OxC0AS0NSip6Wbo/12f42PCHKD+CIRR9ocBpjkys6Ts1K
+         bf2znAlNG8OyyhBl2wHcCovmsMJ5PwjhRFEgOlc6V+GzqwLg+KcuYHYPlnE5x7ZwETvV
+         Eh3vu2bESJM/tSjY20W1sF9ZTWUKHJ001tPwYaRxD8H7vajaq57dnUmQJv6//SfTMNNX
+         pf+w==
+X-Gm-Message-State: ABy/qLbcEpYH6H1h9JQhVnHvcKmUOo6jehIFu5ul68CLIS365RErG4xf
+        fI5EZQsvHplBHon2k6w6Bmo5DVPg6bc=
+X-Google-Smtp-Source: APBJJlFBHgXpbjKvsg2fV5FIfmmDwomZh1AzvGxM1oKFoo6VhvA/pONRWlP7M29VuQGUXzpHlTl6dw==
+X-Received: by 2002:a05:6512:2820:b0:4f8:49a7:2deb with SMTP id cf32-20020a056512282000b004f849a72debmr10375270lfb.8.1689671573333;
+        Tue, 18 Jul 2023 02:12:53 -0700 (PDT)
+Received: from [192.168.1.103] ([31.173.85.68])
+        by smtp.gmail.com with ESMTPSA id t17-20020ac243b1000000b004faeedbb29dsm347416lfl.64.2023.07.18.02.12.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 02:12:52 -0700 (PDT)
+Subject: Re: [PATCH] ata: remove whitespace after '(' and before ')'
+To:     hanyu001@208suo.com, dlemoal@kernel.org
 Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers: ata: Added missing spaces
-In-Reply-To: <tencent_BF5CCE8322052C3E2AE2861606F1D8AE740A@qq.com>
-References: <tencent_BF5CCE8322052C3E2AE2861606F1D8AE740A@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <c34db7fdcd7ac86046fe481cb91a9a48@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+References: <tencent_6714ED434F83826DD33A8EE7B99064165309@qq.com>
+ <07f7ac9c59d027f959a69836fee9940c@208suo.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <5b055482-1adc-6915-b693-f3a95ebc64a1@gmail.com>
+Date:   Tue, 18 Jul 2023 12:12:51 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <07f7ac9c59d027f959a69836fee9940c@208suo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added spaces needed in the proper places to address:
+On 7/18/23 11:53 AM, hanyu001@208suo.com wrote:
 
-./drivers/ata/pata_triflex.c:88: ERROR: space required after that ';' 
-(ctx:VxV)
-./drivers/ata/pata_triflex.c:90: ERROR: space required after that ';' 
-(ctx:VxV)
-./drivers/ata/pata_triflex.c:92: ERROR: space required after that ';' 
-(ctx:VxV)
-./drivers/ata/pata_triflex.c:96: ERROR: space required after that ';' 
-(ctx:VxV)
-./drivers/ata/pata_triflex.c:98: ERROR: space required after that ';' 
-(ctx:VxV)
-./drivers/ata/pata_triflex.c:100: ERROR: space required after that ';' 
-(ctx:VxV)
-./drivers/ata/pata_triflex.c:102: ERROR: space required after that ';' 
-(ctx:VxV)
-./drivers/ata/pata_triflex.c:104: ERROR: space required after that ';' 
-(ctx:VxV)
-./drivers/ata/pata_triflex.c:106: ERROR: space required after that ';' 
-(ctx:VxV)
+> This patch fixes the following checkpatch errors:
+> 
+> ./drivers/ata/pata_sis.c:691: ERROR: space prohibited after that open parenthesis '('
+> ./drivers/ata/pata_sis.c:691: ERROR: space prohibited before that close parenthesis ')'
+> 
+> Signed-off-by: Yu Han <    hanyu001@208suo.com>
 
-Signed-off-by: Yu Han <hanyu001@208suo.com>
----
-  drivers/ata/pata_triflex.c | 18 +++++++++---------
-  1 file changed, 9 insertions(+), 9 deletions(-)
+   What happened to your email? :-)
 
-diff --git a/drivers/ata/pata_triflex.c b/drivers/ata/pata_triflex.c
-index 26d448a..e75bf93 100644
---- a/drivers/ata/pata_triflex.c
-+++ b/drivers/ata/pata_triflex.c
-@@ -85,25 +85,25 @@ static void triflex_load_timing(struct ata_port *ap, 
-struct ata_device *adev, in
-      switch(speed)
-      {
-          case XFER_MW_DMA_2:
--            timing = 0x0103;break;
-+            timing = 0x0103; break;
-          case XFER_MW_DMA_1:
--            timing = 0x0203;break;
-+            timing = 0x0203; break;
-          case XFER_MW_DMA_0:
--            timing = 0x0808;break;
-+            timing = 0x0808; break;
-          case XFER_SW_DMA_2:
-          case XFER_SW_DMA_1:
-          case XFER_SW_DMA_0:
--            timing = 0x0F0F;break;
-+            timing = 0x0F0F; break;
-          case XFER_PIO_4:
--            timing = 0x0202;break;
-+            timing = 0x0202; break;
-          case XFER_PIO_3:
--            timing = 0x0204;break;
-+            timing = 0x0204; break;
-          case XFER_PIO_2:
--            timing = 0x0404;break;
-+            timing = 0x0404; break;
-          case XFER_PIO_1:
--            timing = 0x0508;break;
-+            timing = 0x0508; break;
-          case XFER_PIO_0:
--            timing = 0x0808;break;
-+            timing = 0x0808; break;
-          default:
-              BUG();
-      }
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+
+   Altho I'm not sure whether Damien would want to apply that...
+
+[...]
+
+MBR, Sergey
