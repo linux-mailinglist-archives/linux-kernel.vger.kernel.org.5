@@ -2,107 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85849757830
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E318757833
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231432AbjGRJgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40566 "EHLO
+        id S232348AbjGRJhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjGRJgO (ORCPT
+        with ESMTP id S231933AbjGRJhq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:36:14 -0400
-X-Greylist: delayed 1105 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 18 Jul 2023 02:36:13 PDT
-Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7711B5
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:36:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        Content-ID:Content-Description;
-        bh=AOCh2pECVFkA2m0PgCMpjH4E1B+tTEN/qI4vKGlwX54=; b=X+CpZ7PHoRJv/rJiDqA1H20lZO
-        ieil5mjS9FIPe9GSCjWWPi2MQwATquhizUhraXCHkU9ZDJmZzW6xbjWZZcDVWZxks4qKp/2fMs8IT
-        jmKjBbqUAOaLoUJmG175sYZz5rVLsVWszjtEkLV7aybXD1JgX5y5hdcJ85HR2tiVHD2YfcKZ5hccd
-        WlbeKDPhf8/BsSnI5My9YTk8Mb5Vq4QhV0P/+RvX5anZ8j9T8tVcVKEr9hS4RQa2z/NU4+K1LUsk/
-        GinU1pCh4teENnqiHNAOU4MaIJIjftxXm5lwW9AtTLC7tb3zUKsTaSsGCc+68me314MywADbQOsmN
-        UOISuRcZ+tI2wZKcxCR5iTfxAcMd3x29YbuCGebWWKv95kmeKIivDGyjSpRQEiedLHqidHrYpCNFs
-        22qFwxscC+77L7loZnBt7Txg57+/HhVhwtzzdE1uVUxxKj8uWePlEQXkjzeej2YhCxvLp6jXYAwAL
-        RclbrqFs2gXDdIik/soqenNMmda6IVixNxLdTsyroGjiIZDPC81a1eFR8aBjohqa6qZk/h/wiQhrR
-        kMtyZoescLFy6p+z8kjTMLCQVOuPvTLqatVUy7z11OZZwlSEOFrtfQukjk60ITp5ha5Ie1eKSOGng
-        FSRs5x5ITF56HCWU4OxhpjeD66BVfEqhPZYBDr+SM=;
-From:   Christian Schoenebeck <linux_oss@crudebyte.com>
-To:     Eric Van Hensbergen <ericvh@kernel.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Latchesar Ionkov <lucho@ionkov.net>, v9fs@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        Robert Schwebel <r.schwebel@pengutronix.de>
-Subject: Re: [PATCH 2/3] fs/9p: fix typo in comparison logic for cache mode
-Date:   Tue, 18 Jul 2023 11:34:53 +0200
-Message-ID: <2377968.dzquyXH1nE@silver>
-In-Reply-To: <ZLX9lUnIwLYT-Oc4@codewreck.org>
-References: <20230716-fixes-overly-restrictive-mmap-v1-0-0683b283b932@kernel.org>
- <20230716-fixes-overly-restrictive-mmap-v1-2-0683b283b932@kernel.org>
- <ZLX9lUnIwLYT-Oc4@codewreck.org>
+        Tue, 18 Jul 2023 05:37:46 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC9ECF
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:37:41 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R4v4c1QRQzBR1PD
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 17:37:36 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689673055; x=1692265056; bh=6zOPQz80Mv/HWERPJeIchOiif9I
+        O5sqEE8rXdj84adc=; b=p/Tb6cCj2ZdphLNkvYWO15gt6el6IQdTLxKV+lvlNNM
+        iDR0zw2mpwuvnRaIPNcGqBU/CYPgyb6hfLRJm9QjkApvivu22q/d1dnhHASY2GHC
+        jVWpPaq0SC0dzm+Q1l/ZlOBs3naNpOATFHA9VjQArMgbXnEq2ixiHg3EUW1agmY7
+        2pokM9+105WlvQx9tRV9s234AgvL01lc2DjcjyKrd3UhxnTj6KzvEepSUlD8avzN
+        f2eaCkMTO7vEZtV1UFdM0o7+uw1LnZgaUBy700YsSkQzt/FvW/+pVy3N8vGbWAvc
+        waMBVVhlCJx8yuFJUfC1Giuse5UKhMsTXkBUiQrF62Q==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id HMHUuEKzyjfm for <linux-kernel@vger.kernel.org>;
+        Tue, 18 Jul 2023 17:37:35 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R4v4b3dVlzBJBfd;
+        Tue, 18 Jul 2023 17:37:35 +0800 (CST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Tue, 18 Jul 2023 17:37:35 +0800
+From:   hanyu001@208suo.com
+To:     benh@kernel.crashing.org, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, robh@kernel.org, axboe@kernel.dk,
+        chenlifu@huawei.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] platforms: powermac: insert space before the open parenthesis
+ '('
+In-Reply-To: <tencent_3EB579E7E40217D5639568E3324407B49E08@qq.com>
+References: <tencent_3EB579E7E40217D5639568E3324407B49E08@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <0941033d34b2403020f9e4cc17765381@208suo.com>
+X-Sender: hanyu001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, July 18, 2023 4:48:53 AM CEST Dominique Martinet wrote:
-> Eric Van Hensbergen wrote on Mon, Jul 17, 2023 at 04:29:01PM +0000:
-> > There appears to be a typo in the comparison statement for the logic
-> > which sets a file's cache mode based on mount flags.
-> 
-> Shouldn't break anything, but good fix nevertheless, thanks!
-> 
-> Reviewed-by: Dominique Martinet <asmadeus@codewreck.org>
+Fixes checkpatch error:
 
-Right, at least AFAICS I would not expect any visible behaviour change by this
-patch at all. So this patch is probably just a formal fix.
+/powerpc/platforms/powermac/setup.c:222:ERROR: space required before the 
+open parenthesis '('
 
-BTW there are a bunch of unnecessary braces in this function:
+Signed-off-by: Yu Han <hanyu001@208suo.com>
+---
+  arch/powerpc/platforms/powermac/setup.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
-  (!s_cache) -> !s_cache
-
-  (fid->qid.version == 0) -> fid->qid.version == 0
-
-  (!(s_cache & CACHE_WRITEBACK)) -> !(s_cache & CACHE_WRITEBACK)
-
-These could be wiped in a separate patch as well. Anyway ...
-
-Reviewed-by: Christian Schoenebeck <linux_oss@crudebyte.com>
-
-> > 
-> > Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
-> > ---
-> >  fs/9p/fid.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/9p/fid.h b/fs/9p/fid.h
-> > index 0c51889a60b33..297c2c377e3dd 100644
-> > --- a/fs/9p/fid.h
-> > +++ b/fs/9p/fid.h
-> > @@ -57,7 +57,7 @@ static inline void v9fs_fid_add_modes(struct p9_fid *fid, int s_flags,
-> >  	   (s_flags & V9FS_DIRECT_IO) || (f_flags & O_DIRECT)) {
-> >  		fid->mode |= P9L_DIRECT; /* no read or write cache */
-> >  	} else if ((!(s_cache & CACHE_WRITEBACK)) ||
-> > -				(f_flags & O_DSYNC) | (s_flags & V9FS_SYNC)) {
-> > +				(f_flags & O_DSYNC) || (s_flags & V9FS_SYNC)) {
-> >  		fid->mode |= P9L_NOWRITECACHE;
-> >  	}
-> >  }
-> > 
-> 
-> 
-
-
-
-
+diff --git a/arch/powerpc/platforms/powermac/setup.c 
+b/arch/powerpc/platforms/powermac/setup.c
+index 0c41f4b005bc..a89f3022f3a8 100644
+--- a/arch/powerpc/platforms/powermac/setup.c
++++ b/arch/powerpc/platforms/powermac/setup.c
+@@ -219,7 +219,7 @@ static void __init ohare_init(void)
+                  sysctrl_regs[4] |= 0x04000020;
+              else
+                  sysctrl_regs[4] |= 0x04000000;
+-            if(has_l2cache)
++            if (has_l2cache)
+                  printk(KERN_INFO "Level 2 cache enabled\n");
+          }
+      }
