@@ -2,113 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8949F7576C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 973517576D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 10:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbjGRIjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 04:39:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56446 "EHLO
+        id S231976AbjGRIkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 04:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231950AbjGRIjB (ORCPT
+        with ESMTP id S231934AbjGRIkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 04:39:01 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3A110FF
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:38:58 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1qLgEE-0003ai-SD; Tue, 18 Jul 2023 10:38:42 +0200
-Received: from mfe by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1qLgED-0004fO-Eo; Tue, 18 Jul 2023 10:38:41 +0200
-Date:   Tue, 18 Jul 2023 10:38:41 +0200
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
-Subject: Re: [PATCH net-next 2/2] net: stmmac: platform: add support for
- phy-supply
-Message-ID: <20230718083841.p67wflhjlwnu56j4@pengutronix.de>
-References: <20230717164307.2868264-1-m.felsch@pengutronix.de>
- <20230717164307.2868264-2-m.felsch@pengutronix.de>
- <cd8c177e-7840-4636-a039-dbe8884b3d2b@lunn.ch>
+        Tue, 18 Jul 2023 04:40:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D53BEE4C
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:39:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689669568;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=48OfsAs+5NoliWawjnL6mrqynpB+mYbsWNJ2N0teO4w=;
+        b=ZcNcd7BUBnlW5ef07InP4qh+CXmP3//x42h+6KkHe8zJOK0n9oT9g0y6W/ehB+qHMatmcw
+        Kf0/QgsUyWPFa8xrIeo741jLcPHKMcKOuRT/pD7KMZ08fjj2lXPIs25ToXrdu6zX7iyncC
+        ZauNHXYSMNIJlWS18hN+GSvlY76wO7Q=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-564-aKfWN3w6MUGih3J2TmV6YQ-1; Tue, 18 Jul 2023 04:39:26 -0400
+X-MC-Unique: aKfWN3w6MUGih3J2TmV6YQ-1
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-543c2538071so743624a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 01:39:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689669566; x=1692261566;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=48OfsAs+5NoliWawjnL6mrqynpB+mYbsWNJ2N0teO4w=;
+        b=TsG/R3V5OyuQ8qY4BrQCXIJw++0siAaWG1cI574PWcxU0qOZVrVFm/c+Tl/aPi+yQX
+         HMkRXn8waYZKDTGS7Ga7c+OMff+FaxT+aVJq5eLvYbgwmECFHpUTCe+LBVJF+h2j7TT0
+         dPusr8asbytczbMgnLk0L+zVi57g3jExVmMNxhJNNBn7EXzttzbNV9pEJh+erNAUp6oL
+         1wxUFj97izJwUj3evRHIZF1Z8+f2uPzmkZqZHiZu/r//Kkhd+MwzkagOy1LkUyCH9RCj
+         47ByVpW3blJl5KWFVGaKZ4mk+8E/NqZL+BqZlPzO+NEtVbVjHTbj5U2g16RghLuoBgoG
+         2LZA==
+X-Gm-Message-State: ABy/qLbVevdDi0+Z97jZWFbF93+Feumkg6RLDlln3kgTi8eOSsuMFZ/T
+        WvO6EZDH4VM6WKkJg1NKl4xWA4+CZJzNyOYXXaqIOm+/0Qpx1F5m/stjso06NSNF35zmDhnJlzu
+        lT72aL8UBkcOBp6SS+My060NY
+X-Received: by 2002:a05:6a21:338e:b0:123:149b:a34f with SMTP id yy14-20020a056a21338e00b00123149ba34fmr11522159pzb.1.1689669565972;
+        Tue, 18 Jul 2023 01:39:25 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFn6VTd9NoeqQyeoZ4mz9lw2meP9X5GlAOs2CSTs0WWxzf4uI+E1rzir2tOn6PnHRRKr5e2eQ==
+X-Received: by 2002:a05:6a21:338e:b0:123:149b:a34f with SMTP id yy14-20020a056a21338e00b00123149ba34fmr11522141pzb.1.1689669565640;
+        Tue, 18 Jul 2023 01:39:25 -0700 (PDT)
+Received: from [10.66.61.39] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id p9-20020a639509000000b0055bbc746272sm1140176pgd.17.2023.07.18.01.39.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 01:39:25 -0700 (PDT)
+Message-ID: <148fecc6-7ad5-1039-4466-7c1e5a9df911@redhat.com>
+Date:   Tue, 18 Jul 2023 16:39:20 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cd8c177e-7840-4636-a039-dbe8884b3d2b@lunn.ch>
-User-Agent: NeoMutt/20180716
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v6 07/11] KVM: arm64: Define kvm_tlb_flush_vmid_range()
+Content-Language: en-US
+To:     Raghavendra Rao Ananta <rananta@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>
+References: <20230715005405.3689586-1-rananta@google.com>
+ <20230715005405.3689586-8-rananta@google.com>
+From:   Shaoqin Huang <shahuang@redhat.com>
+In-Reply-To: <20230715005405.3689586-8-rananta@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-07-18, Andrew Lunn wrote:
-> > +static int stmmac_phy_power(struct platform_device *pdev,
-> > +			    struct plat_stmmacenet_data *plat,
-> > +			    bool enable)
-> > +{
-> > +	struct regulator *regulator = plat->phy_regulator;
-> > +	int ret = 0;
-> > +
-> > +	if (regulator) {
-> > +		if (enable)
-> > +			ret = regulator_enable(regulator);
-> > +		else
-> > +			regulator_disable(regulator);
-> > +	}
-> > +
-> > +	if (ret)
-> > +		dev_err(&pdev->dev, "Fail to enable regulator\n");
-> 
-> 'enable' is only correct 50% of the time.
 
-You mean to move it under the enable path.
 
-> > @@ -742,6 +786,8 @@ static int __maybe_unused stmmac_pltfr_suspend(struct device *dev)
-> >  	if (priv->plat->exit)
-> >  		priv->plat->exit(pdev, priv->plat->bsp_priv);
-> >  
-> > +	stmmac_phy_power_off(pdev, priv->plat);
-> > +
+On 7/15/23 08:54, Raghavendra Rao Ananta wrote:
+> Implement the helper kvm_tlb_flush_vmid_range() that acts
+> as a wrapper for range-based TLB invalidations. For the
+> given VMID, use the range-based TLBI instructions to do
+> the job or fallback to invalidating all the TLB entries.
 > 
-> What about WOL? You probably want to leave the PHY with power in that
-> case.
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+>   arch/arm64/include/asm/kvm_pgtable.h | 10 ++++++++++
+>   arch/arm64/kvm/hyp/pgtable.c         | 20 ++++++++++++++++++++
+>   2 files changed, 30 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> index 8294a9a7e566..5e8b1ff07854 100644
+> --- a/arch/arm64/include/asm/kvm_pgtable.h
+> +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> @@ -754,4 +754,14 @@ enum kvm_pgtable_prot kvm_pgtable_stage2_pte_prot(kvm_pte_t pte);
+>    *	   kvm_pgtable_prot format.
+>    */
+>   enum kvm_pgtable_prot kvm_pgtable_hyp_pte_prot(kvm_pte_t pte);
+> +
+> +/**
+> + * kvm_tlb_flush_vmid_range() - Invalidate/flush a range of TLB entries
+> + *
+> + * @mmu:	Stage-2 KVM MMU struct
+> + * @addr:	The base Intermediate physical address from which to invalidate
+> + * @size:	Size of the range from the base to invalidate
+> + */
+> +void kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
+> +				phys_addr_t addr, size_t size);
+>   #endif	/* __ARM64_KVM_PGTABLE_H__ */
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index aa740a974e02..5d14d5d5819a 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -670,6 +670,26 @@ static bool stage2_has_fwb(struct kvm_pgtable *pgt)
+>   	return !(pgt->flags & KVM_PGTABLE_S2_NOFWB);
+>   }
+>   
+> +void kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
+> +				phys_addr_t addr, size_t size)
+> +{
+> +	unsigned long pages, inval_pages;
+> +
+> +	if (!system_supports_tlb_range()) {
+> +		kvm_call_hyp(__kvm_tlb_flush_vmid, mmu);
+> +		return;
+> +	}
+> +
+> +	pages = size >> PAGE_SHIFT;
+> +	while (pages > 0) {
+> +		inval_pages = min(pages, MAX_TLBI_RANGE_PAGES);
+> +		kvm_call_hyp(__kvm_tlb_flush_vmid_range, mmu, addr, inval_pages);
+> +
+> +		addr += inval_pages << PAGE_SHIFT;
+> +		pages -= inval_pages;
+> +	}
+> +}
+> +
+>   #define KVM_S2_MEMATTR(pgt, attr) PAGE_S2_MEMATTR(attr, stage2_has_fwb(pgt))
+>   
+>   static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_pgtable_prot prot,
 
-Good point didn't consider WOL. Is there a way to check if WOL is
-enabled?
+-- 
+Shaoqin
 
-Regards,
-  Marco
-
-> 
-> > @@ -757,6 +803,11 @@ static int __maybe_unused stmmac_pltfr_resume(struct device *dev)
-> >  	struct net_device *ndev = dev_get_drvdata(dev);
-> >  	struct stmmac_priv *priv = netdev_priv(ndev);
-> >  	struct platform_device *pdev = to_platform_device(dev);
-> > +	int ret;
-> > +
-> > +	ret = stmmac_phy_power_on(pdev, priv->plat);
-> > +	if (ret)
-> > +		return ret;
-> 
-> And this needs to balance with _suspend when WOL is being used.
-> 
->     Andrew
-> 
