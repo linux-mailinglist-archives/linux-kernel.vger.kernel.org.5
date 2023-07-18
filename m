@@ -2,848 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BBB757F83
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7287E757FA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 16:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232729AbjGROay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 10:30:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50338 "EHLO
+        id S230369AbjGROdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 10:33:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbjGROat (ORCPT
+        with ESMTP id S233289AbjGROcv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 10:30:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B529E;
-        Tue, 18 Jul 2023 07:30:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EAA6F615DD;
-        Tue, 18 Jul 2023 14:30:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86FBAC433C7;
-        Tue, 18 Jul 2023 14:30:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689690645;
-        bh=C1ZOzm/Pw7IVXJNFy9j+wAwq/2bOUY9836t5/c65Apg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PgP9uoW3S6y09XUTUNwdM7kwJ7+Aq3knB1l0CUlF6cHpcGaHY9rNCi/4qG0edsq3p
-         DdA9nszHelZSylrm28vn5Ry/M3MKhMjaeaymhch3lY7XS8f+l340+Kq8bv/dVhgNzv
-         VbcL/dITrvFSxWLKcnonnust3jiBPxqSSpUYKICb0EYOj0tD6qCh+mJNXyUeUt1EIa
-         K+tcNAJ9Pua8C74Y/x+T11aAZy3LkhKfkPXgiyNWPWzU6WnrJJS81oEF5EDHL1OUsu
-         2UtOCAFWxhnhZm9uqhwspOnV2l8QW8HzsqplRnoHGqKX6qKAQXS8hWnyM0uwDZVuY/
-         AOFDSI3syDmRQ==
-Received: (nullmailer pid 1065026 invoked by uid 1000);
-        Tue, 18 Jul 2023 14:30:39 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Peter Chen <peter.chen@kernel.org>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Minas Harutyunyan <hminas@synopsys.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Li Yang <leoyang.li@nxp.com>, Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Herve Codina <herve.codina@bootlin.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Richard Leitner <richard.leitner@linux.dev>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Paul Cercueil <paul@crapouillou.net>, Bin Liu <b-liu@ti.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-tegra@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH v2] usb: Explicitly include correct DT includes
-Date:   Tue, 18 Jul 2023 08:30:23 -0600
-Message-Id: <20230718143027.1064731-1-robh@kernel.org>
-X-Mailer: git-send-email 2.40.1
+        Tue, 18 Jul 2023 10:32:51 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E001BFB;
+        Tue, 18 Jul 2023 07:32:11 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36ID7mMK027462;
+        Tue, 18 Jul 2023 14:30:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=pLgJS/7XCewpCSZ5K3YHA+yeLj3wS8pdyKYKExN0qHY=;
+ b=xwFSVsGhK2Wt0eD9cnoIp/zb+r39J5xzVJW/HzQPCJJSi3LyineTL0a5jXnh2/mAMrjQ
+ SHPzCWxUnJ3gmzHkjGmYhQzwAYVqQ964ErMZmn8lEuIvhKRGk1BZA2qbHeq5nCin4E6p
+ mWxVCkkl/PMzwfhe40D5UAi+VRWI/2Mz9kgR7LUWu34YF+MSO4NlAclc/oma2d6gJHue
+ PAZIY36uEuj8wpDId6gyylGLANkIfZxeXfud8U2xMHCH3hGy5K8FjmIjqpH6G6/4rf8J
+ FWLYoihhnR9F6WGBcuIC89dw/qXweY7kz0R+NU2TvWHv+wyMmk3kHejFoJTD0ZA1amHa /A== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3run7855xq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 Jul 2023 14:30:30 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36IEB4ss000858;
+        Tue, 18 Jul 2023 14:30:29 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2175.outbound.protection.outlook.com [104.47.57.175])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhw56dud-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 Jul 2023 14:30:29 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gZO08mT2trdDBcrF3coTxUiGYEsxp7VtbEZdZjQpNJ+zj4BJBmaolyRNbpEmkjfiSulRuod6AQsfvFWca1c/URs8VY8V0LMI6VMgamGGNyHjQLLLHZLaXKjgnNsNvtNdrHDnsEmm6mDZvnQDotgMoqJ5Srvl3ug7dQ6KIPaOc9UYns4d/B14vgXdaiqiJjWOOJuE/B7dmnkQ2PsNslvy6qIIY772v04na5E0f34RADl0PL0du+iP2cUVic5KiZK2Td1sqWVkhWfelwb/6KRtqN1fQ4Hlm/OCQUVAoKZ21lf0uDYkfRrMDYTnnNBxkukqImVEEm/SkYbWMXol9JA7/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pLgJS/7XCewpCSZ5K3YHA+yeLj3wS8pdyKYKExN0qHY=;
+ b=c+hRu3uvDtknBSmHG97WGOjk1SUxJ8jV0WEbn+iJJ9Ap4+CdXvDzm5wmNqj1me5XlCxCDjRYo6hy3h6d7iM6JLi7IYFp+q+lQfX5RrrA/At4WI0JAWSlkFsI8IgLJyF4OGLpydL3jt+7SfiMrPs77hcEqvapE7LbpwGyCPmoVdCim7VdgG+VGm8XDzXh7m/gO//c8ngechmOZ2gHwjANkO28HMuXAXOQdFHUgrbViI3J+KT29EIg6fIUkWRTXL6KFLS8EdCMgJLJX9wGODzPaLFAOIAIMnC8sYq8cNGlIjDcGY/TV66HyzC+Gk6+o4yRXDJwkC4YUOoPtdmFK/dEPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pLgJS/7XCewpCSZ5K3YHA+yeLj3wS8pdyKYKExN0qHY=;
+ b=GlRDtRNpV4UnAhQ8ujfAoPQ1zCewgBIBv5tkRCy29GSyHfvmw0gi/MbQeXOhj6ET4BF+Yyfo/UwtVP9wwMflSFmZ9LgImTOoPLoaKAsY6Wyu9aROt8JfxTW/+XqqTBuuK9pCBNoUvkikCd/HFWGLgZIntJdK1W+Rh2xCfYaobpU=
+Received: from CH0PR10MB5113.namprd10.prod.outlook.com (2603:10b6:610:c9::8)
+ by DM4PR10MB6253.namprd10.prod.outlook.com (2603:10b6:8:b7::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Tue, 18 Jul
+ 2023 14:30:27 +0000
+Received: from CH0PR10MB5113.namprd10.prod.outlook.com
+ ([fe80::6bff:7715:4210:1e52]) by CH0PR10MB5113.namprd10.prod.outlook.com
+ ([fe80::6bff:7715:4210:1e52%7]) with mapi id 15.20.6588.031; Tue, 18 Jul 2023
+ 14:30:27 +0000
+Message-ID: <6736667f-6456-34b5-1d1f-47219e499001@oracle.com>
+Date:   Tue, 18 Jul 2023 07:30:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] mm/memory-failure: fix hardware poison check in
+ unpoison_memory()
+Content-Language: en-US
+To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, willy@infradead.org,
+        linmiaohe@huawei.com, naoya.horiguchi@nec.com,
+        stable@vger.kernel.org
+References: <20230717181812.167757-1-sidhartha.kumar@oracle.com>
+ <20230718001409.GA751192@ik1-406-35019.vs.sakura.ne.jp>
+ <20230718003956.GA762147@ik1-406-35019.vs.sakura.ne.jp>
+From:   Sidhartha Kumar <sidhartha.kumar@oracle.com>
+In-Reply-To: <20230718003956.GA762147@ik1-406-35019.vs.sakura.ne.jp>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0061.namprd03.prod.outlook.com
+ (2603:10b6:a03:331::6) To CH0PR10MB5113.namprd10.prod.outlook.com
+ (2603:10b6:610:c9::8)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH0PR10MB5113:EE_|DM4PR10MB6253:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1e446aef-b85a-4972-d7a5-08db879b87b5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /EGmqPjm0MzElYipoCA2zI3H1U/m60BKvxrNEiMD6PkGzxlcSs+9Bll1aMNDOfmpTdHVrlhiMPsAKwZkH8EP0wpPi4YGEMXfv19/7odWH+r9hCzPnxOpIqwbuo8hfXex7L2LV2q+iXK/dChfg4TW9A03m7wG4Afa8xalVOwXkfOM5fiajXzp1WELukAyM1imA1G5Q3SBP5+IHH+YGPTOyNNUH1eKij7bZdV+wUEbUdgtUlMfFQDPUim3BPhRdJqdL0cA9KLhfInNf9qPrCrnLRa92AqwsEv4cak4jStn4EpuQTXAVXxCDDHuMK/XO/EZjol73fYrk+gmU7NzP/owpRyu9mUDXW94HToJnPCP4rn0VGyrItXMzRjJi8tGXSg64kLWPNgFMLC6sw4B5mKYBe/k5CNiHVwLnAGfI/N0F2SVyGXLz84gGwwnSCSd33CSn1C+vzA1S4TLp0vMT7V9GXIo8lzjFNKNqi1wtBYj7KoDeI+Zd3aqT/RD0bsMdJz2dkFgNixacuJvylIGAf8IxCJXdBmGJUACWWl70xRVJ5LVUAqnyNZ69zI9KSvZ7GpMs1dOqx5l12ZdK2xwvU4kDJFI8zj79K6MJunpwiNpx7EYpAeQZqYc10MByjEBdr7PwUWxY4cZ80w10ZaE2My/gw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR10MB5113.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(376002)(39860400002)(396003)(366004)(346002)(451199021)(6486002)(53546011)(6506007)(966005)(38100700002)(36756003)(86362001)(2616005)(83380400001)(31696002)(186003)(6512007)(8676002)(8936002)(2906002)(41300700001)(478600001)(44832011)(4326008)(316002)(6916009)(66476007)(5660300002)(66946007)(66556008)(31686004)(6666004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SXl3cE9yeGVVRjJzemRyeUlzK0MyRDd1MG1lNEdsMHdHWWkwYnVVY2EzZnFR?=
+ =?utf-8?B?ZzNmOGtlcDhrd1hKTWR2ZUlCWElHeEY4dFFqOVFwVENZNTRJdWZyQ3ZZbU1k?=
+ =?utf-8?B?Z25iQ1dSN05jL1BLY21QOFVXTU1UaDhOd1YxdTFjZzV5S3czQit2MW1WQTZt?=
+ =?utf-8?B?bkJGQ3Q0NnJXbEdVay9sVi9VcE5uaWMxdVEyN0RIOWtnODcxaC9LVk1NYUE4?=
+ =?utf-8?B?dTdQUzNpRVVQay9wMktRdmg5NkFvSVBSSm1PUjRabnpXRE40MnZPRmVIMkNi?=
+ =?utf-8?B?Uk5iejNxV3Urbmw4ODlYWkhxQUZOZXZMakE0eTYxekw3bi9aZWJVeU5YcHBC?=
+ =?utf-8?B?Rkh6ODE3N3ZyTXdvaG5GbllXUE1iL05palkxOHQ3RloyRFUyTHlZQnU1NlZN?=
+ =?utf-8?B?dnBBclZkdnM1UmY5Y0tiZUg2TWxMYzdmVVgwZGwrWXpNemNQRWZTb0NsbGdy?=
+ =?utf-8?B?ZXVkUGgvRkdRZm5Ec0dNQ1gyUlVxbExUYVUyQ0VIUitnRE4xdVl1VnV6cDVN?=
+ =?utf-8?B?R2VYeU5lSE93VDBUdnVSQStHbW1DNWpNR3kvZWxzKytjMVlUUWZqanVUOU1L?=
+ =?utf-8?B?QWVIVTFKbi9LbUNBeDFoMXd3ZXNaUU5mNStUWWU1a3ZZaWhycGJEdm9NTVZo?=
+ =?utf-8?B?QWMwN3Z1emlPbzhXYmxLN0txdU5yZElBd0s2cFRad1lhNDV4SnJZYTRSVGNm?=
+ =?utf-8?B?bERXb1U3NFlZR2k5WlV1aE8wRnpONTJxcU94V0VIRy90QW81aEYwcVpsalcw?=
+ =?utf-8?B?NGlTNzNsUlNjcUZRL3k5TUt5WEh6Z0tZTm9aZVRSWXNKNzdoZlRsVVhaUERL?=
+ =?utf-8?B?Z2FXNU1rbnFZa1BDOXBuaC9XRGRwMmxTd1J4NzlYMHJJdGpQaEFaQng2WGNM?=
+ =?utf-8?B?UXRhb1g1Wmc2enNZOCtrYnVpRWhSSkFGVHhacEpVS3gxNGVmdTJ1Y05VVE5O?=
+ =?utf-8?B?VmdNSGlmczlrT0I1QnovU0R0cXlab2JhdElrUkF1bWMwRkxaek5aZm5hSXZZ?=
+ =?utf-8?B?cUtIY0g4TFFYNHVRcnNMZ2MzSk5xRTRaazJySXBCRjVzU3ROUEpWdStHVi9h?=
+ =?utf-8?B?QTRORVROckFrYmRpYllrWklCUno3Q2tiN0hlWGpOR3NRQ2FDVXFJR3N2b3pR?=
+ =?utf-8?B?QjZnaUo4NDFMbFRwWUIzZzBYSXhVTHdPd1ZsRW01KzJqMDJ1TXRVUUsvRjI3?=
+ =?utf-8?B?ZlBpdm9xeUpESmhWMFRuMjZkMEdNWml0dTlMOGlZbHdrcUQ4Q3ZRcmVPUVpq?=
+ =?utf-8?B?OThpVHFzcy9YVzFmdmxWMjF0RFFVMnNmK1l4OEF5d1dFQnpwKzdFUFpRZEx1?=
+ =?utf-8?B?dlIrWFcwNGR3cUtqbjFXLzBFL1BqOW4vdDVodWJMNTI5cndzQzZDdHIxTWgr?=
+ =?utf-8?B?RnNoWTVFL051enZud1pibUZGbkpPUllrVW5PalNMR1llQ1M5UGhVVzk5U2hn?=
+ =?utf-8?B?TWxUdW9WVWQzc0FpNXg4ZFBpV1pJb0FrY0FDZlZKS3Z2bm1yWFJ0ZzRkdzlr?=
+ =?utf-8?B?VWpNeXVKc29lMG9TZ0g2MnlqbnlxM250Vjg3L3RkdWNNalUxSXhpV2RHeCs5?=
+ =?utf-8?B?NHFPZmt0b2FjOTl1enhVaTZHWGZkUU80MzdiTjNhSEFjTDQ5L1lDSmpIM3Br?=
+ =?utf-8?B?bFlMYTcvTnhUTjNmc3FZNjUzUGF0UXBsWVJOQTJ3b1BZdHJNdlBKQmdDQko3?=
+ =?utf-8?B?MjluZ01Ec1RBSXEzWW9NbGhWZGFjUUxtTTRQOUs1bmE0UnV0Y1VRVkNHQWJi?=
+ =?utf-8?B?U0hsQklaNXJYRTZvS3FJbHVtZEZkNWk0M21wenFkYVhQSXJHVFduWHJiUkVq?=
+ =?utf-8?B?amFVR2FmZUxvZXdJVlRjakJmM3pFR3B5eXV6OVhYV3dUT0FYdEp2MDhrenNl?=
+ =?utf-8?B?T3lEdi9nN2NaSVVQeU95bEpZT3NIKzFRS04vaUpOZXp6K0VoZ2p2Z016cHNt?=
+ =?utf-8?B?VU9PSFNQNDFjZXNRSWJ2cm1FcGxaOUFmQXFrSGhTeUJnSmhBK1JJSkZJT2Nw?=
+ =?utf-8?B?TWVFNTJ2b1pFUXNVd2JvNUN0OW1KUzJlTU1xSzlZeE93QjMzS1F4SkxYS0NB?=
+ =?utf-8?B?QVdRd2JNT2NvM2pldXFFaXMzV0N2LysrVk1nOWdORERqd2pJUlJGRHBtMFdh?=
+ =?utf-8?B?R3dDQW5hZ0Vxc3A2dm9LRzZvM1kxdm1EVE9BL2xaTDlTeUJCNTM3dytCR2dl?=
+ =?utf-8?Q?yllXY70KJbWlC3pSLG9Dv6M=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?Q2xJRHVDUjlaTkZQQll1Q1J0Wm4rNGVuMHFDV1VHTktJSDI1MzE5RXpsNU4x?=
+ =?utf-8?B?ZzFCNVlTRzNkN1hablBVZWFOMllqNWt4L3FNUUcxalVWNHQrcWRuNEEwK1lG?=
+ =?utf-8?B?dDZVTGxWYmFZUTN0UjI5VlcycWVGQW1CeVUwdnpPdlNtK1RnWmpIYzV0M1h5?=
+ =?utf-8?B?ZFVGOWNtRnpNNjZSZXhIS1pPbmlFcEpQY2kwZUx0TlNHcTZoWTVCTFVuSG42?=
+ =?utf-8?B?L3BaeTV5aStwQUxCNlBtNXYrOFFVbHQ0bWhNZ0VReVhCZUJGcTZGL3I4cEJR?=
+ =?utf-8?B?Y1RwWWRVUHJLV3h6R3FvamNzSmpZUGZDZmxOU21BMlllOUYza2hiaFVINmZm?=
+ =?utf-8?B?MVRFbDlBNkkwb0RLOTRjTEc4SkkyUCsrTy9aemRmcXg4U1Rac2lDd0tLMXc2?=
+ =?utf-8?B?MkFLMUZwVmxVS0lRS2M1OEdZV2NwRUxyckhEMnlNN1ErcU9hZE1jMW1NVzhv?=
+ =?utf-8?B?cHFnRmtTM3pqSGlNVHpka0xvRFVaU0FXZ0lxWElrbEJiZFpneXQrN1V3WEhY?=
+ =?utf-8?B?VzV3TGoyUXh2bFoxNmpubFNkaWNkN3lxdGtJUjMzUUw2RjNZRzIvbWpWNStq?=
+ =?utf-8?B?Q0lkRVFFcE1wT0lnWm5sSG92KzZhb3cxZkJrWjBXbEgwVVlVTUxYOXpWaWt6?=
+ =?utf-8?B?cWlZOHlLTXVYb2dPZHhNbU1GWU1LdzVFSjhxWTdlK25aT3pGUHJWNHBMVkxn?=
+ =?utf-8?B?QlVvM2xXZXNCR2V5d3dISTZvSDNyWEFRYUlsRzBQUmV3a0pXMVgxc2sveVhI?=
+ =?utf-8?B?VlR6L2tsWUhsZjBVU0dZdHNsSDRTNGYxN3pYRGNOSnUzV2ZacVppczFlM0p5?=
+ =?utf-8?B?Z2VSenBESjNlRWphdU51N1Rsd0NzVjFJMUxBM1orcTRKa0VtMEo4bmdGQjdj?=
+ =?utf-8?B?a1o0cWRCSXBrR2ZQMXI5aUY5eis4UXc2NlM0c3ZtVnlmWlNxVDJLY3RQMEZQ?=
+ =?utf-8?B?WkJKSi9YTW82T3NSK09BUUJLTWR1a0VJb0VyYkFVdGRSVW12M1VDVDJCajNK?=
+ =?utf-8?B?bE1KUFFWbVpMQ3dCK0pxdW9OM2xCbmFueXVkSStuRnArUk5qbnRDb1daNDk2?=
+ =?utf-8?B?cjErS0lGZlFTT3puVmhQMFZycVZJV0wwVEUrUm5kejhKMjRWU1NIOUJ4ODNG?=
+ =?utf-8?B?SGxNM29OL2RrOW90RjRTbGFmVDhHNUk3L2xvN1l5dEVaaGp5R1A4R3JIbS9y?=
+ =?utf-8?B?cWsyWG9qT0prMDAvMmE3c3dpa0MyWllnOHNxS3hFSVkxaWM2NDNZTkp2Tzdw?=
+ =?utf-8?B?M3o4OFZVbk5WSVRKTmVFOFZteXp0OFhrWXpTTjVBRkJFRUNQQT09?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e446aef-b85a-4972-d7a5-08db879b87b5
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR10MB5113.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 14:30:27.0657
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: q9t+8OscEhml/Otd5Zv1fvimePL+PdxyV7H934dOWPJbCDHPJ+ORRNrmrnbAaDB3BeVRmo5JKeHOU8NWvcoOWb+rvvKgQEIWx8QGmeh/5/0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB6253
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-18_11,2023-07-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ suspectscore=0 phishscore=0 bulkscore=0 mlxscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307180133
+X-Proofpoint-ORIG-GUID: QpJ2YtJleThNApTd8bszMPDyLrwatkK4
+X-Proofpoint-GUID: QpJ2YtJleThNApTd8bszMPDyLrwatkK4
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DT of_device.h and of_platform.h date back to the separate
-of_platform_bus_type before it as merged into the regular platform bus.
-As part of that merge prepping Arm DT support 13 years ago, they
-"temporarily" include each other. They also include platform_device.h
-and of.h. As a result, there's a pretty much random mix of those include
-files used throughout the tree. In order to detangle these headers and
-replace the implicit includes with struct declarations, users need to
-explicitly include the correct includes.
+On 7/17/23 5:39 PM, Naoya Horiguchi wrote:
+> On Tue, Jul 18, 2023 at 09:14:09AM +0900, Naoya Horiguchi wrote:
+>> On Mon, Jul 17, 2023 at 11:18:12AM -0700, Sidhartha Kumar wrote:
+>>> It was pointed out[1] that using folio_test_hwpoison() is wrong
+>>> as we need to check the indiviual page that has poison.
+>>> folio_test_hwpoison() only checks the head page so go back to using
+>>> PageHWPoison().
+>>>
+>>> Reported-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+>>> Fixes: a6fddef49eef ("mm/memory-failure: convert unpoison_memory() to folios")
+>>> Cc: stable@vger.kernel.org #v6.4
+>>> Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+>>>
+>>> [1]: https://lore.kernel.org/lkml/ZLIbZygG7LqSI9xe@casper.infradead.org/
+>>> ---
+>>>   mm/memory-failure.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+>>> index 02b1d8f104d51..a114c8c3039cd 100644
+>>> --- a/mm/memory-failure.c
+>>> +++ b/mm/memory-failure.c
+>>> @@ -2523,7 +2523,7 @@ int unpoison_memory(unsigned long pfn)
+>>>   		goto unlock_mutex;
+>>>   	}
+>>>   
+>>> -	if (!folio_test_hwpoison(folio)) {
+>>> +	if (!PageHWPoison(p)) {
+>>
+>>
+>> I don't think this works for hwpoisoned hugetlb pages that have PageHWPoison
+>> set on the head page, rather than on the raw subpage. In the case of
+>> hwpoisoned thps, PageHWPoison is set on the raw subpage, not on the head
+>> pages.  (I believe this is not detected because no one considers the
+>> scenario of unpoisoning hwpoisoned thps, which is a rare case).  Perhaps the
+>> function is_page_hwpoison() would be useful for this purpose?
+> 
+> Sorry, I was wrong.  Checking PageHWPoison() is fine because the users of
+> unpoison should know where the PageHWPoison is set via /proc/kpageflags.
+> So this patch is OK to me after comments from other reviewers are resolved.
+> 
 
-Acked-by: Herve Codina <herve.codina@bootlin.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-v2:
-- Fix double include of of.h
----
- drivers/usb/cdns3/cdns3-gadget.c                    | 1 +
- drivers/usb/cdns3/cdns3-plat.c                      | 1 +
- drivers/usb/cdns3/cdns3-ti.c                        | 1 +
- drivers/usb/cdns3/core.c                            | 1 +
- drivers/usb/chipidea/ci_hdrc_imx.c                  | 1 +
- drivers/usb/chipidea/ci_hdrc_tegra.c                | 3 ++-
- drivers/usb/chipidea/usbmisc_imx.c                  | 3 ++-
- drivers/usb/common/common.c                         | 1 +
- drivers/usb/core/message.c                          | 1 +
- drivers/usb/core/of.c                               | 1 -
- drivers/usb/core/usb.c                              | 1 +
- drivers/usb/dwc2/gadget.c                           | 1 -
- drivers/usb/dwc2/platform.c                         | 2 +-
- drivers/usb/dwc3/dwc3-imx8mp.c                      | 1 +
- drivers/usb/dwc3/dwc3-keystone.c                    | 1 +
- drivers/usb/gadget/udc/fsl_udc_core.c               | 1 -
- drivers/usb/gadget/udc/gr_udc.c                     | 5 ++---
- drivers/usb/gadget/udc/max3420_udc.c                | 4 +---
- drivers/usb/gadget/udc/pxa27x_udc.c                 | 2 +-
- drivers/usb/gadget/udc/renesas_usb3.c               | 2 +-
- drivers/usb/gadget/udc/renesas_usbf.c               | 5 ++---
- drivers/usb/gadget/udc/tegra-xudc.c                 | 1 -
- drivers/usb/gadget/udc/udc-xilinx.c                 | 6 ++----
- drivers/usb/host/ehci-fsl.c                         | 2 +-
- drivers/usb/host/ehci-orion.c                       | 2 --
- drivers/usb/host/fhci-hcd.c                         | 3 ++-
- drivers/usb/host/fsl-mph-dr-of.c                    | 3 ++-
- drivers/usb/host/ohci-at91.c                        | 2 +-
- drivers/usb/host/ohci-da8xx.c                       | 1 +
- drivers/usb/host/ohci-ppc-of.c                      | 3 ++-
- drivers/usb/host/xhci-plat.c                        | 1 -
- drivers/usb/host/xhci-rcar.c                        | 1 -
- drivers/usb/host/xhci-tegra.c                       | 2 +-
- drivers/usb/misc/usb251xb.c                         | 2 +-
- drivers/usb/mtu3/mtu3.h                             | 1 +
- drivers/usb/mtu3/mtu3_host.c                        | 1 +
- drivers/usb/musb/jz4740.c                           | 2 +-
- drivers/usb/musb/mediatek.c                         | 1 +
- drivers/usb/musb/mpfs.c                             | 1 +
- drivers/usb/musb/musb_dsps.c                        | 2 --
- drivers/usb/musb/sunxi.c                            | 1 -
- drivers/usb/phy/phy-mxs-usb.c                       | 2 +-
- drivers/usb/phy/phy-tegra-usb.c                     | 2 +-
- drivers/usb/renesas_usbhs/common.c                  | 2 +-
- drivers/usb/renesas_usbhs/rza.c                     | 2 +-
- drivers/usb/renesas_usbhs/rza2.c                    | 1 -
- drivers/usb/typec/tcpm/fusb302.c                    | 2 +-
- drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c       | 2 +-
- drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c | 2 --
- drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_port.c  | 1 -
- drivers/usb/typec/ucsi/ucsi_glink.c                 | 1 -
- 51 files changed, 46 insertions(+), 48 deletions(-)
+Hi Naoya,
 
-diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
-index ea19253fd2d0..e6f6aeb7b5bb 100644
---- a/drivers/usb/cdns3/cdns3-gadget.c
-+++ b/drivers/usb/cdns3/cdns3-gadget.c
-@@ -61,6 +61,7 @@
- #include <linux/module.h>
- #include <linux/dmapool.h>
- #include <linux/iopoll.h>
-+#include <linux/property.h>
- 
- #include "core.h"
- #include "gadget-export.h"
-diff --git a/drivers/usb/cdns3/cdns3-plat.c b/drivers/usb/cdns3/cdns3-plat.c
-index 884e2301237f..b15ff5bd91c2 100644
---- a/drivers/usb/cdns3/cdns3-plat.c
-+++ b/drivers/usb/cdns3/cdns3-plat.c
-@@ -15,6 +15,7 @@
- #include <linux/module.h>
- #include <linux/irq.h>
- #include <linux/kernel.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- 
-diff --git a/drivers/usb/cdns3/cdns3-ti.c b/drivers/usb/cdns3/cdns3-ti.c
-index 81b9132e3aaa..5945c4b1e11f 100644
---- a/drivers/usb/cdns3/cdns3-ti.c
-+++ b/drivers/usb/cdns3/cdns3-ti.c
-@@ -15,6 +15,7 @@
- #include <linux/io.h>
- #include <linux/of_platform.h>
- #include <linux/pm_runtime.h>
-+#include <linux/property.h>
- 
- /* USB Wrapper register offsets */
- #define USBSS_PID		0x0
-diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
-index dbcdf3b24b47..baa154cee352 100644
---- a/drivers/usb/cdns3/core.c
-+++ b/drivers/usb/cdns3/core.c
-@@ -14,6 +14,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/module.h>
- #include <linux/kernel.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-diff --git a/drivers/usb/chipidea/ci_hdrc_imx.c b/drivers/usb/chipidea/ci_hdrc_imx.c
-index 336ef6dd8e7d..aa2aebed8e2d 100644
---- a/drivers/usb/chipidea/ci_hdrc_imx.c
-+++ b/drivers/usb/chipidea/ci_hdrc_imx.c
-@@ -6,6 +6,7 @@
-  */
- 
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/usb/chipidea/ci_hdrc_tegra.c b/drivers/usb/chipidea/ci_hdrc_tegra.c
-index ca36d11a69ea..8e78bf643e25 100644
---- a/drivers/usb/chipidea/ci_hdrc_tegra.c
-+++ b/drivers/usb/chipidea/ci_hdrc_tegra.c
-@@ -6,7 +6,8 @@
- #include <linux/clk.h>
- #include <linux/io.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/reset.h>
- 
-diff --git a/drivers/usb/chipidea/usbmisc_imx.c b/drivers/usb/chipidea/usbmisc_imx.c
-index 9ee9621e2ccc..e8a712e5abad 100644
---- a/drivers/usb/chipidea/usbmisc_imx.c
-+++ b/drivers/usb/chipidea/usbmisc_imx.c
-@@ -4,10 +4,11 @@
-  */
- 
- #include <linux/module.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
- #include <linux/err.h>
- #include <linux/io.h>
- #include <linux/delay.h>
-+#include <linux/platform_device.h>
- #include <linux/usb/otg.h>
- 
- #include "ci_hdrc_imx.h"
-diff --git a/drivers/usb/common/common.c b/drivers/usb/common/common.c
-index c9bdeb4ddcb5..b84efae26e15 100644
---- a/drivers/usb/common/common.c
-+++ b/drivers/usb/common/common.c
-@@ -11,6 +11,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/usb/ch9.h>
- #include <linux/usb/of.h>
- #include <linux/usb/otg.h>
-diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
-index b5811620f1de..0d2bfc909019 100644
---- a/drivers/usb/core/message.c
-+++ b/drivers/usb/core/message.c
-@@ -9,6 +9,7 @@
- #include <linux/pci.h>	/* for scatterlist macros */
- #include <linux/usb.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/slab.h>
- #include <linux/mm.h>
- #include <linux/timer.h>
-diff --git a/drivers/usb/core/of.c b/drivers/usb/core/of.c
-index 617e92569b2c..db4ccf9ce3d9 100644
---- a/drivers/usb/core/of.c
-+++ b/drivers/usb/core/of.c
-@@ -8,7 +8,6 @@
-  */
- 
- #include <linux/of.h>
--#include <linux/of_platform.h>
- #include <linux/usb/of.h>
- 
- /**
-diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
-index 901ec732321c..396a338d801e 100644
---- a/drivers/usb/core/usb.c
-+++ b/drivers/usb/core/usb.c
-@@ -25,6 +25,7 @@
- 
- #include <linux/module.h>
- #include <linux/moduleparam.h>
-+#include <linux/of.h>
- #include <linux/string.h>
- #include <linux/bitops.h>
- #include <linux/slab.h>
-diff --git a/drivers/usb/dwc2/gadget.c b/drivers/usb/dwc2/gadget.c
-index 8b15742d9e8a..b517a7216de2 100644
---- a/drivers/usb/dwc2/gadget.c
-+++ b/drivers/usb/dwc2/gadget.c
-@@ -22,7 +22,6 @@
- #include <linux/delay.h>
- #include <linux/io.h>
- #include <linux/slab.h>
--#include <linux/of_platform.h>
- 
- #include <linux/usb/ch9.h>
- #include <linux/usb/gadget.h>
-diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
-index 0a806f80217e..b1d48019e944 100644
---- a/drivers/usb/dwc2/platform.c
-+++ b/drivers/usb/dwc2/platform.c
-@@ -11,7 +11,7 @@
- #include <linux/clk.h>
- #include <linux/device.h>
- #include <linux/dma-mapping.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/mutex.h>
- #include <linux/platform_device.h>
- #include <linux/phy/phy.h>
-diff --git a/drivers/usb/dwc3/dwc3-imx8mp.c b/drivers/usb/dwc3/dwc3-imx8mp.c
-index 8b9a3bb587bf..4285bde58d2e 100644
---- a/drivers/usb/dwc3/dwc3-imx8mp.c
-+++ b/drivers/usb/dwc3/dwc3-imx8mp.c
-@@ -10,6 +10,7 @@
- #include <linux/io.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/usb/dwc3/dwc3-keystone.c b/drivers/usb/dwc3/dwc3-keystone.c
-index 0a09aedc2573..4155e8d5a559 100644
---- a/drivers/usb/dwc3/dwc3-keystone.c
-+++ b/drivers/usb/dwc3/dwc3-keystone.c
-@@ -13,6 +13,7 @@
- #include <linux/platform_device.h>
- #include <linux/dma-mapping.h>
- #include <linux/io.h>
-+#include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/phy/phy.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/usb/gadget/udc/fsl_udc_core.c b/drivers/usb/gadget/udc/fsl_udc_core.c
-index a67873a074b7..5265ca418cde 100644
---- a/drivers/usb/gadget/udc/fsl_udc_core.c
-+++ b/drivers/usb/gadget/udc/fsl_udc_core.c
-@@ -36,7 +36,6 @@
- #include <linux/platform_device.h>
- #include <linux/fsl_devices.h>
- #include <linux/dmapool.h>
--#include <linux/of_device.h>
- 
- #include <asm/byteorder.h>
- #include <asm/io.h>
-diff --git a/drivers/usb/gadget/udc/gr_udc.c b/drivers/usb/gadget/udc/gr_udc.c
-index 09762559912d..0c3969301a53 100644
---- a/drivers/usb/gadget/udc/gr_udc.c
-+++ b/drivers/usb/gadget/udc/gr_udc.c
-@@ -23,6 +23,7 @@
- 
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
- #include <linux/errno.h>
-@@ -36,9 +37,7 @@
- #include <linux/dmapool.h>
- #include <linux/debugfs.h>
- #include <linux/seq_file.h>
--#include <linux/of_platform.h>
--#include <linux/of_irq.h>
--#include <linux/of_address.h>
-+#include <linux/of.h>
- 
- #include <asm/byteorder.h>
- 
-diff --git a/drivers/usb/gadget/udc/max3420_udc.c b/drivers/usb/gadget/udc/max3420_udc.c
-index 12c519f32bf7..2d57786d3db7 100644
---- a/drivers/usb/gadget/udc/max3420_udc.c
-+++ b/drivers/usb/gadget/udc/max3420_udc.c
-@@ -19,9 +19,7 @@
- #include <linux/io.h>
- #include <linux/module.h>
- #include <linux/bitfield.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
- #include <linux/of_irq.h>
- #include <linux/prefetch.h>
- #include <linux/usb/ch9.h>
-diff --git a/drivers/usb/gadget/udc/pxa27x_udc.c b/drivers/usb/gadget/udc/pxa27x_udc.c
-index c4e1d957f913..61424cfd2e1c 100644
---- a/drivers/usb/gadget/udc/pxa27x_udc.c
-+++ b/drivers/usb/gadget/udc/pxa27x_udc.c
-@@ -23,7 +23,7 @@
- #include <linux/prefetch.h>
- #include <linux/byteorder/generic.h>
- #include <linux/platform_data/pxa2xx_udc.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_gpio.h>
- 
- #include <linux/usb.h>
-diff --git a/drivers/usb/gadget/udc/renesas_usb3.c b/drivers/usb/gadget/udc/renesas_usb3.c
-index 59bb25de2015..3b01734ce1b7 100644
---- a/drivers/usb/gadget/udc/renesas_usb3.c
-+++ b/drivers/usb/gadget/udc/renesas_usb3.c
-@@ -14,7 +14,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/phy/phy.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/usb/gadget/udc/renesas_usbf.c b/drivers/usb/gadget/udc/renesas_usbf.c
-index 6cd0af83e91e..3482b41d0646 100644
---- a/drivers/usb/gadget/udc/renesas_usbf.c
-+++ b/drivers/usb/gadget/udc/renesas_usbf.c
-@@ -12,10 +12,9 @@
- #include <linux/iopoll.h>
- #include <linux/kernel.h>
- #include <linux/kfifo.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of_address.h>
--#include <linux/of_irq.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/types.h>
- #include <linux/usb/composite.h>
-diff --git a/drivers/usb/gadget/udc/tegra-xudc.c b/drivers/usb/gadget/udc/tegra-xudc.c
-index 83eaa65ddde3..065046f1c9cb 100644
---- a/drivers/usb/gadget/udc/tegra-xudc.c
-+++ b/drivers/usb/gadget/udc/tegra-xudc.c
-@@ -16,7 +16,6 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/phy/phy.h>
- #include <linux/phy/tegra/xusb.h>
- #include <linux/pm_domain.h>
-diff --git a/drivers/usb/gadget/udc/udc-xilinx.c b/drivers/usb/gadget/udc/udc-xilinx.c
-index a4a7b90a97e7..0a025bf14e06 100644
---- a/drivers/usb/gadget/udc/udc-xilinx.c
-+++ b/drivers/usb/gadget/udc/udc-xilinx.c
-@@ -18,10 +18,8 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/module.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
--#include <linux/of_platform.h>
--#include <linux/of_irq.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/prefetch.h>
- #include <linux/usb/ch9.h>
- #include <linux/usb/gadget.h>
-diff --git a/drivers/usb/host/ehci-fsl.c b/drivers/usb/host/ehci-fsl.c
-index 81d60a695510..3c776f4de4b8 100644
---- a/drivers/usb/host/ehci-fsl.c
-+++ b/drivers/usb/host/ehci-fsl.c
-@@ -22,7 +22,7 @@
- #include <linux/usb/otg.h>
- #include <linux/platform_device.h>
- #include <linux/fsl_devices.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
- #include <linux/io.h>
- 
- #include "ehci.h"
-diff --git a/drivers/usb/host/ehci-orion.c b/drivers/usb/host/ehci-orion.c
-index 2cfb27dc943a..a5f4e2f98346 100644
---- a/drivers/usb/host/ehci-orion.c
-+++ b/drivers/usb/host/ehci-orion.c
-@@ -13,8 +13,6 @@
- #include <linux/platform_data/usb-ehci-orion.h>
- #include <linux/of.h>
- #include <linux/phy/phy.h>
--#include <linux/of_device.h>
--#include <linux/of_irq.h>
- #include <linux/usb.h>
- #include <linux/usb/hcd.h>
- #include <linux/io.h>
-diff --git a/drivers/usb/host/fhci-hcd.c b/drivers/usb/host/fhci-hcd.c
-index 66a045e01dad..9a1b5224f239 100644
---- a/drivers/usb/host/fhci-hcd.c
-+++ b/drivers/usb/host/fhci-hcd.c
-@@ -22,9 +22,10 @@
- #include <linux/io.h>
- #include <linux/usb.h>
- #include <linux/usb/hcd.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/gpio/consumer.h>
- #include <soc/fsl/qe/qe.h>
-diff --git a/drivers/usb/host/fsl-mph-dr-of.c b/drivers/usb/host/fsl-mph-dr-of.c
-index a9877f2569f4..8508d37a2aff 100644
---- a/drivers/usb/host/fsl-mph-dr-of.c
-+++ b/drivers/usb/host/fsl-mph-dr-of.c
-@@ -10,7 +10,8 @@
- #include <linux/fsl_devices.h>
- #include <linux/err.h>
- #include <linux/io.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/clk.h>
- #include <linux/module.h>
- #include <linux/dma-mapping.h>
-diff --git a/drivers/usb/host/ohci-at91.c b/drivers/usb/host/ohci-at91.c
-index b9ce8d80f20b..3b023ea71f8d 100644
---- a/drivers/usb/host/ohci-at91.c
-+++ b/drivers/usb/host/ohci-at91.c
-@@ -17,13 +17,13 @@
- #include <linux/clk.h>
- #include <linux/dma-mapping.h>
- #include <linux/gpio/consumer.h>
--#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/platform_data/atmel.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/mfd/syscon.h>
-+#include <linux/of.h>
- #include <linux/regmap.h>
- #include <linux/usb.h>
- #include <linux/usb/hcd.h>
-diff --git a/drivers/usb/host/ohci-da8xx.c b/drivers/usb/host/ohci-da8xx.c
-index e4191a868944..9bd6cb9af364 100644
---- a/drivers/usb/host/ohci-da8xx.c
-+++ b/drivers/usb/host/ohci-da8xx.c
-@@ -15,6 +15,7 @@
- #include <linux/jiffies.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/phy/phy.h>
- #include <linux/platform_data/usb-davinci.h>
-diff --git a/drivers/usb/host/ohci-ppc-of.c b/drivers/usb/host/ohci-ppc-of.c
-index 35a7ad7e2569..f64bfe5f4d4d 100644
---- a/drivers/usb/host/ohci-ppc-of.c
-+++ b/drivers/usb/host/ohci-ppc-of.c
-@@ -15,9 +15,10 @@
-  */
- 
- #include <linux/signal.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- 
- static int
- ohci_ppc_of_start(struct usb_hcd *hcd)
-diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-index b26ea7cb4357..28218c8f1837 100644
---- a/drivers/usb/host/xhci-plat.c
-+++ b/drivers/usb/host/xhci-plat.c
-@@ -13,7 +13,6 @@
- #include <linux/module.h>
- #include <linux/pci.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/usb/phy.h>
- #include <linux/slab.h>
-diff --git a/drivers/usb/host/xhci-rcar.c b/drivers/usb/host/xhci-rcar.c
-index bf5261fed32c..ab9c5969e462 100644
---- a/drivers/usb/host/xhci-rcar.c
-+++ b/drivers/usb/host/xhci-rcar.c
-@@ -10,7 +10,6 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/usb/phy.h>
- 
- #include "xhci.h"
-diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
-index 6ca8a37e53e1..51e236c1ff71 100644
---- a/drivers/usb/host/xhci-tegra.c
-+++ b/drivers/usb/host/xhci-tegra.c
-@@ -14,7 +14,7 @@
- #include <linux/iopoll.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_irq.h>
- #include <linux/phy/phy.h>
- #include <linux/phy/tegra/xusb.h>
-diff --git a/drivers/usb/misc/usb251xb.c b/drivers/usb/misc/usb251xb.c
-index e4edb486b69e..7da404f55a6d 100644
---- a/drivers/usb/misc/usb251xb.c
-+++ b/drivers/usb/misc/usb251xb.c
-@@ -16,7 +16,7 @@
- #include <linux/i2c.h>
- #include <linux/module.h>
- #include <linux/nls.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regulator/consumer.h>
- #include <linux/slab.h>
- 
-diff --git a/drivers/usb/mtu3/mtu3.h b/drivers/usb/mtu3/mtu3.h
-index b4a7662dded5..c11840b9a6f1 100644
---- a/drivers/usb/mtu3/mtu3.h
-+++ b/drivers/usb/mtu3/mtu3.h
-@@ -16,6 +16,7 @@
- #include <linux/extcon.h>
- #include <linux/interrupt.h>
- #include <linux/list.h>
-+#include <linux/of.h>
- #include <linux/phy/phy.h>
- #include <linux/regulator/consumer.h>
- #include <linux/usb.h>
-diff --git a/drivers/usb/mtu3/mtu3_host.c b/drivers/usb/mtu3/mtu3_host.c
-index 177d2caf887c..9f2be22af844 100644
---- a/drivers/usb/mtu3/mtu3_host.c
-+++ b/drivers/usb/mtu3/mtu3_host.c
-@@ -11,6 +11,7 @@
- #include <linux/irq.h>
- #include <linux/kernel.h>
- #include <linux/mfd/syscon.h>
-+#include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/regmap.h>
- 
-diff --git a/drivers/usb/musb/jz4740.c b/drivers/usb/musb/jz4740.c
-index 5aabdd7e2511..b38df9226278 100644
---- a/drivers/usb/musb/jz4740.c
-+++ b/drivers/usb/musb/jz4740.c
-@@ -10,7 +10,7 @@
- #include <linux/errno.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/phy/phy.h>
- #include <linux/platform_device.h>
- #include <linux/usb/role.h>
-diff --git a/drivers/usb/musb/mediatek.c b/drivers/usb/musb/mediatek.c
-index 598ee5c0bf34..0a35aab3ab81 100644
---- a/drivers/usb/musb/mediatek.c
-+++ b/drivers/usb/musb/mediatek.c
-@@ -10,6 +10,7 @@
- #include <linux/clk.h>
- #include <linux/dma-mapping.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/usb/role.h>
-diff --git a/drivers/usb/musb/mpfs.c b/drivers/usb/musb/mpfs.c
-index 24b98716f7fc..f0f56df38835 100644
---- a/drivers/usb/musb/mpfs.c
-+++ b/drivers/usb/musb/mpfs.c
-@@ -13,6 +13,7 @@
- #include <linux/io.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/usb/usb_phy_generic.h>
- #include "musb_core.h"
-diff --git a/drivers/usb/musb/musb_dsps.c b/drivers/usb/musb/musb_dsps.c
-index 9119b1d51370..98b42dc04dee 100644
---- a/drivers/usb/musb/musb_dsps.c
-+++ b/drivers/usb/musb/musb_dsps.c
-@@ -26,9 +26,7 @@
- #include <linux/sizes.h>
- 
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_address.h>
--#include <linux/of_irq.h>
- #include <linux/usb/of.h>
- 
- #include <linux/debugfs.h>
-diff --git a/drivers/usb/musb/sunxi.c b/drivers/usb/musb/sunxi.c
-index c5c6c4e09300..d54283fd026b 100644
---- a/drivers/usb/musb/sunxi.c
-+++ b/drivers/usb/musb/sunxi.c
-@@ -15,7 +15,6 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/phy/phy-sun4i-usb.h>
- #include <linux/platform_device.h>
- #include <linux/reset.h>
-diff --git a/drivers/usb/phy/phy-mxs-usb.c b/drivers/usb/phy/phy-mxs-usb.c
-index e1a2b2ea098b..50cf0003384a 100644
---- a/drivers/usb/phy/phy-mxs-usb.c
-+++ b/drivers/usb/phy/phy-mxs-usb.c
-@@ -14,7 +14,7 @@
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/io.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regmap.h>
- #include <linux/mfd/syscon.h>
- #include <linux/iopoll.h>
-diff --git a/drivers/usb/phy/phy-tegra-usb.c b/drivers/usb/phy/phy-tegra-usb.c
-index 8b2ff3a8882d..4ea47e6f835b 100644
---- a/drivers/usb/phy/phy-tegra-usb.c
-+++ b/drivers/usb/phy/phy-tegra-usb.c
-@@ -16,7 +16,7 @@
- #include <linux/iopoll.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/resource.h>
- #include <linux/slab.h>
-diff --git a/drivers/usb/renesas_usbhs/common.c b/drivers/usb/renesas_usbhs/common.c
-index 111b7ee152c4..dd1c17542439 100644
---- a/drivers/usb/renesas_usbhs/common.c
-+++ b/drivers/usb/renesas_usbhs/common.c
-@@ -11,7 +11,7 @@
- #include <linux/gpio/consumer.h>
- #include <linux/io.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/pm_runtime.h>
- #include <linux/reset.h>
- #include <linux/slab.h>
-diff --git a/drivers/usb/renesas_usbhs/rza.c b/drivers/usb/renesas_usbhs/rza.c
-index 2d77edefb4b3..97b5217c5a90 100644
---- a/drivers/usb/renesas_usbhs/rza.c
-+++ b/drivers/usb/renesas_usbhs/rza.c
-@@ -8,7 +8,7 @@
- 
- #include <linux/delay.h>
- #include <linux/io.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include "common.h"
- #include "rza.h"
- 
-diff --git a/drivers/usb/renesas_usbhs/rza2.c b/drivers/usb/renesas_usbhs/rza2.c
-index 3eed3334a17f..f079817250bb 100644
---- a/drivers/usb/renesas_usbhs/rza2.c
-+++ b/drivers/usb/renesas_usbhs/rza2.c
-@@ -8,7 +8,6 @@
- 
- #include <linux/delay.h>
- #include <linux/io.h>
--#include <linux/of_device.h>
- #include <linux/phy/phy.h>
- #include "common.h"
- #include "rza.h"
-diff --git a/drivers/usb/typec/tcpm/fusb302.c b/drivers/usb/typec/tcpm/fusb302.c
-index 7fc1ffa14f76..bc21006e979c 100644
---- a/drivers/usb/typec/tcpm/fusb302.c
-+++ b/drivers/usb/typec/tcpm/fusb302.c
-@@ -15,7 +15,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/proc_fs.h>
- #include <linux/regulator/consumer.h>
-diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
-index a905160dd860..f2f3601cbbfb 100644
---- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
-+++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
-@@ -8,7 +8,7 @@
- #include <linux/kernel.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
-diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-index 4e1b846627d2..bb0b8479d80f 100644
---- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-+++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
-@@ -8,8 +8,6 @@
- #include <linux/kernel.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
--#include <linux/of_irq.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
-diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_port.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_port.c
-index 94285f64b67d..fdd916292675 100644
---- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_port.c
-+++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_port.c
-@@ -9,7 +9,6 @@
- #include <linux/kernel.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
-diff --git a/drivers/usb/typec/ucsi/ucsi_glink.c b/drivers/usb/typec/ucsi/ucsi_glink.c
-index 1fe9cb5b6bd9..bb1854b3311d 100644
---- a/drivers/usb/typec/ucsi/ucsi_glink.c
-+++ b/drivers/usb/typec/ucsi/ucsi_glink.c
-@@ -5,7 +5,6 @@
-  */
- #include <linux/auxiliary_bus.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/mutex.h>
- #include <linux/property.h>
- #include <linux/soc/qcom/pdr.h>
--- 
-2.40.1
+While taking a closer at the patch, later in unpoison_memory() there is 
+also:
+
+-               ret = TestClearPageHWPoison(page) ? 0 : -EBUSY;
++               ret = folio_test_clear_hwpoison(folio) ? 0 : -EBUSY;
+
+I thought this folio conversion would be safe because page is the result 
+of a compound_head() call but I'm wondering if the same issue exists 
+here and we should be calling TestClearPageHWPoison() on the specific 
+subpage by doing TestClearPageHWPoison(p).
+
+Thanks,
+Sidhartha Kumar
+
+> Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> 
+> Thanks,
+> Naoya Horiguchi
+> 
 
