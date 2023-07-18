@@ -2,102 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF144757885
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CFC757884
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 11:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbjGRJym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 05:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
+        id S232399AbjGRJy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 05:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230227AbjGRJyI (ORCPT
+        with ESMTP id S232260AbjGRJyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 05:54:08 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2072.outbound.protection.outlook.com [40.107.102.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B6810E0;
-        Tue, 18 Jul 2023 02:53:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JshX6IzKK8It2qus1OZ9pu6NvoLXgF88mvgsp1/YZj/xbOxCKImamZ+ElKT8gSCIZZtmJWk4WrdW6uIkmzh1lTfJP2UTeH1aKFsX1TAMBwAkkz+e2WhXqojTj3O3sUQUNzKAD7elH+rdJKuusK8BYQupBVC6wNNMsERpvNlFzy8002UUS1XiyMM0HyBEYZEqAGaYX7AdFhqxcM/myM1NKyzIFxw7HwZJT3J51XVAHZs0dxu14x7i4tsoMjASJUPZ1GjuFUOeMCnyUYDcutyJW/KDwBbjq8AvRCYPmnY0x1H9poN385zeziwqTxnHmfsCRhBsI15htY1AFymm1rJQKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=U0D3KvU1Vgdt9kbEaP42kKnqlCcBPvhehoE6DJD5NIM=;
- b=k1BEMbahf61BWQAZrXv5a0tEl/mRxHeZ1mAPPJ8k6fJi/gGvdez0BDxaFQq77QuyWYsHcWvaS48/+l5U9I3PRWuy6SK/xfBCRxHLzx/GsqRMmDZTcabDAPxjG3xzWOfKRUAmWLnHLpNoPAXX3oyI/a1dHop10wr6nIJFCtUBVPN94pu5rpJw4ldgDLgEkKsEsfZ/BQoeZQQf7hMKkTgIrvUPQDL19hRNHdLArkUMHDdUN1E7Eq40ZUWAuCjLFGdXVRbeU8zBX0OitdkPkDJB9LoA4eAEVrOYkQzORRMieDcp3LZ26x5OFhRWMSX/J3D//GKq/fyjRUauAOGeEueZfA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=quicinc.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U0D3KvU1Vgdt9kbEaP42kKnqlCcBPvhehoE6DJD5NIM=;
- b=OO/R9XQ20PxbqqO+7cN6Pk4jHUPbyoASA4QqTTu+/ithiprriBxKn9WxLwNlfz7rVzJSmsV5xCMTHNnJdqmhTI4Gi0KrcAyVFv6b5dDOl4AGAGbWcJpTc+QiduCETxJZJS1EqBYJkK/9IA34/Gadz4UBIx6ZoxLu1GY4G0PkX/QQKmqTJ/F2EZjXbn41j2No1/7XfXgaeJ/TYZM8LCu8qfgPbgal8qoKM2MuXp9b8hwyhDaZfsQ49Ob3Qn8dESBhu95drYikyrSoz916aCt2/En7Xl0k/zkQ8Ngf5HU2ynHjOyUwPovRzqnT7u1JkpTTmsfhIfZC9xRNMWdPosTWHg==
-Received: from BN9PR03CA0330.namprd03.prod.outlook.com (2603:10b6:408:112::35)
- by SA1PR12MB6728.namprd12.prod.outlook.com (2603:10b6:806:257::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Tue, 18 Jul
- 2023 09:52:55 +0000
-Received: from BN8NAM11FT091.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:112:cafe::78) by BN9PR03CA0330.outlook.office365.com
- (2603:10b6:408:112::35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33 via Frontend
- Transport; Tue, 18 Jul 2023 09:52:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- BN8NAM11FT091.mail.protection.outlook.com (10.13.176.134) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.33 via Frontend Transport; Tue, 18 Jul 2023 09:52:54 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 18 Jul 2023
- 02:52:46 -0700
-Received: from localhost (10.126.230.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Tue, 18 Jul
- 2023 02:52:45 -0700
-Date:   Tue, 18 Jul 2023 12:52:42 +0300
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Ilia Lin <quic_ilial@quicinc.com>
-CC:     <steffen.klassert@secunet.com>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Ilia Lin <ilia.lin@kernel.org>
-Subject: Re: [PATCH] xfrm: Allow ESP over UDP in packet offload mode
-Message-ID: <20230718095242.GC8808@unreal>
-References: <20230718092405.4124345-1-quic_ilial@quicinc.com>
+        Tue, 18 Jul 2023 05:54:04 -0400
+Received: from mail-ot1-f77.google.com (mail-ot1-f77.google.com [209.85.210.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FB81BF8
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:53:02 -0700 (PDT)
+Received: by mail-ot1-f77.google.com with SMTP id 46e09a7af769-6b9ba4c1164so6141317a34.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 02:53:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689673966; x=1692265966;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S6aK/PnlOk+5A8db/y7O71xsJ9Bt36+rJ9Njyeo0Rvo=;
+        b=IGSuy5oMXFY5NSl9e89yqFIBNH2cgZT9DagSJ60gA65612QNN12nKQr8wQQOI5NDgE
+         8j0HkWdoEund88lhT6jGhFsqp7LcYDWNnpmCRHExlmwMVe6gTpgePPOYP4hdH5n3/NA5
+         LWg42LSjwNkbGlKaI0AhdaIjNBqoRCIcQY1VouFnxmnMdERm94vVeOzNCPDv157I1aEj
+         C5JjobI7gv446/TqxH66PTAEmpSzBVacwWQz2Ux2f2dpEYoP9x7iP0I4nao3eJUJtqa0
+         bA66mUyLMWANNy6MTIV76fcKCenUzwDwkpxgdCSoJP2tXPE2E+XirhpmMivKB0gq8S8C
+         dIQA==
+X-Gm-Message-State: ABy/qLbzB0JnmBJS5mFII3lV/yjaj2nrKwEEzwQpRSBMXVUIwYRJWmet
+        taB13K/9FPQOSB8AMOTWnhTVb6hUHDP3giP2q+ODxYqLrIVh
+X-Google-Smtp-Source: APBJJlHKaduHEA79KSBPd5VUFVtk65p5tuWKzEnDAhY47EBa70omZhtsjaDCJpB7ucRt7bF3/iddCvc4iLLW69af43e2Hc7zzodD
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230718092405.4124345-1-quic_ilial@quicinc.com>
-X-Originating-IP: [10.126.230.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT091:EE_|SA1PR12MB6728:EE_
-X-MS-Office365-Filtering-Correlation-Id: 96ba5525-55f1-41e3-16a8-08db8774c27b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4UkP1VBp1wFmaEyx+axnDxOdEX6SigJWJlaPpoBghTG9GWgH3mv86GNSQ5YYdiiE2gwDPpcgP+D4MT+aYHqrY7ldrul6jq3cKonAEi6RAfOM0ctgSwUNFOHxp5uoSeS6ooCql+uVyL4KTjtiEF3b0IS+DkwBOdagjZJq4R4JKqDbuBbXOh9DdeKKylUnimhY/87/6RL2pn+1FWn9d6e8IiUMcsjyxp8u987/xY8ZVQk5G0bWLXJMPY515gYAXb1nB9M7A4gva8Ypn/U9qVASICqQj+izrH5oUFr40eXmI0FqEBZAUvJ1G0/n2QqSEBbHgFeZeMJwbGpWeYk+wNRpbz7ZitBDJ4ioaKPbjIt15vjcNCb7O8KTcHnkRXFXxBmRktzgWeoZ10RFloV3lzKfgUFvznM+kqZUNgr6PPYayKk4xPCzdbFDd6JaThsImvynXmpsfuR5+4U4XloQdrHjHxOLvvLkO+RK3sJrf3ffrPBfcOEMGirLfu6u3FR2v5iogWFfE9KlIWCTDvB5k/FubIYN25N2iVZ/BffjX8+GerZVMw9YczL+XBaAEwXhZ6t/LHyag2BjaH9zQMgTYfL0/GTbE8GIk1qzkWWgPcu/QfZLHf+UycYYEY7K2GmEYlPZDi3+/xul/D5/PaeX+8GNWmYANRcF/pwDUPe9DN+jMU3WV94esRt5uQ/cjiqlcMQ4At2uqura8eJ+XUbaeOz0t21vln2D/Z8yT8rNivbw3QqW9H7eU5y+nDrfQbJqzGebj74vUU9Eqp3/7qPUIi55Jzrc3xpgVmEAqJFTkLx6KrQ=
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(7916004)(396003)(346002)(136003)(39860400002)(376002)(82310400008)(451199021)(36840700001)(46966006)(40470700004)(33716001)(2906002)(478600001)(54906003)(6666004)(8676002)(8936002)(7416002)(41300700001)(70206006)(316002)(4326008)(70586007)(6916009)(82740400003)(83380400001)(426003)(336012)(47076005)(86362001)(7636003)(356005)(9686003)(966005)(40460700003)(5660300002)(36860700001)(1076003)(16526019)(26005)(186003)(33656002)(40480700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2023 09:52:54.9984
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96ba5525-55f1-41e3-16a8-08db8774c27b
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT091.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6728
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+X-Received: by 2002:a05:6830:13d1:b0:6b7:54aa:d72e with SMTP id
+ e17-20020a05683013d100b006b754aad72emr12750203otq.4.1689673966443; Tue, 18
+ Jul 2023 02:52:46 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 02:52:46 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008e62f40600bfe080@google.com>
+Subject: [syzbot] [mm?] possible deadlock in shmem_uncharge (2)
+From:   syzbot <syzbot+38ca19393fb3344f57e6@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, cem@kernel.org, cmaiolino@redhat.com,
+        hughd@google.com, jack@suse.cz, lczerner@redhat.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -106,56 +57,245 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 12:24:05PM +0300, Ilia Lin wrote:
-> The ESP encapsulation is not supported only in crypto mode.
-> In packet offload mode, the RX is bypassing the XFRM,
-> so we can enable the encapsulation.
+Hello,
 
-It is not accurate. RX is bypassed after XFRM validated packet to ensure
-that it was really handled by HW.
+syzbot found the following issue on:
 
-However, this patch should come with relevant driver code which should
-support ESP over UDP. You can see it here:
+HEAD commit:    7c2878be5732 Add linux-next specific files for 20230714
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=14b77fd8a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3baff2936ac3cefa
+dashboard link: https://syzkaller.appspot.com/bug?extid=38ca19393fb3344f57e6
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=153eea12a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1169adeca80000
 
-https://git.kernel.org/pub/scm/linux/kernel/git/leon/linux-rdma.git/log/?h=xfrm-next
- xfrm: Support UDP encapsulation in packet offload mode
- net/mlx5e: Support IPsec NAT-T functionality
- net/mlx5e: Check for IPsec NAT-T support
- net/mlx5: Add relevant capabilities bits to support NAT-T
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/bfdfa043f096/disk-7c2878be.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/cf7a97f69e2a/vmlinux-7c2878be.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8366b63af2c6/bzImage-7c2878be.xz
 
-Thanks
+The issue was bisected to:
 
-> 
-> Signed-off-by: Ilia Lin <ilia.lin@kernel.org>
-> ---
->  net/xfrm/xfrm_device.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/net/xfrm/xfrm_device.c b/net/xfrm/xfrm_device.c
-> index 4aff76c6f12e0..3018468d97662 100644
-> --- a/net/xfrm/xfrm_device.c
-> +++ b/net/xfrm/xfrm_device.c
-> @@ -246,8 +246,10 @@ int xfrm_dev_state_add(struct net *net, struct xfrm_state *x,
->  		return -EINVAL;
->  	}
->  
-> -	/* We don't yet support UDP encapsulation and TFC padding. */
-> -	if (x->encap || x->tfcpad) {
-> +	is_packet_offload = xuo->flags & XFRM_OFFLOAD_PACKET;
-> +
-> +	/* We don't yet support UDP encapsulation except full mode and TFC padding. */
-> +	if ((!is_packet_offload && x->encap) || x->tfcpad) {
->  		NL_SET_ERR_MSG(extack, "Encapsulation and TFC padding can't be offloaded");
->  		return -EINVAL;
->  	}
-> @@ -258,7 +260,6 @@ int xfrm_dev_state_add(struct net *net, struct xfrm_state *x,
->  		return -EINVAL;
->  	}
->  
-> -	is_packet_offload = xuo->flags & XFRM_OFFLOAD_PACKET;
->  	dev = dev_get_by_index(net, xuo->ifindex);
->  	if (!dev) {
->  		if (!(xuo->flags & XFRM_OFFLOAD_INBOUND)) {
-> -- 
-> 
-> 
+commit 1a93dd24f1bee98ca121e68ce5c0de4a60a0a0b6
+Author: Carlos Maiolino <cem@kernel.org>
+Date:   Thu Jul 13 13:48:47 2023 +0000
+
+    shmem: quota support
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11af3afaa80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13af3afaa80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15af3afaa80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+38ca19393fb3344f57e6@syzkaller.appspotmail.com
+Fixes: 1a93dd24f1be ("shmem: quota support")
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.5.0-rc1-next-20230714-syzkaller #0 Not tainted
+------------------------------------------------------
+/5027 is trying to acquire lock:
+ffff88807dbd8758 (&info->lock){....}-{2:2}, at: shmem_uncharge+0x28/0x2b0 mm/shmem.c:450
+
+but task is already holding lock:
+ffff88801526c068 (&lruvec->lru_lock){....}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ffff88801526c068 (&lruvec->lru_lock){....}-{2:2}, at: folio_lruvec_lock+0x1ba/0x3b0 mm/memcontrol.c:1323
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #3 (&lruvec->lru_lock){....}-{2:2}:
+       __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+       _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+       spin_lock include/linux/spinlock.h:351 [inline]
+       folio_lruvec_lock+0x1ba/0x3b0 mm/memcontrol.c:1323
+       __split_huge_page mm/huge_memory.c:2538 [inline]
+       split_huge_page_to_list+0x103b/0x49e0 mm/huge_memory.c:2772
+       split_folio_to_list include/linux/huge_mm.h:400 [inline]
+       split_folio include/linux/huge_mm.h:405 [inline]
+       truncate_inode_partial_folio+0x544/0x760 mm/truncate.c:242
+       shmem_undo_range+0x723/0x1190 mm/shmem.c:1026
+       shmem_truncate_range mm/shmem.c:1120 [inline]
+       shmem_setattr+0xd43/0x1050 mm/shmem.c:1205
+       notify_change+0x742/0x11c0 fs/attr.c:485
+       do_truncate+0x15c/0x220 fs/open.c:66
+       do_sys_ftruncate+0x6a2/0x790 fs/open.c:194
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #2 (&xa->xa_lock#7){..-.}-{2:2}:
+       __raw_spin_lock_irq include/linux/spinlock_api_smp.h:119 [inline]
+       _raw_spin_lock_irq+0x36/0x50 kernel/locking/spinlock.c:170
+       spin_lock_irq include/linux/spinlock.h:376 [inline]
+       filemap_remove_folio+0xbf/0x250 mm/filemap.c:259
+       truncate_inode_folio+0x49/0x70 mm/truncate.c:195
+       shmem_undo_range+0x363/0x1190 mm/shmem.c:1004
+       shmem_truncate_range mm/shmem.c:1120 [inline]
+       shmem_evict_inode+0x334/0xb10 mm/shmem.c:1250
+       evict+0x2ed/0x6b0 fs/inode.c:665
+       iput_final fs/inode.c:1791 [inline]
+       iput.part.0+0x55e/0x7a0 fs/inode.c:1817
+       iput+0x5c/0x80 fs/inode.c:1807
+       dentry_unlink_inode+0x292/0x430 fs/dcache.c:401
+       __dentry_kill+0x3b8/0x640 fs/dcache.c:607
+       dentry_kill fs/dcache.c:745 [inline]
+       dput+0x703/0xfd0 fs/dcache.c:913
+       do_renameat2+0xc4c/0xdc0 fs/namei.c:5011
+       __do_sys_rename fs/namei.c:5055 [inline]
+       __se_sys_rename fs/namei.c:5053 [inline]
+       __x64_sys_rename+0x81/0xa0 fs/namei.c:5053
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #1 (&sb->s_type->i_lock_key){+.+.}-{2:2}:
+       __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+       _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+       spin_lock include/linux/spinlock.h:351 [inline]
+       inode_sub_bytes+0x28/0x100 fs/stat.c:816
+       __dquot_free_space+0x8f7/0xaf0 fs/quota/dquot.c:1881
+       dquot_free_space_nodirty include/linux/quotaops.h:379 [inline]
+       dquot_free_block_nodirty include/linux/quotaops.h:390 [inline]
+       shmem_inode_unacct_blocks mm/shmem.c:243 [inline]
+       shmem_recalc_inode+0x196/0x350 mm/shmem.c:420
+       shmem_undo_range+0x558/0x1190 mm/shmem.c:1114
+       shmem_truncate_range mm/shmem.c:1120 [inline]
+       shmem_evict_inode+0x334/0xb10 mm/shmem.c:1250
+       evict+0x2ed/0x6b0 fs/inode.c:665
+       iput_final fs/inode.c:1791 [inline]
+       iput.part.0+0x55e/0x7a0 fs/inode.c:1817
+       iput+0x5c/0x80 fs/inode.c:1807
+       dentry_unlink_inode+0x292/0x430 fs/dcache.c:401
+       __dentry_kill+0x3b8/0x640 fs/dcache.c:607
+       dentry_kill fs/dcache.c:745 [inline]
+       dput+0x703/0xfd0 fs/dcache.c:913
+       do_renameat2+0xc4c/0xdc0 fs/namei.c:5011
+       __do_sys_rename fs/namei.c:5055 [inline]
+       __se_sys_rename fs/namei.c:5053 [inline]
+       __x64_sys_rename+0x81/0xa0 fs/namei.c:5053
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #0 (&info->lock){....}-{2:2}:
+       check_prev_add kernel/locking/lockdep.c:3142 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3261 [inline]
+       validate_chain kernel/locking/lockdep.c:3876 [inline]
+       __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5144
+       lock_acquire kernel/locking/lockdep.c:5761 [inline]
+       lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
+       shmem_uncharge+0x28/0x2b0 mm/shmem.c:450
+       __split_huge_page mm/huge_memory.c:2549 [inline]
+       split_huge_page_to_list+0x3832/0x49e0 mm/huge_memory.c:2772
+       split_folio_to_list include/linux/huge_mm.h:400 [inline]
+       split_folio include/linux/huge_mm.h:405 [inline]
+       truncate_inode_partial_folio+0x544/0x760 mm/truncate.c:242
+       shmem_undo_range+0x723/0x1190 mm/shmem.c:1026
+       shmem_truncate_range mm/shmem.c:1120 [inline]
+       shmem_setattr+0xd43/0x1050 mm/shmem.c:1205
+       notify_change+0x742/0x11c0 fs/attr.c:485
+       do_truncate+0x15c/0x220 fs/open.c:66
+       do_sys_ftruncate+0x6a2/0x790 fs/open.c:194
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+other info that might help us debug this:
+
+Chain exists of:
+  &info->lock --> &xa->xa_lock#7 --> &lruvec->lru_lock
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&lruvec->lru_lock);
+                               lock(&xa->xa_lock#7);
+                               lock(&lruvec->lru_lock);
+  lock(&info->lock);
+
+ *** DEADLOCK ***
+
+5 locks held by /5027:
+ #0: ffff8880762b4410 (sb_writers#5){.+.+}-{0:0}, at: do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ #0: ffff8880762b4410 (sb_writers#5){.+.+}-{0:0}, at: do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ #1: ffff88807dbd8a50 (&sb->s_type->i_mutex_key#12){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:771 [inline]
+ #1: ffff88807dbd8a50 (&sb->s_type->i_mutex_key#12){+.+.}-{3:3}, at: do_truncate+0x14b/0x220 fs/open.c:64
+ #2: ffff88807dbd8cf0 (&mapping->i_mmap_rwsem){++++}-{3:3}, at: i_mmap_lock_read include/linux/fs.h:501 [inline]
+ #2: ffff88807dbd8cf0 (&mapping->i_mmap_rwsem){++++}-{3:3}, at: split_huge_page_to_list+0x7d5/0x49e0 mm/huge_memory.c:2712
+ #3: ffff88807dbd8b60 (&xa->xa_lock#7){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ #3: ffff88807dbd8b60 (&xa->xa_lock#7){..-.}-{2:2}, at: split_huge_page_to_list+0x980/0x49e0 mm/huge_memory.c:2744
+ #4: ffff88801526c068 (&lruvec->lru_lock){....}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ #4: ffff88801526c068 (&lruvec->lru_lock){....}-{2:2}, at: folio_lruvec_lock+0x1ba/0x3b0 mm/memcontrol.c:1323
+
+stack backtrace:
+CPU: 0 PID: 5027 Comm:  Not tainted 6.5.0-rc1-next-20230714-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ check_noncircular+0x311/0x3f0 kernel/locking/lockdep.c:2195
+ check_prev_add kernel/locking/lockdep.c:3142 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3261 [inline]
+ validate_chain kernel/locking/lockdep.c:3876 [inline]
+ __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5144
+ lock_acquire kernel/locking/lockdep.c:5761 [inline]
+ lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
+ shmem_uncharge+0x28/0x2b0 mm/shmem.c:450
+ __split_huge_page mm/huge_memory.c:2549 [inline]
+ split_huge_page_to_list+0x3832/0x49e0 mm/huge_memory.c:2772
+ split_folio_to_list include/linux/huge_mm.h:400 [inline]
+ split_folio include/linux/huge_mm.h:405 [inline]
+ truncate_inode_partial_folio+0x544/0x760 mm/truncate.c:242
+ shmem_undo_range+0x723/0x1190 mm/shmem.c:1026
+ shmem_truncate_range mm/shmem.c:1120 [inline]
+ shmem_setattr+0xd43/0x1050 mm/shmem.c:1205
+ notify_change+0x742/0x11c0 fs/attr.c:485
+ do_truncate+0x15c/0x220 fs/open.c:66
+ do_sys_ftruncate+0x6a2/0x790 fs/open.c:194
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fcc0ae38b99
+Code: 48 83 c4 28 c3 e8 67 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffcd4272e58 EFLAGS: 00000246 ORIG_RAX: 000000000000004d
+RAX: ffffffffffffffda RBX: 00007ffcd4272e60 RCX: 00007fcc0ae38b99
+RDX: 00007fcc0ae38b99 RSI: 0000000000008979 RDI: 0000000000000003
+RBP: 00007ffcd4272e68 R08: 00007fcc0ae05c10 R09: 00007fcc0ae05c10
+R10: 0000000000000000 R11: 000000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
