@@ -2,74 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D1775868D
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8069A758690
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 23:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbjGRVJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 17:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33104 "EHLO
+        id S230259AbjGRVK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 17:10:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231199AbjGRVJK (ORCPT
+        with ESMTP id S229908AbjGRVK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 17:09:10 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B8C19AF
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:09:06 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b8b2b60731so34946855ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 14:09:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689714545; x=1692306545;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OSf1DUfPjj9rR6R8dex4siwYdCCG3zhhBQNvw/BY8zs=;
-        b=jxxqZRTK4pC4Gm3RwAxNDLBo/xsEVOT0fiQXouo3xxUl3rnFztWHXL1oeP/7w9BAKt
-         UxuzlTFfU1hIY8o0D9ksWN/uv3w+7eSl2sVst5rd/ZVGmKJop/dlawYNk4jdwToJx2iF
-         ZPMvoFqh4HGIGMqMHCMbIe5jJVZkV2NwJYx0FMrbntQT0KCiM3a00kGYcjdrORNioHmj
-         X0CCx0iGJSqH4d8ib1lmNt+vnOBEqaMrBvD3DSkvx5jY5svhykDLj2oMF8BUHAaCq/eC
-         UPFb7cQ1uSSytjMGmpNzSWv+TwPljqoK9vpLeWQnAGaZQveb8uzu/RXkM5VRmsoYU4xF
-         hsQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689714545; x=1692306545;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OSf1DUfPjj9rR6R8dex4siwYdCCG3zhhBQNvw/BY8zs=;
-        b=Al6eQ24ufbP588y7eWEHE1zuZV75imHSfEcIEe6nf4bXyXpY7mJtf0q29TEg8phaej
-         jpz6iqmqDXw1nYehuo9GbKmypBLp6o4bPYkiGYhNZNVpNpQxsyQ4X3v3iKa9w84UzLrY
-         jx2jjXbuJP5D0Ssum4a9Sn+3aa586MYDkAnQZG7SZSUdq3+dGDQQUzog/M7vvLU2wOWL
-         2gEoeuHRfq5KuG++MhlTtg4eaTNmEixt6K4nyB/1N5Qj6aRZqWMJ8/Bux7VP5VQepTXA
-         HPaz3pu4H8o+ShMhhLi0uXAJCzgB/PBq3tBfNGVk89xpiqGtfBPMQxl3EKXCFeBOMxid
-         AbAw==
-X-Gm-Message-State: ABy/qLZ2F8F+EpLwgOoP2SO5BWPOIuhCfG/sK9HnrjRMlmi5Hw9FiWB/
-        VFhiHKqd/S4VrX6wwV0KfMRfiMTu5ZEnpA==
-X-Google-Smtp-Source: APBJJlEsvSRi+K4F98zqHSa8MaHap/EE1ekJ/8rYJX72Nrk2ydHLnfXG6goaV47zgd6eLP7DY+7ELQ==
-X-Received: by 2002:a17:902:788d:b0:1a9:40d5:b0ae with SMTP id q13-20020a170902788d00b001a940d5b0aemr13124901pll.12.1689714545462;
-        Tue, 18 Jul 2023 14:09:05 -0700 (PDT)
-Received: from localhost ([216.228.127.128])
-        by smtp.gmail.com with ESMTPSA id jk16-20020a170903331000b001b8a3dd5a4asm2304168plb.283.2023.07.18.14.09.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 14:09:04 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 14:09:02 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>, oe-kbuild-all@lists.linux.dev,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2] lib/bitmap: workaround const_eval test build failure
-Message-ID: <ZLb/bioBIHS6bjKc@yury-ThinkPad>
-References: <20230717220435.57640-1-yury.norov@gmail.com>
+        Tue, 18 Jul 2023 17:10:27 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48781BCB;
+        Tue, 18 Jul 2023 14:09:58 -0700 (PDT)
+X-QQ-mid: bizesmtp62t1689714584t1v0xb12
+Received: from linux-lab-host.localdomain ( [119.123.130.39])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 19 Jul 2023 05:09:42 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: RmDZc/K2LPHRRX1ziPaMNp2KF6y/A9L2nQGox1+F18Ejlrxpb6oFcdf+CRNjj
+        1hWaWirBP8guBjmHD9EyBSyq5r1m6iH0qXET1c4IguV0WkgWmRM2mtcYb7xXYGejD4BDIIf
+        6zN8wjfBHf9UF3DhUdyXKRtUOjmNmp9VUANi0eJ9x8KcjONpbuEux/eHxCwVrRK3EUpRPvc
+        kS6vIfkYv+iwyHpzQNgnalVr0eyITwuactFBx4TtQrjo7etOasNLPTwFUBa96GZEzqQoMDv
+        03tggFk8OMvgpfgzK/YiPHRGOLp4FuawkUujbwzAfNTNSeIHTdr06vNMogh/drIZGVZy+NS
+        8xntVYr1wqWhPOQY84Uma4jnK68BERyofScFgpwmfde6iq4EcZgaXtcqFtJeg==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 11760767951132339982
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     thomas@t-8ch.de, arnd@arndb.de, falcon@tinylab.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH v1 0/8] tools/nolibc: add 32/64-bit powerpc support
+Date:   Wed, 19 Jul 2023 05:09:42 +0800
+Message-Id: <cover.1689713175.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717220435.57640-1-yury.norov@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,52 +50,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 03:04:35PM -0700, Yury Norov wrote:
-> When building with Clang, and when KASAN and GCOV_PROFILE_ALL are both
-> enabled, the test fails to build [1]:
-> 
-> >> lib/test_bitmap.c:920:2: error: call to '__compiletime_assert_239' declared with 'error' attribute: BUILD_BUG_ON failed: !__builtin_constant_p(res)
->            BUILD_BUG_ON(!__builtin_constant_p(res));
->            ^
->    include/linux/build_bug.h:50:2: note: expanded from macro 'BUILD_BUG_ON'
->            BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
->            ^
->    include/linux/build_bug.h:39:37: note: expanded from macro 'BUILD_BUG_ON_MSG'
->    #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->                                        ^
->    include/linux/compiler_types.h:352:2: note: expanded from macro 'compiletime_assert'
->            _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->            ^
->    include/linux/compiler_types.h:340:2: note: expanded from macro '_compiletime_assert'
->            __compiletime_assert(condition, msg, prefix, suffix)
->            ^
->    include/linux/compiler_types.h:333:4: note: expanded from macro '__compiletime_assert'
->                            prefix ## suffix();                             \
->                            ^
->    <scratch space>:185:1: note: expanded from here
->    __compiletime_assert_239
-> 
-> Originally it was attributed to s390, which now looks seemingly wrong. The
-> issue is not related to bitmap code itself, but it breaks build for a given
-> configuration.
-> 
-> Disabling the const_eval test under that config may potentially hide other
-> bugs. Instead, workaround it by disabling GCOV for the test_bitmap unless
-> the compiler will get fixed.
-> 
-> [1] https://github.com/ClangBuiltLinux/linux/issues/1874
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202307171254.yFcH97ej-lkp@intel.com/
-> Fixes: dc34d5036692 ("lib: test_bitmap: add compile-time optimization/evaluations assertions")
-> Co-developed-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+Hi, Willy
 
-So, I pushed it in bitmap-for-next. If nothing wrong will appear in
-~week, I'll send a pull request, so expect merging it in this cycle.
+Here is the powerpc support, includes 32-bit big-endian powerpc, 64-bit
+little endian and big endian powerpc.
 
-Thank you for the work!
+All of them passes run-user with the default powerpc toolchain from
+Ubuntu 20.04:
 
-Thanks,
-Yury
+    $ make run-user DEFCONFIG=tinyconfig XARCH=powerpc CROSS_COMPILE=powerpc-linux-gnu- | grep status
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+    $ make run-user DEFCONFIG=tinyconfig XARCH=powerpc64 CROSS_COMPILE=powerpc64le-linux-gnu- | grep status
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+    $ make run-user DEFCONFIG=tinyconfig XARCH=powerpc64le CROSS_COMPILE=powerpc64le-linux-gnu- | grep status
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+
+For the slow 'run' target, I have run with defconfig before, and just
+verified them via the fast tinyconfig + run with a new patch from next
+patchset, all of them passes:
+
+    165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
+
+Note, the big endian crosstool powerpc64-linux-gcc from
+https://mirrors.edge.kernel.org/pub/tools/crosstool/ has been used to
+test both little endian and big endian powerpc64 too, both passed.
+
+Here simply explain what they are:
+
+* tools/nolibc: add support for powerpc
+  tools/nolibc: add support for powerpc64
+
+    32-bit & 64-bit powerpc support of nolibc.
+
+* selftests/nolibc: select_null: fix up for big endian powerpc64
+
+    fix up a test case for big endian powerpc64.
+
+* selftests/nolibc: add extra config file customize support
+
+    add extconfig target to allow enable extra config options via
+    configs/<ARCH>.config
+
+    applied suggestion from Thomas to use config files instead of config
+    lines.
+
+* selftests/nolibc: add XARCH and ARCH mapping support
+
+    applied suggestions from Willy, use XARCH as the input of our nolibc
+    test, use ARCH as the pure kernel input, at last build the mapping
+    between XARCH and ARCH.
+
+    Customize the variables via the input XARCH.
+
+* selftests/nolibc: add test support for powerpc
+
+    Require to use extconfig to enable the console options specified in
+    configs/powerpc.config
+
+    currently, we should manually run extconfig after defconfig, in next
+    patchset, we will do this automatically.
+
+* selftests/nolibc: add test support for powerpc64le
+  selftests/nolibc: add test support for powerpc64
+
+    Very simple, but customize CFLAGS carefully to let them work with
+    powerpc64le-linux-gnu-gcc (from Linux distributions) and
+    powerpc64-linux-gcc (from mirrors.edge.kernel.org)
+
+The next patchset will not be tinyconfig, but some prepare patches, will
+be sent out soon.
+
+Best regards,
+Zhangjin
+---
+
+Zhangjin Wu (8):
+  tools/nolibc: add support for powerpc
+  tools/nolibc: add support for powerpc64
+  selftests/nolibc: select_null: fix up for big endian powerpc64
+  selftests/nolibc: add extra config file customize support
+  selftests/nolibc: add XARCH and ARCH mapping support
+  selftests/nolibc: add test support for powerpc
+  selftests/nolibc: add test support for powerpc64le
+  selftests/nolibc: add test support for powerpc64
+
+ tools/include/nolibc/arch-powerpc.h           | 170 ++++++++++++++++++
+ tools/testing/selftests/nolibc/Makefile       |  55 ++++--
+ .../selftests/nolibc/configs/powerpc.config   |   3 +
+ tools/testing/selftests/nolibc/nolibc-test.c  |   2 +-
+ 4 files changed, 217 insertions(+), 13 deletions(-)
+ create mode 100644 tools/include/nolibc/arch-powerpc.h
+ create mode 100644 tools/testing/selftests/nolibc/configs/powerpc.config
+
+-- 
+2.25.1
+
