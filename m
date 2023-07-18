@@ -2,108 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2995B75790B
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF5B757910
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 12:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbjGRKMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 06:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
+        id S229831AbjGRKNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 06:13:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231506AbjGRKLr (ORCPT
+        with ESMTP id S229585AbjGRKNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 06:11:47 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8A0188;
-        Tue, 18 Jul 2023 03:11:46 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4R4vmD14XFz67nfn;
-        Tue, 18 Jul 2023 18:08:28 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
- 2023 11:11:43 +0100
-Date:   Tue, 18 Jul 2023 11:11:43 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Balsam CHIHI <bchihi@baylibre.com>,
-        "Claudiu Beznea" <claudiu.beznea@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-renesas-soc@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, Andy Shevchenko <andy@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Len Brown <len.brown@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        "Jonathan Hunter" <jonathanh@nvidia.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v2 10/10] pinctrl: tegra: Switch to use
- DEFINE_NOIRQ_DEV_PM_OPS() helper
-Message-ID: <20230718111143.000067dc@Huawei.com>
-In-Reply-To: <20230717172821.62827-11-andriy.shevchenko@linux.intel.com>
-References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
-        <20230717172821.62827-11-andriy.shevchenko@linux.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 18 Jul 2023 06:13:51 -0400
+Received: from mail-oo1-f78.google.com (mail-oo1-f78.google.com [209.85.161.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC1CF7
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 03:13:50 -0700 (PDT)
+Received: by mail-oo1-f78.google.com with SMTP id 006d021491bc7-565c44558b0so7383692eaf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 03:13:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689675230; x=1692267230;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=94gU9Cm0HvT/INyO59YYDp2AwD4IHO+lDlr2Eco5aCc=;
+        b=GAjaLX0kF8lsDLbe7v1SD33I0rPWok3mqq1BvxJP12xF7V5tb4qHfgdbQyI/9ZceTp
+         UPDicfkzekeLFj+NEHDx4A9ib3xRG0nZpYCBK5vAYoFwq+uJXGpca26xuD7UsrEiorQ5
+         36YOzx17NX5CUDTz6yK2sNTGazv4N4rVSt8ASX4PU/9XnaicT327FVuAAbU/oHWmnp42
+         G4ntGs2T+pDWGgc5Hpe1Trxo+Fyf4r/mRnZMI2vebuWt3+K6m2B5g4PFOC0ZKn4BIAQu
+         f2B0qSpKzRAncdcfPXoy5aZYOray4MhvnI76W/XsE5LTF8I0YuAc7C4qGGEE4H0uQdlR
+         OEWQ==
+X-Gm-Message-State: ABy/qLYXbzd/gVOFy2YR+6bKO5kpsosABJygA1FxG2QqkQgyPg0cBm8q
+        2QbOAzs3qYnKi+dr/jmnwDX918BplhO+M0sUB+HIhNYXyJs1
+X-Google-Smtp-Source: APBJJlGg0H/RMlzPzlO8s+7kJUejmRoNsfZLtceYr4nS+AsenM02OJ/ezEh8WVeF1f7fUhqJ60h7NphOl8nf49DAzkfA5UTv8hSa
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:20a0:b0:39e:de07:a6b7 with SMTP id
+ s32-20020a05680820a000b0039ede07a6b7mr4311665oiw.1.1689675229972; Tue, 18 Jul
+ 2023 03:13:49 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 03:13:49 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000de4c2c0600c02b28@google.com>
+Subject: [syzbot] [hfs?] kernel BUG in hfs_show_options
+From:   syzbot <syzbot+155274e882dcbf9885df@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Jul 2023 20:28:21 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+Hello,
 
-> Since pm.h provides a helper for system no-IRQ PM callbacks,
-> switch the driver to use it instead of open coded variant.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+syzbot found the following issue on:
 
-No pm_sleep_ptr()?
+HEAD commit:    aeba456828b4 Add linux-next specific files for 20230718
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1615a7b6a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e7ec534f91cfce6c
+dashboard link: https://syzkaller.appspot.com/bug?extid=155274e882dcbf9885df
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=136fa2aaa80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16629fe4a80000
 
-> ---
->  drivers/pinctrl/tegra/pinctrl-tegra.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/tegra/pinctrl-tegra.c b/drivers/pinctrl/tegra/pinctrl-tegra.c
-> index 4547cf66d03b..734c71ef005b 100644
-> --- a/drivers/pinctrl/tegra/pinctrl-tegra.c
-> +++ b/drivers/pinctrl/tegra/pinctrl-tegra.c
-> @@ -747,10 +747,7 @@ static int tegra_pinctrl_resume(struct device *dev)
->  	return 0;
->  }
->  
-> -const struct dev_pm_ops tegra_pinctrl_pm = {
-> -	.suspend_noirq = &tegra_pinctrl_suspend,
-> -	.resume_noirq = &tegra_pinctrl_resume
-> -};
-> +DEFINE_NOIRQ_DEV_PM_OPS(tegra_pinctrl_pm, tegra_pinctrl_suspend, tegra_pinctrl_resume);
->  
->  static bool tegra_pinctrl_gpio_node_has_range(struct tegra_pmx *pmx)
->  {
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/94f67a948e1d/disk-aeba4568.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/9818a252eddd/vmlinux-aeba4568.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/fbf9befe9bc9/bzImage-aeba4568.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/f676b00757fa/mount_1.gz
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+155274e882dcbf9885df@syzkaller.appspotmail.com
+
+memfd_create() without MFD_EXEC nor MFD_NOEXEC_SEAL, pid=5030 'syz-executor221'
+loop0: detected capacity change from 0 to 64
+detected buffer overflow in strnlen
+------------[ cut here ]------------
+kernel BUG at lib/string_helpers.c:1031!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 5030 Comm: syz-executor221 Not tainted 6.5.0-rc2-next-20230718-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
+RIP: 0010:fortify_panic+0x1c/0x20 lib/string_helpers.c:1031
+Code: ba fd eb d7 66 2e 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 53 48 89 fb e8 23 de 65 fd 48 89 de 48 c7 c7 00 2c c8 8a e8 e4 28 49 fd <0f> 0b 66 90 f3 0f 1e fa 41 55 41 54 55 53 48 89 fb e8 fe dd 65 fd
+RSP: 0018:ffffc90003b0fb38 EFLAGS: 00010286
+RAX: 0000000000000023 RBX: ffffffff8a879260 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff816aad20 RDI: 0000000000000005
+RBP: ffff888029e9f000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: 0000000000000001 R12: 1ffff92000761f69
+R13: 0000000000000004 R14: ffff88807ea07864 R15: ffffc90003b0fb68
+FS:  00005555558f2380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000005fdeb8 CR3: 0000000023140000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ strnlen include/linux/fortify-string.h:181 [inline]
+ strscpy include/linux/fortify-string.h:324 [inline]
+ hfs_show_options+0x6c7/0x7a0 fs/hfs/super.c:138
+ show_vfsmnt+0x364/0x470 fs/proc_namespace.c:129
+ seq_read_iter+0xaf0/0x1280 fs/seq_file.c:272
+ call_read_iter include/linux/fs.h:1911 [inline]
+ new_sync_read fs/read_write.c:389 [inline]
+ vfs_read+0x4e0/0x930 fs/read_write.c:470
+ ksys_read+0x12f/0x250 fs/read_write.c:613
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fcba03d9ab9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd12ef40b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fcba03d9ab9
+RDX: 0000000000002020 RSI: 0000000020000340 RDI: 0000000000000004
+RBP: 00007ffd12ef40c0 R08: 0000000000000000 R09: 65732f636f72702f
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffd12ef4308 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:fortify_panic+0x1c/0x20 lib/string_helpers.c:1031
+Code: ba fd eb d7 66 2e 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 53 48 89 fb e8 23 de 65 fd 48 89 de 48 c7 c7 00 2c c8 8a e8 e4 28 49 fd <0f> 0b 66 90 f3 0f 1e fa 41 55 41 54 55 53 48 89 fb e8 fe dd 65 fd
+RSP: 0018:ffffc90003b0fb38 EFLAGS: 00010286
+RAX: 0000000000000023 RBX: ffffffff8a879260 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff816aad20 RDI: 0000000000000005
+RBP: ffff888029e9f000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: 0000000000000001 R12: 1ffff92000761f69
+R13: 0000000000000004 R14: ffff88807ea07864 R15: ffffc90003b0fb68
+FS:  00005555558f2380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000005fdeb8 CR3: 0000000023140000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
