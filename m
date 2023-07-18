@@ -2,89 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB760757D7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D3D757D63
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 15:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbjGRN3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 09:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33922 "EHLO
+        id S232107AbjGRNZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 09:25:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbjGRN3f (ORCPT
+        with ESMTP id S232311AbjGRNZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 09:29:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F025D1;
-        Tue, 18 Jul 2023 06:29:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Tue, 18 Jul 2023 09:25:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA191EE
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 06:24:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689686674;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dgledF1WRoLwrfDvjbydZH7nQLxGFefypqZhBkMsdxg=;
+        b=Peet7B3UXXCda/vDPMqkOSWIvLWKHcmJ9k/jcxYGeJLMGMqFce3nmEBMRermOAwnMgx/2a
+        ihVx82TIV6Z4Q6wntHJtCpBzV9O8wpVJUA2gsVWnnRD0xL8bEWB2+uUvTtFVNBNLTEjIBl
+        j9CYADyVYXq/86NEPHzQxzHIb8azgTk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-241-Tkt302CUP3iz11o0VtpMww-1; Tue, 18 Jul 2023 09:24:28 -0400
+X-MC-Unique: Tkt302CUP3iz11o0VtpMww-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F102761584;
-        Tue, 18 Jul 2023 13:29:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1461C433C8;
-        Tue, 18 Jul 2023 13:29:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1689686973;
-        bh=6iTjVARF9WmVKMhxOcPS9qZIC1LR6nJSeaSCWdPXC4I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QITOC1h3eFOnv1ebHrmktrNSZuNoKjXl88x44EkSlWqmOVY0Be0pwWe7ibFyZka9J
-         zRLK+VYwQIjc7w92ClrzExG35ZS3H9GL+mcrccbVtVNb0BZTtXuWvImvIfqUPzB7Hs
-         jx5ZlxnOHnALrNHrYv8ONDO9w+YzlYkCziBdNhOQ=
-Date:   Tue, 18 Jul 2023 15:29:28 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        heikki.krogerus@linux.intel.com, pmalani@chromium.org,
-        bleung@chromium.org
-Subject: Re: [PATCH v4 2/2] usb: typec: intel_pmc_mux: Configure Active and
- Retimer Cable type
-Message-ID: <2023071800-roaming-automated-5404@gregkh>
-References: <20230718024703.1013367-1-utkarsh.h.patel@intel.com>
- <20230718024703.1013367-3-utkarsh.h.patel@intel.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6965A8D168D;
+        Tue, 18 Jul 2023 13:24:28 +0000 (UTC)
+Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1E9E42166B25;
+        Tue, 18 Jul 2023 13:24:28 +0000 (UTC)
+From:   Jeff Moyer <jmoyer@redhat.com>
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] io_uring: don't audit the capability check in io_uring_create()
+References: <20230718115607.65652-1-omosnace@redhat.com>
+X-PGP-KeyID: 1F78E1B4
+X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
+Date:   Tue, 18 Jul 2023 09:30:18 -0400
+In-Reply-To: <20230718115607.65652-1-omosnace@redhat.com> (Ondrej Mosnacek's
+        message of "Tue, 18 Jul 2023 13:56:07 +0200")
+Message-ID: <x49lefd4aad.fsf@segfault.boston.devel.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718024703.1013367-3-utkarsh.h.patel@intel.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 07:47:03PM -0700, Utkarsh Patel wrote:
-> Cable type such as active and retimer received as a part of Thunderbolt3
-> or Thunderbolt4 cable discover mode VDO needs to be configured in the
-> thunderbolt alternate mode.
-> 
-> Configuring the register bits for this cable type is changed with Intel
-> Meteor Lake platform. BIT2 for Retimer/Redriver cable and BIT22 for
-> Active/Passive cable.
-> 
-> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
+Hi, Ondrej,
+
+Ondrej Mosnacek <omosnace@redhat.com> writes:
+
+> The check being unconditional may lead to unwanted denials reported by
+> LSMs when a process has the capability granted by DAC, but denied by an
+> LSM. In the case of SELinux such denials are a problem, since they can't
+> be effectively filtered out via the policy and when not silenced, they
+> produce noise that may hide a true problem or an attack.
+>
+> Since not having the capability merely means that the created io_uring
+> context will be accounted against the current user's RLIMIT_MEMLOCK
+> limit, we can disable auditing of denials for this check by using
+> ns_capable_noaudit() instead of capable().
+
+Could you add a comment, or add some documentation to
+ns_capable_noaudit() about when it should be used?  It wasn't apparent
+to me, at least, before this explanation.
+
+> Fixes: 2b188cc1bb85 ("Add io_uring IO interface")
+> Link: https://bugzilla.redhat.com/show_bug.cgi?id=2193317
+> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
 > ---
-> Changes in v4:
->  - No changes.
-> 
-> Changes in v3:
->  - No changes.
-> 
-> Changes in v2:
->  - No changes.
-> ---
-> ---
->  drivers/usb/typec/mux/intel_pmc_mux.c | 28 +++++++++++++++++++++++----
->  1 file changed, 24 insertions(+), 4 deletions(-)
+>  io_uring/io_uring.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
+> index 7505de2428e03..a9923676d16d6 100644
+> --- a/io_uring/io_uring.c
+> +++ b/io_uring/io_uring.c
+> @@ -3870,7 +3870,7 @@ static __cold int io_uring_create(unsigned entries, struct io_uring_params *p,
+>  		ctx->syscall_iopoll = 1;
+>  
+>  	ctx->compat = in_compat_syscall();
+> -	if (!capable(CAP_IPC_LOCK))
+> +	if (!ns_capable_noaudit(&init_user_ns, CAP_IPC_LOCK))
+>  		ctx->user = get_uid(current_user());
+>  
+>  	/*
 
-Why the 2 --- lines?
+Reviewed-by: Jeff Moyer <jmoyer@redhat.com>
 
-And why are you not cc:ing all the proper people (i.e. the person that
-can actually apply this...)?
-
-confused,
-
-greg k-h
