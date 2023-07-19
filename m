@@ -2,123 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A530B759842
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED8875984D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231582AbjGSO0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 10:26:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
+        id S231691AbjGSO0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231583AbjGSO0M (ORCPT
+        with ESMTP id S231620AbjGSO0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:26:12 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E5710FE
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:26:09 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fdd14c1fbfso3006551e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:26:09 -0700 (PDT)
+        Wed, 19 Jul 2023 10:26:22 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DDC10F5
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:26:20 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-c2cf4e61bc6so7247704276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:26:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689776768; x=1692368768;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QYVunoFchPUC0OBXPo1j3FS+mazfA++aFluGXeilBDk=;
-        b=ex9mlEDgIOJBoi8ZE5Gy9YUPQeUCRyk2JVGKFSKdodeYs/N/NtWwXC/vlNh6FO8dg5
-         bT3XYgM30DXywlczVpCpuAXqh9u50yEYN81xkpDJSOW1dN4WyP4QVNlfZbqa5FJy6Ic5
-         oaDAu4pTTv96rjmWvUDMCi2lwTXB7s+iciRxaCcQWQAOYr+FGa+2MxvtZh6qQz2CGuEL
-         mDtJXY8o3skprV1mr7EbaM9fWdRyhSrhDExbBw6OKs1PoKBNZHdh0QXQMoyz2859AWZA
-         Z2eDNNUeVJF4j5j98YSMGCm8kcMqiXqbDRZ61NbqWm4+JOIxpJPgNXCvf/GtdZoS2gM4
-         uVaw==
+        d=google.com; s=20221208; t=1689776779; x=1692368779;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2VK55DG3Fs7PTghAKQd0jM8nvqZIPZ4glcR3HhFBT7c=;
+        b=7jfU311slUUW0UFqd1xP+4htLveZmM27w7SWA5P0Ofot830W2PGNGcLy4HrhdEoxQm
+         az+ILN50Jzlo4maRmOZlUhdjCrGtxh073DOAMOQlyZCSdcDvxCsrVoHtWECGQCV6CMYP
+         dtkRMmL1WsTSmqNv2tW3j4A1S23poCaDbO2S1YBY1oW1aMQtTEPf6UsRY+WbA+OtKrIC
+         Ua7LPGLJzdckrb/5yRJ7bC/gRfLRRWFwi+VUOyu29ro5uT5rEQHlXpAaCoqRhr+mHIqE
+         pK8dmPZI3dsvbXSSHF64DsP7G2TTHotWz5S+oM6rCmanQUB6ET0h94ELWpdpUDirIPGy
+         yX7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689776768; x=1692368768;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QYVunoFchPUC0OBXPo1j3FS+mazfA++aFluGXeilBDk=;
-        b=IunjEazCQrUiYBe3AsR0UiWWLulPo2gHwEtRV90BvkP80HwKz0l3HZBTTCNpBZpRvE
-         RF9HtGe4BlC2VF1O7kVqBDU2agwRMzdSu561FueIYNUQ86WO0llBV2B+6n5JB1w74p6c
-         JcFXXMze1ocwqY5FA7ZN73syO8KpFtpyuOVTSoMa3/PrFJq0Nd04/HKMeFmzjBU4brfm
-         Lp2sB3/8cZB5J4WKosqNFls0AJRxtzAbW9CBky1ZE8ohW/+f05R+FIpgnOksQokbHeyQ
-         f7vpnyAziXPLxLHDG9+3wmPjaImcVIN1v4NFvl7nsRrUpFbmDbMQyu8RAQZnL4IecfJ/
-         TZpg==
-X-Gm-Message-State: ABy/qLb+Juw2v74yrmqvKIxclD93Xlh3I/qIXutD6hStQP6QnZIm7VU2
-        7d2bJeyhTdNjwYwcDBY5BJ0tI3sotlHbNIf5BQTg/g==
-X-Google-Smtp-Source: APBJJlGi3BabRvugk7R6rQS2y8EhvImMu4QFhIo/YCnkmRrehmGmgHtJngmJ6AEMC2RjxVfWsQOH5g==
-X-Received: by 2002:a19:914a:0:b0:4fb:89e2:fc27 with SMTP id y10-20020a19914a000000b004fb89e2fc27mr5864lfj.54.1689776768042;
-        Wed, 19 Jul 2023 07:26:08 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id c15-20020aa7df0f000000b005219de74217sm2741339edy.43.2023.07.19.07.26.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 07:26:07 -0700 (PDT)
-Message-ID: <6c5b594f-96af-8b7a-558c-0ce244634057@linaro.org>
-Date:   Wed, 19 Jul 2023 16:26:04 +0200
+        d=1e100.net; s=20221208; t=1689776779; x=1692368779;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2VK55DG3Fs7PTghAKQd0jM8nvqZIPZ4glcR3HhFBT7c=;
+        b=UVZpgABYpkklUc6x/21HUJhBzQa4vnwhNz0Q0xjyTz5hu2xpSFh11bWWQHXjXwyLpE
+         S8N3/7NKBnFD0JNMq93dosrPvk+rVEEoQkYj5LB7ZJKsWTvUqdkCqdcCf5RooH5pbaWI
+         TFTHJTXlL6HIK7NkUztx+mvu6xv2Eab7cm5kcqoxSSHgYWJaJiZywwBUQ3KS9yrHjKuO
+         Gkrtvg451vd7LFcPq3umPWKD4yw8NWkKw4yQS+ismp6KXXcLhqnv9GwHZLi7gB5fum+A
+         1KsOf/jzl5ZzQqwesK4+ngfiVEPHGB9ET9QXGcZh2juCP7ze0RMB6DgPUlkVBMbYSRQp
+         hh2Q==
+X-Gm-Message-State: ABy/qLaipCoeh1N4Q+UOxxk2dFGUwnhZdW2A66kxjW+eAaS6Ks+6HBtO
+        Nx5aLzioao0K/CyfTJ4q/YvCfGUaV5b8IVCrG8qooA==
+X-Google-Smtp-Source: APBJJlFkic+Ri/Zc9kWO4O0LpFmkfS6fsW6kTdiRwmfAxsS9VkTkZur4wtoBXB7B9HvqhJ1+BGi7/g==
+X-Received: by 2002:a25:5342:0:b0:c85:d8b7:1b96 with SMTP id h63-20020a255342000000b00c85d8b71b96mr2356398ybb.52.1689776778840;
+        Wed, 19 Jul 2023 07:26:18 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id 133-20020a250b8b000000b00cecd504e708sm651446ybl.35.2023.07.19.07.26.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 07:26:18 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 07:26:08 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Yin Fengwei <fengwei.yin@intel.com>
+cc:     Yosry Ahmed <yosryahmed@google.com>, Yu Zhao <yuzhao@google.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, willy@infradead.org, david@redhat.com,
+        ryan.roberts@arm.com, shy828301@gmail.com,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: [RFC PATCH v2 3/3] mm: mlock: update mlock_pte_range to handle
+ large folio
+In-Reply-To: <e3044d46-3b38-dc2e-b8d2-8ec1033f85e7@intel.com>
+Message-ID: <79f6822-f2f8-aba4-b517-b661d07e2d@google.com>
+References: <20230712060144.3006358-1-fengwei.yin@intel.com> <20230712060144.3006358-4-fengwei.yin@intel.com> <CAOUHufYef--8MxFettL6fOGjVx2vyZHZQU6EEaTCoW0XBvuC8Q@mail.gmail.com> <CAOUHufZ6=9P_=CAOQyw0xw-3q707q-1FVV09dBNDC-hpcpj2Pg@mail.gmail.com>
+ <40cbc39e-5179-c2f4-3cea-0a98395aaff1@intel.com> <CAOUHufZHyEvU-c2O6B6stM_QVMxc22zV4Szn52myYqjdZvptUA@mail.gmail.com> <16844254-7248-f557-b1eb-b8b102c877a2@intel.com> <CAJD7tkYAkVOE2caqEj_hTmm47Kex451prBQ1wKTRUiOwnDcwNA@mail.gmail.com>
+ <b995e802-1500-6930-79d0-8cc4bfe89589@intel.com> <CAJD7tkZtHku-kaK02MAdgaxNzr9hQkPty=cw44R_9HdTS+Pd5w@mail.gmail.com> <CAJD7tkZWXdHwpW5AeKqmn6TVCXm1wmKr-2RN2baRJ7c4ciTJng@mail.gmail.com> <208aff10-8a32-6ab8-f03a-7f3c9d3ca0f7@intel.com>
+ <CAJD7tkYT6EZMwit8C9MTftUxMmuWtn2YpZ+NSVhy0xVCYuafsg@mail.gmail.com> <438d6f6d-2571-69d9-844e-9af9e6b4f820@intel.com> <CAJD7tkYWH8umBFgmxPmeOkRF=pauVW=MvyyN+z17XMHN+q8JKg@mail.gmail.com> <e3044d46-3b38-dc2e-b8d2-8ec1033f85e7@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/3] Documentation/process: maintainer-soc: add clean
- platforms profile
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     dsterba@suse.cz
-Cc:     Conor Dooley <conor@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Nishanth Menon <nm@ti.com>, linux-riscv@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, workflows@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20230714084725.27847-1-krzysztof.kozlowski@linaro.org>
- <20230714084725.27847-2-krzysztof.kozlowski@linaro.org>
- <20230714135914.GI20457@twin.jikos.cz>
- <4963b85c-c0ff-92a1-e5d6-ca76f1882f93@linaro.org>
-Content-Language: en-US
-In-Reply-To: <4963b85c-c0ff-92a1-e5d6-ca76f1882f93@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/07/2023 09:51, Krzysztof Kozlowski wrote:
-> On 14/07/2023 15:59, David Sterba wrote:
->> On Fri, Jul 14, 2023 at 10:47:24AM +0200, Krzysztof Kozlowski wrote:
->>> +Overview
->>> +--------
->>> +
->>> +SoC platforms or subarchitectures follow all the rules from
->>> +Documentation/process/maintainer-soc.rst.  However platforms referencing this
->>
->> Just a drive by comment, references to highly relevant documents should
->> be clickable, so :doc:`Documentation/process/maintainer-soc` , with
->> exceptions like if the document has been referenced already.
-> 
-> Is it needed though? The link is anyway detected by sphinx.
+On Wed, 19 Jul 2023, Yin Fengwei wrote:
+> >>>>>>>>> Could this also happen against normal 4K page? I mean when user try to munlock
+> >>>>>>>>> a normal 4K page and this 4K page is isolated. So it become unevictable page?
+> >>>>>>>> Looks like it can be possible. If cpu 1 is in __munlock_folio() and
+> >>>>>>>> cpu 2 is isolating the folio for any purpose:
+> >>>>>>>>
+> >>>>>>>> cpu1                        cpu2
+> >>>>>>>>                             isolate folio
+> >>>>>>>> folio_test_clear_lru() // 0
+> >>>>>>>>                             putback folio // add to unevictable list
+> >>>>>>>> folio_test_clear_mlocked()
+> >>>>>                                folio_set_lru()
+> Let's wait the response from Huge and Yu. :).
 
-And it does not work:
+I haven't been able to give it enough thought, but I suspect you are right:
+that the current __munlock_folio() is deficient when folio_test_clear_lru()
+fails.
 
-maintainer-soc-clean-dts.rst:10: WARNING: unknown document:
-Documentation/process/maintainer-soc
+(Though it has not been reported as a problem in practice: perhaps because
+so few places try to isolate from the unevictable "list".)
 
-I also tried:
-maintainer-soc-clean-dts.rst:10: WARNING: unknown document:
-Documentation/process/maintainer-soc.rst
+I forget what my order of development was, but it's likely that I first
+wrote the version for our own internal kernel - which used our original
+lruvec locking, which did not depend on getting PG_lru first (having got
+lru_lock, it checked memcg, then tried again if that had changed).
 
+I was uneasy with the PG_lru aspect of upstream lru_lock implementation,
+but it turned out to work okay - elsewhere; but it looks as if I missed
+its implication when adapting __munlock_page() for upstream.
 
-Best regards,
-Krzysztof
+If I were trying to fix this __munlock_folio() race myself (sorry, I'm
+not), I would first look at that aspect: instead of folio_test_clear_lru()
+behaving always like a trylock, could "folio_wait_clear_lru()" or whatever
+spin waiting for PG_lru here?
 
+Hugh
