@@ -2,138 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19EAD759FFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB12275A006
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbjGSUif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41290 "EHLO
+        id S230517AbjGSUj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbjGSUid (ORCPT
+        with ESMTP id S229530AbjGSUjZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:38:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25EE71FD5;
-        Wed, 19 Jul 2023 13:38:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 655E761807;
-        Wed, 19 Jul 2023 20:38:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5790C433C7;
-        Wed, 19 Jul 2023 20:38:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689799110;
-        bh=MX1OE5fjXcKD7FNhNvGIrSI3FvsSGAQiIhW5RAzciLU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=UqeFX6fDaD8ZBU4DrJqo6mibQqK/FIOJYQTZEX0Oo4lnUVX100DG0WoSKqd/vyJfj
-         cVzo4ouC7DEMEGXpPCLvrHLXOCLPBy8qNH2KFqv8qlHxQS9EsGauvOTC78VQVyWJjY
-         +4O1grFVx5Zk8H41nn8b+MSWNBFNJTzMV4BLyWFJKTLahsP6eAgvDY0hzNaPBUZAc4
-         Hl3Q72jryEOXhIUSehz1txWRmloP1awPmEtX6uGXgYb38i9G0AwKAXiTnI1W5k7P8F
-         pvsu1Z0DHh2NnIQ+jPkHsikyF+Pfwf4QQEa0sq63wyQAoaGyuYOgVFaXf7UKpD39R/
-         p05rmxOz8Q22Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 610E7CE0928; Wed, 19 Jul 2023 13:38:30 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 13:38:30 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH rcu 2/6] rcu: Clarify rcu_is_watching() kernel-doc comment
-Message-ID: <bebbfb7d-35c4-4edf-bfa2-5a6224c17966@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
- <20230717180317.1097590-2-paulmck@kernel.org>
- <a11d5ce7-5ee3-fbf7-9adb-4cfc805c6bb7@joelfernandes.org>
- <2e404769-67af-4240-b572-bd0808503486@paulmck-laptop>
- <998db46d-9c76-a3c5-e7c5-b7adf1770352@joelfernandes.org>
+        Wed, 19 Jul 2023 16:39:25 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE73FD;
+        Wed, 19 Jul 2023 13:39:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689799164; x=1721335164;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=/eyxXxZ9T5eaCw0tKETLUSNQkftiddWXSmwZU2ySHLo=;
+  b=ZNrTSBNO6dUMuONqby5qnGSi2gJxrbYA6EMem0TG++Ez6rVFFSfgjx0h
+   yDtgB7RRGFOENcmJkQuZoLlaksnKqD/1oc1Cy6Kn2qEFUIXQBaZPQ/pLZ
+   RtxphSPFjyPvS02C7xrmNXUKenHpQumbrLdYWVy1bDV3fU6MaeroWIJY8
+   GldlNd5ALO2+x2hdJmZrtsFcsdwpanI3XDruv8rfXPBsXLsa2adkd3hNt
+   2L3iTApxaYoqNOoElJ1pJvt2VKDNwcZL42tWki98y85+jOm0njvS9nRMc
+   6bZV0eRy1+RJ4OBLg19wx6KwN1S92CBH1UjDfj09PUEdWY6JeXlmF5Faa
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="346869278"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="346869278"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 13:39:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="848172221"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="848172221"
+Received: from vijayakr-mobl2.amr.corp.intel.com (HELO [10.212.182.233]) ([10.212.182.233])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 13:39:23 -0700
+Message-ID: <53d5eeb3-5a13-3663-57a1-e927c4c369b8@linux.intel.com>
+Date:   Wed, 19 Jul 2023 13:39:23 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <998db46d-9c76-a3c5-e7c5-b7adf1770352@joelfernandes.org>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH 2/2] cxl/pci: Fix appropriate checking for _OSC while
+ handling CXL RAS registers
+Content-Language: en-US
+To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-cxl@vger.kernel.org
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, oohall@gmail.com,
+        Lukas Wunner <lukas@wunner.de>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Ben Widawsky <bwidawsk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Terry Bowman <terry.bowman@amd.com>,
+        Robert Richter <rrichter@amd.com>
+References: <20230719192313.38591-1-Smita.KoralahalliChannabasappa@amd.com>
+ <20230719192313.38591-3-Smita.KoralahalliChannabasappa@amd.com>
+From:   Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20230719192313.38591-3-Smita.KoralahalliChannabasappa@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 09:56:38PM -0400, Joel Fernandes wrote:
-> Hi Paul,
-> 
-> On 7/18/23 14:12, Paul E. McKenney wrote:
-> > On Tue, Jul 18, 2023 at 08:52:30AM -0400, Joel Fernandes wrote:
-> > > Hi Paul,
-> > > 
-> > > On 7/17/23 14:03, Paul E. McKenney wrote:
-> > > > Make it clear that this function always returns either true or false
-> > > > without other planned failure modes.
-> > > > 
-> > > > Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > ---
-> > > >    kernel/rcu/tree.c | 12 ++++++++----
-> > > >    1 file changed, 8 insertions(+), 4 deletions(-)
-> > > > 
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > index 1449cb69a0e0..fae9b4e29c93 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -679,10 +679,14 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
-> > > >    /**
-> > > >     * rcu_is_watching - see if RCU thinks that the current CPU is not idle
-> > > 
-> > > Would it be better to modify the 'not idle' to 'not idle from an RCU
-> > > viewpoint'? This matches the comments in ct_nmi_enter() as well.
-> > 
-> > We have the "if RCU thinks that" earlier.
-> > 
-> > But maybe something like this?
-> > 
-> >   * rcu_is_watching - RCU read-side critical sections permitted on current CPU?
-> > 
-> 
-> Yes, that's better.
-> 
-> > > >     *
-> > > > - * Return true if RCU is watching the running CPU, which means that this
-> > > > - * CPU can safely enter RCU read-side critical sections.  In other words,
-> > > > - * if the current CPU is not in its idle loop or is in an interrupt or
-> > > > - * NMI handler, return true.
-> > > > + * Return @true if RCU is watching the running CPU and @false otherwise.
-> > > > + * An @true return means that this CPU can safely enter RCU read-side
-> > > > + * critical sections.
-> > > > + *
-> > > > + * More specifically, if the current CPU is not deep within its idle
-> > > > + * loop, return @true.  Note that rcu_is_watching() will return @true if
-> > > > + * invoked from an interrupt or NMI handler, even if that interrupt or
-> > > > + * NMI interrupted the CPU while it was deep within its idle loop.
-> > > 
-> > > But it is more than the idle loop, for ex. NOHZ_FULL CPUs with single task
-> > > running could be idle from RCU's viewpoint? Could that be clarified more?
-> > 
-> > Perhaps something like this?
-> > 
-> >   * Although calls to rcu_is_watching() from most parts of the kernel
-> >   * will return @true, there are important exceptions.  For example, if the
-> >   * current CPU is deep within its idle loop, in kernel entry/exit code,
-> >   * or offline, rcu_is_watching() will return @false.
-> > 
-> > (Where nohz_full CPUs are covered by kernel entry/exit code.)
-> 
-> To me, "kernel exit" does not immediately make the nohz_full CPU case
-> obvious. But yes, your suggestion is an improvement so we can go with that.
-> :)
-> 
-> Also because we agree on the changes, for next revision:
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Very good, thank you!  The update should appear shortly.  For some
-definition of "shortly".  ;-)
 
-							Thanx, Paul
+On 7/19/23 12:23 PM, Smita Koralahalli wrote:
+> According to Section 9.17.2, Table 9-26 of CXL Specification [1], owner
+> of AER should also own CXL Protocol Error Management as there is no
+> explicit control of CXL Protocol error. And the CXL RAS Cap registers
+> reported on Protocol errors should check for AER _OSC rather than CXL
+> Memory Error Reporting Control _OSC.
+> 
+> The CXL Memory Error Reporting Control _OSC specifically highlights
+> handling Memory Error Logging and Signaling Enhancements. These kinds of
+> errors are reported through a device's mailbox and can be managed
+> independently from CXL Protocol Errors.
+
+Does it fix any issue? If yes, please include that in the commit log.
+
+Since you are removing some change, maybe it needs Fixes: tag?
+> 
+> [1] Compute Express Link (CXL) Specification, Revision 3.1, Aug 1 2022.
+> 
+> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+> ---
+>  drivers/cxl/pci.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+> index 1cb1494c28fe..44a21ab7add5 100644
+> --- a/drivers/cxl/pci.c
+> +++ b/drivers/cxl/pci.c
+> @@ -529,7 +529,6 @@ static int cxl_pci_setup_regs(struct pci_dev *pdev, enum cxl_regloc_type type,
+>  
+>  static int cxl_pci_ras_unmask(struct pci_dev *pdev)
+>  {
+> -	struct pci_host_bridge *host_bridge = pci_find_host_bridge(pdev->bus);
+>  	struct cxl_dev_state *cxlds = pci_get_drvdata(pdev);
+>  	void __iomem *addr;
+>  	u32 orig_val, val, mask;
+> @@ -541,9 +540,9 @@ static int cxl_pci_ras_unmask(struct pci_dev *pdev)
+>  		return 0;
+>  	}
+>  
+> -	/* BIOS has CXL error control */
+> -	if (!host_bridge->native_cxl_error)
+> -		return -ENXIO;
+> +	/* BIOS has PCIe AER error control */
+> +	if (!pcie_aer_is_native(pdev))
+> +		return 0;
+>  
+>  	rc = pcie_capability_read_word(pdev, PCI_EXP_DEVCTL, &cap);
+>  	if (rc)
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
