@@ -2,62 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5E175A0D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 23:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DF575A0DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 23:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbjGSV5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 17:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39132 "EHLO
+        id S229981AbjGSV5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 17:57:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjGSV5F (ORCPT
+        with ESMTP id S230020AbjGSV5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 17:57:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ACB11FD9;
-        Wed, 19 Jul 2023 14:57:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F305961839;
-        Wed, 19 Jul 2023 21:57:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57EBDC433C7;
-        Wed, 19 Jul 2023 21:57:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689803823;
-        bh=ZLQvNTjEVCYzwSTjbgk264AUntpBOx9X8u3UOjdAqKw=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=b1JcMva3tTkCUdD/k+a7mePggLAQhMvMgi+wi/zhT+GVmQ0JWwodtMkuW1mJEOkjU
-         KtEMg5o/+MsPYRgC+SVUuwz3igwzC4ED8/WEfQM+mBUBdxK1VCkwoL4QxhSIOsVgad
-         n8Jk43vNe2FRKZ3qlfmiC12oGMAFVq8+sIMG9oyTO7qpJKD4lzM4xQ48iphb7Vx6xa
-         OV0dXOK8IjjBdMx+GUSrek/OWsYUAJP+8L2rT2eGxZhQ5u6uaTncKi3OAzBsuUFEn8
-         kr2nGJGII4McNpE5A8g5EMHNDvRqbGln81SuD/1cf32OY4OnlgT0TSvdmmb9JaUcw6
-         oN+vsCZ4qaU6Q==
-Message-ID: <5a3acd0897f09bf38d95106de3c2a5c3.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230627140145.729609-1-colin.i.king@gmail.com>
-References: <20230627140145.729609-1-colin.i.king@gmail.com>
-Subject: Re: [PATCH][next] clk: lmk04832: clkout: make read-only const arrays static
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Colin Ian King <colin.i.king@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org
-Date:   Wed, 19 Jul 2023 14:57:01 -0700
-User-Agent: alot/0.10
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 19 Jul 2023 17:57:30 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F6321FD9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 14:57:29 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-c64ef5bde93so104326276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 14:57:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689803848; x=1690408648;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=d3Ht7L7dsVm5KYjvx2fbdO1jyBq4m055oYZLq1pDnXs=;
+        b=Ra8+xJNP/sYgyLpaDBs1F288TIvL1tnzWLHFmnzM7/dQqrNn5YcbKDgTbFtPDZD/ha
+         K8MFOKEa+OQyC87XpoOeppzZtaRCkoHPRaR+wC1YoKWuo1BAl875kJyfty5HOfA/hD9+
+         DfLJhptuW65V2HY78jzcImh3piPxWnQw9n9gcwz97bbRazS7jcez6cAmtuqzFBjG12+w
+         mtv2cEj7lNF4fu2yhTlpdewK1595/OJ//S3L+ici78yhdckGjZky1+pC4CyEGkAidHWm
+         IBziZwUK+XXVoHgvync2hHaby+uusAd+25S0ybYENq7qI1Wh9pAbi7wcu7J7bvZIarxv
+         g/Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689803848; x=1690408648;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=d3Ht7L7dsVm5KYjvx2fbdO1jyBq4m055oYZLq1pDnXs=;
+        b=GaUnipB2dsz3JA/+rXBv96n1yUJPDtfxSFL0/RMW8wZSACsuuB9KyqtURgbUOI9wCk
+         Wa9v5gE6iSwjY4GCbZ8h/I5aCasJMNJUwxe76gd+BNxJRkIrHHNbc7oT6r02ynJ9c2J7
+         2mStDM769JF4rk3gG9Cbn7TlIUwADKhXr6hOEBMovBlCWw7ZNf8EjNsqEhTQ+zXEk8Lu
+         jlS8KBMIkyVxCgRqn0TW3c6ifXKw4FUDXQVPOIoArD0i9t99sCPRBfXzBz+oNeXbjCfG
+         pgky8SrSckJW9Kcnvwh03Qp33RzT98lN0abzRasx91bCD+xf/u6i95hMuslVH1FJybqL
+         Ywgw==
+X-Gm-Message-State: ABy/qLZtuziXBCBUdN5oDuS4rx2/kqmwBglWjOqrXxtn+vg9VgQ85UGM
+        1hl97ar4suf2H7CmIHSvLYtTjc1grJPd
+X-Google-Smtp-Source: APBJJlFhBf7IMPO6XHr8iP300gZpPf9iE5qcascfXqirJteE6s/G8oXQ/YGVmqERwG2BAFqqgzagvO/iZ6Qg
+X-Received: from rananta-linux.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:22b5])
+ (user=rananta job=sendgmr) by 2002:a5b:352:0:b0:cc7:b850:7f2 with SMTP id
+ q18-20020a5b0352000000b00cc7b85007f2mr30000ybp.5.1689803848368; Wed, 19 Jul
+ 2023 14:57:28 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 21:57:25 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230719215725.799162-1-rananta@google.com>
+Subject: [PATCH v2] KVM: arm64: Fix hardware enable/disable flows for pKVM
+From:   Raghavendra Rao Ananta <rananta@google.com>
+To:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>, Fuad Tabba <tabba@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Raghavendra Rao Anata <rananta@google.com>,
+        kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Colin Ian King (2023-06-27 07:01:45)
-> Don't populate the arrays on the stack, instead make them static.
+When running in protected mode, the hyp stub is disabled after pKVM is
+initialized, meaning the host cannot enable/disable the hyp at
+runtime. As such, kvm_arm_hardware_enabled is always 1 after
+initialization, and kvm_arch_hardware_enable() never enables the vgic
+maintenance irq or timer irqs.
 
-What improves with this patch?
+Unconditionally enable/disable the vgic + timer irqs in the respective
+calls, instead relying on the percpu bookkeeping in the generic code
+to keep track of which cpus have the interrupts unmasked.
+
+Fixes: 466d27e48d7c ("KVM: arm64: Simplify the CPUHP logic")
+Reported-by: Oliver Upton <oliver.upton@linux.dev>
+Suggested-by: Oliver Upton <oliver.upton@linux.dev>
+Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+---
+ arch/arm64/kvm/arm.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
+
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index c2c14059f6a8..010ebfa69650 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -1867,14 +1867,10 @@ static void _kvm_arch_hardware_enable(void *discard)
+ 
+ int kvm_arch_hardware_enable(void)
+ {
+-	int was_enabled = __this_cpu_read(kvm_arm_hardware_enabled);
+-
+ 	_kvm_arch_hardware_enable(NULL);
+ 
+-	if (!was_enabled) {
+-		kvm_vgic_cpu_up();
+-		kvm_timer_cpu_up();
+-	}
++	kvm_vgic_cpu_up();
++	kvm_timer_cpu_up();
+ 
+ 	return 0;
+ }
+@@ -1889,10 +1885,8 @@ static void _kvm_arch_hardware_disable(void *discard)
+ 
+ void kvm_arch_hardware_disable(void)
+ {
+-	if (__this_cpu_read(kvm_arm_hardware_enabled)) {
+-		kvm_timer_cpu_down();
+-		kvm_vgic_cpu_down();
+-	}
++	kvm_timer_cpu_down();
++	kvm_vgic_cpu_down();
+ 
+ 	if (!is_protected_kvm_enabled())
+ 		_kvm_arch_hardware_disable(NULL);
+-- 
+2.41.0.487.g6d72f3e995-goog
+
