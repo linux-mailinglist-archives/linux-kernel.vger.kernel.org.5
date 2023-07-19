@@ -2,126 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14DDB759711
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7017596E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbjGSNfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 09:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
+        id S231334AbjGSNdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 09:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbjGSNfx (ORCPT
+        with ESMTP id S230509AbjGSNdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 09:35:53 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C0D113
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:35:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689773752; x=1721309752;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=wfPSbk3KPqoC/jBdA7CzlHdvMnbUfG0A2+TB1XSaqrw=;
-  b=ebcNPHwM3guXcW9Ttxw8qH0Ny8ucoyZHrZSCalWp0733BXYZMOblpkDq
-   BozoGMUEg++UbS0kexO8ltYzns/lQtQ5HAwLd7bzuFTGqoKWo/t/bHW+6
-   CZ4DXAOG9+157D3OktbI/XMoMozmRQmq4WwB6cQ2/VybO14FqbqZWTYum
-   CPz8IS1ABeH1SbBZkq7q2tqik4ddb580VQmT4doRrSUoB3EFIXk0swpco
-   XXO/vOuaAnxYZI14iuaGkIN5fqXdkHzglQTfth8VEOBSSq0J0untTJezH
-   m+MRWpA59tQFdIntj6j+Q9L+RVEmuQjybuSAu4GeqgWNcJsyq0Up0bEtN
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="397324606"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="397324606"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 06:35:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="674297037"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="674297037"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 06:35:48 -0700
-Date:   Wed, 19 Jul 2023 16:32:28 +0300 (EEST)
-From:   Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-cc:     Takashi Iwai <tiwai@suse.de>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Alsa-devel <alsa-devel@alsa-project.org>,
-        sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Matthew Auld <matthew.auld@intel.com>
-Subject: Re: [PATCH 6/7] ASoC: SOF: Intel: Remove deferred probe for SOF
-In-Reply-To: <66d22637-069f-5262-2249-6041ef9d4614@linux.intel.com>
-Message-ID: <alpine.DEB.2.22.394.2307191613460.3532114@eliteleevi.tm.intel.com>
-References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com> <20230718084522.116952-7-maarten.lankhorst@linux.intel.com> <alpine.DEB.2.22.394.2307181922160.3532114@eliteleevi.tm.intel.com> <874jm0modf.wl-tiwai@suse.de>
- <66d22637-069f-5262-2249-6041ef9d4614@linux.intel.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+        Wed, 19 Jul 2023 09:33:01 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69FF610A;
+        Wed, 19 Jul 2023 06:32:58 -0700 (PDT)
+X-QQ-mid: bizesmtp79t1689773568tihiumin
+Received: from linux-lab-host.localdomain ( [119.123.130.39])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 19 Jul 2023 21:32:47 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: vrqOr+ppv0uPJA1yEKpWWkVnlUVqK6PuuvjdcyUHTrqkd/pqeEmMWxHZikDYj
+        CkZ8/RJXIHvgLJf2jqgOcGTFxCd/FQ5bl379HoWrd8vkibnH47pU5q0kP+sxxDjREvmZU+e
+        be2EPxscjn2d7Dfo95eemVORbMsNqsAUq5tF5GbGkP5HsHyifNSJktBae+cshFgImccttiP
+        47/eb2g/JI2ocs7p12XfFJuF0kjb2M2KZRL7Ly1g1lw/eOebxaWOu/oZoA/re3h4LpsrvO2
+        jkRTyhWJYBER4Mk/Ustf6yzF1N4ex+pClTbjBlYQqEP6IRtHjD+qNfNume0CK7azkie0Tyr
+        cJmGlgv+Ywb02/GEHq9Pt9+CZN8PGY7gnG7AVQ+U/bJJ/ycN9CF698Aq+ekGQbC0vx2kUfv
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 3748257128951603751
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     thomas@t-8ch.de, arnd@arndb.de, falcon@tinylab.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH v2 14/14] selftests/nolibc: tinyconfig: add support for 32/64-bit powerpc
+Date:   Wed, 19 Jul 2023 21:32:46 +0800
+Message-Id: <15b47c6901f79a22b985a53efeae71dc7b172a5f.1689759351.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1689759351.git.falcon@tinylab.org>
+References: <cover.1689759351.git.falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-318106570-2122726055-1689773555=:3532114"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Firstly, add extra config files for powerpc, powerpc64le and powerpc64.
 
----318106570-2122726055-1689773555=:3532114
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Second, QEMU_TIMEOUT is configured as 60 seconds for powerpc to allow
+quit qemu-system-ppc even if poweroff fails. In normal host machine, ~20
+seconds may be enough for boot+test+poweroff, but 60 seconds is used
+here to gurantee it at least finish even in a very slow host machine or
+the host machine is too busy. Both powerpc64le and powerpc64 can
+poweroff normally, no need to configure QEMU_TIMEOUT for them.
 
-Hi,
+It is able to use tinyconfig as the minimal config target to speed up
+the run target of powerpc:
 
-On Wed, 19 Jul 2023, Maarten Lankhorst wrote:
+    $ for arch in powerpc powerpc64 powerpc64le; do \
+        rm -rf $PWD/kernel-$arch; \
+        mkdir -p $PWD/kernel-$arch; \
+        make tinyconfig run XARCH=$arch O=$PWD/kernel-$arch | grep status ; \
+      done
 
-> On Tue, 18 Jul 2023 19:04:41 +0200, Kai Vehmanen wrote:
->> My only bigger concern is corner cases where the display PCI device is 
-on 
->> the bus and visible to kernel, but for some reason there is no working 
->> driver in the system or it is disabled.
-> 
-> Yeah, I have no answer for this. My guess is that in an ideal world, the optional features
-> related to HDMI outputs would be put in a separate sub-driver, which could -EPROBE_DEFER.
-> Only when this driver loads, features related to display will work, but the main audio driver
-> could still load.
+rerun with architecture specific run.out (for later report):
 
-in longer term, we have ongoing work in SOF to allow exposing multiple 
-cards (e.g. to have a separate card for HDMI/DP PCM devices), and we
-are continuously working at improving the data we get from ACPI to 
-have less guesswork in the driver. But this really doesn't help in the 
-shortterm and/or cover all scenarios.
+    $ for arch in powerpc powerpc64 powerpc64le; do \
+        mkdir -p $PWD/kernel-$arch; \
+        make rerun XARCH=$arch O=$PWD/kernel-$arch RUN_OUT=$PWD/run.$arch.out | grep status ; \
+      done
 
-So for now, this is legacy we just need to deal with. OTOH, I do agree
-that...
+report:
 
-> A module option to snd_hdac_i915_init would probably be the least of all evils here.
-> 
-> I see the removal of the 60 second timeout as a good thing regardless. :-) Usually when nomodeset is used, it's just for safe
-> mode.
-> 
-> With the addition of  the xe driver, blindly modprobing i915 will fall apart regardless.
+    $ for arch in powerpc powerpc64 powerpc64le; do \
+        make report RUN_OUT=$PWD/run.$arch.out | grep status ; \
+      done
 
-The modprobing of i915 from the audio driver, has always felt a bit 
-out-of-place, and with the xe driver, this simply won't scale anymore.
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile                   | 1 +
+ tools/testing/selftests/nolibc/configs/powerpc.config     | 3 +++
+ tools/testing/selftests/nolibc/configs/powerpc64.config   | 3 +++
+ tools/testing/selftests/nolibc/configs/powerpc64le.config | 4 ++++
+ 4 files changed, 11 insertions(+)
+ create mode 100644 tools/testing/selftests/nolibc/configs/powerpc64.config
+ create mode 100644 tools/testing/selftests/nolibc/configs/powerpc64le.config
 
-The test results so far look good and this patchset works ok even if some 
-of the more complex multi-GPU configurations we have, so I think with a 
-module option to snd_hdac_i915, I'd be ready to go with this.
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index f42782fa78a9..b01346323e35 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -103,6 +103,7 @@ QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=N
+ QEMU_ARGS            = $(QEMU_ARGS_$(XARCH)) $(QEMU_ARGS_EXTRA)
+ 
+ # QEMU_TIMEOUT: some architectures can not poweroff normally, especially for tinyconfig
++QEMU_TIMEOUT_powerpc     = 60
+ QEMU_TIMEOUT             = $(QEMU_TIMEOUT_$(XARCH))
+ 
+ # OUTPUT is only set when run from the main makefile, otherwise
+diff --git a/tools/testing/selftests/nolibc/configs/powerpc.config b/tools/testing/selftests/nolibc/configs/powerpc.config
+index b1975f8253f7..29123cee14c4 100644
+--- a/tools/testing/selftests/nolibc/configs/powerpc.config
++++ b/tools/testing/selftests/nolibc/configs/powerpc.config
+@@ -1,3 +1,6 @@
++CONFIG_COMPAT_32BIT_TIME=y
++CONFIG_PPC_PMAC=y
++CONFIG_PPC_OF_BOOT_TRAMPOLINE=y
+ CONFIG_SERIAL_PMACZILOG=y
+ CONFIG_SERIAL_PMACZILOG_TTYS=y
+ CONFIG_SERIAL_PMACZILOG_CONSOLE=y
+diff --git a/tools/testing/selftests/nolibc/configs/powerpc64.config b/tools/testing/selftests/nolibc/configs/powerpc64.config
+new file mode 100644
+index 000000000000..4e17f0cdb99f
+--- /dev/null
++++ b/tools/testing/selftests/nolibc/configs/powerpc64.config
+@@ -0,0 +1,3 @@
++CONFIG_PPC64=y
++CONFIG_PPC_POWERNV=y
++CONFIG_HVC_OPAL=y
+diff --git a/tools/testing/selftests/nolibc/configs/powerpc64le.config b/tools/testing/selftests/nolibc/configs/powerpc64le.config
+new file mode 100644
+index 000000000000..713b227f506f
+--- /dev/null
++++ b/tools/testing/selftests/nolibc/configs/powerpc64le.config
+@@ -0,0 +1,4 @@
++CONFIG_PPC64=y
++CONFIG_PPC_POWERNV=y
++CONFIG_HVC_OPAL=y
++CONFIG_CPU_LITTLE_ENDIAN=y
+-- 
+2.25.1
 
-Br, Kai
----318106570-2122726055-1689773555=:3532114--
