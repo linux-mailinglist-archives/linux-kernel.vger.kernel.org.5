@@ -2,132 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCB07597CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C1C7597D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbjGSOLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 10:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45192 "EHLO
+        id S231509AbjGSOMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbjGSOLW (ORCPT
+        with ESMTP id S230194AbjGSOMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:11:22 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4399E42;
-        Wed, 19 Jul 2023 07:11:19 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 6595F12007A;
-        Wed, 19 Jul 2023 17:11:17 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 6595F12007A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1689775877;
-        bh=bLDHWlqd+9J/3Q27qKAYWbhXTkIrXZ9utoTJw3eZAd8=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-        b=PwSykd0PZrBLwQYuZ8SUlmv7SUWrN/+vEAAwid/jh8Je1gRYVfsD4dvac9sJE6ckR
-         ew0OH1vo3tIPQSFlTp5NfiRSKD65Xc5/wM47N0O8hEfJeEErg9hVQGyHPsiyRlQJWp
-         pYtawhiM5aPl5IPg6yHL7vSq7ArrBmsMclz3t7Vp6z/NuVTwvKOj/eEC3JlPdGKr6i
-         bb3z8fFV0Z7cZbQRE95u/5ajlO5Ku4IP4nobm2GAfr9EQPPJl/0dizSxvnbWMXOxzY
-         awIiI4XTbG4U5neNphUHPopIMBzTwtGgJGO0tUvCjMXNmfLkFAIqmzI6E1/HDPhTE8
-         00U2IEp3ZXsng==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 19 Jul 2023 10:12:52 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F89610B
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:12:50 -0700 (PDT)
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed, 19 Jul 2023 17:11:17 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 19 Jul
- 2023 17:11:17 +0300
-Date:   Wed, 19 Jul 2023 17:11:11 +0300
-From:   Dmitry Rokosov <ddrokosov@sberdevices.ru>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC:     zelong dong <zelong.dong@amlogic.com>, <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-amlogic@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <kelvin.zhang@amlogic.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: reset: Add compatible and DT
- bindings for Amlogic C3 Reset Controller
-Message-ID: <20230719141111.ykg2pfv4dmyvutqm@CAB-WSD-L081021>
-References: <20230719060954.14864-1-zelong.dong@amlogic.com>
- <20230719060954.14864-2-zelong.dong@amlogic.com>
- <20230719115014.2har4sool7d5edcn@CAB-WSD-L081021>
- <c6fd4df2-97ab-a830-f466-2d09f5b38dfc@linaro.org>
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 3F51D3F20D
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 14:12:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1689775967;
+        bh=fTUvgetUaqT3wHGPq5i4Fev7+8uAQkZMBnoHSdm3l3w=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=YO80lpqG0A4vA4ZBUJtRcedkWFRu0+cz/UmcUipFJpLW2HbO31wCSL9cgvYuxRuOt
+         MO7zV8bbR7eBUzAr2GDu33XcycsRr3CVkz5HqlWq+SXccD29gHL/W3N23kbWwupCWB
+         bZycLLMpWhJp4J+/99n43pWes2SnqAGclu9mWpwCxxjSLl7fVJ9BIkfYpeLb3w+iYx
+         aODv30bsKJxViZArfXSH8yeND8ComojwzJRPFqd2W3eEjzTNLU1uggT/vdo9d9Vw7J
+         WCMRFa36DEI4pC00wykmi3QZVVAMYENLt7sf35HlEn/iQBSr0ByVScy5JgLAgvAU56
+         GlUqQL21YoIKw==
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-403c7ffd25eso75057001cf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:12:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689775965; x=1690380765;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fTUvgetUaqT3wHGPq5i4Fev7+8uAQkZMBnoHSdm3l3w=;
+        b=G9jBXGHJgA1onXzVHhXp3IkWcDi/dXHcUUNwST8nyU2PM0x8J6hO6xg5eqGf1RVpLd
+         5PotcwFG4ZNJA1h5T2bOp5ai2Cnp/dfsLoxmCuqD8N82ev/54h5a0ayci4eQxDuR8+qr
+         raC2+7OmTSIpngUDnwNroFSlIEUHKTHh+s9LhPN5QOSqkGgcgnCaJd0wIDjeH7J1C1OQ
+         EvFu6bvt9iWrNEWk5ybYfMQcNlmGtIcO0hYqu7m1QdPBrH61z6SQaIQ/w1fzge4dLgE7
+         DmCqfqe2bqZtaWg2K/4orkgi6a6yZOeqVkfEIRDnXLfwrPb2zxWDccigWJua4KJl3kRw
+         uv7w==
+X-Gm-Message-State: ABy/qLbeh6SVQZwOS4X3L5UVz8vJ3RuR8UnOb8YwgZZjWhJS7Ue/5abL
+        e29xGdMV8wSICbYIvVQ6KqCxukss4cDrAg07uSk6+ti0C8/by4Y2blGTu3Y7kUYYMTo5PkV7PbS
+        EurVi236ePRbnKEevKWdnqamF/eUMyVZqwEdYIMYMvLNn9FNxxfDk1CLNMA==
+X-Received: by 2002:ac8:5a82:0:b0:3f9:cb01:9dae with SMTP id c2-20020ac85a82000000b003f9cb019daemr21215436qtc.50.1689775965101;
+        Wed, 19 Jul 2023 07:12:45 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEyqJAW0YcwGXzwaqtO+haPvbXa6TVCnEWDq/UNmAT5PINh4LZDlSHEpJIERRJmT2R7L69By/E3f/BC3H9q+ls=
+X-Received: by 2002:ac8:5a82:0:b0:3f9:cb01:9dae with SMTP id
+ c2-20020ac85a82000000b003f9cb019daemr21215415qtc.50.1689775964905; Wed, 19
+ Jul 2023 07:12:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <c6fd4df2-97ab-a830-f466-2d09f5b38dfc@linaro.org>
-User-Agent: NeoMutt/20220415
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 178725 [Jul 19 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: DDRokosov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 524 524 9753033d6953787301affc41bead8ed49c47b39d, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;sberdevices.ru:5.0.1,7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;www.kernel.org:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/07/19 13:07:00
-X-KSMG-LinksScanning: Clean, bases: 2023/07/19 13:07:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/19 10:42:00 #21641119
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230717205357.2779473-1-samuel.holland@sifive.com> <20230717205357.2779473-3-samuel.holland@sifive.com>
+In-Reply-To: <20230717205357.2779473-3-samuel.holland@sifive.com>
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Date:   Wed, 19 Jul 2023 16:12:28 +0200
+Message-ID: <CAJM55Z8Q-kGFKhFc57_Ew+0VsmBqwLrBAaiaiJ5zYdu_OG-wMg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] gpio: sifive: Allow building the driver as a module
+To:     Samuel Holland <samuel.holland@sifive.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 02:33:03PM +0200, Krzysztof Kozlowski wrote:
-> On 19/07/2023 13:50, Dmitry Rokosov wrote:
-> > On Wed, Jul 19, 2023 at 02:09:52PM +0800, zelong dong wrote:
-> >> From: Zelong Dong <zelong.dong@amlogic.com>
-> >>
-> >> Add new compatible and DT bindings for Amlogic C3 Reset Controller
-> >>
-> >> Signed-off-by: Zelong Dong <zelong.dong@amlogic.com>
-> >> ---
-> >>  .../bindings/reset/amlogic,meson-reset.yaml   |   1 +
-> >>  include/dt-bindings/reset/amlogic,c3-reset.h  | 119 ++++++++++++++++++
-> >>  2 files changed, 120 insertions(+)
-> > 
-> > As I understand it, updates to DT bindings documentation, as well as any
-> > DT bindings includes, should be submitted in separate patches, per the
-> > guidelines outlined in the following link:
-> > https://www.kernel.org/doc/html/latest/devicetree/bindings/submitting-patches.html#i-for-patch-submitters.
-> > 
-> > Krzysztof, Rob, and Conor, please correct me if I am mistaken.
-> 
-> And they are. What's wrong here?
+On Wed, 19 Jul 2023 at 08:26, Samuel Holland <samuel.holland@sifive.com> wrote:
+>
+> This can reduce the kernel image size in multiplatform configurations.
+>
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> ---
+>
+>  drivers/gpio/Kconfig       | 2 +-
+>  drivers/gpio/gpio-sifive.c | 4 +++-
+>  2 files changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+> index e382dfebad7c..1a8e8a8c85d6 100644
+> --- a/drivers/gpio/Kconfig
+> +++ b/drivers/gpio/Kconfig
+> @@ -564,7 +564,7 @@ config GPIO_SAMA5D2_PIOBU
+>           maintain their value during backup/self-refresh.
+>
+>  config GPIO_SIFIVE
+> -       bool "SiFive GPIO support"
+> +       tristate "SiFive GPIO support"
+>         depends on OF_GPIO
+>         select IRQ_DOMAIN_HIERARCHY
+>         select GPIO_GENERIC
+> diff --git a/drivers/gpio/gpio-sifive.c b/drivers/gpio/gpio-sifive.c
+> index 745e5f67254e..5941a817491c 100644
+> --- a/drivers/gpio/gpio-sifive.c
+> +++ b/drivers/gpio/gpio-sifive.c
+> @@ -277,4 +277,6 @@ static struct platform_driver sifive_gpio_driver = {
+>                 .of_match_table = sifive_gpio_match,
+>         },
+>  };
+> -builtin_platform_driver(sifive_gpio_driver)
+> +module_platform_driver(sifive_gpio_driver)
+> +
 
-Please accept my apologies for any confusion caused. Initially, I
-misunderstood that YAML documentation and device tree bindings includes
-should be kept separate.
+While you're at it maybe also add the MODULE_AUTHOR() and
+MODULE_DESCRIPTION() macros.
 
-As such, this patch includes modifications to both areas, namely
-bindings documentation and include/dt-bindings, but all of them are
-separate from driver part.
-
-In this case,
-
-Reviewed-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
-
--- 
-Thank you,
-Dmitry
+> +MODULE_LICENSE("GPL");
+> --
+> 2.40.1
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
