@@ -2,52 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 584B075966C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E45275966E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbjGSNTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 09:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45498 "EHLO
+        id S231145AbjGSNTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 09:19:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbjGSNS7 (ORCPT
+        with ESMTP id S229777AbjGSNTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 09:18:59 -0400
-Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B9B8119
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:18:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        Content-ID:Content-Description;
-        bh=7L+Xkt1Em2DaemKP30bcX/bfNhleDwpX/9tOCT336L4=; b=U4Cm0gWu1IAKrXYF/GNlt975nB
-        c4D6vwd57ekgrf2ZTFg8NYrSlSEFihb3WFyUDoaV/Qm94mTOqq+7SKhzEeiyypAg9JPQj0VlPJoJ3
-        2HJZ35jbGlOx6QY236ZXdtsV+uWvdXhqxnElXznKrswBKJ3Y3elAO9qG+bHs/ck4zjugDZyID0fsu
-        5XcJhod2BXu4tb26RPdCh7O9nrnUb0SMIeGKUFLaHTe/gWFjdphsNmU6SnDbbKy8RZw56Gw1s1rRp
-        X/GZ5ddcjjr26rS8nZ4lo1NgMtNZVesMMndI0xb+tjJLlgw2OglOD3+PxapXfjLeMyNQzu3Synfq6
-        LdFLWIPBfIUNVIKq+3r9b4CHmYbeWvQcemnMLr5zk14aaMGhGCkk1WefwGgMsll1DXgfWIFcRfL4f
-        En5WbUCFRwtXdaNdnvqonl98MSRL0/NyNuqObO4Rp5PZ9e/UIKGQuVnlOeKRK2HNDNw/lbJsptUAW
-        nZEqw5EVqDaGr9ewjVYOQzfZHGIaPrlLDgCQBVw2p2SHHBE0j0sWMjbly272WAo/kPNttgbZ8CES+
-        iETlW1cxbAT8fRKtvbVUxSkBaZvOmjQDdz/8Dpcg2Pdxc3kEtSPHyJ4uNCbkpQDu+XFpAxqnHKJPs
-        rHapZ2eGivRDGrBtJwNa72ebKGCwXOeJkbMnMqe5E=;
-From:   Christian Schoenebeck <linux_oss@crudebyte.com>
-To:     Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>
-Cc:     v9fs@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Robert Schwebel <r.schwebel@pengutronix.de>,
-        Eric Van Hensbergen <ericvh@kernel.org>
-Subject: Re: [PATCH v2 1/4] fs/9p: remove unnecessary and overrestrictive check
-Date:   Wed, 19 Jul 2023 15:18:33 +0200
-Message-ID: <5578264.lUQuLdSRdS@silver>
-In-Reply-To: <20230716-fixes-overly-restrictive-mmap-v2-1-147d6b93f699@kernel.org>
-References: <20230716-fixes-overly-restrictive-mmap-v2-0-147d6b93f699@kernel.org>
- <20230716-fixes-overly-restrictive-mmap-v2-1-147d6b93f699@kernel.org>
+        Wed, 19 Jul 2023 09:19:22 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30F9125;
+        Wed, 19 Jul 2023 06:19:20 -0700 (PDT)
+X-QQ-mid: bizesmtp70t1689772752tdo5hf5m
+Received: from linux-lab-host.localdomain ( [119.123.130.39])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 19 Jul 2023 21:19:11 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: +ynUkgUhZJmS7aWA1MF5mWbEkqg6YFGMNEdccEOgkkP+0XR/32r431zhxHhIH
+        Hm6hMRh0/leap3zvRmOxuJJLlaB5qN5xUbcd9P1qvuDZye3nmnSjCYhUFFJxGkB5XTDBjY+
+        AR2fbkznlPJNook9BF72hihBqGCX+HRhcvewGCyV+WbkJXG3RlA1iK5Jzt7Y/WvDKeF6S98
+        ihfAB+A9ljPFt9SpJy4A4nCM9TFUkxMXV3EQ9gva1fz3FbIbyyB1GuuxsC6p59aZMHL1obO
+        KkMEwmqgmhCANuIvgmAj4HLglhTh5JggccgjebfxeVNscCSLLwKgTz5XIhnV2TChxjwab8G
+        oVTgn9VvMG3zZxxx4+EMFD/QNgAFGn+04JxudtBJaElu9wHVBs5sdwkt7EdYoHCv5cSjsaz
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 16744309574529494032
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     thomas@t-8ch.de, arnd@arndb.de, falcon@tinylab.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH v2 02/14] selftests/nolibc: add macros to enhance maintainability
+Date:   Wed, 19 Jul 2023 21:19:10 +0800
+Message-Id: <0415392c9c2b0a7249563abd79599a475019b508.1689759351.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1689759351.git.falcon@tinylab.org>
+References: <cover.1689759351.git.falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,34 +51,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, July 18, 2023 10:50:15 PM CEST Eric Van Hensbergen wrote:
-> This eliminates a check for shared that was overrestrictive and
-> duplicated a check in generic_file_readonly_mmap.
-> 
-> Reviewed-by: Dominique Martinet <asmadeus@codewreck.org>
-> Reviewed-by: Christian Schoenebeck <linux_oss@crudebyte.com>
-> Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
-> ---
->  fs/9p/vfs_file.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
-> index 2996fb00387fa..bda3abd6646b8 100644
-> --- a/fs/9p/vfs_file.c
-> +++ b/fs/9p/vfs_file.c
-> @@ -506,8 +506,6 @@ v9fs_file_mmap(struct file *filp, struct vm_area_struct *vma)
->  
->  	if (!(v9ses->cache & CACHE_WRITEBACK)) {
->  		p9_debug(P9_DEBUG_CACHE, "(no mmap mode)");
+The kernel targets share the same kernel make operations, the same
+.config file, the same kernel image, add MAKE_KERNEL, KERNEL_CONFIG and
+KERNEL_IMAGE for them.
 
-"(r/o mmap mode)" ?
+Many targets share the same logging related settings, let's add common
+variables RUN_OUT, LOG_OUT and REPORT_RUN_OUT for them.
 
-> -		if (vma->vm_flags & VM_MAYSHARE)
-> -			return -ENODEV;
->  		invalidate_inode_pages2(filp->f_mapping);
->  		return generic_file_readonly_mmap(filp, vma);
->  	}
-> 
-> 
+The qemu run/rerun targets share the same qemu system run command, add
+QEMU_SYSTEM_RUN for them.
 
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile | 41 ++++++++++++++++---------
+ 1 file changed, 27 insertions(+), 14 deletions(-)
+
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index 0cd17de2062c..8c531518bb9f 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -166,45 +166,58 @@ endif
+ libc-test: nolibc-test.c
+ 	$(QUIET_CC)$(CC) -o $@ $<
+ 
++# common macros for logging
++RUN_OUT = $(CURDIR)/run.out
++LOG_OUT = > "$(RUN_OUT)"
++REPORT_RUN_OUT = $(REPORT) "$(RUN_OUT)"
++
+ # local libc-test
+ run-libc-test: libc-test
+-	$(Q)./libc-test > "$(CURDIR)/run.out" || :
+-	$(Q)$(REPORT) $(CURDIR)/run.out
++	$(Q)./libc-test $(LOG_OUT) || :
++	$(Q)$(REPORT_RUN_OUT)
+ 
+ # local nolibc-test
+ run-nolibc-test: nolibc-test
+-	$(Q)./nolibc-test > "$(CURDIR)/run.out" || :
+-	$(Q)$(REPORT) $(CURDIR)/run.out
++	$(Q)./nolibc-test $(LOG_OUT) || :
++	$(Q)$(REPORT_RUN_OUT)
+ 
+ # qemu user-land test
+ run-user: nolibc-test
+-	$(Q)qemu-$(QEMU_ARCH) ./nolibc-test > "$(CURDIR)/run.out" || :
+-	$(Q)$(REPORT) $(CURDIR)/run.out
++	$(Q)qemu-$(QEMU_ARCH) ./nolibc-test $(LOG_OUT) || :
++	$(Q)$(REPORT_RUN_OUT)
+ 
+ initramfs: nolibc-test
+ 	$(QUIET_MKDIR)mkdir -p initramfs
+ 	$(call QUIET_INSTALL, initramfs/init)
+ 	$(Q)cp nolibc-test initramfs/init
+ 
++# common macros for kernel targets
++MAKE_KERNEL   = $(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE)
++KERNEL_CONFIG = $(srctree)/.config
++KERNEL_IMAGE  = $(srctree)/$(IMAGE)
++
+ defconfig:
+-	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) mrproper $(DEFCONFIG) prepare
++	$(Q)$(MAKE_KERNEL) mrproper $(DEFCONFIG) prepare
+ 
+ extconfig:
+-	$(Q)$(srctree)/scripts/kconfig/merge_config.sh -O "$(srctree)" -m "$(srctree)/.config" $(foreach c,$(EXTCONFIG),$(wildcard $(CURDIR)/configs/$c))
+-	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) KCONFIG_ALLCONFIG="$(srctree)/.config" allnoconfig
++	$(Q)$(srctree)/scripts/kconfig/merge_config.sh -O "$(srctree)" -m "$(KERNEL_CONFIG)" $(foreach c,$(EXTCONFIG),$(wildcard $(CURDIR)/configs/$c))
++	$(Q)$(MAKE_KERNEL) KCONFIG_ALLCONFIG="$(KERNEL_CONFIG)" allnoconfig
+ 
+ kernel: initramfs
+-	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) $(IMAGE_NAME) CONFIG_INITRAMFS_SOURCE=$(CURDIR)/initramfs
++	$(Q)$(MAKE_KERNEL) $(IMAGE_NAME) CONFIG_INITRAMFS_SOURCE=$(CURDIR)/initramfs
++
++# common macros for qemu run/rerun targets
++QEMU_SYSTEM_RUN = qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(KERNEL_IMAGE)" -serial stdio $(QEMU_ARGS)
+ 
+ # run the tests after building the kernel
+ run: kernel
+-	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(srctree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
+-	$(Q)$(REPORT) $(CURDIR)/run.out
++	$(Q)$(QEMU_SYSTEM_RUN) $(LOG_OUT)
++	$(Q)$(REPORT_RUN_OUT)
+ 
+ # re-run the tests from an existing kernel
+ rerun:
+-	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(srctree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
+-	$(Q)$(REPORT) $(CURDIR)/run.out
++	$(Q)$(QEMU_SYSTEM_RUN) $(LOG_OUT)
++	$(Q)$(REPORT_RUN_OUT)
+ 
+ # report with existing test log
+ report:
+-- 
+2.25.1
 
