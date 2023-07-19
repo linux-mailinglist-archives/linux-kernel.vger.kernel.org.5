@@ -2,167 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAB6758BC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 05:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3A2758BC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 05:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbjGSDGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 23:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40308 "EHLO
+        id S230233AbjGSDGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 23:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjGSDGU (ORCPT
+        with ESMTP id S229452AbjGSDGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 23:06:20 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBB61BCF;
-        Tue, 18 Jul 2023 20:06:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689735979; x=1721271979;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+Z0zqG7VipzZjKGonsZ4TWL6em48rDUeDmL5b7Oaqdk=;
-  b=h+SILe6TzxPocRWTvY/mx1GlHztCBRbrJIwe+09gvRxrs6so2F2JLQve
-   Y4sGqMg0Z3ppxaW0IkJ8C3xRZYeKSKTLq4DpSa5cgmhSmLFtyoELhExbq
-   WaHX7x6yAWqr3lFdOPPp3wdjI9pGeULz4bZjaxWQjKx+D7Qe8ARRaakeH
-   P0AsWpcrQngO87xCgtop5Eg0OHMxj003stOz2dgiE1WlNbRyC++rpBmSi
-   F6we0RTTS/VH0/DIYvymsvrmhpsxXHJqvD48bz2+zbpaL2HD87ALp70bN
-   D587IgKvSPFDMaCj5VOPQobsaXMTQhdxZZ6RtNvqhhMJaaZo/bAWV/Met
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="452737931"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="452737931"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 20:06:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="727161982"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="727161982"
-Received: from zengguan-mobl1.ccr.corp.intel.com (HELO [10.238.2.33]) ([10.238.2.33])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 20:06:16 -0700
-Message-ID: <69afdc99-df5d-678e-5a63-2ef33c607d3a@intel.com>
-Date:   Wed, 19 Jul 2023 11:05:40 +0800
+        Tue, 18 Jul 2023 23:06:18 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3953A1BCF;
+        Tue, 18 Jul 2023 20:06:18 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-668709767b1so4746391b3a.2;
+        Tue, 18 Jul 2023 20:06:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689735978; x=1692327978;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1Z9PyE2GANnTh52Vqt31fvX9tSTvaKClVjtDBjMtSbE=;
+        b=nb9kUI8bONsv2c5OXd7yUFJ2nrgwho4q5KMMSKhFHtNMcc26l2Hm5lUl0Vfp98T6zu
+         ff6TWwv1zicEck5SOPfHWyMJVTwfJ9uChuZzydNhZIp7RSasfmPZAo3cJrpw/injUU8C
+         FkfW7zcI7xtX2d75G3XCNF/NbWMB9JHRLSRcSCftKFtp3cRcHI6fNnOT9V1uARduE8KY
+         C+85oIJJLG/9WbnnIftqf4Q+Zivai7wp+bLqC8HmVw4FENVi+KqwfHU703DeBUWV6WUk
+         L2eneZ/3uvqZ9l2b5JBPpD35B5tHqZVG0A1OUsZ2auwi6Qbmh/35LRO/RMs4XtSlDr0B
+         rv0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689735978; x=1692327978;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1Z9PyE2GANnTh52Vqt31fvX9tSTvaKClVjtDBjMtSbE=;
+        b=k9kc6DFe4iW3I9cf5QocvfR8V0YiVNl0dq5Q4Dk2hoFkJKCl6NSjd2Kuvw4E8szqoV
+         pMgvoIQK7Zqhsh3KAR689zVnq8EZOTuvqZGMCTHPEMfAUItYudWtyb4ty7eKOcpxA/ij
+         3leLeziKy+cxjQycLVaeC78QQKkC9NP60Qb9KZddFoSgJCWusBJVQw8JJbVO1E8ab5Fv
+         hZuL51NrAlVE9S3jD9mAX/ZOEbl74bDZ94rfxv8TgU+dWIGACCYJWNmY8QCoQmYrO1I4
+         PnZCp3EogOGWB20NcvN8QgFodvj+acE/hZu/3R24/T3uJL/wgbF1AFaifvth+oP4/dn4
+         sRZQ==
+X-Gm-Message-State: ABy/qLbDVRHlfkeQNCYCFBuU7fJkOEdUGyv20Bw9859Y1W3nY6rmuXlx
+        RWX2zSt/Hfl2xHP8UHg0s8c=
+X-Google-Smtp-Source: APBJJlE/LlWi3gxrEQ11e9g5JSE95CD1Syqahqy7ISJg8tcqhaGyKZITfgSoHls0I9VTUNu+6IIPIA==
+X-Received: by 2002:a05:6a20:7f9b:b0:131:39cc:4c21 with SMTP id d27-20020a056a207f9b00b0013139cc4c21mr3962567pzj.56.1689735977676;
+        Tue, 18 Jul 2023 20:06:17 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j24-20020aa78d18000000b006732786b5f1sm2136641pfe.213.2023.07.18.20.06.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 20:06:16 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 18 Jul 2023 20:06:16 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Naresh Solanki <naresh.solanki@9elements.com>
+Cc:     devicetree@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Patrick Rudolph <patrick.rudolph@9elements.com>
+Subject: Re: [PATCH v2 5/8] hwmon: (pmbus/mp2975) Make phase count variable
+Message-ID: <b2624063-393f-4fe1-a139-89db0942bc51@roeck-us.net>
+References: <20230714135124.2645339-1-Naresh.Solanki@9elements.com>
+ <20230714135124.2645339-5-Naresh.Solanki@9elements.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 0/8] LASS KVM virtualization support
-Content-Language: en-US
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        H Peter Anvin <hpa@zytor.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20230718131844.5706-1-guang.zeng@intel.com>
-From:   Zeng Guang <guang.zeng@intel.com>
-In-Reply-To: <20230718131844.5706-1-guang.zeng@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230714135124.2645339-5-Naresh.Solanki@9elements.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please ignore this patch set as I posted wrong one by mistake.
-I will submit the correct patch series soon. Sorry for bothering.
+On Fri, Jul 14, 2023 at 03:51:13PM +0200, Naresh Solanki wrote:
+> From: Patrick Rudolph <patrick.rudolph@9elements.com>
+> 
+> In order to add support for MP2973 and MP2971 replace hardcoded
+> phase count for both channels by a variable.
+> 
+> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
 
-On 7/18/2023 9:18 PM, Zeng, Guang wrote:
-> Linear Address Space Separation (LASS)[1] is a new mechanism that
-> enforces the same mode-based protections as paging, i.e. SMAP/SMEP
-> but without traversing the paging structures. Because the protections
-> enforced by LASS are applied before paging, "probes" by malicious
-> software will provide no paging-based timing information.
->
-> Based on a linear-address organization, LASS partitions 64-bit linear
-> address space into two halves, user-mode address (LA[bit 63]=0) and
-> supervisor-mode address (LA[bit 63]=1).
->
-> LASS aims to prevent any attempt to probe supervisor-mode addresses by
-> user mode, and likewise stop any attempt to access (if SMAP enabled) or
-> execute user-mode addresses from supervisor mode.
->
-> When platform has LASS capability, KVM requires to expose this feature
-> to guest VM enumerated by CPUID.(EAX=07H.ECX=1):EAX.LASS[bit 6], and
-> allow guest to enable it via CR4.LASS[bit 27] on demand. For instruction
-> executed in the guest directly, hardware will perform the check. But KVM
-> also needs to behave same as hardware to apply LASS to kinds of guest
-> memory accesses when emulating instructions by software.
->
-> KVM will take following LASS violations check on emulation path.
-> User-mode access to supervisor space address:
->          LA[bit 63] && (CPL == 3)
-> Supervisor-mode access to user space address:
->          Instruction fetch: !LA[bit 63] && (CPL < 3)
->          Data access: !LA[bit 63] && (CR4.SMAP==1) && ((RFLAGS.AC == 0 &&
->                       CPL < 3) || Implicit supervisor access)
->
-> This patch series provide a LASS KVM solution and depends on kernel
-> enabling that can be found at
-> https://lore.kernel.org/all/20230609183632.48706-1-alexander.shishkin@linux.intel.com/
->
-> We tested the basic function of LASS virtualization including LASS
-> enumeration and enabling in non-root and nested environment. As KVM
-> unittest framework is not compatible to LASS rule, we use kernel module
-> and application test to emulate LASS violation instead. With KVM forced
-> emulation mechanism, we also verified the LASS functionality on some
-> emulation path with instruction fetch and data access to have same
-> behavior as hardware.
->
-> How to extend kselftest to support LASS is under investigation and
-> experiment.
->
-> [1] Intel ISE https://cdrdv2.intel.com/v1/dl/getContent/671368
-> Chapter Linear Address Space Separation (LASS)
->
-> ------------------------------------------------------------------------
->
-> v1->v2
-> 1. refactor and optimize the interface of instruction emulation
->     by introducing new set of operation type definition prefixed with
->     "X86EMUL_F_" to distinguish access.
-> 2. reorganize the patch to make each area of KVM better isolated.
-> 3. refine LASS violation check design with consideration of wraparound
->     access across address space boundary.
->
-> v0->v1
-> 1. Adapt to new __linearize() API
-> 2. Function refactor of vmx_check_lass()
-> 3. Refine commit message to be more precise
-> 4. Drop LASS kvm cap detection depending
->     on hardware capability
->
-> Binbin Wu (4):
->    KVM: x86: Consolidate flags for __linearize()
->    KVM: x86: Use a new flag for branch instructions
->    KVM: x86: Add an emulation flag for implicit system access
->    KVM: x86: Add X86EMUL_F_INVTLB and pass it in em_invlpg()
->
-> Zeng Guang (4):
->    KVM: emulator: Add emulation of LASS violation checks on linear
->      address
->    KVM: VMX: Implement and apply vmx_is_lass_violation() for LASS
->      protection
->    KVM: x86: Virtualize CR4.LASS
->    KVM: x86: Advertise LASS CPUID to user space
->
->   arch/x86/include/asm/kvm-x86-ops.h |  3 ++-
->   arch/x86/include/asm/kvm_host.h    |  5 +++-
->   arch/x86/kvm/cpuid.c               |  5 ++--
->   arch/x86/kvm/emulate.c             | 37 ++++++++++++++++++++---------
->   arch/x86/kvm/kvm_emulate.h         |  9 +++++++
->   arch/x86/kvm/vmx/nested.c          |  3 ++-
->   arch/x86/kvm/vmx/sgx.c             |  4 ++++
->   arch/x86/kvm/vmx/vmx.c             | 38 ++++++++++++++++++++++++++++++
->   arch/x86/kvm/vmx/vmx.h             |  3 +++
->   arch/x86/kvm/x86.c                 | 10 ++++++++
->   arch/x86/kvm/x86.h                 |  2 ++
->   11 files changed, 102 insertions(+), 17 deletions(-)
->
+Applied.
+
+Thanks,
+Guenter
