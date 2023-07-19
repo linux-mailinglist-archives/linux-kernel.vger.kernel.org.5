@@ -2,215 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF94F759B40
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7F7759B48
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbjGSQpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 12:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60586 "EHLO
+        id S230386AbjGSQph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 12:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230268AbjGSQpB (ORCPT
+        with ESMTP id S230210AbjGSQp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 12:45:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6AD172E;
-        Wed, 19 Jul 2023 09:44:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 73A1A61788;
-        Wed, 19 Jul 2023 16:44:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D8C2C433C7;
-        Wed, 19 Jul 2023 16:44:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689785090;
-        bh=GNiOTf7Wsj6iBBrxZOzip07dR5NF7eYzPjywtBjLGr8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sU8B0REPY0tu6NeUyQwgtq91tYheBGPdQyqo+fVrEUUfca0pupMNGDi2cMrI4CoRr
-         S7s/6+03LrWqT3qCTWoHcHkGfJtNoAGAaB4ck4DyYZ4U3/YS9CFauQbzP+vc1Np3h3
-         6fhpSl9ur2yQ35RsPkf8p/WX70qTlc7fgeXEqsBrGVETaIEvQ43hL6cdJ7vw3qr+a/
-         8xKFtzj6suiTHryJorIomxa1BUEdfgzh8aG4OsOuNZlLTBG0DXJF1KTTRV2KtmpHPP
-         zrgLtTwauqTeLm9YZ/j084WrAeZ4xmVx1e4TFIB5BzU9RsBXQY0J0rSxt3W1hJP/ET
-         hfFWq+OcuNsTA==
-Date:   Wed, 19 Jul 2023 17:44:45 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Luca Ceresoli <luca.ceresoli@bootlin.com>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: Re: [PATCH 2/3] dt-bindings: display: panel: Add panels based on
- ILITEK ILI9806E
-Message-ID: <20230719-sizing-ribbon-9e62a4afb5f6@spud>
-References: <20230719152147.355486-1-luca.ceresoli@bootlin.com>
- <20230719152147.355486-2-luca.ceresoli@bootlin.com>
+        Wed, 19 Jul 2023 12:45:29 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE4E213F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:45:14 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-401d1d967beso4611cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:45:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689785113; x=1692377113;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5eouzQn1DE3Woy1acpRFuk9bMIN105v+sSKwoOHp8Q8=;
+        b=IbgjYuG3oCAbk2Ss+q74q4W9F25Eeq8BUOuDEmMhxAWrgzJ5V9vxVLkUriCO2ZViyi
+         Ts51qXKLKaUYg6koQszGu7BAKGs7tOLsHM1GaCqF87EjE9NiH+j96ZGLV9Lf1+A63pVS
+         haptMv8ibM4uu/LUclKR2ygVmqoCN6Bzus6kNffY4lJ51vLYKeotii1gBK3s2lvzzz6o
+         OOTgVqxbimG8t5WA+bBOUlPlRkZT1zg/8asYOCkOto+TWfPvcA4pNBFIovUsZSzFdj5u
+         YfenC57DXKxItYVqeO75sG8s693f26o2XCM/I6LFSTgFH4d+eIgbnkPF4y20ywQmIRcC
+         QTGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689785113; x=1692377113;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5eouzQn1DE3Woy1acpRFuk9bMIN105v+sSKwoOHp8Q8=;
+        b=NvmJTf5ms6rd1/D9uOQTruOmr/LP26QrGZ0+9UDGJwE+r51x8J9OxPwUQWBhPSZZtn
+         VI06W5dNRFmSOyDcIk4tQ/UO2OzdCPfL5PpwmnSXU1gxUEDWlS3pT1wYxZRgJSCNd9I2
+         d469mqtid3nhOy/xKDhhMk/1yYGXPJwVw4z8potX1N1WyP5mVB/e82cYGJ9X5B1k+VW/
+         eXidyTnsSPK+oD0i6eqDxIXOdkfWmEKzblTJLL/JpzWdgqIEzlYmznhdjQ9CagacqJDE
+         N0gILH2u9Dha8WRKw/v3UjQfX+xzCGh/mD6a3wh9fCDcQn7FM28VGrxlIUI+iRbgrME8
+         F5QA==
+X-Gm-Message-State: ABy/qLYCMiUfAlhF1EFjEgDnfRei1y52YxQoBK8FcYYb/FGeySzei67c
+        JceekL88niLnvxobrwDHShF9gGt1IMKBCUdsSXlLog==
+X-Google-Smtp-Source: APBJJlEL8/G/yVptpWOuQ0guUBdI/DR3grNFP/ZpiVN+HoXzJ96I7quOyM5EFQoiqbygx2tM85uZiFrotTti9DDS5c4=
+X-Received: by 2002:a05:622a:38b:b0:405:3a65:b3d6 with SMTP id
+ j11-20020a05622a038b00b004053a65b3d6mr117111qtx.13.1689785107840; Wed, 19 Jul
+ 2023 09:45:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="j+RSuWfJSboaYJOP"
-Content-Disposition: inline
-In-Reply-To: <20230719152147.355486-2-luca.ceresoli@bootlin.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230715032915.97146-1-yangjihong1@huawei.com> <20230715032915.97146-3-yangjihong1@huawei.com>
+In-Reply-To: <20230715032915.97146-3-yangjihong1@huawei.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 19 Jul 2023 09:44:56 -0700
+Message-ID: <CAP-5=fVysKhUn1YsUr0NBU2kVBDgkoczO861XwK5VCtkeYSRJA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] perf evlist: Add evlist__findnew_tracking_event() helper
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com,
+        kan.liang@linux.intel.com, james.clark@arm.com,
+        tmricht@linux.ibm.com, ak@linux.intel.com,
+        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 14, 2023 at 8:31=E2=80=AFPM Yang Jihong <yangjihong1@huawei.com=
+> wrote:
+>
+> Currently, intel-bts, intel-pt, and arm-spe may add a dummy event for
+> tracking to the evlist. We may need to search for the dummy event for
+> some settings. Therefore, add evlist__findnew_tracking_event() helper.
+>
+> evlist__findnew_tracking_event() also deal with system_wide maps if
+> system_wide is true.
 
---j+RSuWfJSboaYJOP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hey Luca,
-
-On Wed, Jul 19, 2023 at 05:21:46PM +0200, Luca Ceresoli wrote:
-> Add bindings for LCD panels based on the ILITEK ILI9806E RGB controller
-> connected over SPI and the "ShenZhen New Display Co NDS040480800-V3"
-> 480x800 panel based on it.
->=20
-> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-> ---
->  .../display/panel/ilitek,ili9806e.yaml        | 69 +++++++++++++++++++
->  MAINTAINERS                                   |  6 ++
->  2 files changed, 75 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/panel/ilite=
-k,ili9806e.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/display/panel/ilitek,ili98=
-06e.yaml b/Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.=
-yaml
-> new file mode 100644
-> index 000000000000..42abc6923065
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.yaml
-> @@ -0,0 +1,69 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/panel/ilitek,ili9806e.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Ilitek ILI9806E display panels
-> +
-> +maintainers:
-> +  - Luca Ceresoli <luca.ceresoli@bootlin.com>
-> +
-> +description:
-> +  This binding is for display panels using an Ilitek ILI9806E controller=
- in
-> +  SPI mode.
-
-I figure you explicitly mention SPI mode here because it also supports
-D{P,S}I?
-
-> +
-> +allOf:
-> +  - $ref: panel-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          # ShenZhen New Display Co 3.97" 480x800 RGB a-SI TFT LCD
-> +          - newdisplay,nds040480800-v3
-> +      - const: ilitek,ili9806e
-> +
-> +  reg: true
-> +  spi-max-frequency: true
-> +  reset-gpios: true
-> +  backlight: true
-> +  port: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - port
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    backlight: backlight {
-> +        compatible =3D "gpio-backlight";
-> +        gpios =3D <&gpio 22 GPIO_ACTIVE_HIGH>;
-> +    };
-> +    spi {
-
-Just a nit, a blank line between properties please. Clearly no
-respinning needed for that...
-
-Otherwise,
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+I'm wondering if we can simplify the naming in the API, we have "dummy
+event" which makes sense as we literally call the event "dummy",
+"sideband" which refers to the kind of samples/events the dummy event
+will record but "tracking" I think tends to get used as a verb rather
+than a noun. So I think evlist__findnew_tracking_event should be
+evlist__findnew_dummy_event.
 
 Thanks,
-Conor.
+Ian
 
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
+> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> ---
+>  tools/perf/builtin-record.c | 11 +++--------
+>  tools/perf/util/evlist.c    | 18 ++++++++++++++++++
+>  tools/perf/util/evlist.h    |  1 +
+>  3 files changed, 22 insertions(+), 8 deletions(-)
+>
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index aec18db7ff23..ca83599cc50c 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -1295,14 +1295,9 @@ static int record__open(struct record *rec)
+>          */
+>         if (opts->target.initial_delay || target__has_cpu(&opts->target) =
+||
+>             perf_pmus__num_core_pmus() > 1) {
+> -               pos =3D evlist__get_tracking_event(evlist);
+> -               if (!evsel__is_dummy_event(pos)) {
+> -                       /* Set up dummy event. */
+> -                       if (evlist__add_dummy(evlist))
+> -                               return -ENOMEM;
+> -                       pos =3D evlist__last(evlist);
+> -                       evlist__set_tracking_event(evlist, pos);
+> -               }
+> +               pos =3D evlist__findnew_tracking_event(evlist, false);
+> +               if (!pos)
+> +                       return -ENOMEM;
+>
+>                 /*
+>                  * Enable the dummy event when the process is forked for
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index 7ef43f72098e..25c3ebe2c2f5 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -1694,6 +1694,24 @@ void evlist__set_tracking_event(struct evlist *evl=
+ist, struct evsel *tracking_ev
+>         tracking_evsel->tracking =3D true;
+>  }
+>
+> +struct evsel *evlist__findnew_tracking_event(struct evlist *evlist, bool=
+ system_wide)
+> +{
+> +       struct evsel *evsel;
 > +
-> +        display@0 {
-> +            compatible =3D "newdisplay,nds040480800-v3", "ilitek,ili9806=
-e";
-> +            reg =3D <0>;
-> +            spi-max-frequency =3D <1000000>;
-> +            pinctrl-names =3D "default";
-> +            pinctrl-0 =3D <&pinctrl_lcdgpios>;
-> +            reset-gpios =3D <&gpio 26 GPIO_ACTIVE_LOW>;
-> +            backlight =3D <&backlight>;
+> +       evsel =3D evlist__get_tracking_event(evlist);
+> +       if (!evsel__is_dummy_event(evsel)) {
+> +               evsel =3D evlist__add_aux_dummy(evlist, system_wide);
+> +               if (!evsel)
+> +                       return NULL;
 > +
-> +            port {
-> +                ili9806e_in: endpoint {
-> +                    remote-endpoint =3D <&lcdif_out>;
-> +                };
-> +            };
-> +        };
-> +    };
+> +               evlist__set_tracking_event(evlist, evsel);
+> +       } else if (system_wide) {
+> +               perf_evlist__go_system_wide(&evlist->core, &evsel->core);
+> +       }
 > +
-> +...
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index aee340630eca..3c38699ee821 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6515,6 +6515,12 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
->  F:	Documentation/devicetree/bindings/display/ilitek,ili9486.yaml
->  F:	drivers/gpu/drm/tiny/ili9486.c
-> =20
-> +DRM DRIVER FOR ILITEK ILI9806E PANELS
-> +M:	Luca Ceresoli <luca.ceresoli@bootlin.com>
-> +S:	Maintained
-> +T:	git git://anongit.freedesktop.org/drm/drm-misc
-> +F:	Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.yaml
+> +       return evsel;
+> +}
 > +
->  DRM DRIVER FOR JADARD JD9365DA-H3 MIPI-DSI LCD PANELS
->  M:	Jagan Teki <jagan@edgeble.ai>
->  S:	Maintained
-> --=20
-> 2.34.1
->=20
-
---j+RSuWfJSboaYJOP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLgS/QAKCRB4tDGHoIJi
-0vyvAP46mdHMTAFPovlWwCuGPOePISXPxxu9rgJZZO3CYwVWPQEA+J1Ty9WwUfvI
-2Xj6I0WHld8jnPue1q38PYahl9hXTA0=
-=7pn7
------END PGP SIGNATURE-----
-
---j+RSuWfJSboaYJOP--
+>  struct evsel *evlist__find_evsel_by_str(struct evlist *evlist, const cha=
+r *str)
+>  {
+>         struct evsel *evsel;
+> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+> index 664c6bf7b3e0..98e7ddb2bd30 100644
+> --- a/tools/perf/util/evlist.h
+> +++ b/tools/perf/util/evlist.h
+> @@ -387,6 +387,7 @@ bool evlist_cpu_iterator__end(const struct evlist_cpu=
+_iterator *evlist_cpu_itr);
+>
+>  struct evsel *evlist__get_tracking_event(struct evlist *evlist);
+>  void evlist__set_tracking_event(struct evlist *evlist, struct evsel *tra=
+cking_evsel);
+> +struct evsel *evlist__findnew_tracking_event(struct evlist *evlist, bool=
+ system_wide);
+>
+>  struct evsel *evlist__find_evsel_by_str(struct evlist *evlist, const cha=
+r *str);
+>
+> --
+> 2.30.GIT
+>
