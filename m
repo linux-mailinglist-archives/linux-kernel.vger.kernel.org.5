@@ -2,250 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E10A775A02C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7797A75A02E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbjGSUuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47542 "EHLO
+        id S230191AbjGSUum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230264AbjGSUtw (ORCPT
+        with ESMTP id S230135AbjGSUui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:49:52 -0400
+        Wed, 19 Jul 2023 16:50:38 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452DB2108;
-        Wed, 19 Jul 2023 13:49:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A3401FE1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:50:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 01F8861843;
-        Wed, 19 Jul 2023 20:49:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 270F6C433CA;
-        Wed, 19 Jul 2023 20:49:38 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 21ECB61821
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:50:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB975C433C8;
+        Wed, 19 Jul 2023 20:49:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689799782;
-        bh=OazpdNCdjjMaiaC/TvQE6CjFJ6T/f9NfLfUAUPgtiPA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZE2Q9/7xBBEfujluvrRVJM0CsJUEth7+NFDpXRW5r0p8RCdU6V9heUR8LvzekahbM
-         Gi1zcfLtLIvYlgFQJ8Q0izhZFhi66yVvwalcduhqWfvPkJ9eeUuOvv1nE7HMnp7P+U
-         JXdXINJa1jB2U6hZpr9x9WO4UGmmXrdm5O1FQ8VXFo5n6Ns9QM39ilzD/E7gGSG0/6
-         nYCXx6JgTGd8QDjsGKZP7KPHZRT+zsxTOBmzae/TGvAmnIxY6dRCanBMxxLynax5Jg
-         8hf+OzfUyMQQpx/ZBTQFKFnUc83PuINmQdDOAdvBdb76itOuJM45eHsZfyBuOiGvxJ
-         MWtzgYK6o/r6g==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Andre Fredette <anfredet@redhat.com>,
-        Dave Tucker <datucker@redhat.com>,
-        Derek Barbosa <debarbos@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH 5/5] perf bench uprobe trace_printk: Add entry attaching an BPF program that does a trace_printk
-Date:   Wed, 19 Jul 2023 17:49:10 -0300
-Message-ID: <20230719204910.539044-6-acme@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230719204910.539044-1-acme@kernel.org>
-References: <20230719204910.539044-1-acme@kernel.org>
+        s=k20201202; t=1689799800;
+        bh=Y8XiusgINQG98IO04NdyvglLi4HqlEdF2bPF6Yofwfo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P9h5hXCJgQFf0j2oLtEq7ifgxpDpBRU4+S+GE6zru1iDxEVD+bpJOCzueY1fguqxX
+         TKcjhRnSDBt9yrLt/fD3mc+stzDsI9eJn+yFGkYciYNpviQeBWWUn4rT0XLtLFjn6d
+         ux3lC0WjMBlYsuXfjeWTBeygRhzcQIeo2KRRcvPRyMZSnEFOmOFY8VJBlBNWzDofhr
+         o/1H46qxwmeq3GvjaTMRGb74RzjzIWvgB/+bmmNZqpnJOcoqbVaGwlqHZ126Zsjmrg
+         +Ji3MKgb4wDSSMM0TLPgt8BFt3zL/ybNzMxNXF0/PUUqmio2C4fdatKRKOu6Zdk8LQ
+         SlDY1dk5oCj8A==
+Date:   Wed, 19 Jul 2023 21:49:55 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Tomasz Jeznach <tjeznach@rivosinc.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com,
+        linux-kernel@vger.kernel.org, Sebastien Boeuf <seb@rivosinc.com>,
+        iommu@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 01/11] RISC-V: drivers/iommu: Add RISC-V IOMMU - Ziommu
+ support.
+Message-ID: <20230719-confront-grass-6d0eb304b94f@spud>
+References: <cover.1689792825.git.tjeznach@rivosinc.com>
+ <c33c24036c06c023947ecb47177da273569b3ac7.1689792825.git.tjeznach@rivosinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="84pc7Ec13y+mZhcJ"
+Content-Disposition: inline
+In-Reply-To: <c33c24036c06c023947ecb47177da273569b3ac7.1689792825.git.tjeznach@rivosinc.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-  [root@five ~]# perf bench uprobe all
-  # Running uprobe/baseline benchmark...
-  # Executed 1,000 usleep(1000) calls
-       Total time: 1,053,963 usecs
+--84pc7Ec13y+mZhcJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   1,053.963 usecs/op
+Hey Tomasz,
 
-  # Running uprobe/empty benchmark...
-  # Executed 1,000 usleep(1000) calls
-       Total time: 1,056,293 usecs +2,330 to baseline
+On Wed, Jul 19, 2023 at 12:33:45PM -0700, Tomasz Jeznach wrote:
+> The patch introduces skeleton IOMMU device driver implementation as defin=
+ed
+> by RISC-V IOMMU Architecture Specification, Version 1.0 [1], with minimal=
+ support
+> for pass-through mapping, basic initialization and bindings for platform =
+and PCIe
+> hardware implementations.
+>=20
+> Series of patches following specification evolution has been reorganized =
+to provide
+> functional separation of implemented blocks, compliant with ratified spec=
+ification.
+>=20
+> This and following patch series includes code contributed by: Nick Kossif=
+idis
+> <mick@ics.forth.gr> (iommu-platform device, number of specification clari=
+fication
+> and bugfixes and readability improvements), Sebastien Boeuf <seb@rivosinc=
+=2Ecom> (page
+> table creation, ATS/PGR flow).
+>=20
+> Complete history can be found at the maintainer's repository branch [2].
+>=20
+> Device driver enables RISC-V 32/64 support for memory translation for DMA=
+ capable
+> PCI and platform devices, multilevel device directory table, process dire=
+ctory,
+> shared virtual address support, wired and message signaled interrupt for =
+translation
+> I/O fault, page request interface and command processing.
+>=20
+> Matching RISCV-V IOMMU device emulation implementation is available for Q=
+EMU project,
+> along with educational device extensions for PASID ATS/PRI support [3].
 
-   1,056.293 usecs/op 2.330 usecs/op to baseline
+This commit message reads like a cover letter IMO. At whatever point
+you send a v2, could you re-write this focusing on what is done in the
+patch itself?
 
-  # Running uprobe/trace_printk benchmark...
-  # Executed 1,000 usleep(1000) calls
-       Total time: 1,056,977 usecs +3,014 to baseline +684 to previous
+Also, since I am not going to reply to any of these iommu driver patches
+in a meaningful capacity, please run checkpatch.pl on your work. There
+are well over 100 style etc complaints that it has highlighted. Sparse
+has also gone a bit nuts, with many warnings along the lines of:
+drivers/iommu/riscv/iommu.c:1568:29: warning: incorrect type in assignment =
+(different base types)
+drivers/iommu/riscv/iommu.c:1568:29:    expected unsigned long long [userty=
+pe] iohgatp
+drivers/iommu/riscv/iommu.c:1568:29:    got restricted __le64 [usertype]
 
-   1,056.977 usecs/op 3.014 usecs/op to baseline 0.684 usecs/op to previous
+I can provide you the full list when the patchwork automation has run
+through the series.
 
-  [root@five ~]#
+Anyway, what I wanted to ask was whether it was valid to use the IOMMU
+in a system if Ziommu is not present in whatever the ISA extension
+communication mechanism is? Eg, riscv,isa or the ISA string property in
+the ACPI tables.
 
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Andre Fredette <anfredet@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: Dave Tucker <datucker@redhat.com>
-Cc: Derek Barbosa <debarbos@redhat.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/bench/bench.h                    |  1 +
- tools/perf/bench/uprobe.c                   | 39 +++++++++++++++------
- tools/perf/builtin-bench.c                  |  1 +
- tools/perf/util/bpf_skel/bench_uprobe.bpf.c | 11 ++++++
- 4 files changed, 41 insertions(+), 11 deletions(-)
+Thanks,
+Conor.
 
-diff --git a/tools/perf/bench/bench.h b/tools/perf/bench/bench.h
-index daf4850b441cf91c..50de4773651f9914 100644
---- a/tools/perf/bench/bench.h
-+++ b/tools/perf/bench/bench.h
-@@ -44,6 +44,7 @@ int bench_breakpoint_thread(int argc, const char **argv);
- int bench_breakpoint_enable(int argc, const char **argv);
- int bench_uprobe_baseline(int argc, const char **argv);
- int bench_uprobe_empty(int argc, const char **argv);
-+int bench_uprobe_trace_printk(int argc, const char **argv);
- int bench_pmu_scan(int argc, const char **argv);
- 
- #define BENCH_FORMAT_DEFAULT_STR	"default"
-diff --git a/tools/perf/bench/uprobe.c b/tools/perf/bench/uprobe.c
-index dfb90038a4f7a06a..914c0817fe8ad31b 100644
---- a/tools/perf/bench/uprobe.c
-+++ b/tools/perf/bench/uprobe.c
-@@ -11,6 +11,7 @@
- #include <subcmd/parse-options.h>
- #include "../builtin.h"
- #include "bench.h"
-+#include <linux/compiler.h>
- #include <linux/time64.h>
- 
- #include <inttypes.h>
-@@ -27,6 +28,7 @@ static int loops = LOOPS_DEFAULT;
- enum bench_uprobe {
-         BENCH_UPROBE__BASELINE,
-         BENCH_UPROBE__EMPTY,
-+        BENCH_UPROBE__TRACE_PRINTK,
- };
- 
- static const struct option options[] = {
-@@ -42,9 +44,21 @@ static const char * const bench_uprobe_usage[] = {
- #ifdef HAVE_BPF_SKEL
- #include "bpf_skel/bench_uprobe.skel.h"
- 
-+#define bench_uprobe__attach_uprobe(prog) \
-+	skel->links.prog = bpf_program__attach_uprobe_opts(/*prog=*/skel->progs.prog, \
-+							   /*pid=*/-1, \
-+							   /*binary_path=*/"/lib64/libc.so.6", \
-+							   /*func_offset=*/0, \
-+							   /*opts=*/&uprobe_opts); \
-+	if (!skel->links.prog) { \
-+		err = -errno; \
-+		fprintf(stderr, "Failed to attach bench uprobe \"%s\": %s\n", #prog, strerror(errno)); \
-+		goto cleanup; \
-+	}
-+
- struct bench_uprobe_bpf *skel;
- 
--static int bench_uprobe__setup_bpf_skel(void)
-+static int bench_uprobe__setup_bpf_skel(enum bench_uprobe bench)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, uprobe_opts);
- 	int err;
-@@ -63,14 +77,12 @@ static int bench_uprobe__setup_bpf_skel(void)
- 	}
- 
- 	uprobe_opts.func_name = "usleep";
--	skel->links.empty = bpf_program__attach_uprobe_opts(/*prog=*/skel->progs.empty,
--							    /*pid=*/-1,
--							    /*binary_path=*/"/lib64/libc.so.6",
--							    /*func_offset=*/0,
--							    /*opts=*/&uprobe_opts);
--	if (!skel->links.empty) {
--		err = -errno;
--		fprintf(stderr, "Failed to attach bench uprobe: %s\n", strerror(errno));
-+	switch (bench) {
-+	case BENCH_UPROBE__BASELINE:							break;
-+	case BENCH_UPROBE__EMPTY:	 bench_uprobe__attach_uprobe(empty);		break;
-+	case BENCH_UPROBE__TRACE_PRINTK: bench_uprobe__attach_uprobe(trace_printk);	break;
-+	default:
-+		fprintf(stderr, "Invalid bench: %d\n", bench);
- 		goto cleanup;
- 	}
- 
-@@ -88,7 +100,7 @@ static void bench_uprobe__teardown_bpf_skel(void)
- 	}
- }
- #else
--static int bench_uprobe__setup_bpf_skel(void) { return 0; }
-+static int bench_uprobe__setup_bpf_skel(enum bench_uprobe bench __maybe_unused) { return 0; }
- static void bench_uprobe__teardown_bpf_skel(void) {};
- #endif
- 
-@@ -135,7 +147,7 @@ static int bench_uprobe(int argc, const char **argv, enum bench_uprobe bench)
- 
- 	argc = parse_options(argc, argv, options, bench_uprobe_usage, 0);
- 
--	if (bench != BENCH_UPROBE__BASELINE && bench_uprobe__setup_bpf_skel() < 0)
-+	if (bench != BENCH_UPROBE__BASELINE && bench_uprobe__setup_bpf_skel(bench) < 0)
- 		return 0;
- 
-         clock_gettime(CLOCK_REALTIME, &start);
-@@ -179,3 +191,8 @@ int bench_uprobe_empty(int argc, const char **argv)
- {
- 	return bench_uprobe(argc, argv, BENCH_UPROBE__EMPTY);
- }
-+
-+int bench_uprobe_trace_printk(int argc, const char **argv)
-+{
-+	return bench_uprobe(argc, argv, BENCH_UPROBE__TRACE_PRINTK);
-+}
-diff --git a/tools/perf/builtin-bench.c b/tools/perf/builtin-bench.c
-index 1021680bbc6d4298..f60ccafccac25602 100644
---- a/tools/perf/builtin-bench.c
-+++ b/tools/perf/builtin-bench.c
-@@ -107,6 +107,7 @@ static struct bench breakpoint_benchmarks[] = {
- static struct bench uprobe_benchmarks[] = {
- 	{ "baseline",	"Baseline libc usleep(1000) call",				bench_uprobe_baseline,	},
- 	{ "empty",	"Attach empty BPF prog to uprobe on usleep, system wide",	bench_uprobe_empty,	},
-+	{ "trace_printk", "Attach trace_printk BPF prog to uprobe on usleep syswide",	bench_uprobe_trace_printk,	},
- 	{ NULL,	NULL, NULL },
- };
- 
-diff --git a/tools/perf/util/bpf_skel/bench_uprobe.bpf.c b/tools/perf/util/bpf_skel/bench_uprobe.bpf.c
-index 1365dcc5dddff546..7046bea5da871627 100644
---- a/tools/perf/util/bpf_skel/bench_uprobe.bpf.c
-+++ b/tools/perf/util/bpf_skel/bench_uprobe.bpf.c
-@@ -3,10 +3,21 @@
- #include "vmlinux.h"
- #include <bpf/bpf_tracing.h>
- 
-+unsigned int nr_uprobes;
-+
- SEC("uprobe")
- int BPF_UPROBE(empty)
- {
-        return 0;
- }
- 
-+SEC("uprobe")
-+int BPF_UPROBE(trace_printk)
-+{
-+	char fmt[] = "perf bench uprobe %u";
-+
-+        bpf_trace_printk(fmt, sizeof(fmt), ++nr_uprobes);
-+	return 0;
-+}
-+
- char LICENSE[] SEC("license") = "Dual BSD/GPL";
--- 
-2.41.0
+> References:
+>  - [1] https://github.com/riscv-non-isa/riscv-iommu
+>  - [2] https://github.com/tjeznach/linux/tree/tjeznach/riscv-iommu
+>  - [3] https://github.com/tjeznach/qemu/tree/tjeznach/riscv-iommu
 
+FYI, we have the Link: tag/trailer for this.
+
+
+--84pc7Ec13y+mZhcJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLhMcwAKCRB4tDGHoIJi
+0lIfAP9uPwBu+e/C+/ZsygvppSSP9x3v8vUZ8yHHUidL/6sOCwD/f6sSZh1Cj6wv
+5tIrbH5HWVcSsflIwaoP6uRCLLneIAw=
+=c5fj
+-----END PGP SIGNATURE-----
+
+--84pc7Ec13y+mZhcJ--
