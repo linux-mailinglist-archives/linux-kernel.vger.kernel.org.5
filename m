@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 330C57596EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499A07596F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbjGSNda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 09:33:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
+        id S231337AbjGSNeG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 19 Jul 2023 09:34:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbjGSNd2 (ORCPT
+        with ESMTP id S230131AbjGSNeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 09:33:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEB811B
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:33:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A2F8960F80
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:33:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D842FC433C7;
-        Wed, 19 Jul 2023 13:33:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689773606;
-        bh=bRvmDa89F8tiiWEs4W8W25Rz7T9FiMmeQyv4PQo01ww=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Z7UhaFJWNJTQ+acILXK8LbHJN90m1mM0O9bfhS9NeWy89PpfAR3Pnltqiwx2ZDs7l
-         lK+BPRHAdj+yKqiOzwqL7cKu8W95UjpeiN894kf+pOZheHU230Wc9AUfjtzFLYT5XB
-         bM0nTz2xLjpnUulF5gYZ7Q6V0e8VmwhCLw37bkGpGNACHflzJ5TrPKiBDs1juOeJGm
-         Nkmknf/upBUWdvxQY71zO+VgyJogGm/YazfLE0htRxwEKw54GoeAdZl0qms9skEWCf
-         SakPebAR8hTqJuxAy9eArIuiTfDsYtlqmizJNwjSwGmWTl2YWscXTLiJuxhhm1US+g
-         v3NCj2ip75UYg==
-From:   Mark Brown <broonie@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230717-regmap-cache-check-v1-0-73ef688afae3@kernel.org>
-References: <20230717-regmap-cache-check-v1-0-73ef688afae3@kernel.org>
-Subject: Re: [PATCH 0/3] regmap: Add interface for checking if a register
- is cached
-Message-Id: <168977360558.39760.4789872825823703528.b4-ty@kernel.org>
-Date:   Wed, 19 Jul 2023 14:33:25 +0100
+        Wed, 19 Jul 2023 09:34:05 -0400
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45083113;
+        Wed, 19 Jul 2023 06:34:04 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2b951a1a03bso6194601fa.0;
+        Wed, 19 Jul 2023 06:34:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689773642; x=1692365642;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ch5QBOhh4FZKc92//FFcj4rG6CE12dmRlZdD1fLxA40=;
+        b=L07nUKD+/ml8+7b5I0twxAypEacuMgj7lNsOwNq6nXY1SBnxmtbK0tJ/NDlE2TVC28
+         eiGfF1PA+XmnJCwdru6XdpH5NiColQVwhNICjtgO8+LoO0grbSzZrdneD4y06IqfAbpW
+         UJFcLRgcz9T5k0+kqi5N4N9OFI4qrVL7fyZ3mXyHmF8TlXy5GD5RpI7+PrRDSmQMGd71
+         IRgbNfTj6hRrYlFX0CJ9COhRvBWTnIl1+23dWtZkK5oPDR6IDMNCuBgR4DJjm5vlf+Y7
+         qaJuLAna59b/rv2YPMR/c6oM5aljchdJymfZdGoJYuaAZQU2Wx28PWjhfijTw3OvQZwX
+         N3Fg==
+X-Gm-Message-State: ABy/qLaTx6LKhC0t11kAAUvtkn4q2pLGM8p/YSpkyMGe6K+VFlkchyAn
+        DnYw0i1GYnfHJjJqGpzVYxQpAPS8enNluDUKvLey3ZwX
+X-Google-Smtp-Source: APBJJlEVZcLjenwjTLNBPdv1a9AnoryDrpjTyoR3PbXJbY0i44z3kMPeXQEUrIF64jlEoHPGcZlMtK95X3C3x1VdX3E=
+X-Received: by 2002:a2e:1655:0:b0:2b9:4bc3:c367 with SMTP id
+ 21-20020a2e1655000000b002b94bc3c367mr1416178ljw.5.1689773642193; Wed, 19 Jul
+ 2023 06:34:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <13318886.uLZWGnKmhe@kreacher> <8b89f009-bcfe-3a90-f19e-0b5894a5ebd1@linaro.org>
+In-Reply-To: <8b89f009-bcfe-3a90-f19e-0b5894a5ebd1@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 19 Jul 2023 15:33:50 +0200
+Message-ID: <CAJZ5v0j1gF15vXKw7EdLLh629wisNr8niXQ8eYPY56rvzyNSKw@mail.gmail.com>
+Subject: Re: [PATCH v1 0/7] ACPI: thermal: Use trip point table to register
+ thermal zones
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Jul 2023 21:33:02 +0100, Mark Brown wrote:
-> HDA has a use case for checking if a register is present in the cache
-> which it awkwardly open codes with use of _cache_only() and a read,
-> provide a direct API for this.
-> 
+On Wed, Jul 19, 2023 at 12:46 AM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+>
+> Hi Rafael,
+>
+> On 18/07/2023 20:01, Rafael J. Wysocki wrote:
+> > Hi Everyone,
+> >
+> > This patch series makes the ACPI thermal driver register thermal zones
+> > with the help of thermal_zone_device_register_with_trips(), so it
+> > doesn't need to use the thermal zone callbacks related to trip points
+> > any more (and they are dropped in the last patch).
+>
+> Yay!
+>
+> > The approach presented here is quite radically different from the
+> > previous attempts, as it doesn't really rearrange the driver's
+> > internal data structures, but adds the trip table support on top of
+> > them.  For this purpose, it uses an additional field in struct thermal_trip
+> > introduced in the first patch.
+> >
+> > I have run it on my test-bed systems, but this is not too representative,
+> > because they each have only one ACPI thermal zone with only one (critical)
+> > trip point in it.
+>
+> Rui created some ACPI fake tables I was able to run them in a KVM
+> machine with fake thermal zones.
+>
+> I can share the setup if you are interested in
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
-
-Thanks!
-
-[1/3] regmap: Let users check if a register is cached
-      commit: 78908f45ccf1dc2f4d5fb395c460fdbbf7e9ac3a
-[2/3] regmap: Provide test for regcache_reg_present()
-      commit: d881ee5a872fd539a8c693e4c8656b9343c9aae0
-[3/3] ALSA: hda: Use regcache_reg_cached() rather than open coding
-      commit: 99aae70551f99536936438bbcfc562df69eeb79c
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Yes, please!
