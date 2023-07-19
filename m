@@ -2,169 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B506759F4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C1A759F4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbjGSUHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:07:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
+        id S231289AbjGSUHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:07:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjGSUHU (ORCPT
+        with ESMTP id S229542AbjGSUHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:07:20 -0400
+        Wed, 19 Jul 2023 16:07:24 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E1992;
-        Wed, 19 Jul 2023 13:07:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4771492;
+        Wed, 19 Jul 2023 13:07:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 62D4C61806;
-        Wed, 19 Jul 2023 20:07:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7061C433C7;
-        Wed, 19 Jul 2023 20:07:17 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D859361812;
+        Wed, 19 Jul 2023 20:07:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B303C433C9;
+        Wed, 19 Jul 2023 20:07:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689797237;
-        bh=ijTQFn+UUwawMg9/ox6FWUtSRipPCufd57gHfxuHsec=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=snjQa7HHSMyYNSdd2hjgeh8PUAxBTefShmrygu2tBtTM+GC+qN6J6LWByDzmKCAs1
-         aH53N3WeiIjr/WLBjyHkVhVAbBKiOM7aGSwLyTL0tDcI0dPPyXTvf33w1hMUoBHNHO
-         pOkg9quc6DBSksRiKDBfGCnqix6DbWm0TuYeBht/avJVf8BYOzuaxsA1MamPHrakBf
-         UDFR0oohq929qEdBltXLniUAh//5DUkz+xgdLe7SNRfCPDgAp7NWEBgTHiWgOHyGaY
-         E9zjOrOe/vQ+SZ3WtkuevMbrE0sBtmoKcQ+67USDrf7dqtjWZonz/M/K4PHtag7nX9
-         OBWTUAxEuFyHA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 43F52CE0928; Wed, 19 Jul 2023 13:07:17 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 13:07:17 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        akaher@vmware.com, shuah@kernel.org, rcu@vger.kernel.org
-Subject: Re: [BUG] unable to handle page fault for address
-Message-ID: <23b091fc-cc2e-4ace-b860-a0ddf662d1ae@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <60f88589-5f9f-4221-82f9-5c9c11fb5d95@paulmck-laptop>
- <CAABZP2xAi0FdEjmSV-DU_Pefk=Jya=XvL0OwDQspKg-jnq_fLQ@mail.gmail.com>
+        s=k20201202; t=1689797242;
+        bh=QBRlv2TQMbOLiRvL0z9P4oIMqhGPMMGSEdcz73enZaw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dm23rWS9Rw6KGAXcY7fuoaDU28fLmGZtA7SLE6RiGx2FoRtRCGnsQjATCPx9dpqsq
+         oUP2RkT4+v8C82HZLBdLQPBraitPW9d+bFP1lWYq7EMkaXEuBF3vCvVJYUlN8bJZ2Q
+         zxD6mmXx0fGjeCV0CtEkNtElaPu5shLL2Atd3x33NdA3hp2w+niODhzYnIkAdo3K8O
+         eAzhxwKZ1caG5qIL4pMEpBnX0E7/UKf1hf3LMy6PP55+6PKaAZIULaalXQs0UzPMBd
+         QQUgOL5QUtkA/mJyaskDagLgav1Izt6Q1NECuWIi36In3LMKZg0qKGF2QceLcPq0MJ
+         ou7lWynyzfzhA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 199B940516; Wed, 19 Jul 2023 17:07:19 -0300 (-03)
+Date:   Wed, 19 Jul 2023 17:07:19 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     John Garry <john.g.garry@oracle.com>, namhyung@kernel.org,
+        jolsa@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        renyu.zj@linux.alibaba.com, shangxiaojing@huawei.com,
+        kjain@linux.ibm.com, kan.liang@linux.intel.com
+Subject: Re: [PATCH RFC 4/9] perf jevents: Add sys_events_find_events_table()
+Message-ID: <ZLhCd684SosTkJ8q@kernel.org>
+References: <897dcf1d-6a04-33d3-9c4f-ea9d1706cdad@oracle.com>
+ <CAP-5=fX+rz928LtFs2MWYUH=6Mcvz0XQcLRkO-n9BnVnX4RYWw@mail.gmail.com>
+ <297ddf04-9b35-7613-8efd-2857668b6835@oracle.com>
+ <CAP-5=fXSQVyqCfrBJFjHkrRdANuQC=TKR-HHi37hLaQ91rPQiA@mail.gmail.com>
+ <eb011f48-b953-3647-4699-734ebdf1876a@oracle.com>
+ <CAP-5=fXJxVpYQ84hXiMxy4LUi7xs1puXdDhbp6d6N2ArnqKJuQ@mail.gmail.com>
+ <0d6e41d1-2f27-9a90-1516-c4e50bad1c21@oracle.com>
+ <CAP-5=fXKqZM=RMB-+ooKEKfGw=KdCVU0UbVQ9+XrDOAWpoYAdw@mail.gmail.com>
+ <4f0355ec-8bc6-e51a-ab5b-61d555a68b6c@oracle.com>
+ <CAP-5=fVGOP6-k=BTRd_bn=N0HVy+1ShpdW5rk5ND0ZGhm_fQkg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAABZP2xAi0FdEjmSV-DU_Pefk=Jya=XvL0OwDQspKg-jnq_fLQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAP-5=fVGOP6-k=BTRd_bn=N0HVy+1ShpdW5rk5ND0ZGhm_fQkg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 03:03:53AM +0800, Zhouyi Zhou wrote:
-> On Thu, Jul 20, 2023 at 1:40 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+Em Wed, Jul 19, 2023 at 08:25:31AM -0700, Ian Rogers escreveu:
+> On Tue, Jul 18, 2023 at 2:32 AM John Garry <john.g.garry@oracle.com> wrote:
 > >
-> > Hello!
+> > On 17/07/2023 22:39, Ian Rogers wrote:
+> > > On Mon, Jul 17, 2023 at 12:41 AM John Garry<john.g.garry@oracle.com>  wrote:
+> > >> On 14/07/2023 16:55, Ian Rogers wrote:
+> > >>> In this
+> > >>> series my main concern was in the changes of the event lookup and
+> > >>> having implied PMUs. You mentioned doing these changes so I was
+> > >>> waiting for a v2.
+> > >> OK, fine, I can look to do this now.
 > >
-> > Just FYI for the moment, I hit a BUG in 10-hour overnight qemu/KVM-based
-> > rcutorture testing of the TASKS01, TASKS03, TREE03, and TREE07 rcutorture
-> > on the mainline commit:
+> > I was thinking about this a little further. So you suggest that the
+> > metric expression contains PMU name per term, like
+> > "cpu_atom@instructions@ / cpu_atom@cycles@" - how would/could this work
+> > for PMUs with more complex naming, like the form hisi_siclXXX_cpa_YYY?
+> > Would we use the "Unit" expression for the metric name, like
+> > "@hisi_sicl,cpa@event_foo"?
+> 
+> How does this work for events? The "@hisi_sicl,cpa@event_foo" looks
+> strange, shouldn't it be "hisi_sicl,cpa@event_foo@" but then hisi_sicl
+> looks like an event name.
+> 
 > >
-> > ccff6d117d8d ("Merge tag 'perf-tools-fixes-for-v6.5-1-2023-07-18' of git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools")
+> > >>
+> > >> BTW, which git repo/branch do you guys use for dev? I thought that it
+> > >> would be acme git, but Namhyung says "We moved to new repos from acme to
+> > >> perf/perf-tools and perf/perf-tools-next" - where is repo "perf"?
+> > > Current development is here now:
+> > > https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/log/?h=perf-tools-next__;!!ACWV5N9M2RV99hQ!OQDHOClSjd6nVZhmgzrK3RwzXuQpP54QhqyIKpITa_MFD4PLdS7yPYSnvInFja9nrFx9Sd-UnlsJ6XUqAh4$
 > >
-> > This commit was merged with the -rcu "dev" branch, which just yesterday
-> > passes overnight tests when based on v6.5-rc1.  A web search got me the
-> > following, which is not a very close match, but the best that there is:
-> >
-> > https://www.spinics.net/lists/bpf/msg91848.html
-> >
-> > Here is a representative splat out of 29 of them:
-> >
-> > [22544.494701] BUG: unable to handle page fault for address: fffffe0000af0038
-> > [22544.496012] #PF: supervisor read access in user mode
-> > [22544.496985] #PF: error_code(0x0000) - not-present page
-> > [22544.497970] IDT: 0xfffffe0000000000 (limit=0xfff) GDT: 0xfffffe355b3fd000 (limit=0x7f)
-> > [22544.499479] LDTR: NULL
-> > [22544.499959] TR: 0x40 -- base=0xfffffe355b3ff000 limit=0x4087
-> > [22544.501073] PGD 1ffd2067 P4D 1ffd2067 PUD 1124067 PMD 0
-> > [22544.502149] Oops: 0000 [#1] PREEMPT SMP PTI
-> > [22544.502967] CPU: 0 PID: 1 Comm: init Not tainted 6.5.0-rc2-00128-g68052f2f9e35 #5844
-> > [22544.504435] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-> > [22544.506581] RIP: 0033:0x400181
-> > [22544.507256] Code: 00 45 31 d2 4c 8d 44 24 f0 48 c7 44 24 f8 00 00 00 00 0f 05 b8 60 00 00 00 48 8d 7c 24 e0 0f 05 41 89 c0 85 c0 75 c6 44 89 c0 <89> c2 0f af d0 ff c0 48 63 d2 48 89 15 06 01 20 00 3d a0 86 01 00
-> > [22544.510954] RSP: 002b:00007ffde5192288 EFLAGS: 00010283
-> > [22544.511963] RAX: 000000000000ebe9 RBX: 0000000000000000 RCX: 00000000004001a7
-> > [22544.513386] RDX: ffffffffd963c240 RSI: 0000000000000000 RDI: 00007ffde5192258
-> > [22544.514751] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> > [22544.516079] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> > [22544.517452] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> > [22544.518818] FS:  0000000000000000 GS:  0000000000000000
-> > [22544.519864] Modules linked in:
-> > [22544.520653] CR2: fffffe0000af0038
-> > [22544.521401] ---[ end trace 0000000000000000 ]---
-> > [22544.522297] RIP: 0033:0x400181
-> > [22544.522887] RSP: 002b:00007ffde5192288 EFLAGS: 00010283
-> > [22544.523887] RAX: 000000000000ebe9 RBX: 0000000000000000 RCX: 00000000004001a7
-> > [22544.525257] RDX: ffffffffd963c240 RSI: 0000000000000000 RDI: 00007ffde5192258
-> > [22544.526623] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> > [22544.528016] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> > [22544.529439] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> > [22544.530909] FS:  0000000000000000(0000) GS:ffff8d101f400000(0000) knlGS:0000000000000000
-> > [22544.532564] CS:  0033 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [22544.533760] CR2: fffffe0000af0038 CR3: 0000000002d8e000 CR4: 00000000000006f0
-> > [22544.535286] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > [22544.536738] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > [22544.538228] note: init[1] exited with irqs disabled
-> > [22544.540087] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
-> > [22544.544806] Kernel Offset: 0x9600000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-> >
-> > The failure rates for each scenario are as follows:
-> >
-> > TASKS01: 13 of 15
-> > TASKS03: 7 of 15
-> > TREE03: 4 of 15
-> > TREE07: 5 of 15
-> >
-> > In other words, for TASKS01, there were 15 10-hour runs, and 13 of them
-> > hit this bug.
-> >
-> > Except that these failures were corellated:
-> >
-> > o       TASKS01 and TASKS03 failures are in batch 17 running on
-> >         kerneltest053.05.atn6.
-> >
-> > o       TREE03 and one of the TREE07 failures are in batch 4 running
-> >         on kerneltest025.05.atn6.
-> >
-> > o       Five of the TREE07 failures are in batch 6 running on
-> >         kerneltest010.05.atn6.
-> >
-> > All of the failures in a given batch happened at about the same time,
-> > suggesting a reaction to some stimulus from the host system.  There
-> > was no console output from any of these host systems during the test,
-> > other than the usual complaint about qemu having an executable stack.
-> >
-> > Now, perhaps this is hardware or configuration failure on those three
-> > systems.  But I have been using them for quite some time, and so why
-> > would three fail at the same time?
-> >
-> > Bisection will not be easy given that there were only three actual
-> > failures in ten hours over 20 batches.  If this is in fact a random
-> > kernel failure, there would be almost a 4% chance of a false positive
-> > on each bisection step, which gives about a 50% chance of bisecting to
-> > the wrong place if the usual 16 steps are required.
-> Hi Paul
-> I am also very interested in tracing this bug.
-> I have invoked ./tools/testing/selftests/rcutorture/bin/torture.sh on
-> my 16 core Intel(R) Xeon(R) CPU E5-2660 server a moment ago to see
-> what happens
+> > Can that be added to the MAINTAINERS file? I suppose it is ok under
+> > "PERFORMANCE EVENTS SUBSYTEM", since the two would-be git repos listed
+> > under that same entry would be pretty obvious in purpose.
+> 
+> Arnaldo could you take a look at doing this?
 
-Looking forward to hearing what you find!
+Sure, just added this:
 
-							Thanx, Paul
+[acme@quaco perf-tools-next]$ git show
+commit 0146244875046fad472a39ffd61ec4f91719b62a (HEAD -> perf-tools-next)
+Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+Date:   Wed Jul 19 16:53:01 2023 -0300
 
-> Thanx, Zhouyi
-> >
-> > I will give this another try this evening, Pacific Time.  In the
-> > meantime, FYI.
-> >
-> >                                                 Thanx, Paul
+    MAINTAINERS: Add git information for perf-tools and perf-tools-next trees/branches
+
+    Now the perf tools development is done on these trees/branches:
+
+      git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git perf-tools
+      git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git perf-tools-next
+
+    For a while I'll continue mirroring what is these to the same branches
+    in my git tree.
+
+    Suggested-by: John Garry <john.g.garry@oracle.com>
+    Cc: Adrian Hunter <adrian.hunter@intel.com>
+    Cc: Ian Rogers <irogers@google.com>
+    Cc: Jiri Olsa <jolsa@kernel.org>
+    Cc: Namhyung Kim <namhyung@kernel.org>
+    Link: https://lore.kernel.org/lkml/CAP-5=fVGOP6-k=BTRd_bn=N0HVy+1ShpdW5rk5ND0ZGhm_fQkg@mail.gmail.com
+    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index aee340630ecaea38..e351cfc7cd41c570 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16629,6 +16629,8 @@ L:      linux-kernel@vger.kernel.org
+ S:     Supported
+ W:     https://perf.wiki.kernel.org/
+ T:     git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
++T:     git git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git perf-tools
++T:     git git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git perf-tools-next
+ F:     arch/*/events/*
+ F:     arch/*/events/*/*
+ F:     arch/*/include/asm/perf_event.h
+[acme@quaco perf-tools-next]$
