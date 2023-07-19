@@ -2,263 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF6F759158
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDD275915E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbjGSJOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60758 "EHLO
+        id S231293AbjGSJRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231250AbjGSJOT (ORCPT
+        with ESMTP id S230291AbjGSJRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:14:19 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCEDF19B3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:14:11 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbd200d354so151605e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:14:11 -0700 (PDT)
+        Wed, 19 Jul 2023 05:17:32 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BD2121
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:17:30 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-51e48e1f6d1so9071327a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:17:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689758050; x=1690362850;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fw3Ndz7Q+pn503DLUGnxOuIrj/0HxqHosajRzns1ruw=;
-        b=FsQM+37fpQG/WFda+Me4TH1UGCzdsQmyy4xnoGzUR9zNO+9UJqG33F+UY/dOEE3mO0
-         95Cjmp3KQbKHLrc4JuQIn0OAQ8BhDG24H79m2YShphj8AER/otpkWN378iKvqWqin51+
-         hTuB61fBGykjU9tQO3moQ0ema2+3Ha1Uh2ZCg8TNOD/gk0b+vrq257zP/2p6RIdt6+fr
-         Ea2ZmDMlenr2ESDRQuWUVnsvJ6XypRZGc1FzEc8OCEyGMXpmzcmPKqBsrDt8HVaBnV5b
-         f3TWR4i4rG5Om6OQWPk628j1V091S2mhStqtWnks8ZnhhO0OWO2dev5+x8Kheln63V8h
-         dA1w==
+        d=linaro.org; s=google; t=1689758248; x=1692350248;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vbFAUTqn4J/1uXGDz1Y+p40GpYX5buZBByhfIvb+XTw=;
+        b=pWC6FgUMIYeP779sWAqgtzO3nU1XJ6nhP75SPD12kn5z7GaOdQUHJSr1oj+fpvsMzu
+         1olNjVI5wRWrn45bUPuYJyc5Bco8Iwi76p6mGXk8gdDHJ8p+VfH0Y9Ob/M/hmJowz1Gc
+         J+pNlH0r5n+VARIHACKHBpFtJ+fkdhK77/Ra2Fb2lW0F96NuMi3yPmIb8SIxEbJT+vJ4
+         NbT2hiKo+epWuNBHDFljYudEOU8wGGY0fV8Na+/YoGH0+S92GxieXHMoNGOhVnIdlO7o
+         mBmS3hhhglibp+4T6hBrbrEi0hI9yP9Rr6ZhyVA0T7CkDbC5e5ZxaRjLFEr2TUPH/EFx
+         M6bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689758050; x=1690362850;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Fw3Ndz7Q+pn503DLUGnxOuIrj/0HxqHosajRzns1ruw=;
-        b=creIl40TjH2v3vFgZ95cVofh4Ed43ZFFFBf1jMHYmi5qmbFkYLXTn5GALUp8hUkHoB
-         8eQ9eAHNDxhOahrFQRb7BkPRzKEl1nyFji6Qk15WNxugQd275qouFCvGzjkMg5BiDeER
-         Mhyg37MI7xFe4R0mGYOdxtuMjSi0bW6Fzy5A/yVq1+KljjiGDycDft48Fnr3fpvqyDdt
-         AuBID+ACB5EzMQTN7QU6ZJPevEZBOX0YhXIFu00Sj2c09ODJnBUwy4F+HuOxQhFEVjWf
-         FVKsvBAywxhYhK69Xr7WLRGUM/UD2njf/aDzr2RM0aN01iReN5yqixKj8Sd7k8LoXstA
-         EGyA==
-X-Gm-Message-State: ABy/qLb5QeLGwRNekZ37voqhExtYbkcPeRcuHan9e7UxZlb/RJJPMynp
-        2ZqvOIo9HTRhLpLFrQhX85HrCALQVjJZWHHxuFV/zA==
-X-Google-Smtp-Source: APBJJlGH7WzaWYeVZoi4gY6oUHy3k+FC5or6lg9Asu0UBJ11sGsKgmH4ktoFVAKWZdUruaBbasXM4e6LbEH53YGIt5Q=
-X-Received: by 2002:a05:600c:12d5:b0:3f7:3e85:36a with SMTP id
- v21-20020a05600c12d500b003f73e85036amr186944wmd.7.1689758050368; Wed, 19 Jul
- 2023 02:14:10 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689758248; x=1692350248;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vbFAUTqn4J/1uXGDz1Y+p40GpYX5buZBByhfIvb+XTw=;
+        b=fbPt+dbF0HY5IrK1vEcoREc2BJnbVj9HJLPtIOW4Tz2pchKoJBlT8hj2uHlZR7S0Bk
+         gIPqh1oBQ/UE4qyj+imew57pEiTmjY6IWLFug1+ysXIzgEE9L7NP+s9DWl3MTvWZWYeO
+         0Kvsq8CSQR0+6dTcYa+p2dRRZDaM5sweJUjdC4L/gmNMi71Sq2s/dxaVizSp3OJ2Z0Vm
+         jmPYdIeuLaZ/7EtBiKwTBbn35b/2aJGg4vOF3l+gsIoBanN8HtLM9OJg0SGs2P78nByV
+         2FIxtPDB3d8Bs3oz25XH0bLdSB8lTF5PG0FmX/b2It/QnTlj5UtwawwGao/Ob4k1u9Cd
+         Jxvw==
+X-Gm-Message-State: ABy/qLZl7o/1n8uFZuvu9oWyF/6pFDPpbpWpm4lGmRrP09EGLt2DH8ci
+        MYJf2PiAhj2s1gmLezvGASSk+w==
+X-Google-Smtp-Source: APBJJlEa4+3uhs2sYS9ftR+O+4gIJ5VpENZ++c6LZlxKhiuUtFmEJV/gmWJNZ1CJFLaGAPqoWDTMng==
+X-Received: by 2002:aa7:d384:0:b0:51b:ec86:b49a with SMTP id x4-20020aa7d384000000b0051bec86b49amr2063330edq.7.1689758248587;
+        Wed, 19 Jul 2023 02:17:28 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id k26-20020a056402049a00b0051e186a6fb0sm2422099edv.33.2023.07.19.02.17.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 02:17:28 -0700 (PDT)
+Message-ID: <3c291f6a-7e9a-b863-9c34-c486647edbf7@linaro.org>
+Date:   Wed, 19 Jul 2023 11:17:26 +0200
 MIME-Version: 1.0
-References: <20230329-kunit-devm-inconsistencies-test-v2-0-19feb71e864b@kernel.org>
- <20230329-kunit-devm-inconsistencies-test-v2-3-19feb71e864b@kernel.org>
-In-Reply-To: <20230329-kunit-devm-inconsistencies-test-v2-3-19feb71e864b@kernel.org>
-From:   David Gow <davidgow@google.com>
-Date:   Wed, 19 Jul 2023 17:13:58 +0800
-Message-ID: <CABVgOSmBcSA69SXEOh8_A7=aSigv5vztkhPYt9TBSNnxhiRSYA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] drivers: base: Free devm resources when
- unregistering a device
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000005d15f90600d37461"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 5/7] ARM: dts: exynos: k3g: Add notification LED support
+Content-Language: en-US
+To:     Markuss Broks <markuss.broks@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230716220644.22158-1-markuss.broks@gmail.com>
+ <20230716220644.22158-7-markuss.broks@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230716220644.22158-7-markuss.broks@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000005d15f90600d37461
-Content-Type: text/plain; charset="UTF-8"
-
-On Wed, 28 Jun 2023 at 17:50, Maxime Ripard <mripard@kernel.org> wrote:
->
-> From: David Gow <davidgow@google.com>
->
-> In the current code, devres_release_all() only gets called if the device
-> has a bus and has been probed.
->
-> This leads to issues when using bus-less or driver-less devices where
-> the device might never get freed if a managed resource holds a reference
-> to the device. This is happening in the DRM framework for example.
->
-> We should thus call devres_release_all() in the device_del() function to
-> make sure that the device-managed actions are properly executed when the
-> device is unregistered, even if it has neither a bus nor a driver.
->
-> This is effectively the same change than commit 2f8d16a996da ("devres:
-> release resources on device_del()") that got reverted by commit
-> a525a3ddeaca ("driver core: free devres in device_release") over
-> use-after-free concerns.
->
-> It's not clear whether those concerns are legitimate though, but I would
-> expect drivers not to register new resources in their device-managed
-> actions.
-
-It might be clearer to notice that this patch effectively combines the
-two patches above, freeing _both_ on device_del() and
-device_release(). This should give us the best of both worlds. I'm not
-aware of a use-after-free issue that could result here, though it's
-possible there's a double free I'm missing now that we are freeing
-things twice. My understanding is that commit a525a3ddeaca ("driver
-core: free devres in device_release") was more to avoid a leak than a
-use-after-free, but I could be wrong.
-
-
-> Fixes: a525a3ddeaca ("driver core: free devres in device_release")
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+On 17/07/2023 00:05, Markuss Broks wrote:
+> This device has a Texas Instruments LP5562 LED controller
+> which controls the LEDs which are used as notification lights.
+> It has three colors which can be combined, supports pulse mode
+> and other various features.
+> 
+> Signed-off-by: Markuss Broks <markuss.broks@gmail.com>
 > ---
-
-Signed-off-by: David Gow <davidgow@google.com>
-
-Personally, I feel that this is the right way to go, but I'm
-definitely not an expert, so I'll let someone else review it in case
-there's something I'm missing.
-
-Cheers,
--- David
-
-
-
->  drivers/base/core.c                      | 11 +++++++++++
->  drivers/base/test/platform-device-test.c |  2 --
->  drivers/base/test/root-device-test.c     |  2 --
->  3 files changed, 11 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 3dff5037943e..6ceaf50f5a67 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -3817,6 +3817,17 @@ void device_del(struct device *dev)
->         device_platform_notify_remove(dev);
->         device_links_purge(dev);
->
-> +       /*
-> +        * If a device does not have a driver attached, we need to clean
-> +        * up any managed resources. We do this in device_release(), but
-> +        * it's never called (and we leak the device) if a managed
-> +        * resource holds a reference to the device. So release all
-> +        * managed resources here, like we do in driver_detach(). We
-> +        * still need to do so again in device_release() in case someone
-> +        * adds a new resource after this point, though.
-> +        */
-> +       devres_release_all(dev);
+>  arch/arm/boot/dts/exynos5422-samsung-k3g.dts | 47 ++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/exynos5422-samsung-k3g.dts b/arch/arm/boot/dts/exynos5422-samsung-k3g.dts
+> index b3576a745054..813dbf0438de 100644
+> --- a/arch/arm/boot/dts/exynos5422-samsung-k3g.dts
+> +++ b/arch/arm/boot/dts/exynos5422-samsung-k3g.dts
+> @@ -10,6 +10,7 @@
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/input.h>
+>  #include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/leds/common.h>
+>  #include "exynos5800.dtsi"
+>  #include "exynos5422-cpus.dtsi"
+>  
+> @@ -131,6 +132,52 @@ touchkey@20 {
+>  		};
+>  	};
+>  
+> +	i2c-led {
+> +		compatible = "i2c-gpio";
 > +
->         bus_notify(dev, BUS_NOTIFY_REMOVED_DEVICE);
->         kobject_uevent(&dev->kobj, KOBJ_REMOVE);
->         glue_dir = get_glue_dir(dev);
-> diff --git a/drivers/base/test/platform-device-test.c b/drivers/base/test/platform-device-test.c
-> index b6ebf1dcdffb..1ae5ce8bd366 100644
-> --- a/drivers/base/test/platform-device-test.c
-> +++ b/drivers/base/test/platform-device-test.c
-> @@ -87,8 +87,6 @@ static void platform_device_devm_register_get_unregister_with_devm_test(struct k
->         struct test_priv *priv = test->priv;
->         int ret;
->
-> -       kunit_skip(test, "This needs to be fixed in the core.");
-> -
->         pdev = platform_device_alloc(DEVICE_NAME, PLATFORM_DEVID_NONE);
->         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, pdev);
->
-> diff --git a/drivers/base/test/root-device-test.c b/drivers/base/test/root-device-test.c
-> index 9a3e6cccae13..780d07455f57 100644
-> --- a/drivers/base/test/root-device-test.c
-> +++ b/drivers/base/test/root-device-test.c
-> @@ -78,8 +78,6 @@ static void root_device_devm_register_get_unregister_with_devm_test(struct kunit
->         struct test_priv *priv = test->priv;
->         int ret;
->
-> -       kunit_skip(test, "This needs to be fixed in the core.");
-> -
->         priv->dev = root_device_register(DEVICE_NAME);
->         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->dev);
->
->
-> --
-> 2.40.0
->
+> +		sda-gpios = <&gpy3 6 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+> +		scl-gpios = <&gpy3 7 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+> +		i2c-gpio,delay-us = <2>;
+> +
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		lp5562@30 {
 
---0000000000005d15f90600d37461
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
 
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-9IGQSBx2i4m+hGXJpET+MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCRI3Z4cAidgFcv
-Usqdz765x6KMZSfg/WtFrYg8ewsP2NpCxVM2+EhPyyEQ0k0DhtzdtGoI/Ug+jdFDyCKB9P2+EPLh
-iMjMnFILp7Zs4r18ECHlvZuDZfH9m0BchXIxu5jLIuQyKUWrCRDZZEDNr510ZhhVfYSFPA8ms1nk
-jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
-jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
-FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAc
-wm3A5jQhGhLKuzjTPqRDl74KhPufWlsGh6CKM3A20zAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzA3MTkwOTE0MTBaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEASP12E7UOShfxxVcuGuS6
-SPxYJWESSdXOi9eoRg0fEGuyXa6cS4QKzstLUbMe+aCWo+o8x4KewT8suZ/Wv8GYFliM8H2LeUyK
-ydxZ2v9WD2lnAD//WgY83H920sDkhxcocOUr6Aw7cuFgXWmPSjFhmUzNcz+vByL9wepGRWq+JJ+q
-910EKxRFmqiRbsKGpcBUou09Zzomr8SmzEapXhD+8rcQXgWgqE75TiV5IGANdvXQwDpntprN8gvc
-ECBa2m1jBqMOLSik44dpJ4hFOHD/DdL3zR06GGPVJ01jgWlD7nhotvSGz7RyYa7/1S9+6bbonCow
-2pzruzj0QAZ6SRcJZg==
---0000000000005d15f90600d37461--
+Most likely this is led-controller
+
+
+
+Best regards,
+Krzysztof
+
