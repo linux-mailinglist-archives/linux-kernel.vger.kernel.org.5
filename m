@@ -2,287 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E46759E00
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 20:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 507E2759E04
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 20:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbjGSS5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 14:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39926 "EHLO
+        id S230430AbjGSS6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 14:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbjGSS5w (ORCPT
+        with ESMTP id S229492AbjGSS6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 14:57:52 -0400
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7041BF6;
-        Wed, 19 Jul 2023 11:57:50 -0700 (PDT)
-Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1b06777596cso5724644fac.2;
-        Wed, 19 Jul 2023 11:57:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689793069; x=1692385069;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dO/Ro82esZ77c8U9Ji2AYs62+OJdWI2aXZlK6bvNYHg=;
-        b=U3KBhCNE+sq9QfBOgAvwnyfdnuf1HZ7C3xQesvpESjpZH9B0LlM9cnnZLbzTDg6t4W
-         mCinuYgj1G3I0hZy9eKMIgVxY+vr+rURl/6iKQaZ/FRSr8KIX77HbkUJeWApXmwGX1RM
-         Mh4kLMMxTcWeFHnW4SLU8gOHQ4Kq0/R5yGlI/BbcrleNr45AXtLXzAMUvwDCxf7+TnJl
-         6bTHOkI9OTo3JVD0xKMdZu1pQ6K6EqhX8/Hffl9Q4Ii3qg8g9W0kcQEPIXdccUr8VMl0
-         9NRJSbUeJyUzBMhjpJ+IsrZYp8yGtryiwEPcc94z1be/waXOMs+diSR7kJLkMU11qyjR
-         jQOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689793069; x=1692385069;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dO/Ro82esZ77c8U9Ji2AYs62+OJdWI2aXZlK6bvNYHg=;
-        b=SZsGyQJr6KjXHsT1ZjIrSg/ZMtl/oBRca3RCmqLuWzTGHZifpS7v/x0nesTA1e1TMN
-         h6F1Jng2DVKNJ8/rRws6mOJLfpLpKeUHZgJDsj44KOU8hxxODH7eKnlkCQAV1HtiqftQ
-         AwBtDC8HXAg69QvzUUXX/UKR+IBIRoUBxZFPE3DV00DYrNm9xI0y9UUCtbMXrmfuJY2e
-         ljQAYWKdMVqca/2WUftt1p/9D7So3/abrKezS/MNu9I1u25ulNeS3v5jKYfdlxzQMlTh
-         0ML8nAm5+AhSukFIGzE0QF5t55ixJUGywqpBUXtxXCvl1WxRDvnOgqKEvLVHFM1gwaa6
-         F5NA==
-X-Gm-Message-State: ABy/qLYgfCkEZmk0eidixz3ZcAE43KzwQKWAntnPadoN2n819tU/YQCj
-        /54nr1CBCIuMdtIu//7HoPIxeYDntLQxAsH9oN4=
-X-Google-Smtp-Source: APBJJlEYyE3r6HXrGx1zx4tohMxFwu8wFsBcEYB9ItkrjV2qOwltCGuOtZBu2WwGOrgJAqlJLxnVq6O+x6dPnc+d0r0=
-X-Received: by 2002:a05:6870:b6a5:b0:1ba:b9ae:8d2c with SMTP id
- cy37-20020a056870b6a500b001bab9ae8d2cmr5670110oab.41.1689793069132; Wed, 19
- Jul 2023 11:57:49 -0700 (PDT)
+        Wed, 19 Jul 2023 14:58:21 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87632171E
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 11:58:20 -0700 (PDT)
+Received: from [192.168.2.126] (109-252-154-2.dynamic.spd-mgts.ru [109.252.154.2])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 16E63660297B;
+        Wed, 19 Jul 2023 19:58:18 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689793099;
+        bh=90P6czviIlXHr0eGb/SoquQ/g7YR+xk08OSKKljjd2E=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=NLKC62L0/gpuc3lHyujrpNMQPtMmwibHObN8EbT24VBIxldrTwrLDfFZRbVlr7UZb
+         Llu1yQsuzA/wU+nCTjtdecHepOhwAuOM3NlBClW5hgH55S75tnDC6c7nP8pEF6LhtF
+         vlWEpszLBieC7DxCFsGEXBsskST4WHn2p0u6TZO9tS5TmMWTwtv7KYI9tkYLIQBu/w
+         dfTG/2AZxGbCwz+niMxvwlYxGNuQGGiL2KBUYigXPTki1pai+G9UGl+bQDtSwLeYBS
+         w6DOLF+Fk3VLI8D0G8+30qnL+VZeBPg5dP5+EMhVx9gQLP8nDK/4Cvq5A8cL0UIO//
+         Tz210FZyi+HEw==
+Message-ID: <4c18744d-b6cd-d517-5726-104017d0764b@collabora.com>
+Date:   Wed, 19 Jul 2023 21:58:14 +0300
 MIME-Version: 1.0
-References: <20230719160048.2737423-1-james.hilliard1@gmail.com> <03748443-0459-c925-ce76-33ec134a303d@linaro.org>
-In-Reply-To: <03748443-0459-c925-ce76-33ec134a303d@linaro.org>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Wed, 19 Jul 2023 12:57:36 -0600
-Message-ID: <CADvTj4pgA_XjYZyU+D+J2QdC4NPFTxPSBCvrpK8WNjFkzkz-KQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ARM: dts: imx6qdl: Add Variscite VAR-SOM-MX6 SoM support
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     devicetree@vger.kernel.org,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.1
+Subject: Re: [PATCH v6 0/3] Add sync object UAPI support to VirtIO-GPU driver
+Content-Language: en-US
+To:     Rob Clark <robdclark@gmail.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com,
+        virtualization@lists.linux-foundation.org,
+        David Airlie <airlied@redhat.com>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?B?TWFyZWsgT2zFocOhaw==?= <maraeo@gmail.com>,
+        Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>,
+        Emil Velikov <emil.velikov@collabora.com>
+References: <20230416115237.798604-1-dmitry.osipenko@collabora.com>
+ <141b928d-6165-f282-b8e6-f140cb09333d@collabora.com>
+ <CAAfnVBnrUotph4TYJVu9Bohqv3m80t90V34TNhh-Tspxwsj-ZQ@mail.gmail.com>
+ <CAF6AEGs4fuq4i8UJdO5hvgHTNhzFMKGZ87+w1oyvL0LAqWio6A@mail.gmail.com>
+ <CAAfnVBkLhYVaSG3U_QUZwXLFv-XT=9F2v2pgrCDQQBgNZ3MSWA@mail.gmail.com>
+ <a453d562-7e93-aef3-a533-171f572b6ee3@collabora.com>
+ <CAAfnVBmwVTBNx4GC2hiYQ9Ya8ufP_D8N0-JOzT2iPV9BYZhD9w@mail.gmail.com>
+ <CAF6AEGvWrUN9W9DKv45OT-MfYAS4D_bXa_Sb5ptgrMEf9WSSqA@mail.gmail.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <CAF6AEGvWrUN9W9DKv45OT-MfYAS4D_bXa_Sb5ptgrMEf9WSSqA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 11:16=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 19/07/2023 18:00, James Hilliard wrote:
-> > This patch adds support for the Variscite VAR_SOM-MX6 SoM with :
-> > - i.MX6 Quad or Dual Lite SoC
-> > - 256 =E2=80=93 4096 MB DDR3
-> > - 4-64 GB eMMC
-> > - 128 =E2=80=93 1024 MB SLC NAND
-> > - Camera Interface
-> > - HDMI+CEC interface
-> > - LVDS / DSI / Parallel RGB interfaces
-> > - Ethernet RGMII interface
-> > - On-SoM Wi-Fi/Bluetooth with WiLink wl183x SDIO Module
-> > - SD/MMC/SDIO interface
-> > - USB Host + USB OTG interface
-> > - I2C interfaces
-> > - SPI interfaces
-> > - PCI-Express 2.0 interface
-> > - on-SoM Audio Codec with HP/Line-In interfaces + DMIC interface
-> > - Digital Audio interface
-> > - S/PDIF interface
-> >
-> > Product website : https://www.variscite.com/product/system-on-module-so=
-m/cortex-a9/var-som-mx6-cpu-freescale-imx6/
-> >
-> > Support is handled with a SoM-centric dtsi exporting the default interf=
-aces
-> > along the default pinmuxing to be enabled by the board dts file.
-> >
-> > This file is based on the one provided by Variscite on their own
-> > kernel, but adapted for mainline.
-> >
-> > Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> > ---
-> >  arch/arm/boot/dts/imx6qdl-var-som.dtsi | 547 +++++++++++++++++++++++++
-> >  1 file changed, 547 insertions(+)
-> >  create mode 100644 arch/arm/boot/dts/imx6qdl-var-som.dtsi
-> >
-> > diff --git a/arch/arm/boot/dts/imx6qdl-var-som.dtsi b/arch/arm/boot/dts=
-/imx6qdl-var-som.dtsi
-> > new file mode 100644
-> > index 000000000000..e93dae59624e
-> > --- /dev/null
-> > +++ b/arch/arm/boot/dts/imx6qdl-var-som.dtsi
-> > @@ -0,0 +1,547 @@
-> > +// SPDX-License-Identifier: GPL-2.0+
-> > +/*
-> > + * Support for Variscite VAR-SOM-MX6 Module
-> > + *
-> > + * Copyright 2011 Linaro Ltd.
-> > + * Copyright 2012 Freescale Semiconductor, Inc.
-> > + * Copyright (C) 2014-2016 Variscite, Ltd.
-> > + * Author: Donio Ron <ron.d@variscite.com>
-> > + * Copyright 2022 Bootlin
-> > + */
-> > +
-> > +/dts-v1/;
-> > +
-> > +#include "imx6q.dtsi"
-> > +#include <dt-bindings/clock/imx6qdl-clock.h>
-> > +#include <dt-bindings/gpio/gpio.h>
-> > +#include <dt-bindings/sound/fsl-imx-audmux.h>
-> > +
-> > +/ {
-> > +     model =3D "Variscite i.MX6 QUAD/DUAL VAR-SOM-MX6";
-> > +     compatible =3D "fsl,imx6q";
->
-> That's not correct compatible. It's not Imx6 soc. It's a som.
+27.06.2023 20:16, Rob Clark пишет:
+...
+>> Now these are just suggestions, and while I think they are good, you can safely ignore them.
+>>
+>> But there's also the DRM requirements, which state "userspace side must be fully reviewed and tested to the standards of that user-space project.".  So I think to meet the minimum requirements, I think we should at-least have one of the following (not all, just one) reviewed:
+>>
+>> 1) venus using the new uapi
+>> 2) gfxstream vk using the new uapi
+>> 3) amdgpu nctx out of "draft" mode and using the new uapi.
+>> 4) virtio-intel using new uapi
+>> 5) turnip using your new uapi
+> 
+> forgot to mention this earlier, but
+> https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/23533
+> 
+> Dmitry, you can also add, if you haven't already:
+> 
+> Tested-by: Rob Clark <robdclark@gmail.com>
 
-I'm confused, AFAIU the VAR-SOM-MX6 uses an imx6q SoC.
+Gurchetan, Turnip Mesa virtio support is ready to be merged upstream,
+it's using this new syncobj UAPI. Could you please give yours r-b if you
+don't have objections?
 
->
-> > +...
-> > +
-> > +     sound: sound {
-> > +             compatible =3D "simple-audio-card";
-> > +             simple-audio-card,name =3D "var-som-audio";
-> > +             simple-audio-card,format =3D "i2s";
-> > +             simple-audio-card,bitclock-master =3D <&sound_codec>;
-> > +             simple-audio-card,frame-master =3D <&sound_codec>;
-> > +             simple-audio-card,widgets =3D "Headphone", "Headphone Jac=
-k",
-> > +                                         "Line", "Line In", "Microphon=
-e", "Mic Jack";
-> > +             simple-audio-card,routing =3D "Headphone Jack", "HPLOUT",
-> > +                                         "Headphone Jack", "HPROUT",
-> > +                                         "LINE1L", "Line In",
-> > +                                         "LINE1R", "Line In";
-> > +
-> > +             sound_cpu: simple-audio-card,cpu {
-> > +                     sound-dai =3D <&ssi2>;
-> > +             };
-> > +
-> > +             sound_codec: simple-audio-card,codec {
-> > +                     sound-dai =3D <&tlv320aic3106>;
-> > +                     clocks =3D <&clks IMX6QDL_CLK_CKO>;
-> > +             };
-> > +     };
-> > +
-> > +     wlan_bt_rfkill {
->
-> No underscores in node names.
->
-> Just "rfkill"
->
->
-> > +             compatible =3D "rfkill-gpio";
-> > +             name =3D "wlan_bt_rfkill";
-> > +             type =3D <2>;     /* bluetooth */
-> > +             gpios =3D <&gpio6 18 GPIO_ACTIVE_HIGH>;
-> > +     };
-> > +};
-> > +
->
-> ...
->
-> > +     tlv320aic3106: codec@1b {
-> > +             compatible =3D "ti,tlv320aic3106";
-> > +             reg =3D <0x1b>;
-> > +             #sound-dai-cells =3D <0>;
-> > +             DRVDD-supply =3D <&reg_3p3v>;
-> > +             AVDD-supply =3D <&reg_3p3v>;
-> > +             IOVDD-supply =3D <&reg_3p3v>;
-> > +             DVDD-supply =3D <&reg_3p3v>;
-> > +             ai3x-ocmv =3D <0>;
-> > +             reset-gpios =3D <&gpio4 5 GPIO_ACTIVE_LOW>;
-> > +             ai3x-gpio-func =3D <
-> > +                     0 /* AIC3X_GPIO1_FUNC_DISABLED */
-> > +                     5 /* AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT */
-> > +             >;
-> > +     };
-> > +};
-> > +
-> > +&iomuxc {
-> > +     pinctrl-names =3D "default";
-> > +     pinctrl-0 =3D <&pinctrl_hog>;
-> > +
-> > +     imx6qdl-var-som-mx6 {
-> > +             pinctrl_hog: hoggrp {
-> > +                     fsl,pins =3D <
-> > +                             /* CTW6120 IRQ */
-> > +                             MX6QDL_PAD_EIM_DA7__GPIO3_IO07          0=
-x80000000
-> > +                             /* SDMMC2 CD/WP */
-> > +                             MX6QDL_PAD_KEY_COL4__GPIO4_IO14         0=
-x80000000
-> > +                             MX6QDL_PAD_KEY_ROW4__GPIO4_IO15         0=
-x80000000
-> > +                     >;
-> > +             };
-> > +
-> > +             pinctrl_audmux: audmux {
->
-> It does not look like you tested the DTS against bindings. Please run
-> `make dtbs_check` (see
-> Documentation/devicetree/bindings/writing-schema.rst or
-> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sou=
-rces-with-the-devicetree-schema/
-> for instructions).
->
-> AFAIR, all of them end with grp
+-- 
+Best regards,
+Dmitry
 
-Ah, that's def throwing a bunch of warnings, although quite a few look
-to be existing
-issues in dependent dtsi files. I'll clean up what I can there.
-
->
->
-> ...
->
-> > +
-> > +&usdhc3 {
-> > +     pinctrl-names =3D "default", "state_100mhz", "state_200mhz";
-> > +     pinctrl-0 =3D <&pinctrl_usdhc3>;
-> > +     pinctrl-1 =3D <&pinctrl_usdhc3_100mhz>;
-> > +     pinctrl-2 =3D <&pinctrl_usdhc3_200mhz>;
-> > +     bus-width =3D <4>;
-> > +     vmmc-supply =3D <&reg_wl18xx_vmmc>;
-> > +     non-removable;
-> > +     wakeup-source;
-> > +     keep-power-in-suspend;
-> > +     cap-power-off-card;
-> > +     #address-cells =3D <1>;
-> > +     #size-cells =3D <0>;
-> > +     status =3D "okay";
-> > +
-> > +     wlcore: wlcore@0 {
->
-> Generic node names. Is this wifi?
-
-I think it also supports bluetooth technically, although that might be
-under a different node.
-
->
-> https://devicetree-specification.readthedocs.io/en/latest/chapter2-device=
-tree-basics.html#generic-names-recommendation
->
-> > +             compatible =3D "ti,wl1835";
-> > +             reg =3D <2>;
->
->
-> Best regards,
-> Krzysztof
->
