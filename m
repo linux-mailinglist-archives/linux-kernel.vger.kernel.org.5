@@ -2,124 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE135759388
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9B2759393
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbjGSK4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37142 "EHLO
+        id S229919AbjGSK7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjGSK4m (ORCPT
+        with ESMTP id S229611AbjGSK7K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:56:42 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 516DA189
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:56:40 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-51a52a7d859so1440923a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689764199; x=1692356199;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0cb3uJKvOt8I5jmhbZsvlqVNSIoteu3SKnCcD96px/Q=;
-        b=RRfaLI7MLZQZSoqDtZvBm0x8SmP9gMXxNavOUPcBWUSCXzw/PEIJdLgWjxGAB29uYK
-         0oJEtpZog0gAnag+9XxZvXjJB2mZTl6uZMXBkOwscERdcquWRhPom4plOqskCWGBi1f7
-         Nb+RXexS29zn7rr2zJSUuHpEJVWL/CIUPryAdMc6pBelMNlB10wC5fYbt6WyoUMl8uXF
-         gclttPhgn+GE84qw6LOcv4fA0aDGFt/7KK5zv0DgjRLEyvJdQ63vp5DkKwhmlvSOBjoQ
-         H+j62SVP9u5+ho7R/xtr+qTDmD9A3SG41iZTzt6EPpmHgw/bMtB3aGvi1dqLRD6xMly2
-         sohw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689764199; x=1692356199;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0cb3uJKvOt8I5jmhbZsvlqVNSIoteu3SKnCcD96px/Q=;
-        b=aYk4iUZY314SYw937HkECuFokZrUI629RtHVo8N2H8IP8IVV+FJav+EOWYKZ8T+CU9
-         NtkgOT9UyD+odxsolqtHqHevMkBhx8yodUAl9tBjggN48azpiH+lfYgUSk+5crzHpUCq
-         2hSVvcmSWu2MJ3k189OKfNMTvoCL4N2SRBCy7XQ5zOA5JtHsT56RtsTB7WtsJsDH9Ri7
-         Uj/NsBJvLuPTf2mcJVAORfwfXMSrLDqJdpm2zq1GZoM3Poic6cBI6oRDy0aQAlV31A38
-         Jryb2TaNXT44hQlze81A/JdBBwnyEFfuaKiu2r4Jsa8NOUZKTK8vEsm5JGv4q88oPbwz
-         lgcg==
-X-Gm-Message-State: ABy/qLYbFE4wxfcRUuChEVIC/EKxcdS9SDIGB2+oOu76QHev798j+RWe
-        GmDIJuL+f4IT9+EgsIrVAyyV8g==
-X-Google-Smtp-Source: APBJJlGQ3ePNgBtFehdx88Nyu/l+QC7MVDygtSlJZdbG1gOoT3v8ggTbM5uC2DFHqNgNaZbRUyNFUg==
-X-Received: by 2002:a05:6402:654:b0:521:ad49:8493 with SMTP id u20-20020a056402065400b00521ad498493mr2196390edx.6.1689764198806;
-        Wed, 19 Jul 2023 03:56:38 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id d15-20020a50fe8f000000b0051df6c2bb7asm2520009edt.38.2023.07.19.03.56.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 03:56:38 -0700 (PDT)
-Message-ID: <d08ff946-5b9c-8887-0445-e49a0c76618b@linaro.org>
-Date:   Wed, 19 Jul 2023 12:56:35 +0200
+        Wed, 19 Jul 2023 06:59:10 -0400
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB1F186
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:59:07 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 1299D60007;
+        Wed, 19 Jul 2023 10:58:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1689764346;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=INBu3P3S1gZdEhtPxSWbNhdhaThn/dov55l5MihIIxc=;
+        b=me1+yVQy2h5JS8f9pszwSrbXJrRxg1rUArG7+6vJ5euBuQMTh3l0c1xoPNGtUdqkKIebSN
+        SUVo1pA0k1vhhxZa+dqQuTU3DjkgcbaaM/QrWxwJg8Od4ZP7NSP3CJkbnY4x13Pmh+Urcp
+        zMfjsdUYEAkbrxk1gxEILiglpcK1cy+K4yrDNvLwU2JNuTDQjTPSmsGzPRpP353aiOJT1t
+        73dn1pdVy7NOab2thbwZMed3r1JvHLro3OZx5s52yxdeGdqpAhp6OTv/ehTvXT+5B5FQps
+        rOdUKwkx2Fz5Qj6ACS6PCO/MgzjtXY3S9jY/RG5kSeFT8NNz07/srx1sLf+m0Q==
+From:   Luca Ceresoli <luca.ceresoli@bootlin.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Luca Ceresoli <luca.ceresoli@bootlin.com>
+Subject: [PATCH] drm/panel: db7430: remove unused variables
+Date:   Wed, 19 Jul 2023 12:58:29 +0200
+Message-Id: <20230719105829.148011-1-luca.ceresoli@bootlin.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 7/9] dt-bindings: PCI: Add StarFive JH7110 PCIe
- controller
-Content-Language: en-US
-To:     Minda Chen <minda.chen@starfivetech.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20230719102057.22329-1-minda.chen@starfivetech.com>
- <20230719102057.22329-8-minda.chen@starfivetech.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230719102057.22329-8-minda.chen@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: luca.ceresoli@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/2023 12:20, Minda Chen wrote:
-> Add StarFive JH7110 SoC PCIe controller dt-bindings.
-> JH7110 using PLDA XpressRICH PCIe host controller IP.
-> 
-> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
-> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
-> ---
+These variables are never referenced in the code.
 
+Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+---
+ drivers/gpu/drm/panel/panel-samsung-db7430.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-...
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - "#interrupt-cells"
-> +  - interrupts
-> +  - interrupt-map-mask
-> +  - interrupt-map
-> +  - clocks
-> +  - resets
-> +  - starfive,stg-syscon
-> +  - msi-controller
-> +  - reset-gpios
-
-Same concern as previous binding patch.
-
-Best regards,
-Krzysztof
+diff --git a/drivers/gpu/drm/panel/panel-samsung-db7430.c b/drivers/gpu/drm/panel/panel-samsung-db7430.c
+index 117b26845083..14c6700e37b3 100644
+--- a/drivers/gpu/drm/panel/panel-samsung-db7430.c
++++ b/drivers/gpu/drm/panel/panel-samsung-db7430.c
+@@ -56,10 +56,6 @@ struct db7430 {
+ 	struct mipi_dbi dbi;
+ 	/** @panel: the DRM panel instance for this device */
+ 	struct drm_panel panel;
+-	/** @width: the width of this panel in mm */
+-	u32 width;
+-	/** @height: the height of this panel in mm */
+-	u32 height;
+ 	/** @reset: reset GPIO line */
+ 	struct gpio_desc *reset;
+ 	/** @regulators: VCCIO and VIO supply regulators */
+-- 
+2.34.1
 
