@@ -2,88 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5711C759F00
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B00759EE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231296AbjGSTws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 15:52:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
+        id S230205AbjGSTlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 15:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjGSTwq (ORCPT
+        with ESMTP id S230062AbjGSTlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 15:52:46 -0400
-X-Greylist: delayed 654 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 19 Jul 2023 12:52:44 PDT
-Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD3CA7
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:52:44 -0700 (PDT)
-Received: from [2601:18c:8180:ac39:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1qMD3N-0007gS-36;
-        Wed, 19 Jul 2023 15:41:41 -0400
-Date:   Wed, 19 Jul 2023 15:41:37 -0400
-From:   Rik van Riel <riel@surriel.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com
-Subject: [PATCH] mm,memblock: reset memblock.reserved to system init state
- to  prevent UAF
-Message-ID: <20230719154137.732d8525@imladris.surriel.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Sender: riel@surriel.com
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 19 Jul 2023 15:41:51 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605A51FCD
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:41:50 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-573d70da2afso628017b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:41:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689795709; x=1692387709;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x0CVjOuwJCEU6INafeYJW4NN7Sz04k19DziuQ/frsrc=;
+        b=qj6RNkQvx9b7ihLOFjXaxIJDfFaOk5oOFW55Bn7dQ8BAde01HPZ47q4Gp4GjFBfRnS
+         UXvE+Jj3ZAZGauBvN6rBTxNWjNJ3r82WvhogDTokd8gYZEyUYpp9T2uNDfIS2U2uLcr4
+         14com1XaWcy/uZ1GKkzKC7ewufFIZSGcZ1pEg6jn/L1a9jj0rg3ZUW8Ixjg3fpGOABJK
+         qfw8JDgFyKgUCxxgJrHmion24bLWnGHZk0Uj6QbLgUutIpjleN3niU1GlAYGEQyoQJSD
+         cEwZNdr0dopLkYGv+t09ohXkDWuAQKL99iZ00oC8VV5g8KmUfm6h/K3cvuJY5C8zI+8V
+         xfUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689795709; x=1692387709;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=x0CVjOuwJCEU6INafeYJW4NN7Sz04k19DziuQ/frsrc=;
+        b=W7LEGhSQddsU4Em97IuyQ0Y5xDMrvHPJJBb3vpYLjPXzBfDyHkffvAF8N1e4Z2DCxD
+         NXp4W1mTfvNaGyok5vpNB+zerkpLBpYr0WgLwzm/lyKup1M9SetxxO2hFPGKcszOdoOa
+         NJR+W7DyMKBPi7wj4Cnky1DT4YtdMPCKp2Fqf2beHywt06VA6KkYVqYghzaOQjkGw1J+
+         iPn2TcrZD4xsLwJ2aHiVsbFIctBA3TaDP86wNUmiKLOwtbtC4bFDCUDTOqKo6+ASwRSV
+         X4CSZPM5+mliXhZDlya92cte9TEyae5clOh3NMXIhz0wKVRfxqT0eWiChf1Ws9foNf4t
+         zWLQ==
+X-Gm-Message-State: ABy/qLYMm/Fnzzly9qbq6mosDr7nhyazPTgS4q+zAy/vqH39MULroTZi
+        SpHp5j9aOL7qEkm/a7nun89OhR8KwP4=
+X-Google-Smtp-Source: APBJJlFlTWBq1xUnrehbktU8BMZ3/Sc67KZ1X3VYSFrMj9t7RBT0ytEGf0/+DYMncBfcubUCwqIX4dNvD6s=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:ad5a:0:b0:577:617b:f881 with SMTP id
+ l26-20020a81ad5a000000b00577617bf881mr487ywk.8.1689795709610; Wed, 19 Jul
+ 2023 12:41:49 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 12:41:47 -0700
+In-Reply-To: <e44a9a1a-0826-dfa7-4bd9-a11e5790d162@intel.com>
+Mime-Version: 1.0
+References: <20230511040857.6094-1-weijiang.yang@intel.com>
+ <ZIufL7p/ZvxjXwK5@google.com> <147246fc-79a2-3bb5-f51f-93dfc1cffcc0@intel.com>
+ <ZIyiWr4sR+MqwmAo@google.com> <c438b5b1-b34d-3e77-d374-37053f4c14fa@intel.com>
+ <ZJYF7haMNRCbtLIh@google.com> <e44a9a1a-0826-dfa7-4bd9-a11e5790d162@intel.com>
+Message-ID: <ZLg8ezG/XrZH+KGD@google.com>
+Subject: Re: [PATCH v3 00/21] Enable CET Virtualization
+From:   Sean Christopherson <seanjc@google.com>
+To:     Weijiang Yang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        rppt@kernel.org, binbin.wu@linux.intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com,
+        Chao Gao <chao.gao@intel.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The memblock_discard function frees the memblock.reserved.regions
-array, which is good.
+On Mon, Jul 17, 2023, Weijiang Yang wrote:
+>=20
+> On 6/24/2023 4:51 AM, Sean Christopherson wrote:
+> > > 1)Add Supervisor Shadow Stack=EF=BF=BD state support(i.e., XSS.bit12(=
+CET_S)) into
+> > > kernel so that host can support guest Supervisor Shadow Stack MSRs in=
+ g/h FPU
+> > > context switch.
+> > If that's necessary for correct functionality, yes.
 
-However, if a subsequent memblock_free (or memblock_phys_free) comes
-in later, from for example ima_free_kexec_buffer, that will result in
-a use after free bug in memblock_isolate_range.
+...
 
-When running a kernel with CONFIG_KASAN enabled, this will cause a
-kernel panic very early in boot. Without CONFIG_KASAN, there is
-a chance that memblock_isolate_range might scribble on memory
-that is now in use by somebody else.
+> the Pros:
+> =EF=BF=BD- Super easy to implement for KVM.
+> =EF=BF=BD- Automatically avoids saving and restoring this data when the v=
+mexit
+> =EF=BF=BD=EF=BF=BD is handled within KVM.
+>=20
+> the Cons:
+> =EF=BF=BD- Unnecessarily restores XFEATURE_CET_KERNEL when switching to
+> =EF=BF=BD=EF=BF=BD non-KVM task's userspace.
+> =EF=BF=BD- Forces allocating space for this state on all tasks, whether o=
+r not
+> =EF=BF=BD=EF=BF=BD they use KVM, and with likely zero users today and the=
+ near future.
+> =EF=BF=BD- Complicates the FPU optimization thinking by including things =
+that
+> =EF=BF=BD=EF=BF=BD can have no affect on userspace in the FPU
+>=20
+> Given above reasons, I implemented guest CET supervisor states management
+> in KVM instead of adding a kernel patch for it.
+>=20
+> Below are 3 KVM patches to support it:
+>=20
+> Patch 1: Save/reload guest CET supervisor states when necessary:
+>=20
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+> commit 16147ede75dee29583b7d42a6621d10d55b63595
+> Author: Yang Weijiang <weijiang.yang@intel.com>
+> Date:=EF=BF=BD=EF=BF=BD Tue Jul 11 02:26:17 2023 -0400
+>=20
+> =EF=BF=BD=EF=BF=BD=EF=BF=BD KVM:x86: Make guest supervisor states as non-=
+XSAVE managed
+>=20
+> =EF=BF=BD=EF=BF=BD=EF=BF=BD Save and reload guest CET supervisor states, =
+i.e.,PL{0,1,2}_SSP,
+> =EF=BF=BD=EF=BF=BD=EF=BF=BD when vCPU context is being swapped before and=
+ after userspace
+> =EF=BF=BD=EF=BF=BD=EF=BF=BD <->kernel entry, also do the same operation w=
+hen vCPU is sched-in
+> =EF=BF=BD=EF=BF=BD=EF=BF=BD or sched-out.
 
-Avoid those issues by making sure that memblock_discard points
-memblock.reserved.regions back at the static buffer.
+...
 
-If memblock_discard is called while there is still memory
-in the memblock.reserved type, that will print a warning
-in memblock_remove_region.
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index e2c549f147a5..7d9cfb7e2fe8 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -11212,6 +11212,31 @@ static void kvm_put_guest_fpu(struct kvm_vcpu
+> *vcpu)
+> =EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD trace_kvm=
+_fpu(0);
+> =EF=BF=BD}
+>=20
+> +static void kvm_save_cet_supervisor_ssp(struct kvm_vcpu *vcpu)
+> +{
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD preempt_disable()=
+;
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD if (unlikely(gues=
+t_can_use(vcpu, X86_FEATURE_SHSTK))) {
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD rdmsrl(MSR_IA32_PL0_=
+SSP, vcpu->arch.cet_s_ssp[0]);
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD rdmsrl(MSR_IA32_PL1_=
+SSP, vcpu->arch.cet_s_ssp[1]);
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD rdmsrl(MSR_IA32_PL2_=
+SSP, vcpu->arch.cet_s_ssp[2]);
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD wrmsrl(MSR_IA32_PL0_=
+SSP, 0);
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD wrmsrl(MSR_IA32_PL1_=
+SSP, 0);
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD wrmsrl(MSR_IA32_PL2_=
+SSP, 0);
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD }
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD preempt_enable();
+> +}
+> +
+> +static void kvm_reload_cet_supervisor_ssp(struct kvm_vcpu *vcpu)
+> +{
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD preempt_disable()=
+;
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD if (unlikely(gues=
+t_can_use(vcpu, X86_FEATURE_SHSTK))) {
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD wrmsrl(MSR_IA32_PL0_=
+SSP, vcpu->arch.cet_s_ssp[0]);
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD wrmsrl(MSR_IA32_PL1_=
+SSP, vcpu->arch.cet_s_ssp[1]);
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD wrmsrl(MSR_IA32_PL2_=
+SSP, vcpu->arch.cet_s_ssp[2]);
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD }
+> +=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD preempt_enable();
+> +}
 
-Signed-off-by: Rik van Riel <riel@surriel.com>
----
- mm/memblock.c | 4 ++++
- 1 file changed, 4 insertions(+)
+My understanding is that PL[0-2]_SSP are used only on transitions to the
+corresponding privilege level from a *different* privilege level.  That mea=
+ns
+KVM should be able to utilize the user_return_msr framework to load the hos=
+t
+values.  Though if Linux ever supports SSS, I'm guessing the core kernel wi=
+ll
+have some sort of mechanism to defer loading MSR_IA32_PL0_SSP until an exit=
+ to
+userspace, e.g. to avoid having to write PL0_SSP, which will presumably be
+per-task, on every context switch.
 
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 3feafea06ab2..068289a46903 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -374,6 +374,10 @@ void __init memblock_discard(void)
- 			kfree(memblock.reserved.regions);
- 		else
- 			memblock_free_late(addr, size);
-+		/* Reset to prevent UAF from stray frees. */
-+		memblock.reserved.regions = memblock_reserved_init_regions;
-+		memblock.reserved.cnt = 1;
-+		memblock_remove_region(&memblock.reserved, 0);
- 	}
- 
- 	if (memblock.memory.regions != memblock_memory_init_regions) {
--- 
-2.34.1
+But note my original wording: **If that's necessary**
 
+If nothing in the host ever consumes those MSRs, i.e. if SSS is NOT enabled=
+ in
+IA32_S_CET, then running host stuff with guest values should be ok.  KVM on=
+ly
+needs to guarantee that it doesn't leak values between guests.  But that sh=
+ould
+Just Work, e.g. KVM should load the new vCPU's values if SHSTK is exposed t=
+o the
+guest, and intercept (to inject #GP) if SHSTK is not exposed to the guest.
 
+And regardless of what the mechanism ends up managing SSP MSRs, it should o=
+nly
+ever touch PL0_SSP, because Linux never runs anything at CPL1 or CPL2, i.e.=
+ will
+never consume PL{1,2}_SSP.
+
+Am I missing something?
