@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E39758A5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 02:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83FD758A42
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 02:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbjGSAvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 20:51:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46986 "EHLO
+        id S229945AbjGSAuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 20:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbjGSAvC (ORCPT
+        with ESMTP id S229918AbjGSAuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 20:51:02 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9393198E
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 17:50:18 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-763a2e39b88so624562585a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 17:50:18 -0700 (PDT)
+        Tue, 18 Jul 2023 20:50:39 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41551BF7
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 17:50:19 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-7672303c831so582747685a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 17:50:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance.com; s=google; t=1689727818; x=1692319818;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=lELx1Jor3ryyghgQ+HYk7Hk999TnyRY5ELpyAOdCAo8=;
-        b=kh51wAObPhNEmOAF6xUu3EksFG8Jzcd7WXjvKK6sY85ydx0oCAjbKfJr7SfAn8ZIn3
-         OGDI5Sza40VPT51V90ZS6M8PG8voBghdWBcI5NkF1Ln/E2NjdGFfN7ylSyhZB3H/2qSs
-         Eux2cQM7uyHorES3YiVvkdVicwQZiumEj2S/+chWRKgcpZyK9fkMR/CLDlpe+s84ardD
-         AKBPhERrtDXd34zmfEnd3tYdQcRIeQYrqvfg1/Y0DzpVit92JSl6lqih2sFM3FuYrzAZ
-         fDskheDYTg3t3x7D1pKzM5RwsL+n/HiUxZZYtcVnsMAhT0q+Xp+oLec11WIcU0wG0jf8
-         03Hw==
+        bh=sPwhBmtD9OJVg+4DzOYL256xxaoXc/AZRhsCaKboFfQ=;
+        b=Zfsg98WIgY3dgqQOhdM9OAVFqPKJRz3yNitUZviHPLo8OICH8/ZXeMciH1E2lvVC1/
+         WQvvNe6PKKqimbaiIqj3LDH7lfrsKB75ErVF7KEisUxO81NDcKvEP1ksOG0gS0q1uina
+         NKwbA9SMEAQ2Shk1tQNxk3aIFrV6Cb5K3YTvQcaifZDHat7ikr/1J3s/lnHkOZg7/7k0
+         uAqN7l2ohxoCr4PLTpodnRAgI7ZI8bktML3sVuatZHFX0PZII/lQpXB/KCJ69kPptn+Q
+         Y7BvncJSgJ3X7J0wjOrbBcMg96cQK58DPadsZuENr1qj2c7auxRvhplDNYUOWhSiijFv
+         mdew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1689727818; x=1692319818;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lELx1Jor3ryyghgQ+HYk7Hk999TnyRY5ELpyAOdCAo8=;
-        b=BirYATpAIsNkQ5CIYOTHtfv8pWB3SLZJt7fSlv663YP/QMeUvJCjKCyk6sTuwxGwVI
-         5kU4/8pl6qsXF8myK1wonmrQRyNB/dXZD4hFi8WcPwGbKPMpwLJWnLNeW0HBF5DrmKTk
-         FAR7jW3I6kWXTUDt5u/HXbyrwaOSoOHHdmc47O7rK8700bMqcLmpp5/pOa3KxjwCxpZ1
-         LEWGFuYI8F+mN+6frAJN5HgGQsbKoa0Sf1CjbQe0x2CD+qNL8jRjq2JhOodG5OTu/Pbr
-         7NWkZ45D9dy0HgdSPn8zFnzQaplMiz93q3Or8QHD/MI92dIh0C1GH6aNTQJ4lO1U0oH1
-         vXjQ==
-X-Gm-Message-State: ABy/qLb5T9bvlQTWrjOCny4g5YugNmOB1INc5obMSW9KxmECyd/UtOPM
-        jPYzv42/pQ4wViFlhLaM1oW10w==
-X-Google-Smtp-Source: APBJJlHUp6yi3x2n9nRDT4fU8CPFc7u1hcZSiQvsFocXnMLLx8X+n9M7kAdjrUgvmbOkC1g5qOsF3Q==
-X-Received: by 2002:a05:620a:8c13:b0:765:9e6b:139e with SMTP id qz19-20020a05620a8c1300b007659e6b139emr1162065qkn.16.1689727817783;
-        Tue, 18 Jul 2023 17:50:17 -0700 (PDT)
+        bh=sPwhBmtD9OJVg+4DzOYL256xxaoXc/AZRhsCaKboFfQ=;
+        b=AkoHdXeQGzhWJcrUCnn454SxXspQgdQzUL75YbZF7a/clvAahfKPEhMxGW3OPruJKV
+         f/tU9Q8Ga2KOnUZZ/I9C4RdRxZq3ZuV9stce121g18N0X0tkJAyqbCsTJrr8IidceBLw
+         xKSXrOAZ88qAFa4/WSTK8Ed1yKhqdXLrN+Md8Y2NxXl0Aa8SU/dcg6ReIw28lEtUbEyI
+         MfhSaH+o/2N0AUTFx5zx9yi5d5QOv4QYE46qNbqCYjLmhmC28o0aABwEjzjKpVRuBtee
+         0XS1VcrDpAdgnnfaTfaYo4rDZtHqIK902UYv+9xDEikI+3TCEc/PtDX1a+yM7e4PfjJB
+         UQEg==
+X-Gm-Message-State: ABy/qLYnwbXV8iOlxoeBc+sc5eRJzjFNS/gnOMp3uHrbSRBAWWVWSaUL
+        BHjW5V0fctMu8TZo21GKwQhuvA==
+X-Google-Smtp-Source: APBJJlGXGRD0guPH/Jjx0e35MhLHJF0cvmxP5fhz+u5q+QQsjgsXv0HLDTaM2Pxw5w2Z5rNWOkfgmQ==
+X-Received: by 2002:a05:620a:2447:b0:767:1293:f43e with SMTP id h7-20020a05620a244700b007671293f43emr22685654qkn.49.1689727818622;
+        Tue, 18 Jul 2023 17:50:18 -0700 (PDT)
 Received: from [172.17.0.7] ([130.44.212.112])
         by smtp.gmail.com with ESMTPSA id c5-20020a05620a11a500b0076738337cd1sm968696qkk.1.2023.07.18.17.50.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 17:50:17 -0700 (PDT)
+        Tue, 18 Jul 2023 17:50:18 -0700 (PDT)
 From:   Bobby Eshleman <bobby.eshleman@bytedance.com>
-Date:   Wed, 19 Jul 2023 00:50:14 +0000
-Subject: [PATCH RFC net-next v5 10/14] virtio/vsock: add
- VIRTIO_VSOCK_F_DGRAM feature bit
+Date:   Wed, 19 Jul 2023 00:50:15 +0000
+Subject: [PATCH RFC net-next v5 11/14] vhost/vsock: implement datagram
+ support
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230413-b4-vsock-dgram-v5-10-581bd37fdb26@bytedance.com>
+Message-Id: <20230413-b4-vsock-dgram-v5-11-581bd37fdb26@bytedance.com>
 References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
 In-Reply-To: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
 To:     Stefan Hajnoczi <stefanha@redhat.com>,
@@ -80,8 +80,7 @@ Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
         Krasnov Arseniy <oxffffaa@gmail.com>, kvm@vger.kernel.org,
         virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        bpf@vger.kernel.org, Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>
+        bpf@vger.kernel.org, Bobby Eshleman <bobby.eshleman@bytedance.com>
 X-Mailer: b4 0.12.2
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -93,26 +92,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds a feature bit for virtio vsock to support datagrams.
+This commit implements datagram support for vhost/vsock by teaching
+vhost to use the common virtio transport datagram functions.
 
-Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+If the virtio RX buffer is too small, then the transmission is
+abandoned, the packet dropped, and EHOSTUNREACH is added to the socket's
+error queue.
+
 Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
 ---
- include/uapi/linux/virtio_vsock.h | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/vhost/vsock.c    | 62 +++++++++++++++++++++++++++++++++++++++++++++---
+ net/vmw_vsock/af_vsock.c |  5 +++-
+ 2 files changed, 63 insertions(+), 4 deletions(-)
 
-diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
-index 331be28b1d30..27b4b2b8bf13 100644
---- a/include/uapi/linux/virtio_vsock.h
-+++ b/include/uapi/linux/virtio_vsock.h
-@@ -40,6 +40,7 @@
+diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+index d5d6a3c3f273..da14260c6654 100644
+--- a/drivers/vhost/vsock.c
++++ b/drivers/vhost/vsock.c
+@@ -8,6 +8,7 @@
+  */
+ #include <linux/miscdevice.h>
+ #include <linux/atomic.h>
++#include <linux/errqueue.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+ #include <linux/vmalloc.h>
+@@ -32,7 +33,8 @@
+ enum {
+ 	VHOST_VSOCK_FEATURES = VHOST_FEATURES |
+ 			       (1ULL << VIRTIO_F_ACCESS_PLATFORM) |
+-			       (1ULL << VIRTIO_VSOCK_F_SEQPACKET)
++			       (1ULL << VIRTIO_VSOCK_F_SEQPACKET) |
++			       (1ULL << VIRTIO_VSOCK_F_DGRAM)
+ };
  
- /* The feature bitmap for virtio vsock */
- #define VIRTIO_VSOCK_F_SEQPACKET	1	/* SOCK_SEQPACKET supported */
-+#define VIRTIO_VSOCK_F_DGRAM		3	/* SOCK_DGRAM supported */
+ enum {
+@@ -56,6 +58,7 @@ struct vhost_vsock {
+ 	atomic_t queued_replies;
  
- struct virtio_vsock_config {
- 	__le64 guest_cid;
+ 	u32 guest_cid;
++	bool dgram_allow;
+ 	bool seqpacket_allow;
+ };
+ 
+@@ -86,6 +89,32 @@ static struct vhost_vsock *vhost_vsock_get(u32 guest_cid)
+ 	return NULL;
+ }
+ 
++/* Claims ownership of the skb, do not free the skb after calling! */
++static void
++vhost_transport_error(struct sk_buff *skb, int err)
++{
++	struct sock_exterr_skb *serr;
++	struct sock *sk = skb->sk;
++	struct sk_buff *clone;
++
++	serr = SKB_EXT_ERR(skb);
++	memset(serr, 0, sizeof(*serr));
++	serr->ee.ee_errno = err;
++	serr->ee.ee_origin = SO_EE_ORIGIN_NONE;
++
++	clone = skb_clone(skb, GFP_KERNEL);
++	if (!clone)
++		return;
++
++	if (sock_queue_err_skb(sk, clone))
++		kfree_skb(clone);
++
++	sk->sk_err = err;
++	sk_error_report(sk);
++
++	kfree_skb(skb);
++}
++
+ static void
+ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+ 			    struct vhost_virtqueue *vq)
+@@ -160,9 +189,15 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+ 		hdr = virtio_vsock_hdr(skb);
+ 
+ 		/* If the packet is greater than the space available in the
+-		 * buffer, we split it using multiple buffers.
++		 * buffer, we split it using multiple buffers for connectible
++		 * sockets and drop the packet for datagram sockets.
+ 		 */
+ 		if (payload_len > iov_len - sizeof(*hdr)) {
++			if (le16_to_cpu(hdr->type) == VIRTIO_VSOCK_TYPE_DGRAM) {
++				vhost_transport_error(skb, EHOSTUNREACH);
++				continue;
++			}
++
+ 			payload_len = iov_len - sizeof(*hdr);
+ 
+ 			/* As we are copying pieces of large packet's buffer to
+@@ -394,6 +429,7 @@ static bool vhost_vsock_more_replies(struct vhost_vsock *vsock)
+ 	return val < vq->num;
+ }
+ 
++static bool vhost_transport_dgram_allow(u32 cid, u32 port);
+ static bool vhost_transport_seqpacket_allow(u32 remote_cid);
+ 
+ static struct virtio_transport vhost_transport = {
+@@ -410,7 +446,8 @@ static struct virtio_transport vhost_transport = {
+ 		.cancel_pkt               = vhost_transport_cancel_pkt,
+ 
+ 		.dgram_enqueue            = virtio_transport_dgram_enqueue,
+-		.dgram_allow              = virtio_transport_dgram_allow,
++		.dgram_allow              = vhost_transport_dgram_allow,
++		.dgram_addr_init          = virtio_transport_dgram_addr_init,
+ 
+ 		.stream_enqueue           = virtio_transport_stream_enqueue,
+ 		.stream_dequeue           = virtio_transport_stream_dequeue,
+@@ -443,6 +480,22 @@ static struct virtio_transport vhost_transport = {
+ 	.send_pkt = vhost_transport_send_pkt,
+ };
+ 
++static bool vhost_transport_dgram_allow(u32 cid, u32 port)
++{
++	struct vhost_vsock *vsock;
++	bool dgram_allow = false;
++
++	rcu_read_lock();
++	vsock = vhost_vsock_get(cid);
++
++	if (vsock)
++		dgram_allow = vsock->dgram_allow;
++
++	rcu_read_unlock();
++
++	return dgram_allow;
++}
++
+ static bool vhost_transport_seqpacket_allow(u32 remote_cid)
+ {
+ 	struct vhost_vsock *vsock;
+@@ -799,6 +852,9 @@ static int vhost_vsock_set_features(struct vhost_vsock *vsock, u64 features)
+ 	if (features & (1ULL << VIRTIO_VSOCK_F_SEQPACKET))
+ 		vsock->seqpacket_allow = true;
+ 
++	if (features & (1ULL << VIRTIO_VSOCK_F_DGRAM))
++		vsock->dgram_allow = true;
++
+ 	for (i = 0; i < ARRAY_SIZE(vsock->vqs); i++) {
+ 		vq = &vsock->vqs[i];
+ 		mutex_lock(&vq->mutex);
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index e73f3b2c52f1..449ed63ac2b0 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -1427,9 +1427,12 @@ int vsock_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+ 		return prot->recvmsg(sk, msg, len, flags, NULL);
+ #endif
+ 
+-	if (flags & MSG_OOB || flags & MSG_ERRQUEUE)
++	if (unlikely(flags & MSG_OOB))
+ 		return -EOPNOTSUPP;
+ 
++	if (unlikely(flags & MSG_ERRQUEUE))
++		return sock_recv_errqueue(sk, msg, len, SOL_VSOCK, 0);
++
+ 	transport = vsk->transport;
+ 
+ 	/* Retrieve the head sk_buff from the socket's receive queue. */
 
 -- 
 2.30.2
