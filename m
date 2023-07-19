@@ -2,87 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73247759297
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61474759291
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbjGSKST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40778 "EHLO
+        id S229883AbjGSKSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbjGSKSM (ORCPT
+        with ESMTP id S230435AbjGSKR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:18:12 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C611FCB
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:18:04 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-993d1f899d7so939130566b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:18:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1689761883; x=1692353883;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3NsOzwLbyHagOj0RUJh6oS60oUKmYlB8RPkDGxAGY18=;
-        b=O2pnEuPln44glMdeg60thEUz2OpSqZ/q0d5NCNBMcNGZ3PPVNAri3R+01Ku599baiT
-         iW+V/lvASTxjNqKmCemBNSYN1Dhb+8BVv36AOBGTTn+bUHhTq8tfW0SW4HfF55T1cxR9
-         hVVjk7uLRDQdZ14Tg9GhicKs6HPVRmQjK3hE8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689761883; x=1692353883;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3NsOzwLbyHagOj0RUJh6oS60oUKmYlB8RPkDGxAGY18=;
-        b=WC410mzeWfiHx1tUUzhqRFDAfeiKZSSQYtFcaqEsjcebWRQWHVGY2/iPiXfx3fkG7l
-         DTcjmXq3XMGE/2DKqo/kzkM/C6WvBDiOqwVwcVW3uO6+bs1lHJQp3KNaVRCbeIOnlfMj
-         /4NedEpX74ONcQnRLLWCgDtEIK4Yt8ZKuBI8VcxpHvsLfKafS5x8ZbVgAhI4zpLx2rMT
-         acsw/JI7iVUovX0TdIIEBTfWPievidKI7AdnSLiOzPkqCCUQRMoXPBmfSfnX+hLInoVr
-         nS4I3xHlGkGfmgVh5rLhZpYpE4dd55BouPQDSSzzrffXF77itwETKJzT2eF76sJ7nvge
-         /Y+w==
-X-Gm-Message-State: ABy/qLZJUSPiqDMDi9VS5gNaS/56MO4g3N0HiSiCRm0L7eexcYW2+pNP
-        CKUyuNiE4WLl/HKDWY5RUStqlNVA9/4X5DncOjOgYQ==
-X-Google-Smtp-Source: APBJJlGoD/VxR3BbFv+ImtFMoe6c5kQO9wv+u3g62HEJx8HqwwhtWvu3lLeGD/sLRyF77FLO7GXKEdXGcjmXqyU+fkQ=
-X-Received: by 2002:a17:906:2213:b0:974:1ef1:81ad with SMTP id
- s19-20020a170906221300b009741ef181admr2102985ejs.4.1689761883028; Wed, 19 Jul
- 2023 03:18:03 -0700 (PDT)
+        Wed, 19 Jul 2023 06:17:57 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BB71BEF
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:17:55 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R5Wwd4QVkzBRDrb
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 18:17:53 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689761873; x=1692353874; bh=OPzYp2r3St+A8ub/rS9zAYkNqGK
+        Z1nd9QbmIsgDXZNg=; b=uWICH71hDS+2mPc980QwOBS8Chqp4GncOtzGK93Q0Xt
+        GV0XQAI21kBFQ+KRVxRLzLeFsVByx2I6WcmV9Yo7RTars7rXqgAPzpcvd+h/aI6Z
+        kXjKB7SSyiU0WWgtUs3iMUBaYfcIybrnCrIOjONPxBKuQe3qNYkljVedjr8lKTiU
+        Qjw7hi8skfrBa0Y4BkZYagD8m7f1mDIu5+9ROeP7cHOha/12hYrCU3K+7OYO/i4m
+        aLH4AxzQNED5G3m8HKFElwyZDO9cWgIaDDYmJ38xouGdzyGwwZcFd0LsLrbMVJUh
+        j2yrS7n4IIBXHho19nYfUeVKT0BrcMkLj00cEKogl1Q==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 7ISv8rsiYlLf for <linux-kernel@vger.kernel.org>;
+        Wed, 19 Jul 2023 18:17:53 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R5Wwd2JQ1zBRDrT;
+        Wed, 19 Jul 2023 18:17:53 +0800 (CST)
 MIME-Version: 1.0
-References: <20230629155433.4170837-1-dhowells@redhat.com> <20230629155433.4170837-2-dhowells@redhat.com>
-In-Reply-To: <20230629155433.4170837-2-dhowells@redhat.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 19 Jul 2023 12:17:51 +0200
-Message-ID: <CAJfpegsJuvXJDcXpo9T19Gw0tDuvyOJdv44Y2bt04MEf1JLxGg@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/4] splice: Fix corruption of spliced data after
- splice() returns
-To:     David Howells <dhowells@redhat.com>
-Cc:     netdev@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Matt Whitlock <kernel@mattwhitlock.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@kvack.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Wed, 19 Jul 2023 18:17:53 +0800
+From:   huzhi001@208suo.com
+To:     trond.myklebust@hammerspace.com, anna@kernel.org
+Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] NFSv4.1: Fix errors in nfs4state.c
+In-Reply-To: <tencent_5D2B9BC6DA996AFC3A398652FB2DAD9BB207@qq.com>
+References: <tencent_5D2B9BC6DA996AFC3A398652FB2DAD9BB207@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <e19db8d4e30d076af0c9dc46413ad1df@208suo.com>
+X-Sender: huzhi001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Jun 2023 at 17:56, David Howells <dhowells@redhat.com> wrote:
->
-> Splicing data from, say, a file into a pipe currently leaves the source
-> pages in the pipe after splice() returns - but this means that those pages
-> can be subsequently modified by shared-writable mmap(), write(),
-> fallocate(), etc. before they're consumed.
+Signed-off-by: ZhiHu <huzhi001@208suo.com>
+---
+  fs/nfs/nfs4state.c | 58 ++++++++++++++++++++++------------------------
+  1 file changed, 28 insertions(+), 30 deletions(-)
 
-What is this trying to fix?   The above behavior is well known, so
-it's not likely to be a problem.
-
-Besides, removing spliced pages from the cache is basically guaranteed
-to result in a performance regression for any application using
-splice.
-
-Thanks,
-Miklos
+diff --git a/fs/nfs/nfs4state.c b/fs/nfs/nfs4state.c
+index bbe49315d99e..8fedb9a4efd5 100644
+--- a/fs/nfs/nfs4state.c
++++ b/fs/nfs/nfs4state.c
+@@ -788,14 +788,14 @@ static void __nfs4_close(struct nfs4_state *state,
+      /* Protect against nfs4_find_state() */
+      spin_lock(&owner->so_lock);
+      switch (fmode & (FMODE_READ | FMODE_WRITE)) {
+-        case FMODE_READ:
+-            state->n_rdonly--;
+-            break;
+-        case FMODE_WRITE:
+-            state->n_wronly--;
+-            break;
+-        case FMODE_READ|FMODE_WRITE:
+-            state->n_rdwr--;
++    case FMODE_READ:
++        state->n_rdonly--;
++        break;
++    case FMODE_WRITE:
++        state->n_wronly--;
++        break;
++    case FMODE_READ|FMODE_WRITE:
++        state->n_rdwr--;
+      }
+      newstate = FMODE_READ|FMODE_WRITE;
+      if (state->n_rdwr == 0) {
+@@ -905,9 +905,8 @@ void nfs4_free_lock_state(struct nfs_server *server, 
+struct nfs4_lock_state *lsp
+  static struct nfs4_lock_state *nfs4_get_lock_state(struct nfs4_state 
+*state, fl_owner_t owner)
+  {
+      struct nfs4_lock_state *lsp, *new = NULL;
+-
+      for(;;) {
+-        spin_lock(&state->state_lock);
++        spin_lock (&state->state_lock);
+          lsp = __nfs4_find_lock_state(state, owner, NULL);
+          if (lsp != NULL)
+              break;
+@@ -1120,25 +1119,25 @@ void nfs_free_seqid(struct nfs_seqid *seqid)
+  static void nfs_increment_seqid(int status, struct nfs_seqid *seqid)
+  {
+      switch (status) {
+-        case 0:
+-            break;
+-        case -NFS4ERR_BAD_SEQID:
+-            if (seqid->sequence->flags & NFS_SEQID_CONFIRMED)
+-                return;
+-            pr_warn_ratelimited("NFS: v4 server returned a bad"
+-                    " sequence-id error on an"
+-                    " unconfirmed sequence %p!\n",
+-                    seqid->sequence);
+-            return;
+-        case -NFS4ERR_STALE_CLIENTID:
+-        case -NFS4ERR_STALE_STATEID:
+-        case -NFS4ERR_BAD_STATEID:
+-        case -NFS4ERR_BADXDR:
+-        case -NFS4ERR_RESOURCE:
+-        case -NFS4ERR_NOFILEHANDLE:
+-        case -NFS4ERR_MOVED:
+-            /* Non-seqid mutating errors */
++    case 0:
++        break;
++    case -NFS4ERR_BAD_SEQID:
++        if (seqid->sequence->flags & NFS_SEQID_CONFIRMED)
+              return;
++        pr_warn_ratelimited("NFS: v4 server returned a bad"
++                " sequence-id error on an"
++                " unconfirmed sequence %p!\n",
++                seqid->sequence);
++        return;
++    case -NFS4ERR_STALE_CLIENTID:
++    case -NFS4ERR_STALE_STATEID:
++    case -NFS4ERR_BAD_STATEID:
++    case -NFS4ERR_BADXDR:
++    case -NFS4ERR_RESOURCE:
++    case -NFS4ERR_NOFILEHANDLE:
++    case -NFS4ERR_MOVED:
++        /* Non-seqid mutating errors */
++        return;
+      }
+      /*
+       * Note: no locking needed as we are guaranteed to be first
+@@ -1335,7 +1334,7 @@ int nfs4_client_recover_expired_lease(struct 
+nfs_client *clp)
+          if (ret != 0)
+              break;
+          if (!test_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state) &&
+-            !test_bit(NFS4CLNT_CHECK_LEASE,&clp->cl_state))
++            !test_bit(NFS4CLNT_CHECK_LEASE, &clp->cl_state))
+              break;
+          nfs4_schedule_state_manager(clp);
+          ret = -EIO;
+@@ -1643,7 +1642,6 @@ static int nfs4_reclaim_open_state(struct 
+nfs4_state_owner *sp,
+  #ifdef CONFIG_NFS_V4_2
+      bool found_ssc_copy_state = false;
+  #endif /* CONFIG_NFS_V4_2 */
+-
+      /* Note: we rely on the sp->so_states list being ordered
+       * so that we always reclaim open(O_RDWR) and/or open(O_WRITE)
+       * states first.
