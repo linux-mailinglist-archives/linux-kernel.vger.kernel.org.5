@@ -2,95 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92ADF758D32
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C726B758D34
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbjGSFek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 01:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59036 "EHLO
+        id S230020AbjGSFgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 01:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGSFei (ORCPT
+        with ESMTP id S229451AbjGSFgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 01:34:38 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BB01BF5;
-        Tue, 18 Jul 2023 22:34:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689744877; x=1721280877;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=OBalWpngnhMPgJxMwpZBYm8SQHbLKJ7zpmUckfVSeh4=;
-  b=XGXnNMd6dfsFWPi2DOExfF9EO63uYLtde0kNCJwD8B/iRBO/Os2j7Gf4
-   D+8P9Z9Vlq6nDaEPev5t0rvZyZ9EQ2HvKHks9SvRVm8hM85MGRdnJeEUd
-   wlUPwoNd7qct/eoW83oTfK22+eqcl5zoC5IuQORvGp9ZX44ESbQMraYfg
-   1YRvUujR62AImoV43tb9V2Fo/BooYv3+I3ipB5cB66zBN7GJrhxMYiat5
-   dL8WqLhPeYYVSbbNak+WjKMr/n8c2wBSLLDkLwCwGqcEkPvetZKiffXOr
-   /v2+qN+CJhCHX7Cv1Z08me3mG0ZpCwNKe17pTccy0SSFxfFXil/esOgVK
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="369022924"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="369022924"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 22:34:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="789289419"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="789289419"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP; 18 Jul 2023 22:34:33 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qLzpX-00DKc8-1C;
-        Wed, 19 Jul 2023 08:34:31 +0300
-Date:   Wed, 19 Jul 2023 08:34:31 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-omap@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] serial: core: Fix serial core port id to not use
- port->line
-Message-ID: <ZLd154hdaSG2lnue@smile.fi.intel.com>
-References: <20230719051235.46396-1-tony@atomide.com>
- <82c49602-8c6e-51c2-6f73-28fb9b458db8@kernel.org>
+        Wed, 19 Jul 2023 01:36:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F28D2;
+        Tue, 18 Jul 2023 22:36:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6246F60B4A;
+        Wed, 19 Jul 2023 05:36:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3810C433C8;
+        Wed, 19 Jul 2023 05:36:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689744968;
+        bh=d3/IxNuFlljicHq27zgThypsE9G9mnM25K7t3Fk1Ydw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DiKRDBeRYX7ESq/ogBKlUjPVwSz0hBHnVgLsDhViy+CGjZ582sXbGYCbff8xsb9gj
+         7PEa2XSMLvgX4C9f3/ntcW1TKTP1MMrxtjD62N9U3sfgY4SyTrHrrBn7Cxm87dfxvm
+         zX5d0VoeXsX0WgfMPELO7CIppkj3hj5JIG0lginY=
+Date:   Wed, 19 Jul 2023 07:36:04 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     =?utf-8?B?546L5piOLei9r+S7tuW6leWxguaKgOacr+mDqA==?= 
+        <machel@vivo.com>
+Cc:     Ajay Singh <ajay.kathat@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "opensource.kernel" <opensource.kernel@vivo.com>
+Subject: Re: [PATCH net v2] net: wireless: Use kfree_sensitive instead of
+ kfree
+Message-ID: <2023071950-nervous-grub-5ee3@gregkh>
+References: <20230719022041.663-1-machel@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <82c49602-8c6e-51c2-6f73-28fb9b458db8@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230719022041.663-1-machel@vivo.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 07:26:41AM +0200, Jiri Slaby wrote:
-> On 19. 07. 23, 7:12, Tony Lindgren wrote:
-
-...
-
-> >   	int			ctrl_id;		/* optional serial core controller id */
-> > +	int			port_id;		/* optional serial core port id */
+On Wed, Jul 19, 2023 at 02:21:16AM +0000, 王明-软件底层技术部 wrote:
+> key contains private part of the key, so better use
+> kfree_sensitive to free it.
 > 
-> Can the id be negative? If not, please use uint.
+> Fixes: 7cec84fdfd88 ("staging: wilc1000: split add_key() to avoid line over 80 chars")
+> Signed-off-by: Wang Ming <machel@vivo.com>
 
-Does this suggestion apply to ctrl_id as well?
-
--- 
-With Best Regards,
-Andy Shevchenko
+Why not also use 王明-软件底层技术部 <machel@vivo.com> here as well?
 
 
+> ---
+>  drivers/net/wireless/microchip/wilc1000/cfg80211.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+
+No change log from what changed from version 1?
+
+
+
+> 
+> diff --git a/drivers/net/wireless/microchip/wilc1000/cfg80211.c b/drivers/net/wireless/microchip/wilc1000/cfg80211.c
+> index b545d93c6e37..45bcadeba2da 100644
+> --- a/drivers/net/wireless/microchip/wilc1000/cfg80211.c
+> +++ b/drivers/net/wireless/microchip/wilc1000/cfg80211.c
+> @@ -518,7 +518,7 @@ static int wilc_wfi_cfg_allocate_wpa_igtk_entry(struct wilc_priv *priv, u8 idx)
+>  static int wilc_wfi_cfg_copy_wpa_info(struct wilc_wfi_key *key_info,
+>  				      struct key_params *params)
+>  {
+> -	kfree(key_info->key);
+> +	kfree_sensitive(key_info->key);
+>  
+>  	key_info->key = kmemdup(params->key, params->key_len, GFP_KERNEL);
+>  	if (!key_info->key)
+> @@ -656,7 +656,7 @@ static int del_key(struct wiphy *wiphy, struct net_device *netdev, int link_id,
+>  	if (!pairwise && (key_index == 4 || key_index == 5)) {
+>  		key_index -= 4;
+>  		if (priv->wilc_igtk[key_index]) {
+> -			kfree(priv->wilc_igtk[key_index]->key);
+> +			kfree_sensitive(priv->wilc_igtk[key_index]->key);
+
+Normally "kfree_sensitive()" is used at the end of a function for when
+kfree() of a local variable might not be called because the compiler
+thinks it is smarter than us and optimizes it away.
+
+Putting it here, in the normal operation, really doesn't do anything,
+right?  There's always going to be odd data in the heap and normal
+distros/users who care about that, always wipe the heap when doing new
+allocations as that's a kernel config option.
+
+So what exactly is this "fixing" here?  What is the bug?
+
+thanks,
+
+greg k-h
