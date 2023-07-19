@@ -2,222 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4BE758F9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4377D758F76
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbjGSHxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 03:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
+        id S229822AbjGSHsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 03:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbjGSHxS (ORCPT
+        with ESMTP id S230333AbjGSHrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 03:53:18 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D21D213A;
-        Wed, 19 Jul 2023 00:52:52 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 7DE98100030;
-        Wed, 19 Jul 2023 10:52:51 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 7DE98100030
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1689753171;
-        bh=g0miA95mALM0gUfzk2atlBJ3XUSuet59Uo+peHbHeWw=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=pj9ijqSZ4S/RUq6tpVHmALi0XmVlMHPaZMrwJQMV3FbpVT6H9fNgWE+wVUZvK++ps
-         IT9pc6pd6Zo7TmlqnyksFC1W1i5WJx0Wj4ukQXVz04tL73WVj/nWUVYXjadTvIwwf+
-         R3/5bRWnNZ2wwOuO8/3+P5XQFGb9bmWmnlFzTjQM2T+SH+0NuYj9K+UfshgIb1suDi
-         0GJ6/BGMKAkKk3J2H+eEZjzWtj7OAugiCtmwZXa7UMkFgvOFi/0X9cd8h5DES7eTi9
-         JI9X+S4RPVGzMQSop5CBwwsRxid9JErU8M3rBE3PQOqjJSr/egF7Y4pWTXmbbNlY3U
-         hzpIjNl/F2zLw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed, 19 Jul 2023 10:52:51 +0300 (MSK)
-Received: from [192.168.0.12] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 19 Jul 2023 10:52:50 +0300
-Message-ID: <7cd4b344-0c73-eade-e36a-654a5bad9662@sberdevices.ru>
-Date:   Wed, 19 Jul 2023 10:47:21 +0300
+        Wed, 19 Jul 2023 03:47:42 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F008B1736;
+        Wed, 19 Jul 2023 00:47:39 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 07:47:37 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1689752858;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=crG8yI+O19YDwNsTIzlOmC+Mf49wGu7sPAQKUPi6ugc=;
+        b=XzD4TUZ5x6YtlzybKbQliIBsCC7EYD8UmtqN41Ui5SX9D0HRiBxVbhneM8QnmL2wL1utB/
+        LhAESxtjqjEoNqHao38mqIzGtsSvCVS2xGI0SRj4XInckA5uUEHvTNPScdBOhtJKkfZIZb
+        pdWoVGTmbeCKyv/DjFMFIDl5SgcX8/ydcDyb1PgXonHz6zNWkzCuamaMArtLR8vPfnuRq2
+        eELraspdNktnRv65o0oX73r+b+9fIrU/1y1JhcVSQfro44rYIXCIl6hXLTg02SEYowAdrd
+        NdJyA6y5tCAH5Z01m7gGloHDAYgrxCghJOrdThRic6+bWKbzPcjvksGlQwyGuQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1689752858;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=crG8yI+O19YDwNsTIzlOmC+Mf49wGu7sPAQKUPi6ugc=;
+        b=XTaFpCDF/phJb3Faj0sH2FQ/LwGAIlMNVaFawpfdR1ciWGQv1hvECadDUPb7+yyLTxHOnZ
+        2AkmdBxMwLNl0YCg==
+From:   "tip-bot2 for Chin Yik Ming" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/headers: Rename task_struct::state to
+ task_struct::__state in the comments too
+Cc:     Chin Yik Ming <yikming2222@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230717064952.2804-1-yikming2222@gmail.com>
+References: <20230717064952.2804-1-yikming2222@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v2 2/4] vsock/virtio: support to send non-linear
- skb
-Content-Language: en-US
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20230718180237.3248179-1-AVKrasnov@sberdevices.ru>
- <20230718180237.3248179-3-AVKrasnov@sberdevices.ru>
- <20230718162202-mutt-send-email-mst@kernel.org>
- <1ac4be11-0814-05af-6c2e-8563ac15e206@sberdevices.ru>
- <4batgyn7pmxn2rysqpztuaim4dxtpfjbrjyyuodsct3qun7w5e@ebd45ngrsfut>
-From:   Arseniy Krasnov <avkrasnov@sberdevices.ru>
-In-Reply-To: <4batgyn7pmxn2rysqpztuaim4dxtpfjbrjyyuodsct3qun7w5e@ebd45ngrsfut>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 178706 [Jul 19 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 524 524 9753033d6953787301affc41bead8ed49c47b39d, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/19 03:54:00 #21637026
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <168975285779.28540.5554306672674995336.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the sched/core branch of tip:
 
+Commit-ID:     48b5583719cdfbdee238f9549a6a1a47af2b0469
+Gitweb:        https://git.kernel.org/tip/48b5583719cdfbdee238f9549a6a1a47af2b0469
+Author:        Chin Yik Ming <yikming2222@gmail.com>
+AuthorDate:    Mon, 17 Jul 2023 14:49:52 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 19 Jul 2023 09:42:58 +02:00
 
-On 19.07.2023 10:36, Stefano Garzarella wrote:
-> On Wed, Jul 19, 2023 at 07:46:05AM +0300, Arseniy Krasnov wrote:
->>
->>
->> On 18.07.2023 23:27, Michael S. Tsirkin wrote:
->>> On Tue, Jul 18, 2023 at 09:02:35PM +0300, Arseniy Krasnov wrote:
->>>> For non-linear skb use its pages from fragment array as buffers in
->>>> virtio tx queue. These pages are already pinned by 'get_user_pages()'
->>>> during such skb creation.
->>>>
->>>> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
->>>> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
->>>> ---
->>>>  net/vmw_vsock/virtio_transport.c | 40 +++++++++++++++++++++++++++-----
->>>>  1 file changed, 34 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
->>>> index e95df847176b..6cbb45bb12d2 100644
->>>> --- a/net/vmw_vsock/virtio_transport.c
->>>> +++ b/net/vmw_vsock/virtio_transport.c
->>>> @@ -100,7 +100,9 @@ virtio_transport_send_pkt_work(struct work_struct *work)
->>>>      vq = vsock->vqs[VSOCK_VQ_TX];
->>>>
->>>>      for (;;) {
->>>> -        struct scatterlist hdr, buf, *sgs[2];
->>>> +        /* +1 is for packet header. */
->>>> +        struct scatterlist *sgs[MAX_SKB_FRAGS + 1];
->>>> +        struct scatterlist bufs[MAX_SKB_FRAGS + 1];
->>>>          int ret, in_sg = 0, out_sg = 0;
->>>>          struct sk_buff *skb;
->>>>          bool reply;
->>>> @@ -111,12 +113,38 @@ virtio_transport_send_pkt_work(struct work_struct *work)
->>>>
->>>>          virtio_transport_deliver_tap_pkt(skb);
->>>>          reply = virtio_vsock_skb_reply(skb);
->>>> +        sg_init_one(&bufs[out_sg], virtio_vsock_hdr(skb),
->>>> +                sizeof(*virtio_vsock_hdr(skb)));
->>>> +        sgs[out_sg] = &bufs[out_sg];
->>>> +        out_sg++;
->>>> +
->>>> +        if (!skb_is_nonlinear(skb)) {
->>>> +            if (skb->len > 0) {
->>>> +                sg_init_one(&bufs[out_sg], skb->data, skb->len);
->>>> +                sgs[out_sg] = &bufs[out_sg];
->>>> +                out_sg++;
->>>> +            }
->>>> +        } else {
->>>> +            struct skb_shared_info *si;
->>>> +            int i;
->>>> +
->>>> +            si = skb_shinfo(skb);
->>>> +
->>>> +            for (i = 0; i < si->nr_frags; i++) {
->>>> +                skb_frag_t *skb_frag = &si->frags[i];
->>>> +                void *va = page_to_virt(skb_frag->bv_page);
->>>>
->>>> -        sg_init_one(&hdr, virtio_vsock_hdr(skb), sizeof(*virtio_vsock_hdr(skb)));
->>>> -        sgs[out_sg++] = &hdr;
->>>> -        if (skb->len > 0) {
->>>> -            sg_init_one(&buf, skb->data, skb->len);
->>>> -            sgs[out_sg++] = &buf;
->>>> +                /* We will use 'page_to_virt()' for userspace page here,
->>>
->>> don't put comments after code they refer to, please?
->>>
->>>> +                 * because virtio layer will call 'virt_to_phys()' later
->>>
->>> it will but not always. sometimes it's the dma mapping layer.
->>>
->>>
->>>> +                 * to fill buffer descriptor. We don't touch memory at
->>>> +                 * "virtual" address of this page.
->>>
->>>
->>> you need to stick "the" in a bunch of places above.
->>
->> Ok, I'll fix this comment!
->>
->>>
->>>> +                 */
->>>> +                sg_init_one(&bufs[out_sg],
->>>> +                        va + skb_frag->bv_offset,
->>>> +                        skb_frag->bv_len);
->>>> +                sgs[out_sg] = &bufs[out_sg];
->>>> +                out_sg++;
->>>> +            }
->>>>          }
->>>>
->>>>          ret = virtqueue_add_sgs(vq, sgs, out_sg, in_sg, skb, GFP_KERNEL);
->>>
->>>
->>> There's a problem here: if there vq is small this will fail.
->>> So you really should check free vq s/gs and switch to non-zcopy
->>> if too small.
->>
->> Ok, so idea is that:
->>
->> if (out_sg > vq->num_free)
->>    reorganise current skb for copy mode (e.g. 2 out_sg - header and data)
->>    and try to add it to vq again.
->>
->> ?
->>
->> @Stefano, I'll remove net-next tag (guess RFC is not required again, but not net-next
->> anyway) as this change will require review. R-b I think should be also removed. All
->> other patches in this set still unchanged.
-> 
-> It's still a new feature so we have net-next tree as the target, right?
-> 
-> I think we should keep net-next. Even if patches require to be
-> re-reviewed, net-next indicates the tree where we want these to be merge
-> and for new features is the right one.
-> 
-> Ack for not putting RFC again and for R-b removal for this patch.
+sched/headers: Rename task_struct::state to task_struct::__state in the comments too
 
-Ok,
+The rename in 2f064a59a11f ("sched: Change task_struct::state") missed the
+comments.
 
-Thanks, Arseniy
+[ mingo: Improved the changelog. ]
 
-> 
-> Thanks,
-> Stefano
-> 
+Signed-off-by: Chin Yik Ming <yikming2222@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Link: https://lore.kernel.org/r/20230717064952.2804-1-yikming2222@gmail.com
+---
+ include/linux/sched.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index efc9f4b..2aab7be 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -75,14 +75,14 @@ struct user_event_mm;
+  * Task state bitmask. NOTE! These bits are also
+  * encoded in fs/proc/array.c: get_task_state().
+  *
+- * We have two separate sets of flags: task->state
++ * We have two separate sets of flags: task->__state
+  * is about runnability, while task->exit_state are
+  * about the task exiting. Confusing, but this way
+  * modifying one set can't modify the other one by
+  * mistake.
+  */
+ 
+-/* Used in tsk->state: */
++/* Used in tsk->__state: */
+ #define TASK_RUNNING			0x00000000
+ #define TASK_INTERRUPTIBLE		0x00000001
+ #define TASK_UNINTERRUPTIBLE		0x00000002
+@@ -92,7 +92,7 @@ struct user_event_mm;
+ #define EXIT_DEAD			0x00000010
+ #define EXIT_ZOMBIE			0x00000020
+ #define EXIT_TRACE			(EXIT_ZOMBIE | EXIT_DEAD)
+-/* Used in tsk->state again: */
++/* Used in tsk->__state again: */
+ #define TASK_PARKED			0x00000040
+ #define TASK_DEAD			0x00000080
+ #define TASK_WAKEKILL			0x00000100
+@@ -173,7 +173,7 @@ struct user_event_mm;
+ #endif
+ 
+ /*
+- * set_current_state() includes a barrier so that the write of current->state
++ * set_current_state() includes a barrier so that the write of current->__state
+  * is correctly serialised wrt the caller's subsequent test of whether to
+  * actually sleep:
+  *
+@@ -196,9 +196,9 @@ struct user_event_mm;
+  *   wake_up_state(p, TASK_UNINTERRUPTIBLE);
+  *
+  * where wake_up_state()/try_to_wake_up() executes a full memory barrier before
+- * accessing p->state.
++ * accessing p->__state.
+  *
+- * Wakeup will do: if (@state & p->state) p->state = TASK_RUNNING, that is,
++ * Wakeup will do: if (@state & p->__state) p->__state = TASK_RUNNING, that is,
+  * once it observes the TASK_UNINTERRUPTIBLE store the waking CPU can issue a
+  * TASK_RUNNING store which can collide with __set_current_state(TASK_RUNNING).
+  *
