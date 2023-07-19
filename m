@@ -2,170 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C297599EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4DB7599F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbjGSPiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 11:38:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
+        id S231898AbjGSPjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 11:39:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbjGSPiu (ORCPT
+        with ESMTP id S230268AbjGSPjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 11:38:50 -0400
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2069.outbound.protection.outlook.com [40.107.247.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF5BB7;
-        Wed, 19 Jul 2023 08:38:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ObLAIGHjF419sUTM6sh6qI1H1JkTkVtG41IOB2l+AKDEx4zkGY8pYEx/sS4ywpx0O1l9melgP/+smjRs3+XzHEftinJGCnhA0uW3WLyZvaBk209HX63OIdjeyfaoq5gHsxVIQzGl14iKQ9xhhB16YpW6iHzoEWpbWPP392KHrT12pOi3dVeFvB8CmPLKvjt41oNqwPwWqm362k/eK7dnOL0xO+KrXXYOMtYgCkw80C+/zs9+4x6AHdzK7s5NRLaWMN3KirZeURheCCl2Sp1R+0w/JhqQlRitXuUGUv2GOvC3giHXf9L+1tRB+kcQ+RVsjqbOqlCtErnRaGw0D8JG4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rzzyjmw0dmlLACVToXH4tsJWbUKDUZ635iEMzQZISB8=;
- b=mH3tgN3vOI1hf5b7/0RUq6EdKX2EZTAkyqXZdKysXS8nV5QJmtHXQfnm57Ntf+VbL7XAM/xcdfCytJzbXGEmlZ8SyBn/ce1JqAZY492viUHgCllXHBhwb1ZdbScr1WxKOnXrX80MurPI5eRP76X/yYNFo+GxPXBQR7QCehWTpWT87Z3X81IB+8ExHVK79gCUFrCe/Blvmt2wviFi4+DE7Rx2YqT7VJfC1VyLmuO5Nyi5hJbHJw5GiOsYgpfWLjPLenbiW2ocJdYdF9t15Yrd0+61a/eHes85MK06IZhU1c7yjclkcO/tFJdRGZYhPP1ya3tXWH6B9QjtXzsl4sMRbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rzzyjmw0dmlLACVToXH4tsJWbUKDUZ635iEMzQZISB8=;
- b=PaX9yCChwjdzHmP/7XnnzNMWgBiaeX7Y2FSSo/CRoXcnVaMpRk7Azn8cqWgkcaRHq3yCkk4DrqCTSPTJNqp9jW8AJflt++JyKi+24Un9eppcecPSi5laBfx3Wr1hV6yeHFeT/5yY8EYiEVzfdVbDYHbTtPL/f43Uv0pFge7aakdQYlcIsYCkTJXL58+IBc7Zo0wcezWFMyiqCEdpOLfLOCz41YtiArOWPIvnBi7z2OoQx7BGK2mUTsdVt3YIfSknnov//m5HnwPDi1dwrxwxFTKoSu77wK0WmZ5xINuFzYuuhUMU8ss3Svk6EuupxL6mK/qsnQ7tbkP2pxHMmZmL2g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from DB8PR04MB7164.eurprd04.prod.outlook.com (2603:10a6:10:129::23)
- by DU0PR04MB9297.eurprd04.prod.outlook.com (2603:10a6:10:354::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.23; Wed, 19 Jul
- 2023 15:38:46 +0000
-Received: from DB8PR04MB7164.eurprd04.prod.outlook.com
- ([fe80::2975:b06:eaaa:9361]) by DB8PR04MB7164.eurprd04.prod.outlook.com
- ([fe80::2975:b06:eaaa:9361%5]) with mapi id 15.20.6588.031; Wed, 19 Jul 2023
- 15:38:45 +0000
-Date:   Wed, 19 Jul 2023 23:38:33 +0800
-From:   joeyli <jlee@suse.com>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Chun-Yi Lee <joeyli.kernel@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
+        Wed, 19 Jul 2023 11:39:23 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC672106
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:39:11 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-ceabb7e8afdso1694942276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:39:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689781150; x=1692373150;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3uTGEOgXGgjS1mpy4uY8Zn88ggwsAyaWY3/MU5WFUXU=;
+        b=zuZWZV29hv7HoMETiCkSKGIHZcpHTMG8TKF9qduMPPS/E1c0SfFLVA6kGEOoP5U9qq
+         U77CuEsLMMxKIxLMFnjtp2hpB+IIMkYXVFGsPC5bapP3nIk/nGTrjqlCGcZf5+xPpr8T
+         q16/aDqhEkgnoKMdGaA5rz+Gt+5uK6D6P1fr5Zm7R4i7YF7l973NWOrr+c3kq7IzyS9M
+         gLZmugAwtecTQMKF7z0UBcPf86RbNReN6ZSKfaBS2Zp8N7kJnMwhsDMUzBHIndlxccW1
+         lnFRHUcOrryTZsXwruMmKL2jJUIvic1/Jzr/kaZBJYZOlvirf0tEwgFNXnc0yrJBGF6s
+         gFpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689781150; x=1692373150;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3uTGEOgXGgjS1mpy4uY8Zn88ggwsAyaWY3/MU5WFUXU=;
+        b=S2TKeHAGZoCpYhP9ue1AcZskiT46QmDWEe3jRDMT0KOnlS6ANvSVXDsvE6GbuWLMUp
+         OjJ7FMqilMAtCIhQPAHOG/bSLp7Zu4Tu18T0PlVgzUN4b5z7VBZhEU3djnFkR135ZXwI
+         QRVx9X1T0tjFTHNL5UjJRWzL/8sEZj6mUXAJnbolw1OEYCNWL47AWnpgBlyuLSg9RoL3
+         jb3cbVhdgkCQ8IsJTaBza2t8ac1F4ui8U5iRIMA5PYPjrCNNPV6F7CpMpidheNiDGH6i
+         ZEJaE3rMD25+y1iFLXYSlVM1x6TmincM8Fts2QdY0hyPrqRDl6AWBbHTgtj4JtHCj+Ea
+         uiOw==
+X-Gm-Message-State: ABy/qLYeLtIdkiWN9ofp8vfGyZoCcquUws4YK/q8dF2+UaRaploMNuEF
+        5+6PziJCmTrC9HEVxbWvxophZ12csqU=
+X-Google-Smtp-Source: APBJJlHKX/op8BIXr6hrdN4x6RovTyUJBoPmA+F//tB9wdB4uZjaG/yxyF0KPogxnGD6eEZAy2DX7qXfLUE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:868b:0:b0:c4d:9831:9712 with SMTP id
+ z11-20020a25868b000000b00c4d98319712mr26898ybk.0.1689781150625; Wed, 19 Jul
+ 2023 08:39:10 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 08:39:09 -0700
+In-Reply-To: <CU66VMG4IKSD.33KF2CEZJ2I1@suppilovahvero>
+Mime-Version: 1.0
+References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-2-seanjc@google.com>
+ <CU66VMG4IKSD.33KF2CEZJ2I1@suppilovahvero>
+Message-ID: <ZLgDnYJUX/QR9UJi@google.com>
+Subject: Re: [RFC PATCH v11 01/29] KVM: Wrap kvm_gfn_range.pte in a per-action union
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        linux-bluetooth@vger.kernel.org
-Subject: Re: [PATCH v2] Bluetooth: hci_event: Ignore NULL link key
-Message-ID: <20230719153833.GH14791@linux-l9pv.suse>
-References: <20230718034337.23502-1-jlee@suse.com>
- <41f91e8e-8038-22d8-baa6-91f98afe405d@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <41f91e8e-8038-22d8-baa6-91f98afe405d@molgen.mpg.de>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-ClientProxiedBy: TYCP286CA0027.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:263::18) To DB8PR04MB7164.eurprd04.prod.outlook.com
- (2603:10a6:10:129::23)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB8PR04MB7164:EE_|DU0PR04MB9297:EE_
-X-MS-Office365-Filtering-Correlation-Id: d22b6794-b776-4bb5-8405-08db886e3d31
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rvxc7KzYrl6Ui+Xl17qSQpN9Xra2wm3BtWl/Xfqid9kXteE4KEjQG56Gx6rhaz1o/y6DuWj0eolDiyskWCKPm/e4j8ZuXvOsGJxyoyYQ1VMKFpwQ4bEs2dvhO8ft3Ewd0XOuppKG6w5PXNy2nf6uTQLyeiDErQp5TpVFP1Xx8JYW30ZEcLJLcAvQkCA5UZnuR9FoSMIMFRGN85Koqnso9BPAZh2qljrHaRODQcc2ojXX9gQBsSnRj6Y3AZ4ynFmfbzrz1qC8FS6NHN4cNKccO4ufSCXsWDiZj/CpUTEJzlI7EKuQ1TEkNLbQANSlh74Tq96eOVkboZaPiAW9xmQ2D5YFjQLyFHjiwatXbruxQ0CKlOyAxy58f0Wu0+NFjjSDEdUYWDLjyXl06foApShx98uuyZ6J+GWvH1Gpq0D656XYJQZbLMOnfZMrKMkZs87g453G/oV90uajvPx6DJa1cak561FffofZVL6B1O3JILjsSkpQAIe5HX4LuB+woOMUTO2M97PqKcO9fqL8AQG3WdrZVINfKs2Fngun/kOX10AY0pFZX02+nJWHNhmhf4v5UOzWxi1nnXuN5qU2st8Sgu/tg86QMx984caqtyEnXJE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB7164.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(396003)(136003)(376002)(366004)(39860400002)(451199021)(6512007)(9686003)(6506007)(26005)(1076003)(54906003)(36756003)(38100700002)(7416002)(66946007)(5660300002)(2906002)(316002)(4326008)(66476007)(66556008)(6916009)(8676002)(33656002)(41300700001)(8936002)(86362001)(6486002)(6666004)(478600001)(83380400001)(186003)(43062005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?STliT0hvMkswN0lUSTNEckovYVlTNjJKREs2cXNCcjB5NzYyRHg2WUlQL2FG?=
- =?utf-8?B?QXRLbGNvSmpua1BoQVFzL1ZRSlQ1UlUzcllndWg5bThRUERHRW42QXNpbmdQ?=
- =?utf-8?B?Y2ErbmMvWVBocUw5NElKbGtPY2c0OWtJbUU1aWFqSVRLMjZDRVBrZTkvbnl5?=
- =?utf-8?B?c2VBUkxqdW5zTTRGVXAwS0ZzeGY3RjU5eUhSeUx6aG5SeVdycm1hcWNRUXhk?=
- =?utf-8?B?V3dENWhCSDlQajdxSUlvOUtISXVnZ09pUDF1NHB0NUUyYzdxb0hxbUJCVS9k?=
- =?utf-8?B?Vkt4ajRkcGdrMHAxcFFuWFROdXhtWnFQUnJtK2xGSWNhai9FRGxQRjk2d0ZI?=
- =?utf-8?B?c2tjL05WRlZaZmVEbGVyRjhQaXFjY3dDaFZUdVJ1YUE1L01rNisvVStuSlRw?=
- =?utf-8?B?a2dRaDluMmZ2dGJBUzhwWERST1JTOXlhNGhaYUNCLzAvVlplWUF5TmZXQlhq?=
- =?utf-8?B?OUdPMXlpVVlUTWQyT2pLL1QwRlB2cmdNaS9kcnJFSTVsNjVQOUNTT1ZEQWt4?=
- =?utf-8?B?bmp0d29OcHlITHF6eUpZVk80ajlXdUdrQ0U5TVhkZ1lQcld2S2pVejdLZldP?=
- =?utf-8?B?QWFkSnZVOGNDUmlTd2VqVzdlUXpWVGwzM3FQbm0xVFJ0UzQvcVNpVGRtV2ZR?=
- =?utf-8?B?QzRkcUJlbjlsTDVxN3BkbG9vQ2FQSWZ1Rm5HcjVsMkFUVEhrSXFyOURrWVAz?=
- =?utf-8?B?ci9vT3pEbHJMVVlnV2ZrcXBsMW9lQlhpSVBOdTFqaHlObytxZU1PQVlqQlVX?=
- =?utf-8?B?bVRsMDRacGk0dXMwWEJVZkk2N29BM2plemUvanFmTHltWHBTVmRzYXNKUHF4?=
- =?utf-8?B?enhzaVhZQ1FhcFZWdjc5bVZFK1Q3Z29UeDNPRHJZaVNrWHp5UStoRHNNY2Ix?=
- =?utf-8?B?ZStTUSszUWpxZlhyak93TjkzckdnREdzZWNLS2tvNFdFd2luY2J4enFzQVpa?=
- =?utf-8?B?RGx4ajFZMXRqR0RZSEYyelVmZW91NVAyL2lDZ20xelZYOFBacHEybHBiaUxi?=
- =?utf-8?B?V3NlOGVUc2NZVTZvN1ZqU1hnUWZSZExjTzhSN2N0bXpvT2dyb3pOQUhtakdn?=
- =?utf-8?B?WVhES1hCQkpHbTRQQy9CT1RUSzlXVC9qQmZCTEtGV2wzZmJ0Um9acDQrZTVV?=
- =?utf-8?B?N0ZCMm15Y2lkQVIvWjAwNFhNTWdnU2draDF0NGxYQUpVYUVyMGlpck5JcU4v?=
- =?utf-8?B?eWV6SUE1RDFHZ1dYbE44UDRucDY1SVFJOGNjUGVjQTI3ZzFsSTJDRGtMY25H?=
- =?utf-8?B?VFhvY1hUVzhFS0NycFJha0F3czd5TmhPM0l4N1Y1MEk5YmFpbVMxa2Y0UDZP?=
- =?utf-8?B?NEpBc0lvVXpnY0VNcjdCTGlWR3hPU3R0Sng3ZjU1MHhkUHhJb3BvK1ozNG9T?=
- =?utf-8?B?aEljUzdxZzFVbjFGM1IxQ2ZTbTFtZ3dKQ0dsNlMzWnFHNnF4VEFzdVpoSDBK?=
- =?utf-8?B?OW5LbVhHSlNPdHRWTGdGK094Q052RVorQUpDaFFlUVBtdUlBOXJiSXowdGgy?=
- =?utf-8?B?NG45WSt6TS9JcUNlUXFJVVVDd2RDNkhLb3NHY29yem10TTdYQVZvMHNZM1VU?=
- =?utf-8?B?SjFqM0tkQmVUT2htam9nSzZtL1cveFJ6Z1plaTNrMHNEZjJvKzk3NmFndjBs?=
- =?utf-8?B?aHBmUzZLZDVGZE5oMS9JVGR5bllqdFM3cGlsVk9WYU1wdXVRQ21mUzRORy94?=
- =?utf-8?B?TFRCcHpJbTJObzI0WXFQWFNjeE5jNm9la1ZVRGd0NXdzeGZjMTR0ZnFZRC83?=
- =?utf-8?B?SENwNEtjbzRCcStvRklLRUt2RWpSZzRUNlYzbkQ3VnNrQVRZam96dEJaRU9x?=
- =?utf-8?B?U2UrSlREZzBaTjkvd0JZOHRTQzlTMU5XTFl1aHZFZUExVVN0SlRrdW42SmJh?=
- =?utf-8?B?RkdxeUZ2dlI5bndacVdiTjVPQTl2QXJWVS9aL29JMEpiM0tEQ0ozT2RsY3VP?=
- =?utf-8?B?bTZYYlVEVjJjeFJKU25EMTdDNVAwU3dGTmRHQnliR3JrcnJOMDRBK0crN2RR?=
- =?utf-8?B?bGh0NXlyODJ3cjFVVkhoRkhWcU03UVc5YTlFQ1laenBlNUdIWVJCc3JIbzRz?=
- =?utf-8?B?cVFueUNyTWlCUm1XSHpHVnl0ZWlvYzlRYUlOM1NldkZib216RTYvUmNlZVd5?=
- =?utf-8?Q?2PlY=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d22b6794-b776-4bb5-8405-08db886e3d31
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB7164.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 15:38:45.8906
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YM5A82rfNmhQJBqV5hac6erNiuRIdh8jNtsAQWjUr9A4CBFouGQerf6XAYltWiMO
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9297
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul, 
+On Wed, Jul 19, 2023, Jarkko Sakkinen wrote:
+> On Wed Jul 19, 2023 at 2:44 AM EEST, Sean Christopherson wrote:
+> >  	/* Huge pages aren't expected to be modified without first being zapped. */
+> > -	WARN_ON(pte_huge(range->pte) || range->start + 1 != range->end);
+> > +	WARN_ON(pte_huge(range->arg.pte) || range->start + 1 != range->end);
+> 
+> Not familiar with this code. Just checking whether whether instead
+> pr_{warn,err}()
 
-Thanks for your review!
+The "full" WARN is desirable, this is effecitvely an assert on the contract between
+the primary MMU, generic KVM code, and x86's TDP MMU.  The .change_pte() mmu_notifier
+callback doesn't allow for hugepages, i.e. it's a (likely fatal) kernel bug if a
+hugepage is encountered at this point.  Ditto for the "start + 1 == end" check,
+if that fails then generic KVM likely has a fatal bug.
 
-On Tue, Jul 18, 2023 at 07:40:37AM +0200, Paul Menzel wrote:
-> Dear Chun-Yi,
-> 
-> 
-> Thank you for your patch.
-> 
-> Am 18.07.23 um 05:43 schrieb Lee, Chun-Yi <joeyli.kernel@gmail.com>:
-> 
-> […]
-> 
-> > Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
-> 
-> As checkpatch.pl also reports, please make sure the author and Signed-off-by
-> entry match.
-> 
->     $ git config --global user.name "Chun-Yi  Lee"
->     $ git commit --amend --author="Chun-Yi Lee <jlee@suse.com>" -s
-> 
-> (It’s also common to write the name in the order, so no comma is needed.)
-> 
-> `git format-patch` should not generate a patch with a dedicated `From:` at
-> the beginning, so you can send it from a different email account. (No idea,
-> why upstream Linux kernel development shouldn’t work with your SUSE
-> address.)
->
+> combined with return false would be a more graceful option?
 
-I have set the from in .gitconfig and also tried git send-email --from "Lee, Chun-Yi <jlee@suse.com>".
-But gmail always modified it to From: Lee, Chun-Yi <joeyli.kernel@gmail.com>. I have no idea why.
-
-In next version, I will put Signed-off-by: "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
-to keep the From: to be sync with Signed-off-by.
-
-Thanks a lot!
-Joey Lee
+The return value communicates whether or not a TLB flush is needed, not whether
+or not the operation was successful, i.e. there is no way to cancel the unexpected
+PTE change.
