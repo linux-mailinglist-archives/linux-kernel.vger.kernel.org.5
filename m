@@ -2,123 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6111475A067
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 23:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3EA75A06F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 23:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbjGSVPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 17:15:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
+        id S229510AbjGSVQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 17:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjGSVPK (ORCPT
+        with ESMTP id S229670AbjGSVQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 17:15:10 -0400
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2059.outbound.protection.outlook.com [40.107.15.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE021FC0;
-        Wed, 19 Jul 2023 14:15:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h/fjxIIfRx2PznDWXmUo066WIUbfiFW/QAQWmyyRYwAf+80GFk8Pu6Oks4+Xs3MxitrZg89skcvbrueAYnqAI7Tm5liI1dE1/xVuM7+cnnXGdrqUsHuZGcgpO1hi6XPTLviHid38Oi5kTAwXM+ut6ZzkmHElsRtiQ1XmdtQt/7dRTLWTz6FmoYcBZnVGW76400zUEw8Ziog/xGz+1Gc22QZ8HID7wHRmUBjJipFwxVEMQK7d25kp6RH53PfF8/0N8Fj8CQYsYcdCzevT0qzJKaH8s9XX49bH9frO0zJASq1EGUIl8coT3m5kqQShKcn5J39SJ77/PJoNrhGWlNW/0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Lz3brBpmjxJG6fPFlrGOYwJ8tbaYbmg5Ru9ChWh6H0Q=;
- b=eCzNjZeq/Y/fTcoI/HBZ4iYTBUPx/xmUqQD9WKEErb55883C72XUmWpzOoJNb90/ojDUvjxBKOXGwSdkCSwJ3hKjU9tH6cbanAjKkVP8wl3j/NLrCx7PbffRn9XL7ster75uz8j6721eHd3YNEbpOxMz6HTs/Nf9iNY42I/0q/y/8ZuvaAtrAGhWZYVscgBEnzRpJhwP7RadzJGZEgvEVcWGLMGYhx5JhB/M5Oo+8sm1nXffVL0ipN+lfWj6evfpJsrBAnF+MXzKuHqEHiKBsLFI5a23qo9LP0ayrbvCxqwbqysJTBsnXkKr25fgviEdVB9VqHzFiuLhuihRvnzanw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Lz3brBpmjxJG6fPFlrGOYwJ8tbaYbmg5Ru9ChWh6H0Q=;
- b=QChVRu7tyeBr/qnK2mPSkyYenMY7TKnCP5coDsZ6i/rXfpVdfIdk8dQnXjgMLMiQS2LOIZy8aAElU7wAwP4RixWPuRf5SijVL0LXr+v1QUjFvmhP/QzKnFq2hYndHol+9YvlZlev5RT41ZdhIIBo7vIbaVg3pQCZoTzQ0kqKt4k=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by PR3PR04MB7372.eurprd04.prod.outlook.com (2603:10a6:102:80::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.23; Wed, 19 Jul
- 2023 21:15:06 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::d0d5:3604:98da:20b1]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::d0d5:3604:98da:20b1%7]) with mapi id 15.20.6609.024; Wed, 19 Jul 2023
- 21:15:06 +0000
-Date:   Wed, 19 Jul 2023 17:14:52 -0400
-From:   Frank Li <Frank.li@nxp.com>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Xiaowei Bao <xiaowei.bao@nxp.com>, linux-pci@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org,
-        kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, imx@lists.linux.dev,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Rob Herring <robh@kernel.org>,
-        Roy Zang <roy.zang@nxp.com>
-Subject: Re: [v3 1/2] PCI: layerscape: Add support for Link down notification
-Message-ID: <ZLhSTH6M3XWgxMFy@lizhi-Precision-Tower-5810>
-References: <20230719155707.1948698-1-Frank.Li@nxp.com>
- <901fdc6a-a560-a431-adc9-aa73d7f69e7a@web.de>
- <ZLg9Mw/FvmMdNLjX@lizhi-Precision-Tower-5810>
- <065b12d7-d46f-adf9-e806-40802fe888cf@web.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <065b12d7-d46f-adf9-e806-40802fe888cf@web.de>
-X-ClientProxiedBy: SJ0PR05CA0048.namprd05.prod.outlook.com
- (2603:10b6:a03:33f::23) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Wed, 19 Jul 2023 17:16:42 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EAB81FC1;
+        Wed, 19 Jul 2023 14:16:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689801401; x=1721337401;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=KOlYhSQQf0n27vCrrgt8YCZyUuX7bCxCVC7N0wOP1Jw=;
+  b=C1jv2hadUjV4P8vdlE5j63P43iT5wbq3KrOr5iSZPg/jDmtaE6PtFAk5
+   PN1JUvB3JS9FGyLn99UUnE6R/b7tM3m9SsB9JcrJ/8fipJkpqQupzwAyn
+   PdtNqOfLo5/wKe1mF7oY//ABwmd4g/HEzv4kKCm3NAQLGYkQiqj/PCTwA
+   gUhHBHmmSpt8xsvEQd9RXsORmbQhsKzDzBohk0RaL/LnHOoWH7K8RPM1u
+   MgeQ4WIAZp8rgcoCtKxyxNunF/xW6PQnbkpCKRAKg5KWHjfp1EHKpmSlp
+   u2FxFx6PvnuedpPR2ebe4XZoTl6z5MUbwiMkhPFLIN2dE3Ev/aOSbhwKo
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="351435329"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="351435329"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 14:16:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="724150548"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="724150548"
+Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 14:16:40 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "Song, Youquan" <youquan.song@intel.com>, x86@kernel.org,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v2] x86/mce: Set PG_hwpoison page flag to avoid the capture kernel panic
+Date:   Wed, 19 Jul 2023 14:16:25 -0700
+Message-Id: <20230719211625.298785-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230127015030.30074-1-tony.luck@intel.com>
+References: <20230127015030.30074-1-tony.luck@intel.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PR3PR04MB7372:EE_
-X-MS-Office365-Filtering-Correlation-Id: 851ed36b-6c3c-4345-5507-08db889d3974
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4enW4njal3RWASt2SLdtZWAtZxDWpr7GcPC1r5JOXLLNJURNEyAPws0IZoH1xurOQIqVqU0VtucuSrSCiZNqmQ5zx9vtMmwpe0wRrZ3wGetrOwUbGI/zaNmm0tuKtm2t2fXAdah+zzpiVAW2yxH9NN2XVn9gHeVtYY3r9JMtctIDxqF9jUO9ScqWn8kvAqP/dtmpXIySUqrVM+OkzMZ53Wk7yYTk/3Df1UtkmZDllbk4eepg1P+LRr1VIzbrP9iKIGlnrGz9zkJx3ezBf41zhksyqfVNR+rERfMHW/X+1pp0v4fdtG4Ab/FpWxFnH17XENsH8EgXepDv5Q2dTMmeY5S1GofDhLRssKSxPsjsITrCNRlkOaNgpAJheFkjAyXclPG7Cq5BxT4ugfCrNYR+EccemnCavxNSj5Q3sOM+IdDCat4hy5EJ+JIGThir3H+9QUYC8LSZFGNLeOxPIRoxEovmMK4L5XCQni+gkbrN9NXmFQUX3iihbKRiIqEngZuc5EJ64tWf94oMQZRcJ87MuYlILOzS3Bhuds3VoPRBrT95qk1oE00kAyUdqg/DKAz/lI6MNLckmxcHjLZ84kKGBfQnWwO/h4CAx4WYATAtuK8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(4636009)(366004)(376002)(136003)(346002)(396003)(39860400002)(451199021)(316002)(41300700001)(66476007)(66556008)(66946007)(4326008)(6916009)(5660300002)(8676002)(8936002)(33716001)(86362001)(38350700002)(38100700002)(6486002)(9686003)(966005)(6512007)(52116002)(6506007)(186003)(26005)(6666004)(54906003)(478600001)(7416002)(2906002)(4744005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/kOEMF0CyZ7iJU0s/QOVnyu50fEEDQtf8qdtrFjA95rd6cJfBd2XwMJE2zTv?=
- =?us-ascii?Q?X1DliFSLNkVFVmmb3TqBPfr2/oMJXfbbfVHZuCyNkB65zt1i6XNYsvugStVt?=
- =?us-ascii?Q?44T4KlmWWNelW7jKItb2CrJNs98MRnaAWJNFyfORsESQqS1YCeNRnEUEAz+b?=
- =?us-ascii?Q?cf6VKRu72CLgvqDTpgYPsUxSE9raSkXptHipd15KEwzaGktAAAOP74GRVuGa?=
- =?us-ascii?Q?KtutrVArrecAHSfRVDmSBJ6VxKy7IimIEEEEtOnlhLiakGg2LQtIqKAXQAK9?=
- =?us-ascii?Q?JrEFIAAtWMe9PNakaZyTE6+5APtyO2UGO4oM/7sOCa1goVHwfKCBuf9ZbB24?=
- =?us-ascii?Q?KwloVKHVZiUVMG+1B2Ujv2X8Ij8/RIaVNyG4xsXsHPb1u5rH6NfkxsPsouL8?=
- =?us-ascii?Q?UK/Znjlhqjx9q/K/mYqGmxIPq7YS930vEgv1EcrD9xzZCN3RKZL13mLQ86CR?=
- =?us-ascii?Q?lKfswwipJ0ibWHwX9sLuSYXmmKPocBHq72503JZcyMGusneAoz3pX7mSWG6P?=
- =?us-ascii?Q?rq3Lp8RPw8xjpCCUcbJGAdzulVbYfUHJKRzbCBSXGPlX6y3zSzWBEDxDwcxS?=
- =?us-ascii?Q?67hLwRxEAezx398mNuJPWv8QAb2P+9c8fiSDNJpUBabYfztoHB8JFso6sMRi?=
- =?us-ascii?Q?n7oxYygGnjQEYcdH7Pefhtfo8spZaVNneMvX7j+yXVDcriN/AncqFBmgArdx?=
- =?us-ascii?Q?o6Bie10VQnyRhUjaKbMZKh7VYrAyrwr1NK0Av5ZkeDROzvzVjbms8u546HbK?=
- =?us-ascii?Q?SKFstsR8LJxrqZLx9uKBcfXKzLDrFIzx1orujDVZAwtDtQQl1QWwuGAkLyE5?=
- =?us-ascii?Q?aLU3LQfzOlwOOi4xhxVSMtoDuzB2u2A+5LXXvruCgmiTuuhyqr3nBiLHSMEw?=
- =?us-ascii?Q?mfmc/tDbAdbKongmJovOMo9o7eJDB9sBJoxCOXj0zGdTRsMfs18tSf7vgcJW?=
- =?us-ascii?Q?FEHNre2Cj5vXrS9eLKNfboYEy6pS5ZY8utVWRGIHkfPQHRdZMuUfbL4kgaPR?=
- =?us-ascii?Q?M+Nil8vyt6Qrdt7n0u62Heem5tI1c9RLZARytrb96Q1ixHcxqWSljwu2zxEd?=
- =?us-ascii?Q?enBDpO0z3EPvrAyN7zqTzEfYocxx/TBGO44jwc428PxBdGdLPn26LObLWUr5?=
- =?us-ascii?Q?LliN3asM16ceFgrr3uRHf/39grdP1Iv0+7Bxjiv/OQz7sGu55bzu1xb+4czc?=
- =?us-ascii?Q?PHoGZm/8n2xwtqdDQvQMXEQSGdFJTdr3T9iR+UmNvI81FMJ+R8I3cTMmB4J1?=
- =?us-ascii?Q?hUjBN+PsIPlIgs3lKk8RjMVIEMK0wnsQmh+ardXaT18dZqELJJ/IT6jJNzd1?=
- =?us-ascii?Q?HDA2uYNaoqTs3COBODk6mtxriPuCqGVydYI9oadJi17Od8hew2igBuSB1dE5?=
- =?us-ascii?Q?Bf6mgggMfpvl361w3Sk9xFROqMzNyEdbFUiz/Ho3uh4PGf0hODi7vzaXgXuv?=
- =?us-ascii?Q?qz8Sf8yc1LXMI2nhxF+Q1PcZpHTnWwJ3/lHf6VfemBUYhdyCY2zR2RlDv99b?=
- =?us-ascii?Q?Z9x3grikAEkHM9et5HqhuF5K+xnj0kPgXUFq9RXfSnzNxmVTaP3OiNYtND02?=
- =?us-ascii?Q?q9QNmtouUpJJz+6+V2QQkPXOPW16LxzTLkFXKhg6?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 851ed36b-6c3c-4345-5507-08db889d3974
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 21:15:05.9350
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7SqRxIdM6S5pKjIMHSu8ZKetH7y0chXtTrdrCdySYhUwSyoR2Cf6gQMa+XGC6BqzfdleX3dBCJ4Pg32CxKKXUw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR04MB7372
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -126,33 +64,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 10:08:16PM +0200, Markus Elfring wrote:
-> > Cover letter just annoise people here.
-> 
-> How do you think about advices from another information source?
-> 
-> See also:
-> https://kernelnewbies.org/PatchSeries
+From: Zhiquan Li <zhiquan1.li@intel.com>
 
-"You may like to include a cover letter with your patch series."
+Kdump can exclude the HWPosion page to avoid touch the error page
+again, the prerequisite is the PG_hwpoison page flag is set.
+However, for some MCE fatal error cases, there are no opportunity
+to queue a task for calling memory_failure(), as a result,
+the capture kernel touches the error page again and panics.
 
-Generally, I think cover letter will be needed only if it really
-help reviewer to get main idea about patches. 
+Add function mce_set_page_hwpoison_now() which mark a page as
+HWPoison before kernel panic() for MCE error, so that the dump
+program can check and skip the error page and prevent the capture
+kernel panic.
 
-Such as my on going pathes(with cover letter):
-  https://lore.kernel.org/imx/ZLglBiSz0meJm5os@lizhi-Precision-Tower-5810/T/#t
+[Tony: Changed TestSetPageHWPoison() to SetPageHWPoison()]
 
-Similar case without(cover leter) and accepted.
- https://lore.kernel.org/imx/20230719063425.GE151430@dragon/T/#t
+Co-developed-by: Youquan Song <youquan.song@intel.com>
+Signed-off-by: Youquan Song <youquan.song@intel.com>
+Signed-off-by: Zhiquan Li <zhiquan1.li@intel.com>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+---
 
-I don't think cover letter real help reviewer to review these two patches.
+v2: Replaced "TODO" comment in code with comments based on mailing
+list discussion on the lack of value in covering other page types
 
-I more like to get "real problem"(such as comments about "typo").
+ arch/x86/kernel/cpu/mce/core.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-It is just waste time to discuss if need add cover letter here.
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 89e2aab5d34d..766f64fade51 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -156,6 +156,30 @@ void mce_unregister_decode_chain(struct notifier_block *nb)
+ }
+ EXPORT_SYMBOL_GPL(mce_unregister_decode_chain);
+ 
++/*
++ * Kdump can exclude the HWPosion page to avoid touch the error page again,
++ * the prerequisite is the PG_hwpoison page flag is set. However, for some
++ * MCE fatal error cases, there are no opportunity to queue a task
++ * for calling memory_failure(), as a result, the capture kernel panic.
++ * This function mark the page as HWPoison before kernel panic() for MCE.
++ *
++ * This covers normal 4KByte pages. There is little/no value in covering
++ * other page types. E.g.
++ * SGX: These cannot be dumped.
++ * PMEM: Pointless to dump these. Persistent memory contents remain
++ * available across reboots.
++ * HugeTLB: These are user pages. Generally filtered out of the kdump
++ * to keep size small. Not helpful to debug kernel issues.
++ */
++static void mce_set_page_hwpoison_now(unsigned long pfn)
++{
++	struct page *p;
++
++	p = pfn_to_online_page(pfn);
++	if (p)
++		SetPageHWPoison(p);
++}
++
+ static void __print_mce(struct mce *m)
+ {
+ 	pr_emerg(HW_ERR "CPU %d: Machine Check%s: %Lx Bank %d: %016Lx\n",
+@@ -286,6 +310,8 @@ static noinstr void mce_panic(const char *msg, struct mce *final, char *exp)
+ 	if (!fake_panic) {
+ 		if (panic_timeout == 0)
+ 			panic_timeout = mca_cfg.panic_timeout;
++		if (final && (final->status & MCI_STATUS_ADDRV))
++			mce_set_page_hwpoison_now(final->addr >> PAGE_SHIFT);
+ 		panic(msg);
+ 	} else
+ 		pr_emerg(HW_ERR "Fake kernel panic: %s\n", msg);
+-- 
+2.40.1
 
-Frank
-
-> 
-> Regards,
-> Markus
