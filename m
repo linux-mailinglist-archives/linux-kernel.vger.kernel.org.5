@@ -2,110 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F20D5759CEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3BDD759CF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbjGSR5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 13:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
+        id S230124AbjGSR50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 13:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjGSR5D (ORCPT
+        with ESMTP id S229512AbjGSR5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:57:03 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB631FD9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:56:55 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbd33a1819so7595e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:56:55 -0700 (PDT)
+        Wed, 19 Jul 2023 13:57:19 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8591FE9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:57:14 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b9cdef8619so46247655ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:57:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689789414; x=1692381414;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=networkplumber-org.20221208.gappssmtp.com; s=20221208; t=1689789434; x=1690394234;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DD1IusQWRz6p2k0vZ6mCPvoLmaSeWQRMjCUQkOWqtZ4=;
-        b=tokZw9dfLqWCkA//xRWaD3/62VJCQvQV+NksrMsFB3gANBGXmcp0kknUxUY88Ja52d
-         otMnaSRZyF0woIeqeePP9qQM7+7RxUCU0Hdaqq14PmVZzBVoY4EI5pz5tzaJj1UAFdud
-         2NfcmFmW99tltTR6vU3ux+cnaAhdPEnNGa1vad8CwhiE0pM2UyKQlp4dr+wS4jQpA7bx
-         uLakX3lCdxTDhkbwwVFfogIcAuDkY7ebx6HVutkOKNmLhW7/Vl30UzLarBnLCzXnR51v
-         ls4NF1NRyc7kIsHAckEFx72s9UO15Ygztw90IMhfSekugKUEy86jP+gMGASY8Z1HbIJK
-         XpZw==
+        bh=4FVEMGAeC4A4acfilWsGklHz88eR5z5EWRCCV9Kst0I=;
+        b=0Q1tzUOb9vYJXHmPeDryrYB5A4pEESrmEqXYj9Hg+90Z5+QCPv2ecrkofZgQVHrh2Q
+         2SmV6ESktQAtsjCYVJZhJojTRHsrQLvYLqNH0EoTgXcN4+EyUGH6ZSXKFYb02Y0hiirh
+         icie1/r4QjaO+Xr/8VrDJJ+t8iIcRUo2snH46DM7aXAbB12rMZS46rJ2h5Z2q3coLAKN
+         GMT7GgUwcUUW4SpZr+6zG8X6fnKROWImTBv7u2v/1CdFXwNuMSzJvhzr6uNXEVsoU8p0
+         jr3ynj+/29rinW5TGGhTFa+uF7yLH222PS2w2a9Iu7qAlX2Am1gjapUEui6PcMe/HT1i
+         pwCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689789414; x=1692381414;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689789434; x=1690394234;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DD1IusQWRz6p2k0vZ6mCPvoLmaSeWQRMjCUQkOWqtZ4=;
-        b=JHP+pT1VeRO5sIguE47a+4t9feDWBggx/LPilAu5aV/0rzhUQOsSjUJY8Y7l1q/qM9
-         RU1w3isUX4Hy6I7Y1/T+ssL3bJGERYC+2GlyvvzqdAAghSSqgCSm0ZsRAUycjCHcybhL
-         WRr4LXSOT+cAenOaOAhiknVJBQuvl+l7yTPsyCr52A3V4GG1peOXlVvBJp7sYgmOqEec
-         NMuuPCTjGZq6Z5bsVw4oG3eypsmEARHxYUhwt6BzrtZbSnxfO5zLWApbihGbbsvWCMyG
-         DhALcR+kihN90pJJYJ1pwcQRRY2Oqfx2kc2RfkLbquLMB3+UqoNlBS1HWea09wrKUBjk
-         uzbA==
-X-Gm-Message-State: ABy/qLa03txGm/rdRtO917AJiKVWesjYH26W6N3aTKdBRIEo2B05BYS7
-        DljwcQKX+3E63K30Bc2Lu0u2S8+qajlHrN4GsoQ+Yg==
-X-Google-Smtp-Source: APBJJlG5bTRD5YkszX4iw8+wglBuRr66CaZUTcAakzDmbxj2WKqLn2P0+Qoo7JohL/GOWrxSJZrgc4+E+BQi5RXNWfo=
-X-Received: by 2002:a05:600c:4754:b0:3f6:f4b:d4a6 with SMTP id
- w20-20020a05600c475400b003f60f4bd4a6mr4947wmo.7.1689789413718; Wed, 19 Jul
- 2023 10:56:53 -0700 (PDT)
+        bh=4FVEMGAeC4A4acfilWsGklHz88eR5z5EWRCCV9Kst0I=;
+        b=H/jKqny8KKakT+H4imC11VvUP7BntKdrT5L1bObrZAqrhDTeEnCQOvCOobbBv/nvBd
+         BLHe60VRzXDPL9HHpiQr1pTPKq+2n5/e/rVSUttPqc9qxZtRSyzUUVgslwtK2eRYbhch
+         NYUMYfxayUHac/P/fMBbBUhpwXmjrY6o0g3JJOBsT/5pgjDJITAgKhxY+aRWGWgZj/QY
+         ikzINV3mO4qSjx4SJvvphu/3vZYcsMTD/yzIwEukFeTHkzfjXgcx2dVUIgHyxgtVhgkn
+         cStPg177GZ6cj4ePAUp8ighh8nMrv8Xx4ndmk7qCsmnVXmnRUzQaIdDSIEvoJzofLJeW
+         WYMw==
+X-Gm-Message-State: ABy/qLZR9fKzhhwlINEEUpBz5LRY3FqBPfXW4I2ScUsBNdPuENk25dA/
+        0PL8lgNpah6l6hXyjzGWJ2Ycdw==
+X-Google-Smtp-Source: APBJJlEsVXT/riHHb217/IRnC4FkTdrL+WEIRgGEaqW1QkKPQqx7J9SZ2+4YPKCL/Z0Wz9JzjQeyoQ==
+X-Received: by 2002:a17:90a:d598:b0:264:97a:2ba6 with SMTP id v24-20020a17090ad59800b00264097a2ba6mr4560333pju.7.1689789434001;
+        Wed, 19 Jul 2023 10:57:14 -0700 (PDT)
+Received: from hermes.local (204-195-127-207.wavecable.com. [204.195.127.207])
+        by smtp.gmail.com with ESMTPSA id nw17-20020a17090b255100b00263f41a655esm1415304pjb.43.2023.07.19.10.57.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 10:57:13 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 10:57:11 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, David Ahern <dsahern@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        netdev@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Subject: Re: [RFC PATCH 00/10] Device Memory TCP
+Message-ID: <20230719105711.448f8cad@hermes.local>
+In-Reply-To: <CAHS8izPORN=r2-hzYSgN4s_Aoo2dnwoJXrU5Hu=43sb8zsWyhQ@mail.gmail.com>
+References: <20230710223304.1174642-1-almasrymina@google.com>
+        <12393cd2-4b09-4956-fff0-93ef3929ee37@kernel.org>
+        <CAHS8izNPTwtk+zN7XYt-+ycpT+47LMcRrYXYh=suTXCZQ6-rVQ@mail.gmail.com>
+        <ZLbUpdNYvyvkD27P@ziepe.ca>
+        <20230718111508.6f0b9a83@kernel.org>
+        <35f3ec37-11fe-19c8-9d6f-ae5a789843cb@kernel.org>
+        <20230718112940.2c126677@kernel.org>
+        <eb34f812-a866-a1a3-9f9b-7d5054d17609@kernel.org>
+        <20230718154503.0421b4cd@kernel.org>
+        <CAHS8izPORN=r2-hzYSgN4s_Aoo2dnwoJXrU5Hu=43sb8zsWyhQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <000000000000ada87505fe7cf809@google.com> <0000000000002361ee0600da8ec5@google.com>
-In-Reply-To: <0000000000002361ee0600da8ec5@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Wed, 19 Jul 2023 19:56:42 +0200
-Message-ID: <CANp29Y6QHom7Db6y3azXS0MACKSW6hUQzypZs7qrB-3TtxO1zA@mail.gmail.com>
-Subject: Re: [syzbot] [crypto?] general protection fault in shash_ahash_update
-To:     syzbot <syzbot+88f4b1e6cf88da11f5cd@syzkaller.appspotmail.com>
-Cc:     Jiadong.Zhu@amd.com, alexander.deucher@amd.com,
-        davem@davemloft.net, dhowells@redhat.com,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 7:42=E2=80=AFPM syzbot
-<syzbot+88f4b1e6cf88da11f5cd@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 1dbcf770cc2d15baf8a1e8174d6fd014a68b45ca
-> Author: Jiadong Zhu <Jiadong.Zhu@amd.com>
-> Date:   Wed May 24 03:42:19 2023 +0000
->
->     drm/amdgpu: Reset CP_VMID_PREEMPT after trailing fence signaled
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1622cafaa8=
-0000
-> start commit:   9a94d764e9bc Merge tag 'mlx5-updates-2023-06-16' of git:/=
-/..
-> git tree:       net-next
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Da4a7d74e6a7c3=
-211
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D88f4b1e6cf88da1=
-1f5cd
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1152c4ff280=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1307cbcf28000=
-0
->
-> If the result looks correct, please mark the issue as fixed by replying w=
-ith:
+On Wed, 19 Jul 2023 08:10:58 -0700
+Mina Almasry <almasrymina@google.com> wrote:
 
-No, that's unrelated.
+> On Tue, Jul 18, 2023 at 3:45=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> =
+wrote:
+> >
+> > On Tue, 18 Jul 2023 16:35:17 -0600 David Ahern wrote: =20
+> > > I do not see how 1 RSS context (or more specifically a h/w Rx queue) =
+can
+> > > be used properly with memory from different processes (or dma-buf
+> > > references). =20
+>=20
+> Right, my experience with dma-bufs from GPUs are that they're
+> allocated from the userspace and owned by the process that allocated
+> the backing GPU memory and generated the dma-buf from it. I.e., we're
+> limited to 1 dma-buf per RX queue. If we enable binding multiple
+> dma-bufs to the same RX queue, we have a problem, because AFAIU the
+> NIC can't decide which dma-buf to put the packet into (it hasn't
+> parsed the packet's destination yet).
+>=20
+> > > When the process dies, that memory needs to be flushed from
+> > > the H/W queues. Queues with interlaced submissions make that more
+> > > complicated. =20
+> > =20
+>=20
+> When the process dies, do we really want to flush the memory from the
+> hardware queues? The drivers I looked at don't seem to have a function
+> to flush the rx queues alone, they usually do an entire driver reset
+> to achieve that. Not sure if that's just convenience or there is some
+> technical limitation there. Do we really want  to trigger a driver
+> reset at the event a userspace process crashes?
 
->
-> #syz fix: drm/amdgpu: Reset CP_VMID_PREEMPT after trailing fence signaled
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
->
+Naive idea.
+Would it be possible for process to use mmap() on the GPU memory and then
+do zero copy TCP receive some how? Or is this what is being proposed.
