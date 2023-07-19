@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2409B759967
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 859C275996C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231663AbjGSPUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 11:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57578 "EHLO
+        id S231667AbjGSPVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 11:21:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231548AbjGSPUS (ORCPT
+        with ESMTP id S229974AbjGSPVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 11:20:18 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF7212F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:20:16 -0700 (PDT)
-Received: from johnny.home (unknown [IPv6:2a01:e0a:212:79f0:c8e5:afad:333a:7f73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Wed, 19 Jul 2023 11:21:18 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50459E;
+        Wed, 19 Jul 2023 08:21:16 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 93AA41FFA4;
+        Wed, 19 Jul 2023 15:21:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1689780075; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dWtRlExKoqUIgcX6NxNlXAD281gSIaupKc5Oxdi/n08=;
+        b=kNL1Fsh6OgjpwbG0rHcs0IAURm5dp4GYEb687ynGZMjs5Mn5o6EW4ltZtlEQJEu+sV+XM9
+        gbPei/0Vi5ZWesUkBvZEd+qgNQRC3JlDJGCDkuJP5xxn/mijgZjTD6x4NDPCr5n/KhbreT
+        2s+ZnwZe8kDdNikK0m4jfGIrsbwas+s=
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: aferraris)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E6E896607078;
-        Wed, 19 Jul 2023 16:20:14 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689780015;
-        bh=Vuz8fxxRQjyEzNJO5AifT30HVP1PpYja7Nw+e3uq5EM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RdqvU8eVbhir2m5RRjomEgdqhaDDdkd3yICGx8N0RE2FPBi6pPTU3uesyt+xzFPwS
-         fF3ER6Q01KfF51CY8OaD2UeJeLY118SnTQOFu9gsK+4x/NN9Zox8mFQk6HVWLhSjig
-         H29UON+odoMwFCkq2h68bYXNoveCARYcuXhMWdhEBsAljOLNW+wxbMl1WSYDU3/sv3
-         nc8Q292u36GOFTutxOF8f0eCjPVAhmkmTnw1gaCj77hT0ugNnCs5hG4c3jt5IRXi/D
-         /0zcnhsVBIQBo3r9mg/VhZqTPmg4By9GafFGum+MC4STsYDrJ3em/klMvArVBpFOLw
-         r8/ye8B97dYKA==
-From:   Arnaud Ferraris <arnaud.ferraris@collabora.com>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Molly Sophia <mollysophia379@gmail.com>,
-        Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Subject: [PATCH v5 2/2 RESEND] drm: panel: Add novatek nt35596s panel driver
-Date:   Wed, 19 Jul 2023 17:20:07 +0200
-Message-Id: <20230719152007.197710-3-arnaud.ferraris@collabora.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230719152007.197710-1-arnaud.ferraris@collabora.com>
-References: <20230719152007.197710-1-arnaud.ferraris@collabora.com>
+        by relay2.suse.de (Postfix) with ESMTPS id D29FB2C142;
+        Wed, 19 Jul 2023 15:21:14 +0000 (UTC)
+Date:   Wed, 19 Jul 2023 17:21:11 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Brian Gerst <brgerst@gmail.com>, jpoimboe@kernel.org
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        alyssa.milburn@linux.intel.com, keescook@chromium.org,
+        joao@overdrivepizza.com, tim.c.chen@linux.intel.com,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] x86: Rewrite ret_from_fork() in C
+Message-ID: <ZLf_Z5dCSm7zKDel@alley>
+References: <20230623225529.34590-1-brgerst@gmail.com>
+ <20230623225529.34590-3-brgerst@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230623225529.34590-3-brgerst@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -59,349 +61,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Molly Sophia <mollysophia379@gmail.com>
+On Fri 2023-06-23 18:55:29, Brian Gerst wrote:
+> When kCFI is enabled, special handling is needed for the indirect call
+> to the kernel thread function.  Rewrite the ret_from_fork() function in
+> C so that the compiler can properly handle the indirect call.
 
-Novatek NT35596s is a generic DSI IC that drives command and video mode
-panels. Add the driver for it. Currently add support for the LCD panel
-from JDI connected with this IC, as found on Xiaomi Mi Mix2s phones.
+This patch broke livepatching. Kthreads never have a reliable stack.
+It works when I revert it.
 
-Signed-off-by: Molly Sophia <mollysophia379@gmail.com>
-Signed-off-by: Arnaud Ferraris <arnaud.ferraris@collabora.com>
----
-Changes in v5:
-- Move changelog out of commit message.
-- Wrap description lines around 80 chars.
+See also below.
 
-Changes in v4:
-- Correct numeric order of the items.
+> --- a/arch/x86/entry/entry_64.S
+> +++ b/arch/x86/entry/entry_64.S
+> @@ -284,36 +284,19 @@ SYM_FUNC_END(__switch_to_asm)
+>   * r12: kernel thread arg
+>   */
+>  .pushsection .text, "ax"
+> -	__FUNC_ALIGN
+> -SYM_CODE_START_NOALIGN(ret_from_fork)
+> -	UNWIND_HINT_END_OF_STACK
+> +SYM_CODE_START(ret_from_fork_asm)
+> +	UNWIND_HINT_REGS
+>  	ANNOTATE_NOENDBR // copy_thread
+>  	CALL_DEPTH_ACCOUNT
+> -	movq	%rax, %rdi
+> -	call	schedule_tail			/* rdi: 'prev' task parameter */
+>  
+> -	testq	%rbx, %rbx			/* from kernel_thread? */
+> -	jnz	1f				/* kernel threads are uncommon */
+> +	movq	%rax, %rdi		/* prev */
+> +	movq	%rsp, %rsi		/* regs */
+> +	movq	%rbx, %rdx		/* fn */
+> +	movq	%r12, %rcx		/* fn_arg */
+> +	call	ret_from_fork
+>  
+> -2:
+> -	UNWIND_HINT_REGS
+> -	movq	%rsp, %rdi
+> -	call	syscall_exit_to_user_mode	/* returns with IRQs disabled */
+>  	jmp	swapgs_restore_regs_and_return_to_usermode
+> -
+> -1:
+> -	/* kernel thread */
+> -	UNWIND_HINT_END_OF_STACK
 
-Changes in v3:
-- Embed the documentation into existing one (novatek,nt36672a).
+I think that it might be related to removal of this line.
+The following intructions are going to call fn(fn_arg).
+See below.
 
- drivers/gpu/drm/panel/Kconfig                 |   7 +-
- .../gpu/drm/panel/panel-novatek-nt36672a.c    | 251 ++++++++++++++++--
- 2 files changed, 237 insertions(+), 21 deletions(-)
+> -	movq	%r12, %rdi
+> -	CALL_NOSPEC rbx
+> -	/*
+> -	 * A kernel thread is allowed to return here after successfully
+> -	 * calling kernel_execve().  Exit to userspace to complete the execve()
+> -	 * syscall.
+> -	 */
+> -	movq	$0, RAX(%rsp)
+> -	jmp	2b
+> -SYM_CODE_END(ret_from_fork)
+> +SYM_CODE_END(ret_from_fork_asm)
+>  .popsection
+>  
+>  .macro DEBUG_ENTRY_ASSERT_IRQS_OFF
+> diff --git a/arch/x86/include/asm/switch_to.h b/arch/x86/include/asm/switch_to.h
+> index 5c91305d09d2..f42dbf17f52b 100644
+> --- a/arch/x86/include/asm/switch_to.h
+> +++ b/arch/x86/include/asm/switch_to.h
+> @@ -12,7 +12,9 @@ struct task_struct *__switch_to_asm(struct task_struct *prev,
+>  __visible struct task_struct *__switch_to(struct task_struct *prev,
+>  					  struct task_struct *next);
+>  
+> -asmlinkage void ret_from_fork(void);
+> +asmlinkage void ret_from_fork_asm(void);
+> +__visible void ret_from_fork(struct task_struct *prev, struct pt_regs *regs,
+> +			     int (*fn)(void *), void *fn_arg);
+>  
+>  /*
+>   * This is the structure pointed to by thread.sp for an inactive task.  The
+> diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+> index cc7a642f8c9d..001e6dad9a48 100644
+> --- a/arch/x86/kernel/process.c
+> +++ b/arch/x86/kernel/process.c
+> @@ -136,6 +137,25 @@ static int set_new_tls(struct task_struct *p, unsigned long tls)
+>  		return do_set_thread_area_64(p, ARCH_SET_FS, tls);
+>  }
+>  
+> +__visible noinstr void ret_from_fork(struct task_struct *prev, struct pt_regs *regs,
+> +				     int (*fn)(void *), void *fn_arg)
+> +{
+> +	schedule_tail(prev);
+> +
+> +	/* Is this a kernel thread? */
+> +	if (unlikely(fn)) {
+> +		fn(fn_arg);
 
-diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-index 1a0fd0754692..28ac4d980472 100644
---- a/drivers/gpu/drm/panel/Kconfig
-+++ b/drivers/gpu/drm/panel/Kconfig
-@@ -399,14 +399,15 @@ config DRM_PANEL_NOVATEK_NT36523
- 	  Boe panels used in Xiaomi Mi Pad 5 and 5 Pro tablets.
- 
- config DRM_PANEL_NOVATEK_NT36672A
--	tristate "Novatek NT36672A DSI panel"
-+	tristate "Novatek NT36672A/NT35596S DSI panel"
- 	depends on OF
- 	depends on DRM_MIPI_DSI
- 	depends on BACKLIGHT_CLASS_DEVICE
- 	help
- 	  Say Y here if you want to enable support for the panels built
--	  around the Novatek NT36672A display controller, such as some
--	  Tianma panels used in a few Xiaomi Poco F1 mobile phones.
-+	  around the Novatek NT36672A or NT35596S display controller, such
-+	  as some Tianma panels used in a few Xiaomi Poco F1 mobile phones
-+	  or the JDI panels used in Xiaomi Mi Mix2S mobile phones.
- 
- config DRM_PANEL_NOVATEK_NT39016
- 	tristate "Novatek NT39016 RGB/SPI panel"
-diff --git a/drivers/gpu/drm/panel/panel-novatek-nt36672a.c b/drivers/gpu/drm/panel/panel-novatek-nt36672a.c
-index 73bcffa1e0c1..68600000618b 100644
---- a/drivers/gpu/drm/panel/panel-novatek-nt36672a.c
-+++ b/drivers/gpu/drm/panel/panel-novatek-nt36672a.c
-@@ -3,13 +3,16 @@
-  * Copyright (C) 2020 Linaro Ltd
-  * Author: Sumit Semwal <sumit.semwal@linaro.org>
-  *
-- * This driver is for the DSI interface to panels using the NT36672A display driver IC
-- * from Novatek.
-- * Currently supported are the Tianma FHD+ panels found in some Xiaomi phones, including
-- * some variants of the Poco F1 phone.
-+ * Copyright (C) 2022 Molly Sophia <mollysophia379@gmail.com>
-  *
-- * Panels using the Novatek NT37762A IC should add appropriate configuration per-panel and
-- * use this driver.
-+ * This driver is for the DSI interface to panels using the NT36672A/NT35596S
-+ * display driver IC from Novatek.
-+ * Currently supported are the Tianma FHD+ panels found in some Xiaomi phones,
-+ * including some variants of the Poco F1 phone, and the JDI FHD+ panels found
-+ * in Xiaomi Mi Mix2S phones.
-+ *
-+ * Panels using the Novatek NT37762A or NT35596S IC should add appropriate
-+ * configuration per-panel and use this driver.
-  */
- 
- #include <linux/delay.h>
-@@ -123,12 +126,14 @@ static int nt36672a_panel_unprepare(struct drm_panel *panel)
- 	if (!pinfo->prepared)
- 		return 0;
- 
--	/* send off cmds */
--	ret = nt36672a_send_cmds(panel, pinfo->desc->off_cmds,
--				 pinfo->desc->num_off_cmds);
-+	if (pinfo->desc->num_off_cmds != 0) {
-+		/* send off cmds if present */
-+		ret = nt36672a_send_cmds(panel, pinfo->desc->off_cmds,
-+					pinfo->desc->num_off_cmds);
- 
--	if (ret < 0)
--		dev_err(panel->dev, "failed to send DCS off cmds: %d\n", ret);
-+		if (ret < 0)
-+			dev_err(panel->dev, "failed to send DCS off cmds: %d\n", ret);
-+	}
- 
- 	ret = mipi_dsi_dcs_set_display_off(pinfo->link);
- 	if (ret < 0)
-@@ -211,13 +216,15 @@ static int nt36672a_panel_prepare(struct drm_panel *panel)
- 		goto poweroff;
- 	}
- 
--	/* Send rest of the init cmds */
--	err = nt36672a_send_cmds(panel, pinfo->desc->on_cmds_2,
--				 pinfo->desc->num_on_cmds_2);
-+	if (pinfo->desc->num_on_cmds_2 != 0) {
-+		/* Send rest of the init cmds if present */
-+		err = nt36672a_send_cmds(panel, pinfo->desc->on_cmds_2,
-+					pinfo->desc->num_on_cmds_2);
- 
--	if (err < 0) {
--		dev_err(panel->dev, "failed to send DCS Init 2nd Code: %d\n", err);
--		goto poweroff;
-+		if (err < 0) {
-+			dev_err(panel->dev, "failed to send DCS Init 2nd Code: %d\n", err);
-+			goto poweroff;
-+		}
- 	}
- 
- 	msleep(120);
-@@ -601,6 +608,212 @@ static const struct nt36672a_panel_desc tianma_fhd_video_panel_desc = {
- 	.num_off_cmds = ARRAY_SIZE(tianma_fhd_video_off_cmds),
- };
- 
-+static const struct nt36672a_panel_cmd jdi_nt35596s_video_on_cmds[] = {
-+	{ .data = { 0xff, 0x24 } },
-+	{ .data = { 0x9d, 0x34 } },
-+	{ .data = { 0xfb, 0x01 } },
-+	{ .data = { 0xc4, 0x25 } },
-+	{ .data = { 0xd1, 0x08 } },
-+	{ .data = { 0xd2, 0x84 } },
-+	{ .data = { 0xff, 0x26 } },
-+	{ .data = { 0xfb, 0x01 } },
-+	{ .data = { 0x03, 0x1c } },
-+	{ .data = { 0x3b, 0x08 } },
-+	{ .data = { 0x6b, 0x08 } },
-+	{ .data = { 0x97, 0x08 } },
-+	{ .data = { 0xc5, 0x08 } },
-+	{ .data = { 0xfb, 0x01 } },
-+	{ .data = { 0xff, 0x23 } },
-+	{ .data = { 0xfb, 0x01 } },
-+	{ .data = { 0x01, 0x84 } },
-+	{ .data = { 0x05, 0x2d } },
-+	{ .data = { 0x06, 0x00 } },
-+	{ .data = { 0x33, 0x07 } },
-+	{ .data = { 0x21, 0xee } },
-+	{ .data = { 0x22, 0xed } },
-+	{ .data = { 0x23, 0xea } },
-+	{ .data = { 0x24, 0xe8 } },
-+	{ .data = { 0x25, 0xe5 } },
-+	{ .data = { 0x26, 0xe2 } },
-+	{ .data = { 0x27, 0xde } },
-+	{ .data = { 0x28, 0xbb } },
-+	{ .data = { 0x29, 0x87 } },
-+	{ .data = { 0x2a, 0x77 } },
-+	{ .data = { 0x32, 0x0c } },
-+	{ .data = { 0x13, 0x3f } },
-+	{ .data = { 0x14, 0x34 } },
-+	{ .data = { 0x15, 0x2a } },
-+	{ .data = { 0x16, 0x25 } },
-+	{ .data = { 0x17, 0x9d } },
-+	{ .data = { 0x18, 0x9a } },
-+	{ .data = { 0x19, 0x97 } },
-+	{ .data = { 0x1a, 0x94 } },
-+	{ .data = { 0x1b, 0x91 } },
-+	{ .data = { 0x1c, 0x8e } },
-+	{ .data = { 0x1d, 0x8b } },
-+	{ .data = { 0x1e, 0x89 } },
-+	{ .data = { 0x1f, 0x86 } },
-+	{ .data = { 0x20, 0x83 } },
-+	{ .data = { 0xff, 0x22 } },
-+	{ .data = { 0x00, 0x0a } },
-+	{ .data = { 0x01, 0x43 } },
-+	{ .data = { 0x02, 0x5b } },
-+	{ .data = { 0x03, 0x6a } },
-+	{ .data = { 0x04, 0x7a } },
-+	{ .data = { 0x05, 0x82 } },
-+	{ .data = { 0x06, 0x85 } },
-+	{ .data = { 0x07, 0x80 } },
-+	{ .data = { 0x08, 0x7c } },
-+	{ .data = { 0x09, 0x7c } },
-+	{ .data = { 0x0a, 0x74 } },
-+	{ .data = { 0x0b, 0x71 } },
-+	{ .data = { 0x0c, 0x6e } },
-+	{ .data = { 0x0d, 0x68 } },
-+	{ .data = { 0x0e, 0x65 } },
-+	{ .data = { 0x0f, 0x5c } },
-+	{ .data = { 0x10, 0x32 } },
-+	{ .data = { 0x11, 0x18 } },
-+	{ .data = { 0x12, 0x00 } },
-+	{ .data = { 0x13, 0x00 } },
-+	{ .data = { 0x1a, 0x00 } },
-+	{ .data = { 0x1b, 0x00 } },
-+	{ .data = { 0x1c, 0x00 } },
-+	{ .data = { 0x1d, 0x00 } },
-+	{ .data = { 0x1e, 0x00 } },
-+	{ .data = { 0x1f, 0x00 } },
-+	{ .data = { 0x20, 0x00 } },
-+	{ .data = { 0x21, 0x00 } },
-+	{ .data = { 0x22, 0x00 } },
-+	{ .data = { 0x23, 0x00 } },
-+	{ .data = { 0x24, 0x00 } },
-+	{ .data = { 0x25, 0x00 } },
-+	{ .data = { 0x26, 0x00 } },
-+	{ .data = { 0x27, 0x00 } },
-+	{ .data = { 0x28, 0x00 } },
-+	{ .data = { 0x29, 0x00 } },
-+	{ .data = { 0x2a, 0x00 } },
-+	{ .data = { 0x2b, 0x00 } },
-+	{ .data = { 0x2f, 0x00 } },
-+	{ .data = { 0x30, 0x00 } },
-+	{ .data = { 0x31, 0x00 } },
-+	{ .data = { 0x32, 0x0c } },
-+	{ .data = { 0x33, 0x0c } },
-+	{ .data = { 0x34, 0x0c } },
-+	{ .data = { 0x35, 0x0b } },
-+	{ .data = { 0x36, 0x09 } },
-+	{ .data = { 0x37, 0x09 } },
-+	{ .data = { 0x38, 0x08 } },
-+	{ .data = { 0x39, 0x05 } },
-+	{ .data = { 0x3a, 0x03 } },
-+	{ .data = { 0x3b, 0x00 } },
-+	{ .data = { 0x3f, 0x00 } },
-+	{ .data = { 0x40, 0x00 } },
-+	{ .data = { 0x41, 0x00 } },
-+	{ .data = { 0x42, 0x00 } },
-+	{ .data = { 0x43, 0x00 } },
-+	{ .data = { 0x44, 0x00 } },
-+	{ .data = { 0x45, 0x00 } },
-+	{ .data = { 0x46, 0x00 } },
-+	{ .data = { 0x47, 0x00 } },
-+	{ .data = { 0x48, 0x00 } },
-+	{ .data = { 0x49, 0x03 } },
-+	{ .data = { 0x4a, 0x06 } },
-+	{ .data = { 0x4b, 0x07 } },
-+	{ .data = { 0x4c, 0x07 } },
-+	{ .data = { 0x53, 0x01 } },
-+	{ .data = { 0x54, 0x01 } },
-+	{ .data = { 0x55, 0x89 } },
-+	{ .data = { 0x56, 0x00 } },
-+	{ .data = { 0x58, 0x00 } },
-+	{ .data = { 0x68, 0x00 } },
-+	{ .data = { 0x84, 0xff } },
-+	{ .data = { 0x85, 0xff } },
-+	{ .data = { 0x86, 0x03 } },
-+	{ .data = { 0x87, 0x00 } },
-+	{ .data = { 0x88, 0x00 } },
-+	{ .data = { 0xa2, 0x20 } },
-+	{ .data = { 0xa9, 0x01 } },
-+	{ .data = { 0xaa, 0x12 } },
-+	{ .data = { 0xab, 0x13 } },
-+	{ .data = { 0xac, 0x0a } },
-+	{ .data = { 0xad, 0x74 } },
-+	{ .data = { 0xaf, 0x33 } },
-+	{ .data = { 0xb0, 0x03 } },
-+	{ .data = { 0xb1, 0x14 } },
-+	{ .data = { 0xb2, 0x42 } },
-+	{ .data = { 0xb3, 0x40 } },
-+	{ .data = { 0xb4, 0xa5 } },
-+	{ .data = { 0xb6, 0x44 } },
-+	{ .data = { 0xb7, 0x04 } },
-+	{ .data = { 0xb8, 0x14 } },
-+	{ .data = { 0xb9, 0x42 } },
-+	{ .data = { 0xba, 0x40 } },
-+	{ .data = { 0xbb, 0xa5 } },
-+	{ .data = { 0xbd, 0x44 } },
-+	{ .data = { 0xbe, 0x04 } },
-+	{ .data = { 0xbf, 0x00 } },
-+	{ .data = { 0xc0, 0x75 } },
-+	{ .data = { 0xc1, 0x6a } },
-+	{ .data = { 0xc2, 0xa5 } },
-+	{ .data = { 0xc4, 0x22 } },
-+	{ .data = { 0xc5, 0x02 } },
-+	{ .data = { 0xc6, 0x00 } },
-+	{ .data = { 0xc7, 0x95 } },
-+	{ .data = { 0xc8, 0x8a } },
-+	{ .data = { 0xc9, 0xa5 } },
-+	{ .data = { 0xcb, 0x22 } },
-+	{ .data = { 0xcc, 0x02 } },
-+	{ .data = { 0xcd, 0x00 } },
-+	{ .data = { 0xce, 0xb5 } },
-+	{ .data = { 0xcf, 0xaa } },
-+	{ .data = { 0xd0, 0xa5 } },
-+	{ .data = { 0xd2, 0x22 } },
-+	{ .data = { 0xd3, 0x02 } },
-+	{ .data = { 0xfb, 0x01 } },
-+	{ .data = { 0xff, 0x10 } },
-+	{ .data = { 0x26, 0x02 } },
-+	{ .data = { 0x35, 0x00 } },
-+	{ .data = { 0x51, 0xff } },
-+	{ .data = { 0x53, 0x24 } },
-+	{ .data = { 0x55, 0x00 } },
-+	{ .data = { 0xb0, 0x00 } },
-+};
-+
-+static const struct drm_display_mode jdi_nt35596s_video_panel_mode = {
-+	.clock = (1080 + 16 + 28 + 40) * (2160 + 7 + 4 + 24) * 60 / 1000,
-+
-+	.hdisplay = 1080,
-+	.hsync_start = 1080 + 16,
-+	.hsync_end = 1080 + 16 + 28,
-+	.htotal = 1080 + 16 + 28 + 40,
-+
-+	.vdisplay = 2160,
-+	.vsync_start = 2160 + 7,
-+	.vsync_end = 2160 + 7 + 4,
-+	.vtotal = 2160 + 7 + 4 + 24,
-+
-+	.type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED,
-+};
-+
-+static const struct nt36672a_panel_desc jdi_nt35596s_video_panel_desc = {
-+	.display_mode = &jdi_nt35596s_video_panel_mode,
-+
-+	.width_mm = 68,
-+	.height_mm = 136,
-+
-+	.mode_flags = MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_VIDEO |
-+		      MIPI_DSI_MODE_VIDEO_HSE | MIPI_DSI_CLOCK_NON_CONTINUOUS |
-+		      MIPI_DSI_MODE_VIDEO_BURST,
-+	.format = MIPI_DSI_FMT_RGB888,
-+	.lanes = 4,
-+	.on_cmds_1 = jdi_nt35596s_video_on_cmds,
-+	.num_on_cmds_1 = ARRAY_SIZE(jdi_nt35596s_video_on_cmds),
-+	.on_cmds_2 = NULL,
-+	.num_on_cmds_2 = 0,
-+	.off_cmds = NULL,
-+	.num_off_cmds = 0,
-+};
-+
- static int nt36672a_panel_add(struct nt36672a_panel *pinfo)
- {
- 	struct device *dev = &pinfo->link->dev;
-@@ -699,6 +912,7 @@ static void nt36672a_panel_shutdown(struct mipi_dsi_device *dsi)
- 
- static const struct of_device_id tianma_fhd_video_of_match[] = {
- 	{ .compatible = "tianma,fhd-video", .data = &tianma_fhd_video_panel_desc },
-+	{ .compatible = "jdi,fhd-nt35596s", .data = &jdi_nt35596s_video_panel_desc },
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, tianma_fhd_video_of_match);
-@@ -715,5 +929,6 @@ static struct mipi_dsi_driver nt36672a_panel_driver = {
- module_mipi_dsi_driver(nt36672a_panel_driver);
- 
- MODULE_AUTHOR("Sumit Semwal <sumit.semwal@linaro.org>");
--MODULE_DESCRIPTION("NOVATEK NT36672A based MIPI-DSI LCD panel driver");
-+MODULE_AUTHOR("Molly Sophia <mollysophia379@gmail.com>");
-+MODULE_DESCRIPTION("NOVATEK NT36672A/NT35596S based MIPI-DSI LCD panel driver");
- MODULE_LICENSE("GPL");
--- 
-2.40.1
+This is the related code but it does not include the annotation
+about the end of the stack.
+
+Honestly, I am not familiar with the stack unwinder and how this is
+supposed to work.
+
+I hope that Josh or anyone else might know better.
+
+> +		/*
+> +		 * A kernel thread is allowed to return here after successfully
+> +		 * calling kernel_execve().  Exit to userspace to complete the
+> +		 * execve() syscall.
+> +		 */
+> +		regs->ax = 0;
+> +	}
+> +
+> +	syscall_exit_to_user_mode(regs);
+> +}
+> +
+>  int copy_thread(struct task_struct *p, const struct kernel_clone_args *args)
+>  {
+>  	unsigned long clone_flags = args->flags;
+
+Best Regards,
+Petr
