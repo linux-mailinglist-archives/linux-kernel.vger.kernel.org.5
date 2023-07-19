@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D13F0759EDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5711C759F00
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbjGSTlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 15:41:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35484 "EHLO
+        id S231296AbjGSTws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 15:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbjGSTlF (ORCPT
+        with ESMTP id S229853AbjGSTwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 15:41:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F521FCD
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:41:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C7A58617DA
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 19:41:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B04EC433C7;
-        Wed, 19 Jul 2023 19:41:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689795663;
-        bh=HT6NIJnJjP5XXjL3jAn8RBEdx6VjahZqEGc1GycJOzs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=glJtml9m0Hgxx78mdXgcgYqU8Aq4I+4WSEAyiStrCFQ6CwHaDQufqKPeshdn1Pu02
-         oFYhSswF5yw8PkhEan5XX1ffIV79x44ZeWHxfDT4Krxj2oNwuED3/sNk+pTRO7+LsR
-         psri1Wn6WwIu9gKrAKAMIKmya2dEXFgMk1GH6LWhwQeyJbd4fEZsmWqT6nL+oPDi3A
-         gNWZrvm0k1exHt07nf/8pM8LOqmwU8bODbgwkNU8Vo3CueJjgofJSs42P9soDODaFT
-         NumZ1Loz0WGBO7Bvvqm3AEtHnCOgyDOmUfdv5mjOjQL/jprXnXJcd8EKnSAWAU784h
-         3S1rE3mcdV7ug==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Shannon Nelson <shannon.nelson@amd.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] vpda: pds: fix building without debugfs
-Date:   Wed, 19 Jul 2023 21:40:52 +0200
-Message-Id: <20230719194058.1606869-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Wed, 19 Jul 2023 15:52:46 -0400
+X-Greylist: delayed 654 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 19 Jul 2023 12:52:44 PDT
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD3CA7
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:52:44 -0700 (PDT)
+Received: from [2601:18c:8180:ac39:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1qMD3N-0007gS-36;
+        Wed, 19 Jul 2023 15:41:41 -0400
+Date:   Wed, 19 Jul 2023 15:41:37 -0400
+From:   Rik van Riel <riel@surriel.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: [PATCH] mm,memblock: reset memblock.reserved to system init state
+ to  prevent UAF
+Message-ID: <20230719154137.732d8525@imladris.surriel.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Sender: riel@surriel.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+The memblock_discard function frees the memblock.reserved.regions
+array, which is good.
 
-The new debugfs code still gets called when debugfs is disabled, resulting
-in a link failure:
+However, if a subsequent memblock_free (or memblock_phys_free) comes
+in later, from for example ima_free_kexec_buffer, that will result in
+a use after free bug in memblock_isolate_range.
 
-ERROR: modpost: "pds_vdpa_debugfs_del_vdpadev" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
-ERROR: modpost: "pds_vdpa_debugfs_add_vdpadev" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
-ERROR: modpost: "pds_vdpa_debugfs_reset_vdpadev" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
-ERROR: modpost: "pds_vdpa_debugfs_create" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
-ERROR: modpost: "pds_vdpa_debugfs_add_ident" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
-ERROR: modpost: "pds_vdpa_debugfs_destroy" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
-ERROR: modpost: "pds_vdpa_debugfs_add_pcidev" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
+When running a kernel with CONFIG_KASAN enabled, this will cause a
+kernel panic very early in boot. Without CONFIG_KASAN, there is
+a chance that memblock_isolate_range might scribble on memory
+that is now in use by somebody else.
 
-Add the usual #if/#else block around the declarations to supply empty stubs
-for the broken case.
+Avoid those issues by making sure that memblock_discard points
+memblock.reserved.regions back at the static buffer.
 
-Fixes: 151cc834f3dda ("pds_vdpa: add support for vdpa and vdpamgmt interfaces")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+If memblock_discard is called while there is still memory
+in the memblock.reserved type, that will print a warning
+in memblock_remove_region.
+
+Signed-off-by: Rik van Riel <riel@surriel.com>
 ---
- drivers/vdpa/pds/debugfs.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ mm/memblock.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/vdpa/pds/debugfs.h b/drivers/vdpa/pds/debugfs.h
-index c088a4e8f1e92..6fbd64ace13a3 100644
---- a/drivers/vdpa/pds/debugfs.h
-+++ b/drivers/vdpa/pds/debugfs.h
-@@ -6,6 +6,7 @@
+diff --git a/mm/memblock.c b/mm/memblock.c
+index 3feafea06ab2..068289a46903 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -374,6 +374,10 @@ void __init memblock_discard(void)
+ 			kfree(memblock.reserved.regions);
+ 		else
+ 			memblock_free_late(addr, size);
++		/* Reset to prevent UAF from stray frees. */
++		memblock.reserved.regions = memblock_reserved_init_regions;
++		memblock.reserved.cnt = 1;
++		memblock_remove_region(&memblock.reserved, 0);
+ 	}
  
- #include <linux/debugfs.h>
- 
-+#ifdef CONFIG_DEBUG_FS
- void pds_vdpa_debugfs_create(void);
- void pds_vdpa_debugfs_destroy(void);
- void pds_vdpa_debugfs_add_pcidev(struct pds_vdpa_aux *vdpa_aux);
-@@ -13,5 +14,14 @@ void pds_vdpa_debugfs_add_ident(struct pds_vdpa_aux *vdpa_aux);
- void pds_vdpa_debugfs_add_vdpadev(struct pds_vdpa_aux *vdpa_aux);
- void pds_vdpa_debugfs_del_vdpadev(struct pds_vdpa_aux *vdpa_aux);
- void pds_vdpa_debugfs_reset_vdpadev(struct pds_vdpa_aux *vdpa_aux);
-+#else
-+static inline void pds_vdpa_debugfs_create(void) { }
-+static inline void pds_vdpa_debugfs_destroy(void) { }
-+static inline void pds_vdpa_debugfs_add_pcidev(struct pds_vdpa_aux *vdpa_aux) { }
-+static inline void pds_vdpa_debugfs_add_ident(struct pds_vdpa_aux *vdpa_aux) { }
-+static inline void pds_vdpa_debugfs_add_vdpadev(struct pds_vdpa_aux *vdpa_aux) { }
-+static inline void pds_vdpa_debugfs_del_vdpadev(struct pds_vdpa_aux *vdpa_aux) { }
-+static inline void pds_vdpa_debugfs_reset_vdpadev(struct pds_vdpa_aux *vdpa_aux) { }
-+#endif
- 
- #endif /* _PDS_VDPA_DEBUGFS_H_ */
+ 	if (memblock.memory.regions != memblock_memory_init_regions) {
 -- 
-2.39.2
+2.34.1
+
 
