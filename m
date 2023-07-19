@@ -2,45 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B60F3758AD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 03:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 568A9758ADA
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 03:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbjGSBZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 21:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35960 "EHLO
+        id S229982AbjGSB11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 21:27:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjGSBZg (ORCPT
+        with ESMTP id S229479AbjGSB1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 21:25:36 -0400
-Received: from hust.edu.cn (mail.hust.edu.cn [202.114.0.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E258B12F;
-        Tue, 18 Jul 2023 18:25:34 -0700 (PDT)
-Received: from [IPV6:2001:250:4000:5113:b1a1:bdb4:62a:cbc5] ([172.16.0.254])
-        (user=dzm91@hust.edu.cn mech=PLAIN bits=0)
-        by mx1.hust.edu.cn  with ESMTP id 36J1P3dQ011344-36J1P3dR011344
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO);
-        Wed, 19 Jul 2023 09:25:03 +0800
-Message-ID: <b14a23c8-826e-ad36-1cbb-bea4938b6368@hust.edu.cn>
-Date:   Wed, 19 Jul 2023 09:25:03 +0800
+        Tue, 18 Jul 2023 21:27:25 -0400
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30091BD7
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 18:27:24 -0700 (PDT)
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-39fb9cce400so10576380b6e.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 18:27:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689730044; x=1692322044;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rfxy0CP6ni1VWU8/yfU77lINRc2kmaRCFe7LKCX8BHs=;
+        b=lzwLYY0dqqVjXh7lOu1ZzIO52738PCybD1LSsXFRU2fb4I/IKVV/B1lSEg63YldZJG
+         GJRsMkDipTnvBZ0f21AA5b+SqCB6qeRPykodXXHj51ESc47ErHiIsVsSekrMaMCkuNvG
+         hBe/DF2Tsc3f+KYAk8sWrzKUcFhzjo/jYLj5VTtbbCqdazFjM+JZeVtlw5ft6xXcQcPV
+         2ref4nRW8XzVyI1N5R8Icqg0ekkW/Erb2YMsOC/OOXe9MiBCDASbBVy1m4+NZ+aULuXo
+         eWiBbddEXR8gVCxJ11KBegMj15z1X5Jd9xWMWjKOG/8BgfK+cyXiq9aVq48EXngVQKi2
+         BXag==
+X-Gm-Message-State: ABy/qLYkoYrFi6enhT1wspKHtOhzenACZmhHu+w58utspJwCUEkqe/JY
+        UDAInHwiw8r9wS9zYBqib4UTSQ6c5DwyXOhXHTwD6ITu+s6o
+X-Google-Smtp-Source: APBJJlHvSvEWJ4gshpSi+alJuPgyRolravk84YMG5BqnOgm8pVPsVWN6pdJN9s7BhvvHifJU+W2mqyC9ps8Z4ponVybWUl4qoYDH
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v3] wifi: ath9k: fix printk specifier
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@toke.dk>,
-        Jonas Gorski <jonas.gorski@gmail.com>
-Cc:     Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230706111700.14305-1-dzm91@hust.edu.cn>
- <87cz15s2gv.fsf@toke.dk>
- <CAOiHx=kccbUFGsWMA_31UPW6p=k1qa+HyL5OGyzv50W2Mc111w@mail.gmail.com>
- <87a5w7hm46.fsf@toke.dk>
-From:   Dongliang Mu <dzm91@hust.edu.cn>
-In-Reply-To: <87a5w7hm46.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-FEAS-AUTH-USER: dzm91@hust.edu.cn
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a05:6808:3081:b0:3a4:13ba:9fe with SMTP id
+ bl1-20020a056808308100b003a413ba09femr8362947oib.10.1689730044035; Tue, 18
+ Jul 2023 18:27:24 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 18:27:23 -0700
+In-Reply-To: <000000000000d8352e0600c0c804@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000a88cb0600ccef54@google.com>
+Subject: Re: [syzbot] [hfs?] kernel BUG in hfsplus_show_options
+From:   syzbot <syzbot+98d3ceb7e01269e7bf4f@syzkaller.appspotmail.com>
+To:     andriy.shevchenko@linux.intel.com, keescook@chromium.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,43 +56,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has bisected this issue to:
 
-On 2023/7/7 21:44, Toke Høiland-Jørgensen wrote:
-> Jonas Gorski <jonas.gorski@gmail.com> writes:
->
->> On Thu, 6 Jul 2023 at 13:39, Toke Høiland-Jørgensen <toke@toke.dk> wrote:
->>> Dongliang Mu <dzm91@hust.edu.cn> writes:
->>>
->>>> Smatch reports:
->>>>
->>>> ath_pci_probe() warn: argument 4 to %lx specifier is cast from pointer
->>>> ath_ahb_probe() warn: argument 4 to %lx specifier is cast from pointer
->>>>
->>>> Fix it by modifying %lx to %p in printk.
->>>>
->>>> Signed-off-by: Dongliang Mu <dzm91@hust.edu.cn>
->>> Third time is the charm! :)
->>>
->>> Acked-by: Toke Høiland-Jørgensen <toke@toke.dk>
->> But do we *want* to replace %lx with %p? Because this now causes a
->> change in behavior, as the kernel will omit the pointer's address,
->> while before it printed the actual memory address. Using %px would
->> have kept the original behavior.
-> So this is basically an informational log message, which really
-> shouldn't be leaking kernel pointer addresses. So I think %p is the
-> right choice here, and if someone wants to see the real address for
-> debugging they should be booting with no_hash_pointers.
->
->> So if the change is desired, it should be noted in the commit message.
-> That is a fair point, documenting this in the commit message would be
-> good...
+commit c30417b20f4993e49406f3f6d986355c6e943aa2
+Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date:   Mon Jul 17 09:33:32 2023 +0000
 
-Hi Toke,
+    seq_file: Replace strncpy()+nul by strscpy()
 
-What's the next? Patch v4 with a note at the end, like the following,
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17488c1aa80000
+start commit:   aeba456828b4 Add linux-next specific files for 20230718
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=14c88c1aa80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10c88c1aa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e7ec534f91cfce6c
+dashboard link: https://syzkaller.appspot.com/bug?extid=98d3ceb7e01269e7bf4f
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15ecf646a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1476f30aa80000
 
-"Note that %p would by default print a hashed value without leaking the 
-kernel pointer to user space."
+Reported-by: syzbot+98d3ceb7e01269e7bf4f@syzkaller.appspotmail.com
+Fixes: c30417b20f49 ("seq_file: Replace strncpy()+nul by strscpy()")
 
-
-> -Toke
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
