@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFAB75980D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E5C75980F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbjGSOU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 10:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50782 "EHLO
+        id S231250AbjGSOVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbjGSOUx (ORCPT
+        with ESMTP id S230375AbjGSOV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:20:53 -0400
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2651993;
-        Wed, 19 Jul 2023 07:20:44 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 14:20:36 +0000
+        Wed, 19 Jul 2023 10:21:28 -0400
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E10F2122;
+        Wed, 19 Jul 2023 07:21:01 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 14:20:43 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1689776443; x=1690035643;
-        bh=DsEfSlKtIhyTB7NkpS5sssxEHNqI+QqAvnsnKYAwLtk=;
+        s=r5yynngpuvbuthttlghkc7g77y.protonmail; t=1689776458; x=1690035658;
+        bh=ssgVP+xm/xUxRo5NGKU6FQiwAj0frSX0JCoESMRG9+4=;
         h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
          Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
          Message-ID:BIMI-Selector;
-        b=bC5l9XnAlrfdaq2S5N8x5zKK+FHAetJ5Qoe3fWVLWY0MN12Z6bYFJOnh7qF1QhQ8A
-         7Y8++xHkylHtv06khzindeO9YELBrZiRYIJwXZ5JgQODdCPOSBuf0A5hYME84tJ/0X
-         uWkzgAF9ipSb5S4EmVjrU/M4Di2j4hoWBmmgMubB1zQrWzquDMRDMhdfkimwq/4dTB
-         paPXsBuQL1rrWJr3ePiYKVTpH3bOH6nptIry5TmBDyQu0iSjSl/sPfB4HYBK2Xiq8d
-         5yCe/yrjOAtNt21S3EGzfW99kSq+/Jp9s4AJb+XEbiVZyHVrburFMl321d96JmnDXB
-         4hzuS60K6qpeA==
+        b=g+vfPcqM0arg3Xzi+IPsZG7G/BF/jKT9SNSx+ctTlu2zdhzxFxxhOAGG0pLGfFEPY
+         10fLtiyor6Ot2+c+USFvHRwDiNqwalSOlAI+X3jUMXn3uuSbfushJedmjJNmqS1dj/
+         XuwFeMSa//FBPmn1psngv0glJ9+r2I2lIYYU6aOcpsv7g2T9BlhUzl7tsor77HP5Y2
+         tVR4tv22Gkc/bnJbkrilMGfm1N5S0l2SufWT2aDkfNesWLsSZNMnDycmknTkeym24l
+         r4OVWO8ejG6ipRs+I54mIwWe17uF7EQg8xMYncAq1oQ1FOyna0jIllEyMfO5fl6e4H
+         ZtO/KzbmaxBwQ==
 To:     Miguel Ojeda <ojeda@kernel.org>,
         Wedson Almeida Filho <wedsonaf@gmail.com>,
         Alex Gaynor <alex.gaynor@gmail.com>
@@ -38,8 +38,8 @@ Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
         Alice Ryhl <aliceryhl@google.com>,
         Andreas Hindborg <nmi@metaspace.dk>,
         rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 04/12] rust: init: wrap type checking struct initializers in a closure
-Message-ID: <20230719141918.543938-5-benno.lossin@proton.me>
+Subject: [PATCH v2 05/12] rust: init: make initializer values inaccessible after initializing
+Message-ID: <20230719141918.543938-6-benno.lossin@proton.me>
 In-Reply-To: <20230719141918.543938-1-benno.lossin@proton.me>
 References: <20230719141918.543938-1-benno.lossin@proton.me>
 Feedback-ID: 71780778:user:proton
@@ -57,59 +57,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the implementation of the init macros there is a `if false` statement
-that type checks the initializer to ensure every field is initialized.
-Since the next patch has a stack variable to store the struct, the
-function might allocate too much memory on debug builds. Putting the
-struct into a closure that is never executed ensures that even in debug
-builds no stack overflow error is caused. In release builds this was not
-a problem since the code was optimized away due to the `if false`.
+Previously the init macros would create a local variable with the name
+and hygiene of the field that is being initialized to store the value of
+the field. This would override any user defined variables. For example:
+```
+struct Foo {
+    a: usize,
+    b: usize,
+}
+let a =3D 10;
+let foo =3D init!(Foo{
+    a: a + 1, // This creates a local variable named `a`.
+    b: a, // This refers to that variable!
+});
+let foo =3D Box::init!(foo)?;
+assert_eq!(foo.a, 11);
+assert_eq!(foo.b, 11);
+```
+
+This patch changes this behavior, so the above code would panic at the
+last assertion, since `b` would have value 10.
 
 Signed-off-by: Benno Lossin <benno.lossin@proton.me>
 ---
-v1 -> v2:
-* do not call the created closure
-
- rust/kernel/init/macros.rs | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ rust/kernel/init/macros.rs | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
 diff --git a/rust/kernel/init/macros.rs b/rust/kernel/init/macros.rs
-index c5f977f52d0c..160b95fc03c9 100644
+index 160b95fc03c9..5de939e0801f 100644
 --- a/rust/kernel/init/macros.rs
 +++ b/rust/kernel/init/macros.rs
-@@ -1038,14 +1038,14 @@ macro_rules! __init_internal {
-                     // once, this struct initializer will still be type-ch=
-ecked and complain with a
-                     // very natural error message if a field is forgotten/=
-mentioned more than once.
-                     #[allow(unreachable_code, clippy::diverging_sub_expres=
-sion)]
--                    if false {
-+                    let _ =3D || {
-                         $crate::__init_internal!(make_initializer:
-                             @slot(slot),
-                             @type_name($t),
-                             @munch_fields($($fields)*,),
-                             @acc(),
-                         );
--                    }
-+                    };
-                 }
-                 Ok(__InitOk)
-             }
-@@ -1166,8 +1166,8 @@ macro_rules! __init_internal {
-         @acc($($acc:tt)*),
+@@ -1073,13 +1073,13 @@ macro_rules! __init_internal {
+         // In-place initialization syntax.
+         @munch_fields($field:ident <- $val:expr, $($rest:tt)*),
      ) =3D> {
-         // Endpoint, nothing more to munch, create the initializer.
--        // Since we are in the `if false` branch, this will never get exec=
-uted. We abuse `slot` to
--        // get the correct type inference here:
-+        // Since we are in the closure that is never called, this will nev=
-er get executed.
-+        // We abuse `slot` to get the correct type inference here:
-         unsafe {
-             ::core::ptr::write($slot, $t {
-                 $($acc)*
+-        let $field =3D $val;
++        let init =3D $val;
+         // Call the initializer.
+         //
+         // SAFETY: `slot` is valid, because we are inside of an initialize=
+r closure, we
+         // return when an error/panic occurs.
+         // We also use the `data` to require the correct trait (`Init` or =
+`PinInit`) for `$field`.
+-        unsafe { $data.$field(::core::ptr::addr_of_mut!((*$slot).$field), =
+$field)? };
++        unsafe { $data.$field(::core::ptr::addr_of_mut!((*$slot).$field), =
+init)? };
+         // Create the drop guard:
+         //
+         // We rely on macro hygiene to make it impossible for users to acc=
+ess this local variable.
+@@ -1105,12 +1105,12 @@ macro_rules! __init_internal {
+         // In-place initialization syntax.
+         @munch_fields($field:ident <- $val:expr, $($rest:tt)*),
+     ) =3D> {
+-        let $field =3D $val;
++        let init =3D $val;
+         // Call the initializer.
+         //
+         // SAFETY: `slot` is valid, because we are inside of an initialize=
+r closure, we
+         // return when an error/panic occurs.
+-        unsafe { $crate::init::Init::__init($field, ::core::ptr::addr_of_m=
+ut!((*$slot).$field))? };
++        unsafe { $crate::init::Init::__init(init, ::core::ptr::addr_of_mut=
+!((*$slot).$field))? };
+         // Create the drop guard:
+         //
+         // We rely on macro hygiene to make it impossible for users to acc=
+ess this local variable.
+@@ -1136,11 +1136,13 @@ macro_rules! __init_internal {
+         // Init by-value.
+         @munch_fields($field:ident $(: $val:expr)?, $($rest:tt)*),
+     ) =3D> {
+-        $(let $field =3D $val;)?
+-        // Initialize the field.
+-        //
+-        // SAFETY: The memory at `slot` is uninitialized.
+-        unsafe { ::core::ptr::write(::core::ptr::addr_of_mut!((*$slot).$fi=
+eld), $field) };
++        {
++            $(let $field =3D $val;)?
++            // Initialize the field.
++            //
++            // SAFETY: The memory at `slot` is uninitialized.
++            unsafe { ::core::ptr::write(::core::ptr::addr_of_mut!((*$slot)=
+.$field), $field) };
++        }
+         // Create the drop guard:
+         //
+         // We rely on macro hygiene to make it impossible for users to acc=
+ess this local variable.
 --=20
 2.41.0
 
