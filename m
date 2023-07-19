@@ -2,101 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 640BE75921B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9643B759220
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbjGSJwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54250 "EHLO
+        id S229835AbjGSJ4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjGSJwr (ORCPT
+        with ESMTP id S229592AbjGSJ4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:52:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E544DEC;
-        Wed, 19 Jul 2023 02:52:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7E0A46134C;
-        Wed, 19 Jul 2023 09:52:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 108ABC433C7;
-        Wed, 19 Jul 2023 09:52:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689760365;
-        bh=p+VPpRPArB1Uz3WdiGB0Q/lkKspNzGEsJXp0xntNTak=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Z2abMUCWvgN0XC/hFUeMnoraY3M5H4fMDZRTWHPLtOgiRZ537ho5YDalpZPLAwvKe
-         43IOiBWoLFBmgfopQKpevAknmbqSAn2D16htatfxHAl35e3leKXTT9BrdrYfbZovL0
-         ZAJMWBN259/aumSwifFgPxHg0bUm9L3vjvf0zI8uNbw8CAI+nkVOwwW7JcbX3FrG7J
-         TZZ+r8LoT8aFp78cAeR9t7xhoDBifxW9KK86OqxjzfV8F0Edgeen8j2AE3kJ1bRJHo
-         elCtZ7lOaeqSADv+LRMr4OyqEMB/qeCXkVNyPJ6ZBV9KZkhOtL+brCmBDHH+wPo+7T
-         DcEqa5KQs+eNQ==
-Message-ID: <66dcf813-af1d-c7a0-5c02-3d2585ff6cc7@kernel.org>
-Date:   Wed, 19 Jul 2023 18:52:44 +0900
+        Wed, 19 Jul 2023 05:56:41 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1F5EC
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:54:37 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R5WPj4zrFzBRDrQ
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 17:54:33 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689760473; x=1692352474; bh=iZ7MHDXMAeTe21V130fRphXLFoc
+        oLkF9T3oPe8TXaRU=; b=A7FrCShP8IWzWnXTNctVB5FUbpvV3i7boTOXyu0+Rrf
+        6EjkxZQwKnlCi3OwEOofgQunTbAQcEWuFIrKqfmmqcKw4F4qSa5MiiIx+QAeYRZZ
+        r8L8qwJcFmagKCzdJ9O3hcRDreEJ5ohA679Z4j+wMYUceng2+qF6cFPjkFPrep55
+        XhF1lZUkTfbCkA4ixJCypzCpfRETwUamm1mcTg1hWybaLEyvvLx1C220uVK+21FI
+        U09KhGw4bhD6pothBSubf3GWomiQciRggHESM3B+QD7BsNKKrPCl3/5iMB+NxC4d
+        E6u7vuyaFLzQnuPQBF+It3DFBu4VPfYmKexUgA6H8Wg==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id S-LwKX8xerZ0 for <linux-kernel@vger.kernel.org>;
+        Wed, 19 Jul 2023 17:54:33 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R5WPj3JmgzBRDrF;
+        Wed, 19 Jul 2023 17:54:33 +0800 (CST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] ata: pata_arasan_cf: Use dev_err_probe() instead
- dev_err() in data_xfer()
-Content-Language: en-US
-To:     =?UTF-8?B?5p2c5pWP5p2w?= <duminjie@vivo.com>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "open list:LIBATA PATA DRIVERS" <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     "opensource.kernel" <opensource.kernel@vivo.com>
-References: <20230719094902.5643-1-duminjie@vivo.com>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20230719094902.5643-1-duminjie@vivo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Wed, 19 Jul 2023 17:54:33 +0800
+From:   hanyu001@208suo.com
+To:     pkshih@realtek.com, kvalo@kernel.org
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rtlwifi: rtl8192de: phy: "foo * bar" should be "foo *bar"
+In-Reply-To: <tencent_56B12E143DA8D1D6A9C3669E04C963914905@qq.com>
+References: <tencent_56B12E143DA8D1D6A9C3669E04C963914905@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <8ef50a4e96014949bbfde956edd07108@208suo.com>
+X-Sender: hanyu001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/23 18:49, 杜敏杰 wrote:
-> It is possible for dma_request_chan() to return EPROBE_DEFER, which means
-> acdev->host->dev is not ready yet.
-> At this point dev_err() will have no output.
-> 
-> Signed-off-by: Minjie Du <duminjie@vivo.com>
-> ---
->  drivers/ata/pata_arasan_cf.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/ata/pata_arasan_cf.c b/drivers/ata/pata_arasan_cf.c
-> index 6ab294322..fd54682f1 100644
-> --- a/drivers/ata/pata_arasan_cf.c
-> +++ b/drivers/ata/pata_arasan_cf.c
-> @@ -529,7 +529,8 @@ static void data_xfer(struct work_struct *work)
->  	/* dma_request_channel may sleep, so calling from process context */
->  	acdev->dma_chan = dma_request_chan(acdev->host->dev, "data");
->  	if (IS_ERR(acdev->dma_chan)) {
-> -		dev_err(acdev->host->dev, "Unable to get dma_chan\n");
-> +		dev_err_probe(acdev->host->dev, PTR_ERR(acdev->dma_chan),
-> +					  "Unable to get dma_chan\n");
 
-Still not aligned...
+This patch fixes the checkpatch.pl error:
 
-        dev_err_probe(acdev->host->dev, PTR_ERR(acdev->dma_chan),
-                      "Unable to get dma_chan\n");
+./drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c:2434: ERROR: "foo 
+* bar" should be "foo *bar"
 
-Like this please.
+Signed-off-by: Yu Han <hanyu001@208suo.com>
+---
+  drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
->  		acdev->dma_chan = NULL;
->  		goto chan_request_fail;
->  	}
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c 
+b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
+index d18c092..27b029b 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
+@@ -2431,7 +2431,7 @@ static bool _rtl92d_is_legal_5g_channel(struct 
+ieee80211_hw *hw, u8 channel)
+  }
 
--- 
-Damien Le Moal
-Western Digital Research
-
+  static void _rtl92d_phy_calc_curvindex(struct ieee80211_hw *hw,
+-                       u32 *targetchnl, u32 * curvecount_val,
++                       u32 *targetchnl, u32 *curvecount_val,
+                         bool is5g, u32 *curveindex)
+  {
+      struct rtl_priv *rtlpriv = rtl_priv(hw);
