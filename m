@@ -2,272 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AAE75A1D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C255475A1D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbjGSWYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 18:24:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55722 "EHLO
+        id S229872AbjGSWZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 18:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230375AbjGSWYr (ORCPT
+        with ESMTP id S229776AbjGSWZK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 18:24:47 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A701FE1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:24:16 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-583312344e7so1748617b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:24:16 -0700 (PDT)
+        Wed, 19 Jul 2023 18:25:10 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CBB26B0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:24:45 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-44358c019ddso92717137.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:24:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689805449; x=1692397449;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NHegRKijxtllrUHzL1SgBpkoHu+y+n5qaq++K8WyWmA=;
-        b=fdqBQx83SLumVnseBEBGY8wv1JHLRmHCegfbTKpsqZwmsnq3Dm9xmh64SvghtVFTxA
-         wHDeybiDWo9RRB9Btl/nyr8aI0jF8V56ADHIVUGP4UOVNQE9HEwaH62CkVlLzWsWdEY7
-         /ipNN+nLRrWA38Ov0mBVaaORiD0LU/oRw+o2FOjrIvwYfaqhXiiv35+isDfRE0vqyxJg
-         xyLpa4ck/n4pl9RupD+kPhZ8ot8uhEK30tTJALzry75zdcVvQiiEIgtm3DvteNF/roGS
-         ZnV9KjTtZFooTBiwo8z8fEbjtp9qYRnkT6YWvzto1xA/uyuQzoedsmwY2VUORG84r/ya
-         XX6Q==
+        d=linaro.org; s=google; t=1689805478; x=1690410278;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=26dnrZdbOXwc7V0lFcAmHMacjxZ28I9Y/ukTqEwlwaE=;
+        b=KFVFuviOl0sIUexTYybNWDONi7gLdbLEDjD0lt6rVTHlqBwAyvQ7aGNxy9IJLJPIOC
+         She10h/pcQNeCh2WX3NYUkCldqNXRxnvsCZL6Pf22XYj3mp/R2H8o/YZPnxHyVzk8tJZ
+         nNgzAT56tRd7F/dnUHsr00pmut/2vdPOT9kDLJLGlO/FwTSwqohcxC1FWUMSENvYkhjI
+         02uQSpj8hlxp6Lx+IbVRWxx7HjOzaIiqtpHsv34K53oy9QJwt91kOs4uVT27DjBH48lP
+         ees62wLPYy7lAWmd0D/GiQjExxemKUybfoE/Ehd2E8KF4fXEcgYVq87vpjRod1fnwQcy
+         qCWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689805449; x=1692397449;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NHegRKijxtllrUHzL1SgBpkoHu+y+n5qaq++K8WyWmA=;
-        b=HSa3z1rXu95OIWruaTJl9greaDkXEh+gHWmeZAuNerL4nHVQG/Yv7wB6sPnHTGD17h
-         psubeUkvOkxrJiXvQpBKvbkIh1LDUoYz005NgLT+Uv/DPFT+5OVBY86UxStdGAe5o9jb
-         fBuvXzeCDpo1Md734bP2VM5CdIHKMMru+ut9d0dqUZE+8WpSf8UnGEqM0IboF4nmBho/
-         ahNfrlxsznyBr2lY6Zl4Tibo0Ir8ZtEg1XKPtSb8H/9W+CDQjv09ZfnLfMLqVkkQ2QYh
-         dnM57Y67ZNaJE7xfq7X14IeUFDnE7USBIk+DaY8LevADrAjJStS6TvAxQsIKcXkA9AMW
-         yfqA==
-X-Gm-Message-State: ABy/qLbTbmL7yECixZ3Mc+h40LBgiXbcLJsX6nCgig1ad12Zw1ztblaD
-        GKuilrp9/FCmsdsUkz9fX8C0gXWdaQ==
-X-Google-Smtp-Source: APBJJlE8YL/XYJLuvTEOkCulIsrvD7y2CHXTDLudsi1AezvQ7W5NJYo+J0HPPSfJWCFexPio++2FX+ebfg==
-X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
- (user=rmoar job=sendgmr) by 2002:a25:ab0e:0:b0:cc5:c7d6:ae13 with SMTP id
- u14-20020a25ab0e000000b00cc5c7d6ae13mr31839ybi.5.1689805449595; Wed, 19 Jul
- 2023 15:24:09 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 22:23:36 +0000
-In-Reply-To: <20230719222338.259684-1-rmoar@google.com>
-Mime-Version: 1.0
-References: <20230719222338.259684-1-rmoar@google.com>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230719222338.259684-10-rmoar@google.com>
-Subject: [PATCH v1 9/9] kunit: Add documentation of KUnit test attributes
-From:   Rae Moar <rmoar@google.com>
-To:     shuah@kernel.org, davidgow@google.com, dlatypov@google.com,
-        brendan.higgins@linux.dev
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, keescook@chromium.org,
-        linux-hardening@vger.kernel.org, jstultz@google.com,
-        tglx@linutronix.de, sboyd@kernel.org, Rae Moar <rmoar@google.com>
+        d=1e100.net; s=20221208; t=1689805478; x=1690410278;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=26dnrZdbOXwc7V0lFcAmHMacjxZ28I9Y/ukTqEwlwaE=;
+        b=aqPEC1Vf9Rua80YPjvnuIPO1pX42CGuFg8aKgR4HKeWg/M8hca2/sDzH0r8ggiXh8t
+         8mYORxnJquhEklod4WWu8A2predGTia8TXEHNI0eApptLgUMtb+rAIps2mmEhBiIAnu0
+         8Ticzc7yE/MW2vSg1uajaizeCid84kpJSubzrG4/UB9V2wfjJH9FD311sXIi8OBG6EFp
+         tfod6+e4BfXK0a7mBmvI52RW9iRcQGjA5Y7EueiFtYE0IFZYZULopodH0MQZ1Qlsci50
+         NuJcA888FZDDb5FVnxMN2jGYUgigCM3PJlbjkr6ybhO/RRbGglcVvIdKE1cNqTvPXjyl
+         dLHg==
+X-Gm-Message-State: ABy/qLab55AWpYzvNjWUa+EqijfsH9e+C80B3IAP/9Cf2MEcuHPKzoh/
+        k1DjGpoTyjtRWWqrBP8JhBDyXdabKa3EfhdQ71FFAA==
+X-Google-Smtp-Source: APBJJlHqWAyz6LumuvPI+kV38qbnV5QfCFxoeJLB0UnlwATacEi9dTeimWC/QN650Sv8DUBzTmd98lSsvTr3Ot8qPW4=
+X-Received: by 2002:a67:f5c1:0:b0:443:8f10:7f72 with SMTP id
+ t1-20020a67f5c1000000b004438f107f72mr10614432vso.14.1689805478306; Wed, 19
+ Jul 2023 15:24:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230718-sm6125-dpu-v3-0-6c5a56e99820@somainline.org>
+ <20230718-sm6125-dpu-v3-6-6c5a56e99820@somainline.org> <3ce19d8f-97d8-15b6-5148-78e200b112e9@linaro.org>
+ <tpkiplw7l2mzdwekynkrg6dwm7svktwm2zooodb3c42btyvo3e@yjrpqem26wtx>
+In-Reply-To: <tpkiplw7l2mzdwekynkrg6dwm7svktwm2zooodb3c42btyvo3e@yjrpqem26wtx>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 20 Jul 2023 01:24:27 +0300
+Message-ID: <CAA8EJprHEes5T1z4-sxg_Xk+VjuyoTH0Ra-VyMnrWjTv7qG9EA@mail.gmail.com>
+Subject: Re: [PATCH v3 06/15] dt-bindings: display/msm: sc7180-dpu: Describe SM6125
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Krishna Manikandan <quic_mkrishn@quicinc.com>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, Lux Aliaga <they@mint.lgbt>,
+        Rob Herring <robh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation on the use of test attributes under the section "Tips for
-Running KUnit Tests" in the KUnit docs.
+On Thu, 20 Jul 2023 at 01:09, Marijn Suijten
+<marijn.suijten@somainline.org> wrote:
+>
+> On 2023-07-19 01:06:03, Dmitry Baryshkov wrote:
+> > On 19/07/2023 00:24, Marijn Suijten wrote:
+> > > SM6125 is identical to SM6375 except that while downstream also defines
+> > > a throttle clock, its presence results in timeouts whereas SM6375
+> > > requires it to not observe any timeouts.  This is represented by
+> > > reducing the clock array length to 6 so that it cannot be passed.  Note
+> > > that any SoC other than SM6375 (currently SC7180 and SM6350) are
+> > > unconstrained and could either pass or leave out this "throttle" clock.
+> >
+> > Could you please describe, what kind of timeouts do you observe? Is this
+> > the DSI underruns issue?
+>
+> Ping-pong timeouts and low(er) framerate.  However, they were previosuly
+> not happening on a random boot out of tens... and now I can no longer
+> reproduce the timeout on 4 consecutive boots after adding the throttle
+> clock.  Could it perhaps be the power domains and opps that we added in
+> v2 and v3?
 
-Documentation includes three sections on how to mark tests with attributes,
-how attributes are reported, and how the user can filter tests using test
-attributes.
+Quite unlikely, but who knows. My main question is whether we should
+continue skipping the throttle clocks or if it should be enabled now.
 
-Reviewed-by: David Gow <davidgow@google.com>
-Signed-off-by: Rae Moar <rmoar@google.com>
----
+>
+> We previously discussed in DMs that the rate was bouncing between 25MHz
+> and 403MHz without the clock specified, and with it it it got set at 385
+> or 403MHz.  Now, a month or so later, repeatedly running this command
+> shows 25MHz when the panel is not being refreshed, and between 337 and
+> 403MHz on modetest -r -v:
+>
+>     sony-pdx201 ~ $ sudo ./debugcc -p sm6125 gcc_disp_throttle_core_clk
+>                 gcc_disp_throttle_core_clk: 337.848277MHz (337848277Hz)
+>
+> Either all these boots are flukes, or it is really fixed and this patch
+> should be revised...
+>
+> > If so, it might be fixed by the MDSS
+> > interconnect fix ([1]).
+> >
+> > [1] https://patchwork.freedesktop.org/series/116576/
+>
+> Might have an effect but I don't have any interconnects defined in this
+> SoC DT yet.
+>
+> - Marijn
+>
+> > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> > > ---
+> > >   .../devicetree/bindings/display/msm/qcom,sc7180-dpu.yaml   | 14 ++++++++++++++
+> > >   1 file changed, 14 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/display/msm/qcom,sc7180-dpu.yaml b/Documentation/devicetree/bindings/display/msm/qcom,sc7180-dpu.yaml
+> > > index 630b11480496..37f66940c5e3 100644
+> > > --- a/Documentation/devicetree/bindings/display/msm/qcom,sc7180-dpu.yaml
+> > > +++ b/Documentation/devicetree/bindings/display/msm/qcom,sc7180-dpu.yaml
+> > > @@ -15,6 +15,7 @@ properties:
+> > >     compatible:
+> > >       enum:
+> > >         - qcom,sc7180-dpu
+> > > +      - qcom,sm6125-dpu
+> > >         - qcom,sm6350-dpu
+> > >         - qcom,sm6375-dpu
+> > >
+> > > @@ -73,6 +74,19 @@ allOf:
+> > >           clock-names:
+> > >             minItems: 7
+> > >
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          const: qcom,sm6125-dpu
+> > > +
+> > > +    then:
+> > > +      properties:
+> > > +        clocks:
+> > > +          maxItems: 6
+> > > +
+> > > +        clock-names:
+> > > +          maxItems: 6
+> > > +
+> > >   examples:
+> > >     - |
+> > >       #include <dt-bindings/clock/qcom,dispcc-sc7180.h>
+> > >
+> >
+> > --
+> > With best wishes
+> > Dmitry
+> >
 
-Changes since RFC v2:
-- Add comment on KUNIT_CASE_SLOW() to documentation.
-- Add comment on how to expose raw kernel output.
-- Remove an extra line at the end of file.
 
-Changes since RFC v1:
-- This is a new patch
 
- .../dev-tools/kunit/running_tips.rst          | 166 ++++++++++++++++++
- 1 file changed, 166 insertions(+)
-
-diff --git a/Documentation/dev-tools/kunit/running_tips.rst b/Documentation/dev-tools/kunit/running_tips.rst
-index 8e8c493f17d1..766f9cdea0fa 100644
---- a/Documentation/dev-tools/kunit/running_tips.rst
-+++ b/Documentation/dev-tools/kunit/running_tips.rst
-@@ -262,3 +262,169 @@ other code executed during boot, e.g.
- 	# Reset coverage counters before running the test.
- 	$ echo 0 > /sys/kernel/debug/gcov/reset
- 	$ modprobe kunit-example-test
-+
-+
-+Test Attributes and Filtering
-+=============================
-+
-+Test suites and cases can be marked with test attributes, such as speed of
-+test. These attributes will later be printed in test output and can be used to
-+filter test execution.
-+
-+Marking Test Attributes
-+-----------------------
-+
-+Tests are marked with an attribute by including a ``kunit_attributes`` object
-+in the test definition.
-+
-+Test cases can be marked using the ``KUNIT_CASE_ATTR(test_name, attributes)``
-+macro to define the test case instead of ``KUNIT_CASE(test_name)``.
-+
-+.. code-block:: c
-+
-+	static const struct kunit_attributes example_attr = {
-+		.speed = KUNIT_VERY_SLOW,
-+	};
-+
-+	static struct kunit_case example_test_cases[] = {
-+		KUNIT_CASE_ATTR(example_test, example_attr),
-+	};
-+
-+.. note::
-+	To mark a test case as slow, you can also use ``KUNIT_CASE_SLOW(test_name)``.
-+	This is a helpful macro as the slow attribute is the most commonly used.
-+
-+Test suites can be marked with an attribute by setting the "attr" field in the
-+suite definition.
-+
-+.. code-block:: c
-+
-+	static const struct kunit_attributes example_attr = {
-+		.speed = KUNIT_VERY_SLOW,
-+	};
-+
-+	static struct kunit_suite example_test_suite = {
-+		...,
-+		.attr = example_attr,
-+	};
-+
-+.. note::
-+	Not all attributes need to be set in a ``kunit_attributes`` object. Unset
-+	attributes will remain uninitialized and act as though the attribute is set
-+	to 0 or NULL. Thus, if an attribute is set to 0, it is treated as unset.
-+	These unset attributes will not be reported and may act as a default value
-+	for filtering purposes.
-+
-+Reporting Attributes
-+--------------------
-+
-+When a user runs tests, attributes will be present in the raw kernel output (in
-+KTAP format). Note that attributes will be hidden by default in kunit.py output
-+for all passing tests but the raw kernel output can be accessed using the
-+``--raw_output`` flag. This is an example of how test attributes for test cases
-+will be formatted in kernel output:
-+
-+.. code-block:: none
-+
-+	# example_test.speed: slow
-+	ok 1 example_test
-+
-+This is an example of how test attributes for test suites will be formatted in
-+kernel output:
-+
-+.. code-block:: none
-+
-+	  KTAP version 2
-+	  # Subtest: example_suite
-+	  # module: kunit_example_test
-+	  1..3
-+	  ...
-+	ok 1 example_suite
-+
-+Additionally, users can output a full attribute report of tests with their
-+attributes, using the command line flag ``--list_tests_attr``:
-+
-+.. code-block:: bash
-+
-+	kunit.py run "example" --list_tests_attr
-+
-+.. note::
-+	This report can be accessed when running KUnit manually by passing in the
-+	module_param ``kunit.action=list_attr``.
-+
-+Filtering
-+---------
-+
-+Users can filter tests using the ``--filter`` command line flag when running
-+tests. As an example:
-+
-+.. code-block:: bash
-+
-+	kunit.py run --filter speed=slow
-+
-+
-+You can also use the following operations on filters: "<", ">", "<=", ">=",
-+"!=", and "=". Example:
-+
-+.. code-block:: bash
-+
-+	kunit.py run --filter "speed>slow"
-+
-+This example will run all tests with speeds faster than slow. Note that the
-+characters < and > are often interpreted by the shell, so they may need to be
-+quoted or escaped, as above.
-+
-+Additionally, you can use multiple filters at once. Simply separate filters
-+using commas. Example:
-+
-+.. code-block:: bash
-+
-+	kunit.py run --filter "speed>slow, module=kunit_example_test"
-+
-+.. note::
-+	You can use this filtering feature when running KUnit manually by passing
-+	the filter as a module param: ``kunit.filter="speed>slow, speed<=normal"``.
-+
-+Filtered tests will not run or show up in the test output. You can use the
-+``--filter_action=skip`` flag to skip filtered tests instead. These tests will be
-+shown in the test output in the test but will not run. To use this feature when
-+running KUnit manually, use the module param ``kunit.filter_action=skip``.
-+
-+Rules of Filtering Procedure
-+----------------------------
-+
-+Since both suites and test cases can have attributes, there may be conflicts
-+between attributes during filtering. The process of filtering follows these
-+rules:
-+
-+- Filtering always operates at a per-test level.
-+
-+- If a test has an attribute set, then the test's value is filtered on.
-+
-+- Otherwise, the value falls back to the suite's value.
-+
-+- If neither are set, the attribute has a global "default" value, which is used.
-+
-+List of Current Attributes
-+--------------------------
-+
-+``speed``
-+
-+This attribute indicates the speed of a test's execution (how slow or fast the
-+test is).
-+
-+This attribute is saved as an enum with the following categories: "normal",
-+"slow", or "very_slow". The assumed default speed for tests is "normal". This
-+indicates that the test takes a relatively trivial amount of time (less than
-+1 second), regardless of the machine it is running on. Any test slower than
-+this could be marked as "slow" or "very_slow".
-+
-+The macro ``KUNIT_CASE_SLOW(test_name)`` can be easily used to set the speed
-+of a test case to "slow".
-+
-+``module``
-+
-+This attribute indicates the name of the module associated with the test.
-+
-+This attribute is automatically saved as a string and is printed for each suite.
-+Tests can also be filtered using this attribute.
 -- 
-2.41.0.255.g8b1d071c50-goog
-
+With best wishes
+Dmitry
