@@ -2,149 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BA27590C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 10:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895BE7590C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbjGSI7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 04:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47944 "EHLO
+        id S230518AbjGSJAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbjGSI7H (ORCPT
+        with ESMTP id S230436AbjGSJAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 04:59:07 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA40E19F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 01:59:05 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fb73ba3b5dso11273897e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 01:59:05 -0700 (PDT)
+        Wed, 19 Jul 2023 05:00:45 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68535172E
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:00:44 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-7835971026fso290066439f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:00:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689757144; x=1692349144;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WjwZwXCwXmQM2M0w+HMY5U9URq0w0O8JkoEEEKtmHuY=;
-        b=WBCaZgcOMjA+k/QpkjJGCnd/b5G/48llJV9HxfVW2Dtqpe8UAevu5A+dKDqe/PoJMu
-         tS08s2b/y1eUfvbbtsJhiLe9z0hUaTiPJxiJDaJTbMz9KZ83kh7pXaSLdPkB5H8Ozlhv
-         MvnARJkhm/LOEAyr90a84nmSdtClE+bCi+1SDdIe1Eyq11qLmu9QkUpELJBpV23EqHZJ
-         Ks4XrMTY49SaSGJr9/Y1TYv0siRRGVrG0rp6RcceZUq6OWpdV7TinyvCiEWNIFFwno8C
-         ThPzLbTfPADRjOtV9VhD6vaAtU3BgdKp4wZ5GPxz1fID+rikEcpkxkh7/xjNwnVpztD8
-         yztw==
+        d=google.com; s=20221208; t=1689757244; x=1692349244;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SamseihHveHRCFRV/VFLPEZGl+SZA6Yk6XZ5fusUv5A=;
+        b=Ugkye6s2X/gZoq0X/CqbIIbknRu6ceke7LB3VJV2qKUB+lYDKlMeJcDzRr18+F8AnN
+         N+OaA12F2ivp9Mvj7JlfebFrEgNX+JVs6+IVDXRCsjRF02dYmgJswuLn/FF5j+XwDrQQ
+         px0aA2Yd8yiLlA4qmllanjQu23cZmoiyG0RoXZbvXQlhepE8/KWxwptTPCMXGmIPecUX
+         r2Jk6K8f89P1mMWR9Xnwk85YYtKSdSr8KptSnm0+G2oiPRwk3u8v5XJW4qQCMs6mIGLi
+         mW8nzAyr2TVhHomboZhUzkolSweyQ9nSv1lKQKKwyH5XcqV6i2OYWVfYUz6pgYOUqcpp
+         JNsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689757144; x=1692349144;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WjwZwXCwXmQM2M0w+HMY5U9URq0w0O8JkoEEEKtmHuY=;
-        b=jQ4z7Sd7eS+Vejmu+osY1RZKsvOKaYxvHsTFUmfouIKlv/efr/YH6pNquUyACXoOeh
-         wR4DqeQz6a04C8la37TgQu2G56M0w5zVUP9hjDJ+RinQyYsbUE+X2g97z/xjkE7XIK8y
-         Th7SeoWTGe5dWe2vSR27dWFSBBvDEdUjy8kh/c7w0DMBdKLdZomG4/no7Z1wo7AGXzod
-         AYnQxTT3j6VDKARsBOox6NF6D27soMB80ui+dHSXjwDSFu2n3WgRZSsQRzK3TlV5kKtD
-         GdPxefQKtVKdR3a0WOe4r99jrCQGa2OsTGm1QVXyT9YveISH+mpjCPm/IAj1bvIksMPS
-         NY2g==
-X-Gm-Message-State: ABy/qLaU3bOSnXXy3GjvAvMc4dQCv6WbB/+yX7+dRNdsAkzK/8qOB3vk
-        2uPRhb2OCCNZdd68YsBPAWdEjg==
-X-Google-Smtp-Source: APBJJlG145+baYy2xRG5EFByw1fAnzYogqFOqfQMF9/Kcfbqlu51ky4jNieZhAvomXVs9haaW6JG7g==
-X-Received: by 2002:a05:6512:1089:b0:4fb:89e3:5ac6 with SMTP id j9-20020a056512108900b004fb89e35ac6mr13736198lfg.62.1689757144005;
-        Wed, 19 Jul 2023 01:59:04 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id h5-20020a50ed85000000b00521a7864e13sm2306858edr.90.2023.07.19.01.59.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 01:59:03 -0700 (PDT)
-Message-ID: <86cbedcd-692b-ecb8-2075-d50835739bcf@linaro.org>
-Date:   Wed, 19 Jul 2023 10:59:01 +0200
+        d=1e100.net; s=20221208; t=1689757244; x=1692349244;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SamseihHveHRCFRV/VFLPEZGl+SZA6Yk6XZ5fusUv5A=;
+        b=Uu1t3cb4EJ6zEtlh5gRXjeFrXu8GLY4Tqd8pWsEpZmBm+osHLsFCMNFGXqUoj0QWsf
+         hFNDRVFLciyuD022pGL587U92MgUew1JVY9o/IT+8IpWXTU/M0l019+6j32c0FEOdNiZ
+         W9oQ8Q+Xl1Ra4/jFKgPVHRO5zUB4XBxSS800uvXVfs4YmwnYf06KJxm5UIeEInldG7vA
+         m1cvhxeKV2QWrBvmgukbOvn7M3NGI64CO4H9zsc4znVFEaerT+MxM9Dj0ZHzQsj9K5MW
+         rv8z/KN9EbKdwbuC0HLrczgyOPdX2jWuZ2ILQB7VuEePCo+Ad5t4xfwJsHtqCgeAwGVm
+         aa7g==
+X-Gm-Message-State: ABy/qLYHeAO/PBCjrycahuWNjr/Vsa5DMtgxSgnnTJWbFgeFw280ieZf
+        S7zzlIKIO1HyFOakAZt2lv6jPa9fHXDWb/XoKu6rsg==
+X-Google-Smtp-Source: APBJJlHajI9KppsTh5EhXdoDW+nqB3D4QiZ11D3kIMCJmcCRAUOfsoDPIA/7xvfcugvLcKeOSwiHcI2OT+NeGSC+Ggw=
+X-Received: by 2002:a6b:730c:0:b0:786:2125:a034 with SMTP id
+ e12-20020a6b730c000000b007862125a034mr1912720ioh.18.1689757243703; Wed, 19
+ Jul 2023 02:00:43 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 3/3] dt-bindings: usb: dwc2: add compatible
- "intel,socfpga-stratix10-hsotg"
-Content-Language: en-US
-To:     "Li, Meng" <Meng.Li@windriver.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "dinguyen@kernel.org" <dinguyen@kernel.org>,
-        "hminas@synopsys.com" <hminas@synopsys.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20230719025509.3007986-1-Meng.Li@windriver.com>
- <20230719025509.3007986-4-Meng.Li@windriver.com>
- <488835c0-e08e-c0cc-abac-192f658b093f@linaro.org>
- <PH0PR11MB51913FB3A55B1420B7798C01F139A@PH0PR11MB5191.namprd11.prod.outlook.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <PH0PR11MB51913FB3A55B1420B7798C01F139A@PH0PR11MB5191.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230717113709.328671-1-glider@google.com> <20230717113709.328671-2-glider@google.com>
+ <ZLVjYzuxlJAQVpIO@yury-ThinkPad> <CAG_fn=UPqyFhEMLDz3nhc7fgpCvprLsYrNjUnw3z4KfWCJGTHA@mail.gmail.com>
+ <ZLabOHmNQm2EOXWR@smile.fi.intel.com> <ZLbF3ZO7TvJGJOeo@yury-ThinkPad>
+In-Reply-To: <ZLbF3ZO7TvJGJOeo@yury-ThinkPad>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 19 Jul 2023 11:00:06 +0200
+Message-ID: <CAG_fn=Wk8qSx0VWjzAs5Mks_1QK6JYbc=auhjhSD7vxvyP3-yg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] lib/bitmap: add bitmap_{set,get}_value()
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        eugenis@google.com, syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/2023 10:45, Li, Meng wrote:
-> 
-> 
->> -----Original Message-----
->> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> Sent: Wednesday, July 19, 2023 2:39 PM
->> To: Li, Meng <Meng.Li@windriver.com>; gregkh@linuxfoundation.org;
->> robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
->> dinguyen@kernel.org; hminas@synopsys.com; linux-usb@vger.kernel.org;
->> devicetree@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> Subject: Re: [PATCH 3/3] dt-bindings: usb: dwc2: add compatible "intel,socfpga-
->> stratix10-hsotg"
->>
->> CAUTION: This email comes from a non Wind River email account!
->> Do not click links or open attachments unless you recognize the sender and
->> know the content is safe.
->>
->> On 19/07/2023 04:55, Meng Li wrote:
->>> Add the compatible "intel,socfpga-stratix10-hsotg" to the DWC2
->>> implementation, because the Stratix DWC2 implementation does not
->>> support clock gating. This compatible is used with generic snps,dwc2.
->>>
->>> Signed-off-by: Meng Li <Meng.Li@windriver.com>
->>
->> Missing changelog, missing versioning. This is v3 or v4.
->>
->>> ---
->>>  Documentation/devicetree/bindings/usb/dwc2.yaml | 1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml
->>> b/Documentation/devicetree/bindings/usb/dwc2.yaml
->>> index dc4988c0009c..f90094320914 100644
->>> --- a/Documentation/devicetree/bindings/usb/dwc2.yaml
->>> +++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
->>> @@ -51,6 +51,7 @@ properties:
->>>                - amlogic,meson-g12a-usb
->>>                - amlogic,meson-a1-usb
->>>                - intel,socfpga-agilex-hsotg
->>> +              - intel,socfpga-stratix10-hsotg
->>
->> So you just sent the same patch as before. I pointed you to the proper solution
->> with compatibility.
->>
-> 
-> No. not the same.
-> I don't understand why SoC specific compatible "intel,socfpga-agilex-hsotg" is able to be added, but the SoC specific compatible "intel,socfpga-stratix10-hsotg" is not allowed.
-> 
-> You said "Where is SoC specific compatible?"
-> Now, I add the SoC specific compatible "intel,socfpga-stratix10-hsotg", but why it is still not reasonable.
+>
+> Thanks to GENMASK() implementation, you'll be warned by GENMASK_INPUT_CHE=
+CK()
+> if nbits is a compile-time variable. In case of runtime, it's a pure unde=
+f,
+> not mentioning useless, expensive and dangerous fetch.
+>
+> > >  - we anyway need a dynamic check for the case nbits is not constant
+> > > (for both bitmap_get_value() and bitmap_set_value(), I assume).
+> > >
+> > > What do you think?
+>
+> I think that instead of speculations, it's better to cover nbits =3D=3D 0
+> with the explicit tests for run- and compile-time. That way you're
+> always on a safe side.
 
-The compatible should be added, but I said they are compatible, so
-express it. I also gave you example of file which expresses it.
+You are right. I added tests for these cases.
 
-Why that compatible is not allowed alone? Because what we said here
-many, many times and because the doc I gave you which explains this.
+> bitmap_get_val(NULL, 0, 0) shouldn't crash the kernel.
 
-Best regards,
-Krzysztof
+Haha, the compiler is smart enough to not crash the kernel in this case.
+But passing zero via a volatile variable did the trick.
 
+>
+> > The idea behind is to eliminate the code completely for the cases nbits=
+ !=3D 0.
+> > In your case the dynamic check will be there. That's what we want to av=
+oid.
+>
+> Alexander is right - we can't avoid testing against 0 if we need to
+> test for 0... In case of other functions we have inline and outline
+> implementations, controlled by small_const_nbits().
+>
+> As you can see, the small_const_nbits() tests against 0 explicitly,
+> although it's free at compile time. But if nbits =3D=3D 0, we pick
+> outline version of a function regardless.
+>
+> On their turn, outline versions again do their test against nbits =3D=3D =
+0,
+> but most of the time implicitly.
+>
+> In case of bitmap_set_val, we are touching at max 2 words, and there's
+> no reason for outline version, so we have to test nbits against 0
+> inside inline code.
+>
+> Having all that in mind, and because nbits =3D=3D 0 is most likely an
+> error we'd follow the following rules:
+>  - no memory must be touched as we're potentially in error condition,
+>    and pointer may be corrupted;
+>  - the cost of the check must be as minimal as possible.
+>
+> So I suggest:
+>
+>         if (unlikely(nbits =3D=3D 0))
+>                 return;
+
+Sounds good, I'll add unlikely() around the check.
+Thanks for the explanation!
+
+>
+> For readers that would literally mean: we don't expect that, and we find
+> it suspicious, but we'll handle that as correct as we can.
+>
+> By the way, Alexander, please drop that 'const' things. Those are for
+> pointers or some global variables, not for inline functions with 4
+> lines of code. (If you think it helps the code to be safe than no - it's
+> unsafe even with consts.)
+
+These consts are from the original Syed's patch and were probably
+added for consistency with bitmap_{set,get}_value8().
+But, okay, I'll remove them.
+
+
+
+
+--
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
