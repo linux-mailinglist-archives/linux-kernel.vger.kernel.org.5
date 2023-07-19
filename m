@@ -2,150 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFCA1758D1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D57758D1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbjGSF2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 01:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56062 "EHLO
+        id S230029AbjGSF3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 01:29:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjGSF2p (ORCPT
+        with ESMTP id S229471AbjGSF3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 01:28:45 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A541BF2;
-        Tue, 18 Jul 2023 22:28:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689744524; x=1721280524;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hQg3EFz6MDv5rNRrtClQQip7QilFfkNcCy3V0EZ+QZc=;
-  b=XLfQJdfRft6ayHhbo5VU3oqh3OzpEAU3ZXXMu5hxhRCHAFzxDpmtOc37
-   scPivGIpuH5VWkgiwTpwfayPxQlU2IqKMc72sfHOG8aO+zqdnwrzfJNfZ
-   5gPJBabipHUdGv86KvEscftp3pBPPW4lWCVsfOOQBma8eMvv/0dm3dUJf
-   BLfRGygX2MBx4hMBgEAGkvWxzRgT2OK7p/nkb8HIdK/5mTxPaMchlp5es
-   hbc07yiuYgeg2TupK3VcMsjBCbxvHbln+TBeYatWlTPoWWU+HUVLJCJZA
-   y4DbLCKe4oMrjjLvz4jyercz3hjTRdAji60sWNUrl0izLcCCVo6hftZzu
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="452751822"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="452751822"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 22:28:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="717865700"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="717865700"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 18 Jul 2023 22:28:34 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qLzjk-00D7sU-1O;
-        Wed, 19 Jul 2023 08:28:32 +0300
-Date:   Wed, 19 Jul 2023 08:28:32 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+        Wed, 19 Jul 2023 01:29:32 -0400
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B596CD2;
+        Tue, 18 Jul 2023 22:29:31 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2b6f97c7115so96343641fa.2;
+        Tue, 18 Jul 2023 22:29:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689744570; x=1690349370;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BT4nzBp82aR2sqeLIUaJEs6yXbxXtnG7f8mxLuZymQA=;
+        b=foRGV5z9gFkwy5G3HgU8HKDe99y1Zy/VNaMGY1B91ubgl6An7mO3jE4PyjUT6NO7nh
+         R7Fc48he5KT3tHr9xSbI2kgPnJTJe4TZOWiJj8G/4Im1sb/8Y6oWOtZ5UgddSFRcdJ/2
+         5vdk1EnVE2/itsOWoYsL0prdYchpti71R59y2RevsXwQurfmZOty+iXHd+A51mtWK3Rs
+         Xm350U0j9TynAUiQlW0QB3hP3t5L3qOIpHyRY6EeLKN5ldjTk3ZBFQFmWIGg0uFAG0mb
+         b5WMi91QnWb/AIq5lNrk5dXUqlRl0/QqjTM2Zd0XNEPI4VPR8eonpPoNfye9bEh208cL
+         bSTA==
+X-Gm-Message-State: ABy/qLaqe5Emun1CI10ZnaRf6p/4OM1TuyWENFkFv+nC8kQdp39ePTFd
+        sD+++t4PCNvy6Hhz8qI6V2w=
+X-Google-Smtp-Source: APBJJlG6L9wQU4y2nJVfHX+NFUu854MHbLYnKYwFA+Wjso46kfWVt5XUc7z9A0nbuLRvllGfukrcZA==
+X-Received: by 2002:a2e:3a1a:0:b0:2b6:e2c6:6e1c with SMTP id h26-20020a2e3a1a000000b002b6e2c66e1cmr12410304lja.14.1689744569737;
+        Tue, 18 Jul 2023 22:29:29 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id lw17-20020a170906bcd100b00993017b64a8sm1801462ejb.224.2023.07.18.22.29.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 22:29:29 -0700 (PDT)
+Message-ID: <87431096-e883-c90d-853e-44a463c0e8f2@kernel.org>
+Date:   Wed, 19 Jul 2023 07:29:28 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] serial: core: Add support for dev_name:0.0 naming for
+ kernel console
+Content-Language: en-US
 To:     Tony Lindgren <tony@atomide.com>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
         John Ogness <john.ogness@linutronix.de>,
         Johan Hovold <johan@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         linux-omap@vger.kernel.org, linux-serial@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] serial: core: Fix serial core port id to not use
- port->line
-Message-ID: <ZLd0gI7DC1WAXRvO@smile.fi.intel.com>
-References: <20230719051235.46396-1-tony@atomide.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230719051235.46396-1-tony@atomide.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230719051525.46494-1-tony@atomide.com>
+ <35758c24-1543-6f96-7957-b371dc94e59d@kernel.org>
+ <20230719052811.GH5194@atomide.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20230719052811.GH5194@atomide.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 08:12:33AM +0300, Tony Lindgren wrote:
-> The serial core port id should be serial core controller specific port
-> instance, which is not always the port->line index.
+On 19. 07. 23, 7:28, Tony Lindgren wrote:
+> * Jiri Slaby <jirislaby@kernel.org> [230719 05:25]:
+>> On 19. 07. 23, 7:15, Tony Lindgren wrote:
+>>> +/*
+>>> + * Add preferred console if configured on kernel command line with naming
+>>> + * "console=dev_name:0.0".
+>>> + */
+>>> +static int serial_core_add_preferred_console(struct uart_driver *drv,
+>>> +					     struct uart_port *port)
+>>> +{
+>>> +	char *port_match, *opt, *name;
+>>> +	int len, ret = 0;
+>>> +
+>>> +	port_match = kasprintf(GFP_KERNEL, "console=%s:%i.%i",
+>>> +			       dev_name(port->dev), port->ctrl_id,
+>>> +			       port->port_id);
+>>> +	if (!port_match)
+>>> +		return -ENOMEM;
+>>> +
+>>> +	opt = strstr(saved_command_line, port_match);
+>>> +	if (!opt)
+>>> +		goto free_port_match;
+>>> +
+>>> +	len = strlen(port_match);
+>>> +
+>>> +	if (strlen(opt) > len + 1 && opt[len] == ',')
+>>> +		opt += len + 1;
+>>> +	else
+>>> +		opt = NULL;
+>>> +
+>>> +	name = kstrdup(drv->dev_name, GFP_KERNEL);
+>>
+>> Why do you dup the name here?
 > 
-> For example, 8250 driver maps a number of legacy ports, and when a
-> hardware specific device driver takes over, we typically have one
-> driver instance for each port. Let's instead add port->port_id to
-> keep track serial ports mapped to each serial core controller instance.
-> 
-> Currently this is only a cosmetic issue for the serial core port device
-> names. The issue can be noticed looking at /sys/bus/serial-base/devices
-> for example though. Let's fix the issue to avoid port addressing issues
-> later on.
+> I was getting ignoring const warning, but maybe the right solution is
+> to just use const char *name here.. Let me check.
 
-Good catch!
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+So fix add_preferred_console() instead ;).
 
-> Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to enable runtime PM")
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
->  drivers/tty/serial/8250/8250_core.c  | 2 ++
->  drivers/tty/serial/serial_base_bus.c | 2 +-
->  include/linux/serial_core.h          | 1 +
->  3 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
-> --- a/drivers/tty/serial/8250/8250_core.c
-> +++ b/drivers/tty/serial/8250/8250_core.c
-> @@ -497,6 +497,7 @@ static struct uart_8250_port *serial8250_setup_port(int index)
->  
->  	up = &serial8250_ports[index];
->  	up->port.line = index;
-> +	up->port.port_id = index;
->  
->  	serial8250_init_port(up);
->  	if (!base_ops)
-> @@ -1040,6 +1041,7 @@ int serial8250_register_8250_port(const struct uart_8250_port *up)
->  			uart_remove_one_port(&serial8250_reg, &uart->port);
->  
->  		uart->port.ctrl_id	= up->port.ctrl_id;
-> +		uart->port.port_id	= up->port.port_id;
->  		uart->port.iobase       = up->port.iobase;
->  		uart->port.membase      = up->port.membase;
->  		uart->port.irq          = up->port.irq;
-> diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
-> --- a/drivers/tty/serial/serial_base_bus.c
-> +++ b/drivers/tty/serial/serial_base_bus.c
-> @@ -136,7 +136,7 @@ struct serial_port_device *serial_base_port_add(struct uart_port *port,
->  	err = serial_base_device_init(port, &port_dev->dev,
->  				      &ctrl_dev->dev, &serial_port_type,
->  				      serial_base_port_release,
-> -				      port->line);
-> +				      port->port_id);
->  	if (err)
->  		goto err_put_device;
->  
-> diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
-> --- a/include/linux/serial_core.h
-> +++ b/include/linux/serial_core.h
-> @@ -460,6 +460,7 @@ struct uart_port {
->  	int			(*iso7816_config)(struct uart_port *,
->  						  struct serial_iso7816 *iso7816);
->  	int			ctrl_id;		/* optional serial core controller id */
-> +	int			port_id;		/* optional serial core port id */
->  	unsigned int		irq;			/* irq number */
->  	unsigned long		irqflags;		/* irq flags  */
->  	unsigned int		uartclk;		/* base uart clock */
-> -- 
-> 2.41.0
-
+thanks,
 -- 
-With Best Regards,
-Andy Shevchenko
-
+js
+suse labs
 
