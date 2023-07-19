@@ -2,47 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7017596E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330C57596EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbjGSNdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 09:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54074 "EHLO
+        id S231342AbjGSNda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 09:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbjGSNdB (ORCPT
+        with ESMTP id S231337AbjGSNd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 09:33:01 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69FF610A;
-        Wed, 19 Jul 2023 06:32:58 -0700 (PDT)
-X-QQ-mid: bizesmtp79t1689773568tihiumin
-Received: from linux-lab-host.localdomain ( [119.123.130.39])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 19 Jul 2023 21:32:47 +0800 (CST)
-X-QQ-SSF: 01200000000000D0X000000A0000000
-X-QQ-FEAT: vrqOr+ppv0uPJA1yEKpWWkVnlUVqK6PuuvjdcyUHTrqkd/pqeEmMWxHZikDYj
-        CkZ8/RJXIHvgLJf2jqgOcGTFxCd/FQ5bl379HoWrd8vkibnH47pU5q0kP+sxxDjREvmZU+e
-        be2EPxscjn2d7Dfo95eemVORbMsNqsAUq5tF5GbGkP5HsHyifNSJktBae+cshFgImccttiP
-        47/eb2g/JI2ocs7p12XfFJuF0kjb2M2KZRL7Ly1g1lw/eOebxaWOu/oZoA/re3h4LpsrvO2
-        jkRTyhWJYBER4Mk/Ustf6yzF1N4ex+pClTbjBlYQqEP6IRtHjD+qNfNume0CK7azkie0Tyr
-        cJmGlgv+Ywb02/GEHq9Pt9+CZN8PGY7gnG7AVQ+U/bJJ/ycN9CF698Aq+ekGQbC0vx2kUfv
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 3748257128951603751
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     thomas@t-8ch.de, arnd@arndb.de, falcon@tinylab.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 14/14] selftests/nolibc: tinyconfig: add support for 32/64-bit powerpc
-Date:   Wed, 19 Jul 2023 21:32:46 +0800
-Message-Id: <15b47c6901f79a22b985a53efeae71dc7b172a5f.1689759351.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1689759351.git.falcon@tinylab.org>
-References: <cover.1689759351.git.falcon@tinylab.org>
+        Wed, 19 Jul 2023 09:33:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEB811B
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:33:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A2F8960F80
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:33:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D842FC433C7;
+        Wed, 19 Jul 2023 13:33:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689773606;
+        bh=bRvmDa89F8tiiWEs4W8W25Rz7T9FiMmeQyv4PQo01ww=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=Z7UhaFJWNJTQ+acILXK8LbHJN90m1mM0O9bfhS9NeWy89PpfAR3Pnltqiwx2ZDs7l
+         lK+BPRHAdj+yKqiOzwqL7cKu8W95UjpeiN894kf+pOZheHU230Wc9AUfjtzFLYT5XB
+         bM0nTz2xLjpnUulF5gYZ7Q6V0e8VmwhCLw37bkGpGNACHflzJ5TrPKiBDs1juOeJGm
+         Nkmknf/upBUWdvxQY71zO+VgyJogGm/YazfLE0htRxwEKw54GoeAdZl0qms9skEWCf
+         SakPebAR8hTqJuxAy9eArIuiTfDsYtlqmizJNwjSwGmWTl2YWscXTLiJuxhhm1US+g
+         v3NCj2ip75UYg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230717-regmap-cache-check-v1-0-73ef688afae3@kernel.org>
+References: <20230717-regmap-cache-check-v1-0-73ef688afae3@kernel.org>
+Subject: Re: [PATCH 0/3] regmap: Add interface for checking if a register
+ is cached
+Message-Id: <168977360558.39760.4789872825823703528.b4-ty@kernel.org>
+Date:   Wed, 19 Jul 2023 14:33:25 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -51,89 +57,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Firstly, add extra config files for powerpc, powerpc64le and powerpc64.
+On Mon, 17 Jul 2023 21:33:02 +0100, Mark Brown wrote:
+> HDA has a use case for checking if a register is present in the cache
+> which it awkwardly open codes with use of _cache_only() and a read,
+> provide a direct API for this.
+> 
 
-Second, QEMU_TIMEOUT is configured as 60 seconds for powerpc to allow
-quit qemu-system-ppc even if poweroff fails. In normal host machine, ~20
-seconds may be enough for boot+test+poweroff, but 60 seconds is used
-here to gurantee it at least finish even in a very slow host machine or
-the host machine is too busy. Both powerpc64le and powerpc64 can
-poweroff normally, no need to configure QEMU_TIMEOUT for them.
+Applied to
 
-It is able to use tinyconfig as the minimal config target to speed up
-the run target of powerpc:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
 
-    $ for arch in powerpc powerpc64 powerpc64le; do \
-        rm -rf $PWD/kernel-$arch; \
-        mkdir -p $PWD/kernel-$arch; \
-        make tinyconfig run XARCH=$arch O=$PWD/kernel-$arch | grep status ; \
-      done
+Thanks!
 
-rerun with architecture specific run.out (for later report):
+[1/3] regmap: Let users check if a register is cached
+      commit: 78908f45ccf1dc2f4d5fb395c460fdbbf7e9ac3a
+[2/3] regmap: Provide test for regcache_reg_present()
+      commit: d881ee5a872fd539a8c693e4c8656b9343c9aae0
+[3/3] ALSA: hda: Use regcache_reg_cached() rather than open coding
+      commit: 99aae70551f99536936438bbcfc562df69eeb79c
 
-    $ for arch in powerpc powerpc64 powerpc64le; do \
-        mkdir -p $PWD/kernel-$arch; \
-        make rerun XARCH=$arch O=$PWD/kernel-$arch RUN_OUT=$PWD/run.$arch.out | grep status ; \
-      done
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-report:
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-    $ for arch in powerpc powerpc64 powerpc64le; do \
-        make report RUN_OUT=$PWD/run.$arch.out | grep status ; \
-      done
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- tools/testing/selftests/nolibc/Makefile                   | 1 +
- tools/testing/selftests/nolibc/configs/powerpc.config     | 3 +++
- tools/testing/selftests/nolibc/configs/powerpc64.config   | 3 +++
- tools/testing/selftests/nolibc/configs/powerpc64le.config | 4 ++++
- 4 files changed, 11 insertions(+)
- create mode 100644 tools/testing/selftests/nolibc/configs/powerpc64.config
- create mode 100644 tools/testing/selftests/nolibc/configs/powerpc64le.config
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index f42782fa78a9..b01346323e35 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -103,6 +103,7 @@ QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=N
- QEMU_ARGS            = $(QEMU_ARGS_$(XARCH)) $(QEMU_ARGS_EXTRA)
- 
- # QEMU_TIMEOUT: some architectures can not poweroff normally, especially for tinyconfig
-+QEMU_TIMEOUT_powerpc     = 60
- QEMU_TIMEOUT             = $(QEMU_TIMEOUT_$(XARCH))
- 
- # OUTPUT is only set when run from the main makefile, otherwise
-diff --git a/tools/testing/selftests/nolibc/configs/powerpc.config b/tools/testing/selftests/nolibc/configs/powerpc.config
-index b1975f8253f7..29123cee14c4 100644
---- a/tools/testing/selftests/nolibc/configs/powerpc.config
-+++ b/tools/testing/selftests/nolibc/configs/powerpc.config
-@@ -1,3 +1,6 @@
-+CONFIG_COMPAT_32BIT_TIME=y
-+CONFIG_PPC_PMAC=y
-+CONFIG_PPC_OF_BOOT_TRAMPOLINE=y
- CONFIG_SERIAL_PMACZILOG=y
- CONFIG_SERIAL_PMACZILOG_TTYS=y
- CONFIG_SERIAL_PMACZILOG_CONSOLE=y
-diff --git a/tools/testing/selftests/nolibc/configs/powerpc64.config b/tools/testing/selftests/nolibc/configs/powerpc64.config
-new file mode 100644
-index 000000000000..4e17f0cdb99f
---- /dev/null
-+++ b/tools/testing/selftests/nolibc/configs/powerpc64.config
-@@ -0,0 +1,3 @@
-+CONFIG_PPC64=y
-+CONFIG_PPC_POWERNV=y
-+CONFIG_HVC_OPAL=y
-diff --git a/tools/testing/selftests/nolibc/configs/powerpc64le.config b/tools/testing/selftests/nolibc/configs/powerpc64le.config
-new file mode 100644
-index 000000000000..713b227f506f
---- /dev/null
-+++ b/tools/testing/selftests/nolibc/configs/powerpc64le.config
-@@ -0,0 +1,4 @@
-+CONFIG_PPC64=y
-+CONFIG_PPC_POWERNV=y
-+CONFIG_HVC_OPAL=y
-+CONFIG_CPU_LITTLE_ENDIAN=y
--- 
-2.25.1
+Thanks,
+Mark
 
