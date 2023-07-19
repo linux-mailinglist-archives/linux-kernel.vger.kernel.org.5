@@ -2,87 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17EF975992F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 864E4759862
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbjGSPKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 11:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51270 "EHLO
+        id S231542AbjGSOcF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 19 Jul 2023 10:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231522AbjGSPKU (ORCPT
+        with ESMTP id S229884AbjGSOcE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 11:10:20 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6631991
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:10:06 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-c84fd44593aso7129705276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:10:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mariatruth.art; s=google; t=1689779405; x=1690384205;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=3jr6vaUcvSMNI4x0zxIRsTo4xguGIaHs6nxZRP4hUh0=;
-        b=OGwBVKMwGxqrYmcG75XKr9ujIiTd/Km9VIeMLa3pkvkCN/aaTZLkKBcJPjIuo5G86H
-         KI9HXG0TYf1/mxmrAn8C41UjyUUhmsvliD96YJ9oPPyHlsk9ESWAnw2Eie+q99gcC7TN
-         NSfmPi56izMtvrCzQZiCUDN2czFlEuNH2HTcU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689779405; x=1690384205;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3jr6vaUcvSMNI4x0zxIRsTo4xguGIaHs6nxZRP4hUh0=;
-        b=QDbACGIBsQSIfk3QduUWv2j/z2IbjoOQDZ0jIOOfg3z3mKLKxmcs7D//HPlEB6dm6M
-         4q1CAPkMCdnsLT3a1xhG4mf5aiFwHOj7rje4dEzn4zxf1OnMg7q/U04UZMxR5pAb30UD
-         2T8e29ajdE3W/LUgt6kjaD+H+EbmA5g2r5XexK3sOEGyWvBfXaoW9EN6vvT2c83co//F
-         byLFkI2jUxF5pay19H4yZMW4h2hhAis1vFNrn57NOmDCEYrjqFRxbjVBsbOO064MJehu
-         jRjZiD9jRdg2uuachmyXjoTOnJG5AD2sfuuA+xxUNheAqv7X4IdzdrtdlQAj+W8jt1Cd
-         1ZLQ==
-X-Gm-Message-State: ABy/qLYWFobZuvwX+x3dsH9atMwOZ1atYmGtqahSbEWPbOhAlKa2Qux9
-        yy+nB1EqcUWh1np3j8piJOfwKhukHuRwTZBQpcqFA+hRNK+AZCDJCMKNrBu+/b8=
-X-Google-Smtp-Source: APBJJlEkjrmVt0o0dLkSQbK9kBBpDFah8NS5iqvhTZRCKWp+dBS4MODEP1iB8fcSb9UfbT5Gu79UZkmfyABcKT/3k1Ot2ve2hn8=
-X-Received: by 2002:a25:bc90:0:b0:cef:f6bb:ceda with SMTP id
- e16-20020a25bc90000000b00ceff6bbcedamr2734040ybk.25.1689779405470; Wed, 19
- Jul 2023 08:10:05 -0700 (PDT)
+        Wed, 19 Jul 2023 10:32:04 -0400
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA81D1A6
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:31:58 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 5D1B1634202F;
+        Wed, 19 Jul 2023 16:31:56 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id zaKynDZcz5vf; Wed, 19 Jul 2023 16:31:55 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id D49FC6342049;
+        Wed, 19 Jul 2023 16:31:55 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id jP2E1FoDpgBZ; Wed, 19 Jul 2023 16:31:55 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id AFEA5634202B;
+        Wed, 19 Jul 2023 16:31:55 +0200 (CEST)
+Date:   Wed, 19 Jul 2023 16:31:55 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     Stephan Wurm <stephan.wurm@a-eberle.de>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Johannes Eigner <johannes.eigner@a-eberle.de>
+Message-ID: <1006337471.13025.1689777115644.JavaMail.zimbra@nod.at>
+In-Reply-To: <ZLVWfrlEOWT1twpr@PC-LX-Wurm>
+References: <ZLT2qEYjaWgSpRD6@PC-LX-Wurm> <736980270.3262.1689586950735.JavaMail.zimbra@nod.at> <ZLUXruUkYMrPK+GQ@PC-LX-Wurm> <260741266.3681.1689591789332.JavaMail.zimbra@nod.at> <ZLVWfrlEOWT1twpr@PC-LX-Wurm>
+Subject: Re: ubiblock: null pointer dereference using scatterlist in
+ work_queue
 MIME-Version: 1.0
-From:   Maria K <info@mariatruth.art>
-Date:   Wed, 19 Jul 2023 10:30:18 -0400
-Message-ID: <CAKNe_tCjgGs=mOTW+d-t6PO68OOqcB3RrMvngWMNVpEMXBosSg@mail.gmail.com>
-Subject: Review Maria's Books
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubiblock: null pointer dereference using scatterlist in work_queue
+Thread-Index: QWBZmEM+jrW3AoQV9zucPkJZxr7Mdw==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello there,
+----- Ursprüngliche Mail -----
+> Von: "Stephan Wurm" <stephan.wurm@a-eberle.de>
+>> > We did not check other stacked devices, but we'll give this a try.
 
-I am an internationally established millennial writer and I'm
-releasing my first books in creative/literary nonfiction, philosophy
-(epistemology / metaphysics), history (revolutionary), true crime
-(speculative), and self help genres. They all have philosophical and
-psychological dimensions on social issues. Would you review them?
+Did you find the time to check with dmcrypt?
+Just to give me a hint where to start looking.
+I'm still a little puzzled what is going on here.
 
-You Are Always Innocent
-You are always innocent even if you think or they tell you you're guilty.
-
-Reality Is Just A Possible Fantasy
-Reality is just a possible fantasy and can easily be the other way round.
-
-The Impossible Proof Of Knowing Nothing
-Believe nothing. Doubt everything. Research. Question.
-
-I have been published in top level publications such as Forbes US,
-HuffPostUK, TED, Wikipedia, PhilosophyNow and more. I have
-qualifications from top universities such as MIT, Harvard, Cambridge,
-Caltech, California, Sydney, Queensland, Alberta, Toronto, Berkeley
-and more in every Art and Science.
-
-mariatruth.art
-goodreads.com/mariakarvouni
-twitter.com/mariajesty
-amazon.com/author/mariakarvouni
+Thanks,
+//richard
