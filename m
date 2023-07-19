@@ -2,115 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CED8875984D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A0A759853
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbjGSO0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 10:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57722 "EHLO
+        id S231580AbjGSO2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231620AbjGSO0W (ORCPT
+        with ESMTP id S230289AbjGSO2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:26:22 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DDC10F5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:26:20 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-c2cf4e61bc6so7247704276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:26:20 -0700 (PDT)
+        Wed, 19 Jul 2023 10:28:36 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A2410B
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:28:34 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-7659db6339eso41754685a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:28:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689776779; x=1692368779;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2VK55DG3Fs7PTghAKQd0jM8nvqZIPZ4glcR3HhFBT7c=;
-        b=7jfU311slUUW0UFqd1xP+4htLveZmM27w7SWA5P0Ofot830W2PGNGcLy4HrhdEoxQm
-         az+ILN50Jzlo4maRmOZlUhdjCrGtxh073DOAMOQlyZCSdcDvxCsrVoHtWECGQCV6CMYP
-         dtkRMmL1WsTSmqNv2tW3j4A1S23poCaDbO2S1YBY1oW1aMQtTEPf6UsRY+WbA+OtKrIC
-         Ua7LPGLJzdckrb/5yRJ7bC/gRfLRRWFwi+VUOyu29ro5uT5rEQHlXpAaCoqRhr+mHIqE
-         pK8dmPZI3dsvbXSSHF64DsP7G2TTHotWz5S+oM6rCmanQUB6ET0h94ELWpdpUDirIPGy
-         yX7A==
+        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1689776914; x=1690381714;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Tl31fPEVZv/XSj4GJGcrVMvmw4IX33aKorlexj1wX2k=;
+        b=LAalPu6eJykTNbpvUv7GdqmiAa0NeQssVV1cu5H5/loGl4URTMZeskfrSeGtfb/S6j
+         7w1DIl0VTfcOFpRB7AaTNUt7n4W5PhW1Y03cLDKqEGpdLgBoN3B17yjDaOhnNRd8ECmL
+         +eYTK2flqDOooPfT0WzfOiO1odqa9CeAZ6SFHqFdmS7GAsLgCvEWQisjAL8noyuVj+Xv
+         mdOLFBlOne1S1gv51gLVErVX6Yh127f2D6XMxFRUIiuSU2ZvRjoUg+DJimN7qrxi10cL
+         WKeqIymmm435NdpaWWLN1fNZN93R27UGpAR0x2n6aqIz0dbFwUpedBBESx4V3qUdrrvW
+         yV1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689776779; x=1692368779;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2VK55DG3Fs7PTghAKQd0jM8nvqZIPZ4glcR3HhFBT7c=;
-        b=UVZpgABYpkklUc6x/21HUJhBzQa4vnwhNz0Q0xjyTz5hu2xpSFh11bWWQHXjXwyLpE
-         S8N3/7NKBnFD0JNMq93dosrPvk+rVEEoQkYj5LB7ZJKsWTvUqdkCqdcCf5RooH5pbaWI
-         TFTHJTXlL6HIK7NkUztx+mvu6xv2Eab7cm5kcqoxSSHgYWJaJiZywwBUQ3KS9yrHjKuO
-         Gkrtvg451vd7LFcPq3umPWKD4yw8NWkKw4yQS+ismp6KXXcLhqnv9GwHZLi7gB5fum+A
-         1KsOf/jzl5ZzQqwesK4+ngfiVEPHGB9ET9QXGcZh2juCP7ze0RMB6DgPUlkVBMbYSRQp
-         hh2Q==
-X-Gm-Message-State: ABy/qLaipCoeh1N4Q+UOxxk2dFGUwnhZdW2A66kxjW+eAaS6Ks+6HBtO
-        Nx5aLzioao0K/CyfTJ4q/YvCfGUaV5b8IVCrG8qooA==
-X-Google-Smtp-Source: APBJJlFkic+Ri/Zc9kWO4O0LpFmkfS6fsW6kTdiRwmfAxsS9VkTkZur4wtoBXB7B9HvqhJ1+BGi7/g==
-X-Received: by 2002:a25:5342:0:b0:c85:d8b7:1b96 with SMTP id h63-20020a255342000000b00c85d8b71b96mr2356398ybb.52.1689776778840;
-        Wed, 19 Jul 2023 07:26:18 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id 133-20020a250b8b000000b00cecd504e708sm651446ybl.35.2023.07.19.07.26.16
+        d=1e100.net; s=20221208; t=1689776914; x=1690381714;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tl31fPEVZv/XSj4GJGcrVMvmw4IX33aKorlexj1wX2k=;
+        b=EQPPSLoVaS1jbUib7lX/2IQO3jfZzqN808Gi0GIgsvYG4XVyoWLRWKQzXJlE0Vqb7k
+         zNfGnl3AdLqcm6+6Czw6Vv/h11gLAQLPLSGrQJrWq3ZJpUmYkbH1wLYB0HszDaUQ63dt
+         0ciP+Uu/YP+Zzn7MU9boaJ1F5ZCSAK3CnvmEP0ykkanheqh2u9W8FEWZHgNbHHG4Bijy
+         yX9FNdllWEMT4rS68wAIS4Yq8FqZIJvFbARfsGAl2d0rOMUYduHENV1rSEyTbhDheabA
+         nST2aLqPAiAFmebq0Cr9B/gI/aEhmeOM4ya/r11KY1+bSQljM/8K3an+1YcMoAvo6CDJ
+         6wZg==
+X-Gm-Message-State: ABy/qLbpEHYnaePBAlVmzb1JlcCGfIUGhJR+Lgpmgqplt4ynL7jpYld6
+        nhw2Ecbf5kYd2Ovoam/3aCrdrg==
+X-Google-Smtp-Source: APBJJlEMrxHzKfhacxnycVwdc58qqKM0ubUIR2hO4njFovHpv9dpC8lvbXt6kfn1Msdilz1REn71SQ==
+X-Received: by 2002:a05:620a:444a:b0:762:3841:c098 with SMTP id w10-20020a05620a444a00b007623841c098mr3072588qkp.30.1689776913751;
+        Wed, 19 Jul 2023 07:28:33 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-8f57-5681-ccd3-4a2e.res6.spectrum.com. [2603:7000:c01:2716:8f57:5681:ccd3:4a2e])
+        by smtp.gmail.com with ESMTPSA id g20-20020a0caad4000000b00635ef0579c2sm1510550qvb.39.2023.07.19.07.28.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 07:26:18 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 07:26:08 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Yin Fengwei <fengwei.yin@intel.com>
-cc:     Yosry Ahmed <yosryahmed@google.com>, Yu Zhao <yuzhao@google.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, willy@infradead.org, david@redhat.com,
-        ryan.roberts@arm.com, shy828301@gmail.com,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: [RFC PATCH v2 3/3] mm: mlock: update mlock_pte_range to handle
- large folio
-In-Reply-To: <e3044d46-3b38-dc2e-b8d2-8ec1033f85e7@intel.com>
-Message-ID: <79f6822-f2f8-aba4-b517-b661d07e2d@google.com>
-References: <20230712060144.3006358-1-fengwei.yin@intel.com> <20230712060144.3006358-4-fengwei.yin@intel.com> <CAOUHufYef--8MxFettL6fOGjVx2vyZHZQU6EEaTCoW0XBvuC8Q@mail.gmail.com> <CAOUHufZ6=9P_=CAOQyw0xw-3q707q-1FVV09dBNDC-hpcpj2Pg@mail.gmail.com>
- <40cbc39e-5179-c2f4-3cea-0a98395aaff1@intel.com> <CAOUHufZHyEvU-c2O6B6stM_QVMxc22zV4Szn52myYqjdZvptUA@mail.gmail.com> <16844254-7248-f557-b1eb-b8b102c877a2@intel.com> <CAJD7tkYAkVOE2caqEj_hTmm47Kex451prBQ1wKTRUiOwnDcwNA@mail.gmail.com>
- <b995e802-1500-6930-79d0-8cc4bfe89589@intel.com> <CAJD7tkZtHku-kaK02MAdgaxNzr9hQkPty=cw44R_9HdTS+Pd5w@mail.gmail.com> <CAJD7tkZWXdHwpW5AeKqmn6TVCXm1wmKr-2RN2baRJ7c4ciTJng@mail.gmail.com> <208aff10-8a32-6ab8-f03a-7f3c9d3ca0f7@intel.com>
- <CAJD7tkYT6EZMwit8C9MTftUxMmuWtn2YpZ+NSVhy0xVCYuafsg@mail.gmail.com> <438d6f6d-2571-69d9-844e-9af9e6b4f820@intel.com> <CAJD7tkYWH8umBFgmxPmeOkRF=pauVW=MvyyN+z17XMHN+q8JKg@mail.gmail.com> <e3044d46-3b38-dc2e-b8d2-8ec1033f85e7@intel.com>
+        Wed, 19 Jul 2023 07:28:33 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 10:28:32 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Nhat Pham <nphamcs@gmail.com>,
+        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
+        konrad.wilk@oracle.com, vitaly.wool@konsulko.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: kill frontswap
+Message-ID: <20230719142832.GA932528@cmpxchg.org>
+References: <20230714194610.828210-1-hannes@cmpxchg.org>
+ <ZLIVleBYOm4HIGTZ@casper.infradead.org>
+ <20230717141250.GA866068@cmpxchg.org>
+ <901409ed-504b-9500-54d8-e42f832e07b0@suse.cz>
+ <20230717160227.GA867137@cmpxchg.org>
+ <CAJD7tkbkoph+N3E92n4xGAvVP12H=issOfAPmdrS0655Ja=qAw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkbkoph+N3E92n4xGAvVP12H=issOfAPmdrS0655Ja=qAw@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Jul 2023, Yin Fengwei wrote:
-> >>>>>>>>> Could this also happen against normal 4K page? I mean when user try to munlock
-> >>>>>>>>> a normal 4K page and this 4K page is isolated. So it become unevictable page?
-> >>>>>>>> Looks like it can be possible. If cpu 1 is in __munlock_folio() and
-> >>>>>>>> cpu 2 is isolating the folio for any purpose:
-> >>>>>>>>
-> >>>>>>>> cpu1                        cpu2
-> >>>>>>>>                             isolate folio
-> >>>>>>>> folio_test_clear_lru() // 0
-> >>>>>>>>                             putback folio // add to unevictable list
-> >>>>>>>> folio_test_clear_mlocked()
-> >>>>>                                folio_set_lru()
-> Let's wait the response from Huge and Yu. :).
+Hi Yosry,
 
-I haven't been able to give it enough thought, but I suspect you are right:
-that the current __munlock_folio() is deficient when folio_test_clear_lru()
-fails.
+thanks for the review. I hope I saw everything you commented on ;) -
+can you please trim your replies to the relevant hunks?
 
-(Though it has not been reported as a problem in practice: perhaps because
-so few places try to isolate from the unevictable "list".)
+On Tue, Jul 18, 2023 at 11:52:45AM -0700, Yosry Ahmed wrote:
+> On Mon, Jul 17, 2023 at 9:02 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > -/*
+> > - * "Get" data from frontswap associated with swaptype and offset that were
+> > - * specified when the data was put to frontswap and use it to fill the
+> > - * specified page with data. Page must be locked and in the swap cache.
+> > - */
+> > -int __frontswap_load(struct page *page)
+> > -{
+> > -       int ret = -1;
+> > -       swp_entry_t entry = { .val = page_private(page), };
+> > -       int type = swp_type(entry);
+> > -       struct swap_info_struct *sis = swap_info[type];
+> > -       pgoff_t offset = swp_offset(entry);
+> > -       bool exclusive = false;
+> > -
+> > -       VM_BUG_ON(!frontswap_ops);
+> > -       VM_BUG_ON(!PageLocked(page));
+> > -       VM_BUG_ON(sis == NULL);
+> > -
+> > -       if (!__frontswap_test(sis, offset))
+> > -               return -1;
+> 
+> With the removal of the above, it will be a bit slower to realize an
+> entry is not in zswap and read it from disk (bitmask test vs. rbtree
+> lookup). I guess in the swapin path (especially from disk), it would
+> not matter much in practice. Just a note (mostly to myself).
 
-I forget what my order of development was, but it's likely that I first
-wrote the version for our own internal kernel - which used our original
-lruvec locking, which did not depend on getting PG_lru first (having got
-lru_lock, it checked memcg, then tried again if that had changed).
+I briefly considered moving that bitmap to zswap, but it actually
+seems quite backwards. It adds overhead to the fast path, where
+entries are in-cache, in order to optimize the cold path that requires
+IO. As long as compression is faster than IO, zswap is expected to see
+the (much) bigger share of transactions in any sane config.
 
-I was uneasy with the PG_lru aspect of upstream lru_lock implementation,
-but it turned out to work okay - elsewhere; but it looks as if I missed
-its implication when adapting __munlock_page() for upstream.
+> > @@ -1356,15 +1342,12 @@ static int zswap_frontswap_store(unsigned type, pgoff_t offset,
+> >
+> >         /* map */
+> >         spin_lock(&tree->lock);
+> > -       do {
+> > -               ret = zswap_rb_insert(&tree->rbroot, entry, &dupentry);
+> > -               if (ret == -EEXIST) {
+> > -                       zswap_duplicate_entry++;
+> > -                       /* remove from rbtree */
+> > -                       zswap_rb_erase(&tree->rbroot, dupentry);
+> > -                       zswap_entry_put(tree, dupentry);
+> > -               }
+> > -       } while (ret == -EEXIST);
+> > +       while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST) {
+> > +               zswap_duplicate_entry++;
+> > +               /* remove from rbtree */
+> > +               zswap_rb_erase(&tree->rbroot, dupentry);
+> > +               zswap_entry_put(tree, dupentry);
+> 
+> nit: it would be nice to replace the above two lines with
+> zswap_invalidate_entry(), which also keeps it clear that we maintain
+> the frontswap semantics of invalidating a duplicated entry.
 
-If I were trying to fix this __munlock_folio() race myself (sorry, I'm
-not), I would first look at that aspect: instead of folio_test_clear_lru()
-behaving always like a trylock, could "folio_wait_clear_lru()" or whatever
-spin waiting for PG_lru here?
+Agreed, that's better. I'll send a follow-up.
 
-Hugh
+> > @@ -1418,7 +1401,7 @@ static int zswap_frontswap_load(unsigned type, pgoff_t offset,
+> >         if (!entry) {
+> >                 /* entry was written back */
+> 
+> nit: the above comment is now obsolete. We may not find the entry
+> because it was never stored in zswap in the first place (since we
+> dropped the frontswap map, we won't know before we do the lookup
+> here).
+
+Good catch. I'll send a delta fix to Andrew.
+
+> LGTM with a few nits above, probably they can be done in follow up
+> patches. Thanks for the cleanup!
+> 
+> FWIW:
+> Acked-by: Yosry Ahmed <yosryahmed@google.com>
+
+Thanks!
+
+Andrew, could you please fold this in?
+
+---
+
+From 86eeba389d7478e5794877254af6cc0310c835c7 Mon Sep 17 00:00:00 2001
+From: Johannes Weiner <hannes@cmpxchg.org>
+Date: Wed, 19 Jul 2023 10:21:49 -0400
+Subject: [PATCH] mm: kill frontswap fix
+
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/zswap.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/mm/zswap.c b/mm/zswap.c
+index d58672f23d43..583ef7b84dc3 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -1399,7 +1399,6 @@ bool zswap_load(struct page *page)
+ 	spin_lock(&tree->lock);
+ 	entry = zswap_entry_find_get(&tree->rbroot, offset);
+ 	if (!entry) {
+-		/* entry was written back */
+ 		spin_unlock(&tree->lock);
+ 		return false;
+ 	}
+-- 
+2.41.0
