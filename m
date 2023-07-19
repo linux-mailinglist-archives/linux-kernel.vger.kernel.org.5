@@ -2,89 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9643B759220
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1373E759225
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbjGSJ4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
+        id S229975AbjGSJ6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjGSJ4l (ORCPT
+        with ESMTP id S229530AbjGSJ6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:56:41 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1F5EC
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:54:37 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R5WPj4zrFzBRDrQ
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 17:54:33 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689760473; x=1692352474; bh=iZ7MHDXMAeTe21V130fRphXLFoc
-        oLkF9T3oPe8TXaRU=; b=A7FrCShP8IWzWnXTNctVB5FUbpvV3i7boTOXyu0+Rrf
-        6EjkxZQwKnlCi3OwEOofgQunTbAQcEWuFIrKqfmmqcKw4F4qSa5MiiIx+QAeYRZZ
-        r8L8qwJcFmagKCzdJ9O3hcRDreEJ5ohA679Z4j+wMYUceng2+qF6cFPjkFPrep55
-        XhF1lZUkTfbCkA4ixJCypzCpfRETwUamm1mcTg1hWybaLEyvvLx1C220uVK+21FI
-        U09KhGw4bhD6pothBSubf3GWomiQciRggHESM3B+QD7BsNKKrPCl3/5iMB+NxC4d
-        E6u7vuyaFLzQnuPQBF+It3DFBu4VPfYmKexUgA6H8Wg==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id S-LwKX8xerZ0 for <linux-kernel@vger.kernel.org>;
-        Wed, 19 Jul 2023 17:54:33 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R5WPj3JmgzBRDrF;
-        Wed, 19 Jul 2023 17:54:33 +0800 (CST)
+        Wed, 19 Jul 2023 05:58:22 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C06AEEC;
+        Wed, 19 Jul 2023 02:58:20 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A496D2F4;
+        Wed, 19 Jul 2023 02:59:03 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DED5C3F67D;
+        Wed, 19 Jul 2023 02:58:18 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Liviu Dudau <liviu.dudau@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH] arm64: dts: arm: minor whitespace cleanup around '='
+Date:   Wed, 19 Jul 2023 10:58:12 +0100
+Message-ID: <168976035601.3010516.2250237785915698190.b4-ty@arm.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230702185315.44584-1-krzysztof.kozlowski@linaro.org>
+References: <20230702185315.44584-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Date:   Wed, 19 Jul 2023 17:54:33 +0800
-From:   hanyu001@208suo.com
-To:     pkshih@realtek.com, kvalo@kernel.org
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rtlwifi: rtl8192de: phy: "foo * bar" should be "foo *bar"
-In-Reply-To: <tencent_56B12E143DA8D1D6A9C3669E04C963914905@qq.com>
-References: <tencent_56B12E143DA8D1D6A9C3669E04C963914905@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <8ef50a4e96014949bbfde956edd07108@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 02 Jul 2023 20:53:15 +0200, Krzysztof Kozlowski wrote:
+> The DTS code coding style expects exactly one space before and after '='
+> sign.
+>
 
-This patch fixes the checkpatch.pl error:
+Applied to sudeep.holla/linux (for-next/juno/updates), thanks!
 
-./drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c:2434: ERROR: "foo 
-* bar" should be "foo *bar"
 
-Signed-off-by: Yu Han <hanyu001@208suo.com>
----
-  drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+[1/1] arm64: dts: arm: minor whitespace cleanup around '='
+      https://git.kernel.org/sudeep.holla/c/cc958441ed41
+--
+Regards,
+Sudeep
 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c 
-b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-index d18c092..27b029b 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-@@ -2431,7 +2431,7 @@ static bool _rtl92d_is_legal_5g_channel(struct 
-ieee80211_hw *hw, u8 channel)
-  }
-
-  static void _rtl92d_phy_calc_curvindex(struct ieee80211_hw *hw,
--                       u32 *targetchnl, u32 * curvecount_val,
-+                       u32 *targetchnl, u32 *curvecount_val,
-                         bool is5g, u32 *curveindex)
-  {
-      struct rtl_priv *rtlpriv = rtl_priv(hw);
