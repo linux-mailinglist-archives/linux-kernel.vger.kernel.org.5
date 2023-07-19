@@ -2,121 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 826A9759F34
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D158F759F39
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbjGSUDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:03:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
+        id S231351AbjGSUDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:03:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbjGSUDD (ORCPT
+        with ESMTP id S230221AbjGSUDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:03:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CC1210E;
-        Wed, 19 Jul 2023 13:03:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C93EC61805;
-        Wed, 19 Jul 2023 20:02:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DBB8C433C7;
-        Wed, 19 Jul 2023 20:02:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689796979;
-        bh=scbk5YRYsVggHMvCaLAFxu3w656JVeYWrqypMrbUNs0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=T8zE3XeWVAqzDIHZTQOGiRbKNetAkz0LqiLaOjD0p2A/T1BBR/S9neEsx4JahhOMn
-         jSwUDMEVzRGEXDpS0A8z83xWGyYcYgcjaQwHZ7zeYgjWBfrjCJGHThw3s+tm9/0zdC
-         zO3lGVA2KuPOP+0axdHyncagf598QQV5sPca1d5t5rgCywefd64zTVMYsTGOs9IjK9
-         yNb1oA7ERkMymImQYWV9O3rGDEN6g4zbxnl9tZtpH1YToRfCd9f+mQftiCu9o6hqQy
-         nllriGnmlQ9L9CSUEi5zaW6GvAMoULjpX8TsumAcwLoScgbpXtlO891B7RSflz/SJu
-         mLETum6PfSa1Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B4F40CE0928; Wed, 19 Jul 2023 13:02:58 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 13:02:58 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org
-Subject: Re: [PATCH rcu 6/6] rcu: Use WRITE_ONCE() for assignments to ->next
- for rculist_nulls
-Message-ID: <1c3260bc-9e22-4ea4-9790-50f9a78581ee@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
- <20230717180317.1097590-6-paulmck@kernel.org>
- <9651c3b4-0791-5cd7-567f-f65d28bc8fae@joelfernandes.org>
- <BE64BF3F-69AD-4522-965E-0B7E4054D737@gmail.com>
- <3f6b04b3-af22-49f0-8d3c-269640f9f762@paulmck-laptop>
- <449d0d48-ac98-659b-4d03-e75c318605d4@joelfernandes.org>
- <50bc6e0d-7d9b-4634-999a-2ee8f503e86a@paulmck-laptop>
- <129BFB2B-1A19-437E-B04E-16B16AA4C838@gmail.com>
+        Wed, 19 Jul 2023 16:03:45 -0400
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B28F01FD8
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:03:40 -0700 (PDT)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1b055511f8bso59250fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:03:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689797020; x=1692389020;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qWSsNFba9oUv/FScx3zdSbWldRujPp4lpJvUZYeuiSU=;
+        b=Wjxt1zwNO5cM+fN0gsoUnLeecCGrjqeRSyY2c7z0gRycqeSv3jSSKvVlyjU/98wiTk
+         JyMAUd/rM0kh+Rklnlu6b7NE3fD/NWk95f0E1uQ/Hujs/HNnvGi19p73ycgiYadwcym3
+         Vlzdrceion6WI/4k9LGb54YCMQy1Nbt/AnhHeEwsQWikLe5cCo6ge/nSVT23STI7pzze
+         L/bO1aJkBnFbdWQAPZRj/f4CZkgXIiF41FeJVtygl4/XZDA7LGj+RgaxCTinJpKvUX6B
+         hI37VlghRURpiGPCE2CPzOBlBS9UOoHJihTInm8LDjm9aAAUN91bdqsfsWD61gfAybT7
+         RLNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689797020; x=1692389020;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qWSsNFba9oUv/FScx3zdSbWldRujPp4lpJvUZYeuiSU=;
+        b=GNCM8ZD4Mv55VebdcRE/np9wJo8lgf5yD4/1BVZ/an4+MOnN+i5QFuiAJfmVpYNmrr
+         b4WrK6XvHWDOJM2a9OI1nZMOiaYqmOGMZzb36tYdgDZI9Vat0HQvVOySNgrAom5KjARz
+         Rnw3zzESsDiRd3OuoKCNz8o3sirkgZ2aKwFAbF2gF6bBq9xm4g0wxIOyVFtYwCCnuCpo
+         dEO0wZvL6aJZxemUnilNa8dDh3BJ+6rSan+edlOdyicMMo3sR4DSrDQ3RePu4PNS2Aob
+         8emIwWWnYcghgDjBXssZsEt9s1cvS6vyLCjSsYM0TqdNPXBZ4OeVdAYhOkh9wvjQrlam
+         TXHA==
+X-Gm-Message-State: ABy/qLaLHRPGbXc6177sDpdzR79Q1V2hXCBPZw4deTFLdeX46qxjf3og
+        832NEHQthUi/CU9EmVCbPow=
+X-Google-Smtp-Source: APBJJlHVHGWOAVllrZYZzwR6gn4Ncl+JjHNugXsy56HPiv8isZ/45/aboLGsJABGZtS4EM7dsVSpBw==
+X-Received: by 2002:a05:6870:e391:b0:1b0:1225:ffb5 with SMTP id x17-20020a056870e39100b001b01225ffb5mr2461352oad.16.1689797019957;
+        Wed, 19 Jul 2023 13:03:39 -0700 (PDT)
+Received: from policorp.cardumecowork.local ([177.91.232.53])
+        by smtp.gmail.com with ESMTPSA id y4-20020a056870388400b001b3538afd01sm2238749oan.51.2023.07.19.13.03.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 13:03:39 -0700 (PDT)
+From:   Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
+To:     lgirdwood@gmail.com
+Cc:     broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        wtli@nuvoton.com, u.kleine-koenig@pengutronix.de,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        edson.drosdeck@gmail.com
+Subject: [PATCH] ASoC: nau8821: Add DMI quirk mechanism for active-high jack-detect
+Date:   Wed, 19 Jul 2023 17:02:41 -0300
+Message-Id: <20230719200241.4865-1-edson.drosdeck@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <129BFB2B-1A19-437E-B04E-16B16AA4C838@gmail.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 03:17:58AM +0800, Alan Huang wrote:
-> 
-> > 2023年7月20日 02:20，Paul E. McKenney <paulmck@kernel.org> 写道：
-> > 
-> > On Tue, Jul 18, 2023 at 09:48:59PM -0400, Joel Fernandes wrote:
-> >> 
-> >> 
-> >> On 7/18/23 14:32, Paul E. McKenney wrote:
-> >>> On Tue, Jul 18, 2023 at 10:48:07PM +0800, Alan Huang wrote:
-> >>>> 
-> >>>>> 2023年7月18日 21:49，Joel Fernandes <joel@joelfernandes.org> 写道：
-> >>>>> 
-> >>>>> On 7/17/23 14:03, Paul E. McKenney wrote:
-> >>>>>> From: Alan Huang <mmpgouride@gmail.com>
-> >>>>>> When the objects managed by rculist_nulls are allocated with
-> >>>>>> SLAB_TYPESAFE_BY_RCU, old readers may still hold references to an object
-> >>>>>> even though it is just now being added, which means the modification of
-> >>>>>> ->next is visible to readers.  This patch therefore uses WRITE_ONCE()
-> >>>>>> for assignments to ->next.
-> >>>>>> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
-> >>>>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >>>>> 
-> >>>>> Did we ever conclude that the READ_ONCE() counterparts were not needed? ;-)
-> >>>> 
-> >>>> Read-side is already protected by rcu_dereference_raw() in hlist_nulls_for_each_entry_{rcu, safe}.
-> >>> 
-> >>> It turns out that different traversal synchronization designs want
-> >>> different pointers using WRITE_ONCE().
-> >> 
-> >> Thank you Alan and Paul,
-> >> 
-> >> Btw, I don't see any users of hlist_nulls_unhashed_lockless(), maybe it can
-> >> be removed?
-> > 
-> > Either that or the people who removed uses injected bugs...
-> 
-> It has never been used.
-> 
-> That said, the data race has been there almost for four years.
-> 
-> And the network people use sk_unhashed() for both hlist_node and hlist_nulls_node.
-> So, I plan to use hlist_unhashed_lockless() in sk_unhashed(), that will be one of my future patches.
-> 
-> > 
-> > But if this one really does go away, do we need ->pprev to be
-> > protected by _ONCE()?
-> 
-> The ->pprev thing is what I’m currently working on. :)
+Add a quirk mechanism to allow specifying that active-high jack-detection
+should be used on platforms where this info is not available in devicetree.
 
-Very good, looking forward to seeing what you come up with!
+And add an entry for the Positivo CW14Q01P-V2 to the DMI table, so that
+jack-detection will work properly on this laptop.
 
-							Thanx, Paul
+Signed-off-by: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
+---
+ sound/soc/codecs/nau8821.c | 41 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+
+diff --git a/sound/soc/codecs/nau8821.c b/sound/soc/codecs/nau8821.c
+index 96d75882b33a..ca6beb2d2649 100644
+--- a/sound/soc/codecs/nau8821.c
++++ b/sound/soc/codecs/nau8821.c
+@@ -10,6 +10,7 @@
+ #include <linux/acpi.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
++#include <linux/dmi.h>
+ #include <linux/init.h>
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+@@ -25,6 +26,13 @@
+ #include <sound/tlv.h>
+ #include "nau8821.h"
+ 
++#define NAU8821_JD_ACTIVE_HIGH			BIT(0)
++
++static int nau8821_quirk;
++static int quirk_override = -1;
++module_param_named(quirk, quirk_override, uint, 0444);
++MODULE_PARM_DESC(quirk, "Board-specific quirk override");
++
+ #define NAU_FREF_MAX 13500000
+ #define NAU_FVCO_MAX 100000000
+ #define NAU_FVCO_MIN 90000000
+@@ -1792,6 +1800,33 @@ static int nau8821_setup_irq(struct nau8821 *nau8821)
+ 	return 0;
+ }
+ 
++/* Please keep this list alphabetically sorted */
++static const struct dmi_system_id nau8821_quirk_table[] = {
++	{
++		/* Positivo CW14Q01P-V2 */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Positivo Tecnologia SA"),
++			DMI_MATCH(DMI_BOARD_NAME, "CW14Q01P-V2"),
++		},
++		.driver_data = (void *)(NAU8821_JD_ACTIVE_HIGH),
++	},
++	{}
++};
++
++static void nau8821_check_quirks(void)
++{
++	const struct dmi_system_id *dmi_id;
++
++	if (quirk_override != -1) {
++		nau8821_quirk = quirk_override;
++		return;
++	}
++
++	dmi_id = dmi_first_match(nau8821_quirk_table);
++	if (dmi_id)
++		nau8821_quirk = (unsigned long)dmi_id->driver_data;
++}
++
+ static int nau8821_i2c_probe(struct i2c_client *i2c)
+ {
+ 	struct device *dev = &i2c->dev;
+@@ -1812,6 +1847,12 @@ static int nau8821_i2c_probe(struct i2c_client *i2c)
+ 
+ 	nau8821->dev = dev;
+ 	nau8821->irq = i2c->irq;
++
++	nau8821_check_quirks();
++
++	if (nau8821_quirk & NAU8821_JD_ACTIVE_HIGH)
++		nau8821->jkdet_polarity = 0;
++
+ 	nau8821_print_device_properties(nau8821);
+ 
+ 	nau8821_reset_chip(nau8821->regmap);
+-- 
+2.39.2
+
