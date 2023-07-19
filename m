@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E26758A06
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 02:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA6B758A7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 02:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbjGSAV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 20:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42038 "EHLO
+        id S229785AbjGSA4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 20:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjGSAV5 (ORCPT
+        with ESMTP id S229639AbjGSA4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 20:21:57 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F2E136;
-        Tue, 18 Jul 2023 17:21:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689726116; x=1721262116;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=pT6Ies0wLFEXJTKDZySE8hEP555Mfms46DvEBx71y1Q=;
-  b=EfClzMjDcRHjh+CGIP4nECRW2oY1e5OMGAq3u01Qqf/VzKKYmWdZv5rm
-   vOMQXF8cNLPfYK5+Oa6objnV9uzhqu1qeSoY7KcaTVrDjTlX7JK8SYoPf
-   B1/ajuaKIvNfpWbkyuLn5aSVMBtE+vNzB/o0CC5yHWi/2r+x/6HB+/tfs
-   sSYR45qAuLPh1xizE1bJALOuaVC3PrS6p9+8kS5y3XmRPYW9JxE+GqAhe
-   cEvQ3gTLI0W4Xegt9IDrVkFAM5Qfzy8hgaiR+5uLBkOvDOr5ErkS4Qz91
-   jlgj9/PoC+o6alG2LCwqccjhJRv1R8HAnjMB8IpHnZkZu0ckgKoHXmKVI
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="351210768"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="351210768"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 17:21:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="867275772"
-Received: from unknown (HELO [10.209.37.195]) ([10.209.37.195])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 17:21:55 -0700
-Message-ID: <d718cdda-2d5b-9b4b-d90d-55449ec1ac75@intel.com>
-Date:   Tue, 18 Jul 2023 17:21:54 -0700
+        Tue, 18 Jul 2023 20:56:09 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65071FFE;
+        Tue, 18 Jul 2023 17:55:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1689728076;
+        bh=hTchEKX6cnJkYCHL4oAppGBgjyw3HhGMPHv7Zn0VTik=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uT9Dl0z22yuk1/ozsIFsUWy4kSAqAINbPwZs5sRGYtwfxW0pm/9XnGLe69d/PEkvh
+         Fp6sjzSkvU9rC9GiOIW8aGY305NJKCNTNR8sJ+2Tou45SuPADXPLgv4fIK29ZSCIkU
+         QV2jL4UqxsfejEp1mGDisZCdhPttQvXYMJjqlBcONQKYyLN+ZakBC1iKj2LMfxPopF
+         f+PNm7Ug6aMzzwUH7HYAnILnWbcJLm7+rtAqjpUnMIj6Fsm80RwWDboS2jSMy7K1cw
+         aLjBttfIG5hXu+3XrJXtPAMY+s0lqxJxf6cleiYzFVIwdWn9UdP1S5pRznYVtgHFqe
+         JEbFVVA9BuEoQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R5HQh0NWxz4wjG;
+        Wed, 19 Jul 2023 10:54:35 +1000 (AEST)
+Date:   Wed, 19 Jul 2023 10:28:13 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the btrfs tree
+Message-ID: <20230719102813.12e24eb4@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] x86/sgx: fix a NULL pointer
-Content-Language: en-US
-To:     "Huang, Kai" <kai.huang@intel.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "haitao.huang@linux.intel.com" <haitao.huang@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
-        "Chatre, Reinette" <reinette.chatre@intel.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Christopherson,, Sean" <seanjc@google.com>
-References: <CU4OBQ8MQ2LK.2GRBPLQGVTZ3@seitikki>
- <20230717202938.94989-1-haitao.huang@linux.intel.com>
- <dfb1f233-aebd-50cf-8704-e83b91ee110a@intel.com>
- <op.18ah5mn3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <b5779418-e2a4-ca7a-866f-97e49cd272cb@intel.com>
- <op.18aontlmwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <eb1aea6f-3688-f871-2335-ff911a51ef52@intel.com>
- <op.18aqz7sbwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <ad2d9610-61c0-4719-9df1-0116ef317d8a@intel.com>
- <op.18asliuzwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <520111c9ccdd7356f9eaf20013e3e3c75b06398e.camel@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <520111c9ccdd7356f9eaf20013e3e3c75b06398e.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/O/W8eXJmUO3GjyG3BVBBNrA";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/18/23 17:14, Huang, Kai wrote:
-> Also perhaps the patch title is too vague.  Adding more information doesn't hurt
-> I think, e.g., mentioning it is a fix for NULL pointer dereference in the EAUG
-> flow.
+--Sig_/O/W8eXJmUO3GjyG3BVBBNrA
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Yeah, let's say something like:
+Hi all,
 
-	x86/sgx: Resolve SECS reclaim vs. page fault race
+The following commits are also in the btrfs-fixes tree as different
+commits (but the same patches):
 
-please
+  13c2fe254dea ("btrfs: fix ordered extent split error handling in btrfs_di=
+o_submit_io")
+  31dabcf9cdca ("btrfs: set_page_extent_mapped after read_folio in btrfs_co=
+nt_expand")
+  5597efed9886 ("btrfs: fix iput() on error pointer after error during orph=
+an cleanup")
+  8e5955e7a539 ("btrfs: zoned: fix memory leak after finding block group wi=
+th super blocks")
+  9a976a7a78a2 ("btrfs: use irq safe locking when running and adding delaye=
+d iputs")
+  ce23502dff23 ("btrfs: fix warning when putting transaction with qgroups e=
+nabled after abort")
+  dfcfcaf6d1fa ("btrfs: raid56: always verify the P/Q contents for scrub")
+  e6d11b4a5648 ("btrfs: fix double iput() on inode after an error during or=
+phan cleanup")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/O/W8eXJmUO3GjyG3BVBBNrA
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmS3Lh0ACgkQAVBC80lX
+0GyCqwf+L8W+qqq9KGRnnjMlfTnM6GyXaftsB2JTGDu0pD07tPNjfa3ZUjMGd4uT
++lABeByTExXsCF1SjY2wPktFNlnCGnikKklRYwCCZPyROawyO0f+z9q/rT5b1tuk
+Ge22Kp7SmZfmGnWLmbB0CNGfW+c4q59JOtUjJZJX8PTL3BCBwHtjMDKXm70bKNcD
+9quSlp3bZEJG1/4TBVWaivEv39PZ0PrSdz10qD0E6LN6lJTBO+vNOhEulOx9kutx
+XI/taz1T8nApj03AuRUs6DVCDeyh+5DIeJzFJW8/gWCAGrl+4FcWGS8ZklYBO0tq
+FSSLK+qvQD8j2KDvJ19c9Hu8EVs2Qw==
+=M7DR
+-----END PGP SIGNATURE-----
+
+--Sig_/O/W8eXJmUO3GjyG3BVBBNrA--
