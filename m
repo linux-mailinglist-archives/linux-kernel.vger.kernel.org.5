@@ -2,165 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42840759CD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25017759CF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbjGSRuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 13:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38008 "EHLO
+        id S230028AbjGSR5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 13:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjGSRuJ (ORCPT
+        with ESMTP id S230212AbjGSR5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:50:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB261BF6
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:49:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689788964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XYue51ytI6NDHPfrk6nzrr+J7lvDM0nrv78I+/fXUNw=;
-        b=R2kObZgY4hhHWw9fQleV5Wj7fC05dZF3J2LskRwlYgw2RuAGp7EydMSxr5QLmQjS3Cji7j
-        hS/YW9Y+NKIpLS0jhTg9Tttf+leDkH6Gy1sUlk0e5Cesh2U6Td+ryyJeyc/jbYkjBx4I1c
-        5NkLsPm86FbG99O0kDzd9Dsa2FNtMvs=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-594-CI3AZDWyNyyafRsGwrmQbQ-1; Wed, 19 Jul 2023 13:49:20 -0400
-X-MC-Unique: CI3AZDWyNyyafRsGwrmQbQ-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b707829eb9so66949111fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:49:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689788959; x=1690393759;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XYue51ytI6NDHPfrk6nzrr+J7lvDM0nrv78I+/fXUNw=;
-        b=D+gaPz3VCn2z+jVl+m7WYtUFWMX/Y5W9K/Gd+wOxknlIe/0mljv/JHR85O7ap/w9h8
-         oTHGKi1D/hdNFUXjLilUKoHcKvogFvmU7Fr4zggM05AFbYAVdUQvqEQ4EGYQ2eEhmEAd
-         pY/mKqfbVlMGABWcJx2tyHAuhogsFWYD0lz3ZFqgmKZMf+waxC41nBlhgGz69W8KISRS
-         wuQgK+aXWXE3dX3hzpJ/JWTFxa2FyzirkpfFT2UUYhkd3rXxoRd4uiJ9ENX/8k+NOqJa
-         JKXv9gKbvPCAZ+7tL0EO+pXRWTJf+EosLiG+0RcY47CEvCfi9bu4PQFnafMvhQoRr3kP
-         rusg==
-X-Gm-Message-State: ABy/qLYDH+BEv2CJYw1gSUFs2xOX83u9n0CBQmV4/yH2fkFHayBh3XPo
-        IvYLj8aRC890C7esmdg0AGFid/bRo7tCfPAwj3DAA/AxtTEkbFi5mMoQA06fNJOVpjvHbtwyzca
-        9BoP8izKUlPQOJVjvkIJbeseC
-X-Received: by 2002:a2e:b60a:0:b0:2b6:c8e8:915f with SMTP id r10-20020a2eb60a000000b002b6c8e8915fmr525303ljn.22.1689788959378;
-        Wed, 19 Jul 2023 10:49:19 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHGcoA3ayLgHeAmqmqFqjnQ7AOt3SyqJk7AsijJMopV3od5+bU+++6SyugmvMMgSvDsgJiIRg==
-X-Received: by 2002:a2e:b60a:0:b0:2b6:c8e8:915f with SMTP id r10-20020a2eb60a000000b002b6c8e8915fmr525282ljn.22.1689788958986;
-        Wed, 19 Jul 2023 10:49:18 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id t13-20020a7bc3cd000000b003fc05b89e5bsm2165158wmj.34.2023.07.19.10.49.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 10:49:18 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Helge Deller <deller@gmx.de>, linux-kernel@vger.kernel.org
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        Jingoo Han <jingoohan1@gmail.com>, Lee Jones <lee@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Nipun Gupta <nipun.gupta@amd.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 0/4] Allow disabling all native fbdev drivers and
- only keeping DRM emulation
-In-Reply-To: <46d933f5-38e4-b46a-f94b-0e9a6e3b2e31@gmx.de>
-References: <20230719081544.741051-1-javierm@redhat.com>
- <46d933f5-38e4-b46a-f94b-0e9a6e3b2e31@gmx.de>
-Date:   Wed, 19 Jul 2023 19:49:17 +0200
-Message-ID: <877cqvkd0i.fsf@minerva.mail-host-address-is-not-set>
+        Wed, 19 Jul 2023 13:57:30 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307AC1FF5;
+        Wed, 19 Jul 2023 10:57:25 -0700 (PDT)
+Received: from [192.168.1.141] ([37.4.248.68]) by mrelayeu.kundenserver.de
+ (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MQy0N-1qbOZE21MF-00O1y2; Wed, 19 Jul 2023 19:51:51 +0200
+Message-ID: <f1d46c8c-2dfd-4fe7-6005-fc7b97f5cafb@i2se.com>
+Date:   Wed, 19 Jul 2023 19:51:50 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v9 1/5] staging: vc04_services: vchiq_arm: Add new bus
+ type and device type
+Content-Language: en-US
+To:     Umang Jain <umang.jain@ideasonboard.com>,
+        linux-staging@lists.linux.dev,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, f.fainelli@gmail.com,
+        athierry@redhat.com, error27@gmail.com,
+        dave.stevenson@raspberrypi.com, kieran.bingham@ideasonboard.com,
+        laurent.pinchart@ideasonboard.com
+References: <20230719164427.1383646-1-umang.jain@ideasonboard.com>
+ <20230719164427.1383646-2-umang.jain@ideasonboard.com>
+From:   Stefan Wahren <stefan.wahren@i2se.com>
+In-Reply-To: <20230719164427.1383646-2-umang.jain@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:8VJip2zrPWfOrkss/26VVuw/ZEQ+jciPFDMSIIifivfwfYruXyv
+ MMZanM2hs9O1N/y2K98q/zamtKAScB5ijAGqLi7J++xqTwI6HANrxDKz15jNb01OxWDhA08
+ NW5yOgtMJ8KhXEvZHFPvGwi20ar0uzlUnUXPqLGcOxC0fFU9Ovj2giyiTCCR46caPLRPqrv
+ tAZcpzAu0+wkS5XX1XU8w==
+UI-OutboundReport: notjunk:1;M01:P0:hMttlQkVM2g=;HIJk1JqgwdmnPTy+Myjm+1cI1jY
+ LIoSjk084Anhiyf+nuyKaPrSmEzpOqL0XDBvXpAPmIfwTExJLrt401CuROIHqJHkQ9AY+Jf6v
+ r3HS48txAC1+KK7Dxqt7vr13Qq7K4iH+n1En/4d0JH8jjHOcfc0JZbLQ1HXhHi/sVxpNEubVk
+ F9Omty/amA+GzgiUEO2Z47iWojttilcCXcN20whmj9IaaKX8JoTb8iiahwXFz6R3Vrlm7xZHI
+ 1er4Xad6u0Zqy09lc2tTIYDzxxCx1IJ8EMI87kHRm4xU8iNqZj3Kt2++rGrCRaX5/W8YS8r9t
+ IlnIizGZLr3EqL2vjDoGrfIDL9GZJ12dAl1IiHaLQnb3Dy0orcAkf4iVkj9u9jH8DTUmWIuxV
+ 6/GBEHuoV3sSD7RtNq2JiRowwdUz5DweDpOSQ/01o7IKiBqmnYh4L21zyiCLl3aQHKyhVcEtk
+ tjgHj5QG0JbDx/BHBiTmBeIYdiZJKGMBgZqwIhDEmdg9AbRHdjJO2QJH+ZI5KUbe96WJetsjw
+ fEt7xrWAnmS54vHJhfC3Wwi/BLWGcitAdrDmtx4tOKwStLpIqU+l+wRyX79uiK4np/kkTqskU
+ BfuDBnvxs7EVGrKw5e2v3V6I6qnj4BWf0jYT2iHHejKU3grsm1x3sEtTcdRcgI40wKmjYdrYR
+ hyy6y37oFvHoA3s4FAzHpt8vL8ss/Ci0dYGHqwun8g==
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Helge Deller <deller@gmx.de> writes:
+Hi Umang,
 
-Hello Helge,
+Am 19.07.23 um 18:44 schrieb Umang Jain:
+> The devices that the vchiq interface registers (bcm2835-audio,
+> bcm2835-camera) are implemented and exposed by the VC04 firmware.
+> The device tree describes the VC04 itself with the resources required
+> to communicate with it through a mailbox interface. However, the
+> vchiq interface registers these devices as platform devices. This
+> also means the specific drivers for these devices are getting
+> registered as platform drivers. This is not correct and a blatant
+> abuse of platform device/driver.
+> 
+> Add a new bus type, vchiq_bus_type and device type (struct vchiq_device)
+> which will be used to migrate child devices that the vchiq interfaces
+> creates/registers from the platform device/driver.
+> 
+> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+> ---
+>   drivers/staging/vc04_services/Makefile        |   1 +
+>   .../interface/vchiq_arm/vchiq_device.c        | 102 ++++++++++++++++++
+>   .../interface/vchiq_arm/vchiq_device.h        |  54 ++++++++++
+>   3 files changed, 157 insertions(+)
+>   create mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.c
+>   create mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.h
+> 
+> diff --git a/drivers/staging/vc04_services/Makefile b/drivers/staging/vc04_services/Makefile
+> index 44794bdf6173..2d071e55e175 100644
+> --- a/drivers/staging/vc04_services/Makefile
+> +++ b/drivers/staging/vc04_services/Makefile
+> @@ -5,6 +5,7 @@ vchiq-objs := \
+>      interface/vchiq_arm/vchiq_core.o  \
+>      interface/vchiq_arm/vchiq_arm.o \
+>      interface/vchiq_arm/vchiq_debugfs.o \
+> +   interface/vchiq_arm/vchiq_device.o \
+>      interface/vchiq_arm/vchiq_connected.o \
+>   
+>   ifdef CONFIG_VCHIQ_CDEV
+> diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.c
+> new file mode 100644
+> index 000000000000..d7dfe4173579
+> --- /dev/null
+> +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.c
+> @@ -0,0 +1,102 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * vchiq_device.c - VCHIQ generic device and bus-type
+> + *
+> + * Copyright (c) 2023 Ideas On Board Oy
+> + */
+> +
+> +#include <linux/device/bus.h>
+> +#include <linux/slab.h>
+> +#include <linux/string.h>
+> +
+> +#include "vchiq_device.h"
+> +
+> +static int vchiq_bus_type_match(struct device *dev, struct device_driver *drv)
+> +{
+> +	if (dev->bus == &vchiq_bus_type &&
+> +	    strcmp(dev_name(dev), drv->name) == 0)
+> +		return 1;
+> +
+> +	return 0;
+> +}
+> +
+> +static int vchiq_bus_uevent(const struct device *dev, struct kobj_uevent_env *env)
+> +{
+> +	const struct vchiq_device *device = container_of_const(dev, struct vchiq_device, dev);
+> +
+> +	return add_uevent_var(env, "MODALIAS=%s", dev_name(&device->dev));
+> +}
+> +
+> +static int vchiq_bus_probe(struct device *dev)
+> +{
+> +	struct vchiq_device *device = to_vchiq_device(dev);
+> +	struct vchiq_driver *driver = to_vchiq_driver(dev->driver);
+> +	int ret;
+> +
+> +	ret = driver->probe(device);
+> +	if (ret == 0)
+> +		return 0;
+> +
+> +	return ret;
 
-> Hi Javier,
->
-> On 7/19/23 10:15, Javier Martinez Canillas wrote:
->> This patch series splits the fbdev core support in two different Kconfig
->> symbols: FB and FB_CORE. The motivation for this is to allow CONFIG_FB to
->> be disabled, while still having the the core fbdev support needed for the
->
-> One "the" too much.
-> (correcting just because this is a cover letter)
->
->> CONFIG_DRM_FBDEV_EMULATION to be enabled. The motivation is automatically
->> disabling all fbdev drivers instead of having to be disabled individually.
->>
->> The reason for doing this is that now with simpledrm, there's no need for
->> the legacy fbdev (e.g: efifb or vesafb) drivers anymore and many distros
->> now disable them. > But it would simplify the config a lot fo have a single
->> Kconfig symbol to disable all fbdev drivers.
->
-> I suggest to rephrase this, e.g.:
-> The reason for doing this is that with simpledrm, mainstream Linux distributions
-> like Fedora, SUSE or Ubuntu can then more easily enable the DRM drivers only
-> by switching off legacy fbdev drivers with one Kconfig option (e.g. for efifb or
-> vesafb).
->
-> (note: there are quite many other distributions, e.g. debian and the derivates,
-> which still need the fbdev drivers for the various other architectures)
->
+Why not returning the result of probe directly?
 
-Right, I meant that there is no need anymore for the remaining fbdev
-drivers that many distributions used to enable only to have fallback
-fbcon/VT (like vesafb, efifb, simplefb, etc). But I'm OK with your
-rephrasing and agree that's more accurate to cover all the distros.
+> +}
+> +
+> +struct bus_type vchiq_bus_type = {
+> +	.name   = "vchiq-bus",
+> +	.match  = vchiq_bus_type_match,
+> +	.uevent = vchiq_bus_uevent,
+> +	.probe  = vchiq_bus_probe,
+> +};
+> +
+> +static void vchiq_device_release(struct device *dev)
+> +{
+> +	struct vchiq_device *device = to_vchiq_device(dev);
+> +
+> +	kfree(device);
+> +}
+> +
+> +struct vchiq_device *
+> +vchiq_device_register(struct device *parent, const char *name)
+> +{
+> +	struct vchiq_device *device;
+> +	int ret;
+> +
+> +	device = kzalloc(sizeof(*device), GFP_KERNEL);
+> +	if (!device) {
+> +		dev_err(parent, "Cannot register %s: Insufficient memory\n",
+> +			name);
+> +		return NULL;
+> +	}
+> +
+> +	device->dev.init_name = name;
+> +	device->dev.parent = parent;
+> +	device->dev.bus = &vchiq_bus_type;
+> +	device->dev.release = vchiq_device_release;
 
->> I've built tested with possible combinations of CONFIG_FB, CONFIG_FB_CORE,
->> CONFIG_DRM_FBDEV_EMULATION and CONFIG_FB_DEVICE symbols set to 'y' or 'n'.
->>
->> Patch #1 moves the auxdisplay drivers to "Graphics support" Kconfig menu,
->> patch #2 moves the core fbdev Kconfig symbols to a separate Kconfig file,
->> patch #3 does the FB symbol split and introduces the FB_CORE symbol and
->> finally patch #4 makes the DRM symbol to select FB_CORE if the DRM fbdev
->> emualtion support was enabled.
->>
->> Since this series touches three subsystems (auxdisplay, fbdev and DRM),
->> I would like to merge it through DRM with the acks of these maintainers.
->
-> Sure. Ack from me.
->
-> The patch series look good otherwise. You may add:
-> Acked-by: Helge Deller <deller@gmx.de>
->
+Not sure, but maybe a good place to set the DMA mask?
 
-Thanks!
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+> +
+> +	ret = device_register(&device->dev);
+> +	if (ret) {
+> +		dev_err(parent, "Cannot register %s: %d\n", name, ret);
+> +		put_device(&device->dev);
+> +		return NULL;
+> +	}
+> +
+> +	return device;
+> +}
+> +
+> +void vchiq_device_unregister(struct vchiq_device *vchiq_dev)
+> +{
+> +	device_unregister(&vchiq_dev->dev);
+> +}
+> +
+> +int vchiq_driver_register(struct vchiq_driver *vchiq_drv)
+> +{
+> +	vchiq_drv->driver.bus = &vchiq_bus_type;
+> +
+> +	return driver_register(&vchiq_drv->driver);
+> +}
+> +EXPORT_SYMBOL_GPL(vchiq_driver_register);
+> +
+> +void vchiq_driver_unregister(struct vchiq_driver *vchiq_drv)
+> +{
+> +	driver_unregister(&vchiq_drv->driver);
+> +}
+> +EXPORT_SYMBOL_GPL(vchiq_driver_unregister);
+> diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.h
+> new file mode 100644
+> index 000000000000..7eaaf9a91cda
+> --- /dev/null
+> +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.h
+> @@ -0,0 +1,54 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (c) 2023 Ideas On Board Oy
+> + */
+> +
+> +#ifndef _VCHIQ_DEVICE_H
+> +#define _VCHIQ_DEVICE_H
+> +
+> +#include <linux/device.h>
+> +
+> +struct vchiq_device {
+> +	struct device dev;
+> +};
+> +
+> +struct vchiq_driver {
+> +	int		(*probe)(struct vchiq_device *device);
+> +	void		(*remove)(struct vchiq_device *device);
+> +	int		(*resume)(struct vchiq_device *device);
+> +	int		(*suspend)(struct vchiq_device *device,
+> +				   pm_message_t state);
+> +	struct device_driver driver;
+> +};
+> +
+> +static inline struct vchiq_device *to_vchiq_device(struct device *d)
+> +{
+> +	return container_of(d, struct vchiq_device, dev);
+> +}
+> +
+> +static inline struct vchiq_driver *to_vchiq_driver(struct device_driver *d)
+> +{
+> +	return container_of(d, struct vchiq_driver, driver);
+> +}
+> +
+> +extern struct bus_type vchiq_bus_type;
+> +
+> +struct vchiq_device *
+> +vchiq_device_register(struct device *parent, const char *name);
+> +void vchiq_device_unregister(struct vchiq_device *dev);
+> +
+> +int vchiq_driver_register(struct vchiq_driver *vchiq_drv);
+> +void vchiq_driver_unregister(struct vchiq_driver *vchiq_drv);
+> +
+> +/**
+> + * module_vchiq_driver() - Helper macro for registering a vchiq driver
+> + * @__vchiq_driver: vchiq driver struct
+> + *
+> + * Helper macro for vchiq drivers which do not do anything special in
+> + * module init/exit. This eliminates a lot of boilerplate. Each module may only
+> + * use this macro once, and calling it replaces module_init() and module_exit()
+> + */
+> +#define module_vchiq_driver(__vchiq_driver) \
+> +	module_driver(__vchiq_driver, vchiq_driver_register, vchiq_driver_unregister)
+> +
+> +#endif /* _VCHIQ_DEVICE_H */
