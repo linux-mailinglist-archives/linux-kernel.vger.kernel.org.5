@@ -2,90 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EC7758CA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 06:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA75758C64
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 06:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbjGSEba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 00:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39682 "EHLO
+        id S229707AbjGSEIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 00:08:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbjGSEb2 (ORCPT
+        with ESMTP id S229447AbjGSEIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 00:31:28 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A1FE47
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 21:31:27 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R5MWR4zMzzCLkFW
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 11:58:59 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689739138; x=1692331139; bh=g+gKctoELFDP+ddd+DRaRwJpB4a
-        9mxa7pY0/WAvW5us=; b=Le1d1Mi1sYe25CYC2+UfbN4Xl7V37NbkvDA+GPVlT+e
-        8rCrcpmX3CxVag+l/mrS663ZSfplnjVbpFu2s+esZFGu4jLrNnCRAvu/En7FIuAw
-        MpZFGz1caz7WLdh1/GYHLniJLZGAKV+e3HQWXhbWzi6FOApSxJoMz+vmLJaAghHO
-        6rHATEu0wnbqHD9l+U4dLzFwhFNbr9YVT4Nxn94bEzIxYg7eLRB9folyfyI95cnz
-        E+d39JqHZV7HNoOSJ9h/gtFNVQa77LRMGabySXSk0enTjR9GKmu1EFSjhQaYb81I
-        QzB+kZea5AIRsAyHqXlpBRU3H2ECHWzUUQ0mN764Bbg==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id oHzmDJ_IDU5D for <linux-kernel@vger.kernel.org>;
-        Wed, 19 Jul 2023 11:58:58 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R5Lgg5ttGzCDHsB;
-        Wed, 19 Jul 2023 11:21:03 +0800 (CST)
+        Wed, 19 Jul 2023 00:08:10 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995DB186;
+        Tue, 18 Jul 2023 21:08:09 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-56fff21c2ebso66164867b3.3;
+        Tue, 18 Jul 2023 21:08:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689739689; x=1692331689;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TSpR33MkMFVo0HDEbifHOHIAy9DSs04x6Yf0f9lEG7M=;
+        b=jzKgMM/KTVIcRhePK7+HhcBBIv/hqF30YmMEQS7cPNgkBro8RADtI6PTrz89Lsoezl
+         z0pJ5YSRl03Lp63r0AzeF8RBKclyKg723k2ea0nQOF402cRsRKI3WnPGVIYiftE08/cU
+         vg+3Bd4fO6B2BQXXHzkTc3cVDaa3pBbbGQSnCCo6JJnA8epUrSRWai/7G4FnLFXqu/wH
+         xpXCqcd24Ud/x7tFOtm1oZEDiIHbnLbWi6SRLz+rgkyA1GKThZkj5rRJ+7H7Ro8Epiht
+         u1EKtcsB/xfrqfViEJeFQid4yNMQTJcnLhZnGjge3HMRFBlYEdVU8mT2lqj0ntLg4Dmw
+         0esA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689739689; x=1692331689;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TSpR33MkMFVo0HDEbifHOHIAy9DSs04x6Yf0f9lEG7M=;
+        b=Ddga9/gkBGcwRhA+76m2XHB3F/blQF8zVvzMw/ipryKo3NadLkcOJ+GuEt8TxOYVKP
+         ek2pGAiMUVCybZJ84jWLydeaLNLglT4j0CiCz47uGzC40c206LdnUyADrvW8KmqTgewl
+         1aByMcj4tlkQFN80jILTgFtU3qHPNSQAGNfNuFD313RRsExXJ/sd5enLfuWyj86I7IdW
+         taj94cP7Cd9kyodU26Zww86gs41iYkirnEVdbmDuXLOB8P9Ka7n6AKnYJ0qXZ4+rN1/B
+         4KOGrmVeObArMPXHpDnvoK4BNIM2VPzs2DzUWA3VlbpYGU4yZkvDyv2Fuc0dG20ElhCw
+         EUtQ==
+X-Gm-Message-State: ABy/qLY5Sd5TWXudV5fqp4C0i2iHkXAor8+TIwE9Bt0ZBRZTkpgl0rYQ
+        MG/HVsAaPR/TWiSyva+3GG0=
+X-Google-Smtp-Source: APBJJlGvARg5Fhi/6CMrWWiAUB1EfTtlAM3RwOSFjdJfBmwQf0ikzp4wfIA8wpB4Dq5g8T18e08Dhg==
+X-Received: by 2002:a0d:c341:0:b0:562:1060:f2c9 with SMTP id f62-20020a0dc341000000b005621060f2c9mr19548939ywd.13.1689739688797;
+        Tue, 18 Jul 2023 21:08:08 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c2-20020a0dda02000000b005619cfb1b88sm834317ywe.52.2023.07.18.21.08.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 21:08:08 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 18 Jul 2023 21:08:06 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Bill O'Donnell <billodo@redhat.com>
+Cc:     Rob Barnes <robbarnes@google.com>, bleung@chromium.org,
+        linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: export emergency_sync
+Message-ID: <ad539fad-999b-46cd-9372-a196469b4631@roeck-us.net>
+References: <20230718214540.1.I763efc30c57dcc0284d81f704ef581cded8960c8@changeid>
+ <ZLcOcr6N+Ty59rBD@redhat.com>
 MIME-Version: 1.0
-Date:   Wed, 19 Jul 2023 11:21:03 +0800
-From:   sunran001@208suo.com
-To:     rostedt@goodmis.org, mhiramat@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: [PATCH] include: events: remove spaces after '(' and before ')'
-In-Reply-To: <20230719030939.18448-1-xujianghui@cdjrlc.com>
-References: <20230719030939.18448-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <7d6b48368594b2f815dff7c5375be638@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZLcOcr6N+Ty59rBD@redhat.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix four occurrences of the checkpatch error:
+On Tue, Jul 18, 2023 at 05:13:06PM -0500, Bill O'Donnell wrote:
+> On Tue, Jul 18, 2023 at 09:45:40PM +0000, Rob Barnes wrote:
+> > emergency_sync forces a filesystem sync in emergency situations.
+> > Export this function so it can be used by modules.
+> > 
+> > Signed-off-by: Rob Barnes <robbarnes@google.com>
+> 
+> Example of an emergency situation?
 
-ERROR: space prohibited after that open parenthesis '('
-ERROR: space prohibited before that close parenthesis ')'
+An example from existing code in
+drivers/firmware/arm_scmi/scmi_power_control.c:
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  include/trace/events/nmi.h | 6 +++---
-  1 file changed, 3 insertions(+), 3 deletions(-)
+static inline void
+scmi_request_forceful_transition(struct scmi_syspower_conf *sc)
+{
+        dev_dbg(sc->dev, "Serving forceful request:%d\n",
+                sc->required_transition);
 
-diff --git a/include/trace/events/nmi.h b/include/trace/events/nmi.h
-index 18e0411398ba..99abd0bc8ebd 100644
---- a/include/trace/events/nmi.h
-+++ b/include/trace/events/nmi.h
-@@ -15,9 +15,9 @@ TRACE_EVENT(nmi_handler,
-  	TP_ARGS(handler, delta_ns, handled),
+#ifndef MODULE
+        emergency_sync();
+#endif
 
-  	TP_STRUCT__entry(
--		__field(	void *,		handler	)
--		__field(	s64,		delta_ns)
--		__field(	int,		handled	)
-+		__field(void *,	handler)
-+		__field(s64, delta_ns)
-+		__field(int, handled)
-  	),
+Arguably emergency_sync() should also be called if the file is built
+as module.
 
-  	TP_fast_assign(
+Either case, I think it would make sense to add an example to the commit
+description.
+
+Thanks,
+Guenter
