@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C216E759E41
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7532B759E49
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbjGSTLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 15:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45406 "EHLO
+        id S230519AbjGSTMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 15:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjGSTLr (ORCPT
+        with ESMTP id S230511AbjGSTM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 15:11:47 -0400
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 850321BF3;
-        Wed, 19 Jul 2023 12:11:46 -0700 (PDT)
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1b038d7a5faso5969675fac.1;
-        Wed, 19 Jul 2023 12:11:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689793905; x=1692385905;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yawocYEJ44V0eHQLJuZe86F3h3cwFvu38nD+qkGCl5c=;
-        b=DJiOlhEE2RklGMQv2eKPVbLCkXO6As3b59Rcyp/9poyvIj9TAGmk/6sarD2QgdiNRr
-         GjJeGLxJe8lKoFEH+Un3VclURyZv4CA1p8x3VMGZgb+31HuEdFrpMvICI3qw/hgMLW51
-         mpySn2hgHj765/TGFJf7KQCZQrrVqmi/OoGh2LyqoUaNmW82N0k7fIwqPht0YWKIS3wi
-         gmqe4bTkhnSDM/LTBLV2oPw95NCQsPlzGhxW0Joq7ZEpUwS3FxhNInraIriMpQMbbcAj
-         t/8O3Gz94cV7pCW8X1Qvns7q6dcTTxnfi8LHyVbtVaFm9jERpJSMtQ4nwEdl1c9S7pqd
-         1TRQ==
+        Wed, 19 Jul 2023 15:12:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA568199A
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689793900;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F8XGxi53b0PEdlxoh7O8cl7xJyRMkcuJJYP/JuLoaN8=;
+        b=SRxE7/HP8H//Wg/zEmb57Oh398h2MBvK63J5wbgE9mKOdEhkI0bCMqvvYkNVz7SiQdy1+n
+        dkkJUo8EJUTKYE6LlVED4aztfbphjsgCrOwnKGc6OwzyeVMpV+h0Y/MJONSKxpD35PvhPF
+        53Igcu5Op95vHE9uUHddu6LNj5U9Mkw=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-117-__ui0w8MMKef19n0jhQzTg-1; Wed, 19 Jul 2023 15:11:38 -0400
+X-MC-Unique: __ui0w8MMKef19n0jhQzTg-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fa8db49267so39101395e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:11:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689793905; x=1692385905;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yawocYEJ44V0eHQLJuZe86F3h3cwFvu38nD+qkGCl5c=;
-        b=c023IkAI2RqbO/zTc0SInxkFa0CGn9koG8K5fa2uOXvawoTbhCXOOT4icMNhLvg4Or
-         SpjHKiQSCOVi+yMuQATbdwpt/eeSkgg/nRCJOP2OUno0rS3EZ7eg7AzYSKsMjjq18qc5
-         plXa8nz29tk6c06f3Q6WrYbOV9bt6Dlgdllud4bnEwpG5giEa3MS8VC95MM72RwMMQfU
-         i6Z0Ea7aWxceLkqcE1ozm1s4Jig23rqsBjLt9iOGt37hUf+AXtsxNTP9iCNDDOA51Lje
-         2qW1rUh9reyKwB6EPU/pZH7VgECpdEKtRRo5Vva2pikRAJ6SXfkPthLRvISQlycN22rh
-         LwIQ==
-X-Gm-Message-State: ABy/qLYDLynv7XZJSeGrGMd1+stzkgObyDoY7ORin6BWifNdB1MGvh8y
-        T2F1oAz9qX8AMH7hczMjJ1Zw92TL4VmiSYSnGGFy37B8QUNOlQ==
-X-Google-Smtp-Source: APBJJlGptWfcIcTTronFnKnMMIshwN3gP7pSWP7bAHwZjMet49AEuwP+SHndRnhbKpqCIKbb2NIUYsTAA7pI+BqUwgE=
-X-Received: by 2002:a05:6870:8a1f:b0:1ba:df9e:f2e9 with SMTP id
- p31-20020a0568708a1f00b001badf9ef2e9mr1845566oaq.0.1689793905589; Wed, 19 Jul
- 2023 12:11:45 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689793897; x=1690398697;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F8XGxi53b0PEdlxoh7O8cl7xJyRMkcuJJYP/JuLoaN8=;
+        b=Lb8s2SupZs1d+rcn6LAU4q8chrgCZBkSjwJXX3CXO99awdfmc/nkhVh4R/KEBbFvuz
+         R/UWCcMi+ZzFZoW53b92eD+zqN4NU3e6ezqDYWpkWQc8sfmHEQCYhnbsPaC7eQl4aBEL
+         19Zy2jLQYXIgR4Th1FMIKH3/EJaF/LU0QNW1x9x4v7M+irafjJ5x5flUhdftkJPg2EAN
+         YaShbLd2VbjXr/luz3OMVayF8DzXpuMiMWtrzMfijocaZJm7S3FHzfYhwvGefQlOcfqA
+         9CFv1AvWNeL5c1NXT/8pe6wqTT+qSYyApSFgdjoFLj/f7M8/XZFJffNtw6Cv1kXm77SZ
+         SvYQ==
+X-Gm-Message-State: ABy/qLZN623Fno1yCWhkmpwzGEPjaqVuZ0v8sIXJJNka5sw6AIDg6dRV
+        JGj8AXz/7jxi2NUsREcrwC+m/LVZpha9xq1EsDICaF2O1onjfxkLbteMXS4DpiXwNz9cCkAHbY8
+        BLAcooW6M6s7PcmiB5Ej0Cv1OPA5T10As
+X-Received: by 2002:adf:de85:0:b0:313:efed:9162 with SMTP id w5-20020adfde85000000b00313efed9162mr592379wrl.59.1689793897427;
+        Wed, 19 Jul 2023 12:11:37 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGAEpZ3HnNJFf0EXDQ6PiNnXG6pJ7iZ6T6kGVVDyiOZcpi7AONcMjyvvGq2mav4MkZGW/OMOw==
+X-Received: by 2002:adf:de85:0:b0:313:efed:9162 with SMTP id w5-20020adfde85000000b00313efed9162mr592365wrl.59.1689793897094;
+        Wed, 19 Jul 2023 12:11:37 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id c3-20020adfef43000000b00313f9a0c521sm5973293wrp.107.2023.07.19.12.11.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 12:11:36 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>
+Cc:     Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 05/11] drm/tests: helpers: Create an helper to allocate
+ a locking ctx
+In-Reply-To: <20230710-kms-kunit-actions-rework-v1-5-722c58d72c72@kernel.org>
+References: <20230710-kms-kunit-actions-rework-v1-0-722c58d72c72@kernel.org>
+ <20230710-kms-kunit-actions-rework-v1-5-722c58d72c72@kernel.org>
+Date:   Wed, 19 Jul 2023 21:11:36 +0200
+Message-ID: <874jlzk97b.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-References: <20230719160048.2737423-1-james.hilliard1@gmail.com>
- <20230719160048.2737423-2-james.hilliard1@gmail.com> <15268646-a38f-f530-4c04-1164617d2b25@linaro.org>
-In-Reply-To: <15268646-a38f-f530-4c04-1164617d2b25@linaro.org>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Wed, 19 Jul 2023 13:11:33 -0600
-Message-ID: <CADvTj4oPjGZzjJzjRNXprF1Nz9Hmn=Qs+s=0cke5e3Lb27YLFA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ARM: dts: imx6q: Add Variscite MX6 Custom board support
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     devicetree@vger.kernel.org,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 11:18=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> > +
-> > +&ldb {
-> > +     status =3D "okay";
-> > +
-> > +     lvds-channel@0 {
-> > +             fsl,data-mapping =3D "spwg";
-> > +             fsl,data-width =3D <24>;
-> > +             status =3D "okay";
->
-> Again, why do you need it? Is it disabled?
+Maxime Ripard <mripard@kernel.org> writes:
 
-I think so?
-https://github.com/torvalds/linux/blob/v6.5-rc2/arch/arm/boot/dts/nxp/imx/i=
-mx6qdl.dtsi#L87
+> As we get more and more tests, the locking context initialisation
+> creates more and more boilerplate, both at creation and destruction.
+>
+> Let's create a helper that will allocate, initialise a context, and
+> register kunit actions to clean up once the test is done.
+>
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> ---
+
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
