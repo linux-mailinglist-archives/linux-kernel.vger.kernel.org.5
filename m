@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E523C758ED1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D63758ED0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbjGSHXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 03:23:19 -0400
+        id S229813AbjGSHW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 03:22:58 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbjGSHW7 (ORCPT
+        with ESMTP id S229563AbjGSHW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 03:22:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65B62682
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:22:37 -0700 (PDT)
+        Wed, 19 Jul 2023 03:22:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE0B2113;
+        Wed, 19 Jul 2023 00:22:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 51B72611F6
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:22:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAC3EC433C8;
-        Wed, 19 Jul 2023 07:21:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BC51160C89;
+        Wed, 19 Jul 2023 07:22:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0520BC433CB;
+        Wed, 19 Jul 2023 07:22:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689751322;
-        bh=3iiA3Y9v1L1k9xx1PzYcaYLgH17AKV0yDCqMSrfyEF4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nmVKHiZsNnQMe/6FLFncveBM2z3lNTQkHbzhiUP8aLpud297muIMGvdjTef4SGS/k
-         I3tf9OzQT50AQy3GiWpiG5MCsiQlF/hD9PxNnkTAeODaxjc0sB/Xf+S7SgREBeOh3q
-         wmCT/NQAPpqImQw3Z5djwf9CoMiOeAwwHybpbYOPfTyFmBLWmF1eouxSUlKr1NZdCu
-         3UpnNQ+tI4fQKC6T1miwkiXnqdF0BvNHyZ/CnHZGclnPdU4tIf4M+YVg8UcaVBR89P
-         dICY5VOfXeP9dOtWgc/NH7zQuqbAnAPerNf+oopqzjxR93iFNTSc9Ft/Ycl7Lzo7rC
-         ypyNg8yF612kA==
+        s=k20201202; t=1689751348;
+        bh=v+KzWx3A540NW8aAgQGBA0OhgGvyrwyOdzXHhvq2quA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NHG0AIdGyV6plj0mYiDIUa1yfQ5R7aui2+xWEKeiQzUzb0dxb6CtzvOOZUtFUK94I
+         /HVFlu8bollcLb61dFxUa85WDSiDjERnKi1ERRX0y9/438ka1Q/IeHiRVb7VjqUoI3
+         5yyVH21Ou7O+MCquJtxgpf+7lz4qHbMVyayzg2aCqjbpI94Ikpuxv4jla7WwvnjaVp
+         plzW8C/0FqZaWEC0XX6N9vNvircV3o+ZxJIC9K5bHt/qfqW8MYwTJ56N+WpmdEjE/m
+         HMTpWhR5yxsd3ZVqKjf9Pm/zb8ZYfmlrLBm+qFASmOHzv7sZqXghzgmSbS2ZYCkzqq
+         Cess+QHAYBsjw==
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-51e566b1774so8696607a12.1;
+        Wed, 19 Jul 2023 00:22:27 -0700 (PDT)
+X-Gm-Message-State: ABy/qLaaQFbU848g2ACF4wKf8XhC56MoOKtIJQbZW2xW+E4mL9EV5fOv
+        06MEt6hUloQTfjMvqK7j5SYbTBOE+CXyT9gICuo=
+X-Google-Smtp-Source: APBJJlGgFowu6dGDg4naL/LQVEuvtSanlod0S5HMByJDn7shqAJ5E7r/8oPECUcfYfFdSH/QCwseM85/5g1ZvbZFZ1c=
+X-Received: by 2002:a50:ef0c:0:b0:51d:d16f:7e52 with SMTP id
+ m12-20020a50ef0c000000b0051dd16f7e52mr1734736eds.29.1689751346283; Wed, 19
+ Jul 2023 00:22:26 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Wed, 19 Jul 2023 09:21:57 +0200
-From:   Michael Walle <mwalle@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>,
-        Xu Liang <lxu@maxlinear.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Simon Horman <simon.horman@corigine.com>
-Subject: Re: [PATCH net-next v3 07/11] net: phy: introduce
- phy_mdiobus_read_mmd()
-In-Reply-To: <3cfe5af5-31b6-492c-af55-cd0397b07eb1@lunn.ch>
-References: <20230620-feature-c45-over-c22-v3-0-9eb37edf7be0@kernel.org>
- <20230620-feature-c45-over-c22-v3-7-9eb37edf7be0@kernel.org>
- <3cfe5af5-31b6-492c-af55-cd0397b07eb1@lunn.ch>
-Message-ID: <8147c4e37adfa7b7d9ee95d242223f39@kernel.org>
-X-Sender: mwalle@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230718153348.3340811-1-chenhuacai@loongson.cn> <261edc6c-e339-faeb-3045-bfe6604d1aef@web.de>
+In-Reply-To: <261edc6c-e339-faeb-3045-bfe6604d1aef@web.de>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Wed, 19 Jul 2023 15:22:13 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H5nNMmYZQXvoog85cgMUd+gM2QMaG3cUhYk_iGzjB=B4Q@mail.gmail.com>
+Message-ID: <CAAhV-H5nNMmYZQXvoog85cgMUd+gM2QMaG3cUhYk_iGzjB=B4Q@mail.gmail.com>
+Subject: Re: [PATCH v5] LoongArch: Fix CONFIG_CMDLINE_EXTEND and
+ CONFIG_CMDLINE_BOOTLOADER handling
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Zhihong Dong <donmor3000@hotmail.com>, loongarch@lists.linux.dev,
+        loongson-kernel@lists.loongnix.cn, kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, Guo Ren <guoren@kernel.org>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Xuerui Wang <kernel@xen0n.name>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2023-07-19 01:54, schrieb Andrew Lunn:
->> +static int __phy_mdiobus_read_mmd(struct mii_bus *bus, int phy_addr,
->> +				  enum phy_access_mode access_mode,
->> +				  int devad, u32 regnum)
->> +{
->> +	switch (access_mode) {
->> +	case PHY_ACCESS_C45:
->> +		return __mdiobus_c45_read(bus, phy_addr, devad, regnum);
->> +	case PHY_ACCESS_C22:
->> +		/* ignore return value for legacy reasons */
->> +		mmd_phy_indirect(bus, phy_addr, devad, regnum, false);
->> +
->> +		/* Read the content of the MMD's selected register */
->> +		return __mdiobus_read(bus, phy_addr, MII_MMD_DATA);
->> +	default:
->> +		return -EOPNOTSUPP;
->> +	}
-> 
-> So this is reading a C45 register space register, otherwise it would
-> not be called _mmd and have a devad. So access_mode should really be
-> transfer mode. Until now, only transfer mode C45 can be used to access
-> C45 register space. The point of this patchset is to add a new
-> C45_OVER_C22 transfer mode.
+Hi, Markus,
 
-So you suggest to rename access_mode to transfer_mode, right?
+On Wed, Jul 19, 2023 at 2:51=E2=80=AFPM Markus Elfring <Markus.Elfring@web.=
+de> wrote:
+>
+> >                                                   =E2=80=A6, so this pa=
+tch add
+> > some code to fix it.
+>
+> Would you like to avoid a typo here?
+>
+> Will any other imperative change description variant become more helpful?
+Thank you for pointing this out, but since Zhihong is the original
+author, I don't want to completely rewrite the commit message, so just
+fix the typo...
 
-> And C22 would should give -EINVAL, since you cannot use plain C22 bus
-> transactions to access C45 register space.
-
-We had indirect mmd access before with c22 PHYs before, we could
-theoretically fold that into c45-over-c22, but the old indirect
-mmd access wasn't checking for error codes and according to Russell
-we cannot change that. Honestly, I'd just duplicate the code and
-leave the old non-error checking code in __phy_read_mmd() while
-__phy_mdiobus_read_mmd() will do error checking and return -EINVAL
-with PHY_ACCESS_C22. I had that in one of the first versions but
-you suggested to not copy the code :), then this ugly check_rc
-thing came. Or __phy_mdiobus_(read,write)_mmd() will have a
-check_rc parameter.
-
--michael
+Huacai
+>
+> See also:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
+ocumentation/process/submitting-patches.rst?h=3Dv6.5-rc2#n94
+>
+> Regards,
+> Markus
