@@ -2,228 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 617117597C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCB07597CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbjGSOLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 10:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45134 "EHLO
+        id S231510AbjGSOLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbjGSOLM (ORCPT
+        with ESMTP id S230194AbjGSOLW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:11:12 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB878E
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:11:10 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <j.zink@pengutronix.de>)
-        id 1qM7tG-0003ij-5J; Wed, 19 Jul 2023 16:10:54 +0200
-Received: from [2a0a:edc0:0:1101:1d::39] (helo=dude03.red.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <j.zink@pengutronix.de>)
-        id 1qM7tC-000cnD-8D; Wed, 19 Jul 2023 16:10:50 +0200
-Received: from localhost ([::1] helo=dude03.red.stw.pengutronix.de)
-        by dude03.red.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <j.zink@pengutronix.de>)
-        id 1qM7tB-003DGO-Bm; Wed, 19 Jul 2023 16:10:49 +0200
-From:   Johannes Zink <j.zink@pengutronix.de>
-Date:   Wed, 19 Jul 2023 16:10:38 +0200
-Subject: [PATCH] net: stmmac: correct MAC propagation delay
+        Wed, 19 Jul 2023 10:11:22 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4399E42;
+        Wed, 19 Jul 2023 07:11:19 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 6595F12007A;
+        Wed, 19 Jul 2023 17:11:17 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 6595F12007A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1689775877;
+        bh=bLDHWlqd+9J/3Q27qKAYWbhXTkIrXZ9utoTJw3eZAd8=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=PwSykd0PZrBLwQYuZ8SUlmv7SUWrN/+vEAAwid/jh8Je1gRYVfsD4dvac9sJE6ckR
+         ew0OH1vo3tIPQSFlTp5NfiRSKD65Xc5/wM47N0O8hEfJeEErg9hVQGyHPsiyRlQJWp
+         pYtawhiM5aPl5IPg6yHL7vSq7ArrBmsMclz3t7Vp6z/NuVTwvKOj/eEC3JlPdGKr6i
+         bb3z8fFV0Z7cZbQRE95u/5ajlO5Ku4IP4nobm2GAfr9EQPPJl/0dizSxvnbWMXOxzY
+         awIiI4XTbG4U5neNphUHPopIMBzTwtGgJGO0tUvCjMXNmfLkFAIqmzI6E1/HDPhTE8
+         00U2IEp3ZXsng==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Wed, 19 Jul 2023 17:11:17 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 19 Jul
+ 2023 17:11:17 +0300
+Date:   Wed, 19 Jul 2023 17:11:11 +0300
+From:   Dmitry Rokosov <ddrokosov@sberdevices.ru>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     zelong dong <zelong.dong@amlogic.com>, <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-amlogic@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <kelvin.zhang@amlogic.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: reset: Add compatible and DT
+ bindings for Amlogic C3 Reset Controller
+Message-ID: <20230719141111.ykg2pfv4dmyvutqm@CAB-WSD-L081021>
+References: <20230719060954.14864-1-zelong.dong@amlogic.com>
+ <20230719060954.14864-2-zelong.dong@amlogic.com>
+ <20230719115014.2har4sool7d5edcn@CAB-WSD-L081021>
+ <c6fd4df2-97ab-a830-f466-2d09f5b38dfc@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230719-stmmac_correct_mac_delay-v1-1-768aa4d09334@pengutronix.de>
-X-B4-Tracking: v=1; b=H4sIAN3ut2QC/x2NUQrCMBBEr1L220ATCzVeRaRsNqtdSFPZtKKU3
- r3Rv3kDb2aDwipc4NpsoPyWInOuYE8N0Ij5yUZiZXCtO7e99aYs04Q00KzKtAy/HDnh13Suv1D
- w0QeyUPWAhU1QzDTWgbymVMuX8kM+/7/bfd8PVFGWSX8AAAA=
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     patchwork-jzi@pengutronix.de, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Johannes Zink <j.zink@pengutronix.de>
-X-Mailer: b4 0.12.2
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: j.zink@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <c6fd4df2-97ab-a830-f466-2d09f5b38dfc@linaro.org>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178725 [Jul 19 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: DDRokosov@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 524 524 9753033d6953787301affc41bead8ed49c47b39d, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;sberdevices.ru:5.0.1,7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;www.kernel.org:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/07/19 13:07:00
+X-KSMG-LinksScanning: Clean, bases: 2023/07/19 13:07:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/19 10:42:00 #21641119
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IEEE1588 Standard specifies that the timestamps of Packets must be
-captured when the PTP message timestamp point (leading edge of first
-octet after the start of frame delimiter) crosses the boundary between
-the node and the network. As the MAC latches the timestamp at an
-internal point, the captured timestamp must be corrected for the
-additional path latency, as described in the publicly available
-datasheet [1].
+On Wed, Jul 19, 2023 at 02:33:03PM +0200, Krzysztof Kozlowski wrote:
+> On 19/07/2023 13:50, Dmitry Rokosov wrote:
+> > On Wed, Jul 19, 2023 at 02:09:52PM +0800, zelong dong wrote:
+> >> From: Zelong Dong <zelong.dong@amlogic.com>
+> >>
+> >> Add new compatible and DT bindings for Amlogic C3 Reset Controller
+> >>
+> >> Signed-off-by: Zelong Dong <zelong.dong@amlogic.com>
+> >> ---
+> >>  .../bindings/reset/amlogic,meson-reset.yaml   |   1 +
+> >>  include/dt-bindings/reset/amlogic,c3-reset.h  | 119 ++++++++++++++++++
+> >>  2 files changed, 120 insertions(+)
+> > 
+> > As I understand it, updates to DT bindings documentation, as well as any
+> > DT bindings includes, should be submitted in separate patches, per the
+> > guidelines outlined in the following link:
+> > https://www.kernel.org/doc/html/latest/devicetree/bindings/submitting-patches.html#i-for-patch-submitters.
+> > 
+> > Krzysztof, Rob, and Conor, please correct me if I am mistaken.
+> 
+> And they are. What's wrong here?
 
-This patch only corrects for the MAC-Internal delay, which can be read
-out from the MAC_Ingress_Timestamp_Latency register, since the Phy
-framework currently does not support querying the Phy ingress and egress
-latency. The Closs Domain Crossing Circuits errors as indicated in [1]
-are already being accounted in the stmmac_get_tx_hwtstamp() function and
-are not corrected here.
+Please accept my apologies for any confusion caused. Initially, I
+misunderstood that YAML documentation and device tree bindings includes
+should be kept separate.
 
-As the Latency varies for different link speeds and MII
-modes of operation, the correction value needs to be updated on each
-link state change.
+As such, this patch includes modifications to both areas, namely
+bindings documentation and include/dt-bindings, but all of them are
+separate from driver part.
 
-As the delay also causes a phase shift in the timestamp counter compared
-to the rest of the network, this correction will also reduce phase error
-when generating PPS outputs from the timestamp counter.
+In this case,
 
-[1] i.MX8MP Reference Manual, rev.1 Section 11.7.2.5.3 "Timestamp
-correction"
+Reviewed-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
 
-Signed-off-by: Johannes Zink <j.zink@pengutronix.de>
----
- drivers/net/ethernet/stmicro/stmmac/hwif.h         |  3 ++
- .../net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c  | 42 ++++++++++++++++++++++
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  4 +++
- drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h   |  6 ++++
- 4 files changed, 55 insertions(+)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-index 6ee7cf07cfd7..95a4d6099577 100644
---- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-@@ -536,6 +536,7 @@ struct stmmac_hwtimestamp {
- 	void (*get_systime) (void __iomem *ioaddr, u64 *systime);
- 	void (*get_ptptime)(void __iomem *ioaddr, u64 *ptp_time);
- 	void (*timestamp_interrupt)(struct stmmac_priv *priv);
-+	void (*correct_latency)(struct stmmac_priv *priv);
- };
- 
- #define stmmac_config_hw_tstamping(__priv, __args...) \
-@@ -554,6 +555,8 @@ struct stmmac_hwtimestamp {
- 	stmmac_do_void_callback(__priv, ptp, get_ptptime, __args)
- #define stmmac_timestamp_interrupt(__priv, __args...) \
- 	stmmac_do_void_callback(__priv, ptp, timestamp_interrupt, __args)
-+#define stmmac_correct_latency(__priv, __args...) \
-+	stmmac_do_void_callback(__priv, ptp, correct_latency, __args)
- 
- struct stmmac_tx_queue;
- struct stmmac_rx_queue;
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-index fa2c3ba7e9fe..1749cba7b206 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-@@ -60,6 +60,47 @@ static void config_sub_second_increment(void __iomem *ioaddr,
- 		*ssinc = data;
- }
- 
-+static void correct_latency(struct stmmac_priv *priv)
-+{
-+	void __iomem *ioaddr = priv->ptpaddr;
-+	u32 reg_tsic, reg_tsicsns;
-+	u32 reg_tsec, reg_tsecsns;
-+	u64 scaled_ns;
-+	u32 val;
-+
-+	/* MAC-internal ingress latency */
-+	scaled_ns = readl(ioaddr + PTP_TS_INGR_LAT);
-+
-+	/* See section 11.7.2.5.3.1 "Ingress Correction" on page 4001 of
-+	 * i.MX8MP Applications Processor Reference Manual Rev. 1, 06/2021
-+	 */
-+	val = readl(ioaddr + PTP_TCR);
-+	if (val & PTP_TCR_TSCTRLSSR)
-+		/* nanoseconds field is in decimal format with granularity of 1ns/bit */
-+		scaled_ns = (NSEC_PER_SEC << 16) - scaled_ns;
-+	else
-+		/* nanoseconds field is in binary format with granularity of ~0.466ns/bit */
-+		scaled_ns = ((1ULL << 31) << 16) - scaled_ns * PSEC_PER_NSEC / 466;
-+
-+	reg_tsic = scaled_ns >> 16;
-+	reg_tsicsns = scaled_ns & 0xff00;
-+
-+	/* set bit 31 for 2's compliment */
-+	reg_tsic |= BIT(31);
-+
-+	writel(reg_tsic, ioaddr + PTP_TS_INGR_CORR_NS);
-+	writel(reg_tsicsns, ioaddr + PTP_TS_INGR_CORR_SNS);
-+
-+	/* MAC-internal egress latency */
-+	scaled_ns = readl(ioaddr + PTP_TS_EGR_LAT);
-+
-+	reg_tsec = scaled_ns >> 16;
-+	reg_tsecsns = scaled_ns & 0xff00;
-+
-+	writel(reg_tsec, ioaddr + PTP_TS_EGR_CORR_NS);
-+	writel(reg_tsecsns, ioaddr + PTP_TS_EGR_CORR_SNS);
-+}
-+
- static int init_systime(void __iomem *ioaddr, u32 sec, u32 nsec)
- {
- 	u32 value;
-@@ -221,4 +262,5 @@ const struct stmmac_hwtimestamp stmmac_ptp = {
- 	.get_systime = get_systime,
- 	.get_ptptime = get_ptptime,
- 	.timestamp_interrupt = timestamp_interrupt,
-+	.correct_latency = correct_latency,
- };
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index efe85b086abe..ee78e69e9ae3 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -909,6 +909,8 @@ static int stmmac_init_ptp(struct stmmac_priv *priv)
- 	priv->hwts_tx_en = 0;
- 	priv->hwts_rx_en = 0;
- 
-+	stmmac_correct_latency(priv, priv);
-+
- 	return 0;
- }
- 
-@@ -1094,6 +1096,8 @@ static void stmmac_mac_link_up(struct phylink_config *config,
- 
- 	if (priv->dma_cap.fpesel)
- 		stmmac_fpe_link_state_handle(priv, true);
-+
-+	stmmac_correct_latency(priv, priv);
- }
- 
- static const struct phylink_mac_ops stmmac_phylink_mac_ops = {
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-index bf619295d079..d1fe4b46f162 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-@@ -26,6 +26,12 @@
- #define	PTP_ACR		0x40	/* Auxiliary Control Reg */
- #define	PTP_ATNR	0x48	/* Auxiliary Timestamp - Nanoseconds Reg */
- #define	PTP_ATSR	0x4c	/* Auxiliary Timestamp - Seconds Reg */
-+#define	PTP_TS_INGR_CORR_NS	0x58	/* Ingress timestamp correction nanoseconds */
-+#define	PTP_TS_EGR_CORR_NS	0x5C	/* Egress timestamp correction nanoseconds*/
-+#define	PTP_TS_INGR_CORR_SNS	0x60	/* Ingress timestamp correction subnanoseconds */
-+#define	PTP_TS_EGR_CORR_SNS	0x64	/* Egress timestamp correction subnanoseconds */
-+#define	PTP_TS_INGR_LAT	0x68	/* MAC internal Ingress Latency */
-+#define	PTP_TS_EGR_LAT	0x6c	/* MAC internal Egress Latency */
- 
- #define	PTP_STNSUR_ADDSUB_SHIFT	31
- #define	PTP_DIGITAL_ROLLOVER_MODE	0x3B9ACA00	/* 10e9-1 ns */
-
----
-base-commit: 36395b2efe905650cd179d67411ffee3b770268b
-change-id: 20230719-stmmac_correct_mac_delay-4278cb9d9bc1
-
-Best regards,
 -- 
-Johannes Zink <j.zink@pengutronix.de>
-
+Thank you,
+Dmitry
