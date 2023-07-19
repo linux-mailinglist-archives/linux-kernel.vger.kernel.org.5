@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B43875951A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 14:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF33D75951F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 14:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229633AbjGSM3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 08:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
+        id S229709AbjGSMan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 08:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjGSM3F (ORCPT
+        with ESMTP id S229535AbjGSMam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 08:29:05 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA8E136;
-        Wed, 19 Jul 2023 05:29:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689769743; x=1721305743;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KYLhNrHtUFSx7/C0LdiN2Hgj1mrnIODr7nl7CL2g1ec=;
-  b=GLo5fwpA9RYfEwW6/qKpSaiIEECoHFS+FuLBNVg6Y306byW9tmexk3vH
-   61HkhMuZoBsg5tXMPfCP2Ad4x/94mVaEDLSCKAqMgwxrVnUDM7jbqTR/6
-   09mfAY++DcyhEGtfKGWQQSjvPOQRzWLrUrr1i+So/QtnZOLSi7aHxIA5/
-   j4oi8JD/sUGzIE5cO6OytYDtDTqKqE/B1r2RCjVUgnzmmPgRZnc7+GdBZ
-   LRcGrupUQNaQCfszvio/ZqbiJqQaf5B4kwKH3G9IqZzOkcojKsjdgls+H
-   C0OoPMwO9AqOtYUibJ+C2yV9s0mUByMVu5axM0xfdnIhg5igMtc1ZGI0B
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="397303362"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="397303362"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 05:29:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="793998622"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="793998622"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 19 Jul 2023 05:28:42 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qM6IL-0004n7-0g;
-        Wed, 19 Jul 2023 12:28:41 +0000
-Date:   Wed, 19 Jul 2023 20:28:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yunlong Xing <yunlong.xing@unisoc.com>, miklos@szeredi.hu,
-        amir73il@gmail.com
-Cc:     oe-kbuild-all@lists.linux.dev, linux-unionfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhiguo.niu@unisoc.com,
-        hongyu.jin@unisoc.com, yunlongxing23@gmail.com
-Subject: Re: [PATCH V2] ovl: fix mount fail because the upper doesn't have
- space
-Message-ID: <202307192052.2CaL6sdr-lkp@intel.com>
-References: <20230719085434.154834-1-yunlong.xing@unisoc.com>
+        Wed, 19 Jul 2023 08:30:42 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0273EE0;
+        Wed, 19 Jul 2023 05:30:40 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51e590a8ab5so9379566a12.2;
+        Wed, 19 Jul 2023 05:30:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689769838; x=1690374638;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xN2l+O6gJGRa84uZb1BsKBHRU7JKgcju1wz8yosyb6M=;
+        b=Dr9HMbIgFpXgZvjVl2cm/7LYBEgOpp+BumU0LigiIqOKShfyAP70ZYXEuLx2Nnmmai
+         l8N8kpsQeoORaNIgOL5nNgynGVpuFLliUPX7wEJeseDZh7tus6ms7exuFJwZP9Q7X4cV
+         qNqEtjzohE4MZjlrjmOguOOAUKA67tPWauK56261JZEYeZj+Nd8FpPQEw1hWiuiSArUa
+         R3McQ/aQ1/BCT3k6Cx4ug1DJP+zLIMr7K1lzSpkk1bN4NKR9mAIoNyZk5Aymh3xOsJIa
+         fi4iaPOJF5Cex7d9JUHltPu/Mt8pYuSuRmcKPDCvZV5WgabfCI8wxs8t0pmNVXI48Wjj
+         +gNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689769838; x=1690374638;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xN2l+O6gJGRa84uZb1BsKBHRU7JKgcju1wz8yosyb6M=;
+        b=OPd5NIEtVmkaWx2oymX9j1NQvIdlmsZSF+PiU/d14dh625hppSnFmUVYqccKG9lhng
+         R4re2IKp13mhelr+EaQDY0HiU+CW8prmmNguePiPhkN5zcV4Blbdq4QL5R3tkg9PJrC4
+         oBfHoE3EV4+gKqNsokmXIy9yCaFKhfu7F7F+ZA5Gx/YTyztcN5XuB0yhZnTZDvIkYv56
+         blUY0z3KlgOaosJYT74y00CHd4PkOgJD/MbhwhyvFwjDsvD6a27BWRQJZ0tfQkZxIPEo
+         iVCXNPW3te1lLOCnTJu4+VHWNeRw0epKORegw8ziNg6Z5PVzs+lFcHmG+UHM3V3aq6Km
+         3pwQ==
+X-Gm-Message-State: ABy/qLYGH7bukB85isbAtNLM8b6iwI4ynPoz2+yGY1coiGgdU9Xc2OJf
+        YoPT94IER1jz+NMOw7OQXRnVMPzn7lYjMgVcVG8=
+X-Google-Smtp-Source: APBJJlFqasK+/oeB2EkcK3d1RtcgXvs+4PEasJMm6GAJfFeOQ5eqhXf5jf7NKFl6Rw6YMA2a2SdaSKcdixrqKwwRrn8=
+X-Received: by 2002:a05:6402:12d9:b0:51d:dbf1:c825 with SMTP id
+ k25-20020a05640212d900b0051ddbf1c825mr2900612edx.1.1689769838275; Wed, 19 Jul
+ 2023 05:30:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230719085434.154834-1-yunlong.xing@unisoc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <20230719101339.18256-1-aboutphysycs@gmail.com>
+In-Reply-To: <20230719101339.18256-1-aboutphysycs@gmail.com>
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+Date:   Wed, 19 Jul 2023 20:30:21 +0800
+Message-ID: <CAJhJPsUBWC6h2ZL_wcqwkd0Krih-PxErVeGFdFdPxocL1RTNcw@mail.gmail.com>
+Subject: Re: [PATCH] gpio: loongson1 :remove unneeded platform_set_drvdata()call
+To:     Andrei Coardos <aboutphysycs@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-mips@vger.kernel.org, andy@kernel.org, brgl@bgdev.pl,
+        linus.walleij@linaro.org, Alexandru Ardelean <alex@shruggie.ro>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,109 +70,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yunlong,
+On Wed, Jul 19, 2023 at 6:14=E2=80=AFPM Andrei Coardos <aboutphysycs@gmail.=
+com> wrote:
+>
+> In the drivers/gpio/gpio-loongson1 the call to platform_set_drvdata was
+> removed.
+> This function call was found to be unnecesarry as the associated
+> structure is defined inside the local .c file.
+> It doesn't use any type of function either so it can be removed without
+> any complications.
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on mszeredi-vfs/overlayfs-next]
-[also build test ERROR on linus/master v6.5-rc2 next-20230719]
-[cannot apply to mszeredi-vfs/next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Yunlong-Xing/ovl-fix-mount-fail-because-the-upper-doesn-t-have-space/20230719-165654
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git overlayfs-next
-patch link:    https://lore.kernel.org/r/20230719085434.154834-1-yunlong.xing%40unisoc.com
-patch subject: [PATCH V2] ovl: fix mount fail because the upper doesn't have space
-config: arc-randconfig-r024-20230718 (https://download.01.org/0day-ci/archive/20230719/202307192052.2CaL6sdr-lkp@intel.com/config)
-compiler: arc-elf-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230719/202307192052.2CaL6sdr-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307192052.2CaL6sdr-lkp@intel.com/
-
-All error/warnings (new ones prefixed by >>):
-
-   fs/overlayfs/super.c: In function 'ovl_make_workdir':
->> fs/overlayfs/super.c:1192:25: warning: missing terminating " character
-    1192 |                 pr_warn("upper fs does not support RENAME_WHITEOUT (%i).\n,
-         |                         ^
-   fs/overlayfs/super.c:1193:28: warning: missing terminating " character
-    1193 |                         err");
-         |                            ^
->> fs/overlayfs/super.c:2065:23: error: unterminated argument list invoking macro "pr_warn"
-    2065 | module_exit(ovl_exit);
-         |                       ^
->> fs/overlayfs/super.c:1192:17: error: 'pr_warn' undeclared (first use in this function)
-    1192 |                 pr_warn("upper fs does not support RENAME_WHITEOUT (%i).\n,
-         |                 ^~~~~~~
-   fs/overlayfs/super.c:1192:17: note: each undeclared identifier is reported only once for each function it appears in
->> fs/overlayfs/super.c:1192:24: error: expected ';' at end of input
-    1192 |                 pr_warn("upper fs does not support RENAME_WHITEOUT (%i).\n,
-         |                        ^
-         |                        ;
-   ......
-   fs/overlayfs/super.c:1191:9: note: '-Wmisleading-indentation' is disabled from this point onwards, since column-tracking was disabled due to the size of the code/headers
-    1191 |         if (!rename_whiteout)
-         |         ^~
-   fs/overlayfs/super.c:1191:9: note: adding '-flarge-source-files' will allow for more column-tracking support, at the expense of compilation time and memory
->> fs/overlayfs/super.c:1192:17: error: expected declaration or statement at end of input
-    1192 |                 pr_warn("upper fs does not support RENAME_WHITEOUT (%i).\n,
-         |                 ^~~~~~~
->> fs/overlayfs/super.c:1188:17: error: label 'out' used but not defined
-    1188 |                 goto out;
-         |                 ^~~~
-   fs/overlayfs/super.c:1144:13: warning: unused variable 'fh_type' [-Wunused-variable]
-    1144 |         int fh_type;
-         |             ^~~~~~~
-   fs/overlayfs/super.c: At top level:
-   fs/overlayfs/super.c:1136:12: warning: 'ovl_make_workdir' defined but not used [-Wunused-function]
-    1136 | static int ovl_make_workdir(struct super_block *sb, struct ovl_fs *ofs,
-         |            ^~~~~~~~~~~~~~~~
-   fs/overlayfs/super.c:1118:12: warning: 'ovl_create_volatile_dirty' defined but not used [-Wunused-function]
-    1118 | static int ovl_create_volatile_dirty(struct ovl_fs *ofs)
-         |            ^~~~~~~~~~~~~~~~~~~~~~~~~
-   fs/overlayfs/super.c:969:12: warning: 'ovl_get_upper' defined but not used [-Wunused-function]
-     969 | static int ovl_get_upper(struct super_block *sb, struct ovl_fs *ofs,
-         |            ^~~~~~~~~~~~~
-   fs/overlayfs/super.c:926:36: warning: 'ovl_user_xattr_handlers' defined but not used [-Wunused-variable]
-     926 | static const struct xattr_handler *ovl_user_xattr_handlers[] = {
-         |                                    ^~~~~~~~~~~~~~~~~~~~~~~
-   fs/overlayfs/super.c:920:36: warning: 'ovl_trusted_xattr_handlers' defined but not used [-Wunused-variable]
-     920 | static const struct xattr_handler *ovl_trusted_xattr_handlers[] = {
-         |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   fs/overlayfs/super.c:859:13: warning: 'ovl_workdir_ok' defined but not used [-Wunused-function]
-     859 | static bool ovl_workdir_ok(struct dentry *workdir, struct dentry *upperdir)
-         |             ^~~~~~~~~~~~~~
-   fs/overlayfs/super.c:816:12: warning: 'ovl_lower_dir' defined but not used [-Wunused-function]
-     816 | static int ovl_lower_dir(const char *name, struct path *path,
-         |            ^~~~~~~~~~~~~
-   fs/overlayfs/super.c:580:12: warning: 'ovl_fs_params_verify' defined but not used [-Wunused-function]
-     580 | static int ovl_fs_params_verify(const struct ovl_fs_context *ctx,
-         |            ^~~~~~~~~~~~~~~~~~~~
-   fs/overlayfs/super.c:493:12: warning: 'ovl_parse_param' defined but not used [-Wunused-function]
-     493 | static int ovl_parse_param(struct fs_context *fc, struct fs_parameter *param)
-         |            ^~~~~~~~~~~~~~~
-   fs/overlayfs/super.c:442:38: warning: 'ovl_super_operations' defined but not used [-Wunused-const-variable=]
-     442 | static const struct super_operations ovl_super_operations = {
-         |                                      ^~~~~~~~~~~~~~~~~~~~
-   fs/overlayfs/super.c:420:12: warning: 'ovl_reconfigure' defined but not used [-Wunused-function]
-     420 | static int ovl_reconfigure(struct fs_context *fc)
-         |            ^~~~~~~~~~~~~~~
-   fs/overlayfs/super.c:166:39: warning: 'ovl_dentry_operations' defined but not used [-Wunused-const-variable=]
-     166 | static const struct dentry_operations ovl_dentry_operations = {
-         |                                       ^~~~~~~~~~~~~~~~~~~~~
+If there is a ls1x_gpio_remove(), platform_get_drvdata() will be called.
+Then platform_set_drvdata() will be necessary.
+>
+> Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
+> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+> ---
+>  drivers/gpio/gpio-loongson1.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-loongson1.c b/drivers/gpio/gpio-loongson1.=
+c
+> index 6ca3b969db4d..2a57ffa0548b 100644
+> --- a/drivers/gpio/gpio-loongson1.c
+> +++ b/drivers/gpio/gpio-loongson1.c
+> @@ -78,8 +78,6 @@ static int ls1x_gpio_probe(struct platform_device *pdev=
+)
+>         if (ret)
+>                 goto err;
+>
+> -       platform_set_drvdata(pdev, ls1x_gc);
+> -
+>         dev_info(dev, "GPIO controller registered with %d pins\n",
+>                  ls1x_gc->gc.ngpio);
+>
+> --
+> 2.34.1
+>
 
 
-vim +/pr_warn +2065 fs/overlayfs/super.c
+--=20
+Best regards,
 
-e9be9d5e76e348 Miklos Szeredi 2014-10-24  2063  
-e9be9d5e76e348 Miklos Szeredi 2014-10-24  2064  module_init(ovl_init);
-e9be9d5e76e348 Miklos Szeredi 2014-10-24 @2065  module_exit(ovl_exit);
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Keguang Zhang
