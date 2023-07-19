@@ -2,298 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB78759D2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 20:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B04759D29
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 20:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbjGSSVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 14:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
+        id S230022AbjGSSUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 14:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjGSSVC (ORCPT
+        with ESMTP id S229531AbjGSSUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 14:21:02 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C771FE2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 11:20:58 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-76728ae3162so570934585a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 11:20:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1689790857; x=1690395657;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=wAKnLLGXTAx1QhvywPz1LbM269pc2VgDh1nDIxzgm2k=;
-        b=b0SrQ3Mfo4h2ocZxx+7P2CFQacHqPPSslQ0ksn6ttGkEUiMH4W+5cngMTZa+0D7dZ+
-         yfXPh7we68QzEt7qt4DhDRKEu5LD/M3djN6N+xTw54iXq0fdmHTcAzK7gnwG9Duhz7Xy
-         SvJ6fJshLpl1WSjn42i/5Nv9+6O4OUGS+XLmY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689790857; x=1690395657;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wAKnLLGXTAx1QhvywPz1LbM269pc2VgDh1nDIxzgm2k=;
-        b=Nj+4sGpuwHFLJNKmra6joYOjeFmbPe32yJIl/72YUt/WkjNv5SJSyZcUiIds1z3mVC
-         AwDDgP0AqS3qfyBeXKcNsZWeiGNdqicorDrCCJV7H+EIpn3KZA/RhBFO22eaSb+X3K8K
-         BSiRz8LMUktM4fkolo6Ygd7eIhPfpzKGFeb87tRlhlozaRhgIhV5ii3/4niDRGv6z4sn
-         gvPRj+k04x+eo/vEQN9cLC3EfLrOIeyUGeve8dNRTn9LzHFVtXIPpUjXEGNFF15QNz0d
-         Vj5SFFylbCsgvBHl+RMMSMQD3JdPAbk5TSvQmZlmdAn/93/YtXbuHwSHuIdFQ4WoaEwa
-         ODlw==
-X-Gm-Message-State: ABy/qLZ+NazSJxgr22dDlkzL0X8d/cje6rdZgKv+0UuAKD6bQECAFJoo
-        jpv3fkPQIbGeH+WnCwHBCocTnA==
-X-Google-Smtp-Source: APBJJlFGL+bC4Vsjwqgoz3/K0CNyNAJqLUlJxdoPMJGPBtIl0XRTvCqFgEHKua1cmiQf/QievBgNIg==
-X-Received: by 2002:a05:620a:31a9:b0:763:b7b9:1d02 with SMTP id bi41-20020a05620a31a900b00763b7b91d02mr7322970qkb.31.1689790857315;
-        Wed, 19 Jul 2023 11:20:57 -0700 (PDT)
-Received: from [10.136.13.65] ([192.19.161.248])
-        by smtp.gmail.com with ESMTPSA id g27-20020a05620a13db00b0076730d0b0b9sm1447766qkl.14.2023.07.19.11.20.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 11:20:56 -0700 (PDT)
-Message-ID: <2e87058c-839b-5b28-62e1-896d1e49fb57@broadcom.com>
-Date:   Wed, 19 Jul 2023 11:17:14 -0700
+        Wed, 19 Jul 2023 14:20:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEDDB6;
+        Wed, 19 Jul 2023 11:20:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 533BC617DF;
+        Wed, 19 Jul 2023 18:20:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9575C433C7;
+        Wed, 19 Jul 2023 18:20:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689790836;
+        bh=STDrO2XG5LQFsEtCL+3146/AIGbyOQu+kSYgcPpwbqE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=YP6THxhJrcWyOm88VDT+pQ6UdtyGZyURfg960GO72IfdKvfr863gwxG9KH7h0szw4
+         h8lc46JXX5FbCID14+MPczGiX98APiA+CQ4Pz/mrbHOXCaXhNhB47Nji6/g5rYMK7q
+         mq/5fcYT4xrd+weSmhIdLFBmi2QBzHn+QDWtTMiLJQbgggj6x13kbbmqQyX84ZwjcY
+         SZBCL9++rFHIckEUJZ1dqUACZ2rq3d2jS26/5Yz/FS/SungAO8Zy71OK0YqKCxRiZv
+         JgaunElg6A2QjjfpkgkEDH9yzGHjC8lQOVayGiOHwUYWG6Yeh50A1oguN0Kmr7u8SM
+         Jn5ivIXl/wXgA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 56910CE092F; Wed, 19 Jul 2023 11:20:36 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 11:20:36 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Alan Huang <mmpgouride@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org
+Subject: Re: [PATCH rcu 6/6] rcu: Use WRITE_ONCE() for assignments to ->next
+ for rculist_nulls
+Message-ID: <50bc6e0d-7d9b-4634-999a-2ee8f503e86a@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
+ <20230717180317.1097590-6-paulmck@kernel.org>
+ <9651c3b4-0791-5cd7-567f-f65d28bc8fae@joelfernandes.org>
+ <BE64BF3F-69AD-4522-965E-0B7E4054D737@gmail.com>
+ <3f6b04b3-af22-49f0-8d3c-269640f9f762@paulmck-laptop>
+ <449d0d48-ac98-659b-4d03-e75c318605d4@joelfernandes.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v3] misc: bcm_vk: Fix potential deadlock on &vk->ctx_lock
-To:     Ray Jui <ray.jui@broadcom.com>,
-        Chengfeng Ye <dg573847474@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, desmond.yan@broadcom.com
-References: <20230629182941.13045-1-dg573847474@gmail.com>
- <4fb34b91-13af-cfff-0118-0f263e0e0d27@broadcom.com>
- <07406ab9-fbb0-4f98-56b1-0c64b7e695e1@broadcom.com>
-From:   Scott Branden <scott.branden@broadcom.com>
-In-Reply-To: <07406ab9-fbb0-4f98-56b1-0c64b7e695e1@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000d069d50600db175c"
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <449d0d48-ac98-659b-4d03-e75c318605d4@joelfernandes.org>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000d069d50600db175c
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-
-
-
-On 2023-07-19 10:31, Ray Jui wrote:
+On Tue, Jul 18, 2023 at 09:48:59PM -0400, Joel Fernandes wrote:
 > 
 > 
-> On 7/19/2023 10:07 AM, Scott Branden wrote:
->> Works fine - thanks.
+> On 7/18/23 14:32, Paul E. McKenney wrote:
+> > On Tue, Jul 18, 2023 at 10:48:07PM +0800, Alan Huang wrote:
+> > > 
+> > > > 2023年7月18日 21:49，Joel Fernandes <joel@joelfernandes.org> 写道：
+> > > > 
+> > > > On 7/17/23 14:03, Paul E. McKenney wrote:
+> > > > > From: Alan Huang <mmpgouride@gmail.com>
+> > > > > When the objects managed by rculist_nulls are allocated with
+> > > > > SLAB_TYPESAFE_BY_RCU, old readers may still hold references to an object
+> > > > > even though it is just now being added, which means the modification of
+> > > > > ->next is visible to readers.  This patch therefore uses WRITE_ONCE()
+> > > > > for assignments to ->next.
+> > > > > Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+> > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > 
+> > > > Did we ever conclude that the READ_ONCE() counterparts were not needed? ;-)
+> > > 
+> > > Read-side is already protected by rcu_dereference_raw() in hlist_nulls_for_each_entry_{rcu, safe}.
+> > 
+> > It turns out that different traversal synchronization designs want
+> > different pointers using WRITE_ONCE().
 > 
-> So apparently the choice of using the timer previously was not due to
-> performance reasons?
-Correct - the heartbeat does not need high performance.
-
+> Thank you Alan and Paul,
 > 
-> If performance is a concern by converting to use workqueue (now it runs
-> in process/thread context than softirq), I assume you are aware of
-> another easy way to fix this potential deadlock issue? :)
-Performance not a concern.
+> Btw, I don't see any users of hlist_nulls_unhashed_lockless(), maybe it can
+> be removed?
 
->>
->> On 2023-06-29 11:29, Chengfeng Ye wrote:
->>> As &vk->ctx_lock is acquired by timer bcm_vk_hb_poll() under softirq
->>> context, other process context code should disable irq or bottom-half
->>> before acquire the same lock, otherwise deadlock could happen if the
->>> timer preempt the execution while the lock is held in process context
->>> on the same CPU.
->>>
->>> Possible deadlock scenario
->>> bcm_vk_open()
->>>       -> bcm_vk_get_ctx()
->>>       -> spin_lock(&vk->ctx_lock)
->>>      <timer iterrupt>
->>>      -> bcm_vk_hb_poll()
->>>      -> bcm_vk_blk_drv_access()
->>>      -> spin_lock_irqsave(&vk->ctx_lock, flags) (deadlock here)
->>>
->>> This flaw was found using an experimental static analysis tool we are
->>> developing for irq-related deadlock, which reported the following
->>> warning when analyzing the linux kernel 6.4-rc7 release.
->>>
->>> [Deadlock]: &vk->ctx_lock
->>>     [Interrupt]: bcm_vk_hb_poll
->>>       -->/root/linux/drivers/misc/bcm-vk/bcm_vk_msg.c:176
->>>       -->/root/linux/drivers/misc/bcm-vk/bcm_vk_dev.c:512
->>>     [Locking Unit]: bcm_vk_ioctl
->>>       -->/root/linux/drivers/misc/bcm-vk/bcm_vk_dev.c:1181
->>>       -->/root/linux/drivers/misc/bcm-vk/bcm_vk_dev.c:512
->>>
->>> [Deadlock]: &vk->ctx_lock
->>>     [Interrupt]: bcm_vk_hb_poll
->>>       -->/root/linux/drivers/misc/bcm-vk/bcm_vk_msg.c:176
->>>       -->/root/linux/drivers/misc/bcm-vk/bcm_vk_dev.c:512
->>>     [Locking Unit]: bcm_vk_ioctl
->>>       -->/root/linux/drivers/misc/bcm-vk/bcm_vk_dev.c:1169
->>>
->>> [Deadlock]: &vk->ctx_lock
->>>     [Interrupt]: bcm_vk_hb_poll
->>>       -->/root/linux/drivers/misc/bcm-vk/bcm_vk_msg.c:176
->>>       -->/root/linux/drivers/misc/bcm-vk/bcm_vk_dev.c:512
->>>     [Locking Unit]: bcm_vk_open
->>>       -->/root/linux/drivers/misc/bcm-vk/bcm_vk_msg.c:216
->>>
->>> [Deadlock]: &vk->ctx_lock
->>>     [Interrupt]: bcm_vk_hb_poll
->>>       -->/root/linux/drivers/misc/bcm-vk/bcm_vk_msg.c:176
->>>       -->/root/linux/drivers/misc/bcm-vk/bcm_vk_dev.c:512
->>>     [Locking Unit]: bcm_vk_release
->>>       -->/root/linux/drivers/misc/bcm-vk/bcm_vk_msg.c:306
->>>
->>> As suggested by Arnd, the tentative patch fix the potential deadlocks
->>> by replacing the timer with delay workqueue. x86_64 allyesconfig using
->>> GCC shows no new warning. Note that no runtime testing was performed
->>> due to no device on hand.
->>>
->>> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
->> Acked-by: Scott Branden <scott.branden@broadcom.com>
->> Tested-by: Desmond Yan <desmond.branden@broadcom.com>
->>
->>> ---
->>>    drivers/misc/bcm-vk/bcm_vk.h     |  2 +-
->>>    drivers/misc/bcm-vk/bcm_vk_msg.c | 14 +++++++-------
->>>    2 files changed, 8 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
->>> index 25d51222eedf..386884c2a263 100644
->>> --- a/drivers/misc/bcm-vk/bcm_vk.h
->>> +++ b/drivers/misc/bcm-vk/bcm_vk.h
->>> @@ -340,7 +340,7 @@ struct bcm_vk_proc_mon_info {
->>>    };
->>>      struct bcm_vk_hb_ctrl {
->>> -    struct timer_list timer;
->>> +    struct delayed_work work;
->>>        u32 last_uptime;
->>>        u32 lost_cnt;
->>>    };
->>> diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.c
->>> b/drivers/misc/bcm-vk/bcm_vk_msg.c
->>> index 3c081504f38c..e17d81231ea6 100644
->>> --- a/drivers/misc/bcm-vk/bcm_vk_msg.c
->>> +++ b/drivers/misc/bcm-vk/bcm_vk_msg.c
->>> @@ -137,11 +137,11 @@ void bcm_vk_set_host_alert(struct bcm_vk *vk,
->>> u32 bit_mask)
->>>    #define BCM_VK_HB_TIMER_VALUE (BCM_VK_HB_TIMER_S * HZ)
->>>    #define BCM_VK_HB_LOST_MAX (27 / BCM_VK_HB_TIMER_S)
->>>    -static void bcm_vk_hb_poll(struct timer_list *t)
->>> +static void bcm_vk_hb_poll(struct work_struct *work)
->>>    {
->>>        u32 uptime_s;
->>> -    struct bcm_vk_hb_ctrl *hb = container_of(t, struct bcm_vk_hb_ctrl,
->>> -                         timer);
->>> +    struct bcm_vk_hb_ctrl *hb = container_of(to_delayed_work(work),
->>> struct bcm_vk_hb_ctrl,
->>> +                         work);
->>>        struct bcm_vk *vk = container_of(hb, struct bcm_vk, hb_ctrl);
->>>          if (bcm_vk_drv_access_ok(vk) && hb_mon_is_on()) {
->>> @@ -177,22 +177,22 @@ static void bcm_vk_hb_poll(struct timer_list *t)
->>>            bcm_vk_set_host_alert(vk, ERR_LOG_HOST_HB_FAIL);
->>>        }
->>>        /* re-arm timer */
->>> -    mod_timer(&hb->timer, jiffies + BCM_VK_HB_TIMER_VALUE);
->>> +    schedule_delayed_work(&hb->work, BCM_VK_HB_TIMER_VALUE);
->>>    }
->>>      void bcm_vk_hb_init(struct bcm_vk *vk)
->>>    {
->>>        struct bcm_vk_hb_ctrl *hb = &vk->hb_ctrl;
->>>    -    timer_setup(&hb->timer, bcm_vk_hb_poll, 0);
->>> -    mod_timer(&hb->timer, jiffies + BCM_VK_HB_TIMER_VALUE);
->>> +    INIT_DELAYED_WORK(&hb->work, bcm_vk_hb_poll);
->>> +    schedule_delayed_work(&hb->work, BCM_VK_HB_TIMER_VALUE);
->>>    }
->>>      void bcm_vk_hb_deinit(struct bcm_vk *vk)
->>>    {
->>>        struct bcm_vk_hb_ctrl *hb = &vk->hb_ctrl;
->>>    -    del_timer(&hb->timer);
->>> +    cancel_delayed_work_sync(&hb->work);
->>>    }
->>>      static void bcm_vk_msgid_bitmap_clear(struct bcm_vk *vk,
+Either that or the people who removed uses injected bugs...
 
---000000000000d069d50600db175c
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+But if this one really does go away, do we need ->pprev to be
+protected by _ONCE()?
 
-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
-aon9PduLGVgSMfiFb2nQ2w0PzDSefbrZKRQAGcSvcQlWb8XU7YKGbLhjR9c/r3KF4iUW8w2T2pd+
-bO6aQXt8b1C9YG/V+B65TuJXxgX0veIJEyP+Cl0Im5vNwwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU8+MSO/sprODwb9D5cjaq
-JNiLqgkwDQYJKoZIhvcNAQELBQADggEBAA25uPHwC95BhvFXuEOAk+J5FZV4v82uly/X7LATDzrf
-tsww461GRAidKV8lvziiIw6OQQgO9Ei/yC8bVdzDLQJF2PhxcWhc+4II6AkUyRC+Tmfk7xmPEYSv
-MHgQfpwPU6C1o4FI/8XjfJgk1dE4j4v16iLKC2qfBqfdzdT/cJaCg/fZfL0w5RLtGOOVIMBWwObx
-UKmtYSCgcvRKmLailjlxgiUaYgxdZSpwR0RvFJapt0KzMR5OIP96iyXYVWbl9qy8uY9gqEeNaaQm
-Bt8T4oEXHxRvse+Ij162RjEysEsDgkiE/koCb3YFlkVu5lL1N0M7EIo+XiuWWUEjuhztPasxggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxPA+M+AQMMGpZn
-bCswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIICh7i4T/Be4uKTVayFDyVlc9L9/
-pibisszP0BpKGryiMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
-MDcxOTE4MjA1N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQA47dg4uTrs3fKYNG2TBEcxIQU43L2D3CzWAtk9n25Uz7le
-NmXCJBaztfwT0nkFzTEZRLHugiItZSXXWI33LRwnNNLEnqQLir8ss71b6zcGAsFXeo8TBgOO+eFp
-kbe3GgGyCSIAyK2On0+b7w2IYwEHL30aSuRIt1tRt75rP4mSQlNqOUAqlFVgf/+3GKkoafx51s11
-AYAtUqPyqr7lMCiNnXgNL0VGlqKE5kbpv0OGMSzX793Fu0N00pxGXnrQQ5hGDzcWcp/UwwANkl+o
-/BJItY5+JN2ffWsJEVkd7/0rPZqPlgizDo/5KYoGD5zepr1nLOmCHAf5yjMRc4lsqwJC
---000000000000d069d50600db175c--
+							Thanx, Paul
