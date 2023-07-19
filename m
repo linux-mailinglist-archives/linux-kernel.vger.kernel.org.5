@@ -2,126 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AAF759CD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCE3759CDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbjGSRyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 13:54:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39494 "EHLO
+        id S229733AbjGSRzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 13:55:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjGSRyG (ORCPT
+        with ESMTP id S229447AbjGSRzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:54:06 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262D31BF5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:54:05 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-57320c10635so64386997b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:54:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689789244; x=1690394044;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=0kxZ4Z80lUcSFdp3GgQl/jQwBGNAtEogOtDD6DT+le8=;
-        b=NdNKIYqEldjUUQV4h+XNM1ILmBpma9z9AEdBtYn1qcrFOenwJmBXrHw6mTbkprQj8p
-         r+YtkbikqlLfJdQZIoTiQv/TZpBxRXEg0gSoK35Ky48bcLRFCn0Qj0DsnXRublL7LccU
-         VbZhu6d+zj+n5OuXYLNNjo3SaPP6NC8/yNGWRhVbEHVJlHuLX5Gsll/rQ8aLyHWCbZUs
-         /8pD6jrn0k0jGKj8o91kas/Vof7SZ7T7M6Y8JVFS9L6EnZODlq5wuOfEPi4IxaVWx6IY
-         g0cXiBg3AzBUjksD04dElZ9FVrB9vd1h8Wu2ap7UEulstmwA86OoTJopktyhvQXeMD9s
-         GkBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689789244; x=1690394044;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0kxZ4Z80lUcSFdp3GgQl/jQwBGNAtEogOtDD6DT+le8=;
-        b=Xlmh/uwJH77jtnimbqevTjS9AkvqsH9ZKjV5myYFRtQQzpdsTlLKsBnIJS+HKtnE7o
-         +cKyL8WD1rQfOlSMsmZm+PYcvkae0rzlnDBvfXVxbkYz9zjX8hC5N+k+uUX/RD709bhY
-         BZjB2cQawaS93nFBobwkqLbqZzn1e9TTbj8ZyhpbRnVZBPjURsMojXv0h4Qy9pa7zc2t
-         /oCube6sRdJjEIpTEtqWOUCCpnqDuyLQuWV+3OYyfE/jkDTZF+xyzODMDnNVNNcaXIcy
-         3eXg3l4QQ0yGKZKZe3i1kX75uzCdjt0zLDMoNtypoE4esCio7ES3F7LyFzGVhwsWBfIy
-         WFEg==
-X-Gm-Message-State: ABy/qLYi439rMQGpqVcuVLPyDsNNdtta74PC60uVZpVqQwOEebvCLJnR
-        LmOc/yqOS+ofvzQvqoSJMXmhQUlOYvKk
-X-Google-Smtp-Source: APBJJlHzC655GgaoeeexqmchzYWVTbKP9Ygbn4QXSHn76tJOWPJ5nIAjVrvG3mrJnq+Ot9jVn2qgg1kU3KfD
-X-Received: from rananta-linux.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:22b5])
- (user=rananta job=sendgmr) by 2002:a81:d00a:0:b0:56d:502:9eb0 with SMTP id
- v10-20020a81d00a000000b0056d05029eb0mr34446ywi.6.1689789244409; Wed, 19 Jul
- 2023 10:54:04 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 17:54:00 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230719175400.647154-1-rananta@google.com>
-Subject: [PATCH] KVM: arm64: Fix CPUHP logic for protected KVM
-From:   Raghavendra Rao Ananta <rananta@google.com>
-To:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Will Deacon <will@kernel.org>, Fuad Tabba <tabba@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Raghavendra Rao Anata <rananta@google.com>,
-        kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+        Wed, 19 Jul 2023 13:55:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCCD51FC1;
+        Wed, 19 Jul 2023 10:55:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5255D617D2;
+        Wed, 19 Jul 2023 17:55:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B34B8C433CB;
+        Wed, 19 Jul 2023 17:55:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689789308;
+        bh=VAHpwDmbVb7vAmsueO0gxYld9Kz+/rC90JncY/i+0Z8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pUtLQqEmUh6jrfGRA9xHjt27XPhzYdfbSDgpz8mdy3PCA3IPTuWwydcfqHkfDveHB
+         qAxdNREGLUGdYWYdl7QKIoXLvV+zmEC9IwW1N0D4EUuLtSVTxwjCQpQtnoRwLo2Jhg
+         nlPgMrMD+gnyCrWkquB+7hI/1Qcd6WKQkOGGtf36q4LlIyJ1UrjNiuJz1+rJ3LkY3i
+         KGn9QzJWPYUnyOmE9+F0opil4iPTVx52VXVI79bHt3C5adIA+0xaujCQb+agz0evf8
+         aXDsWWsn6O+hPrxqh0lm4XuEZa7/oBrPTxiaPMtRmlRyejxHZzhG5ltF7XXAFg/k/w
+         aXKlCAekLo8PQ==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2b701e1c80fso106457761fa.2;
+        Wed, 19 Jul 2023 10:55:08 -0700 (PDT)
+X-Gm-Message-State: ABy/qLZNIV0LKMXvNar4J8WjtznIksPbpowl47En8ulxPUx7jqybpEHE
+        39jztkQTSuKTq6284rYPCm1bbD8YvXU+IRF2sA==
+X-Google-Smtp-Source: APBJJlGL/kk3oHY6k1yfq7SsCPop3Wy3YQQE6Qzgt85P636iSCY98TK7gwsRHy3ktZQQSAMhuBPDa2ZKFWJ9nqnLjNM=
+X-Received: by 2002:a2e:97c8:0:b0:2b6:a3b0:f4d3 with SMTP id
+ m8-20020a2e97c8000000b002b6a3b0f4d3mr440245ljj.26.1689789306681; Wed, 19 Jul
+ 2023 10:55:06 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230718155814.1674087-1-kuba@kernel.org>
+In-Reply-To: <20230718155814.1674087-1-kuba@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 19 Jul 2023 11:54:53 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKBbP_dXZCbyKtgXVDMV-0Qp8YLQAXANg+_XSiMxou9vw@mail.gmail.com>
+Message-ID: <CAL_JsqKBbP_dXZCbyKtgXVDMV-0Qp8YLQAXANg+_XSiMxou9vw@mail.gmail.com>
+Subject: Re: [PATCH docs v2] docs: maintainer: document expectations of small
+ time maintainers
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     corbet@lwn.net, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, gregkh@linuxfoundation.org,
+        linux@leemhuis.info, broonie@kernel.org, krzk@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For protected kvm, the CPU hotplug 'down' logic currently brings
-down the timer and vGIC, essentially disabling interrupts. However,
-because of how the 'kvm_arm_hardware_enabled' flag is designed, it
-never re-enables them back on the CPU hotplug 'up' path. Hence,
-clean up the logic to maintain the CPU hotplug up/down symmetry.
+On Tue, Jul 18, 2023 at 10:00=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> w=
+rote:
+>
+> We appear to have a gap in our process docs. We go into detail
+> on how to contribute code to the kernel, and how to be a subsystem
+> maintainer. I can't find any docs directed towards the thousands
+> of small scale maintainers, like folks maintaining a single driver
+> or a single network protocol.
 
-Fixes: 466d27e48d7c ("KVM: arm64: Simplify the CPUHP logic")
-Reported-by: Oliver Upton <oliver.upton@linux.dev>
-Suggested-by: Oliver Upton <oliver.upton@linux.dev>
-Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
----
- arch/arm64/kvm/arm.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+I think the split is great. It would be even better if this
+distinction could be made in MAINTAINERS and then the tools could use
+that. For example, on treewide changes on Cc subsystem maintainers and
+skip driver maintainers. The problem right now is Cc'ing everyone
+quickly hits maillist moderation for too many recipients.
 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index c2c14059f6a8..010ebfa69650 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1867,14 +1867,10 @@ static void _kvm_arch_hardware_enable(void *discard)
- 
- int kvm_arch_hardware_enable(void)
- {
--	int was_enabled = __this_cpu_read(kvm_arm_hardware_enabled);
--
- 	_kvm_arch_hardware_enable(NULL);
- 
--	if (!was_enabled) {
--		kvm_vgic_cpu_up();
--		kvm_timer_cpu_up();
--	}
-+	kvm_vgic_cpu_up();
-+	kvm_timer_cpu_up();
- 
- 	return 0;
- }
-@@ -1889,10 +1885,8 @@ static void _kvm_arch_hardware_disable(void *discard)
- 
- void kvm_arch_hardware_disable(void)
- {
--	if (__this_cpu_read(kvm_arm_hardware_enabled)) {
--		kvm_timer_cpu_down();
--		kvm_vgic_cpu_down();
--	}
-+	kvm_timer_cpu_down();
-+	kvm_vgic_cpu_down();
- 
- 	if (!is_protected_kvm_enabled())
- 		_kvm_arch_hardware_disable(NULL);
--- 
-2.41.0.487.g6d72f3e995-goog
-
+Rob
