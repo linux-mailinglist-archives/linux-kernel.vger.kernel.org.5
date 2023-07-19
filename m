@@ -2,115 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6856475A2D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 01:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3362575A2DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 01:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbjGSXbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 19:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
+        id S229789AbjGSXf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 19:35:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjGSXbQ (ORCPT
+        with ESMTP id S229512AbjGSXf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 19:31:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595A19D;
-        Wed, 19 Jul 2023 16:31:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CB95661877;
-        Wed, 19 Jul 2023 23:31:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9984EC433C7;
-        Wed, 19 Jul 2023 23:31:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689809474;
-        bh=nIP5gyEY0YLO/0/+3zjFCWyJEEXhcI/AJRJ4WfpyQyA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SvZp7drhtHKzINff+lrYfxX2axIKzm3bwzgT3eAEmUOfnIUGiNN+HX7YbcckmXrBa
-         Fffo7pFSS/EuDLW0c+fjXMiNVzwqY+ou7e4c7dWQuWHSFQZGqxGpOhvbiFl4R0ambe
-         SZ0xEZzUn1L8b3PffGuT06szb7jJC9GRuhRqpegotCLBWaJh0MS+alUFvBBUT/UJol
-         j4yMmlaMMMSDr4eX+nWRJfKmbJPIHRmJlNaSaZori8QO5em8YVZw5MCvEN9yWvksFb
-         Y6P1L88WteQIrPgRz7dVTwshZsfWKrWArkv9b1+ApHrjPp2nfQsL9Wh54MeeEONmLA
-         cK1vwYHagqwyA==
-Date:   Wed, 19 Jul 2023 16:31:11 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Petr Mladek <pmladek@suse.com>, Brian Gerst <brgerst@gmail.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        alyssa.milburn@linux.intel.com, keescook@chromium.org,
-        joao@overdrivepizza.com, tim.c.chen@linux.intel.com,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] x86: Rewrite ret_from_fork() in C
-Message-ID: <20230719233111.kqafaqect4v2ehu6@treble>
-References: <20230623225529.34590-1-brgerst@gmail.com>
- <20230623225529.34590-3-brgerst@gmail.com>
- <ZLf_Z5dCSm7zKDel@alley>
- <20230719200222.GD3529734@hirez.programming.kicks-ass.net>
- <20230719201538.GA3553016@hirez.programming.kicks-ass.net>
- <20230719205050.GG3529734@hirez.programming.kicks-ass.net>
+        Wed, 19 Jul 2023 19:35:56 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C66C6
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 16:35:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689809755; x=1721345755;
+  h=date:from:to:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=nribv/50tQ/p1dQw3Z+dB+DDsgwwpop7bUHtWLTlHyY=;
+  b=kyQdhYvTGPQnOl1qw3awF/VtUsO8hq02feQk2Tjqhts2f2hPU04/4L1I
+   gqAvFZhyFERytAlg1aF+NjnWKenghRK26BKvrKBJfP7xjanLbAX96N7Qq
+   u1ZDqJaMQadtI0Wothj5HDcyJeXjW/8BJ9qsVGqfgCCssL9D61DKcv7n3
+   SktL51DFeCK6tbeB5qFo2LCTUAyG6IE6qJ1VbGwNhdNXJSpKggCOThTXm
+   HbGJ9PK3T8+yQWAGqwfsJYggAL7tDFu2/L8IkECFid+vSiHP/kR5/ZcEh
+   /zsy+z8PZicLDfCRJgkAf+jRqvhtvM27DDHNsVbOAzJm6W5GyMBaIvMl/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="365475566"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="365475566"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 16:35:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="794220636"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="794220636"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 16:35:55 -0700
+Date:   Wed, 19 Jul 2023 16:35:54 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     rostedt@goodmis.org, Aristeu Rozanski <aris@ruivo.org>,
+        linux-kernel@vger.kernel.org
+Subject: rasdaemon broke between v6.0 and v6.3?
+Message-ID: <ZLhzWoyRCWN0FmqE@agluck-desk3>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230719205050.GG3529734@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 10:50:50PM +0200, Peter Zijlstra wrote:
-> > The below cures things; Josh, did I miss anything?
-> > 
-> > ---
-> >  arch/x86/entry/entry_64.S | 14 +++++++++++++-
-> >  1 file changed, 13 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-> > index 91f6818884fa..cfe7882ea9ae 100644
-> > --- a/arch/x86/entry/entry_64.S
-> > +++ b/arch/x86/entry/entry_64.S
-> > @@ -285,7 +285,14 @@ SYM_FUNC_END(__switch_to_asm)
-> >   */
-> >  .pushsection .text, "ax"
-> >  SYM_CODE_START(ret_from_fork_asm)
-> > -	UNWIND_HINT_REGS
-> > +	/*
-> > +	 * This is the start of the kernel stack; even through there's a regs
-> > +	 * set at the top, there is no real exception frame and one cannot
-> > +	 * unwind further. This is the end.
-> > +	 *
-> > +	 * This ensures stack unwinds of kernel threads hit a known good state.
-> > +	 */
-> > +	UNWIND_HINT_END_OF_STACK
+[resend as plain text - sorry for the earlier HTML]
 
-The comments may be a bit superfluous (to me at least) but the patch
-looks fine.
+An internal team is seeing tests that worked on v6.0 fail on v6.3. The problem is that
+rasdaemon isn’t waking up to process the “mce_record” trace events.
 
-> So unwind_orc.c:unwind_next_frame() will terminate on this hint *or* on
-> user_mode(state->regs).
-> 
-> AFAICT way things are set up in copy_thread(), user_mode() will not be
-> true -- after all there is no usermode, the kthread would first have to
-> exec() something to create a usermode.
-> 
-> Yet I'm wondering if perhaps we should spoof the regs to make
-> user_mode() true and auto-terminate without this explicit hint.
+Manually checking for them works:
 
-I'm not sure that would be worth the trouble / cleverness.  The hint is
-straightforward IMO.
+root@R-4251:/sys/kernel/debug/tracing>systemctl stop rasdaemon
+root@R-4251:/sys/kernel/debug/tracing>
+root@R-4251:/sys/kernel/debug/tracing>
+root@R-4251:/sys/kernel/debug/tracing>echo 1 > events/mce/mce_record/enable
+root@R-4251:/sys/kernel/debug/tracing>
+root@R-4251:/sys/kernel/debug/tracing>cat trace_pipe
+           <...>-235     [000] .....   596.892583: mce_record: CPU: 0, MCGc/s: f000c15/0, MC13: 8c00004200800090, IPID: 0000000000000000, ADDR/MISC/SYND: 0000000123450000/08000a80c2982086/0000000000000000, RIP: 00:<0000000000000000>, TSC: 14120b051a1, PROCESSOR: 0:c06f1, TIME: 1689802780, SOCKET: 0, APIC: 0
+     kworker/0:2-235     [000] .....   597.204343: mce_record: CPU: 0, MCGc/s: f000c15/0, MC255: 9c0000000000009f, IPID: 0000000000000000, ADDR/MISC/SYND: 0000000123450000/000000000000008c/0000000000000000, RIP: 00:<0000000000000000>, TSC: 0, PROCESSOR: 0:c06f1, TIME: 1689802781, SOCKET: 0, APIC: 0
 
-> Josh, do you remember the rationale for all this?
+So their tests are injecting errors, and the trace event is firing.
 
-For what exactly :-)
+Is there some updated version of rasdaemon needed?
 
--- 
-Josh
+Some kernel CONFIG option problem?
+
+-Tony
+
+
+
