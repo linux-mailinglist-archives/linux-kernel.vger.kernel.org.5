@@ -2,116 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC6F758B0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 03:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E485758B1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 04:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbjGSBxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 21:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
+        id S229800AbjGSCCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 22:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjGSBxh (ORCPT
+        with ESMTP id S229738AbjGSCCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 21:53:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FF5FC;
-        Tue, 18 Jul 2023 18:53:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E8D8615D5;
-        Wed, 19 Jul 2023 01:53:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7112DC433C7;
-        Wed, 19 Jul 2023 01:53:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689731614;
-        bh=3FBnzkP6pgeUS+Ui9l2ehSB5W9hcuMMuRXv0tAYDx/Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TT/p2Z7TWx0kxWBdutaY7BnoLGQzC7vfsIBtt1FP9zOMQ1WLJVK0Vm9FBhTgNqpgG
-         8RU5iUXt887vHV8mF93Pq7PmbTbQUvHL1oPPnFJ58/+URXVF0hWEUTfPbSsYfAbMeU
-         NCcsS/seI5it78/Fpm2TlCduoNXPg+n1wPipdg/g09FwBrtnxIzAG/JFDOZrXeg+sx
-         BZpBqSrH9aSwuAqlpX9i8EtP0jybOOfFvwZhAerQHM2FatTv/nFASWrVdhVuur4eN+
-         XPYJLsFbHAf/cYWinOfNBlAyBWXLuhxTDutlIv9HTVRYu3QCaEsMGMSZxW1shILeZJ
-         vBga848S0OTYA==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.1 000/589] 6.1.39-rc3 review
-Date:   Wed, 19 Jul 2023 01:53:31 +0000
-Message-Id: <20230719015331.65070-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230717201547.359923764@linuxfoundation.org>
-References: 
+        Tue, 18 Jul 2023 22:02:15 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D84139
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 19:02:11 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R5Jn96fMpzBT2Gp
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:55:41 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689731741; x=1692323742; bh=yKSd7cxWjShDjglwegTmMtByAjU
+        2HTzhwkcLswWUnSc=; b=CzQ8R5HaQukQMuwIRnAUJQw/m6yCltyonp+tBI2dKDw
+        NWZEuNwr0oNkLk+TuHLDuUAhIrDMM3sVKH5T9QEEQbtyCBf5kvf4f6WBQE66dIF6
+        AOKfu3x8wBegS/CNrVIHR/BMzGU/CTzxD4vJDYAYb8vKIl69lbiYWEkjnQRn8xkw
+        bMHjzEDYdheRt968wZsNIrm/pBwYMqBU21GwFSfRCWcCYFXoJpMlW/1aTVGmX+9+
+        kbh9S78BEl5/l+AGDO+6RpklS5WrAehk8JiWemrHivnqZ8KcqgSktrWwWHjpVFJg
+        ltNuqcTv5JDKXBozAeFmfVvR0bek5R5o9sQOM+d32PA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 8jIyON1chixi for <linux-kernel@vger.kernel.org>;
+        Wed, 19 Jul 2023 09:55:41 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R5JlY3g0BzBtk6C;
+        Wed, 19 Jul 2023 09:54:17 +0800 (CST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Date:   Wed, 19 Jul 2023 09:54:17 +0800
+From:   hanyu001@208suo.com
+To:     dlemoal@kernel.org
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ata: pata_serverworks: "foo * bar" should be "foo *bar"
+In-Reply-To: <tencent_FAA8D636BA8369FE01896CB144F12E543905@qq.com>
+References: <tencent_FAA8D636BA8369FE01896CB144F12E543905@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <fee05ac48ee8c60b0843a7d63260ba1d@208suo.com>
+X-Sender: hanyu001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Jul 2023 22:34:23 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+This patch fixes the checkpatch.pl error:
 
-> This is the start of the stable review cycle for the 6.1.39 release.
-> There are 589 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 19 Jul 2023 20:14:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.39-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
+./drivers/ata/pata_serverworks.c:305: ERROR: "foo * bar" should be "foo 
+*bar"
 
-I confirmed this rc kernel passes DAMON functionality test[1] as below.
+Signed-off-by: 	Yu Han <hanyu001@208suo.com>
+---
+  drivers/ata/pata_serverworks.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tested-by: SeongJae Park <sj@kernel.org>
+diff --git a/drivers/ata/pata_serverworks.c 
+b/drivers/ata/pata_serverworks.c
+index b348784..549ff24 100644
+--- a/drivers/ata/pata_serverworks.c
++++ b/drivers/ata/pata_serverworks.c
+@@ -302,7 +302,7 @@ static int serverworks_fixup_csb(struct pci_dev 
+*pdev)
 
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-
-
-Thanks,
-SJ
-
-
--------------------------------- >8 ------------------------------------------
-
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: sysfs.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_m68k.sh
-ok 12 selftests: damon-tests: build_arm64.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
-
-PASS
-
-[...]
+      /* Third Channel Test */
+      if (!(PCI_FUNC(pdev->devfn) & 1)) {
+-        struct pci_dev *findev = NULL;
++        struct pci_dev * findev = NULL;
+          u32 reg4c = 0;
+          findev = pci_get_device(PCI_VENDOR_ID_SERVERWORKS,
+              PCI_DEVICE_ID_SERVERWORKS_CSB5, NULL);
