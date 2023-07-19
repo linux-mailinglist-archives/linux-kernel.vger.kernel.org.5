@@ -2,82 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB18759C90
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618EE759C9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbjGSRkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 13:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32890 "EHLO
+        id S230462AbjGSRkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 13:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGSRkC (ORCPT
+        with ESMTP id S230373AbjGSRk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:40:02 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A83D18D;
-        Wed, 19 Jul 2023 10:40:01 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b962c226ceso777991fa.3;
-        Wed, 19 Jul 2023 10:40:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689788399; x=1692380399;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q4FZ+pEDFxMu62/f3ZPQU8/ejLZyeXKnXKx6I8N8EPg=;
-        b=CVXdubXH69K58dJHQTBhen0a6lTzPl/4lDHx/RpgNo7gpDXKZL87NsO2G/yViFJaG9
-         7TS3yYbry1HrIue4mK4152ml8buuqqBVM/rPJvUc0PImdC25Es3JgLN6+aNTqxOnuYvt
-         GXvrtXDVR58xbxzVUvo/yTc4CNNPjQD55awUyKRhVVcBneYnfKzCyrxodVlS14RPHQKg
-         NvVpwsDP+YZ6RmMCfVQ5xE7UlK4z8/b4vzxutU4FZfWkOMWwDNA76OuLRML4Loehsw1j
-         wXfLdFlEjuKbPcS0eGZcR18xUJty61dgB9bCgOXN+Lmc3ODdCDnbvKvMz6Sr4ZeVPCaM
-         PYPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689788399; x=1692380399;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q4FZ+pEDFxMu62/f3ZPQU8/ejLZyeXKnXKx6I8N8EPg=;
-        b=KZ7f1FXPOyENbhbR9zjDcUsfaITKtmGkPrGMGUSLY5ncpw7W0IIk3NWK8tL6NAYCHZ
-         Tpc3j+mvMQk/Qm4imugBQeeVDwSGoh159iH5lmHl2pT9qCUh+usjDk6iyOZ1SoWszaEo
-         cjT+pJmhQI+eRTHpiwmVFI7691tdbelY1g5DDHCPW8iKV8joq+0kMhDBIin/ZvKDmP1X
-         xOXk1NL6wkqkiC3YCUR/BkBoFIYm16crDVyMd3iehqm7uJzT2UN4lXBzpJn1ibiyj7pb
-         glNegC23vwZeaTw7VcKdCsetWP7j3QwF+2b7I92w1w90hWPPwNrBtHBEr3p/Fb8wMzQS
-         qHMw==
-X-Gm-Message-State: ABy/qLarypQVRkyFI9DuKah9sT5aqUz3tCrYBxkCj4YWwcWR449W4yn5
-        Sloa5kQfLWK0Z5+v8VSnQb9SU+sAwOmAk7/t+9M=
-X-Google-Smtp-Source: APBJJlGImTB+nPdraOcOvpNx+dDsCOW/2CoyeTbuMoJdSdyjYZXkoTMzQHdGzkJGsbfve95V/0FvPYmb+CWQevfx8z0=
-X-Received: by 2002:a2e:87d5:0:b0:2b5:80e0:f18e with SMTP id
- v21-20020a2e87d5000000b002b580e0f18emr518116ljj.3.1689788399045; Wed, 19 Jul
- 2023 10:39:59 -0700 (PDT)
+        Wed, 19 Jul 2023 13:40:27 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0913B1FC0;
+        Wed, 19 Jul 2023 10:40:20 -0700 (PDT)
+Received: from jupiter.universe (dyndsl-091-248-208-009.ewe-ip-backbone.de [91.248.208.9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4027F6607030;
+        Wed, 19 Jul 2023 18:40:19 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689788419;
+        bh=npdCwm3+Jd5lwBgGPCmM83TseN3mERIRvQQxK5+YEOQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=M/Y0L+mGEInoRfd0/tuQH0u9rqufvnDcRD68MWl5xMBZuNZ5VHY67yhMml1IYvaIz
+         s1Bpjkzq4t2QSCLCjgW7LMb55eQcvUulqOgEgkTt9nJNl8reqOMheAiTsRiS1Jsw1H
+         pdXNrzV6JXb36Zj13URCJqUZIoPWvmBESBtHzmfssFG5qzTTIL+ZP/y/GrD/8VHRNe
+         6wJhR+wvzHv8xejN7hutaTdQz1nrtKgZlWTK5eghJ/VixpoGITK92RLF/uZUB63a2e
+         k8aywk5yJc4WDBaHUJt13ob6oaQSPZjBAwTtPPvk+EKLcpetZm9m1olv+8Q1KNUvD7
+         vDe9rT/Y3A8+w==
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id 1EA0A480DA3; Wed, 19 Jul 2023 19:40:17 +0200 (CEST)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Heiko Stuebner <heiko@sntech.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-rockchip@lists.infradead.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH v1 0/2] RK3588 USB3 host controller support
+Date:   Wed, 19 Jul 2023 19:40:13 +0200
+Message-Id: <20230719174015.68153-1-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-References: <20230719125232.92607-1-hffilwlqm@gmail.com> <20230719125232.92607-3-hffilwlqm@gmail.com>
-In-Reply-To: <20230719125232.92607-3-hffilwlqm@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 19 Jul 2023 10:39:47 -0700
-Message-ID: <CAADnVQKxGNNbn-OnQzrbcOfC6c_5tL0PSfZM0y8h_FJ0Pg=sDg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Add testcase for xdp
- attaching failure tracepoint
-To:     Leon Hwang <hffilwlqm@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Yizhou Tang <tangyeechou@gmail.com>, kernel-patches-bot@fb.com,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,17 +61,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 5:53=E2=80=AFAM Leon Hwang <hffilwlqm@gmail.com> wr=
-ote:
-> +       return 0;
-> +}
-> +
-> +/*
-> + * Reuse the XDP program in xdp_dummy.c.
-> + */
-> +
-> +char LICENSE[] SEC("license") =3D "GPL";
+Hi,
 
-Do you have a hidden char in the above?
-git considers the last line to be part of the commit log instead
-of part of the patchset and it fails CI.
+This adds RK3588 USB3 host controller support. The DT binding is
+already prepared for the dual-role controllers, which are also DWC3
+based, but using a different PHY and a different set of clocks.
+
+The series has been tested with Radxa Rock 5B, which uses the controller
+for the upper USB3 port. The patch enabling &combphy2_psu and &usbhost3_0
+for this board will be send separately once this has been merged.
+
+-- Sebastian
+
+Sebastian Reichel (2):
+  dt-bindings: usb: rockchip,dwc3: Add RK3588 binding
+  arm64: dts: rockchip: rk3588s: Add USB3 host controller
+
+ .../bindings/usb/rockchip,rk3399-dwc3.yaml    | 107 ++++++++++++++----
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi     |  29 +++++
+ 2 files changed, 114 insertions(+), 22 deletions(-)
+
+-- 
+2.40.1
+
