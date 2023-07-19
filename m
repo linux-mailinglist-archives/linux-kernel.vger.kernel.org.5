@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D32CD75A05F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 23:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF3375A064
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 23:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbjGSVNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 17:13:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56124 "EHLO
+        id S230353AbjGSVOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 17:14:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjGSVNP (ORCPT
+        with ESMTP id S229477AbjGSVOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 17:13:15 -0400
-Received: from out-33.mta0.migadu.com (out-33.mta0.migadu.com [91.218.175.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78191FC1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 14:13:13 -0700 (PDT)
-Message-ID: <1a10cb43-7c96-069a-bdd2-3a8cdb7727e1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689801191;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GsT5fBh8KwnUgUCpgN0LIT64s0RQIMJgl5uyUvT45hU=;
-        b=onl9tgCTxyWZS4mjI/YjCwX2bDOLsgCA+ISxwXBqf+mKSgHVlK/fYzNmGvtF4NA4SrazBc
-        kBA9R1hBsWYb8TEpWhBanuhWyYSEzs6MaENojEpZivIyXmyoqGyVN/eQDHOjtvSWb2USi9
-        +WJeGIgLdpDUwGRijlEDkt46oUuzP3w=
-Date:   Thu, 20 Jul 2023 05:13:01 +0800
+        Wed, 19 Jul 2023 17:14:38 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4FE1FC0;
+        Wed, 19 Jul 2023 14:14:37 -0700 (PDT)
+Received: from mercury (unknown [185.209.196.239])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 22D196607078;
+        Wed, 19 Jul 2023 22:14:36 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689801276;
+        bh=JMyQEP3od9PZOBsKRjkFxXdi2lvzCZLQhxvRz72H9to=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HE5y3hiXQcOixAs3n0zNF4bMBfYzm7JL+CW6REiwSEjXA+TCJYdY556/PjXwAjAas
+         dvqagZ/hG87rcrHH2CryR7DO7T61NpsGvAPqRlfWuvgR92WNgxXYMYY6w9y71bfPOp
+         U/D+0uADFNZeyBNgwSXmFJNZwlTBxipeZFPqJHNZNTBpBFf6FxWzydIvTpJ7j5O3r4
+         ds8nnJjcfLTOGMJH99pQ3WDJF+RMUr3Mr5CVjdfmHQVXTaTvn7oLVTqU46dNNtLnUL
+         vNvyl3IMgXcE54P3Q7tBdfG7KFOd5DnqvCdECk9Q5zZX4wewX8SGTz53ngt6y8sX3U
+         mRucVyYZLXEjA==
+Received: by mercury (Postfix, from userid 1000)
+        id 655DC1061639; Wed, 19 Jul 2023 23:14:33 +0200 (CEST)
+Date:   Wed, 19 Jul 2023 23:14:33 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Colin Ian King <colin.i.king@gmail.com>, linux-pm@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] power: supply: bd99954: make read-only array
+ sub_status_reg
+Message-ID: <20230719211433.cfqz3c5pki4xi6rl@mercury.elektranox.org>
+References: <20230627121707.722021-1-colin.i.king@gmail.com>
+ <94dca2c3-e5fc-c4bc-a945-31ebb728e353@gmail.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/6] PCI/VGA: Deal with PCI VGA compatible devices only
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Sui@freedesktop.org,
-        Jingfeng@loongson.cn, Sui Jingfeng <suijingfeng@loongson.cn>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, loongson-kernel@lists.loongnix.cn,
-        Mario Limonciello <mario.limonciello@amd.com>
-References: <20230719182617.GA509912@bhelgaas>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <20230719182617.GA509912@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ihp5cv6merpfazba"
+Content-Disposition: inline
+In-Reply-To: <94dca2c3-e5fc-c4bc-a945-31ebb728e353@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -58,139 +59,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+
+--ihp5cv6merpfazba
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
 Hi,
 
+On Tue, Jun 27, 2023 at 03:38:35PM +0300, Matti Vaittinen wrote:
+> On 6/27/23 15:17, Colin Ian King wrote:
+> > Don't populate the read-only array on the stack, instead make it
+> > static const.
+> >=20
+> > Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+>=20
+> Reviewed-by: Matti Vaittinen <mazziesaccount@gmail.com>
 
-On 2023/7/20 02:26, Bjorn Helgaas wrote:
-> On Tue, Jul 11, 2023 at 09:43:50PM +0800, Sui Jingfeng wrote:
->> From: Sui Jingfeng<suijingfeng@loongson.cn>
->>
->> Currently, vgaarb only cares about PCI VGA-compatible class devices.
->>
->> While vga_arbiter_del_pci_device() gets called unbalanced when some PCI
->> device is about to be removed. This happens even during the boot process.
-> The previous code calls vga_arbiter_add_pci_device() for every device
-> (every device present at boot and also every hot-added device).  It
-> only allocates a vga_device if pdev->class is 0x0300XX.
->
-> It calls vga_arbiter_del_pci_device() for every device removal.  It
-> does nothing unless it finds a vga_device.
-> This seems symmetric and reasonable to me.  Did you observe a problem
-> with it?
->
-Not big deal, but the vgaarb does do some useless work there.
+Thanks, queued.
 
+-- Sebastian
 
-Right,  it calls vga_arbiter_del_pci_device() for every device removal.
+--ihp5cv6merpfazba
+Content-Type: application/pgp-signature; name="signature.asc"
 
-And it can not finds a vga_device at the most time. (Because on normal 
-case, a user only have one or two GPU device in the system.)
+-----BEGIN PGP SIGNATURE-----
 
-But even it can not finds a vga_device, vga_arbiter_del_pci_device() 
-still brings
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmS4UjMACgkQ2O7X88g7
++ppYgg//dORO/aqPrYARCr7Yl2RBHeIbi5cvuQTT86ZWSiB2tTe4pxHibBXRXh5h
+rynWngtMqxgQUGGPawi6HiM/esBkp2Pvz6lwAhxCi2e6ZoXe7MO9+fcDRNZRrsKD
+LENS2c5yH+N8jgNg1ek8GJv17tjRW0z9X9SH2eCAG7fSikmmzbkm0Xrzu4kdtfNL
+ubUrb3GPOms1TJPxTbQO+EmzIEcUC7p2kU5U2T2IBy4SNcLY1Ts/TZ7gtQFMX3Ea
+Pj4MUUxRGnTFgfArqviaPNtSJ7hMmQBB0VTgcHRvBWY83tZuazi5a/DhaTZLwuYn
+HR9IwfUtHBlxwdc4aWaL9yEV5HONXMBkln59Z9l8v7StPRBjKUtZxQMtVnkwA872
+cF9i9TZMRfD6Q2ujY9nA7OWODLammkJYs2aAMcsI5oqGl9QxPNkea8YUOwHgpFEw
+9MR5oUqvqgA7HK0EgE6zvf7oW5OFCGQy5LflL44nl8JFHkgLChpFibOCvL6rZslg
+2xAvlsFT/YzKtTv+cNgXnfkZwrOeHjq6ue+JYD9ltwfbmljKEBPHyEVMsDtF6tps
+KJj096/+EmzvcI4bK6DaWqEg8KmHTcygYd6dCP77xHLKG9MQhyzbcCtOwPmJUfhe
+q7AP2asYFVIalrm3oAK1NZ8xtnZdv5ff8ocXFWfvrgTiBd35JeA=
+=f2XX
+-----END PGP SIGNATURE-----
 
-additional(and it is unnecessary) overheads.
-
-
-For an example, on my i3-8100 (the motherboard model is H110 D4L) machine,
-
-The PCI device(0000:00:1f.1) will trigger the call to 
-vga_arbiter_del_pci_device().
-
-
-Even though it can not finds a vga_device,
-
-vga_arbiter_del_pci_device() is *NOT* a no-op still.
-
-
-```
-
-static bool vga_arbiter_del_pci_device(struct pci_dev *pdev)
-{
-     struct vga_device *vgadev;
-     unsigned long flags;
-     bool ret = true;
-
-     spin_lock_irqsave(&vga_lock, flags);
-     vgadev = vgadev_find(pdev);
-     if (vgadev == NULL) {
-         ret = false;
-         goto bail;
-     }
-
-     // omit ...
-
-
-bail:
-     spin_unlock_irqrestore(&vga_lock, flags);
-     kfree(vgadev);
-     return ret;
-}
-
-```
-
-
-1) It call spin_lock_irqsave() and  spin_unlock_irqrestore() pair for 
-complete irrelevant PCI devices
-
-2) It try to find a vgadev with pdev pointer, which have to search the 
-whole list (All nodes in the list got accessed), because it can not find.
-
-3) It call kfree() to free NULL pointer, it's just that kfree() will 
-just return if you pass a NULL, so no bug happen.
-
-
-It is not efficient.
-
-While the major contribution of my patch is to filter irrelevant PCI device.
-
-Otherwise there 30+ noisy(useless) events got snooped. See below:
-
-
-```
-
-[    0.246077] pci 0000:01:00.0: vgaarb: setting as boot VGA device
-[    0.246077] pci 0000:01:00.0: vgaarb: bridge control possible
-[    0.246077] pci 0000:01:00.0: vgaarb: VGA device added: 
-decodes=io+mem,owns=io+mem,locks=none
-[    0.246077] vgaarb: loaded
-[    0.294169] skl_uncore 0000:00:00.0: vgaarb: pci_notify: action=3
-[    0.294182] skl_uncore 0000:00:00.0: vgaarb: pci_notify: action=4
-[    0.301297] pcieport 0000:00:01.0: vgaarb: pci_notify: action=3
-[    0.301482] pcieport 0000:00:01.0: vgaarb: pci_notify: action=4
-[    0.301488] pcieport 0000:00:1c.0: vgaarb: pci_notify: action=3
-[    0.301705] pcieport 0000:00:1c.0: vgaarb: pci_notify: action=4
-[    1.806445] xhci_hcd 0000:00:14.0: vgaarb: pci_notify: action=3
-[    1.810976] ahci 0000:00:17.0: vgaarb: pci_notify: action=3
-[    1.824383] xhci_hcd 0000:00:14.0: vgaarb: pci_notify: action=4
-[    1.857470] ahci 0000:00:17.0: vgaarb: pci_notify: action=4
-[    4.692700] intel_pch_thermal 0000:00:14.2: vgaarb: pci_notify: action=3
-[    4.693110] intel_pch_thermal 0000:00:14.2: vgaarb: pci_notify: action=4
-[    4.746712] i801_smbus 0000:00:1f.4: vgaarb: pci_notify: action=3
-[    4.747212] pci 0000:00:1f.1: vgaarb: pci_notify: action=0
-[    4.747227] pci 0000:00:1f.1: vgaarb: pci_notify: action=1
-[    4.747250] pci 0000:00:1f.1: vgaarb: pci_notify: action=2
-[    4.749098] i801_smbus 0000:00:1f.4: vgaarb: pci_notify: action=4
-[    4.799217] mei_me 0000:00:16.0: vgaarb: pci_notify: action=3
-[    4.802503] mei_me 0000:00:16.0: vgaarb: pci_notify: action=4
-[    4.874880] intel-lpss 0000:00:15.0: vgaarb: pci_notify: action=3
-[    4.881227] intel-lpss 0000:00:15.0: vgaarb: pci_notify: action=4
-[    4.881240] intel-lpss 0000:00:15.1: vgaarb: pci_notify: action=3
-[    4.887578] intel-lpss 0000:00:15.1: vgaarb: pci_notify: action=4
-[    4.985796] r8169 0000:02:00.0: vgaarb: pci_notify: action=3
-[    4.991862] r8169 0000:02:00.0: vgaarb: pci_notify: action=4
-[    5.404835] snd_hda_intel 0000:00:1f.3: vgaarb: pci_notify: action=3
-[    5.405175] snd_hda_intel 0000:00:1f.3: vgaarb: pci_notify: action=4
-[    5.405401] snd_hda_intel 0000:01:00.1: vgaarb: pci_notify: action=3
-[    5.405973] snd_hda_intel 0000:01:00.1: vgaarb: pci_notify: action=4
-[   10.793665] i915 0000:00:02.0: vgaarb: pci_notify: action=3
-[   11.201384] i915 0000:00:02.0: vgaarb: pci_notify: action=4
-[   16.135842] amdgpu 0000:01:00.0: vgaarb: pci_notify: action=3
-[   16.140458] amdgpu 0000:01:00.0: vgaarb: deactivate vga console
-[   16.638564] amdgpu 0000:01:00.0: vgaarb: pci_notify: action=4
-
-```
-
-
-
-
+--ihp5cv6merpfazba--
