@@ -2,189 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2403759751
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5016275975F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229478AbjGSNuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 09:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34000 "EHLO
+        id S231171AbjGSNu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 09:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231252AbjGSNt6 (ORCPT
+        with ESMTP id S229456AbjGSNuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 09:49:58 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E34B31993
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:49:31 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3142970df44so6510584f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:49:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689774570; x=1692366570;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JeaSSoZd0P4aBDcnBZ8BgOhayrU2NW5OGYbO05NkL/4=;
-        b=mSLGK2c7L5EE4FfadrFnGKrx8rHqMorl3CkK/H11fHsq3cy4XSsKtutECoQcxj7VUH
-         6217O/9tcynPgDcZCiS5kwgKPRQ9yaxcBfet9pGpjP3OtetZCluXE3f4KQeLL37dXcdq
-         Shyafc4xZzvzAf3/I3duYT0A6Lan59ePh67EPf8B6LGZv9LJEeK4tH3b6lkOaji6veEW
-         jV3wN5L8eRb0FEZEQdFL5i8bBvckl20VHoXJydGdhlh18d4M6Z7KwE4oD2NfJGaix4SY
-         m60NOgE8+OkCmcQdiCC141H+NDbenv1Kvjlt/AYNlG4in4PaDFI5cUWT/kWWjIB6GhTf
-         8q+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689774570; x=1692366570;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JeaSSoZd0P4aBDcnBZ8BgOhayrU2NW5OGYbO05NkL/4=;
-        b=BcbtgEDax43PELLn+bGVBQMz8jfsaRgW+5k72uW3VM0L5TDcf/8budajno7ZsYCccV
-         baK0mRdICP6jxP5pDRNyLtJZcsDf/QUiP5j7Xpq8gQve79G81/ih/im/yfh4vq+CRML9
-         Azn1mfiIs0DQj4WgfZNXJJ9CEyipyR/w1c75Gsxffh6+9rswiKejXu3D/7laHjg8eMnm
-         nsEccfy0A/YKc2jF8alyBkj+7iAcdXf2L270OW0FS3x1kq4tzsJ/p2J2yZoyN8ZSLzYx
-         WQpOWziDozx/qhII6kYx008GjMT2x6ffjtdLzciQehn0/HCG/h0EPY9qE67jX9FxLVXe
-         mjbA==
-X-Gm-Message-State: ABy/qLZ6TKVIjZRHaYsJQV7xrRc1mwgVga9JuY/D/HVFTRAkEUphWyE/
-        4NG8RtPPnOKbDenXD5uJPmpxiQ==
-X-Google-Smtp-Source: APBJJlEbRVrqi3m5ZvwiJaNOZocZP7fbMQ7EmoV04cKWj5tMJSoThE8C5X94lSqKcc5w5KB/JoRc7Q==
-X-Received: by 2002:adf:d0d1:0:b0:314:824:3777 with SMTP id z17-20020adfd0d1000000b0031408243777mr13524380wrh.48.1689774570336;
-        Wed, 19 Jul 2023 06:49:30 -0700 (PDT)
-Received: from [192.168.69.115] ([176.187.201.220])
-        by smtp.gmail.com with ESMTPSA id w17-20020adfde91000000b00315a57f1128sm5357828wrl.115.2023.07.19.06.49.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 06:49:29 -0700 (PDT)
-Message-ID: <32595080-dd79-5cf0-46e7-b82d0df8f067@linaro.org>
-Date:   Wed, 19 Jul 2023 15:49:22 +0200
+        Wed, 19 Jul 2023 09:50:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE63D19A
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:50:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2464D6162A
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:50:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24012C433C8;
+        Wed, 19 Jul 2023 13:50:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689774652;
+        bh=eTOECLHt5+G+o9Vzad3QTBIsWxNKNRHb3k78HAMje+8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Y2O5BFAoZ2CHTqSqwUJ+RPN9ykaUQawY0y4u8GAS36D4HWhlinDsm4+7QPOKx24q5
+         bWywxYLgM+Fiz41q9cAkeu1U5vuXrCcRzNHMyhHzOIYVhax2+T6X2hdKhWBC2pULjp
+         HKgjEr8Sk7U7FopdiTWnW25uU3rK6ZgfqF0JAHcTJpXL+jAQvXE1yRkMzb47E7QoBy
+         GLvFDLiBTA6tMoTUTqUy7o/9trJJyc9K8tYBdSvnLg+sfIBUauYuw2HepkDS9pXALW
+         FzC4BGe5kvZ9c5p+vO1vr2DqI3LlKEJ+zBQcOxyhAZxrs/C8NpFoZeaoQ/QvqM/0em
+         d0Ux4ToiuYyAw==
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao@kernel.org>
+Subject: [PATCH 1/2] f2fs: fix to update i_ctime in __f2fs_setxattr()
+Date:   Wed, 19 Jul 2023 21:50:45 +0800
+Message-Id: <20230719135047.2947030-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v2 5/9] vgacon: remove screen_info dependency
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>, linux-fbdev@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Helge Deller <deller@gmx.de>,
-        Javier Martinez Canillas <javierm@redhat.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Deepak Rawat <drawat.floss@gmail.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guo Ren <guoren@kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        WANG Xuerui <kernel@xen0n.name>, Wei Liu <wei.liu@kernel.org>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20230719123944.3438363-1-arnd@kernel.org>
- <20230719123944.3438363-6-arnd@kernel.org>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <20230719123944.3438363-6-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+generic/728       - output mismatch (see /media/fstests/results//generic/728.out.bad)
+    --- tests/generic/728.out	2023-07-19 07:10:48.362711407 +0000
+    +++ /media/fstests/results//generic/728.out.bad	2023-07-19 08:39:57.000000000 +0000
+     QA output created by 728
+    +Expected ctime to change after setxattr.
+    +Expected ctime to change after removexattr.
+     Silence is golden
+    ...
+    (Run 'diff -u /media/fstests/tests/generic/728.out /media/fstests/results//generic/728.out.bad'  to see the entire diff)
+generic/729        1s
 
-On 19/7/23 14:39, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The vga console driver is fairly self-contained, and only used by
-> architectures that explicitly initialize the screen_info settings.
-> 
-> Chance every instance that picks the vga console by setting conswitchp
-> to call a function instead, and pass a reference to the screen_info
-> there.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   arch/alpha/kernel/setup.c      |  2 +-
->   arch/arm/kernel/setup.c        |  2 +-
->   arch/ia64/kernel/setup.c       |  2 +-
->   arch/mips/kernel/setup.c       |  2 +-
->   arch/x86/kernel/setup.c        |  2 +-
->   drivers/firmware/pcdp.c        |  2 +-
->   drivers/video/console/vgacon.c | 68 ++++++++++++++++++++--------------
->   include/linux/console.h        |  7 ++++
->   8 files changed, 53 insertions(+), 34 deletions(-)
+It needs to update i_ctime after {set,remove}xattr, fix it.
 
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+ fs/f2fs/xattr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> @@ -1074,13 +1077,13 @@ static int vgacon_resize(struct vc_data *c, unsigned int width,
->   		 * Ho ho!  Someone (svgatextmode, eh?) may have reprogrammed
->   		 * the video mode!  Set the new defaults then and go away.
->   		 */
-> -		screen_info.orig_video_cols = width;
-> -		screen_info.orig_video_lines = height;
-> +		vga_si->orig_video_cols = width;
-> +		vga_si->orig_video_lines = height;
->   		vga_default_font_height = c->vc_cell_height;
->   		return 0;
->   	}
-> -	if (width % 2 || width > screen_info.orig_video_cols ||
-> -	    height > (screen_info.orig_video_lines * vga_default_font_height)/
-> +	if (width % 2 || width > vga_si->orig_video_cols ||
-> +	    height > (vga_si->orig_video_lines * vga_default_font_height)/
->   	    c->vc_cell_height)
->   		return -EINVAL;
->   
-> @@ -1110,8 +1113,8 @@ static void vgacon_save_screen(struct vc_data *c)
->   		 * console initialization routines.
->   		 */
->   		vga_bootup_console = 1;
-> -		c->state.x = screen_info.orig_x;
-> -		c->state.y = screen_info.orig_y;
-> +		c->state.x = vga_si->orig_x;
-> +		c->state.y = vga_si->orig_y;
-
-Not really my area, so bare with me if this is obviously not
-possible :) If using DUMMY_CONSOLE, can we trigger a save_screen
-/ resize? If so, we'd reach here with vga_si=NULL.
-
->   	}
->   
->   	/* We can't copy in more than the size of the video buffer,
-> @@ -1204,4 +1207,13 @@ const struct consw vga_con = {
->   };
->   EXPORT_SYMBOL(vga_con);
->   
-> +void vgacon_register_screen(struct screen_info *si)
-> +{
-> +	if (!si || vga_si)
-> +		return;
-> +
-> +	conswitchp = &vga_con;
-> +	vga_si = si;
-> +}
+diff --git a/fs/f2fs/xattr.c b/fs/f2fs/xattr.c
+index 476b186b90a6..71bfa2391ab4 100644
+--- a/fs/f2fs/xattr.c
++++ b/fs/f2fs/xattr.c
+@@ -757,17 +757,17 @@ static int __f2fs_setxattr(struct inode *inode, int index,
+ 	if (index == F2FS_XATTR_INDEX_ENCRYPTION &&
+ 			!strcmp(name, F2FS_XATTR_NAME_ENCRYPTION_CONTEXT))
+ 		f2fs_set_encrypted_inode(inode);
+-	f2fs_mark_inode_dirty_sync(inode, true);
+ 	if (!error && S_ISDIR(inode->i_mode))
+ 		set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
+ 
+ same:
+ 	if (is_inode_flag_set(inode, FI_ACL_MODE)) {
+ 		inode->i_mode = F2FS_I(inode)->i_acl_mode;
+-		inode->i_ctime = current_time(inode);
+ 		clear_inode_flag(inode, FI_ACL_MODE);
+ 	}
+ 
++	inode->i_ctime = current_time(inode);
++	f2fs_mark_inode_dirty_sync(inode, true);
+ exit:
+ 	kfree(base_addr);
+ 	return error;
+-- 
+2.40.1
 
