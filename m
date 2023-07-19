@@ -2,320 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F7E758B15
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 03:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3206A758B1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 04:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbjGSB6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 21:58:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43328 "EHLO
+        id S229458AbjGSCBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 22:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjGSB6L (ORCPT
+        with ESMTP id S229463AbjGSCBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 21:58:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3521BE9;
-        Tue, 18 Jul 2023 18:58:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E4D0761683;
-        Wed, 19 Jul 2023 01:58:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56C73C433C9;
-        Wed, 19 Jul 2023 01:57:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689731883;
-        bh=RawEnqc1EkIgdkG2i7me4l9fFj/6mUCWCz+xGcSTwAc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q7a7oEr8cy6h2A3djds9QBxY5rCG1G+E9+SWbmSrMqgK/lMSCQqJOb3xV05iUsCoN
-         nN6poCxArph65dloIeJ0lF/SQIjMWHOg/QGU9+9zKLscwn/9IyVDUEPKN3JGOUtYxb
-         ypkBXycMSAg6oIOYs243x+kWrPKEsXsYtRMpjL0vtYqc9xY9U7Pa8+/mIqgxE6IGz4
-         bdqzzqjWpHwNci/K3JKCV9qOeABLl36BBNRZF2eIpp7L8J4+vkPY3H4qBmGyZlZh8F
-         kTbnIpsumRmJMlPnAKBna4b9QoBYH+7ZXgVIaMa0XzboSZDIikXDlO44OiXiTWJbYi
-         th22DTt01xFtQ==
-Date:   Wed, 19 Jul 2023 09:57:50 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] arm64: dts: freescale: Add imx8mp-venice-gw71xx-2x
-Message-ID: <20230719015750.GR9559@dragon>
-References: <20230607170724.2016988-1-tharvey@gateworks.com>
- <20230607170724.2016988-2-tharvey@gateworks.com>
- <20230717002717.GI9559@dragon>
- <CAJ+vNU2Wn0jf8QyZsGiw3f=XThZEfXajhGJTmZz2mnJXgprAhQ@mail.gmail.com>
+        Tue, 18 Jul 2023 22:01:14 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FFFFC
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 19:01:12 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-993a37b79e2so847640866b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 19:01:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689732071; x=1692324071;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IJxttgCms2UBUENv/ecjfyY+jsuBATcIGCNjI4vFRsw=;
+        b=HF4xu4BibgPaAP86DjGRepVLlt2JlKYethGSpA1NoyQHLqXUSQ0dfCOwMxNria384q
+         4kCqyEP9Oegj/h9zH1llGHwtE7Esap9f2DvWyWKCSjJPw+3XEWFJ5lQs+62yBMSixMhC
+         oyYIB9Y8KEQf1gUN4zOTmesrPISe3N3gHvqiz7x6lav3srY3paxgYC/3Zc0nXsGDkpb4
+         zajmx8st33tk7jRoZcICIdzgQMSIgW/Q/Tx7dFKpHB2SSO2+CYB8KqurSgxuU6LAq1+x
+         txZLINpU9m2aBZln9AydbbrCoTxhXGUdSJEa+FT4aZZcO9F7ySJZxH8l45wKSFxdRddl
+         MqYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689732071; x=1692324071;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IJxttgCms2UBUENv/ecjfyY+jsuBATcIGCNjI4vFRsw=;
+        b=d5F2eQK7UaKB9E/EY6qWAp0Tzbk5bqDxzUg0KvYEz9tblUpdNPF/N4U2rIIvLC49F+
+         Fmn6VkThMLadu2RwLB1UqBA9kevYT7/NKbYPn0k1ptx4rtZ1GvSAo2S0nyheilrd90TL
+         89no8Cz/6s6iCQBbvMeuYAwflqCmZ1opAIqHWmJ36UrrmfqxIKosE/2OCaKdloMjphar
+         vjFSRGkQTReogrlmSjVIEKHbWOis/SMa+BcHehjonhrk2WWDtsoxR91M2XjQkDjZPrSh
+         lbV4LnPxag26JmrXiPBYRKRrTDB9cvrQR6cxEi5p8hLMm5mNnfXjlm6fslxS6z5eWJeD
+         vJPA==
+X-Gm-Message-State: ABy/qLYUM16tS1xfOl+RevYN8UiLxignEZY1Lig5tbshQft1HPKcfaiI
+        8i4IMhOFJIaivbSYv+qEY+6SqmjKdObMimZcEaXC8zFry2xDUu73pXUI7w==
+X-Google-Smtp-Source: APBJJlEu/j2ZuGIw4EeIaNQEWaqjUUguApp/aD3uSFg5uF4Sc+vREmT5lODsu4TxjgA294QOG5KSyeLLXgMEAbo3Mj4=
+X-Received: by 2002:a17:907:8d11:b0:992:a838:a564 with SMTP id
+ tc17-20020a1709078d1100b00992a838a564mr914789ejc.28.1689732070874; Tue, 18
+ Jul 2023 19:01:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJ+vNU2Wn0jf8QyZsGiw3f=XThZEfXajhGJTmZz2mnJXgprAhQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230712060144.3006358-1-fengwei.yin@intel.com>
+ <20230712060144.3006358-4-fengwei.yin@intel.com> <CAOUHufYef--8MxFettL6fOGjVx2vyZHZQU6EEaTCoW0XBvuC8Q@mail.gmail.com>
+ <CAOUHufZ6=9P_=CAOQyw0xw-3q707q-1FVV09dBNDC-hpcpj2Pg@mail.gmail.com>
+ <40cbc39e-5179-c2f4-3cea-0a98395aaff1@intel.com> <CAOUHufZHyEvU-c2O6B6stM_QVMxc22zV4Szn52myYqjdZvptUA@mail.gmail.com>
+ <16844254-7248-f557-b1eb-b8b102c877a2@intel.com> <CAJD7tkYAkVOE2caqEj_hTmm47Kex451prBQ1wKTRUiOwnDcwNA@mail.gmail.com>
+ <b995e802-1500-6930-79d0-8cc4bfe89589@intel.com> <CAJD7tkZtHku-kaK02MAdgaxNzr9hQkPty=cw44R_9HdTS+Pd5w@mail.gmail.com>
+ <CAJD7tkZWXdHwpW5AeKqmn6TVCXm1wmKr-2RN2baRJ7c4ciTJng@mail.gmail.com> <208aff10-8a32-6ab8-f03a-7f3c9d3ca0f7@intel.com>
+In-Reply-To: <208aff10-8a32-6ab8-f03a-7f3c9d3ca0f7@intel.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 18 Jul 2023 19:00:34 -0700
+Message-ID: <CAJD7tkYT6EZMwit8C9MTftUxMmuWtn2YpZ+NSVhy0xVCYuafsg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 3/3] mm: mlock: update mlock_pte_range to handle
+ large folio
+To:     Yin Fengwei <fengwei.yin@intel.com>
+Cc:     Yu Zhao <yuzhao@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        willy@infradead.org, david@redhat.com, ryan.roberts@arm.com,
+        shy828301@gmail.com, Hugh Dickins <hughd@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 02:16:22PM -0700, Tim Harvey wrote:
-> On Sun, Jul 16, 2023 at 5:27 PM Shawn Guo <shawnguo@kernel.org> wrote:
+On Tue, Jul 18, 2023 at 6:57=E2=80=AFPM Yin Fengwei <fengwei.yin@intel.com>=
+ wrote:
+>
+>
+> On 7/19/23 09:52, Yosry Ahmed wrote:
+> > On Tue, Jul 18, 2023 at 6:32=E2=80=AFPM Yosry Ahmed <yosryahmed@google.=
+com> wrote:
+> >> On Tue, Jul 18, 2023 at 4:47=E2=80=AFPM Yin Fengwei <fengwei.yin@intel=
+.com> wrote:
+> >>>
+> >>>
+> >>> On 7/19/23 06:48, Yosry Ahmed wrote:
+> >>>> On Sun, Jul 16, 2023 at 6:58=E2=80=AFPM Yin Fengwei <fengwei.yin@int=
+el.com> wrote:
+> >>>>>
+> >>>>>
+> >>>>> On 7/17/23 08:35, Yu Zhao wrote:
+> >>>>>> On Sun, Jul 16, 2023 at 6:00=E2=80=AFPM Yin, Fengwei <fengwei.yin@=
+intel.com> wrote:
+> >>>>>>> On 7/15/2023 2:06 PM, Yu Zhao wrote:
+> >>>>>>>> There is a problem here that I didn't have the time to elaborate=
+: we
+> >>>>>>>> can't mlock() a folio that is within the range but not fully map=
+ped
+> >>>>>>>> because this folio can be on the deferred split queue. When the =
+split
+> >>>>>>>> happens, those unmapped folios (not mapped by this vma but are m=
+apped
+> >>>>>>>> into other vmas) will be stranded on the unevictable lru.
+> >>>>>>> This should be fine unless I missed something. During large folio=
+ split,
+> >>>>>>> the unmap_folio() will be migrate(anon)/unmap(file) folio. Folio =
+will be
+> >>>>>>> munlocked in unmap_folio(). So the head/tail pages will be evicta=
+ble always.
+> >>>>>> It's close but not entirely accurate: munlock can fail on isolated=
+ folios.
+> >>>>> Yes. The munlock just clear PG_mlocked bit but with PG_unevictable =
+left.
+> >>>>>
+> >>>>> Could this also happen against normal 4K page? I mean when user try=
+ to munlock
+> >>>>> a normal 4K page and this 4K page is isolated. So it become unevict=
+able page?
+> >>>> Looks like it can be possible. If cpu 1 is in __munlock_folio() and
+> >>>> cpu 2 is isolating the folio for any purpose:
+> >>>>
+> >>>> cpu1                                        cpu2
+> >>>>                                                 isolate folio
+> >>>> folio_test_clear_lru() // 0
+> >>>>                                                 putback folio // add
+> >>>> to unevictable list
+> >>>> folio_test_clear_mlocked()
+> >>> Yes. Yu showed this sequence to me in another email. I thought the pu=
+tback_lru()
+> >>> could correct the none-mlocked but unevictable folio. But it doesn't =
+because
+> >>> of this race.
+> >> (+Hugh Dickins for vis)
+> >>
+> >> Yu, I am not familiar with the split_folio() case, so I am not sure it
+> >> is the same exact race I stated above.
+> >>
+> >> Can you confirm whether or not doing folio_test_clear_mlocked() before
+> >> folio_test_clear_lru() would fix the race you are referring to? IIUC,
+> >> in this case, we make sure we clear PG_mlocked before we try to to
+> >> clear PG_lru. If we fail to clear it, then someone else have the folio
+> >> isolated after we clear PG_mlocked, so we can be sure that when they
+> >> put the folio back it will be correctly made evictable.
+> >>
+> >> Is my understanding correct?
+> > Hmm, actually this might not be enough. In folio_add_lru() we will
+> > call folio_batch_add_and_move(), which calls lru_add_fn() and *then*
+> > sets PG_lru. Since we check folio_evictable() in lru_add_fn(), the
+> > race can still happen:
 > >
-> > On Wed, Jun 07, 2023 at 10:07:24AM -0700, Tim Harvey wrote:
-> > > The Gateworks imx8mp-venice-gw71xx-2x consists of a SOM + baseboard.
-> > >
-> > > The GW702x SOM contains the following:
-> > >  - i.MX8M Plus SoC
-> > >  - LPDDR4 memory
-> > >  - eMMC Boot device
-> > >  - Gateworks System Controller (GSC) with integrated EEPROM, button
-> > >    controller, and ADC's
-> > >  - PMIC
-> > >  - SOM connector providing:
-> > >   - eQoS GbE MII
-> > >   - 1x SPI
-> > >   - 2x I2C
-> > >   - 4x UART
-> > >   - 2x USB 3.0
-> > >   - 1x PCI
-> > >   - 1x SDIO (4-bit 3.3V)
-> > >   - 1x SDIO (4-bit 3.3V/1.8V)
-> > >   - GPIO
-> > >
-> > > The GW71xx Baseboard contains the following:
-> > >  - GPS
-> > >  - RJ45 GbE (eQoS)
-> > >  - off-board I/O connector with UART, I2C, SPI, GPIO
-> > >  - EERPOM
-> > >  - PCIe clock generator
-> > >  - full-length miniPCIe socket with PCI/USB3 (via mux) and USB2.0
-> > >  - USB Type-C with USB 2.0 host and peripheral support
-> > >  - Wide range DC input supply
-> > >
-> > > Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> > > ---
-> > >  arch/arm64/boot/dts/freescale/Makefile        |   1 +
-> > >  .../dts/freescale/imx8mp-venice-gw71xx-2x.dts |  19 ++
-> > >  .../dts/freescale/imx8mp-venice-gw71xx.dtsi   | 236 ++++++++++++++++++
-> > >  3 files changed, 256 insertions(+)
-> > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx-2x.dts
-> > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx.dtsi
-> > >
-> > > diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> > > index 62f22b77b38b..b3bb823d0168 100644
-> > > --- a/arch/arm64/boot/dts/freescale/Makefile
-> > > +++ b/arch/arm64/boot/dts/freescale/Makefile
-> > > @@ -101,6 +101,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mp-icore-mx8mp-edimm2.2.dtb
-> > >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-msc-sm2s-ep1.dtb
-> > >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-phyboard-pollux-rdk.dtb
-> > >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-tqma8mpql-mba8mpxl.dtb
-> > > +dtb-$(CONFIG_ARCH_MXC) += imx8mp-venice-gw71xx-2x.dtb
-> > >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-venice-gw74xx.dtb
-> > >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-venice-gw7905-2x.dtb
-> > >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-verdin-nonwifi-dahlia.dtb
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx-2x.dts b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx-2x.dts
-> > > new file mode 100644
-> > > index 000000000000..53120fc9cd7f
-> > > --- /dev/null
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx-2x.dts
-> > > @@ -0,0 +1,19 @@
-> > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> > > +/*
-> > > + * Copyright 2023 Gateworks Corporation
-> > > + */
-> > > +
-> > > +/dts-v1/;
-> > > +
-> > > +#include "imx8mp.dtsi"
-> > > +#include "imx8mp-venice-gw702x.dtsi"
-> > > +#include "imx8mp-venice-gw71xx.dtsi"
-> > > +
-> > > +/ {
-> > > +     model = "Gateworks Venice GW71xx-2x i.MX8MP Development Kit";
-> > > +     compatible = "gateworks,imx8mp-gw71xx-2x", "fsl,imx8mp";
-> > > +
-> > > +     chosen {
-> > > +             stdout-path = &uart2;
-> > > +     };
-> > > +};
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx.dtsi
-> > > new file mode 100644
-> > > index 000000000000..86999f52d4b2
-> > > --- /dev/null
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx.dtsi
-> > > @@ -0,0 +1,236 @@
-> > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> > > +/*
-> > > + * Copyright 2023 Gateworks Corporation
-> > > + */
-> > > +
-> > > +#include <dt-bindings/gpio/gpio.h>
-> > > +#include <dt-bindings/leds/common.h>
-> > > +#include <dt-bindings/phy/phy-imx8-pcie.h>
-> > > +
-> > > +/ {
-> > > +     led-controller {
-> > > +             compatible = "gpio-leds";
-> > > +             pinctrl-names = "default";
-> > > +             pinctrl-0 = <&pinctrl_gpio_leds>;
-> > > +
-> > > +             led-0 {
-> > > +                     function = LED_FUNCTION_STATUS;
-> > > +                     color = <LED_COLOR_ID_GREEN>;
-> > > +                     gpios = <&gpio4 1 GPIO_ACTIVE_HIGH>;
-> > > +                     default-state = "on";
-> > > +                     linux,default-trigger = "heartbeat";
-> > > +             };
-> > > +
-> > > +             led-1 {
-> > > +                     function = LED_FUNCTION_STATUS;
-> > > +                     color = <LED_COLOR_ID_RED>;
-> > > +                     gpios = <&gpio4 5 GPIO_ACTIVE_HIGH>;
-> > > +                     default-state = "off";
-> > > +             };
-> > > +     };
-> > > +
-> > > +     pcie0_refclk: pcie0-refclk {
 > >
-> > Can we name the node clock-xxx?
+> > cpu1                              cpu2
+> >                                       folio_evictable() //false
+> > folio_test_clear_mlocked()
+> > folio_test_clear_lru() //false
+> >                                       folio_set_lru()
 > >
-> > > +             compatible = "fixed-clock";
-> > > +             #clock-cells = <0>;
-> > > +             clock-frequency = <100000000>;
-> > > +     };
-> > > +
-> > > +     pps {
-> > > +             compatible = "pps-gpio";
-> > > +             pinctrl-names = "default";
-> > > +             pinctrl-0 = <&pinctrl_pps>;
-> > > +             gpios = <&gpio4 3 GPIO_ACTIVE_HIGH>;
-> > > +             status = "okay";
-> > > +     };
-> > > +};
-> > > +
-> > > +/* off-board header */
-> > > +&ecspi2 {
-> > > +     pinctrl-names = "default";
-> > > +     pinctrl-0 = <&pinctrl_spi2>;
-> > > +     cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
-> > > +     status = "okay";
-> > > +};
-> > > +
-> > > +&gpio4 {
-> > > +     gpio-line-names =
-> > > +             "", "", "", "",
-> > > +             "", "", "", "",
-> > > +             "dio1", "", "", "dio0",
-> > > +             "", "", "pci_usb_sel", "",
-> > > +             "", "", "", "",
-> > > +             "", "", "", "",
-> > > +             "dio3", "", "dio2", "",
-> > > +             "pci_wdis#", "", "", "";
-> > > +};
-> > > +
-> > > +&i2c2 {
-> > > +     clock-frequency = <400000>;
-> > > +     pinctrl-names = "default";
-> > > +     pinctrl-0 = <&pinctrl_i2c2>;
-> > > +     status = "okay";
-> > > +
-> > > +     accelerometer@19 {
-> > > +             pinctrl-names = "default";
-> > > +             pinctrl-0 = <&pinctrl_accel>;
-> > > +             compatible = "st,lis2de12";
-> > > +             reg = <0x19>;
+> > Relying on PG_lru for synchronization might not be enough with the
+> > current code. We might need to revert 2262ace60713 ("mm/munlock:
+> > delete smp_mb() from __pagevec_lru_add_fn()").
 > >
-> > Can we start the property list from these two?
-> >
-> > > +             st,drdy-int-pin = <1>;
-> > > +             interrupt-parent = <&gpio4>;
-> > > +             interrupts = <21 IRQ_TYPE_LEVEL_LOW>;
-> > > +             interrupt-names = "INT1";
-> > > +     };
-> > > +};
-> > > +
-> > > +&pcie_phy {
-> > > +     fsl,refclk-pad-mode = <IMX8_PCIE_REFCLK_PAD_INPUT>;
-> > > +     fsl,clkreq-unsupported;
-> > > +     clocks = <&pcie0_refclk>;
-> > > +     clock-names = "ref";
-> > > +     status = "okay";
-> > > +};
-> > > +
-> > > +&pcie {
-> > > +     pinctrl-names = "default";
-> > > +     pinctrl-0 = <&pinctrl_pcie0>;
-> > > +     reset-gpio = <&gpio4 29 GPIO_ACTIVE_LOW>;
-> > > +     status = "okay";
-> > > +};
-> > > +
-> > > +/* GPS */
-> > > +&uart1 {
-> > > +     pinctrl-names = "default";
-> > > +     pinctrl-0 = <&pinctrl_uart1>;
-> > > +     status = "okay";
-> > > +};
-> > > +
-> > > +/* off-board header */
-> > > +&uart3 {
-> > > +     pinctrl-names = "default";
-> > > +     pinctrl-0 = <&pinctrl_uart3>;
-> > > +     status = "okay";
-> > > +};
-> > > +
-> > > +/* USB1 Type-C front panel */
-> > > +&usb3_0 {
-> > > +     pinctrl-names = "default";
-> > > +     pinctrl-0 = <&pinctrl_usb1>;
-> > > +     fsl,over-current-active-low;
-> > > +     status = "okay";
-> > > +};
-> > > +
-> > > +&usb3_phy0 {
-> > > +     status = "okay";
-> > > +};
-> > > +
-> > > +&usb_dwc3_0 {
-> > > +     /* dual role is implemented but not a full featured OTG */
-> > > +     adp-disable;
-> > > +     hnp-disable;
-> > > +     srp-disable;
-> > > +     dr_mode = "otg";
-> > > +     usb-role-switch;
-> > > +     role-switch-default-mode = "peripheral";
-> > > +     status = "okay";
-> > > +
-> > > +     connector {
-> > > +             pinctrl-names = "default";
-> > > +             pinctrl-0 = <&pinctrl_usbcon1>;
-> > > +             compatible = "gpio-usb-b-connector", "usb-b-connector";
-> >
-> > Start the properties from 'compatible'?
-> >
-> > Shawn
-> >
-> 
-> Hi Shawn,
-> 
-> My notes say that pinctrl should come first (if needed) followed by
-> compatible, reg, other props, and finally status (if needed). Assuming
-> I'm wrong about that where in the list should pinctrl be and is this
-> documented anywhere for future reference?
+> > Sorry for going back and forth here, I am thinking out loud.
+>
+> Yes. Currently, the order in lru_add_fn() is not correct.
+>
+> I think we should move folio_test_clear_lru(folio) into
+>
+> lru locked range. As the lru lock here was expected to
+>
+> use for sync here. Check the comment in lru_add_fn().
 
-It's more a recommended idiom than documented/hard rule.
+Right, I am wondering if it would be better to just revert
+2262ace60713 and rely on the memory barrier and operations ordering
+instead of the lru lock. The lru lock is heavily contended as-is, so
+avoiding using it where possible is preferable I assume.
 
-- compatible
-- reg
-- general properties
-- vendor specific properties
-- status
-
-Shawn
+>
+>
+> Regards
+>
+> Yin, Fengwei
+>
+>
+> >
+> >> If yes, I can add this fix to my next version of the RFC series to
+> >> rework mlock_count. It would be a lot more complicated with the
+> >> current implementation (as I stated in a previous email).
+> >>
+> >>>>
+> >>>> The page would be stranded on the unevictable list in this case, no?
+> >>>> Maybe we should only try to isolate the page (clear PG_lru) after we
+> >>>> possibly clear PG_mlocked? In this case if we fail to isolate we kno=
+w
+> >>>> for sure that whoever has the page isolated will observe that
+> >>>> PG_mlocked is clear and correctly make the page evictable.
+> >>>>
+> >>>> This probably would be complicated with the current implementation, =
+as
+> >>>> we first need to decrement mlock_count to determine if we want to
+> >>>> clear PG_mlocked, and to do so we need to isolate the page as
+> >>>> mlock_count overlays page->lru. With the proposal in [1] to rework
+> >>>> mlock_count, it might be much simpler as far as I can tell. I intend
+> >>>> to refresh this proposal soon-ish.
+> >>>>
+> >>>> [1]https://lore.kernel.org/lkml/20230618065719.1363271-1-yosryahmed@=
+google.com/
+> >>>>
+> >>>>>
+> >>>>> Regards
+> >>>>> Yin, Fengwei
+> >>>>>
