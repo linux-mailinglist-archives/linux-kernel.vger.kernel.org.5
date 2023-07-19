@@ -2,118 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B2D759888
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A42BC75988C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbjGSOhe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 19 Jul 2023 10:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
+        id S230321AbjGSOiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbjGSOhE (ORCPT
+        with ESMTP id S231626AbjGSOhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:37:04 -0400
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4A310E5;
-        Wed, 19 Jul 2023 07:37:02 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5704fce0f23so74157877b3.3;
-        Wed, 19 Jul 2023 07:37:02 -0700 (PDT)
+        Wed, 19 Jul 2023 10:37:40 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A337710F5;
+        Wed, 19 Jul 2023 07:37:39 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9939fbb7191so193718266b.0;
+        Wed, 19 Jul 2023 07:37:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689777458; x=1690382258;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oLiCt95ygV41kuZf9pX1cXwrEnN2OwQXL7Y8MwA/vjc=;
+        b=OyLcAVb026kFo928Hy3s1W+mPe+iulgMNXBvR9EpvChGg9Gydpc9dQDdcU7AEPRriL
+         ighvJf16NYasg4aV/9TjA4clHitRmHAisnla+yi5FyN6dw0wPq4bAINmZqyjhSwz5kpe
+         gZ801AHmgwGJ/iSbUpwUyBgiyhJFuR5m1DyHqkiyqFkOvrqhHaWqC6BejFbZ+pSw2ffo
+         C79R5Osz6/qKjz8y7faz8knUyBl51h9WHcLga9OEKb+y7Kt5lLYp+fCmW4trCWdYogbR
+         gqFYnb3IHsDOiU0+bCLYOKPdHLnmOQsOIWD/EVq7s1mtfap97NdLpUjH3VxLFpRT5jlk
+         lW8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689777422; x=1692369422;
+        d=1e100.net; s=20221208; t=1689777458; x=1690382258;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=766U5ZrZx7633jGu4x/jDYUFK9E93rbSDM5/tiBPbjE=;
-        b=Um3d7hU1HvrfIMqyVRykNN7Til291WQ7Gh8KiZW+swFFxo2AFacKMxcdLIXAaHQ72L
-         G6lLypiqpDImxkDWAfnAQ+UPdgBH/Aim1bz0JiiYdWzBeEE2Grgvo55+YTyAHrPSSM7D
-         SdzGg0KLXWbOcbS7pj/ZRpgRjUO2vTt4MVHHFwecefzZ9xxFAI0hmbLjnCRHDZn+LGMe
-         3VV0KNItYajt1qZBr5GXilHq76BI2G4Q0brdZPKCCAleWllmNrM13Z/YuKDnUpKN/mxc
-         Fw03Q53L0Th270b40VlgnBBPqCaNZomSWoPRspTzH28JnL11CC9Bwd8XdUXdfJ2zigPP
-         6g6A==
-X-Gm-Message-State: ABy/qLYMhtlD/NAI8cFX4CryEdT3B1QUaKNNnxv+gwH3oRYbA9bplc9m
-        qbAyX5M4llw4mla/ny0l6TQHLQ7ryZDemg==
-X-Google-Smtp-Source: APBJJlE0pkRGxBPVDcSO6vvzZZz1wEd90Knpum2vgyodq5EPMAxv7wLMRE9HRsWoWxmk3KVvegFF5Q==
-X-Received: by 2002:a81:5294:0:b0:56d:1747:5bde with SMTP id g142-20020a815294000000b0056d17475bdemr2613531ywb.32.1689777421776;
-        Wed, 19 Jul 2023 07:37:01 -0700 (PDT)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id n5-20020a0dcb05000000b00579f1c5ebdasm1051532ywd.15.2023.07.19.07.37.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 07:37:01 -0700 (PDT)
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-cefa8fe4cc2so1449761276.1;
-        Wed, 19 Jul 2023 07:37:00 -0700 (PDT)
-X-Received: by 2002:a5b:1c7:0:b0:c69:54aa:d441 with SMTP id
- f7-20020a5b01c7000000b00c6954aad441mr2403900ybp.34.1689777420399; Wed, 19 Jul
- 2023 07:37:00 -0700 (PDT)
+        bh=oLiCt95ygV41kuZf9pX1cXwrEnN2OwQXL7Y8MwA/vjc=;
+        b=JO93dIDH/2bfF6AS+nj+BAs3lmcNsSJNQ65FnaOjfgiLs57IyncnO0/16g1HC+4UKR
+         HVIUhq5ycXYrXMVi38qOftmM1SGHDoF2tKgv05icVm3aM9xzZ9XN3lpGwiXhwo4Ya9Sv
+         1jvm9e0qAwVWHLD+oVwNMuTnO7ngKKYEnCN0Xcp7h5rMmlNL+EFNGKCKm1HLdpyYK324
+         hmV/ap9e2+DMS7nEJ3oEfCFJtCT896y+ug2sjhzkQdlid8r9tLSdTntszfdWEtY2Z2Jr
+         sIrjB3SVDgeofUCsPsTMQDijXI5CLO2/G59pzIXIA3WkUunHcpTIX1oZpMA8PfszKQpe
+         8I+Q==
+X-Gm-Message-State: ABy/qLbYn4IMYUKLVtThn1duDRrcMEH14S2QlInww6QBIfXt+M+UPouw
+        o4YVeR3SztN+WHx62M7YtAFKzvIrCXTVjgV0Mbk=
+X-Google-Smtp-Source: APBJJlHvLAd11eHo8p4btHRTHFKMuq/1+lumsya3iavDjF5xiaMW7akyP7F5aQv7cVawl2wAzQxcsVt2Jm3RMy8ClbI=
+X-Received: by 2002:a17:906:64d7:b0:993:f127:2391 with SMTP id
+ p23-20020a17090664d700b00993f1272391mr2767082ejn.32.1689777457867; Wed, 19
+ Jul 2023 07:37:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230719134058.2138934-1-arnd@kernel.org>
-In-Reply-To: <20230719134058.2138934-1-arnd@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 19 Jul 2023 16:36:47 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUzuTXgd5wspGOy2-AL8sgXmr3GVDV3+hLCu5zkWM_yxw@mail.gmail.com>
-Message-ID: <CAMuHMdUzuTXgd5wspGOy2-AL8sgXmr3GVDV3+hLCu5zkWM_yxw@mail.gmail.com>
-Subject: Re: [PATCH] rtc: bq4802: add sparc dependency
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230717205357.2779473-1-samuel.holland@sifive.com>
+ <20230717205357.2779473-3-samuel.holland@sifive.com> <CAJM55Z8Q-kGFKhFc57_Ew+0VsmBqwLrBAaiaiJ5zYdu_OG-wMg@mail.gmail.com>
+In-Reply-To: <CAJM55Z8Q-kGFKhFc57_Ew+0VsmBqwLrBAaiaiJ5zYdu_OG-wMg@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 19 Jul 2023 17:37:01 +0300
+Message-ID: <CAHp75VfxGP+N3KmAb2wcCZiDypsXBKxKwC9H_4WZ5ByM-Qo=5Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] gpio: sifive: Allow building the driver as a module
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc:     Samuel Holland <samuel.holland@sifive.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Wed, Jul 19, 2023 at 5:12=E2=80=AFPM Emil Renner Berthing
+<emil.renner.berthing@canonical.com> wrote:
+> On Wed, 19 Jul 2023 at 08:26, Samuel Holland <samuel.holland@sifive.com> =
+wrote:
 
-On Wed, Jul 19, 2023 at 3:41 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The added HAS_IOPORT dependency might not actually be necessary as Geert
-> points out, but the driver is also only used on one architecture. Sparc
-> is also a special case here since it converts port numbers into virtual
-> addresses rather than having them mapped into a particular part of the
-> __iomem address space, so the difference is actually not important here.
->
-> Add a dependency on sparc, but allow compile-testing otherwise, to
-> make this clearer without anyone having to spend much time modernizing
-> the driver beyond that.
->
-> Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: David S. Miller <davem@davemloft.net>
-> Link: https://lore.kernel.org/all/CAMuHMdWEx0F=fNei4Bz_JPkuvoaN-+zk08h0i8KnSi_VjO615g@mail.gmail.com/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+...
 
-Thanks for your patch!
+> While you're at it maybe also add the MODULE_AUTHOR() and
+> MODULE_DESCRIPTION() macros.
 
-> --- a/drivers/rtc/Kconfig
-> +++ b/drivers/rtc/Kconfig
-> @@ -1195,7 +1195,7 @@ config RTC_DRV_MSM6242
->
->  config RTC_DRV_BQ4802
->         tristate "TI BQ4802"
-> -       depends on HAS_IOMEM && HAS_IOPORT
-> +       depends on SPARC || (HAS_IOMEM && HAS_IOPORT && COMPILE_TEST)
++1, as now we have a new warning that MODULE_DESCRIPTION() is not set.
 
-I'd rather just add a line "depends on SPARC || COMPILE_TEST",
-which is easier to parse.
-
->         help
->           If you say Y here you will get support for the TI
->           BQ4802 RTC chip.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--=20
+With Best Regards,
+Andy Shevchenko
