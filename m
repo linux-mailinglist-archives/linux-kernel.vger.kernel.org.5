@@ -2,198 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF05758D0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC26758D0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229437AbjGSF03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 01:26:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54488 "EHLO
+        id S229464AbjGSFZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 01:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjGSF01 (ORCPT
+        with ESMTP id S229447AbjGSFZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 01:26:27 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E60CD2;
-        Tue, 18 Jul 2023 22:26:26 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36J57ew4016375;
-        Wed, 19 Jul 2023 05:25:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=UY9eRzpsP8GQl+06o8COfYvWwoeEZ3IyVjc0AqBVSDA=;
- b=HqPHMq5DY50UrHwMA+kh0U4vjCK8bPPmNq+5t29OSU0J+O/kuRCku7pVRpZZJdExSlps
- ffpmfu9jbte9HqbRCzUIfGQfLBT+CHTQUGiBHZxoFDyaz/aXd96R+mC0khgtW3cTN5xk
- C21F3/Ls2AUSHxI3vGFC5VsNhoTBLyz80MfNrMNruPWr+f9KJ0H3fX8SYPdPzo/ytBxo
- 8OPm0hFW/LqQWnWLcHcwb8v2HSDcaV+uRsprfW7HuuAYbc2n9sAppMNYNkDxlb4bwnnC
- OVaYz4fs93hvfzV/LCZIO4aSKW+R227xl5k1CXmFnQVyIIcjmNeKpxPhFmucoIUB4HDB jA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rx8uarxv2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Jul 2023 05:25:00 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36J5HWak021174;
-        Wed, 19 Jul 2023 05:24:59 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rx8uarxum-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Jul 2023 05:24:59 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36J4HvET016875;
-        Wed, 19 Jul 2023 05:24:58 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rv5srs1ns-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Jul 2023 05:24:57 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36J5Oso923134850
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 Jul 2023 05:24:54 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C11012004B;
-        Wed, 19 Jul 2023 05:24:54 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CD90F20040;
-        Wed, 19 Jul 2023 05:24:43 +0000 (GMT)
-Received: from [9.43.21.186] (unknown [9.43.21.186])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 19 Jul 2023 05:24:43 +0000 (GMT)
-Message-ID: <6762c880-6d2b-233f-6786-7ad5b0472dc7@linux.ibm.com>
-Date:   Wed, 19 Jul 2023 10:54:42 +0530
+        Wed, 19 Jul 2023 01:25:41 -0400
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B11FD2;
+        Tue, 18 Jul 2023 22:25:40 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-51e566b1774so8584340a12.1;
+        Tue, 18 Jul 2023 22:25:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689744338; x=1690349138;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GRgFksD0PKCE1D5trX9nk3Gnv+UFCoWdjPcPmaic2v0=;
+        b=h0Xyt5DtMKTHgaArDYiZqiqo/KfhxPXBt9oNI9pMygBMq2flnmi/00mBrqoC3nE0KB
+         q0uduAb6I5RL6kwL6UD2fi/WBWI3sbLvdkdlL93L3Oln9sxq9n39T9IslwRuysfTtMM1
+         yf+MRmZ6aKclpn+dhnKIT10GEkB6MDBqRTqLHSMPDeo3NzM3UjoQuPE9fffajAzkACen
+         zNDUe75GbQyBEpPlnlBuqiqOszGgvvAew2Mk2pTExPNxDKX/Yxpy9k5Qvk415jr9BoQj
+         GrQDaWeucX/tosV8GPxBeIZJq7o8DHtyJL1pQGNSFdOmv8ORtUyUvZQBvZC/hs3vC99A
+         HO2w==
+X-Gm-Message-State: ABy/qLbgKvpZ88IWwGo+wEtKSZQL9ANYe+hYsjR4BdgKabtgMCeFe9PC
+        NUuo6oOUTgI/Zm+ZXRkVE4E=
+X-Google-Smtp-Source: APBJJlGHhPTXN+PiERIz9uY8LQsOOKUGmhtLr7f/9sCXE4ouCBOBLvXXy7yhPmjG0f4OzQWTWEFn7w==
+X-Received: by 2002:aa7:c902:0:b0:521:7417:1131 with SMTP id b2-20020aa7c902000000b0052174171131mr1431658edt.15.1689744338452;
+        Tue, 18 Jul 2023 22:25:38 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id o21-20020aa7d3d5000000b0051bed21a635sm2151028edr.74.2023.07.18.22.25.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 22:25:38 -0700 (PDT)
+Message-ID: <35758c24-1543-6f96-7957-b371dc94e59d@kernel.org>
+Date:   Wed, 19 Jul 2023 07:25:35 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v3 04/13] powerpc: assert_pte_locked() use
- pte_offset_map_nolock()
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] serial: core: Add support for dev_name:0.0 naming for
+ kernel console
 Content-Language: en-US
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Steven Price <steven.price@arm.com>,
-        SeongJae Park <sj@kernel.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Song Liu <song@kernel.org>,
-        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Jann Horn <jannh@google.com>,
-        Vishal Moola <vishal.moola@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Zi Yan <ziy@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <7cd843a9-aa80-14f-5eb2-33427363c20@google.com>
- <e8d56c95-c132-a82e-5f5f-7bb1b738b057@google.com>
- <87msztbiy8.fsf@linux.ibm.com>
- <392f311f-83ac-a5a2-d16e-2c7736d1b577@google.com>
-From:   Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>
-In-Reply-To: <392f311f-83ac-a5a2-d16e-2c7736d1b577@google.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Tony Lindgren <tony@atomide.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-omap@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230719051525.46494-1-tony@atomide.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20230719051525.46494-1-tony@atomide.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 7q90oElJg2CmupBk6GumnocMBX9ahL2e
-X-Proofpoint-GUID: YantjdaBDNNQUApFPJ6DdS47ZMvQSDAB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-19_02,2023-07-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 clxscore=1015 suspectscore=0 mlxlogscore=999 mlxscore=0
- lowpriorityscore=0 phishscore=0 malwarescore=0 spamscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307190047
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/23 10:34 AM, Hugh Dickins wrote:
-> On Tue, 18 Jul 2023, Aneesh Kumar K.V wrote:
->> Hugh Dickins <hughd@google.com> writes:
->>
->>> Instead of pte_lockptr(), use the recently added pte_offset_map_nolock()
->>> in assert_pte_locked().  BUG if pte_offset_map_nolock() fails: this is
->>> stricter than the previous implementation, which skipped when pmd_none()
->>> (with a comment on khugepaged collapse transitions): but wouldn't we want
->>> to know, if an assert_pte_locked() caller can be racing such transitions?
->>>
->>
->> The reason we had that pmd_none check there was to handle khugpaged. In
->> case of khugepaged we do pmdp_collapse_flush and then do a ptep_clear.
->> ppc64 had the assert_pte_locked check inside that ptep_clear.
->>
->> _pmd = pmdp_collapse_flush(vma, address, pmd);
->> ..
->> ptep_clear()
->> -> asset_ptep_locked()
->> ---> pmd_none
->> -----> BUG
->>
->>
->> The problem is how assert_pte_locked() verify whether we are holding
->> ptl. It does that by walking the page table again and in this specific
->> case by the time we call the function we already had cleared pmd .
+On 19. 07. 23, 7:15, Tony Lindgren wrote:
+> With the serial core controller related changes we can now start
+> addressing serial ports with dev_name:0.0 naming. The names are something
+> like 00:04.0:0.0 on qemu, and 2800000.serial.0:0.0 on ARM for example.
 > 
-> Aneesh, please clarify, I've spent hours on this.
+> The dev_name is unique serial port hardware controller device name, also
+> known as port->dev, and 0.0 are the serial core controller id and port id.
 > 
-> From all your use of past tense ("had"), I thought you were Acking my
-> patch; but now, after looking again at v3.11 source and today's,
-> I think you are NAKing my patch in its present form.
+> Typically 0.0 are used for each controller and port instance unless the
+> serial port hardware controller has multiple controllers or ports.
 > 
-
-Sorry for the confusion my reply created. 
-
-> You are pointing out that anon THP's __collapse_huge_page_copy_succeeded()
-> uses ptep_clear() at a point after pmdp_collapse_flush() already cleared
-> *pmd, so my patch now leads that one use of assert_pte_locked() to BUG.
-> Is that your point?
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
 > 
-
-Yes. I haven't tested this yet to verify that it is indeed hitting that BUG.
-But a code inspection tells me we will hit that BUG on powerpc because of
-the above details.
-
-> I can easily restore that khugepaged comment (which had appeared to me
-> out of date at the time, but now looks still relevant) and pmd_none(*pmd)
-> check: but please clarify.
+> Note that this depends on fix for serial core port ids patch
+> "[PATCH] serial: core: Fix serial core port id to not use port->line"
 > 
+> ---
+>   drivers/tty/serial/serial_core.c | 47 ++++++++++++++++++++++++++++++++
+>   1 file changed, 47 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+> --- a/drivers/tty/serial/serial_core.c
+> +++ b/drivers/tty/serial/serial_core.c
+> @@ -3322,6 +3322,49 @@ static int serial_core_port_device_add(struct serial_ctrl_device *ctrl_dev,
+>   	return 0;
+>   }
+>   
+> +/*
+> + * Add preferred console if configured on kernel command line with naming
+> + * "console=dev_name:0.0".
+> + */
+> +static int serial_core_add_preferred_console(struct uart_driver *drv,
+> +					     struct uart_port *port)
+> +{
+> +	char *port_match, *opt, *name;
+> +	int len, ret = 0;
+> +
+> +	port_match = kasprintf(GFP_KERNEL, "console=%s:%i.%i",
+> +			       dev_name(port->dev), port->ctrl_id,
+> +			       port->port_id);
+> +	if (!port_match)
+> +		return -ENOMEM;
+> +
+> +	opt = strstr(saved_command_line, port_match);
+> +	if (!opt)
+> +		goto free_port_match;
+> +
+> +	len = strlen(port_match);
+> +
+> +	if (strlen(opt) > len + 1 && opt[len] == ',')
+> +		opt += len + 1;
+> +	else
+> +		opt = NULL;
+> +
+> +	name = kstrdup(drv->dev_name, GFP_KERNEL);
 
-That is correct. if we add that pmd_none check back we should be good here.
+Why do you dup the name here?
 
+> +	if (!name) {
+> +		ret = -ENOMEM;
+> +		goto free_port_match;
+> +	}
+> +
+> +	add_preferred_console(name, port->line, opt);
+> +
+> +	kfree(name);
 
--aneesh
+thanks,
+-- 
+js
+suse labs
+
