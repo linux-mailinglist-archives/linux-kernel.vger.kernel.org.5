@@ -2,148 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C1A759F4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4219F759F53
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbjGSUHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49248 "EHLO
+        id S231228AbjGSUIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjGSUHY (ORCPT
+        with ESMTP id S231313AbjGSUII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:07:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4771492;
-        Wed, 19 Jul 2023 13:07:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D859361812;
-        Wed, 19 Jul 2023 20:07:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B303C433C9;
-        Wed, 19 Jul 2023 20:07:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689797242;
-        bh=QBRlv2TQMbOLiRvL0z9P4oIMqhGPMMGSEdcz73enZaw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dm23rWS9Rw6KGAXcY7fuoaDU28fLmGZtA7SLE6RiGx2FoRtRCGnsQjATCPx9dpqsq
-         oUP2RkT4+v8C82HZLBdLQPBraitPW9d+bFP1lWYq7EMkaXEuBF3vCvVJYUlN8bJZ2Q
-         zxD6mmXx0fGjeCV0CtEkNtElaPu5shLL2Atd3x33NdA3hp2w+niODhzYnIkAdo3K8O
-         eAzhxwKZ1caG5qIL4pMEpBnX0E7/UKf1hf3LMy6PP55+6PKaAZIULaalXQs0UzPMBd
-         QQUgOL5QUtkA/mJyaskDagLgav1Izt6Q1NECuWIi36In3LMKZg0qKGF2QceLcPq0MJ
-         ou7lWynyzfzhA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 199B940516; Wed, 19 Jul 2023 17:07:19 -0300 (-03)
-Date:   Wed, 19 Jul 2023 17:07:19 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     John Garry <john.g.garry@oracle.com>, namhyung@kernel.org,
-        jolsa@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        renyu.zj@linux.alibaba.com, shangxiaojing@huawei.com,
-        kjain@linux.ibm.com, kan.liang@linux.intel.com
-Subject: Re: [PATCH RFC 4/9] perf jevents: Add sys_events_find_events_table()
-Message-ID: <ZLhCd684SosTkJ8q@kernel.org>
-References: <897dcf1d-6a04-33d3-9c4f-ea9d1706cdad@oracle.com>
- <CAP-5=fX+rz928LtFs2MWYUH=6Mcvz0XQcLRkO-n9BnVnX4RYWw@mail.gmail.com>
- <297ddf04-9b35-7613-8efd-2857668b6835@oracle.com>
- <CAP-5=fXSQVyqCfrBJFjHkrRdANuQC=TKR-HHi37hLaQ91rPQiA@mail.gmail.com>
- <eb011f48-b953-3647-4699-734ebdf1876a@oracle.com>
- <CAP-5=fXJxVpYQ84hXiMxy4LUi7xs1puXdDhbp6d6N2ArnqKJuQ@mail.gmail.com>
- <0d6e41d1-2f27-9a90-1516-c4e50bad1c21@oracle.com>
- <CAP-5=fXKqZM=RMB-+ooKEKfGw=KdCVU0UbVQ9+XrDOAWpoYAdw@mail.gmail.com>
- <4f0355ec-8bc6-e51a-ab5b-61d555a68b6c@oracle.com>
- <CAP-5=fVGOP6-k=BTRd_bn=N0HVy+1ShpdW5rk5ND0ZGhm_fQkg@mail.gmail.com>
+        Wed, 19 Jul 2023 16:08:08 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 803A21FD9;
+        Wed, 19 Jul 2023 13:08:06 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8AxFvGkQrhkI2sHAA--.19010S3;
+        Thu, 20 Jul 2023 04:08:04 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx_yOkQrhkmwo1AA--.39758S3;
+        Thu, 20 Jul 2023 04:08:04 +0800 (CST)
+Message-ID: <f0d58cc7-1f4e-464a-2e6c-7649e997c8de@loongson.cn>
+Date:   Thu, 20 Jul 2023 04:08:04 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/6] PCI/VGA: Deal with PCI VGA compatible devices only
+Content-Language: en-US
+To:     Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        loongson-kernel@lists.loongnix.cn,
+        Mario Limonciello <mario.limonciello@amd.com>
+References: <20230719182617.GA509912@bhelgaas>
+ <9a1590bd-5dfc-94ad-645e-a0a499ae5b23@linux.dev>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <9a1590bd-5dfc-94ad-645e-a0a499ae5b23@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fVGOP6-k=BTRd_bn=N0HVy+1ShpdW5rk5ND0ZGhm_fQkg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: AQAAf8Dx_yOkQrhkmwo1AA--.39758S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
+        BjDU0xBIdaVrnRJUUUPEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
+        xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
+        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxV
+        AFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
+        wI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv
+        67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
+        AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCF54CYxVAaw2AFwI0_Jw0_GFyl4c8EcI0Ec7Cj
+        xVAaw2AFwI0_Jw0_GFyl4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_GFv_Wr
+        ylx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Xr0_Ar1lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
+        87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
+        IFyTuYvjxUcCD7UUUUU
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jul 19, 2023 at 08:25:31AM -0700, Ian Rogers escreveu:
-> On Tue, Jul 18, 2023 at 2:32 AM John Garry <john.g.garry@oracle.com> wrote:
-> >
-> > On 17/07/2023 22:39, Ian Rogers wrote:
-> > > On Mon, Jul 17, 2023 at 12:41 AM John Garry<john.g.garry@oracle.com>  wrote:
-> > >> On 14/07/2023 16:55, Ian Rogers wrote:
-> > >>> In this
-> > >>> series my main concern was in the changes of the event lookup and
-> > >>> having implied PMUs. You mentioned doing these changes so I was
-> > >>> waiting for a v2.
-> > >> OK, fine, I can look to do this now.
-> >
-> > I was thinking about this a little further. So you suggest that the
-> > metric expression contains PMU name per term, like
-> > "cpu_atom@instructions@ / cpu_atom@cycles@" - how would/could this work
-> > for PMUs with more complex naming, like the form hisi_siclXXX_cpa_YYY?
-> > Would we use the "Unit" expression for the metric name, like
-> > "@hisi_sicl,cpa@event_foo"?
-> 
-> How does this work for events? The "@hisi_sicl,cpa@event_foo" looks
-> strange, shouldn't it be "hisi_sicl,cpa@event_foo@" but then hisi_sicl
-> looks like an event name.
-> 
-> >
-> > >>
-> > >> BTW, which git repo/branch do you guys use for dev? I thought that it
-> > >> would be acme git, but Namhyung says "We moved to new repos from acme to
-> > >> perf/perf-tools and perf/perf-tools-next" - where is repo "perf"?
-> > > Current development is here now:
-> > > https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/log/?h=perf-tools-next__;!!ACWV5N9M2RV99hQ!OQDHOClSjd6nVZhmgzrK3RwzXuQpP54QhqyIKpITa_MFD4PLdS7yPYSnvInFja9nrFx9Sd-UnlsJ6XUqAh4$
-> >
-> > Can that be added to the MAINTAINERS file? I suppose it is ok under
-> > "PERFORMANCE EVENTS SUBSYTEM", since the two would-be git repos listed
-> > under that same entry would be pretty obvious in purpose.
-> 
-> Arnaldo could you take a look at doing this?
 
-Sure, just added this:
+On 2023/7/20 03:58, Sui Jingfeng wrote:
+> My explanation about the minor tweak being made before this version 
+> and previous version
+>
+> is that  I want to keep my patch *less distraction*. 
 
-[acme@quaco perf-tools-next]$ git show
-commit 0146244875046fad472a39ffd61ec4f91719b62a (HEAD -> perf-tools-next)
-Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-Date:   Wed Jul 19 16:53:01 2023 -0300
 
-    MAINTAINERS: Add git information for perf-tools and perf-tools-next trees/branches
+The minor tweak being made between this version and previous version is 
+to keep my patch *less distraction*.
 
-    Now the perf tools development is done on these trees/branches:
-
-      git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git perf-tools
-      git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git perf-tools-next
-
-    For a while I'll continue mirroring what is these to the same branches
-    in my git tree.
-
-    Suggested-by: John Garry <john.g.garry@oracle.com>
-    Cc: Adrian Hunter <adrian.hunter@intel.com>
-    Cc: Ian Rogers <irogers@google.com>
-    Cc: Jiri Olsa <jolsa@kernel.org>
-    Cc: Namhyung Kim <namhyung@kernel.org>
-    Link: https://lore.kernel.org/lkml/CAP-5=fVGOP6-k=BTRd_bn=N0HVy+1ShpdW5rk5ND0ZGhm_fQkg@mail.gmail.com
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index aee340630ecaea38..e351cfc7cd41c570 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16629,6 +16629,8 @@ L:      linux-kernel@vger.kernel.org
- S:     Supported
- W:     https://perf.wiki.kernel.org/
- T:     git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
-+T:     git git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git perf-tools
-+T:     git git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git perf-tools-next
- F:     arch/*/events/*
- F:     arch/*/events/*/*
- F:     arch/*/include/asm/perf_event.h
-[acme@quaco perf-tools-next]$
