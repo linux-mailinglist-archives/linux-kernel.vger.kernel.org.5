@@ -2,366 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1D475A29C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 01:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3D875A29E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 01:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbjGSXE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 19:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56972 "EHLO
+        id S230168AbjGSXFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 19:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbjGSXEz (ORCPT
+        with ESMTP id S229551AbjGSXE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 19:04:55 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA2F1FD5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 16:04:52 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6726d5d92afso928400b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 16:04:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1689807892; x=1690412692;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5wFr2A7e5EWp+82eThYDiZpPT27i18/NTWE7QU00Iwo=;
-        b=slUMxadFiLxH+NNFI2NDyiI0rQr8f9NpvfLLOhGsjG3O87r0bcZpvKpTPwrunBBgix
-         s/cmHJkDCRHbplL0GzIVCbuqXlBFs039EcAQnx/flZ5Gi3JAt3TD2pmwnkRjudretQiH
-         rf8DuUSwKLwPAf7m42dHVlr5ByBa/4G2j8KhQXtOVRYJi4VOuqhwjMJmXrdnuY/vUCg6
-         IJvX1PACNIQsf2fy+lpfsr/+zhR0OBdjb7pFzsHns2AkYah12SDiIGpNSUaoZRF/ZfF7
-         y7f7lA8GAqyp8kfSzHTLXKliOVE+L8A6yKVC/BCLClsl7shxYfGKJKgP1iCRG5ps0bPw
-         qp0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689807892; x=1690412692;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5wFr2A7e5EWp+82eThYDiZpPT27i18/NTWE7QU00Iwo=;
-        b=K2mLua9/NC9Ri/xkLNKlbSX305ZUi2faGC/bZkRiwP+svZhfo9xAMp+ddhJcSy0uG8
-         A0AlUYPMr7hlxup1RSx+tOLBeZQVQNnlqj6BGqz1MG6o44O7EY1QHWScPd92pY8eoShw
-         JS10sD5ggU0QPtNu2hKEkyqJNikiSl5cPKa52fCY8yVepQzWfkI1A/7aMh1ToCk0/bhC
-         BhIlTqVoPJzD75ZPMgFX41VyCKlgrRdRLZbZZ66ONkVcM31EPioEl7CVoeUa/HTBXy25
-         L6toclzeHTwGwciZ89jCekrkN3G/LtZj9uLauP6/Bj71NMXyyMdH4oxTFheN8GfJxKD2
-         cm2w==
-X-Gm-Message-State: ABy/qLaWH41EfuRAx0/PUXBr02V05r2Tc3zdhljsXcnfIOMR3eVl8y7C
-        n7GeoIESpf4yvE9sS3vl/niWB3p/SRmj+do5tUmjGw==
-X-Google-Smtp-Source: APBJJlGO9EDGVzmVIbzDbaW4q/7xWmaTWhlijEvEV5ktsCXxLMGAAqX7MC+JIcF9coSbnKNUULA6G0T3b0h/46L1VCU=
-X-Received: by 2002:a17:90a:72c8:b0:261:326d:99e8 with SMTP id
- l8-20020a17090a72c800b00261326d99e8mr4688870pjk.2.1689807892181; Wed, 19 Jul
- 2023 16:04:52 -0700 (PDT)
+        Wed, 19 Jul 2023 19:04:56 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2067.outbound.protection.outlook.com [40.107.93.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D1F9171E
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 16:04:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PdmuUCZnkJum/kms0XquuU7l3WJKjb1M7uhd0AYKI1ts8hHC4f+X8srOeo3Dlvb4H8/015b3ew7VFw5VGrjz6404ThkFa9W1j7+7OdT5fUEWAGlKAiVx4YGGj8mbx9cOxa7EbRKrM46PH17psixUxhXUTOA4hKTW3Kgm1yKBWK2zO/ZaJgfkimKIFaj1m1FjGolMqEtBJLiX6x62lBai0surgZNxNz0/vTNK2cF67DRKFZPgfIT8H7OX5m+SPHitjsKQJSSDPDxBB8uKM+owWYwPifupJW6KXEL2acCjm0gufR6tokPcSXos+LmNCAp4Ws78PkTJE97v8dvfdxe0Kg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2ZfMN7YPajL1jwR5JCs7N6iUAdl552Hxzzjs/Jfm4L4=;
+ b=LUTXnS67Np1HOV7TtlG3CMTEotXJk2SADJfE9uiPSWhCN1Xyjrs+SoDIrH79+QQTJYvcOsSdRiwTaaEgj/UL622Z2BVGuUuyIB55ykofIJvt09XnPq5PRWJV3JQVyfPIK8ZevnJMlr3O3TWjHlZnHI0kysEr1mwWn/h/ha9J4B6uM0ny2Nq5J7kABQfRSebdlojtmhjchr5ENsKn63ZR0duf49P5S9gg750ostlVyBTk1/sJIzQusCyYUAS5ZS6kM4MmFBLf4B+f50WNcmeBOs/gY0iFncYkPjP4e3OxthX1kLhx2qBLygFk3Gu0JflktnL0mJFyVipMlA+4sqiuyA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2ZfMN7YPajL1jwR5JCs7N6iUAdl552Hxzzjs/Jfm4L4=;
+ b=gQMIiUUJMkdU2+ugG1p+vydZbRWAXxEYNh0xCQ9aOkUCuvufEaHAd0TIspUkWT89k2j+BcAU5w+7YOdk18rOVo/7ra5sP6Ge6U4ibI8ASUfOl/Rkphb7iheH/9Tj7xpRrpTuxAAOvly8tA2zkaJSW5bC/FK5PHd0rvTpSyj0eiQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS0PR12MB6583.namprd12.prod.outlook.com (2603:10b6:8:d1::12) by
+ CY8PR12MB7242.namprd12.prod.outlook.com (2603:10b6:930:59::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6609.24; Wed, 19 Jul 2023 23:04:51 +0000
+Received: from DS0PR12MB6583.namprd12.prod.outlook.com
+ ([fe80::bf76:da18:e4b4:746b]) by DS0PR12MB6583.namprd12.prod.outlook.com
+ ([fe80::bf76:da18:e4b4:746b%7]) with mapi id 15.20.6609.024; Wed, 19 Jul 2023
+ 23:04:50 +0000
+Message-ID: <0a714a16-c5f1-1ef9-587a-c0871366ad74@amd.com>
+Date:   Wed, 19 Jul 2023 16:04:46 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH] vpda: pds: fix building without debugfs
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20230719194058.1606869-1-arnd@kernel.org>
+From:   Shannon Nelson <shannon.nelson@amd.com>
+In-Reply-To: <20230719194058.1606869-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR05CA0015.namprd05.prod.outlook.com
+ (2603:10b6:a03:33b::20) To DS0PR12MB6583.namprd12.prod.outlook.com
+ (2603:10b6:8:d1::12)
 MIME-Version: 1.0
-References: <cover.1689792825.git.tjeznach@rivosinc.com> <d62ceb33620cab766d809e6bbf30eaf5b46bc955.1689792825.git.tjeznach@rivosinc.com>
- <20230719-unnoticed-scion-744fdf509151@spud> <CAL_JsqLsb801Z4H7+ViboBSGwd+XidcpYcJMHgw+6fofsXB=9Q@mail.gmail.com>
-In-Reply-To: <CAL_JsqLsb801Z4H7+ViboBSGwd+XidcpYcJMHgw+6fofsXB=9Q@mail.gmail.com>
-From:   Tomasz Jeznach <tjeznach@rivosinc.com>
-Date:   Wed, 19 Jul 2023 16:04:41 -0700
-Message-ID: <CAH2o1u5VdOx+MgQFyjEr1__DZmsxLGGqf8v1pDvTHoPJ4OGfGA@mail.gmail.com>
-Subject: Re: [PATCH 03/11] dt-bindings: Add RISC-V IOMMU bindings
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Conor Dooley <conor@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com,
-        linux-kernel@vger.kernel.org, Sebastien Boeuf <seb@rivosinc.com>,
-        iommu@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        linux-riscv@lists.infradead.org, krzysztof.kozlowski+dt@linaro.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6583:EE_|CY8PR12MB7242:EE_
+X-MS-Office365-Filtering-Correlation-Id: 25be83e4-182e-4b79-1f7c-08db88ac8dee
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Vk95eqQ5PzW7o1SGWDHY1pcb7b74P/7aGdDw2td4IqhZIzhoT79fxtVF6w09379bXLuxLtNH8K6WEVJgd7szdVJCJhNq4cOAzILb81hRe16RO5WkLT+RN6ohf3uvPBTCh2fZOEzOuz6DnOatvwJphtG7QaA3i1RYnSTF1XJkXkKTvWDDCUHPNvdUn/+Sr3azn+HiqWYCZ6WiKTTHMKiEZFlXZloTt8qjBEckLu1YTGFhAfeoVUCf7fEZU0fVllE3+BggKrrgsI7sftYCZpsocPeBtZyPRqtdn+HabfWFSAzot24gx8ZnJsSeC01/BOVnawEf1gkdCV0td/miz9KVemD5G3+jwV5B/IjOyN9DrhphcG/J2kQ88tIZYBOXdYi5MHqHVWYHwBbK1lapnO4Ti3CHL2HL3kfdIOeuQmHFHqad/veHBrsqEhLjyPqI9VBVFnHSGxQN4KpbHUSrEPuh3DcFK7DO4WtHYzadPKsqBaskXLylaNKQk2RSy8hGYL0UuWsSy5nQ4HZrgHRK45CEQ3hjxmR5D25x8+A3VsHPob1HViBy9LyJBIMAIenr5QBpDUAJCA9bR87TATgdCEidVBpH+FzMfTH7bCb8sRHzcs7iHzTVtDv/o8W2MYbCj+kyXT9G3L9O6W/sMyKQebAHXA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6583.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(346002)(39860400002)(396003)(136003)(376002)(451199021)(316002)(2906002)(8936002)(5660300002)(8676002)(44832011)(41300700001)(36756003)(31696002)(86362001)(31686004)(6666004)(2616005)(6486002)(54906003)(110136005)(478600001)(186003)(26005)(6506007)(53546011)(966005)(6512007)(38100700002)(66946007)(66476007)(66556008)(4326008)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T05wQW5Ga2NUWVhHVmtsYmFGQTgvcW9sSzVmZ3BUajJic2xnYWpGZ3hkb3ZU?=
+ =?utf-8?B?TG9RMXkxRExoY0dsWTJ1RFRxTWliR1QrdmhrRGhwYUp3TVJ3R2N2T0JsOU1q?=
+ =?utf-8?B?TXhYSEMrRk05b1lKOWlxLy91dGNFbFB4WEM5Njl6MmNWMlhjY3hHQktiOSt3?=
+ =?utf-8?B?a0FTUUFBV3R2OXpDM0JEeTNXK3JHTGQ3QTBKcTlYVDN6UGx1UzUxdWx4Unlm?=
+ =?utf-8?B?NXJYVEt1Q2NjZnF0S1JKV3hPV1p6YWdUc2xyWTZlcGlONFFsZ09EV2xBbE56?=
+ =?utf-8?B?RDZWVkN1U1ZRWlRjRUs3Q2pMeGZTRjJnQmZzYzZzakhXTmIrUzAyWG1YYUlB?=
+ =?utf-8?B?WXdnMDJpVGUwU1E2TzQyd3Z6RlFyaERQMVU3WUtxSHNOM1BsZ3VkUFBsY2w1?=
+ =?utf-8?B?S3paQTVBcXEzbTlxekpmOUNaL1dPalJOY2l2dFRJWldlYWZ4OXl1bzhaUFJD?=
+ =?utf-8?B?MkpXR0NyZnVzY09Sb0FFMUcyZ3lyRmVGTTF5OHdXVldkbVV5WDZDdXVWYkZk?=
+ =?utf-8?B?c0NMMXNhVmUrK25KT0pYRFJFeS81ZWtoMHpVeHBuR1I5RklCb2FKWUZBc1JQ?=
+ =?utf-8?B?UlplRDViQ3JnblJvNW1VTnYwMFRZaHRxNGZTd29PdnN1UjJpcWVFUXhJdkw5?=
+ =?utf-8?B?RWhYMmQ0eDBLYVdKaTNydzI4V2cvektiMzhRU3BxcDhKdFZvR1I3VmxQUXJI?=
+ =?utf-8?B?NG5obkhMNStCWVEvUDhpbmVDZlZYakVMTDQ4Qzdkb2ZXc1loTGM3Vk1EOEVD?=
+ =?utf-8?B?Z0p4NTVPandaWWx6S21vUXVrb2FBaEpvLzh1NTIrU0VRL3o3dDZBYkdLcEI0?=
+ =?utf-8?B?NDlSNTRiVGQwSVVSU290QTdFb0xNWkZicmJjcnJJSTg5V1MrUXM5NEppZkc4?=
+ =?utf-8?B?M1VDaDRkT1RqaGR1SHVFdTJGemw0L0VzM2VLR1J6T0FIOWUxZFZqZUpWK0h3?=
+ =?utf-8?B?SFNMQ0dDOSsrelRkdTZRakl2eFphc2dRUzcwcjhvZU14RkxoWjQ4eXptTXNh?=
+ =?utf-8?B?cVBZb0FOQ3hFUy9xS29odTZ4ampCZmttMnRxeDlwNnJNcis2cW9sNzZkUk0x?=
+ =?utf-8?B?WEhXVmFXNWpkNTBhT3RQdVp3K3djaTZiTFd1T0JQOE1KaXlGbFBodmF0ckRV?=
+ =?utf-8?B?dkN4OXpBUDE3MU9hdWRSNlFDTnVGcFMwQy9LS1JPclZVZGpxb3VJcVVtRFFB?=
+ =?utf-8?B?Nk5QMDV3bmkzM1hTQTd4cENkZUN2a0xZME9jdUovQkdUUHFQMU1Ba1NUTmRj?=
+ =?utf-8?B?eTlqQVdTY0I2Yk5qOUtNSkVaOXlUVFA5WjFlaE1Dc2UrSnlxS21HWVY3RE5q?=
+ =?utf-8?B?c1JLM0VySzdISVYvYXpialdsdE1hbzZqdk8wUE9FeEJhOUJxdDVKd0dsb2N4?=
+ =?utf-8?B?Q04zUHFpUEJBRDJUeEd5RlR1RGtMaUhEZkp4U1J4NitrOFlXdHZDR09DUDNi?=
+ =?utf-8?B?SDVodWo3VlZwUGRlendCR2RuUDVZdzBTaTdlSjZWbElhWUd0SnRBd0p4Y3NV?=
+ =?utf-8?B?YVpRUzBySkFxL3pRRk5CV0NzRk1oR0pMcVdIV3RZWitOWUtMSXZoaFBVVjNy?=
+ =?utf-8?B?M3lIb3Qwb0FIUHhyWmFVMEQzZlI3b3JleVhQR1VoSlk1N3dUWDkwelRhS29P?=
+ =?utf-8?B?akpBdUpLMzBXTXpNNGNCRnN5RDVxL05NSTRZSVBXVEUrdEtLZDBlS3FON1dI?=
+ =?utf-8?B?V2VRYkFhZkFpMDY2N1ArZkhTZTN3NEcxMUc0KzJKMDg4OVA4cUppcUV0WG1B?=
+ =?utf-8?B?dVFORGZxL3FmMlFsZE1SOUFRRnFlZ25WcHpMVFhsYURxc3RkM0UzZ3NxdHdp?=
+ =?utf-8?B?ZU1HdkFHek9vN1VhNVNOeERuVWsvclNEY1hXd05uU0RwbjRHWmtOZFJ6MTh6?=
+ =?utf-8?B?d2VMYWJjTTh0Y3pQUzNGSEZSR0pEQVFXWU5iZ25OVTZPRFhmbHVLanhxMU5X?=
+ =?utf-8?B?M2FNT3V6WHd1VVVWTXp5RjIwa2hlWFFPQk1JZzBYNWpXb0NhTzlxSU80dVN3?=
+ =?utf-8?B?RFRGVmh3TzJ2ZU8wWmladjl3bVo0c2hDa1VwRGhRREV0RzJvTmtSWTNLU2Fk?=
+ =?utf-8?B?bEhVekprNkhmcXpkZ2FXYTBUUS9YMkh4QXg3MG9NeDNQeUFiWFdXaWptTFpS?=
+ =?utf-8?Q?wvPhQUDTtiA5x4byWAIk5tyqT?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25be83e4-182e-4b79-1f7c-08db88ac8dee
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6583.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 23:04:50.1716
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: O0y+cpToec/25F+zge5EbNWvINmFgThiNQUKeJIZM3hkymA3OW9nNT26HC5NXdwSbAf5ikrfvRVkGjg/D1Mtyw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7242
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 2:37=E2=80=AFPM Rob Herring <robh+dt@kernel.org> wr=
-ote:
->
-> On Wed, Jul 19, 2023 at 2:19=E2=80=AFPM Conor Dooley <conor@kernel.org> w=
-rote:
-> >
-> > Hey Tomasz,
-> >
-> > On Wed, Jul 19, 2023 at 12:33:47PM -0700, Tomasz Jeznach wrote:
-> > > From: Anup Patel <apatel@ventanamicro.com>
-> > >
-> > > We add DT bindings document for RISC-V IOMMU platform and PCI devices
-> > > defined by the RISC-V IOMMU specification.
-> > >
-> > > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> >
-> > Your signoff is missing from here.
-> >
-> > Secondly, as get_maintainer.pl would have told you, dt-bindings patches
-> > need to be sent to the dt-binding maintainers and list.
-> > +CC maintainers & list.
-> >
-> > Thirdly, dt-binding patches should come before their users.
-> >
-> > > ---
-> > >  .../bindings/iommu/riscv,iommu.yaml           | 146 ++++++++++++++++=
-++
-> > >  1 file changed, 146 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/iommu/riscv,iom=
-mu.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml=
- b/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml
-> > > new file mode 100644
-> > > index 000000000000..8a9aedb61768
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml
-> > > @@ -0,0 +1,146 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/iommu/riscv,iommu.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: RISC-V IOMMU Implementation
-> > > +
-> > > +maintainers:
-> > > +  - Tomasz Jeznach <tjeznach@rivosinc.com>
-> >
-> > What about Anup, who seems to have written this?
-> > Or your co-authors of the drivers?
-> >
-> > > +
-> > > +description:
-> > > +  The RISC-V IOMMU specificaiton defines an IOMMU for RISC-V platfor=
-ms
->
-> typo
->
+On 7/19/23 12:40 PM, Arnd Bergmann wrote:
+> 
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The new debugfs code still gets called when debugfs is disabled, resulting
+> in a link failure:
+> 
+> ERROR: modpost: "pds_vdpa_debugfs_del_vdpadev" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
+> ERROR: modpost: "pds_vdpa_debugfs_add_vdpadev" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
+> ERROR: modpost: "pds_vdpa_debugfs_reset_vdpadev" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
+> ERROR: modpost: "pds_vdpa_debugfs_create" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
+> ERROR: modpost: "pds_vdpa_debugfs_add_ident" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
+> ERROR: modpost: "pds_vdpa_debugfs_destroy" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
+> ERROR: modpost: "pds_vdpa_debugfs_add_pcidev" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
+> 
+> Add the usual #if/#else block around the declarations to supply empty stubs
+> for the broken case.
+> 
+> Fixes: 151cc834f3dda ("pds_vdpa: add support for vdpa and vdpamgmt interfaces")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-ack
+Thanks, Arnd.  There is a patch already intended to address this:
+https://lore.kernel.org/netdev/20230706231718.54198-1-shannon.nelson@amd.com/
 
-> > > +  which can be a regular platform device or a PCI device connected t=
-o
-> > > +  the host root port.
-> > > +
-> > > +  The RISC-V IOMMU provides two stage translation, device directory =
-table,
-> > > +  command queue and fault reporting as wired interrupt or MSIx event=
- for
-> > > +  both PCI and platform devices.
->
-> TBC, you want a PCI device that's an IOMMU and the IOMMU serves
-> (provides translation for) PCI devices?
->
+Maybe it needs to get pulled in through a different tree to show up quicker?
 
-Yes, IOMMU as a PCIe device providing address translation services for
-connect PCIe root complex.
-
-> > > +
-> > > +  Visit https://github.com/riscv-non-isa/riscv-iommu for more detail=
-s.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    oneOf:
-> > > +      - description: RISC-V IOMMU as a platform device
->
-> "platform device" is a Linux term. Don't use Linux terms in bindings.
->
-
-ack.
+sln
 
 
-> > > +        items:
-> > > +          - enum:
-> > > +              - vendor,chip-iommu
-> >
-> > These dummy compatibles are not valid, as was pointed out to Anup on
-> > the AIA series. Please go look at what was done there instead:
-> > https://lore.kernel.org/all/20230719113542.2293295-7-apatel@ventanamicr=
-o.com/
-> >
-> > > +          - const: riscv,iommu
-> > > +
-> > > +      - description: RISC-V IOMMU as a PCI device connected to root =
-port
-> > > +        items:
-> > > +          - enum:
-> > > +              - vendor,chip-pci-iommu
-> > > +          - const: riscv,pci-iommu
-> >
-> > I'm not really au fait with the arm smmu stuff, but do any of its
-> > versions support being connected to a root port?
->
-> PCI devices have a defined format for the compatible string based on
-> VID/PID. For PCI, also usually don't need to be described in DT
-> because they are discoverable. The exception is when there's parts
-> which aren't. Which parts aren't?
->
-
-We've put 'riscv,pci-iommu' node here to describe relationship between PCIe
-devices and IOMMU(s), needed for the pcie root complex description (iommu-m=
-ap).
-If there is a better way to reference PCI-IOMMU without adding
-pci-iommu definition
-that would solve the problem. Every other property of pci-iommu should
-be discoverable.
-
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +    description:
-> > > +      For RISC-V IOMMU as a platform device, this represents the MMI=
-O base
-> > > +      address of registers.
-> > > +
-> > > +      For RISC-V IOMMU as a PCI device, this represents the PCI-PCI =
-bridge
->
-> Your IOMMU is also a PCI-PCI bridge? Is that a normal PCI thing?
->
-
-It's allowed to be integrated with root complex / IO bridge, but it is
-as a separate PCIe device.
-I'll clarify the description.
-
->
-> > > +      details as described in Documentation/devicetree/bindings/pci/=
-pci.txt
->
-> Don't refer to pci.txt. It is going to be removed.
->
-
-ack.
-
-> > > +
-> > > +  '#iommu-cells':
-> > > +    const: 2
-> > > +    description: |
-> >
-> > |s are only needed where formatting needs to be preserved.
-> >
-> > > +      Each IOMMU specifier represents the base device ID and number =
-of
-> > > +      device IDs.
->
-> Doesn't that assume device IDs are contiguous? Generally not a safe assum=
-ption.
->
-
-ack.
-
-> > > +
-> > > +  interrupts:
-> > > +    minItems: 1
-> > > +    maxItems: 16
-> >
-> > What are any of these interrupts?
-> >
-> > > +    description:
-> > > +      The presence of this property implies that given RISC-V IOMMU =
-uses
-> > > +      wired interrupts to notify the RISC-V HARTS (or CPUs).
-> > > +
-> > > +  msi-parent:
-> > > +    description:
-> > > +      The presence of this property implies that given RISC-V IOMMU =
-uses
-> > > +      MSIx to notify the RISC-V HARTs (or CPUs). This property shoul=
-d be
-> > > +      considered only when the interrupts property is absent.
->
-> This doesn't make sense for a PCI device. PCI defines its own way to
-> describe MSI support.
->
-
-Agree, this is for IOMMU as a non-PCI device, capable of sending MSI.
-Follows 'MSI clients' notes from
-devicetree/bindings/interrupt-controller/msi.txt
-Is this a proper way to describe this relationship?
-
-> > > +
-> > > +  dma-coherent:
-> >
-> > RISC-V is dma-coherent by default, should this not be dma-noncoherent
-> > instead?
-> >
-> > > +    description:
-> > > +      Present if page table walks and DMA accessed made by the RISC-=
-V IOMMU
-> > > +      are cache coherent with the CPU.
-> > > +
-> > > +  power-domains:
-> > > +    maxItems: 1
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - '#iommu-cells'
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    /* Example 1 (IOMMU platform device with wired interrupts) */
-> > > +    immu1: iommu@1bccd000 {
-> >
-> > Why is this "immu"? typo or intentional?
-> >
-> > > +        compatible =3D "vendor,chip-iommu", "riscv,iommu";
-> > > +        reg =3D <0x1bccd000 0x1000>;
-> > > +        interrupt-parent =3D <&aplic_smode>;
-> > > +        interrupts =3D <32 4>, <33 4>, <34 4>, <35 4>;
-> > > +        #iommu-cells =3D <2>;
-> > > +    };
-> > > +
-> > > +    /* Device with two IOMMU device IDs, 0 and 7 */
-> > > +    master1 {
-> > > +        iommus =3D <&immu1 0 1>, <&immu1 7 1>;
-> > > +    };
-> > > +
-> > > +  - |
-> > > +    /* Example 2 (IOMMU platform device with MSIs) */
-> > > +    immu2: iommu@1bcdd000 {
-> > > +        compatible =3D "vendor,chip-iommu", "riscv,iommu";
-> > > +        reg =3D <0x1bccd000 0x1000>;
-> > > +        msi-parent =3D <&imsics_smode>;
-> > > +        #iommu-cells =3D <2>;
-> > > +    };
-> > > +
-> > > +    bus {
-> > > +        #address-cells =3D <2>;
-> > > +        #size-cells =3D <2>;
-> > > +
-> > > +        /* Device with IOMMU device IDs ranging from 32 to 64 */
-> > > +        master1 {
-> > > +                iommus =3D <&immu2 32 32>;
-> > > +        };
-> > > +
-> > > +        pcie@40000000 {
-> > > +            compatible =3D "pci-host-cam-generic";
-> > > +            device_type =3D "pci";
-> > > +            #address-cells =3D <3>;
-> > > +            #size-cells =3D <2>;
-> > > +            bus-range =3D <0x0 0x1>;
-> > > +
-> > > +            /* CPU_PHYSICAL(2)  SIZE(2) */
->
-> I'm guessing there was more after this, but I don't have it...
-
-Complete patch 3 is at:
-https://lore.kernel.org/linux-iommu/cover.1689792825.git.tjeznach@rivosinc.=
-com/T/#mbf8dc4098fb09b87b2618c5c545ae882f11b114b
-
->
-> Guessing, immu2 is a PCI device, but it translates for master1 which
-> is not a PCI device? Weird. Why would anyone build such a thing?
->
-
-In this example immu2 is a non-PCI device. Agree, otherwise would be weird.
-
->
-> Rob
-
-Thank you,
-- Tomasz
+> ---
+>   drivers/vdpa/pds/debugfs.h | 10 ++++++++++
+>   1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/vdpa/pds/debugfs.h b/drivers/vdpa/pds/debugfs.h
+> index c088a4e8f1e92..6fbd64ace13a3 100644
+> --- a/drivers/vdpa/pds/debugfs.h
+> +++ b/drivers/vdpa/pds/debugfs.h
+> @@ -6,6 +6,7 @@
+> 
+>   #include <linux/debugfs.h>
+> 
+> +#ifdef CONFIG_DEBUG_FS
+>   void pds_vdpa_debugfs_create(void);
+>   void pds_vdpa_debugfs_destroy(void);
+>   void pds_vdpa_debugfs_add_pcidev(struct pds_vdpa_aux *vdpa_aux);
+> @@ -13,5 +14,14 @@ void pds_vdpa_debugfs_add_ident(struct pds_vdpa_aux *vdpa_aux);
+>   void pds_vdpa_debugfs_add_vdpadev(struct pds_vdpa_aux *vdpa_aux);
+>   void pds_vdpa_debugfs_del_vdpadev(struct pds_vdpa_aux *vdpa_aux);
+>   void pds_vdpa_debugfs_reset_vdpadev(struct pds_vdpa_aux *vdpa_aux);
+> +#else
+> +static inline void pds_vdpa_debugfs_create(void) { }
+> +static inline void pds_vdpa_debugfs_destroy(void) { }
+> +static inline void pds_vdpa_debugfs_add_pcidev(struct pds_vdpa_aux *vdpa_aux) { }
+> +static inline void pds_vdpa_debugfs_add_ident(struct pds_vdpa_aux *vdpa_aux) { }
+> +static inline void pds_vdpa_debugfs_add_vdpadev(struct pds_vdpa_aux *vdpa_aux) { }
+> +static inline void pds_vdpa_debugfs_del_vdpadev(struct pds_vdpa_aux *vdpa_aux) { }
+> +static inline void pds_vdpa_debugfs_reset_vdpadev(struct pds_vdpa_aux *vdpa_aux) { }
+> +#endif
+> 
+>   #endif /* _PDS_VDPA_DEBUGFS_H_ */
+> --
+> 2.39.2
+> 
