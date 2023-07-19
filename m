@@ -2,119 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE37675A1FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4377275A229
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbjGSWeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 18:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35342 "EHLO
+        id S230282AbjGSWo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 18:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbjGSWef (ORCPT
+        with ESMTP id S230253AbjGSWox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 18:34:35 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C9CF1FDC
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:34:34 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-346099c6f43so52545ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:34:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689806073; x=1692398073;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lIbuVyN5d3NyUBHRaekU7xza2xcWELBLsfoZP8e9gNg=;
-        b=2hxfLvUnWST1hw5GHv+xREoq79Syz2FB2qGP2KKuqS3JcgJ3VRnxxDA4HtD4TomoRS
-         c8VbEXGK/dNFnd0BMqEcDL8zSJ4/ae7LyF3rhus4PkPJMdb+PXpiWcS1UoGu31hfRfHz
-         TGQiRlYA2CPIWG1xhGptxv5gQW2pQ7HoTudYJOCjw//U0C9h96eWd1zm7UwTSJyL6kts
-         0iZiz/lrqcMVDFAXiC6d3mxWEGV+FtGq3NierD9tZzc9UWyLGEC9aHrZhZdtDfYExC4r
-         bUyr7rBPvEzyxg6af8CCWhUSkwoexwomx8FdiF6Q5ScCtJC6M7MOeOc7nUHcR+h+hoML
-         L/lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689806073; x=1692398073;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lIbuVyN5d3NyUBHRaekU7xza2xcWELBLsfoZP8e9gNg=;
-        b=ZlzUgT/j3AGDxEMoc3Rtm3nqahwARD1OddHWDXcp8JRSfWD8HVJmIds//VKEb0EfX6
-         9L6xptpmvZti/0MWau2geFJEag2DoAvQzPys2zdcsaaf4fpyx9ScHcxwbBMkNqhstF8I
-         Pemw7QL15LZWuqCVqVvfe9RUAK/AU2APjq+VcdYy9c6KUDK+Xu3Ir33+fxb/kE4cYe0R
-         G04anvyfXxwynsztdbLo6QG9aCIS8RoLoO8GFFB+nucfvRWuZPdKhgMQ4PiQ4ksS7Q5t
-         FieduRMe60hS1nq3AnnQXwJdiO0Pr9RHr5Wpa5L68gpP4Fd0riCHVpVhAXXBukmMI398
-         ZOAA==
-X-Gm-Message-State: ABy/qLYL74eZUnbFwG2InuRklif0OWAGXU7dbiLk/R/I/VJ2cHRxZUmR
-        gjRikCneQj5Eo7Z++UmFpT9ueOF7WLrkE+GmjAKwEA==
-X-Google-Smtp-Source: APBJJlG9jUMqVyvUlse88weKimxWs0pP1zXlRDmC++8lT6+P6hHKROIp/1otTP4crqWLUHpvTdqFVht2+4BxQnlXnOI=
-X-Received: by 2002:a05:6e02:1789:b0:346:48bd:da43 with SMTP id
- y9-20020a056e02178900b0034648bdda43mr99530ilu.4.1689806073680; Wed, 19 Jul
- 2023 15:34:33 -0700 (PDT)
+        Wed, 19 Jul 2023 18:44:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CEC1FE6;
+        Wed, 19 Jul 2023 15:44:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 999BF61840;
+        Wed, 19 Jul 2023 22:44:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E474FC433CA;
+        Wed, 19 Jul 2023 22:44:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689806692;
+        bh=KpGFKEUuiIitS8UfirDt+cuq2SuWxsDx+OdYFcxFU7M=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=JpRakYUuJVAkIJR5HXblpzkI9PdUqU4i6XmbSMiTmtzfemV4WD1akHLy5SRrSFQpN
+         un+aQppiWBaKop97bHOHt21+1n5Lni5eMuEOpIRbNOIQw+sidPK0D5Pg+bixMmM/iT
+         5x+yJ277k0CF6zsE7cPVFO/voXF/CTgmkLAMhiOiddjfli33xDNSUhJZVyNPVcWVMe
+         /N7mjpOjsORLyfseS1M97Cx+eWLMUz5gcr35FhKsYEKzfkvyhrCKdrQjUpIFLkHSCx
+         rHSKNa1leBY7DM/IVkwNmgKkCvpnnBeCpNNjaU+nXSyos4fD53d+gJSxubvCXqzjo2
+         SL/39Pi2aAirg==
+Date:   Wed, 19 Jul 2023 15:37:02 -0700
+From:   Kees Cook <kees@kernel.org>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Kees Cook <keescook@chromium.org>
+CC:     Hans de Goede <hdegoede@redhat.com>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: Crash in VirtualBox virtual machines running kernel 6.5
+User-Agent: K-9 Mail for Android
+In-Reply-To: <d29c7e51-deff-c82f-81d4-8322b0c28d22@lwfinger.net>
+References: <ab3a70e9-60ed-0f13-e3d4-8866eaccc8c1@lwfinger.net> <202307190823.086EFD42D9@keescook> <202307190835.752D710D@keescook> <d29c7e51-deff-c82f-81d4-8322b0c28d22@lwfinger.net>
+Message-ID: <DC28E9B9-0F7A-4CA5-9FA9-6A4AB5DCD9D5@kernel.org>
 MIME-Version: 1.0
-References: <20230719202951.534582-1-acme@kernel.org>
-In-Reply-To: <20230719202951.534582-1-acme@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 19 Jul 2023 15:34:21 -0700
-Message-ID: <CAP-5=fWj8ZgbYd2OX85LjW=Cd6jvF_tfqPdVELsTXHG+GebxRg@mail.gmail.com>
-Subject: Re: [PATCHES 0/6] Fix some 'perf trace' leaks found with -fsanitize=address.
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        John Garry <john.g.garry@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 1:30=E2=80=AFPM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
+On July 19, 2023 2:24:52 PM PDT, Larry Finger <Larry=2EFinger@lwfinger=2Ene=
+t> wrote:
+>On 7/19/23 10:36, Kees Cook wrote:
+>> Okay, please try:
+>>=20
+>> diff --git a/fs/vboxsf/shfl_hostintf=2Eh b/fs/vboxsf/shfl_hostintf=2Eh
+>> index aca829062c12=2E=2E902fe3224453 100644
+>> --- a/fs/vboxsf/shfl_hostintf=2Eh
+>> +++ b/fs/vboxsf/shfl_hostintf=2Eh
+>> @@ -68,12 +68,11 @@ struct shfl_string {
+>>     	/** UTF-8 or UTF-16 string=2E Nul terminated=2E */
+>>   	union {
+>> -		u8 utf8[2];
+>> -		u16 utf16[1];
+>> -		u16 ucs2[1]; /* misnomer, use utf16=2E */
+>> +		DECLARE_FLEX_ARRAY(u8, utf8);
+>> +		DECLARE_FLEX_ARRAY(u16, utf16);
+>>   	} string;
+>>   };
+>> -VMMDEV_ASSERT_SIZE(shfl_string, 6);
+>> +VMMDEV_ASSERT_SIZE(shfl_string, 4);
+>>     /* The size of shfl_string w/o the string part=2E */
+>>   #define SHFLSTRING_HEADER_SIZE  4
+>>=20
+>>=20
+>> The size assert doesn't seem to be used anywhere else, but I can do a
+>> more careful binary analysis later today=2E=2E=2E''
 >
-> Hi,
+>Kees,
 >
->         Please review/ack, I put it as well on the tmp.perf-tools-next
-> in the perf-tools-next tree:
+>The testing was harder than I expected=2E My standard kernel would not lo=
+ad the system disk on the VM, thus I had to build one using my distros conf=
+iguration=2E It is really painful to wait for all those drivers to build, b=
+ut I figured that might be faster than trying to find the incorrect paramet=
+er=2E
 >
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/=
-commit/?h=3Dtmp.perf-tools-next
+>I can finally report that vboxsf no longer generated a BUG=2E It is getti=
+ng farther, but I am not done yet=2E It now generates a line that says "Unk=
+nown parameter tag" and then hangs=2E I have not tracked that down yet=2E
 >
-> Best regards,
+>I was not aware of the DECLARE_FLEX_ARRAY() macro=2E I had considered rem=
+oving the union and creating a simple string[] declaration, but I do not me=
+ss with file systems, and decided to let the experts handle it=2E
 >
-> - Arnaldo
->
-> Arnaldo Carvalho de Melo (6):
->   perf evsel: Free evsel->filter on the destructor
->   perf thread: Allow tools to register a thread->priv destructor
->   perf trace: Register a thread priv destructor
->   perf trace: Really free the evsel->priv area
->   perf trace: Free thread_trace->files table
->   MAINTAINERS: Add git information for perf-tools and perf-tools-next
->     trees/branches
+>I will let you know what I find about that unknown parameter=2E It probab=
+ly is coming from VirtualBox=2E
 
-Series:
-Acked-by: Ian Rogers <irogers@google.com>
+It's possible the size really needs to stay 6 bytes=2E In that case, try a=
+dding a "u8 legacy_padding[2]" to the union and restore the VMMDEV_ASSERT_S=
+IZE?
 
-I think patch 2 could use an extra assert to be extra safe.
 
-Thanks,
-Ian
-
->  MAINTAINERS                |  2 ++
->  tools/perf/builtin-trace.c | 38 +++++++++++++++++++++++++++++++-------
->  tools/perf/util/evsel.c    |  1 +
->  tools/perf/util/thread.c   | 11 +++++++++++
->  tools/perf/util/thread.h   |  2 ++
->  5 files changed, 47 insertions(+), 7 deletions(-)
->
-> --
-> 2.41.0
->
+--=20
+Kees Cook
