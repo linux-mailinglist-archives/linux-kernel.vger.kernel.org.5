@@ -2,231 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B30759E82
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 051E4759E84
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbjGSTYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 15:24:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52460 "EHLO
+        id S231156AbjGSTZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 15:25:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjGSTYo (ORCPT
+        with ESMTP id S229604AbjGSTZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 15:24:44 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D277B2100
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:24:23 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3159da54e95so6453986f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:24:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689794662; x=1692386662;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+blPZKyB9kQFw2yoby4zINVsIsHNl22npZY9ACzq+7M=;
-        b=bk8lvJ6g3z6EPgXbtKn2Fzd23CEOBNs5B1l2gctQmMUF7pzcwOKdqAWXywZ2qlO7Zs
-         KZzMKMmfo8R16jLokoMrLIoWfIK/sQCjrsHJgrN40ivwJoeT1TrqcpbDzqDWvTweDkTL
-         xJbOQNl8Zd07wwRany4lpu7oJJ9YB7Ff7Wsalr5En8vLMJNti0/m0E5bawSpG0CdndEh
-         x4/QDJlDfCPB1gcsIwcB8GnipJUR4Dvq3xLMLbjDvgOcT1lyJxFO234K/82SS5fWLJdp
-         PCGwe5bHlKCoFZi1MVy+rMZ89QxOsG5LWxf5XXIJh+xa5dG6Y7dWwlf7sas/pzNs0P+Z
-         32tA==
+        Wed, 19 Jul 2023 15:25:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DD8213D
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:24:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689794691;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l4X8keUZdQb2bH4NBTCOtLQ3Hj41EdN+SDgQPF1/pfY=;
+        b=LevcImOQEyH53widEzfHgn84r2PCWCT4YmHSpmAK5Wd6Xdw90DOS2hH2LcVrULaBdXQ9Z/
+        eCM68TZhrEszEI6o9r6kJ3YJRW48S44ziOokILimcVz7PA4cvtkkJFtUiZvvIWwpSJQQGk
+        G8MP6x+Al1YgPJSZQQtVMqgEr4gncGU=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-15-EbyTc2IdNcKgJRUmwmbzgA-1; Wed, 19 Jul 2023 15:24:47 -0400
+X-MC-Unique: EbyTc2IdNcKgJRUmwmbzgA-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3f5df65f9f4so39154935e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:24:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689794662; x=1692386662;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+blPZKyB9kQFw2yoby4zINVsIsHNl22npZY9ACzq+7M=;
-        b=kVNlnL74+nJIcg8h7eq4MeaxZJxvdb03NKHcycVy11eq0DXZ/3Mc7J0hcHV1pGbwTT
-         JyncL8n0jXGcvGPTuVYSm+UviP5oX47Jsfs032PY+HrpfaCeuvDjCTkbf38ThhECLCsw
-         SKzIrS1Y5QvunUwG8CdZ5aEk/Y2f2uPBeGHwNMYPaqjrTZNVchcCwZCuTQ808vd6gE5r
-         lravBtF75WUNfNioLwsFtNu2/PwMQsg13SWfI+p0A4UnbbW2/ENFOtE/604kcVLnxmAQ
-         NvoHLelWksJheKgOnyqEFugE9Q3Z1S/utS+6A9bWUfd7lRAefZZD0b1txJSexpMJCUu0
-         v6Yw==
-X-Gm-Message-State: ABy/qLYTWRj0FL9suIlRKTszUlYONLiqqUsARmrNcHxflgfLeuJQca7b
-        83yes3GohElo+tAMpM0DDjrwlw==
-X-Google-Smtp-Source: APBJJlG/IP1yeppp6oYFbXTEcgn9BuyhttF9KKLqZS7LmXAJAfIbTTU894byU/ZqPDkhiyIy/y8yOQ==
-X-Received: by 2002:a5d:538d:0:b0:314:4915:689 with SMTP id d13-20020a5d538d000000b0031449150689mr642273wrv.34.1689794662315;
-        Wed, 19 Jul 2023 12:24:22 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id p1-20020adff201000000b003141f3843e6sm6005395wro.90.2023.07.19.12.24.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 12:24:21 -0700 (PDT)
-Message-ID: <792641d2-3a27-4f87-fa90-2490a302685e@linaro.org>
-Date:   Wed, 19 Jul 2023 21:24:19 +0200
+        d=1e100.net; s=20221208; t=1689794686; x=1690399486;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l4X8keUZdQb2bH4NBTCOtLQ3Hj41EdN+SDgQPF1/pfY=;
+        b=Rh5USAYz4rIOo/wl6W01c0aGEVtF/N8BHBoegrarQIyI8JHSLdeHsezDPywIpRivAs
+         LjkQS76vyjRXFRUC+wzaceH9eFBCPujYq0LxOaHeDcGD6vcXyyV/I0Wm6TWgalbAVo0I
+         wcjJuBU1o7kukitD0Mveq7dciVmg5F0RqvTa8CIl5Sjzm3k7PT/Hli/t6MHLF2gJBoYF
+         cBLQWljMuKig9/csX4Exlj/LiFFjg7wJZUt8nnAJ0SDLeYbhz+0Efmj8XuMaTz9IR28P
+         Lx+r9HRancNupQtjfRF79NlL9NT/BiaY4jTEjamLIJ2SvebKXUHE65Irw51Uei2gsvOZ
+         jKRA==
+X-Gm-Message-State: ABy/qLZ1Y9nPVYXsF/FHoN/unad7k5p11n0vaKcu8PQSxCsd25P5qJRN
+        39SszXQQQo45cZeK6wOx7EwFi0JXQYvCmbPlyQC17NDq8XGZV8ClRdyr3P42l5SkDUDgP0x6vzr
+        1tuu+XKTfBjFwaOa4UmOMQ0On
+X-Received: by 2002:adf:f803:0:b0:313:ebf3:f817 with SMTP id s3-20020adff803000000b00313ebf3f817mr694726wrp.22.1689794686778;
+        Wed, 19 Jul 2023 12:24:46 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlE+gAoZVxaGmHUoZ+DGJdKLFu6ZbS53uLFxpRmgqQc1kVBMnscA1+Tk/eOyiu3y0cdVGHrgig==
+X-Received: by 2002:adf:f803:0:b0:313:ebf3:f817 with SMTP id s3-20020adff803000000b00313ebf3f817mr694713wrp.22.1689794686460;
+        Wed, 19 Jul 2023 12:24:46 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id h10-20020a5d4fca000000b00314172ba213sm5943825wrw.108.2023.07.19.12.24.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 12:24:46 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     suijingfeng <suijingfeng@loongson.cn>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [05/11] drm/tests: helpers: Create an helper to allocate a
+ locking ctx
+In-Reply-To: <fbbc08de-043a-2622-7cd4-fa485129edaf@loongson.cn>
+References: <20230710-kms-kunit-actions-rework-v1-5-722c58d72c72@kernel.org>
+ <fbbc08de-043a-2622-7cd4-fa485129edaf@loongson.cn>
+Date:   Wed, 19 Jul 2023 21:24:45 +0200
+Message-ID: <87lefbhfgi.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] ARM: dts: imx6qdl: Add Variscite VAR-SOM-MX6 SoM
- support
-Content-Language: en-US
-To:     James Hilliard <james.hilliard1@gmail.com>
-Cc:     devicetree@vger.kernel.org,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230719160048.2737423-1-james.hilliard1@gmail.com>
- <03748443-0459-c925-ce76-33ec134a303d@linaro.org>
- <CADvTj4pgA_XjYZyU+D+J2QdC4NPFTxPSBCvrpK8WNjFkzkz-KQ@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <CADvTj4pgA_XjYZyU+D+J2QdC4NPFTxPSBCvrpK8WNjFkzkz-KQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/2023 20:57, James Hilliard wrote:
-> On Wed, Jul 19, 2023 at 11:16 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->>
+suijingfeng <suijingfeng@loongson.cn> writes:
 
+> Hi,
+>
+> On 2023/7/10 15:47, Maxime Ripard wrote:
+>> As we get more and more tests, the locking context initialisation
 
->>> +
->>> +/ {
->>> +     model = "Variscite i.MX6 QUAD/DUAL VAR-SOM-MX6";
->>> +     compatible = "fsl,imx6q";
->>
->> That's not correct compatible. It's not Imx6 soc. It's a som.
-> 
-> I'm confused, AFAIU the VAR-SOM-MX6 uses an imx6q SoC.
+[...]
 
-True, I should say - that's incomplete compatible. You claim here this
-is imx6q. Not that it uses imx6q... Add your own compatible and document
-all of them.
+>> +/**
+>> + * drm_kunit_helper_context_alloc - Allocates an acquire context
+>> + * @test: The test context object
+>> + *
+>> + * Allocates and initializes a modeset acquire context.
+>> + *
+>> + * The context is tied to the kunit test context, so we must not call
+>> + * drm_modeset_acquire_fini() on it, it will be done so automatically.
+>> + *
+>> + * Returns:
+>> + * An ERR_PTR on error, a pointer to the newly allocated context otherwise
+>> + */
+>> +struct drm_modeset_acquire_ctx *
+>> +drm_kunit_helper_acquire_ctx_alloc(struct kunit *test)
+>> +{
+>> +	struct drm_modeset_acquire_ctx *ctx;
+>> +	int ret;
+>> +
+>> +	ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
+>
+> Because kunit_kzalloc() is also managed,
+>
+> Is there any possibility that kfree(ctx) get called before 
+> action_drm_release_context(ctx) ?
+>
+> Currently, I can't find where the order is guaranteed.
+>
 
-> 
->>
->>> +...
->>> +
->>> +     sound: sound {
->>> +             compatible = "simple-audio-card";
->>> +             simple-audio-card,name = "var-som-audio";
->>> +             simple-audio-card,format = "i2s";
->>> +             simple-audio-card,bitclock-master = <&sound_codec>;
->>> +             simple-audio-card,frame-master = <&sound_codec>;
->>> +             simple-audio-card,widgets = "Headphone", "Headphone Jack",
->>> +                                         "Line", "Line In", "Microphone", "Mic Jack";
->>> +             simple-audio-card,routing = "Headphone Jack", "HPLOUT",
->>> +                                         "Headphone Jack", "HPROUT",
->>> +                                         "LINE1L", "Line In",
->>> +                                         "LINE1R", "Line In";
->>> +
->>> +             sound_cpu: simple-audio-card,cpu {
->>> +                     sound-dai = <&ssi2>;
->>> +             };
->>> +
->>> +             sound_codec: simple-audio-card,codec {
->>> +                     sound-dai = <&tlv320aic3106>;
->>> +                     clocks = <&clks IMX6QDL_CLK_CKO>;
->>> +             };
->>> +     };
->>> +
->>> +     wlan_bt_rfkill {
->>
->> No underscores in node names.
->>
->> Just "rfkill"
->>
->>
->>> +             compatible = "rfkill-gpio";
->>> +             name = "wlan_bt_rfkill";
->>> +             type = <2>;     /* bluetooth */
->>> +             gpios = <&gpio6 18 GPIO_ACTIVE_HIGH>;
->>> +     };
->>> +};
->>> +
->>
->> ...
->>
->>> +     tlv320aic3106: codec@1b {
->>> +             compatible = "ti,tlv320aic3106";
->>> +             reg = <0x1b>;
->>> +             #sound-dai-cells = <0>;
->>> +             DRVDD-supply = <&reg_3p3v>;
->>> +             AVDD-supply = <&reg_3p3v>;
->>> +             IOVDD-supply = <&reg_3p3v>;
->>> +             DVDD-supply = <&reg_3p3v>;
->>> +             ai3x-ocmv = <0>;
->>> +             reset-gpios = <&gpio4 5 GPIO_ACTIVE_LOW>;
->>> +             ai3x-gpio-func = <
->>> +                     0 /* AIC3X_GPIO1_FUNC_DISABLED */
->>> +                     5 /* AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT */
->>> +             >;
->>> +     };
->>> +};
->>> +
->>> +&iomuxc {
->>> +     pinctrl-names = "default";
->>> +     pinctrl-0 = <&pinctrl_hog>;
->>> +
->>> +     imx6qdl-var-som-mx6 {
->>> +             pinctrl_hog: hoggrp {
->>> +                     fsl,pins = <
->>> +                             /* CTW6120 IRQ */
->>> +                             MX6QDL_PAD_EIM_DA7__GPIO3_IO07          0x80000000
->>> +                             /* SDMMC2 CD/WP */
->>> +                             MX6QDL_PAD_KEY_COL4__GPIO4_IO14         0x80000000
->>> +                             MX6QDL_PAD_KEY_ROW4__GPIO4_IO15         0x80000000
->>> +                     >;
->>> +             };
->>> +
->>> +             pinctrl_audmux: audmux {
->>
->> It does not look like you tested the DTS against bindings. Please run
->> `make dtbs_check` (see
->> Documentation/devicetree/bindings/writing-schema.rst or
->> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
->> for instructions).
->>
->> AFAIR, all of them end with grp
-> 
-> Ah, that's def throwing a bunch of warnings, although quite a few look
-> to be existing
-> issues in dependent dtsi files. I'll clean up what I can there.
-> 
->>
->>
->> ...
->>
->>> +
->>> +&usdhc3 {
->>> +     pinctrl-names = "default", "state_100mhz", "state_200mhz";
->>> +     pinctrl-0 = <&pinctrl_usdhc3>;
->>> +     pinctrl-1 = <&pinctrl_usdhc3_100mhz>;
->>> +     pinctrl-2 = <&pinctrl_usdhc3_200mhz>;
->>> +     bus-width = <4>;
->>> +     vmmc-supply = <&reg_wl18xx_vmmc>;
->>> +     non-removable;
->>> +     wakeup-source;
->>> +     keep-power-in-suspend;
->>> +     cap-power-off-card;
->>> +     #address-cells = <1>;
->>> +     #size-cells = <0>;
->>> +     status = "okay";
->>> +
->>> +     wlcore: wlcore@0 {
->>
->> Generic node names. Is this wifi?
-> 
-> I think it also supports bluetooth technically, although that might be
-> under a different node.
-> 
+It isn't documented indeed in Documentation/dev-tools/kunit/usage.rst but
+the kunit_add_action() kernel-doc says:
 
-Bluetooths are usually under serial, so this is just wifi.
+"All functions registered with kunit_add_action() will execute in the
+opposite order to that they were registered in".
 
+And now that kunit_kzalloc() and friends are also implemented using the
+cleanup actions, it will be part of that execution chain.
+
+Probably the kunit docs can make this more clear.
+
+-- 
 Best regards,
-Krzysztof
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
