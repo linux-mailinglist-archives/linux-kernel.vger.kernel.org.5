@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C12C675936F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B74E759372
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbjGSKxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:53:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34934 "EHLO
+        id S231199AbjGSKx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjGSKxB (ORCPT
+        with ESMTP id S229997AbjGSKx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:53:01 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C4511D
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:53:00 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-51e57870becso8974405a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:53:00 -0700 (PDT)
+        Wed, 19 Jul 2023 06:53:27 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532A7126
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:53:26 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51e57874bfdso9550232a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:53:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689763979; x=1692355979;
+        d=linaro.org; s=google; t=1689764005; x=1692356005;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=sSY7y/1+6yYaMus6riUbfDhWCuuda/0kYuX0FoEcddU=;
-        b=tg85zqDx6jj/Z3CoCLI5djTDjzQF9aAMa3YgvXDnU0pyHXw7rcuzBpIwA8yBdLN9sY
-         Ph7R3+uuSvOImNSnY1NHoDAUTAI9eZIAa8K89C7emG9iKk/bPn/lnYIzYHtztZG4BHUZ
-         82KSkhPwiqrlrW4m8Za04gw0wk89u/ON6TvOn1LTgo/vBT5OqPfteSB6j2KYSKFlB1gQ
-         21T9jvMOgpYSRS+qKZSd7HgIOJPfBrPq2TJB8YnexUYD+Oy4n0kWA2RUqxWv+mk7OLZh
-         cqV1ZhU0aoD1jPlxkUUCDZb00zf7OU9fnId5WENJqms4je4A/wNIjwLwJm/K8xh03b9i
-         JOsA==
+        bh=7UsnPJAlx+zJvjW7NPUxGuJZcFft7FkawPhO4cPS6L0=;
+        b=D7rQYOCWkih5eVlFXleNpL06gLAZgJqJerQzOvXhKfktsHfjx24qwJx+uG/L2p+OXv
+         yzrhseE9fT80PjT662zAq+5L6fWYbLvYO3ImvJWgVotHNQCeGcaGcIN1ZmxGvXRkVS1M
+         ZliL2YrU4f6hYAQw5th2V9LMESb2o6RxW0muNWM8QWLT9P7U1eXG796eoRNLQKTe6j5G
+         8XERIMFcwcvq4p1kHi5ceclOpsWIjzMguicGOTjijM2l3JNxOiXzSIJ+RwYR3RvQEDyl
+         aMeujQdGEMfySMtacz9WzXxMa4ILKoYjnOOx37adgApMky3ASieAB23g25T/i0YNe2UK
+         BhgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689763979; x=1692355979;
+        d=1e100.net; s=20221208; t=1689764005; x=1692356005;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sSY7y/1+6yYaMus6riUbfDhWCuuda/0kYuX0FoEcddU=;
-        b=bmQMJkqqvKfpep8o4xo0IdqCkv1P0EdOG9Ctnx2YvSwtZohKuujyRiFOQjLScOJtp1
-         YJ6GdNts85FzWLyY2bRpF5O5eKNXaMj6UUeprawoFy23g+0ymqXNKVVHCYF0ryO4QOW9
-         zW4WaT7evPxIz80/X+Y+YY+5a0TiSZGh41b4dxM/2sdCtnNdM0iLSCsrVTOxGgUfnyej
-         ViZn1kutEPExNln0BxAqMTGcyeNIEJj0hGdFhBxh4u7+ue9/hmIq9+QLk4La7+C7yv3+
-         EgwjGph4CI+n529Yyr0VJD7b6ZbDNzsAksXzpgTiktk8gXfpRD8s3IdCLh5zTuj8Q1oB
-         +1kw==
-X-Gm-Message-State: ABy/qLYhMjsLR+wjw2sKuvryRqDdyy0jxif/pYKpUyIPhl6A/pJCYxva
-        0KPeOSHUgHZpJom8PEM7zDh2oA==
-X-Google-Smtp-Source: APBJJlEqIKUOT6GxeKOCN3apXOlhXrfPpHxzoJyFUMl+xVLbqY0+PPhlyCxzpRR+/9kMh+ghLV4jQg==
-X-Received: by 2002:aa7:cfd8:0:b0:51d:e30b:f33a with SMTP id r24-20020aa7cfd8000000b0051de30bf33amr2089692edy.34.1689763978715;
-        Wed, 19 Jul 2023 03:52:58 -0700 (PDT)
+        bh=7UsnPJAlx+zJvjW7NPUxGuJZcFft7FkawPhO4cPS6L0=;
+        b=BBSGdwvgwtMeD3Ww/z76+pNgMVgRtT2NWztBpYc4vOK3wc814xdlS8bDXLj4dpq0oe
+         SfDle5DfQbErWglaCB2JKuxOSYRY3UCaU9lM+zzgIqBTHP+z4rIRdY21C83VInATosjn
+         aocOiQoLZYCWsot8lrF5tOfaXBEksAJxiUVFbeU0Ag+VWD8RJzJZzXpM51tEnBadVh09
+         XHaaQ7A5V8fD844Er3ayioSekCP29eRNNSnamz6rcA0LPOa9FSfO64+AXbi5/kRquuKF
+         x/nw5o3w1wsT44iHcb6Ri4lXyvBfQCamgLC7vnFKOuh+lbtCjoZBVpYU4yTb/8sk7WEr
+         H6tg==
+X-Gm-Message-State: ABy/qLbMxga80IYRNwQF3pZ34MRZVfAhHImSLNigR7DJH2NiWrjT9Pgu
+        QlpoeTjKhzvaNWC7o5dP3fjBBw==
+X-Google-Smtp-Source: APBJJlHeDzULHdm46nMp8fn9qzD8PjM/5gM+DuBigu3bOrq4KBv2hSExaHh8IBlswZWOt5RwDBQiRA==
+X-Received: by 2002:a17:907:7fa4:b0:988:bb33:53b7 with SMTP id qk36-20020a1709077fa400b00988bb3353b7mr3000006ejc.60.1689764004961;
+        Wed, 19 Jul 2023 03:53:24 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id r18-20020aa7da12000000b0051d9de03516sm2570472eds.52.2023.07.19.03.52.56
+        by smtp.gmail.com with ESMTPSA id s17-20020a170906c31100b00992d0de8762sm2157060ejz.216.2023.07.19.03.53.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 03:52:58 -0700 (PDT)
-Message-ID: <c1dea7c8-2bc4-a113-0d40-098228fe3860@linaro.org>
-Date:   Wed, 19 Jul 2023 12:52:55 +0200
+        Wed, 19 Jul 2023 03:53:24 -0700 (PDT)
+Message-ID: <a1f60fc6-f150-0cca-2685-daaba82af20e@linaro.org>
+Date:   Wed, 19 Jul 2023 12:53:21 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v1 1/9] dt-bindings: PCI: Add PLDA XpressRICH PCIe host
+Subject: Re: [PATCH v1 2/9] dt-bindings: PCI: microchip: Remove the PLDA
  common properties
 Content-Language: en-US
 To:     Minda Chen <minda.chen@starfivetech.com>,
@@ -77,15 +77,15 @@ Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Leyfoon Tan <leyfoon.tan@starfivetech.com>,
         Kevin Xie <kevin.xie@starfivetech.com>
 References: <20230719102057.22329-1-minda.chen@starfivetech.com>
- <20230719102057.22329-2-minda.chen@starfivetech.com>
+ <20230719102057.22329-3-minda.chen@starfivetech.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230719102057.22329-2-minda.chen@starfivetech.com>
+In-Reply-To: <20230719102057.22329-3-minda.chen@starfivetech.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -93,66 +93,18 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 19/07/2023 12:20, Minda Chen wrote:
-> Add PLDA XpressRICH PCIe host common properties dt-binding doc.
-> Microchip PolarFire PCIe host using PLDA IP.
-> Extract properties from Microchip PolarFire PCIe host.
+> Add plda,xpressrich-pcie-common.yaml reference and
+> remove the PLDA XpressRICH PCIe host common properties.
 > 
 > Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
-> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+
+This should be squashed with previous patch.
+
 > ---
->  .../pci/plda,xpressrich-pcie-common.yaml      | 72 +++++++++++++++++++
->  1 file changed, 72 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/plda,xpressrich-pcie-common.yaml
-
-How is it related with existing plda,xpressrich3-axi?
-
+>  .../bindings/pci/microchip,pcie-host.yaml     | 45 +------------------
+>  1 file changed, 1 insertion(+), 44 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/pci/plda,xpressrich-pcie-common.yaml b/Documentation/devicetree/bindings/pci/plda,xpressrich-pcie-common.yaml
-> new file mode 100644
-> index 000000000000..3627a846c5d1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/plda,xpressrich-pcie-common.yaml
-> @@ -0,0 +1,72 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pci/plda,xpressrich-pcie-common.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: PLDA XpressRICH PCIe host common properties
-> +
-> +maintainers:
-> +  - Daire McNamara <daire.mcnamara@microchip.com>
-> +  - Minda Chen <minda.chen@starfivetech.com>
-> +
-> +description:
-> +  Generic PLDA XpressRICH PCIe host common properties.
-> +
-> +select: false
 
-This should not be needed.
-
-> +
-> +properties:
-> +  reg:
-> +    description:
-> +      At least host IP register set and configuration space are
-
-"At least" does not fit here since you do not allow anything else.
-
-> +      required for normal controller work.
-> +    maxItems: 2
-> +
-> +  reg-names:
-> +    oneOf:
-> +      - items:
-> +          - const: cfg
-> +          - const: apb
-> +      - items:
-> +          - const: host
-> +          - const: cfg
-
-Maybe keep similar order, so cfg followed by host?
 
 Best regards,
 Krzysztof
