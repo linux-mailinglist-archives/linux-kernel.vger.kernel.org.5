@@ -2,54 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06472759326
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D1C759317
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbjGSKgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
+        id S231405AbjGSKag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjGSKgQ (ORCPT
+        with ESMTP id S230495AbjGSKaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:36:16 -0400
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8096BE0;
-        Wed, 19 Jul 2023 03:36:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-        t=1689762558; bh=zzi5kjyS7aIx9/ym7iyyPL9XVFwQcOnol4QUS4SlqUw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=foB3/ueojPefseN2KuCfAWKwfBnt5yovt63TIp91f1fXhyps1dSO8lCmWRJNE7UAB
-         DkrBPZ62wGj0rusHYsgFtuq+lKLCna8xhWUMSsYxnU/lmsWxZINix9tXWFJ+g4pc5M
-         Z7Gz4wwrO0+65Fi61ht2j2QuN81cdb+UMlwUTckM=
-Received: from [100.100.34.13] (unknown [220.248.53.61])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 3D4D46006F;
-        Wed, 19 Jul 2023 18:29:18 +0800 (CST)
-Message-ID: <f9e7fb54-a76e-a9b0-1b9c-8c9251f4af20@xen0n.name>
-Date:   Wed, 19 Jul 2023 18:29:17 +0800
+        Wed, 19 Jul 2023 06:30:18 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC4E21FD2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:29:43 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-51e57870becso8943916a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:29:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689762573; x=1692354573;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hsbdF3vSFjWOVf7tTPeAyNmYXPOrPPfpGyXWv71M4vY=;
+        b=pMflW6B6zdC43SRPUZaBNyhVj9ywPekh1ELYAAqf0KlpE0hJGBH+W0q+Cw+ck5fBYV
+         ymbC8xPJjNLICUR6EHbtArsWt4KeHjjU6xe+49HCiUWoCwxqgkSVijIhzhyHlV4ENYlf
+         QqNapgCKPE+KhWpp0Lzz1eY2nNQyd1c98UIHgtNWjhyoQN+XR24GU0pIFvWE4P6rdY55
+         fQ7dqFlUAyjHb3+GLq48He1mbQFjr9brzgkXWywQLzDgi6ooceElSVDDtVKGlQ0acRUX
+         p0nuLr+M1NfwwPLJHe87MxbtgPqupsuabUz8pqE2fKQZJQXY5T2sI6XaY825SScC8TPf
+         aunQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689762573; x=1692354573;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hsbdF3vSFjWOVf7tTPeAyNmYXPOrPPfpGyXWv71M4vY=;
+        b=HOiAQt3KtkY6STzog+Spe73kdOGuaD7pH+Ip742W4jMeW9eAF68snJjCRqt0FDUz3I
+         VJ2B9SVuIEuzF0Up1flpwpgP5NqzeE5htr0m8ElC/BOt9PV8j8v6MEw7sEiRprrqOgf1
+         bhUk6+m/RM+oRJU2YsaJLmbw7DxWskc9WOjysE9UVY+ClM6oXmLYGc1ShaJZ7ZXafi31
+         9Jb5WXGGalSx/RwLJNyGgWbKQM2lHy8gTLdLIyrcCW/QB1hlphjX9A5m4R7GzcGNgYLK
+         zxN+hiNTagNNxh/VMBGmglHnY6WbJhReg2iJY4UWFhKVzqzA9vf1pIGVglN2B57NOvAj
+         Vn3w==
+X-Gm-Message-State: ABy/qLaV7EDLNHgG+brV/y3rUOjd8r0HTVPd5AoZiOLfSZ9L8kq/8ZtF
+        mYRK6oAGPZP8T7R6tsFz8FGm8A==
+X-Google-Smtp-Source: APBJJlGjAQSiTv09hvjzoL2bHorCfqXaWQw+3rHRmToUpY1BWy3cRCU5AjBIV+sp0DuIyOQ3WgrdxA==
+X-Received: by 2002:aa7:d482:0:b0:521:aa4b:24f3 with SMTP id b2-20020aa7d482000000b00521aa4b24f3mr2106665edr.24.1689762573695;
+        Wed, 19 Jul 2023 03:29:33 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id n7-20020a05640206c700b0051e2a5d9290sm2487874edy.77.2023.07.19.03.29.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 03:29:33 -0700 (PDT)
+Message-ID: <6d9ded3a-415a-e879-2c80-e462c21ed9cb@linaro.org>
+Date:   Wed, 19 Jul 2023 12:29:31 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v5] LoongArch: Fix CONFIG_CMDLINE_EXTEND and
- CONFIG_CMDLINE_BOOTLOADER handling
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/2] drm/tiny: add display driver for philips pcd8544
+ display controller
 Content-Language: en-US
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Markus Elfring <Markus.Elfring@web.de>
-Cc:     Zhihong Dong <donmor3000@hotmail.com>, loongarch@lists.linux.dev,
-        loongson-kernel@lists.loongnix.cn, kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, Guo Ren <guoren@kernel.org>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-References: <20230718153348.3340811-1-chenhuacai@loongson.cn>
- <261edc6c-e339-faeb-3045-bfe6604d1aef@web.de>
- <CAAhV-H5nNMmYZQXvoog85cgMUd+gM2QMaG3cUhYk_iGzjB=B4Q@mail.gmail.com>
-From:   WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <CAAhV-H5nNMmYZQXvoog85cgMUd+gM2QMaG3cUhYk_iGzjB=B4Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To:     Viktar Simanenka <viteosen@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230719102430.316504-1-viteosen@gmail.com>
+ <20230719102430.316504-2-viteosen@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230719102430.316504-2-viteosen@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -60,44 +82,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/19 15:22, Huacai Chen wrote:
-> Hi, Markus,
+On 19/07/2023 12:24, Viktar Simanenka wrote:
+> Support for common monochrome LCD displays based on PCD8544 (such as
+> Nokia 5110/3310 LCD) SPI controlled displays.
 > 
-> On Wed, Jul 19, 2023 at 2:51 PM Markus Elfring <Markus.Elfring@web.de> wrote:
->>
->>>                                                    …, so this patch add
->>> some code to fix it.
->>
->> Would you like to avoid a typo here?
->>
->> Will any other imperative change description variant become more helpful?
-> Thank you for pointing this out, but since Zhihong is the original
-> author, I don't want to completely rewrite the commit message, so just
-> fix the typo...
+> Signed-off-by: Viktar Simanenka <viteosen@gmail.com>
+> ---
 
-AFAICT the commit message is totally uninformative even if "an 
-imperative change description" were used. It basically:
+No changelog, same version, so nothing improved here?
 
-1. repeated the patch title,
-2. spent one sentence only for mentioning a function name without giving 
-any more information,
-3. mentioned why some change was not necessary due to some other 
-existing code, but not explicitly calling that part out, then
-4. finished with a sentence that boiled down to "we should do the 
-similar thing".
-
-My take:
-
- > Subject: Fix CMDLINE_EXTEND and CMDLINE_BOOTLOADER on non-FDT systems
- >
- > On FDT systems these command line processing are already taken care of
- > by early_init_dt_scan_chosen(). Add similar handling to the non-FDT
- > code path to allow these config options to work for non-FDT boxes too.
-
-Would this sound better?
-
--- 
-WANG "xen0n" Xuerui
-
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+Best regards,
+Krzysztof
 
