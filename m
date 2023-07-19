@@ -2,67 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 406F2758DCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 08:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D416F758DCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 08:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbjGSGcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 02:32:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
+        id S229774AbjGSGcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 02:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbjGSGcQ (ORCPT
+        with ESMTP id S229475AbjGSGcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 02:32:16 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7771FC4
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 23:32:14 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6b9edef7993so486827a34.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 23:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1689748334; x=1692340334;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=c9KrLLP8cL1uPsjJ1nSTy5SK2yTBHa/947mlcAdb160=;
-        b=OdMNMSpEfv/yH1YzdMwSElZuj3ZFDDe2Uvr+0uT/C9mKCgI3PnkaDphepFbwXZGaEh
-         4veUsr3yq4av+3Kyq+YmVd8InvdEWYYmEbxxSbxVZpDlbA8mF7IUCkYe0beFK37O129D
-         HwZepvEjoG0zFUPtNuvTTJNeKyeFZNy5V0aLxZXX4omIC3Pi/jf6NyTqsEStkdHwzKpp
-         KLIRLmMK5x4fsT0nFh8BTFe6u7ptjPcC8XeOO6h7Zj9FF0SK+Hg5C4Ln1YpMWgWaPOIQ
-         DcqIgGRwYzCSxddeZapFOS1ZpehwxS41A/L2zcFcH55bH7WPxxoB8TARBVQ51D1vrgax
-         vtSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689748334; x=1692340334;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=c9KrLLP8cL1uPsjJ1nSTy5SK2yTBHa/947mlcAdb160=;
-        b=Be0DXbvYyI+gb5RPqZGdZdeXggPSAN2vIgrUY+3NVCX1zSQ5nsx0eb0oYSg50kbo4S
-         JCQxoU+1wWoqnfyxSykgdKSiKaAwhosBydw+jKz7QkNXyUFJvCgbfPolL8aXZu4GkuoW
-         iR7uiOQjqXyuxJ+kuMH57ph9r/nZjkB9um9EWT0xlKTINbEjnlAE8ln0oM23mR0+tobd
-         xLT65ka45n3tyaZ6jt6eCMpUHcvVwWXTfQh48cW4nq/+G9W/hWsLJ/lZH5I6faauwQum
-         xumoMnTxMY6Pu5pieooDc+OrqegP1Kd/0RdgNWkCLzobjDlS7+eLYEZ/fHgu/3TX3T2J
-         H9Qw==
-X-Gm-Message-State: ABy/qLYDPuBUXHS6t+6+YnZamWhWV7++B4TWscReRfMVw7ITvNWZGg6t
-        HxgNgKASwOiHNTGmu6VY9EzQz0SaxefHRpSZygng7w==
-X-Google-Smtp-Source: APBJJlG7Hnr+DLSYxVj/kGW324BYuM9R7IW3z2osuMAejNGZ153KuMIBDUA2MT+Nc81tM5Yh8hK+Hg==
-X-Received: by 2002:a05:6830:1110:b0:6b8:90cd:47b5 with SMTP id w16-20020a056830111000b006b890cd47b5mr5139616otq.7.1689748333811;
-        Tue, 18 Jul 2023 23:32:13 -0700 (PDT)
-Received: from PXLDJ45XCM.bytedance.net ([139.177.225.226])
-        by smtp.gmail.com with ESMTPSA id p12-20020a631e4c000000b005348af1b84csm2701678pgm.74.2023.07.18.23.32.10
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 18 Jul 2023 23:32:12 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     mike.kravetz@oracle.com, muchun.song@linux.dev,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: hugetlb_vmemmap: use PageCompound() instead of PageReserved()
-Date:   Wed, 19 Jul 2023 14:31:31 +0800
-Message-Id: <20230719063132.37676-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.39.2 (Apple Git-143)
+        Wed, 19 Jul 2023 02:32:09 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25E21FC0;
+        Tue, 18 Jul 2023 23:32:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/s5SuSKavCuuj/hFLYyUYTA+bQWVcN4rBZzXOlC/BsY=; b=B9zLOcQ77ltk5BkG8IALoPk+Qx
+        vj5vt1RKtG5xpVPwMQ95yhOhYZd2zL7RYeiYA0IGQor7qfRT1pPnyygRt7M5pAN7cOyvrReHRQNJu
+        avQEH2nW1S4YbzVykq85YkFDd3ICa9tbnuVQJ6BmK7Gh+K4DZD+Plmt5ZTu//Y6R90LASXJIkN94e
+        47WTiz2VRjG7IyogiFE95u2urB6pzE8wSTfcOrZf4w77XvuqP9kvE4Qb1A6IEUVwphl1F+5Syu3yV
+        MRl3WE0WHnAU7aKn6T6Buec32LrlzVUYRR7c6qn2hfSteyhhXmcCfHa/rbkRCLVO4MAwaSOyBJnk/
+        S/NJcm+w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qM0iz-005lTJ-33;
+        Wed, 19 Jul 2023 06:31:49 +0000
+Date:   Tue, 18 Jul 2023 23:31:49 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Bill O'Donnell <billodo@redhat.com>,
+        Rob Barnes <robbarnes@google.com>, bleung@chromium.org,
+        linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: export emergency_sync
+Message-ID: <ZLeDVcQrFft8FYle@infradead.org>
+References: <20230718214540.1.I763efc30c57dcc0284d81f704ef581cded8960c8@changeid>
+ <ZLcOcr6N+Ty59rBD@redhat.com>
+ <ad539fad-999b-46cd-9372-a196469b4631@roeck-us.net>
+ <20230719-zwinkert-raddampfer-6f11fdc0cf8f@brauner>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230719-zwinkert-raddampfer-6f11fdc0cf8f@brauner>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,30 +58,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ckeck of PageReserved() is easy to be broken in the future, PageCompound()
-is more stable to check if the page should be split.
+On Wed, Jul 19, 2023 at 07:53:32AM +0200, Christian Brauner wrote:
+> On vacation until next. Please add a proper rationale why and who this
+> export is needed by in the commit message. As right now it looks like
+> someone thought it would be good to have which is not enough for
+> something to become an export.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/hugetlb_vmemmap.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+emergency_sync is a relaly bad idea and has all kinds of issues.
+It should go away and not grow more users outside of core code,
+and the one Guenther points to should never have been added.
 
-diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index 4b9734777f69..8068fe890f52 100644
---- a/mm/hugetlb_vmemmap.c
-+++ b/mm/hugetlb_vmemmap.c
-@@ -73,8 +73,10 @@ static int split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long start)
- 		 * be treated as indepdenent small pages (as they can be freed
- 		 * individually).
- 		 */
--		if (!PageReserved(head))
-+		if (PageCompound(head)) {
-+			VM_BUG_ON(compound_order(head) != get_order(PMD_SIZE));
- 			split_page(head, get_order(PMD_SIZE));
-+		}
- 
- 		/* Make pte visible before pmd. See comment in pmd_install(). */
- 		smp_wmb();
--- 
-2.11.0
-
+If we want to allow emergency shutdowns it needs a proper interface
+and not a remount read-only ignoring some rules that tends to make
+things worse and instad of better, and even for that I'm not sure
+I want modules to be able to drive it.
