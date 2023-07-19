@@ -2,157 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DE37598CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A1E759A34
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbjGSOta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 10:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42054 "EHLO
+        id S231942AbjGSPuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 11:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbjGSOtZ (ORCPT
+        with ESMTP id S230383AbjGSPuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:49:25 -0400
-Received: from icts-p-cavspool-1.kulnet.kuleuven.be (icts-p-cavspool-1.kulnet.kuleuven.be [134.58.240.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EEA1718;
-        Wed, 19 Jul 2023 07:49:19 -0700 (PDT)
-Received: from icts-p-cavuit-1.kulnet.kuleuven.be (icts-p-cavuit-1.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:132])
-        by icts-p-cavspool-1.kulnet.kuleuven.be (Postfix) with ESMTP id DC6521EFB;
-        Wed, 19 Jul 2023 16:25:46 +0200 (CEST)
-X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
-X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: 9E8CF2016D.A65EC
-X-KULeuven-Information: Katholieke Universiteit Leuven
-Received: from icts-p-ceifnet-smtps-1.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:136:242:ac11:f])
-        by icts-p-cavuit-1.kulnet.kuleuven.be (Postfix) with ESMTP id 9E8CF2016D;
-        Wed, 19 Jul 2023 16:25:41 +0200 (CEST)
-BCmilterd-Mark-Subject: no
-BCmilterd-Errors: 
-BCmilterd-Report: SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_SIGNED#0.00
-X-CAV-Cluster: smtps
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
-        s=cav; t=1689776741;
-        bh=U7po882eCFHMo5UgaOdm+hXgmwg0dG234LXIyMqCMnk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=ZYKJNQ3RNt8RXjFnwCz62eX70YXD+r3tmpyKaoKsyF/SrJGDhrvSkYabD+w40nb1l
-         MQiFnDDUEpLFPbrn5Yky34C/yk+SaOCHaEQ0xyo+0JRVDL8fu2tUWcs1/gRMep8weX
-         gpXWUsRksKfgy2fO9fwbnd+upNcprggvJsWXwcCI=
-Received: from librem.epfl.ch (eduroam-269-1-126.epfl.ch [192.33.197.126])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id 6B089D4EB0D01;
-        Wed, 19 Jul 2023 16:25:41 +0200 (CEST)
-X-Kuleuven: This mail passed the K.U.Leuven mailcluster
-From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-To:     jarkko@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     dave.hansen@linux.intel.com,
-        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-Subject: [PATCH 1/4] selftests/sgx: Harden test enclave ABI
-Date:   Wed, 19 Jul 2023 16:24:57 +0200
-Message-Id: <20230719142500.13623-2-jo.vanbulck@cs.kuleuven.be>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230719142500.13623-1-jo.vanbulck@cs.kuleuven.be>
-References: <20230719142500.13623-1-jo.vanbulck@cs.kuleuven.be>
+        Wed, 19 Jul 2023 11:50:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4590CE69
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:49:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689781790;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IIs1+OeC7xY5Px8k4Oh0JXDET+KMNKzjvphGrBCnx5U=;
+        b=DhY03SyjfsoTQ/YP2f1xBV0QYazT52zXeutAxdgw8kZen8bpB3buhxVG3W3QWIC5loryyV
+        Eb7N7gLs8ZHC2G4LTR2VtuEs22yDCJ6RLYkb+6aC0ZW56o28GWQjqwfggnJtz2bAnbyeM5
+        s2HVwIzfZcCaJxAtQTxoWtk0Qh9RzPw=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-477-80JtDaUQP86zSlWg44b64Q-1; Wed, 19 Jul 2023 11:49:49 -0400
+X-MC-Unique: 80JtDaUQP86zSlWg44b64Q-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-993c24f3246so120162566b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:49:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689781788; x=1692373788;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IIs1+OeC7xY5Px8k4Oh0JXDET+KMNKzjvphGrBCnx5U=;
+        b=cimR0YF2E//swkF5EpWCQXXNMOmIcDAsUCAfYq2eUVJnacBnIceXdcu/UmMAbxLB4U
+         hyaW4lDz2dpz8WvOuEuS9KI82/NaGck203RZsB1bZI0Qgti6o7C/rSvhwUj/l8j/EnrC
+         fBMQFpc+mCssi0Laylg2EXrmqjnTgI7KZlax7NruloWV/LXKtz05lRfwi5JGOePx+dQO
+         ZLGKD41y4T6P7/r7Ei5RwDw8sWD1SKdnewiKXYJfHCNE34hoUpX9BD7tux7l+2SNN1zz
+         ZoX4eP1oOQyeAWV2GRvXOSBivDj8ielz0JK1g1HqFJ6EHeT1CD+Wa083AhZFjvqjvqR5
+         rrRw==
+X-Gm-Message-State: ABy/qLb50AuDR12Yzp5fFSmewckFipSEvtXfK9EWqRtWfPbHbgxIqnUu
+        Iy5E7Tva4UQ4RlTZiYdx2+jAEY0/GLHUmcfDsvzn8sXV4DvRiRGYry+AM4MLxM2MxAOCkUDmhw4
+        AuCi7My0p1ekYzmSgYPK9LuZy
+X-Received: by 2002:a17:906:5195:b0:994:1805:1fad with SMTP id y21-20020a170906519500b0099418051fadmr2933924ejk.10.1689781787942;
+        Wed, 19 Jul 2023 08:49:47 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGQL1Dj9k25VVJZws0W/1xc6x1SGhyLAgn1JiyYhHtZBXW7L/qfpybCi7Tx38pKd+P+6CmdVA==
+X-Received: by 2002:a17:906:5195:b0:994:1805:1fad with SMTP id y21-20020a170906519500b0099418051fadmr2933899ejk.10.1689781787590;
+        Wed, 19 Jul 2023 08:49:47 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
+        by smtp.gmail.com with ESMTPSA id u9-20020a1709063b8900b00992e51fecfbsm2549039ejf.64.2023.07.19.08.49.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 08:49:47 -0700 (PDT)
+Message-ID: <955bc56a-6cfa-447a-31a9-2b35d8b23149@redhat.com>
+Date:   Wed, 19 Jul 2023 16:24:58 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v5] Documentation/gpu: Add a VM_BIND async draft document
+Content-Language: en-US
+To:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>
+Cc:     Matthew Brost <matthew.brost@intel.com>,
+        Francois Dugast <francois.dugast@intel.com>,
+        linux-kernel@vger.kernel.org, Oak Zeng <oak.zeng@intel.com>,
+        dri-devel@lists.freedesktop.org, Nirmoy Das <nirmoy.das@intel.com>,
+        intel-xe@lists.freedesktop.org
+References: <20230715154543.13183-1-thomas.hellstrom@linux.intel.com>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <20230715154543.13183-1-thomas.hellstrom@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The System V x86-64 ABI used by the C compiler defines certain low-level
-CPU configuration registers to be set to expected values upon function
-entry. However, SGX enclaves cannot expect the untrusted caller to respect
-these ABI conventions. Therefore, adhere to SGX runtime best practices by
-sanitizing RFLAGS.DF=0 before transitioning to C code. Additionally
-sanitize RFLAGS.AC=0 to protect against known #AC-fault side channels for
-unaligned memory accesses.
+On 7/15/23 17:45, Thomas Hellström wrote:
+> Add a motivation for and description of asynchronous VM_BIND operation
+> 
+> v2:
+> - Fix typos (Nirmoy Das)
+> - Improve the description of a memory fence (Oak Zeng)
+> - Add a reference to the document in the Xe RFC.
+> - Add pointers to sample uAPI suggestions
+> v3:
+> - Address review comments (Danilo Krummrich)
+> - Formatting fixes
+> v4:
+> - Address typos (Francois Dugast)
+> - Explain why in-fences are not allowed for VM_BIND operations for long-
+>    running workloads (Matthew Brost)
+> v5:
+> - More typo- and style fixing
+> - Further clarify the implications of disallowing in-fences for VM_BIND
+>    operations for long-running workloads (Matthew Brost)
+> 
+> Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
+> Acked-by: Nirmoy Das <nirmoy.das@intel.com>
+> ---
+>   Documentation/gpu/drm-vm-bind-async.rst | 171 ++++++++++++++++++++++++
+>   Documentation/gpu/rfc/xe.rst            |   4 +-
+>   2 files changed, 173 insertions(+), 2 deletions(-)
+>   create mode 100644 Documentation/gpu/drm-vm-bind-async.rst
+> 
+> diff --git a/Documentation/gpu/drm-vm-bind-async.rst b/Documentation/gpu/drm-vm-bind-async.rst
+> new file mode 100644
+> index 000000000000..d2b02a38198a
+> --- /dev/null
+> +++ b/Documentation/gpu/drm-vm-bind-async.rst
+> @@ -0,0 +1,171 @@
+> +====================
+> +Asynchronous VM_BIND
+> +====================
+> +
+> +Nomenclature:
+> +=============
+> +
+> +* ``VRAM``: On-device memory. Sometimes referred to as device local memory.
+> +
+> +* ``gpu_vm``: A GPU address space. Typically per process, but can be shared by
+> +  multiple processes.
 
-Note that the test enclave does currently not use any floating-point
-instructions (-mno-sse). Hence, keep the code simple by _not_ using XRSTOR
-to cleanse extended x87/SSE state.
+Again, pretty obvious, but I suggest to be explicit "GPU virtual address 
+space".
 
-Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
----
- tools/testing/selftests/sgx/Makefile          |  2 +-
- tools/testing/selftests/sgx/main.c            | 21 +++++++++++++++++++
- .../selftests/sgx/test_encl_bootstrap.S       | 12 +++++++++++
- 3 files changed, 34 insertions(+), 1 deletion(-)
+Also, you might want to remove "draft" from the patch subject.
 
-diff --git a/tools/testing/selftests/sgx/Makefile b/tools/testing/selftests/sgx/Makefile
-index 50aab6b57..c2a13bc6e 100644
---- a/tools/testing/selftests/sgx/Makefile
-+++ b/tools/testing/selftests/sgx/Makefile
-@@ -14,7 +14,7 @@ endif
- INCLUDES := -I$(top_srcdir)/tools/include
- HOST_CFLAGS := -Wall -Werror -g $(INCLUDES) -fPIC -z noexecstack
- ENCL_CFLAGS := -Wall -Werror -static -nostdlib -nostartfiles -fPIC \
--	       -fno-stack-protector -mrdrnd $(INCLUDES)
-+	       -fno-stack-protector -mrdrnd -mno-sse $(INCLUDES)
- 
- TEST_CUSTOM_PROGS := $(OUTPUT)/test_sgx
- TEST_FILES := $(OUTPUT)/test_encl.elf
-diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
-index 9820b3809..d3c7a39f4 100644
---- a/tools/testing/selftests/sgx/main.c
-+++ b/tools/testing/selftests/sgx/main.c
-@@ -307,6 +307,27 @@ TEST_F(enclave, unclobbered_vdso)
- 	EXPECT_EQ(self->run.user_data, 0);
- }
- 
-+TEST_F(enclave, poison_args)
-+{
-+	struct encl_op_header nop_op;
-+	uint64_t flags = -1;
-+
-+	ASSERT_TRUE(setup_test_encl(ENCL_HEAP_SIZE_DEFAULT, &self->encl, _metadata));
-+
-+	memset(&self->run, 0, sizeof(self->run));
-+	self->run.tcs = self->encl.encl_base;
-+
-+	/* attempt ABI register poisoning */
-+	nop_op.type = ENCL_OP_NOP;
-+	asm("std\n\t");
-+	EXPECT_EQ(ENCL_CALL(&nop_op, &self->run, false), 0);
-+	asm("pushfq\n\t"		\
-+	    "popq %0\n\t"		\
-+	    : "=m"(flags) : : );
-+	EXPECT_EEXIT(&self->run);
-+	EXPECT_EQ(flags & 0x40400, 0);
-+}
-+
- /*
-  * A section metric is concatenated in a way that @low bits 12-31 define the
-  * bits 12-31 of the metric and @high bits 0-19 define the bits 32-51 of the
-diff --git a/tools/testing/selftests/sgx/test_encl_bootstrap.S b/tools/testing/selftests/sgx/test_encl_bootstrap.S
-index 03ae0f57e..3b69fea61 100644
---- a/tools/testing/selftests/sgx/test_encl_bootstrap.S
-+++ b/tools/testing/selftests/sgx/test_encl_bootstrap.S
-@@ -57,6 +57,18 @@ encl_entry_core:
- 	push	%rcx # push the address after EENTER
- 	push	%rbx # push the enclave base address
- 
-+	# Sanitize CPU state: x86-64 ABI requires RFLAGS.DF=0 on function
-+	# entry, and we additionally clear RFLAGS.AC to prevent #AC-fault side
-+	# channels.
-+	# NOTE: Real-world enclave runtimes should also cleanse extended CPU
-+	# state (i.e., x87 FPU and SSE/AVX/...) configuration registers,
-+	# preferably using XRSTOR. This is _not_ done below to simplify the
-+	# test enclave, which does not use any floating-point instructions.
-+	cld
-+	pushfq
-+	andq $~0x40000, (%rsp)
-+	popfq
-+
- 	call	encl_body
- 
- 	pop	%rbx # pop the enclave base address
--- 
-2.34.1
+Otherwise: Reviewed-by: Danilo Krummrich <dakr@redhat.com>
+
+> +
+> +* ``VM_BIND``: An operation or a list of operations to modify a gpu_vm using
+> +  an IOCTL. The operations include mapping and unmapping system- or
+> +  VRAM memory.
+> +
+> +* ``syncobj``: A container that abstracts synchronization objects. The
+> +  synchronization objects can be either generic, like dma-fences or
+> +  driver specific. A syncobj typically indicates the type of the
+> +  underlying synchronization object.
+> +
+> +* ``in-syncobj``: Argument to a VM_BIND IOCTL, the VM_BIND operation waits
+> +  for these before starting.
+> +
+> +* ``out-syncobj``: Argument to a VM_BIND_IOCTL, the VM_BIND operation
+> +  signals these when the bind operation is complete.
+> +
+> +* ``memory fence``: A synchronization object, different from a dma-fence.
+> +  A memory fence uses the value of a specified memory location to determine
+> +  signaled status. A memory fence can be awaited and signaled by both
+> +  the GPU and CPU. Memory fences are sometimes referred to as
+> +  user-fences, userspace-fences or gpu futexes and do not necessarily obey
+> +  the dma-fence rule of signaling within a "reasonable amount of time".
+> +  The kernel should thus avoid waiting for memory fences with locks held.
+> +
+> +* ``long-running workload``: A workload that may take more than the
+> +  current stipulated dma-fence maximum signal delay to complete and
+> +  which therefore needs to set the gpu_vm or the GPU execution context in
+> +  a certain mode that disallows completion dma-fences.
+> +
+> +* ``exec function``: An exec function is a function that revalidates all
+> +  affected gpu_vmas, submits a GPU command batch and registers the
+> +  dma_fence representing the GPU command's activity with all affected
+> +  dma_resvs. For completeness, although not covered by this document,
+> +  it's worth mentioning that an exec function may also be the
+> +  revalidation worker that is used by some drivers in compute /
+> +  long-running mode.
+> +
+> +* ``bind context``: A context identifier used for the VM_BIND
+> +  operation. VM_BIND operations that use the same bind context can be
+> +  assumed, where it matters, to complete in order of submission. No such
+> +  assumptions can be made for VM_BIND operations using separate bind contexts.
+> +
+> +* ``UMD``: User-mode driver.
+> +
+> +* ``KMD``: Kernel-mode driver.
+> +
+> +
+> +Synchronous / Asynchronous VM_BIND operation
+> +============================================
+> +
+> +Synchronous VM_BIND
+> +___________________
+> +With Synchronous VM_BIND, the VM_BIND operations all complete before the
+> +IOCTL returns. A synchronous VM_BIND takes neither in-fences nor
+> +out-fences. Synchronous VM_BIND may block and wait for GPU operations;
+> +for example swap-in or clearing, or even previous binds.
+> +
+> +Asynchronous VM_BIND
+> +____________________
+> +Asynchronous VM_BIND accepts both in-syncobjs and out-syncobjs. While the
+> +IOCTL may return immediately, the VM_BIND operations wait for the in-syncobjs
+> +before modifying the GPU page-tables, and signal the out-syncobjs when
+> +the modification is done in the sense that the next exec function that
+> +awaits for the out-syncobjs will see the change. Errors are reported
+> +synchronously assuming that the asynchronous part of the job never errors.
+> +In low-memory situations the implementation may block, performing the
+> +VM_BIND synchronously, because there might not be enough memory
+> +immediately available for preparing the asynchronous operation.
+> +
+> +If the VM_BIND IOCTL takes a list or an array of operations as an argument,
+> +the in-syncobjs needs to signal before the first operation starts to
+> +execute, and the out-syncobjs signal after the last operation
+> +completes. Operations in the operation list can be assumed, where it
+> +matters, to complete in order.
+> +
+> +Since asynchronous VM_BIND operations may use dma-fences embedded in
+> +out-syncobjs and internally in KMD to signal bind completion,  any
+> +memory fences given as VM_BIND in-fences need to be awaited
+> +synchronously before the VM_BIND ioctl returns, since dma-fences,
+
+IOCTL
+
+> +required to signal in a reasonable amount of time, can never be made
+> +to depend on memory fences that don't have such a restriction.
+> +
+> +To aid in supporting user-space queues, the VM_BIND may take a bind context.
+> +
+> +The purpose of an Asynchronous VM_BIND operation is for user-mode
+> +drivers to be able to pipeline interleaved gpu_vm modifications and
+> +exec functions. For long-running workloads, such pipelining of a bind
+> +operation is not allowed and any in-fences need to be awaited
+> +synchronously. The reason for this is twofold. First, any memory
+> +fences gated by a long-running workload and used as in-syncobjs for the
+> +VM_BIND operation will need to be awaited synchronously anyway (see
+> +above). Second, any dma-fences used as in-syncobjs for VM_BIND
+> +operations for long-running workloads will not allow for pipelining
+> +anyway since long-running workloads don't allow for dma-fences as
+> +out-syncobjs, so while theoretically possible the use of them is
+> +questionable and should be rejected until there is a valuable use-case.
+> +Note that this is not a limitation imposed by dma-fence rules, but
+> +rather a limitation imposed to keep KMD implementation simple. It does
+> +not affect using dma-fences as dependencies for the long-running
+> +workload itself, which is allowed by dma-fence rules, but rather for
+> +the VM_BIND operation only.
+> +
+> +Also for VM_BINDS for long-running gpu_vms the user-mode driver should typically
+> +select memory fences as out-fences since that gives greater flexibility for
+> +the kernel mode driver to inject other operations into the bind /
+> +unbind operations. Like for example inserting breakpoints into batch
+> +buffers. The workload execution can then easily be pipelined behind
+> +the bind completion using the memory out-fence as the signal condition
+> +for a GPU semaphore embedded by UMD in the workload.
+> +
+> +Multi-operation VM_BIND IOCTL error handling and interrupts
+> +===========================================================
+> +
+> +The VM_BIND operations of the IOCTL may error due to lack of resources
+> +to complete and also due to interrupted waits. In both situations UMD
+> +should preferably restart the IOCTL after taking suitable action. If
+> +UMD has over-committed a memory resource, an -ENOSPC error will be
+> +returned, and UMD may then unbind resources that are not used at the
+> +moment and restart the IOCTL. On -EINTR, UMD should simply restart the
+> +IOCTL and on -ENOMEM user-space may either attempt to free known
+> +system memory resources or abort the operation. If aborting as a
+> +result of a failed operation in a list of operations, some operations
+> +may still have completed, and to get back to a known state, user-space
+> +should therefore attempt to unbind all virtual memory regions touched
+> +by the failing IOCTL.
+> +Unbind operations are guaranteed not to cause any errors due to
+> +resource constraints.
+> +In between a failed VM_BIND IOCTL and a successful restart there may
+> +be implementation defined restrictions on the use of the gpu_vm. For a
+> +description why, please see KMD implementation details under `error
+> +state saving`_.
+> +
+> +Sample uAPI implementations
+> +===========================
+> +Suggested uAPI implementations at the moment of writing can be found for
+> +the Nouveau driver `here
+> +<https://patchwork.freedesktop.org/patch/543260/?series=112994&rev=6>`_.
+> +and for the Xe driver `here
+> +<https://cgit.freedesktop.org/drm/drm-xe/diff/include/uapi/drm/xe_drm.h?h=drm-xe-next&id=9cb016ebbb6a275f57b1cb512b95d5a842391ad7>`_.
+> +
+> +KMD implementation details
+> +==========================
+> +
+> +Error state saving
+> +__________________
+> +Open: When the VM_BIND IOCTL returns an error, some or even parts of
+> +an operation may have been completed. If the IOCTL is restarted, in
+> +order to know where to restart, the KMD can either put the gpu_vm in
+> +an error state and save one instance of the needed restart state
+> +internally. In this case, KMD needs to block further modifications of
+> +the gpu_vm state that may cause additional failures requiring a
+> +restart state save, until the error has been fully resolved. If the
+> +uAPI instead defines a pointer to a UMD allocated cookie in the IOCTL
+> +struct, it could also choose to store the restart state in that cookie.
+> +
+> +The restart state may, for example, be the number of successfully
+> +completed operations.
+> +
+> +Easiest for UMD would of course be if KMD did a full unwind on error
+> +so that no error state needs to be saved.
+> diff --git a/Documentation/gpu/rfc/xe.rst b/Documentation/gpu/rfc/xe.rst
+> index 2516fe141db6..0f062e1346d2 100644
+> --- a/Documentation/gpu/rfc/xe.rst
+> +++ b/Documentation/gpu/rfc/xe.rst
+> @@ -138,8 +138,8 @@ memory fences. Ideally with helper support so people don't get it wrong in all
+>   possible ways.
+>   
+>   As a key measurable result, the benefits of ASYNC VM_BIND and a discussion of
+> -various flavors, error handling and a sample API should be documented here or in
+> -a separate document pointed to by this document.
+> +various flavors, error handling and sample API suggestions are documented in
+> +Documentation/gpu/drm-vm-bind-async.rst
+>   
+>   Userptr integration and vm_bind
+>   -------------------------------
 
