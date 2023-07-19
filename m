@@ -2,116 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E61759C9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01780759CA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbjGSRk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 13:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33360 "EHLO
+        id S230218AbjGSRmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 13:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbjGSRk0 (ORCPT
+        with ESMTP id S229554AbjGSRmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:40:26 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A291BF6;
-        Wed, 19 Jul 2023 10:40:20 -0700 (PDT)
-Received: from jupiter.universe (dyndsl-091-248-208-009.ewe-ip-backbone.de [91.248.208.9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 43F04660704A;
-        Wed, 19 Jul 2023 18:40:19 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689788419;
-        bh=8jqadUrLP+GDojjmPoLDIihhsoBB6VsVeLoCMFXOZXs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SgSUnYOSN8oYJy4ma5e1Y5O2G6mWv/uDrAjnCLeD0aUJ2wdovwZGOS1rPQm3xmeu1
-         +AORNA0+ywiUSTqtaoG5N1IizNlnMnbzMOH3H+qxikyYW6BIopmyu7JllkgPTiL4RY
-         SCfs8Oj/Ud/YSfmDZFARbOT0keb+yQc0NcQ7c4lqB1H3MylBkvxoYKsWBnut1msXkF
-         BpIqMzuoN1q7yv2WG9uSi7ea3c5iTJApmpbz143/34AMXCNkVe4MOGQbW1ECtGZRZl
-         xmI6U0htlAIRRNBc65dtTmo3rVHIyE6dlgcNz7Srle8D8ifiQlmux/CS7V/kn+y5Xa
-         MyxVsgijPTOQQ==
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 22496480DA9; Wed, 19 Jul 2023 19:40:17 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Heiko Stuebner <heiko@sntech.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-rockchip@lists.infradead.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH v1 2/2] arm64: dts: rockchip: rk3588s: Add USB3 host controller
-Date:   Wed, 19 Jul 2023 19:40:15 +0200
-Message-Id: <20230719174015.68153-3-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230719174015.68153-1-sebastian.reichel@collabora.com>
-References: <20230719174015.68153-1-sebastian.reichel@collabora.com>
+        Wed, 19 Jul 2023 13:42:33 -0400
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6866B19B4
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:42:28 -0700 (PDT)
+Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-56768da274aso3082938eaf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:42:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689788547; x=1692380547;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5GdSlJQiKv484CM7UIkrDgwXqQQM0s/UqcfPqk1L/74=;
+        b=fJqXWZ4dFi2ry85Cbx4C1YmkEAfXMv+ei9Wd8zfnO3mZcca5M7igJOhsD8JsIXi8Nx
+         S4O/h41vB1xirHW5D/1MOGr/u5NvrS+KArcIZMVoeWdhKr3W16/RuqOahiP3ZwaRRUNY
+         Vy90HGuh1HkC3q54ST5yTGsf/T4GHPLRnX1udsSFMPOf024yZPKOPceEZHNrmcx43Mqd
+         inmh6kpMhePQUtKWajp4SH8gcmQLCDqXQ1/UeeWynhA2dfp2kBBQC1SxCkKRMpJKnxlk
+         oZ0qB6VJfU8mo2kGZ5N08bULNmlN/CY9dW8E3rGxkZJlKJTfP+erG5t+gST8YDNXD6rm
+         xDWA==
+X-Gm-Message-State: ABy/qLYFsrYlnvI6UYJiBhAEcTjFCmrn7U01YNe7Mb5qi52xFgp3S2gL
+        scWsrz0i8pA7mVf1505OhN14KDxxL9KlR+zfVGxx7NfMd8jn
+X-Google-Smtp-Source: APBJJlGc+FLMHZg6mdALKsMlGrkkyQ9/UibmMwawm8SN0wVBXG3jpPAmimRjmmikWRK5g6vvUtlS7JtRmzwo7B46VeTGBSh53ppP
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:3013:b0:38d:ca0a:8e18 with SMTP id
+ ay19-20020a056808301300b0038dca0a8e18mr28834819oib.2.1689788547816; Wed, 19
+ Jul 2023 10:42:27 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 10:42:27 -0700
+In-Reply-To: <000000000000ada87505fe7cf809@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002361ee0600da8ec5@google.com>
+Subject: Re: [syzbot] [crypto?] general protection fault in shash_ahash_update
+From:   syzbot <syzbot+88f4b1e6cf88da11f5cd@syzkaller.appspotmail.com>
+To:     Jiadong.Zhu@amd.com, alexander.deucher@amd.com,
+        davem@davemloft.net, dhowells@redhat.com,
+        herbert@gondor.apana.org.au, jiadong.zhu@amd.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RK3588 has three USB3 controllers. One of them is host-only and uses
-the naneng-combphy. The other two are dual-role and using a different
-PHY that is not yet supported upstream.
+syzbot suspects this issue was fixed by commit:
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 29 +++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+commit 1dbcf770cc2d15baf8a1e8174d6fd014a68b45ca
+Author: Jiadong Zhu <Jiadong.Zhu@amd.com>
+Date:   Wed May 24 03:42:19 2023 +0000
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-index b9b509257aaa..416581dd3bb5 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-@@ -443,6 +443,35 @@ usb_host1_ohci: usb@fc8c0000 {
- 		status = "disabled";
- 	};
- 
-+	usbhost3_0: usb@fcd00000 {
-+		compatible = "rockchip,rk3588-dwc3-host", "rockchip,rk3399-dwc3";
-+		clocks = <&cru REF_CLK_USB3OTG2>, <&cru SUSPEND_CLK_USB3OTG2>,
-+			 <&cru ACLK_USB3OTG2>, <&cru CLK_UTMI_OTG2>,
-+			 <&cru PCLK_PHP_ROOT>, <&cru CLK_PIPEPHY2_PIPE_U3_G>;
-+		clock-names = "ref", "suspend", "bus", "utmi", "php", "pipe";
-+		ranges;
-+		resets = <&cru SRST_A_USB3OTG2>;
-+		reset-names = "usb3-host";
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		status = "disabled";
-+
-+		usbhost_dwc3_0: usb@fcd00000 {
-+			compatible = "snps,dwc3";
-+			reg = <0x0 0xfcd00000 0x0 0x400000>;
-+			interrupts = <GIC_SPI 222 IRQ_TYPE_LEVEL_HIGH 0>;
-+			dr_mode = "host";
-+			phys = <&combphy2_psu PHY_TYPE_USB3>;
-+			phy-names = "usb3-phy";
-+			phy_type = "utmi_wide";
-+			snps,dis_enblslpm_quirk;
-+			snps,dis-u2-freeclk-exists-quirk;
-+			snps,dis-del-phy-power-chg-quirk;
-+			snps,dis-tx-ipgap-linecheck-quirk;
-+			snps,dis_rxdet_inp3_quirk;
-+		};
-+	};
-+
- 	sys_grf: syscon@fd58c000 {
- 		compatible = "rockchip,rk3588-sys-grf", "syscon";
- 		reg = <0x0 0xfd58c000 0x0 0x1000>;
--- 
-2.40.1
+    drm/amdgpu: Reset CP_VMID_PREEMPT after trailing fence signaled
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1622cafaa80000
+start commit:   9a94d764e9bc Merge tag 'mlx5-updates-2023-06-16' of git://..
+git tree:       net-next
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a4a7d74e6a7c3211
+dashboard link: https://syzkaller.appspot.com/bug?extid=88f4b1e6cf88da11f5cd
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1152c4ff280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1307cbcf280000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: drm/amdgpu: Reset CP_VMID_PREEMPT after trailing fence signaled
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
