@@ -2,170 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E117F75982F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398327598CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231573AbjGSOZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 10:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55714 "EHLO
+        id S231583AbjGSOti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231608AbjGSOZB (ORCPT
+        with ESMTP id S231190AbjGSOt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:25:01 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2040.outbound.protection.outlook.com [40.107.93.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBB926BF;
-        Wed, 19 Jul 2023 07:24:43 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QI6sOzi+gtQNdbN9C9GztwX037PSU2qhwGRIMd/ULjCFzbtl6G3vaGFx69Ru1dK2qxwYfscPcjX7u6az40Zuas8P2TIXBwRmBXSngKlE0q82RopW/vblRncDIe+/Y3xZzl3DeaCACmPW7kHidfJPFdQD2ycLHD5f4gesGlnSTv6YFpEINOYs2eIHDe/1ya/cDnqio0tJ1GlKWq5c4/eHIPGOeIQsgK4Y0HHwuIrY0itAVrwwYE/woVCFvByXlBC1cC4EWZoHxjmCvfclmNGCm4rQybJjlhQLheVJbjyFLNkaVATnLk39tlnQgrl8RZl6V+7u2T9yyBc7AVHnY0h86A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JiTW8fCjX/4q7DDyRSjV238D/QVT/rwNhUJ0BOiO6vE=;
- b=HY35YnX8iZAJYNOVeC4Aj1Dc5oo6aDFeOITJq49ORmFY01L2PElKQiKuNFCv9H4HgW+RZGDp/drbb6vJlR2897IW7zfIp0nlEGw3s99nhuKO6GCJiWKCTUO2MhY4TbhfyooCG8ErX+6Ml8jAo2b/rUaUtZikyj1WV5kqedoaneUwjonYfhz5WkfXrppi8MRsZs4PkFimUwJcJItmBcDkoEaCRdlR/5mcIF3CVY6P/AeVP8j0sgPCBGwhBYrqiaXJl2uK8018am8YHGZrZC49bIMUz0iQQdP6fAmsufU2xb/Ji+nWhSFdFAJUJlVoVvxFEgxceRJzcPbgaYxIWOifAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JiTW8fCjX/4q7DDyRSjV238D/QVT/rwNhUJ0BOiO6vE=;
- b=RI8ipCUVyRQQgyvzjHqzmMZkkYuMs7UfgrnLQD6lfqMKKp0P96fgQmoQ2/5h+kXQ2V7x0P+4j8G+zET0DUt+GNYsHIw8qBKxAJBaoRHl993HvswGMTQANS3/yvXtKNe2U1Ad+EpZCFy/oTVJckWowftSS4mmIpNfjItNWbqDhkM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
- by BL3PR12MB6546.namprd12.prod.outlook.com (2603:10b6:208:38d::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33; Wed, 19 Jul
- 2023 14:24:37 +0000
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::ca28:efb4:a838:58fb]) by BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::ca28:efb4:a838:58fb%4]) with mapi id 15.20.6609.024; Wed, 19 Jul 2023
- 14:24:37 +0000
-Message-ID: <8b547ba9-45bb-312c-293f-356b5bea01c7@amd.com>
-Date:   Wed, 19 Jul 2023 10:24:33 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/4] drm/amdkfd: use vma_is_initial_stack() and
- vma_is_initial_heap()
-Content-Language: en-US
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
-        selinux@vger.kernel.org, Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-References: <20230719075127.47736-1-wangkefeng.wang@huawei.com>
- <20230719075127.47736-3-wangkefeng.wang@huawei.com>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-In-Reply-To: <20230719075127.47736-3-wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YQBPR0101CA0140.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:e::13) To BN9PR12MB5115.namprd12.prod.outlook.com
- (2603:10b6:408:118::14)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5115:EE_|BL3PR12MB6546:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4144b76c-73e1-4298-7dc1-08db8863e16c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K8/s9c9gpEtTTD5iV+55HocmMU3c/dddZ6HOlFsLY90f1RZ9fx51+cmnVGOCC86xxqNjZQ44pIYb6Lo44qjrOvcvdzlrEivSSuEHRxa9+PiSW8VbVDApzVWbFUoSVydb8lYP7aVA+dQQqgo9uc4Y7DlftYJGNhcSoD5wfS4NsmT1FY0pqJljqBrYBwiIYpI4l1BrRiiiWncDgznn7ZyivLTaCAl/dLVQh+yncEXt/LMheF5R1QxG7VfK0pu4SjebkeOJ9/D6F1Axx2cemAmMR1ePcQNSCj8UfcXsldTfLiXyp6TCZ6xjWEHr++7I5Hn2KzZGVlAjdeE3djJxxYjy1WoV+73ZVmbBbtR9Mg/hxtMa56CbXpMjaiwLkKHiqrYGh5cDTl8K+kMQqdwIyg12fIJCNQaz3A2HkydnQXSpGEVGIhSf8nSKe78ZQzNSDoqmiuOI9BLcA4K0yQvtkv5anrX94LxnDO7LZMLk8I2T9SMBi65M6FwTa0hKOaLc5bACjtzpaqYqpdhDsR/6G/bA/60wDzYXGmtgfMS9SJotkkEqesY28vnro90o2jKpCoIQuog4PM/CWXRVrMu2lZr0TRmbnKM9aQIyClJ+lXjmM5eX3G5LBcIG5eRPEkJCm8ZvhjrPwtfARg9Iz6pWacGrTQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(396003)(39860400002)(376002)(366004)(136003)(451199021)(66946007)(54906003)(6486002)(110136005)(41300700001)(478600001)(8676002)(8936002)(5660300002)(6666004)(66476007)(66556008)(6512007)(4326008)(2616005)(316002)(66574015)(83380400001)(186003)(26005)(6506007)(38100700002)(31696002)(86362001)(36756003)(7416002)(44832011)(2906002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M3FZVW1jVFRjVW1UcmdKcTQyTW83bGpLSHJiTVRMK3dVWFNxbHJQVDdCZHFO?=
- =?utf-8?B?bktiYkpVYy9Vd0RGSzNNc2YrcmFSaXg1QzNkdFp2NnhlN3Vyc0pPS056cFJD?=
- =?utf-8?B?c2RpQy9TKzdSWlFCZDkzQ3llNGVFbGFybUpGZElsQmp1RVZmR1BTUitsL1pO?=
- =?utf-8?B?YytPRHlET3dYZHRxNVJXMG03NDc4ZVJGWHY3UHREMTRWNDBkQXMvTWlQYTlQ?=
- =?utf-8?B?YmFLUVFwRkdDM1JvL1RyLzNuMS9uK3dYRDNWYlA3MWVSeUV3RjF4eVluL3Fk?=
- =?utf-8?B?b0RNZGFrdVVIajdaL2IxSHNXVW5OMnNkSC9iaWhoRFBJL0kyRHU2TGUxM21P?=
- =?utf-8?B?SDBlRXVFSjJYczdXSldZdHhKZmx2NjRRaUdOYkxmQzZxK29ZSmQvOTlxWDZV?=
- =?utf-8?B?WWUyNjJtL3BjNHZuRVR2aVkrSEdON1czTjZQOVBFY3MwN3VJa08yTzVvcUlB?=
- =?utf-8?B?ZGdITk9kZzRJSm5OWE5zUlJqMW1tekRsZGh6aEdhU1E2cG5aVkZIcTc2TXVE?=
- =?utf-8?B?enV5TXFiQ0pGRmhqb1JGc2gyWEV5NXdCaXRxM0czMVA2ci9NZGV4bFpRUGhY?=
- =?utf-8?B?SVArbmpGWVBxQ0FRTzB0NUpScncwSG8zKzZETzJKaXc0cWsrK3ZhL0VrNk5C?=
- =?utf-8?B?ckpJdzl1cHR2dHovMlVYMVhZRGZWY1d4QVh4eFFxeHlqaHBOa2czWmMra3Zh?=
- =?utf-8?B?T1k3MklUeVQySDZVY1B0bUZyN0VhVEZPcWo1ZExqRXROQWdBRm9KSnFhK0Vi?=
- =?utf-8?B?OW1oWTEzemsxVlJheVcwcHZKRDNIMDdjWGNqc1dGdzBiTGppY1hzeG5RZjQx?=
- =?utf-8?B?ZmVid0ZEanoyWndsYTlldWcxbU9hTVEzalZKZEFRRTBBOEFqUGpjeklEK1ps?=
- =?utf-8?B?U2pkYUkrbCtvOFh4TGVOckVZUGtjTEd0ak9rL29wTXBRN2h3SktFRU1LM2lL?=
- =?utf-8?B?WjZ6UFFmR2IzSUF1NGdTK09FVGV0N3llcSt2UEhuRjF0MVF4cGxJajZRWjVG?=
- =?utf-8?B?RnhUTXJLVnRLaGw5ck15NnlBRmFPanBPc0Fhbmo0UWFaNDdrenV2WVNSZEk4?=
- =?utf-8?B?akhWRWh0cW82SkI3UG9LMXVaV0RQYVJrdS82dEFWWGR2eTdJekxuSnBjczJC?=
- =?utf-8?B?V1czTjEyU1ZCMGtwUEFUc09PaTVsb0tyQXFtZkx3QXltZFBFOWYrRDZSQkFo?=
- =?utf-8?B?SEV6UHIzRi9CNk1Ga0JoaUs2QlBTMGF5TW9pRk9HclNDN280RlN0UWRLWGVC?=
- =?utf-8?B?VDNFelBYN0o4cTZJL0IwLzZyaTlyOTJicDVRRkxGeFZadGF4MDdzYm9oYXR4?=
- =?utf-8?B?VEhJVEFRa3BJMEZwRXJMZUJWZTgybEpKS0g5SVVmZERNY2Rzemk0VVc1QzY5?=
- =?utf-8?B?a3BXYTJXaFA4S0Q5Qm1VSHZEdE5xVy9CWGZqSmVsQWFEcmFmWndHL25jelF3?=
- =?utf-8?B?S2hMSS9PbDN4SjZvTEUzRXh1UXpxUjJZQy9QNGp1bmEyRHc5QXVrV204WHB1?=
- =?utf-8?B?dzZ1Z0pwU0RTYjVZTkUwcFIrRldDcS9nY00rb1ZxVHFtRjlhU0J6Ly9sT25u?=
- =?utf-8?B?ZVVSSHcwb3Z1RHNHcmRRZlIzeThXZ05JNmJFcThLQXoyaWs5QkV0TmRwdS8z?=
- =?utf-8?B?dGdQQThPYXpGTUxEcUo3TGRBSU5LYlY3blNVN3lKZUdLV0lhb2hvOG1NcVlV?=
- =?utf-8?B?R2swM1lPUTRVVXhUTzUyRXMyQy9meE9qYTdWbjh2YklFVHBTTjJGL1NIcEda?=
- =?utf-8?B?UWE0azJXV1haMnFoanBKREdNUk9BRHZtT0VqeGFxRzFnbTcyd0hFNytsSVM4?=
- =?utf-8?B?aFQ3YXJIc1UrSWNreTJmTG9YTUlrU1ZIRHh5RzJwTlhteHBWSjdRYkJ4ajBq?=
- =?utf-8?B?dXlkdXlIUTg1eTJGSmVmZU5HK0xURzZLbGxURkZ6N1U3VnRKcGNTK3p6NElU?=
- =?utf-8?B?SlVwRmJNL3YxdEtrZHI4RnZsRm9GS3dyVkhoUjV1Njh6ZDZIeDMzMkRUZkNW?=
- =?utf-8?B?N2F1S1hmcFJGRTgxSldoMm9wNlEzWVNGWnFzcXR5RjhUVncwbFpLM0t2WTR6?=
- =?utf-8?B?cmluY1BvWnJJVEViclJrRE95QktIY2RoYzNUdVlMQkJTUTR5emphak41Mmxh?=
- =?utf-8?Q?xXPXac7sO71yvO0K2k7wf4JtO?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4144b76c-73e1-4298-7dc1-08db8863e16c
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 14:24:36.9856
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VMONTdcPTmTQCYzKTQBdirY9O5MRcWMIMiyW9FCa5ox8nCg8KayC4GgW0qNCTbAxEhI+7UehTqpytCcLBLk5NA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6546
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        Wed, 19 Jul 2023 10:49:27 -0400
+Received: from icts-p-cavspool-1.kulnet.kuleuven.be (icts-p-cavspool-1.kulnet.kuleuven.be [134.58.240.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651DB171B;
+        Wed, 19 Jul 2023 07:49:21 -0700 (PDT)
+Received: from icts-p-cavuit-3.kulnet.kuleuven.be (icts-p-cavuit-3.kulnet.kuleuven.be [134.58.240.133])
+        by icts-p-cavspool-1.kulnet.kuleuven.be (Postfix) with ESMTP id F0FD01E2C;
+        Wed, 19 Jul 2023 16:25:41 +0200 (CEST)
+X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
+X-KULeuven-Scanned: Found to be clean
+X-KULeuven-ID: 3A6FD20176.AB057
+X-KULeuven-Information: Katholieke Universiteit Leuven
+Received: from icts-p-ceifnet-smtps-1.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:136:242:ac11:f])
+        by icts-p-cavuit-3.kulnet.kuleuven.be (Postfix) with ESMTP id 3A6FD20176;
+        Wed, 19 Jul 2023 16:25:36 +0200 (CEST)
+BCmilterd-Mark-Subject: no
+BCmilterd-Errors: 
+BCmilterd-Report: SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID_AU#0.00
+X-CAV-Cluster: smtps
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
+        s=cav; t=1689776736;
+        bh=hHJG4KWPo0LI/bwzcL9cDo906OstHfhQRTpA1GLUueg=;
+        h=From:To:Cc:Subject:Date;
+        b=J3A8BqMN9OaKcfGxzF14KTnbaadHq/BM4WQlR9JPwnNG0fUqXyzRUA/jBAJgXpz7J
+         nI9yh/UAxNk0aaEXgSPdDBE276iMykO7oba46U0tTxL6r0nNRdNrLUmj9KinedoxIN
+         FrBydpHtwFukO3BGS2Xtj6iYoIM5sBgaO78flW+I=
+Received: from librem.epfl.ch (eduroam-269-1-126.epfl.ch [192.33.197.126])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id E770DD4E6AFDA;
+        Wed, 19 Jul 2023 16:25:35 +0200 (CEST)
+X-Kuleuven: This mail passed the K.U.Leuven mailcluster
+From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+To:     jarkko@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     dave.hansen@linux.intel.com,
+        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+Subject: [PATCH 0/4] selftests/sgx: Harden test enclave
+Date:   Wed, 19 Jul 2023 16:24:56 +0200
+Message-Id: <20230719142500.13623-1-jo.vanbulck@cs.kuleuven.be>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-Am 2023-07-19 um 03:51 schrieb Kefeng Wang:
-> Use the helpers to simplify code.
->
-> Cc: Felix Kuehling <Felix.Kuehling@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian König" <christian.koenig@amd.com>
-> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-> Cc: David Airlie <airlied@gmail.com>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+This patch series fixes several issues in the SGX example test enclave:
 
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+1. Adhere to enclave programming best practices by sanitizing untrusted
+   user inputs (ABI registers and API pointer arguments).
+2. Ensure correct behavior with compiler optimizations (gcc -O{1,2,3,s}).
+
+Motivation
+==========
+
+While I understand that the bare-metal Intel SGX selftest enclave is
+certainly not intended as a full-featured independent production runtime,
+it has been noted on this mailing list before that "people are likely to
+copy this code for their own enclaves" and that it provides a "great
+starting point if you want to do things from scratch" [1]. Thus, proper and
+complete example code is vital for security-sensitive functionality, like the
+selftest example enclave.
+
+The purpose of this patch series is, hence, to make the test enclave adhere
+to required enclave programming defensive measures by, to the extent
+possible and practical, sanitizing attacker-controlled inputs through
+minimal checks. Note that this is in line with the existing check in the
+test enclave to guard against buffer overflow of the encl_op_array through
+the op.type input.
+
+Proposed changes
+================
+
+This patch series adds the minimally required sanitization checks, as well
+as makes the test enclave compatible with gcc compiler optimizations. The
+added functionality is separated in this patch series as follows:
+
+1. Minimal changes in the enclave entry assembly stub as per the x86-64
+   ABI expected by the C compiler. Particularly, sanitize the DF and AC
+   bits in RFLAGS, which have been dangerously abused in prior SGX attack
+   research [2,3]. Also add a test case to validate the sanitization.
+
+   Note that, compiling the existing, unmodified test enclave on my machine
+   (gcc v11.3.0) with -Os optimizations yields assembly code that uses the
+   x86 REP string instructions for memcpy/memset. Hence, such a compiled
+   test enclave would be directly vulnerable to severe memory-corruption
+   attacks by trivially inverting RFLAGS.DF before enclave entry (similar
+   to CVE-2019-14565 -- Intel SA-00293 [3]).
+
+   Finally note that the proposed patch does currently _not_ sanitize the
+   extended CPU state using XSAVE/XRSTOR, as has been shown in prior attack
+   research to be necessary for SGX enclaves using floating-point
+   instructions [4]. I found that prior versions of the selftest enclave
+   _did_ partially cleanse extended CPU state, but that his functionality
+   has been removed, as it was argued that "the test enclave doesn't touch
+   state managed by XSAVE, let alone put secrets into said state" [5].
+   However, I found that compiling the unmodified test enclave with gcc
+   -O{2,3} optimization levels may still use the XMM registers to store
+   some intermediate results (i.e., clobber them as allowed per the x86-64
+   ABI). Hence, for now, add the -mno-sse compilation option to prevent
+   this behavior and add a note to explicitly document the assumption that
+   extended state should remain untouched in the selftest enclave.
+
+   This may also be an argument to consider re-adding the XRSTOR
+   functionality?
+
+2. Make the selftest enclave aware of its protected ELRANGE: add a linker
+   symbol __enclave_base at the start of the enclave binary and reserve
+   space for __enclave_size to be filled in by the untrusted loader when
+   determining the size of the final enclave image (depending on allocated
+   heap etc.). The final value for __enclave_size is filled in before
+   actual enclave loading and will be measured as part of MRENCLAVE,
+   allowing to trust the size within the enclave validation logic. This
+   approach is similar to how this is done in real-world enclave runtimes
+   (e.g., Intel SGX-SDK).
+
+3. Add minimal validation logic in the enclave C code to ensure that
+   incoming pointer struct arguments properly point outside the enclave
+   before dereference, preventing confused-deputy attacks. Use a C macro to
+   copy struct arguments fully inside the enclave to avoid time-of-check to
+   time-of-use issues for nested pointers. Note that the test enclave
+   deliberately allows arbitrary reads/writes in enclave memory through the
+   get_from_addr/put_to_addr operations for explicit testing purposes.
+   Hence, add an explicit note for this case and only allow remaining
+   unchecked pointer dereferences in these functions.
+
+4. Ensure correct behavior under gcc compiler optimizations. Declare
+   encl_op_array static to ensure RIP-relative addressing is used to access
+   the function-pointer table and rebase the loaded function-pointer
+   entries at runtime before jumping. Declare the secinfo structure as
+   volatile to ensure the compiler passes an aligned address to ENCLU.
+
+   To ensure future compatibility, it may also be worthwhile to rewrite the
+   test framework to exhaustively execute all tests for test_encl.elf
+   compiled with all possible gcc optimizations -O{0,1,2,3,s}?
+
+Best,
+Jo
+
+[1] https://patchwork.kernel.org/comment/23202425/
+[2] https://jovanbulck.github.io/files/ccs19-tale.pdf
+[3] https://jovanbulck.github.io/files/systex22-abi.pdf
+[4] https://jovanbulck.github.io/files/acsac20-fpu.pdf
+[5] https://patchwork.kernel.org/comment/23216515/
+
+Jo Van Bulck (4):
+  selftests/sgx: Harden test enclave ABI
+  selftests/sgx: Store base address and size in test enclave
+  selftests/sgx: Harden test enclave API
+  selftests/sgx: Fix compiler optimizations in test enclave
+
+ tools/testing/selftests/sgx/Makefile          |   2 +-
+ tools/testing/selftests/sgx/load.c            |   3 +-
+ tools/testing/selftests/sgx/main.c            |  55 ++++++
+ tools/testing/selftests/sgx/test_encl.c       | 165 +++++++++++++-----
+ tools/testing/selftests/sgx/test_encl.lds     |   1 +
+ .../selftests/sgx/test_encl_bootstrap.S       |  29 +++
+ 6 files changed, 214 insertions(+), 41 deletions(-)
 
 
-> ---
->   drivers/gpu/drm/amd/amdkfd/kfd_svm.c | 5 +----
->   1 file changed, 1 insertion(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-> index 5ff1a5a89d96..0b7bfbd0cb66 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-> @@ -2621,10 +2621,7 @@ svm_range_get_range_boundaries(struct kfd_process *p, int64_t addr,
->   		return -EFAULT;
->   	}
->   
-> -	*is_heap_stack = (vma->vm_start <= vma->vm_mm->brk &&
-> -			  vma->vm_end >= vma->vm_mm->start_brk) ||
-> -			 (vma->vm_start <= vma->vm_mm->start_stack &&
-> -			  vma->vm_end >= vma->vm_mm->start_stack);
-> +	*is_heap_stack = vma_is_initial_heap(vma) || vma_is_initial_stack(vma);
->   
->   	start_limit = max(vma->vm_start >> PAGE_SHIFT,
->   		      (unsigned long)ALIGN_DOWN(addr, 2UL << 8));
+base-commit: 1a2945f27157825a561be7840023e3664111ab2f
+-- 
+2.34.1
+
