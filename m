@@ -2,160 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB07759B56
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F74D759B59
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbjGSQsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 12:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36184 "EHLO
+        id S230393AbjGSQs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 12:48:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbjGSQso (ORCPT
+        with ESMTP id S230370AbjGSQsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 12:48:44 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B36D2137
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:48:32 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-401d1d967beso5791cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:48:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689785311; x=1692377311;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qdhb3Ae11Gg1Dat3FtPlzRqYz+pl+VF4Ei5yrEPLth0=;
-        b=ZhpgSv3ucAbMdOpycJUjN25cYLL4v6Q2VEZ9BHyAYp/RLIZTddNVRP3H1CckWGYT6+
-         DDx8BkNPfq1m4eGu6KnD4v1nA34X3YhpzrtlxqtwXNDeNfzi8I3R/BnpbSNCAz/cFOxA
-         UX+0qplhn5jKCpboPrfhEab3jglezs+E+hmzwVSQ2k1VJY/jfuG6MwtsX8KrhBEksb5N
-         MDUMdrW2UvnNCPajHkBwyePdOUD1wurmMBd2MxzCJ+0xWWDuOJVMWRH5kxdKfbMckjqE
-         /iJa8ARtYoF4YjmmF8B9PZexijoUH2qNxe/gi9VJBHzhDH6Yi/fPH9zOTTYSnbo6kFjQ
-         03iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689785311; x=1692377311;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qdhb3Ae11Gg1Dat3FtPlzRqYz+pl+VF4Ei5yrEPLth0=;
-        b=kPl0fqLx9umcNVICKEJlLbU3OxeGvT/ek2CWVpFrPKLFsuOiF8GN3aYP8pMYuHfAQt
-         lYFqHDnHxyQkP1mfhdeW+t58ccbT7TnHTA4fiTUjEqzkh1fP6+jcCAoc8oRF55MYgvNX
-         xsTm3HOGVfFHdGaJoKeJDIxwYoAQXfIn7jfMijoVKIAwpyFQfaRCXLqnP/FbSe5gdVB3
-         8BNM6vhHtJ+CUtJ02seCQF7DGGJV0qMAudOnpADMXWCO5IFS2tVWxUA/+qxvQeHKKoEo
-         bMGLQSnjIVFbh1JH8yrGPuZ6v4xfCM1jRsZxpfet+GuILVa61tIfK4j1VbeOvhkF332T
-         H0mw==
-X-Gm-Message-State: ABy/qLbpdSyHLhQD/KWewC/EpSLvzQG7q5Jdus0OTd0Esf5F7iQJ66ij
-        qbXTHzuyORlkKmf0hDpl5ke1Wr7j/4wNH+/XmqiD/Q==
-X-Google-Smtp-Source: APBJJlGHWag7WGvy2AIyTiB9+pLYJ1QpIZVF1cgNC8KDXbH+lfqt6f2fQwTqpmSovIPhRjokwwyzwhW6thNdncLuoxs=
-X-Received: by 2002:a05:622a:1cd:b0:403:a090:41c5 with SMTP id
- t13-20020a05622a01cd00b00403a09041c5mr701146qtw.16.1689785311166; Wed, 19 Jul
- 2023 09:48:31 -0700 (PDT)
+        Wed, 19 Jul 2023 12:48:53 -0400
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882B21BF2;
+        Wed, 19 Jul 2023 09:48:39 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 63728FF802;
+        Wed, 19 Jul 2023 16:48:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1689785317;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JKDmPUsTotuvgM8MSiKrmp7WDzMVYFV4Cjd7anLXrXo=;
+        b=Ik2teUmfo0wnP/ByQx4yLDuXDr9fSqxD0pDRf5TZXTjBH6M/k8OCT6oMi30+bfGiw0ALkP
+        t0abRvexgfIdDy5GvQMBQ1cg92YaF+MyvZZCHxtKJ0qQPphxGn8uBpWUYDutRKL7U6btFW
+        CY3ovATDDERETU8GW1kB5p8XdUVkjUPtjHBVuCYp9LJg/+EF2NDX7FMfn6IVQYFoFlXDNs
+        cvSC8LKXUaV4Zg4tdGmNEByU68+XO59W8+exdE0NTOTvm1mI/dCs0I18xrHk26v3A5l2LX
+        UrucgJTXqVZabnVYEqrhamESPEUGJXjzlgTKPeHFH3cee3MxE4i5tmJLcV/p9g==
+Date:   Wed, 19 Jul 2023 18:48:31 +0200
+From:   Luca Ceresoli <luca.ceresoli@bootlin.com>
+To:     Xu Yang <xu.yang_2@nxp.com>
+Cc:     Francesco Dolcini <francesco@dolcini.it>, Jun Li <jun.li@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: Re: [EXT] Re: [PATCH v2 2/3] usb: chipidea: imx: support disabling
+ runtime-pm
+Message-ID: <20230719184831.75ae8658@booty>
+In-Reply-To: <DB7PR04MB4505560E7DCBC2523FD7A0FE8C39A@DB7PR04MB4505.eurprd04.prod.outlook.com>
+References: <20230504162312.1506763-1-luca.ceresoli@bootlin.com>
+        <ZFPiRvoF5l8uGzzZ@francesco-nb.int.toradex.com>
+        <PA4PR04MB96403377F5E37C12AD8C25B389729@PA4PR04MB9640.eurprd04.prod.outlook.com>
+        <20230505120618.2f4cf22c@booty>
+        <ZFThyn/D/dDK9nk3@francesco-nb.int.toradex.com>
+        <PA4PR04MB96405EE2468555EA900B340189739@PA4PR04MB9640.eurprd04.prod.outlook.com>
+        <ZFjaNzY32x8o2XG7@francesco-nb.int.toradex.com>
+        <20230508151756.785ec07e@booty>
+        <20230529121825.71e9b6d6@booty>
+        <PA4PR04MB96405138465D215C34285F02894B9@PA4PR04MB9640.eurprd04.prod.outlook.com>
+        <ZKaWL3+ClI7iNr/4@francesco-nb.int.toradex.com>
+        <20230717184537.6d6ed607@booty>
+        <DB7PR04MB450573F8EA936E049F053A258C38A@DB7PR04MB4505.eurprd04.prod.outlook.com>
+        <20230718142504.075d0186@booty>
+        <DB7PR04MB4505560E7DCBC2523FD7A0FE8C39A@DB7PR04MB4505.eurprd04.prod.outlook.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20230715032915.97146-1-yangjihong1@huawei.com> <20230715032915.97146-8-yangjihong1@huawei.com>
-In-Reply-To: <20230715032915.97146-8-yangjihong1@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 19 Jul 2023 09:48:19 -0700
-Message-ID: <CAP-5=fXANQvgd96=hi2j7touCex0UQ9GsUB0cL1018KfeZPqzg@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] perf test: Add test case for record sideband events
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com,
-        kan.liang@linux.intel.com, james.clark@arm.com,
-        tmricht@linux.ibm.com, ak@linux.intel.com,
-        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: luca.ceresoli@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 8:31=E2=80=AFPM Yang Jihong <yangjihong1@huawei.com=
-> wrote:
->
-> Add a new test case to record sideband events for all CPUs when tracing
-> selected CPUs
->
-> Test result:
->
->   # ./perf test list 2>&1 | grep 'perf record sideband tests'
->    95: perf record sideband tests
->   # ./perf test 95
->    95: perf record sideband tests                                      : =
-Ok
->
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> ---
->  tools/perf/tests/shell/record_tracking.sh | 44 +++++++++++++++++++++++
->  1 file changed, 44 insertions(+)
->  create mode 100755 tools/perf/tests/shell/record_tracking.sh
->
-> diff --git a/tools/perf/tests/shell/record_tracking.sh b/tools/perf/tests=
-/shell/record_tracking.sh
+Hello Xu,
 
-Could this be record_sideband.sh ? It will be more consistent with the
-test output...
+thanks for the follow up.
 
-Thanks,
-Ian
+On Wed, 19 Jul 2023 11:23:26 +0000
+Xu Yang <xu.yang_2@nxp.com> wrote:
 
-> new file mode 100755
-> index 000000000000..44fc0af92f81
-> --- /dev/null
-> +++ b/tools/perf/tests/shell/record_tracking.sh
-> @@ -0,0 +1,44 @@
-> +#!/bin/sh
-> +# perf record sideband tests
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +set -e
-> +
-> +err=3D0
-> +perfdata=3D$(mktemp /tmp/__perf_test.perf.data.XXXXX)
-> +
-> +can_cpu_wide()
-> +{
-> +    if ! perf record -o ${perfdata} -BN --no-bpf-event -e dummy:u -C $1 =
-true 2>&1 >/dev/null
-> +    then
-> +        echo "record sideband test [Skipped cannot record cpu$1]"
-> +        err=3D2
-> +    fi
-> +
-> +    rm -f ${perfdata}
-> +    return $err
-> +}
-> +
-> +test_system_wide_tracking()
-> +{
-> +    # Need CPU 0 and CPU 1
-> +    can_cpu_wide 0 || return 0
-> +    can_cpu_wide 1 || return 0
-> +
-> +    # Record on CPU 0 a task running on CPU 1
-> +    perf record -BN --no-bpf-event -o ${perfdata} -e dummy:u -C 0 -- tas=
-kset --cpu-list 1 true
-> +
-> +    # Should get MMAP events from CPU 1
-> +    mmap_cnt=3D`perf script -i ${perfdata} --show-mmap-events -C 1 2>/de=
-v/null | grep MMAP | wc -l`
-> +
-> +    rm -f ${perfdata}
-> +
-> +    if [ ${mmap_cnt} -gt 0 ] ; then
-> +        return 0
-> +    fi
-> +
-> +    echo "Failed to record MMAP events on CPU 1 when tracing CPU 0"
-> +    return 1
-> +}
-> +
-> +test_system_wide_tracking
-> --
-> 2.30.GIT
->
+> Hi Luca,
+> 
+> > -----Original Message-----
+> > 
+> > Hello Xu,
+> > 
+> > On Tue, 18 Jul 2023 08:31:48 +0000
+> > Xu Yang <xu.yang_2@nxp.com> wrote:
+> >   
+> > > > -----Original Message-----
+> > > >
+> > > > Ciao Francesco,
+> > > >
+> > > > On Thu, 6 Jul 2023 12:23:43 +0200
+> > > > Francesco Dolcini <francesco@dolcini.it> wrote:
+> > > >  
+> > > > > Hello Luca,
+> > > > >
+> > > > > On Tue, May 30, 2023 at 11:22:51AM +0000, Jun Li wrote:  
+> > > > > > Yes, your understanding is correct, talked with Xu(in CC), he will take this
+> > > > > > soon.  
+> > > > >
+> > > > > A series was posted
+> > > > >
+> > > > > I had no time to try or look at it yet.  
+> > > >
+> > > > Thanks for keeping me up to date on this topic, which is still totally
+> > > > relevant to me.
+> > > >
+> > > > I looked at the series, but it does not seem to be addressing the
+> > > > problem with USB host not detecting new devices when VBUS is not
+> > > > directly connected, e.g. in the Colibri imx6ull SoM.
+> > > >
+> > > > Xu, do you confirm the series at the link is _not_ solving the problem
+> > > > being discussed here?  
+> > >
+> > > Have you tried this patchset? The upstream driver couldn't get correct
+> > > USB role from HW_USBPHY_CTRL register when the ID pin is float. This is
+> > > what this patchset is trying to fix. With this patch, condition
+> > > "(!vbus_is_on && !mxs_phy_is_otg_host(mxs_phy)" will always be false when
+> > > controller acts as host role, then __mxs_phy_disconnect_line(phy, true)
+> > > will never be called. So I think it doesn't matter whether VBUS is connected
+> > > or not when act as host mode. If you still have issue after apply this patchset,
+> > > please let me know.  
+> > 
+> > I tested this patchset on top of v6.5-rc2 and I confirm USB detection
+> > is still broken on the Colibri iMX6ULL. With or without the patches
+> > the behavior is the same: USB devices are detected only during boot,
+> > and anything connected after boot are never detected.  
+> 
+> Thanks for your feedback. As you said this issue will disappear with below change, right?
+> 
+> 	diff --git a/drivers/usb/phy/phy-mxs-usb.c b/drivers/usb/phy/phy-mxs-usb.c
+> 	index e1a2b2ea098b..ec5ee790455e 100644
+> 	--- a/drivers/usb/phy/phy-mxs-usb.c
+> 	+++ b/drivers/usb/phy/phy-mxs-usb.c
+> 	@@ -178,7 +178,6 @@ static const struct mxs_phy_data imx6sx_phy_data = {
+> 	 };
+> 
+> 	 static const struct mxs_phy_data imx6ul_phy_data = {
+> 	-       .flags = MXS_PHY_DISCONNECT_LINE_WITHOUT_VBUS,
+> 	 };
+> 
+> 	 static const struct mxs_phy_data imx7ulp_phy_data = {
+
+Exactly.
+
+> So I guess something in __mxs_phy_disconnect_line(mxs_phy, true) is causing this behavior.
+> Could you please help to find which line to comment to make this issue disappear?
+
+I did some tests and detection works by doing _any_ of the following
+two changes (or both of them).
+
+Change 1:
+
+--- a/drivers/usb/phy/phy-mxs-usb.c
++++ b/drivers/usb/phy/phy-mxs-usb.c
+@@ -359,10 +359,6 @@ static void __mxs_phy_disconnect_line(struct mxs_phy *mxs_phy, bool disconnect)
+        void __iomem *base = mxs_phy->phy.io_priv;
+        u32 reg;
+ 
+-       if (disconnect)
+-               writel_relaxed(BM_USBPHY_DEBUG_CLKGATE,
+-                       base + HW_USBPHY_DEBUG_CLR);
+-
+        if (mxs_phy->port_id == 0) {
+                reg = disconnect ? ANADIG_USB1_LOOPBACK_SET
+                        : ANADIG_USB1_LOOPBACK_CLR;
+
+Change 2:
+
+--- a/drivers/usb/phy/phy-mxs-usb.c
++++ b/drivers/usb/phy/phy-mxs-usb.c
+@@ -372,9 +372,6 @@ static void __mxs_phy_disconnect_line(struct mxs_phy *mxs_phy, bool disconnect)
+        } else if (mxs_phy->port_id == 1) {
+                reg = disconnect ? ANADIG_USB2_LOOPBACK_SET
+                        : ANADIG_USB2_LOOPBACK_CLR;
+-               regmap_write(mxs_phy->regmap_anatop, reg,
+-                       BM_ANADIG_USB2_LOOPBACK_UTMI_DIG_TST1 |
+-                       BM_ANADIG_USB2_LOOPBACK_TSTI_TX_EN);
+        }
+ 
+        if (!disconnect)
+
+I hope this clarifies something to you.
+
+Luca
+
+-- 
+Luca Ceresoli, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
