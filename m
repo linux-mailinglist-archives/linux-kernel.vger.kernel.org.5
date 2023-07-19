@@ -2,91 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2989C758BBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 05:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F1E758BC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 05:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbjGSDDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 23:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        id S230220AbjGSDEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 23:04:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbjGSDDJ (ORCPT
+        with ESMTP id S229461AbjGSDEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 23:03:09 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6391BF0;
-        Tue, 18 Jul 2023 20:03:08 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-5577004e21bso2712343a12.2;
-        Tue, 18 Jul 2023 20:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689735788; x=1692327788;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=O6Q4Gr5aTOSuGEpQsnLnXjoJVut5P5cv2RZkLBpYF2c=;
-        b=KdUJZCNqNtRGIW9mfRkwXt5/4suDubL/MztFLizONKQfCxMZe5a7yieLemqQJwT+zh
-         7O+XHfuKSFunySoHLcypQK9L5i90iHMM8MBeHQkPgl5QWoKZko7vSx7ApEIwtFKcAHCj
-         GQ5q93LZBVW8UExcVp2EqPZSgVnQdftdE/jFAoSUwfkqfp4fSoa57bCNxG5EdsAHTcu1
-         rRJ2kYdA4H8ZcoJG2HxU3h0Ep/t6RzXPH1O3X0PKfWBNsizTcpeDqklfXOo2UpTbYaXD
-         X5ZXL0ULJWCXYGffrRhLlar1D9nv7duEGUfixsxpTF9igmRgy45pFSTMuRakV7S3a/x1
-         esWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689735788; x=1692327788;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O6Q4Gr5aTOSuGEpQsnLnXjoJVut5P5cv2RZkLBpYF2c=;
-        b=LsUy3Govuz7MhEYjFzeV2Tx7Cv9lVkR4sKFOqc/zsuNkf/2Dq+nh9mxTyVqo4NU0pB
-         PQaKkzFqiRcY3rVbYcAyT+8eIu1psR3BK0qL6BDwWOWW9jgcVrtehkB3vRpqdla3Sx4r
-         P4yu/SiVMpTpHRE9NK9opVO2EjKqjAg8+9LrsTIkHJsCHuseeGspE0vMPfoSThNaI5Gm
-         QQdPDA2UutlWiGm4ucgTpZuLsyYtI0ILWYItGu+1xaT4mrPI8S7SxVTM3RuWdmCCWoYs
-         TTRrJaJOqfqJzJFDxqSlVYDP6UBEGQFm7gj9e8CahdAcB9Q7qjxMfJzqUY9BPQO948mx
-         DLQw==
-X-Gm-Message-State: ABy/qLY6DlX8XlHFsF/JHE1I0N7hzAa49Uv2+YOzas7lAp3RREbgiNCG
-        tvKaOYRV3hLAqSVHxqaH94ww71dcbjo=
-X-Google-Smtp-Source: APBJJlEPTmQwFFpXblUkAudk+z1dg+vzkVrVSVR33gnNf2cyBqIIVokJEY8hPdxfUrNUo78ZY9xR+w==
-X-Received: by 2002:a17:902:e809:b0:1ba:1704:8a12 with SMTP id u9-20020a170902e80900b001ba17048a12mr4372188plg.45.1689735787910;
-        Tue, 18 Jul 2023 20:03:07 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id ba12-20020a170902720c00b001b9d9225b78sm2602876plb.102.2023.07.18.20.03.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 20:03:07 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 18 Jul 2023 20:03:06 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     devicetree@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>
-Subject: Re: [PATCH v2 3/8] hwmon: (pmbus/mp2975) Prepare for MP2973 and
- MP2971
-Message-ID: <5dc4825b-3c17-42c7-b2b8-d804ba355dbc@roeck-us.net>
-References: <20230714135124.2645339-1-Naresh.Solanki@9elements.com>
- <20230714135124.2645339-3-Naresh.Solanki@9elements.com>
+        Tue, 18 Jul 2023 23:04:30 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1EF2E130;
+        Tue, 18 Jul 2023 20:04:28 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 98A182F4;
+        Tue, 18 Jul 2023 20:05:11 -0700 (PDT)
+Received: from [10.162.40.17] (unknown [10.162.40.17])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4BE363F67D;
+        Tue, 18 Jul 2023 20:04:22 -0700 (PDT)
+Message-ID: <45fadf89-27ec-07a9-746a-e5d14aba62a3@arm.com>
+Date:   Wed, 19 Jul 2023 08:34:19 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230714135124.2645339-3-Naresh.Solanki@9elements.com>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 0/4] Invalidate secondary IOMMU TLB on permission upgrade
+Content-Language: en-US
+To:     Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org
+Cc:     ajd@linux.ibm.com, catalin.marinas@arm.com, fbarrat@linux.ibm.com,
+        iommu@lists.linux.dev, jgg@ziepe.ca, jhubbard@nvidia.com,
+        kevin.tian@intel.com, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        mpe@ellerman.id.au, nicolinc@nvidia.com, npiggin@gmail.com,
+        robin.murphy@arm.com, seanjc@google.com, will@kernel.org,
+        x86@kernel.org, zhi.wang.linux@gmail.com
+References: <cover.b4454f7f3d0afbfe1965e8026823cd50a42954b4.1689666760.git-series.apopple@nvidia.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <cover.b4454f7f3d0afbfe1965e8026823cd50a42954b4.1689666760.git-series.apopple@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 03:51:11PM +0200, Naresh Solanki wrote:
-> From: Patrick Rudolph <patrick.rudolph@9elements.com>
-> 
-> Add support for differntiating between the chips.
-> The following commits will make use of this mechanism.
-> 
-> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
 
-Applied.
 
-Thanks,
-Guenter
+On 7/18/23 13:26, Alistair Popple wrote:
+> The main change is to move secondary TLB invalidation mmu notifier
+> callbacks into the architecture specific TLB flushing functions. This
+> makes secondary TLB invalidation mostly match CPU invalidation while
+> still allowing efficient range based invalidations based on the
+> existing TLB batching code.
+> 
+> ==========
+> Background
+> ==========
+> 
+> The arm64 architecture specifies TLB permission bits may be cached and
+> therefore the TLB must be invalidated during permission upgrades. For
+> the CPU this currently occurs in the architecture specific
+> ptep_set_access_flags() routine.
+> 
+> Secondary TLBs such as implemented by the SMMU IOMMU match the CPU
+> architecture specification and may also cache permission bits and
+> require the same TLB invalidations. This may be achieved in one of two
+> ways.
+> 
+> Some SMMU implementations implement broadcast TLB maintenance
+> (BTM). This snoops CPU TLB invalidates and will invalidate any
+> secondary TLB at the same time as the CPU. However implementations are
+> not required to implement BTM.
+
+So, the implementations with BTM do not even need a MMU notifier callback
+for secondary TLB invalidation purpose ? Perhaps mmu_notifier_register()
+could also be skipped for such cases i.e with ARM_SMMU_FEAT_BTM enabled ?
+
+BTW, dont see ARM_SMMU_FEAT_BTM being added as a feature any where during
+the probe i.e arm_smmu_device_hw_probe().
+
+> 
+> Implementations without BTM rely on mmu notifier callbacks to send
+> explicit TLB invalidation commands to invalidate SMMU TLB. Therefore
+> either generic kernel code or architecture specific code needs to call
+> the mmu notifier on permission upgrade.
+> 
+> Currently that doesn't happen so devices will fault indefinitely when
+> writing to a PTE that was previously read-only as nothing invalidates
+> the SMMU TLB.
+
+Why does not the current SMMU MMU notifier intercept all invalidation from
+generic MM code and do the required secondary TLB invalidation ? Is there
+a timing issue involved here ? Secondary TLB invalidation does happen but
+after the damage has been done ? Could you please point us to a real world
+bug report taking such indefinite faults as mentioned above ?
+
+> 
+> ========
+> Solution
+> ========
+> 
+> To fix this the series first renames the .invalidate_range() callback
+> to .arch_invalidate_secondary_tlbs() as suggested by Jason and Sean to
+> make it clear this callback is only used for secondary TLBs. That was
+> made possible thanks to Sean's series [1] to remove KVM's incorrect
+> usage.
+> 
+> Based on feedback from Jason [2] the proposed solution to the bug is
+> to move the calls to mmu_notifier_arch_invalidate_secondary_tlbs()
+> closer to the architecture specific TLB invalidation code. This
+> ensures the secondary TLB won't miss invalidations, including the
+> existing invalidation in the ARM64 code to deal with permission
+> upgrade.
+
+ptep_set_access_flags() is the only problematic place where this issue
+is being reported ? If yes, why dont fix that instead of moving these
+into platform specific callbacks ? OR there are other problematic areas
+I might be missing.
+
+> 
+> Currently only ARM64, PowerPC and x86 have IOMMU with secondary TLBs
+> requiring SW invalidation so the notifier is only called for those
+> architectures. It is also not called for invalidation of kernel
+> mappings as no secondary IOMMU implementations can access those and
+> hence it is not required.
+> 
+> [1] - https://lore.kernel.org/all/20230602011518.787006-1-seanjc@google.com/
+> [2] - https://lore.kernel.org/linux-mm/ZJMR5bw8l+BbzdJ7@ziepe.ca/
+> 
+> Alistair Popple (4):
+>   mm_notifiers: Rename invalidate_range notifier
+>   arm64/smmu: Use TLBI ASID when invalidating entire range
+>   mmu_notifiers: Call arch_invalidate_secondary_tlbs() when invalidating TLBs
+>   mmu_notifiers: Don't invalidate secondary TLBs as part of mmu_notifier_invalidate_range_end()
+> 
+>  arch/arm64/include/asm/tlbflush.h               |   5 +-
+>  arch/powerpc/include/asm/book3s/64/tlbflush.h   |   1 +-
+>  arch/powerpc/mm/book3s64/radix_hugetlbpage.c    |   1 +-
+>  arch/powerpc/mm/book3s64/radix_tlb.c            |   6 +-
+>  arch/x86/mm/tlb.c                               |   3 +-
+>  drivers/iommu/amd/iommu_v2.c                    |  10 +-
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c |  29 +++--
+>  drivers/iommu/intel/svm.c                       |   8 +-
+>  drivers/misc/ocxl/link.c                        |   8 +-
+>  include/asm-generic/tlb.h                       |   1 +-
+>  include/linux/mmu_notifier.h                    | 104 ++++-------------
+>  kernel/events/uprobes.c                         |   2 +-
+>  mm/huge_memory.c                                |  29 +----
+>  mm/hugetlb.c                                    |   8 +-
+>  mm/memory.c                                     |   8 +-
+>  mm/migrate_device.c                             |   9 +-
+>  mm/mmu_notifier.c                               |  47 +++-----
+>  mm/rmap.c                                       |  40 +-------
+>  18 files changed, 109 insertions(+), 210 deletions(-)
+> 
+> base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
