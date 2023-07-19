@@ -2,94 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 838DF758F28
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692A9758F2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbjGSHgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 03:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34296 "EHLO
+        id S230135AbjGSHhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 03:37:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbjGSHgX (ORCPT
+        with ESMTP id S229868AbjGSHhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 03:36:23 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2171FF1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:36:20 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-51e5d9e20ecso9314382a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:36:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689752179; x=1692344179;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ASco8vj7+XaPQen56URwDE1RtWpxUMyxaWBEjOtEJHo=;
-        b=Cnz1csnoz89sYWUFjF5+rCspweC7RZvwPEU4Cg5MAF7UKpXzochmOa/qauV3CKgkjv
-         fAJRVMXPFDrQNYOPUKdgZ7EU7ck3LB0bn8XcyOtCVRNMpYOcRn5TYaARwdkfvI0h4Vyd
-         N6SGOv0GYyy/lVRTQFQF11PtuSiZi4ZBakUZUOGM/IEt7aPqg2Il7ZUODmJExn5d/QHq
-         uYoqJS3rLdn9zbPr87U1Djc03IfPrAvt/2/XB/dzfMVqRMXfoq6t5q+f2DvhwH05s6Xo
-         I8HdO07cSAQ1BJp6rwLZvx+SFNFdw1/iwSqYgVw+BPHGQMPlCDAW+CAwVbvhe2rKd0px
-         kXKg==
+        Wed, 19 Jul 2023 03:37:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4E21735
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:36:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689752193;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/l/BFx3Ouxomc0W5crH0QEL+N5uRN2SeYoUdCWhVZBA=;
+        b=X5HS4QAmje4SpahwTW5wG/vym2nUcsDkyr7FlgXBPl7g+2xoQY1ra99ZpvCmnH8hYDtsbj
+        PdP+oylMcRQhXOhGrYi+cQtid8BidRkQlQmzwavFcS7q3IofX9sY0m65fRV7Cgn6DblpU2
+        ngNOPsiiPCSuMWh6Psc3sEsNIcOcYhY=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-30-OnlsvzugPjqiTGGpoXJKfQ-1; Wed, 19 Jul 2023 03:36:32 -0400
+X-MC-Unique: OnlsvzugPjqiTGGpoXJKfQ-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-4fb76659d54so5425137e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:36:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689752179; x=1692344179;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ASco8vj7+XaPQen56URwDE1RtWpxUMyxaWBEjOtEJHo=;
-        b=YWgovl0wHaXAjYlDC/vsWaUMAxZz2MXvJQ0rJNIsYsSipk4XBXMAw5eAmqVH8ezGpH
-         72ZLwDfYJXd8U6XH7bJqgZ5rrY8NBG33aLjev8g0JxIht9HbNqPMmiYRqv8/ysyES1TD
-         jY1nMYwJrN8ZmsskBNV5mNtG75eT90gWgqIuIdy8Hgd8uZIgefNUmj21k6F+QxeQ/PQw
-         wvfNovrQ8yr/8G+c1jOP7H2lVvc0otU028l22UZcSp6YEUo6EEVP/+SVkmbaoULG3/9a
-         MvFMsPnvrZFFZqUbcZAH6gcOnGp9R+nJichSq0paHeB+SV9iQPOUCoKB73K2GNwvqrmh
-         rCIw==
-X-Gm-Message-State: ABy/qLZOSRdU5Ryb+LlXtkSvgSZkkDRQQeesKTyXRPIdcP2YJjlE2G0C
-        EdqoMaMwA/2YihWW8rbn4EvPJw==
-X-Google-Smtp-Source: APBJJlEKMYKstWVoOwy2osy2Orx7A7obEkkxdyX2eTBoa5l4pHTs29W1yKNfhK6tTJHPkKTVCn1cOA==
-X-Received: by 2002:aa7:c74d:0:b0:51d:ad03:95f with SMTP id c13-20020aa7c74d000000b0051dad03095fmr1780896eds.7.1689752179304;
-        Wed, 19 Jul 2023 00:36:19 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id v5-20020aa7cd45000000b0051e069ebee3sm2310594edw.14.2023.07.19.00.36.17
+        d=1e100.net; s=20221208; t=1689752191; x=1690356991;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/l/BFx3Ouxomc0W5crH0QEL+N5uRN2SeYoUdCWhVZBA=;
+        b=U/24TLFxQD38DKRBYqt/1CObKJOkArOppNshrNYTMyxAXSbY92Fm8ACbQHP45tSCm/
+         bdlyRQJej8xk/WlUoxbcx84OsAgERuUx3MCG11CBAhTWtD+KnX5ZgmAdwPyrAO6eXNGd
+         tWNiEbRldrHfS5qsLr+lZd7hTgCeEffPj8/CjF6FpwECnOVng52Anhkb3Z6xEZVhfKcj
+         XkF//fGYTLv0AnnR4og0URtbbq8wgNEfl3O65E4L04z9tJMTFNmVVG8J022tBJLw1VCc
+         XnUyf9Zf0hyT4EpR7AvZIq8MM87M7bGzECDbpwB7X99mO7xZ16bRQ2PmOWRWotZy3H6B
+         jkjw==
+X-Gm-Message-State: ABy/qLaLm+YxYiGFGXpvN8K4jUFrj1CvfyOl9EEFGZKXeN+6lCmH2pWH
+        FXoAwT6LQoRY4HxEfzjzPqS0pMkcWSwnGOVpLMqyuRCKXENY2r8Iqi8LQZrtpLFg57hjBNTLAHY
+        EIhLNJQcFA9Ml7RMR93+Gxk0U
+X-Received: by 2002:a05:6512:15a6:b0:4fd:d3aa:e425 with SMTP id bp38-20020a05651215a600b004fdd3aae425mr1581933lfb.27.1689752191001;
+        Wed, 19 Jul 2023 00:36:31 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlH1vDeqm1BTcVm9t1Zzvu6JlLhYTYor1hjJsu8aGBt07Q6f2nfDA4itiCmBAX5Xer/YiP+tpg==
+X-Received: by 2002:a05:6512:15a6:b0:4fd:d3aa:e425 with SMTP id bp38-20020a05651215a600b004fdd3aae425mr1581912lfb.27.1689752190665;
+        Wed, 19 Jul 2023 00:36:30 -0700 (PDT)
+Received: from sgarzare-redhat (host-87-12-25-29.business.telecomitalia.it. [87.12.25.29])
+        by smtp.gmail.com with ESMTPSA id by27-20020a0564021b1b00b0051d87e72159sm2315237edb.13.2023.07.19.00.36.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 00:36:18 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 1/2] ARM: dts: samsung: s3c6410-mini6410: correct ethernet reg addresses (split)
-Date:   Wed, 19 Jul 2023 09:36:11 +0200
-Message-Id: <168975215984.14599.16321800531414229232.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230713152926.82884-1-krzysztof.kozlowski@linaro.org>
-References: <20230713152926.82884-1-krzysztof.kozlowski@linaro.org>
+        Wed, 19 Jul 2023 00:36:29 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 09:36:27 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@sberdevices.ru>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v2 2/4] vsock/virtio: support to send non-linear
+ skb
+Message-ID: <4batgyn7pmxn2rysqpztuaim4dxtpfjbrjyyuodsct3qun7w5e@ebd45ngrsfut>
+References: <20230718180237.3248179-1-AVKrasnov@sberdevices.ru>
+ <20230718180237.3248179-3-AVKrasnov@sberdevices.ru>
+ <20230718162202-mutt-send-email-mst@kernel.org>
+ <1ac4be11-0814-05af-6c2e-8563ac15e206@sberdevices.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <1ac4be11-0814-05af-6c2e-8563ac15e206@sberdevices.ru>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 19, 2023 at 07:46:05AM +0300, Arseniy Krasnov wrote:
+>
+>
+>On 18.07.2023 23:27, Michael S. Tsirkin wrote:
+>> On Tue, Jul 18, 2023 at 09:02:35PM +0300, Arseniy Krasnov wrote:
+>>> For non-linear skb use its pages from fragment array as buffers in
+>>> virtio tx queue. These pages are already pinned by 'get_user_pages()'
+>>> during such skb creation.
+>>>
+>>> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+>>> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+>>> ---
+>>>  net/vmw_vsock/virtio_transport.c | 40 +++++++++++++++++++++++++++-----
+>>>  1 file changed, 34 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+>>> index e95df847176b..6cbb45bb12d2 100644
+>>> --- a/net/vmw_vsock/virtio_transport.c
+>>> +++ b/net/vmw_vsock/virtio_transport.c
+>>> @@ -100,7 +100,9 @@ virtio_transport_send_pkt_work(struct work_struct *work)
+>>>  	vq = vsock->vqs[VSOCK_VQ_TX];
+>>>
+>>>  	for (;;) {
+>>> -		struct scatterlist hdr, buf, *sgs[2];
+>>> +		/* +1 is for packet header. */
+>>> +		struct scatterlist *sgs[MAX_SKB_FRAGS + 1];
+>>> +		struct scatterlist bufs[MAX_SKB_FRAGS + 1];
+>>>  		int ret, in_sg = 0, out_sg = 0;
+>>>  		struct sk_buff *skb;
+>>>  		bool reply;
+>>> @@ -111,12 +113,38 @@ virtio_transport_send_pkt_work(struct work_struct *work)
+>>>
+>>>  		virtio_transport_deliver_tap_pkt(skb);
+>>>  		reply = virtio_vsock_skb_reply(skb);
+>>> +		sg_init_one(&bufs[out_sg], virtio_vsock_hdr(skb),
+>>> +			    sizeof(*virtio_vsock_hdr(skb)));
+>>> +		sgs[out_sg] = &bufs[out_sg];
+>>> +		out_sg++;
+>>> +
+>>> +		if (!skb_is_nonlinear(skb)) {
+>>> +			if (skb->len > 0) {
+>>> +				sg_init_one(&bufs[out_sg], skb->data, skb->len);
+>>> +				sgs[out_sg] = &bufs[out_sg];
+>>> +				out_sg++;
+>>> +			}
+>>> +		} else {
+>>> +			struct skb_shared_info *si;
+>>> +			int i;
+>>> +
+>>> +			si = skb_shinfo(skb);
+>>> +
+>>> +			for (i = 0; i < si->nr_frags; i++) {
+>>> +				skb_frag_t *skb_frag = &si->frags[i];
+>>> +				void *va = page_to_virt(skb_frag->bv_page);
+>>>
+>>> -		sg_init_one(&hdr, virtio_vsock_hdr(skb), sizeof(*virtio_vsock_hdr(skb)));
+>>> -		sgs[out_sg++] = &hdr;
+>>> -		if (skb->len > 0) {
+>>> -			sg_init_one(&buf, skb->data, skb->len);
+>>> -			sgs[out_sg++] = &buf;
+>>> +				/* We will use 'page_to_virt()' for userspace page here,
+>>
+>> don't put comments after code they refer to, please?
+>>
+>>> +				 * because virtio layer will call 'virt_to_phys()' later
+>>
+>> it will but not always. sometimes it's the dma mapping layer.
+>>
+>>
+>>> +				 * to fill buffer descriptor. We don't touch memory at
+>>> +				 * "virtual" address of this page.
+>>
+>>
+>> you need to stick "the" in a bunch of places above.
+>
+>Ok, I'll fix this comment!
+>
+>>
+>>> +				 */
+>>> +				sg_init_one(&bufs[out_sg],
+>>> +					    va + skb_frag->bv_offset,
+>>> +					    skb_frag->bv_len);
+>>> +				sgs[out_sg] = &bufs[out_sg];
+>>> +				out_sg++;
+>>> +			}
+>>>  		}
+>>>
+>>>  		ret = virtqueue_add_sgs(vq, sgs, out_sg, in_sg, skb, GFP_KERNEL);
+>>
+>>
+>> There's a problem here: if there vq is small this will fail.
+>> So you really should check free vq s/gs and switch to non-zcopy
+>> if too small.
+>
+>Ok, so idea is that:
+>
+>if (out_sg > vq->num_free)
+>    reorganise current skb for copy mode (e.g. 2 out_sg - header and data)
+>    and try to add it to vq again.
+>
+>?
+>
+>@Stefano, I'll remove net-next tag (guess RFC is not required again, but not net-next
+>anyway) as this change will require review. R-b I think should be also removed. All
+>other patches in this set still unchanged.
 
-On Thu, 13 Jul 2023 17:29:25 +0200, Krzysztof Kozlowski wrote:
-> The davicom,dm9000 Ethernet Controller accepts two reg addresses.
-> 
-> 
+It's still a new feature so we have net-next tree as the target, right?
 
-Applied, thanks!
+I think we should keep net-next. Even if patches require to be
+re-reviewed, net-next indicates the tree where we want these to be merge
+and for new features is the right one.
 
-[1/2] ARM: dts: samsung: s3c6410-mini6410: correct ethernet reg addresses (split)
-      https://git.kernel.org/krzk/linux/c/cf0cb2af6a18f28b84f9f1416bff50ca60d6e98a
-[2/2] ARM: dts: samsung: s5pv210-smdkv210: correct ethernet reg addresses (split)
-      https://git.kernel.org/krzk/linux/c/982655cb0e7f18934d7532c32366e574ad61dbd7
+Ack for not putting RFC again and for R-b removal for this patch.
 
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Thanks,
+Stefano
+
