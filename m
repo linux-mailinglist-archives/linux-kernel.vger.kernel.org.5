@@ -2,438 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D76C759F88
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF8D759F90
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbjGSUTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54364 "EHLO
+        id S229746AbjGSUUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231368AbjGSUTp (ORCPT
+        with ESMTP id S229722AbjGSUUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:19:45 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4DFA1FFB;
-        Wed, 19 Jul 2023 13:19:30 -0700 (PDT)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36JFOYs8027141;
-        Wed, 19 Jul 2023 20:19:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2023-03-30;
- bh=FIiLJ5lpayMhUkOh0BqdJyvlyvcwDkfk1KO9C7kI+lM=;
- b=hbLLMlc4f5UH7SHjRMKP7ziX3QvUWDK6T3nT2d0F3LAz9bDn01CM9kjHIZv8rbneRYQl
- rKit0QH6Jwqr5kj97LFU2m1QF5I4n2HEo9TIlJqmh1ph+s2wW0jmK9ycQuvCE9fMOxyL
- 2VEg/XbC3C1iC81xj1uGjsKGcnaN8NB/6UsVxJ6DMn4H4+SpYLRrxjpmRoWd6qN1uXPt
- tYHeTLMtZ5Vqz4zYaQaU31i+vCjc7xnh0TAKCFS7KuvKHIC0mv4yBOKmWa9NHH5B3HH6
- wdgtFuulLD3Ard9WvC81Lre+R+XIqpCCXJbtTjCAnZ9TnNqtwFqHR0Djmy+0lccHzv5H Tw== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3run78888d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 Jul 2023 20:19:13 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36JK5IHf038238;
-        Wed, 19 Jul 2023 20:19:00 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhw7dwx2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 Jul 2023 20:19:00 +0000
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36JKIrMm007349;
-        Wed, 19 Jul 2023 20:19:00 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3ruhw7dwct-7;
-        Wed, 19 Jul 2023 20:19:00 +0000
-From:   Anjali Kulkarni <anjali.k.kulkarni@oracle.com>
-To:     davem@davemloft.net
-Cc:     Liam.Howlett@Oracle.com, akpm@linux-foundation.org,
-        david@fries.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, zbr@ioremap.net, brauner@kernel.org,
-        johannes@sipsolutions.net, ecree.xilinx@gmail.com, leon@kernel.org,
-        keescook@chromium.org, socketcan@hartkopp.net, petrm@nvidia.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        anjali.k.kulkarni@oracle.com
-Subject: [PATCH net-next v10 6/6] connector/cn_proc: Selftest for proc connector
-Date:   Wed, 19 Jul 2023 13:18:21 -0700
-Message-ID: <20230719201821.495037-7-anjali.k.kulkarni@oracle.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230719201821.495037-1-anjali.k.kulkarni@oracle.com>
-References: <20230719201821.495037-1-anjali.k.kulkarni@oracle.com>
+        Wed, 19 Jul 2023 16:20:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2BE2698;
+        Wed, 19 Jul 2023 13:20:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E6CA60F80;
+        Wed, 19 Jul 2023 20:19:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70FB1C433C8;
+        Wed, 19 Jul 2023 20:19:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689797997;
+        bh=+dRRWDjMNsYP/s7Jniar5mhvGn3xDY3jYCFUH3EoL8w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WS0Ci6PnEzXe8FvM2OwXBaLdxs8wGr6ur37QLLE46pd6CMwtoICb0cl2iHqKtWbsb
+         YG57ZmOPYJdlwG0uXGl4w7lrrP1XVGGGs3JaEaLVjFn0G+UWBuCZ9keitg68vszqqb
+         YWQnzTscGMwBrYW/B1LwYA0nz7So4n1dCPpXoZGVJyQSmSTmPhh5jzNRlTFH/jT1Hm
+         WzRyYgFy0DAEx17XxM/wkdDURWgDVPw+Tx+WJBt/JxR8FlJ7byOMYIu+7p6Kof/VWa
+         6eqJ7K/viKaaJI2IPwyhBbhWEA0LX5X82faSk+MSDgwa7S2H7JkbqpyyhbN8XzAbH6
+         lcoUi08WziQ4A==
+Date:   Wed, 19 Jul 2023 21:19:52 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Tomasz Jeznach <tjeznach@rivosinc.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com,
+        linux-kernel@vger.kernel.org, Sebastien Boeuf <seb@rivosinc.com>,
+        iommu@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        linux-riscv@lists.infradead.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 03/11] dt-bindings: Add RISC-V IOMMU bindings
+Message-ID: <20230719-unnoticed-scion-744fdf509151@spud>
+References: <cover.1689792825.git.tjeznach@rivosinc.com>
+ <d62ceb33620cab766d809e6bbf30eaf5b46bc955.1689792825.git.tjeznach@rivosinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-19_14,2023-07-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
- adultscore=0 spamscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307190183
-X-Proofpoint-ORIG-GUID: NuXIfb1LyZmMdCSCS_9lEWq59BBOfXlN
-X-Proofpoint-GUID: NuXIfb1LyZmMdCSCS_9lEWq59BBOfXlN
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="rMk0Zx7WotLw1fRI"
+Content-Disposition: inline
+In-Reply-To: <d62ceb33620cab766d809e6bbf30eaf5b46bc955.1689792825.git.tjeznach@rivosinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Run as ./proc_filter -f to run new filter code. Run without "-f" to run
-usual proc connector code without the new filtering code.
 
-Signed-off-by: Anjali Kulkarni <anjali.k.kulkarni@oracle.com>
-Reviewed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
----
- tools/testing/selftests/Makefile              |   1 +
- tools/testing/selftests/connector/Makefile    |   6 +
- .../testing/selftests/connector/proc_filter.c | 310 ++++++++++++++++++
- 3 files changed, 317 insertions(+)
- create mode 100644 tools/testing/selftests/connector/Makefile
- create mode 100644 tools/testing/selftests/connector/proc_filter.c
+--rMk0Zx7WotLw1fRI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 666b56f22a41..5c60a7cea732 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -8,6 +8,7 @@ TARGETS += cachestat
- TARGETS += capabilities
- TARGETS += cgroup
- TARGETS += clone3
-+TARGETS += connector
- TARGETS += core
- TARGETS += cpufreq
- TARGETS += cpu-hotplug
-diff --git a/tools/testing/selftests/connector/Makefile b/tools/testing/selftests/connector/Makefile
-new file mode 100644
-index 000000000000..21c9f3a973a0
---- /dev/null
-+++ b/tools/testing/selftests/connector/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
-+CFLAGS += -Wall
-+
-+TEST_GEN_PROGS = proc_filter
-+
-+include ../lib.mk
-diff --git a/tools/testing/selftests/connector/proc_filter.c b/tools/testing/selftests/connector/proc_filter.c
-new file mode 100644
-index 000000000000..4fe8c6763fd8
---- /dev/null
-+++ b/tools/testing/selftests/connector/proc_filter.c
-@@ -0,0 +1,310 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <sys/types.h>
-+#include <sys/epoll.h>
-+#include <sys/socket.h>
-+#include <linux/netlink.h>
-+#include <linux/connector.h>
-+#include <linux/cn_proc.h>
-+
-+#include <stddef.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <strings.h>
-+#include <errno.h>
-+#include <signal.h>
-+#include <string.h>
-+
-+#include "../kselftest.h"
-+
-+#define NL_MESSAGE_SIZE (sizeof(struct nlmsghdr) + sizeof(struct cn_msg) + \
-+			 sizeof(struct proc_input))
-+#define NL_MESSAGE_SIZE_NF (sizeof(struct nlmsghdr) + sizeof(struct cn_msg) + \
-+			 sizeof(int))
-+
-+#define MAX_EVENTS 1
-+
-+volatile static int interrupted;
-+static int nl_sock, ret_errno, tcount;
-+static struct epoll_event evn;
-+
-+static int filter;
-+
-+#ifdef ENABLE_PRINTS
-+#define Printf printf
-+#else
-+#define Printf ksft_print_msg
-+#endif
-+
-+int send_message(void *pinp)
-+{
-+	char buff[NL_MESSAGE_SIZE];
-+	struct nlmsghdr *hdr;
-+	struct cn_msg *msg;
-+
-+	hdr = (struct nlmsghdr *)buff;
-+	if (filter)
-+		hdr->nlmsg_len = NL_MESSAGE_SIZE;
-+	else
-+		hdr->nlmsg_len = NL_MESSAGE_SIZE_NF;
-+	hdr->nlmsg_type = NLMSG_DONE;
-+	hdr->nlmsg_flags = 0;
-+	hdr->nlmsg_seq = 0;
-+	hdr->nlmsg_pid = getpid();
-+
-+	msg = (struct cn_msg *)NLMSG_DATA(hdr);
-+	msg->id.idx = CN_IDX_PROC;
-+	msg->id.val = CN_VAL_PROC;
-+	msg->seq = 0;
-+	msg->ack = 0;
-+	msg->flags = 0;
-+
-+	if (filter) {
-+		msg->len = sizeof(struct proc_input);
-+		((struct proc_input *)msg->data)->mcast_op =
-+			((struct proc_input *)pinp)->mcast_op;
-+		((struct proc_input *)msg->data)->event_type =
-+			((struct proc_input *)pinp)->event_type;
-+	} else {
-+		msg->len = sizeof(int);
-+		*(int *)msg->data = *(enum proc_cn_mcast_op *)pinp;
-+	}
-+
-+	if (send(nl_sock, hdr, hdr->nlmsg_len, 0) == -1) {
-+		ret_errno = errno;
-+		perror("send failed");
-+		return -3;
-+	}
-+	return 0;
-+}
-+
-+int register_proc_netlink(int *efd, void *input)
-+{
-+	struct sockaddr_nl sa_nl;
-+	int err = 0, epoll_fd;
-+
-+	nl_sock = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_CONNECTOR);
-+
-+	if (nl_sock == -1) {
-+		ret_errno = errno;
-+		perror("socket failed");
-+		return -1;
-+	}
-+
-+	bzero(&sa_nl, sizeof(sa_nl));
-+	sa_nl.nl_family = AF_NETLINK;
-+	sa_nl.nl_groups = CN_IDX_PROC;
-+	sa_nl.nl_pid    = getpid();
-+
-+	if (bind(nl_sock, (struct sockaddr *)&sa_nl, sizeof(sa_nl)) == -1) {
-+		ret_errno = errno;
-+		perror("bind failed");
-+		return -2;
-+	}
-+
-+	epoll_fd = epoll_create1(EPOLL_CLOEXEC);
-+	if (epoll_fd < 0) {
-+		ret_errno = errno;
-+		perror("epoll_create1 failed");
-+		return -2;
-+	}
-+
-+	err = send_message(input);
-+
-+	if (err < 0)
-+		return err;
-+
-+	evn.events = EPOLLIN;
-+	evn.data.fd = nl_sock;
-+	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, nl_sock, &evn) < 0) {
-+		ret_errno = errno;
-+		perror("epoll_ctl failed");
-+		return -3;
-+	}
-+	*efd = epoll_fd;
-+	return 0;
-+}
-+
-+static void sigint(int sig)
-+{
-+	interrupted = 1;
-+}
-+
-+int handle_packet(char *buff, int fd, struct proc_event *event)
-+{
-+	struct nlmsghdr *hdr;
-+
-+	hdr = (struct nlmsghdr *)buff;
-+
-+	if (hdr->nlmsg_type == NLMSG_ERROR) {
-+		perror("NLMSG_ERROR error\n");
-+		return -3;
-+	} else if (hdr->nlmsg_type == NLMSG_DONE) {
-+		event = (struct proc_event *)
-+			((struct cn_msg *)NLMSG_DATA(hdr))->data;
-+		tcount++;
-+		switch (event->what) {
-+		case PROC_EVENT_EXIT:
-+			Printf("Exit process %d (tgid %d) with code %d, signal %d\n",
-+			       event->event_data.exit.process_pid,
-+			       event->event_data.exit.process_tgid,
-+			       event->event_data.exit.exit_code,
-+			       event->event_data.exit.exit_signal);
-+			break;
-+		case PROC_EVENT_FORK:
-+			Printf("Fork process %d (tgid %d), parent %d (tgid %d)\n",
-+			       event->event_data.fork.child_pid,
-+			       event->event_data.fork.child_tgid,
-+			       event->event_data.fork.parent_pid,
-+			       event->event_data.fork.parent_tgid);
-+			break;
-+		case PROC_EVENT_EXEC:
-+			Printf("Exec process %d (tgid %d)\n",
-+			       event->event_data.exec.process_pid,
-+			       event->event_data.exec.process_tgid);
-+			break;
-+		case PROC_EVENT_UID:
-+			Printf("UID process %d (tgid %d) uid %d euid %d\n",
-+			       event->event_data.id.process_pid,
-+			       event->event_data.id.process_tgid,
-+			       event->event_data.id.r.ruid,
-+			       event->event_data.id.e.euid);
-+			break;
-+		case PROC_EVENT_GID:
-+			Printf("GID process %d (tgid %d) gid %d egid %d\n",
-+			       event->event_data.id.process_pid,
-+			       event->event_data.id.process_tgid,
-+			       event->event_data.id.r.rgid,
-+			       event->event_data.id.e.egid);
-+			break;
-+		case PROC_EVENT_SID:
-+			Printf("SID process %d (tgid %d)\n",
-+			       event->event_data.sid.process_pid,
-+			       event->event_data.sid.process_tgid);
-+			break;
-+		case PROC_EVENT_PTRACE:
-+			Printf("Ptrace process %d (tgid %d), Tracer %d (tgid %d)\n",
-+			       event->event_data.ptrace.process_pid,
-+			       event->event_data.ptrace.process_tgid,
-+			       event->event_data.ptrace.tracer_pid,
-+			       event->event_data.ptrace.tracer_tgid);
-+			break;
-+		case PROC_EVENT_COMM:
-+			Printf("Comm process %d (tgid %d) comm %s\n",
-+			       event->event_data.comm.process_pid,
-+			       event->event_data.comm.process_tgid,
-+			       event->event_data.comm.comm);
-+			break;
-+		case PROC_EVENT_COREDUMP:
-+			Printf("Coredump process %d (tgid %d) parent %d, (tgid %d)\n",
-+			       event->event_data.coredump.process_pid,
-+			       event->event_data.coredump.process_tgid,
-+			       event->event_data.coredump.parent_pid,
-+			       event->event_data.coredump.parent_tgid);
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+	return 0;
-+}
-+
-+int handle_events(int epoll_fd, struct proc_event *pev)
-+{
-+	char buff[CONNECTOR_MAX_MSG_SIZE];
-+	struct epoll_event ev[MAX_EVENTS];
-+	int i, event_count = 0, err = 0;
-+
-+	event_count = epoll_wait(epoll_fd, ev, MAX_EVENTS, -1);
-+	if (event_count < 0) {
-+		ret_errno = errno;
-+		if (ret_errno != EINTR)
-+			perror("epoll_wait failed");
-+		return -3;
-+	}
-+	for (i = 0; i < event_count; i++) {
-+		if (!(ev[i].events & EPOLLIN))
-+			continue;
-+		if (recv(ev[i].data.fd, buff, sizeof(buff), 0) == -1) {
-+			ret_errno = errno;
-+			perror("recv failed");
-+			return -3;
-+		}
-+		err = handle_packet(buff, ev[i].data.fd, pev);
-+		if (err < 0)
-+			return err;
-+	}
-+	return 0;
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int epoll_fd, err;
-+	struct proc_event proc_ev;
-+	struct proc_input input;
-+
-+	signal(SIGINT, sigint);
-+
-+	if (argc > 2) {
-+		printf("Expected 0(assume no-filter) or 1 argument(-f)\n");
-+		exit(1);
-+	}
-+
-+	if (argc == 2) {
-+		if (strcmp(argv[1], "-f") == 0) {
-+			filter = 1;
-+		} else {
-+			printf("Valid option : -f (for filter feature)\n");
-+			exit(1);
-+		}
-+	}
-+
-+	if (filter) {
-+		input.event_type = PROC_EVENT_NONZERO_EXIT;
-+		input.mcast_op = PROC_CN_MCAST_LISTEN;
-+		err = register_proc_netlink(&epoll_fd, (void*)&input);
-+	} else {
-+		enum proc_cn_mcast_op op = PROC_CN_MCAST_LISTEN;
-+		err = register_proc_netlink(&epoll_fd, (void*)&op);
-+	}
-+
-+	if (err < 0) {
-+		if (err == -2)
-+			close(nl_sock);
-+		if (err == -3) {
-+			close(nl_sock);
-+			close(epoll_fd);
-+		}
-+		exit(1);
-+	}
-+
-+	while (!interrupted) {
-+		err = handle_events(epoll_fd, &proc_ev);
-+		if (err < 0) {
-+			if (ret_errno == EINTR)
-+				continue;
-+			if (err == -2)
-+				close(nl_sock);
-+			if (err == -3) {
-+				close(nl_sock);
-+				close(epoll_fd);
-+			}
-+			exit(1);
-+		}
-+	}
-+
-+	if (filter) {
-+		input.mcast_op = PROC_CN_MCAST_IGNORE;
-+		send_message((void*)&input);
-+	} else {
-+		enum proc_cn_mcast_op op = PROC_CN_MCAST_IGNORE;
-+		send_message((void*)&op);
-+	}
-+
-+	close(epoll_fd);
-+	close(nl_sock);
-+
-+	printf("Done total count: %d\n", tcount);
-+	exit(0);
-+}
--- 
-2.41.0
+Hey Tomasz,
 
+On Wed, Jul 19, 2023 at 12:33:47PM -0700, Tomasz Jeznach wrote:
+> From: Anup Patel <apatel@ventanamicro.com>
+>=20
+> We add DT bindings document for RISC-V IOMMU platform and PCI devices
+> defined by the RISC-V IOMMU specification.
+>=20
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+
+Your signoff is missing from here.
+
+Secondly, as get_maintainer.pl would have told you, dt-bindings patches
+need to be sent to the dt-binding maintainers and list.
++CC maintainers & list.
+
+Thirdly, dt-binding patches should come before their users.
+
+> ---
+>  .../bindings/iommu/riscv,iommu.yaml           | 146 ++++++++++++++++++
+>  1 file changed, 146 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iommu/riscv,iommu.y=
+aml
+>=20
+> diff --git a/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml b/D=
+ocumentation/devicetree/bindings/iommu/riscv,iommu.yaml
+> new file mode 100644
+> index 000000000000..8a9aedb61768
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml
+> @@ -0,0 +1,146 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iommu/riscv,iommu.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: RISC-V IOMMU Implementation
+> +
+> +maintainers:
+> +  - Tomasz Jeznach <tjeznach@rivosinc.com>
+
+What about Anup, who seems to have written this?
+Or your co-authors of the drivers?
+
+> +
+> +description:
+> +  The RISC-V IOMMU specificaiton defines an IOMMU for RISC-V platforms
+> +  which can be a regular platform device or a PCI device connected to
+> +  the host root port.
+> +
+> +  The RISC-V IOMMU provides two stage translation, device directory tabl=
+e,
+> +  command queue and fault reporting as wired interrupt or MSIx event for
+> +  both PCI and platform devices.
+> +
+> +  Visit https://github.com/riscv-non-isa/riscv-iommu for more details.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - description: RISC-V IOMMU as a platform device
+> +        items:
+> +          - enum:
+> +              - vendor,chip-iommu
+
+These dummy compatibles are not valid, as was pointed out to Anup on
+the AIA series. Please go look at what was done there instead:
+https://lore.kernel.org/all/20230719113542.2293295-7-apatel@ventanamicro.co=
+m/
+
+> +          - const: riscv,iommu
+> +
+> +      - description: RISC-V IOMMU as a PCI device connected to root port
+> +        items:
+> +          - enum:
+> +              - vendor,chip-pci-iommu
+> +          - const: riscv,pci-iommu
+
+I'm not really au fait with the arm smmu stuff, but do any of its
+versions support being connected to a root port?=20
+
+> +  reg:
+> +    maxItems: 1
+> +    description:
+> +      For RISC-V IOMMU as a platform device, this represents the MMIO ba=
+se
+> +      address of registers.
+> +
+> +      For RISC-V IOMMU as a PCI device, this represents the PCI-PCI brid=
+ge
+> +      details as described in Documentation/devicetree/bindings/pci/pci.=
+txt
+> +
+> +  '#iommu-cells':
+> +    const: 2
+> +    description: |
+
+|s are only needed where formatting needs to be preserved.
+
+> +      Each IOMMU specifier represents the base device ID and number of
+> +      device IDs.
+> +
+> +  interrupts:
+> +    minItems: 1
+> +    maxItems: 16
+
+What are any of these interrupts?
+
+> +    description:
+> +      The presence of this property implies that given RISC-V IOMMU uses
+> +      wired interrupts to notify the RISC-V HARTS (or CPUs).
+> +
+> +  msi-parent:
+> +    description:
+> +      The presence of this property implies that given RISC-V IOMMU uses
+> +      MSIx to notify the RISC-V HARTs (or CPUs). This property should be
+> +      considered only when the interrupts property is absent.
+> +
+> +  dma-coherent:
+
+RISC-V is dma-coherent by default, should this not be dma-noncoherent
+instead?
+
+> +    description:
+> +      Present if page table walks and DMA accessed made by the RISC-V IO=
+MMU
+> +      are cache coherent with the CPU.
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#iommu-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    /* Example 1 (IOMMU platform device with wired interrupts) */
+> +    immu1: iommu@1bccd000 {
+
+Why is this "immu"? typo or intentional?
+
+> +        compatible =3D "vendor,chip-iommu", "riscv,iommu";
+> +        reg =3D <0x1bccd000 0x1000>;
+> +        interrupt-parent =3D <&aplic_smode>;
+> +        interrupts =3D <32 4>, <33 4>, <34 4>, <35 4>;
+> +        #iommu-cells =3D <2>;
+> +    };
+> +
+> +    /* Device with two IOMMU device IDs, 0 and 7 */
+> +    master1 {
+> +        iommus =3D <&immu1 0 1>, <&immu1 7 1>;
+> +    };
+> +
+> +  - |
+> +    /* Example 2 (IOMMU platform device with MSIs) */
+> +    immu2: iommu@1bcdd000 {
+> +        compatible =3D "vendor,chip-iommu", "riscv,iommu";
+> +        reg =3D <0x1bccd000 0x1000>;
+> +        msi-parent =3D <&imsics_smode>;
+> +        #iommu-cells =3D <2>;
+> +    };
+> +
+> +    bus {
+> +        #address-cells =3D <2>;
+> +        #size-cells =3D <2>;
+> +
+> +        /* Device with IOMMU device IDs ranging from 32 to 64 */
+> +        master1 {
+> +                iommus =3D <&immu2 32 32>;
+> +        };
+> +
+> +        pcie@40000000 {
+> +            compatible =3D "pci-host-cam-generic";
+> +            device_type =3D "pci";
+> +            #address-cells =3D <3>;
+> +            #size-cells =3D <2>;
+> +            bus-range =3D <0x0 0x1>;
+> +
+> +            /* CPU_PHYSICAL(2)  SIZE(2) */
+
+These sort of comments seem to just repeat what address-cells &
+size-cells has already said, no?
+
+Thanks,
+Conor.
+
+--rMk0Zx7WotLw1fRI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLhFaAAKCRB4tDGHoIJi
+0nJLAP0chtdgZE2gZpCi3AaJW9Pe70I3FRYkI9zS5Qvk8D3hVgEApzDYB3fpvX25
+uBuRjV6v3RlnZVVcq1tK0tkOckbX5wQ=
+=MtQU
+-----END PGP SIGNATURE-----
+
+--rMk0Zx7WotLw1fRI--
