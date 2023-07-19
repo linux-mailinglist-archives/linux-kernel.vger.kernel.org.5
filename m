@@ -2,71 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1475C7597A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 477B87597A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbjGSOA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 10:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41596 "EHLO
+        id S231477AbjGSOCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231475AbjGSOAx (ORCPT
+        with ESMTP id S230028AbjGSOCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:00:53 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E9AA7
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:00:52 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-785ccf19489so341716639f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:00:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689775252; x=1692367252;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sm5iUVzDjI6gtV1CUEzsIfEMKheElnJtk12R8Kcga4w=;
-        b=AVjUX5sIScJhPd/PaRJ/WytxTzNMZtgYf0uiVAVBKOuOEQSCbVB0ilRKZ5QiD8lU1x
-         XdK5vI7Q1yOKC32qLCDQfzsH46vKYZtS9ngPXFb1DwMwc8Rst5K43lOauReYD3UNMen3
-         s6k8+39O+dmB4IxfokHqIR2IbdNWYyesRAm2Aj1G3uVLLt+CpSZYVineDAssC37Zfi9/
-         XGVVtsKHo5UW3S3237LBrVMmTa+iXOqAp69hq2T1M5nmp3DLI1BXrzLwfcWBb7NuE2jm
-         Vep92QmraEtl568n+7aIKMp57eHJRMoZ0V4d9yUuZerew4GiUUfXVz8t88Xc2cJWMmqc
-         XO7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689775252; x=1692367252;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sm5iUVzDjI6gtV1CUEzsIfEMKheElnJtk12R8Kcga4w=;
-        b=RWOTSH6QsssObZ90dSVSVjKtM2jHCIg3RynhvLj0k3LkQ5blgWbv+31892l3oyxivr
-         SKqYhIoySEvmwKinH2y0thjc7jP+mv33uEns1yoHUQLWFBp0COS1al7Ur3Gc88iTBdhs
-         kd7nCQxKKLvxNsJ8hf8+ggXQPGCtdabl4aWL8siutR2LiVIL+PKglTZaF2TPuYaFSQyS
-         RJ3494iyVTf8110s6eTUQek9ui8mQaj/9Gb8ymGOr95qitmAVQIf3A7FKhWaqYcx0/hP
-         VezDmRtAke+ru5I1KoJ57wYtIj3vJ38ovlNJBKf8+/mKjJ9h8/mvIGgiCKufFJBudWKI
-         ImAA==
-X-Gm-Message-State: ABy/qLayqKE/N2u41AmpmGAIFnX9ddw20nJIy6WrKR7/kLhPp9g1t8/R
-        EOTgVipcQQDgicOmv0vrjlestztd3d6muZVOoEV+CA==
-X-Google-Smtp-Source: APBJJlH8nmA9FeuGVLYUZEujVBfCWqRf6lw0eP3LFo9BVnqinoFrbCWdpUoBhe0hCoxBSEopQ5nuit7MmTjOtTFM7Jk=
-X-Received: by 2002:a5e:a709:0:b0:785:cfa1:fcac with SMTP id
- b9-20020a5ea709000000b00785cfa1fcacmr5100870iod.20.1689775251390; Wed, 19 Jul
- 2023 07:00:51 -0700 (PDT)
+        Wed, 19 Jul 2023 10:02:33 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEF58E;
+        Wed, 19 Jul 2023 07:02:31 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36JDhtKs007417;
+        Wed, 19 Jul 2023 14:01:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Ow7m3jr75URZ7/he9bZZDJXevWwjWsi1e2wS+QOs+tU=;
+ b=oAJrr0NbpKZfKlvIh+41mpTLblMhSq/1YHr4nGKTD6Y9NxTj1Z+dk/57l8PmvUUfQkFF
+ Kx9KsQFK0g0mwNO21IsbaQcd5/L+V5WE0gMDXzyRFuQpb6t6Jv6PLeBiYkaBb2r3nI5l
+ RhqpuKiHzJg5l3wKxdWdASX6SZQ7ZB2vdVz44436qUVd6BfMxpVpJZB2BXOdFke3ad9q
+ 3OCPfheENKDccGyvETHbW6TtrA9dyCEH/XQK8ksvjuap0tXJ32CnJVG0CWX0+mBElIb7
+ JpptWIidltBUgMa122fnq0WH81s0E06JKykdAedWpIEDaZPZuQdxy7xyorN3+pouRX4I VA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rwps5bed5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Jul 2023 14:01:48 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36JE1lm1002273
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Jul 2023 14:01:47 GMT
+Received: from [10.48.241.243] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 19 Jul
+ 2023 07:01:46 -0700
+Message-ID: <7738463c-c592-5d59-61ec-d39f9544b18f@quicinc.com>
+Date:   Wed, 19 Jul 2023 07:01:45 -0700
 MIME-Version: 1.0
-References: <20230717113709.328671-1-glider@google.com> <20230717113709.328671-4-glider@google.com>
- <ZLd+J3BkI3oK5vCw@yury-ThinkPad>
-In-Reply-To: <ZLd+J3BkI3oK5vCw@yury-ThinkPad>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 19 Jul 2023 16:00:14 +0200
-Message-ID: <CAG_fn=USWBm=mdhgOz_df0veGQdioGOARqpZH5rAg3_fwhpbjA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/5] arm64: mte: implement CONFIG_ARM64_MTE_COMP
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH net-next] page_pool: split types and declarations from
+ page_pool.h
+Content-Language: en-US
+To:     Yunsheng Lin <linyunsheng@huawei.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <pabeni@redhat.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+References: <20230719121339.63331-1-linyunsheng@huawei.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20230719121339.63331-1-linyunsheng@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: _L3h4Q3N71Ht3lEC8JxD5IKpRtE2fNnX
+X-Proofpoint-ORIG-GUID: _L3h4Q3N71Ht3lEC8JxD5IKpRtE2fNnX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-19_09,2023-07-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=821
+ malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=0 lowpriorityscore=0
+ adultscore=0 phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2307190125
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,232 +109,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 8:09=E2=80=AFAM Yury Norov <yury.norov@gmail.com> w=
-rote:
-...
-> > +
-> > +/* Functions below are exported for testing purposes. */
->
-> Then declare them in a separate local header or simply in the test, but
-> please not in a public header.
+On 7/19/2023 5:13 AM, Yunsheng Lin wrote:
+> Split types and pure function declarations from page_pool.h
+> and add them in page_page_types.h, so that C sources can
 
-Fair enough, moved them to the test.
+nit: s/page_page_types/page_pool_types/
 
-> > +
-> > +/*
-> > + * EA0 stands for "Evgenii's Algorithm 0", as the initial proposal con=
-tained two
-> > + * compression algorithms.
->
-> This is the 4th time I see mr. Stepanov's credentials in the patch.
-> I've no doubts he's a worthy gentleman but please avoid mentioning
-> people in source code. Suggested-by is enough. IIRC, the rule for
-> that exists for about decade.
->
-> For the purpose of namespacing, the mte_compress/mte_decompress would
-> sound better.
+> include page_pool.h and headers should generally only include
+> page_pool_types.h as suggested by jakub.
 
-This indeed makes sense; "EA0" is not widely recognizable, and we are
-unlikely to have more than one MTE compression algorithm anyway.
-I changed "ea0" to "mte" in the patch series.
-
-
-
-> > + *
-> > + * 4. For the inline case, the following values are stored in the 8-by=
-te handle:
-> > + *       largest_idx : i4
-> > + *      r_tags[0..5] : i4 x 6
-> > + *     r_sizes[0..4] : i7 x 5
-> > + *    (if N is less than 6, @r_tags and @r_sizes are padded up with ze=
-ro values)
-> > + *
-> > + *    Because @largest_idx is <=3D 5, bit 63 of the handle is always 0=
- (so it can
-> > + *    be stored in the Xarray), and bits 62..60 cannot all be 1, so it=
- can be
-> > + *    distinguished from a kernel pointer.
->
-> I honestly tried to understand... For example, what the
->         'r_sizes[0..4] : i7 x 5'
-> means? An array of 5 elements, 17 bits each? But it's alone greater
-> than size of pointer... Oh gosh...
-
-iN (note that it is a small i, not a 1) is LLVM notation for an N-bit
-integer type.
-There's no such thing in C syntax, and describing the data layout
-using bitfields would be painful.
-Would it help if I add a comment explaining that iN is an N-bit
-integer? Or do you prefer something like
-
-  r_sizes[0..4] : 5 x 7 bits
-
-?
-
->
-> Moreover, MTE tags are all 4-bits.
->
-> It seems like text without pictures is above my mental abilities. Can you
-> please illustrate it? For example, from the #4, I (hopefully correctly)
-> realized that:
->
-> Inline frame format:
->    0                                                    60       62  63
->  +---------------------------------------------------------------------+
-I think it's more natural to number bits from 63 to 0
-
->  |              No idea what happens here             |    Lidx    | X |
->  +---------------------------------------------------------------------+
->  63    : X      :  RAZ : Reserved for Xarray.
->  60-62 : Lidx   : 0..5 : Largest element index.
-
-There's some mismatch now between this picture, where Lidx is i3, and
-the implementation that treats it as an i4, merging bit 63 into it.
-Maybe we can avoid this by not splitting off bit 63?
-
->                      6 : Reserved
->                      7 : Invalid handler
-
-No, 7 means "treat this handle as an out-of-line one". It is still
-valid, but instead of tag data it contains a pointer.
-
->
-> Because of the size, I believe this comment is worth to put in Docs,
-> moreover we already have "Documentation/arch/arm64/memory-tagging-extensi=
-on.rst"
-> Why don't you add an 'MTE Compression' section in there?
-
-Good idea, will do!
-
->
-> > +#include <linux/bits.h>
-> > +#include <linux/bitmap.h>
-> > +#include <linux/gfp.h>
-> > +#include <linux/module.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/swab.h>
-> > +#include <linux/string.h>
-> > +#include <linux/types.h>
->
-> Nit: Alphabetic order?
-Ack.
-
->
-> Andy is right, bitmap.h includes bit.h, no need to include both. And if
-> your code will get broken one day, it's a bitmap maintainers' work to fix=
-.
-Ack.
-
-
-> > +
-> > +/*
-> > + * Sizes of compressed values.
-> > + */
-> > +#define BITS_PER_TAG 4
-> > +#define BITS_PER_SIZE 7
-> > +#define BITS_PER_LARGEST_IDX_INLINE 4
-> > +#define BITS_PER_LARGEST_IDX 6
->
-> But in the comment you say that largest index in inline frame is 3-bits l=
-ong.
-
-The comment says "i4" (see my comments above)
-
-> > +
-> > +/* Translate allocation size into mtecomp_caches[] index. */
-> > +static int ea0_size_to_cache_id(int len)
->
-> Here and everywhere, do you need signed values? If not, unsigned int.
-
-Done as part of fixing Andy's comments
-
-> > +
-> > +/* Transform tag ranges back into tags. */
-> > +void ea0_ranges_to_tags(u8 *r_tags, short *r_sizes, int r_len, u8 *tag=
-s)
-> > +{
-> > +     int i, j, pos =3D 0;
-> > +     u8 prev;
-> > +
-> > +     for (i =3D 0; i < r_len; i++) {
-> > +             for (j =3D 0; j < r_sizes[i]; j++) {
-> > +                     if (pos % 2)
-> > +                             tags[pos / 2] =3D (prev << 4) | r_tags[i]=
-;
-> > +                     else
-> > +                             prev =3D r_tags[i];
-> > +                     pos++;
-> > +             }
-> > +     }
-> > +}
-> > +EXPORT_SYMBOL_NS(ea0_ranges_to_tags, MTECOMP);
->
-> Because I didn't understand the compressed frame format, not sure I
-> can understand this logic...
-Hope the above comments will help, if not - please let me know.
-
-> > +
-> > +/* Translate @num_ranges into the allocation size needed to hold them.=
- */
-> > +static int ea0_alloc_size(int num_ranges)
-> > +{
-> > +     if (num_ranges <=3D 6)
-> > +             return 8;
-> > +     if (num_ranges <=3D 11)
-> > +             return 16;
-> > +     if (num_ranges <=3D 23)
-> > +             return 32;
-> > +     if (num_ranges <=3D 46)
-> > +             return 64;
-> > +     return 128;
-> > +}
-> > +
-> > +/* Translate allocation size into maximum number of ranges that it can=
- hold. */
-> > +static int ea0_size_to_ranges(int size)
-> > +{
-> > +     switch (size) {
-> > +     case 8:
-> > +             return 6;
-> > +     case 16:
-> > +             return 11;
-> > +     case 32:
-> > +             return 23;
-> > +     case 64:
-> > +             return 46;
-> > +     default:
-> > +             return 0;
-> > +     }
-> > +}
->
-> I wonder if there's a math formula here? Can you explain where from
-> those numbers come?
-
-I'll add a comment there.
-Basically, for the inline case it is the biggest N such as 4 + 4*N +
-7*(N-1) <=3D 63
-(not 64, because Xarray steals one bit from us)
-
-For the out-of-line case it is the biggest N such as 6+4*N + 7*(N-1)
-<=3D array size in bits (128, 256, or 512).
-
->
-> > +#define RANGES_INLINE ea0_size_to_ranges(8)
->
-> Maybe
->
->  #define RANGES_INLINE (6)
-
-Fair enough.
-
-
-> > +
-> > +static void bitmap_write(unsigned long *bitmap, unsigned long value,
-> > +                      unsigned long *pos, unsigned long bits)
->
-> Please don't steal prefixes. But the idea is good. For the next
-> iteration, let's rename bitmap_set_value() to bitmap_write()?
-> So that your function will be an mte_bitmap_write().
-
-I don't object, but it diverges from bitmap_set_value8() now.
-Will do.
