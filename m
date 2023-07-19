@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED7F7592FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5669F7592FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbjGSK3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
+        id S231419AbjGSK27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbjGSK2k (ORCPT
+        with ESMTP id S231494AbjGSK14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:28:40 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8896272E
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:28:11 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-51e99584a82so9205634a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:28:11 -0700 (PDT)
+        Wed, 19 Jul 2023 06:27:56 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0864335A9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:27:14 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-786bb09e595so13645339f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:27:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689762479; x=1692354479;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1689762431; x=1692354431;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=S/soqLhMpJky2zqln6dSDdmPSrvY11zerYkE0V67yek=;
-        b=gSNKlFhffgUuPmBavvfpWRkCG2UCbjPYWY42YDdTLP15e6tBwZQVOEJuoVuAIeRHLZ
-         2bx6A895x0JYCBekHLjKRSVn0HBAtxpZh33ZdJy/2ZY4DoK2DhNyywNa5mzbKxBztwAg
-         q+qTd6gXnnzIyW4fotVLuMl0wU+6kuOocl3ZovByuNJuNnn+Omg8AtHDePOUp7X7RzrY
-         bIRWiqJDmFmnAUlu9CwF61NdVPwcmy1XZqbpqRjDbKyhf9OWFiZZa2XAOBYHjTld+vYV
-         DHY/CjGuKoKM0Zc34XLc4RR2Ffa60yFn61KGELNhzZ/2IDrq3Noz9ReCxW+4YYFWFH+R
-         qBcg==
+        bh=hVbJ90S8n4+Y/GX8BKsAT4na7uO4IaCBjmWUCYyFtgQ=;
+        b=oLRdVzTfTtrUPJcxnjOfxybXRBijbPNPQTF90bAGGwtnrP2otSx3WdTHuzxFE4aTTB
+         ze7W43etYcGoE1u6xIrxIaIKlIPOSKLnkHlAKwIptM4kYXH0YLnpOt/4H+yKjbotUSkC
+         niw+rXgkwM8NX75XXiaUi5NoanYr+Tg+JlE+I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689762479; x=1692354479;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689762431; x=1692354431;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S/soqLhMpJky2zqln6dSDdmPSrvY11zerYkE0V67yek=;
-        b=jRBC6jJfR2DMbl/Ciii1D6+hQCvDEjoluf39DUNucV6W56WvseUCQ8plIsjhAKepbJ
-         ncEP9lP6e8rU/VPcHKW7W3rVR6eduxiZvBjzkEW5+pne9Wy5RfNxeWg0ncWKfzcNde1u
-         AS2dHEQmNmuswtGfVNyAg0orFcB1y0YbMOrWFESOFHM86b/5tlPNRAoUHBRxKdMxQuo5
-         vWerosE5yyGhvxMiXEvSq47gCgfn3MWvuZi/ifeEMFG4BqB8Ar1xJ38D17EENmZwJNVy
-         FrJ4A4QdDz3FsRSiREYzmCNpckF6xm1jkEv5vShSCuE2jGyULxkIAZSWz3VHYOzxxGtc
-         yf+w==
-X-Gm-Message-State: ABy/qLYdcI43APdZn380V99y2Z9d88/aQpAeXOsJpXL0RmDf5TxI5GVN
-        flGpAsDItHNDie/UfQVxbiY=
-X-Google-Smtp-Source: APBJJlGJ+6/TQOwpsOvAJwCZUzSSs0M/xowjy33dQoku0NFMJKmrNmho9unlZcqPOJRn82Ys6L7Avg==
-X-Received: by 2002:aa7:d941:0:b0:51e:1690:1b9a with SMTP id l1-20020aa7d941000000b0051e16901b9amr2197361eds.29.1689762479247;
-        Wed, 19 Jul 2023 03:27:59 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:c844:242b:b300:215:5dff:fe9c:4c81])
-        by smtp.gmail.com with ESMTPSA id b17-20020a05640202d100b005217412e18dsm2520457edx.48.2023.07.19.03.27.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 03:27:59 -0700 (PDT)
-From:   Matus Gajdos <matuszpd@gmail.com>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Matus Gajdos <matuszpd@gmail.com>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] drm/panel: ilitek-ili9881c: Add TDO TL050HDV35 LCD panel
-Date:   Wed, 19 Jul 2023 12:26:15 +0200
-Message-Id: <20230719102616.2259-3-matuszpd@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230719102616.2259-1-matuszpd@gmail.com>
-References: <20230719102616.2259-1-matuszpd@gmail.com>
+        bh=hVbJ90S8n4+Y/GX8BKsAT4na7uO4IaCBjmWUCYyFtgQ=;
+        b=ckdZZlK+kDbLQ5Mo4kAGO8ZTUWhUb9wuvwc5C79VVmoVMPQ7RQXSQBu+NDO7Bz7BR1
+         sVGVj0qhhntwmDXo0/IJ56hG74l5Z/frMnL3e6MxxF4geVuiHUMZ7LSqAPdycPGFV+xD
+         4roD9YQP6sXBo3xOetVGu3T/6NIhRHqrmKvTxOUvEdykJ5Q0mKSyn8k/nrRFDHy3BKEu
+         dvJ/q+jIzFC9OFr7Y2BzrW1/tOQJAZXA61xbNc6tgbQ5bstuOjfZg6mvPN4RH+Q1ejCo
+         J/4/kWQ3fbO9IpxAzYvRU0A0F0HzHfKuShiiTD0t58cDcBn/S9QbsjuKwYlApeoYSd+h
+         9PWw==
+X-Gm-Message-State: ABy/qLaGoclNtzcUTZDGOY5yvhexog9uSUOOgKTywwZlIouUpRLn9Kwq
+        3D4SNgvLRPLPgoxSRVGRqdXQXz2muSINCeewABc=
+X-Google-Smtp-Source: APBJJlHJ6nWJbb45D3Qp/KkKvb/Weq6PwUj/WcJ5vSawbG0GENNLnVQ986ASthJjrF3QaxQK8rMZsQ==
+X-Received: by 2002:a92:d045:0:b0:346:3825:fa56 with SMTP id 5-20020a92d045000000b003463825fa56mr1734386ilm.1.1689762431403;
+        Wed, 19 Jul 2023 03:27:11 -0700 (PDT)
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com. [209.85.166.44])
+        by smtp.gmail.com with ESMTPSA id o12-20020a056638124c00b0042b05586c52sm1176585jas.25.2023.07.19.03.27.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 03:27:10 -0700 (PDT)
+Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7835ffc53bfso14911739f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:27:10 -0700 (PDT)
+X-Received: by 2002:a05:6602:87:b0:787:147b:b54f with SMTP id
+ h7-20020a056602008700b00787147bb54fmr1327429iob.3.1689762430227; Wed, 19 Jul
+ 2023 03:27:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20230719075056.72178-1-angelogioacchino.delregno@collabora.com> <20230719075056.72178-7-angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230719075056.72178-7-angelogioacchino.delregno@collabora.com>
+From:   Fei Shao <fshao@chromium.org>
+Date:   Wed, 19 Jul 2023 18:26:34 +0800
+X-Gmail-Original-Message-ID: <CAC=S1ngWWeGuXrvsvgLrU7iVjnAm1+o2PwfPOBrQMLzsijnuHQ@mail.gmail.com>
+Message-ID: <CAC=S1ngWWeGuXrvsvgLrU7iVjnAm1+o2PwfPOBrQMLzsijnuHQ@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] drm/mediatek: mtk_dpi: Compress struct
+ of_device_id entries
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     chunkuang.hu@kernel.org, p.zabel@pengutronix.de, airlied@gmail.com,
+        daniel@ffwll.ch, matthias.bgg@gmail.com,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,239 +81,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for TDO TL050HDV35-H1311A LCD panel.
+On Wed, Jul 19, 2023 at 3:51=E2=80=AFPM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@collabora.com> wrote:
+>
+> Reduce line count by compressing the entries of struct of_device_id;
+> while at it, also add the usual /* sentinel */ comment to the last
+> entry.
+>
+> This commit brings no functional changes.
+>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
+abora.com>
 
-Signed-off-by: Matus Gajdos <matuszpd@gmail.com>
----
- drivers/gpu/drm/panel/panel-ilitek-ili9881c.c | 194 ++++++++++++++++++
- 1 file changed, 194 insertions(+)
-
-diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-index 1ec696adf9de..78ac57224689 100644
---- a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-+++ b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-@@ -455,6 +455,174 @@ static const struct ili9881c_instr k101_im2byl02_init[] = {
- 	ILI9881C_COMMAND_INSTR(0xD3, 0x3F), /* VN0 */
- };
- 
-+static const struct ili9881c_instr tl050hdv35_init[] = {
-+	ILI9881C_SWITCH_PAGE_INSTR(3),
-+	ILI9881C_COMMAND_INSTR(0x01, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x02, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x03, 0x73),
-+	ILI9881C_COMMAND_INSTR(0x04, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x05, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x06, 0x0a),
-+	ILI9881C_COMMAND_INSTR(0x07, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x08, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x09, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x0a, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x0b, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x0c, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x0d, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x0e, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x0f, 0x1d),
-+	ILI9881C_COMMAND_INSTR(0x10, 0x1d),
-+	ILI9881C_COMMAND_INSTR(0x15, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x16, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x17, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x18, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x19, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x1a, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x1b, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x1c, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x1d, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x1e, 0x40),
-+	ILI9881C_COMMAND_INSTR(0x1f, 0x80),
-+	ILI9881C_COMMAND_INSTR(0x20, 0x06),
-+	ILI9881C_COMMAND_INSTR(0x21, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x28, 0x33),
-+	ILI9881C_COMMAND_INSTR(0x29, 0x03),
-+	ILI9881C_COMMAND_INSTR(0x2a, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x2b, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x2c, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x2d, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x2e, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x2f, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x35, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x36, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x37, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x38, 0x3C),
-+	ILI9881C_COMMAND_INSTR(0x39, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x3a, 0x40),
-+	ILI9881C_COMMAND_INSTR(0x3b, 0x40),
-+	ILI9881C_COMMAND_INSTR(0x3c, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x3d, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x3e, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x3f, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x40, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x41, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x42, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x43, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x44, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x55, 0xab),
-+	ILI9881C_COMMAND_INSTR(0x5a, 0x89),
-+	ILI9881C_COMMAND_INSTR(0x5b, 0xab),
-+	ILI9881C_COMMAND_INSTR(0x5c, 0xcd),
-+	ILI9881C_COMMAND_INSTR(0x5d, 0xef),
-+	ILI9881C_COMMAND_INSTR(0x5e, 0x11),
-+	ILI9881C_COMMAND_INSTR(0x5f, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x60, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x61, 0x15),
-+	ILI9881C_COMMAND_INSTR(0x62, 0x14),
-+	ILI9881C_COMMAND_INSTR(0x63, 0x0e),
-+	ILI9881C_COMMAND_INSTR(0x64, 0x0f),
-+	ILI9881C_COMMAND_INSTR(0x65, 0x0c),
-+	ILI9881C_COMMAND_INSTR(0x66, 0x0d),
-+	ILI9881C_COMMAND_INSTR(0x67, 0x06),
-+	ILI9881C_COMMAND_INSTR(0x68, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x69, 0x07),
-+	ILI9881C_COMMAND_INSTR(0x6a, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x6b, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x6c, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x6d, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x6e, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x6f, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x70, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x71, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x72, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x73, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x74, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x75, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x76, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x77, 0x14),
-+	ILI9881C_COMMAND_INSTR(0x78, 0x15),
-+	ILI9881C_COMMAND_INSTR(0x79, 0x0e),
-+	ILI9881C_COMMAND_INSTR(0x7a, 0x0f),
-+	ILI9881C_COMMAND_INSTR(0x7b, 0x0c),
-+	ILI9881C_COMMAND_INSTR(0x7c, 0x0d),
-+	ILI9881C_COMMAND_INSTR(0x7d, 0x06),
-+	ILI9881C_COMMAND_INSTR(0x7e, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x7f, 0x07),
-+	ILI9881C_COMMAND_INSTR(0x88, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x89, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x8A, 0x02),
-+	ILI9881C_SWITCH_PAGE_INSTR(4),
-+	ILI9881C_COMMAND_INSTR(0x38, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x39, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x6c, 0x15),
-+	ILI9881C_COMMAND_INSTR(0x6e, 0x2b),
-+	ILI9881C_COMMAND_INSTR(0x6f, 0x33),
-+	ILI9881C_COMMAND_INSTR(0x8d, 0x18),
-+	ILI9881C_COMMAND_INSTR(0x87, 0xba),
-+	ILI9881C_COMMAND_INSTR(0x26, 0x76),
-+	ILI9881C_COMMAND_INSTR(0xb2, 0xd1),
-+	ILI9881C_COMMAND_INSTR(0xb5, 0x06),
-+	ILI9881C_COMMAND_INSTR(0x3a, 0x24),
-+	ILI9881C_COMMAND_INSTR(0x35, 0x1f),
-+	ILI9881C_COMMAND_INSTR(0x33, 0x14),
-+	ILI9881C_COMMAND_INSTR(0x3b, 0x98),
-+	ILI9881C_SWITCH_PAGE_INSTR(1),
-+	ILI9881C_COMMAND_INSTR(0x22, 0x0a),
-+	ILI9881C_COMMAND_INSTR(0x31, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x40, 0x33),
-+	ILI9881C_COMMAND_INSTR(0x53, 0xa2),
-+	ILI9881C_COMMAND_INSTR(0x55, 0x92),
-+	ILI9881C_COMMAND_INSTR(0x50, 0x96),
-+	ILI9881C_COMMAND_INSTR(0x51, 0x96),
-+	ILI9881C_COMMAND_INSTR(0x60, 0x22),
-+	ILI9881C_COMMAND_INSTR(0x61, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x62, 0x19),
-+	ILI9881C_COMMAND_INSTR(0x63, 0x00),
-+	ILI9881C_COMMAND_INSTR(0xa0, 0x08),
-+	ILI9881C_COMMAND_INSTR(0xa1, 0x11),
-+	ILI9881C_COMMAND_INSTR(0xa2, 0x19),
-+	ILI9881C_COMMAND_INSTR(0xa3, 0x0d),
-+	ILI9881C_COMMAND_INSTR(0xa4, 0x0d),
-+	ILI9881C_COMMAND_INSTR(0xa5, 0x1e),
-+	ILI9881C_COMMAND_INSTR(0xa6, 0x14),
-+	ILI9881C_COMMAND_INSTR(0xa7, 0x17),
-+	ILI9881C_COMMAND_INSTR(0xa8, 0x4f),
-+	ILI9881C_COMMAND_INSTR(0xa9, 0x1a),
-+	ILI9881C_COMMAND_INSTR(0xaa, 0x27),
-+	ILI9881C_COMMAND_INSTR(0xab, 0x49),
-+	ILI9881C_COMMAND_INSTR(0xac, 0x1a),
-+	ILI9881C_COMMAND_INSTR(0xad, 0x18),
-+	ILI9881C_COMMAND_INSTR(0xae, 0x4c),
-+	ILI9881C_COMMAND_INSTR(0xaf, 0x22),
-+	ILI9881C_COMMAND_INSTR(0xb0, 0x27),
-+	ILI9881C_COMMAND_INSTR(0xb1, 0x4b),
-+	ILI9881C_COMMAND_INSTR(0xb2, 0x60),
-+	ILI9881C_COMMAND_INSTR(0xb3, 0x39),
-+	ILI9881C_COMMAND_INSTR(0xc0, 0x08),
-+	ILI9881C_COMMAND_INSTR(0xc1, 0x11),
-+	ILI9881C_COMMAND_INSTR(0xc2, 0x19),
-+	ILI9881C_COMMAND_INSTR(0xc3, 0x0d),
-+	ILI9881C_COMMAND_INSTR(0xc4, 0x0d),
-+	ILI9881C_COMMAND_INSTR(0xc5, 0x1e),
-+	ILI9881C_COMMAND_INSTR(0xc6, 0x14),
-+	ILI9881C_COMMAND_INSTR(0xc7, 0x17),
-+	ILI9881C_COMMAND_INSTR(0xc8, 0x4f),
-+	ILI9881C_COMMAND_INSTR(0xc9, 0x1a),
-+	ILI9881C_COMMAND_INSTR(0xca, 0x27),
-+	ILI9881C_COMMAND_INSTR(0xcb, 0x49),
-+	ILI9881C_COMMAND_INSTR(0xcc, 0x1a),
-+	ILI9881C_COMMAND_INSTR(0xcd, 0x18),
-+	ILI9881C_COMMAND_INSTR(0xce, 0x4c),
-+	ILI9881C_COMMAND_INSTR(0xcf, 0x33),
-+	ILI9881C_COMMAND_INSTR(0xd0, 0x27),
-+	ILI9881C_COMMAND_INSTR(0xd1, 0x4b),
-+	ILI9881C_COMMAND_INSTR(0xd2, 0x60),
-+	ILI9881C_COMMAND_INSTR(0xd3, 0x39),
-+	ILI9881C_SWITCH_PAGE_INSTR(0),
-+	ILI9881C_COMMAND_INSTR(0x36, 0x03),
-+};
-+
- static const struct ili9881c_instr w552946ab_init[] = {
- 	ILI9881C_SWITCH_PAGE_INSTR(3),
- 	ILI9881C_COMMAND_INSTR(0x01, 0x00),
-@@ -812,6 +980,23 @@ static const struct drm_display_mode k101_im2byl02_default_mode = {
- 	.height_mm	= 217,
- };
- 
-+static const struct drm_display_mode tl050hdv35_default_mode = {
-+	.clock		= 59400,
-+
-+	.hdisplay	= 720,
-+	.hsync_start	= 720 + 18,
-+	.hsync_end	= 720 + 18 + 3,
-+	.htotal		= 720 + 18 + 3 + 20,
-+
-+	.vdisplay	= 1280,
-+	.vsync_start	= 1280 + 26,
-+	.vsync_end	= 1280 + 26 + 6,
-+	.vtotal		= 1280 + 26 + 6 + 28,
-+
-+	.width_mm	= 62,
-+	.height_mm	= 110,
-+};
-+
- static const struct drm_display_mode w552946aba_default_mode = {
- 	.clock		= 64000,
- 
-@@ -944,6 +1129,14 @@ static const struct ili9881c_desc k101_im2byl02_desc = {
- 	.mode_flags = MIPI_DSI_MODE_VIDEO_SYNC_PULSE,
- };
- 
-+static const struct ili9881c_desc tl050hdv35_desc = {
-+	.init = tl050hdv35_init,
-+	.init_length = ARRAY_SIZE(tl050hdv35_init),
-+	.mode = &tl050hdv35_default_mode,
-+	.mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
-+		      MIPI_DSI_MODE_LPM,
-+};
-+
- static const struct ili9881c_desc w552946aba_desc = {
- 	.init = w552946ab_init,
- 	.init_length = ARRAY_SIZE(w552946ab_init),
-@@ -955,6 +1148,7 @@ static const struct ili9881c_desc w552946aba_desc = {
- static const struct of_device_id ili9881c_of_match[] = {
- 	{ .compatible = "bananapi,lhr050h41", .data = &lhr050h41_desc },
- 	{ .compatible = "feixin,k101-im2byl02", .data = &k101_im2byl02_desc },
-+	{ .compatible = "tdo,tl050hdv35", .data = &tl050hdv35_desc },
- 	{ .compatible = "wanchanglong,w552946aba", .data = &w552946aba_desc },
- 	{ }
- };
--- 
-2.25.1
-
+Reviewed-by: Fei Shao <fshao@chromium.org>
