@@ -2,134 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54186759E86
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 808D7759E8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbjGST1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 15:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53764 "EHLO
+        id S231180AbjGST2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 15:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjGST1o (ORCPT
+        with ESMTP id S229776AbjGST2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 15:27:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DADB1FC0;
-        Wed, 19 Jul 2023 12:27:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D86DF617C7;
-        Wed, 19 Jul 2023 19:27:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2600C433C8;
-        Wed, 19 Jul 2023 19:27:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689794862;
-        bh=zt97BOS4bdaf5dk0BTyo2CkiDC24s45caGLHh2EraIQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YwooUnVURGjtn39uuMPKbvd9Kg5I5N5jMhKue1gC/8oz9wwyrWZMIGzyDx048OL32
-         me5OxxVjX46hhFw9GDXMF3boPMxFG9JqMYFFPAlOmoXyT9XK+DWSDAENYgnr9YNMfh
-         TJhdhSyhUFxd7vRa6rwn65wyA2JzM25aIm/Ya4Gbc5DM6fJuofZqjjk0GSA4WeylX8
-         UkHZRuejfzcMJOm795J33EpV1KRAmfN72rMpHX+pr05ajPEMWGuf01CtT+53L+DEIe
-         BqEZrRjt+zmh4yfvkHUnoJo5faXVOMblGMGRm1R3gAsdpmAUPxf4mPZWlGiWtnZNvB
-         Vgg1+Qh/SauoA==
-Received: by pali.im (Postfix)
-        id 231287CA; Wed, 19 Jul 2023 21:27:39 +0200 (CEST)
-Date:   Wed, 19 Jul 2023 21:27:39 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Marius Hoch <mail@mariushoch.de>
-Cc:     Jean Delvare <jdelvare@suse.de>, linux-i2c@vger.kernel.org,
+        Wed, 19 Jul 2023 15:28:16 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD031FD3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:28:14 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9939fbb7191so18397266b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:28:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689794893; x=1692386893;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uPoArgRK0ePPhHkMiGjMoj/J8C1a6a2nFfrrtKfK41Q=;
+        b=w/i1U45+liuN+7k3F7LG/5hR+D6RXzrX3aWtCAoz6HbWRoQnApjOXh9G4ECBbOuSAP
+         xJ1c4RWCvEbABPJzovFvL+1dF2LF2wAAshkdsc9kAwwJXo9vWlH6EUuSyAQFDAdqJX43
+         8IE1o8ao7Py4uEqQ7KDGtckj7N3+u7b3Pj36n622LgxUA6zUv03h2aeRtNQQwbxramOt
+         SDn3k4ooAul4JOH9pJ8+Hs9I9F+F9ug7cQsMTrtbz6ndqOEcS+nkkEoAa17/pr2cq9Ce
+         8+bi5TJleHV4ujTNZLHC1B6oYWwsEtGp47grDydSldNhsZYvNcHfwuyAIl9tte5c5xhF
+         i4IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689794893; x=1692386893;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uPoArgRK0ePPhHkMiGjMoj/J8C1a6a2nFfrrtKfK41Q=;
+        b=Xf+flVkpRr7KCjlfsTvNzo8bPPZ4COqDFVHDjNXA2SknpwOJSBsmMwSf0UdkQW2ei9
+         fIQW8J0GfL/ER55gIBi65tdudHUyz55EciLYq4BVnULv+qzLtGsugwcoSiuaIQjNSDcP
+         rAG/InsugW02HISiFmPN960/i+6tiPlfEB7B8Yv/uhEvNaDuqpfhu4PuHSU+CSDmhwwJ
+         pV9dYUesgnEWR2tpx1xBauEaYWRx0/4RZjNAdv1hK2Ot7sHpxQwPhK8QJjgw6TgUzNxW
+         0ZpS6s5z6OCZAcoqCa4LswAgKDJnjBgDJXXUo+ySFADJUPe0Tg1TEna9ddTy4SeTamb3
+         SOLg==
+X-Gm-Message-State: ABy/qLbdFykXf9prY5UrzXDsZ37uQjXzhNvqPi29eF5nOWNvIio80Tyf
+        6H6NyhANMWYC96lRpUcys2wgKQ==
+X-Google-Smtp-Source: APBJJlF+y4nvtoJttbysvyj57guiGA5ZQiUlcaYu+GQGAVt0Qi34Mbnk7AeL9aUgHhtcHI6J6eKA7Q==
+X-Received: by 2002:a17:906:77d9:b0:993:da87:1c81 with SMTP id m25-20020a17090677d900b00993da871c81mr3882864ejn.20.1689794893206;
+        Wed, 19 Jul 2023 12:28:13 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id n26-20020a170906119a00b00991e2b5a27dsm2720966eja.37.2023.07.19.12.28.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 12:28:12 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] i2c: i801: Force no IRQ for Dell Latitude E7450
-Message-ID: <20230719192739.z5mnlcfxczjayjri@pali>
-References: <20230514103634.235917-1-mail@mariushoch.de>
- <20230523200350.62ab4788@endymion.delvare>
- <59a6a917-2a93-d52d-37f3-091295dd0db4@mariushoch.de>
- <20230604160132.102dd6a7@endymion.delvare>
- <967411b3-7013-619e-4fef-90644fa8d489@mariushoch.de>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 1/3] arm64: dts: qcom: sm8350-hdk: include PMK8350
+Date:   Wed, 19 Jul 2023 21:28:07 +0200
+Message-Id: <20230719192809.434709-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <967411b3-7013-619e-4fef-90644fa8d489@mariushoch.de>
-User-Agent: NeoMutt/20180716
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello! In your log is one important information.
+HDK8350 comes with PMK8350 PMIC, so include relevant DTSI.  This also
+allows to use reboot reason.
 
-On Sunday 18 June 2023 15:42:40 Marius Hoch wrote:
-> Hi Jean,
-> 
-> thanks again for all the helpful replies!
-> 
-> On 04/06/2023 16:01, Jean Delvare wrote:
-> > Hi Marius,
-> > 
-> > On Sat, 3 Jun 2023 11:24:02 +0200, Marius Hoch wrote:
-> > > On 23/05/2023 20:03, Jean Delvare wrote:
-> > > > On Sun, 14 May 2023 12:36:32 +0200, Marius Hoch wrote:
-> > > > > The Dell Latitude E7450 uses IRQ 18 for the accelerometer,
-> > > > > but also claims that the SMBus uses IRQ 18. This will
-> > > > > result in:
-> > > > > 
-> > > > > i801_smbus 0000:00:1f.3: PCI INT C: failed to register GSI
-> > > > > i801_smbus 0000:00:1f.3: Failed to enable SMBus PCI device (-16)
-> > > > > i801_smbus: probe of 0000:00:1f.3 failed with error -16
-> > > > The i2c-i801 driver supports shared IRQ. If this fails, this means that
-> > > > the other driver is not passing IRQF_SHARED when registering the
-> > > > interrupt. Which driver is this? I'd rather check whether sharing the
-> > > > IRQ is possible, rather that falling back to polling, which has a
-> > > > performance cost.
-> > > I don't think this is a conflict rather than a completely bogus entry:
-> > > smo8800 uses IRQ 18 (the freefall sensor).
-> > You're probably right. I admit I misread your report originally and
-> > thought requesting the IRQ was failing. But actually the failure
-> > happens before that, when enabling the PCI device. So its not related
-> > to sharing the interrupt.
-> > 
-> > > For the SMBus in acpi_pci_irq_enable, acpi_register_gsi fails for GSI 18
-> > > with IRQ 255 (dev->irq), independently from the presence of the
-> > > dell_smo8800 module.
-> > > 
-> > > Now looking into this again, seeing dev->irq at 255 seems very
-> > > suspicious here? Doesn't that mean not connected (although I'm not sure
-> > > how this relates to it supposedly having GSI 18)?
-> > I admit I don't know. I'm not familiar with how GSI numbers relate to
-> > IRQ numbers. I think I understand that GSI numbers are an ACPI thing,
-> > and the ACPI layer is responsible for mapping these to actual IRQ
-> > numbers? Is there a GSI-to-IRQ table available somewhere as part of the
-> > ACPI tables? If so, it would be interesting to disassemble the ACPI
-> > tables on your system and check what this looks like for you.
-> > 
-> > If this is a bug in the ACPI data then it might be worth booting with
-> > acpi=noirq and see if it helps. This option might break other things
-> > though (like free fall detection or thermal management) so be cautious.
-> I just booted with acpi=noirq, the PCI device no longer fails to be enabled
-> and the device got assigned IRQ 19 now (according to lspci -v/
-> proc/interrupts), while the freefall device remained at IRQ 18.
-> Interestingly dmesg is full of spam from the freefall device (endlessly
-> reporting that freefall got detected, probably indicating a problem in IRQ
-> handling, yikes).
-> 
-> Booting without the smo8800 module results in:
-> [root@fedora ~]# dmesg | grep -i smbus
-> [   20.042515] i801_smbus 0000:00:1f.3: PCI->APIC IRQ transform: INT C ->
-> IRQ 19
-> [   20.042548] i801_smbus 0000:00:1f.3: SPD Write Disable is set
-> [   20.042574] i801_smbus 0000:00:1f.3: SMBus using PCI interrupt
-> [   20.051270] i801_smbus 0000:00:1f.3: Accelerometer lis3lv02d is present
-> on SMBus but its address is unknown, skipping registration
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-The accelerometer with "conflicting" interrupt line is connected via
-that same SMBus. You could be able to detects its address via i2cdetect
-and manually load via: echo lis3lv02d [address] > /sys/.../new_device
+---
 
-My guess, are not all devices on SMBus using same shared interrupt line?
+Changes in v2:
+1. Add Rb
+---
+ arch/arm64/boot/dts/qcom/sm8350-hdk.dts | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sm8350-hdk.dts b/arch/arm64/boot/dts/qcom/sm8350-hdk.dts
+index ad381d64d558..94e923962700 100644
+--- a/arch/arm64/boot/dts/qcom/sm8350-hdk.dts
++++ b/arch/arm64/boot/dts/qcom/sm8350-hdk.dts
+@@ -7,6 +7,7 @@
+ 
+ #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+ #include "sm8350.dtsi"
++#include "pmk8350.dtsi"
+ 
+ / {
+ 	model = "Qualcomm Technologies, Inc. SM8350 HDK";
+-- 
+2.34.1
+
