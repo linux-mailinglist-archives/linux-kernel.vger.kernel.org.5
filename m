@@ -2,93 +2,479 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD7A758FEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 10:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DCA758FF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 10:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbjGSINg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 04:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54872 "EHLO
+        id S230078AbjGSIPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 04:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjGSINd (ORCPT
+        with ESMTP id S229475AbjGSIPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 04:13:33 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE00197
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 01:13:31 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BFDF8FF804;
-        Wed, 19 Jul 2023 08:13:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1689754410;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dd+zfI16pEx3BXTsAYCbZH3BDKP24/m6t4MEhjKwt/U=;
-        b=nEkasCgFCgPjlAFkMM0ll8UnmJ9jTxA7HzkaHB9GQ10Ky9SpVpaoBDcgD3B/C4HCpx4HfB
-        A4lRl9mY231e/7ksyJkVEUMVzIVIiSYodf1mek4y0cB1cEmFYEUFYHGFmnU3QPLodJM420
-        T3oNvWOnmMShHrwnRwZaGQl6d+H6b+nDUgXkOWfgWPl+DzjOx9IHFoV7LadlJ+fxRm4VxV
-        T1WiqOMIU9WuF4nt284CDA4vyZdYpaOGo+wB0rpZM3gYE47wYGYrsd/odOK96nY5Nnfmhf
-        Y7bFHPt4V/degW7FOlWczukG/KceX/T0t/AEmx0Ck9vjcgxQsIFhkjIh6XWXyQ==
-Date:   Wed, 19 Jul 2023 10:13:27 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] nvmem: core: clear sysfs attributes for each NVMEM
- device
-Message-ID: <20230719101327.25b9ee7a@xps-13>
-In-Reply-To: <ZLavw9ZyXMWMqTu_@makrotopia.org>
-References: <ZLaZ03PzkbPNJQ3b@makrotopia.org>
-        <e155a4bf-46b7-c07a-f3e0-80fae8108f56@linaro.org>
-        <ZLavw9ZyXMWMqTu_@makrotopia.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Wed, 19 Jul 2023 04:15:04 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A8F1B6
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 01:15:02 -0700 (PDT)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36J8AXSD016753;
+        Wed, 19 Jul 2023 08:14:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=mime-version : date :
+ from : to : cc : subject : in-reply-to : references : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=UwgwZnWVm7uH8e3kA7r4Z/dJXiEnIYa5dKnvzO0prh8=;
+ b=OFsyXu0e7OAw7g57Nwos6kuLZB+YbGDA58N1WLQufSFVAMkm6+OShm0cBhgBd6+nOxgP
+ edRsiIWNw1CTcXBlQHwnJbReREGMPkLeG1u8tZtJJ2LItlhYp5Yojxqu7CuxIbvBJT6M
+ pP6oSREgPi/VUqm1Ir/f1vYqiMs3kdhOGj9bx7TWuTcRfIl6hwFgYqHo1oOSP2X+waXZ
+ DhP1NlsReGWIUDRbLsyqQGbEX/z7c3DvizeRBCZc9PeDuGD9WqxqRbH7p1N+RoMiFSIq
+ VT8H/gLUcOHATC1ygvBl61VXi3xpoQ8TnABapQDthw/0XB9HibiJ796Ig9/j9Yuw851s Kg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rxa7hu8pj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Jul 2023 08:14:31 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36J8AxgU017277;
+        Wed, 19 Jul 2023 08:14:31 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rxa7hu8nw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Jul 2023 08:14:31 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36J74dMo004510;
+        Wed, 19 Jul 2023 08:14:30 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rv80j6d3c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Jul 2023 08:14:30 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36J8ETRG20120270
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 Jul 2023 08:14:29 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7375E5805E;
+        Wed, 19 Jul 2023 08:14:29 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5E37058059;
+        Wed, 19 Jul 2023 08:14:28 +0000 (GMT)
+Received: from ltc.linux.ibm.com (unknown [9.5.196.140])
+        by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 19 Jul 2023 08:14:28 +0000 (GMT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Wed, 19 Jul 2023 10:14:28 +0200
+From:   Tobias Huschle <huschle@linux.ibm.com>
+To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        "Ravi V . Shankar" <ravi.v.shankar@intel.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Len Brown <len.brown@intel.com>, Mel Gorman <mgorman@suse.de>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        naveen.n.rao@linux.vnet.ibm.com,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Barry Song <v-songbaohua@oppo.com>,
+        Chen Yu <yu.c.chen@intel.com>, Hillf Danton <hdanton@sina.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [Patch v3 1/6] sched/fair: Determine active load balance for SMT
+ sched groups
+In-Reply-To: <c15b1322-074d-b400-bc7b-2a0031862fdd@linux.vnet.ibm.com>
+References: <cover.1688770494.git.tim.c.chen@linux.intel.com>
+ <e24f35d142308790f69be65930b82794ef6658a2.1688770494.git.tim.c.chen@linux.intel.com>
+ <165778ce-7b8f-1966-af02-90ef481455b9@linux.vnet.ibm.com>
+ <a399af19aa8e1291558724509a1de2f52b3bad0a.camel@linux.intel.com>
+ <1109f49642faf60438717eb7716b324f@linux.ibm.com>
+ <c15b1322-074d-b400-bc7b-2a0031862fdd@linux.vnet.ibm.com>
+Message-ID: <92c80c2a77161c93730829460486e311@linux.ibm.com>
+X-Sender: huschle@linux.ibm.com
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: geRUY3KwE7p8JugMooyxvTID_Ljm8GxV
+X-Proofpoint-ORIG-GUID: MaWMDRFLalK_WzHlUkKqz84nB6jjvCTN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-19_04,2023-07-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 spamscore=0 priorityscore=1501
+ impostorscore=0 clxscore=1015 lowpriorityscore=0 mlxscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307190073
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On 2023-07-18 16:52, Shrikanth Hegde wrote:
+> On 7/18/23 11:37 AM, Tobias Huschle wrote:
+>> On 2023-07-15 01:05, Tim Chen wrote:
+>>> On Fri, 2023-07-14 at 18:36 +0530, Shrikanth Hegde wrote:
+>>> 
+>>>> 
+>>>> 
+>>>> If we consider symmetric platforms which have SMT4 such as power10.
+>>>> we have a topology like below. multiple such MC will form DIE(PKG)
+>>>> 
+>>>> 
+>>>> [0 2 4 6][1 3 5 7][8 10 12 14][9 11 13 15]
+>>>> [--SMT--][--SMT--][----SMT---][---SMT----]
+>>>> [--sg1--][--sg1--][---sg1----][---sg1----]
+>>>> [--------------MC------------------------]
+>>>> 
+>>>> In case of SMT4, if there is any group which has 2 or more tasks, 
+>>>> that
+>>>> group will be marked as group_smt_balance. previously, if that group
+>>>> had 2
+>>>> or 3 tasks, it would have been marked as group_has_spare. Since all
+>>>> the groups have
+>>>> SMT that means behavior would be same fully busy right? That can
+>>>> cause some
+>>>> corner cases. No?
+>>> 
+>>> You raised a good point. I was looking from SMT2
+>>> perspective so group_smt_balance implies group_fully_busy.
+>>> That is no longer true for SMT4.
+>>> 
+>>> I am thinking of the following fix on the current patch
+>>> to take care of SMT4. Do you think this addresses
+>>> concerns from you and Tobias?
+>>> 
+>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>>> index 294a662c9410..3fc8d3a3bd22 100644
+>>> --- a/kernel/sched/fair.c
+>>> +++ b/kernel/sched/fair.c
+>>> @@ -9588,6 +9588,17 @@ static bool update_sd_pick_busiest(struct
+>>> lb_env *env,
+>>>                 break;
+>>> 
+>>>         case group_smt_balance:
+>>> +               /* no idle cpus on both groups handled by
+>>> group_fully_busy below */
+>>> +               if (sgs->idle_cpus != 0 || busiest->idle_cpus != 0) {
+>>> +                       if (sgs->idle_cpus > busiest->idle_cpus)
+>>> +                               return false;
+>>> +                       if (sgs->idle_cpus < busiest->idle_cpus)
+>>> +                               return true;
+>>> +                       if (sgs->sum_nr_running <=
+>>> busiest_sum_nr_running)
+>>> +                               return false;
+>>> +                       else
+>>> +                               return true;
+>>> +               }
+>>> 
+>>> 
+>>> I will be on vacation next three weeks so my response will be slow.
+>>> 
+>>> Tim
+>>> 
+>> 
+>> What if the setup is asymmetric, where SMT2 and SMT4 would mix, e.g.
+>> 
+>> [0 1][2 3 4 5]
+>> [SMT][--SMT--]
+>> 
+>> If now CPUs 0,2,3 have a running task, both groups would be classified 
+>> as
+>> smt_balance. But if it comes to the selection of the busiest group, 
+>> the
+>> smaller
+>> group would be selected, as it has less idle CPUs, right? Which could 
+>> lead
+>> to the smaller group being left with no tasks.
+>> Using the absolute numbers of task is what made the prefer_sibling 
+>> path
+>> problematic,
+> 
+> 
+> Yes. But Not sure how realistic is that configuration. on power10, we 
+> typically
+> have all cores in either SMT1, SMT2 or SMT4. But not mixed configs.
+> One can offline a CPUs to get into that cases in SMT4.
 
-daniel@makrotopia.org wrote on Tue, 18 Jul 2023 16:29:07 +0100:
+I'm also not sure if there is a real case for that. The assumption that 
+two groups
+are always of equal size was the issue why the prefer_sibling path did 
+not work as
+expected. I just wanted to point out that we might introduce a similar 
+assumption
+here again. It might be valid to assume that if there are no usecases 
+for having
+two cores with a different number of SMT threads.
 
-> On Tue, Jul 18, 2023 at 03:55:56PM +0100, Srinivas Kandagatla wrote:
-> > HI Daniel,
-> >=20
-> > On 18/07/2023 14:55, Daniel Golle wrote: =20
-> > > Set nvmem_cells_group.bin_attrs to NULL in case of an NVMEM device not
-> > > having any cells in order to make sure sysfs attributes of a previous=
-ly
-> > > registered NVMEM device are not accidentally reused for a follow-up
-> > > device which doesn't have any cells.
-> > >=20
-> > > Fixes: 757f8b3835c9 ("nvmem: core: Expose cells through sysfs") =20
-> >=20
-> > These patches are dropped out of nvmem next branch as it was breaking s=
-ome
-> > existing users. =20
->=20
-> Ok. I've encountered those commits in linux-next and can confirm that
-> they were definitely also breaking things here, hence my patches at
-> least partially fixing that.
->=20
-> I agree that reverting them for now and reworking them seems to be the
-> better option in this case, hence my patches won't be needed as such.
+> 
+>> I would assume that the same holds true here. Therefore, I would 
+>> prefer
+>> avg_load,
+>> or, similar to prefer_siblings, a ratio over the number of cores.
+>> 
+>> I can't really test that on s390 as we always have SMT2. But, we can
+>> have these
+>> asymmetries on higher levels, e.g
+> 
+> 
+> IIUC, on higher levels, group will not have SD_SHARE_CPUCAPACITY, so
+> it shouldn't
+> run into group_smt_balance.
+> 
+>> 
+>> [0 1][2 3][4 5][6 7][8 9]
+>> [SMT][SMT][SMT][SMT][SMT]
+>> [-----core----][--core--]
+>> 
+>> For large configurations this can be true for even higher levels.
+>> Therefore, the idea was to move the smt_balance state around and adapt 
+>> its
+>> conditions to something like this (which would require to reorder the
+>> commits):
+>> 
+>> @@ -8330,6 +8330,11 @@ enum fbq_type { regular, remote, all };
+>>  enum group_type {
+>>         /* The group has spare capacity that can be used to run more
+>> tasks.  */
+>>         group_has_spare = 0,
+>> +       /*
+>> +        * Balance SMT group that's fully busy. Can benefit from 
+>> migration
+>> +        * a task on SMT with busy sibling to another CPU on idle 
+>> core.
+>> +        */
+>> +       group_smt_balance,
+>>         /*
+>>          * The group is fully used and the tasks don't compete for 
+>> more CPU
+>>          * cycles. Nevertheless, some tasks might wait before running.
+>> @@ -8340,11 +8345,6 @@ enum group_type {
+>>          * more powerful CPU.
+>>          */
+>>         group_misfit_task,
+>> -       /*
+>> -        * Balance SMT group that's fully busy. Can benefit from 
+>> migration
+>> -        * a task on SMT with busy sibling to another CPU on idle 
+>> core.
+>> -        */
+>> -       group_smt_balance,
+>>         /*
+>>          * SD_ASYM_PACKING only: One local CPU with higher capacity is
+>> available,
+> 
+> 
+> IIUC, for cluster topology of this patch, busiest group should be a
+> SMT if it has 2
+> threads compared to an Atom cluster having 4 threads. Atom cluster
+> will be group_fully_busy,
+> whereas SMT group will be group_smt_balance. For that to happen
+> group_smt_balance should have
+> higher group_type.
 
-Quite the opposite, on my setup I don't have any breakage but as you
-already fixed the cell name issue (also reported by Chen-yu), if you
-agree, I will include these fixes (or an improved version) in my next
-proposal.
+Makes sense.
 
-Thanks,
-Miqu=C3=A8l
+> 
+>>          * and the task should be migrated to it instead of running on 
+>> the
+>> @@ -9327,15 +9327,15 @@ group_type group_classify(unsigned int
+>> imbalance_pct,
+>>         if (sgs->group_asym_packing)
+>>                 return group_asym_packing;
+>> 
+>> -       if (sgs->group_smt_balance)
+>> -               return group_smt_balance;
+>> -
+>>         if (sgs->group_misfit_task_load)
+>>                 return group_misfit_task;
+>> 
+>>         if (!group_has_capacity(imbalance_pct, sgs))
+>>                 return group_fully_busy;
+>> 
+>> +       if (sgs->group_smt_balance)
+>> +               return group_smt_balance;
+>> +
+>>         return group_has_spare;
+>>  }
+>> 
+>> @@ -9457,8 +9457,7 @@ static inline bool smt_balance(struct lb_env 
+>> *env,
+>> struct sg_lb_stats *sgs,
+>>          * Note that if a group has a single SMT, SD_SHARE_CPUCAPACITY
+>>          * will not be on.
+>>          */
+>> -       if (group->flags & SD_SHARE_CPUCAPACITY &&
+>> -           sgs->sum_h_nr_running > 1)
+>> +       if (sgs->sum_h_nr_running > group->cores)
+> 
+> In case of Power10, where we have SMT4, group->cores will be 1. I dont 
+> see
+> a difference here.
+
+The aim of this change was to also make use of this further up in the 
+hierarchy,
+where SD_SHARE_CPUCAPACITY is not set. Up there, it would be possible to 
+have
+more than one core, also potentially different numbers (at least on 
+s390).
+
+It appears to work fine without these changes though, so I think there 
+is
+nothing to do for now.
+
+> 
+>>                 return true;
+>> 
+>>         return false;
+>> 
+>> The s390 problem is currently solved by changing the prefer_sibling
+>> path. When
+>> disabling that flag, we might have an issue, will have to verify that
+>> though.
+>> 
+>>>> 
+>>>> One example is Lets say sg1 has 4 tasks. and sg2 has 0 tasks and is
+>>>> trying to do
+>>>> load balance. Previously imbalance would have been 2, instead now
+>>>> imbalance would be 1.
+>>>> But in subsequent lb it would be balanced.
+>>>> 
+>>>> 
+>>>> 
+>>>> > +    return false;
+>>>> > +}
+>>>> > +
+>>>> >  static inline bool
+>>>> >  sched_reduced_capacity(struct rq *rq, struct sched_domain *sd)
+>>>> >  {
+>>>> > @@ -9425,6 +9464,10 @@ static inline void update_sg_lb_stats(struct
+>>>> lb_env *env,
+>>>> >          sgs->group_asym_packing = 1;
+>>>> >      }
+>>>> >
+>>>> > +    /* Check for loaded SMT group to be balanced to dst CPU */
+>>>> > +    if (!local_group && smt_balance(env, sgs, group))
+>>>> > +        sgs->group_smt_balance = 1;
+>>>> > +
+>>>> >      sgs->group_type = group_classify(env->sd->imbalance_pct,
+>>>> group, sgs);
+>>>> >
+>>>> >      /* Computing avg_load makes sense only when group is
+>>>> overloaded */
+>>>> > @@ -9509,6 +9552,7 @@ static bool update_sd_pick_busiest(struct
+>>>> lb_env *env,
+>>>> >              return false;
+>>>> >          break;
+>>>> >
+>>>> > +    case group_smt_balance:
+>>>> >      case group_fully_busy:
+>>>> >          /*
+>>>> >           * Select the fully busy group with highest avg_load. In
+>>>> > @@ -9537,6 +9581,18 @@ static bool update_sd_pick_busiest(struct
+>>>> lb_env *env,
+>>>> >          break;
+>>>> >
+>>>> >      case group_has_spare:
+>>>> > +        /*
+>>>> > +         * Do not pick sg with SMT CPUs over sg with pure CPUs,
+>>>> > +         * as we do not want to pull task off SMT core with one task
+>>>> > +         * and make the core idle.
+>>>> > +         */
+>>>> > +        if (smt_vs_nonsmt_groups(sds->busiest, sg)) {
+>>>> > +            if (sg->flags & SD_SHARE_CPUCAPACITY &&
+>>>> sgs->sum_h_nr_running <= 1)
+>>>> > +                return false;
+>>>> > +            else
+>>>> > +                return true;> +        }
+>>>> > +
+>>>> >          /*
+>>>> >           * Select not overloaded group with lowest number of idle
+>>>> cpus
+>>>> >           * and highest number of running tasks. We could also compare
+>>>> > @@ -9733,6 +9789,7 @@ static bool update_pick_idlest(struct
+>>>> sched_group *idlest,
+>>>> >
+>>>> >      case group_imbalanced:
+>>>> >      case group_asym_packing:
+>>>> > +    case group_smt_balance:
+>>>> >          /* Those types are not used in the slow wakeup path */
+>>>> >          return false;
+>>>> >
+>>>> > @@ -9864,6 +9921,7 @@ find_idlest_group(struct sched_domain *sd,
+>>>> struct task_struct *p, int this_cpu)
+>>>> >
+>>>> >      case group_imbalanced:
+>>>> >      case group_asym_packing:
+>>>> > +    case group_smt_balance:
+>>>> >          /* Those type are not used in the slow wakeup path */
+>>>> >          return NULL;
+>>>> >
+>>>> > @@ -10118,6 +10176,13 @@ static inline void
+>>>> calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
+>>>> >          return;
+>>>> >      }
+>>>> >
+>>>> > +    if (busiest->group_type == group_smt_balance) {
+>>>> > +        /* Reduce number of tasks sharing CPU capacity */
+>>>> > +        env->migration_type = migrate_task;
+>>>> > +        env->imbalance = 1;
+>>>> > +        return;
+>>>> > +    }
+>>>> > +
+>>>> >      if (busiest->group_type == group_imbalanced) {
+>>>> >          /*
+>>>> >           * In the group_imb case we cannot rely on group-wide
+>>>> averages
+>>>> > @@ -10363,16 +10428,23 @@ static struct sched_group
+>>>> *find_busiest_group(struct lb_env *env)
+>>>> >          goto force_balance;
+>>>> >
+>>>> >      if (busiest->group_type != group_overloaded) {
+>>>> > -        if (env->idle == CPU_NOT_IDLE)
+>>>> > +        if (env->idle == CPU_NOT_IDLE) {
+>>>> >              /*
+>>>> >               * If the busiest group is not overloaded (and as a
+>>>> >               * result the local one too) but this CPU is already
+>>>> >               * busy, let another idle CPU try to pull task.
+>>>> >               */
+>>>> >              goto out_balanced;
+>>>> > +        }
+>>>> > +
+>>>> > +        if (busiest->group_type == group_smt_balance &&
+>>>> > +            smt_vs_nonsmt_groups(sds.local, sds.busiest)) {
+>>>> > +            /* Let non SMT CPU pull from SMT CPU sharing with
+>>>> sibling */
+>>>> > +            goto force_balance;
+>>>> > +        }
+>>>> >
+>>>> >          if (busiest->group_weight > 1 &&
+>>>> > -            local->idle_cpus <= (busiest->idle_cpus + 1))
+>>>> > +            local->idle_cpus <= (busiest->idle_cpus + 1)) {
+>>>> >              /*
+>>>> >               * If the busiest group is not overloaded
+>>>> >               * and there is no imbalance between this and busiest
+>>>> > @@ -10383,12 +10455,14 @@ static struct sched_group
+>>>> *find_busiest_group(struct lb_env *env)
+>>>> >               * there is more than 1 CPU per group.
+>>>> >               */
+>>>> >              goto out_balanced;
+>>>> > +        }
+>>>> >
+>>>> > -        if (busiest->sum_h_nr_running == 1)
+>>>> > +        if (busiest->sum_h_nr_running == 1) {
+>>>> >              /*
+>>>> >               * busiest doesn't have any tasks waiting to run
+>>>> >               */
+>>>> >              goto out_balanced;
+>>>> > +        }
+>>>> >      }
+>>>> >
+>>>> >  force_balance:
