@@ -2,178 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E119675981C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31801759822
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbjGSOYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 10:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
+        id S231591AbjGSOYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:24:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231250AbjGSOYB (ORCPT
+        with ESMTP id S231560AbjGSOYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:24:01 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D10B61986
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689776619; x=1721312619;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=zHlHpxEklNtVHi8zaxu6DQD5fptiq8BycOi5SkO9gT4=;
-  b=BBFLF19aDsjRiYzqXGlYyxRN0kcciXUYJI4zHY/yPROgf8JxTW+dPqiR
-   ZnzVEUXpEZQLKuVCt7x5/U/+3DnmnC0rm9hQr6lQwiPWe6SzJxeP08oEA
-   MAeLnm/y4exd7WUbEEoE026HGYR16MlnTmNZtO/pqmdyuivAnMqMxvcbd
-   JS88T8BQ1AjTdeVpSKRA0oCe3ZOhk0HgFho3G5ZpQoavEKd/slwD+NZia
-   g3g55rMfSbOo3WIGuMA7sTl8gBPy99uItLKfjpzexrbDlde/4pM7w/Ffe
-   BrZtsdif9dfSSQFFJWyLVIOwnu7DFF4PVZTbBuc2sPnnk4Efq8RVMXClQ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="397338601"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="397338601"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 07:22:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="848063114"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="848063114"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga004.jf.intel.com with ESMTP; 19 Jul 2023 07:22:57 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 19 Jul 2023 07:22:56 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Wed, 19 Jul 2023 07:22:56 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.177)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Wed, 19 Jul 2023 07:22:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dSKgiekb5fAN5Q5q9fvGVGlB3ItbkrKmO6+8Y2rKCb+PsvE2O4LeGqmsp8Sdj5gFjlVl5nx+463qGQTwxv1wGhAX2/oB0sosQ89DzdJIcBBRSGYIKYOxWDbHAgI6dg9Xu7ubliIQw8CMfgZ2aKvsEMamrP9BKB0wMNRM721EnK93XNujeB/fUnmubWHA/gqoKY+EwrUVVi175W2Yr/geht/ERQj4qgRzhl6hRGsdN3QSD5+lTvpjiECHXFzANxt1PQwIROLL2awrHpHX/VWXCVNYJn+Hpfh+3OiC1L0pcLNFNIYRoC6sKjM/nNhrKW6dAeC8rU65v4S2GnzaET+okA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=H4erQHh7YIrWLh9cGM/gjMicwV5JVSnB8VSA6TNePwM=;
- b=SENCgQdZcekijquKXgRh/3e4NQzuBmphvjQbboEVYBbufV03vFhjKI6EcbI1aOjPgsnW1ZVmGuQAtT+cPudh5Yd4O7PFdpupGK3Tw+mXQIn4mAtswFSujn3yL2KfzmpM0Yjr/RKjx8s0zyrSqhfSNj45DFa8HaI+1OGtroWo8fDB9aMwqjyeZgUwmeFqggkX9NwHqEhwSlHCmW/Dlf6LPzwsALyREgR0umQQMgCgFCQogn39sxkYofR7gm0uqy8wrKV+R6Xgde7ztpClycCylYzmS49u4yjm6nw8PuPjaY6M1QJqzrbrpVlNM6JOSI3FRAoBMiI/YPCGC4X+8X2iKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BL0PR11MB3060.namprd11.prod.outlook.com (2603:10b6:208:72::24)
- by SA1PR11MB6823.namprd11.prod.outlook.com (2603:10b6:806:2b0::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32; Wed, 19 Jul
- 2023 14:22:54 +0000
-Received: from BL0PR11MB3060.namprd11.prod.outlook.com
- ([fe80::7196:1728:580c:9eec]) by BL0PR11MB3060.namprd11.prod.outlook.com
- ([fe80::7196:1728:580c:9eec%5]) with mapi id 15.20.6609.024; Wed, 19 Jul 2023
- 14:22:54 +0000
-Date:   Wed, 19 Jul 2023 22:22:35 +0800
-From:   Aaron Lu <aaron.lu@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        "Mel Gorman" <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Nitin Tekchandani <nitin.tekchandani@intel.com>,
-        Yu Chen <yu.c.chen@intel.com>,
-        Waiman Long <longman@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <yury.norov@gmail.com>,
-        <andriy.shevchenko@linux.intel.com>, <linux@rasmusvillemoes.dk>,
-        <rppt@kernel.org>
-Subject: Re: [RFC PATCH 2/4] sched/fair: Make tg->load_avg per node
-Message-ID: <20230719142235.GA94215@ziqianlu-dell>
-References: <20230718134120.81199-1-aaron.lu@intel.com>
- <20230718134120.81199-3-aaron.lu@intel.com>
- <20230719115358.GB3529734@hirez.programming.kicks-ass.net>
- <20230719134500.GB91858@ziqianlu-dell>
- <20230719135305.GC3529734@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230719135305.GC3529734@hirez.programming.kicks-ass.net>
-X-ClientProxiedBy: SI1PR02CA0004.apcprd02.prod.outlook.com
- (2603:1096:4:1f7::12) To BL0PR11MB3060.namprd11.prod.outlook.com
- (2603:10b6:208:72::24)
+        Wed, 19 Jul 2023 10:24:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E222126;
+        Wed, 19 Jul 2023 07:23:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A249F6163F;
+        Wed, 19 Jul 2023 14:23:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EF2CC433C8;
+        Wed, 19 Jul 2023 14:23:12 +0000 (UTC)
+Date:   Wed, 19 Jul 2023 10:23:10 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ajay Kaher <akaher@vmware.com>
+Cc:     "shuah@kernel.org" <shuah@kernel.org>,
+        "mhiramat@kernel.org" <mhiramat@kernel.org>,
+        Ching-lin Yu <chinglinyu@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-trace-kernel@vger.kernel.org" 
+        <linux-trace-kernel@vger.kernel.org>,
+        "lkp@intel.com" <lkp@intel.com>, Nadav Amit <namit@vmware.com>,
+        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        "er.ajay.kaher@gmail.com" <er.ajay.kaher@gmail.com>,
+        "srivatsa@csail.mit.edu" <srivatsa@csail.mit.edu>,
+        Tapas Kundu <tkundu@vmware.com>,
+        Vasavi Sirnapalli <vsirnapalli@vmware.com>
+Subject: Re: [PATCH v4 00/10] tracing: introducing eventfs
+Message-ID: <20230719102310.552d3356@gandalf.local.home>
+In-Reply-To: <2CD72098-08E2-4CAA-B74D-D8C44D318117@vmware.com>
+References: <1689248004-8158-1-git-send-email-akaher@vmware.com>
+        <20230714185824.62556254@gandalf.local.home>
+        <883F9774-3E76-4346-9988-2788FAF0D55E@vmware.com>
+        <20230718094005.32516161@gandalf.local.home>
+        <2CD72098-08E2-4CAA-B74D-D8C44D318117@vmware.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL0PR11MB3060:EE_|SA1PR11MB6823:EE_
-X-MS-Office365-Filtering-Correlation-Id: dee805bc-bc9c-4bfb-4471-08db8863a457
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tVoh2TguvbdgQYM/uUC6PkuRD+Ach/IcZ0SNr2Xn5lw1JKufKv/PAIPWvB+E0gGc4gTntTpUnAQZIaHXNYNKEbaBJLxZ0EwNlMDptw7qpoZ8D3E/ulMeXd02vx/KsNcYg2rKSL7hNfCCQdhKaKKwMnCFbxyYeYpOdmgoEaBCYTgUHLJ4T+7eWcjj8wVC9OHwbNOXBpLgdwYvNE7gVWuVjq81L8/ATlRiGLvdjs0TBwO/rh1lQkFZ8nLWN+GHvQAGn+oQnrUWVYDNY4EAq14+N0KrceNJKMkuWZycN7thhWxg2lecsaL7tABMpkrKmgzBucrMlRHX0UEx7p6+mwz88QCg3Zco1crWypTX+EccMhPTaJA+iDa+/ELlMLJLQMU7YM22Bt45JoO2vnur9GcNmithuCoEIWgiGGkH0xU5SoeP7ba97xLHuLoAOpisAA8ijp0M3uZQHAVfM5YRfaBugD4/ZRHgMLYDKhlruQol45lG/xC5FAmsm1KjQvHS2cuW5qOXYVa7bOrUDkLu4dbMvfFFF40TZ7OCpv54ghIROmwr0pszNKWvEfJigO6P31wa
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB3060.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(376002)(136003)(396003)(39860400002)(366004)(346002)(451199021)(6916009)(33716001)(66946007)(4326008)(316002)(86362001)(38100700002)(9686003)(82960400001)(6512007)(6666004)(478600001)(54906003)(8936002)(44832011)(41300700001)(66556008)(7416002)(8676002)(66476007)(5660300002)(1076003)(26005)(6506007)(186003)(33656002)(2906002)(6486002)(4744005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Lb9D98PKflKjJ0gTyukuBNUwHW2jb1yWlYrJbLP1RmZ9M8cMnMepCUB/GNuc?=
- =?us-ascii?Q?f39GLKl67HrKHDevf9HgFV86/u9UbnETnLqbUpb7myM+t0s4epvzezLt3DxK?=
- =?us-ascii?Q?M34JHckBPi0O5NOz5yhx0+MdsnDSa9/FhahJTY+zTGYKcU8X+ORdis/FBzng?=
- =?us-ascii?Q?1zfDsIj5lxc5t3xiWeHEnDQpQu/07Am4FnqXDKlDm72wZ39y18OLOFr7icIB?=
- =?us-ascii?Q?qjqoN72JD+PTcu7pgb0mrG5biWBI0u58FoMf1TA/p+tlU+VuTe/BC8AtZe3w?=
- =?us-ascii?Q?ddGx4Exod9v2NgO5DlobEfDjVpEkzBnjqcSKXHM1VGc+Kb8GIOD6YZrF5NM7?=
- =?us-ascii?Q?jVd3wxrom4C63OeHPmK5t6/dC049SBqnnBXIpvrPBDrf5yGYMa9h0LrdnWfF?=
- =?us-ascii?Q?PtTuc+41PsSbOOY+d4PWc3HcmxX0ZpLb3Qv6Gzmkp/nD12r2w+T8gp1TAylo?=
- =?us-ascii?Q?VceyRYl87tgO0qdIaoDpKNibP6gHy0mmxT0vYEY1q7/ilV/QERLUYMauHLbY?=
- =?us-ascii?Q?J6b2H2MYQA+KHbgPy+BH8j1ltpLsDXOvNlPmgpWX47rmcC8uI7KRpHnGTdqa?=
- =?us-ascii?Q?kQXIvjvMM+9/M081HXds9AWpFINn8f2Si3ypwjPhlb05ZyeXuUqzfLaU4T8z?=
- =?us-ascii?Q?UbarNGqwzMdkfUbE9MxqoUwauC11w7VNtT+8fRnqpkIu0iElnllzNJwFYaqt?=
- =?us-ascii?Q?1JIOGyytJ2uxXZHxSzc41x+6VVw8qyETcl6gb9POE1+WRPF7uXa7EiGDEaW4?=
- =?us-ascii?Q?/JDnUqtzoR8B3IaqshZ9Gm1G0mTyxCzpq126wyS933u09b7mcxokxx1mDjf8?=
- =?us-ascii?Q?zlDeyTG1paL/I+w7U91iDdiHTuNPefNvnZiyAaxlMusZHPGoeei9WSobMdb4?=
- =?us-ascii?Q?C8uaZM/o4+hIUk5LT5TSpwVulpIiOwFaVea0h3qpw2qF3rPJgcIjKhTinRNg?=
- =?us-ascii?Q?gw6KxoYQfGXZmud3ewBmysDegCktfuKEF8/51zVA07zqQ/qBKXMeP1E94PGS?=
- =?us-ascii?Q?SMVUjYEsdgzFM3E5LS0tA9KbGeZ2qqAdlTfP6X+cACnssW8AwyM1XuZk4I75?=
- =?us-ascii?Q?Jx8kRhduVck+dVET2eHyDAKvq0F8jXW4Lf1ywSwO95IIo05Wv1epLuLVos88?=
- =?us-ascii?Q?2RQdXDrQgPKR86UFXU52YdZWtRebsgyEkQjqaFJEcl1nKXIIEmhwE8aG8vGa?=
- =?us-ascii?Q?U2GtZk7+Og3e9a5WM09PBAt4B/22wU44Nso+SBKMeL5spmHteSv0P9LgVFzV?=
- =?us-ascii?Q?Z2myd3XDjndbYI43+EUXNy0quevueBhkewripP8YT+IwUhklfETuQdN3vl8S?=
- =?us-ascii?Q?UyjueTkMoTn/Vdj76Ot96GI0Yc4hAhpaBIScGFKEszMfy0pQ547P9OAD/7q9?=
- =?us-ascii?Q?Vc3AGfR9vxStCC8KAengeNoXuq68JefxnAm/mkl5sNKhQVc6OYDx3qniU7YW?=
- =?us-ascii?Q?t6tm2fzaYsqKGvtQXrlbt/iuDpJGtmuP6EEBNejS/Vn6+pULYVYScl4j3dmr?=
- =?us-ascii?Q?PD+qOLv+f099wZbZvdVJFNexGcWl76ruaY+tf0U1tJe3SULT5Thvdbez0Lc3?=
- =?us-ascii?Q?WlqE5AfGyjRVrsESeHx/iJ8kMpKjR1XTL8QRrf78?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: dee805bc-bc9c-4bfb-4471-08db8863a457
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB3060.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 14:22:54.4795
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zCAM/JbXliqwlOAwRHmMKhJRM8M0p90CcMA4hKgiq7Ni03y/DF5oxjdEjtQ9AK6QiXTzIbwpq98IihuKogeljg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6823
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 03:53:05PM +0200, Peter Zijlstra wrote:
-> On Wed, Jul 19, 2023 at 09:45:00PM +0800, Aaron Lu wrote:
-> > I'll rebase this per-node patch on top of below diff.
+On Wed, 19 Jul 2023 10:25:28 +0000
+Ajay Kaher <akaher@vmware.com> wrote:
+
+> - Is it also reproducible on v3?
+> - Is it manually reproducible or reproducible using any specific script?
 > 
-> Oh, please double check I didn't wreck anything. I skipped 'converting'
-> the find_*_bit() functions because the users of those iterators might be
-> expecting NR_MAXNODES when not found.
->
+> Let me know if I can help.
 
-Sounds more work than I had expected :)
+Just tried it against v3, and it gave me the splat that I originally had
+and starting to fix, which now gives me another splat. I'll spend a couple
+more days on it and start sharing code and seeing if we can work together
+on this.
 
-> But perhaps there's more I overlooked.
+Here's the reproducer (of both v3 splat and the bug I'm hitting now).
 
-Got it, will see if I can make it work.
+ ~# echo 'p:sock_getattr 0xffffffff9b55cef0 sk=%di' > /sys/kernel/tracing/kprobe_events
+ ~# ls /sys/kernel/debug/tracing/events/kprobes/sock_getattr/
+ ~# echo '-:sock_getattr 0xffffffff9b55cef0 sk=%di' > /sys/kernel/tracing/kprobe_events
+
+v3 gives me (and my updates too)
+
+======================================================
+ WARNING: possible circular locking dependency detected
+ 6.5.0-rc1-test+ #576 Not tainted
+ ------------------------------------------------------
+ trace-cmd/840 is trying to acquire lock:
+ ffff8881007e5de0 (&sb->s_type->i_mutex_key#5){++++}-{3:3}, at: dcache_dir_open_wrapper+0xc1/0x1b0
+ 
+ but task is already holding lock:
+ ffff888103ad7e70 (eventfs_rwsem/1){.+.+}-{3:3}, at: dcache_dir_open_wrapper+0x6f/0x1b0
+ 
+ which lock already depends on the new lock.
+
+ 
+ the existing dependency chain (in reverse order) is:
+ 
+ -> #1 (eventfs_rwsem/1){.+.+}-{3:3}:
+        down_read_nested+0x41/0x180
+        eventfs_root_lookup+0x42/0x120
+        __lookup_slow+0xff/0x1b0
+        walk_component+0xdb/0x150
+        path_lookupat+0x67/0x1a0
+        filename_lookup+0xe4/0x1f0
+        vfs_statx+0x9e/0x180
+        vfs_fstatat+0x51/0x70
+        __do_sys_newfstatat+0x3f/0x80
+        do_syscall_64+0x3a/0xc0
+        entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+ 
+ -> #0 (&sb->s_type->i_mutex_key#5){++++}-{3:3}:
+        __lock_acquire+0x165d/0x2390
+        lock_acquire+0xd4/0x2d0
+        down_write+0x3b/0xd0
+        dcache_dir_open_wrapper+0xc1/0x1b0
+        do_dentry_open+0x20c/0x510
+        path_openat+0x7ad/0xc60
+        do_filp_open+0xaf/0x160
+        do_sys_openat2+0xab/0xe0
+        __x64_sys_openat+0x6a/0xa0
+        do_syscall_64+0x3a/0xc0
+        entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+ 
+ other info that might help us debug this:
+
+  Possible unsafe locking scenario:
+
+        CPU0                    CPU1
+        ----                    ----
+   rlock(eventfs_rwsem/1);
+                                lock(&sb->s_type->i_mutex_key#5);
+                                lock(eventfs_rwsem/1);
+   lock(&sb->s_type->i_mutex_key#5);
+ 
+  *** DEADLOCK ***
+
+ 1 lock held by trace-cmd/840:
+  #0: ffff888103ad7e70 (eventfs_rwsem/1){.+.+}-{3:3}, at: dcache_dir_open_wrapper+0x6f/0x1b0
+ 
+ stack backtrace:
+ CPU: 7 PID: 840 Comm: trace-cmd Not tainted 6.5.0-rc1-test+ #576
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+ Call Trace:
+  <TASK>
+  dump_stack_lvl+0x57/0x90
+  check_noncircular+0x14b/0x160
+  __lock_acquire+0x165d/0x2390
+  lock_acquire+0xd4/0x2d0
+  ? dcache_dir_open_wrapper+0xc1/0x1b0
+  down_write+0x3b/0xd0
+  ? dcache_dir_open_wrapper+0xc1/0x1b0
+  dcache_dir_open_wrapper+0xc1/0x1b0
+  ? __pfx_dcache_dir_open_wrapper+0x10/0x10
+  do_dentry_open+0x20c/0x510
+  path_openat+0x7ad/0xc60
+  do_filp_open+0xaf/0x160
+  do_sys_openat2+0xab/0xe0
+  __x64_sys_openat+0x6a/0xa0
+  do_syscall_64+0x3a/0xc0
+  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+ RIP: 0033:0x7f1743267e41
+ Code: 44 24 18 31 c0 41 83 e2 40 75 3e 89 f0 25 00 00 41 00 3d 00 00 41 00 74 30 89 f2 b8 01 01 00 00 48 89 fe bf 9c ff ff ff 0f 05 <48> 3d 00 f0 ff ff 77 3f 48 8b 54 24 18 64 48 2b 14 25 28 00 00 00
+ RSP: 002b:00007ffec10ff5d0 EFLAGS: 00000287 ORIG_RAX: 0000000000000101
+ RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f1743267e41
+ RDX: 0000000000090800 RSI: 00007ffec10ffdb0 RDI: 00000000ffffff9c
+ RBP: 00007ffec10ffda0 R08: 00007ffec11003e0 R09: 0000000000000040
+ R10: 0000000000000000 R11: 0000000000000287 R12: 00007ffec11003e0
+ R13: 0000000000000040 R14: 0000000000000000 R15: 00007ffec110034b
+  </TASK>
+
+
+I moved the code around a bit, and it appears that kprobes is getting
+dput() more than once.
+
+I moved the d_invalidate() and dput() into the workqueue function, and on
+kprobes going away, d_invalidate() frees it, and dput() is now corrupted.
+
+Still investigating. The VFS layer is a magic box that needs the right
+wizard hat to deal with, but I unfortunately am waiting on back order to
+retrieve that specific hat :-p
+
+-- Steve
