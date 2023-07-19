@@ -2,130 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D03F8758B3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 04:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04453758B3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 04:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbjGSCOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 22:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48938 "EHLO
+        id S229942AbjGSCOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 22:14:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbjGSCOg (ORCPT
+        with ESMTP id S229829AbjGSCOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 22:14:36 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BCCF1FC8
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 19:14:28 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-579d5d89b41so65612037b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 19:14:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1689732867; x=1692324867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F9eL+vRLh2IMmmWxtSCYk4DtifazKKWTBnb901S3j94=;
-        b=E0qagBYe20SR0SALzjMEgzAAwWZNBuyNfIuFOB5oHd7/unduwTPDowOXpp+9jaIhsk
-         yWWws98rOg0AI15RrkDBVlvYl+q+EWOCtTO4U5wc9SPXFO1NrHsi1lJhfbpMLnVvCYSu
-         oaogCqHUw7nH2YLUiLkB73e/lfZwIXPUSJs7W+SWDWF5uZgcQ+XMineDaONtZ9cLz3x6
-         qFIwAxqXBML/rim1qQxNWhMp2wpGTXV7YkFVf+0lJR5qbVIjM/GxPwfH1ltdJggyZlow
-         mW571RQ0nZa7z2F/9ExiiTsk1vBPkwJLlWHYvCs5k2sRgQGq40SZGqPgHZcShBBgy7hi
-         TVaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689732867; x=1692324867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F9eL+vRLh2IMmmWxtSCYk4DtifazKKWTBnb901S3j94=;
-        b=fDHqNsSNIC6TCaX0rxizqKYK/Tm5xAlJhuOeCsgE3wiraNOQgfFanz4aQH4kM+jLUb
-         vvpwBTXewNCLbwlzYi6xGM8NKJWy/nL1ms2W9fTKloZwUARMtYjqY4U+YiCDvcRfnY62
-         8eJduhu1RrRO86Qa1j9JnxujeU3xx+TMQUoh9IDFKzZ4EKubKA1idpbKpbZm2LLA3CHh
-         6vkd3i6io25QPSAGs2xe4S5ojqwMK5z3IwmomhLI1lpFLYsvTwjpGi648RYFgl8WOKVY
-         1OHDlFTOd73g0WXhp6Lyggms1LWcXLNGWJWifGc/QYrcDma3OG38clnj/CDB6vstZqtH
-         czUw==
-X-Gm-Message-State: ABy/qLYZDazecqrwOEUnqtkheEp5AILS5e+mf/e97+VZUNX3Tx6wTOu8
-        sU1d2w4RRAcy7QltJszIL+gnRLJsDsiu6MOsPxPx
-X-Google-Smtp-Source: APBJJlE6HrXGv8FiBWPESZXA4zS7WdaVXKrmS0y2QVal6eHwFQK9KIQhCzYsyt32AHunSvFteTt6TeRzQof/apGmOO8=
-X-Received: by 2002:a0d:e843:0:b0:56d:2ad0:cb45 with SMTP id
- r64-20020a0de843000000b0056d2ad0cb45mr17052519ywe.1.1689732867591; Tue, 18
- Jul 2023 19:14:27 -0700 (PDT)
+        Tue, 18 Jul 2023 22:14:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53EE12F
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 19:14:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3DC72616B6
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:14:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 580EBC433CA;
+        Wed, 19 Jul 2023 02:14:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689732872;
+        bh=3HLKChLyL9JPdyst9k3t4LgRUL+54IFiq42lL+w+5lQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dP/XljB6NcpUifVaaNB7oN3sgrjiEUuOHHVDYcA8KjnBtUzTKC8OTcab4tHxgwyPR
+         iuFXVtcxobS7kXy8cf5SgPE5fPAkEw6QOBJilBbZUipo+lqGVVym7LeACFjN9y36C/
+         YHZuSt2Wa8X45BCvMhFaN6qcOrIwFG70kUoLsiMVfzRjj9KP2o527LKUOYjbZozyTa
+         jwkc6yTxoUBiTHcWkMoQ1r9lf0pqe9dCnl7Bz7hI35omdlFx0OanO47RK1F+0dKaz6
+         2mlySK6qIllov9EBX9NpqTAHieLdBUryJTuF3xGS9l4eCupPJNahVTMSM77bKieni4
+         o1nBrhzyE46UA==
+Date:   Wed, 19 Jul 2023 10:14:22 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bus: imx-weim: use devm_platform_ioremap_resource
+Message-ID: <20230719021422.GT9559@dragon>
+References: <20230709133945.182307-1-martin@kaiser.cx>
 MIME-Version: 1.0
-References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-12-seanjc@google.com>
-In-Reply-To: <20230718234512.1690985-12-seanjc@google.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 18 Jul 2023 22:14:16 -0400
-Message-ID: <CAHC9VhSUhthtS9W1QkqFd8Y+VHsGVXt1vZenYpqRtr7Gw51B3A@mail.gmail.com>
-Subject: Re: [RFC PATCH v11 11/29] security: Export security_inode_init_security_anon()
- for use by KVM
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230709133945.182307-1-martin@kaiser.cx>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 7:48=E2=80=AFPM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  security/security.c | 1 +
->  1 file changed, 1 insertion(+)
+On Sun, Jul 09, 2023 at 03:39:44PM +0200, Martin Kaiser wrote:
+> devm_platform_get_and_ioremap_resource maps a resource and returns its
+> physical address. If we don't need the physical address, we should call
+> devm_platform_ioremap_resource instead.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 
-Acked-by: Paul Moore <paul@paul-moore.com>
-
-> diff --git a/security/security.c b/security/security.c
-> index b720424ca37d..7fc78f0f3622 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -1654,6 +1654,7 @@ int security_inode_init_security_anon(struct inode =
-*inode,
->         return call_int_hook(inode_init_security_anon, 0, inode, name,
->                              context_inode);
->  }
-> +EXPORT_SYMBOL_GPL(security_inode_init_security_anon);
->
->  #ifdef CONFIG_SECURITY_PATH
->  /**
-> --
-> 2.41.0.255.g8b1d071c50-goog
-
---
-paul-moore.com
+Applied, thanks!
