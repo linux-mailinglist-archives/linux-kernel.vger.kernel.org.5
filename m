@@ -2,57 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3452D758B21
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 04:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19ED758B26
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 04:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbjGSCGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 22:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45690 "EHLO
+        id S229851AbjGSCKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 22:10:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjGSCGB (ORCPT
+        with ESMTP id S229824AbjGSCKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 22:06:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60CD810B;
-        Tue, 18 Jul 2023 19:06:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D341B616B1;
-        Wed, 19 Jul 2023 02:05:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DED91C433C8;
-        Wed, 19 Jul 2023 02:05:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689732359;
-        bh=m1UkAD/C8sXQzuy+RrqFbDP52tGVclA8Dt2cUkQoofg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k2lGr1C2CBAW+2zVUCzM6SdTwMwC1HvBlAJJ6VVtN7WTATLnDC9jRo1v9aZsAwVFB
-         YIAKetTfw4oqEPbTKTZ5FcES1m3j+4PmSMIVr4UganAd0hpMw9Yr9uMbs8wWWu3Lby
-         7MTsRersQhyxMoLo4wvw2g+i7H4j+14nCSGEP7f9ddcb5Rw4xgcYLAfw5P0SZIWy9G
-         4+NuN6mZpXjQHE0ouUaxhaJ7QYSgc+w2JEELugu+ZGmJha8qvYMHtjwUHxXeMtz5Yh
-         9r9PmRzonvFRZu53LpJ21xB1FvmMjmrNzpQjQksb07DSHfXyuWUtHbqKBTnPN5xR2d
-         C9769XMRjuzwQ==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.4 000/801] 6.4.4-rc3 review
-Date:   Wed, 19 Jul 2023 02:05:56 +0000
-Message-Id: <20230719020556.65166-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230717201608.814406187@linuxfoundation.org>
-References: 
+        Tue, 18 Jul 2023 22:10:07 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D385919AF;
+        Tue, 18 Jul 2023 19:10:05 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4f95bf5c493so10420440e87.3;
+        Tue, 18 Jul 2023 19:10:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689732604; x=1692324604;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zWXZjAuDZ5feV/10kVxl5QUKhgl3CYoFjxPM3tLNDek=;
+        b=YZGj2TqAigLS9gVX3/oQv4ypHCGxUHuSWVyP1A9xC7iDkYJdvi5b/qwqpDMn7LjuDi
+         2GshvvD0I89VK3MVl5Vlmt529yNHy+27c6atxbkgO40IMEvMqmTZiqOuDJkczno07L6q
+         cMuQq/T9+1Z3mYMH24DKBECjb5BEhAMKDoYI8nTiGacAOpFTCXWj4Jt64s0l2Dkk/T8v
+         tZidh8JDHr4pFdJ9FSCmRvE95UUH4IITiq6CGJ0SIkDD4PCNhslXMPgJ/cB1y3Gzcnt7
+         jxRw/Rv5Pb4oiq7c2hSCecz/Pt4BZmqiP0eiaNotJYDXfL4Mz1VyKLrxDAoEqhcx2Tiu
+         9lRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689732604; x=1692324604;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zWXZjAuDZ5feV/10kVxl5QUKhgl3CYoFjxPM3tLNDek=;
+        b=TDF4YSU6X7FiGbx0LTsJnKuLmnfZpWDQ2bKSSBIiWlsivrYjMw7JtwiotavWqhz7Z3
+         iMRuETbW6rJFWFqvlj3tp4SMs/oeaO48qXe0DLst7OivnRW8LQqAODDE1cjBW9bcZikr
+         sKe9AyY/ksIWsIUNcmV2qK7KSJmmuoSXfdv/aitRUwfX/R+16APLmbEf1NUs5RqwSyvV
+         P4vT2nXM8981MN4LrExh0dcSh85gPjzU5vT52ItkbyMQeK9e2ShOR4KyHiDmRtIXg9+/
+         DJI47BKNVQP49fVENHQ8+oQ+ROQg8+1CAsOTkr5u8jmbcx05UIMq23ibJhD8JWtr+iMY
+         E2Xw==
+X-Gm-Message-State: ABy/qLa/45sfMhPNkLmGGeqSiDnswFkz4JrkTrSi4kDs/VOFBPR6MiPH
+        M8PDvU9AIUn1C0LvsG0zizKS33iRgbjFvn8SU6fMTBGfK2eYzQ13btY=
+X-Google-Smtp-Source: APBJJlEOMCn868MC4GK6BKZADcUyesZCadL6Md/hcHc7RhsHn0zpsG0YaJgVCxPXyBg+p1Q28zkWaYX7eIRhKDZhpBU=
+X-Received: by 2002:a05:6512:2038:b0:4f8:67f0:7253 with SMTP id
+ s24-20020a056512203800b004f867f07253mr725859lfs.49.1689732603526; Tue, 18 Jul
+ 2023 19:10:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <168960739768.34107.15145201749042174448.stgit@devnote2>
+ <168960741686.34107.6330273416064011062.stgit@devnote2> <CAErzpmuvhrj0HhTpH2m-C-=pFV=Q_mxYC59Hw=dm0pqUvtPm0g@mail.gmail.com>
+ <20230718194431.5653b1e89841e6abd9742ede@kernel.org> <20230718225606.926222723cdd8c2c37294e41@kernel.org>
+ <CAADnVQ+8PuT5tC4q1spefzzCZG9r1UszFv0jenK5+Ed+QNqtsw@mail.gmail.com> <20230719080337.0955a6e77d799daad4c44350@kernel.org>
+In-Reply-To: <20230719080337.0955a6e77d799daad4c44350@kernel.org>
+From:   Donglin Peng <dolinux.peng@gmail.com>
+Date:   Wed, 19 Jul 2023 10:09:48 +0800
+Message-ID: <CAErzpmtJF4tjHCyYdHgiX_-vp39tdc=3iNmMhQ6SnFVicqZWrg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/9] bpf/btf: tracing: Move finding func-proto API and
+ getting func-param API to BTF
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,63 +78,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Jul 2023 22:34:36 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Wed, Jul 19, 2023 at 7:03=E2=80=AFAM Masami Hiramatsu <mhiramat@kernel.o=
+rg> wrote:
+>
+> On Tue, 18 Jul 2023 10:11:01 -0700
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>
+> > On Tue, Jul 18, 2023 at 6:56=E2=80=AFAM Masami Hiramatsu <mhiramat@kern=
+el.org> wrote:
+> > >
+> > > On Tue, 18 Jul 2023 19:44:31 +0900
+> > > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> > >
+> > > > > >  static const struct btf_param *find_btf_func_param(const char =
+*funcname, s32 *nr,
+> > > > > >                                                    bool tracepo=
+int)
+> > > > > >  {
+> > > > > > +       struct btf *btf =3D traceprobe_get_btf();
+> > > > >
+> > > > > I found that traceprobe_get_btf() only returns the vmlinux's btf.=
+ But
+> > > > > if the function is
+> > > > > defined in a kernel module, we should get the module's btf.
+> > > > >
+> > > >
+> > > > Good catch! That should be a separated fix (or improvement?)
+> > > > I think it's better to use btf_get() and btf_put(), and pass btf vi=
+a
+> > > > traceprobe_parse_context.
+> > >
+> > > Hmm, it seems that there is no exposed API to get the module's btf.
+> > > Should I use btf_idr and btf_idr_lock directly to find the correspond=
+ing
+> > > btf? If there isn't yet, I will add it too.
+> >
+> > There is bpf_find_btf_id.
+> > Probably drop 'static' from it and use it.
+>
+> Thanks! BTW, that API seems to search BTF type info by name. If user want=
+ to
+> specify a module name, do we need a new API? (Or expand the function to p=
+arse
+> a module name in given name?)
 
-> This is the start of the stable review cycle for the 6.4.4 release.
-> There are 801 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 19 Jul 2023 20:14:44 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.4-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
+btf_get_module_btf can be used to get a module's btf, but we have to use
+find_module to get the module by its name firstly.
 
-I confirmed that this rc kernel passes DAMON functionality test[1] on my test
-machine.  Attaching the test results summary below.
-
-
-Tested-by: SeongJae Park <sj@kernel.org>
-
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-
-
-Thanks,
-SJ
-
------------------------------------ >8 --------------------------------------
-
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: debugfs_rm_non_contexts.sh
-ok 8 selftests: damon: sysfs.sh
-ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
-ok 10 selftests: damon: reclaim.sh
-ok 11 selftests: damon: lru_sort.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_m68k.sh
-ok 12 selftests: damon-tests: build_arm64.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
-
-PASS
-
-[...]
+>
+> Thank you,
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
