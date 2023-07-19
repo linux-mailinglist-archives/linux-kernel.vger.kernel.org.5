@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB4375A183
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D71075A191
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjGSWNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 18:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
+        id S229819AbjGSWPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 18:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbjGSWNZ (ORCPT
+        with ESMTP id S229477AbjGSWP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 18:13:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A4F1FED;
-        Wed, 19 Jul 2023 15:13:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 34E6661840;
-        Wed, 19 Jul 2023 22:13:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9479C433C8;
-        Wed, 19 Jul 2023 22:13:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689804803;
-        bh=9mhog5cEC4jCgLXESNkH8Vrr7nDt6CeB9bPN18iRiNI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LRwSja7i1CQgKB9XQYh+QyWUoWstQ49qNtCB9iXIuGgoS3XxJhCxpva2LrPrMRiU5
-         uBqo2Phhs6Ly5amnSUfJv2cjMtIntJKUQVB9WCPpiGsDq1hdt15j2rXjEM/di8STuB
-         4AtPTy/KV5sl0MQum3efWRfASssJaHvMhpgvJPeHtrz5qkcd8apV+QBzR836rgBlSC
-         u6L2ldh9KuUaKN0vMQm3Xxg8AI+m783g74RRZaTid3wPQ2wZC6gXnK67Z6i55Yxd0J
-         jeMFWnTh8SW7K4bS1UNuiiVnvn3u9+2OZnpUTpTGaxrc8fNIR8IRySaNR5iDGGu0QC
-         N64XRlwBI/mGg==
-Received: (nullmailer pid 870826 invoked by uid 1000);
-        Wed, 19 Jul 2023 22:13:20 -0000
-Date:   Wed, 19 Jul 2023 16:13:20 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Ungerer <gerg@kernel.org>,
-        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v3 2/9] dt-bindings: net: mediatek,net: add
- mt7988-eth binding
-Message-ID: <20230719221320.GA865753-robh@kernel.org>
-References: <cover.1689714290.git.daniel@makrotopia.org>
- <584b459ebb0a74a2ce6ca661f1148f59b9014667.1689714291.git.daniel@makrotopia.org>
+        Wed, 19 Jul 2023 18:15:29 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46E91BCF
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:15:28 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-40540a8a3bbso56801cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:15:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689804928; x=1690409728;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bI4h//jtHulH4e1vD3lH5/PhOzYIPiS3BViR1dZJxNY=;
+        b=gYT68r9HXYzI4rTptv1st6gRoYl7R798bb78w4Sz8KEx9R+xqwnmO0G6+XfdMvo8/K
+         BBWJh6L+/q0Tu44Lse2slk06fPHzFBYEbqQvji3TxSyATaLaYnXbWOMfzOpt/7093AUP
+         xYKA8J6zHD3WSyRAaav6Vyoh/Syldv4mCakm881HD8ue2Kbe4JJaxyFP8sehJvrLI03r
+         0Sfd8qEKF14E9/1NCabDI7aLY2ft3vRKJPfxrL0qz+RRZ+mL7+CeV8W5/Pf/hhh7mKJ4
+         qSHZnlunfsBb4Bdi9gCtTD0sjJOdTmQTDdcC/qOaQuoE+bT9/NQcPS+ZozBeUs7VzLYY
+         FYKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689804928; x=1690409728;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bI4h//jtHulH4e1vD3lH5/PhOzYIPiS3BViR1dZJxNY=;
+        b=CRRT5nx0XUWLRb2byPOaf07SZmTOKRCiLoklksVWPaTRGxF3/3lEsbrtFsXkiPUJ3Z
+         FJ+Fj+aH/DGt2YOxDWjoijoTvR8qIwoI9Cp2O0Q8No7DW2UMDO155uiUy4qXo8dcQ431
+         lR7OlB6ZzE1BZPq6YJnLgUjh5ltTGLWW40NdPUdnmGMMMCIw6QRpzUzbMaXOuC1zARb1
+         /9QiybLKZy0UEcZ8Df+1c/8U9jcWNuyaBRMJdD41fqBbI9XOtt4yh35ptpj3DICeRIf6
+         C8tpZGqOoFpDGB5FPg+nEhwd0kmf3fSmQlhp+RSXcqlq3kjLWY3bkq7gpMcJl6dl72bG
+         HiNA==
+X-Gm-Message-State: ABy/qLZJQHs++Yd5FlX9Po1NSFaTucCMRiJpkwHcVRkYDrDr//1fdDga
+        Njz86WXoQH8rcj6UNrHAj4NDB55BvffxJ5PfvzFCYg==
+X-Google-Smtp-Source: APBJJlE9o37ZaHd/XcocCfK+Zf8TveQJE0XYZg4TdckQGOg3QWt9pydQkQ5o8hgi65StLMnWGe8GuZ4vXeadT+Nfxps=
+X-Received: by 2002:ac8:5755:0:b0:403:f3f5:1a8 with SMTP id
+ 21-20020ac85755000000b00403f3f501a8mr89408qtx.12.1689804927647; Wed, 19 Jul
+ 2023 15:15:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <584b459ebb0a74a2ce6ca661f1148f59b9014667.1689714291.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230719113542.2293295-1-apatel@ventanamicro.com> <20230719113542.2293295-4-apatel@ventanamicro.com>
+In-Reply-To: <20230719113542.2293295-4-apatel@ventanamicro.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 19 Jul 2023 15:14:51 -0700
+Message-ID: <CAGETcx9zAF2ipO0s-6-zjyvn1JWt7OUS9G=cQ6OwyOPuqh-pBA@mail.gmail.com>
+Subject: Re: [PATCH v6 03/14] drivers: irqchip/riscv-intc: Mark all INTC nodes
+ as initialized
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,61 +83,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 10:30:33PM +0100, Daniel Golle wrote:
-> Introduce DT bindings for the MT7988 SoC to mediatek,net.yaml.
-> The MT7988 SoC got 3 Ethernet MACs operating at a maximum of
-> 10 Gigabit/sec supported by 2 packet processor engines for
-> offloading tasks.
-> The first MAC is hard-wired to a built-in switch which exposes
-> four 1000Base-T PHYs as user ports.
-> It also comes with built-in 2500Base-T PHY which can be used
-> with the 2nd GMAC.
-> The 2nd and 3rd GMAC can be connected to external PHYs or provide
-> SFP(+) cages attached via SGMII, 1000Base-X, 2500Base-X, USXGMII,
-> 5GBase-KR or 10GBase-KR.
-> 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+On Wed, Jul 19, 2023 at 4:36=E2=80=AFAM Anup Patel <apatel@ventanamicro.com=
+> wrote:
+>
+> The RISC-V INTC local interrupts are per-HART (or per-CPU) so
+> we create INTC IRQ domain only for the INTC node belonging to
+> the boot HART. This means only the boot HART INTC node will be
+> marked as initialized and other INTC nodes won't be marked which
+> results downstream interrupt controllers (such as IMSIC and APLIC
+> direct-mode) not being probed due to missing device suppliers.
+>
+> To address this issue, we mark all INTC node for which we don't
+> create IRQ domain as initialized.
+>
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
 > ---
->  .../devicetree/bindings/net/mediatek,net.yaml | 74 +++++++++++++++++--
->  1 file changed, 69 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/mediatek,net.yaml b/Documentation/devicetree/bindings/net/mediatek,net.yaml
-> index 38aa3d97ee234..ae2062f3c1833 100644
-> --- a/Documentation/devicetree/bindings/net/mediatek,net.yaml
-> +++ b/Documentation/devicetree/bindings/net/mediatek,net.yaml
-> @@ -24,6 +24,7 @@ properties:
->        - mediatek,mt7629-eth
->        - mediatek,mt7981-eth
->        - mediatek,mt7986-eth
-> +      - mediatek,mt7988-eth
->        - ralink,rt5350-eth
->  
->    reg:
-> @@ -61,6 +62,12 @@ properties:
->        Phandle to the mediatek hifsys controller used to provide various clocks
->        and reset to the system.
->  
-> +  mediatek,infracfg:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Phandle to the syscon node that handles the path from GMAC to
-> +      PHY variants.
-> +
->    mediatek,sgmiisys:
->      $ref: /schemas/types.yaml#/definitions/phandle-array
->      minItems: 1
-> @@ -229,11 +236,7 @@ allOf:
->              - const: sgmii_ck
->              - const: eth2pll
->  
-> -        mediatek,infracfg:
-> -          $ref: /schemas/types.yaml#/definitions/phandle
-> -          description:
-> -            Phandle to the syscon node that handles the path from GMAC to
-> -            PHY variants.
-> +        mediatek,infracfg: true
+>  drivers/irqchip/irq-riscv-intc.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv=
+-intc.c
+> index 65f4a2afb381..4e2704bc25fb 100644
+> --- a/drivers/irqchip/irq-riscv-intc.c
+> +++ b/drivers/irqchip/irq-riscv-intc.c
+> @@ -155,8 +155,16 @@ static int __init riscv_intc_init(struct device_node=
+ *node,
+>          * for each INTC DT node. We only need to do INTC initialization
+>          * for the INTC DT node belonging to boot CPU (or boot HART).
+>          */
+> -       if (riscv_hartid_to_cpuid(hartid) !=3D smp_processor_id())
+> +       if (riscv_hartid_to_cpuid(hartid) !=3D smp_processor_id()) {
+> +               /*
+> +                * The INTC nodes of each CPU are suppliers for downstrea=
+m
+> +                * interrupt controllers (such as IMSIC and APLIC direct-=
+mode)
+> +                * so we should mark an INTC node as initialized if we ar=
+e
+> +                * not creating IRQ domain for it.
+> +                */
 
-You don't need this. What you need is 'mediatek,infracfg: false' in the 
-if/then schemas for the cases it should not be present.
+I'm a bit confused by this. If those non-boot CPUs INTC doesn't have
+an IRQ domain, why are the downstream interrupt controllers listing
+these non-boot CPU INTCs as an upstream interrupt controller?
 
-Rob
+This is more of a question of the existing behavior that this patch,
+but this patch highlights the existing oddity.
+
+-Saravana
+
+> +               fwnode_dev_initialized(of_fwnode_handle(node), true);
+>                 return 0;
+> +       }
+>
+>         return riscv_intc_init_common(of_node_to_fwnode(node));
+>  }
+> --
+> 2.34.1
+>
