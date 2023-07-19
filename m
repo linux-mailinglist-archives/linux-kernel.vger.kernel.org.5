@@ -2,54 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC5675A269
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3A575A271
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbjGSWtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 18:49:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42808 "EHLO
+        id S231382AbjGSWtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 18:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbjGSWrv (ORCPT
+        with ESMTP id S231168AbjGSWrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 19 Jul 2023 18:47:51 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5742681;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DADA268C;
         Wed, 19 Jul 2023 15:47:39 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 22:47:36 -0000
+Date:   Wed, 19 Jul 2023 22:47:37 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1689806857;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=k0iW4kEXyzvjJbKMCCB8AqZCO3GDEyFq67B+MlbairE=;
-        b=jKZglwpuQWO2B+7kUpXeHQ7lILvZBcJLiqP8w7s0yAAdnLYGfNs+syCuY99S4mC6oH3C5D
-        16ALZB6tIEBzONlUs2uuZNYQUrmI1Shgt9Zbfi39+VIS4gjJiy2yRDZ+ddyA5uM36PI5gi
-        4EScKuwCW3Uvci6bV3Tz+C82ofmHMv0OluLf28GTapvacqh06vjZRYXSrBB7yh4y3uXB7Z
-        rfNaIZTxmWrIVOqTN5Uh/qYYd80Wkkrd7uXd3eqkoYdlwyph+f8vvz0zX9pUVOEEtX8ASh
-        hnjX6cVaS/UxODdlUZG1QTdSklFrdGemXvJ75H3Le6783V7q/jiV6J8znmuPtg==
+        bh=EvF+7KcqEYKqnR73e8M5MzH7E22tefwXroowfUKv1Y0=;
+        b=XAcoi48UiJWZRFXp6mOigtHdx6h4XCreIQx14nGKQmNU4hoviqZrlsmr9wB+LktquEliii
+        t6Ivga4syuKqR8B0fuX+6nUGuUWvfD80fITtQtJ9LvAWpfuymPGs3WD3REMl6ZuQhgUIaQ
+        eIN51DF/VOm5iM8h/oV9r0Nbe6wFyBhwH+4Ql/lzcyiqLE/tAbr7xTf/aXXXZs7I/sKkT/
+        z7rLVK6fe/YIK7u8Tl9MPrzY1giehE//JG107ac7CpYquliBsnlWGIgDc+7yIfZfz3R1Xr
+        aNo1DOIav9lzVouMBxzf6mDrs09pqT3B+MulKt+YLCCPvHk8EF1kdknvDW2NpQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1689806857;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=k0iW4kEXyzvjJbKMCCB8AqZCO3GDEyFq67B+MlbairE=;
-        b=46okp9JuZTFvVjsPgXy+8zZ1+LJqntVR524DLE55WL5tZBXDQDwGz0uQuRBLnjDtVqgzhF
-        h0FnzPx7fOJrtpDQ==
+        bh=EvF+7KcqEYKqnR73e8M5MzH7E22tefwXroowfUKv1Y0=;
+        b=O1rk94OltpTL8BsaU2nsaMVpW1BsOQCSI1BwlNs8htrvTCxxMI+0catl5iBiDaEZrHjWKa
+        xl3h0+bNQvGQIOAA==
 From:   "tip-bot2 for Rick Edgecombe" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/shstk] mm: Warn on shadow stack memory in wrong vma
-Cc:     Rick Edgecombe <rick.p.edgecombe@intel.com>,
+Subject: [tip: x86/shstk] mm: Add guard pages around a shadow stack.
+Cc:     "Yu-cheng Yu" <yu-cheng.yu@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>,
+        Kees Cook <keescook@chromium.org>,
         Mark Brown <broonie@kernel.org>,
         "Mike Rapoport (IBM)" <rppt@kernel.org>,
         Pengfei Xu <pengfei.xu@intel.com>,
-        John Allen <john.allen@amd.com>,
-        Kees Cook <keescook@chromium.org>, x86@kernel.org,
+        John Allen <john.allen@amd.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <168980685678.28540.3427004225895700383.tip-bot2@tip-bot2>
+Message-ID: <168980685720.28540.1197937453503731142.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,145 +68,185 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/shstk branch of tip:
 
-Commit-ID:     e5136e876581ba5b63220378e25fec9dcec7bad1
-Gitweb:        https://git.kernel.org/tip/e5136e876581ba5b63220378e25fec9dcec7bad1
+Commit-ID:     0266e7c53647fbc18be2d0da98d5c9e92922d866
+Gitweb:        https://git.kernel.org/tip/0266e7c53647fbc18be2d0da98d5c9e92922d866
 Author:        Rick Edgecombe <rick.p.edgecombe@intel.com>
-AuthorDate:    Mon, 12 Jun 2023 17:10:43 -07:00
+AuthorDate:    Mon, 12 Jun 2023 17:10:42 -07:00
 Committer:     Rick Edgecombe <rick.p.edgecombe@intel.com>
 CommitterDate: Tue, 11 Jul 2023 14:12:19 -07:00
 
-mm: Warn on shadow stack memory in wrong vma
+mm: Add guard pages around a shadow stack.
 
 The x86 Control-flow Enforcement Technology (CET) feature includes a new
 type of memory called shadow stack. This shadow stack memory has some
 unusual properties, which requires some core mm changes to function
 properly.
 
-One sharp edge is that PTEs that are both Write=0 and Dirty=1 are
-treated as shadow by the CPU, but this combination used to be created by
-the kernel on x86. Previous patches have changed the kernel to now avoid
-creating these PTEs unless they are for shadow stack memory. In case any
-missed corners of the kernel are still creating PTEs like this for
-non-shadow stack memory, and to catch any re-introductions of the logic,
-warn if any shadow stack PTEs (Write=0, Dirty=1) are found in non-shadow
-stack VMAs when they are being zapped. This won't catch transient cases
-but should have decent coverage.
+The architecture of shadow stack constrains the ability of userspace to
+move the shadow stack pointer (SSP) in order to prevent corrupting or
+switching to other shadow stacks. The RSTORSSP instruction can move the
+SSP to different shadow stacks, but it requires a specially placed token
+in order to do this. However, the architecture does not prevent
+incrementing the stack pointer to wander onto an adjacent shadow stack. To
+prevent this in software, enforce guard pages at the beginning of shadow
+stack VMAs, such that there will always be a gap between adjacent shadow
+stacks.
 
-In order to check if a PTE is shadow stack in core mm code, add two arch
-breakouts arch_check_zapped_pte/pmd(). This will allow shadow stack
-specific code to be kept in arch/x86.
+Make the gap big enough so that no userspace SSP changing operations
+(besides RSTORSSP), can move the SSP from one stack to the next. The
+SSP can be incremented or decremented by CALL, RET  and INCSSP. CALL and
+RET can move the SSP by a maximum of 8 bytes, at which point the shadow
+stack would be accessed.
 
-Only do the check if shadow stack is supported by the CPU and configured
-because in rare cases older CPUs may write Dirty=1 to a Write=0 CPU on
-older CPUs. This check is handled in pte_shstk()/pmd_shstk().
+The INCSSP instruction can also increment the shadow stack pointer. It
+is the shadow stack analog of an instruction like:
 
+        addq    $0x80, %rsp
+
+However, there is one important difference between an ADD on %rsp and
+INCSSP. In addition to modifying SSP, INCSSP also reads from the memory
+of the first and last elements that were "popped". It can be thought of
+as acting like this:
+
+READ_ONCE(ssp);       // read+discard top element on stack
+ssp += nr_to_pop * 8; // move the shadow stack
+READ_ONCE(ssp-8);     // read+discard last popped stack element
+
+The maximum distance INCSSP can move the SSP is 2040 bytes, before it
+would read the memory. Therefore, a single page gap will be enough to
+prevent any operation from shifting the SSP to an adjacent stack, since
+it would have to land in the gap at least once, causing a fault.
+
+This could be accomplished by using VM_GROWSDOWN, but this has a
+downside. The behavior would allow shadow stacks to grow, which is
+unneeded and adds a strange difference to how most regular stacks work.
+
+In the maple tree code, there is some logic for retrying the unmapped
+area search if a guard gap is violated. This retry should happen for
+shadow stack guard gap violations as well. This logic currently only
+checks for VM_GROWSDOWN for start gaps. Since shadow stacks also have
+a start gap as well, create an new define VM_STARTGAP_FLAGS to hold
+all the VM flag bits that have start gaps, and make mmap use it.
+
+Co-developed-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
+Reviewed-by: Kees Cook <keescook@chromium.org>
 Reviewed-by: Mark Brown <broonie@kernel.org>
 Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
 Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 Tested-by: John Allen <john.allen@amd.com>
 Tested-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/all/20230613001108.3040476-18-rick.p.edgecombe%40intel.com
+Link: https://lore.kernel.org/all/20230613001108.3040476-17-rick.p.edgecombe%40intel.com
 ---
- arch/x86/include/asm/pgtable.h |  6 ++++++
- arch/x86/mm/pgtable.c          | 20 ++++++++++++++++++++
- include/linux/pgtable.h        | 14 ++++++++++++++
- mm/huge_memory.c               |  1 +
- mm/memory.c                    |  1 +
- 5 files changed, 42 insertions(+)
+ include/linux/mm.h | 54 ++++++++++++++++++++++++++++++++++++++++-----
+ mm/mmap.c          |  4 +--
+ 2 files changed, 50 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index 7bab1b2..9255b5b 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -1665,6 +1665,12 @@ static inline bool arch_has_hw_pte_young(void)
- 	return true;
- }
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index f6c2ebd..97eddc8 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -342,7 +342,36 @@ extern unsigned int kobjsize(const void *objp);
+ #endif /* CONFIG_ARCH_HAS_PKEYS */
  
-+#define arch_check_zapped_pte arch_check_zapped_pte
-+void arch_check_zapped_pte(struct vm_area_struct *vma, pte_t pte);
-+
-+#define arch_check_zapped_pmd arch_check_zapped_pmd
-+void arch_check_zapped_pmd(struct vm_area_struct *vma, pmd_t pmd);
-+
- #ifdef CONFIG_XEN_PV
- #define arch_has_hw_nonleaf_pmd_young arch_has_hw_nonleaf_pmd_young
- static inline bool arch_has_hw_nonleaf_pmd_young(void)
-diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
-index 217c436..4bfbe4c 100644
---- a/arch/x86/mm/pgtable.c
-+++ b/arch/x86/mm/pgtable.c
-@@ -886,3 +886,23 @@ pmd_t pmd_mkwrite(pmd_t pmd, struct vm_area_struct *vma)
- 
- 	return pmd_clear_saveddirty(pmd);
- }
-+
-+void arch_check_zapped_pte(struct vm_area_struct *vma, pte_t pte)
-+{
-+	/*
-+	 * Hardware before shadow stack can (rarely) set Dirty=1
-+	 * on a Write=0 PTE. So the below condition
-+	 * only indicates a software bug when shadow stack is
-+	 * supported by the HW. This checking is covered in
-+	 * pte_shstk().
-+	 */
-+	VM_WARN_ON_ONCE(!(vma->vm_flags & VM_SHADOW_STACK) &&
-+			pte_shstk(pte));
-+}
-+
-+void arch_check_zapped_pmd(struct vm_area_struct *vma, pmd_t pmd)
-+{
-+	/* See note in arch_check_zapped_pte() */
-+	VM_WARN_ON_ONCE(!(vma->vm_flags & VM_SHADOW_STACK) &&
-+			pmd_shstk(pmd));
-+}
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 9462f4a..dd4637d 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -313,6 +313,20 @@ static inline bool arch_has_hw_pte_young(void)
- }
+ #ifdef CONFIG_X86_USER_SHADOW_STACK
+-# define VM_SHADOW_STACK	VM_HIGH_ARCH_5 /* Should not be set with VM_SHARED */
++/*
++ * This flag should not be set with VM_SHARED because of lack of support
++ * core mm. It will also get a guard page. This helps userspace protect
++ * itself from attacks. The reasoning is as follows:
++ *
++ * The shadow stack pointer(SSP) is moved by CALL, RET, and INCSSPQ. The
++ * INCSSP instruction can increment the shadow stack pointer. It is the
++ * shadow stack analog of an instruction like:
++ *
++ *   addq $0x80, %rsp
++ *
++ * However, there is one important difference between an ADD on %rsp
++ * and INCSSP. In addition to modifying SSP, INCSSP also reads from the
++ * memory of the first and last elements that were "popped". It can be
++ * thought of as acting like this:
++ *
++ * READ_ONCE(ssp);       // read+discard top element on stack
++ * ssp += nr_to_pop * 8; // move the shadow stack
++ * READ_ONCE(ssp-8);     // read+discard last popped stack element
++ *
++ * The maximum distance INCSSP can move the SSP is 2040 bytes, before
++ * it would read the memory. Therefore a single page gap will be enough
++ * to prevent any operation from shifting the SSP to an adjacent stack,
++ * since it would have to land in the gap at least once, causing a
++ * fault.
++ *
++ * Prevent using INCSSP to move the SSP between shadow stacks by
++ * having a PAGE_SIZE guard gap.
++ */
++# define VM_SHADOW_STACK	VM_HIGH_ARCH_5
+ #else
+ # define VM_SHADOW_STACK	VM_NONE
+ #endif
+@@ -405,6 +434,8 @@ extern unsigned int kobjsize(const void *objp);
+ #define VM_STACK_DEFAULT_FLAGS VM_DATA_DEFAULT_FLAGS
  #endif
  
-+#ifndef arch_check_zapped_pte
-+static inline void arch_check_zapped_pte(struct vm_area_struct *vma,
-+					 pte_t pte)
-+{
-+}
-+#endif
++#define VM_STARTGAP_FLAGS (VM_GROWSDOWN | VM_SHADOW_STACK)
 +
-+#ifndef arch_check_zapped_pmd
-+static inline void arch_check_zapped_pmd(struct vm_area_struct *vma,
-+					 pmd_t pmd)
+ #ifdef CONFIG_STACK_GROWSUP
+ #define VM_STACK	VM_GROWSUP
+ #define VM_STACK_EARLY	VM_GROWSDOWN
+@@ -3273,15 +3304,26 @@ struct vm_area_struct *vma_lookup(struct mm_struct *mm, unsigned long addr)
+ 	return mtree_load(&mm->mm_mt, addr);
+ }
+ 
++static inline unsigned long stack_guard_start_gap(struct vm_area_struct *vma)
 +{
-+}
-+#endif
++	if (vma->vm_flags & VM_GROWSDOWN)
++		return stack_guard_gap;
 +
- #ifndef __HAVE_ARCH_PTEP_GET_AND_CLEAR
- static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
- 				       unsigned long address,
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 23c2aa6..554f6f8 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1681,6 +1681,7 @@ int zap_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 	 */
- 	orig_pmd = pmdp_huge_get_and_clear_full(vma, addr, pmd,
- 						tlb->fullmm);
-+	arch_check_zapped_pmd(vma, orig_pmd);
- 	tlb_remove_pmd_tlb_entry(tlb, pmd, addr);
- 	if (vma_is_special_huge(vma)) {
- 		if (arch_needs_pgtable_deposit())
-diff --git a/mm/memory.c b/mm/memory.c
-index f093c73..36289f3 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1430,6 +1430,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 				continue;
- 			ptent = ptep_get_and_clear_full(mm, addr, pte,
- 							tlb->fullmm);
-+			arch_check_zapped_pte(vma, ptent);
- 			tlb_remove_tlb_entry(tlb, pte, addr);
- 			zap_install_uffd_wp_if_needed(vma, addr, pte, details,
- 						      ptent);
++	/* See reasoning around the VM_SHADOW_STACK definition */
++	if (vma->vm_flags & VM_SHADOW_STACK)
++		return PAGE_SIZE;
++
++	return 0;
++}
++
+ static inline unsigned long vm_start_gap(struct vm_area_struct *vma)
+ {
++	unsigned long gap = stack_guard_start_gap(vma);
+ 	unsigned long vm_start = vma->vm_start;
+ 
+-	if (vma->vm_flags & VM_GROWSDOWN) {
+-		vm_start -= stack_guard_gap;
+-		if (vm_start > vma->vm_start)
+-			vm_start = 0;
+-	}
++	vm_start -= gap;
++	if (vm_start > vma->vm_start)
++		vm_start = 0;
+ 	return vm_start;
+ }
+ 
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 4900f74..11dcf50 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1572,7 +1572,7 @@ retry:
+ 	gap = mas.index;
+ 	gap += (info->align_offset - gap) & info->align_mask;
+ 	tmp = mas_next(&mas, ULONG_MAX);
+-	if (tmp && (tmp->vm_flags & VM_GROWSDOWN)) { /* Avoid prev check if possible */
++	if (tmp && (tmp->vm_flags & VM_STARTGAP_FLAGS)) { /* Avoid prev check if possible */
+ 		if (vm_start_gap(tmp) < gap + length - 1) {
+ 			low_limit = tmp->vm_end;
+ 			mas_reset(&mas);
+@@ -1624,7 +1624,7 @@ retry:
+ 	gap -= (gap - info->align_offset) & info->align_mask;
+ 	gap_end = mas.last;
+ 	tmp = mas_next(&mas, ULONG_MAX);
+-	if (tmp && (tmp->vm_flags & VM_GROWSDOWN)) { /* Avoid prev check if possible */
++	if (tmp && (tmp->vm_flags & VM_STARTGAP_FLAGS)) { /* Avoid prev check if possible */
+ 		if (vm_start_gap(tmp) <= gap_end) {
+ 			high_limit = vm_start_gap(tmp);
+ 			mas_reset(&mas);
