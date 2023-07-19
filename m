@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4A57593BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4AA7593BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbjGSLFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 07:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
+        id S229587AbjGSLFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 07:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbjGSLFb (ORCPT
+        with ESMTP id S229451AbjGSLFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 07:05:31 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9065197;
-        Wed, 19 Jul 2023 04:05:29 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id d2e1a72fcca58-668730696a4so4582570b3a.1;
-        Wed, 19 Jul 2023 04:05:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689764729; x=1690369529;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hFsE/K6gUAIXkP05EqNENfRpK1bhpEZsF99N61vWloE=;
-        b=g23qWW+P9F4/xy1Kafm+XGVUvORdC8zJAIToX89ML26LZ6ptcANrUBMFVhtQ+2c5Ch
-         B5CV9Lx3rx2c98ImyBDrDMJbuMqPD0KqeXlNw/eT+qLAvfGyonOvV8BAg5AgrKniDesd
-         sPw6qi06EYniqagV0wDNOiKib5lZsCHFfVHTWZ5/mIkVIblDEIuQu6tXeUT1dG1q/55x
-         b7bSeDuYiIuBlontTBRmxHhLfmX2VtTLvhgNJqxIIVVVIQHu6gHlsGYiA+ySOFb8LxP6
-         CgmxC9pJ/Ir8Ji5PG6CVsavg5zsNIq6M2t/psKRf1nTMYm/xHgjC3FdMPopzgd88+eSX
-         TEnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689764729; x=1690369529;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hFsE/K6gUAIXkP05EqNENfRpK1bhpEZsF99N61vWloE=;
-        b=W2WuorzFYQzsCvbGycKDzluqEx88zGTpawFlfrLwHiB5QWJsax0mYsJj/mF1GaKiw2
-         i9ZITlWP7oWjErJSwZQciMxVHbtOCWwVUFdFpcEaOXQCbzu7h87xNb757PYjtiwGgT8B
-         jxkFjHc7qWKxnjVIJkRkhQeTogK2S0LWKdFrCeP0TgD4eKpIbizQ1QxHhwXXGJH6HHcw
-         fQ1pJFHFFMRyBXu7pm51c2YrD2xzUUnZIjrfhyFtmd4PLyeAVUUybBtP3njP/ODvisUv
-         GMfnvll0fbbqW3eM+Y/A7VcLOiVjYriCBsRgxiFKBSg9uM7fevxGYbVWoaEjsKMQU7ix
-         g8NQ==
-X-Gm-Message-State: ABy/qLbX5E+i4gNjnbiw3c/EXfiOS0PRanLF7fo9Hc6YcFoM8NlO4BRb
-        zzI3MVgFVwQNkdCiDyBoby+BtK/3wuw4BO6vSdw=
-X-Google-Smtp-Source: APBJJlHZk6bMFYQH4zS8hQT5yWHMzYO7s2xc1b5R3Ge7j1Pa/VBS2SFHC++3Qll9rk0DlvSly1tR9g==
-X-Received: by 2002:a05:6a21:6d89:b0:137:48cc:9cfa with SMTP id wl9-20020a056a216d8900b0013748cc9cfamr1033460pzb.24.1689764729250;
-        Wed, 19 Jul 2023 04:05:29 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.81])
-        by smtp.gmail.com with ESMTPSA id v10-20020a62ac0a000000b00682c864f35bsm3124196pfe.140.2023.07.19.04.05.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 04:05:28 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: imagedong@tencent.com
-To:     yhs@fb.com
-Cc:     davem@davemloft.net, dsahern@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        imagedong@tencent.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hao Peng <flyingpeng@tencent.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: [PATCH bpf-next] bpf, x86: initialize the variable "first_off" in save_args()
-Date:   Wed, 19 Jul 2023 19:03:30 +0800
-Message-Id: <20230719110330.2007949-1-imagedong@tencent.com>
-X-Mailer: git-send-email 2.40.1
+        Wed, 19 Jul 2023 07:05:14 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05043189;
+        Wed, 19 Jul 2023 04:05:12 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36J7FAx1008724;
+        Wed, 19 Jul 2023 11:05:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=gFYdc0ZY2kWPdUL+rCQaIfR0nZf5YnqkOS0qZJaBh68=;
+ b=IgVCwszNKDL7yQwULpIa/Sobj6+9p8CFbYxYBsoL4W7fwwHr2XnXhKKBuWAx2oFXlRB2
+ vJ1uU5J6F8X0tPCVveRpfZuJGPK3jGEIq42A8yh7+PgT9gR97hBleWI/MxjLKAncf/3x
+ wGwvJ55GWULkc/WrbuD4Aei5n5AOtIFXGs09IgaSBkVcGILNI3GF/D8vE4ne4EgMtCHL
+ KdPUOFkJwDgpm0wWEhGdNt3T9qXR3r21dk0JBipjtX7ffsHsFax9B2d5wPmpds0hBfPW
+ 860tbKZc/Y2f+uweHcu31tn/vYa7cevMHMrQ9reWvBslI/XmJactmlN1Rl/rQT3VSvwA Fg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rx728rwu9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Jul 2023 11:05:08 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36JB4fna009749
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Jul 2023 11:04:41 GMT
+Received: from hu-shazhuss-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 19 Jul 2023 04:04:13 -0700
+From:   Shazad Hussain <quic_shazhuss@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linus.walleij@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC:     <bartosz.golaszewski@linaro.org>,
+        Shazad Hussain <quic_shazhuss@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] dt-bindings: pinctrl: qcom,sa8775p-tlmm: add gpio function constant
+Date:   Wed, 19 Jul 2023 16:33:44 +0530
+Message-ID: <20230719110344.19983-1-quic_shazhuss@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: gA0dLZc_hpTYpBOgRt3MlUNOezWcr-Vt
+X-Proofpoint-ORIG-GUID: gA0dLZc_hpTYpBOgRt3MlUNOezWcr-Vt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-19_07,2023-07-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ bulkscore=0 suspectscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxlogscore=913 impostorscore=0 spamscore=0 clxscore=1011 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307190100
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <imagedong@tencent.com>
+Alternative function 'gpio' is not listed in the constants for pin
+configuration, so adding this constant to the list.
 
-As Dan Carpenter reported, the variable "first_off" which is passed to
-clean_stack_garbage() in save_args() can be uninitialized, which can
-cause runtime warnings with KMEMsan. Therefore, init it with 0.
-
-Fixes: 473e3150e30a ("bpf, x86: allow function arguments up to 12 for TRACING")
-Cc: Hao Peng <flyingpeng@tencent.com>
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/bpf/09784025-a812-493f-9829-5e26c8691e07@moroto.mountain/
-Signed-off-by: Menglong Dong <imagedong@tencent.com>
+Fixes: 9a2aaee23c79 ("dt-bindings: pinctrl: describe sa8775p-tlmm")
+Signed-off-by: Shazad Hussain <quic_shazhuss@quicinc.com>
 ---
- arch/x86/net/bpf_jit_comp.c | 2 +-
+ .../devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml          | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 5ab531be56ac..83c4b45dc65f 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1925,7 +1925,7 @@ static int get_nr_used_regs(const struct btf_func_model *m)
- static void save_args(const struct btf_func_model *m, u8 **prog,
- 		      int stack_size, bool for_call_origin)
- {
--	int arg_regs, first_off, nr_regs = 0, nr_stack_slots = 0;
-+	int arg_regs, first_off = 0, nr_regs = 0, nr_stack_slots = 0;
- 	int i, j;
- 
- 	/* Store function arguments to stack.
+diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml
+index e608a4f1bcae..e119a226a4b1 100644
+--- a/Documentation/devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml
+@@ -87,7 +87,7 @@ $defs:
+                 emac0_mdc, emac0_mdio, emac0_ptp_aux, emac0_ptp_pps, emac1_mcg0,
+                 emac1_mcg1, emac1_mcg2, emac1_mcg3, emac1_mdc, emac1_mdio,
+                 emac1_ptp_aux, emac1_ptp_pps, gcc_gp1, gcc_gp2, gcc_gp3,
+-                gcc_gp4, gcc_gp5, hs0_mi2s, hs1_mi2s, hs2_mi2s, ibi_i3c,
++                gcc_gp4, gcc_gp5, gpio, hs0_mi2s, hs1_mi2s, hs2_mi2s, ibi_i3c,
+                 jitter_bist, mdp0_vsync0, mdp0_vsync1, mdp0_vsync2, mdp0_vsync3,
+                 mdp0_vsync4, mdp0_vsync5, mdp0_vsync6, mdp0_vsync7, mdp0_vsync8,
+                 mdp1_vsync0, mdp1_vsync1, mdp1_vsync2, mdp1_vsync3, mdp1_vsync4,
 -- 
-2.40.1
+2.17.1
 
