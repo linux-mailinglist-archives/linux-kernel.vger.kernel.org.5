@@ -2,56 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3D7759CB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49071759CBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbjGSRrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 13:47:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36278 "EHLO
+        id S229475AbjGSRrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 13:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbjGSRrQ (ORCPT
+        with ESMTP id S229863AbjGSRrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:47:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031701BF6
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:47:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 95F31617C2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 17:47:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CC17C433C8;
-        Wed, 19 Jul 2023 17:47:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689788834;
-        bh=eCinvZYUH/JC1KKDwH42gcUrbZIde3UQTwfcSlixCaE=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Jj9gx+ckIzm7lTs3PzLxN4ngYBtS/+aKA4qtJcxa54BzJjaxIF7eYH9XaoENcQMO/
-         ghb7JBRhRu1eOkix/LTK+y8IV7ZdCfxQkUjsTFopKVygyPcKZNLKn7N0e8KJ6lDY+S
-         yuQcC164lNTw58l6WPFuWUe0HOonS/cSDM9F83N057ekEp+RUTFdsDxJTBR3UV76uA
-         87/Hwkr+NH3liqvCALC53Tc3cTMH1Dkhca2bF40CgBgIpHal7H8BhtKozTVVdC3xjM
-         trcLMeZXhswfc+YkFnnqAqXEtciSAOvKpWY1B239fRXg08QsY+esMGTHl8W97WLuPS
-         COPvfKGzmG5xw==
-From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        Trevor Wu <trevor.wu@mediatek.com>
-Cc:     alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230706064123.29790-1-trevor.wu@mediatek.com>
-References: <20230706064123.29790-1-trevor.wu@mediatek.com>
-Subject: Re: [PATCH] ASoC: mediatek: mt8188: DPCM used FE and BE merged
- parameters
-Message-Id: <168978883184.125745.10740530088863632779.b4-ty@kernel.org>
-Date:   Wed, 19 Jul 2023 18:47:11 +0100
-MIME-Version: 1.0
+        Wed, 19 Jul 2023 13:47:47 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B6B1735
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:47:44 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-577323ba3d5so16595007b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:47:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689788864; x=1692380864;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZrpSlfvy8CWa29HQgq0qreuIOXt/Wldn9lf0s+IQ19g=;
+        b=ArpFLxX4pd+nE6yhxk4kfQsyY2cBj0283wyB2UFD4pQNpbkrc+ZAbqxw+z+OgClanI
+         8Bmj2Z7j2c1NhNgCvBdv83cjgOHHCOOMDHYftHtZeAL3vo412/Xbeep/S+CdApdBGNVE
+         aduoGH7mk12lxFjmYh58eVW/1Ksc0OT9NLaSC1w5eMBSYs+0sTNoL7N0w3aZ0n2P+aH0
+         VnFxLOrHPJ9r2ezOXOfj0cBYblwBN0Ye2w9Cgtba6HWxXo2yyLAo7PNbRfr5GAzKlZhF
+         ic8thdmStV5nJQreXCY0jlMVC8WTwDKkeNH3l7/QHaf5X+Z1Dsac59JBXIEJlOoDRy4l
+         I3Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689788864; x=1692380864;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ZrpSlfvy8CWa29HQgq0qreuIOXt/Wldn9lf0s+IQ19g=;
+        b=JphcQQbjshPnOPY8ZepU4BJh4ozJA8dO4xegGiSE0j8esfAzeAxaaw4czp10rLkmul
+         Hs8Lq+cVH0jOyzEozY79622MpeCS2CtHqyVxZvBylV1OibQ4cl6nOcZl/Jz+eKM3Pqhy
+         2CKLXJDgwQlEVEINSizLPw8uv6ZP+noxVtxKvOWoJeA8A8RdSMGV5sppyYYKV+AZHGEp
+         YGlLxyDUXEiyA9Pou8cf9s/19QH3XxPm9zLPOj/VZJjp//XcTGwtsZI0RpMGH2cPg4AU
+         npb3q6lMxrNidGmEXnwVIGh2NWYjgx35KZdTBCRycIP5YJJ1xhs01hbybs+xwnOeT0sM
+         VdDw==
+X-Gm-Message-State: ABy/qLYJvfGpysx0ZB5PBVqLUu5Z2fJC6hdFxcdmvQ8W+z82GeunpP8t
+        yvAmOq+0nPc+oxs3b/qJi+4EKpU6tn0=
+X-Google-Smtp-Source: APBJJlFlYUVvIIObTojpJ8UchQ4CwQtQGAVrCh++KpJ7LgJpdZRIA9xQwbGLQUVWTMKWnIrBZUJv99cvfhs=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:f509:0:b0:ca3:3341:6315 with SMTP id
+ a9-20020a25f509000000b00ca333416315mr42238ybe.0.1689788863726; Wed, 19 Jul
+ 2023 10:47:43 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 10:47:41 -0700
+In-Reply-To: <CAGtprH9a2jX-hdww9GPuMrO9noNeXkoqE8oejtVn2vD0AZa3zA@mail.gmail.com>
+Mime-Version: 1.0
+References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-13-seanjc@google.com>
+ <CAGtprH9a2jX-hdww9GPuMrO9noNeXkoqE8oejtVn2vD0AZa3zA@mail.gmail.com>
+Message-ID: <ZLghvU4QzE0PtfNG@google.com>
+Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vishal Annapurve <vannapurve@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,43 +103,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 06 Jul 2023 14:41:23 +0800, Trevor Wu wrote:
-> To ensure that DPCM takes into account the backend hardware limitations
-> when user space queries the hw_params of a device, we need to add
-> dpcm_merged_format, dpcm_merged_chan, and dpcm_merged_rate to the FE
-> dai_links.
-> 
-> This patch includes only stereo FE dai_links, since multi-channel FEs
-> may be reserved for specific purposes. Therefore, it may not be
-> appropriate to consider BE conditions.
-> 
-> [...]
+On Wed, Jul 19, 2023, Vishal Annapurve wrote:
+> On Tue, Jul 18, 2023 at 4:49=E2=80=AFPM Sean Christopherson <seanjc@googl=
+e.com> wrote:
+> > ...
+> > +static int kvm_gmem_error_page(struct address_space *mapping, struct p=
+age *page)
+> > +{
+> > +       struct list_head *gmem_list =3D &mapping->private_list;
+> > +       struct kvm_memory_slot *slot;
+> > +       struct kvm_gmem *gmem;
+> > +       unsigned long index;
+> > +       pgoff_t start, end;
+> > +       gfn_t gfn;
+> > +
+> > +       filemap_invalidate_lock_shared(mapping);
+> > +
+> > +       start =3D page->index;
+> > +       end =3D start + thp_nr_pages(page);
+> > +
+> > +       list_for_each_entry(gmem, gmem_list, entry) {
+> > +               xa_for_each_range(&gmem->bindings, index, slot, start, =
+end - 1) {
+> > +                       for (gfn =3D start; gfn < end; gfn++) {
+> > +                               if (WARN_ON_ONCE(gfn < slot->base_gfn |=
+|
+> > +                                               gfn >=3D slot->base_gfn=
+ + slot->npages))
+> > +                                       continue;
+> > +
+> > +                               /*
+> > +                                * FIXME: Tell userspace that the *priv=
+ate*
+> > +                                * memory encountered an error.
+> > +                                */
+> > +                               send_sig_mceerr(BUS_MCEERR_AR,
+> > +                                               (void __user *)gfn_to_h=
+va_memslot(slot, gfn),
+> > +                                               PAGE_SHIFT, current);
+>=20
+> Does it make sense to replicate what happens with MCE handling on
+> tmpfs backed guest memory:
+> 1) Unmap gpa from guest
+> 2) On the next guest EPT fault, exit to userspace to handle/log the
+> mce error for the gpa.
 
-Applied to
+Hmm, yes, that would be much better.  Ah, and kvm_gmem_get_pfn() needs to c=
+heck
+folio_test_hwpoison() and potentially PageHWPoison().  E.g. if the folio is=
+ huge,
+KVM needs to restrict the mapping to order-0 (target page isn't poisoned), =
+or
+return KVM_PFN_ERR_HWPOISON (taget page IS poisoned).
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: mediatek: mt8188: DPCM used FE and BE merged parameters
-      commit: 30019d220cf9ec4df4e5f5d9082baf5519516018
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Alternatively, KVM could punch a hole in kvm_gmem_error_page(), but I don't=
+ think
+we want to do that because that would prevent forwarding the #MC to the gue=
+st.
