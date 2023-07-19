@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D890759FE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F322C759FF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbjGSUgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39470 "EHLO
+        id S230454AbjGSUhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:37:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229807AbjGSUgl (ORCPT
+        with ESMTP id S231297AbjGSUhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:36:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2792112;
-        Wed, 19 Jul 2023 13:36:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Wed, 19 Jul 2023 16:37:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E701734;
+        Wed, 19 Jul 2023 13:37:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ct4x5skzs8PALPBz8qK2ftN+HGVLNPB6AD5V5+AkyPY=; b=E76vkvNezGst4usz/FoC67Y/mF
+        Hz/T5KV5GXFZzTizzlUf5x0Isr9Aus4wrC9yP/x131xgzlCj7k9TUiTHLj4XWDOsSKKBWKJdaWJva
+        6hsVg5P2ko5ub7M3j2d5+36+FBCHZKc9wYSGhT8tKF7msGf/nLTj+EvGX6Db26CRnGeZGIzEWL5W8
+        DWlLsz79KeRQOxAqsDuqnqWlSgKGUl5eC499RVxCrUlPtFGN58i2NkAjG3dkpUwhv6gx/0ofErnfH
+        gA8nt3DAiupyGI6SbCG+GwTLo0szhgwd/VGq0OabuN8Ste94x26acNPKhCAWAI6cNUiQICRnBvzvo
+        FmcBfIiA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qMDuu-006Rr1-CA; Wed, 19 Jul 2023 20:37:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 05FE061827;
-        Wed, 19 Jul 2023 20:36:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1345C433C7;
-        Wed, 19 Jul 2023 20:36:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689798963;
-        bh=XrQ/pPRSHvXh7lxVqpPGBAZ3IM9RShfrP9G5GJYGNpY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=DNI2J6H+YnMEsoWAuadSAWPeYD7tM3mWfNvpmrOqbG1twEQ6KZveIJI5Rz/s3zJKU
-         6XonmkQXwNQly5B4kySr9PK279KtmwSNiUufvrkBIjVw9HoQxtZlOuy/QoAIOUnmWN
-         lNvuHwtCTcL5705avEj+eL1IjBlhUCnMsc+RN8T7kh9ESH5xNQ1lAOw7a3KwkKugzt
-         uHZojok/KrXl6Q0Cp925GujyX3nbsf+BQWMvTT6bklPboEyCZbvrjwFkWR7oMyOpu9
-         Tfb1h4EbTIhIoUbp5tFYjnPZIoPwXL/4bf4oviI2vOna7wSUhi/p79rBkjx8WZ+xT+
-         i7SEgldqHzc4g==
-Date:   Wed, 19 Jul 2023 15:36:00 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cxl@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        oohall@gmail.com, Lukas Wunner <lukas@wunner.de>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Ben Widawsky <bwidawsk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Terry Bowman <terry.bowman@amd.com>,
-        Robert Richter <rrichter@amd.com>
-Subject: Re: [PATCH 1/2] PCI, AER: Export and make pcie_aer_is_native() global
-Message-ID: <20230719203600.GA514279@bhelgaas>
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 228C830049E;
+        Wed, 19 Jul 2023 22:36:59 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0D2E326AA535C; Wed, 19 Jul 2023 22:36:59 +0200 (CEST)
+Date:   Wed, 19 Jul 2023 22:36:58 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Weijiang Yang <weijiang.yang@intel.com>, pbonzini@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, rppt@kernel.org,
+        binbin.wu@linux.intel.com, rick.p.edgecombe@intel.com,
+        john.allen@amd.com, Chao Gao <chao.gao@intel.com>
+Subject: Re: [PATCH v3 00/21] Enable CET Virtualization
+Message-ID: <20230719203658.GE3529734@hirez.programming.kicks-ass.net>
+References: <20230511040857.6094-1-weijiang.yang@intel.com>
+ <ZIufL7p/ZvxjXwK5@google.com>
+ <147246fc-79a2-3bb5-f51f-93dfc1cffcc0@intel.com>
+ <ZIyiWr4sR+MqwmAo@google.com>
+ <c438b5b1-b34d-3e77-d374-37053f4c14fa@intel.com>
+ <ZJYF7haMNRCbtLIh@google.com>
+ <e44a9a1a-0826-dfa7-4bd9-a11e5790d162@intel.com>
+ <ZLg8ezG/XrZH+KGD@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230719192313.38591-2-Smita.KoralahalliChannabasappa@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <ZLg8ezG/XrZH+KGD@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,75 +67,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 07:23:12PM +0000, Smita Koralahalli wrote:
-> Export and move the declaration of pcie_aer_is_native() to a common header
-> file to be reused by cxl/pci module.
+On Wed, Jul 19, 2023 at 12:41:47PM -0700, Sean Christopherson wrote:
 
-Run "git log --oneline drivers/pci/pcie/aer.c" and format your subject
-line to match.
-
-"Exporting" pretty much means making it global, so "Export
-pcie_aer_is_native()" is probably enough.
-
-> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-
-With the above,
-
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-
-> ---
->  drivers/pci/pcie/aer.c     | 1 +
->  drivers/pci/pcie/portdrv.h | 2 --
->  include/linux/aer.h        | 2 ++
->  3 files changed, 3 insertions(+), 2 deletions(-)
+> My understanding is that PL[0-2]_SSP are used only on transitions to the
+> corresponding privilege level from a *different* privilege level.  That means
+> KVM should be able to utilize the user_return_msr framework to load the host
+> values.  Though if Linux ever supports SSS, I'm guessing the core kernel will
+> have some sort of mechanism to defer loading MSR_IA32_PL0_SSP until an exit to
+> userspace, e.g. to avoid having to write PL0_SSP, which will presumably be
+> per-task, on every context switch.
 > 
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index f6c24ded134c..87d90dbda023 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -229,6 +229,7 @@ int pcie_aer_is_native(struct pci_dev *dev)
->  
->  	return pcie_ports_native || host->native_aer;
->  }
-> +EXPORT_SYMBOL_GPL(pcie_aer_is_native);
->  
->  int pci_enable_pcie_error_reporting(struct pci_dev *dev)
->  {
-> diff --git a/drivers/pci/pcie/portdrv.h b/drivers/pci/pcie/portdrv.h
-> index 58a2b1a1cae4..1f3803bde7ee 100644
-> --- a/drivers/pci/pcie/portdrv.h
-> +++ b/drivers/pci/pcie/portdrv.h
-> @@ -29,10 +29,8 @@ extern bool pcie_ports_dpc_native;
->  
->  #ifdef CONFIG_PCIEAER
->  int pcie_aer_init(void);
-> -int pcie_aer_is_native(struct pci_dev *dev);
->  #else
->  static inline int pcie_aer_init(void) { return 0; }
-> -static inline int pcie_aer_is_native(struct pci_dev *dev) { return 0; }
->  #endif
->  
->  #ifdef CONFIG_HOTPLUG_PCI_PCIE
-> diff --git a/include/linux/aer.h b/include/linux/aer.h
-> index 3a3ab05e13fd..94ce49a5f8d5 100644
-> --- a/include/linux/aer.h
-> +++ b/include/linux/aer.h
-> @@ -45,6 +45,7 @@ struct aer_capability_regs {
->  int pci_enable_pcie_error_reporting(struct pci_dev *dev);
->  int pci_disable_pcie_error_reporting(struct pci_dev *dev);
->  int pci_aer_clear_nonfatal_status(struct pci_dev *dev);
-> +int pcie_aer_is_native(struct pci_dev *dev);
->  #else
->  static inline int pci_enable_pcie_error_reporting(struct pci_dev *dev)
->  {
-> @@ -58,6 +59,7 @@ static inline int pci_aer_clear_nonfatal_status(struct pci_dev *dev)
->  {
->  	return -EINVAL;
->  }
-> +static inline int pcie_aer_is_native(struct pci_dev *dev) { return 0; }
->  #endif
->  
->  void cper_print_aer(struct pci_dev *dev, int aer_severity,
-> -- 
-> 2.17.1
+> But note my original wording: **If that's necessary**
 > 
+> If nothing in the host ever consumes those MSRs, i.e. if SSS is NOT enabled in
+> IA32_S_CET, then running host stuff with guest values should be ok.  KVM only
+> needs to guarantee that it doesn't leak values between guests.  But that should
+> Just Work, e.g. KVM should load the new vCPU's values if SHSTK is exposed to the
+> guest, and intercept (to inject #GP) if SHSTK is not exposed to the guest.
+> 
+> And regardless of what the mechanism ends up managing SSP MSRs, it should only
+> ever touch PL0_SSP, because Linux never runs anything at CPL1 or CPL2, i.e. will
+> never consume PL{1,2}_SSP.
+
+To clarify, Linux will only use SSS in FRED mode -- FRED removes CPL1,2.
