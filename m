@@ -2,66 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F034A75995D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E9075995F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbjGSPS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 11:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
+        id S231618AbjGSPTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 11:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbjGSPSy (ORCPT
+        with ESMTP id S229977AbjGSPS6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 11:18:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E57819B9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:18:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AF60561757
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:18:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86C11C433C8;
-        Wed, 19 Jul 2023 15:18:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689779890;
-        bh=yRNGM7k1m44UGiSOAxGAbNASoCiFYC+UXo3gbDSSuDI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=QwLsB+j6V0YIEGRkP2tox2mqqdk3mE2QCURMU/CVETBBJwN3oyIYtmxOUetSAkF40
-         /RS+ApBqn8DYnYau+OosPfhhGaQMbCAqoV5muR0AMrG9m+67v0S5YqjDvIP571n7Is
-         S92IT+ZnwZqdluFH+xPI4Wr2hvcqWHvhKgaiZUKny/P+2/eLfZk1Mzh8CRyxAK7EYT
-         fyLyR+rYYBa/ZAa1yU3cVuD70VfIUN5JeWYJbpaThX0BbafGKTmiTbyEf+MqjwwtiR
-         k0moGCANuw6dLL87/X8pt6mSGmBYUtp11ymCqAwOr2KXeND2V4L25mEuAKblIZUGeY
-         a9IrYQfBI7DsQ==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Pu Lehui <pulehui@huawei.com>, Pu Lehui <pulehui@huaweicloud.com>,
-        bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Guo Ren <guoren@kernel.org>, Song Shuai <suagrfillet@gmail.com>
-Subject: Re: [PATCH bpf] riscv, bpf: Adapt bpf trampoline to optimized riscv
- ftrace framework
-In-Reply-To: <63986ef9-10a4-bcef-369d-0bad28b192d1@huawei.com>
-References: <20230715090137.2141358-1-pulehui@huaweicloud.com>
- <87lefdougi.fsf@all.your.base.are.belong.to.us>
- <63986ef9-10a4-bcef-369d-0bad28b192d1@huawei.com>
-Date:   Wed, 19 Jul 2023 17:18:08 +0200
-Message-ID: <87o7k8udzj.fsf@all.your.base.are.belong.to.us>
+        Wed, 19 Jul 2023 11:18:58 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE044210B;
+        Wed, 19 Jul 2023 08:18:33 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36JDuIcH009598;
+        Wed, 19 Jul 2023 15:18:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=9K1mMR1iHlRgY1J+lDP2ewhpZLX/fOyQb9/Z2hIWlmc=;
+ b=bSmekRRqadmhYRYbf+qo6nkjTt9ZNm7iJmW1eSij1gIEaxEYunDjhuyt9v1EPVjZWfVO
+ FEkhtxcq9wi4nJDtcmGrIWVEdgKxnwdCtox/sfi2AWrFLgoeSry58gl+GQWUZ3HgBYxu
+ s9FKhxZSlDBmhb63vK8nnrFhXAm98XZSGxQK3/ORovlA/YRADfWjAZoTcbkY1ol7Vo02
+ 5Ed/N4c2xXfi5g80GUqGZmPX0dtf1y1v8/P8SPuG+UnJBkHQ+793Ry5HBjC6Vgm4XmFu
+ pc3vDnp8//PeeQbeDyPo3Ij+GXsFq7Ezl7lVxEPrMxoZOPsctUHNpM7SdZ6J++8mLeLV 4w== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxd98gum2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Jul 2023 15:18:19 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36JFIINS016563
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Jul 2023 15:18:18 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 19 Jul 2023 08:18:18 -0700
+Date:   Wed, 19 Jul 2023 08:18:17 -0700
+From:   Bjorn Andersson <quic_bjorande@quicinc.com>
+To:     Chengfeng Ye <dg573847474@gmail.com>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <lee@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mfd: qcom-pm8xxx: Fix potential deadlock on
+ &chip->pm_irq_lock
+Message-ID: <20230719151817.GB4176673@hu-bjorande-lv.qualcomm.com>
+References: <20230628072840.28587-1-dg573847474@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230628072840.28587-1-dg573847474@gmail.com>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: b7TQnPUUCGAfvLvqCD3-HLdDeJwmcxS5
+X-Proofpoint-ORIG-GUID: b7TQnPUUCGAfvLvqCD3-HLdDeJwmcxS5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-19_10,2023-07-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 impostorscore=0
+ mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=731 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307190136
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,122 +77,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pu Lehui <pulehui@huawei.com> writes:
+On Wed, Jun 28, 2023 at 07:28:40AM +0000, Chengfeng Ye wrote:
+> As &chip->pm_irq_lock is acquired by pm8xxx_irq_handler() under irq
+> context, other process context code should disable irq before acquiring
+> the lock.
+> 
+> I think .irq_set_type and .irq_get_irqchip_state callbacks should be
 
-> On 2023/7/19 4:06, Bj=C3=B6rn T=C3=B6pel wrote:
->> Pu Lehui <pulehui@huaweicloud.com> writes:
->>=20
->>> From: Pu Lehui <pulehui@huawei.com>
->>>
->>> Commit 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to
->>> half") optimizes the detour code size of kernel functions to half with
->>> T0 register and the upcoming DYNAMIC_FTRACE_WITH_DIRECT_CALLS of riscv
->>> is based on this optimization, we need to adapt riscv bpf trampoline
->>> based on this. One thing to do is to reduce detour code size of bpf
->>> programs, and the second is to deal with the return address after the
->>> execution of bpf trampoline. Meanwhile, add more comments and rename
->>> some variables to make more sense. The related tests have passed.
->>>
->>> This adaptation needs to be merged before the upcoming
->>> DYNAMIC_FTRACE_WITH_DIRECT_CALLS of riscv, otherwise it will crash due
->>> to a mismatch in the return address. So we target this modification to
->>> bpf tree and add fixes tag for locating.
->>=20
->> Thank you for working on this!
->>=20
->>> Fixes: 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to hal=
-f")
->>=20
->> This is not a fix. Nothing is broken. Only that this patch much come
->> before or as part of the ftrace series.
->
-> Yep, it's really not a fix. I have no idea whether this patch target to=20
-> bpf-next tree can be ahead of the ftrace series of riscv tree?
+You are correct, so please drop "I think", and change "should be" to
+"are generally".
 
-For this patch, I'd say it's easier to take it via the RISC-V tree, IFF
-the ftrace series is in for-next.
+> executed from process context without irq disabled by default. Thus the
+> same lock acquision should disable irq.
+> 
+> Possible deadlock scenario
+> pm8xxx_irq_set_type()
+>     -> pm8xxx_config_irq()
+>     -> spin_lock(&chip->pm_irq_lock)
+>         <irq interrupt>
+>         -> pm8xxx_irq_handler()
+>         -> pm8xxx_irq_master_handler()
+>         -> pm8xxx_irq_block_handler()
+>         -> pm8xxx_read_block_irq()
+>         -> spin_lock(&chip->pm_irq_lock) (deadlock here)
+> 
+> This flaw was found using an experimental static analysis tool we are
+> developing for irq-related deadlock.
+> 
+> The tentative patch fix the potential deadlock by spin_lock_irqsave().
 
-[...]
+I don't think this is a "tentative patch fix", it is the patch to fix
+the issue. I think you can omit this line, because you already described
+your problem, and the solution above.
 
->>> +#define DETOUR_NINSNS	2
->>=20
->> Better name? Maybe call this patchable function entry something? Also,
->
-> How about RV_FENTRY_NINSNS?
+> 
+> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
 
-Sure. And more importantly that it's actually used in the places where
-nops/skips are done.
+Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 
->> to catch future breaks like this -- would it make sense to have a
->> static_assert() combined with something tied to
->> -fpatchable-function-entry=3D from arch/riscv/Makefile?
->
-> It is very necessary, but it doesn't seem to be easy. I try to find GCC=20
-> related functions, something like __builtin_xxx, but I can't find it so=20
-> far. Also try to make it as a CONFIG_PATCHABLE_FUNCTION_ENTRY=3D4 in=20
-> Makefile and then static_assert, but obviously it shouldn't be done.=20
-> Maybe we can deal with this later when we have a solution?
-
-Ok!
-
-[...]
-
->>> @@ -787,20 +762,19 @@ static int __arch_prepare_bpf_trampoline(struct b=
-pf_tramp_image *im,
->>>   	int i, ret, offset;
->>>   	int *branches_off =3D NULL;
->>>   	int stack_size =3D 0, nregs =3D m->nr_args;
->>> -	int retaddr_off, fp_off, retval_off, args_off;
->>> -	int nregs_off, ip_off, run_ctx_off, sreg_off;
->>> +	int fp_off, retval_off, args_off, nregs_off, ip_off, run_ctx_off, sre=
-g_off;
->>>   	struct bpf_tramp_links *fentry =3D &tlinks[BPF_TRAMP_FENTRY];
->>>   	struct bpf_tramp_links *fexit =3D &tlinks[BPF_TRAMP_FEXIT];
->>>   	struct bpf_tramp_links *fmod_ret =3D &tlinks[BPF_TRAMP_MODIFY_RETURN=
-];
->>>   	void *orig_call =3D func_addr;
->>> -	bool save_ret;
->>> +	bool save_retval, traced_ret;
->>>   	u32 insn;
->>>=20=20=20
->>>   	/* Generated trampoline stack layout:
->>>   	 *
->>>   	 * FP - 8	    [ RA of parent func	] return address of parent
->>>   	 *					  function
->>> -	 * FP - retaddr_off [ RA of traced func	] return address of traced
->>> +	 * FP - 16	    [ RA of traced func	] return address of
->>>   	traced
->>=20
->> BPF code uses frame pointers. Shouldn't the trampoline frame look like a
->> regular frame [1], i.e. start with return address followed by previous
->> frame pointer?
->>=20
->
-> oops, will fix it. Also we need to consider two types of trampoline=20
-> stack layout, that is:
->
-> * 1. trampoline called from function entry
-> * --------------------------------------
-> * FP + 8           [ RA of parent func ] return address of parent
-> *                                        function
-> * FP + 0           [ FP                ]
-> *
-> * FP - 8           [ RA of traced func ] return address of traced
-> *                                        function
-> * FP - 16          [ FP                ]
-> * --------------------------------------
-> *
-> * 2. trampoline called directly
-> * --------------------------------------
-> * FP - 8           [ RA of caller func ] return address of caller
-> *                                        function
-> * FP - 16          [ FP                ]
-> * --------------------------------------
-
-Hmm, could you expand a bit on this? The stack frame top 16B (8+8)
-should follow what the psabi suggests, regardless of the call site?
-
-Maybe it's me that's not following -- please explain a bit more!
-
-
-Bj=C3=B6rn
+Regards,
+Bjorn
