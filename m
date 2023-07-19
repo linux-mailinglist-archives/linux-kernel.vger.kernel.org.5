@@ -2,158 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE8B75919A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A017591B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbjGSJ3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
+        id S229989AbjGSJb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbjGSJ2u (ORCPT
+        with ESMTP id S229529AbjGSJb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:28:50 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728241FD3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:28:46 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fbc0314a7bso11029031e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1689758924; x=1692350924;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TL4iPDnWm7LI7dooTGYVCYljPJYJzbf9kW0UMI/E3E8=;
-        b=RmR0tn2XLxoJOQVfhj6Z1y0iP4vl4SctrEUwL1kVlHU/vpEljcorwTzzRgX4ay8x6J
-         ZxCler5k1qYfD6FdRhctRHWJrBIPj38PG89ytDH1l+GK/juPRE8kbFKAaIJvYhEnX+81
-         30HIyfPQhmb4VSWcnrPkYKDmvk69GBJc5iD2tQCEvBqIpJOSQdaWDlwlQGrmkiLNazPC
-         2Bd5pSUZiJkEroDFWFD7oNPe2iJXfklJtZZAxJi52al2Sf6Kt+wJ4C53pbYDuTYFHwb6
-         ENKVUA0rzunIqRYXUKNUzwvzz8u/Zxja1M6bOI/9MJ46+Hm2LNiCV5O8vSnBxs2Ub3fI
-         jbug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689758924; x=1692350924;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TL4iPDnWm7LI7dooTGYVCYljPJYJzbf9kW0UMI/E3E8=;
-        b=HYf7B1fFR/N7jA2KCmphCSasLAiPiy9Kyn8fuwxw3N05syV+jZc2dbY1v7dxwZPWFW
-         FMV/7dja/E6PzQWCo8zl09uGbksYl9umkZD0bumoqYkp6gpBLRrIfwyIE8OefuPJ5vm5
-         pPH6sW6oEaGqnXS+jQ8srUUzSx6zFFpj+natOT9g1a8fNc0MovLGP3HpFkMSwkBdpSlG
-         JHeozDZM7T+eziYVYPZGZLV4nY0EyNGQtklOOuTulOCaYHFN3snwzD6WqRRlk8H1FxK4
-         78InOgSwDu0D4ji3MdlgcHCY4xoxusLAmYhfMbHk+W++S8MOPzIWqGUJx2bCvvbwzjND
-         6Uvw==
-X-Gm-Message-State: ABy/qLYdacl31DXX09GTRCFLhnaL41ZJ7ElOm/RCmlPGqCRuSV0fJjEq
-        XgbIunZWOmgc6dRYMCwCxCNl0o057tpjrOGZwMvF6Q==
-X-Google-Smtp-Source: APBJJlEvJxlIlo047VV+7wzcGwDG8LI2FzpITTuAkDeRT6GN74ABqTYEyn20L8ozGDwoQvHV0y9XxA==
-X-Received: by 2002:a05:6512:3d1b:b0:4fb:8a92:4fba with SMTP id d27-20020a0565123d1b00b004fb8a924fbamr15073243lfv.25.1689758924233;
-        Wed, 19 Jul 2023 02:28:44 -0700 (PDT)
-Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id r18-20020adff112000000b0031435c2600esm4857213wro.79.2023.07.19.02.28.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 02:28:43 -0700 (PDT)
-From:   Anton Protopopov <aspsk@isovalent.com>
-To:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Hou Tao <houtao1@huawei.com>, Joe Stringer <joe@isovalent.com>,
-        Anton Protopopov <aspsk@isovalent.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 bpf-next 4/4] bpf: allow any program to use the bpf_map_sum_elem_count kfunc
-Date:   Wed, 19 Jul 2023 09:29:52 +0000
-Message-Id: <20230719092952.41202-5-aspsk@isovalent.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230719092952.41202-1-aspsk@isovalent.com>
-References: <20230719092952.41202-1-aspsk@isovalent.com>
+        Wed, 19 Jul 2023 05:31:58 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824E9186
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:31:56 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R5VvX0BtgzBR5lb
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 17:31:52 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689759111; x=1692351112; bh=LItqP0llwziE0Rh0tkeMsYWBjcC
+        emIDMOFOvno6nS6k=; b=nCKn0hTdixU+lqLNSIUoagua6whh2WdHvOraOw3UZsk
+        Gi0NAF1gU4cpxEvHYX/1XjJWb1RvxvBYGR4CxV39qnIr33WjMIePC06a5BELZF1T
+        t9lTlNjYKMc/JQy8ssWfyla0HxYQq5FjPPSgFiFD5T37rv34ZxbM6PihRr+4FcSS
+        gHEvAv8YGgYXcP842ZLjRKwtVJ9P7ovEdLAiUpyV/fS63NNAq8f9oF4XzwuwkU+x
+        azgNUPHTY+rV/kcoT/eJjafw4fDCCntS/fKLTDRR2Ut4fgvqsr7OYCxI/SGPIYxQ
+        7p3AjePkUt9jn8gF7tEPML6MFaho2hU+2PIHw9SO1pA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id J-01tpFKFT9G for <linux-kernel@vger.kernel.org>;
+        Wed, 19 Jul 2023 17:31:51 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R5VvW4lmDzBR1Nw;
+        Wed, 19 Jul 2023 17:31:51 +0800 (CST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Date:   Wed, 19 Jul 2023 17:31:51 +0800
+From:   hanyu001@208suo.com
+To:     kvalo@kernel.org
+Cc:     libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] libertas: debugfs: Added missing spaces
+In-Reply-To: <tencent_0EA6836B1E10A9623158112DD43D48C95605@qq.com>
+References: <tencent_0EA6836B1E10A9623158112DD43D48C95605@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <013fa54eeb505b6a7080c6d4ccc3a445@208suo.com>
+X-Sender: hanyu001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register the bpf_map_sum_elem_count func for all programs, and update the
-map_ptr subtest of the test_progs test to test the new functionality.
+Fixes the following checkpatch errors:
 
-The usage is allowed as long as the pointer to the map is trusted (when
-using tracing programs) or is a const pointer to map, as in the following
-example:
+./drivers/net/wireless/marvell/libertas/debugfs.c:712: ERROR: spaces 
+required around that '=' (ctx:VxV)
+./drivers/net/wireless/marvell/libertas/debugfs.c:712: ERROR: spaces 
+required around that '<' (ctx:VxV)
+./drivers/net/wireless/marvell/libertas/debugfs.c:723: ERROR: spaces 
+required around that '=' (ctx:VxV)
+./drivers/net/wireless/marvell/libertas/debugfs.c:723: ERROR: spaces 
+required around that '<' (ctx:VxV)
+./drivers/net/wireless/marvell/libertas/debugfs.c:734: ERROR: spaces 
+required around that '=' (ctx:VxV)
+./drivers/net/wireless/marvell/libertas/debugfs.c:734: ERROR: spaces 
+required around that '<' (ctx:VxV)
+./drivers/net/wireless/marvell/libertas/debugfs.c:754: ERROR: spaces 
+required around that '=' (ctx:VxV)
+./drivers/net/wireless/marvell/libertas/debugfs.c:754: ERROR: spaces 
+required around that '<' (ctx:VxV)
+./drivers/net/wireless/marvell/libertas/debugfs.c:754: ERROR: space 
+required before the open parenthesis '('
+./drivers/net/wireless/marvell/libertas/debugfs.c:759: ERROR: spaces 
+required around that '=' (ctx:VxV)
+./drivers/net/wireless/marvell/libertas/debugfs.c:759: ERROR: spaces 
+required around that '<' (ctx:VxV)
+./drivers/net/wireless/marvell/libertas/debugfs.c:759: ERROR: space 
+required before the open parenthesis '('
+./drivers/net/wireless/marvell/libertas/debugfs.c:766: ERROR: spaces 
+required around that '=' (ctx:VxV)
+./drivers/net/wireless/marvell/libertas/debugfs.c:766: ERROR: spaces 
+required around that '<' (ctx:VxV)
+./drivers/net/wireless/marvell/libertas/debugfs.c:766: ERROR: space 
+required before the open parenthesis '('
 
-    struct {
-            __uint(type, BPF_MAP_TYPE_HASH);
-            ...
-    } hash SEC(".maps");
-
-    ...
-
-    static inline int some_bpf_prog(void)
-    {
-            struct bpf_map *map = (struct bpf_map *)&hash;
-            __s64 count;
-
-            count = bpf_map_sum_elem_count(map);
-
-            ...
-    }
-
-Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+Signed-off-by: Yu Han <hanyu001@208suo.com>
 ---
- kernel/bpf/map_iter.c                            | 2 +-
- tools/testing/selftests/bpf/progs/map_ptr_kern.c | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+  drivers/net/wireless/marvell/libertas/debugfs.c | 12 ++++++------
+  1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
-index 011adb41858e..6fc9dae9edc8 100644
---- a/kernel/bpf/map_iter.c
-+++ b/kernel/bpf/map_iter.c
-@@ -226,6 +226,6 @@ static const struct btf_kfunc_id_set bpf_map_iter_kfunc_set = {
- 
- static int init_subsystem(void)
- {
--	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_map_iter_kfunc_set);
-+	return register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC, &bpf_map_iter_kfunc_set);
- }
- late_initcall(init_subsystem);
-diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-index db388f593d0a..3325da17ec81 100644
---- a/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-+++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-@@ -103,6 +103,8 @@ struct {
- 	__type(value, __u32);
- } m_hash SEC(".maps");
- 
-+__s64 bpf_map_sum_elem_count(struct bpf_map *map) __ksym;
-+
- static inline int check_hash(void)
- {
- 	struct bpf_htab *hash = (struct bpf_htab *)&m_hash;
-@@ -115,6 +117,8 @@ static inline int check_hash(void)
- 	VERIFY(hash->elem_size == 64);
- 
- 	VERIFY(hash->count.counter == 0);
-+	VERIFY(bpf_map_sum_elem_count(map) == 0);
-+
- 	for (i = 0; i < HALF_ENTRIES; ++i) {
- 		const __u32 key = i;
- 		const __u32 val = 1;
-@@ -123,6 +127,7 @@ static inline int check_hash(void)
- 			return 0;
- 	}
- 	VERIFY(hash->count.counter == HALF_ENTRIES);
-+	VERIFY(bpf_map_sum_elem_count(map) == HALF_ENTRIES);
- 
- 	return 1;
- }
--- 
-2.34.1
+diff --git a/drivers/net/wireless/marvell/libertas/debugfs.c 
+b/drivers/net/wireless/marvell/libertas/debugfs.c
+index c604613..8939bf4 100644
+--- a/drivers/net/wireless/marvell/libertas/debugfs.c
++++ b/drivers/net/wireless/marvell/libertas/debugfs.c
+@@ -709,7 +709,7 @@ void lbs_debugfs_init_one(struct lbs_private *priv, 
+struct net_device *dev)
 
+      priv->debugfs_dir = debugfs_create_dir(dev->name, lbs_dir);
+
+-    for (i=0; i<ARRAY_SIZE(debugfs_files); i++) {
++    for (i = 0; i < ARRAY_SIZE(debugfs_files); i++) {
+          files = &debugfs_files[i];
+          priv->debugfs_files[i] = debugfs_create_file(files->name,
+                                   files->perm,
+@@ -720,7 +720,7 @@ void lbs_debugfs_init_one(struct lbs_private *priv, 
+struct net_device *dev)
+
+      priv->events_dir = debugfs_create_dir("subscribed_events", 
+priv->debugfs_dir);
+
+-    for (i=0; i<ARRAY_SIZE(debugfs_events_files); i++) {
++    for (i = 0; i < ARRAY_SIZE(debugfs_events_files); i++) {
+          files = &debugfs_events_files[i];
+          priv->debugfs_events_files[i] = 
+debugfs_create_file(files->name,
+                                   files->perm,
+@@ -731,7 +731,7 @@ void lbs_debugfs_init_one(struct lbs_private *priv, 
+struct net_device *dev)
+
+      priv->regs_dir = debugfs_create_dir("registers", 
+priv->debugfs_dir);
+
+-    for (i=0; i<ARRAY_SIZE(debugfs_regs_files); i++) {
++    for (i = 0; i < ARRAY_SIZE(debugfs_regs_files); i++) {
+          files = &debugfs_regs_files[i];
+          priv->debugfs_regs_files[i] = debugfs_create_file(files->name,
+                                   files->perm,
+@@ -751,19 +751,19 @@ void lbs_debugfs_remove_one(struct lbs_private 
+*priv)
+  {
+      int i;
+
+-    for(i=0; i<ARRAY_SIZE(debugfs_regs_files); i++)
++    for (i = 0; i < ARRAY_SIZE(debugfs_regs_files); i++)
+          debugfs_remove(priv->debugfs_regs_files[i]);
+
+      debugfs_remove(priv->regs_dir);
+
+-    for(i=0; i<ARRAY_SIZE(debugfs_events_files); i++)
++    for (i = 0; i < ARRAY_SIZE(debugfs_events_files); i++)
+          debugfs_remove(priv->debugfs_events_files[i]);
+
+      debugfs_remove(priv->events_dir);
+  #ifdef PROC_DEBUG
+      debugfs_remove(priv->debugfs_debug);
+  #endif
+-    for(i=0; i<ARRAY_SIZE(debugfs_files); i++)
++    for (i = 0; i < ARRAY_SIZE(debugfs_files); i++)
+          debugfs_remove(priv->debugfs_files[i]);
+      debugfs_remove(priv->debugfs_dir);
+  }
