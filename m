@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A95B175BB66
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 02:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5920E75BB7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 02:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbjGUACi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 20:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
+        id S229887AbjGUAZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 20:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbjGUACh (ORCPT
+        with ESMTP id S229451AbjGUAZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 20:02:37 -0400
-Received: from out-4.mta1.migadu.com (out-4.mta1.migadu.com [95.215.58.4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42EEA2736
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 17:02:31 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 17:02:22 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689897749;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=y2QMFvECdm8dFJV/IrLJkLq1p3G+GKee/U2h0MLyOkg=;
-        b=KOmSPRR+QbQBjXhqggDP5pjoKz8izA0OgekgidARozZue4LF/JrgMyfSRsVOon8kZShUCs
-        iuKScGj3/4eJx8nQmoeKvDrgYrl23dCurXmodrsSemoBLksfFX420En5g1UBLuJaEqjteF
-        xsULlcNlaLyxKaP2p1y6iCgloSi1UGE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "T.J. Mercier" <tjmercier@google.com>,
-        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 0/8] memory recharging for offline memcgs
-Message-ID: <ZLnLDlQ/B81Qb9pj@P9FQF9L96D.corp.robot.car>
-References: <20230720070825.992023-1-yosryahmed@google.com>
+        Thu, 20 Jul 2023 20:25:01 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD33F270D;
+        Thu, 20 Jul 2023 17:25:00 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3a36b52b4a4so896903b6e.1;
+        Thu, 20 Jul 2023 17:25:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689899100; x=1690503900;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1aGnwCQHIk14nq04vsYycTNcRKlcwdnAMCYE+vJJxd8=;
+        b=gua5P85x7N8S9ZuzM9iGv8p0L5I3/NhFhu5rIC57RTd2OaA7Ligtz8ochAqwtiqMR5
+         5SDwMiYItyx+rpF1wAAw1LXxc+FFA9TKsF7wxqgEa27gkZ4S2d/f5q452vFjrpiel5ln
+         /ubzrw6JRbek925oi+GOG/IIVAOtbqN2t8mlqwcM9q72lPMzvac9l6eQPelK4j5POaFl
+         n5vWBUewRBrcqJutcxBWwXufq7KI2uhPU8L5AWawfEbd6w6kiyyu5ynUD70q/SYwb/hu
+         fFRedKF5XeMGq8ZJPcq8qhG3rsMw0gdQQG7iQ6S/9NibiFU95fnSX41fSdBNL31EZhBU
+         A5vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689899100; x=1690503900;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1aGnwCQHIk14nq04vsYycTNcRKlcwdnAMCYE+vJJxd8=;
+        b=SyP7MAVgmdtc0W5OsV+PelxQmGrinkhuOxFSPRs8XMcAyQHgf6LZrNBB4tQZN8o3TC
+         LDZx7j70XAFmNEP7VKo5By6LgcPGqXrtCEJgu071nr9kFVfsGM1m/zEU2IjtUvxCXQ6t
+         KYGIPmXzlLlw0MGlV3kFSccG4PBg8vlZK+hxjp8OtIQo/AOFFOMdKLg5O6p6YwAN2tnV
+         UawCDAqFs6ot6SQP0G0t5SPjkstixl6JScQ/phY4oY/CgENH3VQjo0CpS+XJHG5ocNS+
+         YsDq5hlXONUxjKMWCr8070IL3omydSE4dLYCxrnwM5esnDVrBSmJgdI99y07qkxcLx4D
+         nxRw==
+X-Gm-Message-State: ABy/qLZE0PoZ2csYofcw7QdJbl+kJpoxAwQ+ec1JtycUdUijp6ZaLyoO
+        0XyQm3gYSlz432Cc5SQHD1w=
+X-Google-Smtp-Source: APBJJlEh9c/kQzxPjHbVrfQNHrqIxhlrxv3iPueOhYyz/CIbuUHkL6qmzkTMXEscczBc5Lw+NF7SMg==
+X-Received: by 2002:a05:6808:4d2:b0:3a4:1531:70b4 with SMTP id a18-20020a05680804d200b003a4153170b4mr303821oie.15.1689899100081;
+        Thu, 20 Jul 2023 17:25:00 -0700 (PDT)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id t25-20020a056808159900b0039ee1de4e6esm928210oiw.38.2023.07.20.17.24.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 17:24:59 -0700 (PDT)
+Message-ID: <f9b06056-ea24-c19b-def7-c84c3c089732@gmail.com>
+Date:   Wed, 19 Jul 2023 15:37:38 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230720070825.992023-1-yosryahmed@google.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/12] rust: init: consolidate init macros
+Content-Language: en-US
+To:     Benno Lossin <benno.lossin@proton.me>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <nmi@metaspace.dk>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230719141918.543938-1-benno.lossin@proton.me>
+ <20230719141918.543938-2-benno.lossin@proton.me>
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20230719141918.543938-2-benno.lossin@proton.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DATE_IN_PAST_24_48,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 07:08:17AM +0000, Yosry Ahmed wrote:
-> This patch series implements the proposal in LSF/MM/BPF 2023 conference
-> for reducing offline/zombie memcgs by memory recharging [1]. The main
-> difference is that this series focuses on recharging and does not
-> include eviction of any memory charged to offline memcgs.
+On 7/19/23 11:20, Benno Lossin wrote:
+> Merges the implementations of `try_init!` and `try_pin_init!`. These two
+> macros are very similar, but use different traits. The new macro
+> `__init_internal!` that is now the implementation for both takes these
+> traits as parameters.
 > 
-> Two methods of recharging are proposed:
+> This change does not affect any users, as no public API has been
+> changed, but it should simplify maintaining the init macros.
 > 
-> (a) Recharging of mapped folios.
-> 
-> When a memcg is offlined, queue an asynchronous worker that will walk
-> the lruvec of the offline memcg and try to recharge any mapped folios to
-> the memcg of one of the processes mapping the folio. The main assumption
-> is that a process mapping the folio is the "rightful" owner of the
-> memory.
-> 
-> Currently, this is only supported for evictable folios, as the
-> unevictable lru is imaginary and we cannot iterate the folios on it. A
-> separate proposal [2] was made to revive the unevictable lru, which
-> would allow recharging of unevictable folios.
-> 
-> (b) Deferred recharging of folios.
-> 
-> For folios that are unmapped, or mapped but we fail to recharge them
-> with (a), we rely on deferred recharging. Simply put, any time a folio
-> is accessed or dirtied by a userspace process, and that folio is charged
-> to an offline memcg, we will try to recharge it to the memcg of the
-> process accessing the folio. Again, we assume this process should be the
-> "rightful" owner of the memory. This is also done asynchronously to avoid
-> slowing down the data access path.
+> Reviewed-by: Björn Roy Baron <bjorn3_gh@protonmail.com>
+> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+> ---
+> [...]
 
-Unfortunately I have to agree with Johannes, Tejun and others who are not big
-fans of this approach.
-
-Lazy recharging leads to an interesting phenomena: a memory usage of a running
-workload may suddenly go up only because some other workload is terminated and
-now it's memory is being recharged. I find it confusing. It also makes hard
-to set up limits and/or guarantees.
-
-In general, I don't think we can handle shared memory well without getting rid
-of "whoever allocates a page, pays the full price" policy and making a shared
-ownership a fully supported concept. Of course, it's a huge work and I believe
-the only way we can achieve it is to compromise on the granularity of the
-accounting. Will the resulting system be better in the real life, it's hard to
-say in advance.
-
-Thanks!
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
