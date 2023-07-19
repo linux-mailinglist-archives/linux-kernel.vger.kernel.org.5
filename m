@@ -2,122 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 260E8758E97
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 296F8758E95
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbjGSHQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 03:16:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
+        id S229840AbjGSHQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 03:16:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbjGSHQJ (ORCPT
+        with ESMTP id S229812AbjGSHQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 03:16:09 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDD01FF1;
-        Wed, 19 Jul 2023 00:15:56 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C08E56606F57;
-        Wed, 19 Jul 2023 08:15:53 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689750954;
-        bh=iewCcJUfElKKyjKf+NtkxBXYK+aTi5ddhmCEGbtXwRo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=CM02QOPvcLxFcvDvKyuF+x7VBYLxDtdnZm3Em+Bksi1sPDcNkt/XxQZ4hiJR7jRqy
-         TkKx+HXvjGq/V1CIeYfoyQbKbAe57STrM6IeCXHpu45xzhJRic4prMgktjJewSYRTa
-         LKMOS2vo8jeQby3ka1XLMt/D004KpXLXiBrFEmnvr9gBiv8KlM0U9e48FmLJlTHAOL
-         DrcgsmaS7mbINDeUziq/ecF1pL0HkU2u5VS+76uzig/1Pf007F4ndac0eajmEj9M1i
-         3pV66jrFxzVUYxUxoYrCCQYMz723TP8lVwRF8s+/wnm3RpVlo0Oush32HclBZ+iFSr
-         L6tkPq7uOnayw==
-Message-ID: <ae40d54a-1599-a954-b18f-263196766a2d@collabora.com>
-Date:   Wed, 19 Jul 2023 09:15:51 +0200
+        Wed, 19 Jul 2023 03:16:06 -0400
+Received: from mail-ot1-f79.google.com (mail-ot1-f79.google.com [209.85.210.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5E0213F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:15:54 -0700 (PDT)
+Received: by mail-ot1-f79.google.com with SMTP id 46e09a7af769-6b75210454eso10280922a34.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:15:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689750954; x=1692342954;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SmMt+1RXtbKxP54dgvLSrwyxRWOOWeHY0qYMkvZw70c=;
+        b=X1gN4gk8TvL6Ah1lKUSYKzLqZ0efV3fqEcvZRBLtyNqIT5u6QrudT+LGPeNo+6O45O
+         jtjPSb/tyLZJlnwyCzdPlSfaBFD/dVP3PbphB3OVnUCXyXk7wH31+9aXfcbIqrD9isRC
+         ND8XYh1zq0bHo2M510zqmq5ds0wYA4+u+UFbB4Pc8q1wJa70yIyDmzvbAwgHk1U72Jrt
+         ags+/ips+EUmNcYZtsppgPms+4qURpH8JHfewWjT3abNgzmDdMMw5B5Z8JhSebwxt8j3
+         q4zgs3MdUlcg+ixma4Kub1XVDxFftGtdP8GiqabYlQy5tiSzjDmyXEAN7TH+hU/Whh+5
+         Q9UQ==
+X-Gm-Message-State: ABy/qLbjMPp1zqGZ4b92SE43GoSjpCZzGAsqBMz5CuI8WXADx1i/ZD6W
+        Q0By2WA42JHUgRr37YUMSNLPQTwRsvA+bl7oQdBVxCpPTxwb
+X-Google-Smtp-Source: APBJJlFRJxQIEVZon2lp0Rv8kpsFdjXr6IP6FbqEFKh8/DiX7zMrzuGeJVYa6LrCakym2Jy6Zx6SP8T/ozk6vQvTKF7s/bn7JRf0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v4 3/4] dt-bindings: soc: mediatek: pwrap: Modify
- compatible for MT8188
-Content-Language: en-US
-To:     Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     =?UTF-8?Q?N=c3=adcolas_F_=2e_R_=2e_A_=2e_Prado?= 
-        <nfraprado@collabora.com>, Chen-Yu Tsai <wenst@chromium.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
-References: <20230718110947.13426-1-jason-ch.chen@mediatek.com>
- <20230718110947.13426-4-jason-ch.chen@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230718110947.13426-4-jason-ch.chen@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:35c5:b0:1b0:2d25:f5ab with SMTP id
+ c5-20020a05687035c500b001b02d25f5abmr17058013oak.0.1689750954093; Wed, 19 Jul
+ 2023 00:15:54 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 00:15:54 -0700
+In-Reply-To: <00000000000067322b05fdfa973f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000060b4f90600d1cdd0@google.com>
+Subject: Re: [syzbot] [dri?] WARNING in vkms_get_vblank_timestamp (2)
+From:   syzbot <syzbot+93bd128a383695391534@syzkaller.appspotmail.com>
+To:     airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, hamohammed.sa@gmail.com,
+        linux-kernel@vger.kernel.org, melissa.srw@gmail.com,
+        rodrigosiqueiramelo@gmail.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
+        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 18/07/23 13:09, Jason-ch Chen ha scritto:
-> From: jason-ch chen <Jason-ch.Chen@mediatek.com>
-> 
-> The reason for changing the patch was that while MT8188 uses the same
-> pwrap as MT8195, the original code was only applicable to 'compatible =
-> "mediatek,mt8188-pwrap"'. To resolve the DTBS check warning that
-> '['mediatek,mt8188-pwrap', 'mediatek,mt8195-pwrap', 'syscon'] is too
-> long', it is necessary to modify the code.
-> 
-> Signed-off-by: jason-ch chen <Jason-ch.Chen@mediatek.com>
+syzbot has found a reproducer for the following issue on:
 
-The original binding allowed only "mediatek,mt8188-pwrap", while we need
-to specify
+HEAD commit:    e40939bbfc68 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=12abeba2a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c4a2640e4213bc2f
+dashboard link: https://syzkaller.appspot.com/bug?extid=93bd128a383695391534
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=107c6d56a80000
 
-compatible = "mediatek,mt8188-pwrap", "mediatek,mt8195-pwrap", "syscon";
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/9d87aa312c0e/disk-e40939bb.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/22a11d32a8b2/vmlinux-e40939bb.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/0978b5788b52/Image-e40939bb.gz.xz
 
-for this node, as MT8188's PWRAP is fully compatible with MT8195 as it is
-the very same IP, hence:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+93bd128a383695391534@syzkaller.appspotmail.com
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 25438 at drivers/gpu/drm/vkms/vkms_crtc.c:103 vkms_get_vblank_timestamp+0x1a4/0x1d4 drivers/gpu/drm/vkms/vkms_crtc.c:103
+Modules linked in:
+CPU: 1 PID: 25438 Comm: syz-executor.4 Not tainted 6.4.0-rc7-syzkaller-ge40939bbfc68 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
+pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : vkms_get_vblank_timestamp+0x1a4/0x1d4 drivers/gpu/drm/vkms/vkms_crtc.c:103
+lr : vkms_get_vblank_timestamp+0x1a4/0x1d4 drivers/gpu/drm/vkms/vkms_crtc.c:103
+sp : ffff800097a271f0
+x29: ffff800097a271f0 x28: ffff0000c612f080 x27: 0000000000000000
+x26: 1ffff00012f44e4c x25: 1ffff00012f44e70 x24: 0000000000000000
+x23: ffff0000cb948000 x22: dfff800000000000 x21: 000000df48e233a8
+x20: 000000df48e233a8 x19: ffff800097a27380 x18: ffff800097a27d28
+x17: 0000000000000000 x16: ffff80008a395170 x15: 0000000000000000
+x14: 1ffff00011bde0ac x13: 0000000000000000 x12: ffff80009a3d9000
+x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
+x8 : ffff0000d881b780 x7 : 0000000000000000 x6 : ffff80009a3d9000
+x5 : ffff0000d08378e8 x4 : ffff0000d08378a8 x3 : 0000000000000000
+x2 : ffff800097a27380 x1 : 000000df48e233a8 x0 : 000000df48e233a8
+Call trace:
+ vkms_get_vblank_timestamp+0x1a4/0x1d4 drivers/gpu/drm/vkms/vkms_crtc.c:103
+ drm_crtc_get_last_vbltimestamp drivers/gpu/drm/drm_vblank.c:877 [inline]
+ drm_crtc_next_vblank_start+0x1d4/0x3e0 drivers/gpu/drm/drm_vblank.c:1012
+ set_fence_deadline drivers/gpu/drm/drm_atomic_helper.c:1537 [inline]
+ drm_atomic_helper_wait_for_fences+0x200/0x7c4 drivers/gpu/drm/drm_atomic_helper.c:1584
+ drm_atomic_helper_commit+0x500/0x94c drivers/gpu/drm/drm_atomic_helper.c:2013
+ drm_atomic_commit+0x24c/0x2a0 drivers/gpu/drm/drm_atomic.c:1503
+ drm_client_modeset_commit_atomic+0x5a4/0x730 drivers/gpu/drm/drm_client_modeset.c:1045
+ drm_client_modeset_commit_locked+0xd0/0x4a8 drivers/gpu/drm/drm_client_modeset.c:1148
+ drm_client_modeset_commit+0x50/0x7c drivers/gpu/drm/drm_client_modeset.c:1174
+ __drm_fb_helper_restore_fbdev_mode_unlocked drivers/gpu/drm/drm_fb_helper.c:251 [inline]
+ drm_fb_helper_restore_fbdev_mode_unlocked drivers/gpu/drm/drm_fb_helper.c:278 [inline]
+ drm_fb_helper_lastclose+0xc0/0x160 drivers/gpu/drm/drm_fb_helper.c:2363
+ drm_fbdev_generic_client_restore+0x3c/0x50 drivers/gpu/drm/drm_fbdev_generic.c:260
+ drm_client_dev_restore+0x12c/0x24c drivers/gpu/drm/drm_client.c:236
+ drm_lastclose drivers/gpu/drm/drm_file.c:462 [inline]
+ drm_release+0x500/0x608 drivers/gpu/drm/drm_file.c:493
+ __fput+0x30c/0x7bc fs/file_table.c:321
+ ____fput+0x20/0x30 fs/file_table.c:349
+ task_work_run+0x230/0x2e0 kernel/task_work.c:179
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ do_notify_resume+0x2180/0x3c90 arch/arm64/kernel/signal.c:1305
+ exit_to_user_mode_prepare arch/arm64/kernel/entry-common.c:137 [inline]
+ exit_to_user_mode arch/arm64/kernel/entry-common.c:144 [inline]
+ el0_svc+0x94/0x160 arch/arm64/kernel/entry-common.c:648
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+irq event stamp: 2010
+hardirqs last  enabled at (2009): [<ffff80008a44626c>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:84 [inline]
+hardirqs last  enabled at (2009): [<ffff80008a44626c>] exit_to_kernel_mode+0xdc/0x10c arch/arm64/kernel/entry-common.c:94
+hardirqs last disabled at (2010): [<ffff80008a443db4>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:407
+softirqs last  enabled at (1920): [<ffff800080034380>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
+softirqs last disabled at (1918): [<ffff80008003434c>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
+---[ end trace 0000000000000000 ]---
 
-Regards,
-Angelo
 
-> ---
->   .../devicetree/bindings/soc/mediatek/mediatek,pwrap.yaml    | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/mediatek/mediatek,pwrap.yaml b/Documentation/devicetree/bindings/soc/mediatek/mediatek,pwrap.yaml
-> index a06ac2177444..4737e5f45d54 100644
-> --- a/Documentation/devicetree/bindings/soc/mediatek/mediatek,pwrap.yaml
-> +++ b/Documentation/devicetree/bindings/soc/mediatek/mediatek,pwrap.yaml
-> @@ -41,7 +41,6 @@ properties:
->                 - mediatek,mt8173-pwrap
->                 - mediatek,mt8183-pwrap
->                 - mediatek,mt8186-pwrap
-> -              - mediatek,mt8188-pwrap
->                 - mediatek,mt8195-pwrap
->                 - mediatek,mt8365-pwrap
->                 - mediatek,mt8516-pwrap
-> @@ -50,6 +49,11 @@ properties:
->                 - mediatek,mt8186-pwrap
->                 - mediatek,mt8195-pwrap
->             - const: syscon
-> +      - items:
-> +          - enum:
-> +              - mediatek,mt8188-pwrap
-> +          - const: mediatek,mt8195-pwrap
-> +          - const: syscon
->   
->     reg:
->       minItems: 1
-
-
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
