@@ -2,133 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C06759F16
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F53F759F1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbjGST4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 15:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42010 "EHLO
+        id S231296AbjGST5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 15:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbjGST4e (ORCPT
+        with ESMTP id S229981AbjGST47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 15:56:34 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBA392;
-        Wed, 19 Jul 2023 12:56:33 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbc12181b6so75084895e9.2;
-        Wed, 19 Jul 2023 12:56:32 -0700 (PDT)
+        Wed, 19 Jul 2023 15:56:59 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7B61FCE
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:56:58 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-51de9c2bc77so10028131a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:56:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689796591; x=1692388591;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=szeredi.hu; s=google; t=1689796616; x=1692388616;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HkXfqP5HTc7LAT471rM4RtSLWgyDDA4RKqfhTSA/bHM=;
-        b=Ur6fXRxqNVu6iJfQVwhSvCj8F/Ub6ioJGh7LOMqSUduRNJ5g723VsQ3iS5DTqLbDPi
-         LM3fTKR8y2LLZkbP/K1+550CBQ6qVN7I/j9R/2LfV47wk0ygWxvRbAD+bJu0uxO0vJCS
-         1qTuPTjblcCvUd5+R2JwFuLqpVdGC02ud8M2sPOomwQNJKcUPCceKjlbI/Yi26s8fv8O
-         tGFgSvHwXxNIEG136IZMdJYdeeGHq0NxbPfFMJ+cTHnL6YHY1ipyWJuVZhq4JnkMaWfl
-         5gdcBXWA8wxg7fW99UtS5X9wAeO3FEIfL6xEaA2OIoFO/z5d4jLZetn6i4xm97sfv1r6
-         0jUg==
+        bh=eCAWdeG436mH+DfARvo16QjhMFi/Eb5+1UBeyzzjyUI=;
+        b=KDf25kUkA8y5VPkkc7HrbMTq3b2TUQ9qV1Rqf5zm3CstAGUdbu1d6TNxedY+pIsa7j
+         2FZ1elHv1v1po8knHje3+LiAmx8Xahh5ExqZRnI0mXGfRX7m3EFLlyAK10LkH8G1Mz8+
+         NL2rNXbVT3ccaArlkF+ebJlcCMIxueJ9R+uLs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689796591; x=1692388591;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689796616; x=1692388616;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HkXfqP5HTc7LAT471rM4RtSLWgyDDA4RKqfhTSA/bHM=;
-        b=mH4+codFjN+dEuv4m6zMQA4AFBIeENO+63sAouyvMlJwHLHyW2QovcFEmFENaaRexg
-         X11+ddhIUT9qMW6zCz4oGeowgePLqDVUICmuu2QVENKTKWTDu+AKGR257fWf4b42iBgX
-         0s8AMBCKpmlLXu7/bFsm1hZboajJyQSo5iG1B/b6WhwHBY4v0BMZ0lua43eKVcbpd2mR
-         eMpevKJelYYgiHSFWQEL9s56QankdPI263qUaA2X9v7qlR6tjWfom1Q2NIdCU2SXPW6l
-         xM+TYMw3qsluyPfR1Of5WvGgO1c+q3j1KJoLr3yQRmdRNU8XIu0+0A7GuaJaCtUbVZVc
-         Gdvg==
-X-Gm-Message-State: ABy/qLaijR9epKlTjtQUnhSfutbqa0LXWmsfLO6o/3xI8WmTcCBM9qH0
-        LJeJimd3o3ZwG/cf8OKKiF4=
-X-Google-Smtp-Source: APBJJlFr+x78/f/4ot76lC8mJxJeAa7g9BNSia7Aug5kEv7lgO0VS3TFcD/HAU9e5hLbCT97nsVT4w==
-X-Received: by 2002:a05:600c:2494:b0:3fb:b1fd:4183 with SMTP id 20-20020a05600c249400b003fbb1fd4183mr316396wms.12.1689796591016;
-        Wed, 19 Jul 2023 12:56:31 -0700 (PDT)
-Received: from jernej-laptop.localnet (82-149-1-233.dynamic.telemach.net. [82.149.1.233])
-        by smtp.gmail.com with ESMTPSA id w13-20020a5d680d000000b00313e2abfb8dsm6093571wru.92.2023.07.19.12.56.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 12:56:30 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Vasily Khoruzhick <anarsoul@gmail.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>, Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] thermal/drivers/sun8i: Free calibration nvmem after reading it
-Date:   Wed, 19 Jul 2023 21:56:27 +0200
-Message-ID: <13308789.uLZWGnKmhe@jernej-laptop>
-In-Reply-To: <20230719-thermal-sun8i-free-nvmem-v1-1-f553d5afef79@kernel.org>
-References: <20230719-thermal-sun8i-free-nvmem-v1-1-f553d5afef79@kernel.org>
+        bh=eCAWdeG436mH+DfARvo16QjhMFi/Eb5+1UBeyzzjyUI=;
+        b=kGc9oFTWXYNNVS84hC/I1xK4BlUFOUSMb8EFLlDyUVwdHvW1wj5uEvMUgp47tErvM1
+         NZZ1jr7Mds3hXA7VlS2MPVtI5fhrY3MQOUE9f0l4fAA6NpLnI7E3e37iWsBmyVk0YChj
+         X+x3HsvdRpHhpAUAxSAh1sbldscbtLHSFrHVPESMMDCCbB9o1Bm9C9dKnwliaEUR9SKb
+         4LBQSIT20CEHr/pviKv2785skff31/NSva8giquCTqDZpWZkiDcqeoYOn1bb0WNITQrw
+         NI3HvbU3SBp6jlyfdfWwFqgFlknz6+YCcO7oc12cZF88F3bIsfG8UB9FE3U/wok0V7T0
+         R3Hw==
+X-Gm-Message-State: ABy/qLZwmetFXZ+LQydmwZ1jIhwu+Rc/kWUSeleK5wEjXYVK38VvsOVM
+        TyqNq7ExSveWedDW17BPRzk0OVSf3RgBGPbp1B6DIg==
+X-Google-Smtp-Source: APBJJlHY/0j9zo7xINflNaeK8tuqOdnpsiGywd4+hJhWLhzGqpSvrN0Bo9bC2obyVshWt0JU/Kz9CjVIL8pOynOaHLU=
+X-Received: by 2002:a17:906:7485:b0:993:f497:adbe with SMTP id
+ e5-20020a170906748500b00993f497adbemr4056662ejl.19.1689796616378; Wed, 19 Jul
+ 2023 12:56:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20230629155433.4170837-1-dhowells@redhat.com> <20230629155433.4170837-2-dhowells@redhat.com>
+ <CAJfpegsJuvXJDcXpo9T19Gw0tDuvyOJdv44Y2bt04MEf1JLxGg@mail.gmail.com>
+ <c634a18e-9f2b-4746-bd8f-aa1d41e6ddf7@mattwhitlock.name> <CAJfpegvq4M_Go7fHiWVBBkrK6h4ChLqQTd0+EOKbRWZDcVerWA@mail.gmail.com>
+ <ZLg9HbhOVnLk1ogA@casper.infradead.org>
+In-Reply-To: <ZLg9HbhOVnLk1ogA@casper.infradead.org>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 19 Jul 2023 21:56:44 +0200
+Message-ID: <CAJfpegtYQXgAyejoYWRVkf+9y91O70jaTu+mm+3zhnGPJhKwcA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/4] splice: Fix corruption of spliced data after
+ splice() returns
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Matt Whitlock <kernel@mattwhitlock.name>,
+        David Howells <dhowells@redhat.com>, netdev@vger.kernel.org,
+        Dave Chinner <david@fromorbit.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@kvack.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne sreda, 19. julij 2023 ob 02:58:54 CEST je Mark Brown napisal(a):
-> The sun8i thermal driver reads calibration data via the nvmem API at
-> startup, updating the device configuration and not referencing the data
-> again.  Rather than explicitly freeing the nvmem data the driver relies
-> on devm_ to release it, even though the data is never referenced again.
-> The allocation is still tracked so it's not leaked but this is notable
-> when looking at the code and is a little wasteful so let's instead
-> explicitly free the nvmem after we're done with it.
-> 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+On Wed, 19 Jul 2023 at 21:44, Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Wed, Jul 19, 2023 at 09:35:33PM +0200, Miklos Szeredi wrote:
+> > On Wed, 19 Jul 2023 at 19:59, Matt Whitlock <kernel@mattwhitlock.name> =
+wrote:
+> > >
+> > > On Wednesday, 19 July 2023 06:17:51 EDT, Miklos Szeredi wrote:
+> > > > On Thu, 29 Jun 2023 at 17:56, David Howells <dhowells@redhat.com> w=
+rote:
+> > > >>
+> > > >> Splicing data from, say, a file into a pipe currently leaves the s=
+ource
+> > > >> pages in the pipe after splice() returns - but this means that tho=
+se pages
+> > > >> can be subsequently modified by shared-writable mmap(), write(),
+> > > >> fallocate(), etc. before they're consumed.
+> > > >
+> > > > What is this trying to fix?   The above behavior is well known, so
+> > > > it's not likely to be a problem.
+> > >
+> > > Respectfully, it's not well-known, as it's not documented. If the spl=
+ice(2)
+> > > man page had mentioned that pages can be mutated after they're alread=
+y
+> > > ostensibly at rest in the output pipe buffer, then my nightly backups
+> > > wouldn't have been incurring corruption silently for many months.
+> >
+> > splice(2):
+> >
+> >        Though we talk of copying, actual copies are generally avoided.
+> > The kernel does this by implementing a pipe buffer as a set  of
+> > refer=E2=80=90
+> >        ence-counted  pointers  to  pages  of kernel memory.  The
+> > kernel creates "copies" of pages in a buffer by creating new pointers
+> > (for the
+> >        output buffer) referring to the pages, and increasing the
+> > reference counts for the pages: only pointers are copied, not the
+> > pages of the
+> >        buffer.
+> >
+> > While not explicitly stating that the contents of the pages can change
+> > after being spliced, this can easily be inferred from the above
+> > semantics.
+>
+> So what's the API that provides the semantics of _copying_?
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+What's your definition of copying?
 
-Best regards,
-Jernej
-
-> ---
->  drivers/thermal/sun8i_thermal.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/thermal/sun8i_thermal.c
-> b/drivers/thermal/sun8i_thermal.c index 195f3c5d0b38..af3098717e3c 100644
-> --- a/drivers/thermal/sun8i_thermal.c
-> +++ b/drivers/thermal/sun8i_thermal.c
-> @@ -286,7 +286,7 @@ static int sun8i_ths_calibrate(struct ths_device *tmdev)
-> size_t callen;
->  	int ret = 0;
-> 
-> -	calcell = devm_nvmem_cell_get(dev, "calibration");
-> +	calcell = nvmem_cell_get(dev, "calibration");
->  	if (IS_ERR(calcell)) {
->  		if (PTR_ERR(calcell) == -EPROBE_DEFER)
->  			return -EPROBE_DEFER;
-> @@ -316,6 +316,8 @@ static int sun8i_ths_calibrate(struct ths_device *tmdev)
-> 
->  	kfree(caldata);
->  out:
-> +	if (!IS_ERR(calcell))
-> +		nvmem_cell_put(calcell);
->  	return ret;
->  }
-> 
-> 
-> ---
-> base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
-> change-id: 20230718-thermal-sun8i-free-nvmem-3e9e21306e3e
-> 
-> Best regards,
-
-
-
-
+Thanks,
+Miklos
