@@ -2,183 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 927A9758E1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 08:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B234C758E22
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 08:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbjGSGvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 02:51:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37414 "EHLO
+        id S231207AbjGSGwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 02:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbjGSGvI (ORCPT
+        with ESMTP id S229731AbjGSGwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 02:51:08 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043851FCD
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 23:51:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689749465; x=1721285465;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=xrAa/EfRGIe1Mjva05iGB8sMeeB2R7tIWEue9UWVP2w=;
-  b=Yb7N3hz+bfI6o85dusi0VuiS1hn0KHuybOHrNnunq3Pu+VHQqzdmj1er
-   GIDGjXuX17PkeLhZHAqSN03DKeXqEOZI9hDqT4DR2EF9D3h+m48md00sD
-   7f9xVFgAljF/WeueKMGi4CNaAkNKIDO7BrRr4f3Y5E5UvqFcOh3JDQQw0
-   TlpZXgoh2NtaZauL/bysw7G8T8IMIWwnyDhSb1m4v4bxdafem8IebYif4
-   5AhGv/+6O81hycMWJK2cChIuWHiFn7R5juaq1fVmx9AuTT8OzrzwsS+mO
-   GJAVR5XiRXz6rEwMPRzBlYpqPYK24xLYKobT8S815ZDk0IM6CHdMUHnTO
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="365265527"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="365265527"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 23:51:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="789302607"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="789302607"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 18 Jul 2023 23:51:03 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qM11a-0004E7-1H;
-        Wed, 19 Jul 2023 06:51:02 +0000
-Date:   Wed, 19 Jul 2023 14:50:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Zhang Rui <rui.zhang@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: drivers/powercap/intel_rapl_tpmi.c:141:41: sparse: sparse: incorrect
- type in initializer (different address spaces)
-Message-ID: <202307191405.B2ozLURw-lkp@intel.com>
+        Wed, 19 Jul 2023 02:52:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6DA1BFC
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 23:51:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689749514;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RmgXaAba/oCYxBLIcW2af9UbEUzL3nU3I4mLOpLAlGU=;
+        b=itukjsw2sa5ZS8Zvbd/FYchDvEeN6NxQ/DyYvALboS49Sco4zkRGoHUWvvKB/YwEy9OWBm
+        z2oOViQ4VSbNIhrsp/3RR+0zDVyx2fwjCHYtkCdzC1ygvGY/X+ERB/mcfSTxPBQ/xJ/N4S
+        tm0OgTnf3d1g3AVsXErI8trG6BDNpf4=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-395-8Vs1XdscMVCgwj-zKUJ2Hg-1; Wed, 19 Jul 2023 02:51:53 -0400
+X-MC-Unique: 8Vs1XdscMVCgwj-zKUJ2Hg-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-4fccf211494so5238540e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 23:51:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689749510; x=1692341510;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RmgXaAba/oCYxBLIcW2af9UbEUzL3nU3I4mLOpLAlGU=;
+        b=JCJoGi1leeUHwT8wcvXjOzkVkTf9hmrZtBSgm5IvqLgGSXZld3rCxFlRQesK0QJ4J+
+         Wo/eun1TtuK+kCk+NVy7NASz8905JnzotOcp/QKtuhr1uSNQhBo240GiFyPgr+IUvZco
+         1sAWgkhfIHuNYu+tw7anrsszJoD4Td8ck7JlrrbgsxUv741yi3rEokEyrcZ9v7/nrIKb
+         6DP1HibEZh/pqIjreh/dmc3P4gNWIlFb07Ul2wsYslexn7/eENVqhdqAF3sFQSaXjV/P
+         3zg0NVjKFvadVsuboOLvOrXTqD4FoaIjxtO47ZVL9wNBhVCw1j+2E7LVQqEIh1WuDZOb
+         oi+w==
+X-Gm-Message-State: ABy/qLZVBKotxnb309TO8lxOnQSeC1wPCoJCCA8lj8eRey/spG7LUerl
+        CJgJ/EkjZk5dfKTs3uDDCwbxFkItIvnsMaMlKBdXgCfSd0EWuwVvt1eyW+Aj4ZG13Uj+G1Ri/BP
+        nPsY88gIOS4w623HIP9ccKVf1Vn3itOQ=
+X-Received: by 2002:a05:6512:4002:b0:4fb:7c40:9f97 with SMTP id br2-20020a056512400200b004fb7c409f97mr13453076lfb.27.1689749510631;
+        Tue, 18 Jul 2023 23:51:50 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHiblX6I1VK85JRK6ZfiR6zQ/918ty6VbbTzNPHQVPdj/huza5v97okOnE6LLJAIPpT3GEn4A==
+X-Received: by 2002:a05:6512:4002:b0:4fb:7c40:9f97 with SMTP id br2-20020a056512400200b004fb7c409f97mr13453059lfb.27.1689749510204;
+        Tue, 18 Jul 2023 23:51:50 -0700 (PDT)
+Received: from [192.168.1.121] (85-23-20-79.bb.dnainternet.fi. [85.23.20.79])
+        by smtp.gmail.com with ESMTPSA id a12-20020a19f80c000000b004fa5f4fd094sm801329lff.266.2023.07.18.23.51.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 23:51:49 -0700 (PDT)
+Message-ID: <2b66797b-3ee9-a70f-25d0-dcab830859d2@redhat.com>
+Date:   Wed, 19 Jul 2023 09:51:48 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] mm: hugetlb_vmemmap: use PageCompound() instead of
+ PageReserved()
+Content-Language: en-US
+To:     Muchun Song <songmuchun@bytedance.com>, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20230719063132.37676-1-songmuchun@bytedance.com>
+From:   =?UTF-8?Q?Mika_Penttil=c3=a4?= <mpenttil@redhat.com>
+In-Reply-To: <20230719063132.37676-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ccff6d117d8dc8d8d86e8695a75e5f8b01e573bf
-commit: 9eef7f9da928c54149199e7b3215b82c2d595ccd powercap: intel_rapl: Introduce RAPL TPMI interface driver
-date:   8 weeks ago
-config: x86_64-randconfig-x061-20230719 (https://download.01.org/0day-ci/archive/20230719/202307191405.B2ozLURw-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230719/202307191405.B2ozLURw-lkp@intel.com/reproduce)
+Hi,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307191405.B2ozLURw-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/powercap/intel_rapl_tpmi.c:141:41: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [usertype] *tpmi_rapl_regs @@     got void [noderef] __iomem * @@
-   drivers/powercap/intel_rapl_tpmi.c:141:41: sparse:     expected unsigned long long [usertype] *tpmi_rapl_regs
-   drivers/powercap/intel_rapl_tpmi.c:141:41: sparse:     got void [noderef] __iomem *
+On 19.7.2023 9.31, Muchun Song wrote:
+> The ckeck of PageReserved() is easy to be broken in the future, PageCompound()
+> is more stable to check if the page should be split.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>   mm/hugetlb_vmemmap.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> index 4b9734777f69..8068fe890f52 100644
+> --- a/mm/hugetlb_vmemmap.c
+> +++ b/mm/hugetlb_vmemmap.c
+> @@ -73,8 +73,10 @@ static int split_vmemmap_huge_pmd(pmd_t *pmd, unsigned long start)
+>   		 * be treated as indepdenent small pages (as they can be freed
+>   		 * individually).
+>   		 */
+> -		if (!PageReserved(head))
+> +		if (PageCompound(head)) {
+> +			VM_BUG_ON(compound_order(head) != get_order(PMD_SIZE));
+>   			split_page(head, get_order(PMD_SIZE));
 
-vim +141 drivers/powercap/intel_rapl_tpmi.c
+I think vmemmap pages are not compound pages (even order > 0).
+They would bug on here trying to split_page() :
 
-   132	
-   133	static int parse_one_domain(struct tpmi_rapl_package *trp, u32 offset)
-   134	{
-   135		u8 tpmi_domain_version;
-   136		enum rapl_domain_type domain_type;
-   137		enum tpmi_rapl_domain_type tpmi_domain_type;
-   138		enum tpmi_rapl_register reg_index;
-   139		enum rapl_domain_reg_id reg_id;
-   140		int tpmi_domain_size, tpmi_domain_flags;
- > 141		u64 *tpmi_rapl_regs = trp->base + offset;
-   142		u64 tpmi_domain_header = readq((void __iomem *)tpmi_rapl_regs);
-   143	
-   144		/* Domain Parent bits are ignored for now */
-   145		tpmi_domain_version = tpmi_domain_header & 0xff;
-   146		tpmi_domain_type = tpmi_domain_header >> 8 & 0xff;
-   147		tpmi_domain_size = tpmi_domain_header >> 16 & 0xff;
-   148		tpmi_domain_flags = tpmi_domain_header >> 32 & 0xffff;
-   149	
-   150		if (tpmi_domain_version != TPMI_RAPL_VERSION) {
-   151			pr_warn(FW_BUG "Unsupported version:%d\n", tpmi_domain_version);
-   152			return -ENODEV;
-   153		}
-   154	
-   155		/* Domain size: in unit of 128 Bytes */
-   156		if (tpmi_domain_size != 1) {
-   157			pr_warn(FW_BUG "Invalid Domain size %d\n", tpmi_domain_size);
-   158			return -EINVAL;
-   159		}
-   160	
-   161		/* Unit register and Energy Status register are mandatory for each domain */
-   162		if (!(tpmi_domain_flags & BIT(TPMI_RAPL_REG_UNIT)) ||
-   163		    !(tpmi_domain_flags & BIT(TPMI_RAPL_REG_ENERGY_STATUS))) {
-   164			pr_warn(FW_BUG "Invalid Domain flag 0x%x\n", tpmi_domain_flags);
-   165			return -EINVAL;
-   166		}
-   167	
-   168		switch (tpmi_domain_type) {
-   169		case TPMI_RAPL_DOMAIN_PACKAGE:
-   170			domain_type = RAPL_DOMAIN_PACKAGE;
-   171			break;
-   172		case TPMI_RAPL_DOMAIN_SYSTEM:
-   173			domain_type = RAPL_DOMAIN_PLATFORM;
-   174			break;
-   175		case TPMI_RAPL_DOMAIN_MEMORY:
-   176			domain_type = RAPL_DOMAIN_DRAM;
-   177			break;
-   178		default:
-   179			pr_warn(FW_BUG "Unsupported Domain type %d\n", tpmi_domain_type);
-   180			return -EINVAL;
-   181		}
-   182	
-   183		if (trp->priv.regs[domain_type][RAPL_DOMAIN_REG_UNIT]) {
-   184			pr_warn(FW_BUG "Duplicate Domain type %d\n", tpmi_domain_type);
-   185			return -EINVAL;
-   186		}
-   187	
-   188		reg_index = TPMI_RAPL_REG_HEADER;
-   189		while (++reg_index != TPMI_RAPL_REG_MAX) {
-   190			if (!(tpmi_domain_flags & BIT(reg_index)))
-   191				continue;
-   192	
-   193			switch (reg_index) {
-   194			case TPMI_RAPL_REG_UNIT:
-   195				reg_id = RAPL_DOMAIN_REG_UNIT;
-   196				break;
-   197			case TPMI_RAPL_REG_PL1:
-   198				reg_id = RAPL_DOMAIN_REG_LIMIT;
-   199				trp->priv.limits[domain_type] |= BIT(POWER_LIMIT1);
-   200				break;
-   201			case TPMI_RAPL_REG_PL2:
-   202				reg_id = RAPL_DOMAIN_REG_PL2;
-   203				trp->priv.limits[domain_type] |= BIT(POWER_LIMIT2);
-   204				break;
-   205			case TPMI_RAPL_REG_PL4:
-   206				reg_id = RAPL_DOMAIN_REG_PL4;
-   207				trp->priv.limits[domain_type] |= BIT(POWER_LIMIT4);
-   208				break;
-   209			case TPMI_RAPL_REG_ENERGY_STATUS:
-   210				reg_id = RAPL_DOMAIN_REG_STATUS;
-   211				break;
-   212			case TPMI_RAPL_REG_PERF_STATUS:
-   213				reg_id = RAPL_DOMAIN_REG_PERF;
-   214				break;
-   215			case TPMI_RAPL_REG_POWER_INFO:
-   216				reg_id = RAPL_DOMAIN_REG_INFO;
-   217				break;
-   218			default:
-   219				continue;
-   220			}
-   221			trp->priv.regs[domain_type][reg_id] = (u64)&tpmi_rapl_regs[reg_index];
-   222		}
-   223	
-   224		return 0;
-   225	}
-   226	
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+void split_page(struct page *page, unsigned int order)
+{
+         int i;
+
+         VM_BUG_ON_PAGE(PageCompound(page), page);
+
+
+> +		}
+>   
+>   		/* Make pte visible before pmd. See comment in pmd_install(). */
+>   		smp_wmb();
+
+--Mika
+
