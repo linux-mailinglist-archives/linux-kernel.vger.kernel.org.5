@@ -2,114 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 841FC75A2CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 01:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73D075A2D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 01:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjGSXZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 19:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37770 "EHLO
+        id S229666AbjGSX0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 19:26:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjGSXY7 (ORCPT
+        with ESMTP id S229452AbjGSX0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 19:24:59 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959852102
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 16:24:54 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-668704a5b5bso144568b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 16:24:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1689809094; x=1690413894;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QMBXWfDTfMeBEXpKpdrCux7UOxDUWWDJl0r9KLthi7I=;
-        b=RitoPG5vg2KH92ckG+V7d8L8L9W7M1MBD8JemTd7YYR3fTJrTOVFYtqqXzUnBKMuir
-         5mWALTL5KmWaQJU0sCdTf1pDvm6hLmYvUeYrkwPsO1SZCFet8sGivcjzWo2/jJSQ+69r
-         tWFF5/07XRl/q/8uN+rCYjwQhkZBkDDkJmR7gbwa/MDL9f0w0sZGSvooJmm5Ax+0ioy1
-         H/sOq8DkuI4B9Gm5OL3DqroseeCwVW7yCWj9quaQcgXz/+7NKt05sQF+GJ9/12jWPXZ6
-         8j+EKQKrYcWo0PuWQibJD8tsH5yifa7BtFwNC8Ufe7awQAN0xt48aMlwNrlWN/lcUSoO
-         93QA==
+        Wed, 19 Jul 2023 19:26:33 -0400
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19AA9D
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 16:26:32 -0700 (PDT)
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3a337ddff03so410213b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 16:26:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689809094; x=1690413894;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QMBXWfDTfMeBEXpKpdrCux7UOxDUWWDJl0r9KLthi7I=;
-        b=U/gcPUwKnWkajpz2GohgD3DanyeAosETax+yI09fWg815I/YnleaBo9FgOZb/xtdK3
-         tRK4riOUr/zX1MXiKFpl3iAZh+njA7Q1oeAT8CeDPhWbP8sAh7bxYpOwlQ3X7lLdg8W+
-         WIw4R4IirY4dMZxpuRXqVWIx0DSVJyBDa3zElPylk6wmorNW6ay/yQPDbKiHE0D6Y2Bc
-         7W/xdrFrL29gCjQKwgwucUVN6oR6C0Owi5z+jyLUY+iV6R6hj2nWAzjuyjfmQ2yfd4+a
-         XGgBpdeezDVOf+3wuGfvBZrPD+wbrIqcuEBtLkVRcbEzzfzlPDVMusF7db9FQjL9EtTC
-         aIDQ==
-X-Gm-Message-State: ABy/qLZiZX9esjCYoDlJRStcUCSuGo8Rf4kNdT4c93ZuzdHFmqJ2KpTT
-        McZ7uWZoHPWn8E3wmgLZSQsabLChdSfPFJYoAFg=
-X-Google-Smtp-Source: APBJJlF1RVY7gVrV+x6J0pGqg/vEpRGAJ3WpkIaplw7rwOALVicAHlHdlSUsDv1w5+4aog7vtr7zhQ==
-X-Received: by 2002:a05:6a20:840b:b0:126:a80d:4960 with SMTP id c11-20020a056a20840b00b00126a80d4960mr28216893pzd.30.1689809094040;
-        Wed, 19 Jul 2023 16:24:54 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id g23-20020aa78757000000b0067a1f4f4f7dsm3780558pfo.169.2023.07.19.16.24.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 16:24:53 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qMGXL-002tBd-Tt;
-        Wed, 19 Jul 2023 20:24:51 -0300
-Date:   Wed, 19 Jul 2023 20:24:51 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Stephen Hemminger <stephen@networkplumber.org>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        netdev@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: [RFC PATCH 00/10] Device Memory TCP
-Message-ID: <ZLhww+P+7zhTTUk7@ziepe.ca>
-References: <12393cd2-4b09-4956-fff0-93ef3929ee37@kernel.org>
- <CAHS8izNPTwtk+zN7XYt-+ycpT+47LMcRrYXYh=suTXCZQ6-rVQ@mail.gmail.com>
- <ZLbUpdNYvyvkD27P@ziepe.ca>
- <20230718111508.6f0b9a83@kernel.org>
- <35f3ec37-11fe-19c8-9d6f-ae5a789843cb@kernel.org>
- <20230718112940.2c126677@kernel.org>
- <eb34f812-a866-a1a3-9f9b-7d5054d17609@kernel.org>
- <20230718154503.0421b4cd@kernel.org>
- <CAHS8izPORN=r2-hzYSgN4s_Aoo2dnwoJXrU5Hu=43sb8zsWyhQ@mail.gmail.com>
- <20230719105711.448f8cad@hermes.local>
+        d=1e100.net; s=20221208; t=1689809192; x=1692401192;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rDOSJedoPxepoA025WtTczNfxj6NuTnlUwyZGaEdBWQ=;
+        b=G785T+aCwrjDTtKeC9sg0boDCHF1MOVGP2/2C8hT9LDOyS20rmPU3oVkIVhxmcLTkK
+         sZ19SQwNG/OeAZpgn2/5DFErwwEOp54XKfRQE85HPdu1u/iErh2YcpOMGBwds2HAt7/S
+         /z/zHZsLE1aSQk7yxqLfy/jOuE5EYvQYlPnX3huIET1eZGP69faJfTv8vACVUwrgQP/B
+         FGLlWld/B9BnHMZId08RiMb3l77kWWps4kFn+eBYlP74av5TFij7kN6Vfq5MXjxpJhHz
+         hsYd/wscYSfSOxocwz0I4orBi9NmedR757vNt4Q+26bJ7HLeZlW1TE1zE1pI/1S7dDzD
+         5Wbw==
+X-Gm-Message-State: ABy/qLZ11fsLGg+kEhEX8FZA0Z9F/TknEwWufevAeya9o20fctmutug1
+        sWjRawodpP/h2AS033h76oH3h+8LS12CJdT1FZ38RC/CoXRp
+X-Google-Smtp-Source: APBJJlFC2ZIZQe11DY4AlEV9XSZwIkOQl6yUaNY2ZQXgFznDb77YxI28US8bJG3TeSgFAXTXgYl/lIQ0iX2MD1PcZjIVGEgz2emD
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230719105711.448f8cad@hermes.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:13d5:b0:3a3:fa78:415d with SMTP id
+ d21-20020a05680813d500b003a3fa78415dmr7381617oiw.9.1689809192346; Wed, 19 Jul
+ 2023 16:26:32 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 16:26:32 -0700
+In-Reply-To: <e5c7184e93d32d44196e3ac23d88f1fa@disroot.org>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a5e9f60600df5c80@google.com>
+Subject: Re: [syzbot] [hfs?] kernel BUG in hfsplus_show_options
+From:   syzbot <syzbot+98d3ceb7e01269e7bf4f@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sel4@disroot.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 10:57:11AM -0700, Stephen Hemminger wrote:
+Hello,
 
-> Naive idea.
-> Would it be possible for process to use mmap() on the GPU memory and then
-> do zero copy TCP receive some how? Or is this what is being proposed.
+syzbot tried to test the proposed patch but the build/boot failed:
 
-It could be possible, but currently there is no API to recover the
-underlying dmabuf from the VMA backing the mmap.
+failed to apply patch:
+checking file include/linux/fortify-string.h
+patch: **** unexpected end of file in patch
 
-Also you can't just take arbitary struct pages from any old VMA and
-make them "netmem"
 
-Jason
+
+Tested on:
+
+commit:         aeba4568 Add linux-next specific files for 20230718
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+dashboard link: https://syzkaller.appspot.com/bug?extid=98d3ceb7e01269e7bf4f
+compiler:       
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10bbdd92a80000
+
