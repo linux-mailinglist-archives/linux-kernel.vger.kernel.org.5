@@ -2,93 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EED7F759A6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4611C759B0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231272AbjGSQDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 12:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33430 "EHLO
+        id S229709AbjGSQk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 12:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231991AbjGSQCv (ORCPT
+        with ESMTP id S229937AbjGSQkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 12:02:51 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D2E10E5;
-        Wed, 19 Jul 2023 09:02:47 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id d3e2f070daab447b; Wed, 19 Jul 2023 18:02:45 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id DD21566167C;
-        Wed, 19 Jul 2023 18:02:44 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>
-Subject: [PATCH v1] ACPI: processor: Refine messages in acpi_early_processor_control_setup()
-Date:   Wed, 19 Jul 2023 18:02:44 +0200
-Message-ID: <2703565.mvXUDI8C0e@kreacher>
+        Wed, 19 Jul 2023 12:40:21 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56A713E
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:40:20 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R5gcL050rzBSlPv
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:04:17 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689782657; x=1692374658; bh=PUla6YxRk64OglOS2131UVbMHa5
+        6/2XtLAw2enOh0Fc=; b=JPiYaVEzgEobsenkfu2d7RakUKYy6Pdo9I4ckhgjCKl
+        TY3oqGL5b2eMhKTH74EjwwG75Fz2E57KPHM6E14dU7R2mS0/xfaP/wh0WLY5ChoE
+        JP4CBI7hQ5ZaSQKxiRN9pOozN9erj9yT8LxdIGZ/tUYROtUmuIrJ9jzCrFIVF4zM
+        3stuFAtL5dyxY7UwRc4qQ8j5SMLxE4Jddw/BfxXp6HVoC+Tl+1M5oN5NG2H2G1ns
+        k0p3J+hePtmaR6Cn4gPHNvRnS6+yalGO2GfWlDgEmRkjLpop7QBsTlCsVfI1Wbu3
+        gp3teA35n7fDAyZ3adzzSBxIYujFIRtUJc1t2RAb7mw==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 0_37KiBtFVJt for <linux-kernel@vger.kernel.org>;
+        Thu, 20 Jul 2023 00:04:17 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R5RJz4159zD3hf8;
+        Wed, 19 Jul 2023 14:50:11 +0800 (CST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrgeekgdejlecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeffffffkefgheehffelteeiveeffeevhfelteejvddvieejjeelvdeiheeuveeuffenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeegpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Date:   Wed, 19 Jul 2023 14:50:11 +0800
+From:   sunran001@208suo.com
+To:     rostedt@goodmis.org, mhiramat@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: [PATCH] napi: remove spaces after '('
+In-Reply-To: <20230719032953.18679-1-xujianghui@cdjrlc.com>
+References: <20230719032953.18679-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <f9128b6d2307a4a53904930cae864dcc@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_INVALID,DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fix four occurrences of the checkpatch error:
 
-The source and meaning of the messages printed by
-acpi_early_processor_control_setup() is unclear, so add a pr_fmt()
-definition to acpi_processor.c and expand the messages to make it
-clear that they are about CPUs.
+ERROR: space prohibited after that open parenthesis '('
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Ran Sun <sunran001@208suo.com>
 ---
+  include/trace/events/napi.h | 8 ++++----
+  1 file changed, 4 insertions(+), 4 deletions(-)
 
-Based on linux-next.
+diff --git a/include/trace/events/napi.h b/include/trace/events/napi.h
+index 6678cf8b235b..98fb9e0d2219 100644
+--- a/include/trace/events/napi.h
++++ b/include/trace/events/napi.h
+@@ -18,10 +18,10 @@ TRACE_EVENT(napi_poll,
+  	TP_ARGS(napi, work, budget),
 
----
- drivers/acpi/acpi_processor.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+  	TP_STRUCT__entry(
+-		__field(	struct napi_struct *,	napi)
+-		__string(	dev_name, napi->dev ? napi->dev->name : NO_DEV)
+-		__field(	int,			work)
+-		__field(	int,			budget)
++		__field(struct napi_struct *, napi)
++		__string(dev_name, napi->dev ? napi->dev->name : NO_DEV)
++		__field(int, work)
++		__field(int, budget)
+  	),
 
-Index: linux-pm/drivers/acpi/acpi_processor.c
-===================================================================
---- linux-pm.orig/drivers/acpi/acpi_processor.c
-+++ linux-pm/drivers/acpi/acpi_processor.c
-@@ -9,6 +9,7 @@
-  * Copyright (C) 2013, Intel Corporation
-  *                     Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-  */
-+#define pr_fmt(fmt) "ACPI: " fmt
- 
- #include <linux/acpi.h>
- #include <linux/device.h>
-@@ -611,9 +612,9 @@ static bool __init acpi_early_processor_
- void __init acpi_early_processor_control_setup(void)
- {
- 	if (acpi_early_processor_osc()) {
--		pr_info("_OSC evaluated successfully\n");
-+		pr_info("_OSC evaluated successfully for all CPUs\n");
- 	} else {
--		pr_info("_OSC evaluation failed, trying _PDC\n");
-+		pr_info("_OSC evaluation for CPUs failed, trying _PDC\n");
- 		acpi_early_processor_set_pdc();
- 	}
- }
-
-
-
+  	TP_fast_assign(
