@@ -2,232 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B5D759CFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 20:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B12A6759D02
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 20:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjGSSAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 14:00:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43766 "EHLO
+        id S230221AbjGSSCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 14:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbjGSSAV (ORCPT
+        with ESMTP id S230122AbjGSSB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 14:00:21 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1D41FC4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 11:00:20 -0700 (PDT)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36JFOhmX022370;
-        Wed, 19 Jul 2023 17:59:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2023-03-30;
- bh=YtDp3sgfoAD1bDqnXsk/05Amf2WqHZORgkvlNwXd8Ck=;
- b=oJEezSh+RQorvRn1eQjk2/c2xblRXBaX4srM+qzSK3hmmBfRT3cL7JbhgKptnlr2kV9o
- m6sUmS00d1q7tpSRdNPNf03QO5vUoySr3Eul5kp8iMtS6YQuP2vLcd7G6QBrqFwTVlrj
- 1epHGiTbu4ztJBAZ5pdnHzTm27IEBNgcDdD58HU3zOUsxkQ3wxlijdtXLdJxOkI6AUND
- woi+5aFzBEXch4wCwzburNhJdzYgC3r/LKdCixC06KF31/nb2AKAXDa3bX7aXffvVisS
- b+FMw4KYg4WfPo6dqcuRC2hMawIqNN8e9EzE4wwu4j8S9tqZQXociNeC1s0lnjJerUbS 5A== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3run8a85hb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 Jul 2023 17:59:54 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36JGHcNC038179;
-        Wed, 19 Jul 2023 17:59:54 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhw77w25-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 19 Jul 2023 17:59:54 +0000
+        Wed, 19 Jul 2023 14:01:58 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2083.outbound.protection.outlook.com [40.107.22.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB951FCD;
+        Wed, 19 Jul 2023 11:01:57 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I4iu66p3LY4lMPNOqxrvvLIORctsEOJbE7MA0+vQmvdSSyKu6aqMBxAzeAYHPssgL4iVDzF0g5ThCNcLfu49HNe6vc557oh25LFgoVKkvB71xz6aDEeLoualrUuLnoZbqmSbA2xYMzbZW1wAoASXQx9ijTtUJSUzUiHD18Nx1AZVX0fpmY3FwHZV4U2mAkzpJfJ6vKA/cBUgfNtKJPkYWPvulxCjAoHiFQJUDyNeDcHdf2zv9SVtvGmd0F+5QAZjr1h8PwsaGBn6uScQntxJ2tadvCd/4HQ1Dk7n6YPOUS93CBTPb/6Ut2YeXLJNMLvLwVAdUlabLHAMdNOi7a0FsA==
+ b=mFRIEV2MVfnulnhS8txuQqu8MsYfk2iyBDGfJJifYnnK7dOsiK4KC6zyqHpFnMz3AixqvWrCTtN88FO5DL/Fi1OkYJpolnU3UgM+D9DjDe2Z61zghgkt4oeSIYF/oNK5K10geLOi6MWlYEsv/g84oszOnlVzLcIhtL2WTnHvkzad8Hqnfmnzfx1+C0HpnYvbvmBrb0I07/WOd/YKNHLf6hTxAl1hJFT9mpHFU3lp7KmJ0YOflUoSU6tn7tKwJd1Tc2SQ3lwZbO9AF7saLalF79Uq7JgNixtq2sRs3gORjKcS2tSN2pfTUXKa0a0enMNtDOKAW4s6yXYvDnSA16XBNA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YtDp3sgfoAD1bDqnXsk/05Amf2WqHZORgkvlNwXd8Ck=;
- b=dpr7zBn4gmcfIUP5N+VnSI/qF+HbzGZXYNcVY7jVeLbnAD9Tlr/6Znp3ufmb5so3Fu6IQB/4MIXDqKiZsgLJImKGkw5e0fo6exg+ti9SzdZ6kmfZzQcl00A+bijyEC35TD9fyCJ+fspsbvmw9a3p2LIRxG9tlmnX6fEkUnJgL4Rzo0+wR8MrKxXLTcUL9PtldIry4PD+DDVWhukiZL3eL/F7+HCidZo4I12njDkSMZmXRVKrXRDqXQzLL/59V8dyuP2FKJ0XGXrFhOj4zKEDi6bWyJ1rmzejI+Wx82GBOLNoWtWwNRjrYE6aMybVum2bZARXOadlaX0RzTthuGCQ4w==
+ bh=rAC8o57OeLcuUsYHpiEs6c2FRIbssiJXLXt6vwErNCQ=;
+ b=VakLmDre/VicJQUoXuRXOcQJr8sUVVUmtNumS1AMciX7s+PyvWCwinPgOmC0u2/2ocPsVoMA3ugjOC9CEMw72eV2LTIyE52WNZGH29qIDILoLFVJW7YBgVoyT1p+rTsNPpfoy4OLxMWKmEAXtbHnYT3p143eCZqJ5CLFnCt1KMMb1pOAWxY/8IocAZkkp3PmS9ofclz9PAUZHu4c5CB/9+kvvSXM4ZdHPgSPFxoeYofwBJglvXvzxzfIGRSQxsFULx5MJfbR4fN95Fejlb6vRB6jpQOk1InPikv7NtfyWusm3zi7E0j5o57vNaBQsK4hyfYe3PnDX86wb2vin8qLdg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YtDp3sgfoAD1bDqnXsk/05Amf2WqHZORgkvlNwXd8Ck=;
- b=LbCEMeEBDQbkBUHFl7tcf0ggNHjc21g/l0IRX1r2E3aMfstQawgq1lvBapxLqobCmGjKcJqJNBDtC+AyYhkicl126IxJLaZKZ4XgEvn2Hm8A5WRYAwTqrvrTAv8/kh0t1dLEGoqzhXKCu+n2YTLnxjCn+7I3VmmOz9bqk+DQXnM=
-Received: from CH0PR10MB5113.namprd10.prod.outlook.com (2603:10b6:610:c9::8)
- by PH7PR10MB6355.namprd10.prod.outlook.com (2603:10b6:510:1b6::12) with
+ bh=rAC8o57OeLcuUsYHpiEs6c2FRIbssiJXLXt6vwErNCQ=;
+ b=FtHgWhDdKGonMBE+U3ZVwVrzftJlhH59o1SO+p7sW1HW4D1o5AR/ix8NNL3PidhN0JQasjGEKnGUst4OnVB/lczAFSJg+L7QMZul31FIoheXd2YeQyC2xuGo4H2qtk9VDgSoaVR1ssG4JclsXPoXoboPMqo+dhUVXVquhEAjYy8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by AS8PR04MB7815.eurprd04.prod.outlook.com (2603:10a6:20b:28a::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.23; Wed, 19 Jul
- 2023 17:59:51 +0000
-Received: from CH0PR10MB5113.namprd10.prod.outlook.com
- ([fe80::6bff:7715:4210:1e52]) by CH0PR10MB5113.namprd10.prod.outlook.com
- ([fe80::6bff:7715:4210:1e52%7]) with mapi id 15.20.6609.024; Wed, 19 Jul 2023
- 17:59:49 +0000
-From:   Sidhartha Kumar <sidhartha.kumar@oracle.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     akpm@linux-foundation.org, songmuchun@bytedance.com,
-        mike.kravetz@oracle.com,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Subject: [PATCH] mm/hugetlb: get rid of page_hstate()
-Date:   Wed, 19 Jul 2023 10:59:44 -0700
-Message-ID: <20230719175944.292929-1-sidhartha.kumar@oracle.com>
-X-Mailer: git-send-email 2.41.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR05CA0160.namprd05.prod.outlook.com
- (2603:10b6:a03:339::15) To CH0PR10MB5113.namprd10.prod.outlook.com
- (2603:10b6:610:c9::8)
+ 2023 18:01:54 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::d0d5:3604:98da:20b1]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::d0d5:3604:98da:20b1%7]) with mapi id 15.20.6609.024; Wed, 19 Jul 2023
+ 18:01:54 +0000
+Date:   Wed, 19 Jul 2023 14:01:42 -0400
+From:   Frank Li <Frank.li@nxp.com>
+To:     vkoul@kernel.org
+Cc:     devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+        imx@lists.linux.dev, joy.zou@nxp.com,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        peng.fan@nxp.com, robh+dt@kernel.org, shenwei.wang@nxp.com
+Subject: Re: [PATCH v10 00/12] dmaengine: edma: add freescale edma v3 support
+Message-ID: <ZLglBiSz0meJm5os@lizhi-Precision-Tower-5810>
+References: <20230707190029.476005-1-Frank.Li@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230707190029.476005-1-Frank.Li@nxp.com>
+X-ClientProxiedBy: BYAPR06CA0035.namprd06.prod.outlook.com
+ (2603:10b6:a03:d4::48) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH0PR10MB5113:EE_|PH7PR10MB6355:EE_
-X-MS-Office365-Filtering-Correlation-Id: e87fd482-2a23-4d21-df6f-08db8881f206
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AS8PR04MB7815:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1446f1b5-4aa5-47e6-db18-08db88823c7b
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PukNL/LjMRadOBajsk4KuUbvdJJdaA2q1I1KiT+bSd7qWSX/FpRfbAcG+vncsrYTXyPwuUPGw+JkfWPN3WsEUJh6ehOC9l9GsshNkI4MPy+vhYRyK/R6iXsaP9XZSK/UUR0rf5Pl1plHb6Q0slaJe5zm2/WDNceUmjiiNzfCq6jNvSkOQ9/PI5vltDdhVj9CShKYBjAXBV4X54BmCI2XNoqo9g9ttM0vaYSo8EICKik5sPKFEga8iWlJpxm3XWgyFocdSIhqdndw70d1fEymvVwMSWjMFo4sJpI9w76qhv+R/NlsXAs0vYN7qBtlqETgw3Mt5KW0PxzhStMecbWDK8tEq5rO1GSzwXELt0efkkeu+owQYngT/8MXLfaEZsrj8NiyruEeuFTQTMjqzRjJMwZoZrjo8wtQdnL1HiM66a7j2BKaT2ojt52xMuS8swn/lkc5wmNIq+Klqbe7bO965NIjCmmaQvi3V6R2sNDPGFszrzdTwpFYVW2d3i7+IPtLBiPYDWTtiyxV6UajON64u+QMTBKs9XvkCgWdtlqQG3vHxFi5bdRjt9pctpucxP9bytxRnX8Kyj7g1TQwBXMqraZUMmXsGsE+kaNy4kNH6EU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR10MB5113.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(396003)(376002)(39860400002)(346002)(136003)(451199021)(2906002)(6506007)(1076003)(6512007)(107886003)(316002)(5660300002)(4326008)(66476007)(8936002)(66556008)(8676002)(41300700001)(44832011)(66946007)(36756003)(38100700002)(6666004)(6486002)(478600001)(83380400001)(2616005)(86362001)(186003)(26583001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: CWh3V5ssrULnaaY09wu/LQW7WtK8DWr/RwSPvRTe+1UDvV/Zb4FQeP+6NDajl0HSNo4I7imztUcDQVlR5qOoTYH9a2ehAhrjMBPbWmisiNXHRjSiw3q55seLeui1KpU4q4KPziL9XLFCaz4hXPwtT95apI1rzA3bvX/+npjsA8ucvWnW1RJESniqmrRZufM1xNon/A9H74dqY4kNaSMOPVVOfhrZ6oj1HBFW+ucTLFKxZtrCXp9c15OZJCPzeAYVQV7Igo2vtOrUB7fjFL8mRG3GmiSd5tP/5cUzFmLbt5X5Zu0fvIZ/OF03CgiNz6eZVSYbDcna+L70KWNf1IuszDHQ1Ey6y+ntbNoS3zBAzHy+Wge6JgbTNdUxAi+VgTYj7faHSy+y3+Xee64IDk10hniRRax1xRO2PGr4Xbsf64+OXG9CmVWGaVMporhhBtldVc1eGbJj3QM5yIzFE7uXoj9qrDx3gUYOmiLoPKt3AxihdcifGgOeFen+q8cdqDO9Jrcxi9T8bioQ7ibIoue5R0sNwn/tuCMEcK5qSuQeLGjVRTPz+YhyaM4AsE+D04SfAcMT96fxY6kEV+R3kTDs8b8st+3gtGkMu9xxbvCZnAG37W+Xl6YonoUYbuyoKZsg
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(4636009)(39860400002)(396003)(366004)(346002)(136003)(376002)(451199021)(2906002)(8676002)(8936002)(33716001)(66476007)(6916009)(4326008)(66946007)(316002)(41300700001)(5660300002)(66556008)(26005)(6506007)(6512007)(6486002)(52116002)(186003)(478600001)(6666004)(83380400001)(38100700002)(86362001)(38350700002)(9686003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QQAAm7q2rXQAlg/dVstN2DuTl2QGqfP+tJTQPXMehz1++gf9JW13YrKQJDFs?=
- =?us-ascii?Q?jiAwmWcd+KEg/sqcqPPaD8hqo7DBbc0DeKCpmJrvmw7Ko9oBH7pUAXxWuwxC?=
- =?us-ascii?Q?BXJWBU/R+jbOuOBbgL8qrmnRKSrzxYpGa217EZOm21rgWWP/CK3PRWKOilso?=
- =?us-ascii?Q?ipU4RT3dgA6A+XBrblIGfGSOuhAHIYFR7Y0K3d7uhHC/jvnS0dxL//8sUsPq?=
- =?us-ascii?Q?v2glGX3euB9WyFRgyKWE/TetoQRIzBNsezGmxEWOCGBf+6krUp5A3iLPr1D0?=
- =?us-ascii?Q?PNQkMwmgLqr42qzY3zG71JgZJFMmW3O6jBEAqVg4jGcidjxZ9Xqq+OULJkdI?=
- =?us-ascii?Q?rhs8q/XCt5IBsfkzay/HaADS8IjIVxB3uhrcTIaKi2Bi32pVW8vU/ayPMaXi?=
- =?us-ascii?Q?JsylRM8Bi2XpEzWyT++0p6lgF+epv0bX/o1Rcv4muhaRUoeYnCe6sFzGOYxX?=
- =?us-ascii?Q?7gNV+zvwCk5V4Y7isqSG5midDRSJyByyQN5LhfwmJfGp8Eoeb3HG2V1/+ZEk?=
- =?us-ascii?Q?B62kGvOxj3etb2u3gZYA8jxg4WnIjlcKQVHKgZqECelChgtjlEAaE/TPYQi7?=
- =?us-ascii?Q?p7ZiAb9TaliR3pLNFpetX+jf5IkdANs5fmtcRveJis65O+Dg+TKBLERQAljU?=
- =?us-ascii?Q?Lbi9F65QlxxNd7H8jLC+0Y00ZvVrSdA4XS6aJhS6fT4r1/LqOU89tO55KswY?=
- =?us-ascii?Q?12eI7v6URBfKIe5QW36xy9VN5tV4FkIcnI0OPlnigTucmH9NfE3yo4BijRs/?=
- =?us-ascii?Q?yBnK4yl0R4W4xQvEl9sagE66o+uU/32MeXgMgbkyvTrGdJ/SNVmdMstRzeuV?=
- =?us-ascii?Q?h1UvxhuYDLOWUPQPZZ+0Q2voPfyjwzEMYyQY7vMtZh2PrnqFmsyMWda1fP8K?=
- =?us-ascii?Q?bmnR/3oXJdEwR00rifk65PcDLJVvZO5OuZWMWKJBTYrUe6Sa9CN4Z6dMjGYr?=
- =?us-ascii?Q?S/leUidhlOUWbi8r+oVrimF6NpH7rqALEbo5KM+hnQIK4lPR8CWHEz41TLyq?=
- =?us-ascii?Q?yalNDBDOgEe75aIW+UA3tbBpk0FFw0KSiwWGUXQBZPDSQ4xDLcfWDQu6ILv1?=
- =?us-ascii?Q?IABtL7hQGDXGqXZabL42F8dI0KIBbm4nWCybYiq6kBI2bWY5XeG0gN/ETAy6?=
- =?us-ascii?Q?JqPhWljTYfyw1JaJ9uN3rNBz5QhUz+WptKIf0YJVGJ67McLLoSODLOF3aHqI?=
- =?us-ascii?Q?3smBa/WVmfGPozCHWmIJSnVs41lnJv7cx4FPEVfuJ1qPhORjcLrhgfYA6uAV?=
- =?us-ascii?Q?k3eBaYuOZdZJqiDOwLpeOhV9Le6JN/wNScWX5vuJVE4eAQTQTjzacyVy/k2a?=
- =?us-ascii?Q?bWPxr3XcM7HHW82ZpkNZ1k8wdUIl0+xtx0TveKf3IfaFC44ASMfbG1G+yIHX?=
- =?us-ascii?Q?ECFjDjebol8AP02sk+hjjVRrRu24aBUtU7dlhr80BZQaAlrVXVkljILYY+pQ?=
- =?us-ascii?Q?DR73pLnwoJv7Ig+UvdrhHY3/llfjyZQj0SCZR5zsAX0KUowErKlJMmwH5uHa?=
- =?us-ascii?Q?wdKfP118Zibj74UJd340OrAvBRNvanOXFNGHyHruFXOph++h6Ip6OtmmF+XI?=
- =?us-ascii?Q?MCpIut8qw2sda1d3fYvz2qki6//Yv/Ekh1sRPpn7FLijBcwPZAAJ947BN1pp?=
- =?us-ascii?Q?Z9DCyvbEsBUd4yAa5OyrKqU=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: QzoCbaA4L2XiB9Si1lB62lhDd2P9L4L8uIfH8FY58lIp0bGLNPEddIJLMAHY6x2FuVSqzIK9l2soUwXMjNVZ3RPkzG2O6L/MJHOEGF1MieCqfHt4BRNNsw+0Af3o3hfQrounRG0MGwWCHTRw42KVLumzV5E0qoGu+0R6vyH/OKakL6tMaFlAWRzoOaMIC7GXJthvdvEnzErqzOfIahcbqMWhBcWHu66/oUWqUOlEVKnzd352/Pf/TOrqAYjR0SeMiT0Ne2eICtB9ZumtGh61Y8q5VOWfgMV5SEw/ePLd277TT+O2eUCebL7qLRXASsbsyxzm+wADt0hByQnTpBrvKRtAoLd+L5Endnkq+GyfbA8BL2N6/d2xLOx+ApTFNlyK4j+bxWg+L4QvWAydJ/HekTf7nqmpm4CCKGQqIjkribF7RxMPVblXiZRj/QM5b5/0VITNKs5zLjqhldJ6kH7vZrrKjrbvigbvw44+bMSVbwDlyUmD2n5uPMtbpAvsJXOw+UsA4Nj+62TD7m6+rnKv69MIc6nG1iCYeB2haNF12qWNkZMneCpxrOspFdHzQFzoGoFtIQgwvHw7VNgla4Sq169xrzthLCGjhpddWbjjDeiTWKGLUV1IE9+M1nngfSMsoB55326FqVt4WIyldgT4h0tLkGrX8cyuaouNryOJlYk5bLCNNkEKexkUsaTRrtmWiwNOCtpqKbkr+gqpaIZsI3Hp3a7/of411q36IJmp41T6IvmTxCgdYzi/Lfzuy9cGLQucUx/zhkzxKYKiZHbFzFtyMijHWQCJ9hceCQCMW3wC3ajymMc6g81m/XYZ8QsWTyOSKJJqB54R16xYLtPtta3YMxAmpyhVQr+QtolPoW+xd2iaYMWVfPKeVhoekEh6
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e87fd482-2a23-4d21-df6f-08db8881f206
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR10MB5113.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iFwOEgEZuNSiv/0xqnI+ykELa+7cxt181FG3BjY9wFea3VX7gQ1gvUlTRPnt?=
+ =?us-ascii?Q?GDFpGwJmFN57B0SHK5wMi6MN9h+dQDO7v1qjGKmQfMb1SPeEIDpRxo52FMbg?=
+ =?us-ascii?Q?IMn3xV73xGsvSDbJXIePs1zVrghwlmirc67UiyeIeVUrDbs88wXv2WsiEmmt?=
+ =?us-ascii?Q?lZdnzkRV0kF6RAb5sSxk4XQmRgT+qQqDMBLleif/3lYPUo3hLkTzNV3NVysr?=
+ =?us-ascii?Q?T5UuvmIT/V94N2d2noFqlr3nub2P1jIs2HfHKVngWDb7YaN1IwzIcOi+uP4E?=
+ =?us-ascii?Q?TKuqG8Y1n7RsYJqA+Bd3fKtVKP5KX3xrmAsQnCUxgVkS/xz5S13NSa6Kbv8z?=
+ =?us-ascii?Q?ixip9Ef4vqsUHjbnytJoabddr2Ns1dKtmPvPR0X4FirKo/rCXn4mXAlP+0wr?=
+ =?us-ascii?Q?9E4D39Un7piV5AIpN9Av/0Aw/JqATes+fC3XK1y7+D50kB9zNTXatRqRYWUm?=
+ =?us-ascii?Q?EXkSz2R5J4WaEbuwPqTWuvoR1dopX5NoL1UXevw12OBDYxSAwlBhc7C61ykW?=
+ =?us-ascii?Q?qSom3/0aGXi7ixpw4EfRDYLMoJfg3C+eo04lLzCJiJUoEdi9UMxJegWuZcRC?=
+ =?us-ascii?Q?x19TqYcEorjAHjBbMvZ4Cx+CIjNuINrDVzKIM3e8EiVDOpXbTgCNgYVEkNnl?=
+ =?us-ascii?Q?sk8kZA6dd1d06tITiMuXXT/VX9MsQoU2TjYIgNvztaQI5LbZAA12G4Rxs1j6?=
+ =?us-ascii?Q?qweQO0cS2dyJu4wS/dxpSj9eJCUAycRltVWi4yjVtsh5F7LVuBlEJLtbsih6?=
+ =?us-ascii?Q?j/C6eip58MyctQZDYgRUXxvHW/zhH4OfaBofozzpw8ez3g2zJmjKdQsatKju?=
+ =?us-ascii?Q?jiTLW53IpTDxNQUmaKMnkhuK4jv2DMxmgvkzU61g6iNslFQWz21HmrN1f90+?=
+ =?us-ascii?Q?YTIjXevTiARzeu2z/tEHNgrllH/aHkBJSb+bAoFwUJuX3p74hJv9ngMiDmXc?=
+ =?us-ascii?Q?LEmeoDtcedjCiqjTwHMWH/CC18mK3s0Nu40g2Y78f16P6Zr9ouNoKKmhwnPq?=
+ =?us-ascii?Q?Q9sw5HIO27blkHl2hmZU5uZ9lmajrVQGmPvh1c1AwSomHNq+NzAHVdou00kk?=
+ =?us-ascii?Q?KVqHp6ju4SqMVtSdHpUHwMcl2iIeJCRR6Bg5qPFCJmGwKOG8y4hc0ehVLsgr?=
+ =?us-ascii?Q?8zSxbsSPbiYXDQHzqz05qWO/9W+CJpEMdibYSm4d01eiBKXeTPe8NJSo92aj?=
+ =?us-ascii?Q?p6fsilYTlUpocEjq/f1xw0yLKObUdMx1LX3vk34qOE8tPrNY1TKaHBcl5hxX?=
+ =?us-ascii?Q?+vfeCQPZhAf2FNDDzrq3p7aqqVDplIUBRZr6QL9s1qKGBYZ8J0A8UZuuXuBX?=
+ =?us-ascii?Q?gdcElrtpoo9o45ZSzMy1gJpioG/1U+wKqWovVjC1x5lwamDRwIiKkAQAYIn2?=
+ =?us-ascii?Q?q91LhSM1yEZ2tJM6HeGx7PmQG10/WuXKF7wgEYl3zo1Ht9P6sI/cm1UuaBf/?=
+ =?us-ascii?Q?7HW32agzZIwHAhvDe6qfc6KmrKdiGvfiAHdzXhk/M4mPgvGeSktkXp1vY3rX?=
+ =?us-ascii?Q?fbEnIac/p47mStjJTiMRQHhdBwXwmWfUyjPMrUJd4iXzr75FROahlrUV4dW4?=
+ =?us-ascii?Q?Jxw2K+uWTbOCu4txDefUbiAD5fPw4lSxP+ON9Me7?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1446f1b5-4aa5-47e6-db18-08db88823c7b
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 17:59:49.7630
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 18:01:54.7071
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YZBXwX5BsV3QwNtEpy8yXFSW1LqbdvRBtA0nZS+OrB+GBfJzIrj3rA0h7uWc6BYYVVxvP4X8C2B6yF0FH8donXb4ZQoP6vWuF3YTaY0lpHc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6355
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-19_12,2023-07-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
- adultscore=0 spamscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307190162
-X-Proofpoint-GUID: UQuWwiNeJ0JI2DDWUsRAglE3TOHzHkvZ
-X-Proofpoint-ORIG-GUID: UQuWwiNeJ0JI2DDWUsRAglE3TOHzHkvZ
+X-MS-Exchange-CrossTenant-UserPrincipalName: w4u3uNfL6lozCpvnYCgPxytw0LEYGQjT3HrtEIVgjU0DvMZHayJAyyF8s3vndhVhIxsnQJNIzVYSuCZdQbniVQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7815
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Converts the last page_hstate() user to use folio_hstate() so
-page_hstate() can be safely removed.
+On Fri, Jul 07, 2023 at 03:00:17PM -0400, Frank Li wrote:
+> This patch series introduces support for the eDMA version 3 from
+> Freescale. The eDMA v3 brings alterations in the register layout,
+> particularly, the separation of channel control registers into
+> different channels. The Transfer Control Descriptor (TCD) layout,
+> however, remains identical with only the offset being changed.
 
-Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
----
- include/linux/hugetlb.h | 10 ----------
- mm/hugetlb.c            |  6 +++---
- mm/page_isolation.c     |  8 ++++----
- 3 files changed, 7 insertions(+), 17 deletions(-)
+@vkoul:
+  Do you have chance to check these patches again? I fixed all problem
+that you said.
+  All audio parts of i.MX8x and i.MX9 was dependent on these patches.
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 57f21279c529f..3d4de9c7326bb 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -847,11 +847,6 @@ static inline struct hstate *folio_hstate(struct folio *folio)
- 	return size_to_hstate(folio_size(folio));
- }
- 
--static inline struct hstate *page_hstate(struct page *page)
--{
--	return folio_hstate(page_folio(page));
--}
--
- static inline unsigned hstate_index_to_shift(unsigned index)
- {
- 	return hstates[index].order + PAGE_SHIFT;
-@@ -1088,11 +1083,6 @@ static inline struct hstate *folio_hstate(struct folio *folio)
- 	return NULL;
- }
- 
--static inline struct hstate *page_hstate(struct page *page)
--{
--	return NULL;
--}
--
- static inline struct hstate *size_to_hstate(unsigned long size)
- {
- 	return NULL;
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 71d18bb76b4df..b15ae05819a8a 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1785,10 +1785,10 @@ static void free_hpage_workfn(struct work_struct *work)
- 		node = node->next;
- 		page->mapping = NULL;
- 		/*
--		 * The VM_BUG_ON_PAGE(!PageHuge(page), page) in page_hstate()
--		 * is going to trigger because a previous call to
-+		 * The VM_BUG_ON_FOLIO(!folio_test_hugetlb(folio), folio) in
-+		 * folio_hstate() is going to trigger because a previous call to
- 		 * remove_hugetlb_folio() will call folio_set_compound_dtor
--		 * (folio, NULL_COMPOUND_DTOR), so do not use page_hstate()
-+		 * (folio, NULL_COMPOUND_DTOR), so do not use folio_hstate()
- 		 * directly.
- 		 */
- 		h = size_to_hstate(page_size(page));
-diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-index 6599cc965e216..cd36b9998483d 100644
---- a/mm/page_isolation.c
-+++ b/mm/page_isolation.c
-@@ -79,17 +79,17 @@ static struct page *has_unmovable_pages(unsigned long start_pfn, unsigned long e
- 		 * handle each tail page individually in migration.
- 		 */
- 		if (PageHuge(page) || PageTransCompound(page)) {
--			struct page *head = compound_head(page);
-+			struct folio *folio = page_folio(page);
- 			unsigned int skip_pages;
- 
- 			if (PageHuge(page)) {
--				if (!hugepage_migration_supported(page_hstate(head)))
-+				if (!hugepage_migration_supported(folio_hstate(folio)))
- 					return page;
--			} else if (!PageLRU(head) && !__PageMovable(head)) {
-+			} else if (!folio_test_lru(folio) && !__folio_test_movable(folio)) {
- 				return page;
- 			}
- 
--			skip_pages = compound_nr(head) - (page - head);
-+			skip_pages = folio_nr_pages(folio) - (page - &folio->page);
- 			pfn += skip_pages - 1;
- 			continue;
- 		}
--- 
-2.41.0
+Frank
 
+> 
+> The first 11 patches aim at tidying up the existing Freescale
+> eDMA code and laying the groundwork for the integration of eDMA v3
+> support.
+> 
+> Patch 1-11:
+> These patches primarily focus on cleaning up and refactoring the existing
+> fsl_edma driver code. This is to accommodate the upcoming changes and new
+> features introduced with the eDMA v3.
+> 
+> Patch 12:
+> This patch introduces support for eDMA v3. In addition, this patch has
+> been designed with an eye towards future upgradability, specifically for
+> transitioning to eDMA v5. The latter involves a significant upgrade
+> where the TCD address would need to support 64 bits.
+> 
+> Patch 13:
+> This patch focuses on the device tree bindings and their modifications
+> to properly handle and integrate the changes brought about by eDMA v3
+> 
+> Change from v9 to v10
+> - use HAS_IOMEM
+> - move dt-bind before enable v3
+> - remove a unused code
+> - drop patch3 clean up fsl_edma_irq_exit()
+> 
+> Change from v8 to v9
+> - add dmaengine: fsl-edma: fix build error when arch is s390
+>   fix kernel test robot build issue
+> 
+> Change from v7 to v8
+> -dt-bind: add missed part
+> 
+> clock-names:
+> > items:
+> >   - const: dma
+> > 
+> > clocks:
+> >   maxItems: 1
+> 
+> Change from v6 to v7
+> -dt-bind: remove "else" branch. 
+> 
+> Change from v5 to v6
+> - dt-bind: rework it by fixed top level constraint.
+> 
+> Change from v4 to v5
+> - dt-bind, add example for imx93 to trigger make dt_binding_check to
+> generate the yaml error. fixed dt_binding_check error. 
+>   keep compatible string ordered alphabetically.
+> 
+> Change from v3 to v4.
+> - use dma-channel-mask instead of fsl,channel-mask
+> - don't use dmamux after v3. only use flags to distinguish the IP
+> difference
+> - fixed 8qm and imx93 have not CH_MUX register. Previous can work
+> because dmamux is 0.
+> 
+> Change from v2 to v3
+> - dt-binding: add interrupt-names
+> - dt-binding: add minItems
+> - dt-binding: add missed property: fsl,channel-mask
+> - rework patch 4, removed edma_version to avoid confuse with hardware
+> IP version.
+> 
+> Change from v1 to v2
+> - fixed issue found by make DT_CHECKER_FLAGS=-m dt_binding_check
+> - fixed warning found by kernel test robot
+> 
+> 
+> Frank Li (13):
+> 1   dmaengine: fsl-edma: fix build error when arch is s390
+> 2   dmaengine: fsl-edma: clean up EXPORT_SYMBOL_GPL in fsl-edma-common.c
+> 3[dropped]   dmaengine: fsl-edma: clean up fsl_edma_irq_exit()
+> 4   dmaengine: fsl-edma: transition from bool fields to bitmask flags in
+>     drvdata
+> 5   dmaengine: fsl-edma: Remove enum edma_version
+> 6   dmaengine: fsl-edma: move common IRQ handler to common.c
+> 7   dmaengine: fsl-edma: simply ATTR_DSIZE and ATTR_SSIZE by using ffs()
+> 8   dmaengine: fsl-edma: refactor using devm_clk_get_enabled
+> 9   dmaengine: fsl-edma: move clearing of register interrupt into
+>     setup_irq function
+> 10  dmaengine: fsl-edma: refactor chan_name setup and safety
+> 11  dmaengine: fsl-edma: move tcd into struct fsl_dma_chan
+> 12  dt-bindings: fsl-dma: fsl-edma: add edma3 compatible string
+> 13  dmaengine: fsl-edma: integrate v3 support
+> 
+>  .../devicetree/bindings/dma/fsl,edma.yaml     | 106 +++++-
+>  drivers/dma/Kconfig                           |   2 +-
+>  drivers/dma/Makefile                          |   6 +-
+>  drivers/dma/fsl-edma-common.c                 | 308 +++++++++++------
+>  drivers/dma/fsl-edma-common.h                 | 127 +++++--
+>  drivers/dma/{fsl-edma.c => fsl-edma-main.c}   | 320 ++++++++++++++----
+>  drivers/dma/{mcf-edma.c => mcf-edma-main.c}   |  36 +-
+>  7 files changed, 677 insertions(+), 228 deletions(-)
+>  rename drivers/dma/{fsl-edma.c => fsl-edma-main.c} (62%)
+>  rename drivers/dma/{mcf-edma.c => mcf-edma-main.c} (90%)
+> 
+> -- 
+> 2.34.1
+> 
