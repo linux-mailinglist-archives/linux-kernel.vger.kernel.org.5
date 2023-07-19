@@ -2,101 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7D475A06D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 23:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B31E75A071
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 23:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbjGSVQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 17:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57484 "EHLO
+        id S229670AbjGSVQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 17:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjGSVQg (ORCPT
+        with ESMTP id S229957AbjGSVQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 17:16:36 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133591FCD
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 14:16:35 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5734d919156so1419207b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 14:16:35 -0700 (PDT)
+        Wed, 19 Jul 2023 17:16:54 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21EED210C
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 14:16:50 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b52875b8d9so58415ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 14:16:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689801394; x=1690406194;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F9BpFuhMTkAOIbHVpXjSO4oTM9iSvRhAIZS7PoLmzJ4=;
-        b=2rWGTRMAxnD6VeFPQEreW2HWSQArB4kLh/AVFJFeMRRu/b0qI1M/YvEqYUK8drstJH
-         c/O7qo/G7EcS+Ij4KHSS9CoygJOHy5gj8wp3xmV/RasyNFdsxhTWXIzN3WjKFi628Z7Z
-         rIt976xfybkKpbGh6/5efs/pvr+MjFRMYiTTM3VrAUGQ+YfVC370lk74ULcnEvsN3CDB
-         NRDaruRhWjr9gF9nA4RyHuIkv2SMzlJxCucuDfduj2L9I5lcjVw2w2ZwfBjwrBYDCZD4
-         R2llbtpO92RHOF1V8NVsi+Zl+Wv+rxrxnQsvjkVz34oPQHrkFZaceYSPBoWmhKHdwQq6
-         pRsg==
+        d=google.com; s=20221208; t=1689801409; x=1690406209;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eBJj2LL0pM4tkw5oGrSPDiIzepbTgsFXALya9co7OzU=;
+        b=W6OMSkAAUHEcMC412H0lAQ3j8Wn4AhrIEwRhYSYVuxLpiOCbfR46pbNCWs36E7yHLb
+         5UVJGnc9+6mX2OpE3q8S7+xNH/IYoxOT3PaeBp2xWoDyDyHIWrgVLSHjNxHaYkQ8jDkf
+         WYEqlXjA2c78z7kIxII3WCpUyAVyV2/xBxEaRCRfsPXZspG8XQxzK/5o7xgrYLIioUtf
+         uyEhVJ/lHOfIF8jZhsA0KmLH8s/73qzjxi9GhT/D50ZC7gj2d0NhTQ03OxaNEAktJFV8
+         iiFOOvx1G48+CpG1qT2hcgz3UpXZkAg0ijbJYKqPmM7ULVc0VY4YyhKq2sxJ/29vjUOR
+         wUvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689801394; x=1690406194;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F9BpFuhMTkAOIbHVpXjSO4oTM9iSvRhAIZS7PoLmzJ4=;
-        b=GhPrLK4nuEglrzYF4w5OqCggZRACURc4kBuZK8CTeaYrLRjzQEsCJFsNmtoDFonn9T
-         1TxUIlfGnHz/XttLzAFgcFP2jRZi0pAto7NFNI3BVOA/jygbTn0XOSoMHFgsFpeHU06W
-         ihiCAG2D+RBlIagzb0SvwaAeOSlfTiPIyej8GAZ2HJKMpc1BTKScGdWsWAkJple3nSJ3
-         TD8h86aJGrMXBeM4N9ufm5ertkPKdO7vGueSCd//PniTEKyKNRXGRF/kWJRTveDjNVVC
-         YsP1apafWTVD+FYIR0zKgJKRLkYqrV8LYEmJTNISbEtMjcRSraiR2suwI1XeuRs3T95H
-         TvTQ==
-X-Gm-Message-State: ABy/qLb4Er/RsorR5sKjijsGD/WFtbb2DrLu62AebsZedTT8XXJ97Pz9
-        mN4kcAfwqqQYsyIYulkPE8tB1+xlNuqhjq0Vn96c
-X-Google-Smtp-Source: APBJJlHreOXAS0H9GQPXpAnmR0dGnAWP0KSY+RuBCP7YUswW95L59jjmKDrqfTpSNj9UEciNANfkAkMJF+8kz9Tkf4LV
-X-Received: from axel.svl.corp.google.com ([2620:15c:2a3:200:2c07:36ef:118f:86cf])
- (user=axelrasmussen job=sendgmr) by 2002:a81:430c:0:b0:555:cd45:bc3a with
- SMTP id q12-20020a81430c000000b00555cd45bc3amr198551ywa.9.1689801394300; Wed,
- 19 Jul 2023 14:16:34 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 14:16:31 -0700
-In-Reply-To: <79375b71-db2e-3e66-346b-254c90d915e2@cslab.ece.ntua.gr>
-Mime-Version: 1.0
-References: <79375b71-db2e-3e66-346b-254c90d915e2@cslab.ece.ntua.gr>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230719211631.890995-1-axelrasmussen@google.com>
-Subject: Re: Using userfaultfd with KVM's async page fault handling causes
- processes to hung waiting for mmap_lock to be released
-From:   Axel Rasmussen <axelrasmussen@google.com>
-To:     Dimitris Siakavaras <jimsiak@cslab.ece.ntua.gr>
-Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        linux-mm@kvack.org, Axel Rasmussen <axelrasmussen@google.com>
+        d=1e100.net; s=20221208; t=1689801409; x=1690406209;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eBJj2LL0pM4tkw5oGrSPDiIzepbTgsFXALya9co7OzU=;
+        b=lZ/cu/qwDRUrhYoR7kd5tkl8o2QjmOkKORgcs7k4za6zAnrQb3+vLgYXwFNtCElBAZ
+         KHUptPR6QHHr+UXX5Bm+uQxIavFA2ouzC/lCV1El5w4twDAdFWulkxqQ4BeTC6U0HmJM
+         u0s/Q7jeqHbqwbu/bL0XZskCmYSgAymA+XMZpkOqHiucj4d4wKDzmvNU2k5YqxKSUxfC
+         rvtT6MUzUQj1D5to4YCbVzFlI1VtXP3oBbDh6W40exZteWBwoWGqGzHK2v9YZLhZJeCG
+         5CzgbFgrqMOFjrhOpEvCv9yyPAsXpgwcPGrmNHegbezOdXk6RfbYp6mvlDjJAOQUFEkE
+         rg3Q==
+X-Gm-Message-State: ABy/qLZ00fgil2yk9gze4luEaH4DWjUpVKNC5KhOOnXj0BIVLqUnoDtq
+        wNDG4qbZdROkvOwqbNM2225YnzPbKqDHIFUaQqg4WA==
+X-Google-Smtp-Source: APBJJlHKlzwdoYmK+M09bgH3YtAqDj8/AuZu+WjFw6IiL5hGhp/FOj8omZxrBHxg8mWcQ3OEO3r9j9Evb539urogo0Y=
+X-Received: by 2002:a17:902:f9cf:b0:1b8:89fd:61ea with SMTP id
+ kz15-20020a170902f9cf00b001b889fd61eamr21553plb.1.1689801408973; Wed, 19 Jul
+ 2023 14:16:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230719175400.647154-1-rananta@google.com> <ZLhMDapXa2djVzf0@linux.dev>
+In-Reply-To: <ZLhMDapXa2djVzf0@linux.dev>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Wed, 19 Jul 2023 14:16:36 -0700
+Message-ID: <CAJHc60x3X1OCQGsfvuWg-6niMfASkZwXJtyfZ5KMac0-=r4uXw@mail.gmail.com>
+Subject: Re: [PATCH] KVM: arm64: Fix CPUHP logic for protected KVM
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>, Fuad Tabba <tabba@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Reiji Watanabe <reijiw@google.com>, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the detailed report Dimitris! I've CCed the MM mailing list and some
-folks who work on userfaultfd.
+On Wed, Jul 19, 2023 at 1:48=E2=80=AFPM Oliver Upton <oliver.upton@linux.de=
+v> wrote:
+>
+> On Wed, Jul 19, 2023 at 05:54:00PM +0000, Raghavendra Rao Ananta wrote:
+> > For protected kvm, the CPU hotplug 'down' logic currently brings
+> > down the timer and vGIC, essentially disabling interrupts. However,
+> > because of how the 'kvm_arm_hardware_enabled' flag is designed, it
+> > never re-enables them back on the CPU hotplug 'up' path. Hence,
+> > clean up the logic to maintain the CPU hotplug up/down symmetry.
+>
+> Correct me if I am wrong, but this issue exists outside of cpu hotplug,
+> right? init_subsystems() calls _kvm_arch_hardware_enable() on all cores,
+> which only sets up the hyp cpu context and not the percpu interrupts.
+> Similar issue exists for the cpu that calls do_pkvm_init().
+>
+Ah, perhaps I looked at the from a different perspective, but this
+makes sense too.
 
-I took a look at this today, but I haven't quite come up with a solution.
+> I'll also note kvm_arm_hardware_enabled is deceptively vague, as it only
+> keeps track of whether or not the hyp cpu context has been initialized.
+> May send a cleanup here in a bit.
+>
+> Perhaps this for the changelog:
+>
+>   KVM: arm64: Fix hardware enable/disable flows for pKVM
+>
+>   When running in protected mode, the hyp stub is disabled after pKVM is
+>   initialized, meaning the host cannot enable/disable the hyp at
+>   runtime. As such, kvm_arm_hardware_enabled is always 1 after
+>   initialization, and kvm_arch_hardware_enable() never enables the vgic
+>   maintenance irq or timer irqs.
+>
+>   Unconditionally enable/disable the vgic + timer irqs in the respective
+>   calls, instead relying on the percpu bookkeeping in the generic code
+>   to keep track of which cpus have the interrupts unmasked.
+>
+Sure, we can use this for v2.
 
-I thought it might be as easy as changing userfaultfd_release() to set released
-*after* taking the lock. But no such luck, the ordering is what it is to deal
-with another subtle case:
-
-
-	WRITE_ONCE(ctx->released, true);
-
-	if (!mmget_not_zero(mm))
-		goto wakeup;
-
-	/*
-	 * Flush page faults out of all CPUs. NOTE: all page faults
-	 * must be retried without returning VM_FAULT_SIGBUS if
-	 * userfaultfd_ctx_get() succeeds but vma->vma_userfault_ctx
-	 * changes while handle_userfault released the mmap_lock. So
-	 * it's critical that released is set to true (above), before
-	 * taking the mmap_lock for writing.
-	 */
-	mmap_write_lock(mm);
-
-I think perhaps the right thing to do is to have handle_userfault() release
-mmap_lock when it returns VM_FAULT_NOPAGE, and to have GUP deal with that
-appropriately? But, some investigation is required to be sure that's okay to do
-in the other non-GUP ways we can end up in handle_userfault().
+Thanks,
+Raghavendra
+> > Fixes: 466d27e48d7c ("KVM: arm64: Simplify the CPUHP logic")
+> > Reported-by: Oliver Upton <oliver.upton@linux.dev>
+> > Suggested-by: Oliver Upton <oliver.upton@linux.dev>
+> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > ---
+> >  arch/arm64/kvm/arm.c | 14 ++++----------
+> >  1 file changed, 4 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> > index c2c14059f6a8..010ebfa69650 100644
+> > --- a/arch/arm64/kvm/arm.c
+> > +++ b/arch/arm64/kvm/arm.c
+> > @@ -1867,14 +1867,10 @@ static void _kvm_arch_hardware_enable(void *dis=
+card)
+> >
+> >  int kvm_arch_hardware_enable(void)
+> >  {
+> > -     int was_enabled =3D __this_cpu_read(kvm_arm_hardware_enabled);
+> > -
+> >       _kvm_arch_hardware_enable(NULL);
+> >
+> > -     if (!was_enabled) {
+> > -             kvm_vgic_cpu_up();
+> > -             kvm_timer_cpu_up();
+> > -     }
+> > +     kvm_vgic_cpu_up();
+> > +     kvm_timer_cpu_up();
+> >
+> >       return 0;
+> >  }
+> > @@ -1889,10 +1885,8 @@ static void _kvm_arch_hardware_disable(void *dis=
+card)
+> >
+> >  void kvm_arch_hardware_disable(void)
+> >  {
+> > -     if (__this_cpu_read(kvm_arm_hardware_enabled)) {
+> > -             kvm_timer_cpu_down();
+> > -             kvm_vgic_cpu_down();
+> > -     }
+> > +     kvm_timer_cpu_down();
+> > +     kvm_vgic_cpu_down();
+> >
+> >       if (!is_protected_kvm_enabled())
+> >               _kvm_arch_hardware_disable(NULL);
+> > --
+> > 2.41.0.487.g6d72f3e995-goog
+> >
+>
+> --
+> Thanks,
+> Oliver
