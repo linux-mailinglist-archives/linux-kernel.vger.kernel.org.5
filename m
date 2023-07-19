@@ -2,207 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7287591E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95FF17591E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbjGSJpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:45:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49478 "EHLO
+        id S230234AbjGSJqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjGSJp1 (ORCPT
+        with ESMTP id S230187AbjGSJp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:45:27 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499181BE4;
-        Wed, 19 Jul 2023 02:45:23 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36J9jFGm037558;
-        Wed, 19 Jul 2023 04:45:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1689759915;
-        bh=6k8nWeTmJSA+oC1ZHw0onB2rmqB4/nI626R3nCHO7Fc=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=u6oVchi7Rtom/0P34iqA5NK6TT4vKLtV5HP2oZu8xXKSumu0KvVGHsXKQN+To42TW
-         WlFo6UUU4Tn4H3pt8Fi6outuPBDhn/5ZHT1B0amWuxrl0YQHHYWyeEdL+SZj/r4ST/
-         TJrguvV3OYFUy70mhTyGhg6/FeDeWvVG7VfSkfSY=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36J9jFJG018999
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 19 Jul 2023 04:45:15 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 19
- Jul 2023 04:45:14 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 19 Jul 2023 04:45:14 -0500
-Received: from [172.24.227.83] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36J9jACH050339;
-        Wed, 19 Jul 2023 04:45:11 -0500
-Message-ID: <24fa9784-7781-7259-d53a-a76a017198f1@ti.com>
-Date:   Wed, 19 Jul 2023 15:15:10 +0530
+        Wed, 19 Jul 2023 05:45:57 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210631BFC
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:45:54 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52176fdad9dso6807467a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:45:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689759952; x=1692351952;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hgDMq8EIs6cspXF6h80EUdVrIdTF49gQA8Jmrcfwu8g=;
+        b=G0NhZBDiVzdqDKmNidzXpVTTlrgUn853zGTxU3EvK5rxIR4e9IBv6tesf/GFDoH/RH
+         0zage/xH+HJrFRElelFJGFU93Uch6HW1DVDOpOY99SsDbowmR0qBVzISY1dLzOCOJjDi
+         Hlli/Uup8eu0arXpzS/KKziNgMxDtODc4wUrRxDwxPL5KPCdQOOpJfwKrDq6crANldnQ
+         k/75QdimFUxu5NvmgvgLfR76rcmT3JiFUz4sdjEWQ7cnJVlxkyAnjhHueJqpHl6AFnIp
+         DddFx/7vLLIPECUXadL2ElFrv5iZ1sKvuWUh4JejAjLCR32hJjW6gvyh5FowP9RdIjaa
+         w4Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689759952; x=1692351952;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hgDMq8EIs6cspXF6h80EUdVrIdTF49gQA8Jmrcfwu8g=;
+        b=e7bPOFwVI5hByIUEw4257BBiGrbOge8SUHzfRwBRVEj2QzbCfZIJmsDistae6Xqiu8
+         g8kDprb9cpHh/r5snuMo9qxH7If7g6n6NZK/BFNAdotCRvoViit5yiDLr+gBftwJyZeF
+         FbCpTc3czET2At+gV+q4r5RP+L9gADF+4P2sD69Nl4qudP4QCx+hyh8mazIy2YTuw0Pk
+         NBgyXp1FGgzbvk1lGq/QrQX1pL7npM06HpAK39lDTgjJUPh/R16mMMk8yAT+7r/tIt1z
+         vE1XyReE0lpFB5qUNRkKGeCLF+Og0DgUC9wy014bYSZmklhNhWFiVDL8mdp4cz3j/8gz
+         7KRg==
+X-Gm-Message-State: ABy/qLbg0UxqBUprpi6n5I98li/XJ8JjjP5PM5fZ7TAmekiJPlTBl6PY
+        SCTp9twha/xp9J1dcZfHBJWkog==
+X-Google-Smtp-Source: APBJJlHexnJstMsdtGTJCbSIgOlieYQJgNdMtFqtxAgvGnbbXeTx2dJ1MnyPK18EMK3MjtK+PnfcDw==
+X-Received: by 2002:a17:906:7a4a:b0:993:e883:491f with SMTP id i10-20020a1709067a4a00b00993e883491fmr2340646ejo.8.1689759952496;
+        Wed, 19 Jul 2023 02:45:52 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id v10-20020a1709060b4a00b00999bb1e01dfsm774352ejg.52.2023.07.19.02.45.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 02:45:52 -0700 (PDT)
+Message-ID: <2c1c69bf-3cd5-4d68-43db-696ce0f15197@linaro.org>
+Date:   Wed, 19 Jul 2023 11:45:50 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 2/2] arm64: dts: ti: k3-j721s2: Add overlay to enable
- main CPSW2G with GESI
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3] arm64: dts: qcom: sdm630: Add support for modem
+ remoteproc
 Content-Language: en-US
-To:     Siddharth Vadapalli <s-vadapalli@ti.com>, <nm@ti.com>,
-        <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <afd@ti.com>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        Ravi Gunasekaran <r-gunasekaran@ti.com>
-References: <20230710094328.1359377-1-s-vadapalli@ti.com>
- <20230710094328.1359377-3-s-vadapalli@ti.com>
-From:   Ravi Gunasekaran <r-gunasekaran@ti.com>
-In-Reply-To: <20230710094328.1359377-3-s-vadapalli@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+To:     Alexey Minnekhanov <alexeymin@postmarketos.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+References: <20230719093458.2668842-1-alexeymin@postmarketos.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230719093458.2668842-1-alexeymin@postmarketos.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/10/23 3:13 PM, Siddharth Vadapalli wrote:
-> From: Kishon Vijay Abraham I <kishon@ti.com>
+On 19/07/2023 11:34, Alexey Minnekhanov wrote:
+> Modem subsystem in SDM630/660 is similar to MSM8998 and
+> device tree node for it is based on the one from msm8998.dtsi.
 > 
-> The MAIN CPSW2G instance of CPSW on J721S2 SoC can be enabled with the GESI
-> Expansion Board connected to the J7 Common-Proc-Board. Use the overlay
-> to enable this.
-> 
-> Add alias for the MAIN CPSW2G port to enable kernel to fetch MAC address
-> directly from U-Boot.
-> 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> Signed-off-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
 > ---
->  arch/arm64/boot/dts/ti/Makefile               |  2 +
->  .../dts/ti/k3-j721s2-evm-gesi-exp-board.dtso  | 85 +++++++++++++++++++
->  2 files changed, 87 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/ti/k3-j721s2-evm-gesi-exp-board.dtso
 > 
-> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-> index 6dd7b6f1d6ab..019a8be19b93 100644
-> --- a/arch/arm64/boot/dts/ti/Makefile
-> +++ b/arch/arm64/boot/dts/ti/Makefile
-> @@ -51,6 +51,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-j721e-sk.dtb
->  # Boards with J721s2 SoC
->  dtb-$(CONFIG_ARCH_K3) += k3-am68-sk-base-board.dtb
->  dtb-$(CONFIG_ARCH_K3) += k3-j721s2-common-proc-board.dtb
-> +dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm-gesi-exp-board.dtbo
+> V3: Use memory-region property to specify memory regions, instead
+>     of using "mba" and "mpss" subnodes.
+> 
+> V2 link: https://lore.kernel.org/lkml/20230621175046.61521-3-alexeymin@postmarketos.org/
+> 
+>  arch/arm64/boot/dts/qcom/sdm630.dtsi | 59 ++++++++++++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+> index 2136ded22f7e..797625cf78ac 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+> @@ -1032,6 +1032,65 @@ data-pins {
+>  			};
+>  		};
 >  
->  # Boards with J784s4 SoC
->  dtb-$(CONFIG_ARCH_K3) += k3-am69-sk.dtb
-> @@ -58,3 +59,4 @@ dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm.dtb
->  
->  # Enable support for device-tree overlays
->  DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
-> +DTC_FLAGS_k3-j721s2-common-proc-board += -@
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-evm-gesi-exp-board.dtso b/arch/arm64/boot/dts/ti/k3-j721s2-evm-gesi-exp-board.dtso
-> new file mode 100644
-> index 000000000000..9ababfeef904
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/ti/k3-j721s2-evm-gesi-exp-board.dtso
-> @@ -0,0 +1,85 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/**
-> + * DT Overlay for MAIN CPSW2G using GESI Expansion Board with J7 common processor board.
-> + *
-> + * GESI Board Product Link: https://www.ti.com/tool/J7EXPCXEVM
-> + *
-> + * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
-> + */
-> +
-> +/dts-v1/;
-> +/plugin/;
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/net/ti-dp83867.h>
-> +
-> +#include "k3-pinctrl.h"
-> +
-> +&{/} {
-> +	aliases {
-> +		ethernet1 = "/bus@100000/ethernet@c200000/ethernet-ports/port@1";
-> +	};
-> +};
-> +
-> +&main_pmx0 {
-> +	main_cpsw_mdio_pins_default: main-cpsw-mdio-pins-default {
-> +		pinctrl-single,pins = <
-> +			J721S2_IOPAD(0x0c0, PIN_OUTPUT, 6) /* (T28) MCASP1_AXR0.MDIO0_MDC */
-> +			J721S2_IOPAD(0x0bc, PIN_INPUT, 6) /* (V28) MCASP1_AFSX.MDIO0_MDIO */
-> +		>;
-> +	};
-> +
-> +	rgmii1_pins_default: rgmii1-pins-default {
-> +		pinctrl-single,pins = <
-> +			J721S2_IOPAD(0x0b8, PIN_INPUT, 6) /* (AA24) MCASP1_ACLKX.RGMII1_RD0 */
-> +			J721S2_IOPAD(0x0a0, PIN_INPUT, 6) /* (AB25) MCASP0_AXR12.RGMII1_RD1 */
-> +			J721S2_IOPAD(0x0a4, PIN_INPUT, 6) /* (T23) MCASP0_AXR13.RGMII1_RD2 */
-> +			J721S2_IOPAD(0x0a8, PIN_INPUT, 6) /* (U24) MCASP0_AXR14.RGMII1_RD3 */
-> +			J721S2_IOPAD(0x0b0, PIN_INPUT, 6) /* (AD26) MCASP1_AXR3.RGMII1_RXC */
-> +			J721S2_IOPAD(0x0ac, PIN_INPUT, 6) /* (AC25) MCASP0_AXR15.RGMII1_RX_CTL */
-> +			J721S2_IOPAD(0x08c, PIN_OUTPUT, 6) /* (T25) MCASP0_AXR7.RGMII1_TD0 */
-> +			J721S2_IOPAD(0x090, PIN_OUTPUT, 6) /* (W24) MCASP0_AXR8.RGMII1_TD1 */
-> +			J721S2_IOPAD(0x094, PIN_OUTPUT, 6) /* (AA25) MCASP0_AXR9.RGMII1_TD2 */
-> +			J721S2_IOPAD(0x098, PIN_OUTPUT, 6) /* (V25) MCASP0_AXR10.RGMII1_TD3 */
-> +			J721S2_IOPAD(0x0b4, PIN_OUTPUT, 6) /* (U25) MCASP1_AXR4.RGMII1_TXC */
-> +			J721S2_IOPAD(0x09c, PIN_OUTPUT, 6) /* (T24) MCASP0_AXR11.RGMII1_TX_CTL */
-> +		>;
-> +	};
-> +};
-> +
-> +&exp1 {
-> +	p15 {
-> +		/* P15 - EXP_MUX2 */
-> +		gpio-hog;
-> +		gpios = <13 GPIO_ACTIVE_HIGH>;
-> +		output-high;
-> +		line-name = "EXP_MUX2";
-> +	};
-> +};
-> +
-> +&main_cpsw {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&rgmii1_pins_default>;
-> +};
-> +
-> +&main_cpsw_mdio {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&main_cpsw_mdio_pins_default>;
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	main_cpsw_phy0: ethernet-phy@0 {
-> +		reg = <0>;
-> +		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-> +		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-> +		ti,min-output-impedance;
-> +	};
-> +};
-> +
-> +&main_cpsw_port1 {
-> +	status = "okay";
-> +	phy-mode = "rgmii-rxid";
-> +	phy-handle = <&main_cpsw_phy0>;
-> +};
+> +		remoteproc_mss: remoteproc@4080000 {
+> +			compatible = "qcom,sdm660-mss-pil";
 
-Reviewed-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
+Missing bindings so standard comment:
 
--- 
-Regards,
-Ravi
+It does not look like you tested the DTS against bindings. Please run
+`make dtbs_check` (see
+Documentation/devicetree/bindings/writing-schema.rst or
+https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+for instructions).
+
+Best regards,
+Krzysztof
+
