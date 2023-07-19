@@ -2,56 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C007598DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B70D7598CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbjGSOyc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 19 Jul 2023 10:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
+        id S230258AbjGSOuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231342AbjGSOyD (ORCPT
+        with ESMTP id S230384AbjGSOuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:54:03 -0400
-Received: from 6.mo575.mail-out.ovh.net (6.mo575.mail-out.ovh.net [46.105.63.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AFF1722
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:54:01 -0700 (PDT)
-Received: from director8.ghost.mail-out.ovh.net (unknown [10.108.1.240])
-        by mo575.mail-out.ovh.net (Postfix) with ESMTP id 3EBA92701E
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 14:46:00 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-vmrfz (unknown [10.110.171.117])
-        by director8.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 12A6A1FD18;
-        Wed, 19 Jul 2023 14:45:58 +0000 (UTC)
-Received: from courmont.net ([37.59.142.106])
-        by ghost-submission-6684bf9d7b-vmrfz with ESMTPSA
-        id hQaDOib3t2TqZgAAVw4Xwg
-        (envelope-from <remi@remlab.net>); Wed, 19 Jul 2023 14:45:58 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-106R006f1f5ee59-9d59-4f77-aa40-2a724a7ea83b,
-                    EAC8E2D8683B439879DFB44EAE753B92CD951686) smtp.auth=postmaster@courmont.net
-X-OVh-ClientIp: 87.92.194.88
-From:   =?ISO-8859-1?Q?R=E9mi?= Denis-Courmont <remi@remlab.net>
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Aurelien Jarno <aurelien@aurel32.net>,
-        Mathieu Malaterre <malat@debian.org>,
-        Jan Newger <jannewger@google.com>
-Subject: Re: [PATCH v4 00/10] riscv: Allow userspace to directly access perf counters
-Date:   Wed, 19 Jul 2023 17:45:57 +0300
-Message-ID: <5951331.lOV4Wx5bFT@basile.remlab.net>
-Organization: Remlab
-In-Reply-To: <CAOnJCU+W9u+HnMfjU_y9W7331Zx07eQs9R1twV0=KsBAeSMSjw@mail.gmail.com>
-References: <20230703124647.215952-1-alexghiti@rivosinc.com>
- <8756384.Zvl9fuB8X0@basile.remlab.net>
- <CAOnJCU+W9u+HnMfjU_y9W7331Zx07eQs9R1twV0=KsBAeSMSjw@mail.gmail.com>
+        Wed, 19 Jul 2023 10:50:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AD8198D;
+        Wed, 19 Jul 2023 07:49:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4BCDD61724;
+        Wed, 19 Jul 2023 14:49:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FB11C433C8;
+        Wed, 19 Jul 2023 14:49:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689778190;
+        bh=A3CT326GLyuZ8uG3ETpFiXuusbMwfWFklBzbmRUIMNU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ohnmzcB+bjpNkYJYehCOo+xlvbo0F8MQ8fNKAMyeIRJ4SAiNxuJ7gTBq7w417yBmp
+         kxpXsSV2BgbblTd9/geUEyrtVKItQS5bWsJQJchy03NnSUAWHaGGP55S7w7riek14G
+         zlXYAFXVWshM2W8qUzvievxS3Dq+6+MozfLa20WkfkKweiA84pl3vNNSSh4KEEHz55
+         Ftk5F37U2hRH3z0SwNCx92i7XhM89j3s+ZTxudWM1lr8cKs9CfEAgOVfCJcus6y51Z
+         WDtPGyGGa0KjpuAD98gBPhZn5azpeA8Ap95izdTEecZnC+TLWZd0lpA+gcPIcsSfR4
+         KswggLK+8kpIA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 82B1E40516; Wed, 19 Jul 2023 11:49:47 -0300 (-03)
+Date:   Wed, 19 Jul 2023 11:49:47 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/3] Parse event sort/regroup fixes
+Message-ID: <ZLf4C/+x2ZSpb1Uz@kernel.org>
+References: <20230719001836.198363-1-irogers@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
-X-Ovh-Tracer-Id: 17809484729600317882
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrgeekgdeigecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfhojghfggfgtgesthhqredttddtjeenucfhrhhomheptformhhiucffvghnihhsqdevohhurhhmohhnthcuoehrvghmihesrhgvmhhlrggsrdhnvghtqeenucggtffrrghtthgvrhhnpeeuhfegfeefvdefueetleefffduuedvjeefheduueekieeltdetueetueeugfevffenucffohhmrghinheprhgvmhhlrggsrdhnvghtnecukfhppeduvdejrddtrddtrddupdekjedrledvrdduleegrdekkedpfeejrdehledrudegvddruddtieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehrvghmihesrhgvmhhlrggsrdhnvghtqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheejhedpmhhouggvpehsmhhtphhouhht
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230719001836.198363-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,34 +67,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le keskiviikkona 19. heinäkuuta 2023, 1.48.49 EEST Atish Patra a écrit :
-> > Isn't RDTIM susceptible to interference from power management and CPU
-> > frequency scaling? I suppose that RDCYCLE may behave differently depending
-> > on PM in *some* designs, but that would still be way better than RDTIME
-> > for the purpose.
+Em Tue, Jul 18, 2023 at 05:18:33PM -0700, Ian Rogers escreveu:
+> Patch 1, fix:
+> perf stat -e cycles,slots,topdown-fe-bound
+> so that cycles isn't made a group leader (failure caused by PMUs
+> matching). Previously this event list would fail so not necessarily a
+> regression over previous perf release.
 > 
-> Yes. But that's what it is probably using for other ISAs ?
+> Patch 2, when regrouping events the leader needs to be updated due to
+> sorting. This fix causes larger event groups that then regress at
+> least the tigerlake metric test as the kernel PMU driver fails to
+> break the weak groups. This is a fix for a bug but the consequence of
+> fixing the bug is to make a passing test fail due to the kernel PMU
+> driver.
+> 
+> Patch 3, don't alter the list position of events without a group if
+> they don't need forcing into a group. Analysis showed this was the
+> cause of the issue reported by Andi Kleen:
+> https://lore.kernel.org/linux-perf-users/ZLBgbHkbrfGygM%2Fu@tassilo/
 
-At least on AArch64, it is using either Linux perf cycle counter, or if that 
-is disabled at build time, the raw PMU cycle counter - which obviously leads 
-to SIGILL on Linux, just like this MR would do with RDCYCLE.
+Andi,
 
-Again, I do not *personally* have objections to disabling RDCYCLE for 
-userspace (somebody else does, but that's neither my nor your problem). I do 
-have objections to the wording of some of the commit messages though.
+	Can you please check these patches and provide a Tested-by?
 
-> My point was it should just do whatever it does for other ISA. RISC-V is no
-> special in that regard.
+Thanks,
 
-Sure. My point is that RDTIME may be great for, so to say, system-level 
-benchmarks. For FFmpeg that could something like how long it takes to 
-transcode a video. But it doesn't seem to make much sense for 
-microbenchmarking of single threaded tightly optimised loops, as opposed to 
-RDCYCLE (or a wrapper for RDCYCLE).
-
--- 
-Rémi Denis-Courmont
-http://www.remlab.net/
-
-
-
+- Arnaldo
+ 
+> Due to the test regression in patch 2, follow up patches may be
+> necessary for Icelake+ Intel vendor metrics to add METRIC_NO_GROUP to
+> avoid the kernel PMU driver issue.
+> 
+> Ian Rogers (3):
+>   perf parse-events: Extra care around force grouped events
+>   perf parse-events: When fixing group leaders always set the leader
+>   perf parse-events: Only move force grouped evsels when sorting
+> 
+>  tools/perf/util/parse-events.c | 58 +++++++++++++++++++++-------------
+>  1 file changed, 36 insertions(+), 22 deletions(-)
+> 
+> -- 
+> 2.41.0.487.g6d72f3e995-goog
