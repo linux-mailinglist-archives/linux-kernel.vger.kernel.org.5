@@ -2,131 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44FA27599AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8667599B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbjGSP0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 11:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36276 "EHLO
+        id S231186AbjGSP12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 11:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231796AbjGSP0g (ORCPT
+        with ESMTP id S231640AbjGSP1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 11:26:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A8D210F3;
-        Wed, 19 Jul 2023 08:26:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 281CA6173E;
-        Wed, 19 Jul 2023 15:26:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FE34C433CA;
-        Wed, 19 Jul 2023 15:26:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689780388;
-        bh=ns5KGRSm1qCUcwtmraI8e2J0uq3O7YGwgmpNhsjeKO8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=VuJDe3s41aLEcac9qwpGYMw6sUAUSCHpi0OK958F/zb6K3iJ/TpwKmKOd4coAUtWL
-         uN7N//0+c8CKRqvPfN2zSRHQReSGQvk16uioiHK0LjDTaHpSTmjT32kSvDOGlpQrg/
-         +0L/ASu3edgI4rgYBzetyJyYnFl0fLWpMPCRfsYgAymYBtVOCTuTHkEdRdyoAtTXpC
-         xWd4g3Yg2olteJ4zEbU6AjYI33BQ+uNmlpnO+lKG+tOfHseWKPy1ZsfH456n/veSn0
-         ij16qm258qtfw1T2VgDrXzfImzM5pI2Nm2/bTtmxJloYVgDYtTuPizBBej0yqHl/lH
-         8guSi4DjkHnTw==
-Date:   Wed, 19 Jul 2023 10:26:26 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Minda Chen <minda.chen@starfivetech.com>
-Cc:     Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-Subject: Re: [PATCH v1 0/9] Refactoring Microchip PolarFire PCIe driver
-Message-ID: <20230719152626.GA502469@bhelgaas>
+        Wed, 19 Jul 2023 11:27:24 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00333132;
+        Wed, 19 Jul 2023 08:27:23 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-55ae51a45deso4374886a12.3;
+        Wed, 19 Jul 2023 08:27:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689780443; x=1692372443;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=V0Lkx5Mu5pvkEv29AIHqZ8L4QB5hfUluGqCIAyC8ZJk=;
+        b=HEAevr00LmMycArFzDSeYVZmLznbz5oEpFZxynb5wxEGGgUx5DJJmWJH6iWfzuKQ82
+         j/q+V2GcYQdpuMBXbMONEd8GpEbKSfDPLqRmg25F/KkMg5eVxI2QOI8fQwIrDHopvaYa
+         RFFOC3WSgYIEEEhEtjGRD3oloSPeIggnizN8qbo9JMtRoHmTIG9sXqPoerng0IgakYa8
+         Qnwrqga1eh3CAoxK1uv8I2D8CXaBlmmWVOOLsi2ylOFH24sZRGbxmJF/JxVPuBjtCe+X
+         V90YgF9sr/JH/b+mEkjIbeD1ndU79utRZ1u9+zT8aVpHfdbEN4vQTVf+z7cD3xPouQju
+         lQow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689780443; x=1692372443;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V0Lkx5Mu5pvkEv29AIHqZ8L4QB5hfUluGqCIAyC8ZJk=;
+        b=hTU4fMAi2uHIYlzUO9RNa5gY5oyLx4kdRhHjge2vJKmSFpsIOd0suvcS3lgXqFU3zG
+         MpqgMMT1T+CXELm5fE7Yb5MirTf8DbOWoYJ1XGSGXiDopoFC9as4WucEcaMFGRKH8eUD
+         gaQhp8PTSEW2rkzyTP8tRUXJtSKYGUtPacF7QATK9nIT6MwxmpwVoG7fckI9QAOiHJGn
+         N+IOQ4PR/X7SOgnH6f6aoWyTdPI7Ig7aaNy/g+eqg8p9D9Iaz0qJnnBMi7DDSdQjNg7r
+         +oN3qiVJ4YNKVi3tM2/vVwUmWM+xrAX2Quf/rhZXBwmxtUM+cYZK2p+Kd65zSPaBm7cL
+         q5vg==
+X-Gm-Message-State: ABy/qLZt8bAkk5nxY8GuyaPrsKbe52sKM/kAwMxK5OsADOr4qS/AgleM
+        Gt3BFrcTEnR2TxvN8OCNKNA=
+X-Google-Smtp-Source: APBJJlG8RhFXCinyrxXOSUSkjZx9zIQBAyDQ7O8rOLEtG9KaFfrOU9qx2/9vGw940Tvo0EIke5wzEQ==
+X-Received: by 2002:a17:90a:db03:b0:263:129e:80ac with SMTP id g3-20020a17090adb0300b00263129e80acmr2068279pjv.38.1689780443086;
+        Wed, 19 Jul 2023 08:27:23 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id in23-20020a17090b439700b00262eccfa29fsm1303446pjb.33.2023.07.19.08.27.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 08:27:22 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <b3e1208e-4b45-ad0a-25cf-941518357ebe@roeck-us.net>
+Date:   Wed, 19 Jul 2023 08:27:20 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230719102057.22329-1-minda.chen@starfivetech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 3/3] dt-bindings: hwmon: add sht3x devicetree binding
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        JuenKit Yip <JuenKit_Yip@hotmail.com>, jdelvare@suse.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org
+Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230703140818.427403-1-JuenKit_Yip@hotmail.com>
+ <DB4PR10MB6261295D96DCE88F712910B99229A@DB4PR10MB6261.EURPRD10.PROD.OUTLOOK.COM>
+ <948211aa-2315-5ed6-4c04-f1a795045997@linaro.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <948211aa-2315-5ed6-4c04-f1a795045997@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 06:20:48PM +0800, Minda Chen wrote:
-> This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
->   dt-bindings: PCI: Add PLDA XpressRICH PCIe host common properties
-> JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
-> same IP and have commit their codes, which are mixed with PLDA
-> controller codes and Microchip platform codes.
-
-I guess this actually adds TWO drivers: PCIE_PLDA_PLAT_HOST (claims
-"plda,xpressrich-pcie-host" devices) and PCIE_STARFIVE_HOST (claims
-"starfive,jh7110-pcie" devices), right?
-
-> For re-use the PLDA controller codes, I request refactoring microchip
-> codes, move PLDA common codes to PLDA files.
-> Desigware and Cadence is good example for refactoring codes.
+On 7/3/23 07:39, Krzysztof Kozlowski wrote:
+> On 03/07/2023 16:08, JuenKit Yip wrote:
+>> add sht3x devicetree binding files
+>>
+>> Signed-off-by: JuenKit Yip <JuenKit_Yip@hotmail.com>
+>> ---
+>> v3:
+>>    - fix wildcards problem
+>>    - add vdd-supply property
 > 
-> So first step is extract the PLDA common codes from microchip, and
-> refactoring the microchip codes.(patch1 - 4)
-> Then add the PLDA platform codes. (patch5, 6)
-> At last, add Starfive codes. (patch7 - 9)
+> No improvements in subject.
+>>
+>>   .../bindings/hwmon/sensirion,sht3x.yaml       | 45 +++++++++++++++++++
+>>   1 file changed, 45 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/hwmon/sensirion,sht3x.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/hwmon/sensirion,sht3x.yaml b/Documentation/devicetree/bindings/hwmon/sensirion,sht3x.yaml
+>> new file mode 100644
+>> index 000000000000..bef2eb492a47
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/hwmon/sensirion,sht3x.yaml
+>> @@ -0,0 +1,45 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/hwmon/sensirion,sht3x.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Sensirion SHT3x-DIS humidity and temperature sensor
+>> +
+>> +maintainers:
+>> +  - JuenKit Yip <JuenKit_Yip@hotmail.com>
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - sensirion,sht30
+>> +      - sensirion,sht31
+>> +      - sensirion,sht35
+>> +      - sensirion,sts30
+>> +      - sensirion,sts31
+>> +      - sensirion,sts35
 > 
-> This patchset is base on v6.5-rc1
+> Your driver change suggests these are compatible, so make them such with
+> oneOf and a list.
+> 
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  vdd-supply:
+>> +    description: regulator that drives the VDD pin
+> 
+> Missing reset-gpios. It's the second ignored comment.
+> 
+> This is a friendly reminder during the review process.
+> 
+> It seems my previous comments were not fully addressed. Maybe my
+> feedback got lost between the quotes, maybe you just forgot to apply it.
+> Please go back to the previous discussion and either implement all
+> requested changes or keep discussing them.
+> 
 
-Doesn't quite apply cleanly for me:
+To clarify from previous replies: the properties need to be described
+(because the chip needs a supply voltage, and because it has a reset pin,
+and bindings should be complete), but that doesn't mean that the driver
+has to implement them.
 
-  10:10:15 ~/linux (main)$ git checkout -b wip/minda-starfive-v1 v6.5-rc1
-  Switched to a new branch 'wip/minda-starfive-v1'
-  10:10:33 ~/linux (wip/minda-starfive-v1)$ git am m/20230719_minda_chen_refactoring_microchip_polarfire_pcie_driver.mbx
-  Applying: dt-bindings: PCI: Add PLDA XpressRICH PCIe host common properties
-  Applying: dt-bindings: PCI: microchip: Remove the PLDA common properties
-  Applying: PCI: PLDA: Get PLDA common codes from Microchip PolarFire host
-  Applying: PCI: microchip: Move PCIe driver to PLDA directory
-  Applying: dt-bindings: PLDA: Add PLDA XpressRICH PCIe host controller
-  Applying: PCI: PLDA: Add host conroller platform driver
-  Applying: dt-bindings: PCI: Add StarFive JH7110 PCIe controller
-  Applying: PCI: PLDA: starfive: Add JH7110 PCIe controller
-  Applying: riscv: dts: starfive: add PCIe dts configuration for JH7110
-  error: patch failed: arch/riscv/boot/dts/starfive/jh7110.dtsi:629
-  error: arch/riscv/boot/dts/starfive/jh7110.dtsi: patch does not apply
-  Patch failed at 0009 riscv: dts: starfive: add PCIe dts configuration for JH7110
+Thanks,
+Guenter
 
->   dt-bindings: PCI: Add PLDA XpressRICH PCIe host common properties
->   dt-bindings: PCI: microchip: Remove the PLDA common properties
->   PCI: PLDA: Get PLDA common codes from Microchip PolarFire host
->   PCI: microchip: Move PCIe driver to PLDA directory
->   dt-bindings: PLDA: Add PLDA XpressRICH PCIe host controller
->   PCI: PLDA: Add host conroller platform driver
-
-"controller"
-
->   dt-bindings: PCI: Add StarFive JH7110 PCIe controller
->   PCI: PLDA: starfive: Add JH7110 PCIe controller
->   riscv: dts: starfive: add PCIe dts configuration for JH7110
-
-Use "PCI: plda: " prefix for PLDA things that are shared across
-multiple drivers.
-
-Use "PCI: starfive: " prefix for starfive-specific things.
-
-This is the same as how drivers/pci/controller/dwc/* looks.
-
-Bjorn
