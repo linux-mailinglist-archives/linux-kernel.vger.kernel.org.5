@@ -2,96 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33881758CD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 06:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EF8758CD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbjGSE7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 00:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46420 "EHLO
+        id S229838AbjGSFAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 01:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbjGSE7F (ORCPT
+        with ESMTP id S229476AbjGSFA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 00:59:05 -0400
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E351BF3;
-        Tue, 18 Jul 2023 21:59:04 -0700 (PDT)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-99313a34b2dso778675966b.1;
-        Tue, 18 Jul 2023 21:59:04 -0700 (PDT)
+        Wed, 19 Jul 2023 01:00:27 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D811BF2
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 22:00:26 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-76571dae5feso602977685a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 22:00:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1689742826; x=1692334826;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qJV+5H7WHAd6FvjZ1TOjL7hWDt3g7V64oyP4LlM0T74=;
+        b=LHYzANnXsGO/VDnFyFI2yYLRZUrhDs294AiCUCVYJFv1oCRnrAiCEXXKKr1Wbw4Xi7
+         WKyCo3l+241P/vTt0bpy3xBnlu9djZwxIl7biKdikgaUTWY+c7jM/OY8vsiPR8EYGYN3
+         QkkFwQY21A37VAGogjtsNMvgcJ4IuBSn8lVss=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689742743; x=1690347543;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1689742826; x=1692334826;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=j73OOjIeRuMj/hW5XddSt0G2UN09Sqon0o8YRkFJAmE=;
-        b=l/xAU3Tk5Otn7sylrbD0kn4jI/WBp77eixjcwDu9lz+Jumc2k/IiEbRyg37iJxncO8
-         Tg7pcuR5zDmcbzqskkojmwtTlQb0b69A1NS1MtdgPDggqhwQThPA1f36hOftwwC34JUn
-         ELy7xxcODkYSJkcgu/ghxeLpzunNaHGzRdzXUlCEBuuJD1p6/11Cq/luVbKiUZV2loT8
-         +NCjtgDl3xwcLhSy0ubt5IOxlSLpMFsZ1M/QuhgMY84PafkwEL/xK5eUOFUL/COn+vpP
-         fj7iMF2SEUqdsw3P8tDzihnvjNEQdbBzVc+pVrNKB6qNCmSPkUyYrxYt2ku3y0E/wVYJ
-         rbrw==
-X-Gm-Message-State: ABy/qLY92Q9d8oZ63icmQavFIAxcaX1kOPH+kH+QYaQy9PVC13KZwA2w
-        hw4dEs3C+MKkaPXF6DmcedE+dApcqTY=
-X-Google-Smtp-Source: APBJJlE5FBhwnn+ttSshK5fDq37w5f5hotxC47JdDOGMCuEPnvDrPixrpDDiWdU9TUvzvExhUXBiSQ==
-X-Received: by 2002:a17:906:2208:b0:993:f9b2:93c1 with SMTP id s8-20020a170906220800b00993f9b293c1mr1532542ejs.9.1689742742765;
-        Tue, 18 Jul 2023 21:59:02 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id x26-20020a1709064a9a00b009893b06e9e3sm1775731eju.225.2023.07.18.21.59.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 21:59:02 -0700 (PDT)
-Message-ID: <29a50d29-67f6-8b18-d0bb-278878f9ddac@kernel.org>
-Date:   Wed, 19 Jul 2023 06:59:01 +0200
+        bh=qJV+5H7WHAd6FvjZ1TOjL7hWDt3g7V64oyP4LlM0T74=;
+        b=Ib9Ev+KpGhdOTwzDtztlZ0inTCeK+ZhewIkfe3BmG8DPPvbeo7jjvIpCnQ0VZabbcM
+         PGbopDOcdaKoUxO4FTXNNqmDFyOSRlYvEaqcGaJNfiYAFiEElCV5SdJf54kQDOh+KhS5
+         GQx6Sl4FCue2clUUracuutzQUTMOlyY4bc2TRr+eOGyt9P/iG2PL2rgIqYw0pGAp7ClY
+         cWRd+RXbKP7xtVz6cL76SrdCRDTP+Ph2hXcJ8gt8F8OKktxjcmKjncLzVgZ4o6r7j4OG
+         Fe0xiC6y3kHuFf9bpo4HTOxZxavYGEzdHh0rsXuCc7gGIaK+s382Bkq3B65T+f19BCyK
+         1E+w==
+X-Gm-Message-State: ABy/qLa648EtYdy0E9QimUN0VjkDf6lWjPSkYx905MdO+0bPsfZ2gvH/
+        j7vGvT0a+HlomFdK9WZM8UHOHguFk4PhMsApONc=
+X-Google-Smtp-Source: APBJJlH9cUbrl47s/tZ3jmVxzSHae+deP+2Z74B5lJRj1FiVldoMgegBxL27xRdf1h+5cuRV6+N4Rg==
+X-Received: by 2002:a05:620a:4724:b0:767:3b7d:687c with SMTP id bs36-20020a05620a472400b007673b7d687cmr2067876qkb.15.1689742825929;
+        Tue, 18 Jul 2023 22:00:25 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id fy16-20020a17090b021000b00256353eb8f2sm383334pjb.5.2023.07.18.22.00.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 22:00:25 -0700 (PDT)
+Date:   Tue, 18 Jul 2023 22:00:24 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1 1/1] seq_file: Replace strncpy()+nul by strscpy()
+Message-ID: <202307182147.A5B81B67D@keescook>
+References: <20230717093332.54236-1-andriy.shevchenko@linux.intel.com>
+ <168963536094.1395996.315062356944871422.b4-ty@chromium.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 6.4 000/801] 6.4.4-rc3 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20230717201608.814406187@linuxfoundation.org>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <20230717201608.814406187@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <168963536094.1395996.315062356944871422.b4-ty@chromium.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17. 07. 23, 22:34, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.4 release.
-> There are 801 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Jul 17, 2023 at 04:09:23PM -0700, Kees Cook wrote:
 > 
-> Responses should be made by Wed, 19 Jul 2023 20:14:44 +0000.
-> Anything received after that time might be too late.
+> On Mon, 17 Jul 2023 12:33:32 +0300, Andy Shevchenko wrote:
+> > Privided seq_show_option_n() macro breaks build with -Werror
+> > and W=1, e.g.:
+> > 
+> > In function ‘strncpy’,
+> >     inlined from ‘ocfs2_show_options’ at fs/ocfs2/super.c:1520:3:
+> > include/linux/fortify-string.h:68:33: error: ‘__builtin_strncpy’ output may be truncated copying 4 bytes from a string of length 4 [-Werror=stringop-truncation]
+> >    68 | #define __underlying_strncpy    __builtin_strncpy
+> >       |                                 ^
+> > include/linux/fortify-string.h:151:16: note: in expansion of macro ‘__underlying_strncpy’
+> >   151 |         return __underlying_strncpy(p, q, size);
+> >       |                ^~~~~~~~~~~~~~~~~~~~
+> > cc1: all warnings being treated as errors
+> > 
+> > [...]
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.4-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
+> Applied, thanks!
+> 
+> [1/1] seq_file: Replace strncpy()+nul by strscpy()
+>       https://git.kernel.org/kees/c/c30417b20f49
 
-openSUSE configs¹⁾ mostly green -- arm is still building (our build 
-systems have limited resourced due to move now). x86_64 runs fine in qemu.
+Gah, I dropped this from my tree since it was actually wrong[1]. This is an
+ugly corner case with strscpy vs strncpy: the cast be32 from hfs/hfsplus[2]
+looks unterminated to strscpy, so it would return -E2BIG, but really
+FORTIFY noticed the over-read (strscpy is correctly checking the 5th
+byte for NUL).
 
-Tested-by: Jiri Slaby <jirislaby@kernel.org>
+So... I think we need to fix seq_show_option_n() using memcpy+NUL, drop
+the ocfs2 usage, and clarify that the seq_show_option_n() docs mean
+"n means _exactly_ n bytes"...
 
-¹⁾ armv6hl armv7hl arm64 i386 ppc64 ppc64le riscv64 s390x x86_64
+-Kees
+
+[1] https://lore.kernel.org/lkml/0000000000000a88cb0600ccef54@google.com/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/hfsplus/options.c?h=v6.4#n221
 
 -- 
-js
-suse labs
-
+Kees Cook
