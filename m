@@ -2,57 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08812759BC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8408759BC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbjGSREb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 13:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
+        id S230457AbjGSRFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 13:05:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbjGSRE3 (ORCPT
+        with ESMTP id S229699AbjGSRFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:04:29 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430601BB
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:04:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689786268; x=1721322268;
-  h=date:from:to:cc:subject:message-id;
-  bh=XgRxhxPhAVLE2bzyROfMlqUOjUd5c/ZxNxtmHp2pIgY=;
-  b=KNkZw//ZN5aZPcWEApZm2Yj8t139BMFHI7Tqx79VixQBolxV+62lvw7p
-   hea/XYcdqJ90/rQ5beYL16VGJWGQujrX0/2HzsWJEjk0OM8KD/GMkjFDq
-   gYuGWftrYaqrHsgtaGVDehebWZ/zIJ6ZgHzQKFYrcYd4fDLod3xGsIMQu
-   pKGFadI7WiwEE43cOv69Gtyk0Kiy4evYp5phdC8irEuOpCpvSva4Bihgp
-   AlPO6KiBdKnnTlCvPpXWSgysHZY5ItevdHbvOSiHjLvhWm5bS5kFSdb/q
-   OugZ9kWmtxS3YkdfWqgt1F0R6w3h1MYZntd5WzrtRmB7LH0P3XnqnumHu
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="351391253"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="351391253"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 10:04:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="794120574"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="794120574"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 19 Jul 2023 10:04:26 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qMAbC-0005Jl-05;
-        Wed, 19 Jul 2023 17:04:26 +0000
-Date:   Thu, 20 Jul 2023 01:03:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- e209b9496e109188268dd8e7e7e6abeaaff7a285
-Message-ID: <202307200149.IKqFOUPD-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        Wed, 19 Jul 2023 13:05:04 -0400
+Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D1510CB;
+        Wed, 19 Jul 2023 10:05:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1689786303; x=1721322303;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=n3xuV25OzbskrlT52LWtJFNWdqbbfavJdeAVLDvE9YI=;
+  b=ABkJ3+EhI+BnK7bDkvCYxCH+vy/K4j/utwNEGM5r2staL0z2TC16M/Di
+   mS7VTynCOIV9AFMVNgZaHwef3ZdE/vgvJc3j7YRbZAclaK+OrylZ1TIWr
+   4wtPjiqoiiFaUqqlKeHpJhFIhfbuIL2Jh+cdEgTQom8e1d0EzbKs0ZCt9
+   M=;
+X-IronPort-AV: E=Sophos;i="6.01,216,1684800000"; 
+   d="scan'208";a="227505479"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-d2040ec1.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 17:05:00 +0000
+Received: from EX19MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2c-m6i4x-d2040ec1.us-west-2.amazon.com (Postfix) with ESMTPS id DF90E40DA2;
+        Wed, 19 Jul 2023 17:04:58 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 19 Jul 2023 17:04:57 +0000
+Received: from 88665a182662.ant.amazon.com (10.187.170.21) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 19 Jul 2023 17:04:53 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <leitao@debian.org>
+CC:     <alexander@mihalicyn.com>, <ast@kernel.org>, <davem@davemloft.net>,
+        <dhowells@redhat.com>, <edumazet@google.com>,
+        <kernelxing@tencent.com>, <kuba@kernel.org>, <kuniyu@amazon.com>,
+        <leit@meta.com>, <linux-kernel@vger.kernel.org>,
+        <lucien.xin@gmail.com>, <martin.lau@kernel.org>,
+        <netdev@vger.kernel.org>, <pabeni@redhat.com>
+Subject: Re: [PATCH net-next] net: Use _K_SS_MAXSIZE instead of absolute value
+Date:   Wed, 19 Jul 2023 10:04:45 -0700
+Message-ID: <20230719170445.30993-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230719084415.1378696-1-leitao@debian.org>
+References: <20230719084415.1378696-1-leitao@debian.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.187.170.21]
+X-ClientProxiedBy: EX19D043UWC003.ant.amazon.com (10.13.139.240) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,135 +71,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: e209b9496e109188268dd8e7e7e6abeaaff7a285  Merge branch into tip/master: 'x86/mm'
+From: Breno Leitao <leitao@debian.org>
+Date: Wed, 19 Jul 2023 01:44:12 -0700
+> Looking at sk_getsockopt function, it is unclear why 128 is a magical
+> number.
+> 
+> Use the proper macro, so it becomes clear to understand what the value
+> mean, and get a reference where it is coming from (user-exported API).
+> 
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+> ---
+>  net/core/sock.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index 9370fd50aa2c..58b6f00197d6 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -1815,7 +1815,7 @@ int sk_getsockopt(struct sock *sk, int level, int optname,
+>  
+>  	case SO_PEERNAME:
+>  	{
+> -		char address[128];
+> +		char address[_K_SS_MAXSIZE];
 
-elapsed time: 1199m
+I guess you saw a bug caught by the fortified memcpy(), but this
+doesn't fix it properly.
 
-configs tested: 116
-configs skipped: 3
+I'll post a series soon that fix the issue and another realted one.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks!
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                      axs103_smp_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r032-20230718   gcc  
-arc                  randconfig-r043-20230718   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                          ixp4xx_defconfig   clang
-arm                      jornada720_defconfig   gcc  
-arm                          pxa910_defconfig   gcc  
-arm                  randconfig-r021-20230718   gcc  
-arm                  randconfig-r031-20230718   clang
-arm                  randconfig-r046-20230718   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r011-20230718   clang
-arm64                randconfig-r012-20230718   clang
-arm64                randconfig-r033-20230718   gcc  
-csky                                defconfig   gcc  
-hexagon              randconfig-r041-20230718   clang
-hexagon              randconfig-r045-20230718   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230718   gcc  
-i386         buildonly-randconfig-r005-20230718   gcc  
-i386         buildonly-randconfig-r006-20230718   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230718   gcc  
-i386                 randconfig-i002-20230718   gcc  
-i386                 randconfig-i003-20230718   gcc  
-i386                 randconfig-i004-20230718   gcc  
-i386                 randconfig-i005-20230718   gcc  
-i386                 randconfig-i006-20230718   gcc  
-i386                 randconfig-i011-20230718   clang
-i386                 randconfig-i012-20230718   clang
-i386                 randconfig-i013-20230718   clang
-i386                 randconfig-i014-20230718   clang
-i386                 randconfig-i015-20230718   clang
-i386                 randconfig-i016-20230718   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r002-20230718   gcc  
-loongarch            randconfig-r003-20230718   gcc  
-loongarch            randconfig-r034-20230718   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r035-20230718   gcc  
-microblaze           randconfig-r006-20230718   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r013-20230718   gcc  
-nios2                               defconfig   gcc  
-openrisc             randconfig-r036-20230718   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                     kilauea_defconfig   clang
-powerpc                      mgcoge_defconfig   gcc  
-powerpc              randconfig-r014-20230718   clang
-powerpc              randconfig-r015-20230718   clang
-riscv                            alldefconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r001-20230718   gcc  
-riscv                randconfig-r022-20230718   clang
-riscv                randconfig-r025-20230718   clang
-riscv                randconfig-r042-20230718   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r023-20230718   clang
-s390                 randconfig-r044-20230718   clang
-sh                               allmodconfig   gcc  
-sh                   randconfig-r026-20230718   gcc  
-sh                           se7724_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r016-20230718   gcc  
-sparc64              randconfig-r005-20230718   gcc  
-sparc64              randconfig-r024-20230718   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230718   gcc  
-x86_64       buildonly-randconfig-r002-20230718   gcc  
-x86_64       buildonly-randconfig-r003-20230718   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-x001-20230718   clang
-x86_64               randconfig-x002-20230718   clang
-x86_64               randconfig-x003-20230718   clang
-x86_64               randconfig-x004-20230718   clang
-x86_64               randconfig-x005-20230718   clang
-x86_64               randconfig-x006-20230718   clang
-x86_64               randconfig-x011-20230718   gcc  
-x86_64               randconfig-x012-20230718   gcc  
-x86_64               randconfig-x013-20230718   gcc  
-x86_64               randconfig-x014-20230718   gcc  
-x86_64               randconfig-x015-20230718   gcc  
-x86_64               randconfig-x016-20230718   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>  
+>  		lv = sock->ops->getname(sock, (struct sockaddr *)address, 2);
+>  		if (lv < 0)
+> -- 
+> 2.34.1
