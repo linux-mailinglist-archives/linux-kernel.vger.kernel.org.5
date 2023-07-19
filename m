@@ -2,52 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D142758E3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25FE758E3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbjGSHAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 03:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42618 "EHLO
+        id S229539AbjGSHAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 03:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbjGSHAt (ORCPT
+        with ESMTP id S230317AbjGSHAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 03:00:49 -0400
-Received: from out-11.mta0.migadu.com (out-11.mta0.migadu.com [91.218.175.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C179EE69
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:00:47 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689750046;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oR02ocyNOo67ut2irvQW1I2L6Nr8rh1y4Mq6MMgZptA=;
-        b=P28LWt5j97mE8Bogv4TUnkw9D03W3cY38+SvKocgJGJA0cZAytNGa3JzPU3glSKdjNpsiW
-        4fFlcxi11dmnQbm7yTHremnym57grfNXGsi9EP38Wsa1OIuRqtQnPzKhicLduPK4/nQfxX
-        Gcm7Tjfald/RpBWB/3cLmurPL05tPH4=
+        Wed, 19 Jul 2023 03:00:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321F4E60
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:00:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B6B2861275
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:00:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7D0FC433C7;
+        Wed, 19 Jul 2023 07:00:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689750035;
+        bh=aroVN9ylhT+jGcY56bKaxxXfO8XoQj1uPdqUTCGAqtY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VDHtuu2WKS2ADWsGTrCfkLBUA9vfUIoZ341lLPeFi7sGMOxPV588R4A82BMoyXDVq
+         n4BvyBO3fxP4/zlNgY5JJkwY+fHqUxzC9OLX71/c1Se+7zyrwxbtuj4gP8DPcWUtOg
+         a75xbe1+0aOiJoLgI0CMwtwQm+Z+iu5A627GCcZ3Z5PxZO6DdQA68Gq6UEvB9uJWo4
+         wyn7rEd6UWNWMPdmOZ0QbrWxNjneheXn4AqCl7EZSkOX803zFzvfNHd9s4neEXftF2
+         U0VHoHFenxeqzL09DsJcCIzHmjgNc2OQSwoYHDxmYo3Ibj/XgHojXDiLWEO/yuyN93
+         BBSas6JqlBlVQ==
+Date:   Wed, 19 Jul 2023 15:00:22 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, Frank.Li@nxp.com, aisheng.dong@nxp.com,
+        marcel.ziswiler@toradex.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH 0/7] firmware: imx: scu-pd: misc update
+Message-ID: <20230719070022.GH151430@dragon>
+References: <20230714090936.937344-1-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] mm: hugetlb_vmemmap: use PageCompound() instead of
- PageReserved()
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <2b66797b-3ee9-a70f-25d0-dcab830859d2@redhat.com>
-Date:   Wed, 19 Jul 2023 15:00:04 +0800
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <A363D1BA-80B6-4E71-B587-EF04530BBA77@linux.dev>
-References: <20230719063132.37676-1-songmuchun@bytedance.com>
- <2b66797b-3ee9-a70f-25d0-dcab830859d2@redhat.com>
-To:     =?utf-8?Q?Mika_Penttil=C3=A4?= <mpenttil@redhat.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230714090936.937344-1-peng.fan@oss.nxp.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,60 +58,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
++Ulf
 
+On Fri, Jul 14, 2023 at 05:09:29PM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> This patchset is to upstream NXP downstream scu-pd driver patches.
+> patch 1,2 is to support more PDs
+> patch 3 is to not power off console when no console suspend
+> patch 4 is to suppress bind
+> patch 5 is to make genpd align with HW state
+> patch 6 is to support LP mode in runtime suspend, OFF mode in system suspend.
+> patch 7 is to change init level to avoid uneccessary defer probe
+> 
+> Dong Aisheng (2):
+>   firmware: imx: scu-pd: do not power off console if no_console_suspend
+>   firmware: imx: scu-pd: change init level to subsys_initcall
+> 
+> Peng Fan (5):
+>   firmware: imx: scu-pd: enlarge PD range
+>   firmware: imx: scu-pd: add more PDs
+>   firmware: imx: scu-pd: Suppress bind attrs
+>   firmware: imx: scu-pd: initialize is_off according to HW state
+>   firmware: imx: scu-pd: add multi states support
+> 
+>  drivers/firmware/imx/scu-pd.c | 193 ++++++++++++++++++++++++++++++++--
+>  1 file changed, 182 insertions(+), 11 deletions(-)
 
-> On Jul 19, 2023, at 14:51, Mika Penttil=C3=A4 <mpenttil@redhat.com> =
-wrote:
->=20
-> Hi,
->=20
->=20
-> On 19.7.2023 9.31, Muchun Song wrote:
->> The ckeck of PageReserved() is easy to be broken in the future, =
-PageCompound()
->> is more stable to check if the page should be split.
->> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->> ---
->>  mm/hugetlb_vmemmap.c | 4 +++-
->>  1 file changed, 3 insertions(+), 1 deletion(-)
->> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
->> index 4b9734777f69..8068fe890f52 100644
->> --- a/mm/hugetlb_vmemmap.c
->> +++ b/mm/hugetlb_vmemmap.c
->> @@ -73,8 +73,10 @@ static int split_vmemmap_huge_pmd(pmd_t *pmd, =
-unsigned long start)
->>   * be treated as indepdenent small pages (as they can be freed
->>   * individually).
->>   */
->> - if (!PageReserved(head))
->> + if (PageCompound(head)) {
->> + 	VM_BUG_ON(compound_order(head) !=3D get_order(PMD_SIZE));
->>   	split_page(head, get_order(PMD_SIZE));
->=20
-> I think vmemmap pages are not compound pages (even order > 0).
-> They would bug on here trying to split_page() :
+We have genpd subsystem [1] coming.  Should we consider to move this
+scu-pd driver there too?
 
-You are right. I have missed this. Now I remember why I use
-PageReserved() instead of PageCompound() when I fist submit
-the commit 39d35edee453. Thanks for your reminder.
+Shawn
 
-Sorry for the noise. Please ignore this patch.
-
-Thanks.
-
->=20
->=20
-> void split_page(struct page *page, unsigned int order)
-> {
->        int i;
->=20
->        VM_BUG_ON_PAGE(PageCompound(page), page);
->=20
->=20
->> + }
->>     /* Make pte visible before pmd. See comment in pmd_install(). */
->>   smp_wmb();
->=20
-> --Mika
->=20
-
+[1] https://lore.kernel.org/linux-arm-kernel/20230714092301.28690-1-ulf.hansson@linaro.org/T/
