@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C99B075A274
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B562675A272
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbjGSWtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 18:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42850 "EHLO
+        id S231393AbjGSWti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 18:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231279AbjGSWrz (ORCPT
+        with ESMTP id S231268AbjGSWrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 19 Jul 2023 18:47:55 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5A7270D;
-        Wed, 19 Jul 2023 15:47:43 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 22:47:40 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7404B2712;
+        Wed, 19 Jul 2023 15:47:44 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 22:47:41 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1689806861;
+        s=2020; t=1689806862;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=iYyZYtqS+AEGd5Pnlk5ms106y7I8+ZRGduGGs3pZQd8=;
-        b=UPtYlnJ/I6q8KdjNdA/U7uV49FcgktinODgB8z1iGJHYQ9b9sYYX2A9F3H90teyuRsjQgt
-        pNdgFW5c67Yw0tRkG/PbCh7rzqPD/qkfmJdW85iWBkNaCumSo8HSkYtajGKKJQkVUpkzuV
-        VcmLlkET6YFCjwhCvPXMh9UVM5fZ8MyJnC3XDxSXGPokgitg/bKOkvIh+yYRamsfOZMDLr
-        x+ZFGHMaK02SW8qEPSdJyZYt4Gu1cFfQ8r6y5UX0LbFN5rnG9c6hBk4BjRDbiGPUrPqj67
-        BS76mbvvx7Fk98vou9scRaVVOHDf0zYpmokIiOVkGPYcKbFhOIesYtyCd2qEcw==
+        bh=iyuYd8QMB9FAdqbSNXeTgPoNkZ6fmC7VxJ7OXEZ8Qv4=;
+        b=x2lJMMsz5lIsEQ2eqvhPmhTuyharuylO4IHoph+MSgbcwGJqMArzI1cup8KOpLjoEXMmDA
+        6dnwMLo2UCs5KdtmsDoih0aSgxerFPH2W0TTN2TiPHLpqbfbo6sQSZt1O+ZYO5nyDtfW0Z
+        4d59jReHDbofrL86X6ZiqayoLazkoXovYQ3OclAvcBBwK4UX+77ImH9R2dwRN78zOVUtpe
+        oWxW9LZd7Ho4we7d0kRuhgZa6C0/JxMTCjST6dVB5Orl37flpWw4QZoM999QeoSaOvoEh7
+        rbClBWxTC74e00O2FfgwQMXxjbDt3hgjBiQJwsoxkeojNSo8voq0HhVYrtmkiA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1689806861;
+        s=2020e; t=1689806862;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=iYyZYtqS+AEGd5Pnlk5ms106y7I8+ZRGduGGs3pZQd8=;
-        b=HG5YCtbEz4gfoMYKmaXqgl6IyzPa5dOvd3Kdq8C+LTkEuxbOBVFU44XJKXjhFkps+CCwBL
-        AtJL8f/VYSZv+ACQ==
+        bh=iyuYd8QMB9FAdqbSNXeTgPoNkZ6fmC7VxJ7OXEZ8Qv4=;
+        b=pCckvF4SRGHcylgJdptTbpf2Ju4ypb7wShyMJUlyk3HgHQZYVD6keO1nE5VB/cBkUeRsZj
+        m+bFpLbmwReLVGCg==
 From:   "tip-bot2 for Rick Edgecombe" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/shstk] x86/cpufeatures: Add CPU feature flags for shadow stacks
+Subject: [tip: x86/shstk] x86/shstk: Add Kconfig option for shadow stack
 Cc:     "Yu-cheng Yu" <yu-cheng.yu@intel.com>,
         Rick Edgecombe <rick.p.edgecombe@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
@@ -50,7 +50,7 @@ Cc:     "Yu-cheng Yu" <yu-cheng.yu@intel.com>,
         John Allen <john.allen@amd.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <168980686077.28540.9644400808231268450.tip-bot2@tip-bot2>
+Message-ID: <168980686167.28540.17336697338680035127.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,32 +67,25 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/shstk branch of tip:
 
-Commit-ID:     701fb66d576ec4d06903e7dd55678a3005d86e5f
-Gitweb:        https://git.kernel.org/tip/701fb66d576ec4d06903e7dd55678a3005d86e5f
+Commit-ID:     18e66b695e787374ca762ecdeaa1ab5e3772af94
+Gitweb:        https://git.kernel.org/tip/18e66b695e787374ca762ecdeaa1ab5e3772af94
 Author:        Rick Edgecombe <rick.p.edgecombe@intel.com>
-AuthorDate:    Mon, 12 Jun 2023 17:10:34 -07:00
+AuthorDate:    Mon, 12 Jun 2023 17:10:32 -07:00
 Committer:     Rick Edgecombe <rick.p.edgecombe@intel.com>
 CommitterDate: Tue, 11 Jul 2023 14:12:18 -07:00
 
-x86/cpufeatures: Add CPU feature flags for shadow stacks
+x86/shstk: Add Kconfig option for shadow stack
 
-The Control-Flow Enforcement Technology contains two related features,
-one of which is Shadow Stacks. Future patches will utilize this feature
-for shadow stack support in KVM, so add a CPU feature flags for Shadow
-Stacks (CPUID.(EAX=7,ECX=0):ECX[bit 7]).
+Shadow stack provides protection for applications against function return
+address corruption. It is active when the processor supports it, the
+kernel has CONFIG_X86_SHADOW_STACK enabled, and the application is built
+for the feature. This is only implemented for the 64-bit kernel. When it
+is enabled, legacy non-shadow stack applications continue to work, but
+without protection.
 
-To protect shadow stack state from malicious modification, the registers
-are only accessible in supervisor mode. This implementation
-context-switches the registers with XSAVES. Make X86_FEATURE_SHSTK depend
-on XSAVES.
-
-The shadow stack feature, enumerated by the CPUID bit described above,
-encompasses both supervisor and userspace support for shadow stack. In
-near future patches, only userspace shadow stack will be enabled. In
-expectation of future supervisor shadow stack support, create a software
-CPU capability to enumerate kernel utilization of userspace shadow stack
-support. This user shadow stack bit should depend on the HW "shstk"
-capability and that logic will be implemented in future patches.
+Since there is another feature that utilizes CET (Kernel IBT) that will
+share implementation with shadow stacks, create CONFIG_CET to signify
+that at least one CET feature is configured.
 
 Co-developed-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
@@ -104,68 +97,71 @@ Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
 Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 Tested-by: John Allen <john.allen@amd.com>
 Tested-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/all/20230613001108.3040476-9-rick.p.edgecombe%40intel.com
+Link: https://lore.kernel.org/all/20230613001108.3040476-7-rick.p.edgecombe%40intel.com
 ---
- arch/x86/include/asm/cpufeatures.h       | 2 ++
- arch/x86/include/asm/disabled-features.h | 8 +++++++-
- arch/x86/kernel/cpu/cpuid-deps.c         | 1 +
- 3 files changed, 10 insertions(+), 1 deletion(-)
+ arch/x86/Kconfig           | 24 ++++++++++++++++++++++++
+ arch/x86/Kconfig.assembler |  5 +++++
+ 2 files changed, 29 insertions(+)
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index cb8ca46..d7215c8 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -308,6 +308,7 @@
- #define X86_FEATURE_MSR_TSX_CTRL	(11*32+20) /* "" MSR IA32_TSX_CTRL (Intel) implemented */
- #define X86_FEATURE_SMBA		(11*32+21) /* "" Slow Memory Bandwidth Allocation */
- #define X86_FEATURE_BMEC		(11*32+22) /* "" Bandwidth Monitoring Event Configuration */
-+#define X86_FEATURE_USER_SHSTK		(11*32+23) /* Shadow stack support for user mode applications */
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 7422db4..e860f80 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1849,6 +1849,11 @@ config CC_HAS_IBT
+ 		  (CC_IS_CLANG && CLANG_VERSION >= 140000)) && \
+ 		  $(as-instr,endbr64)
  
- /* Intel-defined CPU features, CPUID level 0x00000007:1 (EAX), word 12 */
- #define X86_FEATURE_AVX_VNNI		(12*32+ 4) /* AVX VNNI instructions */
-@@ -380,6 +381,7 @@
- #define X86_FEATURE_OSPKE		(16*32+ 4) /* OS Protection Keys Enable */
- #define X86_FEATURE_WAITPKG		(16*32+ 5) /* UMONITOR/UMWAIT/TPAUSE Instructions */
- #define X86_FEATURE_AVX512_VBMI2	(16*32+ 6) /* Additional AVX512 Vector Bit Manipulation Instructions */
-+#define X86_FEATURE_SHSTK		(16*32+ 7) /* "" Shadow stack */
- #define X86_FEATURE_GFNI		(16*32+ 8) /* Galois Field New Instructions */
- #define X86_FEATURE_VAES		(16*32+ 9) /* Vector AES */
- #define X86_FEATURE_VPCLMULQDQ		(16*32+10) /* Carry-Less Multiplication Double Quadword */
-diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
-index fafe9be..b9c7eae 100644
---- a/arch/x86/include/asm/disabled-features.h
-+++ b/arch/x86/include/asm/disabled-features.h
-@@ -105,6 +105,12 @@
- # define DISABLE_TDX_GUEST	(1 << (X86_FEATURE_TDX_GUEST & 31))
- #endif
- 
-+#ifdef CONFIG_X86_USER_SHADOW_STACK
-+#define DISABLE_USER_SHSTK	0
-+#else
-+#define DISABLE_USER_SHSTK	(1 << (X86_FEATURE_USER_SHSTK & 31))
-+#endif
++config X86_CET
++	def_bool n
++	help
++	  CET features configured (Shadow stack or IBT)
 +
- /*
-  * Make sure to add features to the correct mask
-  */
-@@ -120,7 +126,7 @@
- #define DISABLED_MASK9	(DISABLE_SGX)
- #define DISABLED_MASK10	0
- #define DISABLED_MASK11	(DISABLE_RETPOLINE|DISABLE_RETHUNK|DISABLE_UNRET| \
--			 DISABLE_CALL_DEPTH_TRACKING)
-+			 DISABLE_CALL_DEPTH_TRACKING|DISABLE_USER_SHSTK)
- #define DISABLED_MASK12	(DISABLE_LAM)
- #define DISABLED_MASK13	0
- #define DISABLED_MASK14	0
-diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
-index f6748c8..e462c1d 100644
---- a/arch/x86/kernel/cpu/cpuid-deps.c
-+++ b/arch/x86/kernel/cpu/cpuid-deps.c
-@@ -81,6 +81,7 @@ static const struct cpuid_dep cpuid_deps[] = {
- 	{ X86_FEATURE_XFD,			X86_FEATURE_XSAVES    },
- 	{ X86_FEATURE_XFD,			X86_FEATURE_XGETBV1   },
- 	{ X86_FEATURE_AMX_TILE,			X86_FEATURE_XFD       },
-+	{ X86_FEATURE_SHSTK,			X86_FEATURE_XSAVES    },
- 	{}
- };
+ config X86_KERNEL_IBT
+ 	prompt "Indirect Branch Tracking"
+ 	def_bool y
+@@ -1856,6 +1861,7 @@ config X86_KERNEL_IBT
+ 	# https://github.com/llvm/llvm-project/commit/9d7001eba9c4cb311e03cd8cdc231f9e579f2d0f
+ 	depends on !LD_IS_LLD || LLD_VERSION >= 140000
+ 	select OBJTOOL
++	select X86_CET
+ 	help
+ 	  Build the kernel with support for Indirect Branch Tracking, a
+ 	  hardware support course-grain forward-edge Control Flow Integrity
+@@ -1949,6 +1955,24 @@ config X86_SGX
  
+ 	  If unsure, say N.
+ 
++config X86_USER_SHADOW_STACK
++	bool "X86 userspace shadow stack"
++	depends on AS_WRUSS
++	depends on X86_64
++	select ARCH_USES_HIGH_VMA_FLAGS
++	select X86_CET
++	help
++	  Shadow stack protection is a hardware feature that detects function
++	  return address corruption.  This helps mitigate ROP attacks.
++	  Applications must be enabled to use it, and old userspace does not
++	  get protection "for free".
++
++	  CPUs supporting shadow stacks were first released in 2020.
++
++	  See Documentation/x86/shstk.rst for more information.
++
++	  If unsure, say N.
++
+ config EFI
+ 	bool "EFI runtime service support"
+ 	depends on ACPI
+diff --git a/arch/x86/Kconfig.assembler b/arch/x86/Kconfig.assembler
+index b88f784..8ad41da 100644
+--- a/arch/x86/Kconfig.assembler
++++ b/arch/x86/Kconfig.assembler
+@@ -24,3 +24,8 @@ config AS_GFNI
+ 	def_bool $(as-instr,vgf2p8mulb %xmm0$(comma)%xmm1$(comma)%xmm2)
+ 	help
+ 	  Supported by binutils >= 2.30 and LLVM integrated assembler
++
++config AS_WRUSS
++	def_bool $(as-instr,wrussq %rax$(comma)(%rbx))
++	help
++	  Supported by binutils >= 2.31 and LLVM integrated assembler
