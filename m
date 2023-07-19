@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A65D759CA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E61759C9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbjGSRke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 13:40:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33376 "EHLO
+        id S230418AbjGSRk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 13:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbjGSRk1 (ORCPT
+        with ESMTP id S230179AbjGSRk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:40:27 -0400
+        Wed, 19 Jul 2023 13:40:26 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E82A91FE9;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A291BF6;
         Wed, 19 Jul 2023 10:40:20 -0700 (PDT)
 Received: from jupiter.universe (dyndsl-091-248-208-009.ewe-ip-backbone.de [91.248.208.9])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3F2EB6606FCE;
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 43F04660704A;
         Wed, 19 Jul 2023 18:40:19 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
         s=mail; t=1689788419;
-        bh=LlUh7Fn0cj04qJmOdkCXn8GhQI6+9wcTUh77kHYpm+c=;
+        bh=8jqadUrLP+GDojjmPoLDIihhsoBB6VsVeLoCMFXOZXs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mId2p9mv1C0V9ofkmv80IFSeXy7Dod5LmGeSNOVTRWn+aumEFnzwSJt8PhFyRI5Ng
-         n4UubNfF51wVwIkymVzRcwci+XM+ospEBgV+CfTkRv47yFYjDeoJgJpXaZRZji48xr
-         UeMg9z2rH6u1IhneCdSsAKiMft2EJVrStEJv/EVgMnVNaQFNLGCV6bGjg/8ZL0PaZW
-         hdMoXYOdJNi+12XtDlskQM5FlEkkrEskp1QiARs1t4ueXsHR+2cCp4LTAw/vQL/k9K
-         k0agJfPQ2nTearEeZmqwTqy/fsqL2ldcANHxDcX2CSvwNbCPRpYFrUTI2K3Us6Fmwt
-         DhZCKdG3yi1wg==
+        b=SgSUnYOSN8oYJy4ma5e1Y5O2G6mWv/uDrAjnCLeD0aUJ2wdovwZGOS1rPQm3xmeu1
+         +AORNA0+ywiUSTqtaoG5N1IizNlnMnbzMOH3H+qxikyYW6BIopmyu7JllkgPTiL4RY
+         SCfs8Oj/Ud/YSfmDZFARbOT0keb+yQc0NcQ7c4lqB1H3MylBkvxoYKsWBnut1msXkF
+         BpIqMzuoN1q7yv2WG9uSi7ea3c5iTJApmpbz143/34AMXCNkVe4MOGQbW1ECtGZRZl
+         xmI6U0htlAIRRNBc65dtTmo3rVHIyE6dlgcNz7Srle8D8ifiQlmux/CS7V/kn+y5Xa
+         MyxVsgijPTOQQ==
 Received: by jupiter.universe (Postfix, from userid 1000)
-        id 20E6C480DA8; Wed, 19 Jul 2023 19:40:17 +0200 (CEST)
+        id 22496480DA9; Wed, 19 Jul 2023 19:40:17 +0200 (CEST)
 From:   Sebastian Reichel <sebastian.reichel@collabora.com>
 To:     Heiko Stuebner <heiko@sntech.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -45,9 +45,9 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         linux-arm-kernel@lists.infradead.org,
         Sebastian Reichel <sebastian.reichel@collabora.com>,
         kernel@collabora.com
-Subject: [PATCH v1 1/2] dt-bindings: usb: rockchip,dwc3: Add RK3588 binding
-Date:   Wed, 19 Jul 2023 19:40:14 +0200
-Message-Id: <20230719174015.68153-2-sebastian.reichel@collabora.com>
+Subject: [PATCH v1 2/2] arm64: dts: rockchip: rk3588s: Add USB3 host controller
+Date:   Wed, 19 Jul 2023 19:40:15 +0200
+Message-Id: <20230719174015.68153-3-sebastian.reichel@collabora.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230719174015.68153-1-sebastian.reichel@collabora.com>
 References: <20230719174015.68153-1-sebastian.reichel@collabora.com>
@@ -63,158 +63,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RK3588 contains three DWC3 cores. Two of them are connected to
-dedicated USBDP PHY and can be used in dual-role. The third is
-connected to one of the shared combo PHYs used for PCIe/SATA/USB3
-and can only be used in host mode. Since the binding is all about
-the PHY glueing and involved clocks, separate compatible values
-have been created for these two types.
+RK3588 has three USB3 controllers. One of them is host-only and uses
+the naneng-combphy. The other two are dual-role and using a different
+PHY that is not yet supported upstream.
 
 Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 ---
- .../bindings/usb/rockchip,rk3399-dwc3.yaml    | 107 ++++++++++++++----
- 1 file changed, 85 insertions(+), 22 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 29 +++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/rockchip,rk3399-dwc3.yaml b/Documentation/devicetree/bindings/usb/rockchip,rk3399-dwc3.yaml
-index 3159f9a6a0f7..0db4dc86e506 100644
---- a/Documentation/devicetree/bindings/usb/rockchip,rk3399-dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/rockchip,rk3399-dwc3.yaml
-@@ -11,7 +11,13 @@ maintainers:
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+index b9b509257aaa..416581dd3bb5 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+@@ -443,6 +443,35 @@ usb_host1_ohci: usb@fc8c0000 {
+ 		status = "disabled";
+ 	};
  
- properties:
-   compatible:
--    const: rockchip,rk3399-dwc3
-+    oneOf:
-+      - items:
-+          - enum:
-+              - rockchip,rk3588-dwc3-otg
-+              - rockchip,rk3588-dwc3-host
-+          - const: rockchip,rk3399-dwc3
-+      - const: rockchip,rk3399-dwc3
- 
-   '#address-cells':
-     const: 2
-@@ -22,35 +28,37 @@ properties:
-   ranges: true
- 
-   clocks:
--    items:
--      - description:
--          Controller reference clock, must to be 24 MHz
--      - description:
--          Controller suspend clock, must to be 24 MHz or 32 KHz
--      - description:
--          Master/Core clock, must to be >= 62.5 MHz for SS
--          operation and >= 30MHz for HS operation
--      - description:
--          USB3 aclk peri
--      - description:
--          USB3 aclk
--      - description:
--          Controller grf clock
-+    minItems: 3
-+    maxItems: 6
- 
-   clock-names:
-     items:
--      - const: ref_clk
--      - const: suspend_clk
--      - const: bus_clk
--      - const: aclk_usb3_rksoc_axi_perf
--      - const: aclk_usb3
--      - const: grf_clk
-+      oneOf:
-+        - enum:
-+            - ref
-+            - ref_clk
-+        - enum:
-+            - suspend
-+            - suspend_clk
-+        - enum:
-+            - bus
-+            - bus_clk
-+        - const: aclk_usb3_rksoc_axi_perf
-+        - const: aclk_usb3
-+        - const: grf_clk
-+        - const: utmi
-+        - const: php
-+        - const: pipe
-+    minItems: 3
-+    maxItems: 6
- 
-   resets:
-     maxItems: 1
- 
-   reset-names:
--    const: usb3-otg
-+    enum:
-+      - usb3-host
-+      - usb3-otg
- 
- patternProperties:
-   '^usb@':
-@@ -68,6 +76,61 @@ required:
-   - resets
-   - reset-names
- 
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          const: rockchip,rk3399-dwc3
-+    then:
-+      properties:
-+        clocks:
-+          minItems: 6
-+        clock-names:
-+          items:
-+            - const: ref_clk
-+            - const: suspend_clk
-+            - const: bus_clk
-+            - const: aclk_usb3_rksoc_axi_perf
-+            - const: aclk_usb3
-+            - const: grf_clk
-+        reset-names:
-+          const: usb3-otg
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: rockchip,rk3588-dwc3-otg
-+    then:
-+      properties:
-+        clocks:
-+          maxItems: 3
-+        clock-names:
-+          items:
-+            - const: ref
-+            - const: suspend
-+            - const: bus
-+        reset-names:
-+          const: usb3-otg
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: rockchip,rk3588-dwc3-host
-+    then:
-+      properties:
-+        clocks:
-+          minItems: 6
-+        clock-names:
-+          items:
-+            - const: ref
-+            - const: suspend
-+            - const: bus
-+            - const: utmi
-+            - const: php
-+            - const: pipe
-+        reset-names:
-+          const: usb3-host
++	usbhost3_0: usb@fcd00000 {
++		compatible = "rockchip,rk3588-dwc3-host", "rockchip,rk3399-dwc3";
++		clocks = <&cru REF_CLK_USB3OTG2>, <&cru SUSPEND_CLK_USB3OTG2>,
++			 <&cru ACLK_USB3OTG2>, <&cru CLK_UTMI_OTG2>,
++			 <&cru PCLK_PHP_ROOT>, <&cru CLK_PIPEPHY2_PIPE_U3_G>;
++		clock-names = "ref", "suspend", "bus", "utmi", "php", "pipe";
++		ranges;
++		resets = <&cru SRST_A_USB3OTG2>;
++		reset-names = "usb3-host";
++		#address-cells = <2>;
++		#size-cells = <2>;
++		status = "disabled";
 +
- examples:
-   - |
-     #include <dt-bindings/clock/rk3399-cru.h>
++		usbhost_dwc3_0: usb@fcd00000 {
++			compatible = "snps,dwc3";
++			reg = <0x0 0xfcd00000 0x0 0x400000>;
++			interrupts = <GIC_SPI 222 IRQ_TYPE_LEVEL_HIGH 0>;
++			dr_mode = "host";
++			phys = <&combphy2_psu PHY_TYPE_USB3>;
++			phy-names = "usb3-phy";
++			phy_type = "utmi_wide";
++			snps,dis_enblslpm_quirk;
++			snps,dis-u2-freeclk-exists-quirk;
++			snps,dis-del-phy-power-chg-quirk;
++			snps,dis-tx-ipgap-linecheck-quirk;
++			snps,dis_rxdet_inp3_quirk;
++		};
++	};
++
+ 	sys_grf: syscon@fd58c000 {
+ 		compatible = "rockchip,rk3588-sys-grf", "syscon";
+ 		reg = <0x0 0xfd58c000 0x0 0x1000>;
 -- 
 2.40.1
 
