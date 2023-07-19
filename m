@@ -2,84 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F02759C4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030F7759C51
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbjGSRVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 13:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54308 "EHLO
+        id S231351AbjGSRWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 13:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjGSRVS (ORCPT
+        with ESMTP id S231250AbjGSRWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:21:18 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2561F189;
-        Wed, 19 Jul 2023 10:21:18 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="351395026"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="351395026"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 10:21:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="794128236"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="794128236"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP; 19 Jul 2023 10:21:14 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andy@kernel.org>)
-        id 1qMArQ-002Uz0-1V;
-        Wed, 19 Jul 2023 20:21:12 +0300
-Date:   Wed, 19 Jul 2023 20:21:12 +0300
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Samuel Holland <samuel.holland@sifive.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 3/4] gpio: sifive: Get the parent IRQ's domain from
- its irq_data
-Message-ID: <ZLgbiIMVqYoe/OcN@smile.fi.intel.com>
-References: <20230719163446.1398961-1-samuel.holland@sifive.com>
- <20230719163446.1398961-4-samuel.holland@sifive.com>
- <ZLgVPv7zdoaiUCU6@smile.fi.intel.com>
- <a3c4f1c6-444b-b3a2-c952-bdd5b0463f95@sifive.com>
+        Wed, 19 Jul 2023 13:22:10 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B766197
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:22:08 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-991ef0b464cso230299466b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:22:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689787326; x=1692379326;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=muf27eIntjXr3Sa3gdcQLPN4y9AYfVWt2TffDnLSMcw=;
+        b=yA9Vox816zD+aJ/FVd+gHS1eUUrpLebV0UPRWoTOQXRhwbDjiEzKfZKLt7ZPO+mtvH
+         SaibLGPqQv8DRVnknibkmwFWbPPfcXmr6c+ujgDGBFuCW/F/BitDoK4IVXsvCkVTbM2a
+         UUXFrIHyb9EtmF0G0jSo223YyW0H9eb4QyBBeSzBXy3UqItMc2tyGgaUGUFrdupt+8A5
+         dLZgmELLzzoUW2SKSL+4MBdgHsq0BaZC4v7p3QuLBtrY+JwzHEa0w4RaSfJgn6bTpTvs
+         oKq8cg7sWg40yA0HzTTcfPzlRvV46kkywbP49vwd3eHSPLgVvqkoTlu6Tp2eaYz6GzrZ
+         sQlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689787326; x=1692379326;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=muf27eIntjXr3Sa3gdcQLPN4y9AYfVWt2TffDnLSMcw=;
+        b=eMxmH013qQeX/3H0jRTfZ49ApPhfy3b0UoAvc82+gomTOVWS9gYs9EOwEGUsTGmzEQ
+         HEQDRGsG9af3qdvHtc+3/cAeh3yeesjACBeKsv6f3endL4ZI/Jgw/FEf7zL/iWYHAcDK
+         72dn+mVb8mMvJ07AEtVhBqBZwbexnwQ+1hEHjNfJTAFkPeMgNIh8pZ7AuRKIyNnmq83h
+         /VXAqbecgA2vCLYkY6E+KSR+n+WiNGHaOijFihY5osZWvFV5vEwqW780oEJXnXnryeBf
+         JrMz+8qWq1usMcyuke8e23LLVnXMzqkzvmvtLD0jBnzf/nBgeo9EraATxz4RpQ1g8tOr
+         8T8w==
+X-Gm-Message-State: ABy/qLaTlCavrH8658cvEBAzTsAUILMvsd5xHj2VHlpzYACEd/QIBMhJ
+        7cD1Bp6sqHdiEqDbce+WdEtEAfeWet54oWoh4J60jA==
+X-Google-Smtp-Source: APBJJlHLONYvTW7m5Fbx16RlTb/fOqinzIvyTzihLXJQXLhrTmtvBuSogp90ZclD7PbARqJZdKXYR/WVY9tuMb+Y5tE=
+X-Received: by 2002:a17:906:292:b0:97e:17cc:cc95 with SMTP id
+ 18-20020a170906029200b0097e17cccc95mr3045374ejf.36.1689787326540; Wed, 19 Jul
+ 2023 10:22:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a3c4f1c6-444b-b3a2-c952-bdd5b0463f95@sifive.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-13-seanjc@google.com>
+In-Reply-To: <20230718234512.1690985-13-seanjc@google.com>
+From:   Vishal Annapurve <vannapurve@google.com>
+Date:   Wed, 19 Jul 2023 10:21:55 -0700
+Message-ID: <CAGtprH9a2jX-hdww9GPuMrO9noNeXkoqE8oejtVn2vD0AZa3zA@mail.gmail.com>
+Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 12:03:46PM -0500, Samuel Holland wrote:
-> On 2023-07-19 11:54 AM, Andy Shevchenko wrote:
-> > On Wed, Jul 19, 2023 at 09:34:44AM -0700, Samuel Holland wrote:
+On Tue, Jul 18, 2023 at 4:49=E2=80=AFPM Sean Christopherson <seanjc@google.=
+com> wrote:
+> ...
+> +static int kvm_gmem_error_page(struct address_space *mapping, struct pag=
+e *page)
+> +{
+> +       struct list_head *gmem_list =3D &mapping->private_list;
+> +       struct kvm_memory_slot *slot;
+> +       struct kvm_gmem *gmem;
+> +       unsigned long index;
+> +       pgoff_t start, end;
+> +       gfn_t gfn;
+> +
+> +       filemap_invalidate_lock_shared(mapping);
+> +
+> +       start =3D page->index;
+> +       end =3D start + thp_nr_pages(page);
+> +
+> +       list_for_each_entry(gmem, gmem_list, entry) {
+> +               xa_for_each_range(&gmem->bindings, index, slot, start, en=
+d - 1) {
+> +                       for (gfn =3D start; gfn < end; gfn++) {
+> +                               if (WARN_ON_ONCE(gfn < slot->base_gfn ||
+> +                                               gfn >=3D slot->base_gfn +=
+ slot->npages))
+> +                                       continue;
+> +
+> +                               /*
+> +                                * FIXME: Tell userspace that the *privat=
+e*
+> +                                * memory encountered an error.
+> +                                */
+> +                               send_sig_mceerr(BUS_MCEERR_AR,
+> +                                               (void __user *)gfn_to_hva=
+_memslot(slot, gfn),
+> +                                               PAGE_SHIFT, current);
 
-...
+Does it make sense to replicate what happens with MCE handling on
+tmpfs backed guest memory:
+1) Unmap gpa from guest
+2) On the next guest EPT fault, exit to userspace to handle/log the
+mce error for the gpa.
 
-> > Also, can irq_get_irq_data() return NULL? Needs a comment on top
-> > of that assignment or an additional check.
-> 
-> No, the earlier loop already verified the IRQ number was valid. I don't think it
-> can later become invalid. In any case, we already dereference the result of
-> irq_get_irq_data(irq_number[foo]) in sifive_gpio_child_to_parent_hwirq().
+IIUC, such MCEs could be asynchronous and "current" might not always
+be the intended recipient of this signal.
 
-Thanks for explanation, just add a comment.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> +                       }
+> +               }
+> +       }
+> +
+> +       filemap_invalidate_unlock_shared(mapping);
+> +
+> +       return 0;
+> +}
+> +
