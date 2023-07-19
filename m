@@ -2,72 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2C075912B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EAFD75913B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjGSJHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:07:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55126 "EHLO
+        id S230281AbjGSJK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbjGSJHf (ORCPT
+        with ESMTP id S229953AbjGSJKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:07:35 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16FB02712;
-        Wed, 19 Jul 2023 02:07:11 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R5VHX3yywzLnrT;
-        Wed, 19 Jul 2023 17:04:08 +0800 (CST)
-Received: from huawei.com (10.174.151.185) by canpemm500002.china.huawei.com
- (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 19 Jul
- 2023 17:06:35 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <tj@kernel.org>, <hannes@cmpxchg.org>, <lizefan.x@bytedance.com>
-CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] cgroup: fix obsolete comment above cgroup_create()
-Date:   Wed, 19 Jul 2023 17:06:40 +0800
-Message-ID: <20230719090640.2568600-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.33.0
+        Wed, 19 Jul 2023 05:10:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C287E134
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:10:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689757815;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aMIgzXiT1F2iEJnG15o5FqJ6MShjQORJM5LN2yDl3KI=;
+        b=aJQtS3NO2hYHYF/3bv13bvEDsTmrbU+7uffuykWZVdLAsnYpi8ezRwHZQKVt+oGBzIhSkM
+        TLoFisY361TvJfJfVS7HBpdD7tdmnaRj+FfMjvlWo96LWDkR40LIlsONRqzSUz6lOQ8hXo
+        bY2XJEN9g60RoEeNHCDz+8MHji+K7Zg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-60-WzdpLWmjPkmtkdFW_z-X1A-1; Wed, 19 Jul 2023 05:10:11 -0400
+X-MC-Unique: WzdpLWmjPkmtkdFW_z-X1A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 28B5688D580;
+        Wed, 19 Jul 2023 09:10:11 +0000 (UTC)
+Received: from t14s.redhat.com (unknown [10.45.225.164])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C6ADBF6CCA;
+        Wed, 19 Jul 2023 09:10:09 +0000 (UTC)
+From:   Jan Stancek <jstancek@redhat.com>
+To:     dhowells@redhat.com, kuba@kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, brauner@kernel.org,
+        viro@zeniv.linux.org.uk, jstancek@redhat.com
+Subject: [PATCH] splice, net: Fix splice_to_socket() for O_NONBLOCK socket
+Date:   Wed, 19 Jul 2023 11:07:52 +0200
+Message-Id: <7854000d2ce5ac32b75782a7c4574f25a11b573d.1689757133.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.151.185]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 743210386c03 ("cgroup: use cgrp->kn->id as the cgroup ID"),
-cgrp is associated with its kernfs_node. Update corresponding comment.
+LTP sendfile07 [1], which expects sendfile() to return EAGAIN when
+transferring data from regular file to a "full" O_NONBLOCK socket,
+started failing after commit 2dc334f1a63a ("splice, net: Use
+sendmsg(MSG_SPLICE_PAGES) rather than ->sendpage()").
+sendfile() no longer immediately returns, but now blocks.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Removed sock_sendpage() handled this case by setting a MSG_DONTWAIT
+flag, fix new splice_to_socket() to do the same for O_NONBLOCK sockets.
+
+[1] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/sendfile/sendfile07.c
+
+Fixes: 2dc334f1a63a ("splice, net: Use sendmsg(MSG_SPLICE_PAGES) rather than ->sendpage()")
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- kernel/cgroup/cgroup.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/splice.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 40ee81f982ff..44bf9e3ffb8a 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5544,8 +5544,7 @@ static struct cgroup_subsys_state *css_create(struct cgroup *cgrp,
+diff --git a/fs/splice.c b/fs/splice.c
+index 004eb1c4ce31..3e2a31e1ce6a 100644
+--- a/fs/splice.c
++++ b/fs/splice.c
+@@ -876,6 +876,8 @@ ssize_t splice_to_socket(struct pipe_inode_info *pipe, struct file *out,
+ 			msg.msg_flags |= MSG_MORE;
+ 		if (remain && pipe_occupancy(pipe->head, tail) > 0)
+ 			msg.msg_flags |= MSG_MORE;
++		if (out->f_flags & O_NONBLOCK)
++			msg.msg_flags |= MSG_DONTWAIT;
  
- /*
-  * The returned cgroup is fully initialized including its control mask, but
-- * it isn't associated with its kernfs_node and doesn't have the control
-- * mask applied.
-+ * it doesn't have the control mask applied.
-  */
- static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
- 				    umode_t mode)
+ 		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, bvec, bc,
+ 			      len - remain);
 -- 
-2.33.0
+2.31.1
 
