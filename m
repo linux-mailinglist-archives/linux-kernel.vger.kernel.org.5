@@ -2,143 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4FC75A04A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 23:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B8D75A04D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 23:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjGSVBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 17:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53034 "EHLO
+        id S230261AbjGSVCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 17:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbjGSVA6 (ORCPT
+        with ESMTP id S229680AbjGSVCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 17:00:58 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E5B1BF0;
-        Wed, 19 Jul 2023 14:00:57 -0700 (PDT)
-Received: from mercury (unknown [185.254.75.45])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D2CFC660707B;
-        Wed, 19 Jul 2023 22:00:55 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689800455;
-        bh=JZc8T7ioV/cJFnqDSexkT6DvNL6Jzk6G0WW9rlfuHDc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JzIuEBr81YqvI9U4PXIxE4AMEpbCY37Ds7QEhRC2g5FkfvgmKF4pB1OzpDuWbJT9a
-         TBPDqbSlZAQkTMaNBKfp7GffncS/7/hvCc5rPMxxqIZqht38VFB6k87anvcm9JYoZA
-         kKnbxvRUs2gCKtcg8dlDHcpobiVXWxmRgDYnmH8hC1agFKmLw9NruIee1eLva8NOyy
-         ZTWZoAoEegNv4JHaKUTLM5+ryL7Z0/LKR6qiohdqn5+HBtlw8ka26kz9gUJ+6f2un1
-         wKLkSxNEIVwLsU/neUfusgiDk5/QniekVHfs+nnN5wkd7McXcU8hcqyHTloSmKpYTR
-         I5danS94KOjKw==
-Received: by mercury (Postfix, from userid 1000)
-        id 3969F10613A9; Wed, 19 Jul 2023 23:00:53 +0200 (CEST)
-Date:   Wed, 19 Jul 2023 23:00:53 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Lee Jones <lee@kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: mfd: Un-support Maxim and Samsung PMIC
- drivers
-Message-ID: <20230719210053.fmcaotetmt2ydydx@mercury.elektranox.org>
-References: <20230714050313.8424-1-krzysztof.kozlowski@linaro.org>
+        Wed, 19 Jul 2023 17:02:19 -0400
+Received: from resqmta-h1p-028588.sys.comcast.net (resqmta-h1p-028588.sys.comcast.net [IPv6:2001:558:fd02:2446::a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B4F1FC0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 14:02:17 -0700 (PDT)
+Received: from resomta-h1p-027914.sys.comcast.net ([96.102.179.199])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 256/256 bits)
+        (Client did not present a certificate)
+        by resqmta-h1p-028588.sys.comcast.net with ESMTP
+        id M8BKqr6301NLIMEJNqyzwF; Wed, 19 Jul 2023 21:02:17 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=comcastmailservice.net; s=20211018a; t=1689800537;
+        bh=xqMj+3VVjo+8UbUEghVnxRyNG8G2SG/j/lJTsRoSPsQ=;
+        h=Received:Received:From:To:Subject:Date:MIME-Version:Message-ID:
+         Content-Type:Xfinity-Spam-Result;
+        b=M/Qb3VpWAE7bYugC+rHd7Cd5cE3NxoMyRELNAJ97xWWgtX/teX5suAFwORnCr5cPw
+         VyAog58FGP8weDbwm8qXeedhP8hlN3mYo5jf/WIbn610nEAr1yNElNOWnHmdyrjxEs
+         JYwCjYf5VMekWWDuucIh+qZEqjuAwqSWRcDQNAFWjWUD8ulAl3wy+K5EE8QxSMNFUu
+         KCdWpoeV3ELH+sROto/COwmZf1RdD8xZoZjUDxxlDuGqQhbGNzYU4oslXvaEG9PDMw
+         GHiiFX5zLPjrJ3fsjWS8zh9QoqpF5l8nkcnOvGVcFMhTwJfHl7hwyOKYzRXreDPhhr
+         flBYWxP73gtiA==
+Received: from localhost ([IPv6:2601:18c:9082:afd:219:d1ff:fe75:dc2f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 256/256 bits)
+        (Client did not present a certificate)
+        by resomta-h1p-027914.sys.comcast.net with ESMTPSA
+        id MEJAqBpSU0WpqMEJCqnizK; Wed, 19 Jul 2023 21:02:12 +0000
+X-Xfinity-VMeta: sc=-100.00;st=legit
+From:   Matt Whitlock <kernel@mattwhitlock.name>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        David Howells <dhowells@redhat.com>, <netdev@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Jens Axboe <axboe@kernel.dk>, <linux-fsdevel@kvack.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>, <linux-fsdevel@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/4] splice: Fix corruption of spliced data after =?iso-8859-1?Q?splice()_returns?=
+Date:   Wed, 19 Jul 2023 17:02:04 -0400
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qsxp4w5rz3a6tynw"
-Content-Disposition: inline
-In-Reply-To: <20230714050313.8424-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <6609f1b8-3264-4017-ac3c-84a01ea12690@mattwhitlock.name>
+In-Reply-To: <CAHk-=wiq95bWiWLyz96ombPfpy=PNrc2KKyzJ2d+WMrxi6=OVA@mail.gmail.com>
+References: <20230629155433.4170837-1-dhowells@redhat.com>
+ <20230629155433.4170837-2-dhowells@redhat.com>
+ <CAJfpegsJuvXJDcXpo9T19Gw0tDuvyOJdv44Y2bt04MEf1JLxGg@mail.gmail.com>
+ <c634a18e-9f2b-4746-bd8f-aa1d41e6ddf7@mattwhitlock.name>
+ <CAJfpegvq4M_Go7fHiWVBBkrK6h4ChLqQTd0+EOKbRWZDcVerWA@mail.gmail.com>
+ <ZLg9HbhOVnLk1ogA@casper.infradead.org>
+ <CAHk-=wiq95bWiWLyz96ombPfpy=PNrc2KKyzJ2d+WMrxi6=OVA@mail.gmail.com>
+User-Agent: Trojita/v0.7-595-g7738cd47; Qt/5.15.10; xcb; Linux; Gentoo Linux
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wednesday, 19 July 2023 16:16:07 EDT, Linus Torvalds wrote:
+> The *ONLY* reason for splice() existing is for zero-copy.
 
---qsxp4w5rz3a6tynw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The very first sentence of splice(2) reads: "splice() moves data between=20
+two file descriptors without copying between kernel address space and user=20=
 
-Hi,
+address space." Thus, it is not unreasonable to believe that the point of=20
+splice is to avoid copying between user-space and kernel-space.
 
-On Fri, Jul 14, 2023 at 07:03:13AM +0200, Krzysztof Kozlowski wrote:
-> Since few years no one is really paid to support drivers for: Maxim
-> MUICs/PMICs for Exynos based boards and Samsung PMICs.  Correct the
-> status to keep them as maintained.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
+If you use read() and write(), then you're making two copies. If you use=20
+splice(), then you're making one copy (or zero, but that's an optimization=20=
 
-I assume this will go via MFD. FWIW,
+that should be invisible to the user).
 
-Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> And no, we don't start some kind of crazy "versioned zero-copy with
+> COW". That's a fundamental mistake.
 
--- Sebastian
+Agreed. splice() should steal the reference if it can, copy the page data=20
+if it must. Note that, even in the slow case where the page data must be=20
+copied, this still gives a better-than-50% speedup over read()+write()=20
+since an entire copy (and one syscall) is elided.
 
->  MAINTAINERS | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index ab839af24fc3..0b8cd03f5e52 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -12840,7 +12840,7 @@ F:	drivers/power/supply/max77976_charger.c
->  MAXIM MUIC CHARGER DRIVERS FOR EXYNOS BASED BOARDS
->  M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->  L:	linux-pm@vger.kernel.org
-> -S:	Supported
-> +S:	Maintained
->  B:	mailto:linux-samsung-soc@vger.kernel.org
->  F:	Documentation/devicetree/bindings/power/supply/maxim,max14577.yaml
->  F:	Documentation/devicetree/bindings/power/supply/maxim,max77693.yaml
-> @@ -12851,7 +12851,7 @@ MAXIM PMIC AND MUIC DRIVERS FOR EXYNOS BASED BOAR=
-DS
->  M:	Chanwoo Choi <cw00.choi@samsung.com>
->  M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->  L:	linux-kernel@vger.kernel.org
-> -S:	Supported
-> +S:	Maintained
->  B:	mailto:linux-samsung-soc@vger.kernel.org
->  F:	Documentation/devicetree/bindings/*/maxim,max14577.yaml
->  F:	Documentation/devicetree/bindings/*/maxim,max77686.yaml
-> @@ -18809,7 +18809,7 @@ SAMSUNG MULTIFUNCTION PMIC DEVICE DRIVERS
->  M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->  L:	linux-kernel@vger.kernel.org
->  L:	linux-samsung-soc@vger.kernel.org
-> -S:	Supported
-> +S:	Maintained
->  B:	mailto:linux-samsung-soc@vger.kernel.org
->  F:	Documentation/devicetree/bindings/clock/samsung,s2mps11.yaml
->  F:	Documentation/devicetree/bindings/mfd/samsung,s2m*.yaml
-> --=20
-> 2.34.1
->=20
+> IF YOU DON'T UNDERSTAND THE *POINT* OF SPLICE, DON'T USE SPLICE.
 
---qsxp4w5rz3a6tynw
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks for being so condescending. Your reputation is deserved.
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmS4TwQACgkQ2O7X88g7
-+ppf5g/+K7pCMCIm2AJmnRVXqYTBxtAnxbKztimxS/EuObifkbVteASi3I8AUHSk
-SQaRoFPMKukeMfvggMTE+Z1jYtOOVlB3cYQoH//f8AESXg94ygem+FXIrb0aXSD6
-qJx2cYMrw2yxLjNdweflSYLYGPFbL0zmFl+Ls2fWsZWILYV6IYq8mZmvcEQ2Ox2R
-TU0+MOfnyt1xlSMUvZPUOylXKLO3cWNaLY/DCnu5dYauH5S3hKyWb8pHDxEwbsDn
-+eAxJv155VS4F4V6h61FcipHGoLqxoUtIzEtgXUpNwATo6CBZPKMdIRoIlchbMeJ
-SrXIBDcxEuANZHO1cU5dHhiwrb1TvjNxN9rWeaZdDQAkg9qO3Rks64/oWl0DgqNL
-cTw1p9X/yYb8h2b4v/DZwd92mosyGrC100TrXYJUWtswIlt9gZV/iXIvC5URaaZM
-sQZ3Ot/gCygoCLjb3XGZpU4jYttrhn5rck4TaMd4AQP8ngnS3JxTyVoMfbl1QVlo
-vlJ2P1uWluogEfFa3EhR7DrGsrHtXJw6XCSp1UZ905g7Awt5Q0D0V5TRuhVI94+I
-BsaVEDVHCbr03bR3t791h/SuIsUmNU7FTZkUssSbcFcUXwYR1CZAVlFsz2hQsKKG
-ancH5AJ2GUkG3zHYwyhV3wHfiyFgB3FWOlJ1DiqphKVlJqxR0hU=
-=zH2e
------END PGP SIGNATURE-----
-
---qsxp4w5rz3a6tynw--
