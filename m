@@ -2,208 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E1C75A14E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93AF975A150
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbjGSWEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 18:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
+        id S230233AbjGSWE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 18:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbjGSWEb (ORCPT
+        with ESMTP id S230229AbjGSWEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 18:04:31 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 804561FE8;
-        Wed, 19 Jul 2023 15:04:23 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8Cxc_DmXbhkBHMHAA--.18957S3;
-        Thu, 20 Jul 2023 06:04:22 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx7yPlXbhkPxo1AA--.40661S3;
-        Thu, 20 Jul 2023 06:04:22 +0800 (CST)
-Message-ID: <d490f455-5228-b85a-656a-dce11586dee5@loongson.cn>
-Date:   Thu, 20 Jul 2023 06:04:21 +0800
+        Wed, 19 Jul 2023 18:04:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AB11FDC;
+        Wed, 19 Jul 2023 15:04:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 682666184B;
+        Wed, 19 Jul 2023 22:04:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDB19C433C8;
+        Wed, 19 Jul 2023 22:04:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689804284;
+        bh=LxOZUcCoPlz4lTzVpOYBntP8TLpXJKJ8Pl+iUGHVfFM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Pmm1W96sEvo+HqQaHeU5H/echSiacOHIZHyQDgkhzZOktupW2XWtwjZ8uvu/ZGuO4
+         0QntzVGHMCQxBc1Fjj3ldeC5u1GSJXkOGG773jtvFX4oCsciu+nXOjGmENOGrm2mkE
+         cgG+GRs+a+CMSGLI8HmkP3UeHZVv5xnndcuSEHANPj4GQMG7V6iFLhI2LntOrSs42n
+         Zjl1RW2d/3crQDN3xuX8IXiLIELmek82JxLtVoKrkWzooQcwGsz3LmrFopuns45g5G
+         ifL4zvz9aC4TUS+lWfuMBtN5jjKM0z2IG1jUvGgKT8Hhd5lV5I9g78/KAWsu2ml7Gl
+         U/Ac/4UwbyLSA==
+Received: (nullmailer pid 861466 invoked by uid 1000);
+        Wed, 19 Jul 2023 22:04:42 -0000
+Date:   Wed, 19 Jul 2023 16:04:42 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Matthew Croughan <matthew.croughan@nix.how>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] arm64: dts: allwinner: h616: Add Mango Pi MQ-Quad DTS
+Message-ID: <20230719220442.GA859690-robh@kernel.org>
+References: <20230718152206.1430313-1-matthew.croughan@nix.how>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [Intel-gfx] [PATCH v3 3/9] PCI/VGA: Switch to
- aperture_contain_firmware_fb_nonreloc()
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc:     David Airlie <airlied@gmail.com>, linux-fbdev@vger.kernel.org,
-        kvm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-pci@vger.kernel.org
-References: <20230719204314.GA512532@bhelgaas>
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <20230719204314.GA512532@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8Cx7yPlXbhkPxo1AA--.40661S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxAr47uw17Jryxtw1rAr1xtFc_yoWrZw4xpa
-        n5AFZ3Aa1DGr4rG3W2v3W2vF1Fvws7GFyUKF98Zw1ru3sIkwn7Kr18ArZ0v3s7ArZ7Ja1S
-        vF43tw15uan8ZFXCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
-        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAF
-        wI0_Cr0_Gr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1c
-        AE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8C
-        rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8Zw
-        CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x02
-        67AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Cr
-        0_Gr1UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UA
-        Ma8UUUUU=
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718152206.1430313-1-matthew.croughan@nix.how>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Jul 18, 2023 at 04:22:03PM +0100, Matthew Croughan wrote:
+> Mango Pi MQ Quad is a H616 based SBC, add basic support for the board
+> and its peripherals
+> 
+> Signed-off-by: Matthew Croughan <matthew.croughan@nix.how>
+> ---
+> V1 -> V2: Alphabetical ordering, added "widora,mangopi-mq-quad" compatible
+> V2 -> V3: Added Signed-off-by, add to device-tree compatible/bindings documentation
+> 
+>  .../devicetree/bindings/arm/sunxi.yaml        |   5 +
 
-On 2023/7/20 04:43, Bjorn Helgaas wrote:
-> [+cc linux-pci; I don't apply or ack PCI patches unless they appear there]
->
-> On Wed, Jul 12, 2023 at 12:43:04AM +0800, Sui Jingfeng wrote:
->> From: Sui Jingfeng <suijingfeng@loongson.cn>
->>
->> The observation behind this is that we should avoid accessing the global
->> screen_info directly. Call the aperture_contain_firmware_fb_nonreloc()
->> function to implement the detection of whether an aperture contains the
->> firmware FB.
-> Because it's better to access the global screen_info from
-> aperture_contain_firmware_fb_nonreloc()?  The reasoning here is not
-> super clear to me.
+Bindings should be a separate patch.
 
-Yes, honestly the benefits of this patch is not obvious.
+>  arch/arm64/boot/dts/allwinner/Makefile        |   1 +
+>  .../allwinner/sun50i-h616-mangopi-mq-quad.dts | 183 ++++++++++++++++++
+>  3 files changed, 189 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentation/devicetree/bindings/arm/sunxi.yaml
+> index ee8fdd2da869..2dee815fd45e 100644
+> --- a/Documentation/devicetree/bindings/arm/sunxi.yaml
+> +++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
+> @@ -862,6 +862,11 @@ properties:
+>            - const: wexler,tab7200
+>            - const: allwinner,sun7i-a20
+>  
+> +      - description: MangoPi MQ-Quad
+> +        items:
+> +          - const: widora,mangopi-mq-quad
+> +          - const: allwinner,sun50i-h616
+> +
+>        - description: MangoPi MQ-R board
+>          items:
+>            - const: widora,mangopi-mq-r-t113
+> diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
+> index 6a96494a2e0a..06c5b97dbfc3 100644
+> --- a/arch/arm64/boot/dts/allwinner/Makefile
+> +++ b/arch/arm64/boot/dts/allwinner/Makefile
+> @@ -38,5 +38,6 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
+> +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-mangopi-mq-quad.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts
+> new file mode 100644
+> index 000000000000..47fd49af2886
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts
+> @@ -0,0 +1,183 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +// Copyright (C) 2020 Arm Ltd.
+> +/*
+> + * Copyright (C) 2023 Matthew Croughan <matthew.croughan@nix.how>
+> + */
 
-But I do have some (may not practical) ideas in my mind when I create 
-this patch.
+Why 2 comment styles for copyrights?
 
-See my explanation at the end.
-
-
->> This patch helps to decouple the determination from the implementation.
->> Or, in other words, we intend to make the determination opaque to the
->> caller. The determination may choose to be arch-dependent or
->> arch-independent. But vgaarb, as a consumer of the determination,
->> shouldn't care how the does determination is implemented.
-> "how the determination ..."  (drop the "does")
-Ok, will be fixed at the next version.
->
-> Are you saying that aperture_contain_firmware_fb_nonreloc() might be
-> arch-dependent?  Are there multiple callers?  Or does this just move
-> code from one place to a more appropriate place?
-
-1) To form a unify approach, and drop the screen_info.h header.
-
-There are similar cleanup patch at patchwork.
-
-
-screen_info.h is definitely arch-dependent, while vgaarb is just 
-device-dependent.
-
-I think, they do have subtle difference.
-
-
-2) Convert the *device driven* to the "driver driven".
-
-Move it from vgaarb.c to video/apperture allow code sharing.
-
-While this function are not going to be shared in vgaarb.
-
-Previous it is the device make the decision,
-
-after applied this patch it allow driver make the decision.
-
-They do have subtle difference.
-
-Emm, I will try to give some examples at the next version.
-
-
-3) I was imagine to drag platform display controllers in (get platform 
-devices involved in the arbitration).
-
-As Alex seem hint to implement something platform-independent.
-
-The aperture_contain_firmware_fb_nonreloc() actually is possible be shared.
-
-The aperture of platform device will be not moved.
-
-So it seems that platform device driver could call this function to do 
-something else.
-
-
->> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
->> ---
->>   drivers/pci/vgaarb.c | 19 ++++---------------
->>   1 file changed, 4 insertions(+), 15 deletions(-)
->>
->> diff --git a/drivers/pci/vgaarb.c b/drivers/pci/vgaarb.c
->> index bf96e085751d..953daf731b2c 100644
->> --- a/drivers/pci/vgaarb.c
->> +++ b/drivers/pci/vgaarb.c
->> @@ -14,6 +14,7 @@
->>   #define vgaarb_info(dev, fmt, arg...)	dev_info(dev, "vgaarb: " fmt, ##arg)
->>   #define vgaarb_err(dev, fmt, arg...)	dev_err(dev, "vgaarb: " fmt, ##arg)
->>   
->> +#include <linux/aperture.h>
->>   #include <linux/module.h>
->>   #include <linux/kernel.h>
->>   #include <linux/pci.h>
->> @@ -26,7 +27,6 @@
->>   #include <linux/poll.h>
->>   #include <linux/miscdevice.h>
->>   #include <linux/slab.h>
->> -#include <linux/screen_info.h>
->>   #include <linux/vt.h>
->>   #include <linux/console.h>
->>   #include <linux/acpi.h>
->> @@ -558,20 +558,11 @@ void vga_put(struct pci_dev *pdev, unsigned int rsrc)
->>   }
->>   EXPORT_SYMBOL(vga_put);
->>   
->> +/* Select the device owning the boot framebuffer if there is one */
->>   static bool vga_is_firmware_default(struct pci_dev *pdev)
->>   {
->>   #if defined(CONFIG_X86) || defined(CONFIG_IA64)
->> -	u64 base = screen_info.lfb_base;
->> -	u64 size = screen_info.lfb_size;
->>   	struct resource *r;
->> -	u64 limit;
->> -
->> -	/* Select the device owning the boot framebuffer if there is one */
->> -
->> -	if (screen_info.capabilities & VIDEO_CAPABILITY_64BIT_BASE)
->> -		base |= (u64)screen_info.ext_lfb_base << 32;
->> -
->> -	limit = base + size;
->>   
->>   	/* Does firmware framebuffer belong to us? */
->>   	pci_dev_for_each_resource(pdev, r) {
->> @@ -581,10 +572,8 @@ static bool vga_is_firmware_default(struct pci_dev *pdev)
->>   		if (!r->start || !r->end)
->>   			continue;
->>   
->> -		if (base < r->start || limit >= r->end)
->> -			continue;
->> -
->> -		return true;
->> +		if (aperture_contain_firmware_fb_nonreloc(r->start, r->end))
->> +			return true;
->>   	}
->>   #endif
->>   	return false;
->> -- 
->> 2.25.1
->>
-
+> +
+> +/dts-v1/;
+> +
+> +#include "sun50i-h616.dtsi"
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+> +#include <dt-bindings/leds/common.h>
+> +
+> +/ {
+> +	model = "MangoPi MQ-Quad";
+> +	compatible = "widora,mangopi-mq-quad", "allwinner,sun50i-h616";
+> +
+> +	aliases {
+> +		serial0 = &uart0;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	leds {
+> +		compatible = "gpio-leds";
+> +
+> +		led-0 {
+> +			function = LED_FUNCTION_STATUS;
+> +			color = <LED_COLOR_ID_GREEN>;
+> +			gpios = <&pio 2 13 GPIO_ACTIVE_HIGH>; /* PC13 */
+> +		};
+> +	};
+> +
+> +	reg_vcc5v: vcc5v {
+> +		/* board wide 5V supply directly from the USB-C socket */
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcc-5v";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +		regulator-always-on;
+> +	};
+> +
+> +	reg_vcc3v3: vcc3v3 {
+> +		/* board wide 3V3 supply directly from SY8008 regulator */
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcc-3v3";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		regulator-always-on;
+> +	};
+> +
+> +	wifi_pwrseq: wifi-pwrseq {
+> +		compatible = "mmc-pwrseq-simple";
+> +		reset-gpios = <&pio 6 18 GPIO_ACTIVE_LOW>; /* PG18 */
+> +	};
+> +};
+> +
+> +&ehci1 {
+> +	status = "okay";
+> +};
+> +
+> +/* USB 2 & 3 are on headers only. */
+> +
+> +&mmc0 {
+> +	vmmc-supply = <&reg_vcc3v3>;
+> +	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>;	/* PF6 */
+> +	bus-width = <4>;
+> +	status = "okay";
+> +};
+> +
+> +&mmc1 {
+> +	bus-width = <4>;
+> +	mmc-pwrseq = <&wifi_pwrseq>;
+> +	non-removable;
+> +	vmmc-supply = <&reg_vcc3v3>;
+> +	vqmmc-supply = <&reg_vcc3v3>;
+> +	pinctrl-0 = <&mmc1_pins>;
+> +	pinctrl-names = "default";
+> +	status = "okay";
+> +
+> +	rtl8723ds: wifi@1 {
+> +		reg = <1>;
+> +		interrupt-parent = <&pio>;
+> +		interrupts = <6 15 IRQ_TYPE_LEVEL_LOW>; /* PG15 */
+> +		interrupt-names = "host-wake";
+> +	};
+> +};
+> +
+> +
+> +&uart1 {
+> +	uart-has-rtscts;
+> +	pinctrl-0 = <&uart1_pins>, <&uart1_rts_cts_pins>;
+> +	pinctrl-names = "default";
+> +	status = "okay";
+> +
+> +	bluetooth {
+> +		compatible = "realtek,rtl8723ds-bt";
+> +		device-wake-gpios = <&pio 6 17 GPIO_ACTIVE_HIGH>; /* PG17 */
+> +		enable-gpios = <&pio 6 19 GPIO_ACTIVE_HIGH>; /* PG19 */
+> +		host-wake-gpios = <&pio 6 16 GPIO_ACTIVE_HIGH>; /* PG16 */
+> +	};
+> +};
+> +
+> +&ohci1 {
+> +	status = "okay";
+> +};
+> +
+> +&r_i2c {
+> +	status = "okay";
+> +
+> +	axp313a: pmic@36 {
+> +		compatible = "x-powers,axp313a";
+> +		reg = <0x36>;
+> +		x-powers,self-working-mode;
+> +		regulators {
+> +			reg_aldo1: aldo1 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-name = "vcc-1v8";
+> +			};
+> +
+> +			reg_dldo1: dldo1 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <3300000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-name = "vcc-3v3-pmic";
+> +			};
+> +
+> +			reg_dcdc1: dcdc1 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <810000>;
+> +				regulator-max-microvolt = <990000>;
+> +				regulator-name = "vdd-gpu-sys";
+> +			};
+> +
+> +			reg_dcdc2: dcdc2 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <810000>;
+> +				regulator-max-microvolt = <1100000>;
+> +				regulator-name = "vdd-cpu";
+> +			};
+> +
+> +			reg_dcdc3: dcdc3 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <1500000>;
+> +				regulator-max-microvolt = <1500000>;
+> +				regulator-name = "vdd-dram";
+> +			};
+> +
+> +		};
+> +	};
+> +};
+> +
+> +&uart0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&uart0_ph_pins>;
+> +	status = "okay";
+> +};
+> +
+> +&usbotg {
+> +	/*
+> +	 * PHY0 pins are connected to a USB-C socket, but a role switch
+> +	 * is not implemented: both CC pins are pulled to GND.
+> +	 * The VBUS pins power the device, so a fixed peripheral mode
+> +	 * is the best choice.
+> +	 * The board can be powered via GPIOs, in this case port0 *can*
+> +	 * act as a host (with a cable/adapter ignoring CC), as VBUS is
+> +	 * then provided by the GPIOs. Any user of this setup would
+> +	 * need to adjust the DT accordingly: dr_mode set to "host",
+> +	 * enabling OHCI0 and EHCI0.
+> +	 */
+> +	dr_mode = "peripheral";
+> +	status = "okay";
+> +};
+> +
+> +&usbphy {
+> +	usb1_vbus-supply = <&reg_vcc5v>;
+> +	status = "okay";
+> +};
+> -- 
+> 2.41.0
+> 
