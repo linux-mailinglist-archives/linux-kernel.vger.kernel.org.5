@@ -2,184 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 143D3758E5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D39758E6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbjGSHJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 03:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
+        id S229646AbjGSHLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 03:11:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjGSHJR (ORCPT
+        with ESMTP id S229512AbjGSHLw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 03:09:17 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41E3E43
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:09:15 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-307d58b3efbso6316171f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:09:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1689750554; x=1692342554;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AnRQdh3EEqJvpxETy5ODliVLYVhTAipKqSwZ1tgyM7s=;
-        b=aTwmtP37x0bkdUYFbjUqUYnJC/Hnr+D9La8jEgyiierVL4utIhqhD1JTy+P+f+y/mq
-         UXKokW7pEV5meRgolDZSxJ7N19/4DmWjiMeVcvYTPDLdjlidkQUIu6fATD7bXgYsUi5+
-         QDsDb68YKoRkNiyCH5mzvEE+uIsQvdaHoFtI5FrxdLVyaP/VsEGlxadzIdv39txlqr8M
-         ZmOPhQxhoDjonu4G4cLR6BjLvY5eh7gwcdHL91j5C314qlUhimptswBFolJ9CVmGacBk
-         Ml8ckDptZTszCTHgyoEHGqJ2lzHA0ZRe9xh4tuA8rIrFHESi3UpHfTen3XB+x58nc/YG
-         JJOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689750554; x=1692342554;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AnRQdh3EEqJvpxETy5ODliVLYVhTAipKqSwZ1tgyM7s=;
-        b=iMzvHmPhjJY6B9nWdozz0t5mPVs1ZLE1YReCCiGwIWaBFZjBuNoY00ygItKToeNOEx
-         Ta5jLQX/K/nvAdFsJTcz6qay4KKve0nUyyOFodM8fC9O/iLQqb/NT4l+/q/awYiRi18v
-         ZUke/P+y6X/HV0HBT/IkkMz4RR5ScteDXL3m8LvQ4uWQa25GZNiGdAlS/Syy3cTp1YIb
-         heaYd2fzehpdzAdW7Qn9XWvxHSj1lP2x8MHqpE1sG4p0R7zpdXLXqxd6/wlLVe6GGIcF
-         nsUqj2YrBTDmXMVjf7BhYPGAwIKTqsN7Xog/shtgNt5XROUta+awesy4vx5oZI+ABTUL
-         5RVA==
-X-Gm-Message-State: ABy/qLaeIFz/NvUghOS5nV/STFHKv1MHpsHPh17LLJSXAkprk0eXIXfx
-        quFYZ1fG6IxhheYrKbXxOJ/fsA==
-X-Google-Smtp-Source: APBJJlEHxNQB8OI0gK1JkgrcA6qpKfCt1495gUus2SsESAJnzz3dh8IXIELLzNbEHSWbTsk9l2XGjg==
-X-Received: by 2002:adf:f48f:0:b0:315:adee:2e47 with SMTP id l15-20020adff48f000000b00315adee2e47mr14943637wro.30.1689750554376;
-        Wed, 19 Jul 2023 00:09:14 -0700 (PDT)
-Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id n4-20020a5d4204000000b00315a1c160casm4388505wrq.99.2023.07.19.00.09.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 00:09:13 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 07:10:23 +0000
-From:   Anton Protopopov <aspsk@isovalent.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Hou Tao <houtao1@huawei.com>, Joe Stringer <joe@isovalent.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/3] bpf: consider CONST_PTR_TO_MAP as trusted
- pointer to struct bpf_map
-Message-ID: <ZLeMX4cJnKeXJfqW@zh-lab-node-5>
-References: <20230714141747.41560-1-aspsk@isovalent.com>
- <20230714142100.42265-1-aspsk@isovalent.com>
- <20230714142100.42265-2-aspsk@isovalent.com>
- <CAADnVQJztACtOx8UEyWJqTXd95DBDWsNEAG284Ci4N7Ma8Fqgw@mail.gmail.com>
- <ZLOhMDZIjikWdWf5@zh-lab-node-5>
- <CAADnVQLt=k6T0s3cRZRB26D+7TXcvR5CRk-q4SbKK6FQKuyjhg@mail.gmail.com>
+        Wed, 19 Jul 2023 03:11:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88860A4
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:11:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 16925612A5
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:11:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D01EC433C7;
+        Wed, 19 Jul 2023 07:11:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689750710;
+        bh=vQXnPTJwOFXKS8OGeyQepIwHUWfefqjc0NtH7P9v39k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iYB+sogwyp5LUVKrzUpQbFXw52Vv8gSPJxknBhhuIj2nVIptrf52/WQtAqlK2laff
+         VLWB/JU9zGiqRQDd+HcXfBxgD6kd1T9fvf3HfW7a38YvlyZuYNtQQLS7kz90eQNVRx
+         RJge8MroFQNJ27q/adaB3+ko75DCPMcseILvYpQ5F3cxohJejfLQqSnmkVpoBTDk2R
+         NPtEUbEQ5pqTZgzBcW15iOW3hUl+UAVVkr5eFjr4On1qo1dAnk1eZ4DDESwt6ps/BW
+         y7v9wm4qTiOWKp7TYiqw4q+AB93zdggVk3dp2620M5HaMOmYAP3PT64QhRQnMd0XPE
+         Pf/r0Ko0mjuiw==
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLt=k6T0s3cRZRB26D+7TXcvR5CRk-q4SbKK6FQKuyjhg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Date:   Wed, 19 Jul 2023 09:11:44 +0200
+From:   Michael Walle <mwalle@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>,
+        Xu Liang <lxu@maxlinear.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Simon Horman <simon.horman@corigine.com>
+Subject: Re: [PATCH net-next v3 02/11] net: phy: introduce
+ phy_has_c45_registers()
+In-Reply-To: <7be8b305-f287-4e99-bddd-55646285c427@lunn.ch>
+References: <20230620-feature-c45-over-c22-v3-0-9eb37edf7be0@kernel.org>
+ <20230620-feature-c45-over-c22-v3-2-9eb37edf7be0@kernel.org>
+ <7be8b305-f287-4e99-bddd-55646285c427@lunn.ch>
+Message-ID: <867ae3cc05439599d63e4712bca79e27@kernel.org>
+X-Sender: mwalle@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 05:54:27PM -0700, Alexei Starovoitov wrote:
-> On Sun, Jul 16, 2023 at 12:49 AM Anton Protopopov <aspsk@isovalent.com> wrote:
-> >
-> > On Fri, Jul 14, 2023 at 10:56:00AM -0700, Alexei Starovoitov wrote:
-> > > On Fri, Jul 14, 2023 at 7:20 AM Anton Protopopov <aspsk@isovalent.com> wrote:
-> > > >
-> > > > Patch verifier to regard values of type CONST_PTR_TO_MAP as trusted
-> > > > pointers to struct bpf_map. This allows kfuncs to work with `struct
-> > > > bpf_map *` arguments.
-> > > >
-> > > > Save some bytes by defining btf_bpf_map_id as BTF_ID_LIST_GLOBAL_SINGLE
-> > > > (which is u32[1]), not as BTF_ID_LIST (which is u32[64]).
-> > > >
-> > > > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-> > > > ---
-> > > >  include/linux/btf_ids.h | 1 +
-> > > >  kernel/bpf/map_iter.c   | 3 +--
-> > > >  kernel/bpf/verifier.c   | 5 ++++-
-> > > >  3 files changed, 6 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> > > > index 00950cc03bff..a3462a9b8e18 100644
-> > > > --- a/include/linux/btf_ids.h
-> > > > +++ b/include/linux/btf_ids.h
-> > > > @@ -267,5 +267,6 @@ MAX_BTF_TRACING_TYPE,
-> > > >  extern u32 btf_tracing_ids[];
-> > > >  extern u32 bpf_cgroup_btf_id[];
-> > > >  extern u32 bpf_local_storage_map_btf_id[];
-> > > > +extern u32 btf_bpf_map_id[];
-> > > >
-> > > >  #endif
-> > > > diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
-> > > > index d06d3b7150e5..b67996147895 100644
-> > > > --- a/kernel/bpf/map_iter.c
-> > > > +++ b/kernel/bpf/map_iter.c
-> > > > @@ -78,8 +78,7 @@ static const struct seq_operations bpf_map_seq_ops = {
-> > > >         .show   = bpf_map_seq_show,
-> > > >  };
-> > > >
-> > > > -BTF_ID_LIST(btf_bpf_map_id)
-> > > > -BTF_ID(struct, bpf_map)
-> > > > +BTF_ID_LIST_GLOBAL_SINGLE(btf_bpf_map_id, struct, bpf_map)
-> > > >
-> > > >  static const struct bpf_iter_seq_info bpf_map_seq_info = {
-> > > >         .seq_ops                = &bpf_map_seq_ops,
-> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > index 0b9da95331d7..5663f97ef292 100644
-> > > > --- a/kernel/bpf/verifier.c
-> > > > +++ b/kernel/bpf/verifier.c
-> > > > @@ -5419,6 +5419,9 @@ static bool is_trusted_reg(const struct bpf_reg_state *reg)
-> > > >         if (reg->ref_obj_id)
-> > > >                 return true;
-> > > >
-> > > > +       if (reg->type == CONST_PTR_TO_MAP)
-> > > > +               return true;
-> > > > +
-> > >
-> > > Overall it looks great.
-> > > Instead of above, how about the following instead:
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 0b9da95331d7..cd08167dc347 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -10775,7 +10775,7 @@ static int check_kfunc_args(struct
-> > > bpf_verifier_env *env, struct bpf_kfunc_call_
-> > >                         if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu(meta))
-> > >                                 break;
-> > >
-> > > -                       if (!is_trusted_reg(reg)) {
-> > > +                       if (!is_trusted_reg(reg) &&
-> > > !reg2btf_ids[base_type(reg->type)]) {
-> > >
-> > >
-> > > This way we won't need to list every convertible type in is_trusted_reg.
-> > >
-> > > I'm a bit hesitant to put reg2btf_ids[] check directly into is_trusted_reg().
-> > > Maybe it's ok, but it needs more analysis.
-> >
-> > I am not sure I see a difference in adding a check you proposed above and
-> > adding the reg2btf_ids[] check directly into the is_trusted_reg() function.
-> > Basically, we say "if type is in reg2btf_ids[], then consider it trusted" in
-> > both cases. AFAIS, currently the reg2btf_ids[] contains only trusted types,
-> > however, could it happen that we add a non-trusted type there?
-> >
-> > So, I would leave the patch as is (which also makes sense because the
-> > const-ptr-to-map is a special case), or add the "reg2btf_ids[] check"
-> > directly into the is_trusted_reg() function.
-> 
-> Fair enough. Let's add reg2btf_ids[] to is_trusted_reg() directly.
 
-Thanks, I will send v2.
+>> diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
+>> index a64186dc53f8..686a57d56885 100644
+>> --- a/drivers/net/phy/phy-core.c
+>> +++ b/drivers/net/phy/phy-core.c
+>> @@ -556,7 +556,7 @@ int __phy_read_mmd(struct phy_device *phydev, int 
+>> devad, u32 regnum)
+>> 
+>>  	if (phydev->drv && phydev->drv->read_mmd) {
+>>  		val = phydev->drv->read_mmd(phydev, devad, regnum);
+>> -	} else if (phydev->is_c45) {
+>> +	} else if (phy_has_c45_registers(phydev)) {
+> 
+> This i would say should be
+> 
+> phy_has_c45_transfers(phydev). This is about, can we do C45 transfers
+> on the bus, and if not, fall back to C45 over C22.
+
+Shouldn't this then be a bus property? I.e. mdiobus_has_c45_transfers().
+I've have a similar helper introduced in 9/11:
+
+static inline bool mdiobus_supports_c45(struct mii_bus *bus)
+{
+     return bus->read_c45 && !bus->prevent_c45_access;
+}
+
+>>  static int phylink_sfp_connect_phy(void *upstream, struct phy_device 
+>> *phy)
+>> diff --git a/include/linux/phy.h b/include/linux/phy.h
+>> index 11c1e91563d4..fdb3774e99fc 100644
+>> --- a/include/linux/phy.h
+>> +++ b/include/linux/phy.h
+>> @@ -766,6 +766,11 @@ static inline struct phy_device 
+>> *to_phy_device(const struct device *dev)
+>>  	return container_of(to_mdio_device(dev), struct phy_device, mdio);
+>>  }
+>> 
+>> +static inline bool phy_has_c45_registers(struct phy_device *phydev)
+>> +{
+>> +	return phydev->is_c45;
+>> +}
+> 
+> And this is where it gets interesting. I think as a first step, you
+> should implement the four functions:
+> 
+> phy_has_c22_registers()
+> phy_has_c45_registers()
+> phy_has_c22_transfers()
+> phy_has_c45_transfers()
+> 
+> based on this. So there is initially no functional change.
+> 
+> 
+> You can then change the implementation of _transfers() based on what
+> the MDIO bus can do, plus the quirk for if a FUBAR microchip PHY has
+> been found.
+
+See above. Shouldn't it be mdiobus_...() then?
+
+> Then change the implementation of _registers() based on the results of
+> probing for the ID registers.
+
+So this is where I cannot follow. Right now there is
+(1) probing via bus scan
+(2) probing via DT (or maybe also ACPI)
+
+With (1) you we have scan_c22(), so if successful, 
+phy_has_c22_registers()
+will return true, right? But it's not that clear for
+phy_has_c45_registers(), because sometimes we prevent that scan. So
+the PHY might have c45 but we don't know.
+
+For (2) we don't even do a c22 scan if we know if its a C45 PHY (or the
+other way around). I'm not sure we can reliably tell (at the end of this
+series) if a phy has c22 register, c45 registers or both.
+
+-michael
+
+> That should give us a basis for a clean separation between register
+> spaces and bus transaction, and then adding C45 over C22 should be
+> more obviously correct.
+> 
+> 	Andrew
