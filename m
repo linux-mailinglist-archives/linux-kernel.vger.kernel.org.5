@@ -2,116 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5570E7589D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 02:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9914C7589D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 02:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229555AbjGSABf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 20:01:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59804 "EHLO
+        id S229822AbjGSABu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 20:01:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjGSABd (ORCPT
+        with ESMTP id S229730AbjGSABs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 20:01:33 -0400
-Received: from out-42.mta1.migadu.com (out-42.mta1.migadu.com [IPv6:2001:41d0:203:375::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F52B1719
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 17:01:01 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 08:59:46 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689724794;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MpJgs9wRGslX7B0v5r1djRNwrOTPSth9rMMf+bQv7bw=;
-        b=WYnZ4pp9slmQ2hwQev8HbcppJxGxief9n5Va5HFZ1X1tR64d3tufyCKwlA6RML4tADBRvB
-        B+f+tEGKcFEZzN1utrRUo0hvMhShxz/vE/k9e9lpGORIXNVD/djPI8y3fYbzt2ltu3RiOL
-        +k/JLqwpVnJErwKnw/et3BFkM+7iBgA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, willy@infradead.org,
-        linmiaohe@huawei.com, naoya.horiguchi@nec.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] mm/memory-failure: fix hardware poison check in
- unpoison_memory()
-Message-ID: <20230718235946.GA1106729@ik1-406-35019.vs.sakura.ne.jp>
-References: <20230717181812.167757-1-sidhartha.kumar@oracle.com>
- <20230718001409.GA751192@ik1-406-35019.vs.sakura.ne.jp>
- <20230718003956.GA762147@ik1-406-35019.vs.sakura.ne.jp>
- <6736667f-6456-34b5-1d1f-47219e499001@oracle.com>
+        Tue, 18 Jul 2023 20:01:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDB41BE7;
+        Tue, 18 Jul 2023 17:01:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E91B6159F;
+        Wed, 19 Jul 2023 00:00:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B6929C433C9;
+        Wed, 19 Jul 2023 00:00:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689724821;
+        bh=qxxeeH4BpVPJRWJ4+RBZAoXm54CuQ1BuSkX6X7QPBno=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=aM26f95NosLZkRBrJfElkigefJKCG4RGcGm7yoQa0kV402AWkNwxeOcvbA5zBw1nu
+         LH8/v9SpSyraWj2UFraGByiTEAsRpdyNSfxBjcKwf2yisrg1rf+ffy1cE5ivVwkUhL
+         KCi1B5rnO8iIy5XRlANVrw5nNvzm4c7/6i12TsYvFy0QaR4PsXQlbG8PSZ5HSDf8MQ
+         sd+99fC9x5txVMyehtWqt5b+s4l6E1kWLYCqTRNR/oQ0v188B61pnv/5N8Q76OlOsm
+         Rif0k4UoJyFDOkm065tfBNTz4lEy/PdHz33ZoNduRd+mOmg4urmNR/1cWh3WhxrTv6
+         Bssl9fiykT76w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9A7C8E22AE4;
+        Wed, 19 Jul 2023 00:00:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <6736667f-6456-34b5-1d1f-47219e499001@oracle.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 0/3] selftests: tc: increase timeout and add missing
+ kconfig
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168972482162.23822.8375282604196078031.git-patchwork-notify@kernel.org>
+Date:   Wed, 19 Jul 2023 00:00:21 +0000
+References: <20230713-tc-selftests-lkft-v1-0-1eb4fd3a96e7@tessares.net>
+In-Reply-To: <20230713-tc-selftests-lkft-v1-0-1eb4fd3a96e7@tessares.net>
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        shuah@kernel.org, keescook@chromium.org, davem@davemloft.net,
+        paulb@mellanox.com, marcelo.leitner@gmail.com,
+        mptcp@lists.linux.dev, pctammela@mojatatu.com,
+        skhan@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        stable@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 07:30:23AM -0700, Sidhartha Kumar wrote:
-> On 7/17/23 5:39 PM, Naoya Horiguchi wrote:
-> > On Tue, Jul 18, 2023 at 09:14:09AM +0900, Naoya Horiguchi wrote:
-> > > On Mon, Jul 17, 2023 at 11:18:12AM -0700, Sidhartha Kumar wrote:
-> > > > It was pointed out[1] that using folio_test_hwpoison() is wrong
-> > > > as we need to check the indiviual page that has poison.
-> > > > folio_test_hwpoison() only checks the head page so go back to using
-> > > > PageHWPoison().
-> > > > 
-> > > > Reported-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > > > Fixes: a6fddef49eef ("mm/memory-failure: convert unpoison_memory() to folios")
-> > > > Cc: stable@vger.kernel.org #v6.4
-> > > > Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-> > > > 
-> > > > [1]: https://lore.kernel.org/lkml/ZLIbZygG7LqSI9xe@casper.infradead.org/
-> > > > ---
-> > > >   mm/memory-failure.c | 2 +-
-> > > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> > > > index 02b1d8f104d51..a114c8c3039cd 100644
-> > > > --- a/mm/memory-failure.c
-> > > > +++ b/mm/memory-failure.c
-> > > > @@ -2523,7 +2523,7 @@ int unpoison_memory(unsigned long pfn)
-> > > >   		goto unlock_mutex;
-> > > >   	}
-> > > > -	if (!folio_test_hwpoison(folio)) {
-> > > > +	if (!PageHWPoison(p)) {
-> > > 
-> > > 
-> > > I don't think this works for hwpoisoned hugetlb pages that have PageHWPoison
-> > > set on the head page, rather than on the raw subpage. In the case of
-> > > hwpoisoned thps, PageHWPoison is set on the raw subpage, not on the head
-> > > pages.  (I believe this is not detected because no one considers the
-> > > scenario of unpoisoning hwpoisoned thps, which is a rare case).  Perhaps the
-> > > function is_page_hwpoison() would be useful for this purpose?
-> > 
-> > Sorry, I was wrong.  Checking PageHWPoison() is fine because the users of
-> > unpoison should know where the PageHWPoison is set via /proc/kpageflags.
-> > So this patch is OK to me after comments from other reviewers are resolved.
-> > 
-> 
-> Hi Naoya,
-> 
-> While taking a closer at the patch, later in unpoison_memory() there is
-> also:
-> 
-> -               ret = TestClearPageHWPoison(page) ? 0 : -EBUSY;
-> +               ret = folio_test_clear_hwpoison(folio) ? 0 : -EBUSY;
-> 
-> I thought this folio conversion would be safe because page is the result of
-> a compound_head() call but I'm wondering if the same issue exists here and
-> we should be calling TestClearPageHWPoison() on the specific subpage by
-> doing TestClearPageHWPoison(p).
+Hello:
 
-In this case (get_hwpoison_page returns 0), the target of unpoison_memory was
-buddy page or free huge page, so there seems not any realistic problem.
-But putting back to TestClearPageHWPoison() looks consistent, so I'm fine with it.
+This series was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Thanks,
-Naoya Horiguchi
+On Thu, 13 Jul 2023 23:16:43 +0200 you wrote:
+> When looking for something else in LKFT reports [1], I noticed that the
+> TC selftest ended with a timeout error:
+> 
+>   not ok 1 selftests: tc-testing: tdc.sh # TIMEOUT 45 seconds
+> 
+> I also noticed most of the tests were skipped because the "teardown
+> stage" did not complete successfully. It was due to missing kconfig.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,1/3] selftests: tc: set timeout to 15 minutes
+    https://git.kernel.org/netdev/net/c/fda05798c22a
+  - [net,2/3] selftests: tc: add 'ct' action kconfig dep
+    https://git.kernel.org/netdev/net/c/719b4774a8cb
+  - [net,3/3] selftests: tc: add ConnTrack procfs kconfig
+    https://git.kernel.org/netdev/net/c/031c99e71fed
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
