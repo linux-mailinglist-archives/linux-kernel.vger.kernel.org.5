@@ -2,104 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7532B759E49
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FBC6759E44
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbjGSTMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 15:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45400 "EHLO
+        id S230039AbjGSTMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 15:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230511AbjGSTM1 (ORCPT
+        with ESMTP id S229535AbjGSTMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 15:12:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA568199A
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:11:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689793900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F8XGxi53b0PEdlxoh7O8cl7xJyRMkcuJJYP/JuLoaN8=;
-        b=SRxE7/HP8H//Wg/zEmb57Oh398h2MBvK63J5wbgE9mKOdEhkI0bCMqvvYkNVz7SiQdy1+n
-        dkkJUo8EJUTKYE6LlVED4aztfbphjsgCrOwnKGc6OwzyeVMpV+h0Y/MJONSKxpD35PvhPF
-        53Igcu5Op95vHE9uUHddu6LNj5U9Mkw=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-117-__ui0w8MMKef19n0jhQzTg-1; Wed, 19 Jul 2023 15:11:38 -0400
-X-MC-Unique: __ui0w8MMKef19n0jhQzTg-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fa8db49267so39101395e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:11:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689793897; x=1690398697;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F8XGxi53b0PEdlxoh7O8cl7xJyRMkcuJJYP/JuLoaN8=;
-        b=Lb8s2SupZs1d+rcn6LAU4q8chrgCZBkSjwJXX3CXO99awdfmc/nkhVh4R/KEBbFvuz
-         R/UWCcMi+ZzFZoW53b92eD+zqN4NU3e6ezqDYWpkWQc8sfmHEQCYhnbsPaC7eQl4aBEL
-         19Zy2jLQYXIgR4Th1FMIKH3/EJaF/LU0QNW1x9x4v7M+irafjJ5x5flUhdftkJPg2EAN
-         YaShbLd2VbjXr/luz3OMVayF8DzXpuMiMWtrzMfijocaZJm7S3FHzfYhwvGefQlOcfqA
-         9CFv1AvWNeL5c1NXT/8pe6wqTT+qSYyApSFgdjoFLj/f7M8/XZFJffNtw6Cv1kXm77SZ
-         SvYQ==
-X-Gm-Message-State: ABy/qLZN623Fno1yCWhkmpwzGEPjaqVuZ0v8sIXJJNka5sw6AIDg6dRV
-        JGj8AXz/7jxi2NUsREcrwC+m/LVZpha9xq1EsDICaF2O1onjfxkLbteMXS4DpiXwNz9cCkAHbY8
-        BLAcooW6M6s7PcmiB5Ej0Cv1OPA5T10As
-X-Received: by 2002:adf:de85:0:b0:313:efed:9162 with SMTP id w5-20020adfde85000000b00313efed9162mr592379wrl.59.1689793897427;
-        Wed, 19 Jul 2023 12:11:37 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGAEpZ3HnNJFf0EXDQ6PiNnXG6pJ7iZ6T6kGVVDyiOZcpi7AONcMjyvvGq2mav4MkZGW/OMOw==
-X-Received: by 2002:adf:de85:0:b0:313:efed:9162 with SMTP id w5-20020adfde85000000b00313efed9162mr592365wrl.59.1689793897094;
-        Wed, 19 Jul 2023 12:11:37 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id c3-20020adfef43000000b00313f9a0c521sm5973293wrp.107.2023.07.19.12.11.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 12:11:36 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emma Anholt <emma@anholt.net>
-Cc:     Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 05/11] drm/tests: helpers: Create an helper to allocate
- a locking ctx
-In-Reply-To: <20230710-kms-kunit-actions-rework-v1-5-722c58d72c72@kernel.org>
-References: <20230710-kms-kunit-actions-rework-v1-0-722c58d72c72@kernel.org>
- <20230710-kms-kunit-actions-rework-v1-5-722c58d72c72@kernel.org>
-Date:   Wed, 19 Jul 2023 21:11:36 +0200
-Message-ID: <874jlzk97b.fsf@minerva.mail-host-address-is-not-set>
+        Wed, 19 Jul 2023 15:12:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFBE1BF6;
+        Wed, 19 Jul 2023 12:12:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4D00D617EB;
+        Wed, 19 Jul 2023 19:12:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C98FDC433C8;
+        Wed, 19 Jul 2023 19:12:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689793935;
+        bh=WnEpYb5mCjqyiCqGCFbyID54hiPfijMfm02T5CHpq+E=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=IPMW/TPeElwK4pnrsNJ+14tW2/Yrz6imn5BjbGDOpzEDr+QClaZJVrJUOYiE2OKOd
+         xKKYnksaQmZBaNmBONHN+HLYGGF6Iu7di2hT04NRYI9gipdHE2pLSqHJ7pvm93WJ4r
+         ODXdgj1e/c7iKOvJkoABDHpeB0RMTqJXZPPK/Go43yb9z7GR56jVNbMjmR7FHtkEZT
+         DXSdRFUldGiU/XixofL86zqBJ6WkYJB2rnuEcE5Ji73zcjfEpNjDX0bkVoXVCjgvu3
+         eU2hEFDhssej7vwy0O4EQj2GoLjZ+VneJh8Acdgzr/cFJ95Lsd5RmaVdoErtFW+INY
+         yubRivpI6RYTQ==
+Message-ID: <32b660c62f2abb17695816b83c41ae15b065b70e.camel@kernel.org>
+Subject: Re: [PATCH] nfsd: inherit required unset default acls from
+ effective set
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ondrej Valousek <ondrej.valousek@diasemi.com>,
+        Andreas Gruenbacher <agruen@redhat.com>
+Date:   Wed, 19 Jul 2023 15:12:13 -0400
+In-Reply-To: <0FE91AAE-0A90-4856-B9F3-A2CC4B4A94CC@oracle.com>
+References: <20230719-nfsd-acl-v1-1-eb0faf3d2917@kernel.org>
+         <0FE91AAE-0A90-4856-B9F3-A2CC4B4A94CC@oracle.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxime Ripard <mripard@kernel.org> writes:
+On Wed, 2023-07-19 at 19:02 +0000, Chuck Lever III wrote:
+>=20
+> > On Jul 19, 2023, at 1:49 PM, Jeff Layton <jlayton@kernel.org> wrote:
+> >=20
+> > A well-formed NFSv4 ACL will always contain OWNER@/GROUP@/EVERYONE@
+> > ACEs, but there is no requirement for inheritable entries for those
+> > entities. POSIX ACLs must always have owner/group/other entries, even f=
+or a
+> > default ACL.
+> >=20
+> > nfsd builds the default ACL from inheritable ACEs, but the current code
+> > just leaves any unspecified ACEs zeroed out. The result is that adding =
+a
+> > default user or group ACE to an inode can leave it with unwanted deny
+> > entries.
+> >=20
+> > For instance, a newly created directory with no acl will look something
+> > like this:
+> >=20
+> > # NFSv4 translation by server
+> > A::OWNER@:rwaDxtTcCy
+> > A::GROUP@:rxtcy
+> > A::EVERYONE@:rxtcy
+> >=20
+> > # POSIX ACL of underlying file
+> > user::rwx
+> > group::r-x
+> > other::r-x
+> >=20
+> > ...if I then add new v4 ACE:
+> >=20
+> > nfs4_setfacl -a A:fd:1000:rwx /mnt/local/test
+> >=20
+> > ...I end up with a result like this today:
+> >=20
+> > user::rwx
+> > user:1000:rwx
+> > group::r-x
+> > mask::rwx
+> > other::r-x
+> > default:user::---
+> > default:user:1000:rwx
+> > default:group::---
+> > default:mask::rwx
+> > default:other::---
+> >=20
+> > A::OWNER@:rwaDxtTcCy
+> > A::1000:rwaDxtcy
+> > A::GROUP@:rxtcy
+> > A::EVERYONE@:rxtcy
+> > D:fdi:OWNER@:rwaDx
+> > A:fdi:OWNER@:tTcCy
+> > A:fdi:1000:rwaDxtcy
+> > A:fdi:GROUP@:tcy
+> > A:fdi:EVERYONE@:tcy
+> >=20
+> > ...which is not at all expected. Adding a single inheritable allow ACE
+> > should not result in everyone else losing access.
+> >=20
+> > The setfacl command solves a silimar issue by copying owner/group/other
+> > entries from the effective ACL when none of them are set:
+> >=20
+> >    "If a Default ACL entry is created, and the  Default  ACL  contains =
+ no
+> >     owner,  owning group,  or  others  entry,  a  copy of the ACL owner=
+,
+> >     owning group, or others entry is added to the Default ACL.
+> >=20
+> > Having nfsd do the same provides a more sane result (with no deny ACEs
+> > in the resulting set):
+> >=20
+> > user::rwx
+> > user:1000:rwx
+> > group::r-x
+> > mask::rwx
+> > other::r-x
+> > default:user::rwx
+> > default:user:1000:rwx
+> > default:group::r-x
+> > default:mask::rwx
+> > default:other::r-x
+> >=20
+> > A::OWNER@:rwaDxtTcCy
+> > A::1000:rwaDxtcy
+> > A::GROUP@:rxtcy
+> > A::EVERYONE@:rxtcy
+> > A:fdi:OWNER@:rwaDxtTcCy
+> > A:fdi:1000:rwaDxtcy
+> > A:fdi:GROUP@:rxtcy
+> > A:fdi:EVERYONE@:rxtcy
+> >=20
+> > Link: https://bugzilla.redhat.com/show_bug.cgi?id=3D2136452
+> > Reported-by: Ondrej Valousek <ondrej.valousek@diasemi.com>
+> > Suggested-by: Andreas Gruenbacher <agruen@redhat.com>
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+>=20
+> As you pointed out in the bug report, there is not much testing
+> infrastructure for NFSv4 ACLs. It will be hard to tell in
+> advance if this change results in a behavior regression.
+>=20
+> On the other hand, I'm not sure we have a large cohort of
+> NFSv4 ACL users on Linux.
+>=20
+> I can certainly apply this to nfsd-next at least for a few
+> weeks to see if anyone yelps.
+>=20
 
-> As we get more and more tests, the locking context initialisation
-> creates more and more boilerplate, both at creation and destruction.
->
-> Let's create a helper that will allocate, initialise a context, and
-> register kunit actions to clean up once the test is done.
->
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> ---
-
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+Thanks, that's probably the best we can do, given the state of v4 ACL
+test coverage.
+--=20
+Jeff Layton <jlayton@kernel.org>
