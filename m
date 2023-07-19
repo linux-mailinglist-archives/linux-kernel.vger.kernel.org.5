@@ -2,206 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAB7759C1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6292759C24
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbjGSRM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 13:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48364 "EHLO
+        id S231264AbjGSRNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 13:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbjGSRMY (ORCPT
+        with ESMTP id S231158AbjGSRNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:12:24 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 533B1B7
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:12:21 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-4036bd4fff1so13561cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:12:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689786740; x=1692378740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kq4j2u46wil1ke52/+CnH14UkMUz/ytY53Ok+bsM5GU=;
-        b=g0G8X70teAAyZAkWLbF+vMVfO9L+y6n6bG9NPwGSQjxwF9XQotP1lv3E+QtiNY5MA2
-         c0Dl0ngaWR1XjW/zN/6b7vkG3crrJchcrY9kW4CIV6g1DlbIoCGiTdupuhzopptu8UP6
-         Sr2i5TE0/KdV4Vo1dldATPTOwaLneY0OEylRQ3C2yTmbuiWW9hbXj78yDp0OdDS8xSPO
-         aJP82uERjhVWq51Izw9hIcQLt2St+GQrvU4uFLJTU0QSSINcWNV3FDxOmeunD/rmJBR0
-         fAsofRX99qObnVIGeCF7UMOHUPB3xpfydRd8YiCAVLWd265F/vcs5O4eaFcwanaeGxeG
-         oXmw==
+        Wed, 19 Jul 2023 13:13:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B351FD2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:12:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689786738;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S9AsII7CY5MJTEaTaOHNT9YNASCGL4WKC7qHJSnopZQ=;
+        b=CVvb6Q2xzzE0WQ8S6S3CxLhWgiMaVpw/K6F8OCQY1HbNUxJQXoNMRhSiyHfD+Q6ND9ypd3
+        pNJ2sm9dFrFn85+/nK9cOpEyVKSRLgAKugeBH5uL5EeOJqI/GlN0X9ljnlv5SH6C4dZth5
+        w5F0o4A0DYO3R9E8loL+LtsdKes73dA=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-423-6Eu8PJxyO-m05ADQtawzQA-1; Wed, 19 Jul 2023 13:12:17 -0400
+X-MC-Unique: 6Eu8PJxyO-m05ADQtawzQA-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-97542592eb9so368481666b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:12:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689786740; x=1692378740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kq4j2u46wil1ke52/+CnH14UkMUz/ytY53Ok+bsM5GU=;
-        b=hCyAeAD3TkrzHFroGm7aLKERYd9h6F7JPDAn+sRkjoZc+XE0gY/tuss/BATwwyGxpU
-         O+45rxW4E06nhfMPmJrBw2wpk+Pyp851SL7cAekVU76+1siiCvHaGdFAx9P5AFHqdsjP
-         00C4EH2yhr7+ozmzLvTJhJmHk4HLH5p/kYq/poSG/i/qlys8t6DCJjGmtw+l9WwAlaPJ
-         tPb87xATyMRyDIVrONTw8P97oPp5gfGNcoX44sCTvZV27MA+IZ915VJJf5oF/aVXUlMM
-         U9y/7BdycnB8W1b+WZUp/tH3BHz8jAZBImO+Ynh+hrEySMoieai+opSHTuRNHOiG/9+1
-         EzzQ==
-X-Gm-Message-State: ABy/qLY1RLNrQTpTnAkbRxVV1jY1uJ4PYI+4qBPwsLDcg1Iz4dbTASMg
-        RxyFPcFRN8AHqW/c5ERHaX2TAjYjEWffiDA6NwQdlg==
-X-Google-Smtp-Source: APBJJlHpQOYSzqxXGuzVcbYnlfuvIArb0O9nLkJXBcX5vlTL4it/Or3f2kwpGFNjpS52wab4u61zvzTR0OpGHXS145U=
-X-Received: by 2002:ac8:7fca:0:b0:403:b242:3e30 with SMTP id
- b10-20020ac87fca000000b00403b2423e30mr623248qtk.1.1689786740368; Wed, 19 Jul
- 2023 10:12:20 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689786736; x=1692378736;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S9AsII7CY5MJTEaTaOHNT9YNASCGL4WKC7qHJSnopZQ=;
+        b=a1gS0Ah2N3RCaBgmDmkDHklirzPpiSRCT9AseOi9u9XjNAq+yE/NgckDxu+sHe63+2
+         jG+ZHongOO3GXiXB05Qxo0EXP/niaT9wkXUhulpMfTJDqzSCTa+fqFWPZ+8t2eZcFyqn
+         FJY0/LjvVGhlHGjz1op0Q30NY1t8NdfTaAT6QQWKOPq4Bzpwv4OqpWoVol+2lFQ5HA0F
+         2SLm6WaFJYgh1O7xiesCNo+3IpUzTugMM0P8JpSwqH1xMP5T2DSUIDbGDmOisi4Z47Rl
+         bwBR/Ok1Xup5Tn5QYgYeSkfvCM4SVAjSlyhfSvahQ7hGvDqR5gPDz3bHBJD7uQm5OgDD
+         LlSg==
+X-Gm-Message-State: ABy/qLYivXNqIKchdmemsoiPrM6g+/tTfCKRdqcgU5BjjvP0KOJupFSO
+        N2cctKobXKY8a8TdxhNy2BSUIgRYhCpLPw4hIboIIgmT9So/LDzyFnqn+Z+KutZYcZXP8bURxrm
+        dq9SISNe3zIXpF9KhoDUQIj4a
+X-Received: by 2002:a17:907:78c7:b0:993:336d:bc0c with SMTP id kv7-20020a17090778c700b00993336dbc0cmr3348291ejc.34.1689786736182;
+        Wed, 19 Jul 2023 10:12:16 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEWH5lpXrWw3fibEqRX+XISeWU/0ydBla5bYBnTwaBnN76X92VTCl72XthCydwwSYBUr3ZDqg==
+X-Received: by 2002:a17:907:78c7:b0:993:336d:bc0c with SMTP id kv7-20020a17090778c700b00993336dbc0cmr3348255ejc.34.1689786735792;
+        Wed, 19 Jul 2023 10:12:15 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.googlemail.com with ESMTPSA id i16-20020a17090685d000b0099251942e1esm2561055ejy.119.2023.07.19.10.12.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 10:12:15 -0700 (PDT)
+Message-ID: <fedb8c9b-c28b-fe97-aa98-f8189067cb5a@redhat.com>
+Date:   Wed, 19 Jul 2023 19:12:12 +0200
 MIME-Version: 1.0
-References: <20230715032915.97146-1-yangjihong1@huawei.com>
- <20230715032915.97146-3-yangjihong1@huawei.com> <CAP-5=fVysKhUn1YsUr0NBU2kVBDgkoczO861XwK5VCtkeYSRJA@mail.gmail.com>
- <085942cc-f6e7-a81b-243f-a739c91ecd72@intel.com>
-In-Reply-To: <085942cc-f6e7-a81b-243f-a739c91ecd72@intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 19 Jul 2023 10:12:09 -0700
-Message-ID: <CAP-5=fVmKmgsABpnsngT9L1QeaWaUxakHc1078LahGFqK4-riA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] perf evlist: Add evlist__findnew_tracking_event() helper
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Yang Jihong <yangjihong1@huawei.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, kan.liang@linux.intel.com,
-        james.clark@arm.com, tmricht@linux.ibm.com, ak@linux.intel.com,
-        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH v11 03/29] KVM: Use gfn instead of hva for
+ mmu_notifier_retry
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20230718234512.1690985-1-seanjc@google.com>
+ <20230718234512.1690985-4-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20230718234512.1690985-4-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 9:59=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.=
-com> wrote:
->
-> On 19/07/23 19:44, Ian Rogers wrote:
-> > On Fri, Jul 14, 2023 at 8:31=E2=80=AFPM Yang Jihong <yangjihong1@huawei=
-.com> wrote:
-> >>
-> >> Currently, intel-bts, intel-pt, and arm-spe may add a dummy event for
-> >> tracking to the evlist. We may need to search for the dummy event for
-> >> some settings. Therefore, add evlist__findnew_tracking_event() helper.
-> >>
-> >> evlist__findnew_tracking_event() also deal with system_wide maps if
-> >> system_wide is true.
-> >
-> > I'm wondering if we can simplify the naming in the API, we have "dummy
-> > event" which makes sense as we literally call the event "dummy",
-> > "sideband" which refers to the kind of samples/events the dummy event
-> > will record but "tracking" I think tends to get used as a verb rather
-> > than a noun. So I think evlist__findnew_tracking_event should be
-> > evlist__findnew_dummy_event.
->
-> Except the tracking event has "tracking" set but there can be other dummy
-> events that do not.
+On 7/19/23 01:44, Sean Christopherson wrote:
+> From: Chao Peng<chao.p.peng@linux.intel.com>
+> 
+> Currently in mmu_notifier invalidate path, hva range is recorded and
+> then checked against by mmu_notifier_retry_hva() in the page fault
+> handling path. However, for the to be introduced private memory, a page
+> fault may not have a hva associated, checking gfn(gpa) makes more sense.
+> 
+> For existing hva based shared memory, gfn is expected to also work. The
+> only downside is when aliasing multiple gfns to a single hva, the
+> current algorithm of checking multiple ranges could result in a much
+> larger range being rejected. Such aliasing should be uncommon, so the
+> impact is expected small.
 
-Thanks! I'm wondering what a dummy event without tracking would be
-used for - do you have a reference? I don't see anything in
-perf_event.h calling things like mmap2/comm in perf_event_attr
-tracking. I'm not a fan of dummy due to it not being intention
-revealing. Perhaps if we could go back in time  we could call the
-event "sideband", maybe we should migrate to this. We have other
-non-obvious uses of the term dummy like in cpumap:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/lib/perf/include/perf/cpumap.h?h=3Dperf-tools-next#n24
-If tracking can be on any event then does that make the functions
-behavior more ambiguous if it means dummy+tracking not <any
-event>+tracking?
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
-Thanks,
-Ian
+> Suggested-by: Sean Christopherson<seanjc@google.com>
+> Signed-off-by: Chao Peng<chao.p.peng@linux.intel.com>
+> Reviewed-by: Fuad Tabba<tabba@google.com>
+> Tested-by: Fuad Tabba<tabba@google.com>
+> [sean: convert vmx_set_apic_access_page_addr() to gfn-based API]
+> Signed-off-by: Sean Christopherson<seanjc@google.com>
+> ---
+>   arch/x86/kvm/mmu/mmu.c   | 10 ++++++----
+>   arch/x86/kvm/vmx/vmx.c   | 11 +++++------
+>   include/linux/kvm_host.h | 33 +++++++++++++++++++++------------
+>   virt/kvm/kvm_main.c      | 40 +++++++++++++++++++++++++++++++---------
+>   4 files changed, 63 insertions(+), 31 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index d72f2b20f430..b034727c4cf9 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3087,7 +3087,7 @@ static void direct_pte_prefetch(struct kvm_vcpu *vcpu, u64 *sptep)
+>    *
+>    * There are several ways to safely use this helper:
+>    *
+> - * - Check mmu_invalidate_retry_hva() after grabbing the mapping level, before
+> + * - Check mmu_invalidate_retry_gfn() after grabbing the mapping level, before
+>    *   consuming it.  In this case, mmu_lock doesn't need to be held during the
+>    *   lookup, but it does need to be held while checking the MMU notifier.
+>    *
+> @@ -4400,7 +4400,7 @@ static bool is_page_fault_stale(struct kvm_vcpu *vcpu,
+>   		return true;
+>   
+>   	return fault->slot &&
+> -	       mmu_invalidate_retry_hva(vcpu->kvm, fault->mmu_seq, fault->hva);
+> +	       mmu_invalidate_retry_gfn(vcpu->kvm, fault->mmu_seq, fault->gfn);
+>   }
+>   
+>   static int direct_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+> @@ -6301,7 +6301,9 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+>   
+>   	write_lock(&kvm->mmu_lock);
+>   
+> -	kvm_mmu_invalidate_begin(kvm, 0, -1ul);
+> +	kvm_mmu_invalidate_begin(kvm);
+> +
+> +	kvm_mmu_invalidate_range_add(kvm, gfn_start, gfn_end);
+>   
+>   	flush = kvm_rmap_zap_gfn_range(kvm, gfn_start, gfn_end);
+>   
+> @@ -6314,7 +6316,7 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+>   	if (flush)
+>   		kvm_flush_remote_tlbs_range(kvm, gfn_start, gfn_end - gfn_start);
+>   
+> -	kvm_mmu_invalidate_end(kvm, 0, -1ul);
+> +	kvm_mmu_invalidate_end(kvm);
+>   
+>   	write_unlock(&kvm->mmu_lock);
+>   }
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 0ecf4be2c6af..946380b53cf5 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6729,10 +6729,10 @@ static void vmx_set_apic_access_page_addr(struct kvm_vcpu *vcpu)
+>   		return;
+>   
+>   	/*
+> -	 * Grab the memslot so that the hva lookup for the mmu_notifier retry
+> -	 * is guaranteed to use the same memslot as the pfn lookup, i.e. rely
+> -	 * on the pfn lookup's validation of the memslot to ensure a valid hva
+> -	 * is used for the retry check.
+> +	 * Explicitly grab the memslot using KVM's internal slot ID to ensure
+> +	 * KVM doesn't unintentionally grab a userspace memslot.  It_should_
+> +	 * be impossible for userspace to create a memslot for the APIC when
+> +	 * APICv is enabled, but paranoia won't hurt in this case.
+>   	 */
+>   	slot = id_to_memslot(slots, APIC_ACCESS_PAGE_PRIVATE_MEMSLOT);
+>   	if (!slot || slot->flags & KVM_MEMSLOT_INVALID)
+> @@ -6757,8 +6757,7 @@ static void vmx_set_apic_access_page_addr(struct kvm_vcpu *vcpu)
+>   		return;
+>   
+>   	read_lock(&vcpu->kvm->mmu_lock);
+> -	if (mmu_invalidate_retry_hva(kvm, mmu_seq,
+> -				     gfn_to_hva_memslot(slot, gfn))) {
+> +	if (mmu_invalidate_retry_gfn(kvm, mmu_seq, gfn)) {
+>   		kvm_make_request(KVM_REQ_APIC_PAGE_RELOAD, vcpu);
+>   		read_unlock(&vcpu->kvm->mmu_lock);
+>   		goto out;
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index b901571ab61e..90a0be261a5c 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -788,8 +788,8 @@ struct kvm {
+>   	struct mmu_notifier mmu_notifier;
+>   	unsigned long mmu_invalidate_seq;
+>   	long mmu_invalidate_in_progress;
+> -	unsigned long mmu_invalidate_range_start;
+> -	unsigned long mmu_invalidate_range_end;
+> +	gfn_t mmu_invalidate_range_start;
+> +	gfn_t mmu_invalidate_range_end;
+>   #endif
+>   	struct list_head devices;
+>   	u64 manual_dirty_log_protect;
+> @@ -1371,10 +1371,9 @@ void kvm_mmu_free_memory_cache(struct kvm_mmu_memory_cache *mc);
+>   void *kvm_mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc);
+>   #endif
+>   
+> -void kvm_mmu_invalidate_begin(struct kvm *kvm, unsigned long start,
+> -			      unsigned long end);
+> -void kvm_mmu_invalidate_end(struct kvm *kvm, unsigned long start,
+> -			    unsigned long end);
+> +void kvm_mmu_invalidate_begin(struct kvm *kvm);
+> +void kvm_mmu_invalidate_range_add(struct kvm *kvm, gfn_t start, gfn_t end);
+> +void kvm_mmu_invalidate_end(struct kvm *kvm);
+>   
+>   long kvm_arch_dev_ioctl(struct file *filp,
+>   			unsigned int ioctl, unsigned long arg);
+> @@ -1940,9 +1939,9 @@ static inline int mmu_invalidate_retry(struct kvm *kvm, unsigned long mmu_seq)
+>   	return 0;
+>   }
+>   
+> -static inline int mmu_invalidate_retry_hva(struct kvm *kvm,
+> +static inline int mmu_invalidate_retry_gfn(struct kvm *kvm,
+>   					   unsigned long mmu_seq,
+> -					   unsigned long hva)
+> +					   gfn_t gfn)
+>   {
+>   	lockdep_assert_held(&kvm->mmu_lock);
+>   	/*
+> @@ -1951,10 +1950,20 @@ static inline int mmu_invalidate_retry_hva(struct kvm *kvm,
+>   	 * that might be being invalidated. Note that it may include some false
+>   	 * positives, due to shortcuts when handing concurrent invalidations.
+>   	 */
+> -	if (unlikely(kvm->mmu_invalidate_in_progress) &&
+> -	    hva >= kvm->mmu_invalidate_range_start &&
+> -	    hva < kvm->mmu_invalidate_range_end)
+> -		return 1;
+> +	if (unlikely(kvm->mmu_invalidate_in_progress)) {
+> +		/*
+> +		 * Dropping mmu_lock after bumping mmu_invalidate_in_progress
+> +		 * but before updating the range is a KVM bug.
+> +		 */
+> +		if (WARN_ON_ONCE(kvm->mmu_invalidate_range_start == INVALID_GPA ||
+> +				 kvm->mmu_invalidate_range_end == INVALID_GPA))
+> +			return 1;
+> +
+> +		if (gfn >= kvm->mmu_invalidate_range_start &&
+> +		    gfn < kvm->mmu_invalidate_range_end)
+> +			return 1;
+> +	}
+> +
+>   	if (kvm->mmu_invalidate_seq != mmu_seq)
+>   		return 1;
+>   	return 0;
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 50aea855eeae..8101b11a13ba 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -518,9 +518,7 @@ static inline struct kvm *mmu_notifier_to_kvm(struct mmu_notifier *mn)
+>   
+>   typedef bool (*gfn_handler_t)(struct kvm *kvm, struct kvm_gfn_range *range);
+>   
+> -typedef void (*on_lock_fn_t)(struct kvm *kvm, unsigned long start,
+> -			     unsigned long end);
+> -
+> +typedef void (*on_lock_fn_t)(struct kvm *kvm);
+>   typedef void (*on_unlock_fn_t)(struct kvm *kvm);
+>   
+>   struct kvm_mmu_notifier_range {
+> @@ -617,7 +615,8 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
+>   				locked = true;
+>   				KVM_MMU_LOCK(kvm);
+>   				if (!IS_KVM_NULL_FN(range->on_lock))
+> -					range->on_lock(kvm, range->start, range->end);
+> +					range->on_lock(kvm);
+> +
+>   				if (IS_KVM_NULL_FN(range->handler))
+>   					break;
+>   			}
+> @@ -721,15 +720,26 @@ static void kvm_mmu_notifier_change_pte(struct mmu_notifier *mn,
+>   	kvm_handle_hva_range(mn, address, address + 1, pte, kvm_change_spte_gfn);
+>   }
+>   
+> -void kvm_mmu_invalidate_begin(struct kvm *kvm, unsigned long start,
+> -			      unsigned long end)
+> +void kvm_mmu_invalidate_begin(struct kvm *kvm)
+>   {
+> +	lockdep_assert_held_write(&kvm->mmu_lock);
+>   	/*
+>   	 * The count increase must become visible at unlock time as no
+>   	 * spte can be established without taking the mmu_lock and
+>   	 * count is also read inside the mmu_lock critical section.
+>   	 */
+>   	kvm->mmu_invalidate_in_progress++;
+> +
+> +	if (likely(kvm->mmu_invalidate_in_progress == 1))
+> +		kvm->mmu_invalidate_range_start = INVALID_GPA;
+> +}
+> +
+> +void kvm_mmu_invalidate_range_add(struct kvm *kvm, gfn_t start, gfn_t end)
+> +{
+> +	lockdep_assert_held_write(&kvm->mmu_lock);
+> +
+> +	WARN_ON_ONCE(!kvm->mmu_invalidate_in_progress);
+> +
+>   	if (likely(kvm->mmu_invalidate_in_progress == 1)) {
+>   		kvm->mmu_invalidate_range_start = start;
+>   		kvm->mmu_invalidate_range_end = end;
+> @@ -750,6 +760,12 @@ void kvm_mmu_invalidate_begin(struct kvm *kvm, unsigned long start,
+>   	}
+>   }
+>   
+> +static bool kvm_mmu_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+> +{
+> +	kvm_mmu_invalidate_range_add(kvm, range->start, range->end);
+> +	return kvm_unmap_gfn_range(kvm, range);
+> +}
+> +
 
-> >
-> > Thanks,
-> > Ian
-> >
-> >> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> >> ---
-> >>  tools/perf/builtin-record.c | 11 +++--------
-> >>  tools/perf/util/evlist.c    | 18 ++++++++++++++++++
-> >>  tools/perf/util/evlist.h    |  1 +
-> >>  3 files changed, 22 insertions(+), 8 deletions(-)
-> >>
-> >> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> >> index aec18db7ff23..ca83599cc50c 100644
-> >> --- a/tools/perf/builtin-record.c
-> >> +++ b/tools/perf/builtin-record.c
-> >> @@ -1295,14 +1295,9 @@ static int record__open(struct record *rec)
-> >>          */
-> >>         if (opts->target.initial_delay || target__has_cpu(&opts->targe=
-t) ||
-> >>             perf_pmus__num_core_pmus() > 1) {
-> >> -               pos =3D evlist__get_tracking_event(evlist);
-> >> -               if (!evsel__is_dummy_event(pos)) {
-> >> -                       /* Set up dummy event. */
-> >> -                       if (evlist__add_dummy(evlist))
-> >> -                               return -ENOMEM;
-> >> -                       pos =3D evlist__last(evlist);
-> >> -                       evlist__set_tracking_event(evlist, pos);
-> >> -               }
-> >> +               pos =3D evlist__findnew_tracking_event(evlist, false);
-> >> +               if (!pos)
-> >> +                       return -ENOMEM;
-> >>
-> >>                 /*
-> >>                  * Enable the dummy event when the process is forked f=
-or
-> >> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> >> index 7ef43f72098e..25c3ebe2c2f5 100644
-> >> --- a/tools/perf/util/evlist.c
-> >> +++ b/tools/perf/util/evlist.c
-> >> @@ -1694,6 +1694,24 @@ void evlist__set_tracking_event(struct evlist *=
-evlist, struct evsel *tracking_ev
-> >>         tracking_evsel->tracking =3D true;
-> >>  }
-> >>
-> >> +struct evsel *evlist__findnew_tracking_event(struct evlist *evlist, b=
-ool system_wide)
-> >> +{
-> >> +       struct evsel *evsel;
-> >> +
-> >> +       evsel =3D evlist__get_tracking_event(evlist);
-> >> +       if (!evsel__is_dummy_event(evsel)) {
-> >> +               evsel =3D evlist__add_aux_dummy(evlist, system_wide);
-> >> +               if (!evsel)
-> >> +                       return NULL;
-> >> +
-> >> +               evlist__set_tracking_event(evlist, evsel);
-> >> +       } else if (system_wide) {
-> >> +               perf_evlist__go_system_wide(&evlist->core, &evsel->cor=
-e);
-> >> +       }
-> >> +
-> >> +       return evsel;
-> >> +}
-> >> +
-> >>  struct evsel *evlist__find_evsel_by_str(struct evlist *evlist, const =
-char *str)
-> >>  {
-> >>         struct evsel *evsel;
-> >> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-> >> index 664c6bf7b3e0..98e7ddb2bd30 100644
-> >> --- a/tools/perf/util/evlist.h
-> >> +++ b/tools/perf/util/evlist.h
-> >> @@ -387,6 +387,7 @@ bool evlist_cpu_iterator__end(const struct evlist_=
-cpu_iterator *evlist_cpu_itr);
-> >>
-> >>  struct evsel *evlist__get_tracking_event(struct evlist *evlist);
-> >>  void evlist__set_tracking_event(struct evlist *evlist, struct evsel *=
-tracking_evsel);
-> >> +struct evsel *evlist__findnew_tracking_event(struct evlist *evlist, b=
-ool system_wide);
-> >>
-> >>  struct evsel *evlist__find_evsel_by_str(struct evlist *evlist, const =
-char *str);
-> >>
-> >> --
-> >> 2.30.GIT
-> >>
->
