@@ -2,157 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A0575A2A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 01:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB83275A2AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 01:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbjGSXFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 19:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57842 "EHLO
+        id S230255AbjGSXMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 19:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbjGSXFn (ORCPT
+        with ESMTP id S229571AbjGSXMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 19:05:43 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55476268F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 16:05:20 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-78362f574c9so6790539f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 16:05:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689807919; x=1692399919;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NtoVTIzSaEDDzG0bR4jOtPcvMd189PXBa9TamlZo308=;
-        b=UKTkTk7YGb5sJ7JSucdkUItIsjvrFJMq+hXa/yO2GuqHnTAu7Cl6ve+b8+wbptuh69
-         VLH+HU3danMVPr/I+PdFWVrA78ovyfPAJoqzx83Nr0d3etmfqB7KlNjnU+53bFnqBm5h
-         bJym6ezLXxvMwjpO5vyvR3FrM+VYAoRirtYYiLriz6Qi82hVxAb2a/VSWQcxcfbITdE6
-         REBx7cKruKtMUVABv5K/aYV7ues8suooxt0O3/j4FIk6358bgNVWlpbZjW0AUAybaJS+
-         /qtOVpoczOWQfazbmqVYQGQu4ZVMkhQHG1AJsiWOK5rMHxtd6SsCRo5Fb4KQu1jgpbi8
-         PujA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689807919; x=1692399919;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NtoVTIzSaEDDzG0bR4jOtPcvMd189PXBa9TamlZo308=;
-        b=N0yD+jvewIfRLjAklSd0uQFAOGn/zpWa+613Cc2yFNaQLBPoQLSbRB435s3E5gBwd6
-         o/zyRy7Xw4w95oY2h1xPEBDxgTU4O48HkcTdCcWHW+kRuJRoYYPuqoBzMK0dg32AN0ET
-         +nd0ED7g5ZGRB2up2rFX3Xg+FmGq740p7PogL7qg9Lc5zjPKhEl2YVx/oIK2NdQzwK2V
-         1QHr4em4Sfmn9SGE1SzH4PcJA+j6UuOrkcOcRuboG+REtReWa6mwM48BKW7sVT3YK+Kq
-         hbRcXykvPzMrXX8Xb/EVzeklZoryCAOleQ/Ki4z2iPguAGWCaIQ8HxsiNi85NPBFMj5J
-         P2XQ==
-X-Gm-Message-State: ABy/qLaTcBSFSamRAdTb/V33lEQFwqZRW/kV6Td1SRC0KaWqoQhxkIzR
-        Tqv6+nJOBjCHRYjOaCgEHskeNA==
-X-Google-Smtp-Source: APBJJlGK517Ks2qQjDvuU28RE/+1S6J6gj01Hw8Ew77Bdf7DnmdFmIYgQT9VnrMGj1JSVi2zkl+vUA==
-X-Received: by 2002:a6b:610d:0:b0:783:5209:c01 with SMTP id v13-20020a6b610d000000b0078352090c01mr7971152iob.17.1689807919206;
-        Wed, 19 Jul 2023 16:05:19 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:84dc:2218:a741:ad50])
-        by smtp.gmail.com with ESMTPSA id e9-20020a056638020900b0042bae96eba7sm1624193jaq.7.2023.07.19.16.05.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 16:05:18 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 17:05:15 -0600
-From:   Ross Zwisler <zwisler@google.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Mike Rapoport <rppt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: collision between ZONE_MOVABLE and memblock allocations
-Message-ID: <20230719230515.GA3654720@google.com>
-References: <20230718220106.GA3117638@google.com>
- <ZLd/WEZTH5rlwYjP@dhcp22.suse.cz>
- <20230719075952.GH1901145@kernel.org>
- <ZLeZaa5LMH1c2zQ3@dhcp22.suse.cz>
- <9770454d-f840-c7cf-314e-ce81839393e3@redhat.com>
+        Wed, 19 Jul 2023 19:12:35 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC401701;
+        Wed, 19 Jul 2023 16:12:34 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1qMGL1-0003Yx-B2; Thu, 20 Jul 2023 01:12:07 +0200
+Date:   Thu, 20 Jul 2023 01:12:07 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Aleksandr Nogikh <nogikh@google.com>
+Cc:     syzbot <syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com>,
+        dsterba@suse.cz, bakmitopiacibubur@boga.indosterling.com,
+        clm@fb.com, davem@davemloft.net, dsahern@kernel.org,
+        dsterba@suse.com, fw@strlen.de, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, josef@toxicpanda.com, kadlec@netfilter.org,
+        kuba@kernel.org, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
+        yoshfuji@linux-ipv6.org
+Subject: Re: [syzbot] [btrfs?] [netfilter?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too
+ low! (2)
+Message-ID: <20230719231207.GF32192@breakpoint.cc>
+References: <20230719170446.GR20457@twin.jikos.cz>
+ <00000000000042a3ac0600da1f69@google.com>
+ <CANp29Y4Dx3puutrowfZBzkHy1VpWHhQ6tZboBrwq_qNcFRrFGw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <9770454d-f840-c7cf-314e-ce81839393e3@redhat.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANp29Y4Dx3puutrowfZBzkHy1VpWHhQ6tZboBrwq_qNcFRrFGw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,PLING_QUERY,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 10:14:59AM +0200, David Hildenbrand wrote:
-> On 19.07.23 10:06, Michal Hocko wrote:
-> > On Wed 19-07-23 10:59:52, Mike Rapoport wrote:
-> > > On Wed, Jul 19, 2023 at 08:14:48AM +0200, Michal Hocko wrote:
-> > > > On Tue 18-07-23 16:01:06, Ross Zwisler wrote:
-> > > > [...]
-> > > > > I do think that we need to fix this collision between ZONE_MOVABLE and memmap
-> > > > > allocations, because this issue essentially makes the movablecore= kernel
-> > > > > command line parameter useless in many cases, as the ZONE_MOVABLE region it
-> > > > > creates will often actually be unmovable.
-> > > > 
-> > > > movablecore is kinda hack and I would be more inclined to get rid of it
-> > > > rather than build more into it. Could you be more specific about your
-> > > > use case?
-> > > > 
-> > > > > Here are the options I currently see for resolution:
-> > > > > 
-> > > > > 1. Change the way ZONE_MOVABLE memory is allocated so that it is allocated from
-> > > > > the beginning of the NUMA node instead of the end. This should fix my use case,
-> > > > > but again is prone to breakage in other configurations (# of NUMA nodes, other
-> > > > > architectures) where ZONE_MOVABLE and memblock allocations might overlap.  I
-> > > > > think that this should be relatively straightforward and low risk, though.
-> > > > > 
-> > > > > 2. Make the code which processes the movablecore= command line option aware of
-> > > > > the memblock allocations, and have it choose a region for ZONE_MOVABLE which
-> > > > > does not have these allocations. This might be done by checking for
-> > > > > PageReserved() as we do with offlining memory, though that will take some boot
-> > > > > time reordering, or we'll have to figure out the overlap in another way. This
-> > > > > may also result in us having two ZONE_NORMAL zones for a given NUMA node, with
-> > > > > a ZONE_MOVABLE section in between them.  I'm not sure if this is allowed?
-> > > > 
-> > > > Yes, this is no problem. Zones are allowed to be sparse.
-> > > 
-> > > The current initialization order is roughly
-> > > 
-> > > * very early initialization with some memblock allocations
-> > > * determine zone locations and sizes
-> > > * initialize memory map	
-> > >    - memblock_alloc(lots of memory)
-> > > * lots of unrelated initializations that may allocate memory
-> > > * release free pages from memblock to the buddy allocator
-> > > 
-> > > With 2) we can make sure the memory map and early allocations won't be in
-> > > the ZONE_MOVABLE, but we'll still may have reserved pages there.
-> > 
-> > Yes this will always be fragile. If the spefic placement of the movable
-> > memory is not important and the only thing that matters is the size and
-> > numa locality then an easier to maintain solution would be to simply
-> > offline enough memory blocks very early in the userspace bring up and
-> > online it back as movable. If offlining fails just try another
-> > memblock. This doesn't require any kernel code change.
+Aleksandr Nogikh <nogikh@google.com> wrote:
+> On Wed, Jul 19, 2023 at 7:11 PM syzbot
+> <syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com> wrote:
+> >
+> > > On Wed, Jul 19, 2023 at 02:32:51AM -0700, syzbot wrote:
+> > >> syzbot has found a reproducer for the following issue on:
+> > >>
+> > >> HEAD commit:    e40939bbfc68 Merge branch 'for-next/core' into for-kernelci
+> > >> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+> > >> console output: https://syzkaller.appspot.com/x/log.txt?x=15d92aaaa80000
+> > >> kernel config:  https://syzkaller.appspot.com/x/.config?x=c4a2640e4213bc2f
+> > >> dashboard link: https://syzkaller.appspot.com/bug?extid=9bbbacfbf1e04d5221f7
+> > >> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> > >> userspace arch: arm64
+> > >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=149b2d66a80000
+> > >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1214348aa80000
+> > >>
+> > >> Downloadable assets:
+> > >> disk image: https://storage.googleapis.com/syzbot-assets/9d87aa312c0e/disk-e40939bb.raw.xz
+> > >> vmlinux: https://storage.googleapis.com/syzbot-assets/22a11d32a8b2/vmlinux-e40939bb.xz
+> > >> kernel image: https://storage.googleapis.com/syzbot-assets/0978b5788b52/Image-e40939bb.gz.xz
+> > >
+> > > #syz unset btrfs
+> >
+> > The following labels did not exist: btrfs
 > 
-> As an alternative, we might use the "memmap=nn[KMG]!ss[KMG]" [1] parameter
-> to mark some memory as protected.
-> 
-> That memory can then be configured as devdax device and online to
-> ZONE_MOVABLE (dev/dax).
-> 
-> [1] https://docs.pmem.io/persistent-memory/getting-started-guide/creating-development-environments/linux-environments/linux-memmap
+> #syz set subsystems: netfilter
 
-I've previously been reconfiguring devdax memory like this:
+I don't see any netfilter involvement here.
 
-  ndctl create-namespace --reconfig=namespace0.0 -m devdax -f
-  daxctl reconfigure-device --mode=system-ram dax0.0
+The repro just creates a massive amount of team devices.
 
-Is this how you've been doing it, or is there something else I should
-consider?
+At the time it hits the LOCKDEP limits on my test vm it has
+created ~2k team devices, system load is at +14 because udev
+is also busy spawing hotplug scripts for the new devices.
 
-I just sent mail to Michal outlining my use case, hopefully it makes sense.
+After reboot and suspending the running reproducer after about 1500
+devices (before hitting lockdep limits), followed by 'ip link del' for
+the team devices gets the lockdep entries down to ~8k (from 40k),
+which is in the range that it has on this VM after a fresh boot.
 
-I had thought about using 'memmap=' in the first kernel and the worry was that
-I'd have to support many different machines with different memory
-configurations, and have to hard-code memory offsets and lengths for the
-various memmap= kernel command line parameters.  If I can make ZONE_MOVABLE
-work that's preferable because the kernel will choose the correct usermem-only
-region for me, and then I can just use that region for the crash kernel and
-3rd kernel boots.
+So as far as I can see this workload is just pushing lockdep
+past what it can handle with the configured settings and is
+not triggering any actual bug.
