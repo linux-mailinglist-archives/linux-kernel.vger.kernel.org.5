@@ -2,105 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 332B4759F2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C624F759F2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbjGSUC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44306 "EHLO
+        id S229902AbjGSUBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGSUC0 (ORCPT
+        with ESMTP id S230194AbjGSUBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:02:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5524FB3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:01:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689796895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sg6wZSinxe8r2P+uFq4KgcT9vXCAHVcOICFNECpMgro=;
-        b=MNhOajlcipd3Ui+uJqa05iEko9V9zDYbZL0X5Rg2azLecIjL028LfjoDpaFRu+LtOpYFEF
-        1ZvmuIlti0MmQci9ciEttmwS4oq+q7HmzR/DoNl0wpKI9hs8qyMuSP5N3comsGrnOaTDmm
-        vI4nIOVSisdIsZIirGGIHBMsDbP2FuY=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-642-QWOV52wmPIqTSAS1qNVIJg-1; Wed, 19 Jul 2023 16:01:30 -0400
-X-MC-Unique: QWOV52wmPIqTSAS1qNVIJg-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f42bcef2acso21355e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:01:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689796885; x=1690401685;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sg6wZSinxe8r2P+uFq4KgcT9vXCAHVcOICFNECpMgro=;
-        b=hyqwMwJT89LFiU+0p9VWAFiLow0CpKqwqKiuUgFGnXyifAyxEx4eBBW2/lEzwVMPdt
-         kdwIVidVmZ1kR/ArVeqizBmPi+9OnAldg/Ai6gQhLbSIQycfAMYJNxNrmR8oTfPSCBaI
-         W62iSfmtNCWSkMf4VTN+Vr2chXtmlZhtJUWAXpT2clPAGmF06RLT2DwNpaKqoAVOgFqM
-         LQHUdsax3FJYPo7UwbnkQMUeoVgwsUH24w7wmDZ9POGu1xsITSDUGA5MHQxGIMoF1Ubp
-         w072avwX8X0w+4VQzxKwWzXstmO5JaC7lSXIr28LIyJl7gfZgR/zlQE/u8GUuPifLdEw
-         lIcQ==
-X-Gm-Message-State: ABy/qLYfZOYn8XYVupBFIrt2B3Ib1YU4ftEjpzyOdRt3FMK0JeTuZw8r
-        Ss3QFqUt+871c7mQbpyK7aWhKPK/OkToQY45YB8X0sj09s5EFYAmpluHFOcwf/w3TPA+rif2Hqz
-        6e3QCQKr+7g5/cc+eRcE9U6+f
-X-Received: by 2002:a1c:7412:0:b0:3fb:dbd0:a7ea with SMTP id p18-20020a1c7412000000b003fbdbd0a7eamr5358870wmc.37.1689796885404;
-        Wed, 19 Jul 2023 13:01:25 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHwqBKuTLWtJTG125iBcGiKJyRQZhKpcKrRbtLnI3PtSW9DnwX2W7eJ7bjSr7Vo1B8R/7uLgA==
-X-Received: by 2002:a1c:7412:0:b0:3fb:dbd0:a7ea with SMTP id p18-20020a1c7412000000b003fbdbd0a7eamr5358862wmc.37.1689796885087;
-        Wed, 19 Jul 2023 13:01:25 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id d5-20020a5d6445000000b00311299df211sm6074595wrw.77.2023.07.19.13.01.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 13:01:24 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emma Anholt <emma@anholt.net>
-Cc:     Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 06/11] drm/tests: helpers: Create an helper to allocate
- an atomic state
-In-Reply-To: <20230710-kms-kunit-actions-rework-v1-6-722c58d72c72@kernel.org>
-References: <20230710-kms-kunit-actions-rework-v1-0-722c58d72c72@kernel.org>
- <20230710-kms-kunit-actions-rework-v1-6-722c58d72c72@kernel.org>
-Date:   Wed, 19 Jul 2023 22:01:24 +0200
-Message-ID: <87ilafhdrf.fsf@minerva.mail-host-address-is-not-set>
+        Wed, 19 Jul 2023 16:01:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F31F1FE9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:01:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A1F9617F4
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:01:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9B31C433C8;
+        Wed, 19 Jul 2023 20:01:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689796907;
+        bh=w2xExNL6EbofhaPL7HrdC2dQl+hHtjTWHi8Iv1ep0XM=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=bcTlPpPYAYmB2sS5fUgqGZUU3FJICfaHN5WbE7TGHrxRYFbYb08wO2sohI7OddFUT
+         pwKL5HrnkJPeEpRx3gngzC63J27H+jVm1ZhEqqFCeZ4T7vR8Ea3fvm4/GOICqQ4mqK
+         NHLz6DQ2xvaokv+q7OVorcg5ORkWMbT0MU5y9TuLd9qt1G/8qQnmFEt5DWUiv/ULgg
+         l6nYmC5JAWfo3Tfl7wFAXkvaXvm7D4qXK2lE3S+VxFSRrMGB9omCjpsfDUZ5HgDhNn
+         BedXC2DS3xEVCLkKF8mEw7Xsh/XqC79MMe4Y+AbMWACLcGez8yBsTZlvGez+jUma+s
+         thMkIBC5WTkwA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Matus Gajdos <matuszpd@gmail.com>
+Cc:     alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230719163154.19492-1-matuszpd@gmail.com>
+References: <20230719163154.19492-1-matuszpd@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_spdif: Add support for 22.05 kHz sample rate
+Message-Id: <168979690540.180044.4033002873442934544.b4-ty@kernel.org>
+Date:   Wed, 19 Jul 2023 21:01:45 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxime Ripard <mripard@kernel.org> writes:
+On Wed, 19 Jul 2023 18:31:53 +0200, Matus Gajdos wrote:
+> Add support for 22.05 kHz sample rate for TX.
+> 
+> 
 
-> As we gain more tests, boilerplate to allocate an atomic state and free
-> it starts to be there more and more as well.
->
-> In order to reduce the allocation boilerplate, we can create an helper
-> to create that atomic state, and call an action when the test is done.
-> This will also clean up the exit path.
->
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> ---
+Applied to
 
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
--- 
-Best regards,
+Thanks!
 
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+[1/1] ASoC: fsl_spdif: Add support for 22.05 kHz sample rate
+      commit: 65bc25b8d0904e0aff66b1c3a9dd4c0dcb8efbf1
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
