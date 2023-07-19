@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BF0759B0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92777759B14
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbjGSQkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 12:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56014 "EHLO
+        id S229937AbjGSQlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 12:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjGSQkQ (ORCPT
+        with ESMTP id S229510AbjGSQls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 12:40:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C112613E
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:40:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4CEDB615F9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 16:40:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A9EFC433C8;
-        Wed, 19 Jul 2023 16:40:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689784814;
-        bh=hpd4KDlCVbb9UV25Db6X99cNQA41UhTFbnri/UeLO4s=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=gb5p8/FFPdXgyqBN38mcYLDnewxT6m393E4gbTv/WXBaiI2Bwo8PLLRWltYWtZfB4
-         0msKE3w9/9B5XBeq/sV0HCGSZZfc9gaE+EMElMGNAGEwNwpin6Ryjju9EUglxw/IYz
-         6jsdDYW34QwTZGA4SN7BlK3iCqxg2BmZwu6rwr8gxBqoCkATijX1tX1V+SdGpS026l
-         dR+5zHnLz2Xe8enBIxQ6IwrFNg5r9zzeO6UgxFIiswtYkZdrREK5ARTUjrSuw9MLzl
-         7sT/sRyNu4pm/WoQxAeyYxU+2pP2EyFJv3JlPtg76CNQ846nqJslMFCwN9y1YeWLZg
-         veM4cm+kPbplg==
-From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Wed, 19 Jul 2023 12:41:48 -0400
+Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65679135
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:41:46 -0700 (PDT)
+From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
-        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230719130846.633701-1-arnd@kernel.org>
-References: <20230719130846.633701-1-arnd@kernel.org>
-Subject: Re: [PATCH] ASoC: amd: acp: fix SND_SOC_AMD_ACP_PCI depdenencies
-Message-Id: <168978481190.111081.12971357887459390811.b4-ty@kernel.org>
-Date:   Wed, 19 Jul 2023 17:40:11 +0100
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Subject: [PATCH v2 0/9] sound: Use -EPROBE_DEFER instead of i915 module loading.
+Date:   Wed, 19 Jul 2023 18:41:32 +0200
+Message-Id: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Jul 2023 15:08:37 +0200, Arnd Bergmann wrote:
-> The new PM functions require code that is part of the snd-acp-legacy-common
-> module:
-> 
-> x86_64-linux-ld: sound/soc/amd/acp/acp-pci.o: in function `snd_acp_resume':
-> acp-pci.c:(.text+0x23): undefined reference to `acp_init'
-> x86_64-linux-ld: acp-pci.c:(.text+0x58): undefined reference to `acp_enable_interrupts'
-> x86_64-linux-ld: sound/soc/amd/acp/acp-pci.o: in function `snd_acp_suspend':
-> acp-pci.c:(.text+0x89): undefined reference to `acp_deinit'
-> x86_64-linux-ld: sound/soc/amd/acp/acp-pci.o: in function `acp_pci_remove':
-> acp-pci.c:(.text+0xec): undefined reference to `acp_deinit'
-> x86_64-linux-ld: sound/soc/amd/acp/acp-pci.o: in function `acp_pci_probe':
-> acp-pci.c:(.text+0x26b): undefined reference to `acp_init'
-> 
-> [...]
+Explicitly loading i915 becomes a problem when upstreaming the new intel driver
+for Tiger Lake and higher graphics (xe). By loading i915, it doesn't wait for
+driver load of xe, and will fail completely before it loads.
 
-Applied to
+-EPROBE_DEFER has to be returned before any device is created in probe(),
+otherwise the removal of the device will cause EPROBE_DEFER to try again
+in an infinite loop.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+The conversion is done in gradual steps. First I add an argument to
+snd_hdac_i915_init to allow for -EPROBE_DEFER so I can convert each driver
+separately. Then I convert each driver to move snd_hdac_i915_init out of the
+workqueue. Finally I drop the ability to choose modprobe behavior after the
+last user is converted.
 
-Thanks!
+I suspect the avs and skylake drivers used snd_hdac_i915_init purely for the
+modprobe, but I don't have the hardware to test if it can be safely removed.
+It can still be done easily in a followup patch to simplify probing.
 
-[1/1] ASoC: amd: acp: fix SND_SOC_AMD_ACP_PCI depdenencies
-      commit: 4edc07fc7fe1a9eec1a4ebc518d2dec222382f43
+---
+New since first version:
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+- snd_hda_core.gpu_bind is added as a mechanism to force gpu binding,
+  for testing. snd_hda_core.gpu_bind=0 forces waiting for GPU bind to
+  off, snd_hda_core.gpu_bind=1 forces waiting for gpu bind. Default
+  setting depends on whether kernel booted with nomodeset.
+- Incorporated all feedback review.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
+Cc: sound-open-firmware@alsa-project.org
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Maarten Lankhorst (9):
+  ALSA: hda/intel: Fix error handling in azx_probe()
+  ALSA: hda/i915: Allow override of gpu binding.
+  ALSA: hda/i915: Add an allow_modprobe argument to snd_hdac_i915_init
+  ALSA: hda/i915: Allow xe as match for i915_component_master_match
+  ASoC: Intel: avs: Move snd_hdac_i915_init to before probe_work.
+  ASoC: Intel: Skylake: Move snd_hdac_i915_init to before probe_work.
+  ALSA: hda/intel: Move snd_hdac_i915_init to before probe_work.
+  ASoC: SOF: Intel: Remove deferred probe for SOF
+  ALSA: hda/i915: Remove extra argument from snd_hdac_i915_init
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+ sound/hda/hdac_i915.c         | 25 ++++++++-------
+ sound/pci/hda/hda_intel.c     | 60 ++++++++++++++++++-----------------
+ sound/soc/intel/avs/core.c    | 13 +++++---
+ sound/soc/intel/skylake/skl.c | 31 ++++++------------
+ sound/soc/sof/Kconfig         | 19 -----------
+ sound/soc/sof/core.c          | 38 ++--------------------
+ sound/soc/sof/intel/Kconfig   |  1 -
+ sound/soc/sof/intel/hda.c     | 32 +++++++++++--------
+ sound/soc/sof/sof-pci-dev.c   |  3 +-
+ sound/soc/sof/sof-priv.h      |  5 ---
+ 10 files changed, 85 insertions(+), 142 deletions(-)
 
-Thanks,
-Mark
+-- 
+2.39.2
 
