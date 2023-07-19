@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F13B759525
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 14:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6A9759531
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 14:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbjGSMcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 08:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49616 "EHLO
+        id S230106AbjGSMdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 08:33:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbjGSMcS (ORCPT
+        with ESMTP id S230345AbjGSMdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 08:32:18 -0400
-Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5B013E
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 05:32:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
-        ; s=dkim1; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date
-        :Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=1z4UMtFUS+UMq9pCbej0PTan3ZjiLdHvyY77ZjGpLQE=; b=ZDAdE0ZDjk9+g9wDhOb4YushFa
-        FqFmcKw7APWOqanWS0Wp50YoI2mPE7XSoouKkWvsTozvTGpmxMqd3C36xHEs9kFSppVo++osxQhL9
-        EjcqqYsqVjCGiXsOQW4n8wB2HLNXHxjounl5rueoGd0DVDCtCMViL6FGqmJpIhUaZ9E6jg/LdETSs
-        WIzu+BFGQatHr1nBEyRFcQoRxq6sehna+jGkS92Q3vY2H4aZQw10OroLBsj8c5dGX4g/irU3IC37F
-        LOUPRn9rL6bxkmDJ9OfF9KCGjQ9c9GIlErf9Khphp8z8EGRA7+aX5h96tthWP4mzIzYbP6jotZOr0
-        /C83G/QA==;
-Received: from [192.168.1.4] (port=34992 helo=SH-EX2013.helmholz.local)
-        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
-        (Exim 4.96)
-        (envelope-from <Ante.Knezic@helmholz.de>)
-        id 1qM6Lb-0003nx-18;
-        Wed, 19 Jul 2023 14:32:03 +0200
-Received: from linuxdev.helmholz.local (192.168.6.7) by
- SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
- 15.0.1497.48; Wed, 19 Jul 2023 14:32:02 +0200
-From:   Ante Knezic <ante.knezic@helmholz.de>
-To:     <ante.knezic@helmholz.de>
-CC:     <andrew@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
-        <f.fainelli@gmail.com>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <olteanv@gmail.com>, <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v2] net: dsa: mv88e6xxx: Add erratum 3.14 for 88E6390X and 88E6190X
-Date:   Wed, 19 Jul 2023 14:31:59 +0200
-Message-ID: <20230719123159.7099-1-ante.knezic@helmholz.de>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20230719090853.21509-1-ante.knezic@helmholz.de>
-References: <20230719090853.21509-1-ante.knezic@helmholz.de>
+        Wed, 19 Jul 2023 08:33:35 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46DD91982
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 05:33:08 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbc54cab6fso62792615e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 05:33:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689769986; x=1692361986;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Hd70zMEtOBX6AxgP8T71HipoKl6JHE3xjQG1BhWcDhA=;
+        b=g0MwMZ8VDshuY7Z1LRHG1oIiAzcVhDCZJw40X0Qc2TMhOIzdakZYlcwAKQSAawSxEr
+         L1/CVzaQ10H1DtCskYBUWAlPZkuxBkc1V7oTkPYBbL2PrNd3WESNFBCJRkU8Mxvtx4rk
+         Ojj8hjQ2WZv2KxpckRT2tnoEXzvINUVhQbXVrU3Q8Jsn09pMDLMWlN4mB+tvbONzMYPL
+         TO0SVRbcWKhBK3SmuXA3qTd43piILMuqc6Ucsp+wOIwo0WED7auY1el+EkIRsF7Z04eO
+         IRAuRZdi2JABqW+xk/gstw7/ZAjb/DYaOnK0Sp7YiUbd2oDO5MTN0qLlr6f77hN4iFSP
+         AE7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689769986; x=1692361986;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hd70zMEtOBX6AxgP8T71HipoKl6JHE3xjQG1BhWcDhA=;
+        b=MzrRbfHsFGndOU1NXtoZU5oetDxauOL0atXqLGEWaqr6aAZ0lIMrusol52rE3Cu28W
+         LhK8Q0PsCfGv+VzzyvIQLOCH9qZQRn0I3MmeYjI+2z56r9Jx4cYw4WYGt+X4P1fpD/0O
+         4Hb5QwtcRXmBayNQEefsmbyL3caUcaF3k5PqUpGPFofsyc9B6liZEO19VTlhicH8C8vf
+         6XW8TACS6aNSkcx3ONVYF+d38j5fQs9k8RkVLMjHJOpWsrplZcJgGKDVInPNkriCPkzn
+         JKNUuKuWO3i/u5AsRKUXccvtI6MZgedQ9//T+jjfksmBH9GC4oREffafrOwnKEWbPOSg
+         nDaw==
+X-Gm-Message-State: ABy/qLbimtG0YQ+QgwKPtLuIwxHz3uud6jQadbRW9GKuw81i0opDoH5s
+        zt88BiFAhUG6uFKantU7QRzkHA==
+X-Google-Smtp-Source: APBJJlHhVb4rToSqFUE0Ogf7ZXp/2WyQ9R4R7VSZTA6j/ouHMAGUwGEwX9N974eKktKyxaL84la29g==
+X-Received: by 2002:a1c:740d:0:b0:3fc:5d2:1f47 with SMTP id p13-20020a1c740d000000b003fc05d21f47mr4080643wmc.20.1689769986596;
+        Wed, 19 Jul 2023 05:33:06 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id b14-20020a05600c11ce00b003fbc0a49b57sm1643578wmi.6.2023.07.19.05.33.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 05:33:06 -0700 (PDT)
+Message-ID: <c6fd4df2-97ab-a830-f466-2d09f5b38dfc@linaro.org>
+Date:   Wed, 19 Jul 2023 14:33:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.6.7]
-X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
- SH-EX2013.helmholz.local (192.168.1.4)
-X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 1/3] dt-bindings: reset: Add compatible and DT bindings
+ for Amlogic C3 Reset Controller
+To:     Dmitry Rokosov <ddrokosov@sberdevices.ru>,
+        zelong dong <zelong.dong@amlogic.com>, conor+dt@kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        kelvin.zhang@amlogic.com
+References: <20230719060954.14864-1-zelong.dong@amlogic.com>
+ <20230719060954.14864-2-zelong.dong@amlogic.com>
+ <20230719115014.2har4sool7d5edcn@CAB-WSD-L081021>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230719115014.2har4sool7d5edcn@CAB-WSD-L081021>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > It needs to be implemented exactly as posted here? After mv88e6390_serdes_power()
-> > is called on any port/lane, mv88e6390x_serdes_erratum_3_14() needs to run
-> > for all lanes? That might be a problem.
+On 19/07/2023 13:50, Dmitry Rokosov wrote:
+> On Wed, Jul 19, 2023 at 02:09:52PM +0800, zelong dong wrote:
+>> From: Zelong Dong <zelong.dong@amlogic.com>
+>>
+>> Add new compatible and DT bindings for Amlogic C3 Reset Controller
+>>
+>> Signed-off-by: Zelong Dong <zelong.dong@amlogic.com>
+>> ---
+>>  .../bindings/reset/amlogic,meson-reset.yaml   |   1 +
+>>  include/dt-bindings/reset/amlogic,c3-reset.h  | 119 ++++++++++++++++++
+>>  2 files changed, 120 insertions(+)
 > 
-> Actually, I tested applying erratum only on requested lane in pcs_post_config and
-> it seems to work out fine, so we might use something like:
-> static int mv88e6390_erratum_3_14(struct mv88e639x_pcs *mpcs)
-> {
-> 	int err;
+> As I understand it, updates to DT bindings documentation, as well as any
+> DT bindings includes, should be submitted in separate patches, per the
+> guidelines outlined in the following link:
+> https://www.kernel.org/doc/html/latest/devicetree/bindings/submitting-patches.html#i-for-patch-submitters.
 > 
-> 	/* 88e6190x and 88e6390x errata 3.14:
-> 	 * After chip reset, SERDES reconfiguration or SERDES core
-> 	 * Software Reset, the SERDES lanes may not be properly aligned
-> 	 * resulting in CRC errors
-> 	 */
-> 
-> 	err = mdiodev_c45_write(&mpcs->mdio, MDIO_MMD_PHYXS,
-> 					 0xf054, 0x400C);
-> 	if (err)
-> 	        return err;
-> 
-> 	err = mdiodev_c45_write(&mpcs->mdio, MDIO_MMD_PHYXS,
-> 				 0xf054, 0x4000);
-> 	if (err)
-> 	        return err;
-> 
-> 	return 0;
-> }
+> Krzysztof, Rob, and Conor, please correct me if I am mistaken.
 
-Unfortunatelly, above statement is not correct. I managed to occasionally replicate
-the issue when applying erratum on requested lane only. This happens on occasion
-only but it looks like we need to apply erratum on all serdes lanes to ensure 
-proper operation.
-The Errata document falls short on this detail and does not clearly state whether all 
-or only specific lanes need to be written to.
+And they are. What's wrong here?
+
+Best regards,
+Krzysztof
 
