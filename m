@@ -2,139 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5608275947D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E620D759482
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbjGSLl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 07:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
+        id S230103AbjGSLm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 07:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbjGSLl0 (ORCPT
+        with ESMTP id S229554AbjGSLmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 07:41:26 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C500125
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:41:11 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fbef8ad9bbso67965835e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:41:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1689766869; x=1690371669;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=omclyAfkGRQWS2BiKQCx7pDx212Hyui8qaS7KiVV4jA=;
-        b=asvioqTlybWzOybciqN1ksH9D2IA4G3XyJNfKHI6nskJTHwCNROLCkZIv6WQMghL9d
-         F/UumjmxH8VAADIo11xP6AFf7qgsbZqunQA6bzET8dmqqL4IdflaAbHMIxy5ZGR+ZFZt
-         81SGf3Fv6zhzOH9/ijWOwxmkAyvP+ov8dIoq/RbiHcORZfKlGc66mrGJyAYTLVDV9eML
-         7+wmoaQaKrBOeWdfBBzAJeRdmlltzIIB8wgEbKcMVpjXbth6hTgn0oXCpNiRDSmRrex+
-         wZnQT1z7EgtJtThH8crfTbBehz8pgAzYk5CERU/uHQkvthyrWInzdJQhyfi6Oc14te0m
-         ZXOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689766869; x=1690371669;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=omclyAfkGRQWS2BiKQCx7pDx212Hyui8qaS7KiVV4jA=;
-        b=MtrW6dXSgdePHHFTwQDDKxrxbed3AQSObk7PrI42uVflF6iu81+P6JzvdHoczlyoo4
-         VIVpKMcQnrOAN3u5E/847VDuPnTmn6LoywBRjP0Ett+cvk+2FqxEipjvMdT0nqs68QN1
-         F5oUbN7Kr4Q1S0+DVL17f8EjqkWWZ6fhUAyeD1m47rVyOV5Y0kTBx1/J2Yqnh0rR8iP2
-         R+zhFPUdjzJk6YfgW8Oxg1SumgW+/l09ZZX8/F5wuzEbKOrGb0KNiWaWteYBxT7pcREY
-         Cu7rKsSawoWXarSR1pguZnWTUtnRGDmeiJrM+cmiBj6YMGwtKhRnLJaXlEIByqOJMMt1
-         e1Xg==
-X-Gm-Message-State: ABy/qLazjv3rygn8nAJuRHYKrZBLOW3p5p8dbQjmlMH+UiWYl2+PuTsa
-        DcOb+9hAWTIsR+lqSXtpCgad4Q==
-X-Google-Smtp-Source: APBJJlEhQJz3wV0yQP9Hu5jxBZIFMZNrna3knuUJntAfNSU7Rc9Nko0UhR7OKF14/DD3JJO7/HJ80w==
-X-Received: by 2002:a7b:ce16:0:b0:3fa:9e61:19ed with SMTP id m22-20020a7bce16000000b003fa9e6119edmr1874710wmc.23.1689766869358;
-        Wed, 19 Jul 2023 04:41:09 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:f884:f48d:2867:5c1d])
-        by smtp.gmail.com with ESMTPSA id o10-20020a1c750a000000b003fbb346279dsm1485644wmc.38.2023.07.19.04.41.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 04:41:08 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>
-Cc:     linux-pwm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH] gpio: mvebu: fix irq domain leak
-Date:   Wed, 19 Jul 2023 13:41:01 +0200
-Message-Id: <20230719114101.55051-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
+        Wed, 19 Jul 2023 07:42:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FDA0BE;
+        Wed, 19 Jul 2023 04:42:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DA964615BA;
+        Wed, 19 Jul 2023 11:42:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF3D1C433C7;
+        Wed, 19 Jul 2023 11:42:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689766943;
+        bh=wPRMqbpbLUGy3uCjIzFDHysaD/lX8t+s8gaE2CHN+uQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bXWkr6yyQPPbZ1rOXq5/QjUQz1j3giLABh26cCfhh5RRcADgmXpLqKdx6JXnVrscf
+         yTexG6yrL0z1t1ulOjO3C4ZUkqRJsjLO4wJZKDgopoxeqybJzNjsTqWOHqZRKeQVhG
+         RotmvRNeTvtPReViEohETLDXmXSDJChCj4jOmyo9YezWoaKD/l57/0z2mwn7zp+m4s
+         YP0EjW3m3YpKyNqd2l2yV0mlZzN0pjMvgf/sE89lpM0IlLv78rWAhz77VThRdQmWQI
+         yARd2dTevEcb+T6fuoahaUYIvSQ5RbKUoLu+UNDaCb/7BezmnJ9JS4SXlhGzw11ORB
+         ehqFuM01CIKbg==
+Date:   Wed, 19 Jul 2023 17:12:07 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Vivek Pernamitta <quic_vpernami@quicinc.com>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        mhi@lists.linux.dev, mrana@quicinc.com, quic_qianyu@quicinc.com,
+        quic_vbadigan@quicinc.com, quic_krichai@quicinc.com,
+        quic_skananth@quicinc.com, linux-arm-msm@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2] net: mhi : Add support to enable ethernet interface
+Message-ID: <20230719114207.GC9312@thinkpad>
+References: <1689660928-12092-1-git-send-email-quic_vpernami@quicinc.com>
+ <20230718124334.GG4771@thinkpad>
+ <350d577a-f0b3-1f20-9c35-356355a9aa8e@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <350d577a-f0b3-1f20-9c35-356355a9aa8e@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Wed, Jul 19, 2023 at 04:08:37PM +0530, Vivek Pernamitta wrote:
+> 
+> Currently MHI NET driver does not support Ethernet interface,
+> 
 
-Uwe Kleine-König pointed out we still have one resource leak in the mvebu
-driver triggered on driver detach. Let's address it with a custom devm
-action.
+Please do not top post. Read: https://people.kernel.org/tglx/notes-about-netiquette-qw89
 
-Fixes: 812d47889a8e ("gpio/mvebu: Use irq_domain_add_linear")
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- drivers/gpio/gpio-mvebu.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+> we are adding Ethernet interface support to MHI NET driver, so new client
+> can be configured to be Ethernet type over MHI by setting
+> "mhi_device_info.ethernet_if = true"
+> 
 
-diff --git a/drivers/gpio/gpio-mvebu.c b/drivers/gpio/gpio-mvebu.c
-index a35958e7adf6..67497116ce27 100644
---- a/drivers/gpio/gpio-mvebu.c
-+++ b/drivers/gpio/gpio-mvebu.c
-@@ -1112,6 +1112,13 @@ static int mvebu_gpio_probe_syscon(struct platform_device *pdev,
- 	return 0;
- }
- 
-+static void mvebu_gpio_remove_irq_domain(void *data)
-+{
-+	struct irq_domain *domain = data;
-+
-+	irq_domain_remove(domain);
-+}
-+
- static int mvebu_gpio_probe(struct platform_device *pdev)
- {
- 	struct mvebu_gpio_chip *mvchip;
-@@ -1246,13 +1253,18 @@ static int mvebu_gpio_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
-+	err = devm_add_action_or_reset(&pdev->dev, mvebu_gpio_remove_irq_domain,
-+				       mvchip->domain);
-+	if (err)
-+		return err;
-+
- 	err = irq_alloc_domain_generic_chips(
- 	    mvchip->domain, ngpios, 2, np->name, handle_level_irq,
- 	    IRQ_NOREQUEST | IRQ_NOPROBE | IRQ_LEVEL, 0, 0);
- 	if (err) {
- 		dev_err(&pdev->dev, "couldn't allocate irq chips %s (DT).\n",
- 			mvchip->chip.label);
--		goto err_domain;
-+		return err;
- 	}
- 
- 	/*
-@@ -1292,10 +1304,6 @@ static int mvebu_gpio_probe(struct platform_device *pdev)
- 	}
- 
- 	return 0;
--
--err_domain:
--	irq_domain_remove(mvchip->domain);
--	return err;
- }
- 
- static struct platform_driver mvebu_gpio_driver = {
+Which is the new client you are referring to?
+
+> currently we are not changing mhi_swip0/mhi_hwip0 to Ethernet. we are adding
+> an provision to configure mhi client as  Ethernet type.
+> 
+
+If there are no users of the said provision, then it should not be added now.
+You can only add interfaces to kernel if there is atleast one user.
+
+- Mani
+
+> 
+> On 7/18/2023 6:13 PM, Manivannan Sadhasivam wrote:
+> > On Tue, Jul 18, 2023 at 11:45:28AM +0530, Vivek Pernamitta wrote:
+> > > Add support to enable ethernet interface for MHI SWIP channels.
+> > > 
+> > Please add more info in the commit message i.e., why this interface is added and
+> > how it is going to benefit the users etc..
+> > 
+> > Since you are modifying the existing mhi_swip interface, this isn't an ABI
+> > change?
+> > 
+> > > Signed-off-by: Vivek Pernamitta <quic_vpernami@quicinc.com>
+> > > Reviewed-by: Daniele Palmas <dnlplm@gmail.com>
+> > > Reviewed-by: Simon Horman <simon.horman@corigine.com>
+> > > ---
+> > > 
+> > > changes since v1:
+> > > 	- Moved to net-next from linux-next	
+> > > 	- moved to eth_hw_addr_random() to assign Ethernet MAC address
+> > > 	  from eth_random_addr()
+> > > ---
+> > >   drivers/net/mhi_net.c | 53 ++++++++++++++++++++++++++++++++++++++-------------
+> > >   1 file changed, 40 insertions(+), 13 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/mhi_net.c b/drivers/net/mhi_net.c
+> > > index 3d322ac..5bb8d99 100644
+> > > --- a/drivers/net/mhi_net.c
+> > > +++ b/drivers/net/mhi_net.c
+> > [...]
+> > 
+> > > @@ -380,10 +405,12 @@ static void mhi_net_remove(struct mhi_device *mhi_dev)
+> > >   static const struct mhi_device_info mhi_hwip0 = {
+> > >   	.netname = "mhi_hwip%d",
+> > > +	.ethernet_if = false,
+> > >   };
+> > >   static const struct mhi_device_info mhi_swip0 = {
+> > >   	.netname = "mhi_swip%d",
+> > > +	.ethernet_if = false,
+> > false?
+> yes ,it is false as by default mhi_swip/mhi_hwip interface will be normal
+> net device.
+> > 
+> > - Mani
+> > 
+> > >   };
+> > >   static const struct mhi_device_id mhi_net_id_table[] = {
+> > > -- 
+> > > 2.7.4
+> > > 
+
 -- 
-2.39.2
-
+மணிவண்ணன் சதாசிவம்
