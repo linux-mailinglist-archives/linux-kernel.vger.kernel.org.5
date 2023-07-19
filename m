@@ -2,70 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5684D7591A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF335759193
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbjGSJaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
+        id S229740AbjGSJ2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjGSJaG (ORCPT
+        with ESMTP id S229685AbjGSJ2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:30:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43681BFC;
-        Wed, 19 Jul 2023 02:29:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7CficctBvH0/f/2WnPWvQCjSoDFtYP+3xEUu6sJSHYU=; b=AwEHjXzgMNux6iIaljsrFXLYj0
-        CyuYr3l+n07xWFw7eEzaELQ2hwsHlUN1pdAApoNylg5AxMIA0xPWctyN+gqMMen348MGvM083EcyI
-        rjQPk6Ae+qe5s2UighPxHub7n/OOopo8UO5+OMsTG6QOP9JWergddJvNZSHEHAZn6K4y7qXOVNbGd
-        ++MoXGpDmYWZp0ky2JPke07ZWlo5rI6Rs+3mb58qVd/iP8k3uSX01ISjnFDn3y3ot6oNhNX8fwa1E
-        KNmLhqHETpG5SCQHBwTg1cbsfEPiv7HBxi6M9w2NHOShu29hsbwH9kR4aYlCe/DkNUR+6YNc83Hfu
-        wS6xoKcw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qM3Uj-005uqN-NS; Wed, 19 Jul 2023 09:29:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 32C053008AC;
-        Wed, 19 Jul 2023 11:29:15 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5E5DE2137288F; Wed, 19 Jul 2023 11:29:15 +0200 (CEST)
-Date:   Wed, 19 Jul 2023 11:29:15 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
-        selinux@vger.kernel.org, Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH v2 4/4] perf/core: use vma_is_initial_stack() and
- vma_is_initial_heap()
-Message-ID: <20230719092915.GA3529602@hirez.programming.kicks-ass.net>
-References: <20230719075127.47736-1-wangkefeng.wang@huawei.com>
- <20230719075127.47736-5-wangkefeng.wang@huawei.com>
+        Wed, 19 Jul 2023 05:28:43 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59F410D4
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:28:41 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fbfa811667so3441415e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:28:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1689758920; x=1692350920;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=N+yJnAl3CCQWb/mfN2f4CLcTItvIXBeaPFFTQ42Alt4=;
+        b=Qe1Qo1A7lFJd+xdiu0BpKr3r4b11oInJMbPdUPdeGVEAn/xYpXOe+H62t77qy6lQSZ
+         vj1+XLOVcE8I3Mk9DsdeaTX+Y9F8VQTxAcSlz/SGwKCz+2Us5XNKpLB9YnbLBmLd0zdS
+         5O06IWhhEl2Bv7sa+dlOVNlqzHbYdPhhyzTwOtTmIykJik1tRgOmYMJJ6pAhTDJz9T3G
+         5uWdu8RBJ93xk7Rs6mQTd2V5KCbGDaxx0eJ59e1YVzoMuw70td6cf0n4AYqeLECPPotf
+         E1UT/biMKw7XPC/PaVA7kFCioo3p46bfsRn5H6BWdFP1mN8tL3m1A8jUs720p2mCgCTo
+         lDBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689758920; x=1692350920;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N+yJnAl3CCQWb/mfN2f4CLcTItvIXBeaPFFTQ42Alt4=;
+        b=NtQoKDhnIBpennhtB1SY21qLHrd4FmqDiV8RvkbGpUaIPcOdZhoNr3MX6eAqdV2sOb
+         Gp84R4tChmNWAwEpiI9JJTmNVmmkkaNoJCyBn5zRzX9/06oEhYihTbQoQcCJeHDraRIN
+         Dfo1t9wIK02lm1G3bErn++1J94oXIbjel887tTntoZBjTDGNA6lnoNkYgkeGTTCxg02c
+         SqQlNlFTJHx9A96p+1ZjTqI2P0BVP4woqIJFwi3Cz/65DhpkZB2lUtBUVs2s+MloBhgF
+         kKXfgTDGKZ+KMT1rNMRMrfmw+4N5gyjMb+cftIeTTdSttaZTWJnCxVRBXXkslSmcvBcb
+         SqXw==
+X-Gm-Message-State: ABy/qLZ6HdeIkJiNd65DRWYySULeo7QsVMmjVNIPm1sXTZ+NnBRS8y86
+        iNZt7sqwRI5zh4sEog80a5L0Eg==
+X-Google-Smtp-Source: APBJJlGwoQ6LF55a5YukSTcWiEnbF3Xtw53f47orxgf2BUQj/Vv8UNfS3yu8eFT84FN/HA44u4GjSQ==
+X-Received: by 2002:adf:db52:0:b0:314:3f86:dd9f with SMTP id f18-20020adfdb52000000b003143f86dd9fmr1311078wrj.25.1689758920131;
+        Wed, 19 Jul 2023 02:28:40 -0700 (PDT)
+Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id r18-20020adff112000000b0031435c2600esm4857213wro.79.2023.07.19.02.28.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 02:28:39 -0700 (PDT)
+From:   Anton Protopopov <aspsk@isovalent.com>
+To:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Hou Tao <houtao1@huawei.com>, Joe Stringer <joe@isovalent.com>,
+        Anton Protopopov <aspsk@isovalent.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH v2 bpf-next 0/4] allow bpf_map_sum_elem_count for all program types
+Date:   Wed, 19 Jul 2023 09:29:48 +0000
+Message-Id: <20230719092952.41202-1-aspsk@isovalent.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230719075127.47736-5-wangkefeng.wang@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 03:51:14PM +0800, Kefeng Wang wrote:
-> Use the helpers to simplify code, also kill unneeded goto cpy_name.
+This series is a follow up to the recent change [1] which added
+per-cpu insert/delete statistics for maps. The bpf_map_sum_elem_count
+kfunc presented in the original series was only available to tracing
+programs, so let's make it available to all.
 
-Grrr.. why am I only getting 4/4 ?
+The first patch makes types listed in the reg2btf_ids[] array to be
+considered trusted by kfuncs.
 
-I'm going to write a bot that auto NAKs all partial series :/
+The second patch allows to treat CONST_PTR_TO_MAP as trusted pointers from
+kfunc's point of view by adding it to the reg2btf_ids[] array.
+
+The third patch adds missing const to the map argument of the
+bpf_map_sum_elem_count kfunc.
+
+The fourth patch registers the bpf_map_sum_elem_count for all programs,
+and patches selftests correspondingly.
+
+  [1] https://lore.kernel.org/bpf/20230705160139.19967-1-aspsk@isovalent.com/
+
+v1 -> v2:
+  * treat the whole reg2btf_ids array as trusted (Alexei)
+
+Anton Protopopov (4):
+  bpf: consider types listed in reg2btf_ids as trusted
+  bpf: consider CONST_PTR_TO_MAP as trusted pointer to struct bpf_map
+  bpf: make an argument const in the bpf_map_sum_elem_count kfunc
+  bpf: allow any program to use the bpf_map_sum_elem_count kfunc
+
+ include/linux/btf_ids.h                       |  1 +
+ kernel/bpf/map_iter.c                         |  7 +++---
+ kernel/bpf/verifier.c                         | 22 +++++++++++--------
+ .../selftests/bpf/progs/map_ptr_kern.c        |  5 +++++
+ 4 files changed, 22 insertions(+), 13 deletions(-)
+
+-- 
+2.34.1
+
