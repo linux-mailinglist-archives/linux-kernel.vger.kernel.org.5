@@ -2,218 +2,415 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 538C875A1E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B79E75A1ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbjGSWad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 18:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
+        id S230010AbjGSWak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 18:30:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjGSWab (ORCPT
+        with ESMTP id S229592AbjGSWag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 18:30:31 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2084.outbound.protection.outlook.com [40.107.94.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62ED01BF0;
-        Wed, 19 Jul 2023 15:30:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pm9fe5bqt5g/fRVWzec3T+JRpxraWkQzqqdZgDeW1PEpRMURzNh2/4Q0ydWBe7G2xPW8sJ7jP83LxmPeeW/bc0I+2JrJMpRFwMdeI3WLzGn1VTR+0BfO/Tysu3J+S960bTbTZLlTLTvZzlfoUaHLDOv005Gc9+pZTbIenRqUD8xkc+D96TwjpQLTpNzENp91rQL5Q/nqJUHgwIlhGY7XRRXI8wywMclB7szvyv6OuA2/S2KBnzja913mgfc11o/O+yRWObvhm367B9LMKns7A+5AzJMFhLa6ZUgJ80Kz1r2qbP49QliheOFrGvHe5bQZxoLMySZ6yAO5LcKjq6uezg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pUWpJ35fU/2NlbzFUTPd/Xhi65x7s74rsxaDDpjAGsw=;
- b=J+KWoTdwdHFV0Chtwy7Xu0pN2m2rXUFIsJ/KFkwjRCtyUiY7GInuVoSQ5FViTTwd7qcpw/EgcY8b0psD8OWT9rBI1MyVeUlx6eji6Ob2x+d305s87wN2mdEfB6NQmzdgYtFkjgjFpa34fNpz36jN1ernM19CEy9E+h+syTtvV+eq6ubgq9yRRm+M+pLmuYemFISTUVpooOs8/i8B7tSm7rnX/AZqPcG+Ie+mQcQy6k6RqkUYWxlz2ATVtr6j503gU8Ih7AigjFY/WwW1anD4TijP9TFp7gCRys30iebqf3QVvKUCSBLiYT5TfWb5nqkg+vHQ0HfmYoqOZjZSDLFN4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pUWpJ35fU/2NlbzFUTPd/Xhi65x7s74rsxaDDpjAGsw=;
- b=nDBohJRi7KD/y3+0Svtf+uIi1PpzD+Fe9vb687D4bFVH6u4iEaj9w46I+EMUplaGj0GAiLxxDsy7I9xfPrNI5Ja+087c00qheJ/KTjcEGKOKNCy29rY1NauPGxvGh2Hj1SPeGT8q1Fk1XICUlyd63tWTV7K98qrAKgyseguygzY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB2869.namprd12.prod.outlook.com (2603:10b6:a03:132::30)
- by SJ0PR12MB5486.namprd12.prod.outlook.com (2603:10b6:a03:3bb::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Wed, 19 Jul
- 2023 22:30:28 +0000
-Received: from BYAPR12MB2869.namprd12.prod.outlook.com
- ([fe80::642c:a4b0:ae3f:378b]) by BYAPR12MB2869.namprd12.prod.outlook.com
- ([fe80::642c:a4b0:ae3f:378b%4]) with mapi id 15.20.6609.024; Wed, 19 Jul 2023
- 22:30:27 +0000
-Message-ID: <937d872d-cbc1-3671-9c3d-ddceb9cb270b@amd.com>
-Date:   Wed, 19 Jul 2023 15:30:25 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH 2/2] cxl/pci: Fix appropriate checking for _OSC while
- handling CXL RAS registers
-Content-Language: en-US
-To:     Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cxl@vger.kernel.org
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, oohall@gmail.com,
-        Lukas Wunner <lukas@wunner.de>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Ben Widawsky <bwidawsk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Terry Bowman <terry.bowman@amd.com>,
-        Robert Richter <rrichter@amd.com>
-References: <20230719192313.38591-1-Smita.KoralahalliChannabasappa@amd.com>
- <20230719192313.38591-3-Smita.KoralahalliChannabasappa@amd.com>
- <53d5eeb3-5a13-3663-57a1-e927c4c369b8@linux.intel.com>
-From:   Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-In-Reply-To: <53d5eeb3-5a13-3663-57a1-e927c4c369b8@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR03CA0003.namprd03.prod.outlook.com
- (2603:10b6:a03:1e0::13) To BYAPR12MB2869.namprd12.prod.outlook.com
- (2603:10b6:a03:132::30)
+        Wed, 19 Jul 2023 18:30:36 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C16F1BF0;
+        Wed, 19 Jul 2023 15:30:34 -0700 (PDT)
+Received: from mercury (unknown [185.209.196.239])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id DF2DE6607058;
+        Wed, 19 Jul 2023 23:30:32 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689805833;
+        bh=+kf7RoDivTxamgEcoW6Au+YH65J2a8+x+Q1W6naqTd0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Crowx33tiA1ZszqiIpnxygnHyfnjM68Sv6gGo3eOwU4048AtB6megzV41TdG7003e
+         wK6g+4BoWKC3V6fz8J1mN50/vWgcq+FC+WV145TneGEdmHihPD4E3vQWqNhp3N8uLS
+         3tmX4sRASjDNI7gOnI/KBhJd3UsAt5qEa2G0PL2yRPgOFBB1lUqS8ggsdFKMubHrKO
+         jMHKtMUwaNSfUFncWG0xK2tE3g9izJveNslEGhU/MRTCKePlnTwXZDXmcr9jWpnBDY
+         RRuEBFLDJAvcCoX4mXY6ZfpqhfcGn+3C1Pp1uGUlFfzRfz7o8p+WTSebgiayh/6n5E
+         ZgmkB5sVNIlNg==
+Received: by mercury (Postfix, from userid 1000)
+        id D2FE31062877; Thu, 20 Jul 2023 00:30:30 +0200 (CEST)
+Date:   Thu, 20 Jul 2023 00:30:30 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-oxnas@groups.io,
+        Arnd Bergmann <arnd@arndb.de>,
+        Daniel Golle <daniel@makrotopia.org>
+Subject: Re: [PATCH v2 12/15] power: reset: oxnas-restart: remove obsolete
+ restart driver
+Message-ID: <20230719223030.5yvdm3stj4lojlg6@mercury.elektranox.org>
+References: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
+ <20230630-topic-oxnas-upstream-remove-v2-12-fb6ab3dea87c@linaro.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2869:EE_|SJ0PR12MB5486:EE_
-X-MS-Office365-Filtering-Correlation-Id: f8268f43-6b0d-42cf-ea49-08db88a7c0b4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AS4DC7Uz7t96EakCFlK9GIqp/pPCDAggjC/AHLRFLZjze2aMIN5jNyDs3iSqwqY+UtdGY13YFejcZCY806fXtubThMha89FS2KdngcaVxEj/zrzozYmZEayaFqe58dbn5xDQ8OhNINbDfovgld0Y8vRte0pOShUT2RLk8PFsiMI1knFd4aZLJLZBALy/F1bmbzR2gdGIMSXs76DILGnrlrLsQvknwrMZrRwm4vadS10BJOToigEfL0jLCMxGu4Ly8PZhT8Gkja8WZaQmyKDDwXiLi7kzQ4HgAi8uXi+o0wS1PxdRSBlBZdRecMSh4QhH9EVdnrVqRi7oDATylTohjVTVxj1CkiyshlD/BAzvD11gjK+0DK56ZnRRfG+OXfpgOIfsUBIuKT7U9cta7Ff8tweqi+7NqGuCGra29PpqzUa5ykoctDtGW4nTkGnC1pRjB45HTXyucqVcEnl1ugE2mefSWrmRKcPpCWU4kMMq5WHwnA+oK5LCtxMqWSLFrUd1Wd6eiwY9UlmiqE6U7e/ikA3e3KViybFib3bq/jVDp7pvVziKQSeTNYr9ldEs7O0UCs8i5vFiU8AEofN2rdiW2TtQ9TEmqn1wfXfGKhxNx9Km71BaBPYMzYU8nAUDDiTUnnhOEeTTHYedNwU1pwvG6w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(396003)(136003)(366004)(346002)(451199021)(26005)(2616005)(53546011)(186003)(6506007)(5660300002)(8676002)(83380400001)(8936002)(41300700001)(7416002)(54906003)(66946007)(66556008)(316002)(66476007)(4326008)(6486002)(6512007)(2906002)(478600001)(36756003)(86362001)(31696002)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M2xVZDFQYURsQ2tFNHNFSW9oUDFLcEpBY3o3czlLZkpBUG01RXh4dWpvSXc1?=
- =?utf-8?B?NDdONEJGMW5xd21majRpUVlYZHB5bzBzMVZQaHo4d0sxWWVxQkptcXo5SVpJ?=
- =?utf-8?B?SUpGTTVobGJNYjREcExJNmV3WExiWERRcTRkbUpVZGtKcHY1bzEvKy8yS2hX?=
- =?utf-8?B?dGE3cjJhU3h0Q0tTSCtuOUZNbEtzbW1SVVIrOVhHMnEyMGdSMlhhVWg2ZjVB?=
- =?utf-8?B?Q0pUS2d0RTdzckliRGhJb1pDaXRXUW1OYzErZm4rR29PKzM5L0gyTldTK0lp?=
- =?utf-8?B?SmVsYThXYlM4d1A3dUdrblNEWkI3dVJueG5uUHNYQ0t6dFZBZmxrTUpVVmtY?=
- =?utf-8?B?Y3lJcEhReDRUWTR4ZXBPZzNSNzA3RWsyaytkc09VRHdacENkRkVubXZxMHBa?=
- =?utf-8?B?aGszYUUwZzdwUW83dTl1VWFGVmxEZHRIanVyMzJxSUhXZmFZbDNHL1E4eTk0?=
- =?utf-8?B?bmJaaGdVVHFSY2N6SU8wanAxU0NPb1J6SEpUZUhFSHU2YVlhaDlqMHZNbWlD?=
- =?utf-8?B?ZjlkSlNodSt3eDJBZ2x2YXdLdGxhL2JHdU5sbkc3UmJ0MGRUcElDaDBmWTZL?=
- =?utf-8?B?SVp6eTlGTE9KOEdBQWdYdW11R2NBOHE0RnVKTVlvVG1sdnNQb21QSXhuWXFQ?=
- =?utf-8?B?ZGpzb2RySk5HZ0E2UTIvcTE2azZWMEJMY3gwRzB1alN1RGM0YXdKSVNBR1lU?=
- =?utf-8?B?aVR4aldOek9DazV5OXVjZTRVUW5neTFZYlduQ0JSOGlLK2R3SmZGWVgvNXpR?=
- =?utf-8?B?ME0xWkk2ZDZSZW5JMUhLMzNQSlBIMmVpSzFPSCs2WGg3RXBmL1dsdzhIZDAy?=
- =?utf-8?B?SFhENEIvcDN0SFhLVnFVZjNWM1ExVXZtT1pGOUtVL2Exei8vbVE0dEFDaGM3?=
- =?utf-8?B?STlqV29JbGZZTGRGYWdiOFE2Z0pldUJNY0JZOHB6a2xCQmltZXYxZjV6RjVy?=
- =?utf-8?B?QUlEaUR1SzdOZUR0V0NqdnlBTzAwWWlTUjFNZHh3ZFFjSlFZNGloRGFUVngw?=
- =?utf-8?B?WDJHY2c3blBONDUxWDRZbXpFWjVadi91R0pqQ0JQd21WancwejBtbUJ1V3dL?=
- =?utf-8?B?dGRPTk43b09yb0lhMENYbm9PWC8yWTdGZU1LY3owS2M4cHNoU1VNWnUzUFNj?=
- =?utf-8?B?WkxlY1ZWRWRZcWtDaldiNXo0Ky9ZYlZWdW8weWhwZXVXcnE3aHg3ZFRzdHU5?=
- =?utf-8?B?a29XVTcwSU05Z1dXVkhQeUF4UWluZDBtT3J4TXNWUkpCQ3FsZGl6Z1MzeWxX?=
- =?utf-8?B?UmZ4WVJPWDBjRmRBWm1id3dBWkNneDE4V2M1SDIxdTVkNGs4cUpkQnFXTVIx?=
- =?utf-8?B?Q01XZG5ZZ2NiUisvWmFuMDVCTGhyckJZVXhUdy9ic2huczVMWG9uYXhrQlVB?=
- =?utf-8?B?RFJZUlRUbVVaQ3E4amloQkJNZ0k2eEU2VE5mYnRRYkFlSlZGVHF0WG1NMzJN?=
- =?utf-8?B?alZBN3FUUC9uWTRIaDFhRHpTLzkwQm9DbnpvZVZYZE1PUlhJQ1N3SFdZYjZ2?=
- =?utf-8?B?ZWFXWmJLUXFPZ2t0d0ZGcHRnK3NpNlZvRVM2WkYrNWd2NGk5U1ZxQnJMYTFa?=
- =?utf-8?B?b0M0Z2pUditseEhoVnJuejJvQ0ZLZURNQ1hTamxVUi95MEZPZlFGcnVNdFRv?=
- =?utf-8?B?QTJsMzR4YThIRlNCOWx2dUVVMU1OckNEOVhQRjc0ZUV6WWUrUklHc0xIb2hm?=
- =?utf-8?B?cTdEa2lMYTRPZkwwWWg0THMrUTI3K2l5Ri9ndk9CU3Nhd1cvUXNiUE5meXdv?=
- =?utf-8?B?MFRldnNQdFArbTBzeDJhN25aRWM0Y05KVW1vSng2WTVzelpOZWZiYVdUTHQ1?=
- =?utf-8?B?bTU4SnpxdUIvMzA1cUxlamF2dFg3V1JWa1FITlh2L014a3R4MFV1aXpBY2VO?=
- =?utf-8?B?YkNnWjZqRldWVWtUeVBVVkZtdGgvbW0wZlk5dnNRVzloWjlNdmxmUko0UFJ5?=
- =?utf-8?B?WFF6RzlZeEZtMTRPcWRCWFNxeHpNQklPN0szVE56YS8zc29yWlRIUFZlYlhD?=
- =?utf-8?B?dnhocnBBWkxha25RSXVWOTFiNUNycG9NeVZZSUMzNjI3Y28rV2NRZS9PM2cv?=
- =?utf-8?B?YXpycDFwTTZJK2p5b1dyNzFHVHoybnZzZ2J0Z0VZclZGc1R5UnZWWGpzaFpn?=
- =?utf-8?Q?LQh/xCHB570Hcc1vjuZKgIca6?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8268f43-6b0d-42cf-ea49-08db88a7c0b4
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 22:30:27.8412
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aLLvNfd02H8cseF2jgZ9wE1kLUfvMwexLSpluIaXX8ZVRuRA9HgiqH/iNFHGtL9hpFhd+UX5xNmDVIDyNuvj9w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5486
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lyw6wy7zr4wdlke6"
+Content-Disposition: inline
+In-Reply-To: <20230630-topic-oxnas-upstream-remove-v2-12-fb6ab3dea87c@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/2023 1:39 PM, Sathyanarayanan Kuppuswamy wrote:
-> 
-> 
-> On 7/19/23 12:23 PM, Smita Koralahalli wrote:
->> According to Section 9.17.2, Table 9-26 of CXL Specification [1], owner
->> of AER should also own CXL Protocol Error Management as there is no
->> explicit control of CXL Protocol error. And the CXL RAS Cap registers
->> reported on Protocol errors should check for AER _OSC rather than CXL
->> Memory Error Reporting Control _OSC.
->>
->> The CXL Memory Error Reporting Control _OSC specifically highlights
->> handling Memory Error Logging and Signaling Enhancements. These kinds of
->> errors are reported through a device's mailbox and can be managed
->> independently from CXL Protocol Errors.
-> 
-> Does it fix any issue? If yes, please include that in the commit log.
 
-Yes, this fix actually makes Protocol Error handling independent of 
-Component/Memory Error handling.
+--lyw6wy7zr4wdlke6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-We observed that OS was not able to handle the protocol errors ("i.e 
-unable to reference to the cxl device node") with native AER support. 
-The reason being Memory/Component Error handling was under FW control.
+Hi,
 
-Since the RAS registers are tied to protocol errors, I think there is no 
-reason that memory error reporting being in fw control or os control 
-should be a roadblock in handling RAS registers or accessing the cxl 
-device node by OS.
+On Fri, Jun 30, 2023 at 06:58:37PM +0200, Neil Armstrong wrote:
+> Due to lack of maintenance and stall of development for a few years now,
+> and since no new features will ever be added upstream, remove support
+> for OX810 and OX820 restart feature.
+>=20
+> Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> Acked-by: Daniel Golle <daniel@makrotopia.org>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
 
-> 
-> Since you are removing some change, maybe it needs Fixes: tag?
+Thanks, queued.
 
-Missed this. Thanks!
+-- Sebastian
 
-Fixes: 248529edc86f ("cxl: add RAS status unmasking for CXL")
+>  drivers/power/reset/Kconfig         |   7 --
+>  drivers/power/reset/Makefile        |   1 -
+>  drivers/power/reset/oxnas-restart.c | 233 ------------------------------=
+------
+>  3 files changed, 241 deletions(-)
+>=20
+> diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
+> index fff07b2bd77b..59e1ebb7842e 100644
+> --- a/drivers/power/reset/Kconfig
+> +++ b/drivers/power/reset/Kconfig
+> @@ -148,13 +148,6 @@ config POWER_RESET_ODROID_GO_ULTRA_POWEROFF
+>  	help
+>  	  This driver supports Power off for Odroid Go Ultra device.
+> =20
+> -config POWER_RESET_OXNAS
+> -	bool "OXNAS SoC restart driver"
+> -	depends on ARCH_OXNAS
+> -	default MACH_OX820
+> -	help
+> -	  Restart support for OXNAS/PLXTECH OX820 SoC.
+> -
+>  config POWER_RESET_PIIX4_POWEROFF
+>  	tristate "Intel PIIX4 power-off driver"
+>  	depends on PCI
+> diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
+> index d763e6735ee3..a95d1bd275d1 100644
+> --- a/drivers/power/reset/Makefile
+> +++ b/drivers/power/reset/Makefile
+> @@ -14,7 +14,6 @@ obj-$(CONFIG_POWER_RESET_HISI) +=3D hisi-reboot.o
+>  obj-$(CONFIG_POWER_RESET_LINKSTATION) +=3D linkstation-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_MSM) +=3D msm-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_MT6323) +=3D mt6323-poweroff.o
+> -obj-$(CONFIG_POWER_RESET_OXNAS) +=3D oxnas-restart.o
+>  obj-$(CONFIG_POWER_RESET_QCOM_PON) +=3D qcom-pon.o
+>  obj-$(CONFIG_POWER_RESET_OCELOT_RESET) +=3D ocelot-reset.o
+>  obj-$(CONFIG_POWER_RESET_ODROID_GO_ULTRA_POWEROFF) +=3D odroid-go-ultra-=
+poweroff.o
+> diff --git a/drivers/power/reset/oxnas-restart.c b/drivers/power/reset/ox=
+nas-restart.c
+> deleted file mode 100644
+> index 13090bec058a..000000000000
+> --- a/drivers/power/reset/oxnas-restart.c
+> +++ /dev/null
+> @@ -1,233 +0,0 @@
+> -// SPDX-License-Identifier: (GPL-2.0)
+> -/*
+> - * oxnas SoC reset driver
+> - * based on:
+> - * Microsemi MIPS SoC reset driver
+> - * and ox820_assert_system_reset() written by Ma Hajun <mahaijuns@gmail.=
+com>
+> - *
+> - * Copyright (c) 2013 Ma Hajun <mahaijuns@gmail.com>
+> - * Copyright (c) 2017 Microsemi Corporation
+> - * Copyright (c) 2020 Daniel Golle <daniel@makrotopia.org>
+> - */
+> -#include <linux/delay.h>
+> -#include <linux/io.h>
+> -#include <linux/notifier.h>
+> -#include <linux/mfd/syscon.h>
+> -#include <linux/of_address.h>
+> -#include <linux/of_device.h>
+> -#include <linux/platform_device.h>
+> -#include <linux/reboot.h>
+> -#include <linux/regmap.h>
+> -
+> -/* bit numbers of reset control register */
+> -#define OX820_SYS_CTRL_RST_SCU                0
+> -#define OX820_SYS_CTRL_RST_COPRO              1
+> -#define OX820_SYS_CTRL_RST_ARM0               2
+> -#define OX820_SYS_CTRL_RST_ARM1               3
+> -#define OX820_SYS_CTRL_RST_USBHS              4
+> -#define OX820_SYS_CTRL_RST_USBHSPHYA          5
+> -#define OX820_SYS_CTRL_RST_MACA               6
+> -#define OX820_SYS_CTRL_RST_MAC                OX820_SYS_CTRL_RST_MACA
+> -#define OX820_SYS_CTRL_RST_PCIEA              7
+> -#define OX820_SYS_CTRL_RST_SGDMA              8
+> -#define OX820_SYS_CTRL_RST_CIPHER             9
+> -#define OX820_SYS_CTRL_RST_DDR                10
+> -#define OX820_SYS_CTRL_RST_SATA               11
+> -#define OX820_SYS_CTRL_RST_SATA_LINK          12
+> -#define OX820_SYS_CTRL_RST_SATA_PHY           13
+> -#define OX820_SYS_CTRL_RST_PCIEPHY            14
+> -#define OX820_SYS_CTRL_RST_STATIC             15
+> -#define OX820_SYS_CTRL_RST_GPIO               16
+> -#define OX820_SYS_CTRL_RST_UART1              17
+> -#define OX820_SYS_CTRL_RST_UART2              18
+> -#define OX820_SYS_CTRL_RST_MISC               19
+> -#define OX820_SYS_CTRL_RST_I2S                20
+> -#define OX820_SYS_CTRL_RST_SD                 21
+> -#define OX820_SYS_CTRL_RST_MACB               22
+> -#define OX820_SYS_CTRL_RST_PCIEB              23
+> -#define OX820_SYS_CTRL_RST_VIDEO              24
+> -#define OX820_SYS_CTRL_RST_DDR_PHY            25
+> -#define OX820_SYS_CTRL_RST_USBHSPHYB          26
+> -#define OX820_SYS_CTRL_RST_USBDEV             27
+> -#define OX820_SYS_CTRL_RST_ARMDBG             29
+> -#define OX820_SYS_CTRL_RST_PLLA               30
+> -#define OX820_SYS_CTRL_RST_PLLB               31
+> -
+> -/* bit numbers of clock control register */
+> -#define OX820_SYS_CTRL_CLK_COPRO              0
+> -#define OX820_SYS_CTRL_CLK_DMA                1
+> -#define OX820_SYS_CTRL_CLK_CIPHER             2
+> -#define OX820_SYS_CTRL_CLK_SD                 3
+> -#define OX820_SYS_CTRL_CLK_SATA               4
+> -#define OX820_SYS_CTRL_CLK_I2S                5
+> -#define OX820_SYS_CTRL_CLK_USBHS              6
+> -#define OX820_SYS_CTRL_CLK_MACA               7
+> -#define OX820_SYS_CTRL_CLK_MAC                OX820_SYS_CTRL_CLK_MACA
+> -#define OX820_SYS_CTRL_CLK_PCIEA              8
+> -#define OX820_SYS_CTRL_CLK_STATIC             9
+> -#define OX820_SYS_CTRL_CLK_MACB               10
+> -#define OX820_SYS_CTRL_CLK_PCIEB              11
+> -#define OX820_SYS_CTRL_CLK_REF600             12
+> -#define OX820_SYS_CTRL_CLK_USBDEV             13
+> -#define OX820_SYS_CTRL_CLK_DDR                14
+> -#define OX820_SYS_CTRL_CLK_DDRPHY             15
+> -#define OX820_SYS_CTRL_CLK_DDRCK              16
+> -
+> -/* Regmap offsets */
+> -#define OX820_CLK_SET_REGOFFSET               0x2c
+> -#define OX820_CLK_CLR_REGOFFSET               0x30
+> -#define OX820_RST_SET_REGOFFSET               0x34
+> -#define OX820_RST_CLR_REGOFFSET               0x38
+> -#define OX820_SECONDARY_SEL_REGOFFSET         0x14
+> -#define OX820_TERTIARY_SEL_REGOFFSET          0x8c
+> -#define OX820_QUATERNARY_SEL_REGOFFSET        0x94
+> -#define OX820_DEBUG_SEL_REGOFFSET             0x9c
+> -#define OX820_ALTERNATIVE_SEL_REGOFFSET       0xa4
+> -#define OX820_PULLUP_SEL_REGOFFSET            0xac
+> -#define OX820_SEC_SECONDARY_SEL_REGOFFSET     0x100014
+> -#define OX820_SEC_TERTIARY_SEL_REGOFFSET      0x10008c
+> -#define OX820_SEC_QUATERNARY_SEL_REGOFFSET    0x100094
+> -#define OX820_SEC_DEBUG_SEL_REGOFFSET         0x10009c
+> -#define OX820_SEC_ALTERNATIVE_SEL_REGOFFSET   0x1000a4
+> -#define OX820_SEC_PULLUP_SEL_REGOFFSET        0x1000ac
+> -
+> -struct oxnas_restart_context {
+> -	struct regmap *sys_ctrl;
+> -	struct notifier_block restart_handler;
+> -};
+> -
+> -static int ox820_restart_handle(struct notifier_block *this,
+> -				 unsigned long mode, void *cmd)
+> -{
+> -	struct oxnas_restart_context *ctx =3D container_of(this, struct
+> -							oxnas_restart_context,
+> -							restart_handler);
+> -	u32 value;
+> -
+> -	/*
+> -	 * Assert reset to cores as per power on defaults
+> -	 * Don't touch the DDR interface as things will come to an impromptu
+> -	 * stop NB Possibly should be asserting reset for PLLB, but there are
+> -	 * timing concerns here according to the docs
+> -	 */
+> -	value =3D BIT(OX820_SYS_CTRL_RST_COPRO)		|
+> -		BIT(OX820_SYS_CTRL_RST_USBHS)		|
+> -		BIT(OX820_SYS_CTRL_RST_USBHSPHYA)	|
+> -		BIT(OX820_SYS_CTRL_RST_MACA)		|
+> -		BIT(OX820_SYS_CTRL_RST_PCIEA)		|
+> -		BIT(OX820_SYS_CTRL_RST_SGDMA)		|
+> -		BIT(OX820_SYS_CTRL_RST_CIPHER)		|
+> -		BIT(OX820_SYS_CTRL_RST_SATA)		|
+> -		BIT(OX820_SYS_CTRL_RST_SATA_LINK)	|
+> -		BIT(OX820_SYS_CTRL_RST_SATA_PHY)	|
+> -		BIT(OX820_SYS_CTRL_RST_PCIEPHY)		|
+> -		BIT(OX820_SYS_CTRL_RST_STATIC)		|
+> -		BIT(OX820_SYS_CTRL_RST_UART1)		|
+> -		BIT(OX820_SYS_CTRL_RST_UART2)		|
+> -		BIT(OX820_SYS_CTRL_RST_MISC)		|
+> -		BIT(OX820_SYS_CTRL_RST_I2S)		|
+> -		BIT(OX820_SYS_CTRL_RST_SD)		|
+> -		BIT(OX820_SYS_CTRL_RST_MACB)		|
+> -		BIT(OX820_SYS_CTRL_RST_PCIEB)		|
+> -		BIT(OX820_SYS_CTRL_RST_VIDEO)		|
+> -		BIT(OX820_SYS_CTRL_RST_USBHSPHYB)	|
+> -		BIT(OX820_SYS_CTRL_RST_USBDEV);
+> -
+> -	regmap_write(ctx->sys_ctrl, OX820_RST_SET_REGOFFSET, value);
+> -
+> -	/* Release reset to cores as per power on defaults */
+> -	regmap_write(ctx->sys_ctrl, OX820_RST_CLR_REGOFFSET,
+> -			BIT(OX820_SYS_CTRL_RST_GPIO));
+> -
+> -	/*
+> -	 * Disable clocks to cores as per power-on defaults - must leave DDR
+> -	 * related clocks enabled otherwise we'll stop rather abruptly.
+> -	 */
+> -	value =3D BIT(OX820_SYS_CTRL_CLK_COPRO)		|
+> -		BIT(OX820_SYS_CTRL_CLK_DMA)		|
+> -		BIT(OX820_SYS_CTRL_CLK_CIPHER)		|
+> -		BIT(OX820_SYS_CTRL_CLK_SD)		|
+> -		BIT(OX820_SYS_CTRL_CLK_SATA)		|
+> -		BIT(OX820_SYS_CTRL_CLK_I2S)		|
+> -		BIT(OX820_SYS_CTRL_CLK_USBHS)		|
+> -		BIT(OX820_SYS_CTRL_CLK_MAC)		|
+> -		BIT(OX820_SYS_CTRL_CLK_PCIEA)		|
+> -		BIT(OX820_SYS_CTRL_CLK_STATIC)		|
+> -		BIT(OX820_SYS_CTRL_CLK_MACB)		|
+> -		BIT(OX820_SYS_CTRL_CLK_PCIEB)		|
+> -		BIT(OX820_SYS_CTRL_CLK_REF600)		|
+> -		BIT(OX820_SYS_CTRL_CLK_USBDEV);
+> -
+> -	regmap_write(ctx->sys_ctrl, OX820_CLK_CLR_REGOFFSET, value);
+> -
+> -	/* Enable clocks to cores as per power-on defaults */
+> -
+> -	/* Set sys-control pin mux'ing as per power-on defaults */
+> -	regmap_write(ctx->sys_ctrl, OX820_SECONDARY_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_TERTIARY_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_QUATERNARY_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_DEBUG_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_ALTERNATIVE_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_PULLUP_SEL_REGOFFSET, 0);
+> -
+> -	regmap_write(ctx->sys_ctrl, OX820_SEC_SECONDARY_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_SEC_TERTIARY_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_SEC_QUATERNARY_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_SEC_DEBUG_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_SEC_ALTERNATIVE_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_SEC_PULLUP_SEL_REGOFFSET, 0);
+> -
+> -	/*
+> -	 * No need to save any state, as the ROM loader can determine whether
+> -	 * reset is due to power cycling or programatic action, just hit the
+> -	 * (self-clearing) CPU reset bit of the block reset register
+> -	 */
+> -	value =3D
+> -		BIT(OX820_SYS_CTRL_RST_SCU) |
+> -		BIT(OX820_SYS_CTRL_RST_ARM0) |
+> -		BIT(OX820_SYS_CTRL_RST_ARM1);
+> -
+> -	regmap_write(ctx->sys_ctrl, OX820_RST_SET_REGOFFSET, value);
+> -
+> -	pr_emerg("Unable to restart system\n");
+> -	return NOTIFY_DONE;
+> -}
+> -
+> -static int ox820_restart_probe(struct platform_device *pdev)
+> -{
+> -	struct oxnas_restart_context *ctx;
+> -	struct regmap *sys_ctrl;
+> -	struct device *dev =3D &pdev->dev;
+> -	int err =3D 0;
+> -
+> -	sys_ctrl =3D syscon_node_to_regmap(pdev->dev.of_node);
+> -	if (IS_ERR(sys_ctrl))
+> -		return PTR_ERR(sys_ctrl);
+> -
+> -	ctx =3D devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+> -	if (!ctx)
+> -		return -ENOMEM;
+> -
+> -	ctx->sys_ctrl =3D sys_ctrl;
+> -	ctx->restart_handler.notifier_call =3D ox820_restart_handle;
+> -	ctx->restart_handler.priority =3D 192;
+> -	err =3D register_restart_handler(&ctx->restart_handler);
+> -	if (err)
+> -		dev_err(dev, "can't register restart notifier (err=3D%d)\n", err);
+> -
+> -	return err;
+> -}
+> -
+> -static const struct of_device_id ox820_restart_of_match[] =3D {
+> -	{ .compatible =3D "oxsemi,ox820-sys-ctrl" },
+> -	{}
+> -};
+> -
+> -static struct platform_driver ox820_restart_driver =3D {
+> -	.probe =3D ox820_restart_probe,
+> -	.driver =3D {
+> -		.name =3D "ox820-chip-reset",
+> -		.of_match_table =3D ox820_restart_of_match,
+> -	},
+> -};
+> -builtin_platform_driver(ox820_restart_driver);
+>=20
+> --=20
+> 2.34.1
+>=20
 
-Will include in v2.
+--lyw6wy7zr4wdlke6
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Smita
+-----BEGIN PGP SIGNATURE-----
 
->>
->> [1] Compute Express Link (CXL) Specification, Revision 3.1, Aug 1 2022.
->>
->> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
->> ---
->>   drivers/cxl/pci.c | 7 +++----
->>   1 file changed, 3 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
->> index 1cb1494c28fe..44a21ab7add5 100644
->> --- a/drivers/cxl/pci.c
->> +++ b/drivers/cxl/pci.c
->> @@ -529,7 +529,6 @@ static int cxl_pci_setup_regs(struct pci_dev *pdev, enum cxl_regloc_type type,
->>   
->>   static int cxl_pci_ras_unmask(struct pci_dev *pdev)
->>   {
->> -	struct pci_host_bridge *host_bridge = pci_find_host_bridge(pdev->bus);
->>   	struct cxl_dev_state *cxlds = pci_get_drvdata(pdev);
->>   	void __iomem *addr;
->>   	u32 orig_val, val, mask;
->> @@ -541,9 +540,9 @@ static int cxl_pci_ras_unmask(struct pci_dev *pdev)
->>   		return 0;
->>   	}
->>   
->> -	/* BIOS has CXL error control */
->> -	if (!host_bridge->native_cxl_error)
->> -		return -ENXIO;
->> +	/* BIOS has PCIe AER error control */
->> +	if (!pcie_aer_is_native(pdev))
->> +		return 0;
->>   
->>   	rc = pcie_capability_read_word(pdev, PCI_EXP_DEVCTL, &cap);
->>   	if (rc)
-> 
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmS4Y/sACgkQ2O7X88g7
++pqWORAAhnuSzBSgSarcodT3gxHpEZgAj/XnfVKr1PDfxOVhyV17RiZPStEXlbYU
+ODsrFEhVjIN9BuagUVjIWf0yRJ6NjhCQr9JuO9+y0MIlKRPZmVnlEzYiyReYPgPi
+EazV0/RhPRCoqUOUlrjrn0UYBXiISj+O6Ig/sbwZ76KLycaUEFVSqP9bJawa/T3a
+C/jNg2qVjDcwUJ22g/xidwXNNg7ie8kOggyA0uyp7y2MHm1eRL8O403sZh7v7wZZ
+MI2bXkQxg8iBnXLTWQ1g7Dbrt60LjO9PEqbe7bKsGkoIA5pVltMy0YKh+FeH8S3h
+VIXaCIbRA/uJXQPsolubLQOP6rQDrGOLyNLp7bjP8gRyvbE76poixd1/KGmXLNkV
+KRXq3cuBhDU8jtpXhh3E9IsLkaHwXS/xxcu7HXWRDF2e5kY3mQyyARkXpe4SUPkx
+CiGnUTg4TB+2z9Y7QbNrVNErzoMmNTFjr0ZQ/O72jRtrpNTnXmQSOeEQET7TgcXf
+Ywif3RIUkvt/uskyQogTpHd6gJHII4kQ1czwfQ8gMKXH/2r5yHx5u+KY2NpYB+7K
+lKMQVweY52wdFPat9xsqorHcHE+jE3PujNQD8ryr3IV8luVWh6ND5KjwFGXx5WHY
+/51coHqpHCKUvUTtlMkSdHChPpnHNW54ieSDwzrTvksDmd1nKSs=
+=rMk0
+-----END PGP SIGNATURE-----
 
+--lyw6wy7zr4wdlke6--
