@@ -2,145 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D91DC7591D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BED417591BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbjGSJml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
+        id S230229AbjGSJgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbjGSJm1 (ORCPT
+        with ESMTP id S229601AbjGSJge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:42:27 -0400
-Received: from proxmox1.postmarketos.org (proxmox1.postmarketos.org [IPv6:2a01:4f8:a0:821d::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 882C110D4;
-        Wed, 19 Jul 2023 02:42:26 -0700 (PDT)
-Received: from lexxgentoo.devos.club (unknown [77.239.252.99])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by proxmox1.postmarketos.org (Postfix) with ESMTPSA id C0D09140121;
-        Wed, 19 Jul 2023 09:42:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=postmarketos.org;
-        s=donut; t=1689759745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=meT+EQqITVdz8Y3mT8iZaYriOiIgKIZ/SrythyqBZfM=;
-        b=g3fQ6MVH+lALdS5cvw4i4MMYv63vT6jEulktXl0irVwxNfF2piaumqExGRhLaGR2v8XLHP
-        G9i04ioGvtwSplIICaNIUFncOeSXLnIcRLQ5oznIk+GnQ9qZnW1L5vHvSY5Mdb6snMyLXG
-        plmxYKjxXmB5kKFV3GnaqiY84L8KsgQ=
-From:   Alexey Minnekhanov <alexeymin@postmarketos.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Alexey Minnekhanov <alexeymin@postmarketos.org>
-Subject: [PATCH v3] arm64: dts: qcom: sdm630: Add support for modem remoteproc
-Date:   Wed, 19 Jul 2023 12:34:58 +0300
-Message-ID: <20230719093458.2668842-1-alexeymin@postmarketos.org>
-X-Mailer: git-send-email 2.41.0
+        Wed, 19 Jul 2023 05:36:34 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8467E42
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:36:32 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R5W0r4XGjzBR5D1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 17:36:28 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689759388; x=1692351389; bh=eCH2V3ntIvzfeHaDHWorbP5NXrR
+        Bd6933jWIixZYE1w=; b=XMNVOtWDkMUJiO+PMZpcwHfvBybAtpvmWEth0tDScM9
+        ZU9qMv/xMTT31Cl5Ym2Yrnb8eVjFZrzhQnr28nCaA/CikkX+SsL2l3miweypPxSR
+        wu0UjIU8zYwIRKu9No+WC63f4JYQivT3thr1EDWTZvH+LA05BTGsKQ90pIwOSme4
+        N3rt8+eiKr6gjF5J2bVYn0T7QFM37LJINbfSMK4WmoAib1+kTWKXya5cqWr/thN5
+        jhgPHMHduplwZrcwU1vR1mTxEN3Cn6WHPcEEjk5d1BBVaWfZzNV0BOVXLYH2fhVy
+        zilHit6sPfUZQ6SKiIpKL+qukvI4AnN331gv5WfWk+A==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 3DgKu2Binp99 for <linux-kernel@vger.kernel.org>;
+        Wed, 19 Jul 2023 17:36:28 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R5W0r2cxvzBR1PC;
+        Wed, 19 Jul 2023 17:36:28 +0800 (CST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Wed, 19 Jul 2023 17:36:28 +0800
+From:   hanyu001@208suo.com
+To:     guoren@kernel.org
+Cc:     linux-csky@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] abiv2: inc: abi: add require space around ':'
+In-Reply-To: <tencent_80CE010520AAD72B85C65189CC69B56AC709@qq.com>
+References: <tencent_80CE010520AAD72B85C65189CC69B56AC709@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <07397261f87f410076689e4a0cd0913f@208suo.com>
+X-Sender: hanyu001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modem subsystem in SDM630/660 is similar to MSM8998 and
-device tree node for it is based on the one from msm8998.dtsi.
+Fix below checkpatch errors:
 
-Signed-off-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
+/csky/abiv2/inc/abi/ckmmu.h:131: ERROR: spaces required around that ':' 
+(ctx:ExV)
+/csky/abiv2/inc/abi/ckmmu.h:132: ERROR: spaces required around that ':' 
+(ctx:ExV)
+
+Signed-off-by: Yu Han <hanyu001@208suo.com>
 ---
+  arch/csky/abiv2/inc/abi/ckmmu.h | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
-V3: Use memory-region property to specify memory regions, instead
-    of using "mba" and "mpss" subnodes.
+diff --git a/arch/csky/abiv2/inc/abi/ckmmu.h 
+b/arch/csky/abiv2/inc/abi/ckmmu.h
+index 64215f2380f1..b5cac07c4411 100644
+--- a/arch/csky/abiv2/inc/abi/ckmmu.h
++++ b/arch/csky/abiv2/inc/abi/ckmmu.h
+@@ -128,8 +128,8 @@ static inline void setup_pgd(pgd_t *pgd, int asid)
+          NOP32
+          ".endr            \n"
+          :
+-        :"r"(asid), "r"(__pa(pgd) | BIT(0))
+-        :"memory");
++        : "r"(asid), "r"(__pa(pgd) | BIT(0))
++        : "memory");
+  }
 
-V2 link: https://lore.kernel.org/lkml/20230621175046.61521-3-alexeymin@postmarketos.org/
-
- arch/arm64/boot/dts/qcom/sdm630.dtsi | 59 ++++++++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-index 2136ded22f7e..797625cf78ac 100644
---- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-@@ -1032,6 +1032,65 @@ data-pins {
- 			};
- 		};
- 
-+		remoteproc_mss: remoteproc@4080000 {
-+			compatible = "qcom,sdm660-mss-pil";
-+			reg = <0x04080000 0x100>, <0x04180000 0x40>;
-+			reg-names = "qdsp6", "rmb";
-+
-+			interrupts-extended = <&intc GIC_SPI 448 IRQ_TYPE_EDGE_RISING>,
-+					      <&modem_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
-+					      <&modem_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
-+					      <&modem_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
-+					      <&modem_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
-+					      <&modem_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
-+			interrupt-names = "wdog",
-+					  "fatal",
-+					  "ready",
-+					  "handover",
-+					  "stop-ack",
-+					  "shutdown-ack";
-+
-+			clocks = <&gcc GCC_MSS_CFG_AHB_CLK>,
-+				 <&gcc GCC_BIMC_MSS_Q6_AXI_CLK>,
-+				 <&gcc GCC_BOOT_ROM_AHB_CLK>,
-+				 <&gcc GPLL0_OUT_MSSCC>,
-+				 <&gcc GCC_MSS_SNOC_AXI_CLK>,
-+				 <&gcc GCC_MSS_MNOC_BIMC_AXI_CLK>,
-+				 <&rpmcc RPM_SMD_QDSS_CLK>,
-+				 <&rpmcc RPM_SMD_XO_CLK_SRC>;
-+			clock-names = "iface",
-+				      "bus",
-+				      "mem",
-+				      "gpll0_mss",
-+				      "snoc_axi",
-+				      "mnoc_axi",
-+				      "qdss",
-+				      "xo";
-+
-+			qcom,smem-states = <&modem_smp2p_out 0>;
-+			qcom,smem-state-names = "stop";
-+
-+			resets = <&gcc GCC_MSS_RESTART>;
-+			reset-names = "mss_restart";
-+
-+			qcom,halt-regs = <&tcsr_regs_1 0x3000 0x5000 0x4000>;
-+
-+			power-domains = <&rpmpd SDM660_VDDCX>,
-+					<&rpmpd SDM660_VDDMX>;
-+			power-domain-names = "cx", "mx";
-+
-+			memory-region = <&mba_region>, <&mpss_region>;
-+
-+			status = "disabled";
-+
-+			glink-edge {
-+				interrupts = <GIC_SPI 452 IRQ_TYPE_EDGE_RISING>;
-+				label = "modem";
-+				qcom,remote-pid = <1>;
-+				mboxes = <&apcs_glb 15>;
-+			};
-+		};
-+
- 		adreno_gpu: gpu@5000000 {
- 			compatible = "qcom,adreno-508.0", "qcom,adreno";
- 
--- 
-2.41.0
-
+  static inline pgd_t *get_pgd(void)
