@@ -2,87 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40EC075909E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 10:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952BD7590A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 10:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbjGSItV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 04:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
+        id S230379AbjGSIui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 04:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbjGSItN (ORCPT
+        with ESMTP id S229703AbjGSIug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 04:49:13 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336C41FE6
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 01:48:42 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R5Txh0VcbzBHYMc
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 16:48:40 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689756519; x=1692348520; bh=40Hc0D4Tmx/rHOjdgcxVJLdF/9k
-        FAF/oIE2sOyuc27o=; b=QqJddWXW7rvqSs0IZhFCqNZ4WrqrnDF+mVoa7AG7Qve
-        4lbmpp+guStUo/hFA94QnKQe94qmD9Gb4Z45s5+7COjAoOoesGUP2rV0M/2pXiTN
-        1+GTVQ3man0SFHi+EE6/dcL3uDP4cpSLOxXohxKkWvmd6E8uTUY2cL5kb1RzTVIe
-        NcdEZ2WudvOADTYAHzaPEJ2oGTm2s3DHe/tzIEYeJrbfkL4aWMtxb8DgMtEzJOxj
-        4OKJcXz92k2hp3mnbmu9oZCvXv9ZuQilJCijcfn0d+3ESZkTIHdWl0b/Pm8K/MFS
-        8rHDA//iR8AWFdefhJWQ/YouwEhTVr3Ttwkfz51h+Vw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 23opfM0UtsHf for <linux-kernel@vger.kernel.org>;
-        Wed, 19 Jul 2023 16:48:39 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R5Txg66N4zBHYLx;
-        Wed, 19 Jul 2023 16:48:39 +0800 (CST)
+        Wed, 19 Jul 2023 04:50:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C38010E;
+        Wed, 19 Jul 2023 01:50:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A078E60DC7;
+        Wed, 19 Jul 2023 08:50:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F1B5C433C7;
+        Wed, 19 Jul 2023 08:50:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689756634;
+        bh=QaOVdoicLSy5dKvSVcxnCf2FIR9+Gbw+hyfNJZaBNxQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VOCiS+mAhkBUIAtb0ZxxOSM4mSLoUcdDjifVlftwc1NrvcfomBFsJspfrW2zoRfrm
+         +zX+3YqCNk7WgX9L24AO13e23ygzMGGkVH9XdxB5rHqylkep1kNiAymb0nCDTWfkyu
+         w/R9JcLRgM+pfjU4VRVaL3rAGERGV1y+YEFPoyYTstgf1qJ1T6mYLhoW14bU8ean7e
+         CAo8awK1ee+UTb/TdJZmUWDuh+nbQyQXWn2mc5VbnQVYBG/HyH/fSjYkBXkfb68qlA
+         LDxMsjH+XFvxqLyL+Dhey+XEBl85lPv8anpYjemdmKiWNGO5/Ze2Q3+9aJngGwQXXj
+         J9uvFc1DwVmmQ==
+Date:   Wed, 19 Jul 2023 09:50:29 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Fenglin Wu <quic_fenglinw@quicinc.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pavel@ucw.cz, ChiaEn Wu <chiaen_wu@richtek.com>,
+        Alice Chen <alice_chen@richtek.com>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Dylan Van Assche <me@dylanvanassche.be>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Tom Rix <trix@redhat.com>, linux-leds@vger.kernel.org,
+        quic_collinsd@quicinc.com, quic_subbaram@quicinc.com
+Subject: Re: [PATCH v1] led: flash: various minor fixes for leds-qcom-flash
+ driver
+Message-ID: <20230719085029.GI1082701@google.com>
+References: <20230718092439.2482320-1-quic_fenglinw@quicinc.com>
+ <d246292b-c0df-fa70-7561-9523e4db6138@linaro.org>
+ <e420f2c9-4c29-e2c4-4312-291b05c97224@quicinc.com>
 MIME-Version: 1.0
-Date:   Wed, 19 Jul 2023 16:48:39 +0800
-From:   hanyu001@208suo.com
-To:     vkoul@kernel.org
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dma: at_hdmac: "(foo*)" should be "(foo *)"
-In-Reply-To: <tencent_0348568B118A57A1F34115B6FB1D12F38008@qq.com>
-References: <tencent_0348568B118A57A1F34115B6FB1D12F38008@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <902c5769afd77f600c9bef24da0da34f@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e420f2c9-4c29-e2c4-4312-291b05c97224@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the checkpatch.pl error:
+On Tue, 18 Jul 2023, Fenglin Wu wrote:
 
-./drivers/dma/at_hdmac.c:1119: ERROR: "(foo*)" should be "(foo *)"
+> 
+> 
+> On 7/18/2023 5:32 PM, Krzysztof Kozlowski wrote:
+> > On 18/07/2023 11:24, Fenglin Wu wrote:
+> > > Update the driver to address following minor issues:
+> > >   - Add a sentence in Kconfig to explain the driver can be compiled
+> > >     as a module
+> > >   - strobe off the LED channel before setting flash current to prevent
+> > >     the flash LED being lit with an incorrect brightness if it was
+> > >     already active in torch mode
+> > >   - put the child node if register any flash LED device failed.
+> > 
+> > Don't mix different fixes and changes in one commit.
+> > 
+> > Also, please use scripts/get_maintainers.pl to get a list of necessary
+> > people and lists to CC (and consider --no-git-fallback argument). I
+> > really do not see a point why I am cc-ed here.
+> > 
+> > Best regards,
+> > Krzysztof
+> 
+> I understood that we should separate the changes for different fixes.
+> 
+> I am trying to address the review comment from Pavel that was coming late
+> after the original changes were applied:
+> https://lore.kernel.org/linux-arm-msm/20230325170957.GA2904@bug/ (sorry for
+> just got time to work on this), since all of them are small ones and all
+> related with the same driver, so I thought it might be good to put them
+> together and update with a single patch?
 
-Signed-off-by: Yu Han <hanyu001@208suo.com>
----
-  drivers/dma/at_hdmac.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+Separate patches - one per functional change please.
 
-diff --git a/drivers/dma/at_hdmac.c b/drivers/dma/at_hdmac.c
-index ee3a219..af747a7 100644
---- a/drivers/dma/at_hdmac.c
-+++ b/drivers/dma/at_hdmac.c
-@@ -1116,7 +1116,7 @@ static int atdma_create_memset_lli(struct dma_chan 
-*chan,
-      /* Only the first byte of value is to be used according to 
-dmaengine */
-      fill_pattern = (char)value;
-
--    *(u32*)vaddr = (fill_pattern << 24) |
-+    *(u32 *)vaddr = (fill_pattern << 24) |
-                 (fill_pattern << 16) |
-                 (fill_pattern << 8) |
-                 fill_pattern;
+-- 
+Lee Jones [李琼斯]
