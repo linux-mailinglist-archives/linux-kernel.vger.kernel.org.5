@@ -2,77 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78EA9759122
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C507C759126
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbjGSJF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:05:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51130 "EHLO
+        id S229616AbjGSJGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230394AbjGSJFg (ORCPT
+        with ESMTP id S229626AbjGSJGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:05:36 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7005D172E
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:05:04 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9939fbb7191so125842666b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:05:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689757496; x=1692349496;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CG2i2gBdVgAobd7kSOtOhhY9985qKrdP4M4UxdNSfpA=;
-        b=MOo4xwK0xHvBv6dWQDzKM4xZBpYxTg51VuIGMqgw+zOK983xACaLL8Theq51In9kck
-         ZbW8lqvNI30+RT0Ho3lDWgtkFCQV/uc4m29yqrHATPsdeOui9ZS9gwJQju57qUIFvN/t
-         chxhOdn/P3ssp0Cefy9C77tBxSrmVYaT5jAoKz+caAYFnznIBIeQdXPqv84zZI83jm4u
-         vsO64A/nrPqAofMmncPSkmslDsGlx8pVeuGHZJcESevisX7PcQN1DB1v00rImbeHLdDb
-         jretoz77IVDpgb5t3fvU1NgIzImTrM+iWcuM6hs7JmBeoKGYF/gVX7fHzUfEop8Wj9Cp
-         Mr8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689757496; x=1692349496;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CG2i2gBdVgAobd7kSOtOhhY9985qKrdP4M4UxdNSfpA=;
-        b=S3rKHOOGUHrPUpFPjI0W4GIbtE281s1jyEoZe3ldEYuEUXFP677JJBk7PSSuydKdEp
-         IurzDt8lGSReY0W3y43kAIdAdmjS/nACiVV4WFSLfN50+8qgVawpgQrCdvsA51qL4GWc
-         +8C2qdPKK7Yf+m3g6pPzJVYlsm5EDg6eRmZyz0BCaERNH6yTxaOaOkXi5Dl0poKoL7gh
-         b0rw4u0I5G3+0xYL1mYSJxWwmXw1o7WctmKN6ss6bBObaV/GaOKgIGmGx0k/nkW91RIT
-         ytwipxFUn9klmom8DT6HEeqgEI+d3x1l3lx+rPyQzWhO9zL7WLDIDSzDkDc09ruFBnlT
-         DTPg==
-X-Gm-Message-State: ABy/qLYOCxrMcLBsS0xCCfKmkLPtO74CtLjpoywf6C0TrGkM5c9KqYDS
-        grjCP22RoiYb6lvyJXXtwIclbw==
-X-Google-Smtp-Source: APBJJlG2CdR7otElXbCSTvvIj4z8QCx0EPvoLVEcs45/igNTPlvZg67Tn6ceqy4lh0WKAf33sSeqQA==
-X-Received: by 2002:a17:907:3ea0:b0:993:f9d8:9fd0 with SMTP id hs32-20020a1709073ea000b00993f9d89fd0mr1955000ejc.1.1689757495980;
-        Wed, 19 Jul 2023 02:04:55 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id cw17-20020a170906c79100b00992b0745548sm2058618ejb.152.2023.07.19.02.04.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 02:04:55 -0700 (PDT)
-Message-ID: <401692d5-14a9-51a2-6676-06449ec54d18@linaro.org>
-Date:   Wed, 19 Jul 2023 11:04:53 +0200
+        Wed, 19 Jul 2023 05:06:36 -0400
+Received: from outbound-smtp06.blacknight.com (outbound-smtp06.blacknight.com [81.17.249.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4DF2136
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:06:07 -0700 (PDT)
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp06.blacknight.com (Postfix) with ESMTPS id 8E15EC2B5B
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:05:21 +0100 (IST)
+Received: (qmail 3286 invoked from network); 19 Jul 2023 09:05:21 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.20.191])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 19 Jul 2023 09:05:21 -0000
+Date:   Wed, 19 Jul 2023 10:05:18 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Arjan Van De Ven <arjan@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <jweiner@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [RFC 2/2] mm: alloc/free depth based PCP high auto-tuning
+Message-ID: <20230719090518.67g7hascnfcly6hk@techsingularity.net>
+References: <20230710065325.290366-3-ying.huang@intel.com>
+ <ZK060sMG0GfC5gUS@dhcp22.suse.cz>
+ <20230712090526.thk2l7sbdcdsllfi@techsingularity.net>
+ <871qhcdwa1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <20230714140710.5xbesq6xguhcbyvi@techsingularity.net>
+ <87pm4qdhk4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <20230717135017.7ro76lsaninbazvf@techsingularity.net>
+ <87lefeca2z.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <20230718123428.jcy4avtjg3rhuh7i@techsingularity.net>
+ <87mszsbfx7.fsf@yhuang6-desk2.ccr.corp.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/7] ARM: dts: exynos: k3g: Add GPIO keys support
-Content-Language: en-US
-To:     Markuss Broks <markuss.broks@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230716220644.22158-1-markuss.broks@gmail.com>
- <20230716220644.22158-4-markuss.broks@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230716220644.22158-4-markuss.broks@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <87mszsbfx7.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,18 +59,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/07/2023 00:05, Markuss Broks wrote:
-> Add the four physical buttons support, volume buttons have
-> external pull-up resistors.
+On Wed, Jul 19, 2023 at 01:59:00PM +0800, Huang, Ying wrote:
+> > The big remaaining corner case to watch out for is where the sum
+> > of the boosted pcp->high exceeds the low watermark.  If that should ever
+> > happen then potentially a premature OOM happens because the watermarks
+> > are fine so no reclaim is active but no pages are available. It may even
+> > be the case that the sum of pcp->high should not exceed *min* as that
+> > corner case means that processes may prematurely enter direct reclaim
+> > (not as bad as OOM but still bad).
 > 
-> Signed-off-by: Markuss Broks <markuss.broks@gmail.com>
-> ---
->  arch/arm/boot/dts/exynos5422-samsung-k3g.dts | 60 ++++++++++++++++++++
->  1 file changed, 60 insertions(+)
+> Sorry, I don't understand this.  When pages are moved from buddy to PCP,
+> zone NR_FREE_PAGES will be decreased in rmqueue_bulk().  That is, pages
+> in PCP will be counted as used instead of free.  And, in
+> zone_watermark_ok*() and zone_watermark_fast(), zone NR_FREE_PAGES is
+> used to check watermark.  So, if my understanding were correct, if the
+> number of pages in PCP is larger than low/min watermark, we can still
+> trigger reclaim.  Whether is my understanding correct?
 > 
 
-Is it a duplicate? You know it cannot be then applied?
+You're right, I didn't check the timing of the accounting and all that
+occurred to me was "the timing of when watermarks trigger kswapd or
+direct reclaim may change as a result of PCP adaptive resizing". Even
+though I got the timing wrong, the shape of the problem just changes.
+I suspect that excessively large PCP high relative to the watermarks may
+mean that reclaim happens prematurely if too many pages are pinned by PCP
+pages as the zone free pages approaches the watermark. While disabling
+the adaptive resizing during reclaim will limit the worst of the problem,
+it may still be the case that kswapd is woken early simply because there
+are enough CPUs pinning pages in PCP lists. Similarly, depending on the
+size of pcp->high and the gap between the watermarks, it's possible for
+direct reclaim to happen prematurely. I could still be wrong because I'm
+not thinking the problem through fully, examining the code or thinking
+about the implementation. It's simply worth keeping in mind the impact
+elevated PCP high values has on the timing of watermarks failing. If it's
+complex enough, it may be necessary to have a separate patch dealing with
+the impact of elevated pcp->high on watermarks.
 
-Best regards,
-Krzysztof
-
+-- 
+Mel Gorman
+SUSE Labs
