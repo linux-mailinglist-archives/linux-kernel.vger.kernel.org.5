@@ -2,189 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9F1759CE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82BD759CE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbjGSRzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 13:55:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40518 "EHLO
+        id S229825AbjGSR4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 13:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbjGSRzv (ORCPT
+        with ESMTP id S230122AbjGSR4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:55:51 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871771FC8;
-        Wed, 19 Jul 2023 10:55:49 -0700 (PDT)
-Received: from [192.168.1.141] ([37.4.248.68]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1N0WsG-1q1VmE3ZMC-00wZJi; Wed, 19 Jul 2023 19:55:34 +0200
-Message-ID: <153d3a8f-26b9-fdf3-e96f-a1e338c977b7@i2se.com>
-Date:   Wed, 19 Jul 2023 19:55:34 +0200
+        Wed, 19 Jul 2023 13:56:08 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE288211B
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:56:02 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fc03aa6e04so67034185e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:56:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689789360; x=1692381360;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=q+5oaw2J5+G3GYFPR3to60Ow5YDUAwCVY4MtrYxrWzo=;
+        b=O5tdpOzllo11N68hbvqat1rL/4izSOZ0mS/2NFq3W6QpoHAAtnacEgIE/ney42oTv2
+         baG9U7DhaLclF5umoDw473TrB85LBTE4niFhYh71kp24dX/IN8IpfpLtVSNPiSNmk0Dx
+         ELKwjMmadFYml++d7mnvFvKSqrYKNyNROBtMVaoH+dgbYgQRa4NtT2p8yv3hAfaKipVP
+         yy6b/5ssaNPZeA+Fct6luOsGclO3j1r2EQSsUwxf7NvfgxrmXZZxznrl1KpZMg4/Iu9x
+         bA8Z4+a5tUdsu+6ZBbRGVBvC749z6UrX7ZbxxkgUHeCO5P4QVhijnULOlpui+1R/d/3A
+         MUeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689789360; x=1692381360;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=q+5oaw2J5+G3GYFPR3to60Ow5YDUAwCVY4MtrYxrWzo=;
+        b=X1h+Ug9GGnxCkgENUrugLe9kZ27uZIdwQrsAL0QHvGpOooYNbrcy5CxRqMAfK1bArd
+         60TjhsTxbagFDTRcRNEIpn9jag8N9CkrZZk2i9reie7HQbqR0srILduvGnY0f/x9Tk4M
+         zTvyPWAPyZsYybRB0WxE1irvWcuGNzSoj1J6j9AITSeTqwP3UzNYp5nbzCNdgB36kMVL
+         csmqIETFkUXLuBpKVTDNDvtWiAre5aVfIdAuFoackHD5eAiV71EczGMINm42er+/XPLu
+         4UmW7X84qVnxWcoP7tK+0JFk2weLajo1EA7oIJ9eBbZ6eRe6uy7a7bjYAcG4D4ms+flE
+         v9EQ==
+X-Gm-Message-State: ABy/qLaT9TucVkDw2V1jYCGewBpDgOoKM35V8BqRzsJKPky/p/2KssVS
+        IP8pwk62a+MXvPge726Bsk1s4g==
+X-Google-Smtp-Source: APBJJlGJWPVncsHecZCDgmX0fdTLwFLC8Wokgg9i2konxqVAbiNqQMmWxybL1xsSOpnBwDHWUMyY6A==
+X-Received: by 2002:a05:600c:20f:b0:3fb:ab76:164b with SMTP id 15-20020a05600c020f00b003fbab76164bmr2552075wmi.13.1689789360496;
+        Wed, 19 Jul 2023 10:56:00 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id y9-20020a7bcd89000000b003fbb1a9586esm2232470wmj.15.2023.07.19.10.55.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 10:56:00 -0700 (PDT)
+Message-ID: <71f2c286-c205-13b8-885a-240eae4131e3@linaro.org>
+Date:   Wed, 19 Jul 2023 19:55:57 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v9 4/5] staging: bcm2835-audio: Register bcm2835-audio
- with vchiq_bus_type
+Subject: Re: [PATCH v2 2/3] Documentation/process: maintainer-soc: add clean
+ platforms profile
 Content-Language: en-US
-To:     Umang Jain <umang.jain@ideasonboard.com>,
-        linux-staging@lists.linux.dev,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, f.fainelli@gmail.com,
-        athierry@redhat.com, error27@gmail.com,
-        dave.stevenson@raspberrypi.com, kieran.bingham@ideasonboard.com,
-        laurent.pinchart@ideasonboard.com
-References: <20230719164427.1383646-1-umang.jain@ideasonboard.com>
- <20230719164427.1383646-5-umang.jain@ideasonboard.com>
-From:   Stefan Wahren <stefan.wahren@i2se.com>
-In-Reply-To: <20230719164427.1383646-5-umang.jain@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:IrHo+yQKjQZP8ufddu3tihy98TNvPWemx/TN6KSs51LFKI15ndm
- DehgGQTo3sRzoiu8PkADCbiwegPb9AUScsHHkA8Cd+C515hHMZEbBesvIcJBs71Zsmrl832
- H9I6UGzhdYd1oJ2RuFHzE9PxIsYWjYdhWtBrC09ZotzgjEGSb5ctMvfiacYdqFGeaso53xq
- wxycDQwuBYj6H956RjmiQ==
-UI-OutboundReport: notjunk:1;M01:P0:FKpyv9qePPA=;adpoBBO3/O2qrN3L9RZuwCT6cST
- xoTVo36MlQL0KyAo39JAWVAOa0OKtdbgFCZMA4DInEalUnLno0HC+vGMhvUhA93ZkklQaDIPS
- /2J1UskIpqkf2L8pvEgJ6g3qdPtEiTYa4NVMFspC6s3Q7BQu49BXE1pRyBBfZQ+k8253l1PfH
- Nj7WWdTRZDKMJjQbRAJRzJlC5f0R0w45hTwXOcBX/1p9GV5l6zY0d6syyBhrbDzY+o3EpiBdT
- dvUHd7RQDb0xVZkvFnTDHr90CuSpwPMXyyWAu0wveA0ciQGh4tp4KQWPmu/qbRThbBP6rxmxw
- fKm3nWpQggn5T50czfHw96yLxgEaiFkSSCT4JEHfluI5fgBEUrZcr4PBPhvtmw5MLDfgd+cPt
- O48M43vi9M42R2DPQOAjm2Nc9ZDFjdM4wpUjsXUFPPHKAdT4lRe5HPlzBIHBeOAPa5HLFWTLU
- rxidgNuqvDi2CauzcHyrNncaH/DFaeiIbbD1IB2iqX027rbQPupGI2POzBM3boHtihn47Baxw
- JUMiwFYQ4rAoWqhTeLIX4I9HinsFZXl3sl9cvi6sHKakncgJ1GYSV2mx11TTQSs+/qGZZ11qM
- 893S4Dx2CO6nvQln9V+FLbVxMETeLkXVr0MAQ3u0+Ai38xMjAdrSLjLWA6uVgy8ArfNmthgbY
- 8kkIFmt3vxAto5kS6ez3PbUkFHTOVxXjxLW0+zphdg==
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org, arm@kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
+References: <20230719143309.204766-1-krzysztof.kozlowski@linaro.org>
+ <20230719143309.204766-2-krzysztof.kozlowski@linaro.org>
+ <CAL_JsqLXanpk+cMG0b8Ze9WAfmRqcu6-5EsdKVKG3TKCOwnm7A@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CAL_JsqLXanpk+cMG0b8Ze9WAfmRqcu6-5EsdKVKG3TKCOwnm7A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Umang,
-
-Am 19.07.23 um 18:44 schrieb Umang Jain:
-> Similar to how bcm2385-camera device is registered, register the
-> bcm2835-audio with vchiq_bus_type as well.
+On 19/07/2023 19:40, Rob Herring wrote:
+> On Wed, Jul 19, 2023 at 8:33 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> Some SoC platforms require that commits must not bring any new
+>> dtbs_check warnings.  Maintainers of such platforms usually have some
+>> automation set, so any new warning will be spotted sooner or later.
+>> Worst case: they run the tests themselves.  Document requirements for
+>> such platforms, so contributors can expect their patches being dropped
+>> or ignored, if they bring new warnings for existing boards.
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>>
+>> ---
+>>
+>> Changes in v2:
+>> 1. Add Rb tag.
+>> 2. Implement Conor's feedback: change doc title, follow->should follow,
+>>    minor style changes.
+>> ---
+>>  .../process/maintainer-handbooks.rst          |  1 +
+>>  .../process/maintainer-soc-clean-dts.rst      | 23 +++++++++++++++++++
+>>  MAINTAINERS                                   |  2 +-
+>>  3 files changed, 25 insertions(+), 1 deletion(-)
+>>  create mode 100644 Documentation/process/maintainer-soc-clean-dts.rst
+>>
+>> diff --git a/Documentation/process/maintainer-handbooks.rst b/Documentation/process/maintainer-handbooks.rst
+>> index 9992bfd7eaa3..976391cec528 100644
+>> --- a/Documentation/process/maintainer-handbooks.rst
+>> +++ b/Documentation/process/maintainer-handbooks.rst
+>> @@ -17,5 +17,6 @@ Contents:
+>>
+>>     maintainer-netdev
+>>     maintainer-soc
+>> +   maintainer-soc-clean-dts
+>>     maintainer-tip
+>>     maintainer-kvm-x86
+>> diff --git a/Documentation/process/maintainer-soc-clean-dts.rst b/Documentation/process/maintainer-soc-clean-dts.rst
+>> new file mode 100644
+>> index 000000000000..c460923f39be
+>> --- /dev/null
+>> +++ b/Documentation/process/maintainer-soc-clean-dts.rst
+>> @@ -0,0 +1,23 @@
+>> +.. SPDX-License-Identifier: GPL-2.0
+>> +
+>> +==============================================
+>> +SoC Platforms with DTS Compliance Requirements
+>> +==============================================
+>> +
+>> +Overview
+>> +--------
+>> +
+>> +SoC platforms or subarchitectures should follow all the rules from
+>> +Documentation/process/maintainer-soc.rst.  However platforms referencing
+>> +this document impose additional requirements listed below.
 > 
-> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
-> ---
->   .../vc04_services/bcm2835-audio/bcm2835.c     | 20 +++++++++----------
->   .../interface/vchiq_arm/vchiq_arm.c           |  6 +++---
->   2 files changed, 13 insertions(+), 13 deletions(-)
+> I would make it clear how platforms reference this doc:
+> this document in MAINTAINERS impose...
+
+Sure.
+
 > 
-> diff --git a/drivers/staging/vc04_services/bcm2835-audio/bcm2835.c b/drivers/staging/vc04_services/bcm2835-audio/bcm2835.c
-> index 00bc898b0189..70e5e0942743 100644
-> --- a/drivers/staging/vc04_services/bcm2835-audio/bcm2835.c
-> +++ b/drivers/staging/vc04_services/bcm2835-audio/bcm2835.c
-> @@ -1,12 +1,12 @@
->   // SPDX-License-Identifier: GPL-2.0
->   /* Copyright 2011 Broadcom Corporation.  All rights reserved. */
->   
-> -#include <linux/platform_device.h>
-> -
->   #include <linux/init.h>
->   #include <linux/slab.h>
->   #include <linux/module.h>
->   
-> +#include "../interface/vchiq_arm/vchiq_arm.h"
-> +#include "../interface/vchiq_arm/vchiq_device.h"
->   #include "bcm2835.h"
->   
->   static bool enable_hdmi;
-> @@ -268,9 +268,9 @@ static int snd_add_child_devices(struct device *device, u32 numchans)
->   	return 0;
->   }
->   
-> -static int snd_bcm2835_alsa_probe(struct platform_device *pdev)
-> +static int snd_bcm2835_alsa_probe(struct vchiq_device *device)
->   {
-> -	struct device *dev = &pdev->dev;
-> +	struct device *dev = &device->dev;
->   	int err;
->   
->   	if (num_channels <= 0 || num_channels > MAX_SUBSTREAMS) {
-> @@ -292,32 +292,32 @@ static int snd_bcm2835_alsa_probe(struct platform_device *pdev)
->   
->   #ifdef CONFIG_PM
->   
-> -static int snd_bcm2835_alsa_suspend(struct platform_device *pdev,
-> +static int snd_bcm2835_alsa_suspend(struct vchiq_device *device,
->   				    pm_message_t state)
->   {
->   	return 0;
->   }
->   
-> -static int snd_bcm2835_alsa_resume(struct platform_device *pdev)
-> +static int snd_bcm2835_alsa_resume(struct vchiq_device *device)
->   {
->   	return 0;
->   }
->   
->   #endif
->   
-> -static struct platform_driver bcm2835_alsa_driver = {
-> +static struct vchiq_driver bcm2835_alsa_driver = {
->   	.probe = snd_bcm2835_alsa_probe,
->   #ifdef CONFIG_PM
->   	.suspend = snd_bcm2835_alsa_suspend,
->   	.resume = snd_bcm2835_alsa_resume,
->   #endif
->   	.driver = {
-> -		.name = "bcm2835_audio",
-> +		.name = "bcm2835-audio",
+>> +
+>> +Strict DTS DT Schema Compliance
+> 
+> Schema and dtc
+Ack
 
-At least this change is not mentioned in the commit log.
+> 
+> 
+>> +-------------------------------
+>> +
+>> +No changes to the SoC platform Devicetree sources (DTS files) should introduce
+>> +new ``make dtbs_check W=1`` warnings.  The platform maintainers have automation
+>> +in place which should point out any new warnings.
+> 
+> If a soc.dtsi file has warnings a new board.dts will duplicate all
+> those warnings. I imagine those are okay? 
 
-Thanks
+This. I would assume that these were existing warnings, so new board
+does not add anything new. Different question if new board comes with
+the same warning for compatible in TXT (not DT schema).
 
->   	},
->   };
-> -module_platform_driver(bcm2835_alsa_driver);
-> +module_vchiq_driver(bcm2835_alsa_driver);
->   
->   MODULE_AUTHOR("Dom Cobley");
->   MODULE_DESCRIPTION("Alsa driver for BCM2835 chip");
->   MODULE_LICENSE("GPL");
-> -MODULE_ALIAS("platform:bcm2835_audio");
-> +MODULE_ALIAS("bcm2835-audio");
-> diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> index d941e9640415..f7c2dce5ab09 100644
-> --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> @@ -67,12 +67,12 @@ int vchiq_susp_log_level = VCHIQ_LOG_ERROR;
->   DEFINE_SPINLOCK(msg_queue_spinlock);
->   struct vchiq_state g_state;
->   
-> -static struct platform_device *bcm2835_audio;
->   /*
->    * The devices implemented in the VCHIQ firmware are not discoverable,
->    * so we need to maintain a list of them in order to register them with
->    * the interface.
->    */
-> +static struct vchiq_device *bcm2835_audio;
->   static struct vchiq_device *bcm2835_camera;
->   
->   struct vchiq_drvdata {
-> @@ -1845,7 +1845,7 @@ static int vchiq_probe(struct platform_device *pdev)
->   		goto error_exit;
->   	}
->   
-> -	bcm2835_audio = vchiq_register_child(pdev, "bcm2835_audio");
-> +	bcm2835_audio = vchiq_device_register(&pdev->dev, "bcm2835-audio");
->   	bcm2835_camera = vchiq_device_register(&pdev->dev, "bcm2835-camera");
->   
->   	return 0;
-> @@ -1858,7 +1858,7 @@ static int vchiq_probe(struct platform_device *pdev)
->   
->   static void vchiq_remove(struct platform_device *pdev)
->   {
-> -	platform_device_unregister(bcm2835_audio);
-> +	vchiq_device_unregister(bcm2835_audio);
->   	vchiq_device_unregister(bcm2835_camera);
->   	vchiq_debugfs_deinit();
->   	vchiq_deregister_chrdev();
+> Or are we assuming soc.dtsi
+> is warning free? Or do we need to distinguish both cases?
+
+Warning free, or at least not many warnings, should be implied,
+otherwise I don't think it is possible to spot new warnings.
+
+
+> 
+> I would like to see a build target for the warning free platforms, so
+> we can easily run it and check for no warnings. Just hasn't been
+> enough platforms yet to do that.
+> 
+Best regards,
+Krzysztof
+
