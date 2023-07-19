@@ -2,207 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CB7758CD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E242758CD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjGSFE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 01:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47834 "EHLO
+        id S229977AbjGSFFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 01:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjGSFEX (ORCPT
+        with ESMTP id S229476AbjGSFFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 01:04:23 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810221BF3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 22:04:21 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5835388d632so16106907b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 22:04:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689743060; x=1692335060;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=f4gbnMS0W6E9Awn5g41KlL6GZi3HN5/R/yFQL1nQXJg=;
-        b=bsfPCapysjnAZODvh7VQx88fm7IvMM72XC0oEOupCXke50rzUpxBzJjYQpi6er51fb
-         D4bBL8Bh1D+h6gJQCrL3ilyuQNC5vtgJJbqXXVdUX3wGIHEmUxC4mo1pR0Z+lwJSnYwK
-         meVLK3418dgqsYosj9vCSuNEJNkdRzYHJy0dpVlfsGSOV8HIHO4e1UNyCrc3kkrhsuYl
-         F7Nsl4WNKMNEHKdGgWak0LJ4fwxrpogQk/dx/JNial3Rw8ApbYcti+VqcZ3cqR3TmrjR
-         HLyZAxKWibz4mBf1B911Dg5ToxkxCT+TuKgSTuRLqJQNqiyCWpJGUeH03fYVv65KsNEv
-         GKdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689743060; x=1692335060;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f4gbnMS0W6E9Awn5g41KlL6GZi3HN5/R/yFQL1nQXJg=;
-        b=RA36OITP21DnkAeGPD2LcPQQrsDyJ0iKt+7qKnMItOjUsedwkWOXcchd+rmg3UXHul
-         iuF3IzmYuV3/+CG1qCLFT2hP2XVV/1SCsQCfePohK/hYVbqoQSU5vNIMQqaSazKr2ip8
-         fnaHVqCwKfw8pmjAHrP/GvA4yozTzMVux6B+YHuH/8Svn0yzmx4iuZICxi1wCPRlvzrK
-         TrbKLsqOOEYy856qNpvDLsBnDY1qQ2MJ3kjv4jgOVajX3BMfzJHMI4RPP6tfWnm/aiOh
-         JdHQ6/FctxKe4S/n+KIf7QsW7JIjqXHcJ5EtW42Jn3JihEZRMEg7ayiDd4PKVVxcQL3+
-         TtLg==
-X-Gm-Message-State: ABy/qLap2NZQ9Rnn+DYTQDHSNjMRiHPmKtme9b7JOE+KJ6GJnLy15LtB
-        WhKzeD7he0ibS34DOzfdM/SBGA==
-X-Google-Smtp-Source: APBJJlFfOyYeGiVCuczZwoUNyN9JCPq13oUH5g6h02u0hokVq61z1GN7QWMboOKVDLBaFX+57WnbTA==
-X-Received: by 2002:a81:a00d:0:b0:573:d3cd:3d2a with SMTP id x13-20020a81a00d000000b00573d3cd3d2amr19838242ywg.28.1689743060542;
-        Tue, 18 Jul 2023 22:04:20 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id b125-20020a0df283000000b0056d304e224dsm847329ywf.90.2023.07.18.22.04.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 22:04:19 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 22:04:08 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Steven Price <steven.price@arm.com>,
-        SeongJae Park <sj@kernel.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Song Liu <song@kernel.org>,
-        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Jann Horn <jannh@google.com>,
-        Vishal Moola <vishal.moola@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Zi Yan <ziy@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3 04/13] powerpc: assert_pte_locked() use
- pte_offset_map_nolock()
-In-Reply-To: <87msztbiy8.fsf@linux.ibm.com>
-Message-ID: <392f311f-83ac-a5a2-d16e-2c7736d1b577@google.com>
-References: <7cd843a9-aa80-14f-5eb2-33427363c20@google.com> <e8d56c95-c132-a82e-5f5f-7bb1b738b057@google.com> <87msztbiy8.fsf@linux.ibm.com>
+        Wed, 19 Jul 2023 01:05:06 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1A51BFD
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 22:05:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689743105; x=1721279105;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pOXYwV97mgxYIXwJnjIqWa8OytFh4DeSpkMg2iBSERc=;
+  b=gwtYSMiwgSlapJUiyy3e0L7fsTaNvU+n3VjtpxUzjrpH+qFBBVVl+7iN
+   FSgJpRXTS1KuFVHH0t4Plz+PiyyJLbT3bhU0EAihePiLcfhdhohGjcjwv
+   SOljO+TVlRHzPkZqE8UGW+wNBygQD4sdvEFHR1j8gx2akaAsfWfyUKw+U
+   5sigTFyB5Ruu3y4WgE6n+1miD11+zSVG9kZsZOmp0PiPzxIL8bxPJwte3
+   2AllnaYsCsTubrxyXMWkZY8u0+OVCik4sgfTEa4p7RQhxVjOrwdAb/9EL
+   CCSeeCqO+rhDFXvWHv1GyW0QQQMaUQ8BKb02s9GEI5sBjzSgVpOZAaC5M
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="351243186"
+X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
+   d="scan'208";a="351243186"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 22:05:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="847927211"
+X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
+   d="scan'208";a="847927211"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 18 Jul 2023 22:05:02 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qLzN0-0004AM-0G;
+        Wed, 19 Jul 2023 05:05:02 +0000
+Date:   Wed, 19 Jul 2023 13:04:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Wang Ming <machel@vivo.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, opensource.kernel@vivo.com
+Subject: Re: [PATCH v1] reset: hisilicon: Use dev_err_probe instead of dev_err
+Message-ID: <202307191252.hZvUCt7Q-lkp@intel.com>
+References: <20230718030511.16065-1-machel@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718030511.16065-1-machel@vivo.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023, Aneesh Kumar K.V wrote:
-> Hugh Dickins <hughd@google.com> writes:
-> 
-> > Instead of pte_lockptr(), use the recently added pte_offset_map_nolock()
-> > in assert_pte_locked().  BUG if pte_offset_map_nolock() fails: this is
-> > stricter than the previous implementation, which skipped when pmd_none()
-> > (with a comment on khugepaged collapse transitions): but wouldn't we want
-> > to know, if an assert_pte_locked() caller can be racing such transitions?
-> >
-> 
-> The reason we had that pmd_none check there was to handle khugpaged. In
-> case of khugepaged we do pmdp_collapse_flush and then do a ptep_clear.
-> ppc64 had the assert_pte_locked check inside that ptep_clear.
-> 
-> _pmd = pmdp_collapse_flush(vma, address, pmd);
-> ..
-> ptep_clear()
-> -> asset_ptep_locked()
-> ---> pmd_none
-> -----> BUG
-> 
-> 
-> The problem is how assert_pte_locked() verify whether we are holding
-> ptl. It does that by walking the page table again and in this specific
-> case by the time we call the function we already had cleared pmd .
+Hi Wang,
 
-Aneesh, please clarify, I've spent hours on this.
+kernel test robot noticed the following build errors:
 
-From all your use of past tense ("had"), I thought you were Acking my
-patch; but now, after looking again at v3.11 source and today's,
-I think you are NAKing my patch in its present form.
+[auto build test ERROR on pza/reset/next]
+[also build test ERROR on pza/imx-drm/next linus/master v6.5-rc2 next-20230718]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-You are pointing out that anon THP's __collapse_huge_page_copy_succeeded()
-uses ptep_clear() at a point after pmdp_collapse_flush() already cleared
-*pmd, so my patch now leads that one use of assert_pte_locked() to BUG.
-Is that your point?
+url:    https://github.com/intel-lab-lkp/linux/commits/Wang-Ming/reset-hisilicon-Use-dev_err_probe-instead-of-dev_err/20230718-203055
+base:   https://git.pengutronix.de/git/pza/linux reset/next
+patch link:    https://lore.kernel.org/r/20230718030511.16065-1-machel%40vivo.com
+patch subject: [PATCH v1] reset: hisilicon: Use dev_err_probe instead of dev_err
+config: arm-defconfig (https://download.01.org/0day-ci/archive/20230719/202307191252.hZvUCt7Q-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230719/202307191252.hZvUCt7Q-lkp@intel.com/reproduce)
 
-I can easily restore that khugepaged comment (which had appeared to me
-out of date at the time, but now looks still relevant) and pmd_none(*pmd)
-check: but please clarify.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307191252.hZvUCt7Q-lkp@intel.com/
 
-Thanks,
-Hugh
+All errors (new ones prefixed by >>):
 
-> >
-> > This mod might cause new crashes: which either expose my ignorance, or
-> > indicate issues to be fixed, or limit the usage of assert_pte_locked().
-> >
-> > Signed-off-by: Hugh Dickins <hughd@google.com>
-> > ---
-> >  arch/powerpc/mm/pgtable.c | 16 ++++++----------
-> >  1 file changed, 6 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
-> > index cb2dcdb18f8e..16b061af86d7 100644
-> > --- a/arch/powerpc/mm/pgtable.c
-> > +++ b/arch/powerpc/mm/pgtable.c
-> > @@ -311,6 +311,8 @@ void assert_pte_locked(struct mm_struct *mm, unsigned long addr)
-> >  	p4d_t *p4d;
-> >  	pud_t *pud;
-> >  	pmd_t *pmd;
-> > +	pte_t *pte;
-> > +	spinlock_t *ptl;
-> >  
-> >  	if (mm == &init_mm)
-> >  		return;
-> > @@ -321,16 +323,10 @@ void assert_pte_locked(struct mm_struct *mm, unsigned long addr)
-> >  	pud = pud_offset(p4d, addr);
-> >  	BUG_ON(pud_none(*pud));
-> >  	pmd = pmd_offset(pud, addr);
-> > -	/*
-> > -	 * khugepaged to collapse normal pages to hugepage, first set
-> > -	 * pmd to none to force page fault/gup to take mmap_lock. After
-> > -	 * pmd is set to none, we do a pte_clear which does this assertion
-> > -	 * so if we find pmd none, return.
-> > -	 */
-> > -	if (pmd_none(*pmd))
-> > -		return;
-> > -	BUG_ON(!pmd_present(*pmd));
-> > -	assert_spin_locked(pte_lockptr(mm, pmd));
-> > +	pte = pte_offset_map_nolock(mm, pmd, addr, &ptl);
-> > +	BUG_ON(!pte);
-> > +	assert_spin_locked(ptl);
-> > +	pte_unmap(pte);
-> >  }
-> >  #endif /* CONFIG_DEBUG_VM */
-> >  
-> > -- 
-> > 2.35.3
+   drivers/reset/hisilicon/reset-hi3660.c: In function 'hi3660_reset_probe':
+   drivers/reset/hisilicon/reset-hi3660.c:93:36: warning: passing argument 2 of 'dev_err_probe' makes integer from pointer without a cast [-Wint-conversion]
+      93 |                 dev_err_probe(dev, "failed to get hisilicon,rst-syscon\n");
+         |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                                    |
+         |                                    char *
+   In file included from include/linux/platform_device.h:13,
+                    from include/linux/of_device.h:5,
+                    from drivers/reset/hisilicon/reset-hi3660.c:9:
+   include/linux/device.h:1091:64: note: expected 'int' but argument is of type 'char *'
+    1091 | __printf(3, 4) int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
+         |                                                            ~~~~^~~
+>> drivers/reset/hisilicon/reset-hi3660.c:93:17: error: too few arguments to function 'dev_err_probe'
+      93 |                 dev_err_probe(dev, "failed to get hisilicon,rst-syscon\n");
+         |                 ^~~~~~~~~~~~~
+   include/linux/device.h:1091:20: note: declared here
+    1091 | __printf(3, 4) int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
+         |                    ^~~~~~~~~~~~~
+
+
+vim +/dev_err_probe +93 drivers/reset/hisilicon/reset-hi3660.c
+
+    75	
+    76	static int hi3660_reset_probe(struct platform_device *pdev)
+    77	{
+    78		struct hi3660_reset_controller *rc;
+    79		struct device_node *np = pdev->dev.of_node;
+    80		struct device *dev = &pdev->dev;
+    81	
+    82		rc = devm_kzalloc(dev, sizeof(*rc), GFP_KERNEL);
+    83		if (!rc)
+    84			return -ENOMEM;
+    85	
+    86		rc->map = syscon_regmap_lookup_by_phandle(np, "hisilicon,rst-syscon");
+    87		if (rc->map == ERR_PTR(-ENODEV)) {
+    88			/* fall back to the deprecated compatible */
+    89			rc->map = syscon_regmap_lookup_by_phandle(np,
+    90								  "hisi,rst-syscon");
+    91		}
+    92		if (IS_ERR(rc->map)) {
+  > 93			dev_err_probe(dev, "failed to get hisilicon,rst-syscon\n");
+    94			return PTR_ERR(rc->map);
+    95		}
+    96	
+    97		rc->rst.ops = &hi3660_reset_ops,
+    98		rc->rst.of_node = np;
+    99		rc->rst.of_reset_n_cells = 2;
+   100		rc->rst.of_xlate = hi3660_reset_xlate;
+   101	
+   102		return reset_controller_register(&rc->rst);
+   103	}
+   104	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
