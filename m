@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 685C2759613
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 597F6759615
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbjGSNAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 09:00:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37466 "EHLO
+        id S230383AbjGSNBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 09:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjGSNAp (ORCPT
+        with ESMTP id S230370AbjGSNBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 09:00:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3BB11C
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:00:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AA2FF61626
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:00:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CCAFC433C8;
-        Wed, 19 Jul 2023 13:00:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689771642;
-        bh=vTRTi8gePGQh/v/SApP6VdgisFuhvR4V4ouD65IvxwQ=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Y0H1OEXL/5HzI2GvKdCbZZ5lX64S2dYzS441FtomQqJZrAdhgYgPTOG3Y9Hcfr9AJ
-         SU5+SMqBOXZ6o36ULFel0jrL4YTcPhx73RVmfx0akqMFf/fmQRhtnmGjbYbiLiojCa
-         PhvpZTbkq4DFce3erI+clBoPAyZeCQHld7UGFC1neK0n5YZP3X+xpFvL+sb6dOLFiD
-         Gu5Dvq6d/v+fvm4IKbYBdRMjYK502U+ONKAB3qKI+OqAiZJzz5SKnaSWpV1aSRViQ6
-         PmJAcRx71fbxaO55kKmMs9JB6f3/CITiM2QyxkFABDi2WTRUnHetFqqfguUnei/Q0O
-         Lm09LgMRk8E4A==
-From:   Mark Brown <broonie@kernel.org>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     lgirdwood@gmail.com, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-In-Reply-To: <20230718003255.124594-1-yang.lee@linux.alibaba.com>
-References: <20230718003255.124594-1-yang.lee@linux.alibaba.com>
-Subject: Re: [PATCH -next] regulator: Remove duplicated include in
- mt6359-regulator.c
-Message-Id: <168977164102.32923.17335159942963668524.b4-ty@kernel.org>
-Date:   Wed, 19 Jul 2023 14:00:41 +0100
+        Wed, 19 Jul 2023 09:01:04 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 127901711;
+        Wed, 19 Jul 2023 06:01:02 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qM6nT-00079S-1s; Wed, 19 Jul 2023 15:00:51 +0200
+Message-ID: <6bcdeee4-5348-c08e-701e-47bc138be74f@leemhuis.info>
+Date:   Wed, 19 Jul 2023 15:00:50 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: Fwd: Unexplainable packet drop starting at v6.4
+Content-Language: en-US, de-DE
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Andrzej Kacprowski <andrzej.kacprowski@linux.intel.com>,
+        Krystian Pradzynski <krystian.pradzynski@linux.intel.com>,
+        Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+        Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, hq.dev+kernel@msdfc.xyz
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Networking <netdev@vger.kernel.org>,
+        Linux Intel Ethernet Drivers 
+        <intel-wired-lan@lists.osuosl.org>
+References: <e79edb0f-de89-5041-186f-987d30e0187c@gmail.com>
+ <444d8158-cc58-761d-a878-91e5d4d28b71@leemhuis.info>
+ <4759e7d4-5a8c-8acb-1775-e049b9b06cc1@gmail.com>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <4759e7d4-5a8c-8acb-1775-e049b9b06cc1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1689771663;6c1522dc;
+X-HE-SMSGID: 1qM6nT-00079S-1s
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,36 +61,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 08:32:55 +0800, Yang Li wrote:
-> ./drivers/regulator/mt6359-regulator.c: linux/platform_device.h is included more than once.
-> 
-> 
+On 19.07.23 14:30, Bagas Sanjaya wrote:
+> On 7/19/23 18:49, Thorsten Leemhuis wrote:
+>> On 18.07.23 02:51, Bagas Sanjaya wrote:
+>>> I notice a regression report on Bugzilla [1]. Quoting from it:
+>>>
+>>>> After I updated to 6.4 through Archlinux kernel update, suddenly I noticed random packet losses on my routers like nodes. I have these networking relevant config on my nodes
+>>>>
+>>>> 1. Using archlinux
+>>>> 2. Network config through systemd-networkd
+>>>> 3. Using bird2 for BGP routing, but not relevant to this bug.
+>>>> 4. Using nftables for traffic control, but seems not relevant to this bug. 
+>>>> 5. Not using fail2ban like dymanic filtering tools, at least at L3/L4 level
+>>>>
+>>>> After I ruled out systemd-networkd, nftables related issues. I tracked down issues to kernel.
+>>> [...]
+>>> See Bugzilla for the full thread.
+>>>
+>>> Thorsten: The reporter had a bad bisect (some bad commits were marked as good
+>>> instead), hence SoB chain for culprit (unrelated) ipvu commit is in To:
+>>> list. I also asked the reporter (also in To:) to provide dmesg and request
+>>> rerunning bisection, but he doesn't currently have a reliable reproducer.
+>>> Is it the best I can do?
+>>
+>> When a bisection apparently went sideways it's best to not bother the
+>> culprit's developers with it, they most likely will just be annoyed by
+>> it (and then they might become annoyed by regression tracking, which we
+>> need to avoid).
+>
+> I mean don't Cc: the culprit author in that case?
 
-Applied to
+Yes. If a bisection lands on a commit that seems like a pretty unlikely
+culprit for the problem at hand (which even the reporter admitted in the
+report), then ask the reporter to verify the result (e.g. ideally by
+trying to revert it ontop of latest mainline; checking the parent commit
+again sometimes can do the trick as well)  before involving the people
+that authored and handled said change. Otherwise you just raise a false
+alarm and then people will be annoyed by our work or if we are unlucky
+start to ignore us -- and we need to prevent that.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-
-Thanks!
-
-[1/1] regulator: Remove duplicated include in mt6359-regulator.c
-      commit: 6023fffc3e276d1ab0d1262ea9be3b720325fede
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Ciao, Thorsten
