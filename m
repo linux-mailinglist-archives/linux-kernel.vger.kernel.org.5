@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3060F758CD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 06:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33881758CD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 06:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbjGSE7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 00:59:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46402 "EHLO
+        id S230283AbjGSE7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 00:59:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbjGSE67 (ORCPT
+        with ESMTP id S229840AbjGSE7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 00:58:59 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5429C1BF2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 21:58:57 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-345a76c3a2eso29482375ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 21:58:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=heitbaum.com; s=google; t=1689742736; x=1692334736;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xx/nlFjtu4ARcPKwXdYmnkb99UM/dQKiVgI7KMRPIGM=;
-        b=VQaYGcC5+WLtUiJAamvCvUXI9h0WDtf6H6gPpm7L4TXt2YDHaPeg7SDQCxXAQbapnG
-         5OWlkvmOlZISqLIn2WmroOJdMHvOPMrIQhrfqqySiwNhqzeHV9t6UE1DcUx6Afyx4uLw
-         nsDXqp5hLQXwosWTWmykXon17uRtDXf5Mt0UM=
+        Wed, 19 Jul 2023 00:59:05 -0400
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E351BF3;
+        Tue, 18 Jul 2023 21:59:04 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-99313a34b2dso778675966b.1;
+        Tue, 18 Jul 2023 21:59:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689742736; x=1692334736;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xx/nlFjtu4ARcPKwXdYmnkb99UM/dQKiVgI7KMRPIGM=;
-        b=bqtAdqZFTZhuC+WXZOEB+GPcAqAaPNa836x/OZMkvFWWweE+i/4coV8rA/jqKoHXS4
-         NXgt60n0mjkcGNrEqCXfgWqBOBWcB8fX9r56c3oD1ZTK+nqOgy/yWQpRpJAMb0HRWZ0m
-         jMuioebRR2mroRLyBWVy2VgiEHia20tYxfpXr3/hx8VDu0ERnPg+4QC61yc/a3dl3bla
-         6KYjhwTjAwstrKhn+BeCzXk79aimcS6LpoO/ooazb8ZdLkAdI/t7i/QKDg1OIiYgKpj2
-         HDuR6jzpttZlDLHRrRvjo67wqgzQHkBCIFwrgLHWzFhvcv1KN4UpZDFRqIgEYeEL2b6B
-         ki3w==
-X-Gm-Message-State: ABy/qLb7cPaP0I818TK9o0yk3XRUilNGrSWxxfceOHfAw8dfNweGDPrr
-        QYpCXz+CV2WF5PMjOdpTctRFDw==
-X-Google-Smtp-Source: APBJJlH2mIKMnmpMa5BwTtRfkel54/muJVaPz4sXZLak232jtyoBEh3mzEjcxLrSHDpjK6NTMIfmJw==
-X-Received: by 2002:a05:6e02:219b:b0:346:7741:3ea9 with SMTP id j27-20020a056e02219b00b0034677413ea9mr5170367ila.3.1689742736583;
-        Tue, 18 Jul 2023 21:58:56 -0700 (PDT)
-Received: from a443afd6f3a9 ([122.199.31.3])
-        by smtp.gmail.com with ESMTPSA id e21-20020a170902d39500b001b9dfa8d884sm2759468pld.226.2023.07.18.21.58.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 21:58:55 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 04:58:48 +0000
-From:   Rudi Heitbaum <rudi@heitbaum.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 6.4 000/801] 6.4.4-rc3 review
-Message-ID: <ZLdtiMeTL7ZSD7nW@a443afd6f3a9>
-References: <20230717201608.814406187@linuxfoundation.org>
+        d=1e100.net; s=20221208; t=1689742743; x=1690347543;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j73OOjIeRuMj/hW5XddSt0G2UN09Sqon0o8YRkFJAmE=;
+        b=l/xAU3Tk5Otn7sylrbD0kn4jI/WBp77eixjcwDu9lz+Jumc2k/IiEbRyg37iJxncO8
+         Tg7pcuR5zDmcbzqskkojmwtTlQb0b69A1NS1MtdgPDggqhwQThPA1f36hOftwwC34JUn
+         ELy7xxcODkYSJkcgu/ghxeLpzunNaHGzRdzXUlCEBuuJD1p6/11Cq/luVbKiUZV2loT8
+         +NCjtgDl3xwcLhSy0ubt5IOxlSLpMFsZ1M/QuhgMY84PafkwEL/xK5eUOFUL/COn+vpP
+         fj7iMF2SEUqdsw3P8tDzihnvjNEQdbBzVc+pVrNKB6qNCmSPkUyYrxYt2ku3y0E/wVYJ
+         rbrw==
+X-Gm-Message-State: ABy/qLY92Q9d8oZ63icmQavFIAxcaX1kOPH+kH+QYaQy9PVC13KZwA2w
+        hw4dEs3C+MKkaPXF6DmcedE+dApcqTY=
+X-Google-Smtp-Source: APBJJlE5FBhwnn+ttSshK5fDq37w5f5hotxC47JdDOGMCuEPnvDrPixrpDDiWdU9TUvzvExhUXBiSQ==
+X-Received: by 2002:a17:906:2208:b0:993:f9b2:93c1 with SMTP id s8-20020a170906220800b00993f9b293c1mr1532542ejs.9.1689742742765;
+        Tue, 18 Jul 2023 21:59:02 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id x26-20020a1709064a9a00b009893b06e9e3sm1775731eju.225.2023.07.18.21.59.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 21:59:02 -0700 (PDT)
+Message-ID: <29a50d29-67f6-8b18-d0bb-278878f9ddac@kernel.org>
+Date:   Wed, 19 Jul 2023 06:59:01 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 6.4 000/801] 6.4.4-rc3 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20230717201608.814406187@linuxfoundation.org>
+From:   Jiri Slaby <jirislaby@kernel.org>
 In-Reply-To: <20230717201608.814406187@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 10:34:36PM +0200, Greg Kroah-Hartman wrote:
+On 17. 07. 23, 22:34, Greg Kroah-Hartman wrote:
 > This is the start of the stable review cycle for the 6.4.4 release.
 > There are 801 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
@@ -81,27 +77,21 @@ On Mon, Jul 17, 2023 at 10:34:36PM +0200, Greg Kroah-Hartman wrote:
 > 
 > Responses should be made by Wed, 19 Jul 2023 20:14:44 +0000.
 > Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.4-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> and the diffstat can be found below.
 
-Hi Greg,
+openSUSE configs¹⁾ mostly green -- arm is still building (our build 
+systems have limited resourced due to move now). x86_64 runs fine in qemu.
 
-6.4.4-rc3 tested.
+Tested-by: Jiri Slaby <jirislaby@kernel.org>
 
-Run tested on:
-- Intel Alder Lake x86_64 (nuc12 i7-1260P)
+¹⁾ armv6hl armv7hl arm64 i386 ppc64 ppc64le riscv64 s390x x86_64
 
-In addition - build tested for:
-- Allwinner A64
-- Allwinner H3
-- Allwinner H5
-- Allwinner H6
-- NXP iMX6
-- NXP iMX8
-- Qualcomm Dragonboard
-- Rockchip RK3288
-- Rockchip RK3328
-- Rockchip RK3399pro
-- Samsung Exynos
+-- 
+js
+suse labs
 
-Tested-by: Rudi Heitbaum <rudi@heitbaum.com>
---
-Rudi
