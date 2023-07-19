@@ -2,116 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 047EE758F69
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56EE758F6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbjGSHrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 03:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41246 "EHLO
+        id S229712AbjGSHrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 03:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbjGSHql (ORCPT
+        with ESMTP id S229458AbjGSHq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 03:46:41 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9381BF2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:46:26 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b71ae5fa2fso98092291fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:46:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689752785; x=1692344785;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gA99ih2FnRCOXCq5xoPhBdPBEfSv+wq4btoWQwv8pf8=;
-        b=B7DUTOqJ5kHVkpfy7suxLj1l4s7ROhUxM7lqJdK2OKeYAP9o3KEr6p1USORehmQkmF
-         XqOeePO46XFFvZFjqPM9qIqhTAHmJNB8RQhx/njhjA1U1ulTtlKjNGrghGkb8f7jZDN6
-         MVEII7pGn3VAoXsR/MulkiOhcvFCr3aVT+LhL9fgWLqdM4ApK101CX0c4LzxoSb1Pc2d
-         B+625o8usu6TBvO5zO7KZuRb/0K2NSK2//su6U6CfRuomTe0NMPUBzSRasD5RRri/yAx
-         D7L4y6PxtmnP6798wIu1PlbEli0I9DJFaa7tPVHcaHs/pdy5akiE9pti6pt1mcOB2k+5
-         5pew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689752785; x=1692344785;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gA99ih2FnRCOXCq5xoPhBdPBEfSv+wq4btoWQwv8pf8=;
-        b=gENDiE94ISjZmfvu2WiuPfHO/hoW6jkTCdsuvtytSYXjbYhrLQYcWWE6AMNUH8dqSv
-         Q+Qiv9k8I09h/nXzpsE9y7NW901uRydiq0b4CfPBrE4tTZE+9qPLz0h9THv21qcW4+c8
-         CGNmRD+zb9mmIaC0uZphTqCvl+ywc551/Vh8xRQse6sH3jAs7mjrwpUftJitC5tlSroN
-         XNryX2SW4mi/0Bb19+yjWiAgUmL4DbBhved/mSV5W6q3/aCVYbXDSJhA/ut5zrGZZwm8
-         WK7PZO/zB5PvY32+ulNwtnm16Kt3dIm3OeJMtZA/3rT3WqDXDCDimCtzKoID+3ZyaPuw
-         Q61g==
-X-Gm-Message-State: ABy/qLbtfOXoEFVQfF3fR4RQ3EiwyXwehhfuBCDJACjAnCTa7ikJhPwI
-        /VpCCxWb3WDYV3/86qcEXb1r3g==
-X-Google-Smtp-Source: APBJJlECCKaqB9v8tHPR8n2BKeGIOTR9AOa5V66EyZtfbU/OWVj5YRmUaKSKwIDLFx/eHm9Qwr8lgA==
-X-Received: by 2002:a2e:8945:0:b0:2b9:48f1:b195 with SMTP id b5-20020a2e8945000000b002b948f1b195mr4909958ljk.44.1689752785115;
-        Wed, 19 Jul 2023 00:46:25 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id dk9-20020a170906f0c900b00988a0765e29sm1965303ejb.104.2023.07.19.00.46.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 00:46:24 -0700 (PDT)
-Message-ID: <2fe453af-320b-4eba-e8d8-9a7461185276@linaro.org>
-Date:   Wed, 19 Jul 2023 09:46:21 +0200
+        Wed, 19 Jul 2023 03:46:57 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4534AE43
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:46:56 -0700 (PDT)
+Received: from kwepemm600020.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R5SWZ46lmzLnss;
+        Wed, 19 Jul 2023 15:44:26 +0800 (CST)
+Received: from [10.174.179.160] (10.174.179.160) by
+ kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 19 Jul 2023 15:46:53 +0800
+Message-ID: <47ec8e1c-d7e5-8420-0ceb-60a9e71b064f@huawei.com>
+Date:   Wed, 19 Jul 2023 15:46:52 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v6 1/3] dt-bindings: watchdog: ti,rti-wdt: Add support for
- WDIOF_CARDRESET
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH 1/6] mm/page_io: use a folio in __end_swap_bio_read()
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <sidhartha.kumar@oracle.com>, <akpm@linux-foundation.org>,
+        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
+References: <20230717132602.2202147-1-zhangpeng362@huawei.com>
+ <20230717132602.2202147-2-zhangpeng362@huawei.com>
+ <ZLVDYjdflF+3oJCG@casper.infradead.org>
+ <df29af76-fc8f-b4f1-4a32-a200b5d4ba31@huawei.com>
+ <ZLa6z+vhK6aWYePL@casper.infradead.org>
 Content-Language: en-US
-To:     huaqian.li@siemens.com, wim@linux-watchdog.org, linux@roeck-us.net,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-Cc:     huaqianlee@gmail.com, nm@ti.com, vigneshr@ti.com,
-        kristo@kernel.org, linux-watchdog@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, jan.kiszka@siemens.com,
-        baocheng.su@siemens.com
-References: <20230718021007.1338761-1-huaqian.li@siemens.com>
- <20230718021007.1338761-2-huaqian.li@siemens.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230718021007.1338761-2-huaqian.li@siemens.com>
-Content-Type: text/plain; charset=UTF-8
+From:   "zhangpeng (AS)" <zhangpeng362@huawei.com>
+In-Reply-To: <ZLa6z+vhK6aWYePL@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.179.160]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600020.china.huawei.com (7.193.23.147)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/07/2023 04:10, huaqian.li@siemens.com wrote:
-> From: Li Hua Qian <huaqian.li@siemens.com>
-> 
-> TI RTI (Real Time Interrupt) Watchdog doesn't support to record the
-> watchdog cause. Add a reserved memory to know the last reboot was caused
-> by the watchdog card. In the reserved memory, some specific info will be
-> saved to indicate whether the watchdog reset was triggered in last
-> boot.
-> 
-> Signed-off-by: Li Hua Qian <huaqian.li@siemens.com>
-> ---
+On 2023/7/19 0:16, Matthew Wilcox wrote:
 
+> On Tue, Jul 18, 2023 at 08:56:16PM +0800, zhangpeng (AS) wrote:
+>>>>    	if (bio->bi_status) {
+>>>> -		SetPageError(page);
+>>>> -		ClearPageUptodate(page);
+>>>> +		folio_set_error(folio);
+>>> I appreciate this is a 1:1 conversion, but maybe we could think about
+>>> this a bit.  Is there anybody who checks the
+>>> PageError()/folio_test_error() for this page/folio?
+>> Maybe wait_dev_supers() checks the PageError() after write_dev_supers()
+>> in fs/btrfs/disk-io.c?
+> How does _this_ folio end up in btrfs's write_dev_supers()?  This is a
+> swap read.  The only folios which are swapped are anonymous and tmpfs.
+> btrfs takes care of doing its own I/O.  wait_dev_supers() is looking
+> for the error set in btrfs_end_super_write() which is the completion
+> routine for write_dev_supers().  The pages involved there are attached
+> to a btrfs address_space, not shmem or anon.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Thanks for your explanation!
 
+Then I think nobody checks the PageError()/folio_test_error() for the page
+in patch 1 and patch 2. I'll delete SetPageError() in a v2.
 
----
-
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you do not know the process, here is a short
-explanation:
-
-Please add Acked-by/Reviewed-by/Tested-by tags you received, when
-posting new versions, under or above your Signed-off-by tag. Tools like
-b4 can help here. However, there's no need to repost patches *only* to
-add the tags. The upstream maintainer will do that for acks received on
-the version they apply.
-
-https://elixir.bootlin.com/linux/v5.17/source/Documentation/process/submitting-patches.rst#L540
-
-Best regards,
-Krzysztof
+-- 
+Best Regards,
+Peng
 
