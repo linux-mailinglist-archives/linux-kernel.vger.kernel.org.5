@@ -2,454 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F46D759A81
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2EB759A85
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbjGSQMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 12:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
+        id S229713AbjGSQNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 12:13:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjGSQMa (ORCPT
+        with ESMTP id S229699AbjGSQND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 12:12:30 -0400
-Received: from finn.localdomain (finn.gateworks.com [108.161.129.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E96210B;
-        Wed, 19 Jul 2023 09:12:28 -0700 (PDT)
-Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
-        by finn.localdomain with esmtp (Exim 4.93)
-        (envelope-from <tharvey@gateworks.com>)
-        id 1qM9mr-007FfI-3o; Wed, 19 Jul 2023 16:12:25 +0000
-From:   Tim Harvey <tharvey@gateworks.com>
-To:     Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH v3 2/2] arm64: dts: freescale: Add imx8mm-venice-gw7905-0x
-Date:   Wed, 19 Jul 2023 09:12:21 -0700
-Message-Id: <20230719161221.7005-2-tharvey@gateworks.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230719161221.7005-1-tharvey@gateworks.com>
-References: <20230719161221.7005-1-tharvey@gateworks.com>
+        Wed, 19 Jul 2023 12:13:03 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB12E47
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:12:55 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-40371070eb7so666061cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:12:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689783174; x=1692375174;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9X/T6eIl8uv7b1fwfeNSFGPzQj0MwF56jVEOv5Ex2a0=;
+        b=05bppa1UvF3bLHg1a21i7yXYgd3IweWyuUbx/uSEAyVurRLCSjSB8NLBO/F4und3wC
+         cGj1dGL9EgxB3Y2WEkvN+lhfF/6EhIBcx1ffjZbRrlY6SP51nDmvZDZ2iL0qeJrZWWbz
+         HZzZfP9hJ+LGvc4ztKB6WoIHeIBYKqZ5TPbGVv7iLqXpADHmacReY5PoNkLX2Q+S4sMB
+         T/QRBuMaQNJCyZCqPWB8NYkoGs5/8bKHYGZ2PzsZMqXu4OLdfXd5WLLskzSKL8oFvIbL
+         hOalcHu0AsHPbnVDnc3aplrMSNCebwfabxmQEy1LEzWYsxDNEwHd97u/BvohXCEUdnOw
+         8Pog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689783174; x=1692375174;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9X/T6eIl8uv7b1fwfeNSFGPzQj0MwF56jVEOv5Ex2a0=;
+        b=Ggmkv0bnpIE14pKdMZQExg1iS5W/e5mfclK4UybJzd3x5/J0URM3BMu3Mcj36qaDi0
+         OAnQ2WV2D6AS+Rl/WHt9gt8pci/NRjAujezj074BkzC1HUuagZpr86JagfL1sG8nRRK2
+         IJyoN+P7+pm2mDmX1PSZU840R2owCkVg00w1aknElVK8UswYFCJ8k/lJA8/uIlK32Nqa
+         fy2AJ2XyQZC5grG0fwsyRljazrSZDBz8qMZxkp8qVp5bzqZFC6C4khz9ezuJLmsG/Yw9
+         J/wU9TD3gBISpdqy8vLL54lFE4WHigE/k1aBPFepmPj6bCei/n4/j5qfTeD6LIRCCsy1
+         IrVA==
+X-Gm-Message-State: ABy/qLYIxFnpJC9oxmSUgkoVZNImA2Cn2bWZ2FQSrwrQ6Vfv9Rr9hOHr
+        BX3uKPWQfzbi6dIRc7a+kSHQCVSgmCpAdk5u3CBgUQ==
+X-Google-Smtp-Source: APBJJlEg8IQOaM/hF1/8FHt/n6wJSgBmXsxn8FPUaw1rnzKIQP/rAnZ/K3cOCs6XQXd4VzgzEM4VZJAMjZ6rkpLmvT0=
+X-Received: by 2002:a05:622a:1a87:b0:3f4:f0fd:fe7e with SMTP id
+ s7-20020a05622a1a8700b003f4f0fdfe7emr574304qtc.3.1689783174436; Wed, 19 Jul
+ 2023 09:12:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1689748843.git.sandipan.das@amd.com> <a70b1ef6ab427b768f21401af280d235dd095412.1689748843.git.sandipan.das@amd.com>
+In-Reply-To: <a70b1ef6ab427b768f21401af280d235dd095412.1689748843.git.sandipan.das@amd.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 19 Jul 2023 09:12:42 -0700
+Message-ID: <CAP-5=fX1NQzus3MQapmBrdgEhDG4+XmawgytfugHHOKD0E-COg@mail.gmail.com>
+Subject: Re: [PATCH 6/6] perf vendor events amd: Add Zen 4 memory controller events
+To:     Sandipan Das <sandipan.das@amd.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        x86@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, adrian.hunter@intel.com, tglx@linutronix.de,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        eranian@google.com, ananth.narayan@amd.com, ravi.bangoria@amd.com,
+        santosh.shukla@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Gateworks imx8mm-venice-gw7905-0x consists of a SOM + baseboard.
+On Tue, Jul 18, 2023 at 11:58=E2=80=AFPM Sandipan Das <sandipan.das@amd.com=
+> wrote:
+>
+> Make the jevents parser aware of the Unified Memory Controller (UMC) PMU
+> and add events taken from Section 8.2.1 "UMC Performance Monitor Events"
+> of the Processor Programming Reference (PPR) for AMD Family 19h Model 11h
+> processors. The events capture UMC command activity such as CAS, ACTIVATE=
+,
+> PRECHARGE etc. while the metrics derive data bus utilization and memory
+> bandwidth out of these events.
+>
+> Signed-off-by: Sandipan Das <sandipan.das@amd.com>
 
-The GW700x SOM contains the following:
- - i.MX8M Mini SoC
- - LPDDR4 memory
- - eMMC Boot device
- - Gateworks System Controller (GSC) with integrated EEPROM, button
-   controller, and ADC's
- - PMIC
- - SOM connector providing:
-  - FEC GbE MII
-  - 1x SPI
-  - 2x I2C
-  - 4x UART
-  - 2x USB 2.0
-  - 1x PCI
-  - 1x SDIO (4-bit 3.3V)
-  - 1x SDIO (4-bit 3.3V/1.8V)
-  - GPIO
+Acked-by: Ian Rogers <irogers@google.com>
 
-The GW7905 Baseboard contains the following:
- - GPS
- - microSD
- - off-board I/O connector with I2C, SPI, GPIO
- - EERPOM
- - PCIe clock generator
- - 1x full-length miniPCIe socket with PCI/USB3 (via mux) and USB2.0
- - 1x half-length miniPCIe socket with USB2.0 and USB3.0
- - USB 3.0 HUB
- - USB Type-C with USB PD Sink capability and peripheral support
- - USB Type-C with USB 3.0 host support
+> ---
+>  .../arch/x86/amdzen4/memory-controller.json   | 101 ++++++++++++++++++
+>  .../arch/x86/amdzen4/recommended.json         |  84 +++++++++++++++
+>  tools/perf/pmu-events/jevents.py              |   2 +
+>  3 files changed, 187 insertions(+)
+>  create mode 100644 tools/perf/pmu-events/arch/x86/amdzen4/memory-control=
+ler.json
+>
+> diff --git a/tools/perf/pmu-events/arch/x86/amdzen4/memory-controller.jso=
+n b/tools/perf/pmu-events/arch/x86/amdzen4/memory-controller.json
+> new file mode 100644
+> index 000000000000..55263e5e4f69
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/x86/amdzen4/memory-controller.json
+> @@ -0,0 +1,101 @@
+> +[
+> +  {
+> +    "EventName": "umc_mem_clk",
+> +    "PublicDescription": "Number of memory clock cycles.",
+> +    "EventCode": "0x00",
+> +    "PerPkg": "1",
+> +    "Unit": "UMCPMC"
 
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
----
-v3:
- - change clock name from pcie0-refclk to clock-pcie0
- - start properties with compatible then reg with pinctrl following
+nit: Why use UMCPMC and then rewrite to amd_umc, why not just use "amd_umc"=
+ ?
 
-v2:
- - no changes
----
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../dts/freescale/imx8mm-venice-gw7905-0x.dts |  28 ++
- .../dts/freescale/imx8mm-venice-gw7905.dtsi   | 303 ++++++++++++++++++
- 3 files changed, 332 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-venice-gw7905-0x.dts
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-venice-gw7905.dtsi
+Thanks,
+Ian
 
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 324ecf17440a..ea63d8f65385 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -75,6 +75,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw7901.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw7902.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw7903.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw7904.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw7905-0x.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mm-verdin-nonwifi-dahlia.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mm-verdin-nonwifi-dev.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mm-verdin-nonwifi-yavia.dtb
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7905-0x.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7905-0x.dts
-new file mode 100644
-index 000000000000..914753f062cd
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7905-0x.dts
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2023 Gateworks Corporation
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx8mm.dtsi"
-+#include "imx8mm-venice-gw700x.dtsi"
-+#include "imx8mm-venice-gw7905.dtsi"
-+
-+/ {
-+	model = "Gateworks Venice GW7905-0x i.MX8MM Development Kit";
-+	compatible = "gateworks,imx8mm-gw7905-0x", "fsl,imx8mm";
-+
-+	chosen {
-+		stdout-path = &uart2;
-+	};
-+};
-+
-+/* Disable SOM interfaces not used on baseboard */
-+&fec1 {
-+	status = "disabled";
-+};
-+
-+&usdhc1 {
-+	status = "disabled";
-+};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7905.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7905.dtsi
-new file mode 100644
-index 000000000000..5eb92005195c
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7905.dtsi
-@@ -0,0 +1,303 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2023 Gateworks Corporation
-+ */
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
-+#include <dt-bindings/phy/phy-imx8-pcie.h>
-+
-+/ {
-+	led-controller {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_gpio_leds>;
-+
-+		led-0 {
-+			function = LED_FUNCTION_STATUS;
-+			color = <LED_COLOR_ID_GREEN>;
-+			gpios = <&gpio4 0 GPIO_ACTIVE_HIGH>;
-+			default-state = "on";
-+			linux,default-trigger = "heartbeat";
-+		};
-+
-+		led-1 {
-+			function = LED_FUNCTION_STATUS;
-+			color = <LED_COLOR_ID_RED>;
-+			gpios = <&gpio4 2 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+	};
-+
-+	pcie0_refclk: clock-pcie0 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <100000000>;
-+	};
-+
-+	pps {
-+		compatible = "pps-gpio";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_pps>;
-+		gpios = <&gpio4 5 GPIO_ACTIVE_HIGH>;
-+		status = "okay";
-+	};
-+
-+	reg_usb2_vbus: regulator-usb2-vbus {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_reg_usb2_en>;
-+		regulator-name = "usb2_vbus";
-+		gpio = <&gpio1 8 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+	};
-+
-+	reg_usdhc2_vmmc: regulator-usdhc2 {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_reg_usdhc2_vmmc>;
-+		regulator-name = "SD2_3P3V";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&gpio2 19 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+};
-+
-+/* off-board header */
-+&ecspi2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_spi2>;
-+	cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
-+	status = "okay";
-+};
-+
-+&gpio1 {
-+	gpio-line-names =
-+		"", "", "", "",
-+		"", "", "", "",
-+		"", "", "", "",
-+		"", "gpioa", "gpiob", "",
-+		"", "", "", "",
-+		"", "", "", "",
-+		"", "", "", "",
-+		"", "", "", "";
-+};
-+
-+&gpio4 {
-+	gpio-line-names =
-+		"", "", "", "pci_usb_sel",
-+		"", "", "", "pci_wdis#",
-+		"", "", "", "",
-+		"", "", "", "",
-+		"", "", "", "",
-+		"", "", "", "",
-+		"", "", "", "",
-+		"", "", "", "";
-+};
-+
-+&gpio5 {
-+	gpio-line-names =
-+		"", "", "", "",
-+		"gpioc", "gpiod", "", "",
-+		"", "", "", "",
-+		"", "", "", "",
-+		"", "", "", "",
-+		"", "", "", "",
-+		"", "", "", "",
-+		"", "", "", "";
-+};
-+
-+&i2c2 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c2>;
-+	status = "okay";
-+
-+	eeprom@52 {
-+		compatible = "atmel,24c32";
-+		reg = <0x52>;
-+		pagesize = <32>;
-+	};
-+};
-+
-+/* off-board header */
-+&i2c3 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c3>;
-+	status = "okay";
-+};
-+
-+&pcie_phy {
-+	fsl,refclk-pad-mode = <IMX8_PCIE_REFCLK_PAD_INPUT>;
-+	fsl,clkreq-unsupported;
-+	clocks = <&pcie0_refclk>;
-+	clock-names = "ref";
-+	status = "okay";
-+};
-+
-+&pcie0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pcie0>;
-+	reset-gpio = <&gpio4 6 GPIO_ACTIVE_LOW>;
-+	status = "okay";
-+};
-+
-+/* GPS */
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	status = "okay";
-+};
-+
-+/* USB1 - Type C front panel SINK port J14 */
-+&usbotg1 {
-+	dr_mode = "peripheral";
-+	status = "okay";
-+};
-+
-+/* USB2 4-port USB3.0 HUB:
-+ *  P1 - USBC connector (host only)
-+ *  P2 - USB2 test connector
-+ *  P3 - miniPCIe full card
-+ *  P4 - miniPCIe half card
-+ */
-+&usbotg2 {
-+	dr_mode = "host";
-+	vbus-supply = <&reg_usb2_vbus>;
-+	status = "okay";
-+};
-+
-+/* microSD */
-+&usdhc2 {
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-+	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
-+	pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_gpio>;
-+	pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_gpio>;
-+	cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
-+	vmmc-supply = <&reg_usdhc2_vmmc>;
-+	bus-width = <4>;
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_hog>;
-+
-+	pinctrl_hog: hoggrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_GPIO1_IO13_GPIO1_IO13	0x40000040 /* GPIOA */
-+			MX8MM_IOMUXC_GPIO1_IO14_GPIO1_IO14	0x40000040 /* GPIOB */
-+			MX8MM_IOMUXC_SAI1_RXD1_GPIO4_IO3	0x40000106 /* PCI_USBSEL */
-+			MX8MM_IOMUXC_SAI1_RXD5_GPIO4_IO7	0x40000106 /* PCIE_WDIS# */
-+			MX8MM_IOMUXC_SPDIF_EXT_CLK_GPIO5_IO5	0x40000040 /* GPIOD */
-+			MX8MM_IOMUXC_SPDIF_RX_GPIO5_IO4		0x40000040 /* GPIOC */
-+		>;
-+	};
-+
-+	pinctrl_gpio_leds: gpioledgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SAI1_RXFS_GPIO4_IO0	0x6	/* LEDG */
-+			MX8MM_IOMUXC_SAI1_RXD0_GPIO4_IO2	0x6	/* LEDR */
-+		>;
-+	};
-+
-+	pinctrl_i2c2: i2c2grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_I2C2_SCL_I2C2_SCL		0x400001c2
-+			MX8MM_IOMUXC_I2C2_SDA_I2C2_SDA		0x400001c2
-+		>;
-+	};
-+
-+	pinctrl_i2c3: i2c3grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_I2C3_SCL_I2C3_SCL		0x400001c2
-+			MX8MM_IOMUXC_I2C3_SDA_I2C3_SDA		0x400001c2
-+		>;
-+	};
-+
-+	pinctrl_pcie0: pciegrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SAI1_RXD4_GPIO4_IO6	0x106
-+		>;
-+	};
-+
-+	pinctrl_pps: ppsgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SAI1_RXD3_GPIO4_IO5	0x106
-+		>;
-+	};
-+
-+	pinctrl_reg_usb2_en: regusb2grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_GPIO1_IO08_GPIO1_IO8	0x6	/* USBHUB_RST# (ext p/u) */
-+		>;
-+	};
-+
-+	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SD2_RESET_B_GPIO2_IO19	0x40
-+		>;
-+	};
-+
-+	pinctrl_spi2: spi2grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK	0x140
-+			MX8MM_IOMUXC_ECSPI2_MOSI_ECSPI2_MOSI	0x140
-+			MX8MM_IOMUXC_ECSPI2_MISO_ECSPI2_MISO	0x140
-+			MX8MM_IOMUXC_ECSPI2_SS0_GPIO5_IO13	0x140
-+		>;
-+	};
-+
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_UART1_RXD_UART1_DCE_RX	0x140
-+			MX8MM_IOMUXC_UART1_TXD_UART1_DCE_TX	0x140
-+		>;
-+	};
-+
-+	pinctrl_usdhc2: usdhc2grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x190
-+			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d0
-+			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d0
-+			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d0
-+			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d0
-+			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d0
-+			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT	0xc0
-+		>;
-+	};
-+
-+	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x194
-+			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d4
-+			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d4
-+			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d4
-+			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d4
-+			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d4
-+			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT	0xc0
-+		>;
-+	};
-+
-+	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x196
-+			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d6
-+			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d6
-+			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d6
-+			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d6
-+			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d6
-+			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT	0xc0
-+		>;
-+	};
-+
-+	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12	0x1c4
-+		>;
-+	};
-+};
--- 
-2.25.1
 
+> +  },
+> +  {
+> +    "EventName": "umc_act_cmd.all",
+> +    "PublicDescription": "Number of ACTIVATE commands sent.",
+> +    "EventCode": "0x05",
+> +    "PerPkg": "1",
+> +    "Unit": "UMCPMC"
+> +  },
+> +  {
+> +    "EventName": "umc_act_cmd.rd",
+> +    "PublicDescription": "Number of ACTIVATE commands sent for reads.",
+> +    "EventCode": "0x05",
+> +    "RdWrMask": "0x1",
+> +    "PerPkg": "1",
+> +    "Unit": "UMCPMC"
+> +  },
+> +  {
+> +    "EventName": "umc_act_cmd.wr",
+> +    "PublicDescription": "Number of ACTIVATE commands sent for writes.",
+> +    "EventCode": "0x05",
+> +    "RdWrMask": "0x2",
+> +    "PerPkg": "1",
+> +    "Unit": "UMCPMC"
+> +  },
+> +  {
+> +    "EventName": "umc_pchg_cmd.all",
+> +    "PublicDescription": "Number of PRECHARGE commands sent.",
+> +    "EventCode": "0x06",
+> +    "PerPkg": "1",
+> +    "Unit": "UMCPMC"
+> +  },
+> +  {
+> +    "EventName": "umc_pchg_cmd.rd",
+> +    "PublicDescription": "Number of PRECHARGE commands sent for reads.",
+> +    "EventCode": "0x06",
+> +    "RdWrMask": "0x1",
+> +    "PerPkg": "1",
+> +    "Unit": "UMCPMC"
+> +  },
+> +  {
+> +    "EventName": "umc_pchg_cmd.wr",
+> +    "PublicDescription": "Number of PRECHARGE commands sent for writes."=
+,
+> +    "EventCode": "0x06",
+> +    "RdWrMask": "0x2",
+> +    "PerPkg": "1",
+> +    "Unit": "UMCPMC"
+> +  },
+> +  {
+> +    "EventName": "umc_cas_cmd.all",
+> +    "PublicDescription": "Number of CAS commands sent.",
+> +    "EventCode": "0x0a",
+> +    "PerPkg": "1",
+> +    "Unit": "UMCPMC"
+> +  },
+> +  {
+> +    "EventName": "umc_cas_cmd.rd",
+> +    "PublicDescription": "Number of CAS commands sent for reads.",
+> +    "EventCode": "0x0a",
+> +    "RdWrMask": "0x1",
+> +    "PerPkg": "1",
+> +    "Unit": "UMCPMC"
+> +  },
+> +  {
+> +    "EventName": "umc_cas_cmd.wr",
+> +    "PublicDescription": "Number of CAS commands sent for writes.",
+> +    "EventCode": "0x0a",
+> +    "RdWrMask": "0x2",
+> +    "PerPkg": "1",
+> +    "Unit": "UMCPMC"
+> +  },
+> +  {
+> +    "EventName": "umc_data_slot_clks.all",
+> +    "PublicDescription": "Number of clocks used by the data bus.",
+> +    "EventCode": "0x14",
+> +    "PerPkg": "1",
+> +    "Unit": "UMCPMC"
+> +  },
+> +  {
+> +    "EventName": "umc_data_slot_clks.rd",
+> +    "PublicDescription": "Number of clocks used by the data bus for read=
+s.",
+> +    "EventCode": "0x14",
+> +    "RdWrMask": "0x1",
+> +    "PerPkg": "1",
+> +    "Unit": "UMCPMC"
+> +  },
+> +  {
+> +    "EventName": "umc_data_slot_clks.wr",
+> +    "PublicDescription": "Number of clocks used by the data bus for writ=
+es.",
+> +    "EventCode": "0x14",
+> +    "RdWrMask": "0x2",
+> +    "PerPkg": "1",
+> +    "Unit": "UMCPMC"
+> +  }
+> +]
+> diff --git a/tools/perf/pmu-events/arch/x86/amdzen4/recommended.json b/to=
+ols/perf/pmu-events/arch/x86/amdzen4/recommended.json
+> index 5e6a793acf7b..96e06401c6cb 100644
+> --- a/tools/perf/pmu-events/arch/x86/amdzen4/recommended.json
+> +++ b/tools/perf/pmu-events/arch/x86/amdzen4/recommended.json
+> @@ -330,5 +330,89 @@
+>      "MetricGroup": "data_fabric",
+>      "PerPkg": "1",
+>      "ScaleUnit": "6.103515625e-5MiB"
+> +  },
+> +  {
+> +    "MetricName": "umc_data_bus_utilization",
+> +    "BriefDescription": "Memory controller data bus utilization.",
+> +    "MetricExpr": "d_ratio(umc_data_slot_clks.all / 2, umc_mem_clk)",
+> +    "MetricGroup": "memory_controller",
+> +    "PerPkg": "1",
+> +    "ScaleUnit": "100%"
+> +  },
+> +  {
+> +    "MetricName": "umc_cas_cmd_rate",
+> +    "BriefDescription": "Memory controller CAS command rate.",
+> +    "MetricExpr": "d_ratio(umc_cas_cmd.all * 1000, umc_mem_clk)",
+> +    "MetricGroup": "memory_controller",
+> +    "PerPkg": "1"
+> +  },
+> +  {
+> +    "MetricName": "umc_cas_cmd_read_ratio",
+> +    "BriefDescription": "Ratio of memory controller CAS commands for rea=
+ds.",
+> +    "MetricExpr": "d_ratio(umc_cas_cmd.rd, umc_cas_cmd.all)",
+> +    "MetricGroup": "memory_controller",
+> +    "PerPkg": "1",
+> +    "ScaleUnit": "100%"
+> +  },
+> +  {
+> +    "MetricName": "umc_cas_cmd_write_ratio",
+> +    "BriefDescription": "Ratio of memory controller CAS commands for wri=
+tes.",
+> +    "MetricExpr": "d_ratio(umc_cas_cmd.wr, umc_cas_cmd.all)",
+> +    "MetricGroup": "memory_controller",
+> +    "PerPkg": "1",
+> +    "ScaleUnit": "100%"
+> +  },
+> +  {
+> +    "MetricName": "umc_mem_read_bandwidth",
+> +    "BriefDescription": "Estimated memory read bandwidth.",
+> +    "MetricExpr": "(umc_cas_cmd.rd * 64) / 1e6 / duration_time",
+> +    "MetricGroup": "memory_controller",
+> +    "PerPkg": "1",
+> +    "ScaleUnit": "1MB/s"
+> +  },
+> +  {
+> +    "MetricName": "umc_mem_write_bandwidth",
+> +    "BriefDescription": "Estimated memory write bandwidth.",
+> +    "MetricExpr": "(umc_cas_cmd.wr * 64) / 1e6 / duration_time",
+> +    "MetricGroup": "memory_controller",
+> +    "PerPkg": "1",
+> +    "ScaleUnit": "1MB/s"
+> +  },
+> +  {
+> +    "MetricName": "umc_mem_bandwidth",
+> +    "BriefDescription": "Estimated combined memory bandwidth.",
+> +    "MetricExpr": "(umc_cas_cmd.all * 64) / 1e6 / duration_time",
+> +    "MetricGroup": "memory_controller",
+> +    "PerPkg": "1",
+> +    "ScaleUnit": "1MB/s"
+> +  },
+> +  {
+> +    "MetricName": "umc_cas_cmd_read_ratio",
+> +    "BriefDescription": "Ratio of memory controller CAS commands for rea=
+ds.",
+> +    "MetricExpr": "d_ratio(umc_cas_cmd.rd, umc_cas_cmd.all)",
+> +    "MetricGroup": "memory_controller",
+> +    "PerPkg": "1",
+> +    "ScaleUnit": "100%"
+> +  },
+> +  {
+> +    "MetricName": "umc_cas_cmd_rate",
+> +    "BriefDescription": "Memory controller CAS command rate.",
+> +    "MetricExpr": "d_ratio(umc_cas_cmd.all * 1000, umc_mem_clk)",
+> +    "MetricGroup": "memory_controller",
+> +    "PerPkg": "1"
+> +  },
+> +  {
+> +    "MetricName": "umc_activate_cmd_rate",
+> +    "BriefDescription": "Memory controller ACTIVATE command rate.",
+> +    "MetricExpr": "d_ratio(umc_act_cmd.all * 1000, umc_mem_clk)",
+> +    "MetricGroup": "memory_controller",
+> +    "PerPkg": "1"
+> +  },
+> +  {
+> +    "MetricName": "umc_precharge_cmd_rate",
+> +    "BriefDescription": "Memory controller PRECHARGE command rate.",
+> +    "MetricExpr": "d_ratio(umc_pchg_cmd.all * 1000, umc_mem_clk)",
+> +    "MetricGroup": "memory_controller",
+> +    "PerPkg": "1"
+>    }
+>  ]
+> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jev=
+ents.py
+> index 12e80bb7939b..c2a5728253db 100755
+> --- a/tools/perf/pmu-events/jevents.py
+> +++ b/tools/perf/pmu-events/jevents.py
+> @@ -272,6 +272,7 @@ class JsonEvent:
+>            'imx8_ddr': 'imx8_ddr',
+>            'L3PMC': 'amd_l3',
+>            'DFPMC': 'amd_df',
+> +          'UMCPMC': 'amd_umc',
+>            'cpu_core': 'cpu_core',
+>            'cpu_atom': 'cpu_atom',
+>        }
+> @@ -330,6 +331,7 @@ class JsonEvent:
+>          ('Invert', 'inv=3D'),
+>          ('SampleAfterValue', 'period=3D'),
+>          ('UMask', 'umask=3D'),
+> +        ('RdWrMask', 'rdwrmask=3D'),
+>      ]
+>      for key, value in event_fields:
+>        if key in jd and jd[key] !=3D '0':
+> --
+> 2.34.1
+>
