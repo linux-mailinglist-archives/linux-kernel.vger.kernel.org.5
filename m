@@ -2,65 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB3EC758CE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847C1758CE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbjGSFGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 01:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48694 "EHLO
+        id S229779AbjGSFMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 01:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjGSFGX (ORCPT
+        with ESMTP id S229454AbjGSFMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 01:06:23 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1531BF3
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 22:06:22 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3158a5e64b6so6136721f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 22:06:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689743180; x=1690347980;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from:sender
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CacrP58zq0+usnB3XTcjIP1l3ZG/LBc8uVYTg+/ZhHE=;
-        b=IxgI5XlSaeBgu1PFj1XffbjNHH6gjpVLhln6sVG86XmAyxPHceVr3CdYFztsBc0PDL
-         7ECQ9Az7R2Gws0HlzFItYT75w2IeEdyitVN1iGtpUX9Ig9fxqCOAS/raQxJWojk4OKkl
-         CqK2JFwGSN2uQI1eIsHfdmWaRiw78EAuZY6wMBOqmGolWQtJN3hChkT/lcYFCe8momu5
-         IWzwiZQsD9ZuJIa0WqGoRQ2C8A1lVeLQylBEkSqwTRo6jKkjzDdnCL+t2kRhe2nfxmIZ
-         aF7Utea4wMVIfyxfK4bFNbOtY1fBMMSnzIWg8/8jsdIFKHOMEem8MGDzhG0fn+Sus03y
-         LJJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689743180; x=1690347980;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from:sender
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CacrP58zq0+usnB3XTcjIP1l3ZG/LBc8uVYTg+/ZhHE=;
-        b=fnowdCsJQpbzl0744hSUIxFYYsv1IvuEYkNN2Z5DNww0fM6QC/W/o6Q2MyA+0aMJ8V
-         vOmEDmCXO9b6Fmr/hjQD1Xo6Wd2s5Wlo3Kzx+rNkVBnaWwLDlmwz0nd6SnWfgiVjmUjj
-         o1LCMWqoEW96uI8AXnO6rdmSaewGcAXW7Ua6Tmumzv2P8cj0E4Aj+7GYPfE+5bAulBSt
-         fFb+YL3aOk168hMbuDJVaxHU+yzry0mYzNxKTTLmUQi6PWOk3sbs6tDDIDeN0mNERLup
-         UQU6y7QfwYRSftu+VIb5oFalzrLwGM3pjmuakHWs3k1X2ciWGFTSRS6CvBady1jm0m/R
-         tLJQ==
-X-Gm-Message-State: ABy/qLYtmil7qriFpE3IuoRz+D6Vlhfr5WE0gEtZvxbJ/DZywR4Vmd2W
-        62t9sy2WK1R4YbEvUjdFuacrA3wxYPNxRtyERRgFBacK2v4=
-X-Google-Smtp-Source: APBJJlHyXo//D6l20y7ps/JakIZR/7tky4G6kIPHac2NdZy1caEM8dtk5Tce7IxyeVSp88egGmVCE8cxi+FRPay/Dbs=
-X-Received: by 2002:adf:fd89:0:b0:314:4437:beab with SMTP id
- d9-20020adffd89000000b003144437beabmr11779504wrr.55.1689743180159; Tue, 18
- Jul 2023 22:06:20 -0700 (PDT)
+        Wed, 19 Jul 2023 01:12:43 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2C8DA1BF5;
+        Tue, 18 Jul 2023 22:12:42 -0700 (PDT)
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 2346880AA;
+        Wed, 19 Jul 2023 05:12:38 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-omap@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] serial: core: Fix serial core port id to not use port->line
+Date:   Wed, 19 Jul 2023 08:12:33 +0300
+Message-ID: <20230719051235.46396-1-tony@atomide.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Sender: getarunks@gmail.com
-X-Google-Sender-Delegation: getarunks@gmail.com
-From:   Arun KS <arunks.linux@gmail.com>
-Date:   Wed, 19 Jul 2023 10:36:08 +0530
-X-Google-Sender-Auth: yKFI9T3yjp-s4_w89q2fM5l5iV4
-Message-ID: <CAKZGPAOYPp3ANWfBWxcsT3TJdPt8jH-f2ZJzpin=UZ=-b_-QFg@mail.gmail.com>
-Subject: Question on sched_clock
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, Arun KS <getarunks@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,52 +46,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The serial core port id should be serial core controller specific port
+instance, which is not always the port->line index.
 
-Kernel=E2=80=99s printk uses local_clock() for timestamps and it is mapped =
-to
-sched_clock(). Two problems/requirements I see,
+For example, 8250 driver maps a number of legacy ports, and when a
+hardware specific device driver takes over, we typically have one
+driver instance for each port. Let's instead add port->port_id to
+keep track serial ports mapped to each serial core controller instance.
 
-One, Kernel=E2=80=99s printk timestamps start from 0, I want to change this=
- to
-match with actual time since boot.
-Two, sched_clock() doesn=E2=80=99t account for time spend in low power
-state(suspend to ram)
+Currently this is only a cosmetic issue for the serial core port device
+names. The issue can be noticed looking at /sys/bus/serial-base/devices
+for example though. Let's fix the issue to avoid port addressing issues
+later on.
 
-Could workout patches to modify these behaviours and found working in
-my system. But need to hear expert opinion on why this is not done in
-the upstream.
+Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to enable runtime PM")
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ drivers/tty/serial/8250/8250_core.c  | 2 ++
+ drivers/tty/serial/serial_base_bus.c | 2 +-
+ include/linux/serial_core.h          | 1 +
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/time/sched_clock.c b/kernel/time/sched_clock.c
-index 68d6c1190ac7..b63b2ded5727 100644
---- a/kernel/time/sched_clock.c
-+++ b/kernel/time/sched_clock.c
-@@ -190,7 +190,10 @@ sched_clock_register(u64 (*read)(void), int bits,
-unsigned long rate)
-        /* Update epoch for new counter and update 'epoch_ns' from old coun=
-ter*/
-        new_epoch =3D read();
-        cyc =3D cd.actual_read_sched_clock();
--       ns =3D rd.epoch_ns + cyc_to_ns((cyc - rd.epoch_cyc) &
-rd.sched_clock_mask, rd.mult, rd.shift);
-+       if (!cyc)
-+               ns =3D cyc_to_ns(new_epoch, new_mult, new_shift)
-+       else
-+               ns =3D rd.epoch_ns + cyc_to_ns((cyc - rd.epoch_cyc) &
-rd.sched_clock_mask, rd.mult, rd.shift);
-        cd.actual_read_sched_clock =3D read;
-
-        rd.read_sched_clock     =3D read;
-
-@@ -287,7 +290,6 @@ void sched_clock_resume(void)
- {
-        struct clock_read_data *rd =3D &cd.read_data[0];
-
--       rd->epoch_cyc =3D cd.actual_read_sched_clock();
-        hrtimer_start(&sched_clock_timer, cd.wrap_kt, HRTIMER_MODE_REL_HARD=
-);
-        rd->read_sched_clock =3D cd.actual_read_sched_clock;
- }
-
-Regards,
-Arun
+diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
+--- a/drivers/tty/serial/8250/8250_core.c
++++ b/drivers/tty/serial/8250/8250_core.c
+@@ -497,6 +497,7 @@ static struct uart_8250_port *serial8250_setup_port(int index)
+ 
+ 	up = &serial8250_ports[index];
+ 	up->port.line = index;
++	up->port.port_id = index;
+ 
+ 	serial8250_init_port(up);
+ 	if (!base_ops)
+@@ -1040,6 +1041,7 @@ int serial8250_register_8250_port(const struct uart_8250_port *up)
+ 			uart_remove_one_port(&serial8250_reg, &uart->port);
+ 
+ 		uart->port.ctrl_id	= up->port.ctrl_id;
++		uart->port.port_id	= up->port.port_id;
+ 		uart->port.iobase       = up->port.iobase;
+ 		uart->port.membase      = up->port.membase;
+ 		uart->port.irq          = up->port.irq;
+diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
+--- a/drivers/tty/serial/serial_base_bus.c
++++ b/drivers/tty/serial/serial_base_bus.c
+@@ -136,7 +136,7 @@ struct serial_port_device *serial_base_port_add(struct uart_port *port,
+ 	err = serial_base_device_init(port, &port_dev->dev,
+ 				      &ctrl_dev->dev, &serial_port_type,
+ 				      serial_base_port_release,
+-				      port->line);
++				      port->port_id);
+ 	if (err)
+ 		goto err_put_device;
+ 
+diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+--- a/include/linux/serial_core.h
++++ b/include/linux/serial_core.h
+@@ -460,6 +460,7 @@ struct uart_port {
+ 	int			(*iso7816_config)(struct uart_port *,
+ 						  struct serial_iso7816 *iso7816);
+ 	int			ctrl_id;		/* optional serial core controller id */
++	int			port_id;		/* optional serial core port id */
+ 	unsigned int		irq;			/* irq number */
+ 	unsigned long		irqflags;		/* irq flags  */
+ 	unsigned int		uartclk;		/* base uart clock */
+-- 
+2.41.0
