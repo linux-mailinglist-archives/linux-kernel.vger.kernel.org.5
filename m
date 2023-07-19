@@ -2,195 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD28759147
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C91BB75914A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbjGSJMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:12:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59204 "EHLO
+        id S231211AbjGSJNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:13:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbjGSJMt (ORCPT
+        with ESMTP id S229823AbjGSJNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:12:49 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96BD10B
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:12:48 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fcd615d7d6so10303385e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:12:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689757967; x=1690362767;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=wX2bUVJUdm0gNSGeMKdGK2i21/1BBolm7LfONnjZla0=;
-        b=QZC34lzd5JM3r8Rp8FHRSWEinB1TOQAbRi/EEDuBD8C9dvO3NjyWTxc/hSVkBxlpYX
-         0f0w6kOAVj3JVulIbTx+E+KWoZtMVHazeuvUp7eGB3mpLg789/3chnPYX2012jpiDHTH
-         ZyJ2NqGK8EbnLfsBj67W2qtWJOU+M0aBftkIJCe/GpJFIj8Q6HMU1EwBXGyO9jJ3VdMo
-         oRoS1X6g2uYAEamqMb/8nutQY1cyT4ZOI6N9aDDvxX3yYLCpu4Bw1hRKF1RUjrHFIej/
-         fM0xQ8y6jDqOJoEtZECxem13N92XdY95Nu04d8vWtw9lAluwe+qE8MrZmxBRjsYR0TB7
-         rbPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689757967; x=1690362767;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wX2bUVJUdm0gNSGeMKdGK2i21/1BBolm7LfONnjZla0=;
-        b=Ut9NO9QTpT73ZyZH/RfWjTj4wvKMMfxDoZWdZRRNptWyVyv1Be2zmVSCve7IUeoDCr
-         5FdZj/+TDsd96vA73951BpQlzuyGTcbWJxwtL4wNLCo1/Wkio9m2cRriTaijXq/YTdpF
-         XQvsQV0YWVdtlCCJbGrG38DayV8JqzWxWQP2NTWfyWsvuN4N8rQA93jbFIBLMDSJ9qRn
-         paTDIeZHD8gSCtYPThgpOU4M32rALV773vJ0lrIAcFJn8jSFs0dabVOgbq0IhH4AyFDd
-         vjXuxRBXk7DrXCInQx4W5lXuZPVP64rTyA6r/PgoO4wqILKCLOsCajYHJBVBxLCc65g1
-         fAIw==
-X-Gm-Message-State: ABy/qLa74YzrzI7UmRO8qeUAcvztmfFhXuYuJUeQvp1s+Jx6bzFoMnvj
-        8WBFR7CCdVReYdzN55VLOExXEVJcj7CIPnL9L3X0TQ==
-X-Google-Smtp-Source: APBJJlEnVtXZT4M8E7W4vlwbq0bQ+X9mtp21HXsF24aTAaHzVHsIE84fJH7dWsRDCnaVzB28tDHY+hL/kdPbV2+gli8=
-X-Received: by 2002:ac2:5df5:0:b0:4fd:d92e:31ca with SMTP id
- z21-20020ac25df5000000b004fdd92e31camr215640lfq.36.1689757966919; Wed, 19 Jul
- 2023 02:12:46 -0700 (PDT)
+        Wed, 19 Jul 2023 05:13:16 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC0F10B;
+        Wed, 19 Jul 2023 02:13:14 -0700 (PDT)
+Received: from dggpemm500002.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R5VT71yWZzrRr5;
+        Wed, 19 Jul 2023 17:12:27 +0800 (CST)
+Received: from [10.174.178.247] (10.174.178.247) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 19 Jul 2023 17:13:11 +0800
+Subject: Re: [PATCH v3] ACPI/IORT: Remove erroneous id_count check in
+ iort_node_get_rmr_info()
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Guanghui Feng <guanghuifeng@linux.alibaba.com>
+CC:     "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolin.wang@linux.alibaba.com" <baolin.wang@linux.alibaba.com>,
+        "alikernel-developer@linux.alibaba.com" 
+        <alikernel-developer@linux.alibaba.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>
+References: <1689593625-45213-1-git-send-email-guanghuifeng@linux.alibaba.com>
+ <ZLZEq0QBBW4rcxJM@lpieralisi> <597f481b0e5149dabe4821ca618af6b3@huawei.com>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <613da2c3-d515-b49c-4ff3-cf94836b2acf@huawei.com>
+Date:   Wed, 19 Jul 2023 17:13:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20230718134120.81199-1-aaron.lu@intel.com> <20230718134120.81199-4-aaron.lu@intel.com>
- <CAKfTPtAu33AN6=X82T=yOgm40S8OXi+sPcF0QyD-bYRPV=xPEg@mail.gmail.com>
- <20230719051826.GB84059@ziqianlu-dell> <20230719081102.GB90441@ziqianlu-dell>
-In-Reply-To: <20230719081102.GB90441@ziqianlu-dell>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 19 Jul 2023 11:12:36 +0200
-Message-ID: <CAKfTPtAOC9OXjPHLRU_g1OQKaYUKcDbnZkJ=ZJpAtUucjxAOeA@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/4] sched/fair: delay update_tg_load_avg() for
- cfs_rq's removed load
-To:     Aaron Lu <aaron.lu@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Nitin Tekchandani <nitin.tekchandani@intel.com>,
-        Yu Chen <yu.c.chen@intel.com>,
-        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <597f481b0e5149dabe4821ca618af6b3@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.247]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Jul 2023 at 10:11, Aaron Lu <aaron.lu@intel.com> wrote:
->
-> On Wed, Jul 19, 2023 at 01:18:26PM +0800, Aaron Lu wrote:
-> > On Tue, Jul 18, 2023 at 06:01:51PM +0200, Vincent Guittot wrote:
-> > > Have you tried to remove update_cfs_group() from enqueue/dequeue and
-> > > only let the tick update the share periodically ?
-> >
-> > patch4 kind of did that :-)
-> >
->
-> More about this.
->
-> If I remove update_cfs_group() in dequeue_task_fair() on top of patch4
-> like this:
->
-> From 43d5c12f0b2180c99149e663a71c610e31023d90 Mon Sep 17 00:00:00 2001
-> From: Aaron Lu <aaron.lu@intel.com>
-> Date: Wed, 19 Jul 2023 14:51:07 +0800
-> Subject: [PATCH 1/2] sched/fair: completely remove update_cfs_group() in
->  dequeue path
->
-> ---
->  kernel/sched/fair.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 2adb6a6abbce..a21ab72819ce 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6434,7 +6434,6 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->
->                 update_load_avg(cfs_rq, se, UPDATE_TG);
->                 se_update_runnable(se);
-> -               update_cfs_group(se);
->
->                 cfs_rq->h_nr_running--;
->                 cfs_rq->idle_h_nr_running -= idle_h_nr_running;
-> --
-> 2.40.1
->
-> Than P95 latency of the schbench workload I described in patch4's
-> changelog will increase to > 1ms(base and patch4's P95 < 100us):
->
-> Latency percentiles (usec) runtime 300 (s) (18504 total samples)
->         50.0th: 20 (9537 samples)
->         75.0th: 25 (4869 samples)
->         90.0th: 29 (2264 samples)
->         95.0th: 2564 (909 samples)
->         *99.0th: 20768 (740 samples)
->         99.5th: 23520 (93 samples)
->         99.9th: 31520 (74 samples)
->         min=6, max=40072
->
-> If I further remove update_cfs_group() completely in enqueue path on top
-> of the last change:
->
-> From 4e4cb31590ca2e4080ece9cfa9dfaaf26501c60d Mon Sep 17 00:00:00 2001
-> From: Aaron Lu <aaron.lu@intel.com>
-> Date: Wed, 19 Jul 2023 15:36:24 +0800
-> Subject: [PATCH 2/2] sched/fair: completely remove update_cfs_group() from
->  enqueue path
->
-> ---
->  kernel/sched/fair.c | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index a21ab72819ce..8fc325112282 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4847,8 +4847,6 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
->          */
->         update_load_avg(cfs_rq, se, UPDATE_TG | DO_ATTACH);
->         se_update_runnable(se);
-> -       if (cfs_rq->nr_running > 0)
-> -               update_cfs_group(se);
->         account_entity_enqueue(cfs_rq, se);
->
->         if (flags & ENQUEUE_WAKEUP)
-> @@ -6344,7 +6342,6 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->
->                 update_load_avg(cfs_rq, se, UPDATE_TG);
->                 se_update_runnable(se);
-> -               update_cfs_group(se);
->
->                 cfs_rq->h_nr_running++;
->                 cfs_rq->idle_h_nr_running += idle_h_nr_running;
-> --
-> 2.40.1
->
-> Then P50's latency will bump to ~4ms from ~20us:
-> Latency percentiles (usec) runtime 300 (s) (17940 total samples)
->         50.0th: 3996 (12092 samples)
->         75.0th: 4004 (4919 samples)
->         90.0th: 4004 (0 samples)
->         95.0th: 4012 (353 samples)
->         *99.0th: 20000 (487 samples)
->         99.5th: 20000 (0 samples)
->         99.9th: 31136 (72 samples)
->         min=7, max=37402
-> real    5m36.633s
-> user    47m33.947s
-> sys     4m47.097s
->
-> So for the read side, maybe just keep what patch4 does?
+On 2023/7/18 16:56, Shameerali Kolothum Thodi wrote:
+>> [+Catalin, Will, Shameer]
+>>
+>> On Mon, Jul 17, 2023 at 07:33:45PM +0800, Guanghui Feng wrote:
+>>> According to the ARM IORT specifications DEN 0049 issue E,
+>>> the "Number of IDs" field in the ID mapping format reports
+>>> the number of IDs in the mapping range minus one.
+>>>
+>>> In iort_node_get_rmr_info(), we erroneously skip ID mappings
+>>> whose "Number of IDs" equal to 0, resulting in valid mapping
+>>> nodes with a single ID to map being skipped, which is wrong.
+>>>
+>>> Fix iort_node_get_rmr_info() by removing the bogus id_count
+>>> check.
+>>>
+>>> Fixes: 491cf4a6735a ("ACPI/IORT: Add support to retrieve IORT RMR
+>> reserved regions")
+>>> Signed-off-by: Guanghui Feng<guanghuifeng@linux.alibaba.com>
+>>> ---
+>>>   drivers/acpi/arm64/iort.c | 3 ---
+>>>   1 file changed, 3 deletions(-)
+>>>
+>>> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+>>> index 3631230..56d8873 100644
+>>> --- a/drivers/acpi/arm64/iort.c
+>>> +++ b/drivers/acpi/arm64/iort.c
+>>> @@ -1007,9 +1007,6 @@ static void iort_node_get_rmr_info(struct
+>> acpi_iort_node *node,
+>>>   	for (i = 0; i < node->mapping_count; i++, map++) {
+>>>   		struct acpi_iort_node *parent;
+>>>
+>>> -		if (!map->id_count)
+>>> -			continue;
+>>> -
+>>>   		parent = ACPI_ADD_PTR(struct acpi_iort_node, iort_table,
+>>>   				      map->output_reference);
+>>>   		if (parent != iommu)
+>> Shameer, I know this may look like overkill since the hunk we are
+>> removing is buggy but can you please test this patch on platforms
+>> with RMR to make sure we are not triggering regressions by removing
+>> it (by the specs that's what should be done but current firmware
+>> is always something to reckon with) ?
+> Yes, that is a valid fix. Unlikely it will be a problem. Anyway, I have requested
+> Hanjun to help with the testing as I don't have a test setup with me now.
 
-yes, skipping update_cfs_group() at enqueue bypass the opportunity to
-increase the share and get more running time for the group until the
-update really happen
+Valid fix for me as well, we had a firmware bug which reported the
+numbers of ID as 1 when we only have one ID mapping, so remove the
+check is fine for the old firmware, but to make it sure, we need some
+test before give it a pass.
 
->
-> Thanks,
-> Aaron
+> 
+> Hanjun, please help.
+
+I need some time to get it properly tested on two versions of firmware,
+and get the test machine properly setup, please allow me give the
+feedback next week.
+
+Thanks
+Hanjun
