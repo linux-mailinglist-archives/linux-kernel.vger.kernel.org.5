@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3775175941D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE0475941F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbjGSLYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 07:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
+        id S229796AbjGSL0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 07:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbjGSLYr (ORCPT
+        with ESMTP id S229525AbjGSL0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 07:24:47 -0400
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924C0E4D
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:24:45 -0700 (PDT)
-Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-44358c019ddso2386654137.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:24:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1689765884; x=1690370684;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OZSrWDc/cBveds+xSFFWhnQ/pzCd4lTeY64B0PPEGW0=;
-        b=T1IMgiireLSvSXiTqLXmFjq9F8EsjIjVEm5sr6vcGRZMB9arVcgUqsKwzTbbVZ5B0d
-         ajVxvut0epp7SNwmwKzEJMgdJvXYkYEb8jBPrsW0yDzJnFFxJoO/RQdh2N1yZJ5O9MRS
-         Ev8Qg9vc4kY2/ME9SqOM+vCW3ViGaZsYa86Kxz9XR/ZPgndF9vzesGT0RksXS5eMc04h
-         ell7+2PcrXlKisrXM96SjKXJ5kwoMY57qLfIyeplwiEJjo9Q4LxRnOriSbtInNjcqq+o
-         I6RYEDjc39Gn0ddNJHe53OJEYZqvaM+hrQhZij6E4WH+TgsfMnxGoOOW7yjSfGQETgYn
-         U63A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689765884; x=1690370684;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OZSrWDc/cBveds+xSFFWhnQ/pzCd4lTeY64B0PPEGW0=;
-        b=I200QhGGWHkY0nVJBHiG/odxLcKoHBMeJ1NRh0eW+usdqGjJo6yuoFvRSN+5eoGOlK
-         0qvLCQSp3NGQ/Ml4skfw4B2gUgGZ7BGUgGSSRHfnBJSihNGJrI6LzRYcXHWHZG0r65Zv
-         s9IMzDXSWm3qiR4dqxNSW2WeRaghgLiVBzew5rRnaY6yl0bCsrU/lEgYdr/ydQSbld/v
-         7631JccHSpdHjHieRf9F6wqLvK1/m4firCuagl8LNJRoZWRdBUqK3L9CFeqhVBzgGi0T
-         ODwfPiZHlEzw/bLyj+NaC4fw6yzl5tLUpcbKu9XHUcvu5ue8D12G0fJPB2FCreIeZHMz
-         OaWQ==
-X-Gm-Message-State: ABy/qLYygRd5GhEBBUeA75zTKfSNd+KHBesxf+ZpkYuCwcuJNUo8ojRL
-        11BdPQXukQA1v7hgiEO6aMOmrCekzLhYHE/9JsQINQ==
-X-Google-Smtp-Source: APBJJlETfEXohyULgSqD+dtrZrcCLBAUgDaqwYgYehWjp3RUYrt8J/1ty1q/3ivKhd5XQbecf0XzDYFagtzXJqIh+lM=
-X-Received: by 2002:a67:fa85:0:b0:443:7503:a537 with SMTP id
- f5-20020a67fa85000000b004437503a537mr8935739vsq.28.1689765884686; Wed, 19 Jul
- 2023 04:24:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230714174525.4055475-1-robh@kernel.org>
-In-Reply-To: <20230714174525.4055475-1-robh@kernel.org>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 19 Jul 2023 13:24:33 +0200
-Message-ID: <CAMRc=MeR=uEufQ3p2cqN2ABL1w9V0QHRSYLv_WVZ97q8C4AgJQ@mail.gmail.com>
-Subject: Re: [PATCH] gpio: Explicitly include correct DT includes
-To:     Rob Herring <robh@kernel.org>
-Cc:     Alban Bedel <albeu@free.fr>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Doug Berger <opendmb@gmail.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Daniel Palmer <daniel@thingy.jp>,
-        Romain Perier <romain.perier@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
-        Srinivas Neeli <srinivas.neeli@amd.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Nandor Han <nandor.han@ge.com>, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        Wed, 19 Jul 2023 07:26:32 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2292CE4D;
+        Wed, 19 Jul 2023 04:26:31 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id EB43C3200929;
+        Wed, 19 Jul 2023 07:26:27 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Wed, 19 Jul 2023 07:26:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1689765987; x=1689852387; bh=mD
+        imigewmW3nMEJvSbjoGyHdnkBM+54sakILIw7rvCw=; b=lxiBjfqdegMMLqCzTD
+        rDjT/jzYGMvhreJ8bov2nBM3Q23o+uXqmDkyBqBIlUjBcrAgOfe9FRCY642KGJ+f
+        coXKBZIi1vxWVXDY1ATwy1FR9tHj9olK4tB9COiv74a31gIpS4Yt4xM9tdIyzuIw
+        9WunAtm7tiYbzrsUBwJjf2BozUqUH3PbguNTsZ7U4oMENeBwXa5/3oDmhljC/CI3
+        nBTZJTH2GqTiY3H+mW/mhVWKBuHK2k5T9snjQ3bjInyDnfwuC8JtUIFcQ97yIxmd
+        sXQ/wHcNIybTDB6QEXUOkcv6zk73kGeiFkfLU3RSmJYjmn86w/QKeCz8b8etXzUg
+        XLIQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1689765987; x=1689852387; bh=mDimigewmW3nM
+        EJvSbjoGyHdnkBM+54sakILIw7rvCw=; b=Qv3DbYCHxiXOUWbm/ZC3xIqdV99fk
+        gUGmF4B9p/tGncXwnJb0h9XhjrgRluwAdGu3Tm+c/YLKvV+ag3q5M1HMEhAmvmJr
+        Gq/fdU0zzC8rAMXttuRVdcFL3EFfnbvn4f24DZsBCiw5KVWYNTWaSdMaaMmqF4gt
+        O/0+rC06YVRuM1d0iykH3WcYnYtPwhAGHKpjlBMOIEsxBAXS9NrH76pPjVZEPtUA
+        rPvl7R2h/jYsHBhV2x5UfNuj5joP1TpwvLjnLc3Y5fhoCsqPC+vDPntIm7KXinvr
+        L7PKZ+kH1zreKGVRYR9Hm3qXPrCbsGU/7VuNi+dcNkKEzxwfVwff9Sihg==
+X-ME-Sender: <xms:Y8i3ZKarZHkOWUoyj1WKDLDUrq7euxanvjr8C4B2X6fEwBh0rGuLFA>
+    <xme:Y8i3ZNZVEpvgOHS8Hin8q9aB3fSeoHv1TMpXhTSG6LlKZhE5g-FLzH1ru8Fc9F8GY
+    Ou1fKFxCkmHW3-DNiA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrgeekgddvgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:Y8i3ZE8olSz_V8K5f0SGTXRLq4zStgly3_jVCCj5wILcRdOsGS0MiQ>
+    <xmx:Y8i3ZMqPcO26jlO20bp_8k1F1fLMfr0ORJol_f-r1z3drR6L12hmCA>
+    <xmx:Y8i3ZFp5mDDDJDew0ynktm6nbzB-GlX_wxI6svqt0fR3j6FJ92_X4Q>
+    <xmx:Y8i3ZA03US-QuJ8sXvoZrOIegS3Zps0PEnnhlgwRo7xT1-CI3ItfLA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 01EECB60086; Wed, 19 Jul 2023 07:26:26 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-531-gfdfa13a06d-fm-20230703.001-gfdfa13a0
+Mime-Version: 1.0
+Message-Id: <3e7dbbf3-351c-430e-9bfe-a9e9e9cb895c@app.fastmail.com>
+In-Reply-To: <319ee5f7-2dbd-430d-8ab1-a7b072ac7a9f@kadam.mountain>
+References: <20230718193913.3578660-1-arnd@kernel.org>
+ <319ee5f7-2dbd-430d-8ab1-a7b072ac7a9f@kadam.mountain>
+Date:   Wed, 19 Jul 2023 13:26:06 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Dan Carpenter" <dan.carpenter@linaro.org>,
+        "Arnd Bergmann" <arnd@kernel.org>
+Cc:     "Linus Walleij" <linus.walleij@linaro.org>,
+        "Bartosz Golaszewski" <brgl@bgdev.pl>,
+        "Andy Shevchenko" <andy.shevchenko@gmail.com>,
+        "Shenwei Wang" <shenwei.wang@nxp.com>,
+        "Andy Shevchenko" <andy@kernel.org>, "Marek Vasut" <marex@denx.de>,
+        "Marc Zyngier" <maz@kernel.org>,
+        "Dan Carpenter" <error27@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] gpio: mxc: fix unused function warnings
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -100,21 +94,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 7:45=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
+On Wed, Jul 19, 2023, at 11:44, Dan Carpenter wrote:
+> On Tue, Jul 18, 2023 at 09:39:08PM +0200, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> The new runtime PM support causes a harmless warning about
+>> unused functions when runtime PM is disabled:
+>> 
+>> drivers/gpio/gpio-mxc.c:612:12: error: 'mxc_gpio_runtime_resume' defined but not used [-Werror=unused-function]
+>> drivers/gpio/gpio-mxc.c:602:12: error: 'mxc_gpio_runtime_suspend' defined but not used [-Werror=unused-function]
+>> 
+>> Change the driver to use the more modern helper macros that avoid these
+>> warnings, and remove the now unnecessary __maybe_unused annotations
+>> 
+>> Fixes: 3283d820dce64 ("gpio: mxc: add runtime pm support")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
 >
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
+> The patch is nice, but I don't understand why __maybe_unused doesn't
+> work?
 
-Applied, thanks!
+Adding __maybe_unused to both mxc_gpio_runtime_resume and
+mxc_gpio_runtime_suspend would avoid the warning, and that is
+what we used to do in the past before we had the new macros,
+including for the mxc_gpio_noirq_suspend/mxc_gpio_noirq_resume
+functions in this driver.
 
-Bart
+Since I'm moving the driver to the new method, it's best to
+do it for both pairs of PM functions at the same time, so
+the __maybe_unused annotation becomes redundant.
+
+      Arnd
