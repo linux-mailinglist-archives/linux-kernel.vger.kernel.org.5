@@ -2,92 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1327592F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0CD7592F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbjGSK1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46180 "EHLO
+        id S230404AbjGSK12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231415AbjGSK1Y (ORCPT
+        with ESMTP id S231379AbjGSK1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:27:24 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9497213F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:26:32 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-78360f61ba0so330484339f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:26:32 -0700 (PDT)
+        Wed, 19 Jul 2023 06:27:10 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED1F2D6D
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:26:07 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b701e1c80fso99166231fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:26:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689762390; x=1692354390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MDKpzyl715FXpvBs//brcAoLgtj+1UL6KkC6I4T68sU=;
-        b=oQJ2CxIW4tsldI/cUWFdXbWkbYNYGGRppQlvoyZO5Jkx4G6fK3t4l7Zr0zvd82wVuz
-         9A90SIKHVhvb+ceyh2cdCltMNQ1ppUzYOaMArxGRa7I/BRp957XL64wLc+K2RgciTLA1
-         BYqLXYCcynfHXt2l5g7t0QX4GbIsNk2JVMRIE=
+        d=linaro.org; s=google; t=1689762366; x=1692354366;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KLSLLfLfGkyZH0yjoTyn6PJy/RUjV1d8qkkgDc6QU+s=;
+        b=JybiC/o3rXPgzagAEAnnN2dmY0GnVZAjHjAdu05xYkFxYMFmn7mKyKBvGd/2nRmjW2
+         Vq660C4pMeIQyXqLwv0XIyzhYVyqtMfQ/GZux+LOrLLPM7pxhQq+XKkUthHCXuWBHrqg
+         fIFHO1FMOkxuqiRJ2DHm/VCEvp2QUlqS9mIbO6kcmoeyKagXbKGRt9wKUeNNvEJnM+WR
+         6A8jMiHTVTTRYVnGS6b7zS4khwDLJvz6yRbuTLYUQC9pTzvo/gs0ECBdnC8/TPc7Jtdp
+         WlDbwM4i/VvYAo4rGHMc7pAArPMtFsDgMONMx5zZxzDXLjT8Ri01Wmec2nAbva9cqAaN
+         +iMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689762390; x=1692354390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MDKpzyl715FXpvBs//brcAoLgtj+1UL6KkC6I4T68sU=;
-        b=SbR8IQR7NMSAyg/aatTv+g1TSTpNbgvU1JH+VDSDaHb56TcDhEeh8sx/ajo9ArL9Hs
-         Oqm0asugsgyTPEnQoH7H75P6RdcXfgQnxF5JVBipEvmRsv2rct1hfjg+4tMMdiYFNPPt
-         KZxjbULzQsGJmbGP6La70o4hLlEHOwZPkPBoaNwR2x6tf/ONSlzcH6KIgP8gqiRrRigf
-         ZBwgwSTjdLJEettC4forwgAI22rjMnUtSjSb6qMZLz77tDv7SETvtJrgSh5pDjsXjfeb
-         3deDnS5aTCCf9LLBez3teduJ0rt0n6OT59qewfXATIoIKC331IzWDB5bjfpv8j2WVLZD
-         h6qA==
-X-Gm-Message-State: ABy/qLbEmaG4anE3pasfi6Pzx2RvbNDEwNQbNx0uN0wCS2p4fFrOQnx5
-        s9utRIQn47rFqPppwU1hBLLAJZM3K5qyKD3GmEE=
-X-Google-Smtp-Source: APBJJlFS8pSsJhzeVmIeYPi5XBS32/NYpbWNbnl0gWjmsszN8fLOCYvEBD3NHROxyEY4uNveWDJHvw==
-X-Received: by 2002:a5e:8804:0:b0:787:230f:55b1 with SMTP id l4-20020a5e8804000000b00787230f55b1mr4968784ioj.2.1689762390160;
-        Wed, 19 Jul 2023 03:26:30 -0700 (PDT)
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com. [209.85.166.53])
-        by smtp.gmail.com with ESMTPSA id z23-20020a02ceb7000000b0042b4b1246cbsm1153928jaq.148.2023.07.19.03.26.28
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20221208; t=1689762366; x=1692354366;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KLSLLfLfGkyZH0yjoTyn6PJy/RUjV1d8qkkgDc6QU+s=;
+        b=CqCHR+D4iqJ3CX8CmkAWZXlBFdq51fp99DSnAQxTDcs6EGoA/2++Le5vr+zsef3zxt
+         7wlVVqrBkqUvRK/lfOaBJWA8EZH65dG2ee5kTR87ThutItRY6pazgqaaC5K7ZxwNzkk9
+         byMtdhgNZLPxZ95g/+ACaz08NlfdARmHBZNM+9mt9TIrKb5tpphUCQ92c0TGwAUaZuty
+         Jv11citnDdxfdgkMpYHxKSjfn7yKduSwDvo2lXzwSrDBUenT/Gt4AFss0xCG9ufxIxtM
+         G7S2eGuADwQWLLCuVRC1IV6tMjx/Kk3OJjOP02QBMlQksJntFQT5l7bCkqltvCbM96Je
+         sqVA==
+X-Gm-Message-State: ABy/qLagTq0xPoR8Ph8JIvuEuzwD8NfFFzuRN65A0goBoUYpmjsYd4fK
+        ffszSIagZM9W7zJl2C2sX9Y+vQ==
+X-Google-Smtp-Source: APBJJlHeac+wBpkb+738ruf1UYkUyJ9pvySpiPwn4PRRxb52jswHUAR/7akNbkpM/QEo4HQZpm7Vlg==
+X-Received: by 2002:a05:651c:85:b0:2b5:7f93:b3b0 with SMTP id 5-20020a05651c008500b002b57f93b3b0mr3881840ljq.17.1689762365727;
+        Wed, 19 Jul 2023 03:26:05 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id r22-20020a170906351600b00992f8110a2bsm2129419eja.150.2023.07.19.03.26.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 03:26:28 -0700 (PDT)
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-78374596182so331296139f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:26:28 -0700 (PDT)
-X-Received: by 2002:a6b:f10c:0:b0:780:c787:637d with SMTP id
- e12-20020a6bf10c000000b00780c787637dmr5094711iog.17.1689762388259; Wed, 19
- Jul 2023 03:26:28 -0700 (PDT)
+        Wed, 19 Jul 2023 03:26:05 -0700 (PDT)
+Message-ID: <3d544c17-7aa9-bc68-c56d-6b6fad1c7b66@linaro.org>
+Date:   Wed, 19 Jul 2023 12:26:03 +0200
 MIME-Version: 1.0
-References: <20230719075056.72178-1-angelogioacchino.delregno@collabora.com> <20230719075056.72178-6-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230719075056.72178-6-angelogioacchino.delregno@collabora.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Wed, 19 Jul 2023 18:25:52 +0800
-X-Gmail-Original-Message-ID: <CAC=S1nhHKCZoh2Q4Fou-WmEB=Kn+kNzj344UaJEXhoG56k3-hw@mail.gmail.com>
-Message-ID: <CAC=S1nhHKCZoh2Q4Fou-WmEB=Kn+kNzj344UaJEXhoG56k3-hw@mail.gmail.com>
-Subject: Re: [PATCH v2 5/6] drm/mediatek: mtk_dpi: Use devm_platform_ioremap_resource()
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     chunkuang.hu@kernel.org, p.zabel@pengutronix.de, airlied@gmail.com,
-        daniel@ffwll.ch, matthias.bgg@gmail.com,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 5/5] soc: qcom: socinfo: add SM4450 ID
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
+        konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
+        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
+        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230719100135.21325-1-quic_tengfan@quicinc.com>
+ <20230719100135.21325-6-quic_tengfan@quicinc.com>
+ <185cb945-4c4e-1697-060e-602a3af2fe50@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <185cb945-4c4e-1697-060e-602a3af2fe50@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 3:51=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> Instead of the open-coded platform_get_resource, devm_ioremap_resource
-> switch to devm_platform_ioremap_resource(), also dropping the useless
-> struct resource pointer, which becomes unused.
->
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
-abora.com>
+On 19/07/2023 12:15, Dmitry Baryshkov wrote:
+> On 19/07/2023 13:01, Tengfei Fan wrote:
+>> Add the ID for the Qualcomm SM4450 SoC.
+>>
+>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+>> ---
+>>   drivers/soc/qcom/socinfo.c         | 1 +
+>>   include/dt-bindings/arm/qcom,ids.h | 2 ++
+>>   2 files changed, 3 insertions(+)
+>>
+>> diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
+>> index 4d49945b3a35..fa5e4c54207a 100644
+>> --- a/drivers/soc/qcom/socinfo.c
+>> +++ b/drivers/soc/qcom/socinfo.c
+>> @@ -415,6 +415,7 @@ static const struct soc_id soc_id[] = {
+>>   	{ qcom_board_id(IPQ5312) },
+>>   	{ qcom_board_id(IPQ5302) },
+>>   	{ qcom_board_id(IPQ5300) },
+>> +	{ qcom_board_id(SM4450) },
+>>   };
+>>   
+>>   static const char *socinfo_machine(struct device *dev, unsigned int id)
+>> diff --git a/include/dt-bindings/arm/qcom,ids.h b/include/dt-bindings/arm/qcom,ids.h
+>> index bcbe9ee2cdaf..6201bfb1405e 100644
+>> --- a/include/dt-bindings/arm/qcom,ids.h
+>> +++ b/include/dt-bindings/arm/qcom,ids.h
+>> @@ -2,6 +2,7 @@
+>>   /*
+>>    * Copyright (c) 2015, The Linux Foundation. All rights reserved.
+>>    * Copyright (c) 2022 Linaro Ltd
+>> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+> 
+> I wonder whether a single define is copyrightable.
 
-Reviewed-by: Fei Shao <fshao@chromium.org>
+If you carefully choose a place, like out of order, then probably it is
+a creative work. :)
+
+Best regards,
+Krzysztof
+
