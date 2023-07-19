@@ -2,147 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A49B75A1F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DC275A1F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbjGSWb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 18:31:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34136 "EHLO
+        id S230383AbjGSWcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 18:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230187AbjGSWb5 (ORCPT
+        with ESMTP id S230187AbjGSWcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 18:31:57 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFF92103
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:31:53 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-345bc4a438fso28275ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:31:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689805913; x=1692397913;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hiNsp140u/z6iaEw6m3evD3OsE+pjKNY88u57By7+DM=;
-        b=MWnmjKVm7AYL27gaU9Vyk22i9b/I03CZ2m3162rteHKQ0h6PQ+eQJFrnU0gdW5S/sA
-         5AYA+Ot2dAes2ZoyaFtHJAF4VQEcJi/hoVusA+yjI0PkWr1tHKUKOFjV4UEWtz1A3A6W
-         CrpAB9k8A9M1BD7vJc4NnwGswA1YlfSR43p2qYT7m9VUunZ9wMZ1TmpnRI3KJoSd038Z
-         iSYhj4Dw6FFxF+vlId7PlFyh/0kSZisDo0les+2TgUsfW8XuluThywlb8lMddoFHASY8
-         IJvJtWZ5guTPqByisvww8eb9QnENwIe2I2lJaf578Sul9C79FIXW7Qzqkf98klTH6NyN
-         5eeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689805913; x=1692397913;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hiNsp140u/z6iaEw6m3evD3OsE+pjKNY88u57By7+DM=;
-        b=XafwUSCVjubIMo13N6KK1bppd0caR7dI8rOMt82Y4oLHFe0j8rPjFgulf8nWQfpd1n
-         41bi/T8NhxFNQJDEmA2XhQKCcljhi1k53dJGT6ETkZOCN59EmdOwtVbqO1QVLThVh9i2
-         aQsBkb5rw1th0Kw4UTVY+8e6Xt8VNN0Xer6GsrnNOgnoJRI5y1+7zRNaj2e7sWT2fnmR
-         9999Ei9MXtIL01sBwoQCw0mXY5BMklIvGZGW2m8UYRPI3F+xLR37kLzbA8bxQv/BKEPA
-         LYMW8znwuKdXitM4VUFMbHZgn8rFhkfGHnFHocYHq9189GrDWWAuvQKAnGwXofjpaMXz
-         CR2g==
-X-Gm-Message-State: ABy/qLbhpMlbKv0o8wijEA7bgL9NiII50bpok4N9KjIsdLZKa+kCiGsb
-        PmYjKYPA69I2IloVYmn8O3zdh3RDvTyR0XHH7Okflg==
-X-Google-Smtp-Source: APBJJlH9BzVTG/2sfDIAuUfdaGvxpNlVQtgmXmW6P6EhWaGK5HeN313qhFDPSDiTYWH9S+nNpyiNfOADKTIwVEXEmgw=
-X-Received: by 2002:a05:6e02:1ba3:b0:346:9c8:b011 with SMTP id
- n3-20020a056e021ba300b0034609c8b011mr37657ili.19.1689805912815; Wed, 19 Jul
- 2023 15:31:52 -0700 (PDT)
+        Wed, 19 Jul 2023 18:32:23 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2CB4C1FDC;
+        Wed, 19 Jul 2023 15:32:20 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8BxXetzZLhkQnUHAA--.13743S3;
+        Thu, 20 Jul 2023 06:32:19 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx_c5zZLhkDh41AA--.15520S3;
+        Thu, 20 Jul 2023 06:32:19 +0800 (CST)
+Message-ID: <f87a48c6-909e-39ba-62b0-289e78798540@loongson.cn>
+Date:   Thu, 20 Jul 2023 06:32:19 +0800
 MIME-Version: 1.0
-References: <20230719202951.534582-1-acme@kernel.org> <20230719202951.534582-3-acme@kernel.org>
-In-Reply-To: <20230719202951.534582-3-acme@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 19 Jul 2023 15:31:41 -0700
-Message-ID: <CAP-5=fV3Er=Ek8=iE=bSGbEBmM56_PJffMWot1g_5Bh8B5hO7A@mail.gmail.com>
-Subject: Re: [PATCH 2/6] perf thread: Allow tools to register a thread->priv destructor
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 4/9] PCI/VGA: Improve the default VGA device selection
+Content-Language: en-US
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc:     David Airlie <airlied@gmail.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian Konig <christian.koenig@amd.com>,
+        Pan Xinhui <Xinhui.Pan@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Lijo Lazar <lijo.lazar@amd.com>,
+        YiPeng Chai <YiPeng.Chai@amd.com>,
+        Bokun Zhang <Bokun.Zhang@amd.com>,
+        Likun Gao <Likun.Gao@amd.com>,
+        Ville Syrjala <ville.syrjala@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Abhishek Sahu <abhsahu@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jani Nikula <jani.nikula@intel.com>
+References: <20230719193233.GA511659@bhelgaas>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <20230719193233.GA511659@bhelgaas>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8Cx_c5zZLhkDh41AA--.15520S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7WF18WFW7Cw1kAr15Zr15Jrc_yoW5Jr1rp3
+        yaga1akrs7XFWUtry7A34kXFyavw4fX3yrGr1rG34j9398G3s5JrW8Ka15Ka47Zw18WF42
+        vFy8tw12kay5Z3gCm3ZEXasCq-sJn29KB7ZKAUJUUUUP529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1ln4kS14v26r1q6r43M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q
+        6rW5McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCI
+        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267
+        AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Cr0_
+        Gr1UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxU-J
+        KIDUUUU
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 1:30=E2=80=AFPM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> From: Arnaldo Carvalho de Melo <acme@redhat.com>
->
-> So that when thread__delete() runs it can be called and free stuff tools
-> stashed into thread->priv, like 'perf trace' does and will use this
-> new facility to plug some leaks.
->
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> ---
->  tools/perf/util/thread.c | 11 +++++++++++
->  tools/perf/util/thread.h |  2 ++
->  2 files changed, 13 insertions(+)
->
-> diff --git a/tools/perf/util/thread.c b/tools/perf/util/thread.c
-> index 0b166404c5c365cf..35dd4e716e411da9 100644
-> --- a/tools/perf/util/thread.c
-> +++ b/tools/perf/util/thread.c
-> @@ -80,6 +80,13 @@ struct thread *thread__new(pid_t pid, pid_t tid)
->         return NULL;
->  }
->
-> +static void (*thread__priv_destructor)(void *priv);
-> +
-> +void thread__set_priv_destructor(void (*destructor)(void *priv))
-> +{
+Hi,
 
-Perhaps:
-assert(thread__priv_destructor =3D=3D NULL);
+On 2023/7/20 03:32, Bjorn Helgaas wrote:
+> [+cc linux-pci (please cc in the future since the bulk of this patch
+> is in drivers/pci/)]
+>
+> On Wed, Jul 12, 2023 at 12:43:05AM +0800, Sui Jingfeng wrote:
+>> From: Sui Jingfeng <suijingfeng@loongson.cn>
+>>
+>> Currently, the strategy of selecting the default boot on a multiple video
+>> card coexistence system is not perfect. Potential problems are:
+>>
+>> 1) This function is a no-op on non-x86 architectures.
+> Which function in particular is a no-op for non-x86?
 
-To make it clear that there should never be >1 currently.
 
-> +       thread__priv_destructor =3D destructor;
-> +}
-> +
->  void thread__delete(struct thread *thread)
->  {
->         struct namespaces *namespaces, *tmp_namespaces;
-> @@ -112,6 +119,10 @@ void thread__delete(struct thread *thread)
->         exit_rwsem(thread__namespaces_lock(thread));
->         exit_rwsem(thread__comm_lock(thread));
->         thread__free_stitch_list(thread);
-> +
-> +       if (thread__priv_destructor)
-> +               thread__priv_destructor(thread__priv(thread));
-> +
->         RC_CHK_FREE(thread);
->  }
+I refer to the vga_is_firmware_default() function,
+
+I will improve the commit message at the next version. (To make it more 
+human readable).
+
+Thanks you point it out.
+
+
+>> 2) It does not take the PCI Bar may get relocated into consideration.
+>> 3) It is not effective for the PCI device without a dedicated VRAM Bar.
+>> 4) It is device-agnostic, thus it has to waste the effort to iterate all
+>>     of the PCI Bar to find the VRAM aperture.
+>> 5) It has invented lots of methods to determine which one is the default
+>>     boot device, but this is still a policy because it doesn't give the
+>>     user a choice to override.
+> I don't think we need a list of *potential* problems.  We need an
+> example of the specific problem this will solve, i.e., what currently
+> does not work?
+
+1) The selection of primary GPU on Non-x86 platform. (Arm64, risc-v, 
+powerpc etc)
+
+Mostly server platforms have equipped with aspeed bmc, and such hardware 
+platforms have a lot PCIe slot.
+
+So I think, aspeed bmc V.S (P.K) radeon(or amdgpu) is very common.
+
+
+2) The ability to pass the control back to the end user.
+
+Convert the *device driven* to the "driver driven" or "human driven".
+
+Currently, it is the machine making the decision.
+
+Emm, I probably will be able to give some examples at the next version.
+
+
+> The drm/ast and maybe drm/loongson patches are the only ones that use
+> the new callback, so I assume there are real problems with those
+> drivers.
 >
-> diff --git a/tools/perf/util/thread.h b/tools/perf/util/thread.h
-> index 9068a21ce0fa1b0f..e79225a0ea46b789 100644
-> --- a/tools/perf/util/thread.h
-> +++ b/tools/perf/util/thread.h
-> @@ -71,6 +71,8 @@ struct thread *thread__new(pid_t pid, pid_t tid);
->  int thread__init_maps(struct thread *thread, struct machine *machine);
->  void thread__delete(struct thread *thread);
+> CONFIG_DRM_AST is a tristate.  We're talking about identifying the
+> boot-time console device.  So if CONFIG_DRM_AST=m, I guess we don't
+> get the benefit of the new callback unless the module gets loaded?
 >
-> +void thread__set_priv_destructor(void (*destructor)(void *priv));
-> +
->  struct thread *thread__get(struct thread *thread);
->  void thread__put(struct thread *thread);
->
-> --
-> 2.41.0
->
+Since, this patch set is mostly for the user of X server.
+
+It is actually okey if CONFIG_DRM_AST=m. (it will be works no matter CONFIG_DRM_AST=m or CONFIG_DRM_AST=y)
+
+
+As the device and the driver bound at a latter time.
+
+So we are lucky, we need this behavior to implement the override.
+
