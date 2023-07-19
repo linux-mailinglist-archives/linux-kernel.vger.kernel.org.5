@@ -2,137 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7F9758D37
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F10C758D3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229664AbjGSFgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 01:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60136 "EHLO
+        id S230259AbjGSFhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 01:37:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbjGSFgl (ORCPT
+        with ESMTP id S230219AbjGSFh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 01:36:41 -0400
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B191FCE;
-        Tue, 18 Jul 2023 22:36:37 -0700 (PDT)
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-51e429e1eabso9158629a12.2;
-        Tue, 18 Jul 2023 22:36:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689744995; x=1690349795;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EDbeeMAF25Dt1BLMyZ5tpgdRlA71spcND6k71f+vr88=;
-        b=Kac+cDLtfIQQL/p7AgVoQVUaBt6jVdlaxuo3XKSgdc1zvk8shdgr+sdmCs29uukn2a
-         dBEcX54moIIj8wdr5NYXLAdGD2VQiz8d/fpGbpcyU0aYPo66Xa+Ve1sp6YwCSCgrqgbX
-         pZqnVEZdG/Noc9gNiX1r765lK0Z0y0nqxAga02iCoMbR+Qrhaddk5dF6oY3nXg5Z5mnc
-         KWUcJ6jxjJu2tuAJqMc0YMvaBBYX2GH4YW95Ih0YAom0IZQHxu0ngQmkvkeA6OWRO/Jw
-         q1okLT/NxVPCLG9AyK/MokQ9sJ15dhLVD2enUorfjE14XGiRjJUi0QHgUvF6w2uCaGd/
-         +z4A==
-X-Gm-Message-State: ABy/qLbDq4qVHb/dAhPriIyUR2dq2CTKAxq4nSZvU1ItW/mrJ7aWIh49
-        +JowqScMyclP5RWw+V3Rfvo=
-X-Google-Smtp-Source: APBJJlGNPQr57woYj+uSYDG4JDiEkyWIfNLgHXtdJ5skgjW8Rk0FryOdDQSZiMoW9lDCVvkERD9Vtw==
-X-Received: by 2002:aa7:c0cd:0:b0:51d:d30c:f1e3 with SMTP id j13-20020aa7c0cd000000b0051dd30cf1e3mr1476517edp.16.1689744995419;
-        Tue, 18 Jul 2023 22:36:35 -0700 (PDT)
-Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id p10-20020aa7d30a000000b0050cc4461fc5sm2167113edq.92.2023.07.18.22.36.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 22:36:34 -0700 (PDT)
-Message-ID: <c0061557-1dc7-0442-b5e0-3e528d0bebb1@kernel.org>
-Date:   Wed, 19 Jul 2023 07:36:33 +0200
+        Wed, 19 Jul 2023 01:37:27 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908891BF7
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 22:37:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689745045; x=1721281045;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=T1unG0vjvqpp3WUUzYFWk4kgYgyuCL1GBV5V1zIqMJ4=;
+  b=kqxzYO81mjtGlqAssoSkHC9AyrX5K4O5ix7gnMhe+dyHQKx3k2FmWopx
+   6ZP8faIs4V7KxfI4N5BNP7S5nDzcbI2obI9meui2edt5JPTVTLo2AWr55
+   E5N/7GlZucFXEO16EeLAV6WdkelkwrdI0VcuLYebrnC3s64J0WMso9qCj
+   rnd7J2sPuTLVpCfCTMJisvnukmZq8YMIeAp7Xhwb9mwIo36KByzmSROw6
+   hT3N6ju6M3vu8M9blNboBwT8kgNtOje60bZwe1IwKwGymO/zv9ut+eWG6
+   iM7B+kPG67CuxR+vqCD9eAe5WwzK1eilARGLC7dpiufDxC4iEELP/A4kU
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="346679540"
+X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
+   d="scan'208";a="346679540"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 22:37:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="723876144"
+X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
+   d="scan'208";a="723876144"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 18 Jul 2023 22:37:22 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qLzsH-0004BV-0x;
+        Wed, 19 Jul 2023 05:37:21 +0000
+Date:   Wed, 19 Jul 2023 13:36:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1 1/1] kasan: Replace strreplace() with strchrnul()
+Message-ID: <202307191350.tJh2PZdE-lkp@intel.com>
+References: <20230628153342.53406-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] serial: core: Add support for dev_name:0.0 naming for
- kernel console
-Content-Language: en-US
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-omap@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230719051525.46494-1-tony@atomide.com>
- <35758c24-1543-6f96-7957-b371dc94e59d@kernel.org>
- <20230719052811.GH5194@atomide.com>
- <87431096-e883-c90d-853e-44a463c0e8f2@kernel.org>
- <20230719053220.GI5194@atomide.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <20230719053220.GI5194@atomide.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230628153342.53406-1-andriy.shevchenko@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19. 07. 23, 7:32, Tony Lindgren wrote:
-> * Jiri Slaby <jirislaby@kernel.org> [230719 05:29]:
->> On 19. 07. 23, 7:28, Tony Lindgren wrote:
->>> * Jiri Slaby <jirislaby@kernel.org> [230719 05:25]:
->>>> On 19. 07. 23, 7:15, Tony Lindgren wrote:
->>>>> +/*
->>>>> + * Add preferred console if configured on kernel command line with naming
->>>>> + * "console=dev_name:0.0".
->>>>> + */
->>>>> +static int serial_core_add_preferred_console(struct uart_driver *drv,
->>>>> +					     struct uart_port *port)
->>>>> +{
->>>>> +	char *port_match, *opt, *name;
->>>>> +	int len, ret = 0;
->>>>> +
->>>>> +	port_match = kasprintf(GFP_KERNEL, "console=%s:%i.%i",
->>>>> +			       dev_name(port->dev), port->ctrl_id,
->>>>> +			       port->port_id);
->>>>> +	if (!port_match)
->>>>> +		return -ENOMEM;
->>>>> +
->>>>> +	opt = strstr(saved_command_line, port_match);
->>>>> +	if (!opt)
->>>>> +		goto free_port_match;
->>>>> +
->>>>> +	len = strlen(port_match);
->>>>> +
->>>>> +	if (strlen(opt) > len + 1 && opt[len] == ',')
->>>>> +		opt += len + 1;
->>>>> +	else
->>>>> +		opt = NULL;
->>>>> +
->>>>> +	name = kstrdup(drv->dev_name, GFP_KERNEL);
->>>>
->>>> Why do you dup the name here?
->>>
->>> I was getting ignoring const warning, but maybe the right solution is
->>> to just use const char *name here.. Let me check.
->>
->> So fix add_preferred_console() instead ;).
-> 
-> Let's see what kind of trouble changing it to use const char *name
-> might be.
+Hi Andy,
 
-I don't see any, the string is copied internally. So it should be 
-straightforward. Actually all three parameters of 
-__add_preferred_console() should be const, IMO. But that involves 
-changing struct console_cmdline. But that should be straightforward too.
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on linus/master v6.5-rc2 next-20230718]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/kasan-Replace-strreplace-with-strchrnul/20230628-233727
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20230628153342.53406-1-andriy.shevchenko%40linux.intel.com
+patch subject: [PATCH v1 1/1] kasan: Replace strreplace() with strchrnul()
+config: x86_64-randconfig-x001-20230718 (https://download.01.org/0day-ci/archive/20230719/202307191350.tJh2PZdE-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce: (https://download.01.org/0day-ci/archive/20230719/202307191350.tJh2PZdE-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307191350.tJh2PZdE-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> mm/kasan/report_generic.c:286:3: warning: variable 'p' is uninitialized when used here [-Wuninitialized]
+                   p[strchrnul(token, ':') - token] = '\0';
+                   ^
+   mm/kasan/report_generic.c:267:10: note: initialize the variable 'p' to silence this warning
+                   char *p;
+                          ^
+                           = NULL
+   1 warning generated.
 
 
-Aside from that, why do you parse saved_command_line on your own? 
-Instead of using setup() or other commonly used mechanisms for command 
-line handling?
+vim +/p +286 mm/kasan/report_generic.c
 
-thanks,
+   242	
+   243	static void print_decoded_frame_descr(const char *frame_descr)
+   244	{
+   245		/*
+   246		 * We need to parse the following string:
+   247		 *    "n alloc_1 alloc_2 ... alloc_n"
+   248		 * where alloc_i looks like
+   249		 *    "offset size len name"
+   250		 * or "offset size len name:line".
+   251		 */
+   252	
+   253		char token[64];
+   254		unsigned long num_objects;
+   255	
+   256		if (!tokenize_frame_descr(&frame_descr, token, sizeof(token),
+   257					  &num_objects))
+   258			return;
+   259	
+   260		pr_err("\n");
+   261		pr_err("This frame has %lu %s:\n", num_objects,
+   262		       num_objects == 1 ? "object" : "objects");
+   263	
+   264		while (num_objects--) {
+   265			unsigned long offset;
+   266			unsigned long size;
+   267			char *p;
+   268	
+   269			/* access offset */
+   270			if (!tokenize_frame_descr(&frame_descr, token, sizeof(token),
+   271						  &offset))
+   272				return;
+   273			/* access size */
+   274			if (!tokenize_frame_descr(&frame_descr, token, sizeof(token),
+   275						  &size))
+   276				return;
+   277			/* name length (unused) */
+   278			if (!tokenize_frame_descr(&frame_descr, NULL, 0, NULL))
+   279				return;
+   280			/* object name */
+   281			if (!tokenize_frame_descr(&frame_descr, token, sizeof(token),
+   282						  NULL))
+   283				return;
+   284	
+   285			/* Strip line number; without filename it's not very helpful. */
+ > 286			p[strchrnul(token, ':') - token] = '\0';
+   287	
+   288			/* Finally, print object information. */
+   289			pr_err(" [%lu, %lu) '%s'", offset, offset + size, token);
+   290		}
+   291	}
+   292	
+
 -- 
-js
-suse labs
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
