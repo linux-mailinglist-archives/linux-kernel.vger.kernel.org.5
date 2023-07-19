@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A5175A273
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080E075A270
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbjGSWtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 18:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42808 "EHLO
+        id S231377AbjGSWtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 18:49:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbjGSWrz (ORCPT
+        with ESMTP id S231245AbjGSWrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 19 Jul 2023 18:47:55 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754C426B5;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C40726BA;
         Wed, 19 Jul 2023 15:47:41 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 22:47:38 -0000
+Date:   Wed, 19 Jul 2023 22:47:39 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1689806859;
+        s=2020; t=1689806860;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=F686mNAfxw9unGtGg3UmKzC0CIGnObbybdIynSv8PwU=;
-        b=cIjneE6z9r0r9l3vpcKA073TAn1FwTPTR3qrgpf+LddypRqMk0yHVMOKRtfCf4fryfl7nG
-        iVjRI9TqU0NxFTlIFcAaBjnSXGlFvVtYIbMG1kZj5h0Dx3ywWDv98O8ziiUS0LG3M0RdsS
-        A7b0i2XBglnNKDQJoooqKkdrwEhatqr+5fvZHdy6BtpqiZCLGKln7mEctCZCnFK51mNh7P
-        hek7JWhUlvN78Lu8rSw+Eb6nei97YtjhVu3uXa9rzUDabXfO4hDBSOscfJFB6G+83pAv+G
-        iTNqGL2Zt0uNpPgzgxczsLNwPmKDIhDu8C1XJlIHxxodehpEh0ygq7ZyZ7o6NA==
+        bh=bG1OAkOfL55DIvNEq2Rs1D1O2SQlcTgoWxtBtLu+JOs=;
+        b=WmwHJE7+Gfor0p0rZj8dx0NQqahxZ+1ekz+KD/P1RThNrgv+iyVmrFG7kJC0t9EBoS9mxu
+        Zb/lPTEAlqL3aAOhYRuj6FX5+rACsFbb2domqlPMjiC7Vz9hkPa5Ui/Lpope6afST/Lww8
+        i8glKuNEUEb92Z3w/yuIImUcGDUITHSVdlFz0mvdBHg72KxuzZZcX4usCfnRzcireBqOHp
+        U3GPg+Je1nEWulPiizrzx2pvBPetm3nWwBds0mZr2FXNWCHUmTI/g/ukMhuhbgBqasQsjI
+        h0tGoKlAQ1NpEhocottbgIodxOLlpOQr2W3gMUaOaqmfHv+7FWnBSsr8dBTMWg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1689806859;
+        s=2020e; t=1689806860;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=F686mNAfxw9unGtGg3UmKzC0CIGnObbybdIynSv8PwU=;
-        b=/HkpWzlXoB7gK4d6kT42hb3J/altG09ZeWCKcGLSL7n5QlS1H/kpoPzYlkDHzfOzNPJK4/
-        rrn+tURTh7D3mDAg==
+        bh=bG1OAkOfL55DIvNEq2Rs1D1O2SQlcTgoWxtBtLu+JOs=;
+        b=zDiyzdAlZCWMlhj7bKxSn8FHj1tx8lGS2Jwo/FChojfAK76cuyx3jLVF/itJZIiOhLZTCv
+        RmOZc9aVwWIA81Aw==
 From:   "tip-bot2 for Rick Edgecombe" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/shstk] x86/mm: Remove _PAGE_DIRTY from kernel RO pages
+Subject: [tip: x86/shstk] x86/mm: Update ptep/pmdp_set_wrprotect() for
+ _PAGE_SAVED_DIRTY
 Cc:     "Yu-cheng Yu" <yu-cheng.yu@intel.com>,
         Rick Edgecombe <rick.p.edgecombe@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>,
-        Kees Cook <keescook@chromium.org>,
         "Mike Rapoport (IBM)" <rppt@kernel.org>,
         Pengfei Xu <pengfei.xu@intel.com>,
-        John Allen <john.allen@amd.com>, x86@kernel.org,
+        John Allen <john.allen@amd.com>,
+        Kees Cook <keescook@chromium.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <168980685855.28540.9122084229630179588.tip-bot2@tip-bot2>
+Message-ID: <168980685940.28540.1641055647652693070.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,84 +67,95 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/shstk branch of tip:
 
-Commit-ID:     f788b71768ff6a8a453a93a9f366e162af560483
-Gitweb:        https://git.kernel.org/tip/f788b71768ff6a8a453a93a9f366e162af560483
+Commit-ID:     1f6f66f62e8cba909abc4fb59de3b57d8c5a9783
+Gitweb:        https://git.kernel.org/tip/1f6f66f62e8cba909abc4fb59de3b57d8c5a9783
 Author:        Rick Edgecombe <rick.p.edgecombe@intel.com>
-AuthorDate:    Mon, 12 Jun 2023 17:10:39 -07:00
+AuthorDate:    Mon, 12 Jun 2023 17:10:37 -07:00
 Committer:     Rick Edgecombe <rick.p.edgecombe@intel.com>
 CommitterDate: Tue, 11 Jul 2023 14:12:19 -07:00
 
-x86/mm: Remove _PAGE_DIRTY from kernel RO pages
+x86/mm: Update ptep/pmdp_set_wrprotect() for _PAGE_SAVED_DIRTY
 
-New processors that support Shadow Stack regard Write=0,Dirty=1 PTEs as
-shadow stack pages.
+When shadow stack is in use, Write=0,Dirty=1 PTE are preserved for
+shadow stack. Copy-on-write PTEs then have Write=0,SavedDirty=1.
 
-In normal cases, it can be helpful to create Write=1 PTEs as also Dirty=1
-if HW dirty tracking is not needed, because if the Dirty bit is not already
-set the CPU has to set Dirty=1 when the memory gets written to. This
-creates additional work for the CPU. So traditional wisdom was to simply
-set the Dirty bit whenever you didn't care about it. However, it was never
-really very helpful for read-only kernel memory.
+When a PTE goes from Write=1,Dirty=1 to Write=0,SavedDirty=1, it could
+become a transient shadow stack PTE in two cases:
 
-When CR4.CET=1 and IA32_S_CET.SH_STK_EN=1, some instructions can write to
-such supervisor memory. The kernel does not set IA32_S_CET.SH_STK_EN, so
-avoiding kernel Write=0,Dirty=1 memory is not strictly needed for any
-functional reason. But having Write=0,Dirty=1 kernel memory doesn't have
-any functional benefit either, so to reduce ambiguity between shadow stack
-and regular Write=0 pages, remove Dirty=1 from any kernel Write=0 PTEs.
+1. Some processors can start a write but end up seeing a Write=0 PTE by
+   the time they get to the Dirty bit, creating a transient shadow stack
+   PTE. However, this will not occur on processors supporting shadow
+   stack, and a TLB flush is not necessary.
+
+2. When _PAGE_DIRTY is replaced with _PAGE_SAVED_DIRTY non-atomically, a
+   transient shadow stack PTE can be created as a result.
+
+Prevent the second case when doing a write protection and Dirty->SavedDirty
+shift at the same time with a CMPXCHG loop. The first case
+
+Note, in the PAE case CMPXCHG will need to operate on 8 byte, but
+try_cmpxchg() will not use CMPXCHG8B, so it cannot operate on a full PAE
+PTE. However the exiting logic is not operating on a full 8 byte region
+either, and relies on the fact that the Write bit is in the first 4
+bytes when doing the clear_bit(). Since both the Dirty, SavedDirty and
+Write bits are in the first 4 bytes, casting to a long will be similar to
+the existing behavior which also casts to a long.
+
+Dave Hansen, Jann Horn, Andy Lutomirski, and Peter Zijlstra provided many
+insights to the issue. Jann Horn provided the CMPXCHG solution.
 
 Co-developed-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
-Reviewed-by: Kees Cook <keescook@chromium.org>
 Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
 Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 Tested-by: John Allen <john.allen@amd.com>
 Tested-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/all/20230613001108.3040476-14-rick.p.edgecombe%40intel.com
+Link: https://lore.kernel.org/all/20230613001108.3040476-12-rick.p.edgecombe%40intel.com
 ---
- arch/x86/include/asm/pgtable_types.h | 8 +++++---
- arch/x86/mm/pat/set_memory.c         | 4 ++--
- 2 files changed, 7 insertions(+), 5 deletions(-)
+ arch/x86/include/asm/pgtable.h | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
-index 9379647..002f19e 100644
---- a/arch/x86/include/asm/pgtable_types.h
-+++ b/arch/x86/include/asm/pgtable_types.h
-@@ -218,10 +218,12 @@ enum page_cache_mode {
- #define _PAGE_TABLE_NOENC	 (__PP|__RW|_USR|___A|   0|___D|   0|   0)
- #define _PAGE_TABLE		 (__PP|__RW|_USR|___A|   0|___D|   0|   0| _ENC)
- 
--#define __PAGE_KERNEL_RO	 (__PP|   0|   0|___A|__NX|___D|   0|___G)
--#define __PAGE_KERNEL_ROX	 (__PP|   0|   0|___A|   0|___D|   0|___G)
-+#define __PAGE_KERNEL_RO	 (__PP|   0|   0|___A|__NX|   0|   0|___G)
-+#define __PAGE_KERNEL_ROX	 (__PP|   0|   0|___A|   0|   0|   0|___G)
-+#define __PAGE_KERNEL		 (__PP|__RW|   0|___A|__NX|___D|   0|___G)
-+#define __PAGE_KERNEL_EXEC	 (__PP|__RW|   0|___A|   0|___D|   0|___G)
- #define __PAGE_KERNEL_NOCACHE	 (__PP|__RW|   0|___A|__NX|___D|   0|___G| __NC)
--#define __PAGE_KERNEL_VVAR	 (__PP|   0|_USR|___A|__NX|___D|   0|___G)
-+#define __PAGE_KERNEL_VVAR	 (__PP|   0|_USR|___A|__NX|   0|   0|___G)
- #define __PAGE_KERNEL_LARGE	 (__PP|__RW|   0|___A|__NX|___D|_PSE|___G)
- #define __PAGE_KERNEL_LARGE_EXEC (__PP|__RW|   0|___A|   0|___D|_PSE|___G)
- #define __PAGE_KERNEL_WP	 (__PP|__RW|   0|___A|__NX|___D|   0|___G| __WP)
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index df4182b..bda9f12 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -2074,12 +2074,12 @@ int set_memory_nx(unsigned long addr, int numpages)
- 
- int set_memory_ro(unsigned long addr, int numpages)
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 0c0747c..b48d07a 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -1190,7 +1190,17 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
+ static inline void ptep_set_wrprotect(struct mm_struct *mm,
+ 				      unsigned long addr, pte_t *ptep)
  {
--	return change_page_attr_clear(&addr, numpages, __pgprot(_PAGE_RW), 0);
-+	return change_page_attr_clear(&addr, numpages, __pgprot(_PAGE_RW | _PAGE_DIRTY), 0);
+-	clear_bit(_PAGE_BIT_RW, (unsigned long *)&ptep->pte);
++	/*
++	 * Avoid accidentally creating shadow stack PTEs
++	 * (Write=0,Dirty=1).  Use cmpxchg() to prevent races with
++	 * the hardware setting Dirty=1.
++	 */
++	pte_t old_pte, new_pte;
++
++	old_pte = READ_ONCE(*ptep);
++	do {
++		new_pte = pte_wrprotect(old_pte);
++	} while (!try_cmpxchg((long *)&ptep->pte, (long *)&old_pte, *(long *)&new_pte));
  }
  
- int set_memory_rox(unsigned long addr, int numpages)
+ #define flush_tlb_fix_spurious_fault(vma, address, ptep) do { } while (0)
+@@ -1242,7 +1252,17 @@ static inline pud_t pudp_huge_get_and_clear(struct mm_struct *mm,
+ static inline void pmdp_set_wrprotect(struct mm_struct *mm,
+ 				      unsigned long addr, pmd_t *pmdp)
  {
--	pgprot_t clr = __pgprot(_PAGE_RW);
-+	pgprot_t clr = __pgprot(_PAGE_RW | _PAGE_DIRTY);
+-	clear_bit(_PAGE_BIT_RW, (unsigned long *)pmdp);
++	/*
++	 * Avoid accidentally creating shadow stack PTEs
++	 * (Write=0,Dirty=1).  Use cmpxchg() to prevent races with
++	 * the hardware setting Dirty=1.
++	 */
++	pmd_t old_pmd, new_pmd;
++
++	old_pmd = READ_ONCE(*pmdp);
++	do {
++		new_pmd = pmd_wrprotect(old_pmd);
++	} while (!try_cmpxchg((long *)pmdp, (long *)&old_pmd, *(long *)&new_pmd));
+ }
  
- 	if (__supported_pte_mask & _PAGE_NX)
- 		clr.pgprot |= _PAGE_NX;
+ #ifndef pmdp_establish
