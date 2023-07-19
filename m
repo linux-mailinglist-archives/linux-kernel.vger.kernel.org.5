@@ -2,59 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61474759291
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D65759292
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbjGSKSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:18:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40524 "EHLO
+        id S230191AbjGSKSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:18:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbjGSKR5 (ORCPT
+        with ESMTP id S230495AbjGSKSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:17:57 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BB71BEF
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:17:55 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R5Wwd4QVkzBRDrb
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 18:17:53 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689761873; x=1692353874; bh=OPzYp2r3St+A8ub/rS9zAYkNqGK
-        Z1nd9QbmIsgDXZNg=; b=uWICH71hDS+2mPc980QwOBS8Chqp4GncOtzGK93Q0Xt
-        GV0XQAI21kBFQ+KRVxRLzLeFsVByx2I6WcmV9Yo7RTars7rXqgAPzpcvd+h/aI6Z
-        kXjKB7SSyiU0WWgtUs3iMUBaYfcIybrnCrIOjONPxBKuQe3qNYkljVedjr8lKTiU
-        Qjw7hi8skfrBa0Y4BkZYagD8m7f1mDIu5+9ROeP7cHOha/12hYrCU3K+7OYO/i4m
-        aLH4AxzQNED5G3m8HKFElwyZDO9cWgIaDDYmJ38xouGdzyGwwZcFd0LsLrbMVJUh
-        j2yrS7n4IIBXHho19nYfUeVKT0BrcMkLj00cEKogl1Q==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 7ISv8rsiYlLf for <linux-kernel@vger.kernel.org>;
-        Wed, 19 Jul 2023 18:17:53 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R5Wwd2JQ1zBRDrT;
-        Wed, 19 Jul 2023 18:17:53 +0800 (CST)
+        Wed, 19 Jul 2023 06:18:00 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8893F1BFD
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:17:58 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbfcc6daa9so62357075e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:17:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689761877; x=1690366677;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/12YzBMxFEuL9z1yWxB+UUCkYX6+8C24FFiPRnVOeYs=;
+        b=h7/WTUUWaoUzOcX86SFAvjDqKxEWUmwu+YhE3cNW33MrssWBI/fbZ8ND6zHNcXjHgw
+         3j8kn05JCeCAbnsife3MAC/9la+wF4PRffF+SRhL+G12LmogFN6K3TioSMpzkLm7KG93
+         gVjWA+5C6tI7mcjQ3QVMply/DRiEnOsagoTEPNoAP+HjDSt0XGtXBYMyYc8kkS5SjFn2
+         nB2tbt0lWG/K5JQ9lgxdCI1H3FEjIOWMaVhNMTK30fySlZYJmq8/VRj0ettvrI9n1cVJ
+         cvsl4W62ZpzX+maxk5mts/VOjiWpHDL2RYFu0v2EkuRPhihuIY+rMNXsS+esJsloML/q
+         a83A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689761877; x=1690366677;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/12YzBMxFEuL9z1yWxB+UUCkYX6+8C24FFiPRnVOeYs=;
+        b=SLKM+h5TiRa9uf0iDpJxGf+w9NtedRqcrVEkgO1BApnnDa3dKaTfNbeHfXE2Do1NZI
+         D7mSZ4E2+lyn3CPRjEglOBOft+FyJN/2EVGxieIdmAG6XAywgKN5732vdXR7fRPOU0z9
+         RldytZugGX4CnOqWop5v+VXdc7B6T2Dwjv42vln8L8VaQSc3a11yn2WWfnGjC/L25WxK
+         eTRG8dF8cgHjhIOwTuHEzIHGrC3hd0RG8nZ/hBQNvc0x0n1oRsGLgo6AMc392RFOWHPr
+         QPvjCfILdkpxY/5A61i+bIae6P+68eG2jkEd5JtZInUkexevfRWlbfTHTI63YRjvzs75
+         vWRw==
+X-Gm-Message-State: ABy/qLbSOE5vqo6vFwFXS38MIEBYL/CalONQcbCOootRtWdsllJJau8N
+        eJq6t66uCBl2weeVa+JU5/MPDg==
+X-Google-Smtp-Source: APBJJlH/wReuFNESBCfYGmjiyYJIozOQLKMrl6ckmaNf19lwjXmfAOVCoYhJvsQXenBPnI/4zc4muQ==
+X-Received: by 2002:adf:ecd0:0:b0:30f:ca58:a00d with SMTP id s16-20020adfecd0000000b0030fca58a00dmr1786141wro.45.1689761877016;
+        Wed, 19 Jul 2023 03:17:57 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id j8-20020a5d4488000000b0031417b0d338sm4924130wrq.87.2023.07.19.03.17.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 03:17:56 -0700 (PDT)
+Message-ID: <55c336a4-b268-d2d3-47f3-213300e4e623@baylibre.com>
+Date:   Wed, 19 Jul 2023 12:17:55 +0200
 MIME-Version: 1.0
-Date:   Wed, 19 Jul 2023 18:17:53 +0800
-From:   huzhi001@208suo.com
-To:     trond.myklebust@hammerspace.com, anna@kernel.org
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] NFSv4.1: Fix errors in nfs4state.c
-In-Reply-To: <tencent_5D2B9BC6DA996AFC3A398652FB2DAD9BB207@qq.com>
-References: <tencent_5D2B9BC6DA996AFC3A398652FB2DAD9BB207@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <e19db8d4e30d076af0c9dc46413ad1df@208suo.com>
-X-Sender: huzhi001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RESEND PATCH v2] media: mtk-jpeg: Fix use after free bug due to
+ uncanceled work
+To:     Zheng Hacker <hackerzheng666@gmail.com>
+Cc:     Zheng Wang <zyytlz.wz@163.com>, Kyrie.Wu@mediatek.com,
+        bin.liu@mediatek.com, mchehab@kernel.org, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Irui.Wang@mediatek.com,
+        security@kernel.org, 1395428693sheep@gmail.com,
+        alex000young@gmail.com
+References: <20230707092414.866760-1-zyytlz.wz@163.com>
+ <538096d2-7b24-e1c7-706d-4d4f952d35eb@baylibre.com>
+ <CAJedcCzR6DzX_aG1KBgrMHDJ1xh=RTA-FrZ+TJ_4KawWpHyYuA@mail.gmail.com>
+ <CAJedcCyKv-hdDhWcogDZrC-kY6qtO-H1fDYqjTXMJvCR19MxYg@mail.gmail.com>
+Content-Language: en-US
+From:   Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <CAJedcCyKv-hdDhWcogDZrC-kY6qtO-H1fDYqjTXMJvCR19MxYg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,111 +85,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: ZhiHu <huzhi001@208suo.com>
----
-  fs/nfs/nfs4state.c | 58 ++++++++++++++++++++++------------------------
-  1 file changed, 28 insertions(+), 30 deletions(-)
 
-diff --git a/fs/nfs/nfs4state.c b/fs/nfs/nfs4state.c
-index bbe49315d99e..8fedb9a4efd5 100644
---- a/fs/nfs/nfs4state.c
-+++ b/fs/nfs/nfs4state.c
-@@ -788,14 +788,14 @@ static void __nfs4_close(struct nfs4_state *state,
-      /* Protect against nfs4_find_state() */
-      spin_lock(&owner->so_lock);
-      switch (fmode & (FMODE_READ | FMODE_WRITE)) {
--        case FMODE_READ:
--            state->n_rdonly--;
--            break;
--        case FMODE_WRITE:
--            state->n_wronly--;
--            break;
--        case FMODE_READ|FMODE_WRITE:
--            state->n_rdwr--;
-+    case FMODE_READ:
-+        state->n_rdonly--;
-+        break;
-+    case FMODE_WRITE:
-+        state->n_wronly--;
-+        break;
-+    case FMODE_READ|FMODE_WRITE:
-+        state->n_rdwr--;
-      }
-      newstate = FMODE_READ|FMODE_WRITE;
-      if (state->n_rdwr == 0) {
-@@ -905,9 +905,8 @@ void nfs4_free_lock_state(struct nfs_server *server, 
-struct nfs4_lock_state *lsp
-  static struct nfs4_lock_state *nfs4_get_lock_state(struct nfs4_state 
-*state, fl_owner_t owner)
-  {
-      struct nfs4_lock_state *lsp, *new = NULL;
--
-      for(;;) {
--        spin_lock(&state->state_lock);
-+        spin_lock (&state->state_lock);
-          lsp = __nfs4_find_lock_state(state, owner, NULL);
-          if (lsp != NULL)
-              break;
-@@ -1120,25 +1119,25 @@ void nfs_free_seqid(struct nfs_seqid *seqid)
-  static void nfs_increment_seqid(int status, struct nfs_seqid *seqid)
-  {
-      switch (status) {
--        case 0:
--            break;
--        case -NFS4ERR_BAD_SEQID:
--            if (seqid->sequence->flags & NFS_SEQID_CONFIRMED)
--                return;
--            pr_warn_ratelimited("NFS: v4 server returned a bad"
--                    " sequence-id error on an"
--                    " unconfirmed sequence %p!\n",
--                    seqid->sequence);
--            return;
--        case -NFS4ERR_STALE_CLIENTID:
--        case -NFS4ERR_STALE_STATEID:
--        case -NFS4ERR_BAD_STATEID:
--        case -NFS4ERR_BADXDR:
--        case -NFS4ERR_RESOURCE:
--        case -NFS4ERR_NOFILEHANDLE:
--        case -NFS4ERR_MOVED:
--            /* Non-seqid mutating errors */
-+    case 0:
-+        break;
-+    case -NFS4ERR_BAD_SEQID:
-+        if (seqid->sequence->flags & NFS_SEQID_CONFIRMED)
-              return;
-+        pr_warn_ratelimited("NFS: v4 server returned a bad"
-+                " sequence-id error on an"
-+                " unconfirmed sequence %p!\n",
-+                seqid->sequence);
-+        return;
-+    case -NFS4ERR_STALE_CLIENTID:
-+    case -NFS4ERR_STALE_STATEID:
-+    case -NFS4ERR_BAD_STATEID:
-+    case -NFS4ERR_BADXDR:
-+    case -NFS4ERR_RESOURCE:
-+    case -NFS4ERR_NOFILEHANDLE:
-+    case -NFS4ERR_MOVED:
-+        /* Non-seqid mutating errors */
-+        return;
-      }
-      /*
-       * Note: no locking needed as we are guaranteed to be first
-@@ -1335,7 +1334,7 @@ int nfs4_client_recover_expired_lease(struct 
-nfs_client *clp)
-          if (ret != 0)
-              break;
-          if (!test_bit(NFS4CLNT_LEASE_EXPIRED, &clp->cl_state) &&
--            !test_bit(NFS4CLNT_CHECK_LEASE,&clp->cl_state))
-+            !test_bit(NFS4CLNT_CHECK_LEASE, &clp->cl_state))
-              break;
-          nfs4_schedule_state_manager(clp);
-          ret = -EIO;
-@@ -1643,7 +1642,6 @@ static int nfs4_reclaim_open_state(struct 
-nfs4_state_owner *sp,
-  #ifdef CONFIG_NFS_V4_2
-      bool found_ssc_copy_state = false;
-  #endif /* CONFIG_NFS_V4_2 */
--
-      /* Note: we rely on the sp->so_states list being ordered
-       * so that we always reclaim open(O_RDWR) and/or open(O_WRITE)
-       * states first.
+
+On 18/07/2023 05:07, Zheng Hacker wrote:
+> Friendly ping
+> 
+> Zheng Hacker <hackerzheng666@gmail.com> 于2023年7月16日周日 00:08写道：
+>>
+>> Hi,
+>>
+>> This issue has not been resolved for a long time. Is there anyone who can help?
+>>
+>> Best regards,
+>> Zheng
+>>
+>> Alexandre Mergnat <amergnat@baylibre.com> 于2023年7月7日周五 22:11写道：
+>>>
+>>>
+>>>
+>>> On 07/07/2023 11:24, Zheng Wang wrote:
+>>>> In mtk_jpeg_probe, &jpeg->job_timeout_work is bound with
+>>>> mtk_jpeg_job_timeout_work. Then mtk_jpeg_dec_device_run
+>>>> and mtk_jpeg_enc_device_run may be called to start the
+>>>> work.
+>>>> If we remove the module which will call mtk_jpeg_remove
+>>>> to make cleanup, there may be a unfinished work. The
+>>>> possible sequence is as follows, which will cause a
+>>>> typical UAF bug.
+>>>>
+>>>> Fix it by canceling the work before cleanup in the mtk_jpeg_remove
+>>>>
+>>>> CPU0                  CPU1
+>>>>
+>>>>                       |mtk_jpeg_job_timeout_work
+>>>> mtk_jpeg_remove     |
+>>>>     v4l2_m2m_release  |
+>>>>       kfree(m2m_dev); |
+>>>>                       |
+>>>>                       | v4l2_m2m_get_curr_priv
+>>>>                       |   m2m_dev->curr_ctx //use
+>>>
+>>> Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+>>>
+>>> --
+>>> Regards,
+>>> Alexandre
+
+Hi Zheng,
+
+If you asking me to merge patch, sorry but I can't, I'm just a reviewer. 
+I invite you to ping the maintainers directly:
+
+Bin Liu <bin.liu@mediatek.com> (supporter:MEDIATEK JPEG DRIVER)
+Mauro Carvalho Chehab <mchehab@kernel.org> (maintainer:MEDIA INPUT 
+INFRASTRUCTURE (V4L/DVB))
+Matthias Brugger <matthias.bgg@gmail.com> (maintainer:ARM/Mediatek SoC 
+support)
+
+Otherwise, I misunderstood what you asking me. If so, can you rephrase 
+your question please?
+
+-- 
+Regards,
+Alexandre
