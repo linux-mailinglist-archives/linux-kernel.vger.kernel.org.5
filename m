@@ -2,46 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A777593FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4A57593BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbjGSLMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 07:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45668 "EHLO
+        id S230041AbjGSLFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 07:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbjGSLMM (ORCPT
+        with ESMTP id S230107AbjGSLFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 07:12:12 -0400
-X-Greylist: delayed 530 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 19 Jul 2023 04:12:11 PDT
-Received: from mail.mu-ori.me (mail.mu-ori.me [185.189.151.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE0D186
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:12:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mu-ori.me; s=mail;
-        t=1689764599; bh=U6L9qf57aZ+piH/Y4yyE5WrcMXFqI5zBHQ7zUeMMado=;
-        h=Date:From:To:Subject:From;
-        b=VHjBV+EyciLX5c4tMPbkLVezmAkXeWygc0xO0L5F7LEW1D6fFLpn/c12pE+BdB6vi
-         lSmQ1y/i9dvwJmTpc8XU4qNTsiVR4M5z6e0Tngo2gH314EBHLfwmd2L++ilWMp9Jl7
-         l9xaE8HkemRMHISl+Fkab0fjiNfQC69pSKeBlxOFIG2FuLtAcDbL8X85Phb7RT/Rat
-         eZdWbefoPqtgoV9KCaSB9Ys1XaXfCPBPK/sAIvEQd97drmg4MqhJu7kQA6rwD8G2W/
-         ZweUDlSyBYI5Xs887kaGzM7HZqr6ufK1AL8GHpkoqVa9Et1ittsd2hIktYsCym9Zzq
-         Rdtu5Nhogf2xA==
-Received: from webm.mu-ori.me (localhost [127.0.0.1])
-        by mail.mu-ori.me (Postfix) with ESMTPSA id 9D2B3613AD
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 11:03:19 +0000 (UTC)
+        Wed, 19 Jul 2023 07:05:31 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9065197;
+        Wed, 19 Jul 2023 04:05:29 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id d2e1a72fcca58-668730696a4so4582570b3a.1;
+        Wed, 19 Jul 2023 04:05:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689764729; x=1690369529;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hFsE/K6gUAIXkP05EqNENfRpK1bhpEZsF99N61vWloE=;
+        b=g23qWW+P9F4/xy1Kafm+XGVUvORdC8zJAIToX89ML26LZ6ptcANrUBMFVhtQ+2c5Ch
+         B5CV9Lx3rx2c98ImyBDrDMJbuMqPD0KqeXlNw/eT+qLAvfGyonOvV8BAg5AgrKniDesd
+         sPw6qi06EYniqagV0wDNOiKib5lZsCHFfVHTWZ5/mIkVIblDEIuQu6tXeUT1dG1q/55x
+         b7bSeDuYiIuBlontTBRmxHhLfmX2VtTLvhgNJqxIIVVVIQHu6gHlsGYiA+ySOFb8LxP6
+         CgmxC9pJ/Ir8Ji5PG6CVsavg5zsNIq6M2t/psKRf1nTMYm/xHgjC3FdMPopzgd88+eSX
+         TEnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689764729; x=1690369529;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hFsE/K6gUAIXkP05EqNENfRpK1bhpEZsF99N61vWloE=;
+        b=W2WuorzFYQzsCvbGycKDzluqEx88zGTpawFlfrLwHiB5QWJsax0mYsJj/mF1GaKiw2
+         i9ZITlWP7oWjErJSwZQciMxVHbtOCWwVUFdFpcEaOXQCbzu7h87xNb757PYjtiwGgT8B
+         jxkFjHc7qWKxnjVIJkRkhQeTogK2S0LWKdFrCeP0TgD4eKpIbizQ1QxHhwXXGJH6HHcw
+         fQ1pJFHFFMRyBXu7pm51c2YrD2xzUUnZIjrfhyFtmd4PLyeAVUUybBtP3njP/ODvisUv
+         GMfnvll0fbbqW3eM+Y/A7VcLOiVjYriCBsRgxiFKBSg9uM7fevxGYbVWoaEjsKMQU7ix
+         g8NQ==
+X-Gm-Message-State: ABy/qLbX5E+i4gNjnbiw3c/EXfiOS0PRanLF7fo9Hc6YcFoM8NlO4BRb
+        zzI3MVgFVwQNkdCiDyBoby+BtK/3wuw4BO6vSdw=
+X-Google-Smtp-Source: APBJJlHZk6bMFYQH4zS8hQT5yWHMzYO7s2xc1b5R3Ge7j1Pa/VBS2SFHC++3Qll9rk0DlvSly1tR9g==
+X-Received: by 2002:a05:6a21:6d89:b0:137:48cc:9cfa with SMTP id wl9-20020a056a216d8900b0013748cc9cfamr1033460pzb.24.1689764729250;
+        Wed, 19 Jul 2023 04:05:29 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.81])
+        by smtp.gmail.com with ESMTPSA id v10-20020a62ac0a000000b00682c864f35bsm3124196pfe.140.2023.07.19.04.05.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 04:05:28 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: imagedong@tencent.com
+To:     yhs@fb.com
+Cc:     davem@davemloft.net, dsahern@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        imagedong@tencent.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hao Peng <flyingpeng@tencent.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Subject: [PATCH bpf-next] bpf, x86: initialize the variable "first_off" in save_args()
+Date:   Wed, 19 Jul 2023 19:03:30 +0800
+Message-Id: <20230719110330.2007949-1-imagedong@tencent.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Date:   Wed, 19 Jul 2023 11:03:19 +0000
-From:   "Drew B." <subs@mu-ori.me>
-To:     linux-kernel@vger.kernel.org
-Subject: Misbehavior with setsockopt timeval structure with -fpack-struct
- enabled
-Message-ID: <559f4003c263a7aaa873cbc80947cc57@mu-ori.me>
-X-Sender: subs@mu-ori.me
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,68 +77,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everyone!
-I've got a very strange behavior on Linux and OS X build of the same 
-source code. To be specific, when I try to set socket timeout option:
+From: Menglong Dong <imagedong@tencent.com>
 
-...
-struct timeval timeout;
-timeout.tv_sec = 0;
-timeout.tv_usec = 1;
-ret = setsockopt(so, SOL_SOCKET, SO_RCVTIMEO, &timeout, 
-sizeof(timeout));
-...
+As Dan Carpenter reported, the variable "first_off" which is passed to
+clean_stack_garbage() in save_args() can be uninitialized, which can
+cause runtime warnings with KMEMsan. Therefore, init it with 0.
 
-with -fpack-struct enabled, on Linux machine the size of timeval struct 
-is 16 bytes (as well as unpacked), while on OS X it's 12 for packed and 
-16 for unpacked. In which case I get an error while trying to apply the 
-setting to the socket. I dug a little bit deeper and the following piece 
-of code in net/core/sock.c:
+Fixes: 473e3150e30a ("bpf, x86: allow function arguments up to 12 for TRACING")
+Cc: Hao Peng <flyingpeng@tencent.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/bpf/09784025-a812-493f-9829-5e26c8691e07@moroto.mountain/
+Signed-off-by: Menglong Dong <imagedong@tencent.com>
+---
+ arch/x86/net/bpf_jit_comp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-...
-int sock_copy_user_timeval(struct __kernel_sock_timeval *tv,
-			   sockptr_t optval, int optlen, bool old_timeval)
-{
-	if (old_timeval && in_compat_syscall() && !COMPAT_USE_64BIT_TIME) {
-		struct old_timeval32 tv32;
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 5ab531be56ac..83c4b45dc65f 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1925,7 +1925,7 @@ static int get_nr_used_regs(const struct btf_func_model *m)
+ static void save_args(const struct btf_func_model *m, u8 **prog,
+ 		      int stack_size, bool for_call_origin)
+ {
+-	int arg_regs, first_off, nr_regs = 0, nr_stack_slots = 0;
++	int arg_regs, first_off = 0, nr_regs = 0, nr_stack_slots = 0;
+ 	int i, j;
+ 
+ 	/* Store function arguments to stack.
+-- 
+2.40.1
 
-		if (optlen < sizeof(tv32))
-			return -EINVAL;
-
-		if (copy_from_sockptr(&tv32, optval, sizeof(tv32)))
-			return -EFAULT;
-		tv->tv_sec = tv32.tv_sec;
-		tv->tv_usec = tv32.tv_usec;
-	} else if (old_timeval) {
-		struct __kernel_old_timeval old_tv;
-
-		if (optlen < sizeof(old_tv))
-			return -EINVAL;
-		if (copy_from_sockptr(&old_tv, optval, sizeof(old_tv)))
-			return -EFAULT;
-		tv->tv_sec = old_tv.tv_sec;
-		tv->tv_usec = old_tv.tv_usec;
-	} else {
-		if (optlen < sizeof(*tv))
-			return -EINVAL;
-		if (copy_from_sockptr(tv, optval, sizeof(*tv)))
-			return -EFAULT;
-	}
-
-	return 0;
-}
-EXPORT_SYMBOL(sock_copy_user_timeval);
-...
-
-So, to be specific (same or similar logics goes through the function in 
-respective places):
-if (optlen < sizeof(tv32))
-	return -EINVAL;
-Which means, that it doesn't consider whether the structure is packed or 
-not, it always compares against unpacked (?) structure == 16 bytes (for 
-now).
-
-Is it expected?
-
-Kind regards,
-Drew.
