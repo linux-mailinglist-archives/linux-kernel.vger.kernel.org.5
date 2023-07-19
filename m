@@ -2,110 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB09759E7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F65759E78
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbjGSTXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 15:23:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51160 "EHLO
+        id S231133AbjGSTXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 15:23:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbjGSTXb (ORCPT
+        with ESMTP id S230106AbjGSTX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 15:23:31 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2075.outbound.protection.outlook.com [40.107.102.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B3F1BF7;
-        Wed, 19 Jul 2023 12:23:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RVR1OMsWtm+5j7IEgvviWnTTFFPSMnQm70CdpYCMvTYY07UdHpJObMkJxp1XaYdP3A9x/jdBjiiJhkpwH/0HT6G+BUg+3TgZSMP2HX6Xptfrdzat+8QqMnR7YcQP7N5LNvSmuCLI8bbDv551itwS1XKX7GOb8v0mY7VX0SnFRUFis6UYmYWtTdDeev5WD3zjAuxngXY/27l9paR2o8nwXtEd8hSXmbFdh4iLZSVdvH5yf3xYrWNLgRazkvtXWLhrghmqymLQ91a+ZPG6nsCY85vhvDUGytC8UeqTL7OzvvBSbKEly2oJoI8HCdaklX2oltsh1LDEUCsMIJ0+/WK98g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lLPmOOeyh7gR9cySHSNk9ED1GEJZkTIqXjs3KmPK5Bc=;
- b=c581ORGcNpM4wpcqvK4irGJdvNNu4CtUUnR0LCePf8TvguuFI+PzPbzWO2z/PpmyzaemxiuEt2JCY9aYkNKOSVDfoJXm3MeA0broTHEigUtiHSy4otM9Yis1wKEsewFbCTlcsqf5dCrF5qud76GfvFW28NA1hB7BAflWEgJiP9o+ylFbaW4H+cSLfOeFIl7zrMYkou8WtCPWDqZMsKqeNEhwlTs2kJWvUh/N/EU/aY3oRgCkgVKlI3n9SXx8RhryMm9SJqcio7b9toLFK9dP+e6YtR987aiL5IyjrtXnWk5WsknIUclUIw+LEgpyn395ONHr7weqWxJU3GyrOQPJ6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lLPmOOeyh7gR9cySHSNk9ED1GEJZkTIqXjs3KmPK5Bc=;
- b=xFXzh3Zzlhqp00IGCRk+PjEdzuF+uSIgXuwimUmRyQ8iju8SDEEaDYp/d2pWez2KJ1rzrdkjxUZHsa///S71FcBy+YcMfV3ZtUTcUvd/Ko87JI1aUleWFCdERFNwgfPcbqfjiuEphC6vqIn0BzwUS94oDidTO2ei+MCiOHKXLb0=
-Received: from MW4PR04CA0312.namprd04.prod.outlook.com (2603:10b6:303:82::17)
- by MW3PR12MB4364.namprd12.prod.outlook.com (2603:10b6:303:5c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.23; Wed, 19 Jul
- 2023 19:23:28 +0000
-Received: from CO1NAM11FT023.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:82:cafe::ad) by MW4PR04CA0312.outlook.office365.com
- (2603:10b6:303:82::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33 via Frontend
- Transport; Wed, 19 Jul 2023 19:23:28 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT023.mail.protection.outlook.com (10.13.175.35) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6588.34 via Frontend Transport; Wed, 19 Jul 2023 19:23:27 +0000
-Received: from ethanolx50f7host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Wed, 19 Jul
- 2023 14:23:25 -0500
-From:   Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-To:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-cxl@vger.kernel.org>
-CC:     Bjorn Helgaas <bhelgaas@google.com>, <oohall@gmail.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        "Vishal Verma" <vishal.l.verma@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Ben Widawsky" <bwidawsk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Terry Bowman <terry.bowman@amd.com>,
-        Robert Richter <rrichter@amd.com>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Subject: [PATCH 2/2] cxl/pci: Fix appropriate checking for _OSC while handling CXL RAS registers
-Date:   Wed, 19 Jul 2023 19:23:13 +0000
-Message-ID: <20230719192313.38591-3-Smita.KoralahalliChannabasappa@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230719192313.38591-1-Smita.KoralahalliChannabasappa@amd.com>
-References: <20230719192313.38591-1-Smita.KoralahalliChannabasappa@amd.com>
+        Wed, 19 Jul 2023 15:23:29 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E5D01BFC
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:23:27 -0700 (PDT)
+Received: from notapiano.myfiosgateway.com (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 041DE6606F97;
+        Wed, 19 Jul 2023 20:23:23 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689794605;
+        bh=9RSSdAc6acLEaTRxg2Yr+1H4A/wy2mLAUFDBTbvZP5s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MUtWUYLgNUeuwHYSntirqooUNHyZ0BrrrcNJ5H3f6QCxJiYVa2lKNGj8wET4RhpJn
+         dr6a6Z4WvHSF7vkOflmuI0WUqBHgEfTb2TqSkuOKEgHJJKki8kJyk617mSISwLbg13
+         CcN2csyNS2VTdrt8iaQX+l2/YRmUs2j9B9A/mHy5mfJgGtnpQur7plUxthwm2bU3Je
+         i2rGg6kO4ekhiyc6UK95BdF10Dfo4kp3o0hXP5XAAnXViA+a556AeMnbGNtTAsXGg+
+         Hw6WlTpXYkaaFcOncKkkCNqQBdA4aYXd9o6Fos1SaO7IrWIMS3e+wrHbWDyHyb0ihX
+         /K7HNmSy4q+NA==
+From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     kernel@collabora.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        James Lo <james.lo@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v2] spmi: mtk-pmif: Serialize PMIF status check and command submission
+Date:   Wed, 19 Jul 2023 15:23:16 -0400
+Message-ID: <20230719192319.252617-1-nfraprado@collabora.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT023:EE_|MW3PR12MB4364:EE_
-X-MS-Office365-Filtering-Correlation-Id: b33d5df1-9777-4e15-1e40-08db888da14a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: m+9yJQZeKFWBg0HNPV3Hd+Gle7JxvDEaMYFq4X/dFq5gFXNWFcwP3t4nrJCW71X4W4j5FezS2nbQa4gMOsXelO3HkLwohbZpckBDZNVIWa4wBtguUSXu1Bs3wQiD+uRjtHdb0ae2ZgBXVeqpAm443nFVMJMzocqEyfVr69QYgzYtmRWRtalEx9CFLczf1my8LmlV+aTl8uzwwn01Km7CeHozZVTH92OQGD9nWkvCdoA2RIQFqJQwqEo2KtNqhq2Qtku8rZb/ua6oWk55vfUghOqbi4mufR6BwDWNjKCEv9CBiDiZeXnW6ta+QnX8Fw/J/+8FCXJdP4PLHSMEtpT2Ca6UCXi/xMu0kgBux7SpGobdFOOhZrDYWLDFYfR9qaurOcvQZIsB3sMRlG4D7Fi/R6xaHrgw4ZiAm0B/mqc5LEMGtgAChb696kmyur5GQmtTGYmYUhu0I4gPfYk/VQtW47bLmRKoDC/rigoHCGhn1/J6jYeCi50I+WE8NV518tgvW1b5ld0pWDMKwlBTB6DlDhi1UsjOqIhJGVVkYQGPTcdBDZkhxb78OL8asn3+68SXfKCfqbaiv4do5MDACCOoKKPIXICXJiuafdIHMPjBfAQE/lvZZfQK01BCkZpZ6Oa9BFCIx3cG20KBUsmaJsvBenHvUIuKqUdiuQsFSvEVp7yi2xtFPKr8yAh6iAaPF5ijEBoyjTf4g8jw/z0eNtmAOD7ZPjabxWs7uDTzo5qVXM3TWqla+bwqfmOwd5nnqDky5+8ISmaZzvbNjDzsOE3rKw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(39860400002)(346002)(376002)(451199021)(82310400008)(40470700004)(36840700001)(46966006)(82740400003)(478600001)(81166007)(356005)(26005)(1076003)(40480700001)(40460700003)(7696005)(6666004)(4326008)(83380400001)(426003)(8936002)(8676002)(7416002)(5660300002)(2616005)(47076005)(316002)(41300700001)(86362001)(2906002)(36860700001)(186003)(16526019)(336012)(70206006)(36756003)(70586007)(110136005)(54906003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 19:23:27.9250
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b33d5df1-9777-4e15-1e40-08db888da14a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT023.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4364
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -113,49 +63,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to Section 9.17.2, Table 9-26 of CXL Specification [1], owner
-of AER should also own CXL Protocol Error Management as there is no
-explicit control of CXL Protocol error. And the CXL RAS Cap registers
-reported on Protocol errors should check for AER _OSC rather than CXL
-Memory Error Reporting Control _OSC.
+Before writing the read or write command to the SPMI arbiter through the
+PMIF interface, the current status of the channel is checked to ensure
+it is idle. However, since the status only changes from idle when the
+command is written, it is possible for two concurrent calls to determine
+that the channel is idle and simultaneously send their commands. At this
+point the PMIF interface hangs, with the status register no longer being
+updated, and thus causing all subsequent operations to time out.
 
-The CXL Memory Error Reporting Control _OSC specifically highlights
-handling Memory Error Logging and Signaling Enhancements. These kinds of
-errors are reported through a device's mailbox and can be managed
-independently from CXL Protocol Errors.
+This was observed on the mt8195-cherry-tomato-r2 machine, particularly
+after commit 46600ab142f8 ("regulator: Set PROBE_PREFER_ASYNCHRONOUS for
+drivers between 5.10 and 5.15") was applied, since then the two MT6315
+devices present on the SPMI bus would probe assynchronously and
+sometimes (during probe or at a later point) read the bus
+simultaneously, breaking the PMIF interface and consequently slowing
+down the whole system.
 
-[1] Compute Express Link (CXL) Specification, Revision 3.1, Aug 1 2022.
+To fix the issue at its root cause, introduce locking around the channel
+status check and the command write, so that both become an atomic
+operation, preventing race conditions between two (or more) SPMI bus
+read/write operations. A spinlock is used since this is a fast bus, as
+indicated by the usage of the atomic variant of readl_poll, and
+'.fast_io = true' being used in the mt6315 driver, so spinlocks are
+already used for the regmap access.
 
-Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Fixes: b45b3ccef8c0 ("spmi: mediatek: Add support for MT6873/8192")
+Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+
 ---
- drivers/cxl/pci.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-index 1cb1494c28fe..44a21ab7add5 100644
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -529,7 +529,6 @@ static int cxl_pci_setup_regs(struct pci_dev *pdev, enum cxl_regloc_type type,
+Changes in v2:
+- Added missing spin_unlocks to error paths
+- Moved memcpy outside spinlock region in the write_cmd function
+- Reworded commit message to make clear that issue can happen at any
+  point in runtime, not only during boot
+
+ drivers/spmi/spmi-mtk-pmif.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/spmi/spmi-mtk-pmif.c b/drivers/spmi/spmi-mtk-pmif.c
+index b3c991e1ea40..78b69e0b5c81 100644
+--- a/drivers/spmi/spmi-mtk-pmif.c
++++ b/drivers/spmi/spmi-mtk-pmif.c
+@@ -50,6 +50,7 @@ struct pmif {
+ 	struct clk_bulk_data clks[PMIF_MAX_CLKS];
+ 	size_t nclks;
+ 	const struct pmif_data *data;
++	spinlock_t lock;
+ };
  
- static int cxl_pci_ras_unmask(struct pci_dev *pdev)
- {
--	struct pci_host_bridge *host_bridge = pci_find_host_bridge(pdev->bus);
- 	struct cxl_dev_state *cxlds = pci_get_drvdata(pdev);
- 	void __iomem *addr;
- 	u32 orig_val, val, mask;
-@@ -541,9 +540,9 @@ static int cxl_pci_ras_unmask(struct pci_dev *pdev)
- 		return 0;
+ static const char * const pmif_clock_names[] = {
+@@ -314,6 +315,7 @@ static int pmif_spmi_read_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid,
+ 	struct ch_reg *inf_reg;
+ 	int ret;
+ 	u32 data, cmd;
++	unsigned long flags;
+ 
+ 	/* Check for argument validation. */
+ 	if (sid & ~0xf) {
+@@ -334,12 +336,14 @@ static int pmif_spmi_read_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid,
+ 	else
+ 		return -EINVAL;
+ 
++	spin_lock_irqsave(&arb->lock, flags);
+ 	/* Wait for Software Interface FSM state to be IDLE. */
+ 	inf_reg = &arb->chan;
+ 	ret = readl_poll_timeout_atomic(arb->base + arb->data->regs[inf_reg->ch_sta],
+ 					data, GET_SWINF(data) == SWINF_IDLE,
+ 					PMIF_DELAY_US, PMIF_TIMEOUT_US);
+ 	if (ret < 0) {
++		spin_unlock_irqrestore(&arb->lock, flags);
+ 		/* set channel ready if the data has transferred */
+ 		if (pmif_is_fsm_vldclr(arb))
+ 			pmif_writel(arb, 1, inf_reg->ch_rdy);
+@@ -350,6 +354,7 @@ static int pmif_spmi_read_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid,
+ 	/* Send the command. */
+ 	cmd = (opc << 30) | (sid << 24) | ((len - 1) << 16) | addr;
+ 	pmif_writel(arb, cmd, inf_reg->ch_send);
++	spin_unlock_irqrestore(&arb->lock, flags);
+ 
+ 	/*
+ 	 * Wait for Software Interface FSM state to be WFVLDCLR,
+@@ -376,7 +381,8 @@ static int pmif_spmi_write_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid,
+ 	struct pmif *arb = spmi_controller_get_drvdata(ctrl);
+ 	struct ch_reg *inf_reg;
+ 	int ret;
+-	u32 data, cmd;
++	u32 data, wdata, cmd;
++	unsigned long flags;
+ 
+ 	if (len > 4) {
+ 		dev_err(&ctrl->dev, "pmif supports 1..4 bytes per trans, but:%zu requested", len);
+@@ -394,12 +400,17 @@ static int pmif_spmi_write_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid,
+ 	else
+ 		return -EINVAL;
+ 
++	/* Set the write data. */
++	memcpy(&wdata, buf, len);
++
++	spin_lock_irqsave(&arb->lock, flags);
+ 	/* Wait for Software Interface FSM state to be IDLE. */
+ 	inf_reg = &arb->chan;
+ 	ret = readl_poll_timeout_atomic(arb->base + arb->data->regs[inf_reg->ch_sta],
+ 					data, GET_SWINF(data) == SWINF_IDLE,
+ 					PMIF_DELAY_US, PMIF_TIMEOUT_US);
+ 	if (ret < 0) {
++		spin_unlock_irqrestore(&arb->lock, flags);
+ 		/* set channel ready if the data has transferred */
+ 		if (pmif_is_fsm_vldclr(arb))
+ 			pmif_writel(arb, 1, inf_reg->ch_rdy);
+@@ -407,13 +418,12 @@ static int pmif_spmi_write_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid,
+ 		return ret;
  	}
  
--	/* BIOS has CXL error control */
--	if (!host_bridge->native_cxl_error)
--		return -ENXIO;
-+	/* BIOS has PCIe AER error control */
-+	if (!pcie_aer_is_native(pdev))
-+		return 0;
+-	/* Set the write data. */
+-	memcpy(&data, buf, len);
+-	pmif_writel(arb, data, inf_reg->wdata);
++	pmif_writel(arb, wdata, inf_reg->wdata);
  
- 	rc = pcie_capability_read_word(pdev, PCI_EXP_DEVCTL, &cap);
- 	if (rc)
+ 	/* Send the command. */
+ 	cmd = (opc << 30) | BIT(29) | (sid << 24) | ((len - 1) << 16) | addr;
+ 	pmif_writel(arb, cmd, inf_reg->ch_send);
++	spin_unlock_irqrestore(&arb->lock, flags);
+ 
+ 	return 0;
+ }
+@@ -488,6 +498,8 @@ static int mtk_spmi_probe(struct platform_device *pdev)
+ 	arb->chan.ch_send = PMIF_SWINF_0_ACC + chan_offset;
+ 	arb->chan.ch_rdy = PMIF_SWINF_0_VLD_CLR + chan_offset;
+ 
++	spin_lock_init(&arb->lock);
++
+ 	platform_set_drvdata(pdev, ctrl);
+ 
+ 	err = spmi_controller_add(ctrl);
 -- 
-2.17.1
+2.41.0
 
