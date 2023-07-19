@@ -2,84 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4219F759F53
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC137759F55
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbjGSUIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49956 "EHLO
+        id S230078AbjGSUJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:09:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231313AbjGSUII (ORCPT
+        with ESMTP id S229480AbjGSUJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:08:08 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 803A21FD9;
-        Wed, 19 Jul 2023 13:08:06 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8AxFvGkQrhkI2sHAA--.19010S3;
-        Thu, 20 Jul 2023 04:08:04 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx_yOkQrhkmwo1AA--.39758S3;
-        Thu, 20 Jul 2023 04:08:04 +0800 (CST)
-Message-ID: <f0d58cc7-1f4e-464a-2e6c-7649e997c8de@loongson.cn>
-Date:   Thu, 20 Jul 2023 04:08:04 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/6] PCI/VGA: Deal with PCI VGA compatible devices only
-Content-Language: en-US
-To:     Sui Jingfeng <sui.jingfeng@linux.dev>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
+        Wed, 19 Jul 2023 16:09:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5948792
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:08:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689797321;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iM0CuWzlzu6pdYi/6cJkA8MQCu3DxXUjouE+j/kSvnQ=;
+        b=NFTl61zd1nwddSGg8TafABZ8+UzW3hXUbcWbsR49I6oFiNCR1doz3QOWMpgSGLWH6og095
+        amyHJlO67ugjajXMqKhsI7f90lJbJX95ExLpoJ5J9JqFSt8DC5/Y1S8H7mn6JPSx3gWsqX
+        +2y+msvBRFgODhPjEqNncB5gCqcwEXg=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-153-3McoVUipMuGkl2m0_JOawQ-1; Wed, 19 Jul 2023 16:08:40 -0400
+X-MC-Unique: 3McoVUipMuGkl2m0_JOawQ-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-4fccf211494so10440e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:08:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689797318; x=1690402118;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iM0CuWzlzu6pdYi/6cJkA8MQCu3DxXUjouE+j/kSvnQ=;
+        b=N56MifUgy+VbpeLGW+ssQs/LpKKQpY1NhexQUDAef2eUgYMa4AHn/1iG6Il98JmQbU
+         nhFaSs0GDJOLgBmi/w6l5p62G+cFAdO5TBHbWLF7enF1DZISSkEV/OYwDEvvAPYugNTt
+         Ai8w3j/jSRUUpmKo2tKp8vV0UWobBUEIrdENMQNzMHHw5rDThFUc5Pu2SzbfWkevaxN9
+         AW2W0J/WSt3d+XijftzTEUK25ItQeN/wDZvUULjzi4Z4jZrJmrm8OGQUL00jAWNTOYVz
+         8tCgUH1Ey9RvOrzxTnopvjMansrY2KDf0afx+s1r8RLPQLMz8WfemWTO1w789nKiIGpt
+         WRXg==
+X-Gm-Message-State: ABy/qLY7zNcmHfwxBcxJZbR6ketQNNNkiMtC9vJ49IdgyT88ab3pabg9
+        S+ZZvIJVn8e3+ZLKkhFKEB0vl8C4RCKUOz4iqaDMFwJFXLxsDhLr4z7nLsD8l/QeBpUEXbpSNZM
+        EnXA0+1Lqr7cW39dHMTwuJagz4VlR8nt4
+X-Received: by 2002:a05:6512:33d0:b0:4f6:2317:f387 with SMTP id d16-20020a05651233d000b004f62317f387mr870475lfg.35.1689797318552;
+        Wed, 19 Jul 2023 13:08:38 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFc25d7ighZVtdSRxpwgArEzNOn94MS4yvSo0iGHAnJzSp1NeM1GJCTXANqXaeQnuA7j2/kdQ==
+X-Received: by 2002:a05:6512:33d0:b0:4f6:2317:f387 with SMTP id d16-20020a05651233d000b004f62317f387mr870455lfg.35.1689797318171;
+        Wed, 19 Jul 2023 13:08:38 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id t10-20020a1c770a000000b003faef96ee78sm2431167wmi.33.2023.07.19.13.08.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 13:08:37 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Maxime Ripard <mripard@kernel.org>,
         David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        loongson-kernel@lists.loongnix.cn,
-        Mario Limonciello <mario.limonciello@amd.com>
-References: <20230719182617.GA509912@bhelgaas>
- <9a1590bd-5dfc-94ad-645e-a0a499ae5b23@linux.dev>
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <9a1590bd-5dfc-94ad-645e-a0a499ae5b23@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Dx_yOkQrhkmwo1AA--.39758S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
-        BjDU0xBIdaVrnRJUUUPEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
-        xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
-        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxV
-        AFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
-        wI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv
-        67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
-        AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCF54CYxVAaw2AFwI0_Jw0_GFyl4c8EcI0Ec7Cj
-        xVAaw2AFwI0_Jw0_GFyl4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_GFv_Wr
-        ylx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Xr0_Ar1lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
-        87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
-        IFyTuYvjxUcCD7UUUUU
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>
+Cc:     Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 11/11] drm/vc4: tests: pv-muxing: Document test scenario
+In-Reply-To: <20230710-kms-kunit-actions-rework-v1-11-722c58d72c72@kernel.org>
+References: <20230710-kms-kunit-actions-rework-v1-0-722c58d72c72@kernel.org>
+ <20230710-kms-kunit-actions-rework-v1-11-722c58d72c72@kernel.org>
+Date:   Wed, 19 Jul 2023 22:08:37 +0200
+Message-ID: <874jlzhdfe.fsf@minerva.mail-host-address-is-not-set>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Maxime Ripard <mripard@kernel.org> writes:
 
-On 2023/7/20 03:58, Sui Jingfeng wrote:
-> My explanation about the minor tweak being made before this version 
-> and previous version
+> We've had a couple of tests that weren't really obvious, nor did they
+> document what they were supposed to test. Document that to make it
+> hopefully more obvious.
 >
-> is that  I want to keep my patch *less distraction*. 
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> ---
 
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
 
-The minor tweak being made between this version and previous version is 
-to keep my patch *less distraction*.
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
