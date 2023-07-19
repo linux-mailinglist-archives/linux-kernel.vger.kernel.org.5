@@ -2,109 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79912758F5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DF7758F60
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbjGSHng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 03:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38188 "EHLO
+        id S230341AbjGSHoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 03:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjGSHm7 (ORCPT
+        with ESMTP id S230344AbjGSHnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 03:42:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11461FE8;
-        Wed, 19 Jul 2023 00:41:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 642F160F19;
-        Wed, 19 Jul 2023 07:41:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70B9EC433C7;
-        Wed, 19 Jul 2023 07:41:54 +0000 (UTC)
-Message-ID: <1dfd0643-bec6-5360-bbd1-968848b760f9@xs4all.nl>
-Date:   Wed, 19 Jul 2023 09:41:52 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] media: Fix resource leaks in for_each_child_of_node()
- loops
-Content-Language: en-US
-To:     Lu Hongfei <luhongfei@vivo.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Wed, 19 Jul 2023 03:43:33 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4752D268F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:42:57 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-26314c2be8eso3597491a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:42:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1689752577; x=1690357377;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8kbs2DuWb4kB1m8a4nLkKBnUGt5UrZsO1n5+nbdXlnA=;
+        b=NxYRpMQ1MI3s26pnW2g/EuUERfFiKqPtolriGBIpLZlPtkVKTzvs3UcHHtciA4FRBc
+         tBmPpu1++ooa1smNKdUc/sF7158Vo8ra5BN2dcV7ZzjvtDZV+PjdQFOg8sQveIREZn3C
+         vWkPZVwlxjajHG5oNnNVAPaaI5JbsJYcUpzxM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689752577; x=1690357377;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8kbs2DuWb4kB1m8a4nLkKBnUGt5UrZsO1n5+nbdXlnA=;
+        b=VIjVsQEb3JUH3jai4XOgwSeN3o8VKKdQeZnqb5rmTFoZtax2TXho9FFQ2NLUnnocgA
+         rPZrSTyIMRoFcWnQ2ouBoUrK55CNhFsbHWYZn33IC5F0qmXv8qMYqkQ/7NhKlCMf7O/8
+         AzdUKOcuf1VrjRMW97K6J0HWr3xBMfsCU18+8eJyynl1V/ldgJ3qCBx4NXPO6ykG3tUu
+         LPiI6UnD0c+Fd+TtRDTWdlsU/kytBqpJl3CwhNLgpu8R6UOAIsPcki4BydTBvqlNGIGt
+         IYrJyjg0gJkvdE3zLSGfjf0B/LjLoKuI0iGKjAKhw/CX122uIRD+0mRqwrIfwmsi1xMb
+         0dqw==
+X-Gm-Message-State: ABy/qLbT+i8JldDU2tmCjMMVMGQuCS1Oc2ZcMwyZFVUHECFM6x5suuuO
+        jM7/NXSlfXq73EuQZl4ASDja4A==
+X-Google-Smtp-Source: APBJJlHj8emtlM2xqJSmgfj7e1lMySh3gNJProkHsWCZl2AjGt7U6HHZa476k9mL+uXpbwnw3nTGZA==
+X-Received: by 2002:a17:90a:f2cf:b0:263:f856:a82c with SMTP id gt15-20020a17090af2cf00b00263f856a82cmr1076296pjb.15.1689752576701;
+        Wed, 19 Jul 2023 00:42:56 -0700 (PDT)
+Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:dc1f:4359:d310:3643])
+        by smtp.gmail.com with ESMTPSA id z1-20020a17090a1fc100b002631f3d36a1sm710274pjz.36.2023.07.19.00.42.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 00:42:56 -0700 (PDT)
+From:   Chen-Yu Tsai <wenst@chromium.org>
+To:     Stephen Boyd <sboyd@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Moudy Ho <moudy.ho@mediatek.com>,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>, Sun Ke <sunke32@huawei.com>,
-        "open list:MEDIA INPUT INFRASTRUCTURE (V4L/DVB)" 
-        <linux-media@vger.kernel.org>,
-        "open list:ARM/Mediatek SoC support" <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Cc:     opensource.kernel@vivo.com
-References: <20230530094541.23396-1-luhongfei@vivo.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230530094541.23396-1-luhongfei@vivo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH] clk: mediatek: mt8183: Add back SSPM related clocks
+Date:   Wed, 19 Jul 2023 15:42:50 +0800
+Message-ID: <20230719074251.1219089-1-wenst@chromium.org>
+X-Mailer: git-send-email 2.41.0.455.g037347b96a-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lu Hongfei,
+This reverts commit 860690a93ef23b567f781c1b631623e27190f101.
 
-Please add the driver name to the subject line: 'media: mdp3:'!
+On the MT8183, the SSPM related clocks were removed claiming a lack of
+usage. This however causes some issues when the driver was converted to
+the new simple-probe mechanism. This mechanism allocates enough space
+for all the clocks defined in the clock driver, not the highest index
+in the DT binding. This leads to out-of-bound writes if their are holes
+in the DT binding or the driver (due to deprecated or unimplemented
+clocks). These errors can go unnoticed and cause memory corruption,
+leading to crashes in unrelated areas, or nothing at all. KASAN will
+detect them.
 
-On 30/05/2023 11:45, Lu Hongfei wrote:
-> for_each_child_of_node should have of_node_put() avoid resource leaks.
-> 
-> Signed-off-by: Lu Hongfei <luhongfei@vivo.com>
-> ---
->  drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c | 3 +++
->  1 file changed, 3 insertions(+)
->  mode change 100644 => 100755 drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
-> 
-> diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
-> index 19a4a085f73a..5a6a61d68cba
-> --- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
-> +++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
-> @@ -1128,6 +1128,7 @@ int mdp_comp_config(struct mdp_dev *mdp)
->  		comp = mdp_comp_create(mdp, node, id);
->  		if (IS_ERR(comp)) {
->  			ret = PTR_ERR(comp);
-> +			of_node_put(node);
+Add the SSPM related clocks back to the MT8183 clock driver to fully
+implement the DT binding. The SSPM clocks are for the power management
+co-processor, and should never be turned off. They are marked as such.
 
-This is needed,
+Fixes: 3f37ba7cc385 ("clk: mediatek: mt8183: Convert all remaining clocks to common probe")
+Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+---
+Please merge for fixes.
 
->  			goto err_init_comps;
->  		}
->  
-> @@ -1137,6 +1138,8 @@ int mdp_comp_config(struct mdp_dev *mdp)
->  		pm_runtime_enable(comp->comp_dev);
->  	}
->  
-> +	of_node_put(node);
-> +
+ drivers/clk/mediatek/clk-mt8183.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-but not this one. The for_each_child_of_node loop ended, so node == NULL and
-there is nothing to put.
-
-Regards,
-
-	Hans
-
->  	ret = mdp_comp_sub_create(mdp);
->  	if (ret)
->  		goto err_init_comps;
+diff --git a/drivers/clk/mediatek/clk-mt8183.c b/drivers/clk/mediatek/clk-mt8183.c
+index 1ba421b38ec5..e31f94387d87 100644
+--- a/drivers/clk/mediatek/clk-mt8183.c
++++ b/drivers/clk/mediatek/clk-mt8183.c
+@@ -328,6 +328,14 @@ static const char * const atb_parents[] = {
+ 	"syspll_d5"
+ };
+ 
++static const char * const sspm_parents[] = {
++	"clk26m",
++	"univpll_d2_d4",
++	"syspll_d2_d2",
++	"univpll_d2_d2",
++	"syspll_d3"
++};
++
+ static const char * const dpi0_parents[] = {
+ 	"clk26m",
+ 	"tvdpll_d2",
+@@ -507,6 +515,9 @@ static const struct mtk_mux top_muxes[] = {
+ 	/* CLK_CFG_6 */
+ 	MUX_GATE_CLR_SET_UPD(CLK_TOP_MUX_ATB, "atb_sel",
+ 		atb_parents, 0xa0, 0xa4, 0xa8, 0, 2, 7, 0x004, 24),
++	MUX_GATE_CLR_SET_UPD_FLAGS(CLK_TOP_MUX_SSPM, "sspm_sel",
++				   sspm_parents, 0xa0, 0xa4, 0xa8, 8, 3, 15, 0x004, 25,
++				   CLK_IS_CRITICAL | CLK_SET_RATE_PARENT),
+ 	MUX_GATE_CLR_SET_UPD(CLK_TOP_MUX_DPI0, "dpi0_sel",
+ 		dpi0_parents, 0xa0, 0xa4, 0xa8, 16, 4, 23, 0x004, 26),
+ 	MUX_GATE_CLR_SET_UPD(CLK_TOP_MUX_SCAM, "scam_sel",
+@@ -673,10 +684,18 @@ static const struct mtk_gate_regs infra3_cg_regs = {
+ 	GATE_MTK(_id, _name, _parent, &infra2_cg_regs, _shift,	\
+ 		&mtk_clk_gate_ops_setclr)
+ 
++#define GATE_INFRA2_FLAGS(_id, _name, _parent, _shift, _flag)	\
++	GATE_MTK_FLAGS(_id, _name, _parent, &infra2_cg_regs, 	\
++		       _shift, &mtk_clk_gate_ops_setclr, _flag)
++
+ #define GATE_INFRA3(_id, _name, _parent, _shift)		\
+ 	GATE_MTK(_id, _name, _parent, &infra3_cg_regs, _shift,	\
+ 		&mtk_clk_gate_ops_setclr)
+ 
++#define GATE_INFRA3_FLAGS(_id, _name, _parent, _shift, _flag)	\
++	GATE_MTK_FLAGS(_id, _name, _parent, &infra3_cg_regs, 	\
++		       _shift, &mtk_clk_gate_ops_setclr, _flag)
++
+ static const struct mtk_gate infra_clks[] = {
+ 	/* INFRA0 */
+ 	GATE_INFRA0(CLK_INFRA_PMIC_TMR, "infra_pmic_tmr", "axi_sel", 0),
+@@ -748,7 +767,11 @@ static const struct mtk_gate infra_clks[] = {
+ 	GATE_INFRA2(CLK_INFRA_UNIPRO_TICK, "infra_unipro_tick", "fufs_sel", 12),
+ 	GATE_INFRA2(CLK_INFRA_UFS_MP_SAP_BCLK, "infra_ufs_mp_sap_bck", "fufs_sel", 13),
+ 	GATE_INFRA2(CLK_INFRA_MD32_BCLK, "infra_md32_bclk", "axi_sel", 14),
++	/* infra_sspm is main clock in co-processor, should not be closed in Linux. */
++	GATE_INFRA2_FLAGS(CLK_INFRA_SSPM, "infra_sspm", "sspm_sel", 15, CLK_IS_CRITICAL),
+ 	GATE_INFRA2(CLK_INFRA_UNIPRO_MBIST, "infra_unipro_mbist", "axi_sel", 16),
++	/* infra_sspm_bus_hclk is main clock in co-processor, should not be closed in Linux. */
++	GATE_INFRA2_FLAGS(CLK_INFRA_SSPM_BUS_HCLK, "infra_sspm_bus_hclk", "axi_sel", 17, CLK_IS_CRITICAL),
+ 	GATE_INFRA2(CLK_INFRA_I2C5, "infra_i2c5", "i2c_sel", 18),
+ 	GATE_INFRA2(CLK_INFRA_I2C5_ARBITER, "infra_i2c5_arbiter", "i2c_sel", 19),
+ 	GATE_INFRA2(CLK_INFRA_I2C5_IMM, "infra_i2c5_imm", "i2c_sel", 20),
+@@ -766,6 +789,10 @@ static const struct mtk_gate infra_clks[] = {
+ 	GATE_INFRA3(CLK_INFRA_MSDC0_SELF, "infra_msdc0_self", "msdc50_0_sel", 0),
+ 	GATE_INFRA3(CLK_INFRA_MSDC1_SELF, "infra_msdc1_self", "msdc50_0_sel", 1),
+ 	GATE_INFRA3(CLK_INFRA_MSDC2_SELF, "infra_msdc2_self", "msdc50_0_sel", 2),
++	/* infra_sspm_26m_self is main clock in co-processor, should not be closed in Linux. */
++	GATE_INFRA3_FLAGS(CLK_INFRA_SSPM_26M_SELF, "infra_sspm_26m_self", "f_f26m_ck", 3, CLK_IS_CRITICAL),
++	/* infra_sspm_32k_self is main clock in co-processor, should not be closed in Linux. */
++	GATE_INFRA3_FLAGS(CLK_INFRA_SSPM_32K_SELF, "infra_sspm_32k_self", "f_f26m_ck", 4, CLK_IS_CRITICAL),
+ 	GATE_INFRA3(CLK_INFRA_UFS_AXI, "infra_ufs_axi", "axi_sel", 5),
+ 	GATE_INFRA3(CLK_INFRA_I2C6, "infra_i2c6", "i2c_sel", 6),
+ 	GATE_INFRA3(CLK_INFRA_AP_MSDC0, "infra_ap_msdc0", "msdc50_hclk_sel", 7),
+-- 
+2.41.0.455.g037347b96a-goog
 
