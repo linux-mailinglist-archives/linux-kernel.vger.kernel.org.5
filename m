@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C99759448
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D67075944A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230154AbjGSLgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 07:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53006 "EHLO
+        id S229512AbjGSLgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 07:36:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbjGSLgH (ORCPT
+        with ESMTP id S230109AbjGSLgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 07:36:07 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6832F170E
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:36:05 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-666edfc50deso508384b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:36:05 -0700 (PDT)
+        Wed, 19 Jul 2023 07:36:17 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B6E11BF5
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:36:11 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6686c74183cso6768745b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:36:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1689766565; x=1690371365;
+        d=ventanamicro.com; s=google; t=1689766570; x=1690371370;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ASJ6N1f2HtTSaai3pJY5ayecgWjGnn9m1BypIphubd8=;
-        b=FNUJTTod8d8lkD0j2EWesqH3a2UI3TMHlDsCBF6GwyZAmOkXqcKEwV7u2/cVonYeiR
-         LtQRO9edVmljFnQKOqJNIrd/xe/R1sZZY6PKCdm7l8CcXkLO6A6iBBF0RnhZVFiBd8mc
-         GykZ3jM3Fzm8Ki7dKbZCksXdykfCpHEuNvd9ISOUhYa7AA9t5Ur7F+PhTagSyDzVY0YL
-         nAdfgFdS9Plri5I+ku5NEbfrmRLqqU8vDErM99MLo9OJGBN1a6ecXpUCbScUtYV2Z8iD
-         3TfS7WUMdTk+iEHmSEo09Vbj5bGCfWrfXuGhWNZxFCOnVEWA+eQS0RnS2dZu9bj4BK1R
-         CEKQ==
+        bh=oQiwHLQTp/8j8gItu3f4LCSePQxOFgN8ncFMh196Onk=;
+        b=WAO50NkUFcJNAH38hHesi1r+AhVYkQ3T7HiabLtaPKGo+n8KaN9dQ1BPiWlPZaxre0
+         ghmIUYzEflFP9s1yN4PmzDbFFZ3yLfhMG/c525rbrL0geQ7j3gmj9QA7MFxracRRnpBX
+         swRP3S5w3ETO+2wgm4HsU9zgSReM4HzTxHPhVJueMsqDmzQB68lzUJSCRdWMCqMX8X/R
+         ESSNoscvZvcfLh3V+F3fWiIh306v+SdhgYkHCByFQf48Ij43zRqR2DU8rKIfB4sm53sL
+         qNGiTx+lgH0c4HPRODh5UqpGjqiqeOtcK8xM3/ADfyHamb9TmsVtx+JvUkIAHYKjWcK+
+         FK0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689766565; x=1690371365;
+        d=1e100.net; s=20221208; t=1689766570; x=1690371370;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ASJ6N1f2HtTSaai3pJY5ayecgWjGnn9m1BypIphubd8=;
-        b=QGI9/mKNPo/u8acCEcVzSm/+r5Q+0aELF+EuC+pdm9UQmBqHDn6lni+/38XucUBl7d
-         WQXCOWIifyoYx8vHKgNvjstp2berfmOXKm/9QJui4+44Zjp8UoaoyUxtY81SoGjXQqcb
-         WA1zNqBVgfSRa3S3ErKtfo3VFO685NYeIjrR250DTpB0jm3dF5QTCotIm3ah1DYvgLgQ
-         KMgDdi2m5I9gJ2sDy21eBk7gxbUoCEJPwUIm754peeauQAVgoojzW6HanIkM7U+AwNv5
-         HVyB2LxU/SLwpRIMB0AUh5kpujHnhHnRXKkzGvHFj49qNLTvj3tiMgVfrurXAhSQ2ZBy
-         TiNg==
-X-Gm-Message-State: ABy/qLZIC+BKzVJSgw7XTJndH7ReIVKcVgrXfrKXdvjbn19Au/4/FbhN
-        HMJwc2JRN52/wyd27QLVxlJ8YA==
-X-Google-Smtp-Source: APBJJlEt5NjiDD+SV5jYFnNxnx7P2kahDiZ6mEz+7XT5lgFV80n26BTX/gkKnX0j6e8fR7eYiMB7uQ==
-X-Received: by 2002:a05:6a20:430f:b0:f0:50c4:4c43 with SMTP id h15-20020a056a20430f00b000f050c44c43mr2313038pzk.5.1689766564723;
-        Wed, 19 Jul 2023 04:36:04 -0700 (PDT)
+        bh=oQiwHLQTp/8j8gItu3f4LCSePQxOFgN8ncFMh196Onk=;
+        b=R1qugW2uOEGXRLb4ZzseozbA0BX+jHog8PFjx5foPhJf2vIMNAyOvN++6mmONHXpg1
+         J4ktrg3s6Prblgg+KePskCis3aAzFyooo6YMEL4AcyrSPLzAmcEr9HRYgsVTmYjtPuxg
+         HR51q3nBufcHNTHAaBuN+S90u3gL371ZNkApSrNobKJUDcQ6Ka6WZnP615vO0zKtjjmk
+         e3h9fUebftCze6znHR+beKClj8Nxibu4Zj/X12uPktz8O9wm1ixfzlINYduSP0gqvDJK
+         QVTHpjc2b1kOIQwNydjH6fhIrKKXYhS6TbReH6ARXCInTq5hIvOdgFvuAZpBoI2R3ewb
+         qjjA==
+X-Gm-Message-State: ABy/qLZ9uag0I2/NkAd7xP9jNl4LUD1xkGj0d5gXcVfaMerdDv6EwWKm
+        3Hc9DD6oOvekgMG8142RsB4TmOiMalbVvP3hckk=
+X-Google-Smtp-Source: APBJJlFmLFGryKpfzKpUE3V98g17+lc5UaKu+zvNUvTPMAceFo6f/UbuUr/F/yrJsP0AJyC70N/57w==
+X-Received: by 2002:a05:6a20:8e10:b0:132:87da:5b57 with SMTP id y16-20020a056a208e1000b0013287da5b57mr22614317pzj.59.1689766570147;
+        Wed, 19 Jul 2023 04:36:10 -0700 (PDT)
 Received: from anup-ubuntu-vm.localdomain ([171.76.86.130])
-        by smtp.gmail.com with ESMTPSA id j10-20020aa783ca000000b00669c99d05fasm3050408pfn.150.2023.07.19.04.35.59
+        by smtp.gmail.com with ESMTPSA id j10-20020aa783ca000000b00669c99d05fasm3050408pfn.150.2023.07.19.04.36.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 04:36:04 -0700 (PDT)
+        Wed, 19 Jul 2023 04:36:09 -0700 (PDT)
 From:   Anup Patel <apatel@ventanamicro.com>
 To:     Palmer Dabbelt <palmer@dabbelt.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
@@ -66,9 +66,9 @@ Cc:     Atish Patra <atishp@atishpatra.org>,
         Anup Patel <anup@brainfault.org>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Anup Patel <apatel@ventanamicro.com>
-Subject: [PATCH v6 02/14] of: property: Add fw_devlink support for msi-parent
-Date:   Wed, 19 Jul 2023 17:05:30 +0530
-Message-Id: <20230719113542.2293295-3-apatel@ventanamicro.com>
+Subject: [PATCH v6 03/14] drivers: irqchip/riscv-intc: Mark all INTC nodes as initialized
+Date:   Wed, 19 Jul 2023 17:05:31 +0530
+Message-Id: <20230719113542.2293295-4-apatel@ventanamicro.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230719113542.2293295-1-apatel@ventanamicro.com>
 References: <20230719113542.2293295-1-apatel@ventanamicro.com>
@@ -77,71 +77,50 @@ Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows fw_devlink to create device links between consumers of
-a MSI and the supplier of the MSI.
+The RISC-V INTC local interrupts are per-HART (or per-CPU) so
+we create INTC IRQ domain only for the INTC node belonging to
+the boot HART. This means only the boot HART INTC node will be
+marked as initialized and other INTC nodes won't be marked which
+results downstream interrupt controllers (such as IMSIC and APLIC
+direct-mode) not being probed due to missing device suppliers.
+
+To address this issue, we mark all INTC node for which we don't
+create IRQ domain as initialized.
 
 Signed-off-by: Anup Patel <apatel@ventanamicro.com>
 ---
- drivers/of/property.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ drivers/irqchip/irq-riscv-intc.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index ddc75cd50825..e4096b79a872 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1325,6 +1325,37 @@ static struct device_node *parse_interrupts(struct device_node *np,
- 	return of_irq_parse_one(np, index, &sup_args) ? NULL : sup_args.np;
- }
- 
-+static struct device_node *parse_msi_parent(struct device_node *np,
-+					    const char *prop_name, int index)
-+{
-+	struct of_phandle_args sup_args;
-+	struct device_node *msi_np;
-+
-+	if (!IS_ENABLED(CONFIG_OF_IRQ))
-+		return NULL;
-+
-+	if (strcmp(prop_name, "msi-parent"))
-+		return NULL;
-+
-+	msi_np = of_parse_phandle(np, prop_name, 0);
-+	if (msi_np) {
-+		if (!of_property_read_bool(msi_np, "#msi-cells")) {
-+			if (index) {
-+				of_node_put(msi_np);
-+				return NULL;
-+			}
-+			return msi_np;
-+		}
-+		of_node_put(msi_np);
+diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+index 65f4a2afb381..4e2704bc25fb 100644
+--- a/drivers/irqchip/irq-riscv-intc.c
++++ b/drivers/irqchip/irq-riscv-intc.c
+@@ -155,8 +155,16 @@ static int __init riscv_intc_init(struct device_node *node,
+ 	 * for each INTC DT node. We only need to do INTC initialization
+ 	 * for the INTC DT node belonging to boot CPU (or boot HART).
+ 	 */
+-	if (riscv_hartid_to_cpuid(hartid) != smp_processor_id())
++	if (riscv_hartid_to_cpuid(hartid) != smp_processor_id()) {
++		/*
++		 * The INTC nodes of each CPU are suppliers for downstream
++		 * interrupt controllers (such as IMSIC and APLIC direct-mode)
++		 * so we should mark an INTC node as initialized if we are
++		 * not creating IRQ domain for it.
++		 */
++		fwnode_dev_initialized(of_fwnode_handle(node), true);
+ 		return 0;
 +	}
-+
-+	if (of_parse_phandle_with_args(np, prop_name, "#msi-cells", index,
-+				       &sup_args))
-+		return NULL;
-+
-+	return sup_args.np;
-+}
-+
- static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_clocks, },
- 	{ .parse_prop = parse_interconnects, },
-@@ -1359,6 +1390,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_regulators, },
- 	{ .parse_prop = parse_gpio, },
- 	{ .parse_prop = parse_gpios, },
-+	{ .parse_prop = parse_msi_parent, },
- 	{}
- };
  
+ 	return riscv_intc_init_common(of_node_to_fwnode(node));
+ }
 -- 
 2.34.1
 
