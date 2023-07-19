@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36775759665
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 584B075966C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbjGSNSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 09:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44702 "EHLO
+        id S231136AbjGSNTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 09:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbjGSNR6 (ORCPT
+        with ESMTP id S230155AbjGSNS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 09:17:58 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 57BAC172A;
-        Wed, 19 Jul 2023 06:17:51 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3486B2F4;
-        Wed, 19 Jul 2023 06:18:34 -0700 (PDT)
-Received: from [10.57.31.26] (unknown [10.57.31.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D3C2A3F6C4;
-        Wed, 19 Jul 2023 06:17:47 -0700 (PDT)
-Message-ID: <42118979-5f86-75df-72a5-e5fc8592eb82@arm.com>
-Date:   Wed, 19 Jul 2023 14:18:17 +0100
+        Wed, 19 Jul 2023 09:18:59 -0400
+Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B9B8119
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:18:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        Content-ID:Content-Description;
+        bh=7L+Xkt1Em2DaemKP30bcX/bfNhleDwpX/9tOCT336L4=; b=U4Cm0gWu1IAKrXYF/GNlt975nB
+        c4D6vwd57ekgrf2ZTFg8NYrSlSEFihb3WFyUDoaV/Qm94mTOqq+7SKhzEeiyypAg9JPQj0VlPJoJ3
+        2HJZ35jbGlOx6QY236ZXdtsV+uWvdXhqxnElXznKrswBKJ3Y3elAO9qG+bHs/ck4zjugDZyID0fsu
+        5XcJhod2BXu4tb26RPdCh7O9nrnUb0SMIeGKUFLaHTe/gWFjdphsNmU6SnDbbKy8RZw56Gw1s1rRp
+        X/GZ5ddcjjr26rS8nZ4lo1NgMtNZVesMMndI0xb+tjJLlgw2OglOD3+PxapXfjLeMyNQzu3Synfq6
+        LdFLWIPBfIUNVIKq+3r9b4CHmYbeWvQcemnMLr5zk14aaMGhGCkk1WefwGgMsll1DXgfWIFcRfL4f
+        En5WbUCFRwtXdaNdnvqonl98MSRL0/NyNuqObO4Rp5PZ9e/UIKGQuVnlOeKRK2HNDNw/lbJsptUAW
+        nZEqw5EVqDaGr9ewjVYOQzfZHGIaPrlLDgCQBVw2p2SHHBE0j0sWMjbly272WAo/kPNttgbZ8CES+
+        iETlW1cxbAT8fRKtvbVUxSkBaZvOmjQDdz/8Dpcg2Pdxc3kEtSPHyJ4uNCbkpQDu+XFpAxqnHKJPs
+        rHapZ2eGivRDGrBtJwNa72ebKGCwXOeJkbMnMqe5E=;
+From:   Christian Schoenebeck <linux_oss@crudebyte.com>
+To:     Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>
+Cc:     v9fs@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, Robert Schwebel <r.schwebel@pengutronix.de>,
+        Eric Van Hensbergen <ericvh@kernel.org>
+Subject: Re: [PATCH v2 1/4] fs/9p: remove unnecessary and overrestrictive check
+Date:   Wed, 19 Jul 2023 15:18:33 +0200
+Message-ID: <5578264.lUQuLdSRdS@silver>
+In-Reply-To: <20230716-fixes-overly-restrictive-mmap-v2-1-147d6b93f699@kernel.org>
+References: <20230716-fixes-overly-restrictive-mmap-v2-0-147d6b93f699@kernel.org>
+ <20230716-fixes-overly-restrictive-mmap-v2-1-147d6b93f699@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [RESEND][PATCH v2 1/3] sched/tp: Add new tracepoint to track
- uclamp set from user-space
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        rafael@kernel.org, linux-pm@vger.kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        vschneid@redhat.com, delyank@fb.com, qyousef@google.com,
-        Qais Yousef <qyousef@layalina.io>
-References: <20230522145702.2419654-1-lukasz.luba@arm.com>
- <20230522145702.2419654-2-lukasz.luba@arm.com>
- <20230531182629.nztie5rwhjl53v3d@airbuntu>
- <20230706111443.GH2833176@hirez.programming.kicks-ass.net>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20230706111443.GH2833176@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,33 +55,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tuesday, July 18, 2023 10:50:15 PM CEST Eric Van Hensbergen wrote:
+> This eliminates a check for shared that was overrestrictive and
+> duplicated a check in generic_file_readonly_mmap.
+> 
+> Reviewed-by: Dominique Martinet <asmadeus@codewreck.org>
+> Reviewed-by: Christian Schoenebeck <linux_oss@crudebyte.com>
+> Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
+> ---
+>  fs/9p/vfs_file.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
+> index 2996fb00387fa..bda3abd6646b8 100644
+> --- a/fs/9p/vfs_file.c
+> +++ b/fs/9p/vfs_file.c
+> @@ -506,8 +506,6 @@ v9fs_file_mmap(struct file *filp, struct vm_area_struct *vma)
+>  
+>  	if (!(v9ses->cache & CACHE_WRITEBACK)) {
+>  		p9_debug(P9_DEBUG_CACHE, "(no mmap mode)");
+
+"(r/o mmap mode)" ?
+
+> -		if (vma->vm_flags & VM_MAYSHARE)
+> -			return -ENODEV;
+>  		invalidate_inode_pages2(filp->f_mapping);
+>  		return generic_file_readonly_mmap(filp, vma);
+>  	}
+> 
+> 
 
 
-On 7/6/23 12:14, Peter Zijlstra wrote:
-> On Wed, May 31, 2023 at 07:26:29PM +0100, Qais Yousef wrote:
->> On 05/22/23 15:57, Lukasz Luba wrote:
->>> The user-space can set uclamp value for a given task. It impacts task
->>> placement decisions made by the scheduler. This is very useful information
->>> and helps to understand the system behavior or track improvements in
->>> middleware and applications which start using uclamp mechanisms and report
->>> better performance in tests.
->>
->> Do you mind adding a generic one instead please? And explain why we can't just
->> attach to the syscall via kprobes? I think you want to bypass the permission
->> checks, so maybe a generic tracepoint after that might be justifiable?
->> Then anyone can use it to track how userspace has changed any attributes for
->> a task, not just uclamp.
-> 
-> Yeah, so I'm leaning towards the same, if you want to put a tracepoint
-> in __sched_setscheduler(), just trace the whole attr and leave it at
-> that:
-> 
-> 	trace_update_sched_attr_tp(p, attr);
-> 
-> or somesuch.
-> 
-
-OK, fair enough, I'll do that. Thanks Peter!
-(I'm sorry for the delay, I was on vacation)
-
-Lukasz
