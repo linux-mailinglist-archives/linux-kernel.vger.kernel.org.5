@@ -2,177 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7F7759B48
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513AF759B52
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbjGSQph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 12:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
+        id S230263AbjGSQsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 12:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbjGSQp3 (ORCPT
+        with ESMTP id S229632AbjGSQsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 12:45:29 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE4E213F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:45:14 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-401d1d967beso4611cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:45:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689785113; x=1692377113;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5eouzQn1DE3Woy1acpRFuk9bMIN105v+sSKwoOHp8Q8=;
-        b=IbgjYuG3oCAbk2Ss+q74q4W9F25Eeq8BUOuDEmMhxAWrgzJ5V9vxVLkUriCO2ZViyi
-         Ts51qXKLKaUYg6koQszGu7BAKGs7tOLsHM1GaCqF87EjE9NiH+j96ZGLV9Lf1+A63pVS
-         haptMv8ibM4uu/LUclKR2ygVmqoCN6Bzus6kNffY4lJ51vLYKeotii1gBK3s2lvzzz6o
-         OOTgVqxbimG8t5WA+bBOUlPlRkZT1zg/8asYOCkOto+TWfPvcA4pNBFIovUsZSzFdj5u
-         YfenC57DXKxItYVqeO75sG8s693f26o2XCM/I6LFSTgFH4d+eIgbnkPF4y20ywQmIRcC
-         QTGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689785113; x=1692377113;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5eouzQn1DE3Woy1acpRFuk9bMIN105v+sSKwoOHp8Q8=;
-        b=NvmJTf5ms6rd1/D9uOQTruOmr/LP26QrGZ0+9UDGJwE+r51x8J9OxPwUQWBhPSZZtn
-         VI06W5dNRFmSOyDcIk4tQ/UO2OzdCPfL5PpwmnSXU1gxUEDWlS3pT1wYxZRgJSCNd9I2
-         d469mqtid3nhOy/xKDhhMk/1yYGXPJwVw4z8potX1N1WyP5mVB/e82cYGJ9X5B1k+VW/
-         eXidyTnsSPK+oD0i6eqDxIXOdkfWmEKzblTJLL/JpzWdgqIEzlYmznhdjQ9CagacqJDE
-         N0gILH2u9Dha8WRKw/v3UjQfX+xzCGh/mD6a3wh9fCDcQn7FM28VGrxlIUI+iRbgrME8
-         F5QA==
-X-Gm-Message-State: ABy/qLYCMiUfAlhF1EFjEgDnfRei1y52YxQoBK8FcYYb/FGeySzei67c
-        JceekL88niLnvxobrwDHShF9gGt1IMKBCUdsSXlLog==
-X-Google-Smtp-Source: APBJJlEL8/G/yVptpWOuQ0guUBdI/DR3grNFP/ZpiVN+HoXzJ96I7quOyM5EFQoiqbygx2tM85uZiFrotTti9DDS5c4=
-X-Received: by 2002:a05:622a:38b:b0:405:3a65:b3d6 with SMTP id
- j11-20020a05622a038b00b004053a65b3d6mr117111qtx.13.1689785107840; Wed, 19 Jul
- 2023 09:45:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230715032915.97146-1-yangjihong1@huawei.com> <20230715032915.97146-3-yangjihong1@huawei.com>
-In-Reply-To: <20230715032915.97146-3-yangjihong1@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 19 Jul 2023 09:44:56 -0700
-Message-ID: <CAP-5=fVysKhUn1YsUr0NBU2kVBDgkoczO861XwK5VCtkeYSRJA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] perf evlist: Add evlist__findnew_tracking_event() helper
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com,
-        kan.liang@linux.intel.com, james.clark@arm.com,
-        tmricht@linux.ibm.com, ak@linux.intel.com,
-        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
+        Wed, 19 Jul 2023 12:48:12 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9CB91;
+        Wed, 19 Jul 2023 09:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689785291; x=1721321291;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=/H+0UaO1mEQJGDj4ZmlsnzDIwI2IQGIu+jYRD5LDkSU=;
+  b=GHAFlvdtjmB8wGM8PSkgBRqiHh+H9qzQVCd0CSWXOIiqJzIfGH+93suI
+   LtUuepzWDvlpNpk0BiQzSdGX69JwsdrDTuowFa+FrtS8WFK1nM0V7sJ17
+   vHWAboGBjSiuloHSeSaDJA2KFXwUAd52T+hjAD7olIU1AaLOXaj+hB7Px
+   IC1DIzDQf/zeJAyoMiicIhWBJozH+7J5X1ZEXkQJoladwZN4PFsYtx7De
+   oUVlRMFoyFDEOrNGBHaiF17HhPyhTlEKQQw1p9/gUhanBn893eri8n1FK
+   3c1k+nRWCjwEgfpcf53cPUMMQTPs5Yu5KWgkWFEd1SE5pbhAh744a9eYC
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="356478878"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="356478878"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 09:48:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="1054808256"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="1054808256"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga005.fm.intel.com with ESMTP; 19 Jul 2023 09:48:10 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 19 Jul 2023 09:48:10 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 19 Jul 2023 09:48:10 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 19 Jul 2023 09:48:10 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 19 Jul 2023 09:48:09 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DALnCS38E9BJdQQInHjMTW0OPxHKy2pK7k/YmnyTMXJz4fQ0SCXYqu9MMF8CL8ZIBLpGzyrDrRB0zLxaUIiaAbUrxV2gtbvuKZvPrBQXgUsHnm/VX+RGGycx8pJ7lMWijkoF0SnJPny19v9xTeEHHNPrOpRa89cCDX46PkygP8AtqrZB4t84sfa8rAEiyZy7yQmVUyW/6RnFVkgWUhkuUAU90nG4FKpjpp7ullhAuRJKuv8dfhxnKeg2R/82saYxNGxDMVz1YLZ7fCMN0Z6WLDV/iiTTtnb20oAR6qNl3yf6gamq0EbAh0AWnNEdNZkaXQLFJ+oyK+Owee3i7WGrNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rwn+a+Kp/UvYFtUp4WhJqWUxgG5MsAi9LrOAdh0Snks=;
+ b=DzHV/20NWTK4Ib1VhPzIQEP1+fkxxhYdAFn5XCrQWmBoSOtYEq1iCTA6ISmnwhTzX8GcmLJR5uI74OrxF5PplJdTsCuG98Zs5ajhig2LWmG2CxO/eC7zZajTfJxaFh1YD7SuMIpVa1eZcgXzGBpfpun6wwj/t+0ZK5qscRDNXS9d9D6zYRlzknKkA7LdTARW81kdYAbXuom11L0frElgph711zj8K+DzZKbeEBLzUItO+OojuWPF1J2AA8JtYvhMTLS2+mwqKVrHJMRGaRUqfQSV3D5P2vd5nj7MBKV/Mba2IsdEfPEbguTmjNNbcNGs6D+vQan57gmBklPjqM7XnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by SJ2PR11MB8498.namprd11.prod.outlook.com (2603:10b6:a03:56f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Wed, 19 Jul
+ 2023 16:48:08 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a%7]) with mapi id 15.20.6609.024; Wed, 19 Jul 2023
+ 16:48:08 +0000
+Message-ID: <e0d85f3a-377b-dd29-3125-c5c304d9d234@intel.com>
+Date:   Wed, 19 Jul 2023 18:46:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH net-next] net: fec: add XDP_TX feature support
+Content-Language: en-US
+To:     Wei Fang <wei.fang@nxp.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <20230717103709.2629372-1-wei.fang@nxp.com>
+ <fa3dc82a-fe5e-a90c-6490-1661f1bb43d8@intel.com>
+ <AM5PR04MB3139675725C77A4C06103DA48839A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <AM5PR04MB3139675725C77A4C06103DA48839A@AM5PR04MB3139.eurprd04.prod.outlook.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BE1P281CA0375.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:82::9) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|SJ2PR11MB8498:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8ebba99b-0620-437e-7c7e-08db8877edca
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: n59IcBGGe/pETqNDn/fgpBNF8j4QvMyb3rntYd7UbQ7PyXzARamXcsGKfryw+Gy/u23nDTsi4JOadLaWcoAEFeifrfSj+dtdvZpMyOkGiaITgGazTXWTuCcds1AqsHnnRumIMTQ+3ssYZdRxmlPawLeq8dHkcKEiaKVUPGoVmb0nhLEU0/h70rEkQp9r1leQNJcy/kddZVm23O5GoHRONpcgjvOMpf1xUbl8hxT8yMH/yVOB/rNCGMtAiO0Hkxqa0wsbHNspGd5bb4eG2ku7/66QS66DBLYVYsW+6uYz5jLU7OZbLrYSyojv8j20aH8S+ofyX+tSsDhxA5RAEiiqhY7Ql1xYQLfnSuKFhoCiPBgZS8/vwO+kcigda1886pw5BKzJXtXTe8Y3bgHdTUvWbQWB5Jl39iI9jujVinhue+XIBbx473sb2keKldUpHaHyyMhV88bn17D5T2J/5qmHj2d6sx/LC02lruP8Jt5SIajC1n7mCavT8PT97rNncd5/thnahzf0MVk45+a8pke4RL8rNoHFX0pJk4yFAPM9EI7r3w5/JpW/Yio1xeKZLU+BsD5frLXwMgATEXaQtmFDNSs4zjSaPU7VPTmkV59zcxr3/U8fAg9aylHsqMT5KlQIIspDyA3Pp2QSz5tavwhmZA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(346002)(396003)(136003)(366004)(376002)(451199021)(31686004)(6666004)(6486002)(478600001)(54906003)(83380400001)(2616005)(36756003)(31696002)(86362001)(2906002)(26005)(186003)(53546011)(6506007)(6512007)(66476007)(38100700002)(66556008)(6916009)(66946007)(5660300002)(4326008)(316002)(41300700001)(8936002)(8676002)(82960400001)(7416002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aWVSUUFqR0g0emdMSDBMWXVSa3VGTTVEbGJuaXFHblVocnNtM0VVVkhadmRa?=
+ =?utf-8?B?Q05YKytJeXd3c3hsenN4aXh2OXdHNlNzeUxrUmNCZzJTcFQwZ0hLenJ1a1lk?=
+ =?utf-8?B?SUdSRTlWeDUrM2UyeWQ5UG9hUEcvNjF4Q1dJT0FjeHErMzk5aFV4eDZ2L1hE?=
+ =?utf-8?B?UHBPSmc3SndEZ3lSSm94WmFiRFppdVA1RlpPbWdobnk2d2RtZEpZWVAvYmVy?=
+ =?utf-8?B?UHhVUXJpTmtpei84QkIrRnlYUS9uS2NRcUo1cjBEa2htejBHdFIyUkZSOTBo?=
+ =?utf-8?B?cTR2d3V0bTNldkdSdktKWVdZU0xtUUdzQWlOZDFCbmZLREN2YU5EMmdxeDRD?=
+ =?utf-8?B?Z0ppK2dVcVNOTVhqNnJzQkdFYXlPbVltbWVVbjRqaXVCS0hPNWFKTnlpWTdK?=
+ =?utf-8?B?SnVwN2ZnM3dlbENKVWRPRFRhVWtDcC8zUzVvMm5SVE1BQzBUQUl0a0VaUE5V?=
+ =?utf-8?B?VFZLTGxYZXVhM2plNFFtY3BieFRBaktCenN2SlFodWdsaFhkemFDMTVFOVJL?=
+ =?utf-8?B?aEp5MFVCWFNxUGVnRXhKcWhoS1AxMU5xNW1RdW4yL3R2N2J0WVFOK3p1clRU?=
+ =?utf-8?B?cExOTm1oclltenhBMjJjaVRSQmhqZS9JaWkrTm4zN0Jjd1RhSDRHTjhiL3hV?=
+ =?utf-8?B?a3ZGR0ZUMVMyeWJ0Y0xtNERxVzh3alVpaVh4WjR0dHBkTmNWeWFwUExjTEJv?=
+ =?utf-8?B?RGpra1hoS1lrZVoraWVsN1pDNFBOcTVzU0ZYSXF5VW1IRkY1eVR6QUZET3hP?=
+ =?utf-8?B?dWZuQUVoOWVuWVA3SlZibnhXOGsyUkJxR0JuZUZMdGFxZ3BsNEVzMzhpTG4x?=
+ =?utf-8?B?OHEyR1lCdEM5Y1o3U3hQZExrWkpDUFpBaFY5K2ltY2tWRTBTeURjTGw5OU1y?=
+ =?utf-8?B?YVk4SUU0amZZaGNxbDZ3VmUwTXVMUUVKVGhwNjhkbHB5Q2tubWZ0TG5WNFZF?=
+ =?utf-8?B?eVJJclZDdUJNTnJnYUhDS1FkTWRsNkFPRTVkTlJseitjQlA2UVhQT1JwOSs1?=
+ =?utf-8?B?OXVvVS9kMHVuVDlCT0tQTXBtQy8rRjFONEdQUHk4cUFxSDhoOUsvekR3MitM?=
+ =?utf-8?B?cSs1VE1vL1NTTkphaFZJKzhMYVRPVmlkYmx3UktQbWJ3MEdDT0VhczViRkkz?=
+ =?utf-8?B?djJ5ZXhwbkJvMmQxT3p1MDdIQ2RVaE5rbjRBVU5Gdlh2a1R4YzlxSElqdFkz?=
+ =?utf-8?B?bklCdkNiYXJ3MHNwWm5xTWJLT050Y25RTDZQNkpoWmhXbVBBeThpT2pOdi9C?=
+ =?utf-8?B?SzRTOW9JVllPOEk2TTE3SDkvd0FjME5Xc1R6aFErd2l5QUYyVlZBcDc4WTNG?=
+ =?utf-8?B?ejlBVkZnVnlNODZaUi8rWDlxNUxSN1NrdXZJYWp2QW00SlBucmNzUUtLSU56?=
+ =?utf-8?B?N21TWlBlZUVMSkJHK2dwWGY3aG9OOUxybm5hODVPamZmUkVPQUFrVkRkc1hZ?=
+ =?utf-8?B?WUFlMU8va2hWT1VkTmJzb0N0NnZyNnlFeXUybkVwSFYwbWR2bk5xcFRuZW1Y?=
+ =?utf-8?B?RjhVbDlqRmRqMnhmV0tkK3ZFT0Nua1ZLRkM0aU03RWhnVkJ5b2JwWFVaczlp?=
+ =?utf-8?B?aFZ5aFdrMnpBeXUyd2cwNEg4cGYrVFI2bVU3Tkl5d0VPTmg5cVJnZWh3YThG?=
+ =?utf-8?B?L2lZZUlyNTJsWjhVMzJDdk5pZTF0V3BrQ0wra21aQ2FHcHpGUWl3UkdiUGxq?=
+ =?utf-8?B?MFc3K1loK1ZQRFhmWkRkcjMvLzB2QUlyYW52RXNGd3A1dFBzTGZsaEpYZWZr?=
+ =?utf-8?B?QkRob2tSM1hGcnNxYzNBbHh4TTh2WTRWd3hyb0ptQlNEQzA2bmZuR1dVWmJI?=
+ =?utf-8?B?M0ExMU93aDA1WU5yRU5aNTlDK3ZZNmpFdjlkSXg4NUlTZllTME5Mc3UrTE1Z?=
+ =?utf-8?B?NGMrTVZuSGpEdUQxTGVxc2dDYXVmdGhBUkxtQk8zUkF2a2Z2VGhnVERkT2ds?=
+ =?utf-8?B?U3FVZkJnbjFNK1lnSG9rVUZMVk9YYnNXZjlxNnNhS1NlaERCMGVVdWdFL1p4?=
+ =?utf-8?B?YVNzejJiWVcxd09QWFJML1lEWldhZTI5Y2hmTmNhWURNa0UyNEdQdjZ0R1lq?=
+ =?utf-8?B?SW83V3NJbHJnNVJHNVIvL2tRbnVYaS9PdWNGWnU3M2FqZWNmbHRvYk5pakZ5?=
+ =?utf-8?B?QjdUTlZDb29jbENmNDlXOXNQZVQ1YmYzbGtJeWRYSWQxZWhQWisvM044Znla?=
+ =?utf-8?B?c0E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ebba99b-0620-437e-7c7e-08db8877edca
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 16:48:07.8623
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: k1kXtSAaaYPOcGfcmGIoMCeTAAukOd2XG9Z0w40wihApys+I1ADwd13RFNnKpgpkIQg3v5rC7Y3HTWMKZyj5F/aqmxnBFhlAPhw080hCyO0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB8498
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 8:31=E2=80=AFPM Yang Jihong <yangjihong1@huawei.com=
-> wrote:
->
-> Currently, intel-bts, intel-pt, and arm-spe may add a dummy event for
-> tracking to the evlist. We may need to search for the dummy event for
-> some settings. Therefore, add evlist__findnew_tracking_event() helper.
->
-> evlist__findnew_tracking_event() also deal with system_wide maps if
-> system_wide is true.
+From: Wei Fang <wei.fang@nxp.com>
+Date: Wed, 19 Jul 2023 03:28:26 +0000
 
-I'm wondering if we can simplify the naming in the API, we have "dummy
-event" which makes sense as we literally call the event "dummy",
-"sideband" which refers to the kind of samples/events the dummy event
-will record but "tracking" I think tends to get used as a verb rather
-than a noun. So I think evlist__findnew_tracking_event should be
-evlist__findnew_dummy_event.
+>> -----Original Message-----
+>> From: Alexander Lobakin <aleksander.lobakin@intel.com>
+>> Sent: 2023年7月18日 23:15
+>> To: Wei Fang <wei.fang@nxp.com>
+>> Cc: davem@davemloft.net; edumazet@google.com; kuba@kernel.org;
+>> pabeni@redhat.com; ast@kernel.org; daniel@iogearbox.net;
+>> hawk@kernel.org; john.fastabend@gmail.com; Clark Wang
+>> <xiaoning.wang@nxp.com>; Shenwei Wang <shenwei.wang@nxp.com>;
+>> netdev@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>;
+>> linux-kernel@vger.kernel.org; bpf@vger.kernel.org
+>> Subject: Re: [PATCH net-next] net: fec: add XDP_TX feature support
+>>
+>> From: Wei Fang <wei.fang@nxp.com>
+>> Date: Mon, 17 Jul 2023 18:37:09 +0800
+>>
+>>> The XDP_TX feature is not supported before, and all the frames which
+>>> are deemed to do XDP_TX action actually do the XDP_DROP action. So
+>>> this patch adds the XDP_TX support to FEC driver.
+>>
+>> [...]
+>>
+>>> @@ -3897,6 +3923,29 @@ static int fec_enet_txq_xmit_frame(struct
+>> fec_enet_private *fep,
+>>>  	return 0;
+>>>  }
+>>>
+>>> +static int fec_enet_xdp_tx_xmit(struct net_device *ndev,
+>>> +				struct xdp_buff *xdp)
+>>> +{
+>>> +	struct xdp_frame *xdpf = xdp_convert_buff_to_frame(xdp);
+>>
+>> Have you tried avoid converting buff to frame in case of XDP_TX? It would save
+>> you a bunch of CPU cycles.
+>>
+> Sorry, I haven't. I referred to several ethernet drivers about the implementation of
+> XDP_TX. Most drivers adopt the method of converting xdp_buff to xdp_frame, and
+> in this method, I can reuse the existing interface fec_enet_txq_xmit_frame() to
+> transmit the frames and the implementation is relatively simple. Otherwise, there
+> will be more changes and more effort is needed to implement this feature.
+> Thanks!
+
+No problem, it is just FYI, as we observe worse performance when
+convert_buff_to_frame() is used for XDP_TX versus when you transmit the
+xdp_buff directly. The main reason is that converting to XDP frame
+touches ->data_hard_start cacheline (usually untouched), while xdp_buff
+is always on the stack and hot.
+It is up to you what to pick for your driver obviously :)
+
+> 
+>>> +	struct fec_enet_private *fep = netdev_priv(ndev);
+>>> +	struct fec_enet_priv_tx_q *txq;
+>>> +	int cpu = smp_processor_id();
+>>> +	struct netdev_queue *nq;
+>>> +	int queue, ret;
+>>> +
+>>> +	queue = fec_enet_xdp_get_tx_queue(fep, cpu);
+>>> +	txq = fep->tx_queue[queue];
+>>> +	nq = netdev_get_tx_queue(fep->netdev, queue);
+>>> +
+>>> +	__netif_tx_lock(nq, cpu);
+>>> +
+>>> +	ret = fec_enet_txq_xmit_frame(fep, txq, xdpf, false);
+>>> +
+>>> +	__netif_tx_unlock(nq);
+>>> +
+>>> +	return ret;
+>>> +}
+>>> +
+>>>  static int fec_enet_xdp_xmit(struct net_device *dev,
+>>>  			     int num_frames,
+>>>  			     struct xdp_frame **frames,
+>>> @@ -3917,7 +3966,7 @@ static int fec_enet_xdp_xmit(struct net_device
+>> *dev,
+>>>  	__netif_tx_lock(nq, cpu);
+>>>
+>>>  	for (i = 0; i < num_frames; i++) {
+>>> -		if (fec_enet_txq_xmit_frame(fep, txq, frames[i]) < 0)
+>>> +		if (fec_enet_txq_xmit_frame(fep, txq, frames[i], true) < 0)
+>>>  			break;
+>>>  		sent_frames++;
+>>>  	}
+>>
+> 
 
 Thanks,
-Ian
-
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> ---
->  tools/perf/builtin-record.c | 11 +++--------
->  tools/perf/util/evlist.c    | 18 ++++++++++++++++++
->  tools/perf/util/evlist.h    |  1 +
->  3 files changed, 22 insertions(+), 8 deletions(-)
->
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index aec18db7ff23..ca83599cc50c 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -1295,14 +1295,9 @@ static int record__open(struct record *rec)
->          */
->         if (opts->target.initial_delay || target__has_cpu(&opts->target) =
-||
->             perf_pmus__num_core_pmus() > 1) {
-> -               pos =3D evlist__get_tracking_event(evlist);
-> -               if (!evsel__is_dummy_event(pos)) {
-> -                       /* Set up dummy event. */
-> -                       if (evlist__add_dummy(evlist))
-> -                               return -ENOMEM;
-> -                       pos =3D evlist__last(evlist);
-> -                       evlist__set_tracking_event(evlist, pos);
-> -               }
-> +               pos =3D evlist__findnew_tracking_event(evlist, false);
-> +               if (!pos)
-> +                       return -ENOMEM;
->
->                 /*
->                  * Enable the dummy event when the process is forked for
-> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> index 7ef43f72098e..25c3ebe2c2f5 100644
-> --- a/tools/perf/util/evlist.c
-> +++ b/tools/perf/util/evlist.c
-> @@ -1694,6 +1694,24 @@ void evlist__set_tracking_event(struct evlist *evl=
-ist, struct evsel *tracking_ev
->         tracking_evsel->tracking =3D true;
->  }
->
-> +struct evsel *evlist__findnew_tracking_event(struct evlist *evlist, bool=
- system_wide)
-> +{
-> +       struct evsel *evsel;
-> +
-> +       evsel =3D evlist__get_tracking_event(evlist);
-> +       if (!evsel__is_dummy_event(evsel)) {
-> +               evsel =3D evlist__add_aux_dummy(evlist, system_wide);
-> +               if (!evsel)
-> +                       return NULL;
-> +
-> +               evlist__set_tracking_event(evlist, evsel);
-> +       } else if (system_wide) {
-> +               perf_evlist__go_system_wide(&evlist->core, &evsel->core);
-> +       }
-> +
-> +       return evsel;
-> +}
-> +
->  struct evsel *evlist__find_evsel_by_str(struct evlist *evlist, const cha=
-r *str)
->  {
->         struct evsel *evsel;
-> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-> index 664c6bf7b3e0..98e7ddb2bd30 100644
-> --- a/tools/perf/util/evlist.h
-> +++ b/tools/perf/util/evlist.h
-> @@ -387,6 +387,7 @@ bool evlist_cpu_iterator__end(const struct evlist_cpu=
-_iterator *evlist_cpu_itr);
->
->  struct evsel *evlist__get_tracking_event(struct evlist *evlist);
->  void evlist__set_tracking_event(struct evlist *evlist, struct evsel *tra=
-cking_evsel);
-> +struct evsel *evlist__findnew_tracking_event(struct evlist *evlist, bool=
- system_wide);
->
->  struct evsel *evlist__find_evsel_by_str(struct evlist *evlist, const cha=
-r *str);
->
-> --
-> 2.30.GIT
->
+Olek
