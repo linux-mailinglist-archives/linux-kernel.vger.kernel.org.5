@@ -2,102 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE04758C13
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 05:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04267758B7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 04:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbjGSD1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 23:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49374 "EHLO
+        id S229706AbjGSCqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 22:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbjGSD0f (ORCPT
+        with ESMTP id S229441AbjGSCqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 23:26:35 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF3BA2690;
-        Tue, 18 Jul 2023 20:26:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689737167; x=1721273167;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=m7F+bfcxslqE8nz+gTY6bLsLBtHdYH/TwQh4VN2/phU=;
-  b=lyWDkJqlf+4Py1HbNsJvZGid17t+6CMp/z0wOFKv80PI9DrDpJWajSFo
-   UiYYv8VCoUUzeBXVOwAaNNfoO2aHKBau4DBRYBsAE1KxPmOCGNPfAB1kS
-   DoNsX+GkDW9TNI3gsOrzmeJ92UbHrCo6TMZW5fd5GsoWNdoUzJki/SmBY
-   uOvKQH8AqLAF36EyndG5cEqCnit0k0OLQhAq7SnMgkAOz8o8bhxRsGsfx
-   +cbD65Rl3OcmP6DKGdPIoxBAGegUGvtVCvz6ch9gjr34FpLzjAAILyWxm
-   BugxqO3uNCedslogV3RlJcJL0vx0ZOLyXyEe+bA/9qraR87K5QRKXKt/Z
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="346665883"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="346665883"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 20:26:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="813980304"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="813980304"
-Received: from arthur-vostro-3668.sh.intel.com ([10.238.200.123])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 20:26:03 -0700
-From:   Zeng Guang <guang.zeng@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        H Peter Anvin <hpa@zytor.com>, kvm@vger.kernel.org
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Zeng Guang <guang.zeng@intel.com>
-Subject: [PATCH v2 8/8] KVM: x86: Advertise LASS CPUID to user space
-Date:   Wed, 19 Jul 2023 10:45:58 +0800
-Message-Id: <20230719024558.8539-9-guang.zeng@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230719024558.8539-1-guang.zeng@intel.com>
-References: <20230719024558.8539-1-guang.zeng@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 18 Jul 2023 22:46:31 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30693FC;
+        Tue, 18 Jul 2023 19:46:30 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-63719ad32e7so38054596d6.1;
+        Tue, 18 Jul 2023 19:46:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689734789; x=1692326789;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=alrunddGyr7n1O6dTU2394duvap6e5CEXKLxFMKdcbQ=;
+        b=F+9xO7EHDJJtK+PpR7Mqu0aMYjSiAtGBIIg9T9AY9eIPoeu3iY2VrUPbPHDMt4BEMQ
+         OM1HeTcAf8slfv2WNu4347kqsqqbdZA1L37hiZ+WBIWBc3rS92XGUf5YJsaHJFiaGhn7
+         fYUuW24LjTBvwoWRzJBXl7BlgEf9GkGyEbWj/5VXav9t952p488jO08EjO4WpAL9I75y
+         4R5k3HTsJr9/Vkj0xTaoR+TCW3q/T3HO7JKqoYEwkhaGH0oiSz5eMs8v0G5l3C6fbkBN
+         A0ZVDy3KaS8F9iVRDnhpbxZtU4+Wce1JLfhCmrq1RtoMYm7wtniGLkUacQliqdEl47fr
+         GUZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689734789; x=1692326789;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=alrunddGyr7n1O6dTU2394duvap6e5CEXKLxFMKdcbQ=;
+        b=BJtCWmrSxU6XclCZc/by1QUPFpz8JMjlb9HSi2rTIQdlGF8Mcdrqa8xgQ/y1P0C6tH
+         /RrCRVy+jcBpgcrch0htcWe1KlwmylGp7Le9f42lsnHCCG6nhpeJSq+ywt9nsotGU5Nk
+         lKvhDZmWWQ2bixVDnd+MfAC0mmiizmWZbHXlz2grPRSxuEyZtvon94PXSlFUW32thNIQ
+         U4mRAN54WFrPqmumPf6pllqtMZfLMDydkIdEDNRcmU8zcTjRHN1jisn1KYQ1rnIN4RaL
+         g6TnfYStqBHoU/bLVF3IlU/VFhg5KtNOx+nctqIbJiIh5Khy+EL++x/NAPMGAvuk4XrB
+         l/7A==
+X-Gm-Message-State: ABy/qLbMSrRkgxE6Xs/YbTsJ14zQ6x8hadX2iZPL1uNlIa+08C1+iZVi
+        s0u0NB9e99UpG8iijF4qNuUHncEHhjgZ3pkDd47GlZXAeSc=
+X-Google-Smtp-Source: APBJJlHi9YcS6cywR3cItNs1XzS1rLPuLzN8PYhyxlhuSUkUpuIsrGfYwCyNRf06QQAVdPowvZCsaCnt0ylprKjIWMw=
+X-Received: by 2002:a0c:b394:0:b0:635:e303:ed6d with SMTP id
+ t20-20020a0cb394000000b00635e303ed6dmr15390732qve.52.1689734789236; Tue, 18
+ Jul 2023 19:46:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230718011504.10947-1-wenchao.chen@unisoc.com> <b4ef97ba-440a-2641-0811-bb05e630ccb1@intel.com>
+In-Reply-To: <b4ef97ba-440a-2641-0811-bb05e630ccb1@intel.com>
+From:   Wenchao Chen <wenchao.chen666@gmail.com>
+Date:   Wed, 19 Jul 2023 10:46:18 +0800
+Message-ID: <CA+Da2qxOhK7Uc8_ONVgkR=3pTnTo7KgcJi-yS3Cv730+J0pAxA@mail.gmail.com>
+Subject: Re: [PATCH] mmc: core: Remove FW revision from CID check
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Wenchao Chen <wenchao.chen@unisoc.com>, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhenxiong.lai@unisoc.com, chunyan.zhang@unisoc.com,
+        yuelin.tang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linear address space separation (LASS) is an independent mechanism
-to enforce the mode-based protection that can prevent user-mode
-accesses to supervisor-mode addresses, and vice versa. Because the
-LASS protections are applied before paging, malicious software can
-not acquire any paging-based timing information to compromise the
-security of system.
+On Tue, Jul 18, 2023 at 2:13=E2=80=AFPM Adrian Hunter <adrian.hunter@intel.=
+com> wrote:
+>
+> On 18/07/23 04:15, Wenchao Chen wrote:
+> > When the card is reset, mmc_card_init() will check if this
+> > card is the previous card by comparing the CID.
+> >
+> > If the firmware is upgraded, the product version may change,
+> > so we remove the product version from the CID check.
+>
+> What is the use-case for this?  I would have thought it is safer
+> not to assume anything about the card after the firmware has been
+> upgraded.
+>
+Hi adrian
+    Understood, but we have case:
+    1.Before the firmware upgrade
+        [T5745@C0] mmc0 oldcard raw->cid[2]: 32691160, raw->cid[3]: d924180=
+0
+        PRV=3D69
+    2.After the firmware upgrade
+        [T5745@C0] mmc0 cid[2]: 32011160 cid[3]: d9241800
+        PRV=3D01
+    If the PRV is not excluded in the CID check, then the mmc
+initialization will fail after the mmc reset.
+    In addition, CRC is excluded because some controllers support
+SDHCI_QUIRK2_RSP_136_HAS_CRC.
 
-The CPUID bit definition to support LASS:
-CPUID.(EAX=07H.ECX=1):EAX.LASS[bit 6]
-
-Advertise LASS to user space to support LASS virtualization.
-
-Signed-off-by: Zeng Guang <guang.zeng@intel.com>
-Tested-by: Xuelian Guo <xuelian.guo@intel.com>
----
- arch/x86/kvm/cpuid.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 0c9660a07b23..a7fafe99ffe4 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -646,9 +646,8 @@ void kvm_set_cpu_caps(void)
- 		kvm_cpu_cap_set(X86_FEATURE_SPEC_CTRL_SSBD);
- 
- 	kvm_cpu_cap_mask(CPUID_7_1_EAX,
--		F(AVX_VNNI) | F(AVX512_BF16) | F(CMPCCXADD) |
--		F(FZRM) | F(FSRS) | F(FSRC) |
--		F(AMX_FP16) | F(AVX_IFMA)
-+		F(AVX_VNNI) | F(AVX512_BF16) | F(LASS) | F(CMPCCXADD) |
-+		F(FZRM) | F(FSRS) | F(FSRC) | F(AMX_FP16) | F(AVX_IFMA)
- 	);
- 
- 	kvm_cpu_cap_init_kvm_defined(CPUID_7_1_EDX,
--- 
-2.27.0
-
+> >
+> > Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+> > ---
+> >  drivers/mmc/core/mmc.c | 18 +++++++++++++++++-
+> >  1 file changed, 17 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+> > index 89cd48fcec79..32a73378d5c3 100644
+> > --- a/drivers/mmc/core/mmc.c
+> > +++ b/drivers/mmc/core/mmc.c
+> > @@ -32,6 +32,9 @@
+> >  #define MIN_CACHE_EN_TIMEOUT_MS 1600
+> >  #define CACHE_FLUSH_TIMEOUT_MS 30000 /* 30s */
+> >
+> > +#define MMC_CID_PRV_MASK GENMASK(23, 16)
+> > +#define MMC_CID_CRC_MASK GENMASK(7, 0)
+> > +
+> >  static const unsigned int tran_exp[] =3D {
+> >       10000,          100000,         1000000,        10000000,
+> >       0,              0,              0,              0
+> > @@ -126,6 +129,19 @@ static int mmc_decode_cid(struct mmc_card *card)
+> >       return 0;
+> >  }
+> >
+> > +static int mmc_check_cid(u32 *cid, u32 *raw_cid)
+> > +{
+> > +     /*
+> > +      * When comparing CID, we need to remove the product
+> > +      * version (Field PRV, offset 55:48) and CRC. Because
+> > +      * the product version will change when the firmware
+> > +      * is upgraded. Also, the new CRC is different.
+> > +      */
+> > +     return cid[0] !=3D raw_cid[0] || cid[1] !=3D raw_cid[1] ||
+> > +             (cid[2] & ~MMC_CID_PRV_MASK) !=3D (raw_cid[2] & ~MMC_CID_=
+PRV_MASK) ||
+> > +             (cid[3] & ~MMC_CID_CRC_MASK) !=3D (raw_cid[3] & ~MMC_CID_=
+CRC_MASK);
+> > +}
+> > +
+> >  static void mmc_set_erase_size(struct mmc_card *card)
+> >  {
+> >       if (card->ext_csd.erase_group_def & 1)
+> > @@ -1640,7 +1656,7 @@ static int mmc_init_card(struct mmc_host *host, u=
+32 ocr,
+> >               goto err;
+> >
+> >       if (oldcard) {
+> > -             if (memcmp(cid, oldcard->raw_cid, sizeof(cid)) !=3D 0) {
+> > +             if (mmc_check_cid(cid, oldcard->raw_cid)) {
+> >                       pr_debug("%s: Perhaps the card was replaced\n",
+> >                               mmc_hostname(host));
+> >                       err =3D -ENOENT;
+>
