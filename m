@@ -2,77 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F897595E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 14:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE5F7595EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 14:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbjGSMtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 08:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59906 "EHLO
+        id S230182AbjGSMxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 08:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230364AbjGSMs7 (ORCPT
+        with ESMTP id S229535AbjGSMxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 08:48:59 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D1B1996;
-        Wed, 19 Jul 2023 05:48:50 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qM6bn-0004pH-9s; Wed, 19 Jul 2023 14:48:47 +0200
-Message-ID: <3252775c-099f-4bbe-c663-122634d5fc2f@leemhuis.info>
-Date:   Wed, 19 Jul 2023 14:48:46 +0200
+        Wed, 19 Jul 2023 08:53:00 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB92113;
+        Wed, 19 Jul 2023 05:52:59 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-53482b44007so4246887a12.2;
+        Wed, 19 Jul 2023 05:52:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689771179; x=1690375979;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ORmNTDEPuiXr5MQMrZYwdQ/7w0rdL3GvI/IS1eUVHPg=;
+        b=STQfUOWpSGSpXO1Q6TbQhkTDcLFeUCn98nbfQ2FhhgH1lqBvPJHN42SQe+E7rSfvo0
+         FppTg/6RDfh+Xddkt8AiCpF3k0dNQgXorMpvIcjilKllwhd2W6xFcXbaRpuGqDVaNqcy
+         +698JTQqgtcsqqN3Dhzm6mJBJvh47KBR4T0b2yNSRJaN3samAbhoqXnA4jdm2KPYutO+
+         TN/CFmpFwiwf1J8XR4w0/dWlsot16sYS6av7XVCl4dN1/jKXQUODk+2BR6w8W8lboZD2
+         8ZSddYQdZxp+8a2XvI1CoM8QeJ1xA9VjCHMZ5IlexAFdKGJmJah4Y6Lte5INtteQLRGo
+         3paQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689771179; x=1690375979;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ORmNTDEPuiXr5MQMrZYwdQ/7w0rdL3GvI/IS1eUVHPg=;
+        b=cVn38e9kLWtp3bSaFEs4gnSmD/xn9T6wECNZ6z+6Wf4HdTzQT5EJ9N+3kvpEnmlZ9L
+         G7SWPzs5fKVbCh+Oj6jN+LwN3tSSHO1P0cSI+CYlTT/9Y/plX6DQwi5qnBv0vEFNTchP
+         L2iTYCXSLQiECGRz0Ki4xnqAe4LWVKXtwp3L0QDYYy+W/qZBa33nb3Uv1pY3o8k7Mqqj
+         KCCTF+nZH9cr3MW09gKmhqK4LPRP4uzgL7k6rAFlVdxTZxteOZnHYqfvFYBBAEn1uTbC
+         LhfQqVw/lR9yDr5aJcGChXcTwswgg166lpqPtkJgiaY2kiBoFBEcwJiksLQUOPpeUmQA
+         S7Kw==
+X-Gm-Message-State: ABy/qLYL3DEGdyL4Ao7zhtHKYnkUuzLVffiTMoDtYUF4vopqJqpZLFDt
+        VC4CupEP+qpOSr7xObKpaY8=
+X-Google-Smtp-Source: APBJJlF4PdBUSDKfe+myk08P8+QIMkEBsCSpcYsT6Fs8z8+U+Kl1bYnKlxrPfHLADX4V7A1tCrzvKg==
+X-Received: by 2002:a17:90b:360e:b0:263:f75b:c33f with SMTP id ml14-20020a17090b360e00b00263f75bc33fmr1593667pjb.45.1689771178638;
+        Wed, 19 Jul 2023 05:52:58 -0700 (PDT)
+Received: from localhost.localdomain (bb219-74-209-211.singnet.com.sg. [219.74.209.211])
+        by smtp.gmail.com with ESMTPSA id lc14-20020a17090b158e00b002612150d958sm1146191pjb.16.2023.07.19.05.52.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 05:52:58 -0700 (PDT)
+From:   Leon Hwang <hffilwlqm@gmail.com>
+To:     ast@kernel.org
+Cc:     daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, hawk@kernel.org,
+        hffilwlqm@gmail.com, tangyeechou@gmail.com,
+        kernel-patches-bot@fb.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/2] bpf, xdp: Add tracepoint to xdp attaching failure
+Date:   Wed, 19 Jul 2023 20:52:30 +0800
+Message-ID: <20230719125232.92607-1-hffilwlqm@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: linux-next: Tree for Jul 13 (drivers/video/fbdev/ps3fb.c)
-Content-Language: en-US, de-DE
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Helge Deller <deller@gmx.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        linux-fbdev@vger.kernel.org,
-        Linux PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20230713123710.5d7d81e4@canb.auug.org.au>
- <ccc63065-2976-88ef-1211-731330bf2866@infradead.org>
- <ZLYHtVuS7AElXcCb@debian.me>
- <f5e6258b-ba76-001b-4942-588f4cbb0aa7@leemhuis.info>
- <5983cf9d-dc1e-75bd-3624-770951661245@gmail.com>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <5983cf9d-dc1e-75bd-3624-770951661245@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1689770930;d3687a3f;
-X-HE-SMSGID: 1qM6bn-0004pH-9s
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.07.23 14:36, Bagas Sanjaya wrote:
-> On 7/18/23 17:06, Thorsten Leemhuis wrote:
->> I'm missing something here:
->>
->> * What makes you think this is caused by bdb616479eff419? I didn't see
->> anything in the thread that claims this, but I might be missing something
->> * related: if I understand Randy right, this is only happening in -next;
->> so why is bdb616479eff419 the culprit, which is also in mainline since
->> End of June?
-> 
-> Actually drivers/video/fbdev/ps3bf.c only had two non-merge commits during
-> previous cycle: 25ec15abb06194 and bdb616479eff419. The former was simply
-> adding .owner field in ps3fb_ops (hence trivial), so I inferred that the
-> culprit was likely the latter (due to it was being authored by Thomas).
+This series introduces a new tracepoint in bpf_xdp_link_attach(). By
+this tracepoint, error message will be captured when error happens in
+dev_xdp_attach(), e.g. invalid attaching flags.
 
-As you can see from Michael's reply this was misguided, as it was an
-external change that broke the driver. This happens all the time, such
-inferring thus is not possible at all.
+Leon Hwang (2):
+  bpf, xdp: Add tracepoint to xdp attaching failure
+  selftests/bpf: Add testcase for xdp attaching failure tracepoint
 
-Ciao, Thorsten
+ include/trace/events/xdp.h                    | 17 +++++
+ net/core/dev.c                                |  5 +-
+ .../selftests/bpf/prog_tests/xdp_attach.c     | 63 +++++++++++++++++++
+ .../bpf/progs/test_xdp_attach_fail.c          | 51 +++++++++++++++
+ 4 files changed, 135 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_attach_fail.c
+
+
+base-commit: 0858a95ec7491a7a5bfca4be9736dba4ee38c461
+-- 
+2.41.0
+
