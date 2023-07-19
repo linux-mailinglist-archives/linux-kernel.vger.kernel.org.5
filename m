@@ -2,157 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C59C57596B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2747D7596BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbjGSN10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 09:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50690 "EHLO
+        id S231274AbjGSN2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 09:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbjGSN1X (ORCPT
+        with ESMTP id S231387AbjGSN2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 09:27:23 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF4E10A;
-        Wed, 19 Jul 2023 06:27:22 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b9ecf0cb4cso42890765ad.2;
-        Wed, 19 Jul 2023 06:27:22 -0700 (PDT)
+        Wed, 19 Jul 2023 09:28:06 -0400
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3F3CD
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:28:04 -0700 (PDT)
+Received: by mail-vk1-xa31.google.com with SMTP id 71dfb90a1353d-4815756d742so2090669e0c.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:28:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689773241; x=1692365241;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=vEZpNOYS9nfEBGq46i0VO/JDsbT3stpNrnYlf/F2Bm4=;
-        b=G8vFs7rlJXCbgpn4q2delBk60nXYL9q0Qrzx234KnTpOjs1JPIbA2FQMBVxQXW3D27
-         BD22ZYk8nL3ap3wHIHgmXAhTgCxB7uJDsMt1ojnGbfDJs9E3XWi/4GM16vsst2/iML/k
-         DcovuDihH0Dv8GRLv00BVZuvv/lr/TmzA/M4Z6wxNGxlysM6qqwrestKAx0EhclxJWcS
-         rpeitkAxPXYNgEGvbj9uBJXrR3VbTTflsmklPyy39sTQENEK4nXRmEWQZyuKp11JtqVx
-         juORTCPYUbKyCbJ0OrFpuIe1Q4t1kVRDBUnyBZUdIkf2f2gDFbEebv5t7A0yV3zeRmPH
-         MPYA==
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1689773284; x=1690378084;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=flEwfn9BpI6GLbTD9ZQxNq/h4BeiJLyxxD5aIyE9kIA=;
+        b=wRtkVyr3297wr6GJR9LD3x3GIr5dtP27Y+0VJvbyN3UOp/Img7GGPZ/uPuw1DyQPgR
+         yiuD4isYWpQyy3Q/+6V/PBssPy42oq5nGo34HEl0y8Idn1Z3jBpEM049BBl2y3JxxiFj
+         ZHhVirPxt30HWnZf5WhykMaAQOxHyGOCwckV9xephk8QoL6FArRXhGDX59NVKekiY3lC
+         /Pjyd9EP5ao2vdAVqYWIkpCdx9lAebS/j6bkVM0+BsNcl74Lpkr4mGIrVQ0IW5JEExTm
+         lBEbXg+AbZFIPqPsMKMO4MtaQwyUEFHcOM+iM9RLCN0dN+AMkg/oR6IVBFv88BrwcR8d
+         4tiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689773241; x=1692365241;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vEZpNOYS9nfEBGq46i0VO/JDsbT3stpNrnYlf/F2Bm4=;
-        b=hTFLnKU1jg8pcc4bW9ZJ8/7zcbCYiNpmCvklqnKq8ODBfm2PnW8hjn/GNuPj4AL2GK
-         3LsEU6J56t/coAitxUnFhPRRa5JtiIMHY7Ea+IBJVMy3xJI/3JjD9VgTtDM7G6eZKqRO
-         Q5Ep/r60U3kPu742PwNvj4qRnvHkPkx7SJwcn9VUUVW7M0pbjhay9bF1vVG7JIrDJ8Yl
-         SByz950pUj7Z2g+qauR9FYflGaDvAWHC/1DGPFbG67sWZV5KjARSB4wDgDR1IZm6pbx1
-         LnSasMLJ6HNq+FjJIAwo5pQArPvSaIDuWq2p3Irr5Jd7qkQM6fdK296iQpWnDBM9cHNG
-         Okjg==
-X-Gm-Message-State: ABy/qLZEb9NQs/BGfsihfb5t6tHR8doc48e7HxwZLmAuefP0e6w0yD5+
-        xWabakn+2MEGqGrYSrXSJAkTinHTlz8=
-X-Google-Smtp-Source: APBJJlFRapaPzb9hBRolQi+w+L4XrT3Vs1fDe1kfE+rlHHKJYCo78EJMBReRRnmxZupD0fr374+44A==
-X-Received: by 2002:a17:902:b086:b0:1b8:9b17:f63d with SMTP id p6-20020a170902b08600b001b89b17f63dmr2294700plr.23.1689773241404;
-        Wed, 19 Jul 2023 06:27:21 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id jk16-20020a170903331000b001b8a3dd5a4asm3946916plb.283.2023.07.19.06.27.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 06:27:20 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <160cb639-5081-ec50-2c41-fc31502107a2@roeck-us.net>
-Date:   Wed, 19 Jul 2023 06:27:19 -0700
+        d=1e100.net; s=20221208; t=1689773284; x=1690378084;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=flEwfn9BpI6GLbTD9ZQxNq/h4BeiJLyxxD5aIyE9kIA=;
+        b=RRpAFb01ydz+3VvCfNzpdvHwiWlHa69Dj2960pQQnNVO/CG+apwdGwRdigAPAT5O18
+         iQsCqFXu09jwxCX1v4/j6X7S1Z/ybZRKyh3KT8ePU/0iZO+6YAzJP/lV2D0hG1BQ8qTc
+         5+WUdRIF1BAusEp/gm3dQM6Ew2qOON2bbX0l0fUDLvasAPU+9y6IOhIErUMPwKjpbm18
+         qMgecpWbXvF4R9or4occfROF9RX4MBSaT1xgd32IzfS4c0u4wWSzFloDy6mD2lsTaPIZ
+         rtZK+ev3SzqZSeXhDRwLM4NHQZq1uWk/kNMic6sPr9Bo/Cs4e1O4sVKFdyBZ+sKz4qWZ
+         kxGw==
+X-Gm-Message-State: ABy/qLY32TozW/5xnmHkc3hOTgYd8P4EAkJZ9L0Bv/K+sxwwGnbn51gf
+        E7r4HajU/BL8tz9Nny89K/MOZ/95oJdxGPOEsLgmpQ==
+X-Google-Smtp-Source: APBJJlFJm2ZMiFRABNNtoXvQlrC7EHOreqZ1E7RaK2D8FV20PxDW2Tlho5AZvU4VBfgpyWUiBERBrDIqdnJimDI905k=
+X-Received: by 2002:a1f:d087:0:b0:471:b557:12a with SMTP id
+ h129-20020a1fd087000000b00471b557012amr3157493vkg.11.1689773283085; Wed, 19
+ Jul 2023 06:28:03 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] watchdog: make Siemens Simatic watchdog driver
- default on platform
-Content-Language: en-US
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lee Jones <lee@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Mark Gross <markgross@kernel.org>,
-        Tobias Schaffner <tobias.schaffner@siemens.com>
-References: <20230718105213.1275-1-henning.schild@siemens.com>
- <20230718105213.1275-2-henning.schild@siemens.com>
- <ZLafwOPrw+puH+rF@smile.fi.intel.com>
- <20230718164251.13855c47@md1za8fc.ad001.siemens.net>
- <b1528e3d-15f7-7ab2-b803-917f79efe999@roeck-us.net>
- <20230719091816.6661d535@md1za8fc.ad001.siemens.net>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230719091816.6661d535@md1za8fc.ad001.siemens.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20230719114101.55051-1-brgl@bgdev.pl> <CAHp75VfdCsAE8dGfTe2PsT5kxvoT84nChNptwgaA4Q5jf5oJvQ@mail.gmail.com>
+In-Reply-To: <CAHp75VfdCsAE8dGfTe2PsT5kxvoT84nChNptwgaA4Q5jf5oJvQ@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 19 Jul 2023 15:27:52 +0200
+Message-ID: <CAMRc=MdxY0s347g36jjvPc_HC-LtJyhNbycF3ZmtUwe1AZywpQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: mvebu: fix irq domain leak
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>, linux-pwm@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/23 00:18, Henning Schild wrote:
-> Am Tue, 18 Jul 2023 08:10:09 -0700
-> schrieb Guenter Roeck <linux@roeck-us.net>:
-> 
->> On 7/18/23 07:42, Henning Schild wrote:
->>> Am Tue, 18 Jul 2023 17:20:48 +0300
->>> schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
->>>    
->>>> On Tue, Jul 18, 2023 at 12:52:11PM +0200, Henning Schild wrote:
->>>>> If a user did choose to enable Siemens Simatic platform support
->>>>> they likely want that driver to be enabled without having to flip
->>>>> more config switches. So we make the watchdog driver config switch
->>>>> default to the platform driver switches value.
->>>>
->>>> A nit-pick below.
->>>>
->>>> ...
->>>>   
->>>>>    config SIEMENS_SIMATIC_IPC_WDT
->>>>>    	tristate "Siemens Simatic IPC Watchdog"
->>>>>    	depends on SIEMENS_SIMATIC_IPC
->>>>   
->>>>> +	default SIEMENS_SIMATIC_IPC
->>>>
->>>> It's more natural to group tristate and default, vs. depends and
->>>> select.
->>>
->>> Will be ignored unless maintainer insists.
->>>    
->>
->> Maintainer wants to know why "default SIEMENS_SIMATIC_IPC" is needed
->> or warranted instead of the much simpler and easier to understand
->> "default y".
-> 
-> I thought a "default y" or "default m" was maybe not the best idea for
-> a platform that is not super common. That is why i did not dare to even
-> think about defaulting any of the Simatic stuff to not-no.
-> 
-> But it seems that this would be ok after all. And i would be very happy
-> to do so because it means less work on distro configs.
-> 
-> SIEMENS_SIMATIC_IPC_WDT will drive a platform device which gets
-> registered by SIEMENS_SIMATIC_IPC and nothing else. That is why
-> "default SIEMENS_SIMATIC_IPC" was chosen.
-> 
+On Wed, Jul 19, 2023 at 3:03=E2=80=AFPM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Wed, Jul 19, 2023 at 2:41=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
+l> wrote:
+> >
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > Uwe Kleine-K=C3=B6nig pointed out we still have one resource leak in th=
+e mvebu
+> > driver triggered on driver detach. Let's address it with a custom devm
+> > action.
+>
+> One nit-pick below, in either case
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>
+> > Fixes: 812d47889a8e ("gpio/mvebu: Use irq_domain_add_linear")
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > ---
+> >  drivers/gpio/gpio-mvebu.c | 18 +++++++++++++-----
+> >  1 file changed, 13 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/gpio/gpio-mvebu.c b/drivers/gpio/gpio-mvebu.c
+> > index a35958e7adf6..67497116ce27 100644
+> > --- a/drivers/gpio/gpio-mvebu.c
+> > +++ b/drivers/gpio/gpio-mvebu.c
+> > @@ -1112,6 +1112,13 @@ static int mvebu_gpio_probe_syscon(struct platfo=
+rm_device *pdev,
+> >         return 0;
+> >  }
+> >
+> > +static void mvebu_gpio_remove_irq_domain(void *data)
+> > +{
+> > +       struct irq_domain *domain =3D data;
+> > +
+> > +       irq_domain_remove(domain);
+>
+> The from/to void * doesn't need an explicit casting in C. This can be
+> a one liner
+>
 
-It depends on SIEMENS_SIMATIC_IPC. "default y" would make it y if
-SIEMENS_SIMATIC_IPC=y, and m if SIEMENS_SIMATIC_IPC=m. If
-SIEMENS_SIMATIC_IPC=n, it won't even be offered as option, and
-default={m,y} will be ignored.
+I know but I prioritise readability over brevity. I prefer this version.
 
-> But if i may i would change that to "default m", not "y" because there
-> is an out of tree driver package which if installed on top, should be
-> able to override the in-tree drivers.
-> 
-> So i will go ahead and make that one "default m"
-> 
+Bart
 
-Why make it m as default even if SIEMENS_SIMATIC_IPC=y for whatever
-reason ? Presumably anyone selecting SIEMENS_SIMATIC_IPC=y would
-also want SIEMENS_SIMATIC_IPC_WDT=y, which is what you had before.
-Sorry, I don't understand your logic.
-
-Guenter
-
+> static void mvebu_gpio_remove_irq_domain(void *domain)
+> {
+>       irq_domain_remove(domain);
+> }
+>
+> > +}
+> > +
+> >  static int mvebu_gpio_probe(struct platform_device *pdev)
+> >  {
+> >         struct mvebu_gpio_chip *mvchip;
+> > @@ -1246,13 +1253,18 @@ static int mvebu_gpio_probe(struct platform_dev=
+ice *pdev)
+> >                 return -ENODEV;
+> >         }
+> >
+> > +       err =3D devm_add_action_or_reset(&pdev->dev, mvebu_gpio_remove_=
+irq_domain,
+> > +                                      mvchip->domain);
+> > +       if (err)
+> > +               return err;
+> > +
+> >         err =3D irq_alloc_domain_generic_chips(
+> >             mvchip->domain, ngpios, 2, np->name, handle_level_irq,
+> >             IRQ_NOREQUEST | IRQ_NOPROBE | IRQ_LEVEL, 0, 0);
+> >         if (err) {
+> >                 dev_err(&pdev->dev, "couldn't allocate irq chips %s (DT=
+).\n",
+> >                         mvchip->chip.label);
+> > -               goto err_domain;
+> > +               return err;
+> >         }
+> >
+> >         /*
+> > @@ -1292,10 +1304,6 @@ static int mvebu_gpio_probe(struct platform_devi=
+ce *pdev)
+> >         }
+> >
+> >         return 0;
+> > -
+> > -err_domain:
+> > -       irq_domain_remove(mvchip->domain);
+> > -       return err;
+> >  }
+>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
