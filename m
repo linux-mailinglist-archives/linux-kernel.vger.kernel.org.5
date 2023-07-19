@@ -2,77 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 571C275962A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D5775962D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230447AbjGSNFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 09:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39908 "EHLO
+        id S230457AbjGSNFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 09:05:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbjGSNFX (ORCPT
+        with ESMTP id S230405AbjGSNFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 09:05:23 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16D21986;
-        Wed, 19 Jul 2023 06:05:20 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 1DBE45C0145;
-        Wed, 19 Jul 2023 09:05:20 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 19 Jul 2023 09:05:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1689771920; x=1689858320; bh=siYFJLdfTwI4H
-        sjetwx60OIcBExO9uyJZ22N85nYicM=; b=EyhLIFk3QZGbzPk9a/2CsQl+bWSkx
-        +rf5EUc8oHC0kqo0iPXtwSKCKWvopRnD27quu1ojrRkVJv1XSyKruCCxu3TSv+ht
-        7Z3ndflYqWdO44tQ980vujHnyzGeWRPUdpuf0t9ObDGPw6hFLCcggxfHD9RetcN4
-        f2WQXNEzdp271oELA8NQiRmaZwZoY++Uz+rx5Rgsd0mwG5A7UZSNFNgnYZIRHTQ5
-        Sz35NUnbdyD/RvEbWGVceo48O18exJU8GVBX1l6f7mtRA37P1cG13Ci/mn6KheRJ
-        051ysczjv8Ys4qqn1zXplhEqwXdcF0Wu9iVSOWeul1LeNkSHCn8sX1sYg==
-X-ME-Sender: <xms:j9-3ZNol6LZ1AYQFwnmQr-_3o5RzhuXTA1m3NG2JHEsFpvRyvlML_w>
-    <xme:j9-3ZPoVyKtWmj9PnPftQFg3T2WxqnqjJQNNVQiUnQYlF4BYeZiMwC2gSTnw_fKVN
-    C9KGd8WCVT2meU>
-X-ME-Received: <xmr:j9-3ZKNPyO1HwPVDGQ6fXhe6sbWu0Wsq04i0JwStWFfSOWKqCgcqMG8b9Gb-_UjIienSVo3Djq0CmxhVAuhx_5i4jUI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrgeekgdeggecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdortddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeffueevhffhuddvjeetfeeuudfgheegledvveehheeuueduvdehgedtteefheeg
-    feenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:j9-3ZI7G_T6zgOtN5gnwqWiNxm7BR64f7vD-vRtmxQ-96PIFABP9yQ>
-    <xmx:j9-3ZM7inD1TaP-hmWsrEe4mopWmlTLXuiDgzTswPWe9q5HblZf0fA>
-    <xmx:j9-3ZAhCYGqYDtQejFEUaftUnw7Ncx8MJGredtEjSe92CATxeffnRw>
-    <xmx:kN-3ZNGmaU8pcdpgjOlvZB83Baf1W4j3hZTcSPXdZfifgfmhtbSdfQ>
-Feedback-ID: i494840e7:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 19 Jul 2023 09:05:18 -0400 (EDT)
-Date:   Wed, 19 Jul 2023 16:05:16 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PROBLEM] selftests: net/forwarding/bridge_mdb.sh: 'Command
- "replace" is unknown, try "bridge mdb help"'
-Message-ID: <ZLffjNMaJZiGJytj@shredder>
-References: <6b04b2ba-2372-6f6b-3ac8-b7cba1cfae83@alu.unizg.hr>
+        Wed, 19 Jul 2023 09:05:46 -0400
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 143161711
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:05:43 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 36JD5Zqj043653;
+        Wed, 19 Jul 2023 21:05:35 +0800 (+08)
+        (envelope-from Xuewen.Yan@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4R5bch0SXJz2K1r9p;
+        Wed, 19 Jul 2023 21:04:20 +0800 (CST)
+Received: from BJ10918NBW01.spreadtrum.com (10.0.73.72) by
+ BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Wed, 19 Jul 2023 21:05:33 +0800
+From:   Xuewen Yan <xuewen.yan@unisoc.com>
+To:     <rafael@kernel.org>, <viresh.kumar@linaro.org>, <mingo@redhat.com>,
+        <peterz@infradead.org>, <vincent.guittot@linaro.org>
+CC:     <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>, <bristot@redhat.com>,
+        <vschneid@redhat.com>, <guohua.yan@unisoc.com>,
+        <qyousef@layalina.io>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] cpufreq: schedutil: next_freq need update when cpufreq_limits changed
+Date:   Wed, 19 Jul 2023 21:05:27 +0800
+Message-ID: <20230719130527.8074-1-xuewen.yan@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6b04b2ba-2372-6f6b-3ac8-b7cba1cfae83@alu.unizg.hr>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.0.73.72]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX01.spreadtrum.com (10.0.64.7)
+X-MAIL: SHSQR01.spreadtrum.com 36JD5Zqj043653
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,50 +53,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 09:02:31PM +0200, Mirsad Todorovac wrote:
-> Command "replace" is unknown, try "bridge mdb help".
+When cpufreq's policy is single, there is a scenario that will
+cause sg_policy's next_freq to be unable to update.
 
-You are running the test with an old iproute2 that doesn't support the
-replace command. The following patches [1][2] skip the tests in this
-case. However, you will get better test coverage with iproute2-next [3]
-compared to the version shipped with your distribution.
+When the cpu's util is always max, the cpufreq will be max,
+and then if we change the policy's scaling_max_freq to be a
+lower freq, indeed, the sg_policy's next_freq need change to
+be the lower freq, however, because the cpu_is_busy, the next_freq
+would keep the max_freq.
 
-[1]
-diff --git a/tools/testing/selftests/net/forwarding/bridge_mdb.sh b/tools/testing/selftests/net/forwarding/bridge_mdb.sh
-index ae3f9462a2b6..a1bd4900acb6 100755
---- a/tools/testing/selftests/net/forwarding/bridge_mdb.sh
-+++ b/tools/testing/selftests/net/forwarding/bridge_mdb.sh
-@@ -1206,6 +1206,12 @@ ctrl_test()
-        ctrl_mldv2_is_in_test
- }
- 
-+bridge mdb help 2>&1 | grep -q "replace"
-+if [ $? -ne 0 ]; then
-+       echo "SKIP: iproute2 too old, missing bridge mdb replace support"
-+       exit $ksft_skip
-+fi
-+
- trap cleanup EXIT
- 
- setup_prepare
+For example:
+The cpu7 is single cpu:
 
-[2]
-diff --git a/tools/testing/selftests/net/forwarding/bridge_mdb_max.sh b/tools/testing/selftests/net/forwarding/bridge_mdb_max.sh
-index ae255b662ba3..a1c4aec4cbb1 100755
---- a/tools/testing/selftests/net/forwarding/bridge_mdb_max.sh
-+++ b/tools/testing/selftests/net/forwarding/bridge_mdb_max.sh
-@@ -1328,6 +1328,12 @@ test_8021qvs()
-        switch_destroy
- }
- 
-+bridge link help 2>&1 | grep -q "mcast_max_groups"
-+if [ $? -ne 0 ]; then
-+       echo "SKIP: iproute2 too old, missing bridge \"mcast_max_groups\" support"
-+       exit $ksft_skip
-+fi
-+
- trap cleanup EXIT
- 
- setup_prepare
+unisoc:/sys/devices/system/cpu/cpufreq/policy7 # while true;do done&
+[1] 4737
+unisoc:/sys/devices/system/cpu/cpufreq/policy7 # taskset -p 80 4737
+pid 4737's current affinity mask: ff
+pid 4737's new affinity mask: 80
+unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_max_freq
+2301000
+unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_cur_freq
+2301000
+unisoc:/sys/devices/system/cpu/cpufreq/policy7 # echo 2171000 > scaling_max_freq
+unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_max_freq
+2171000
 
-[3] https://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git
+At this time, the sg_policy's next_freq would keep 2301000.
+
+To prevent the case happen, add the judgment of the need_freq_update flag.
+
+Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+Co-developed-by: Guohua Yan <guohua.yan@unisoc.com>
+Signed-off-by: Guohua Yan <guohua.yan@unisoc.com>
+---
+ kernel/sched/cpufreq_schedutil.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+index 4492608b7d7f..458d359f5991 100644
+--- a/kernel/sched/cpufreq_schedutil.c
++++ b/kernel/sched/cpufreq_schedutil.c
+@@ -350,7 +350,8 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
+ 	 * Except when the rq is capped by uclamp_max.
+ 	 */
+ 	if (!uclamp_rq_is_capped(cpu_rq(sg_cpu->cpu)) &&
+-	    sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
++	    sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq &&
++	    !sg_policy->need_freq_update) {
+ 		next_f = sg_policy->next_freq;
+ 
+ 		/* Restore cached freq as next_freq has changed */
+-- 
+2.25.1
+
