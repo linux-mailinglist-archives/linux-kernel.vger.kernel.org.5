@@ -2,126 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D9C759AF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BF0759B0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbjGSQhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 12:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53374 "EHLO
+        id S229826AbjGSQkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 12:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbjGSQg4 (ORCPT
+        with ESMTP id S229510AbjGSQkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 12:36:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C6F2717;
-        Wed, 19 Jul 2023 09:36:32 -0700 (PDT)
+        Wed, 19 Jul 2023 12:40:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C112613E
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:40:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AE14C61789;
-        Wed, 19 Jul 2023 16:36:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7F60C433C8;
-        Wed, 19 Jul 2023 16:36:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4CEDB615F9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 16:40:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A9EFC433C8;
+        Wed, 19 Jul 2023 16:40:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689784586;
-        bh=T67KVuMsXJyOHPpyRG/bF4u+lVYth3Zf4FyYGoex53A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y3ZdEYbupgVsJzit/TJjMBMI1pQ8pnMPk2eY2TJHizVHcRhCCIs2G6wSKmru9CuYg
-         ruEp67kxjdVKQIPZVkMwSI6CdpryX0NZpAYAhYUDUruC6T9xnyuEMf2dXWHR4kmH3k
-         ewV2JPjapcDFamJ7uVoBOsUQ5oUAjoqYdB8sIQD9OXmyPECcbB7PxQXvDBxym+NuMm
-         J5WscmACVaQfmSU4drA+8IVI/cCN8A5AHBdzlsBrYvP5My+3Cg3Ej9st3hAK9Jtp6S
-         uvKnK/Cg/MX8z/aNRtrEtQAbBROe2du8KC3a2UsYabJm5jWi4G3npRk+0opcqGD520
-         SgmaXBE+V5bjg==
-Date:   Wed, 19 Jul 2023 17:36:21 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Pranavi Somisetty <pranavi.somisetty@amd.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, michal.simek@amd.com, harini.katakam@amd.com,
-        git@amd.com, radhey.shyam.pandey@amd.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] dt-bindings: net: xilinx_gmii2rgmii: Convert to json
- schema
-Message-ID: <20230719-sizzling-heaving-bc802f2ed2ae@spud>
-References: <20230719061808.30967-1-pranavi.somisetty@amd.com>
+        s=k20201202; t=1689784814;
+        bh=hpd4KDlCVbb9UV25Db6X99cNQA41UhTFbnri/UeLO4s=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=gb5p8/FFPdXgyqBN38mcYLDnewxT6m393E4gbTv/WXBaiI2Bwo8PLLRWltYWtZfB4
+         0msKE3w9/9B5XBeq/sV0HCGSZZfc9gaE+EMElMGNAGEwNwpin6Ryjju9EUglxw/IYz
+         6jsdDYW34QwTZGA4SN7BlK3iCqxg2BmZwu6rwr8gxBqoCkATijX1tX1V+SdGpS026l
+         dR+5zHnLz2Xe8enBIxQ6IwrFNg5r9zzeO6UgxFIiswtYkZdrREK5ARTUjrSuw9MLzl
+         7sT/sRyNu4pm/WoQxAeyYxU+2pP2EyFJv3JlPtg76CNQ846nqJslMFCwN9y1YeWLZg
+         veM4cm+kPbplg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230719130846.633701-1-arnd@kernel.org>
+References: <20230719130846.633701-1-arnd@kernel.org>
+Subject: Re: [PATCH] ASoC: amd: acp: fix SND_SOC_AMD_ACP_PCI depdenencies
+Message-Id: <168978481190.111081.12971357887459390811.b4-ty@kernel.org>
+Date:   Wed, 19 Jul 2023 17:40:11 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ZZlRDUsAAGIHGb0l"
-Content-Disposition: inline
-In-Reply-To: <20230719061808.30967-1-pranavi.somisetty@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 19 Jul 2023 15:08:37 +0200, Arnd Bergmann wrote:
+> The new PM functions require code that is part of the snd-acp-legacy-common
+> module:
+> 
+> x86_64-linux-ld: sound/soc/amd/acp/acp-pci.o: in function `snd_acp_resume':
+> acp-pci.c:(.text+0x23): undefined reference to `acp_init'
+> x86_64-linux-ld: acp-pci.c:(.text+0x58): undefined reference to `acp_enable_interrupts'
+> x86_64-linux-ld: sound/soc/amd/acp/acp-pci.o: in function `snd_acp_suspend':
+> acp-pci.c:(.text+0x89): undefined reference to `acp_deinit'
+> x86_64-linux-ld: sound/soc/amd/acp/acp-pci.o: in function `acp_pci_remove':
+> acp-pci.c:(.text+0xec): undefined reference to `acp_deinit'
+> x86_64-linux-ld: sound/soc/amd/acp/acp-pci.o: in function `acp_pci_probe':
+> acp-pci.c:(.text+0x26b): undefined reference to `acp_init'
+> 
+> [...]
 
---ZZlRDUsAAGIHGb0l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Wed, Jul 19, 2023 at 12:18:08AM -0600, Pranavi Somisetty wrote:
-> Convert the Xilinx GMII to RGMII Converter device tree binding
-> documentation to json schema.
-> This converter is usually used as gem <---> gmii2rgmii <---> external phy
-> and, it's phy-handle should point to the phandle of the external phy.
->=20
-> Signed-off-by: Pranavi Somisetty <pranavi.somisetty@amd.com>
-> ---
-> Changes v2:
-> 1. Changed description for the property "reg".
-> 2. Added a reference to the description of "phy-handle" property.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Seems fine to me, one /minor/ nit that I don't expect to be addressed.
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Thanks!
+
+[1/1] ASoC: amd: acp: fix SND_SOC_AMD_ACP_PCI depdenencies
+      commit: 4edc07fc7fe1a9eec1a4ebc518d2dec222382f43
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Conor.
+Mark
 
-> diff --git a/Documentation/devicetree/bindings/net/xlnx,gmii-to-rgmii.yam=
-l b/Documentation/devicetree/bindings/net/xlnx,gmii-to-rgmii.yaml
-> new file mode 100644
-> index 000000000000..9d22382a64ba
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/xlnx,gmii-to-rgmii.yaml
-
-> +examples:
-> +  - |
-> +    mdio {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +        phy: ethernet-phy@0 {
-> +            reg =3D <0>;
-> +        };
-> +        gmiitorgmii@8 {
-> +            compatible =3D "xlnx,gmii-to-rgmii-1.0";
-> +            reg =3D <8>;
-> +            phy-handle =3D <&phy>;
-> +        };
-
-Ideally, add a blank line before child nodes.
-
-> +    };
-> --=20
-> 2.36.1
->=20
-
---ZZlRDUsAAGIHGb0l
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLgRBQAKCRB4tDGHoIJi
-0pFDAQCmtiE2GnotCBnhox3kae5HrWkNtj3/Tv6uGBwnTLajtAEAiiBsXMRS3sfZ
-PMfmBowd0X1+f9ihnG6IfCkO/fQ2pgg=
-=Asfq
------END PGP SIGNATURE-----
-
---ZZlRDUsAAGIHGb0l--
