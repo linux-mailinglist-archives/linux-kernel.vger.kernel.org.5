@@ -2,140 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FFB75A025
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D45F75A023
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbjGSUtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46994 "EHLO
+        id S229517AbjGSUsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:48:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbjGSUtB (ORCPT
+        with ESMTP id S229846AbjGSUsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:49:01 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5DD51FC0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:49:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689799740; x=1721335740;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=gyE5oUAZQf8eFO3OxexjtCVX4TO6hdfu4WVnH0NtknA=;
-  b=AUuR9+a4kUo4Qtlf4Hxyl5+rIN+bb+XT3QXRmAgyMNuCDkwsKXEDK5qd
-   f3JNAc3DogiE8H/ZdtZOphCNmHAq3VhnYm/MBfE7N2aY0weJCFryWAMMd
-   bkgo1OUoqejzse5P24iJqYKLTkW+aTpC+bZMDf/p5uJ0wUW4SGVrnvnaA
-   gyLnl6I1aR1AwDvoeceOnPezAvs12ONC3JnSEp+BhvjT0RpbjwUKV/GdU
-   INJZfO2cHmb9hoyt5xmJuUmqdQE4OafceuVsNirRIpbf5aZNR+pv/zWkD
-   lg4Vv4geuwf7Bhnj1+A84l1agDAboVpZU+p9SULF4oT1UnKqSKTDPN2E6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="346871397"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="346871397"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 13:49:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="970763093"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="970763093"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 19 Jul 2023 13:48:58 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qME6U-0005T5-0j;
-        Wed, 19 Jul 2023 20:48:58 +0000
-Date:   Thu, 20 Jul 2023 04:48:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     William Zhang <william.zhang@broadcom.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: drivers/soc/bcm/bcm63xx/bcm-pmb.c:103:65: sparse: sparse: cast to
- restricted __be32
-Message-ID: <202307200429.ZJZG9V9A-lkp@intel.com>
+        Wed, 19 Jul 2023 16:48:21 -0400
+Received: from out-6.mta1.migadu.com (out-6.mta1.migadu.com [IPv6:2001:41d0:203:375::6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2F91FC0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:48:19 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 20:48:13 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1689799697;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ABmm8ziz9w11JK63dBDo/JptwWWVO+Y+GrOZN7APQNo=;
+        b=QbYLN3KsKY0UMpUE5N0eq/DOFDyLXqbm3K+hyONSSXH3wZQHs8MT77tS5XJr3QJq+IP5pb
+        Z8SO/+JsRWBto74/wxwKIzmZoubj4AVb3sXX621eRLSyhaY4s1H7YaOlFv8SE9oVCYuxed
+        J7dOGvyYBSQgQoUZOa6NV5OgRwc0sF4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Oliver Upton <oliver.upton@linux.dev>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>, Fuad Tabba <tabba@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Reiji Watanabe <reijiw@google.com>, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: arm64: Fix CPUHP logic for protected KVM
+Message-ID: <ZLhMDapXa2djVzf0@linux.dev>
+References: <20230719175400.647154-1-rananta@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230719175400.647154-1-rananta@google.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi William,
+On Wed, Jul 19, 2023 at 05:54:00PM +0000, Raghavendra Rao Ananta wrote:
+> For protected kvm, the CPU hotplug 'down' logic currently brings
+> down the timer and vGIC, essentially disabling interrupts. However,
+> because of how the 'kvm_arm_hardware_enabled' flag is designed, it
+> never re-enables them back on the CPU hotplug 'up' path. Hence,
+> clean up the logic to maintain the CPU hotplug up/down symmetry.
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+Correct me if I am wrong, but this issue exists outside of cpu hotplug,
+right? init_subsystems() calls _kvm_arch_hardware_enable() on all cores,
+which only sets up the hyp cpu context and not the percpu interrupts.
+Similar issue exists for the cpu that calls do_pkvm_init().
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   bfa3037d828050896ae52f6467b6ca2489ae6fb1
-commit: 7bb49d774f481fdd7bd053e034e4d206770fda04 arm64: bcmbca: Make BCM4908 drivers depend on ARCH_BCMBCA
-date:   11 months ago
-config: arm64-randconfig-r092-20230720 (https://download.01.org/0day-ci/archive/20230720/202307200429.ZJZG9V9A-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230720/202307200429.ZJZG9V9A-lkp@intel.com/reproduce)
+I'll also note kvm_arm_hardware_enabled is deceptively vague, as it only
+keeps track of whether or not the hyp cpu context has been initialized.
+May send a cleanup here in a bit.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307200429.ZJZG9V9A-lkp@intel.com/
+Perhaps this for the changelog:
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/soc/bcm/bcm63xx/bcm-pmb.c:103:65: sparse: sparse: cast to restricted __be32
->> drivers/soc/bcm/bcm63xx/bcm-pmb.c:103:65: sparse: sparse: cast to restricted __be32
->> drivers/soc/bcm/bcm63xx/bcm-pmb.c:103:65: sparse: sparse: cast to restricted __be32
->> drivers/soc/bcm/bcm63xx/bcm-pmb.c:103:65: sparse: sparse: cast to restricted __be32
->> drivers/soc/bcm/bcm63xx/bcm-pmb.c:103:65: sparse: sparse: cast to restricted __be32
->> drivers/soc/bcm/bcm63xx/bcm-pmb.c:103:65: sparse: sparse: cast to restricted __be32
->> drivers/soc/bcm/bcm63xx/bcm-pmb.c:103:45: sparse: sparse: cast to restricted __le32
->> drivers/soc/bcm/bcm63xx/bcm-pmb.c:115:36: sparse: sparse: restricted __le32 degrades to integer
->> drivers/soc/bcm/bcm63xx/bcm-pmb.c:115:55: sparse: sparse: restricted __be32 degrades to integer
+  KVM: arm64: Fix hardware enable/disable flows for pKVM
 
-vim +103 drivers/soc/bcm/bcm63xx/bcm-pmb.c
+  When running in protected mode, the hyp stub is disabled after pKVM is
+  initialized, meaning the host cannot enable/disable the hyp at
+  runtime. As such, kvm_arm_hardware_enabled is always 1 after
+  initialization, and kvm_arch_hardware_enable() never enables the vgic
+  maintenance irq or timer irqs.
 
-8bcac4011ebe0db Rafał Miłecki 2020-12-14   90  
-8bcac4011ebe0db Rafał Miłecki 2020-12-14   91  static int bcm_pmb_bpcm_read(struct bcm_pmb *pmb, int bus, u8 device,
-8bcac4011ebe0db Rafał Miłecki 2020-12-14   92  			     int offset, u32 *val)
-8bcac4011ebe0db Rafał Miłecki 2020-12-14   93  {
-8bcac4011ebe0db Rafał Miłecki 2020-12-14   94  	void __iomem *base = pmb->base + bus * 0x20;
-8bcac4011ebe0db Rafał Miłecki 2020-12-14   95  	unsigned long flags;
-8bcac4011ebe0db Rafał Miłecki 2020-12-14   96  	int err;
-8bcac4011ebe0db Rafał Miłecki 2020-12-14   97  
-8bcac4011ebe0db Rafał Miłecki 2020-12-14   98  	spin_lock_irqsave(&pmb->lock, flags);
-8bcac4011ebe0db Rafał Miłecki 2020-12-14   99  	err = bpcm_rd(base, device, offset, val);
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  100  	spin_unlock_irqrestore(&pmb->lock, flags);
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  101  
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  102  	if (!err)
-8bcac4011ebe0db Rafał Miłecki 2020-12-14 @103  		*val = pmb->little_endian ? le32_to_cpu(*val) : be32_to_cpu(*val);
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  104  
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  105  	return err;
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  106  }
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  107  
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  108  static int bcm_pmb_bpcm_write(struct bcm_pmb *pmb, int bus, u8 device,
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  109  			      int offset, u32 val)
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  110  {
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  111  	void __iomem *base = pmb->base + bus * 0x20;
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  112  	unsigned long flags;
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  113  	int err;
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  114  
-8bcac4011ebe0db Rafał Miłecki 2020-12-14 @115  	val = pmb->little_endian ? cpu_to_le32(val) : cpu_to_be32(val);
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  116  
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  117  	spin_lock_irqsave(&pmb->lock, flags);
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  118  	err = bpcm_wr(base, device, offset, val);
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  119  	spin_unlock_irqrestore(&pmb->lock, flags);
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  120  
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  121  	return err;
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  122  }
-8bcac4011ebe0db Rafał Miłecki 2020-12-14  123  
+  Unconditionally enable/disable the vgic + timer irqs in the respective
+  calls, instead relying on the percpu bookkeeping in the generic code
+  to keep track of which cpus have the interrupts unmasked.
 
-:::::: The code at line 103 was first introduced by commit
-:::::: 8bcac4011ebe0dbdd46fd55b036ee855c95702d3 soc: bcm: add PM driver for Broadcom's PMB
-
-:::::: TO: Rafał Miłecki <rafal@milecki.pl>
-:::::: CC: Florian Fainelli <f.fainelli@gmail.com>
+> Fixes: 466d27e48d7c ("KVM: arm64: Simplify the CPUHP logic")
+> Reported-by: Oliver Upton <oliver.upton@linux.dev>
+> Suggested-by: Oliver Upton <oliver.upton@linux.dev>
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  arch/arm64/kvm/arm.c | 14 ++++----------
+>  1 file changed, 4 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index c2c14059f6a8..010ebfa69650 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -1867,14 +1867,10 @@ static void _kvm_arch_hardware_enable(void *discard)
+>  
+>  int kvm_arch_hardware_enable(void)
+>  {
+> -	int was_enabled = __this_cpu_read(kvm_arm_hardware_enabled);
+> -
+>  	_kvm_arch_hardware_enable(NULL);
+>  
+> -	if (!was_enabled) {
+> -		kvm_vgic_cpu_up();
+> -		kvm_timer_cpu_up();
+> -	}
+> +	kvm_vgic_cpu_up();
+> +	kvm_timer_cpu_up();
+>  
+>  	return 0;
+>  }
+> @@ -1889,10 +1885,8 @@ static void _kvm_arch_hardware_disable(void *discard)
+>  
+>  void kvm_arch_hardware_disable(void)
+>  {
+> -	if (__this_cpu_read(kvm_arm_hardware_enabled)) {
+> -		kvm_timer_cpu_down();
+> -		kvm_vgic_cpu_down();
+> -	}
+> +	kvm_timer_cpu_down();
+> +	kvm_vgic_cpu_down();
+>  
+>  	if (!is_protected_kvm_enabled())
+>  		_kvm_arch_hardware_disable(NULL);
+> -- 
+> 2.41.0.487.g6d72f3e995-goog
+> 
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Oliver
