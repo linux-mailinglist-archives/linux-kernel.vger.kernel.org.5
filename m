@@ -2,159 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBC2759982
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F82759985
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231535AbjGSPXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 11:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
+        id S231725AbjGSPXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 11:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231753AbjGSPWx (ORCPT
+        with ESMTP id S231712AbjGSPXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 11:22:53 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D02E19B9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:22:40 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-4036bd4fff1so711421cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:22:40 -0700 (PDT)
+        Wed, 19 Jul 2023 11:23:32 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67367BE
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:23:31 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-98377c5d53eso940463166b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:23:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689780159; x=1692372159;
+        d=google.com; s=20221208; t=1689780210; x=1692372210;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B72UkkXxSYnbUsFY/YUEO+cQDrOpS7sEr3ObSScgRhE=;
-        b=gMU01dt+lLh55R7AX3Hk7+fyFASXNlkl/+3gC3QqhooZOJiNeiOhwYBV6FMfCiCWvJ
-         8yBTWf8jCnNXfYAJsZc3HGRQJ+3k3/MFifaij7cbXWeyM1cvDSYy9vqP5qxIzGd3KEZv
-         5t8NmerDiBHSV4dIoq+b4b7De2ASocG2xTLEUA9kT5WZjF/Wp0Gyn1qN6RfYff6Bo8IJ
-         7OIEGVcVfoyctj9F5uzS8V/VrDouwo2ozfB5BHxFFgYedAYTAl8Dlix5QOCUtquVI/Jq
-         jJn5cvrja/GlrF8iR5pBhFCVqHcppVmXDsXiZvy4MNNpMoiqPRooTwKEOfqKcRSgqipX
-         QBlg==
+        bh=pYTI3rxc07upa7orcKEjaXXi8vFg3GHcpbX5fCjL0zo=;
+        b=rdSZMmCBAzdoLWy2/2UJlGsstH/QYihCudnOBWEcFDbhLbNqgAM44QGcCaXrsL0MZ5
+         pjR3A+Zn/i9gUApwqFh6kQEXOLtwNztvHcB7lKRze6OnKeCJN6xMbEu66yJOHs4LJd5G
+         EVnjHe5A+sPq0DPYxhnQWgZ7K1Cc59nBV3CtMGphzgzfOXaerrWxiU8ZHPOB019cIG3R
+         yzpLrXd5SAGoryzS8IFtSkQGY03lxtpJgn4MSTDt+3/vNhCuPLJNgg45MBDntjpN6h31
+         N0uGKP8KYQA8QBYEJ6XIX3jpnCnhOX/Poa80m4YFWkTK744ncQw9xIiAqblLdeYW4uEm
+         XHUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689780159; x=1692372159;
+        d=1e100.net; s=20221208; t=1689780210; x=1692372210;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B72UkkXxSYnbUsFY/YUEO+cQDrOpS7sEr3ObSScgRhE=;
-        b=YHL98Ltu9nbP8ill2t15lT0AqCc3Stz/uMFTCyrtIZTWjSO2dQQoyK8rRZJO9tOpdE
-         zwJhPqWNj97f5ToiN7SJFTm9vHwAfd6juaDuLoAqsV0vvFhfPbkluBHEp4HgiDRnPqXm
-         7v1RA6YkpiJCw7GN3bGyEAD0sK0lJuvKmoA/fPS0r9HdgCwfRh4OXXrkeijdeqTt5IAv
-         xdMaEPc4YMWsYv4jc73vLi3bhIjJ5ve2KgF/xTDxWIDKnzKP1beHgCbYRricsykx5xYG
-         poDwD8/sjheC/+acNxT/R1vQOPiB+c1/MvblelwJExhwSyPQhL1OrMaMZXtjA4RuHkX2
-         8fOw==
-X-Gm-Message-State: ABy/qLZQOzil7NA1qFKG504vVfxGI0XduXSQylUn3/QAv/vo12jTKt84
-        iIbexYMQCqBCOYfkqpOOrfoLg7aMptYkB6ZXs8iR/RbC2uBzETF612g=
-X-Google-Smtp-Source: APBJJlFvJSbZ8xBnLgfIuzFE30MmDzLcOIGFY6sMLTSM66P9iy4b/F4ZwAquSqsG+u2lZyeklZqivh1tMWu62WEqlHk=
-X-Received: by 2002:a05:622a:193:b0:3ef:5f97:258f with SMTP id
- s19-20020a05622a019300b003ef5f97258fmr595360qtw.16.1689780159248; Wed, 19 Jul
- 2023 08:22:39 -0700 (PDT)
+        bh=pYTI3rxc07upa7orcKEjaXXi8vFg3GHcpbX5fCjL0zo=;
+        b=Txi0STRK1zgUscTbZvIbcuAbkysiG6Wz+/Q7t7EePri/5NaabSSUifAGL6O4HOlqtg
+         qcf/q/DLa/iKksOSHdTKMX8FLLJlFexGEPZMj2cOh1Gv8/N05FeqQCiGBrUDHmIw9njY
+         UYGEzP1FalTr1iYL3YS760AJWpbuuWOx45ETQY6+ut8N1Nqm8CAuPw6IcGZIjkGUFpP5
+         xYU7l7fNVYuxUbOx8ju6+2YGxkTShl42qoLPLCzliirdNXnj0E3chljeV2IIsVSAf/z3
+         QFkaa4Ck48cMrycQAmNlfLJSPbrwBqR35/8V+7dij2aMaHkeFVCk6MK/XJYs69rprspy
+         7HZg==
+X-Gm-Message-State: ABy/qLaUrtxlrAy4ktcxb594Pea9vho86MoHLlcHp1hYwfDUzk4BZZwl
+        JhuynTSFuNvFhPfAqMOHo1IVoIIqMXs9sO1MO2/DYg==
+X-Google-Smtp-Source: APBJJlGe6ARv3ysgZg/JX60UPzKzjCRWAJishv5hbT41vqoQjAhbq5kvYF4ZBIk9ocMe7qHigXOLNSRSfN3CRgzS3pg=
+X-Received: by 2002:a17:907:8d11:b0:992:a838:a564 with SMTP id
+ tc17-20020a1709078d1100b00992a838a564mr2251707ejc.28.1689780209717; Wed, 19
+ Jul 2023 08:23:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1689718662.git.anupnewsmail@gmail.com> <ZLfDPPYK1PXc9xOe@yoga>
-In-Reply-To: <ZLfDPPYK1PXc9xOe@yoga>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 19 Jul 2023 08:22:24 -0700
-Message-ID: <CAP-5=fUzUoLEpjcrZTzX93TPFbRMUhZGF+BVLB9OiusmKJFYvA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/6] Add support for Firefox's gecko profile format
-To:     Anup Sharma <anupnewsmail@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230714194610.828210-1-hannes@cmpxchg.org> <ZLIVleBYOm4HIGTZ@casper.infradead.org>
+ <20230717141250.GA866068@cmpxchg.org> <901409ed-504b-9500-54d8-e42f832e07b0@suse.cz>
+ <20230717160227.GA867137@cmpxchg.org> <CAJD7tkbkoph+N3E92n4xGAvVP12H=issOfAPmdrS0655Ja=qAw@mail.gmail.com>
+ <20230719142832.GA932528@cmpxchg.org>
+In-Reply-To: <20230719142832.GA932528@cmpxchg.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 19 Jul 2023 08:22:52 -0700
+Message-ID: <CAJD7tkYTmkVAbm20gmU0nB4vyA8YEy2+uRiQLFW00RHUApn+9Q@mail.gmail.com>
+Subject: Re: [PATCH] mm: kill frontswap
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Nhat Pham <nphamcs@gmail.com>,
+        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
+        konrad.wilk@oracle.com, vitaly.wool@konsulko.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 4:04=E2=80=AFAM Anup Sharma <anupnewsmail@gmail.com=
+On Wed, Jul 19, 2023 at 7:28=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
 > wrote:
 >
-> On Wed, Jul 19, 2023 at 04:15:52AM +0530, Anup Sharma wrote:
-> > This patch series adds support for Firefox's gecko profile format.
-> > The format is documented here [1].
-> >
-> > I have incorporated several changes based on feedback from the
-> > previous version of the patch.
-> >
-> > Changes in v3:
-> a small typo here. It should be v4 instead of v3 (changes in v4).
-> > - Implemented object-oriented programming (OOP) approach for Thread and=
- Sample
-> >   to improve code organization and maintainability.
-> > - Enhanced user experience by introducing argparse for changing color s=
-ettings
-> >   of user and kernel symbols during execution.
-> > - Ensured proper module encapsulation by adding imports wherever necess=
-ary.
-> > - Improved code readability by adding descriptive comments and type ann=
-otations.
-> >
-> > These changes focus on adopting OOP principles, enhancing user interact=
-ion with argparse,
-> > and making the code more readable with comments and type information.
-> >
-> > TODO:
-> > - use cpu_mode to determine the category instead of finding it from sym=
-bol name.
-> > - Write a test.
-> > - add direct execution command for this script under script/python/bin =
-directory.
-> >
+> Hi Yosry,
+>
+> thanks for the review. I hope I saw everything you commented on ;) -
+> can you please trim your replies to the relevant hunks?
 
-Thanks Anup, is there a minimal TODO so that some code can be merged?
-I didn't have any comments for this series so:
-Acked-by: Ian Rogers <irogers@google.com>
-I think even the test can be follow up as the code isn't on the critical pa=
-th.
+You did :) Sorry for that, my client automatically trims the quotes so
+I couldn't perceive the size of the problem :p
 
-Thanks,
-Ian
+>
+> On Tue, Jul 18, 2023 at 11:52:45AM -0700, Yosry Ahmed wrote:
+> > On Mon, Jul 17, 2023 at 9:02=E2=80=AFAM Johannes Weiner <hannes@cmpxchg=
+.org> wrote:
+> > > -/*
+> > > - * "Get" data from frontswap associated with swaptype and offset tha=
+t were
+> > > - * specified when the data was put to frontswap and use it to fill t=
+he
+> > > - * specified page with data. Page must be locked and in the swap cac=
+he.
+> > > - */
+> > > -int __frontswap_load(struct page *page)
+> > > -{
+> > > -       int ret =3D -1;
+> > > -       swp_entry_t entry =3D { .val =3D page_private(page), };
+> > > -       int type =3D swp_type(entry);
+> > > -       struct swap_info_struct *sis =3D swap_info[type];
+> > > -       pgoff_t offset =3D swp_offset(entry);
+> > > -       bool exclusive =3D false;
+> > > -
+> > > -       VM_BUG_ON(!frontswap_ops);
+> > > -       VM_BUG_ON(!PageLocked(page));
+> > > -       VM_BUG_ON(sis =3D=3D NULL);
+> > > -
+> > > -       if (!__frontswap_test(sis, offset))
+> > > -               return -1;
+> >
+> > With the removal of the above, it will be a bit slower to realize an
+> > entry is not in zswap and read it from disk (bitmask test vs. rbtree
+> > lookup). I guess in the swapin path (especially from disk), it would
+> > not matter much in practice. Just a note (mostly to myself).
+>
+> I briefly considered moving that bitmap to zswap, but it actually
+> seems quite backwards. It adds overhead to the fast path, where
+> entries are in-cache, in order to optimize the cold path that requires
+> IO. As long as compression is faster than IO, zswap is expected to see
+> the (much) bigger share of transactions in any sane config.
 
-> > Committer Testing:
-> > - Tested with a perf.data file generated for single and multiple cpu
-> >   cores enabled.
-> > - Uploaded the stdout into profiler.firefox.com and verified the
-> >   output.
-> > - Verified the output with the output generated by the existing
-> >   script as mentioned here [2].
-> > Method:
-> > - perf record -F 99 -a -g -- sleep 5
-> > - perf script firefox-gecko-converter.py > output.json
-> > - upload output.json to profiler.firefox.com
+Makes sense to me, thanks for the clarification. Maybe we should put
+this in the commit log as well?
+
+>
+> > > @@ -1356,15 +1342,12 @@ static int zswap_frontswap_store(unsigned typ=
+e, pgoff_t offset,
+> > >
+> > >         /* map */
+> > >         spin_lock(&tree->lock);
+> > > -       do {
+> > > -               ret =3D zswap_rb_insert(&tree->rbroot, entry, &dupent=
+ry);
+> > > -               if (ret =3D=3D -EEXIST) {
+> > > -                       zswap_duplicate_entry++;
+> > > -                       /* remove from rbtree */
+> > > -                       zswap_rb_erase(&tree->rbroot, dupentry);
+> > > -                       zswap_entry_put(tree, dupentry);
+> > > -               }
+> > > -       } while (ret =3D=3D -EEXIST);
+> > > +       while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) =3D=
+=3D -EEXIST) {
+> > > +               zswap_duplicate_entry++;
+> > > +               /* remove from rbtree */
+> > > +               zswap_rb_erase(&tree->rbroot, dupentry);
+> > > +               zswap_entry_put(tree, dupentry);
 > >
-> > [1] https://github.com/firefox-devtools/profiler/blob/main/docs-develop=
-er/gecko-profile-format.md
-> > [2] https://perf.wiki.kernel.org/index.php/Tutorial#Firefox_Profiler
+> > nit: it would be nice to replace the above two lines with
+> > zswap_invalidate_entry(), which also keeps it clear that we maintain
+> > the frontswap semantics of invalidating a duplicated entry.
+>
+> Agreed, that's better. I'll send a follow-up.
+
+Thanks!
+
+>
+> > > @@ -1418,7 +1401,7 @@ static int zswap_frontswap_load(unsigned type, =
+pgoff_t offset,
+> > >         if (!entry) {
+> > >                 /* entry was written back */
 > >
-> > Anup Sharma (6):
-> >   perf scripts python: Add initial script file with usage information
-> >   perf scripts python: Extact necessary information from process event
-> >   perf scripts python: Add classes and conversion functions
-> >   perf scripts python: Add trace end processing and PRODUCT and
-> >     CATEGORIES information
-> >   perf scripts python: implement internal get or create frame, stack an=
-d
-> >     string function
-> >   perf scripts python: Implement add sample function and thread
-> >     processing
+> > nit: the above comment is now obsolete. We may not find the entry
+> > because it was never stored in zswap in the first place (since we
+> > dropped the frontswap map, we won't know before we do the lookup
+> > here).
+>
+> Good catch. I'll send a delta fix to Andrew.
+>
+> > LGTM with a few nits above, probably they can be done in follow up
+> > patches. Thanks for the cleanup!
 > >
-> >  .../scripts/python/firefox-gecko-converter.py | 339 ++++++++++++++++++
-> >  1 file changed, 339 insertions(+)
-> >  create mode 100644 tools/perf/scripts/python/firefox-gecko-converter.p=
-y
-> >
-> > --
-> > 2.34.1
-> >
+> > FWIW:
+> > Acked-by: Yosry Ahmed <yosryahmed@google.com>
+>
+> Thanks!
+>
+> Andrew, could you please fold this in?
+>
+> ---
+>
+> From 86eeba389d7478e5794877254af6cc0310c835c7 Mon Sep 17 00:00:00 2001
+> From: Johannes Weiner <hannes@cmpxchg.org>
+> Date: Wed, 19 Jul 2023 10:21:49 -0400
+> Subject: [PATCH] mm: kill frontswap fix
+>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> ---
+>  mm/zswap.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index d58672f23d43..583ef7b84dc3 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -1399,7 +1399,6 @@ bool zswap_load(struct page *page)
+>         spin_lock(&tree->lock);
+>         entry =3D zswap_entry_find_get(&tree->rbroot, offset);
+>         if (!entry) {
+> -               /* entry was written back */
+>                 spin_unlock(&tree->lock);
+>                 return false;
+>         }
+> --
+> 2.41.0
