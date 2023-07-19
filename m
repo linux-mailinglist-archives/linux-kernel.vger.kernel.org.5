@@ -2,262 +2,434 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB13758C15
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 05:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE61758C19
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 05:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbjGSD11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 23:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49452 "EHLO
+        id S230286AbjGSD3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 23:29:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230513AbjGSD0j (ORCPT
+        with ESMTP id S230103AbjGSD2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 23:26:39 -0400
-Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEDB26B0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 20:26:09 -0700 (PDT)
-Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-1b439698cd8so9589987fac.2
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 20:26:09 -0700 (PDT)
+        Tue, 18 Jul 2023 23:28:38 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FBE23ABD;
+        Tue, 18 Jul 2023 20:27:19 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fb960b7c9dso10660287e87.0;
+        Tue, 18 Jul 2023 20:27:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689737230; x=1692329230;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T27lW/IFYnc+mInlhV3C6crQROEaMWng9NOrvyJj8Fs=;
+        b=dbTKujg5aaRvV24uG6GJAeHAWBZoxmFuehuFLX4dG0r8rsQo7jhTkL2ITFC0zbseX4
+         VHfZm175+zCWC5nUNl+XumC2jSqszSn7apxuVp1Z+dMv48VPvkH2q4ZYbBgp1cN7OSM6
+         qdM44cgTfaE8TGUoVVjF5zUYYq8+ywMhWu/UVd7N30zxySwwrphofYlYJvE5i+xUylSl
+         hPr4WnKkVcohMed2s00HHDrJVnAXr8CEkxmF9Y1Qh8G3rYDmOBeqDub1/GEeJQlsvRl+
+         T6jKgnzoRo4NYM69INEv4qhltizOjMBTuVMnDMOEWlWxyUAC50yyzC7C2853sDvhclBF
+         9RkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689737166; x=1692329166;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eAktzDOC7KpSEUrH3Ss7lVoNi/hKqFvUDurD5dZ1Lyo=;
-        b=Y8YkhcbaPzBtYpwnK6mmV5G3E14N4DeeqjOBslIMuCVouojhaVdwwp2/aYvHWLj+tC
-         qXiD9aKT4rEAZ4QAWSTFiWz4t3o1FUSc5haZ114I7WK8nyy5FW414WeSl4LaPlXXbBKf
-         IbvgIcBpECBPe5bs2QUbcB00dQlDw1WOxaOrMb2C2Dnnhl8pQcIHQCdml1+w8M/+TBLE
-         x9011gfVHH3e2lLDMRE8tFO+ndvDj8ofP+z+L440HprRv4qsMvXi1qRPHCeVf2RlgkKl
-         ftdWJ5T9lQmdqF0j1IKyrjPU0ikbXG/yUr/1ArpPxqqnc+YysqZNBlzicB2a1Dj7Qshu
-         QRCQ==
-X-Gm-Message-State: ABy/qLY1BBK+N092Tj2kSGjOc4JEOwoDIBE6pXN3RHWAg3s98ez/bq9v
-        7PpbNbaKKs0Ke6/G4Y+Kw0HHTdvZnSElc8EuLCVb435oZeBa
-X-Google-Smtp-Source: APBJJlEM0r5s9bd2eq/hYzdvUeB+7RwYdshv1kF0G7KfFhOAmMoLmT/TiDVQENW+hKXEiZvalO6NFkAyeulkzQb9yXvo0eFawUDT
+        d=1e100.net; s=20221208; t=1689737230; x=1692329230;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T27lW/IFYnc+mInlhV3C6crQROEaMWng9NOrvyJj8Fs=;
+        b=OLjZuFQLXkWYo7DF3EklXRt53YrLmLVGxCxHt/1chLjpH7q97RUA2D6xBe+P6zWTiq
+         4kR48uIkh0f9hRihUNTe89P4r7SpnjLLcitUywLjSgMFjjhY4sicIlNfW1wrVbrXBL3j
+         iSHPxqjFOXUwGDNtA/Y/4/bljAzQINbewD3iepLjiccNlg5kK+vUV30A72TKVerNBuAm
+         ah6UvVetHzWTm3AS7b/SXItnJbrbM2Czi4477TtiO6NDKq9bCA0fEiteykXV/B9rxu8N
+         GhjWnGXaLuptp1dwgzJBQMIBy7sW1T457TMJcBuvdEoqGz+JLx3obUG4p8AJonT4qx5i
+         8UEA==
+X-Gm-Message-State: ABy/qLZDxw/PpaGDsH/YhjhdI00OvE4MCFEnW44FbXj+/a3x9BtdxjB6
+        IgvU6frtJE6zBMyHfPvy67toUhRKxxjlLRJA+J/AvTVzKHT1rw==
+X-Google-Smtp-Source: APBJJlHrO4H619uYtcfclW4M+aOuvvK0Bi1u13xQvN8qN/fJOz0UJSVdI1wE2UvITWIj6AeuomGGmSTv4WlDnCbc+qM=
+X-Received: by 2002:a05:6512:b18:b0:4fb:52f1:9ab4 with SMTP id
+ w24-20020a0565120b1800b004fb52f19ab4mr982334lfu.50.1689737229709; Tue, 18 Jul
+ 2023 20:27:09 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:1a90:b0:1b0:3fac:f557 with SMTP id
- ef16-20020a0568701a9000b001b03facf557mr15900503oab.10.1689737165941; Tue, 18
- Jul 2023 20:26:05 -0700 (PDT)
-Date:   Tue, 18 Jul 2023 20:26:05 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008a30ff0600ce97dd@google.com>
-Subject: [syzbot] [kernfs?] possible deadlock in walk_component (2)
-From:   syzbot <syzbot+39acbe8ff4cab0acdb9d@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tj@kernel.org
+References: <20230717062343.3743-1-cloudliang@tencent.com> <20230717062343.3743-4-cloudliang@tencent.com>
+ <20230719000245.GC25699@ls.amr.corp.intel.com>
+In-Reply-To: <20230719000245.GC25699@ls.amr.corp.intel.com>
+From:   Jinrong Liang <ljr.kernel@gmail.com>
+Date:   Wed, 19 Jul 2023 11:26:58 +0800
+Message-ID: <CAFg_LQXYvFdpfRfGByTOipwc7YAtyU3Lk6gmuhDuMsRwATNSgQ@mail.gmail.com>
+Subject: Re: [PATCH v4 3/6] KVM: selftests: Introduce __kvm_pmu_event_filter
+ to improved event filter settings
+To:     Isaku Yamahata <isaku.yamahata@gmail.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Jinrong Liang <cloudliang@tencent.com>,
+        linux-kselftest@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Isaku Yamahata <isaku.yamahata@gmail.com> =E4=BA=8E2023=E5=B9=B47=E6=9C=881=
+9=E6=97=A5=E5=91=A8=E4=B8=89 08:02=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Mon, Jul 17, 2023 at 02:23:40PM +0800,
+> Jinrong Liang <ljr.kernel@gmail.com> wrote:
+>
+> > From: Jinrong Liang <cloudliang@tencent.com>
+> >
+> > Add custom "__kvm_pmu_event_filter" structure to improve pmu event
+> > filter settings. Simplifies event filter setup by organizing event
+> > filter parameters in a cleaner, more organized way.
+> >
+> > Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
+> > ---
+> >  .../kvm/x86_64/pmu_event_filter_test.c        | 179 +++++++++---------
+> >  1 file changed, 87 insertions(+), 92 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c=
+ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> > index 5ac05e64bec9..ffcbbf25b29b 100644
+> > --- a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> > +++ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> > @@ -28,6 +28,10 @@
+> >
+> >  #define NUM_BRANCHES 42
+> >
+> > +/* Matches KVM_PMU_EVENT_FILTER_MAX_EVENTS in pmu.c */
+> > +#define MAX_FILTER_EVENTS            300
+> > +#define MAX_TEST_EVENTS              10
+> > +
+> >  /*
+> >   * This is how the event selector and unit mask are stored in an AMD
+> >   * core performance event-select register. Intel's format is similar,
+> > @@ -69,21 +73,33 @@
+> >
+> >  #define INST_RETIRED EVENT(0xc0, 0)
+> >
+> > +struct __kvm_pmu_event_filter {
+> > +     __u32 action;
+> > +     __u32 nevents;
+> > +     __u32 fixed_counter_bitmap;
+> > +     __u32 flags;
+> > +     __u32 pad[4];
+> > +     __u64 events[MAX_FILTER_EVENTS];
+> > +};
+> > +
+> >  /*
+> >   * This event list comprises Intel's eight architectural events plus
+> >   * AMD's "retired branch instructions" for Zen[123] (and possibly
+> >   * other AMD CPUs).
+> >   */
+> > -static const uint64_t event_list[] =3D {
+> > -     EVENT(0x3c, 0),
+> > -     INST_RETIRED,
+> > -     EVENT(0x3c, 1),
+> > -     EVENT(0x2e, 0x4f),
+> > -     EVENT(0x2e, 0x41),
+> > -     EVENT(0xc4, 0),
+> > -     EVENT(0xc5, 0),
+> > -     EVENT(0xa4, 1),
+> > -     AMD_ZEN_BR_RETIRED,
+> > +static const struct __kvm_pmu_event_filter base_event_filter =3D {
+> > +     .nevents =3D ARRAY_SIZE(base_event_filter.events),
+> > +     .events =3D {
+> > +             EVENT(0x3c, 0),
+> > +             INST_RETIRED,
+> > +             EVENT(0x3c, 1),
+> > +             EVENT(0x2e, 0x4f),
+> > +             EVENT(0x2e, 0x41),
+> > +             EVENT(0xc4, 0),
+> > +             EVENT(0xc5, 0),
+> > +             EVENT(0xa4, 1),
+> > +             AMD_ZEN_BR_RETIRED,
+> > +     },
+> >  };
+> >
+> >  struct {
+> > @@ -225,47 +241,11 @@ static bool sanity_check_pmu(struct kvm_vcpu *vcp=
+u)
+> >       return !r;
+> >  }
+> >
+> > -static struct kvm_pmu_event_filter *alloc_pmu_event_filter(uint32_t ne=
+vents)
+> > -{
+> > -     struct kvm_pmu_event_filter *f;
+> > -     int size =3D sizeof(*f) + nevents * sizeof(f->events[0]);
+> > -
+> > -     f =3D malloc(size);
+> > -     TEST_ASSERT(f, "Out of memory");
+> > -     memset(f, 0, size);
+> > -     f->nevents =3D nevents;
+> > -     return f;
+> > -}
+> > -
+> > -
+> > -static struct kvm_pmu_event_filter *
+> > -create_pmu_event_filter(const uint64_t event_list[], int nevents,
+> > -                     uint32_t action, uint32_t flags)
+> > -{
+> > -     struct kvm_pmu_event_filter *f;
+> > -     int i;
+> > -
+> > -     f =3D alloc_pmu_event_filter(nevents);
+> > -     f->action =3D action;
+> > -     f->flags =3D flags;
+> > -     for (i =3D 0; i < nevents; i++)
+> > -             f->events[i] =3D event_list[i];
+> > -
+> > -     return f;
+> > -}
+> > -
+> > -static struct kvm_pmu_event_filter *event_filter(uint32_t action)
+> > -{
+> > -     return create_pmu_event_filter(event_list,
+> > -                                    ARRAY_SIZE(event_list),
+> > -                                    action, 0);
+> > -}
+> > -
+> >  /*
+> >   * Remove the first occurrence of 'event' (if any) from the filter's
+> >   * event list.
+> >   */
+> > -static void remove_event(struct kvm_pmu_event_filter *f, uint64_t even=
+t)
+> > +static void remove_event(struct __kvm_pmu_event_filter *f, uint64_t ev=
+ent)
+> >  {
+> >       bool found =3D false;
+> >       int i;
+> > @@ -313,66 +293,70 @@ static void test_without_filter(struct kvm_vcpu *=
+vcpu)
+> >  }
+> >
+> >  static void test_with_filter(struct kvm_vcpu *vcpu,
+> > -                          struct kvm_pmu_event_filter *f)
+> > +                          struct __kvm_pmu_event_filter *__f)
+> >  {
+> > +     struct kvm_pmu_event_filter *f =3D (void *)__f;
+> > +
+> >       vm_ioctl(vcpu->vm, KVM_SET_PMU_EVENT_FILTER, f);
+> >       run_vcpu_and_sync_pmc_results(vcpu);
+> >  }
+> >
+> >  static void test_amd_deny_list(struct kvm_vcpu *vcpu)
+> >  {
+> > -     uint64_t event =3D EVENT(0x1C2, 0);
+> > -     struct kvm_pmu_event_filter *f;
+> > +     struct __kvm_pmu_event_filter f =3D base_event_filter;
+> >
+> > -     f =3D create_pmu_event_filter(&event, 1, KVM_PMU_EVENT_DENY, 0);
+> > -     test_with_filter(vcpu, f);
+> > -     free(f);
+> > +     f.action =3D KVM_PMU_EVENT_DENY;
+> > +     f.nevents =3D 1;
+> > +     f.events[0] =3D EVENT(0x1C2, 0);
+> > +     test_with_filter(vcpu, &f);
+>
+> This overwrite all members.  We can use designated initializer.
+>         struct __kvm_pmu_event_filter f =3D {
+>                 .action =3D KVM_PMU_EVENT_DENY,
+>                 .nevents =3D 1,
+>                 .events =3D {
+>                         EVENT(0x1C2, 0),
+>                 },
+>         };
 
-syzbot found the following issue on:
+LGTM.
 
-HEAD commit:    2772d7df3c93 Merge tag 'riscv-for-linus-6.5-rc2' of git://..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16849b0aa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6769a69bd0e144b4
-dashboard link: https://syzkaller.appspot.com/bug?extid=39acbe8ff4cab0acdb9d
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/feba8b35b0b4/disk-2772d7df.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d2300fb3a26e/vmlinux-2772d7df.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6e07347f5489/bzImage-2772d7df.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+39acbe8ff4cab0acdb9d@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.5.0-rc1-syzkaller-00201-g2772d7df3c93 #0 Not tainted
-------------------------------------------------------
-syz-executor.3/28959 is trying to acquire lock:
-ffff8880340fa450 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: inode_lock_shared include/linux/fs.h:781 [inline]
-ffff8880340fa450 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: lookup_slow fs/namei.c:1706 [inline]
-ffff8880340fa450 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: walk_component+0x33b/0x5a0 fs/namei.c:1998
-
-but task is already holding lock:
-ffff888062425488 (&of->mutex){+.+.}-{3:3}, at: kernfs_fop_write_iter+0x281/0x610 fs/kernfs/file.c:325
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #3 (&of->mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
-       __mutex_lock+0x181/0x1340 kernel/locking/mutex.c:747
-       kernfs_seq_start+0x4b/0x460 fs/kernfs/file.c:154
-       seq_read_iter+0x2ad/0x1280 fs/seq_file.c:225
-       kernfs_fop_read_iter+0x4c8/0x680 fs/kernfs/file.c:279
-       call_read_iter include/linux/fs.h:1865 [inline]
-       new_sync_read fs/read_write.c:389 [inline]
-       vfs_read+0x4e0/0x930 fs/read_write.c:470
-       ksys_read+0x12f/0x250 fs/read_write.c:613
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #2 (&p->lock){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
-       __mutex_lock+0x181/0x1340 kernel/locking/mutex.c:747
-       seq_read_iter+0xda/0x1280 fs/seq_file.c:182
-       proc_reg_read_iter+0x211/0x300 fs/proc/inode.c:305
-       call_read_iter include/linux/fs.h:1865 [inline]
-       copy_splice_read+0x418/0x8f0 fs/splice.c:367
-       vfs_splice_read fs/splice.c:994 [inline]
-       vfs_splice_read+0x2c8/0x3b0 fs/splice.c:963
-       splice_direct_to_actor+0x2a5/0xa30 fs/splice.c:1070
-       do_splice_direct+0x1af/0x280 fs/splice.c:1195
-       do_sendfile+0xb88/0x1390 fs/read_write.c:1254
-       __do_sys_sendfile64 fs/read_write.c:1322 [inline]
-       __se_sys_sendfile64 fs/read_write.c:1308 [inline]
-       __x64_sys_sendfile64+0x1d6/0x220 fs/read_write.c:1308
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #1 (sb_writers#4){.+.+}-{0:0}:
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       __sb_start_write include/linux/fs.h:1494 [inline]
-       sb_start_write include/linux/fs.h:1569 [inline]
-       mnt_want_write+0x6f/0x440 fs/namespace.c:403
-       ovl_create_object+0x9e/0x2a0 fs/overlayfs/dir.c:629
-       lookup_open.isra.0+0x1049/0x1360 fs/namei.c:3492
-       open_last_lookups fs/namei.c:3560 [inline]
-       path_openat+0x931/0x29c0 fs/namei.c:3790
-       do_filp_open+0x1de/0x430 fs/namei.c:3820
-       do_sys_openat2+0x176/0x1e0 fs/open.c:1407
-       do_sys_open fs/open.c:1422 [inline]
-       __do_sys_openat fs/open.c:1438 [inline]
-       __se_sys_openat fs/open.c:1433 [inline]
-       __x64_sys_openat+0x175/0x210 fs/open.c:1433
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3142 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3261 [inline]
-       validate_chain kernel/locking/lockdep.c:3876 [inline]
-       __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5144
-       lock_acquire kernel/locking/lockdep.c:5761 [inline]
-       lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
-       down_read+0x9c/0x470 kernel/locking/rwsem.c:1520
-       inode_lock_shared include/linux/fs.h:781 [inline]
-       lookup_slow fs/namei.c:1706 [inline]
-       walk_component+0x33b/0x5a0 fs/namei.c:1998
-       lookup_last fs/namei.c:2455 [inline]
-       path_lookupat+0x17f/0x770 fs/namei.c:2479
-       filename_lookup+0x1e7/0x5b0 fs/namei.c:2508
-       kern_path+0x35/0x50 fs/namei.c:2606
-       lookup_bdev+0xd9/0x280 block/bdev.c:943
-       resume_store+0x1d4/0x460 kernel/power/hibernate.c:1177
-       kobj_attr_store+0x55/0x80 lib/kobject.c:833
-       sysfs_kf_write+0x117/0x170 fs/sysfs/file.c:136
-       kernfs_fop_write_iter+0x3ff/0x610 fs/kernfs/file.c:334
-       call_write_iter include/linux/fs.h:1871 [inline]
-       new_sync_write fs/read_write.c:491 [inline]
-       vfs_write+0x650/0xe40 fs/read_write.c:584
-       ksys_write+0x12f/0x250 fs/read_write.c:637
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-other info that might help us debug this:
-
-Chain exists of:
-  &ovl_i_mutex_dir_key[depth] --> &p->lock --> &of->mutex
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&of->mutex);
-                               lock(&p->lock);
-                               lock(&of->mutex);
-  rlock(&ovl_i_mutex_dir_key[depth]);
-
- *** DEADLOCK ***
-
-4 locks held by syz-executor.3/28959:
- #0: ffff8880426b2d48 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe3/0x100 fs/file.c:1047
- #1: ffff88801bcea410 (sb_writers#8){.+.+}-{0:0}, at: ksys_write+0x12f/0x250 fs/read_write.c:637
- #2: ffff888062425488 (&of->mutex){+.+.}-{3:3}, at: kernfs_fop_write_iter+0x281/0x610 fs/kernfs/file.c:325
- #3: ffff88801826ce88 (kn->active#68){.+.+}-{0:0}, at: kernfs_fop_write_iter+0x2a4/0x610 fs/kernfs/file.c:326
-
-stack backtrace:
-CPU: 0 PID: 28959 Comm: syz-executor.3 Not tainted 6.5.0-rc1-syzkaller-00201-g2772d7df3c93 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- check_noncircular+0x311/0x3f0 kernel/locking/lockdep.c:2195
- check_prev_add kernel/locking/lockdep.c:3142 [inline]
- check_prevs_add kernel/locking/lockdep.c:3261 [inline]
- validate_chain kernel/locking/lockdep.c:3876 [inline]
- __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5144
- lock_acquire kernel/locking/lockdep.c:5761 [inline]
- lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
- down_read+0x9c/0x470 kernel/locking/rwsem.c:1520
- inode_lock_shared include/linux/fs.h:781 [inline]
- lookup_slow fs/namei.c:1706 [inline]
- walk_component+0x33b/0x5a0 fs/namei.c:1998
- lookup_last fs/namei.c:2455 [inline]
- path_lookupat+0x17f/0x770 fs/namei.c:2479
- filename_lookup+0x1e7/0x5b0 fs/namei.c:2508
- kern_path+0x35/0x50 fs/namei.c:2606
- lookup_bdev+0xd9/0x280 block/bdev.c:943
- resume_store+0x1d4/0x460 kernel/power/hibernate.c:1177
- kobj_attr_store+0x55/0x80 lib/kobject.c:833
- sysfs_kf_write+0x117/0x170 fs/sysfs/file.c:136
- kernfs_fop_write_iter+0x3ff/0x610 fs/kernfs/file.c:334
- call_write_iter include/linux/fs.h:1871 [inline]
- new_sync_write fs/read_write.c:491 [inline]
- vfs_write+0x650/0xe40 fs/read_write.c:584
- ksys_write+0x12f/0x250 fs/read_write.c:637
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f3db0c7cb29
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f3db1a280c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f3db0d9bf80 RCX: 00007f3db0c7cb29
-RDX: 0000000000000012 RSI: 0000000020000080 RDI: 0000000000000004
-RBP: 00007f3db0cc847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f3db0d9bf80 R15: 00007ffc4744d038
- </TASK>
-PM: Image not found (code -6)
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+>
+> Except this, looks good to me.
+> Reviewed-by: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> Thanks,
+>
+> >
+> >       ASSERT_PMC_COUNTING_INSTRUCTIONS();
+> >  }
+> >
+> >  static void test_member_deny_list(struct kvm_vcpu *vcpu)
+> >  {
+> > -     struct kvm_pmu_event_filter *f =3D event_filter(KVM_PMU_EVENT_DEN=
+Y);
+> > +     struct __kvm_pmu_event_filter f =3D base_event_filter;
+> >
+> > -     test_with_filter(vcpu, f);
+> > -     free(f);
+> > +     f.action =3D KVM_PMU_EVENT_DENY;
+> > +     test_with_filter(vcpu, &f);
+> >
+> >       ASSERT_PMC_NOT_COUNTING_INSTRUCTIONS();
+> >  }
+> >
+> >  static void test_member_allow_list(struct kvm_vcpu *vcpu)
+> >  {
+> > -     struct kvm_pmu_event_filter *f =3D event_filter(KVM_PMU_EVENT_ALL=
+OW);
+> > +     struct __kvm_pmu_event_filter f =3D base_event_filter;
+> >
+> > -     test_with_filter(vcpu, f);
+> > -     free(f);
+> > +     f.action =3D KVM_PMU_EVENT_ALLOW;
+> > +     test_with_filter(vcpu, &f);
+> >
+> >       ASSERT_PMC_COUNTING_INSTRUCTIONS();
+> >  }
+> >
+> >  static void test_not_member_deny_list(struct kvm_vcpu *vcpu)
+> >  {
+> > -     struct kvm_pmu_event_filter *f =3D event_filter(KVM_PMU_EVENT_DEN=
+Y);
+> > +     struct __kvm_pmu_event_filter f =3D base_event_filter;
+> > +
+> > +     f.action =3D KVM_PMU_EVENT_DENY;
+> >
+> > -     remove_event(f, INST_RETIRED);
+> > -     remove_event(f, INTEL_BR_RETIRED);
+> > -     remove_event(f, AMD_ZEN_BR_RETIRED);
+> > -     test_with_filter(vcpu, f);
+> > -     free(f);
+> > +     remove_event(&f, INST_RETIRED);
+> > +     remove_event(&f, INTEL_BR_RETIRED);
+> > +     remove_event(&f, AMD_ZEN_BR_RETIRED);
+> > +     test_with_filter(vcpu, &f);
+> >
+> >       ASSERT_PMC_COUNTING_INSTRUCTIONS();
+> >  }
+> >
+> >  static void test_not_member_allow_list(struct kvm_vcpu *vcpu)
+> >  {
+> > -     struct kvm_pmu_event_filter *f =3D event_filter(KVM_PMU_EVENT_ALL=
+OW);
+> > +     struct __kvm_pmu_event_filter f =3D base_event_filter;
+> >
+> > -     remove_event(f, INST_RETIRED);
+> > -     remove_event(f, INTEL_BR_RETIRED);
+> > -     remove_event(f, AMD_ZEN_BR_RETIRED);
+> > -     test_with_filter(vcpu, f);
+> > -     free(f);
+> > +     f.action =3D KVM_PMU_EVENT_ALLOW;
+> > +
+> > +     remove_event(&f, INST_RETIRED);
+> > +     remove_event(&f, INTEL_BR_RETIRED);
+> > +     remove_event(&f, AMD_ZEN_BR_RETIRED);
+> > +     test_with_filter(vcpu, &f);
+> >
+> >       ASSERT_PMC_NOT_COUNTING_INSTRUCTIONS();
+> >  }
+> > @@ -567,19 +551,16 @@ static void run_masked_events_test(struct kvm_vcp=
+u *vcpu,
+> >                                  const uint64_t masked_events[],
+> >                                  const int nmasked_events)
+> >  {
+> > -     struct kvm_pmu_event_filter *f;
+> > +     struct __kvm_pmu_event_filter f =3D {
+> > +             .nevents =3D nmasked_events,
+> > +             .action =3D KVM_PMU_EVENT_ALLOW,
+> > +             .flags =3D KVM_PMU_EVENT_FLAG_MASKED_EVENTS,
+> > +     };
+> >
+> > -     f =3D create_pmu_event_filter(masked_events, nmasked_events,
+> > -                                 KVM_PMU_EVENT_ALLOW,
+> > -                                 KVM_PMU_EVENT_FLAG_MASKED_EVENTS);
+> > -     test_with_filter(vcpu, f);
+> > -     free(f);
+> > +     memcpy(f.events, masked_events, sizeof(uint64_t) * nmasked_events=
+);
+> > +     test_with_filter(vcpu, &f);
+> >  }
+> >
+> > -/* Matches KVM_PMU_EVENT_FILTER_MAX_EVENTS in pmu.c */
+> > -#define MAX_FILTER_EVENTS    300
+> > -#define MAX_TEST_EVENTS              10
+> > -
+> >  #define ALLOW_LOADS          BIT(0)
+> >  #define ALLOW_STORES         BIT(1)
+> >  #define ALLOW_LOADS_STORES   BIT(2)
+> > @@ -751,17 +732,27 @@ static void test_masked_events(struct kvm_vcpu *v=
+cpu)
+> >       run_masked_events_tests(vcpu, events, nevents);
+> >  }
+> >
+> > -static int run_filter_test(struct kvm_vcpu *vcpu, const uint64_t *even=
+ts,
+> > -                        int nevents, uint32_t flags)
+> > +static int do_vcpu_set_pmu_event_filter(struct kvm_vcpu *vcpu,
+> > +                                     struct __kvm_pmu_event_filter *__=
+f)
+> >  {
+> > -     struct kvm_pmu_event_filter *f;
+> > -     int r;
+> > +     struct kvm_pmu_event_filter *f =3D (void *)__f;
+> >
+> > -     f =3D create_pmu_event_filter(events, nevents, KVM_PMU_EVENT_ALLO=
+W, flags);
+> > -     r =3D __vm_ioctl(vcpu->vm, KVM_SET_PMU_EVENT_FILTER, f);
+> > -     free(f);
+> > +     return __vm_ioctl(vcpu->vm, KVM_SET_PMU_EVENT_FILTER, f);
+> > +}
+> > +
+> > +static int set_pmu_single_event_filter(struct kvm_vcpu *vcpu, uint64_t=
+ event,
+> > +                                    uint32_t flags, uint32_t action)
+> > +{
+> > +     struct __kvm_pmu_event_filter f =3D {
+> > +             .nevents =3D 1,
+> > +             .flags =3D flags,
+> > +             .action =3D action,
+> > +             .events =3D {
+> > +                     event,
+> > +             },
+> > +     };
+> >
+> > -     return r;
+> > +     return do_vcpu_set_pmu_event_filter(vcpu, &f);
+> >  }
+> >
+> >  static void test_filter_ioctl(struct kvm_vcpu *vcpu)
+> > @@ -773,14 +764,18 @@ static void test_filter_ioctl(struct kvm_vcpu *vc=
+pu)
+> >        * Unfortunately having invalid bits set in event data is expecte=
+d to
+> >        * pass when flags =3D=3D 0 (bits other than eventsel+umask).
+> >        */
+> > -     r =3D run_filter_test(vcpu, &e, 1, 0);
+> > +     r =3D set_pmu_single_event_filter(vcpu, e, 0, KVM_PMU_EVENT_ALLOW=
+);
+> >       TEST_ASSERT(r =3D=3D 0, "Valid PMU Event Filter is failing");
+> >
+> > -     r =3D run_filter_test(vcpu, &e, 1, KVM_PMU_EVENT_FLAG_MASKED_EVEN=
+TS);
+> > +     r =3D set_pmu_single_event_filter(vcpu, e,
+> > +                                     KVM_PMU_EVENT_FLAG_MASKED_EVENTS,
+> > +                                     KVM_PMU_EVENT_ALLOW);
+> >       TEST_ASSERT(r !=3D 0, "Invalid PMU Event Filter is expected to fa=
+il");
+> >
+> >       e =3D KVM_PMU_ENCODE_MASKED_ENTRY(0xff, 0xff, 0xff, 0xf);
+> > -     r =3D run_filter_test(vcpu, &e, 1, KVM_PMU_EVENT_FLAG_MASKED_EVEN=
+TS);
+> > +     r =3D set_pmu_single_event_filter(vcpu, e,
+> > +                                     KVM_PMU_EVENT_FLAG_MASKED_EVENTS,
+> > +                                     KVM_PMU_EVENT_ALLOW);
+> >       TEST_ASSERT(r =3D=3D 0, "Valid PMU Event Filter is failing");
+> >  }
+> >
+> > --
+> > 2.39.3
+> >
+>
+> --
+> Isaku Yamahata <isaku.yamahata@gmail.com>
