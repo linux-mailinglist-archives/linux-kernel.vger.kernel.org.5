@@ -2,100 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE502759132
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0626759131
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbjGSJJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56320 "EHLO
+        id S229990AbjGSJJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:09:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjGSJJ1 (ORCPT
+        with ESMTP id S229503AbjGSJJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:09:27 -0400
-Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5770519B4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:09:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
-        ; s=dkim1; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date
-        :Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=gyEGvssOzYguh+Kro8HHxNoiB63QqOxNwkcV9tfP/0o=; b=NKCJHBO8Wd/LPkElLlhk85v2Rl
-        2aJTSyKPZlakEp70YGUSY58Pmiqe/B1K1PNNa/h0isvDBBdCqw2cNQLyNtXCvFxjA4oCGHL0STtRi
-        DuUxGkMSm7K2P0GrTVNjUSWthNAs0SNipCUZYv2NT4vGZJiIRMx/55Khi64ngSnpuY8d5vAUlCFgp
-        mRC62VAZeNlDsKQXPYkfMv56dc+uMP83WvQm5BR18sVVzwrdjy9eV0kLQKW5+qXEomsjg7fXOiylH
-        V6Yc11q+4aMXr81nl8AUWpSMq7bHNQIO7cm7fKCbNLsU27PgurUajBnev5ONRYsZIZDOpXRX4Gkuo
-        0uj+nWnw==;
-Received: from [192.168.1.4] (port=15819 helo=SH-EX2013.helmholz.local)
-        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
-        (Exim 4.96)
-        (envelope-from <Ante.Knezic@helmholz.de>)
-        id 1qM3B3-0000wP-25;
-        Wed, 19 Jul 2023 11:08:57 +0200
-Received: from linuxdev.helmholz.local (192.168.6.7) by
- SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
- 15.0.1497.48; Wed, 19 Jul 2023 11:08:57 +0200
-From:   Ante Knezic <ante.knezic@helmholz.de>
-To:     <olteanv@gmail.com>
-CC:     <andrew@lunn.ch>, <ante.knezic@helmholz.de>, <davem@davemloft.net>,
-        <edumazet@google.com>, <f.fainelli@gmail.com>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v2] net: dsa: mv88e6xxx: Add erratum 3.14 for 88E6390X and 88E6190X
-Date:   Wed, 19 Jul 2023 11:08:53 +0200
-Message-ID: <20230719090853.21509-1-ante.knezic@helmholz.de>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20230718155621.3jenfn7rqtgouny7@skbuf>
-References: <20230718155621.3jenfn7rqtgouny7@skbuf>
+        Wed, 19 Jul 2023 05:09:11 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F5A19F;
+        Wed, 19 Jul 2023 02:09:08 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-440b4b0147bso1447837137.1;
+        Wed, 19 Jul 2023 02:09:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689757748; x=1692349748;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8fT+DNDdqPeCsHA6TjEc6nVyJDv1yc5mQ8emGSQPENg=;
+        b=FxxYv6Kio4HImvxczRigcO/VYjulUgXQCvNDtxO+FqOvF6GbWU4uslqUOT825dCRTf
+         vV5LwAN98Bpi1tSFAefeVRC2iHHjxXIe6aPPZxIiBubUHpVbwEm7JouyPuwtFo57SAiC
+         VlX96pF5JiCKogdYo4oExRgD/gSlQ2zfB4ttc7HRSW06gOkwmC4pqAewCiwISEdzhSbR
+         qgA/OJNK7Ek49Cb82jtk6dIm458Kd6ZLmwGeCQAG4l7w/FtSfyYGozjxkoHGrWRlOE0b
+         8zS94HsL399NHj0/6J/0wKXL1BZ87+TvF1tOxm++RqugmL9bms3bvWgoAJLqotkdzjI7
+         4E8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689757748; x=1692349748;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8fT+DNDdqPeCsHA6TjEc6nVyJDv1yc5mQ8emGSQPENg=;
+        b=T2ymlpb+690vJfiRJO4waQEh6yOvKG9Xm8bfNR+6dryxSF196korAPn8gND9rFuf93
+         RwgtqEke9c13jES0VqWvGMPS+u3OrEc8nP+0mgl8AWX/IN4mhOpFCwOugduttvI0/oPk
+         nAayss+lFnc9cRHYJe2wErCrhCF8zKCYCW79hu9S5sBUEW1fMWaLbpFCk3vDQM7iX6cz
+         h+vx00CWNDQbSgv3W78zQcpWltIf2RgCKsoTU0NW0Eg2foTUn+oQ8YoXiX08I6++B6vQ
+         QuOZpbEv99SCywy+AB1LMmAoBtN78UAVLYiLASQUAT3n8q1VEb+YOJefvNtlipDGh7pG
+         Z3yQ==
+X-Gm-Message-State: ABy/qLbS+IIw+DIF9eG9QbdiI4kW5hlySdQk+KY2tWFcOmjxOy2byysT
+        3YeqZtqtIszJRaYQaNfvUSCW1jh6rIiETWLU7LI=
+X-Google-Smtp-Source: APBJJlGH+YsOaadmXcy97JvMmyhQwkCiSNei67C7NlIFW9T1/Om4oOGbrdqgSy3I8U7PcZZby11U/jtBJ4t4AiEkIp0=
+X-Received: by 2002:a67:f918:0:b0:445:55a:7ca3 with SMTP id
+ t24-20020a67f918000000b00445055a7ca3mr6252859vsq.22.1689757747851; Wed, 19
+ Jul 2023 02:09:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.6.7]
-X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
- SH-EX2013.helmholz.local (192.168.1.4)
-X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
+References: <20230719085434.154834-1-yunlong.xing@unisoc.com>
+In-Reply-To: <20230719085434.154834-1-yunlong.xing@unisoc.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 19 Jul 2023 12:08:56 +0300
+Message-ID: <CAOQ4uxhkiJ5weS575TLF+Xr83ZekwpqRC683dTDv8zsRYoj9+A@mail.gmail.com>
+Subject: Re: [PATCH V2] ovl: fix mount fail because the upper doesn't have space
+To:     Yunlong Xing <yunlong.xing@unisoc.com>
+Cc:     miklos@szeredi.hu, linux-unionfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhiguo.niu@unisoc.com,
+        hongyu.jin@unisoc.com, yunlongxing23@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> It needs to be implemented exactly as posted here? After mv88e6390_serdes_power()
-> is called on any port/lane, mv88e6390x_serdes_erratum_3_14() needs to run
-> for all lanes? That might be a problem.
+On Wed, Jul 19, 2023 at 11:54=E2=80=AFAM Yunlong Xing <yunlong.xing@unisoc.=
+com> wrote:
+>
+> The current ovlfs mount flow:
+>
+> ovl_fill_super
+>  |_ovl_get_workdir
+>     |_ovl_make_workdir
+>        |_ovl_check_rename_whiteout
+>
+> In ovl_check_rename_whiteout(), a new file is attempted to create.But if
+> the upper doesn't have space to do this, it will return error -ENOSPC,
+> causing the mount fail. It means that if the upper is full, the overlayfs
+> cannot be mounted.It is not reasonable, so this patch will omit this erro=
+r
+>  and continue mount flow.
+>
+> Fixes: cad218ab3320 ("ovl: check if upper fs supports RENAME_WHITEOUT")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Yunlong Xing <yunlong.xing@unisoc.com>
+> ---
+> changes of v2: Following Amir's suggestion, assuming it is not supported
+> if the check fails because the upper does't have space
+> ---
 
-Actually, I tested applying erratum only on requested lane in pcs_post_config and
-it seems to work out fine, so we might use something like:
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-static int mv88e6390_erratum_3_14(struct mv88e639x_pcs *mpcs)
-{
-	int err;
-
-	/* 88e6190x and 88e6390x errata 3.14:
-	 * After chip reset, SERDES reconfiguration or SERDES core
-	 * Software Reset, the SERDES lanes may not be properly aligned
-	 * resulting in CRC errors
-	 */
-
-	err = mdiodev_c45_write(&mpcs->mdio, MDIO_MMD_PHYXS,
-					 0xf054, 0x400C);
-	if (err)
-	        return err;
-
-	err = mdiodev_c45_write(&mpcs->mdio, MDIO_MMD_PHYXS,
-				 0xf054, 0x4000);
-	if (err)
-	        return err;
-
-	return 0;
-}
-
-> Do we know if the register writes are disruptive for the ports which are
-> already up and running?
-
-I was not able to see any issues when appling the errata for already active
-and running ports.
+>  fs/overlayfs/super.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+> index 5b069f1a1e44..2b33c56fe4d7 100644
+> --- a/fs/overlayfs/super.c
+> +++ b/fs/overlayfs/super.c
+> @@ -744,12 +744,13 @@ static int ovl_make_workdir(struct super_block *sb,=
+ struct ovl_fs *ofs,
+>
+>         /* Check if upper/work fs supports RENAME_WHITEOUT */
+>         err =3D ovl_check_rename_whiteout(ofs);
+> -       if (err < 0)
+> +       if (err < 0 && err !=3D -ENOSPC)
+>                 goto out;
+>
+> -       rename_whiteout =3D err;
+> +       rename_whiteout =3D err > 0;
+>         if (!rename_whiteout)
+> -               pr_warn("upper fs does not support RENAME_WHITEOUT.\n");
+> +               pr_warn("upper fs does not support RENAME_WHITEOUT (%i).\=
+n,
+> +                       err");
+>
+>         /*
+>          * Check if upper/work fs supports (trusted|user).overlay.* xattr
+> --
+> 2.25.1
+>
