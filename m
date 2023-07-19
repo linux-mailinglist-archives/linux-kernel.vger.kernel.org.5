@@ -2,117 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 884EB7592DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DAD7592E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbjGSKZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46134 "EHLO
+        id S229997AbjGSK0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231313AbjGSKY5 (ORCPT
+        with ESMTP id S229591AbjGSKZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:24:57 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5888B212F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:24:29 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fdd7d09576so519542e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:24:29 -0700 (PDT)
+        Wed, 19 Jul 2023 06:25:50 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEE12706;
+        Wed, 19 Jul 2023 03:24:59 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fba86f069bso11026477e87.3;
+        Wed, 19 Jul 2023 03:24:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689762263; x=1692354263;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pNIJhMzmxxBXN5ArPOashQWkLNWVWDg/qYJKuyb0nNQ=;
-        b=vk9cdWjzrp3hj0LBUXT5ZfmBiPnkjaSYfQr+qib+jR2Crpj+WwVsF4pvQsBXDosA5O
-         AA4oAnObB9MWfYt5CHhtPsTN3flGSvlZGU0wG6qUJv1PWG6k4sEa8HGWUhzTencS7UBT
-         +dQPGDYROA0rBFc8HcV6oJ9xng7pgI3u9Z9Gtlyzo10mGpL0Z7oVTG2d7Tr3f4Tux0cM
-         m1BWRd+oDmmThwnn6mkIdlRHKY6sWSdg048k9DGzgYTCmQNG2EM8TL/I7jl7rY9dFFBL
-         mZx+bmuVuTpYDVCiPOfx/qLwht1ZaQjNUUfPDIxbYyOVh3KzT18D1Nab+zm+a96KDb82
-         /0Rg==
+        d=gmail.com; s=20221208; t=1689762298; x=1692354298;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kzwI5VxEU3KMLKWKNIn2pwe7xkF7bK6X8n8zVQIr7Rg=;
+        b=lLD7U78AvsWpQsA+ih7cP/XCaGmPFltne9MPqtHTzBQS+p3YpOfOb9o4wKgs/xstYd
+         DEIg6DYTG6baWnMkZPF19uln0GPiAVPkMQd0xcJcHl0QTVOWWnzywdJ3+LxBPTdWiigC
+         ja1haPZz7EVoWCD2gFGraRpHUOu5lEdVfMlxn7Mos+CMef5YpI6S5+JjiXn9n5bHvLME
+         mFv3WPXKBN9SVVF38NgWnlciFJebgjOOztwxf/BVNOnPimAJcUEmO6yrgGLmvEIDgfvd
+         bR/umRb2gHL+l7Ap2BhLXQxestuKJ2HmgK4Z/qqAqQQ8usmCkTtrlhDelbTpaw9zG0nV
+         8bmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689762263; x=1692354263;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pNIJhMzmxxBXN5ArPOashQWkLNWVWDg/qYJKuyb0nNQ=;
-        b=GnMO5LasZp15J8+BoNgb/yNOsEhfJn4fbykA64WGfaNss33d0Dz+no7HlpWQaHYOsh
-         nnjycJH4mpGpiPYjKklJrexDf1NgHzPal3e6gEDzHG1xAqodWmJfldu11pSU5Adg8Zb5
-         xWkIFXVQ2+uuBGs3fymjr+YIARdusWYkuX5OYPICnWUdubW/HYjpmETxBGPJyI9QwcXu
-         Q5P+wepmgxXSGx12/2Nb3eCuLgnU7g6v5eBGW3fDJfcAnRoch+XDm/81e5FWyvC7Fmx+
-         Yozdy5pntTxVlrWld22Dh2vEjXDoNK4+VyA2i74vi9FYteg7ANOb4BIzQEbhDl4u9Qix
-         EX1g==
-X-Gm-Message-State: ABy/qLY+wxTpHyCJSNdprrWpdHUTMTWf5Hp91MFir6h9sjK9hC5AGVeC
-        BkazamSboagwZd5kUBUmWy07mw==
-X-Google-Smtp-Source: APBJJlHGQlC0ewnTRDYY+l855TWfq0boXSlDOuJUX8gOb2ZskptGYi4Tp8UcYomgG/ui0h92jERFkw==
-X-Received: by 2002:a05:6512:208c:b0:4fb:8bab:48b6 with SMTP id t12-20020a056512208c00b004fb8bab48b6mr14132879lfr.52.1689762263021;
-        Wed, 19 Jul 2023 03:24:23 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id l23-20020a056402125700b0051d9ee1c9d3sm2498130edw.84.2023.07.19.03.24.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 03:24:22 -0700 (PDT)
-Message-ID: <c2c9d335-ed84-2ed7-6b3c-2a3af93fd081@linaro.org>
-Date:   Wed, 19 Jul 2023 12:24:20 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 4/5] dt-bindings: arm: qcom: Document SM4450 SoC and
- boards
-Content-Language: en-US
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
-        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
-        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        d=1e100.net; s=20221208; t=1689762298; x=1692354298;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kzwI5VxEU3KMLKWKNIn2pwe7xkF7bK6X8n8zVQIr7Rg=;
+        b=VcGPWrEvumrDkKA5ptprOCYnr1YZ0r/ReFstjjga/NuxV+GYCFuEp2U7uUcPXrF4tb
+         dffDaxOYEqA2CoqqPyBRIQJrvEaneHYVy46cptWHMhG8K/ivC7cNt9Dts7y5bSiSyA9r
+         aPGLpoE3KjdjfEabYpJmM4F39fUEDGG4KA7owUeWGU+us22kMCNILHc9cTgmnSkx2aaG
+         Ghz0JRGgJFPxLeOb3QN7pISj6OZbnMnOnmaJdiRFRAO7DoXF6Pmx+wo+4jPj5O9Zbd+y
+         ewsyoPoqUh87jUErKrmk0QO/shF4Pn4n/iuGmjilZtBaoNXbSrTWsLGf6B+8luCqcafu
+         ZSMw==
+X-Gm-Message-State: ABy/qLZ4qaxXmFepzAAZZmHcw7H0fOAIgV73tpNiXGBxo9X6tfEnCOO4
+        MMiGzMsLyI0azz4wrwnPmlU=
+X-Google-Smtp-Source: APBJJlGhm6Wd3ZSuA/ojzZSkRjGMNdf9Nw27UIw1oSG2HZPZKShGd2lhnbkd3lqo9fy+Xwkkw6MuAg==
+X-Received: by 2002:ac2:46f7:0:b0:4fb:c67e:b067 with SMTP id q23-20020ac246f7000000b004fbc67eb067mr1296369lfo.66.1689762297723;
+        Wed, 19 Jul 2023 03:24:57 -0700 (PDT)
+Received: from localhost.localdomain (mm-94-245-57-86.leased.line.mgts.by. [86.57.245.94])
+        by smtp.gmail.com with ESMTPSA id q11-20020a19a40b000000b004fa4323ec97sm887786lfc.301.2023.07.19.03.24.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 03:24:57 -0700 (PDT)
+From:   Viktar Simanenka <viteosen@gmail.com>
+To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Viktar Simanenka <viteosen@gmail.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20230719100135.21325-1-quic_tengfan@quicinc.com>
- <20230719100135.21325-5-quic_tengfan@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230719100135.21325-5-quic_tengfan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Subject: [PATCH 1/2] dt-bindings: add vendor-prefixes and bindings for pcd8544 displays
+Date:   Wed, 19 Jul 2023 13:24:29 +0300
+Message-Id: <20230719102430.316504-1-viteosen@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/2023 12:01, Tengfei Fan wrote:
-> Document the SM8450 SoC binding and also the boards using it.
-> 
-> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> ---
->  Documentation/devicetree/bindings/arm/qcom.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
-> index 450f616774e0..691e66612872 100644
-> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
-> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-> @@ -83,6 +83,7 @@ description: |
->          sm8350
->          sm8450
->          sm8550
-> +        sm4450
->  
->    The 'board' element must be one of the following strings:
->  
-> @@ -976,6 +977,11 @@ properties:
->                - qcom,sm8550-qrd
->            - const: qcom,sm8550
->  
-> +      - items:
-> +          - enum:
-> +              - qcom,sm4450-qrd
-> +          - const: qcom,sm4450
+Signed-off-by: Viktar Simanenka <viteosen@gmail.com>
+---
+ .../bindings/display/philips,pcd8544.yaml     | 89 +++++++++++++++++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+ 2 files changed, 91 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/philips,pcd8544.yaml
 
-No, really...
-
-Best regards,
-Krzysztof
+diff --git a/Documentation/devicetree/bindings/display/philips,pcd8544.yaml b/Documentation/devicetree/bindings/display/philips,pcd8544.yaml
+new file mode 100644
+index 000000000000..ac880d9d8cc1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/philips,pcd8544.yaml
+@@ -0,0 +1,89 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/philips,pcd8544.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Philips PCD8544 LCD Display Controller
++
++maintainers:
++  - Viktar Simanenka <viteosen@gmail.com>
++
++description: |
++  Philips PCD8544 LCD Display Controller with SPI control bus.
++  Monochrome 84x48 LCD displays, such as Nokia 5110/3310 LCDs.
++  May contain backlight LED.
++
++allOf:
++  - $ref: panel/panel-common.yaml#
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - enum:
++          - philips,pcd8544
++
++  dc-gpios:
++    maxItems: 1
++    description: Data/Command selection pin (D/CX)
++
++  reset-gpios:
++    maxItems: 1
++    description: Display Reset pin (RST)
++
++  philips,inverted:
++    type: boolean
++    description: Display color inversion
++
++  philips,voltage-op:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0
++    maximum: 127
++    description: Display liquid crystal operation voltage
++
++  philips,bias:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0
++    maximum: 7
++    description: Display bias voltage system value
++
++  philips,temperature-coeff:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0
++    maximum: 3
++    description: Display temperature compensation coefficient
++
++required:
++  - compatible
++  - reg
++  - dc-gpios
++  - reset-gpios
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        display@0 {
++            compatible = "philips,pcd8544";
++            spi-max-frequency = <8000000>;
++            reg = <0>;
++
++            dc-gpios = <&pio 0 3 GPIO_ACTIVE_HIGH>; /* DC=PA3 */
++            reset-gpios = <&pio 0 1 GPIO_ACTIVE_HIGH>; /* RESET=PA1 */
++            backlight = <&backlight>;
++
++            philips,inverted;
++            philips,voltage-op = <0>;
++            philips,bias = <4>;
++            philips,temperature-coeff = <0>;
++        };
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index af60bf1a6664..0c3844af6776 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -1037,6 +1037,8 @@ patternProperties:
+     description: Pervasive Displays, Inc.
+   "^phicomm,.*":
+     description: PHICOMM Co., Ltd.
++  "^philips,.*":
++    description: Koninklijke Philips N.V.
+   "^phytec,.*":
+     description: PHYTEC Messtechnik GmbH
+   "^picochip,.*":
+-- 
+2.34.1
 
