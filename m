@@ -2,141 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD7B759F68
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F95759F6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbjGSUQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
+        id S230333AbjGSUQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjGSUQN (ORCPT
+        with ESMTP id S229936AbjGSUQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:16:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C9BF0;
-        Wed, 19 Jul 2023 13:16:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 694B06181D;
-        Wed, 19 Jul 2023 20:16:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B680C433C8;
-        Wed, 19 Jul 2023 20:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689797767;
-        bh=j6e92Ndx74FH6PByjJZ4j4e9GQ6FFdbXxvBk/vDjsh4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BcblMrxaFpGR37DZykDQc/fmqAEvgdawVysnDghn2k8i9jjcCpOiLmL47RZv72yaZ
-         0eOsZtIGNaXz5ljaEGbwjuV+M8O+17gnMjF8eBsQ6Mw2OF12P5AJTJEyAWkXqyF3tk
-         n/BSZYWo5B30L06xg9QjeWT6gbtgR0lkeYutFpwdPKndi1XhHQ5wu0fkpL88dG9Pnw
-         5T88lbG4jw8lU11jaxaeEjLesIoWPELSSSbql406vsJ33q+q/qitMbs4UhaFrce3+3
-         wa3vl9Ia5TAjZg+QkRt+WbubnnGmxHQtX/Cf264feEJPKr6OJlEEXA4VP9BQyheZGj
-         CyB3mgp7OQ4Hw==
-Received: (nullmailer pid 740813 invoked by uid 1000);
-        Wed, 19 Jul 2023 20:16:05 -0000
-Date:   Wed, 19 Jul 2023 14:16:05 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     linux-pci@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Simon Xue <xxm@rock-chips.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v3 2/5] dt-bindings: PCI: dwc: rockchip: Fix
- interrupt-names issue
-Message-ID: <20230719201605.GA706263-robh@kernel.org>
-References: <20230717172651.64324-1-sebastian.reichel@collabora.com>
- <20230717172651.64324-3-sebastian.reichel@collabora.com>
+        Wed, 19 Jul 2023 16:16:31 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1441FEC
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:16:27 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b74fa5e7d7so77571fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:16:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1689797786; x=1692389786;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ReDr3/cUrrY5O6f157kS0Oes02zkOeh4YD/h5uR7Jps=;
+        b=coi65PEzCV7rCDEfL1mpkcR6k+K28LAsBIXeiZTCZLjyw2Hy4j+ku4FXsXBZCMuun9
+         P4YFf7zHA3iWFEyAOCYUleRCXXLr6ChxfuWsEDVI8+N1e2T11Lo54fctsXWy4wHwot4X
+         ek09n/z1vP6HGncPkGB8YnuM4OcDKlXEa7zZM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689797786; x=1692389786;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ReDr3/cUrrY5O6f157kS0Oes02zkOeh4YD/h5uR7Jps=;
+        b=QGVVtVaY4VN2uyDr4gN8Khj03DbxZG0MBSW9nUCf7cDgAf7EVAEhTMfRLZMXu1I+Ro
+         DOQ22/5zE9wbxr9+Xh+2cDzbdVKF0d+vZVIh98mcoT0Qi35aoCvx4cyQWIqVCPID3Fx8
+         oohrDNctyR5ND2PTnivz83dDrJESM7t8Kd0WWdQbshFHQivZ7pJ9wXslQZ6uLXAvUcdy
+         Uzp/h2jFO74Iyp9mHmNS8G0fOGxW4yYk1OphoNoPId9gK0EQ/CzLSglLf6YbLxJEL9Xd
+         CYQcekNeB9FNH+rRpgq2yDcci6iZlDgeE2BJSsaAR0VDeZOR+DYizIHia3HpGpdy119p
+         OIvw==
+X-Gm-Message-State: ABy/qLYH4H2dE+IOebzI16/izlpbXGw5jiRVf80nkYTZnI7JI+qNSMoo
+        bmSdCJJbODw7o2dN7/J6QIvGkygGu6UVIXkP+adKIM74
+X-Google-Smtp-Source: APBJJlECqlbMh8z7X6ur/8CnGw3EmJTLSqlxZN3xLPcFkMtAjfISDMlVMbwscD9Xl/Yn5uNsKFygVA==
+X-Received: by 2002:a2e:908b:0:b0:2b6:dd9a:e1d3 with SMTP id l11-20020a2e908b000000b002b6dd9ae1d3mr705601ljg.44.1689797786041;
+        Wed, 19 Jul 2023 13:16:26 -0700 (PDT)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id c3-20020a2e9483000000b002b6cb40e9aasm1162151ljh.103.2023.07.19.13.16.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 13:16:25 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2b734aea34aso387471fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:16:25 -0700 (PDT)
+X-Received: by 2002:a05:6512:368c:b0:4fb:85ad:b6e2 with SMTP id
+ d12-20020a056512368c00b004fb85adb6e2mr613569lfs.50.1689797784754; Wed, 19 Jul
+ 2023 13:16:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717172651.64324-3-sebastian.reichel@collabora.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230629155433.4170837-1-dhowells@redhat.com> <20230629155433.4170837-2-dhowells@redhat.com>
+ <CAJfpegsJuvXJDcXpo9T19Gw0tDuvyOJdv44Y2bt04MEf1JLxGg@mail.gmail.com>
+ <c634a18e-9f2b-4746-bd8f-aa1d41e6ddf7@mattwhitlock.name> <CAJfpegvq4M_Go7fHiWVBBkrK6h4ChLqQTd0+EOKbRWZDcVerWA@mail.gmail.com>
+ <ZLg9HbhOVnLk1ogA@casper.infradead.org>
+In-Reply-To: <ZLg9HbhOVnLk1ogA@casper.infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 19 Jul 2023 13:16:07 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiq95bWiWLyz96ombPfpy=PNrc2KKyzJ2d+WMrxi6=OVA@mail.gmail.com>
+Message-ID: <CAHk-=wiq95bWiWLyz96ombPfpy=PNrc2KKyzJ2d+WMrxi6=OVA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/4] splice: Fix corruption of spliced data after
+ splice() returns
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Matt Whitlock <kernel@mattwhitlock.name>,
+        David Howells <dhowells@redhat.com>, netdev@vger.kernel.org,
+        Dave Chinner <david@fromorbit.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@kvack.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 07:26:48PM +0200, Sebastian Reichel wrote:
-> The RK356x (and RK3588) have 5 ganged interrupts. For example the
-> "legacy" interrupt combines "inta/intb/intc/intd" with a register
-> providing the details.
-> 
-> Currently the binding is not specifying these interrupts resulting
-> in a bunch of errors for all rk356x boards using PCIe.
-> 
-> Fix this by specifying the interrupts and add them to the example
-> to prevent regressions.
-> 
-> This changes the reference from snps,dw-pcie.yaml to
-> snps,dw-pcie-common.yaml, since the interrupts are vendor
-> specific and should not be listed in the generic file. The
-> only other bit from the generic binding are the reg-names,
-> which are overwritten by this binding.
-> 
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> ---
->  .../bindings/pci/rockchip-dw-pcie.yaml        | 43 ++++++++++++++++++-
->  1 file changed, 42 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/rockchip-dw-pcie.yaml b/Documentation/devicetree/bindings/pci/rockchip-dw-pcie.yaml
-> index a4f61ced5e88..7836b9a5547c 100644
-> --- a/Documentation/devicetree/bindings/pci/rockchip-dw-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/rockchip-dw-pcie.yaml
-> @@ -17,7 +17,8 @@ description: |+
->    snps,dw-pcie.yaml.
->  
->  allOf:
-> -  - $ref: /schemas/pci/snps,dw-pcie.yaml#
-> +  - $ref: /schemas/pci/pci-bus.yaml#
-> +  - $ref: /schemas/pci/snps,dw-pcie-common.yaml#
->  
->  properties:
->    compatible:
-> @@ -60,6 +61,39 @@ properties:
->        - const: aux
->        - const: pipe
->  
-> +  interrupts:
-> +    items:
-> +      - description:
-> +          Combined system interrupt, which is used to signal the following
-> +          interrupts - phy_link_up, dll_link_up, link_req_rst_not, hp_pme,
-> +          hp, hp_msi, link_auto_bw, link_auto_bw_msi, bw_mgt, bw_mgt_msi,
-> +          edma_wr, edma_rd, dpa_sub_upd, rbar_update, link_eq_req, ep_elbi_app
-> +      - description:
-> +          Combined PM interrupt, which is used to signal the following
-> +          interrupts - linkst_in_l1sub, linkst_in_l1, linkst_in_l2,
-> +          linkst_in_l0s, linkst_out_l1sub, linkst_out_l1, linkst_out_l2,
-> +          linkst_out_l0s, pm_dstate_update
-> +      - description:
-> +          Combined message interrupt, which is used to signal the following
-> +          interrupts - ven_msg, unlock_msg, ltr_msg, cfg_pme, cfg_pme_msi,
-> +          pm_pme, pm_to_ack, pm_turnoff, obff_idle, obff_obff, obff_cpu_active
-> +      - description:
-> +          Combined legacy interrupt, which is used to signal the following
-> +          interrupts - inta, intb, intc, intd
-> +      - description:
-> +          Combined error interrupt, which is used to signal the following
-> +          interrupts - aer_rc_err, aer_rc_err_msi, rx_cpl_timeout,
-> +          tx_cpl_timeout, cor_err_sent, nf_err_sent, f_err_sent, cor_err_rx,
-> +          nf_err_rx, f_err_rx, radm_qoverflow
+On Wed, 19 Jul 2023 at 12:44, Matthew Wilcox <willy@infradead.org> wrote:
+>
+> So what's the API that provides the semantics of _copying_?
 
-I'm confused. It is really up to the integrator on how each of these 
-interrupts are combined? I thought it was a bit more fixed than that.
+It's called "read()" and "write()".
 
-Rob
+Seriously.
+
+The *ONLY* reason for splice() existing is for zero-copy. If you don't
+want zero-copy (aka "copy by reference"), don't use splice.
+
+Stop arguing against it. If you don't want zero-copy, you use read()
+and write(). It really is that simple.
+
+And no, we don't start some kind of crazy "versioned zero-copy with
+COW". That's a fundamental mistake. It's a mistake that has been done
+- several times - and made perhaps most famous by Hurd, that made that
+a big thing.
+
+And yes, this has been documented *forever*. It may not have been
+documented on the first line, because IT WAS SO OBVIOUS. The whole
+reason splice() is fast is because it avoids the actual copy, and does
+a copy-by-reference.
+
+That's still a copy. But a copy-by-reference is a special thing. If
+you don't know what copy-by-reference is, or don't want it, don't use
+splice().
+
+I don't know how many different ways I can say the same thing.
+
+IF YOU DON'T WANT ZERO-COPY, DON'T USE SPLICE.
+
+IF YOU DON'T UNDERSTAND THE DIFFERENCE BETWEEN COPY-BY-VALUE AND
+COPY-BY-REFERENCE, DON'T USE SPLICE.
+
+IF YOU DON'T UNDERSTAND THE *POINT* OF SPLICE, DON'T USE SPLICE.
+
+It's kind of a bit like pointers in C: if you don't understand
+pointers but use them anyway, you're going to have a hard time. That's
+not the fault of the pointers. Pointers are very very powerful. But if
+you are used to languages that only do copy-by-value, you are going to
+think they are bad things.
+
+                  Linus
