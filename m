@@ -2,44 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBAA67597FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD95759805
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbjGSOSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 10:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48760 "EHLO
+        id S230268AbjGSOTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:19:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbjGSOSQ (ORCPT
+        with ESMTP id S229736AbjGSOTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:18:16 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A031FFC
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:17:52 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qM7zx-0001xr-1o; Wed, 19 Jul 2023 16:17:49 +0200
-Message-ID: <2f873530-9c72-af23-0290-a2100df9ba56@leemhuis.info>
-Date:   Wed, 19 Jul 2023 16:17:46 +0200
+        Wed, 19 Jul 2023 10:19:23 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E0CED3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:19:22 -0700 (PDT)
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 540FA3F721
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 14:19:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1689776359;
+        bh=GQssMG4sr5GfDopggRQSgpxYtYsDKGG3T/Izx89s/GE=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=kLnO9KgSxuoBAXPoIrbV3r6dACuF99vODNb4FiTam2yTl08ldlX20EQ9m7/m3hOBD
+         Pez7rBxrzwTNBdhUR+m3fOEHh1vnqjZrVHceXg3ole6aWSHrzHuAZHC9Rh85XERyB0
+         OvuZePXRjoMcuhKhMbGbfk5akMC8lnbgfzJt4opGoTVu8xTv7w/UovZuweCCW7fNmV
+         Ju5Mk/VSNGf/FbqqLZC2RWGnriOLukhg4Dsb9r5eXk2KXnMs7Ytg9BPAg60HkpmHXY
+         JvGqrVen7GmaTocsYtbRb84Ma2GXKb8z7HXhNsdmL+53qLGRUNykUb6NBEHLVUD+Ek
+         dzaHOEYs+AvLw==
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-403fc19a7a7so18602931cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:19:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689776355; x=1690381155;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GQssMG4sr5GfDopggRQSgpxYtYsDKGG3T/Izx89s/GE=;
+        b=TXw8aG0IhE0GNaPnj8E9BSfWA+5G/yfjCbmHzomdoqacukHggkguyVCqF8OAVYz+CN
+         doU87uSKKf88IKNkCyZH/Dwc6uWzgiIN/s3U5Wi2vmZWcUobaJNBIKPx/unkIYpwyy+n
+         4d7e8wpMZZamcRjWAcnUmxzDC6wXERqq11v6PVGWLEE8FXyg3jcZSOpiisJpM/qTPI8Z
+         DscQUyrOuFAezXkbn2KIQlAVnxWBQWn9Jbh+mPEj7G7LYIV90cvaZNRQOWrG7tuPDYl+
+         z1XcA2WWmSoO/Rwhglzw5AcJq0qLnDFamzr53xfUqjiRACq9Ik1HGH15zuqKU1ToLRKi
+         DZ6w==
+X-Gm-Message-State: ABy/qLaPlFHuuuf3WXyOziNWGj273iMN/X5u0kGc+m1OD248pV9nu7nn
+        tGCkqoOlyl6L+JXzjSc2LShO0sfKoIWtlKrTVTra+QowqKybu9oll4uJww0gSd0v/dUhtr+YMlz
+        I0JV+AUmzRsOUPBU4mTogYYkkcJE4Rcsi6tgiiXaZiTJtSyCSnSGEb0FiqQ==
+X-Received: by 2002:a05:622a:1043:b0:403:e841:58cf with SMTP id f3-20020a05622a104300b00403e84158cfmr7250705qte.10.1689776355281;
+        Wed, 19 Jul 2023 07:19:15 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlF6ArzibyjU/HIAo8zVRkK4K5uiAaxY67dwKUBWu+e77t8a+bRUMd76ruBG00lvDGu4BDbxlfoFwop3e5WhMrI=
+X-Received: by 2002:a05:622a:1043:b0:403:e841:58cf with SMTP id
+ f3-20020a05622a104300b00403e84158cfmr7250684qte.10.1689776355066; Wed, 19 Jul
+ 2023 07:19:15 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/3] fs/9p: fix mmap regression
-To:     Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>
-Cc:     v9fs@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Robert Schwebel <r.schwebel@pengutronix.de>,
-        Linux kernel regressions list <regressions@lists.linux.dev>
-References: <20230716-fixes-overly-restrictive-mmap-v1-0-0683b283b932@kernel.org>
-Content-Language: en-US, de-DE
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <20230716-fixes-overly-restrictive-mmap-v1-0-0683b283b932@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1689776273;29f38920;
-X-HE-SMSGID: 1qM7zx-0001xr-1o
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+References: <20230717210356.2794736-1-samuel.holland@sifive.com> <20230717210356.2794736-2-samuel.holland@sifive.com>
+In-Reply-To: <20230717210356.2794736-2-samuel.holland@sifive.com>
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Date:   Wed, 19 Jul 2023 16:18:59 +0200
+Message-ID: <CAJM55Z9B6atT_t4321kOCGWoeqLxe+ZBsJDr4BeV1byaeYw5fw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] clk: sifive: Allow building the driver as a module
+To:     Samuel Holland <samuel.holland@sifive.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -48,52 +82,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.07.23 18:28, Eric Van Hensbergen wrote:
-> This series attempts to fix a reported exception with mmap
-> on newer kernels. 
-> 
-> -- original regression report --
-> 
-> TL;DR: mmap() seems to be broken on 9pfs on Linux 6.4. setting
-> "rootflags=ignoreqv" fixes it as well, but it feels like a regression.
+On Wed, 19 Jul 2023 at 10:07, Samuel Holland <samuel.holland@sifive.com> wrote:
 >
-> [...]
-> 
-> I could track down the breakage to
-> 
->   1543b4c5071c54d76aad7a7a26a6e43082269b0c
-> 
-> My test setup has, in addition to the patch above, the following patches also
-> reverted on top of a vanilla 6.4 kernel:
-> 
->   4eb3117888a923f6b9b1ad2dd093641c49a63ae5
->   21e26d5e54ab7cfe6b488fd27d4d70956d07e03b
-> 
-> as 1543b cannot be reverted without those; however, the effect only goes away
-> when I also revert 1543b. The kernel has no other patches applied, only these
-> three reverts.
-> 
-> -- end bug report --
-> 
-> Reported-by: Robert Schwebel <r.schwebel@pengutronix.de>
+> This can reduce the kernel image size in multiplatform configurations.
 
-This tag afaics should be in some or all of the commits -- together with
-a Link: or Closes: tag to the report
-(https://lore.kernel.org/v9fs/ZK25XZ%2BGpR3KHIB%2F@pengutronix.de/ ).
+I don't mind this, but booting without this driver also means there is
+no uart for debug output or any other peripheral until the kernel gets
+to the initrd to load the driver. Does the earlycon console work all
+the way until we reach the initrd? Otherwise I can't imagine many
+scenarios where configuring this as a module is desirable.
 
-'Fixes:' tags would seem appropriate here as well. And to get this fixed
-in Linux 6.4.y. a "Cc: <stable..." would be great as well.
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> ---
+>
+>  drivers/clk/sifive/Kconfig       | 2 +-
+>  drivers/clk/sifive/sifive-prci.c | 8 +++-----
+>  2 files changed, 4 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/clk/sifive/Kconfig b/drivers/clk/sifive/Kconfig
+> index 2322f634a910..49597d95602e 100644
+> --- a/drivers/clk/sifive/Kconfig
+> +++ b/drivers/clk/sifive/Kconfig
+> @@ -10,7 +10,7 @@ menuconfig CLK_SIFIVE
+>  if CLK_SIFIVE
+>
+>  config CLK_SIFIVE_PRCI
+> -       bool "PRCI driver for SiFive SoCs"
+> +       tristate "PRCI driver for SiFive SoCs"
+>         default ARCH_SIFIVE
+>         select RESET_CONTROLLER
+>         select RESET_SIMPLE
+> diff --git a/drivers/clk/sifive/sifive-prci.c b/drivers/clk/sifive/sifive-prci.c
+> index e317f3454e93..8c67d1a7c8df 100644
+> --- a/drivers/clk/sifive/sifive-prci.c
+> +++ b/drivers/clk/sifive/sifive-prci.c
+> @@ -7,6 +7,7 @@
+>  #include <linux/clkdev.h>
+>  #include <linux/delay.h>
+>  #include <linux/io.h>
+> +#include <linux/module.h>
+>  #include <linux/of_device.h>
+>  #include "sifive-prci.h"
+>  #include "fu540-prci.h"
+> @@ -618,9 +619,6 @@ static struct platform_driver sifive_prci_driver = {
+>         },
+>         .probe = sifive_prci_probe,
+>  };
+> +module_platform_driver(sifive_prci_driver);
+>
+> -static int __init sifive_prci_init(void)
+> -{
+> -       return platform_driver_register(&sifive_prci_driver);
+> -}
+> -core_initcall(sifive_prci_init);
 
-See Documentation/handling-regressions.rst (
-https://docs.kernel.org/process/handling-regressions.html ) and the
-links to Documentation/process/submitting-patches.rst or
-Documentation/process/5.Posting.rst for details.
+Maybe also add the MODULE_AUTHOR() and MODULE_DESCRIPTION() macros
+while you're at it.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
-
-#regzbot ^backmonitor:
-https://lore.kernel.org/v9fs/ZK25XZ%2BGpR3KHIB%2F@pengutronix.de/
+> +MODULE_LICENSE("GPL");
+> --
+> 2.40.1
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
