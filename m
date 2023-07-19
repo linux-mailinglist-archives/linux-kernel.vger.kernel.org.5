@@ -2,56 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4F375926F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A80275927A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbjGSKLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:11:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
+        id S229800AbjGSKOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:14:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjGSKLh (ORCPT
+        with ESMTP id S230326AbjGSKOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:11:37 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7B417E69;
-        Wed, 19 Jul 2023 03:11:36 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F8432F4;
-        Wed, 19 Jul 2023 03:12:19 -0700 (PDT)
-Received: from [10.57.33.122] (unknown [10.57.33.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 730643F67D;
-        Wed, 19 Jul 2023 03:11:33 -0700 (PDT)
-Message-ID: <ac77142d-964b-691d-ea15-105a523d9738@arm.com>
-Date:   Wed, 19 Jul 2023 11:11:31 +0100
+        Wed, 19 Jul 2023 06:14:48 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884C91FE9;
+        Wed, 19 Jul 2023 03:14:46 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-31716932093so858353f8f.3;
+        Wed, 19 Jul 2023 03:14:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689761684; x=1692353684;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Sdeu/FNXu1IFJS3/hcgjv0hV6ECeTHIsIHo54xBo1WM=;
+        b=k8EqETGbVTckou8SA3q7lqdzVZLWQZjoTAF/I3mwwciSYf643o8LeAA9zYvSjtUUtg
+         Q1+MP5p64XR1cU+giFfEoFv4EwB3w70i1wEwbeuSMZajNG4kCIIfFmZGFMKllcJTKMt3
+         y2JC92+QbjKqUIaRm3He28PFJp/5VStp9vdBS/TgcDmrwiQoyPJVR/oJ17PBi8jqxvYM
+         NREUlSAX+QQ27thCscClLTzgLL+zObMGsd78b2jnCcPTw7KG+Frcg0zz1ZBEuaGyhhW5
+         eq3JG/yZDixUKpwulob2tmr8CQtyH/ZUEHjmlw1sg1TFH8r+pv7VojBNkJyYixyI9QK1
+         G9Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689761684; x=1692353684;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Sdeu/FNXu1IFJS3/hcgjv0hV6ECeTHIsIHo54xBo1WM=;
+        b=No2MKz/aV6+En8MfoK3BGy7JI7TnjFSVaOPBeW12WKaY64RfsX+BIKzWJz0BKickC8
+         VofJturnNpn4BNLXvJQLqjarLPCm3I6TNU+SbNXlAlIoGMMraLRPxbF3QJyOHUny+cHC
+         vDrTInvu81DvgumXbXB+/baVJ5tZ2B6lq4hH8KgWEIJy8DRt5mcCIctWRFT6gKvLDhjv
+         bvz3wj+9fTp1en8478T723hx+6VNOIUp+L8hjn7CfxzONbHfDo4flBfvtnGJ+aN+BTJL
+         PwpUNQu8BoVYYXo4IeX14o1AEhEfjLFGUznj00W0zuT4NobAo8eIbW6OjRuX+aMZNdW/
+         Muvw==
+X-Gm-Message-State: ABy/qLa+9HHWcjboN8+LsH0jx0WSpy5dgMphsG+F2gml86psmVy8Gu8b
+        afEkBgjSO2+aikTtZbJkSA9Bx3ojPBAP2w==
+X-Google-Smtp-Source: APBJJlHh7h3DgHDGm3HnP9/Y3UgOqiBHciQ8oTaJAiiw1R2Jd6++zvulTs0u/i23pDx3eo5vbrxP/w==
+X-Received: by 2002:adf:e388:0:b0:314:3b09:ca8 with SMTP id e8-20020adfe388000000b003143b090ca8mr1886038wrm.58.1689761684472;
+        Wed, 19 Jul 2023 03:14:44 -0700 (PDT)
+Received: from localhost.localdomain ([92.85.190.61])
+        by smtp.gmail.com with ESMTPSA id q4-20020adffec4000000b003144bfbd0b3sm4889456wrs.37.2023.07.19.03.14.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 03:14:44 -0700 (PDT)
+From:   Andrei Coardos <aboutphysycs@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Cc:     andy@kernel.org, brgl@bgdev.pl, linus.walleij@linaro.org,
+        keguang.zhang@gmail.com, Andrei Coardos <aboutphysycs@gmail.com>,
+        Alexandru Ardelean <alex@shruggie.ro>
+Subject: [PATCH] gpio: loongson1 :remove unneeded platform_set_drvdata()call
+Date:   Wed, 19 Jul 2023 13:13:39 +0300
+Message-Id: <20230719101339.18256-1-aboutphysycs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH V6 6/6] coresight: etm4x: Add ACPI support in platform
- driver
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-To:     rafael@kernel.org, Len Brown <lenb@kernel.org>
-Cc:     Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>,
-        Steve Clevenger <scclevenger@os.amperecomputing.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>, devicetree@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        gregkh@linuxfoundation.org
-References: <20230710062500.45147-1-anshuman.khandual@arm.com>
- <20230710062500.45147-7-anshuman.khandual@arm.com>
- <38f0c8f3-5fb3-a18a-456d-867da2998786@arm.com>
-In-Reply-To: <38f0c8f3-5fb3-a18a-456d-867da2998786@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,100 +71,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rafael, Len
+In the drivers/gpio/gpio-loongson1 the call to platform_set_drvdata was
+removed.
+This function call was found to be unnecesarry as the associated
+structure is defined inside the local .c file.
+It doesn't use any type of function either so it can be removed without
+any complications.
 
-Ping (packets 6, lost 100%).
+Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
+Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+---
+ drivers/gpio/gpio-loongson1.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-
-On 10/07/2023 17:40, Suzuki K Poulose wrote:
-> Rafael, Len
-> 
-> On 10/07/2023 07:25, Anshuman Khandual wrote:
->> From: Suzuki K Poulose <suzuki.poulose@arm.com>
->>
->> Drop ETM4X ACPI ID from the AMBA ACPI device list, and instead just 
->> move it
->> inside the new ACPI devices list detected and used via platform driver.
->>
->> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
->> Cc: Len Brown <lenb@kernel.org>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Leo Yan <leo.yan@linaro.org>
->> Cc: Sudeep Holla <sudeep.holla@arm.com>
->> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
->> Cc: linux-acpi@vger.kernel.org
->> Cc: coresight@lists.linaro.org
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Reviewed-by: Sudeep Holla <sudeep.holla@arm.com> (for ACPI specific 
->> changes)
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> 
-> We would like to queue this via coresight tree. The acpi_amba bits have
-> been reviewed by Sudeep. Please could you give us an Ack, if you are
-> happy with the proposal ?
-> 
-
-Kind regards
-Suzuki
-
-> Kind regards
-> Suzuki
-> 
-> 
->> ---
->>   drivers/acpi/acpi_amba.c                           |  1 -
->>   drivers/hwtracing/coresight/coresight-etm4x-core.c | 10 ++++++++++
->>   2 files changed, 10 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/acpi/acpi_amba.c b/drivers/acpi/acpi_amba.c
->> index f5b443ab01c2..099966cbac5a 100644
->> --- a/drivers/acpi/acpi_amba.c
->> +++ b/drivers/acpi/acpi_amba.c
->> @@ -22,7 +22,6 @@
->>   static const struct acpi_device_id amba_id_list[] = {
->>       {"ARMH0061", 0}, /* PL061 GPIO Device */
->>       {"ARMH0330", 0}, /* ARM DMA Controller DMA-330 */
->> -    {"ARMHC500", 0}, /* ARM CoreSight ETM4x */
->>       {"ARMHC501", 0}, /* ARM CoreSight ETR */
->>       {"ARMHC502", 0}, /* ARM CoreSight STM */
->>       {"ARMHC503", 0}, /* ARM CoreSight Debug */
->> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c 
->> b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> index 43f583987250..703b6fcbb6a5 100644
->> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> @@ -3,6 +3,7 @@
->>    * Copyright (c) 2014, The Linux Foundation. All rights reserved.
->>    */
->> +#include <linux/acpi.h>
->>   #include <linux/bitops.h>
->>   #include <linux/kernel.h>
->>   #include <linux/moduleparam.h>
->> @@ -2347,12 +2348,21 @@ static const struct of_device_id 
->> etm4_sysreg_match[] = {
->>       {}
->>   };
->> +#ifdef CONFIG_ACPI
->> +static const struct acpi_device_id etm4x_acpi_ids[] = {
->> +    {"ARMHC500", 0}, /* ARM CoreSight ETM4x */
->> +    {}
->> +};
->> +MODULE_DEVICE_TABLE(acpi, etm4x_acpi_ids);
->> +#endif
->> +
->>   static struct platform_driver etm4_platform_driver = {
->>       .probe        = etm4_probe_platform_dev,
->>       .remove        = etm4_remove_platform_dev,
->>       .driver            = {
->>           .name            = "coresight-etm4x",
->>           .of_match_table        = etm4_sysreg_match,
->> +        .acpi_match_table    = ACPI_PTR(etm4x_acpi_ids),
->>           .suppress_bind_attrs    = true,
->>           .pm            = &etm4_dev_pm_ops,
->>       },
-> 
+diff --git a/drivers/gpio/gpio-loongson1.c b/drivers/gpio/gpio-loongson1.c
+index 6ca3b969db4d..2a57ffa0548b 100644
+--- a/drivers/gpio/gpio-loongson1.c
++++ b/drivers/gpio/gpio-loongson1.c
+@@ -78,8 +78,6 @@ static int ls1x_gpio_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err;
+ 
+-	platform_set_drvdata(pdev, ls1x_gc);
+-
+ 	dev_info(dev, "GPIO controller registered with %d pins\n",
+ 		 ls1x_gc->gc.ngpio);
+ 
+-- 
+2.34.1
 
