@@ -2,141 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC4675914E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC24C759151
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbjGSJN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59662 "EHLO
+        id S231229AbjGSJNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbjGSJN1 (ORCPT
+        with ESMTP id S231150AbjGSJNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:13:27 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD02173B;
-        Wed, 19 Jul 2023 02:13:26 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36J4gSwX008449;
-        Wed, 19 Jul 2023 09:13:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Gj2yJp4znK+CIfSIZHigRVEHv6hEKNrVzDu1MeYrYWQ=;
- b=CuT8cBdTbmrwqnDifEHUr3fz9efcCSKpGn03+sYl5qWghQV5ICeiJsvuajABxVjG5S/3
- hQUdb6s2HFpSXfdAIFUT58D089d3/6bCZpL6e5W6N+j697xS6zE5QvgDmnC02XSi8iue
- +X+y7XzTLZdcEyp0T7cRDn2gIx9dKNbx1ls9nPm5sFxDM0Oc12awsEHXWNPc5A3y0beV
- 6Sso9LlObNP4PeY9PGOmGknq4J5BMZSVpczOE5jW3u0fwISc2TRwXaliYFE+kMt31ftD
- WXFT4GVJnaEmYwANZwXapnOD9k5snDcCB5/760pyM38buR8IxT+rDxRh3me0rdaD42JH DA== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rwnrrjx4n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Jul 2023 09:13:23 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36J9DMfZ020133
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Jul 2023 09:13:22 GMT
-Received: from [10.216.47.173] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 19 Jul
- 2023 02:13:18 -0700
-Message-ID: <37ab515a-a4b1-09fa-6ec4-e2dae17fb58c@quicinc.com>
-Date:   Wed, 19 Jul 2023 14:43:15 +0530
+        Wed, 19 Jul 2023 05:13:53 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D5B134
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:13:52 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-521ac15e333so17861a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:13:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689758030; x=1690362830;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8gZsYamAtqYIkQMLXzLi0LGk3lWcHPODBvcWnT8OslA=;
+        b=dxUix3plXQr2sNVfSzQPg4AVOF3klkQQrkDb11hDUSVKjiwgE6OghRzgwIbiwshKkt
+         zytzgGrSJ7DbKn3N+qGYhPwjupx2K4B8QM95tWMiFYZVip3xKsjbVLDzl1Ssjnsz1eD9
+         BjgjErswBi+ITZdWhRzsUtoOcCp6xLgz0ZkA1k++CL+usiQWY/5fD2ASz4yTCPQ91bjb
+         lptrzofahOD0hf8iiyrG/a0UhSd3hFKfBWwFO85k8aPGQ5kCziTmTSd4VVGH9krdeysF
+         5NLas/USaBPWjkSJP+UyrhIyNF+D579RVUQnpgfbNIW3zxMP81c9+Ln1NERUxBEL17tq
+         WxAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689758030; x=1690362830;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8gZsYamAtqYIkQMLXzLi0LGk3lWcHPODBvcWnT8OslA=;
+        b=f04NvLubvJMcYy50F7Da8jstgHo7KCCUpgleVTGPHWO8+1qR9QU34kO+kyC+l+EdvV
+         xs422pq51C/sVbal4kZQFLVTKnlV4CExJ40G3h9k76a+gG6VWBhcv8Kd7F9JBFkLioFy
+         muxQbLZlBhjRjTQ9u+eOWCrc3yP9xS2SNSxDG4BsiyzdgjwN6tIbizI7j8UxISGkrCQ6
+         aOJJMRsmObW5rs1JAG3QeieEUmv/nHIEB7uO3sd1c1E95EFM3vbhx6xMYqVoHtlq+z0X
+         5+XON9dpS9Ht9jiWCm/+WUsLyzW4f6e3J//T6o8jvTdxRQ97+uoXtuS6OkSogrEsNJzn
+         PKmg==
+X-Gm-Message-State: ABy/qLaSe+WkyMPDFtdce7VE6P1iRvXSWmT50DSF9hjCRmpcOnTPFOBE
+        LoXky7mE0a0TTEH55spb7g0+v6a3m/mEwocM2j9vdQ==
+X-Google-Smtp-Source: APBJJlG88xsR/5uyJpHjV11JlBE8kPjPYsOAnlNwoDUatB8cu5lLfxTspsrgDzO1/Ty8BfW5YjodsljdZ+oq3bEfA1A=
+X-Received: by 2002:a50:a6c6:0:b0:514:92e4:ab9f with SMTP id
+ f6-20020a50a6c6000000b0051492e4ab9fmr211619edc.7.1689758030393; Wed, 19 Jul
+ 2023 02:13:50 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] dt-bindings: power: qcom,rpmhpd: Add Generic RPMh PD
- indexes
-Content-Language: en-US
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <1689744162-9421-1-git-send-email-quic_rohiagar@quicinc.com>
- <1689744162-9421-2-git-send-email-quic_rohiagar@quicinc.com>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <1689744162-9421-2-git-send-email-quic_rohiagar@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: pV2YhOuCdK5Fn9cLY1UA0f4Kyi1_8HUZ
-X-Proofpoint-ORIG-GUID: pV2YhOuCdK5Fn9cLY1UA0f4Kyi1_8HUZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-19_05,2023-07-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- malwarescore=0 suspectscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
- mlxlogscore=838 priorityscore=1501 impostorscore=0 mlxscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307190083
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230329-kunit-devm-inconsistencies-test-v2-0-19feb71e864b@kernel.org>
+In-Reply-To: <20230329-kunit-devm-inconsistencies-test-v2-0-19feb71e864b@kernel.org>
+From:   David Gow <davidgow@google.com>
+Date:   Wed, 19 Jul 2023 17:13:38 +0800
+Message-ID: <CABVgOSnwQ5a+G99b5QcZjS2pZk7TivQSJJ6it3ie33igvjGcAg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] drivers: base: Add tests showing devm handling inconsistencies
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000002ec4d70600d373a5"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--0000000000002ec4d70600d373a5
+Content-Type: text/plain; charset="UTF-8"
 
-
-On 7/19/2023 10:52 AM, Rohit Agarwal wrote:
-> Add Generic RPMh Power Domain indexes that can be used
-> for all the Qualcomm SoC henceforth.
-> The power domain indexes of these bindings are based on compatibility
-> with current targets like SM8[2345]50 targets.
-> 
-> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
-> Suggested-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-Signed-off-by should be followed by Suggested-by ?
-
--Mukesh
-
+On Wed, 28 Jun 2023 at 17:50, Maxime Ripard <mripard@kernel.org> wrote:
+>
+> Hi,
+>
+> This follows the discussion here:
+> https://lore.kernel.org/linux-kselftest/20230324123157.bbwvfq4gsxnlnfwb@houat/
+>
+> This shows a couple of inconsistencies with regard to how device-managed
+> resources are cleaned up. Basically, devm resources will only be cleaned up
+> if the device is attached to a bus and bound to a driver. Failing any of
+> these cases, a call to device_unregister will not end up in the devm
+> resources being released.
+>
+> We had to work around it in DRM to provide helpers to create a device for
+> kunit tests, but the current discussion around creating similar, generic,
+> helpers for kunit resumed interest in fixing this.
+>
+> This can be tested using the command:
+> ./tools/testing/kunit/kunit.py run --kunitconfig=drivers/base/test/
+>
+> I added the fix David suggested back in that discussion which does fix
+> the tests. The SoB is missing, since David didn't provide it back then.
+>
+> Let me know what you think,
+> Maxime
+>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 > ---
->   include/dt-bindings/power/qcom,rpmhpd.h | 30 ++++++++++++++++++++++++++++++
->   1 file changed, 30 insertions(+)
->   create mode 100644 include/dt-bindings/power/qcom,rpmhpd.h
-> 
-> diff --git a/include/dt-bindings/power/qcom,rpmhpd.h b/include/dt-bindings/power/qcom,rpmhpd.h
-> new file mode 100644
-> index 0000000..7c201a6
-> --- /dev/null
-> +++ b/include/dt-bindings/power/qcom,rpmhpd.h
-> @@ -0,0 +1,30 @@
-> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-> +/*
-> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +#ifndef _DT_BINDINGS_POWER_QCOM_RPMHPD_H
-> +#define _DT_BINDINGS_POWER_QCOM_RPMHPD_H
-> +
-> +/* Generic RPMH Power Domain Indexes */
-> +#define RPMHPD_CX               0
-> +#define RPMHPD_CX_AO		1
-> +#define RPMHPD_EBI		2
-> +#define RPMHPD_GFX		3
-> +#define RPMHPD_LCX		4
-> +#define RPMHPD_LMX		5
-> +#define RPMHPD_MMCX		6
-> +#define RPMHPD_MMCX_AO		7
-> +#define RPMHPD_MX		8
-> +#define RPMHPD_MX_AO		9
-> +#define RPMHPD_MXC		10
-> +#define RPMHPD_MXC_AO		11
-> +#define RPMHPD_MSS              12
-> +#define RPMHPD_NSP		13
-> +#define RPMHPD_NSP0             14
-> +#define RPMHPD_NSP1             15
-> +#define RPMHPD_QPHY             16
-> +#define RPMHPD_DDR              17
-> +#define RPMHPD_XO               18
-> +
-> +#endif
+
+Whoops, sorry. This managed to hide in my inbox. I think it looks
+good, and am happy for you to add by SoB to the patch.
+
+I've sent out reviews to the others with some small nitpicky things.
+
+Thanks a bunch,
+-- David
+
+> Changes in v2:
+> - Use an init function
+> - Document the tests
+> - Add a fix for the bugs
+> - Link to v1: https://lore.kernel.org/r/20230329-kunit-devm-inconsistencies-test-v1-0-c33127048375@cerno.tech
+>
+> ---
+> David Gow (1):
+>       drivers: base: Free devm resources when unregistering a device
+>
+> Maxime Ripard (2):
+>       drivers: base: Add basic devm tests for root devices
+>       drivers: base: Add basic devm tests for platform devices
+>
+>  drivers/base/core.c                      |  11 ++
+>  drivers/base/test/.kunitconfig           |   2 +
+>  drivers/base/test/Kconfig                |   4 +
+>  drivers/base/test/Makefile               |   3 +
+>  drivers/base/test/platform-device-test.c | 220 +++++++++++++++++++++++++++++++
+>  drivers/base/test/root-device-test.c     | 108 +++++++++++++++
+>  6 files changed, 348 insertions(+)
+> ---
+> base-commit: 53cdf865f90ba922a854c65ed05b519f9d728424
+> change-id: 20230329-kunit-devm-inconsistencies-test-5e5a7d01e60d
+>
+> Best regards,
+> --
+> Maxime Ripard <mripard@kernel.org>
+>
+
+--0000000000002ec4d70600d373a5
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+9IGQSBx2i4m+hGXJpET+MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCRI3Z4cAidgFcv
+Usqdz765x6KMZSfg/WtFrYg8ewsP2NpCxVM2+EhPyyEQ0k0DhtzdtGoI/Ug+jdFDyCKB9P2+EPLh
+iMjMnFILp7Zs4r18ECHlvZuDZfH9m0BchXIxu5jLIuQyKUWrCRDZZEDNr510ZhhVfYSFPA8ms1nk
+jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
+jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
+FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCB6
+nhSW228fPx1SV7AqHm6VTOMvSsyge31E8HuB8VpTczAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA3MTkwOTEzNTBaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAE9weZSc/AvLQ/osrUlVR
+E/kyaqqw8BmRLP/+0M1+wPJ9cyBx71lJEzIaIuMOJ7WMfD/rufb5X1Bh+ST/jGH3EIWWVFuPqaHx
+2m+gYqyHWPhW6m0OOWM/CKum6A2YA09ysvXGs3BwKWUtlOYkfHcBMPa9l9Q2z76g5paUb3VIw1ox
+gmozdg6W98xRCB4vWGAy3mW7+3s3cdg7WzDZrcFhONLjdjIz2FcuJBdP+El42cE+wKmvwuqeWBLS
+bC6RkmIWxD5LuAe8mE55j9PaRsGIv0Tnyi1dnrj/iLP2q9xs7rFfPWS4fr+XCUQdiKQ7rcNMOA/w
+9uMy42J45wuLWnUnXQ==
+--0000000000002ec4d70600d373a5--
