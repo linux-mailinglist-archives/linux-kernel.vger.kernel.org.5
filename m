@@ -2,82 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5908759EE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1EF759EE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbjGSToZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 15:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36848 "EHLO
+        id S230256AbjGSTol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 15:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjGSToX (ORCPT
+        with ESMTP id S230249AbjGSToj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 15:44:23 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B37B1FCD;
-        Wed, 19 Jul 2023 12:44:20 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id C3827100015;
-        Wed, 19 Jul 2023 22:44:18 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru C3827100015
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1689795858;
-        bh=kUDvjqDNQNz1pNg7L/BrcdK38VwKX7/0pQHaXlKqgl4=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-        b=O96gQ0O7FLkrRpu8YQxNKft8u2UIlT1/gEF24uLIAjlyKkGppVZPNClZrIA2eFkqr
-         Ih1oAtxYFB4v24D7/3Blg368obJnkXkoKv4fHsUpw+etpBsNu42obTm8RmitAP3qbW
-         tYisGoO+jR9f2ckjoKIHsVNpiBAJWHIT+fUe9egig/ukR9LIoETXypf0TsZksJWanw
-         pNorMle5Jr1CMmDNIGLskaBXUlTo8BnnKElkBI49qY9JZCCLzxqJlTijLEW7nHAlmw
-         rf3e2PhgIkAmGqu60ymWzBp7FVzGWZQQvQcx6OhqJWfoE0Q4e+N92PmD5oVfSpTEQ1
-         pxURzQqkZN6pg==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed, 19 Jul 2023 22:44:18 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 19 Jul
- 2023 22:44:18 +0300
-Date:   Wed, 19 Jul 2023 22:44:13 +0300
-From:   Dmitry Rokosov <ddrokosov@sberdevices.ru>
-To:     Xianwei Zhao <xianwei.zhao@amlogic.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>
-Subject: Re: [PATCH V2 1/4] soc: amlogic: use name instead of index as
- criterion
-Message-ID: <20230719194413.ssxxzwo3jkbsj2lb@CAB-WSD-L081021>
-References: <20230707003710.2667989-1-xianwei.zhao@amlogic.com>
- <20230707003710.2667989-2-xianwei.zhao@amlogic.com>
+        Wed, 19 Jul 2023 15:44:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB29D1FDC;
+        Wed, 19 Jul 2023 12:44:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=09gXH5WPLUH/2CplgzC5LRXG+n41z1xeytY52mkD4kk=; b=m+PE/dTTM6VCcwL3b0YBkVYCFM
+        RnUKaVfGae71cAmNweNZy6Nyxt6jJ7PHj4eHZ93P7R+SPZ+W8/sc9dndzPM1eJAcZ4fEeDKGrYick
+        AEwXOTN1BmSMXPLuJ+xd1G3/rdLNhryhdV2WffAppSEvJ341tuObuAiOSFiRCiQMTRkxqw0s/jNEl
+        Z8LQ/9Bqmeia+xH+uoxXnlFlP/GvG/R6Mf5sL2Xvx/RwovZ3hPZVyAIt8zQeanjnpwloY1Vc5HeCn
+        7IysHoWWw5mxmqU9IqDXIQQ7jHtSXiDpYphdgr4DbytftBGRRvWcfnKaS/ysIOl40NBZBJqpEOLLr
+        rl151uwg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qMD65-006PmY-2t; Wed, 19 Jul 2023 19:44:29 +0000
+Date:   Wed, 19 Jul 2023 20:44:29 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Matt Whitlock <kernel@mattwhitlock.name>,
+        David Howells <dhowells@redhat.com>, netdev@vger.kernel.org,
+        Dave Chinner <david@fromorbit.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@kvack.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/4] splice: Fix corruption of spliced data after
+ splice() returns
+Message-ID: <ZLg9HbhOVnLk1ogA@casper.infradead.org>
+References: <20230629155433.4170837-1-dhowells@redhat.com>
+ <20230629155433.4170837-2-dhowells@redhat.com>
+ <CAJfpegsJuvXJDcXpo9T19Gw0tDuvyOJdv44Y2bt04MEf1JLxGg@mail.gmail.com>
+ <c634a18e-9f2b-4746-bd8f-aa1d41e6ddf7@mattwhitlock.name>
+ <CAJfpegvq4M_Go7fHiWVBBkrK6h4ChLqQTd0+EOKbRWZDcVerWA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230707003710.2667989-2-xianwei.zhao@amlogic.com>
-User-Agent: NeoMutt/20220415
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 178730 [Jul 19 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: DDRokosov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 524 524 9753033d6953787301affc41bead8ed49c47b39d, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, lists.infradead.org:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;sberdevices.ru:7.1.1,5.0.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/07/19 15:51:00
-X-KSMG-LinksScanning: Clean, bases: 2023/07/19 15:51:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/19 15:29:00 #21641898
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJfpegvq4M_Go7fHiWVBBkrK6h4ChLqQTd0+EOKbRWZDcVerWA@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -88,42 +60,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 07, 2023 at 08:37:07AM +0800, Xianwei Zhao wrote:
-> The  variate 'index' could be equal to zero in some SoCs. Such as C3 SoC,
-> PWRC_C3_NNA_ID be defined zero. Use 'name' instead of 'index' as criterion.
+On Wed, Jul 19, 2023 at 09:35:33PM +0200, Miklos Szeredi wrote:
+> On Wed, 19 Jul 2023 at 19:59, Matt Whitlock <kernel@mattwhitlock.name> wrote:
+> >
+> > On Wednesday, 19 July 2023 06:17:51 EDT, Miklos Szeredi wrote:
+> > > On Thu, 29 Jun 2023 at 17:56, David Howells <dhowells@redhat.com> wrote:
+> > >>
+> > >> Splicing data from, say, a file into a pipe currently leaves the source
+> > >> pages in the pipe after splice() returns - but this means that those pages
+> > >> can be subsequently modified by shared-writable mmap(), write(),
+> > >> fallocate(), etc. before they're consumed.
+> > >
+> > > What is this trying to fix?   The above behavior is well known, so
+> > > it's not likely to be a problem.
+> >
+> > Respectfully, it's not well-known, as it's not documented. If the splice(2)
+> > man page had mentioned that pages can be mutated after they're already
+> > ostensibly at rest in the output pipe buffer, then my nightly backups
+> > wouldn't have been incurring corruption silently for many months.
 > 
-> Signed-off-by: Xianwei Zhao <xianwei.zhao@amlogic.com>
+> splice(2):
+> 
+>        Though we talk of copying, actual copies are generally avoided.
+> The kernel does this by implementing a pipe buffer as a set  of
+> refer‐
+>        ence-counted  pointers  to  pages  of kernel memory.  The
+> kernel creates "copies" of pages in a buffer by creating new pointers
+> (for the
+>        output buffer) referring to the pages, and increasing the
+> reference counts for the pages: only pointers are copied, not the
+> pages of the
+>        buffer.
+> 
+> While not explicitly stating that the contents of the pages can change
+> after being spliced, this can easily be inferred from the above
+> semantics.
 
-Reviewed-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
+So what's the API that provides the semantics of _copying_?  And, frankly,
+this is a "you're holding it wrong" kind of argument.  It only makes
+sense if you're read the implementation, which is at best level 2:
 
-> ---
-> V1 -> V2: add a new patch for change.
-> ---
->  drivers/soc/amlogic/meson-secure-pwrc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soc/amlogic/meson-secure-pwrc.c b/drivers/soc/amlogic/meson-secure-pwrc.c
-> index 25b4b71df9b8..c11d65a3e3d9 100644
-> --- a/drivers/soc/amlogic/meson-secure-pwrc.c
-> +++ b/drivers/soc/amlogic/meson-secure-pwrc.c
-> @@ -179,7 +179,7 @@ static int meson_secure_pwrc_probe(struct platform_device *pdev)
->  	for (i = 0 ; i < match->count ; ++i) {
->  		struct meson_secure_pwrc_domain *dom = &pwrc->domains[i];
->  
-> -		if (!match->domains[i].index)
-> +		if (!match->domains[i].name)
->  			continue;
->  
->  		dom->pwrc = pwrc;
-> -- 
-> 2.37.1
-> 
-> 
-> _______________________________________________
-> linux-amlogic mailing list
-> linux-amlogic@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-amlogic
+https://ozlabs.org/~rusty/index.cgi/tech/2008-03-30.html
 
--- 
-Thank you,
-Dmitry
+and worst a level -5:
+
+https://ozlabs.org/~rusty/index.cgi/tech/2008-04-01.html
+
