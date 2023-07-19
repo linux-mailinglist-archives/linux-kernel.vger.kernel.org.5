@@ -2,107 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7CCF759716
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13114759727
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbjGSNg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 09:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56596 "EHLO
+        id S230074AbjGSNia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 09:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231373AbjGSNgW (ORCPT
+        with ESMTP id S229492AbjGSNi2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 09:36:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B5611B
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:36:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A06D5611F9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:36:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B2C5C433C7;
-        Wed, 19 Jul 2023 13:36:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1689773779;
-        bh=wReR3wE3+Bic4nDhYj0aTbtveQfuwLx1sVheIXbZsMM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2IjU6/pvTor2wKteVBMHwRaIZFZVY3E7ujHxjCkNEREIvf9cf0FNlTWvb7KH7+dEv
-         fHmcVg50DcqP0n3azHgTrcAkLaYdkEwBZPYhvPlF/zEQl3C5N7QNa56NCi8fIl1cC7
-         jQ6A9ytiefU3VjjKc8KNLIoOnUG+i9k0UNHAVytE=
-Date:   Wed, 19 Jul 2023 15:36:15 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Gupta, Nipun" <nipun.gupta@amd.com>
-Cc:     linux-kernel@vger.kernel.org, git@amd.com,
-        pieter.jansen-van-vuuren@amd.com, nikhil.agarwal@amd.com,
-        michal.simek@amd.com, abhijit.gangurde@amd.com
-Subject: Re: [PATCH] cdx: add support for bus mastering
-Message-ID: <2023071939-delegator-kebab-51b8@gregkh>
-References: <20230718100651.18317-1-nipun.gupta@amd.com>
- <2023071817-floss-visibly-396a@gregkh>
- <f5b7216c-8e6f-16c4-6902-dc8a04997fb9@amd.com>
+        Wed, 19 Jul 2023 09:38:28 -0400
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB9DE5;
+        Wed, 19 Jul 2023 06:38:27 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-57764a6bf8cso71984547b3.3;
+        Wed, 19 Jul 2023 06:38:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689773907; x=1692365907;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=4SW8uOZK/M3FIyC+ZihHbXBDgWbo0K+gK3nMprTplwY=;
+        b=OJ2XS5hw21iiVMy63Nc6I11QW86QUgpHL5wlTk/SH+hU/RDZUnDmIYj2ia40GFt3Wf
+         Ss2ZAPmHwPjFc85dNoO0QxX4BdRV9+5i2urOUcWij/J2HMSLS6KQhXkn1/ow4MCubaPy
+         lmuGjiB2JvAgZ/SpACSXNlQr/TxZLq/Z3V24HCBOz8KHGgv5josLFQBIfjFOSmliO7lK
+         7YuzFT61K+51rnLT+STGVdi5hUUa4pR0GzWOBARV8x4pj2KP1vN+ejNhpuCnI/QidzYf
+         74IUCjUhT4qN1UWq5fSk2TvQpDxAzpGiNedbzwfHQ7HbE7o93WUa0fkY8yIb3d+7eR7H
+         mHmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689773907; x=1692365907;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4SW8uOZK/M3FIyC+ZihHbXBDgWbo0K+gK3nMprTplwY=;
+        b=OEiGSbF6d4cHZvQsREe5rqTOiPtxt2Bdd/pcEXbxrdsbKcgDMSyMmrp4FYpYUn6hDA
+         iQteu9wPZZqPFUprcXe/ctl/T0WQdez2dBHavuPGOs2sMqepU5PVTHTk6l2lB+jngkYh
+         heXpaLTnOMZsdsO/QufVu4xfhaGwR3jQMKpVg6rN2TQRaiK8BgY/ICBuk6/cGhfZsu0l
+         Jmlo9NQT2pA0aMR/ZdAASqgRIritFK+RFWj57c30pqm83PvDij3FyM7T5xZFCCV7q3jH
+         +I6r2yxLcBnsuBM/VLkIOEUO742vuMtgA6qx3ELIRR66jArfdIGDoMVn6Ewcyvt4GCyg
+         m6hw==
+X-Gm-Message-State: ABy/qLY3fL+TEOJUkZweCGR3bszx65GM6CPjze/2a3veWH1MEmbwr4JK
+        pwNyDRF444UVqQuYZYep3cM=
+X-Google-Smtp-Source: APBJJlEdoeXvVWnGoO0/djpd45PCLlunRAhNUFdl/sElIJ5HzMwHIZsHZWQC843xxSynt7KZz1XtlA==
+X-Received: by 2002:a81:5f45:0:b0:573:b42b:4e27 with SMTP id t66-20020a815f45000000b00573b42b4e27mr3243372ywb.16.1689773905270;
+        Wed, 19 Jul 2023 06:38:25 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l10-20020a0de20a000000b0057a5302e2fesm1022721ywe.5.2023.07.19.06.38.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 06:38:24 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <8248bfb3-02fb-ec8d-8742-169a393abb6e@roeck-us.net>
+Date:   Wed, 19 Jul 2023 06:38:22 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f5b7216c-8e6f-16c4-6902-dc8a04997fb9@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v6 3/3] watchdog:rit_wdt: Add support for WDIOF_CARDRESET
+Content-Language: en-US
+To:     huaqian.li@siemens.com, wim@linux-watchdog.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     huaqianlee@gmail.com, nm@ti.com, vigneshr@ti.com,
+        kristo@kernel.org, linux-watchdog@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, jan.kiszka@siemens.com,
+        baocheng.su@siemens.com
+References: <20230718021007.1338761-1-huaqian.li@siemens.com>
+ <20230718021007.1338761-4-huaqian.li@siemens.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230718021007.1338761-4-huaqian.li@siemens.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 06:06:40PM +0530, Gupta, Nipun wrote:
+On 7/17/23 19:10, huaqian.li@siemens.com wrote:
+> From: Li Hua Qian <huaqian.li@siemens.com>
 > 
+> This patch adds the WDIOF_CARDRESET support for the platform watchdog
+> whose hardware does not support this feature, to know if the board
+> reboot is due to a watchdog reset.
 > 
-> On 7/18/2023 7:16 PM, Greg KH wrote:
-> > On Tue, Jul 18, 2023 at 03:36:51PM +0530, Nipun Gupta wrote:
-> > > Introduce cdx_set_master() and cdx_clear_master() APIs
-> > > to support enable and disable of bus mastering. Drivers
-> > > need to use these APIs to enable/disable DMAs from the
-> > > CDX devices.
-> > 
-> > You do have a full 72 columns, why not use that?
+> This is done via reserved memory(RAM), which indicates if specific
+> info saved, triggering the watchdog reset in last boot.
 > 
-> sure, will update accordingly.
-> 
-> > 
-> > > Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
-> > > Reviewed-by: Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>
-> > > ---
-> > >   drivers/cdx/cdx.c                       | 32 ++++++++++++++
-> > >   drivers/cdx/controller/cdx_controller.c |  4 ++
-> > >   drivers/cdx/controller/mcdi_functions.c | 57 +++++++++++++++++++++++++
-> > >   drivers/cdx/controller/mcdi_functions.h | 13 ++++++
-> > >   include/linux/cdx/cdx_bus.h             | 16 +++++++
-> > >   5 files changed, 122 insertions(+)
-> > > 
-> > > diff --git a/drivers/cdx/cdx.c b/drivers/cdx/cdx.c
-> > > index d2cad4c670a0..efb24672b7d9 100644
-> > > --- a/drivers/cdx/cdx.c
-> > > +++ b/drivers/cdx/cdx.c
-> > > @@ -182,6 +182,38 @@ cdx_match_id(const struct cdx_device_id *ids, struct cdx_device *dev)
-> > >   	return NULL;
-> > >   }
-> > > +int cdx_set_master(struct cdx_device *cdx_dev)
-> > > +{
-> > > +	struct cdx_controller *cdx = cdx_dev->cdx;
-> > > +	struct cdx_device_config dev_config;
-> > > +	int ret;
-> > > +
-> > > +	dev_config.type = CDX_DEV_BUS_MASTER_CONF;
-> > > +	dev_config.bme = true;
-> > 
-> > What is "bme"?
-> 
-> This is bus master enable. I will add a comment on the structure definition.
+> Signed-off-by: Li Hua Qian <huaqian.li@siemens.com>
 
-Better yet, spell it out "bus_master_enable" so no one has to look up
-the comment, no need to try to make cryptic variable names :)
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-thanks,
+> ---
+>   drivers/watchdog/rti_wdt.c | 48 ++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 48 insertions(+)
+> 
+> diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
+> index ce8f18e93aa9..901109d979f0 100644
+> --- a/drivers/watchdog/rti_wdt.c
+> +++ b/drivers/watchdog/rti_wdt.c
+> @@ -14,6 +14,8 @@
+>   #include <linux/mod_devicetable.h>
+>   #include <linux/module.h>
+>   #include <linux/moduleparam.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+>   #include <linux/platform_device.h>
+>   #include <linux/pm_runtime.h>
+>   #include <linux/types.h>
+> @@ -52,6 +54,11 @@
+>   
+>   #define DWDST			BIT(1)
+>   
+> +#define PON_REASON_SOF_NUM	0xBBBBCCCC
+> +#define PON_REASON_MAGIC_NUM	0xDDDDDDDD
+> +#define PON_REASON_EOF_NUM	0xCCCCBBBB
+> +#define RESERVED_MEM_MIN_SIZE	12
+> +
+>   static int heartbeat = DEFAULT_HEARTBEAT;
+>   
+>   /*
+> @@ -198,6 +205,11 @@ static int rti_wdt_probe(struct platform_device *pdev)
+>   	struct rti_wdt_device *wdt;
+>   	struct clk *clk;
+>   	u32 last_ping = 0;
+> +	struct device_node *node;
+> +	u32 reserved_mem_size;
+> +	struct resource res;
+> +	u32 *vaddr;
+> +	u64 paddr;
+>   
+>   	wdt = devm_kzalloc(dev, sizeof(*wdt), GFP_KERNEL);
+>   	if (!wdt)
+> @@ -284,6 +296,42 @@ static int rti_wdt_probe(struct platform_device *pdev)
+>   		}
+>   	}
+>   
+> +	node = of_parse_phandle(pdev->dev.of_node, "memory-region", 0);
+> +	if (node) {
+> +		ret = of_address_to_resource(node, 0, &res);
+> +		if (ret) {
+> +			dev_err(dev, "No memory address assigned to the region.\n");
+> +			goto err_iomap;
+> +		}
+> +
+> +		/*
+> +		 * If reserved memory is defined for watchdog reset cause.
+> +		 * Readout the Power-on(PON) reason and pass to bootstatus.
+> +		 */
+> +		paddr = res.start;
+> +		reserved_mem_size = resource_size(&res);
+> +		if (reserved_mem_size < RESERVED_MEM_MIN_SIZE) {
+> +			dev_err(dev, "The size of reserved memory is too small.\n");
+> +			ret = -EINVAL;
+> +			goto err_iomap;
+> +		}
+> +
+> +		vaddr = memremap(paddr, reserved_mem_size, MEMREMAP_WB);
+> +		if (vaddr == NULL) {
+> +			dev_err(dev, "Failed to map memory-region.\n");
+> +			ret = -ENOMEM;
+> +			goto err_iomap;
+> +		}
+> +
+> +		if (vaddr[0] == PON_REASON_SOF_NUM &&
+> +		    vaddr[1] == PON_REASON_MAGIC_NUM &&
+> +		    vaddr[2] == PON_REASON_EOF_NUM) {
+> +			wdd->bootstatus |= WDIOF_CARDRESET;
+> +		}
+> +		memset(vaddr, 0, reserved_mem_size);
+> +		memunmap(vaddr);
+> +	}
+> +
+>   	watchdog_init_timeout(wdd, heartbeat, dev);
+>   
+>   	ret = watchdog_register_device(wdd);
 
-greg k-h
