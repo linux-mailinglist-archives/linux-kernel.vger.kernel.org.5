@@ -2,157 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 409FC758D59
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A91F758D5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 08:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbjGSFzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 01:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38652 "EHLO
+        id S229672AbjGSGA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 02:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjGSFzj (ORCPT
+        with ESMTP id S229464AbjGSGA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 01:55:39 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on20616.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5b::616])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37B11BF5;
-        Tue, 18 Jul 2023 22:55:37 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QwxTSbPGSWFvr5vw34xJp0nLdVW9In6ewt1yz30wLLVwuH2vl+46ANXeszZLYiXaeLkST7NMV76VSxxMCDx5eTDN8uf2acJkLYgv2qoUneqt5XuJ17eG5RDYy3XIzDIQfgIteay4JeOhmjMYDp3QLLzP31TcHbgBGP7asLSvaGy3cRHgyDJRtbHAvQ1KA9Ek8BZ2BbzREkDcjbekptlX08SZyPkMEOxdvyoPKdqpK/BOgII4J4o2p7xkPUa92Oulnd4nzkmWe0WM5LEU1N6l8EA2Ay6VolAbTANas00IUi+cueRlZ3k1ooTuGXp4dkiKIcE0Gzt9Td4o7A4WxVNG7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UUeyV/a0Ef2Mwzszx1aKGv4bCxudbDg6NQeJdkKrGJQ=;
- b=oPV82KVVRXByWYodx7XesA2EC1ggBDtEfViOSXzeQKrs0meCpCoNzKzWwM0eUnonwu5OnZkobJp/GJfQ9cVrtEEJvT11sJZVvhBHOJ1jDXurfqhNzXCM6yNckq47Jd3+z1FazNmueIUIZKRW2Sjbb1sL/HR2i/eCXzMGtoHhj5QO//xf7CoBOPh3TYYQ5TFyM+INSlr2r7kHk+sGQFyry9QQvKqtpUHvU6SUQp/WUHDpmZwQBF9bGLS2NXjVEJvy5K/n4eev0Wcf2goqjcwISVcYjnSWZRjWZi4zGXaCQgnyYM+PBhH/6ZDt/sqN6frEwvVDRHou01qnGV7DjMrL7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UUeyV/a0Ef2Mwzszx1aKGv4bCxudbDg6NQeJdkKrGJQ=;
- b=Ku04ewdac5/7UGLJ4i2x5nie1Df/3oLH6xnteLZDVHQwaL7hFcMqSNus4s6xU9kgrE2+ux1mkH9UaX6pRW9Odl44agOjceACXW+DpDOV0wqB3NAuOcO9p7i+UpJBScfkwQLQz40/Y0UKWTvFypG+6L/yL7JfrFeDr3TIRhlhV53RBmoPDicshoEhZmgGL1yLSfMN8RNC0LyXKux3v4cdH6wqiSfuLChsAhIAaQbwFQfwHt1ex3M3ohaQ8wnVTb/pAs4Xlg0MerabCVo6fTI93kA+Ju5Ice1R58nEQKwNToZBbW0kp2fmP4jmgGyWQTROysY8UOM4TP6ErlBLlwrCog==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
- by IA0PR12MB8280.namprd12.prod.outlook.com (2603:10b6:208:3df::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Wed, 19 Jul
- 2023 05:55:35 +0000
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::cd5e:7e33:c2c9:fb74]) by BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::cd5e:7e33:c2c9:fb74%7]) with mapi id 15.20.6588.031; Wed, 19 Jul 2023
- 05:55:34 +0000
-References: <20230719143233.1c283b0e@canb.auug.org.au>
-User-agent: mu4e 1.8.13; emacs 28.2
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the mm tree
-Date:   Wed, 19 Jul 2023 15:55:16 +1000
-In-reply-to: <20230719143233.1c283b0e@canb.auug.org.au>
-Message-ID: <87bkg8la27.fsf@nvdebian.thelocal>
-Content-Type: text/plain
-X-ClientProxiedBy: SY6PR01CA0116.ausprd01.prod.outlook.com
- (2603:10c6:10:1b8::12) To BYAPR12MB3176.namprd12.prod.outlook.com
- (2603:10b6:a03:134::26)
+        Wed, 19 Jul 2023 02:00:57 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232AB1BF5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 23:00:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689746452; x=1721282452;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=Lrm8C4LkSKxSTMxpNCc3TGkjG2hlTDS4b5Oxvf/6LnY=;
+  b=VSK0L98oH8LzJDV84j7a+0WtCBU3L6TBK8iJNLVfTd+9Dlkvmp7UjYl+
+   unizjyx++ePuxa82zQV1XtKC89/W+Mon11FwXjQkFjesi4TF4oEZ/Qk1Q
+   bRsUYCHnYWCm4u9NXVCNf1MiExZSM+pNSguyLfZsN9YZ+CKyVNAJtdsg1
+   S5wTBEA9DScXy4+IVUEo9xxYHmmMfOjP3EdPITcjj2BMM8KX6biM+/hZE
+   0lxd/X8XGNwaDbntgZAE+Ws+nti5bBL+ZVqd6iuGW0bmoZcr+sel67tzT
+   NdX11owCcW8vwL+2NScDIEKZxm+77T9llRhHA95P5ECVC4thGQ7TOc/aT
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="346682836"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="346682836"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 23:00:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="847940388"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="847940388"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 23:00:43 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Michal Hocko <mhocko@suse.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Arjan Van De Ven <arjan@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <jweiner@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [RFC 2/2] mm: alloc/free depth based PCP high auto-tuning
+References: <20230710065325.290366-1-ying.huang@intel.com>
+        <20230710065325.290366-3-ying.huang@intel.com>
+        <ZK060sMG0GfC5gUS@dhcp22.suse.cz>
+        <20230712090526.thk2l7sbdcdsllfi@techsingularity.net>
+        <871qhcdwa1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <20230714140710.5xbesq6xguhcbyvi@techsingularity.net>
+        <87pm4qdhk4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <20230717135017.7ro76lsaninbazvf@techsingularity.net>
+        <87lefeca2z.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <20230718123428.jcy4avtjg3rhuh7i@techsingularity.net>
+Date:   Wed, 19 Jul 2023 13:59:00 +0800
+In-Reply-To: <20230718123428.jcy4avtjg3rhuh7i@techsingularity.net> (Mel
+        Gorman's message of "Tue, 18 Jul 2023 13:34:28 +0100")
+Message-ID: <87mszsbfx7.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|IA0PR12MB8280:EE_
-X-MS-Office365-Filtering-Correlation-Id: eca6d7d0-3745-4eec-30fe-08db881cc4ce
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rZDkGxnc1kwscS3lq24P/RO8UUOeGuMSeEv0NVDGDge8RWwuma01mnknJR+uB8l5UX3S7RhIVQzOFC/+HDYzBZ+pweTR6/v3lQX9Q6GMpNxZX6HxbVyoXupi/upVxhQhN9gBFFz+ez8Zyvc+INI+bdYcbsEUGiSBSWp35+PEj6w/FmTIAgtrYgSY38VpdKjcXcGgwvPficHxLHrHSUp4tT2d1e3lpoDctct/6jre5NZZQK2PJ+vs+laNWY0oFu3PAhCuRYgO4ozWujO7ITDxtGcuihlqU9dumjGYsofndxHgf7QgzdyNvr0ZCEn+ExK7WoYzPUmvN21PtjsHJup0RfAA647Ujor8UbzIjPNFArzgh/avSvFHI5phdsMifpQ8NpTmqT7AninipR0wFUmo+6ulvuhleLA0scolxS5wNY3guHBcASNMSWpxWavtLxS+29Vjlx66AvERsH8TMO/4MwgrVzyy60llJF9DKWVa5r7H4zy7Y9a4c3TsRSfUFMA9Xl1Lk/Qv3YYuPrHqrSTD6EmhqITU30vEbNBORECqnAEXMIWSb+CbYlI2NZo37vnu
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(39860400002)(136003)(366004)(396003)(451199021)(478600001)(6666004)(6486002)(66556008)(54906003)(83380400001)(86362001)(9686003)(2906002)(6506007)(186003)(6512007)(316002)(38100700002)(26005)(6916009)(4326008)(66946007)(41300700001)(66476007)(5660300002)(8676002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?q0B6i4MU5TalezM02ku9ZQ6kWzpgAIg8UGTPQo4EBqlCGsul2ucFBC5VUpBP?=
- =?us-ascii?Q?8SIH/RJ3c4L89EkAjD/rxJhCvOUHZoA5UNAA20G6AyolOYlQ7oCVSgKIpCO0?=
- =?us-ascii?Q?Qgk2JkJhU8CpIpwakRO3ESEZXnIX7lt+jZx2QZ0G5sSdTEyD3iuH8sDzCUe6?=
- =?us-ascii?Q?KGl2rFr5yz7AxJSxqWEpOzMVIU1w8DOX8tfkz6LioBoXKPFeg+eccMpmQcdi?=
- =?us-ascii?Q?v31n1WTBZDqhLMO7Lbsp+hvbzb5dmQbr2Gu2HpVYhnoHDNTome/PUncohu7Q?=
- =?us-ascii?Q?HcIdAMuzVqvpgXriC2XB9YCQQosWNq8199KUQojn0eCSs8Jh55b65+5bIGer?=
- =?us-ascii?Q?236HFjm01f1qvLldoK5IaOr+kbeqa0nlbTUBtirhc1XwCH6zzTa2abDBinMb?=
- =?us-ascii?Q?BcddxLpznsI+r1WrDVHlZaZOscfd6zKuyoPG1YNkvzWjujZXy0AXgn6zmhS/?=
- =?us-ascii?Q?r/ArYZK/cO16aIQinTRqC68PQ7TVQd0X6LWA1VvdzjLzisGALDqruD43iQhO?=
- =?us-ascii?Q?1pFRdxaVHIeQbewMyU3M9RqEDAEEoDaVX/mM2Sd2PvF5yR4G3OB9CgjJsJ8g?=
- =?us-ascii?Q?KsmKIkOAmpa5Po0XC3/4MeaIz9cpdBy1bW6TRJuLiQCJaIn72NuOqpkDykO5?=
- =?us-ascii?Q?TxiWVWQhvcRUQ/G6VCu8Zo3hrXB+En7cEmzHqo67GBCJZz+lnQ1jQqnYjkJl?=
- =?us-ascii?Q?fZpk1VwBTh6u/MixQ/J6rZrrp9+kdy0OtVf1qd1NIoFe4zyVH7bseOvFqowF?=
- =?us-ascii?Q?nx2qrdktr86jC976sVVGjm08PMLoFrcE9U+Re6/yM6oogAJQWG0rS2J4xeO5?=
- =?us-ascii?Q?YbTlcsGN8Q+jSj/s5nZXUruZQ6JnzBii0X3+niZbQhB9pJzUxndercsUQX2s?=
- =?us-ascii?Q?X2GzwleDOdXlMw9NUBjgBi4xZre9wWPURZ23AhPDGYVrW+5JioBPuT0A+cCQ?=
- =?us-ascii?Q?iyv+3mO8FdkKvvFatZFRcLvj/l/qCMdOpSWjLUdL7+HVgc5yE3KXSFK43ecv?=
- =?us-ascii?Q?TEr+kAYQzTGwWIEZPPeBWEn6UJ73nmiYWwU6mcfTNf0ybVHQKVh91LZ8nHlW?=
- =?us-ascii?Q?6NkN4StgL1LW0z6rTuUBqWk1HaxR2svmCZyIs5wKIK5H5QwbhXnSZLbDbkbD?=
- =?us-ascii?Q?Wpy2pX/AUWpzjVVH6bhZeDSrvQlTAp5UmHUz03OvapqojhgpK9CxD4TDMY/C?=
- =?us-ascii?Q?b3bupBt94ERCAQsMqep8nfOOinDXDDKMXKjC9SM041+GYj8PHG7h5KWPEmtZ?=
- =?us-ascii?Q?avGitjBcz/yY74dX0FsOiBNxlIRw8S2Ut4HdSbAcJT6PV4Z5TGhYFed7ihbV?=
- =?us-ascii?Q?Y3T/McZS4yEbNCT98+nYaIq4dJYow9ulRNFhdQCE4UUETs+T5r/CnR8cdScZ?=
- =?us-ascii?Q?5rnsFjc5Ki9b0Fe1ZnEuxlv0VP/KTi1PMPGTOsVIfWm79gSXTPl/q6JfN5UA?=
- =?us-ascii?Q?QiwaFUP7qqmrRtxF7pVKcFcp00CwrkZ1QHHOdkUSBjirHSgyv++SAID4QkJr?=
- =?us-ascii?Q?vMHIktzqsGT6UhKP72D+M9IITO7xw5DlGYCmJMgd04NPBZTDE9K4EyTgMhJ+?=
- =?us-ascii?Q?MBzuKCCmOJ+tSVrLxnKd/cXMCX1wPEVScm/v1W5d?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eca6d7d0-3745-4eec-30fe-08db881cc4ce
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 05:55:34.6281
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Rh0Z3g+m5sM712CtE8Pz+C5t3BwukVznqVNO2y5sw35MHZpZFyjXwpkfe0zQtijhVXHHM3I7EDR0i7vVXPpaNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8280
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Mel Gorman <mgorman@techsingularity.net> writes:
 
-Thanks Stephen.
-
-Looks like a conflict with 9c47011d3302 ("arm64: support
-batched/deferred tlb shootdown during page reclamation/migration") which
-restructured that code slightly. I have to respin my series anyway so
-will rebase on mm-unstable rather than v6.5-rc2.
-
- - Alistair
-
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
-
-> [[PGP Signed Part:Undecided]]
-> Hi all,
+> On Tue, Jul 18, 2023 at 08:55:16AM +0800, Huang, Ying wrote:
+>> Mel Gorman <mgorman@techsingularity.net> writes:
+>> 
+>> > On Mon, Jul 17, 2023 at 05:16:11PM +0800, Huang, Ying wrote:
+>> >> Mel Gorman <mgorman@techsingularity.net> writes:
+>> >> 
+>> >> > Batch should have a much lower maximum than high because it's a deferred cost
+>> >> > that gets assigned to an arbitrary task. The worst case is where a process
+>> >> > that is a light user of the allocator incurs the full cost of a refill/drain.
+>> >> >
+>> >> > Again, intuitively this may be PID Control problem for the "Mix" case
+>> >> > to estimate the size of high required to minimise drains/allocs as each
+>> >> > drain/alloc is potentially a lock contention. The catchall for corner
+>> >> > cases would be to decay high from vmstat context based on pcp->expires. The
+>> >> > decay would prevent the "high" being pinned at an artifically high value
+>> >> > without any zone lock contention for prolonged periods of time and also
+>> >> > mitigate worst-case due to state being per-cpu. The downside is that "high"
+>> >> > would also oscillate for a continuous steady allocation pattern as the PID
+>> >> > control might pick an ideal value suitable for a long period of time with
+>> >> > the "decay" disrupting that ideal value.
+>> >> 
+>> >> Maybe we can track the minimal value of pcp->count.  If it's small
+>> >> enough recently, we can avoid to decay pcp->high.  Because the pages in
+>> >> PCP are used for allocations instead of idle.
+>> >
+>> > Implement as a separate patch. I suspect this type of heuristic will be
+>> > very benchmark specific and the complexity may not be worth it in the
+>> > general case.
+>> 
+>> OK.
+>> 
+>> >> Another question is as follows.
+>> >> 
+>> >> For example, on CPU A, a large number of pages are freed, and we
+>> >> maximize batch and high.  So, a large number of pages are put in PCP.
+>> >> Then, the possible situations may be,
+>> >> 
+>> >> a) a large number of pages are allocated on CPU A after some time
+>> >> b) a large number of pages are allocated on another CPU B
+>> >> 
+>> >> For a), we want the pages are kept in PCP of CPU A as long as possible.
+>> >> For b), we want the pages are kept in PCP of CPU A as short as possible.
+>> >> I think that we need to balance between them.  What is the reasonable
+>> >> time to keep pages in PCP without many allocations?
+>> >> 
+>> >
+>> > This would be a case where you're relying on vmstat to drain the PCP after
+>> > a period of time as it is a corner case.
+>> 
+>> Yes.  The remaining question is how long should "a period of time" be?
 >
-> After merging the mm tree, today's linux-next build (arm64 defconfig)
-> failed like this:
->
-> In file included from arch/arm64/include/asm/pgtable.h:15,
->                  from include/linux/pgtable.h:6,
->                  from arch/arm64/include/asm/io.h:12,
->                  from include/linux/io.h:13,
->                  from include/acpi/acpi_io.h:5,
->                  from include/linux/acpi.h:37,
->                  from include/acpi/apei.h:9,
->                  from include/acpi/ghes.h:5,
->                  from include/linux/arm_sdei.h:8,
->                  from arch/arm64/kernel/asm-offsets.c:10:
-> arch/arm64/include/asm/tlbflush.h: In function '__flush_tlb_page_nosync':
-> arch/arm64/include/asm/tlbflush.h:268:53: error: 'vma' undeclared (first use in this function); did you mean 'cma'?
->   268 |         mmu_notifier_arch_invalidate_secondary_tlbs(vma->vm_mm, uaddr & PAGE_MASK,
->       |                                                     ^~~
->       |                                                     cma
->
-> Caused by commit
->
->   8c2be11e06f4 ("mmu_notifiers: call arch_invalidate_secondary_tlbs() when invalidating TLBs")
->
-> I have reverted that commit (and the following clear
-> one and the two
-> earlier ones - otherwise it would not buildfrom) for today.
+> Match the time used for draining "remote" pages from the PCP lists. The
+> choice is arbitrary and no matter what value is chosen, it'll be possible
+> to build an adverse workload.
 
+OK.
+
+>> If it's long, the pages in PCP can be used for allocation after some
+>> time.  If it's short the pages can be put in buddy, so can be used by
+>> other workloads if needed.
+>> 
+>
+> Assume that the main reason to expire pages and put them back on the buddy
+> list is to avoid premature allocation failures due to pages pinned on the
+> PCP. Once pages are going back onto the buddy list and the expiry is hit,
+> it might as well be assumed that the pages are cache-cold. Some bad corner
+> cases should be mitigated by disabling the adapative sizing when reclaim is
+> active.
+
+Yes.  This can be mitigated, but the page allocation performance may be
+hurt.
+
+> The big remaaining corner case to watch out for is where the sum
+> of the boosted pcp->high exceeds the low watermark.  If that should ever
+> happen then potentially a premature OOM happens because the watermarks
+> are fine so no reclaim is active but no pages are available. It may even
+> be the case that the sum of pcp->high should not exceed *min* as that
+> corner case means that processes may prematurely enter direct reclaim
+> (not as bad as OOM but still bad).
+
+Sorry, I don't understand this.  When pages are moved from buddy to PCP,
+zone NR_FREE_PAGES will be decreased in rmqueue_bulk().  That is, pages
+in PCP will be counted as used instead of free.  And, in
+zone_watermark_ok*() and zone_watermark_fast(), zone NR_FREE_PAGES is
+used to check watermark.  So, if my understanding were correct, if the
+number of pages in PCP is larger than low/min watermark, we can still
+trigger reclaim.  Whether is my understanding correct?
+
+>> Anyway, I will do some experiment for that.
+>> 
+>> > You cannot reasonably detect the pattern on two separate per-cpu lists
+>> > without either inspecting remote CPU state or maintaining global
+>> > state. Either would incur cache miss penalties that probably cost more
+>> > than the heuristic saves.
+>> 
+>> Yes.  Totally agree.
+
+Best Regards,
+Huang, Ying
