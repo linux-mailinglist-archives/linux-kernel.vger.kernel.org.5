@@ -2,59 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D67EE7595CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 14:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E817595DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 14:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbjGSMn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 08:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
+        id S229563AbjGSMrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 08:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbjGSMnO (ORCPT
+        with ESMTP id S229447AbjGSMrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 08:43:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC1A8173B;
-        Wed, 19 Jul 2023 05:42:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Wed, 19 Jul 2023 08:47:47 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DE8F0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 05:47:46 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 713436090A;
-        Wed, 19 Jul 2023 12:42:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CE4AC433C7;
-        Wed, 19 Jul 2023 12:42:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689770574;
-        bh=HyVoxX8AEi9B94ASA5k8kd4DUFL0wTVKIY1KcFtkfDY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A+Kws3lxThBlltt/f12GSaRAtAPzhFg7bYb/YuJz81qIKKbGOM8s0gZ93UM2nntD5
-         WTdVlTaZ9UpAoV01CmvQTGSWbkfflC6gz7szk9vgcbt2wAzyyXirymJ0HiE7ttgdUL
-         YrItBCsCKRLpUeWupKKLHiWcZHkLDvhVbHTjOeGNGyu8qgdUud2B18ijrklNUgxOor
-         WG8pU/E6h7bNVbGXA3cJ7bAaDoY616B26mEroXMJzLXzvnixNrRAXWezamCq4SIPa0
-         A7sTZ8nQMcfWQ4aGevhi6NChrMr/u7EmXTcVJDRJbFSXBTvo4Hx9UTBVoAYtpCjXuQ
-         4vZGjWCIvDUIg==
-Date:   Wed, 19 Jul 2023 13:42:50 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     =?utf-8?B?5p2c5pWP5p2w?= <duminjie@vivo.com>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        "open list:FREESCALE DSPI DRIVER" <linux-spi@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:PTP HARDWARE CLOCK SUPPORT" <netdev@vger.kernel.org>,
-        "opensource.kernel" <opensource.kernel@vivo.com>
-Subject: Re: [PATCH v1] spi: fsl-dspi: Use dev_err_probe() in
- dspi_request_dma()
-Message-ID: <dd60d083-6ffe-4d74-8c5b-588a62303b34@sirena.org.uk>
-References: <20230719071239.4736-1-duminjie@vivo.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yplmLVqcDsA0Kwdt"
-Content-Disposition: inline
-In-Reply-To: <20230719071239.4736-1-duminjie@vivo.com>
-X-Cookie: They just buzzed and buzzed...buzzed.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B731F1FF13;
+        Wed, 19 Jul 2023 12:47:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689770864; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kxETokD9SAc/wRhOVt8MvBPZMGFuOcbQTtb5gLkVU78=;
+        b=1aKSfbgn2PvswS2cwrPQIVjoUw4GqWZswnTB1uZtTDGT1ZQqXfBd22iKJ8Va/dV5Dfx9CL
+        RY+5IRBgau/GJ0d0VvM2Za/biKliJ46PMbzbesIxY3hYKnK6DdLxXAa11iQvrZmbtdZcW1
+        jGdnaZJfhU6Hnl+9lr8FO35n9FQkZKA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689770864;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kxETokD9SAc/wRhOVt8MvBPZMGFuOcbQTtb5gLkVU78=;
+        b=Ov/01hsT/NEJyHEdy7OhhqmQhtaQFxa+O3GW/ggQ+MryZOe8HiEwslYkGrDMPjhnnOsL2b
+        ed085g26KkbFviAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9614D13460;
+        Wed, 19 Jul 2023 12:47:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id EvgaJHDbt2SmEAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Wed, 19 Jul 2023 12:47:44 +0000
+Date:   Wed, 19 Jul 2023 14:47:44 +0200
+Message-ID: <87edl4f4pb.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Alsa-devel <alsa-devel@alsa-project.org>,
+        sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Matthew Auld <matthew.auld@intel.com>
+Subject: Re: [PATCH] ASoC: SOF: Intel: Remove deferred probe for SOF
+In-Reply-To: <2ed288d0-c8fe-1856-dbe9-74f4f7c075ba@linux.intel.com>
+References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com>
+        <20230718084522.116952-7-maarten.lankhorst@linux.intel.com>
+        <alpine.DEB.2.22.394.2307181922160.3532114@eliteleevi.tm.intel.com>
+        <874jm0modf.wl-tiwai@suse.de>
+        <66d22637-069f-5262-2249-6041ef9d4614@linux.intel.com>
+        <875y6g5feo.wl-tiwai@suse.de>
+        <2ed288d0-c8fe-1856-dbe9-74f4f7c075ba@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,36 +87,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 19 Jul 2023 14:13:59 +0200,
+Maarten Lankhorst wrote:
+> 
+> 
+> On 2023-07-19 13:06, Takashi Iwai wrote:
+> > On Wed, 19 Jul 2023 11:48:06 +0200,
+> > Maarten Lankhorst wrote:
+> >> 
+> >>      The 60 seconds timeout is a thing "better than complete disablement",
+> >>      so it's not ideal, either.  Maybe we can add something like the
+> >>      following:
+> >>           - Check when the deferred probe takes too long, and warn
+> >> it
+> >>      - Provide some runtime option to disable the component binding, so
+> >>        that user can work around it if needed
+> >>      A module option to snd_hdac_i915_init would probably be the
+> >> least of all evils
+> >> here.
+> > 
+> > Yes, probably it's the easiest option and sufficient.
+> > 
+> > 
+> > thanks,
+> > 
+> > Takashi
+> Hey,
+> 
+> Patch below, can be applied immediately iresspective of the other patches.
+> 
+> ---->8----------
+> 
+> Selecting CONFIG_DRM selects CONFIG_VIDEO_NOMODESET, which exports
+> video_firmware_drivers_only(). This can be used as a first
+> approximation
+> on whether i915 will be available. It's safe to use as this is only
+> built when CONFIG_SND_HDA_I915 is selected by CONFIG_I915.
+> 
+> It's not completely fool proof, as you can boot with "nomodeset
+> i915.modeset=1" to make i915 load regardless, or use
+> "i915.force_probe=!*" to never load i915, but the common case of booting
+> with nomodeset to disable all GPU drivers this will work as intended.
 
---yplmLVqcDsA0Kwdt
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The check of video_firmware_drivers_only() may help a bit, but I
+believe we still need an option to override the behavior, from the
+same reason as why i915.modeset option behaves so.  In general,
+nomodeset is for a debugging purpose, and without an option, you'll
+have no way to re-enable the HD-audio even if you could reload the
+graphics driver.
 
-On Wed, Jul 19, 2023 at 07:13:02AM +0000, =E6=9D=9C=E6=95=8F=E6=9D=B0 wrote:
 
-> -		dev_err(dev, "rx dma channel not available\n");
-> -		ret =3D PTR_ERR(dma->chan_rx);
-> -		return ret;
-> +		return dev_err_probe(dev, PTR_ERR(dma->chan_rx),
-> +							"rx dma channel not available\n");
+thanks,
 
-The indentation on the second line is messed up here, it's far too
-indented.
+Takashi
 
---yplmLVqcDsA0Kwdt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS32kkACgkQJNaLcl1U
-h9AsAwf/XRlF/OUeW8KspA4enro+hJVLmo1S1OP2Q+sUoS0nCV2LL3aj++22ZNVb
-gB0Jmw0xhhdm9x/mw/oI6SZ1UJnKtRg4af3SF40tzTp5RgjkVOHWq0AethK9kLvr
-DN4mrd8DunsuOCSoNOXHVDsHKtVwE7LQ9aNgSpHTdK/XVz20HnRYasSYzYFI81Al
-FIzP816JKvW6fDqWSA2UmDGrwSjkonQxJHw4pRW/dhrDVqCdmCmj43JvRcH1XDo5
-N2URSskEi/8AfIUYsHAkXdGfptKBFa/3xM2IeQZKCT1T+TzwqlozFcSx5D7YtS+R
-phO5DyksBpm4CRd+VgHt9wwsc6zo7w==
-=unq7
------END PGP SIGNATURE-----
-
---yplmLVqcDsA0Kwdt--
+> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> ---
+> diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+> index 1637dc6e630a6..90bcf84f7b2ce 100644
+> --- a/sound/hda/hdac_i915.c
+> +++ b/sound/hda/hdac_i915.c
+> @@ -11,6 +11,8 @@
+>  #include <sound/hda_i915.h>
+>  #include <sound/hda_register.h>
+> 
+> +#include <video/nomodeset.h>
+> +
+>  #define IS_HSW_CONTROLLER(pci) (((pci)->device == 0x0a0c) || \
+>  				((pci)->device == 0x0c0c) || \
+>  				((pci)->device == 0x0d0c) || \
+> @@ -122,6 +124,9 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
+>  {
+>  	struct pci_dev *display_dev = NULL;
+> 
+> +	if (video_firmware_drivers_only())
+> +		return false;
+> +
+>  	for_each_pci_dev(display_dev) {
+>  		if (display_dev->vendor == PCI_VENDOR_ID_INTEL &&
+>  		    (display_dev->class >> 16) == PCI_BASE_CLASS_DISPLAY &&
+> 
