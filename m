@@ -2,112 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0048759497
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9CF1759494
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbjGSLtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 07:49:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34362 "EHLO
+        id S230191AbjGSLth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 07:49:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbjGSLtu (ORCPT
+        with ESMTP id S229456AbjGSLtf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 07:49:50 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52C21705;
-        Wed, 19 Jul 2023 04:49:46 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qM5gT-0002S1-7g; Wed, 19 Jul 2023 13:49:33 +0200
-Message-ID: <444d8158-cc58-761d-a878-91e5d4d28b71@leemhuis.info>
-Date:   Wed, 19 Jul 2023 13:49:32 +0200
+        Wed, 19 Jul 2023 07:49:35 -0400
+Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F55C7
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:49:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1689767362; x=1692359362;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=s3SfUHLDoHQ9D2o5HMY3KB6nOOANyL/Of0yxevezC2c=;
+        b=cRA5U8Q/l4ycIUS0srsopJ6Cc+UNKYh7t3N5sdyehcb48t3/2KZRy6nydPffEJRV
+        2ER+XWtJA+Y55RWpXdc92e3kWKANiOSL1iu3X7Zc0U1hDogfYJ0+WdOnGOueLl/n
+        CLJOe84VSH0mN069La/0Y7ygg9lpVvk3u9pZI3eqLjk=;
+X-AuditID: ac14000a-923ff70000007ecb-10-64b7cdc20574
+Received: from florix.phytec.de (Unknown_Domain [172.25.0.13])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id E5.D8.32459.2CDC7B46; Wed, 19 Jul 2023 13:49:22 +0200 (CEST)
+Received: from Berlix.phytec.de (172.25.0.12) by Florix.phytec.de
+ (172.25.0.13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Wed, 19 Jul
+ 2023 13:49:22 +0200
+Received: from Berlix.phytec.de ([fe80::61cc:ebf0:7375:8768]) by
+ berlix.phytec.de ([fe80::197e:d26b:2ca:c7b4%4]) with mapi id 15.01.2375.018;
+ Wed, 19 Jul 2023 13:49:41 +0200
+From:   =?utf-8?B?U3RlZmFuIFJpZWRtw7xsbGVy?= <S.Riedmueller@phytec.de>
+To:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linux-imx@nxp.com" <linux-imx@nxp.com>,
+        "andrej.picej@norik.com" <andrej.picej@norik.com>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?utf-8?B?U3RlZmFuIE3DvGxsZXItS2xpZXNlcg==?= 
+        <S.Mueller-Klieser@phytec.de>,
+        "upstream@phytec.de" <upstream@phytec.de>
+Subject: Re: [PATCH v2 1/3] ARM: dts: imx6: phytec: fix RTC interrupt level
+Thread-Topic: [PATCH v2 1/3] ARM: dts: imx6: phytec: fix RTC interrupt level
+Thread-Index: AQHZujZYwhDq3JUyW0qf/O3X4BzlVK/A2CcA
+Date:   Wed, 19 Jul 2023 11:49:41 +0000
+Message-ID: <79bb474aaf49fca37ede6cefce241aec6eeade0d.camel@phytec.de>
+References: <20230719114328.2239818-1-andrej.picej@norik.com>
+In-Reply-To: <20230719114328.2239818-1-andrej.picej@norik.com>
+Accept-Language: en-US, de-DE
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.25.0.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <66404B180153F7409EBCA3C558D1CFBB@phytec.de>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: Fwd: Unexplainable packet drop starting at v6.4
-Content-Language: en-US, de-DE
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Andrzej Kacprowski <andrzej.kacprowski@linux.intel.com>,
-        Krystian Pradzynski <krystian.pradzynski@linux.intel.com>,
-        Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
-        Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, hq.dev+kernel@msdfc.xyz
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Networking <netdev@vger.kernel.org>,
-        Linux Intel Ethernet Drivers 
-        <intel-wired-lan@lists.osuosl.org>
-References: <e79edb0f-de89-5041-186f-987d30e0187c@gmail.com>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <e79edb0f-de89-5041-186f-987d30e0187c@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1689767386;d78491b8;
-X-HE-SMSGID: 1qM5gT-0002S1-7g
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrFIsWRmVeSWpSXmKPExsWyRpKBV/fQ2e0pBq3dVhZT9zJarNl7jsli
+        /pFzrBYPr/pbrJq6k8Wi78VDZotNj6+xWnT9WslscXnXHDaL1r1H2C3+bt/EYvFii7gDj8fO
+        WXfZPTat6mTzuHNtD5vH5iX1Ht+/bmD12PhuB5NH/18Dj8+b5AI4orhsUlJzMstSi/TtErgy
+        Oi4+Yi+YwlexZvlcxgbGJ7xdjJwcEgImEove3WXpYuTiEBJYwiSx89FVZgjnAaPEzoN/oJyN
+        jBK/Nn9jA2lhE3CR+NwGYnNxiAgcZ5ZY+2UKWD+zwCkmiTOvHzCDVAkLeEv82t3KCmKLCPhI
+        rFz+ih3CNpL4v/AfkM3BwSKgKrFgtjhImFfATeLsr98sILaQgK3E1hurmEBsTgE7iXNXFoPF
+        GQVkJTob3oHFmQXEJTY9+84K8YOAxJI955khbFGJl4//QcXlJU7cmsYEsopZQFNi/S59iFYL
+        iSPHlkGNUZSY0v2QHeIEQYmTM5+wTGAUn4VkwyyE7llIumch6Z6FpHsBI+sqRqHczOTs1KLM
+        bL2CjMqS1GS9lNRNjKD4F2Hg2sHYN8fjECMTB+MhRgkOZiUR3keXt6UI8aYkVlalFuXHF5Xm
+        pBYfYpTmYFES573fw5QoJJCeWJKanZpakFoEk2Xi4JRqYGQucTwR0PGsvXuGSqn8wzU5cY57
+        Pgnun6o1P1Kszvf8x322j7ZwaLw+f7/aWF5HslXymNunSmapxpenzWfc/CW/qJWhlr/c/MyP
+        D70HZ7ZlHyj7YDZTbGrtwRfaHT0SZXJ9sv8m813b9M8nfGHYBE/bPUwHL7/1z3LPnbxO9pbO
+        wqm3a5/2fFNiKc5INNRiLipOBADOqa5o7QIAAA==
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.07.23 02:51, Bagas Sanjaya wrote:
-> 
-> I notice a regression report on Bugzilla [1]. Quoting from it:
-> 
->> After I updated to 6.4 through Archlinux kernel update, suddenly I noticed random packet losses on my routers like nodes. I have these networking relevant config on my nodes
->>
->> 1. Using archlinux
->> 2. Network config through systemd-networkd
->> 3. Using bird2 for BGP routing, but not relevant to this bug.
->> 4. Using nftables for traffic control, but seems not relevant to this bug. 
->> 5. Not using fail2ban like dymanic filtering tools, at least at L3/L4 level
->>
->> After I ruled out systemd-networkd, nftables related issues. I tracked down issues to kernel.
-> [...]
-> See Bugzilla for the full thread.
-> 
-> Thorsten: The reporter had a bad bisect (some bad commits were marked as good
-> instead), hence SoB chain for culprit (unrelated) ipvu commit is in To:
-> list. I also asked the reporter (also in To:) to provide dmesg and request
-> rerunning bisection, but he doesn't currently have a reliable reproducer.
-> Is it the best I can do?
-
-When a bisection apparently went sideways it's best to not bother the
-culprit's developers with it, they most likely will just be annoyed by
-it (and then they might become annoyed by regression tracking, which we
-need to avoid).
-
-I'd have forwarded this to the network folks, but in a style along the
-lines of "FYI, in case somebody has a idea or has heard about something
-similar and thus can help; if not, no worries, reporter is repeating the
-bisection".
-
-> Anyway, I'm adding this regression to be tracked in regzbot:
-> 
-> #regzbot introduced: a3efabee5878b8 https://bugzilla.kernel.org/show_bug.cgi?id=217678
-> #regzbot title: packet drop on Intel X710-T4L due to ipvu boot fix
->
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217678
-
-Side note for the record: Stephen also forwarded this. And let me also
-clear the commit you specified, as it sounds it's unlikely to be causing
-this.
-
-#regzbot introduced: v6.3..v6.4
-#regzbot monitor:
-https://lore.kernel.org/all/20230717115352.79aecc71@hermes.local/
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+SGkgQW5kcmVqLA0KDQpPbiBXZWQsIDIwMjMtMDctMTkgYXQgMTM6NDMgKzAyMDAsIEFuZHJlaiBQ
+aWNlaiB3cm90ZToNCj4gUlRDIGludGVycnVwdCBsZXZlbCBzaG91bGQgYmUgc2V0IHRvICJMT1ci
+LiBUaGlzIHdhcyByZXZlYWxlZCBieSB0aGUNCj4gaW50cm9kdWN0aW9uIG9mIGNvbW1pdDoNCj4g
+DQo+IMKgIGYxODE5ODdlZjQ3NyAoInJ0YzogbTQxdDgwOiB1c2UgSVJRIGZsYWdzIG9idGFpbmVk
+IGZyb20gZndub2RlIikNCj4gDQo+IHdoaWNoIGNoYW5nZWQgdGhlIHdheSBJUlEgdHlwZSBpcyBv
+YnRhaW5lZC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEFuZHJlaiBQaWNlaiA8YW5kcmVqLnBpY2Vq
+QG5vcmlrLmNvbT4NCg0KUmV2aWV3ZWQtYnk6IFN0ZWZhbiBSaWVkbcO8bGxlciA8cy5yaWVkbXVl
+bGxlckBwaHl0ZWMuZGU+DQoNCj4gLS0tDQo+IENoYW5nZXMgaW4gdjI6DQo+IMKgLSBubyBjaGFu
+Z2VzDQo+IC0tLQ0KPiDCoGFyY2gvYXJtL2Jvb3QvZHRzL254cC9pbXgvaW14NnFkbC1waHl0ZWMt
+bWlyYS5kdHNpIHwgMiArLQ0KPiDCoDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBk
+ZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2Jvb3QvZHRzL254cC9pbXgv
+aW14NnFkbC1waHl0ZWMtbWlyYS5kdHNpDQo+IGIvYXJjaC9hcm0vYm9vdC9kdHMvbnhwL2lteC9p
+bXg2cWRsLXBoeXRlYy1taXJhLmR0c2kNCj4gaW5kZXggMWE1OTljMjk0YWI4Li4xY2E0ZDIxOTYw
+OWYgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvYXJtL2Jvb3QvZHRzL254cC9pbXgvaW14NnFkbC1waHl0
+ZWMtbWlyYS5kdHNpDQo+ICsrKyBiL2FyY2gvYXJtL2Jvb3QvZHRzL254cC9pbXgvaW14NnFkbC1w
+aHl0ZWMtbWlyYS5kdHNpDQo+IEBAIC0xODIsNyArMTgyLDcgQEAgaTJjX3J0YzogcnRjQDY4IHsN
+Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwaW5jdHJsLTAgPSA8JnBpbmN0cmxf
+cnRjX2ludD47DQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmVnID0gPDB4Njg+
+Ow0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGludGVycnVwdC1wYXJlbnQgPSA8
+JmdwaW83PjsNCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGludGVycnVwdHMgPSA8
+OCBJUlFfVFlQRV9MRVZFTF9ISUdIPjsNCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oGludGVycnVwdHMgPSA8OCBJUlFfVFlQRV9MRVZFTF9MT1c+Ow0KPiDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoHN0YXR1cyA9ICJkaXNhYmxlZCI7DQo+IMKgwqDCoMKgwqDCoMKgwqB9
+Ow0KPiDCoH07DQo=
