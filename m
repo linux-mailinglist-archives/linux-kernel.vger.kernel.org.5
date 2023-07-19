@@ -2,117 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1D27593C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985357593C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbjGSLFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 07:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41104 "EHLO
+        id S230220AbjGSLFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 07:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbjGSLFm (ORCPT
+        with ESMTP id S230129AbjGSLFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 07:05:42 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29679E42;
-        Wed, 19 Jul 2023 04:05:41 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36J9jrtn013032;
-        Wed, 19 Jul 2023 04:05:20 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=JC+SlG2J1cwHPNYKwRoVuKapytz+jNTHeq1scJHPdeg=;
- b=Ix3MCGYUm998VvdjXYeUNa3FsQVhI0bC4a6Es5AB+hcIXPcvzcjwaELEuKvy5En/8ANn
- DDK42qPxz2KArvU+vVF+LeJ1OKG/95COP013imq1zwU6wjs0UVrJudrLnQU1+5DGFFzL
- +quWuKuT86s1KkJ2VuMN5YRZk1g1mX8sqIVRUpVwbT+m3f5wewxrSmBvqE8NiAaPJuxm
- 8/G0/PXqan6Wd+gi4WBMJnkDrO9hwVOf7Mxh9ezm4X6CKsFGq3BJ+6xyqzSg8xLziBLK
- e51oQuc5mXKbmW2m0KUsPt54PRCZvbwbmxsx7h5WwySjvpqNz62nc6PuK7GFlGZ+Ymea dQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3rwyc6je0u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 19 Jul 2023 04:05:18 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 19 Jul
- 2023 04:04:50 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Wed, 19 Jul 2023 04:04:50 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id 197623F704F;
-        Wed, 19 Jul 2023 04:04:44 -0700 (PDT)
-From:   Hariprasad Kelam <hkelam@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>,
-        <willemdebruijn.kernel@gmail.com>, <andrew@lunn.ch>,
-        <sgoutham@marvell.com>, <lcherian@marvell.com>,
-        <gakula@marvell.com>, <jerinj@marvell.com>, <sbhatta@marvell.com>,
-        <hkelam@marvell.com>, <naveenm@marvell.com>, <edumazet@google.com>,
-        <pabeni@redhat.com>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <maxtram95@gmail.com>, <corbet@lwn.net>,
-        <linux-doc@vger.kernel.org>
-Subject: [net-next PatchV4 0/4] octeontx2-pf: support Round Robin scheduling
-Date:   Wed, 19 Jul 2023 16:34:39 +0530
-Message-ID: <20230719110443.15310-1-hkelam@marvell.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 19 Jul 2023 07:05:37 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305F319A;
+        Wed, 19 Jul 2023 04:05:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689764736; x=1721300736;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lqPMmv8M10HlNolBgp653qSVYTh89TergptkrLWqzYo=;
+  b=S5NtVeRoGxWEjiy4hfYUAS6bs0vfE83cCaG/koNG3riMlWxEYMmxngH7
+   wd/UooOkJRRRf8oXEF1DJgiCM1fLoahHlHIoA1yA/8oYaOyrqLhMVs4Or
+   RUQm4+dbmqmr2n3HXCWsHzIO1QU8BY8NpqVJfIaKra3CIRmGTkE55oEYE
+   h/JUbwQI2rh7uzoF7NTpBdEQh+d/Nl+lfW+dJLoe4CIyIWKAjALjNVU5N
+   wBZV+ZjH1CcQsGEOPCEa+62lNArQO+022rBZYuDQQMNdczTFJNkIC54z2
+   PRwJxBle5D6naYj8wNIDeOjEdrIkxWMZ0jM53U4o2qAFBujmBb/bPR48k
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="346023055"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="346023055"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 04:05:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="867422501"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Jul 2023 04:05:15 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qM4zX-0004hf-2P;
+        Wed, 19 Jul 2023 11:05:12 +0000
+Date:   Wed, 19 Jul 2023 19:04:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Manikanta Mylavarapu <quic_mmanikan@quicinc.com>,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        mathieu.poirier@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        quic_eberman@quicinc.com, kvalo@kernel.org,
+        loic.poulain@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, quic_srichara@quicinc.com,
+        quic_sjaganat@quicinc.com, quic_kathirav@quicinc.com,
+        quic_anusha@quicinc.com
+Subject: Re: [V3,09/11] remoteproc: qcom: Add Hexagon based multipd rproc
+ driver
+Message-ID: <202307191844.WyywUs6s-lkp@intel.com>
+References: <20230718120501.3205661-10-quic_mmanikan@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: gv3LVWq6OLvDfRF9DNmHhmgmuMhz9Eo4
-X-Proofpoint-ORIG-GUID: gv3LVWq6OLvDfRF9DNmHhmgmuMhz9Eo4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-19_06,2023-07-19_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718120501.3205661-10-quic_mmanikan@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-octeontx2 and CN10K silicons support Round Robin scheduling. When multiple
-traffic flows reach transmit level with the same priority, with Round Robin
-scheduling traffic flow with the highest quantum value is picked. With this
-support, the user can add multiple classes with the same priority and
-different quantum in htb offload.
+Hi Manikanta,
 
-This series of patches adds support for the same.
+kernel test robot noticed the following build warnings:
 
-Patch1: implement transmit schedular allocation algorithm as preparation
-        for support round robin scheduling.
+[auto build test WARNING on next-20230718]
+[also build test WARNING on v6.5-rc2]
+[cannot apply to remoteproc/rproc-next clk/clk-next robh/for-next linus/master v6.5-rc2 v6.5-rc1 v6.4]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Patch2: Allow quantum parameter in HTB offload mode.
+url:    https://github.com/intel-lab-lkp/linux/commits/Manikanta-Mylavarapu/dt-bindings-remoteproc-qcom-Add-support-for-multipd-model/20230718-202747
+base:   next-20230718
+patch link:    https://lore.kernel.org/r/20230718120501.3205661-10-quic_mmanikan%40quicinc.com
+patch subject: [V3,09/11] remoteproc: qcom: Add Hexagon based multipd rproc driver
+config: arm-allmodconfig (https://download.01.org/0day-ci/archive/20230719/202307191844.WyywUs6s-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230719/202307191844.WyywUs6s-lkp@intel.com/reproduce)
 
-Patch3: extends octeontx2 htb offload support for Round Robin scheduling
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307191844.WyywUs6s-lkp@intel.com/
 
-Patch4: extend QOS documentation for Round Robin scheduling
+All warnings (new ones prefixed by >>):
 
-Hariprasad Kelam (1):
-  docs: octeontx2: extend documentation for Round Robin scheduling
+>> drivers/remoteproc/qcom_q6v5_mpd.c:112:4: warning: no previous prototype for 'qcom_get_pd_asid' [-Wmissing-prototypes]
+     112 | u8 qcom_get_pd_asid(struct rproc *rproc)
+         |    ^~~~~~~~~~~~~~~~
 
-Naveen Mamindlapalli (3):
-  octeontx2-pf: implement transmit schedular allocation algorithm
-  sch_htb: Allow HTB quantum parameter in offload mode
-  octeontx2-pf: htb offload support for Round Robin scheduling
----
-v4 * update classid values in documentation.
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for SM_GCC_8350
+   Depends on [n]: COMMON_CLK [=y] && COMMON_CLK_QCOM [=m] && (ARM64 || COMPILE_TEST [=n])
+   Selected by [m]:
+   - SM_VIDEOCC_8350 [=m] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=m]
+   WARNING: unmet direct dependencies detected for SM_GCC_8450
+   Depends on [n]: COMMON_CLK [=y] && COMMON_CLK_QCOM [=m] && (ARM64 || COMPILE_TEST [=n])
+   Selected by [m]:
+   - SM_GPUCC_8450 [=m] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=m]
+   - SM_VIDEOCC_8450 [=m] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=m]
+   WARNING: unmet direct dependencies detected for SM_GCC_8550
+   Depends on [n]: COMMON_CLK [=y] && COMMON_CLK_QCOM [=m] && (ARM64 || COMPILE_TEST [=n])
+   Selected by [m]:
+   - SM_GPUCC_8550 [=m] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=m]
+   - SM_VIDEOCC_8550 [=m] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=m]
 
-v3 * 1. update QOS documentation for round robin scheduling
-     2. added out of bound checks for quantum parameter
 
-v2 * change data type of otx2_index_used to reduce size of structure
-     otx2_qos_cfg
+vim +/qcom_get_pd_asid +112 drivers/remoteproc/qcom_q6v5_mpd.c
 
- .../ethernet/marvell/octeontx2.rst            |   8 +
- .../marvell/octeontx2/nic/otx2_common.c       |   1 +
- .../marvell/octeontx2/nic/otx2_common.h       |   1 +
- .../net/ethernet/marvell/octeontx2/nic/qos.c  | 398 ++++++++++++++++--
- .../net/ethernet/marvell/octeontx2/nic/qos.h  |  11 +-
- .../net/ethernet/mellanox/mlx5/core/en/qos.c  |   4 +-
- include/net/pkt_cls.h                         |   1 +
- net/sched/sch_htb.c                           |   7 +-
- 8 files changed, 388 insertions(+), 43 deletions(-)
+   105	
+   106	/**
+   107	 * qcom_get_pd_asid() - get the pd asid number from PD spawn bit
+   108	 * @rproc:	rproc handle
+   109	 *
+   110	 * Returns asid on success
+   111	 */
+ > 112	u8 qcom_get_pd_asid(struct rproc *rproc)
+   113	{
+   114		struct q6_wcss *wcss = rproc->priv;
+   115		u8 bit = wcss->q6.spawn_bit;
+   116	
+   117		return bit / 8;
+   118	}
+   119	
 
---
-2.17.1
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
