@@ -2,193 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B236175918A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5377275918F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbjGSJ1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:27:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38670 "EHLO
+        id S229659AbjGSJ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGSJ1l (ORCPT
+        with ESMTP id S229451AbjGSJ2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:27:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE772107
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:26:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689758789;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/f0NTUat3Qw0nEGYdWCuhe31jBdzjtLNwY7Efuzq/OI=;
-        b=go++CehKmT83fiOz8wAk68w8MJYNBnIjtrit/5HiClnyCz5Ui7AdK9xTTyv7pIG9eN4MJh
-        reYZgreoqRoMEXfRNfC8dsw1TzCVVuCDF8szomLhRX/ep5NF/Dp2Nz6lzIHxYQK+0RIkiC
-        lgcEAKng4q9QDGW39LaNj0zKIUVVyYw=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-297-L7h32KX3MbSV5tDk-NQLpg-1; Wed, 19 Jul 2023 05:26:24 -0400
-X-MC-Unique: L7h32KX3MbSV5tDk-NQLpg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EFD8B28EC10C;
-        Wed, 19 Jul 2023 09:26:23 +0000 (UTC)
-Received: from ovpn-8-17.pek2.redhat.com (ovpn-8-17.pek2.redhat.com [10.72.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 828DC492B01;
-        Wed, 19 Jul 2023 09:26:15 +0000 (UTC)
-Date:   Wed, 19 Jul 2023 17:26:11 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Andreas Hindborg <nmi@metaspace.dk>
-Cc:     Matias Bjorling <Matias.Bjorling@wdc.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, gost.dev@samsung.com,
-        Christoph Hellwig <hch@infradead.org>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Aravind Ramesh <Aravind.Ramesh@wdc.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        Hans Holmberg <Hans.Holmberg@wdc.com>,
-        Minwoo Im <minwoo.im.dev@gmail.com>, ming.lei@redhat.com
-Subject: Re: [PATCH v9 2/2] ublk: enable zoned storage support
-Message-ID: <ZLesM5flOn2aet8p@ovpn-8-17.pek2.redhat.com>
-References: <20230714072510.47770-1-nmi@metaspace.dk>
- <20230714072510.47770-3-nmi@metaspace.dk>
+        Wed, 19 Jul 2023 05:28:37 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8CFB3186;
+        Wed, 19 Jul 2023 02:28:35 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 47D4E2F4;
+        Wed, 19 Jul 2023 02:29:18 -0700 (PDT)
+Received: from [10.57.33.122] (unknown [10.57.33.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 794C13F67D;
+        Wed, 19 Jul 2023 02:28:31 -0700 (PDT)
+Message-ID: <7da93c6e-1cbf-8840-282e-f115197b80c4@arm.com>
+Date:   Wed, 19 Jul 2023 10:28:29 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230714072510.47770-3-nmi@metaspace.dk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [Question - ARM CCA] vCPU Hotplug Support in ARM Realm world
+ might require ARM spec change?
+To:     Salil Mehta <salil.mehta@huawei.com>,
+        "steven.price@arm.com" <steven.price@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        "christoffer.dall@arm.com" <christoffer.dall@arm.com>,
+        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        Salil Mehta <salil.mehta@opnsrc.net>,
+        "andrew.jones@linux.dev" <andrew.jones@linux.dev>,
+        yuzenghui <yuzenghui@huawei.com>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Gareth Stockwell <Gareth.Stockwell@arm.com>
+References: <9cb24131a09a48e9a622e92bf8346c9d@huawei.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <9cb24131a09a48e9a622e92bf8346c9d@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 09:25:10AM +0200, Andreas Hindborg wrote:
-> From: Andreas Hindborg <a.hindborg@samsung.com>
+Hi Salil
+
+Thanks for raising this.
+
+On 19/07/2023 03:35, Salil Mehta wrote:
+> [Reposting it here from Linaro Open Discussion List for more eyes to look at]
 > 
-> Add zoned storage support to ublk: report_zones and operations:
->  - REQ_OP_ZONE_OPEN
->  - REQ_OP_ZONE_CLOSE
->  - REQ_OP_ZONE_FINISH
->  - REQ_OP_ZONE_RESET
->  - REQ_OP_ZONE_APPEND
+> Hello,
+> I have recently started to dabble with ARM CCA stuff and check if our
+> recent changes to support vCPU Hotplug in ARM64 can work in the realm
+> world. I have realized that in the RMM specification[1] PSCI_CPU_ON
+> command(B5.3.3) does not handles the PSCI_DENIED return code(B5.4.2),
+> from the host. This might be required to support vCPU Hotplug feature
+> in the realm world in future. vCPU Hotplug is an important feature to
+> support kata-containers in realm world as it reduces the VM boot time
+> and facilitates dynamic adjustment of vCPUs (which I think should be
+> true even with Realm world as current implementation only makes use
+> of the PSCI_ON/OFF to realize the Hotplug look-like effect?)
 > 
-> The zone append feature uses the `addr` field of `struct ublksrv_io_cmd` to
-> communicate ALBA back to the kernel. Therefore ublk must be used with the
-> user copy feature (UBLK_F_USER_COPY) for zoned storage support to be
-> available. Without this feature, ublk will not allow zoned storage support.
 > 
-> Signed-off-by: Andreas Hindborg <a.hindborg@samsung.com>
-> ---
+> As per our recent changes [2], [3] related to support vCPU Hotplug on
+> ARM64, we handle the guest exits due to SMC/HVC Hypercall in the
+> user-space i.e. VMM/Qemu. In realm world, REC Exits to host due to
+> PSCI_CPU_ON should undergo similar policy checks and I think,
+> 
+> 1. Host should *deny* to online the target vCPUs which are NOT plugged
+> 2. This means target REC should be denied by host. Can host call
+>     RMI_PSCI_COMPETE in such s case?
+> 3. The *return* value (B5.3.3.1.3 Output values) should be PSCI_DENIED
 
-...
+The Realm exit with EXIT_PSCI already provides the parameters passed
+onto the PSCI request. This happens for all PSCI calls except
+(PSCI_VERSION and PSCI_FEAUTRES). The hyp could forward these exits to
+the VMM and could invoke the RMI_PSCI_COMPLETE only when the VMM blesses 
+the request (wherever applicable).
 
-> +/*
-> + * Construct a zone report. The report request is carried in `struct
-> + * ublksrv_io_desc`. The `start_sector` field must be the first sector of a zone
-> + * and shall indicate the first zone of the report. The `nr_sectors` shall
-> + * indicate how many zones should be reported (divide by zone size to get number
-> + * of zones in the report) and must be an integer multiple of the zone size. The
-> + * report shall be delivered as a `struct blk_zone` array. To report fewer zones
-> + * than requested, zero the last entry of the returned array.
-> + */
-> +#define		UBLK_IO_OP_REPORT_ZONES		18
+However, the RMM spec currently doesn't allow denying the request.
+i.e., without RMI_PSCI_COMPLETE, the REC cannot be scheduled back in.
+We will address this in the RMM spec and get back to you.
 
-Actually, I meant the following delta change in V8 comment, then the UAPI
-looks more clean & readable wrt. reporting how many zones in UBLK_IO_OP_REPORT_ZONES
-and reusing ublksrv_io_cmd->addr.
-
-Otherwise, this patchset looks fine.
+Kind regards
+Suzuki
 
 
-diff --git a/drivers/block/ublk_drv.c b/drivers/block/ublk_drv.c
-index 5698f4575e05..454c852ed328 100644
---- a/drivers/block/ublk_drv.c
-+++ b/drivers/block/ublk_drv.c
-@@ -70,7 +70,7 @@ struct ublk_rq_data {
- 	struct kref ref;
- 	__u64 sector;
- 	__u32 operation;
--	__u32 nr_sectors;
-+	__u32 nr_zones;
- };
- 
- struct ublk_uring_cmd_pdu {
-@@ -335,7 +335,7 @@ static int ublk_report_zones(struct gendisk *disk, sector_t sector,
- 		pdu = blk_mq_rq_to_pdu(req);
- 		pdu->operation = UBLK_IO_OP_REPORT_ZONES;
- 		pdu->sector = sector;
--		pdu->nr_sectors = zones_in_request * zone_size_sectors;
-+		pdu->nr_zones = zones_in_request;
- 
- 		ret = blk_rq_map_kern(disk->queue, req, buffer, buffer_length,
- 					GFP_KERNEL);
-@@ -404,7 +404,7 @@ static blk_status_t ublk_setup_iod_zoned(struct ublk_queue *ubq,
- 		switch (ublk_op) {
- 		case UBLK_IO_OP_REPORT_ZONES:
- 			iod->op_flags = ublk_op | ublk_req_build_flags(req);
--			iod->nr_sectors = pdu->nr_sectors;
-+			iod->nr_zones = pdu->nr_zones;
- 			iod->start_sector = pdu->sector;
- 			return BLK_STS_OK;
- 		default:
-diff --git a/include/uapi/linux/ublk_cmd.h b/include/uapi/linux/ublk_cmd.h
-index 4d97eb0f7d13..602a788a650e 100644
---- a/include/uapi/linux/ublk_cmd.h
-+++ b/include/uapi/linux/ublk_cmd.h
-@@ -249,11 +249,13 @@ struct ublksrv_ctrl_dev_info {
- /*
-  * Construct a zone report. The report request is carried in `struct
-  * ublksrv_io_desc`. The `start_sector` field must be the first sector of a zone
-- * and shall indicate the first zone of the report. The `nr_sectors` shall
-- * indicate how many zones should be reported (divide by zone size to get number
-- * of zones in the report) and must be an integer multiple of the zone size. The
-- * report shall be delivered as a `struct blk_zone` array. To report fewer zones
-- * than requested, zero the last entry of the returned array.
-+ * and shall indicate the first zone of the report. The `nr_zones` shall
-+ * indicate how many zones should be reported at most. The report shall be
-+ * delivered as a `struct blk_zone` array. To report fewer zones than
-+ * requested, zero the last entry of the returned array.
-+ *
-+ * So related definitions(blk_zone, blk_zone_cond, blk_zone_type, ...) in
-+ * include/uapi/linux/blkzoned.h are part of ublk UAPI.
-  */
- #define		UBLK_IO_OP_REPORT_ZONES		18
- 
-@@ -276,7 +278,10 @@ struct ublksrv_io_desc {
- 	/* op: bit 0-7, flags: bit 8-31 */
- 	__u32		op_flags;
- 
--	__u32		nr_sectors;
-+	union {
-+		__u32		nr_sectors;
-+		__u32		nr_zones; /* for UBLK_IO_OP_REPORT_ZONES only */
-+	};
- 
- 	/* start sector for this io */
- 	__u64		start_sector;
-@@ -308,6 +313,12 @@ struct ublksrv_io_cmd {
- 	/*
- 	 * userspace buffer address in ublksrv daemon process, valid for
- 	 * FETCH* command only
-+	 *
-+	 * This field shouldn't be used if UBLK_F_USER_COPY is enabled,
-+	 * because userspace deals with data copy by pread()/pwrite() over
-+	 * /dev/ublkcN. But in case of UBLK_F_ZONED, 'addr' is re-used to
-+	 * pass back the allocated LBA for UBLK_IO_OP_ZONE_APPEND which
-+	 * actually depends on UBLK_F_USER_COPY
- 	 */
- 	__u64	addr;
- };
-
-Thanks,
-Ming
+> 4. Failure condition (B5.3.3.2) should be amended with
+>     runnable pre: target_rec.flags.runnable == NOT_RUNNABLE (?)
+>              post: result == PSCI_DENIED (?)
+> 5. Change would also be required in the flow (D1.4 PSCI flows) depicting
+>     PSCI_CPU_ON flow (D1.4.1)
+>    
+> 
+> I do understand that ARM CCA support is in its infancy stage and
+> discussing about vCPU Hotplug in realm world seem to be a far-fetched
+> idea right now. But specification changes require lot of time and if
+> this change is really required then it should be further discussed
+> within ARM.
+> 
+> Many thanks!
+> 
+> 
+> Bes regards
+> Salil
+> 
+> 
+> References:
+> 
+> [1] https://developer.arm.com/documentation/den0137/latest/
+> [2] https://github.com/salil-mehta/qemu.git virt-cpuhp-armv8/rfc-v1-port11052023.dev-1
+> [3] https://git.gitlab.arm.com/linux-arm/linux-jm.git virtual_cpu_hotplug/rfc/v2
+> 
 
