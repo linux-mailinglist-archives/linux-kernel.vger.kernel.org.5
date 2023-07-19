@@ -2,98 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 489D77591F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D96C7591FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbjGSJsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
+        id S230297AbjGSJsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:48:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGSJsV (ORCPT
+        with ESMTP id S230106AbjGSJst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:48:21 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C9E106
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:48:19 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-992b27e1c55so861458866b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:48:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689760098; x=1692352098;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sU3jr0AJabwf5kYoiJEatfT5ArWDG6nYpAUewcG/2K4=;
-        b=oK2efTw4dP6roLEX+cx4lAXPUNFfMmRKMbVRXP0o938WQvLvi6t8XW9ZAaz/vYK5B6
-         v+gTjjb9V5l3SRKzwGSCz8OJyGsWTKBJySV3e67r0kLJ+ZVg5zY/pistNFw9h7puYHM5
-         g4U95DutrAb++k9YBjB/gt304h1wUpLtIiT/922MkIjo43viNgOf5iUiX7WgialSl1Nv
-         /tG1OW5QkB5pZ8zGoIqP81szdrcAJ/oIUsaxgtThpzFHyhxnqj77XRBBmd/+RUthft7C
-         CZO4vOppKCsBJTNeaDLGk0Um8lAoGNtXnwBUCIWLZSumiwy13Tp+i6UPUq57gsmZxZKO
-         YXEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689760098; x=1692352098;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sU3jr0AJabwf5kYoiJEatfT5ArWDG6nYpAUewcG/2K4=;
-        b=G3jrDyoyahonaW26zmG9EjuE3/t461ApJv1HEopIf7B89U/TcjrrM0SgrLwkodv+8v
-         eVu9rafG2FaGX6TrIn55zURvzgFlqcfaebxPRmlK7j+ywXuOg28PXSY2nHGnh83FZzzD
-         9ZwBfHFsFERHP/uuPbyEUm8HrMZRwE0Rk7a1hyB/BkSFQ3FBfGjyju5MAcOTO/9x3bGF
-         zCjHDif4Q3CsSjazgiP6v6YlNRQ9HJ8ON13MZX9diN9Tc8iiVwA1ZyachW8pWTKV9alZ
-         bGUdn20PN7ESLR40G+CtE5/z/I9wS5vrRlEJXhv0XSoipC+JnWTZqMxl/vIeoGfJAyxD
-         8OAw==
-X-Gm-Message-State: ABy/qLZgVC+ZgqDtxgDbxKZ8dKHnS7YNSyCV6N0oX42Vp1yuAULqZO5m
-        F7p1oBJ6q7l0RViPllp4zqyhhg==
-X-Google-Smtp-Source: APBJJlGlpi3msRNnmPAwQD2bynHkjap3lHKsvINLHTSLefZOMWDv13SZAB29wBHQBWBtz8h90Ovv5Q==
-X-Received: by 2002:a17:907:2da7:b0:993:d1b6:61cc with SMTP id gt39-20020a1709072da700b00993d1b661ccmr1996059ejc.44.1689760098480;
-        Wed, 19 Jul 2023 02:48:18 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id t13-20020a17090616cd00b0099364d9f0e9sm2104502ejd.102.2023.07.19.02.48.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 02:48:18 -0700 (PDT)
-Message-ID: <34274b22-29e2-09ea-e955-f00704ce87c7@linaro.org>
-Date:   Wed, 19 Jul 2023 11:48:09 +0200
+        Wed, 19 Jul 2023 05:48:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E666F1FD8;
+        Wed, 19 Jul 2023 02:48:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1420361360;
+        Wed, 19 Jul 2023 09:48:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C31B7C433C7;
+        Wed, 19 Jul 2023 09:48:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689760114;
+        bh=pB3m7C2ISyNuQSWXIsz415DWWQwj/DbO9R2twS/7/K4=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=QGlnIA/1cy/m27vC456OqU4aXMq40WwChuyVhdAQJJvxDW4vytdDdE/eRHVieXebN
+         vfWbMI+8GeoqQdWFUMKFswtnrpmllqh1lFW9HhuibFrNTn+fQiCLyujnZNJX3KHVsX
+         GPWr3n4dCj/yvMCn7ayuufKbXTqw/8LbBJXwxG8LXwKD+5/yFD902HJF0+mHwtra06
+         FeDB+/SizOTKMOlswuovZhVcwAffXNFuTbX4KEly10qsxmcfazt3tUS80Tbjo20fqU
+         rq+JaeSmQv2MZL/PZw19O1U7GcakLyyQpPsXaOxj/oh6u/pHi2H7XrJ31RGd0KKukl
+         qZifHocaidVPQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Markus.Elfring@web.de, Michal Kalderon <mkalderon@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Minjie Du <duminjie@vivo.com>
+Cc:     opensource.kernel@vivo.com
+In-Reply-To: <20230705103950.15225-1-duminjie@vivo.com>
+References: <20230705103950.15225-1-duminjie@vivo.com>
+Subject: Re: [PATCH v2] RDMA/qedr: Remove a duplicate assignment in
+ qedr_create_gsi_qp()
+Message-Id: <168976011020.1099718.7601409753250892373.b4-ty@kernel.org>
+Date:   Wed, 19 Jul 2023 12:48:30 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/2] arm64: dts: ti: k3-j721s2: Add overlay to enable
- main CPSW2G with GESI
-Content-Language: en-US
-To:     Ravi Gunasekaran <r-gunasekaran@ti.com>,
-        Siddharth Vadapalli <s-vadapalli@ti.com>, nm@ti.com,
-        vigneshr@ti.com, kristo@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, afd@ti.com
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, srk@ti.com
-References: <20230710094328.1359377-1-s-vadapalli@ti.com>
- <20230710094328.1359377-3-s-vadapalli@ti.com>
- <24fa9784-7781-7259-d53a-a76a017198f1@ti.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <24fa9784-7781-7259-d53a-a76a017198f1@ti.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Mailer: b4 0.12-dev-a055d
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/2023 11:45, Ravi Gunasekaran wrote:
-> 
-> 
-> On 7/10/23 3:13 PM, Siddharth Vadapalli wrote:
->> From: Kishon Vijay Abraham I <kishon@ti.com>
->>
->> The MAIN CPSW2G instance of CPSW on J721S2 SoC can be enabled with the GESI
->> Expansion Board connected to the J7 Common-Proc-Board. Use the overlay
->> to enable this.
->>
 
-Trim your replies.
+On Wed, 05 Jul 2023 18:39:50 +0800, Minjie Du wrote:
+> Delete a duplicate statement from this function implementation.
+> 
+> 
+
+Applied, thanks!
+
+[1/1] RDMA/qedr: Remove a duplicate assignment in qedr_create_gsi_qp()
+      https://git.kernel.org/rdma/rdma/c/296609e6b64cd1
 
 Best regards,
-Krzysztof
-
+-- 
+Leon Romanovsky <leon@kernel.org>
