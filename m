@@ -2,131 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E038575A01C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E009375A021
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbjGSUpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45222 "EHLO
+        id S229531AbjGSUqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbjGSUp3 (ORCPT
+        with ESMTP id S229517AbjGSUqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:45:29 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2096.outbound.protection.outlook.com [40.107.223.96])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28F41734;
-        Wed, 19 Jul 2023 13:45:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bSt7BvxlnyDwYFc4qJtuq8ZqacW4MMimbmQAN7RwkHLOEPly6ddvcR25UJKefLM+tNLcIJUOq2LbZ3yRcJYulYf12FgpE+DdXDAd7Ano7zw1olaiPmHHWpf06qAtu9TjfySQPu6LYKX2nTmLcjA+lqAR4oDeGj6k8OYllTXlLD4YeRKynQWb2nHncFkVAqMx6oU+PqDZvJerfU1YLyA2TRPHU+pvzcqXD5uy8ebvkOe6RjnuiWs1N6jcnOK1Y/QHK24vixxCC2+Za/aAKM5FW1zLyJvxoPOg51QKQLmNn1y1PFfQFHjddCg2Mac9ZBfHMUA7B0TCXDRD8/S8rdaPSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PKafITy4Re7/0OFWZ+xJYEOz4K6xQc+yR/VvxMX0kLM=;
- b=I3UtyCIkoDWbH9o0Lu4VOtjFiHE6cz1rnGrkZIthKMOiBeHmpC/I+MBmIHPzdHjR3U8jJNS6WB5iX0BaMGnwaTsiDEKvqf2b0M16svAWoZeXfZtOkvC9ZqHDZ4HO87+peuqxove61En+sVpFiCvWkNgc7U5nH8ITyesMKg2UQfBNQpn2/aeY+gNI4SxGajEwTXhtad1OK0fOmPM3JDggjDHXyWCCEGvbG2H+kgOcZ+McoPQjlhI9TtaZ4vyyZGr6dLw5inExejyv2YS88d3MaQ0NM85sLNIO/tR+CKLPZpDoOMnLaqCy6lV6eVsZ/WPlpP2c5q+3GMCpLN97hb/YYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PKafITy4Re7/0OFWZ+xJYEOz4K6xQc+yR/VvxMX0kLM=;
- b=F4mphQSE4bo9+Ea8hs5HxWEd1Tb8pVEVPAztMTR19AnTr5DKpRpjdAvFjGO6QoYQz74PxEt3fWt9zMOPapV89/y3yEQ+ebbz+0H5rP0p0j4TkrMy4PPi0gDOAof9xKrwJvqi/L8Cl/lGG5Ds46vcLPDnJ89AtbxV83Ac14eU0ZY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by BLAPR13MB4721.namprd13.prod.outlook.com (2603:10b6:208:327::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Wed, 19 Jul
- 2023 20:45:24 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.024; Wed, 19 Jul 2023
- 20:45:24 +0000
-Date:   Wed, 19 Jul 2023 21:45:17 +0100
-From:   Simon Horman <simon.horman@corigine.com>
-To:     Wei Fang <wei.fang@nxp.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, xiaoning.wang@nxp.com, shenwei.wang@nxp.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com
-Subject: Re: [PATCH net-next 0/3] clean up the FEC driver
-Message-ID: <ZLhLXVNm6LVqjg0Z@corigine.com>
-References: <20230718090928.2654347-1-wei.fang@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718090928.2654347-1-wei.fang@nxp.com>
-X-ClientProxiedBy: LO4P123CA0432.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:18b::23) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
+        Wed, 19 Jul 2023 16:46:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CDC1734
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:46:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689799560;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b12/aDc/W25MU+G31DwKlpA3J3XW9Rd+FvX9Yt4/KPo=;
+        b=CqYwjMOmEDR/wK6jZ9QNIRljoYNZgWbc72WZGa16hBXx4cL6YwC8lZrorjLh+HAzKlTPSh
+        iJIkc3g0fAzvW6QCypYC9eGeqhtvYxUPGpBtit9KT1Cv5pwPgk68xYPwmIJgwOUS6D2dEz
+        WtPPblhjTyb4I044DKNwvwiGxBmoVPc=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-614-GfksWCS_MCaKvBlbxYCW5A-1; Wed, 19 Jul 2023 16:45:58 -0400
+X-MC-Unique: GfksWCS_MCaKvBlbxYCW5A-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-4053d3613f9so367221cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:45:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689799558; x=1690404358;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b12/aDc/W25MU+G31DwKlpA3J3XW9Rd+FvX9Yt4/KPo=;
+        b=BuhjwTxdVgqKex5QTnNx5i3ha5ZvKIyJn5U2bMP3LxuG1vmqT9ibcTZUSSfgT2cX8B
+         6zdjkCJh8ZRAhEic+y84bjOxBsP2R/NPkMS2m9LaGp8TGiOc+uQWeg7qLMsOulmS2esF
+         Quc1tuBEroesv6JYaTv3Ez/86tDtvHtFRr4kth0ep2KRp0xDshqA6jcijK1mxbJNRlMK
+         3KgZ3V148oic6YYNLlXyKsCcUNMZqBUvnrhp9B4zxFQe1viu/TOM24LY65WllpoS7inA
+         g2FToK8PauviPMYakfCVPkI98mYBGktqHxmLjvKSVXySCl2SGTCVcndl56taZQz5Fr6B
+         edIQ==
+X-Gm-Message-State: ABy/qLbtHiRKpd3n0VrkL0MmVwpd/hXJev37Qyn8vqkzMHtNaVvMnFrG
+        PffFh5IlahWXG6lv7p9WsGZ5fW4NCoc/S0PLimu7bCrrsYDKBTEPToYP495q6fmQyP3TjsZPu3U
+        WN3P0WsGHuo6q0ilkkI9ZNzfK
+X-Received: by 2002:ac8:5a8d:0:b0:400:8036:6f05 with SMTP id c13-20020ac85a8d000000b0040080366f05mr1056338qtc.2.1689799558109;
+        Wed, 19 Jul 2023 13:45:58 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGSHzDb9t3k9dqegflbS3XBeYFDxCtTpS4UPlvDTuKAeHWVA2dhbsFeIaJTUjfOppuCRIL0qg==
+X-Received: by 2002:ac8:5a8d:0:b0:400:8036:6f05 with SMTP id c13-20020ac85a8d000000b0040080366f05mr1056324qtc.2.1689799557835;
+        Wed, 19 Jul 2023 13:45:57 -0700 (PDT)
+Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
+        by smtp.gmail.com with ESMTPSA id ci23-20020a05622a261700b004037cd9bd40sm1592793qtb.15.2023.07.19.13.45.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 13:45:57 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 16:45:45 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 8/8] selftests/mm: Run all tests from run_vmtests.sh
+Message-ID: <ZLhLeSLgYgqSMSEA@x1n>
+References: <20230717103152.202078-1-ryan.roberts@arm.com>
+ <20230717103152.202078-9-ryan.roberts@arm.com>
+ <5a12536a-2e33-7a68-6cfd-fd991ddf875a@redhat.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|BLAPR13MB4721:EE_
-X-MS-Office365-Filtering-Correlation-Id: e04c7d3b-a633-4113-123d-08db889913a9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: H5O/3IyJym/eKjzb/Ht5dIm+41li+zvlxFUNbWKgPZ2vEiDfDg0vZ4NCMT8mElJ08m1b8RHPTPl8QrMn+ACUVHPORRgFr/33y74xSu19hO4g4DoXM4e0Ocuw8JCu3rijf3Lpoa2Xj++Z5nP1njT1dRLxFXzmSxZS02t/R7v0tuubKvG/T1p2VrqCHCjYBLgADw49jDQ6/M0V12byPzio/96cS9UJgMuJBipL+PMEa/3aICdcvACQcW9oc3Wn+/Ju9tCS7EYzvB4sVj3CmqBzmHP4GfbwC4KYixwA4GAl64kiv8/kcOHsjho8tri3VjSFZJJx7MD2WbMDsHcnTFd/bWtbQwXIllJKzn99smprSIHcF5ZyLA4pgHBzCGV0aE/e2qU7gnuOdy9Mnc/BhUo0rvxacDOIwHXKeC6Ht2CQmg+POIwiq057Tm8Yn9EswtLn+6QYvay0hOjjtY+PI9t1IkhxHxf+4uRLRpyGlRNMUPRtyPM8MVJ1DmdiGlYFryxnHen6lKZJUcFl03CQ9UBlMoYxYWKwTXvxr2hG8TuYiu9si0kIUJBpklYdmk5Ak8BTQLtNjengZDL0/ORCAdpWBDxTGHLVDgbDzYRiz1cvMWc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(396003)(346002)(366004)(39830400003)(136003)(451199021)(55236004)(26005)(186003)(6506007)(478600001)(41300700001)(6916009)(4326008)(5660300002)(83380400001)(66556008)(66476007)(66946007)(316002)(6666004)(4744005)(8676002)(8936002)(6512007)(6486002)(36756003)(44832011)(7416002)(38100700002)(2906002)(86362001)(2616005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uIUuiAvDNI2DytDYeLwC923WtIw6jHMWZTD867cGZ7cJ0H91Bww2D61Asv4O?=
- =?us-ascii?Q?dG/oeydTgfb+xdkWZ9eGP2c0gxD3V/L15xhr7dx56IC7uYLZ0K5KKGOCW/OD?=
- =?us-ascii?Q?iw1UZGsvevwK1IjrE67hXEFbVxu/qxX+eqrsCla/cFUVQ0aYqu4GvqBRfK/3?=
- =?us-ascii?Q?GKWzzesR3r9q9qcSvH22CwlRcbtqEEvMb7o+akEIVOZTEMprfjnyWmXrx/Oq?=
- =?us-ascii?Q?linf4QeXa6kLaDJhTU29qmdg9NmvwYV4jelLtmN2x3A4//z4dI4fpNaRLNbm?=
- =?us-ascii?Q?uvQsZGVmbkYzCv2kSEKrHbtIXH38ECJNOFifyI8JZa1Ij0lGcaQmaM+R3GUk?=
- =?us-ascii?Q?JpbsagGqPRrOyBEMAe5AfKZPXNjKhPV4pF9q5C+g6PYlWPee0OdVYZht/gcu?=
- =?us-ascii?Q?xLE6T6k3zYLRTJyvDgH8tl2igO4S2Mw3MZm2IhVZJS02VFpGmhgRnvVS06dY?=
- =?us-ascii?Q?3RLAQeERxOXGzHOXnuy/uvfKyXPMHu+HkwTGhBvjxdzzjqL83JHMAdpqxsXU?=
- =?us-ascii?Q?8xkfhmR7X9Q1/y1fiZuJxWPo8Tlkt2lDIjkgfYiwEZ31tnkNuiZdb8/dREc8?=
- =?us-ascii?Q?l7nCLLXNCA/liX5IvKLzTyaNP6P+yQ4D9Nz7QOhvz7nQj033fl4HhE3zpzYy?=
- =?us-ascii?Q?Ew6TCT/XFNTt40/4Kvp4RdTCIS/DLC3xCMeNn3RsxlE6+gg/g2+1HdcFRoMg?=
- =?us-ascii?Q?bkSWzMLK3MCJI2rxvOurCa6YIX7OX2B5pGOVE0Y3XDT1D1/tXud7thnHMo9R?=
- =?us-ascii?Q?aTyoG9FgRGGf0RgLz9d0MgUI3K7Lwc33gmUy4DlDL6N+1tFJrOtsK5B+95Gf?=
- =?us-ascii?Q?tM+FIwThrgjU38C4XY2/XDqqye2jzrDmLKlz0J1u8QrOkZ0fHPnw/pDMTAyu?=
- =?us-ascii?Q?HEBamQXwnkdMqKgHuvdZVr8+/gANv22ZRlF9VLZZxBKxyUVlLHYtI37Hxlcb?=
- =?us-ascii?Q?ctF48hm4cYmf00fdyjXzH9QupH1c9CK3Unae0B7I2TU/fRK8NrhxRVKZPVFO?=
- =?us-ascii?Q?X4ohMTvo6cgp03ZaxWbrnH0mcLYhiuCHlyiqpJk9XLK3BfrdA11RVMpWqX6B?=
- =?us-ascii?Q?EuCCe12szNrHDqUHpsPVtNaD73zVxCOG7G/za31NVjyykjDyAMTnJUuRpo1v?=
- =?us-ascii?Q?e894K37/KZeQTyyQuZceWFFYOjR1YJ4v94hmyXACOXM6URddSmWnsoVAqmp+?=
- =?us-ascii?Q?XkwDGq8aUQS2ksxWssBCc7aPKPtxgOaiZtBGXTkZxARmSS96CRnUiKBZMLa3?=
- =?us-ascii?Q?xirIWmwCe/NVqolRTRBnLGrN5e5RENekA3VCIi5bhrqhXa0qj3f0b5fd6fja?=
- =?us-ascii?Q?NfPb6HIuzlCR4J5J/S8IZNMXc0MAXx5adHoetFP/LX4C0ZOqG2q/R75ca7FG?=
- =?us-ascii?Q?PLZR0SU8z3TlZvlW37Jq+gat8LdJWvfTvOHx/RnC/ULDCUnoQ0GncpkPbu0u?=
- =?us-ascii?Q?AKSmpV5VUKux6FT+QyxatkLoaNgdgbJG4kysaKcdiyD+4FloyIhffOpuZCo9?=
- =?us-ascii?Q?My00p2Iqt8vRaE0eFCeASkGYo/nI/GHlmbTsEqMKlLVG/wAUPzPzCPQd4DIk?=
- =?us-ascii?Q?pwfmuOVHTJyZk05FxTlufaNM2XiIVHZSzhskfBNA9dXTKufnOx/L3s7gUTk/?=
- =?us-ascii?Q?QA=3D=3D?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e04c7d3b-a633-4113-123d-08db889913a9
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 20:45:24.6446
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2ih68FtXiVOfseugB1Q4KnLqa0KK569CcBtSR5tf/haJlAmwBjyAzt5AnJElk0t7ixw93IPr9vtP0Ta1ecNYrdey11FHamE1XcBDJvyxBzM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR13MB4721
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <5a12536a-2e33-7a68-6cfd-fd991ddf875a@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 05:09:25PM +0800, Wei Fang wrote:
-> When reading the codes of the FEC driver recently, I found there are
-> some redundant or invalid codes, these codes make the FEC driver a
-> bit messy and not concise, so this patch set has cleaned up the FEC
-> driver. At present, I only found these, but I believe these are not
-> all, I will continue to clean up the FEC driver in the future.
+On Mon, Jul 17, 2023 at 07:27:13PM +0200, David Hildenbrand wrote:
+> On 17.07.23 12:31, Ryan Roberts wrote:
+> > It is very unclear to me how one is supposed to run all the mm selftests
+> > consistently and get clear results.
+> > 
+> > Most of the test programs are launched by both run_vmtests.sh and
+> > run_kselftest.sh:
+> > 
+> >    hugepage-mmap
+> >    hugepage-shm
+> >    map_hugetlb
+> >    hugepage-mremap
+> >    hugepage-vmemmap
+> >    hugetlb-madvise
+> >    map_fixed_noreplace
+> >    gup_test
+> >    gup_longterm
+> >    uffd-unit-tests
+> >    uffd-stress
+> >    compaction_test
+> >    on-fault-limit
+> >    map_populate
+> >    mlock-random-test
+> >    mlock2-tests
+> >    mrelease_test
+> >    mremap_test
+> >    thuge-gen
+> >    virtual_address_range
+> >    va_high_addr_switch
+> >    mremap_dontunmap
+> >    hmm-tests
+> >    madv_populate
+> >    memfd_secret
+> >    ksm_tests
+> >    ksm_functional_tests
+> >    soft-dirty
+> >    cow
+> > 
+> > However, of this set, when launched by run_vmtests.sh, some of the
+> > programs are invoked multiple times with different arguments. When
+> > invoked by run_kselftest.sh, they are invoked without arguments (and as
+> > a consequence, some fail immediately).
+> > 
+> > Some test programs are only launched by run_vmtests.sh:
+> > 
+> >    test_vmalloc.sh
+> > 
+> > And some test programs and only launched by run_kselftest.sh:
+> > 
+> >    khugepaged
+> >    migration
+> >    mkdirty
+> >    transhuge-stress
+> >    split_huge_page_test
+> >    mdwe_test
+> >    write_to_hugetlbfs
+> > 
+> > Furthermore, run_vmtests.sh is invoked by run_kselftest.sh, so in this
+> > case all the test programs invoked by both scripts are run twice!
+> > 
+> > Needless to say, this is a bit of a mess. In the absence of fully
+> > understanding the history here, it looks to me like the best solution is
+> > to launch ALL test programs from run_vmtests.sh, and ONLY invoke
+> > run_vmtests.sh from run_kselftest.sh. This way, we get full control over
+> > the parameters, each program is only invoked the intended number of
+> > times, and regardless of which script is used, the same tests get run in
+> > the same way.
+> > 
+> > The only drawback is that if using run_kselftest.sh, it's top-level tap
+> > result reporting reports only a single test and it fails if any of the
+> > contained tests fail. I don't see this as a big deal though since we
+> > still see all the nested reporting from multiple layers. The other issue
+> > with this is that all of run_vmtests.sh must execute within a single
+> > kselftest timeout period, so let's increase that to something more
+> > suitable.
+> > 
+> > In the Makefile, TEST_GEN_PROGS will compile and install the tests and
+> > will add them to the list of tests that run_kselftest.sh will run.
+> > TEST_GEN_FILES will compile and install the tests but will not add them
+> > to the test list. So let's move all the programs from TEST_GEN_PROGS to
+> > TEST_GEN_FILES so that they are built but not executed by
+> > run_kselftest.sh. Note that run_vmtests.sh is added to TEST_PROGS, which
+> > means it ends up in the test list. (the lack of "_GEN" means it won't be
+> > compiled, but simply copied).
+> > 
+> > Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> > ---
 > 
-> Wei Fang (3):
->   net: fec: remove the remaining code of rx copybreak
->   net: fec: remove fec_set_mac_address() from fec_enet_init()
->   net: fec: remove unused members from struct fec_enet_private
+> Acked-by: David Hildenbrand <david@redhat.com>
 
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
+Thanks for letting me know, David.  Sorry for the late response, still
+catching up things.
+
+I used to justify that from mm/ itself that everything should be PROG, but
+I see that from higher level where TEST_GEN_FILE|PROG is really used this
+makes sense.  As long as vm_utils.o will be properly linked I'll be happy
+enough..
+
+Acked-by: Peter Xu <peterx@redhat.com>
+
+Thanks,
+
+-- 
+Peter Xu
 
