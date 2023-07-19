@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 083187591CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCED7591D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbjGSJlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46616 "EHLO
+        id S230252AbjGSJmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjGSJlW (ORCPT
+        with ESMTP id S230354AbjGSJmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:41:22 -0400
-Received: from smtp.dudau.co.uk (dliviu.plus.com [80.229.23.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B1814EC;
-        Wed, 19 Jul 2023 02:41:20 -0700 (PDT)
-Received: from mail.dudau.co.uk (bart.dudau.co.uk [192.168.14.2])
-        by smtp.dudau.co.uk (Postfix) with SMTP id A2F6E41A7003;
-        Wed, 19 Jul 2023 10:41:18 +0100 (BST)
-Received: by mail.dudau.co.uk (sSMTP sendmail emulation); Wed, 19 Jul 2023 10:41:18 +0100
-Date:   Wed, 19 Jul 2023 10:41:18 +0100
-From:   Liviu Dudau <liviu@dudau.co.uk>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     linux-phy@lists.infradead.org, linux-rockchip@lists.infradead.org,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Simon Xue <xxm@rock-chips.com>, John Clark <inindev@gmail.com>,
-        Qu Wenruo <wqu@suse.com>, devicetree@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-Subject: Re: [PATCH v2 2/2] arm64: dts: rockchip: rk3588: add PCIe3 support
-Message-ID: <ZLevvl+VKBxe1kQu@bart.dudau.co.uk>
-References: <20230717173512.65169-1-sebastian.reichel@collabora.com>
- <20230717173512.65169-3-sebastian.reichel@collabora.com>
- <ZLarQUvUK3v3m6Cg@bart.dudau.co.uk>
- <20230718160137.sfitnkl6gmyi75jx@mercury.elektranox.org>
- <ZLbqPB5yP7Kn6FT6@bart.dudau.co.uk>
- <20230718210601.6hrmnl5lbtl6vinp@mercury.elektranox.org>
+        Wed, 19 Jul 2023 05:42:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A923C10CC;
+        Wed, 19 Jul 2023 02:42:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 40F3D61331;
+        Wed, 19 Jul 2023 09:42:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 063C0C433C7;
+        Wed, 19 Jul 2023 09:42:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689759742;
+        bh=VUUMVFRdDD+K3SsdpeBN5Pr1IQErJJ9Z1IMYmvDtRWk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=qX8RP0YoMkFQGnMYToXqpkLx3i6P1sVy2uKaGNGCB7PD1YM9sT2T9uVZlHOJxcE8z
+         lBDDhZKehTgHeuP/T+pRYP+emgIay3xu5xdJEu9wUGuwEAGJb2RR39n78i1KM+M3iN
+         oHZ6FaWOXCKWeZq9Xbo77c5q1kYlI+REyZZaF+Auy3L9L300lY7GOnDa90KuNaqm1W
+         9wf5qHtsJfBuju5eeNEfDQ2s5/UlnSqxTn8kg8k7RJA8dZ5FxbUlgpfICHCpUb44lD
+         3Hg4ary0ZIX4pM0RtxftPm3G5TQ/oS6bnuwVPemPQoCvSBfkmrBpifoYt4KD9TFgAA
+         OjvHo+0UwYjYA==
+Message-ID: <642db1d9-5e22-30ac-a1be-6825ac871c06@kernel.org>
+Date:   Wed, 19 Jul 2023 18:42:19 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230718210601.6hrmnl5lbtl6vinp@mercury.elektranox.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1] ata: pata_arasan_cf: Use dev_err_probe() instead
+ dev_err() in data_xfer()
+To:     =?UTF-8?B?5p2c5pWP5p2w?= <duminjie@vivo.com>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "open list:LIBATA PATA DRIVERS" <linux-ide@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     "opensource.kernel" <opensource.kernel@vivo.com>
+References: <20230719073140.4971-1-duminjie@vivo.com>
+Content-Language: en-US
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20230719073140.4971-1-duminjie@vivo.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,53 +63,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian,
-
-On Tue, Jul 18, 2023 at 11:06:01PM +0200, Sebastian Reichel wrote:
-> Hi,
+On 7/19/23 16:31, 杜敏杰 wrote:
+> It is possible for dma_request_chan() to return EPROBE_DEFER, which means
+> acdev->host->dev is not ready yet.
+> At this point dev_err() will have no output.
 > 
-> On Tue, Jul 18, 2023 at 08:38:36PM +0100, Liviu Dudau wrote:
-> > On Tue, Jul 18, 2023 at 06:01:37PM +0200, Sebastian Reichel wrote:
-> > > On Tue, Jul 18, 2023 at 04:09:53PM +0100, Liviu Dudau wrote:
-> > > > On Mon, Jul 17, 2023 at 07:35:12PM +0200, Sebastian Reichel wrote:
-> > > > >  	pipe_phy1_grf: syscon@fd5c0000 {
-> > > > >  		compatible = "rockchip,rk3588-pipe-phy-grf", "syscon";
-> > > > >  		reg = <0x0 0xfd5c0000 0x0 0x100>;
-> > > > 
-> > > > What tree is based this on? Even after applying your PCIe2 series I don't have the above
-> > > > node so the patch doesn't apply to mainline.
-> > > 
-> > > You are missing naneng-combphy support:
-> > > 
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip.git/commit/?h=v6.6-armsoc/dts64&id=6ebd55b3bba383e0523b0c014f17c97f3ce80708
-> > 
-> > Thanks! It looks like the PCIe2 commit that adds support to rk3588(s).dtsi
-> > files is also missing an #include <dt-bindings/phy/phy.h> for the PHY_TYPE_PCIE
-> > use, otherwise the DTS fail to compile.
+> Signed-off-by: Minjie Du <duminjie@vivo.com>
+> ---
+>  drivers/ata/pata_arasan_cf.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> Yes, that's also already in linux-next:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip.git/commit/?h=v6.6-armsoc/dts64&id=34d6c15d8e86256ef2456c604b1c8d8242720871
+> diff --git a/drivers/ata/pata_arasan_cf.c b/drivers/ata/pata_arasan_cf.c
+> index 6ab294322..fd54682f1 100644
+> --- a/drivers/ata/pata_arasan_cf.c
+> +++ b/drivers/ata/pata_arasan_cf.c
+> @@ -529,7 +529,8 @@ static void data_xfer(struct work_struct *work)
+>  	/* dma_request_channel may sleep, so calling from process context */>  	acdev->dma_chan = dma_request_chan(acdev->host->dev, "data");
+>  	if (IS_ERR(acdev->dma_chan)) {
+> -		dev_err(acdev->host->dev, "Unable to get dma_chan\n");
+> +		dev_err_probe(acdev->host->dev, PTR_ERR(acdev->dma_chan),
+> +						"Unable to get dma_chan\n");
 
-I'm reading that as: "relevant patch that this series depends on has already
-been added to the tree that's going to pull this PCIe2 series so all will be
-good". Otherwise I think there should be some mention in the cover letter
-about dependencies, so that people like me don't report issues just because
-they are not using the linux-rockchip tree by default.
+Please align the string argument after "(".
 
-Many thanks for the quick answers and the links to fix my tree.
-
-Best regards,
-Liviu
-
-> 
-> Greetings,
-> 
-> -- Sebastian
-
-
+>  		acdev->dma_chan = NULL;
+>  		goto chan_request_fail;
+>  	}
 
 -- 
-Everyone who uses computers frequently has had, from time to time,
-a mad desire to attack the precocious abacus with an axe.
-       	   	      	     	  -- John D. Clark, Ignition!
+Damien Le Moal
+Western Digital Research
+
