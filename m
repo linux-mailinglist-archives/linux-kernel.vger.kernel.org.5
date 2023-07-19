@@ -2,1363 +2,660 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8657594D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 14:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C97EE7594E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 14:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbjGSMNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 08:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41282 "EHLO
+        id S229942AbjGSMQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 08:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjGSMN2 (ORCPT
+        with ESMTP id S229542AbjGSMQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 08:13:28 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98831E5;
-        Wed, 19 Jul 2023 05:13:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689768804; x=1721304804;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=pAuoPjFq/oVcAu5tlznisLv78Ge98QiB1DTAsCNv4go=;
-  b=mHrhfkwdwt0MkPb1zoEKxAwnP0lt+GDPptNMfBaOSMW9tWlV0q95Cz2w
-   fO+c2gkcXVgQUrszfkdd6UNCSwNHLlBCcAuJWbzSPFK+Fqj+nsB1Czzhk
-   EWXr5AbJVxDjMGz/2ltQ4OS9juR1PBEdVPeC9ODImQ2ApIKpbdA1NwYTf
-   ImadXwdxg2f2aijBcMy4i7ss5p1MRgAFpDXzdPu3KdO4XYklD4lEkP+FZ
-   QlgnfklkMbobQ9TBYomDgMZAj/OBAYxbTEY7dODX0nY+VBDl+geyWXuGg
-   09j+Uzq9d4MZIBTf7IZ3zK4ZdvN8a4sKGhqIp0AmCEEO/LqICbfx3+vgL
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="369090992"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="369090992"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 05:13:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="837675535"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="837675535"
-Received: from ijarvine-mobl2.ger.corp.intel.com ([10.249.36.79])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 05:13:17 -0700
-Date:   Wed, 19 Jul 2023 15:13:14 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Henry Shi <henryshi2018@gmail.com>
-cc:     hbshi69@hotmail.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, hdegoede@redhat.com, markgross@kernel.org,
-        jdelvare@suse.com, linux@roeck-us.net,
-        LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        hb_shi2003@yahoo.com, henrys@silicom-usa.com, wenw@silicom-usa.com
-Subject: Re: [PATCH] Add Silicom Platform Driver
-In-Reply-To: <20230718160104.2716-1-henryshi2018@gmail.com>
-Message-ID: <94cbb7d-68a-765-8bdf-5c8f8e41891@linux.intel.com>
-References: <20230718160104.2716-1-henryshi2018@gmail.com>
+        Wed, 19 Jul 2023 08:16:28 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7786E5;
+        Wed, 19 Jul 2023 05:16:23 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R5ZTR4qyCzNmFW;
+        Wed, 19 Jul 2023 20:12:59 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 19 Jul 2023 20:16:19 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH net-next] page_pool: split types and declarations from page_pool.h
+Date:   Wed, 19 Jul 2023 20:13:37 +0800
+Message-ID: <20230719121339.63331-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023, Henry Shi wrote:
-
-> The Silicom platform (silicom-platform) Linux driver for Swisscom
-> Business Box (Swisscom BB) as well as Cordoba family products is a 
-> software solution designed to facilitate the efficient management
-> and control of devices through the integration of various Linux
-> frameworks. This platform driver provides seamless support for
-> device management via the Linux LED framework, GPIO framework,
-> Hardware Monitoring (HWMON), and device attributes. The Silicom
-> platform driver's compatibility with these Linux frameworks allows
-> applications to access and control Cordoba family devices using
-> existing software that is compatible with these frameworks. This
-> compatibility simplifies the development process, reduces
-> dependencies on proprietary solutions, and promotes
-> interoperability with other Linux-based systems and software.
-> 
-> Signed-off-by: Henry Shi <henryshi2018@gmail.com>
-> ---
->  drivers/platform/x86/Kconfig            |   12 +
->  drivers/platform/x86/Makefile           |    1 +
->  drivers/platform/x86/silicom-platform.c | 1123 +++++++++++++++++++++++
->  3 files changed, 1136 insertions(+)
->  create mode 100644 drivers/platform/x86/silicom-platform.c
-> 
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index 22052031c719..8c0988c2b4ce 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -188,6 +188,18 @@ config ACER_WMI
->  	  If you have an ACPI-WMI compatible Acer/ Wistron laptop, say Y or M
->  	  here.
->  
-> +
-
-Extra newline
-
-> +config SILICOM_PLATFORM
-> +	tristate "Silicom Edge Networking device support"
-> +	depends on DMI
-> +	select LEDS_CLASS_MULTICOLOR
-> +	select GPIOLIB
-> +	help
-> +	  This option enables support for the LEDs/GPIO/etc downstream of the
-> +	  embedded controller on Silicom "Cordoba" hardware and derivatives.
-> +
-> +	  If you have a Silicom network appliance, say Y or M here.
-> +
->  source "drivers/platform/x86/amd/Kconfig"
->  
->  config ADV_SWBUTTON
-> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-> index 2cafe51ec4d8..f2f5743a9e54 100644
-> --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -113,6 +113,7 @@ obj-$(CONFIG_SERIAL_MULTI_INSTANTIATE)	+= serial-multi-instantiate.o
->  obj-$(CONFIG_MLX_PLATFORM)		+= mlx-platform.o
->  obj-$(CONFIG_TOUCHSCREEN_DMI)		+= touchscreen_dmi.o
->  obj-$(CONFIG_WIRELESS_HOTKEY)		+= wireless-hotkey.o
-> +obj-$(CONFIG_SILICOM_PLATFORM)          += silicom-platform.o
-
-Use tabs like the other lines.
-
->  obj-$(CONFIG_X86_ANDROID_TABLETS)	+= x86-android-tablets/
->  
->  # Intel uncore drivers
-> diff --git a/drivers/platform/x86/silicom-platform.c b/drivers/platform/x86/silicom-platform.c
-> new file mode 100644
-> index 000000000000..90431f733682
-> --- /dev/null
-> +++ b/drivers/platform/x86/silicom-platform.c
-> @@ -0,0 +1,1123 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +//
-> +// silicom-platform.c - Silicom MEC170x platform driver
-> +//
-> +// Copyright (C) 2023 Henry Shi <henrys@silicom-usa.com>
-> +
-> +#include <linux/dmi.h>
-> +#include <linux/gpio/driver.h>
-> +#include <linux/init.h>
-> +#include <linux/ioport.h>
-> +#include <linux/io.h>
-> +#include <linux/kernel.h>
-> +#include <linux/led-class-multicolor.h>
-> +#include <linux/module.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/mutex.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/string.h>
-> +#include <linux/thermal.h>
-> +#include <linux/kobject.h>
-> +#include <linux/sysfs.h>
-> +
-> +#define MEC_ADDR ((mec_io_base) + 0x02)
-> +#define MEC_DATA(byte) ((mec_io_base) + 0x04 + (byte))
-> +#define EC_ADDR_LSB MEC_ADDR
-> +#define EC_ADDR_MSB ((mec_io_base) + 0x03)
-> +#define SILICOM_MEC_MAGIC 0x5a
-
-> +#define OFFSET_BIT_TO_CHANNEL(off, bit) ((((off) + 0x014) << 3) | (bit))
-> +#define CHANNEL_TO_OFFSET(chan) (((chan) >> 3) - 0x14)
-
-So you have two fields, offset and "bit", whatever that is. It would seem
-named define with GENMASK() for these two fields and FIELD_PREP() is 
-appropriate here. And FIELD_GET() (and perhaps also FIELD_PREP()) used in 
-the code below where appropriate.
-
-0x14 should be named with a define.
-
-> +#define CHANNEL_TO_BIT(chan) ((chan) & 0x07)
-
-Unused.
-
-> +
-> +static DEFINE_MUTEX(mec_io_mutex);
-> +static int mec_io_base, mec_io_len;
-> +
-> +struct silicom_fan_control_data {
-> +	struct   device *hdev;
-> +	int      temp;
-> +	int      fan_speed;
-> +};
-> +
-> +static const struct hwmon_channel_info *silicom_fan_control_info[] = {
-> +	HWMON_CHANNEL_INFO(fan, HWMON_F_INPUT | HWMON_F_LABEL),
-> +	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT | HWMON_T_LABEL),
-> +	NULL
-> +};
-> +
-> +struct silicom_device_control_data {
-> +	struct   device *my_dev;
-> +	int      efuse_status;
-> +	int      uc_version;
-> +	int      power_cycle;
-> +};
-> +static struct silicom_device_control_data my_dev_ctl;
-> +
-> +struct silicom_platform_info {
-> +	int io_base;
-> +	int io_len;
-> +	struct led_classdev_mc *led_info;
-> +	struct gpio_chip *gpiochip;
-> +	u8 *gpio_channels;
-> +	u16 ngpio;
-> +};
-> +
-> +static const char * const plat_0222_gpio_names[] = {
-> +	"AUTOM0_SFP_TX_FAULT",
-> +	"SLOT2_LED_OUT",
-> +	"SIM_M2_SLOT2_B_DET",
-> +	"SIM_M2_SLOT2_A_DET",
-> +	"SLOT1_LED_OUT",
-> +	"SIM_M2_SLOT1_B_DET",
-> +	"SIM_M2_SLOT1_A_DET",
-> +	"SLOT0_LED_OUT",
-> +	"WAN_SFP0_RX_LOS",
-> +	"WAN_SFP0_PRSNT_N",
-> +	"WAN_SFP0_TX_FAULT",
-> +	"AUTOM1_SFP_RX_LOS",
-> +	"AUTOM1_SFP_PRSNT_N",
-> +	"AUTOM1_SFP_TX_FAULT",
-> +	"AUTOM0_SFP_RX_LOS",
-> +	"AUTOM0_SFP_PRSNT_N",
-> +	"WAN_SFP1_RX_LOS",
-> +	"WAN_SFP1_PRSNT_N",
-> +	"WAN_SFP1_TX_FAULT",
-> +	"SIM_M2_SLOT1_MUX_SEL",
-> +	"W_DISABLE_M2_SLOT1_N",
-> +	"W_DISABLE_MPCIE_SLOT0_N",
-> +	"W_DISABLE_M2_SLOT0_N",
-> +	"BT_COMMAND_MODE",
-> +	"WAN_SFP1_TX_DISABLE",
-> +	"WAN_SFP0_TX_DISABLE",
-> +	"AUTOM1_SFP_TX_DISABLE",
-> +	"AUTOM0_SFP_TX_DISABLE",
-> +	"SIM_M2_SLOT2_MUX_SEL",
-> +	"W_DISABLE_M2_SLOT2_N",
-> +	"RST_CTL_M2_SLOT_1_N",
-> +	"RST_CTL_M2_SLOT_2_N",
-> +	"PM_USB_PWR_EN_BOT",
-> +	"PM_USB_PWR_EN_TOP",
-> +};
-> +
-> +static u8 plat_0222_gpio_channels[] = {
-> +	OFFSET_BIT_TO_CHANNEL(0x00, 0),
-> +	OFFSET_BIT_TO_CHANNEL(0x00, 1),
-> +	OFFSET_BIT_TO_CHANNEL(0x00, 2),
-> +	OFFSET_BIT_TO_CHANNEL(0x00, 3),
-> +	OFFSET_BIT_TO_CHANNEL(0x00, 4),
-> +	OFFSET_BIT_TO_CHANNEL(0x00, 5),
-> +	OFFSET_BIT_TO_CHANNEL(0x00, 6),
-> +	OFFSET_BIT_TO_CHANNEL(0x00, 7),
-> +	OFFSET_BIT_TO_CHANNEL(0x01, 0),
-> +	OFFSET_BIT_TO_CHANNEL(0x01, 1),
-> +	OFFSET_BIT_TO_CHANNEL(0x01, 2),
-> +	OFFSET_BIT_TO_CHANNEL(0x01, 3),
-> +	OFFSET_BIT_TO_CHANNEL(0x01, 4),
-> +	OFFSET_BIT_TO_CHANNEL(0x01, 5),
-> +	OFFSET_BIT_TO_CHANNEL(0x01, 6),
-> +	OFFSET_BIT_TO_CHANNEL(0x01, 7),
-> +	OFFSET_BIT_TO_CHANNEL(0x02, 0),
-> +	OFFSET_BIT_TO_CHANNEL(0x02, 1),
-> +	OFFSET_BIT_TO_CHANNEL(0x02, 2),
-> +	OFFSET_BIT_TO_CHANNEL(0x09, 0),
-> +	OFFSET_BIT_TO_CHANNEL(0x09, 1),
-> +	OFFSET_BIT_TO_CHANNEL(0x09, 2),
-> +	OFFSET_BIT_TO_CHANNEL(0x09, 3),
-> +	OFFSET_BIT_TO_CHANNEL(0x0a, 0),
-> +	OFFSET_BIT_TO_CHANNEL(0x0a, 1),
-> +	OFFSET_BIT_TO_CHANNEL(0x0a, 2),
-> +	OFFSET_BIT_TO_CHANNEL(0x0a, 3),
-> +	OFFSET_BIT_TO_CHANNEL(0x0a, 4),
-> +	OFFSET_BIT_TO_CHANNEL(0x0a, 5),
-> +	OFFSET_BIT_TO_CHANNEL(0x0a, 6),
-> +	OFFSET_BIT_TO_CHANNEL(0x0b, 0),
-> +	OFFSET_BIT_TO_CHANNEL(0x0b, 1),
-> +	OFFSET_BIT_TO_CHANNEL(0x0b, 2),
-> +	OFFSET_BIT_TO_CHANNEL(0x0b, 3),
-> +};
-> +
-> +static int silicom_gpio_get_direction(struct gpio_chip *gc, unsigned int offset);
-> +static int silicom_gpio_direction_input(struct gpio_chip *gc, unsigned int offset);
-> +static int silicom_gpio_direction_output(struct gpio_chip *gc, unsigned int offset, int value);
-> +static int silicom_gpio_get(struct gpio_chip *gc, unsigned int offset);
-> +static void silicom_gpio_set(struct gpio_chip *gc, unsigned int offset, int value);
-> +static void silicom_mec_led_mc_brightness_set(struct led_classdev *led_cdev,
-> +					      enum led_brightness brightness);
-> +static enum led_brightness silicom_mec_led_mc_brightness_get(struct led_classdev *led_cdev);
-
-Try to organize the code such that no forward declarations are necessary.
-
-> +static struct platform_device *silicom_platform_dev;
-> +static struct led_classdev_mc *silicom_led_info __initdata;
-> +static struct gpio_chip *silicom_gpiochip __initdata;
-> +static u8 *silicom_gpio_channels __initdata;
-> +static struct gpio_chip silicom_gpio_chip = {
-> +	.label = "silicom-gpio",
-> +	.get_direction = silicom_gpio_get_direction,
-> +	.direction_input = silicom_gpio_direction_input,
-> +	.direction_output = silicom_gpio_direction_output,
-> +	.get = silicom_gpio_get,
-> +	.set = silicom_gpio_set,
-> +	.base = -1,
-> +	.ngpio = ARRAY_SIZE(plat_0222_gpio_channels),
-> +	.names = plat_0222_gpio_names,
-> +	/* We're using a mutex to protect the indirect access, so we can sleep if the lock blocks */
-> +	.can_sleep = true,
-> +};
-> +
-> +static struct mc_subled plat_0222_wan_mc_subled_info[] __initdata = {
-> +	{
-> +		.color_index = LED_COLOR_ID_WHITE,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 7),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_YELLOW,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 6),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_RED,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 5),
-> +	},
-> +};
-> +
-> +static struct mc_subled plat_0222_sys_mc_subled_info[] __initdata = {
-> +	{
-> +		.color_index = LED_COLOR_ID_WHITE,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 4),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_AMBER,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 3),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_RED,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 2),
-> +	},
-> +};
-> +
-> +static struct mc_subled plat_0222_stat1_mc_subled_info[] __initdata = {
-> +	{
-> +		.color_index = LED_COLOR_ID_RED,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 1),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_GREEN,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 0),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_BLUE,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 7),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_YELLOW,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 6),
-> +	},
-> +};
-> +
-> +static struct mc_subled plat_0222_stat2_mc_subled_info[] __initdata = {
-> +	{
-> +		.color_index = LED_COLOR_ID_RED,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 5),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_GREEN,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 4),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_BLUE,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 3),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_YELLOW,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 2),
-> +	},
-> +};
-> +
-> +static struct mc_subled plat_0222_stat3_mc_subled_info[] __initdata = {
-> +	{
-> +		.color_index = LED_COLOR_ID_RED,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 1),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_GREEN,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 0),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_BLUE,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0e, 1),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_YELLOW,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x0e, 0),
-> +	},
-> +};
-> +
-> +static struct led_classdev_mc plat_0222_mc_led_info[] __initdata = {
-> +	{
-> +		.led_cdev = {
-> +			.name = "multicolor:wan",
-> +			.brightness = 0,
-> +			.max_brightness = 1,
-> +			.brightness_set = silicom_mec_led_mc_brightness_set,
-> +			.brightness_get = silicom_mec_led_mc_brightness_get,
-> +		},
-> +		.num_colors = ARRAY_SIZE(plat_0222_wan_mc_subled_info),
-> +		.subled_info = plat_0222_wan_mc_subled_info,
-> +	},
-> +	{
-> +		.led_cdev = {
-> +			.name = "multicolor:sys",
-> +			.brightness = 0,
-> +			.max_brightness = 1,
-> +			.brightness_set = silicom_mec_led_mc_brightness_set,
-> +			.brightness_get = silicom_mec_led_mc_brightness_get,
-> +		},
-> +		.num_colors = ARRAY_SIZE(plat_0222_sys_mc_subled_info),
-> +		.subled_info = plat_0222_sys_mc_subled_info,
-> +	},
-> +	{
-> +		.led_cdev = {
-> +			.name = "multicolor:stat1",
-> +			.brightness = 0,
-> +			.max_brightness = 1,
-> +			.brightness_set = silicom_mec_led_mc_brightness_set,
-> +			.brightness_get = silicom_mec_led_mc_brightness_get,
-> +		},
-> +		.num_colors = ARRAY_SIZE(plat_0222_stat1_mc_subled_info),
-> +		.subled_info = plat_0222_stat1_mc_subled_info,
-> +	},
-> +	{
-> +		.led_cdev = {
-> +			.name = "multicolor:stat2",
-> +			.brightness = 0,
-> +			.max_brightness = 1,
-> +			.brightness_set = silicom_mec_led_mc_brightness_set,
-> +			.brightness_get = silicom_mec_led_mc_brightness_get,
-> +		},
-> +		.num_colors = ARRAY_SIZE(plat_0222_stat2_mc_subled_info),
-> +		.subled_info = plat_0222_stat2_mc_subled_info,
-> +	},
-> +	{
-> +		.led_cdev = {
-> +			.name = "multicolor:stat3",
-> +			.brightness = 0,
-> +			.max_brightness = 1,
-> +			.brightness_set = silicom_mec_led_mc_brightness_set,
-> +			.brightness_get = silicom_mec_led_mc_brightness_get,
-> +		},
-> +		.num_colors = ARRAY_SIZE(plat_0222_stat3_mc_subled_info),
-> +		.subled_info = plat_0222_stat3_mc_subled_info,
-> +	},
-> +	{ },
-> +};
-> +
-> +static struct silicom_platform_info silicom_plat_0222_cordoba_info __initdata = {
-> +	.io_base = 0x800,
-> +	.io_len = 8,
-> +	.led_info = plat_0222_mc_led_info,
-> +	.gpiochip = &silicom_gpio_chip,
-> +	.gpio_channels = plat_0222_gpio_channels,
-> +	/* The original generic cordoba does not have the last 4 outputs of the plat_0222 BB variant,
-> +	 * the rest are the same, so use the same longer list, but ignore the last entries here
-> +	 */
-> +	.ngpio = ARRAY_SIZE(plat_0222_gpio_channels),
-> +
-> +};
-> +
-> +static struct mc_subled cordoba_fp_left_mc_subled_info[] __initdata = {
-> +	{
-> +		.color_index = LED_COLOR_ID_RED,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 6),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_GREEN,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 5),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_BLUE,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 7),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_AMBER,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 4),
-> +	},
-> +};
-> +
-> +static struct mc_subled cordoba_fp_center_mc_subled_info[] __initdata = {
-> +	{
-> +		.color_index = LED_COLOR_ID_RED,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 7),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_GREEN,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 4),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_BLUE,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 3),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_AMBER,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 6),
-> +	},
-> +};
-> +
-> +static struct mc_subled cordoba_fp_right_mc_subled_info[] __initdata = {
-> +	{
-> +		.color_index = LED_COLOR_ID_RED,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 2),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_GREEN,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 1),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_BLUE,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 0),
-> +	},
-> +	{
-> +		.color_index = LED_COLOR_ID_AMBER,
-> +		.brightness = 1,
-> +		.intensity = 0,
-> +		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 5),
-> +	},
-> +};
-> +
-> +static struct led_classdev_mc cordoba_mc_led_info[] __initdata = {
-> +	{
-> +		.led_cdev = {
-> +			.name = "multicolor:fp_left",
-> +			.brightness = 0,
-> +			.max_brightness = 1,
-> +			.brightness_set = silicom_mec_led_mc_brightness_set,
-> +			.brightness_get = silicom_mec_led_mc_brightness_get,
-> +		},
-> +		.num_colors = ARRAY_SIZE(cordoba_fp_left_mc_subled_info),
-> +		.subled_info = cordoba_fp_left_mc_subled_info,
-> +	},
-> +	{
-> +		.led_cdev = {
-> +			.name = "multicolor:fp_center",
-> +			.brightness = 0,
-> +			.max_brightness = 1,
-> +			.brightness_set = silicom_mec_led_mc_brightness_set,
-> +			.brightness_get = silicom_mec_led_mc_brightness_get,
-> +		},
-> +		.num_colors = ARRAY_SIZE(cordoba_fp_center_mc_subled_info),
-> +		.subled_info = cordoba_fp_center_mc_subled_info,
-> +	},
-> +	{
-> +		.led_cdev = {
-> +			.name = "multicolor:fp_right",
-> +			.brightness = 0,
-> +			.max_brightness = 1,
-> +			.brightness_set = silicom_mec_led_mc_brightness_set,
-> +			.brightness_get = silicom_mec_led_mc_brightness_get,
-> +		},
-> +		.num_colors = ARRAY_SIZE(cordoba_fp_right_mc_subled_info),
-> +		.subled_info = cordoba_fp_right_mc_subled_info,
-> +	},
-> +	{ },
-> +};
-> +
-> +static struct silicom_platform_info silicom_generic_cordoba_info __initdata = {
-> +	.io_base = 0x800,
-> +	.io_len = 8,
-> +	.led_info = cordoba_mc_led_info,
-> +	.gpiochip = &silicom_gpio_chip,
-> +	.gpio_channels = plat_0222_gpio_channels,
-> +	.ngpio = ARRAY_SIZE(plat_0222_gpio_channels),
-> +};
-> +
-> +static struct platform_driver silicom_platform_driver = {
-> +	.driver = {
-> +		.name = "silicom-platform",
-> +	},
-> +};
-> +
-> +void lock_io_modules(void)
-> +{
-> +	mutex_lock(&mec_io_mutex);
-> +}
-> +EXPORT_SYMBOL(lock_io_modules);
-> +
-> +void unlock_io_modules(void)
-> +{
-> +	mutex_unlock(&mec_io_mutex);
-> +}
-> +EXPORT_SYMBOL(unlock_io_modules);
-> +
-> +static ssize_t efuse_status_show(struct device *dev, struct device_attribute *attr,
-> +		      char *buf)
-> +{
-> +	u32 reg;
-> +	u32 bank = 0;
-> +	u32 offset = 0x28;
-
-Why is this not a named define?
-
-No need for bank & offset variables.
-
-> +	u32 byte_pos = 0;
-> +
-> +	mutex_lock(&mec_io_mutex);
-> +	/* Select memory region */
-> +	outb(bank, EC_ADDR_MSB);
-> +	outb(offset, EC_ADDR_LSB);
-> +
-> +	/* Get current date from the address */
-> +	reg = inl(MEC_DATA(byte_pos));
-> +	mutex_unlock(&mec_io_mutex);
-> +
-> +	my_dev_ctl.efuse_status = reg & 0x1;
-> +
-> +	return sprintf(buf, "%d\n", my_dev_ctl.efuse_status);
-> +}
-> +
-> +static ssize_t uc_version_show(struct device *dev,
-> +			       struct device_attribute *attr,
-> +			       char *buf)
-> +{
-> +	u32 reg;
-> +	u32 bank = 0;
-> +	u32 offset = 0x0;
-
-Ditto.
-
-> +	u32 byte_pos = 0;
-> +	int uc_version;
-> +
-> +	mutex_lock(&mec_io_mutex);
-> +	outb(bank, EC_ADDR_MSB);
-> +	outb(offset, EC_ADDR_LSB);
-> +
-> +	reg = inl(MEC_DATA(byte_pos));
-> +	mutex_unlock(&mec_io_mutex);
-> +
-> +	uc_version = (reg >> 8) & 0xFF;
-
-Define a named mask with GENMASK() and use FIELD_GET().
-
-> +	if (uc_version >= 64 && uc_version < 128) {
-> +		uc_version = uc_version - 64;
-
-Testing for a bit (or two bit field inside the version actually 
-considering the other if too) in version and then handcrafting & ~THATBIT?
-
-> +		if (uc_version < 10)
-> +			uc_version = 100 + uc_version;
-> +		else
-> +			uc_version = 100 + 10 * (uc_version / 10) + uc_version % 10;
-
-Why is this if necessary? Doesn't the latter yield the same value as the 
-first one when uc_version < 10?
-
-> +	} else if (uc_version >= 128 && uc_version < 192) {
-> +		uc_version = uc_version - 128;
-> +		if (uc_version < 10)
-> +			uc_version = 200 + uc_version;
-> +		else
-> +			uc_version = 200 + 10 * (uc_version / 10) + uc_version % 10;
-
-Similar comments to this block.
-
-> +	}
-> +	my_dev_ctl.uc_version = uc_version;
-> +	return sprintf(buf, "%d\n", my_dev_ctl.uc_version);
-> +}
-> +
-> +static ssize_t power_cycle_show(struct device *dev,
-> +				struct device_attribute *attr,
-> +				char *buf)
-> +{
-> +	return sprintf(buf, "%d\n", my_dev_ctl.power_cycle);
-> +}
-> +
-> +static void powercycle_uc(void)
-> +{
-> +	u32 bank = 0;
-> +	u32 offset = 0x24;
-
-Named define, no need for these variables.
-
-> +	u32 byte_pos = 0;
-> +
-> +	mutex_lock(&mec_io_mutex);
-> +	/* Select memory region */
-> +	outb(bank, EC_ADDR_MSB);
-> +	outb(offset, EC_ADDR_LSB);
-> +
-> +	/* Set to 1 for current date from the address */
-> +	outb(1, MEC_DATA(byte_pos));
-
-Hmm, this is really misleading. MEC_DATA() seems to calculate _an offset_, 
-not data? Name things accordingly.
-
-> +	mutex_unlock(&mec_io_mutex);
-> +}
-> +
-> +static ssize_t power_cycle_store(struct device *dev, struct device_attribute *attr,
-> +				 const char *buf, size_t count)
-> +{
-> +	if (sscanf(buf, "%du", &my_dev_ctl.power_cycle) != 1) {
-> +		dev_err(dev, "Failed to read power_cycle\n");
-> +		return -EINVAL;
-> +	}
-> +	if (my_dev_ctl.power_cycle > 0)
-> +		powercycle_uc();
-> +
-> +	return count;
-> +}
-> +
-> +static struct device_attribute my_dev_attr[] = {
-> +	{
-> +		.attr = {.name = "efuse_status", .mode = 0644},
-> +		.show = efuse_status_show,
-> +		.store = NULL
-> +	},
-> +	{
-> +		.attr = {.name = "uc_version", .mode = 0644},
-> +		.show = uc_version_show,
-> +		.store = NULL
-> +	},
-> +	{
-> +		.attr = {.name = "power_cycle", .mode = 0644},
-> +		.show = power_cycle_show,
-> +		.store = power_cycle_store
-> +	},
-> +};
-> +
-> +static int silicom_gpio_get_direction(struct gpio_chip *gc, unsigned int offset)
-> +{
-> +	u8 *channels = gpiochip_get_data(gc);
-> +
-> +	/* Input registers have offsets between [0x00, 0x07] */
-> +	if (CHANNEL_TO_OFFSET(channels[offset]) < 0x08)
-> +		return GPIO_LINE_DIRECTION_IN;
-> +
-> +	return GPIO_LINE_DIRECTION_OUT;
-> +}
-> +
-> +static int silicom_gpio_direction_input(struct gpio_chip *gc, unsigned int offset)
-> +{
-> +	int direction = silicom_gpio_get_direction(gc, offset);
-> +
-> +	return direction == GPIO_LINE_DIRECTION_IN ? 0 : -EINVAL;
-> +}
-> +
-> +static void silicom_gpio_set(struct gpio_chip *gc, unsigned int offset, int value)
-> +{
-> +	u8 *channels = gpiochip_get_data(gc);
-> +	int direction = silicom_gpio_get_direction(gc, offset);
-> +	int channel = channels[offset];
-> +	u8 reg;
-> +
-> +	if (direction == GPIO_LINE_DIRECTION_IN)
-> +		return;
-> +
-> +	mutex_lock(&mec_io_mutex);
-> +	/* Get the dword offset from the channel */
-> +	outb((channel >> 3) & 0xfc, MEC_ADDR);
-> +
-> +	/* Get the current register */
-> +	reg = inb(MEC_DATA((channel >> 3) & 0x03));
-> +	if (value == 0)
-> +		reg &= ~(1 << (channel & 0x7));
-> +	else if (value > 0)
-> +		reg |= 1 << (channel & 0x7);
-> +	else
-> +		pr_err("Invalid GPIO value: %d\n", value);
-> +	outb(reg, MEC_DATA((channel >> 3) & 0x03));
-> +	mutex_unlock(&mec_io_mutex);
-> +}
-> +
-> +static int silicom_gpio_direction_output(struct gpio_chip *gc, unsigned int offset, int value)
-> +{
-> +	int direction = silicom_gpio_get_direction(gc, offset);
-> +
-> +	if (direction == GPIO_LINE_DIRECTION_IN)
-> +		return -EINVAL;
-> +
-> +	silicom_gpio_set(gc, offset, value);
-> +
-> +	return 0;
-> +}
-> +
-> +static int silicom_gpio_get(struct gpio_chip *gc, unsigned int offset)
-> +{
-> +	u8 *channels = gpiochip_get_data(gc);
-> +	int channel = channels[offset];
-> +	u8 reg;
-> +
-> +	mutex_lock(&mec_io_mutex);
-> +	/* Get the dword offset from the channel */
-> +	outb((channel >> 3) & 0xfc, MEC_ADDR);
-> +
-> +	/* Get the current register */
-> +	reg = inb(MEC_DATA((channel >> 3) & 0x03));
-> +	mutex_unlock(&mec_io_mutex);
-> +
-> +	return (reg >> (channel & 0x7)) & 0x01;
-> +}
-> +
-> +static int __init silicom_mc_leds_register(struct device *dev,
-> +					   const struct led_classdev_mc *mc_leds)
-> +{
-> +	struct led_classdev_mc *led;
-> +	int i, err;
-> +
-> +	for (i = 0; mc_leds[i].led_cdev.name; i++) {
-> +		/* allocate and copy data from the init constansts */
-
-There's a typo in the constansts but the code seems obvious enough to not 
-need a comment at all.
-
-> +		led = devm_kzalloc(dev, sizeof(struct led_classdev_mc), GFP_KERNEL);
-> +		if (IS_ERR_OR_NULL(led)) {
-> +			dev_err(dev, "Failed to alloc led_classdev_mc[%d]: %ld\n", i, PTR_ERR(led));
-> +			return -ENOMEM;
-> +		}
-> +		memcpy(led, &mc_leds[i], sizeof(*led));
-> +
-> +		led->subled_info = devm_kzalloc(dev, led->num_colors * sizeof(struct mc_subled),
-
-array_size() from linux/overflow.h
-
-> +						GFP_KERNEL);
-> +		if (IS_ERR_OR_NULL(led->subled_info)) {
-> +			dev_err(dev, "Failed to alloc subled_info[%d]: %ld\n",
-> +				i, PTR_ERR(led->subled_info));
-> +			return -ENOMEM;
-> +		}
-> +		memcpy(led->subled_info, mc_leds[i].subled_info,
-> +			led->num_colors * sizeof(struct mc_subled));
-
-array_size()
-
-Although a local variable could be used to hold it as it's used for alloc 
-and this line.
-
-> +
-> +		err = devm_led_classdev_multicolor_register(dev, led);
-> +		if (err) {
-> +			dev_err(dev, "Failed to register[%d]: %d\n", i, err);
-> +			return err;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void silicom_mec_led_set(int channel, int on)
-> +{
-> +	u8 reg;
-> +
-> +	mutex_lock(&mec_io_mutex);
-> +	/* Get the dword offset from the channel */
-> +	outb((channel >> 3) & 0xfc, MEC_ADDR);
-> +	/* Get the current LED settings */
-> +	reg = inb(MEC_DATA((channel >> 3) & 0x03));
-> +
-> +	/* Outputs are active low, so clear the bit for on, or set it for off */
-> +	if (on)
-> +		reg &= ~(1 << (channel & 0x7));
-> +	else
-> +		reg |= 1 << (channel & 0x7);
-> +
-> +	/* Write back the updated register */
-> +	outb(reg, MEC_DATA((channel >> 3) & 0x03));
-> +
-> +	mutex_unlock(&mec_io_mutex);
-
-There's an identical code block in silicom_gpio_set(). Why not simply call 
-this from silicom_gpio_set()?
-
-> +}
-> +
-> +static void silicom_mec_led_mc_brightness_set(struct led_classdev *led_cdev,
-> +					      enum led_brightness brightness)
-> +{
-> +	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(led_cdev);
-> +	int i;
-> +
-> +	led_mc_calc_color_components(mc_cdev, brightness);
-> +
-> +	for (i = 0; i < mc_cdev->num_colors; i++) {
-> +		silicom_mec_led_set(mc_cdev->subled_info[i].channel,
-> +				    mc_cdev->subled_info[i].brightness);
-> +	}
-> +}
-> +
-> +static enum led_brightness silicom_mec_led_get(int channel)
-> +{
-> +	u8 reg;
-> +
-> +	mutex_lock(&mec_io_mutex);
-> +	/* Get the dword offset of the register for this LED from the channel */
-> +	outb((channel >> 3) & 0xfc, MEC_ADDR);
-> +	/* Get the current LED settings */
-> +	reg = inb(MEC_DATA((channel >> 3) & 0x03));
-> +	mutex_unlock(&mec_io_mutex);
-> +
-> +	/* Outputs are active low */
-> +	return reg & (1 << (channel & 0x7)) ? LED_OFF : LED_ON;
-
-Looks identical to a part of silicom_gpio_get(). Perhaps it should call 
-this function??
-
-> +}
-> +
-> +static enum led_brightness silicom_mec_led_mc_brightness_get(struct led_classdev *led_cdev)
-> +{
-> +	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(led_cdev);
-> +	enum led_brightness brightness = LED_OFF;
-> +	int i;
-> +
-> +	for (i = 0; i < mc_cdev->num_colors; i++) {
-> +		mc_cdev->subled_info[i].brightness =
-> +			silicom_mec_led_get(mc_cdev->subled_info[i].channel);
-> +
-> +		/* Mark the overall brightness as LED_ON if any of the subleds are on */
-> +		if (mc_cdev->subled_info[i].brightness != LED_OFF)
-> +			brightness = LED_ON;
-> +	}
-> +
-> +	return brightness;
-> +}
-> +
-> +
-> +static u32 rpm_get(void)
-> +{
-> +	u32 reg;
-> +	u32 bank = 0;
-> +	u32 offset = 0xc;
-
-Named with a define. Remove unnecessary local vars.
-
-> +	u32 byte_pos = 0;
-> +
-> +	mutex_lock(&mec_io_mutex);
-> +	/* Select memory region */
-> +	outb(bank, EC_ADDR_MSB);
-> +	outb(offset, EC_ADDR_LSB);
-> +	/* Get current date from the address */
-> +	reg = inw(MEC_DATA(byte_pos));
-> +	mutex_unlock(&mec_io_mutex);
-> +
-> +	return reg;
-> +}
-> +
-> +static u32 temp_get(void)
-> +{
-> +	u32 reg;
-> +	u32 bank = 0;
-> +	u32 offset = 0xc;
-> +	u32 byte_pos = 0;
-
-Ditto.
-
-> +	mutex_lock(&mec_io_mutex);
-> +	/* Select memory region */
-> +	outb(bank, EC_ADDR_MSB);
-> +	outb(offset, EC_ADDR_LSB);
-> +	/* Get current date from the address */
-> +	reg = inl(MEC_DATA(byte_pos));
-> +	mutex_unlock(&mec_io_mutex);
-> +
-> +	return (reg >> 16) / 10;
-
-Should that >> 16 do a FIELD_GET() for a named field, I suspect it should?
-
-> +}
-> +
-> +static umode_t silicom_fan_control_fan_is_visible(const u32 attr)
-> +{
-> +	switch (attr) {
-> +	case hwmon_fan_input:
-> +	case hwmon_fan_label:
-> +		return 0444;
-> +	default:
-> +		return 0;
-> +	}
-> +}
-> +
-> +static umode_t silicom_fan_control_temp_is_visible(const u32 attr)
-> +{
-> +	switch (attr) {
-> +	case hwmon_temp_input:
-> +	case hwmon_temp_label:
-> +		return 0444;
-> +	default:
-> +		return 0;
-> +	}
-> +}
-> +
-> +static int silicom_fan_control_read_fan(struct device *dev, u32 attr, long *val)
-> +{
-> +	struct silicom_fan_control_data *ctl = dev_get_drvdata(dev);
-> +
-> +	switch (attr) {
-> +	case hwmon_fan_input:
-> +		ctl->fan_speed = rpm_get();
-> +		*val = ctl->fan_speed;
-> +		return 0;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int silicom_fan_control_read_temp(struct device *dev, u32 attr, long *val)
-> +{
-> +	struct silicom_fan_control_data *ctl = dev_get_drvdata(dev);
-> +
-> +	switch (attr) {
-> +	case hwmon_temp_input:
-> +		ctl->temp = temp_get();
-> +		*val = ctl->temp;
-> +		return 0;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static umode_t silicom_fan_control_is_visible(const void *data,
-> +					  enum hwmon_sensor_types type,
-> +					  u32 attr, int channel)
-> +{
-> +	switch (type) {
-> +	case hwmon_fan:
-> +		return silicom_fan_control_fan_is_visible(attr);
-> +	case hwmon_temp:
-> +		return silicom_fan_control_temp_is_visible(attr);
-> +	default:
-> +		return 0;
-> +	}
-> +}
-> +
-> +static int silicom_fan_control_read(struct device *dev, enum hwmon_sensor_types type,
-> +				    u32 attr, int channel, long *val)
-> +{
-> +	switch (type) {
-> +	case hwmon_fan:
-> +		return silicom_fan_control_read_fan(dev, attr, val);
-> +	case hwmon_temp:
-> +		return silicom_fan_control_read_temp(dev, attr, val);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int silicom_fan_control_read_labels(struct device *dev, enum hwmon_sensor_types type,
-> +					   u32 attr, int channel, const char **str)
-> +{
-> +	switch (type) {
-> +	case hwmon_fan:
-> +		*str = "Fan Speed (RPM)";
-> +		return 0;
-> +	case hwmon_temp:
-> +		*str = "Thermostat Sensor";
-> +		return 0;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int silicom_fan_control_write(struct device *dev, enum hwmon_sensor_types type,
-> +				     u32 attr, int channel, long val)
-> +{
-> +	return 0;
-> +}
-> +
-> +static const struct hwmon_ops silicom_fan_control_hwmon_ops = {
-> +	.is_visible = silicom_fan_control_is_visible,
-> +	.read = silicom_fan_control_read,
-> +	.write = silicom_fan_control_write,
-> +	.read_string = silicom_fan_control_read_labels,
-> +};
-> +
-> +static const struct hwmon_chip_info silicom_chip_info = {
-> +	.ops = &silicom_fan_control_hwmon_ops,
-> +	.info = silicom_fan_control_info,
-> +};
-> +
-> +static int __init silicom_platform_probe(struct platform_device *device)
-> +{
-> +	int i, err;
-> +	u8 magic, ver;
-> +	struct silicom_fan_control_data *ctl;
-> +	const char *name = "Silocom_Fan_Monitor";
-> +	const char *dev_name = "Silicom_platform";
-> +
-> +	mec_io_base = 0x0800;
-> +	mec_io_len = 8;
-> +	if (!devm_request_region(&device->dev, mec_io_base, mec_io_len, "mec")) {
-> +		dev_err(&device->dev, "couldn't reserve MEC io ports\n");
-> +		return -EBUSY;
-> +	}
-> +
-> +	/* Sanity check magic number read for EC */
-> +	outb(0x00, MEC_ADDR);
-> +	magic = inb(MEC_DATA(0));
-> +	ver = inb(MEC_DATA(1));
-
-0 and 1 should be named with defines.
-
-> +	dev_dbg(&device->dev, "EC magic 0x%02x, version 0x%02x\n", magic, ver);
-> +
-> +	if (magic != SILICOM_MEC_MAGIC) {
-> +		dev_err(&device->dev, "Bad EC magic 0x%02x!\n", magic);
-> +		return -ENODEV;
-> +	}
-> +
-> +	if (silicom_led_info) {
-
-How can this be NULL?
-
-> +		err = silicom_mc_leds_register(&device->dev, silicom_led_info);
-> +		if (err) {
-> +			dev_err(&device->dev, "Failed to register LEDs\n");
-> +			return err;
-> +		}
-> +	}
-> +
-> +	if (silicom_gpiochip) {
-
-How can this be NULL?
-
-> +		err = devm_gpiochip_add_data(&device->dev, silicom_gpiochip, silicom_gpio_channels);
-> +		if (err) {
-> +			dev_err(&device->dev, "Failed to register gpiochip: %d\n", err);
-> +			return err;
-> +		}
-> +	}
-> +
-> +	ctl = devm_kzalloc(&device->dev, sizeof(*ctl), GFP_KERNEL);
-> +	if (!ctl)
-> +		return -ENOMEM;
-> +
-> +	ctl->hdev = devm_hwmon_device_register_with_info(&device->dev, name, ctl,
-> +				&silicom_chip_info, NULL);
-> +
-> +	my_dev_ctl.my_dev = root_device_register(dev_name);
-> +	for (i = 0; i < ARRAY_SIZE(my_dev_attr); i++) {
-> +		err = sysfs_create_file(&my_dev_ctl.my_dev->kobj, &my_dev_attr[i].attr);
-> +		if (err) {
-> +			pr_debug("failed to create the foo file in /sys/devices/Silicom_platform\n");
-> +			break;
-> +		}
-> +	}
-> +
-> +	return err;
-> +}
-> +
-> +static int __init silicom_platform_info_init(const struct dmi_system_id *id)
-> +{
-> +	struct silicom_platform_info *info = id->driver_data;
-> +
-> +	dev_info(&silicom_platform_dev->dev, "Detected %s\n", id->ident);
-> +
-> +	mec_io_base = info->io_base;
-> +	mec_io_len = info->io_len;
-> +	silicom_led_info = info->led_info;
-> +	silicom_gpio_channels = info->gpio_channels;
-> +	silicom_gpiochip = info->gpiochip;
-> +	if (silicom_gpiochip)
-
-How can this be NULL?
-
-> +		silicom_gpiochip->ngpio = info->ngpio;
-> +
-> +	return 1;
-> +}
-> +
-> +static const struct dmi_system_id silicom_dmi_ids[] __initconst = {
-> +	{
-> +		.callback = silicom_platform_info_init,
-> +		.ident = "Silicom Cordoba (Generic)",
-> +		.matches = {
-> +			DMI_MATCH(DMI_BOARD_VENDOR, "Silicom"),
-> +			DMI_MATCH(DMI_BOARD_NAME, "80300-0214-G"),
-> +		},
-> +		.driver_data = &silicom_generic_cordoba_info,
-> +	},
-> +	{
-> +		.callback = silicom_platform_info_init,
-> +		.ident = "Silicom Cordoba (Generic)",
-> +		.matches = {
-> +			DMI_MATCH(DMI_BOARD_VENDOR, "Silicom"),
-> +			DMI_MATCH(DMI_BOARD_NAME, "80500-0214-G"),
-> +		},
-> +		.driver_data = &silicom_generic_cordoba_info,
-> +	},
-> +	{
-> +		 .callback = silicom_platform_info_init,
-> +		 .ident = "Silicom Cordoba (plat_0222)",
-> +		 .matches = {
-> +		       DMI_MATCH(DMI_BOARD_VENDOR, "Silicom"),
-> +		       DMI_MATCH(DMI_BOARD_NAME, "80300-0222-G"),
-> +		 },
-
-Incorrect indentation x6.
-
-> +		.driver_data = &silicom_plat_0222_cordoba_info,
-> +	},
-> +	{ },
-> +};
-> +
-> +static int __init silicom_platform_init(void)
-> +{
-> +	struct device *dev;
-> +	int err;
-> +
-> +	/* register a platform device to act as the parent for LEDS, etc. */
-> +	silicom_platform_dev = platform_device_register_simple("silicom-platform", -1, NULL, 0);
-> +	if (IS_ERR(silicom_platform_dev)) {
-> +		err = PTR_ERR(silicom_platform_dev);
-> +		pr_err("failed to register silicom-platform device: %d\n", err);
-> +		goto silicom_init_register_err;
-> +	}
-> +	dev = &silicom_platform_dev->dev;
-> +
-> +	err = dmi_check_system(silicom_dmi_ids);
-> +	if (err == 0) {
-> +		dev_err(dev, "No DMI match for this platform\n");
-> +		err = -ENODEV;
-> +		goto silicom_init_probe_err;
-> +	}
-> +
-> +	/* Directly probe the platform driver in init since this isn't a
-> +	 * hotpluggable device.  That means we don't need to register a driver
-> +	 * that needs to wait around in memory on the chance a matching device
-> +	 * would get added.  Instead run once in __init so that we can free all
-> +	 * those resources when the __init region is wiped
-> +	 */
-> +	err = platform_driver_probe(&silicom_platform_driver, silicom_platform_probe);
-> +	if (err) {
-> +		dev_err(dev, "Failed to probe platform driver %d\n", err);
-> +		goto silicom_init_probe_err;
-> +	}
-> +
-> +	return 0;
-> +
-> +silicom_init_probe_err:
-> +	if (silicom_platform_dev) {
-
-How can this by NULL?
-
-> +		platform_device_unregister(silicom_platform_dev);
-> +		silicom_platform_dev = NULL;
-
-Seems unnecessary.
-
-> +	}
-> +	if (my_dev_ctl.my_dev) {
-> +		root_device_unregister(my_dev_ctl.my_dev);
-> +		my_dev_ctl.my_dev = NULL;
-
-Ditto.
-
-> +	}
-> +
-> +silicom_init_register_err:
-> +	return err;
-> +}
-> +
-> +static void __exit silicom_platform_exit(void)
-> +{
-> +	int i;
-> +
-> +	if (silicom_platform_dev) {
-> +		platform_device_unregister(silicom_platform_dev);
-> +		platform_driver_unregister(&silicom_platform_driver);
-> +	}
-> +
-> +	if (my_dev_ctl.my_dev) {
-> +		for (i = 0; i < ARRAY_SIZE(my_dev_attr); i++)
-> +			sysfs_remove_file(&my_dev_ctl.my_dev->kobj, &my_dev_attr[i].attr);
-> +		root_device_unregister(my_dev_ctl.my_dev);
-> +	}
-> +	mutex_destroy(&mec_io_mutex);
-> +}
-> +
-> +module_init(silicom_platform_init);
-> +module_exit(silicom_platform_exit);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_AUTHOR("Henry Shi <henrys@silicom-usa.com>");
-> +MODULE_DESCRIPTION("Platform driver for Silicom network appliances");
-> +
-> +MODULE_DEVICE_TABLE(dmi, silicom_dmi_ids);
-> +
-
-Extra newline in the end.
-
+Split types and pure function declarations from page_pool.h
+and add them in page_page_types.h, so that C sources can
+include page_pool.h and headers should generally only include
+page_pool_types.h as suggested by jakub.
+
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+CC: Alexander Lobakin <aleksander.lobakin@intel.com>
+---
+ MAINTAINERS                                   |   1 +
+ drivers/net/ethernet/engleder/tsnep_main.c    |   1 +
+ drivers/net/ethernet/freescale/fec_main.c     |   1 +
+ .../marvell/octeontx2/nic/otx2_common.c       |   1 +
+ .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |   1 +
+ .../ethernet/mellanox/mlx5/core/en/params.c   |   1 +
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |   1 +
+ drivers/net/wireless/mediatek/mt76/mt76.h     |   1 +
+ include/linux/skbuff.h                        |   2 +-
+ include/net/page_pool.h                       | 193 +-----------------
+ include/net/page_pool_types.h                 | 193 ++++++++++++++++++
+ 11 files changed, 206 insertions(+), 190 deletions(-)
+ create mode 100644 include/net/page_pool_types.h
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9a5863f1b016..2888d63e6e03 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16003,6 +16003,7 @@ L:	netdev@vger.kernel.org
+ S:	Supported
+ F:	Documentation/networking/page_pool.rst
+ F:	include/net/page_pool.h
++F:	include/net/page_pool_types.h
+ F:	include/trace/events/page_pool.h
+ F:	net/core/page_pool.c
+ 
+diff --git a/drivers/net/ethernet/engleder/tsnep_main.c b/drivers/net/ethernet/engleder/tsnep_main.c
+index 84751bb303a6..6222aaa5157f 100644
+--- a/drivers/net/ethernet/engleder/tsnep_main.c
++++ b/drivers/net/ethernet/engleder/tsnep_main.c
+@@ -28,6 +28,7 @@
+ #include <linux/iopoll.h>
+ #include <linux/bpf.h>
+ #include <linux/bpf_trace.h>
++#include <net/page_pool.h>
+ #include <net/xdp_sock_drv.h>
+ 
+ #define TSNEP_RX_OFFSET (max(NET_SKB_PAD, XDP_PACKET_HEADROOM) + NET_IP_ALIGN)
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index 1b990a486059..cfc07f012254 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -38,6 +38,7 @@
+ #include <linux/in.h>
+ #include <linux/ip.h>
+ #include <net/ip.h>
++#include <net/page_pool.h>
+ #include <net/selftests.h>
+ #include <net/tso.h>
+ #include <linux/tcp.h>
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+index 77c8f650f7ac..b5385ae65dcb 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+@@ -7,6 +7,7 @@
+ 
+ #include <linux/interrupt.h>
+ #include <linux/pci.h>
++#include <net/page_pool.h>
+ #include <net/tso.h>
+ #include <linux/bitfield.h>
+ 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+index fe8ea4e531b7..7eca434a0550 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+@@ -16,6 +16,7 @@
+ #include <linux/bpf.h>
+ #include <linux/bpf_trace.h>
+ #include <linux/bitfield.h>
++#include <net/page_pool.h>
+ 
+ #include "otx2_reg.h"
+ #include "otx2_common.h"
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/params.c b/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
+index 5ce28ff7685f..0f152f14165b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
+@@ -6,6 +6,7 @@
+ #include "en/port.h"
+ #include "en_accel/en_accel.h"
+ #include "en_accel/ipsec.h"
++#include <net/page_pool.h>
+ #include <net/xdp_sock_drv.h>
+ 
+ static u8 mlx5e_mpwrq_min_page_shift(struct mlx5_core_dev *mdev)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+index 40589cebb773..16038c23b7d8 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+@@ -35,6 +35,7 @@
+ #include "en/xdp.h"
+ #include "en/params.h"
+ #include <linux/bitfield.h>
++#include <net/page_pool.h>
+ 
+ int mlx5e_xdp_max_mtu(struct mlx5e_params *params, struct mlx5e_xsk_param *xsk)
+ {
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76.h b/drivers/net/wireless/mediatek/mt76/mt76.h
+index 6b07b8fafec2..95c16f11d156 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76.h
++++ b/drivers/net/wireless/mediatek/mt76/mt76.h
+@@ -15,6 +15,7 @@
+ #include <linux/average.h>
+ #include <linux/soc/mediatek/mtk_wed.h>
+ #include <net/mac80211.h>
++#include <net/page_pool.h>
+ #include "util.h"
+ #include "testmode.h"
+ 
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 91ed66952580..bc4a7d45365b 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -32,7 +32,7 @@
+ #include <linux/if_packet.h>
+ #include <linux/llist.h>
+ #include <net/flow.h>
+-#include <net/page_pool.h>
++#include <net/page_pool_types.h>
+ #if IS_ENABLED(CONFIG_NF_CONNTRACK)
+ #include <linux/netfilter/nf_conntrack_common.h>
+ #endif
+diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+index 126f9e294389..bee12295d729 100644
+--- a/include/net/page_pool.h
++++ b/include/net/page_pool.h
+@@ -30,107 +30,9 @@
+ #ifndef _NET_PAGE_POOL_H
+ #define _NET_PAGE_POOL_H
+ 
+-#include <linux/mm.h> /* Needed by ptr_ring */
+-#include <linux/ptr_ring.h>
+-#include <linux/dma-direction.h>
+-
+-#define PP_FLAG_DMA_MAP		BIT(0) /* Should page_pool do the DMA
+-					* map/unmap
+-					*/
+-#define PP_FLAG_DMA_SYNC_DEV	BIT(1) /* If set all pages that the driver gets
+-					* from page_pool will be
+-					* DMA-synced-for-device according to
+-					* the length provided by the device
+-					* driver.
+-					* Please note DMA-sync-for-CPU is still
+-					* device driver responsibility
+-					*/
+-#define PP_FLAG_PAGE_FRAG	BIT(2) /* for page frag feature */
+-#define PP_FLAG_ALL		(PP_FLAG_DMA_MAP |\
+-				 PP_FLAG_DMA_SYNC_DEV |\
+-				 PP_FLAG_PAGE_FRAG)
+-
+-/*
+- * Fast allocation side cache array/stack
+- *
+- * The cache size and refill watermark is related to the network
+- * use-case.  The NAPI budget is 64 packets.  After a NAPI poll the RX
+- * ring is usually refilled and the max consumed elements will be 64,
+- * thus a natural max size of objects needed in the cache.
+- *
+- * Keeping room for more objects, is due to XDP_DROP use-case.  As
+- * XDP_DROP allows the opportunity to recycle objects directly into
+- * this array, as it shares the same softirq/NAPI protection.  If
+- * cache is already full (or partly full) then the XDP_DROP recycles
+- * would have to take a slower code path.
+- */
+-#define PP_ALLOC_CACHE_SIZE	128
+-#define PP_ALLOC_CACHE_REFILL	64
+-struct pp_alloc_cache {
+-	u32 count;
+-	struct page *cache[PP_ALLOC_CACHE_SIZE];
+-};
+-
+-struct page_pool_params {
+-	unsigned int	flags;
+-	unsigned int	order;
+-	unsigned int	pool_size;
+-	int		nid;  /* Numa node id to allocate from pages from */
+-	struct device	*dev; /* device, for DMA pre-mapping purposes */
+-	struct napi_struct *napi; /* Sole consumer of pages, otherwise NULL */
+-	enum dma_data_direction dma_dir; /* DMA mapping direction */
+-	unsigned int	max_len; /* max DMA sync memory size */
+-	unsigned int	offset;  /* DMA addr offset */
+-	void (*init_callback)(struct page *page, void *arg);
+-	void *init_arg;
+-};
+-
+-#ifdef CONFIG_PAGE_POOL_STATS
+-struct page_pool_alloc_stats {
+-	u64 fast; /* fast path allocations */
+-	u64 slow; /* slow-path order 0 allocations */
+-	u64 slow_high_order; /* slow-path high order allocations */
+-	u64 empty; /* failed refills due to empty ptr ring, forcing
+-		    * slow path allocation
+-		    */
+-	u64 refill; /* allocations via successful refill */
+-	u64 waive;  /* failed refills due to numa zone mismatch */
+-};
+-
+-struct page_pool_recycle_stats {
+-	u64 cached;	/* recycling placed page in the cache. */
+-	u64 cache_full; /* cache was full */
+-	u64 ring;	/* recycling placed page back into ptr ring */
+-	u64 ring_full;	/* page was released from page-pool because
+-			 * PTR ring was full.
+-			 */
+-	u64 released_refcnt; /* page released because of elevated
+-			      * refcnt
+-			      */
+-};
+-
+-/* This struct wraps the above stats structs so users of the
+- * page_pool_get_stats API can pass a single argument when requesting the
+- * stats for the page pool.
+- */
+-struct page_pool_stats {
+-	struct page_pool_alloc_stats alloc_stats;
+-	struct page_pool_recycle_stats recycle_stats;
+-};
+-
+-int page_pool_ethtool_stats_get_count(void);
+-u8 *page_pool_ethtool_stats_get_strings(u8 *data);
+-u64 *page_pool_ethtool_stats_get(u64 *data, void *stats);
+-
+-/*
+- * Drivers that wish to harvest page pool stats and report them to users
+- * (perhaps via ethtool, debugfs, or another mechanism) can allocate a
+- * struct page_pool_stats call page_pool_get_stats to get stats for the specified pool.
+- */
+-bool page_pool_get_stats(struct page_pool *pool,
+-			 struct page_pool_stats *stats);
+-#else
++#include <net/page_pool_types.h>
+ 
++#ifndef CONFIG_PAGE_POOL_STATS
+ static inline int page_pool_ethtool_stats_get_count(void)
+ {
+ 	return 0;
+@@ -145,72 +47,7 @@ static inline u64 *page_pool_ethtool_stats_get(u64 *data, void *stats)
+ {
+ 	return data;
+ }
+-
+-#endif
+-
+-struct page_pool {
+-	struct page_pool_params p;
+-
+-	struct delayed_work release_dw;
+-	void (*disconnect)(void *);
+-	unsigned long defer_start;
+-	unsigned long defer_warn;
+-
+-	u32 pages_state_hold_cnt;
+-	unsigned int frag_offset;
+-	struct page *frag_page;
+-	long frag_users;
+-
+-#ifdef CONFIG_PAGE_POOL_STATS
+-	/* these stats are incremented while in softirq context */
+-	struct page_pool_alloc_stats alloc_stats;
+-#endif
+-	u32 xdp_mem_id;
+-
+-	/*
+-	 * Data structure for allocation side
+-	 *
+-	 * Drivers allocation side usually already perform some kind
+-	 * of resource protection.  Piggyback on this protection, and
+-	 * require driver to protect allocation side.
+-	 *
+-	 * For NIC drivers this means, allocate a page_pool per
+-	 * RX-queue. As the RX-queue is already protected by
+-	 * Softirq/BH scheduling and napi_schedule. NAPI schedule
+-	 * guarantee that a single napi_struct will only be scheduled
+-	 * on a single CPU (see napi_schedule).
+-	 */
+-	struct pp_alloc_cache alloc ____cacheline_aligned_in_smp;
+-
+-	/* Data structure for storing recycled pages.
+-	 *
+-	 * Returning/freeing pages is more complicated synchronization
+-	 * wise, because free's can happen on remote CPUs, with no
+-	 * association with allocation resource.
+-	 *
+-	 * Use ptr_ring, as it separates consumer and producer
+-	 * effeciently, it a way that doesn't bounce cache-lines.
+-	 *
+-	 * TODO: Implement bulk return pages into this structure.
+-	 */
+-	struct ptr_ring ring;
+-
+-#ifdef CONFIG_PAGE_POOL_STATS
+-	/* recycle stats are per-cpu to avoid locking */
+-	struct page_pool_recycle_stats __percpu *recycle_stats;
+ #endif
+-	atomic_t pages_state_release_cnt;
+-
+-	/* A page_pool is strictly tied to a single RX-queue being
+-	 * protected by NAPI, due to above pp_alloc_cache. This
+-	 * refcnt serves purpose is to simplify drivers error handling.
+-	 */
+-	refcount_t user_cnt;
+-
+-	u64 destroy_cnt;
+-};
+-
+-struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp);
+ 
+ static inline struct page *page_pool_dev_alloc_pages(struct page_pool *pool)
+ {
+@@ -219,9 +56,6 @@ static inline struct page *page_pool_dev_alloc_pages(struct page_pool *pool)
+ 	return page_pool_alloc_pages(pool, gfp);
+ }
+ 
+-struct page *page_pool_alloc_frag(struct page_pool *pool, unsigned int *offset,
+-				  unsigned int size, gfp_t gfp);
+-
+ static inline struct page *page_pool_dev_alloc_frag(struct page_pool *pool,
+ 						    unsigned int *offset,
+ 						    unsigned int size)
+@@ -240,21 +74,7 @@ inline enum dma_data_direction page_pool_get_dma_dir(struct page_pool *pool)
+ 	return pool->p.dma_dir;
+ }
+ 
+-bool page_pool_return_skb_page(struct page *page, bool napi_safe);
+-
+-struct page_pool *page_pool_create(const struct page_pool_params *params);
+-
+-struct xdp_mem_info;
+-
+-#ifdef CONFIG_PAGE_POOL
+-void page_pool_unlink_napi(struct page_pool *pool);
+-void page_pool_destroy(struct page_pool *pool);
+-void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(void *),
+-			   struct xdp_mem_info *mem);
+-void page_pool_release_page(struct page_pool *pool, struct page *page);
+-void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+-			     int count);
+-#else
++#ifndef CONFIG_PAGE_POOL
+ static inline void page_pool_unlink_napi(struct page_pool *pool)
+ {
+ }
+@@ -263,6 +83,7 @@ static inline void page_pool_destroy(struct page_pool *pool)
+ {
+ }
+ 
++struct xdp_mem_info;
+ static inline void page_pool_use_xdp_mem(struct page_pool *pool,
+ 					 void (*disconnect)(void *),
+ 					 struct xdp_mem_info *mem)
+@@ -279,10 +100,6 @@ static inline void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+ }
+ #endif
+ 
+-void page_pool_put_defragged_page(struct page_pool *pool, struct page *page,
+-				  unsigned int dma_sync_size,
+-				  bool allow_direct);
+-
+ /* pp_frag_count represents the number of writers who can update the page
+  * either by updating skb->data or via DMA mappings for the device.
+  * We can't rely on the page refcnt for that as we don't know who might be
+@@ -391,8 +208,6 @@ static inline bool page_pool_put(struct page_pool *pool)
+ 	return refcount_dec_and_test(&pool->user_cnt);
+ }
+ 
+-/* Caller must provide appropriate safe context, e.g. NAPI. */
+-void page_pool_update_nid(struct page_pool *pool, int new_nid);
+ static inline void page_pool_nid_changed(struct page_pool *pool, int new_nid)
+ {
+ 	if (unlikely(pool->p.nid != new_nid))
+diff --git a/include/net/page_pool_types.h b/include/net/page_pool_types.h
+new file mode 100644
+index 000000000000..9dc189082e20
+--- /dev/null
++++ b/include/net/page_pool_types.h
+@@ -0,0 +1,193 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _NET_PAGE_POOL_TYPES_H
++#define _NET_PAGE_POOL_TYPES_H
++
++#include <linux/ptr_ring.h>
++#include <linux/dma-direction.h>
++
++#define PP_FLAG_DMA_MAP		BIT(0) /* Should page_pool do the DMA
++					* map/unmap
++					*/
++#define PP_FLAG_DMA_SYNC_DEV	BIT(1) /* If set all pages that the driver gets
++					* from page_pool will be
++					* DMA-synced-for-device according to
++					* the length provided by the device
++					* driver.
++					* Please note DMA-sync-for-CPU is still
++					* device driver responsibility
++					*/
++#define PP_FLAG_PAGE_FRAG	BIT(2) /* for page frag feature */
++#define PP_FLAG_ALL		(PP_FLAG_DMA_MAP |\
++				 PP_FLAG_DMA_SYNC_DEV |\
++				 PP_FLAG_PAGE_FRAG)
++
++/*
++ * Fast allocation side cache array/stack
++ *
++ * The cache size and refill watermark is related to the network
++ * use-case.  The NAPI budget is 64 packets.  After a NAPI poll the RX
++ * ring is usually refilled and the max consumed elements will be 64,
++ * thus a natural max size of objects needed in the cache.
++ *
++ * Keeping room for more objects, is due to XDP_DROP use-case.  As
++ * XDP_DROP allows the opportunity to recycle objects directly into
++ * this array, as it shares the same softirq/NAPI protection.  If
++ * cache is already full (or partly full) then the XDP_DROP recycles
++ * would have to take a slower code path.
++ */
++#define PP_ALLOC_CACHE_SIZE	128
++#define PP_ALLOC_CACHE_REFILL	64
++struct pp_alloc_cache {
++	u32 count;
++	struct page *cache[PP_ALLOC_CACHE_SIZE];
++};
++
++struct page_pool_params {
++	unsigned int	flags;
++	unsigned int	order;
++	unsigned int	pool_size;
++	int		nid;  /* Numa node id to allocate from pages from */
++	struct device	*dev; /* device, for DMA pre-mapping purposes */
++	struct napi_struct *napi; /* Sole consumer of pages, otherwise NULL */
++	enum dma_data_direction dma_dir; /* DMA mapping direction */
++	unsigned int	max_len; /* max DMA sync memory size */
++	unsigned int	offset;  /* DMA addr offset */
++	void (*init_callback)(struct page *page, void *arg);
++	void *init_arg;
++};
++
++#ifdef CONFIG_PAGE_POOL_STATS
++struct page_pool_alloc_stats {
++	u64 fast; /* fast path allocations */
++	u64 slow; /* slow-path order 0 allocations */
++	u64 slow_high_order; /* slow-path high order allocations */
++	u64 empty; /* failed refills due to empty ptr ring, forcing
++		    * slow path allocation
++		    */
++	u64 refill; /* allocations via successful refill */
++	u64 waive;  /* failed refills due to numa zone mismatch */
++};
++
++struct page_pool_recycle_stats {
++	u64 cached;	/* recycling placed page in the cache. */
++	u64 cache_full; /* cache was full */
++	u64 ring;	/* recycling placed page back into ptr ring */
++	u64 ring_full;	/* page was released from page-pool because
++			 * PTR ring was full.
++			 */
++	u64 released_refcnt; /* page released because of elevated
++			      * refcnt
++			      */
++};
++
++/* This struct wraps the above stats structs so users of the
++ * page_pool_get_stats API can pass a single argument when requesting the
++ * stats for the page pool.
++ */
++struct page_pool_stats {
++	struct page_pool_alloc_stats alloc_stats;
++	struct page_pool_recycle_stats recycle_stats;
++};
++
++int page_pool_ethtool_stats_get_count(void);
++u8 *page_pool_ethtool_stats_get_strings(u8 *data);
++u64 *page_pool_ethtool_stats_get(u64 *data, void *stats);
++
++/*
++ * Drivers that wish to harvest page pool stats and report them to users
++ * (perhaps via ethtool, debugfs, or another mechanism) can allocate a
++ * struct page_pool_stats call page_pool_get_stats to get stats for the specified pool.
++ */
++bool page_pool_get_stats(struct page_pool *pool,
++			 struct page_pool_stats *stats);
++#endif
++
++struct page_pool {
++	struct page_pool_params p;
++
++	struct delayed_work release_dw;
++	void (*disconnect)(void *);
++	unsigned long defer_start;
++	unsigned long defer_warn;
++
++	u32 pages_state_hold_cnt;
++	unsigned int frag_offset;
++	struct page *frag_page;
++	long frag_users;
++
++#ifdef CONFIG_PAGE_POOL_STATS
++	/* these stats are incremented while in softirq context */
++	struct page_pool_alloc_stats alloc_stats;
++#endif
++	u32 xdp_mem_id;
++
++	/*
++	 * Data structure for allocation side
++	 *
++	 * Drivers allocation side usually already perform some kind
++	 * of resource protection.  Piggyback on this protection, and
++	 * require driver to protect allocation side.
++	 *
++	 * For NIC drivers this means, allocate a page_pool per
++	 * RX-queue. As the RX-queue is already protected by
++	 * Softirq/BH scheduling and napi_schedule. NAPI schedule
++	 * guarantee that a single napi_struct will only be scheduled
++	 * on a single CPU (see napi_schedule).
++	 */
++	struct pp_alloc_cache alloc ____cacheline_aligned_in_smp;
++
++	/* Data structure for storing recycled pages.
++	 *
++	 * Returning/freeing pages is more complicated synchronization
++	 * wise, because free's can happen on remote CPUs, with no
++	 * association with allocation resource.
++	 *
++	 * Use ptr_ring, as it separates consumer and producer
++	 * effeciently, it a way that doesn't bounce cache-lines.
++	 *
++	 * TODO: Implement bulk return pages into this structure.
++	 */
++	struct ptr_ring ring;
++
++#ifdef CONFIG_PAGE_POOL_STATS
++	/* recycle stats are per-cpu to avoid locking */
++	struct page_pool_recycle_stats __percpu *recycle_stats;
++#endif
++	atomic_t pages_state_release_cnt;
++
++	/* A page_pool is strictly tied to a single RX-queue being
++	 * protected by NAPI, due to above pp_alloc_cache. This
++	 * refcnt serves purpose is to simplify drivers error handling.
++	 */
++	refcount_t user_cnt;
++
++	u64 destroy_cnt;
++};
++
++struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp);
++struct page *page_pool_alloc_frag(struct page_pool *pool, unsigned int *offset,
++				  unsigned int size, gfp_t gfp);
++bool page_pool_return_skb_page(struct page *page, bool napi_safe);
++struct page_pool *page_pool_create(const struct page_pool_params *params);
++
++#ifdef CONFIG_PAGE_POOL
++void page_pool_unlink_napi(struct page_pool *pool);
++void page_pool_destroy(struct page_pool *pool);
++
++struct xdp_mem_info;
++void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(void *),
++			   struct xdp_mem_info *mem);
++void page_pool_release_page(struct page_pool *pool, struct page *page);
++void page_pool_put_page_bulk(struct page_pool *pool, void **data,
++			     int count);
++#endif
++
++void page_pool_put_defragged_page(struct page_pool *pool, struct page *page,
++				  unsigned int dma_sync_size,
++				  bool allow_direct);
++
++/* Caller must provide appropriate safe context, e.g. NAPI. */
++void page_pool_update_nid(struct page_pool *pool, int new_nid);
++
++#endif /* _NET_PAGE_POOL_H */
 -- 
- i.
+2.33.0
 
