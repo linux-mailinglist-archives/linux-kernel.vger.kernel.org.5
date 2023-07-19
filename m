@@ -2,129 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 279BD759D86
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 20:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17BF759D92
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 20:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230362AbjGSShi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 14:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58108 "EHLO
+        id S229934AbjGSSjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 14:39:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbjGSShf (ORCPT
+        with ESMTP id S229894AbjGSSjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 14:37:35 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D8D27172E
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 11:37:30 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 730912F4;
-        Wed, 19 Jul 2023 11:38:13 -0700 (PDT)
-Received: from [10.57.76.81] (unknown [10.57.76.81])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 00DF63F67D;
-        Wed, 19 Jul 2023 11:37:27 -0700 (PDT)
-Message-ID: <7c3b347c-11a1-6250-9038-c0c58c5ebd89@arm.com>
-Date:   Wed, 19 Jul 2023 19:37:25 +0100
+        Wed, 19 Jul 2023 14:39:39 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC27F0;
+        Wed, 19 Jul 2023 11:39:38 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso6677142f8f.0;
+        Wed, 19 Jul 2023 11:39:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689791977; x=1692383977;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QzzhHUMsEPca1REXinNBty7qrU/8lOnoSAoDZgJ76hk=;
+        b=qBwFTggRpkj+jX6aVXXFeRKWjGvyH+s2zwyHsO8x4OwE36yuPr/YWDg0sB9FDZGOZA
+         COVEaLg1lypqvCy1NhWKHWr/fFShKH/oRzRrVVEPZNuZrdJ51kh9ZvjUlsgXIiDkiBaa
+         tIkHqJaAGX8rtax7s7wRpMbAUgreVL5TXfl8uRkwaaTfc2mj9Di9+SCSOv0HC/0vL+Te
+         o6EvSiOLwE+LNdQjBiwwugiKf3mXbCKntldwGrw7bFvW4WN6JWmiZVjSZiVs5y8Eiyy2
+         EF8HxjaUs9eu4iRmKHG/hTpacyzRbBembvnWO3Vhz5IbLRQhKI13lkV7HXeQSDh0PRvB
+         M/6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689791977; x=1692383977;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QzzhHUMsEPca1REXinNBty7qrU/8lOnoSAoDZgJ76hk=;
+        b=WiHdriZVS9g5/cZ7ekyiOKiF9KRUailOcG1qHk5QjaPJuYPBI1sKgqjOF+CZn6DiW7
+         MYzlG4n7cLk6gkV157Hm92neL+bmBlbxNbVgyQRD2WKAho1wcaphdK1Bu6UkL2ugt60b
+         9x6HTPrP0brw+yvg47wV3UePN7yrqif7YsRKTOxki9rcDx5HVCpF7iAxzUTeHlqSxRe3
+         5jCj7hOtv+FiFaAbUeVMp6jFKkpuzlbsr6LeqBoIhk/4ytdebUu/PW3ctNicRo3WRFj1
+         lMBpOhvnyi5Z4K6xnqu7yhEgVi6MSQCiQkXbZl3D596pRK/u5wEXYK+KkcNc7w2SHmQe
+         DeNg==
+X-Gm-Message-State: ABy/qLYDBLAOVLXyRwB31HGzeItAMxDGJVZzVW9Oy9JfYVTTK5WmB7M6
+        uSM2hOSvli2CoCLGD0ZoFxhlZhf9IE1CSUrsOj0=
+X-Google-Smtp-Source: APBJJlFejtxmv7imev+zeanVVRwqOImooJH6ndEfKqWAZjWaMbgyBEzzpOgezaGNdUJq3NIBmbFkAxhPTwAGJLJhp8M=
+X-Received: by 2002:adf:e104:0:b0:316:d887:624a with SMTP id
+ t4-20020adfe104000000b00316d887624amr495707wrz.15.1689791976882; Wed, 19 Jul
+ 2023 11:39:36 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v2 0/5] variable-order, large folios for anonymous memory
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20230703135330.1865927-1-ryan.roberts@arm.com>
- <78159ed0-a233-9afb-712f-2df1a4858b22@redhat.com>
- <4d4c45a2-0037-71de-b182-f516fee07e67@arm.com>
- <d9cb4563-c622-9660-287b-a2f35121aec7@redhat.com>
- <ZKgPIXSrxqymWrsv@casper.infradead.org>
- <bfa13f35-bca9-c4e8-25f3-e8021f85f223@redhat.com>
- <C56EA745-E112-4887-8C22-B74FCB6A14EB@nvidia.com>
- <a8f567b0-3501-7f1b-7e14-e0e5fb205a59@arm.com>
- <4DD00BE6-4141-4887-B5E5-0B7E8D1E2086@nvidia.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <4DD00BE6-4141-4887-B5E5-0B7E8D1E2086@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230705090951.63762-1-dg573847474@gmail.com> <7266dc04-8db3-a48b-6844-8530ae7b8adf@roeck-us.net>
+In-Reply-To: <7266dc04-8db3-a48b-6844-8530ae7b8adf@roeck-us.net>
+From:   Chengfeng Ye <dg573847474@gmail.com>
+Date:   Thu, 20 Jul 2023 02:39:25 +0800
+Message-ID: <CAAo+4rVh4+VX3_EQyFasmfe4aC1aMN1nJmniMs+poUA63OTqFg@mail.gmail.com>
+Subject: Re: [PATCH v3] watchdog: s3c2410: Fix potential deadlock on &wdt->lock
+To:     Guenter Roeck <linux@roeck-us.net>, krzysztof.kozlowski@linaro.org,
+        alim.akhtar@samsung.com, wim@linux-watchdog.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/2023 17:05, Zi Yan wrote:
-> On 19 Jul 2023, at 11:49, Ryan Roberts wrote:
-> 
->> On 10/07/2023 17:53, Zi Yan wrote:
->>> On 7 Jul 2023, at 9:24, David Hildenbrand wrote:
->>>
->>>> On 07.07.23 15:12, Matthew Wilcox wrote:
->>>>> On Fri, Jul 07, 2023 at 01:40:53PM +0200, David Hildenbrand wrote:
->>>>>> On 06.07.23 10:02, Ryan Roberts wrote:
->>>>>> But can you comment on the page migration part (IOW did you try it already)?
->>>>>>
->>>>>> For example, memory hotunplug, CMA, MCE handling, compaction all rely on
->>>>>> page migration of something that was allocated using GFP_MOVABLE to actually
->>>>>> work.
->>>>>>
->>>>>> Compaction seems to skip any higher-order folios, but the question is if the
->>>>>> udnerlying migration itself works.
->>>>>>
->>>>>> If it already works: great! If not, this really has to be tackled early,
->>>>>> because otherwise we'll be breaking the GFP_MOVABLE semantics.
->>>>>
->>>>> I have looked at this a bit.  _Migration_ should be fine.  _Compaction_
->>>>> is not.
->>>>
->>>> Thanks! Very nice if at least ordinary migration works.
->>>>
->>>>>
->>>>> If you look at a function like folio_migrate_mapping(), it all seems
->>>>> appropriately folio-ised.  There might be something in there that is
->>>>> slightly wrong, but that would just be a bug to fix, not a huge
->>>>> architectural problem.
->>>>>
->>>>> The problem comes in the callers of migrate_pages().  They pass a
->>>>> new_folio_t callback.  alloc_migration_target() is the usual one passed
->>>>> and as far as I can tell is fine.  I've seen no problems reported with it.
->>>>>
->>>>> compaction_alloc() is a disaster, and I don't know how to fix it.
->>>>> The compaction code has its own allocator which is populated with order-0
->>>>> folios.  How it populates that freelist is awful ... see split_map_pages()
->>>>
->>>> Yeah, all that code was written under the assumption that we're moving order-0 pages (which is what the anon+pagecache pages part).
->>>>
->>>> From what I recall, we're allocating order-0 pages from the high memory addresses, so we can migrate from low memory addresses, effectively freeing up low memory addresses and filling high memory addresses.
->>>>
->>>> Adjusting that will be ... interesting. Instead of allocating order-0 pages from high addresses, we might want to allocate "as large as possible" ("grab what we can") from high addresses and then have our own kind of buddy for allocating from that pool a compaction destination page, depending on our source page. Nasty.
->>>
->>> We probably do not need a pool, since before migration, we have isolated folios to
->>> be migrated and can come up with a stats on how many folios there are at each order.
->>> Then, we can isolate free pages based on the stats and do not split free pages
->>> all the way down to order-0. We can sort the source folios based on their orders
->>> and isolate free pages from largest order to smallest order. That could avoid
->>> a free page pool.
->>
->> Hi Zi, I just wanted to check; is this something you are working on or planning
->> to work on? I'm trying to maintain a list of all the items that need to get
->> sorted for large anon folios. It would be great to put your name against it! ;-)
-> 
-> Sure. I can work on this one.
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Awesome - thanks!
+Thanks much for your time in reviewing the patch :)
 
-> 
-> --
-> Best Regards,
-> Yan, Zi
-
+Best Regards,
+Chengfeng
