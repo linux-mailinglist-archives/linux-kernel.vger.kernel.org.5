@@ -2,96 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29008759FEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EAD759FFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbjGSUhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40042 "EHLO
+        id S230179AbjGSUif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231148AbjGSUhL (ORCPT
+        with ESMTP id S229694AbjGSUid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:37:11 -0400
+        Wed, 19 Jul 2023 16:38:33 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99554171E;
-        Wed, 19 Jul 2023 13:37:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25EE71FD5;
+        Wed, 19 Jul 2023 13:38:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2E1A261807;
-        Wed, 19 Jul 2023 20:37:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2BE5C433C8;
-        Wed, 19 Jul 2023 20:37:00 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 655E761807;
+        Wed, 19 Jul 2023 20:38:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5790C433C7;
+        Wed, 19 Jul 2023 20:38:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689799021;
-        bh=SL7k8eZ8nRbX0vwXOdVgFN2hRtqQGVAaTbvJqY57BEU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BuvyrT061YUMSD8cNtGfuZUYzuxPpFcZw8zFsExRkWlWUhjNMtWkE7mxb2izkRBZ9
-         O1WBwZ6bb8drf/uwk8Wa0VszOc7EqWwXPbEuhOssWsbLQP48hw/F10jMiOTwcXPOgD
-         EpO9kWXvGYiD9ZFJolRqG+ZSTPWbFE4Ak23jeb1eBfxk7yZCM9F9dl45vayuudNpRz
-         3lka10SYYniiqESB1Tx8VVwqa/QrJX4KG7lGdFRY2SN14mLkl0k9oEYjJU+zvtG0Cw
-         2AS37/gepyGO5pHewv4AQ8sUuKpeu8scpNrKlFO90A8Nl2c2rIgIuO1PaB2FBj01XT
-         CMknK6m3ulovw==
-Date:   Wed, 19 Jul 2023 13:36:59 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     David Ahern <dsahern@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        netdev@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: [RFC PATCH 00/10] Device Memory TCP
-Message-ID: <20230719133659.5529729e@kernel.org>
-In-Reply-To: <CAHS8izPORN=r2-hzYSgN4s_Aoo2dnwoJXrU5Hu=43sb8zsWyhQ@mail.gmail.com>
-References: <20230710223304.1174642-1-almasrymina@google.com>
-        <12393cd2-4b09-4956-fff0-93ef3929ee37@kernel.org>
-        <CAHS8izNPTwtk+zN7XYt-+ycpT+47LMcRrYXYh=suTXCZQ6-rVQ@mail.gmail.com>
-        <ZLbUpdNYvyvkD27P@ziepe.ca>
-        <20230718111508.6f0b9a83@kernel.org>
-        <35f3ec37-11fe-19c8-9d6f-ae5a789843cb@kernel.org>
-        <20230718112940.2c126677@kernel.org>
-        <eb34f812-a866-a1a3-9f9b-7d5054d17609@kernel.org>
-        <20230718154503.0421b4cd@kernel.org>
-        <CAHS8izPORN=r2-hzYSgN4s_Aoo2dnwoJXrU5Hu=43sb8zsWyhQ@mail.gmail.com>
+        s=k20201202; t=1689799110;
+        bh=MX1OE5fjXcKD7FNhNvGIrSI3FvsSGAQiIhW5RAzciLU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=UqeFX6fDaD8ZBU4DrJqo6mibQqK/FIOJYQTZEX0Oo4lnUVX100DG0WoSKqd/vyJfj
+         cVzo4ouC7DEMEGXpPCLvrHLXOCLPBy8qNH2KFqv8qlHxQS9EsGauvOTC78VQVyWJjY
+         +4O1grFVx5Zk8H41nn8b+MSWNBFNJTzMV4BLyWFJKTLahsP6eAgvDY0hzNaPBUZAc4
+         Hl3Q72jryEOXhIUSehz1txWRmloP1awPmEtX6uGXgYb38i9G0AwKAXiTnI1W5k7P8F
+         pvsu1Z0DHh2NnIQ+jPkHsikyF+Pfwf4QQEa0sq63wyQAoaGyuYOgVFaXf7UKpD39R/
+         p05rmxOz8Q22Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 610E7CE0928; Wed, 19 Jul 2023 13:38:30 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 13:38:30 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH rcu 2/6] rcu: Clarify rcu_is_watching() kernel-doc comment
+Message-ID: <bebbfb7d-35c4-4edf-bfa2-5a6224c17966@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
+ <20230717180317.1097590-2-paulmck@kernel.org>
+ <a11d5ce7-5ee3-fbf7-9adb-4cfc805c6bb7@joelfernandes.org>
+ <2e404769-67af-4240-b572-bd0808503486@paulmck-laptop>
+ <998db46d-9c76-a3c5-e7c5-b7adf1770352@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <998db46d-9c76-a3c5-e7c5-b7adf1770352@joelfernandes.org>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Jul 2023 08:10:58 -0700 Mina Almasry wrote:
-> From Jakub and David's comments it sounds (if I understood correctly),
-> you'd like to tie the dma-buf bind/unbind functions to the lifetime of
-> a netlink socket, rather than a struct file like I was thinking. That
-> does sound cleaner, but I'm not sure how. Can you link me to any
-> existing code examples? Or rough pointers to any existing code?
+On Tue, Jul 18, 2023 at 09:56:38PM -0400, Joel Fernandes wrote:
+> Hi Paul,
+> 
+> On 7/18/23 14:12, Paul E. McKenney wrote:
+> > On Tue, Jul 18, 2023 at 08:52:30AM -0400, Joel Fernandes wrote:
+> > > Hi Paul,
+> > > 
+> > > On 7/17/23 14:03, Paul E. McKenney wrote:
+> > > > Make it clear that this function always returns either true or false
+> > > > without other planned failure modes.
+> > > > 
+> > > > Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > ---
+> > > >    kernel/rcu/tree.c | 12 ++++++++----
+> > > >    1 file changed, 8 insertions(+), 4 deletions(-)
+> > > > 
+> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > index 1449cb69a0e0..fae9b4e29c93 100644
+> > > > --- a/kernel/rcu/tree.c
+> > > > +++ b/kernel/rcu/tree.c
+> > > > @@ -679,10 +679,14 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
+> > > >    /**
+> > > >     * rcu_is_watching - see if RCU thinks that the current CPU is not idle
+> > > 
+> > > Would it be better to modify the 'not idle' to 'not idle from an RCU
+> > > viewpoint'? This matches the comments in ct_nmi_enter() as well.
+> > 
+> > We have the "if RCU thinks that" earlier.
+> > 
+> > But maybe something like this?
+> > 
+> >   * rcu_is_watching - RCU read-side critical sections permitted on current CPU?
+> > 
+> 
+> Yes, that's better.
+> 
+> > > >     *
+> > > > - * Return true if RCU is watching the running CPU, which means that this
+> > > > - * CPU can safely enter RCU read-side critical sections.  In other words,
+> > > > - * if the current CPU is not in its idle loop or is in an interrupt or
+> > > > - * NMI handler, return true.
+> > > > + * Return @true if RCU is watching the running CPU and @false otherwise.
+> > > > + * An @true return means that this CPU can safely enter RCU read-side
+> > > > + * critical sections.
+> > > > + *
+> > > > + * More specifically, if the current CPU is not deep within its idle
+> > > > + * loop, return @true.  Note that rcu_is_watching() will return @true if
+> > > > + * invoked from an interrupt or NMI handler, even if that interrupt or
+> > > > + * NMI interrupted the CPU while it was deep within its idle loop.
+> > > 
+> > > But it is more than the idle loop, for ex. NOHZ_FULL CPUs with single task
+> > > running could be idle from RCU's viewpoint? Could that be clarified more?
+> > 
+> > Perhaps something like this?
+> > 
+> >   * Although calls to rcu_is_watching() from most parts of the kernel
+> >   * will return @true, there are important exceptions.  For example, if the
+> >   * current CPU is deep within its idle loop, in kernel entry/exit code,
+> >   * or offline, rcu_is_watching() will return @false.
+> > 
+> > (Where nohz_full CPUs are covered by kernel entry/exit code.)
+> 
+> To me, "kernel exit" does not immediately make the nohz_full CPU case
+> obvious. But yes, your suggestion is an improvement so we can go with that.
+> :)
+> 
+> Also because we agree on the changes, for next revision:
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-I don't have a strong preference whether the lifetime is bound to 
-the socket or not. My main point was that if we're binding lifetimes
-to processes, it should be done via netlink sockets, not special-
--purpose FDs. Inevitably more commands and info will be needed and
-we'll start reinventing the uAPI wheel which is Netlink.
+Very good, thank you!  The update should appear shortly.  For some
+definition of "shortly".  ;-)
 
-Currently adding state to netlink sockets is a bit raw. You can create
-an Xarray which stores the per socket state using socket's portid
-(genl_info->snd_portid) and use netlink_register_notifier() to get
-notifications when sockets are closed.
+							Thanx, Paul
