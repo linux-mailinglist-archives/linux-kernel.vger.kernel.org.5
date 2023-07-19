@@ -2,170 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F515759715
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CCF759716
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbjGSNgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 09:36:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56560 "EHLO
+        id S231364AbjGSNg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 09:36:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbjGSNgQ (ORCPT
+        with ESMTP id S231373AbjGSNgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 09:36:16 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102B8119;
-        Wed, 19 Jul 2023 06:36:16 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3a44cccbd96so2683595b6e.3;
-        Wed, 19 Jul 2023 06:36:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689773775; x=1692365775;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=TJ2vx/tKf7zzjvUa+sqtKM/x0dVHinqfYDPi5srcm3E=;
-        b=IJ0k1i3/+kogGTYB6zcbpuRB3on4TUjyXoCiQxZjJFH4AX35tptgNy1GKF6bm3DR5O
-         KJ/Phjqy1fcXGbstssVplRm9Fsz7xk1pnhE7VspMc3+FiieyicaPIR3HHTKAXJv/3yTg
-         wsHVifm6dIRpYeB4CtJOLtfzE3OTpagu0TBVNDdSHb8fn855cxAFEJfsU/G3i5pEyX2y
-         bSq1EhpN/bqNLfzhNcJgxz8WYuDAVUvNsTclsRTfLCJ71MMaxWljMFfNQUyMkE3j6lIH
-         zDXA0icFrezc2RpUF5havMSHbBLDvrKfHlNG/B0/+08ldOqRejTiwjZtZu/aW0nJxH5v
-         GurA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689773775; x=1692365775;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TJ2vx/tKf7zzjvUa+sqtKM/x0dVHinqfYDPi5srcm3E=;
-        b=Fi7L3icrRuT8qLJsHoLW2xzILuSkusUhMFbDQdR4jgEwuBbk5i5Eg0wbpUtDr3Pks/
-         pvbr0zpcA/0DRpwysNSZSiuFSowMfsnUvHYG4Y8t2xERFY9wLRkoTvi92F8uQzKPDyHO
-         H74PlHsAkyj5IdoC8s5O1qChLuLlAb/wqyOA2O3TnwBPqCXlVumAJZ0kdKu4swo8ORX6
-         D0vQmTo/hmxQbJx/o1IUP8xLqYVuRMLdZfjrujT0CklNHN6JzesnnfOkvzxOtUrst9Aa
-         8IsoGqzPiYOigcLTfmBVXydslV7SYXkTkzZj1nxDQSkew5akv8b/hwuDjLsY7qu4NeQp
-         fLAg==
-X-Gm-Message-State: ABy/qLaVKoeMbuiARRcB+KJFkzqgAiLTKpZcwDMg78DkHvau59ZyOACq
-        vC0i1I5bagOJ2stCza7kJVGZ5kNiW3Q=
-X-Google-Smtp-Source: APBJJlHVGjAmOWoOgJ5U2OPYf5RbYG+LbvDjDgwqAQITZ6UbFDZuQoaqdyheA+Z369mDOodnFPomwA==
-X-Received: by 2002:a05:6358:c1d:b0:133:8a9:b354 with SMTP id f29-20020a0563580c1d00b0013308a9b354mr3085486rwj.1.1689773775083;
-        Wed, 19 Jul 2023 06:36:15 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p10-20020a056902014a00b00c602b4b7226sm843677ybh.25.2023.07.19.06.36.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 06:36:14 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <cc4fa759-b7c0-61e0-d7f6-e8704aed4e6a@roeck-us.net>
-Date:   Wed, 19 Jul 2023 06:36:13 -0700
+        Wed, 19 Jul 2023 09:36:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B5611B
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:36:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A06D5611F9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:36:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B2C5C433C7;
+        Wed, 19 Jul 2023 13:36:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689773779;
+        bh=wReR3wE3+Bic4nDhYj0aTbtveQfuwLx1sVheIXbZsMM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2IjU6/pvTor2wKteVBMHwRaIZFZVY3E7ujHxjCkNEREIvf9cf0FNlTWvb7KH7+dEv
+         fHmcVg50DcqP0n3azHgTrcAkLaYdkEwBZPYhvPlF/zEQl3C5N7QNa56NCi8fIl1cC7
+         jQ6A9ytiefU3VjjKc8KNLIoOnUG+i9k0UNHAVytE=
+Date:   Wed, 19 Jul 2023 15:36:15 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Gupta, Nipun" <nipun.gupta@amd.com>
+Cc:     linux-kernel@vger.kernel.org, git@amd.com,
+        pieter.jansen-van-vuuren@amd.com, nikhil.agarwal@amd.com,
+        michal.simek@amd.com, abhijit.gangurde@amd.com
+Subject: Re: [PATCH] cdx: add support for bus mastering
+Message-ID: <2023071939-delegator-kebab-51b8@gregkh>
+References: <20230718100651.18317-1-nipun.gupta@amd.com>
+ <2023071817-floss-visibly-396a@gregkh>
+ <f5b7216c-8e6f-16c4-6902-dc8a04997fb9@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 3/3] hwmon: (peci/dimmtemp) Add Sapphire Rapids support
-Content-Language: en-US
-To:     Naresh Solanki <naresh.solanki@9elements.com>,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        iwona.winiarska@intel.com, jdelvare@suse.com
-Cc:     Patrick Rudolph <patrick.rudolph@9elements.com>
-References: <20230712091241.3668454-1-Naresh.Solanki@9elements.com>
- <20230712091241.3668454-3-Naresh.Solanki@9elements.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230712091241.3668454-3-Naresh.Solanki@9elements.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5b7216c-8e6f-16c4-6902-dc8a04997fb9@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/12/23 02:12, Naresh Solanki wrote:
-> From: Patrick Rudolph <patrick.rudolph@9elements.com>
+On Wed, Jul 19, 2023 at 06:06:40PM +0530, Gupta, Nipun wrote:
 > 
-> This patch extends the functionality of the hwmon (peci/dimmtemp) to
-> include support for Sapphire Rapids platform.
 > 
-> Sapphire Rapids can accommodate up to 8 CPUs, each with 16 DIMMs. To
-> accommodate this configuration, the maximum supported DIMM count is
-> increased, and the corresponding Sapphire Rapids ID and threshold code
-> are added.
+> On 7/18/2023 7:16 PM, Greg KH wrote:
+> > On Tue, Jul 18, 2023 at 03:36:51PM +0530, Nipun Gupta wrote:
+> > > Introduce cdx_set_master() and cdx_clear_master() APIs
+> > > to support enable and disable of bus mastering. Drivers
+> > > need to use these APIs to enable/disable DMAs from the
+> > > CDX devices.
+> > 
+> > You do have a full 72 columns, why not use that?
 > 
-> The patch has been tested on a 4S system with 64 DIMMs installed.
-> Default thresholds are utilized for Sapphire Rapids, as accessing the
-> threshold requires accessing the UBOX device on Uncore bus 0, which can
-> only be achieved using MSR access. The non-PCI-compliant MMIO BARs are
-> not available for this purpose.
+> sure, will update accordingly.
 > 
-> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+> > 
+> > > Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
+> > > Reviewed-by: Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>
+> > > ---
+> > >   drivers/cdx/cdx.c                       | 32 ++++++++++++++
+> > >   drivers/cdx/controller/cdx_controller.c |  4 ++
+> > >   drivers/cdx/controller/mcdi_functions.c | 57 +++++++++++++++++++++++++
+> > >   drivers/cdx/controller/mcdi_functions.h | 13 ++++++
+> > >   include/linux/cdx/cdx_bus.h             | 16 +++++++
+> > >   5 files changed, 122 insertions(+)
+> > > 
+> > > diff --git a/drivers/cdx/cdx.c b/drivers/cdx/cdx.c
+> > > index d2cad4c670a0..efb24672b7d9 100644
+> > > --- a/drivers/cdx/cdx.c
+> > > +++ b/drivers/cdx/cdx.c
+> > > @@ -182,6 +182,38 @@ cdx_match_id(const struct cdx_device_id *ids, struct cdx_device *dev)
+> > >   	return NULL;
+> > >   }
+> > > +int cdx_set_master(struct cdx_device *cdx_dev)
+> > > +{
+> > > +	struct cdx_controller *cdx = cdx_dev->cdx;
+> > > +	struct cdx_device_config dev_config;
+> > > +	int ret;
+> > > +
+> > > +	dev_config.type = CDX_DEV_BUS_MASTER_CONF;
+> > > +	dev_config.bme = true;
+> > 
+> > What is "bme"?
+> 
+> This is bus master enable. I will add a comment on the structure definition.
 
-Assuming this will be applied through the peci tree:
+Better yet, spell it out "bus_master_enable" so no one has to look up
+the comment, no need to try to make cryptic variable names :)
 
-Acked-by: Guenter Roeck <linux@roeck-us.net>
+thanks,
 
-> ---
-> Changes in V2:
-> - Update subject.
-> ---
->   drivers/hwmon/peci/dimmtemp.c | 24 +++++++++++++++++++++++-
->   1 file changed, 23 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwmon/peci/dimmtemp.c b/drivers/hwmon/peci/dimmtemp.c
-> index ed968401f93c..edafbfd66fef 100644
-> --- a/drivers/hwmon/peci/dimmtemp.c
-> +++ b/drivers/hwmon/peci/dimmtemp.c
-> @@ -30,8 +30,10 @@
->   #define DIMM_IDX_MAX_ON_ICX	2
->   #define CHAN_RANK_MAX_ON_ICXD	4
->   #define DIMM_IDX_MAX_ON_ICXD	2
-> +#define CHAN_RANK_MAX_ON_SPR	128
-> +#define DIMM_IDX_MAX_ON_SPR	2
->   
-> -#define CHAN_RANK_MAX		CHAN_RANK_MAX_ON_HSX
-> +#define CHAN_RANK_MAX		CHAN_RANK_MAX_ON_SPR
->   #define DIMM_IDX_MAX		DIMM_IDX_MAX_ON_HSX
->   #define DIMM_NUMS_MAX		(CHAN_RANK_MAX * DIMM_IDX_MAX)
->   
-> @@ -530,6 +532,15 @@ read_thresholds_icx(struct peci_dimmtemp *priv, int dimm_order, int chan_rank, u
->   	return 0;
->   }
->   
-> +static int
-> +read_thresholds_spr(struct peci_dimmtemp *priv, int dimm_order, int chan_rank, u32 *data)
-> +{
-> +	/* Use defaults */
-> +	*data = (95 << 16) | (90 << 8);
-> +
-> +	return 0;
-> +}
-> +
->   static const struct dimm_info dimm_hsx = {
->   	.chan_rank_max	= CHAN_RANK_MAX_ON_HSX,
->   	.dimm_idx_max	= DIMM_IDX_MAX_ON_HSX,
-> @@ -572,6 +583,13 @@ static const struct dimm_info dimm_icxd = {
->   	.read_thresholds = &read_thresholds_icx,
->   };
->   
-> +static const struct dimm_info dimm_spr = {
-> +	.chan_rank_max	= CHAN_RANK_MAX_ON_SPR,
-> +	.dimm_idx_max	= DIMM_IDX_MAX_ON_SPR,
-> +	.min_peci_revision = 0x40,
-> +	.read_thresholds = &read_thresholds_spr,
-> +};
-> +
->   static const struct auxiliary_device_id peci_dimmtemp_ids[] = {
->   	{
->   		.name = "peci_cpu.dimmtemp.hsx",
-> @@ -597,6 +615,10 @@ static const struct auxiliary_device_id peci_dimmtemp_ids[] = {
->   		.name = "peci_cpu.dimmtemp.icxd",
->   		.driver_data = (kernel_ulong_t)&dimm_icxd,
->   	},
-> +	{
-> +		.name = "peci_cpu.dimmtemp.spr",
-> +		.driver_data = (kernel_ulong_t)&dimm_spr,
-> +	},
->   	{ }
->   };
->   MODULE_DEVICE_TABLE(auxiliary, peci_dimmtemp_ids);
-
+greg k-h
