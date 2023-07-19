@@ -2,95 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9C1759743
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7217596B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbjGSNsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 09:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33196 "EHLO
+        id S231249AbjGSN1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 09:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjGSNsQ (ORCPT
+        with ESMTP id S229512AbjGSN1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 09:48:16 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0430D197
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:48:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689774496; x=1721310496;
-  h=from:to:cc:subject:date:message-id;
-  bh=LjqK/tmNoiLq39k4+y5wWdRySbSnPHlhMJYPPGh+QG0=;
-  b=l6o15yjWzItd+v74o6fT6q0tW5nDzESQPnrZ91H0kEn6vxtrnzAGaN7B
-   WlTrrpnGrKa4oIr5CSss94fHE0p/I6LHKy/5F8n8rhLCwBaxTipgRyWIl
-   O9AmBeRJlIUA+UAmpgZ3Px8SOScUh3gUZpNYWwCW3Afgmddo9IKfu+mFY
-   Qd8zee9FR8vQLuiFKwMA/8D4x7OXn6h/ckFihg9A1+jgEsYCdnDPNcqAy
-   LEGNbnxKoAj7ZUUdezj3QF0Qv9TX+a3+6N2SsIx9EizYpncrJwuyOautM
-   ugWbuZg0uWblwYiBAnblBtHN/MhpkZiQftqP3L9bwvKNrm0PkadkfJkmS
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="365348307"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="365348307"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 06:48:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="789426638"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="789426638"
-Received: from srikandan-ilbpg12.png.intel.com ([10.88.229.69])
-  by fmsmga008.fm.intel.com with ESMTP; 19 Jul 2023 06:47:51 -0700
-From:   mahesh.r.vaidya@intel.com
-To:     tudor.ambarus@linaro.org, pratyush@kernel.org, michael@walle.cc,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     andriy.shevchenko@linux.intel.com, jarkko.nikula@intel.com,
-        furong.zhou@intel.com, mallikarjunappa.sangannavar@intel.com,
-        nandhini.srikandan@intel.com, rashmi.a@intel.com,
-        mahesh.r.vaidya@intel.com
-Subject: [PATCH v1] mtd: spi-nor: macronix: Add support for MX77U25650F
-Date:   Wed, 19 Jul 2023 21:27:00 +0800
-Message-Id: <20230719132700.15274-1-mahesh.r.vaidya@intel.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Wed, 19 Jul 2023 09:27:22 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53ACFD;
+        Wed, 19 Jul 2023 06:27:19 -0700 (PDT)
+X-QQ-mid: bizesmtp73t1689773230tl41c04k
+Received: from linux-lab-host.localdomain ( [119.123.130.39])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 19 Jul 2023 21:27:09 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: IcCSTr/hHjObbBazmsx/eCk6zRHzb4DLLNT0pf/dPkYF5A5ior6pI6BCHSsR6
+        Ls5QcnnivFHHZI0EX9chwHrUZo6HybXN+Cgzuoi7E6aZgU+1yfQ14crWCtNUDJ/gaGFW2uJ
+        TKdt3NDsCDUgg5seMKn0J51fY8ToI5VZY/w04izFonbY4YFDEJIrnxYhSDjhxqDZ4ewz626
+        vd3bJFiAcB5340nsQBeWRtHGS1WbMKXJCRkw9OxxBQ3cEBkwgvFsiBlpF9UEwYQ2aus0rLT
+        sWs48u3OS58LBsGC0E7Glr5gfeuoGQ6FzjBbri/cuFKmF1qd8LRLfgW5SjbRd2cwRmtU52L
+        D1VhjIeI9q7iCTQGy8HU+Khonc1Zm4NC1RI2YdoZIiKSFIuXtWXikEGBVIvUtwlYWB1rwQd
+        PjYxYlvgGZQ=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 11276070205488590152
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     thomas@t-8ch.de, arnd@arndb.de, falcon@tinylab.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH v2 09/14] selftests/nolibc: allow quit qemu-system when poweroff fails
+Date:   Wed, 19 Jul 2023 21:27:08 +0800
+Message-Id: <511b2f6009fb830b3f32b4be3dca99596c684fa3.1689759351.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1689759351.git.falcon@tinylab.org>
+References: <cover.1689759351.git.falcon@tinylab.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mahesh R Vaidya <mahesh.r.vaidya@intel.com>
+The kernel of some architectures can not poweroff qemu-system normally,
+especially for tinyconfig.
 
-The MX7725650F is production chip for new design from Macronix
-with a lesser memory of 256Mbit with unique security features
-like Permanent 4 I/O RPMC, Secured 8K OTP support.
+Some architectures may have no kernel poweroff support, the others may
+require more kernel config options and therefore slow down the
+tinyconfig build and test. and also, it's very hard (and some even not
+possible) to find out the exact poweroff related kernel config options
+for every architecture.
 
-Validated by read, erase, write and read back.
-Tested on Intel RPL, PASS.
-Tested-by: Mahesh R Vaidya <mahesh.r.vaidya@intel.com>
+Since the low-level poweroff support is heavily kernel & qemu dependent,
+it is not that critical to both nolibc and nolibc-test, let's simply
+ignore the poweroff required kernel config options for tinyconfig (and
+even for defconfig) and quit qemu-system after a specified timeout or
+with an expected system halt or poweroff string (these strings mean our
+reboot() library routine is perfectly ok).
 
-Signed-off-by: Mahesh R Vaidya <mahesh.r.vaidya@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+QEMU_TIMEOUT value can be configured for every architecture based on
+their time cost requirement of boot+test+poweroff.
+
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
 ---
- drivers/mtd/spi-nor/macronix.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/testing/selftests/nolibc/Makefile | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 04888258e891..995936ba58e2 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -103,6 +103,9 @@ static const struct flash_info macronix_nor_parts[] = {
- 	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
- 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
-+	{ "mx77u25650f",  INFO(0xc27539, 0, 64 * 1024, 512)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
- };
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index 541f3565e584..a03fab020ebe 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -93,6 +93,9 @@ QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1
+ QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS            = $(QEMU_ARGS_$(XARCH)) $(QEMU_ARGS_EXTRA)
  
- static void macronix_nor_default_init(struct spi_nor *nor)
++# QEMU_TIMEOUT: some architectures can not poweroff normally, especially for tinyconfig
++QEMU_TIMEOUT             = $(QEMU_TIMEOUT_$(XARCH))
++
+ # OUTPUT is only set when run from the main makefile, otherwise
+ # it defaults to this nolibc directory.
+ OUTPUT ?= $(CURDIR)/
+@@ -224,16 +227,32 @@ kernel: extconfig
+ # common macros for qemu run/rerun targets
+ QEMU_SYSTEM_RUN = qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(KERNEL_IMAGE)" -serial stdio $(QEMU_ARGS)
+ 
++ifneq ($(QEMU_TIMEOUT),)
++TIMEOUT_CMD = t=$(QEMU_TIMEOUT); \
++	while [ $$t -gt 0 ]; do                                                       \
++	    sleep 5; t=$$(expr $$t - 5); echo "detecting power off ...";              \
++	    if grep -qE "reboot: System halted|reboot: Power down" "$(RUN_OUT)"; then \
++		pkill -9 qemu-system-$(QEMU_ARCH);                                    \
++		echo "powered off, test finish"; t=1; break;                          \
++	    fi;                                                                       \
++	done;                                                                         \
++	if [ $$t -le 0 ]; then pkill -9 qemu-system-$(QEMU_ARCH); echo "qemu-system-$(QEMU_ARCH) timeout"; fi
++
++TIMEOUT_QEMU_RUN = ($(QEMU_SYSTEM_RUN) $(LOG_OUT) &); $(TIMEOUT_CMD)
++else
++TIMEOUT_QEMU_RUN = $(QEMU_SYSTEM_RUN) $(LOG_OUT)
++endif
++
+ # run the tests after building the kernel
+ PHONY += $(KERNEL_IMAGE)
+ $(KERNEL_IMAGE): kernel
+ run: $(KERNEL_IMAGE)
+-	$(Q)$(QEMU_SYSTEM_RUN) $(LOG_OUT)
++	$(Q)$(TIMEOUT_QEMU_RUN)
+ 	$(Q)$(REPORT_RUN_OUT)
+ 
+ # re-run the tests from an existing kernel
+ rerun:
+-	$(Q)$(QEMU_SYSTEM_RUN) $(LOG_OUT)
++	$(Q)$(TIMEOUT_QEMU_RUN)
+ 	$(Q)$(REPORT_RUN_OUT)
+ 
+ # report with existing test log
 -- 
-2.17.1
+2.25.1
 
