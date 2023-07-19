@@ -2,68 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F54759827
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3892475983A
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjGSOYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 10:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55060 "EHLO
+        id S231633AbjGSOZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231250AbjGSOY2 (ORCPT
+        with ESMTP id S231621AbjGSOZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:24:28 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C2F2690;
-        Wed, 19 Jul 2023 07:24:08 -0700 (PDT)
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R5dJQ0gzxzNmKd;
-        Wed, 19 Jul 2023 22:20:22 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 19 Jul 2023 22:23:40 +0800
-Subject: Re: [RFC PATCH 05/21] ubifs: Pass worst-case buffer size to
- compression routines
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>
-CC:     <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Kees Cook <keescook@chromium.org>,
-        Haren Myneni <haren@us.ibm.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        <linux-kernel@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <qat-linux@intel.com>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-mtd@lists.infradead.org>, <netdev@vger.kernel.org>
-References: <20230718125847.3869700-1-ardb@kernel.org>
- <20230718125847.3869700-6-ardb@kernel.org>
- <20230718223813.GC1005@sol.localdomain>
- <CAMj1kXE1fND2h8ts6Xtfn19wkt=vAnj1TumxvoBCuEn7z3V4Aw@mail.gmail.com>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <3330004f-acac-81b4-e382-a17221a0a128@huawei.com>
-Date:   Wed, 19 Jul 2023 22:23:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Wed, 19 Jul 2023 10:25:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063CC1FFB
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:24:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689776638;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AYL0WxfELPHjwx6ZiDqavEiQQIijrcopNRfhrvLV03A=;
+        b=Fy8i5nOuJc9vT64qGI1h402ACgpl6AB64fP+pSezsKXU7oX0ASaTIrY6cxryrL9cV8OvNU
+        v0sIZeURGjZ3itQ6NPF0MFxRumgHZwjZfMTfec/c/ZD6nxw8e6l3CXc8VJBtqU8rK9ljTf
+        QgQvU5p0Ucau8pjJq5qE+94Kp1SQ6E8=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-342-yD-e619FO-GYoxGJYrxQ2g-1; Wed, 19 Jul 2023 10:23:56 -0400
+X-MC-Unique: yD-e619FO-GYoxGJYrxQ2g-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-314394a798dso398057f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:23:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689776635; x=1690381435;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AYL0WxfELPHjwx6ZiDqavEiQQIijrcopNRfhrvLV03A=;
+        b=NjfB+XujNCQV0EXAhz1ixnriYmSMxyhZsxyoc6Y/VVkkeq2X0UZowiFjmee9Kyxvu5
+         VhzCGDvN4wxm1xpdg5D9WQ3t+zDU/xjM+aHyRfVWLk6oyow35Bq+7gVvVmm+j2rCEkQw
+         FHd1mlO+TtiKRkmfQ4xWc5UWc6qUK8s72w1EMSSCUKbtC79gDNK5IP7wMN1Uk8krpmDe
+         Ac54Hg3zq0BBcsUFmk7xyxmn6kcLmh0fMLQC2Xt+bOYR7XfLbKhJ7OiP8lmn27jI2lKb
+         JPhctvTJnVpRgQxazH2wz6p1Zx3eAhdKOXl3BqYwe5WJalxcdbgp5xsnsr+InwGY2itC
+         CrmA==
+X-Gm-Message-State: ABy/qLb1EiaITSGWJURWg6FeavSU+4BSliGYAV9vYhXOwZIw+h1Pq7qH
+        tRrgemXCfoYL6nufs9wz9vdwb+Td2oDeYI8K6QuXYhTMh2Fr4+hfF0omsm6sk4MlCXzlxyulxZq
+        U41gBZya7mOG+agIi8zqV1e9v
+X-Received: by 2002:adf:f406:0:b0:317:15f5:a1cc with SMTP id g6-20020adff406000000b0031715f5a1ccmr41801wro.22.1689776635699;
+        Wed, 19 Jul 2023 07:23:55 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHAuWaDn4wkaE25f0gFYugdobiggD0h46Z8p4U2s3LOHj24u3Bx+1zUs1XU1djJ3aSjiu0SQg==
+X-Received: by 2002:adf:f406:0:b0:317:15f5:a1cc with SMTP id g6-20020adff406000000b0031715f5a1ccmr41757wro.22.1689776635405;
+        Wed, 19 Jul 2023 07:23:55 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id q19-20020a056000137300b003143d80d11dsm5429196wrz.112.2023.07.19.07.23.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 07:23:54 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Arnd Bergmann <arnd@kernel.org>, linux-fbdev@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Helge Deller <deller@gmx.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Deepak Rawat <drawat.floss@gmail.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guo Ren <guoren@kernel.org>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Khalid Aziz <khalid@gonehiking.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        WANG Xuerui <kernel@xen0n.name>, Wei Liu <wei.liu@kernel.org>,
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2 7/9] vga16fb: drop powerpc support
+In-Reply-To: <20230719123944.3438363-8-arnd@kernel.org>
+References: <20230719123944.3438363-1-arnd@kernel.org>
+ <20230719123944.3438363-8-arnd@kernel.org>
+Date:   Wed, 19 Jul 2023 16:23:53 +0200
+Message-ID: <87a5vshtdy.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXE1fND2h8ts6Xtfn19wkt=vAnj1TumxvoBCuEn7z3V4Aw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,67 +116,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2023/7/19 16:33, Ard Biesheuvel 写道:
-> On Wed, 19 Jul 2023 at 00:38, Eric Biggers <ebiggers@kernel.org> wrote:
->>
->> On Tue, Jul 18, 2023 at 02:58:31PM +0200, Ard Biesheuvel wrote:
->>> Currently, the ubifs code allocates a worst case buffer size to
->>> recompress a data node, but does not pass the size of that buffer to the
->>> compression code. This means that the compression code will never use
+Arnd Bergmann <arnd@kernel.org> writes:
 
-I think you mean the 'out_len' which describes the lengh of 'buf' is 
-passed into ubifs_decompress, which effects the result of 
-decompressor(eg. lz4 uses length to calculate the buffer end pos).
-So, we should pass the real lenghth of 'buf'.
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> I noticed that commit 0db5b61e0dc07 ("fbdev/vga16fb: Create
+> EGA/VGA devices in sysfb code") broke vga16fb on non-x86 platforms,
+> because the sysfb code never creates a vga-framebuffer device when
+> screen_info.orig_video_isVGA is set to '1' instead of VIDEO_TYPE_VGAC.
+>
+> However, it turns out that the only architecture that has allowed
+> building vga16fb in the past 20 years is powerpc, and this only worked
+> on two 32-bit platforms and never on 64-bit powerpc. The last machine
+> that actually used this was removed in linux-3.10, so this is all dead
+> code and can be removed.
+>
+> The big-endian support in vga16fb.c could also be removed, but I'd just
+> leave this in place.
+>
+> Fixes: 933ee7119fb14 ("powerpc: remove PReP platform")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
 
->>> the additional space, and might fail spuriously due to lack of space.
->>>
->>> So let's multiply out_len by WORST_COMPR_FACTOR after allocating the
->>> buffer. Doing so is guaranteed not to overflow, given that the preceding
->>> kmalloc_array() call would have failed otherwise.
->>>
->>> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
->>> ---
->>>   fs/ubifs/journal.c | 2 ++
->>>   1 file changed, 2 insertions(+)
->>>
->>> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
->>> index dc52ac0f4a345f30..4e5961878f336033 100644
->>> --- a/fs/ubifs/journal.c
->>> +++ b/fs/ubifs/journal.c
->>> @@ -1493,6 +1493,8 @@ static int truncate_data_node(const struct ubifs_info *c, const struct inode *in
->>>        if (!buf)
->>>                return -ENOMEM;
->>>
->>> +     out_len *= WORST_COMPR_FACTOR;
->>> +
->>>        dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
->>>        data_size = dn_size - UBIFS_DATA_NODE_SZ;
->>>        compr_type = le16_to_cpu(dn->compr_type);
->>
->> This looks like another case where data that would be expanded by compression
->> should just be stored uncompressed instead.
->>
->> In fact, it seems that UBIFS does that already.  ubifs_compress() has this:
->>
->>          /*
->>           * If the data compressed only slightly, it is better to leave it
->>           * uncompressed to improve read speed.
->>           */
->>          if (in_len - *out_len < UBIFS_MIN_COMPRESS_DIFF)
->>                  goto no_compr;
->>
->> So it's unclear why the WORST_COMPR_FACTOR thing is needed at all.
->>
-> 
-> It is not. The buffer is used for decompression in the truncation
-> path, so none of this logic even matters. Even if the subsequent
-> recompression of the truncated data node could result in expansion
-> beyond the uncompressed size of the original data (which seems
-> impossible to me), increasing the size of this buffer would not help
-> as it is the input buffer for the compression not the output buffer.
-> .
-> 
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
