@@ -2,52 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0607C759EAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69FFD759EAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbjGSTdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 15:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56006 "EHLO
+        id S231223AbjGSTcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 15:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjGSTcv (ORCPT
+        with ESMTP id S230377AbjGSTcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 15:32:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB89B1FE6;
+        Wed, 19 Jul 2023 15:32:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8791FDC;
         Wed, 19 Jul 2023 12:32:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C49261804;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C91B61803;
         Wed, 19 Jul 2023 19:32:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCAE6C433C9;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD1ADC433C8;
         Wed, 19 Jul 2023 19:32:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689795164;
-        bh=hZI4hitD39aZ+Qdl1lmi9pA61QSLLLHm+XV9ADPTsus=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=eQXfqj+zST5V+UqVLxrOjyGA+WFrIALYwsndDf8yb+d/ZcAhNbmKZDq169VZaA9sf
-         25+bBsBNSvp0yYQUkVL2vtrX8ooa/xyi+l+HGRTJ1LyPinE1QFLpb5R0Cg36sW3qNn
-         YgZrsKi4oHpxkgHsNexLn2gxv7Eeh2OoajZB5APtfPQ+10fXyIgjl2R3+z+WXlvO86
-         Qn893HS/fbI8ZKTtw08zvDfUMSHa1Fv8E+7oGp9QKbDJfH1c2kWXr4T2FGBMg+JkXS
-         oxjrRjZ46Nr7EXvdUaNgc1xypDfdpbsWW38ebY+nmePmjVTAwUQssX3tnWVYHKKP77
-         X9BK/nT/OlPNA==
-Date:   Wed, 19 Jul 2023 14:32:41 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc:     David Airlie <airlied@gmail.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-fbdev@vger.kernel.org,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v3 0/9] PCI/VGA: Improve the default VGA device selection
-Message-ID: <20230719193241.GA510805@bhelgaas>
+        s=k20201202; t=1689795163;
+        bh=N9sUbulAgUXtPlmw8jl5xfdENe0VOW/VEmTuoJuKFSI=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=vK2R7sJ1r5AdtAq+fy57hZlOKY42M5ez2S+WXgkAcMpK6/ONEVdrUCtbbDPok4LLT
+         L3GiSo0y36fcYsUrlw9q2PJ8obyRn+7YbIj9QTohihfvCR1hO1Epd+SdFOWP3a1S+S
+         rd+j6An9ov8qg53B+fydb/2c7f8NRMQi9iYtwAAWVPHdlVPmvSnlZny7UuvYb3wDe+
+         ByfFOEfRxok2kVhnqpSv3yeXgVheZtTqsuoClBCqgDpAEvNUnmJPI3pIdGTcbOauVQ
+         D7KIu4N+r2EPG4MYel8ZFLwk5mpPEG/UoTfD4G2S7/4gzlcry8PXp2EyCdjWExZUgw
+         cyO4zdmC/mzHw==
+Received: by pali.im (Postfix)
+        id 393ED7CA; Wed, 19 Jul 2023 21:32:41 +0200 (CEST)
+Date:   Wed, 19 Jul 2023 21:32:41 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Wolfram Sang <wsa@kernel.org>, Paul Menzel <pmenzel@molgen.mpg.de>,
+        Jean Delvare <jdelvare@suse.com>, linux-i2c@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, Dell.Client.Kernel@dell.com
+Subject: Re: Accelerometer lis3lv02d is present on SMBus but its address is
+ unknown, skipping registration
+Message-ID: <20230719193241.l7ihqtwok5sywrx5@pali>
+References: <97708c11-ac85-fb62-2c8e-d37739ca826f@molgen.mpg.de>
+ <Y/0EIRsycj8EWjrz@ninjato>
+ <47ed190e-ebae-fdc6-f46a-f42a36fb6f26@molgen.mpg.de>
+ <Y/3cYL0s1Ul9fgR+@ninjato>
+ <1669a3d8-1d19-e91b-8f6e-36f5037fff47@molgen.mpg.de>
+ <Y/3e0JsMmX6hlNHI@ninjato>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230711164310.791756-1-sui.jingfeng@linux.dev>
+In-Reply-To: <Y/3e0JsMmX6hlNHI@ninjato>
+User-Agent: NeoMutt/20180716
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -58,75 +64,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc linux-pci]
-
-On Wed, Jul 12, 2023 at 12:43:01AM +0800, Sui Jingfeng wrote:
-> From: Sui Jingfeng <suijingfeng@loongson.cn>
+On Tuesday 28 February 2023 12:00:32 Wolfram Sang wrote:
+> Hi Paul,
 > 
-> Currently, the default VGA device selection is not perfect. Potential
-> problems are:
 > 
-> 1) This function is a no-op on non-x86 architectures.
-> 2) It does not take the PCI Bar may get relocated into consideration.
-> 3) It is not effective for the PCI device without a dedicated VRAM Bar.
-> 4) It is device-agnostic, thus it has to waste the effort to iterate all
->    of the PCI Bar to find the VRAM aperture.
-> 5) It has invented lots of methods to determine which one is the default
->    boot device on a multiple video card coexistence system. But this is
->    still a policy because it doesn't give the user a choice to override.
+> > It does. After your command, Linux logs:
 > 
-> With the observation that device drivers or video aperture helpers may
-> have better knowledge about which PCI bar contains the firmware FB,
+> Cool!
 > 
-> This patch tries to solve the above problems by introducing a function
-> callback to the vga_client_register() function interface. DRM device
-> drivers for the PCI device need to register the is_boot_device() function
-> callback during the driver loading time. Once the driver binds the device
-> successfully, VRAARB will call back to the driver. This gives the device
-> drivers a chance to provide accurate boot device identification. Which in
-> turn unlock the abitration service to non-x86 architectures. A device
-> driver can also pass a NULL pointer to keep the original behavior.
+> > I can cook up a patch, if you want.
+> 
+> Yes, please.
+> 
+> Happy hacking,
+> 
+>    Wolfram
+> 
 
-I skimmed all these patches, but the only one that seems to mention an
-actual problem being solved, i.e., something that doesn't work for an
-end user, is "drm/ast: Register as a vga client ..."  Maybe
-"drm/loongson: Add an implement for ..." also solves a problem, but it
-lacks a commit log, so I don't know what the problem is.
-
-In the future, can you please cc: linux-pci with the entire series?
-In this posting, only the patches that touched drivers/pci/vgaarb.c
-went to linux-pci, but those aren't enough to make sense of the series
-as a whole.
-
->   video/aperture: Add a helper to detect if an aperture contains
->     firmware FB
->   video/aperture: Add a helper for determining if an unmoved aperture
->     contain FB
->   PCI/VGA: Switch to aperture_contain_firmware_fb_nonreloc()
-
-Since this subject includes the function name (which is nice!), it
-would also be helpful if the "Add a helper ..." subject included the
-same function name.
-
->   PCI/VGA: Improve the default VGA device selection
-
-If you can make this subject any more specific, that would be useful.
-There's more to say about that patch, so I'll respond there.
-
->   drm/amdgpu: Implement the is_primary_gpu callback of
->     vga_client_register()
->   drm/radeon: Add an implement for the is_primary_gpu function callback
->   drm/i915: Add an implement for the is_primary_gpu hook
->   drm/ast: Register as a vga client to vgaarb by calling
->     vga_client_register()
->   drm/loongson: Add an implement for the is_primary_gpu function
->     callback
-
-There's unnecessary variation in the subject lines (and the commit
-logs) of these patches.  If they all do the same thing but in
-different drivers, it's useful if the patches all *look* the same.
-
-You might be able to write these subjects as
-"Implement .is_primary_gpu() callback" for brevity.
-
-Bjorn
+Hello! When you find some time, please send a patch. If needed I can help with it.
