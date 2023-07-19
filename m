@@ -2,132 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BDD759CF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6DC759CF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbjGSR50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 13:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
+        id S229847AbjGSR7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 13:59:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjGSR5T (ORCPT
+        with ESMTP id S229512AbjGSR7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:57:19 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8591FE9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:57:14 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b9cdef8619so46247655ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:57:14 -0700 (PDT)
+        Wed, 19 Jul 2023 13:59:03 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E6B1FC1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:59:02 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-263315da33cso1318116a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:59:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20221208.gappssmtp.com; s=20221208; t=1689789434; x=1690394234;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1689789542; x=1690394342;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4FVEMGAeC4A4acfilWsGklHz88eR5z5EWRCCV9Kst0I=;
-        b=0Q1tzUOb9vYJXHmPeDryrYB5A4pEESrmEqXYj9Hg+90Z5+QCPv2ecrkofZgQVHrh2Q
-         2SmV6ESktQAtsjCYVJZhJojTRHsrQLvYLqNH0EoTgXcN4+EyUGH6ZSXKFYb02Y0hiirh
-         icie1/r4QjaO+Xr/8VrDJJ+t8iIcRUo2snH46DM7aXAbB12rMZS46rJ2h5Z2q3coLAKN
-         GMT7GgUwcUUW4SpZr+6zG8X6fnKROWImTBv7u2v/1CdFXwNuMSzJvhzr6uNXEVsoU8p0
-         jr3ynj+/29rinW5TGGhTFa+uF7yLH222PS2w2a9Iu7qAlX2Am1gjapUEui6PcMe/HT1i
-         pwCg==
+        bh=Wi+LNMfR/Tz//DqwsS9WjOFzP/lTw2sLHYGwQYYciDs=;
+        b=lBj8+nwCuwo596pTyfKXaKrt8yhokPjU3bVcfwCcKcL3iROHxYhHCsmM/soc06CwW6
+         BTq62R05+jBWHP8hDAG1coMUVVIqr2/XqxsLAubJyzhbV4q/OR80cns6jxg/J8XH0ooJ
+         bxj4mMWhu7x1oBSTP3WGWRpy6Ay6pMqH4fx53iaxYP8OX5hNooeQMOudWEBSV8qlquCS
+         iKK025wFAyieMuyayxhQ2AQISO16rdoeNSqewibItvGKfIYzNzEC3HyHqcAeoI8olFsy
+         z3qCsZUbNgIE96F5JaY4mIe2nGMWqWX8+HgP/Yog/1TBhArv34r8hHEqk4BsokUIDlC6
+         QV7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689789434; x=1690394234;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689789542; x=1690394342;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4FVEMGAeC4A4acfilWsGklHz88eR5z5EWRCCV9Kst0I=;
-        b=H/jKqny8KKakT+H4imC11VvUP7BntKdrT5L1bObrZAqrhDTeEnCQOvCOobbBv/nvBd
-         BLHe60VRzXDPL9HHpiQr1pTPKq+2n5/e/rVSUttPqc9qxZtRSyzUUVgslwtK2eRYbhch
-         NYUMYfxayUHac/P/fMBbBUhpwXmjrY6o0g3JJOBsT/5pgjDJITAgKhxY+aRWGWgZj/QY
-         ikzINV3mO4qSjx4SJvvphu/3vZYcsMTD/yzIwEukFeTHkzfjXgcx2dVUIgHyxgtVhgkn
-         cStPg177GZ6cj4ePAUp8ighh8nMrv8Xx4ndmk7qCsmnVXmnRUzQaIdDSIEvoJzofLJeW
-         WYMw==
-X-Gm-Message-State: ABy/qLZR9fKzhhwlINEEUpBz5LRY3FqBPfXW4I2ScUsBNdPuENk25dA/
-        0PL8lgNpah6l6hXyjzGWJ2Ycdw==
-X-Google-Smtp-Source: APBJJlEsVXT/riHHb217/IRnC4FkTdrL+WEIRgGEaqW1QkKPQqx7J9SZ2+4YPKCL/Z0Wz9JzjQeyoQ==
-X-Received: by 2002:a17:90a:d598:b0:264:97a:2ba6 with SMTP id v24-20020a17090ad59800b00264097a2ba6mr4560333pju.7.1689789434001;
-        Wed, 19 Jul 2023 10:57:14 -0700 (PDT)
-Received: from hermes.local (204-195-127-207.wavecable.com. [204.195.127.207])
-        by smtp.gmail.com with ESMTPSA id nw17-20020a17090b255100b00263f41a655esm1415304pjb.43.2023.07.19.10.57.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 10:57:13 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 10:57:11 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, David Ahern <dsahern@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        netdev@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: [RFC PATCH 00/10] Device Memory TCP
-Message-ID: <20230719105711.448f8cad@hermes.local>
-In-Reply-To: <CAHS8izPORN=r2-hzYSgN4s_Aoo2dnwoJXrU5Hu=43sb8zsWyhQ@mail.gmail.com>
-References: <20230710223304.1174642-1-almasrymina@google.com>
-        <12393cd2-4b09-4956-fff0-93ef3929ee37@kernel.org>
-        <CAHS8izNPTwtk+zN7XYt-+ycpT+47LMcRrYXYh=suTXCZQ6-rVQ@mail.gmail.com>
-        <ZLbUpdNYvyvkD27P@ziepe.ca>
-        <20230718111508.6f0b9a83@kernel.org>
-        <35f3ec37-11fe-19c8-9d6f-ae5a789843cb@kernel.org>
-        <20230718112940.2c126677@kernel.org>
-        <eb34f812-a866-a1a3-9f9b-7d5054d17609@kernel.org>
-        <20230718154503.0421b4cd@kernel.org>
-        <CAHS8izPORN=r2-hzYSgN4s_Aoo2dnwoJXrU5Hu=43sb8zsWyhQ@mail.gmail.com>
+        bh=Wi+LNMfR/Tz//DqwsS9WjOFzP/lTw2sLHYGwQYYciDs=;
+        b=Eyj6pX5XLkZ6GsJw9DBxh2oaIzImlUMqdX78aPfVZDT2EQ411v+yAXAVGAReS4MfVY
+         9ZAhLYx5mK7gl6qwFzY+7fezFF46plTxyA56sNJqNpQdNE4LjPpwsUJiNgjYK8nFarOP
+         hD0ewOSifgUsewRsBsJOpgzDAcGXKOHEjaW+YlR7hap+n3jvdtJ4BuZ+I2+cm4JSdujc
+         NnqhtoqzPdSR116wV6FtEZ39cR+jCCBpkHrwefYF/A6OpcLw7krEu1C9Agl8NFkyuXYu
+         PXgvN7JKSk7He8Bw6if3Y5CctxZBIZIyyFFcH71YfM73Bt1sEPQQJW5x8NNBI3o24bTB
+         8UwA==
+X-Gm-Message-State: ABy/qLb7hKuArHOOJgXN0bLwI7B4NPW6yqM6BpimnLSv2HRzDJCn68Nb
+        khoL7HokYen2ltFe7ZzRLpMhQGgyHLHQtrrws1U=
+X-Google-Smtp-Source: APBJJlGqJI4W82lqYn39sz6kXvq00es8CQ163Oepw2UdWjqWLwEUM7xFGagEC7laHVQIwU79fsL2lAeMrml2BlMljKY=
+X-Received: by 2002:a17:90a:46cf:b0:258:9621:913f with SMTP id
+ x15-20020a17090a46cf00b002589621913fmr2794428pjg.3.1689789541792; Wed, 19 Jul
+ 2023 10:59:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20230719164729.19969-1-matuszpd@gmail.com>
+In-Reply-To: <20230719164729.19969-1-matuszpd@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Wed, 19 Jul 2023 14:58:50 -0300
+Message-ID: <CAOMZO5DOAWWQoTRXbx5DaCx2Hr79YN4bx1DKBywKQOEp6GLARg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_spdif: Silence output on stop
+To:     Matus Gajdos <matuszpd@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Stephen Warren <swarren@nvidia.com>,
+        Mark Brown <broonie@linaro.org>, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Jul 2023 08:10:58 -0700
-Mina Almasry <almasrymina@google.com> wrote:
+On Wed, Jul 19, 2023 at 1:48=E2=80=AFPM Matus Gajdos <matuszpd@gmail.com> w=
+rote:
+>
+> Clear TX registers on stop to prevent the SPDIF interface from sending
+> last written word over and over again.
+>
+> Fixes: a2388a498ad2 ("ASoC: fsl: Add S/PDIF CPU DAI driver")
+> Signed-off-by: Matus Gajdos <matuszpd@gmail.com>
 
-> On Tue, Jul 18, 2023 at 3:45=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> =
-wrote:
-> >
-> > On Tue, 18 Jul 2023 16:35:17 -0600 David Ahern wrote: =20
-> > > I do not see how 1 RSS context (or more specifically a h/w Rx queue) =
-can
-> > > be used properly with memory from different processes (or dma-buf
-> > > references). =20
->=20
-> Right, my experience with dma-bufs from GPUs are that they're
-> allocated from the userspace and owned by the process that allocated
-> the backing GPU memory and generated the dma-buf from it. I.e., we're
-> limited to 1 dma-buf per RX queue. If we enable binding multiple
-> dma-bufs to the same RX queue, we have a problem, because AFAIU the
-> NIC can't decide which dma-buf to put the packet into (it hasn't
-> parsed the packet's destination yet).
->=20
-> > > When the process dies, that memory needs to be flushed from
-> > > the H/W queues. Queues with interlaced submissions make that more
-> > > complicated. =20
-> > =20
->=20
-> When the process dies, do we really want to flush the memory from the
-> hardware queues? The drivers I looked at don't seem to have a function
-> to flush the rx queues alone, they usually do an entire driver reset
-> to achieve that. Not sure if that's just convenience or there is some
-> technical limitation there. Do we really want  to trigger a driver
-> reset at the event a userspace process crashes?
-
-Naive idea.
-Would it be possible for process to use mmap() on the GPU memory and then
-do zero copy TCP receive some how? Or is this what is being proposed.
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
