@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC24C759151
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14778759153
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbjGSJNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
+        id S231150AbjGSJOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbjGSJNx (ORCPT
+        with ESMTP id S231264AbjGSJOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:13:53 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D5B134
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:13:52 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-521ac15e333so17861a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:13:52 -0700 (PDT)
+        Wed, 19 Jul 2023 05:14:01 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05DF219F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:13:58 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbd33a1819so157585e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:13:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689758030; x=1690362830;
+        d=google.com; s=20221208; t=1689758037; x=1690362837;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8gZsYamAtqYIkQMLXzLi0LGk3lWcHPODBvcWnT8OslA=;
-        b=dxUix3plXQr2sNVfSzQPg4AVOF3klkQQrkDb11hDUSVKjiwgE6OghRzgwIbiwshKkt
-         zytzgGrSJ7DbKn3N+qGYhPwjupx2K4B8QM95tWMiFYZVip3xKsjbVLDzl1Ssjnsz1eD9
-         BjgjErswBi+ITZdWhRzsUtoOcCp6xLgz0ZkA1k++CL+usiQWY/5fD2ASz4yTCPQ91bjb
-         lptrzofahOD0hf8iiyrG/a0UhSd3hFKfBWwFO85k8aPGQ5kCziTmTSd4VVGH9krdeysF
-         5NLas/USaBPWjkSJP+UyrhIyNF+D579RVUQnpgfbNIW3zxMP81c9+Ln1NERUxBEL17tq
-         WxAg==
+        bh=VYLPB9/Sf0mhWZO7WZUddRKUMuqIomZ1ufMbEgAh+Ls=;
+        b=FawgAZzMB8JEJuzSNqwlTm3LSX+bu7NfCvPDXl2GEbL+m/4v6kcxrLk9AoB1RjNEhz
+         74Y/s+pow+pyf0/GfMFQZTZQVHKl2yJzOT6tOyvANDqNnYAqoOr/NEdAqQfym6+BUedI
+         lmz/4Mo+UMH7g2z9mAL2LOMStSdaUwiyc+EtH3UxJqKu2EXhQgNsEc0XlwrMOxVid6mn
+         6UlTrENQLsLa1mAHLQDqle+gbQC4LTJ6f/7XigiuFXR6oKq0jPR+NqSuypzQSYErXVvt
+         xP1TYeg0mtuLXKZKWlNznb4JbHHjsYuF9YajbAI7zVhyAa1aq8ImjblEolKIUcnzPO3n
+         WOGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689758030; x=1690362830;
+        d=1e100.net; s=20221208; t=1689758037; x=1690362837;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8gZsYamAtqYIkQMLXzLi0LGk3lWcHPODBvcWnT8OslA=;
-        b=f04NvLubvJMcYy50F7Da8jstgHo7KCCUpgleVTGPHWO8+1qR9QU34kO+kyC+l+EdvV
-         xs422pq51C/sVbal4kZQFLVTKnlV4CExJ40G3h9k76a+gG6VWBhcv8Kd7F9JBFkLioFy
-         muxQbLZlBhjRjTQ9u+eOWCrc3yP9xS2SNSxDG4BsiyzdgjwN6tIbizI7j8UxISGkrCQ6
-         aOJJMRsmObW5rs1JAG3QeieEUmv/nHIEB7uO3sd1c1E95EFM3vbhx6xMYqVoHtlq+z0X
-         5+XON9dpS9Ht9jiWCm/+WUsLyzW4f6e3J//T6o8jvTdxRQ97+uoXtuS6OkSogrEsNJzn
-         PKmg==
-X-Gm-Message-State: ABy/qLaSe+WkyMPDFtdce7VE6P1iRvXSWmT50DSF9hjCRmpcOnTPFOBE
-        LoXky7mE0a0TTEH55spb7g0+v6a3m/mEwocM2j9vdQ==
-X-Google-Smtp-Source: APBJJlG88xsR/5uyJpHjV11JlBE8kPjPYsOAnlNwoDUatB8cu5lLfxTspsrgDzO1/Ty8BfW5YjodsljdZ+oq3bEfA1A=
-X-Received: by 2002:a50:a6c6:0:b0:514:92e4:ab9f with SMTP id
- f6-20020a50a6c6000000b0051492e4ab9fmr211619edc.7.1689758030393; Wed, 19 Jul
- 2023 02:13:50 -0700 (PDT)
+        bh=VYLPB9/Sf0mhWZO7WZUddRKUMuqIomZ1ufMbEgAh+Ls=;
+        b=GEWteIw41w59NYkdsgvFpEKgtaV0YFhcmPD1ogocxhCgKOtX8a8ZE+ZEFW/dhlS66L
+         jTGN3GJL1VQ+kEr4NTm1jkIODjMtvA9F3ntXsNlyWmrIcKnJ/5KPIVgTYp3G0iCwNRnD
+         MOAer0Mj2+EnvgpwVqLfyv4TfrTr81QExlESNqr60ShJlaozGvwbBCHk3/vbVUaui0vN
+         rAFBTtqajHxTl7TMHKZKIaXNHDd5LrlwswXKozUUbzPD2KMBHvYcMeCaDqVZ8oBpIteC
+         u+MSQ7HbXzR95CbGYiDDO81ZqD890zGSck4frQG0gu8qL8cMqCfWcqivBkVFZb1vC7zH
+         osWg==
+X-Gm-Message-State: ABy/qLbTmaL2Ev7CQGGdtUWPGUWgNNqnnIXfzugQ3vGeEAltrN97JBtj
+        CHELseEQxJe3/kl7+mDUfypLSdVIp/0LM5x+LRVt3Q==
+X-Google-Smtp-Source: APBJJlHhm6pQjqfatWQlzJH7wPyTMyBC7Di50WQHUxvV3vm5yqOYn3YIOvsfhVv4xXAZu2qyl9PL0dXnOJuZKAe/tBE=
+X-Received: by 2002:a05:600c:358d:b0:3f1:73b8:b5fe with SMTP id
+ p13-20020a05600c358d00b003f173b8b5femr187675wmq.3.1689758037155; Wed, 19 Jul
+ 2023 02:13:57 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230329-kunit-devm-inconsistencies-test-v2-0-19feb71e864b@kernel.org>
-In-Reply-To: <20230329-kunit-devm-inconsistencies-test-v2-0-19feb71e864b@kernel.org>
+ <20230329-kunit-devm-inconsistencies-test-v2-1-19feb71e864b@kernel.org>
+In-Reply-To: <20230329-kunit-devm-inconsistencies-test-v2-1-19feb71e864b@kernel.org>
 From:   David Gow <davidgow@google.com>
-Date:   Wed, 19 Jul 2023 17:13:38 +0800
-Message-ID: <CABVgOSnwQ5a+G99b5QcZjS2pZk7TivQSJJ6it3ie33igvjGcAg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] drivers: base: Add tests showing devm handling inconsistencies
+Date:   Wed, 19 Jul 2023 17:13:45 +0800
+Message-ID: <CABVgOSmUZw3CpzpduAjDx+eZCU5tm=5Pq8dyVt+d7oXb6-_h=Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] drivers: base: Add basic devm tests for root devices
 To:     Maxime Ripard <mripard@kernel.org>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
@@ -60,89 +61,222 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
         linux-kernel@vger.kernel.org
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000002ec4d70600d373a5"
+        boundary="000000000000962edf0600d37314"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000002ec4d70600d373a5
+--000000000000962edf0600d37314
 Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 28 Jun 2023 at 17:50, Maxime Ripard <mripard@kernel.org> wrote:
+On Wed, 28 Jun 2023 at 17:49, Maxime Ripard <mripard@kernel.org> wrote:
 >
-> Hi,
->
-> This follows the discussion here:
-> https://lore.kernel.org/linux-kselftest/20230324123157.bbwvfq4gsxnlnfwb@houat/
->
-> This shows a couple of inconsistencies with regard to how device-managed
-> resources are cleaned up. Basically, devm resources will only be cleaned up
-> if the device is attached to a bus and bound to a driver. Failing any of
-> these cases, a call to device_unregister will not end up in the devm
-> resources being released.
->
-> We had to work around it in DRM to provide helpers to create a device for
-> kunit tests, but the current discussion around creating similar, generic,
-> helpers for kunit resumed interest in fixing this.
->
-> This can be tested using the command:
-> ./tools/testing/kunit/kunit.py run --kunitconfig=drivers/base/test/
->
-> I added the fix David suggested back in that discussion which does fix
-> the tests. The SoB is missing, since David didn't provide it back then.
->
-> Let me know what you think,
-> Maxime
+> The root devices show some odd behaviours compared to regular "bus" devices
+> that have been probed through the usual mechanism, so let's create kunit
+> tests to exercise those paths and odd cases.
 >
 > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 > ---
 
-Whoops, sorry. This managed to hide in my inbox. I think it looks
-good, and am happy for you to add by SoB to the patch.
+Reviewed-by: David Gow <davidgow@google.com>
 
-I've sent out reviews to the others with some small nitpicky things.
+There's definitely an argument that root devices are not supposed to
+be like regular devices, and so devm_ managed resources aren't
+supposed to work with them. Either way:
+- It needs to be documented somewhere (and this test makes for good
+documentation, IMO).
+- It should be consistent: if devm_ isn't to be used with root
+devices, it should fail everywhere, and if it is, it should work in
+all the cases below.
 
-Thanks a bunch,
+So I'm all in favour of including this test and making root devices work.
+
+That being said, I am planning to send out a patchset adding a struct
+kunit_device for use in tests, which will be attached to a "kunit"
+bus. I think the combination of "fix devm_ with root devices" and
+"don't recommend root devices as a 'fake' device for testing" is
+probably the longer-term solution everyone can agree upon?
+
+Cheers,
 -- David
 
-> Changes in v2:
-> - Use an init function
-> - Document the tests
-> - Add a fix for the bugs
-> - Link to v1: https://lore.kernel.org/r/20230329-kunit-devm-inconsistencies-test-v1-0-c33127048375@cerno.tech
+
+>  drivers/base/test/.kunitconfig       |   2 +
+>  drivers/base/test/Kconfig            |   4 ++
+>  drivers/base/test/Makefile           |   2 +
+>  drivers/base/test/root-device-test.c | 110 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 118 insertions(+)
 >
-> ---
-> David Gow (1):
->       drivers: base: Free devm resources when unregistering a device
+> diff --git a/drivers/base/test/.kunitconfig b/drivers/base/test/.kunitconfig
+> new file mode 100644
+> index 000000000000..473923f0998b
+> --- /dev/null
+> +++ b/drivers/base/test/.kunitconfig
+> @@ -0,0 +1,2 @@
+> +CONFIG_KUNIT=y
+> +CONFIG_DM_KUNIT_TEST=y
+> diff --git a/drivers/base/test/Kconfig b/drivers/base/test/Kconfig
+> index 610a1ba7a467..9d42051f8f8e 100644
+> --- a/drivers/base/test/Kconfig
+> +++ b/drivers/base/test/Kconfig
+> @@ -9,6 +9,10 @@ config TEST_ASYNC_DRIVER_PROBE
 >
-> Maxime Ripard (2):
->       drivers: base: Add basic devm tests for root devices
->       drivers: base: Add basic devm tests for platform devices
+>           If unsure say N.
 >
->  drivers/base/core.c                      |  11 ++
->  drivers/base/test/.kunitconfig           |   2 +
->  drivers/base/test/Kconfig                |   4 +
->  drivers/base/test/Makefile               |   3 +
->  drivers/base/test/platform-device-test.c | 220 +++++++++++++++++++++++++++++++
->  drivers/base/test/root-device-test.c     | 108 +++++++++++++++
->  6 files changed, 348 insertions(+)
-> ---
-> base-commit: 53cdf865f90ba922a854c65ed05b519f9d728424
-> change-id: 20230329-kunit-devm-inconsistencies-test-5e5a7d01e60d
+> +config DM_KUNIT_TEST
+> +       tristate "KUnit Tests for the device model" if !KUNIT_ALL_TESTS
+> +       depends on KUNIT
+
+Could we add "default KUNIT_ALL_TESTS" here? Or if there's a good
+reason to not make this run by default, remove the "if
+!KUNIT_ALL_TESTS" condition above.
+
+
+> +
+>  config DRIVER_PE_KUNIT_TEST
+>         bool "KUnit Tests for property entry API" if !KUNIT_ALL_TESTS
+>         depends on KUNIT=y
+> diff --git a/drivers/base/test/Makefile b/drivers/base/test/Makefile
+> index 7f76fee6f989..d589ca3fa8fc 100644
+> --- a/drivers/base/test/Makefile
+> +++ b/drivers/base/test/Makefile
+> @@ -1,5 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  obj-$(CONFIG_TEST_ASYNC_DRIVER_PROBE)  += test_async_driver_probe.o
 >
-> Best regards,
+> +obj-$(CONFIG_DM_KUNIT_TEST)    += root-device-test.o
+> +
+>  obj-$(CONFIG_DRIVER_PE_KUNIT_TEST) += property-entry-test.o
+>  CFLAGS_property-entry-test.o += $(DISABLE_STRUCTLEAK_PLUGIN)
+> diff --git a/drivers/base/test/root-device-test.c b/drivers/base/test/root-device-test.c
+> new file mode 100644
+> index 000000000000..9a3e6cccae13
+> --- /dev/null
+> +++ b/drivers/base/test/root-device-test.c
+> @@ -0,0 +1,110 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright 2023 Maxime Ripard <mripard@kernel.org>
+> +
+> +#include <kunit/resource.h>
+> +
+> +#include <linux/device.h>
+> +
+> +#define DEVICE_NAME "test"
+> +
+> +struct test_priv {
+> +       bool probe_done;
+> +       bool release_done;
+> +       wait_queue_head_t release_wq;
+> +       struct device *dev;
+> +};
+> +
+> +static int root_device_devm_init(struct kunit *test)
+> +{
+> +       struct test_priv *priv;
+> +
+> +       priv = kunit_kzalloc(test, sizeof(*priv), GFP_KERNEL);
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv);
+> +       init_waitqueue_head(&priv->release_wq);
+> +
+> +       test->priv = priv;
+> +
+> +       return 0;
+> +}
+> +
+> +static void devm_device_action(void *ptr)
+> +{
+> +       struct test_priv *priv = ptr;
+> +
+> +       priv->release_done = true;
+> +       wake_up_interruptible(&priv->release_wq);
+> +}
+> +
+> +#define RELEASE_TIMEOUT_MS     100
+> +
+> +/*
+> + * Tests that a bus-less, non-probed device will run its device-managed
+> + * actions when unregistered.
+> + */
+> +static void root_device_devm_register_unregister_test(struct kunit *test)
+> +{
+> +       struct test_priv *priv = test->priv;
+> +       int ret;
+> +
+> +       priv->dev = root_device_register(DEVICE_NAME);
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->dev);
+> +
+> +       ret = devm_add_action_or_reset(priv->dev, devm_device_action, priv);
+> +       KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +       root_device_unregister(priv->dev);
+> +
+> +       ret = wait_event_interruptible_timeout(priv->release_wq, priv->release_done,
+> +                                              msecs_to_jiffies(RELEASE_TIMEOUT_MS));
+> +       KUNIT_EXPECT_GT(test, ret, 0);
+> +}
+> +
+> +static void devm_put_device_action(void *ptr)
+> +{
+> +       struct test_priv *priv = ptr;
+> +
+> +       put_device(priv->dev);
+> +       priv->release_done = true;
+> +       wake_up_interruptible(&priv->release_wq);
+> +}
+> +
+> +/*
+> + * Tests that a bus-less, non-probed device will run its device-managed
+> + * actions when unregistered, even if someone still holds a reference to
+> + * it.
+> + */
+> +static void root_device_devm_register_get_unregister_with_devm_test(struct kunit *test)
+> +{
+> +       struct test_priv *priv = test->priv;
+> +       int ret;
+> +
+> +       kunit_skip(test, "This needs to be fixed in the core.");
+> +
+> +       priv->dev = root_device_register(DEVICE_NAME);
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->dev);
+> +
+> +       get_device(priv->dev);
+> +
+> +       ret = devm_add_action_or_reset(priv->dev, devm_put_device_action, priv);
+> +       KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +       root_device_unregister(priv->dev);
+> +
+> +       ret = wait_event_interruptible_timeout(priv->release_wq, priv->release_done,
+> +                                              msecs_to_jiffies(RELEASE_TIMEOUT_MS));
+> +       KUNIT_EXPECT_GT(test, ret, 0);
+> +}
+> +
+> +static struct kunit_case root_device_devm_tests[] = {
+> +       KUNIT_CASE(root_device_devm_register_unregister_test),
+> +       KUNIT_CASE(root_device_devm_register_get_unregister_with_devm_test),
+> +       {}
+> +};
+> +
+> +static struct kunit_suite root_device_devm_test_suite = {
+> +       .name = "root-device-devm",
+> +       .init = root_device_devm_init,
+> +       .test_cases = root_device_devm_tests,
+> +};
+> +
+> +kunit_test_suite(root_device_devm_test_suite);
+>
 > --
-> Maxime Ripard <mripard@kernel.org>
+> 2.40.0
 >
 
---0000000000002ec4d70600d373a5
+--000000000000962edf0600d37314
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -209,14 +343,14 @@ jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
 jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
 FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
 R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCB6
-nhSW228fPx1SV7AqHm6VTOMvSsyge31E8HuB8VpTczAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzA3MTkwOTEzNTBaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCBQ
+5S2uzESpjVky3tM8utyU8gGedU62654v2GnL/oph2jAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA3MTkwOTEzNTdaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
 BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAE9weZSc/AvLQ/osrUlVR
-E/kyaqqw8BmRLP/+0M1+wPJ9cyBx71lJEzIaIuMOJ7WMfD/rufb5X1Bh+ST/jGH3EIWWVFuPqaHx
-2m+gYqyHWPhW6m0OOWM/CKum6A2YA09ysvXGs3BwKWUtlOYkfHcBMPa9l9Q2z76g5paUb3VIw1ox
-gmozdg6W98xRCB4vWGAy3mW7+3s3cdg7WzDZrcFhONLjdjIz2FcuJBdP+El42cE+wKmvwuqeWBLS
-bC6RkmIWxD5LuAe8mE55j9PaRsGIv0Tnyi1dnrj/iLP2q9xs7rFfPWS4fr+XCUQdiKQ7rcNMOA/w
-9uMy42J45wuLWnUnXQ==
---0000000000002ec4d70600d373a5--
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAe+vQAXo1w9dr+ugsPF2S
+aFVYHHw7EHa4QDK+bzpTaUHlfAMqeLqESTsTl1XWtApAHrKcxAXuHN0uL/m9FVurcPwHHzv/lRGK
+kIhoy0NIrLbBc6mgW13ULLx9NYKOiVcyjPjAuQ98Ovw1w8bs708uoYl9a49NZovUlgBDOAbYdRsI
+PrZXFe/ftp2NVXaolcbgPCpIvODrSixhrD2lhLjHOVEPYtP+g1cIuZ8ZEUR9xzbF/BRWmZjO1hmG
+2yq+HGlMyg55klcbn48WKHVylAeVC8qM9Zq9pIYTkAgnnF9DG7F0OMmcDpOXYyQvdWIvGRWqTSDg
+pG1vMuT93A5WZoVabw==
+--000000000000962edf0600d37314--
