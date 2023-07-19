@@ -2,97 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDE0758F95
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9D4758F8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbjGSHv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 03:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44154 "EHLO
+        id S229932AbjGSHvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 03:51:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbjGSHvL (ORCPT
+        with ESMTP id S229853AbjGSHvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 03:51:11 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E21BBE47
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:51:10 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        Wed, 19 Jul 2023 03:51:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7ECBE60;
+        Wed, 19 Jul 2023 00:51:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2F6A16607072;
-        Wed, 19 Jul 2023 08:51:09 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689753069;
-        bh=lw4Zkv3oS6GSkPKOSPEXOFTpN59kNOlACTF4/SJM4pY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PKZwt9Y3MCS4bZ3uTZssAD3AlKromVqKaRw/2gYboZ24CuR/b4gJ/3r995tND22qt
-         yTbJS+cf5GkoR+y/b5VybefGocyes/d5UseDbgAG+6kmKpoEf1KKhH/ZjtfEnR9ZSJ
-         mrRuZdYqTbYZZDqqXUdKIcMvPEiW09dwEBIaZAJJQgADK5CHD/p0MGvuz6Qlo+dwo0
-         UpA6YaBcF/Duh5MhqIP1Mr8kPUad2ERTBeI7YxUJvbipGCMYbYEhz6tu7dpKzvlqxQ
-         hLXw+WX6jKkcly65ZCXs53OurQ4wNDeNXSupqKxl+esmLd2W0aCsjIfD2nVdkPtNVm
-         YitujLBf8wMGg==
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     chunkuang.hu@kernel.org
-Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
-        fshao@chromium.org
-Subject: [PATCH v2 4/6] drm/mediatek: mtk_dpi: Switch to .remove_new() void callback
-Date:   Wed, 19 Jul 2023 09:50:54 +0200
-Message-Id: <20230719075056.72178-5-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230719075056.72178-1-angelogioacchino.delregno@collabora.com>
-References: <20230719075056.72178-1-angelogioacchino.delregno@collabora.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 73619612FC;
+        Wed, 19 Jul 2023 07:51:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD643C433C7;
+        Wed, 19 Jul 2023 07:51:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689753067;
+        bh=BAJRmdE6Oj35G6+Tr7t7WtcZpYWzN2VkcZH7AbETOxI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QJ27AMcm/JwBFNGJRHx/EBRal0oREEfdH1WOGydIfWAO4NuRKKAV/aSJ6NZ5NJnAR
+         HiqqFOnnFadcdEOWOffkx23Hin5k7IFJEa49dhq6rzqsz8pI3TKxmAavKBIBh2aHs6
+         knW97C6iLB2GrgZL+/lAVNqYvUAi3199Bd5cnBfUenwQuKRF6Iud0DlsiBBiBAkktI
+         lLq64KXcFhcV9/vfwJWLJJsylL0kVXFJIQsVKoV+6O3RJfAU8a3/vMCBJq38RETCgm
+         Yh9z8l1fm8DRD7OYs4HEn4Vqg3pLzfENtb3/NjMs/mSgMWjhFXNhpZZP2b2SaKS79C
+         FjlGaqjqqBBnQ==
+Date:   Wed, 19 Jul 2023 15:50:55 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux@ew.tq-group.com
+Subject: Re: [PATCH v3 3/3] arm64: defconfig: Enable i.MX93 devices
+Message-ID: <20230719075055.GO151430@dragon>
+References: <20230718085722.1198862-1-alexander.stein@ew.tq-group.com>
+ <20230718085722.1198862-4-alexander.stein@ew.tq-group.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718085722.1198862-4-alexander.stein@ew.tq-group.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The .remove() callback cannot fail: switch to .remove_new() and
-change mtk_dpi_remove() to void.
+On Tue, Jul 18, 2023 at 10:57:22AM +0200, Alexander Stein wrote:
+> These drivers are used on i.MX93 based devices.
+> 
+> Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/gpu/drm/mediatek/mtk_dpi.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+It doesn't apply to my imx/defconfig branch.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index e9c5a0f44537..3a140498c98a 100644
---- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -1087,11 +1087,9 @@ static int mtk_dpi_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int mtk_dpi_remove(struct platform_device *pdev)
-+static void mtk_dpi_remove(struct platform_device *pdev)
- {
- 	component_del(&pdev->dev, &mtk_dpi_component_ops);
--
--	return 0;
- }
- 
- static const struct of_device_id mtk_dpi_of_ids[] = {
-@@ -1122,7 +1120,7 @@ MODULE_DEVICE_TABLE(of, mtk_dpi_of_ids);
- 
- struct platform_driver mtk_dpi_driver = {
- 	.probe = mtk_dpi_probe,
--	.remove = mtk_dpi_remove,
-+	.remove_new = mtk_dpi_remove,
- 	.driver = {
- 		.name = "mediatek-dpi",
- 		.of_match_table = mtk_dpi_of_ids,
--- 
-2.40.1
-
+Shawn
