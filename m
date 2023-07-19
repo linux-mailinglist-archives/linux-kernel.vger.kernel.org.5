@@ -2,140 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 898BE759A2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3418D759A30
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229673AbjGSPuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 11:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52778 "EHLO
+        id S231941AbjGSPub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 11:50:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231877AbjGSPuR (ORCPT
+        with ESMTP id S231835AbjGSPu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 11:50:17 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CAE210B
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:50:05 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-403f21d3c2dso653401cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:50:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689781804; x=1692373804;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OFrUgOBRU5LRkuOibj1Wn78oyPKuJ5PufyYoH6fT47g=;
-        b=00U7y2p7FCFTHRuDKA8GkLL/EgkMGu4khpifCIb9d8bFmxz8H8KWNLSxDaUHd7wRDA
-         /wBzLAua2eKqbFnXFxirIfycCDqN3yFZQWGwFQybFp+gTIHEPPIoE0ruO/T+BfME2FLq
-         ZxMu3pcVlWyCl1GSNevoRC9Kfij09d6qVGt9RGA8bc5Wcxvow8ceXmLleiiHvG/jVXfb
-         ZHhKo5SWu6rkJpu1ebt6LLllkBIdCVwMbGPb+bqFFPBcbxEMuwyzR1xM6VyWpEKnsvKX
-         WKz0FKlJManx1+TwQu5oEDmHwe4PviQWyKSX/qsbdDL3QnbdPUBa8uCoJWoxGMiaNkp3
-         Exug==
+        Wed, 19 Jul 2023 11:50:28 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982871FFA
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:50:13 -0700 (PDT)
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7644B3FA70
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:50:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1689781812;
+        bh=lBkd8y3XOzT/fx92qUyW7CMl9N9JYFVT6xHfK84rRBs=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=Q9xjtbQ15Ybw7rewOfYq54BVdFXC0YvVzNRg0I4S3e12lTY/pVDdR9KFVlHCe4/Z7
+         nKIP9psEQoY6TugsP4MJZbj4ZcnJpktsMO5373Eit/K4f6oLM+wx8NqaK/95SSdjDg
+         u5e7QuQfKW6QIaGC9Q8Bxhbj/bGf4+ia6ZCCDBmhbsJjOCuLme/XkXet/ce38ZbnkM
+         XyEKqrENuPVFPihRYCFQ30RmTIiIsElMiYMF35Ss7DvsiT4Nq9N4Yo+WL8csDt5TYg
+         1DQi3O/Bk7vRkYhfYwH8i502gCfI9UHvQK/YbC2jEkwxv8S3q7lWKJPMFioef0Bpgl
+         KKL1yHOmgrDZg==
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-403b134421cso8660141cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:50:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689781804; x=1692373804;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OFrUgOBRU5LRkuOibj1Wn78oyPKuJ5PufyYoH6fT47g=;
-        b=kaGQsmZ9dq6ba6lffxqtkRX8Czh70SrjPUGK4nY8JMtQ5pA5zcMgCVcSoh2pMuVHb1
-         SmZ7190GnHXxNhACpASZLqi1ZBBosqcdMnGPOCKMh7jwMvyFbLBWoMFMZCqxczUJptp1
-         gpSX1iSYGOVmJX1HyFLMgWTw3ai7UurtZjE2pJPuldLSF2WqjDhvkcysWBmVI39Beseu
-         Jz6fUpSKjzdrXmM6OsjrSTFSgFbdhn5Qmsz+a/DKS8jQ5hxE7xTUsCP3qo8kY6+uH62+
-         4LntWUNHXsMsyIa1Oks6J4qggc7MN0GDRl5vIdbp5DusbFkgf7Q5VRR2eZGTVpJ68T1F
-         kthw==
-X-Gm-Message-State: ABy/qLZKs/CxNPB3M+62Hx+Vy6gbq6NRSgAfJzE2GYmfj9WuqUWKM45A
-        hBcJ41FUFRtxPxdK+uw4dv6237vyiSituqPL9x7ooQ==
-X-Google-Smtp-Source: APBJJlFmIi7M2rW34hvn/P2sLljtDbqNDzKEFsQVEgFF03q5+81wL4xxP/HEonTbMImrALOqwf7EO8fPsokB7tEtQcU=
-X-Received: by 2002:ac8:7dd6:0:b0:403:b1d0:2f0a with SMTP id
- c22-20020ac87dd6000000b00403b1d02f0amr599239qte.28.1689781804546; Wed, 19 Jul
- 2023 08:50:04 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689781811; x=1690386611;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lBkd8y3XOzT/fx92qUyW7CMl9N9JYFVT6xHfK84rRBs=;
+        b=Sue2DMZcHqV46WKQms1KsFkfFpCdIZze6JMTw8IoMrS0if2MTamWdk/jIPhVvCaRZV
+         HOhGSUPPc5xIHvKMHqcuk1L12A0mb57RrFlQFGR1is5G2/qPHKQ/GNjYopgVlUSO9tGZ
+         7u1AZ9DHsU4vpqMIJyeD+KN79exR6K1SI+hq7zjSy1CLbrEOsgtefqAMADrqKvAh1log
+         128JO9+2Pj0ENQMGqGdWlIXEeXFnhT+kbp5HToqO1pAjBolm1PBqxzDeu/wAXejJ7yz9
+         8jJlxylE9asY4kqIUGDE5v9iH2BqoGty1TZlngXXtdl5ueR5ObQRPceL6JWfMN6Ga+sx
+         9V8g==
+X-Gm-Message-State: ABy/qLZXJEaemGW7yibSLjaNUA8cQUlYrJuxk8bzCW3NFF/WmEATpxOv
+        HrhJYgk/rqtdmFMHtfWzR73jGpVKPGzA2VzReWYUPL4Z4sNU4s/+Jjszt9udtekFL79bnfb/5Zn
+        VbopCPdSfOYccaQgMR3vtk8xHPmKZ/WUP7CnTUdNqZF08OAM0e8m6mrK2sA==
+X-Received: by 2002:a05:622a:1009:b0:402:d15e:2984 with SMTP id d9-20020a05622a100900b00402d15e2984mr2944879qte.32.1689781810927;
+        Wed, 19 Jul 2023 08:50:10 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFLsdryo3l3HfOhrzOljHukZzudv9rHzS/TP/ey37QvguSJT9mRI3G5taBWNolBsF75e8Yi/YTmAsaRVIRiakk=
+X-Received: by 2002:a05:622a:1009:b0:402:d15e:2984 with SMTP id
+ d9-20020a05622a100900b00402d15e2984mr2944851qte.32.1689781810663; Wed, 19 Jul
+ 2023 08:50:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230628102949.2598096-1-john.g.garry@oracle.com>
- <20230628102949.2598096-5-john.g.garry@oracle.com> <CAP-5=fXa24_LEiyni0Ncyfa5hKwC1GE6y-zi2u8M98M9SwHX+g@mail.gmail.com>
- <CAP-5=fUs=u3PKYP3mVDdzNB8+=GAHaEXG3SGfWJpMELYYqO_hA@mail.gmail.com>
- <d59b6e7c-cead-24d4-a9cb-6552b3154d84@oracle.com> <CAP-5=fUu6xgVDQT4tq=vmRLDMe3ddMLywP11uOLvKSu8Lc6BjQ@mail.gmail.com>
- <897dcf1d-6a04-33d3-9c4f-ea9d1706cdad@oracle.com> <CAP-5=fX+rz928LtFs2MWYUH=6Mcvz0XQcLRkO-n9BnVnX4RYWw@mail.gmail.com>
- <297ddf04-9b35-7613-8efd-2857668b6835@oracle.com> <CAP-5=fXSQVyqCfrBJFjHkrRdANuQC=TKR-HHi37hLaQ91rPQiA@mail.gmail.com>
- <eb011f48-b953-3647-4699-734ebdf1876a@oracle.com> <CAP-5=fXJxVpYQ84hXiMxy4LUi7xs1puXdDhbp6d6N2ArnqKJuQ@mail.gmail.com>
- <0d6e41d1-2f27-9a90-1516-c4e50bad1c21@oracle.com> <CAP-5=fXKqZM=RMB-+ooKEKfGw=KdCVU0UbVQ9+XrDOAWpoYAdw@mail.gmail.com>
- <4f0355ec-8bc6-e51a-ab5b-61d555a68b6c@oracle.com> <CAP-5=fVGOP6-k=BTRd_bn=N0HVy+1ShpdW5rk5ND0ZGhm_fQkg@mail.gmail.com>
- <a5082f3b-58a4-0773-2608-2e2647459d3c@oracle.com>
-In-Reply-To: <a5082f3b-58a4-0773-2608-2e2647459d3c@oracle.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 19 Jul 2023 08:49:53 -0700
-Message-ID: <CAP-5=fVjfR2jpVDbqiBTXRoCStwsTZ9sEZAY-PZCLAiVjy4yzA@mail.gmail.com>
-Subject: Re: [PATCH RFC 4/9] perf jevents: Add sys_events_find_events_table()
-To:     John Garry <john.g.garry@oracle.com>
-Cc:     namhyung@kernel.org, acme@kernel.org, jolsa@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        renyu.zj@linux.alibaba.com, shangxiaojing@huawei.com,
-        kjain@linux.ibm.com, kan.liang@linux.intel.com
+References: <20230717023040.78860-1-xingyu.wu@starfivetech.com> <20230717023040.78860-6-xingyu.wu@starfivetech.com>
+In-Reply-To: <20230717023040.78860-6-xingyu.wu@starfivetech.com>
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Date:   Wed, 19 Jul 2023 17:49:54 +0200
+Message-ID: <CAJM55Z_cX09WQdxB+aNBXo+WVjoJYT5vQz5sbrNBmLikDiNJrQ@mail.gmail.com>
+Subject: Re: [PATCH v7 5/7] clk: starfive: jh7110-sys: Add PLL clocks source
+ from DTS
+To:     Xingyu Wu <xingyu.wu@starfivetech.com>
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Conor Dooley <conor@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        William Qiu <william.qiu@starfivetech.com>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 8:37=E2=80=AFAM John Garry <john.g.garry@oracle.com=
-> wrote:
+On Mon, 17 Jul 2023 at 04:30, Xingyu Wu <xingyu.wu@starfivetech.com> wrote:
 >
-> On 19/07/2023 16:25, Ian Rogers wrote:
-> >> I was thinking about this a little further. So you suggest that the
-> >> metric expression contains PMU name per term, like
-> >> "cpu_atom@instructions@ / cpu_atom@cycles@" - how would/could this wor=
-k
-> >> for PMUs with more complex naming, like the form hisi_siclXXX_cpa_YYY?
-> >> Would we use the "Unit" expression for the metric name, like
-> >> "@hisi_sicl,cpa@event_foo"?
-> > How does this work for events? The "@hisi_sicl,cpa@event_foo" looks
-> > strange, shouldn't it be "hisi_sicl,cpa@event_foo@" but then hisi_sicl
-> > looks like an event name.
+> Modify PLL clocks source to be got from DTS or
+> the fixed factor clocks.
 >
-> Yeah, that was a typo from me - like you say, it would be
-> hisi_sicl,cpa@event_foo@
+> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+> ---
+>  drivers/clk/starfive/Kconfig                  |  1 +
+>  .../clk/starfive/clk-starfive-jh7110-sys.c    | 66 ++++++++++++-------
+>  2 files changed, 45 insertions(+), 22 deletions(-)
 >
-> So is that what you would be suggesting then, such that we specify the
-> PMU in the metric terms? It does look a bit odd :)
-
-I guess there could be some kind of regular expression syntax:
-(hisi_scl|cpa)@event_foo
-
-We have the "has_event" function now in the metric expressions:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/util/expr.c?h=3Dperf-tools-next#n480
-
-So it could be:
-hisi_scl@event_foo@ if has_event(hisi_scl@event_foo@) else cpa@event_foo@
-
-Which has the advantage of working today, but the disadvantage of being ver=
-bose.
-
-Thanks,
-Ian
-
-
-> >
-> >>>> BTW, which git repo/branch do you guys use for dev? I thought that i=
-t
-> >>>> would be acme git, but Namhyung says "We moved to new repos from acm=
-e to
-> >>>> perf/perf-tools and perf/perf-tools-next" - where is repo "perf"?
-> >>> Current development is here now:
-> >>> https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kern=
-el/git/perf/perf-tools-next.git/log/?h=3Dperf-tools-next__;!!ACWV5N9M2RV99h=
-Q!OQDHOClSjd6nVZhmgzrK3RwzXuQpP54QhqyIKpITa_MFD4PLdS7yPYSnvInFja9nrFx9Sd-Un=
-lsJ6XUqAh4$
-> >> Can that be added to the MAINTAINERS file? I suppose it is ok under
-> >> "PERFORMANCE EVENTS SUBSYTEM", since the two would-be git repos listed
-> >> under that same entry would be pretty obvious in purpose.
-> > Arnaldo could you take a look at doing this?
+> diff --git a/drivers/clk/starfive/Kconfig b/drivers/clk/starfive/Kconfig
+> index 5195f7be5213..978b78ec08b1 100644
+> --- a/drivers/clk/starfive/Kconfig
+> +++ b/drivers/clk/starfive/Kconfig
+> @@ -35,6 +35,7 @@ config CLK_STARFIVE_JH7110_SYS
+>         select AUXILIARY_BUS
+>         select CLK_STARFIVE_JH71X0
+>         select RESET_STARFIVE_JH7110 if RESET_CONTROLLER
+> +       select CLK_STARFIVE_JH7110_PLL
+>         default ARCH_STARFIVE
+>         help
+>           Say yes here to support the system clock controller on the
+> diff --git a/drivers/clk/starfive/clk-starfive-jh7110-sys.c b/drivers/clk/starfive/clk-starfive-jh7110-sys.c
+> index e6031345ef05..3884eff9fe93 100644
+> --- a/drivers/clk/starfive/clk-starfive-jh7110-sys.c
+> +++ b/drivers/clk/starfive/clk-starfive-jh7110-sys.c
+> @@ -7,6 +7,7 @@
+>   */
 >
-> Thanks,
-> John
+>  #include <linux/auxiliary_bus.h>
+> +#include <linux/clk.h>
+>  #include <linux/clk-provider.h>
+>  #include <linux/init.h>
+>  #include <linux/io.h>
+> @@ -389,6 +390,7 @@ static int __init jh7110_syscrg_probe(struct platform_device *pdev)
+>         struct jh71x0_clk_priv *priv;
+>         unsigned int idx;
+>         int ret;
+> +       struct clk *pllclk;
+>
+>         priv = devm_kzalloc(&pdev->dev,
+>                             struct_size(priv, reg, JH7110_SYSCLK_END),
+> @@ -402,28 +404,42 @@ static int __init jh7110_syscrg_probe(struct platform_device *pdev)
+>         if (IS_ERR(priv->base))
+>                 return PTR_ERR(priv->base);
+>
+> -       /*
+> -        * These PLL clocks are not actually fixed factor clocks and can be
+> -        * controlled by the syscon registers of JH7110. They will be dropped
+> -        * and registered in the PLL clock driver instead.
+> -        */
+> -       /* 24MHz -> 1000.0MHz */
+> -       priv->pll[0] = devm_clk_hw_register_fixed_factor(priv->dev, "pll0_out",
+> -                                                        "osc", 0, 125, 3);
+> -       if (IS_ERR(priv->pll[0]))
+> -               return PTR_ERR(priv->pll[0]);
+> -
+> -       /* 24MHz -> 1066.0MHz */
+> -       priv->pll[1] = devm_clk_hw_register_fixed_factor(priv->dev, "pll1_out",
+> -                                                        "osc", 0, 533, 12);
+> -       if (IS_ERR(priv->pll[1]))
+> -               return PTR_ERR(priv->pll[1]);
+> -
+> -       /* 24MHz -> 1188.0MHz */
+> -       priv->pll[2] = devm_clk_hw_register_fixed_factor(priv->dev, "pll2_out",
+> -                                                        "osc", 0, 99, 2);
+> -       if (IS_ERR(priv->pll[2]))
+> -               return PTR_ERR(priv->pll[2]);
+> +       /* Use fixed factor clocks if can not get the PLL clocks from DTS */
+> +       pllclk = clk_get(priv->dev, "pll0_out");
+> +       if (IS_ERR(pllclk)) {
+> +               /* 24MHz -> 1000.0MHz */
+> +               priv->pll[0] = devm_clk_hw_register_fixed_factor(priv->dev, "pll0_out",
+> +                                                                "osc", 0, 125, 3);
+> +               if (IS_ERR(priv->pll[0]))
+> +                       return PTR_ERR(priv->pll[0]);
+> +       } else {
+> +               clk_put(pllclk);
+> +               priv->pll[0] = NULL;
+
+Not really important enough for a respin, but setting these to NULL is
+not needed as devm_kzalloc() already zeroes the memory allocated.
+
+In any case:
+Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+
+> +       }
+> +
+> +       pllclk = clk_get(priv->dev, "pll1_out");
+> +       if (IS_ERR(pllclk)) {
+> +               /* 24MHz -> 1066.0MHz */
+> +               priv->pll[1] = devm_clk_hw_register_fixed_factor(priv->dev, "pll1_out",
+> +                                                                "osc", 0, 533, 12);
+> +               if (IS_ERR(priv->pll[1]))
+> +                       return PTR_ERR(priv->pll[1]);
+> +       } else {
+> +               clk_put(pllclk);
+> +               priv->pll[1] = NULL;
+> +       }
+> +
+> +       pllclk = clk_get(priv->dev, "pll2_out");
+> +       if (IS_ERR(pllclk)) {
+> +               /* 24MHz -> 1188.0MHz */
+> +               priv->pll[2] = devm_clk_hw_register_fixed_factor(priv->dev, "pll2_out",
+> +                                                                "osc", 0, 99, 2);
+> +               if (IS_ERR(priv->pll[2]))
+> +                       return PTR_ERR(priv->pll[2]);
+> +       } else {
+> +               clk_put(pllclk);
+> +               priv->pll[2] = NULL;
+> +       }
+>
+>         for (idx = 0; idx < JH7110_SYSCLK_END; idx++) {
+>                 u32 max = jh7110_sysclk_data[idx].max;
+> @@ -462,6 +478,12 @@ static int __init jh7110_syscrg_probe(struct platform_device *pdev)
+>                                 parents[i].fw_name = "tdm_ext";
+>                         else if (pidx == JH7110_SYSCLK_MCLK_EXT)
+>                                 parents[i].fw_name = "mclk_ext";
+> +                       else if (pidx == JH7110_SYSCLK_PLL0_OUT && !priv->pll[0])
+> +                               parents[i].fw_name = "pll0_out";
+> +                       else if (pidx == JH7110_SYSCLK_PLL1_OUT && !priv->pll[1])
+> +                               parents[i].fw_name = "pll1_out";
+> +                       else if (pidx == JH7110_SYSCLK_PLL2_OUT && !priv->pll[2])
+> +                               parents[i].fw_name = "pll2_out";
+>                         else
+>                                 parents[i].hw = priv->pll[pidx - JH7110_SYSCLK_PLL0_OUT];
+>                 }
+> --
+> 2.25.1
+>
