@@ -2,104 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 011B6759F32
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81575759F31
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbjGSUCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44394 "EHLO
+        id S231332AbjGSUCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231320AbjGSUCs (ORCPT
+        with ESMTP id S229451AbjGSUCq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:02:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA641FE9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:02:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689796922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F50ZRNO2TGVX8Kl6rozSN2J4zAo6+Tkfm50rtvi7/ZE=;
-        b=gM7AGlWQgx7nTFxZOlUwUk+PpnPM30xxmn32fUnBs4UOa09hVRcz65LNrlaqiG0KYgWDLP
-        NpqbCZcFIs/HfrFqwVn6ByK2TJ0xCy/zMRFmDq8HLrjJ9CPPHSG/Z1wv1eOZiHh/biFTpa
-        Ufo/oujcsfjpYguB9efM92xPlSJvWcU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-194-a9Hn62OjNlSam_jeapiYAA-1; Wed, 19 Jul 2023 16:02:01 -0400
-X-MC-Unique: a9Hn62OjNlSam_jeapiYAA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-314291caa91so9087f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:02:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689796919; x=1690401719;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F50ZRNO2TGVX8Kl6rozSN2J4zAo6+Tkfm50rtvi7/ZE=;
-        b=Xtuwf4f/l3dH3elg1UpSIpSqErsBKH7gWeRTr60mBSAD6OVrBKdfwDGx2EDSossc+T
-         J/lWHY+F2G1QLTgE870XU+1NrDYR2bjvQJm3a26Ah03AAIidgMjWZC2me6p2GYyEFUy1
-         5bA9OVB41FNQrAv5ONhfJUZ6terqelLkp/D8qK1S3tOzbzT9auUZeJvbtbRkZAtHbcch
-         HV69eFjlFL2SSRpEwYrxkeSy3PABFiB8hEPwLdTJyUe76YsP/rLdqNhSfhwXw7mmu61V
-         LEU1gMmjDTqISKXVdqQ6BwsZgRHi47ZJjpJaGsyoXSsos1L8aYWEvQDAi/zxRlvw4cFD
-         yO0g==
-X-Gm-Message-State: ABy/qLYyrhhvB59rjhg9ky8/myN91pFnH5a/5ferfTCgEhSrIMgdApP5
-        MNTTIKeDuL1EXUtxVXty0yHEb13bJoTROOoP+SIpANPnHZHWX99+KSKsAuDnXyfw+05WqbLxWV4
-        hQEk2ETv0XxT2T6SGOCnjckMj
-X-Received: by 2002:adf:cc8a:0:b0:313:ee3e:50c5 with SMTP id p10-20020adfcc8a000000b00313ee3e50c5mr667541wrj.20.1689796919488;
-        Wed, 19 Jul 2023 13:01:59 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEh6qh2D+HDhq3T4nhad60k5o+fElA385D8f/zxvzb2G1xHV5DYobxgxRQ1y8JlPIHpCqcuDw==
-X-Received: by 2002:adf:cc8a:0:b0:313:ee3e:50c5 with SMTP id p10-20020adfcc8a000000b00313ee3e50c5mr667526wrj.20.1689796919290;
-        Wed, 19 Jul 2023 13:01:59 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id i2-20020adffc02000000b0030c4d8930b1sm6122653wrr.91.2023.07.19.13.01.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 13:01:59 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emma Anholt <emma@anholt.net>
-Cc:     Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 07/11] drm/vc4: tests: pv-muxing: Remove call to
- drm_kunit_helper_free_device()
-In-Reply-To: <20230710-kms-kunit-actions-rework-v1-7-722c58d72c72@kernel.org>
-References: <20230710-kms-kunit-actions-rework-v1-0-722c58d72c72@kernel.org>
- <20230710-kms-kunit-actions-rework-v1-7-722c58d72c72@kernel.org>
-Date:   Wed, 19 Jul 2023 22:01:58 +0200
-Message-ID: <87fs5jhdqh.fsf@minerva.mail-host-address-is-not-set>
+        Wed, 19 Jul 2023 16:02:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2D71FDF;
+        Wed, 19 Jul 2023 13:02:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/LoiVdXFFT7LO9YmsZUcNPfwRVnkM9wKImwKWJoAejg=; b=cRKaWBiMlfzyoOy8f2LZzODpEd
+        +9mFResKM26+NvFN8Ei3BmKR67jaMDguB8YsmgOp8cWlyml87xshEp5o2886SNCvOYwwCYYXC6hCF
+        s02QH7Hb81ltEhBk1r4O2A4M0JCZK6y0mWatjoxxLwx5pp5qysIqf8QSh6iIklPS41ypAFZTnwywt
+        edYAIwbQKlChxfrcQvBJWrAQb/RWwbbC/yeaJGOMu+7foRywQY0Vk4yvbmEEUHMlQyti+xD9OkaDR
+        I6mPGcC2mcJGv0t8NgA1DbUBDXVIRJyrJ1y1DKiZKTmLjGfPquOoI8koQDTJpSK4EhPw8vJAmSkp/
+        oDxQ6Esw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qMDNR-006QUy-1a; Wed, 19 Jul 2023 20:02:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E057030007E;
+        Wed, 19 Jul 2023 22:02:22 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BE04026AA535B; Wed, 19 Jul 2023 22:02:22 +0200 (CEST)
+Date:   Wed, 19 Jul 2023 22:02:22 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Brian Gerst <brgerst@gmail.com>, jpoimboe@kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        alyssa.milburn@linux.intel.com, keescook@chromium.org,
+        joao@overdrivepizza.com, tim.c.chen@linux.intel.com,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] x86: Rewrite ret_from_fork() in C
+Message-ID: <20230719200222.GD3529734@hirez.programming.kicks-ass.net>
+References: <20230623225529.34590-1-brgerst@gmail.com>
+ <20230623225529.34590-3-brgerst@gmail.com>
+ <ZLf_Z5dCSm7zKDel@alley>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZLf_Z5dCSm7zKDel@alley>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxime Ripard <mripard@kernel.org> writes:
+On Wed, Jul 19, 2023 at 05:21:11PM +0200, Petr Mladek wrote:
 
-> Calling drm_kunit_helper_free_device() to clean up the resources
-> allocated by drm_kunit_helper_alloc_device() is now optional and not
-> needed in most cases.
->
-> Remove it.
->
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> ---
+> This patch broke livepatching. Kthreads never have a reliable stack.
+> It works when I revert it.
 
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+> > +SYM_CODE_START(ret_from_fork_asm)
+> > +	UNWIND_HINT_REGS
 
--- 
-Best regards,
+It works again when I change the above hint to UNWIND_HINT_END_OF_STACK,
+so yeah. Doing this makes objtool unhappy with something else though,
+so I'll go prod at things with something sharp...
 
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+Thanks!
 
+> >  	ANNOTATE_NOENDBR // copy_thread
+> >  	CALL_DEPTH_ACCOUNT
+> >  
+> > +	movq	%rax, %rdi		/* prev */
+> > +	movq	%rsp, %rsi		/* regs */
+> > +	movq	%rbx, %rdx		/* fn */
+> > +	movq	%r12, %rcx		/* fn_arg */
+> > +	call	ret_from_fork
+> >  
+> > +SYM_CODE_END(ret_from_fork_asm)
