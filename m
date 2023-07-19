@@ -2,124 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 760B37590F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE33759125
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbjGSJDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49850 "EHLO
+        id S230137AbjGSJGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbjGSJCg (ORCPT
+        with ESMTP id S230187AbjGSJF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:02:36 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58D1199A;
-        Wed, 19 Jul 2023 02:02:34 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-440db8e60c8so2231471137.0;
-        Wed, 19 Jul 2023 02:02:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20221208; t=1689757354; x=1692349354;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dxIwZYUXAuriCTTrhHVqHKddrsis7m+qCsP3HgdIynU=;
-        b=roMthWZenYjFJbkbM2mH9bPO4Bf42B0BRdA0sdFpwN48PKQ9gk4TZacDsuyYpWMUtU
-         l7XYUiMzUMAy/phDMUaatUjESkkXKZSAnkJ4YsFYi4LHKq1cuYFBne+6nU2905/UPcSF
-         eiRoC/YPnk4Xfg/OHZHNVe0aaySC7Dum98v/RDAWN8si4j+7KTylat/B7KzsdUU52gR0
-         ATZdikwexy+mWOAK83xK6JMDtH6htGdJ9v/DCaLbaPTlmTZwkNX8scIlclg0p8FahA0R
-         h6FoIIVMuIN5v6FVCN4uWBK72xyHC8S/m8tYhlYULPyoo8BMP5rmm5j7YoomYtBCUVRH
-         okmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689757354; x=1692349354;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dxIwZYUXAuriCTTrhHVqHKddrsis7m+qCsP3HgdIynU=;
-        b=UtqZLJs/9dNaJ/ouji4lSjg9lWOiRDJHu6EFsAXZ0tegyRGQt9bj36VF6Lw6h0jEr4
-         5oUryOvEL0rWpk8i4qBLToJCdQSl83cr2UTEZAc2yWEyC9pIwj4DDSFNKfRCTi0G/4VC
-         XwxwEoX1EOCu3JbshtdtGc6m7Aj4KQqS3iGrUIgxGNSalgstJpwNuYEn8jm9+KIM0Yba
-         4GwWP3FePJO4zqUxeWWkI8kQ9EFipr4Wg5b+stI1Emg8E/ZhabU9UY6dltY9w8eujctv
-         1Jpx7/cJ4KRFwPKdlLYu0ep1Ahgrxk33hqVN6RzUUqqUS5moIkDMVfLuvf3za3B5RDeK
-         P0Ew==
-X-Gm-Message-State: ABy/qLZIxgKwJcpcJIPqFQB7N/0KFEvtmbZOH1CoTqoQMaVsnE6BMwYv
-        J5T09xHseVKGMhrc4hYuKllbS8PKsOhX/T+AjJE=
-X-Google-Smtp-Source: APBJJlFGC7hcxDjV2bvRpf7CwCMnWqPqtKrErYoLtJJRVn7WV3aGJI76Q4oBgWPzIE71Uc7VS02UNu6Z+sX11RmvnXE=
-X-Received: by 2002:a67:ce82:0:b0:443:6e00:d32 with SMTP id
- c2-20020a67ce82000000b004436e000d32mr8825653vse.8.1689757353731; Wed, 19 Jul
- 2023 02:02:33 -0700 (PDT)
+        Wed, 19 Jul 2023 05:05:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D89E1272D;
+        Wed, 19 Jul 2023 02:05:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BD0461342;
+        Wed, 19 Jul 2023 09:04:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37BEDC433C7;
+        Wed, 19 Jul 2023 09:04:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689757476;
+        bh=6u/M1i70QvhVD9mDK4VniKdAPyDjLdXC4VHlNCq0T00=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Wy5pQiFIE6+QVmTfbAWWeCzbaQoRlwhpLS0UQHdmltp4L7Zh+2S32xZl305cFNC62
+         aE6Wfs941hbiraMDiEVIG0fNE75GLdm7tbJbFbkQqWFcWGBN0k6rZTuyyW2+CWPgrM
+         inhJ99Yx1uDyzPTHFe8H6pvMBj4cy2Wp7CR2+QeSJYVdzPMfEkooctdMVXup3sfQT7
+         mHHlOVTDFPd0Hr8Bt0TFaeTTFSET9/Xomg/B+pV4X233AODqda7Q7XxrAPiiBWyWdW
+         PVBKBUBNRxdxXjf0PfXdE7ldlv9LWV+ce1HDJtRInuDq5mCPlKKD3l8ex6NexViEFp
+         M84L1dHtoJDJg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     William Breathitt Gray <william.gray@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee@kernel.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: [PATCH] mfd: rz-mtu3: link time dependencies
+Date:   Wed, 19 Jul 2023 11:02:23 +0200
+Message-Id: <20230719090430.1925182-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20230719075127.47736-1-wangkefeng.wang@huawei.com> <20230719075127.47736-4-wangkefeng.wang@huawei.com>
-In-Reply-To: <20230719075127.47736-4-wangkefeng.wang@huawei.com>
-From:   =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
-Date:   Wed, 19 Jul 2023 11:02:22 +0200
-Message-ID: <CAJ2a_DfGvPeDuN38UBXD4f2928n9GZpHFgdiPo9MoSAY7YXeOg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] selinux: use vma_is_initial_stack() and vma_is_initial_heap()
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
-        selinux@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Jul 2023 at 09:40, Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->
-> Use the helpers to simplify code.
->
-> Cc: Paul Moore <paul@paul-moore.com>
-> Cc: Stephen Smalley <stephen.smalley.work@gmail.com>
-> Cc: Eric Paris <eparis@parisplace.org>
-> Acked-by: Paul Moore <paul@paul-moore.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->  security/selinux/hooks.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
->
-> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> index d06e350fedee..ee8575540a8e 100644
-> --- a/security/selinux/hooks.c
-> +++ b/security/selinux/hooks.c
-> @@ -3762,13 +3762,10 @@ static int selinux_file_mprotect(struct vm_area_struct *vma,
->         if (default_noexec &&
->             (prot & PROT_EXEC) && !(vma->vm_flags & VM_EXEC)) {
->                 int rc = 0;
-> -               if (vma->vm_start >= vma->vm_mm->start_brk &&
-> -                   vma->vm_end <= vma->vm_mm->brk) {
-> +               if (vma_is_initial_heap(vma)) {
+From: Arnd Bergmann <arnd@arndb.de>
 
-This seems to change the condition from
+The new set of drivers for RZ/G2L MTU3a tries to enable compile-testing the
+individual client drivers even when the MFD portion is disabled but gets it
+wrong, causing a link failure when the core is in a loadable module but the
+other drivers are built-in:
 
-    vma->vm_start >= vma->vm_mm->start_brk && vma->vm_end <= vma->vm_mm->brk
+x86_64-linux-ld: drivers/pwm/pwm-rz-mtu3.o: in function `rz_mtu3_pwm_apply':
+pwm-rz-mtu3.c:(.text+0x4bf): undefined reference to `rz_mtu3_8bit_ch_write'
+x86_64-linux-ld: pwm-rz-mtu3.c:(.text+0x509): undefined reference to `rz_mtu3_disable'
 
-to
+arm-linux-gnueabi-ld: drivers/counter/rz-mtu3-cnt.o: in function `rz_mtu3_cascade_counts_enable_get':
+rz-mtu3-cnt.c:(.text+0xbec): undefined reference to `rz_mtu3_shared_reg_read'
 
-    vma->vm_start <= vma->vm_mm->brk && vma->vm_end >= vma->vm_mm->start_brk
+It seems better not to add the extra complexity here but instead just use
+a normal hard dependency, so remove the #else portion in the header along
+with the "|| COMPILE_TEST". This could also be fixed by having slightly more
+elaborate Kconfig dependencies or using the cursed 'IS_REACHABLE()' helper,
+but in practice it's already possible to compile-test all these drivers
+by enabling the mtd portion.
 
-(or AND arguments swapped)
+Fixes: 254d3a727421c ("pwm: Add Renesas RZ/G2L MTU3a PWM driver")
+Fixes: 0be8907359df4 ("counter: Add Renesas RZ/G2L MTU3a counter driver")
+Fixes: 654c293e1687b ("mfd: Add Renesas RZ/G2L MTU3a core driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/counter/Kconfig     |  2 +-
+ drivers/pwm/Kconfig         |  2 +-
+ include/linux/mfd/rz-mtu3.h | 66 -------------------------------------
+ 3 files changed, 2 insertions(+), 68 deletions(-)
 
-    vma->vm_end >= vma->vm_mm->start_brk && vma->vm_start <= vma->vm_mm->brk
+diff --git a/drivers/counter/Kconfig b/drivers/counter/Kconfig
+index 62962ae84b77d..497bc05dca4df 100644
+--- a/drivers/counter/Kconfig
++++ b/drivers/counter/Kconfig
+@@ -92,7 +92,7 @@ config MICROCHIP_TCB_CAPTURE
+ 
+ config RZ_MTU3_CNT
+ 	tristate "Renesas RZ/G2L MTU3a counter driver"
+-	depends on RZ_MTU3 || COMPILE_TEST
++	depends on RZ_MTU3
+ 	help
+ 	  Enable support for MTU3a counter driver found on Renesas RZ/G2L alike
+ 	  SoCs. This IP supports both 16-bit and 32-bit phase counting mode
+diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+index 6210babb0741a..8ebcddf91f7b7 100644
+--- a/drivers/pwm/Kconfig
++++ b/drivers/pwm/Kconfig
+@@ -505,7 +505,7 @@ config PWM_ROCKCHIP
+ 
+ config PWM_RZ_MTU3
+ 	tristate "Renesas RZ/G2L MTU3a PWM Timer support"
+-	depends on RZ_MTU3 || COMPILE_TEST
++	depends on RZ_MTU3
+ 	depends on HAS_IOMEM
+ 	help
+ 	  This driver exposes the MTU3a PWM Timer controller found in Renesas
+diff --git a/include/linux/mfd/rz-mtu3.h b/include/linux/mfd/rz-mtu3.h
+index c5173bc062701..8421d49500bf4 100644
+--- a/include/linux/mfd/rz-mtu3.h
++++ b/include/linux/mfd/rz-mtu3.h
+@@ -151,7 +151,6 @@ struct rz_mtu3 {
+ 	void *priv_data;
+ };
+ 
+-#if IS_ENABLED(CONFIG_RZ_MTU3)
+ static inline bool rz_mtu3_request_channel(struct rz_mtu3_channel *ch)
+ {
+ 	mutex_lock(&ch->lock);
+@@ -188,70 +187,5 @@ void rz_mtu3_32bit_ch_write(struct rz_mtu3_channel *ch, u16 off, u32 val);
+ void rz_mtu3_shared_reg_write(struct rz_mtu3_channel *ch, u16 off, u16 val);
+ void rz_mtu3_shared_reg_update_bit(struct rz_mtu3_channel *ch, u16 off,
+ 				   u16 pos, u8 val);
+-#else
+-static inline bool rz_mtu3_request_channel(struct rz_mtu3_channel *ch)
+-{
+-	return false;
+-}
+-
+-static inline void rz_mtu3_release_channel(struct rz_mtu3_channel *ch)
+-{
+-}
+-
+-static inline bool rz_mtu3_is_enabled(struct rz_mtu3_channel *ch)
+-{
+-	return false;
+-}
+-
+-static inline void rz_mtu3_disable(struct rz_mtu3_channel *ch)
+-{
+-}
+-
+-static inline int rz_mtu3_enable(struct rz_mtu3_channel *ch)
+-{
+-	return 0;
+-}
+-
+-static inline u8 rz_mtu3_8bit_ch_read(struct rz_mtu3_channel *ch, u16 off)
+-{
+-	return 0;
+-}
+-
+-static inline u16 rz_mtu3_16bit_ch_read(struct rz_mtu3_channel *ch, u16 off)
+-{
+-	return 0;
+-}
+-
+-static inline u32 rz_mtu3_32bit_ch_read(struct rz_mtu3_channel *ch, u16 off)
+-{
+-	return 0;
+-}
+-
+-static inline u16 rz_mtu3_shared_reg_read(struct rz_mtu3_channel *ch, u16 off)
+-{
+-	return 0;
+-}
+-
+-static inline void rz_mtu3_8bit_ch_write(struct rz_mtu3_channel *ch, u16 off, u8 val)
+-{
+-}
+-
+-static inline void rz_mtu3_16bit_ch_write(struct rz_mtu3_channel *ch, u16 off, u16 val)
+-{
+-}
+-
+-static inline void rz_mtu3_32bit_ch_write(struct rz_mtu3_channel *ch, u16 off, u32 val)
+-{
+-}
+-
+-static inline void rz_mtu3_shared_reg_write(struct rz_mtu3_channel *ch, u16 off, u16 val)
+-{
+-}
+-
+-static inline void rz_mtu3_shared_reg_update_bit(struct rz_mtu3_channel *ch,
+-						 u16 off, u16 pos, u8 val)
+-{
+-}
+-#endif
+ 
+ #endif /* __MFD_RZ_MTU3_H__ */
+-- 
+2.39.2
 
-Is this intended?
-
->                         rc = avc_has_perm(sid, sid, SECCLASS_PROCESS,
->                                           PROCESS__EXECHEAP, NULL);
-> -               } else if (!vma->vm_file &&
-> -                          ((vma->vm_start <= vma->vm_mm->start_stack &&
-> -                            vma->vm_end >= vma->vm_mm->start_stack) ||
-> +               } else if (!vma->vm_file && (vma_is_initial_stack(vma) ||
->                             vma_is_stack_for_current(vma))) {
->                         rc = avc_has_perm(sid, sid, SECCLASS_PROCESS,
->                                           PROCESS__EXECSTACK, NULL);
-> --
-> 2.27.0
->
