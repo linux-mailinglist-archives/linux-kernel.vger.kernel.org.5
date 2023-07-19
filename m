@@ -2,123 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB02A7591BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D91DC7591D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbjGSJet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
+        id S230288AbjGSJml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbjGSJes (ORCPT
+        with ESMTP id S230379AbjGSJm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:34:48 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A3C919A
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:34:47 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1qM3Zs-0006cV-D8; Wed, 19 Jul 2023 11:34:36 +0200
-Received: from mfe by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1qM3Zr-0008Ta-Oi; Wed, 19 Jul 2023 11:34:35 +0200
-Date:   Wed, 19 Jul 2023 11:34:35 +0200
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com,
-        laurent.pinchart@ideasonboard.com, dan.scally@ideasonboard.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/4] dt-bindings: arm: fsl: fix DEBIX binding
-Message-ID: <20230719093435.mixoqke3dqtgwauh@pengutronix.de>
-References: <20230717165127.2882535-1-m.felsch@pengutronix.de>
- <20230717165127.2882535-2-m.felsch@pengutronix.de>
- <66b096e1-fcdc-8af7-63ea-9b74013eb667@pengutronix.de>
- <20230717172424.yru3qqfz4xd7qw3a@pengutronix.de>
- <8c91fd56-a815-d2ff-6f62-168eb76ae6c1@pengutronix.de>
+        Wed, 19 Jul 2023 05:42:27 -0400
+Received: from proxmox1.postmarketos.org (proxmox1.postmarketos.org [IPv6:2a01:4f8:a0:821d::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 882C110D4;
+        Wed, 19 Jul 2023 02:42:26 -0700 (PDT)
+Received: from lexxgentoo.devos.club (unknown [77.239.252.99])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by proxmox1.postmarketos.org (Postfix) with ESMTPSA id C0D09140121;
+        Wed, 19 Jul 2023 09:42:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=postmarketos.org;
+        s=donut; t=1689759745;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=meT+EQqITVdz8Y3mT8iZaYriOiIgKIZ/SrythyqBZfM=;
+        b=g3fQ6MVH+lALdS5cvw4i4MMYv63vT6jEulktXl0irVwxNfF2piaumqExGRhLaGR2v8XLHP
+        G9i04ioGvtwSplIICaNIUFncOeSXLnIcRLQ5oznIk+GnQ9qZnW1L5vHvSY5Mdb6snMyLXG
+        plmxYKjxXmB5kKFV3GnaqiY84L8KsgQ=
+From:   Alexey Minnekhanov <alexeymin@postmarketos.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Alexey Minnekhanov <alexeymin@postmarketos.org>
+Subject: [PATCH v3] arm64: dts: qcom: sdm630: Add support for modem remoteproc
+Date:   Wed, 19 Jul 2023 12:34:58 +0300
+Message-ID: <20230719093458.2668842-1-alexeymin@postmarketos.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8c91fd56-a815-d2ff-6f62-168eb76ae6c1@pengutronix.de>
-User-Agent: NeoMutt/20180716
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ahmad, Krzysztof,
+Modem subsystem in SDM630/660 is similar to MSM8998 and
+device tree node for it is based on the one from msm8998.dtsi.
 
-On 23-07-17, Ahmad Fatoum wrote:
-> On 17.07.23 19:24, Marco Felsch wrote:
-> > On 23-07-17, Ahmad Fatoum wrote:
-> >> On 17.07.23 18:51, Marco Felsch wrote:
-> >>> The current imx8mp-debix-model-a.dts uses all three compatibles. Fix the
-> >>> corresponding bindings by adding an own entry for it. Mark
-> >>> polyhex,imx8mp-debix as deprecated but keep it within the dts file since
-> >>> we already have a user for it [1].
-> >>>
-> >>> [1] https://elixir.bootlin.com/barebox/v2023.07.1/source/arch/arm/ \
-> >>>     boards/polyhex-debix/board.c#L38
-> >>>
-> >>> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
-> >>> ---
-> >>> Changelog:
-> >>>
-> >>> v2:
-> >>> - deprecate polyhex,imx8mp-debix
-> >>>
-> >>>  Documentation/devicetree/bindings/arm/fsl.yaml | 10 ++++++++--
-> >>>  1 file changed, 8 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> >>> index 15d4110840654..b29974e3c30b3 100644
-> >>> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> >>> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> >>> @@ -1019,8 +1019,6 @@ properties:
-> >>>                - dmo,imx8mp-data-modul-edm-sbc # i.MX8MP eDM SBC
-> >>>                - fsl,imx8mp-evk            # i.MX8MP EVK Board
-> >>>                - gateworks,imx8mp-gw74xx   # i.MX8MP Gateworks Board
-> >>> -              - polyhex,imx8mp-debix      # Polyhex Debix boards
-> >>> -              - polyhex,imx8mp-debix-model-a # Polyhex Debix Model A Board
-> >>>                - toradex,verdin-imx8mp     # Verdin iMX8M Plus Modules
-> >>>                - toradex,verdin-imx8mp-nonwifi  # Verdin iMX8M Plus Modules without Wi-Fi / BT
-> >>>                - toradex,verdin-imx8mp-wifi  # Verdin iMX8M Plus Wi-Fi / BT Modules
-> >>> @@ -1054,6 +1052,14 @@ properties:
-> >>>            - const: phytec,imx8mp-phycore-som         # phyCORE-i.MX8MP SoM
-> >>>            - const: fsl,imx8mp
-> >>>  
-> >>> +      - description: Polyhex DEBIX i.MX8MP based SBCs
-> >>> +        items:
-> >>> +          - enum:
-> >>> +              - polyhex,imx8mp-debix-model-a        # Polyhex Debix Model A Board
-> >>> +          - const: polyhex,imx8mp-debix             # Polyhex Debix boards
-> >>> +            deprecated: true
-> >>
-> >> I don't see why you need to deprecate this. Can't you just change the comment
-> >> to read "Polyhex i.MX8MP SBCs" or similar?
-> > 
-> > This was suggested by Krzysztof, since polyhex,imx8mp-debix was to
-> > generic. I can keep it without the deprecation notice and just change
-> > the comment since we need to keep dts compatible anyway.
-> 
-> I agree that using it as compatible for both SBC and SoMs, when the boards
-> aren't based on the SoM isn't useful. I still think it's useful to have
-> a compatible for "Debix i.MX8MP SBCs" that spans current lineup of Model A,
-> Model B, B SE and possible future compatibles.
+Signed-off-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
+---
 
-Thanks for the input. @Krzysztof how do we proceed on this topic? I can
-adapt the comment and drop the deprecated status.
+V3: Use memory-region property to specify memory regions, instead
+    of using "mba" and "mpss" subnodes.
 
-Regards,
-  Marco
+V2 link: https://lore.kernel.org/lkml/20230621175046.61521-3-alexeymin@postmarketos.org/
+
+ arch/arm64/boot/dts/qcom/sdm630.dtsi | 59 ++++++++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+index 2136ded22f7e..797625cf78ac 100644
+--- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+@@ -1032,6 +1032,65 @@ data-pins {
+ 			};
+ 		};
+ 
++		remoteproc_mss: remoteproc@4080000 {
++			compatible = "qcom,sdm660-mss-pil";
++			reg = <0x04080000 0x100>, <0x04180000 0x40>;
++			reg-names = "qdsp6", "rmb";
++
++			interrupts-extended = <&intc GIC_SPI 448 IRQ_TYPE_EDGE_RISING>,
++					      <&modem_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
++					      <&modem_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
++					      <&modem_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
++					      <&modem_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
++					      <&modem_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
++			interrupt-names = "wdog",
++					  "fatal",
++					  "ready",
++					  "handover",
++					  "stop-ack",
++					  "shutdown-ack";
++
++			clocks = <&gcc GCC_MSS_CFG_AHB_CLK>,
++				 <&gcc GCC_BIMC_MSS_Q6_AXI_CLK>,
++				 <&gcc GCC_BOOT_ROM_AHB_CLK>,
++				 <&gcc GPLL0_OUT_MSSCC>,
++				 <&gcc GCC_MSS_SNOC_AXI_CLK>,
++				 <&gcc GCC_MSS_MNOC_BIMC_AXI_CLK>,
++				 <&rpmcc RPM_SMD_QDSS_CLK>,
++				 <&rpmcc RPM_SMD_XO_CLK_SRC>;
++			clock-names = "iface",
++				      "bus",
++				      "mem",
++				      "gpll0_mss",
++				      "snoc_axi",
++				      "mnoc_axi",
++				      "qdss",
++				      "xo";
++
++			qcom,smem-states = <&modem_smp2p_out 0>;
++			qcom,smem-state-names = "stop";
++
++			resets = <&gcc GCC_MSS_RESTART>;
++			reset-names = "mss_restart";
++
++			qcom,halt-regs = <&tcsr_regs_1 0x3000 0x5000 0x4000>;
++
++			power-domains = <&rpmpd SDM660_VDDCX>,
++					<&rpmpd SDM660_VDDMX>;
++			power-domain-names = "cx", "mx";
++
++			memory-region = <&mba_region>, <&mpss_region>;
++
++			status = "disabled";
++
++			glink-edge {
++				interrupts = <GIC_SPI 452 IRQ_TYPE_EDGE_RISING>;
++				label = "modem";
++				qcom,remote-pid = <1>;
++				mboxes = <&apcs_glb 15>;
++			};
++		};
++
+ 		adreno_gpu: gpu@5000000 {
+ 			compatible = "qcom,adreno-508.0", "qcom,adreno";
+ 
+-- 
+2.41.0
+
