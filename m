@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 655B575963F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDEF759642
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbjGSNJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 09:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41632 "EHLO
+        id S230178AbjGSNJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 09:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbjGSNJI (ORCPT
+        with ESMTP id S229660AbjGSNJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 09:09:08 -0400
-Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DDA198D
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:09:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        Content-ID:Content-Description;
-        bh=06wAJOif646+VyAqs5qKhAGpFfRMMbjLh19j1Z+a+JA=; b=b8k7YhgAsq7OiZSetYiSTETcU0
-        ARwYiYFPH43QKiugOI1ZQQz7BkNmXgsjMB5hTpET/RkMwmW0kkyyBnbt2b3S4oLVCLS2MeCPcgiIA
-        unJmeOcB6Y0Wk0KJAqaEJ1PUq+6z4NBmWY5Z7GyozEQbjhtEYGvak52lNF/n5PeOA25bQp4gPzLgu
-        xBAUZOOVAPnqxEoDfiR5iMKX0djN/okfVNaQ8B2MPhF1S5jGNqdEnIL0A//SQ6kW+70BDf73Eqd6c
-        HlbjDBS7DrsBoRHTtNQg+Pupm/UhzgV/JAfJNogtQqFfTpEa8GpvBWul6Bry92y2wqDKE6EBEoar5
-        w9Z7qn3U/56SpFgz3bK+D5Mo2rBpbBRZyTnzwh26r+pzyNada6wdQNiZTRePKiZlIZmwlnoKfz5Ve
-        krprNmE0byQ1hQY3Le9TpcAlaH3g/01EH4v21Jpnx/JhIB66UgjEMFtIeai/pEPcz8F+y5G2zjClU
-        wqGbVsxroxjm+1BCrKmijN3NloYYdL8VoC4ytsHSiF+XlucC5KSQHsZDPD3w+Pw16JDWiN/pDBaPq
-        aORg6Rivvy61ULSld5gqMEU5UrzEDUqAt9w1pCzB8KqlfAFn5ctKsYdjfSF4Kf9N2Sb86VwdSFYkc
-        j+e9Lt/0lnMqSv/WBA7Eq6WZJOBs4gtym2sB0hVj4=;
-From:   Christian Schoenebeck <linux_oss@crudebyte.com>
-To:     Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>
-Cc:     v9fs@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Robert Schwebel <r.schwebel@pengutronix.de>,
-        Eric Van Hensbergen <ericvh@kernel.org>
-Subject: Re: [PATCH v2 4/4] fs/9p: remove unnecessary invalidate_inode_pages2
-Date:   Wed, 19 Jul 2023 15:08:58 +0200
-Message-ID: <9712791.GGSLJcCJDP@silver>
-In-Reply-To: <20230716-fixes-overly-restrictive-mmap-v2-4-147d6b93f699@kernel.org>
-References: <20230716-fixes-overly-restrictive-mmap-v2-0-147d6b93f699@kernel.org>
- <20230716-fixes-overly-restrictive-mmap-v2-4-147d6b93f699@kernel.org>
+        Wed, 19 Jul 2023 09:09:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2026210FE
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:09:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AA4756162A
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:09:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE4A5C433C8;
+        Wed, 19 Jul 2023 13:09:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689772185;
+        bh=emvLdW7AGgXpWhAQUruy5IEnajx3zbwFXE7kJcAzRvk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RdCHsQw8isbZoU2ldlm5G9kcGyB4SZBiDMYIUpVgXRyghH1YD7DOgHmbg4Ge8tW+I
+         opSlEOYrbLMAUHuak2sqi+Z3JPvlSiuV5uw5wo0v2+pBZlULn2lJeUoS8EAAu9bF1p
+         Fe6XJerUfw1UpRMvU0XVBqPmOo6vYogitYxhRU24/oZ/t8HV50NV2Vwju3cR9sEh4P
+         6ZY/xuCV9kxlqZAHmWfkuZbCpvlChcMaNDuzmfHsYNPAU+EuDa/DX3Y2MvpLn4xLrY
+         OSaM7UeJcFhrdqw2fPFgN2GNHPNzBZhhfxE+/sBvtwGx+FlkTBDLilDGkNRVeo38Vr
+         cWL2+qPB6GLkQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/panel: r66451: select CONFIG_DRM_DISPLAY_DP_HELPER
+Date:   Wed, 19 Jul 2023 15:09:21 +0200
+Message-Id: <20230719130940.659837-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,31 +57,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, July 18, 2023 10:50:18 PM CEST Eric Van Hensbergen wrote:
-> There was an invalidate_inode_pages2
-> added to mmap that is unnecessary.
-> 
-> Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
-> ---
+From: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Christian Schoenebeck <linux_oss@crudebyte.com>
+The newly added driver only builds when DRM_DISPLAY_DP_HELPER is enabled:
 
->  fs/9p/vfs_file.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
-> index bda3abd6646b8..3809f3a531499 100644
-> --- a/fs/9p/vfs_file.c
-> +++ b/fs/9p/vfs_file.c
-> @@ -506,7 +506,6 @@ v9fs_file_mmap(struct file *filp, struct vm_area_struct *vma)
->  
->  	if (!(v9ses->cache & CACHE_WRITEBACK)) {
->  		p9_debug(P9_DEBUG_CACHE, "(no mmap mode)");
-> -		invalidate_inode_pages2(filp->f_mapping);
->  		return generic_file_readonly_mmap(filp, vma);
->  	}
->  
-> 
-> 
+x86_64-linux-ld: drivers/gpu/drm/panel/panel-visionox-r66451.o: in function `visionox_r66451_enable':
+panel-visionox-r66451.c:(.text+0x105): undefined reference to `drm_dsc_pps_payload_pack'
 
+Select both CONFIG_DRM_DISPLAY_DP_HELPER and CONFIG_DRM_DISPLAY_HELPER to
+ensure the helper function is always available.
+
+Fixes: a6dfab2738fc2 ("drm/panel: Add driver for Visionox r66451 panel")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/gpu/drm/panel/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+index 1a0fd0754692e..e8c9f4613a4b4 100644
+--- a/drivers/gpu/drm/panel/Kconfig
++++ b/drivers/gpu/drm/panel/Kconfig
+@@ -798,6 +798,8 @@ config DRM_PANEL_VISIONOX_R66451
+ 	depends on OF
+ 	depends on DRM_MIPI_DSI
+ 	depends on BACKLIGHT_CLASS_DEVICE
++	select DRM_DISPLAY_DP_HELPER
++	select DRM_DISPLAY_HELPER
+ 	help
+ 	  Say Y here if you want to enable support for Visionox
+ 	  R66451 1080x2340 AMOLED DSI panel.
+-- 
+2.39.2
 
