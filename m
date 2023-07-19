@@ -2,54 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D876759EDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D13F0759EDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 21:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbjGSTkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 15:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35088 "EHLO
+        id S229960AbjGSTlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 15:41:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjGSTka (ORCPT
+        with ESMTP id S229804AbjGSTlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 15:40:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA2C11C;
-        Wed, 19 Jul 2023 12:40:29 -0700 (PDT)
+        Wed, 19 Jul 2023 15:41:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F521FCD
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:41:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7CFE2617F4;
-        Wed, 19 Jul 2023 19:40:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D69EFC433C7;
-        Wed, 19 Jul 2023 19:40:28 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C7A58617DA
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 19:41:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B04EC433C7;
+        Wed, 19 Jul 2023 19:41:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689795628;
-        bh=EXBuHUSa0yoSSKIi58cyfyt8k6/rczE7CI5TV0Q9sbw=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=f5KXu4u18pX8w/bhoDCQEU/VXLVOFDy+kF4NEaBkkFZABXeZ8jy1BL1S787JwxTwv
-         rKhEOnhsY4ZkAnKE+PGC1Cx8tiA1n58V9nnDl7IOeR7eeJiOQvk3ZM8ibD26xhC+nD
-         whoGLUIpr2YAiXQaS7fo2g+6ssJYS4wEOve7uGVH5vo9glYucZqXKgA9VEbfNRlh1t
-         KW3v52Yx/bm74MaVXnAhALXkw4wpJYB9Ap4mGoqE2sNLorFDNkBBDISObAy1BCIECE
-         mcYk8QHU7dMdxWKaAitMdNPINI0BmLQQdK765y8qDO9kwkxXN6BpwNw6vo/GeiYEeL
-         4tl/Gn0p63HAw==
-Message-ID: <25fd7919e449d2a6ffe69c8cb50ba34c.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1689795663;
+        bh=HT6NIJnJjP5XXjL3jAn8RBEdx6VjahZqEGc1GycJOzs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=glJtml9m0Hgxx78mdXgcgYqU8Aq4I+4WSEAyiStrCFQ6CwHaDQufqKPeshdn1Pu02
+         oFYhSswF5yw8PkhEan5XX1ffIV79x44ZeWHxfDT4Krxj2oNwuED3/sNk+pTRO7+LsR
+         psri1Wn6WwIu9gKrAKAMIKmya2dEXFgMk1GH6LWhwQeyJbd4fEZsmWqT6nL+oPDi3A
+         gNWZrvm0k1exHt07nf/8pM8LOqmwU8bODbgwkNU8Vo3CueJjgofJSs42P9soDODaFT
+         NumZ1Loz0WGBO7Bvvqm3AEtHnCOgyDOmUfdv5mjOjQL/jprXnXJcd8EKnSAWAU784h
+         3S1rE3mcdV7ug==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Shannon Nelson <shannon.nelson@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] vpda: pds: fix building without debugfs
+Date:   Wed, 19 Jul 2023 21:40:52 +0200
+Message-Id: <20230719194058.1606869-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230719074251.1219089-1-wenst@chromium.org>
-References: <20230719074251.1219089-1-wenst@chromium.org>
-Subject: Re: [PATCH] clk: mediatek: mt8183: Add back SSPM related clocks
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Date:   Wed, 19 Jul 2023 12:40:26 -0700
-User-Agent: alot/0.10
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -60,26 +57,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Chen-Yu Tsai (2023-07-19 00:42:50)
-> This reverts commit 860690a93ef23b567f781c1b631623e27190f101.
->=20
-> On the MT8183, the SSPM related clocks were removed claiming a lack of
-> usage. This however causes some issues when the driver was converted to
-> the new simple-probe mechanism. This mechanism allocates enough space
-> for all the clocks defined in the clock driver, not the highest index
-> in the DT binding. This leads to out-of-bound writes if their are holes
-> in the DT binding or the driver (due to deprecated or unimplemented
-> clocks). These errors can go unnoticed and cause memory corruption,
-> leading to crashes in unrelated areas, or nothing at all. KASAN will
-> detect them.
->=20
-> Add the SSPM related clocks back to the MT8183 clock driver to fully
-> implement the DT binding. The SSPM clocks are for the power management
-> co-processor, and should never be turned off. They are marked as such.
->=20
-> Fixes: 3f37ba7cc385 ("clk: mediatek: mt8183: Convert all remaining clocks=
- to common probe")
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> ---
+From: Arnd Bergmann <arnd@arndb.de>
 
-Applied to clk-fixes
+The new debugfs code still gets called when debugfs is disabled, resulting
+in a link failure:
+
+ERROR: modpost: "pds_vdpa_debugfs_del_vdpadev" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
+ERROR: modpost: "pds_vdpa_debugfs_add_vdpadev" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
+ERROR: modpost: "pds_vdpa_debugfs_reset_vdpadev" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
+ERROR: modpost: "pds_vdpa_debugfs_create" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
+ERROR: modpost: "pds_vdpa_debugfs_add_ident" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
+ERROR: modpost: "pds_vdpa_debugfs_destroy" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
+ERROR: modpost: "pds_vdpa_debugfs_add_pcidev" [drivers/vdpa/pds/pds_vdpa.ko] undefined!
+
+Add the usual #if/#else block around the declarations to supply empty stubs
+for the broken case.
+
+Fixes: 151cc834f3dda ("pds_vdpa: add support for vdpa and vdpamgmt interfaces")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/vdpa/pds/debugfs.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/vdpa/pds/debugfs.h b/drivers/vdpa/pds/debugfs.h
+index c088a4e8f1e92..6fbd64ace13a3 100644
+--- a/drivers/vdpa/pds/debugfs.h
++++ b/drivers/vdpa/pds/debugfs.h
+@@ -6,6 +6,7 @@
+ 
+ #include <linux/debugfs.h>
+ 
++#ifdef CONFIG_DEBUG_FS
+ void pds_vdpa_debugfs_create(void);
+ void pds_vdpa_debugfs_destroy(void);
+ void pds_vdpa_debugfs_add_pcidev(struct pds_vdpa_aux *vdpa_aux);
+@@ -13,5 +14,14 @@ void pds_vdpa_debugfs_add_ident(struct pds_vdpa_aux *vdpa_aux);
+ void pds_vdpa_debugfs_add_vdpadev(struct pds_vdpa_aux *vdpa_aux);
+ void pds_vdpa_debugfs_del_vdpadev(struct pds_vdpa_aux *vdpa_aux);
+ void pds_vdpa_debugfs_reset_vdpadev(struct pds_vdpa_aux *vdpa_aux);
++#else
++static inline void pds_vdpa_debugfs_create(void) { }
++static inline void pds_vdpa_debugfs_destroy(void) { }
++static inline void pds_vdpa_debugfs_add_pcidev(struct pds_vdpa_aux *vdpa_aux) { }
++static inline void pds_vdpa_debugfs_add_ident(struct pds_vdpa_aux *vdpa_aux) { }
++static inline void pds_vdpa_debugfs_add_vdpadev(struct pds_vdpa_aux *vdpa_aux) { }
++static inline void pds_vdpa_debugfs_del_vdpadev(struct pds_vdpa_aux *vdpa_aux) { }
++static inline void pds_vdpa_debugfs_reset_vdpadev(struct pds_vdpa_aux *vdpa_aux) { }
++#endif
+ 
+ #endif /* _PDS_VDPA_DEBUGFS_H_ */
+-- 
+2.39.2
+
