@@ -2,53 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE3D7594D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 14:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F37759537
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 14:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbjGSMOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 08:14:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41614 "EHLO
+        id S229957AbjGSMgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 08:36:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229807AbjGSMOI (ORCPT
+        with ESMTP id S229579AbjGSMgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 08:14:08 -0400
-Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1841B5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 05:14:05 -0700 (PDT)
-Message-ID: <2ed288d0-c8fe-1856-dbe9-74f4f7c075ba@linux.intel.com>
-Date:   Wed, 19 Jul 2023 14:13:59 +0200
+        Wed, 19 Jul 2023 08:36:38 -0400
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D7713E
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 05:36:36 -0700 (PDT)
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230719123633epoutp04b66c1f313d2f5ac21e15de418fdb8662~zRQnDxLZ01268112681epoutp04E
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 12:36:33 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230719123633epoutp04b66c1f313d2f5ac21e15de418fdb8662~zRQnDxLZ01268112681epoutp04E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1689770193;
+        bh=Hif75bRAzib4zYxvClP6M+ybRL/9J1vZwD85Go2NhRs=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=eRQRSRTz0WoCIhWatmDoGxo8TjguANR+61vKjEGV717kNUMfXdLknKM3ezhJ1GCEK
+         BQDfG47JmQRfUMRfUiqJisubjwFB5dDwLmHgMdNwtDEmtDSe6iHZNBm3cZNt8hTqrC
+         c2lc4+FElUK2ObDRlrA7s8+PfLWMDUeTLsig9FuE=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20230719123632epcas5p4d3509481ff7a12ce4f36369b322b0687~zRQmMq6It0655806558epcas5p4g;
+        Wed, 19 Jul 2023 12:36:32 +0000 (GMT)
+Received: from epsmgec5p1new.samsung.com (unknown [182.195.38.176]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4R5b0Z6YQSz4x9Pv; Wed, 19 Jul
+        2023 12:36:30 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C3.CA.57354.DC8D7B46; Wed, 19 Jul 2023 21:36:29 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+        20230719121928epcas5p3c2af8016b8ffd5d4cb53238a5528eec8~zRBstlAip3080830808epcas5p3Q;
+        Wed, 19 Jul 2023 12:19:28 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230719121928epsmtrp246371f8757919d0dab71fa5e9d6c4bb4~zRBss9kdp0378803788epsmtrp2h;
+        Wed, 19 Jul 2023 12:19:28 +0000 (GMT)
+X-AuditID: b6c32a44-007ff7000001e00a-85-64b7d8cd8dd9
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        72.78.64355.0D4D7B46; Wed, 19 Jul 2023 21:19:28 +0900 (KST)
+Received: from green245.sa.corp.samsungelectronics.net (unknown
+        [107.99.41.245]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20230719121927epsmtip2a78974ac8469e31b8bd2ea71f8f36d25~zRBrus1er1907719077epsmtip2f;
+        Wed, 19 Jul 2023 12:19:27 +0000 (GMT)
+From:   Nitesh Shetty <nj.shetty@samsung.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     martin.petersen@oracle.com, gost.dev@samsung.com,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] block: refactor to use helper
+Date:   Wed, 19 Jul 2023 17:46:08 +0530
+Message-Id: <20230719121608.32105-1-nj.shetty@samsung.com>
+X-Mailer: git-send-email 2.35.1.500.gb896f729e2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: [PATCH] ASoC: SOF: Intel: Remove deferred probe for SOF
-Content-Language: en-US
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Alsa-devel <alsa-devel@alsa-project.org>,
-        sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Matthew Auld <matthew.auld@intel.com>
-References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com>
- <20230718084522.116952-7-maarten.lankhorst@linux.intel.com>
- <alpine.DEB.2.22.394.2307181922160.3532114@eliteleevi.tm.intel.com>
- <874jm0modf.wl-tiwai@suse.de>
- <66d22637-069f-5262-2249-6041ef9d4614@linux.intel.com>
- <875y6g5feo.wl-tiwai@suse.de>
-From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-In-Reply-To: <875y6g5feo.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOKsWRmVeSWpSXmKPExsWy7bCmlu7ZG9tTDDr3cFqsvtvPZnHzwE4m
+        i723tC0u75rDZrH8+D8mi22/5zM7sHlcPlvq8fHpLRaPvi2rGD0+b5ILYInKtslITUxJLVJI
+        zUvOT8nMS7dV8g6Od443NTMw1DW0tDBXUshLzE21VXLxCdB1y8wBWq2kUJaYUwoUCkgsLlbS
+        t7Mpyi8tSVXIyC8usVVKLUjJKTAp0CtOzC0uzUvXy0stsTI0MDAyBSpMyM7Yu2gNe0EnR8Wc
+        zu1sDYyn2LoYOTkkBEwkXn05y9jFyMUhJLCbUeLeqSMsEM4nRomFGxsRnDUTngI5HGAty8+p
+        Q8R3Mkp0bVvEDOG0Mkn8bzgFVsQmoC1x+j8HyAoRAQWJnt8r2UBqmAVmMUoc7J7NCJIQFtCT
+        OHfrEZjNIqAqsWg5hM0rYCXRP/sDG8QyfYn++4IQYUGJkzOfsIDYzALyEs1bZ4PtlRDYxS5x
+        ZPVOFoh/XCSW7vvIDmELS7w6vgXKlpL4/G4v1M/lEiunrGCDaG5hlJh1fRYjRMJeovVUPzPI
+        YmYBTYn1u/QhwrISU0+tY4JYzCfR+/sJE0ScV2LHPBhbWWLN+gVQ8yUlrn1vhLI9JC7e7GIG
+        sYUEYiV+PD3PMoFRfhaSf2Yh+WcWwuYFjMyrGCVTC4pz01OTTQsM81LL4RGbnJ+7iRGcArVc
+        djDemP9P7xAjEwfjIUYJDmYlEd5Hl7elCPGmJFZWpRblxxeV5qQWH2I0BYbxRGYp0eR8YBLO
+        K4k3NLE0MDEzMzOxNDYzVBLnfd06N0VIID2xJDU7NbUgtQimj4mDU6qB6UaX3s7C52f5U5/8
+        PnnpgyzHi3Vf8+aIzuquWXWXuePM5Vvpyl6fhPfJ3I5asev0p0551jf9J4/9s1vC66xlFbnL
+        N+edoZqSnu8l/hbWDXJPJ6/VPlG+e9rEew9mfr7evZq/jaeove+Gf06Bg1PZwSV3F/56oHJS
+        fmFrB8utzjeNP764mhUHlTF8SY1Tej4jrXt2Al/r2z4uleJvgoH2p90nZO3JfmPrM5FN8vvF
+        Z5wKvT6s1q7yod9b1qmFOZxICNIpd+nf9IDp8QO9u9eer+/qZLnWoiOqd0li/qL19jL3PiwR
+        /xvkZFy85aBH8C2+Q6WM7Fyftrq78gW95UyQm8PqpP6y6NiCguY/ptKtSizFGYmGWsxFxYkA
+        QHg29AoEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDLMWRmVeSWpSXmKPExsWy7bCSvO6FK9tTDG6/UbVYfbefzeLmgZ1M
+        FntvaVtc3jWHzWL58X9MFtt+z2d2YPO4fLbU4+PTWywefVtWMXp83iQXwBLFZZOSmpNZllqk
+        b5fAlbF30Rr2gk6Oijmd29kaGE+xdTFycEgImEgsP6fexcjJISSwnVGi62MliC0hICmx7O8R
+        ZghbWGLlv+fsXYxcQDXNTBL/zoA4HBxsAtoSp/9zgNSICChI9PxeyQZSwywwj1Fi34z9YM3C
+        AnoS5249YgSxWQRUJRYth7B5Bawk+md/gLpBX6L/viBEWFDi5MwnLCA2s4C8RPPW2cwTGPlm
+        IUnNQpJawMi0ilE0taA4Nz03ucBQrzgxt7g0L10vOT93EyM4ALWCdjAuW/9X7xAjEwfjIUYJ
+        DmYlEd5Hl7elCPGmJFZWpRblxxeV5qQWH2KU5mBREudVzulMERJITyxJzU5NLUgtgskycXBK
+        NTBFuhvflzWLWN94X11mT/ffL6u66m9vYl79qvGFM/O+69ee2sW8kOmIFZat31bEG5sdIWtU
+        3e1azJHaNmPRkjaO4hNHS76xirNGfG0957Km5Kjx55dO994f8T2+tCVSv0Zhqt+r3Swqf+3/
+        W/21iPFQW636vrF6h7+Q9ewLT9W4X4m9/FixbtbhtY3T39vZC355Xzlr+UNe1+mnrjMpRe+K
+        uJ/y9Ua4wvcp6nsu7lH1K/Re05v6yW8Xt/ZJ1cYEG5c2rfsrnvxbL5gpsEQwrSX90uq57kfF
+        nFQ9/934bfTkCquE/VKxDVqeMb9ncd3cfjPhfe/hiyLLdza9D+C5c/lbZf6FCbvuay0+kNB6
+        xyZfiaU4I9FQi7moOBEAKFkBLK8CAAA=
+X-CMS-MailID: 20230719121928epcas5p3c2af8016b8ffd5d4cb53238a5528eec8
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230719121928epcas5p3c2af8016b8ffd5d4cb53238a5528eec8
+References: <CGME20230719121928epcas5p3c2af8016b8ffd5d4cb53238a5528eec8@epcas5p3.samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,66 +114,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Reduce some code by making use of bio_integrity_bytes().
 
-On 2023-07-19 13:06, Takashi Iwai wrote:
-> On Wed, 19 Jul 2023 11:48:06 +0200,
-> Maarten Lankhorst wrote:
->>
->>      The 60 seconds timeout is a thing "better than complete disablement",
->>      so it's not ideal, either.  Maybe we can add something like the
->>      following:
->>      
->>      - Check when the deferred probe takes too long, and warn it
->>      - Provide some runtime option to disable the component binding, so
->>        that user can work around it if needed
->>      
->> A module option to snd_hdac_i915_init would probably be the least of all evils
->> here.
-> 
-> Yes, probably it's the easiest option and sufficient.
-> 
-> 
-> thanks,
-> 
-> Takashi
-Hey,
-
-Patch below, can be applied immediately iresspective of the other patches.
-
----->8----------
-
-Selecting CONFIG_DRM selects CONFIG_VIDEO_NOMODESET, which exports 
-video_firmware_drivers_only(). This can be used as a first approximation
-on whether i915 will be available. It's safe to use as this is only 
-built when CONFIG_SND_HDA_I915 is selected by CONFIG_I915.
-
-It's not completely fool proof, as you can boot with "nomodeset 
-i915.modeset=1" to make i915 load regardless, or use
-"i915.force_probe=!*" to never load i915, but the common case of booting
-with nomodeset to disable all GPU drivers this will work as intended.
-
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
 ---
-diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
-index 1637dc6e630a6..90bcf84f7b2ce 100644
---- a/sound/hda/hdac_i915.c
-+++ b/sound/hda/hdac_i915.c
-@@ -11,6 +11,8 @@
-  #include <sound/hda_i915.h>
-  #include <sound/hda_register.h>
+ block/bio-integrity.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-+#include <video/nomodeset.h>
-+
-  #define IS_HSW_CONTROLLER(pci) (((pci)->device == 0x0a0c) || \
-  				((pci)->device == 0x0c0c) || \
-  				((pci)->device == 0x0d0c) || \
-@@ -122,6 +124,9 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
-  {
-  	struct pci_dev *display_dev = NULL;
+diff --git a/block/bio-integrity.c b/block/bio-integrity.c
+index 4533eb491661..8f0af7ac8573 100644
+--- a/block/bio-integrity.c
++++ b/block/bio-integrity.c
+@@ -199,7 +199,6 @@ bool bio_integrity_prep(struct bio *bio)
+ 	unsigned long start, end;
+ 	unsigned int len, nr_pages;
+ 	unsigned int bytes, offset, i;
+-	unsigned int intervals;
+ 	blk_status_t status;
+ 
+ 	if (!bi)
+@@ -224,10 +223,9 @@ bool bio_integrity_prep(struct bio *bio)
+ 		    !(bi->flags & BLK_INTEGRITY_GENERATE))
+ 			return true;
+ 	}
+-	intervals = bio_integrity_intervals(bi, bio_sectors(bio));
+ 
+ 	/* Allocate kernel buffer for protection data */
+-	len = intervals * bi->tuple_size;
++	len = bio_integrity_bytes(bi, bio_sectors(bio));
+ 	buf = kmalloc(len, GFP_NOIO);
+ 	status = BLK_STS_RESOURCE;
+ 	if (unlikely(buf == NULL)) {
+-- 
+2.34.1
 
-+	if (video_firmware_drivers_only())
-+		return false;
-+
-  	for_each_pci_dev(display_dev) {
-  		if (display_dev->vendor == PCI_VENDOR_ID_INTEL &&
-  		    (display_dev->class >> 16) == PCI_BASE_CLASS_DISPLAY &&
