@@ -2,129 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DB575979A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 199977597A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbjGSN75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 09:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
+        id S231444AbjGSOAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbjGSN7z (ORCPT
+        with ESMTP id S231454AbjGSOAm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 09:59:55 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE198E;
-        Wed, 19 Jul 2023 06:59:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689775194; x=1721311194;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=looCyhUaIxJ67yA9rnHsM2+5OW4oeW1pu/8q4IfbMgk=;
-  b=CRFpK4Cvt6kCCh48XQ8nCJbnzascqI8ktQ9K3LfuKYeXUi1cYSpRIlSe
-   eBNzx1r9zsSZDdRoA0JIhTUQeWfgqzHESO/gY5wA2EGztScXKObx/OLaP
-   XTkPQZXGPm4RvQCRVdOA/5ze10dfq/GUD0vHxjTnUG3Kb8V1FpnPxUnF2
-   aMW/5LFGSzOD/XWKkJ1wvkBc7yYYeZxauh+l8Efoyg9yztZ/w8dKcw3Qu
-   29uZXXcbe70SDenrIKD/2HwjAFc9cymwEpGfwGGsT//R0qeXWDpDIoL1c
-   LDqDFM8bfO1TE6RlPs9eOV2+6Lo5oSHvl3c8+5jqezhmN01IrICiA339a
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="452842430"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="452842430"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 06:59:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="727308049"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="727308049"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP; 19 Jul 2023 06:59:51 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qM7iX-00DBxH-1P;
-        Wed, 19 Jul 2023 16:59:49 +0300
-Date:   Wed, 19 Jul 2023 16:59:49 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-omap@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] serial: core: Add sysfs links for serial core port
- instances for ttys
-Message-ID: <ZLfsVU7uiA3IReHU@smile.fi.intel.com>
-References: <20230719051613.46569-1-tony@atomide.com>
- <ZLd1uCKoGMBruwiN@smile.fi.intel.com>
- <20230719054321.GJ5194@atomide.com>
+        Wed, 19 Jul 2023 10:00:42 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD5F1731;
+        Wed, 19 Jul 2023 07:00:21 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51e5da802afso9790476a12.3;
+        Wed, 19 Jul 2023 07:00:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20221208; t=1689775220; x=1692367220;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WG1/1PGr6K8OyLB4Qk19/O0vzUanSieaRPj5jWDmRzU=;
+        b=aZ1XbjyGp3iMdlByDdtJzyG5jQRsZA/RCemLZnQ/TN9SRhiWl4HfqViQtyexKdizCP
+         9bm+3LVUzeoR4r262DZYJsWoOA1MUD4H7DCgtgRzk2i+wae+FMpj4KhzoaRTLZ26S2bv
+         AVMZ1IpSBrJQciLChqQUq2nw9IGBSzcQv0sRXC2ufjI2S5VOzSH/cTrf/XbY23181SvL
+         998TPqD79mOMS8Qkii2a1DTF152YgFxzRtNDw3AsDQj+v25H+vRd2Q+IB06VAi41NAly
+         Mca9DF1uhQwbsMFNJ1VS0+i+8hX+OoqyPIDya29NDvmjJZZR+0gFZEahe5JJgqmg9H1F
+         nYtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689775220; x=1692367220;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WG1/1PGr6K8OyLB4Qk19/O0vzUanSieaRPj5jWDmRzU=;
+        b=XAHmZipe0YvdbAYwhOpemO26eT9A8c4t17yzjD3pvGXIhAp29oK7buxsMC0w4R6v03
+         nmc4Muuphm9ZlBDEInJciW291cMFmNUjRChinHS9rVmDJpxnJ/u6hV6B72Moo0tyD0MT
+         B5SUJWi9Ll3nQ+JsAoxQSWfzTAvydqdQcxWII4n16kNlxI+0m9lRlYimxaboHqbnWVRy
+         dtZkMI1/CoWdI3SBP8gsDq2kH5u2tpJepz/IdhZMR8CKVunE2HMgGo7nZl+7wIOvlhkv
+         1hhQNbrhfImv4DKPD0CFnQ4KyLQMmF7cht/BVGGsuUiP0s209Bibm/a5SyVPbhDwJqxu
+         6Pmg==
+X-Gm-Message-State: ABy/qLa3oOhLYd7FlajECK1/mz1gpCHN54QYHZBKrsKlNuJFVPLVOa/2
+        Otz2lp+BtlRomvyN1uN2xSgUfkWgzadyAx5r9es=
+X-Google-Smtp-Source: APBJJlGTP/KjgS0L66VBgw3uA1Z/vrOSeOwRyd9kuIyK5+jShFWEfdBfCdq/sGQDhvmRHJCflTjHWA==
+X-Received: by 2002:aa7:c3d4:0:b0:521:775b:ec8b with SMTP id l20-20020aa7c3d4000000b00521775bec8bmr2401071edr.25.1689775219949;
+        Wed, 19 Jul 2023 07:00:19 -0700 (PDT)
+Received: from debian_development.DebianHome (dynamic-077-010-150-003.77.10.pool.telefonica.de. [77.10.150.3])
+        by smtp.gmail.com with ESMTPSA id g21-20020aa7c855000000b00521cc4d5a5bsm714521edt.58.2023.07.19.07.00.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 07:00:19 -0700 (PDT)
+From:   =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+Cc:     Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] tomoyo: add format attributes to functions
+Date:   Wed, 19 Jul 2023 16:00:07 +0200
+Message-Id: <20230719140007.34570-1-cgzones@googlemail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230719054321.GJ5194@atomide.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 08:43:21AM +0300, Tony Lindgren wrote:
-> * Andy Shevchenko <andriy.shevchenko@intel.com> [230719 05:34]:
-> > On Wed, Jul 19, 2023 at 08:16:11AM +0300, Tony Lindgren wrote:
-> > > Let's allow the userspace to find out the tty name for a serial core
-> > > controller id if a tty exists. This can be done with:
-> > > 
-> > > $ grep DEVNAME /sys/bus/serial-base/devices/port*/tty/uevent
-> > > /sys/bus/serial-base/devices/port.00:04.0/tty/uevent:DEVNAME=ttyS0
-> > > /sys/bus/serial-base/devices/port.serial8250.1/tty/uevent:DEVNAME=ttyS1
-> > > /sys/bus/serial-base/devices/port.serial8250.2/tty/uevent:DEVNAME=ttyS2
-> > > /sys/bus/serial-base/devices/port.serial8250.3/tty/uevent:DEVNAME=ttyS3
-> > 
-> > What part is the controller ID here?
-> 
-> Oh looks like controller id it's missing in the name, I'll send a fix
-> for that.
-> 
-> > We also have something in procfs (I don't remember what info exactly is there).
-> 
-> Do you mean /proc/devices?
+Format attributes on functions taking format string can help compilers
+detect argument type or count mismatches.
 
-Something tty specific, /proc/tty/, but I had a look and it seems for another
-stuff.
+Please the compiler when building with W=1:
 
-> > > And with this, we can add /dev/serial/by-id symlinks to the serial port
-> > > device instances so we can start using serial core port addressing in
-> > > addition to the legacy ttyS naming.
-> > > 
-> > > The naming we can use is dev_name:0.0 where 0.0 are the serial core
-> > > controller id and port id, so for the ttyS0 example above the naming
-> > > would be 00:04.0:0.0.
-> > 
-> > This is interesting idea. But any hint why it can be useful?
-> 
-> If you have lots of serial ports and we are stuck with adding aliases
-> for the ports in the dts files where the ttyS naming and ordering does
-> not really help or may not necessarily make sense if the ports are on
-> different buses or domains. With CONFIG_SERIAL_8250_RUNTIME_UARTS=4,
-> the ttyS naming is only needed for the legacy ports really.
+    security/tomoyo/audit.c: In function ‘tomoyo_init_log’:
+    security/tomoyo/audit.c:290:9: error: function ‘tomoyo_init_log’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
+      290 |         vsnprintf(buf + pos, len - pos, fmt, args);
+          |         ^~~~~~~~~
+    security/tomoyo/audit.c: In function ‘tomoyo_write_log2’:
+    security/tomoyo/audit.c:376:9: error: function ‘tomoyo_write_log2’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
+      376 |         buf = tomoyo_init_log(r, len, fmt, args);
+          |         ^~~
+    security/tomoyo/common.c: In function ‘tomoyo_addprintf’:
+    security/tomoyo/common.c:193:9: error: function ‘tomoyo_addprintf’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
+      193 |         vsnprintf(buffer + pos, len - pos - 1, fmt, args);
+          |         ^~~~~~~~~
 
-I see. Does it fix the long standing issue with ttyS enumeration (on x86
-at least) when depending on the presence of the legacy ports the HSUART
-(high speed) can preempt the legacy placeholders (ttyS0..ttyS3)?
+Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+---
+ security/tomoyo/common.c | 1 +
+ security/tomoyo/common.h | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-To me sounds like it may very well do fix it and I would be glad to see that
-in the commit message (as selling point) and in documentation.
-
+diff --git a/security/tomoyo/common.c b/security/tomoyo/common.c
+index 969d4aa6fd55..57ee70ae50f2 100644
+--- a/security/tomoyo/common.c
++++ b/security/tomoyo/common.c
+@@ -184,6 +184,7 @@ static bool tomoyo_manage_by_non_root;
+  *
+  * Returns nothing.
+  */
++__printf(3, 4)
+ static void tomoyo_addprintf(char *buffer, int len, const char *fmt, ...)
+ {
+ 	va_list args;
+diff --git a/security/tomoyo/common.h b/security/tomoyo/common.h
+index a539b2cbb5c4..e669837ed0e3 100644
+--- a/security/tomoyo/common.h
++++ b/security/tomoyo/common.h
+@@ -954,7 +954,7 @@ bool tomoyo_str_starts(char **src, const char *find);
+ char *tomoyo_encode(const char *str);
+ char *tomoyo_encode2(const char *str, int str_len);
+ char *tomoyo_init_log(struct tomoyo_request_info *r, int len, const char *fmt,
+-		      va_list args);
++		      va_list args) __printf(3, 0);
+ char *tomoyo_read_token(struct tomoyo_acl_param *param);
+ char *tomoyo_realpath_from_path(const struct path *path);
+ char *tomoyo_realpath_nofollow(const char *pathname);
+@@ -1067,7 +1067,7 @@ void tomoyo_warn_oom(const char *function);
+ void tomoyo_write_log(struct tomoyo_request_info *r, const char *fmt, ...)
+ 	__printf(2, 3);
+ void tomoyo_write_log2(struct tomoyo_request_info *r, int len, const char *fmt,
+-		       va_list args);
++		       va_list args) __printf(3, 0);
+ 
+ /********** External variable definitions. **********/
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.40.1
 
