@@ -2,149 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD95759805
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0520759807
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbjGSOTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 10:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49538 "EHLO
+        id S229492AbjGSOUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbjGSOTX (ORCPT
+        with ESMTP id S229719AbjGSOUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:19:23 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E0CED3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:19:22 -0700 (PDT)
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 540FA3F721
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 14:19:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1689776359;
-        bh=GQssMG4sr5GfDopggRQSgpxYtYsDKGG3T/Izx89s/GE=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=kLnO9KgSxuoBAXPoIrbV3r6dACuF99vODNb4FiTam2yTl08ldlX20EQ9m7/m3hOBD
-         Pez7rBxrzwTNBdhUR+m3fOEHh1vnqjZrVHceXg3ole6aWSHrzHuAZHC9Rh85XERyB0
-         OvuZePXRjoMcuhKhMbGbfk5akMC8lnbgfzJt4opGoTVu8xTv7w/UovZuweCCW7fNmV
-         Ju5Mk/VSNGf/FbqqLZC2RWGnriOLukhg4Dsb9r5eXk2KXnMs7Ytg9BPAg60HkpmHXY
-         JvGqrVen7GmaTocsYtbRb84Ma2GXKb8z7HXhNsdmL+53qLGRUNykUb6NBEHLVUD+Ek
-         dzaHOEYs+AvLw==
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-403fc19a7a7so18602931cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:19:19 -0700 (PDT)
+        Wed, 19 Jul 2023 10:20:11 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B54310B
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:20:09 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-ca8e5f39e09so1422588276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:20:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689776408; x=1692368408;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nhEe8Ro3m3xzVle4clHGMPuyDiBtjYljaeIOHNrxaD4=;
+        b=W5CztIfb2WV1OWqLAThymisnkJPQVhPq+rptaayQR88+SC3tZCZIZmDvoAzm9Rc0mr
+         zT4hx1GUSD1sD7nHriR2nT+8WYZ7RQfzs61CwB0q/PMbEhe3SFBgktQsio2IgawVLhkr
+         BYDmSWHJnulfQ8y8LqLZCLucqszhaZj4dHelTBP4r/9HO2L1uU5wOUOiH5/IVgelIGbW
+         N228nAnoKOTr9l2EvlOOpnDIJHzBpPdiKrtJ3o6nFYbhcUXMBIE81Eb98RTXzJ+AIlgW
+         5TLxT88Puoptxkgyii/kXfJ8SjYs2YpNsxVtYoegULEMlwsk198zpQZnISGnP+Gbm39y
+         dCSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689776355; x=1690381155;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GQssMG4sr5GfDopggRQSgpxYtYsDKGG3T/Izx89s/GE=;
-        b=TXw8aG0IhE0GNaPnj8E9BSfWA+5G/yfjCbmHzomdoqacukHggkguyVCqF8OAVYz+CN
-         doU87uSKKf88IKNkCyZH/Dwc6uWzgiIN/s3U5Wi2vmZWcUobaJNBIKPx/unkIYpwyy+n
-         4d7e8wpMZZamcRjWAcnUmxzDC6wXERqq11v6PVGWLEE8FXyg3jcZSOpiisJpM/qTPI8Z
-         DscQUyrOuFAezXkbn2KIQlAVnxWBQWn9Jbh+mPEj7G7LYIV90cvaZNRQOWrG7tuPDYl+
-         z1XcA2WWmSoO/Rwhglzw5AcJq0qLnDFamzr53xfUqjiRACq9Ik1HGH15zuqKU1ToLRKi
-         DZ6w==
-X-Gm-Message-State: ABy/qLaPlFHuuuf3WXyOziNWGj273iMN/X5u0kGc+m1OD248pV9nu7nn
-        tGCkqoOlyl6L+JXzjSc2LShO0sfKoIWtlKrTVTra+QowqKybu9oll4uJww0gSd0v/dUhtr+YMlz
-        I0JV+AUmzRsOUPBU4mTogYYkkcJE4Rcsi6tgiiXaZiTJtSyCSnSGEb0FiqQ==
-X-Received: by 2002:a05:622a:1043:b0:403:e841:58cf with SMTP id f3-20020a05622a104300b00403e84158cfmr7250705qte.10.1689776355281;
-        Wed, 19 Jul 2023 07:19:15 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlF6ArzibyjU/HIAo8zVRkK4K5uiAaxY67dwKUBWu+e77t8a+bRUMd76ruBG00lvDGu4BDbxlfoFwop3e5WhMrI=
-X-Received: by 2002:a05:622a:1043:b0:403:e841:58cf with SMTP id
- f3-20020a05622a104300b00403e84158cfmr7250684qte.10.1689776355066; Wed, 19 Jul
- 2023 07:19:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230717210356.2794736-1-samuel.holland@sifive.com> <20230717210356.2794736-2-samuel.holland@sifive.com>
-In-Reply-To: <20230717210356.2794736-2-samuel.holland@sifive.com>
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Date:   Wed, 19 Jul 2023 16:18:59 +0200
-Message-ID: <CAJM55Z9B6atT_t4321kOCGWoeqLxe+ZBsJDr4BeV1byaeYw5fw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] clk: sifive: Allow building the driver as a module
-To:     Samuel Holland <samuel.holland@sifive.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        d=1e100.net; s=20221208; t=1689776408; x=1692368408;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nhEe8Ro3m3xzVle4clHGMPuyDiBtjYljaeIOHNrxaD4=;
+        b=k4OCSEY3S+0PcLy5gvKiaMu75rmVuYTmDEFaaKz6khdl/PvSkCAC3Q9dd2YEsXv7OT
+         pvRX4Ts+ySl1I1FiyDIzVBjrfc1sBXBRwMvNl5+O+UBHIJgdegnV7OGoAS6IZx1jz+zx
+         o3YeH7q+2MPZEcjlBN71jbT+nW7lkyO4q3lfs2KfMeMFF5fHtEBbnGPc0KZ6YDl9QvK6
+         VNqdPCE5mtyGEyk61DNu/7ZZpNqfXLh1bmI+BMoNzwwhv11e+GzH5LP9dK2XFtso4rod
+         Zt7j1RBScTASgKSnVBfhD7iiRQRGsXeVG3ImsZrdaf3vmk5pgtOQUxr1ab9rhD/U5D8v
+         NN2w==
+X-Gm-Message-State: ABy/qLYgYrQ6UOLrdN04wNrjlQZW9hgGLmIvvw1ljkznHwGbNCpT6Kuu
+        dD2K/l7MewHO8szr8JAYoFMaNoOeINU=
+X-Google-Smtp-Source: APBJJlF2IkKp6n6PH2OlPb2WtD4mLbCloSic8/PuahGhbvnmxuxv/ezql90pF+Be+RGqIUM1q5hZ9k9FdQc=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:f509:0:b0:ca3:3341:6315 with SMTP id
+ a9-20020a25f509000000b00ca333416315mr33581ybe.0.1689776408256; Wed, 19 Jul
+ 2023 07:20:08 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 07:20:06 -0700
+In-Reply-To: <cover.1687991811.git.isaku.yamahata@intel.com>
+Mime-Version: 1.0
+References: <cover.1687991811.git.isaku.yamahata@intel.com>
+Message-ID: <ZLfxFkFTotkOumRG@google.com>
+Subject: Re: [RFC PATCH v3 00/11] KVM: guest memory: Misc enhacnement
+From:   Sean Christopherson <seanjc@google.com>
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+        erdemaktas@google.com, Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        linux-coco@lists.linux.dev,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Yuan Yao <yuan.yao@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Jul 2023 at 10:07, Samuel Holland <samuel.holland@sifive.com> wrote:
->
-> This can reduce the kernel image size in multiplatform configurations.
+On Wed, Jun 28, 2023, isaku.yamahata@intel.com wrote:
+> Isaku Yamahata (8):
+>   KVM: selftests: Fix test_add_overlapping_private_memory_regions()
+>   KVM: selftests: Fix guest_memfd()
+>   KVM: selftests: x86: typo in private_mem_conversions_test.c
 
-I don't mind this, but booting without this driver also means there is
-no uart for debug output or any other peripheral until the kernel gets
-to the initrd to load the driver. Does the earlycon console work all
-the way until we reach the initrd? Otherwise I can't imagine many
-scenarios where configuring this as a module is desirable.
+Folded these fixes into the guest_memfd RFC[*].
 
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> ---
->
->  drivers/clk/sifive/Kconfig       | 2 +-
->  drivers/clk/sifive/sifive-prci.c | 8 +++-----
->  2 files changed, 4 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/clk/sifive/Kconfig b/drivers/clk/sifive/Kconfig
-> index 2322f634a910..49597d95602e 100644
-> --- a/drivers/clk/sifive/Kconfig
-> +++ b/drivers/clk/sifive/Kconfig
-> @@ -10,7 +10,7 @@ menuconfig CLK_SIFIVE
->  if CLK_SIFIVE
->
->  config CLK_SIFIVE_PRCI
-> -       bool "PRCI driver for SiFive SoCs"
-> +       tristate "PRCI driver for SiFive SoCs"
->         default ARCH_SIFIVE
->         select RESET_CONTROLLER
->         select RESET_SIMPLE
-> diff --git a/drivers/clk/sifive/sifive-prci.c b/drivers/clk/sifive/sifive-prci.c
-> index e317f3454e93..8c67d1a7c8df 100644
-> --- a/drivers/clk/sifive/sifive-prci.c
-> +++ b/drivers/clk/sifive/sifive-prci.c
-> @@ -7,6 +7,7 @@
->  #include <linux/clkdev.h>
->  #include <linux/delay.h>
->  #include <linux/io.h>
-> +#include <linux/module.h>
->  #include <linux/of_device.h>
->  #include "sifive-prci.h"
->  #include "fu540-prci.h"
-> @@ -618,9 +619,6 @@ static struct platform_driver sifive_prci_driver = {
->         },
->         .probe = sifive_prci_probe,
->  };
-> +module_platform_driver(sifive_prci_driver);
->
-> -static int __init sifive_prci_init(void)
-> -{
-> -       return platform_driver_register(&sifive_prci_driver);
-> -}
-> -core_initcall(sifive_prci_init);
+>   KVM: Fix set_mem_attr ioctl when error case
 
-Maybe also add the MODULE_AUTHOR() and MODULE_DESCRIPTION() macros
-while you're at it.
+And this one too.
 
-> +MODULE_LICENSE("GPL");
-> --
-> 2.40.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>   KVM: Add new members to struct kvm_gfn_range to operate on
+
+And also included patches that achieve this (and will also post them separately
+as non-RFC, mainly to coordinate with MGLRU).
+
+[*] https://lore.kernel.org/all/20230718234512.1690985-1-seanjc@google.com
