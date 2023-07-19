@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7084C759195
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DDB3759197
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbjGSJ2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
+        id S229796AbjGSJ2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:28:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjGSJ2n (ORCPT
+        with ESMTP id S229761AbjGSJ2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:28:43 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C511BFC
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:28:42 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3110ab7110aso6864775f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:28:42 -0700 (PDT)
+        Wed, 19 Jul 2023 05:28:46 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD83619A0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:28:43 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-316f9abf204so3965955f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:28:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1689758921; x=1692350921;
+        d=isovalent.com; s=google; t=1689758922; x=1692350922;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7yIrbZZR4lCf9GkhcpzxSxXCXtiiG2twcc9m1HrepQM=;
-        b=YEixGh5HQBFgZR9iRMGxVQCaew6ZN4cNCvdwaCgkfJ4NWRHyaXymSonkXqsxYBpeHw
-         eFC+YxzSSrCN7HiNvb14OxUMDE8BJyipOGvbCz2c4iFNE1kVuNRKPGkbtOojEi5nU9O1
-         10SWJi8kIW2w4bJ9Zm88mldz64l1zZLyPWdqqAtXxawhrlOGm4TgPy9mGIs0JMn/vVqZ
-         0XaPgHMVc8OlKMG/t1sPKUe0I4eLQbEwCfsL9bBWJziaxlG+QoRVZn2oHrw6UBqHkzYB
-         vqLIcP+F3xKVCbHQd0NfLVf32dNlWI91inCPekKmzovxRwFbW7Y6IVI9/P+MkBPN7cTF
-         VVCQ==
+        bh=/ox7+dO2lf7lgMqaaTMVSFAPK5+oYnmrVK+bXEJp/W0=;
+        b=Y2Mpy8bAABv4S46y7WZ90sd+XQqYerSsyNFK/fOu5v+1aFTrKSRh157qWeb2fcZFET
+         3ujI6G+AWSuXWleaTkj6PW77kImZOuxsWPr7WNqnFQavys+x/jC3mNS/2wvq9oPGpcjL
+         ImbPB9uXkyRaLUm0kcv4RFO36Acn2QJwhaJmqA8PJ+uv0+RTDSkazJVLRUrl23PZ+/02
+         ecJIYrKOIHzmWw/jlH1nyYB2JcUFO5WCC8ouKj2wH6g0rs+5gwlOnFDOHLnsr5xhP8dH
+         JWHA4RLKDXHv9KafdYTVQB5yC3/jsIRiF6R1i/Ru/iOcG4Jkc1WDhl6Fh44r47q1KG9R
+         5JIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689758921; x=1692350921;
+        d=1e100.net; s=20221208; t=1689758922; x=1692350922;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7yIrbZZR4lCf9GkhcpzxSxXCXtiiG2twcc9m1HrepQM=;
-        b=NcSywi+HWU+zgLHWWr3JkcJaMuFdtNbcAWnN0zAMD4usF3Pswo4K1qxCXhH3Ty0CAY
-         IzySY8uYnEOJHElV5Fv+duUXEfMXnqU3F3oCreK0oWZw2x3g9hh4LNr2jHXxeFGIDzRK
-         e79uBGoLMLckvS38G2dObEEPz7hVvvEnB5KtSW7kWcvPUlYqtxUaPJPH3eDXheqeNOXa
-         ycxy3TXo9hYrUAAn371AVa/+F0CsUnBhVPhZ2mIMwr3qRS+eob93IMdpBiWP9eul9OTA
-         MCPJSt56ztiNijJ/SER0MhNFel1REPckk4vFxG+LtqV5s57/aY4n3z8V+AO7MzCAti7v
-         TMtw==
-X-Gm-Message-State: ABy/qLYC0QfcLEriVG3bBxcKTUJmLuFK7KUiuANRubnSieFam4uyhleT
-        2RjmDDjmNbRQidbg2UL3zu6mOw==
-X-Google-Smtp-Source: APBJJlGdrZyXQBJRRhdPij5Uln/4bYjkXgebmKRLaYptoKxPns58oPRvii6FI4Dg7/Guu6ObcLZAbQ==
-X-Received: by 2002:a5d:4292:0:b0:314:f88:4fea with SMTP id k18-20020a5d4292000000b003140f884feamr15008563wrq.8.1689758921130;
-        Wed, 19 Jul 2023 02:28:41 -0700 (PDT)
+        bh=/ox7+dO2lf7lgMqaaTMVSFAPK5+oYnmrVK+bXEJp/W0=;
+        b=jCsxVEu7LK9RP968aeA0LD2ao29glKxauJO6DxNC4YoZ9f7/2x0uRhnvtS9kH9zTVb
+         GhnL490iH+vnpBtPC+zTnKVDqsydODcrY82SW31GaWNPgPKPMc0UmG670sXRBrQwGenK
+         LB1xgloWONbEqXvXG3SPQXBGk7lI3DVkAbQwwq3ZVBqJm8cFYtFTtIeMDJNDXsPKTMh3
+         ILrlgzlOTu1i7Id8O8zVwktiBNNDS3IUhKHZDHqxBC+Xo5xhkeN2u+QOP98xS1KTEufv
+         deGxq22IQ5vyb6RFTv4sbbIwyyiFfwZk0WGcD5hCY95Vcs9mUXVloXJqdYi3m9cduTt5
+         0hDw==
+X-Gm-Message-State: ABy/qLaAxNmzdKKQ21C+nUz4DpJlk8nqNgIBqenWLHh+Hd8wqiVv9b1S
+        gZgMKQnCiHhpGF8ozaZtEuteWg==
+X-Google-Smtp-Source: APBJJlFFjbihNqB2C1H/22PKc4G/vqLpNf4xB0qRfHVT9SwRQy1zNL5ufYtH9malvGJfo8NCXO/WNA==
+X-Received: by 2002:a05:6000:18d:b0:314:4ba7:b024 with SMTP id p13-20020a056000018d00b003144ba7b024mr16716585wrx.9.1689758922063;
+        Wed, 19 Jul 2023 02:28:42 -0700 (PDT)
 Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id r18-20020adff112000000b0031435c2600esm4857213wro.79.2023.07.19.02.28.40
+        by smtp.gmail.com with ESMTPSA id r18-20020adff112000000b0031435c2600esm4857213wro.79.2023.07.19.02.28.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 02:28:40 -0700 (PDT)
+        Wed, 19 Jul 2023 02:28:41 -0700 (PDT)
 From:   Anton Protopopov <aspsk@isovalent.com>
 To:     Martin KaFai Lau <martin.lau@linux.dev>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -64,9 +64,9 @@ To:     Martin KaFai Lau <martin.lau@linux.dev>,
         Hou Tao <houtao1@huawei.com>, Joe Stringer <joe@isovalent.com>,
         Anton Protopopov <aspsk@isovalent.com>, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 bpf-next 1/4] bpf: consider types listed in reg2btf_ids as trusted
-Date:   Wed, 19 Jul 2023 09:29:49 +0000
-Message-Id: <20230719092952.41202-2-aspsk@isovalent.com>
+Subject: [PATCH v2 bpf-next 2/4] bpf: consider CONST_PTR_TO_MAP as trusted pointer to struct bpf_map
+Date:   Wed, 19 Jul 2023 09:29:50 +0000
+Message-Id: <20230719092952.41202-3-aspsk@isovalent.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230719092952.41202-1-aspsk@isovalent.com>
 References: <20230719092952.41202-1-aspsk@isovalent.com>
@@ -82,60 +82,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reg2btf_ids array contains a list of types for which we can (and need)
-to find a corresponding static BTF id. All the types in the list can be
-considered as trusted for purposes of kfuncs.
+Add the BTF id of struct bpf_map to the reg2btf_ids array. This makes the
+values of the CONST_PTR_TO_MAP type to be considered as trusted by kfuncs.
+This, in turn, allows users to execute trusted kfuncs which accept `struct
+bpf_map *` arguments from non-tracing programs.
+
+While exporting the btf_bpf_map_id variable, save some bytes by defining
+it as BTF_ID_LIST_GLOBAL_SINGLE (which is u32[1]) and not as BTF_ID_LIST
+(which is u32[64]).
 
 Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
 ---
- kernel/bpf/verifier.c | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
+ include/linux/btf_ids.h | 1 +
+ kernel/bpf/map_iter.c   | 3 +--
+ kernel/bpf/verifier.c   | 1 +
+ 3 files changed, 3 insertions(+), 2 deletions(-)
 
+diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+index 00950cc03bff..a3462a9b8e18 100644
+--- a/include/linux/btf_ids.h
++++ b/include/linux/btf_ids.h
+@@ -267,5 +267,6 @@ MAX_BTF_TRACING_TYPE,
+ extern u32 btf_tracing_ids[];
+ extern u32 bpf_cgroup_btf_id[];
+ extern u32 bpf_local_storage_map_btf_id[];
++extern u32 btf_bpf_map_id[];
+ 
+ #endif
+diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
+index d06d3b7150e5..b67996147895 100644
+--- a/kernel/bpf/map_iter.c
++++ b/kernel/bpf/map_iter.c
+@@ -78,8 +78,7 @@ static const struct seq_operations bpf_map_seq_ops = {
+ 	.show	= bpf_map_seq_show,
+ };
+ 
+-BTF_ID_LIST(btf_bpf_map_id)
+-BTF_ID(struct, bpf_map)
++BTF_ID_LIST_GLOBAL_SINGLE(btf_bpf_map_id, struct, bpf_map)
+ 
+ static const struct bpf_iter_seq_info bpf_map_seq_info = {
+ 	.seq_ops		= &bpf_map_seq_ops,
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 0b9da95331d7..05123feab378 100644
+index 05123feab378..803b91135ca0 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -5413,12 +5413,24 @@ static bool is_flow_key_reg(struct bpf_verifier_env *env, int regno)
- 	return reg->type == PTR_TO_FLOW_KEYS;
- }
+@@ -5419,6 +5419,7 @@ static u32 *reg2btf_ids[__BPF_REG_TYPE_MAX] = {
+ 	[PTR_TO_SOCK_COMMON] = &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON],
+ 	[PTR_TO_TCP_SOCK] = &btf_sock_ids[BTF_SOCK_TYPE_TCP],
+ #endif
++	[CONST_PTR_TO_MAP] = btf_bpf_map_id,
+ };
  
-+static u32 *reg2btf_ids[__BPF_REG_TYPE_MAX] = {
-+#ifdef CONFIG_NET
-+	[PTR_TO_SOCKET] = &btf_sock_ids[BTF_SOCK_TYPE_SOCK],
-+	[PTR_TO_SOCK_COMMON] = &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON],
-+	[PTR_TO_TCP_SOCK] = &btf_sock_ids[BTF_SOCK_TYPE_TCP],
-+#endif
-+};
-+
  static bool is_trusted_reg(const struct bpf_reg_state *reg)
- {
- 	/* A referenced register is always trusted. */
- 	if (reg->ref_obj_id)
- 		return true;
- 
-+	/* Types listed in the reg2btf_ids are always trusted */
-+	if (reg2btf_ids[base_type(reg->type)])
-+		return true;
-+
- 	/* If a register is not referenced, it is trusted if it has the
- 	 * MEM_ALLOC or PTR_TRUSTED type modifiers, and no others. Some of the
- 	 * other type modifiers may be safe, but we elect to take an opt-in
-@@ -10052,15 +10064,6 @@ static bool __btf_type_is_scalar_struct(struct bpf_verifier_env *env,
- 	return true;
- }
- 
--
--static u32 *reg2btf_ids[__BPF_REG_TYPE_MAX] = {
--#ifdef CONFIG_NET
--	[PTR_TO_SOCKET] = &btf_sock_ids[BTF_SOCK_TYPE_SOCK],
--	[PTR_TO_SOCK_COMMON] = &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON],
--	[PTR_TO_TCP_SOCK] = &btf_sock_ids[BTF_SOCK_TYPE_TCP],
--#endif
--};
--
- enum kfunc_ptr_arg_type {
- 	KF_ARG_PTR_TO_CTX,
- 	KF_ARG_PTR_TO_ALLOC_BTF_ID,    /* Allocated object */
 -- 
 2.34.1
 
