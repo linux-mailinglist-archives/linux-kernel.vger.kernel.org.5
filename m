@@ -2,101 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1C5759F4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B506759F4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjGSUHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49180 "EHLO
+        id S229666AbjGSUHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjGSUHx (ORCPT
+        with ESMTP id S229525AbjGSUHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:07:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10D6B3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:07:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689797230;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=i4g3C6nzU3Agvgh/c0t6ZuWBnKAptGwQm3c5SNMdT5Q=;
-        b=UOzucYoxwb456lbMd066+3iG06FYQO0ovpgdl5tZpGC8trwT/N5St4ew04N9Ruh154rqTW
-        xGbGClIADcXaFW7JQhKITDz5U+LSD9J8j4e68dXFXWzXNGuaJ2TrTbHsGbYbH2zJl9fGNe
-        ooAxkfgSzNy5XHdo/d+bpFyD6UtvuZg=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-372-_vfvuc_rPpubSnCcnkmaeQ-1; Wed, 19 Jul 2023 16:07:09 -0400
-X-MC-Unique: _vfvuc_rPpubSnCcnkmaeQ-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-31443e13f9dso20997f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:07:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689797228; x=1690402028;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i4g3C6nzU3Agvgh/c0t6ZuWBnKAptGwQm3c5SNMdT5Q=;
-        b=aa+BX1e/sk47JkB5nIyY3zC6Cpg+Egnb8Nh429G0vi8nS/DRahzFzmOZPgxT1YxKPs
-         9Qd45Da5QDqxLt1mpDgomCevH/QqBbKjNYKw4CLiE7l9NZYDH0TnxwxkJn96x2THatDz
-         bn9EhArbdpOmZ0DjFGaavAOscpz6CxYH4PTFX8FqF9bUOxXB9C0MnoEgrhpSJ3kuvurV
-         xx9T2NtxI8s046Jam+4ZYoPBAcUYT0zS/ZeOkgDQrbNA6aOLzt0OSz4Vgz/y0a3k26gW
-         Bt1C6mxfkxE85o49lBBAGibEAgZ/9ncISPqF1J+L2gp7ockgjqe433mRLH49Jeof7Rpr
-         xv0g==
-X-Gm-Message-State: ABy/qLZJAZDV9clJcgvsPHTISotxw3Yv80ZkB9kPcCbkaLLrHdpiW1xW
-        +y88O0ZXE4ujIdMoetwkjcr8MBEBIHs7p7euH5a6qEY0GJ/QVEDyWb3o25qP7O2s3mVShQF+3UT
-        z1zvpsV5yzuzDaaU36LzSpc+f
-X-Received: by 2002:a5d:4143:0:b0:314:133a:f04 with SMTP id c3-20020a5d4143000000b00314133a0f04mr694230wrq.49.1689797228309;
-        Wed, 19 Jul 2023 13:07:08 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGGpjl4pcXBRRgdFlcvKhEnkSCPwpm/o3Je+LPH5KIPIVm/X3+J0u4SMJq0uEAL2pKg5oBTQQ==
-X-Received: by 2002:a5d:4143:0:b0:314:133a:f04 with SMTP id c3-20020a5d4143000000b00314133a0f04mr694210wrq.49.1689797228021;
-        Wed, 19 Jul 2023 13:07:08 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id r1-20020adfdc81000000b0031412b685d2sm6119194wrj.32.2023.07.19.13.07.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 13:07:07 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emma Anholt <emma@anholt.net>
-Cc:     Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 10/11] drm/vc4: tests: Switch to atomic state allocation
- helper
-In-Reply-To: <20230710-kms-kunit-actions-rework-v1-10-722c58d72c72@kernel.org>
-References: <20230710-kms-kunit-actions-rework-v1-0-722c58d72c72@kernel.org>
- <20230710-kms-kunit-actions-rework-v1-10-722c58d72c72@kernel.org>
-Date:   Wed, 19 Jul 2023 22:07:06 +0200
-Message-ID: <877cqvhdhx.fsf@minerva.mail-host-address-is-not-set>
+        Wed, 19 Jul 2023 16:07:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E1992;
+        Wed, 19 Jul 2023 13:07:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 62D4C61806;
+        Wed, 19 Jul 2023 20:07:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7061C433C7;
+        Wed, 19 Jul 2023 20:07:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689797237;
+        bh=ijTQFn+UUwawMg9/ox6FWUtSRipPCufd57gHfxuHsec=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=snjQa7HHSMyYNSdd2hjgeh8PUAxBTefShmrygu2tBtTM+GC+qN6J6LWByDzmKCAs1
+         aH53N3WeiIjr/WLBjyHkVhVAbBKiOM7aGSwLyTL0tDcI0dPPyXTvf33w1hMUoBHNHO
+         pOkg9quc6DBSksRiKDBfGCnqix6DbWm0TuYeBht/avJVf8BYOzuaxsA1MamPHrakBf
+         UDFR0oohq929qEdBltXLniUAh//5DUkz+xgdLe7SNRfCPDgAp7NWEBgTHiWgOHyGaY
+         E9zjOrOe/vQ+SZ3WtkuevMbrE0sBtmoKcQ+67USDrf7dqtjWZonz/M/K4PHtag7nX9
+         OBWTUAxEuFyHA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 43F52CE0928; Wed, 19 Jul 2023 13:07:17 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 13:07:17 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
+        akaher@vmware.com, shuah@kernel.org, rcu@vger.kernel.org
+Subject: Re: [BUG] unable to handle page fault for address
+Message-ID: <23b091fc-cc2e-4ace-b860-a0ddf662d1ae@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <60f88589-5f9f-4221-82f9-5c9c11fb5d95@paulmck-laptop>
+ <CAABZP2xAi0FdEjmSV-DU_Pefk=Jya=XvL0OwDQspKg-jnq_fLQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAABZP2xAi0FdEjmSV-DU_Pefk=Jya=XvL0OwDQspKg-jnq_fLQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxime Ripard <mripard@kernel.org> writes:
+On Thu, Jul 20, 2023 at 03:03:53AM +0800, Zhouyi Zhou wrote:
+> On Thu, Jul 20, 2023 at 1:40 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > Hello!
+> >
+> > Just FYI for the moment, I hit a BUG in 10-hour overnight qemu/KVM-based
+> > rcutorture testing of the TASKS01, TASKS03, TREE03, and TREE07 rcutorture
+> > on the mainline commit:
+> >
+> > ccff6d117d8d ("Merge tag 'perf-tools-fixes-for-v6.5-1-2023-07-18' of git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools")
+> >
+> > This commit was merged with the -rcu "dev" branch, which just yesterday
+> > passes overnight tests when based on v6.5-rc1.  A web search got me the
+> > following, which is not a very close match, but the best that there is:
+> >
+> > https://www.spinics.net/lists/bpf/msg91848.html
+> >
+> > Here is a representative splat out of 29 of them:
+> >
+> > [22544.494701] BUG: unable to handle page fault for address: fffffe0000af0038
+> > [22544.496012] #PF: supervisor read access in user mode
+> > [22544.496985] #PF: error_code(0x0000) - not-present page
+> > [22544.497970] IDT: 0xfffffe0000000000 (limit=0xfff) GDT: 0xfffffe355b3fd000 (limit=0x7f)
+> > [22544.499479] LDTR: NULL
+> > [22544.499959] TR: 0x40 -- base=0xfffffe355b3ff000 limit=0x4087
+> > [22544.501073] PGD 1ffd2067 P4D 1ffd2067 PUD 1124067 PMD 0
+> > [22544.502149] Oops: 0000 [#1] PREEMPT SMP PTI
+> > [22544.502967] CPU: 0 PID: 1 Comm: init Not tainted 6.5.0-rc2-00128-g68052f2f9e35 #5844
+> > [22544.504435] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+> > [22544.506581] RIP: 0033:0x400181
+> > [22544.507256] Code: 00 45 31 d2 4c 8d 44 24 f0 48 c7 44 24 f8 00 00 00 00 0f 05 b8 60 00 00 00 48 8d 7c 24 e0 0f 05 41 89 c0 85 c0 75 c6 44 89 c0 <89> c2 0f af d0 ff c0 48 63 d2 48 89 15 06 01 20 00 3d a0 86 01 00
+> > [22544.510954] RSP: 002b:00007ffde5192288 EFLAGS: 00010283
+> > [22544.511963] RAX: 000000000000ebe9 RBX: 0000000000000000 RCX: 00000000004001a7
+> > [22544.513386] RDX: ffffffffd963c240 RSI: 0000000000000000 RDI: 00007ffde5192258
+> > [22544.514751] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> > [22544.516079] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> > [22544.517452] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> > [22544.518818] FS:  0000000000000000 GS:  0000000000000000
+> > [22544.519864] Modules linked in:
+> > [22544.520653] CR2: fffffe0000af0038
+> > [22544.521401] ---[ end trace 0000000000000000 ]---
+> > [22544.522297] RIP: 0033:0x400181
+> > [22544.522887] RSP: 002b:00007ffde5192288 EFLAGS: 00010283
+> > [22544.523887] RAX: 000000000000ebe9 RBX: 0000000000000000 RCX: 00000000004001a7
+> > [22544.525257] RDX: ffffffffd963c240 RSI: 0000000000000000 RDI: 00007ffde5192258
+> > [22544.526623] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> > [22544.528016] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> > [22544.529439] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> > [22544.530909] FS:  0000000000000000(0000) GS:ffff8d101f400000(0000) knlGS:0000000000000000
+> > [22544.532564] CS:  0033 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [22544.533760] CR2: fffffe0000af0038 CR3: 0000000002d8e000 CR4: 00000000000006f0
+> > [22544.535286] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > [22544.536738] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > [22544.538228] note: init[1] exited with irqs disabled
+> > [22544.540087] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
+> > [22544.544806] Kernel Offset: 0x9600000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+> >
+> > The failure rates for each scenario are as follows:
+> >
+> > TASKS01: 13 of 15
+> > TASKS03: 7 of 15
+> > TREE03: 4 of 15
+> > TREE07: 5 of 15
+> >
+> > In other words, for TASKS01, there were 15 10-hour runs, and 13 of them
+> > hit this bug.
+> >
+> > Except that these failures were corellated:
+> >
+> > o       TASKS01 and TASKS03 failures are in batch 17 running on
+> >         kerneltest053.05.atn6.
+> >
+> > o       TREE03 and one of the TREE07 failures are in batch 4 running
+> >         on kerneltest025.05.atn6.
+> >
+> > o       Five of the TREE07 failures are in batch 6 running on
+> >         kerneltest010.05.atn6.
+> >
+> > All of the failures in a given batch happened at about the same time,
+> > suggesting a reaction to some stimulus from the host system.  There
+> > was no console output from any of these host systems during the test,
+> > other than the usual complaint about qemu having an executable stack.
+> >
+> > Now, perhaps this is hardware or configuration failure on those three
+> > systems.  But I have been using them for quite some time, and so why
+> > would three fail at the same time?
+> >
+> > Bisection will not be easy given that there were only three actual
+> > failures in ten hours over 20 batches.  If this is in fact a random
+> > kernel failure, there would be almost a 4% chance of a false positive
+> > on each bisection step, which gives about a 50% chance of bisecting to
+> > the wrong place if the usual 16 steps are required.
+> Hi Paul
+> I am also very interested in tracing this bug.
+> I have invoked ./tools/testing/selftests/rcutorture/bin/torture.sh on
+> my 16 core Intel(R) Xeon(R) CPU E5-2660 server a moment ago to see
+> what happens
 
-> Now that we have a helper that takes care of an atomic state allocation
-> and cleanup, we can migrate to it to simplify our tests.
->
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> ---
+Looking forward to hearing what you find!
 
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+							Thanx, Paul
 
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+> Thanx, Zhouyi
+> >
+> > I will give this another try this evening, Pacific Time.  In the
+> > meantime, FYI.
+> >
+> >                                                 Thanx, Paul
