@@ -2,84 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5D7758EC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0835758EB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbjGSHVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 03:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52832 "EHLO
+        id S229668AbjGSHU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 03:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbjGSHU4 (ORCPT
+        with ESMTP id S230097AbjGSHUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 03:20:56 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4152106;
-        Wed, 19 Jul 2023 00:20:41 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36J5kEu9018635;
-        Wed, 19 Jul 2023 07:20:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=fxbSAOTbCRZKV5fgWQzs58YIFmsL+43nXlNRoGtbXoM=;
- b=PI2EBp703wb/eE4xETJOqYpdow9AcjUe7c+WP4XIquTLyl/Ij0oANXQgQjE8tf+TQowa
- CLTpeisXNsQdd0PocPL9nrUCp46Vy3Ko1b7pIfZNF8Be9znG92ZxV69lBtSElAS2c2NJ
- vrZQD0oHBKEcAirqb36BlY4Blxs+1b2JZfqRbQnO58gGoahS8m70eqW2/GyLDLHkz43O
- //UdVJY2rGIM5CFYynVn4YZ7zk+Xe2XFjkRUioH1Y0f7LZpWw3zE7EKUdwa1ulQ1XZ4t
- j12Ev/KG8R2zwkaJDOPTNahTdgMstAe8l6KtW/weqtWnYxaHSsBqMyGHL7boZy1Tg+fh hw== 
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rx7410ev6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Jul 2023 07:20:24 +0000
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 36J7EfA8017367;
-        Wed, 19 Jul 2023 07:20:21 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3rumhm1v7n-1;
-        Wed, 19 Jul 2023 07:20:21 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36J7KLvc022672;
-        Wed, 19 Jul 2023 07:20:21 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-krichai-hyd.qualcomm.com [10.213.110.112])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 36J7KLlD022642;
-        Wed, 19 Jul 2023 07:20:21 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 4058933)
-        id 7C97C4B11; Wed, 19 Jul 2023 12:50:20 +0530 (+0530)
-From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
-        krzysztof.kozlowski@linaro.org,
-        Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH v10 4/4] PCI: qcom-ep: Add ICC bandwidth voting support
-Date:   Wed, 19 Jul 2023 12:50:18 +0530
-Message-Id: <1689751218-24492-5-git-send-email-quic_krichai@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1689751218-24492-1-git-send-email-quic_krichai@quicinc.com>
-References: <1689751218-24492-1-git-send-email-quic_krichai@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ermn3eukH_aiafSZPORWICjnzMeyWXSr
-X-Proofpoint-ORIG-GUID: ermn3eukH_aiafSZPORWICjnzMeyWXSr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-19_04,2023-07-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0 bulkscore=0
- suspectscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307190066
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        Wed, 19 Jul 2023 03:20:44 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2042.outbound.protection.outlook.com [40.107.22.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8882C26AC;
+        Wed, 19 Jul 2023 00:20:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y8er8rD6USnjqtuWF0+X9Uv7J5sSA/dH/t8QxZ1Q5AEBjcIYT6VYkP2b2F3fgtiTJs3G9N/Zttk+RosSNyEPWbyHsnd8Fp8QTHOxTtWurl/3KyZWIE3MemmYxPwZpkn6QRnDtfXUQnCUIL/6VESkhC0NniOS2HI4BVzXInyXSC/pVTUgEJ0Ck9Pdz8e8ojRu1M2eY/HOTDeDPDoAkAZiCQ7pJWSvZTIVrqf1hhGz8HHez3hEf2IVWmNpN8zbbzs7zk8jDhqbaFv9Xa9AwhKG78Wx4VT5gg36AMcTnEsU5GbjfOX2fdiwTq5gbjgWrAHwXeHVVzJsEo8tTPZkqNouJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RSKnjInqwQJ6rb4M09xR56vNJZTL+vsiqOnb+k+PYUI=;
+ b=fw50TXVlRGDGWPU82wXs9Po6awGwLNUGL+iZhwzlm0aCEehk//chKAsYUCGqr2uh/bDuzgGlisihAnQicKtcEV2EC5PUHC83s5iTM34pn25SFojC4x6kgZp0fjX7q0cTIo9o2yW8fmCXs1UW5UuMErPrYAB9IR8yNeOm2t4kWeA9IlidSzcwgXb0CGB7t0jyeRnNgVvmi2JcsxPWUPeNKp4U+T+CSlepcOnbty2H5ZYzTpYIlaih2UlOOn3LQ9AhmuLS1MjGMB4fbcD6UolP6VVAHL9240erd81ogM5lOHVoiYNXPClGs5EEtBVahWekoK7by4NaOoRRjyw77a46MA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
+ dkim=pass header.d=siemens.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RSKnjInqwQJ6rb4M09xR56vNJZTL+vsiqOnb+k+PYUI=;
+ b=JLLJjbAGWIqFJzVB9Kfe1+hqlvQx50YlXvqQ8yybgZzoGVgyOox2rjdU9sEa3l8y7VSQONWpBQEf5BERmQ7I1LiLFAk3afVxZNkvcQFxnRsmd6G1bsZilZOUHvVDUwvkq9yypTA2GtYoswXgHcLwuTdci9ZGr2g0onnWnw8jb7bNeigw5sXyz2oawq2G8WIejVoKUrPAAh+Kyzu5xLx97I2gk1kXEwljz/NVus8WMtZU5OKDAnoNYvtxQNfqFMXh/kYFwJUZZvlmwXm3B1PUJhHBn96hSN+3TjgVskXScA0FF0UlgSxtidKEWGjozx9jXpRP34iuylpqi71fxJ12WQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=siemens.com;
+Received: from PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:269::8)
+ by DU0PR10MB6560.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:403::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32; Wed, 19 Jul
+ 2023 07:20:24 +0000
+Received: from PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::a171:a3f2:99b7:5f29]) by PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::a171:a3f2:99b7:5f29%6]) with mapi id 15.20.6588.031; Wed, 19 Jul 2023
+ 07:20:24 +0000
+Date:   Wed, 19 Jul 2023 09:20:19 +0200
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Lee Jones <lee@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tobias Schaffner <tobias.schaffner@siemens.com>
+Subject: Re: [PATCH 1/3] watchdog: make Siemens Simatic watchdog driver
+ default on platform
+Message-ID: <20230719092019.5545ee15@md1za8fc.ad001.siemens.net>
+In-Reply-To: <0f38956f-8d23-4f50-8e76-85fc3e225fd6@roeck-us.net>
+References: <20230718105213.1275-1-henning.schild@siemens.com>
+        <20230718105213.1275-2-henning.schild@siemens.com>
+        <0f38956f-8d23-4f50-8e76-85fc3e225fd6@roeck-us.net>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FRYP281CA0007.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::17)
+ To PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:269::8)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR10MB5780:EE_|DU0PR10MB6560:EE_
+X-MS-Office365-Filtering-Correlation-Id: 07df36d0-1c09-4f1e-3433-08db88289e5b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 07WPiSvkQVe+up+8rxiGE9CyhcLWvdITznjs7a3j1RNtnrz99DuxHWJu1/0kuRuag2VwLZFCCFLqhA3EFMAwOkvH7j61AjL+FAKErgvv362l/FPpv+K16PMBgqbxkI2vL5il3UfV4yG6qKs5amnQyg9bpMJBvgRsTqS7Xe9r0nxeOkdn1QxUgzba8TjHKRT/2PaCqteVEhhNIYvtYdR7CplkaloBK7O3wDbozJOHDy77R9y6XE8mOU7rAvpxzpRWKii7UOt6wCzh2lCsB9AM7H5CttB8EXPzM/8HaGV9ZCL78Gr8snU+/zI6LTpWHnNgqQ7mf0fPxqOv+EhctVX+UnNMbFkutp5TWK2y6GmzdcnXFwg65bVrh4/5jJyWayepsnA72HRTrDsNd/GdgrxQuuvluZ+e6tTRg7z8a3qqgSaIgPR6xUVXG8w3HgN1OxVLHLwQ+gq/yWyKmKEgOfFdc+l+j3m6F4zOjKB9heKgNT2Z7S520Zo0zumjd6lsyE4p8upnPzB/RxZZSBstKqVHD41+LyJaDnff93wn5VjZ7j++p447oQM52dqoN3Ecomq4
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(396003)(136003)(376002)(366004)(451199021)(478600001)(6486002)(6666004)(54906003)(86362001)(2906002)(44832011)(186003)(1076003)(6506007)(6512007)(9686003)(107886003)(38100700002)(41300700001)(82960400001)(66556008)(66476007)(6916009)(8936002)(8676002)(7416002)(4326008)(5660300002)(316002)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?G98Hxha5fTP9HBFdgelwPCkrQdrGquNFxnIgFqDuw04qXd06egsGqOKbWWzm?=
+ =?us-ascii?Q?KErxVFSdQWmAsSBay2v4MdCHa+ksX3UyEdMeIsxB+5W2qH8vMua8VXG93dgG?=
+ =?us-ascii?Q?HRN6qyXhhUU1WPLphxNbFCIChbGjLZJ04/WTRywx34SrBsZHpxQB5aOgQ3M6?=
+ =?us-ascii?Q?KkTvpgb5toeEEQwmUvlD5uvuZdwhHZPLu0yQPpG2yTpMXjE/itK8KzQL9C9F?=
+ =?us-ascii?Q?rmiOPvbEQDC/WuR5bo2sv0yGpz/K4h2BOuwC+nyH4SKarghcOYBlWWpS+dXZ?=
+ =?us-ascii?Q?BEO8jSbaBTZ3UQ+Ob7rKzchySOeqUbcOyHp3+pqy6ns0RupDluRHGyyDmCDF?=
+ =?us-ascii?Q?ivLVbfm2BsIQ/G2In063NnOP9+XXsyloMEjXgjA7s6yKEsXd7YASRSM9ris9?=
+ =?us-ascii?Q?lOp2gpMulGoiFH8ssk4AqNX4o3hRPcrP6a0cwzt5jGyiCdmRrab4UUyaurFk?=
+ =?us-ascii?Q?dX2YOdc0qscyowRWTCTkRu4Xv25+MBZnk3a0VSt0Sg7f/nL6PdOi9VvY9a3Y?=
+ =?us-ascii?Q?GIMHlT29dW26TU5r3pLJrA+0C0uiEWGAkWYnskT2A4NqjnGfS1zRfX9zeWaE?=
+ =?us-ascii?Q?TmWpcP2HcjuKs85fhko1crHFzv8QLV/CIIuNEnJVwxYbtPMr6xLQYXDSJSOH?=
+ =?us-ascii?Q?YhWqudHGupRWNDMpgXiKJN5wxlCtylBK97hB9WyXv9zAnFHkfPT8DBbk5RU6?=
+ =?us-ascii?Q?zl/XcshfjKruY5Mh5El0uKFYcxMIQdrRdtf/ARRl2MySMoPHCf7c5bmJNk5c?=
+ =?us-ascii?Q?wkAOda+BkXm34FBwC2/XyR1umkbo9LaBxFnuwmCk9gis+YVytaIz+TdL59Hc?=
+ =?us-ascii?Q?dhJpgMxPtkkwKm6bK3//5y633d9x+rLaZBU1r1NKJB2xgQK4j9Qg6rgPNB8j?=
+ =?us-ascii?Q?RaTLzVYB+IR75dxl2qayOrKVP2Hp5DfXEZ0WSQl3k9yx3A0+QUrIlXe9t53F?=
+ =?us-ascii?Q?Srk61b3xvNl7iViGbicaFBCd3OYiZ39v3Ly400iw1kxw31C5/7Fou5vajI2L?=
+ =?us-ascii?Q?lHndZF9xhAYmDyZXhvv9XyiwVVR0CPcCQoHMYhIfsjAGL0vRfxtyPpMo5OYI?=
+ =?us-ascii?Q?ibTtZvwAQWUfwhfGzDQsb6VtkzrbP3MrBYLpmT5/uLoj/n9EF/iI9vjkYyrw?=
+ =?us-ascii?Q?Xd3rLhwNqBjZrnHH4q21KTPDULy45BLsk22+0If3QvOQ77+Qq1PcOYztIO8H?=
+ =?us-ascii?Q?G7NCQEtD6ovp4owjrDLLmDHr3jVgFp4v9XTPn7RBRjOhrSw+0eSYdBcgDp1L?=
+ =?us-ascii?Q?ceBKBBcTNTJSytt0KnhSCSivTOMH9I4P5ClX5FKC/wDx8Dopjly90Oz14na5?=
+ =?us-ascii?Q?0+u00Xf5LnpyuGum8Nbkl2UoBYYL9W0UGA5KAwVs67Cl+/Bin0JPFZbFUiG5?=
+ =?us-ascii?Q?A9SZmpV3kTd6DqdZcKC+mVe6BwgMygZx0vVKvc0o2/X2CfXhen/9oXzbcFRb?=
+ =?us-ascii?Q?MjhOslnB9iLY+sJiunV4T+wsGvdnovARRaeqsAIXculUn1KN2YaOioYKX4+7?=
+ =?us-ascii?Q?HiyfsHrz1fAecg60UXuD0MhPMohTODRQhHZNPPf0zXSpHb/qZLwhyBh3BcF3?=
+ =?us-ascii?Q?+X7xgltUk1sZKwGiOIyB7LUNfA09lzXI044OmsVS1iX71lYNGynonM8kKNCJ?=
+ =?us-ascii?Q?jhXWjdo+bbNkNl7pQHF+IH7aWYhuahzQqIsxrfnyn9BG7td7MOt2kwb+Xgz+?=
+ =?us-ascii?Q?gJEYkA=3D=3D?=
+X-OriginatorOrg: siemens.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07df36d0-1c09-4f1e-3433-08db88289e5b
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 07:20:24.1291
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FX4AjymXxt+8JmUtW7a76DBYtfdSfgLLS+/+ijEuzXxssv6OMVgVAxLWAySZJEyv0jofA+fbkRZ9b4PsUgSGugdfNWzeJiJISFiFp0/mmCA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR10MB6560
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,157 +125,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for voting interconnect (ICC) bandwidth based
-on the link speed and width.
+Am Tue, 18 Jul 2023 08:07:52 -0700
+schrieb Guenter Roeck <linux@roeck-us.net>:
 
-This commit is inspired from the basic interconnect support added
-to pcie-qcom driver in commit c4860af88d0c ("PCI: qcom: Add basic
-interconnect support").
+> On Tue, Jul 18, 2023 at 12:52:11PM +0200, Henning Schild wrote:
+> > If a user did choose to enable Siemens Simatic platform support they
+> > likely want that driver to be enabled without having to flip more
+> > config switches. So we make the watchdog driver config switch
+> > default to the platform driver switches value.
+> > 
+> > Signed-off-by: Henning Schild <henning.schild@siemens.com>
+> > ---
+> >  drivers/watchdog/Kconfig | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> > index ee97d89dfc11..ccdbd1109a32 100644
+> > --- a/drivers/watchdog/Kconfig
+> > +++ b/drivers/watchdog/Kconfig
+> > @@ -1681,6 +1681,7 @@ config NIC7018_WDT
+> >  config SIEMENS_SIMATIC_IPC_WDT
+> >  	tristate "Siemens Simatic IPC Watchdog"
+> >  	depends on SIEMENS_SIMATIC_IPC
+> > +	default SIEMENS_SIMATIC_IPC  
+> 
+> Why not just "default y" ? That does the same (it will be set to m if
+> SIEMENS_SIMATIC_IPC=m) without the complexity.
 
-The interconnect support is kept optional to be backward compatible
-with legacy devicetrees.
+I see. Thanks! In that case i will go for "default y" and not "default
+m" which i wrote about in the other mail.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
----
- drivers/pci/controller/dwc/pcie-qcom-ep.c | 71 +++++++++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+Henning
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-index 0fe7f06..7460b3f 100644
---- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-@@ -13,6 +13,7 @@
- #include <linux/debugfs.h>
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
-+#include <linux/interconnect.h>
- #include <linux/mfd/syscon.h>
- #include <linux/phy/pcie.h>
- #include <linux/phy/phy.h>
-@@ -133,6 +134,11 @@
- #define CORE_RESET_TIME_US_MAX			1005
- #define WAKE_DELAY_US				2000 /* 2 ms */
- 
-+#define PCIE_GEN1_BW_MBPS			250
-+#define PCIE_GEN2_BW_MBPS			500
-+#define PCIE_GEN3_BW_MBPS			985
-+#define PCIE_GEN4_BW_MBPS			1969
-+
- #define to_pcie_ep(x)				dev_get_drvdata((x)->dev)
- 
- enum qcom_pcie_ep_link_status {
-@@ -178,6 +184,8 @@ struct qcom_pcie_ep {
- 	struct phy *phy;
- 	struct dentry *debugfs;
- 
-+	struct icc_path *icc_mem;
-+
- 	struct clk_bulk_data *clks;
- 	int num_clks;
- 
-@@ -253,8 +261,49 @@ static void qcom_pcie_dw_stop_link(struct dw_pcie *pci)
- 	disable_irq(pcie_ep->perst_irq);
- }
- 
-+static void qcom_pcie_ep_icc_update(struct qcom_pcie_ep *pcie_ep)
-+{
-+	struct dw_pcie *pci = &pcie_ep->pci;
-+	u32 offset, status, bw;
-+	int speed, width;
-+	int ret;
-+
-+	if (!pcie_ep->icc_mem)
-+		return;
-+
-+	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-+	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
-+
-+	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
-+	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
-+
-+	switch (speed) {
-+	case 1:
-+		bw = MBps_to_icc(PCIE_GEN1_BW_MBPS);
-+		break;
-+	case 2:
-+		bw = MBps_to_icc(PCIE_GEN2_BW_MBPS);
-+		break;
-+	case 3:
-+		bw = MBps_to_icc(PCIE_GEN3_BW_MBPS);
-+		break;
-+	default:
-+		dev_warn(pci->dev, "using default GEN4 bandwidth\n");
-+		fallthrough;
-+	case 4:
-+		bw = MBps_to_icc(PCIE_GEN4_BW_MBPS);
-+		break;
-+	}
-+
-+	ret = icc_set_bw(pcie_ep->icc_mem, 0, width * bw);
-+	if (ret)
-+		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
-+			ret);
-+}
-+
- static int qcom_pcie_enable_resources(struct qcom_pcie_ep *pcie_ep)
- {
-+	struct dw_pcie *pci = &pcie_ep->pci;
- 	int ret;
- 
- 	ret = clk_bulk_prepare_enable(pcie_ep->num_clks, pcie_ep->clks);
-@@ -277,8 +326,24 @@ static int qcom_pcie_enable_resources(struct qcom_pcie_ep *pcie_ep)
- 	if (ret)
- 		goto err_phy_exit;
- 
-+	/*
-+	 * Some Qualcomm platforms require interconnect bandwidth constraints
-+	 * to be set before enabling interconnect clocks.
-+	 *
-+	 * Set an initial peak bandwidth corresponding to single-lane Gen 1
-+	 * for the pcie-mem path.
-+	 */
-+	ret = icc_set_bw(pcie_ep->icc_mem, 0, MBps_to_icc(PCIE_GEN1_BW_MBPS));
-+	if (ret) {
-+		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
-+			ret);
-+		goto err_phy_off;
-+	}
-+
- 	return 0;
- 
-+err_phy_off:
-+	phy_power_off(pcie_ep->phy);
- err_phy_exit:
- 	phy_exit(pcie_ep->phy);
- err_disable_clk:
-@@ -289,6 +354,7 @@ static int qcom_pcie_enable_resources(struct qcom_pcie_ep *pcie_ep)
- 
- static void qcom_pcie_disable_resources(struct qcom_pcie_ep *pcie_ep)
- {
-+	icc_set_bw(pcie_ep->icc_mem, 0, 0);
- 	phy_power_off(pcie_ep->phy);
- 	phy_exit(pcie_ep->phy);
- 	clk_bulk_disable_unprepare(pcie_ep->num_clks, pcie_ep->clks);
-@@ -550,6 +616,10 @@ static int qcom_pcie_ep_get_resources(struct platform_device *pdev,
- 	if (IS_ERR(pcie_ep->phy))
- 		ret = PTR_ERR(pcie_ep->phy);
- 
-+	pcie_ep->icc_mem = devm_of_icc_get(dev, "pcie-mem");
-+	if (IS_ERR(pcie_ep->icc_mem))
-+		ret = PTR_ERR(pcie_ep->icc_mem);
-+
- 	return ret;
- }
- 
-@@ -573,6 +643,7 @@ static irqreturn_t qcom_pcie_ep_global_irq_thread(int irq, void *data)
- 	} else if (FIELD_GET(PARF_INT_ALL_BME, status)) {
- 		dev_dbg(dev, "Received BME event. Link is enabled!\n");
- 		pcie_ep->link_status = QCOM_PCIE_EP_LINK_ENABLED;
-+		qcom_pcie_ep_icc_update(pcie_ep);
- 		pci_epc_bme_notify(pci->ep.epc);
- 	} else if (FIELD_GET(PARF_INT_ALL_PM_TURNOFF, status)) {
- 		dev_dbg(dev, "Received PM Turn-off event! Entering L23\n");
--- 
-2.7.4
+> Guenter
+> 
+> >  	select WATCHDOG_CORE
+> >  	select P2SB
+> >  	help
+> > -- 
+> > 2.41.0
+> >   
 
