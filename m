@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C14759F29
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332B4759F2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbjGSUBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
+        id S230480AbjGSUC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:02:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjGSUBh (ORCPT
+        with ESMTP id S229451AbjGSUC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:01:37 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E9292;
-        Wed, 19 Jul 2023 13:01:35 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-cb4de3bd997so1795129276.1;
-        Wed, 19 Jul 2023 13:01:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689796894; x=1690401694;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=stu+6/j3HbnPj0KRDFW+4OZ7RsJiQvUoKxDl73j6SMY=;
-        b=cY5xHQ7xgHbVGZF6SIYA44/9ljfF0XdAsQA/RJujiVeWYdI9LdiiQGqhJiwRyHLNCl
-         HE/tZn8c1YNS50/ZxnW9EUBjhznIuwFxFeEDD/cNsRKzKxSfVO9+N+J7GRkleuij0FP7
-         mfMbsqJe5YNxup7OzbRysbg7/O3P85ErksLhD+68yquOIg+3QTagsbdukzI39R1DDfZ1
-         v14cXn10OpAdbgX6W6m/7QWfVT7fbBrBoqlfigUFGCXSLhg2e/PH8FRMySp0dlG0mKUL
-         9wHgS5HdT200ELRgeGcuAmc8Ahi57LBvOlClPmMZlh0x194ibBPktQqbI5FIqes0/qGV
-         9ZrQ==
+        Wed, 19 Jul 2023 16:02:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5524FB3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:01:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689796895;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sg6wZSinxe8r2P+uFq4KgcT9vXCAHVcOICFNECpMgro=;
+        b=MNhOajlcipd3Ui+uJqa05iEko9V9zDYbZL0X5Rg2azLecIjL028LfjoDpaFRu+LtOpYFEF
+        1ZvmuIlti0MmQci9ciEttmwS4oq+q7HmzR/DoNl0wpKI9hs8qyMuSP5N3comsGrnOaTDmm
+        vI4nIOVSisdIsZIirGGIHBMsDbP2FuY=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-642-QWOV52wmPIqTSAS1qNVIJg-1; Wed, 19 Jul 2023 16:01:30 -0400
+X-MC-Unique: QWOV52wmPIqTSAS1qNVIJg-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f42bcef2acso21355e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:01:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689796894; x=1690401694;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=stu+6/j3HbnPj0KRDFW+4OZ7RsJiQvUoKxDl73j6SMY=;
-        b=fFVH6Y59EUMIiBD6p9HjhBOFcZYC4twdUBA+uf2YJH92W6i3D1wMQoL8mhbNi7ci4j
-         1D7mMYkXXUMM7bXcSFU/wfQEwL65sAXPyd4Pd6WHmHpeKPi7gOv1mWYZ3HJITw1aLopz
-         6sTza0qRunZ2JixbyeYNQDyt9Q1XWxPgOBcPkk91DGzxzYNm2B1VbEih5M7Rtb3MeM9R
-         oA52QQxbPz/6DSPlcguNMWCSvGuT2QW2GK8afQ8Xk7LHMejLmEJGGPhJJlljtp/LHXGO
-         Iwoil0NpoFf3my4Vk8dda75bgfsdexTH9I/8Zl/L3iewkif0YXMlrmF2WLMqlce52Lis
-         Htig==
-X-Gm-Message-State: ABy/qLZ0xmVIN8tvD0X/ui6o3c9UoPEXYxNlP+Y9GjA2Gvs/UkSlVx4N
-        cO8deSpnxTwYzQ9EuW58r7l8OgocNTnzxlyCW7sNCc4/MKg=
-X-Google-Smtp-Source: APBJJlGOXTxMetMf8KW+6Eh/OrQPukURd838S4EXYF6N5QJWweVDtUowyEnHyPNBLXwUTHha/gJGbaD+AsCzL6p3rYY=
-X-Received: by 2002:a25:ff19:0:b0:cfc:d478:be7e with SMTP id
- c25-20020a25ff19000000b00cfcd478be7emr289348ybe.10.1689796894314; Wed, 19 Jul
- 2023 13:01:34 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689796885; x=1690401685;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sg6wZSinxe8r2P+uFq4KgcT9vXCAHVcOICFNECpMgro=;
+        b=hyqwMwJT89LFiU+0p9VWAFiLow0CpKqwqKiuUgFGnXyifAyxEx4eBBW2/lEzwVMPdt
+         kdwIVidVmZ1kR/ArVeqizBmPi+9OnAldg/Ai6gQhLbSIQycfAMYJNxNrmR8oTfPSCBaI
+         W62iSfmtNCWSkMf4VTN+Vr2chXtmlZhtJUWAXpT2clPAGmF06RLT2DwNpaKqoAVOgFqM
+         LQHUdsax3FJYPo7UwbnkQMUeoVgwsUH24w7wmDZ9POGu1xsITSDUGA5MHQxGIMoF1Ubp
+         w072avwX8X0w+4VQzxKwWzXstmO5JaC7lSXIr28LIyJl7gfZgR/zlQE/u8GUuPifLdEw
+         lIcQ==
+X-Gm-Message-State: ABy/qLYfZOYn8XYVupBFIrt2B3Ib1YU4ftEjpzyOdRt3FMK0JeTuZw8r
+        Ss3QFqUt+871c7mQbpyK7aWhKPK/OkToQY45YB8X0sj09s5EFYAmpluHFOcwf/w3TPA+rif2Hqz
+        6e3QCQKr+7g5/cc+eRcE9U6+f
+X-Received: by 2002:a1c:7412:0:b0:3fb:dbd0:a7ea with SMTP id p18-20020a1c7412000000b003fbdbd0a7eamr5358870wmc.37.1689796885404;
+        Wed, 19 Jul 2023 13:01:25 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHwqBKuTLWtJTG125iBcGiKJyRQZhKpcKrRbtLnI3PtSW9DnwX2W7eJ7bjSr7Vo1B8R/7uLgA==
+X-Received: by 2002:a1c:7412:0:b0:3fb:dbd0:a7ea with SMTP id p18-20020a1c7412000000b003fbdbd0a7eamr5358862wmc.37.1689796885087;
+        Wed, 19 Jul 2023 13:01:25 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id d5-20020a5d6445000000b00311299df211sm6074595wrw.77.2023.07.19.13.01.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 13:01:24 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>
+Cc:     Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 06/11] drm/tests: helpers: Create an helper to allocate
+ an atomic state
+In-Reply-To: <20230710-kms-kunit-actions-rework-v1-6-722c58d72c72@kernel.org>
+References: <20230710-kms-kunit-actions-rework-v1-0-722c58d72c72@kernel.org>
+ <20230710-kms-kunit-actions-rework-v1-6-722c58d72c72@kernel.org>
+Date:   Wed, 19 Jul 2023 22:01:24 +0200
+Message-ID: <87ilafhdrf.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-References: <CANiq72nm-tWGPHMaNF11baVRDFpk8ruvTAVDEWKfraEzADWqQQ@mail.gmail.com>
- <20230426204923.16195-1-amiculas@cisco.com>
-In-Reply-To: <20230426204923.16195-1-amiculas@cisco.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 19 Jul 2023 22:01:23 +0200
-Message-ID: <CANiq72npkGJ0=_C4JacaEBvujaT34TO6vqM1UzYVKH0+b+cjzQ@mail.gmail.com>
-Subject: Re: [PATCH v3] rust: helpers: sort includes alphabetically in rust/helpers.c
-To:     Ariel Miculas <amiculas@cisco.com>
-Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ojeda@kernel.org, alex.gaynor@gmail.com, wedsonaf@gmail.com,
-        boqun.feng@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com,
-        benno.lossin@proton.me
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 26, 2023 at 10:50=E2=80=AFPM Ariel Miculas <amiculas@cisco.com>=
- wrote:
->
-> Sort the #include directives of rust/helpers.c alphabetically and add a
-> comment specifying this. The reason for this is to improve readability
-> and to be consistent with the other files with a similar approach within
-> 'rust/'.
->
-> Suggested-by: Miguel Ojeda <ojeda@kernel.org>
-> Link: https://github.com/Rust-for-Linux/linux/issues/1003
-> Signed-off-by: Ariel Miculas <amiculas@cisco.com>
+Maxime Ripard <mripard@kernel.org> writes:
 
-Applied to `rust-next`, thanks!
+> As we gain more tests, boilerplate to allocate an atomic state and free
+> it starts to be there more and more as well.
+>
+> In order to reduce the allocation boilerplate, we can create an helper
+> to create that atomic state, and call an action when the test is done.
+> This will also clean up the exit path.
+>
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> ---
 
-Cheers,
-Miguel
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
