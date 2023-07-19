@@ -2,181 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A91F758D5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 08:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D28758D5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 08:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbjGSGA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 02:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39378 "EHLO
+        id S230124AbjGSGBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 02:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjGSGA5 (ORCPT
+        with ESMTP id S229464AbjGSGBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 02:00:57 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232AB1BF5
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 23:00:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689746452; x=1721282452;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=Lrm8C4LkSKxSTMxpNCc3TGkjG2hlTDS4b5Oxvf/6LnY=;
-  b=VSK0L98oH8LzJDV84j7a+0WtCBU3L6TBK8iJNLVfTd+9Dlkvmp7UjYl+
-   unizjyx++ePuxa82zQV1XtKC89/W+Mon11FwXjQkFjesi4TF4oEZ/Qk1Q
-   bRsUYCHnYWCm4u9NXVCNf1MiExZSM+pNSguyLfZsN9YZ+CKyVNAJtdsg1
-   S5wTBEA9DScXy4+IVUEo9xxYHmmMfOjP3EdPITcjj2BMM8KX6biM+/hZE
-   0lxd/X8XGNwaDbntgZAE+Ws+nti5bBL+ZVqd6iuGW0bmoZcr+sel67tzT
-   NdX11owCcW8vwL+2NScDIEKZxm+77T9llRhHA95P5ECVC4thGQ7TOc/aT
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="346682836"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="346682836"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 23:00:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="847940388"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="847940388"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 23:00:43 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Michal Hocko <mhocko@suse.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Arjan Van De Ven <arjan@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Johannes Weiner <jweiner@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [RFC 2/2] mm: alloc/free depth based PCP high auto-tuning
-References: <20230710065325.290366-1-ying.huang@intel.com>
-        <20230710065325.290366-3-ying.huang@intel.com>
-        <ZK060sMG0GfC5gUS@dhcp22.suse.cz>
-        <20230712090526.thk2l7sbdcdsllfi@techsingularity.net>
-        <871qhcdwa1.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <20230714140710.5xbesq6xguhcbyvi@techsingularity.net>
-        <87pm4qdhk4.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <20230717135017.7ro76lsaninbazvf@techsingularity.net>
-        <87lefeca2z.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <20230718123428.jcy4avtjg3rhuh7i@techsingularity.net>
-Date:   Wed, 19 Jul 2023 13:59:00 +0800
-In-Reply-To: <20230718123428.jcy4avtjg3rhuh7i@techsingularity.net> (Mel
-        Gorman's message of "Tue, 18 Jul 2023 13:34:28 +0100")
-Message-ID: <87mszsbfx7.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 19 Jul 2023 02:01:04 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F831BF5
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 23:01:03 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0918D218FE;
+        Wed, 19 Jul 2023 06:01:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689746462; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dgQgxlFcepDaInfoxrsHrXxt5AXoVTbhkF6IGVf5cpg=;
+        b=h+0Ruqz2CalI1XiDmKNvlyGndFSw7ERXP+PZjYhItCW7Wa8qHRlYAyS+ImQm6rKrLeis8T
+        7Qs1ZGhvKdfO801WdT2Wa4eWTt2q1LoAFabYJnIOz5qXgTySXpm71BOtQoxv0TQg1lDKfb
+        2hanErmJryg7pAGehHTL75Q4sLrVXJ8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689746462;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dgQgxlFcepDaInfoxrsHrXxt5AXoVTbhkF6IGVf5cpg=;
+        b=OngDeZ4SaqRjusrxyHy6gBD4FR6gZjmfsTpJ87Z+foKyZS0MV5RgCVILNvMK/W4hD76mOR
+        zHOm9Lfjp21/A+DQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A311C1361C;
+        Wed, 19 Jul 2023 06:01:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id eALPJh18t2TXMgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Wed, 19 Jul 2023 06:01:01 +0000
+Date:   Wed, 19 Jul 2023 08:01:00 +0200
+Message-ID: <874jm0modf.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Alsa-devel <alsa-devel@alsa-project.org>,
+        sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Matthew Auld <matthew.auld@intel.com>
+Subject: Re: [PATCH 6/7] ASoC: SOF: Intel: Remove deferred probe for SOF
+In-Reply-To: <alpine.DEB.2.22.394.2307181922160.3532114@eliteleevi.tm.intel.com>
+References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com>
+        <20230718084522.116952-7-maarten.lankhorst@linux.intel.com>
+        <alpine.DEB.2.22.394.2307181922160.3532114@eliteleevi.tm.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mel Gorman <mgorman@techsingularity.net> writes:
+On Tue, 18 Jul 2023 19:04:41 +0200,
+Kai Vehmanen wrote:
+> 
+> > diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+> > index f1fd5b44aaac9..344b61576c0e3 100644
+> > --- a/sound/soc/sof/intel/hda-codec.c
+> > +++ b/sound/soc/sof/intel/hda-codec.c
+> > @@ -415,7 +415,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
+> >  		return 0;
+> >  
+> >  	/* i915 exposes a HDA codec for HDMI audio */
+> > -	ret = snd_hdac_i915_init(bus, true);
+> > +	ret = snd_hdac_i915_init(bus, false);
+> >  	if (ret < 0)
+> >  		return ret;
+> 
+> My only bigger concern is corner cases where the display PCI device is on 
+> the bus and visible to kernel, but for some reason there is no working 
+> driver in the system or it is disabled.
+> 
+> With this patch, not having a workign display driver means that there is 
+> also no audio in the system as the SOF driver will never get probed.
+> 
+> In current mainline, one will get the 60sec timeout warning and then
+> audio driver will proceed to probe and you'll have audio support (minus 
+> HDMI/DP).
 
-> On Tue, Jul 18, 2023 at 08:55:16AM +0800, Huang, Ying wrote:
->> Mel Gorman <mgorman@techsingularity.net> writes:
->> 
->> > On Mon, Jul 17, 2023 at 05:16:11PM +0800, Huang, Ying wrote:
->> >> Mel Gorman <mgorman@techsingularity.net> writes:
->> >> 
->> >> > Batch should have a much lower maximum than high because it's a deferred cost
->> >> > that gets assigned to an arbitrary task. The worst case is where a process
->> >> > that is a light user of the allocator incurs the full cost of a refill/drain.
->> >> >
->> >> > Again, intuitively this may be PID Control problem for the "Mix" case
->> >> > to estimate the size of high required to minimise drains/allocs as each
->> >> > drain/alloc is potentially a lock contention. The catchall for corner
->> >> > cases would be to decay high from vmstat context based on pcp->expires. The
->> >> > decay would prevent the "high" being pinned at an artifically high value
->> >> > without any zone lock contention for prolonged periods of time and also
->> >> > mitigate worst-case due to state being per-cpu. The downside is that "high"
->> >> > would also oscillate for a continuous steady allocation pattern as the PID
->> >> > control might pick an ideal value suitable for a long period of time with
->> >> > the "decay" disrupting that ideal value.
->> >> 
->> >> Maybe we can track the minimal value of pcp->count.  If it's small
->> >> enough recently, we can avoid to decay pcp->high.  Because the pages in
->> >> PCP are used for allocations instead of idle.
->> >
->> > Implement as a separate patch. I suspect this type of heuristic will be
->> > very benchmark specific and the complexity may not be worth it in the
->> > general case.
->> 
->> OK.
->> 
->> >> Another question is as follows.
->> >> 
->> >> For example, on CPU A, a large number of pages are freed, and we
->> >> maximize batch and high.  So, a large number of pages are put in PCP.
->> >> Then, the possible situations may be,
->> >> 
->> >> a) a large number of pages are allocated on CPU A after some time
->> >> b) a large number of pages are allocated on another CPU B
->> >> 
->> >> For a), we want the pages are kept in PCP of CPU A as long as possible.
->> >> For b), we want the pages are kept in PCP of CPU A as short as possible.
->> >> I think that we need to balance between them.  What is the reasonable
->> >> time to keep pages in PCP without many allocations?
->> >> 
->> >
->> > This would be a case where you're relying on vmstat to drain the PCP after
->> > a period of time as it is a corner case.
->> 
->> Yes.  The remaining question is how long should "a period of time" be?
->
-> Match the time used for draining "remote" pages from the PCP lists. The
-> choice is arbitrary and no matter what value is chosen, it'll be possible
-> to build an adverse workload.
+Yeah, that was a concern in the past, too.  e.g. when you pass
+"nomodeset" boot option, the driver will become unusable, even if the
+bus is used generically for both analog and HDMI codecs.
 
-OK.
+> This is mostly an issue with very new hardware (e.g. hw is still 
+> behind force_probe flag in xe/i915 driver), but we've had some odd
+> cases with e.g. systems with both Intel IGFX and other vendors' DGPU. 
+> Audio drivers see the Intel VGA controller in system and will
+> call snd_hdac_i915_init(), but the audio component bind will never
+> succeed if the the Intel IGFX is not in actual use.
+> 
+> Will need a bit of time to think about possible scenarios. Possibly this 
+> is not an issue outside early development systems. In theory if IGFX is 
+> disabled in BIOS, and not visible to OS, we are good, and if it's visible, 
+> the i915/xe driver should be loaded, so we are good again.
 
->> If it's long, the pages in PCP can be used for allocation after some
->> time.  If it's short the pages can be put in buddy, so can be used by
->> other workloads if needed.
->> 
->
-> Assume that the main reason to expire pages and put them back on the buddy
-> list is to avoid premature allocation failures due to pages pinned on the
-> PCP. Once pages are going back onto the buddy list and the expiry is hit,
-> it might as well be assumed that the pages are cache-cold. Some bad corner
-> cases should be mitigated by disabling the adapative sizing when reclaim is
-> active.
+The 60 seconds timeout is a thing "better than complete disablement",
+so it's not ideal, either.  Maybe we can add something like the
+following:
 
-Yes.  This can be mitigated, but the page allocation performance may be
-hurt.
+- Check when the deferred probe takes too long, and warn it
+- Provide some runtime option to disable the component binding, so
+  that user can work around it if needed
 
-> The big remaaining corner case to watch out for is where the sum
-> of the boosted pcp->high exceeds the low watermark.  If that should ever
-> happen then potentially a premature OOM happens because the watermarks
-> are fine so no reclaim is active but no pages are available. It may even
-> be the case that the sum of pcp->high should not exceed *min* as that
-> corner case means that processes may prematurely enter direct reclaim
-> (not as bad as OOM but still bad).
 
-Sorry, I don't understand this.  When pages are moved from buddy to PCP,
-zone NR_FREE_PAGES will be decreased in rmqueue_bulk().  That is, pages
-in PCP will be counted as used instead of free.  And, in
-zone_watermark_ok*() and zone_watermark_fast(), zone NR_FREE_PAGES is
-used to check watermark.  So, if my understanding were correct, if the
-number of pages in PCP is larger than low/min watermark, we can still
-trigger reclaim.  Whether is my understanding correct?
+thanks,
 
->> Anyway, I will do some experiment for that.
->> 
->> > You cannot reasonably detect the pattern on two separate per-cpu lists
->> > without either inspecting remote CPU state or maintaining global
->> > state. Either would incur cache miss penalties that probably cost more
->> > than the heuristic saves.
->> 
->> Yes.  Totally agree.
-
-Best Regards,
-Huang, Ying
+Takashi
