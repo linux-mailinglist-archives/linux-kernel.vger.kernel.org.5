@@ -2,71 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B47B75A036
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48E375A038
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbjGSUvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49794 "EHLO
+        id S230266AbjGSUwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbjGSUvi (ORCPT
+        with ESMTP id S230239AbjGSUv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:51:38 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A971FE2;
-        Wed, 19 Jul 2023 13:51:35 -0700 (PDT)
-Received: from mercury (unknown [185.254.75.45])
+        Wed, 19 Jul 2023 16:51:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E721FFA
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 13:51:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E2E156607078;
-        Wed, 19 Jul 2023 21:51:33 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689799894;
-        bh=c3uH/gG1XWxCmsfa/PtfUqtSiWqoIU9tT6WvHwLXMgM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NHxWKfjTdramqP30Ar8ukCkAzRt5qmjDXa/OA6fMDnoIAfYN+sRNUe7t2CTXt5CVp
-         xDIJfwcPhY7p2FuTzRLQv6qKHoheJtYTX8nMFwmxHBN0TWPZiuXnESnkEu5uAgXcyq
-         FNEWy89JfqlQ0bFQn8jwnGjgZ0NeIdz+7OH1YhucUn5Ke9r8f7b+z209X/uGDCc0Nd
-         K9qqMu/PDT92oYjRnmNX1Ijj76unq76IckCkJCftmPoMFNmqEksETXwB9V3DrdF/D4
-         GKWcLVDDYZYcbuXPFJwFbC9ouH4DkxPwEy9C8M0owQa80PnadMWr6duuVuxq5PpUML
-         I0konnbQTjCQg==
-Received: by mercury (Postfix, from userid 1000)
-        id 2A3571061387; Wed, 19 Jul 2023 22:51:31 +0200 (CEST)
-Date:   Wed, 19 Jul 2023 22:51:31 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Simon Glass <sjg@chromium.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Support Opensource <support.opensource@diasemi.com>,
-        David Lechner <david@lechnology.com>,
-        Iskren Chernev <me@iskren.info>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Matheus Castello <matheus@castello.eng.br>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-oxnas@groups.io
-Subject: Re: [PATCH v2] power: Explicitly include correct DT includes
-Message-ID: <20230719205131.xmfyggy7y2dusjrx@mercury.elektranox.org>
-References: <20230718143045.1065100-1-robh@kernel.org>
- <CAPnjgZ0H077Hdq2HoOyrYxjAmXLigRrj+6H3sPLidtDa2w=Wcw@mail.gmail.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DBCAC61834
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:51:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC22BC433C9;
+        Wed, 19 Jul 2023 20:51:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689799911;
+        bh=R5thK8MzXZwRF74d2FHPjnura0sN99c4ZZeDzrYKSwU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mp5F+HqNOqjXJTDdywXHW0z9pnTBc98MnAf7a8vhvVxpqq28oAHkeJRUXwIZQP6L8
+         DVQm0hDbNgrw0f8DhTUqr3U/4ib7oEnZ6/HgcZrCV18jEOq0FzjVeH8CWphtAjIEI4
+         DI6V3i9qTGAj8YC2iJ79sng2pfupjQcw2jYK6kXjH0h3FBTnequI7uJsiXWu07MuSJ
+         YsvDUj/eErevdSDanuKVwNB/LfVhDNvloJ7X9wRIjLYxWvOG9GhsbvrPdsrE9Vaz3v
+         WlZ4TB+kbPqpp/MOFoNb50WyKrK7Sxco6Cp+3lTuKLcXX7Hl9ZO0/upL53VElALfl2
+         /8Lf1Mvd0AmVA==
+Date:   Wed, 19 Jul 2023 13:51:50 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC net-next v2 7/7] net: skbuff: always try to recycle
+ PP pages directly when in softirq
+Message-ID: <20230719135150.4da2f0ff@kernel.org>
+In-Reply-To: <d7cd1903-de0e-0fe3-eb15-0146b589c7b0@intel.com>
+References: <20230714170853.866018-1-aleksander.lobakin@intel.com>
+        <20230714170853.866018-10-aleksander.lobakin@intel.com>
+        <20230718174042.67c02449@kernel.org>
+        <d7cd1903-de0e-0fe3-eb15-0146b589c7b0@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="o4yglry5cm6klniy"
-Content-Disposition: inline
-In-Reply-To: <CAPnjgZ0H077Hdq2HoOyrYxjAmXLigRrj+6H3sPLidtDa2w=Wcw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,88 +67,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 19 Jul 2023 18:34:46 +0200 Alexander Lobakin wrote:
+> > What if we got here from netpoll? napi budget was 0, so napi_safe is
+> > false, but in_softirq() can be true or false.  
+> 
+> If we're on the same CPU where the NAPI would run and in the same
+> context, i.e. softirq, in which the NAPI would run, what is the problem?
+> If there really is a good one, I can handle it here.
 
---o4yglry5cm6klniy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+#define SOFTIRQ_BITS		8
+#define SOFTIRQ_MASK		(__IRQ_MASK(SOFTIRQ_BITS) << SOFTIRQ_SHIFT)
+# define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
+#define in_softirq()		(softirq_count())
 
-Hi,
+I don't know what else to add beyond that and the earlier explanation.
 
-On Tue, Jul 18, 2023 at 07:08:01PM -0600, Simon Glass wrote:
-> On Tue, 18 Jul 2023 at 08:31, Rob Herring <robh@kernel.org> wrote:
-> > The DT of_device.h and of_platform.h date back to the separate
-> > of_platform_bus_type before it as merged into the regular platform bus.
-> > As part of that merge prepping Arm DT support 13 years ago, they
-> > "temporarily" include each other. They also include platform_device.h
-> > and of.h. As a result, there's a pretty much random mix of those include
-> > files used throughout the tree. In order to detangle these headers and
-> > replace the implicit includes with struct declarations, users need to
-> > explicitly include the correct includes.
-> >
-> > Acked-by: David Lechner <david@lechnology.com>
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> > v2:
-> > - Fix double include of of.h
-> > ---
-> >  drivers/power/reset/as3722-poweroff.c            | 1 -
-> >  drivers/power/reset/brcm-kona-reset.c            | 4 ++--
-> >  drivers/power/reset/gpio-poweroff.c              | 3 ++-
-> >  drivers/power/reset/gpio-restart.c               | 2 +-
-> >  drivers/power/reset/keystone-reset.c             | 3 ++-
-> >  drivers/power/reset/ocelot-reset.c               | 4 ++--
-> >  drivers/power/reset/odroid-go-ultra-poweroff.c   | 3 ++-
-> >  drivers/power/reset/oxnas-restart.c              | 2 --
-> >  drivers/power/reset/st-poweroff.c                | 2 +-
-> >  drivers/power/reset/syscon-poweroff.c            | 3 +--
-> >  drivers/power/reset/syscon-reboot.c              | 3 +--
-> >  drivers/power/reset/xgene-reboot.c               | 2 +-
-> >  drivers/power/supply/axp20x_ac_power.c           | 1 -
-> >  drivers/power/supply/axp20x_battery.c            | 1 -
-> >  drivers/power/supply/axp20x_usb_power.c          | 1 -
-> >  drivers/power/supply/cpcap-battery.c             | 2 +-
-> >  drivers/power/supply/da9150-charger.c            | 2 --
-> >  drivers/power/supply/da9150-fg.c                 | 1 -
-> >  drivers/power/supply/lego_ev3_battery.c          | 2 +-
-> >  drivers/power/supply/ltc2941-battery-gauge.c     | 2 +-
-> >  drivers/power/supply/ltc4162-l-charger.c         | 2 +-
-> >  drivers/power/supply/max14656_charger_detector.c | 2 +-
-> >  drivers/power/supply/max17040_battery.c          | 2 +-
-> >  drivers/power/supply/max8903_charger.c           | 1 -
-> >  drivers/power/supply/rn5t618_power.c             | 1 -
-> >  drivers/power/supply/rt5033_charger.c            | 2 +-
-> >  drivers/power/supply/rt9455_charger.c            | 3 +--
-> >  drivers/power/supply/sbs-battery.c               | 2 +-
-> >  drivers/power/supply/tps65090-charger.c          | 2 +-
-> >  drivers/power/supply/tps65217_charger.c          | 1 -
-> >  drivers/power/supply/twl4030_charger.c           | 1 +
-> >  31 files changed, 26 insertions(+), 37 deletions(-)
->=20
-> Reviewed-by: Simon Glass <sjg@chromium.org>
-
-Thanks, queued.
-
--- Sebastian
-
---o4yglry5cm6klniy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmS4TMkACgkQ2O7X88g7
-+pq7lg//WgZTHis+b/+aR3UeuhJImAXVAknxQX4lPsDZ9Q4pMWR8h1FlZPpwhIol
-YkNrPwE1yK6Xxe8kUSnFDI/gqFD+vRqeEaMNSxcwjlzNX+XVe5NPA37mdAruHnNI
-JTH5n1isMVQrT3kulswPgAz+X2/CUI31FJQURqHob1c52cS2edrqv2VwWDVC/ozY
-NpyhgzJgYwXLODp/SmOW4bo2Lq9Dx8GlqiiNWaPnUu96Z4zW0WEQEYvxRbTWky0Q
-SHmKXDzaxbbTRYJ5B4Fbygtoy7cmbN5FKN4Reh6GfieDf5+/VTXiEVUsw1Volas7
-bEuSqdw9lICEx0YIpf2WCxP7+R7dZ1UHzgs9CoI8dBpZMNAoMNV48VLoLgDgyBYS
-s7IffoU4bs0jMzdBSkCseeEyOUV0wGqQPUbJAJyH7feCrGjVLUf01ay/gyiFy6eu
-v64+5g35xbw0Yq6WPG82WsWsZYb7xox3gFFosWLD2O3k6CjIm/AAydx71IIwBiHI
-43argw9f+njfusK7PVWwMqQiEkJLcv37M78ZrK/RX3TIy/GdLOpFgPbUovRlF3dk
-ojIlqOwDFx9qhwij3Gy6cSawaEeK6A2TnUIdxEi0/QN+ukUcGQHAWetG9aCtPyTq
-+RTMvoOUC1qwZJqsrvihAhnnKu5e6XP3rkTshqIYmQUav3z1OO4=
-=yzKh
------END PGP SIGNATURE-----
-
---o4yglry5cm6klniy--
+AFAIK pages as allocated by page pool do not benefit from the usual
+KASAN / KMSAN checkers, so if we were to double-recycle a page once
+a day because of a netcons race - it's going to be a month long debug
+for those of us using Linux in production.
