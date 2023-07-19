@@ -2,98 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CD9759C3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7C8759C44
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbjGSRTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 13:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52892 "EHLO
+        id S231338AbjGSRUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 13:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjGSRSy (ORCPT
+        with ESMTP id S230484AbjGSRUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:18:54 -0400
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFBD189;
-        Wed, 19 Jul 2023 10:18:53 -0700 (PDT)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-52166c7f77cso8685885a12.2;
-        Wed, 19 Jul 2023 10:18:53 -0700 (PDT)
+        Wed, 19 Jul 2023 13:20:09 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E4B197
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:20:07 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbdfda88f4so65784045e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:20:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689787206; x=1692379206;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tryqWINbuaEc88iTrVyHMsqPdFzMjV4Usg4i5lKUzxg=;
+        b=BFhym1rSHwx5Or+Pii0FqmZpyk6fWpZjZKuo/9KNL6cngJ1bY3HlQ6rlV5EcJyFRLw
+         31K4RtM628f51v3S8c5Qi0K+lV2LP3yEBUDlYdKQn5eZ1TR5bO0zO4gWNUqeMYgLprrV
+         vsj44XHkZLFHVH7Lhy1WesZcIkZQIaceksaTSd13I8/6O1HJMGeEhvgpy6H/EzHjdzoZ
+         j8BPZjt1gCWP0rBB0a5szfWaRB71TzqswPLfbYyCb/6N/CQ6Cu6X5jO8liFDTkAIa4Ja
+         ywl1hQ9WidgV5njtS2Ml2ZnGxg8JPyfLbqHf+t+NNiz6J5eWzBNa4yr/dQEH8Ul2zmMk
+         xSOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689787132; x=1692379132;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HJ8zyPA28H2PBLz8lr4+2NlPFh5DMTLYGFS9mgafKcY=;
-        b=EdmHU8N936Tg5yFldrBTh0UBsL6U1yjpXDu+8EdaGEJtcAulimdbkyDbmHUIzsL5/T
-         Z8NQrLkOu6HA+qdYGGriwFa5KOuZzBxRx+JpK664QqO+9AnKHUPlSas7Hya1fsqtPGTD
-         N9xVypkjYvVFsupXiUKKjENvPYFSBRMO6vy8SA3jjC+7jeRBxJHxZbvQzBu935/mfnNR
-         l75p3QHodqDfMZyLZIHtPDtXb7qWsH6Ka3PBGswUgWZ0O7MtZWDG8j0HkYKkyZC3xQhF
-         8IFpt5f7raGa4CB5j+sE6tTLhy44Rw9lthkKrWju+8Wr0Py/qlfbBffBUvHgRRHP7GPK
-         UsPQ==
-X-Gm-Message-State: ABy/qLaQFG54qtG1V1rD6l97CZPsAKtY2vngbjFaeqWmvPAfoOFBBUnM
-        sPPjDgtmbHAf1KdqMKRFkik=
-X-Google-Smtp-Source: APBJJlEOJvQn9kSsZWsRdnFrSThCTxwiUITIx9D1MPZqWcvz6lb1LwjVA9hbY8O/MmLpzg1hUSocNw==
-X-Received: by 2002:a05:6402:1a31:b0:51d:96d2:6578 with SMTP id be17-20020a0564021a3100b0051d96d26578mr3359383edb.28.1689787131622;
-        Wed, 19 Jul 2023 10:18:51 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-017.fbsv.net. [2a03:2880:31ff:11::face:b00c])
-        by smtp.gmail.com with ESMTPSA id k19-20020a05640212d300b00521d1c34b23sm371987edx.83.2023.07.19.10.18.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 10:18:51 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 10:18:49 -0700
-From:   Breno Leitao <leitao@debian.org>
-To:     Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc:     alexander@mihalicyn.com, ast@kernel.org, davem@davemloft.net,
-        dhowells@redhat.com, edumazet@google.com, kernelxing@tencent.com,
-        kuba@kernel.org, leit@meta.com, linux-kernel@vger.kernel.org,
-        lucien.xin@gmail.com, martin.lau@kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com
-Subject: Re: [PATCH net-next] net: Use _K_SS_MAXSIZE instead of absolute value
-Message-ID: <ZLga+cBUKkN5Fnn7@gmail.com>
-References: <20230719084415.1378696-1-leitao@debian.org>
- <20230719170445.30993-1-kuniyu@amazon.com>
+        d=1e100.net; s=20221208; t=1689787206; x=1692379206;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tryqWINbuaEc88iTrVyHMsqPdFzMjV4Usg4i5lKUzxg=;
+        b=S22TErZUveO0SBEJqqI7md2hhj2nBtqT6yIVS6x5bDfUb229bprkf2RgXTb3Agmfsf
+         QTAAByNuDtzuWWqWzdLC2sgp0QQaRu2YgodN/6QEnSqkKdVGTP1WfYS+kL9NhbK9CiJ/
+         2x6maUrjaqLPB2mZ37ihJZ13ADzJfpVQvoV6HFRHG/zQPongJFcE0rrPCm4TSP68BAYt
+         jAyAZQK1pcXPPVOVSU0IrbKQ34o9E47AjAajaM/TfFxoVS1mtkNixvRnI4bmn0ydEgW/
+         9TzoDhorOGGc8RArmVN3EfnX8jTryt/Ny10ratCvDltmi8HMUXnnir0DZkrdb6EtSBKB
+         BJhg==
+X-Gm-Message-State: ABy/qLbcGpg2yLeo8t/XTMcnysH0iA6fOeFFWYj9JubIlYcveHszuZh+
+        aFUkVPGTrwQMnJsiVaGr1ZLCdA==
+X-Google-Smtp-Source: APBJJlERLjXGvjJSJjU1AMkKL+pqkSk/vqOk8N4LMFX++aVs21FOCvyEtjc8FdvLbnLuf1/njZiDZw==
+X-Received: by 2002:a05:600c:2113:b0:3fb:ba04:6d5d with SMTP id u19-20020a05600c211300b003fbba046d5dmr49523wml.12.1689787206013;
+        Wed, 19 Jul 2023 10:20:06 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id p3-20020a05600c204300b003fc3b03e41esm2485270wmg.1.2023.07.19.10.20.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 10:20:05 -0700 (PDT)
+Message-ID: <3bff674f-791b-74bd-da1c-13b6596ea276@linaro.org>
+Date:   Wed, 19 Jul 2023 19:20:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230719170445.30993-1-kuniyu@amazon.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: adding MCP3564 ADC
+Content-Language: en-US
+To:     Marius.Cristea@microchip.com, jic23@kernel.org, lars@metafoo.de,
+        robh+dt@kernel.org
+Cc:     conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230714150051.637952-1-marius.cristea@microchip.com>
+ <20230714150051.637952-2-marius.cristea@microchip.com>
+ <d0682516-28aa-dbfc-81d1-33300c669835@linaro.org>
+ <3d5cc96388f27b1f03f5a1d3bee7113686548e43.camel@microchip.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <3d5cc96388f27b1f03f5a1d3bee7113686548e43.camel@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 10:04:45AM -0700, Kuniyuki Iwashima wrote:
-> From: Breno Leitao <leitao@debian.org>
-> Date: Wed, 19 Jul 2023 01:44:12 -0700
-> > Looking at sk_getsockopt function, it is unclear why 128 is a magical
-> > number.
-> > 
-> > Use the proper macro, so it becomes clear to understand what the value
-> > mean, and get a reference where it is coming from (user-exported API).
-> > 
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
-> > ---
-> >  net/core/sock.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/net/core/sock.c b/net/core/sock.c
-> > index 9370fd50aa2c..58b6f00197d6 100644
-> > --- a/net/core/sock.c
-> > +++ b/net/core/sock.c
-> > @@ -1815,7 +1815,7 @@ int sk_getsockopt(struct sock *sk, int level, int optname,
-> >  
-> >  	case SO_PEERNAME:
-> >  	{
-> > -		char address[128];
-> > +		char address[_K_SS_MAXSIZE];
+On 19/07/2023 17:40, Marius.Cristea@microchip.com wrote:
+> Hi Krzysztof,
 > 
-> I guess you saw a bug caught by the fortified memcpy(), but this
-> doesn't fix it properly.
+>>> +
+>>> +patternProperties:
+>>> +  "^channel@([0-9]|([1-7][0-9]))$":
+>>> +    $ref: adc.yaml
+>>> +    type: object
+>>
+>> Missing unevaluatedProperties: false.
+>>
+>> Open other bindings and look how it is done there.
+>>
+>>> +    description: Represents the external channels which are
+>>> connected to the ADC.
+>>> +
+>>> +    properties:
+>>> +      reg:
+>>> +        description: The channel number in single-ended and
+>>> differential mode.
+>>> +        minimum: 0
+>>> +        maximum: 79
+>>> +
+>>> +      diff-channels: true
+>>
+>> Why? Drop, unless you want to say there all other ADC properties are
+>> invalid for this type of device (device, not driver!).
+>>
+>>> +
+>>> +    required:
+>>> +      - reg
+>>
+>>
+> 
+> All other ADC properties are valid.
 
-Not really, in fact. I was reading this code, and I found this
-discussion a while ago, where I got the idea:
+So drop what I questioned.
 
-https://lore.kernel.org/lkml/20140930.005925.995989898229686123.davem@davemloft.net/
+
+Best regards,
+Krzysztof
+
