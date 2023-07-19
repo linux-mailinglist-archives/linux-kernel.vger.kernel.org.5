@@ -2,54 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7604F75A180
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB4375A183
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbjGSWNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 18:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51664 "EHLO
+        id S229868AbjGSWNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 18:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbjGSWNQ (ORCPT
+        with ESMTP id S230128AbjGSWNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 18:13:16 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC431BCF;
-        Wed, 19 Jul 2023 15:13:15 -0700 (PDT)
-Received: from mercury (unknown [185.254.75.45])
+        Wed, 19 Jul 2023 18:13:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A4F1FED;
+        Wed, 19 Jul 2023 15:13:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3F3416607058;
-        Wed, 19 Jul 2023 23:13:14 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689804794;
-        bh=4wqdNSX9wNybCZxff7444C8uT2sNtfc0g+td0eQpgI0=;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 34E6661840;
+        Wed, 19 Jul 2023 22:13:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9479C433C8;
+        Wed, 19 Jul 2023 22:13:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689804803;
+        bh=9mhog5cEC4jCgLXESNkH8Vrr7nDt6CeB9bPN18iRiNI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aiXz364rvyXX/UVEKiGgmuz6zV4KHRUpdVl07ZQrLlDN9bH/Zcn0VhhIZMancz3dP
-         Cha1sGFSYIxpdhEvPhZ6zMLhwvL0YplUf8w3PT/LCTcHMZHN436wyr/w9oOedpLF9s
-         UsFS6MYgl/B2eHpgTvgrg7IEhuxvQ3DJFWjRn7KqsJx32fqgmeZ9StglgSHJcGUV2t
-         4gX3HTTSqf9z7xFzqeri8jEN07tpZ2w7Uny6NJvpH5VTc4lbjKd1qIaz1pWniZtl/7
-         I2KdsF0SiDSlIl8/hiTndaZZdd7X+QLlSpwd6p6I+0NlwiM7UwSyysEeb9kWCHo59L
-         FIAy+xHi2EN6g==
-Received: by mercury (Postfix, from userid 1000)
-        id 836221062877; Thu, 20 Jul 2023 00:13:11 +0200 (CEST)
-Date:   Thu, 20 Jul 2023 00:13:11 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] power: supply: core: Avoid duplicate hwmon device from
- thermal framework
-Message-ID: <20230719221311.a3esxsykojkxmyzw@mercury.elektranox.org>
-References: <20230613090726.1358199-1-wenst@chromium.org>
+        b=LRwSja7i1CQgKB9XQYh+QyWUoWstQ49qNtCB9iXIuGgoS3XxJhCxpva2LrPrMRiU5
+         uBqo2Phhs6Ly5amnSUfJv2cjMtIntJKUQVB9WCPpiGsDq1hdt15j2rXjEM/di8STuB
+         4AtPTy/KV5sl0MQum3efWRfASssJaHvMhpgvJPeHtrz5qkcd8apV+QBzR836rgBlSC
+         u6L2ldh9KuUaKN0vMQm3Xxg8AI+m783g74RRZaTid3wPQ2wZC6gXnK67Z6i55Yxd0J
+         jeMFWnTh8SW7K4bS1UNuiiVnvn3u9+2OZnpUTpTGaxrc8fNIR8IRySaNR5iDGGu0QC
+         N64XRlwBI/mGg==
+Received: (nullmailer pid 870826 invoked by uid 1000);
+        Wed, 19 Jul 2023 22:13:20 -0000
+Date:   Wed, 19 Jul 2023 16:13:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Ungerer <gerg@kernel.org>,
+        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v3 2/9] dt-bindings: net: mediatek,net: add
+ mt7988-eth binding
+Message-ID: <20230719221320.GA865753-robh@kernel.org>
+References: <cover.1689714290.git.daniel@makrotopia.org>
+ <584b459ebb0a74a2ce6ca661f1148f59b9014667.1689714291.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rucyhb2ezh5winuw"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230613090726.1358199-1-wenst@chromium.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+In-Reply-To: <584b459ebb0a74a2ce6ca661f1148f59b9014667.1689714291.git.daniel@makrotopia.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,77 +77,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 18, 2023 at 10:30:33PM +0100, Daniel Golle wrote:
+> Introduce DT bindings for the MT7988 SoC to mediatek,net.yaml.
+> The MT7988 SoC got 3 Ethernet MACs operating at a maximum of
+> 10 Gigabit/sec supported by 2 packet processor engines for
+> offloading tasks.
+> The first MAC is hard-wired to a built-in switch which exposes
+> four 1000Base-T PHYs as user ports.
+> It also comes with built-in 2500Base-T PHY which can be used
+> with the 2nd GMAC.
+> The 2nd and 3rd GMAC can be connected to external PHYs or provide
+> SFP(+) cages attached via SGMII, 1000Base-X, 2500Base-X, USXGMII,
+> 5GBase-KR or 10GBase-KR.
+> 
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>  .../devicetree/bindings/net/mediatek,net.yaml | 74 +++++++++++++++++--
+>  1 file changed, 69 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/mediatek,net.yaml b/Documentation/devicetree/bindings/net/mediatek,net.yaml
+> index 38aa3d97ee234..ae2062f3c1833 100644
+> --- a/Documentation/devicetree/bindings/net/mediatek,net.yaml
+> +++ b/Documentation/devicetree/bindings/net/mediatek,net.yaml
+> @@ -24,6 +24,7 @@ properties:
+>        - mediatek,mt7629-eth
+>        - mediatek,mt7981-eth
+>        - mediatek,mt7986-eth
+> +      - mediatek,mt7988-eth
+>        - ralink,rt5350-eth
+>  
+>    reg:
+> @@ -61,6 +62,12 @@ properties:
+>        Phandle to the mediatek hifsys controller used to provide various clocks
+>        and reset to the system.
+>  
+> +  mediatek,infracfg:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      Phandle to the syscon node that handles the path from GMAC to
+> +      PHY variants.
+> +
+>    mediatek,sgmiisys:
+>      $ref: /schemas/types.yaml#/definitions/phandle-array
+>      minItems: 1
+> @@ -229,11 +236,7 @@ allOf:
+>              - const: sgmii_ck
+>              - const: eth2pll
+>  
+> -        mediatek,infracfg:
+> -          $ref: /schemas/types.yaml#/definitions/phandle
+> -          description:
+> -            Phandle to the syscon node that handles the path from GMAC to
+> -            PHY variants.
+> +        mediatek,infracfg: true
 
---rucyhb2ezh5winuw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+You don't need this. What you need is 'mediatek,infracfg: false' in the 
+if/then schemas for the cases it should not be present.
 
-Hi,
-
-On Tue, Jun 13, 2023 at 05:07:23PM +0800, Chen-Yu Tsai wrote:
-> When the power supply device being registered supports a temperature
-> readout, the core registers a thermal zone for it. The thermal core
-> would register a hwmon device for that unless told otherwise.
->=20
-> When CONFIG_POWER_SUPPLY_HWMON is enabled, the power supply core creates
-> a hwmon device. This results in a second entry, one which has a better
-> name than the one registered through the thermal framework. It could
-> potentially have readouts other than temperature.
->=20
-> To simplify the result, tell the thermal framework to not register a
-> hwmon device if CONFIG_POWER_SUPPLY_HWMON is enabled. The result is
-> one hwmon device with all the readings the device supports.
-
-Thanks, queued.
-
--- Sebastian
-
->  drivers/power/supply/power_supply_core.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power/sup=
-ply/power_supply_core.c
-> index 3791aec69ddc..4aa466c945e2 100644
-> --- a/drivers/power/supply/power_supply_core.c
-> +++ b/drivers/power/supply/power_supply_core.c
-> @@ -1305,8 +1305,12 @@ static int psy_register_thermal(struct power_suppl=
-y *psy)
-> =20
->  	/* Register battery zone device psy reports temperature */
->  	if (psy_has_property(psy->desc, POWER_SUPPLY_PROP_TEMP)) {
-> +		/* Prefer our hwmon device and avoid duplicates */
-> +		struct thermal_zone_params tzp =3D {
-> +			.no_hwmon =3D IS_ENABLED(CONFIG_POWER_SUPPLY_HWMON)
-> +		};
->  		psy->tzd =3D thermal_zone_device_register(psy->desc->name,
-> -				0, 0, psy, &psy_tzd_ops, NULL, 0, 0);
-> +				0, 0, psy, &psy_tzd_ops, &tzp, 0, 0);
->  		if (IS_ERR(psy->tzd))
->  			return PTR_ERR(psy->tzd);
->  		ret =3D thermal_zone_device_enable(psy->tzd);
-> --=20
-> 2.41.0.162.gfafddb0af9-goog
->=20
-
---rucyhb2ezh5winuw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmS4X/MACgkQ2O7X88g7
-+pqJfRAAjHNNKuLGpBOVv5IMxKWPj26BmYVQkXIJmTWRDN4JjarIjYP7wvsugOtt
-lgvSzEjk5F1yvoKFSB+snP5z0Ti+rtIUQ/hyERmAu+fGPiOxXdl9u9OFwd6Hq3Pi
-ujNsW58KCIOb7im58OcFKCoWLmRxCIGiRT/pznVOBVVUDVSng9xGNGLnL6xUwYKd
-OXoZ9hI2wdKQq6YDWLY2Q/EcAJRoA/A/NI0Urz45FO21gHFPOXsLMDHBTI1qHIXt
-zF2GEbHBFlWUkll4Zi1A94uXM/t+QloKeeP7WJpyA8rgniVkiiqK2Vw6/wxALW1L
-f/kJ+e3elCWiQwJ0zAfSnpbPWDXTHqA1IEeA8Sah5/Z1ByxSqaJ0qN55uJBpKhFU
-1zwMi+1dGu7Yy/2X5VQ64bMrnxDFa3bcVNFqKZTRn4et9KjMtQazvRuEyebWUG22
-4FuV1VADBEhwoombXlsov/EtogjQmRCSyTyxclSE4vNo4fnSco5WMgjnNsZFsEYa
-JsAj6FTEijRDE8TOiQErCRvdYPBjlVqx/JXWtgRk32Ax+oKFB7LjW2Ocxn0kntKO
-/g/RolkLS21qK1o0DCmuFQdIUZelXtSiP82hGZJKsRySDKNnEhb+U2YTCRp/mH8P
-6QWMy0Bn40WJHB5zOYyqu1fkzBjv91ZmyQ578eA/j6rWsNz4TXY=
-=BfNy
------END PGP SIGNATURE-----
-
---rucyhb2ezh5winuw--
+Rob
