@@ -2,185 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B89759D91
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 20:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79402759D95
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 20:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbjGSSjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 14:39:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59236 "EHLO
+        id S229763AbjGSSky convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 19 Jul 2023 14:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjGSSji (ORCPT
+        with ESMTP id S229492AbjGSSkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 14:39:38 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1C6C6;
-        Wed, 19 Jul 2023 11:39:35 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 660A412007A;
-        Wed, 19 Jul 2023 21:39:33 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 660A412007A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1689791973;
-        bh=sc+94aLvgVUxBUEzSPbWOsr9WhtmbJCsOLteFFzOoLU=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-        b=ftS9UdnFVupfX9JxONl46s/RGEHl80jPk77NDDqzvRlD1qSq1jhJ6yXhfHaSPewnr
-         LEQ6tu0ClcfcCUU9btQ8pcnKoaAO2EJBXjugGbhFMHWzBlTJxypP0F3af+WF7YnUcT
-         qwRJV+UdIg9Tq/ng5S2MnxsHFZSDjXsqkqprkZ/FAn6+PAzMRaUZQlMaszmoB8jzPf
-         AAU7c/jMuvSi1AM8yvRzt0m4L7ILTyWgBLaRMTnYKOJhuMJljph7thz7MAefNZECdm
-         ASZdS2Hm97OvI4aj7PSdUXrCYM7KLsHLwhBPeZ4VRaDC7sbNbBsJ+UEFUFLlGc1JiM
-         1mc7vWHZzj6DA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 19 Jul 2023 14:40:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935C0B6;
+        Wed, 19 Jul 2023 11:40:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed, 19 Jul 2023 21:39:33 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 19 Jul
- 2023 21:39:33 +0300
-Date:   Wed, 19 Jul 2023 21:39:27 +0300
-From:   Dmitry Rokosov <ddrokosov@sberdevices.ru>
-To:     Rob Herring <robh@kernel.org>
-CC:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        Alex Helms <alexander.helms.jy@renesas.com>,
-        Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
-        <soc@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Hal Feng <hal.feng@starfivetech.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Emilio =?utf-8?B?TMOzcGV6?= <emilio@elopez.com.ar>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Michal Simek <michal.simek@amd.com>,
-        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-actions@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-rpi-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-oxnas@groups.io>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-sunxi@lists.linux.dev>,
-        <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH] clk: Explicitly include correct DT includes
-Message-ID: <20230719183927.c4ykdjw3iekmugzy@CAB-WSD-L081021>
-References: <20230714174342.4052882-1-robh@kernel.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 27D8D617E0;
+        Wed, 19 Jul 2023 18:40:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA141C433C7;
+        Wed, 19 Jul 2023 18:40:47 +0000 (UTC)
+Date:   Wed, 19 Jul 2023 14:40:46 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ajay Kaher <akaher@vmware.com>
+Cc:     "shuah@kernel.org" <shuah@kernel.org>,
+        "mhiramat@kernel.org" <mhiramat@kernel.org>,
+        Ching-lin Yu <chinglinyu@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-trace-kernel@vger.kernel.org" 
+        <linux-trace-kernel@vger.kernel.org>,
+        "lkp@intel.com" <lkp@intel.com>, Nadav Amit <namit@vmware.com>,
+        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        "er.ajay.kaher@gmail.com" <er.ajay.kaher@gmail.com>,
+        "srivatsa@csail.mit.edu" <srivatsa@csail.mit.edu>,
+        Tapas Kundu <tkundu@vmware.com>,
+        Vasavi Sirnapalli <vsirnapalli@vmware.com>
+Subject: Re: [PATCH v4 00/10] tracing: introducing eventfs
+Message-ID: <20230719144046.746af82e@gandalf.local.home>
+In-Reply-To: <899D0823-A1B2-4A6F-A5BA-0D707F41C3D4@vmware.com>
+References: <1689248004-8158-1-git-send-email-akaher@vmware.com>
+        <20230714185824.62556254@gandalf.local.home>
+        <883F9774-3E76-4346-9988-2788FAF0D55E@vmware.com>
+        <20230718094005.32516161@gandalf.local.home>
+        <2CD72098-08E2-4CAA-B74D-D8C44D318117@vmware.com>
+        <20230719102310.552d3356@gandalf.local.home>
+        <899D0823-A1B2-4A6F-A5BA-0D707F41C3D4@vmware.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230714174342.4052882-1-robh@kernel.org>
-User-Agent: NeoMutt/20220415
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 178730 [Jul 19 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: DDRokosov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 524 524 9753033d6953787301affc41bead8ed49c47b39d, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/19 15:29:00 #21641898
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 11:43:29AM -0600, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
+On Wed, 19 Jul 2023 18:37:12 +0000
+Ajay Kaher <akaher@vmware.com> wrote:
+
+> > Here's the reproducer (of both v3 splat and the bug I'm hitting now).
+> > 
+> > ~# echo 'p:sock_getattr 0xffffffff9b55cef0 sk=%di' > /sys/kernel/tracing/kprobe_events
+> > ~# ls /sys/kernel/debug/tracing/events/kprobes/sock_getattr/
+> > ~# echo '-:sock_getattr 0xffffffff9b55cef0 sk=%di' > /sys/kernel/tracing/kprobe_events  
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
+> I tried above steps on v4 but couldn’t reproduce:
+> 
+> root@photon-6 [ ~/sdb/linux ]# echo 'p:sock_getattr 0xffffffff9b55cef0 sk=%di' > /sys/kernel/tracing/kprobe_events
+> root@photon-6 [ ~/sdb/linux ]# ls /sys/kernel/debug/tracing/events/kprobes/sock_getattr/
+> enable  filter  format  id  trigger
+> root@photon-6 [ ~/sdb/linux ]# echo '-:sock_getattr 0xffffffff9b55cef0 sk=%di' > /sys/kernel/tracing/kprobe_events
+> -bash: echo: write error: No such file or directory
+> 
+> I have doubt on call_srcu(), it may first end the grace period for parent then for child. If this is true then free_list
+> will have unordered list and could cause problem.
 
-[...]
+I modified the srcu portion a bit. Will post soon. I think I got something
+working.
 
-For
+I'm having doubt that the dput()s were needed in the eventfs_remove_rec(),
+as the d_invalidate() appears to be enough. I'm still testing.
 
->  drivers/clk/meson/a1-peripherals.c               | 2 +-
->  drivers/clk/meson/a1-pll.c                       | 2 +-
+>  
+> 
+> > 
+> > v3 gives me (and my updates too)
+> > 
+> > ======================================================
+> > WARNING: possible circular locking dependency detected
+> > 6.5.0-rc1-test+ #576 Not tainted
+> > ------------------------------------------------------
+> > trace-cmd/840 is trying to acquire lock:
+> > ffff8881007e5de0 (&sb->s_type->i_mutex_key#5){++++}-{3:3}, at: dcache_dir_open_wrapper+0xc1/0x1b0
+> > 
+> > but task is already holding lock:
+> > ffff888103ad7e70 (eventfs_rwsem/1){.+.+}-{3:3}, at: dcache_dir_open_wrapper+0x6f/0x1b0
+> > 
+> > which lock already depends on the new lock.
+> > 
+> > 
+> > the existing dependency chain (in reverse order) is:
+> >   
+> > -> #1 (eventfs_rwsem/1){.+.+}-{3:3}:  
+> >        down_read_nested+0x41/0x180
+> >        eventfs_root_lookup+0x42/0x120
+> >        __lookup_slow+0xff/0x1b0
+> >        walk_component+0xdb/0x150
+> >        path_lookupat+0x67/0x1a0
+> >        filename_lookup+0xe4/0x1f0
+> >        vfs_statx+0x9e/0x180
+> >        vfs_fstatat+0x51/0x70
+> >        __do_sys_newfstatat+0x3f/0x80
+> >        do_syscall_64+0x3a/0xc0
+> >        entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> >   
+> > -> #0 (&sb->s_type->i_mutex_key#5){++++}-{3:3}:  
+> >        __lock_acquire+0x165d/0x2390
+> >        lock_acquire+0xd4/0x2d0
+> >        down_write+0x3b/0xd0
+> >        dcache_dir_open_wrapper+0xc1/0x1b0
+> >        do_dentry_open+0x20c/0x510
+> >        path_openat+0x7ad/0xc60
+> >        do_filp_open+0xaf/0x160
+> >        do_sys_openat2+0xab/0xe0
+> >        __x64_sys_openat+0x6a/0xa0
+> >        do_syscall_64+0x3a/0xc0
+> >        entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> > 
+> > other info that might help us debug this:
+> > 
+> >  Possible unsafe locking scenario:
+> > 
+> >        CPU0                    CPU1
+> >        ----                    ----
+> >   rlock(eventfs_rwsem/1);
+> >                                lock(&sb->s_type->i_mutex_key#5);
+> >                                lock(eventfs_rwsem/1);
+> >   lock(&sb->s_type->i_mutex_key#5);
+> > 
+> >  *** DEADLOCK ***
+> > 
+> > 1 lock held by trace-cmd/840:
+> >  #0: ffff888103ad7e70 (eventfs_rwsem/1){.+.+}-{3:3}, at: dcache_dir_open_wrapper+0x6f/0x1b0
+> > 
+> > stack backtrace:
+> > CPU: 7 PID: 840 Comm: trace-cmd Not tainted 6.5.0-rc1-test+ #576
+> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > Call Trace:
+> >  <TASK>
+> >  dump_stack_lvl+0x57/0x90
+> >  check_noncircular+0x14b/0x160
+> >  __lock_acquire+0x165d/0x2390
+> >  lock_acquire+0xd4/0x2d0
+> >  ? dcache_dir_open_wrapper+0xc1/0x1b0
+> >  down_write+0x3b/0xd0
+> >  ? dcache_dir_open_wrapper+0xc1/0x1b0
+> >  dcache_dir_open_wrapper+0xc1/0x1b0
+> >  ? __pfx_dcache_dir_open_wrapper+0x10/0x10
+> >  do_dentry_open+0x20c/0x510
+> >  path_openat+0x7ad/0xc60
+> >  do_filp_open+0xaf/0x160
+> >  do_sys_openat2+0xab/0xe0
+> >  __x64_sys_openat+0x6a/0xa0
+> >  do_syscall_64+0x3a/0xc0
+> >  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> > RIP: 0033:0x7f1743267e41
+> > Code: 44 24 18 31 c0 41 83 e2 40 75 3e 89 f0 25 00 00 41 00 3d 00 00 41 00 74 30 89 f2 b8 01 01 00 00 48 89 fe bf 9c ff ff ff 0f 05 <48> 3d 00 f0 ff ff 77 3f 48 8b 54 24 18 64 48 2b 14 25 28 00 00 00
+> > RSP: 002b:00007ffec10ff5d0 EFLAGS: 00000287 ORIG_RAX: 0000000000000101
+> > RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f1743267e41
+> > RDX: 0000000000090800 RSI: 00007ffec10ffdb0 RDI: 00000000ffffff9c
+> > RBP: 00007ffec10ffda0 R08: 00007ffec11003e0 R09: 0000000000000040
+> > R10: 0000000000000000 R11: 0000000000000287 R12: 00007ffec11003e0
+> > R13: 0000000000000040 R14: 0000000000000000 R15: 00007ffec110034b
+> >  </TASK>
+> >   
+> 
+> This is expected from v3 (just ignore as of now), if eventfs_set_ef_status_free crash not
+> reproduced on v3 then it’s v4 issue.
 
-Reviewed-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
+The issue comes from fixing the above ;-)
 
-[...]
-
--- 
-Thank you,
-Dmitry
+-- Steve
