@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21304759F3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C7A759F43
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbjGSUE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46956 "EHLO
+        id S231370AbjGSUFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbjGSUEz (ORCPT
+        with ESMTP id S231361AbjGSUFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:04:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68922F0;
-        Wed, 19 Jul 2023 13:04:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B0E8E61807;
-        Wed, 19 Jul 2023 20:04:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08D7CC433C8;
-        Wed, 19 Jul 2023 20:04:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689797091;
-        bh=0iKypu0kymTeD57KjtrMnZG3ybCTpOA4DfWhM2jjUOU=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=g4iAn8M9Y2zWazYP8g4VgHvj9qbowkKoguznJHd7M+5DI1D6NecNuwAsSEo2OpkSH
-         xedrocvcG6ll1IIw5g1HA7Z6zzqRggLca8gUoCIFvv0MsafwvDHpYp1Mln46w9IMAX
-         Yr5yDxfkpxY6SePMBzj0kJyjlrDa+CuabMqEWFqGWSTOybstNm0CPrz4R7Xy9mhd4v
-         +Qzhp7SP09R7IXPzkDNeQyXgU0cXVPx4hGcgv9SiRIJEsYwzLKYUVMPvqfUUTPs8++
-         lWTbCo//XArPpW0HDII69NIDvFx2kzTqHgn+DLDxp9Z8g0/GS6B8VGOCHCwF0YJKiW
-         3NNjPA9rMrioQ==
-Message-ID: <f726290fe0678217f2e17b6a68c20d42.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+        Wed, 19 Jul 2023 16:05:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E264B1FD8;
+        Wed, 19 Jul 2023 13:04:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hXgD7wQYE14rWhctIq9t136yN3UHwMAmBUim8bApvMM=; b=gStURRZCpkgITnErx9hIkk61Lx
+        DF8f8kxmD+8R85SGQnqpxzXLL+lDwRtceFxe8OWmayO+7Vi/sqalrpsGF/YWCtk3UOgTaZx6jAP+M
+        2lKQOosAAN9B6+LdTTh5e9ImUwacnGeulmXuR6INNrL7WEOKGF0T+1jrodQGiyou+xP8/D00r6jH8
+        DuORStFBx5r3/aellYX/2tWZo/DbvbKjKQoQfDyS6gsg4yuuH3fJjiU7sHOTDnp+JT617dwu2gvoK
+        PPnnEnTkky0WjE1Oxw1U28aySqR4ba0H27m8VvNzuzAI1llU2+v+wDLuCd7aJyqROh86hFVvp82k3
+        l/M7Q66A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qMDPp-006Qbx-7h; Wed, 19 Jul 2023 20:04:53 +0000
+Date:   Wed, 19 Jul 2023 21:04:53 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Matt Whitlock <kernel@mattwhitlock.name>,
+        David Howells <dhowells@redhat.com>, netdev@vger.kernel.org,
+        Dave Chinner <david@fromorbit.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@kvack.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/4] splice: Fix corruption of spliced data after
+ splice() returns
+Message-ID: <ZLhB5ZTFpqRBTlpJ@casper.infradead.org>
+References: <20230629155433.4170837-1-dhowells@redhat.com>
+ <20230629155433.4170837-2-dhowells@redhat.com>
+ <CAJfpegsJuvXJDcXpo9T19Gw0tDuvyOJdv44Y2bt04MEf1JLxGg@mail.gmail.com>
+ <c634a18e-9f2b-4746-bd8f-aa1d41e6ddf7@mattwhitlock.name>
+ <CAJfpegvq4M_Go7fHiWVBBkrK6h4ChLqQTd0+EOKbRWZDcVerWA@mail.gmail.com>
+ <ZLg9HbhOVnLk1ogA@casper.infradead.org>
+ <CAJfpegtYQXgAyejoYWRVkf+9y91O70jaTu+mm+3zhnGPJhKwcA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230710093206.18894-1-quic_devipriy@quicinc.com>
-References: <20230710093206.18894-1-quic_devipriy@quicinc.com>
-Subject: Re: [PATCH] clk: qcom: clk-alpha-pll: Use determine_rate instead of round_rate
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     quic_srichara@quicinc.com, quic_sjaganat@quicinc.com,
-        quic_kathirav@quicinc.com, quic_anusha@quicinc.com,
-        quic_saahtoma@quicinc.com
-To:     Devi Priya <quic_devipriy@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mturquette@baylibre.com
-Date:   Wed, 19 Jul 2023 13:04:48 -0700
-User-Agent: alot/0.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJfpegtYQXgAyejoYWRVkf+9y91O70jaTu+mm+3zhnGPJhKwcA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,106 +61,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Devi Priya (2023-07-10 02:32:06)
-> @@ -1094,25 +1099,25 @@ static const struct clk_div_table clk_alpha_2bit_=
-div_table[] =3D {
->         { }
->  };
-> =20
-> -static long
-> -clk_alpha_pll_postdiv_round_rate(struct clk_hw *hw, unsigned long rate,
-> -                                unsigned long *prate)
-> +static int clk_alpha_pll_postdiv_determine_rate(struct clk_hw *hw,
-> +                                               struct clk_rate_request *=
-req)
->  {
->         struct clk_alpha_pll_postdiv *pll =3D to_clk_alpha_pll_postdiv(hw=
-);
->         const struct clk_div_table *table;
-> +       unsigned long rate =3D req->rate;
-> =20
->         if (pll->width =3D=3D 2)
->                 table =3D clk_alpha_2bit_div_table;
->         else
->                 table =3D clk_alpha_div_table;
-> =20
-> -       return divider_round_rate(hw, rate, prate, table,
-> -                                 pll->width, CLK_DIVIDER_POWER_OF_TWO);
-> +       req->rate =3D divider_round_rate(hw, rate, &req->best_parent_rate=
-, table,
+On Wed, Jul 19, 2023 at 09:56:44PM +0200, Miklos Szeredi wrote:
+> On Wed, 19 Jul 2023 at 21:44, Matthew Wilcox <willy@infradead.org> wrote:
+> > So what's the API that provides the semantics of _copying_?
+> 
+> What's your definition of copying?
 
-Can you use divider_determine_rate() instead?
-
-> +                                      pll->width, CLK_DIVIDER_POWER_OF_T=
-WO);
-> +       return 0;
->  }
-> =20
-> -static long
-> -clk_alpha_pll_postdiv_round_ro_rate(struct clk_hw *hw, unsigned long rat=
-e,
-> -                                   unsigned long *prate)
-> +static int clk_alpha_pll_postdiv_determine_ro_rate(struct clk_hw *hw,
-> +                                                  struct clk_rate_reques=
-t *req)
->  {
->         struct clk_alpha_pll_postdiv *pll =3D to_clk_alpha_pll_postdiv(hw=
-);
->         u32 ctl, div;
-[...]
-> @@ -1452,14 +1459,16 @@ clk_trion_pll_postdiv_recalc_rate(struct clk_hw *=
-hw, unsigned long parent_rate)
->         return (parent_rate / div);
->  }
-> =20
-> -static long
-> -clk_trion_pll_postdiv_round_rate(struct clk_hw *hw, unsigned long rate,
-> -                                unsigned long *prate)
-> +static int
-> +clk_trion_pll_postdiv_determine_rate(struct clk_hw *hw,
-> +                                    struct clk_rate_request *req)
->  {
->         struct clk_alpha_pll_postdiv *pll =3D to_clk_alpha_pll_postdiv(hw=
-);
-> =20
-> -       return divider_round_rate(hw, rate, prate, pll->post_div_table,
-> -                                 pll->width, CLK_DIVIDER_ROUND_CLOSEST);
-> +       req->rate =3D divider_round_rate(hw, req->rate, &req->best_parent=
-_rate,
-
-divider_determine_rate()?
-
-> +                                      pll->post_div_table, pll->width,
-> +                                      CLK_DIVIDER_ROUND_CLOSEST);
-> +       return 0;
->  };
-> =20
->  static int
-> @@ -1485,18 +1494,21 @@ clk_trion_pll_postdiv_set_rate(struct clk_hw *hw,=
- unsigned long rate,
-> =20
->  const struct clk_ops clk_alpha_pll_postdiv_trion_ops =3D {
->         .recalc_rate =3D clk_trion_pll_postdiv_recalc_rate,
-> -       .round_rate =3D clk_trion_pll_postdiv_round_rate,
-> +       .determine_rate =3D clk_trion_pll_postdiv_determine_rate,
->         .set_rate =3D clk_trion_pll_postdiv_set_rate,
->  };
->  EXPORT_SYMBOL_GPL(clk_alpha_pll_postdiv_trion_ops);
-> =20
-> -static long clk_alpha_pll_postdiv_fabia_round_rate(struct clk_hw *hw,
-> -                               unsigned long rate, unsigned long *prate)
-> +static int
-> +clk_alpha_pll_postdiv_fabia_determine_rate(struct clk_hw *hw,
-> +                                          struct clk_rate_request *req)
->  {
->         struct clk_alpha_pll_postdiv *pll =3D to_clk_alpha_pll_postdiv(hw=
-);
-> =20
-> -       return divider_round_rate(hw, rate, prate, pll->post_div_table,
-> -                               pll->width, CLK_DIVIDER_ROUND_CLOSEST);
-> +       req->rate =3D divider_round_rate(hw, req->rate, &req->best_parent=
-_rate,
-> +                                      pll->post_div_table, pll->width,
-> +                                       CLK_DIVIDER_ROUND_CLOSEST);
-
-divider_determine_rate()?
+Future modifications to the pagecache do not affect the data after the
+syscall has returned success.  Modifications to the pagecache while
+the syscall is in progress may or may not affect the data received at
+the destination.
