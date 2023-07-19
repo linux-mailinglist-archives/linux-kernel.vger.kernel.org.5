@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3913375A25F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AEE175A264
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbjGSWsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 18:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
+        id S230506AbjGSWs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 18:48:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbjGSWro (ORCPT
+        with ESMTP id S231134AbjGSWru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 18:47:44 -0400
+        Wed, 19 Jul 2023 18:47:50 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC56210B;
-        Wed, 19 Jul 2023 15:47:35 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 22:47:33 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9593C2127;
+        Wed, 19 Jul 2023 15:47:37 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 22:47:34 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1689806853;
+        s=2020; t=1689806855;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=bjEn3JqcSQo1gJAI2nh37QcddKb+X0YfjVkcDqUbRNE=;
-        b=WVJLfvckgsYf1Hc0dfZS90Leuokjt+X2ZgJ6u7ZK9/IvltI96fj2KJtbstixVjGl4ukqXo
-        yPiMPDyrieXIQEXVhHpV0cYS1tGEmOFSyFweQ1VSb749J6bAggXEEjWSm27tXHqXsC36Kt
-        XanxdqcYBvzVfWT0ucq/Ouezcq5Sz1hqEEXBMiInrKVpH7yOejqSgJb7DnUevw85Q+t3/h
-        n1eFDN6ZGuhFP9fUbK6huSDDTvA1A5Uh7gy5LZN1pUMJX/spdP/ve30F1/cn8+mLv+4CDr
-        QU8eJFMM9J16YeY53eElJxIBmFf0L81uNe9z2TuKSpFmvROxQeofOGXH8SW6UA==
+        bh=6RaDc0uxTpDv+FQGSYEtH1QqNCE6dth2JPIYxw7pRKE=;
+        b=Jht+gsbTQDV1VCi8uZEMOvuiK5c6n6x9UXgxsGfTLtlBllB+VUElmVc1jqmMBKoWL+NOqG
+        Rt3Cv9+9fOv+MGiEw/u4ewkBc/+vocb0tk5zV312yurGxj7axEEQjt7KVuDoEj84/M4usW
+        m3TeOo01xMEUszXRM3igkhx7jLjSmLgdrFtrzosSICt/4aYhFMydMu4rHubhpWZ2e3bllM
+        5viVMS0UBQFqxGIdUFUtOLQO08WGAMdQ5jPl0eW1rNKNgNWRsCg6fqqru04VJgXqtiZ3Ih
+        cWiseo6d4N3XqEGcyxMLea0C4rjjGNfa3Vcc3KUPq/W0E8GvuTUEXxdZ+Jqx1w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1689806853;
+        s=2020e; t=1689806855;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=bjEn3JqcSQo1gJAI2nh37QcddKb+X0YfjVkcDqUbRNE=;
-        b=MiafcrqqFlX8u0opRaYwdc/OFNts5yQNAsP82i8AlkbmzyEV7gj0FfuWRb6SzcbbGbexGy
-        ld/H6Ka21jtyUHAw==
+        bh=6RaDc0uxTpDv+FQGSYEtH1QqNCE6dth2JPIYxw7pRKE=;
+        b=HkBiGbWW/TsWnjYg++SaZzsm818kzBfJRCrr/5RHSBWCEvoyI/zUxNvRG7N2pj2GTsShtg
+        wqYdvqzoMHEr8/CA==
 From:   "tip-bot2 for Rick Edgecombe" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/shstk] x86/fpu: Add helper for modifying xstate
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+Subject: [tip: x86/shstk] x86/mm: Teach pte_mkwrite() about stack memory
+Cc:     Rick Edgecombe <rick.p.edgecombe@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "Borislav Petkov (AMD)" <bp@alien8.de>,
         Kees Cook <keescook@chromium.org>,
         "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Deepak Gupta <debug@rivosinc.com>,
         Pengfei Xu <pengfei.xu@intel.com>,
         John Allen <john.allen@amd.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <168980685323.28540.16408510205774794327.tip-bot2@tip-bot2>
+Message-ID: <168980685497.28540.12778915917294389214.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,97 +67,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/shstk branch of tip:
 
-Commit-ID:     b89e93a76d9b525b72e5684c8187ab3e83052337
-Gitweb:        https://git.kernel.org/tip/b89e93a76d9b525b72e5684c8187ab3e83052337
+Commit-ID:     b497e52ddb2ab750b00d8cc78209613558fc503b
+Gitweb:        https://git.kernel.org/tip/b497e52ddb2ab750b00d8cc78209613558fc503b
 Author:        Rick Edgecombe <rick.p.edgecombe@intel.com>
-AuthorDate:    Mon, 12 Jun 2023 17:10:51 -07:00
+AuthorDate:    Mon, 12 Jun 2023 17:10:47 -07:00
 Committer:     Rick Edgecombe <rick.p.edgecombe@intel.com>
-CommitterDate: Tue, 11 Jul 2023 14:12:49 -07:00
+CommitterDate: Tue, 11 Jul 2023 14:12:19 -07:00
 
-x86/fpu: Add helper for modifying xstate
+x86/mm: Teach pte_mkwrite() about stack memory
 
-Just like user xfeatures, supervisor xfeatures can be active in the
-registers or present in the task FPU buffer. If the registers are
-active, the registers can be modified directly. If the registers are
-not active, the modification must be performed on the task FPU buffer.
+If a VMA has the VM_SHADOW_STACK flag, it is shadow stack memory. So
+when it is made writable with pte_mkwrite(), it should create shadow
+stack memory, not conventionally writable memory. Now that all the places
+where shadow stack memory might be created pass a VMA into pte_mkwrite(),
+it can know when it should do this.
 
-When the state is not active, the kernel could perform modifications
-directly to the buffer. But in order for it to do that, it needs
-to know where in the buffer the specific state it wants to modify is
-located. Doing this is not robust against optimizations that compact
-the FPU buffer, as each access would require computing where in the
-buffer it is.
+So make pte_mkwrite() create shadow stack memory when the VMA has the
+VM_SHADOW_STACK flag. Do the same thing for pmd_mkwrite().
 
-The easiest way to modify supervisor xfeature data is to force restore
-the registers and write directly to the MSRs. Often times this is just fine
-anyway as the registers need to be restored before returning to userspace.
-Do this for now, leaving buffer writing optimizations for the future.
+This requires referencing VM_SHADOW_STACK in these functions, which are
+currently defined in pgtable.h, however mm.h (where VM_SHADOW_STACK is
+located) can't be pulled in without causing problems for files that
+reference pgtable.h. So also move pte/pmd_mkwrite() into pgtable.c, where
+they can safely reference VM_SHADOW_STACK.
 
-Add a new function fpregs_lock_and_load() that can simultaneously call
-fpregs_lock() and do this restore. Also perform some extra sanity
-checks in this function since this will be used in non-fpu focused code.
-
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
 Reviewed-by: Kees Cook <keescook@chromium.org>
 Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
+Acked-by: Deepak Gupta <debug@rivosinc.com>
 Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 Tested-by: John Allen <john.allen@amd.com>
 Tested-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/all/20230613001108.3040476-26-rick.p.edgecombe%40intel.com
+Link: https://lore.kernel.org/all/20230613001108.3040476-22-rick.p.edgecombe%40intel.com
 ---
- arch/x86/include/asm/fpu/api.h |  9 +++++++++
- arch/x86/kernel/fpu/core.c     | 18 ++++++++++++++++++
- 2 files changed, 27 insertions(+)
+ arch/x86/mm/pgtable.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
-index b475d9a..31089b8 100644
---- a/arch/x86/include/asm/fpu/api.h
-+++ b/arch/x86/include/asm/fpu/api.h
-@@ -82,6 +82,15 @@ static inline void fpregs_unlock(void)
- 		preempt_enable();
- }
+diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+index 4bfbe4c..0d66aeb 100644
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -875,6 +875,9 @@ int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
  
-+/*
-+ * FPU state gets lazily restored before returning to userspace. So when in the
-+ * kernel, the valid FPU state may be kept in the buffer. This function will force
-+ * restore all the fpu state to the registers early if needed, and lock them from
-+ * being automatically saved/restored. Then FPU state can be modified safely in the
-+ * registers, before unlocking with fpregs_unlock().
-+ */
-+void fpregs_lock_and_load(void);
+ pte_t pte_mkwrite(pte_t pte, struct vm_area_struct *vma)
+ {
++	if (vma->vm_flags & VM_SHADOW_STACK)
++		return pte_mkwrite_shstk(pte);
 +
- #ifdef CONFIG_X86_DEBUG_FPU
- extern void fpregs_assert_state_consistent(void);
- #else
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index 1015af1..375852c 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -753,6 +753,24 @@ void switch_fpu_return(void)
- }
- EXPORT_SYMBOL_GPL(switch_fpu_return);
+ 	pte = pte_mkwrite_novma(pte);
  
-+void fpregs_lock_and_load(void)
-+{
-+	/*
-+	 * fpregs_lock() only disables preemption (mostly). So modifying state
-+	 * in an interrupt could screw up some in progress fpregs operation.
-+	 * Warn about it.
-+	 */
-+	WARN_ON_ONCE(!irq_fpu_usable());
-+	WARN_ON_ONCE(current->flags & PF_KTHREAD);
+ 	return pte_clear_saveddirty(pte);
+@@ -882,6 +885,9 @@ pte_t pte_mkwrite(pte_t pte, struct vm_area_struct *vma)
+ 
+ pmd_t pmd_mkwrite(pmd_t pmd, struct vm_area_struct *vma)
+ {
++	if (vma->vm_flags & VM_SHADOW_STACK)
++		return pmd_mkwrite_shstk(pmd);
 +
-+	fpregs_lock();
-+
-+	fpregs_assert_state_consistent();
-+
-+	if (test_thread_flag(TIF_NEED_FPU_LOAD))
-+		fpregs_restore_userregs();
-+}
-+
- #ifdef CONFIG_X86_DEBUG_FPU
- /*
-  * If current FPU state according to its tracking (loaded FPU context on this
+ 	pmd = pmd_mkwrite_novma(pmd);
+ 
+ 	return pmd_clear_saveddirty(pmd);
