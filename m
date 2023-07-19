@@ -2,122 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB9C758A89
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 02:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A94758A8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 03:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbjGSA7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 20:59:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55966 "EHLO
+        id S229655AbjGSBA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 21:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjGSA7G (ORCPT
+        with ESMTP id S229511AbjGSBAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 20:59:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D83F1;
-        Tue, 18 Jul 2023 17:59:05 -0700 (PDT)
+        Tue, 18 Jul 2023 21:00:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E070D3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 18:00:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E02BA615F8;
-        Wed, 19 Jul 2023 00:59:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB324C433C8;
-        Wed, 19 Jul 2023 00:59:00 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C917C6160B
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 01:00:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 33EE2C433D9;
+        Wed, 19 Jul 2023 01:00:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689728344;
-        bh=m+DQXW5oOBBKiDq+gqnKrZk+GHqHZgupJCPrOePrckM=;
-        h=From:Date:Subject:To:Cc:From;
-        b=n1x+oYfzNnx9aUiCysKEHFobDcDr4Rg8FBVHYbKKgGjw1eA0amX9CDQSbWFbcW1l6
-         MRpxyj6VU17Ymgzan6vIympW5XZ5rI7KBJ6ogrlB6qw0hSTYWbBHh8m1PQtq3vQlmg
-         1SvenkkIGROm+l8lP9i5fDHl3Pe8IA+bzz0aqhOfcPbib1rfk5psWQpDg5Rv5jm6E8
-         qBZAOmHuYUZn1aOZHrUAt4wXj8ybfDFUbBdNY48N07T4KeYbwVwUydqrAA33Q84+pE
-         /9pmaNyooiG/alZVXiVwbJDx1SiVOKlUAPepH6nv4YCuf8o8PhRRkP+yQAKEwW0UGj
-         CQsa00oqxtPgg==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Wed, 19 Jul 2023 01:58:54 +0100
-Subject: [PATCH] thermal/drivers/sun8i: Free calibration nvmem after
- reading it
-MIME-Version: 1.0
+        s=k20201202; t=1689728423;
+        bh=T//e2pfQDKWOAe1HJ27LKkSwaU+uIiZkMChAZ58CtAA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=E1F7olaR4BCHYFgAN+enpj8qXdDxTtnlNpslqBeJYa1BahCneI2RcHV/J/2FYN1O/
+         NYlTmC0ZHoAfzuD9+3kDVZddTLPQ/iA6jKkkHZEncEY+2gKEuvCJYo52kdWis85abU
+         82yMDgzbHwsUU5PGw3NIIo6mDxGR4WnrSvYt35KAT9NdMzDqa5mv8dEuhrZecXvafz
+         4Qdd3SUlnxf/wdy07eExPypSljj6LbiRpv/FtWe/o2DQ4FumkCybPJChjjD6girwxy
+         DzcBc81e3WM98TueJE9JesVt//SerogbqIJQCSTxznHeZZjRUzi49jGow0NSdFgeTV
+         +voN87V9ZuvPA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1F65FE22AE5;
+        Wed, 19 Jul 2023 01:00:23 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230719-thermal-sun8i-free-nvmem-v1-1-f553d5afef79@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAE01t2QC/x3MywqDMBBG4VeRWXcgF2jVV5EuRP80AybKxEpBf
- HdDl9/inJMKVFCob05SHFJkzRX20dAUx/wBy1xNzjhvXrblPULTuHD55lY4KMD5SEjs0cFZb57
- woJpviiC//3p4X9cN1Am1wWoAAAA=
-To:     Vasily Khoruzhick <anarsoul@gmail.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1503; i=broonie@kernel.org;
- h=from:subject:message-id; bh=m+DQXW5oOBBKiDq+gqnKrZk+GHqHZgupJCPrOePrckM=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBktzVTom85+f/CsiB3tDq5aRty+QLY7GiyI2QXE
- 45eZI49muaJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZLc1UwAKCRAk1otyXVSH
- 0NPMB/sGvVdLD3D+bb6SkCXEGskTVhY3pzkBBDYQpA9CssD24JsbsElftzoztvE8sNMWNOTB9IL
- ZdzrPxjPkpJhNOxUee+uMML6eg0lVtsSIobZe1fWidnN8/B4EE4IzywkOXiQdpiDSFlGgDJ23FX
- Yrto56HDP/bE4eFMxQmixvC2sQ3ZsnSrbfU90AiDkJAs6cxrh6GaTKvZ8PUOxSd5PTGHsHnGgKY
- beBzLXkLBl62wFZXghrfoIOVPRwJpwOaaObPnrTiBt3agCEF6hKDWLLVpSYe4YU4I+9l5Xz1Lmp
- HMup7rGvqY+EJincYrtBcOQ0fwDXCmsJPnsoHr5iOj2KdsAs
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] net: mvpp2: debugfs: remove redundant parameter check in
+ three functions
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168972842312.21294.6659811622444707479.git-patchwork-notify@kernel.org>
+Date:   Wed, 19 Jul 2023 01:00:23 +0000
+References: <20230717025538.2848-1-duminjie@vivo.com>
+In-Reply-To: <20230717025538.2848-1-duminjie@vivo.com>
+To:     Minjie Du <duminjie@vivo.com>
+Cc:     simon.horman@corigine.com, mw@semihalf.com, linux@armlinux.org.uk,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sun8i thermal driver reads calibration data via the nvmem API at
-startup, updating the device configuration and not referencing the data
-again.  Rather than explicitly freeing the nvmem data the driver relies
-on devm_ to release it, even though the data is never referenced again.
-The allocation is still tracked so it's not leaked but this is notable
-when looking at the code and is a little wasteful so let's instead
-explicitly free the nvmem after we're done with it.
+Hello:
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- drivers/thermal/sun8i_thermal.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-diff --git a/drivers/thermal/sun8i_thermal.c b/drivers/thermal/sun8i_thermal.c
-index 195f3c5d0b38..af3098717e3c 100644
---- a/drivers/thermal/sun8i_thermal.c
-+++ b/drivers/thermal/sun8i_thermal.c
-@@ -286,7 +286,7 @@ static int sun8i_ths_calibrate(struct ths_device *tmdev)
- 	size_t callen;
- 	int ret = 0;
- 
--	calcell = devm_nvmem_cell_get(dev, "calibration");
-+	calcell = nvmem_cell_get(dev, "calibration");
- 	if (IS_ERR(calcell)) {
- 		if (PTR_ERR(calcell) == -EPROBE_DEFER)
- 			return -EPROBE_DEFER;
-@@ -316,6 +316,8 @@ static int sun8i_ths_calibrate(struct ths_device *tmdev)
- 
- 	kfree(caldata);
- out:
-+	if (!IS_ERR(calcell))
-+		nvmem_cell_put(calcell);
- 	return ret;
- }
- 
+On Mon, 17 Jul 2023 10:55:37 +0800 you wrote:
+> As per the comment above debugfs_create_dir(), it is not expected to
+> return an error, so an extra error check is not needed.
+> Drop the return check of debugfs_create_dir() in
+> mvpp2_dbgfs_c2_entry_init(), mvpp2_dbgfs_flow_tbl_entry_init()
+> and mvpp2_dbgfs_cls_init().
+> 
+> Fixes: b607cc61be41 ("net: mvpp2: debugfs: Allow reading the C2 engine table from debugfs")
+> Signed-off-by: Minjie Du <duminjie@vivo.com>
+> 
+> [...]
 
----
-base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
-change-id: 20230718-thermal-sun8i-free-nvmem-3e9e21306e3e
+Here is the summary with links:
+  - [v2] net: mvpp2: debugfs: remove redundant parameter check in three functions
+    https://git.kernel.org/netdev/net-next/c/f8e343326c1d
 
-Best regards,
+You are awesome, thank you!
 -- 
-Mark Brown <broonie@kernel.org>
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
