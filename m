@@ -2,65 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20430759F65
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD7B759F68
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 22:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbjGSUPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 16:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
+        id S230146AbjGSUQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 16:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjGSUPu (ORCPT
+        with ESMTP id S229512AbjGSUQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 16:15:50 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8B5F0;
-        Wed, 19 Jul 2023 13:15:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rB+P/56lu7O3zC0LIPSTAOAzaS17JJok0KIPwQYOIXA=; b=kzDXIdZTRsRlJEZwN0EAzp73cE
-        dAjEs49RfNesD/Nb7mfd1AWQbPPA3MViGY2fIsFlvWpFc54h2GcXwk6FHikg6no/0xZgnbYAKGs9I
-        TW5x9u/xdk+wm4LL0k17MCyaxIf5pI2y+ITO+RAipAC0Y+QdqrXaShDSFzyBLAm07683yNyczPnGa
-        glII9ZaClqeAUcTPdMXoHICoT4KMgKfdFU0eumMm0HjK/5Vwc3QjXIdnh8BZhs07RPWIf6JGmvZx0
-        D9/Czq/RhA16AVi7oh52z3UyFR0qdscYMWUembMewZ/9ntyW69I0wAqDACOLrfAsLVGYGzMeaAYUh
-        /0PgXO1g==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qMDaE-006R4i-Sh; Wed, 19 Jul 2023 20:15:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Wed, 19 Jul 2023 16:16:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C9BF0;
+        Wed, 19 Jul 2023 13:16:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 69C0E30049E;
-        Wed, 19 Jul 2023 22:15:38 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4EC8B2CA67A20; Wed, 19 Jul 2023 22:15:38 +0200 (CEST)
-Date:   Wed, 19 Jul 2023 22:15:38 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Brian Gerst <brgerst@gmail.com>, jpoimboe@kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        alyssa.milburn@linux.intel.com, keescook@chromium.org,
-        joao@overdrivepizza.com, tim.c.chen@linux.intel.com,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] x86: Rewrite ret_from_fork() in C
-Message-ID: <20230719201538.GA3553016@hirez.programming.kicks-ass.net>
-References: <20230623225529.34590-1-brgerst@gmail.com>
- <20230623225529.34590-3-brgerst@gmail.com>
- <ZLf_Z5dCSm7zKDel@alley>
- <20230719200222.GD3529734@hirez.programming.kicks-ass.net>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 694B06181D;
+        Wed, 19 Jul 2023 20:16:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B680C433C8;
+        Wed, 19 Jul 2023 20:16:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689797767;
+        bh=j6e92Ndx74FH6PByjJZ4j4e9GQ6FFdbXxvBk/vDjsh4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BcblMrxaFpGR37DZykDQc/fmqAEvgdawVysnDghn2k8i9jjcCpOiLmL47RZv72yaZ
+         0eOsZtIGNaXz5ljaEGbwjuV+M8O+17gnMjF8eBsQ6Mw2OF12P5AJTJEyAWkXqyF3tk
+         n/BSZYWo5B30L06xg9QjeWT6gbtgR0lkeYutFpwdPKndi1XhHQ5wu0fkpL88dG9Pnw
+         5T88lbG4jw8lU11jaxaeEjLesIoWPELSSSbql406vsJ33q+q/qitMbs4UhaFrce3+3
+         wa3vl9Ia5TAjZg+QkRt+WbubnnGmxHQtX/Cf264feEJPKr6OJlEEXA4VP9BQyheZGj
+         CyB3mgp7OQ4Hw==
+Received: (nullmailer pid 740813 invoked by uid 1000);
+        Wed, 19 Jul 2023 20:16:05 -0000
+Date:   Wed, 19 Jul 2023 14:16:05 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     linux-pci@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Simon Xue <xxm@rock-chips.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel@collabora.com
+Subject: Re: [PATCH v3 2/5] dt-bindings: PCI: dwc: rockchip: Fix
+ interrupt-names issue
+Message-ID: <20230719201605.GA706263-robh@kernel.org>
+References: <20230717172651.64324-1-sebastian.reichel@collabora.com>
+ <20230717172651.64324-3-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230719200222.GD3529734@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+In-Reply-To: <20230717172651.64324-3-sebastian.reichel@collabora.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,55 +71,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 10:02:22PM +0200, Peter Zijlstra wrote:
-> On Wed, Jul 19, 2023 at 05:21:11PM +0200, Petr Mladek wrote:
+On Mon, Jul 17, 2023 at 07:26:48PM +0200, Sebastian Reichel wrote:
+> The RK356x (and RK3588) have 5 ganged interrupts. For example the
+> "legacy" interrupt combines "inta/intb/intc/intd" with a register
+> providing the details.
 > 
-> > This patch broke livepatching. Kthreads never have a reliable stack.
-> > It works when I revert it.
+> Currently the binding is not specifying these interrupts resulting
+> in a bunch of errors for all rk356x boards using PCIe.
 > 
-> > > +SYM_CODE_START(ret_from_fork_asm)
-> > > +	UNWIND_HINT_REGS
+> Fix this by specifying the interrupts and add them to the example
+> to prevent regressions.
 > 
-> It works again when I change the above hint to UNWIND_HINT_END_OF_STACK,
-> so yeah. Doing this makes objtool unhappy with something else though,
-> so I'll go prod at things with something sharp...
+> This changes the reference from snps,dw-pcie.yaml to
+> snps,dw-pcie-common.yaml, since the interrupts are vendor
+> specific and should not be listed in the generic file. The
+> only other bit from the generic binding are the reg-names,
+> which are overwritten by this binding.
+> 
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
+>  .../bindings/pci/rockchip-dw-pcie.yaml        | 43 ++++++++++++++++++-
+>  1 file changed, 42 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/rockchip-dw-pcie.yaml b/Documentation/devicetree/bindings/pci/rockchip-dw-pcie.yaml
+> index a4f61ced5e88..7836b9a5547c 100644
+> --- a/Documentation/devicetree/bindings/pci/rockchip-dw-pcie.yaml
+> +++ b/Documentation/devicetree/bindings/pci/rockchip-dw-pcie.yaml
+> @@ -17,7 +17,8 @@ description: |+
+>    snps,dw-pcie.yaml.
+>  
+>  allOf:
+> -  - $ref: /schemas/pci/snps,dw-pcie.yaml#
+> +  - $ref: /schemas/pci/pci-bus.yaml#
+> +  - $ref: /schemas/pci/snps,dw-pcie-common.yaml#
+>  
+>  properties:
+>    compatible:
+> @@ -60,6 +61,39 @@ properties:
+>        - const: aux
+>        - const: pipe
+>  
+> +  interrupts:
+> +    items:
+> +      - description:
+> +          Combined system interrupt, which is used to signal the following
+> +          interrupts - phy_link_up, dll_link_up, link_req_rst_not, hp_pme,
+> +          hp, hp_msi, link_auto_bw, link_auto_bw_msi, bw_mgt, bw_mgt_msi,
+> +          edma_wr, edma_rd, dpa_sub_upd, rbar_update, link_eq_req, ep_elbi_app
+> +      - description:
+> +          Combined PM interrupt, which is used to signal the following
+> +          interrupts - linkst_in_l1sub, linkst_in_l1, linkst_in_l2,
+> +          linkst_in_l0s, linkst_out_l1sub, linkst_out_l1, linkst_out_l2,
+> +          linkst_out_l0s, pm_dstate_update
+> +      - description:
+> +          Combined message interrupt, which is used to signal the following
+> +          interrupts - ven_msg, unlock_msg, ltr_msg, cfg_pme, cfg_pme_msi,
+> +          pm_pme, pm_to_ack, pm_turnoff, obff_idle, obff_obff, obff_cpu_active
+> +      - description:
+> +          Combined legacy interrupt, which is used to signal the following
+> +          interrupts - inta, intb, intc, intd
+> +      - description:
+> +          Combined error interrupt, which is used to signal the following
+> +          interrupts - aer_rc_err, aer_rc_err_msi, rx_cpl_timeout,
+> +          tx_cpl_timeout, cor_err_sent, nf_err_sent, f_err_sent, cor_err_rx,
+> +          nf_err_rx, f_err_rx, radm_qoverflow
 
+I'm confused. It is really up to the integrator on how each of these 
+interrupts are combined? I thought it was a bit more fixed than that.
 
-The below cures things; Josh, did I miss anything?
-
----
- arch/x86/entry/entry_64.S | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 91f6818884fa..cfe7882ea9ae 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -285,7 +285,14 @@ SYM_FUNC_END(__switch_to_asm)
-  */
- .pushsection .text, "ax"
- SYM_CODE_START(ret_from_fork_asm)
--	UNWIND_HINT_REGS
-+	/*
-+	 * This is the start of the kernel stack; even through there's a regs
-+	 * set at the top, there is no real exception frame and one cannot
-+	 * unwind further. This is the end.
-+	 *
-+	 * This ensures stack unwinds of kernel threads hit a known good state.
-+	 */
-+	UNWIND_HINT_END_OF_STACK
- 	ANNOTATE_NOENDBR // copy_thread
- 	CALL_DEPTH_ACCOUNT
- 
-@@ -295,6 +302,11 @@ SYM_CODE_START(ret_from_fork_asm)
- 	movq	%r12, %rcx		/* fn_arg */
- 	call	ret_from_fork
- 
-+	/*
-+	 * Set the stack state to what is expected for the target function
-+	 * -- also it is not wrong.
-+	 */
-+	UNWIND_HINT_REGS
- 	jmp	swapgs_restore_regs_and_return_to_usermode
- SYM_CODE_END(ret_from_fork_asm)
- .popsection
+Rob
