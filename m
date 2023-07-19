@@ -2,136 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5377275918F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289967591AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbjGSJ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:28:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39778 "EHLO
+        id S229887AbjGSJbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGSJ2h (ORCPT
+        with ESMTP id S229803AbjGSJbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:28:37 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8CFB3186;
-        Wed, 19 Jul 2023 02:28:35 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 47D4E2F4;
-        Wed, 19 Jul 2023 02:29:18 -0700 (PDT)
-Received: from [10.57.33.122] (unknown [10.57.33.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 794C13F67D;
-        Wed, 19 Jul 2023 02:28:31 -0700 (PDT)
-Message-ID: <7da93c6e-1cbf-8840-282e-f115197b80c4@arm.com>
-Date:   Wed, 19 Jul 2023 10:28:29 +0100
+        Wed, 19 Jul 2023 05:31:01 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F014269A
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:30:47 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R5Vpf1zdmztRTj;
+        Wed, 19 Jul 2023 17:27:38 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 19 Jul 2023 17:30:44 +0800
+From:   Yicong Yang <yangyicong@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <dietmar.eggemann@arm.com>, <tim.c.chen@linux.intel.com>,
+        <yu.c.chen@intel.com>, <gautham.shenoy@amd.com>, <mgorman@suse.de>,
+        <vschneid@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <rostedt@goodmis.org>, <bsegall@google.com>, <bristot@redhat.com>,
+        <prime.zeng@huawei.com>, <yangyicong@hisilicon.com>,
+        <jonathan.cameron@huawei.com>, <ego@linux.vnet.ibm.com>,
+        <srikar@linux.vnet.ibm.com>, <linuxarm@huawei.com>,
+        <21cnbao@gmail.com>, <kprateek.nayak@amd.com>,
+        <wuyun.abel@bytedance.com>
+Subject: [PATCH v9 0/2] sched/fair: Scan cluster before scanning LLC in wake-up path
+Date:   Wed, 19 Jul 2023 17:28:36 +0800
+Message-ID: <20230719092838.2302-1-yangyicong@huawei.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [Question - ARM CCA] vCPU Hotplug Support in ARM Realm world
- might require ARM spec change?
-To:     Salil Mehta <salil.mehta@huawei.com>,
-        "steven.price@arm.com" <steven.price@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        "christoffer.dall@arm.com" <christoffer.dall@arm.com>,
-        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        Salil Mehta <salil.mehta@opnsrc.net>,
-        "andrew.jones@linux.dev" <andrew.jones@linux.dev>,
-        yuzenghui <yuzenghui@huawei.com>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Gareth Stockwell <Gareth.Stockwell@arm.com>
-References: <9cb24131a09a48e9a622e92bf8346c9d@huawei.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <9cb24131a09a48e9a622e92bf8346c9d@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.50.163.32]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Salil
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-Thanks for raising this.
+This is the follow-up work to support cluster scheduler. Previously
+we have added cluster level in the scheduler for both ARM64[1] and
+X86[2] to support load balance between clusters to bring more memory
+bandwidth and decrease cache contention. This patchset, on the other
+hand, takes care of wake-up path by giving CPUs within the same cluster
+a try before scanning the whole LLC to benefit those tasks communicating
+with each other.
 
-On 19/07/2023 03:35, Salil Mehta wrote:
-> [Reposting it here from Linaro Open Discussion List for more eyes to look at]
-> 
-> Hello,
-> I have recently started to dabble with ARM CCA stuff and check if our
-> recent changes to support vCPU Hotplug in ARM64 can work in the realm
-> world. I have realized that in the RMM specification[1] PSCI_CPU_ON
-> command(B5.3.3) does not handles the PSCI_DENIED return code(B5.4.2),
-> from the host. This might be required to support vCPU Hotplug feature
-> in the realm world in future. vCPU Hotplug is an important feature to
-> support kata-containers in realm world as it reduces the VM boot time
-> and facilitates dynamic adjustment of vCPUs (which I think should be
-> true even with Realm world as current implementation only makes use
-> of the PSCI_ON/OFF to realize the Hotplug look-like effect?)
-> 
-> 
-> As per our recent changes [2], [3] related to support vCPU Hotplug on
-> ARM64, we handle the guest exits due to SMC/HVC Hypercall in the
-> user-space i.e. VMM/Qemu. In realm world, REC Exits to host due to
-> PSCI_CPU_ON should undergo similar policy checks and I think,
-> 
-> 1. Host should *deny* to online the target vCPUs which are NOT plugged
-> 2. This means target REC should be denied by host. Can host call
->     RMI_PSCI_COMPETE in such s case?
-> 3. The *return* value (B5.3.3.1.3 Output values) should be PSCI_DENIED
+[1] 778c558f49a2 ("sched: Add cluster scheduler level in core and related Kconfig for ARM64")
+[2] 66558b730f25 ("sched: Add cluster scheduler level for x86")
 
-The Realm exit with EXIT_PSCI already provides the parameters passed
-onto the PSCI request. This happens for all PSCI calls except
-(PSCI_VERSION and PSCI_FEAUTRES). The hyp could forward these exits to
-the VMM and could invoke the RMI_PSCI_COMPLETE only when the VMM blesses 
-the request (wherever applicable).
+Since we're using sd->groups->flags to determine a cluster, core should ensure
+the flags set correctly on domain generation. This is done by [*].
 
-However, the RMM spec currently doesn't allow denying the request.
-i.e., without RMI_PSCI_COMPLETE, the REC cannot be scheduled back in.
-We will address this in the RMM spec and get back to you.
+[*] https://lore.kernel.org/all/20230713013133.2314153-1-yu.c.chen@intel.com/
 
-Kind regards
-Suzuki
+Change since v8:
+- Peter find cpus_share_lowest_cache() is weired so fallback to cpus_share_resources()
+  suggested in v4
+- Use sd->groups->flags to find the cluster when scanning, save one per-cpu pointer
+- Fix sched_cluster_active enabled incorrectly on domain degeneration
+- Use sched_cluster_active to avoid repeated check on non-cluster machines, per Gautham
+Link: https://lore.kernel.org/all/20230530070253.33306-1-yangyicong@huawei.com/
 
+Change since v7:
+- Optimize by choosing prev_cpu/recent_used_cpu when possible after failed to
+  scanning for an idle CPU in cluster/LLC. Thanks Chen Yu for testing on Jacobsville
+Link: https://lore.kernel.org/all/20220915073423.25535-1-yangyicong@huawei.com/
 
-> 4. Failure condition (B5.3.3.2) should be amended with
->     runnable pre: target_rec.flags.runnable == NOT_RUNNABLE (?)
->              post: result == PSCI_DENIED (?)
-> 5. Change would also be required in the flow (D1.4 PSCI flows) depicting
->     PSCI_CPU_ON flow (D1.4.1)
->    
-> 
-> I do understand that ARM CCA support is in its infancy stage and
-> discussing about vCPU Hotplug in realm world seem to be a far-fetched
-> idea right now. But specification changes require lot of time and if
-> this change is really required then it should be further discussed
-> within ARM.
-> 
-> Many thanks!
-> 
-> 
-> Bes regards
-> Salil
-> 
-> 
-> References:
-> 
-> [1] https://developer.arm.com/documentation/den0137/latest/
-> [2] https://github.com/salil-mehta/qemu.git virt-cpuhp-armv8/rfc-v1-port11052023.dev-1
-> [3] https://git.gitlab.arm.com/linux-arm/linux-jm.git virtual_cpu_hotplug/rfc/v2
-> 
+Change for RESEND:
+- Collect tag from Chen Yu and rebase on the latest tip/sched/core. Thanks.
+Link: https://lore.kernel.org/lkml/20220822073610.27205-1-yangyicong@huawei.com/
+
+Change since v6:
+- rebase on 6.0-rc1
+Link: https://lore.kernel.org/lkml/20220726074758.46686-1-yangyicong@huawei.com/
+
+Change since v5:
+- Improve patch 2 according to Peter's suggestion:
+  - use sched_cluster_active to indicate whether cluster is active
+  - consider SMT case and use wrap iteration when scanning cluster
+- Add Vincent's tag
+Thanks.
+Link: https://lore.kernel.org/lkml/20220720081150.22167-1-yangyicong@hisilicon.com/
+
+Change since v4:
+- rename cpus_share_resources to cpus_share_lowest_cache to be more informative, per Tim
+- return -1 when nr==0 in scan_cluster(), per Abel
+Thanks!
+Link: https://lore.kernel.org/lkml/20220609120622.47724-1-yangyicong@hisilicon.com/
+
+Change since v3:
+- fix compile error when !CONFIG_SCHED_CLUSTER, reported by lkp test.
+Link: https://lore.kernel.org/lkml/20220608095758.60504-1-yangyicong@hisilicon.com/
+
+Change since v2:
+- leverage SIS_PROP to suspend redundant scanning when LLC is overloaded
+- remove the ping-pong suppression
+- address the comment from Tim, thanks.
+Link: https://lore.kernel.org/lkml/20220126080947.4529-1-yangyicong@hisilicon.com/
+
+Change since v1:
+- regain the performance data based on v5.17-rc1
+- rename cpus_share_cluster to cpus_share_resources per Vincent and Gautham, thanks!
+Link: https://lore.kernel.org/lkml/20211215041149.73171-1-yangyicong@hisilicon.com/
+
+Barry Song (2):
+  sched: Add cpus_share_resources API
+  sched/fair: Scan cluster before scanning LLC in wake-up path
+
+ include/linux/sched/sd_flags.h |  7 ++++
+ include/linux/sched/topology.h |  8 ++++-
+ kernel/sched/core.c            | 12 +++++++
+ kernel/sched/fair.c            | 59 +++++++++++++++++++++++++++++++---
+ kernel/sched/sched.h           |  2 ++
+ kernel/sched/topology.c        | 25 ++++++++++++++
+ 6 files changed, 107 insertions(+), 6 deletions(-)
+
+-- 
+2.24.0
 
