@@ -2,131 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2692759C30
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48230759C33
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbjGSROW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 13:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50040 "EHLO
+        id S231309AbjGSROz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 13:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbjGSROU (ORCPT
+        with ESMTP id S230491AbjGSROx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:14:20 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C409C172D
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:14:18 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-521ac15e333so585a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:14:18 -0700 (PDT)
+        Wed, 19 Jul 2023 13:14:53 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579A319A1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:14:49 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fcd615d7d6so11147742e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:14:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689786857; x=1692378857;
+        d=atishpatra.org; s=google; t=1689786887; x=1692378887;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kflaIto2ZRy9FWnKKeA2RV1so53nf9Q2TlLkLWYnNhM=;
-        b=7jt8a5ZQWinJTMLOsw76Ptd82nTpItUAmde9SVR7wLXITm2emnqVMqRjtd/0cT2Ocy
-         +g/b0COH/UoOS1SiDsnu6P9dn+S7qwCBEmvhjNsDWyx58HOsfS1rYJS+P4pNZYh5ls6j
-         YxonkfEkWc/zBUjIS5fSAkYJzxGaxBS4sfEA9iUbn/Uxo6bH3RJ/5m4pQ27F1P1VEpEf
-         AsvOsmek2U4OIi0U5mccr9RVZzSvn4w/Q8RwzJgXXMNwdR2KLUH/UybanHexn6gg1lTZ
-         73eM3Rz3Kl4PVhQGK4h2QlmPtrI0+CHdTlDbkEwySFMcGYvRvVbzLqN4MK+YAbERJQdE
-         hX4A==
+        bh=elJrsu6Uef6LQuBYEeLwXbUYorXirAQoAABKR5ida5o=;
+        b=fiaiyvFfMRr9Xcr14KrkcwlW5WSFKorUe9O1j3cTg+Ni4nJ2Rwb8XvTzSQsOpqJpyo
+         bASm/XVJEga+vfVYU86n+ZR1sZS7RnHGniJdqq5sU1GVbxOKAc2GFcN7PPhA9QJjzWEV
+         BlGibLWs5VR+3cOUWr/I+maEKzlhkq9Tt6Hsg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689786857; x=1692378857;
+        d=1e100.net; s=20221208; t=1689786887; x=1692378887;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kflaIto2ZRy9FWnKKeA2RV1so53nf9Q2TlLkLWYnNhM=;
-        b=M/u3Gr0nId1tJKKhwhUksHmY4Twap2IqfMC5h7zMGq2zUHHe+ha1fk5iPqEFNide5a
-         Flf7jJ9lR0Q2pkKUm6w/QkKk1dpj1MtZQYg5QtdFATDXwtJU3/i8SK29pwzwgEvF7NCj
-         WV7rI43F+1XRAsdXp4UuRMcGuFp5RYABgixH9zpsDidraCGKYhTJnphIIxzYmLJ2GGgU
-         RBaqj5fhc3Ar7LW+m0klqbUchgu9U2mk0Cvl8/7cOtbRaFMJNC0rvVSoYkIkkB7MhyXm
-         ejqbYiHi/LLssSh1DkTjuMIZt8ZKNGmYAyzjjG3LkUOHbl5yJJpbTU7gKXZOv/cTdqyu
-         yD1w==
-X-Gm-Message-State: ABy/qLZVETGjHi6WkRH2j+RN/8D6y3Uo2iWIR8IjFQlvWTcl39jOp9IU
-        /d0qeQVhBX9R+WmH8jlyHm4OAYEYPqM6eLU8nPLHww==
-X-Google-Smtp-Source: APBJJlGRSF0tEvXGE/is/Qajw4UR5pJnc/wD1guMNvVxbc7T5ofk/LmI5ZFD/CCrOen4zd1SJi9EmJc0BviY3nDh0Ak=
-X-Received: by 2002:a50:d783:0:b0:506:b280:4993 with SMTP id
- w3-20020a50d783000000b00506b2804993mr1169edi.2.1689786857109; Wed, 19 Jul
- 2023 10:14:17 -0700 (PDT)
+        bh=elJrsu6Uef6LQuBYEeLwXbUYorXirAQoAABKR5ida5o=;
+        b=KW2MLZbOBGbapL4SXl8cK2j+hxNYxIU4i72TpqHoBwDDdiNO8sPUeRnT0bAKaLPz9B
+         B0uQhKR2p3mqGimV7ZwIzpNGkiXY4XE7xNeGxJW8jfnUPQSMDtLR5++x/C577jXsUppn
+         NRILqCDc082MAF24TdkAuFnKncagep+cpb9x5ksu4ZhGSOkTnTJhyOe6FtRz/iHTZd3V
+         kcBxVlVgSANHWmdWUw5dFpd0X9ot44Wh9ad2IC6HPi1O0fnEVn9lO5+o7ELgAyPwcQFl
+         d4/nyTGawdMnaPqF2C7Mz/s/wZs5uCKxKYtyM0TvMWzEWLXkWuKx5UTCBEVLv1bgngDC
+         lykQ==
+X-Gm-Message-State: ABy/qLYGDsIoNml6l47d53otYhb5kQTwxFXnzxfgiK9E/8HcBDVnpQBw
+        z/l/6pU88elPvW5UUZ9OL2En656fjza6ObxyH7Oi
+X-Google-Smtp-Source: APBJJlEB1PrXZAM0xFw7GP8k6ndBKsUzY5zeo6WvVrFVnATj7EL2b0cGiZQxPbF0IQ70Uhksr0Wb2hLxqIgfaxCkpiY=
+X-Received: by 2002:a2e:8748:0:b0:2b7:33a6:f2c0 with SMTP id
+ q8-20020a2e8748000000b002b733a6f2c0mr450107ljj.4.1689786887459; Wed, 19 Jul
+ 2023 10:14:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230719170446.GR20457@twin.jikos.cz> <00000000000042a3ac0600da1f69@google.com>
-In-Reply-To: <00000000000042a3ac0600da1f69@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Wed, 19 Jul 2023 19:14:05 +0200
-Message-ID: <CANp29Y4Dx3puutrowfZBzkHy1VpWHhQ6tZboBrwq_qNcFRrFGw@mail.gmail.com>
-Subject: Re: [syzbot] [btrfs?] [netfilter?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too
- low! (2)
-To:     syzbot <syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com>
-Cc:     dsterba@suse.cz, bakmitopiacibubur@boga.indosterling.com,
-        clm@fb.com, davem@davemloft.net, dsahern@kernel.org,
-        dsterba@suse.com, fw@strlen.de, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, josef@toxicpanda.com, kadlec@netfilter.org,
-        kuba@kernel.org, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        yoshfuji@linux-ipv6.org
+References: <20230703124647.215952-1-alexghiti@rivosinc.com>
+ <8756384.Zvl9fuB8X0@basile.remlab.net> <CAOnJCU+W9u+HnMfjU_y9W7331Zx07eQs9R1twV0=KsBAeSMSjw@mail.gmail.com>
+ <5951331.lOV4Wx5bFT@basile.remlab.net>
+In-Reply-To: <5951331.lOV4Wx5bFT@basile.remlab.net>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Wed, 19 Jul 2023 10:14:36 -0700
+Message-ID: <CAOnJCUKCx0Jh1igZytKAYePhhUBt=x5ANCVx4FRTbLtxGkyowA@mail.gmail.com>
+Subject: Re: [PATCH v4 00/10] riscv: Allow userspace to directly access perf counters
+To:     =?UTF-8?Q?R=C3=A9mi_Denis=2DCourmont?= <remi@remlab.net>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Aurelien Jarno <aurelien@aurel32.net>,
+        Mathieu Malaterre <malat@debian.org>,
+        Jan Newger <jannewger@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,PLING_QUERY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 7:11=E2=80=AFPM syzbot
-<syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com> wrote:
+On Wed, Jul 19, 2023 at 7:46=E2=80=AFAM R=C3=A9mi Denis-Courmont <remi@reml=
+ab.net> wrote:
 >
-> > On Wed, Jul 19, 2023 at 02:32:51AM -0700, syzbot wrote:
-> >> syzbot has found a reproducer for the following issue on:
-> >>
-> >> HEAD commit:    e40939bbfc68 Merge branch 'for-next/core' into for-ker=
-nelci
-> >> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/li=
-nux.git for-kernelci
-> >> console output: https://syzkaller.appspot.com/x/log.txt?x=3D15d92aaaa8=
-0000
-> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dc4a2640e42=
-13bc2f
-> >> dashboard link: https://syzkaller.appspot.com/bug?extid=3D9bbbacfbf1e0=
-4d5221f7
-> >> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for =
-Debian) 2.40
-> >> userspace arch: arm64
-> >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D149b2d66=
-a80000
-> >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1214348aa8=
-0000
-> >>
-> >> Downloadable assets:
-> >> disk image: https://storage.googleapis.com/syzbot-assets/9d87aa312c0e/=
-disk-e40939bb.raw.xz
-> >> vmlinux: https://storage.googleapis.com/syzbot-assets/22a11d32a8b2/vml=
-inux-e40939bb.xz
-> >> kernel image: https://storage.googleapis.com/syzbot-assets/0978b5788b5=
-2/Image-e40939bb.gz.xz
+> Le keskiviikkona 19. hein=C3=A4kuuta 2023, 1.48.49 EEST Atish Patra a =C3=
+=A9crit :
+> > > Isn't RDTIM susceptible to interference from power management and CPU
+> > > frequency scaling? I suppose that RDCYCLE may behave differently depe=
+nding
+> > > on PM in *some* designs, but that would still be way better than RDTI=
+ME
+> > > for the purpose.
 > >
-> > #syz unset btrfs
+> > Yes. But that's what it is probably using for other ISAs ?
 >
-> The following labels did not exist: btrfs
-
-#syz set subsystems: netfilter
-
+> At least on AArch64, it is using either Linux perf cycle counter, or if t=
+hat
+> is disabled at build time, the raw PMU cycle counter - which obviously le=
+ads
+> to SIGILL on Linux, just like this MR would do with RDCYCLE.
 >
-> >
-> > The MAX_LOCKDEP_CHAIN_HLOCKS bugs/warnings can be worked around by
-> > configuration, otherwise are considered invalid. This report has also
-> > 'netfilter' label so I'm not closing it right away.
+
+Good to know. Thanks for the clarification.
+
+> Again, I do not *personally* have objections to disabling RDCYCLE for
+> userspace (somebody else does, but that's neither my nor your problem). I=
+ do
+> have objections to the wording of some of the commit messages though.
+>
+
+Completely agreed. We will update the commit text with more clarification i=
+n v5.
+
+> > My point was it should just do whatever it does for other ISA. RISC-V i=
+s no
+> > special in that regard.
+>
+> Sure. My point is that RDTIME may be great for, so to say, system-level
+> benchmarks. For FFmpeg that could something like how long it takes to
+> transcode a video. But it doesn't seem to make much sense for
+> microbenchmarking of single threaded tightly optimised loops, as opposed =
+to
+> RDCYCLE (or a wrapper for RDCYCLE).
 >
 > --
-> You received this message because you are subscribed to the Google Groups=
- "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgi=
-d/syzkaller-bugs/00000000000042a3ac0600da1f69%40google.com.
+> R=C3=A9mi Denis-Courmont
+> http://www.remlab.net/
+>
+>
+>
+
+
+--=20
+Regards,
+Atish
