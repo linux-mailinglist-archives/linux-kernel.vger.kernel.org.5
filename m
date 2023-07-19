@@ -2,223 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D6C75930D
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06472759326
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbjGSK34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51288 "EHLO
+        id S230193AbjGSKgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:36:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231415AbjGSK3m (ORCPT
+        with ESMTP id S229561AbjGSKgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:29:42 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0989330E2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:29:10 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-51e6113437cso9168468a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:29:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689762546; x=1692354546;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ExPK31B4ljf4lopgSPrp6SO4czwztEWUPRdEkb+8xNo=;
-        b=w7AG3lT/hleVDVJWoBWR/9b30ZYcgiAULuogEcKrVjW4wsEyArMaNchv2LL1RE/bul
-         oxRQq9r5JoHKtZz3Ow87qVBlQvLxaDs5scr8e6rhDfcHqJGArp/KOzfHikZkFn6qoa2b
-         QrJGXKXtS1Ly9ogY7Xa26nRYk89lX3lCNq/42xKVeG5fZzeNeh+OExcIMIwvAlSI7vaA
-         FwSYwz2naQtrWqw6hiikqFFDybDbeimBwPSbuib42ZynZ5VihrsiyrcfCs4VFdmU3Vjn
-         sIq90rOss4+PUaa0mtoQcdK+tBflunFm2hRLQSNTQQclooMzQGj7Ot42nI8d5StaLtNu
-         TN3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689762546; x=1692354546;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ExPK31B4ljf4lopgSPrp6SO4czwztEWUPRdEkb+8xNo=;
-        b=HSHVHH9ZyeZHrSNhzOGdPybaq1KZIpAMcchpHF3NmfVxLf95moGmAhS74gt+ppEljR
-         qMDih8V4mzXSuG4uoH/CCqlB2ne/qNGtHhlgnTpmeMvTzpzgKh1nEE+fIo6jei/vjSr1
-         nzUt/sTKJQzadGghYEgSGErO8mgJyGZfKNBdm45jbG+26ylE/U6ukjKsVT5padN/1X7o
-         uk+etaLAu8ere8JmjdmdSYqbkOHje3ol8PfrcY0Qjqy43prqehuySoadt5muHDR5NLbF
-         ACyk+KZOT+0424b1fZiCT3H+H8M3yEOpkj/wOMEumuc93WrwonIp3E8CznG7G878JMj8
-         hLkA==
-X-Gm-Message-State: ABy/qLb3ONMBH4uCHxyRr/0937boPR7IxtLiICP2qS7d0Wdmvhyr33By
-        yp9iw6jybUXJPbMMU8s9REwGZQ==
-X-Google-Smtp-Source: APBJJlFj1TXxAa83rkP3FsR6k80oE7zp7zFFP1kYWHxI2V2j3NwUp9HJ/acreyD3O7Q9i8cabhBYXQ==
-X-Received: by 2002:a17:907:3e99:b0:967:21:5887 with SMTP id hs25-20020a1709073e9900b0096700215887mr2368427ejc.40.1689762546292;
-        Wed, 19 Jul 2023 03:29:06 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id w21-20020a1709064a1500b00982b204678fsm2124473eju.207.2023.07.19.03.29.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 03:29:05 -0700 (PDT)
-Message-ID: <bccf2ce1-1cdc-9bd3-9670-e346c22e92af@linaro.org>
-Date:   Wed, 19 Jul 2023 12:29:03 +0200
+        Wed, 19 Jul 2023 06:36:16 -0400
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8096BE0;
+        Wed, 19 Jul 2023 03:36:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+        t=1689762558; bh=zzi5kjyS7aIx9/ym7iyyPL9XVFwQcOnol4QUS4SlqUw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=foB3/ueojPefseN2KuCfAWKwfBnt5yovt63TIp91f1fXhyps1dSO8lCmWRJNE7UAB
+         DkrBPZ62wGj0rusHYsgFtuq+lKLCna8xhWUMSsYxnU/lmsWxZINix9tXWFJ+g4pc5M
+         Z7Gz4wwrO0+65Fi61ht2j2QuN81cdb+UMlwUTckM=
+Received: from [100.100.34.13] (unknown [220.248.53.61])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 3D4D46006F;
+        Wed, 19 Jul 2023 18:29:18 +0800 (CST)
+Message-ID: <f9e7fb54-a76e-a9b0-1b9c-8c9251f4af20@xen0n.name>
+Date:   Wed, 19 Jul 2023 18:29:17 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] dt-bindings: add vendor-prefixes and bindings for
- pcd8544 displays
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v5] LoongArch: Fix CONFIG_CMDLINE_EXTEND and
+ CONFIG_CMDLINE_BOOTLOADER handling
 Content-Language: en-US
-To:     Viktar Simanenka <viteosen@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230719102430.316504-1-viteosen@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230719102430.316504-1-viteosen@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Markus Elfring <Markus.Elfring@web.de>
+Cc:     Zhihong Dong <donmor3000@hotmail.com>, loongarch@lists.linux.dev,
+        loongson-kernel@lists.loongnix.cn, kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, Guo Ren <guoren@kernel.org>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+References: <20230718153348.3340811-1-chenhuacai@loongson.cn>
+ <261edc6c-e339-faeb-3045-bfe6604d1aef@web.de>
+ <CAAhV-H5nNMmYZQXvoog85cgMUd+gM2QMaG3cUhYk_iGzjB=B4Q@mail.gmail.com>
+From:   WANG Xuerui <kernel@xen0n.name>
+In-Reply-To: <CAAhV-H5nNMmYZQXvoog85cgMUd+gM2QMaG3cUhYk_iGzjB=B4Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/2023 12:24, Viktar Simanenka wrote:
-> Signed-off-by: Viktar Simanenka <viteosen@gmail.com>
-
-Missing commit msg, missing changelog, missing versioning - I already
-asked for the last two things.
-
-> ---
->  .../bindings/display/philips,pcd8544.yaml     | 89 +++++++++++++++++++
->  .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
->  2 files changed, 91 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/philips,pcd8544.yaml
+On 2023/7/19 15:22, Huacai Chen wrote:
+> Hi, Markus,
 > 
-> diff --git a/Documentation/devicetree/bindings/display/philips,pcd8544.yaml b/Documentation/devicetree/bindings/display/philips,pcd8544.yaml
-> new file mode 100644
-> index 000000000000..ac880d9d8cc1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/philips,pcd8544.yaml
-> @@ -0,0 +1,89 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/philips,pcd8544.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Philips PCD8544 LCD Display Controller
-> +
-> +maintainers:
-> +  - Viktar Simanenka <viteosen@gmail.com>
-> +
-> +description: |
-> +  Philips PCD8544 LCD Display Controller with SPI control bus.
-> +  Monochrome 84x48 LCD displays, such as Nokia 5110/3310 LCDs.
-> +  May contain backlight LED.
-> +
-> +allOf:
-> +  - $ref: panel/panel-common.yaml#
-> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
+> On Wed, Jul 19, 2023 at 2:51 PM Markus Elfring <Markus.Elfring@web.de> wrote:
+>>
+>>>                                                    …, so this patch add
+>>> some code to fix it.
+>>
+>> Would you like to avoid a typo here?
+>>
+>> Will any other imperative change description variant become more helpful?
+> Thank you for pointing this out, but since Zhihong is the original
+> author, I don't want to completely rewrite the commit message, so just
+> fix the typo...
 
-That's not oneOf.
+AFAICT the commit message is totally uninformative even if "an 
+imperative change description" were used. It basically:
 
-> +      - enum:
-> +          - philips,pcd8544
-> +
-> +  dc-gpios:
-> +    maxItems: 1
-> +    description: Data/Command selection pin (D/CX)
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +    description: Display Reset pin (RST)
-> +
-> +  philips,inverted:
-> +    type: boolean
-> +    description: Display color inversion
+1. repeated the patch title,
+2. spent one sentence only for mentioning a function name without giving 
+any more information,
+3. mentioned why some change was not necessary due to some other 
+existing code, but not explicitly calling that part out, then
+4. finished with a sentence that boiled down to "we should do the 
+similar thing".
 
-Not much improved here. What is it?
+My take:
 
-> +
-> +  philips,voltage-op:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 127
-> +    description: Display liquid crystal operation voltage
+ > Subject: Fix CMDLINE_EXTEND and CMDLINE_BOOTLOADER on non-FDT systems
+ >
+ > On FDT systems these command line processing are already taken care of
+ > by early_init_dt_scan_chosen(). Add similar handling to the non-FDT
+ > code path to allow these config options to work for non-FDT boxes too.
 
-Voltage is in microvolts (or other *volts). Use proper unit suffix.
+Would this sound better?
 
+-- 
+WANG "xen0n" Xuerui
 
-> +
-> +  philips,bias:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 7
-> +    description: Display bias voltage system value
-
-In which units? Voltage is in microvolts.
-
-> +
-> +  philips,temperature-coeff:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 3
-> +    description: Display temperature compensation coefficient
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - dc-gpios
-> +  - reset-gpios
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    spi {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        display@0 {
-> +            compatible = "philips,pcd8544";
-> +            spi-max-frequency = <8000000>;
-> +            reg = <0>;
-
-reg is always after compatible.
-
-> +
-> +            dc-gpios = <&pio 0 3 GPIO_ACTIVE_HIGH>; /* DC=PA3 */
-> +            reset-gpios = <&pio 0 1 GPIO_ACTIVE_HIGH>; /* RESET=PA1 */
-> +            backlight = <&backlight>;
-> +
-> +            philips,inverted;
-> +            philips,voltage-op = <0>;
-> +            philips,bias = <4>;
-> +            philips,temperature-coeff = <0>;
-> +        };
-> +    };
-> +
-> +...
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> index af60bf1a6664..0c3844af6776 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> @@ -1037,6 +1037,8 @@ patternProperties:
->      description: Pervasive Displays, Inc.
->    "^phicomm,.*":
->      description: PHICOMM Co., Ltd.
-> +  "^philips,.*":
-> +    description: Koninklijke Philips N.V.
-
-Isn't this Philips Semiconductors? That's what datasheet is saying.
-
-
-
-Best regards,
-Krzysztof
+Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
 
