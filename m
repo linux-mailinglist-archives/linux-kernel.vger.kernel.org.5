@@ -2,217 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2B3758BE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 05:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD614758BFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 05:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbjGSDPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 23:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
+        id S229622AbjGSDVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 23:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjGSDPD (ORCPT
+        with ESMTP id S229437AbjGSDVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 23:15:03 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531371BCA;
-        Tue, 18 Jul 2023 20:15:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689736502; x=1721272502;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Mr7BUY4zc60aRuTSv2hIyuXH2IuyI/J0WPMw4qM1y6s=;
-  b=TabfKOZXTj41/LEkgx473uHG8bggOsxcuGtph5eKNYbJLAmE20SSl8h0
-   ygYb8MgB7trdTO2qBP+bfjTTs73jVQ3+dptzmvQL0TSViOlswFxSqRy3O
-   n1yt7iLb/2pECkvYw0WCrzYFbsx1j/fAzDpL7xLKoSR2BB5MYJ3eKDVkw
-   tzvFc282pzI4tfiJcpW23boOBa4bp1wL7LYlRRruR91Fkom63SAFkMtdH
-   SmFdx/5OP1hYJl7PMu77eCTEiPFI60YQSmTc0OLKHASYYF/PhqB8rVQk4
-   O+G8LlvYh3pbKogJn4ZSDg51DAkFQunMTmTtuFcH3ceUmlYcNSLFM/1cF
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="345950649"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="345950649"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 20:15:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="723846508"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="723846508"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga002.jf.intel.com with ESMTP; 18 Jul 2023 20:15:01 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 18 Jul 2023 20:15:01 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 18 Jul 2023 20:15:00 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Tue, 18 Jul 2023 20:15:00 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.174)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Tue, 18 Jul 2023 20:15:00 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h6luLG3Jd2GAnoMbMV6EycJacbxGYvcQOpmm6Xx7oalRKOsTSmvfFPcsNBRwx9eYlSUdb9pUDEZ/ZGbxz70mSyHRWKkmHCKEIsfdoLF0RAPadHLcePEfQ9v4tNzgPkFibqlYja/McohcaoSWGgag1fr4xEFXuN605cGGCMdjPRO19OZGZ2Qh4OL5S8wzA58q6rkOCtxuwtvpm/Q7WO4CspHcG4lCnHZoM2toHjQAgoQ+VuXzR1PXC1Xs6v5St7r1+07NJDpRw2FvcNuyWsCKGryXlZSxpWyJKz/aZwx8Uo53SgLHtw0sTCFkotg6O5DS0Jic9VbvvlA5hmkpiCSbZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Mr7BUY4zc60aRuTSv2hIyuXH2IuyI/J0WPMw4qM1y6s=;
- b=Adbm6U6/UuKnPrN/d8iO26fJNwEkzr+I6OgpyVWe63yUWtZj8UlWOcXv5+iF1XqiEoJl9OYt0tfsIiyJ4rKRF4NbUtVvUyUbPH8jm95Ct/kIuk+Zh8INckgyvdmeDlnwmE7cXIy4/VqpyfrwMsg1LaLQjiZVHUwmD7ID33LPfS1wDImt3leMuiv1zzpMHUEBQU+7/JOmslbzS6OHEva5mUKwtu5hONqza8i+wTZTvDIzyHCiZLfHUmqe1syhHdm4WYrZNuhsn5btGtwtPFA7hwzPPPvr9R1yAM3vYTyFK5qenRxavzMDoYIOs1mF8F2COoptdZfHhnGreX42p1DYlw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by SA1PR11MB6685.namprd11.prod.outlook.com (2603:10b6:806:258::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33; Wed, 19 Jul
- 2023 03:14:58 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::137b:ec82:a88c:8159]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::137b:ec82:a88c:8159%4]) with mapi id 15.20.6588.031; Wed, 19 Jul 2023
- 03:14:57 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-CC:     "ajd@linux.ibm.com" <ajd@linux.ibm.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "fbarrat@linux.ibm.com" <fbarrat@linux.ibm.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "npiggin@gmail.com" <npiggin@gmail.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "zhi.wang.linux@gmail.com" <zhi.wang.linux@gmail.com>
-Subject: RE: [PATCH 0/4] Invalidate secondary IOMMU TLB on permission upgrade
-Thread-Topic: [PATCH 0/4] Invalidate secondary IOMMU TLB on permission upgrade
-Thread-Index: AQHZuU1142PTIIcImUGZyGRSe0EPwK/AaNCAgAABeMA=
-Date:   Wed, 19 Jul 2023 03:14:57 +0000
-Message-ID: <BN9PR11MB52765F6D915656C6AFD138FF8C39A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <cover.b4454f7f3d0afbfe1965e8026823cd50a42954b4.1689666760.git-series.apopple@nvidia.com>
- <45fadf89-27ec-07a9-746a-e5d14aba62a3@arm.com>
-In-Reply-To: <45fadf89-27ec-07a9-746a-e5d14aba62a3@arm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SA1PR11MB6685:EE_
-x-ms-office365-filtering-correlation-id: 867b6b25-bdfe-45e2-e2d6-08db880654ae
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: T0YSp+F+3Eu2PvCBmr9TmfVIcYqOZhMSgfbCHGA2inEdLFW/xD0NsmuJk0iJxbBthQi3WVrs6uU5zgKQpqvOeH8PY0Wk+tZ6W78bqNsshgiJhh1AE6nAjPrj5PRhYghLh90EBova4dQwIStBRoZfHXtaWz5JyDfWdNy7DeIO9CT6Qev42gCfvHi+fbOqWuZOzpS1ZCrN1/HxO4gx7Cj6p0nli9fhmnxTUuHvaWbpTAzUKm1b47eUFzMD1iOvKvHX0oEGeVgXiEj+DjiwjlYFDdEcMl793PaQSTo4KSoZwJ8iJ0uE2xlx9UEY64rq6yIY3sCPEsh4l2woFBSn55tKwdmesoT22/XTgHi0qzAYCDeqj/taHJA0xnZ2SCr01L2zmjLFOcGv4y/vOIZ+ARA9CGQYz4gZP8elDlVUp46Z/X9OZZcBmg5pd1DR3UOCT0tpM49R1fX5pQ+TPK4UqcZLTWQMJWDeP1bA1wtHRHGi0In1vL2tGYu3KS6jezqYQvNURgto3I7dBd0Vz8vkUN/2SfQ/c9407r1YI4HFy55MYd+WuCUKeVb/w1nIO2XmifIk2cUfF7Z/xShR9VrgsXKvEBhGx6nFgVe17CiRkXGsPlZrz+pi+2PE4+MuOWLDKJWS
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(136003)(396003)(39860400002)(346002)(366004)(451199021)(86362001)(2906002)(8936002)(33656002)(8676002)(4326008)(83380400001)(38070700005)(316002)(41300700001)(7416002)(52536014)(5660300002)(122000001)(38100700002)(66946007)(54906003)(76116006)(64756008)(110136005)(66556008)(66476007)(66446008)(186003)(6506007)(26005)(9686003)(53546011)(82960400001)(478600001)(55016003)(71200400001)(7696005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Nzh2YmwyeDJsd0hNMWFCWDJGMmNWZm82c3JUMThITmJ2b0szZHBOWUhObEFE?=
- =?utf-8?B?b2ovb09xakQzcnI5b1BoYksyU0gxYWE5QkpTUnZ6SmhiTFB2b012dHNQeE1W?=
- =?utf-8?B?M3hTWGFqMVpvWE1YZ1RIS3I2SzFjUjZMWmpBSnYrQW1rZmJEY0RIaTNwK010?=
- =?utf-8?B?dmlDajV3NVRBK0FaUVU4Tlhqc1F3WFR5TDJYdnZMeTJTenZyTHh0OUs2TEUz?=
- =?utf-8?B?b0JxTm9OKytVdFF4N0gyMks1WmZ1R0pmZUhlL2dNd3NpWkFJMWxWUUt6V1B4?=
- =?utf-8?B?NHJUZ3VMTmxiMUIxalFLM3pyZU5LMnJRcFlpRVdSeDdqREdzME93YzNla1px?=
- =?utf-8?B?aGZIZGduZm1wMmc2dGVjSDhrSXp6VGM5K1lwaGFrKzQwb2JWbW11OUJIOGs0?=
- =?utf-8?B?dkoxbWlvdmkwSXo1WVRzY2RUZXkrbjMva3ZWRWltZ2wzVlVIak84Ulo4QlNw?=
- =?utf-8?B?RzNuclJ2enNBR1k5Z1RCVko2UmpyV3dkYXNmZWtLWVU3cUpibzhRdmh5T2kz?=
- =?utf-8?B?T0tyVGZBUWZnTjJBUkxaNmVOYXNYcFFTRVowOUNRNDNUbDF5VnBzR29EVndR?=
- =?utf-8?B?UjNHNW5BTWExWUcvanFYUEUvVHMvVkNFR283V0Izdmd0RG12ejBvbnNjSjN6?=
- =?utf-8?B?Z1dBOWZyL3dmVGZKM3lIMmxSN01BVVdaWGVuSmZ2ZVlaQ2x1RFN4YkpXYzZG?=
- =?utf-8?B?UHFxNzlZT21JejBBUEFMNUl6YlI3M0FBVEM1RGkvVlVXeHNCdThLdm5yMTd3?=
- =?utf-8?B?R0dQVU5uZHdZM2k4MFBwaTBQa2wwbFAySzhuQkdScEgzNzQrSFhsZm1pdWR5?=
- =?utf-8?B?ZUFUT1F6cTkvWU41bVJzUnY0enRvMlA2eGxZLzBkV1Bkb01ZYmVmQWVrRGEr?=
- =?utf-8?B?QkE1TEk2N2swNVJJbDhleE5ZMVlNS09xRDBreEJ4QWtqU0VWK1U5d0cwSnpp?=
- =?utf-8?B?SjV3SUVBWE9naitpdXluTnpOaDMyM0Y2K2RBTlAwaXZ1ZUMvL3gxdnVZbDFU?=
- =?utf-8?B?bjkxRC9BWnlkVGpCTXVSNzF4Nzh6ZEhmSFA5ZVpnOG94dDFGU2s0VkJiQjFD?=
- =?utf-8?B?eWlRallEMzR5Y05GanlVUkg1UE83b0o0QXd2Q1dIOE0zcVA5ZTBwaUNwYVV1?=
- =?utf-8?B?NG1xNktIYjFYVlNrOGNRME1MNWoyK3NrcnRYeElZbHJyU1ZhYm56TmQwdnp0?=
- =?utf-8?B?dmpySEtueEZIUkd6cXA3QzcvSkhuUVVXbzZ3MlhFYXh3L1Ryc25ha3U3NWph?=
- =?utf-8?B?S0g2eDNyOU1Ka1Awd3hkd0xTNUFiVFZHNHU3ZXFiN3N4clk5SWhSZURqcHRH?=
- =?utf-8?B?RGxkTGlUaUNTYmJoUWlkUXN6N2NaeTMzWWFYMndDczZNeWJIWjY1Ty9pOURC?=
- =?utf-8?B?TW4vZDdOUWpIM24vbmtwNG1nV3BVM25vUDVDanJrTWF4SnF1dDVqWkJCcUdH?=
- =?utf-8?B?RjBjMUZKL0NJWEpQMkplUURKRkdWR1lXMGM2RHBiTWczWlZSREFHUXRMVGda?=
- =?utf-8?B?NUY1VUxWRXhudFZHajRmOUxXZHRtQTBQRGIxcXp6ZGdSNDFPalVVdEZWYTE4?=
- =?utf-8?B?M09oeDNpUXFJcytnTndQcUwvN0FSRkRoVFVJK1M4TFZxR2ZBWGEwbVM5bDQv?=
- =?utf-8?B?S3JNeUJnUyt3R0JtQjI0VGUvUjVBM3B1aXlSZGs4dmF4SmF0UUpTTE1uVng5?=
- =?utf-8?B?OThBci93RktoelZJR2gwQWZIdXhUUFJDbEgwYzV4dFhpZGU2YzN5eDdHd2xI?=
- =?utf-8?B?L0VFeFJta0N1TzcxSVpMWFBsdlFmeGYrU2pCUENuV0U2OEFVS3hobml5K3Zp?=
- =?utf-8?B?d3A3ZE9Mc3gwQVkxN0lqbkpma21Jb3Eyb0RacEVwR2J6N1JYQU1oWXFSS0hV?=
- =?utf-8?B?cjkyZVB0OFIzK1RBM2ZGMjFjTTNjT29xTk1QSkJXMkN0SVA4V2pBWkFpSXRG?=
- =?utf-8?B?RmNnbGZzeWJqQ1hTNW4wRXVEWEkyRTk2dXZnRmkrZGNqcENoL2t1WVBueDMy?=
- =?utf-8?B?VHpWQ1Z0anRwYk9OaTNPV3BuSVREajcwMVlMNGFJWVFNWmhlSjVEZ1JqRENR?=
- =?utf-8?B?QXA3Wm9tcVRrTGFER1lXd1dBdXF2Z1BmbWJ2R3FrV1dXTVp6MHhhNVhzTmZm?=
- =?utf-8?Q?p5CQk+fst6viX231ttHOSm3Gh?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 18 Jul 2023 23:21:08 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2D31BDD;
+        Tue, 18 Jul 2023 20:21:07 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id 4fb4d7f45d1cf-51e99584a82so8725061a12.1;
+        Tue, 18 Jul 2023 20:21:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689736865; x=1692328865;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qio6pzOCmaXDOiQChQf7WzygxDgvq1z60uM5r+IDyqY=;
+        b=Y2aUVkMBihFO9W2ebrAbF83gFoTV8pv2h0CasKOz7w2rnrjkU3q4qLMH1WffzyCDvQ
+         TpW9L/jmf9/4ZK8IFVPCCZnwRVemTS1YS9+cLDpx+d3JZDYFOQvxn/QKETpqLfjAQ86X
+         KvPCA9NwvoViVru65MbhLgqzE4TRz18Bd1M3dnpBvZAypWPAZdaZn0SMDBopziEFMkRo
+         tGkRXXtw5KepS72fszxopa4FrxSftLvUF6spR0iTDGJp62Wb731J+4lsQJlY+H5D3J1C
+         U6TOepFXm8jC0sjXeuBmyipIpXKcTMQ4Ngg3+nBeZ69usw6/lIypnvZ0qVQI08jsJWSm
+         75NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689736865; x=1692328865;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qio6pzOCmaXDOiQChQf7WzygxDgvq1z60uM5r+IDyqY=;
+        b=R5HnbtppeGoKbQXFTl4nMX/o/kido3mVdmDm1OlZpQt5X7o/+PyBQwxp6igOFnZ91R
+         eeHjBdukm/AgcmAqxCc31+CcUZMAciJfFEb1NxNusi12pmWgc/R0ENaIJDLJIlKbIVnF
+         BB/OGNVZCkmx3kpcq+Pw0211KLtPdgBtH73IZtNihYMTM9KchtfW1yBzNzclWU4N5KHF
+         BUbD9Dss0zPIXIUnxw5bqH4Al1Hqnd6Hucbe5oM8/7D8h7oPW4pWN17dqjkCn03MGFD+
+         c30XLKih8vqi/x3L0uqdOXI37qaRcEi/+S4yp4AEdrVJMPVESmNgEj+AJXlYsk98i0/6
+         sWEg==
+X-Gm-Message-State: ABy/qLbpV2MS/LaqR3pUB6Gaiume1ELpe21P2lwaBlckV2F8w77xNDEL
+        0TnNSYf0dZf6yzxgHaY+8w9Hvy1bGP4iHxySL5HS6wMGjdezDlBj2j0=
+X-Google-Smtp-Source: APBJJlFwCKXpF3myWTSDWY2nVDhSk8KLhh0BEsHLVhIX9+VFk6oyw1eMiipLY6JReFZ+zCIuS4p/6nl3izKeExS/PEU=
+X-Received: by 2002:aa7:d418:0:b0:51e:2282:e1fc with SMTP id
+ z24-20020aa7d418000000b0051e2282e1fcmr1518758edq.6.1689736865579; Tue, 18 Jul
+ 2023 20:21:05 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 867b6b25-bdfe-45e2-e2d6-08db880654ae
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jul 2023 03:14:57.4974
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dV3VqsZRc9ymbOSUR3lLrH/GnR1I6paXOGPxy8AGLUcL0sEehZuArFguH/KjGDHr42T0oxlMqB7OJP7d8cqDAg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6685
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230717062343.3743-1-cloudliang@tencent.com> <20230717062343.3743-5-cloudliang@tencent.com>
+ <20230719011752.GD25699@ls.amr.corp.intel.com>
+In-Reply-To: <20230719011752.GD25699@ls.amr.corp.intel.com>
+From:   Jinrong Liang <ljr.kernel@gmail.com>
+Date:   Wed, 19 Jul 2023 11:20:54 +0800
+Message-ID: <CAFg_LQVA=u+WM3_xK5+KiAz5R=-nZ3jdQbX0jsBmrw7_6+ZWew@mail.gmail.com>
+Subject: Re: [PATCH v4 4/6] KVM: selftests: Add test cases for unsupported PMU
+ event filter input values
+To:     Isaku Yamahata <isaku.yamahata@gmail.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Jinrong Liang <cloudliang@tencent.com>,
+        linux-kselftest@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBBbnNodW1hbiBLaGFuZHVhbCA8YW5zaHVtYW4ua2hhbmR1YWxAYXJtLmNvbT4NCj4g
-U2VudDogV2VkbmVzZGF5LCBKdWx5IDE5LCAyMDIzIDExOjA0IEFNDQo+IA0KPiBPbiA3LzE4LzIz
-IDEzOjI2LCBBbGlzdGFpciBQb3BwbGUgd3JvdGU6DQo+ID4gVGhlIG1haW4gY2hhbmdlIGlzIHRv
-IG1vdmUgc2Vjb25kYXJ5IFRMQiBpbnZhbGlkYXRpb24gbW11IG5vdGlmaWVyDQo+ID4gY2FsbGJh
-Y2tzIGludG8gdGhlIGFyY2hpdGVjdHVyZSBzcGVjaWZpYyBUTEIgZmx1c2hpbmcgZnVuY3Rpb25z
-LiBUaGlzDQo+ID4gbWFrZXMgc2Vjb25kYXJ5IFRMQiBpbnZhbGlkYXRpb24gbW9zdGx5IG1hdGNo
-IENQVSBpbnZhbGlkYXRpb24gd2hpbGUNCj4gPiBzdGlsbCBhbGxvd2luZyBlZmZpY2llbnQgcmFu
-Z2UgYmFzZWQgaW52YWxpZGF0aW9ucyBiYXNlZCBvbiB0aGUNCj4gPiBleGlzdGluZyBUTEIgYmF0
-Y2hpbmcgY29kZS4NCj4gPg0KPiA+ID09PT09PT09PT0NCj4gPiBCYWNrZ3JvdW5kDQo+ID4gPT09
-PT09PT09PQ0KPiA+DQo+ID4gVGhlIGFybTY0IGFyY2hpdGVjdHVyZSBzcGVjaWZpZXMgVExCIHBl
-cm1pc3Npb24gYml0cyBtYXkgYmUgY2FjaGVkIGFuZA0KPiA+IHRoZXJlZm9yZSB0aGUgVExCIG11
-c3QgYmUgaW52YWxpZGF0ZWQgZHVyaW5nIHBlcm1pc3Npb24gdXBncmFkZXMuIEZvcg0KPiA+IHRo
-ZSBDUFUgdGhpcyBjdXJyZW50bHkgb2NjdXJzIGluIHRoZSBhcmNoaXRlY3R1cmUgc3BlY2lmaWMN
-Cj4gPiBwdGVwX3NldF9hY2Nlc3NfZmxhZ3MoKSByb3V0aW5lLg0KPiA+DQo+ID4gU2Vjb25kYXJ5
-IFRMQnMgc3VjaCBhcyBpbXBsZW1lbnRlZCBieSB0aGUgU01NVSBJT01NVSBtYXRjaCB0aGUgQ1BV
-DQo+ID4gYXJjaGl0ZWN0dXJlIHNwZWNpZmljYXRpb24gYW5kIG1heSBhbHNvIGNhY2hlIHBlcm1p
-c3Npb24gYml0cyBhbmQNCj4gPiByZXF1aXJlIHRoZSBzYW1lIFRMQiBpbnZhbGlkYXRpb25zLiBU
-aGlzIG1heSBiZSBhY2hpZXZlZCBpbiBvbmUgb2YgdHdvDQo+ID4gd2F5cy4NCj4gPg0KPiA+IFNv
-bWUgU01NVSBpbXBsZW1lbnRhdGlvbnMgaW1wbGVtZW50IGJyb2FkY2FzdCBUTEIgbWFpbnRlbmFu
-Y2UNCj4gPiAoQlRNKS4gVGhpcyBzbm9vcHMgQ1BVIFRMQiBpbnZhbGlkYXRlcyBhbmQgd2lsbCBp
-bnZhbGlkYXRlIGFueQ0KPiA+IHNlY29uZGFyeSBUTEIgYXQgdGhlIHNhbWUgdGltZSBhcyB0aGUg
-Q1BVLiBIb3dldmVyIGltcGxlbWVudGF0aW9ucyBhcmUNCj4gPiBub3QgcmVxdWlyZWQgdG8gaW1w
-bGVtZW50IEJUTS4NCj4gDQo+IFNvLCB0aGUgaW1wbGVtZW50YXRpb25zIHdpdGggQlRNIGRvIG5v
-dCBldmVuIG5lZWQgYSBNTVUgbm90aWZpZXIgY2FsbGJhY2sNCj4gZm9yIHNlY29uZGFyeSBUTEIg
-aW52YWxpZGF0aW9uIHB1cnBvc2UgPyBQZXJoYXBzIG1tdV9ub3RpZmllcl9yZWdpc3RlcigpDQo+
-IGNvdWxkIGFsc28gYmUgc2tpcHBlZCBmb3Igc3VjaCBjYXNlcyBpLmUgd2l0aCBBUk1fU01NVV9G
-RUFUX0JUTQ0KPiBlbmFibGVkID8NCj4gDQoNCk91dCBvZiBjdXJpb3NpdHkuIEhvdyBkb2VzIEJU
-TSB3b3JrIHdpdGggZGV2aWNlIHRsYj8gQ2FuIFNNTVUgdHJhbnNsYXRlDQphIFRMQiBicm9hZGNh
-c3QgcmVxdWVzdCAoYmFzZWQgb24gQVNJRCkgaW50byBhIHNldCBvZiBQQ0kgQVRTIGludmFsaWRh
-dGlvbg0KcmVxdWVzdHMgKGJhc2VkIG9uIFBDSSByZXF1ZXN0b3IgSUQgYW5kIFBBU0lEKSBpbiBo
-YXJkd2FyZT8NCg0KSWYgc29mdHdhcmUgaW50ZXJ2ZW50aW9uIGlzIHJlcXVpcmVkIHRoZW4gaXQg
-bWlnaHQgYmUgdGhlIHJlYXNvbiB3aHkgbW11DQpub3RpZmllciBjYW5ub3QgYmUgc2tpcHBlZC4g
-V2l0aCBCVE0gZW5hYmxlZCBpdCBqdXN0IG1lYW5zIHRoZSBub3RpZmllcg0KY2FsbGJhY2sgY2Fu
-IHNraXAgaW90bGIgaW52YWxpZGF0aW9uLi4uDQo=
+Isaku Yamahata <isaku.yamahata@gmail.com> =E4=BA=8E2023=E5=B9=B47=E6=9C=881=
+9=E6=97=A5=E5=91=A8=E4=B8=89 09:17=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Mon, Jul 17, 2023 at 02:23:41PM +0800,
+> Jinrong Liang <ljr.kernel@gmail.com> wrote:
+>
+> > From: Jinrong Liang <cloudliang@tencent.com>
+> >
+> > Add test cases to verify the handling of unsupported input values for t=
+he
+> > PMU event filter. The tests cover unsupported "action" values, unsuppor=
+ted
+> > "flags" values, and unsupported "nevents" values. All these cases shoul=
+d
+> > return an error, as they are currently not supported by the filter.
+> > Furthermore, the tests also cover the scenario where setting non-existe=
+nt
+> > fixed counters in the fixed bitmap does not fail.
+> >
+> > Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
+> > ---
+> >  .../kvm/x86_64/pmu_event_filter_test.c        | 26 +++++++++++++++++++
+> >  1 file changed, 26 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c=
+ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> > index ffcbbf25b29b..63f85f583ef8 100644
+> > --- a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> > +++ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> > @@ -32,6 +32,10 @@
+> >  #define MAX_FILTER_EVENTS            300
+> >  #define MAX_TEST_EVENTS              10
+> >
+> > +#define PMU_EVENT_FILTER_INVALID_ACTION              (KVM_PMU_EVENT_DE=
+NY + 1)
+> > +#define PMU_EVENT_FILTER_INVALID_FLAGS                       (KVM_PMU_=
+EVENT_FLAG_MASKED_EVENTS + 1)
+>
+> flag is a bit mask. Not number. So +1 sounds weird.
+> As KVM_PMU_EVENT_FLAGS_VALID_MASK =3D 1,  this happens to get wanted resu=
+lt, though.
+
+We need an invalid flags, KVM_PMU_EVENT_FLAGS_VALID_MASK is actually
+equal to KVM_PMU_EVENT_FLAG_MASKED_EVENTS.
+
+In kvm.h:
+
+#define KVM_PMU_EVENT_FLAG_MASKED_EVENTS BIT(0)
+#define KVM_PMU_EVENT_FLAGS_VALID_MASK (KVM_PMU_EVENT_FLAG_MASKED_EVENTS)
+
+How about this modification:
+
+#define PMU_EVENT_FILTER_INVALID_FLAGS
+(KVM_PMU_EVENT_FLAGS_VALID_MASK << 1)
+
+>
+>
+> > +#define PMU_EVENT_FILTER_INVALID_NEVENTS             (MAX_FILTER_EVENT=
+S + 1)
+> > +
+> >  /*
+> >   * This is how the event selector and unit mask are stored in an AMD
+> >   * core performance event-select register. Intel's format is similar,
+> > @@ -757,6 +761,8 @@ static int set_pmu_single_event_filter(struct kvm_v=
+cpu *vcpu, uint64_t event,
+> >
+> >  static void test_filter_ioctl(struct kvm_vcpu *vcpu)
+> >  {
+> > +     uint8_t nr_fixed_counters =3D kvm_cpu_property(X86_PROPERTY_PMU_N=
+R_FIXED_COUNTERS);
+> > +     struct __kvm_pmu_event_filter f;
+> >       uint64_t e =3D ~0ul;
+> >       int r;
+> >
+> > @@ -777,6 +783,26 @@ static void test_filter_ioctl(struct kvm_vcpu *vcp=
+u)
+> >                                       KVM_PMU_EVENT_FLAG_MASKED_EVENTS,
+> >                                       KVM_PMU_EVENT_ALLOW);
+> >       TEST_ASSERT(r =3D=3D 0, "Valid PMU Event Filter is failing");
+> > +
+> > +     f =3D base_event_filter;
+> > +     f.action =3D PMU_EVENT_FILTER_INVALID_ACTION;
+> > +     r =3D do_vcpu_set_pmu_event_filter(vcpu, &f);
+> > +     TEST_ASSERT(r, "Set invalid action is expected to fail");
+> > +
+> > +     f =3D base_event_filter;
+> > +     f.flags =3D PMU_EVENT_FILTER_INVALID_FLAGS;
+> > +     r =3D do_vcpu_set_pmu_event_filter(vcpu, &f);
+> > +     TEST_ASSERT(r, "Set invalid flags is expected to fail");
+> > +
+> > +     f =3D base_event_filter;
+> > +     f.nevents =3D PMU_EVENT_FILTER_INVALID_NEVENTS;
+> > +     r =3D do_vcpu_set_pmu_event_filter(vcpu, &f);
+> > +     TEST_ASSERT(r, "Exceeding the max number of filter events should =
+fail");
+> > +
+> > +     f =3D base_event_filter;
+> > +     f.fixed_counter_bitmap =3D ~GENMASK_ULL(nr_fixed_counters, 0);
+> > +     r =3D do_vcpu_set_pmu_event_filter(vcpu, &f);
+> > +     TEST_ASSERT(!r, "Masking non-existent fixed counters should be al=
+lowed");
+> >  }
+> >
+> >  int main(int argc, char *argv[])
+> > --
+> > 2.39.3
+> >
+>
+> --
+> Isaku Yamahata <isaku.yamahata@gmail.com>
