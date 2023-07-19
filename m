@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A607590B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 10:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7730F7590BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 10:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbjGSIzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 04:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46586 "EHLO
+        id S230497AbjGSI5j convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 19 Jul 2023 04:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjGSIzO (ORCPT
+        with ESMTP id S229884AbjGSI5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 04:55:14 -0400
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2B41723;
-        Wed, 19 Jul 2023 01:55:06 -0700 (PDT)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 36J8sfkj002172;
-        Wed, 19 Jul 2023 16:54:41 +0800 (+08)
-        (envelope-from Yunlong.Xing@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4R5V3935qrz2K1r9W;
-        Wed, 19 Jul 2023 16:53:25 +0800 (CST)
-Received: from tj10379pcu.spreadtrum.com (10.5.32.15) by
- BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Wed, 19 Jul 2023 16:54:38 +0800
-From:   Yunlong Xing <yunlong.xing@unisoc.com>
-To:     <miklos@szeredi.hu>, <amir73il@gmail.com>
-CC:     <linux-unionfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <zhiguo.niu@unisoc.com>, <hongyu.jin@unisoc.com>,
-        <yunlongxing23@gmail.com>
-Subject: [PATCH V2] ovl: fix mount fail because the upper doesn't have space
-Date:   Wed, 19 Jul 2023 16:54:34 +0800
-Message-ID: <20230719085434.154834-1-yunlong.xing@unisoc.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 19 Jul 2023 04:57:37 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A2919F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 01:57:36 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-199-JcrrCbdbNSik7gdKJemqkQ-1; Wed, 19 Jul 2023 09:57:33 +0100
+X-MC-Unique: JcrrCbdbNSik7gdKJemqkQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 19 Jul
+ 2023 09:57:32 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Wed, 19 Jul 2023 09:57:32 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Tejun Heo' <tj@kernel.org>, Carlos Bilbao <carlos.bilbao@amd.com>
+CC:     "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        amd <amd@localhost.localdomain>
+Subject: RE: [PATCH] blk-iocost: fix seq_printf compile type mismatch error
+Thread-Topic: [PATCH] blk-iocost: fix seq_printf compile type mismatch error
+Thread-Index: AQHZuN9gMxBfo8Y4UkeL32HKckyYqK/Ay+LQ
+Date:   Wed, 19 Jul 2023 08:57:32 +0000
+Message-ID: <2b4540aadc3c4449a192aeed6211f232@AcuMS.aculab.com>
+References: <20230717141852.153965-1-carlos.bilbao@amd.com>
+ <ZLWNHuTGk0fy8pjE@slm.duckdns.org>
+In-Reply-To: <ZLWNHuTGk0fy8pjE@slm.duckdns.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.5.32.15]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX02.spreadtrum.com (10.0.64.8)
-X-MAIL: SHSQR01.spreadtrum.com 36J8sfkj002172
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current ovlfs mount flow:
+From: Tejun Heo
+> Sent: 17 July 2023 19:49
+> 
+> On Mon, Jul 17, 2023 at 09:18:52AM -0500, Carlos Bilbao wrote:
+> > From: amd <amd@localhost.localdomain>
+> >
+> > Fix two type mismatch errors encountered while compiling blk-iocost.c with
+> > GCC version 13.1.1 that involved constant operator WEIGHT_ONE. Cast the
+> > result of the division operation to (unsigned int) to match the expected
+> > format specifier %u in two seq_printf invocations.
+> 
+> Can you detail the warnings? Was that on 32bit compiles?
 
-ovl_fill_super
- |_ovl_get_workdir
-    |_ovl_make_workdir
-       |_ovl_check_rename_whiteout
+The problem is caused by gcc 13 changing the types of the
+constants inside an enum to be all the same.
 
-In ovl_check_rename_whiteout(), a new file is attempted to create.But if
-the upper doesn't have space to do this, it will return error -ENOSPC,
-causing the mount fail. It means that if the upper is full, the overlayfs
-cannot be mounted.It is not reasonable, so this patch will omit this error
- and continue mount flow.
+The best fix is (probably) to replace all the enum used to
+define unrelated constants with #defines.
 
-Fixes: cad218ab3320 ("ovl: check if upper fs supports RENAME_WHITEOUT")
-Cc: stable@vger.kernel.org
-Signed-off-by: Yunlong Xing <yunlong.xing@unisoc.com>
----
-changes of v2: Following Amir's suggestion, assuming it is not supported
-if the check fails because the upper does't have space
----
- fs/overlayfs/super.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+	David
 
-diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-index 5b069f1a1e44..2b33c56fe4d7 100644
---- a/fs/overlayfs/super.c
-+++ b/fs/overlayfs/super.c
-@@ -744,12 +744,13 @@ static int ovl_make_workdir(struct super_block *sb, struct ovl_fs *ofs,
- 
- 	/* Check if upper/work fs supports RENAME_WHITEOUT */
- 	err = ovl_check_rename_whiteout(ofs);
--	if (err < 0)
-+	if (err < 0 && err != -ENOSPC)
- 		goto out;
- 
--	rename_whiteout = err;
-+	rename_whiteout = err > 0;
- 	if (!rename_whiteout)
--		pr_warn("upper fs does not support RENAME_WHITEOUT.\n");
-+		pr_warn("upper fs does not support RENAME_WHITEOUT (%i).\n,
-+			err");
- 
- 	/*
- 	 * Check if upper/work fs supports (trusted|user).overlay.* xattr
--- 
-2.25.1
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
