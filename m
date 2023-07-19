@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F03758C22
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 05:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A87758C24
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 05:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbjGSDbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 23:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49584 "EHLO
+        id S229522AbjGSDb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 23:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbjGSDbU (ORCPT
+        with ESMTP id S229977AbjGSDbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 23:31:20 -0400
+        Tue, 18 Jul 2023 23:31:21 -0400
 Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1628B271B
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 20:29:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE862723
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 20:29:31 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4R5LsK5xpvz4f3lX3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 11:29:25 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4R5LsL0y1wz4f3n02
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 11:29:26 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgAXC+mVWLdkI7bmOA--.28977S5;
+        by APP2 (Coremail) with SMTP id Syh0CgAXC+mVWLdkI7bmOA--.28977S6;
         Wed, 19 Jul 2023 11:29:28 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     akpm@linux-foundation.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
 Cc:     shikemeng@huaweicloud.com
-Subject: [PATCH 3/4] mm/compaction: use compact_unlock_should_abort in isolate_migratepages_block
-Date:   Wed, 19 Jul 2023 19:30:00 +0800
-Message-Id: <20230719113001.2023703-4-shikemeng@huaweicloud.com>
+Subject: [PATCH 4/4] mm/compaction: add compact_unlock_irqrestore to remove repeat code
+Date:   Wed, 19 Jul 2023 19:30:01 +0800
+Message-Id: <20230719113001.2023703-5-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230719113001.2023703-1-shikemeng@huaweicloud.com>
 References: <20230719113001.2023703-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgAXC+mVWLdkI7bmOA--.28977S5
-X-Coremail-Antispam: 1UD129KBjvdXoWrtr48tFWktFy7urW8tF4xWFg_yoWDWFg_Za
-        40q3Zaqr43ZryrJFZxCr4xAFn5KrZ5ur1xW3srtFZ0kr9IyF48tFsrZr43Wr13XasruFZx
-        Ca4kZr12kF12yjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbqAYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl82
-        xGYIkIc2x26280x7IE14v26r1rM28IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kI
-        II0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7
-        xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
-        z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
-        xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v2
-        6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6I
-        AqYI8I648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
-        x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r
-        1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF
-        7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxV
-        WUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjTR
-        QSdDUUUUU
+X-CM-TRANSID: Syh0CgAXC+mVWLdkI7bmOA--.28977S6
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF15Aw45WrWrCr1DWr1DAwb_yoWrXryxpF
+        4kGasIyr4kZFy3WF4ftr4ruFs0g34fXF47Ar4Sk3WfJa1FvF93Gw1SyFyUuFWrXryavFZ5
+        WFs8Jr18AF47Z3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUPmb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
+        8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAv
+        FVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJw
+        A2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE
+        3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr2
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
+        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjI
+        I2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I
+        3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxV
+        WUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8I
+        cVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aV
+        AFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZE
+        Xa7sRNv31UUUUUU==
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
@@ -62,43 +62,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use compact_unlock_should_abort in isolate_migratepages_block to remove
-repeat code.
+Add compact_unlock_irqrestore to remove repeat code. This also make
+compact lock functions sereis complete as we can call
+compact_lock_irqsave/compact_unlock_irqrestore in pair.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- mm/compaction.c | 18 ++++--------------
- 1 file changed, 4 insertions(+), 14 deletions(-)
+ mm/compaction.c | 43 ++++++++++++++++---------------------------
+ 1 file changed, 16 insertions(+), 27 deletions(-)
 
 diff --git a/mm/compaction.c b/mm/compaction.c
-index 638146a49e89..c1dc821ac6e1 100644
+index c1dc821ac6e1..eb1d3d9a422c 100644
 --- a/mm/compaction.c
 +++ b/mm/compaction.c
-@@ -909,20 +909,10 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 		 * contention, to give chance to IRQs. Abort completely if
- 		 * a fatal signal is pending.
- 		 */
--		if (!(low_pfn % COMPACT_CLUSTER_MAX)) {
+@@ -541,6 +541,14 @@ static spinlock_t *compact_lock_irqsave(spinlock_t *lock, unsigned long *flags,
+ 	return lock;
+ }
+ 
++static inline void compact_unlock_irqrestore(spinlock_t **locked, unsigned long flags)
++{
++	if (*locked) {
++		spin_unlock_irqrestore(*locked, flags);
++		*locked = NULL;
++	}
++}
++
+ /*
+  * Compaction requires the taking of some coarse locks that are potentially
+  * very heavily contended. The lock should be periodically unlocked to avoid
+@@ -556,10 +564,7 @@ static spinlock_t *compact_lock_irqsave(spinlock_t *lock, unsigned long *flags,
+ static bool compact_unlock_should_abort(spinlock_t **locked,
+ 		unsigned long flags, struct compact_control *cc)
+ {
+-	if (*locked) {
+-		spin_unlock_irqrestore(*locked, flags);
+-		*locked = NULL;
+-	}
++	compact_unlock_irqrestore(locked, flags);
+ 
+ 	if (fatal_signal_pending(current)) {
+ 		cc->contended = true;
+@@ -671,8 +676,7 @@ static unsigned long isolate_freepages_block(struct compact_control *cc,
+ 
+ 	}
+ 
+-	if (locked)
+-		spin_unlock_irqrestore(locked, flags);
++	compact_unlock_irqrestore(&locked, flags);
+ 
+ 	/*
+ 	 * There is a tiny chance that we have read bogus compound_order(),
+@@ -935,10 +939,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 		}
+ 
+ 		if (PageHuge(page) && cc->alloc_contig) {
 -			if (locked) {
 -				spin_unlock_irqrestore(locked, flags);
 -				locked = NULL;
 -			}
--
--			if (fatal_signal_pending(current)) {
--				cc->contended = true;
--				ret = -EINTR;
--
--				goto fatal_pending;
--			}
--
--			cond_resched();
-+		if (!(low_pfn % COMPACT_CLUSTER_MAX) &&
-+		    compact_unlock_should_abort(&locked, flags, cc)) {
-+			ret = -EINTR;
-+			goto fatal_pending;
- 		}
++			compact_unlock_irqrestore(&locked, flags);
  
- 		nr_scanned++;
+ 			ret = isolate_or_dissolve_huge_page(page, &cc->migratepages);
+ 
+@@ -1024,10 +1025,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 			 */
+ 			if (unlikely(__PageMovable(page)) &&
+ 					!PageIsolated(page)) {
+-				if (locked) {
+-					spin_unlock_irqrestore(locked, flags);
+-					locked = NULL;
+-				}
++				compact_unlock_irqrestore(&locked, flags);
+ 
+ 				if (isolate_movable_page(page, mode)) {
+ 					folio = page_folio(page);
+@@ -1111,9 +1109,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 
+ 		/* If we already hold the lock, we can skip some rechecking */
+ 		if (&lruvec->lru_lock != locked) {
+-			if (locked)
+-				spin_unlock_irqrestore(locked, flags);
+-
++			compact_unlock_irqrestore(&locked, flags);
+ 			locked = compact_lock_irqsave(&lruvec->lru_lock, &flags, cc);
+ 
+ 			lruvec_memcg_debug(lruvec, folio);
+@@ -1176,10 +1172,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 
+ isolate_fail_put:
+ 		/* Avoid potential deadlock in freeing page under lru_lock */
+-		if (locked) {
+-			spin_unlock_irqrestore(locked, flags);
+-			locked = NULL;
+-		}
++		compact_unlock_irqrestore(&locked, flags);
+ 		folio_put(folio);
+ 
+ isolate_fail:
+@@ -1192,10 +1185,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 		 * page anyway.
+ 		 */
+ 		if (nr_isolated) {
+-			if (locked) {
+-				spin_unlock_irqrestore(locked, flags);
+-				locked = NULL;
+-			}
++			compact_unlock_irqrestore(&locked, flags);
+ 			putback_movable_pages(&cc->migratepages);
+ 			cc->nr_migratepages = 0;
+ 			nr_isolated = 0;
+@@ -1224,8 +1214,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 	folio = NULL;
+ 
+ isolate_abort:
+-	if (locked)
+-		spin_unlock_irqrestore(locked, flags);
++	compact_unlock_irqrestore(&locked, flags);
+ 	if (folio) {
+ 		folio_set_lru(folio);
+ 		folio_put(folio);
 -- 
 2.30.0
 
