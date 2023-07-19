@@ -2,77 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE4F75928E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73247759297
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbjGSKRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39930 "EHLO
+        id S230400AbjGSKST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230227AbjGSKRM (ORCPT
+        with ESMTP id S230344AbjGSKSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:17:12 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD3A1FCD
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:17:09 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fdd14c1fbfso2559826e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:17:09 -0700 (PDT)
+        Wed, 19 Jul 2023 06:18:12 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C611FCB
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:18:04 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-993d1f899d7so939130566b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:18:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689761828; x=1690366628;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=y0FHMjrGmCXIw0/DZBD+IQ1a60ZI2uMLDW9c0NrQHlI=;
-        b=etGEow4RvOH5lMWiG86zx5Nr4kAteEEBWUdgjZvmzgXjEJ1yEEuLhdcEkcBbpz92Z8
-         ph4OxAbDyOXatQhzoiYHE2XlAC2W8IwuHOfc8GtYiecQ3X5RjwsUR6r3eo3h3MWtecyn
-         o/aBPXzGcFQk837zaUpLJbdE7QPkPxoy5D5qKHAQgzZP8RmoLu2Gr+YqMoCVQu0iUTB5
-         ILpCFLqnJTAn+ZZ/76At1SkdZhJ9oT1dybWN2TOe8DzHfJ5b8LEx6ceSonwu7nhhr311
-         CJ7bJTZiHOBg355/yfAMTZG9hRhuPAcl3y53W58lRFkVGChRLhWvhmi+XnyNBFio27fi
-         cxow==
+        d=szeredi.hu; s=google; t=1689761883; x=1692353883;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3NsOzwLbyHagOj0RUJh6oS60oUKmYlB8RPkDGxAGY18=;
+        b=O2pnEuPln44glMdeg60thEUz2OpSqZ/q0d5NCNBMcNGZ3PPVNAri3R+01Ku599baiT
+         iW+V/lvASTxjNqKmCemBNSYN1Dhb+8BVv36AOBGTTn+bUHhTq8tfW0SW4HfF55T1cxR9
+         hVVjk7uLRDQdZ14Tg9GhicKs6HPVRmQjK3hE8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689761828; x=1690366628;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y0FHMjrGmCXIw0/DZBD+IQ1a60ZI2uMLDW9c0NrQHlI=;
-        b=DqnenpVrHOphtUECXCL/C2J/sCVlPbYbJmWKUyzpmXorKkQG2saOAR+DmNVMFLs5n5
-         L6Nz5lkZ9Dx5160+Cf/ehNVtO6EPyQvAnmfU3LtaI9luMbGNp15yEsrZ6/edsL3Db8GO
-         HjBPZia9E4/kIEe9lQxIp/L9SPrcywpaY4IqacZZd9bJctjqze4DekCi9wuvGmm+/NU/
-         AK/vASTBJ9CAum0FZ1jhH56cGsJqFKVfr/5DbicQEZmXIcNAHD2DrhS2a61hg1X/yER0
-         yaiCLCBzvnof1d9UiI8V0h0RSG/L80DGbAMSeORHDR4xoMcr2mDgj7dQ4x+YbZqG2SEK
-         Z8CA==
-X-Gm-Message-State: ABy/qLanCaVLMy1UXlalG+HQAB1yGjtV20zoQenKNtSi9yVyrhubdrNi
-        5E3TA6fOmSvmPNUa6oaWOa9mWg==
-X-Google-Smtp-Source: APBJJlEnoluqRJ5HQQAwtaILFzOiwW2HMLqH/12MYBtrVGwkX0/dPhXrorNJ57McribBJ8TvLpO44Q==
-X-Received: by 2002:a05:6512:1328:b0:4f8:5ab0:68c4 with SMTP id x40-20020a056512132800b004f85ab068c4mr1629899lfu.59.1689761828252;
-        Wed, 19 Jul 2023 03:17:08 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
-        by smtp.gmail.com with ESMTPSA id d14-20020ac25ece000000b004fdc0023a50sm869383lfq.232.2023.07.19.03.17.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 03:17:07 -0700 (PDT)
-Message-ID: <484822a3-939f-599d-434c-38f7a560a015@linaro.org>
-Date:   Wed, 19 Jul 2023 13:17:07 +0300
+        d=1e100.net; s=20221208; t=1689761883; x=1692353883;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3NsOzwLbyHagOj0RUJh6oS60oUKmYlB8RPkDGxAGY18=;
+        b=WC410mzeWfiHx1tUUzhqRFDAfeiKZSSQYtFcaqEsjcebWRQWHVGY2/iPiXfx3fkG7l
+         DTcjmXq3XMGE/2DKqo/kzkM/C6WvBDiOqwVwcVW3uO6+bs1lHJQp3KNaVRCbeIOnlfMj
+         /4NedEpX74ONcQnRLLWCgDtEIK4Yt8ZKuBI8VcxpHvsLfKafS5x8ZbVgAhI4zpLx2rMT
+         acsw/JI7iVUovX0TdIIEBTfWPievidKI7AdnSLiOzPkqCCUQRMoXPBmfSfnX+hLInoVr
+         nS4I3xHlGkGfmgVh5rLhZpYpE4dd55BouPQDSSzzrffXF77itwETKJzT2eF76sJ7nvge
+         /Y+w==
+X-Gm-Message-State: ABy/qLZJUSPiqDMDi9VS5gNaS/56MO4g3N0HiSiCRm0L7eexcYW2+pNP
+        CKUyuNiE4WLl/HKDWY5RUStqlNVA9/4X5DncOjOgYQ==
+X-Google-Smtp-Source: APBJJlGoD/VxR3BbFv+ImtFMoe6c5kQO9wv+u3g62HEJx8HqwwhtWvu3lLeGD/sLRyF77FLO7GXKEdXGcjmXqyU+fkQ=
+X-Received: by 2002:a17:906:2213:b0:974:1ef1:81ad with SMTP id
+ s19-20020a170906221300b009741ef181admr2102985ejs.4.1689761883028; Wed, 19 Jul
+ 2023 03:18:03 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/5] arm64: dts: qcom: Add base SM4450 QRD DTS
-Content-Language: en-GB
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
-        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
-        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230719100135.21325-1-quic_tengfan@quicinc.com>
- <20230719100135.21325-3-quic_tengfan@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20230719100135.21325-3-quic_tengfan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+References: <20230629155433.4170837-1-dhowells@redhat.com> <20230629155433.4170837-2-dhowells@redhat.com>
+In-Reply-To: <20230629155433.4170837-2-dhowells@redhat.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 19 Jul 2023 12:17:51 +0200
+Message-ID: <CAJfpegsJuvXJDcXpo9T19Gw0tDuvyOJdv44Y2bt04MEf1JLxGg@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/4] splice: Fix corruption of spliced data after
+ splice() returns
+To:     David Howells <dhowells@redhat.com>
+Cc:     netdev@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Matt Whitlock <kernel@mattwhitlock.name>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@kvack.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,57 +70,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/2023 13:01, Tengfei Fan wrote:
-> Add DTS for Qualcomm QRD platform which uses SM4450 SoC.
-> 
-> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> ---
->   arch/arm64/boot/dts/qcom/Makefile       |  1 +
->   arch/arm64/boot/dts/qcom/sm4450-qrd.dts | 18 ++++++++++++++++++
->   2 files changed, 19 insertions(+)
->   create mode 100644 arch/arm64/boot/dts/qcom/sm4450-qrd.dts
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-> index 337abc4ceb17..a0cfd37e674b 100644
-> --- a/arch/arm64/boot/dts/qcom/Makefile
-> +++ b/arch/arm64/boot/dts/qcom/Makefile
-> @@ -215,3 +215,4 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sm8450-sony-xperia-nagara-pdx223.dtb
->   dtb-$(CONFIG_ARCH_QCOM)	+= sm8450-sony-xperia-nagara-pdx224.dtb
->   dtb-$(CONFIG_ARCH_QCOM)	+= sm8550-mtp.dtb
->   dtb-$(CONFIG_ARCH_QCOM)	+= sm8550-qrd.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= sm4450-qrd.dtb
+On Thu, 29 Jun 2023 at 17:56, David Howells <dhowells@redhat.com> wrote:
+>
+> Splicing data from, say, a file into a pipe currently leaves the source
+> pages in the pipe after splice() returns - but this means that those pages
+> can be subsequently modified by shared-writable mmap(), write(),
+> fallocate(), etc. before they're consumed.
 
-You guess, this should be sorted.
+What is this trying to fix?   The above behavior is well known, so
+it's not likely to be a problem.
 
-> diff --git a/arch/arm64/boot/dts/qcom/sm4450-qrd.dts b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
-> new file mode 100644
-> index 000000000000..851a6761a6ea
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
-> @@ -0,0 +1,18 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "sm4450.dtsi"
-> +/ {
-> +	model = "Qualcomm Technologies, Inc. SM4450 QRD";
-> +	compatible = "qcom,sm4450-qrd", "qcom,sm4450";
-> +
-> +	aliases { };
-> +
-> +	chosen {
-> +		bootargs = " ";
+Besides, removing spliced pages from the cache is basically guaranteed
+to result in a performance regression for any application using
+splice.
 
-Do you need this?
-
-> +	};
-> +};
-
--- 
-With best wishes
-Dmitry
-
+Thanks,
+Miklos
