@@ -2,73 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9EF758B5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 04:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71551758B65
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 04:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbjGSCbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 22:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
+        id S229478AbjGSCdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 22:33:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGSCbR (ORCPT
+        with ESMTP id S229476AbjGSCdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 22:31:17 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E797F1BC3;
-        Tue, 18 Jul 2023 19:31:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689733876; x=1721269876;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=oGVTTbOxHRTNujTz3s1LeziHKKP7JTarTS3cQdLkg0Y=;
-  b=IzVRd8Ve768anOphKD3wStT5443OfOf9eV+fqvX5UTjAwMoGC8B5iUSr
-   sNF3k5AOTHNItTtmCBYv2367M9rjX1ZjGLtR/c9PvW297I5GwK7ZhEOfL
-   0Q4kd5yp1gE2Ypdwh3n2OhG5QDM3uNzZlLXdppnRC98EnuzUZnJ3z2yaB
-   30LYh0X4wQLPqKlcAO8CouWTdEB8XbHW4F+ekRdgPtzuFtVjTT/1eCADg
-   JrrHw5feCThvIBziGa3TLB2p5cDji8rSPSTYQ/xC2kmivW5EcyqlVzaMo
-   xvOyt5ok9wQTMuXE3VwJ/XTNCwq4/9peEHyu+8biuWDjVdkiGy+d+QxyS
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="452734279"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="452734279"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 19:31:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="793844259"
-X-IronPort-AV: E=Sophos;i="6.01,215,1684825200"; 
-   d="scan'208";a="793844259"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.6.77]) ([10.93.6.77])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 19:31:09 -0700
-Message-ID: <e3d2c81f-16e9-9a62-9fcb-d9552c3f12d2@intel.com>
-Date:   Wed, 19 Jul 2023 10:31:06 +0800
+        Tue, 18 Jul 2023 22:33:39 -0400
+Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203411FE8;
+        Tue, 18 Jul 2023 19:33:16 -0700 (PDT)
+Received: from localhost.localdomain (unknown [10.101.196.174])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 685C041314;
+        Wed, 19 Jul 2023 02:33:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1689733995;
+        bh=coNK51IF4YKf75VmW+r/k/vCwNZWQgu3CZj6SU+JB84=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=eSCoOQZFXLB8H6YUMZDfzMvmYLT/w5QwfEqSkRC1dBmRpgvB7u+88nmm+aPG8qRmb
+         QgIAW+/q4DEne7I7ic7PIQeJQ0lnSDt/l3tdxs9/s3yI9H7caygSryUcbTKiJb46v/
+         tFGb5O0pjAP4CmtYdpuaJ6ttp+QGhbG19rBTPkM97ET2Ggny1a/H3cK/wXfPPn6hUC
+         51GYbJM8ZKJTYx+zxIqukIkDElsyEyMnoEu82ZFDRmMvkKsxkg8ueWsAweQbp9HXiH
+         0irZDTjBaXGWp3zY7X+Vi8g5YPCNtI5TmTOWyq2ZBeRjifrxXRefpis0ojcg5gwjBi
+         9ki5OR1MhpBhA==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     rafael@kernel.org, lenb@kernel.org, hdegoede@redhat.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ACPI: video: Put ACPI video and its child devices to D0 at boot
+Date:   Wed, 19 Jul 2023 10:32:23 +0800
+Message-Id: <20230719023223.2971481-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v9 1/2] x86/tdx: Retry TDVMCALL_MAP_GPA() when needed
-Content-Language: en-US
-To:     Dexuan Cui <decui@microsoft.com>, ak@linux.intel.com,
-        arnd@arndb.de, bp@alien8.de, brijesh.singh@amd.com,
-        dan.j.williams@intel.com, dave.hansen@intel.com,
-        dave.hansen@linux.intel.com, haiyangz@microsoft.com, hpa@zytor.com,
-        jane.chu@oracle.com, kirill.shutemov@linux.intel.com,
-        kys@microsoft.com, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, rostedt@goodmis.org,
-        sathyanarayanan.kuppuswamy@linux.intel.com, seanjc@google.com,
-        tglx@linutronix.de, tony.luck@intel.com, wei.liu@kernel.org,
-        x86@kernel.org, mikelley@microsoft.com
-Cc:     linux-kernel@vger.kernel.org, Tianyu.Lan@microsoft.com,
-        rick.p.edgecombe@intel.com
-References: <20230621191317.4129-1-decui@microsoft.com>
- <20230621191317.4129-2-decui@microsoft.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <20230621191317.4129-2-decui@microsoft.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,14 +51,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/2023 3:13 AM, Dexuan Cui wrote:
-> GHCI spec for TDX 1.0 says that the MapGPA call may fail with the R10
-> error code = TDG.VP.VMCALL_RETRY (1), and the guest must retry this
-> operation for the pages in the region starting at the GPA specified
-> in R11.
-> 
-> When a fully enlightened TDX guest runs on Hyper-V, Hyper-V can return
-> the retry error when set_memory_decrypted() is called to decrypt up to
-> 1GB of swiotlb bounce buffers.
+Screen brightness can only be changed once on some HP laptops.
 
-just out of curiosity, what size does Hyper-v handle at most in one call?
+Vendor identified the root cause as Linux doesn't invoke _PS0 at boot
+for all ACPI devices:
+
+    Scope (\_SB.PC00.GFX0)
+    {
+        Scope (DD1F)
+        {
+            Method (_PS0, 0, Serialized)  // _PS0: Power State 0
+            {
+                If (CondRefOf (\_SB.PC00.LPCB.EC0.SSBC))
+                {
+                    \_SB.PC00.LPCB.EC0.SSBC ()
+                }
+            }
+	    ...
+	}
+	...
+    }
+
+The \_SB.PC00.GFX0.DD1F is the panel device, and its _PS0 needs to be
+executed to make the brightness control work properly.
+
+_PS0 doesn't get invoked for all ACPI devices because of commit
+7cd8407d53ef ("ACPI / PM: Do not execute _PS0 for devices without _PSC
+during initialization"). For now use acpi_device_fix_up_power_extended()
+to put ACPI video and its child devices to D0 to workaround the issue.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=217683
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v2:
+ - Wording
+ - Bugzilla
+ - Add comment
+
+ drivers/acpi/acpi_video.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
+index 62f4364e4460..bac614e9fe56 100644
+--- a/drivers/acpi/acpi_video.c
++++ b/drivers/acpi/acpi_video.c
+@@ -2027,6 +2027,13 @@ static int acpi_video_bus_add(struct acpi_device *device)
+ 	if (error)
+ 		goto err_put_video;
+ 
++
++	/*
++	 * Some HP laptops require ACPI video's child devices have _PS0
++	 * evaluated to have functional panel brightness control.
++	 */
++	acpi_device_fix_up_power_extended(device);
++
+ 	pr_info("%s [%s] (multi-head: %s  rom: %s  post: %s)\n",
+ 	       ACPI_VIDEO_DEVICE_NAME, acpi_device_bid(device),
+ 	       video->flags.multihead ? "yes" : "no",
+-- 
+2.34.1
+
