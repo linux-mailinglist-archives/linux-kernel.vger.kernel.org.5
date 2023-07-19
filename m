@@ -2,144 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B07DE75900B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 10:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4AA759013
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 10:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbjGSIRv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 19 Jul 2023 04:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56834 "EHLO
+        id S229614AbjGSITJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 04:19:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbjGSIRZ (ORCPT
+        with ESMTP id S229592AbjGSITF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 04:17:25 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A98C2699
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 01:17:08 -0700 (PDT)
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1qM2MY-0003qe-Oa; Wed, 19 Jul 2023 10:16:46 +0200
-Message-ID: <499938f424957fcf0fd3a9def157866d44f4ee3b.camel@pengutronix.de>
-Subject: Re: [PATCH v1 3/8] drm/etnaviv: Drop the second argument of the
- etnaviv_gem_new_impl()
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     suijingfeng <suijingfeng@loongson.cn>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     loongson-kernel@lists.loongnix.cn, etnaviv@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Date:   Wed, 19 Jul 2023 10:16:41 +0200
-In-Reply-To: <06b291d4-9cab-5179-2a90-a73449ddb2dd@loongson.cn>
-References: <20230623100822.274706-1-sui.jingfeng@linux.dev>
-         <20230623100822.274706-4-sui.jingfeng@linux.dev>
-         <862358e67a6f118b11ba16fb94828e9d1635cb66.camel@pengutronix.de>
-         <e3a05204-61fe-2318-5f06-fd12addfe2e9@loongson.cn>
-         <ee96ed1a1ff12656f6e6542ae928fb526a9758fe.camel@pengutronix.de>
-         <06b291d4-9cab-5179-2a90-a73449ddb2dd@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Wed, 19 Jul 2023 04:19:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D6126B0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 01:18:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689754686;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MmVR/bllIudc94xa/30s1JGUSnUJtFWF09nSa97ATdk=;
+        b=TkvMVbjFo+6H8ZozwyHZXCW44Y/Hvq1Awj8HnEDATCSDeoQPwp1MtKofuRo/iGMmlyciyK
+        K4h+M9dWPzPMOkDF3EJTslfzjGkzNeekdG6bWCPpa6ONmtoxn6BuoVb4aKO3laN5rpYr/7
+        kBXKjZ67J3nEv005FRPgiftBnI4s4xA=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-595-pbU6DF3YM-SAh6hrl3co3A-1; Wed, 19 Jul 2023 04:18:05 -0400
+X-MC-Unique: pbU6DF3YM-SAh6hrl3co3A-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-30e4943ca7fso3681517f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 01:18:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689754684; x=1692346684;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MmVR/bllIudc94xa/30s1JGUSnUJtFWF09nSa97ATdk=;
+        b=Z0VQaq3AZbVIHqwxS/LbXg9Fc4+ciNF8cGiJMxGQef8R7tM7pVYozoYtJyZiaJn0nV
+         Jqkl4gG/1t5aifrMvKkf4H3MWgbv0umwwNju8SR8K6S2B/gXqXKiLuVys9P9APuZMFnx
+         KCIwxmSVscvGHXvGrCOzBzZtTqGLxPyaXXzotIdaQqJcb7fz/deSpcDhoJJcCVgff+LG
+         nM9sCMFcdksj1Tw4GNt+ft7Gv6dcOST2G/oIIhXqs6Y1wQ88ENyX5tI6YW8pXkCNz7bt
+         T8yh7Oaqd4Lvz1aFDh4hP6LMZXB59QDPyoVIdSuLEJ+L/RB47n6n4kMBMR3kC9FRPWfe
+         z/5Q==
+X-Gm-Message-State: ABy/qLaL6JG3clJDBBeod+d2KKWs1XO6SiZGMhIWuFsOTiwfkeeBk2oc
+        NTV8H1YRFWUfVtuZiC32DchkjZzBLniY1vsP5WQr5XC4VgwV4RmriwCed4XWhEpGtGk/HjBsRCH
+        /4dHWkGydHhGhAyHYl6/XOxO0
+X-Received: by 2002:adf:fe49:0:b0:314:1ca4:dbd9 with SMTP id m9-20020adffe49000000b003141ca4dbd9mr13566764wrs.27.1689754683965;
+        Wed, 19 Jul 2023 01:18:03 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlF49g1Vta7mjhC1+bf3quUqv/nXAVqJtAkEUDjFA8Ku+wnpSH62a3c0EOossUbfX4CpB0nijg==
+X-Received: by 2002:adf:fe49:0:b0:314:1ca4:dbd9 with SMTP id m9-20020adffe49000000b003141ca4dbd9mr13566743wrs.27.1689754683589;
+        Wed, 19 Jul 2023 01:18:03 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c74b:4f00:b030:1632:49f2:63? (p200300cbc74b4f00b030163249f20063.dip0.t-ipconnect.de. [2003:cb:c74b:4f00:b030:1632:49f2:63])
+        by smtp.gmail.com with ESMTPSA id n10-20020a5d51ca000000b00314398e4dd4sm4588195wrv.54.2023.07.19.01.18.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 01:18:03 -0700 (PDT)
+Message-ID: <456a78ae-5d7e-9955-5edb-f9f46c22bd75@redhat.com>
+Date:   Wed, 19 Jul 2023 10:18:02 +0200
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v2 1/4] mm: factor out VMA stack and heap checks
+Content-Language: en-US
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+        selinux@vger.kernel.org,
+        =?UTF-8?Q?Christian_G=c3=b6ttsche?= <cgzones@googlemail.com>
+References: <20230719075127.47736-1-wangkefeng.wang@huawei.com>
+ <20230719075127.47736-2-wangkefeng.wang@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230719075127.47736-2-wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jingfeng,
+On 19.07.23 09:51, Kefeng Wang wrote:
+> Factor out VMA stack and heap checks and name them
+> vma_is_initial_stack() and vma_is_initial_heap() for
+> general use.
+> 
+> Cc: Christian Göttsche <cgzones@googlemail.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
 
-Am Mittwoch, dem 19.07.2023 um 00:16 +0800 schrieb suijingfeng:
-> Hi,
-> > > 
+
 [...]
-> > > I don't think you are right here.
-> > > 
-> > Yes, clearly I was not taking into account the differences between
-> > drm_gem_private_object_init and drm_gem_object_init properly. Please
-> > disregard my comment, this patch is good as-is.
-> 
-> I have study your patch in the past frequently.
-> 
-> As you could solve very complex(and difficulty) bugs.
-> 
-> So I still believe that you know everything about etnaviv.
-> 
-While flattering, even I myself am not thinking I know everything about
-etnaviv. The different HW generations and the complex subsystem the
-driver is living in doesn't make it easy for anyone to keep in mind
-everything.
 
-> I'm just wondering that you are designing the traps. But I'm not sure.
-> 
-Certainly not. I'm just human and do make mistakes as everyone. During
-the quick scrolling though the code when reviewing this patch my mind
-clearly just dropped the _private_ part of one of the function names. I
-appreciate being told when I am wrong and I do believe that the
-exchange during the review is helpful for everyone to get on the same
-page.
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 2dd73e4f3d8e..51f8c573db74 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -822,6 +822,27 @@ static inline bool vma_is_anonymous(struct vm_area_struct *vma)
+>   	return !vma->vm_ops;
+>   }
+>   
 
-Regards,
-Lucas
+Worth adding a similar comment like for vma_is_initial_stack() ?
 
-> Okay, still acceptable.
-> 
-> Because communicate will you is interesting.
-> 
-> Thank you.
-> 
-> > Regards,
-> > Lucas
-> > 
-> > > > Regards,
-> > > > Lucas
-> > > > 
-> > > > > Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
-> > > > > ---
-> > > > >    drivers/gpu/drm/etnaviv/etnaviv_gem.c | 7 +++----
-> > > > >    1 file changed, 3 insertions(+), 4 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem.c b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
-> > > > > index b5f73502e3dd..be2f459c66b5 100644
-> > > > > --- a/drivers/gpu/drm/etnaviv/etnaviv_gem.c
-> > > > > +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
-> > > > > @@ -542,7 +542,7 @@ static const struct drm_gem_object_funcs etnaviv_gem_object_funcs = {
-> > > > >    	.vm_ops = &vm_ops,
-> > > > >    };
-> > > > >    
-> > > > > -static int etnaviv_gem_new_impl(struct drm_device *dev, u32 size, u32 flags,
-> > > > > +static int etnaviv_gem_new_impl(struct drm_device *dev, u32 flags,
-> > > > >    	const struct etnaviv_gem_ops *ops, struct drm_gem_object **obj)
-> > > > >    {
-> > > > >    	struct etnaviv_gem_object *etnaviv_obj;
-> > > > > @@ -591,8 +591,7 @@ int etnaviv_gem_new_handle(struct drm_device *dev, struct drm_file *file,
-> > > > >    
-> > > > >    	size = PAGE_ALIGN(size);
-> > > > >    
-> > > > > -	ret = etnaviv_gem_new_impl(dev, size, flags,
-> > > > > -				   &etnaviv_gem_shmem_ops, &obj);
-> > > > > +	ret = etnaviv_gem_new_impl(dev, flags, &etnaviv_gem_shmem_ops, &obj);
-> > > > >    	if (ret)
-> > > > >    		goto fail;
-> > > > >    
-> > > > > @@ -627,7 +626,7 @@ int etnaviv_gem_new_private(struct drm_device *dev, size_t size, u32 flags,
-> > > > >    	struct drm_gem_object *obj;
-> > > > >    	int ret;
-> > > > >    
-> > > > > -	ret = etnaviv_gem_new_impl(dev, size, flags, ops, &obj);
-> > > > > +	ret = etnaviv_gem_new_impl(dev, flags, ops, &obj);
-> > > > >    	if (ret)
-> > > > >    		return ret;
-> > > > >    
-> 
+> +static inline bool vma_is_initial_heap(const struct vm_area_struct *vma)
+> +{
+> +       return vma->vm_start <= vma->vm_mm->brk &&
+> +		vma->vm_end >= vma->vm_mm->start_brk;
+> +}
+> +
+> +/*
+> + * Indicate if the VMA is a stack for the given task; for
+> + * /proc/PID/maps that is the stack of the main task.
+> + */
+> +static inline bool vma_is_initial_stack(const struct vm_area_struct *vma)
+> +{
+> +	/*
+> +	 * We make no effort to guess what a given thread considers to be
+> +	 * its "stack".  It's not even well-defined for programs written
+> +	 * languages like Go.
+> +	 */
+> +       return vma->vm_start <= vma->vm_mm->start_stack &&
+> +	       vma->vm_end >= vma->vm_mm->start_stack;
+> +}
+> +
+>   static inline bool vma_is_temporary_stack(struct vm_area_struct *vma)
+>   {
+>   	int maybe_stack = vma->vm_flags & (VM_GROWSDOWN | VM_GROWSUP);
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Cheers,
+
+David / dhildenb
 
