@@ -2,58 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2F2758C9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 06:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABA6758C9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 06:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbjGSE3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 00:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38726 "EHLO
+        id S229668AbjGSE3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 00:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjGSE3v (ORCPT
+        with ESMTP id S229502AbjGSE3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 00:29:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB58D1B5;
-        Tue, 18 Jul 2023 21:29:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4AED3611A6;
-        Wed, 19 Jul 2023 04:29:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD7F7C433C7;
-        Wed, 19 Jul 2023 04:29:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689740989;
-        bh=VsupOhAw0dkjCQ85UwV+mlGN3pD2O9GWV2eVO3RP9o8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QQ8I5AIdXpyK55Mzzf/2HAnG3XS0KMKKjNJTQcWMnBJ7ngAsNyVlFqPF+Qdu4ovOW
-         yWeGURj5MhyTQdhYUK9c9em02iktKVNnkBVveVRdxBOtShcUKm3zZGXXPsfWr6OyVl
-         ZCO2dfRKMue8ng7w0dzyqvggMqnG2ouswxCj2tZorTSY35P7ktcFvI+eyQcse9MXO3
-         rkXQcLsuzz+5onPv93gJ+GZKPwvhhwGOLvy/UwcnEqWyNLnKjMoF8HXoJpYVbq45dp
-         tmtGidHlV+E8zudwWQE3mIcYTSvmcc+tGu1BKgF0JmZjCKamGe8yphhYRHJRj/Dg1t
-         Yr+VgiB8Ci7hQ==
-Date:   Wed, 19 Jul 2023 09:59:13 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     bhelgaas@google.com, imx@lists.linux.dev, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
-        robh@kernel.org, roy.zang@nxp.com
-Subject: Re: [PATCH v2 2/2] PCI: layerscape: Add the workaround for lost link
- capablities during reset
-Message-ID: <20230719042913.GA5990@thinkpad>
-References: <20230718182142.1864070-1-Frank.Li@nxp.com>
- <20230718182142.1864070-2-Frank.Li@nxp.com>
+        Wed, 19 Jul 2023 00:29:48 -0400
+Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D16291B1
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 21:29:45 -0700 (PDT)
+X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
+Received: from 192.168.10.47
+        by mg.richtek.com with MailGates ESMTPS Server V6.0(1455446:0:AUTH_RELAY)
+        (envelope-from <alina_yu@richtek.com>)
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256); Wed, 19 Jul 2023 12:29:37 +0800 (CST)
+Received: from ex4.rt.l (192.168.10.47) by ex4.rt.l (192.168.10.47) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.25; Wed, 19 Jul
+ 2023 12:29:37 +0800
+Received: from linuxcarl2.richtek.com (192.168.10.154) by ex4.rt.l
+ (192.168.10.45) with Microsoft SMTP Server id 15.2.1118.25 via Frontend
+ Transport; Wed, 19 Jul 2023 12:29:37 +0800
+Date:   Wed, 19 Jul 2023 12:29:37 +0800
+From:   Alina Yu <alina_yu@richtek.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <alina_yu@richtek.com>
+Subject: Re: [PATCH v2 2/2] regulator: rtq2208: Add Richtek RTQ2208 SubPMIC
+ driver
+Message-ID: <20230719042937.GA29368@linuxcarl2.richtek.com>
+References: <cover.1688569987.git.alina_yu@richtek.com>
+ <5fc248e0b2c4d3f59c2af3ec89cc333c8acbc372.1688569987.git.alina_yu@richtek.com>
+ <20230718084028.GA24273@linuxcarl2.richtek.com>
+ <0b956726-f96f-479a-85d1-80b315626a18@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230718182142.1864070-2-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <0b956726-f96f-479a-85d1-80b315626a18@sirena.org.uk>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,92 +52,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 02:21:42PM -0400, Frank Li wrote:
-> From: Xiaowei Bao <xiaowei.bao@nxp.com>
-> 
-> A workaround for the issue where the PCI Express Endpoint (EP) controller
-> loses the values of the Maximum Link Width and Supported Link Speed from
-> the Link Capabilities Register, which initially configured by the Reset
-> Configuration Word (RCW) during a link-down or hot reset event.
-> 
-> Fixes: a805770d8a22 ("PCI: layerscape: Add EP mode support")
-> Signed-off-by: Xiaowei Bao <xiaowei.bao@nxp.com>
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Hi,
+Mark
 
-Acked-by: Manivannan Sadhasivam <mani@kernel.org>
-
-- Mani
-
-> ---
-> change from v1 to v2:
->  - add comments at restore register
->  - add fixes tag
+On Tue, Jul 18, 2023 at 03:16:54PM +0100, Mark Brown wrote:
+> On Tue, Jul 18, 2023 at 04:40:28PM +0800, Alina Yu wrote:
 > 
->  .../pci/controller/dwc/pci-layerscape-ep.c    | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
+> > Sorry, not intend to ping, just want to check the current review status.
+> > Is there any comment about rtq2208-regulator.c
 > 
-> diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-> index e0969ff2ddf7..b1faf41a2fae 100644
-> --- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
-> +++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-> @@ -45,6 +45,7 @@ struct ls_pcie_ep {
->  	struct pci_epc_features		*ls_epc;
->  	const struct ls_pcie_ep_drvdata *drvdata;
->  	int				irq;
-> +	u32				lnkcap;
->  	bool				big_endian;
->  };
->  
-> @@ -73,6 +74,7 @@ static irqreturn_t ls_pcie_ep_event_handler(int irq, void *dev_id)
->  	struct ls_pcie_ep *pcie = dev_id;
->  	struct dw_pcie *pci = pcie->pci;
->  	u32 val, cfg;
-> +	u8 offset;
->  
->  	val = ls_lut_readl(pcie, PEX_PF0_PME_MES_DR);
->  	ls_lut_writel(pcie, PEX_PF0_PME_MES_DR, val);
-> @@ -81,6 +83,19 @@ static irqreturn_t ls_pcie_ep_event_handler(int irq, void *dev_id)
->  		return IRQ_NONE;
->  
->  	if (val & PEX_PF0_PME_MES_DR_LUD) {
-> +
-> +		offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-> +
-> +		/*
-> +		 * The values of the Maximum Link Width and Supported Link
-> +		 * Speed from the Link Capabilities Register will be lost
-> +		 * during link down or hot reset. Restore initial value
-> +		 * that configured by the Reset Configuration Word (RCW).
-> +		 */
-> +		dw_pcie_dbi_ro_wr_en(pci);
-> +		dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, pcie->lnkcap);
-> +		dw_pcie_dbi_ro_wr_dis(pci);
-> +
->  		cfg = ls_lut_readl(pcie, PEX_PF0_CONFIG);
->  		cfg |= PEX_PF0_CFG_READY;
->  		ls_lut_writel(pcie, PEX_PF0_CONFIG, cfg);
-> @@ -216,6 +231,7 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
->  	struct ls_pcie_ep *pcie;
->  	struct pci_epc_features *ls_epc;
->  	struct resource *dbi_base;
-> +	u8 offset;
->  	int ret;
->  
->  	pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
-> @@ -252,6 +268,9 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
->  
->  	platform_set_drvdata(pdev, pcie);
->  
-> +	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-> +	pcie->lnkcap = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
-> +
->  	ret = dw_pcie_ep_init(&pci->ep);
->  	if (ret)
->  		return ret;
-> -- 
-> 2.34.1
-> 
+> It's not in my queue any more so probably no but I really don't
+> remember, I guess there was some issue with the DT binding that I was
+> expecting a respin for.
 
--- 
-மணிவண்ணன் சதாசிவம்
+
+Thanks you for your reply,
+I send v3 which including modification for dt-binging.
+
+
+Best regards,
+Alina
+
