@@ -2,70 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB492759B63
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1E1759B85
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbjGSQt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 12:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37096 "EHLO
+        id S230354AbjGSQyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 12:54:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230375AbjGSQtY (ORCPT
+        with ESMTP id S229540AbjGSQy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 12:49:24 -0400
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E75C72127;
-        Wed, 19 Jul 2023 09:49:09 -0700 (PDT)
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1b89cfb4571so57036865ad.3;
-        Wed, 19 Jul 2023 09:49:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689785349; x=1692377349;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kaQnnXfA+u3adfYMdtW9tWio9fe6uzVE0UNesEG6pHs=;
-        b=WWHEt552cntwrDhrWArDHWGSVb/4jlC4oXIIGYe+JUKauPn8n/1HpWuhAt4Q5SFq0h
-         lsFuiZwRgdco/3K94gWpDNto9bcOkD0RvjwnVA+oFhY7JPnLhDtmpoJJTL0p1c+LvMwg
-         4kwioB64qyCj/1S7Ry1LHrC6y+scLAOVOVhnarXDLsrjfrhfJa1aYShLZ8lH98vAYTvD
-         HAaQSM8y3n0oPMkAnCi5M1/54G49d/5kZZBgZTOMGwuUQhnxYRLefit2OyhVcJFYf7IN
-         iviFq0FT/ztsa6SzYMNBKO8bVSniwmyJ1X7xOivtwHxlPO8K8O1BGKE2HN4LQ4J7ycyd
-         0D6Q==
-X-Gm-Message-State: ABy/qLYK43I6mgvrnd3doC7to53yqcv6GGMf2+uh+zZXGWP/k5E2iz2R
-        bsbMFhftL7xaRfRqq6Br7Sg=
-X-Google-Smtp-Source: APBJJlGgsKFx+gSI337jIO3V/75MoqxZmb4ik8xsUfx6X1QRfZzp/1GByz+/aRgV2klSpx3bktXuBQ==
-X-Received: by 2002:a17:902:ea0d:b0:1b0:6e16:b92c with SMTP id s13-20020a170902ea0d00b001b06e16b92cmr3343356plg.54.1689785349159;
-        Wed, 19 Jul 2023 09:49:09 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:a2ab:183f:c76c:d30d? ([2620:15c:211:201:a2ab:183f:c76c:d30d])
-        by smtp.gmail.com with ESMTPSA id c20-20020a170902c1d400b001b7fb1a8200sm4177403plc.258.2023.07.19.09.49.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 09:49:08 -0700 (PDT)
-Message-ID: <bf2d41ce-2a56-adbb-d752-266fc5ed1128@acm.org>
-Date:   Wed, 19 Jul 2023 09:49:07 -0700
+        Wed, 19 Jul 2023 12:54:29 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440FC91;
+        Wed, 19 Jul 2023 09:54:28 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="430289382"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="430289382"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 09:54:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="789481190"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="789481190"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga008.fm.intel.com with ESMTP; 19 Jul 2023 09:54:24 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andy@kernel.org>)
+        id 1qMARS-001aWY-2H;
+        Wed, 19 Jul 2023 19:54:22 +0300
+Date:   Wed, 19 Jul 2023 19:54:22 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Samuel Holland <samuel.holland@sifive.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v2 3/4] gpio: sifive: Get the parent IRQ's domain from
+ its irq_data
+Message-ID: <ZLgVPv7zdoaiUCU6@smile.fi.intel.com>
+References: <20230719163446.1398961-1-samuel.holland@sifive.com>
+ <20230719163446.1398961-4-samuel.holland@sifive.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH -next] scsi: ufs: core: Fix some kernel-doc comments
-Content-Language: en-US
-To:     Yang Li <yang.lee@linux.alibaba.com>, jejb@linux.ibm.com
-Cc:     martin.petersen@oracle.com, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-References: <20230712075836.15375-1-yang.lee@linux.alibaba.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20230712075836.15375-1-yang.lee@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230719163446.1398961-4-samuel.holland@sifive.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/12/23 00:58, Yang Li wrote:
-> Use colons to separate parameter names from their specific meanings.
+On Wed, Jul 19, 2023 at 09:34:44AM -0700, Samuel Holland wrote:
+> Do not parse the devicetree again when the data is already available
+> from the IRQ subsystem. This follows the example of the ThunderX and
+> X-Gene GPIO drivers. The ngpio check is needed to avoid a possible
+> out-of-bounds read.
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+...
+
+> -	girq->parent_domain = parent;
+> +	girq->parent_domain = irq_get_irq_data(chip->irq_number[0])->domain;
+
+For the sake of readability I would like to leave parent variable
+and assign it beforehand somewhere upper in the code.
+
+Also, can irq_get_irq_data() return NULL? Needs a comment on top
+of that assignment or an additional check.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
