@@ -2,228 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4B17592C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1197592C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbjGSKWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:22:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43910 "EHLO
+        id S231124AbjGSKVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbjGSKW3 (ORCPT
+        with ESMTP id S230360AbjGSKVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:22:29 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD5530C6;
-        Wed, 19 Jul 2023 03:21:37 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36J4gS0r008449;
-        Wed, 19 Jul 2023 10:21:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=H1tWmuhbuVnxEhxL5TNv7ayIR5yNwafgkSHF+1A4gYI=;
- b=eeSbcJvx12vKU91V4jypzzaD/+nSAmDCLacmZzS6+d7y4AWLk1uHzVucAk/aYB20LMsf
- csitA4xqSl486y+VCty0F5oxGfYxdXCfcDfh/IlvmLrPc4VmgP5os7N2+hsM+pT7s13V
- NB29nGeII3nV4mgwnNny+bPsGWN+niQ8gTmgYCWLgYG76JwtJH5e1zjGDqoKamZsIv4y
- LROvKZExJVvhWvgszbyuQ35Atd4L6+XWcfIC1iWeqJ1MifsO7RsehJaIoaJs+tWZFIGe
- 6OkE8I2DVvyHh4g0h87WOYRcd3cq1jQDuB30ei6IgwHtSJlbea4UAhx2dqyD36ojiS02 kw== 
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rwnrrk1yj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Jul 2023 10:21:02 +0000
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 36JAKxBb008071;
-        Wed, 19 Jul 2023 10:20:59 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3rumhm2ngb-1;
-        Wed, 19 Jul 2023 10:20:59 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36JAKwlN008066;
-        Wed, 19 Jul 2023 10:20:59 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-vpernami-hyd.qualcomm.com [10.213.107.240])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 36JAKwkW008065;
-        Wed, 19 Jul 2023 10:20:58 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 2370923)
-        id 8C5794BFF; Wed, 19 Jul 2023 15:50:57 +0530 (+0530)
-From:   Vivek Pernamitta <quic_vpernami@quicinc.com>
-To:     mhi@lists.linux.dev
-Cc:     mrana@quicinc.com, quic_qianyu@quicinc.com,
-        manivannan.sadhasivam@linaro.org, quic_vbadigan@quicinc.com,
-        quic_krichai@quicinc.com, quic_skananth@quicinc.com,
-        andersson@kernel.org, simon.horman@corigine.com, dnlplm@gmail.com,
-        linux-arm-msm@vger.kernel.org,
-        Vivek Pernamitta <quic_vpernami@quicinc.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH V3] net: mhi : Add support to enable ethernet interface
-Date:   Wed, 19 Jul 2023 15:50:54 +0530
-Message-Id: <1689762055-12570-1-git-send-email-quic_vpernami@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: aZkQJcWMLG1M_zCuv_KJlx3G7RdfW1lV
-X-Proofpoint-ORIG-GUID: aZkQJcWMLG1M_zCuv_KJlx3G7RdfW1lV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-19_06,2023-07-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 phishscore=0
- malwarescore=0 suspectscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
- mlxlogscore=873 priorityscore=1501 impostorscore=0 mlxscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307190093
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 19 Jul 2023 06:21:09 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C3E1FC0;
+        Wed, 19 Jul 2023 03:21:06 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 823AC24E2C0;
+        Wed, 19 Jul 2023 18:21:05 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 19 Jul
+ 2023 18:21:05 +0800
+Received: from ubuntu.localdomain (113.72.147.86) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 19 Jul
+ 2023 18:21:04 +0800
+From:   Minda Chen <minda.chen@starfivetech.com>
+To:     Daire McNamara <daire.mcnamara@microchip.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>,
+        Minda Chen <minda.chen@starfivetech.com>
+Subject: [PATCH v1 6/9] PCI: PLDA: Add host conroller platform driver
+Date:   Wed, 19 Jul 2023 18:20:54 +0800
+Message-ID: <20230719102057.22329-7-minda.chen@starfivetech.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230719102057.22329-1-minda.chen@starfivetech.com>
+References: <20230719102057.22329-1-minda.chen@starfivetech.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [113.72.147.86]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to enable ethernet network device for MHI NET driver
-currenlty we have support only NET driver.
+Add PLDA XpressRICH PCIe host controller IP platform
+driver. Implement it like DesignWare PCIe platform
+driver.
 
-Signed-off-by: Vivek Pernamitta <quic_vpernami@quicinc.com>
+Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 ---
- drivers/net/mhi_net.c | 53 ++++++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 40 insertions(+), 13 deletions(-)
+ drivers/pci/controller/plda/Kconfig          |   8 ++
+ drivers/pci/controller/plda/Makefile         |   1 +
+ drivers/pci/controller/plda/pcie-plda-host.c | 111 +++++++++++++++++++
+ drivers/pci/controller/plda/pcie-plda-plat.c |  64 +++++++++++
+ drivers/pci/controller/plda/pcie-plda.h      |   3 +
+ 5 files changed, 187 insertions(+)
+ create mode 100644 drivers/pci/controller/plda/pcie-plda-plat.c
 
-diff --git a/drivers/net/mhi_net.c b/drivers/net/mhi_net.c
-index 3d322ac..5bb8d99 100644
---- a/drivers/net/mhi_net.c
-+++ b/drivers/net/mhi_net.c
-@@ -11,6 +11,7 @@
- #include <linux/netdevice.h>
- #include <linux/skbuff.h>
- #include <linux/u64_stats_sync.h>
-+#include <linux/etherdevice.h>
+diff --git a/drivers/pci/controller/plda/Kconfig b/drivers/pci/controller/plda/Kconfig
+index fb274976b84b..a3c790545843 100644
+--- a/drivers/pci/controller/plda/Kconfig
++++ b/drivers/pci/controller/plda/Kconfig
+@@ -8,6 +8,14 @@ config PCIE_PLDA_HOST
+ 	depends on OF && PCI_MSI
+ 	select IRQ_DOMAIN
  
- #define MHI_NET_MIN_MTU		ETH_MIN_MTU
- #define MHI_NET_MAX_MTU		0xffff
-@@ -38,10 +39,12 @@ struct mhi_net_dev {
- 	u32 rx_queue_sz;
- 	int msg_enable;
- 	unsigned int mru;
-+	bool ethernet_if;
- };
++config PCIE_PLDA_PLAT_HOST
++	bool "PLDA PCIe platform host controller"
++	select PCIE_PLDA_HOST
++	help
++	  Say Y here if you want to support the PLDA PCIe platform controller in
++	  host mode. This PCIe controller may be embedded into many different
++	  vendors SoCs.
++
+ config PCIE_MICROCHIP_HOST
+ 	bool "Microchip AXI PCIe controller"
+ 	select PCI_HOST_COMMON
+diff --git a/drivers/pci/controller/plda/Makefile b/drivers/pci/controller/plda/Makefile
+index 4340ab007f44..2f16d9126535 100644
+--- a/drivers/pci/controller/plda/Makefile
++++ b/drivers/pci/controller/plda/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-$(CONFIG_PCIE_PLDA_HOST) += pcie-plda-host.o
++obj-$(CONFIG_PCIE_PLDA_PLAT_HOST) += pcie-plda-plat.o
+ obj-$(CONFIG_PCIE_MICROCHIP_HOST) += pcie-microchip-host.o
+diff --git a/drivers/pci/controller/plda/pcie-plda-host.c b/drivers/pci/controller/plda/pcie-plda-host.c
+index ca720430721c..e4baa63f6a5b 100644
+--- a/drivers/pci/controller/plda/pcie-plda-host.c
++++ b/drivers/pci/controller/plda/pcie-plda-host.c
+@@ -20,6 +20,15 @@
  
- struct mhi_device_info {
- 	const char *netname;
-+	bool ethernet_if;
- };
+ #include "pcie-plda.h"
  
- static int mhi_ndo_open(struct net_device *ndev)
-@@ -140,6 +143,14 @@ static void mhi_net_setup(struct net_device *ndev)
- 	ndev->tx_queue_len = 1000;
- }
- 
-+static void mhi_ethernet_setup(struct net_device *ndev)
++void __iomem *plda_pcie_map_bus(struct pci_bus *bus, unsigned int devfn,
++				int where)
 +{
-+	ndev->netdev_ops = &mhi_netdev_ops;
-+	ether_setup(ndev);
-+	ndev->min_mtu = ETH_MIN_MTU;
-+	ndev->max_mtu = ETH_MAX_MTU;
++	struct plda_pcie *pcie = bus->sysdata;
++
++	return pcie->config_base + PCIE_ECAM_OFFSET(bus->number, devfn, where);
++}
++EXPORT_SYMBOL_GPL(plda_pcie_map_bus);
++
+ void plda_pcie_enable_msi(struct plda_pcie *port)
+ {
+ 	struct plda_msi *msi = &port->msi;
+@@ -552,3 +561,105 @@ int plda_pcie_setup_iomems(struct plda_pcie *port, struct pci_host_bridge *bridg
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(plda_pcie_setup_iomems);
++
++static void plda_pcie_irq_domain_deinit(struct plda_pcie *pcie)
++{
++	irq_set_chained_handler_and_data(pcie->irq, NULL, NULL);
++	irq_set_chained_handler_and_data(pcie->msi_irq, NULL, NULL);
++	irq_set_chained_handler_and_data(pcie->intx_irq, NULL, NULL);
++
++	irq_domain_remove(pcie->msi.msi_domain);
++	irq_domain_remove(pcie->msi.dev_domain);
++
++	irq_domain_remove(pcie->intx_domain);
++	irq_domain_remove(pcie->event_domain);
 +}
 +
- static struct sk_buff *mhi_net_skb_agg(struct mhi_net_dev *mhi_netdev,
- 				       struct sk_buff *skb)
- {
-@@ -209,16 +220,22 @@ static void mhi_net_dl_callback(struct mhi_device *mhi_dev,
- 			mhi_netdev->skbagg_head = NULL;
- 		}
- 
--		switch (skb->data[0] & 0xf0) {
--		case 0x40:
--			skb->protocol = htons(ETH_P_IP);
--			break;
--		case 0x60:
--			skb->protocol = htons(ETH_P_IPV6);
--			break;
--		default:
--			skb->protocol = htons(ETH_P_MAP);
--			break;
-+		if (mhi_netdev->ethernet_if) {
-+			skb_copy_to_linear_data(skb, skb->data,
-+						mhi_res->bytes_xferd);
-+			skb->protocol = eth_type_trans(skb, mhi_netdev->ndev);
-+		} else {
-+			switch (skb->data[0] & 0xf0) {
-+			case 0x40:
-+				skb->protocol = htons(ETH_P_IP);
-+				break;
-+			case 0x60:
-+				skb->protocol = htons(ETH_P_IPV6);
-+				break;
-+			default:
-+				skb->protocol = htons(ETH_P_MAP);
-+				break;
-+			}
- 		}
- 
- 		u64_stats_update_begin(&mhi_netdev->stats.rx_syncp);
-@@ -301,11 +318,17 @@ static void mhi_net_rx_refill_work(struct work_struct *work)
- 		schedule_delayed_work(&mhi_netdev->rx_refill, HZ / 2);
- }
- 
--static int mhi_net_newlink(struct mhi_device *mhi_dev, struct net_device *ndev)
-+static int mhi_net_newlink(struct mhi_device *mhi_dev, struct net_device *ndev, bool eth_dev)
- {
- 	struct mhi_net_dev *mhi_netdev;
- 	int err;
- 
-+	if (eth_dev) {
-+		eth_hw_addr_random(ndev);
-+		if (!is_valid_ether_addr(ndev->dev_addr))
-+			return -EADDRNOTAVAIL;
++int plda_pcie_host_init(struct plda_pcie *pcie, struct pci_ops *ops)
++{
++	struct resource *cfg_res;
++	struct device *dev = pcie->dev;
++	int ret;
++	struct pci_host_bridge *bridge;
++	struct platform_device *pdev = to_platform_device(dev);
++	struct plda_evt evt = {NULL, NULL, EVENT_PM_MSI_INT_INTX,
++			       EVENT_PM_MSI_INT_MSI};
++
++	pcie->bridge_addr =
++		devm_platform_ioremap_resource_byname(pdev, "host");
++
++	if (IS_ERR(pcie->bridge_addr))
++		return dev_err_probe(dev, PTR_ERR(pcie->bridge_addr),
++			"Failed to map reg memory\n");
++
++	cfg_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cfg");
++	if (!cfg_res)
++		return dev_err_probe(dev, -ENODEV,
++			"Failed to get config memory\n");
++
++	pcie->config_base = devm_ioremap_resource(dev, cfg_res);
++	if (IS_ERR(pcie->config_base))
++		return dev_err_probe(dev, PTR_ERR(pcie->config_base),
++			"Failed to map config memory\n");
++
++	pcie->phy = devm_phy_optional_get(dev, NULL);
++	if (IS_ERR(pcie->phy))
++		return dev_err_probe(dev, PTR_ERR(pcie->phy),
++			"Failed to get pcie phy\n");
++
++	bridge = devm_pci_alloc_host_bridge(dev, 0);
++	if (!bridge)
++		return dev_err_probe(dev, -ENOMEM,
++			"Failed to alloc bridge\n");
++
++	pcie->bridge = bridge;
++
++	if (pcie->ops->host_init) {
++		ret = pcie->ops->host_init(pcie);
++		if (ret)
++			return ret;
 +	}
 +
- 	mhi_netdev = netdev_priv(ndev);
- 
- 	dev_set_drvdata(&mhi_dev->dev, mhi_netdev);
-@@ -313,6 +336,7 @@ static int mhi_net_newlink(struct mhi_device *mhi_dev, struct net_device *ndev)
- 	mhi_netdev->mdev = mhi_dev;
- 	mhi_netdev->skbagg_head = NULL;
- 	mhi_netdev->mru = mhi_dev->mhi_cntrl->mru;
-+	mhi_netdev->ethernet_if = eth_dev;
- 
- 	INIT_DELAYED_WORK(&mhi_netdev->rx_refill, mhi_net_rx_refill_work);
- 	u64_stats_init(&mhi_netdev->stats.rx_syncp);
-@@ -356,13 +380,14 @@ static int mhi_net_probe(struct mhi_device *mhi_dev,
- 	int err;
- 
- 	ndev = alloc_netdev(sizeof(struct mhi_net_dev), info->netname,
--			    NET_NAME_PREDICTABLE, mhi_net_setup);
-+			    NET_NAME_PREDICTABLE, info->ethernet_if ?
-+			    mhi_ethernet_setup : mhi_net_setup);
- 	if (!ndev)
- 		return -ENOMEM;
- 
- 	SET_NETDEV_DEV(ndev, &mhi_dev->dev);
- 
--	err = mhi_net_newlink(mhi_dev, ndev);
-+	err = mhi_net_newlink(mhi_dev, ndev, info->ethernet_if);
- 	if (err) {
- 		free_netdev(ndev);
- 		return err;
-@@ -380,10 +405,12 @@ static void mhi_net_remove(struct mhi_device *mhi_dev)
- 
- static const struct mhi_device_info mhi_hwip0 = {
- 	.netname = "mhi_hwip%d",
-+	.ethernet_if = false,
++	plda_pcie_setup_window(pcie->bridge_addr, 0, cfg_res->start, 0,
++			       resource_size(cfg_res));
++	plda_pcie_setup_iomems(pcie, bridge);
++	plda_set_default_msi(&pcie->msi);
++	ret = plda_pcie_init_irq(pcie, pdev, &evt);
++	if (ret)
++		goto err_host;
++
++	/* Set default bus ops */
++	bridge->ops = ops;
++	bridge->sysdata = pcie;
++
++	plda_pcie_enable_msi(pcie);
++
++	ret = pci_host_probe(bridge);
++	if (ret < 0) {
++		dev_err(dev, "Failed to pci host probe: %d\n", ret);
++		goto err_probe;
++	}
++
++	return ret;
++
++err_probe:
++	plda_pcie_irq_domain_deinit(pcie);
++err_host:
++	if (pcie->ops->host_deinit)
++		pcie->ops->host_deinit(pcie);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(plda_pcie_host_init);
++
++void plda_pcie_host_deinit(struct plda_pcie *pcie)
++{
++	pci_stop_root_bus(pcie->bridge->bus);
++	pci_remove_root_bus(pcie->bridge->bus);
++
++	plda_pcie_irq_domain_deinit(pcie);
++
++	if (pcie->ops->host_deinit)
++		pcie->ops->host_deinit(pcie);
++}
++EXPORT_SYMBOL_GPL(plda_pcie_host_deinit);
+diff --git a/drivers/pci/controller/plda/pcie-plda-plat.c b/drivers/pci/controller/plda/pcie-plda-plat.c
+new file mode 100644
+index 000000000000..270aceb57c7a
+--- /dev/null
++++ b/drivers/pci/controller/plda/pcie-plda-plat.c
+@@ -0,0 +1,64 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * PLDA XpressRich PCIe platform driver
++ *
++ * Authors: Minda Chen <minda.chen@starfivetech.com>
++ */
++
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/gpio.h>
++#include <linux/interrupt.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/of_device.h>
++#include <linux/pci.h>
++#include <linux/platform_device.h>
++#include <linux/resource.h>
++#include <linux/types.h>
++
++#include "pcie-plda.h"
++
++static struct pci_ops plda_default_ops = {
++	.map_bus	= plda_pcie_map_bus,
++	.read		= pci_generic_config_read,
++	.write		= pci_generic_config_write,
++};
++
++static int plda_plat_pcie_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct plda_pcie *pci;
++	int ret;
++
++	pci = devm_kzalloc(dev, sizeof(*pci), GFP_KERNEL);
++	if (!pci)
++		return -ENOMEM;
++
++	pci->dev = dev;
++
++	ret = plda_pcie_host_init(pci, &plda_default_ops);
++	if (ret) {
++		dev_err(dev, "Failed to initialize host\n");
++		return ret;
++	}
++
++	platform_set_drvdata(pdev, pci);
++
++	return ret;
++}
++
++static const struct of_device_id plda_plat_pcie_of_match[] = {
++	{ .compatible = "plda,xpressrich-pcie-host"},
++	{ /* sentinel */ }
++};
++
++static struct platform_driver plda_plat_pcie_driver = {
++	.driver = {
++		.name	= "plda-xpressrich-pcie",
++		.of_match_table = plda_plat_pcie_of_match,
++		.suppress_bind_attrs = true,
++	},
++	.probe = plda_plat_pcie_probe,
++};
++builtin_platform_driver(plda_plat_pcie_driver);
+diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
+index feb3a0d9ace5..8785f885ddb1 100644
+--- a/drivers/pci/controller/plda/pcie-plda.h
++++ b/drivers/pci/controller/plda/pcie-plda.h
+@@ -157,6 +157,7 @@ struct plda_evt {
+ 	int msi_evt;
  };
  
- static const struct mhi_device_info mhi_swip0 = {
- 	.netname = "mhi_swip%d",
-+	.ethernet_if = false,
- };
++void __iomem *plda_pcie_map_bus(struct pci_bus *bus, unsigned int devfn, int where);
+ void plda_pcie_enable_msi(struct plda_pcie *port);
+ void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
+ 			    phys_addr_t axi_addr, phys_addr_t pci_addr,
+@@ -164,6 +165,8 @@ void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
+ int plda_pcie_setup_iomems(struct plda_pcie *port, struct pci_host_bridge *host_bridge);
+ int plda_pcie_init_irq(struct plda_pcie *port, struct platform_device *pdev,
+ 		       struct plda_evt *evt);
++int plda_pcie_host_init(struct plda_pcie *pcie, struct pci_ops *ops);
++void plda_pcie_host_deinit(struct plda_pcie *pcie);
  
- static const struct mhi_device_id mhi_net_id_table[] = {
+ static inline void plda_set_default_msi(struct plda_msi *msi)
+ {
 -- 
-2.7.4
+2.17.1
 
