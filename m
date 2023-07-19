@@ -2,79 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A04759473
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE9B75946F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbjGSLk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 07:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
+        id S229592AbjGSLkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 07:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjGSLkY (ORCPT
+        with ESMTP id S229776AbjGSLkI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 07:40:24 -0400
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0361FF5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:40:01 -0700 (PDT)
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3a3b86821fcso996379b6e.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:40:01 -0700 (PDT)
+        Wed, 19 Jul 2023 07:40:08 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11EBF1BE4
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:39:47 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbc59de009so62804725e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:39:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689766784; x=1692358784;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6xWrGmvyahmWXOp2W9pMTWNvuWztCli0WIWaglYWzcA=;
+        b=fF2COW0XDHf/EtUsGPj3UP3etaBQZw+DItUT2xU6WMark4A2NV28kW4nWFjK6+/tHN
+         rU3okyBv0cp+PRZIs1xnIPiD/OzTYYP7p8zyXNmG3U0Kh/NGpDV32jO8fy5FU1gE9hsa
+         tdhc3Z5BMKewIk7p59VPM3aZMEdTp41RXrgeMOr9I8Bx0B9N8iafg5MOlN98IU3vFbIm
+         Sf0knfkylwbbpPrykX76hhTcNCwoCQjtAYkzPOXBzU9AoxJBHDqFVaNxyM9OUXaK10iG
+         m/108/WTXmTRAMxMaCfCK0g/uR1WfIy2quqzRRBS3lBi2I3XXiHW4aLWEYUERfHPGovP
+         ce9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689766770; x=1692358770;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20221208; t=1689766784; x=1692358784;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/vGmZ9/fDb9epDvOedOBs7HeR46EwNPEEK7sk+j6Kio=;
-        b=I0GFmG/kHfnB6PRsNDJaybaH3nqp2EY2Ut2amnz2Vjaj2PZcSxyzij3XN4cYBapNDo
-         Mb+4VGZxs03tUP2hpZ2UNG+zvHaioR9FDZyi3GAQzIcN0oE8Ix55wSppSu21yAX8JW1d
-         8a/SjHQQUqqqMcFnvj/LXZ2k6f6BahXQOiitZpaSBi41NTHRgZj51few3LYER3W4ZDMq
-         nj4AQVxTiiNS5bMeMm2xpFCdmioQ87KlLjrkCl4GeYcRKLpE3M3xky4QzA3RZT4m6p/A
-         1wHApQCvCPvOVPvK3SBHeZKeJ7O7+gL7zA9bkQJAE7miYB73Wj4gSA79rSDiMmritQKd
-         qLGQ==
-X-Gm-Message-State: ABy/qLZ9iLuA1iCKl8jDwAqTWeHgqIP7w4uxEgKIUHt1cBYPD+/y23H7
-        a+FOkXBCxUUxPWlRPGkXjCJCMgZXiSh+pw9ufDssCKO2oi8t
-X-Google-Smtp-Source: APBJJlHVcNkxZiOgTQ8esKMapxANI5L22BOi8in+N+miz/kb77z2U5OyIOT1jLZTT/rIepP8GTCXchunn8fJhay0LPEwt6P5G282
+        bh=6xWrGmvyahmWXOp2W9pMTWNvuWztCli0WIWaglYWzcA=;
+        b=DEKMRwL37Y35n1cYfo40ha07Pk82xD7egQucP4gWx3lNoxqW4ZXuMePZfQymQieIhT
+         BtOUcWnN9K6W9Pj44j0d87PlmOXb079dafLOr77eWHjHlsBMJLpINGncUFv0ndO9q0d7
+         5QK74049TCc23TJkYE4EUzhjvdAbFw4B+5O1dF/bxBMzylrMxnwVglPNgqxxZyhVox9F
+         nCJgS9U53EQEoSJY/si5C6ISv537wATmLHC9vJJqGEkrXKKDSDOLHM1BQPeq6ijrQDa/
+         enUPFKlLwc/yzFExVUD6LoOJntH0C8aZ5w3TSE7D1LZGwWrMKthsGObVdNK3i1igCH94
+         JX/w==
+X-Gm-Message-State: ABy/qLaKhMlTvgGzjDlh/3iKfoDKrzCHSJGdJug55UOrFcT48Js7yBm5
+        wSTf9XjFpxFNWstrs9IkX/JpgE4T0IN7cxuAHMAA6A==
+X-Google-Smtp-Source: APBJJlFOjB3e9p51PfRvlx+FZqJg8p2IkxuTKJB/Mfx+7qa0F12H2nheFss7zG4r5BQfDeuua0/5Ow==
+X-Received: by 2002:a05:600c:2315:b0:3fb:e189:3532 with SMTP id 21-20020a05600c231500b003fbe1893532mr1688194wmo.20.1689766784311;
+        Wed, 19 Jul 2023 04:39:44 -0700 (PDT)
+Received: from [192.168.69.115] ([176.187.201.220])
+        by smtp.gmail.com with ESMTPSA id u6-20020a05600c00c600b003fbb5142c4bsm1518012wmm.18.2023.07.19.04.39.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 04:39:44 -0700 (PDT)
+Message-ID: <ef4b3c72-1676-fc73-9eb6-5ea6539d8876@linaro.org>
+Date:   Wed, 19 Jul 2023 13:39:41 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:190f:b0:3a1:ee4f:77ce with SMTP id
- bf15-20020a056808190f00b003a1ee4f77cemr3849967oib.1.1689766770301; Wed, 19
- Jul 2023 04:39:30 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 04:39:30 -0700
-In-Reply-To: <0000000000007cfb2405febf9023@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000018e0570600d57cdb@google.com>
-Subject: Re: [syzbot] [ntfs3?] BUG: unable to handle kernel paging request in attr_data_read_resident
-From:   syzbot <syzbot+33a67f9990381cc8951c@syzkaller.appspotmail.com>
-To:     almaz.alexandrovich@paragon-software.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH] MIPS: Loongson64: Fix more __iomem attributes
+Content-Language: en-US
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, chenhuacai@kernel.org,
+        kernel test robot <lkp@intel.com>
+References: <20230718134411.2871477-1-jiaxun.yang@flygoat.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20230718134411.2871477-1-jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On 18/7/23 15:44, Jiaxun Yang wrote:
+> There are some __iomem type casting being missed in previous patch.
+> Fix them here.
+> 
+> Fixes: 5bd3990723bd ("MIPS: Loongson64: Prefix ipi register address pointers with __iomem")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202307020639.QCZOKp8B-lkp@intel.com/
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+>   arch/mips/loongson64/smp.c | 168 ++++++++++++++++++-------------------
+>   1 file changed, 84 insertions(+), 84 deletions(-)
 
-commit ad26a9c84510af7252e582e811de970433a9758f
-Author: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Date:   Fri Oct 7 17:08:06 2022 +0000
 
-    fs/ntfs3: Fixing wrong logic in attr_set_size and ntfs_fallocate
+>   static void ipi_mailbox_buf_init(void)
+>   {
+> -	ipi_mailbox_buf[0] = (void *)
+> +	ipi_mailbox_buf[0] = (void __iomem *)
+>   		(SMP_CORE_GROUP0_BASE + SMP_CORE0_OFFSET + BUF);
+> -	ipi_mailbox_buf[1] = (void *)
+> +	ipi_mailbox_buf[1] = (void __iomem *)
+>   		(SMP_CORE_GROUP0_BASE + SMP_CORE1_OFFSET + BUF);
+> -	ipi_mailbox_buf[2] = (void *)
+> +	ipi_mailbox_buf[2] = (void __iomem *)
+>   		(SMP_CORE_GROUP0_BASE + SMP_CORE2_OFFSET + BUF);
+> -	ipi_mailbox_buf[3] = (void *)
+> +	ipi_mailbox_buf[3] = (void __iomem *)
+>   		(SMP_CORE_GROUP0_BASE + SMP_CORE3_OFFSET + BUF);
+> -	ipi_mailbox_buf[4] = (void *)
+> +	ipi_mailbox_buf[4] = (void __iomem *)
+>   		(SMP_CORE_GROUP1_BASE + SMP_CORE0_OFFSET + BUF);
+> -	ipi_mailbox_buf[5] = (void *)
+> +	ipi_mailbox_buf[5] = (void __iomem *)
+>   		(SMP_CORE_GROUP1_BASE + SMP_CORE1_OFFSET + BUF);
+> -	ipi_mailbox_buf[6] = (void *)
+> +	ipi_mailbox_buf[6] = (void __iomem *)
+>   		(SMP_CORE_GROUP1_BASE + SMP_CORE2_OFFSET + BUF);
+> -	ipi_mailbox_buf[7] = (void *)
+> +	ipi_mailbox_buf[7] = (void __iomem *)
+>   		(SMP_CORE_GROUP1_BASE + SMP_CORE3_OFFSET + BUF);
+> -	ipi_mailbox_buf[8] = (void *)
+> +	ipi_mailbox_buf[8] = (void __iomem *)
+>   		(SMP_CORE_GROUP2_BASE + SMP_CORE0_OFFSET + BUF);
+> -	ipi_mailbox_buf[9] = (void *)
+> +	ipi_mailbox_buf[9] = (void __iomem *)
+>   		(SMP_CORE_GROUP2_BASE + SMP_CORE1_OFFSET + BUF);
+> -	ipi_mailbox_buf[10] = (void *)
+> +	ipi_mailbox_buf[10] = (void __iomem *)
+>   		(SMP_CORE_GROUP2_BASE + SMP_CORE2_OFFSET + BUF);
+> -	ipi_mailbox_buf[11] = (void *)
+> +	ipi_mailbox_buf[11] = (void __iomem *)
+>   		(SMP_CORE_GROUP2_BASE + SMP_CORE3_OFFSET + BUF);
+> -	ipi_mailbox_buf[12] = (void *)
+> +	ipi_mailbox_buf[12] = (void __iomem *)
+>   		(SMP_CORE_GROUP3_BASE + SMP_CORE0_OFFSET + BUF);
+> -	ipi_mailbox_buf[13] = (void *)
+> +	ipi_mailbox_buf[13] = (void __iomem *)
+>   		(SMP_CORE_GROUP3_BASE + SMP_CORE1_OFFSET + BUF);
+> -	ipi_mailbox_buf[14] = (void *)
+> +	ipi_mailbox_buf[14] = (void __iomem *)
+>   		(SMP_CORE_GROUP3_BASE + SMP_CORE2_OFFSET + BUF);
+> -	ipi_mailbox_buf[15] = (void *)
+> +	ipi_mailbox_buf[15] = (void __iomem *)
+>   		(SMP_CORE_GROUP3_BASE + SMP_CORE3_OFFSET + BUF);
+>   }
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=143dfc66a80000
-start commit:   74f1456c4a5f Merge tag 'linux-kselftest-fixes-6.5-rc3' of ..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=163dfc66a80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=123dfc66a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=77b9a3cf8f44c6da
-dashboard link: https://syzkaller.appspot.com/bug?extid=33a67f9990381cc8951c
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15619a3aa80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12288c1aa80000
+OK up to here,
 
-Reported-by: syzbot+33a67f9990381cc8951c@syzkaller.appspotmail.com
-Fixes: ad26a9c84510 ("fs/ntfs3: Fixing wrong logic in attr_set_size and ntfs_fallocate")
+> @@ -782,7 +782,7 @@ void play_dead(void)
+>   
+>   	if (prid_imp == PRID_IMP_LOONGSON_64G) {
+>   		play_dead_at_ckseg1 =
+> -			(void *)CKSEG1ADDR((unsigned long)loongson3_type3_play_dead);
+> +			(void __iomem *)CKSEG1ADDR((unsigned long)loongson3_type3_play_dead);
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+but these changes look dubious.
+
+>   		goto out;
+>   	}
+>   
+> @@ -790,19 +790,19 @@ void play_dead(void)
+>   	case PRID_REV_LOONGSON3A_R1:
+>   	default:
+>   		play_dead_at_ckseg1 =
+> -			(void *)CKSEG1ADDR((unsigned long)loongson3_type1_play_dead);
+> +			(void __iomem *)CKSEG1ADDR((unsigned long)loongson3_type1_play_dead);
+>   		break;
+>   	case PRID_REV_LOONGSON3B_R1:
+>   	case PRID_REV_LOONGSON3B_R2:
+>   		play_dead_at_ckseg1 =
+> -			(void *)CKSEG1ADDR((unsigned long)loongson3_type2_play_dead);
+> +			(void __iomem *)CKSEG1ADDR((unsigned long)loongson3_type2_play_dead);
+>   		break;
+>   	case PRID_REV_LOONGSON3A_R2_0:
+>   	case PRID_REV_LOONGSON3A_R2_1:
+>   	case PRID_REV_LOONGSON3A_R3_0:
+>   	case PRID_REV_LOONGSON3A_R3_1:
+>   		play_dead_at_ckseg1 =
+> -			(void *)CKSEG1ADDR((unsigned long)loongson3_type3_play_dead);
+> +			(void __iomem *)CKSEG1ADDR((unsigned long)loongson3_type3_play_dead);
+>   		break;
+>   	}
+>   
+
