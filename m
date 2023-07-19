@@ -2,87 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF157590AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 10:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A607590B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 10:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbjGSIx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 04:53:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
+        id S229758AbjGSIzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 04:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbjGSIxy (ORCPT
+        with ESMTP id S229561AbjGSIzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 04:53:54 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA60136
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 01:53:52 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R5V3c6sH6zBJBHm
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 16:53:48 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689756828; x=1692348829; bh=5jTBrlBpaXbneCRhhoxAJ0k+U/g
-        EFkX4S81v1MjnjK4=; b=ex2FhJbf5Hw3Oj9o6uRCUkaSy75G9r1LB/pvVQ5sOzY
-        TA0+boIJVrg34Folj3+IKVtdzjjpy56FRUsHlxfuG9JtDan+WA5XAbWOd0OqM26o
-        nZiafsz7rDAJOMzRUsbN26A4puWVbYXSixXSFTsLOaBogIOuxeORjoqICmwBrqxW
-        Fd5SZ6foYtrctMCMrWJYtVzAoiJHFMKLzSa4M6dyhNDKp6wfYmZ6t4Bg7Jlb9q95
-        FAW0IlITX9NuF95T9J/feTNkgvYGDE8J79izhENVyMmW504M4x6qm32i8GKSQlMf
-        J5EAIw13DlQKOOXuEwTd9Cc5NcIwm/A+kNNkyj3f44g==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id DNtAO0taQEGr for <linux-kernel@vger.kernel.org>;
-        Wed, 19 Jul 2023 16:53:48 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R5V3c4S7WzBHYMG;
-        Wed, 19 Jul 2023 16:53:48 +0800 (CST)
+        Wed, 19 Jul 2023 04:55:14 -0400
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2B41723;
+        Wed, 19 Jul 2023 01:55:06 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 36J8sfkj002172;
+        Wed, 19 Jul 2023 16:54:41 +0800 (+08)
+        (envelope-from Yunlong.Xing@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4R5V3935qrz2K1r9W;
+        Wed, 19 Jul 2023 16:53:25 +0800 (CST)
+Received: from tj10379pcu.spreadtrum.com (10.5.32.15) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Wed, 19 Jul 2023 16:54:38 +0800
+From:   Yunlong Xing <yunlong.xing@unisoc.com>
+To:     <miklos@szeredi.hu>, <amir73il@gmail.com>
+CC:     <linux-unionfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <zhiguo.niu@unisoc.com>, <hongyu.jin@unisoc.com>,
+        <yunlongxing23@gmail.com>
+Subject: [PATCH V2] ovl: fix mount fail because the upper doesn't have space
+Date:   Wed, 19 Jul 2023 16:54:34 +0800
+Message-ID: <20230719085434.154834-1-yunlong.xing@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Date:   Wed, 19 Jul 2023 16:53:48 +0800
-From:   hanyu001@208suo.com
-To:     benh@kernel.crashing.org, mpe@ellerman.id.au, npiggin@gmail.com,
-        christophe.leroy@csgroup.eu, robh@kernel.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] platforms: powermac: "foo* bar" replace with "foo *bar"
-In-Reply-To: <tencent_F5ACD262BC92A89156BA56E9FC5300BE1A05@qq.com>
-References: <tencent_F5ACD262BC92A89156BA56E9FC5300BE1A05@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <ead1920f07ad9b7e0a0c7667ba3ee93a@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.5.32.15]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL: SHSQR01.spreadtrum.com 36J8sfkj002172
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix below checkpatch error:
+The current ovlfs mount flow:
 
-/platforms/powermac/pfunc_core.c: ERROR: "foo* bar" should be "foo *bar"
+ovl_fill_super
+ |_ovl_get_workdir
+    |_ovl_make_workdir
+       |_ovl_check_rename_whiteout
 
-Signed-off-by: Yu Han <hanyu001@208suo.com>
+In ovl_check_rename_whiteout(), a new file is attempted to create.But if
+the upper doesn't have space to do this, it will return error -ENOSPC,
+causing the mount fail. It means that if the upper is full, the overlayfs
+cannot be mounted.It is not reasonable, so this patch will omit this error
+ and continue mount flow.
+
+Fixes: cad218ab3320 ("ovl: check if upper fs supports RENAME_WHITEOUT")
+Cc: stable@vger.kernel.org
+Signed-off-by: Yunlong Xing <yunlong.xing@unisoc.com>
 ---
-  arch/powerpc/platforms/powermac/pfunc_core.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+changes of v2: Following Amir's suggestion, assuming it is not supported
+if the check fails because the upper does't have space
+---
+ fs/overlayfs/super.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/platforms/powermac/pfunc_core.c 
-b/arch/powerpc/platforms/powermac/pfunc_core.c
-index 07555c1bb484..7d01352a69f5 100644
---- a/arch/powerpc/platforms/powermac/pfunc_core.c
-+++ b/arch/powerpc/platforms/powermac/pfunc_core.c
-@@ -105,7 +105,7 @@ static u32 pmf_next32(struct pmf_cmd *cmd)
-      return value;
-  }
+diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+index 5b069f1a1e44..2b33c56fe4d7 100644
+--- a/fs/overlayfs/super.c
++++ b/fs/overlayfs/super.c
+@@ -744,12 +744,13 @@ static int ovl_make_workdir(struct super_block *sb, struct ovl_fs *ofs,
+ 
+ 	/* Check if upper/work fs supports RENAME_WHITEOUT */
+ 	err = ovl_check_rename_whiteout(ofs);
+-	if (err < 0)
++	if (err < 0 && err != -ENOSPC)
+ 		goto out;
+ 
+-	rename_whiteout = err;
++	rename_whiteout = err > 0;
+ 	if (!rename_whiteout)
+-		pr_warn("upper fs does not support RENAME_WHITEOUT.\n");
++		pr_warn("upper fs does not support RENAME_WHITEOUT (%i).\n,
++			err");
+ 
+ 	/*
+ 	 * Check if upper/work fs supports (trusted|user).overlay.* xattr
+-- 
+2.25.1
 
--static const void* pmf_next_blob(struct pmf_cmd *cmd, int count)
-+static const void *pmf_next_blob(struct pmf_cmd *cmd, int count)
-  {
-      const void *value;
-      if ((cmd->cmdend - cmd->cmdptr) < count) {
