@@ -2,217 +2,728 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC1375A1BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A41375A1C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbjGSWXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 18:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55158 "EHLO
+        id S230366AbjGSWYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 18:24:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbjGSWXu (ORCPT
+        with ESMTP id S230442AbjGSWYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 18:23:50 -0400
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2067.outbound.protection.outlook.com [40.107.247.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14741FE1;
-        Wed, 19 Jul 2023 15:23:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KXdz4pGJR+iclkyccvuu7KyQrZkl1017shUWbIoxlPRN6ZCagmZol9VCJkfeR7YMyo7FtJSSl3RS/dc75sEVDxeNEzAjY+4kVY0eKuG1YuDy+T/DgKnQZL/2n3zWtVrvjfgRfbxq+kzRQ/1ispIEn/GMJkMCrJbQWGlpqPuJ6dhz91NbCRYJ8y2o2++2s9QiKgw0fu8vfbgL+0DcjUxsD/3ysgBKS7fBc4p23AaPT/4oBBXLDbtTq68WdVeWgyly1DllAez47wfETal55ziixh+EFeaEVoEf0XToMlnFjeHaRfZtu27nCijCOUFZxfSZh4LH6STsLsdoD7LpII4Prg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rlTac8UWYOQNqCDF95w/NOP/2osJeI3ODZUMySGenuA=;
- b=ShToZxKfgLLbIvfJgj4tqa32ecbNoDLVoTmFlYjr6IRyGl3b9VA6HP95HzD90vxgcr81TN1xA/05wL6/asBacx5dkt116r6pJ5XB5yHv5ri2gXqOAY0i+5pdcB/Ks+CMpX+HlRvhcQr5sBOK/fY+AuXOR7+oWnn0xRRWr12j+HWc29qBhxuqU9+tVdrX+KyByNEeL4GrAA97b4AP7Hs3s6VhZg97ICPTDKUDIZABNJu8hgdpIlgHUmsPwFIugg5BpFKzYswl8v7otSgUCHwF3s/gF6ruh45OAfeBoGB3nspTvAcMGai32U3O4IG62kp0KDNxdQ1NR9Sl+w2rnIy6nQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rlTac8UWYOQNqCDF95w/NOP/2osJeI3ODZUMySGenuA=;
- b=GbD4Zk75JYoZm4UDJ+LqozvSVQ/89KC1NyOelpyfjCYDqJEXNnjocr8pKtxf5QFqgGtC0CwfWqKJBD+vXQREwdekf0QeIlcH59y/NE1Bzs8owjMW9BuPfzqvDqtaGraD2YiTKQOPIt4SGh6k/cslCB8ZZeeqkQydOnGHXAH8R3c=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by AS8PR04MB8119.eurprd04.prod.outlook.com (2603:10a6:20b:3f9::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Wed, 19 Jul
- 2023 22:23:44 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::d0d5:3604:98da:20b1]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::d0d5:3604:98da:20b1%7]) with mapi id 15.20.6609.024; Wed, 19 Jul 2023
- 22:23:44 +0000
-Date:   Wed, 19 Jul 2023 18:23:30 -0400
-From:   Frank Li <Frank.li@nxp.com>
-To:     markus.elfring@web.de, lpieralisi@kernel.org
-Cc:     Zhiqiang.Hou@nxp.com, bhelgaas@google.com, imx@lists.linux.dev,
-        kernel-janitors@vger.kernel.org, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        mani@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
-        robh@kernel.org, roy.zang@nxp.com, xiaowei.bao@nxp.com
-Subject: Re: [PATCH v3 2/2] PCI: layerscape: Add the workaround for lost link
- capabilities during reset.
-Message-ID: <ZLhiYlGBHX6ra5zf@lizhi-Precision-Tower-5810>
-References: <20230719155707.1948698-1-Frank.Li@nxp.com>
- <20230719155707.1948698-2-Frank.Li@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230719155707.1948698-2-Frank.Li@nxp.com>
-X-ClientProxiedBy: SJ0PR03CA0022.namprd03.prod.outlook.com
- (2603:10b6:a03:33a::27) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AS8PR04MB8119:EE_
-X-MS-Office365-Filtering-Correlation-Id: e5059eba-156a-429a-88f7-08db88a6cfed
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YM0szZ56huCpcZg+JdwyWi28pjXbEtSCUO+Miyov7vktFYhkNyyGN7LmGUjsi76rqMfEuDwM4e8+tz3FUrNCg3d/KR+dhlZ4krkBkuHxkwYF8HX3u8h94EOXyYBj0G4CKbE+rJ0J0INcQxJpW0VAkCpnPKHDGATtu3EALaJ5C26YpltV74LicBnjZ6DdZ3FAYXKm7XumS5YxTAMw4bxVtFL0Uk8aa0FdHjEJwOWfSQl9U7G6TBfAhk/drojPG4fZ+G8F8BxNgNl3y9j6cwHys660sUfT8CapnEcQ/ri5/MXmnBP1EcHtwn6DyTvFbjl4RwiG1ejWxDR/Ick2dq+piNagAAubV0trDZVTsUkcb7JXzYvaW4C0Nih/xSl/zZuzA82oaDkv4nMhtOzq+DWKw+/KjKSeY7JFgjrzS1ij8nB8sa+RhFQ/286S+Ub7k1TdPTrqppNrxiUwMoiB5WGnbwWcXF+PkJGXGehv9XDk8YbKeNNfkw/A05dV8ik4T4jdba3sYkCWVDa4bra3Aos9goJa90jZX2lGJCoEjykvHH9APgzHojSxpEeLXtNKuxQ9VKB27QvwSj/Q5X22x0WsE1FEFkUcG3L3Ng4DI0zRJC7cVNzwpW+++F968A0UfD1u
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(4636009)(396003)(376002)(346002)(136003)(366004)(39860400002)(451199021)(86362001)(478600001)(83380400001)(38100700002)(186003)(41300700001)(26005)(8676002)(8936002)(7416002)(316002)(2906002)(4326008)(6512007)(9686003)(66556008)(66946007)(33716001)(6486002)(66476007)(6666004)(6506007)(52116002)(38350700002)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ql0XC57igOZ/mFJHSASyZHnJ9J+e8onCiMDFkgIImZBhzzx5BmRGU/TZmNOU?=
- =?us-ascii?Q?WuDg0hOYuTf4R2oIyDy7bplEH6FVsGHbLIwyUGZ2Y1RvdfwO/zyci7RprJyn?=
- =?us-ascii?Q?AuiCWzd27jiYoYGg01VCkvkXHPwZhGCaTlsZUgJKMkTFyBdcgahAjkRqAGLH?=
- =?us-ascii?Q?hvqsemMycGS2AE7tZoGlczDaeHQnOi8lIZDfgHgdEOqP1oLKGCiPGKja7tJA?=
- =?us-ascii?Q?6Rb2KF7VBPqZJJEVuRGxfBkqWHjkUGsAL30sWPmbABI34xZMWKSZL+rjHtDz?=
- =?us-ascii?Q?dkY+lXXIN6NiMIPNxSC589QSSiGmNSEo9JxFSqhazACQr+QioMKquGM3DioB?=
- =?us-ascii?Q?c15JaoTQ5pzhPgugj9aw6nmw8PjjQmXE9KWwTBSql2zitFMbCOr6sS3gi/SE?=
- =?us-ascii?Q?OoZO4ZkpTNGNEtaiQFUVSvKVbVbEscLOPrmqBCVoDPmRPpz/ndLSD3XpfCs5?=
- =?us-ascii?Q?zn+VZcTKeHja0hHMCU3NFa5v+27C+tk2HwAsYOJ3BV4XCRsKQzoS7w+NAR9O?=
- =?us-ascii?Q?eLM9noVYij7FXUH0KNIoLDVQQU8O9CZe6ojEkg5hGgpyfV0pDtMxaiwG4seN?=
- =?us-ascii?Q?8dcbi/vADOnhSm5fMIBmdRDJDD3HGKtA/5GMbtakmkyuWB5DaR+Vv/NVJjuL?=
- =?us-ascii?Q?hN+0im1/SHpPcS+Gp4kH5UPpHD9go08PaI7yZGkRsc0R661CQDND34Wl3hCO?=
- =?us-ascii?Q?h2y3qQB+OIbM6O1eSrEevtUurVJEIuVpHzl3sMT1rrtmOrppfLxDqNRuiSQB?=
- =?us-ascii?Q?twv7kPiz9pVxcpANv1eAxnDIBA+gJo5E+NY+aX/Lwo1PseB6Ru7kLjxteYSU?=
- =?us-ascii?Q?aUi++lYNRSdHKpesatyT4PxIKhLWcqPoVdBc77ZnNiIvnuiSAwfnT7xmffjZ?=
- =?us-ascii?Q?emj7UWCHz5JFJlOkLIOx+zJ72lxVFE6gnVGGAU1nzrQ0r2m+m1RFQWUoirFa?=
- =?us-ascii?Q?39vhf3W8eA72ba/Ui8tU5TSAuEUeHTmghetGbTJ25OYbJ6og/dzOJ84VcwSt?=
- =?us-ascii?Q?vrNB3SjK2CnlF58sGVqSd5NKBbFAzdxZulvQwhDM/gL9+aYl3U9Tlvw9guuK?=
- =?us-ascii?Q?QHFg3AOwY7dtrEkLYUHXGw9Khvp5VCJk5fbF9kGRhuAJzEpWA6Yi6/gQXjbM?=
- =?us-ascii?Q?8yIUUDh5DSaS0VySLOsn3zh5OJjZz0bg22awy1GIRNQuN2qQJ3MkP4aYS56V?=
- =?us-ascii?Q?JmUDO0v4/e0WDYCRayhbWnLN2X6ZYsySkokuHqFd+tm5dO/omaB6JFhIRO/6?=
- =?us-ascii?Q?2NWqL9A46fDGSaGqRAVNxG5IjceOwqB7CPo+zTOj0gQhs+EpBwi49iKGUreN?=
- =?us-ascii?Q?9hZAUcgrOhpZq7BZ0RlyvMMPr/cDFE8Fh201GQQ/X86GuUTGuJ9cAk9HvmGv?=
- =?us-ascii?Q?K4seF36vuM2Rj1bCQ7FmOYs5N7CfkG+9wm8AhQeEjxRO23A9Ksu1N53+auGx?=
- =?us-ascii?Q?J5t/EQZ5xx+nuAw/dp7h2NeiwXHgqE1K32mwdcmn7JlK1w1gHGK9OA6j5nV7?=
- =?us-ascii?Q?CuZfsGy1QX3LlaE343u2kTYwr2peLTB5H2XE89NjDN50FEKRzcc3uABCMJ4n?=
- =?us-ascii?Q?Qqp7Wqc7P3/J9PHO+ZEpa4SpLeq67Ub+7F+7xKi7?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5059eba-156a-429a-88f7-08db88a6cfed
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 22:23:43.9708
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mIuUKGKNi789mfZzwqz/EBiTXZSzk11Hfv34un2tBJGPE95kAyIrFKD4tH1RsWboT9sUJ9qdP7tR8Ixqsij3VQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8119
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 19 Jul 2023 18:24:08 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B071FFB
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:24:00 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-cac66969edaso113324276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:23:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689805438; x=1692397438;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=s3f3JSR7GYuMkfq2Qjp1KKE+tv6rX/vJigTO6xpPGKA=;
+        b=nLAbeJJi8wZqEcjJsnUbro+3934ONlLn7oSKGtWDoHAtbAP916hPQbWv/wRUysgLwQ
+         21jHiqc95QS1Cumgoijd/UYSKCK8qotcoXGWSPxitn39++7B/A7HHWeMz8H7RQY+hMBN
+         dl22oJz+fJ3bDgshpaqi7HBlJgllkDI/4croY3TBYo6GZs3/+QB8MVTbEH8KOGcGv0DT
+         WGHFQFH4YNkOLXcKbPUZuxmXYEZQjBVymPgjZPPewEmoWiKpcDFliOVnR8SVLQUTxhrD
+         G1t5emUe042PJRJssmNxrUqj/1Gq98OwSIKiUIrrL58zozNV4fQOvne4RlNWfdGQcjfL
+         QFkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689805438; x=1692397438;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s3f3JSR7GYuMkfq2Qjp1KKE+tv6rX/vJigTO6xpPGKA=;
+        b=OYtz2uT9gNADKb9uLdjMaM888lh58KICoe0xeridA4EgZkDFri//abHfnQpI+X2iBX
+         shZbyNZGD1pI0Q78yHhSVqPwi8FH2pCcjupwdi1J3GysHKx7kKOfvCbH2EM+nhdFT4YP
+         zRLSpV3StmS4TWdv9HlgZzy0wd0ChhPt0vAYLoQdaQfcpwGjsj8QTQvdyJau4q3GIsMK
+         RHGWRJ+oHjMDTucqKILD7y0OKeUL/SqpafOExO6w32uTPwOp9K/Wvd67nmGYTr2WqGGx
+         zmprOTZnxTttAec/bdjxrNRenPLeFh5o6Z4a9OEp4jqvTCbpDyCp9pM/DxarXuGQeqli
+         Xh5w==
+X-Gm-Message-State: ABy/qLbzZ4dCrrRSIQhFQZbejfY/5bgoToB77Av8cA6MpSHpOWLyCahn
+        b3Q1oUMBq2HgHx+1wzUB51ozng1M2w==
+X-Google-Smtp-Source: APBJJlEngeK+hVJN5JMB3wos7ZwaSvbOjp00/POiafO2UkfpgCbiCmhqMpe7BMrLPpyz3S51drylpJSmnQ==
+X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
+ (user=rmoar job=sendgmr) by 2002:a05:6902:1005:b0:cb3:c343:19e5 with SMTP id
+ w5-20020a056902100500b00cb3c34319e5mr39820ybt.2.1689805438645; Wed, 19 Jul
+ 2023 15:23:58 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 22:23:31 +0000
+In-Reply-To: <20230719222338.259684-1-rmoar@google.com>
+Mime-Version: 1.0
+References: <20230719222338.259684-1-rmoar@google.com>
+X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
+Message-ID: <20230719222338.259684-5-rmoar@google.com>
+Subject: [PATCH v1 4/9] kunit: Add ability to filter attributes
+From:   Rae Moar <rmoar@google.com>
+To:     shuah@kernel.org, davidgow@google.com, dlatypov@google.com,
+        brendan.higgins@linux.dev
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, keescook@chromium.org,
+        linux-hardening@vger.kernel.org, jstultz@google.com,
+        tglx@linutronix.de, sboyd@kernel.org, Rae Moar <rmoar@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 11:57:07AM -0400, Frank Li wrote:
-> From: Xiaowei Bao <xiaowei.bao@nxp.com>
-> 
-> A workaround for the issue where the PCI Express Endpoint (EP) controller
-> loses the values of the Maximum Link Width and Supported Link Speed from
-> the Link Capabilities Register, which initially configured by the Reset
-> Configuration Word (RCW) during a link-down or hot reset event.
-> 
-> Fixes: a805770d8a22 ("PCI: layerscape: Add EP mode support")
-> Acked-by: Manivannan Sadhasivam <mani@kernel.org>
-> Signed-off-by: Xiaowei Bao <xiaowei.bao@nxp.com>
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
-> change from v2 to v3
->  - fix subject typo capabilities
-> change from v1 to v2:
->  - add comments at restore register
->  - add fixes tag
->  - dw_pcie_writew_dbi to dw_pcie_writel_dbi
-> 
->  .../pci/controller/dwc/pci-layerscape-ep.c    | 21 ++++++++++++++++++-
->  1 file changed, 20 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-> index e0969ff2ddf7..39dbd911c3f8 100644
-> --- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
-> +++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-> @@ -45,6 +45,7 @@ struct ls_pcie_ep {
->  	struct pci_epc_features		*ls_epc;
->  	const struct ls_pcie_ep_drvdata *drvdata;
->  	int				irq;
-> +	u32				lnkcap;
->  	bool				big_endian;
->  };
->  
-> @@ -73,6 +74,7 @@ static irqreturn_t ls_pcie_ep_event_handler(int irq, void *dev_id)
->  	struct ls_pcie_ep *pcie = dev_id;
->  	struct dw_pcie *pci = pcie->pci;
->  	u32 val, cfg;
-> +	u8 offset;
->  
->  	val = ls_lut_readl(pcie, PEX_PF0_PME_MES_DR);
->  	ls_lut_writel(pcie, PEX_PF0_PME_MES_DR, val);
-> @@ -81,12 +83,25 @@ static irqreturn_t ls_pcie_ep_event_handler(int irq, void *dev_id)
->  		return IRQ_NONE;
->  
->  	if (val & PEX_PF0_PME_MES_DR_LUD) {
-> +
-> +		offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-> +
-> +		/*
-> +		 * The values of the Maximum Link Width and Supported Link
-> +		 * Speed from the Link Capabilities Register will be lost
-> +		 * during link down or hot reset. Restore initial value
-> +		 * that configured by the Reset Configuration Word (RCW).
-> +		 */
-> +		dw_pcie_dbi_ro_wr_en(pci);
-> +		dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, pcie->lnkcap);
-> +		dw_pcie_dbi_ro_wr_dis(pci);
-> +
->  		cfg = ls_lut_readl(pcie, PEX_PF0_CONFIG);
->  		cfg |= PEX_PF0_CFG_READY;
->  		ls_lut_writel(pcie, PEX_PF0_CONFIG, cfg);
->  		dw_pcie_ep_linkup(&pci->ep);
->  
-> -		dev_dbg(pci->dev, "Link up\n");
-> +		dev_err(pci->dev, "Link up\n");
+Add filtering of test attributes. Users can filter tests using the
+module_param called "filter".
 
-Sorry, Just found that. mistake merge a debug code.
-It should be dev_dbg here, will send update patch soon
+Filters are imputed in the format: <attribute_name><operation><value>
 
-Frank
+Example: kunit.filter="speed>slow"
 
->  	} else if (val & PEX_PF0_PME_MES_DR_LDD) {
->  		dev_dbg(pci->dev, "Link down\n");
->  		pci_epc_linkdown(pci->ep.epc);
-> @@ -216,6 +231,7 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
->  	struct ls_pcie_ep *pcie;
->  	struct pci_epc_features *ls_epc;
->  	struct resource *dbi_base;
-> +	u8 offset;
->  	int ret;
->  
->  	pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
-> @@ -252,6 +268,9 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
->  
->  	platform_set_drvdata(pdev, pcie);
->  
-> +	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-> +	pcie->lnkcap = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
-> +
->  	ret = dw_pcie_ep_init(&pci->ep);
->  	if (ret)
->  		return ret;
-> -- 
-> 2.34.1
-> 
+Operations include: >, <, >=, <=, !=, and =. These operations will act the
+same for attributes of the same type but may not between types.
+
+Note multiple filters can be inputted by separating them with a comma.
+Example: kunit.filter="speed=slow, module!=example"
+
+Since both suites and test cases can have attributes, there may be
+conflicts. The process of filtering follows these rules:
+- Filtering always operates at a per-test level.
+- If a test has an attribute set, then the test's value is filtered on.
+- Otherwise, the value falls back to the suite's value.
+- If neither are set, the attribute has a global "default" value, which
+  is used.
+
+Filtered tests will not be run or show in output. The tests can instead be
+skipped using the configurable option "kunit.filter_action=skip".
+
+Note the default settings for running tests remains unfiltered.
+
+Finally, add "filter" methods for the speed and module attributes to parse
+and compare attribute values.
+
+Note this filtering functionality will be added to kunit.py in the next
+patch.
+
+Signed-off-by: Rae Moar <rmoar@google.com>
+---
+
+Changes since RFC v2:
+- Change to output only one error before exiting.
+
+Changes since RFC v1:
+- Change method for inputting filters to allow for spaces in filtering
+  values
+- Add option to skip filtered tests instead of not run or show them with
+  the --filter_skip flag
+
+ include/kunit/attributes.h |  31 +++++
+ lib/kunit/attributes.c     | 271 +++++++++++++++++++++++++++++++++++++
+ lib/kunit/executor.c       |  94 ++++++++++---
+ lib/kunit/executor_test.c  |  12 +-
+ lib/kunit/test.c           |  10 +-
+ 5 files changed, 390 insertions(+), 28 deletions(-)
+
+diff --git a/include/kunit/attributes.h b/include/kunit/attributes.h
+index 9fcd184cce36..bc76a0b786d2 100644
+--- a/include/kunit/attributes.h
++++ b/include/kunit/attributes.h
+@@ -9,6 +9,20 @@
+ #ifndef _KUNIT_ATTRIBUTES_H
+ #define _KUNIT_ATTRIBUTES_H
+ 
++/*
++ * struct kunit_attr_filter - representation of attributes filter with the
++ * attribute object and string input
++ */
++struct kunit_attr_filter {
++	struct kunit_attr *attr;
++	char *input;
++};
++
++/*
++ * Returns the name of the filter's attribute.
++ */
++const char *kunit_attr_filter_name(struct kunit_attr_filter filter);
++
+ /*
+  * Print all test attributes for a test case or suite.
+  * Output format for test cases: "# <test_name>.<attribute>: <value>"
+@@ -16,4 +30,21 @@
+  */
+ void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int test_level);
+ 
++/*
++ * Returns the number of fitlers in input.
++ */
++int kunit_get_filter_count(char *input);
++
++/*
++ * Parse attributes filter input and return an objects containing the
++ * attribute object and the string input of the next filter.
++ */
++struct kunit_attr_filter kunit_next_attr_filter(char **filters, int *err);
++
++/*
++ * Returns a copy of the suite containing only tests that pass the filter.
++ */
++struct kunit_suite *kunit_filter_attr_tests(const struct kunit_suite *const suite,
++		struct kunit_attr_filter filter, char *action, int *err);
++
+ #endif /* _KUNIT_ATTRIBUTES_H */
+diff --git a/lib/kunit/attributes.c b/lib/kunit/attributes.c
+index 43dcb5de8b8f..861b5ae3c1a1 100644
+--- a/lib/kunit/attributes.c
++++ b/lib/kunit/attributes.c
+@@ -67,6 +67,104 @@ static const char *attr_string_to_string(void *attr, bool *to_free)
+ 	return (char *) attr;
+ }
+ 
++/* Filter Methods */
++
++static const char op_list[] = "<>!=";
++
++/*
++ * Returns whether the inputted integer value matches the filter given
++ * by the operation string and inputted integer.
++ */
++static int int_filter(long val, const char *op, int input, int *err)
++{
++	if (!strncmp(op, "<=", 2))
++		return (val <= input);
++	else if (!strncmp(op, ">=", 2))
++		return (val >= input);
++	else if (!strncmp(op, "!=", 2))
++		return (val != input);
++	else if (!strncmp(op, ">", 1))
++		return (val > input);
++	else if (!strncmp(op, "<", 1))
++		return (val < input);
++	else if (!strncmp(op, "=", 1))
++		return (val == input);
++	*err = -EINVAL;
++	pr_err("kunit executor: invalid filter operation: %s\n", op);
++	return false;
++}
++
++/*
++ * Returns whether the inputted enum value "attr" matches the filter given
++ * by the input string. Note: the str_list includes the corresponding string
++ * list to the enum values.
++ */
++static int attr_enum_filter(void *attr, const char *input, int *err,
++		const char * const str_list[], int max)
++{
++	int i, j, input_int;
++	long test_val = (long)attr;
++	const char *input_val;
++
++	for (i = 0; input[i]; i++) {
++		if (!strchr(op_list, input[i])) {
++			input_val = input + i;
++			break;
++		}
++	}
++
++	if (!input_val) {
++		*err = -EINVAL;
++		pr_err("kunit executor: filter value not found: %s\n", input);
++		return false;
++	}
++
++	for (j = 0; j <= max; j++) {
++		if (!strcmp(input_val, str_list[j]))
++			input_int = j;
++	}
++
++	if (!input_int) {
++		*err = -EINVAL;
++		pr_err("kunit executor: invalid filter input: %s\n", input);
++		return false;
++	}
++
++	return int_filter(test_val, input, input_int, err);
++}
++
++static int attr_speed_filter(void *attr, const char *input, int *err)
++{
++	return attr_enum_filter(attr, input, err, speed_str_list, KUNIT_SPEED_MAX);
++}
++
++/*
++ * Returns whether the inputted string value (attr) matches the filter given
++ * by the input string.
++ */
++static int attr_string_filter(void *attr, const char *input, int *err)
++{
++	char *str = attr;
++
++	if (!strncmp(input, "<", 1)) {
++		*err = -EINVAL;
++		pr_err("kunit executor: invalid filter input: %s\n", input);
++		return false;
++	} else if (!strncmp(input, ">", 1)) {
++		*err = -EINVAL;
++		pr_err("kunit executor: invalid filter input: %s\n", input);
++		return false;
++	} else if (!strncmp(input, "!=", 2)) {
++		return (strcmp(input + 2, str) != 0);
++	} else if (!strncmp(input, "=", 1)) {
++		return (strcmp(input + 1, str) == 0);
++	}
++	*err = -EINVAL;
++	pr_err("kunit executor: invalid filter operation: %s\n", input);
++	return false;
++}
++
++
+ /* Get Attribute Methods */
+ 
+ static void *attr_speed_get(void *test_or_suite, bool is_test)
+@@ -98,6 +196,7 @@ static const struct kunit_attr speed_attr = {
+ 	.name = "speed",
+ 	.get_attr = attr_speed_get,
+ 	.to_string = attr_speed_to_string,
++	.filter = attr_speed_filter,
+ 	.attr_default = (void *)KUNIT_SPEED_NORMAL,
+ 	.print = PRINT_ALWAYS,
+ };
+@@ -106,6 +205,7 @@ static const struct kunit_attr module_attr = {
+ 	.name = "module",
+ 	.get_attr = attr_module_get,
+ 	.to_string = attr_string_to_string,
++	.filter = attr_string_filter,
+ 	.attr_default = (void *)"",
+ 	.print = PRINT_SUITE,
+ };
+@@ -116,6 +216,11 @@ static struct kunit_attr kunit_attr_list[] = {speed_attr, module_attr};
+ 
+ /* Helper Functions to Access Attributes */
+ 
++const char *kunit_attr_filter_name(struct kunit_attr_filter filter)
++{
++	return filter.attr->name;
++}
++
+ void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int test_level)
+ {
+ 	int i;
+@@ -148,3 +253,169 @@ void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int test_level
+ 		}
+ 	}
+ }
++
++/* Helper Functions to Filter Attributes */
++
++int kunit_get_filter_count(char *input)
++{
++	int i, comma_index, count = 0;
++
++	for (i = 0; input[i]; i++) {
++		if (input[i] == ',') {
++			if ((i - comma_index) > 1)
++				count++;
++			comma_index = i;
++		}
++	}
++	if ((i - comma_index) > 0)
++		count++;
++	return count;
++}
++
++struct kunit_attr_filter kunit_next_attr_filter(char **filters, int *err)
++{
++	struct kunit_attr_filter filter;
++	int i, j, comma_index, new_start_index;
++	int op_index = -1, attr_index = -1;
++	char op;
++	char *input = *filters;
++
++	/* Parse input until operation */
++	for (i = 0; input[i]; i++) {
++		if (op_index < 0 && strchr(op_list, input[i])) {
++			op_index = i;
++		} else if (!comma_index && input[i] == ',') {
++			comma_index = i;
++		} else if (comma_index && input[i] != ' ') {
++			new_start_index = i;
++			break;
++		}
++	}
++
++	if (op_index <= 0) {
++		*err = -EINVAL;
++		pr_err("kunit executor: filter operation not found: %s\n", input);
++		return filter;
++	}
++
++	/* Temporarily set operator to \0 character. */
++	op = input[op_index];
++	input[op_index] = '\0';
++
++	/* Find associated kunit_attr object */
++	for (j = 0; j < ARRAY_SIZE(kunit_attr_list); j++) {
++		if (!strcmp(input, kunit_attr_list[j].name)) {
++			attr_index = j;
++			break;
++		}
++	}
++
++	input[op_index] = op;
++
++	if (attr_index < 0) {
++		*err = -EINVAL;
++		pr_err("kunit executor: attribute not found: %s\n", input);
++	} else {
++		filter.attr = &kunit_attr_list[attr_index];
++	}
++
++	if (comma_index) {
++		input[comma_index] = '\0';
++		filter.input = input + op_index;
++		input = input + new_start_index;
++	} else {
++		filter.input = input + op_index;
++		input = NULL;
++	}
++
++	*filters = input;
++
++	return filter;
++}
++
++struct kunit_suite *kunit_filter_attr_tests(const struct kunit_suite *const suite,
++		struct kunit_attr_filter filter, char *action, int *err)
++{
++	int n = 0;
++	struct kunit_case *filtered, *test_case;
++	struct kunit_suite *copy;
++	void *suite_val, *test_val;
++	bool suite_result, test_result, default_result, result;
++
++	/* Allocate memory for new copy of suite and list of test cases */
++	copy = kmemdup(suite, sizeof(*copy), GFP_KERNEL);
++	if (!copy)
++		return ERR_PTR(-ENOMEM);
++
++	kunit_suite_for_each_test_case(suite, test_case) { n++; }
++
++	filtered = kcalloc(n + 1, sizeof(*filtered), GFP_KERNEL);
++	if (!filtered) {
++		kfree(copy);
++		return ERR_PTR(-ENOMEM);
++	}
++
++	n = 0;
++
++	/* Save filtering result on default value */
++	default_result = filter.attr->filter(filter.attr->attr_default, filter.input, err);
++	if (*err) {
++		kfree(copy);
++		kfree(filtered);
++		return NULL;
++	}
++
++	/* Save suite attribute value and filtering result on that value */
++	suite_val = filter.attr->get_attr((void *)suite, false);
++	suite_result = filter.attr->filter(suite_val, filter.input, err);
++	if (*err) {
++		kfree(copy);
++		kfree(filtered);
++		return NULL;
++	}
++
++	/* For each test case, save test case if passes filtering. */
++	kunit_suite_for_each_test_case(suite, test_case) {
++		test_val = filter.attr->get_attr((void *) test_case, true);
++		test_result = filter.attr->filter(filter.attr->get_attr(test_case, true),
++				filter.input, err);
++		if (*err) {
++			kfree(copy);
++			kfree(filtered);
++			return NULL;
++		}
++
++		/*
++		 * If attribute value of test case is set, filter on that value.
++		 * If not, filter on suite value if set. If not, filter on
++		 * default value.
++		 */
++		result = false;
++		if (test_val) {
++			if (test_result)
++				result = true;
++		} else if (suite_val) {
++			if (suite_result)
++				result = true;
++		} else if (default_result) {
++			result = true;
++		}
++
++		if (result) {
++			filtered[n++] = *test_case;
++		} else if (action && strcmp(action, "skip") == 0) {
++			test_case->status = KUNIT_SKIPPED;
++			filtered[n++] = *test_case;
++		}
++	}
++
++	if (n == 0) {
++		kfree(copy);
++		kfree(filtered);
++		return NULL;
++	}
++
++	copy->test_cases = filtered;
++
++	return copy;
++}
+diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+index 12e38a48a5cc..c286ae47435a 100644
+--- a/lib/kunit/executor.c
++++ b/lib/kunit/executor.c
+@@ -17,6 +17,9 @@ extern struct kunit_suite * const __kunit_suites_end[];
+ 
+ static char *filter_glob_param;
+ static char *action_param;
++static char *filter_param;
++static char *filter_action_param;
++
+ 
+ module_param_named(filter_glob, filter_glob_param, charp, 0);
+ MODULE_PARM_DESC(filter_glob,
+@@ -27,15 +30,23 @@ MODULE_PARM_DESC(action,
+ 		 "<none>: run the tests like normal\n"
+ 		 "'list' to list test names instead of running them.\n"
+ 		 "'list_attr' to list test names and attributes instead of running them.\n");
++module_param_named(filter, filter_param, charp, 0);
++MODULE_PARM_DESC(filter,
++		"Filter which KUnit test suites/tests run at boot-time using attributes, e.g. speed>slow");
++module_param_named(filter_action, filter_action_param, charp, 0);
++MODULE_PARM_DESC(filter_action,
++		"Changes behavior of filtered tests using attributes, valid values are:\n"
++		"<none>: do not run filtered tests as normal\n"
++		"'skip': skip all filtered tests instead so tests will appear in output\n");
+ 
+ /* glob_match() needs NULL terminated strings, so we need a copy of filter_glob_param. */
+-struct kunit_test_filter {
++struct kunit_glob_filter {
+ 	char *suite_glob;
+ 	char *test_glob;
+ };
+ 
+ /* Split "suite_glob.test_glob" into two. Assumes filter_glob is not empty. */
+-static void kunit_parse_filter_glob(struct kunit_test_filter *parsed,
++static void kunit_parse_glob_filter(struct kunit_glob_filter *parsed,
+ 				    const char *filter_glob)
+ {
+ 	const int len = strlen(filter_glob);
+@@ -57,7 +68,7 @@ static void kunit_parse_filter_glob(struct kunit_test_filter *parsed,
+ 
+ /* Create a copy of suite with only tests that match test_glob. */
+ static struct kunit_suite *
+-kunit_filter_tests(const struct kunit_suite *const suite, const char *test_glob)
++kunit_filter_glob_tests(const struct kunit_suite *const suite, const char *test_glob)
+ {
+ 	int n = 0;
+ 	struct kunit_case *filtered, *test_case;
+@@ -111,12 +122,15 @@ static void kunit_free_suite_set(struct suite_set suite_set)
+ 
+ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
+ 					    const char *filter_glob,
++						char *filters,
++						char *filter_action,
+ 					    int *err)
+ {
+-	int i;
+-	struct kunit_suite **copy, *filtered_suite;
++	int i, j, k, filter_count;
++	struct kunit_suite **copy, *filtered_suite, *new_filtered_suite;
+ 	struct suite_set filtered;
+-	struct kunit_test_filter filter;
++	struct kunit_glob_filter parsed_glob;
++	struct kunit_attr_filter *parsed_filters;
+ 
+ 	const size_t max = suite_set->end - suite_set->start;
+ 
+@@ -127,17 +141,52 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
+ 		return filtered;
+ 	}
+ 
+-	kunit_parse_filter_glob(&filter, filter_glob);
+-
+-	for (i = 0; &suite_set->start[i] != suite_set->end; i++) {
+-		if (!glob_match(filter.suite_glob, suite_set->start[i]->name))
+-			continue;
++	if (filter_glob)
++		kunit_parse_glob_filter(&parsed_glob, filter_glob);
+ 
+-		filtered_suite = kunit_filter_tests(suite_set->start[i], filter.test_glob);
+-		if (IS_ERR(filtered_suite)) {
+-			*err = PTR_ERR(filtered_suite);
++	/* Parse attribute filters */
++	if (filters) {
++		filter_count = kunit_get_filter_count(filters);
++		parsed_filters = kcalloc(filter_count + 1, sizeof(*parsed_filters), GFP_KERNEL);
++		for (j = 0; j < filter_count; j++)
++			parsed_filters[j] = kunit_next_attr_filter(&filters, err);
++		if (*err)
+ 			return filtered;
++	}
++
++	for (i = 0; &suite_set->start[i] != suite_set->end; i++) {
++		filtered_suite = suite_set->start[i];
++		if (filter_glob) {
++			if (!glob_match(parsed_glob.suite_glob, filtered_suite->name))
++				continue;
++			filtered_suite = kunit_filter_glob_tests(filtered_suite,
++					parsed_glob.test_glob);
++			if (IS_ERR(filtered_suite)) {
++				*err = PTR_ERR(filtered_suite);
++				return filtered;
++			}
++		}
++		if (filter_count) {
++			for (k = 0; k < filter_count; k++) {
++				new_filtered_suite = kunit_filter_attr_tests(filtered_suite,
++						parsed_filters[k], filter_action, err);
++
++				/* Free previous copy of suite */
++				if (k > 0 || filter_glob)
++					kfree(filtered_suite);
++				filtered_suite = new_filtered_suite;
++
++				if (*err)
++					return filtered;
++				if (IS_ERR(filtered_suite)) {
++					*err = PTR_ERR(filtered_suite);
++					return filtered;
++				}
++				if (!filtered_suite)
++					break;
++			}
+ 		}
++
+ 		if (!filtered_suite)
+ 			continue;
+ 
+@@ -145,8 +194,14 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
+ 	}
+ 	filtered.end = copy;
+ 
+-	kfree(filter.suite_glob);
+-	kfree(filter.test_glob);
++	if (filter_glob) {
++		kfree(parsed_glob.suite_glob);
++		kfree(parsed_glob.test_glob);
++	}
++
++	if (filter_count)
++		kfree(parsed_filters);
++
+ 	return filtered;
+ }
+ 
+@@ -206,8 +261,9 @@ int kunit_run_all_tests(void)
+ 		goto out;
+ 	}
+ 
+-	if (filter_glob_param) {
+-		suite_set = kunit_filter_suites(&suite_set, filter_glob_param, &err);
++	if (filter_glob_param || filter_param) {
++		suite_set = kunit_filter_suites(&suite_set, filter_glob_param,
++				filter_param, filter_action_param, &err);
+ 		if (err) {
+ 			pr_err("kunit executor: error filtering suites: %d\n", err);
+ 			goto out;
+@@ -223,7 +279,7 @@ int kunit_run_all_tests(void)
+ 	else
+ 		pr_err("kunit executor: unknown action '%s'\n", action_param);
+ 
+-	if (filter_glob_param) { /* a copy was made of each suite */
++	if (filter_glob_param || filter_param) { /* a copy was made of each suite */
+ 		kunit_free_suite_set(suite_set);
+ 	}
+ 
+diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
+index ce6749af374d..d7ab069324b5 100644
+--- a/lib/kunit/executor_test.c
++++ b/lib/kunit/executor_test.c
+@@ -24,15 +24,15 @@ static struct kunit_case dummy_test_cases[] = {
+ 
+ static void parse_filter_test(struct kunit *test)
+ {
+-	struct kunit_test_filter filter = {NULL, NULL};
++	struct kunit_glob_filter filter = {NULL, NULL};
+ 
+-	kunit_parse_filter_glob(&filter, "suite");
++	kunit_parse_glob_filter(&filter, "suite");
+ 	KUNIT_EXPECT_STREQ(test, filter.suite_glob, "suite");
+ 	KUNIT_EXPECT_FALSE(test, filter.test_glob);
+ 	kfree(filter.suite_glob);
+ 	kfree(filter.test_glob);
+ 
+-	kunit_parse_filter_glob(&filter, "suite.test");
++	kunit_parse_glob_filter(&filter, "suite.test");
+ 	KUNIT_EXPECT_STREQ(test, filter.suite_glob, "suite");
+ 	KUNIT_EXPECT_STREQ(test, filter.test_glob, "test");
+ 	kfree(filter.suite_glob);
+@@ -50,7 +50,7 @@ static void filter_suites_test(struct kunit *test)
+ 	subsuite[1] = alloc_fake_suite(test, "suite2", dummy_test_cases);
+ 
+ 	/* Want: suite1, suite2, NULL -> suite2, NULL */
+-	got = kunit_filter_suites(&suite_set, "suite2", &err);
++	got = kunit_filter_suites(&suite_set, "suite2", NULL, NULL, &err);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start);
+ 	KUNIT_ASSERT_EQ(test, err, 0);
+ 	kfree_at_end(test, got.start);
+@@ -74,7 +74,7 @@ static void filter_suites_test_glob_test(struct kunit *test)
+ 	subsuite[1] = alloc_fake_suite(test, "suite2", dummy_test_cases);
+ 
+ 	/* Want: suite1, suite2, NULL -> suite2 (just test1), NULL */
+-	got = kunit_filter_suites(&suite_set, "suite2.test2", &err);
++	got = kunit_filter_suites(&suite_set, "suite2.test2", NULL, NULL, &err);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start);
+ 	KUNIT_ASSERT_EQ(test, err, 0);
+ 	kfree_at_end(test, got.start);
+@@ -100,7 +100,7 @@ static void filter_suites_to_empty_test(struct kunit *test)
+ 	subsuite[0] = alloc_fake_suite(test, "suite1", dummy_test_cases);
+ 	subsuite[1] = alloc_fake_suite(test, "suite2", dummy_test_cases);
+ 
+-	got = kunit_filter_suites(&suite_set, "not_found", &err);
++	got = kunit_filter_suites(&suite_set, "not_found", NULL, NULL, &err);
+ 	KUNIT_ASSERT_EQ(test, err, 0);
+ 	kfree_at_end(test, got.start); /* just in case */
+ 
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index 9ee55139ecd1..cb9797fa6303 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -613,18 +613,22 @@ int kunit_run_tests(struct kunit_suite *suite)
+ 	kunit_suite_for_each_test_case(suite, test_case) {
+ 		struct kunit test = { .param_value = NULL, .param_index = 0 };
+ 		struct kunit_result_stats param_stats = { 0 };
+-		test_case->status = KUNIT_SKIPPED;
+ 
+ 		kunit_init_test(&test, test_case->name, test_case->log);
+-
+-		if (!test_case->generate_params) {
++		if (test_case->status == KUNIT_SKIPPED) {
++			/* Test marked as skip */
++			test.status = KUNIT_SKIPPED;
++			kunit_update_stats(&param_stats, test.status);
++		} else if (!test_case->generate_params) {
+ 			/* Non-parameterised test. */
++			test_case->status = KUNIT_SKIPPED;
+ 			kunit_run_case_catch_errors(suite, test_case, &test);
+ 			kunit_update_stats(&param_stats, test.status);
+ 		} else {
+ 			/* Get initial param. */
+ 			param_desc[0] = '\0';
+ 			test.param_value = test_case->generate_params(NULL, param_desc);
++			test_case->status = KUNIT_SKIPPED;
+ 			kunit_log(KERN_INFO, &test, KUNIT_SUBTEST_INDENT KUNIT_SUBTEST_INDENT
+ 				  "KTAP version 1\n");
+ 			kunit_log(KERN_INFO, &test, KUNIT_SUBTEST_INDENT KUNIT_SUBTEST_INDENT
+-- 
+2.41.0.255.g8b1d071c50-goog
+
