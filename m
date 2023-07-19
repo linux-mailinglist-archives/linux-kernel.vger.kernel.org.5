@@ -2,127 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F18A1759B93
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C875759BAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbjGSQzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 12:55:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39848 "EHLO
+        id S230027AbjGSQ6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 12:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbjGSQzx (ORCPT
+        with ESMTP id S229449AbjGSQ6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 12:55:53 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A785010CB
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:55:51 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-401d1d967beso8161cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:55:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689785751; x=1692377751;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sj3T/c8YmvgYfTPVsluIq5bnwE6iaG+nhT4u1XN3xLo=;
-        b=AGauPzP+8A9C+sl48+22NswYUFYkLmocOlzOPRtRzGNodahOvDljveR86sZfrkPW3K
-         US8iRew1BEtZbAN6hhw0SpfSi8U9+bkjubJXW2G2IC7yVaotwcPSaW0YHtREMyTLs4BI
-         KqHsQyyUkVmdqDcwMfjtUQyAmlgkHfu7Pk5s4EdLPxKicFU2T7sTUfShrDVnJzPawepi
-         unuF4nvUQhVxecmP8wiKzkcTwrXQVugAnbr/IASM1PWYJIsChQYV4X0cMh1lzmjnDti+
-         ES30zALn0mmVGx16mAF/lvdlIo3yX+4luTfgbnMx8TlNWVcAA0znb6RmnaTMG7WHhmRb
-         Wc/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689785751; x=1692377751;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Sj3T/c8YmvgYfTPVsluIq5bnwE6iaG+nhT4u1XN3xLo=;
-        b=OEEptoP52JJZkGVO3IRQlrrnq89wzFhFADbzohiIcTx5dgD3WzYeCAWjk/0P0/LAfm
-         KJe7m8wcxyNg81ZNnfJARxu5Y+j0kC3FjTcjgqIvVKIcoVrUD7KZx2i8Bc5k9KACcNIz
-         ctcd2POCh4c1LkpYzNviXp5tBv9/TQWtzAoc/OsjBgcWYMGZQ9tED4nnPIpu4mwUhJQh
-         Xz4k9GqkkLZ1NM97AORRhXNFOfc6vu7Fuf34qszfjyVflPGrf3Qvc4RLTcaFokMffw1G
-         pwjJYwaOBjkwaMdUE+jYk+0RrsMV89ID+AcYUVr57CDtJ/mzB7N4tChi/sM+eFPEYpVc
-         26XA==
-X-Gm-Message-State: ABy/qLav4ueabAc4CVry6iHgQ3FofJCyO7WaXjmLEktf++V1ky3ht+UX
-        eHuV1V6uYqQkBNglUX+5X0bgbO9JMZPvnwXbd7LjAg==
-X-Google-Smtp-Source: APBJJlFZiNoYe1axEr2mRKwb20Bd4i3b8lR3RBIA0XbPnU5r0k3J9KjP047hqPmE1v2p3Yuc0NIVMsvEr0fyri/cRVM=
-X-Received: by 2002:ac8:5714:0:b0:403:a43d:bd7d with SMTP id
- 20-20020ac85714000000b00403a43dbd7dmr625699qtw.4.1689785750750; Wed, 19 Jul
- 2023 09:55:50 -0700 (PDT)
+        Wed, 19 Jul 2023 12:58:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC054B6;
+        Wed, 19 Jul 2023 09:58:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0DFC3617A7;
+        Wed, 19 Jul 2023 16:58:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 905FDC433C7;
+        Wed, 19 Jul 2023 16:58:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689785897;
+        bh=xayvFZEqNUxkMixHih/sryn5ylVD/sjcMsn7un1bPYw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J3n9AoZ0SJlV8lgbjP2eg1EfnS7FHT1VfY3AEiWAgaDry/O2UXfoxJvKZ71IIO5QK
+         YfAe2oiJ4tLy+CjALsaOLZ49xbzWRDuvvOWIUWz9YDkb2wqqSuFcXzaiLkxssiAu2I
+         bFCv/eLHHk3j5eIkHt1rKTSamKndqwGiDZ2Ivgv6bZ1/Hu1VeStmSN56Gj2KDIglNS
+         lwt20OvsGEA8vjd7rpi5hSf+esT5XVBtIdLziDxDf0ZwZhLAkNWZ95/urD1Pmx9cM3
+         7ndjk4fnh/ZBpNO4o4+OajYlAexmPFOhKAWSR+yenbpGdv7tAF6aBgj/RUMeHe7eJc
+         6n1y7UBz5n3Eg==
+Date:   Wed, 19 Jul 2023 17:58:11 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Minda Chen <minda.chen@starfivetech.com>
+Cc:     Daire McNamara <daire.mcnamara@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+Subject: Re: [PATCH v1 0/9] Refactoring Microchip PolarFire PCIe driver
+Message-ID: <20230719-rockstar-gangway-467e64ada609@spud>
+References: <20230719102057.22329-1-minda.chen@starfivetech.com>
 MIME-Version: 1.0
-References: <20230713085831.395112-1-changbin.du@huawei.com>
- <b1127b63-6c6a-e42e-ce6c-cf4f24bbc5a1@intel.com> <20230714071914.3jro4kfcvhun2ptd@M910t>
-In-Reply-To: <20230714071914.3jro4kfcvhun2ptd@M910t>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 19 Jul 2023 09:55:39 -0700
-Message-ID: <CAP-5=fV49y9y8Q3-3rhACMQJiQ+nAh0RfysT8bhpJ5_AOqLScw@mail.gmail.com>
-Subject: Re: [PATCH] perf: add new option '--workload-attr' to set workload sched_policy/priority/mask
-To:     Changbin Du <changbin.du@huawei.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ItaO0NWrNgH9c6FC"
+Content-Disposition: inline
+In-Reply-To: <20230719102057.22329-1-minda.chen@starfivetech.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 12:19=E2=80=AFAM Changbin Du <changbin.du@huawei.co=
-m> wrote:
->
-> On Fri, Jul 14, 2023 at 10:06:31AM +0300, Adrian Hunter wrote:
-> > On 13/07/23 11:58, Changbin Du wrote:
-> > > To get consistent benchmarking results, sometimes we need to set the
-> > > sched_policy/priority/mask of the workload to reduce system noise.
-> > >
-> > > For example, CPU binding is required on big.little system.
-> > >
-> > >   $ perf stat -r 10 -- taskset -c 0 ls
-> > >
-> > > Nevertheless, the 'taskset' is also counted here.
-> > >
-> > > To get away of the middleman, this adds a new option '--workload-attr=
-' to
-> > > do the same jobs for stat and record commands.
-> > >
-> > >   $ sudo perf stat --workload-attr fifo,40,0x1 -- ls
-> > >
-> > > Above will make 'ls' run on CPU #0 with fifo scheduler and realtime
-> > > priority is 40.
-> >
-> > Aren't there ways to set up a process then start perf using -p <pid>
-> > then let the process continue.
-> >
-> By that you need a mechanism to pause the new spawnned process and wait p=
-erf to
-> attach. Or setup the sched properties by the app itself. But sometimes we=
- just
-> simply want to run the app through and measure some events. With
-> --workload-attr, we do not need extra setup works.
 
-To my naive eyes this looks to be a broadly useful addition. Some thoughts:
- - "cpu-mask" as the command line argument name, this is "-C" and
-"--cpu" elsewhere, so perhaps just "cpu" as the mask is perhaps
-confusing.
- - could we get a test? Perhaps add a case to tools/perf/tests/shell/stat.s=
-h:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/tests/shell/stat.sh?h=3Dperf-tools-next
+--ItaO0NWrNgH9c6FC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hey Minda,
+
+On Wed, Jul 19, 2023 at 06:20:48PM +0800, Minda Chen wrote:
+> This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
+> JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
+> same IP and have commit their codes, which are mixed with PLDA
+> controller codes and Microchip platform codes.
+>=20
+> For re-use the PLDA controller codes, I request refactoring microchip
+> codes, move PLDA common codes to PLDA files.
+> Desigware and Cadence is good example for refactoring codes.
+>=20
+> So first step is extract the PLDA common codes from microchip, and
+> refactoring the microchip codes.(patch1 - 4)
+> Then add the PLDA platform codes. (patch5, 6)
+> At last, add Starfive codes. (patch7 - 9)
+
+Thanks for sending this, I'll try to have a look through it tomorrow, or
+if not, early next week. As pointed out off-list, the gist of what you
+have here looked good to myself and Daire.
+
+> This patchset is base on v6.5-rc1
+>=20
+> patch1 is add PLDA XpressRICH PCIe host common properties dt-binding
+>        docs, most are extracted from microchip,pcie-host.yaml
+> patch2 is add plda,xpressrich-pcie-common.yaml(patch1 file) reference
+>        and remove the PLDA common properties.
+> patch3 is extracting the PLDA common codes from microchip Polarfire PCIe
+>        codes. The change list in the commit message.
+> patch4 is move microchip driver to PLDA directory and remove the PLDA
+>        common codes.
+> patch5 is add PLDA Xpressrich platform driver dt-binding doc.
+> patch6 is PLDA Xpressrich platform driver.
+> patch7 is add StarFive JH7110 PCIe dt-binding doc.
+> patch8 is add StarFive JH7110 Soc PCIe platform codes.
+> patch9 is StarFive JH7110 device tree configuration.
+>=20
+> I have noticed that Daire have changed microchip's codes.
+> https://patchwork.kernel.org/project/linux-pci/cover/20230630154859.20495=
+21-1-daire.mcnamara@microchip.com/
+
+I'll go and ping this, it's been a few weeks with no movement :)
 
 Thanks,
-Ian
+Conor.
 
-> --
-> Cheers,
-> Changbin Du
+--ItaO0NWrNgH9c6FC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLgWIwAKCRB4tDGHoIJi
+0tRJAQCQfXnUkEmh0PtotZgcZuTK2jJ5Pb7zCTWIdxVjSTdhfQD+LoI9+2N9Qein
+q+pkZ3wrnXopGLOVdsu5a4hvcELWqQ8=
+=fTL5
+-----END PGP SIGNATURE-----
+
+--ItaO0NWrNgH9c6FC--
