@@ -2,126 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E67127591ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B497591EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbjGSJrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:47:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50710 "EHLO
+        id S230056AbjGSJr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjGSJrH (ORCPT
+        with ESMTP id S230022AbjGSJrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:47:07 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D15106;
-        Wed, 19 Jul 2023 02:47:05 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1689760022; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=s/cqr7BUGAtP03C6t/ywoM2f4bBpLmQhEsBEcHmWpfsdbnLgNbgRJQBXG1q7GxmJCc
-    7WPBdQPpZecsw9vXD+wWNLdtZTBUx1qvN8gIcQf+yTV6sgvhlpJYogBjr0zQmNnE7mj4
-    0H86hTj/CqwUokzPN3YXW9hcIiqh1EVMIujgzqhxt0KPAd5UqSbM/0PRxXny03JpA+RC
-    LDhXGI/ssDGfAtWtqqAgVKZoVDFo7L1WSn+rnXP8WwTMEnKsHUAFfBOlXyUg5hDygrRI
-    fLr4PQ7r25FYPFmpVCPFUoBLaol149vLnrcK1TU4Gusy7jimPEECUMJMt8XWijUP2D6M
-    9Xow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1689760022;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=aWulUSFQPQrk0YhE9gD9h7Gdx/P5m2vYoLnnOUcgX0w=;
-    b=T5DmUr1xamW7aiO+hYDZA8Ht5LrJxqgZ2xIF3YZqpjr7L6hr0LJqptFdH9e0xwF3qS
-    QL9jhkM5pJN0bKGTSq4h5h86Gmk4GCsiyKlI0vu/ZtXv3kHP1YlIE1ZaNroKr3+oBRIl
-    JqB/njDN0Afl6wJid5bp98hm4ooD7w0Uu+dVc9oo41xK5ZSy3A5Bq+SgGz+lUyoAlaRh
-    pKCe2kavPxhb7522a7ENILrnAu4rIKEJ7oY4oUt0dSXuEWSxzVBN3Wqw1XowepakRVbw
-    qE/IcKpP8SzhVjEpa58oLbEuTxaR8wE0awWSdcRmcgPkxjriH1J+Bln2t/oteMsQo0Ua
-    59yg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1689760022;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=aWulUSFQPQrk0YhE9gD9h7Gdx/P5m2vYoLnnOUcgX0w=;
-    b=e36bOiV+5ZsnVxzbeB73ByEV038LTxirBS1x+1xmffIbaNad/0UmSCiLvlkTaPPRS7
-    2IV6CNpRGRmEfraapqBB8hC1gG1UJg1NkLG4fiqwDypuYzvkg4xPoorgsAR/u4IKlU9A
-    ci/n3W0WtlurhZavggmLRG20lmFTv+wKgOLj/IujRx0qErAH0U09foRyA5cDlS3EfsZq
-    LEoQHldIlzNRhfp51Ygbm2Fr4SWQIt1d9L2PleTxpnbJboJXx3CayylBBq0QAtFdtHlS
-    xrScPXBT1HheQ0m3N3UEqrGMJBm+XfAm/qmHFPDBWYjcfGFJIbSJZF9DKccTkP97peD8
-    lfMA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1689760022;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=aWulUSFQPQrk0YhE9gD9h7Gdx/P5m2vYoLnnOUcgX0w=;
-    b=1MbLBtiTo2xVLZq0VKKyVWAXc0DKKoJ6orJXJD9axsLXwsxroKHAszeeqii2oEOz7h
-    5nCQlYTAOcLD11xtnTCQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA9Zfh"
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.6.4 DYNA|AUTH)
-    with ESMTPSA id Qa2b39z6J9l12Ww
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 19 Jul 2023 11:47:01 +0200 (CEST)
-Date:   Wed, 19 Jul 2023 11:46:55 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Alexey Minnekhanov <alexeymin@postmarketos.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: sdm630: remove refs to nonexistent
- clocks
-Message-ID: <ZLexD5tdjYGhTCR9@gerhold.net>
-References: <20230719073520.2644966-1-alexeymin@postmarketos.org>
- <9e38d2f5-6da4-089e-1c70-a89069708909@linaro.org>
- <b8cc0229-d663-3527-b320-51a48b4af5b5@postmarketos.org>
+        Wed, 19 Jul 2023 05:47:24 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A0C1BFC
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:47:19 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fb7dc16ff0so10906736e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:47:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689760037; x=1690364837;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=q6km1N3QDvMLrFHM+xaKSuxTKuat8pnQJ2uvdkcsox0=;
+        b=uFaikO9xKwghPdCHqDKUXGEbV8DH5dRLrSIz5FdoJiz9Uw92PWkhbwCFWuVnDkM6Sw
+         R2hquTyKPtKOWszwpuj5WE/a3hRUCgpnwg6t/90bZEsnw8crUmHAmDlGi+ckTmc5CVqW
+         hD8Ac7JtdSrBu5FPSbM8K9tuleWYwqyJFPzvZqibHHa/RKDoX9WaZqVNETLONKpwHGfy
+         LHMUnU/aJJUlNY8+z6vL28OUbva8AaoRQ6CYifLGZEnoZnXhE6LX70Z4FtTHfdW1g5yy
+         td9gThQYCyOoLX3ICXfl6edFUFwcXPNGeBoUIr3uyLVl5WmDDBzOKtKLbZHrb21umeOc
+         /Lmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689760037; x=1690364837;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q6km1N3QDvMLrFHM+xaKSuxTKuat8pnQJ2uvdkcsox0=;
+        b=Iv3nOnH9cqZcksPnc+Z0ATcF141Qpz6WGfWjyH+kSRc+9JwurhGDYiDedLS9ruLxbS
+         KBZ6AXNrqOR3XdrNA0OBFIGgEq6P5iwdMJxzlPq7ArXyKwbhpr1jHduGoml1AkSG5ahx
+         joO+0MUmU3JmQGbKgPdjHWIgcDYeaD+TpfTvMJwNJufhM5uVPrN+vHzp7NGYlCsyKSqj
+         f4mFNi+W6xbY9KC98OxIxh7biaoPjoJTZwYYVG07HnUEEITHpZQoN+U6oTkLU8fLxrNL
+         DpFGyQJv5tLapc7OSM2pk1qN7ZYjXZauAI5EeYUIrLEfdIgYUxRhnFBHFO+d8Ur/1N8h
+         +cZg==
+X-Gm-Message-State: ABy/qLYGMNHPCdk2Xvi1ahTJIcqO2sOep/dWu2fsD6aQnIEj3YL9GqPm
+        oSyvaVbS7Tl73+6ITeAgKi+IRQktljzEQEwZj2F/Ww==
+X-Google-Smtp-Source: APBJJlGgQ2z/oGyWaKU+R2ZCWv6qOiMx9ZWcojS3hysuxFnsES585De/vvVvU5fCepSCek0BytYzGVPzHeH+4W46eSU=
+X-Received: by 2002:a05:6512:108b:b0:4fb:8926:b137 with SMTP id
+ j11-20020a056512108b00b004fb8926b137mr14146299lfg.33.1689760037461; Wed, 19
+ Jul 2023 02:47:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b8cc0229-d663-3527-b320-51a48b4af5b5@postmarketos.org>
-Content-Transfer-Encoding: 7bit
+References: <20230718134120.81199-1-aaron.lu@intel.com> <20230718134120.81199-4-aaron.lu@intel.com>
+ <CAKfTPtAu33AN6=X82T=yOgm40S8OXi+sPcF0QyD-bYRPV=xPEg@mail.gmail.com>
+ <20230719051826.GB84059@ziqianlu-dell> <20230719080105.GA90441@ziqianlu-dell>
+In-Reply-To: <20230719080105.GA90441@ziqianlu-dell>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 19 Jul 2023 11:47:06 +0200
+Message-ID: <CAKfTPtCnvOehfrz1OSW+rmkKW+28bdGw8fU+AvVrZTxkHibL_g@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/4] sched/fair: delay update_tg_load_avg() for
+ cfs_rq's removed load
+To:     Aaron Lu <aaron.lu@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Nitin Tekchandani <nitin.tekchandani@intel.com>,
+        Yu Chen <yu.c.chen@intel.com>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 11:36:46AM +0300, Alexey Minnekhanov wrote:
-> On 19.07.2023 10:39, Krzysztof Kozlowski wrote:
-> > It does not look like you tested the DTS against bindings. Please run
-> > `make dtbs_check`
-> > 
-> 
-> If DT schema for interconnect requires bus clocks to be specified, I don't
-> even know what to put there now. Can we change schema?
-> 
+On Wed, 19 Jul 2023 at 10:01, Aaron Lu <aaron.lu@intel.com> wrote:
+>
+> On Wed, Jul 19, 2023 at 01:18:26PM +0800, Aaron Lu wrote:
+> > Alternatively, I can remove some callsites of update_tg_load_avg() like
+> > you suggested below and only call update_tg_load_avg() when cfs_rq is
+> > decayed(really just decayed, not when it detected it has removed load
+> > pending or load propagated from its children). This way it would give us
+> > similar result as above(roughly once per ms).
+>
+> Something like this: (I think this is better since it removed those
+> unnecessary calls to update_tg_load_avg(), although it is inline but
+> still)
+>
+>
+> From bc749aaefa6bed36aa946921a4006b3dddb69b77 Mon Sep 17 00:00:00 2001
+> From: Aaron Lu <aaron.lu@intel.com>
+> Date: Wed, 19 Jul 2023 13:54:48 +0800
+> Subject: [PATCH] sched/fair: only update_tg_load_avg() when cfs_rq decayed
+>
+> ---
+>  kernel/sched/fair.c | 22 +++++++---------------
+>  1 file changed, 7 insertions(+), 15 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index a80a73909dc2..7d5b7352b8b5 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -3913,16 +3913,16 @@ static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum
+>  }
+>
+>  /* Update task and its cfs_rq load average */
+> -static inline int propagate_entity_load_avg(struct sched_entity *se)
+> +static inline void propagate_entity_load_avg(struct sched_entity *se)
+>  {
+>         struct cfs_rq *cfs_rq, *gcfs_rq;
+>
+>         if (entity_is_task(se))
+> -               return 0;
+> +               return;
+>
+>         gcfs_rq = group_cfs_rq(se);
+>         if (!gcfs_rq->propagate)
+> -               return 0;
+> +               return;
+>
+>         gcfs_rq->propagate = 0;
+>
+> @@ -3936,8 +3936,6 @@ static inline int propagate_entity_load_avg(struct sched_entity *se)
+>
+>         trace_pelt_cfs_tp(cfs_rq);
+>         trace_pelt_se_tp(se);
+> -
+> -       return 1;
+>  }
+>
+>  /*
+> @@ -3974,9 +3972,8 @@ static inline bool skip_blocked_update(struct sched_entity *se)
+>
+>  static inline void update_tg_load_avg(struct cfs_rq *cfs_rq) {}
+>
+> -static inline int propagate_entity_load_avg(struct sched_entity *se)
+> +static inline void propagate_entity_load_avg(struct sched_entity *se)
+>  {
+> -       return 0;
+>  }
+>
+>  static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum) {}
+> @@ -4086,7 +4083,7 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
+>  {
+>         unsigned long removed_load = 0, removed_util = 0, removed_runnable = 0;
+>         struct sched_avg *sa = &cfs_rq->avg;
+> -       int decayed = 0;
+> +       int decayed;
+>
+>         if (cfs_rq->removed.nr) {
+>                 unsigned long r;
+> @@ -4134,11 +4131,9 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
+>                  */
+>                 add_tg_cfs_propagate(cfs_rq,
+>                         -(long)(removed_runnable * divider) >> SCHED_CAPACITY_SHIFT);
+> -
+> -               decayed = 1;
+>         }
+>
+> -       decayed |= __update_load_avg_cfs_rq(now, cfs_rq);
+> +       decayed = __update_load_avg_cfs_rq(now, cfs_rq);
+>         u64_u32_store_copy(sa->last_update_time,
+>                            cfs_rq->last_update_time_copy,
+>                            sa->last_update_time);
+> @@ -4252,7 +4247,7 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
+>                 __update_load_avg_se(now, cfs_rq, se);
+>
+>         decayed  = update_cfs_rq_load_avg(now, cfs_rq);
+> -       decayed |= propagate_entity_load_avg(se);
+> +       propagate_entity_load_avg(se);
 
-I think I mentioned the DT schema updates during the review of Konrad's
-interconnect changes and he mentioned he would like to clean those up
-after getting the series in. (Which would be sometime soon now I guess)
-
-For now, having the &rpmcc "bus"/"bus_a"/"ipa" clocks specified on the
-interconnect@... nodes is still valid. At runtime they will just be
-ignored. Feel free to just keep them there for this initial fix.
-
-For the other two usages (iommu@, usb@) these votes with minimal
-frequency look a bit related to the "keep_alive" stuff Konrad added. [1]
-Maybe that could be used here instead of bypassing interconnect with the
-clock votes?
-
-Thanks,
-Stephan
-
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=b979049c38e170286158e97290c892957c836903
+but then you  also skip the call to cfs_rq_util_change()
+>
+>         if (!se->avg.last_update_time && (flags & DO_ATTACH)) {
+>
+> @@ -4264,15 +4259,12 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
+>                  * IOW we're enqueueing a task on a new CPU.
+>                  */
+>                 attach_entity_load_avg(cfs_rq, se);
+> -               update_tg_load_avg(cfs_rq);
+> -
+>         } else if (flags & DO_DETACH) {
+>                 /*
+>                  * DO_DETACH means we're here from dequeue_entity()
+>                  * and we are migrating task out of the CPU.
+>                  */
+>                 detach_entity_load_avg(cfs_rq, se);
+> -               update_tg_load_avg(cfs_rq);
+>         } else if (decayed) {
+>                 cfs_rq_util_change(cfs_rq, 0);
+>
+> --
+> 2.41.0
+>
