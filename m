@@ -2,160 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCE87599F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C297599EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbjGSPi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 11:38:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44784 "EHLO
+        id S231245AbjGSPiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 11:38:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbjGSPix (ORCPT
+        with ESMTP id S230118AbjGSPiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 11:38:53 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48290B7;
-        Wed, 19 Jul 2023 08:38:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689781132; x=1721317132;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=7Ov7681vkWQmGXJ8qz/HV+aSvOi5QL9idK+76+29III=;
-  b=LMRD8eBrSkXDE+MzC1p69mW3aAoM4g1gFiQJBw8l0sXZCSeM2+MN4+cU
-   UBfSecO8sXJDE0zZOWBvcTOAInNVDLKVX+fNJZ18l0VwQx5HEkuaTeP1f
-   crDynJ3NDGcpu18mAzkHOy3fs8JVW9/DOUkvR8acwuND3N2J31MPvoCvh
-   XPBOy0hlDK4Z0qvxlAPrS2B7N78O4SBV7Q/twQCDmpvJ6xcdosW+ktOIL
-   ao3CJBHMmVmftDQ7QHNiXb52TvdrGqr5TEwU8dI5GgSyy7b+e9uVCsd3y
-   QNLsJvn/J0BjY1bGF+Gq7VHcF+xeGPKlnFEv1i2/AhRJ8RN5YZiXDkMNt
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="452874358"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="452874358"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 08:38:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="718022098"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="718022098"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 19 Jul 2023 08:38:47 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qM9G1-00054P-15;
-        Wed, 19 Jul 2023 15:38:30 +0000
-Date:   Wed, 19 Jul 2023 23:38:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tony Lindgren <tony@atomide.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-omap@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] serial: core: Add support for dev_name:0.0 naming for
- kernel console
-Message-ID: <202307192334.nrgSDnfu-lkp@intel.com>
-References: <20230719051525.46494-1-tony@atomide.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Wed, 19 Jul 2023 11:38:50 -0400
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2069.outbound.protection.outlook.com [40.107.247.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF5BB7;
+        Wed, 19 Jul 2023 08:38:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ObLAIGHjF419sUTM6sh6qI1H1JkTkVtG41IOB2l+AKDEx4zkGY8pYEx/sS4ywpx0O1l9melgP/+smjRs3+XzHEftinJGCnhA0uW3WLyZvaBk209HX63OIdjeyfaoq5gHsxVIQzGl14iKQ9xhhB16YpW6iHzoEWpbWPP392KHrT12pOi3dVeFvB8CmPLKvjt41oNqwPwWqm362k/eK7dnOL0xO+KrXXYOMtYgCkw80C+/zs9+4x6AHdzK7s5NRLaWMN3KirZeURheCCl2Sp1R+0w/JhqQlRitXuUGUv2GOvC3giHXf9L+1tRB+kcQ+RVsjqbOqlCtErnRaGw0D8JG4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rzzyjmw0dmlLACVToXH4tsJWbUKDUZ635iEMzQZISB8=;
+ b=mH3tgN3vOI1hf5b7/0RUq6EdKX2EZTAkyqXZdKysXS8nV5QJmtHXQfnm57Ntf+VbL7XAM/xcdfCytJzbXGEmlZ8SyBn/ce1JqAZY492viUHgCllXHBhwb1ZdbScr1WxKOnXrX80MurPI5eRP76X/yYNFo+GxPXBQR7QCehWTpWT87Z3X81IB+8ExHVK79gCUFrCe/Blvmt2wviFi4+DE7Rx2YqT7VJfC1VyLmuO5Nyi5hJbHJw5GiOsYgpfWLjPLenbiW2ocJdYdF9t15Yrd0+61a/eHes85MK06IZhU1c7yjclkcO/tFJdRGZYhPP1ya3tXWH6B9QjtXzsl4sMRbQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rzzyjmw0dmlLACVToXH4tsJWbUKDUZ635iEMzQZISB8=;
+ b=PaX9yCChwjdzHmP/7XnnzNMWgBiaeX7Y2FSSo/CRoXcnVaMpRk7Azn8cqWgkcaRHq3yCkk4DrqCTSPTJNqp9jW8AJflt++JyKi+24Un9eppcecPSi5laBfx3Wr1hV6yeHFeT/5yY8EYiEVzfdVbDYHbTtPL/f43Uv0pFge7aakdQYlcIsYCkTJXL58+IBc7Zo0wcezWFMyiqCEdpOLfLOCz41YtiArOWPIvnBi7z2OoQx7BGK2mUTsdVt3YIfSknnov//m5HnwPDi1dwrxwxFTKoSu77wK0WmZ5xINuFzYuuhUMU8ss3Svk6EuupxL6mK/qsnQ7tbkP2pxHMmZmL2g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from DB8PR04MB7164.eurprd04.prod.outlook.com (2603:10a6:10:129::23)
+ by DU0PR04MB9297.eurprd04.prod.outlook.com (2603:10a6:10:354::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.23; Wed, 19 Jul
+ 2023 15:38:46 +0000
+Received: from DB8PR04MB7164.eurprd04.prod.outlook.com
+ ([fe80::2975:b06:eaaa:9361]) by DB8PR04MB7164.eurprd04.prod.outlook.com
+ ([fe80::2975:b06:eaaa:9361%5]) with mapi id 15.20.6588.031; Wed, 19 Jul 2023
+ 15:38:45 +0000
+Date:   Wed, 19 Jul 2023 23:38:33 +0800
+From:   joeyli <jlee@suse.com>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Chun-Yi Lee <joeyli.kernel@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        linux-bluetooth@vger.kernel.org
+Subject: Re: [PATCH v2] Bluetooth: hci_event: Ignore NULL link key
+Message-ID: <20230719153833.GH14791@linux-l9pv.suse>
+References: <20230718034337.23502-1-jlee@suse.com>
+ <41f91e8e-8038-22d8-baa6-91f98afe405d@molgen.mpg.de>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230719051525.46494-1-tony@atomide.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <41f91e8e-8038-22d8-baa6-91f98afe405d@molgen.mpg.de>
+User-Agent: Mutt/1.11.4 (2019-03-13)
+X-ClientProxiedBy: TYCP286CA0027.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:263::18) To DB8PR04MB7164.eurprd04.prod.outlook.com
+ (2603:10a6:10:129::23)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB8PR04MB7164:EE_|DU0PR04MB9297:EE_
+X-MS-Office365-Filtering-Correlation-Id: d22b6794-b776-4bb5-8405-08db886e3d31
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rvxc7KzYrl6Ui+Xl17qSQpN9Xra2wm3BtWl/Xfqid9kXteE4KEjQG56Gx6rhaz1o/y6DuWj0eolDiyskWCKPm/e4j8ZuXvOsGJxyoyYQ1VMKFpwQ4bEs2dvhO8ft3Ewd0XOuppKG6w5PXNy2nf6uTQLyeiDErQp5TpVFP1Xx8JYW30ZEcLJLcAvQkCA5UZnuR9FoSMIMFRGN85Koqnso9BPAZh2qljrHaRODQcc2ojXX9gQBsSnRj6Y3AZ4ynFmfbzrz1qC8FS6NHN4cNKccO4ufSCXsWDiZj/CpUTEJzlI7EKuQ1TEkNLbQANSlh74Tq96eOVkboZaPiAW9xmQ2D5YFjQLyFHjiwatXbruxQ0CKlOyAxy58f0Wu0+NFjjSDEdUYWDLjyXl06foApShx98uuyZ6J+GWvH1Gpq0D656XYJQZbLMOnfZMrKMkZs87g453G/oV90uajvPx6DJa1cak561FffofZVL6B1O3JILjsSkpQAIe5HX4LuB+woOMUTO2M97PqKcO9fqL8AQG3WdrZVINfKs2Fngun/kOX10AY0pFZX02+nJWHNhmhf4v5UOzWxi1nnXuN5qU2st8Sgu/tg86QMx984caqtyEnXJE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB7164.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(396003)(136003)(376002)(366004)(39860400002)(451199021)(6512007)(9686003)(6506007)(26005)(1076003)(54906003)(36756003)(38100700002)(7416002)(66946007)(5660300002)(2906002)(316002)(4326008)(66476007)(66556008)(6916009)(8676002)(33656002)(41300700001)(8936002)(86362001)(6486002)(6666004)(478600001)(83380400001)(186003)(43062005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?STliT0hvMkswN0lUSTNEckovYVlTNjJKREs2cXNCcjB5NzYyRHg2WUlQL2FG?=
+ =?utf-8?B?QXRLbGNvSmpua1BoQVFzL1ZRSlQ1UlUzcllndWg5bThRUERHRW42QXNpbmdQ?=
+ =?utf-8?B?Y2ErbmMvWVBocUw5NElKbGtPY2c0OWtJbUU1aWFqSVRLMjZDRVBrZTkvbnl5?=
+ =?utf-8?B?c2VBUkxqdW5zTTRGVXAwS0ZzeGY3RjU5eUhSeUx6aG5SeVdycm1hcWNRUXhk?=
+ =?utf-8?B?V3dENWhCSDlQajdxSUlvOUtISXVnZ09pUDF1NHB0NUUyYzdxb0hxbUJCVS9k?=
+ =?utf-8?B?Vkt4ajRkcGdrMHAxcFFuWFROdXhtWnFQUnJtK2xGSWNhai9FRGxQRjk2d0ZI?=
+ =?utf-8?B?c2tjL05WRlZaZmVEbGVyRjhQaXFjY3dDaFZUdVJ1YUE1L01rNisvVStuSlRw?=
+ =?utf-8?B?a2dRaDluMmZ2dGJBUzhwWERST1JTOXlhNGhaYUNCLzAvVlplWUF5TmZXQlhq?=
+ =?utf-8?B?OUdPMXlpVVlUTWQyT2pLL1QwRlB2cmdNaS9kcnJFSTVsNjVQOUNTT1ZEQWt4?=
+ =?utf-8?B?bmp0d29OcHlITHF6eUpZVk80ajlXdUdrQ0U5TVhkZ1lQcld2S2pVejdLZldP?=
+ =?utf-8?B?QWFkSnZVOGNDUmlTd2VqVzdlUXpWVGwzM3FQbm0xVFJ0UzQvcVNpVGRtV2ZR?=
+ =?utf-8?B?QzRkcUJlbjlsTDVxN3BkbG9vQ2FQSWZ1Rm5HcjVsMkFUVEhrSXFyOURrWVAz?=
+ =?utf-8?B?ci9vT3pEbHJMVVlnV2ZrcXBsMW9lQlhpSVBOdTFqaHlObytxZU1PQVlqQlVX?=
+ =?utf-8?B?bVRsMDRacGk0dXMwWEJVZkk2N29BM2plemUvanFmTHltWHBTVmRzYXNKUHF4?=
+ =?utf-8?B?enhzaVhZQ1FhcFZWdjc5bVZFK1Q3Z29UeDNPRHJZaVNrWHp5UStoRHNNY2Ix?=
+ =?utf-8?B?ZStTUSszUWpxZlhyak93TjkzckdnREdzZWNLS2tvNFdFd2luY2J4enFzQVpa?=
+ =?utf-8?B?RGx4ajFZMXRqR0RZSEYyelVmZW91NVAyL2lDZ20xelZYOFBacHEybHBiaUxi?=
+ =?utf-8?B?V3NlOGVUc2NZVTZvN1ZqU1hnUWZSZExjTzhSN2N0bXpvT2dyb3pOQUhtakdn?=
+ =?utf-8?B?WVhES1hCQkpHbTRQQy9CT1RUSzlXVC9qQmZCTEtGV2wzZmJ0Um9acDQrZTVV?=
+ =?utf-8?B?N0ZCMm15Y2lkQVIvWjAwNFhNTWdnU2draDF0NGxYQUpVYUVyMGlpck5JcU4v?=
+ =?utf-8?B?eWV6SUE1RDFHZ1dYbE44UDRucDY1SVFJOGNjUGVjQTI3ZzFsSTJDRGtMY25H?=
+ =?utf-8?B?VFhvY1hUVzhFS0NycFJha0F3czd5TmhPM0l4N1Y1MEk5YmFpbVMxa2Y0UDZP?=
+ =?utf-8?B?NEpBc0lvVXpnY0VNcjdCTGlWR3hPU3R0Sng3ZjU1MHhkUHhJb3BvK1ozNG9T?=
+ =?utf-8?B?aEljUzdxZzFVbjFGM1IxQ2ZTbTFtZ3dKQ0dsNlMzWnFHNnF4VEFzdVpoSDBK?=
+ =?utf-8?B?OW5LbVhHSlNPdHRWTGdGK094Q052RVorQUpDaFFlUVBtdUlBOXJiSXowdGgy?=
+ =?utf-8?B?NG45WSt6TS9JcUNlUXFJVVVDd2RDNkhLb3NHY29yem10TTdYQVZvMHNZM1VU?=
+ =?utf-8?B?SjFqM0tkQmVUT2htam9nSzZtL1cveFJ6Z1plaTNrMHNEZjJvKzk3NmFndjBs?=
+ =?utf-8?B?aHBmUzZLZDVGZE5oMS9JVGR5bllqdFM3cGlsVk9WYU1wdXVRQ21mUzRORy94?=
+ =?utf-8?B?TFRCcHpJbTJObzI0WXFQWFNjeE5jNm9la1ZVRGd0NXdzeGZjMTR0ZnFZRC83?=
+ =?utf-8?B?SENwNEtjbzRCcStvRklLRUt2RWpSZzRUNlYzbkQ3VnNrQVRZam96dEJaRU9x?=
+ =?utf-8?B?U2UrSlREZzBaTjkvd0JZOHRTQzlTMU5XTFl1aHZFZUExVVN0SlRrdW42SmJh?=
+ =?utf-8?B?RkdxeUZ2dlI5bndacVdiTjVPQTl2QXJWVS9aL29JMEpiM0tEQ0ozT2RsY3VP?=
+ =?utf-8?B?bTZYYlVEVjJjeFJKU25EMTdDNVAwU3dGTmRHQnliR3JrcnJOMDRBK0crN2RR?=
+ =?utf-8?B?bGh0NXlyODJ3cjFVVkhoRkhWcU03UVc5YTlFQ1laenBlNUdIWVJCc3JIbzRz?=
+ =?utf-8?B?cVFueUNyTWlCUm1XSHpHVnl0ZWlvYzlRYUlOM1NldkZib216RTYvUmNlZVd5?=
+ =?utf-8?Q?2PlY=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d22b6794-b776-4bb5-8405-08db886e3d31
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB7164.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 15:38:45.8906
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YM5A82rfNmhQJBqV5hac6erNiuRIdh8jNtsAQWjUr9A4CBFouGQerf6XAYltWiMO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9297
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+Hi Paul, 
 
-kernel test robot noticed the following build errors:
+Thanks for your review!
 
-[auto build test ERROR on tty/tty-testing]
-[also build test ERROR on tty/tty-next linus/master v6.5-rc2 next-20230719]
-[cannot apply to tty/tty-linus usb/usb-testing usb/usb-next usb/usb-linus]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On Tue, Jul 18, 2023 at 07:40:37AM +0200, Paul Menzel wrote:
+> Dear Chun-Yi,
+> 
+> 
+> Thank you for your patch.
+> 
+> Am 18.07.23 um 05:43 schrieb Lee, Chun-Yi <joeyli.kernel@gmail.com>:
+> 
+> […]
+> 
+> > Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
+> 
+> As checkpatch.pl also reports, please make sure the author and Signed-off-by
+> entry match.
+> 
+>     $ git config --global user.name "Chun-Yi  Lee"
+>     $ git commit --amend --author="Chun-Yi Lee <jlee@suse.com>" -s
+> 
+> (It’s also common to write the name in the order, so no comma is needed.)
+> 
+> `git format-patch` should not generate a patch with a dedicated `From:` at
+> the beginning, so you can send it from a different email account. (No idea,
+> why upstream Linux kernel development shouldn’t work with your SUSE
+> address.)
+>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Tony-Lindgren/serial-core-Add-support-for-dev_name-0-0-naming-for-kernel-console/20230719-131657
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
-patch link:    https://lore.kernel.org/r/20230719051525.46494-1-tony%40atomide.com
-patch subject: [PATCH] serial: core: Add support for dev_name:0.0 naming for kernel console
-config: x86_64-randconfig-r013-20230718 (https://download.01.org/0day-ci/archive/20230719/202307192334.nrgSDnfu-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce: (https://download.01.org/0day-ci/archive/20230719/202307192334.nrgSDnfu-lkp@intel.com/reproduce)
+I have set the from in .gitconfig and also tried git send-email --from "Lee, Chun-Yi <jlee@suse.com>".
+But gmail always modified it to From: Lee, Chun-Yi <joeyli.kernel@gmail.com>. I have no idea why.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307192334.nrgSDnfu-lkp@intel.com/
+In next version, I will put Signed-off-by: "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
+to keep the From: to be sync with Signed-off-by.
 
-All errors (new ones prefixed by >>):
-
->> drivers/tty/serial/serial_core.c:3337:17: error: no member named 'port_id' in 'struct uart_port'
-                                  port->port_id);
-                                  ~~~~  ^
-   1 error generated.
-
-
-vim +3337 drivers/tty/serial/serial_core.c
-
-  3324	
-  3325	/*
-  3326	 * Add preferred console if configured on kernel command line with naming
-  3327	 * "console=dev_name:0.0".
-  3328	 */
-  3329	static int serial_core_add_preferred_console(struct uart_driver *drv,
-  3330						     struct uart_port *port)
-  3331	{
-  3332		char *port_match, *opt, *name;
-  3333		int len, ret = 0;
-  3334	
-  3335		port_match = kasprintf(GFP_KERNEL, "console=%s:%i.%i",
-  3336				       dev_name(port->dev), port->ctrl_id,
-> 3337				       port->port_id);
-  3338		if (!port_match)
-  3339			return -ENOMEM;
-  3340	
-  3341		opt = strstr(saved_command_line, port_match);
-  3342		if (!opt)
-  3343			goto free_port_match;
-  3344	
-  3345		len = strlen(port_match);
-  3346	
-  3347		if (strlen(opt) > len + 1 && opt[len] == ',')
-  3348			opt += len + 1;
-  3349		else
-  3350			opt = NULL;
-  3351	
-  3352		name = kstrdup(drv->dev_name, GFP_KERNEL);
-  3353		if (!name) {
-  3354			ret = -ENOMEM;
-  3355			goto free_port_match;
-  3356		}
-  3357	
-  3358		add_preferred_console(name, port->line, opt);
-  3359	
-  3360		kfree(name);
-  3361	
-  3362	free_port_match:
-  3363		kfree(port_match);
-  3364	
-  3365		return ret;
-  3366	}
-  3367	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks a lot!
+Joey Lee
