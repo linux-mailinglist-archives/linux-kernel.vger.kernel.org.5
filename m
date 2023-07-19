@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46EEE7599DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EEC07599DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbjGSPfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 11:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
+        id S231887AbjGSPfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 11:35:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbjGSPff (ORCPT
+        with ESMTP id S230526AbjGSPfj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 11:35:35 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2070.outbound.protection.outlook.com [40.107.20.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79293E43;
-        Wed, 19 Jul 2023 08:35:33 -0700 (PDT)
+        Wed, 19 Jul 2023 11:35:39 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2082.outbound.protection.outlook.com [40.107.7.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CC8B7;
+        Wed, 19 Jul 2023 08:35:38 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yk9U+XcdYYvb/gLGtWl0IerTv3s0J1vUSEOdr6TvRzVWTIsGF2yy+dch3TIyfWZxzZKbbiJVnJsBLzIUYwOH/4chgkC3HFEgC7WH/ijK7ONqpx4sWEd0RdFKtluhYWCeeUajDIrTWZmZJsz6fE9026RJcVXGG/z4XDN5X1aPLPiTK3zwkRYyRAp6hseOrycHonr1uoAZrrdD73FbsCnS7SRsOn73rLo6sTD/HzpIqRKmD9kN1+qHZT55c6lgT12vlXhn5RdRbiDqnATj0kw9c+dqxPpdxhTkFxAJmRxlToAqpD82sidlVpt+eG/SxDMjJMdK1ssVnP6+5I9TFev6Xg==
+ b=W7gDVBVOprph10J0P/CL/WWC4ke4w6ERIGnVw21wAd2ydNicuthxEsRqCB+cMAPWUwHzMtZl6tYaCxaFzBhH/BY4FgKRW9Dayv1irCS8EimYWO08z+OfbGwqaQjcJiNYTjDVqSGF/qRhhay+JyRAf980muQQuz/syZa+eYWZP41FkDA0qz2On50ClY+iGvKZab/g+hCoUSQ/7687T7nQg4C8fs6FjBB/Xqbevnuz4kJlVZ1ekj8TvlhnXMEHzysnyipaJplgU+9ap66VZ9AXfjQZ28WuIAYXgp1zq0B2Kp4IEmGoFWxU2xhGWRGU+dpbEaDZqcgXL3GDR8ZcoikyVA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2hqXwYgt4QMLR+odi0pBx1EtX+Q35KwfC8ZWTiql7wM=;
- b=WA3SVGYnjjjaCyqj7nypcPR/w7QCCBgWINk8x9gZEtVz7ybt3ab6d6rAp+1oWqMiLeGzdGP/d8Ev1TMq1axf3sn7iWj/9dq/FWMKtBtj2p9Q7FwNYqJ+Gyjzeii9UyMOEo/iZofGRiy9bNpACpZs1R/zIKIrbZtKk7DECPATUxcQmUE23qdeUCmoaWfDW6xANM/qGSNVmY8GvtW62QEW1w4bEDniqOSeYAFlLf+04gQ14IJF17v/aC7fNAVhQLhiHHhcu57l6dcnHSS+Hk0wZCP5iK/kGLa7bw+m4qnPNLLeBAI2vt1Pphr+XQ/6GEViykCtqtCf315lyGIq7H8rFw==
+ bh=+iimuwI233p1lJKOpfdYddROMKOqlCEyj5OpcRhIFN4=;
+ b=AQcjwMbcbQtK8wjP8kol/VE8bq8kRkRM25Fa5pwXuyJSBGfJhW+6pceXNEdXw+COt3dungZ/uufwAZPrXSsVSengQkPzMo58CZTA29agBkYFyUFPRnz7aK2ULyIkKrV6914RjyXMwo/o8ZoMPoPbl2vyOsLlifSUhhlTqwPiML8jTCsjdqnscdJAcHyW21YlzNJwRBPkOBYl8aDIA1AvSqu5PvbmfndwUx7Rd2IQXHpHVrSxk0OtaMG6IDeZHZuAQoJUERON1x8v9Qpy+CH8eKQq1sZLeRerlSJ/9JbUTbvERgXOu0UoUFi32sRcpc4KJg+EpcMq42tjkyWUFyTl6Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 194.138.21.75) smtp.rcpttodomain=kernel.org smtp.mailfrom=siemens.com;
+ 194.138.21.74) smtp.rcpttodomain=kernel.org smtp.mailfrom=siemens.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=siemens.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2hqXwYgt4QMLR+odi0pBx1EtX+Q35KwfC8ZWTiql7wM=;
- b=0GXn9lFTTxIQZI+5oVAJBz+b3jJxGc3trfiYycE90kaCEeiMhhTMASMQBIDe7SpyvgP0LqgFEHm6s7rN5AW0TjL5pbSnizjgvitM9qfqf/QXNbmUiQzLHmiQJOACdlrWg+znYF+btZWA+OkB1pXaJ9UR/R/AVLBvqyqwEykoqHe+5M/a+NgoM4MHdndEtd7GEOSNqmfBCS5GcaPY39yI4gYo1rQzbEa0AV00ofR8Vx0SxkTGd0yqaI6vZJdJF7TcvNZAXJIwJbPMT59sEOY37hz8M/DrPPKbARWed/Um+zz47SR6F54uCCEc0D6qSntgGVoQG8rAYR0HPZhETmKyVw==
-Received: from FR3P281CA0001.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:1d::10)
- by DB8PR10MB3800.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:167::12) with
+ bh=+iimuwI233p1lJKOpfdYddROMKOqlCEyj5OpcRhIFN4=;
+ b=a8N/GQqJPJIfPk2t3xpM0ojKvmRlClZvrMXzHUaUtsa9Mzti1rlVZ/6K62qD8VLULk7LR1WOAhwOirOeK/iHxPfDkZPcQXYzYns5Fya0yZYjX/3187pf+iWr9WrBbC2+JdejnEFwgr5wSRcqMMyqWpcqh03vOLPLZNTBVWJH+tGAwKcOjavIqOKA52JmkDCEPtsklerbDvQHPG/oLaxy4kIEpTafcIw0whJpPD5bXX3vQsRDsvNGssw7LzaK7+W1RKLU0yP6Hx5BOz/ml5da4w9RqvM+LjzGNpaiLBimyIekN2ge7R/mip92Yd2ZAb5bRinCpfNl44zPPgTiCBF5PQ==
+Received: from GV3P280CA0075.SWEP280.PROD.OUTLOOK.COM (2603:10a6:150:a::24) by
+ AM7PR10MB3350.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:10c::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33; Wed, 19 Jul
- 2023 15:35:31 +0000
-Received: from VE1EUR01FT067.eop-EUR01.prod.protection.outlook.com
- (2603:10a6:d10:1d:cafe::9f) by FR3P281CA0001.outlook.office365.com
- (2603:10a6:d10:1d::10) with Microsoft SMTP Server (version=TLS1_2,
+ 2023 15:35:35 +0000
+Received: from HE1EUR01FT025.eop-EUR01.prod.protection.outlook.com
+ (2603:10a6:150:a:cafe::17) by GV3P280CA0075.outlook.office365.com
+ (2603:10a6:150:a::24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24 via Frontend
- Transport; Wed, 19 Jul 2023 15:35:30 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 194.138.21.75)
+ Transport; Wed, 19 Jul 2023 15:35:35 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 194.138.21.74)
  smtp.mailfrom=siemens.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=siemens.com;
 Received-SPF: Pass (protection.outlook.com: domain of siemens.com designates
- 194.138.21.75 as permitted sender) receiver=protection.outlook.com;
- client-ip=194.138.21.75; helo=hybrid.siemens.com; pr=C
-Received: from hybrid.siemens.com (194.138.21.75) by
- VE1EUR01FT067.mail.protection.outlook.com (10.152.3.83) with Microsoft SMTP
+ 194.138.21.74 as permitted sender) receiver=protection.outlook.com;
+ client-ip=194.138.21.74; helo=hybrid.siemens.com; pr=C
+Received: from hybrid.siemens.com (194.138.21.74) by
+ HE1EUR01FT025.mail.protection.outlook.com (10.152.0.182) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6609.24 via Frontend Transport; Wed, 19 Jul 2023 15:35:30 +0000
+ 15.20.6609.24 via Frontend Transport; Wed, 19 Jul 2023 15:35:35 +0000
 Received: from DEMCHDC8WAA.ad011.siemens.net (139.25.226.104) by
- DEMCHDC8VRA.ad011.siemens.net (194.138.21.75) with Microsoft SMTP Server
+ DEMCHDC8VQA.ad011.siemens.net (194.138.21.74) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1258.12; Wed, 19 Jul 2023 17:35:29 +0200
 Received: from md1za8fc.ppmd.siemens.net (139.25.68.175) by
@@ -70,10 +70,12 @@ CC:     Pavel Machek <pavel@ucw.cz>, Mark Gross <markgross@kernel.org>,
         "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
         Tobias Schaffner <tobias.schaffner@siemens.com>,
         Henning Schild <henning.schild@siemens.com>
-Subject: [PATCH v2 0/3] platform/x86: move simatic drivers into subdir
-Date:   Wed, 19 Jul 2023 17:35:15 +0200
-Message-ID: <20230719153518.13073-1-henning.schild@siemens.com>
+Subject: [PATCH v2 1/3] watchdog: make Siemens Simatic watchdog driver default on platform
+Date:   Wed, 19 Jul 2023 17:35:16 +0200
+Message-ID: <20230719153518.13073-2-henning.schild@siemens.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230719153518.13073-1-henning.schild@siemens.com>
+References: <20230719153518.13073-1-henning.schild@siemens.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -82,23 +84,23 @@ X-ClientProxiedBy: DEMCHDC8WAA.ad011.siemens.net (139.25.226.104) To
  DEMCHDC8WAA.ad011.siemens.net (139.25.226.104)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1EUR01FT067:EE_|DB8PR10MB3800:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0c01e2dd-3664-4a7b-181c-08db886dc8f2
+X-MS-TrafficTypeDiagnostic: HE1EUR01FT025:EE_|AM7PR10MB3350:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2f844089-60e2-46ce-7a80-08db886dcbbd
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yLxEYnEQCAVOWRFy7gyYcVAO0gIScYFRtK6DqNA6vgN3E8e+lVxQvIyf9qxGCmY7xeINOpFTpVZqTpwhVaZiLsUrpIm65z93FkiuiACUI/LtUrdUjFY8p9TCgkadj85whZvISvqHaDcusHxCLnxQXwci5McE6wIOGJVBfEb72jJq2u6B1DH2xoT5ceBVhUPHyzSArDcrYLidzdUKRgjr2EpHjeAyraTYawwYebWcySET2tIgUzr6HDftBA2kHyWF1IKUt9N3Jq96PIiTImCS7GuapnJ37/5UH89lDh4kWFFvdAypNFs8vzmaeC9VXfLE7erQADWoA6fhWDWX4xQgSfAOPbbvyyOIIlflGNrxTLKkEpvic5whh19xqkv+1ojatFsM9o46dEj/VY/DgAb/Fy5SiCtWGevKH2RJcON/5Vsz+YkkQ9OxXBlIZGRZCONe1BFNdQDwl3IYZdMh1xo+AUwi46NCoea15hQSuiY6NNbybXF2nfYJWPD9XSM6I+x2CJqis2UIpm2CP5ntUUuY14KXGm4BvfoSzrulDJKclFTb3nXnflzPkdZit9HfjrAR1QgLDWwyi6fGqbWjT3t40Tgloev2MinZbibm54Iqpf7jkK37PalfcPL8JlkB3CkzaSFpLWNuGzRqFKc/lDgHO68zLKbWPr4fYNQccMOz5LjWs539tExCzA17pHo1YccxRLcY9Nb4za+FkDZZozLTXv6WGC0ouO6vR3lPJY6wCBPLYhhNJc5kkOmFwvu83QL+XPmNgdr8IJmfWtNDwcIkws2KzQxTPt7Lqh9rE7VwzyI=
-X-Forefront-Antispam-Report: CIP:194.138.21.75;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:hybrid.siemens.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(39860400002)(396003)(346002)(451199021)(82310400008)(46966006)(36840700001)(40470700004)(26005)(1076003)(186003)(107886003)(36756003)(83380400001)(47076005)(36860700001)(2616005)(86362001)(82740400003)(82960400001)(81166007)(356005)(956004)(40480700001)(40460700003)(336012)(16526019)(70206006)(70586007)(4326008)(316002)(8676002)(7416002)(8936002)(5660300002)(44832011)(41300700001)(2906002)(110136005)(54906003)(478600001)(6666004)(2101003)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 2uaM1CEc5L4RnYWA079jlf4vKEBSo2RuHKqTzLAUu0IRkIvbRZIs9iksO3ewh+sbhaNihfK+WR0qxzRK5PJmWMR6fpmkHlZxLo3upab2dObUCd0bsOw3ynAS6MsDdT3kqLHiSMAsJV3w5+uj8YpMILju4bd/U06oP4z9SmaZu45ZF2JmH9U6CXwbeq0yi9+49q5ibL8bRduIwjaz61xNy4mx8eMwvb5o9He9q1kuNAX/lhb345EWzebizkDF3v5SAMIyxuOFQjvGcDSa6BW14xAlWyTkhLHKUODc8fpdoAnUrjDB9WmJtTx23wPVxmrSDBpaqpRu6hans3tjCGV2LvO7qLvTpuoEMxEAEHE3na67naDS1qvWU906HHihmlguCeJL2oVtX4wX+W1XRPunxcYZ9F1J2RTFdFi95A2DVp3XGRj6ervVy0lurOozSO2x3cyUyGQT52r1cWMvUCxmoROnh6Iilj1GKG7ZVeKAaRXGTaEwKOh+G/7JXGnI8Ug9EQuJph5DJHO0rC//dQHuDckiv+O/aUBqNKDhkiimA0Nyp9ws4Rvub6kEkCefrM/IEKh72udQsSJ8W8cBOXxn7gTXHolk3JbWxhygtJmhnmLnbQ8zJZySiL2jPYrLdlQfGmCA6Sm6kwHzlKB/ZHJB0VJPW92WUYowwQkZNdbrC3W+YYAfJDRF9pFRfcxv7UMeLvDOIuXWa+uLwoEMjhj8zUfF17DfBVYr1A+uARnOCQLA55iH0KObBd/cli8DRGAIR/K3KLPOFJQbmLEyiaLE4A==
+X-Forefront-Antispam-Report: CIP:194.138.21.74;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:hybrid.siemens.com;PTR:hybrid.siemens.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(376002)(136003)(346002)(82310400008)(451199021)(36840700001)(40470700004)(46966006)(36860700001)(336012)(47076005)(956004)(2616005)(40460700003)(40480700001)(4744005)(2906002)(4326008)(110136005)(8676002)(7416002)(8936002)(5660300002)(41300700001)(70206006)(44832011)(186003)(16526019)(70586007)(316002)(82740400003)(356005)(478600001)(7596003)(86362001)(7636003)(6666004)(82960400001)(54906003)(36756003)(1076003)(26005)(107886003)(2101003);DIR:OUT;SFP:1101;
 X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 15:35:30.6554
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 15:35:35.3069
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c01e2dd-3664-4a7b-181c-08db886dc8f2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2f844089-60e2-46ce-7a80-08db886dcbbd
 X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;Ip=[194.138.21.75];Helo=[hybrid.siemens.com]
-X-MS-Exchange-CrossTenant-AuthSource: VE1EUR01FT067.eop-EUR01.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;Ip=[194.138.21.74];Helo=[hybrid.siemens.com]
+X-MS-Exchange-CrossTenant-AuthSource: HE1EUR01FT025.eop-EUR01.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB3800
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR10MB3350
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
@@ -110,45 +112,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-change since v1:
- - switch LED/wdt Kconfig to "default y"
- - remove guard which could hide whole siemens submenu, and default m
+If a user did choose to enable Siemens Simatic platform support they
+likely want that driver to be enabled without having to flip more config
+switches. So we make the watchdog driver config switch default to the
+platform driver switches value.
 
-This series does two things. It builds up a Kconfig inheritance chain
-for all platform device drivers, namely Watchdog and LED. And then it
-puts all Siemens Simatic IPC drivers in the platform/x86/ directory in
-a subdirectory called "siemens".
+Signed-off-by: Henning Schild <henning.schild@siemens.com>
+---
+ drivers/watchdog/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-That is so that users have to flip less config switches, and to ease
-maintenance.
-
-Henning Schild (3):
-  watchdog: make Siemens Simatic watchdog driver default on platform
-  leds: simatic-ipc-leds: default config switch to platform switch
-  platform/x86: Move all simatic ipc drivers to the subdirectory siemens
-
- drivers/leds/simple/Kconfig                   |  1 +
- drivers/platform/x86/Kconfig                  | 59 +----------------
- drivers/platform/x86/Makefile                 |  6 +-
- drivers/platform/x86/siemens/Kconfig          | 63 +++++++++++++++++++
- drivers/platform/x86/siemens/Makefile         | 11 ++++
- .../simatic-ipc-batt-apollolake.c             |  0
- .../simatic-ipc-batt-elkhartlake.c            |  0
- .../{ => siemens}/simatic-ipc-batt-f7188x.c   |  0
- .../x86/{ => siemens}/simatic-ipc-batt.c      |  0
- .../x86/{ => siemens}/simatic-ipc-batt.h      |  0
- .../platform/x86/{ => siemens}/simatic-ipc.c  |  0
- drivers/watchdog/Kconfig                      |  1 +
- 12 files changed, 78 insertions(+), 63 deletions(-)
- create mode 100644 drivers/platform/x86/siemens/Kconfig
- create mode 100644 drivers/platform/x86/siemens/Makefile
- rename drivers/platform/x86/{ => siemens}/simatic-ipc-batt-apollolake.c (100%)
- rename drivers/platform/x86/{ => siemens}/simatic-ipc-batt-elkhartlake.c (100%)
- rename drivers/platform/x86/{ => siemens}/simatic-ipc-batt-f7188x.c (100%)
- rename drivers/platform/x86/{ => siemens}/simatic-ipc-batt.c (100%)
- rename drivers/platform/x86/{ => siemens}/simatic-ipc-batt.h (100%)
- rename drivers/platform/x86/{ => siemens}/simatic-ipc.c (100%)
-
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index ee97d89dfc11..04e9b40cf7d5 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -1681,6 +1681,7 @@ config NIC7018_WDT
+ config SIEMENS_SIMATIC_IPC_WDT
+ 	tristate "Siemens Simatic IPC Watchdog"
+ 	depends on SIEMENS_SIMATIC_IPC
++	default y
+ 	select WATCHDOG_CORE
+ 	select P2SB
+ 	help
 -- 
 2.41.0
 
