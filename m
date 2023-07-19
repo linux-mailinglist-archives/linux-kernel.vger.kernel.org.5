@@ -2,207 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31EAF758FBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CC6758FC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbjGSHzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 03:55:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44910 "EHLO
+        id S229724AbjGSH5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 03:57:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbjGSHzV (ORCPT
+        with ESMTP id S229536AbjGSH5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 03:55:21 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F83210A;
-        Wed, 19 Jul 2023 00:54:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689753290; x=1721289290;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1N+W8cRNC9pUexWe7qJQhUtuOwgwVBF4LoLojnPzLGM=;
-  b=MixlU4/EWVcHlWqrt6Hw8mbKHeXxoeGFES3zm7xofvpXmrZrVumYhy+B
-   YqUYb46t+UKPkTsNgLiqajuhdJvXGF01ACu2lxkvSEIqS3vkU39IwbOJs
-   cHwft5ioO0Z9VFEVy5BKDPFQg7u5QxNtDoQwpGn99OI9OTXJ9n+0j/moX
-   uXd5hZexZet+n4BIlgZBEORiygVlEtqnNQmYt+PpsqasLpsS1arQqqjmf
-   lktJpa9sAGv+xfbQxQapRqWqAHLbSnF/Z4Zo9Ua6QRyNW53t/DyChJkqz
-   ypca3FEhhBZ+xs8TlSgoJgFCxngVKRKOg9iI26X6oTjGzaDBsC6amxwly
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="397250599"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="397250599"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 00:54:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="814045464"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="814045464"
-Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
-  by FMSMGA003.fm.intel.com with ESMTP; 19 Jul 2023 00:54:41 -0700
-Date:   Wed, 19 Jul 2023 15:54:40 +0800
-From:   Yuan Yao <yuan.yao@linux.intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [RFC PATCH v11 07/29] KVM: Add KVM_EXIT_MEMORY_FAULT exit
-Message-ID: <20230719075440.m3h653frqggaiusc@yy-desk-7060>
-References: <20230718234512.1690985-1-seanjc@google.com>
- <20230718234512.1690985-8-seanjc@google.com>
+        Wed, 19 Jul 2023 03:57:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87226BE
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:57:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689753427;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0LSXzH9KgQuNIJHrVFvJ9YD/ZmxqwFC+Ci2ZGBbMwGk=;
+        b=R/bSZ5mtXvrl69m0j2LPjtqiFDM2BSu5VOtMCs3305nuxWSEevRP1VvhXKuouidC+3A43t
+        ACls23rYvAb3pbmab44FxRi02bzkfInG2Vp74Wp+RMyK9taDKcyza5CLaVAFhFpakZu//d
+        1BqaJGu1ejaybMFF38L4/Gy6UJLRFWE=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-404-TwmVGynAPiCiQ6zVTdDiFg-1; Wed, 19 Jul 2023 03:57:06 -0400
+X-MC-Unique: TwmVGynAPiCiQ6zVTdDiFg-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fbdf34184eso35534275e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:57:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689753425; x=1690358225;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0LSXzH9KgQuNIJHrVFvJ9YD/ZmxqwFC+Ci2ZGBbMwGk=;
+        b=NIf/O9XG/hWcgGk+a12u4A89SZysYY6O4eCeEGJ2AGQfFfGmqf6tWBRNh0p2ctjCRS
+         pb60JUoDK/thnuhknT/PCBzvFYRxeo5OTRbpzIpxpWJxJMZ9ZsUtkSptDxEirOJYVqL1
+         QFIpbyf0XrCTtH+OF3sgGlTpcWHwFw7MUID1b41YwARg0tqCyXknLtoM9zAKPWCo6cMd
+         cQ/SmH16hw/QqTHj7mQdwzl9c5KBaj8CXaG4E7Czr7EZiUfGYP4XoXl7AuMIN/hGHbxz
+         r+67EpENQtJ03OTTGxnFzhyvWGkzPoB0CTq6OxpkocHIOEdPXLQ3VfEc2BxSVWhOS2tB
+         2dyQ==
+X-Gm-Message-State: ABy/qLZkmKq1N6vCqLRcNlcmyy2gKJ/LBa9dyuVrUVcTMB/xVuyYJlKH
+        Int1B/teb+0s8MS4zz9Wvl1hwCmT42Ig5c6Zl1ja6hB5q05itk6+wUJEO8DBTcAw/P0uSF2Lyqf
+        9QnYbS+z9KDiF4X5wpa6SHl2QOusw64NU
+X-Received: by 2002:a05:600c:cd:b0:3f7:f884:7be3 with SMTP id u13-20020a05600c00cd00b003f7f8847be3mr1334659wmm.4.1689753425238;
+        Wed, 19 Jul 2023 00:57:05 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlH74UgMTjLsFyK1xbqZGPblld9XHaIy+slQtfM8QvANl8wo4fumWmYeLIfxy+UY4GY0/K0oJw==
+X-Received: by 2002:a05:600c:cd:b0:3f7:f884:7be3 with SMTP id u13-20020a05600c00cd00b003f7f8847be3mr1334641wmm.4.1689753424896;
+        Wed, 19 Jul 2023 00:57:04 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id x15-20020a05600c21cf00b003fbbe41fd78sm1046275wmj.10.2023.07.19.00.57.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 00:57:04 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Helge Deller <deller@gmx.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jingoo Han <jingoohan1@gmail.com>, Lee Jones <lee@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v5 3/4] fbdev: Split frame buffer support in FB and
+ FB_CORE symbols
+In-Reply-To: <91486e8b-49ca-4a8a-8dd6-e9a2c6ed63ee@app.fastmail.com>
+References: <20230714171642.91185-1-javierm@redhat.com>
+ <20230714171642.91185-4-javierm@redhat.com>
+ <91486e8b-49ca-4a8a-8dd6-e9a2c6ed63ee@app.fastmail.com>
+Date:   Wed, 19 Jul 2023 09:57:03 +0200
+Message-ID: <87o7k8ibao.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718234512.1690985-8-seanjc@google.com>
-User-Agent: NeoMutt/20171215
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 04:44:50PM -0700, Sean Christopherson wrote:
-> From: Chao Peng <chao.p.peng@linux.intel.com>
->
-> This new KVM exit allows userspace to handle memory-related errors. It
-> indicates an error happens in KVM at guest memory range [gpa, gpa+size).
-> The flags includes additional information for userspace to handle the
-> error. Currently bit 0 is defined as 'private memory' where '1'
-> indicates error happens due to private memory access and '0' indicates
-> error happens due to shared memory access.
+"Arnd Bergmann" <arnd@arndb.de> writes:
 
-Now it's bit 3:
+> On Fri, Jul 14, 2023, at 19:16, Javier Martinez Canillas wrote:
+>> Currently the CONFIG_FB option has to be enabled even if no legacy fbdev
+>> drivers are needed (e.g: only to have support for framebuffer consoles).
+>>
+>> The DRM subsystem has a fbdev emulation layer, but depends on CONFIG_FB
+>> and so it can only be enabled if that dependency is enabled as well.
+>>
+>> That means fbdev drivers have to be explicitly disabled if users want to
+>> enable CONFIG_FB, only to use fbcon and/or the DRM fbdev emulation layer.
+>>
+>> This patch introduces a non-visible CONFIG_FB_CORE symbol that could be
+>> enabled just to have core support needed for CONFIG_DRM_FBDEV_EMULATION,
+>> allowing CONFIG_FB to be disabled (and automatically disabling all the
+>> fbdev drivers).
+>>
+>> Nothing from fb_backlight.o and fbmon.o is used by the DRM fbdev emulation
+>> layer so these two objects can be compiled out when CONFIG_FB is disabled.
+>
+> I gave this a spin in my randconfig build setup and found one small
+> mistake:
+>
 
-#define KVM_MEMORY_EXIT_FLAG_PRIVATE (1ULL << 3)
+Thanks for testing!
 
-I remember some other attributes were introduced in v10 yet:
+>> diff --git a/drivers/video/fbdev/core/Makefile 
+>> b/drivers/video/fbdev/core/Makefile
+>> index 9150bafd9e89..2cd213716c12 100644
+>> --- a/drivers/video/fbdev/core/Makefile
+>> +++ b/drivers/video/fbdev/core/Makefile
+>> @@ -1,10 +1,10 @@
+>>  # SPDX-License-Identifier: GPL-2.0
+>>  obj-$(CONFIG_FB_NOTIFY)           += fb_notify.o
+>> -obj-$(CONFIG_FB)                  += fb.o
+>> -fb-y                              := fb_backlight.o \
+>> -                                     fb_info.o \
+>> -                                     fbmem.o fbmon.o fbcmap.o \
+>> +obj-$(CONFIG_FB_CORE)             += fb.o
+>> +fb-y                              := fb_info.o \
+>> +                                     fbmem.o fbcmap.o \
+>>                                       modedb.o fbcvt.o fb_cmdline.o 
+>> fb_io_fops.o
+>> +fb-$(CONFIG_FB)                   += fb_backlight.o fbmon.o
+>
+> With CONFIG_FB_CORE=y and CONFIG_FB=m, Kbuild does not include
+> the fb_backlight.o and fbmon.o files in fb.ko because they are not
+> set to =y, causing link failures for fbdev drivers later:
+>
+> ERROR: modpost: "of_get_fb_videomode" [drivers/video/fbdev/clps711x-fb.ko] undefined!
+> ERROR: modpost: "fb_videomode_from_videomode" [drivers/video/fbdev/atmel_lcdfb.ko] undefined!
+> ERROR: modpost: "of_get_fb_videomode" [drivers/video/fbdev/imxfb.ko] undefined!
+> ERROR: modpost: "fb_destroy_modedb" [drivers/video/fbdev/udlfb.ko] undefined!
+> ERROR: modpost: "fb_edid_to_monspecs" [drivers/video/fbdev/udlfb.ko] undefined!
+> ERROR: modpost: "fb_destroy_modedb" [drivers/video/fbdev/smscufx.ko] undefined!
+> ERROR: modpost: "fb_edid_to_monspecs" [drivers/video/fbdev/smscufx.ko] undefined!
+> ERROR: modpost: "fb_destroy_modedb" [drivers/video/fbdev/uvesafb.ko] undefined!
+> ERROR: modpost: "fb_validate_mode" [drivers/video/fbdev/uvesafb.ko] undefined!
+> ERROR: modpost: "fb_get_mode" [drivers/video/fbdev/uvesafb.ko] undefined!
+>
 
-#define KVM_MEMORY_ATTRIBUTE_READ              (1ULL << 0)
-#define KVM_MEMORY_ATTRIBUTE_WRITE             (1ULL << 1)
-#define KVM_MEMORY_ATTRIBUTE_EXECUTE           (1ULL << 2)
-#define KVM_MEMORY_ATTRIBUTE_PRIVATE           (1ULL << 3)
-
-So KVM_MEMORY_EXIT_FLAG_PRIVATE changed to bit 3 due to above things,
-or other reason ? (Sorry I didn't follow v10 too much before).
+Right, sorry for missing that combination.
 
 >
-> When private memory is enabled, this new exit will be used for KVM to
-> exit to userspace for shared <-> private memory conversion in memory
-> encryption usage. In such usage, typically there are two kind of memory
-> conversions:
->   - explicit conversion: happens when guest explicitly calls into KVM
->     to map a range (as private or shared), KVM then exits to userspace
->     to perform the map/unmap operations.
->   - implicit conversion: happens in KVM page fault handler where KVM
->     exits to userspace for an implicit conversion when the page is in a
->     different state than requested (private or shared).
+> Folding this fixup into the patch makes it work:
 >
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Co-developed-by: Yu Zhang <yu.c.zhang@linux.intel.com>
-> Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
-> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
-> Reviewed-by: Fuad Tabba <tabba@google.com>
-> Tested-by: Fuad Tabba <tabba@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  Documentation/virt/kvm/api.rst | 22 ++++++++++++++++++++++
->  include/uapi/linux/kvm.h       |  8 ++++++++
->  2 files changed, 30 insertions(+)
+> diff --git a/drivers/video/fbdev/core/Makefile b/drivers/video/fbdev/core/Makefile
+> index 2cd213716c12f..84ddc5d308b58 100644
+> --- a/drivers/video/fbdev/core/Makefile
+> +++ b/drivers/video/fbdev/core/Makefile
+> @@ -4,7 +4,9 @@ obj-$(CONFIG_FB_CORE)             += fb.o
+>  fb-y                              := fb_info.o \
+>                                       fbmem.o fbcmap.o \
+>                                       modedb.o fbcvt.o fb_cmdline.o fb_io_fops.o
+> -fb-$(CONFIG_FB)                   += fb_backlight.o fbmon.o
+> +ifdef CONFIG_FB
+> +fb-y		                   += fb_backlight.o fbmon.o
+> +endif
+>  fb-$(CONFIG_FB_DEFERRED_IO)       += fb_defio.o
+>  fb-$(CONFIG_FB_DEVICE)            += fb_chrdev.o \
+>                                       fb_procfs.o \
 >
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index c0ddd3035462..34d4ce66e0c8 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -6700,6 +6700,28 @@ array field represents return values. The userspace should update the return
->  values of SBI call before resuming the VCPU. For more details on RISC-V SBI
->  spec refer, https://github.com/riscv/riscv-sbi-doc.
->
-> +::
-> +
-> +		/* KVM_EXIT_MEMORY_FAULT */
-> +		struct {
-> +  #define KVM_MEMORY_EXIT_FLAG_PRIVATE	(1ULL << 3)
-> +			__u64 flags;
-> +			__u64 gpa;
-> +			__u64 size;
-> +		} memory;
-> +
-> +If exit reason is KVM_EXIT_MEMORY_FAULT then it indicates that the VCPU has
-> +encountered a memory error which is not handled by KVM kernel module and
-> +userspace may choose to handle it. The 'flags' field indicates the memory
-> +properties of the exit.
-> +
-> + - KVM_MEMORY_EXIT_FLAG_PRIVATE - indicates the memory error is caused by
-> +   private memory access when the bit is set. Otherwise the memory error is
-> +   caused by shared memory access when the bit is clear.
-> +
-> +'gpa' and 'size' indicate the memory range the error occurs at. The userspace
-> +may handle the error and return to KVM to retry the previous memory access.
-> +
->  ::
->
->      /* KVM_EXIT_NOTIFY */
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index 4d4b3de8ac55..6c6ed214b6ac 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -274,6 +274,7 @@ struct kvm_xen_exit {
->  #define KVM_EXIT_RISCV_SBI        35
->  #define KVM_EXIT_RISCV_CSR        36
->  #define KVM_EXIT_NOTIFY           37
-> +#define KVM_EXIT_MEMORY_FAULT     38
->
->  /* For KVM_EXIT_INTERNAL_ERROR */
->  /* Emulate instruction failed. */
-> @@ -520,6 +521,13 @@ struct kvm_run {
->  #define KVM_NOTIFY_CONTEXT_INVALID	(1 << 0)
->  			__u32 flags;
->  		} notify;
-> +		/* KVM_EXIT_MEMORY_FAULT */
-> +		struct {
-> +#define KVM_MEMORY_EXIT_FLAG_PRIVATE	(1ULL << 3)
-> +			__u64 flags;
-> +			__u64 gpa;
-> +			__u64 size;
-> +		} memory;
->  		/* Fix the size of the union. */
->  		char padding[256];
->  	};
-> --
-> 2.41.0.255.g8b1d071c50-goog
->
+
+Perfect, I'll squash your fix in v6. Thanks!
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
