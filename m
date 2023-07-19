@@ -2,105 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEEA759AB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0E3759ABD
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbjGSQXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 12:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
+        id S229763AbjGSQ2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 12:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbjGSQW4 (ORCPT
+        with ESMTP id S229447AbjGSQ2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 12:22:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B454B6;
-        Wed, 19 Jul 2023 09:22:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AEB3361786;
-        Wed, 19 Jul 2023 16:22:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11562C433C7;
-        Wed, 19 Jul 2023 16:22:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689783775;
-        bh=k0K6ocifQ0ciwTzxXH7M8DUDHsKfrzNua/KxUjjXkFA=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=T2LZDWcO5puV7VRCOsBgGotJisgKYwNNFQPAB/HDRTnd0Ladvgmjla4PWV4BzPlYt
-         i5xnpx5OP7rCjVfadkGllgwQuwN/eKoDlsQBe22il4LQzHMWer1aApYyMMSLWl93nH
-         ipkU+jYlLEzhSpmE5oJlURyvBuQEhyZpl47om/5yysQ7Smn3Qg6szrq4OY1rk6R1EV
-         QNdrGIH+VXh0LsjbUaXTquUsLvNjePH8ah6azGRLt7xXZoIqNaXR0lBsG3js4uYk2S
-         CLddkeUGPjnORTEJfT5D7Vsoy7rZaCAVSD6xKsOKY0hZtNWJtHMp3p4k1rOqqKOdt3
-         VtNvQayijlXaw==
-From:   Eric Van Hensbergen <ericvh@kernel.org>
-Date:   Wed, 19 Jul 2023 16:22:33 +0000
-Subject: [PATCH v4 4/4] fs/9p: remove unnecessary invalidate_inode_pages2
+        Wed, 19 Jul 2023 12:28:44 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26F21BB;
+        Wed, 19 Jul 2023 09:28:43 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b933bbd3eeso75686911fa.1;
+        Wed, 19 Jul 2023 09:28:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689784122; x=1692376122;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=99yK8+KnHqRGqbqnzMVhOVnI/JP3FUcwgMY39whDxlg=;
+        b=UnxyuKFJOvvgGrb4VavlzqnHs+xZ0waNJYz6YIk1Z3rxBTeE+/umfOLQ10Ti0TYDDH
+         7HWt/AUWYYelCkjGH3s31LtmKjZrII6YN5+gNJZaMXhbcu/fe/aaoZLE7gsmKJysFlty
+         wfs5w+RPI4B8bxLJt/PwRAudU9x/9MiXeHegGa2oTcSSQXsU13GEE88Y6s+/fnUCTkR1
+         lAPjqaKgISJE2Acl6hitprBwz+/fMXvY5xwZb1AR6T/QmO4EBq/UsJfxEjxp3YILVwoM
+         flWP9Kde14eyM8Nbh2d9XrhosU/8bAav+TzRpkMwQlkVxu2PJ816+Gl5xxOmSSTJvIW0
+         WcsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689784122; x=1692376122;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=99yK8+KnHqRGqbqnzMVhOVnI/JP3FUcwgMY39whDxlg=;
+        b=EvC6z/VzG4kELyYJZOSnVRw4nlr9ZtjLsMY8iH6hQOCTtM6El/K6vDJ4bg9VK+h6uj
+         ZQ3uADpasow+3ol0a41oX3RasgKsoVL2dVL1S759VnTFDz9iQF2af36XD5Ez5zAATtkH
+         lQowOwXWtbfglAf4+DvznOiel6TnxehVvlP9RG1V3kvHu0ZsYc9S1zauTZfjVDJFXm+2
+         NP8/B8i/q0SlC1lp/pAtmwdW2SNOuOUupudpMn/B/ckbeuiYVvBPKDcZjI0KH/0+vuCJ
+         aeDJHWzJOHNTpaw3S/mV97GIvE81+nyh+a2pUBCMh9wt2iByyXxRCTxdZ7otH7k1X6PM
+         0cBg==
+X-Gm-Message-State: ABy/qLaZrCamcyzWIXYFdp0LNODCEuaK1qbM553kdH7Cfi+1Be4J9smy
+        K1hfOULZ0FU6m6HBjDeFSkYXRNgXsnjaEgQPI9ousv6H
+X-Google-Smtp-Source: APBJJlGSuroHCEcnOzxN+od96nVS7g0jFyxSTSx+qFvOpExAY2JTQxe7mGDFxw0P7rtP+qgDJhXoPUAbwo4iFVezwq4=
+X-Received: by 2002:a2e:7805:0:b0:2b9:55c9:c21d with SMTP id
+ t5-20020a2e7805000000b002b955c9c21dmr322674ljc.33.1689784121432; Wed, 19 Jul
+ 2023 09:28:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230716-fixes-overly-restrictive-mmap-v4-4-a3cd1cd32af2@kernel.org>
-References: <20230716-fixes-overly-restrictive-mmap-v4-0-a3cd1cd32af2@kernel.org>
-In-Reply-To: <20230716-fixes-overly-restrictive-mmap-v4-0-a3cd1cd32af2@kernel.org>
-To:     Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>
-Cc:     v9fs@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, stable@vger.kernel.org,
-        Robert Schwebel <r.schwebel@pengutronix.de>,
-        Eric Van Hensbergen <ericvh@kernel.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=894; i=ericvh@kernel.org;
- h=from:subject:message-id; bh=k0K6ocifQ0ciwTzxXH7M8DUDHsKfrzNua/KxUjjXkFA=;
- b=owEBbQKS/ZANAwAKAYj/1ftKX/+YAcsmYgBkuA3ZNyXqWHLoseJ3EWeJrogkDkPGJ82+WR+E+
- 0fnABkiAwuJAjMEAAEKAB0WIQSWlvDRlqWQmKTK0VGI/9X7Sl//mAUCZLgN2QAKCRCI/9X7Sl//
- mH8ND/9VN84P0uGYO69TQEHK08nFdvfeZKbb3riQpl7CAFJtG+EtOYdws4XwZ8FUHomM1KMghDr
- dPYNggkxw5oDu+dtozFz92PR9eBD8Ip+DBFPoilAM/x4/Z1Uq2emVkldZYVIPu6ry/DxZ+Safne
- pWnMVYb1tK6e8gHgUL85BLi+r4koXFs7GZBtQzjGyiKGE5ruEPgc2/wRuf8z2lceXBVAwjdRvAa
- h2mvQ314jDebSO2w2eBREQvuy2BiylBEHvUHebN/agJpNSeh420tc9N/We9aiybdxflBv777gTq
- Wi3hytnPFjfErlzhhLs0wV1ZOw40DHbMSdlIfUpRg/6JcXmAZF7NEAjmysyMuf1+xtERKNjYFu9
- T2K+G1lQc0oACO07LebKqrY+aOrAYco8FZ9lEiKcnUWGEACgYiJgMIHJso9CCHY9+BM006uCuOW
- nJyWFxuRMYyYVKOh5w9jeKn3xXbx+rgTv4Fyy6Issr0hfD5+vUIckGIX36kaf1FfbsETlkzKrZI
- F1wQGbO466Ji+hjUYC5NpG5IduYMELK2gD5DrPck47M1BbGYhlO0poXe2HY2vRA0yojTLF9D7kd
- qe/S3ODW3fInC1vZsOPDoPtqGpbkF8LuX/G46f/kXVzW0Njm5eExaauysApKAC40+8cztAVmmiL
- ylMKFr4wG2hvSEg==
-X-Developer-Key: i=ericvh@kernel.org; a=openpgp;
- fpr=9696F0D196A59098A4CAD15188FFD5FB4A5FFF98
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230717114307.46124-1-aspsk@isovalent.com> <20230717114307.46124-2-aspsk@isovalent.com>
+ <CAADnVQKutS8fYLkNz-rhdmFJ3cTWS6JD9PmwjK7ZZ8N3u7nUYA@mail.gmail.com> <ZLeMExVzuG+uggn8@zh-lab-node-5>
+In-Reply-To: <ZLeMExVzuG+uggn8@zh-lab-node-5>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 19 Jul 2023 09:28:30 -0700
+Message-ID: <CAADnVQJ7EB0JMOzTOw5jg-nZcTnKn=nSwpsn4eTwg14LK7GcUw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: fix setting return values for htab
+ batch ops
+To:     Anton Protopopov <aspsk@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Brian Vazquez <brianvv@google.com>,
+        Hou Tao <houtao1@huawei.com>, Joe Stringer <joe@isovalent.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There was an invalidate_inode_pages2 added to readonly mmap path
-that is unnecessary since that path is only entered when writeback
-cache is disabled on mount.
+On Wed, Jul 19, 2023 at 12:07=E2=80=AFAM Anton Protopopov <aspsk@isovalent.=
+com> wrote:
+>
+> On Tue, Jul 18, 2023 at 05:52:38PM -0700, Alexei Starovoitov wrote:
+> > On Mon, Jul 17, 2023 at 4:42=E2=80=AFAM Anton Protopopov <aspsk@isovale=
+nt.com> wrote:
+> > >
+> > > The map_lookup{,_and_delete}_batch operations are expected to set the
+> > > output parameter, counter, to the number of elements successfully cop=
+ied
+> > > to the user space. This is also expected to be true if an error is
+> > > returned and the errno is set to a value other than EFAULT. The curre=
+nt
+> > > implementation can return -EINVAL without setting the counter to zero=
+, so
+> > > some userspace programs may confuse this with a [partially] successfu=
+l
+> > > operation. Move code which sets the counter to zero to the top of the
+> > > function so that we always return a correct value.
+> > >
+> > > Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
+> > > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> > > ---
+> > >  kernel/bpf/hashtab.c | 14 +++++++-------
+> > >  1 file changed, 7 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> > > index a8c7e1c5abfa..fa8e3f1e1724 100644
+> > > --- a/kernel/bpf/hashtab.c
+> > > +++ b/kernel/bpf/hashtab.c
+> > > @@ -1692,6 +1692,13 @@ __htab_map_lookup_and_delete_batch(struct bpf_=
+map *map,
+> > >         struct bucket *b;
+> > >         int ret =3D 0;
+> > >
+> > > +       max_count =3D attr->batch.count;
+> > > +       if (!max_count)
+> > > +               return 0;
+> > > +
+> > > +       if (put_user(0, &uattr->batch.count))
+> > > +               return -EFAULT;
+> > > +
+> > >         elem_map_flags =3D attr->batch.elem_flags;
+> > >         if ((elem_map_flags & ~BPF_F_LOCK) ||
+> > >             ((elem_map_flags & BPF_F_LOCK) && !btf_record_has_field(m=
+ap->record, BPF_SPIN_LOCK)))
+> > > @@ -1701,13 +1708,6 @@ __htab_map_lookup_and_delete_batch(struct bpf_=
+map *map,
+> > >         if (map_flags)
+> > >                 return -EINVAL;
+> > >
+> > > -       max_count =3D attr->batch.count;
+> > > -       if (!max_count)
+> > > -               return 0;
+> > > -
+> > > -       if (put_user(0, &uattr->batch.count))
+> > > -               return -EFAULT;
+> > > -
+> >
+> > I hear your concern, but I don't think it's a good idea
+> > to return 0 when flags were incorrect.
+> > That will cause more suprises to user space.
+> > I think the code is fine as-is.
+>
+> Yes, thanks, this makes sense. And actually we can do both:
+>
+>    max_count =3D attr->batch.count;
+>    put_user(0, &uattr->batch.count);
+>    /* check flags */
+>    if (!max_count)
+>            return 0;
+>
+> This way we always set the userspace counter to a correct value
+> and also check flags in the right place.
 
-Cc: stable@vger.kernel.org
-Fixes: 1543b4c5071c ("fs/9p: remove writeback fid and fix per-file modes")
-Reviewed-by: Christian Schoenebeck <linux_oss@crudebyte.com>
-Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
----
- fs/9p/vfs_file.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
-index 9b61b480a9b0..11cd8d23f6f2 100644
---- a/fs/9p/vfs_file.c
-+++ b/fs/9p/vfs_file.c
-@@ -506,7 +506,6 @@ v9fs_file_mmap(struct file *filp, struct vm_area_struct *vma)
- 
- 	if (!(v9ses->cache & CACHE_WRITEBACK)) {
- 		p9_debug(P9_DEBUG_CACHE, "(read-only mmap mode)");
--		invalidate_inode_pages2(filp->f_mapping);
- 		return generic_file_readonly_mmap(filp, vma);
- 	}
- 
-
--- 
-2.39.2
-
+Looks too convoluted to me.
+I think concerns over user space always assuming batch.count
+is updated with zero even when it calls api incorrectly are overblown.
