@@ -2,98 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D7F75946B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A04759473
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 13:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbjGSLjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 07:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57110 "EHLO
+        id S229875AbjGSLk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 07:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbjGSLjt (ORCPT
+        with ESMTP id S229659AbjGSLkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 07:39:49 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEA01FDC
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:39:19 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-98e011f45ffso833629266b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:39:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=devtank-co-uk.20221208.gappssmtp.com; s=20221208; t=1689766724; x=1690371524;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9bxBFdS57cHORvtflck/fJjDDdTOyQiFBPvjnTTOIAo=;
-        b=AWChI1fTZP0qKW2nktEcwMabEnYnuQc6o4Bkgb9UUQBnPd6ZLhbkUBLU4Zn5PX/VHH
-         XeWW+MH4OFoDZK6828TPkJpTpQgJoDnYriYFWbx4HtjBuV9tTRxvKoO8/w+Lvp9h8Xow
-         kyyWYbivXDugnlJNaONTBTj4kYzuNU4jyA2q44YioXa3tXdw9KF5y/v/llHXH/MQzkkz
-         i0ptN/4u6ERcLXNEEdTqdFdtpVPG8r5MQZuQoKaTS++6P1yPttgq1mtx8nU34ePhvEJz
-         F29bwltJIp8KVhC+5EDPsjyHeVFoHCSFWNfmDwPUuBW0gcWgbkq/nyvoWEYFy8CMKMIB
-         FS7A==
+        Wed, 19 Jul 2023 07:40:24 -0400
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0361FF5
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:40:01 -0700 (PDT)
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3a3b86821fcso996379b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:40:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689766724; x=1690371524;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9bxBFdS57cHORvtflck/fJjDDdTOyQiFBPvjnTTOIAo=;
-        b=dSbPTiH7098wPnybvq71Pf112DY3ON/equ31uA/DnNE8XgfMsz/uptbl6L6R285x+e
-         O8mKYGCxesr77DR/Jj7hi/Mh4aAI70yOyjz1IBBhE3z3E3m8EnzxACPvdsObQZypgWpC
-         6Zxv3/FSt26Fw6GuF8F0KhxNy+Sks8/va9PTUqdYmdAGiTTUioQeKo5OxQf3FBjZK8To
-         lNi5NhZ3DTmdjK2s2X0UfsPh7k9iZmyLVKAsI9BoxKf0D06k5B6fvX6EtUd2lJBoLc5L
-         h0+quXmFZFcYRU1ZwbD3kyQSVfAC/tREnq//GVj3I1q9d6uxui/QTdwKn/o0ldeasfUp
-         Ok8Q==
-X-Gm-Message-State: ABy/qLYKI9hzrUeDuQgbHHhelDrCJ+lpLC7UuUlsG/+sZyruZqF50xxI
-        nJrpnGRHSocVofNw1cEIWsLwVw==
-X-Google-Smtp-Source: APBJJlFfYCJ6/WfRjAdI1uynrlVTweGQDlLU/PsO+gbBUoM2Ni+z0AbFT9zuRv+ZncjMDPta3LXPpA==
-X-Received: by 2002:a17:906:73d2:b0:982:8c28:c50d with SMTP id n18-20020a17090673d200b009828c28c50dmr2272964ejl.58.1689766724443;
-        Wed, 19 Jul 2023 04:38:44 -0700 (PDT)
-Received: from DevTop.lan ([212.82.82.3])
-        by smtp.gmail.com with ESMTPSA id y23-20020a17090668d700b00997cfef52fasm2235979ejr.94.2023.07.19.04.38.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 04:38:44 -0700 (PDT)
-From:   Harry Geyer <harry.geyer@devtank.co.uk>
-To:     Till Harbaum <till@harbaum.org>,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     harry.geyer@devtank.co.uk
-Subject: [PATCH] i2c: tiny-usb: check usb base class before assuming the interface on device is for this driver
-Date:   Wed, 19 Jul 2023 12:38:38 +0100
-Message-Id: <20230719113838.17714-1-harry.geyer@devtank.co.uk>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20221208; t=1689766770; x=1692358770;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/vGmZ9/fDb9epDvOedOBs7HeR46EwNPEEK7sk+j6Kio=;
+        b=I0GFmG/kHfnB6PRsNDJaybaH3nqp2EY2Ut2amnz2Vjaj2PZcSxyzij3XN4cYBapNDo
+         Mb+4VGZxs03tUP2hpZ2UNG+zvHaioR9FDZyi3GAQzIcN0oE8Ix55wSppSu21yAX8JW1d
+         8a/SjHQQUqqqMcFnvj/LXZ2k6f6BahXQOiitZpaSBi41NTHRgZj51few3LYER3W4ZDMq
+         nj4AQVxTiiNS5bMeMm2xpFCdmioQ87KlLjrkCl4GeYcRKLpE3M3xky4QzA3RZT4m6p/A
+         1wHApQCvCPvOVPvK3SBHeZKeJ7O7+gL7zA9bkQJAE7miYB73Wj4gSA79rSDiMmritQKd
+         qLGQ==
+X-Gm-Message-State: ABy/qLZ9iLuA1iCKl8jDwAqTWeHgqIP7w4uxEgKIUHt1cBYPD+/y23H7
+        a+FOkXBCxUUxPWlRPGkXjCJCMgZXiSh+pw9ufDssCKO2oi8t
+X-Google-Smtp-Source: APBJJlHVcNkxZiOgTQ8esKMapxANI5L22BOi8in+N+miz/kb77z2U5OyIOT1jLZTT/rIepP8GTCXchunn8fJhay0LPEwt6P5G282
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6808:190f:b0:3a1:ee4f:77ce with SMTP id
+ bf15-20020a056808190f00b003a1ee4f77cemr3849967oib.1.1689766770301; Wed, 19
+ Jul 2023 04:39:30 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 04:39:30 -0700
+In-Reply-To: <0000000000007cfb2405febf9023@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000018e0570600d57cdb@google.com>
+Subject: Re: [syzbot] [ntfs3?] BUG: unable to handle kernel paging request in attr_data_read_resident
+From:   syzbot <syzbot+33a67f9990381cc8951c@syzkaller.appspotmail.com>
+To:     almaz.alexandrovich@paragon-software.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch allows usb devices with multiple interfaces to use this driver without
-this driver assuming all interfaces are i2c-tiny-usb.
+syzbot has bisected this issue to:
 
-Signed-off-by: Harry Geyer <harry.geyer@devtank.co.uk>
----
- drivers/i2c/busses/i2c-tiny-usb.c | 5 +++++
- 1 file changed, 5 insertions(+)
+commit ad26a9c84510af7252e582e811de970433a9758f
+Author: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Date:   Fri Oct 7 17:08:06 2022 +0000
 
-diff --git a/drivers/i2c/busses/i2c-tiny-usb.c b/drivers/i2c/busses/i2c-tiny-usb.c
-index d1fa9ff5aeab..fc194c65e50e 100644
---- a/drivers/i2c/busses/i2c-tiny-usb.c
-+++ b/drivers/i2c/busses/i2c-tiny-usb.c
-@@ -222,6 +222,11 @@ static int i2c_tiny_usb_probe(struct usb_interface *interface,
- 	int retval = -ENOMEM;
- 	u16 version;
- 
-+	if (interface->intf_assoc &&
-+		interface->intf_assoc->bFunctionClass != USB_CLASS_VENDOR_SPEC) {
-+		return -ENODEV;
-+	}
-+
- 	dev_dbg(&interface->dev, "probing usb device\n");
- 
- 	/* allocate memory for our device state and initialize it */
--- 
-2.34.1
+    fs/ntfs3: Fixing wrong logic in attr_set_size and ntfs_fallocate
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=143dfc66a80000
+start commit:   74f1456c4a5f Merge tag 'linux-kselftest-fixes-6.5-rc3' of ..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=163dfc66a80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=123dfc66a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=77b9a3cf8f44c6da
+dashboard link: https://syzkaller.appspot.com/bug?extid=33a67f9990381cc8951c
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15619a3aa80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12288c1aa80000
+
+Reported-by: syzbot+33a67f9990381cc8951c@syzkaller.appspotmail.com
+Fixes: ad26a9c84510 ("fs/ntfs3: Fixing wrong logic in attr_set_size and ntfs_fallocate")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
