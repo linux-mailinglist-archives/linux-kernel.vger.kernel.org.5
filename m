@@ -2,149 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D65759292
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CFC75929B
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbjGSKSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
+        id S230462AbjGSKS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbjGSKSA (ORCPT
+        with ESMTP id S230405AbjGSKSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:18:00 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8893F1BFD
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:17:58 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbfcc6daa9so62357075e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:17:58 -0700 (PDT)
+        Wed, 19 Jul 2023 06:18:33 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586B426A4
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:18:22 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9928abc11deso919457766b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:18:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689761877; x=1690366677;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1689761901; x=1692353901;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=/12YzBMxFEuL9z1yWxB+UUCkYX6+8C24FFiPRnVOeYs=;
-        b=h7/WTUUWaoUzOcX86SFAvjDqKxEWUmwu+YhE3cNW33MrssWBI/fbZ8ND6zHNcXjHgw
-         3j8kn05JCeCAbnsife3MAC/9la+wF4PRffF+SRhL+G12LmogFN6K3TioSMpzkLm7KG93
-         gVjWA+5C6tI7mcjQ3QVMply/DRiEnOsagoTEPNoAP+HjDSt0XGtXBYMyYc8kkS5SjFn2
-         nB2tbt0lWG/K5JQ9lgxdCI1H3FEjIOWMaVhNMTK30fySlZYJmq8/VRj0ettvrI9n1cVJ
-         cvsl4W62ZpzX+maxk5mts/VOjiWpHDL2RYFu0v2EkuRPhihuIY+rMNXsS+esJsloML/q
-         a83A==
+        bh=mKO0TJLvmVWRaDSVCf4u46x2zB0AJ6CPfOrU5hIDQ3Y=;
+        b=BR1hVXRSuD4ShJ+2shzyRVpPzUwQ2bQibyB4BYSlcbFc52vBeYKKg/3XruHheKP6DJ
+         d7j0HvFPJ4HoSsD5G/+Tom6obrMBXJJRqvU0ZmzLFp/gai2NUuPxfgFMuwgM+AyxSAR8
+         O6lEtq9tLcB8jy0kdcQU2+o4ky/YuaiOXtA1HRXi4HsmlsswiZykZ5Vuw3MI6psmBvc3
+         qe2h68ytlnA4cPfEzFxzFTzXmazg4zch4j/NFM2KYuYTyOuCAczz7tC/0UyHyNrXS1Ab
+         B6pNSW42fFtO5q/fNJEAjAa6LLCjhdt7iAHIiUpfuxmC384aMNgpY+AAJDTvo5Rebm8j
+         M8nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689761877; x=1690366677;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1689761901; x=1692353901;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/12YzBMxFEuL9z1yWxB+UUCkYX6+8C24FFiPRnVOeYs=;
-        b=SLKM+h5TiRa9uf0iDpJxGf+w9NtedRqcrVEkgO1BApnnDa3dKaTfNbeHfXE2Do1NZI
-         D7mSZ4E2+lyn3CPRjEglOBOft+FyJN/2EVGxieIdmAG6XAywgKN5732vdXR7fRPOU0z9
-         RldytZugGX4CnOqWop5v+VXdc7B6T2Dwjv42vln8L8VaQSc3a11yn2WWfnGjC/L25WxK
-         eTRG8dF8cgHjhIOwTuHEzIHGrC3hd0RG8nZ/hBQNvc0x0n1oRsGLgo6AMc392RFOWHPr
-         QPvjCfILdkpxY/5A61i+bIae6P+68eG2jkEd5JtZInUkexevfRWlbfTHTI63YRjvzs75
-         vWRw==
-X-Gm-Message-State: ABy/qLbSOE5vqo6vFwFXS38MIEBYL/CalONQcbCOootRtWdsllJJau8N
-        eJq6t66uCBl2weeVa+JU5/MPDg==
-X-Google-Smtp-Source: APBJJlH/wReuFNESBCfYGmjiyYJIozOQLKMrl6ckmaNf19lwjXmfAOVCoYhJvsQXenBPnI/4zc4muQ==
-X-Received: by 2002:adf:ecd0:0:b0:30f:ca58:a00d with SMTP id s16-20020adfecd0000000b0030fca58a00dmr1786141wro.45.1689761877016;
-        Wed, 19 Jul 2023 03:17:57 -0700 (PDT)
-Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id j8-20020a5d4488000000b0031417b0d338sm4924130wrq.87.2023.07.19.03.17.55
+        bh=mKO0TJLvmVWRaDSVCf4u46x2zB0AJ6CPfOrU5hIDQ3Y=;
+        b=goygtIVoN5IsM4/J3BIG1yqjn1Or2l6hfbVkdyY8TCdf0drl95H9Of/daegtA+eRBM
+         HNlX1Z1iOWw27jM2groqZlOd3rqSM6nKR6sU3zK6xtKVZBaVXeYRCaOmP65884T0Rime
+         HIueOmek7hY9DqvjIzaK2KhmP+PEjBnLdkaJ3C5ojsNCDYXQVsClvxl2NPPspWr8VUhp
+         eis7aW6W9RB0nSLYlHtVF1F4h1X7VEOyAbaYhFEVajLbIyA99cjNFVlqAzQD5w/n3pXU
+         XkwOHTcjGuZFeuoD0vzke6eBjvWUj6WR30wFYo24V6Wfrp9Im4K3JCmagJMMg+wZWUmk
+         YntQ==
+X-Gm-Message-State: ABy/qLZNSwuroCidQjACgQ6A4O8KAfReFnnuaGzXPQ/htWs0vZ/tSOaz
+        Xfc1kPcZClwJAkbDLWnwuA3Kug==
+X-Google-Smtp-Source: APBJJlGGiRnE6u8Sqrg1Q0TQNzDkrm36pjdp1JMjTh3lj/teWT2U5GviPaKCCOUI2izgODHqGrDgbw==
+X-Received: by 2002:a17:907:3f28:b0:991:d9cb:247d with SMTP id hq40-20020a1709073f2800b00991d9cb247dmr2154650ejc.57.1689761900793;
+        Wed, 19 Jul 2023 03:18:20 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id jt1-20020a170906dfc100b00992b66e54e9sm2111063ejc.214.2023.07.19.03.18.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 03:17:56 -0700 (PDT)
-Message-ID: <55c336a4-b268-d2d3-47f3-213300e4e623@baylibre.com>
-Date:   Wed, 19 Jul 2023 12:17:55 +0200
+        Wed, 19 Jul 2023 03:18:20 -0700 (PDT)
+Message-ID: <ebc27dd7-93fe-4d8e-8b8c-4fc1d52cc275@linaro.org>
+Date:   Wed, 19 Jul 2023 12:18:17 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [RESEND PATCH v2] media: mtk-jpeg: Fix use after free bug due to
- uncanceled work
-To:     Zheng Hacker <hackerzheng666@gmail.com>
-Cc:     Zheng Wang <zyytlz.wz@163.com>, Kyrie.Wu@mediatek.com,
-        bin.liu@mediatek.com, mchehab@kernel.org, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Irui.Wang@mediatek.com,
-        security@kernel.org, 1395428693sheep@gmail.com,
-        alex000young@gmail.com
-References: <20230707092414.866760-1-zyytlz.wz@163.com>
- <538096d2-7b24-e1c7-706d-4d4f952d35eb@baylibre.com>
- <CAJedcCzR6DzX_aG1KBgrMHDJ1xh=RTA-FrZ+TJ_4KawWpHyYuA@mail.gmail.com>
- <CAJedcCyKv-hdDhWcogDZrC-kY6qtO-H1fDYqjTXMJvCR19MxYg@mail.gmail.com>
+Subject: Re: [PATCH v3] arm64: dts: qcom: sdm630: Add support for modem
+ remoteproc
 Content-Language: en-US
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <CAJedcCyKv-hdDhWcogDZrC-kY6qtO-H1fDYqjTXMJvCR19MxYg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+To:     Alexey Minnekhanov <alexeymin@postmarketos.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+References: <20230719093458.2668842-1-alexeymin@postmarketos.org>
+ <2c1c69bf-3cd5-4d68-43db-696ce0f15197@linaro.org>
+ <1f8cbc00-9602-486d-b3c9-9c82f3b6c8df@postmarketos.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <1f8cbc00-9602-486d-b3c9-9c82f3b6c8df@postmarketos.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 18/07/2023 05:07, Zheng Hacker wrote:
-> Friendly ping
-> 
-> Zheng Hacker <hackerzheng666@gmail.com> 于2023年7月16日周日 00:08写道：
+On 19/07/2023 12:10, Alexey Minnekhanov wrote:
+> On 19.07.2023 12:45, Krzysztof Kozlowski wrote:
+>> On 19/07/2023 11:34, Alexey Minnekhanov wrote:
+>>> Modem subsystem in SDM630/660 is similar to MSM8998 and
+>>> device tree node for it is based on the one from msm8998.dtsi.
+>>>
+>>> Signed-off-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
+>>> ---
+>>>
+>>> V3: Use memory-region property to specify memory regions, instead
+>>>      of using "mba" and "mpss" subnodes.
+>>>
+>>> V2 link: https://lore.kernel.org/lkml/20230621175046.61521-3-alexeymin@postmarketos.org/
+>>>
+>>>   arch/arm64/boot/dts/qcom/sdm630.dtsi | 59 ++++++++++++++++++++++++++++
+>>>   1 file changed, 59 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+>>> index 2136ded22f7e..797625cf78ac 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+>>> @@ -1032,6 +1032,65 @@ data-pins {
+>>>   			};
+>>>   		};
+>>>   
+>>> +		remoteproc_mss: remoteproc@4080000 {
+>>> +			compatible = "qcom,sdm660-mss-pil";
 >>
->> Hi,
+>> Missing bindings so standard comment:
 >>
->> This issue has not been resolved for a long time. Is there anyone who can help?
+>> It does not look like you tested the DTS against bindings. Please run
+>> `make dtbs_check` (see
+>> Documentation/devicetree/bindings/writing-schema.rst or
+>> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+>> for instructions).
 >>
 >> Best regards,
->> Zheng
+>> Krzysztof
 >>
->> Alexandre Mergnat <amergnat@baylibre.com> 于2023年7月7日周五 22:11写道：
->>>
->>>
->>>
->>> On 07/07/2023 11:24, Zheng Wang wrote:
->>>> In mtk_jpeg_probe, &jpeg->job_timeout_work is bound with
->>>> mtk_jpeg_job_timeout_work. Then mtk_jpeg_dec_device_run
->>>> and mtk_jpeg_enc_device_run may be called to start the
->>>> work.
->>>> If we remove the module which will call mtk_jpeg_remove
->>>> to make cleanup, there may be a unfinished work. The
->>>> possible sequence is as follows, which will cause a
->>>> typical UAF bug.
->>>>
->>>> Fix it by canceling the work before cleanup in the mtk_jpeg_remove
->>>>
->>>> CPU0                  CPU1
->>>>
->>>>                       |mtk_jpeg_job_timeout_work
->>>> mtk_jpeg_remove     |
->>>>     v4l2_m2m_release  |
->>>>       kfree(m2m_dev); |
->>>>                       |
->>>>                       | v4l2_m2m_get_curr_priv
->>>>                       |   m2m_dev->curr_ctx //use
->>>
->>> Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
->>>
->>> --
->>> Regards,
->>> Alexandre
+> 
+> Bindings are already in linux-next/master since 
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=ed50ac266f67829d4732c8ca61ef1953c2cc63d0 
 
-Hi Zheng,
+Hm, I checked a two days older next. Provide explanations or links if
+you resend DTS in such case.
 
-If you asking me to merge patch, sorry but I can't, I'm just a reviewer. 
-I invite you to ping the maintainers directly:
+> .
+> 
+> And I did check DTS against bindings, it spat 2 warnings about new 
+> remoteproc node, which do not make much sense to me:
+> 
+>    DTC_CHK arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dtb
+>    .../arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dtb: 
+> remoteproc@4080000: qcom,halt-regs:0: [43] is too short
 
-Bin Liu <bin.liu@mediatek.com> (supporter:MEDIATEK JPEG DRIVER)
-Mauro Carvalho Chehab <mchehab@kernel.org> (maintainer:MEDIA INPUT 
-INFRASTRUCTURE (V4L/DVB))
-Matthias Brugger <matthias.bgg@gmail.com> (maintainer:ARM/Mediatek SoC 
-support)
+That's ok.
 
-Otherwise, I misunderstood what you asking me. If so, can you rephrase 
-your question please?
+>          From schema: 
+> .../Documentation/devicetree/bindings/remoteproc/qcom,msm8996-mss-pil.yaml
+>    .../arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dtb: 
+> remoteproc@4080000: memory-region: [[45], [46]] is too short
+>          From schema: 
+> .../Documentation/devicetree/bindings/remoteproc/qcom,msm8996-mss-pil.yaml
 
--- 
-Regards,
-Alexandre
+This needs fixes. The binding lists expected memory regions and you do
+not have three of them.
+
+Best regards,
+Krzysztof
+
