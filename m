@@ -2,109 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90901759BC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08812759BC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 19:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbjGSRDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 13:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43134 "EHLO
+        id S230463AbjGSREb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 13:04:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbjGSRDt (ORCPT
+        with ESMTP id S230164AbjGSRE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 13:03:49 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9486D10CB
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:03:48 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-403a1d7d60fso54311931cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:03:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1689786228; x=1690391028;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2Y/1slnyFOfruKLlVgzy7Oy/yzYdM3htwk1fVwDtIRk=;
-        b=mknpiap4VlzD98tl/hHtgiTz+hpghsQCUu8zc2R7FU+fC1+Nt2mEeusJNUbQixaHEX
-         uiIKyyEd4Dq3OrVDcc7xtvLRXg2G1/PaVEesjc+x9BE0fBeSn6k4N0CVePpZCXsuzvUm
-         f53gYdCf/JRwvyf8I/EUnFVVmyKz3IXYAm0WKTa8aitbsjmTaBeFMX2vpBLapTqThOg6
-         Guforr1Np1vUUXvA9/bDfmuK/YMWXTCtZgWbzOdTK2IBv28LH7MzEfBcQROcZBM4AwHv
-         mET3PbZWJqUfyPf/WEQmvJkhAzSJej7+WI+tfxMKl9I80SvyPB1YIWPKyx0ArDyCEi16
-         LoZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689786228; x=1690391028;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Y/1slnyFOfruKLlVgzy7Oy/yzYdM3htwk1fVwDtIRk=;
-        b=KA0jT0W34hH3CJUR1cl754oQQbv9WnHU56Bs0PIfb+Jp+xGn4CEY/Sq55LWnxBfRNT
-         ApJjX8UFjabNKMEMTstGNj5y5IGDpKqAATianoJPdgYTaDrYxhVgvukiH5F3QpRlIKdT
-         agb/roiQBLOn0pnzk7+2zZmxGw7E1qEmVB2+1sUpLwsPjRh2IR8m2iaE0hdu6M1N6eMm
-         01OJ6zYR9bK6HZ0zndqNGNgkgTqXf4+jPCuMv/A4PManVfGU19or+fPMQzUUjHRD0YPw
-         QdiX5AeraPXWzT32qc3fyx3uYK1nB0GMZBsCTvc0sumVV+lLOyAJn16O4jwjFSv2D/bI
-         a53Q==
-X-Gm-Message-State: ABy/qLYHjqbnwd5CcHrX5CFLyI94qQ4mp0fPYgA+pYhYQGWEeW9VkuX2
-        n/9BNQ05UgvJntTcIasKrWdyxw==
-X-Google-Smtp-Source: APBJJlGo7WgU956qlMCfm5+kYjiJGtiIBkXK8Pxq+lmL3ldE9ZAtORUHqORdt2kk9hfe+8Fm+OlMYA==
-X-Received: by 2002:a0c:a801:0:b0:632:1c72:c379 with SMTP id w1-20020a0ca801000000b006321c72c379mr15842406qva.51.1689786227785;
-        Wed, 19 Jul 2023 10:03:47 -0700 (PDT)
-Received: from ?IPV6:2600:1700:2000:b002:8499:3c3c:78f6:f355? ([2600:1700:2000:b002:8499:3c3c:78f6:f355])
-        by smtp.gmail.com with ESMTPSA id v14-20020ae9e30e000000b0076264532630sm1378783qkf.121.2023.07.19.10.03.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 10:03:47 -0700 (PDT)
-Message-ID: <a3c4f1c6-444b-b3a2-c952-bdd5b0463f95@sifive.com>
-Date:   Wed, 19 Jul 2023 12:03:46 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] gpio: sifive: Get the parent IRQ's domain from its
- irq_data
-Content-Language: en-US
-To:     Andy Shevchenko <andy@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-References: <20230719163446.1398961-1-samuel.holland@sifive.com>
- <20230719163446.1398961-4-samuel.holland@sifive.com>
- <ZLgVPv7zdoaiUCU6@smile.fi.intel.com>
-From:   Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <ZLgVPv7zdoaiUCU6@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 19 Jul 2023 13:04:29 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430601BB
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 10:04:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689786268; x=1721322268;
+  h=date:from:to:cc:subject:message-id;
+  bh=XgRxhxPhAVLE2bzyROfMlqUOjUd5c/ZxNxtmHp2pIgY=;
+  b=KNkZw//ZN5aZPcWEApZm2Yj8t139BMFHI7Tqx79VixQBolxV+62lvw7p
+   hea/XYcdqJ90/rQ5beYL16VGJWGQujrX0/2HzsWJEjk0OM8KD/GMkjFDq
+   gYuGWftrYaqrHsgtaGVDehebWZ/zIJ6ZgHzQKFYrcYd4fDLod3xGsIMQu
+   pKGFadI7WiwEE43cOv69Gtyk0Kiy4evYp5phdC8irEuOpCpvSva4Bihgp
+   AlPO6KiBdKnnTlCvPpXWSgysHZY5ItevdHbvOSiHjLvhWm5bS5kFSdb/q
+   OugZ9kWmtxS3YkdfWqgt1F0R6w3h1MYZntd5WzrtRmB7LH0P3XnqnumHu
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="351391253"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="351391253"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 10:04:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="794120574"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="794120574"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 19 Jul 2023 10:04:26 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qMAbC-0005Jl-05;
+        Wed, 19 Jul 2023 17:04:26 +0000
+Date:   Thu, 20 Jul 2023 01:03:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ e209b9496e109188268dd8e7e7e6abeaaff7a285
+Message-ID: <202307200149.IKqFOUPD-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-19 11:54 AM, Andy Shevchenko wrote:
-> On Wed, Jul 19, 2023 at 09:34:44AM -0700, Samuel Holland wrote:
->> Do not parse the devicetree again when the data is already available
->> from the IRQ subsystem. This follows the example of the ThunderX and
->> X-Gene GPIO drivers. The ngpio check is needed to avoid a possible
->> out-of-bounds read.
-> 
-> ...
-> 
->> -	girq->parent_domain = parent;
->> +	girq->parent_domain = irq_get_irq_data(chip->irq_number[0])->domain;
-> 
-> For the sake of readability I would like to leave parent variable
-> and assign it beforehand somewhere upper in the code.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: e209b9496e109188268dd8e7e7e6abeaaff7a285  Merge branch into tip/master: 'x86/mm'
 
-OK.
+elapsed time: 1199m
 
-> Also, can irq_get_irq_data() return NULL? Needs a comment on top
-> of that assignment or an additional check.
+configs tested: 116
+configs skipped: 3
 
-No, the earlier loop already verified the IRQ number was valid. I don't think it
-can later become invalid. In any case, we already dereference the result of
-irq_get_irq_data(irq_number[foo]) in sifive_gpio_child_to_parent_hwirq().
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                      axs103_smp_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r032-20230718   gcc  
+arc                  randconfig-r043-20230718   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                          ixp4xx_defconfig   clang
+arm                      jornada720_defconfig   gcc  
+arm                          pxa910_defconfig   gcc  
+arm                  randconfig-r021-20230718   gcc  
+arm                  randconfig-r031-20230718   clang
+arm                  randconfig-r046-20230718   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r011-20230718   clang
+arm64                randconfig-r012-20230718   clang
+arm64                randconfig-r033-20230718   gcc  
+csky                                defconfig   gcc  
+hexagon              randconfig-r041-20230718   clang
+hexagon              randconfig-r045-20230718   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230718   gcc  
+i386         buildonly-randconfig-r005-20230718   gcc  
+i386         buildonly-randconfig-r006-20230718   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230718   gcc  
+i386                 randconfig-i002-20230718   gcc  
+i386                 randconfig-i003-20230718   gcc  
+i386                 randconfig-i004-20230718   gcc  
+i386                 randconfig-i005-20230718   gcc  
+i386                 randconfig-i006-20230718   gcc  
+i386                 randconfig-i011-20230718   clang
+i386                 randconfig-i012-20230718   clang
+i386                 randconfig-i013-20230718   clang
+i386                 randconfig-i014-20230718   clang
+i386                 randconfig-i015-20230718   clang
+i386                 randconfig-i016-20230718   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r002-20230718   gcc  
+loongarch            randconfig-r003-20230718   gcc  
+loongarch            randconfig-r034-20230718   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r035-20230718   gcc  
+microblaze           randconfig-r006-20230718   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r013-20230718   gcc  
+nios2                               defconfig   gcc  
+openrisc             randconfig-r036-20230718   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                     kilauea_defconfig   clang
+powerpc                      mgcoge_defconfig   gcc  
+powerpc              randconfig-r014-20230718   clang
+powerpc              randconfig-r015-20230718   clang
+riscv                            alldefconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r001-20230718   gcc  
+riscv                randconfig-r022-20230718   clang
+riscv                randconfig-r025-20230718   clang
+riscv                randconfig-r042-20230718   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r023-20230718   clang
+s390                 randconfig-r044-20230718   clang
+sh                               allmodconfig   gcc  
+sh                   randconfig-r026-20230718   gcc  
+sh                           se7724_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r016-20230718   gcc  
+sparc64              randconfig-r005-20230718   gcc  
+sparc64              randconfig-r024-20230718   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230718   gcc  
+x86_64       buildonly-randconfig-r002-20230718   gcc  
+x86_64       buildonly-randconfig-r003-20230718   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-x001-20230718   clang
+x86_64               randconfig-x002-20230718   clang
+x86_64               randconfig-x003-20230718   clang
+x86_64               randconfig-x004-20230718   clang
+x86_64               randconfig-x005-20230718   clang
+x86_64               randconfig-x006-20230718   clang
+x86_64               randconfig-x011-20230718   gcc  
+x86_64               randconfig-x012-20230718   gcc  
+x86_64               randconfig-x013-20230718   gcc  
+x86_64               randconfig-x014-20230718   gcc  
+x86_64               randconfig-x015-20230718   gcc  
+x86_64               randconfig-x016-20230718   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
