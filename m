@@ -2,92 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0837592E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 884EB7592DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbjGSK02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45962 "EHLO
+        id S231402AbjGSKZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:25:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231366AbjGSKZq (ORCPT
+        with ESMTP id S231313AbjGSKY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:25:46 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9826826BE
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:24:57 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-78372b896d0so317625539f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:24:57 -0700 (PDT)
+        Wed, 19 Jul 2023 06:24:57 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5888B212F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:24:29 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fdd7d09576so519542e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:24:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689762289; x=1692354289;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K9ZDAcRcEb4EcOQItHJdczS495JLkwEqfSdpm/d3I5s=;
-        b=eeUXFsNC6JkS1yWsEnlbibzVOaUw4iyaw9+9IEMNq2UipZPdVXpIO5CNDZTEWkOfsi
-         hQN97Bi5G+ajQRqNVN3jCFvB/BpFl29KTazHH2u6FPf2Q9iLcRaKbjhYwlRwAwDNlFdr
-         YHypId86jhjCihxQ4RkjS+LvUBZRA+y3CkQBw=
+        d=linaro.org; s=google; t=1689762263; x=1692354263;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pNIJhMzmxxBXN5ArPOashQWkLNWVWDg/qYJKuyb0nNQ=;
+        b=vk9cdWjzrp3hj0LBUXT5ZfmBiPnkjaSYfQr+qib+jR2Crpj+WwVsF4pvQsBXDosA5O
+         AA4oAnObB9MWfYt5CHhtPsTN3flGSvlZGU0wG6qUJv1PWG6k4sEa8HGWUhzTencS7UBT
+         +dQPGDYROA0rBFc8HcV6oJ9xng7pgI3u9Z9Gtlyzo10mGpL0Z7oVTG2d7Tr3f4Tux0cM
+         m1BWRd+oDmmThwnn6mkIdlRHKY6sWSdg048k9DGzgYTCmQNG2EM8TL/I7jl7rY9dFFBL
+         mZx+bmuVuTpYDVCiPOfx/qLwht1ZaQjNUUfPDIxbYyOVh3KzT18D1Nab+zm+a96KDb82
+         /0Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689762289; x=1692354289;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K9ZDAcRcEb4EcOQItHJdczS495JLkwEqfSdpm/d3I5s=;
-        b=JbHI+m9csOV5McELJWy8On8hyQF/ORQ2l781qNUD8gX4Rf/iqBsh8LDbKR6YdAw3fV
-         xSHyuGapYSYwjunku1bK9YYdbsKQ5C8JCs2UIsYueVf4JDMxHHzUhIXUcdnZ0LaYS4/7
-         PJh1ZNBRvdsP5DGtH16KypOE0iY5Spf327ijRF5J9u+Ghz0vaI0rVXumzTVpxWHwDt4G
-         qhjFOYYbQ7Db/pmb83G3fbWRI5oSJW4ecZSZt7qjE+xyjY+4ZBa5/3T6a+JtxMYIWbTs
-         PQYMOGaH19qCEp6qQpIUG5Hf/px4CBclcoWmK1AEjUFnDIRQK5QwsBE0otYTOnUGA19i
-         tA3g==
-X-Gm-Message-State: ABy/qLZJmd1VDK7JgIG6zjutHvT5j3Q3C916sLEcGqV4TeCqtgn65OXN
-        uy9QY5DzsIWZmlbCMV8mvF3m+zT2ca0LeOAwLjM=
-X-Google-Smtp-Source: APBJJlE2M44KoYQHz4CKx6sxPjZY5sp/e5t5pBENvG9IeDMWmFq4//3IV575DI+EdMp59a1xt4MbiA==
-X-Received: by 2002:a05:6602:d4:b0:787:7700:2b5c with SMTP id z20-20020a05660200d400b0078777002b5cmr4819568ioe.6.1689762289656;
-        Wed, 19 Jul 2023 03:24:49 -0700 (PDT)
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com. [209.85.166.53])
-        by smtp.gmail.com with ESMTPSA id r19-20020a6bd913000000b007862c74cec6sm1254861ioc.1.2023.07.19.03.24.48
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20221208; t=1689762263; x=1692354263;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pNIJhMzmxxBXN5ArPOashQWkLNWVWDg/qYJKuyb0nNQ=;
+        b=GnMO5LasZp15J8+BoNgb/yNOsEhfJn4fbykA64WGfaNss33d0Dz+no7HlpWQaHYOsh
+         nnjycJH4mpGpiPYjKklJrexDf1NgHzPal3e6gEDzHG1xAqodWmJfldu11pSU5Adg8Zb5
+         xWkIFXVQ2+uuBGs3fymjr+YIARdusWYkuX5OYPICnWUdubW/HYjpmETxBGPJyI9QwcXu
+         Q5P+wepmgxXSGx12/2Nb3eCuLgnU7g6v5eBGW3fDJfcAnRoch+XDm/81e5FWyvC7Fmx+
+         Yozdy5pntTxVlrWld22Dh2vEjXDoNK4+VyA2i74vi9FYteg7ANOb4BIzQEbhDl4u9Qix
+         EX1g==
+X-Gm-Message-State: ABy/qLY+wxTpHyCJSNdprrWpdHUTMTWf5Hp91MFir6h9sjK9hC5AGVeC
+        BkazamSboagwZd5kUBUmWy07mw==
+X-Google-Smtp-Source: APBJJlHGQlC0ewnTRDYY+l855TWfq0boXSlDOuJUX8gOb2ZskptGYi4Tp8UcYomgG/ui0h92jERFkw==
+X-Received: by 2002:a05:6512:208c:b0:4fb:8bab:48b6 with SMTP id t12-20020a056512208c00b004fb8bab48b6mr14132879lfr.52.1689762263021;
+        Wed, 19 Jul 2023 03:24:23 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id l23-20020a056402125700b0051d9ee1c9d3sm2498130edw.84.2023.07.19.03.24.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 03:24:48 -0700 (PDT)
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-78666994bc2so318444639f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:24:48 -0700 (PDT)
-X-Received: by 2002:a5e:950a:0:b0:787:1568:5df7 with SMTP id
- r10-20020a5e950a000000b0078715685df7mr5145284ioj.9.1689762287751; Wed, 19 Jul
- 2023 03:24:47 -0700 (PDT)
+        Wed, 19 Jul 2023 03:24:22 -0700 (PDT)
+Message-ID: <c2c9d335-ed84-2ed7-6b3c-2a3af93fd081@linaro.org>
+Date:   Wed, 19 Jul 2023 12:24:20 +0200
 MIME-Version: 1.0
-References: <20230719075056.72178-1-angelogioacchino.delregno@collabora.com> <20230719075056.72178-5-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230719075056.72178-5-angelogioacchino.delregno@collabora.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Wed, 19 Jul 2023 18:24:11 +0800
-X-Gmail-Original-Message-ID: <CAC=S1nguPCc8HUkWqNQgBWzNNaq83q7UdTdbv1i5_jH2ZZy4eA@mail.gmail.com>
-Message-ID: <CAC=S1nguPCc8HUkWqNQgBWzNNaq83q7UdTdbv1i5_jH2ZZy4eA@mail.gmail.com>
-Subject: Re: [PATCH v2 4/6] drm/mediatek: mtk_dpi: Switch to .remove_new()
- void callback
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     chunkuang.hu@kernel.org, p.zabel@pengutronix.de, airlied@gmail.com,
-        daniel@ffwll.ch, matthias.bgg@gmail.com,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 4/5] dt-bindings: arm: qcom: Document SM4450 SoC and
+ boards
+Content-Language: en-US
+To:     Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
+        konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
+        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
+        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230719100135.21325-1-quic_tengfan@quicinc.com>
+ <20230719100135.21325-5-quic_tengfan@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230719100135.21325-5-quic_tengfan@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 3:51=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> The .remove() callback cannot fail: switch to .remove_new() and
-> change mtk_dpi_remove() to void.
->
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
-abora.com>
+On 19/07/2023 12:01, Tengfei Fan wrote:
+> Document the SM8450 SoC binding and also the boards using it.
+> 
+> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> ---
+>  Documentation/devicetree/bindings/arm/qcom.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+> index 450f616774e0..691e66612872 100644
+> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+> @@ -83,6 +83,7 @@ description: |
+>          sm8350
+>          sm8450
+>          sm8550
+> +        sm4450
+>  
+>    The 'board' element must be one of the following strings:
+>  
+> @@ -976,6 +977,11 @@ properties:
+>                - qcom,sm8550-qrd
+>            - const: qcom,sm8550
+>  
+> +      - items:
+> +          - enum:
+> +              - qcom,sm4450-qrd
+> +          - const: qcom,sm4450
 
-Reviewed-by: Fei Shao <fshao@chromium.org>
+No, really...
+
+Best regards,
+Krzysztof
+
