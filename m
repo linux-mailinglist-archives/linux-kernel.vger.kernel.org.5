@@ -2,78 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE61758C19
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 05:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDAF2758C1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 05:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbjGSD3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 23:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
+        id S230428AbjGSDa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 23:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbjGSD2i (ORCPT
+        with ESMTP id S230186AbjGSDa2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 23:28:38 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FBE23ABD;
-        Tue, 18 Jul 2023 20:27:19 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fb960b7c9dso10660287e87.0;
-        Tue, 18 Jul 2023 20:27:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689737230; x=1692329230;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T27lW/IFYnc+mInlhV3C6crQROEaMWng9NOrvyJj8Fs=;
-        b=dbTKujg5aaRvV24uG6GJAeHAWBZoxmFuehuFLX4dG0r8rsQo7jhTkL2ITFC0zbseX4
-         VHfZm175+zCWC5nUNl+XumC2jSqszSn7apxuVp1Z+dMv48VPvkH2q4ZYbBgp1cN7OSM6
-         qdM44cgTfaE8TGUoVVjF5zUYYq8+ywMhWu/UVd7N30zxySwwrphofYlYJvE5i+xUylSl
-         hPr4WnKkVcohMed2s00HHDrJVnAXr8CEkxmF9Y1Qh8G3rYDmOBeqDub1/GEeJQlsvRl+
-         T6jKgnzoRo4NYM69INEv4qhltizOjMBTuVMnDMOEWlWxyUAC50yyzC7C2853sDvhclBF
-         9RkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689737230; x=1692329230;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T27lW/IFYnc+mInlhV3C6crQROEaMWng9NOrvyJj8Fs=;
-        b=OLjZuFQLXkWYo7DF3EklXRt53YrLmLVGxCxHt/1chLjpH7q97RUA2D6xBe+P6zWTiq
-         4kR48uIkh0f9hRihUNTe89P4r7SpnjLLcitUywLjSgMFjjhY4sicIlNfW1wrVbrXBL3j
-         iSHPxqjFOXUwGDNtA/Y/4/bljAzQINbewD3iepLjiccNlg5kK+vUV30A72TKVerNBuAm
-         ah6UvVetHzWTm3AS7b/SXItnJbrbM2Czi4477TtiO6NDKq9bCA0fEiteykXV/B9rxu8N
-         GhjWnGXaLuptp1dwgzJBQMIBy7sW1T457TMJcBuvdEoqGz+JLx3obUG4p8AJonT4qx5i
-         8UEA==
-X-Gm-Message-State: ABy/qLZDxw/PpaGDsH/YhjhdI00OvE4MCFEnW44FbXj+/a3x9BtdxjB6
-        IgvU6frtJE6zBMyHfPvy67toUhRKxxjlLRJA+J/AvTVzKHT1rw==
-X-Google-Smtp-Source: APBJJlHrO4H619uYtcfclW4M+aOuvvK0Bi1u13xQvN8qN/fJOz0UJSVdI1wE2UvITWIj6AeuomGGmSTv4WlDnCbc+qM=
-X-Received: by 2002:a05:6512:b18:b0:4fb:52f1:9ab4 with SMTP id
- w24-20020a0565120b1800b004fb52f19ab4mr982334lfu.50.1689737229709; Tue, 18 Jul
- 2023 20:27:09 -0700 (PDT)
+        Tue, 18 Jul 2023 23:30:28 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2059.outbound.protection.outlook.com [40.107.20.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6E235B5;
+        Tue, 18 Jul 2023 20:28:42 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gnZ/Z0/tgy7HkPvGgGgPptlOl8OnPfjxK4XCb632DfIlKbsb7a4PZ0+WLlpdz+EhWbIzPumXG/roYak0I0lorT+54V+WohvMEGv7wyFqPUIM5+WOVB1eJh0clURyoJ5piZhKA9GrL+WyC9CwLXMBdj1au/44khG4jgNcE/hE1nCxjPQ9Y9tlnuGTc6AH0g1m+SDp4wj0h7RlurKAk0FMNNs62hX0DFR/dHSzElC1zrswxKGqx+o75qUj6LA6QuNZ2YmBGnl/xDPKnVD/aRJ0OGEu08mVbqMGQTY6P2npDZEgnt7GznmoJlr2pZabvGxYAiyYPx8muaW3iTE+W06mzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mmjQLozZHIMcgJwKcGwSIxcM6V+uqzR9BqVuMN+2hmE=;
+ b=j45WdOCWdhktPVJmkauwvBzr9O2DLxPUxLksYQ4CdgtKObcRdRam6CM7VWZ2YacBsdjx+42QDi9j3kX25QV/+9PtRlFE8JpAO+v6gpFMLB3OdbGdc3H602WOXZ1yxrmXVl0P1AMvAQtLduAkulycpHAulsvOSs0ZMElK7yNytV6FHxe41MVg8iLq6uh9l4jB0t/J5gD9oJka3DreSvJc0dMg35dr9TGxk91gq5RNgRg/GU8lAFuMy9GPueMcO97tXRDcW2klgBe+o20Qh4YqBg7ZVzjzR0dng8Z8zxOGJHQGQAZkgdCdWcmzl4MaFF7J17ZiCMQOllGgkTeIw60MCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mmjQLozZHIMcgJwKcGwSIxcM6V+uqzR9BqVuMN+2hmE=;
+ b=DoBPfyHERZlqJY+kumVGoNy3Kw/cREQ9b1TOed2MRRvq7NBhhAiF8duEtucshLnLu4+RzxzITuxWZJWql5IXmVnKhwrgaELASqvG5SyBOqp6+ZPZev5SSJfi+LK47h1ETempHHFFdnLu8ncCwjlPSA5diWjC1mYGLJFdjXA9ARM=
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
+ by PAWPR04MB9934.eurprd04.prod.outlook.com (2603:10a6:102:380::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Wed, 19 Jul
+ 2023 03:28:26 +0000
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e]) by AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e%4]) with mapi id 15.20.6588.031; Wed, 19 Jul 2023
+ 03:28:26 +0000
+From:   Wei Fang <wei.fang@nxp.com>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH net-next] net: fec: add XDP_TX feature support
+Thread-Topic: [PATCH net-next] net: fec: add XDP_TX feature support
+Thread-Index: AQHZuJuObnt/EH25Q0eb312+ucAGVK+/o/SAgADGssA=
+Date:   Wed, 19 Jul 2023 03:28:26 +0000
+Message-ID: <AM5PR04MB3139675725C77A4C06103DA48839A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+References: <20230717103709.2629372-1-wei.fang@nxp.com>
+ <fa3dc82a-fe5e-a90c-6490-1661f1bb43d8@intel.com>
+In-Reply-To: <fa3dc82a-fe5e-a90c-6490-1661f1bb43d8@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM5PR04MB3139:EE_|PAWPR04MB9934:EE_
+x-ms-office365-filtering-correlation-id: 6db723f3-9539-4a55-1f22-08db880836d1
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dFQW9SX/2PPNk3bzjcfmoAu9Y6W29Z3Dn3x1zAMMiVyso4H+HfsP40gvA4qG914rjdC6x17fCT4YJlC/WRTN7rN6yE7Amz3dDSpcLMJTY/HaxB0IJVNC7bep9DdnNOMyrn5dP+ucW9QWrHN0Vfg0b6McK5fwFFkpBuNsG2J6GNon6RcOxcaS7az1ylzHJfaRpduVuwjxHzS9hiDVplSn8oe6FzdaYhYHes09Di5gELFOlTr5x27E4//+Ahfh8//NLVhEJWPnXty4acTPnqaRcfjLhcTf59/pdqqvfkn2Eas2uMgn59N/EPyFhr9KEx8oTssDxzFJFVTbK3Q8wtmy0r5A2qhRJe2mWuQ2+6Fh78mMtyfstkX7RjjLE/NdkjHyzl2A2KjzAD4I6rI9eknyi2K/bGhSWkQR0KqTmIpIJ7qpf7qP1ntO49dHsKYR4JGo2V6tYa1cfnzb++OQca+u4z9GAR4af0G30+dHk6QXCqzL9PdSU4dhst4oJfCO0XYKVZg8p6wKEOPk6uazUDLrf62CXS3ggW08WHGvIhSD37tkq7WkqcJJO/YRz2RZqcvNRra636J/qpZ7IAPXpl7m3ktpm902ARUHj0H4W6zVGxivuw4nZ26FY+Jw/c0Z+2z7
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(39860400002)(346002)(396003)(366004)(451199021)(7696005)(53546011)(26005)(9686003)(6506007)(122000001)(83380400001)(86362001)(38070700005)(33656002)(38100700002)(186003)(55016003)(8676002)(8936002)(2906002)(41300700001)(478600001)(7416002)(4326008)(52536014)(66446008)(5660300002)(6916009)(316002)(66556008)(76116006)(66946007)(66476007)(64756008)(54906003)(44832011)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WS9tTG9DZWF4OVlIMTBYRXdoNG9TVWJ4dHVsUUlaRVhIU3E2V252WjlsdUI1?=
+ =?utf-8?B?NmhWQWpVY0dURmpXY0RwalhaTlhzenhnN0d2aUpVWHFLRWI3cUFSM2lkOVEx?=
+ =?utf-8?B?bFNEejVCTDhiUExJNHhOOU9KMTh4UW1yN3VYU2Z0YzUxa2R3V3ZKTCtUbTRC?=
+ =?utf-8?B?TFpOUk1zc0ZBSlhYVjExcHh5eWlnQnc4VFFFOEhSa2NLR1FCVDdJWDh6MjRC?=
+ =?utf-8?B?a1JBYjhEdTdSSWN1dU52eUh6azMvNHlzKy9NZHo3WCtLei84RVhuMEQ0LzQr?=
+ =?utf-8?B?YVpnZVNCY3JBSkduaU9ZWmtSdmtPSitzK2hIVjNSRlkyeVJrWnZkd0NVc1dI?=
+ =?utf-8?B?M0kyM09wTWJEK1ZFai9aaTBYZVBXRzE0d00ycXpCSzVNYis5Z2g1WEtPNVBi?=
+ =?utf-8?B?TGdiTW9BZEkybEVkdWp1a3UyRkFXT2JXR29BTHcyQ1NvWXRuODllM2ViVHp5?=
+ =?utf-8?B?R2tWbStFRXdmRjhBSTVaYllZRGQwNWdxZFhkQ0N5WCt1aHF0QzY4aFhHVFkw?=
+ =?utf-8?B?aHNJc3djNmdwOCttUTRlU2pzZ0h4M2pOSzlGSDNRZFdEb3RRcGE1Tzg3aEtR?=
+ =?utf-8?B?SDNsY043ZjRhRys4WGVnOU5jSFBTYzcyT1VLZzFZQlFYWnM1R0V5eDhHUEQr?=
+ =?utf-8?B?ZllRWXZBQVhSN0lVaVphb0NXaEUxaVVqWjlrbU9KcDNmSWpnYjVzYVBrYmV1?=
+ =?utf-8?B?eXpKbnl4WEpkN1RIUmVZbS9ncldydzlBRDRnbDBhT1ZFZUdvSEJqdEQwcVZ1?=
+ =?utf-8?B?aWE3MGJSMllzbWJJTVNzM0UxRDRrOTBianFvdDlpWk0vUnhONXU4MWdWSURt?=
+ =?utf-8?B?QXNENjNrSEtkMSsrRk5QNUt4L1FFU1UyU3ByeERrRFc3dkNXZFhGV0lZaWRB?=
+ =?utf-8?B?UERLNTNJRTBKSFRDTlBKdmtDZUN6UFhONEVxNjVSN1ZzaUU3RjROem5PWjVm?=
+ =?utf-8?B?UU83VXk5MFZLRFIvOHRQVG9haXRMckJ1cWlZczlXNkZPalpCU0RXTEdQb1Jk?=
+ =?utf-8?B?Yzh4SUd4TjVGQksvKzM3cW5tNFVoQTlGOVkvR3lEc3Y3TFdsVHhBTHNXSzN4?=
+ =?utf-8?B?RFYzVTRLUlFtaXl1UnByVHI0Ujc2SXpvQ29ucUFPODJUWDBsZFpsbnNRcm1X?=
+ =?utf-8?B?aGgrK29iQjlwekc5VzMwd2hkeU1KNHBRZVVuMWRCVUhoSHp6SWs2aGFGY0Z5?=
+ =?utf-8?B?WmRrZTU0UVR3ZFVFWG9rRnVuc2JEZUd2Z1V1M25OczU1eGttVkI3VnhHYkJx?=
+ =?utf-8?B?c1I4bk85UHJRVUFINDRqRk5PdHIrdG96czh4em1ZVHptKzV4eFhxdkVrQ3pv?=
+ =?utf-8?B?L3d4cVZZSFJ0WVJSVTdTVXVEYWNoMkk4cmV5TmIzSG1VRXNvTjR1U1pVMjZt?=
+ =?utf-8?B?QTNQZGEzd0lxTTRqZVUxOEI4ZHJ5S05OangwQmpKbmNDbFV1bHRmQUxpOXRh?=
+ =?utf-8?B?YVl3dm1NR1owNFh0b1ZwVUt2dldCVmVVVG5xY0FTakxHc3VreTFPRUo2RmpN?=
+ =?utf-8?B?aFQwRFpoS2sxMVZvNDNWaFVvSGlUVlZZYkUvZ2U5NGUwRHUyVVlhbThkV0p6?=
+ =?utf-8?B?Z0hwRStsMWxZbE9Ra0ppWHVPYmxGSmVZVWNDdWRxMUplT2d4THhZOGZ4cjVS?=
+ =?utf-8?B?SnRSSUQ3Z0JTNFpjeHA0RDg0RUptREVlOHdCUWNiaitSSjc5dWhSK1ZvekZ3?=
+ =?utf-8?B?RU12NkdZSWhQNWQ1SmsvVHRrZVhaeERuaGpXMG1PNVNjNkVzTm1SSFFucmlZ?=
+ =?utf-8?B?RWw4a3poYzBTMnBFc21jTWZ3dTJqV0RvcEo3MmkzR21oQ3Yya0l0RnJWbkxZ?=
+ =?utf-8?B?NHRIVHRuM25CeEpoRWsrU2wrUnptYkgwYTBXUkRKV3ltaXBTS2lldGdMWmwy?=
+ =?utf-8?B?VjdWMHYyaTFack9oWDZEL0VVN2xzKzBPUjZrTFJCMHkvVEtFVlVBSWVvZmh2?=
+ =?utf-8?B?RDE4c1B6M09NUEhPZFkzajBDVk9IcmgyT1pOVllZc2xFckpKb2JYVkQ0eHRl?=
+ =?utf-8?B?UTBDeFJKSUszYm1GV2dsRjA3VytkdHhmVW9sSEhuRFJ5MHVxcmZuN2M4bTBS?=
+ =?utf-8?B?ekExSHg5MzUyZEdva0VCVytaS1Q5UXozOGlyc21lTE83a2N1SDZTdCtBYTRl?=
+ =?utf-8?Q?ph2g=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20230717062343.3743-1-cloudliang@tencent.com> <20230717062343.3743-4-cloudliang@tencent.com>
- <20230719000245.GC25699@ls.amr.corp.intel.com>
-In-Reply-To: <20230719000245.GC25699@ls.amr.corp.intel.com>
-From:   Jinrong Liang <ljr.kernel@gmail.com>
-Date:   Wed, 19 Jul 2023 11:26:58 +0800
-Message-ID: <CAFg_LQXYvFdpfRfGByTOipwc7YAtyU3Lk6gmuhDuMsRwATNSgQ@mail.gmail.com>
-Subject: Re: [PATCH v4 3/6] KVM: selftests: Introduce __kvm_pmu_event_filter
- to improved event filter settings
-To:     Isaku Yamahata <isaku.yamahata@gmail.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Aaron Lewis <aaronlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        linux-kselftest@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6db723f3-9539-4a55-1f22-08db880836d1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jul 2023 03:28:26.3589
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +Q3Aj1GYyD1KKaaMwWMowN7D3gEDBWmsJz89FsBbVpjRsXqt/IOzofR5Ho++fDr4gT0sgAik97DHgjIzqH21Og==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR04MB9934
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,355 +137,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Isaku Yamahata <isaku.yamahata@gmail.com> =E4=BA=8E2023=E5=B9=B47=E6=9C=881=
-9=E6=97=A5=E5=91=A8=E4=B8=89 08:02=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Mon, Jul 17, 2023 at 02:23:40PM +0800,
-> Jinrong Liang <ljr.kernel@gmail.com> wrote:
->
-> > From: Jinrong Liang <cloudliang@tencent.com>
-> >
-> > Add custom "__kvm_pmu_event_filter" structure to improve pmu event
-> > filter settings. Simplifies event filter setup by organizing event
-> > filter parameters in a cleaner, more organized way.
-> >
-> > Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
-> > ---
-> >  .../kvm/x86_64/pmu_event_filter_test.c        | 179 +++++++++---------
-> >  1 file changed, 87 insertions(+), 92 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c=
- b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-> > index 5ac05e64bec9..ffcbbf25b29b 100644
-> > --- a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-> > +++ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-> > @@ -28,6 +28,10 @@
-> >
-> >  #define NUM_BRANCHES 42
-> >
-> > +/* Matches KVM_PMU_EVENT_FILTER_MAX_EVENTS in pmu.c */
-> > +#define MAX_FILTER_EVENTS            300
-> > +#define MAX_TEST_EVENTS              10
-> > +
-> >  /*
-> >   * This is how the event selector and unit mask are stored in an AMD
-> >   * core performance event-select register. Intel's format is similar,
-> > @@ -69,21 +73,33 @@
-> >
-> >  #define INST_RETIRED EVENT(0xc0, 0)
-> >
-> > +struct __kvm_pmu_event_filter {
-> > +     __u32 action;
-> > +     __u32 nevents;
-> > +     __u32 fixed_counter_bitmap;
-> > +     __u32 flags;
-> > +     __u32 pad[4];
-> > +     __u64 events[MAX_FILTER_EVENTS];
-> > +};
-> > +
-> >  /*
-> >   * This event list comprises Intel's eight architectural events plus
-> >   * AMD's "retired branch instructions" for Zen[123] (and possibly
-> >   * other AMD CPUs).
-> >   */
-> > -static const uint64_t event_list[] =3D {
-> > -     EVENT(0x3c, 0),
-> > -     INST_RETIRED,
-> > -     EVENT(0x3c, 1),
-> > -     EVENT(0x2e, 0x4f),
-> > -     EVENT(0x2e, 0x41),
-> > -     EVENT(0xc4, 0),
-> > -     EVENT(0xc5, 0),
-> > -     EVENT(0xa4, 1),
-> > -     AMD_ZEN_BR_RETIRED,
-> > +static const struct __kvm_pmu_event_filter base_event_filter =3D {
-> > +     .nevents =3D ARRAY_SIZE(base_event_filter.events),
-> > +     .events =3D {
-> > +             EVENT(0x3c, 0),
-> > +             INST_RETIRED,
-> > +             EVENT(0x3c, 1),
-> > +             EVENT(0x2e, 0x4f),
-> > +             EVENT(0x2e, 0x41),
-> > +             EVENT(0xc4, 0),
-> > +             EVENT(0xc5, 0),
-> > +             EVENT(0xa4, 1),
-> > +             AMD_ZEN_BR_RETIRED,
-> > +     },
-> >  };
-> >
-> >  struct {
-> > @@ -225,47 +241,11 @@ static bool sanity_check_pmu(struct kvm_vcpu *vcp=
-u)
-> >       return !r;
-> >  }
-> >
-> > -static struct kvm_pmu_event_filter *alloc_pmu_event_filter(uint32_t ne=
-vents)
-> > -{
-> > -     struct kvm_pmu_event_filter *f;
-> > -     int size =3D sizeof(*f) + nevents * sizeof(f->events[0]);
-> > -
-> > -     f =3D malloc(size);
-> > -     TEST_ASSERT(f, "Out of memory");
-> > -     memset(f, 0, size);
-> > -     f->nevents =3D nevents;
-> > -     return f;
-> > -}
-> > -
-> > -
-> > -static struct kvm_pmu_event_filter *
-> > -create_pmu_event_filter(const uint64_t event_list[], int nevents,
-> > -                     uint32_t action, uint32_t flags)
-> > -{
-> > -     struct kvm_pmu_event_filter *f;
-> > -     int i;
-> > -
-> > -     f =3D alloc_pmu_event_filter(nevents);
-> > -     f->action =3D action;
-> > -     f->flags =3D flags;
-> > -     for (i =3D 0; i < nevents; i++)
-> > -             f->events[i] =3D event_list[i];
-> > -
-> > -     return f;
-> > -}
-> > -
-> > -static struct kvm_pmu_event_filter *event_filter(uint32_t action)
-> > -{
-> > -     return create_pmu_event_filter(event_list,
-> > -                                    ARRAY_SIZE(event_list),
-> > -                                    action, 0);
-> > -}
-> > -
-> >  /*
-> >   * Remove the first occurrence of 'event' (if any) from the filter's
-> >   * event list.
-> >   */
-> > -static void remove_event(struct kvm_pmu_event_filter *f, uint64_t even=
-t)
-> > +static void remove_event(struct __kvm_pmu_event_filter *f, uint64_t ev=
-ent)
-> >  {
-> >       bool found =3D false;
-> >       int i;
-> > @@ -313,66 +293,70 @@ static void test_without_filter(struct kvm_vcpu *=
-vcpu)
-> >  }
-> >
-> >  static void test_with_filter(struct kvm_vcpu *vcpu,
-> > -                          struct kvm_pmu_event_filter *f)
-> > +                          struct __kvm_pmu_event_filter *__f)
-> >  {
-> > +     struct kvm_pmu_event_filter *f =3D (void *)__f;
-> > +
-> >       vm_ioctl(vcpu->vm, KVM_SET_PMU_EVENT_FILTER, f);
-> >       run_vcpu_and_sync_pmc_results(vcpu);
-> >  }
-> >
-> >  static void test_amd_deny_list(struct kvm_vcpu *vcpu)
-> >  {
-> > -     uint64_t event =3D EVENT(0x1C2, 0);
-> > -     struct kvm_pmu_event_filter *f;
-> > +     struct __kvm_pmu_event_filter f =3D base_event_filter;
-> >
-> > -     f =3D create_pmu_event_filter(&event, 1, KVM_PMU_EVENT_DENY, 0);
-> > -     test_with_filter(vcpu, f);
-> > -     free(f);
-> > +     f.action =3D KVM_PMU_EVENT_DENY;
-> > +     f.nevents =3D 1;
-> > +     f.events[0] =3D EVENT(0x1C2, 0);
-> > +     test_with_filter(vcpu, &f);
->
-> This overwrite all members.  We can use designated initializer.
->         struct __kvm_pmu_event_filter f =3D {
->                 .action =3D KVM_PMU_EVENT_DENY,
->                 .nevents =3D 1,
->                 .events =3D {
->                         EVENT(0x1C2, 0),
->                 },
->         };
-
-LGTM.
-
->
-> Except this, looks good to me.
-> Reviewed-by: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> Thanks,
->
-> >
-> >       ASSERT_PMC_COUNTING_INSTRUCTIONS();
-> >  }
-> >
-> >  static void test_member_deny_list(struct kvm_vcpu *vcpu)
-> >  {
-> > -     struct kvm_pmu_event_filter *f =3D event_filter(KVM_PMU_EVENT_DEN=
-Y);
-> > +     struct __kvm_pmu_event_filter f =3D base_event_filter;
-> >
-> > -     test_with_filter(vcpu, f);
-> > -     free(f);
-> > +     f.action =3D KVM_PMU_EVENT_DENY;
-> > +     test_with_filter(vcpu, &f);
-> >
-> >       ASSERT_PMC_NOT_COUNTING_INSTRUCTIONS();
-> >  }
-> >
-> >  static void test_member_allow_list(struct kvm_vcpu *vcpu)
-> >  {
-> > -     struct kvm_pmu_event_filter *f =3D event_filter(KVM_PMU_EVENT_ALL=
-OW);
-> > +     struct __kvm_pmu_event_filter f =3D base_event_filter;
-> >
-> > -     test_with_filter(vcpu, f);
-> > -     free(f);
-> > +     f.action =3D KVM_PMU_EVENT_ALLOW;
-> > +     test_with_filter(vcpu, &f);
-> >
-> >       ASSERT_PMC_COUNTING_INSTRUCTIONS();
-> >  }
-> >
-> >  static void test_not_member_deny_list(struct kvm_vcpu *vcpu)
-> >  {
-> > -     struct kvm_pmu_event_filter *f =3D event_filter(KVM_PMU_EVENT_DEN=
-Y);
-> > +     struct __kvm_pmu_event_filter f =3D base_event_filter;
-> > +
-> > +     f.action =3D KVM_PMU_EVENT_DENY;
-> >
-> > -     remove_event(f, INST_RETIRED);
-> > -     remove_event(f, INTEL_BR_RETIRED);
-> > -     remove_event(f, AMD_ZEN_BR_RETIRED);
-> > -     test_with_filter(vcpu, f);
-> > -     free(f);
-> > +     remove_event(&f, INST_RETIRED);
-> > +     remove_event(&f, INTEL_BR_RETIRED);
-> > +     remove_event(&f, AMD_ZEN_BR_RETIRED);
-> > +     test_with_filter(vcpu, &f);
-> >
-> >       ASSERT_PMC_COUNTING_INSTRUCTIONS();
-> >  }
-> >
-> >  static void test_not_member_allow_list(struct kvm_vcpu *vcpu)
-> >  {
-> > -     struct kvm_pmu_event_filter *f =3D event_filter(KVM_PMU_EVENT_ALL=
-OW);
-> > +     struct __kvm_pmu_event_filter f =3D base_event_filter;
-> >
-> > -     remove_event(f, INST_RETIRED);
-> > -     remove_event(f, INTEL_BR_RETIRED);
-> > -     remove_event(f, AMD_ZEN_BR_RETIRED);
-> > -     test_with_filter(vcpu, f);
-> > -     free(f);
-> > +     f.action =3D KVM_PMU_EVENT_ALLOW;
-> > +
-> > +     remove_event(&f, INST_RETIRED);
-> > +     remove_event(&f, INTEL_BR_RETIRED);
-> > +     remove_event(&f, AMD_ZEN_BR_RETIRED);
-> > +     test_with_filter(vcpu, &f);
-> >
-> >       ASSERT_PMC_NOT_COUNTING_INSTRUCTIONS();
-> >  }
-> > @@ -567,19 +551,16 @@ static void run_masked_events_test(struct kvm_vcp=
-u *vcpu,
-> >                                  const uint64_t masked_events[],
-> >                                  const int nmasked_events)
-> >  {
-> > -     struct kvm_pmu_event_filter *f;
-> > +     struct __kvm_pmu_event_filter f =3D {
-> > +             .nevents =3D nmasked_events,
-> > +             .action =3D KVM_PMU_EVENT_ALLOW,
-> > +             .flags =3D KVM_PMU_EVENT_FLAG_MASKED_EVENTS,
-> > +     };
-> >
-> > -     f =3D create_pmu_event_filter(masked_events, nmasked_events,
-> > -                                 KVM_PMU_EVENT_ALLOW,
-> > -                                 KVM_PMU_EVENT_FLAG_MASKED_EVENTS);
-> > -     test_with_filter(vcpu, f);
-> > -     free(f);
-> > +     memcpy(f.events, masked_events, sizeof(uint64_t) * nmasked_events=
-);
-> > +     test_with_filter(vcpu, &f);
-> >  }
-> >
-> > -/* Matches KVM_PMU_EVENT_FILTER_MAX_EVENTS in pmu.c */
-> > -#define MAX_FILTER_EVENTS    300
-> > -#define MAX_TEST_EVENTS              10
-> > -
-> >  #define ALLOW_LOADS          BIT(0)
-> >  #define ALLOW_STORES         BIT(1)
-> >  #define ALLOW_LOADS_STORES   BIT(2)
-> > @@ -751,17 +732,27 @@ static void test_masked_events(struct kvm_vcpu *v=
-cpu)
-> >       run_masked_events_tests(vcpu, events, nevents);
-> >  }
-> >
-> > -static int run_filter_test(struct kvm_vcpu *vcpu, const uint64_t *even=
-ts,
-> > -                        int nevents, uint32_t flags)
-> > +static int do_vcpu_set_pmu_event_filter(struct kvm_vcpu *vcpu,
-> > +                                     struct __kvm_pmu_event_filter *__=
-f)
-> >  {
-> > -     struct kvm_pmu_event_filter *f;
-> > -     int r;
-> > +     struct kvm_pmu_event_filter *f =3D (void *)__f;
-> >
-> > -     f =3D create_pmu_event_filter(events, nevents, KVM_PMU_EVENT_ALLO=
-W, flags);
-> > -     r =3D __vm_ioctl(vcpu->vm, KVM_SET_PMU_EVENT_FILTER, f);
-> > -     free(f);
-> > +     return __vm_ioctl(vcpu->vm, KVM_SET_PMU_EVENT_FILTER, f);
-> > +}
-> > +
-> > +static int set_pmu_single_event_filter(struct kvm_vcpu *vcpu, uint64_t=
- event,
-> > +                                    uint32_t flags, uint32_t action)
-> > +{
-> > +     struct __kvm_pmu_event_filter f =3D {
-> > +             .nevents =3D 1,
-> > +             .flags =3D flags,
-> > +             .action =3D action,
-> > +             .events =3D {
-> > +                     event,
-> > +             },
-> > +     };
-> >
-> > -     return r;
-> > +     return do_vcpu_set_pmu_event_filter(vcpu, &f);
-> >  }
-> >
-> >  static void test_filter_ioctl(struct kvm_vcpu *vcpu)
-> > @@ -773,14 +764,18 @@ static void test_filter_ioctl(struct kvm_vcpu *vc=
-pu)
-> >        * Unfortunately having invalid bits set in event data is expecte=
-d to
-> >        * pass when flags =3D=3D 0 (bits other than eventsel+umask).
-> >        */
-> > -     r =3D run_filter_test(vcpu, &e, 1, 0);
-> > +     r =3D set_pmu_single_event_filter(vcpu, e, 0, KVM_PMU_EVENT_ALLOW=
-);
-> >       TEST_ASSERT(r =3D=3D 0, "Valid PMU Event Filter is failing");
-> >
-> > -     r =3D run_filter_test(vcpu, &e, 1, KVM_PMU_EVENT_FLAG_MASKED_EVEN=
-TS);
-> > +     r =3D set_pmu_single_event_filter(vcpu, e,
-> > +                                     KVM_PMU_EVENT_FLAG_MASKED_EVENTS,
-> > +                                     KVM_PMU_EVENT_ALLOW);
-> >       TEST_ASSERT(r !=3D 0, "Invalid PMU Event Filter is expected to fa=
-il");
-> >
-> >       e =3D KVM_PMU_ENCODE_MASKED_ENTRY(0xff, 0xff, 0xff, 0xf);
-> > -     r =3D run_filter_test(vcpu, &e, 1, KVM_PMU_EVENT_FLAG_MASKED_EVEN=
-TS);
-> > +     r =3D set_pmu_single_event_filter(vcpu, e,
-> > +                                     KVM_PMU_EVENT_FLAG_MASKED_EVENTS,
-> > +                                     KVM_PMU_EVENT_ALLOW);
-> >       TEST_ASSERT(r =3D=3D 0, "Valid PMU Event Filter is failing");
-> >  }
-> >
-> > --
-> > 2.39.3
-> >
->
-> --
-> Isaku Yamahata <isaku.yamahata@gmail.com>
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBbGV4YW5kZXIgTG9iYWtpbiA8
+YWxla3NhbmRlci5sb2Jha2luQGludGVsLmNvbT4NCj4gU2VudDogMjAyM+W5tDfmnIgxOOaXpSAy
+MzoxNQ0KPiBUbzogV2VpIEZhbmcgPHdlaS5mYW5nQG54cC5jb20+DQo+IENjOiBkYXZlbUBkYXZl
+bWxvZnQubmV0OyBlZHVtYXpldEBnb29nbGUuY29tOyBrdWJhQGtlcm5lbC5vcmc7DQo+IHBhYmVu
+aUByZWRoYXQuY29tOyBhc3RAa2VybmVsLm9yZzsgZGFuaWVsQGlvZ2VhcmJveC5uZXQ7DQo+IGhh
+d2tAa2VybmVsLm9yZzsgam9obi5mYXN0YWJlbmRAZ21haWwuY29tOyBDbGFyayBXYW5nDQo+IDx4
+aWFvbmluZy53YW5nQG54cC5jb20+OyBTaGVud2VpIFdhbmcgPHNoZW53ZWkud2FuZ0BueHAuY29t
+PjsNCj4gbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgZGwtbGludXgtaW14IDxsaW51eC1pbXhAbnhw
+LmNvbT47DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGJwZkB2Z2VyLmtlcm5lbC5v
+cmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCBuZXQtbmV4dF0gbmV0OiBmZWM6IGFkZCBYRFBfVFgg
+ZmVhdHVyZSBzdXBwb3J0DQo+IA0KPiBGcm9tOiBXZWkgRmFuZyA8d2VpLmZhbmdAbnhwLmNvbT4N
+Cj4gRGF0ZTogTW9uLCAxNyBKdWwgMjAyMyAxODozNzowOSArMDgwMA0KPiANCj4gPiBUaGUgWERQ
+X1RYIGZlYXR1cmUgaXMgbm90IHN1cHBvcnRlZCBiZWZvcmUsIGFuZCBhbGwgdGhlIGZyYW1lcyB3
+aGljaA0KPiA+IGFyZSBkZWVtZWQgdG8gZG8gWERQX1RYIGFjdGlvbiBhY3R1YWxseSBkbyB0aGUg
+WERQX0RST1AgYWN0aW9uLiBTbw0KPiA+IHRoaXMgcGF0Y2ggYWRkcyB0aGUgWERQX1RYIHN1cHBv
+cnQgdG8gRkVDIGRyaXZlci4NCj4gDQo+IFsuLi5dDQo+IA0KPiA+IEBAIC0zODk3LDYgKzM5MjMs
+MjkgQEAgc3RhdGljIGludCBmZWNfZW5ldF90eHFfeG1pdF9mcmFtZShzdHJ1Y3QNCj4gZmVjX2Vu
+ZXRfcHJpdmF0ZSAqZmVwLA0KPiA+ICAJcmV0dXJuIDA7DQo+ID4gIH0NCj4gPg0KPiA+ICtzdGF0
+aWMgaW50IGZlY19lbmV0X3hkcF90eF94bWl0KHN0cnVjdCBuZXRfZGV2aWNlICpuZGV2LA0KPiA+
+ICsJCQkJc3RydWN0IHhkcF9idWZmICp4ZHApDQo+ID4gK3sNCj4gPiArCXN0cnVjdCB4ZHBfZnJh
+bWUgKnhkcGYgPSB4ZHBfY29udmVydF9idWZmX3RvX2ZyYW1lKHhkcCk7DQo+IA0KPiBIYXZlIHlv
+dSB0cmllZCBhdm9pZCBjb252ZXJ0aW5nIGJ1ZmYgdG8gZnJhbWUgaW4gY2FzZSBvZiBYRFBfVFg/
+IEl0IHdvdWxkIHNhdmUNCj4geW91IGEgYnVuY2ggb2YgQ1BVIGN5Y2xlcy4NCj4gDQpTb3JyeSwg
+SSBoYXZlbid0LiBJIHJlZmVycmVkIHRvIHNldmVyYWwgZXRoZXJuZXQgZHJpdmVycyBhYm91dCB0
+aGUgaW1wbGVtZW50YXRpb24gb2YNClhEUF9UWC4gTW9zdCBkcml2ZXJzIGFkb3B0IHRoZSBtZXRo
+b2Qgb2YgY29udmVydGluZyB4ZHBfYnVmZiB0byB4ZHBfZnJhbWUsIGFuZA0KaW4gdGhpcyBtZXRo
+b2QsIEkgY2FuIHJldXNlIHRoZSBleGlzdGluZyBpbnRlcmZhY2UgZmVjX2VuZXRfdHhxX3htaXRf
+ZnJhbWUoKSB0bw0KdHJhbnNtaXQgdGhlIGZyYW1lcyBhbmQgdGhlIGltcGxlbWVudGF0aW9uIGlz
+IHJlbGF0aXZlbHkgc2ltcGxlLiBPdGhlcndpc2UsIHRoZXJlDQp3aWxsIGJlIG1vcmUgY2hhbmdl
+cyBhbmQgbW9yZSBlZmZvcnQgaXMgbmVlZGVkIHRvIGltcGxlbWVudCB0aGlzIGZlYXR1cmUuDQpU
+aGFua3MhDQoNCj4gPiArCXN0cnVjdCBmZWNfZW5ldF9wcml2YXRlICpmZXAgPSBuZXRkZXZfcHJp
+dihuZGV2KTsNCj4gPiArCXN0cnVjdCBmZWNfZW5ldF9wcml2X3R4X3EgKnR4cTsNCj4gPiArCWlu
+dCBjcHUgPSBzbXBfcHJvY2Vzc29yX2lkKCk7DQo+ID4gKwlzdHJ1Y3QgbmV0ZGV2X3F1ZXVlICpu
+cTsNCj4gPiArCWludCBxdWV1ZSwgcmV0Ow0KPiA+ICsNCj4gPiArCXF1ZXVlID0gZmVjX2VuZXRf
+eGRwX2dldF90eF9xdWV1ZShmZXAsIGNwdSk7DQo+ID4gKwl0eHEgPSBmZXAtPnR4X3F1ZXVlW3F1
+ZXVlXTsNCj4gPiArCW5xID0gbmV0ZGV2X2dldF90eF9xdWV1ZShmZXAtPm5ldGRldiwgcXVldWUp
+Ow0KPiA+ICsNCj4gPiArCV9fbmV0aWZfdHhfbG9jayhucSwgY3B1KTsNCj4gPiArDQo+ID4gKwly
+ZXQgPSBmZWNfZW5ldF90eHFfeG1pdF9mcmFtZShmZXAsIHR4cSwgeGRwZiwgZmFsc2UpOw0KPiA+
+ICsNCj4gPiArCV9fbmV0aWZfdHhfdW5sb2NrKG5xKTsNCj4gPiArDQo+ID4gKwlyZXR1cm4gcmV0
+Ow0KPiA+ICt9DQo+ID4gKw0KPiA+ICBzdGF0aWMgaW50IGZlY19lbmV0X3hkcF94bWl0KHN0cnVj
+dCBuZXRfZGV2aWNlICpkZXYsDQo+ID4gIAkJCSAgICAgaW50IG51bV9mcmFtZXMsDQo+ID4gIAkJ
+CSAgICAgc3RydWN0IHhkcF9mcmFtZSAqKmZyYW1lcywNCj4gPiBAQCAtMzkxNyw3ICszOTY2LDcg
+QEAgc3RhdGljIGludCBmZWNfZW5ldF94ZHBfeG1pdChzdHJ1Y3QgbmV0X2RldmljZQ0KPiAqZGV2
+LA0KPiA+ICAJX19uZXRpZl90eF9sb2NrKG5xLCBjcHUpOw0KPiA+DQo+ID4gIAlmb3IgKGkgPSAw
+OyBpIDwgbnVtX2ZyYW1lczsgaSsrKSB7DQo+ID4gLQkJaWYgKGZlY19lbmV0X3R4cV94bWl0X2Zy
+YW1lKGZlcCwgdHhxLCBmcmFtZXNbaV0pIDwgMCkNCj4gPiArCQlpZiAoZmVjX2VuZXRfdHhxX3ht
+aXRfZnJhbWUoZmVwLCB0eHEsIGZyYW1lc1tpXSwgdHJ1ZSkgPCAwKQ0KPiA+ICAJCQlicmVhazsN
+Cj4gPiAgCQlzZW50X2ZyYW1lcysrOw0KPiA+ICAJfQ0KPiANCg0K
