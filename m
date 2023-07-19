@@ -2,162 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F85475A080
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 23:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D5075A084
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 23:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbjGSVWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 17:22:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59806 "EHLO
+        id S230406AbjGSVW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 17:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjGSVWH (ORCPT
+        with ESMTP id S230383AbjGSVW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 17:22:07 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7FE1FC1;
-        Wed, 19 Jul 2023 14:22:03 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6b9ede6195cso78087a34.3;
-        Wed, 19 Jul 2023 14:22:03 -0700 (PDT)
+        Wed, 19 Jul 2023 17:22:27 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1B71FD2;
+        Wed, 19 Jul 2023 14:22:25 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b702319893so984701fa.3;
+        Wed, 19 Jul 2023 14:22:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689801722; x=1692393722;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=OFl/Yl2t3jZxg8bk98EE4w1kgxMDfOoVWrddWbZKwzc=;
-        b=LvdU0252mMyEGXPltgxFd7ClTEyB1xQHReV/hB/Yx+VQe3ioTeRI5HjMazr8ycJwdz
-         39sLqNpiMiZ5Xt9QlgqxwzzkVtVkwmogyUQ7crc9b3v9sf36o1PCJUZpwHFUrrlHIWNB
-         2GuQDURNHitWcq/fnxqdiwcS9Y2FDWddIukt1xqW7httaaAJeNSfv9fsR9C+Z6/CN/wj
-         7z+TN0bGVsCfQ64WdLOoPywc/gIW9OQqKtrKRE5rLCicelvaIILAJfmf36wmD0VbCSLl
-         Yo0HxE2bFseT66eAylZ5fLh6ICKtxM/TsivsUHfiJ9f7fBqP8S6mHLIFO3liNTUOolBy
-         eyQw==
+        d=gmail.com; s=20221208; t=1689801743; x=1692393743;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pJlm+cK7svZ1+mHOBH75gskGJmblFGpUfmfoGmUCm8o=;
+        b=VS+Uoeq0DWSXf7XqdrtJWwPfD3woLqRezpI2fCqDZOSP+XFOa+C8h2OX8JLqHv+VMn
+         T9GZo+0vo/HihuA2LjQBQd+KU1iF1aDGHbie6gManZZJxAPX9Frxv/bG/2Zhc7vpJ8Eh
+         pkXsbFYpAEfHPdsLsNsxJvBx2PxXId4bRKEzYtIBkn0N9d5fPKUk0YIhf6/nZL3efH0h
+         SLxGuhlvmARirG4XJFcXF5Mj6rWub8StEuUuUTa/N5oOzctFDDz6rCX3CK93iGZPCQj8
+         PFxYLYPdADcJllOBFI5p0P+Qrzo/Ma5wDNJYk+Y3E6+6l9HB6szxBYvisvYWGJec8f1X
+         3ZYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689801722; x=1692393722;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OFl/Yl2t3jZxg8bk98EE4w1kgxMDfOoVWrddWbZKwzc=;
-        b=aI24zhuUU8pByOj5nHABIQhkF6CB46Jsb+QbKmekFmixhYkn58NyR+T8OMXG+mulab
-         AP3cbCQD7Q/BtrMw8YZ+Js8sU7x2jKrUp/Cr6z1KBuYrCdG1gaS+lAdDw0AZ6gcwPJr4
-         3C6qWcr4J1mLFntCOcHFYsTgiHDNYGiYFIxHE8uRtBQIdybnAI7ZGD7bABXbtrJYCOKS
-         mErW2bzLqiTfJQ9hIBPUmpeWRCerQ58di2Az2C8YdurEv73wFARbyNIBZV8q0ov90IoL
-         MqF1ZqwteY3orWYNBb872X9JPBbE0RlrufxIBngsBYNI89oi+NrhaAKZm4QePzq4/5CS
-         ZJWw==
-X-Gm-Message-State: ABy/qLY1xHtiLy1Mk7U0tRdQc/iIfNqqrevkVwMa7fAVyQ3TUvWKUReG
-        EJyWScQMXM/YA591y477Yvs=
-X-Google-Smtp-Source: APBJJlFuxJxUINU7EE8ZuowGQbMZQE2qK3cBwhrFaPr8H40D/bilat0UFoVwMkL80wxa2jpIeL3L+A==
-X-Received: by 2002:a05:6358:4198:b0:132:d32d:d929 with SMTP id w24-20020a056358419800b00132d32dd929mr21265191rwc.20.1689801722132;
-        Wed, 19 Jul 2023 14:22:02 -0700 (PDT)
-Received: from yoga ([2400:1f00:13:be68:d721:f1d5:796e:8708])
-        by smtp.gmail.com with ESMTPSA id a11-20020a637f0b000000b005633941a547sm3695601pgd.27.2023.07.19.14.21.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 14:22:01 -0700 (PDT)
-From:   Anup Sharma <anupnewsmail@gmail.com>
-X-Google-Original-From: Anup Sharma <AnupSharma>
-Date:   Thu, 20 Jul 2023 02:51:53 +0530
-To:     Ian Rogers <irogers@google.com>
-Cc:     Anup Sharma <anupnewsmail@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/6] Add support for Firefox's gecko profile format
-Message-ID: <ZLhT8e7VIUnnhHVV@yoga>
-References: <cover.1689718662.git.anupnewsmail@gmail.com>
- <ZLfDPPYK1PXc9xOe@yoga>
- <CAP-5=fUzUoLEpjcrZTzX93TPFbRMUhZGF+BVLB9OiusmKJFYvA@mail.gmail.com>
+        d=1e100.net; s=20221208; t=1689801743; x=1692393743;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pJlm+cK7svZ1+mHOBH75gskGJmblFGpUfmfoGmUCm8o=;
+        b=Mg6drLWLBWk3eyowwmQyVCMbD8Yr/mhHDEN7QQIsufqmJ2MsuoECRVVuu06AQ/9Wr2
+         chrKAe34ELh3lkyB54zHNQHW0XoGevjzeb5uMjhCLkWT7wusvp4E0n2zocj5qGdlkgUW
+         D96ePLsFwKRlYo1DZBnC+7K+nB1LCNPviZaFwyW5lqa7zuxk8xnOhUYiCwFBo8pfdtO3
+         JwPU+ktNRUUTuHSHQyhtDoPNcBrFe7Vehp7J1iLhuyRP206YxpZW5C57PawTaSUKSx+7
+         jVYroX9agY5ThVJCWdcb97nKyB1qQ0PYKeRJXObJCvl7GUV+I0h1Z2DYS+ubbfMB1BFt
+         p9Bw==
+X-Gm-Message-State: ABy/qLZKsP8MiCahNo8kX0HVNqPz6Oy4CgQE3Gap6W2R+dhWkOgFwspW
+        brZMTWZfhLVAwdMnpALB4DzIIO8bjxKsz4xPuas=
+X-Google-Smtp-Source: APBJJlEte7wDHVx/7CCyhGbmcGxCBZKgA8C7oEisNnlOb1KnVNDN2HzYFr1LRSskWr1GmqvIAsATk8NKUz6F8o8MtdI=
+X-Received: by 2002:a2e:9643:0:b0:2b6:ec2a:a67e with SMTP id
+ z3-20020a2e9643000000b002b6ec2aa67emr742682ljh.53.1689801743017; Wed, 19 Jul
+ 2023 14:22:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fUzUoLEpjcrZTzX93TPFbRMUhZGF+BVLB9OiusmKJFYvA@mail.gmail.com>
+References: <20230719-nfsd-acl-v1-1-eb0faf3d2917@kernel.org>
+In-Reply-To: <20230719-nfsd-acl-v1-1-eb0faf3d2917@kernel.org>
+From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+Date:   Wed, 19 Jul 2023 23:22:11 +0200
+Message-ID: <CAHpGcMLJ6Auk_i4AsWe3R1rvSVr8BgqtZwyFzKCJjGKtWBWi6w@mail.gmail.com>
+Subject: Re: [PATCH] nfsd: inherit required unset default acls from effective set
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ondrej Valousek <ondrej.valousek@diasemi.com>,
+        Andreas Gruenbacher <agruen@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 08:22:24AM -0700, Ian Rogers wrote:
-> On Wed, Jul 19, 2023 at 4:04 AM Anup Sharma <anupnewsmail@gmail.com> wrote:
-> >
-> > On Wed, Jul 19, 2023 at 04:15:52AM +0530, Anup Sharma wrote:
-> > > This patch series adds support for Firefox's gecko profile format.
-> > > The format is documented here [1].
-> > >
-> > > I have incorporated several changes based on feedback from the
-> > > previous version of the patch.
-> > >
-> > > Changes in v3:
-> > a small typo here. It should be v4 instead of v3 (changes in v4).
-> > > - Implemented object-oriented programming (OOP) approach for Thread and Sample
-> > >   to improve code organization and maintainability.
-> > > - Enhanced user experience by introducing argparse for changing color settings
-> > >   of user and kernel symbols during execution.
-> > > - Ensured proper module encapsulation by adding imports wherever necessary.
-> > > - Improved code readability by adding descriptive comments and type annotations.
-> > >
-> > > These changes focus on adopting OOP principles, enhancing user interaction with argparse,
-> > > and making the code more readable with comments and type information.
-> > >
-> > > TODO:
-> > > - use cpu_mode to determine the category instead of finding it from symbol name.
-> > > - Write a test.
-> > > - add direct execution command for this script under script/python/bin directory.
-> > >
-> 
-> Thanks Anup, is there a minimal TODO so that some code can be merged?
+Hi Jeff,
 
-Yaah, only the first TODO is left, will discuss during office hours.
+this patch seems useful, thanks.
 
-> I didn't have any comments for this series so:
-> Acked-by: Ian Rogers <irogers@google.com>
+Am Mi., 19. Juli 2023 um 19:56 Uhr schrieb Jeff Layton <jlayton@kernel.org>:
+> A well-formed NFSv4 ACL will always contain OWNER@/GROUP@/EVERYONE@
+> ACEs, but there is no requirement for inheritable entries for those
+> entities. POSIX ACLs must always have owner/group/other entries, even for a
+> default ACL.
 
-Thanks for the review.
+NFSv4 ACLs actually don't *need* to have OWNER@/GROUP@/EVERYONE@
+entries; that's merely a result of translating POSIX ACLs (or file
+modes) to NFSv4 ACLs.
 
-> I think even the test can be follow up as the code isn't on the critical path.
+> nfsd builds the default ACL from inheritable ACEs, but the current code
+> just leaves any unspecified ACEs zeroed out. The result is that adding a
+> default user or group ACE to an inode can leave it with unwanted deny
+> entries.
+>
+> For instance, a newly created directory with no acl will look something
+> like this:
+>
+>         # NFSv4 translation by server
+>         A::OWNER@:rwaDxtTcCy
+>         A::GROUP@:rxtcy
+>         A::EVERYONE@:rxtcy
+>
+>         # POSIX ACL of underlying file
+>         user::rwx
+>         group::r-x
+>         other::r-x
+>
+> ...if I then add new v4 ACE:
+>
+>         nfs4_setfacl -a A:fd:1000:rwx /mnt/local/test
+>
+> ...I end up with a result like this today:
+>
+>         user::rwx
+>         user:1000:rwx
+>         group::r-x
+>         mask::rwx
+>         other::r-x
+>         default:user::---
+>         default:user:1000:rwx
+>         default:group::---
+>         default:mask::rwx
+>         default:other::---
+>
+>         A::OWNER@:rwaDxtTcCy
+>         A::1000:rwaDxtcy
+>         A::GROUP@:rxtcy
+>         A::EVERYONE@:rxtcy
+>         D:fdi:OWNER@:rwaDx
+>         A:fdi:OWNER@:tTcCy
+>         A:fdi:1000:rwaDxtcy
+>         A:fdi:GROUP@:tcy
+>         A:fdi:EVERYONE@:tcy
+>
+> ...which is not at all expected. Adding a single inheritable allow ACE
+> should not result in everyone else losing access.
+>
+> The setfacl command solves a silimar issue by copying owner/group/other
+> entries from the effective ACL when none of them are set:
+>
+>     "If a Default ACL entry is created, and the  Default  ACL  contains  no
+>      owner,  owning group,  or  others  entry,  a  copy of the ACL owner,
+>      owning group, or others entry is added to the Default ACL.
+>
+> Having nfsd do the same provides a more sane result (with no deny ACEs
+> in the resulting set):
+>
+>         user::rwx
+>         user:1000:rwx
+>         group::r-x
+>         mask::rwx
+>         other::r-x
+>         default:user::rwx
+>         default:user:1000:rwx
+>         default:group::r-x
+>         default:mask::rwx
+>         default:other::r-x
+>
+>         A::OWNER@:rwaDxtTcCy
+>         A::1000:rwaDxtcy
+>         A::GROUP@:rxtcy
+>         A::EVERYONE@:rxtcy
+>         A:fdi:OWNER@:rwaDxtTcCy
+>         A:fdi:1000:rwaDxtcy
+>         A:fdi:GROUP@:rxtcy
+>         A:fdi:EVERYONE@:rxtcy
 
-By the way, I've finished writing the test and will send it very soon.
+This resulting NFSv4 ACL is still rather dull; we end up with an
+inherit-only entry for each effective entry. Those could all be
+combined, resulting in:
 
-> Thanks,
-> Ian
-> 
-> > > Committer Testing:
-> > > - Tested with a perf.data file generated for single and multiple cpu
-> > >   cores enabled.
-> > > - Uploaded the stdout into profiler.firefox.com and verified the
-> > >   output.
-> > > - Verified the output with the output generated by the existing
-> > >   script as mentioned here [2].
-> > > Method:
-> > > - perf record -F 99 -a -g -- sleep 5
-> > > - perf script firefox-gecko-converter.py > output.json
-> > > - upload output.json to profiler.firefox.com
-> > >
-> > > [1] https://github.com/firefox-devtools/profiler/blob/main/docs-developer/gecko-profile-format.md
-> > > [2] https://perf.wiki.kernel.org/index.php/Tutorial#Firefox_Profiler
-> > >
-> > > Anup Sharma (6):
-> > >   perf scripts python: Add initial script file with usage information
-> > >   perf scripts python: Extact necessary information from process event
-> > >   perf scripts python: Add classes and conversion functions
-> > >   perf scripts python: Add trace end processing and PRODUCT and
-> > >     CATEGORIES information
-> > >   perf scripts python: implement internal get or create frame, stack and
-> > >     string function
-> > >   perf scripts python: Implement add sample function and thread
-> > >     processing
-> > >
-> > >  .../scripts/python/firefox-gecko-converter.py | 339 ++++++++++++++++++
-> > >  1 file changed, 339 insertions(+)
-> > >  create mode 100644 tools/perf/scripts/python/firefox-gecko-converter.py
-> > >
-> > > --
-> > > 2.34.1
-> > >
+         A:fd:OWNER@:rwaDxtTcCy
+         A:fd:1000:rwaDxtcy
+         A:fd:GROUP@:rxtcy
+         A:fd:EVERYONE@:rxtcy
+
+This will be the common case, so maybe matching entry pairs can either
+be recombined or not generated in the first place as a further
+improvement.
+
+> Link: https://bugzilla.redhat.com/show_bug.cgi?id=2136452
+> Reported-by: Ondrej Valousek <ondrej.valousek@diasemi.com>
+> Suggested-by: Andreas Gruenbacher <agruen@redhat.com>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/nfsd/nfs4acl.c | 32 +++++++++++++++++++++++++++++---
+>  1 file changed, 29 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/nfsd/nfs4acl.c b/fs/nfsd/nfs4acl.c
+> index 518203821790..64e45551d1b6 100644
+> --- a/fs/nfsd/nfs4acl.c
+> +++ b/fs/nfsd/nfs4acl.c
+> @@ -441,7 +441,8 @@ struct posix_ace_state_array {
+>   * calculated so far: */
+>
+>  struct posix_acl_state {
+> -       int empty;
+> +       bool empty;
+> +       unsigned char valid;
+
+Hmm, "valid" is a bitmask here but it only matters whether it is zero.
+Shouldn't a bool be good enough? Also, this variable indicates whether
+special "who" values are present (and which), so the name "valid"
+probably isn't the best choice.
+
+>         struct posix_ace_state owner;
+>         struct posix_ace_state group;
+>         struct posix_ace_state other;
+> @@ -457,7 +458,7 @@ init_state(struct posix_acl_state *state, int cnt)
+>         int alloc;
+>
+>         memset(state, 0, sizeof(struct posix_acl_state));
+> -       state->empty = 1;
+> +       state->empty = true;
+>         /*
+>          * In the worst case, each individual acl could be for a distinct
+>          * named user or group, but we don't know which, so we allocate
+> @@ -624,7 +625,7 @@ static void process_one_v4_ace(struct posix_acl_state *state,
+>         u32 mask = ace->access_mask;
+>         int i;
+>
+> -       state->empty = 0;
+> +       state->empty = false;
+>
+>         switch (ace2type(ace)) {
+>         case ACL_USER_OBJ:
+> @@ -633,6 +634,7 @@ static void process_one_v4_ace(struct posix_acl_state *state,
+>                 } else {
+>                         deny_bits(&state->owner, mask);
+>                 }
+> +               state->valid |= ACL_USER_OBJ;
+>                 break;
+>         case ACL_USER:
+>                 i = find_uid(state, ace->who_uid);
+> @@ -655,6 +657,7 @@ static void process_one_v4_ace(struct posix_acl_state *state,
+>                         deny_bits_array(state->users, mask);
+>                         deny_bits_array(state->groups, mask);
+>                 }
+> +               state->valid |= ACL_GROUP_OBJ;
+>                 break;
+>         case ACL_GROUP:
+>                 i = find_gid(state, ace->who_gid);
+> @@ -686,6 +689,7 @@ static void process_one_v4_ace(struct posix_acl_state *state,
+>                         deny_bits_array(state->users, mask);
+>                         deny_bits_array(state->groups, mask);
+>                 }
+> +               state->valid |= ACL_OTHER;
+>         }
+>  }
+>
+> @@ -726,6 +730,28 @@ static int nfs4_acl_nfsv4_to_posix(struct nfs4_acl *acl,
+>                 if (!(ace->flag & NFS4_ACE_INHERIT_ONLY_ACE))
+>                         process_one_v4_ace(&effective_acl_state, ace);
+>         }
+> +
+> +       /*
+> +        * At this point, the default ACL may have zeroed-out entries for owner,
+> +        * group and other. That usually results in a non-sensical resulting ACL
+> +        * that denies all access except to any ACE that was explicitly added.
+> +        *
+> +        * The setfacl command solves a similar problem with this logic:
+> +        *
+> +        * "If  a  Default  ACL  entry is created, and the Default ACL contains
+> +        *  no owner, owning group, or others entry,  a  copy of  the  ACL
+> +        *  owner, owning group, or others entry is added to the Default ACL."
+> +        *
+> +        * If none of the requisite ACEs were set, and some explicit user or group
+> +        * ACEs were, copy the requisite entries from the effective set.
+> +        */
+> +       if (!default_acl_state.valid &&
+> +           (default_acl_state.users->n || default_acl_state.groups->n)) {
+> +               default_acl_state.owner = effective_acl_state.owner;
+> +               default_acl_state.group = effective_acl_state.group;
+> +               default_acl_state.other = effective_acl_state.other;
+> +       }
+> +
+>         *pacl = posix_state_to_acl(&effective_acl_state, flags);
+>         if (IS_ERR(*pacl)) {
+>                 ret = PTR_ERR(*pacl);
+>
+> ---
+> base-commit: 9d985ab8ed33176c3c0380b7de589ea2ae51a48d
+> change-id: 20230719-nfsd-acl-5ab61537e4e6
+>
+> Best regards,
+> --
+> Jeff Layton <jlayton@kernel.org>
+
+Thanks,
+Andreas
