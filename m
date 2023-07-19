@@ -2,76 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FCA5758A9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 03:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 844E8758A6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 02:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbjGSBGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 21:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58262 "EHLO
+        id S229562AbjGSAyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 20:54:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGSBGt (ORCPT
+        with ESMTP id S229655AbjGSAyO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 21:06:49 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F688D3;
-        Tue, 18 Jul 2023 18:06:48 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-992acf67388so776680066b.1;
-        Tue, 18 Jul 2023 18:06:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689728806; x=1692320806;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d8u7qKAdqwD7fHpj4HQs/xiT+M2w6vdr9GqBR0wyKXo=;
-        b=OSoXJiwlFr+GaKd6/X7c/kR4088HJA3tI9hI6gvRxz7In4mcnM6TpPm6+HxfDQpkAp
-         OVDFEI023pMEnDuqZpG0oePYEV1rc4J7Heqnqno7pc+96vNksq6U/+u9jzMvQNRpYfP8
-         4Cjg2yP1bAPLkYoTWTpfL3xeW5m2AUyGzKyA4GtMUbUtoKJePzKFQKVPKppca6yRIlG5
-         SyLTwdsrfhprIS5fzbRcyDYB0gi61IUvtFrcttW1frd7OSArfIpoA8290VkuDrJv7wGk
-         TKAqeIKClSyMmBrtEWGaSV1ywZrddmrbqMnayy2KU3OMNLyeUhrvb6MKL+aFSD2VmQJy
-         q9FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689728806; x=1692320806;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d8u7qKAdqwD7fHpj4HQs/xiT+M2w6vdr9GqBR0wyKXo=;
-        b=IBLIMkFV/Mbk7wMEgoANTfMHDoVLzXwehiUOs4XujcyDpn14wBSvO1EhjWBAj4rTTP
-         NVxoQ6LWI3cNAaC3ojt+7qalpytoyxEPr35nt1QmBvOwMzvBrkmKn+dJtrU0DMLBtwQN
-         aZuIih+w1JCmwKf1v+fhY2z8jGDv3xubr0NVTB72xz3PkLj9EiyX8xrR4Gbb5YQ6JVpH
-         P0g1Wov+ObL584NK6riuBqObCWJ9DxImDkomn34bQi3n+kUf95FJpIYVmib9vGZptPma
-         7GAG5lI5QCOuhdUYCCIc358fS4gEKLQLXzZuBpjJXAUpnyjSQbzCu5SO0avDbsU/CP5U
-         9T8A==
-X-Gm-Message-State: ABy/qLYM8Tg8A1v2WyCIsysqms2rQSFOKRxQMQh3Ye0mmHV0XFO7iIun
-        cjcBH5wC3GZAx997NIr0Unyoalh6k3A2tFqnThEOLxDV
-X-Google-Smtp-Source: APBJJlF9yvihjqdUCdb+BdkyWtI2HH22+SvtWMhg5IM/3or3AmaOItneADAFBD0nguzDKfoVoJ1hXhvUAYAkicxR3cQ=
-X-Received: by 2002:a2e:8085:0:b0:2b6:e2c1:980f with SMTP id
- i5-20020a2e8085000000b002b6e2c1980fmr11323434ljg.36.1689727969511; Tue, 18
- Jul 2023 17:52:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230717114307.46124-1-aspsk@isovalent.com> <20230717114307.46124-2-aspsk@isovalent.com>
-In-Reply-To: <20230717114307.46124-2-aspsk@isovalent.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        Tue, 18 Jul 2023 20:54:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF171FE6
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 17:53:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6B8F4615BF
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 00:52:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7645BC433C7;
+        Wed, 19 Jul 2023 00:52:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689727959;
+        bh=HfJ9IwkZpA0DnsGaCCPzZGNvi3wNsmCaWhNsFEfRRfw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=L8xrRIhgHZIA2vZzZcyfRAaoy16jSE6VTUL4iQ5afl+1gx7H9K6qRoWf4UT++eyM3
+         t9FupmSc1LxUt6LDKAFxRR7UWwIFTUNoIZkWBFL+g5yHcX9PqnoVn3XnQrLia8fO0E
+         cnWqfYUIBSrq2lUJaUKWXkV5bbVeqlJlzR3sXb7VF10519O1IitxMcxBg71TpdSnxX
+         hKpL4JHOQiwVh4tiA60p7eSVAHCaCYW9ODoWpOd0aQKunvp550gxXmSMjsl8AhtcR9
+         pfFKQXJ5TqMZneCmUvONnOAwHN1miSjYmBrLi9HzePPOhwNibdvZQZ59zw9dAbCL7O
+         hG17WwBrvfpaQ==
 Date:   Tue, 18 Jul 2023 17:52:38 -0700
-Message-ID: <CAADnVQKutS8fYLkNz-rhdmFJ3cTWS6JD9PmwjK7ZZ8N3u7nUYA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: fix setting return values for htab
- batch ops
-To:     Anton Protopopov <aspsk@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Brian Vazquez <brianvv@google.com>,
-        Hou Tao <houtao1@huawei.com>, Joe Stringer <joe@isovalent.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Minjie Du <duminjie@vivo.com>
+Cc:     Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com (maintainer:MICROCHIP LAN966X ETHERNET
+        DRIVER), "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        netdev@vger.kernel.org (open list:MICROCHIP LAN966X ETHERNET DRIVER),
+        linux-kernel@vger.kernel.org (open list),
+        opensource.kernel@vivo.com,
+        Simon Horman <simon.horman@corigine.com>
+Subject: Re: [PATCH net v4] net: lan966x: fix parameter check in two
+ functions
+Message-ID: <20230718175238.226810e3@kernel.org>
+In-Reply-To: <20230717022235.1767-1-duminjie@vivo.com>
+References: <20230717022235.1767-1-duminjie@vivo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,58 +64,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 4:42=E2=80=AFAM Anton Protopopov <aspsk@isovalent.c=
-om> wrote:
->
-> The map_lookup{,_and_delete}_batch operations are expected to set the
-> output parameter, counter, to the number of elements successfully copied
-> to the user space. This is also expected to be true if an error is
-> returned and the errno is set to a value other than EFAULT. The current
-> implementation can return -EINVAL without setting the counter to zero, so
-> some userspace programs may confuse this with a [partially] successful
-> operation. Move code which sets the counter to zero to the top of the
-> function so that we always return a correct value.
->
-> Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
-> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-> ---
->  kernel/bpf/hashtab.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index a8c7e1c5abfa..fa8e3f1e1724 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -1692,6 +1692,13 @@ __htab_map_lookup_and_delete_batch(struct bpf_map =
-*map,
->         struct bucket *b;
->         int ret =3D 0;
->
-> +       max_count =3D attr->batch.count;
-> +       if (!max_count)
-> +               return 0;
-> +
-> +       if (put_user(0, &uattr->batch.count))
-> +               return -EFAULT;
-> +
->         elem_map_flags =3D attr->batch.elem_flags;
->         if ((elem_map_flags & ~BPF_F_LOCK) ||
->             ((elem_map_flags & BPF_F_LOCK) && !btf_record_has_field(map->=
-record, BPF_SPIN_LOCK)))
-> @@ -1701,13 +1708,6 @@ __htab_map_lookup_and_delete_batch(struct bpf_map =
-*map,
->         if (map_flags)
->                 return -EINVAL;
->
-> -       max_count =3D attr->batch.count;
-> -       if (!max_count)
-> -               return 0;
-> -
-> -       if (put_user(0, &uattr->batch.count))
-> -               return -EFAULT;
-> -
+On Mon, 17 Jul 2023 10:22:35 +0800 Minjie Du wrote:
+>  	vrule = vcap_get_rule(lan966x->vcap_ctrl, rule_id);
+> -	if (vrule) {
+> +	if (!IS_ERR_OR_NULL(vrule)) {
 
-I hear your concern, but I don't think it's a good idea
-to return 0 when flags were incorrect.
-That will cause more suprises to user space.
-I think the code is fine as-is.
+Please make vcap_get_rule() return an error pointer rather than NULL.
+Mixing the two is a common source of errors.
+-- 
+pw-bot: cr
