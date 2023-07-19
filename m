@@ -2,208 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 692587598A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9717598A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbjGSOkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 10:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36136 "EHLO
+        id S231190AbjGSOlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjGSOkx (ORCPT
+        with ESMTP id S229705AbjGSOli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:40:53 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2049.outbound.protection.outlook.com [40.107.21.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13110C7;
-        Wed, 19 Jul 2023 07:40:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wc1u1P74q8TjvRSl6EI+M+3KwmHFi4ZmPfnxWVHdGUujvqNiUpVk2CvjfniNuXjaGqm10exI9+/CAP62CV0yRmO5jG6G1Fc6rD9uYL4tJUu/yOv9nIDeLBLDkgFMVTMaJYd+hVN4pZKzFi40CUt1hnR1/VhrcCyHNykCfHtF2qa3ItB48lfW5MYuO2yUY5AkpMUg42vy2pQhTAHNJPt11zCDcSBv7kw5C/kj2RssXH96hz4CJ7M1WIYVUSB2Q/FqyR00QDnweYdzQ4h3ctHVkczL36vt1Wy3uY1sApSZ24t7jNn29883AX3t46NFUeeGul6Go2Dvpm87298nsjQwcA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/dRVhkcG7az2B6QYrlXyXhljfnR0AuF+4YMXgcq05jE=;
- b=CMqtCnDHllwCQMenX+iIIA7QOMTm4nCIccYt7zFEHgLRNz9iOcrSdFPyIlWpkFKFQEfpLs8zxaq7w5T6WNGCdwz1h5aCK6vWxWGfjMhTi73i+38lHd5SqBxAszZ4WNFcIkOu0de+55Z8lP7wBNiBeuWDFH2uE296IPInmGlPqR6RYV7QJjP3HELj38rmTqf75Cslanr3CuRQSTxRPOKYZiINSoEhhFJULPhHjlS7K2YRvkDH+57+rVaxm7p8kLOtmPgCMXfQo6ulWxeX134OSqEZlhfKz1gRvYa+eMizXw2Nqii0BR65Kb7Ec9ZjB8kuug0Q/stpQw1UVN2eOP53RA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/dRVhkcG7az2B6QYrlXyXhljfnR0AuF+4YMXgcq05jE=;
- b=ZroORGFDRNrk0EukhXPhApXHeMQjQuEP/ONjMM9Yv9hig38JUEHUB5pG/nlnb2bjVqNXRtanYKwAhkv670hP2b1R9F/VJriDb8R3sX3e1G+6yBaZifelC08h+03hSXoxPiUQbQwdYBF2/IOigcAlNdMg1n8KEsrWiSUJzQdCe5UIXfdKhpzr5qxHDFBXgV1ZR7sIpJqZAzZYHLkbCHzal78wylRW0dNbkx36Wa23o03XZofjWM/sdTBDNLNJcrNFq34m3HRnd9I3Gjvl1m3V4TnmfuzTaMbQDWOsnaxb6ngiPA59JUzuexCEbZaK9jqni9ljFLXbQyxyE5pRPK9Ntw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siemens.com;
-Received: from PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:269::8)
- by PAVPR10MB7089.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:319::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.28; Wed, 19 Jul
- 2023 14:40:46 +0000
-Received: from PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::a171:a3f2:99b7:5f29]) by PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::a171:a3f2:99b7:5f29%6]) with mapi id 15.20.6588.031; Wed, 19 Jul 2023
- 14:40:46 +0000
-Date:   Wed, 19 Jul 2023 16:40:34 +0200
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lee Jones <lee@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Mark Gross <markgross@kernel.org>,
-        Tobias Schaffner <tobias.schaffner@siemens.com>
-Subject: Re: [PATCH 1/3] watchdog: make Siemens Simatic watchdog driver
- default on platform
-Message-ID: <20230719164034.3efc9504@md1za8fc.ad001.siemens.net>
-In-Reply-To: <160cb639-5081-ec50-2c41-fc31502107a2@roeck-us.net>
-References: <20230718105213.1275-1-henning.schild@siemens.com>
-        <20230718105213.1275-2-henning.schild@siemens.com>
-        <ZLafwOPrw+puH+rF@smile.fi.intel.com>
-        <20230718164251.13855c47@md1za8fc.ad001.siemens.net>
-        <b1528e3d-15f7-7ab2-b803-917f79efe999@roeck-us.net>
-        <20230719091816.6661d535@md1za8fc.ad001.siemens.net>
-        <160cb639-5081-ec50-2c41-fc31502107a2@roeck-us.net>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH0PR03CA0108.namprd03.prod.outlook.com
- (2603:10b6:610:cd::23) To PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:102:269::8)
+        Wed, 19 Jul 2023 10:41:38 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B301A6;
+        Wed, 19 Jul 2023 07:41:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689777697; x=1721313697;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=eKarSp4UDEBrodseHbSXqyc3U/xgCDSxkmiHVgmD09s=;
+  b=lyvmj6f167yX0ZTFUPVUNK5m9057avQ8Ip/DgqebTxFyZNb8ZT/fTHGV
+   oK8+d8Y0VByCgtNz0RZDEYx3Hv6771DsnTfBa0p1xwcggadoTh/eivhQj
+   2EmP+adxCJJTNSxZq7N1MpZDtGUWeG4imV8++oxl1BFrdVOLthyq+TU7m
+   VEzSkTC7Wg2BIocY6uXacRyprZFd5UE0uXJW9WAMTGomIHANMg6sB43uE
+   bJ3iIOBGibZbVgylNxYxnbGfOMhUlPnSHNOAFfp4/Nbv+HdlDQP5WhIQn
+   XWHdGtI+7bMYKMWQ8ePWfoMHWZABiXFQWRehY1lRE0HFQwgHDTSTRiegY
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="346788119"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="346788119"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 07:41:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="867503238"
+Received: from binbinwu-mobl.ccr.corp.intel.com ([10.249.173.69])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 07:41:35 -0700
+From:   Binbin Wu <binbin.wu@linux.intel.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     seanjc@google.com, pbonzini@redhat.com, chao.gao@intel.com,
+        kai.huang@intel.com, David.Laight@ACULAB.COM,
+        robert.hu@linux.intel.com, guang.zeng@intel.com,
+        binbin.wu@linux.intel.com
+Subject: [PATCH v10 0/9] Linear Address Masking (LAM) KVM Enabling
+Date:   Wed, 19 Jul 2023 22:41:22 +0800
+Message-Id: <20230719144131.29052-1-binbin.wu@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR10MB5780:EE_|PAVPR10MB7089:EE_
-X-MS-Office365-Filtering-Correlation-Id: 413f1e47-5baa-4227-0df7-08db88662331
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mnJyHqPV+4b/FV4a/mhSollRp0oJ/SmyMbJOsA93NQj5jiW65G2XwIIE7hIkzHjAvOA9SX8c4/vVWbl0FcntztCnQ2OL0Vy64L2G0rj/DaKjpsrA7L2eb5xsdjxHz1/L6onH07KPs0iQsM2je19PpBYSXFFUrup98FycWqLJDxaSwVLwGV0QpNUP69N+U7V0hzhxLtEatJyIOMYfF8Ulpy9Wzu38pKhFkxa9bYzlmtVvIhTLMoVjvDbvNVoMdTjlOe3zo/VFYBLFPMIvZCsEubs0vNgBA6o6VqJGrvxLM2RlwbamE3ltt1b4l90wFgdYR1zIy1+Iivqo8U2HU9SF/z5FD6E9+YOD8MpWi3Vi+FZDhELakoJNCZkzazIeF1c2v1NurM33QdG4/TZZWa0szAxXsY0qR3mYPoVehknv2hd803hh7cqOyvXLxbSScA20kAiW2uvE7dZ4+GFFq04FSgm64yinXcDi6XJWmaQbyWULiaLVUTI3ZX7vjScDQ2pIX1oPngRsiBWx/emLz6//xXUcmiZ4HFO+6M9yDJFPnm+VBjF/uX+TQNttWA323z80
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(136003)(366004)(39860400002)(396003)(451199021)(66899021)(41300700001)(1076003)(6506007)(5660300002)(8936002)(8676002)(82960400001)(66556008)(66476007)(66946007)(6916009)(316002)(4326008)(2906002)(44832011)(7416002)(38100700002)(54906003)(186003)(6666004)(86362001)(6486002)(53546011)(9686003)(6512007)(107886003)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TMzjV6Al1tLPoIcqXrk5ty+TZHPyP/+PpHdwEylJ7+g+B1vu3TU6tdIR5/35?=
- =?us-ascii?Q?otH5lq03K+P6NttjByZmr2aXoaiddZyKeRRYKhRCQxJ3O7JAG1DCJiVL9xx3?=
- =?us-ascii?Q?QkQ1HI11MrSm3iWuEP3hqzbkKZkXfAaxojb7DhdkGT+ld0m4oyBfr7AHcgkF?=
- =?us-ascii?Q?ZFUOs6d8fzIVUk3PntNK/YBKnUno/mLGLVTkG6p3l2s1gjgDcnhmgZCgwa5j?=
- =?us-ascii?Q?6+Od71SegNvfpCHYAaKvlkt3ggTjPxoVIxVl8A89z1lW/Ghj4Wo8pxV71xwo?=
- =?us-ascii?Q?uAv7lOBlWrGNgVln3SjL8Mu13YBzMC00TO8q0c4RkaLHqfxqWYwqNawPiw7g?=
- =?us-ascii?Q?7KGYW+Ua12l3a+QWDwg4pLuHzMb2FhtSBk3bMQDxZrbJijVSOq8b6nbo70A0?=
- =?us-ascii?Q?ZVpUTlENd0sZVCxxSltjX8FJZd9xSRHNU4UAElPhgdpa4OxMJ1FEM5+toFey?=
- =?us-ascii?Q?9HP9UhT7frWMLAmSyUo5aKjFKUn8mPtOQtXw2GMyu3wwu3xy4ycUPZjBSXjg?=
- =?us-ascii?Q?4cqd7QFeDVFQjONC/HYrjvuF1rlilrAgJweWYnxEvigpFW/5pdQKfXH/GZW4?=
- =?us-ascii?Q?1Dx0ggjMbj7roVYJuiJYi0H1awFq11d4bVDGF1hgCMpgdnutEa//oyN+nJLb?=
- =?us-ascii?Q?5T+1usjKQg7m4+AfkkICZaA7wKEdlL3gJBPbTLIIY9+9ps8rTTI3O0vlWP8w?=
- =?us-ascii?Q?82d6T5tfkY9MXRWkAqxmTltHGx275BQhY43V4Es6H8zAEZTIMuLlLB+Ew7af?=
- =?us-ascii?Q?FHXgtnI9z2+A6hY6qgTMF5Kp9BcDu+tAjaLneW0l1iiZQGkbLIgnfXIXKf8C?=
- =?us-ascii?Q?gNckC8KAq90KgMnZVgznjIueH6FruaScFkP98yn/fBPbuSBbgQsIPokbEPZe?=
- =?us-ascii?Q?znkV4lyEW/zIfLfL23TkHQWUTcgqUXlLyTtEv4ycuoqXPoRZn8BD4SaJBz7C?=
- =?us-ascii?Q?4Jyo3lwgj+uGDJ/1Fbw7VZb7wsCWceESSrBN2/p50uhof6fDj2feifXdETNE?=
- =?us-ascii?Q?m961Cqn6xzPqvkTZX1emAiVtrZ/U8K7iAZe9K3dCFAZZBsmgRKIzUqfUFgnW?=
- =?us-ascii?Q?R2bIonOB5osMpKhi94FZn7DGwCRyQrPYqYJfbTbmK8cD/deeNHsoyfL7ttta?=
- =?us-ascii?Q?HqRXb3U6rrBysMncva01d3ICxzp/ZzWu0kGw6MGDtsJkoBtax4SJGNlkHRbC?=
- =?us-ascii?Q?SGsNHnwlEVhIDwqNGjyDVSJkDjfoVqyuIgO1ynhVSCSo9zMwdk2MVeU/G8yS?=
- =?us-ascii?Q?9BBxO5LdDX1qo/RMe0zFOIn4qCSMisJy9Hv98UdBjbUw1AYhyD78OPnHSXIf?=
- =?us-ascii?Q?WGuUndctcj4RCVLN6VlqxWEllN9lthknL2DqDlgo0WBBF6STuh8HCM2UVSjd?=
- =?us-ascii?Q?x9EmiIruFIjdL0IZIDaf+z0+lVEaRD1Qo9+j8gU5KXhaMPyZCCyxSnhPFl3d?=
- =?us-ascii?Q?/n/xvQ/ycPD8BAW/ZGixxxUTkahpVwu0tbG2m8wFPC/7MbM7OWPbkIUAGWX/?=
- =?us-ascii?Q?KJkFDjbNKONqdK0ubz7QwcffSj1Li+BLkav+EwgfwK/vxTOC3khou7sB0HpE?=
- =?us-ascii?Q?9cH2hOKcyQeI9ZhFUkEeuNI59vE7sq6JTOgbycSjzhZefvbvCHVyX6m7Lr1D?=
- =?us-ascii?Q?whu/q80FoUCZ164ESm5TXoSTf7Fs/uRdfWk42SCjNf0YmfOWt5LOA0xvHfQI?=
- =?us-ascii?Q?iAzVKQ=3D=3D?=
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 413f1e47-5baa-4227-0df7-08db88662331
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 14:40:46.5220
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ls8ojZNRd7XC8fIdlmyXL2akhDovz8tR9nXko6c6EPYNDLpmgHQpcOetnV+DAN1roo8vutwOb5wpQRgDUbEwd3S1sqfFXbSBvGuunsrJhQY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAVPR10MB7089
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Wed, 19 Jul 2023 06:27:19 -0700
-schrieb Guenter Roeck <linux@roeck-us.net>:
+===Feature Introduction===
 
-> On 7/19/23 00:18, Henning Schild wrote:
-> > Am Tue, 18 Jul 2023 08:10:09 -0700
-> > schrieb Guenter Roeck <linux@roeck-us.net>:
-> >   
-> >> On 7/18/23 07:42, Henning Schild wrote:  
-> >>> Am Tue, 18 Jul 2023 17:20:48 +0300
-> >>> schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
-> >>>      
-> >>>> On Tue, Jul 18, 2023 at 12:52:11PM +0200, Henning Schild wrote:  
-> >>>>> If a user did choose to enable Siemens Simatic platform support
-> >>>>> they likely want that driver to be enabled without having to
-> >>>>> flip more config switches. So we make the watchdog driver
-> >>>>> config switch default to the platform driver switches value.  
-> >>>>
-> >>>> A nit-pick below.
-> >>>>
-> >>>> ...
-> >>>>     
-> >>>>>    config SIEMENS_SIMATIC_IPC_WDT
-> >>>>>    	tristate "Siemens Simatic IPC Watchdog"
-> >>>>>    	depends on SIEMENS_SIMATIC_IPC  
-> >>>>     
-> >>>>> +	default SIEMENS_SIMATIC_IPC  
-> >>>>
-> >>>> It's more natural to group tristate and default, vs. depends and
-> >>>> select.  
-> >>>
-> >>> Will be ignored unless maintainer insists.
-> >>>      
-> >>
-> >> Maintainer wants to know why "default SIEMENS_SIMATIC_IPC" is
-> >> needed or warranted instead of the much simpler and easier to
-> >> understand "default y".  
-> > 
-> > I thought a "default y" or "default m" was maybe not the best idea
-> > for a platform that is not super common. That is why i did not dare
-> > to even think about defaulting any of the Simatic stuff to not-no.
-> > 
-> > But it seems that this would be ok after all. And i would be very
-> > happy to do so because it means less work on distro configs.
-> > 
-> > SIEMENS_SIMATIC_IPC_WDT will drive a platform device which gets
-> > registered by SIEMENS_SIMATIC_IPC and nothing else. That is why
-> > "default SIEMENS_SIMATIC_IPC" was chosen.
-> >   
-> 
-> It depends on SIEMENS_SIMATIC_IPC. "default y" would make it y if
-> SIEMENS_SIMATIC_IPC=y, and m if SIEMENS_SIMATIC_IPC=m. If
-> SIEMENS_SIMATIC_IPC=n, it won't even be offered as option, and
-> default={m,y} will be ignored.
-> 
-> > But if i may i would change that to "default m", not "y" because
-> > there is an out of tree driver package which if installed on top,
-> > should be able to override the in-tree drivers.
-> > 
-> > So i will go ahead and make that one "default m"
-> >   
-> 
-> Why make it m as default even if SIEMENS_SIMATIC_IPC=y for whatever
-> reason ? Presumably anyone selecting SIEMENS_SIMATIC_IPC=y would
-> also want SIEMENS_SIMATIC_IPC_WDT=y, which is what you had before.
-> Sorry, I don't understand your logic.
+Linear-address masking (LAM) [1], modifies the checking that is applied to
+*64-bit* linear addresses, allowing software to use of the untranslated address
+bits for metadata and masks the metadata bits before using them as linear 
+addresses to access memory.
 
-At the time of writing i did not know what you described above. That y
-with depends does not result in y.
+When the feature is virtualized and exposed to guest, it can be used for efficient
+address sanitizers (ASAN) implementation and for optimizations in JITs and virtual
+machines.
 
-Next round will have a "default y", Thanks.
+Regarding which pointer bits are masked and can be used for metadata, LAM has 2
+modes:
+- LAM_48: metadata bits 62:48, i.e. LAM width of 15.
+- LAM_57: metadata bits 62:57, i.e. LAM width of 6.
 
-Henning
+* For user pointers:
+  CR3.LAM_U57 = CR3.LAM_U48 = 0, LAM is off;
+  CR3.LAM_U57 = 1, LAM57 is active;
+  CR3.LAM_U57 = 0 and CR3.LAM_U48 = 1, LAM48 is active.
+* For supervisor pointers: 
+  CR4.LAM_SUP =0, LAM is off;
+  CR4.LAM_SUP =1 with 5-level paging mode, LAM57 is active;
+  CR4.LAM_SUP =1 with 4-level paging mode, LAM48 is active.
 
-> Guenter
-> 
+The modified LAM canonicality check:
+* LAM_S48                : [ 1 ][ metadata ][ 1 ]
+                             63               47
+* LAM_U48                : [ 0 ][ metadata ][ 0 ]
+                             63               47
+* LAM_S57                : [ 1 ][ metadata ][ 1 ]
+                             63               56
+* LAM_U57 + 5-lvl paging : [ 0 ][ metadata ][ 0 ]
+                             63               56
+* LAM_U57 + 4-lvl paging : [ 0 ][ metadata ][ 0...0 ]
+                             63               56..47
+
+Note:
+1. LAM applies to only data address, not to instructions.
+2. LAM identification of an address as user or supervisor is based solely on the
+   value of pointer bit 63 and does not depend on the CPL.
+3. LAM doesn't apply to the writes to control registers or MSRs.
+4. LAM masking applies before paging, so the faulting linear address in CR2
+   doesn't contain the metadata.
+5  The guest linear address saved in VMCS doesn't contain metadata.
+6. For user mode address, it is possible that 5-level paging and LAM_U48 are both
+   set, in this case, the effective usable linear address width is 48.
+   (Currently, only LAM_U57 is enabled in Linux kernel. [2])
+
+===LAM KVM Design===
+LAM KVM enabling includes the following parts:
+- Feature Enumeration
+  LAM feature is enumerated by CPUID.7.1:EAX.LAM[bit 26].
+  If hardware supports LAM and host doesn't disable it explicitly (e.g. via 
+  clearcpuid), LAM feature will be exposed to user VMM.
+
+- CR4 Virtualization
+  LAM uses CR4.LAM_SUP (bit 28) to configure LAM on supervisor pointers.
+  Add support to allow guests to set the new CR4 control bit for guests to enable
+  LAM on supervisor pointers.
+
+- CR3 Virtualization
+  LAM uses CR3.LAM_U48 (bit 62) and CR3.LAM_U57 (bit 61) to configure LAM on user
+  pointers.
+  Add support to allow guests to set two new CR3 non-address control bits for
+  guests to enable LAM on user pointers.
+
+- Modified Canonicality Check and Metadata Mask
+  When LAM is enabled, 64-bit linear address may be tagged with metadata. Linear
+  address should be checked for modified canonicality and untagged in instruction
+  emulations and VMExit handlers when LAM is applicable.
+
+LAM support in SGX enclave mode needs additional enabling and is not
+included in this patch series.
+
+This patch series depends on "governed" X86_FEATURE framework from Sean.
+https://lore.kernel.org/kvm/20230217231022.816138-2-seanjc@google.com/
+
+This patch series depends on the patches of refactor of instruction emulation flags,
+using flags to identify the access type of instructions, sent along with LASS patch series.
+https://lore.kernel.org/kvm/20230719024558.8539-2-guang.zeng@intel.com/
+https://lore.kernel.org/kvm/20230719024558.8539-3-guang.zeng@intel.com/
+https://lore.kernel.org/kvm/20230719024558.8539-4-guang.zeng@intel.com/
+https://lore.kernel.org/kvm/20230719024558.8539-5-guang.zeng@intel.com/
+
+
+LAM QEMU patch:
+https://lists.nongnu.org/archive/html/qemu-devel/2023-05/msg07843.html
+
+LAM kvm-unit-tests patch:
+https://lore.kernel.org/kvm/20230530024356.24870-1-binbin.wu@linux.intel.com/
+
+===Test===
+1. Add test cases in kvm-unit-test [3] for LAM, including LAM_SUP and LAM_{U57,U48}.
+   For supervisor pointers, the test covers CR4 LAM_SUP bits toggle, Memory/MMIO
+   access with tagged pointer, and some special instructions (INVLPG, INVPCID,
+   INVVPID), INVVPID cases also used to cover VMX instruction VMExit path.
+   For uer pointers, the test covers CR3 LAM bits toggle, Memory/MMIO access with
+   tagged pointer.
+   MMIO cases are used to trigger instruction emulation path.
+   Run the unit test with both LAM feature on/off (i.e. including negative cases).
+   Run the unit test in L1 guest with both LAM feature on/off.
+2. Run Kernel LAM kselftests [2] in guest, with both EPT=Y/N.
+3. Launch a nested guest.
+
+All tests have passed in Simics environment.
+
+[1] Intel ISE https://cdrdv2.intel.com/v1/dl/getContent/671368
+    Chapter Linear Address Masking (LAM)
+[2] https://lore.kernel.org/all/20230312112612.31869-9-kirill.shutemov@linux.intel.com/
+[3] https://lore.kernel.org/kvm/20230530024356.24870-1-binbin.wu@linux.intel.com/
+
+---
+Changelog
+v10:
+- Split out the patch "Use GENMASK_ULL() to define __PT_BASE_ADDR_MASK". [Sean]
+- Split out the patch "Add & use kvm_vcpu_is_legal_cr3() to check CR3's legality". [Sean]
+- Use "KVM-governed feature framework" to track if guest can use LAM. [Sean]
+- Use emulation flags to describe the access instead of making the flag a command. [Sean]
+- Split the implementation of vmx_get_untagged_addr() for LAM from emulator and kvm_x86_ops definition. [Per Sean's comment for LASS]
+- Some improvement of implementation in vmx_get_untagged_addr(). [Sean]
+
+v9:
+https://lore.kernel.org/kvm/20230606091842.13123-1-binbin.wu@linux.intel.com/
+
+Binbin Wu (7):
+  KVM: x86/mmu: Use GENMASK_ULL() to define __PT_BASE_ADDR_MASK
+  KVM: x86: Add & use kvm_vcpu_is_legal_cr3() to check CR3's legality
+  KVM: x86: Use KVM-governed feature framework to track "LAM enabled"
+  KVM: x86: Virtualize CR3.LAM_{U48,U57}
+  KVM: x86: Introduce get_untagged_addr() in kvm_x86_ops and call it in
+    emulator
+  KVM: VMX: Implement and wire get_untagged_addr() for LAM
+  KVM: x86: Untag address for vmexit handlers when LAM applicable
+
+Robert Hoo (2):
+  KVM: x86: Virtualize CR4.LAM_SUP
+  KVM: x86: Expose LAM feature to userspace VMM
+
+ arch/x86/include/asm/kvm-x86-ops.h |  1 +
+ arch/x86/include/asm/kvm_host.h    |  5 +++-
+ arch/x86/kvm/cpuid.c               |  2 +-
+ arch/x86/kvm/cpuid.h               |  8 ++++++
+ arch/x86/kvm/emulate.c             |  2 +-
+ arch/x86/kvm/governed_features.h   |  2 ++
+ arch/x86/kvm/kvm_emulate.h         |  3 +++
+ arch/x86/kvm/mmu.h                 |  8 ++++++
+ arch/x86/kvm/mmu/mmu.c             |  2 +-
+ arch/x86/kvm/mmu/mmu_internal.h    |  1 +
+ arch/x86/kvm/mmu/paging_tmpl.h     |  2 +-
+ arch/x86/kvm/svm/nested.c          |  4 +--
+ arch/x86/kvm/vmx/nested.c          |  6 +++--
+ arch/x86/kvm/vmx/sgx.c             |  1 +
+ arch/x86/kvm/vmx/vmx.c             | 43 +++++++++++++++++++++++++++++-
+ arch/x86/kvm/vmx/vmx.h             |  2 ++
+ arch/x86/kvm/x86.c                 | 15 +++++++++--
+ arch/x86/kvm/x86.h                 |  2 ++
+ 18 files changed, 97 insertions(+), 12 deletions(-)
+
+
+base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
+prerequisite-patch-id: 3467bc611ce3774ba481ab72e187eba47000c01b
+prerequisite-patch-id: 1bf4c9da384b39c92c21c467a5c6ed0d306ec266
+prerequisite-patch-id: 226fd3d9a09ef80a5b8001a3bdc6fbf2c23d2a88
+prerequisite-patch-id: 0c31cc0dec011d7e22efde1f7dde9847c86024d8
+prerequisite-patch-id: f487db8bc77007679f4b0e670a9e487c1f63fcfe
+-- 
+2.25.1
 
