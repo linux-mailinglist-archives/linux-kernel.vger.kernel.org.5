@@ -2,100 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA70758CA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 06:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D41D758CB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 06:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbjGSEcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 00:32:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40324 "EHLO
+        id S230146AbjGSEkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 00:40:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjGSEcl (ORCPT
+        with ESMTP id S229477AbjGSEkI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 00:32:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F5F41B1
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 21:32:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Wed, 19 Jul 2023 00:40:08 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE841BE3;
+        Tue, 18 Jul 2023 21:40:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1689741593;
+        bh=mpYeohI8Pee874UkThW3F2XXH1ckXk34XfZjDU3yDCY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ccikDY8fHhsUIxO7guMIKt75vc+L2Xz8s6pCl0SFgtjrUZaSlGlYx5zIFOjXA818t
+         gThsviw3ejGyZE6X7ZgxKAdwTMxBkWjQjxTVWjpsSY19MHmk7WAZcDJB9OQ356UChb
+         owjpBYRCdI0Tt+hBkt1kZjAmf+QLsRWqIxnUl+ki6HKaioy0nuCybJRf/L/wea6kkw
+         x81cD7B/KxLZ00q+5dLeDomnsjl+HGRfuSnnY0zGbv3g0QQECJogbvgOUt9cTlM8Px
+         mDvuggzPOQr0FeDHuqwQAC7dAF0fqai9KNhjAJr4xYnlsDuwu5lnFCfBNfH3/FQjnB
+         gnFUaA2TJHOEA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9409E60C37
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:32:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17576C433C8;
-        Wed, 19 Jul 2023 04:32:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689741159;
-        bh=yU4FuU9GBzJLKMMJ6YPMbnokCAVqtjh1LQe6xjck7Bc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kXMpg8BbhJZJNkpHSPLHr1qjWo5E4zGZfD5bHPWtIg/l2IeZ57hgDzj44YOHivqZG
-         AS0MuLpTF7gFAwMDxhTP0wq2ZUexx34z7lJUYYP7q7TGtsA2UBl/l/92sxdgi/7L7e
-         Yz20BMiMcSCvwSg9FqRVOzMMs5SqCYdCvtg+cj2/CNrExK/BzkoFXxMjs6S8tRICQA
-         HvR2ElBn+SOBXOXfpbChVH6AY8RX0N7hToZKNj92DBMFp+UI3qn96vq6CnrqFbQBAU
-         GHUePA8+GH7wYnA2mIbdIavTA7+38AwRVLGr+hOL1g4zl9aQTIfq5rDM9xENyPoPF+
-         xnILTX+hjNBsw==
-Date:   Wed, 19 Jul 2023 07:32:18 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Haifeng Xu <haifeng.xu@shopee.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/mm_init.c: drop node_start_pfn from
- adjust_zone_range_for_zone_movable()
-Message-ID: <20230719043218.GF1901145@kernel.org>
-References: <20230717065811.1262-1-haifeng.xu@shopee.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R5NQd5cWVz4wqW;
+        Wed, 19 Jul 2023 14:39:53 +1000 (AEST)
+Date:   Wed, 19 Jul 2023 14:32:33 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alistair Popple <apopple@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the mm tree
+Message-ID: <20230719143233.1c283b0e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717065811.1262-1-haifeng.xu@shopee.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/k1bVQ0vzWFCmPomiZwkRQEo";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 06:58:11AM +0000, Haifeng Xu wrote:
-> node_start_pfn is not used in adjust_zone_range_for_zone_movable(), so
-> it is pointless to waste a function argument. Drop the parameter.
-> 
-> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
+--Sig_/k1bVQ0vzWFCmPomiZwkRQEo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
+Hi all,
 
-> ---
->  mm/mm_init.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/mm_init.c b/mm/mm_init.c
-> index a313d1828a6c..23d50541e1f7 100644
-> --- a/mm/mm_init.c
-> +++ b/mm/mm_init.c
-> @@ -1105,7 +1105,6 @@ void __ref memmap_init_zone_device(struct zone *zone,
->   */
->  static void __init adjust_zone_range_for_zone_movable(int nid,
->  					unsigned long zone_type,
-> -					unsigned long node_start_pfn,
->  					unsigned long node_end_pfn,
->  					unsigned long *zone_start_pfn,
->  					unsigned long *zone_end_pfn)
-> @@ -1222,9 +1221,8 @@ static unsigned long __init zone_spanned_pages_in_node(int nid,
->  	/* Get the start and end of the zone */
->  	*zone_start_pfn = clamp(node_start_pfn, zone_low, zone_high);
->  	*zone_end_pfn = clamp(node_end_pfn, zone_low, zone_high);
-> -	adjust_zone_range_for_zone_movable(nid, zone_type,
-> -				node_start_pfn, node_end_pfn,
-> -				zone_start_pfn, zone_end_pfn);
-> +	adjust_zone_range_for_zone_movable(nid, zone_type, node_end_pfn,
-> +					   zone_start_pfn, zone_end_pfn);
->  
->  	/* Check that this node has pages within the zone's required range */
->  	if (*zone_end_pfn < node_start_pfn || *zone_start_pfn > node_end_pfn)
-> -- 
-> 2.25.1
-> 
+After merging the mm tree, today's linux-next build (arm64 defconfig)
+failed like this:
 
--- 
-Sincerely yours,
-Mike.
+In file included from arch/arm64/include/asm/pgtable.h:15,
+                 from include/linux/pgtable.h:6,
+                 from arch/arm64/include/asm/io.h:12,
+                 from include/linux/io.h:13,
+                 from include/acpi/acpi_io.h:5,
+                 from include/linux/acpi.h:37,
+                 from include/acpi/apei.h:9,
+                 from include/acpi/ghes.h:5,
+                 from include/linux/arm_sdei.h:8,
+                 from arch/arm64/kernel/asm-offsets.c:10:
+arch/arm64/include/asm/tlbflush.h: In function '__flush_tlb_page_nosync':
+arch/arm64/include/asm/tlbflush.h:268:53: error: 'vma' undeclared (first us=
+e in this function); did you mean 'cma'?
+  268 |         mmu_notifier_arch_invalidate_secondary_tlbs(vma->vm_mm, uad=
+dr & PAGE_MASK,
+      |                                                     ^~~
+      |                                                     cma
+
+Caused by commit
+
+  8c2be11e06f4 ("mmu_notifiers: call arch_invalidate_secondary_tlbs() when =
+invalidating TLBs")
+
+I have reverted that commit (and the following clear
+one and the two
+earlier ones - otherwise it would not buildfrom) for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/k1bVQ0vzWFCmPomiZwkRQEo
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmS3Z2EACgkQAVBC80lX
+0GwCoQgAkhhBDK+wlGb4T/EIvai7HvIgBz9nPfGZSylRvF1peiecKDfM98cDuce2
+KvvFcjqk5Nbnoz9xAfW0dZgL66e8n7yr/6s+8m0Z4K4d+DTukLl0pvZwjC2cc+95
+kyrErlbi5xU4w9dn4XISeNOv4tT0iBBwHCAJGjzBVHmwheCWrKEe7qRcukPB1T4P
+Sv+jli9IxZKP1qqgKbGtXQXcvUrklggtLeAAdGVR2CJ1Rj4FMFFEOMKhIOQoAXuI
+hj/XblywZ6KroS5z3hYz2O+ZVKoHPayHmryXeb4Q7WQFk+vWYFiEEjirG5FdhhMa
+m9Kbzwj7SuKPtK9/oWKMgvh/YGx8Cg==
+=GYdN
+-----END PGP SIGNATURE-----
+
+--Sig_/k1bVQ0vzWFCmPomiZwkRQEo--
