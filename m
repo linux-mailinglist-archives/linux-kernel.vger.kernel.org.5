@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B22F2758CAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 06:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0AB6758CAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 06:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbjGSEgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 00:36:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
+        id S230144AbjGSEhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 00:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjGSEgB (ORCPT
+        with ESMTP id S229693AbjGSEhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 00:36:01 -0400
+        Wed, 19 Jul 2023 00:37:15 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF5E91B6
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 21:36:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9265D1B1;
+        Tue, 18 Jul 2023 21:37:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CC7F60DC4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 04:36:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7320C433C8;
-        Wed, 19 Jul 2023 04:35:58 +0000 (UTC)
-Message-ID: <06c741c3-3df7-7354-d607-1148a2f99a79@linux-m68k.org>
-Date:   Wed, 19 Jul 2023 14:35:55 +1000
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2126C60FE2;
+        Wed, 19 Jul 2023 04:37:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 041E3C433C8;
+        Wed, 19 Jul 2023 04:37:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689741433;
+        bh=Kx5U5a1uOORtcZ6S84+5N/7Or28yVlj2BT3UaDH8ZbE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=etb7PAn8fYWwon+0FhjWa+30egyQhjTszegVqrHP/0ONuc7pcK6zsD2ZSCXY+vBxM
+         xHUD6cdhAIBL7AjHarpooFfAFKZW/cZN0McOiFKMS/g0Wtat9WZcD/i11P7MsPS0vX
+         MQrYwozj7mJbAmmCcpko9Wbg1duDo8QLyD21c5M2+vGemPCsixkeSeH33JO9p9ofB7
+         FZlOwjkHQWvu+mV6ZmHD7KrRnesv025zwqY2DGLTbaDvdk/EOby5NaHd+PTJ5mhXh6
+         EiNRGu3s6gKOks7Q5MkCRgzBkx/qJB0NVqzzGEjpU91Zi9lKK2vZcCY7SY5CmLghcC
+         SP72AdOoV0hfg==
+Message-ID: <1c657304-7fb6-1f03-9fa6-7225fc14c28d@kernel.org>
+Date:   Wed, 19 Jul 2023 14:37:09 +1000
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH] m68k: coldfire: dma_timer: ERROR: "foo __init bar" should
- be "foo __init bar"
-To:     hexingwei001@208suo.com, geert@linux-m68k.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <20230713081656.77057-1-panzhiai@cdjrlc.com>
- <0ed701a0d75f07e83f4a85617b2e33ae@208suo.com>
+Subject: Re: [PATCH] m68k/pci: Drop useless pcibios_setup()
 Content-Language: en-US
-From:   Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <0ed701a0d75f07e83f4a85617b2e33ae@208suo.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+References: <20230718204229.493669-1-helgaas@kernel.org>
+From:   Greg Ungerer <gerg@kernel.org>
+In-Reply-To: <20230718204229.493669-1-helgaas@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xingwei He,
+Hi Bjorn,
 
-On 13/7/23 18:39, hexingwei001@208suo.com wrote:
-> Fix one occurrences of the checkpatch.pl error:
-> ERROR: "foo __init  bar" should be "foo __init bar"
+On 19/7/23 06:42, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
 > 
-> Signed-off-by: Xingwei He <hexingwei001@208suo.com>
+> The PCI core supplies a weak pcibios_setup() implementation that is
+> identical to the m68k implementation.  Remove the m68k version since it is
+> unnecessary.
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 
-Thanks. Applied to m68knommu git tree, for-next branch.
+Thanks. Seeing as this is related to the ColdFire parts I'll take this through
+the m68knommu git tree. Applied to the for-next branch.
 
 Regards
 Greg
 
 
-
 > ---
->   arch/m68k/coldfire/dma_timer.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   arch/m68k/kernel/pcibios.c | 6 ------
+>   1 file changed, 6 deletions(-)
 > 
-> diff --git a/arch/m68k/coldfire/dma_timer.c b/arch/m68k/coldfire/dma_timer.c
-> index cbb289439606..91e6728f51ed 100644
-> --- a/arch/m68k/coldfire/dma_timer.c
-> +++ b/arch/m68k/coldfire/dma_timer.c
-> @@ -48,7 +48,7 @@ static struct clocksource clocksource_cf_dt = {
->       .flags        = CLOCK_SOURCE_IS_CONTINUOUS,
->   };
-> 
-> -static int __init  init_cf_dt_clocksource(void)
-> +static int __init init_cf_dt_clocksource(void)
->   {
->       /*
->        * We setup DMA timer 0 in free run mode. This incrementing counter is
+> diff --git a/arch/m68k/kernel/pcibios.c b/arch/m68k/kernel/pcibios.c
+> index b0e110d3d2e6..9504eb19d73a 100644
+> --- a/arch/m68k/kernel/pcibios.c
+> +++ b/arch/m68k/kernel/pcibios.c
+> @@ -92,9 +92,3 @@ void pcibios_fixup_bus(struct pci_bus *bus)
+>   		pci_write_config_byte(dev, PCI_LATENCY_TIMER, 32);
+>   	}
+>   }
+> -
+> -char *pcibios_setup(char *str)
+> -{
+> -	return str;
+> -}
+> -
