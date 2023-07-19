@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A535758D76
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 08:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE1B758D73
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 08:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbjGSGK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 02:10:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43300 "EHLO
+        id S230332AbjGSGKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 02:10:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjGSGKy (ORCPT
+        with ESMTP id S230324AbjGSGKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 02:10:54 -0400
+        Wed, 19 Jul 2023 02:10:15 -0400
 Received: from mail-sh.amlogic.com (mail-sh.amlogic.com [58.32.228.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C07F1FD8;
-        Tue, 18 Jul 2023 23:10:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2F31FF2;
+        Tue, 18 Jul 2023 23:10:09 -0700 (PDT)
 Received: from droid10-sz.amlogic.com (10.28.11.69) by mail-sh.amlogic.com
  (10.18.11.5) with Microsoft SMTP Server id 15.1.2507.13; Wed, 19 Jul 2023
- 14:09:53 +0800
+ 14:09:54 +0800
 From:   zelong dong <zelong.dong@amlogic.com>
 To:     Neil Armstrong <neil.armstrong@linaro.org>,
         Philipp Zabel <p.zabel@pengutronix.de>,
@@ -30,11 +30,10 @@ CC:     <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         <devicetree@vger.kernel.org>, <kelvin.zhang@amlogic.com>,
-        Zelong Dong <zelong.dong@amlogic.com>,
-        "Dmitry Rokosov" <ddrokosov@sberdevices.ru>
-Subject: [PATCH v3 2/3] reset: reset-meson: add support for Amlogic C3 SoC Reset Controller
-Date:   Wed, 19 Jul 2023 14:09:53 +0800
-Message-ID: <20230719060954.14864-3-zelong.dong@amlogic.com>
+        Zelong Dong <zelong.dong@amlogic.com>
+Subject: [PATCH v3 3/3] arm64: dts: amlogic: add reset controller for Amlogic C3 SoC
+Date:   Wed, 19 Jul 2023 14:09:54 +0800
+Message-ID: <20230719060954.14864-4-zelong.dong@amlogic.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20230719060954.14864-1-zelong.dong@amlogic.com>
 References: <20230719060954.14864-1-zelong.dong@amlogic.com>
@@ -53,29 +52,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zelong Dong <zelong.dong@amlogic.com>
 
-Add a new compatible string to support for the reset controller
-on the C3 SoC. The count and offset for C3 Soc RESET registers are
-same as S4 Soc.
+Add the reset controller device of Amlogic C3 SoC family
 
 Signed-off-by: Zelong Dong <zelong.dong@amlogic.com>
-Reviewed-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- drivers/reset/reset-meson.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/reset/reset-meson.c b/drivers/reset/reset-meson.c
-index 13878ca2779d..861b9d1b1469 100644
---- a/drivers/reset/reset-meson.c
-+++ b/drivers/reset/reset-meson.c
-@@ -109,6 +109,7 @@ static const struct of_device_id meson_reset_dt_ids[] = {
- 	 { .compatible = "amlogic,meson-axg-reset",  .data = &meson8b_param},
- 	 { .compatible = "amlogic,meson-a1-reset",   .data = &meson_a1_param},
- 	 { .compatible = "amlogic,meson-s4-reset",   .data = &meson_s4_param},
-+	 { .compatible = "amlogic,c3-reset",   .data = &meson_s4_param},
- 	 { /* sentinel */ },
- };
- MODULE_DEVICE_TABLE(of, meson_reset_dt_ids);
+diff --git a/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi b/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi
+index 60ad4f3eef9d..28698c42e11e 100644
+--- a/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi
++++ b/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi
+@@ -6,6 +6,7 @@
+ #include <dt-bindings/interrupt-controller/irq.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/reset/amlogic,c3-reset.h>
+ 
+ / {
+ 	cpus {
+@@ -72,6 +73,12 @@ apb4: bus@fe000000 {
+ 			#size-cells = <2>;
+ 			ranges = <0x0 0x0 0x0 0xfe000000 0x0 0x480000>;
+ 
++			reset: reset-controller@2000 {
++				compatible = "amlogic,c3-reset";
++				reg = <0x0 0x2000 0x0 0x98>;
++				#reset-cells = <1>;
++			};
++
+ 			uart_b: serial@7a000 {
+ 				compatible = "amlogic,meson-s4-uart",
+ 					   "amlogic,meson-ao-uart";
 -- 
 2.35.1
 
