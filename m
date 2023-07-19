@@ -2,47 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 094E6758FA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD491758FAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 09:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbjGSHyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 03:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44690 "EHLO
+        id S230354AbjGSHyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 03:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbjGSHxm (ORCPT
+        with ESMTP id S230259AbjGSHxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 03:53:42 -0400
+        Wed, 19 Jul 2023 03:53:43 -0400
 Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552571FFA;
-        Wed, 19 Jul 2023 00:53:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509151FCB;
+        Wed, 19 Jul 2023 00:53:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1689753221;
-  x=1721289221;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1689753222;
+  x=1721289222;
   h=references:from:to:cc:subject:in-reply-to:date:
    message-id:mime-version;
-  bh=sGKc3f9aEi49syc8A8ZbaYt31rq0mocNyOVaPh8IHJY=;
-  b=VHECJyJ/Gh8dURIpkrhfmUCQTRcqFt9+K1B6AnicmwILSYr+S3o5EW41
-   YM8GrikeQ12PhOhscsoNv3D+HCB4EWfbzrFOW7VG7/sdzGyRwugTXgS+Y
-   OawqG+Nt88sYNUO8TyE1IYlMmoMhKIQ2/X6hv8kFw/xOyP1hAdFfv3KKV
-   1O45DLyW0hIa2XajgSO4n58KvvvzBvZFoHUs+PDRfXm0FmHfaJBwTdRfG
-   ZinfuBTVIon0O9L9OhEnBxaP/6TF2/8P9vREXxQyLYI7xrOq84q8QcnHN
-   j2jvYIRm55n8mzIpoTIbAiCti4n5RlMT0b9V0VYxr2n09xeEhdg+S+Wts
-   Q==;
+  bh=rwAJJHUO0JnZisxLO3+eFKnrpeHeVsnZgdBx2AOpPlA=;
+  b=C454Vq2mvtoEcaJTDLue2KJ7yXoSm8duWwR2/BiMXdIsEK7lU5TnocMp
+   abPkAjjRUK+X3fsPjd53EOpH7w+43qa1XR8hY7NShu+1YZKLq5EOKWexX
+   WLNJhITxq3YCs5/Wfw4t2WyZ7p80WkqwpOATqgZPf/UAGArxm3bfKsRYi
+   gZgbmxHsh0Po0W3MDgucjPnr/R6ZhtlyCaoDSMa8fyPwQ2LX657jz0sIw
+   owbvBpD4Y3HWv4hpJlFV4krNqLpd8aLsY4UQetHm99VlF+R4cxOUnhIXm
+   UeFCtp8s+3D0JgL6EyXyexyyuBx2A7GRBo5eryB1Y8gAqTmx1adu5Dq+b
+   g==;
 References: <cover.1689753076.git.waqar.hameed@axis.com>
 User-agent: a.out
 From:   Waqar Hameed <waqar.hameed@axis.com>
 To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Waqar Hameed <waqar.hameed@axis.com>
+        Lars-Peter Clausen <lars@metafoo.de>
 CC:     <kernel@axis.com>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 1/3] dt-bindings: iio: proximity: Add Murata IRS-D200
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 2/3] iio: Add event enums for running period and count
 In-Reply-To: <cover.1689753076.git.waqar.hameed@axis.com>
-Date:   Wed, 19 Jul 2023 09:51:16 +0200
-Message-ID: <09975910ea638a9aa893411124bbd2a5c98e45c3.1689753076.git.waqar.hameed@axis.com>
+Date:   Wed, 19 Jul 2023 09:51:17 +0200
+Message-ID: <ee4a801ae9b9c4716c7bd23d8f79f232351df8bd.1689753076.git.waqar.hameed@axis.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.0.5.60]
@@ -58,84 +54,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Murata IRS-D200 is a PIR sensor for human detection. It uses the I2C bus
-for communication with interrupt support. Add devicetree bindings
-requiring the compatible string, I2C slave address (reg), power supply
-and interrupts.
+There are devices (such as Murata IRS-D200 PIR proximity sensor) that
+check the data signal with a running period. I.e. for a specified time,
+they count the number of conditions that have occurred, and then signal
+if that is more than a specified amount.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+`IIO_EV_INFO_PERIOD` resets when the condition no longer is true and is
+therefore not suitable for these devices. Add a new `iio_event_info`
+`IIO_EV_INFO_RUNNING_PERIOD` that can be used as a running period. Also
+add a new `IIO_EV_INFO_RUNNING_COUNT` that can be used to specify the
+number of conditions that must occur during this running period.
+
 Signed-off-by: Waqar Hameed <waqar.hameed@axis.com>
 ---
- .../iio/proximity/murata,irsd200.yaml         | 60 +++++++++++++++++++
- 1 file changed, 60 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/proximity/murata,irsd200.yaml
+ Documentation/ABI/testing/sysfs-bus-iio | 16 ++++++++++++++++
+ drivers/iio/industrialio-event.c        |  2 ++
+ include/linux/iio/types.h               |  2 ++
+ 3 files changed, 20 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/iio/proximity/murata,irsd200.yaml b/Documentation/devicetree/bindings/iio/proximity/murata,irsd200.yaml
-new file mode 100644
-index 000000000000..67f5389ece67
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/proximity/murata,irsd200.yaml
-@@ -0,0 +1,60 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/proximity/murata,irsd200.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
+index 7140e8e7313f..a2854dc9a839 100644
+--- a/Documentation/ABI/testing/sysfs-bus-iio
++++ b/Documentation/ABI/testing/sysfs-bus-iio
+@@ -2163,3 +2163,19 @@ Contact:	linux-iio@vger.kernel.org
+ Description:
+ 		An example format is 16-bytes, 2-digits-per-byte, HEX-string
+ 		representing the sensor unique ID number.
 +
-+title: Murata IRS-D200 PIR sensor
++What:		/sys/.../events/in_proximity_thresh_either_runningperiod
++KernelVersion:	6.6
++Contact:	linux-iio@vger.kernel.org
++Description:
++		A running period of time (in seconds) for which
++		in_proximity_thresh_either_runningcount amount of conditions
++		must occur before an event is generated. If direction is not
++		specified then this period applies to both directions.
 +
-+maintainers:
-+  - Waqar Hameed <waqar.hameed@axis.com>
-+
-+description:
-+  PIR sensor for human detection.
-+
-+properties:
-+  compatible:
-+    const: murata,irsd200
-+
-+  reg:
-+    items:
-+      - enum:
-+          - 0x48
-+          - 0x49
-+        description: |
-+          When the AD pin is connected to GND, the slave address is 0x48.
-+          When the AD pin is connected to VDD, the slave address is 0x49.
-+
-+  interrupts:
-+    maxItems: 1
-+    description:
-+      Type should be IRQ_TYPE_EDGE_RISING.
-+
-+  vdd-supply:
-+    description:
-+      3.3 V supply voltage.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - vdd-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        proximity@48 {
-+            compatible = "murata,irsd200";
-+            reg = <0x48>;
-+            interrupts = <24 IRQ_TYPE_EDGE_RISING>;
-+            vdd-supply = <&regulator_3v3>;
-+        };
-+    };
-+...
++What:		/sys/.../events/in_proximity_thresh_either_runningcount
++KernelVersion:	6.6
++Contact:	linux-iio@vger.kernel.org
++Description:
++		Number of conditions that must occur, during a running
++		period, before an event is generated.
+diff --git a/drivers/iio/industrialio-event.c b/drivers/iio/industrialio-event.c
+index f77ce49d4c36..19f7a91157ee 100644
+--- a/drivers/iio/industrialio-event.c
++++ b/drivers/iio/industrialio-event.c
+@@ -252,6 +252,8 @@ static const char * const iio_ev_info_text[] = {
+ 	[IIO_EV_INFO_TIMEOUT] = "timeout",
+ 	[IIO_EV_INFO_RESET_TIMEOUT] = "reset_timeout",
+ 	[IIO_EV_INFO_TAP2_MIN_DELAY] = "tap2_min_delay",
++	[IIO_EV_INFO_RUNNING_PERIOD] = "runningperiod",
++	[IIO_EV_INFO_RUNNING_COUNT] = "runningcount",
+ };
+ 
+ static enum iio_event_direction iio_ev_attr_dir(struct iio_dev_attr *attr)
+diff --git a/include/linux/iio/types.h b/include/linux/iio/types.h
+index 82faa98c719a..117bde7d6ad7 100644
+--- a/include/linux/iio/types.h
++++ b/include/linux/iio/types.h
+@@ -19,6 +19,8 @@ enum iio_event_info {
+ 	IIO_EV_INFO_TIMEOUT,
+ 	IIO_EV_INFO_RESET_TIMEOUT,
+ 	IIO_EV_INFO_TAP2_MIN_DELAY,
++	IIO_EV_INFO_RUNNING_PERIOD,
++	IIO_EV_INFO_RUNNING_COUNT,
+ };
+ 
+ #define IIO_VAL_INT 1
 -- 
 2.30.2
 
