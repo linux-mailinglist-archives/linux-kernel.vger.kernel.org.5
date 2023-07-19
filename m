@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9609C75BB7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 02:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F3275BB7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 02:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbjGUAZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 20:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58774 "EHLO
+        id S230039AbjGUAZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 20:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbjGUAZ3 (ORCPT
+        with ESMTP id S230003AbjGUAZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 20:25:29 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A9130C3;
-        Thu, 20 Jul 2023 17:25:15 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-56368c40e8eso988674eaf.0;
-        Thu, 20 Jul 2023 17:25:15 -0700 (PDT)
+        Thu, 20 Jul 2023 20:25:44 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D5B30EA;
+        Thu, 20 Jul 2023 17:25:19 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3a37909a64eso952361b6e.1;
+        Thu, 20 Jul 2023 17:25:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689899114; x=1690503914;
+        d=gmail.com; s=20221208; t=1689899118; x=1690503918;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=pyRltwBL40ly0dHFnfbd3y2RN2Os8N/El6xTnYycO54=;
-        b=VEoewLVTPw3VAacMRS2+G/YMSswoX1AJOWmIGf6OlAXF1PDzp8t/cW+HxKGW2oYs+x
-         4qivAv2RQ0xcpSo1KtyzwlqcbJBk+xTizat/RiuxqLb2z1c1ln/LHuIXYjNC0V/NhEuY
-         xk2FfBRt5AbfysOKWY7C+8t30caQGbZDgymt95IoRtmqXeaaSDQBJxxDt73A1Jdn3Hd2
-         AEm1V+KW1dpYKzs0FzJoMPpkpkSqiQX9BiA8vvE1D4PmJIKtzXEKD4gia8zb1iI4F7FG
-         kjSngRxM4A2uN8J2xK/I+/p24u0IAtTCRJe/gte+FXq43fbuJw6Y7mWkzIteg32SEE5Q
-         auAw==
+        bh=fFIBwtmo2IIbiaxwKJGeWrtXlnHB7ucvw4QiyNqWMKM=;
+        b=AgDHG+aPobDVWwpkGdmJ4jWljkAyKr7gH0LrLyhn7+Jp7Cw87ZYdFOmtiZarT6mdjL
+         yEPVyQdjSXgp+gq1oXxngeaGn1aqTlIrYYOQSudkxsI8OHljGw70fTMobH0hItNbgpuR
+         77rr1YlT5/aSwPSxYHoBns/bUNj2Sj2sih0fnMrO3yZBDAozPoQGBUDeEqyCmqOMuh8t
+         x9p0rKhbq+S0mFBZW169Ej/6lePLEK/UPzIqGuF0XOLw+uFYANW5+8a4dYd+4bDwOadE
+         nZhNOKuaBydaUeBeJfbao0bD4iib63Y/5LWUkZq06Zp3MLcINWk8fpx+Af4SP903OUfS
+         PCqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689899114; x=1690503914;
+        d=1e100.net; s=20221208; t=1689899118; x=1690503918;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pyRltwBL40ly0dHFnfbd3y2RN2Os8N/El6xTnYycO54=;
-        b=gAXYCYrCoQy7Ng97Wp94WJ0o+Ex+7R19vwR+YJSj0gbi02uLPFIxxaGa1iqD3JpSym
-         A6kwMju/oU4jExAb64XJgbThGVXMFHkrntoWSMQIxFo8Ma7ZwTgXA4FxqSyRppvvFk+C
-         tjUkJv7/y3EWcJMRW5+o3O9fQ9lMY82OS/z0v4cLvrHJ6A7xN5nILWMmdu/yX9zFjdnd
-         fxy2jKS4Jkqf1bT3Xar5pK4HcBGOlD32mGcXrNqcPrIQYtw7nSiPqAX6OMN0WuX+BjbC
-         hKiFCAEF0SumwTgspSXHbgInamk/50rjeJlf7QEQE2m0X4O/Dde0EQUKXSsDLR77lWfL
-         z5ew==
-X-Gm-Message-State: ABy/qLajRzflFPQpo1Vrb3nX5yPcshDyvMCQEvq26/6VJJBdHqbzyc2D
-        ndzfq4YlK5qwFby9SRuPEUo=
-X-Google-Smtp-Source: APBJJlGNljnVlrTNP08cVwpF/RXFuvVlLrP64hNQ3+mZ7oj7zvUL6LixwtvNcZGF3oj59xDhX3w3tA==
-X-Received: by 2002:a05:6808:210d:b0:3a4:8d82:2c1f with SMTP id r13-20020a056808210d00b003a48d822c1fmr543640oiw.39.1689899114300;
-        Thu, 20 Jul 2023 17:25:14 -0700 (PDT)
+        bh=fFIBwtmo2IIbiaxwKJGeWrtXlnHB7ucvw4QiyNqWMKM=;
+        b=KZWvwMRdmRj1HUGRAsZeVCQULXcBLXHpg6dh05wz1y7WqU2nER54j+3aJRge9Fe8S0
+         SSCJYNVn80wHVgdiZDpfXKS/WOplr/qtcF9MtBw5DlRTm6vG25I8ujr/qRgOaqkHohdL
+         fRdXsY3KLzzTT2W56kVgGahS7aCtk0FELOnunuGDiDxvFBM6NhG/Xn9P1mZXFTG07ya1
+         W4FhCzY5XU4GT628CgzIgCiWnKqgVpeUPIlH6dAZelNEjmRAGBo/KWUphnShNFJv0O9u
+         NlUtiMVBesXuev/WW8Ye2Q6rxoKL3SMpGuCoec+4+XVOOnajbYAkx4xD3McMffoPpe7R
+         DbSg==
+X-Gm-Message-State: ABy/qLaMDSFS5uy1NoRBJep7Bfx+N18OONeXb6oUPg5j/nCpLYZcOLHS
+        I1sf7Hf6ymDNTq/69126IWw=
+X-Google-Smtp-Source: APBJJlGgB99Rhaf0oBq3kzK9ReZbPQ5DtRmjDFUepFyssJtRnAL679aMVLUM2I4YQjXo2sN+lY+ALQ==
+X-Received: by 2002:a05:6808:1409:b0:39e:5892:8539 with SMTP id w9-20020a056808140900b0039e58928539mr586637oiv.9.1689899118692;
+        Thu, 20 Jul 2023 17:25:18 -0700 (PDT)
 Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id t25-20020a056808159900b0039ee1de4e6esm928210oiw.38.2023.07.20.17.25.11
+        by smtp.gmail.com with ESMTPSA id t25-20020a056808159900b0039ee1de4e6esm928210oiw.38.2023.07.20.17.25.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 17:25:14 -0700 (PDT)
-Message-ID: <ae33f931-e5e2-8e62-3d1d-b3bab83829d8@gmail.com>
-Date:   Wed, 19 Jul 2023 16:05:57 -0300
+        Thu, 20 Jul 2023 17:25:18 -0700 (PDT)
+Message-ID: <41d543d4-ab21-d10f-f484-4d5360fed7c2@gmail.com>
+Date:   Wed, 19 Jul 2023 16:07:56 -0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 04/12] rust: init: wrap type checking struct
- initializers in a closure
+Subject: Re: [PATCH v2 05/12] rust: init: make initializer values inaccessible
+ after initializing
 Content-Language: en-US
 To:     Benno Lossin <benno.lossin@proton.me>,
         Miguel Ojeda <ojeda@kernel.org>,
@@ -67,14 +67,14 @@ Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
         Andreas Hindborg <nmi@metaspace.dk>,
         rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20230719141918.543938-1-benno.lossin@proton.me>
- <20230719141918.543938-5-benno.lossin@proton.me>
+ <20230719141918.543938-6-benno.lossin@proton.me>
 From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <20230719141918.543938-5-benno.lossin@proton.me>
+In-Reply-To: <20230719141918.543938-6-benno.lossin@proton.me>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DATE_IN_PAST_24_48,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,13 +83,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 7/19/23 11:20, Benno Lossin wrote:
-> In the implementation of the init macros there is a `if false` statement
-> that type checks the initializer to ensure every field is initialized.
-> Since the next patch has a stack variable to store the struct, the
-> function might allocate too much memory on debug builds. Putting the
-> struct into a closure that is never executed ensures that even in debug
-> builds no stack overflow error is caused. In release builds this was not
-> a problem since the code was optimized away due to the `if false`.
+> Previously the init macros would create a local variable with the name
+> and hygiene of the field that is being initialized to store the value of
+> the field. This would override any user defined variables. For example:
+> ```
+> struct Foo {
+>      a: usize,
+>      b: usize,
+> }
+> let a = 10;
+> let foo = init!(Foo{
+>      a: a + 1, // This creates a local variable named `a`.
+>      b: a, // This refers to that variable!
+> });
+> let foo = Box::init!(foo)?;
+> assert_eq!(foo.a, 11);
+> assert_eq!(foo.b, 11);
+> ```
+> 
+> This patch changes this behavior, so the above code would panic at the
+> last assertion, since `b` would have value 10.
 > 
 > Signed-off-by: Benno Lossin <benno.lossin@proton.me>
 > ---
