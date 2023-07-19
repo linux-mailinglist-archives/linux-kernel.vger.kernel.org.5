@@ -2,214 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBD6758DEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 08:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE68758DF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 08:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbjGSGgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 02:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58708 "EHLO
+        id S229503AbjGSGhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 02:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbjGSGgd (ORCPT
+        with ESMTP id S230416AbjGSGg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 02:36:33 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 485061FFB;
-        Tue, 18 Jul 2023 23:36:23 -0700 (PDT)
-Received: from loongson.cn (unknown [10.2.9.158])
-        by gateway (Coremail) with SMTP id _____8AxFvFmhLdkMiQHAA--.18334S3;
-        Wed, 19 Jul 2023 14:36:22 +0800 (CST)
-Received: from kvm-1-158.loongson.cn (unknown [10.2.9.158])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxniNOhLdkQGc0AA--.38253S4;
-        Wed, 19 Jul 2023 14:36:21 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Jianmin Lv <lvjianmin@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>
-Subject: [PATCH v5 2/2] irqchip/loongson-eiointc: Simplify irq routing on some platforms
-Date:   Wed, 19 Jul 2023 14:35:58 +0800
-Message-Id: <20230719063558.3131045-3-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20230719063558.3131045-1-maobibo@loongson.cn>
-References: <20230719063558.3131045-1-maobibo@loongson.cn>
+        Wed, 19 Jul 2023 02:36:59 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014FA1FFC
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 23:36:48 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-51de9c2bc77so8893421a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 23:36:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689748607; x=1692340607;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=v11wysb3P45axVNtMG0xHppUAmtgp/rKBxmWNbBV8AY=;
+        b=kTSmOtYjORgEOXTl1p7nhh95TdIYgJCXQNQeaEkDsNTAwNcHMkZIKcvaNrnHcXSWRv
+         GwI4w7Hg6bVzEOMv0T6RxEh6ae44FYbKz194vmRN4v8FR9gI4lFNB3WTwUt9U2fOQQzU
+         NtA1ldkMkoywwrVSJo5kLHRbi5IeBesbGiRMMzQSAmnGxiis+INeUp410wy0t7F8mA1g
+         NX9j1aZ35aJ6wFdP/OW+AdyAfZqkghIA73mrvZY8w0q1p9eBiEUGmAz8O0i5CD56KBmK
+         om4F6l6/LZ38GuHtFd+M1+PydJ6XFyFqhaxmlO1HnMklMYjSzFnASUbpzEVASGRnGHp8
+         aKOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689748607; x=1692340607;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v11wysb3P45axVNtMG0xHppUAmtgp/rKBxmWNbBV8AY=;
+        b=lF+Mo/IUpOzehyz5phRb/RoxAHXC0JrBxZ9FSnhiewfPUWivEhC71L3AMfZ+F+2sSB
+         Aduhz5WOfajdbssa8KU3ISxjcYc70r/atv343aW5bUMZOJYC6mfu/x2u8gc3reubruax
+         X5lvR5nlOfjWgxQ/CIPOlS1kv+Emujat3jaiwFhvQe9GSalWEt9Fb/H6lZlqjC9atJzF
+         nYC18bSns/m7mmf9biD/jr3hRbQLM7BAMcb+i0CgXgrpeS6UWb2pYg/tIl+YHObd/AB1
+         Yg0fDXrDNJEXxPHTH2VzgpN2FwRF13KFMbQ+YIAEqjSAJN+wWC05I3r9SY/5S6B6Yrbp
+         Tw8A==
+X-Gm-Message-State: ABy/qLb466kzU2koC4EvMzwuojjQ5zzmFKK9vYNIOrwgfaKpkkv1Q1Di
+        F544UxI5VTuXmCweDp1Z+MjlNQ==
+X-Google-Smtp-Source: APBJJlFNijc5whQNi4UO9OZTJAlLHQRUDn6Y4O7gSXBMNaW0f6la/NFqlDxi2uPvNlz+tAg0qrwZ8A==
+X-Received: by 2002:a05:6402:184a:b0:51d:f74c:1d44 with SMTP id v10-20020a056402184a00b0051df74c1d44mr1803282edy.31.1689748607036;
+        Tue, 18 Jul 2023 23:36:47 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id b17-20020a05640202d100b005217412e18dsm2252780edx.48.2023.07.18.23.36.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 23:36:46 -0700 (PDT)
+Message-ID: <5353872c-56a3-98f9-7f22-ec1f6c2ccdc8@linaro.org>
+Date:   Wed, 19 Jul 2023 08:36:45 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxniNOhLdkQGc0AA--.38253S4
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxKFykCr15Gr4xtF1fXFW3CFX_yoW7GF43pF
-        WUGas0qr48XFW5WrZakw4DZFyavr93X3yDtF4fua97Aa98ua1UKF1FyFnrZF1jk34UAF1Y
-        yF45XFy8uFn8A3XCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUU9Fb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
-        AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
-        6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-        CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF
-        0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
-        AIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2
-        KfnxnUUI43ZEXa7IU8EeHDUUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] dt-bindings: reset: Updated binding for Versal-NET
+ reset driver
+Content-Language: en-US
+To:     Michal Simek <michal.simek@amd.com>,
+        Conor Dooley <conor@kernel.org>,
+        Piyush Mehta <piyush.mehta@amd.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, p.zabel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        git@amd.com
+References: <20230717112348.1381367-1-piyush.mehta@amd.com>
+ <20230717112348.1381367-2-piyush.mehta@amd.com>
+ <20230717-explode-caucus-82c12e340e39@spud>
+ <ee81e955-32be-66ea-377b-263ee60a2632@linaro.org>
+ <e8f48a30-9aff-bc2f-d03f-793840a192c9@amd.com>
+ <694a1314-0b25-ff5e-b19f-5a0efe07bf64@linaro.org>
+ <cae162d0-843d-ca1f-80d3-5a0dfe1e3d0f@amd.com>
+ <22e7dc73-2411-5cb1-6cef-daa5f2af8297@linaro.org>
+ <5df3e976-9fc2-19af-e6b4-e2bea0d64623@amd.com>
+ <4c932cbf-19db-2c88-2558-aa42c5338598@linaro.org>
+ <ab0fb666-e370-cb07-367b-f3b88e18fba9@amd.com>
+ <a12286d2-f929-ed6d-c0f2-4dad5ce6b388@linaro.org>
+ <3f76ff03-963d-fff8-b512-abce447da7d0@amd.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <3f76ff03-963d-fff8-b512-abce447da7d0@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some LoongArch systems have only one eiointc node such as 3A5000/2K2000
-and qemu virt-machine. If there is only one eiointc node, all cpus can
-access eiointc registers directly; if there is multiple eiointc nodes, each
-cpu can only access eiointc belonging to specified node group, so anysend
-or ipi needs to be used to configure irq routing. IRQ routing is simple on
-such systems with one node, method like anysend is not necessary.
+On 19/07/2023 08:23, Michal Simek wrote:
+>> Yes. If you want to store some constants (register values, firmware
+>> magic numbers) and use in DTS, this is the way to go. Most (or all) of
+>> examples above are for register values.
+> 
+> I did small grepping over Linux (reset only) and I found that all of these files 
+> are not used by any driver/code. They are included in binding document or dt files.
+> Based on your description above they all are candidates for removing from 
+> include/dt-bindings/reset/.
+> On the other hand that files could be used in different projects out of Linux 
+> where that values could be used by a driver/code.
 
-This patch provides simpile IRQ routing method for systems with one eiointc
-node, and is tested on 3A5000 board and qemu virt-machine.
+Yes, therefore this should be case-by-case decision.
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- drivers/irqchip/irq-loongson-eiointc.c | 80 ++++++++++++++++++++++++--
- 1 file changed, 74 insertions(+), 6 deletions(-)
+> 
+> What to do with it? Should we remove it, deprecate it or just keep it and not to 
+> add new one? I just want to know how to properly handle it.
 
-diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
-index 603d323b8f8b..8f3470e1f9bc 100644
---- a/drivers/irqchip/irq-loongson-eiointc.c
-+++ b/drivers/irqchip/irq-loongson-eiointc.c
-@@ -127,6 +127,48 @@ static int eiointc_set_irq_affinity(struct irq_data *d, const struct cpumask *af
- 	return IRQ_SET_MASK_OK;
- }
- 
-+static int eiointc_single_set_irq_affinity(struct irq_data *d,
-+				const struct cpumask *affinity, bool force)
-+{
-+	unsigned int cpu;
-+	unsigned long flags;
-+	uint32_t vector, regaddr, data, coremap;
-+	struct cpumask mask;
-+	struct eiointc_priv *priv = d->domain->host_data;
-+
-+	cpumask_and(&mask, affinity, cpu_online_mask);
-+	cpumask_and(&mask, &mask, &priv->cpuspan_map);
-+	if (cpumask_empty(&mask))
-+		return -EINVAL;
-+
-+	cpu = cpumask_first(&mask);
-+	vector = d->hwirq;
-+	regaddr = EIOINTC_REG_ENABLE + ((vector >> 5) << 2);
-+	data = ~BIT(vector & 0x1F);
-+	coremap = BIT(cpu_logical_map(cpu) % CORES_PER_EIO_NODE);
-+
-+	/*
-+	 * simplify for platform with only one eiointc node
-+	 * access eiointc registers directly rather than
-+	 * use any_send method here
-+	 */
-+	raw_spin_lock_irqsave(&affinity_lock, flags);
-+	iocsr_write32(EIOINTC_ALL_ENABLE & data, regaddr);
-+	/*
-+	 * get irq route info for continuous 4 vectors
-+	 * and set affinity for specified vector
-+	 */
-+	data = iocsr_read32(EIOINTC_REG_ROUTE + (vector & ~3));
-+	data &=  ~(0xff << ((vector & 3) * 8));
-+	data |= coremap << ((vector & 3) * 8);
-+	iocsr_write32(data, EIOINTC_REG_ROUTE + (vector & ~3));
-+	iocsr_write32(EIOINTC_ALL_ENABLE, regaddr);
-+	raw_spin_unlock_irqrestore(&affinity_lock, flags);
-+
-+	irq_data_update_effective_affinity(d, cpumask_of(cpu));
-+	return IRQ_SET_MASK_OK;
-+}
-+
- static int eiointc_index(int node)
- {
- 	int i;
-@@ -238,22 +280,39 @@ static struct irq_chip eiointc_irq_chip = {
- 	.irq_set_affinity	= eiointc_set_irq_affinity,
- };
- 
-+static struct irq_chip eiointc_irq_chip_single = {
-+	.name			= "EIOINTC-S",
-+	.irq_ack		= eiointc_ack_irq,
-+	.irq_mask		= eiointc_mask_irq,
-+	.irq_unmask		= eiointc_unmask_irq,
-+#ifdef CONFIG_SMP
-+	.irq_set_affinity       = eiointc_single_set_irq_affinity,
-+#endif
-+};
-+
- static int eiointc_domain_alloc(struct irq_domain *domain, unsigned int virq,
- 				unsigned int nr_irqs, void *arg)
- {
- 	int ret;
- 	unsigned int i, type;
- 	unsigned long hwirq = 0;
--	struct eiointc *priv = domain->host_data;
-+	struct eiointc_priv *priv = domain->host_data;
-+	struct irq_chip *chip;
- 
- 	ret = irq_domain_translate_onecell(domain, arg, &hwirq, &type);
- 	if (ret)
- 		return ret;
- 
--	for (i = 0; i < nr_irqs; i++) {
--		irq_domain_set_info(domain, virq + i, hwirq + i, &eiointc_irq_chip,
-+	/*
-+	 * use simple irq routing method on single eiointc node
-+	 */
-+	if ((nr_pics == 1) && (nodes_weight(priv->node_map) == 1))
-+		chip = &eiointc_irq_chip_single;
-+	else
-+		chip = &eiointc_irq_chip;
-+	for (i = 0; i < nr_irqs; i++)
-+		irq_domain_set_info(domain, virq + i, hwirq + i, chip,
- 					priv, handle_edge_irq, NULL, NULL);
--	}
- 
- 	return 0;
- }
-@@ -310,6 +369,7 @@ static void eiointc_resume(void)
- 	int i, j;
- 	struct irq_desc *desc;
- 	struct irq_data *irq_data;
-+	struct irq_chip *chip;
- 
- 	eiointc_router_init(0);
- 
-@@ -319,7 +379,8 @@ static void eiointc_resume(void)
- 			if (desc && desc->handle_irq && desc->handle_irq != handle_bad_irq) {
- 				raw_spin_lock(&desc->lock);
- 				irq_data = irq_domain_get_irq_data(eiointc_priv[i]->eiointc_domain, irq_desc_get_irq(desc));
--				eiointc_set_irq_affinity(irq_data, irq_data->common->affinity, 0);
-+				chip = irq_data_get_irq_chip(irq_data);
-+				chip->irq_set_affinity(irq_data, irq_data->common->affinity, 0);
- 				raw_spin_unlock(&desc->lock);
- 			}
- 		}
-@@ -497,7 +558,14 @@ static int __init eiointc_of_init(struct device_node *of_node,
- 	priv->node = 0;
- 	priv->domain_handle = of_node_to_fwnode(of_node);
- 
--	ret = eiointc_init(priv, parent_irq, 0);
-+	/*
-+	 * 2k0500 and 2k2000 has only one eiointc node
-+	 * set nodemap as 1 for simple irq routing
-+	 *
-+	 * Fixme: what about future embedded boards with more than 4 cpus?
-+	 * nodemap and node need be added in dts like acpi table
-+	 */
-+	ret = eiointc_init(priv, parent_irq, 1);
- 	if (ret < 0)
- 		goto out_free_priv;
- 
--- 
-2.27.0
+They cannot be removed. They could be copied to DTS and deprecated in
+the bindings. But it is not that important that we clean it up... or it
+is rather to the platform maintainer. I did it some time ago for Samsung
+and recently TI is doing for serdes mux bindings.
+
+Best regards,
+Krzysztof
 
