@@ -2,102 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 380C77599E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCE87599F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231767AbjGSPhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 11:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43594 "EHLO
+        id S231879AbjGSPi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 11:38:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbjGSPg7 (ORCPT
+        with ESMTP id S230118AbjGSPix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 11:36:59 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C2BE75
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:36:55 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-666edfc50deso683164b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 08:36:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689781014; x=1690385814;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=K38BxEYH26DFGpPyiTmHTMf3gy9MqzicLBbnOKCteTM=;
-        b=M31KYUXdWst2TaY1F5jpsUdD4iaP74nNegJ7paY/HMXCBJrbgEohOPoyPhg0NjvTTF
-         ZL1bbUaG1BYU4RWYHW3ZzhJaBZRzzB3zcSFsrJUy4zMYMZLN4ilfrMUMcXmvSRnx/t9f
-         7LfMVIkncXDARpJfnBf5+vmvQgYgDJrih18Xc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689781014; x=1690385814;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K38BxEYH26DFGpPyiTmHTMf3gy9MqzicLBbnOKCteTM=;
-        b=iSAEBsq/AgpNFwcSdcwMSejCkyzgr8KEO8b0/V2sOYQGqNZ+MCAlVAO7/ZxDEuHFgp
-         rKbwWj/PLMeIcqCHrAQxff8LY6J0aBKu6/tURDWG1yJmVOaO+KdqgXVK1XNODxO5Ljsn
-         MN8dVh13Ivu6IneuWO3FhNCRDDTGpV/sfK9ApRPtg7Ts8bSr6y2DILXkt3WCA/9BcCz5
-         CuzsfMzDkEyTsEerCgfIegjgpDuHYdX3Wq3d2ZGVK/TaeYz5a30UcXKxsp0EpK2ZNwtT
-         M39dmfJ0jLRjuOkQvnuws2V8+RSdk4MZ50aQ4ap5xuoD4gtN2eedjuL7j1sBOT5Q0fKN
-         LtXQ==
-X-Gm-Message-State: ABy/qLbhfaUalQkDR5r9Q0JGJn26/BEUZXE0nSuYC710/L9iefz7FTXS
-        PfblzmSNosYDHY0l8g5S2saayQ==
-X-Google-Smtp-Source: APBJJlH8qqAz5d6W7EDAD66e1X4MvOuGTuqq1LdVO/pyvNFME1BCH5jDHUK+QmS1hD0xqeuMV5+gjQ==
-X-Received: by 2002:a05:6a00:cc2:b0:678:11d6:2ad6 with SMTP id b2-20020a056a000cc200b0067811d62ad6mr4173575pfv.9.1689781014193;
-        Wed, 19 Jul 2023 08:36:54 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id x3-20020a056a00270300b0065a1b05193asm3415022pfv.185.2023.07.19.08.36.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 08:36:53 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 08:36:53 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Azeem Shaikh <azeemshaikh38@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: Crash in VirtualBox virtual machines running kernel 6.5
-Message-ID: <202307190835.752D710D@keescook>
-References: <ab3a70e9-60ed-0f13-e3d4-8866eaccc8c1@lwfinger.net>
- <202307190823.086EFD42D9@keescook>
+        Wed, 19 Jul 2023 11:38:53 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48290B7;
+        Wed, 19 Jul 2023 08:38:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689781132; x=1721317132;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7Ov7681vkWQmGXJ8qz/HV+aSvOi5QL9idK+76+29III=;
+  b=LMRD8eBrSkXDE+MzC1p69mW3aAoM4g1gFiQJBw8l0sXZCSeM2+MN4+cU
+   UBfSecO8sXJDE0zZOWBvcTOAInNVDLKVX+fNJZ18l0VwQx5HEkuaTeP1f
+   crDynJ3NDGcpu18mAzkHOy3fs8JVW9/DOUkvR8acwuND3N2J31MPvoCvh
+   XPBOy0hlDK4Z0qvxlAPrS2B7N78O4SBV7Q/twQCDmpvJ6xcdosW+ktOIL
+   ao3CJBHMmVmftDQ7QHNiXb52TvdrGqr5TEwU8dI5GgSyy7b+e9uVCsd3y
+   QNLsJvn/J0BjY1bGF+Gq7VHcF+xeGPKlnFEv1i2/AhRJ8RN5YZiXDkMNt
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="452874358"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="452874358"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 08:38:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="718022098"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="718022098"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 19 Jul 2023 08:38:47 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qM9G1-00054P-15;
+        Wed, 19 Jul 2023 15:38:30 +0000
+Date:   Wed, 19 Jul 2023 23:38:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tony Lindgren <tony@atomide.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-omap@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] serial: core: Add support for dev_name:0.0 naming for
+ kernel console
+Message-ID: <202307192334.nrgSDnfu-lkp@intel.com>
+References: <20230719051525.46494-1-tony@atomide.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202307190823.086EFD42D9@keescook>
+In-Reply-To: <20230719051525.46494-1-tony@atomide.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Okay, please try:
+Hi Tony,
 
-diff --git a/fs/vboxsf/shfl_hostintf.h b/fs/vboxsf/shfl_hostintf.h
-index aca829062c12..902fe3224453 100644
---- a/fs/vboxsf/shfl_hostintf.h
-+++ b/fs/vboxsf/shfl_hostintf.h
-@@ -68,12 +68,11 @@ struct shfl_string {
- 
- 	/** UTF-8 or UTF-16 string. Nul terminated. */
- 	union {
--		u8 utf8[2];
--		u16 utf16[1];
--		u16 ucs2[1]; /* misnomer, use utf16. */
-+		DECLARE_FLEX_ARRAY(u8, utf8);
-+		DECLARE_FLEX_ARRAY(u16, utf16);
- 	} string;
- };
--VMMDEV_ASSERT_SIZE(shfl_string, 6);
-+VMMDEV_ASSERT_SIZE(shfl_string, 4);
- 
- /* The size of shfl_string w/o the string part. */
- #define SHFLSTRING_HEADER_SIZE  4
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on tty/tty-testing]
+[also build test ERROR on tty/tty-next linus/master v6.5-rc2 next-20230719]
+[cannot apply to tty/tty-linus usb/usb-testing usb/usb-next usb/usb-linus]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Tony-Lindgren/serial-core-Add-support-for-dev_name-0-0-naming-for-kernel-console/20230719-131657
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
+patch link:    https://lore.kernel.org/r/20230719051525.46494-1-tony%40atomide.com
+patch subject: [PATCH] serial: core: Add support for dev_name:0.0 naming for kernel console
+config: x86_64-randconfig-r013-20230718 (https://download.01.org/0day-ci/archive/20230719/202307192334.nrgSDnfu-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce: (https://download.01.org/0day-ci/archive/20230719/202307192334.nrgSDnfu-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307192334.nrgSDnfu-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/tty/serial/serial_core.c:3337:17: error: no member named 'port_id' in 'struct uart_port'
+                                  port->port_id);
+                                  ~~~~  ^
+   1 error generated.
 
 
-The size assert doesn't seem to be used anywhere else, but I can do a
-more careful binary analysis later today...
+vim +3337 drivers/tty/serial/serial_core.c
+
+  3324	
+  3325	/*
+  3326	 * Add preferred console if configured on kernel command line with naming
+  3327	 * "console=dev_name:0.0".
+  3328	 */
+  3329	static int serial_core_add_preferred_console(struct uart_driver *drv,
+  3330						     struct uart_port *port)
+  3331	{
+  3332		char *port_match, *opt, *name;
+  3333		int len, ret = 0;
+  3334	
+  3335		port_match = kasprintf(GFP_KERNEL, "console=%s:%i.%i",
+  3336				       dev_name(port->dev), port->ctrl_id,
+> 3337				       port->port_id);
+  3338		if (!port_match)
+  3339			return -ENOMEM;
+  3340	
+  3341		opt = strstr(saved_command_line, port_match);
+  3342		if (!opt)
+  3343			goto free_port_match;
+  3344	
+  3345		len = strlen(port_match);
+  3346	
+  3347		if (strlen(opt) > len + 1 && opt[len] == ',')
+  3348			opt += len + 1;
+  3349		else
+  3350			opt = NULL;
+  3351	
+  3352		name = kstrdup(drv->dev_name, GFP_KERNEL);
+  3353		if (!name) {
+  3354			ret = -ENOMEM;
+  3355			goto free_port_match;
+  3356		}
+  3357	
+  3358		add_preferred_console(name, port->line, opt);
+  3359	
+  3360		kfree(name);
+  3361	
+  3362	free_port_match:
+  3363		kfree(port_match);
+  3364	
+  3365		return ret;
+  3366	}
+  3367	
 
 -- 
-Kees Cook
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
