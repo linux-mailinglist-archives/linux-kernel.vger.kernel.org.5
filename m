@@ -2,131 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE997590A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 10:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BA67590AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 10:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbjGSIwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 04:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45210 "EHLO
+        id S230463AbjGSIxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 04:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbjGSIwi (ORCPT
+        with ESMTP id S230449AbjGSIwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 04:52:38 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D86FC;
-        Wed, 19 Jul 2023 01:52:37 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36J8Gdts003054;
-        Wed, 19 Jul 2023 08:52:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=DmrA6Z9j8oN/IxGnpVAb1NIOL7nHFMRfbhGCMTkaxEw=;
- b=nSTpxgO4f1Hnr2ISC4kKxpQOiDkz+V+0XSn60+ikcp4Mg0Y65xDofvwjJvM/UtzGjYBi
- y4/xqa1KSHSA+hCkXjIvEB9Lj5BUyQ1BlFKhI31IvF8JEcXnq48DbbmxpC5rjC0GzDzV
- I9ZXVtXuRsL3hvKIhdFxqktdgHzWxcYAK7Ry8RMNnJwdtgGnv/i1XngDuk6lvuqqbWXN
- Ejn9y0K2z+bB3k6Tn/TKRhXqT7WGHW9wQb4uLb/YVCMiqS/q5YFikA01O+goRrDNj2rc
- o4wmlBe2xEKjHNtSPM4r7EgK8jIipcKEli1eHMVHltdG8RLF65Qma1f1fmdeAwcPL72w vQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rwnrrjvs1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Jul 2023 08:52:10 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36J8q9Sa032119
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Jul 2023 08:52:09 GMT
-Received: from [10.239.154.73] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 19 Jul
- 2023 01:52:06 -0700
-Message-ID: <c22e59ef-918f-81ba-99e8-87815949fc1a@quicinc.com>
-Date:   Wed, 19 Jul 2023 16:52:03 +0800
+        Wed, 19 Jul 2023 04:52:54 -0400
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD4F1723
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 01:52:51 -0700 (PDT)
+Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-791b8525b59so2407197241.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 01:52:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1689756770; x=1690361570;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SMiqDw7X7t0YrSOOzvan9lAW+Fd4IqCvmMQSBgwW2RU=;
+        b=n+QWAsjwEYrhOL660gbbzKYpPFBdtY/VRGDpk3zAR6D3OrchbXWU+3Rrhk/8HnroPz
+         2A/lfOsc4NwsLmiBopMXoDu4BzqbEL+LkBibDmm1tfKSBIMB2GAVJi/VQJxAYQxZegpA
+         /6GuiB4id+r4oKFChsW0y+qMYpiZHC4/Tq1MY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689756770; x=1690361570;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SMiqDw7X7t0YrSOOzvan9lAW+Fd4IqCvmMQSBgwW2RU=;
+        b=SNNUuz8BfWKaQS+wcTu1Fba9gSLer4ppmaxTSgbnVJ+h1dE4WbNC2kp3meWiR+Wywj
+         w8yaY/lw/4oVsIoXxHMsizjgi64xaPbJ/vsz9jChW+c9h2G7TTvZeRs2OJHQJsvW8mTp
+         9bR79n3mcRJwzdMmrq0eDba9/6BnGE0k4XDC+pnY++QUMIzuL4HKGXDELAY5lKZpm7Qv
+         5/LfcDyfDYeL95wRWHUuai1+JCffCl40CJbZj9yTZNTENwKgtdshDRipb2/dm7WjYkzM
+         QArWXRqFqSVM8BGbNoa1jDADBhcdfisXQcc9HM0Wu7Iy7rxJ4efjljoRcYvGswlrx/hq
+         oHuw==
+X-Gm-Message-State: ABy/qLaPVMOFlItlQQvvccVqvveg4H9qabzED3+wquHjP+qb0O92AUdT
+        XvlIzbJ2yUsn+bOUg+2Ew4egGOwbO4P2b5s4rEqhtw==
+X-Google-Smtp-Source: APBJJlFMB/51phMKvUpHT3Rcml2q3l4gVhVhjiZDDgMbXw9h+TT8DiP7jHpkQfpm9gOT379kwzlpBCyQqBRLcLnf03Q=
+X-Received: by 2002:a67:fd59:0:b0:443:873a:16b8 with SMTP id
+ g25-20020a67fd59000000b00443873a16b8mr9329375vsr.30.1689756770172; Wed, 19
+ Jul 2023 01:52:50 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1] led: flash: various minor fixes for leds-qcom-flash
- driver
-Content-Language: en-US
-To:     Lee Jones <lee@kernel.org>
-CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <pavel@ucw.cz>, ChiaEn Wu <chiaen_wu@richtek.com>,
-        Alice Chen <alice_chen@richtek.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        "Dylan Van Assche" <me@dylanvanassche.be>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Tom Rix <trix@redhat.com>, <linux-leds@vger.kernel.org>,
-        <quic_collinsd@quicinc.com>, <quic_subbaram@quicinc.com>
-References: <20230718092439.2482320-1-quic_fenglinw@quicinc.com>
- <d246292b-c0df-fa70-7561-9523e4db6138@linaro.org>
- <e420f2c9-4c29-e2c4-4312-291b05c97224@quicinc.com>
- <20230719085029.GI1082701@google.com>
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-In-Reply-To: <20230719085029.GI1082701@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: EZ0X1Knc-eqXbkLCUBOY5q-cuertraQT
-X-Proofpoint-ORIG-GUID: EZ0X1Knc-eqXbkLCUBOY5q-cuertraQT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-19_05,2023-07-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- malwarescore=0 suspectscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
- mlxlogscore=476 priorityscore=1501 impostorscore=0 mlxscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307190081
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230719082033.1229277-1-wenst@chromium.org> <a63ffedd-8637-8161-2317-bd36be2867ae@collabora.com>
+In-Reply-To: <a63ffedd-8637-8161-2317-bd36be2867ae@collabora.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Wed, 19 Jul 2023 16:52:39 +0800
+Message-ID: <CAGXv+5GimZNPo6QDmCN7o4-qU-iPni=e1vPH5v0Z-Opn_0QjFg@mail.gmail.com>
+Subject: Re: [PATCH] clk: mediatek: Check if clock ID is larger than
+ clk_hw_onecell_data size
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 19, 2023 at 4:36=E2=80=AFPM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@collabora.com> wrote:
+>
+> Il 19/07/23 10:20, Chen-Yu Tsai ha scritto:
+> > The MediaTek clock driver library's simple-probe mechanism allocates
+> > clk_hw_onecell_data based on how many clocks are defined. If there's a
+> > mismatch between that and the actual number of clocks defined in the DT
+> > binding, such that a clock ID exceeds the number, then an out-of-bounds
+> > write will occur. This silently corrupts memory, maybe causing a crash
+> > later on that seems unrelated. KASAN can detect this if turned on.
+> >
+> > To avoid getting into said scenario, check if the to be registered
+> > clock's ID will fit in the allocated clk_hw_onecell_data. If not, put
+> > out a big warning and skip the clock.
+> >
+> > One could argue that the proper fix is to let the drivers specify the
+> > number of clocks (based on a DT binding macro) instead. However even
+> > the DT binding macro could be wrong. And having code to catch errors
+> > and give out warnings is better than having silent corruption.
+> >
+> > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> > ---
+> > This one is less urgent.
+> >
+> > Angelo, do you think we should add a field to struct mtk_clk_desc and
+> > assign CLK_XXX_NR_CLK to it?
+> >
+>
+> I get the point... but I don't know if it is a good idea to add checks fo=
+r
+> *bad code* in the first place, as bad code shall not happen at all.
+> Validating whether a developer wrote the right thing is something that sh=
+ould
+> be done in code reviews, and such mistakes shouldn't be allowed to happen=
+.
 
+In theory, yeah. In practice, well, we already have such an error in tree. =
+:p
 
-On 7/19/2023 4:50 PM, Lee Jones wrote:
-> On Tue, 18 Jul 2023, Fenglin Wu wrote:
-> 
->>
->>
->> On 7/18/2023 5:32 PM, Krzysztof Kozlowski wrote:
->>> On 18/07/2023 11:24, Fenglin Wu wrote:
->>>> Update the driver to address following minor issues:
->>>>    - Add a sentence in Kconfig to explain the driver can be compiled
->>>>      as a module
->>>>    - strobe off the LED channel before setting flash current to prevent
->>>>      the flash LED being lit with an incorrect brightness if it was
->>>>      already active in torch mode
->>>>    - put the child node if register any flash LED device failed.
->>>
->>> Don't mix different fixes and changes in one commit.
->>>
->>> Also, please use scripts/get_maintainers.pl to get a list of necessary
->>> people and lists to CC (and consider --no-git-fallback argument). I
->>> really do not see a point why I am cc-ed here.
->>>
->>> Best regards,
->>> Krzysztof
->>
->> I understood that we should separate the changes for different fixes.
->>
->> I am trying to address the review comment from Pavel that was coming late
->> after the original changes were applied:
->> https://lore.kernel.org/linux-arm-msm/20230325170957.GA2904@bug/ (sorry for
->> just got time to work on this), since all of them are small ones and all
->> related with the same driver, so I thought it might be good to put them
->> together and update with a single patch?
-> 
-> Separate patches - one per functional change please.
-sure. I will separate them and send them out.
-Thanks
+> Besides, if you really want to go this route... In that case I disagree a=
+bout
+> the `continue`, as I would be inflexible: if your code is bad, I will ref=
+use
+> to register your clocks entirely.
+> That'll force the developer to actually fix it, as parts of the SoC and/o=
+r
+> platform will *not work at all* :-)
+>
+> So, in that case...
+>
+>         if (rc->id >=3D clk_data->num) {
+>                 hw =3D PTR_ERR(-EINVAL);
+>                 goto err;
+>         }
+>
+> Thoughts?
 
-> 
+That works for me as well. This was more my debug code cleaned up.
+I assume we still want the warning / error message though?
+
+The other choice would be adding .num_clks for CLK_XXX_NR_CLKS to
+mtk_clk_desc. What are your thoughts on that?
+
+ChenYu
+
+> Cheers!
+> Angelo
+>
+> >   drivers/clk/mediatek/clk-gate.c | 11 +++++++++
+> >   drivers/clk/mediatek/clk-mtk.c  | 43 ++++++++++++++++++++++++++++++++=
++
+> >   2 files changed, 54 insertions(+)
+> >
+> > diff --git a/drivers/clk/mediatek/clk-gate.c b/drivers/clk/mediatek/clk=
+-gate.c
+> > index 67d9e741c5e7..bb7c536ef60f 100644
+> > --- a/drivers/clk/mediatek/clk-gate.c
+> > +++ b/drivers/clk/mediatek/clk-gate.c
+> > @@ -222,6 +222,11 @@ int mtk_clk_register_gates(struct device *dev, str=
+uct device_node *node,
+> >       for (i =3D 0; i < num; i++) {
+> >               const struct mtk_gate *gate =3D &clks[i];
+> >
+> > +             if (WARN(gate->id >=3D clk_data->num,
+> > +                      "%pOF: gateclock ID (%d)larger than expected (%d=
+)\n",
+> > +                      node, gate->id, clk_data->num))
+> > +                     continue;
+> > +
+> >               if (!IS_ERR_OR_NULL(clk_data->hws[gate->id])) {
+> >                       pr_warn("%pOF: Trying to register duplicate clock=
+ ID: %d\n",
+> >                               node, gate->id);
+> > @@ -251,6 +256,9 @@ int mtk_clk_register_gates(struct device *dev, stru=
+ct device_node *node,
+> >       while (--i >=3D 0) {
+> >               const struct mtk_gate *gate =3D &clks[i];
+> >
+> > +             if (gate->id >=3D clk_data->num)
+> > +                     continue;
+> > +
+> >               if (IS_ERR_OR_NULL(clk_data->hws[gate->id]))
+> >                       continue;
+> >
+> > @@ -273,6 +281,9 @@ void mtk_clk_unregister_gates(const struct mtk_gate=
+ *clks, int num,
+> >       for (i =3D num; i > 0; i--) {
+> >               const struct mtk_gate *gate =3D &clks[i - 1];
+> >
+> > +             if (gate->id >=3D clk_data->num)
+> > +                     continue;
+> > +
+> >               if (IS_ERR_OR_NULL(clk_data->hws[gate->id]))
+> >                       continue;
+> >
+> > diff --git a/drivers/clk/mediatek/clk-mtk.c b/drivers/clk/mediatek/clk-=
+mtk.c
+> > index 2e55368dc4d8..09d50a15db77 100644
+> > --- a/drivers/clk/mediatek/clk-mtk.c
+> > +++ b/drivers/clk/mediatek/clk-mtk.c
+> > @@ -94,6 +94,10 @@ int mtk_clk_register_fixed_clks(const struct mtk_fix=
+ed_clk *clks, int num,
+> >       for (i =3D 0; i < num; i++) {
+> >               const struct mtk_fixed_clk *rc =3D &clks[i];
+> >
+> > +             if (WARN(rc->id >=3D clk_data->num,
+> > +                      "Fixed clock ID (%d) larger than expected (%d)\n=
+", rc->id, clk_data->num))
+> > +                     continue;
+> > +
+> >               if (!IS_ERR_OR_NULL(clk_data->hws[rc->id])) {
+> >                       pr_warn("Trying to register duplicate clock ID: %=
+d\n", rc->id);
+> >                       continue;
+> > @@ -117,6 +121,9 @@ int mtk_clk_register_fixed_clks(const struct mtk_fi=
+xed_clk *clks, int num,
+> >       while (--i >=3D 0) {
+> >               const struct mtk_fixed_clk *rc =3D &clks[i];
+> >
+> > +             if (rc->id >=3D clk_data->num)
+> > +                     continue;
+> > +
+> >               if (IS_ERR_OR_NULL(clk_data->hws[rc->id]))
+> >                       continue;
+> >
+> > @@ -139,6 +146,9 @@ void mtk_clk_unregister_fixed_clks(const struct mtk=
+_fixed_clk *clks, int num,
+> >       for (i =3D num; i > 0; i--) {
+> >               const struct mtk_fixed_clk *rc =3D &clks[i - 1];
+> >
+> > +             if (rc->id >=3D clk_data->num)
+> > +                     continue;
+> > +
+> >               if (IS_ERR_OR_NULL(clk_data->hws[rc->id]))
+> >                       continue;
+> >
+> > @@ -160,6 +170,11 @@ int mtk_clk_register_factors(const struct mtk_fixe=
+d_factor *clks, int num,
+> >       for (i =3D 0; i < num; i++) {
+> >               const struct mtk_fixed_factor *ff =3D &clks[i];
+> >
+> > +             if (WARN(ff->id >=3D clk_data->num,
+> > +                      "Fixed factor clock ID (%d) larger than expected=
+ (%d)\n",
+> > +                      ff->id, clk_data->num))
+> > +                     continue;
+> > +
+> >               if (!IS_ERR_OR_NULL(clk_data->hws[ff->id])) {
+> >                       pr_warn("Trying to register duplicate clock ID: %=
+d\n", ff->id);
+> >                       continue;
+> > @@ -183,6 +198,9 @@ int mtk_clk_register_factors(const struct mtk_fixed=
+_factor *clks, int num,
+> >       while (--i >=3D 0) {
+> >               const struct mtk_fixed_factor *ff =3D &clks[i];
+> >
+> > +             if (ff->id >=3D clk_data->num)
+> > +                     continue;
+> > +
+> >               if (IS_ERR_OR_NULL(clk_data->hws[ff->id]))
+> >                       continue;
+> >
+> > @@ -205,6 +223,9 @@ void mtk_clk_unregister_factors(const struct mtk_fi=
+xed_factor *clks, int num,
+> >       for (i =3D num; i > 0; i--) {
+> >               const struct mtk_fixed_factor *ff =3D &clks[i - 1];
+> >
+> > +             if (ff->id >=3D clk_data->num)
+> > +                     continue;
+> > +
+> >               if (IS_ERR_OR_NULL(clk_data->hws[ff->id]))
+> >                       continue;
+> >
+> > @@ -339,6 +360,11 @@ int mtk_clk_register_composites(struct device *dev=
+,
+> >       for (i =3D 0; i < num; i++) {
+> >               const struct mtk_composite *mc =3D &mcs[i];
+> >
+> > +             if (WARN(mc->id >=3D clk_data->num,
+> > +                      "Composite clock ID (%d) larger than expected (%=
+d)\n",
+> > +                      mc->id, clk_data->num))
+> > +                     continue;
+> > +
+> >               if (!IS_ERR_OR_NULL(clk_data->hws[mc->id])) {
+> >                       pr_warn("Trying to register duplicate clock ID: %=
+d\n",
+> >                               mc->id);
+> > @@ -362,6 +388,9 @@ int mtk_clk_register_composites(struct device *dev,
+> >       while (--i >=3D 0) {
+> >               const struct mtk_composite *mc =3D &mcs[i];
+> >
+> > +             if (mc->id >=3D clk_data->num)
+> > +                     continue;
+> > +
+> >               if (IS_ERR_OR_NULL(clk_data->hws[mcs->id]))
+> >                       continue;
+> >
+> > @@ -384,6 +413,9 @@ void mtk_clk_unregister_composites(const struct mtk=
+_composite *mcs, int num,
+> >       for (i =3D num; i > 0; i--) {
+> >               const struct mtk_composite *mc =3D &mcs[i - 1];
+> >
+> > +             if (mc->id >=3D clk_data->num)
+> > +                     continue;
+> > +
+> >               if (IS_ERR_OR_NULL(clk_data->hws[mc->id]))
+> >                       continue;
+> >
+> > @@ -407,6 +439,11 @@ int mtk_clk_register_dividers(struct device *dev,
+> >       for (i =3D 0; i <  num; i++) {
+> >               const struct mtk_clk_divider *mcd =3D &mcds[i];
+> >
+> > +             if (WARN(mcd->id >=3D clk_data->num,
+> > +                      "Divider clock ID (%d) larger than expected (%d)=
+\n",
+> > +                      mcd->id, clk_data->num))
+> > +                     continue;
+> > +
+> >               if (!IS_ERR_OR_NULL(clk_data->hws[mcd->id])) {
+> >                       pr_warn("Trying to register duplicate clock ID: %=
+d\n",
+> >                               mcd->id);
+> > @@ -432,6 +469,9 @@ int mtk_clk_register_dividers(struct device *dev,
+> >       while (--i >=3D 0) {
+> >               const struct mtk_clk_divider *mcd =3D &mcds[i];
+> >
+> > +             if (mcd->id >=3D clk_data->num)
+> > +                     continue;
+> > +
+> >               if (IS_ERR_OR_NULL(clk_data->hws[mcd->id]))
+> >                       continue;
+> >
+> > @@ -454,6 +494,9 @@ void mtk_clk_unregister_dividers(const struct mtk_c=
+lk_divider *mcds, int num,
+> >       for (i =3D num; i > 0; i--) {
+> >               const struct mtk_clk_divider *mcd =3D &mcds[i - 1];
+> >
+> > +             if (mcd->id >=3D clk_data->num)
+> > +                     continue;
+> > +
+> >               if (IS_ERR_OR_NULL(clk_data->hws[mcd->id]))
+> >                       continue;
+> >
+>
