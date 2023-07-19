@@ -2,234 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD92758D06
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF05758D0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 07:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbjGSFXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 01:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52774 "EHLO
+        id S229437AbjGSF03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 01:26:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbjGSFWx (ORCPT
+        with ESMTP id S229447AbjGSF01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 01:22:53 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31ED1119;
-        Tue, 18 Jul 2023 22:22:51 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36J2j3kb011000;
-        Wed, 19 Jul 2023 05:22:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=DKDvLh8p2vRTJGtzgynlitJ7QsagG32ML00xgCT055k=;
- b=cFiX9c8xrYdBOk25esEn7atC0JKods2+EhgOZf+SouRRqBWqIlWYSlpJ1KV3Dhr//nh7
- NNRyhVQXlsMiJNWEpXM+/RQAviAuYHSd2IwPtqptd1DThxP98QqXZhsTitrFnK1B43yL
- P1/fGcv6iBT/6RreSz1pXpkHZWNcoBxMJyBCwKP0mRcg/FWruHPuBNBW+pEA+gyRpYTs
- f86DhMAAhe03W6pK5UZeFHK/XRDutvwiqyd+VTW9IGVUp/B/oADegS6SNIY9y+Awe7jm
- VLaxPyhQvqibjOFBljIYcKSdDr7/yHjNSnuYjRXmBlESw62kJ+UFcPDUuLS8C4RoyhQD kg== 
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rwps5acrw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Jul 2023 05:22:47 +0000
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 36J5MjAC004750;
-        Wed, 19 Jul 2023 05:22:45 GMT
+        Wed, 19 Jul 2023 01:26:27 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E60CD2;
+        Tue, 18 Jul 2023 22:26:26 -0700 (PDT)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36J57ew4016375;
+        Wed, 19 Jul 2023 05:25:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=UY9eRzpsP8GQl+06o8COfYvWwoeEZ3IyVjc0AqBVSDA=;
+ b=HqPHMq5DY50UrHwMA+kh0U4vjCK8bPPmNq+5t29OSU0J+O/kuRCku7pVRpZZJdExSlps
+ ffpmfu9jbte9HqbRCzUIfGQfLBT+CHTQUGiBHZxoFDyaz/aXd96R+mC0khgtW3cTN5xk
+ C21F3/Ls2AUSHxI3vGFC5VsNhoTBLyz80MfNrMNruPWr+f9KJ0H3fX8SYPdPzo/ytBxo
+ 8OPm0hFW/LqQWnWLcHcwb8v2HSDcaV+uRsprfW7HuuAYbc2n9sAppMNYNkDxlb4bwnnC
+ OVaYz4fs93hvfzV/LCZIO4aSKW+R227xl5k1CXmFnQVyIIcjmNeKpxPhFmucoIUB4HDB jA== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3rumhm1bce-1;
-        Wed, 19 Jul 2023 05:22:44 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36J5Mi7f004723;
-        Wed, 19 Jul 2023 05:22:44 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-rohiagar-hyd.qualcomm.com [10.213.106.138])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 36J5MiUx004737;
-        Wed, 19 Jul 2023 05:22:44 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3970568)
-        id 04948E07; Wed, 19 Jul 2023 10:52:44 +0530 (+0530)
-From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Rohit Agarwal <quic_rohiagar@quicinc.com>
-Subject: [PATCH 2/2] soc: qcom: rpmhpd: Use the newly created generic RPMHPD bindings
-Date:   Wed, 19 Jul 2023 10:52:42 +0530
-Message-Id: <1689744162-9421-3-git-send-email-quic_rohiagar@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1689744162-9421-1-git-send-email-quic_rohiagar@quicinc.com>
-References: <1689744162-9421-1-git-send-email-quic_rohiagar@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 8Khtt-dPajsYVUCmJ3C8gCKm3hm0Kh4y
-X-Proofpoint-ORIG-GUID: 8Khtt-dPajsYVUCmJ3C8gCKm3hm0Kh4y
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rx8uarxv2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Jul 2023 05:25:00 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36J5HWak021174;
+        Wed, 19 Jul 2023 05:24:59 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rx8uarxum-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Jul 2023 05:24:59 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36J4HvET016875;
+        Wed, 19 Jul 2023 05:24:58 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rv5srs1ns-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Jul 2023 05:24:57 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36J5Oso923134850
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 Jul 2023 05:24:54 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C11012004B;
+        Wed, 19 Jul 2023 05:24:54 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CD90F20040;
+        Wed, 19 Jul 2023 05:24:43 +0000 (GMT)
+Received: from [9.43.21.186] (unknown [9.43.21.186])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 19 Jul 2023 05:24:43 +0000 (GMT)
+Message-ID: <6762c880-6d2b-233f-6786-7ad5b0472dc7@linux.ibm.com>
+Date:   Wed, 19 Jul 2023 10:54:42 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3 04/13] powerpc: assert_pte_locked() use
+ pte_offset_map_nolock()
+Content-Language: en-US
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Steven Price <steven.price@arm.com>,
+        SeongJae Park <sj@kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Song Liu <song@kernel.org>,
+        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Jann Horn <jannh@google.com>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Zi Yan <ziy@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <7cd843a9-aa80-14f-5eb2-33427363c20@google.com>
+ <e8d56c95-c132-a82e-5f5f-7bb1b738b057@google.com>
+ <87msztbiy8.fsf@linux.ibm.com>
+ <392f311f-83ac-a5a2-d16e-2c7736d1b577@google.com>
+From:   Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>
+In-Reply-To: <392f311f-83ac-a5a2-d16e-2c7736d1b577@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 7q90oElJg2CmupBk6GumnocMBX9ahL2e
+X-Proofpoint-GUID: YantjdaBDNNQUApFPJ6DdS47ZMvQSDAB
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-19_02,2023-07-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- mlxlogscore=968 lowpriorityscore=0 suspectscore=0 bulkscore=0
- priorityscore=1501 adultscore=0 impostorscore=0 phishscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307190049
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 clxscore=1015 suspectscore=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 phishscore=0 malwarescore=0 spamscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307190047
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the SoC SM8[2345]50 entries to use the new
-generic RPMHPD bindings.
+On 7/19/23 10:34 AM, Hugh Dickins wrote:
+> On Tue, 18 Jul 2023, Aneesh Kumar K.V wrote:
+>> Hugh Dickins <hughd@google.com> writes:
+>>
+>>> Instead of pte_lockptr(), use the recently added pte_offset_map_nolock()
+>>> in assert_pte_locked().  BUG if pte_offset_map_nolock() fails: this is
+>>> stricter than the previous implementation, which skipped when pmd_none()
+>>> (with a comment on khugepaged collapse transitions): but wouldn't we want
+>>> to know, if an assert_pte_locked() caller can be racing such transitions?
+>>>
+>>
+>> The reason we had that pmd_none check there was to handle khugpaged. In
+>> case of khugepaged we do pmdp_collapse_flush and then do a ptep_clear.
+>> ppc64 had the assert_pte_locked check inside that ptep_clear.
+>>
+>> _pmd = pmdp_collapse_flush(vma, address, pmd);
+>> ..
+>> ptep_clear()
+>> -> asset_ptep_locked()
+>> ---> pmd_none
+>> -----> BUG
+>>
+>>
+>> The problem is how assert_pte_locked() verify whether we are holding
+>> ptl. It does that by walking the page table again and in this specific
+>> case by the time we call the function we already had cleared pmd .
+> 
+> Aneesh, please clarify, I've spent hours on this.
+> 
+> From all your use of past tense ("had"), I thought you were Acking my
+> patch; but now, after looking again at v3.11 source and today's,
+> I think you are NAKing my patch in its present form.
+> 
 
-Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
----
- drivers/soc/qcom/rpmhpd.c | 101 +++++++++++++++++++++++-----------------------
- 1 file changed, 51 insertions(+), 50 deletions(-)
+Sorry for the confusion my reply created. 
 
-diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
-index 63c35a3..18d8544 100644
---- a/drivers/soc/qcom/rpmhpd.c
-+++ b/drivers/soc/qcom/rpmhpd.c
-@@ -15,6 +15,7 @@
- #include <soc/qcom/cmd-db.h>
- #include <soc/qcom/rpmh.h>
- #include <dt-bindings/power/qcom-rpmpd.h>
-+#include <dt-bindings/power/qcom,rpmhpd.h>
- 
- #define domain_to_rpmhpd(domain) container_of(domain, struct rpmhpd, pd)
- 
-@@ -359,16 +360,16 @@ static const struct rpmhpd_desc sa8155p_desc = {
- 
- /* SM8250 RPMH powerdomains */
- static struct rpmhpd *sm8250_rpmhpds[] = {
--	[SM8250_CX] = &cx_w_mx_parent,
--	[SM8250_CX_AO] = &cx_ao_w_mx_parent,
--	[SM8250_EBI] = &ebi,
--	[SM8250_GFX] = &gfx,
--	[SM8250_LCX] = &lcx,
--	[SM8250_LMX] = &lmx,
--	[SM8250_MMCX] = &mmcx,
--	[SM8250_MMCX_AO] = &mmcx_ao,
--	[SM8250_MX] = &mx,
--	[SM8250_MX_AO] = &mx_ao,
-+	[RPMHPD_CX] = &cx_w_mx_parent,
-+	[RPMHPD_CX_AO] = &cx_ao_w_mx_parent,
-+	[RPMHPD_EBI] = &ebi,
-+	[RPMHPD_GFX] = &gfx,
-+	[RPMHPD_LCX] = &lcx,
-+	[RPMHPD_LMX] = &lmx,
-+	[RPMHPD_MMCX] = &mmcx,
-+	[RPMHPD_MMCX_AO] = &mmcx_ao,
-+	[RPMHPD_MX] = &mx,
-+	[RPMHPD_MX_AO] = &mx_ao,
- };
- 
- static const struct rpmhpd_desc sm8250_desc = {
-@@ -378,19 +379,19 @@ static const struct rpmhpd_desc sm8250_desc = {
- 
- /* SM8350 Power domains */
- static struct rpmhpd *sm8350_rpmhpds[] = {
--	[SM8350_CX] = &cx_w_mx_parent,
--	[SM8350_CX_AO] = &cx_ao_w_mx_parent,
--	[SM8350_EBI] = &ebi,
--	[SM8350_GFX] = &gfx,
--	[SM8350_LCX] = &lcx,
--	[SM8350_LMX] = &lmx,
--	[SM8350_MMCX] = &mmcx,
--	[SM8350_MMCX_AO] = &mmcx_ao,
--	[SM8350_MSS] = &mss,
--	[SM8350_MX] = &mx,
--	[SM8350_MX_AO] = &mx_ao,
--	[SM8350_MXC] = &mxc,
--	[SM8350_MXC_AO] = &mxc_ao,
-+	[RPMHPD_CX] = &cx_w_mx_parent,
-+	[RPMHPD_CX_AO] = &cx_ao_w_mx_parent,
-+	[RPMHPD_EBI] = &ebi,
-+	[RPMHPD_GFX] = &gfx,
-+	[RPMHPD_LCX] = &lcx,
-+	[RPMHPD_LMX] = &lmx,
-+	[RPMHPD_MMCX] = &mmcx,
-+	[RPMHPD_MMCX_AO] = &mmcx_ao,
-+	[RPMHPD_MSS] = &mss,
-+	[RPMHPD_MX] = &mx,
-+	[RPMHPD_MX_AO] = &mx_ao,
-+	[RPMHPD_MXC] = &mxc,
-+	[RPMHPD_MXC_AO] = &mxc_ao,
- };
- 
- static const struct rpmhpd_desc sm8350_desc = {
-@@ -400,19 +401,19 @@ static const struct rpmhpd_desc sm8350_desc = {
- 
- /* SM8450 RPMH powerdomains */
- static struct rpmhpd *sm8450_rpmhpds[] = {
--	[SM8450_CX] = &cx,
--	[SM8450_CX_AO] = &cx_ao,
--	[SM8450_EBI] = &ebi,
--	[SM8450_GFX] = &gfx,
--	[SM8450_LCX] = &lcx,
--	[SM8450_LMX] = &lmx,
--	[SM8450_MMCX] = &mmcx_w_cx_parent,
--	[SM8450_MMCX_AO] = &mmcx_ao_w_cx_parent,
--	[SM8450_MSS] = &mss,
--	[SM8450_MX] = &mx,
--	[SM8450_MX_AO] = &mx_ao,
--	[SM8450_MXC] = &mxc,
--	[SM8450_MXC_AO] = &mxc_ao,
-+	[RPMHPD_CX] = &cx,
-+	[RPMHPD_CX_AO] = &cx_ao,
-+	[RPMHPD_EBI] = &ebi,
-+	[RPMHPD_GFX] = &gfx,
-+	[RPMHPD_LCX] = &lcx,
-+	[RPMHPD_LMX] = &lmx,
-+	[RPMHPD_MMCX] = &mmcx_w_cx_parent,
-+	[RPMHPD_MMCX_AO] = &mmcx_ao_w_cx_parent,
-+	[RPMHPD_MSS] = &mss,
-+	[RPMHPD_MX] = &mx,
-+	[RPMHPD_MX_AO] = &mx_ao,
-+	[RPMHPD_MXC] = &mxc,
-+	[RPMHPD_MXC_AO] = &mxc_ao,
- };
- 
- static const struct rpmhpd_desc sm8450_desc = {
-@@ -422,20 +423,20 @@ static const struct rpmhpd_desc sm8450_desc = {
- 
- /* SM8550 RPMH powerdomains */
- static struct rpmhpd *sm8550_rpmhpds[] = {
--	[SM8550_CX] = &cx,
--	[SM8550_CX_AO] = &cx_ao,
--	[SM8550_EBI] = &ebi,
--	[SM8550_GFX] = &gfx,
--	[SM8550_LCX] = &lcx,
--	[SM8550_LMX] = &lmx,
--	[SM8550_MMCX] = &mmcx_w_cx_parent,
--	[SM8550_MMCX_AO] = &mmcx_ao_w_cx_parent,
--	[SM8550_MSS] = &mss,
--	[SM8550_MX] = &mx,
--	[SM8550_MX_AO] = &mx_ao,
--	[SM8550_MXC] = &mxc,
--	[SM8550_MXC_AO] = &mxc_ao,
--	[SM8550_NSP] = &nsp,
-+	[RPMHPD_CX] = &cx,
-+	[RPMHPD_CX_AO] = &cx_ao,
-+	[RPMHPD_EBI] = &ebi,
-+	[RPMHPD_GFX] = &gfx,
-+	[RPMHPD_LCX] = &lcx,
-+	[RPMHPD_LMX] = &lmx,
-+	[RPMHPD_MMCX] = &mmcx_w_cx_parent,
-+	[RPMHPD_MMCX_AO] = &mmcx_ao_w_cx_parent,
-+	[RPMHPD_MSS] = &mss,
-+	[RPMHPD_MX] = &mx,
-+	[RPMHPD_MX_AO] = &mx_ao,
-+	[RPMHPD_MXC] = &mxc,
-+	[RPMHPD_MXC_AO] = &mxc_ao,
-+	[RPMHPD_NSP] = &nsp,
- };
- 
- static const struct rpmhpd_desc sm8550_desc = {
--- 
-2.7.4
+> You are pointing out that anon THP's __collapse_huge_page_copy_succeeded()
+> uses ptep_clear() at a point after pmdp_collapse_flush() already cleared
+> *pmd, so my patch now leads that one use of assert_pte_locked() to BUG.
+> Is that your point?
+> 
 
+Yes. I haven't tested this yet to verify that it is indeed hitting that BUG.
+But a code inspection tells me we will hit that BUG on powerpc because of
+the above details.
+
+> I can easily restore that khugepaged comment (which had appeared to me
+> out of date at the time, but now looks still relevant) and pmd_none(*pmd)
+> check: but please clarify.
+> 
+
+That is correct. if we add that pmd_none check back we should be good here.
+
+
+-aneesh
