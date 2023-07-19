@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13748759ADE
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 678EB759AE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 18:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbjGSQfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 12:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50824 "EHLO
+        id S230057AbjGSQfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 12:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbjGSQew (ORCPT
+        with ESMTP id S230020AbjGSQez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 12:34:52 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C601BB
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:34:51 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1b8a8154f9cso7284265ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:34:51 -0700 (PDT)
+        Wed, 19 Jul 2023 12:34:55 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7393B19B2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:34:53 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b9e93a538dso40656435ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 09:34:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1689784491; x=1690389291;
+        d=sifive.com; s=google; t=1689784493; x=1690389293;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WY7X996NeRiPR/Rn6FoiwTLGW7DQeNpFoBjkmVc9GgI=;
-        b=Or+/RZwQvNw8bCsOMpm2hSeXLxwp0YuvAcpxKF/K2j6mFJlt3xZGR9ukX+ORaAabKc
-         S/BtVbCvnXG7wClDGpbGAMoCX/el65aEgzRnBn5+XjPwirv+/sC6G+nt5vaK46C5cJ5Q
-         ut6Z72dE3exsn0wXnTpjlmU3IG8rj8ONqqZoL8UZAZ87q1sQR9ZrY3TIcTYSO5eCMkN0
-         K2GBSS6WcrAdlz0eN/pd/f6gjwGcO56TIdZ8xhNSkqMOd3fcEa1E8jsNB3SSSPRXacMs
-         RVqOmrJEu4o7Dpfa3m8IquxXcYW+JF2mpl9Bh8EWRGF9EJMZ5WhDBUiufGw+kw8cGlnV
-         I0aw==
+        bh=qKYrsbwFkQq7mxSa9jMwKApOtesu39YvxU4CShJxAhI=;
+        b=ZvLnrY1568MZhaU/qXPqlRY4i0xnbvv+JpUWdEukxuSZl/js2HLyiHv64/36av5u3L
+         kUf3LGIWVHKuEZeht318sYiL3rd50EHbqXS0SXHIx8tUVeo1gBBrSfKjl0evGs6RA3Ph
+         g15fyNoVbYvClluNk5HufnB5tU27SwjMx5sRXAV13WPnOgbqZokaYWmyXm001+hU3wzZ
+         pjyGKQGGSPgDbmCq74EU+FgzpiZ9qp8PbTz5jkNX35QqD0fTRTcLxPkTgUTIUr7UjxPB
+         WIr+kn52YPa2S/ZaOznqmSXXYvLlDmov1AW9dqDgYj+1cv1QQdhKmZolsnN5t/wTas0R
+         BFCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689784491; x=1690389291;
+        d=1e100.net; s=20221208; t=1689784493; x=1690389293;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WY7X996NeRiPR/Rn6FoiwTLGW7DQeNpFoBjkmVc9GgI=;
-        b=UHr5KDW1ZlxPR8mErL7q2qCin4JSar1ZmveNYFK75xBNsJFaa0Tx/LXSPiyAmBKjb8
-         fOFNz0iBPqYMj6qDfb01gHAY8wswMWK93hgxnt0JzyUR1tEenvULMktkkjO3iabBpkLG
-         nQO+7pGocWsu8Y41hH8yirt1W5cOWgTAmiMiA7ezuPBXiVr56ucMWx9tGeFxkPZdIRuj
-         RAWrYJTj0Rcy5bPPQtXbPAt9iQziqTKekdN2xsn+gu/mgGJWSjM2iPtn2/NpNe6YgnA4
-         UamoLsM6UsPGSmnHCOZz7FE07/rL6Y5JBwcIm4ifwlK9sAMc5Yu0YObkHvzx/AVriHtd
-         DIYA==
-X-Gm-Message-State: ABy/qLbWlXi1OqHvlK093kRBjX62s+ywAaOQLJTczKUg+3/pbdwZeZCW
-        WzmSibxeBRTgeUVxh2raKRr6Kg==
-X-Google-Smtp-Source: APBJJlEdZ4LQSFXZ1B6gqxnku1+mdn1+YmhZhDbIEaXe7GUhYDR8hCg+4i71OKmpuzxzwsW+MP9rUw==
-X-Received: by 2002:a17:902:bb84:b0:1b8:8728:d776 with SMTP id m4-20020a170902bb8400b001b88728d776mr2926304pls.0.1689784491343;
-        Wed, 19 Jul 2023 09:34:51 -0700 (PDT)
+        bh=qKYrsbwFkQq7mxSa9jMwKApOtesu39YvxU4CShJxAhI=;
+        b=H9lhJTOdLY+WgBvXR+pNP3r6kgsFXywKDZM8sztRNhpxcpp8JNoMEYweOjV+wiBt6a
+         PZocsGAHLDqlP8zidMbi6vIgvOC/WHq7q9n+SB9mVrfLdVnj7bF1fCbG1DGXvDUIrMOc
+         yc9DDueRCKzji9BioizBBEBSAt/UYaEUkw/X0j1yllTO+ozqJauQDoTxezHl+c6CmzcJ
+         EJo3X9Dph/2WGFUOBL92rYS5m29wO1yJKhDJ2l8HRvBtNRGghdUt7G693JeGKnig8R3y
+         +dloS2PKX9SZryC2IWzuo0FPxDWa4+wPaVlGnICPDRbFODt1xgaubYjbUVw6ANvc3msp
+         I8GA==
+X-Gm-Message-State: ABy/qLZhfGzqxBxckEu2KQlpeDkLq6oE+le2VrHAwCueSPKUyPjq2cym
+        +qL+iP6eaRWqK780UXFJWi5tcQ==
+X-Google-Smtp-Source: APBJJlFipcbSu/NojN35HkrEsviKbFWtcYcx3WLvCCXo8NC5ZDt1xR4dBGQY2EMiUvSm/R5cz/pIvg==
+X-Received: by 2002:a17:903:48c:b0:1b8:7483:d47a with SMTP id jj12-20020a170903048c00b001b87483d47amr15035853plb.37.1689784492938;
+        Wed, 19 Jul 2023 09:34:52 -0700 (PDT)
 Received: from sw06.internal.sifive.com ([64.62.193.194])
-        by smtp.gmail.com with ESMTPSA id x6-20020a1709027c0600b001b0358848b0sm4199276pll.161.2023.07.19.09.34.50
+        by smtp.gmail.com with ESMTPSA id x6-20020a1709027c0600b001b0358848b0sm4199276pll.161.2023.07.19.09.34.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 09:34:51 -0700 (PDT)
+        Wed, 19 Jul 2023 09:34:52 -0700 (PDT)
 From:   Samuel Holland <samuel.holland@sifive.com>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <brgl@bgdev.pl>,
@@ -62,9 +62,9 @@ Cc:     Emil Renner Berthing <emil.renner.berthing@canonical.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org
-Subject: [PATCH v2 2/4] gpio: sifive: Look up IRQs only once during probe
-Date:   Wed, 19 Jul 2023 09:34:43 -0700
-Message-Id: <20230719163446.1398961-3-samuel.holland@sifive.com>
+Subject: [PATCH v2 3/4] gpio: sifive: Get the parent IRQ's domain from its irq_data
+Date:   Wed, 19 Jul 2023 09:34:44 -0700
+Message-Id: <20230719163446.1398961-4-samuel.holland@sifive.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230719163446.1398961-1-samuel.holland@sifive.com>
 References: <20230719163446.1398961-1-samuel.holland@sifive.com>
@@ -73,17 +73,17 @@ Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-of_irq_count(), or eqivalently platform_irq_count(), simply looks up
-successively-numbered IRQs until that fails. Since this driver needs to
-look up each IRQ anyway to get its virq number, use that existing loop
-to count the IRQs at the same time.
+Do not parse the devicetree again when the data is already available
+from the IRQ subsystem. This follows the example of the ThunderX and
+X-Gene GPIO drivers. The ngpio check is needed to avoid a possible
+out-of-bounds read.
 
 Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 ---
@@ -91,52 +91,69 @@ Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 Changes in v2:
  - New patch for v2
 
- drivers/gpio/gpio-sifive.c | 17 +++++------------
- 1 file changed, 5 insertions(+), 12 deletions(-)
+ drivers/gpio/gpio-sifive.c | 22 +++++-----------------
+ 1 file changed, 5 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/gpio/gpio-sifive.c b/drivers/gpio/gpio-sifive.c
-index ab32c952c61b..6606c919d957 100644
+index 6606c919d957..46a42109d6f5 100644
 --- a/drivers/gpio/gpio-sifive.c
 +++ b/drivers/gpio/gpio-sifive.c
-@@ -185,7 +185,7 @@ static int sifive_gpio_probe(struct platform_device *pdev)
- 	struct irq_domain *parent;
+@@ -6,7 +6,6 @@
+ #include <linux/bitops.h>
+ #include <linux/device.h>
+ #include <linux/errno.h>
+-#include <linux/of_irq.h>
+ #include <linux/gpio/driver.h>
+ #include <linux/init.h>
+ #include <linux/platform_device.h>
+@@ -180,9 +179,6 @@ static const struct regmap_config sifive_gpio_regmap_config = {
+ static int sifive_gpio_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+-	struct device_node *node = pdev->dev.of_node;
+-	struct device_node *irq_parent;
+-	struct irq_domain *parent;
  	struct gpio_irq_chip *girq;
  	struct sifive_gpio *chip;
--	int ret, ngpio, i;
-+	int ret, ngpio;
- 
- 	chip = devm_kzalloc(dev, sizeof(*chip), GFP_KERNEL);
- 	if (!chip)
-@@ -202,13 +202,6 @@ static int sifive_gpio_probe(struct platform_device *pdev)
+ 	int ret, ngpio;
+@@ -202,24 +198,16 @@ static int sifive_gpio_probe(struct platform_device *pdev)
  	if (IS_ERR(chip->regs))
  		return PTR_ERR(chip->regs);
  
--	ngpio = of_irq_count(node);
--	if (ngpio > SIFIVE_GPIO_MAX) {
--		dev_err(dev, "Too many GPIO interrupts (max=%d)\n",
--			SIFIVE_GPIO_MAX);
--		return -ENXIO;
+-	irq_parent = of_irq_find_parent(node);
+-	if (!irq_parent) {
+-		dev_err(dev, "no IRQ parent node\n");
+-		return -ENODEV;
+-	}
+-	parent = irq_find_host(irq_parent);
+-	of_node_put(irq_parent);
+-	if (!parent) {
+-		dev_err(dev, "no IRQ parent domain\n");
+-		return -ENODEV;
 -	}
 -
- 	irq_parent = of_irq_find_parent(node);
- 	if (!irq_parent) {
- 		dev_err(dev, "no IRQ parent node\n");
-@@ -221,11 +214,11 @@ static int sifive_gpio_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	for (i = 0; i < ngpio; i++) {
--		ret = platform_get_irq(pdev, i);
-+	for (ngpio = 0; ngpio < SIFIVE_GPIO_MAX; ngpio++) {
-+		ret = platform_get_irq_optional(pdev, ngpio);
+ 	for (ngpio = 0; ngpio < SIFIVE_GPIO_MAX; ngpio++) {
+ 		ret = platform_get_irq_optional(pdev, ngpio);
  		if (ret < 0)
--			return ret;
--		chip->irq_number[i] = ret;
-+			break;
-+		chip->irq_number[ngpio] = ret;
+ 			break;
+ 		chip->irq_number[ngpio] = ret;
  	}
++	if (!ngpio) {
++		dev_err(dev, "no IRQ found\n");
++		return -ENODEV;
++	}
  
  	ret = bgpio_init(&chip->gc, dev, 4,
+ 			 chip->base + SIFIVE_GPIO_INPUT_VAL,
+@@ -248,7 +236,7 @@ static int sifive_gpio_probe(struct platform_device *pdev)
+ 	girq = &chip->gc.irq;
+ 	gpio_irq_chip_set_chip(girq, &sifive_gpio_irqchip);
+ 	girq->fwnode = dev->fwnode;
+-	girq->parent_domain = parent;
++	girq->parent_domain = irq_get_irq_data(chip->irq_number[0])->domain;
+ 	girq->child_to_parent_hwirq = sifive_gpio_child_to_parent_hwirq;
+ 	girq->handler = handle_bad_irq;
+ 	girq->default_type = IRQ_TYPE_NONE;
 -- 
 2.40.1
 
