@@ -2,139 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4BF759736
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4DFC75973C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 15:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbjGSNku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 09:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
+        id S230428AbjGSNl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 09:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjGSNks (ORCPT
+        with ESMTP id S230118AbjGSNl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 09:40:48 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE176123
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 06:40:47 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qM7Pz-0007az-Nb; Wed, 19 Jul 2023 15:40:39 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qM7Py-000cHN-Ir; Wed, 19 Jul 2023 15:40:38 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qM7Px-0066y8-RK; Wed, 19 Jul 2023 15:40:37 +0200
-Date:   Wed, 19 Jul 2023 15:40:36 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>, linux-pwm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH] gpio: mvebu: fix irq domain leak
-Message-ID: <20230719134036.w5lsqxcg6u3v3ynm@pengutronix.de>
-References: <20230719114101.55051-1-brgl@bgdev.pl>
- <CAHp75VfdCsAE8dGfTe2PsT5kxvoT84nChNptwgaA4Q5jf5oJvQ@mail.gmail.com>
+        Wed, 19 Jul 2023 09:41:56 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1962E5;
+        Wed, 19 Jul 2023 06:41:54 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6687466137bso4591267b3a.0;
+        Wed, 19 Jul 2023 06:41:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689774114; x=1692366114;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XwgHr8CTLPsVJE9zJh+kMK112+A4IUVakHWwbTwXwA0=;
+        b=nrI8gcr7ZJ1NjDNN9lFT6PfdNehcetqW2SpNed6vSYtHbNU34e0V2A6kSFmvzczRRF
+         HYw7i+ZdqNmqIfoVx1F2b3pmrscZf56Rlaf0GmpdbCIYpCNJYseZWlqPeg1OaoW0FGg7
+         uMW70xgI0BX7ARW0P1pRJWBR2PsFxv9p905LjKWv4r6i8TcOwGLW0jLyRwwV8BrnX2ts
+         AQNFIDNKc9g/94i9JTYGS4CgS6TB4YBCivfMz0iaq4p6m+DGkqkj5hhfBvw2ho6nrGwo
+         3OiPQsRHdAa9rkv5de6Ra1GkU9qvCVxB3AQU5ICNCl6FyYcaRr5qC9J5Eaoy0YeuDWvu
+         LIGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689774114; x=1692366114;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XwgHr8CTLPsVJE9zJh+kMK112+A4IUVakHWwbTwXwA0=;
+        b=DSMVshYRRmYzXC6YgREZkdZi5aF4VZ+jm3uDGJtAa63vqI41crh+wx5/nomYzn/XH+
+         K6bJ/6dN+3kGZyA9rkgKGERvrGrtDzIyPJ6CubBJDQWiONPWyNAl/kBxbk/gsQ21hNAh
+         4ArVywDu7tAno6IySa63lkbMRPmRcsvEMWHGYAOzjRhwja4gAOOiY2wb4eh8npS+lZDf
+         6Xh0/Gc4WDOQRDT33I9PmSXjUcAnkGbMIgyERxbpOEzlI3fDYht1qTgsqkuCMCK7QxTt
+         OViaz8fEKzrowuwzFAudvOOO2Zs5AfnnfKZ9fwUn+HQHKGttW+vIB0lIZh33Ho9UtQwD
+         1RBQ==
+X-Gm-Message-State: ABy/qLZ/nVsPy5Hhc39Q5iTOXdM52xljAzdn7awEw+PDuLwrsc3zQWpY
+        B8ztN1+aSYIbCXXBig9+VXs=
+X-Google-Smtp-Source: APBJJlGsAfXvyG4VXl4wd0iW+cciqCxLCZi2xTvSe2aHbnCjyxhMK3VjQibmii6oOgB1/Qq+I4jRxw==
+X-Received: by 2002:a05:6a20:4c9:b0:134:198b:84e9 with SMTP id 9-20020a056a2004c900b00134198b84e9mr2087814pzd.61.1689774114122;
+        Wed, 19 Jul 2023 06:41:54 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s1-20020a63af41000000b00528db73ed70sm3558061pgo.3.2023.07.19.06.41.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 06:41:53 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 19 Jul 2023 06:41:52 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     JuenKit Yip <JuenKit_Yip@hotmail.com>
+Cc:     jdelvare@suse.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] hwmon: (sht3x) convert some of sysfs interface to
+ hwmon
+Message-ID: <30afc318-c7d8-4349-a3c4-2916ac9b8c47@roeck-us.net>
+References: <DB4PR10MB626157BC697F2CD6100431359229A@DB4PR10MB6261.EURPRD10.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ujodkpnhmenu4mny"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75VfdCsAE8dGfTe2PsT5kxvoT84nChNptwgaA4Q5jf5oJvQ@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <DB4PR10MB626157BC697F2CD6100431359229A@DB4PR10MB6261.EURPRD10.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 03, 2023 at 10:08:16PM +0800, JuenKit Yip wrote:
+> update_interval, temperature/humidity max/min and hyst
+> were moved to new hwmon interface, and only heater and
+> repeatability were reserved as non-stardard sysfs interface.
+> 
+> Signed-off-by: JuenKit Yip <JuenKit_Yip@hotmail.com>
 
---ujodkpnhmenu4mny
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied.
 
-On Wed, Jul 19, 2023 at 04:02:39PM +0300, Andy Shevchenko wrote:
-> On Wed, Jul 19, 2023 at 2:41=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
-l> wrote:
-> >
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Uwe Kleine-K=C3=B6nig pointed out we still have one resource leak in th=
-e mvebu
-> > driver triggered on driver detach. Let's address it with a custom devm
-> > action.
->=20
-> One nit-pick below, in either case
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->=20
-> > Fixes: 812d47889a8e ("gpio/mvebu: Use irq_domain_add_linear")
-> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > ---
-> >  drivers/gpio/gpio-mvebu.c | 18 +++++++++++++-----
-> >  1 file changed, 13 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/gpio/gpio-mvebu.c b/drivers/gpio/gpio-mvebu.c
-> > index a35958e7adf6..67497116ce27 100644
-> > --- a/drivers/gpio/gpio-mvebu.c
-> > +++ b/drivers/gpio/gpio-mvebu.c
-> > @@ -1112,6 +1112,13 @@ static int mvebu_gpio_probe_syscon(struct platfo=
-rm_device *pdev,
-> >         return 0;
-> >  }
-> >
-> > +static void mvebu_gpio_remove_irq_domain(void *data)
-> > +{
-> > +       struct irq_domain *domain =3D data;
-> > +
-> > +       irq_domain_remove(domain);
->=20
-> The from/to void * doesn't need an explicit casting in C. This can be
-> a one liner
->=20
-> static void mvebu_gpio_remove_irq_domain(void *domain)
-> {
->       irq_domain_remove(domain);
-> }
-
-I slightly prefer Bartosz's version, but wouldn't get sleepless nights
-=66rom that one.
-
-Reviewed-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-
-for whatever variant you pick.
-
-Best regards and thanks for acting on my report,
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
-   |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ujodkpnhmenu4mny
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmS359QACgkQj4D7WH0S
-/k4e9Af8CqmHYpZTvAibrO7NUTwH5Wv9wPOjn08hjFMA9+EVEq0IZWC04rJdNXxK
-Q9N+jeCJoAWVQNL73ZVUlIzK1CjcJnppEsn92O0G4b4PybMCQGqd+UPyR1naMW7d
-ieNq857UHMYaUUBt1Y+yDNTahs5EsTXXV7uEmlgyHAQXzIGc+4KHzCSF9umSYxyq
-foaTpnOe3llRQGh3TtZVDDsRdDy5HK/wbAwG0Hn9mgYKK0UOJ0P2dpxJncKl2Hgx
-LlNUmXQ4SoF3PlEXBYc7pCSEHF62Qm0agQke4dQHP+af/cBk1QSQQT51UJAzBw3X
-j81qfIKaAF02tBPKvuPlKdWXMNQaaQ==
-=uUOV
------END PGP SIGNATURE-----
-
---ujodkpnhmenu4mny--
+Thanks,
+Guenter
