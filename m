@@ -2,234 +2,409 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98721759A2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26880759A33
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 17:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbjGSPts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 11:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52264 "EHLO
+        id S231201AbjGSPum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 11:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231875AbjGSPtq (ORCPT
+        with ESMTP id S231839AbjGSPui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 11:49:46 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2074.outbound.protection.outlook.com [40.107.21.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D2EE47;
-        Wed, 19 Jul 2023 08:49:44 -0700 (PDT)
+        Wed, 19 Jul 2023 11:50:38 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D103E53;
+        Wed, 19 Jul 2023 08:50:28 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36JFOYJb027141;
+        Wed, 19 Jul 2023 15:49:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=IAae7Pa71sDaCQr0GqSugahvSbck4iElL/eOZXvjBmc=;
+ b=WoHWH6fjSsYhF1H0zCVDq+/5XIPmgiE7vq48hh8fa7FUKwgIAdBTwpoFCmWuRlsCjdOJ
+ a8zIuPKQJT4xRFvoEvVeS5xs5rK+hy9djFYwmPvZX1whq4W3ZU5a2iJoFUcTiw7rY22Q
+ FxJxrlknuNAxT0HMcVuEyyjaPssSKc5DCggO9GDLaeKEqOot+zHhFxPsx0al4wM6Buz0
+ XiwDOmXhA+FCg+0K5QGRCyS4n7kYs/46dSogs/esjTk9YDk+/o6xzloUxXaRsn3m6rqn
+ FJ8HcUT7QXIlfY4t6f2jEh9QFqT/uV2YXkjUTQPn2QzlPAuaVKOuJo2Y0FcHUR6hXroV +A== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3run787pdr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 Jul 2023 15:49:41 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36JESA10038302;
+        Wed, 19 Jul 2023 15:49:40 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhw71vdc-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 19 Jul 2023 15:49:40 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B4rMDx2upczqirFTTJ8y6PzSq7Q/FIh8AgQOI4r2OjkY4M+A3ce/Vo8A2KebGDxC3dknrbwgloIgNlPq5KggQwkGgnCflGKWipPJqTpwJIt5HCeoVtbncb/pg5YZqi++8u8KHHD47oPxHeK3hk7HK86twCjXsTIImjn3X1OxIqy50FWZuZ3b2klQspjk+M/6ay3tE36mT0S0dHvlwVO/bBQEjXBIztWW74efFg7x69G/i80mF0kstoI8/0rPxHGf5Tugp/QiCX5978q2lN2i7YASTlFyOdV65M5MlxoBfE5cw1JXa7k11e9ssphpX1yW9qsGzBLHj/UwzDWfs0IhrQ==
+ b=RwlNkXK4KyVNfVQRIJMDjKiRTHKkKrrfn0RYVmfnlbHj6/X1IrwLba946ga9D8rnkc/gk7WyLwQSfSRtzOcVI0tZNKYlxUmRYnTFHudM4mPAKt3QnB4+dwJtPpUzqddl12pJquJWian99BfAKQ4rRgnUwk1ayjT2PmH3aXZ8w2t7geQ2KuZV9MgsZuQThYALO8FShKvlgRLbGra31NKFMTOeByfHuJNCw5nYAoXfR09uVLQ2StNqOTi70AewxwvZ0rojR80QK9FwG6tFmE7wrLHFR6Y7YgM3gXpCJaLrXji1nCNrJePqqxL3HjPcB8EV3ypBgbjbAaugIEVNCNmG4w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pPZY1OWRvTc4Ccp2lVRUuz5xugjRbxsMLkexykdrms0=;
- b=fw6nRfweNzratlU/PbkYiqW1Vmc32hnbb9JW6xHNC7uSpK1hHG59Z/r2KgLJ5XjP+UgReZGrfRlDrLZywNJfiSryQq+lZ0+VPnUWkICgLjFuzwdYGXlhUiqbJ+uM4MknfN4Jii2oQM0BvbD3MBL56GnCVpZH4LXt4nQvg4ehErs55sE4JeOdO17NFYvFFPvTJ/evZ/4gk8PgFvOEnZKoUyc1UBjC8x6jEa5KKJkcRo7juOsU6WF5Y+xQNfe8g32ttf1d7Nr/hKwmdTXD0o+k8H8jae6FlxrGAlPhmznwz5O4iTeoTZ+gTxWgY2aCb7k1hhYnuEd7DnmVEd/NJ+0XXQ==
+ bh=IAae7Pa71sDaCQr0GqSugahvSbck4iElL/eOZXvjBmc=;
+ b=F3wvH2dOauaHfo3D5fKeznnDpj4+orcPRajrhUiilAxS5DeaFHbHJsba35c83PAD8yvBe+va4ITKYHJYbheNTdG3UaXGaVwsavzBtJo6lGjlvuVZA/VjJy+A/lREZl/JREKdD0/8W+DHrOcIV/zO6VAFW7+DU/PIAq+H6Do5LhJk2NKq5fIQV4mFgIeWGU7lSNmYIGG+6/GH9CHLpDQY23C+755yREYeqwhX0IHYxCusxK3AJ3+GCcLDMyd8zZRYu5WzS+b/MJ+gKFk2Oe7Pb3MCIIBRNEnwmjari/ivWOOrSt1ZOMu/ZHq8b2aRE5RghLozirEKs6ctqQ0wiMa+8w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pPZY1OWRvTc4Ccp2lVRUuz5xugjRbxsMLkexykdrms0=;
- b=A6hKzJD5h4K3nrbAjUP2Vc02Wy6aBlTquDnEYyeqmEKAEhCyfnlw1/GQ4wd1RYfSVLYZv7/ITB9Zrad51XOahiqAKFEpPFUwXymP8+dtr5goJ65gPc5K3KDRTrTzXi+qT1tdF08Y4nAK8C151N6TqfexpGFdT0iGsnvbKVtVUQWAxnQ4XPiNzJ4mxs99b0+YV+IDsDIfF+nQMpLlBMOfB4J8cg0mAR/pkbWPXQTGr//5c3hOpp4LlXUyrxTlxjTmDxW2DhZW8oSO/bFsXKXpuen0R960k/BMomLGqUu8katEteaxD03hqwNbosHnqI6BAMdNVaprtPfbtmcTMgRBMA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from DB8PR04MB7164.eurprd04.prod.outlook.com (2603:10a6:10:129::23)
- by PA4PR04MB7760.eurprd04.prod.outlook.com (2603:10a6:102:c5::14) with
+ bh=IAae7Pa71sDaCQr0GqSugahvSbck4iElL/eOZXvjBmc=;
+ b=vZvdsiTXpKzc6ECHFC9Tabe20hw9iyvbI31mz9u/9cLP9wR9RmiI39fduwBuQ1ZPxkDy8DKl/vq3ymL1YuicCAHBdYqWTj1/2qYVTYMk7q/yg88bOQ5rjVUjj4zHQUv047hd/wvlRx9I4b5ySg5wjCpRw+wz35hw970+P2+j28k=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by DS0PR10MB6846.namprd10.prod.outlook.com (2603:10b6:8:11d::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Wed, 19 Jul
- 2023 15:49:41 +0000
-Received: from DB8PR04MB7164.eurprd04.prod.outlook.com
- ([fe80::2975:b06:eaaa:9361]) by DB8PR04MB7164.eurprd04.prod.outlook.com
- ([fe80::2975:b06:eaaa:9361%5]) with mapi id 15.20.6588.031; Wed, 19 Jul 2023
- 15:49:41 +0000
-Date:   Wed, 19 Jul 2023 23:49:18 +0800
-From:   joeyli <jlee@suse.com>
-To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        linux-bluetooth@vger.kernel.org
-Subject: Re: [PATCH v2] Bluetooth: hci_event: Ignore NULL link key
-Message-ID: <20230719154918.GJ14791@linux-l9pv.suse>
-References: <20230718034337.23502-1-jlee@suse.com>
- <CABBYNZJ97UMyZ7yX1YAGbuU4XwNDdoFewKNwbd=51_L9aNrrCQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABBYNZJ97UMyZ7yX1YAGbuU4XwNDdoFewKNwbd=51_L9aNrrCQ@mail.gmail.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-ClientProxiedBy: TYWP286CA0013.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:178::9) To DB8PR04MB7164.eurprd04.prod.outlook.com
- (2603:10a6:10:129::23)
+ 2023 15:49:28 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::97e0:4c4b:17bb:a90f]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::97e0:4c4b:17bb:a90f%4]) with mapi id 15.20.6609.024; Wed, 19 Jul 2023
+ 15:49:28 +0000
+Message-ID: <155f6f0c-de1a-2069-35d4-b08c1df5821a@oracle.com>
+Date:   Wed, 19 Jul 2023 16:49:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/9] bpf/btf: tracing: Move finding func-proto API and
+ getting func-param API to BTF
+Content-Language: en-GB
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>
+References: <168960739768.34107.15145201749042174448.stgit@devnote2>
+ <168960741686.34107.6330273416064011062.stgit@devnote2>
+ <13926373-1beb-16f4-180e-f529a8c9b0a7@oracle.com>
+ <20230720002446.83aa066ea37af9482751ee8d@kernel.org>
+From:   Alan Maguire <alan.maguire@oracle.com>
+In-Reply-To: <20230720002446.83aa066ea37af9482751ee8d@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR03CA0069.eurprd03.prod.outlook.com (2603:10a6:208::46)
+ To BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB8PR04MB7164:EE_|PA4PR04MB7760:EE_
-X-MS-Office365-Filtering-Correlation-Id: adbd0a4d-5ff1-4ee9-c2a0-08db886fc3f8
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|DS0PR10MB6846:EE_
+X-MS-Office365-Filtering-Correlation-Id: f7c55215-6a01-4a3f-5058-08db886fbbfb
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4xHR9KX0esjqoq6Ysiv3PQsYnd2/VOuRcAavB8Uv4llKYcT74a9IlAqtdzC2YezL/2PVgcq1Jvi9VD6wSZC/t+ZRmUH132acYTHITwTPJZx47TvnGNszMxmN1zgtymYO9K5n30Dv9fKVa8rpoD1p1+5U9S6yKTfF2LajEqy//gP5Lt2VI3SO3QvBDx5BTBJTVpkcU9HlBsCvDO5+kUyCwOvBiU2miFeAMJWcyQcyvC+PYhHWKyHOyDzsVW3XtAFVSJF+JkdykfEs5ONKYGJFw9xQXuEnF1yyi9+/vQkOKIbJLH+TwYwyTI9z+xvN5iBL7r3F8sq0Lk3+kWQFJ0NYgMqA6FBg43nt1yWERw8V9jXg9udujaG5U/b67br79Rhk+Gxc3NIXxNyIiSSebXCkKpgVKoHMSIwe9txK7BZGzZnSgf9qmoPSCyEM8bi5dphpa0YeOBRfJPH/Z1NWLKc3uKTNDdMMMGAwQ7Tp9f23dQ+SmCfBK8HLqpnOcvUoK4lomfwmswv7AX34evgPGdJrw2AyWTIQlKw4Bu95fZRq4xnWl4X6OM3JqVQuB59HY166Yoeo9i/8MKXpWJNdxEybrYAoAogWyfPzOah8wmkwIVU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB7164.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(39860400002)(136003)(346002)(366004)(376002)(451199021)(86362001)(478600001)(83380400001)(1076003)(38100700002)(186003)(41300700001)(26005)(33656002)(54906003)(316002)(53546011)(8676002)(8936002)(6916009)(2906002)(4326008)(6512007)(66556008)(9686003)(66946007)(966005)(6486002)(66476007)(6666004)(6506007)(36756003)(5660300002)(43062005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: BfqdBeHTkgTIhwaz4NiV6JcJi6Wa1SA5AUHLXiXC0Yb8v2w97jXdA3epMlAJFNQISkpZVu6YR6ybyScXn/quZVXA4pQKyDzuSQUK5T5O4HYdaDv1c/TlHgjaCWm0jvaLctJpg5HusaVixZu/C0n4ZxFnOUY/tn3RyYu2TUk7WisLdHWrRL3QTgn3qrjxsqVj0USONraKdm54iEgin9OZUxSz4iuLLszSY90kvq1SUjuYtXqOpcrinvsi3Rgpxr/Ohe4Y4u/1WTqGbpAmxDkMHxH2kD4ebOVOuv3n6psc6wx7BxcAfBwhCaqZpOROXLABajE+l2XUgQC4Yomip+35E2Z6SerQBltkJgH/N2HjUmKDhx9JYGVhH2ugS02VNQwyZclGODtS2BjNnaozKwsgiA232wNgwyacJi227Fec1AXHiacuU/E6UfTbNx37WDiZaC1DBdqlnAEzAuNhJ6ozdgABQxTASETxvwcWySlelOnVpF8iMFQooCZajQpIcqmHi36QJOUYkQ4CbKDH8JzVP1gx6DbNwNWIyuK5H6eV5EC/Sw8iClvlyvvcdpj0cAChlrZgpHSMHiu4CHn9WmhimfFKU3NL1yJiaGIfHZMqKIKf0xbzz3L4lgai7ywmyNK7C9qSosUJjY1Vgk0hfVWxoQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(39860400002)(346002)(376002)(396003)(136003)(451199021)(53546011)(36756003)(54906003)(478600001)(6666004)(6512007)(6486002)(966005)(186003)(6506007)(86362001)(31696002)(41300700001)(6916009)(4326008)(316002)(66946007)(66556008)(66476007)(31686004)(8936002)(44832011)(8676002)(38100700002)(5660300002)(2616005)(2906002)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QkdQTTUyREJqQnhkNjIyYVg3QUNsb1grOUgxMjF3ZG42SUtzTFhiMmpEMWV6?=
- =?utf-8?B?SjNZenNocDE1YXRLa1J5Sk1VaTRXdUE5ak03QkNkODk4cjI5b05CL09HVzQ2?=
- =?utf-8?B?V0hOWlZ1cnUyMlBFTUVmSFQ0NVgya2dGdGZTZHhsaGNXa3FVc1M3dlczd3Q0?=
- =?utf-8?B?NHBaUFRpTE41bW0wTHE1SWV3dTdRMndlemEyeGJwMFpqYm5SYkpUY0VIVWdD?=
- =?utf-8?B?bmNHUUxUSjlaS1E3WlJZNWVrY1luclVOOGMrTTlNV3B1ZUFDZ0VnWkNGR0h1?=
- =?utf-8?B?WDJPOUdvdUgzSjRYMXV5WEtjMDV2QjNlMnJYN1dXbytZUG11b3NFVHczTjcr?=
- =?utf-8?B?bXVLNW0vejV6NDVtY21XSHlHQlowWk14Sjg2RFRrY2VxRW9pSjkvSnpxWWRT?=
- =?utf-8?B?R2o4a01iMHl0RDBqRnFaWitPNXJpY1Z5cGhNNXE5Um9ZaWlLUExaVmdzMFdn?=
- =?utf-8?B?TjNORGpZSGFQWXVJbXlHWXpoU3NLcmVBS2RveEtEWlY2RWNxc0JCdW4xU0dv?=
- =?utf-8?B?eUhpVENjdjVMNHdURkYwUEhLb1h6T3ZmWmM1OURyeFUzSGNWczNZZ1pLNEoy?=
- =?utf-8?B?MHJ0V3hkY2FVZ1BrWS8wTTdVU1JkK3NnQ3pqZWlEaDRtamYzMTBueWZqV3Er?=
- =?utf-8?B?T3Q2Q0ZqTm5sL3d5c09sOGoxWGlDdGErKzhQL0Z0OTlZcENpOFdTcWhNREg1?=
- =?utf-8?B?ajRVL3hObzBpRUhiMVk2QU9kdFozdXNQemhpckk2cWRBcDV6MDdwemIzYlpa?=
- =?utf-8?B?eEVKaVhwNmtvUWY2TzFER1ZUbE5tY1JKU1ZKTDJBeEJnRlEyenRicDhvT2FJ?=
- =?utf-8?B?cmpGaTJva1BGU1R0aWF5TU1yTGgvT2dnRzFKYTBEY2dWSllTRk9tNmJuVVJm?=
- =?utf-8?B?VURGVTdSZENEaFNnRkRHVHNaTjNhRG1idGxVREluUGJ1ZXVVbTJ4WlV3cGNl?=
- =?utf-8?B?V3V4SU1RQkJZaEM2TEpMQWZNQ3pzVUVHV0tGZFFxZjNaYXZIc3ZLOGIxQ0Y0?=
- =?utf-8?B?Vm9VMTZ4ZWZvcHhGUHZ4MlF5SU5oV04xNlE4VmdES1QzbmNvcW5lblNsdE5M?=
- =?utf-8?B?ZlJUUXRQcVZ2TVFwb1VDUW0zTGRVZEhyVUg1NW9ZUTNLUzAvT2xocnV6NDdG?=
- =?utf-8?B?amVBL2hSVmx5V0gyZk1QR3JzcFgwbEVINWJ5M0NHc0xWN0ZXNllHZ2hOUkF4?=
- =?utf-8?B?bXljdkRtMjJDN1JmTSs2U2xkRU1pakc1dEdjcHYxZmFHc2pCZU0rUThhZ0hK?=
- =?utf-8?B?dFkzZThiYkZKLzR0eW1LZFNCTGFIZEN5QnYwT2J5V29Zd21wTnd4V3ZDZmJ6?=
- =?utf-8?B?RDdERHBmd01ndG11ekFrU2RHK1BHNDF4NGZjMXJoVlNVd2k5aW55Q2k1aDZ1?=
- =?utf-8?B?OHVCUUJzSzdVMkM0cnRIQTVXVFphU1ZDa2ZwQmIvWVpEWmNTOThKU3Z2UkVZ?=
- =?utf-8?B?aW1WS1VhMUNJQWVnd0NpbzQvTVRaaWVBYjhYNXRpRFV2a0NBZ1JGZ2RGYWVX?=
- =?utf-8?B?dmdUZFdCYnBTRitTdkJjSUd1NUlvWHlkSm9IUWxsUVdWTjVrK1g1RXhYcUtK?=
- =?utf-8?B?RjlhZk55U3dDMS9HcVZUam9uVGphRjl3czc4L0pzUVFDaWxLYzdOV1QzelJ6?=
- =?utf-8?B?Q2I5c0RaMjVXRjhmc3Q1d0hhbUVkNHJhTGUwcCt3dVNvWVJJM2VHdG1KbVNC?=
- =?utf-8?B?SUxSemdVWkh5SnJOdzVobVBTYzE4OEFDZjc5UW43UkVnL1BYVnlYZ2l5eGZs?=
- =?utf-8?B?N0pwMlp0cDkwYkdlOXAxdzhYbDY3b1d5VzNpL2FMOHB2alJaSWF6bmJiMkVt?=
- =?utf-8?B?NUhFdm1aaFZ3bXVhalNLSk1RTWV0YS9RbFlDM2cyL2NoTjZpQzc3clhBbEJZ?=
- =?utf-8?B?SGtOcUVwSmZQWHh3eDg5dlhWV1ExVzhJSCt0YkdMU214T1dESm92bXNXVGll?=
- =?utf-8?B?aDRKU21iUllaYWdlWms4Y1pXV3ZnMEhHYllHUzlMTVFOQkx0Z1F2T1BKVUZl?=
- =?utf-8?B?NjQ0aXh1MmdEK01pY0tEOVpYRXo0S3o3eFk5c1RQZkowbE4wNHB1ckxhZ1Vh?=
- =?utf-8?B?NlNkemFGd21KaXpQdGxLY0lKUlpSYlV3eEZ6UlBycjBZOFVxZURnNjBtb1Uw?=
- =?utf-8?Q?zUnI=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: adbd0a4d-5ff1-4ee9-c2a0-08db886fc3f8
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB7164.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WjhlQzRIQk13RkduRy8vamZPdWRsUHFMRHp5K09wYjVPM3ZkaDZ0YmxzU0Zh?=
+ =?utf-8?B?NUg5N1dlVW1XaHp0YTdBYkR1dllIV0FQR2piRVZpQWdVeFMxaThuWng5RXRG?=
+ =?utf-8?B?VE1HSDhvUytqY2xiVmRhYVJLajZMZ0VYWVBocHZpY29LQzEreHE3bXpMVUJB?=
+ =?utf-8?B?dVdJalRGamdWeko3NU8yMGJHZUJRVndQbGZCY1ZWb0VUSkhROXNyakUvbDdH?=
+ =?utf-8?B?aldTY0M5YXplbEtZTFFrMFFwVWFiNDI0QnMvWHBWejlYNWxNKzBrR2JoVWVa?=
+ =?utf-8?B?a0lpMktwSVF0bUwyR29SWnRPczRJUCtxY0NHNEhkMFJiU2ZqRmZRREEwWisv?=
+ =?utf-8?B?YzFHQWRLUlBERmxqRlh3QUNJMVAzY0c3R09ueVM5dzF2cmFrSUJZcHM4Rnp6?=
+ =?utf-8?B?QVl0aytaeGJhQlFBOEt6Wk55bWhZVnAvWWtVZmIyeURBRFJ4eDE2RXNJUHh6?=
+ =?utf-8?B?VkRsNUU4dm9IeUxaVHRpQnpQUU52WnFyak1zWlZqZm1DMlNFeVhQdmNLMVox?=
+ =?utf-8?B?UVZVTy92OVk0QTc1bk1kSytkVmNkYytGYmx6bXEvaEQ2OURWOW5VY2wxQndt?=
+ =?utf-8?B?RVhYVS9ZbEx2U0wwbUVLMUVRR0NWRitFYjZ1VlUwalNSMXNWKzU2OFhqNEJM?=
+ =?utf-8?B?UFhGVHlaTnkvU2JVbTNYYyt2V3U3WW1EY3BQREF5REczOW1qMDRhUFNPazVu?=
+ =?utf-8?B?THdaRWRORHlFNkZDSklFaGpWd2NjckN5MVFkeGt6SDdnTXd6Y0lVRFBhRGNK?=
+ =?utf-8?B?TXhFeGQrOUhDcDR4anBKemhrM1NkTUZBWGJKWXVubkgyOG5qMW5KTkRZWEpB?=
+ =?utf-8?B?OWlpV3VjbVI0K2NDMithNnFjUzZaS1g0Wk1iTWF6a2NsYXd1bmFQVHpsSlNa?=
+ =?utf-8?B?UGNZeU1xM1Z6T1BEUFhwMVhwWGtib2pLYmFoREpXdjd1Z3BMaDFZMmdrUHdI?=
+ =?utf-8?B?dHI3QkFzMXdsOEZiR2F1eUVURFZqK2IxNk1qWDBuU3ZLODRMT1M2NVJ2RnRv?=
+ =?utf-8?B?b0NFd0VTaS95WWs0aXdQTXN5QkdWeitZQ1NYNGN6Y3VZb2xPc1dmbzZQblo4?=
+ =?utf-8?B?WlZYc3Jkd3hhUmhscVBVczRGQ0M1STRRZkwxamo5MlF5RHdOWDBlVTVRdHB2?=
+ =?utf-8?B?dEZCOXlzZytvMDBMRFdMYTZIWUFvVm9JV3g5M0t5N1JQVjJVNzFkOGZWcGsz?=
+ =?utf-8?B?bE9JZUtKcjBJVVFVVzVYeXl4dTU1dFY3VHJLOVFOWlJManlFMFY1TWc5WGpM?=
+ =?utf-8?B?SXpyalJmVkFVcS9oQ0V1cVo0UEtZNFVzaGdJamgzcGpCOHU2VC9YVmFTSHda?=
+ =?utf-8?B?WkprUUJPSUNwUTM3ZWp6aVVFMHViWkpiR3VOY2RYVW1oMkZNVEJIbWdTRTQr?=
+ =?utf-8?B?UW9NVURvSGJTaDZDNXVNd2ZtWGVydmlJS1ZRRi91NjBHcnpTa3BrNTkwMXpq?=
+ =?utf-8?B?QU9qWlVpaVZUVk5zMGlJdGt6bEtYR0pmazhOUnVEMjhpK1NFb2paMktHdFJr?=
+ =?utf-8?B?dFd5N3RMbWt3RlVubzIxTEFqVFc2VFNuRnUwcmN3VkorUnArQkxMZ0xQWkw3?=
+ =?utf-8?B?VXlLRVNiMkRyM09yR1pkbW80bG1NUG9aSy8wZ0lka2Y5MG9BQ0VFYVhlNWxB?=
+ =?utf-8?B?MkNWc1pPY1AwMjhEcXNjUDhGZ2tDSlpQZ1JzTnZ0NGJJNlRpNFJqWmkxWUtX?=
+ =?utf-8?B?RUpDWnRlZ21GbDhqMjdIZ0R5WmIzMlNEZU1DZWp4YUtEKzZGYWNHSEVMWVAw?=
+ =?utf-8?B?VWh2R0VHNmdiMEtxbDJIU2FaMDc3QVh2UHlKSWcxeUpXNS9ZYllLcXNJbzNu?=
+ =?utf-8?B?NEZNNWphTll2eTlhM1VqdW13aUE3MlA1UGdZSVRsZnE4bnJOc1ZDRE5JU2JU?=
+ =?utf-8?B?VElKdjlXa3RzQ0oxbXdIcms2TDRnU2RsZk8wdTZBMmErUFM2c21kY2RBTndB?=
+ =?utf-8?B?ekVFUUcyWGUvM2E3OFRaaVZZeGMvYzFXVUpNOXhVdVFTbkpkTHp6QTkzSFR0?=
+ =?utf-8?B?dld6Z3JxUmpFQlpZYWNkQ2IrSFdsVDlDNlJNR2tscDlmNEpOamJOV09aajR3?=
+ =?utf-8?B?WWdBVTlhT3hZbVRrZ3ZDcFg1a2xnTDdLaStyMzVzWVd6RENmblE1OHJ4cGNT?=
+ =?utf-8?B?cHRQUGc0WHF3UHlGZnR6VjAzbFpuSkRxYVlHVjdoUFNIb0dJczNZOThiSllL?=
+ =?utf-8?Q?NSnMK4Vf3ynixU+xgR+ImLU=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: AyfCEfWYpSBS6lvgsFdqBg2owmvbdZezfOD1i51EDMamEBE+b5Jeoz8y5w8fBxZ2kpcmYnwI0/68Rf6jBnisc6gzFu9CRiRcwzwtxfZaQJIHPc0mRUWtdy7YqvMMsUVT3TRKf7lieuDZrVBV1yjlrbMvUFUe1VM4tNcoMX7HMGk+nhZtlKqVhsNvSIbYve5uBoB5WI6hMxyG1eEpkILlCIKosP8inmoCmiWcryEk0P3il5MOi39hXrkw9L9hhczv5+qbgs5CGWXDe74OfashDNvlYNcOAJr154YpVtBsp0vHLZp0WWmc89pKarxa9DgilfVm4YsJlQQEK+kLW2wriXsPaJf+YWitr9lDoNWWKOVIDW4AU/NjgnLyCnRUA3uiB/EUIleKcq/dt8awtMqZHMl1FeZvD1Y88jVxFPcEocyp3W28rLkyg8tB1sZ3lrY/74wYBYPNLAzkqTqS8qwIuazIzl0lGvnGZZNvwaLS9OkBCz9kUKiFvIrRg4cO5aFDHNAfiRMc4ENktPZgKaLuE0I4kkNKoEsD+I6DL141LXQpP2P6xIe9J9mh1QQaeaNyQf0O/azLrO5cG5kC/xz5ivKmH/7jmBUN3p9VtQJvNi5H7v1HgADwn4I0St9GHsEjCsCieuJ7Sn0d198f7BHiJNAFYOFQ29WmVge4xiFGSTuJvL7Rto+yfezipKkFukdf3ESzBwOKrcblQrLcQbVIvQHh16rg0Oc01LIAkjaPztBRIqVJoP/LNaamkYJL7tDlGRjd4r11JnoD7gBKDrq2tLfw/l4xk1k3NnNTrXSCT0Wy74rKkdn07PXidxIHJtmMKOE7zfi5jhy/6ttSK8Qhawo1sXpd1urf1h09HwTdjuk3fiVhpZQySMTLLeqiTh1F
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f7c55215-6a01-4a3f-5058-08db886fbbfb
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 15:49:41.4807
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 15:49:28.1395
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2VwfyF76PD7IkocfldSoT3MUIR3R7Y/8WG0uLj4wfrdP8gpCoQ0V2QuupQX6IqCE
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7760
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: zRrnVPo/awT4PeJo+r8pKJOZ5m3gulSfKFkXQMZ+nodjnwixOU9DeLIlxxz1g0Jgq+UibEWaIWzYPt1sGKqAeQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB6846
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-19_11,2023-07-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
+ adultscore=0 spamscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307190142
+X-Proofpoint-ORIG-GUID: 0-G0NLd40onGI-9Xy9QYKSvW7g09REEY
+X-Proofpoint-GUID: 0-G0NLd40onGI-9Xy9QYKSvW7g09REEY
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luiz Augusto von Dentz, 
-
-On Tue, Jul 18, 2023 at 10:22:26AM -0700, Luiz Augusto von Dentz wrote:
-> Hi Chun-Yi,
+On 19/07/2023 16:24, Masami Hiramatsu (Google) wrote:
+> On Wed, 19 Jul 2023 13:36:48 +0100
+> Alan Maguire <alan.maguire@oracle.com> wrote:
 > 
-> On Mon, Jul 17, 2023 at 8:43 PM Lee, Chun-Yi <joeyli.kernel@gmail.com> wrote:
-> >
-> > This change is used to relieve CVE-2020-26555. The description of the
-> > CVE:
-> >
-> > Bluetooth legacy BR/EDR PIN code pairing in Bluetooth Core Specification
-> > 1.0B through 5.2 may permit an unauthenticated nearby device to spoof
-> > the BD_ADDR of the peer device to complete pairing without knowledge
-> > of the PIN. [1]
+>> On 17/07/2023 16:23, Masami Hiramatsu (Google) wrote:
+>>> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>>>
+>>> Move generic function-proto find API and getting function parameter API
+>>> to BTF library code from trace_probe.c. This will avoid redundant efforts
+>>> on different feature.
+>>>
+>>> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>>> ---
+>>>  include/linux/btf.h        |    4 ++++
+>>>  kernel/bpf/btf.c           |   45 ++++++++++++++++++++++++++++++++++++++++
+>>>  kernel/trace/trace_probe.c |   50 +++++++++++++-------------------------------
+>>>  3 files changed, 64 insertions(+), 35 deletions(-)
+>>>
+>>> diff --git a/include/linux/btf.h b/include/linux/btf.h
+>>> index cac9f304e27a..98fbbcdd72ec 100644
+>>> --- a/include/linux/btf.h
+>>> +++ b/include/linux/btf.h
+>>> @@ -221,6 +221,10 @@ const struct btf_type *
+>>>  btf_resolve_size(const struct btf *btf, const struct btf_type *type,
+>>>  		 u32 *type_size);
+>>>  const char *btf_type_str(const struct btf_type *t);
+>>> +const struct btf_type *btf_find_func_proto(struct btf *btf,
+>>> +					   const char *func_name);
+>>> +const struct btf_param *btf_get_func_param(const struct btf_type *func_proto,
+>>> +					   s32 *nr);
+>>>  
+>>>  #define for_each_member(i, struct_type, member)			\
+>>>  	for (i = 0, member = btf_type_member(struct_type);	\
+>>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+>>> index 817204d53372..e015b52956cb 100644
+>>> --- a/kernel/bpf/btf.c
+>>> +++ b/kernel/bpf/btf.c
+>>> @@ -1947,6 +1947,51 @@ btf_resolve_size(const struct btf *btf, const struct btf_type *type,
+>>>  	return __btf_resolve_size(btf, type, type_size, NULL, NULL, NULL, NULL);
+>>>  }
+>>>  
+>>> +/*
+>>> + * Find a functio proto type by name, and return it.
+>>> + * Return NULL if not found, or return -EINVAL if parameter is invalid.
+>>> + */
+>>> +const struct btf_type *btf_find_func_proto(struct btf *btf, const char *func_name)
+>>> +{
+>>> +	const struct btf_type *t;
+>>> +	s32 id;
+>>> +
+>>> +	if (!btf || !func_name)
+>>> +		return ERR_PTR(-EINVAL);
+>>> +
+>>> +	id = btf_find_by_name_kind(btf, func_name, BTF_KIND_FUNC);
+>>
+>> as mentioned in my other mail, there are cases where the function name
+>> may have a .isra.0 suffix, but the BTF representation will not. I looked
+>> at this and it seems like symbol names are validated via
+>> traceprobe_parse_event_name() - will this validation allow a "."-suffix
+>> name? I tried the following (with pahole v1.25 that emits BTF for
+>> schedule_work.isra.0):
+>>
+>> [45454] FUNC 'schedule_work' type_id=45453 linkage=static
 > 
-> Btw, it is probably worth mentioning that in BR/EDR the key generation
-> is actually handled in the controller, below HCI.
+> That's a good point! I'm checking fprobe, but kprobes actually
+> uses those suffixed names.
+> 
+>>
+>> $ echo 'f schedule_work.isra.0 $arg*' >> dynamic_events
+>> bash: echo: write error: No such file or directory
+> 
+> So maybe fprobe doesn't accept that.
+> 
+>> So presuming that such "."-suffixed names are allowed, would it make
+>> sense to fall back to search BTF for the prefix ("schedule_work")
+>> instead of the full name ("schedule_work.isra.0"), as the former is what
+>> makes it into the BTF representation? Thanks!
+> 
+> OK, that's not a problem. My concern is that some "constprop" functions
+> will replace a part of parameter with constant value (so it can skip
+> passing some arguments). BTF argument may not work in such case.
+> Let me check it.
 >
 
-Yes, the key generation be handled by link manager. I will mention it
-in patch description. 
- 
-> > The detail of this attack is in IEEE paper:
-> > BlueMirror: Reflections on Bluetooth Pairing and Provisioning Protocols
-> > [2]
-> >
-> > It's a reflection attack. Base on the paper, attacker can induce the
-> > attacked target to generate null link key (zero key) without PIN code.
-> >
-> > We can ignore null link key in the handler of "Link Key Notification
-> > event" to relieve the attack. A similar implementation also shows in
-> > btstack project. [3]
+If the --btf_skip_inconsistent_proto option (also specified for pahole
+v1.25) is working as expected, any such cases shouldn't make it into
+BTF. The idea is we skip representing any static functions in BTF that
+
+1. have multiple different function prototypes (since we don't yet have
+good mechanisms to choose which one the user was referring to); or
+2. use an unexpected register for a parameter. We gather that info from
+DWARF and then make choices on whether to skip adding the function to
+BTF or not.
+
+See dwarf_loader.c in https://github.com/acmel/dwarves for more details
+on the process used if needed.
+
+The only exception for case 2 - where we allow unexpected registers - is
+where multiple registers are used to represent a >64 bit structure
+passed as a parameter by value. It might make sense to exclude such
+functions from fprobe support (there's only a few of these functions in
+the kernel if I remember, so it's no huge loss).
+
+So long story short, if a function made it into in BTF, it is likely
+using the registers you expect it to, unless it has a struct parameter.
+It might be worth excluding such functions if you're worried about
+getting unreliable data.
+
+Thanks!
+
+Alan
+
+> Thank you,
 > 
-> Perhaps we could clarify this statement by stating that if we ignore
-> the link key it means the stack will not consider the device is bonded
-> and will not persist the link key, that said the controller will still
-> consider it as paired, so I perhaps we should go one step forward and
-> disconnect if we detect such a key is being used.
->
-
-I am new on bluetooth field. Did you mean like this patch? Sending
-HCI_Disconnect when we found zero link key?
-
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index ff0c331f53d6..3482031cbbb8 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4698,6 +4700,15 @@ static void hci_link_key_notify_evt(struct hci_dev *hdev, void *data,
-        if (!conn)
-                goto unlock;
- 
-+       /* Ignore NULL link key against CVE-2020-26555 */
-+       if (!memcmp(ev->link_key, ZERO_KEY, HCI_LINK_KEY_SIZE)) {
-+               bt_dev_dbg(hdev, "Ignore NULL link key (ZERO KEY) for %pMR", &ev->bdaddr);
-+               hci_disconnect(conn, HCI_ERROR_AUTH_FAILURE);
-+               hci_conn_drop(conn);
-+               goto unlock;
-+       }
-+
-        hci_conn_hold(conn);
-        conn->disc_timeout = HCI_DISCONN_TIMEOUT;
-        hci_conn_drop(conn);
-
-
-Is there anything I'm missing? Thanks a lot!
-
-> > v2:
-> > - Used Link: tag instead of Closes:
-> > - Used bt_dev_dbg instead of BT_DBG
-> > - Added Fixes: tag
-> >
-> > Fixes: 55ed8ca10f35 ("Bluetooth: Implement link key handling for the management interface")
-> > Link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-26555 [1]
-> > Link: https://ieeexplore.ieee.org/abstract/document/9474325/authors#authors [2]
-> > Link: https://github.com/bluekitchen/btstack/blob/master/src/hci.c#L3722 [3]
-> > Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
-> > ---
-> >  net/bluetooth/hci_event.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-> > index 95816a938cea..ff0c331f53d6 100644
-> > --- a/net/bluetooth/hci_event.c
-> > +++ b/net/bluetooth/hci_event.c
-> > @@ -4684,6 +4684,12 @@ static void hci_link_key_notify_evt(struct hci_dev *hdev, void *data,
-> >         bool persistent;
-> >         u8 pin_len = 0;
-> >
-> > +       /* Ignore NULL link key against CVE-2020-26555 */
-> > +       if (!memcmp(ev->link_key, ZERO_KEY, HCI_LINK_KEY_SIZE)) {
-> > +               bt_dev_dbg(hdev, "Ignore NULL link key (ZERO KEY) for %pMR", &ev->bdaddr);
-> > +               return;
-> > +       }
-> > +
-> >         bt_dev_dbg(hdev, "");
-> >
-> >         hci_dev_lock(hdev);
-> > --
-> > 2.35.3
-> >
-
-Thanks a lot!
-Joey Lee
+>>
+>> Alan
+>>
+>>> +	if (id <= 0)
+>>> +		return NULL;
+>>> +
+>>> +	/* Get BTF_KIND_FUNC type */
+>>> +	t = btf_type_by_id(btf, id);
+>>> +	if (!t || !btf_type_is_func(t))
+>>> +		return NULL;
+>>> +
+>>> +	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
+>>> +	t = btf_type_by_id(btf, t->type);
+>>> +	if (!t || !btf_type_is_func_proto(t))
+>>> +		return NULL;
+>>> +
+>>> +	return t;
+>>> +}
+>>> +
+>>> +/*
+>>> + * Get function parameter with the number of parameters.
+>>> + * This can return NULL if the function has no parameters.
+>>> + */
+>>> +const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s32 *nr)
+>>> +{
+>>> +	if (!func_proto || !nr)
+>>> +		return ERR_PTR(-EINVAL);
+>>> +
+>>> +	*nr = btf_type_vlen(func_proto);
+>>> +	if (*nr > 0)
+>>> +		return (const struct btf_param *)(func_proto + 1);
+>>> +	else
+>>> +		return NULL;
+>>> +}
+>>> +
+>>>  static u32 btf_resolved_type_id(const struct btf *btf, u32 type_id)
+>>>  {
+>>>  	while (type_id < btf->start_id)
+>>> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+>>> index c68a72707852..cd89fc1ebb42 100644
+>>> --- a/kernel/trace/trace_probe.c
+>>> +++ b/kernel/trace/trace_probe.c
+>>> @@ -371,47 +371,23 @@ static const char *type_from_btf_id(struct btf *btf, s32 id)
+>>>  	return NULL;
+>>>  }
+>>>  
+>>> -static const struct btf_type *find_btf_func_proto(const char *funcname)
+>>> -{
+>>> -	struct btf *btf = traceprobe_get_btf();
+>>> -	const struct btf_type *t;
+>>> -	s32 id;
+>>> -
+>>> -	if (!btf || !funcname)
+>>> -		return ERR_PTR(-EINVAL);
+>>> -
+>>> -	id = btf_find_by_name_kind(btf, funcname, BTF_KIND_FUNC);
+>>> -	if (id <= 0)
+>>> -		return ERR_PTR(-ENOENT);
+>>> -
+>>> -	/* Get BTF_KIND_FUNC type */
+>>> -	t = btf_type_by_id(btf, id);
+>>> -	if (!t || !btf_type_is_func(t))
+>>> -		return ERR_PTR(-ENOENT);
+>>> -
+>>> -	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
+>>> -	t = btf_type_by_id(btf, t->type);
+>>> -	if (!t || !btf_type_is_func_proto(t))
+>>> -		return ERR_PTR(-ENOENT);
+>>> -
+>>> -	return t;
+>>> -}
+>>> -
+>>>  static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
+>>>  						   bool tracepoint)
+>>>  {
+>>> +	struct btf *btf = traceprobe_get_btf();
+>>>  	const struct btf_param *param;
+>>>  	const struct btf_type *t;
+>>>  
+>>> -	if (!funcname || !nr)
+>>> +	if (!funcname || !nr || !btf)
+>>>  		return ERR_PTR(-EINVAL);
+>>>  
+>>> -	t = find_btf_func_proto(funcname);
+>>> -	if (IS_ERR(t))
+>>> +	t = btf_find_func_proto(btf, funcname);
+>>> +	if (IS_ERR_OR_NULL(t))
+>>>  		return (const struct btf_param *)t;
+>>>  
+>>> -	*nr = btf_type_vlen(t);
+>>> -	param = (const struct btf_param *)(t + 1);
+>>> +	param = btf_get_func_param(t, nr);
+>>> +	if (IS_ERR_OR_NULL(param))
+>>> +		return param;
+>>>  
+>>>  	/* Hide the first 'data' argument of tracepoint */
+>>>  	if (tracepoint) {
+>>> @@ -490,8 +466,8 @@ static const struct fetch_type *parse_btf_retval_type(
+>>>  	const struct btf_type *t;
+>>>  
+>>>  	if (btf && ctx->funcname) {
+>>> -		t = find_btf_func_proto(ctx->funcname);
+>>> -		if (!IS_ERR(t))
+>>> +		t = btf_find_func_proto(btf, ctx->funcname);
+>>> +		if (!IS_ERR_OR_NULL(t))
+>>>  			typestr = type_from_btf_id(btf, t->type);
+>>>  	}
+>>>  
+>>> @@ -500,10 +476,14 @@ static const struct fetch_type *parse_btf_retval_type(
+>>>  
+>>>  static bool is_btf_retval_void(const char *funcname)
+>>>  {
+>>> +	struct btf *btf = traceprobe_get_btf();
+>>>  	const struct btf_type *t;
+>>>  
+>>> -	t = find_btf_func_proto(funcname);
+>>> -	if (IS_ERR(t))
+>>> +	if (!btf)
+>>> +		return false;
+>>> +
+>>> +	t = btf_find_func_proto(btf, funcname);
+>>> +	if (IS_ERR_OR_NULL(t))
+>>>  		return false;
+>>>  
+>>>  	return t->type == 0;
+>>>
+>>>
+> 
+> 
