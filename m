@@ -2,139 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3EA75A06F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 23:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7D475A06D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 23:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbjGSVQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 17:16:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
+        id S229831AbjGSVQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 17:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbjGSVQm (ORCPT
+        with ESMTP id S229510AbjGSVQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 17:16:42 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EAB81FC1;
-        Wed, 19 Jul 2023 14:16:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689801401; x=1721337401;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=KOlYhSQQf0n27vCrrgt8YCZyUuX7bCxCVC7N0wOP1Jw=;
-  b=C1jv2hadUjV4P8vdlE5j63P43iT5wbq3KrOr5iSZPg/jDmtaE6PtFAk5
-   PN1JUvB3JS9FGyLn99UUnE6R/b7tM3m9SsB9JcrJ/8fipJkpqQupzwAyn
-   PdtNqOfLo5/wKe1mF7oY//ABwmd4g/HEzv4kKCm3NAQLGYkQiqj/PCTwA
-   gUhHBHmmSpt8xsvEQd9RXsORmbQhsKzDzBohk0RaL/LnHOoWH7K8RPM1u
-   MgeQ4WIAZp8rgcoCtKxyxNunF/xW6PQnbkpCKRAKg5KWHjfp1EHKpmSlp
-   u2FxFx6PvnuedpPR2ebe4XZoTl6z5MUbwiMkhPFLIN2dE3Ev/aOSbhwKo
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="351435329"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="351435329"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 14:16:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="724150548"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="724150548"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 14:16:40 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "Song, Youquan" <youquan.song@intel.com>, x86@kernel.org,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v2] x86/mce: Set PG_hwpoison page flag to avoid the capture kernel panic
-Date:   Wed, 19 Jul 2023 14:16:25 -0700
-Message-Id: <20230719211625.298785-1-tony.luck@intel.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230127015030.30074-1-tony.luck@intel.com>
-References: <20230127015030.30074-1-tony.luck@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Wed, 19 Jul 2023 17:16:36 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133591FCD
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 14:16:35 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5734d919156so1419207b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 14:16:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689801394; x=1690406194;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=F9BpFuhMTkAOIbHVpXjSO4oTM9iSvRhAIZS7PoLmzJ4=;
+        b=2rWGTRMAxnD6VeFPQEreW2HWSQArB4kLh/AVFJFeMRRu/b0qI1M/YvEqYUK8drstJH
+         c/O7qo/G7EcS+Ij4KHSS9CoygJOHy5gj8wp3xmV/RasyNFdsxhTWXIzN3WjKFi628Z7Z
+         rIt976xfybkKpbGh6/5efs/pvr+MjFRMYiTTM3VrAUGQ+YfVC370lk74ULcnEvsN3CDB
+         NRDaruRhWjr9gF9nA4RyHuIkv2SMzlJxCucuDfduj2L9I5lcjVw2w2ZwfBjwrBYDCZD4
+         R2llbtpO92RHOF1V8NVsi+Zl+Wv+rxrxnQsvjkVz34oPQHrkFZaceYSPBoWmhKHdwQq6
+         pRsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689801394; x=1690406194;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F9BpFuhMTkAOIbHVpXjSO4oTM9iSvRhAIZS7PoLmzJ4=;
+        b=GhPrLK4nuEglrzYF4w5OqCggZRACURc4kBuZK8CTeaYrLRjzQEsCJFsNmtoDFonn9T
+         1TxUIlfGnHz/XttLzAFgcFP2jRZi0pAto7NFNI3BVOA/jygbTn0XOSoMHFgsFpeHU06W
+         ihiCAG2D+RBlIagzb0SvwaAeOSlfTiPIyej8GAZ2HJKMpc1BTKScGdWsWAkJple3nSJ3
+         TD8h86aJGrMXBeM4N9ufm5ertkPKdO7vGueSCd//PniTEKyKNRXGRF/kWJRTveDjNVVC
+         YsP1apafWTVD+FYIR0zKgJKRLkYqrV8LYEmJTNISbEtMjcRSraiR2suwI1XeuRs3T95H
+         TvTQ==
+X-Gm-Message-State: ABy/qLb4Er/RsorR5sKjijsGD/WFtbb2DrLu62AebsZedTT8XXJ97Pz9
+        mN4kcAfwqqQYsyIYulkPE8tB1+xlNuqhjq0Vn96c
+X-Google-Smtp-Source: APBJJlHreOXAS0H9GQPXpAnmR0dGnAWP0KSY+RuBCP7YUswW95L59jjmKDrqfTpSNj9UEciNANfkAkMJF+8kz9Tkf4LV
+X-Received: from axel.svl.corp.google.com ([2620:15c:2a3:200:2c07:36ef:118f:86cf])
+ (user=axelrasmussen job=sendgmr) by 2002:a81:430c:0:b0:555:cd45:bc3a with
+ SMTP id q12-20020a81430c000000b00555cd45bc3amr198551ywa.9.1689801394300; Wed,
+ 19 Jul 2023 14:16:34 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 14:16:31 -0700
+In-Reply-To: <79375b71-db2e-3e66-346b-254c90d915e2@cslab.ece.ntua.gr>
+Mime-Version: 1.0
+References: <79375b71-db2e-3e66-346b-254c90d915e2@cslab.ece.ntua.gr>
+X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
+Message-ID: <20230719211631.890995-1-axelrasmussen@google.com>
+Subject: Re: Using userfaultfd with KVM's async page fault handling causes
+ processes to hung waiting for mmap_lock to be released
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Dimitris Siakavaras <jimsiak@cslab.ece.ntua.gr>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        linux-mm@kvack.org, Axel Rasmussen <axelrasmussen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhiquan Li <zhiquan1.li@intel.com>
+Thanks for the detailed report Dimitris! I've CCed the MM mailing list and some
+folks who work on userfaultfd.
 
-Kdump can exclude the HWPosion page to avoid touch the error page
-again, the prerequisite is the PG_hwpoison page flag is set.
-However, for some MCE fatal error cases, there are no opportunity
-to queue a task for calling memory_failure(), as a result,
-the capture kernel touches the error page again and panics.
+I took a look at this today, but I haven't quite come up with a solution.
 
-Add function mce_set_page_hwpoison_now() which mark a page as
-HWPoison before kernel panic() for MCE error, so that the dump
-program can check and skip the error page and prevent the capture
-kernel panic.
+I thought it might be as easy as changing userfaultfd_release() to set released
+*after* taking the lock. But no such luck, the ordering is what it is to deal
+with another subtle case:
 
-[Tony: Changed TestSetPageHWPoison() to SetPageHWPoison()]
 
-Co-developed-by: Youquan Song <youquan.song@intel.com>
-Signed-off-by: Youquan Song <youquan.song@intel.com>
-Signed-off-by: Zhiquan Li <zhiquan1.li@intel.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
+	WRITE_ONCE(ctx->released, true);
 
-v2: Replaced "TODO" comment in code with comments based on mailing
-list discussion on the lack of value in covering other page types
+	if (!mmget_not_zero(mm))
+		goto wakeup;
 
- arch/x86/kernel/cpu/mce/core.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+	/*
+	 * Flush page faults out of all CPUs. NOTE: all page faults
+	 * must be retried without returning VM_FAULT_SIGBUS if
+	 * userfaultfd_ctx_get() succeeds but vma->vma_userfault_ctx
+	 * changes while handle_userfault released the mmap_lock. So
+	 * it's critical that released is set to true (above), before
+	 * taking the mmap_lock for writing.
+	 */
+	mmap_write_lock(mm);
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 89e2aab5d34d..766f64fade51 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -156,6 +156,30 @@ void mce_unregister_decode_chain(struct notifier_block *nb)
- }
- EXPORT_SYMBOL_GPL(mce_unregister_decode_chain);
- 
-+/*
-+ * Kdump can exclude the HWPosion page to avoid touch the error page again,
-+ * the prerequisite is the PG_hwpoison page flag is set. However, for some
-+ * MCE fatal error cases, there are no opportunity to queue a task
-+ * for calling memory_failure(), as a result, the capture kernel panic.
-+ * This function mark the page as HWPoison before kernel panic() for MCE.
-+ *
-+ * This covers normal 4KByte pages. There is little/no value in covering
-+ * other page types. E.g.
-+ * SGX: These cannot be dumped.
-+ * PMEM: Pointless to dump these. Persistent memory contents remain
-+ * available across reboots.
-+ * HugeTLB: These are user pages. Generally filtered out of the kdump
-+ * to keep size small. Not helpful to debug kernel issues.
-+ */
-+static void mce_set_page_hwpoison_now(unsigned long pfn)
-+{
-+	struct page *p;
-+
-+	p = pfn_to_online_page(pfn);
-+	if (p)
-+		SetPageHWPoison(p);
-+}
-+
- static void __print_mce(struct mce *m)
- {
- 	pr_emerg(HW_ERR "CPU %d: Machine Check%s: %Lx Bank %d: %016Lx\n",
-@@ -286,6 +310,8 @@ static noinstr void mce_panic(const char *msg, struct mce *final, char *exp)
- 	if (!fake_panic) {
- 		if (panic_timeout == 0)
- 			panic_timeout = mca_cfg.panic_timeout;
-+		if (final && (final->status & MCI_STATUS_ADDRV))
-+			mce_set_page_hwpoison_now(final->addr >> PAGE_SHIFT);
- 		panic(msg);
- 	} else
- 		pr_emerg(HW_ERR "Fake kernel panic: %s\n", msg);
--- 
-2.40.1
-
+I think perhaps the right thing to do is to have handle_userfault() release
+mmap_lock when it returns VM_FAULT_NOPAGE, and to have GUP deal with that
+appropriately? But, some investigation is required to be sure that's okay to do
+in the other non-GUP ways we can end up in handle_userfault().
