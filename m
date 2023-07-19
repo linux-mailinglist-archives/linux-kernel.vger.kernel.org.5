@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EB175911F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78EA9759122
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 11:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbjGSJFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 05:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50728 "EHLO
+        id S229988AbjGSJF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 05:05:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231147AbjGSJFD (ORCPT
+        with ESMTP id S230394AbjGSJFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 05:05:03 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6917C273A
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:04:31 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-51f7fb9a944so9307037a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:04:31 -0700 (PDT)
+        Wed, 19 Jul 2023 05:05:36 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7005D172E
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:05:04 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9939fbb7191so125842666b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 02:05:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689757450; x=1692349450;
+        d=linaro.org; s=google; t=1689757496; x=1692349496;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bn+vII7Mq9WTFdjOXCwY94q8vJsw0A4shIloSRXljbU=;
-        b=B7682dZs699xn/7kZzG4ZDU4zJ+nxGKmfVE2JA552bBFer03dODdl44VV+3ud30z47
-         mLeCQ5jjDM4ELp7F61XfMT05gVNeiDv3xVfXlqbPhFPX5PvBRcIHcYR1+eqtAINSfVvx
-         B7p5yFDR1ynu9vxuek20dKQdX/Xgx0o9qH9M3nIYl99JwQSw0rD39W6bzabIduTB3lri
-         wBDXk6X28zqfPoI0Iw8wtrh3kdnqxBqujx/Euuo75m10I6YJPEWeDGLqwIop1UiCS1+T
-         msP6txshHmMhHQYYJ83RQGyWDzRPfJgEU1fO8oVWtRl3eTDFA3br5NcyLzWo+a8as2ah
-         HNRA==
+        bh=CG2i2gBdVgAobd7kSOtOhhY9985qKrdP4M4UxdNSfpA=;
+        b=MOo4xwK0xHvBv6dWQDzKM4xZBpYxTg51VuIGMqgw+zOK983xACaLL8Theq51In9kck
+         ZbW8lqvNI30+RT0Ho3lDWgtkFCQV/uc4m29yqrHATPsdeOui9ZS9gwJQju57qUIFvN/t
+         chxhOdn/P3ssp0Cefy9C77tBxSrmVYaT5jAoKz+caAYFnznIBIeQdXPqv84zZI83jm4u
+         vsO64A/nrPqAofMmncPSkmslDsGlx8pVeuGHZJcESevisX7PcQN1DB1v00rImbeHLdDb
+         jretoz77IVDpgb5t3fvU1NgIzImTrM+iWcuM6hs7JmBeoKGYF/gVX7fHzUfEop8Wj9Cp
+         Mr8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689757450; x=1692349450;
+        d=1e100.net; s=20221208; t=1689757496; x=1692349496;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bn+vII7Mq9WTFdjOXCwY94q8vJsw0A4shIloSRXljbU=;
-        b=OeUhL1LHivIGWmCyfdC/wn2IR47t74FDKkIqgbrXRsW6UR72lBkXPr45bBiVsV/hh3
-         FU5Ojpu1pAFkLWI+l7tCBPzxNOhzzCdcs00KKmlOE6CrR5n7dC4vq1DiA6myvYnjymGd
-         XhiDGN79IqfKzQHRoBflxM+ul7oii77m/GGaqS2yPImMZz4JnAoROkVclXVbrRkRateT
-         byzhDyguFyZqJ6WKyDIPszi4LI+5Y+ML3bgjKuSoKTD8Sgt9rANZIL4GrCrZDb46LbVI
-         7OzHiGhI4mzZJSzRwbSWogyUqnzHieUioJBX7xjGKpyPZvd+ssPoSsj8jTHkeaFUkHr6
-         oqPQ==
-X-Gm-Message-State: ABy/qLbtxpqmcy1CRUF7E6ifCifdGjBi+7phi1qgoayo9iT5MdIpbWkx
-        KgQa/4hRP05RWbNC2dcIUWrIZg==
-X-Google-Smtp-Source: APBJJlExbynH/rLeFi9Sd72ZvSh2WkU51sI+jaasmEZNOVkLEizGSnTAJyhSRMFVWYxoIXG6pzWQSg==
-X-Received: by 2002:aa7:c3cc:0:b0:51d:9605:28fd with SMTP id l12-20020aa7c3cc000000b0051d960528fdmr1637770edr.26.1689757450483;
-        Wed, 19 Jul 2023 02:04:10 -0700 (PDT)
+        bh=CG2i2gBdVgAobd7kSOtOhhY9985qKrdP4M4UxdNSfpA=;
+        b=S3rKHOOGUHrPUpFPjI0W4GIbtE281s1jyEoZe3ldEYuEUXFP677JJBk7PSSuydKdEp
+         IurzDt8lGSReY0W3y43kAIdAdmjS/nACiVV4WFSLfN50+8qgVawpgQrCdvsA51qL4GWc
+         +8C2qdPKK7Yf+m3g6pPzJVYlsm5EDg6eRmZyz0BCaERNH6yTxaOaOkXi5Dl0poKoL7gh
+         b0rw4u0I5G3+0xYL1mYSJxWwmXw1o7WctmKN6ss6bBObaV/GaOKgIGmGx0k/nkW91RIT
+         ytwipxFUn9klmom8DT6HEeqgEI+d3x1l3lx+rPyQzWhO9zL7WLDIDSzDkDc09ruFBnlT
+         DTPg==
+X-Gm-Message-State: ABy/qLYOCxrMcLBsS0xCCfKmkLPtO74CtLjpoywf6C0TrGkM5c9KqYDS
+        grjCP22RoiYb6lvyJXXtwIclbw==
+X-Google-Smtp-Source: APBJJlG2CdR7otElXbCSTvvIj4z8QCx0EPvoLVEcs45/igNTPlvZg67Tn6ceqy4lh0WKAf33sSeqQA==
+X-Received: by 2002:a17:907:3ea0:b0:993:f9d8:9fd0 with SMTP id hs32-20020a1709073ea000b00993f9d89fd0mr1955000ejc.1.1689757495980;
+        Wed, 19 Jul 2023 02:04:55 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id h13-20020aa7c94d000000b0051bec856cb4sm2411493edt.50.2023.07.19.02.04.09
+        by smtp.gmail.com with ESMTPSA id cw17-20020a170906c79100b00992b0745548sm2058618ejb.152.2023.07.19.02.04.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 02:04:10 -0700 (PDT)
-Message-ID: <e864599b-8ca0-d7f4-7337-806cf2549458@linaro.org>
-Date:   Wed, 19 Jul 2023 11:04:08 +0200
+        Wed, 19 Jul 2023 02:04:55 -0700 (PDT)
+Message-ID: <401692d5-14a9-51a2-6676-06449ec54d18@linaro.org>
+Date:   Wed, 19 Jul 2023 11:04:53 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH 1/7] ARM: dts: exynos: k3g: Add WiFi card support
+Subject: Re: [PATCH 2/7] ARM: dts: exynos: k3g: Add GPIO keys support
 Content-Language: en-US
 To:     Markuss Broks <markuss.broks@gmail.com>
 Cc:     Rob Herring <robh+dt@kernel.org>,
@@ -65,15 +65,15 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20230716220644.22158-1-markuss.broks@gmail.com>
- <20230716220644.22158-2-markuss.broks@gmail.com>
+ <20230716220644.22158-4-markuss.broks@gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230716220644.22158-2-markuss.broks@gmail.com>
+In-Reply-To: <20230716220644.22158-4-markuss.broks@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -81,30 +81,16 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 17/07/2023 00:05, Markuss Broks wrote:
-> This device has Broadcom BCM4354 WiFi card installed,
-> which uses SDIO interface.
+> Add the four physical buttons support, volume buttons have
+> external pull-up resistors.
 > 
 > Signed-off-by: Markuss Broks <markuss.broks@gmail.com>
 > ---
+>  arch/arm/boot/dts/exynos5422-samsung-k3g.dts | 60 ++++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+> 
 
-
->  &pinctrl_0 {
->  	s2mps11_irq: s2mps11-irq-pins {
->  		samsung,pins = "gpx0-7";
-> @@ -628,6 +652,11 @@ touch_irq: touch-irq-pins {
->  		samsung,pins = "gpx1-6";
->  		samsung,pin-pud = <EXYNOS_PIN_PULL_DOWN>;
->  	};
-> +
-> +	wlan_reset: wlan-reset {
-
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
-
-This is a requirement since few months (half a year?).
+Is it a duplicate? You know it cannot be then applied?
 
 Best regards,
 Krzysztof
