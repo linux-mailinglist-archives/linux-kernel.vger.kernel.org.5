@@ -2,94 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB2875980C
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7894759809
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjGSOUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 10:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50420 "EHLO
+        id S230289AbjGSOUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbjGSOUk (ORCPT
+        with ESMTP id S231143AbjGSOUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:20:40 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFD8198A
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:20:34 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-315adee6ac8so6654971f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:20:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1689776433; x=1692368433;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sD7U3M3Hdj1KbEGA5MHZFpn4+iCH3CG6qIXB6oHiAg0=;
-        b=NzXAFCftbw+S6D6Cx2051P1VTZgEE2FnmEciOOpuvKi7PAlkLMBjOTTeWXY9Ge+3HM
-         XWEWVSlSzBW3WaNizpY5xJiOAZwJufXzL3No+91k3hysHSK2KTRJTsQoG5FggwSYziqx
-         wcTjM9B20J58TPvtMwNeD/1gfOxVRBSkCVoo8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689776433; x=1692368433;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sD7U3M3Hdj1KbEGA5MHZFpn4+iCH3CG6qIXB6oHiAg0=;
-        b=f5jq2YN+yAjJ1WMVb6hXu5AQNepSFuC59OXZHnjIcXBnuk/V0x5upfLv714PhEQjTq
-         UKZLVfIi2jZZ3xVbcBKN7tM7w5kr4t15kHnP2fzykJW1VkhsALHIfp7kdijf0nONZu8/
-         2bsmhuTNvsbNaUMxnmPI5eWnMFYv/8MlGmTnX59rblDsWyKnlhhELiBwQjMt+BeBZEV1
-         SjdFxsEuT2CV87T0s8JlhVUlezQ7sjXaC1IUtKtC6iqVeIrKfGC8iQe69iOUcFrfb+MB
-         ORwGS+a+5YMUiff19pcpiEnwoSTbvY+fGbYCH2vXcNwh8xo8AqHMEyaUMBBhg+4EoiIV
-         2N0Q==
-X-Gm-Message-State: ABy/qLaoTssm1eu6WafqLXg9KgM75FB3hTlgWkC0pnzPMoDACJUx7wfQ
-        sVJLk/vc5rwY4MXa+8ETRVRWRA==
-X-Google-Smtp-Source: APBJJlGp14EglA8VcfXrVUxwsoE3rzyvXr9G3AO+2J4nzLaP1FL57cOTbsbxKXFWBD0Pk+HaLF7kVQ==
-X-Received: by 2002:a5d:4989:0:b0:313:f6bb:ec2b with SMTP id r9-20020a5d4989000000b00313f6bbec2bmr8229wrq.47.1689776432761;
-        Wed, 19 Jul 2023 07:20:32 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (91-82-183-178.pool.digikabel.hu. [91.82.183.178])
-        by smtp.gmail.com with ESMTPSA id z17-20020a5d6411000000b00314145e6d61sm5499995wru.6.2023.07.19.07.20.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 07:20:32 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 16:20:20 +0200
-From:   Miklos Szeredi <miklos@szeredi.hu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [GIT PULL] fuse update for 6.5
-Message-ID: <ZLfxJKGLH8IpG7Ja@miu.piliscsaba.redhat.com>
+        Wed, 19 Jul 2023 10:20:37 -0400
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF51A1724
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:20:29 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 14:20:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1689776427; x=1690035627;
+        bh=183b5PAZnhFCxp/oOLo9nlLEFrHHHEv1Gt8/V3juWA8=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=ZkWznvewtTc2Zfd3W9Yvv2Bupu9uWWK5mPAieCwdpT0tqsvRT3KXVvtCpyLAO7ZR+
+         6+UWtIFCcjsAAzWicXpOaGb8xE7Ww6gFXFeiXYLopba2JdIeb3LaAjUwGGb/8835ch
+         6039ckKVp4EyDHKBC+SEf1q6NqCfQ3YqjbPgWmKiTZ2iVthcxecakVZVYeuROeqMqW
+         NXeKiDd+fYLKUYoVx45rnH8MGjtNkAVI3Q7yU6XYN/r+pRQocdATKzA1rJk11mTsbc
+         v2WAlt0bzKpD3urZQ+ZW/vDPQJpYLYAXZQGOTUxXpvd+2adqcMjSku2ZJwL3zR5VZu
+         yj4vsYo9NjI1A==
+To:     Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <nmi@metaspace.dk>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Asahi Lina <lina@asahilina.net>
+Subject: [PATCH v2 02/12] rust: add derive macro for `Zeroable`
+Message-ID: <20230719141918.543938-3-benno.lossin@proton.me>
+In-Reply-To: <20230719141918.543938-1-benno.lossin@proton.me>
+References: <20230719141918.543938-1-benno.lossin@proton.me>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Add a derive proc-macro for the `Zeroable` trait. The macro supports
+structs where every field implements the `Zeroable` trait. This way
+`unsafe` implementations can be avoided.
 
-Please pull from:
+The macro is split into two parts:
+- a proc-macro to parse generics into impl and ty generics,
+- a declarative macro that expands to the impl block.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-update-6.5
-
-Small but important fixes and a trivial cleanup.
-
-Thanks,
-Miklos
-
+Suggested-by: Asahi Lina <lina@asahilina.net>
+Reviewed-by: Gary Guo <gary@garyguo.net>
+Reviewed-by: Bj=C3=B6rn Roy Baron <bjorn3_gh@protonmail.com>
+Signed-off-by: Benno Lossin <benno.lossin@proton.me>
 ---
-Bernd Schubert (1):
-      fuse: Apply flags2 only when userspace set the FUSE_INIT_EXT
+v1 -> v2:
+* fix Zeroable path
+* add Reviewed-by from Gary and Bj=C3=B6rn
 
-Miklos Szeredi (3):
-      fuse: add feature flag for expire-only
-      fuse: revalidate: don't invalidate if interrupted
-      fuse: ioctl: translate ENOSYS in outarg
+ rust/kernel/init/macros.rs | 28 ++++++++++++++++++++++++++++
+ rust/kernel/prelude.rs     |  2 +-
+ rust/macros/lib.rs         | 20 ++++++++++++++++++++
+ rust/macros/quote.rs       |  6 ++++++
+ rust/macros/zeroable.rs    | 25 +++++++++++++++++++++++++
+ 5 files changed, 80 insertions(+), 1 deletion(-)
+ create mode 100644 rust/macros/zeroable.rs
 
-zyfjeff (1):
-      fuse: remove duplicate check for nodeid
+diff --git a/rust/kernel/init/macros.rs b/rust/kernel/init/macros.rs
+index fbaebd34f218..c50429173fc7 100644
+--- a/rust/kernel/init/macros.rs
++++ b/rust/kernel/init/macros.rs
+@@ -1213,3 +1213,31 @@ macro_rules! __init_internal {
+         );
+     };
+ }
++
++#[doc(hidden)]
++#[macro_export]
++macro_rules! __derive_zeroable {
++    (parse_input:
++        @sig(
++            $(#[$($struct_attr:tt)*])*
++            $vis:vis struct $name:ident
++            $(where $($whr:tt)*)?
++        ),
++        @impl_generics($($impl_generics:tt)*),
++        @ty_generics($($ty_generics:tt)*),
++        @body({
++            $(
++                $(#[$($field_attr:tt)*])*
++                $field:ident : $field_ty:ty
++            ),* $(,)?
++        }),
++    ) =3D> {
++        // SAFETY: every field type implements `Zeroable` and padding byte=
+s may be zero.
++        #[automatically_derived]
++        unsafe impl<$($impl_generics)*> $crate::init::Zeroable for $name<$=
+($ty_generics)*>
++        where
++            $($field_ty: $crate::init::Zeroable,)*
++            $($($whr)*)?
++        {}
++    };
++}
+diff --git a/rust/kernel/prelude.rs b/rust/kernel/prelude.rs
+index c28587d68ebc..ae21600970b3 100644
+--- a/rust/kernel/prelude.rs
++++ b/rust/kernel/prelude.rs
+@@ -18,7 +18,7 @@
+ pub use alloc::{boxed::Box, vec::Vec};
+=20
+ #[doc(no_inline)]
+-pub use macros::{module, pin_data, pinned_drop, vtable};
++pub use macros::{module, pin_data, pinned_drop, vtable, Zeroable};
+=20
+ pub use super::build_assert;
+=20
+diff --git a/rust/macros/lib.rs b/rust/macros/lib.rs
+index b4bc44c27bd4..fd7a815e68a8 100644
+--- a/rust/macros/lib.rs
++++ b/rust/macros/lib.rs
+@@ -11,6 +11,7 @@
+ mod pin_data;
+ mod pinned_drop;
+ mod vtable;
++mod zeroable;
+=20
+ use proc_macro::TokenStream;
+=20
+@@ -343,3 +344,22 @@ pub fn paste(input: TokenStream) -> TokenStream {
+     paste::expand(&mut tokens);
+     tokens.into_iter().collect()
+ }
++
++/// Derives the [`Zeroable`] trait for the given struct.
++///
++/// This can only be used for structs where every field implements the [`Z=
+eroable`] trait.
++///
++/// # Examples
++///
++/// ```rust
++/// #[derive(Zeroable)]
++/// pub struct DriverData {
++///     id: i64,
++///     buf_ptr: *mut u8,
++///     len: usize,
++/// }
++/// ```
++#[proc_macro_derive(Zeroable)]
++pub fn derive_zeroable(input: TokenStream) -> TokenStream {
++    zeroable::derive(input)
++}
+diff --git a/rust/macros/quote.rs b/rust/macros/quote.rs
+index dddbb4e6f4cb..b76c198a4ed5 100644
+--- a/rust/macros/quote.rs
++++ b/rust/macros/quote.rs
+@@ -124,6 +124,12 @@ macro_rules! quote_spanned {
+         ));
+         quote_spanned!(@proc $v $span $($tt)*);
+     };
++    (@proc $v:ident $span:ident ; $($tt:tt)*) =3D> {
++        $v.push(::proc_macro::TokenTree::Punct(
++                ::proc_macro::Punct::new(';', ::proc_macro::Spacing::Alone=
+)
++        ));
++        quote_spanned!(@proc $v $span $($tt)*);
++    };
+     (@proc $v:ident $span:ident $id:ident $($tt:tt)*) =3D> {
+         $v.push(::proc_macro::TokenTree::Ident(::proc_macro::Ident::new(st=
+ringify!($id), $span)));
+         quote_spanned!(@proc $v $span $($tt)*);
+diff --git a/rust/macros/zeroable.rs b/rust/macros/zeroable.rs
+new file mode 100644
+index 000000000000..cddb866c44ef
+--- /dev/null
++++ b/rust/macros/zeroable.rs
+@@ -0,0 +1,25 @@
++// SPDX-License-Identifier: GPL-2.0
++
++use crate::helpers::{parse_generics, Generics};
++use proc_macro::TokenStream;
++
++pub(crate) fn derive(input: TokenStream) -> TokenStream {
++    let (
++        Generics {
++            impl_generics,
++            ty_generics,
++        },
++        mut rest,
++    ) =3D parse_generics(input);
++    // This should be the body of the struct `{...}`.
++    let last =3D rest.pop();
++    quote! {
++        ::kernel::__derive_zeroable!(
++            parse_input:
++                @sig(#(#rest)*),
++                @impl_generics(#(#impl_generics)*),
++                @ty_generics(#(#ty_generics)*),
++                @body(#last),
++        );
++    }
++}
+--=20
+2.41.0
 
----
- fs/fuse/dir.c             |  4 +---
- fs/fuse/inode.c           |  8 ++++++--
- fs/fuse/ioctl.c           | 21 +++++++++++++--------
- include/uapi/linux/fuse.h |  3 +++
- 4 files changed, 23 insertions(+), 13 deletions(-)
+
