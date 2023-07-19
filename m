@@ -2,156 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CFC75929B
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E0475929D
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbjGSKS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
+        id S231164AbjGSKTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbjGSKSd (ORCPT
+        with ESMTP id S231210AbjGSKSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:18:33 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586B426A4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:18:22 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9928abc11deso919457766b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 03:18:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689761901; x=1692353901;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mKO0TJLvmVWRaDSVCf4u46x2zB0AJ6CPfOrU5hIDQ3Y=;
-        b=BR1hVXRSuD4ShJ+2shzyRVpPzUwQ2bQibyB4BYSlcbFc52vBeYKKg/3XruHheKP6DJ
-         d7j0HvFPJ4HoSsD5G/+Tom6obrMBXJJRqvU0ZmzLFp/gai2NUuPxfgFMuwgM+AyxSAR8
-         O6lEtq9tLcB8jy0kdcQU2+o4ky/YuaiOXtA1HRXi4HsmlsswiZykZ5Vuw3MI6psmBvc3
-         qe2h68ytlnA4cPfEzFxzFTzXmazg4zch4j/NFM2KYuYTyOuCAczz7tC/0UyHyNrXS1Ab
-         B6pNSW42fFtO5q/fNJEAjAa6LLCjhdt7iAHIiUpfuxmC384aMNgpY+AAJDTvo5Rebm8j
-         M8nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689761901; x=1692353901;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mKO0TJLvmVWRaDSVCf4u46x2zB0AJ6CPfOrU5hIDQ3Y=;
-        b=goygtIVoN5IsM4/J3BIG1yqjn1Or2l6hfbVkdyY8TCdf0drl95H9Of/daegtA+eRBM
-         HNlX1Z1iOWw27jM2groqZlOd3rqSM6nKR6sU3zK6xtKVZBaVXeYRCaOmP65884T0Rime
-         HIueOmek7hY9DqvjIzaK2KhmP+PEjBnLdkaJ3C5ojsNCDYXQVsClvxl2NPPspWr8VUhp
-         eis7aW6W9RB0nSLYlHtVF1F4h1X7VEOyAbaYhFEVajLbIyA99cjNFVlqAzQD5w/n3pXU
-         XkwOHTcjGuZFeuoD0vzke6eBjvWUj6WR30wFYo24V6Wfrp9Im4K3JCmagJMMg+wZWUmk
-         YntQ==
-X-Gm-Message-State: ABy/qLZNSwuroCidQjACgQ6A4O8KAfReFnnuaGzXPQ/htWs0vZ/tSOaz
-        Xfc1kPcZClwJAkbDLWnwuA3Kug==
-X-Google-Smtp-Source: APBJJlGGiRnE6u8Sqrg1Q0TQNzDkrm36pjdp1JMjTh3lj/teWT2U5GviPaKCCOUI2izgODHqGrDgbw==
-X-Received: by 2002:a17:907:3f28:b0:991:d9cb:247d with SMTP id hq40-20020a1709073f2800b00991d9cb247dmr2154650ejc.57.1689761900793;
-        Wed, 19 Jul 2023 03:18:20 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id jt1-20020a170906dfc100b00992b66e54e9sm2111063ejc.214.2023.07.19.03.18.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 03:18:20 -0700 (PDT)
-Message-ID: <ebc27dd7-93fe-4d8e-8b8c-4fc1d52cc275@linaro.org>
-Date:   Wed, 19 Jul 2023 12:18:17 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3] arm64: dts: qcom: sdm630: Add support for modem
- remoteproc
+        Wed, 19 Jul 2023 06:18:50 -0400
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2111.outbound.protection.outlook.com [40.107.113.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6845210E;
+        Wed, 19 Jul 2023 03:18:37 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nE2o5skEjbn1JKEJK4tQfHBa0dWyf5tiDOIVm/TfIZbNfLUi6OVGH0pQtxY56pmzUcI+0NYTW3CNAUWUObqohbuYvHRo7KSnD70bTmdPzpmizdIaZEaYB08XI5AG1WG5sAA+QaBSFOP/Apfe31iJhkcqX3pmU8oW4tgFcWAy+n+oYvMire74/Yl82kzhBTM19uPXBQ1fUIWsCw6CciBPXGyshkRjY7MFjDHdIMegnljTbIiRLAVQzcxpkBGSFefR/BpZYPLkunBTAMWfMgeZPMTh1oI4NGAXrF5V/xpqAeZjt9XYsNgDPqbC5r6hhI+jb27qzyk7m69lqjlnNT56UA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jmkhU2dfdfNg+AuxiJE2LmtbHpbTNVr1ok8SP8UJqIQ=;
+ b=SmO8qmo0yt6IMs9G6T1CEWmL71ENdkylFAFDWd+cRXJUC/Neb4+ifok+/r5Kkh2To+9TVZoZk91clpDSgqPGk3zD4w5ARf++1n3QqW2KaLnCfMsKitkh3x2s4AAFYUmBA+63xzi8sFAD3Z3kgi2Mvo6o5bwddh/TvzsIF3vYyRHabsFUAfbS4fxGJOrR4KtZwuwWTaSD5hjaobQVMtUXbks8NTkHfFb7hP01XltB8IYOAuF7GqpVb5L4l/HH6c4XLZwhaiiwmaMEPmgrDlL68yF1UOCyCZoA+3mHURg53yrcmNMPHbMUv/aXAWbNmAPCq2ihsVxeGYUu08EwUHImAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jmkhU2dfdfNg+AuxiJE2LmtbHpbTNVr1ok8SP8UJqIQ=;
+ b=BIex4t/AsHIBWPzrQpnwmIEFpBaMF/OJYFNf22upiUyVkigcMwWnz7LKMpGT58+8N/EziGixjYw8AWQueY4o2+4h26/QeOfkH0KVUTx0sEnZfjyFauyGdJzQo5OuBqiwsM3EGdjD7QhwiLK+ZFzRGxlFfjunu3mFFQxFLthTz5g=
+Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
+ by OS3PR01MB8131.jpnprd01.prod.outlook.com (2603:1096:604:172::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.23; Wed, 19 Jul
+ 2023 10:18:34 +0000
+Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
+ ([fe80::834b:28df:28dc:7f95]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
+ ([fe80::834b:28df:28dc:7f95%7]) with mapi id 15.20.6609.024; Wed, 19 Jul 2023
+ 10:18:30 +0000
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>
+CC:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Randy Dunlap <rd.dunlab@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>
+Subject: RE: [PATCH v2] pwm: fix pwm-rz-mtu3.c build errors
+Thread-Topic: [PATCH v2] pwm: fix pwm-rz-mtu3.c build errors
+Thread-Index: AQHZuULWGO/C9BN6KUGGSx2mRQXL7a+/bdMAgAAWJgCAADtRAIAA9rwAgAAq4wCAAADZ0A==
+Date:   Wed, 19 Jul 2023 10:18:30 +0000
+Message-ID: <OS0PR01MB5922FBECED98089BB36841668639A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+References: <ac8d6190-06ae-b538-1293-07efedbfe94e@gmail.com>
+ <CAMuHMdV-wu_XHy_qYGM+_UOAXN8etip731WxmgEmbQdv+SPwbw@mail.gmail.com>
+ <ZLaSqhsJr2qH5Y6E@orome> <20230718165716.77hllvxiwia542fu@pengutronix.de>
+ <ZLeTZtQ_WVzuUqeM@orome> <20230719101352.qu7az5i5c5lrndwi@pengutronix.de>
+In-Reply-To: <20230719101352.qu7az5i5c5lrndwi@pengutronix.de>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-To:     Alexey Minnekhanov <alexeymin@postmarketos.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-References: <20230719093458.2668842-1-alexeymin@postmarketos.org>
- <2c1c69bf-3cd5-4d68-43db-696ce0f15197@linaro.org>
- <1f8cbc00-9602-486d-b3c9-9c82f3b6c8df@postmarketos.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1f8cbc00-9602-486d-b3c9-9c82f3b6c8df@postmarketos.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bp.renesas.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|OS3PR01MB8131:EE_
+x-ms-office365-filtering-correlation-id: 525a8447-f438-4bd8-e5d7-08db88418018
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Jkd4nKqahat2Fdc7v6tAUPk2xS2VjKDf8zpNE57VBz4z83+22/Kw2ETF5DKWHE3uS6aA0Z2xvE4/NSc2TzXxtrJq9qcZPyPfvZOZvDiwgcAk6IFguz56yE6wk6m6BzJCRMNuQrNNCwOMrfCuAWzS8bf1JVG3Lx831qvc9Q1/b4+T3Z/dEKqiW7U9Vu7QGnzGVhL2sWEqT/Ub3m6Gx/QD8GlKsDpEd/IQ8DHgpTR8Y/kb5cRmqa39LMEz24pvH2WgJu3mEo7tEX5CGq6+Lu+Ro9WqTexLVIq6J+++Ft1IHs6c19Q7N2W8HUcGKWKlh/wpNOstahX5NLsX8Y+EYKV9b7DTWL4Bc+UqD3WZw1Z9qu4znnfNbBlfZ8FhK9lJy75yq9IlfYite3UaW1+E5gGJCjArO3xBFmtn5Iq99Ri0xKAWioXUmC+GD4OY6ucHNndFPH0rl7za29+1UgEbP9KHsUY4L+uzgGpxn1UiW8uG2oQBjNvmje02CiyBnxk/zqmm6zSnVGXsR4JoylOeeW0VsZvMPuG2/iDDsM14o3RWAad7bw+EFUwzwKpfrZ52RD5opm7K3qeKSTIwTSjTD+ycVVozIz2m5ONB7Oo5WX0wnTU=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(366004)(396003)(136003)(346002)(451199021)(8936002)(66446008)(52536014)(8676002)(316002)(4326008)(76116006)(66476007)(66946007)(5660300002)(66556008)(64756008)(55016003)(478600001)(54906003)(2906002)(110136005)(71200400001)(41300700001)(966005)(9686003)(6506007)(7696005)(53546011)(33656002)(186003)(83380400001)(86362001)(122000001)(38070700005)(38100700002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?kLJJtV+wjJbHP5irIc7TupNiF8eB0PDKtjE4DLa8BVTd12GQvFHhWjaKzU?=
+ =?iso-8859-1?Q?cNQO6MMRPd9jLxJFk0C0nKrwRpumq+h0B9fNaEto7Ctgw0Qv4oPTBm73T4?=
+ =?iso-8859-1?Q?P0B8IsxeYqMJp+4/PvxGjheXaZYwszc3Z2UWwI7oFjt9CNLRE/7sd6YAjg?=
+ =?iso-8859-1?Q?XClilbpzdUD0D0fy7IJYZlhpmnuoHEvokAnZQg4GAHtYkehAz9FpJP3Ynp?=
+ =?iso-8859-1?Q?N/hi1XgjSCj4v7+WBFkIqF1Sq8DQtWgWdW8PyoJQK5oxGK2LykVxQ4LUyj?=
+ =?iso-8859-1?Q?nceANMXR9u8ATanDoXZAhgTshwKmv4gr4rnmOrx4AaQmng4ahqgiV4NaeY?=
+ =?iso-8859-1?Q?0jWGioP1ZY/4fGrU69G/MxDR0Sdtevx3AVd7YS8jNBDlrMvUOQRDYajjXK?=
+ =?iso-8859-1?Q?A1u7q2pcjS0nOjO5Mr8QhJqU1WMB9E7thEJoLmIpbZqIW6Xxu65B0eA/bd?=
+ =?iso-8859-1?Q?n4m/oQg/VK5BrwQnY0zvOMRCVQhITQJtH3eo5dQ4FNpA/e1IqYOYEmSdwB?=
+ =?iso-8859-1?Q?ppMFbPbgzhfWRU6cTVGmwVo98wAMAE8GJdWNa6O9YvcjpPkcpJ0DwZNgV4?=
+ =?iso-8859-1?Q?ZXcXGKwdRhKbmyvf8JTyfh1yHzvW93x5p7CKWpysfzJUu2B06G3IVY9771?=
+ =?iso-8859-1?Q?j72hcPGBvUExme32TqGg/Rw8GRh6k/zyoTWWiWBHfik4JrJuxC/cMBNxRK?=
+ =?iso-8859-1?Q?YxQFwi6mzjzzqu6krhQc6JIlzt6I/kJmYedDTntz0gL3iBwN6hUa2UG9xL?=
+ =?iso-8859-1?Q?TvK57LskcBWH6UEinYNSOpeK8XPO/3x4vAam9RwaqnHs1TJrNqhxzm8QoZ?=
+ =?iso-8859-1?Q?bPXvXBL/wnubjNxfd1wO0YVZVx6NQbIAU8qJIATKF3R5CT+tnkOpp5ozW3?=
+ =?iso-8859-1?Q?Uom/Bh0COnHCUdZ4gqwLb6Ntt5Xwwo1AyFgMP7QTktwdFDWfsZL7VtBmgO?=
+ =?iso-8859-1?Q?QLemtAKO5oNqyBYTejqJm0PCm7fdjJPIi6NQTzHTw6GBLyINVzvL2bYTnv?=
+ =?iso-8859-1?Q?nZRDmh1//tOknWhDK6nS9d4qLgY/wt0hdHF8Wn3cWGyoKfX7WzNB0yTHVp?=
+ =?iso-8859-1?Q?vBCSNpHLA9IfDxivYvdHbRYEHHJQZCq3Oj0uPtQt0YVSQ23Z/L+5yTXf/H?=
+ =?iso-8859-1?Q?4XJzM731o9kASEl088BUCQ/b/6DeWPJ58kQnLd+PaPYd3QQ8IwaOjswF1B?=
+ =?iso-8859-1?Q?gilsi1VJEH/nzsVYDGYinAqOV17IzWiGdTPqbWPkTWjdCYLJSKpWkeUZCY?=
+ =?iso-8859-1?Q?2XDG59N8R1J+jycIBr7A0fbwSqHcP89tKP3AP9wdBfOGzmMcrtI5wVYIaf?=
+ =?iso-8859-1?Q?lCJM7ijxJLEJ+znHVXFUefdD19Be2GwUZ3MdkmSiqVd9UkbiKtvQIs5bI7?=
+ =?iso-8859-1?Q?SyGRLzFVGuAR91x8Of6FaMXFalaq5Mz+J4FMrZP8Eb3Rau5B3NaIr0No9q?=
+ =?iso-8859-1?Q?lmL+5/v1mPyAIa8uH44DXQMVoA0Sz3asfRKDHbcJsk9R+AFaVK+rW8eMg9?=
+ =?iso-8859-1?Q?mqYDUGJJB2nZ17peH05i74w7WO8nxiCUoOsU2aa6KuIIJBpVb0PDAOX9oR?=
+ =?iso-8859-1?Q?vZ35b0fu05QsjzCpyaBRksMOxKFEUFI9KmjKP8s8nQ4tWKfT509e+o5L9I?=
+ =?iso-8859-1?Q?s4fRcpCLNC1WE=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 525a8447-f438-4bd8-e5d7-08db88418018
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jul 2023 10:18:30.6007
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: l6G8lsWEu0hogL/LqwR1ZvKJdgqmLEV8P8pTYDyoJAy1iOcoSLWJb6XhuTYmMo79kZfotLp7AKZV8JeHwM2TGvcgOFnattXplUT8IUljyww=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB8131
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/2023 12:10, Alexey Minnekhanov wrote:
-> On 19.07.2023 12:45, Krzysztof Kozlowski wrote:
->> On 19/07/2023 11:34, Alexey Minnekhanov wrote:
->>> Modem subsystem in SDM630/660 is similar to MSM8998 and
->>> device tree node for it is based on the one from msm8998.dtsi.
->>>
->>> Signed-off-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
->>> ---
->>>
->>> V3: Use memory-region property to specify memory regions, instead
->>>      of using "mba" and "mpss" subnodes.
->>>
->>> V2 link: https://lore.kernel.org/lkml/20230621175046.61521-3-alexeymin@postmarketos.org/
->>>
->>>   arch/arm64/boot/dts/qcom/sdm630.dtsi | 59 ++++++++++++++++++++++++++++
->>>   1 file changed, 59 insertions(+)
->>>
->>> diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
->>> index 2136ded22f7e..797625cf78ac 100644
->>> --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
->>> +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
->>> @@ -1032,6 +1032,65 @@ data-pins {
->>>   			};
->>>   		};
->>>   
->>> +		remoteproc_mss: remoteproc@4080000 {
->>> +			compatible = "qcom,sdm660-mss-pil";
->>
->> Missing bindings so standard comment:
->>
->> It does not look like you tested the DTS against bindings. Please run
->> `make dtbs_check` (see
->> Documentation/devicetree/bindings/writing-schema.rst or
->> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
->> for instructions).
->>
->> Best regards,
->> Krzysztof
->>
-> 
-> Bindings are already in linux-next/master since 
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=ed50ac266f67829d4732c8ca61ef1953c2cc63d0 
 
-Hm, I checked a two days older next. Provide explanations or links if
-you resend DTS in such case.
+> -----Original Message-----
+> From: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> Sent: Wednesday, July 19, 2023 11:14 AM
+> To: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>; Randy Dunlap
+> <rd.dunlab@gmail.com>; linux-kernel@vger.kernel.org; linux-
+> pwm@vger.kernel.org; Biju Das <biju.das.jz@bp.renesas.com>
+> Subject: Re: [PATCH v2] pwm: fix pwm-rz-mtu3.c build errors
+>=20
+> Hello,
+>=20
+> On Wed, Jul 19, 2023 at 09:40:22AM +0200, Thierry Reding wrote:
+> > On Tue, Jul 18, 2023 at 06:57:16PM +0200, Uwe Kleine-K=F6nig wrote:
+> > > On Tue, Jul 18, 2023 at 03:24:58PM +0200, Thierry Reding wrote:
+> > > > Honestly, do we really need all of this complexity? I have
+> > > > specific configurations to test all of the PWM drivers to make
+> sure they build.
+> > > > There's probably edge cases that don't get tested, but sooner or
+> > > > later I expect some build bot will encounter those and then we can
+> > > > rectify things. But in many cases that I've seen COMPILE_TEST just
+> > > > happens to do more harm than good.
+> > >
+> > > Without COMPILE_TEST you'd need to build at least for the following
+> > > archs to build all pwm drivers:
+> > >
+> > > 	armv4+5
+> > > 	armv7
+> > > 	armv7m
+> > > 	arm64
+> > > 	mips
+> > > 	riscv
+> > > 	shmobile
+> >
+> > This one is actually ARCH_RENESAS and is armv7.
+>=20
+> Oh indeed. ARCH_RENESAS exists for both arm and shmobile. TIL
 
-> .
-> 
-> And I did check DTS against bindings, it spat 2 warnings about new 
-> remoteproc node, which do not make much sense to me:
-> 
->    DTC_CHK arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dtb
->    .../arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dtb: 
-> remoteproc@4080000: qcom,halt-regs:0: [43] is too short
+arm64 and risc-v too. This MTU3 driver should work on RISC-V(RZ/Five) as we=
+ll(need to test at some point).
 
-That's ok.
+Cheers,
+Biju
 
->          From schema: 
-> .../Documentation/devicetree/bindings/remoteproc/qcom,msm8996-mss-pil.yaml
->    .../arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dtb: 
-> remoteproc@4080000: memory-region: [[45], [46]] is too short
->          From schema: 
-> .../Documentation/devicetree/bindings/remoteproc/qcom,msm8996-mss-pil.yaml
-
-This needs fixes. The binding lists expected memory regions and you do
-not have three of them.
-
-Best regards,
-Krzysztof
-
+>=20
+> > > 	x86
+> >
+> > But yeah, those are the platforms that I build for. It's not terribly
+> > complicated to do since all of the above have publicly available
+> > cross- compilers that are easy to install. Also, most of the time I do
+> > incremental builds, so these are quite quick.
+> >
+> > > I personally like COMPILE_TEST as it reduces the number of needed
+> > > test builds to 1 (I think).
+> >
+> > Anyway, I wasn't arguing that we should get rid of COMPILE_TEST
+> > altogether, just that for cases like this it doesn't seem worth the
+> > extra complexity. RZ_MTU3 is an MFD and already || COMPILE_TEST, so we
+> > can easily always enable it.
+>=20
+> Ah, I got that wrong then. I can life with this one.
+>=20
+> Best regards
+> Uwe
+>=20
+> --
+> Pengutronix e.K.                           | Uwe Kleine-K=F6nig
+> |
+> Industrial Linux Solutions                 | https://www.pengutronix.de/
+> |
