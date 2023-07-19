@@ -2,160 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9CF75A1D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B4C75A1DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbjGSW0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 18:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57900 "EHLO
+        id S229763AbjGSW0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 18:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbjGSW0g (ORCPT
+        with ESMTP id S229790AbjGSW0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 18:26:36 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F2826BE
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:26:01 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-40540a8a3bbso59571cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:26:01 -0700 (PDT)
+        Wed, 19 Jul 2023 18:26:46 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D0D2699
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:26:13 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-77a62a84855so5936939f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 15:26:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689805537; x=1690410337;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SSSA1lN7n0KjTsg7oA72TG3EKvc6npW9RST/+V7gA5w=;
-        b=LJjIuORo74r6AjqcGXyZ+9OMOdZWWUtRe+mycw+xl1CutWmM9d7KO0p6ZSO9pplE8Q
-         wyXRDrsnDRqxZkZnnYmfH2t/huF/g/bMS1elj2dLHGY46pfBK1cqFffEpp5Rp8Vn+akJ
-         7ikye3sFRzJwUe5R8s+kvuXZLtgiYsQFSPFGjplgy+rdQtrItfsyiuZsguHd35BRpVdU
-         Ld+LV6gJN+HED/FMuusQrnHsrdfXfyaM4I3qwLNeZJNWuUwtRLPQrrAYm4yejtWMpJBj
-         jrDD2/4msJOx/UFJLS9s7C8oKM6zlCPF5wSRED5d65WNpEaXMx/D76pVseyqjBUgJuNS
-         eqBQ==
+        d=google.com; s=20221208; t=1689805568; x=1692397568;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=O4hpguHBmYCOtbZuyxhfD1fybnhRTWM1zbbotIr9V0c=;
+        b=FGuL0MhwW3FW9w8TXZe1NWokgm/kG6SL6+cVH9CSqvwCHmB+Y5SKafqFEtU64h1Fgc
+         Buja7fyVt7jfCOlsvhpn7wopN4nHLjoWzeVThYryFNfhHotsyYQRL4pU6TIVF40x4phL
+         an5crvu+U9s+Rdvx18gjA22hNxmZLVm9S6Aakcz0xGm8P4SDaNt8vAkH5twEEUI7yo/1
+         FvrY0xxJgDr8fIFcdD+fdMR9cYxfhtsrVco24A+i0xANll4OF6j/PscLsu8llIE/7ELM
+         04P68F6LfeQWuzkqlMqfeZX3j2rxlW5HxRiN1DatIf4yBVMDjMf843hsIAT2pVFDjupC
+         wiew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689805537; x=1690410337;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SSSA1lN7n0KjTsg7oA72TG3EKvc6npW9RST/+V7gA5w=;
-        b=KHGnpbvfqeaFbFFhQiIZ/KY2XZOYxdPgpyCWiefhyOXZIulOQUX8yY0kLcEHfCidTI
-         s5osDvcX5Q1ltUCs5NaafjymkD75i3JUKG8y+YE8ZQjK2HT5HbyfOdfqksneP9SXdDQa
-         8ppWG0LLHtwuCWNiM55BO0FdZUXiqs3z6U1Bd+zCuf7K6arokg4dXixQtX+xfe+CCMzU
-         BdVEvhVbIC7MyYQdeNIcoMgNmeFQ5IEbRUP8b58KbLtG9NbrSDeZCYX2gycykj4Gu96J
-         H1HIbqSy2XEBTiJbH731zQJzfnCpQcacWeb103rhTmnvRZAz3OUhmoCeAsdrH9LIuZ86
-         KMlg==
-X-Gm-Message-State: ABy/qLZrhfBVeJqsT+rkY49+gGfYXcSCWCIlSNy1CK2aESmam8DdGmQN
-        IaXRwzgwFRceVmSLb6jtVqFrI24VRa/gQlK2vnzbWA==
-X-Google-Smtp-Source: APBJJlEwzjIsuWCIUPIJLiT0PXKD5KoIKHegCghCmNQYU/5mCiPeokHdSgbQU1HUsC+nd1R9ML5FmJIJjdAvN8pxiVU=
-X-Received: by 2002:ac8:4e53:0:b0:3f6:97b4:1a4d with SMTP id
- e19-20020ac84e53000000b003f697b41a4dmr40544qtw.23.1689805537020; Wed, 19 Jul
- 2023 15:25:37 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689805568; x=1692397568;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O4hpguHBmYCOtbZuyxhfD1fybnhRTWM1zbbotIr9V0c=;
+        b=YwxquJbY8eirQuW7ZAaio9Eoc9yFWNF9iEmtMwUgce7eQXb5pzakhZIyjWxbg8dU81
+         8eyuHwiAczpga/6hLJRPxAPCHCz2nG9VqWyPevCt3XgLC/O7ZsuC3EneAC9GouhauA33
+         MnYVVYrb3B++iheTPovCfV+9uITa8kfedmfjUXFwwgAQ8Tt+ZXhxGd80TKGbRSQvOhI+
+         lX6qrGVHPgNAOrXqDCPUoDS2DRrNHel6k4O9J6FCEX1t49dIl+V5zYMjXl85pT2FeC1f
+         YZiH9eegeVoKuCiQk6CoiOlFA1XHWmeHxe5E4FAOdROc+naVcwtGRAdghYUIz7nk9aCj
+         7QPA==
+X-Gm-Message-State: ABy/qLYgSsyAvyOor9+LxpFPY2HBUSpa1RXWfIYVAABUAO5aR+j/eZ8p
+        3GWqxet60p+Trelb8hAoL4fU9Q==
+X-Google-Smtp-Source: APBJJlGTJf0O7Fk+xJWT9qywyV2N/3H7tz3wnHQaXe+ZSu1xhUb9OmMf8YuPpu/xy5b34gul655A3g==
+X-Received: by 2002:a6b:dc05:0:b0:786:e612:72f8 with SMTP id s5-20020a6bdc05000000b00786e61272f8mr3450210ioc.21.1689805568494;
+        Wed, 19 Jul 2023 15:26:08 -0700 (PDT)
+Received: from google.com ([2620:15c:183:200:84dc:2218:a741:ad50])
+        by smtp.gmail.com with ESMTPSA id w26-20020a5d961a000000b007864c26fd35sm1592012iol.13.2023.07.19.15.26.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 15:26:07 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 16:26:04 -0600
+From:   Ross Zwisler <zwisler@google.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: collision between ZONE_MOVABLE and memblock allocations
+Message-ID: <20230719222604.GB3528218@google.com>
+References: <20230718220106.GA3117638@google.com>
+ <20230719054434.GG1901145@kernel.org>
 MIME-Version: 1.0
-References: <20230719113542.2293295-1-apatel@ventanamicro.com> <20230719113542.2293295-3-apatel@ventanamicro.com>
-In-Reply-To: <20230719113542.2293295-3-apatel@ventanamicro.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 19 Jul 2023 15:25:01 -0700
-Message-ID: <CAGETcx9xHSFSX1bOA8H04gXVN_Lh0HgvoC3xKesCzCEdW1dGMw@mail.gmail.com>
-Subject: Re: [PATCH v6 02/14] of: property: Add fw_devlink support for msi-parent
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230719054434.GG1901145@kernel.org>
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 4:36=E2=80=AFAM Anup Patel <apatel@ventanamicro.com=
-> wrote:
->
-> This allows fw_devlink to create device links between consumers of
-> a MSI and the supplier of the MSI.
->
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  drivers/of/property.c | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
->
-> diff --git a/drivers/of/property.c b/drivers/of/property.c
-> index ddc75cd50825..e4096b79a872 100644
-> --- a/drivers/of/property.c
-> +++ b/drivers/of/property.c
-> @@ -1325,6 +1325,37 @@ static struct device_node *parse_interrupts(struct=
- device_node *np,
->         return of_irq_parse_one(np, index, &sup_args) ? NULL : sup_args.n=
-p;
->  }
->
-> +static struct device_node *parse_msi_parent(struct device_node *np,
-> +                                           const char *prop_name, int in=
-dex)
-> +{
-> +       struct of_phandle_args sup_args;
-> +       struct device_node *msi_np;
-> +
-> +       if (!IS_ENABLED(CONFIG_OF_IRQ))
-> +               return NULL;
-> +
-> +       if (strcmp(prop_name, "msi-parent"))
-> +               return NULL;
-> +
-> +       msi_np =3D of_parse_phandle(np, prop_name, 0);
-> +       if (msi_np) {
-> +               if (!of_property_read_bool(msi_np, "#msi-cells")) {
-> +                       if (index) {
-> +                               of_node_put(msi_np);
-> +                               return NULL;
-> +                       }
-> +                       return msi_np;
-> +               }
-> +               of_node_put(msi_np);
-> +       }
-> +
-> +       if (of_parse_phandle_with_args(np, prop_name, "#msi-cells", index=
-,
-> +                                      &sup_args))
-> +               return NULL;
-> +
-> +       return sup_args.np;
-> +}
-> +
+On Wed, Jul 19, 2023 at 08:44:34AM +0300, Mike Rapoport wrote:
+> 3. Switch memblock to use bottom up allocations. Historically memblock
+> allocated memory from the top to avoid corrupting the kernel image and to
+> avoid exhausting precious ZONE_DMA. I believe we can use bottom-up
+> allocations with lower limit of memblock allocations set to 16M.
+> 
+> With the hack below no memblock allocations will end up in ZONE_MOVABLE:
 
-I'm amazed by the different ways you choose to waste people's time.
-Did you even scroll up to see how the other properties are handled?
+Yep, I've confirmed that for my use cases at least this does the trick, thank
+you!  I had thought about moving the memblock allocations, but had no idea it
+was (basically) already supported and thought it'd be much riskier than just
+adjusting where ZONE_MOVABLE lived.
 
-Why can't this be handled using DEFINE_SIMPLE_PROP macro?
-
--Saravana
-
->  static const struct supplier_bindings of_supplier_bindings[] =3D {
->         { .parse_prop =3D parse_clocks, },
->         { .parse_prop =3D parse_interconnects, },
-> @@ -1359,6 +1390,7 @@ static const struct supplier_bindings of_supplier_b=
-indings[] =3D {
->         { .parse_prop =3D parse_regulators, },
->         { .parse_prop =3D parse_gpio, },
->         { .parse_prop =3D parse_gpios, },
-> +       { .parse_prop =3D parse_msi_parent, },
->         {}
->  };
->
-> --
-> 2.34.1
->
+Is there a reason for this to not be a real option for users, maybe per a
+kernel config knob or something?  I'm happy to explore other options in this
+thread, but this is doing the trick so far.
