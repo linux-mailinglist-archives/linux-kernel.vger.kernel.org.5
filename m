@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89073759810
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C25759811
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 16:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbjGSOVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 10:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51708 "EHLO
+        id S231542AbjGSOVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 10:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbjGSOVc (ORCPT
+        with ESMTP id S230375AbjGSOVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 10:21:32 -0400
+        Wed, 19 Jul 2023 10:21:34 -0400
 Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0636E2706;
-        Wed, 19 Jul 2023 07:21:04 -0700 (PDT)
-Date:   Wed, 19 Jul 2023 14:20:50 +0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CBF270F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 07:21:05 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 14:20:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1689776461; x=1690035661;
-        bh=0vuOV/QmUmOY88awAOdtxPsMJ6M9quIP7ewNLnDRz8Q=;
+        s=protonmail; t=1689776463; x=1690035663;
+        bh=ocaw+Jg23eMbqrHzK2iWdBrvi4VvFs/SPBCP4KfLQJI=;
         h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
          Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
          Message-ID:BIMI-Selector;
-        b=QoXU6WJ3mXQgIgYG+lRdE61zAJX6dNOErrJcYdOO5EpjyWrDP69LzaJY8CSfnbjii
-         KvOOdWGUm1M1igFRtL8YKTIHd1TPCoS2/m4qqUlsXmsY7boZ52t7JE6Uf+yFBdyI1E
-         Ty7V/p1wNh0BDeI4o9jNfuqxgTlncwEKvS6lgIXG0zk+uoyx5t7F+SFHT5F1DTF69e
-         SGKMmIR9v/8T8keT9SFg45ze9qJaySjbd6kU6Z7BzvjaTxudFn7W+4z9IzbF1MSHL8
-         l9YLLYdoZT+NesXhZseWQwFWEfDJg6I975VL3D96ZvpAOesCH3XeUkMEm+SlDv5DWj
-         nffeBRuqAbz3g==
+        b=gK1ISIfeWnjFtMpoaYRH7GnrQ1vT8LMld6UrLQmh9V7bcBAA6Bn2dtmYxpZrTSclX
+         oT7nEDYzQXAJMcvgCJ3c1GPr5LVwaiYcvuZeAPgbWWlXEyZNTQNK1t632sK8JtBm89
+         AsPMCN4Z3uN/lJR9oDe9RYcluSFZy696clmyjDdgfHZX7AExnKP5pqooI2+zDO9iLY
+         oZG0w0GZ48nKTfoo8BKV/2dvfMsZx7Z3SngYAydmsNQ7Rmzf8woa3OP2f9BwUMxI2q
+         Dt0v5ZK1F11b7pL5nf9sFhV5e61Y7Ub0HeMpTKtPnpY6Lr93AoDDwYBegH2d/MJGJZ
+         IbVZL2LIyggnQ==
 To:     Miguel Ojeda <ojeda@kernel.org>,
         Wedson Almeida Filho <wedsonaf@gmail.com>,
         Alex Gaynor <alex.gaynor@gmail.com>
@@ -39,8 +39,8 @@ Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
         Andreas Hindborg <nmi@metaspace.dk>,
         rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
         Asahi Lina <lina@asahilina.net>
-Subject: [PATCH v2 06/12] rust: init: add `..Zeroable::zeroed()` syntax for zeroing all missing fields
-Message-ID: <20230719141918.543938-7-benno.lossin@proton.me>
+Subject: [PATCH v2 07/12] rust: init: Add functions to create array initializers
+Message-ID: <20230719141918.543938-8-benno.lossin@proton.me>
 In-Reply-To: <20230719141918.543938-1-benno.lossin@proton.me>
 References: <20230719141918.543938-1-benno.lossin@proton.me>
 Feedback-ID: 71780778:user:proton
@@ -50,301 +50,147 @@ Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the struct update syntax to the init macros, but only for
-`..Zeroable::zeroed()`. Adding this at the end of the struct initializer
-allows one to omit fields from the initializer, these fields will be
-initialized with 0x00 set to every byte. Only types that implement the
-`Zeroable` trait can utilize this.
+Add two functions `pin_init_array_from_fn` and `init_array_from_fn` that
+take a function that generates initializers for `T` from usize, the added
+functions then return an initializer for `[T; N]` where every element is
+initialized by an element returned from the generator function.
 
 Suggested-by: Asahi Lina <lina@asahilina.net>
+Reviewed-by: Bj=C3=B6rn Roy Baron <bjorn3_gh@protonmail.com>
 Signed-off-by: Benno Lossin <benno.lossin@proton.me>
 ---
 v1 -> v2:
-* fix doctest imports
-* fix doctest examples
-* fix `Zeroable` path in the `__init_internal` macro
-* rename `is_zeroable` -> `assert_zeroable`
-* add missing `{}` to the case when `..Zeroable::zeroed()` is present
-* add `allow(unused_assignments)` in the type-checked struct initializer
+* fix warnings and errors in doctests
+* replace dropping loop with `drop_in_place` and `slice_from_raw_parts_mut`
+  inside of `{pin_}init_array_from_fn` functions
 
- rust/kernel/init.rs        |  16 +++++-
- rust/kernel/init/macros.rs | 115 ++++++++++++++++++++++++++++++++++++-
- 2 files changed, 129 insertions(+), 2 deletions(-)
+ rust/kernel/init.rs | 86 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 86 insertions(+)
 
 diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
-index 0120674b451e..460f808ebf84 100644
+index 460f808ebf84..fa1ebdbf5f4b 100644
 --- a/rust/kernel/init.rs
 +++ b/rust/kernel/init.rs
-@@ -517,13 +517,17 @@ macro_rules! stack_try_pin_init {
- /// - Fields that you want to initialize in-place have to use `<-` instead=
- of `:`.
- /// - In front of the initializer you can write `&this in` to have access =
-to a [`NonNull<Self>`]
- ///   pointer named `this` inside of the initializer.
-+/// - Using struct update syntax one can place `..Zeroable::zeroed()` at t=
-he very end of the
-+///   struct, this initializes every field with 0 and then runs all initia=
-lizers specified in the
-+///   body. This can only be done if [`Zeroable`] is implemented for the s=
-truct.
- ///
- /// For instance:
- ///
- /// ```rust
--/// # use kernel::{macros::pin_data, pin_init};
-+/// # use kernel::{macros::{Zeroable, pin_data}, pin_init};
- /// # use core::{ptr::addr_of_mut, marker::PhantomPinned};
- /// #[pin_data]
-+/// #[derive(Zeroable)]
- /// struct Buf {
- ///     // `ptr` points into `buf`.
- ///     ptr: *mut u8,
-@@ -536,6 +540,10 @@ macro_rules! stack_try_pin_init {
- ///     ptr: unsafe { addr_of_mut!((*this.as_ptr()).buf).cast() },
- ///     pin: PhantomPinned,
- /// });
-+/// pin_init!(Buf {
-+///     buf: [1; 64],
-+///     ..Zeroable::zeroed()
-+/// });
- /// ```
- ///
- /// [`try_pin_init!`]: kernel::try_pin_init
-@@ -555,6 +563,7 @@ macro_rules! pin_init {
-             @data(PinData, use_data),
-             @has_data(HasPinData, __pin_data),
-             @construct_closure(pin_init_from_closure),
-+            @munch_fields($($fields)*),
-         )
-     };
+@@ -875,6 +875,92 @@ pub fn uninit<T, E>() -> impl Init<MaybeUninit<T>, E> =
+{
+     unsafe { init_from_closure(|_| Ok(())) }
  }
-@@ -611,6 +620,7 @@ macro_rules! try_pin_init {
-             @data(PinData, use_data),
-             @has_data(HasPinData, __pin_data),
-             @construct_closure(pin_init_from_closure),
-+            @munch_fields($($fields)*),
-         )
-     };
-     ($(&$this:ident in)? $t:ident $(::<$($generics:ty),* $(,)?>)? {
-@@ -624,6 +634,7 @@ macro_rules! try_pin_init {
-             @data(PinData, use_data),
-             @has_data(HasPinData, __pin_data),
-             @construct_closure(pin_init_from_closure),
-+            @munch_fields($($fields)*),
-         )
-     };
- }
-@@ -658,6 +669,7 @@ macro_rules! init {
-             @data(InitData, /*no use_data*/),
-             @has_data(HasInitData, __init_data),
-             @construct_closure(init_from_closure),
-+            @munch_fields($($fields)*),
-         )
-     }
- }
-@@ -708,6 +720,7 @@ macro_rules! try_init {
-             @data(InitData, /*no use_data*/),
-             @has_data(HasInitData, __init_data),
-             @construct_closure(init_from_closure),
-+            @munch_fields($($fields)*),
-         )
-     };
-     ($(&$this:ident in)? $t:ident $(::<$($generics:ty),* $(,)?>)? {
-@@ -721,6 +734,7 @@ macro_rules! try_init {
-             @data(InitData, /*no use_data*/),
-             @has_data(HasInitData, __init_data),
-             @construct_closure(init_from_closure),
-+            @munch_fields($($fields)*),
-         )
-     };
- }
-diff --git a/rust/kernel/init/macros.rs b/rust/kernel/init/macros.rs
-index 5de939e0801f..f5d7f0943f60 100644
---- a/rust/kernel/init/macros.rs
-+++ b/rust/kernel/init/macros.rs
-@@ -989,6 +989,7 @@ impl<$($impl_generics)*> $pin_data<$($ty_generics)*>
- ///
- /// This macro has multiple internal call configurations, these are always=
- the very first ident:
- /// - nothing: this is the base case and called by the `{try_}{pin_}init!`=
- macros.
-+/// - `with_update_parsed`: when the `..Zeroable::zeroed()` syntax has bee=
-n handled.
- /// - `init_slot`: recursively creates the code that initializes all field=
-s in `slot`.
- /// - `make_initializer`: recursively create the struct initializer that g=
-uarantees that every
- ///   field has been initialized exactly once.
-@@ -1007,6 +1008,82 @@ macro_rules! __init_internal {
-         @has_data($has_data:ident, $get_data:ident),
-         // `pin_init_from_closure` or `init_from_closure`.
-         @construct_closure($construct_closure:ident),
-+        @munch_fields(),
-+    ) =3D> {
-+        $crate::__init_internal!(with_update_parsed:
-+            @this($($this)?),
-+            @typ($t $(::<$($generics),*>)? ),
-+            @fields($($fields)*),
-+            @error($err),
-+            @data($data, $($use_data)?),
-+            @has_data($has_data, $get_data),
-+            @construct_closure($construct_closure),
-+            @zeroed(), // nothing means default behavior.
-+        )
-+    };
-+    (
-+        @this($($this:ident)?),
-+        @typ($t:ident $(::<$($generics:ty),*>)?),
-+        @fields($($fields:tt)*),
-+        @error($err:ty),
-+        // Either `PinData` or `InitData`, `$use_data` should only be pres=
-ent in the `PinData`
-+        // case.
-+        @data($data:ident, $($use_data:ident)?),
-+        // `HasPinData` or `HasInitData`.
-+        @has_data($has_data:ident, $get_data:ident),
-+        // `pin_init_from_closure` or `init_from_closure`.
-+        @construct_closure($construct_closure:ident),
-+        @munch_fields(..Zeroable::zeroed()),
-+    ) =3D> {
-+        $crate::__init_internal!(with_update_parsed:
-+            @this($($this)?),
-+            @typ($t $(::<$($generics),*>)? ),
-+            @fields($($fields)*),
-+            @error($err),
-+            @data($data, $($use_data)?),
-+            @has_data($has_data, $get_data),
-+            @construct_closure($construct_closure),
-+            @zeroed(()), // `()` means zero all fields not mentioned.
-+        )
-+    };
-+    (
-+        @this($($this:ident)?),
-+        @typ($t:ident $(::<$($generics:ty),*>)?),
-+        @fields($($fields:tt)*),
-+        @error($err:ty),
-+        // Either `PinData` or `InitData`, `$use_data` should only be pres=
-ent in the `PinData`
-+        // case.
-+        @data($data:ident, $($use_data:ident)?),
-+        // `HasPinData` or `HasInitData`.
-+        @has_data($has_data:ident, $get_data:ident),
-+        // `pin_init_from_closure` or `init_from_closure`.
-+        @construct_closure($construct_closure:ident),
-+        @munch_fields($ignore:tt $($rest:tt)*),
-+    ) =3D> {
-+        $crate::__init_internal!(
-+            @this($($this)?),
-+            @typ($t $(::<$($generics),*>)? ),
-+            @fields($($fields)*),
-+            @error($err),
-+            @data($data, $($use_data)?),
-+            @has_data($has_data, $get_data),
-+            @construct_closure($construct_closure),
-+            @munch_fields($($rest)*),
-+        )
-+    };
-+    (with_update_parsed:
-+        @this($($this:ident)?),
-+        @typ($t:ident $(::<$($generics:ty),*>)?),
-+        @fields($($fields:tt)*),
-+        @error($err:ty),
-+        // Either `PinData` or `InitData`, `$use_data` should only be pres=
-ent in the `PinData`
-+        // case.
-+        @data($data:ident, $($use_data:ident)?),
-+        // `HasPinData` or `HasInitData`.
-+        @has_data($has_data:ident, $get_data:ident),
-+        // `pin_init_from_closure` or `init_from_closure`.
-+        @construct_closure($construct_closure:ident),
-+        @zeroed($($init_zeroed:expr)?),
-     ) =3D> {{
-         // We do not want to allow arbitrary returns, so we declare this t=
-ype as the `Ok` return
-         // type and shadow it later when we insert the arbitrary user code=
-. That way there will be
-@@ -1024,6 +1101,17 @@ macro_rules! __init_internal {
-                 {
-                     // Shadow the structure so it cannot be used to return=
- early.
-                     struct __InitOk;
-+                    // If `$init_zeroed` is present we should zero the slo=
-t now and not emit an
-+                    // error when fields are missing (since they will be z=
-eroed). We also have to
-+                    // check that the type actually implements `Zeroable`.
-+                    $({
-+                        fn assert_zeroable<T: $crate::init::Zeroable>(_: *=
-mut T) {}
-+                        // Ensure that the struct is indeed `Zeroable`.
-+                        assert_zeroable(slot);
-+                        // SAFETY:  The type implements `Zeroable` by the =
-check above.
-+                        unsafe { ::core::ptr::write_bytes(slot, 0, 1) };
-+                        $init_zeroed // this will be `()` if set.
-+                    })?
-                     // Create the `this` so it can be referenced by the us=
-er inside of the
-                     // expressions creating the individual fields.
-                     $(let $this =3D unsafe { ::core::ptr::NonNull::new_unc=
-hecked(slot) };)?
-@@ -1060,7 +1148,7 @@ macro_rules! __init_internal {
-         @data($data:ident),
-         @slot($slot:ident),
-         @guards($($guards:ident,)*),
--        @munch_fields($(,)?),
-+        @munch_fields($(..Zeroable::zeroed())? $(,)?),
-     ) =3D> {
-         // Endpoint of munching, no fields are left. If execution reaches =
-this point, all fields
-         // have been initialized. Therefore we can now dismiss the guards =
-by forgetting them.
-@@ -1161,6 +1249,31 @@ macro_rules! __init_internal {
-             );
-         }
-     };
-+    (make_initializer:
-+        @slot($slot:ident),
-+        @type_name($t:ident),
-+        @munch_fields(..Zeroable::zeroed() $(,)?),
-+        @acc($($acc:tt)*),
-+    ) =3D> {
-+        // Endpoint, nothing more to munch, create the initializer. Since =
-the users specified
-+        // `..Zeroable::zeroed()`, the slot will already have been zeroed =
-and all field that have
-+        // not been overwritten are thus zero and initialized. We still ch=
-eck that all fields are
-+        // actually accessible by using the struct update syntax ourselves=
-.
-+        // Since we are in the `if false` branch, this will never get exec=
-uted. We abuse `slot` to
-+        // get the correct type inference here:
-+        #[allow(unused_assignments)]
-+        unsafe {
-+            let mut zeroed =3D ::core::mem::zeroed();
-+            // We have to use type inference here to make zeroed have the =
-correct type. This does
-+            // not get executed, so it has no effect.
-+            ::core::ptr::write($slot, zeroed);
-+            zeroed =3D ::core::mem::zeroed();
-+            ::core::ptr::write($slot, $t {
-+                $($acc)*
-+                ..zeroed
-+            });
+=20
++/// Initializes an array by initializing each element via the provided ini=
+tializer.
++///
++/// # Examples
++///
++/// ```rust
++/// use kernel::{error::Error, init::init_array_from_fn};
++/// let array: Box<[usize; 1_000_000_000]>=3D Box::init::<Error>(init_arra=
+y_from_fn(|i| i)).unwrap();
++/// pr_info!("{array:?}");
++/// ```
++pub fn init_array_from_fn<I, const N: usize, T, E>(
++    mut make_init: impl FnMut(usize) -> I,
++) -> impl Init<[T; N], E>
++where
++    I: Init<T, E>,
++{
++    let init =3D move |slot: *mut [T; N]| {
++        let slot =3D slot.cast::<T>();
++        for i in 0..N {
++            let init =3D make_init(i);
++            // SAFETY: since 0 <=3D `i` < N, it is still in bounds of `[T;=
+ N]`.
++            let ptr =3D unsafe { slot.add(i) };
++            // SAFETY: The pointer is derived from `slot` and thus satisfi=
+es the `__init`
++            // requirements.
++            match unsafe { init.__init(ptr) } {
++                Ok(()) =3D> {}
++                Err(e) =3D> {
++                    // We now free every element that has been initialized=
+ before:
++                    // SAFETY: The loop initialized exactly the values fro=
+m 0..i and since we
++                    // return `Err` below, the caller will consider the me=
+mory at `slot` as
++                    // uninitialized.
++                    unsafe { ptr::drop_in_place(ptr::slice_from_raw_parts_=
+mut(slot, i)) };
++                    return Err(e);
++                }
++            }
 +        }
++        Ok(())
 +    };
-     (make_initializer:
-         @slot($slot:ident),
-         @type_name($t:ident),
++    // SAFETY: The initializer above initializes every element of the arra=
+y. On failure it drops
++    // any initialized elements and returns `Err`.
++    unsafe { init_from_closure(init) }
++}
++
++/// Initializes an array by initializing each element via the provided ini=
+tializer.
++///
++/// # Examples
++///
++/// ```rust
++/// use kernel::{sync::{Arc, Mutex}, init::pin_init_array_from_fn, new_mut=
+ex};
++/// let array: Arc<[Mutex<usize>; 1_000_000_000]>=3D
++///     Arc::pin_init(pin_init_array_from_fn(|i| new_mutex!(i))).unwrap();
++/// pr_info!("{}", array.len());
++/// ```
++pub fn pin_init_array_from_fn<I, const N: usize, T, E>(
++    mut make_init: impl FnMut(usize) -> I,
++) -> impl PinInit<[T; N], E>
++where
++    I: PinInit<T, E>,
++{
++    let init =3D move |slot: *mut [T; N]| {
++        let slot =3D slot.cast::<T>();
++        for i in 0..N {
++            let init =3D make_init(i);
++            // SAFETY: since 0 <=3D `i` < N, it is still in bounds of `[T;=
+ N]`.
++            let ptr =3D unsafe { slot.add(i) };
++            // SAFETY: The pointer is derived from `slot` and thus satisfi=
+es the `__pinned_init`
++            // requirements.
++            match unsafe { init.__pinned_init(ptr) } {
++                Ok(()) =3D> {}
++                Err(e) =3D> {
++                    // We now have to free every element that has been ini=
+tialized before, since we
++                    // have to abide by the drop guarantee.
++                    // SAFETY: The loop initialized exactly the values fro=
+m 0..i and since we
++                    // return `Err` below, the caller will consider the me=
+mory at `slot` as
++                    // uninitialized.
++                    unsafe { ptr::drop_in_place(ptr::slice_from_raw_parts_=
+mut(slot, i)) };
++                    return Err(e);
++                }
++            }
++        }
++        Ok(())
++    };
++    // SAFETY: The initializer above initializes every element of the arra=
+y. On failure it drops
++    // any initialized elements and returns `Err`.
++    unsafe { pin_init_from_closure(init) }
++}
++
+ // SAFETY: Every type can be initialized by-value.
+ unsafe impl<T, E> Init<T, E> for T {
+     unsafe fn __init(self, slot: *mut T) -> Result<(), E> {
 --=20
 2.41.0
 
