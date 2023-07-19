@@ -2,203 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 984DB758B09
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 03:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC6F758B0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 03:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbjGSBwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 18 Jul 2023 21:52:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41316 "EHLO
+        id S229788AbjGSBxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 18 Jul 2023 21:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjGSBws (ORCPT
+        with ESMTP id S229463AbjGSBxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 18 Jul 2023 21:52:48 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59403FC
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 18:52:47 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9939fbb7191so66889066b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 18 Jul 2023 18:52:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689731566; x=1692323566;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hm8UsgnXaymaPZWlJt+yM3rqUkl+oIHbLCaIfDuxi60=;
-        b=mo41huiFOp4/LAQot5cnPMGXdzt4LO4jLSKIKDb2tXvojrOpRthxN7keBAr+vOg9Td
-         JN2PJUwPl4Bsph6C9KLtjW9SxnefSU3H5iFyb2Vg4CthS/AI4atcu0zselh7c6HId4Lt
-         8r78egy2N9bumGVSEYj6qX2288xTQ+cv3xRaEK7fjcmDeFxqr7IBxFhBGO6Ny9ZrhZ9I
-         S/aTKEAchuOxmK48OnHv15YEF+ZhsXeHM6DLUrRdFX1vYTJ+dsqRTbuVN7ltKYOr+qVo
-         YEEiounkKh2m6dk8rT5RsMAE5C3I8W0n6vmiVk585J9Ao3ao+2KHY3SJI0j5FPunsP8n
-         Vesw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689731566; x=1692323566;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hm8UsgnXaymaPZWlJt+yM3rqUkl+oIHbLCaIfDuxi60=;
-        b=Z4v4S/e5gD9Bkpk1wbKopZjSLXRb4AL9Sdowq6AKZpMf+ODCdJmI0L/UzUOsD8G/sE
-         xDoV0Jk4j4To/f15J02+p9m8DsM754MXCkiyDCZqyZc7GJi0PXvJvig/INnJY9ueoQjL
-         Kh0RmArSUUs/jDjwmdWhfLXYUrqqy2+Bk4dNk1ZR5MvPylNhZu/+MnrYFBoC5H2AvAf2
-         vZhPfXguC6VtIFAi3luqff7aSDQVSUgIS0PoXC7fkIKHZ6WJoJAAIM830tdD3Kb1qsCO
-         lYod94HB8pSwkXt+Ao84sdWBicTs+RxLCGtCsrniERID3Q2bFOvyULIlO2aH33M0drrZ
-         3qZw==
-X-Gm-Message-State: ABy/qLaKL/4kcGScHIf9DGczXEUsxuAOKEfjlBTNo4o1HOwRGbLST4jq
-        h/dPBzsYlO0rYglqFIzx6U5Qtckf/uOguEt2Mw6XkQ==
-X-Google-Smtp-Source: APBJJlGYxqE9W3VQnXNQBmfNYSj9BiqiGm6XNyY2ubOaY1wGxJAlXmw5qiQJVpqpUcXM/CXJZWvyvjCCm/fNTFRWKcM=
-X-Received: by 2002:a17:907:3ea0:b0:993:f9d8:9fd0 with SMTP id
- hs32-20020a1709073ea000b00993f9d89fd0mr996265ejc.1.1689731565653; Tue, 18 Jul
- 2023 18:52:45 -0700 (PDT)
+        Tue, 18 Jul 2023 21:53:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FF5FC;
+        Tue, 18 Jul 2023 18:53:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E8D8615D5;
+        Wed, 19 Jul 2023 01:53:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7112DC433C7;
+        Wed, 19 Jul 2023 01:53:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689731614;
+        bh=3FBnzkP6pgeUS+Ui9l2ehSB5W9hcuMMuRXv0tAYDx/Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TT/p2Z7TWx0kxWBdutaY7BnoLGQzC7vfsIBtt1FP9zOMQ1WLJVK0Vm9FBhTgNqpgG
+         8RU5iUXt887vHV8mF93Pq7PmbTbQUvHL1oPPnFJ58/+URXVF0hWEUTfPbSsYfAbMeU
+         NCcsS/seI5it78/Fpm2TlCduoNXPg+n1wPipdg/g09FwBrtnxIzAG/JFDOZrXeg+sx
+         BZpBqSrH9aSwuAqlpX9i8EtP0jybOOfFvwZhAerQHM2FatTv/nFASWrVdhVuur4eN+
+         XPYJLsFbHAf/cYWinOfNBlAyBWXLuhxTDutlIv9HTVRYu3QCaEsMGMSZxW1shILeZJ
+         vBga848S0OTYA==
+From:   SeongJae Park <sj@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 6.1 000/589] 6.1.39-rc3 review
+Date:   Wed, 19 Jul 2023 01:53:31 +0000
+Message-Id: <20230719015331.65070-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230717201547.359923764@linuxfoundation.org>
+References: 
 MIME-Version: 1.0
-References: <20230712060144.3006358-1-fengwei.yin@intel.com>
- <20230712060144.3006358-4-fengwei.yin@intel.com> <CAOUHufYef--8MxFettL6fOGjVx2vyZHZQU6EEaTCoW0XBvuC8Q@mail.gmail.com>
- <CAOUHufZ6=9P_=CAOQyw0xw-3q707q-1FVV09dBNDC-hpcpj2Pg@mail.gmail.com>
- <40cbc39e-5179-c2f4-3cea-0a98395aaff1@intel.com> <CAOUHufZHyEvU-c2O6B6stM_QVMxc22zV4Szn52myYqjdZvptUA@mail.gmail.com>
- <16844254-7248-f557-b1eb-b8b102c877a2@intel.com> <CAJD7tkYAkVOE2caqEj_hTmm47Kex451prBQ1wKTRUiOwnDcwNA@mail.gmail.com>
- <b995e802-1500-6930-79d0-8cc4bfe89589@intel.com> <CAJD7tkZtHku-kaK02MAdgaxNzr9hQkPty=cw44R_9HdTS+Pd5w@mail.gmail.com>
-In-Reply-To: <CAJD7tkZtHku-kaK02MAdgaxNzr9hQkPty=cw44R_9HdTS+Pd5w@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 18 Jul 2023 18:52:09 -0700
-Message-ID: <CAJD7tkZWXdHwpW5AeKqmn6TVCXm1wmKr-2RN2baRJ7c4ciTJng@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 3/3] mm: mlock: update mlock_pte_range to handle
- large folio
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, willy@infradead.org, david@redhat.com,
-        ryan.roberts@arm.com, shy828301@gmail.com,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 6:32=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> On Tue, Jul 18, 2023 at 4:47=E2=80=AFPM Yin Fengwei <fengwei.yin@intel.co=
-m> wrote:
-> >
-> >
-> >
-> > On 7/19/23 06:48, Yosry Ahmed wrote:
-> > > On Sun, Jul 16, 2023 at 6:58=E2=80=AFPM Yin Fengwei <fengwei.yin@inte=
-l.com> wrote:
-> > >>
-> > >>
-> > >>
-> > >> On 7/17/23 08:35, Yu Zhao wrote:
-> > >>> On Sun, Jul 16, 2023 at 6:00=E2=80=AFPM Yin, Fengwei <fengwei.yin@i=
-ntel.com> wrote:
-> > >>>>
-> > >>>> On 7/15/2023 2:06 PM, Yu Zhao wrote:
-> > >>>>> There is a problem here that I didn't have the time to elaborate:=
- we
-> > >>>>> can't mlock() a folio that is within the range but not fully mapp=
-ed
-> > >>>>> because this folio can be on the deferred split queue. When the s=
-plit
-> > >>>>> happens, those unmapped folios (not mapped by this vma but are ma=
-pped
-> > >>>>> into other vmas) will be stranded on the unevictable lru.
-> > >>>>
-> > >>>> This should be fine unless I missed something. During large folio =
-split,
-> > >>>> the unmap_folio() will be migrate(anon)/unmap(file) folio. Folio w=
-ill be
-> > >>>> munlocked in unmap_folio(). So the head/tail pages will be evictab=
-le always.
-> > >>>
-> > >>> It's close but not entirely accurate: munlock can fail on isolated =
-folios.
-> > >> Yes. The munlock just clear PG_mlocked bit but with PG_unevictable l=
-eft.
-> > >>
-> > >> Could this also happen against normal 4K page? I mean when user try =
-to munlock
-> > >> a normal 4K page and this 4K page is isolated. So it become unevicta=
-ble page?
-> > >
-> > > Looks like it can be possible. If cpu 1 is in __munlock_folio() and
-> > > cpu 2 is isolating the folio for any purpose:
-> > >
-> > > cpu1                                        cpu2
-> > >                                                 isolate folio
-> > > folio_test_clear_lru() // 0
-> > >                                                 putback folio // add
-> > > to unevictable list
-> > > folio_test_clear_mlocked()
-> > Yes. Yu showed this sequence to me in another email. I thought the putb=
-ack_lru()
-> > could correct the none-mlocked but unevictable folio. But it doesn't be=
-cause
-> > of this race.
->
-> (+Hugh Dickins for vis)
->
-> Yu, I am not familiar with the split_folio() case, so I am not sure it
-> is the same exact race I stated above.
->
-> Can you confirm whether or not doing folio_test_clear_mlocked() before
-> folio_test_clear_lru() would fix the race you are referring to? IIUC,
-> in this case, we make sure we clear PG_mlocked before we try to to
-> clear PG_lru. If we fail to clear it, then someone else have the folio
-> isolated after we clear PG_mlocked, so we can be sure that when they
-> put the folio back it will be correctly made evictable.
->
-> Is my understanding correct?
+On Mon, 17 Jul 2023 22:34:23 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-Hmm, actually this might not be enough. In folio_add_lru() we will
-call folio_batch_add_and_move(), which calls lru_add_fn() and *then*
-sets PG_lru. Since we check folio_evictable() in lru_add_fn(), the
-race can still happen:
+> This is the start of the stable review cycle for the 6.1.39 release.
+> There are 589 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 19 Jul 2023 20:14:46 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.39-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+
+I confirmed this rc kernel passes DAMON functionality test[1] as below.
+
+Tested-by: SeongJae Park <sj@kernel.org>
+
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
 
 
-cpu1                              cpu2
-                                      folio_evictable() //false
-folio_test_clear_mlocked()
-folio_test_clear_lru() //false
-                                      folio_set_lru()
+Thanks,
+SJ
 
-Relying on PG_lru for synchronization might not be enough with the
-current code. We might need to revert 2262ace60713 ("mm/munlock:
-delete smp_mb() from __pagevec_lru_add_fn()").
 
-Sorry for going back and forth here, I am thinking out loud.
+-------------------------------- >8 ------------------------------------------
 
->
-> If yes, I can add this fix to my next version of the RFC series to
-> rework mlock_count. It would be a lot more complicated with the
-> current implementation (as I stated in a previous email).
->
-> >
-> > >
-> > >
-> > > The page would be stranded on the unevictable list in this case, no?
-> > > Maybe we should only try to isolate the page (clear PG_lru) after we
-> > > possibly clear PG_mlocked? In this case if we fail to isolate we know
-> > > for sure that whoever has the page isolated will observe that
-> > > PG_mlocked is clear and correctly make the page evictable.
-> > >
-> > > This probably would be complicated with the current implementation, a=
-s
-> > > we first need to decrement mlock_count to determine if we want to
-> > > clear PG_mlocked, and to do so we need to isolate the page as
-> > > mlock_count overlays page->lru. With the proposal in [1] to rework
-> > > mlock_count, it might be much simpler as far as I can tell. I intend
-> > > to refresh this proposal soon-ish.
-> > >
-> > > [1]https://lore.kernel.org/lkml/20230618065719.1363271-1-yosryahmed@g=
-oogle.com/
-> > >
-> > >>
-> > >>
-> > >> Regards
-> > >> Yin, Fengwei
-> > >>
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 2 selftests: damon: debugfs_schemes.sh
+ok 3 selftests: damon: debugfs_target_ids.sh
+ok 4 selftests: damon: debugfs_empty_targets.sh
+ok 5 selftests: damon: debugfs_huge_count_read_write.sh
+ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
+ok 7 selftests: damon: sysfs.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_m68k.sh
+ok 12 selftests: damon-tests: build_arm64.sh
+ok 13 selftests: damon-tests: build_i386_idle_flag.sh
+ok 14 selftests: damon-tests: build_i386_highpte.sh
+ok 15 selftests: damon-tests: build_nomemcg.sh
+
+PASS
+
+[...]
