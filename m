@@ -2,143 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5534C75925F
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B4D759264
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbjGSKJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35044 "EHLO
+        id S229994AbjGSKKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjGSKJ1 (ORCPT
+        with ESMTP id S229847AbjGSKKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:09:27 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391C2E69;
-        Wed, 19 Jul 2023 03:09:26 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-992acf67388so824782666b.1;
-        Wed, 19 Jul 2023 03:09:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689761365; x=1690366165;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2GDNwH3HNE0FsRRgZD2/PtyPc5UbtacjX+R2TbQgSYw=;
-        b=ol9tjXotX3OmlRRDr1uVMwxNBGtzw/4HpR/vj1sFVg2NUpf94JXHFtbrNOWq6VS4iD
-         uQUHmwnEqvjzT/7n71IMcOddbREBD94fBWcrKdiS6PZWsO8i27Ko8O7/xEB7nb53MxV/
-         fu5MjfHVcuL9sx6On3XqizR73DzeKjesYmf/MNDvRMReIW318aIRNU7fAUK7C27WyMg0
-         7Vqt2QYj22cJ1s4H6aJWkVpvC4r27OV+c1OwwQQrOxUzaTCAL2Gl9auYx+RJrlfE75Gp
-         yGDUxGbcSjEfU+RV1NgS5m+DMR/r++nqzqqpFqeMeUz3QojKJdcuv/ULWdFxvGzAZuZW
-         67oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689761365; x=1690366165;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2GDNwH3HNE0FsRRgZD2/PtyPc5UbtacjX+R2TbQgSYw=;
-        b=A9Ofj7pgYdNOJ1zj1sEoZyxDIKnTEzC+PRIKliQ/yrTkD0ETz/vQwP+CeTYvbNWGRQ
-         9pTvzfAzYtFErM733MIceT11pNJZ1I43qrVZYer3nXpRjw4J3WPPbf8RhBFoFV4CG7Vt
-         zFVZE3GahnsqPAlTTUt4mvP7X4O1bBXrioq0WOa8QwLXtmH/R8nibfiF5MgWeieB8NXf
-         Ce61uGeuWmjLaVU0NEdRmpI1RxaqhaP9Z55ZSqgM8j5wnwCJxRdEpHG+w3PqrpE8S4Ey
-         nEW5sguiziH2krZWjciDnlIicaQEvbiq2D/kYT7DOyeVo5kt6h3OgRpGuQbzaT1kd6lt
-         57Qg==
-X-Gm-Message-State: ABy/qLaPTIQnwMM8RNieapp8fzbqF6Chakdg6Gpewz5ItWvxntnqENPG
-        4rduzkp9AAYav+hzcUXd+OJ6gIFPcoSHN/wDpnY=
-X-Google-Smtp-Source: APBJJlGva/2jpmmraE+ZwDdpr/EWe24LQyi64H0jhQnxCqK030YkjHZDPgbUn7Faq5HVeAL3PIT74a7SBff9wdoq6i0=
-X-Received: by 2002:a17:906:5358:b0:96a:52e:5379 with SMTP id
- j24-20020a170906535800b0096a052e5379mr1937947ejo.63.1689761364363; Wed, 19
- Jul 2023 03:09:24 -0700 (PDT)
+        Wed, 19 Jul 2023 06:10:21 -0400
+Received: from proxmox1.postmarketos.org (proxmox1.postmarketos.org [213.239.216.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C4BCD1723;
+        Wed, 19 Jul 2023 03:10:20 -0700 (PDT)
+Received: from [192.168.20.2] (unknown [77.239.252.99])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by proxmox1.postmarketos.org (Postfix) with ESMTPSA id D83DB140782;
+        Wed, 19 Jul 2023 10:10:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=postmarketos.org;
+        s=donut; t=1689761419;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7z7jIvUFcXoNmOObOfrGS4onALLyXZz1+AOjei4YhGg=;
+        b=S9MhZpvNJXHPmB+GsAv7qt+b3U7JgcV2uiPS45toZBoEt43rgtdy6Pcr3ExZqVaNiLoZbM
+        8Cs6DeRMfwCKYcglUGAWHnniTDXZ8cs2MCmoJMhpEiOq8E7UejqtBgLh6AWLnAXM25Kds5
+        FW9N4KBqmNJYNdNG3BspqYqPPzWzugM=
+Message-ID: <1f8cbc00-9602-486d-b3c9-9c82f3b6c8df@postmarketos.org>
+Date:   Wed, 19 Jul 2023 13:10:17 +0300
 MIME-Version: 1.0
-References: <20230712084840.3594-1-di.shen@unisoc.com> <47ded4da-5c39-9132-7978-d0f8c8ee0318@arm.com>
-In-Reply-To: <47ded4da-5c39-9132-7978-d0f8c8ee0318@arm.com>
-From:   Di Shen <cindygm567@gmail.com>
-Date:   Wed, 19 Jul 2023 18:09:12 +0800
-Message-ID: <CAHYJL4o5yPEFMEHBuTCmC1d6qsw52LWr222_xibmGXcP3=052w@mail.gmail.com>
-Subject: Re: [PATCH] Revert "thermal: power allocator: change the 'k_*' always
- in estimate_pid_constants()"
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Di Shen <di.shen@unisoc.com>, linux-pm@vger.kernel.org,
-        rui.zhang@intel.com, rafael@kernel.org, daniel.lezcano@linaro.org,
-        linux-kernel@vger.kernel.org, xuewen.yan@unisoc.com,
-        jeson.gao@unisoc.com, orsonzhai@gmail.com, zhanglyra@gmail.com,
-        amitk@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3] arm64: dts: qcom: sdm630: Add support for modem
+ remoteproc
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+References: <20230719093458.2668842-1-alexeymin@postmarketos.org>
+ <2c1c69bf-3cd5-4d68-43db-696ce0f15197@linaro.org>
+From:   Alexey Minnekhanov <alexeymin@postmarketos.org>
+In-Reply-To: <2c1c69bf-3cd5-4d68-43db-696ce0f15197@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukasz,
-I'm happy to hear from you :)
+On 19.07.2023 12:45, Krzysztof Kozlowski wrote:
+> On 19/07/2023 11:34, Alexey Minnekhanov wrote:
+>> Modem subsystem in SDM630/660 is similar to MSM8998 and
+>> device tree node for it is based on the one from msm8998.dtsi.
+>>
+>> Signed-off-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
+>> ---
+>>
+>> V3: Use memory-region property to specify memory regions, instead
+>>      of using "mba" and "mpss" subnodes.
+>>
+>> V2 link: https://lore.kernel.org/lkml/20230621175046.61521-3-alexeymin@postmarketos.org/
+>>
+>>   arch/arm64/boot/dts/qcom/sdm630.dtsi | 59 ++++++++++++++++++++++++++++
+>>   1 file changed, 59 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+>> index 2136ded22f7e..797625cf78ac 100644
+>> --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+>> @@ -1032,6 +1032,65 @@ data-pins {
+>>   			};
+>>   		};
+>>   
+>> +		remoteproc_mss: remoteproc@4080000 {
+>> +			compatible = "qcom,sdm660-mss-pil";
+> 
+> Missing bindings so standard comment:
+> 
+> It does not look like you tested the DTS against bindings. Please run
+> `make dtbs_check` (see
+> Documentation/devicetree/bindings/writing-schema.rst or
+> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+> for instructions).
+> 
+> Best regards,
+> Krzysztof
+> 
 
-On Wed, Jul 19, 2023 at 4:50=E2=80=AFPM Lukasz Luba <lukasz.luba@arm.com> w=
-rote:
->
-> Hi Di,
->
-> On 7/12/23 09:48, Di Shen wrote:
-> > This reverts commit 90a996544946d1d4834ec2ec8add586edd905779.
-> >
-> > The commit ensures that the pid constants are updated when
-> > sustainable_power changes, but it makes it impossible for
-> > the driver to set the pid constants when the sustainable_power
-> > is not changed.
-> >
-> > When the driver tries to register a thermal zone device by
-> > thermal_zone_device_register_with_trips(const char *type,
-> >       struct thermal_trip *trips, int num_trips, int mask,
-> >       void *devdata, struct thermal_zone_device_ops *ops,
-> >       struct thermal_zone_params *tzp, int passive_delay,
-> >       int polling_delay)
-> > and passes the private thermal_zone_params structure data,
-> >
-> > thermal_zone_devcice_register_with_trips
-> >       |
-> > thermal_set_governor
-> >       |
-> > bind_to_tz
-> >       |
-> > power_allocator_bind
-> >       |
-> > estimate_pid_constants
-> >
-> > the tzp->k_* will not be the data that driver have given,
-> > but the data estimated by sustainable_power.
-> >
-> > To make it possible for driver to add its own pid constants,
->
-> That was dropped, the drivers shouldn't configure 'k_*' IPA
-> parameters. There was also an ask to add those parameter
-> values to the DT for setup - also not allowed.
->
-> > the 'force' flag is needed to indicate whether the tzp->k_*
-> > should be estimated by sustainable_power or not.
->
-> We don't want to maintain many different ways of configurations,
-> which can cause bugs in not tested corner cases.
->
-Ok, I understand.
+Bindings are already in linux-next/master since 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=ed50ac266f67829d4732c8ca61ef1953c2cc63d0 
+.
 
-> Please use the user-space to change those 'k_*' parameters.
-> There are this dedicated and safe sysfs interfaces for each
-> thermal zone.
->
-> The phones that I have on my desk do the update of 'k_*' parameters via
-> sysfs. They do this in different scenarios. You can try to derive
-> best 'k_*' values for your workload scenarios and than save
-> them in the config file. You can update in runtime from user-space
-> when you switch to your scenario (e.g. camera, game, video call).
->
-Thank you for your kind suggestions, Lukasz. Now I totally understand.
-Thank you.
+And I did check DTS against bindings, it spat 2 warnings about new 
+remoteproc node, which do not make much sense to me:
 
-> Regards,
-> Lukasz
+   DTC_CHK arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dtb
+   .../arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dtb: 
+remoteproc@4080000: qcom,halt-regs:0: [43] is too short
+         From schema: 
+.../Documentation/devicetree/bindings/remoteproc/qcom,msm8996-mss-pil.yaml
+   .../arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dtb: 
+remoteproc@4080000: memory-region: [[45], [46]] is too short
+         From schema: 
+.../Documentation/devicetree/bindings/remoteproc/qcom,msm8996-mss-pil.yaml
 
-Best regards,
-Di
+because I do not understand where the limitation to number of items for 
+"qcom,halt-regs" or "memory-regions" come from.
+
+-- 
+Regards,
+Alexey Minnekhanov
+postmarketOS developer
