@@ -2,57 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A98597592A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 790C97592AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 12:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbjGSKU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 06:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42388 "EHLO
+        id S230291AbjGSKVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 06:21:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjGSKUY (ORCPT
+        with ESMTP id S229891AbjGSKVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 06:20:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C7B1BEF;
-        Wed, 19 Jul 2023 03:20:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D3F0061373;
-        Wed, 19 Jul 2023 10:20:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 208FBC433C9;
-        Wed, 19 Jul 2023 10:20:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689762022;
-        bh=vf8HyJJMrc8y7a7IGPiDvWuMwVrymE8dAVACw2+VXLk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=dyPvgc7QPw92aTMqOMCFf0EVygxyojg/kI76uXPrVf0yXopJTOOw98lV/L4NSn+uM
-         aiHrCeLetjHDC6LImN7FStfe20PaCqqqoS5vEloINk9sRfZSte3N0XX1OYCNALUY3j
-         Gz0Iw9hAs5SHbKzfYEa6p5rwnh+Ouj1I5/ERYOFMuuN/FQDsIzZb/oB6VyV9spijCp
-         XW/3S7UgTEEU/RKI4atORf03n1N6zkbdHtttu7AAnaU3hxlZrji3382yGicDMzfeEa
-         CqRPbZPMRrkK65sdBeB6Xb47afXkp40enwisLphkCSfUCSv7hZrTFsDi03F2SF5o4v
-         dR6MxgixWCQtA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 03177E21EFE;
-        Wed, 19 Jul 2023 10:20:22 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 19 Jul 2023 06:21:04 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF64C1FC1;
+        Wed, 19 Jul 2023 03:21:01 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 3AC1724DBBD;
+        Wed, 19 Jul 2023 18:21:00 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 19 Jul
+ 2023 18:21:00 +0800
+Received: from ubuntu.localdomain (113.72.147.86) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 19 Jul
+ 2023 18:20:59 +0800
+From:   Minda Chen <minda.chen@starfivetech.com>
+To:     Daire McNamara <daire.mcnamara@microchip.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>,
+        Minda Chen <minda.chen@starfivetech.com>
+Subject: [PATCH v1 0/9] Refactoring Microchip PolarFire PCIe driver
+Date:   Wed, 19 Jul 2023 18:20:48 +0800
+Message-ID: <20230719102057.22329-1-minda.chen@starfivetech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 00/13] selftests: mptcp: format subtests results
- in TAP
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168976202200.10961.989071815064643315.git-patchwork-notify@kernel.org>
-Date:   Wed, 19 Jul 2023 10:20:22 +0000
-References: <20230717-upstream-net-next-20230712-selftests-mptcp-subtests-v1-0-695127e0ad83@tessares.net>
-In-Reply-To: <20230717-upstream-net-next-20230712-selftests-mptcp-subtests-v1-0-695127e0ad83@tessares.net>
-To:     Matthieu Baerts <matthieu.baerts@tessares.net>
-Cc:     mptcp@lists.linux.dev, martineau@kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        shuah@kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain
+X-Originating-IP: [113.72.147.86]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,52 +64,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
+JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
+same IP and have commit their codes, which are mixed with PLDA
+controller codes and Microchip platform codes.
 
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+For re-use the PLDA controller codes, I request refactoring microchip
+codes, move PLDA common codes to PLDA files.
+Desigware and Cadence is good example for refactoring codes.
 
-On Mon, 17 Jul 2023 15:21:20 +0200 you wrote:
-> The current selftests infrastructure formats the results in TAP 13. This
-> version doesn't support subtests and only the end result of each
-> selftest is taken into account. It means that a single issue in a
-> subtest of a selftest containing multiple subtests forces the whole
-> selftest to be marked as failed. It also means that subtests results are
-> not tracked by CI executing selftests.
-> 
-> [...]
+So first step is extract the PLDA common codes from microchip, and
+refactoring the microchip codes.(patch1 - 4)
+Then add the PLDA platform codes. (patch5, 6)
+At last, add Starfive codes. (patch7 - 9)
 
-Here is the summary with links:
-  - [net-next,01/13] selftests: mptcp: connect: don't stop if error
-    https://git.kernel.org/netdev/net-next/c/edbc16c43b27
-  - [net-next,02/13] selftests: mptcp: userspace pm: don't stop if error
-    https://git.kernel.org/netdev/net-next/c/e141c1e8e4c1
-  - [net-next,03/13] selftests: mptcp: userspace_pm: fix shellcheck warnings
-    https://git.kernel.org/netdev/net-next/c/8320b1387a15
-  - [net-next,04/13] selftests: mptcp: userspace_pm: uniform results printing
-    https://git.kernel.org/netdev/net-next/c/e198ad759273
-  - [net-next,05/13] selftests: mptcp: userspace_pm: reduce dup code around printf
-    https://git.kernel.org/netdev/net-next/c/d8463d81652d
-  - [net-next,06/13] selftests: mptcp: lib: format subtests results in TAP
-    https://git.kernel.org/netdev/net-next/c/c4192967e62f
-  - [net-next,07/13] selftests: mptcp: connect: format subtests results in TAP
-    https://git.kernel.org/netdev/net-next/c/dd350f46e35e
-  - [net-next,08/13] selftests: mptcp: pm_netlink: format subtests results in TAP
-    https://git.kernel.org/netdev/net-next/c/d85555ac11f9
-  - [net-next,09/13] selftests: mptcp: join: format subtests results in TAP
-    https://git.kernel.org/netdev/net-next/c/7f117cd37c61
-  - [net-next,10/13] selftests: mptcp: diag: format subtests results in TAP
-    https://git.kernel.org/netdev/net-next/c/ce9902573652
-  - [net-next,11/13] selftests: mptcp: simult flows: format subtests results in TAP
-    https://git.kernel.org/netdev/net-next/c/675d99338e7a
-  - [net-next,12/13] selftests: mptcp: sockopt: format subtests results in TAP
-    https://git.kernel.org/netdev/net-next/c/9e86a297796b
-  - [net-next,13/13] selftests: mptcp: userspace_pm: format subtests results in TAP
-    https://git.kernel.org/netdev/net-next/c/f589234e1af0
+This patchset is base on v6.5-rc1
 
-You are awesome, thank you!
+patch1 is add PLDA XpressRICH PCIe host common properties dt-binding
+       docs, most are extracted from microchip,pcie-host.yaml
+patch2 is add plda,xpressrich-pcie-common.yaml(patch1 file) reference
+       and remove the PLDA common properties.
+patch3 is extracting the PLDA common codes from microchip Polarfire PCIe
+       codes. The change list in the commit message.
+patch4 is move microchip driver to PLDA directory and remove the PLDA
+       common codes.
+patch5 is add PLDA Xpressrich platform driver dt-binding doc.
+patch6 is PLDA Xpressrich platform driver.
+patch7 is add StarFive JH7110 PCIe dt-binding doc.
+patch8 is add StarFive JH7110 Soc PCIe platform codes.
+patch9 is StarFive JH7110 device tree configuration.
+
+I have noticed that Daire have changed microchip's codes.
+https://patchwork.kernel.org/project/linux-pci/cover/20230630154859.2049521-1-daire.mcnamara@microchip.com/
+I have changed patch3 and patch4 base on their commits. StarFive
+PCIe driver still can work. But their codes is under reviewed and 
+maybe changing. Do not base on their changes first.
+I will base on their commit to change patch3 and patch4 as soon as
+their commits are accepted.
+
+List below is old patchset and is dropped, which is non-refractored version.
+https://patchwork.kernel.org/project/linux-pci/cover/20230406111142.74410-1-minda.chen@starfivetech.com/
+
+Minda Chen (9):
+  dt-bindings: PCI: Add PLDA XpressRICH PCIe host common properties
+  dt-bindings: PCI: microchip: Remove the PLDA common properties
+  PCI: PLDA: Get PLDA common codes from Microchip PolarFire host
+  PCI: microchip: Move PCIe driver to PLDA directory
+  dt-bindings: PLDA: Add PLDA XpressRICH PCIe host controller
+  PCI: PLDA: Add host conroller platform driver
+  dt-bindings: PCI: Add StarFive JH7110 PCIe controller
+  PCI: PLDA: starfive: Add JH7110 PCIe controller
+  riscv: dts: starfive: add PCIe dts configuration for JH7110
+
+ .../bindings/pci/microchip,pcie-host.yaml     |  45 +-
+ .../pci/plda,xpressrich-pcie-common.yaml      |  72 ++
+ .../pci/plda,xpressrich-pcie-host.yaml        |  66 ++
+ .../bindings/pci/starfive,jh7110-pcie.yaml    | 138 ++++
+ MAINTAINERS                                   |  19 +-
+ .../jh7110-starfive-visionfive-2.dtsi         |  44 ++
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      |  88 +++
+ drivers/pci/controller/Kconfig                |   9 +-
+ drivers/pci/controller/Makefile               |   2 +-
+ drivers/pci/controller/plda/Kconfig           |  35 +
+ drivers/pci/controller/plda/Makefile          |   5 +
+ .../{ => plda}/pcie-microchip-host.c          | 594 ++--------------
+ drivers/pci/controller/plda/pcie-plda-host.c  | 665 ++++++++++++++++++
+ drivers/pci/controller/plda/pcie-plda-plat.c  |  64 ++
+ drivers/pci/controller/plda/pcie-plda.h       | 230 ++++++
+ drivers/pci/controller/plda/pcie-starfive.c   | 415 +++++++++++
+ 16 files changed, 1885 insertions(+), 606 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/plda,xpressrich-pcie-common.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/plda,xpressrich-pcie-host.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
+ create mode 100644 drivers/pci/controller/plda/Kconfig
+ create mode 100644 drivers/pci/controller/plda/Makefile
+ rename drivers/pci/controller/{ => plda}/pcie-microchip-host.c (50%)
+ create mode 100644 drivers/pci/controller/plda/pcie-plda-host.c
+ create mode 100644 drivers/pci/controller/plda/pcie-plda-plat.c
+ create mode 100644 drivers/pci/controller/plda/pcie-plda.h
+ create mode 100644 drivers/pci/controller/plda/pcie-starfive.c
+
+
+base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.17.1
 
