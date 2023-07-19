@@ -2,129 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC6475A0C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 19 Jul 2023 23:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C272575A130
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 00:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjGSVwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 17:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37280 "EHLO
+        id S229563AbjGSWA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 18:00:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGSVwm (ORCPT
+        with ESMTP id S229477AbjGSWAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 17:52:42 -0400
-Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [5.144.164.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C941FD9;
-        Wed, 19 Jul 2023 14:52:39 -0700 (PDT)
-Received: from SoMainline.org (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
+        Wed, 19 Jul 2023 18:00:53 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84101FD9;
+        Wed, 19 Jul 2023 15:00:51 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 12D6F20388;
-        Wed, 19 Jul 2023 23:52:36 +0200 (CEST)
-Date:   Wed, 19 Jul 2023 23:52:33 +0200
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krishna Manikandan <quic_mkrishn@quicinc.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, Lux Aliaga <they@mint.lgbt>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v2 10/15] dt-bindings: msm: dsi-phy-14nm: Document SM6125
- variant
-Message-ID: <wr2f6uzgam72ykgrjgalmo2h2ye2xlzgh4v3utxqed4isyfkau@aarofkuvysuk>
-References: <20230627-sm6125-dpu-v2-0-03e430a2078c@somainline.org>
- <20230627-sm6125-dpu-v2-10-03e430a2078c@somainline.org>
- <285facd1-bf20-aff2-b680-f796e8830038@linaro.org>
- <yzz4dddlh2no3lmuxrkuxhsuaf3brruo635pgfpnaxwffmnl6j@uk3jxtoarg7w>
- <d5f925e4-fbfe-cbb2-c3e6-8e806761d61e@linaro.org>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 28B17201D2;
+        Wed, 19 Jul 2023 22:00:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1689804050;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GKhlFvee6LjWmkqXW4vufx/tgUR4Vb2UCUltoEeEI+0=;
+        b=xIiPc3MwZDb8j64g8tV0VxPn5rwEQajv8mlo2O6/JULy4sSJW99DG2x0w6GTv/uuXAFLuB
+        uB2NEAAxHp+prjwp2AJGDO2lPTKRJq5npfktEwUTI4nDHcfKAFEoHIn61+12iZm23hOzOu
+        ONYhPOxxKxT2gUjUSbAnN1CWHRM5Gyk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1689804050;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GKhlFvee6LjWmkqXW4vufx/tgUR4Vb2UCUltoEeEI+0=;
+        b=LH1Ys3piawcY+74iyAfI2DOuEUho9l9XZhmYQ/sz5wMhBZzvsyqIpVLMZ5hYh5fvSsXgPK
+        /GjoueQaY5sqeyCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EEB131361C;
+        Wed, 19 Jul 2023 22:00:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id TE1WORFduGTaHgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 19 Jul 2023 22:00:49 +0000
+Date:   Wed, 19 Jul 2023 23:54:09 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Minjie Du <duminjie@vivo.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        opensource.kernel@vivo.com
+Subject: Re: [PATCH v1] btrfs: increase usage of folio_next_index() helper
+Message-ID: <20230719215409.GT20457@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230717071622.5992-1-duminjie@vivo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d5f925e4-fbfe-cbb2-c3e6-8e806761d61e@linaro.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230717071622.5992-1-duminjie@vivo.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-19 01:01:54, Dmitry Baryshkov wrote:
-> On 19/07/2023 00:00, Marijn Suijten wrote:
-> > On 2023-06-29 13:54:13, Dmitry Baryshkov wrote:
-> >> On 27/06/2023 23:14, Marijn Suijten wrote:
-> >>> Document availability of the 14nm DSI PHY on SM6125.  Note that this
-> >>> compatible uses the SoC-suffix variant, intead of postfixing an
-> >>> arbitrary number without the sm/sdm portion.  The PHY is not powered by
-> >>> a vcca regulator like on most SoCs, but by the MX power domain that is
-> >>> provided via the power-domains property and a single corresponding
-> >>> required-opps.
-> >>>
-> >>> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> >>> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> >>> ---
-> >>>    .../devicetree/bindings/display/msm/dsi-phy-14nm.yaml         | 11 +++++++++++
-> >>>    1 file changed, 11 insertions(+)
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml b/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml
-> >>> index a43e11d3b00d..183a26f8a6dc 100644
-> >>> --- a/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml
-> >>> +++ b/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml
-> >>> @@ -19,6 +19,7 @@ properties:
-> >>>          - qcom,dsi-phy-14nm-2290
-> >>>          - qcom,dsi-phy-14nm-660
-> >>>          - qcom,dsi-phy-14nm-8953
-> >>> +      - qcom,sm6125-dsi-phy-14nm
-> >>>    
-> >>>      reg:
-> >>>        items:
-> >>> @@ -35,6 +36,16 @@ properties:
-> >>>      vcca-supply:
-> >>>        description: Phandle to vcca regulator device node.
-> >>>    
-> >>> +  power-domains:
-> >>> +    description:
-> >>> +      A phandle and PM domain specifier for an optional power domain.
-> >>> +    maxItems: 1
-> >>> +
-> >>> +  required-opps:
-> >>> +    description:
-> >>> +      A phandle to an OPP node describing an optional performance point.
-> >>
-> >> I'd rephrase this to be something more exact, like 'desribing power
-> >> domain's performance point'.
-> > 
-> > Sure.  I'll leave out the word "optional", that becomes obvious from
-> > maxItems:1 without minItems, together with referencing a PM which itself
-> > is already optional.
+On Mon, Jul 17, 2023 at 03:16:22PM +0800, Minjie Du wrote:
+> Simplify code pattern of 'folio->index + folio_nr_pages(folio)' by using
+> the existing helper folio_next_index().
 > 
-> no, default minItems is equal to maxItems. It is not listing this 
-> property under the required what makes it optional.
+> Signed-off-by: Minjie Du <duminjie@vivo.com>
 
-I thought it was both.
-
-Magic.
-
-- Marijn
+With a slightly modified subject added to misc-next, thanks.
