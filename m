@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6E075B140
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDA775B147
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232246AbjGTOay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 10:30:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57774 "EHLO
+        id S232256AbjGTOcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 10:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232245AbjGTOax (ORCPT
+        with ESMTP id S232248AbjGTOcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 10:30:53 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E200826AD
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 07:30:48 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbc6ab5ff5so7028005e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 07:30:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689863447; x=1690468247;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+p4cBe1pMgniHvXw2LuLYSKKIqQxquV7AY6YDbEUJdE=;
-        b=oUUiGCS8pw8J7VoaCzy8JULE07XXLKQOywKwVV2oQdH9glG0suWrzfMxKYQOt3ySck
-         Ts0lKmWd/zI8NUEFA7MocNG6AsBcCcndzq6dFmOETbgezPyI9Gt7rf2OlH64v+25Euau
-         k9VG3h9NIkRhJXfLy3TxRJe9/sUX8C21mWgXHJYnipC/B0i+tTHZtGkiYoAC5Wa0BNTB
-         6eJ3yjLPwsZqapd4dJadZng5ywjpfO4pFWOY51Zml2uoJZXQi29eGMyZhe/xuCT2mL5H
-         YmT4g/d/TFxVLrKFvgheNOiI874jPDyzqzdVJJ2tOFcU+3kaW0OGccacJPta4HJuC8nb
-         RDMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689863447; x=1690468247;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+p4cBe1pMgniHvXw2LuLYSKKIqQxquV7AY6YDbEUJdE=;
-        b=WofHLg8APKYIYVv6mkKBRSSos0maSKyRjYhhLwD2JxlARg4FsLAwKmMspZuwr2FiJU
-         Wo77zkEczasKSItRri51I0lZ0tOAGiQBSFrxxr2+rgYltUnS7kURW9RVvShTHFRd0M5Z
-         CXR6XM/Ubqyu4MjgvandwsZrhFfglDB1k2UnfSZc9sfDNxSwxnYdR7zKKAfYdCxHqWKq
-         QcD9GAvcqxjfJVJsMUFJdCVLp6eImy0+bPBrxT1yJU3iZZJ73RgXRIr8/pAGVCoG5MQ8
-         8GhsiHlho0asUdBTOqmpkA8w6tCFdMhSE+A3V3qoK51pZI+dxJmvfWmLWxmr9ux7obmD
-         02xw==
-X-Gm-Message-State: ABy/qLbB4xAEKmyjE2YFpNN2VCgGisokCS1v+hshANfH1fZUngFX48eY
-        xunpbe9rS5Nht+daBhm4yS2fyg==
-X-Google-Smtp-Source: APBJJlGvGEcc3bxXa6+U1YfrxHHtDMiie6SxWyukbcPySyU+1GaZAiblUjugsW40vgKcbhSAJV0t3A==
-X-Received: by 2002:a1c:7507:0:b0:3fc:f9c:a3e6 with SMTP id o7-20020a1c7507000000b003fc0f9ca3e6mr7262763wmc.9.1689863446765;
-        Thu, 20 Jul 2023 07:30:46 -0700 (PDT)
-Received: from [10.1.3.131] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id m10-20020a7bca4a000000b003fc00702f65sm4028031wml.46.2023.07.20.07.30.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 07:30:46 -0700 (PDT)
-Message-ID: <a2bde8d7-8a30-3f29-b4bd-629416ae20c5@baylibre.com>
-Date:   Thu, 20 Jul 2023 16:30:45 +0200
+        Thu, 20 Jul 2023 10:32:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635AF26AB
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 07:31:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E876161B18
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:31:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12ECEC433C8;
+        Thu, 20 Jul 2023 14:31:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689863518;
+        bh=iPzNO7X2MelLib6Lb/uO/HfywfFgfsM7P7t9oYBcocw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BIKNiOaYaB3xNyyN+i4yiw2xluhjenAUgXe1hgcwgz3Ois7iJ1bI3JyQzdPM6QPNY
+         bBi6kNe91a7vfiiL/ZOQfXORatu/gF5BST35i7h2HF1ju0mBju7YmSUxgNnua/nZaN
+         Ljj0Y78y7dtm0d4n3ncxLvKnCutFxsPBvs46KXqUmSu6sNINjqE037wycAJvZJ355t
+         QVXWn+y3sfbZLEwuLmThrIa4MLiJ/Y4ftWqkQiKxEMu9udajVL0XuOUYaWF63bf99r
+         mLRLVY6yFBkdIhpR8REPCxJFhnsi69LJlr1ShqoN/5Up3o/ejnDxgLk/3Uh+BR+Gpk
+         gMgPojUMIGWpQ==
+Date:   Thu, 20 Jul 2023 15:31:53 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Traceback with CONFIG_REGMAP_KUNIT=y+CONFIG_DEBUG_ATOMIC_SLEEP=y
+Message-ID: <055f2564-551d-4b5f-a6e3-d54ae104d5c9@sirena.org.uk>
+References: <ee59d128-413c-48ad-a3aa-d9d350c80042@roeck-us.net>
+ <336fc14e-f734-49ea-97ce-802f03fa4422@kadam.mountain>
+ <198c4edf-045c-8d85-1d5c-018378eeb490@roeck-us.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v6 09/11] drm/mediatek: dp: Add support for embedded
- DisplayPort aux-bus
-Content-Language: en-US
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, chunkuang.hu@kernel.org
-Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
-        matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
-        wenst@chromium.org, nfraprado@collabora.com
-References: <20230717141438.274419-1-angelogioacchino.delregno@collabora.com>
- <20230717141438.274419-10-angelogioacchino.delregno@collabora.com>
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20230717141438.274419-10-angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="RcGRkRsZXz5WkioE"
+Content-Disposition: inline
+In-Reply-To: <198c4edf-045c-8d85-1d5c-018378eeb490@roeck-us.net>
+X-Cookie: Ginger snap.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-On 17/07/2023 16:14, AngeloGioacchino Del Regno wrote:
-> For the eDP case we can support using aux-bus on MediaTek DP: this
-> gives us the possibility to declare our panel as generic "panel-edp"
-> which will automatically configure the timings and available modes
-> via the EDID that we read from it.
-> 
-> To do this, move the panel parsing at the end of the probe function
-> so that the hardware is initialized beforehand and also initialize
-> the DPTX AUX block and power both on as, when we populate the
-> aux-bus, the panel driver will trigger an EDID read to perform
-> panel detection.
-> 
-> Last but not least, since now the AUX transfers can happen in the
-> separated aux-bus, it was necessary to add an exclusion for the
-> cable_plugged_in check in `mtk_dp_aux_transfer()` and the easiest
-> way to do this is to simply ignore checking that when the bridge
-> type is eDP.
+--RcGRkRsZXz5WkioE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Regards,
-Alexandre
+On Thu, Jul 20, 2023 at 07:26:54AM -0700, Guenter Roeck wrote:
+> On 7/20/23 01:50, Dan Carpenter wrote:
+
+> > +++ b/drivers/base/regmap/regcache-rbtree.c
+> > @@ -187,7 +187,7 @@ static int regcache_rbtree_init(struct regmap *map)
+> >   	int i;
+> >   	int ret;
+> > -	map->cache = kmalloc(sizeof *rbtree_ctx, GFP_KERNEL);
+> > +	map->cache = kmalloc(sizeof *rbtree_ctx, map->alloc_flags);
+
+> Yes, that might work as well (and after looking more deeply into the code
+> I wondered why it wasn't used in the first place).
+
+> Based on Mark's feedback I submitted
+> https://lore.kernel.org/lkml/20230720032848.1306349-1-linux@roeck-us.net/
+> Sorry, I forgot to copy you on that one.
+
+> Mark, please let me know what you prefer.
+
+They're both independently fine, but I wouldn't expect anything that's
+running in atomic context to be actually using dynamic allocations.
+
+--RcGRkRsZXz5WkioE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS5RVkACgkQJNaLcl1U
+h9D+Kwf+NSCwI48CLb02RZFr30GHsVnyIpKqqE8nqAfh9M9pIqR7ebMwxAFr6zxG
+6RYvZovr2Qsd4dXvUJfjxwnhaaRQCIE2/vmEkACi/mXZupMn/E1lYlOxqMCaQ8zD
+/ZSXmGXgdXdrIEfRU0DbOeLA/YXr1txOMyHonP6lKpILYGFby9Zi2XKUzVBxwSAE
+z7D7eUVtMq4m6tLUs/+ORalpBNi65l2PBxhDsWhHt5yVWMs5PTHzjKB33cobOZ6v
+gC2++BxCEUMYrFYdj0P2ylpqDqmhySzwmrfcDUQA2tTbm3P9G1IcWFhUpBQ8Vvza
+34RZkjEy8HKzn31bp9ByMNt5ApwbmA==
+=kPgT
+-----END PGP SIGNATURE-----
+
+--RcGRkRsZXz5WkioE--
