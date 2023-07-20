@@ -2,107 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6323375A6E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A53375A6E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbjGTGtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:49:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59002 "EHLO
+        id S231146AbjGTGtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbjGTGtK (ORCPT
+        with ESMTP id S229604AbjGTGtr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:49:10 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A477110A;
-        Wed, 19 Jul 2023 23:49:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1689835748; x=1721371748;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GvA2a+7n8IaNZUhAWJDCYoLOe+H+gng2myj8Io9r+08=;
-  b=FwOl49Jto24tTo9R5q851F8dBZNEYFzefjRQ0/0nYJj+KMvx8S3U1/mA
-   m599QUGkoiXT40jifbb3+AylS/yjGcf53KANOLQcznDB4zgwo5xvgi9s/
-   6L3CsFfWGBXefPIOpHPbp9sieGgelCZVg1570qxnvYyy8AOQ1ox/7TbYz
-   ELR1xGPLt1LTL3dV9qC5lYK9FwUi3RJ6oAlTFEnGV7h4TSpItwLN9uTIG
-   nSBDabVFSGRyQ0suEqVrsjAZ1vDQ2zDxWE3LBl93+vQMM5wbUOQI5yrfy
-   EDmuLG/fBuD2A3BhMttWnPF7YTBhBDZZcbVBiDq3f0ios1IG/R9NBeqvB
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="asc'?scan'208";a="221271702"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Jul 2023 23:49:07 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 19 Jul 2023 23:49:01 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Wed, 19 Jul 2023 23:48:59 -0700
-Date:   Thu, 20 Jul 2023 07:48:26 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Changhuang Liang <changhuang.liang@starfivetech.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor@kernel.org>,
-        Walker Chen <walker.chen@starfivetech.com>,
-        Hal Feng <hal.feng@starfivetech.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 0/4] Add JH7110 AON PMU support
-Message-ID: <20230720-egging-preheated-02752a588f59@wendy>
-References: <20230519060202.15296-1-changhuang.liang@starfivetech.com>
- <7fe9bc9a-2bb1-6c5c-2ed5-1eee85b8f299@starfivetech.com>
+        Thu, 20 Jul 2023 02:49:47 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AF610A;
+        Wed, 19 Jul 2023 23:49:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1689835768; x=1690440568; i=deller@gmx.de;
+ bh=HZ7rg6AhbQrQ6e7Xq6bBlCGjxjfoM64OtgN0BKs/8YQ=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=EjLiR1ouuZUCT+SNzkAyFPOHlqda/bHE5x2CaZRgACJRdu9wsbkzEggpFOZ8F4MQ2iiKIwu
+ 9rS3MyOiTdrntW6+Xy1JFFvR5xY9W/G23tbdrQTfvWfcnBDNYKDJBdCmNZeLGJfwx6Qzd8HSO
+ 6cvyv6a5orygDgu851k53WBXf9ajJPfGhUge1KDJy5v6IRqEk+c0oBjTvWQTOdTBmyQ3xFUq4
+ Vv5ecKnxbInURErcbNPU6ohg2/lAb0Q8NopyxuBTS1GI76+fK28esSV1jAPvfUFebrqdYjHLM
+ shtj/xpQjb9wHNimf25Z89ntl9k2G4BjJhqJ0554oK/w66VPEdCg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.153.9]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MLR1f-1qejfv1zxD-00IVXd; Thu, 20
+ Jul 2023 08:49:28 +0200
+Message-ID: <5603e84b-656b-e0b2-14ef-13f4e1062552@gmx.de>
+Date:   Thu, 20 Jul 2023 08:49:27 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ndB0Wq94O4LSYrXb"
-Content-Disposition: inline
-In-Reply-To: <7fe9bc9a-2bb1-6c5c-2ed5-1eee85b8f299@starfivetech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] parisc: math-emu: fcnvxf: Add space after that ','
+Content-Language: en-US
+To:     hanyu001@208suo.com
+Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <tencent_86762B5284E20421D8A676F4CC1B205D2F0A@qq.com>
+ <a2ae26be540da062ea4912c36962093b@208suo.com>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <a2ae26be540da062ea4912c36962093b@208suo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:q9WgkOpkJnkqrKbIKi7caJsirmzwbDML/OhqQyMS5bHREYZdHsc
+ xqNH19PsLzVdqbqVa9cNQoSFkWPZsyQWeWMO1o4I9id47AcFZHc+Oimy6p1X7RyAesYr+8+
+ IjUU5c7ZMn1AfHsOYmZmjlyjfoyGi27fHA4zZ0rnAATM1pAZusk4Vlrx5EwGU4ZmXsxyQBM
+ 5bXAx6w44JW5PEy/Qwe1A==
+UI-OutboundReport: notjunk:1;M01:P0:kLAIqU58eDM=;fkyra3ddEZ8kgnJobsX2Y9tFqtd
+ LzwKuCLFp2Nx/FtwmnT1rx2cQbrYh2IgzG0MPvjZpO3y2PC4YrQXMhlaXRK2LbtwZU1mKl1/Q
+ 7rL+mi2XO1BFuupyBPzgA/7GaQ8XVfJ/UaQHYDx1Wa036MiZQjGgi3bxcqaFj5ptzGXBE7MO6
+ JBK0ipplLLqNfcHnmkbKeg25OEo50NnBWJiwHrU5qcCd6UXlhaKBDeUywdEBG0GKQCWfSwFCf
+ v3KNwHRpKGIRfi/vF8d0ok6iJvQEWXh2L7Mb1MZ+lk8dNzwqct4nEKR7gOLJuEfEKTCI7Vj/q
+ XobskLGU17/jXMn1EPaRbrxnzwWkxNybq/XuEcvU7Ub2gHfMPvOtAGxwT97Vftl/sGkAK+mEM
+ oE+lqmYY6rSqaXVf7qeaMEEx4X/Emr44dBMWM0bIzBqjYeFF65/GIpgGT2D8T+13OGQbWMhiF
+ KA1fo2XZiX+VaYAdCu3ldKs9fD9XZQ641zz+orzzcWmTGrX5yDNiDyHIB6T5xMF81XjtK4qCf
+ a0gi/WcuhmssWLptnWt2F17yFJZcxKElpzaOh4swSosd9aTL/qaq1Bnj601uMsRriaS3YUw27
+ YvpeioO4AMvQi0QTaG1NvmR7AdV91d/8QKUsv2AGT7T6HY/b5pH5l2l4AWa3qZgGyKo3auffC
+ 9hIUjsyPWaB2o5RSlbDS4BxUMz1vNFSfDaP73qrTzONKDx62PU9KLQ0ANW86BI7PsSVvspLf9
+ NrnaWAye+BmeS+jSFTCxci7SXV7dA5o/0MQJdylSZphg1Hqs6AmI5Y3AdEAutjdYJna+oVUvI
+ tQuiga/aJ35p47jkS2AbiyOmkpwxTr4eDBQdLlVr1IXl53l1Kcm35AOX9k2Xq2LKaIIdo2KZ/
+ ouK8xs6I0d6ECPQwHEhYjqN0TOwvKmy3wmvlXwmX/90Nm8Lf0n31/DLXSwOsmtpMc+VIkgl6i
+ ip3hTNPc8G4jXETLg5pfvPeyxL8=
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---ndB0Wq94O4LSYrXb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hello hanyu001,
 
-On Thu, Jul 20, 2023 at 11:46:27AM +0800, Changhuang Liang wrote:
-> On 2023/5/19 14:01, Changhuang Liang wrote:
-> > This patchset adds aon power domain driver for the StarFive JH7110 SoC.
-> > It is used to turn on/off dphy rx/tx power switch. It also can use sysc=
-on
-> > operation. The series has been tested on the VisionFive 2 board.
-> >=20
-> > This patchset should be applied after the patchset [1]:
-> > [1] https://lore.kernel.org/all/20230512022036.97987-1-xingyu.wu@starfi=
-vetech.com/
-=20
-> Pll series is accepted, should I need to send a new version about this se=
-ries?
+On 7/13/23 11:37, hanyu001@208suo.com wrote:
+>
+> Fix Error reported by checkpatch.pl
+>
+> arch/parisc/math-emu/fcnvxf.c:99: ERROR: space required after that ',' (=
+ctx:VxV
+> )
+>
+> Signed-off-by: maqimei <2433033762@qq.com>
 
-I don't think so, there were no changes requested here. Let me check.
+Thanks for that patch!
 
+Your patch is correct and as such it should be applied.
+But please notice the arch/parisc/math-emu/README file (in the same
+directory), which states:
+All files except driver.c are snapshots from the HP-UX kernel.  They've
+been modified as little as possible.  Even though they don't fit the
+Linux coding style, please leave them in their funny format just in case
+someone in the future, with access to HP-UX source code, is generous
+enough to update our copies with later changes from HP-UX -- it'll
+make their 'diff' job easier if our code is relatively unmodified.
 
+So, I won't apply any patch to that directory, unless it fixes a real bug
+or is required to compile the kernel.
 
---ndB0Wq94O4LSYrXb
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Helge
 
------BEGIN PGP SIGNATURE-----
+> ---
+>  =C2=A0arch/parisc/math-emu/fcnvxf.c | 2 +-
+>  =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/parisc/math-emu/fcnvxf.c b/arch/parisc/math-emu/fcnvxf=
+.c
+> index 6940179..f5f9376 100644
+> --- a/arch/parisc/math-emu/fcnvxf.c
+> +++ b/arch/parisc/math-emu/fcnvxf.c
+> @@ -96,7 +96,7 @@
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Sgl_increment(result);
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 case ROUNDNEAREST:
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 Sgl_roundnearest_from_int(src,result);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 Sgl_roundnearest_from_int(src, result);
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (Is_inexacttrap_ena=
+bled()) {
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 *dstptr =3D result;
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLjYugAKCRB4tDGHoIJi
-0u2zAPwIPO8ScgeJoGf2C5V8jehHZbn7PWAwnUgwzUy6EtGXpwEAlbSanXyr45PU
-iF7FqiENoOWD67I/oCtJ0J0d1JvZAAY=
-=8iAf
------END PGP SIGNATURE-----
-
---ndB0Wq94O4LSYrXb--
