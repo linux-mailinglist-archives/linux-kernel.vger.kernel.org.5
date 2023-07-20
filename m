@@ -2,65 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E01E175A64B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8AB75A64F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbjGTG0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
+        id S230143AbjGTG2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:28:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjGTG0j (ORCPT
+        with ESMTP id S229451AbjGTG2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:26:39 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B952111
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689834397; x=1721370397;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Ab9EpTq3kAxuQgLzIkGiqoqUu64VuJ68ylr/9K2+01M=;
-  b=VCWvsaLf/hOk5c9TcoNS9vS/TZHXLKM+dsNZgwmLoVbd6trtYJrcp72I
-   RR7jT+vwZfdGH+Uc6PBajl9tI0M3ddrKzq6KG90JvoBOtTPDj4GquF5ut
-   2IgX977XENcI80ceazVEo75msv1VQfczSkRHs8asSnxlamyiJGQQEr5py
-   Kit9gZlfnIJaifsxQcAPewci3KenVG/DPJGCOyv6rMoTMHTgSGLXBRBsv
-   czvCYxpZX2hcAaRp/kTTMugl0pl199Z7uPQ9ZmVhsdV0YMVgAyxBXjpKx
-   EnSCw9MfdstDcP4Of4Y/i29iWB0HFX7gx/+BCXO/nyQvVoesRMszY9A9c
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="430412046"
-X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="430412046"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 23:26:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="718256631"
-X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="718256631"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 19 Jul 2023 23:26:31 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qMN7O-0005ob-1q;
-        Thu, 20 Jul 2023 06:26:30 +0000
-Date:   Thu, 20 Jul 2023 14:25:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Victor Lim <vlim@gigadevice.com>, tudor.ambarus@linaro.org,
-        pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com, akumarma@amd.com
-Cc:     oe-kbuild-all@lists.linux.dev, michael@walle.cc,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        vikhyat.goyal@amd.com, Victor Lim <vlim@gigadevice.com>
-Subject: Re: [PATCH V1 1/1] linux: drivers: mtd: spi-nor: gigadevice.c
-Message-ID: <202307201459.rKBT7i1H-lkp@intel.com>
-References: <20230720042834.12296-1-vlim@gigadevice.com>
+        Thu, 20 Jul 2023 02:28:20 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E675C128;
+        Wed, 19 Jul 2023 23:28:16 -0700 (PDT)
+Received: from loongson.cn (unknown [10.2.5.185])
+        by gateway (Coremail) with SMTP id _____8Dxfev_07hk+owHAA--.16701S3;
+        Thu, 20 Jul 2023 14:28:15 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.185])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxvM7907hkHU81AA--.16059S2;
+        Thu, 20 Jul 2023 14:28:13 +0800 (CST)
+From:   Tianrui Zhao <zhaotianrui@loongson.cn>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
+        Mark Brown <broonie@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
+        Xi Ruoyao <xry111@xry111.site>, zhaotianrui@loongson.cn
+Subject: [PATCH v17 00/30] Add KVM LoongArch support
+Date:   Thu, 20 Jul 2023 14:27:43 +0800
+Message-Id: <20230720062813.4126751-1-zhaotianrui@loongson.cn>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230720042834.12296-1-vlim@gigadevice.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxvM7907hkHU81AA--.16059S2
+X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
+        nUUI43ZEXa7xR_UUUUUUUUU==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,290 +52,285 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Victor,
+This series adds KVM LoongArch support. Loongson 3A5000 supports hardware
+assisted virtualization. With cpu virtualization, there are separate
+hw-supported user mode and kernel mode in guest mode. With memory
+virtualization, there are two-level hw mmu table for guest mode and host
+mode. Also there is separate hw cpu timer with consant frequency in
+guest mode, so that vm can migrate between hosts with different freq.
+Currently, we are able to boot LoongArch Linux Guests.
 
-kernel test robot noticed the following build errors:
+Few key aspects of KVM LoongArch added by this series are:
+1. Enable kvm hardware function when kvm module is loaded.
+2. Implement VM and vcpu related ioctl interface such as vcpu create,
+   vcpu run etc. GET_ONE_REG/SET_ONE_REG ioctl commands are use to
+   get general registers one by one.
+3. Hardware access about MMU, timer and csr are emulated in kernel.
+4. Hardwares such as mmio and iocsr device are emulated in user space
+   such as APIC, IPI, pci devices etc.
 
-[auto build test ERROR on mtd/spi-nor/next]
-[also build test ERROR on linus/master v6.5-rc2 next-20230720]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The running environment of LoongArch virt machine:
+1. Cross tools to build kernel and uefi:
+   $ wget https://github.com/loongson/build-tools/releases/download/2022.09.06/loongarch64-clfs-6.3-cross-tools-gcc-glibc.tar.xz
+   tar -vxf loongarch64-clfs-6.3-cross-tools-gcc-glibc.tar.xz  -C /opt
+   export PATH=/opt/cross-tools/bin:$PATH
+   export LD_LIBRARY_PATH=/opt/cross-tools/lib:$LD_LIBRARY_PATH
+   export LD_LIBRARY_PATH=/opt/cross-tools/loongarch64-unknown-linux-gnu/lib/:$LD_LIBRARY_PATH
+2. This series is based on the linux source code:
+   https://github.com/loongson/linux-loongarch-kvm
+   Build command:
+   git checkout kvm-loongarch
+   make ARCH=loongarch CROSS_COMPILE=loongarch64-unknown-linux-gnu- loongson3_defconfig
+   make ARCH=loongarch CROSS_COMPILE=loongarch64-unknown-linux-gnu-
+3. QEMU hypervisor with LoongArch supported:
+   https://github.com/loongson/qemu
+   Build command:
+   git checkout kvm-loongarch
+   ./configure --target-list="loongarch64-softmmu"  --enable-kvm
+   make
+4. Uefi bios of LoongArch virt machine:
+   Link: https://github.com/tianocore/edk2-platforms/tree/master/Platform/Loongson/LoongArchQemuPkg#readme
+5. you can also access the binary files we have already build:
+   https://github.com/yangxiaojuan-loongson/qemu-binary
+The command to boot loongarch virt machine:
+   $ qemu-system-loongarch64 -machine virt -m 4G -cpu la464 \
+   -smp 1 -bios QEMU_EFI.fd -kernel vmlinuz.efi -initrd ramdisk \
+   -serial stdio   -monitor telnet:localhost:4495,server,nowait \
+   -append "root=/dev/ram rdinit=/sbin/init console=ttyS0,115200" \
+   --nographic
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Victor-Lim/linux-drivers-mtd-spi-nor-gigadevice-c/20230720-123114
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/next
-patch link:    https://lore.kernel.org/r/20230720042834.12296-1-vlim%40gigadevice.com
-patch subject: [PATCH V1 1/1] linux: drivers: mtd: spi-nor: gigadevice.c
-config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230720/202307201459.rKBT7i1H-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230720/202307201459.rKBT7i1H-lkp@intel.com/reproduce)
+changes for v17:
+1. Add CONFIG_AS_HAS_LVZ_EXTENSION config option which depends on
+binutils that support LVZ assemble instruction.
+2. Change kvm mmu related functions, such as rename level2_ptw_pgd
+to kvm_ptw_pgd, replace kvm_flush_range with kvm_ptw_pgd pagewalk
+framework, replace kvm_arch.gpa_mm with kvm_arch.pgd, set
+mark_page_dirty/kvm_set_pfn_dirty out of mmu_lock in kvm page fault
+handling.
+3. Replace kvm_loongarch_interrupt with standard kvm_interrupt
+when injecting IRQ.
+4. Replace vcpu_arch.last_exec_cpu with existing vcpu.cpu, remove
+kvm_arch.online_vcpus and kvm_arch.is_migrating,
+5. Remove EXCCODE_TLBNR and EXCCODE_TLBNX in kvm exception table,
+since NR/NX bit is not set in kvm page fault handling.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307201459.rKBT7i1H-lkp@intel.com/
+Changes for v16:
+1. Free allocated memory of vmcs,kvm_loongarch_ops in kvm module init,
+exit to avoid memory leak problem.
+2. Simplify some assemble codes in switch.S which are necessary to be
+replaced with pseudo-instructions. And any other instructions do not need
+to be replaced anymore.
+3. Add kvm_{save,restore}_guest_gprs macros to replace these ld.d,st.d
+guest regs instructions when vcpu world switch.
+4. It is more secure to disable irq when flush guest tlb by gpa, so replace
+preempt_disable with loacl_irq_save in kvm_flush_tlb_gpa.
 
-All errors (new ones prefixed by >>):
+Changes for v15:
+1. Re-order some macros and variables in LoongArch kvm headers, put them
+together which have the same meaning.
+2. Make some function definitions in one line, as it is not needed to split
+them.
+3. Re-name some macros such as KVM_REG_LOONGARCH_GPR.
 
->> drivers/mtd/spi-nor/gigadevice.c:75:58: error: macro "INFO" passed 5 arguments, but takes just 4
-      75 |                               SPI_NOR_IO_MODE_EN_VOLATILE)
-         |                                                          ^
-   In file included from drivers/mtd/spi-nor/gigadevice.c:9:
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
->> drivers/mtd/spi-nor/gigadevice.c:71:26: error: 'INFO' undeclared here (not in a function)
-      71 |         { "gd25lx256e",  INFO(0xc86819, 0, 64 * 1024, 512,
-         |                          ^~~~
->> drivers/mtd/spi-nor/gigadevice.c:76:28: error: 'gd25lx256e_fixups' undeclared here (not in a function); did you mean 'gd25q256_fixups'?
-      76 |                 .fixups = &gd25lx256e_fixups },
-         |                            ^~~~~~~~~~~~~~~~~
-         |                            gd25q256_fixups
-   drivers/mtd/spi-nor/gigadevice.c:78:66: error: macro "INFO" passed 5 arguments, but takes just 4
-      78 |         SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                  ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:80:66: error: macro "INFO" passed 5 arguments, but takes just 4
-      80 |         SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                  ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:82:66: error: macro "INFO" passed 5 arguments, but takes just 4
-      82 |         SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                  ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:84:65: error: macro "INFO" passed 5 arguments, but takes just 4
-      84 |         SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-         |                                                                 ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:86:65: error: macro "INFO" passed 5 arguments, but takes just 4
-      86 |         SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-         |                                                                 ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:88:86: error: macro "INFO" passed 5 arguments, but takes just 4
-      88 |         SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                                      ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:90:86: error: macro "INFO" passed 5 arguments, but takes just 4
-      90 |         SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                                      ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:92:66: error: macro "INFO" passed 5 arguments, but takes just 4
-      92 |         SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                  ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:94:66: error: macro "INFO" passed 5 arguments, but takes just 4
-      94 |         SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                  ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:96:66: error: macro "INFO" passed 5 arguments, but takes just 4
-      96 |         SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                  ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:98:48: error: macro "INFO" passed 5 arguments, but takes just 4
-      98 |         SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-         |                                                ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:100:48: error: macro "INFO" passed 5 arguments, but takes just 4
-     100 |         SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-         |                                                ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:102:48: error: macro "INFO" passed 5 arguments, but takes just 4
-     102 |         SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-         |                                                ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:104:65: error: macro "INFO" passed 5 arguments, but takes just 4
-     104 |         SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-         |                                                                 ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:106:65: error: macro "INFO" passed 5 arguments, but takes just 4
-     106 |         SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)       },
-         |                                                                 ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:108:65: error: macro "INFO" passed 5 arguments, but takes just 4
-     108 |         SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)       },
-         |                                                                 ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:110:65: error: macro "INFO" passed 5 arguments, but takes just 4
+Changes for v14:
+1. Remove the macro CONFIG_KVM_GENERIC_HARDWARE_ENABLING in
+loongarch/kvm/main.c, as it is not useful.
+2. Add select KVM_GENERIC_HARDWARE_ENABLING in loongarch/kvm/Kconfig,
+as it is used by virt/kvm.
+3. Fix the LoongArch KVM source link in MAINTAINERS.
+4. Improve LoongArch KVM documentation, such as add comment for
+LoongArch kvm_regs.
 
+Changes for v13:
+1. Remove patch-28 "Implement probe virtualization when cpu init", as the
+virtualization information about FPU,PMP,LSX in guest.options,options_dyn
+is not used and the gcfg reg value can be read in kvm_hardware_enable, so
+remove the previous cpu_probe_lvz function.
+2. Fix vcpu_enable_cap interface, it should return -EINVAL directly, as
+FPU cap is enable by default, and do not support any other caps now.
+3. Simplify the jirl instruction with jr when without return addr,
+simplify case HW0 ... HW7 statment in interrupt.c
+4. Rename host_stack,host_gp in kvm_vcpu_arch to host_sp,host_tp.
+5. Remove 'cpu' parameter in _kvm_check_requests, as 'cpu' is not used,
+and remove 'cpu' parameter in kvm_check_vmid function, as it can get
+cpu number by itself.
 
-vim +/INFO +75 drivers/mtd/spi-nor/gigadevice.c
+Changes for v12:
+1. Improve the gcsr write/read/xchg interface to avoid the previous
+instruction statment like parse_r and make the code easy understanding,
+they are implemented in asm/insn-def.h and the instructions consistent
+of "opcode" "rj" "rd" "simm14" arguments.
+2. Fix the maintainers list of LoongArch KVM.
 
-     8	
-   > 9	#include "core.h"
-    10	
-    11	static int
-    12	gd25q256_post_bfpt(struct spi_nor *nor,
-    13			   const struct sfdp_parameter_header *bfpt_header,
-    14			   const struct sfdp_bfpt *bfpt)
-    15	{
-    16		/*
-    17		 * GD25Q256C supports the first version of JESD216 which does not define
-    18		 * the Quad Enable methods. Overwrite the default Quad Enable method.
-    19		 *
-    20		 * GD25Q256 GENERATION | SFDP MAJOR VERSION | SFDP MINOR VERSION
-    21		 *      GD25Q256C      | SFDP_JESD216_MAJOR | SFDP_JESD216_MINOR
-    22		 *      GD25Q256D      | SFDP_JESD216_MAJOR | SFDP_JESD216B_MINOR
-    23		 *      GD25Q256E      | SFDP_JESD216_MAJOR | SFDP_JESD216B_MINOR
-    24		 */
-    25		if (bfpt_header->major == SFDP_JESD216_MAJOR &&
-    26		    bfpt_header->minor == SFDP_JESD216_MINOR)
-    27			nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
-    28	
-    29		return 0;
-    30	}
-    31	
-    32	static const struct spi_nor_fixups gd25q256_fixups = {
-    33		.post_bfpt = gd25q256_post_bfpt,
-    34	};
-    35	
-    36	static const struct flash_info gigadevice_nor_parts[] = {
-    37		{ "gd25q16", INFO(0xc84015, 0, 64 * 1024,  32)
-    38			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-    39			NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-    40				      SPI_NOR_QUAD_READ) },
-    41		{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64)
-    42			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-    43			NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-    44				      SPI_NOR_QUAD_READ) },
-    45		{ "gd25lq32", INFO(0xc86016, 0, 64 * 1024, 64)
-    46			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-    47			NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-    48				      SPI_NOR_QUAD_READ) },
-    49		{ "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128)
-    50			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-    51			NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-    52				      SPI_NOR_QUAD_READ) },
-    53		{ "gd25lq64c", INFO(0xc86017, 0, 64 * 1024, 128)
-    54			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-    55			NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-    56				      SPI_NOR_QUAD_READ) },
-    57		{ "gd25lq128d", INFO(0xc86018, 0, 64 * 1024, 256)
-    58			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-    59			NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-    60				      SPI_NOR_QUAD_READ) },
-    61		{ "gd25q128", INFO(0xc84018, 0, 64 * 1024, 256)
-    62			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-    63			NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-    64				      SPI_NOR_QUAD_READ) },
-    65		{ "gd25q256", INFO(0xc84019, 0, 64 * 1024, 512)
-    66			PARSE_SFDP
-    67			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6)
-    68			FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
-    69			.fixups = &gd25q256_fixups },
-    70	/* adding these parts */
-  > 71		{ "gd25lx256e",  INFO(0xc86819, 0, 64 * 1024, 512,
-    72				      SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
-    73				      SPI_NOR_4B_OPCODES | SPI_NOR_OCTAL_DTR_READ |
-    74				      SPI_NOR_OCTAL_DTR_PP |
-  > 75				      SPI_NOR_IO_MODE_EN_VOLATILE)
-  > 76			.fixups = &gd25lx256e_fixups },
-    77		{"gd25b512", INFO(0xc8471A, 0, 64 * 1024, 1024,	SECT_4K |
-    78		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    79		{"gd55b01g", INFO(0xc8471B, 0, 64 * 1024, 2048,	SECT_4K |
-    80		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    81		{"gd55b02g", INFO(0xc8471C, 0, 64 * 1024, 4096,	SECT_4K |
-    82		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    83		{"gd25f64", INFO(0xc84317, 0, 64 * 1024, 128,	SECT_4K |
-    84		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-    85		{"gd25f128", INFO(0xc84318, 0, 64 * 1024, 256,	SECT_4K	|
-    86		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-    87		{"gd25f256", INFO(0xc84319, 0, 64 * 1024, 512,	SECT_4K |
-    88		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    89		{"gd55f512", INFO(0xc8431A, 0, 64 * 1024, 1024,	SECT_4K |
-    90		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    91		{"gd25t512", INFO(0xc8461A, 0, 64 * 1024, 1024,	SECT_4K |
-    92		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    93		{"gd55t01g", INFO(0xc8461B, 0, 64 * 1024, 2048,	SECT_4K |
-    94		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    95		{"gd55t02ge", INFO(0xc8461C, 0, 64 * 1024, 4096,	SECT_4K |
-    96		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    97		{"gd25x512", INFO(0xc8481A, 0, 64 * 1024, 1024,	SECT_4K |
-    98		SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-    99		{"gd55x01g", INFO(0xc8481B, 0, 64 * 1024, 2048,	SECT_4K |
-   100		SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-   101		{"gd55x02g", INFO(0xc8481C, 0, 64 * 1024, 4096,	SECT_4K |
-   102		SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-   103		{"gd25lb16", INFO(0xc86015, 0, 64 * 1024, 32,	SECT_4K |
-   104		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-   105		{"gd25lb32", INFO(0xc86016, 0, 64 * 1024, 64,	SECT_4K |
-   106		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)	},
-   107		{"gd25lb64", INFO(0xc86017, 0, 64 * 1024, 128,	SECT_4K |
-   108		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)	},
-   109		{"gd25lb128", INFO(0xc86018, 0, 64 * 1024, 256,	SECT_4K |
-   110		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-   111		{"gd25lb256", INFO(0xc86019, 0, 64 * 1024, 512,	SECT_4K |
-   112		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   113		{"gd25lb256", INFO(0xc86719, 0, 64 * 1024, 512,	SECT_4K |
-   114		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   115		{"gd25lb512", INFO(0xc8671A, 0, 64 * 1024, 1024,	SECT_4K |
-   116		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   117		{"gd55lb01g", INFO(0xc8671B, 0, 64 * 1024, 2048,	SECT_4K |
-   118		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   119		{"gd55lb02g", INFO(0xc8671C, 0, 64 * 1024, 4096,	SECT_4K |
-   120		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   121		{"gd25lf80", INFO(0xc86314, 0, 64 * 1024, 16,	SECT_4K |
-   122		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-   123		{"gd25lf16", INFO(0xc86315, 0, 64 * 1024, 32,	SECT_4K |
-   124		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-   125		{"gd25lf32", INFO(0xc86316, 0, 64 * 1024, 64,	SECT_4K |
-   126		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)	},
-   127		{"gd25lf64", INFO(0xc86317, 0, 64 * 1024, 128,	SECT_4K |
-   128		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)	},
-   129		{"gd25lf128", INFO(0xc86318, 0, 64 * 1024, 256,	SECT_4K |
-   130		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)	},
-   131		{"gd25lf255", INFO(0xc86319, 0, 64 * 1024, 512,	SECT_4K |
-   132		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   133		{"gd25lf511", INFO(0xc8631A, 0, 64 * 1024, 1024,	SECT_4K |
-   134		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   135		{"gd25lt256e", INFO(0xc86619, 0, 64 * 1024, 512,	SECT_4K |
-   136		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   137		{"gd25lt512", INFO(0xc8661A, 0, 64 * 1024, 1024,	SECT_4K |
-   138		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   139		{"gd55lt01g", INFO(0xc8661B, 0, 64 * 1024, 2048,	SECT_4K |
-   140		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   141		{"gd55lt02g", INFO(0xc8661C, 0, 64 * 1024, 4096,	SECT_4K |
-   142		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   143		{"gd25lx512", INFO(0xc8681A, 0, 64 * 1024, 1024,	SECT_4K |
-   144		SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-   145		{"gd55lx01g", INFO(0xc8681B, 0, 64 * 1024, 2048,	SECT_4K |
-   146		SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-   147		{"gd55lx02g", INFO(0xc8681C, 0, 64 * 1024, 4096,	SECT_4K |
-   148		SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-   149	};
-   150	
+Changes for v11:
+1. Add maintainers for LoongArch KVM.
+
+Changes for v10:
+1. Fix grammatical problems in LoongArch documentation.
+2. It is not necessary to save or restore the LOONGARCH_CSR_PGD when
+vcpu put and vcpu load, so we remove it.
+
+Changes for v9:
+1. Apply the new defined interrupt number macros in loongarch.h to kvm,
+such as INT_SWI0, INT_HWI0, INT_TI, INT_IPI, etc. And remove the
+previous unused macros.
+2. Remove unused variables in kvm_vcpu_arch, and reorder the variables
+to make them more standard.
+
+Changes for v8:
+1. Adjust the cpu_data.guest.options structure, add the ases flag into
+it, and remove the previous guest.ases. We do this to keep consistent
+with host cpu_data.options structure.
+2. Remove the "#include <asm/kvm_host.h>" in some files which also
+include the "<linux/kvm_host.h>". As linux/kvm_host.h already include
+the asm/kvm_host.h.
+3. Fix some unstandard spelling and grammar errors in comments, and
+improve a little code format to make it easier and standard.
+
+Changes for v7:
+1. Fix the kvm_save/restore_hw_gcsr compiling warnings reported by
+kernel test robot. The report link is:
+https://lore.kernel.org/oe-kbuild-all/202304131526.iXfLaVZc-lkp@intel.com/
+2. Fix loongarch kvm trace related compiling problems.
+
+Changes for v6:
+1. Fix the Documentation/virt/kvm/api.rst compile warning about
+loongarch parts.
+
+Changes for v5:
+1. Implement get/set mp_state ioctl interface, and only the
+KVM_MP_STATE_RUNNABLE state is supported now, and other states
+will be completed in the future. The state is also used when vcpu
+run idle instruction, if vcpu state is changed to RUNNABLE, the
+vcpu will have the possibility to be woken up.
+2. Supplement kvm document about loongarch-specific part, such as add
+api introduction for GET/SET_ONE_REG, GET/SET_FPU, GET/SET_MP_STATE,
+etc.
+3. Improve the kvm_switch_to_guest function in switch.S, remove the
+previous tmp,tmp1 arguments and replace it with t0,t1 reg.
+
+Changes for v4:
+1. Add a csr_need_update flag in _vcpu_put, as most csr registers keep
+unchanged during process context switch, so we need not to update it
+every time. We can do this only if the soft csr is different form hardware.
+That is to say all of csrs should update after vcpu enter guest, as for
+set_csr_ioctl, we have written soft csr to keep consistent with hardware.
+2. Improve get/set_csr_ioctl interface, we set SW or HW or INVALID flag
+for all csrs according to it's features when kvm init. In get/set_csr_ioctl,
+if csr is HW, we use gcsrrd/ gcsrwr instruction to access it, else if csr is
+SW, we use software to emulate it, and others return false.
+3. Add set_hw_gcsr function in csr_ops.S, and it is used in set_csr_ioctl.
+We have splited hw gcsr into three parts, so we can calculate the code offset
+by gcsrid and jump here to run the gcsrwr instruction. We use this function to
+make the code easier and avoid to use the previous SET_HW_GCSR(XXX) interface.
+4. Improve kvm mmu functions, such as flush page table and make clean page table
+interface.
+
+Changes for v3:
+1. Remove the vpid array list in kvm_vcpu_arch and use a vpid variable here,
+because a vpid will never be recycled if a vCPU migrates from physical CPU A
+to B and back to A.
+2. Make some constant variables in kvm_context to global such as vpid_mask,
+guest_eentry, enter_guest, etc.
+3. Add some new tracepoints, such as kvm_trace_idle, kvm_trace_cache,
+kvm_trace_gspr, etc.
+4. There are some duplicate codes in kvm_handle_exit and kvm_vcpu_run,
+so we move it to a new function kvm_pre_enter_guest.
+5. Change the RESUME_HOST, RESUME_GUEST value, return 1 for resume guest
+and "<= 0" for resume host.
+6. Fcsr and fpu registers are saved/restored together.
+
+Changes for v2:
+1. Seprate the original patch-01 and patch-03 into small patches, and the
+patches mainly contain kvm module init, module exit, vcpu create, vcpu run,
+etc.
+2. Remove the original KVM_{GET,SET}_CSRS ioctl in the kvm uapi header,
+and we use the common KVM_{GET,SET}_ONE_REG to access register.
+3. Use BIT(x) to replace the "1 << n_bits" statement.
+
+Tianrui Zhao (30):
+  LoongArch: KVM: Add kvm related header files
+  LoongArch: KVM: Implement kvm module related interface
+  LoongArch: KVM: Implement kvm hardware enable, disable interface
+  LoongArch: KVM: Implement VM related functions
+  LoongArch: KVM: Add vcpu related header files
+  LoongArch: KVM: Implement vcpu create and destroy interface
+  LoongArch: KVM: Implement vcpu run interface
+  LoongArch: KVM: Implement vcpu handle exit interface
+  LoongArch: KVM: Implement vcpu get, vcpu set registers
+  LoongArch: KVM: Implement vcpu ENABLE_CAP ioctl interface
+  LoongArch: KVM: Implement fpu related operations for vcpu
+  LoongArch: KVM: Implement vcpu interrupt operations
+  LoongArch: KVM: Implement misc vcpu related interfaces
+  LoongArch: KVM: Implement vcpu load and vcpu put operations
+  LoongArch: KVM: Implement vcpu status description
+  LoongArch: KVM: Implement update VM id function
+  LoongArch: KVM: Implement virtual machine tlb operations
+  LoongArch: KVM: Implement vcpu timer operations
+  LoongArch: KVM: Implement kvm mmu operations
+  LoongArch: KVM: Implement handle csr excption
+  LoongArch: KVM: Implement handle iocsr exception
+  LoongArch: KVM: Implement handle idle exception
+  LoongArch: KVM: Implement handle gspr exception
+  LoongArch: KVM: Implement handle mmio exception
+  LoongArch: KVM: Implement handle fpu exception
+  LoongArch: KVM: Implement kvm exception vector
+  LoongArch: KVM: Implement vcpu world switch
+  LoongArch: KVM: Enable kvm config and add the makefile
+  LoongArch: KVM: Supplement kvm document about LoongArch-specific part
+  LoongArch: KVM: Add maintainers for LoongArch KVM
+
+ Documentation/virt/kvm/api.rst             |  70 +-
+ MAINTAINERS                                |  12 +
+ arch/loongarch/Kbuild                      |   1 +
+ arch/loongarch/Kconfig                     |   2 +
+ arch/loongarch/configs/loongson3_defconfig |   2 +
+ arch/loongarch/include/asm/insn-def.h      |  55 ++
+ arch/loongarch/include/asm/inst.h          |  16 +
+ arch/loongarch/include/asm/kvm_csr.h       | 252 ++++++
+ arch/loongarch/include/asm/kvm_host.h      | 245 ++++++
+ arch/loongarch/include/asm/kvm_types.h     |  11 +
+ arch/loongarch/include/asm/kvm_vcpu.h      |  96 +++
+ arch/loongarch/include/asm/loongarch.h     |  20 +-
+ arch/loongarch/include/uapi/asm/kvm.h      | 100 +++
+ arch/loongarch/kernel/asm-offsets.c        |  32 +
+ arch/loongarch/kvm/Kconfig                 |  42 +
+ arch/loongarch/kvm/Makefile                |  22 +
+ arch/loongarch/kvm/csr_ops.S               |  87 +++
+ arch/loongarch/kvm/exit.c                  | 705 +++++++++++++++++
+ arch/loongarch/kvm/interrupt.c             | 113 +++
+ arch/loongarch/kvm/main.c                  | 361 +++++++++
+ arch/loongarch/kvm/mmu.c                   | 678 ++++++++++++++++
+ arch/loongarch/kvm/switch.S                | 256 +++++++
+ arch/loongarch/kvm/timer.c                 | 266 +++++++
+ arch/loongarch/kvm/tlb.c                   |  34 +
+ arch/loongarch/kvm/trace.h                 | 168 ++++
+ arch/loongarch/kvm/vcpu.c                  | 850 +++++++++++++++++++++
+ arch/loongarch/kvm/vm.c                    |  76 ++
+ arch/loongarch/kvm/vmid.c                  |  66 ++
+ include/uapi/linux/kvm.h                   |   9 +
+ 29 files changed, 4633 insertions(+), 14 deletions(-)
+ create mode 100644 arch/loongarch/include/asm/insn-def.h
+ create mode 100644 arch/loongarch/include/asm/kvm_csr.h
+ create mode 100644 arch/loongarch/include/asm/kvm_host.h
+ create mode 100644 arch/loongarch/include/asm/kvm_types.h
+ create mode 100644 arch/loongarch/include/asm/kvm_vcpu.h
+ create mode 100644 arch/loongarch/include/uapi/asm/kvm.h
+ create mode 100644 arch/loongarch/kvm/Kconfig
+ create mode 100644 arch/loongarch/kvm/Makefile
+ create mode 100644 arch/loongarch/kvm/csr_ops.S
+ create mode 100644 arch/loongarch/kvm/exit.c
+ create mode 100644 arch/loongarch/kvm/interrupt.c
+ create mode 100644 arch/loongarch/kvm/main.c
+ create mode 100644 arch/loongarch/kvm/mmu.c
+ create mode 100644 arch/loongarch/kvm/switch.S
+ create mode 100644 arch/loongarch/kvm/timer.c
+ create mode 100644 arch/loongarch/kvm/tlb.c
+ create mode 100644 arch/loongarch/kvm/trace.h
+ create mode 100644 arch/loongarch/kvm/vcpu.c
+ create mode 100644 arch/loongarch/kvm/vm.c
+ create mode 100644 arch/loongarch/kvm/vmid.c
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.1
+
