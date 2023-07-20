@@ -2,57 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B857275BB04
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 01:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19BC75BB06
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 01:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbjGTXP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 19:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35522 "EHLO
+        id S229801AbjGTXTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 19:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGTXPY (ORCPT
+        with ESMTP id S229451AbjGTXTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 19:15:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6EA1724;
-        Thu, 20 Jul 2023 16:15:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A87D61CB5;
-        Thu, 20 Jul 2023 23:15:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AEC6C433C7;
-        Thu, 20 Jul 2023 23:15:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689894922;
-        bh=t/+qowoP9CB/NKB2N4O3EAM8OzUyIX9DTycf5HiAHBs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SeHbslgHW6sXqTEk7BiCh+xudqNAZi7v34MkFxgoWqsTle0J/sgW1vtmjPvSKZsOE
-         9mRlqVu7fvY1UJyRg9iT3DwlmMVO8N7JlyBXkKELWTWMmsEXmiKhGVTZptGhrpeCKt
-         k/MHwS5X0DHQWNVshE2GqhzC4Von4+KllY/kInEt2wQPieNnupeLNL8ZVsHCSkdA8j
-         t1QedT2LvCh8zbBhFC0Lq7Jq0bX1dF4RKxONMl89Zc+qXNtl6Mn6xeo3F7DrdY1Irr
-         B2LsPhxJ7arDwC6ZSOQMFOgP+cg+RzR/3T84c4EM8OrTWdQCD7QgWakn8eiWU6kwRY
-         ziXXeifN4o+xA==
-Date:   Thu, 20 Jul 2023 19:15:19 -0400
-From:   Chuck Lever <cel@kernel.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Boyang Xue <bxue@redhat.com>, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] nfsd: sanely handle inabilty to fetch pre/post
- attributes
-Message-ID: <ZLnAB8Nfy/hPBhFl@manet.1015granger.net>
-References: <20230720-bz2223560-v2-0-070aaf2660b7@kernel.org>
- <168988936713.11078.5407820394334916284@noble.neil.brown.name>
+        Thu, 20 Jul 2023 19:19:04 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8901724
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 16:19:03 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-668730696a4so923081b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 16:19:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689895143; x=1690499943;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ibwR2n2ofWT45eqyn7NdkOyxsAPd/bEJkQ0/gWWZPag=;
+        b=lXzYCfCVbZ0XFYr4h1U2cA+eanuunlakdjkGeq0zjbSuUw92kuJhjFPvqvehuVM/MR
+         d6dOtACrgZmq8zypv+uqPq27NBSop8KuKAXQi67hPm6KDQofw6Yw0FXh6k9v2DvsE86X
+         +nczzNvFdpB+JoZriycHeOUDYK3ot62KqY8Vl2sKo6vyYx+5c7vKJ3uH2W5qhIrVkqbC
+         FZTbUZVOgEAoGKoluTWSJ2gVKi4phOzNoClt0OAILWaUHGMYWP4KBtxtGvbNjSQ9RwnI
+         LkM4RtiLcmFhEMj+9v5MKT+ezh7OeqI+otg//ZyvMXzGEBxQ4MIUm67RjBehPHBgORLM
+         avow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689895143; x=1690499943;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ibwR2n2ofWT45eqyn7NdkOyxsAPd/bEJkQ0/gWWZPag=;
+        b=WEl+nLk5Ue9q0T6WUdQH0ebsbpzSXMiGMOs/GOkrwf6AhdqMz7GWrGAe3u1J+seOxv
+         XKV+2bdIDgevO/FxCX0H5xUSQmHw6FpDOjK1/xPrUuSWH447rcCJaaUFxClQutskz1dm
+         GcFLL80RFHFM9c+Jn+EZ3bD0Uitoa0DUgsZNcNanWGfz0y2NKli+fgNT5DA8xYyM7a8I
+         n3P0APmb8cwXIvJjED+D6q1qsVEhX7nfyEU/5ri2jGuT1u7nhSYt6VRQVEEU9G+4Oz7C
+         UUPFtywRVZskgvnuPXK6FdE+uvbcJ548raBuUjtw/bVhYNMkioUMuDfibxfAX5a4BQdV
+         iIbw==
+X-Gm-Message-State: ABy/qLaUatg6xyRBZw1OE/76EV4Tjr33YzhsneUNvM+3m48jYGz4/aZP
+        UHd1SQAleplWnHSlAoMhS6E=
+X-Google-Smtp-Source: APBJJlFUvtKV9g3xN8yZiX1eceYAxHrBp30rIaSA9fDoBvJ552sVhZUdbrWXiZ8RM+whGFBzTee4pQ==
+X-Received: by 2002:a05:6a00:814:b0:668:7292:b2c2 with SMTP id m20-20020a056a00081400b006687292b2c2mr321769pfk.2.1689895143276;
+        Thu, 20 Jul 2023 16:19:03 -0700 (PDT)
+Received: from ubuntu777.domain.name (36-228-98-231.dynamic-ip.hinet.net. [36.228.98.231])
+        by smtp.gmail.com with ESMTPSA id k17-20020aa78211000000b00682562bf477sm1708783pfi.82.2023.07.20.16.19.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 16:19:02 -0700 (PDT)
+From:   Min-Hua Chen <minhuadotchen@gmail.com>
+To:     sven@svenpeter.dev
+Cc:     alyssa@rosenzweig.io, asahi@lists.linux.dev, iommu@lists.linux.dev,
+        joro@8bytes.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, marcan@marcan.st,
+        minhuadotchen@gmail.com, robin.murphy@arm.com, will@kernel.org
+Subject: Re: [PATCH] iommu/apple-dart: mark apple_dart_pm_ops static
+Date:   Fri, 21 Jul 2023 07:18:59 +0800
+Message-Id: <20230720231859.3699-1-minhuadotchen@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <f176c331-f8cf-4a44-8ada-7d9c958b17ca@app.fastmail.com>
+References: <f176c331-f8cf-4a44-8ada-7d9c958b17ca@app.fastmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <168988936713.11078.5407820394334916284@noble.neil.brown.name>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,58 +74,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 07:42:47AM +1000, NeilBrown wrote:
-> On Fri, 21 Jul 2023, Jeff Layton wrote:
-> > Boyang reported tripping the BUG_ON in set_change_info. While we
-> > couldn't confirm it, one way this could happen would be for nfsd_lookup
-> > to succeed and then for fh_fill_both_attrs to fail.
-> > 
-> > This patchset attempts to (sanely) fix this, usually by aborting the
-> > operation if fetching the pre attributes fails. Post-op attribute fetch
-> > handling is more difficult to deal with however since we've already done
-> > the operation, so this has it just fudge the change_info4 if that
-> > occurs.
-> 
-> I think both v3 and v4 allow a reply that says "the operation was a
-> success but there are no post-op attrs".  With v4 you can say "there is
-> no change-attr, but here are some other attrs".  I think.
+Hi Sven,
 
-If the protocols enable NFSD to avoid returning made-up values, I'm
-all for it.
+>On Thu, Jul 20, 2023, at 00:20, Min-Hua Chen wrote:
+>> This patch fixes the following sprse warning:
+>
+>typo: sparse
 
+thanks for catching this.
 
-> Our xdr-encoding doesn't make that easy, but it is just a "simple matter
-> of coding".  If you think it is worth it.
-> 
-> NeilBrown
-> 
-> 
-> > 
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> > Changes in v2:
-> > - make fh_fill_*_attrs return an error and have the callers handle it
-> > - rework of set_change_info, to better handle missing pre/post attrs
-> > 
-> > ---
-> > Jeff Layton (2):
-> >       nfsd: handle failure to collect pre/post-op attrs more sanely
-> >       nfsd: remove unsafe BUG_ON from set_change_info
-> > 
-> >  fs/nfsd/nfs3proc.c |  4 +++-
-> >  fs/nfsd/nfs4proc.c | 45 +++++++++++++++++++++++++++++++++------
-> >  fs/nfsd/nfsfh.c    | 26 ++++++++++++++---------
-> >  fs/nfsd/nfsfh.h    |  6 +++---
-> >  fs/nfsd/vfs.c      | 62 ++++++++++++++++++++++++++++++++++--------------------
-> >  fs/nfsd/xdr4.h     | 11 ----------
-> >  6 files changed, 100 insertions(+), 54 deletions(-)
-> > ---
-> > base-commit: 070f391ca4d48e1750ee6108eb44f751a9e9448e
-> > change-id: 20230720-bz2223560-9c4690a8217b
-> > 
-> > Best regards,
-> > -- 
-> > Jeff Layton <jlayton@kernel.org>
-> > 
-> > 
-> 
+>>
+>> drivers/iommu/apple-dart.c:1279:1: sparse: warning: symbol 
+>> 'apple_dart_pm_ops' was not declared. Should it be static?
+>>
+>> No functional change intended.
+>>
+>> Signed-off-by: Min-Hua Chen <minhuadotchen@gmail.com>
+>> ---
+>
+>Acked-by: Sven Peter <sven@svenpeter.dev>
+
+I'll submit v2 with your Acked-by tag.
+
+thanks,
+Min-Hua
+
+>Thanks,
+>
+>
+>Sven
+
