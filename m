@@ -2,71 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F19BC75BB06
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 01:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CDD75BB08
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 01:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbjGTXTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 19:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36114 "EHLO
+        id S229828AbjGTXT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 19:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGTXTE (ORCPT
+        with ESMTP id S229824AbjGTXT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 19:19:04 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8901724
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 16:19:03 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-668730696a4so923081b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 16:19:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689895143; x=1690499943;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ibwR2n2ofWT45eqyn7NdkOyxsAPd/bEJkQ0/gWWZPag=;
-        b=lXzYCfCVbZ0XFYr4h1U2cA+eanuunlakdjkGeq0zjbSuUw92kuJhjFPvqvehuVM/MR
-         d6dOtACrgZmq8zypv+uqPq27NBSop8KuKAXQi67hPm6KDQofw6Yw0FXh6k9v2DvsE86X
-         +nczzNvFdpB+JoZriycHeOUDYK3ot62KqY8Vl2sKo6vyYx+5c7vKJ3uH2W5qhIrVkqbC
-         FZTbUZVOgEAoGKoluTWSJ2gVKi4phOzNoClt0OAILWaUHGMYWP4KBtxtGvbNjSQ9RwnI
-         LkM4RtiLcmFhEMj+9v5MKT+ezh7OeqI+otg//ZyvMXzGEBxQ4MIUm67RjBehPHBgORLM
-         avow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689895143; x=1690499943;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ibwR2n2ofWT45eqyn7NdkOyxsAPd/bEJkQ0/gWWZPag=;
-        b=WEl+nLk5Ue9q0T6WUdQH0ebsbpzSXMiGMOs/GOkrwf6AhdqMz7GWrGAe3u1J+seOxv
-         XKV+2bdIDgevO/FxCX0H5xUSQmHw6FpDOjK1/xPrUuSWH447rcCJaaUFxClQutskz1dm
-         GcFLL80RFHFM9c+Jn+EZ3bD0Uitoa0DUgsZNcNanWGfz0y2NKli+fgNT5DA8xYyM7a8I
-         n3P0APmb8cwXIvJjED+D6q1qsVEhX7nfyEU/5ri2jGuT1u7nhSYt6VRQVEEU9G+4Oz7C
-         UUPFtywRVZskgvnuPXK6FdE+uvbcJ548raBuUjtw/bVhYNMkioUMuDfibxfAX5a4BQdV
-         iIbw==
-X-Gm-Message-State: ABy/qLaUatg6xyRBZw1OE/76EV4Tjr33YzhsneUNvM+3m48jYGz4/aZP
-        UHd1SQAleplWnHSlAoMhS6E=
-X-Google-Smtp-Source: APBJJlFUvtKV9g3xN8yZiX1eceYAxHrBp30rIaSA9fDoBvJ552sVhZUdbrWXiZ8RM+whGFBzTee4pQ==
-X-Received: by 2002:a05:6a00:814:b0:668:7292:b2c2 with SMTP id m20-20020a056a00081400b006687292b2c2mr321769pfk.2.1689895143276;
-        Thu, 20 Jul 2023 16:19:03 -0700 (PDT)
-Received: from ubuntu777.domain.name (36-228-98-231.dynamic-ip.hinet.net. [36.228.98.231])
-        by smtp.gmail.com with ESMTPSA id k17-20020aa78211000000b00682562bf477sm1708783pfi.82.2023.07.20.16.19.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 16:19:02 -0700 (PDT)
-From:   Min-Hua Chen <minhuadotchen@gmail.com>
-To:     sven@svenpeter.dev
-Cc:     alyssa@rosenzweig.io, asahi@lists.linux.dev, iommu@lists.linux.dev,
-        joro@8bytes.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, marcan@marcan.st,
-        minhuadotchen@gmail.com, robin.murphy@arm.com, will@kernel.org
-Subject: Re: [PATCH] iommu/apple-dart: mark apple_dart_pm_ops static
-Date:   Fri, 21 Jul 2023 07:18:59 +0800
-Message-Id: <20230720231859.3699-1-minhuadotchen@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <f176c331-f8cf-4a44-8ada-7d9c958b17ca@app.fastmail.com>
-References: <f176c331-f8cf-4a44-8ada-7d9c958b17ca@app.fastmail.com>
+        Thu, 20 Jul 2023 19:19:26 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C874B2713;
+        Thu, 20 Jul 2023 16:19:19 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1qMcvI-0003Fw-2U; Fri, 21 Jul 2023 01:19:04 +0200
+Date:   Fri, 21 Jul 2023 01:19:04 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     daniel@iogearbox.net, kadlec@netfilter.org, ast@kernel.org,
+        pablo@netfilter.org, kuba@kernel.org, davem@davemloft.net,
+        andrii@kernel.org, edumazet@google.com, pabeni@redhat.com,
+        fw@strlen.de, alexei.starovoitov@gmail.com, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org, dsahern@kernel.org
+Subject: Re: [PATCH bpf-next v5 2/5] netfilter: bpf: Support
+ BPF_F_NETFILTER_IP_DEFRAG in netfilter link
+Message-ID: <20230720231904.GA31372@breakpoint.cc>
+References: <cover.1689884827.git.dxu@dxuuu.xyz>
+ <690a1b09db84547b0f0c73654df3f4950f1262b7.1689884827.git.dxu@dxuuu.xyz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <690a1b09db84547b0f0c73654df3f4950f1262b7.1689884827.git.dxu@dxuuu.xyz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,33 +49,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sven,
+Daniel Xu <dxu@dxuuu.xyz> wrote:
+> +	const struct nf_defrag_hook __maybe_unused *hook;
+> +
+> +	switch (link->hook_ops.pf) {
+> +#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4)
+> +	case NFPROTO_IPV4:
+> +		hook = get_proto_defrag_hook(link, nf_defrag_v4_hook, "nf_defrag_ipv4");
+> +		if (IS_ERR(hook))
+> +			return PTR_ERR(hook);
+> +
+> +		link->defrag_hook = hook;
+> +		return 0;
+> +#endif
+> +#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+> +	case NFPROTO_IPV6:
+> +		hook = get_proto_defrag_hook(link, nf_defrag_v6_hook, "nf_defrag_ipv6");
+> +		if (IS_ERR(hook))
+> +			return PTR_ERR(hook);
+> +
+> +		link->defrag_hook = hook;
+> +		return 0;
+> +#endif
+> +	default:
+> +		return -EAFNOSUPPORT;
+> +	}
+> +}
+> +
+> +static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
+> +{
+> +	const struct nf_defrag_hook *hook = link->defrag_hook;
+> +
+> +	if (!hook)
+> +		return;
+> +	hook->disable(link->net);
+> +	module_put(hook->owner);
+> +}
+> +
+>  static void bpf_nf_link_release(struct bpf_link *link)
+>  {
+>  	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
+> @@ -37,6 +119,8 @@ static void bpf_nf_link_release(struct bpf_link *link)
+>  	 */
+>  	if (!cmpxchg(&nf_link->dead, 0, 1))
+>  		nf_unregister_net_hook(nf_link->net, &nf_link->hook_ops);
+> +
+> +	bpf_nf_disable_defrag(nf_link);
+>  }
 
->On Thu, Jul 20, 2023, at 00:20, Min-Hua Chen wrote:
->> This patch fixes the following sprse warning:
->
->typo: sparse
+I suspect this needs to be within the cmpxchg() branch to avoid
+multiple ->disable() calls.
 
-thanks for catching this.
+> +	if (attr->link_create.netfilter.flags & BPF_F_NETFILTER_IP_DEFRAG) {
+> +		err = bpf_nf_enable_defrag(link);
+> +		if (err) {
+> +			bpf_link_cleanup(&link_primer);
+> +			return err;
+> +		}
+> +	}
+> +
+>  	err = nf_register_net_hook(net, &link->hook_ops);
+>  	if (err) {
+		bpf_nf_disable_defrag(link);
 
->>
->> drivers/iommu/apple-dart.c:1279:1: sparse: warning: symbol 
->> 'apple_dart_pm_ops' was not declared. Should it be static?
->>
->> No functional change intended.
->>
->> Signed-off-by: Min-Hua Chen <minhuadotchen@gmail.com>
->> ---
->
->Acked-by: Sven Peter <sven@svenpeter.dev>
-
-I'll submit v2 with your Acked-by tag.
-
-thanks,
-Min-Hua
-
->Thanks,
->
->
->Sven
-
+Other than those nits this lgtm, thanks!
