@@ -2,130 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF90575A68C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9895775A68E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbjGTGeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:34:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39904 "EHLO
+        id S231213AbjGTGea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230322AbjGTGdn (ORCPT
+        with ESMTP id S230290AbjGTGeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:33:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1592D3C2A
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:31:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689834612;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZCoF85LwxElSFY5o7HroSG4lMnByeeIZNvm2+XicB/I=;
-        b=OwuS3wAD0UAmS8SUXfWWHOwOlxFTBzvPNZE//qINIrqJ8/VCVtbUBlFUDxwa2X3+n4zRIg
-        54NTJwfxg60h0L66/SG0EeRd+IsaIM23gUDsZDqgKM7GIrj67ZQcGnBY6Oea5bVbdKyjDT
-        Bu28rLl1W/x77lwDfNiWBUeyxhiKFDw=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-576-hl5ufZKwMBK2nZy5I_mBcA-1; Thu, 20 Jul 2023 02:30:10 -0400
-X-MC-Unique: hl5ufZKwMBK2nZy5I_mBcA-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-314256aedcbso244197f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:30:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689834608; x=1690439408;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZCoF85LwxElSFY5o7HroSG4lMnByeeIZNvm2+XicB/I=;
-        b=gYJ5/HhLgkntgVoDKh4tlBgMtA1Ropb2+OyRlx5XrcNk/jsJPT0iLi+WhDygk9I7SJ
-         sKKrAsSxfstjwTI2feaerEqQVyfLwTPZzvWF5VhABh1f/0dGk7eWR1YFaFHXFwDNX8p7
-         yUK8ftFe0R1jqVl3ChFBTa4XNdIYFMvcRzf5FcpAW76YtVEvTO1BfDLWGUvD07Tf/2Er
-         a/hxBuxdZZr6kybzlPxw30UnW/i8zZK6wX/vDzLuUYNiplIL2oxyLxhulg3lnRnrOFq5
-         9vFYMnHx97adzrWGJ9bTuIBQ3p/4QVGAix9lAYM5xN/jiGnYkkN3Ur888fkUp/3f8zQj
-         TrOw==
-X-Gm-Message-State: ABy/qLZnRi+aGGjb7JJlVlr3vgTcXFXkONwck7/5tRdDyb51WPm2wlFF
-        YkFYGcxSr42xFBhPrEEvLTyzMHYemIHA0/bRlskVg7sefZ8b86wuOQbg5rzNeZpObwZhmtpZzdN
-        xjWKQIwCLfQAO6oWS+7rgsD+mw7DsFGnL
-X-Received: by 2002:a5d:46c3:0:b0:314:545f:6e8e with SMTP id g3-20020a5d46c3000000b00314545f6e8emr1017503wrs.62.1689834608675;
-        Wed, 19 Jul 2023 23:30:08 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEqrDGYDr/wLn3dkPeB6zRw5yF1tiHMkpVYfjV66pB+FXnX+Hssa21Ln+BRV1RLzzgO6PpFfg==
-X-Received: by 2002:a5d:46c3:0:b0:314:545f:6e8e with SMTP id g3-20020a5d46c3000000b00314545f6e8emr1017490wrs.62.1689834608389;
-        Wed, 19 Jul 2023 23:30:08 -0700 (PDT)
-Received: from redhat.com ([2a02:14f:172:65c:3b05:aa8f:9ec2:7e3e])
-        by smtp.gmail.com with ESMTPSA id r15-20020adff70f000000b003143ba62cf4sm284488wrp.86.2023.07.19.23.30.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 23:30:07 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 02:30:04 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>, linux-doc@vger.kernel.org,
-        iommu@lists.linux.dev
-Subject: Re: [PATCH] dma: DMA_ATTR_SKIP_CPU_SYNC documentation tweaks
-Message-ID: <20230720022702-mutt-send-email-mst@kernel.org>
-References: <98ef4f76d7a5f90b0878e649a70b101402b8889d.1689761699.git.mst@redhat.com>
- <20230720060742.GA2987@lst.de>
- <20230720021914-mutt-send-email-mst@kernel.org>
- <20230720062525.GA3723@lst.de>
+        Thu, 20 Jul 2023 02:34:12 -0400
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B866D359B;
+        Wed, 19 Jul 2023 23:32:54 -0700 (PDT)
+Received: from [192.168.0.2] (ip5f5aee77.dynamic.kabel-deutschland.de [95.90.238.119])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 0DCDB61E5FE04;
+        Thu, 20 Jul 2023 08:31:31 +0200 (CEST)
+Message-ID: <a658717c-8388-6e56-4d8d-096b0a1aefb9@molgen.mpg.de>
+Date:   Thu, 20 Jul 2023 08:31:30 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230720062525.GA3723@lst.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] md/bitmap: Fix bitmap page writing problem when using
+ block integrity
+Content-Language: en-US
+To:     Jinyoung Choi <j-young.choi@samsung.com>
+References: <CGME20230720061234epcms2p32e02cd528fc834491816b379ae189012@epcms2p3>
+ <20230720061234epcms2p32e02cd528fc834491816b379ae189012@epcms2p3>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     song@kernel.org, shli@fb.com, neilb@suse.com,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230720061234epcms2p32e02cd528fc834491816b379ae189012@epcms2p3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 08:25:25AM +0200, Christoph Hellwig wrote:
-> On Thu, Jul 20, 2023 at 02:21:05AM -0400, Michael S. Tsirkin wrote:
-> > On Thu, Jul 20, 2023 at 08:07:42AM +0200, Christoph Hellwig wrote:
-> > > On Wed, Jul 19, 2023 at 06:15:59AM -0400, Michael S. Tsirkin wrote:
-> > > > A recent patchset highlighted to me that DMA_ATTR_SKIP_CPU_SYNC
-> > > > might be easily misunderstood.
-> > > 
-> > > .. just curious: what patchset is that?  DMA_ATTR_SKIP_CPU_SYNC is
-> > > often a bad idea and all users probably could use a really good
-> > > audit..
-> > 
-> > Message-Id: <20230710034237.12391-1-xuanzhuo@linux.alibaba.com>
+Dear Jinyoung,
+
+
+Thank you very much for your patch. Some minor comments, you can also 
+ignore.
+
+For the commit message summary/title you might be more specific. Maybe:
+
+> Avoid protection error writing bitmap page with block integrity
+
+Am 20.07.23 um 08:12 schrieb Jinyoung CHOI:
+> Be careful when changing the page to perform DMA.
+> Changing the bitmap page is also possible on the page where the DMA is
+> being performed or scheduled in the MD.
+
+Please add a blank line between paragraphs or do not wrap a line just 
+because a sentence ends.
+
+> When configuring raid1(mirror) with devices that support block integrity,
+
+Add a space before the (?
+
+> the same bitmap page is sent to the device twice during the resync process,
+> causing the following problems.
+> (When requeue is executed, integrity is not updated)
 > 
-> Do you have an actual link?
-
-sure, they are not hard to generate ;)
-
-https://lore.kernel.org/all/20230710034237.12391-11-xuanzhuo%40linux.alibaba.com
-
-> > 
-> > 
-> > Looks like there's really little else can be done: there's a
-> > shared page we allow DMA into, so we sync periodically.
-> > Then when we unmap we really do not need that data
-> > synced again.
-> > 
-> > What exactly is wrong with this?
+>               [Func 1]                         [Func 2]
 > 
-> A "shared" page without ownership can't work with the streaming
-> DMA API (dma_map_*) at all.  You need to use dma_alloc_coherent
-> so that it is mapped uncached.
+> 1     A(page) + a(integrity)
+> 2        (sq doorbell)
+> 3                                         A(page) -> A-1(page)
+> 4  A-1(page-updated) + a(integiry)     A-1(page) + a-1(integrity)
 
-Hmm confused.  Based on both documentation and code I think this works:
+integ*rit*y
 
-	dma_map
-	dma_sync
-	dma_sync
-	dma_sync
-	dma_sync
-	dma_unmap(DMA_ATTR_SKIP_CPU_SYNC)
+> 5      	                                    (sq doorbell)
+> 6           (DMA)                               (DMA)
+> 
+> 	I/O Fail and retry N                 I/O Success
+> 	To be Faulty Device
+> 
+> The following is the log when a problem occurs. The problematic device
+> is in the faulty device state.
+> 
+> Log:
+> [  135.037253] md/raid1:md0: active with 2 out of 2 mirrors
+> [  135.038228] md0: detected capacity change from 0 to 7501212288
+> [  135.038270] md: resync of RAID array md0
+> [  151.252172] nvme2n1: I/O Cmd(0x1) @ LBA 16, 8 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+> [  151.252180] protection error, dev nvme2n1, sector 16 op 0x1:(WRITE) flags 0x10800 phys_seg 1 prio class 2
+> [  151.252185] md: super_written gets error=-84
+> [  151.252187] md/raid1:md0: Disk failure on nvme2n1, disabling device.
+>                 md/raid1:md0: Operation continuing on 1 devices.
+> [  151.267450] nvme3n1: I/O Cmd(0x1) @ LBA 16, 8 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+> [  151.267457] protection error, dev nvme3n1, sector 16 op 0x1:(WRITE) flags 0x10800 phys_seg 1 prio class 2
+> [  151.267460] md: super_written gets error=-84
+> [  151.268458] md: md0: resync interrupted.
+> [  151.320765] md: resync of RAID array md0
+> [  151.321205] md: md0: resync done.
 
-right?
+Although you explained the problem well, it’d be great nevertheless if 
+you could add the details of your system to the commit message.
 
--- 
-MST
+> Fixes: 85c9ccd4f026 ("md/bitmap: Don't write bitmap while earlier writes might be in-flight")
+> Signed-off-by: Jinyoung Choi <j-young.choi@samsung.com>
 
+Your From line spells it CHOI. Maybe you can update your git 
+configuration to also use Choi?
+
+> ---
+>   drivers/md/md-bitmap.c | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
+> index 1ff712889a3b..dfb7418ba48a 100644
+> --- a/drivers/md/md-bitmap.c
+> +++ b/drivers/md/md-bitmap.c
+> @@ -467,6 +467,13 @@ void md_bitmap_update_sb(struct bitmap *bitmap)
+>   		return;
+>   	if (!bitmap->storage.sb_page) /* no superblock */
+>   		return;
+> +
+> +	/*
+> +	 * Before modifying the bitmap page and re-issue it, wait for
+> +	 * the requests previously sent to the device to be completed.
+> +	 */
+> +	md_bitmap_wait_writes(bitmap);
+> +
+>   	sb = kmap_atomic(bitmap->storage.sb_page);
+>   	sb->events = cpu_to_le64(bitmap->mddev->events);
+>   	if (bitmap->mddev->events < bitmap->events_cleared)
+
+
+Kind regards,
+
+Paul
