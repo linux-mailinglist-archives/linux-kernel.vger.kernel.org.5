@@ -2,115 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A268875AA52
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1E575AA68
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbjGTJBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38342 "EHLO
+        id S229517AbjGTJOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 05:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbjGTIyY (ORCPT
+        with ESMTP id S230388AbjGTJGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 04:54:24 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93F926A6;
-        Thu, 20 Jul 2023 01:54:22 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51bece5d935so724990a12.1;
-        Thu, 20 Jul 2023 01:54:22 -0700 (PDT)
+        Thu, 20 Jul 2023 05:06:33 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C75C44AF
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:57:43 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b6f97c7115so7213961fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:57:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689843261; x=1692435261;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BGYd0XzLOZIaect1B8DLqJQBB8NGVA7ArI9KPRHwCuA=;
-        b=R6F9AvgnvdC0oDU+DTR4MfnnL48BCbJgyhCk9A0VhVWOhqOQpe41/AATzBaPwXrlbp
-         NiVoQ4an/IEe/zBQWtSt4j+0ECY7RSMDaQhEu0LpfpScWHmLaf5l2o7v0GzABUvd19s5
-         w3jdfWKKI2Z7TETv8eOzBN9Q/hcD451Hvdx3NnYuVWduVN2kzLJ7Mi+gd7kIEYAdNLGx
-         PfpKo5/5UeGO/gSzn2N0keUNKeCsk90RxfmW4xQ3nGSsJBlNdtDiyYfRTsLxuM+guq5h
-         JAEcEamXP44sXSMwQx4SSiQZUZV6ASyXLRxNQClqiEF/jwHGMVw/ZkwvX6yxmHqpohoE
-         Ggkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689843261; x=1692435261;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=linaro.org; s=google; t=1689843419; x=1692435419;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=BGYd0XzLOZIaect1B8DLqJQBB8NGVA7ArI9KPRHwCuA=;
-        b=PGsOh5cyVsFDCJ9F86IunraxxFPJzqbz+HCETfFor46JupUBdghCd7ScvNA+o3/zEV
-         Sf7kqVwIkqRNSIV3C2Jz6Z5A+MV70b/QAZj4c5QRjbpeOqYpknealYye7YdomL3phfcL
-         s6qT8oLYaLRSp20KfPmzFWTlYypE5NNR5L+DaV78cvQbLDH3ftrYR2RDyKXV+pOiKbEc
-         j/CgEhoPZF655Qx4atFhmAkrZEEQ60IBvM411bjLlYobYzGnFTe2CE5gh4Y6y70Wapss
-         elOairquS19hKQ7Sbrsf5ztYxD25MJYBRO2czdZGxzuv+QIIhtKKpD1IyEBR1ShNv/gu
-         7yoQ==
-X-Gm-Message-State: ABy/qLbG6Hihp3ZiszXNb6mySFF6gKkZ+JJL0sHwnuTxn7+WPpuJ4M9f
-        StmDqvT0ccXAQxE1bque6xA=
-X-Google-Smtp-Source: APBJJlFMasg2dNIicMwfx1YyIyQvduddQCgLot96389m6Z9iDA5SQh0KK8JlI0qHyY43u+aGtpP/9g==
-X-Received: by 2002:aa7:c504:0:b0:51e:10d8:e066 with SMTP id o4-20020aa7c504000000b0051e10d8e066mr1651697edq.24.1689843260572;
-        Thu, 20 Jul 2023 01:54:20 -0700 (PDT)
-Received: from giga-mm.home ([2a02:1210:8629:800:82ee:73ff:feb8:99e3])
-        by smtp.gmail.com with ESMTPSA id f20-20020a50ee94000000b00521ce1f04b8sm443021edr.12.2023.07.20.01.54.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 01:54:20 -0700 (PDT)
-Message-ID: <e4486050b95ad53ba9e1d6080c4b6de4b646dcdd.camel@gmail.com>
-Subject: Re: [PATCH v3 13/42] watchdog: ep93xx: add DT support for Cirrus
- EP93xx
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     nikita.shubin@maquefel.me,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lennert Buytenhek <kernel@wantstofly.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Lukasz Majewski <lukma@denx.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sebastian Reichel <sre@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Michael Peters <mpeters@embeddedTS.com>,
-        Kris Bahnsen <kris@embeddedTS.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-Date:   Thu, 20 Jul 2023 10:54:18 +0200
-In-Reply-To: <20230605-ep93xx-v3-13-3d63a5f1103e@maquefel.me>
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
-         <20230605-ep93xx-v3-13-3d63a5f1103e@maquefel.me>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+        bh=HuBtnBic7enS4cLJ/qv3iEzDo3EKyWHxfta/cthROig=;
+        b=O1xSm+jWlv79kxy7XJWRWxGA/a0JrBbFOIigfcQnue0j3dBrF9jCxC05ekbDXDY5u7
+         1qstxE2gzeqTZdnc5U4BMGltOzul/qQdfOL2apdmEKuQVulrjoAyBVBfwurrC8GHeFPx
+         wSu3TIrBZFhgLdwmONT1rOL+wE4uDDha2LCybiHjvo3ifc7z99Qr8QNvgjZTqxnpYNr9
+         0jo5lMejdXZ6UMF0MeurfBH/O9PIwhUpsXO+wIIAdOQ0ZLefAayn54B/BzDVOq9v7n9e
+         0f3nqUkO8z4oXGCVs6AhDOyiiN/Kyere4cPhpBQ8vQgvmuMdMRBOPxhaQ9w3EPGCSKUh
+         wGwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689843419; x=1692435419;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HuBtnBic7enS4cLJ/qv3iEzDo3EKyWHxfta/cthROig=;
+        b=B/43KlGaV3lf8DKvy8rNW1THpJWTPWI5JP/XdNXWUjVrPQ+ucm/zGFH5sVuagiFIDQ
+         NMu3LgctgfQ6xstoEsGipq4AZU1kzyQdcMY42Re6ISbkM5P6H5jIA2ex38mhnS7BGDTw
+         k1BKxjtAhlICQDH3Ga2pFQN89SwSGxgqk8/ahqozzzBwRihA08vPk1FwOawfA5vyn/OQ
+         8CbI3G8nB0YDRrTuglHtqk5q42SkH+wVEXcsMO4ojlXt23Dghm96Qb0gXQ4JvSUF6EoQ
+         MORCzNVIKLILJmWT6IilglIoFUSbXyd/Pfm/oCIdMYRjFZax722RjRsKQqBTymdwGJGl
+         xP6Q==
+X-Gm-Message-State: ABy/qLbC4D+xMykxL2kmh0XCOHNcE7reM1Ux13gqE4pbed+oI/hZkV3/
+        hZUe5P21+WW2861ORWG4tcLsRg==
+X-Google-Smtp-Source: APBJJlGXW5kVbKoCJ8kQrakz+RYqHiDbkxdql8z6yYJGcvbpP1eL1k2a5ki+JQQgjhbyf+aVm6oF2A==
+X-Received: by 2002:a2e:9316:0:b0:2b9:55c9:c228 with SMTP id e22-20020a2e9316000000b002b955c9c228mr1325317ljh.27.1689843418974;
+        Thu, 20 Jul 2023 01:56:58 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id n15-20020a1c720f000000b003fc0505be19sm638037wmc.37.2023.07.20.01.56.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 01:56:58 -0700 (PDT)
+Message-ID: <af890343-824c-7b68-ba27-dbaa4fa5b863@linaro.org>
+Date:   Thu, 20 Jul 2023 10:56:56 +0200
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: ipq5018: add support for the RDP415
+ variant
+Content-Language: en-US
+To:     Hariharan K <quic_harihk@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     quic_srichara@quicinc.com, quic_sjaganat@quicinc.com,
+        quic_kathirav@quicinc.com, quic_arajkuma@quicinc.com,
+        quic_anusha@quicinc.com
+References: <20230720074846.20350-1-quic_harihk@quicinc.com>
+ <20230720074846.20350-3-quic_harihk@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230720074846.20350-3-quic_harihk@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -119,17 +82,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikita,
+On 20/07/2023 09:48, Hariharan K wrote:
+> Add the initial device tree support for the Reference Design
+> Platform(RDP) 415 based on IPQ5018 family of SoC. This patch
+> carries the support for Console UART and eMMC.
+> 
+> Signed-off-by: Hariharan K <quic_harihk@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/Makefile           |  1 +
+>  arch/arm64/boot/dts/qcom/ipq5018-rdp415.dts | 49 +++++++++++++++++++++
+>  2 files changed, 50 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/ipq5018-rdp415.dts
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> index 6334e552b7c1..53df7f24488a 100644
+> --- a/arch/arm64/boot/dts/qcom/Makefile
+> +++ b/arch/arm64/boot/dts/qcom/Makefile
+> @@ -4,6 +4,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= apq8039-t2.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= apq8094-sony-xperia-kitakami-karin_windy.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-db820c.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-ifc6640.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)	+= ipq5018-rdp415.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= ipq5018-rdp432-c2.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= ipq5332-rdp441.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= ipq5332-rdp442.dtb
+> diff --git a/arch/arm64/boot/dts/qcom/ipq5018-rdp415.dts b/arch/arm64/boot/dts/qcom/ipq5018-rdp415.dts
+> new file mode 100644
+> index 000000000000..5c4b43f76a48
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/ipq5018-rdp415.dts
+> @@ -0,0 +1,49 @@
+> +// SPDX-License-Identifier: GPL-2.0+ OR BSD-3-Clause
+> +/*
+> + * IPQ5018 MP03.3-C2 board device tree source
+> + * Copyright (c) 2023, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "ipq5018-rdp-common.dtsi"
 
-On Thu, 2023-07-20 at 14:29 +0300, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
->=20
-> Add OF ID match table.
->=20
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+I don't understand this. You just added in in the same moment in
+different patchset, so why creating this fake dependency?
 
-Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+It makes review difficult, applying even more.
 
---=20
-Alexander Sverdlin.
+Please organize your patches in some logical work.
+
+Best regards,
+Krzysztof
 
