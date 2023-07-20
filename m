@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 807E175A498
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 05:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7B575A49B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 05:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229673AbjGTDAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 23:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36774 "EHLO
+        id S229779AbjGTDBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 23:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjGTDAL (ORCPT
+        with ESMTP id S229463AbjGTDBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 23:00:11 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE57172A;
-        Wed, 19 Jul 2023 20:00:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1689822008;
-        bh=F0XXBdWS7R4lwC8NzegUrg8hr6Npl1NTnNeQR83Gt5I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GYm77Ex4VFZRz9HQDbOPmcZLO/G+KXbLUDRAuGsj8HcA/5inXKxmlCWBfiy/kk8SQ
-         LZ1MkUdVdQsOPN4HFkIdU/uwM8iIyDKTKy3kah/SJaQEkrDuWyN6bb2sDRFew1ktET
-         3M08spRBhmcTHju26URzA82itTbPos5ayHtlOvZOWzcmh6SJpy82cbo+krWIIe4Mz5
-         /tagojSmCjmy4UKbiPRl5jV7ldcdQFPrxHA8AbqRi4OgyybgA636eBQbwmpngY6xCy
-         M4cFKUTG0eQSoBEvQJBL5PButS9vjsZoEhzJLcnobxWZMhoZGe9vtMaWo4St4Beqr2
-         Zbhv/Pz3EPcSw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R5y904frxz4wqZ;
-        Thu, 20 Jul 2023 13:00:04 +1000 (AEST)
-Date:   Thu, 20 Jul 2023 13:00:03 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "Von Dentz, Luiz" <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Linux Next Mailing List" <linux-next@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>
-Subject: Re: linux-next: build failure after merge of the bluetooth tree
-Message-ID: <20230720130003.6137c50f@canb.auug.org.au>
-In-Reply-To: <20230719182439.7af84ccd@kernel.org>
-References: <PH0PR11MB51269B6805230AB8ED209B14D332A@PH0PR11MB5126.namprd11.prod.outlook.com>
-        <20230720105042.64ea23f9@canb.auug.org.au>
-        <20230719182439.7af84ccd@kernel.org>
+        Wed, 19 Jul 2023 23:01:46 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A351739
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:01:45 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R5yBt3XkpzBRDrr
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:01:42 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689822102; x=1692414103; bh=7TaMCUMPT1gwp5Zxmj+joOcKEEc
+        ciuWrPqbP1dQvF8k=; b=A4HtVwIyZaYQbnWRDZHTLuFRFrmZ1S+9GPUGP9d96pp
+        VE5JwAB7OFEQFWpEt0/Ug7rxYyEXtsw5Se1mRJxnC3e6lrmnqogBJ5XyALPE+emq
+        SQliwTJ7NCdPmrRXhcrqWbitbqgsELFQfAw17l6stqwNmbvNo1nOQhcKWSPqpVc7
+        2IjMZAY/f6SxS4dysQpthh+GNeCsCtGjsMRgxy4gpUiCf84HI0QoBvRnTb/YNCes
+        UHKI/wuksDl3QqINkMm8vkXPQBufXwt/2YlfbTUR3Jals9DHwsdXniQ37guAKv55
+        XeXqQMol/SEXN0c3xi1Hvrfl1dywEtG2sXdvKTnXeag==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id JCtgkpDuH0RX for <linux-kernel@vger.kernel.org>;
+        Thu, 20 Jul 2023 11:01:42 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R5yBt25TSzBRDrS;
+        Thu, 20 Jul 2023 11:01:42 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//.il2tFodV=YwpKNTDAuylZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Date:   Thu, 20 Jul 2023 11:01:42 +0800
+From:   sunran001@208suo.com
+To:     mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] hv: put parentheses on macros with complex values in hyperv.h
+In-Reply-To: <20230720030009.1369-1-xujianghui@cdjrlc.com>
+References: <20230720030009.1369-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <e4b504ab6a1534cd26be777c9cb0bb6a@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_//.il2tFodV=YwpKNTDAuylZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Fix "Macros with complex values should be enclosed in parentheses"
+checkpatch error.
 
-Hi Jakub,
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  include/linux/hyperv.h | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
-On Wed, 19 Jul 2023 18:24:39 -0700 Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Something weird. We did merge it, there was a sort-of-v2-called-v1:
->=20
-> https://lore.kernel.org/all/20230627174314.67688-1-kuniyu@amazon.com/
->=20
-> Merged as https://git.kernel.org/netdev/net-next/c/a9c49cc2f5b5
+diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+index bfbc37ce223b..6f6fdc7cf086 100644
+--- a/include/linux/hyperv.h
++++ b/include/linux/hyperv.h
+@@ -428,9 +428,9 @@ union vmpacket_largest_possible_header {
+  	struct vmdata_gpa_direct data_gpa_direct_hdr;
+  };
 
-That is not the net-next tree in linux-next.  I have always used
-git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git#main.
+-#define VMPACKET_DATA_START_ADDRESS(__packet)	\
++#define VMPACKET_DATA_START_ADDRESS((__packet)	\
+  	(void *)(((unsigned char *)__packet) +	\
+-	 ((struct vmpacket_descriptor)__packet)->offset8 * 8)
++	 ((struct vmpacket_descriptor)__packet)->offset8 * 8))
 
-And the above commit is not in linux-next (yet?)
-
-> Dunno how it's supposed to fix this particular issue, tho, on a closer
-> look, as it still calls:
->=20
->   scm_recv_unix() -> scm_pidfd_recv() -> pidfd_prepare()
-
-Yeah, the bluetooth tree will need to change that after the above patch
-is available to it.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_//.il2tFodV=YwpKNTDAuylZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmS4ozMACgkQAVBC80lX
-0Gxr6gf/YGsrxsvJ6180o1dhf9YctwCHIau5DGhVsAN7Cl1HWxn3/y26On90yqcd
-5KDM0gf476Ybkuyhf8rF8LnPo3bCmIXgwADohN45ctJ8WT4tXCDI6vBQR/CRtzVa
-wuzxHVQJ6JiqbebmYlzzAsE7yChD/XMHoMWsKL9jTcI5OtxQ3HswII66luSL9DXg
-zOu242EE6DoBadztGDJxNjG+OB8ZUE+o5owHCPf1UA6lWydQB4kM6Ycdo/b00FGS
-X+/YG/+JxEjofJcDCPE1o5gR3+uNfJ65qze8dSQfGtnjndk8LrFc71hs9tw2mCxs
-tu9FzpAn+L6bIvVs60SxOloidKInYQ==
-=vMS4
------END PGP SIGNATURE-----
-
---Sig_//.il2tFodV=YwpKNTDAuylZ--
+  #define VMPACKET_DATA_LENGTH(__packet)		\
+  	((((struct vmpacket_descriptor)__packet)->len8 -	\
