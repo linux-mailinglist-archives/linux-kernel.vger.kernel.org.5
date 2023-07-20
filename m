@@ -2,108 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 355FE75A4CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 05:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB6D75A4D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 05:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbjGTDiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 23:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46868 "EHLO
+        id S229816AbjGTDkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 23:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjGTDiv (ORCPT
+        with ESMTP id S229729AbjGTDkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 23:38:51 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA201FCD
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:38:49 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R5z1g5YCQzBRDrZ
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:38:47 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689824327; x=1692416328; bh=rQg2tdrcy4na2v0dS/Olq5JrVKy
-        vSeWmwHBFR82qw3U=; b=kRWdAPI/WEZyircnODw5fGbB7yuDteK9r8mw9RCxZWS
-        iCbBG7Q66w9MVBDUKcbZvsQdCMFjpWfrUWk7AdDlnxO8PA6rS37IhSkSHaa5Wxk4
-        QK5AZ8pXhgyj6wae5Fj3OIO/++hmsy1K5Wb0Ui+RpeN3ezB04/F3dLN5410dJWrv
-        UCqIZq948+ETPZ/iCjmROYjQroHqbJhOobbFv6p1C9Ko+p4AGYUYVzb+N78nCoT/
-        YKarI+cXdOzuuGdxJD5ezaGuhkLAjxvRlmxgSUPaQOlErTlPgDiVbEgjiFrC78nn
-        KzxeiOJt7pllJf6dq3fmcSPbtRyZsCyPx+27p9MiLww==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id O1e8N5noWD5z for <linux-kernel@vger.kernel.org>;
-        Thu, 20 Jul 2023 11:38:47 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R5z1g3fcdzBR1P6;
-        Thu, 20 Jul 2023 11:38:47 +0800 (CST)
+        Wed, 19 Jul 2023 23:40:15 -0400
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3BC2107
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:40:13 -0700 (PDT)
+Received: by mail-vk1-xa32.google.com with SMTP id 71dfb90a1353d-481389cd087so120198e0c.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:40:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1689824413; x=1690429213;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lSjRK2q1L9TAgulU0uKFfXHGPLF469L5iIGjDG8jzbg=;
+        b=FmeTyNoriwl9eaAi4UWOvHlnCraMY6GehOzN23WwXZRmcok3v6POEoNGHEu94dxVB8
+         XV4VcCfpZYkmClWeuwO/dz2ibDjqJ8d55lxTA46EwDPzcxh4fhnBC7Tdws3NBkdTIflj
+         r1NHovSBoV0qsV6wHj6W6XPQiDFsT3TG4VhK0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689824413; x=1690429213;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lSjRK2q1L9TAgulU0uKFfXHGPLF469L5iIGjDG8jzbg=;
+        b=Obfemm+Kh9nzj0qu6LNKfw4kkpRazMn4+ePN6WTb9xtDUL5leYilSRezIlRHf5in9N
+         Womo9h8cJNLc97l2P3b/Qr2+eoufBS/a6yrletCRtazARmSjjepEXrpoF3Qg3a1NlVW7
+         xY5Otg7BbRHW3Zep/hnZAP1vUqyaPG5WszB6j/owzS4wmnNf3YNCS78eWCW/GW7eS7HN
+         9BpqE3tpoweNUH1fqDLjg70JKK2CllwaVw1paroEYW144yLsoZb4zstpj+zhwASkwp/6
+         LctOqXiSycZ+Gf5ZGTfWOw4CFybog8UQ7DVOg6p7cuKJ30rGVwr/MpcbIld3U28sqbv1
+         LPnw==
+X-Gm-Message-State: ABy/qLaO/K3U3nVKH/T7065RFEN1Eq6hshNHmrlI5Q6Mw0rWqP0lN1fZ
+        mWCoRIWQlo0otN8GVja22TVUw10lpoHI1BTlYTMyBg==
+X-Google-Smtp-Source: APBJJlFNX7ga31HK628CC6mrALekyrNpX5VHsIamGWWzU5anyG2qAUaYHqYQELEJ8vJVk/lcPOgf7qx4IpcShRxdv2Q=
+X-Received: by 2002:a05:6102:387:b0:443:516b:782 with SMTP id
+ m7-20020a056102038700b00443516b0782mr1896634vsq.33.1689824412895; Wed, 19 Jul
+ 2023 20:40:12 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Thu, 20 Jul 2023 11:38:47 +0800
-From:   sunran001@208suo.com
-To:     geert@linux-m68k.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] m68k: q40: add missing spaces around '='
-In-Reply-To: <20230720033737.2092-1-xujianghui@cdjrlc.com>
-References: <20230720033737.2092-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <006368d8cf146a4e41d860b615d4b3ec@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20230707092414.866760-1-zyytlz.wz@163.com>
+In-Reply-To: <20230707092414.866760-1-zyytlz.wz@163.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Thu, 20 Jul 2023 11:40:01 +0800
+Message-ID: <CAGXv+5HjLdZO7mCJyBYk_Kj9SFUJrL3Z4VbxSsPb2qK-mbwkaQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2] media: mtk-jpeg: Fix use after free bug due to
+ uncanceled work
+To:     Zheng Wang <zyytlz.wz@163.com>
+Cc:     Kyrie.Wu@mediatek.com, bin.liu@mediatek.com, mchehab@kernel.org,
+        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Irui.Wang@mediatek.com,
+        security@kernel.org, hackerzheng666@gmail.com,
+        1395428693sheep@gmail.com, alex000young@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add missing spaces to clear checkpatch errors.
+On Fri, Jul 7, 2023 at 5:25=E2=80=AFPM Zheng Wang <zyytlz.wz@163.com> wrote=
+:
+>
+> In mtk_jpeg_probe, &jpeg->job_timeout_work is bound with
+> mtk_jpeg_job_timeout_work. Then mtk_jpeg_dec_device_run
+> and mtk_jpeg_enc_device_run may be called to start the
+> work.
+> If we remove the module which will call mtk_jpeg_remove
+> to make cleanup, there may be a unfinished work. The
+> possible sequence is as follows, which will cause a
+> typical UAF bug.
+>
+> Fix it by canceling the work before cleanup in the mtk_jpeg_remove
+>
+> CPU0                  CPU1
+>
+>                     |mtk_jpeg_job_timeout_work
+> mtk_jpeg_remove     |
+>   v4l2_m2m_release  |
+>     kfree(m2m_dev); |
+>                     |
+>                     | v4l2_m2m_get_curr_priv
+>                     |   m2m_dev->curr_ctx //use
+> Fixes: b2f0d2724ba4 ("[media] vcodec: mediatek: Add Mediatek JPEG Decoder=
+ Driver")
+> Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
 
-ERROR: spaces required around that '=' (ctx:VxV)
-
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  arch/m68k/q40/q40ints.c | 10 +++++-----
-  1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
-index 127d7ecdbd49..fdd6e48f4fe3 100644
---- a/arch/m68k/q40/q40ints.c
-+++ b/arch/m68k/q40/q40ints.c
-@@ -132,10 +132,10 @@ static irqreturn_t q40_timer_int(int irq, void 
-*dev_id)
-  {
-  	ql_ticks = ql_ticks ? 0 : 1;
-  	if (sound_ticks) {
--		unsigned char sval=(sound_ticks & 1) ? 128-SVOL : 128+SVOL;
-+		unsigned char sval = (sound_ticks & 1) ? 128-SVOL : 128+SVOL;
-  		sound_ticks--;
--		*DAC_LEFT=sval;
--		*DAC_RIGHT=sval;
-+		*DAC_LEFT = sval;
-+		*DAC_RIGHT = sval;
-  	}
-
-  	if (!ql_ticks) {
-@@ -171,7 +171,7 @@ void q40_sched_init (void)
-
-  struct IRQ_TABLE{ unsigned mask; int irq ;};
-  #if 0
--static struct IRQ_TABLE iirqs[]={
-+static struct IRQ_TABLE iirqs[] = {
-    {Q40_IRQ_FRAME_MASK,Q40_IRQ_FRAME},
-    {Q40_IRQ_KEYB_MASK,Q40_IRQ_KEYBOARD},
-    {0,0}};
-@@ -189,7 +189,7 @@ static struct IRQ_TABLE eirqs[] = {
-  };
-
-  /* complain only this many times about spurious ints : */
--static int ccleirq=60;    /* ISA dev IRQs*/
-+static int ccleirq = 60;    /* ISA dev IRQs*/
-  /*static int cclirq=60;*/     /* internal */
-
-  /* FIXME: add shared ints,mask,unmask,probing.... */
+Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
