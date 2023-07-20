@@ -2,169 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F8475B008
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E88BD75B015
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbjGTNbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 09:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49938 "EHLO
+        id S232051AbjGTNd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 09:33:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231997AbjGTNbK (ORCPT
+        with ESMTP id S232072AbjGTNde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 09:31:10 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E812D54;
-        Thu, 20 Jul 2023 06:30:30 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1b8baa836a5so5705575ad.1;
-        Thu, 20 Jul 2023 06:30:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689859821; x=1690464621;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=qIe8rMdwGK8O6waPW6ElMhYZtqXBgjIAped1KS+Lxj0=;
-        b=E36Ey4hpLP1aGERgJzQAv5oQWbjP2dfI/yJ9QSqsCcAZUQqYH2EJuPmluxVpniz94+
-         SqRDS4pEtomXHfRXODYYhAlZIxAatRHID9D88YI+tj+w3vKM5JieqRypSlSHOTbf2v95
-         PUlca0W45r887uApCqi/zn/yh3GyTCCrBBW1XguZKYFarRPPHvkGdKJALW7+s9TgEir3
-         pVPeDdLYxOZSMJ8v3iGIKvATJZHgcVErXIREn7/pOR3ivfvJWVHJWWTf1p+PnK9L0sBz
-         4nG3H7SIhmhoYiEqtjnis5Ppnyac+F2VaQ2UY7v0ygr32czvJ80e2mlstFNoj9axpszx
-         inAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689859821; x=1690464621;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qIe8rMdwGK8O6waPW6ElMhYZtqXBgjIAped1KS+Lxj0=;
-        b=EvNStNqhfvdCRycMNWSDldz9nJ/3UehP9f3BLfjWgQVHod1rlOEpbw+vjBfhCY3vpC
-         9jOTd/+KAo0+WXVPAtqt7PYYLCyanZ08SDuKC4qoVNLAuON+tcB3GG6O6wpKLPvfuF3c
-         fu7aMx97pSwD2QPx+fT4zIj9prUQCA32bNJvOsbcF4Z9XuKHoAX1TSBTf3Ln6rxnRn2t
-         5nO/1OI0mYcYlKu6lk1QQRdUjwF1XRXCzy3RCchjlQImLJUAJ3v/PYkBlLmRhf9SS5IU
-         Z2MRyD3tcPHkzJ9FBMcoQU855tYRxmwirM9TfurKKf91t1KNqX+1sHEiVubcpyA1xFLV
-         4nNQ==
-X-Gm-Message-State: ABy/qLZyt293PadNAyus3aBUo/Nf2dFdmQz4i+vw8Nv7LEqoq+qpump9
-        vHlgsurlu7/M4n6aYRds4KQ=
-X-Google-Smtp-Source: APBJJlFh1AyFX2+11T9yyn39CZ9ejJo7irpyerH5jDd4rJJqhGrNwsFMVrOCBzL5cXWCBiVM2usEnA==
-X-Received: by 2002:a17:903:191:b0:1b8:9b5e:65c8 with SMTP id z17-20020a170903019100b001b89b5e65c8mr25796578plg.4.1689859821611;
-        Thu, 20 Jul 2023 06:30:21 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d12-20020a170902728c00b001b86deba2f9sm1302975pll.284.2023.07.20.06.30.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 06:30:21 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <1d8cf4f5-3004-3af1-2735-03fde48d69c7@roeck-us.net>
-Date:   Thu, 20 Jul 2023 06:30:16 -0700
+        Thu, 20 Jul 2023 09:33:34 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E88A272A
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:33:04 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36KAupUk002185;
+        Thu, 20 Jul 2023 08:32:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=E
+        W9xH6EwUI4+VhEi1xFvO7JxFFGjIaaBEXgWEdpAp04=; b=CE/WQuhzd1FAsmcsx
+        sTIOcKPgqAI61BLWn4l35syr+xP61mC/pdYdORuogKHE4EPMgYOT4ierPYqxFl+i
+        /nsqz0xi1efiZqpEsOlOBIQu/iQFCvB5K5bqxgFfE5uy/dZeDYAPppu46VnVV7mk
+        ALzA4aeVjVMARBahuP5TIeDfxoFjHzOB3BLSSKK50raOY/NTUq1oML19xwByXH0B
+        RSmvcEOhO/YjpcCRh1/E1ApOl3DMrZbsxNOt4zKYo2Is4E90BbXuOnVZNHciabis
+        gsmPSdgBw2EHb1YDGWYJOIX9KE3LtaTy4OVNziejwQOf9vWvMgs7ntfzyt+TsC2q
+        59ksw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3rus6gx5mq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 08:32:10 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
+ 2023 14:32:08 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Thu, 20 Jul 2023 14:32:08 +0100
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.219])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 83BCD475;
+        Thu, 20 Jul 2023 13:32:08 +0000 (UTC)
+From:   Stefan Binding <sbinding@opensource.cirrus.com>
+To:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Stefan Binding <sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 00/11]  Fix support for System Suspend for CS35L41 HDA
+Date:   Thu, 20 Jul 2023 14:31:36 +0100
+Message-ID: <20230720133147.1294337-1-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 32/42] wdt: ts72xx: add DT support for ts72xx
-Content-Language: en-US
-To:     nikita.shubin@maquefel.me,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lennert Buytenhek <kernel@wantstofly.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Lukasz Majewski <lukma@denx.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Michael Peters <mpeters@embeddedTS.com>,
-        Kris Bahnsen <kris@embeddedTS.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-32-3d63a5f1103e@maquefel.me>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230605-ep93xx-v3-32-3d63a5f1103e@maquefel.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: L7QWUw1uIwSJqQtgQ4fIz73mWyeWFijy
+X-Proofpoint-GUID: L7QWUw1uIwSJqQtgQ4fIz73mWyeWFijy
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/23 04:29, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
-> 
-> Add OF ID match table.
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+There have been a couple of customer reports of intermittant issues after
+system resume, where sometimes the DSP firmware stops responding.
+Investigations into this issue show that there is a race between receiving
+a prepare from the HDA core, and the firmware reload which is started by
+the system resume. This can causes the Global Enable on the CS35L41 to be
+enabled during the firmware load, which can sometimes cause issues in the
+DSP.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+The existing system resume behaviour also did not resume the audio, if
+audio was previously playing when it was suspended.
+In addition, during investigation, it was found there were additional
+problems in the System Resume sequence, as well as the Playback sequence
+with External Boost, where the driver does not correctly follow its
+enable sequence for this mode. This can cause additional issues such as
+pops and clicks.
 
-> ---
->   drivers/watchdog/ts72xx_wdt.c | 8 ++++++++
->   1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/watchdog/ts72xx_wdt.c b/drivers/watchdog/ts72xx_wdt.c
-> index 3d57670befe1..ac709dc31a65 100644
-> --- a/drivers/watchdog/ts72xx_wdt.c
-> +++ b/drivers/watchdog/ts72xx_wdt.c
-> @@ -12,6 +12,7 @@
->    */
->   
->   #include <linux/platform_device.h>
-> +#include <linux/mod_devicetable.h>
->   #include <linux/module.h>
->   #include <linux/watchdog.h>
->   #include <linux/io.h>
-> @@ -160,10 +161,17 @@ static int ts72xx_wdt_probe(struct platform_device *pdev)
->   	return 0;
->   }
->   
-> +static const struct of_device_id ts72xx_wdt_of_ids[] = {
-> +	{ .compatible = "technologic,ts7200-wdt" },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, ts72xx_wdt_of_ids);
-> +
->   static struct platform_driver ts72xx_wdt_driver = {
->   	.probe		= ts72xx_wdt_probe,
->   	.driver		= {
->   		.name	= "ts72xx-wdt",
-> +		.of_match_table = ts72xx_wdt_of_ids,
->   	},
->   };
->   
-> 
+This chain intends to correct the sequences for playback and system
+suspend/resume so that the driver: obeys the external boost enable sequence;
+resumes audio on system resume; and avoids the race condition on firmware
+load and playback during system resume.
+
+Stefan Binding (11):
+  ALSA: cs35l41: Use mbox command to enable speaker output for external
+    boost
+  ALSA: hda: cs35l41: Check mailbox status of pause command after
+    firmware load
+  ALSA: hda: cs35l41: Ensure we correctly re-sync regmap before system
+    suspending.
+  ALSA: hda: cs35l41: Ensure we pass up any errors during system
+    suspend.
+  ALSA: hda: cs35l41: Move Play and Pause into separate functions
+  ALSA: hda: hda_component: Add pre and post playback hooks to
+    hda_component
+  ALSA: hda: cs35l41: Use pre and post playback hooks
+  ALSA: hda: cs35l41: Rework System Suspend to ensure correct call
+    separation
+  ALSA: hda/realtek: Support pre-/post- playback hooks for cs35l41
+  ALSA: hda: cs35l41: Add device_link between HDA and cs35l41_hda
+  ALSA: hda: cs35l41: Ensure amp is only unmuted during playback
+
+ include/sound/cs35l41.h        |   5 +-
+ sound/pci/hda/cs35l41_hda.c    | 288 +++++++++++++++++++++++++--------
+ sound/pci/hda/hda_component.h  |   2 +
+ sound/pci/hda/patch_realtek.c  |  10 +-
+ sound/soc/codecs/cs35l41-lib.c | 118 ++++++++++++--
+ sound/soc/codecs/cs35l41.c     |  18 +--
+ 6 files changed, 343 insertions(+), 98 deletions(-)
+
+-- 
+2.34.1
 
