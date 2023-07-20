@@ -2,125 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E91F575AC9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 744E275AC8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbjGTLLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 07:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54462 "EHLO
+        id S229986AbjGTLFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 07:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbjGTLLW (ORCPT
+        with ESMTP id S229476AbjGTLFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:11:22 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23EC268F;
-        Thu, 20 Jul 2023 04:11:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A3405206B7;
-        Thu, 20 Jul 2023 11:11:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1689851479;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0kyCPYIuNcoxBYURlB9p29wj+CqprZvqzi2vSmZLS2s=;
-        b=B2t0oJCRVOlabAC2kjJPVRg3wXr3+ncqmZ5GyQehvb7c1o3NrvtRSG7cNFiZ2HdL3QaexX
-        7QjUYBJpBF0dhp+iHODPeH8k3ZEXwbGr4wALNbDqexQvdTcUIX7t8ZVPwvIcBGIuDqVEUL
-        Iqh6MCAWwY3aJzV8r0bJ0YRMVsly1co=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1689851479;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0kyCPYIuNcoxBYURlB9p29wj+CqprZvqzi2vSmZLS2s=;
-        b=zggSSTpXeJUGaWwN78N3QSFipV98u6ki1zNmJ06y6PGi7so4v8XgRBoVoqN8umTMSxK18X
-        THIRnt3mCuFxcnAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5BB8E133DD;
-        Thu, 20 Jul 2023 11:11:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id o50kFVcWuWShfQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 20 Jul 2023 11:11:19 +0000
-Date:   Thu, 20 Jul 2023 13:04:38 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: turn unpin_extent_cache() into a void function
-Message-ID: <20230720110438.GU20457@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230718173906.12568-1-lhenriques@suse.de>
+        Thu, 20 Jul 2023 07:05:06 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564FB268F;
+        Thu, 20 Jul 2023 04:05:05 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36KASIVh004024;
+        Thu, 20 Jul 2023 11:05:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=t/rC43SaN1aFaJyVR8FzDXCtjGfiom/DgT6LMZXPph8=;
+ b=QU8OBGYea6vjQaVX5qfOnn9BZdz/IYR+AZ7JiZ7gstU+2N37jDiJ8OR9aUY8ww3NyDme
+ J/XtnGult5YdMBOTmJQ+dM+OXw7nRJEHo1eFef6R+kNN4yUxqnUE6/7+Wh7S3xZ3g8RW
+ iZpwxhoFo8CH4jt4QJFxWCbJOVNVH0gX9oGicLf1lq5qLt8Ykca1cIXFIis5eOMoybet
+ BxVR4ZPzOhWLWJ/MVAUxWDxNc7zBdc4YuPrRyw1vjFMl3Yg/oYTHgNK2zHcO26yWXDt/
+ bNagcb2RLsj0wPHkSPhCFnPj8YhGQYdYLd2dqEi/FK9UouV4ai6veUWVqyrRiHHOjfTO Ag== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxummrx6p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 11:05:01 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36KB50nG027242
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 11:05:00 GMT
+Received: from [10.201.197.30] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
+ 2023 04:04:56 -0700
+Message-ID: <a826aaa8-d800-921a-f00e-7929946d9a63@quicinc.com>
+Date:   Thu, 20 Jul 2023 16:34:53 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230718173906.12568-1-lhenriques@suse.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Update the compatible
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
+        <quic_kathirav@quicinc.com>, <quic_arajkuma@quicinc.com>,
+        <quic_anusha@quicinc.com>
+References: <20230720072938.31546-1-quic_harihk@quicinc.com>
+ <20230720072938.31546-2-quic_harihk@quicinc.com>
+ <9283b320-5d77-350c-5312-90d56dfb922f@linaro.org>
+From:   Hariharan K <quic_harihk@quicinc.com>
+In-Reply-To: <9283b320-5d77-350c-5312-90d56dfb922f@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: gogel7oGAV50McmIsofbdRU4r4rgRY2f
+X-Proofpoint-GUID: gogel7oGAV50McmIsofbdRU4r4rgRY2f
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-20_04,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 lowpriorityscore=0
+ clxscore=1011 adultscore=0 suspectscore=0 mlxscore=0 mlxlogscore=961
+ malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307200092
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 06:39:06PM +0100, Luís Henriques wrote:
-> The value of the 'ret' variable is never changed in function
-> unpin_extent_cache().  And since the only caller of this function doesn't
-> check the return value, it can simply be turned into a void function.
+
+
+On 7/20/2023 2:12 PM, Krzysztof Kozlowski wrote:
+> On 20/07/2023 09:29, Hariharan K wrote:
+>> Update the compatible in device tree binding to
+>> use model names instead of rdp numbers for IPQ5018
+>> platform.
+>>
+>> Signed-off-by: Hariharan K <quic_harihk@quicinc.com>
+>> ---
+>>   Documentation/devicetree/bindings/arm/qcom.yaml | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+>> index e94ce1e26fbf..922feb912594 100644
+>> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+>> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+>> @@ -97,6 +97,7 @@ description: |
+>>           ap-mi01.3
+>>           ap-mi01.6
+>>           ap-mi01.9
+>> +        ap-mp03.5-c2
+>>           cdp
+>>           cp01-c1
+>>           dragonboard
+>> @@ -105,7 +106,6 @@ description: |
+>>           hk10-c2
+>>           idp
+>>           liquid
+>> -        rdp432-c2
+>>           mtp
+>>           qrd
+>>           rb2
+>> @@ -343,7 +343,7 @@ properties:
+>>   
+>>         - items:
+>>             - enum:
+>> -              - qcom,ipq5018-rdp432-c2
 > 
-> Signed-off-by: Luís Henriques <lhenriques@suse.de>
-> ---
->  fs/btrfs/extent_map.c | 7 ++-----
->  fs/btrfs/extent_map.h | 2 +-
->  2 files changed, 3 insertions(+), 6 deletions(-)
 > 
-> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-> index 0cdb3e86f29b..f99c458071a4 100644
-> --- a/fs/btrfs/extent_map.c
-> +++ b/fs/btrfs/extent_map.c
-> @@ -292,10 +292,9 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
->   * to the generation that actually added the file item to the inode so we know
->   * we need to sync this extent when we call fsync().
->   */
-> -int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
-> -		       u64 gen)
-> +void unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
-> +			u64 gen)
->  {
-> -	int ret = 0;
->  	struct extent_map *em;
->  	bool prealloc = false;
->  
-> @@ -327,8 +326,6 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
->  	free_extent_map(em);
->  out:
->  	write_unlock(&tree->lock);
-> -	return ret;
-> -
->  }
+> There is no such compatible. Don't send patches with wrong names and
+> before they got merged send a follow up.
+> 
+> Fix the original submission.
 
-This function has unfortunatelly attracting attention to do a simple fix
-to just return void, several have been aleary sent but none of them
-fixes it properly. To the point I don't want to reply anymore.
+Sorry, this patch is in-correct. Names used in the original submission 
+are the right ones. Will drop this patch and also fix it in other 
+patches that i have posted.
 
-https://lore.kernel.org/linux-btrfs/20180815124425.GM24025@twin.jikos.cz/
-https://lore.kernel.org/linux-btrfs/20230530150359.GS575@twin.jikos.cz/
-https://patchwork.kernel.org/project/linux-btrfs/patch/20190416055739.25771-1-wqu@suse.com/#22596309
+Best regards,
+Hariharan K
 
-"When switching a fuction to return void, please check the whole
-callgraph for functions that do not properly handler errors and do
-BUG_ON. You won't see errors passed from them so this gives the
-impression no error handling is needed in the caller."
+> 
+> Best regards,
+> Krzysztof
+> 
+
