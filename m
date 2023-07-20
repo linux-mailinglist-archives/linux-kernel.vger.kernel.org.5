@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C7B75AE65
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDD775AE66
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231436AbjGTMaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 08:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41216 "EHLO
+        id S231685AbjGTMaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 08:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231625AbjGTM37 (ORCPT
+        with ESMTP id S231215AbjGTMaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 08:29:59 -0400
+        Thu, 20 Jul 2023 08:30:08 -0400
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739F130E2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:29:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4403626B6
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:29:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689856174; x=1721392174;
+  t=1689856184; x=1721392184;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=YEbrpqxDeNxFsY1HDeP7iHhWD4JGdZ0gsDdoqmQzleU=;
-  b=PWstHa48pAyLbx3imAHqvs2C3srVZmwIqxeXtgo80bCa+mxqcHAlsQ4v
-   2hIYwVCDlhGE1uwyOAKGVtu6Le3qyTN8IxZ9GsObKHVzXa3Gkut4f/JaZ
-   XYS+1Uap6no63gMalMcp0lT+eFf0zaxUkkAAPNiU5d/azqrJbdf1xFgE7
-   YlR1xEo/b5R5wxexglUGouGA7TuexPoWBVz+ECmAue8HDW4vGNIxewiSr
-   bUVGg/1WI2aM9eMrmMpX3RoNpIXXb7E1crVG+lmcDzaR/wiQG/A88fP3R
-   wNgS2SRcK3N1iuz8flrUWiufKm7dhGqom1YdFsQV5tJXFXJhQ1JbV7ESR
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="356678124"
+  bh=SHZ0FywoL6GHQSxStJeG6h3JzNebQDQCOCElqEWoHTE=;
+  b=JETPl4yRonKglOpxQ8Q5kMuxN7dc1QvNwmMMWYMqpphkoH3QBiR0qdgF
+   VAslkvvFVD9FrfqXYs1OSqr9GVpU0CHgtiRcwrh7L6dRgfO2TpXj4gjGH
+   KMo0XGfN8oV2dh60h6bbaAOlvrdOxERzXpPvfgi3fuQPDfNyxYy+ij4XD
+   Q2ANCF9JryCOfYIZTThGSFsN65u++avv4M7F7ne+ZcLIKxtjVrImiqaHH
+   75mv+wjeCFperkKj1Xc+bebWlRAChzhyQkFuuLjpPaJMpFZxQC9ulEd7l
+   Sdf4LgrMh9jfAWDEaQLHLNPesQSOsl7swSOpAk1kzRFGl5vl3Qoj53am0
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="356678149"
 X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="356678124"
+   d="scan'208";a="356678149"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 05:29:24 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 05:29:28 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="898255976"
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="898255985"
 X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="898255976"
+   d="scan'208";a="898255985"
 Received: from moorer9x-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.209.157.3])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 05:29:20 -0700
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 05:29:24 -0700
 From:   Kai Huang <kai.huang@intel.com>
 To:     peterz@infradead.org, kirill.shutemov@linux.intel.com,
         linux-kernel@vger.kernel.org
@@ -47,9 +47,9 @@ Cc:     dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
         pbonzini@redhat.com, isaku.yamahata@intel.com,
         sathyanarayanan.kuppuswamy@linux.intel.com,
         n.borisov.lkml@gmail.com, kai.huang@intel.com
-Subject: [PATCH v2 09/11] x86/tdx: Remove 'struct tdx_hypercall_args'
-Date:   Fri, 21 Jul 2023 00:28:12 +1200
-Message-ID: <7cd441f86d5da65c496761a8c25c929727fa41d8.1689855280.git.kai.huang@intel.com>
+Subject: [PATCH v2 10/11] x86/virt/tdx: Wire up basic SEAMCALL functions
+Date:   Fri, 21 Jul 2023 00:28:13 +1200
+Message-ID: <7fc21bf2cc330c5c3c88c99d12a69240a97db36c.1689855280.git.kai.huang@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1689855280.git.kai.huang@intel.com>
 References: <cover.1689855280.git.kai.huang@intel.com>
@@ -66,233 +66,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now 'struct tdx_hypercall_args' is basically 'struct tdx_module_args'
-minus RCX.  Although from __tdx_hypercall()'s perspective RCX isn't
-used as shared register thus not part of input/output registers, it's
-not worth to have a separate structure just due to one register.
+Intel Trust Domain Extensions (TDX) protects guest VMs from malicious
+host and certain physical attacks.  A CPU-attested software module
+called 'the TDX module' runs inside a new isolated memory range as a
+trusted hypervisor to manage and run protected VMs.
 
-Remove the 'struct tdx_hypercall_args' and use 'struct tdx_module_args'
-instead in __tdx_hypercall() related code.  This also saves the memory
-copy between the two structures within __tdx_hypercall().
+TDX introduces a new CPU mode: Secure Arbitration Mode (SEAM).  This
+mode runs only the TDX module itself or other code to load the TDX
+module.
 
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
+The host kernel communicates with SEAM software via a new SEAMCALL
+instruction.  This is conceptually similar to a guest->host hypercall,
+except it is made from the host to SEAM software instead.  The TDX
+module establishes a new SEAMCALL ABI which allows the host to
+initialize the module and to manage VMs.
+
+The SEAMCALL ABI is very similar to the TDCALL ABI and leverages much
+TDCALL infrastructure.  Wire up basic functions to make SEAMCALLs for
+the TDX module initialization, which is the first step of TDX support.
+
+To start to support TDX, create a new arch/x86/virt/vmx/tdx/tdx.c for
+TDX host kernel support.  Add a new Kconfig option CONFIG_INTEL_TDX_HOST
+to opt-in TDX host kernel support (to distinguish with TDX guest kernel
+support).  So far only KVM uses TDX.  Make the new config option depend
+on KVM_INTEL.
+
 Signed-off-by: Kai Huang <kai.huang@intel.com>
 ---
 
 v1 -> v2:
- - The third patch (new) split from v1 "x86/tdx: Unify TDX_HYPERCALL
-   and TDX_MODULE_CALL assembly"
- - Rebase to 6.5-rc2.
+ - Removed __seamcall_saved_ret() and leave it to KVM TDX patches.
 
 ---
- arch/x86/boot/compressed/tdx.c    |  4 ++--
- arch/x86/coco/tdx/tdx-shared.c    | 37 ++++++-------------------------
- arch/x86/coco/tdx/tdx.c           | 16 ++++++-------
- arch/x86/include/asm/shared/tdx.h | 25 ++-------------------
- 4 files changed, 19 insertions(+), 63 deletions(-)
+ arch/x86/Kconfig                 | 12 +++++++++
+ arch/x86/Makefile                |  2 ++
+ arch/x86/include/asm/tdx.h       |  6 +++++
+ arch/x86/virt/Makefile           |  2 ++
+ arch/x86/virt/vmx/Makefile       |  2 ++
+ arch/x86/virt/vmx/tdx/Makefile   |  2 ++
+ arch/x86/virt/vmx/tdx/seamcall.S | 42 ++++++++++++++++++++++++++++++++
+ 7 files changed, 68 insertions(+)
+ create mode 100644 arch/x86/virt/Makefile
+ create mode 100644 arch/x86/virt/vmx/Makefile
+ create mode 100644 arch/x86/virt/vmx/tdx/Makefile
+ create mode 100644 arch/x86/virt/vmx/tdx/seamcall.S
 
-diff --git a/arch/x86/boot/compressed/tdx.c b/arch/x86/boot/compressed/tdx.c
-index bc03eae2c560..8451d6a1030c 100644
---- a/arch/x86/boot/compressed/tdx.c
-+++ b/arch/x86/boot/compressed/tdx.c
-@@ -18,7 +18,7 @@ void __tdx_hypercall_failed(void)
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 7422db409770..0558dd98abd7 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1949,6 +1949,18 @@ config X86_SGX
  
- static inline unsigned int tdx_io_in(int size, u16 port)
- {
--	struct tdx_hypercall_args args = {
-+	struct tdx_module_args args = {
- 		.r10 = TDX_HYPERCALL_STANDARD,
- 		.r11 = hcall_func(EXIT_REASON_IO_INSTRUCTION),
- 		.r12 = size,
-@@ -34,7 +34,7 @@ static inline unsigned int tdx_io_in(int size, u16 port)
+ 	  If unsure, say N.
  
- static inline void tdx_io_out(int size, u16 port, u32 value)
- {
--	struct tdx_hypercall_args args = {
-+	struct tdx_module_args args = {
- 		.r10 = TDX_HYPERCALL_STANDARD,
- 		.r11 = hcall_func(EXIT_REASON_IO_INSTRUCTION),
- 		.r12 = size,
-diff --git a/arch/x86/coco/tdx/tdx-shared.c b/arch/x86/coco/tdx/tdx-shared.c
-index 20e8794762e1..9b04959e6c5e 100644
---- a/arch/x86/coco/tdx/tdx-shared.c
-+++ b/arch/x86/coco/tdx/tdx-shared.c
-@@ -70,45 +70,22 @@ bool tdx_accept_memory(phys_addr_t start, phys_addr_t end)
- 	return true;
++config INTEL_TDX_HOST
++	bool "Intel Trust Domain Extensions (TDX) host support"
++	depends on CPU_SUP_INTEL
++	depends on X86_64
++	depends on KVM_INTEL
++	help
++	  Intel Trust Domain Extensions (TDX) protects guest VMs from malicious
++	  host and certain physical attacks.  This option enables necessary TDX
++	  support in the host kernel to run confidential VMs.
++
++	  If unsure, say N.
++
+ config EFI
+ 	bool "EFI runtime service support"
+ 	depends on ACPI
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index fdc2e3abd615..5d8d1892aae9 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -252,6 +252,8 @@ archheaders:
+ 
+ libs-y  += arch/x86/lib/
+ 
++core-y += arch/x86/virt/
++
+ # drivers-y are linked after core-y
+ drivers-$(CONFIG_MATH_EMULATION) += arch/x86/math-emu/
+ drivers-$(CONFIG_PCI)            += arch/x86/pci/
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+index 603e6d1e9d4a..942edc8e9ba8 100644
+--- a/arch/x86/include/asm/tdx.h
++++ b/arch/x86/include/asm/tdx.h
+@@ -72,5 +72,11 @@ static inline long tdx_kvm_hypercall(unsigned int nr, unsigned long p1,
+ 	return -ENODEV;
  }
- 
--u64 __tdx_hypercall(struct tdx_hypercall_args *args)
-+u64 __tdx_hypercall(struct tdx_module_args *args)
- {
--	struct tdx_module_args margs = {
--		.rcx = TDVMCALL_EXPOSE_REGS_MASK,
--		.rdx = args->rdx,
--		.r8  = args->r8,
--		.r9  = args->r9,
--		.r10 = args->r10,
--		.r11 = args->r11,
--		.r12 = args->r12,
--		.r13 = args->r13,
--		.r14 = args->r14,
--		.r15 = args->r15,
--		.rbx = args->rbx,
--		.rdi = args->rdi,
--		.rsi = args->rsi,
--	};
-+	/*
-+	 * For TDVMCALL explicitly set RCX to the bitmap of shared registers.
-+	 * The caller isn't expected to set @args->rcx anyway.
-+	 */
-+	args->rcx = TDVMCALL_EXPOSE_REGS_MASK;
- 
- 	/*
- 	 * Failure of __tdcall_saved_ret() indicates a failure of the TDVMCALL
- 	 * mechanism itself and that something has gone horribly wrong with
- 	 * the TDX module.  __tdx_hypercall_failed() never returns.
- 	 */
--	if (__tdcall_saved_ret(TDG_VP_VMCALL, &margs))
-+	if (__tdcall_saved_ret(TDG_VP_VMCALL, args))
- 		__tdx_hypercall_failed();
- 
--	args->r8  = margs.r8;
--	args->r9  = margs.r9;
--	args->r10 = margs.r10;
--	args->r11 = margs.r11;
--	args->r12 = margs.r12;
--	args->r13 = margs.r13;
--	args->r14 = margs.r14;
--	args->r15 = margs.r15;
--	args->rdi = margs.rdi;
--	args->rsi = margs.rsi;
--	args->rbx = margs.rbx;
--	args->rdx = margs.rdx;
--
- 	/* TDVMCALL leaf return code is in R10 */
- 	return args->r10;
- }
-diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-index aba58484ba10..125dda0b7827 100644
---- a/arch/x86/coco/tdx/tdx.c
-+++ b/arch/x86/coco/tdx/tdx.c
-@@ -46,7 +46,7 @@ void __tdx_hypercall_failed(void)
- long tdx_kvm_hypercall(unsigned int nr, unsigned long p1, unsigned long p2,
- 		       unsigned long p3, unsigned long p4)
- {
--	struct tdx_hypercall_args args = {
-+	struct tdx_module_args args = {
- 		.r10 = nr,
- 		.r11 = p1,
- 		.r12 = p2,
-@@ -106,7 +106,7 @@ EXPORT_SYMBOL_GPL(tdx_mcall_get_report0);
- 
- static void __noreturn tdx_panic(const char *msg)
- {
--	struct tdx_hypercall_args args = {
-+	struct tdx_module_args args = {
- 		.r10 = TDX_HYPERCALL_STANDARD,
- 		.r11 = TDVMCALL_REPORT_FATAL_ERROR,
- 		.r12 = 0, /* Error code: 0 is Panic */
-@@ -228,7 +228,7 @@ static int ve_instr_len(struct ve_info *ve)
- 
- static u64 __cpuidle __halt(const bool irq_disabled)
- {
--	struct tdx_hypercall_args args = {
-+	struct tdx_module_args args = {
- 		.r10 = TDX_HYPERCALL_STANDARD,
- 		.r11 = hcall_func(EXIT_REASON_HLT),
- 		.r12 = irq_disabled,
-@@ -272,7 +272,7 @@ void __cpuidle tdx_safe_halt(void)
- 
- static int read_msr(struct pt_regs *regs, struct ve_info *ve)
- {
--	struct tdx_hypercall_args args = {
-+	struct tdx_module_args args = {
- 		.r10 = TDX_HYPERCALL_STANDARD,
- 		.r11 = hcall_func(EXIT_REASON_MSR_READ),
- 		.r12 = regs->cx,
-@@ -293,7 +293,7 @@ static int read_msr(struct pt_regs *regs, struct ve_info *ve)
- 
- static int write_msr(struct pt_regs *regs, struct ve_info *ve)
- {
--	struct tdx_hypercall_args args = {
-+	struct tdx_module_args args = {
- 		.r10 = TDX_HYPERCALL_STANDARD,
- 		.r11 = hcall_func(EXIT_REASON_MSR_WRITE),
- 		.r12 = regs->cx,
-@@ -313,7 +313,7 @@ static int write_msr(struct pt_regs *regs, struct ve_info *ve)
- 
- static int handle_cpuid(struct pt_regs *regs, struct ve_info *ve)
- {
--	struct tdx_hypercall_args args = {
-+	struct tdx_module_args args = {
- 		.r10 = TDX_HYPERCALL_STANDARD,
- 		.r11 = hcall_func(EXIT_REASON_CPUID),
- 		.r12 = regs->ax,
-@@ -355,7 +355,7 @@ static int handle_cpuid(struct pt_regs *regs, struct ve_info *ve)
- 
- static bool mmio_read(int size, unsigned long addr, unsigned long *val)
- {
--	struct tdx_hypercall_args args = {
-+	struct tdx_module_args args = {
- 		.r10 = TDX_HYPERCALL_STANDARD,
- 		.r11 = hcall_func(EXIT_REASON_EPT_VIOLATION),
- 		.r12 = size,
-@@ -484,7 +484,7 @@ static int handle_mmio(struct pt_regs *regs, struct ve_info *ve)
- 
- static bool handle_in(struct pt_regs *regs, int size, int port)
- {
--	struct tdx_hypercall_args args = {
-+	struct tdx_module_args args = {
- 		.r10 = TDX_HYPERCALL_STANDARD,
- 		.r11 = hcall_func(EXIT_REASON_IO_INSTRUCTION),
- 		.r12 = size,
-diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
-index 188e8bf3332c..74fc466dfdcd 100644
---- a/arch/x86/include/asm/shared/tdx.h
-+++ b/arch/x86/include/asm/shared/tdx.h
-@@ -83,29 +83,8 @@ u64 __tdcall(u64 fn, struct tdx_module_args *args);
- u64 __tdcall_ret(u64 fn, struct tdx_module_args *args);
- u64 __tdcall_saved_ret(u64 fn, struct tdx_module_args *args);
- 
--/*
-- * Used in __tdx_hypercall() to pass down and get back registers' values of
-- * the TDCALL instruction when requesting services from the VMM.
-- *
-- * This is a software only structure and not part of the TDX module/VMM ABI.
-- */
--struct tdx_hypercall_args {
--	u64 r8;
--	u64 r9;
--	u64 r10;
--	u64 r11;
--	u64 r12;
--	u64 r13;
--	u64 r14;
--	u64 r15;
--	u64 rdi;
--	u64 rsi;
--	u64 rbx;
--	u64 rdx;
--};
--
- /* Used to request services from the VMM */
--u64 __tdx_hypercall(struct tdx_hypercall_args *args);
-+u64 __tdx_hypercall(struct tdx_module_args *args);
- 
- /*
-  * Wrapper for standard use of __tdx_hypercall with no output aside from
-@@ -113,7 +92,7 @@ u64 __tdx_hypercall(struct tdx_hypercall_args *args);
-  */
- static inline u64 _tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
- {
--	struct tdx_hypercall_args args = {
-+	struct tdx_module_args args = {
- 		.r10 = TDX_HYPERCALL_STANDARD,
- 		.r11 = fn,
- 		.r12 = r12,
+ #endif /* CONFIG_INTEL_TDX_GUEST && CONFIG_KVM_GUEST */
++
++#ifdef CONFIG_INTEL_TDX_HOST
++u64 __seamcall(u64 fn, struct tdx_module_args *args);
++u64 __seamcall_ret(u64 fn, struct tdx_module_args *args);
++#endif	/* CONFIG_INTEL_TDX_HOST */
++
+ #endif /* !__ASSEMBLY__ */
+ #endif /* _ASM_X86_TDX_H */
+diff --git a/arch/x86/virt/Makefile b/arch/x86/virt/Makefile
+new file mode 100644
+index 000000000000..1e36502cd738
+--- /dev/null
++++ b/arch/x86/virt/Makefile
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0-only
++obj-y	+= vmx/
+diff --git a/arch/x86/virt/vmx/Makefile b/arch/x86/virt/vmx/Makefile
+new file mode 100644
+index 000000000000..feebda21d793
+--- /dev/null
++++ b/arch/x86/virt/vmx/Makefile
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0-only
++obj-$(CONFIG_INTEL_TDX_HOST)	+= tdx/
+diff --git a/arch/x86/virt/vmx/tdx/Makefile b/arch/x86/virt/vmx/tdx/Makefile
+new file mode 100644
+index 000000000000..46ef8f73aebb
+--- /dev/null
++++ b/arch/x86/virt/vmx/tdx/Makefile
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0-only
++obj-y += seamcall.o
+diff --git a/arch/x86/virt/vmx/tdx/seamcall.S b/arch/x86/virt/vmx/tdx/seamcall.S
+new file mode 100644
+index 000000000000..b32934837f16
+--- /dev/null
++++ b/arch/x86/virt/vmx/tdx/seamcall.S
+@@ -0,0 +1,42 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#include <linux/linkage.h>
++#include <asm/frame.h>
++
++#include "tdxcall.S"
++
++/*
++ * __seamcall() - Host-side interface functions to SEAM software
++ * (the P-SEAMLDR or the TDX module).
++ *
++ * __seamcall() function ABI:
++ *
++ * @fn   (RDI)  - SEAMCALL Leaf number, moved to RAX
++ * @args (RSI)  - struct tdx_module_args for input
++ *
++ * Only RCX/RDX/R8-R11 are used as input registers.
++ *
++ * Return (via RAX) TDX_SEAMCALL_VMFAILINVALID if the SEAMCALL itself
++ * fails, or the completion status of the SEAMCALL leaf function.
++ */
++SYM_FUNC_START(__seamcall)
++	TDX_MODULE_CALL host=1
++SYM_FUNC_END(__seamcall)
++
++/*
++ * __seamcall_ret() - Host-side interface functions to SEAM software
++ * (the P-SEAMLDR or the TDX module), with saving RCX/RDX/R8-R11
++ * output registers to the 'struct tdx_module_args' used as input.
++ *
++ * __seamcall_ret() function ABI:
++ *
++ * @fn   (RDI)  - SEAMCALL Leaf number, moved to RAX
++ * @args (RSI)  - struct tdx_module_args for input and output
++ *
++ * Only RCX/RDX/R8-R11 are used as input/output registers.
++ *
++ * Return (via RAX) TDX_SEAMCALL_VMFAILINVALID if the SEAMCALL itself
++ * fails, or the completion status of the SEAMCALL leaf function.
++ */
++SYM_FUNC_START(__seamcall_ret)
++	TDX_MODULE_CALL host=1 ret=1
++SYM_FUNC_END(__seamcall_ret)
 -- 
 2.41.0
 
