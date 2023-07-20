@@ -2,87 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C1575A481
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 04:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1D375A482
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 04:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbjGTCrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 22:47:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
+        id S229716AbjGTCs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 22:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjGTCrP (ORCPT
+        with ESMTP id S229529AbjGTCs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 22:47:15 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D992109
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 19:47:13 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R5xt53vZwzBRDrh
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:47:09 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689821229; x=1692413230; bh=0KLRTreuiIUpnVrU58gqyhT7akT
-        3Ptoka1vuCFuY8Ks=; b=yIRU9Jz2MTcaVPUC4gaANxQTLgjPReL1hqyav0gXyo/
-        X0B98wRsya9+bsAKtZqjrX0Eb6Yv1fajhIyxKlU1derntgfNunZ6AD9+1D6KYkTW
-        V0D8hEL0hWCaMXhjKwIsEESgEyFTEszG0cPBARktxfvooo37E+y9VH8tcvhMezqM
-        qnQvI3948bVs04OCVPAXNqo8FM2faimpKOKasQKcLWZRpC/4smO0WyghgUgY7hzj
-        t1VYPr0jJUqGq/6ZNPuGNwAL5I7hlv+a4EO1pQQRTTDmMqJ6VXEzMrkBtSNTb9IJ
-        wy9Rv9xwQBoLGqJsG/GjV5Mnek3a/Polbp44RAjRyQA==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 711FXe9qawhD for <linux-kernel@vger.kernel.org>;
-        Thu, 20 Jul 2023 10:47:09 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R5xt52DFszBRDrS;
-        Thu, 20 Jul 2023 10:47:09 +0800 (CST)
+        Wed, 19 Jul 2023 22:48:57 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55ACC1FD9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 19:48:52 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-5216569f9e3so344612a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 19:48:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1689821330; x=1690426130;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H6WYVWYrbXb8iJtFoUKTJHuArrTvnYpoCUNdm9ArDBU=;
+        b=vcpSq5efiWfRoeEuQ8DIpdemJ/kEyExu1pg4fGvQDP9AqI6EHLqRkrkvQ3LzqedoQ8
+         +5eOgLm5sUSffZnSTGRjU1uQV80HONokEyIl5FocvTQvle3W0Ef6LmGvKPf1DRuqce6q
+         NB/h5wq2mOhw1TW6bGfFARGLwoTv1d1x9oE90=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689821330; x=1690426130;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H6WYVWYrbXb8iJtFoUKTJHuArrTvnYpoCUNdm9ArDBU=;
+        b=CnWxjk42eHKRcjs5Y27WJTAz5PY3PO8u5FetVYMhvnNdovl4E2gBo77KlBXIhkJ+Um
+         hqr6xz/yo7j656HdHiEtO7PxigDildobwe7Lnnqy0rgRMmyed30R8jXbVfZmghuQJBG4
+         +b6sZlk16SVdnyAqqEc2Sczbg6aIsFjSNq2lFtTMnCQ8lR/AwPXoxKbEQb1X9cNQGIFA
+         pTN/cMQIJV/PKVAEXLBqViOASKYQsz51ab/pR/IirmpPHmVJREFdK4lXd+0VwBaFSjkG
+         QgcIprfhU2Rj+4HL3UKbg30ommSu+yHGTbQ1EDd1HZjdaxalTf24fkwkuLerbsLcuuGo
+         uJoQ==
+X-Gm-Message-State: ABy/qLZcfwygTvP/5v66DoQW9Z4+cSmzj6YSLk7H1MGeposFlIxNDRFe
+        PD0yCfvcGHnncZQVsbZDa9mj5mjfK2PeUPWwy+UpSA==
+X-Google-Smtp-Source: APBJJlE4lJbEWuicmvx7rTLzbS0AdQfZ0xYO09uqtILx/IgDEyJpnJ/Zj1jfL9NtM7jOdCNdJ9odgbHvUeY3HhKVqr4=
+X-Received: by 2002:a05:6402:1295:b0:51a:3159:53c7 with SMTP id
+ w21-20020a056402129500b0051a315953c7mr3643380edv.30.1689821330554; Wed, 19
+ Jul 2023 19:48:50 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Thu, 20 Jul 2023 10:47:09 +0800
-From:   sunran001@208suo.com
-To:     mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: dvb-frontends: add missing spaces before '*' and
- remove spaces after '*'
-In-Reply-To: <20230720024545.1230-1-xujianghui@cdjrlc.com>
-References: <20230720024545.1230-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <1e9b311ce35bc4a115e4a171a565e415@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <ZLdY6JkWRccunvu0@debian.debian> <CAADnVQJNCEntFEh6pNY2HHwxoua0_2mRky2g2U5tj6XU2eoZog@mail.gmail.com>
+In-Reply-To: <CAADnVQJNCEntFEh6pNY2HHwxoua0_2mRky2g2U5tj6XU2eoZog@mail.gmail.com>
+From:   Yan Zhai <yan@cloudflare.com>
+Date:   Wed, 19 Jul 2023 21:48:39 -0500
+Message-ID: <CAO3-Pbr_S_1RYk0x4kHbnna=qcYVJ7u9zx9O-TGNcJz3oUQ0FQ@mail.gmail.com>
+Subject: Re: [PATCH v2 net] bpf: do not return NET_XMIT_xxx values on bpf_redirect
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jordan Griege <jgriege@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing spaces to clear checkpatch errors.
+On Tue, Jul 18, 2023 at 10:42=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Jul 18, 2023 at 8:30=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wro=
+te:
+> >
+> > skb_do_redirect handles returns error code from both rx and tx path. Th=
+e
+> > tx path codes are special, e.g. NET_XMIT_CN: they are non-negative, and
+> > can conflict with LWTUNNEL_XMIT_xxx values. Directly returning such cod=
+e
+> > can cause unexpected behavior. We found at least one bug that will pani=
+c
+> > the kernel through KASAN report when we are redirecting packets to a
+> > down or carrier-down device at lwt xmit hook:
+> >
+> > https://gist.github.com/zhaiyan920/8fbac245b261fe316a7ef04c9b1eba48
+> >
+> > Above bug is hit because NET_XMIT_CN is returned by noop_qdisc of the
+> > down device, and it propagates from dev_queue_xmit all way to the lwt
+> > logic. The result is skb that has been freed by the qdisc continues to
+> > neighbor subsystem and triggers the bug.
+>
+> I'm struggling to parse the above paragraph.
+> Where bpf prog is installed?
+> Is this lwt bpf prog that returns BPF_REDIRECT ?
+> that redirects to netdev with noop_qdisc ?
+> What is the topology?
+>
+Sorry for the confusion. Mentioning noop_qdisc is an explanation of
+what happened. The actual trigger is simple: install a bpf program on
+lwt route at xmit hook. It bpf_redirect packets to a device FOO. If
+FOO is down or carrier-down, redirected packets will crash the kernel.
 
-ERROR: "foo* bar" should be "foo *bar"
+> Please add a selftest to make sure we don't regress.
+>
+> Also pls mark your patch as [PATCH v3 bpf] when you respin.
+>
+Ack
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  drivers/media/dvb-frontends/ds3000.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+> > This change converts the tx code to proper errors that lwt can consume.
+> >
+> > Suggested-by: Stanislav Fomichev <sdf@google.com>
+> > Reported-by: Jordan Griege <jgriege@cloudflare.com>
+> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > ---
+> > v2: coding style fix; sent to netdev instead of bpf for bug fixing.
+> >
+> > ---
+> >  net/core/filter.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 06ba0e56e369..8738c7a4701d 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -2129,6 +2129,9 @@ static inline int __bpf_tx_skb(struct net_device =
+*dev, struct sk_buff *skb)
+> >         ret =3D dev_queue_xmit(skb);
+> >         dev_xmit_recursion_dec();
+> >
+> > +       if (unlikely(ret > 0))
+> > +               ret =3D net_xmit_errno(ret);
+> > +
+> >         return ret;
+> >  }
+> >
+> > --
+> > 2.30.2
+> >
 
-diff --git a/drivers/media/dvb-frontends/ds3000.c 
-b/drivers/media/dvb-frontends/ds3000.c
-index 20fcf31af165..ca40234a28fa 100644
---- a/drivers/media/dvb-frontends/ds3000.c
-+++ b/drivers/media/dvb-frontends/ds3000.c
-@@ -456,7 +456,7 @@ static int ds3000_read_status(struct dvb_frontend 
-*fe, enum fe_status *status)
-  }
 
-  /* read DS3000 BER value */
--static int ds3000_read_ber(struct dvb_frontend *fe, u32* ber)
-+static int ds3000_read_ber(struct dvb_frontend *fe, u32 *ber)
-  {
-  	struct ds3000_state *state = fe->demodulator_priv;
-  	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+
+--=20
+
+Yan
