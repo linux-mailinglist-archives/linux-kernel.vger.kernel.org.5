@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E9275AAF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE85C75AAF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbjGTJg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35730 "EHLO
+        id S230475AbjGTJgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 05:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjGTJgI (ORCPT
+        with ESMTP id S230430AbjGTJgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 05:36:08 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F0159E1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:31:24 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-2637ab3d8efso267134a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:31:24 -0700 (PDT)
+        Thu, 20 Jul 2023 05:36:19 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C09E3584
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:31:34 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6bb07d274feso210576a34.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:31:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689845419; x=1690450219;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=M1SsbgozmtM/pSbOclSq1igA+sXJRO0yU8n0dtU3EnA=;
-        b=w6dnXXrPSXBRLxLMpVqr/3HZBtumCOCDZvD7OXMn0TeBbowumPhEv4/0PX7N+pr/sr
-         7OkH8x1Uc8Bh7sg74NW63WzbQooZJUmbxmbhaKfpPbZSRVIMZM0VEe1cNHIuOcajUaRi
-         FPyA4Gr0WT878Twcdbm0PUrvwIvbGmEfbaPflAJPMQos48II7WKvQxti8mFmjU5Sz57T
-         4n8KWDqbWq1UR6Jz/iLxoycqJl1Ak9pkAgaazw6furh8yxep51IaxJ6w7SSQfIrDlge8
-         ebfYAbmULWifGJery2nTPHstY6Yvt3STkux4InceNY/c0EG5sNknaP7/KG/BAgRWIczT
-         xltQ==
+        d=linaro.org; s=google; t=1689845422; x=1690450222;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BcH5CivD9JzsOs5ChgN7XNfEBbDf+REI+Wos1lw24t8=;
+        b=G4+xAS/DXqyFZcvScl0w5XA5rzH993kM9l/G3ndZtXsZtW/GXcXDd4DKu8/2WnTTAW
+         EZ6t/Qva9yGXqNII/ta1AulhgSc25T84hvaA46v2jxTiurTyOAycIONJeLXa0PK4d1Lf
+         ZrbwrMI5tYtT3G501McQQMhMMVV6HLFpJfIWgO5GFtfvCwSpkmvrs5vCw/vHNoSCk8yy
+         BAr9ZSP/lM4IqQLcqguavKxEMhlrzFBeKuyYal55T5NDpfTaElBVUVNzU0CW5uYjDXwr
+         Qgw4YvVl+5GqnVYPECYSN6Xmb/BldHkrP0F2xlAOk50GGTB1Stcqr5QiCG1eTTlp48zA
+         JnFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689845419; x=1690450219;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=M1SsbgozmtM/pSbOclSq1igA+sXJRO0yU8n0dtU3EnA=;
-        b=b6iDKQj3tu2v7Mot+o5tJ0mvBFJzMzhaNXrJrvE68EsO0STGrZT3F24ro4X/Gvaj/J
-         3V4ot+6IunB+T2wzTHdrc0dBzzbgveXFbFIQlwwqQ7/0pnAkvPzCLmh1Vfj//WLDo0Ct
-         Z1O1WDD3DSfa7wYC2wQF1LQwFgzq+2tYdKpWyQAyHJkYpU0d+t+GaiFsatojvkhyUwlw
-         XcJ+5UE3UBi6u9dJ8/1kAzFhnV5834GbCnVleLkCo0WJbqs0tjEV/OJgm3Na+01EXsaU
-         Q1p5ZcYeIYz9fnT/+U6yyeN2xENiVHm7uTOtzX5vP2mKL2sDlsXhhtznKDYooD1VJywK
-         IEdw==
-X-Gm-Message-State: ABy/qLZ+KOHxMrqAcXXDdVOGj1Wsq8HdoL/jE8njdN+ZUQr+/lPs/b7b
-        HMNDwiDE1JMfesvsXcixG2wXgA==
-X-Google-Smtp-Source: APBJJlFS9iR2fkSXP0Axm+wKJmZt34iyTOhoY08p9XO5XN4RgJGtYjDD4Spk2QqaPZnp+wtHnzjvXA==
-X-Received: by 2002:a17:90a:df8b:b0:263:70e7:1e17 with SMTP id p11-20020a17090adf8b00b0026370e71e17mr3610728pjv.9.1689845418976;
-        Thu, 20 Jul 2023 02:30:18 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689845422; x=1690450222;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BcH5CivD9JzsOs5ChgN7XNfEBbDf+REI+Wos1lw24t8=;
+        b=D6WkXZVlVU5NCc16Xnpue3vL9sAkGqb6i+lHjm4diR0qisaFYwVmFe/mzDidOkrwjo
+         ttgtYorBfNq7f4/7XUGVwFLMj2+nEYfpSA4KttpTaJZlEbVRuHKJ3QS8yTxKZFIO64C5
+         +ExXCADdoUtvmkF6lEjZCIn48GiXqSWz78xI2qVqqCF9TRekpvGmyM3eXBFg2EctnSrd
+         llys2PHjWEdxFSKUQNAK+//4Dg+7bK80bP91AIVsJ2+Y2ZgEDB0hxywyHY0tAnS7WPfX
+         pZt4GLwDCaEsbwROsnb7qCf9hLqsIX7Ow2jVazNoyhIB2fQ12Ayn4H48xTy+Wx1n7sPk
+         8h1w==
+X-Gm-Message-State: ABy/qLYvQRknjSfySfzo9r8pdplIRMAkxlyc0qBu+DBWLdFNSCURSYk1
+        Ng+iictTMReKVM0btEET2I1BSA==
+X-Google-Smtp-Source: APBJJlG+CFjzGXiDG9FgbefUPlyvLxVAR2IqlwVmKmE22A4uIy0tZdXSIFUpPshlDp4hzVYdSawMVg==
+X-Received: by 2002:a05:6358:5925:b0:134:5662:60a with SMTP id g37-20020a056358592500b001345662060amr8854875rwf.6.1689845422464;
+        Thu, 20 Jul 2023 02:30:22 -0700 (PDT)
 Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id gw15-20020a17090b0a4f00b00267bb769652sm666469pjb.6.2023.07.20.02.30.18
+        by smtp.gmail.com with ESMTPSA id z24-20020a63ac58000000b005533b6cb3a6sm697646pgn.16.2023.07.20.02.30.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 02:30:18 -0700 (PDT)
+        Thu, 20 Jul 2023 02:30:22 -0700 (PDT)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Juergen Gross <jgross@suse.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
@@ -61,14 +62,16 @@ Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
         Manos Pitsidianakis <manos.pitsidianakis@linaro.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
         xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 1/2] xen: Update dm_op.h from Xen public header
-Date:   Thu, 20 Jul 2023 15:00:06 +0530
-Message-Id: <c923befe0a016891e7dee3e1ccb3c00d676f2b3d.1689845210.git.viresh.kumar@linaro.org>
+Subject: [PATCH V2 2/2] xen: privcmd: Add support for irqfd
+Date:   Thu, 20 Jul 2023 15:00:07 +0530
+Message-Id: <a25d5f01fe9b4624aa12cab77abd001044ea02d5.1689845210.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
+In-Reply-To: <c923befe0a016891e7dee3e1ccb3c00d676f2b3d.1689845210.git.viresh.kumar@linaro.org>
+References: <c923befe0a016891e7dee3e1ccb3c00d676f2b3d.1689845210.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,472 +80,390 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the definitions in dm_op.h from Xen public header.
+Xen provides support for injecting interrupts to the guests via the
+HYPERVISOR_dm_op() hypercall. The same is used by the Virtio based
+device backend implementations, in an inefficient manner currently.
+
+Generally, the Virtio backends are implemented to work with the Eventfd
+based mechanism. In order to make such backends work with Xen, another
+software layer needs to poll the Eventfds and raise an interrupt to the
+guest using the Xen based mechanism. This results in an extra context
+switch.
+
+This is not a new problem in Linux though. It is present with other
+hypervisors like KVM, etc. as well. The generic solution implemented in
+the kernel for them is to provide an IOCTL call to pass the interrupt
+details and eventfd, which lets the kernel take care of polling the
+eventfd and raising of the interrupt, instead of handling this in user
+space (which involves an extra context switch).
+
+This patch adds support to inject a specific interrupt to guest using
+the eventfd mechanism, by preventing the extra context switch.
+
+Inspired by existing implementations for KVM, etc..
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
 V1->V2:
-- New commit.
+- Improve error handling.
+- Remove the unnecessary usage of list_for_each_entry_safe().
+- Restrict the use of XEN_DMOP_set_irq_level to only ARM64.
 
- include/xen/interface/hvm/dm_op.h | 445 ++++++++++++++++++++++++++++++
- 1 file changed, 445 insertions(+)
+ drivers/xen/privcmd.c      | 276 ++++++++++++++++++++++++++++++++++++-
+ include/uapi/xen/privcmd.h |  14 ++
+ 2 files changed, 288 insertions(+), 2 deletions(-)
 
-diff --git a/include/xen/interface/hvm/dm_op.h b/include/xen/interface/hvm/dm_op.h
-index 08d972f87c7b..bc6948fd1815 100644
---- a/include/xen/interface/hvm/dm_op.h
-+++ b/include/xen/interface/hvm/dm_op.h
-@@ -6,6 +6,451 @@
- #ifndef __XEN_PUBLIC_HVM_DM_OP_H__
- #define __XEN_PUBLIC_HVM_DM_OP_H__
+diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
+index e2f580e30a86..0debc5482253 100644
+--- a/drivers/xen/privcmd.c
++++ b/drivers/xen/privcmd.c
+@@ -9,11 +9,16 @@
  
-+#include <xen/interface/xen.h>
-+#include <xen/interface/event_channel.h>
+ #define pr_fmt(fmt) "xen:" KBUILD_MODNAME ": " fmt
+ 
++#include <linux/eventfd.h>
++#include <linux/file.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/poll.h>
+ #include <linux/sched.h>
+ #include <linux/slab.h>
+ #include <linux/string.h>
++#include <linux/workqueue.h>
+ #include <linux/errno.h>
+ #include <linux/mm.h>
+ #include <linux/mman.h>
+@@ -833,6 +838,257 @@ static long privcmd_ioctl_mmap_resource(struct file *file,
+ 	return rc;
+ }
+ 
++/* Irqfd support */
++static struct workqueue_struct *irqfd_cleanup_wq;
++static DEFINE_MUTEX(irqfds_lock);
++static LIST_HEAD(irqfds_list);
 +
-+#ifndef uint64_aligned_t
-+#define uint64_aligned_t uint64_t
++struct privcmd_kernel_irqfd {
++	domid_t dom;
++	u8 level;
++	bool error;
++	u32 irq;
++	struct eventfd_ctx *eventfd;
++	struct work_struct shutdown;
++	wait_queue_entry_t wait;
++	struct list_head list;
++	poll_table pt;
++};
++
++static void irqfd_deactivate(struct privcmd_kernel_irqfd *kirqfd)
++{
++	lockdep_assert_held(&irqfds_lock);
++
++	list_del_init(&kirqfd->list);
++	queue_work(irqfd_cleanup_wq, &kirqfd->shutdown);
++}
++
++static void irqfd_shutdown(struct work_struct *work)
++{
++	struct privcmd_kernel_irqfd *kirqfd =
++		container_of(work, struct privcmd_kernel_irqfd, shutdown);
++	u64 cnt;
++
++	eventfd_ctx_remove_wait_queue(kirqfd->eventfd, &kirqfd->wait, &cnt);
++	eventfd_ctx_put(kirqfd->eventfd);
++	kfree(kirqfd);
++}
++
++static void irqfd_inject(struct privcmd_kernel_irqfd *kirqfd)
++{
++	/* Different architectures support this differently */
++	struct xen_dm_op dm_op = {
++#ifdef CONFIG_ARM64
++		.op = XEN_DMOP_set_irq_level,
++		.u.set_irq_level.irq = kirqfd->irq,
++		.u.set_irq_level.level = kirqfd->level,
 +#endif
++	};
++	struct xen_dm_op_buf xbufs = {
++		.size = sizeof(dm_op),
++	};
++	u64 cnt;
++	long rc;
 +
-+/*
-+ * IOREQ Servers
-+ *
-+ * The interface between an I/O emulator and Xen is called an IOREQ Server.
-+ * A domain supports a single 'legacy' IOREQ Server which is instantiated if
-+ * parameter...
-+ *
-+ * HVM_PARAM_IOREQ_PFN is read (to get the gfn containing the synchronous
-+ * ioreq structures), or...
-+ * HVM_PARAM_BUFIOREQ_PFN is read (to get the gfn containing the buffered
-+ * ioreq ring), or...
-+ * HVM_PARAM_BUFIOREQ_EVTCHN is read (to get the event channel that Xen uses
-+ * to request buffered I/O emulation).
-+ *
-+ * The following hypercalls facilitate the creation of IOREQ Servers for
-+ * 'secondary' emulators which are invoked to implement port I/O, memory, or
-+ * PCI config space ranges which they explicitly register.
-+ */
++	eventfd_ctx_do_read(kirqfd->eventfd, &cnt);
++	set_xen_guest_handle(xbufs.h, &dm_op);
 +
-+typedef uint16_t ioservid_t;
++	xen_preemptible_hcall_begin();
++	rc = HYPERVISOR_dm_op(kirqfd->dom, 1, &xbufs);
++	xen_preemptible_hcall_end();
 +
-+/*
-+ * XEN_DMOP_create_ioreq_server: Instantiate a new IOREQ Server for a
-+ *                               secondary emulator.
-+ *
-+ * The <id> handed back is unique for target domain. The valur of
-+ * <handle_bufioreq> should be one of HVM_IOREQSRV_BUFIOREQ_* defined in
-+ * hvm_op.h. If the value is HVM_IOREQSRV_BUFIOREQ_OFF then  the buffered
-+ * ioreq ring will not be allocated and hence all emulation requests to
-+ * this server will be synchronous.
-+ */
-+#define XEN_DMOP_create_ioreq_server 1
++	/* Don't repeat the error message for consecutive failures */
++	if (rc && !kirqfd->error) {
++		pr_err("Failed to configure irq: %d to level: %d for guest domain: %d\n",
++		       kirqfd->irq, kirqfd->level, kirqfd->dom);
++	}
 +
-+struct xen_dm_op_create_ioreq_server {
-+    /* IN - should server handle buffered ioreqs */
-+    uint8_t handle_bufioreq;
-+    uint8_t pad[3];
-+    /* OUT - server id */
-+    ioservid_t id;
++	kirqfd->error = !!rc;
++}
++
++static int
++irqfd_wakeup(wait_queue_entry_t *wait, unsigned int mode, int sync, void *key)
++{
++	struct privcmd_kernel_irqfd *kirqfd =
++		container_of(wait, struct privcmd_kernel_irqfd, wait);
++	__poll_t flags = key_to_poll(key);
++
++	if (flags & EPOLLIN)
++		irqfd_inject(kirqfd);
++
++	if (flags & EPOLLHUP) {
++		mutex_lock(&irqfds_lock);
++		irqfd_deactivate(kirqfd);
++		mutex_unlock(&irqfds_lock);
++	}
++
++	return 0;
++}
++
++static void
++irqfd_poll_func(struct file *file, wait_queue_head_t *wqh, poll_table *pt)
++{
++	struct privcmd_kernel_irqfd *kirqfd =
++		container_of(pt, struct privcmd_kernel_irqfd, pt);
++
++	add_wait_queue_priority(wqh, &kirqfd->wait);
++}
++
++static int privcmd_irqfd_assign(struct privcmd_irqfd *irqfd)
++{
++	struct privcmd_kernel_irqfd *kirqfd, *tmp;
++	struct eventfd_ctx *eventfd;
++	__poll_t events;
++	struct fd f;
++	int ret;
++
++	kirqfd = kzalloc(sizeof(*kirqfd), GFP_KERNEL);
++	if (!kirqfd)
++		return -ENOMEM;
++
++	kirqfd->irq = irqfd->irq;
++	kirqfd->dom = irqfd->dom;
++	kirqfd->level = irqfd->level;
++	INIT_LIST_HEAD(&kirqfd->list);
++	INIT_WORK(&kirqfd->shutdown, irqfd_shutdown);
++
++	f = fdget(irqfd->fd);
++	if (!f.file) {
++		ret = -EBADF;
++		goto error_kfree;
++	}
++
++	eventfd = eventfd_ctx_fileget(f.file);
++	if (IS_ERR(eventfd)) {
++		ret = PTR_ERR(eventfd);
++		goto error_fd_put;
++	}
++
++	kirqfd->eventfd = eventfd;
++
++	/*
++	 * Install our own custom wake-up handling so we are notified via a
++	 * callback whenever someone signals the underlying eventfd.
++	 */
++	init_waitqueue_func_entry(&kirqfd->wait, irqfd_wakeup);
++	init_poll_funcptr(&kirqfd->pt, irqfd_poll_func);
++
++	mutex_lock(&irqfds_lock);
++
++	list_for_each_entry(tmp, &irqfds_list, list) {
++		if (kirqfd->eventfd == tmp->eventfd) {
++			ret = -EBUSY;
++			mutex_unlock(&irqfds_lock);
++			goto error_eventfd;
++		}
++	}
++
++	list_add_tail(&kirqfd->list, &irqfds_list);
++	mutex_unlock(&irqfds_lock);
++
++	/*
++	 * Check if there was an event already pending on the eventfd before we
++	 * registered, and trigger it as if we didn't miss it.
++	 */
++	events = vfs_poll(f.file, &kirqfd->pt);
++	if (events & EPOLLIN)
++		irqfd_inject(kirqfd);
++
++	/*
++	 * Do not drop the file until the kirqfd is fully initialized, otherwise
++	 * we might race against the EPOLLHUP.
++	 */
++	fdput(f);
++	return 0;
++
++error_eventfd:
++	eventfd_ctx_put(eventfd);
++
++error_fd_put:
++	fdput(f);
++
++error_kfree:
++	kfree(kirqfd);
++	return ret;
++}
++
++static int privcmd_irqfd_deassign(struct privcmd_irqfd *irqfd)
++{
++	struct privcmd_kernel_irqfd *kirqfd;
++	struct eventfd_ctx *eventfd;
++
++	eventfd = eventfd_ctx_fdget(irqfd->fd);
++	if (IS_ERR(eventfd))
++		return PTR_ERR(eventfd);
++
++	mutex_lock(&irqfds_lock);
++
++	list_for_each_entry(kirqfd, &irqfds_list, list) {
++		if (kirqfd->eventfd == eventfd) {
++			irqfd_deactivate(kirqfd);
++			break;
++		}
++	}
++
++	mutex_unlock(&irqfds_lock);
++
++	eventfd_ctx_put(eventfd);
++
++	/*
++	 * Block until we know all outstanding shutdown jobs have completed so
++	 * that we guarantee there will not be any more interrupts once this
++	 * deassign function returns.
++	 */
++	flush_workqueue(irqfd_cleanup_wq);
++
++	return 0;
++}
++
++static long privcmd_ioctl_irqfd(struct file *file, void __user *udata)
++{
++	struct privcmd_data *data = file->private_data;
++	struct privcmd_irqfd irqfd;
++
++	if (copy_from_user(&irqfd, udata, sizeof(irqfd)))
++		return -EFAULT;
++
++	/* No other flags should be set */
++	if (irqfd.flags & ~PRIVCMD_IRQFD_FLAG_DEASSIGN)
++		return -EINVAL;
++
++	/* If restriction is in place, check the domid matches */
++	if (data->domid != DOMID_INVALID && data->domid != irqfd.dom)
++		return -EPERM;
++
++	if (irqfd.flags & PRIVCMD_IRQFD_FLAG_DEASSIGN)
++		return privcmd_irqfd_deassign(&irqfd);
++
++	return privcmd_irqfd_assign(&irqfd);
++}
++
++static int privcmd_irqfd_init(void)
++{
++	irqfd_cleanup_wq = alloc_workqueue("privcmd-irqfd-cleanup", 0, 0);
++	if (!irqfd_cleanup_wq)
++		return -ENOMEM;
++
++	return 0;
++}
++
++static void privcmd_irqfd_exit(void)
++{
++	struct privcmd_kernel_irqfd *kirqfd, *tmp;
++
++	mutex_lock(&irqfds_lock);
++
++	list_for_each_entry_safe(kirqfd, tmp, &irqfds_list, list)
++		irqfd_deactivate(kirqfd);
++
++	mutex_unlock(&irqfds_lock);
++
++	destroy_workqueue(irqfd_cleanup_wq);
++}
++
+ static long privcmd_ioctl(struct file *file,
+ 			  unsigned int cmd, unsigned long data)
+ {
+@@ -868,6 +1124,10 @@ static long privcmd_ioctl(struct file *file,
+ 		ret = privcmd_ioctl_mmap_resource(file, udata);
+ 		break;
+ 
++	case IOCTL_PRIVCMD_IRQFD:
++		ret = privcmd_ioctl_irqfd(file, udata);
++		break;
++
+ 	default:
+ 		break;
+ 	}
+@@ -992,15 +1252,27 @@ static int __init privcmd_init(void)
+ 	err = misc_register(&xen_privcmdbuf_dev);
+ 	if (err != 0) {
+ 		pr_err("Could not register Xen hypercall-buf device\n");
+-		misc_deregister(&privcmd_dev);
+-		return err;
++		goto err_privcmdbuf;
++	}
++
++	err = privcmd_irqfd_init();
++	if (err != 0) {
++		pr_err("irqfd init failed\n");
++		goto err_irqfd;
+ 	}
+ 
+ 	return 0;
++
++err_irqfd:
++	misc_deregister(&xen_privcmdbuf_dev);
++err_privcmdbuf:
++	misc_deregister(&privcmd_dev);
++	return err;
+ }
+ 
+ static void __exit privcmd_exit(void)
+ {
++	privcmd_irqfd_exit();
+ 	misc_deregister(&privcmd_dev);
+ 	misc_deregister(&xen_privcmdbuf_dev);
+ }
+diff --git a/include/uapi/xen/privcmd.h b/include/uapi/xen/privcmd.h
+index d2029556083e..47334bb91a09 100644
+--- a/include/uapi/xen/privcmd.h
++++ b/include/uapi/xen/privcmd.h
+@@ -98,6 +98,18 @@ struct privcmd_mmap_resource {
+ 	__u64 addr;
+ };
+ 
++/* For privcmd_irqfd::flags */
++#define PRIVCMD_IRQFD_FLAG_DEASSIGN (1 << 0)
++
++struct privcmd_irqfd {
++	__u32 fd;
++	__u32 flags;
++	__u32 irq;
++	domid_t dom;
++	__u8 level;
++	__u8 pad;
 +};
 +
-+/*
-+ * XEN_DMOP_get_ioreq_server_info: Get all the information necessary to
-+ *                                 access IOREQ Server <id>.
-+ *
-+ * If the IOREQ Server is handling buffered emulation requests, the
-+ * emulator needs to bind to event channel <bufioreq_port> to listen for
-+ * them. (The event channels used for synchronous emulation requests are
-+ * specified in the per-CPU ioreq structures).
-+ * In addition, if the XENMEM_acquire_resource memory op cannot be used,
-+ * the emulator will need to map the synchronous ioreq structures and
-+ * buffered ioreq ring (if it exists) from guest memory. If <flags> does
-+ * not contain XEN_DMOP_no_gfns then these pages will be made available and
-+ * the frame numbers passed back in gfns <ioreq_gfn> and <bufioreq_gfn>
-+ * respectively. (If the IOREQ Server is not handling buffered emulation
-+ * only <ioreq_gfn> will be valid).
-+ *
-+ * NOTE: To access the synchronous ioreq structures and buffered ioreq
-+ *       ring, it is preferable to use the XENMEM_acquire_resource memory
-+ *       op specifying resource type XENMEM_resource_ioreq_server.
-+ */
-+#define XEN_DMOP_get_ioreq_server_info 2
-+
-+struct xen_dm_op_get_ioreq_server_info {
-+    /* IN - server id */
-+    ioservid_t id;
-+    /* IN - flags */
-+    uint16_t flags;
-+
-+#define _XEN_DMOP_no_gfns 0
-+#define XEN_DMOP_no_gfns (1u << _XEN_DMOP_no_gfns)
-+
-+    /* OUT - buffered ioreq port */
-+    evtchn_port_t bufioreq_port;
-+    /* OUT - sync ioreq gfn (see block comment above) */
-+    uint64_aligned_t ioreq_gfn;
-+    /* OUT - buffered ioreq gfn (see block comment above)*/
-+    uint64_aligned_t bufioreq_gfn;
-+};
-+
-+/*
-+ * XEN_DMOP_map_io_range_to_ioreq_server: Register an I/O range for
-+ *                                        emulation by the client of
-+ *                                        IOREQ Server <id>.
-+ * XEN_DMOP_unmap_io_range_from_ioreq_server: Deregister an I/O range
-+ *                                            previously registered for
-+ *                                            emulation by the client of
-+ *                                            IOREQ Server <id>.
-+ *
-+ * There are three types of I/O that can be emulated: port I/O, memory
-+ * accesses and PCI config space accesses. The <type> field denotes which
-+ * type of range* the <start> and <end> (inclusive) fields are specifying.
-+ * PCI config space ranges are specified by segment/bus/device/function
-+ * values which should be encoded using the DMOP_PCI_SBDF helper macro
-+ * below.
-+ *
-+ * NOTE: unless an emulation request falls entirely within a range mapped
-+ * by a secondary emulator, it will not be passed to that emulator.
-+ */
-+#define XEN_DMOP_map_io_range_to_ioreq_server 3
-+#define XEN_DMOP_unmap_io_range_from_ioreq_server 4
-+
-+struct xen_dm_op_ioreq_server_range {
-+    /* IN - server id */
-+    ioservid_t id;
-+    uint16_t pad;
-+    /* IN - type of range */
-+    uint32_t type;
-+# define XEN_DMOP_IO_RANGE_PORT   0 /* I/O port range */
-+# define XEN_DMOP_IO_RANGE_MEMORY 1 /* MMIO range */
-+# define XEN_DMOP_IO_RANGE_PCI    2 /* PCI segment/bus/dev/func range */
-+    /* IN - inclusive start and end of range */
-+    uint64_aligned_t start, end;
-+};
-+
-+#define XEN_DMOP_PCI_SBDF(s,b,d,f) \
-+	((((s) & 0xffff) << 16) |  \
-+	 (((b) & 0xff) << 8) |     \
-+	 (((d) & 0x1f) << 3) |     \
-+	 ((f) & 0x07))
-+
-+/*
-+ * XEN_DMOP_set_ioreq_server_state: Enable or disable the IOREQ Server <id>
-+ *
-+ * The IOREQ Server will not be passed any emulation requests until it is
-+ * in the enabled state.
-+ * Note that the contents of the ioreq_gfn and bufioreq_gfn (see
-+ * XEN_DMOP_get_ioreq_server_info) are not meaningful until the IOREQ Server
-+ * is in the enabled state.
-+ */
-+#define XEN_DMOP_set_ioreq_server_state 5
-+
-+struct xen_dm_op_set_ioreq_server_state {
-+    /* IN - server id */
-+    ioservid_t id;
-+    /* IN - enabled? */
-+    uint8_t enabled;
-+    uint8_t pad;
-+};
-+
-+/*
-+ * XEN_DMOP_destroy_ioreq_server: Destroy the IOREQ Server <id>.
-+ *
-+ * Any registered I/O ranges will be automatically deregistered.
-+ */
-+#define XEN_DMOP_destroy_ioreq_server 6
-+
-+struct xen_dm_op_destroy_ioreq_server {
-+    /* IN - server id */
-+    ioservid_t id;
-+    uint16_t pad;
-+};
-+
-+/*
-+ * XEN_DMOP_track_dirty_vram: Track modifications to the specified pfn
-+ *                            range.
-+ *
-+ * NOTE: The bitmap passed back to the caller is passed in a
-+ *       secondary buffer.
-+ */
-+#define XEN_DMOP_track_dirty_vram 7
-+
-+struct xen_dm_op_track_dirty_vram {
-+    /* IN - number of pages to be tracked */
-+    uint32_t nr;
-+    uint32_t pad;
-+    /* IN - first pfn to track */
-+    uint64_aligned_t first_pfn;
-+};
-+
-+/*
-+ * XEN_DMOP_set_pci_intx_level: Set the logical level of one of a domain's
-+ *                              PCI INTx pins.
-+ */
-+#define XEN_DMOP_set_pci_intx_level 8
-+
-+struct xen_dm_op_set_pci_intx_level {
-+    /* IN - PCI INTx identification (domain:bus:device:intx) */
-+    uint16_t domain;
-+    uint8_t bus, device, intx;
-+    /* IN - Level: 0 -> deasserted, 1 -> asserted */
-+    uint8_t  level;
-+};
-+
-+/*
-+ * XEN_DMOP_set_isa_irq_level: Set the logical level of a one of a domain's
-+ *                             ISA IRQ lines.
-+ */
-+#define XEN_DMOP_set_isa_irq_level 9
-+
-+struct xen_dm_op_set_isa_irq_level {
-+    /* IN - ISA IRQ (0-15) */
-+    uint8_t  isa_irq;
-+    /* IN - Level: 0 -> deasserted, 1 -> asserted */
-+    uint8_t  level;
-+};
-+
-+/*
-+ * XEN_DMOP_set_pci_link_route: Map a PCI INTx line to an IRQ line.
-+ */
-+#define XEN_DMOP_set_pci_link_route 10
-+
-+struct xen_dm_op_set_pci_link_route {
-+    /* PCI INTx line (0-3) */
-+    uint8_t  link;
-+    /* ISA IRQ (1-15) or 0 -> disable link */
-+    uint8_t  isa_irq;
-+};
-+
-+/*
-+ * XEN_DMOP_modified_memory: Notify that a set of pages were modified by
-+ *                           an emulator.
-+ *
-+ * DMOP buf 1 contains an array of xen_dm_op_modified_memory_extent with
-+ * @nr_extents entries.
-+ *
-+ * On error, @nr_extents will contain the index+1 of the extent that
-+ * had the error.  It is not defined if or which pages may have been
-+ * marked as dirty, in this event.
-+ */
-+#define XEN_DMOP_modified_memory 11
-+
-+struct xen_dm_op_modified_memory {
-+    /*
-+     * IN - Number of extents to be processed
-+     * OUT -returns n+1 for failing extent
-+     */
-+    uint32_t nr_extents;
-+    /* IN/OUT - Must be set to 0 */
-+    uint32_t opaque;
-+};
-+
-+struct xen_dm_op_modified_memory_extent {
-+    /* IN - number of contiguous pages modified */
-+    uint32_t nr;
-+    uint32_t pad;
-+    /* IN - first pfn modified */
-+    uint64_aligned_t first_pfn;
-+};
-+
-+/*
-+ * XEN_DMOP_set_mem_type: Notify that a region of memory is to be treated
-+ *                        in a specific way. (See definition of
-+ *                        hvmmem_type_t).
-+ *
-+ * NOTE: In the event of a continuation (return code -ERESTART), the
-+ *       @first_pfn is set to the value of the pfn of the remaining
-+ *       region and @nr reduced to the size of the remaining region.
-+ */
-+#define XEN_DMOP_set_mem_type 12
-+
-+struct xen_dm_op_set_mem_type {
-+    /* IN - number of contiguous pages */
-+    uint32_t nr;
-+    /* IN - new hvmmem_type_t of region */
-+    uint16_t mem_type;
-+    uint16_t pad;
-+    /* IN - first pfn in region */
-+    uint64_aligned_t first_pfn;
-+};
-+
-+/*
-+ * XEN_DMOP_inject_event: Inject an event into a VCPU, which will
-+ *                        get taken up when it is next scheduled.
-+ *
-+ * Note that the caller should know enough of the state of the CPU before
-+ * injecting, to know what the effect of injecting the event will be.
-+ */
-+#define XEN_DMOP_inject_event 13
-+
-+struct xen_dm_op_inject_event {
-+    /* IN - index of vCPU */
-+    uint32_t vcpuid;
-+    /* IN - interrupt vector */
-+    uint8_t vector;
-+    /* IN - event type (DMOP_EVENT_* ) */
-+    uint8_t type;
-+/* NB. This enumeration precisely matches hvm.h:X86_EVENTTYPE_* */
-+# define XEN_DMOP_EVENT_ext_int    0 /* external interrupt */
-+# define XEN_DMOP_EVENT_nmi        2 /* nmi */
-+# define XEN_DMOP_EVENT_hw_exc     3 /* hardware exception */
-+# define XEN_DMOP_EVENT_sw_int     4 /* software interrupt (CD nn) */
-+# define XEN_DMOP_EVENT_pri_sw_exc 5 /* ICEBP (F1) */
-+# define XEN_DMOP_EVENT_sw_exc     6 /* INT3 (CC), INTO (CE) */
-+    /* IN - instruction length */
-+    uint8_t insn_len;
-+    uint8_t pad0;
-+    /* IN - error code (or ~0 to skip) */
-+    uint32_t error_code;
-+    uint32_t pad1;
-+    /* IN - type-specific extra data (%cr2 for #PF, pending_dbg for #DB) */
-+    uint64_aligned_t cr2;
-+};
-+
-+/*
-+ * XEN_DMOP_inject_msi: Inject an MSI for an emulated device.
-+ */
-+#define XEN_DMOP_inject_msi 14
-+
-+struct xen_dm_op_inject_msi {
-+    /* IN - MSI data (lower 32 bits) */
-+    uint32_t data;
-+    uint32_t pad;
-+    /* IN - MSI address (0xfeexxxxx) */
-+    uint64_aligned_t addr;
-+};
-+
-+/*
-+ * XEN_DMOP_map_mem_type_to_ioreq_server : map or unmap the IOREQ Server <id>
-+ *                                      to specific memory type <type>
-+ *                                      for specific accesses <flags>
-+ *
-+ * For now, flags only accept the value of XEN_DMOP_IOREQ_MEM_ACCESS_WRITE,
-+ * which means only write operations are to be forwarded to an ioreq server.
-+ * Support for the emulation of read operations can be added when an ioreq
-+ * server has such requirement in future.
-+ */
-+#define XEN_DMOP_map_mem_type_to_ioreq_server 15
-+
-+struct xen_dm_op_map_mem_type_to_ioreq_server {
-+    ioservid_t id;      /* IN - ioreq server id */
-+    uint16_t type;      /* IN - memory type */
-+    uint32_t flags;     /* IN - types of accesses to be forwarded to the
-+                           ioreq server. flags with 0 means to unmap the
-+                           ioreq server */
-+
-+#define XEN_DMOP_IOREQ_MEM_ACCESS_READ (1u << 0)
-+#define XEN_DMOP_IOREQ_MEM_ACCESS_WRITE (1u << 1)
-+
-+    uint64_t opaque;    /* IN/OUT - only used for hypercall continuation,
-+                           has to be set to zero by the caller */
-+};
-+
-+/*
-+ * XEN_DMOP_remote_shutdown : Declare a shutdown for another domain
-+ *                            Identical to SCHEDOP_remote_shutdown
-+ */
-+#define XEN_DMOP_remote_shutdown 16
-+
-+struct xen_dm_op_remote_shutdown {
-+    uint32_t reason;       /* SHUTDOWN_* => enum sched_shutdown_reason */
-+                           /* (Other reason values are not blocked) */
-+};
-+
-+/*
-+ * XEN_DMOP_relocate_memory : Relocate GFNs for the specified guest.
-+ *                            Identical to XENMEM_add_to_physmap with
-+ *                            space == XENMAPSPACE_gmfn_range.
-+ */
-+#define XEN_DMOP_relocate_memory 17
-+
-+struct xen_dm_op_relocate_memory {
-+    /* All fields are IN/OUT, with their OUT state undefined. */
-+    /* Number of GFNs to process. */
-+    uint32_t size;
-+    uint32_t pad;
-+    /* Starting GFN to relocate. */
-+    uint64_aligned_t src_gfn;
-+    /* Starting GFN where GFNs should be relocated. */
-+    uint64_aligned_t dst_gfn;
-+};
-+
-+/*
-+ * XEN_DMOP_pin_memory_cacheattr : Pin caching type of RAM space.
-+ *                                 Identical to XEN_DOMCTL_pin_mem_cacheattr.
-+ */
-+#define XEN_DMOP_pin_memory_cacheattr 18
-+
-+struct xen_dm_op_pin_memory_cacheattr {
-+    uint64_aligned_t start; /* Start gfn. */
-+    uint64_aligned_t end;   /* End gfn. */
-+/* Caching types: these happen to be the same as x86 MTRR/PAT type codes. */
-+#define XEN_DMOP_MEM_CACHEATTR_UC  0
-+#define XEN_DMOP_MEM_CACHEATTR_WC  1
-+#define XEN_DMOP_MEM_CACHEATTR_WT  4
-+#define XEN_DMOP_MEM_CACHEATTR_WP  5
-+#define XEN_DMOP_MEM_CACHEATTR_WB  6
-+#define XEN_DMOP_MEM_CACHEATTR_UCM 7
-+#define XEN_DMOP_DELETE_MEM_CACHEATTR (~(uint32_t)0)
-+    uint32_t type;          /* XEN_DMOP_MEM_CACHEATTR_* */
-+    uint32_t pad;
-+};
-+
-+/*
-+ * XEN_DMOP_set_irq_level: Set the logical level of a one of a domain's
-+ *                         IRQ lines (currently Arm only).
-+ * Only SPIs are supported.
-+ */
-+#define XEN_DMOP_set_irq_level 19
-+
-+struct xen_dm_op_set_irq_level {
-+    uint32_t irq;
-+    /* IN - Level: 0 -> deasserted, 1 -> asserted */
-+    uint8_t level;
-+    uint8_t pad[3];
-+};
-+
-+/*
-+ * XEN_DMOP_nr_vcpus: Query the number of vCPUs a domain has.
-+ *
-+ * This is the number of vcpu objects allocated in Xen for the domain, and is
-+ * fixed from creation time.  This bound is applicable to e.g. the vcpuid
-+ * parameter of XEN_DMOP_inject_event, or number of struct ioreq objects
-+ * mapped via XENMEM_acquire_resource.
-+ */
-+#define XEN_DMOP_nr_vcpus 20
-+
-+struct xen_dm_op_nr_vcpus {
-+    uint32_t vcpus; /* OUT */
-+};
-+
-+struct xen_dm_op {
-+    uint32_t op;
-+    uint32_t pad;
-+    union {
-+        struct xen_dm_op_create_ioreq_server create_ioreq_server;
-+        struct xen_dm_op_get_ioreq_server_info get_ioreq_server_info;
-+        struct xen_dm_op_ioreq_server_range map_io_range_to_ioreq_server;
-+        struct xen_dm_op_ioreq_server_range unmap_io_range_from_ioreq_server;
-+        struct xen_dm_op_set_ioreq_server_state set_ioreq_server_state;
-+        struct xen_dm_op_destroy_ioreq_server destroy_ioreq_server;
-+        struct xen_dm_op_track_dirty_vram track_dirty_vram;
-+        struct xen_dm_op_set_pci_intx_level set_pci_intx_level;
-+        struct xen_dm_op_set_isa_irq_level set_isa_irq_level;
-+        struct xen_dm_op_set_irq_level set_irq_level;
-+        struct xen_dm_op_set_pci_link_route set_pci_link_route;
-+        struct xen_dm_op_modified_memory modified_memory;
-+        struct xen_dm_op_set_mem_type set_mem_type;
-+        struct xen_dm_op_inject_event inject_event;
-+        struct xen_dm_op_inject_msi inject_msi;
-+        struct xen_dm_op_map_mem_type_to_ioreq_server map_mem_type_to_ioreq_server;
-+        struct xen_dm_op_remote_shutdown remote_shutdown;
-+        struct xen_dm_op_relocate_memory relocate_memory;
-+        struct xen_dm_op_pin_memory_cacheattr pin_memory_cacheattr;
-+        struct xen_dm_op_nr_vcpus nr_vcpus;
-+    } u;
-+};
-+
- struct xen_dm_op_buf {
- 	GUEST_HANDLE(void) h;
- 	xen_ulong_t size;
+ /*
+  * @cmd: IOCTL_PRIVCMD_HYPERCALL
+  * @arg: &privcmd_hypercall_t
+@@ -125,5 +137,7 @@ struct privcmd_mmap_resource {
+ 	_IOC(_IOC_NONE, 'P', 6, sizeof(domid_t))
+ #define IOCTL_PRIVCMD_MMAP_RESOURCE				\
+ 	_IOC(_IOC_NONE, 'P', 7, sizeof(struct privcmd_mmap_resource))
++#define IOCTL_PRIVCMD_IRQFD					\
++	_IOC(_IOC_NONE, 'P', 8, sizeof(struct privcmd_irqfd))
+ 
+ #endif /* __LINUX_PUBLIC_PRIVCMD_H__ */
 -- 
 2.31.1.272.g89b43f80a514
 
