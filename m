@@ -2,119 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9011075BA61
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D4675BA67
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbjGTWRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 18:17:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        id S229812AbjGTWTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 18:19:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbjGTWQx (ORCPT
+        with ESMTP id S229671AbjGTWTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 18:16:53 -0400
-Received: from icts-p-cavuit-1.kulnet.kuleuven.be (icts-p-cavuit-1.kulnet.kuleuven.be [134.58.240.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD11C271C;
-        Thu, 20 Jul 2023 15:16:44 -0700 (PDT)
-X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: BE83920062.A53EC
-X-KULeuven-Information: Katholieke Universiteit Leuven
-Received: from icts-p-ceifnet-smtps-0.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:143:242:ac11:20])
-        by icts-p-cavuit-1.kulnet.kuleuven.be (Postfix) with ESMTP id BE83920062;
-        Fri, 21 Jul 2023 00:16:42 +0200 (CEST)
-BCmilterd-Mark-Subject: no
-BCmilterd-Errors: 
-BCmilterd-Report: SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID#0.00
-X-CAV-Cluster: smtps
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
-        s=cav; t=1689891402;
-        bh=p/mHGCHU9khZV4ahP2OfNg5iVtTSORj6dJBV/UvLFD4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=WXR1gBZvHSMCVKOSkVSDLVNQ1HqnPY8CT9/76KL/3whkSnHuXNkqfdd0Pin3e69FP
-         jXOwtWjl+KRvQwEexQUvXINBHyxmzHTYFA8by+yDR2Tp7x+Ght8cCpB03r3SZp4ciT
-         xAt+sCneVAMTgRLgsRMP7hMRbmRXbD1KcBNdTgvo=
-Received: from librem.home (unknown [IPv6:2a02:1210:6c17:f000:92c2:ccf4:848b:6bf4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by icts-p-ceifnet-smtps-0.kuleuven.be (Postfix) with ESMTPSA id 77134D4EC61F5;
-        Fri, 21 Jul 2023 00:16:42 +0200 (CEST)
-X-Kuleuven: This mail passed the K.U.Leuven mailcluster
-From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-To:     jarkko@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     dave.hansen@linux.intel.com,
-        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-Subject: [PATCH 4/4] selftests/sgx: Fix compiler optimizations in test enclave
-Date:   Fri, 21 Jul 2023 00:16:23 +0200
-Message-Id: <20230720221623.9530-5-jo.vanbulck@cs.kuleuven.be>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230720221623.9530-1-jo.vanbulck@cs.kuleuven.be>
-References: <20230720221623.9530-1-jo.vanbulck@cs.kuleuven.be>
+        Thu, 20 Jul 2023 18:19:09 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99716E47
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:19:07 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-682a5465e9eso264715b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:19:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1689891547; x=1690496347;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sVlmD6Cai8xXy17J6HGSSxnEYFsK5TVR9Bij+nhELSU=;
+        b=pNFvIZNJ/OuFuPT10N5T/mocD8A11gY/PpEHIx816IC3XkWam1P85Yvn9F3Adaftrc
+         opViTWT/iuQyIHW2VHMRAjPr+XAFSy3MTPYdr8YRcoddzbrdYNQrQ/pLnAeWWd5vB067
+         7PT/m23rpRxRJ9hk9U5zkbtmMXErlJo+r9DgPllJ55Q7AVmCkxS7lk/RbiPa2YvisgTs
+         Mjq3JJX62SslZ2FSQ9XYcY9iz7fJL8Q6Qcj9Xt4KVd3rN13GYp72vldPuSQpGtie85+Z
+         9zKvCHRsBf6MY8hyMWp5DAkEGM59+hHBXot+YFbhF5mAdWWYlfRhaP6CimCYf6RwNhLd
+         ua5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689891547; x=1690496347;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sVlmD6Cai8xXy17J6HGSSxnEYFsK5TVR9Bij+nhELSU=;
+        b=JQi1Kr+oZ6pChhh4ongiCjfZ2aPyPLNQtfGTnm1doKWrlKpS7l1eib5xN9sAohZSl7
+         Njpyi7XYVjA9mApNI+I6+HWa/eDYOXs8vsHGJ90GW+Odqax9N26+J0SdBmuX6ZpvyoaF
+         EwgkLObrvZeOLXVpM8A0prGgR1YhEH53sxf0SXStmNW9jZa1ONy4/j4dSSSwiuX22AKW
+         2fRNP9+2v2cPAq+SZMDijWBXk3v12yzlqQJQ8nZ7Atrz1vXPp5znUPQRmjfQ3VRN+drn
+         XekAIL4Uc6Q1BVvR043DT7itYbxMt5pxd64SSn3IUHATiKcPV53Ji22DVvUHISdlUyy/
+         4GMw==
+X-Gm-Message-State: ABy/qLYqhiToHfDK+NLwfa6BENkTGWQEqHFwDemdZzu1lkbpCSkyetVm
+        8dt3Bac7O3fwlkTnUV6Y/AwkzA==
+X-Google-Smtp-Source: APBJJlHqQfcorMZnQT72lvQSVFT9t0airkDf7aV143YsSWf4j0Ke590qicZfl3jXtZgvsg5vFzurjA==
+X-Received: by 2002:a05:6a20:42a8:b0:123:3ec2:360d with SMTP id o40-20020a056a2042a800b001233ec2360dmr204852pzj.5.1689891546782;
+        Thu, 20 Jul 2023 15:19:06 -0700 (PDT)
+Received: from localhost.localdomain ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id q1-20020a63bc01000000b0055b3af821d5sm1762454pge.25.2023.07.20.15.19.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 15:19:06 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, andres@anarazel.de
+Subject: [PATCHSET v3 0/10] Add io_uring futex/futexv support
+Date:   Thu, 20 Jul 2023 16:18:48 -0600
+Message-Id: <20230720221858.135240-1-axboe@kernel.dk>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Relocate encl_op_array entries at runtime relative to the enclave base to
-ensure correct function pointer when compiling the test enclave with -Os.
+Hi,
 
-Declare the secinfo struct as volatile to prevent compiler optimizations
-from passing an unaligned pointer to ENCLU.
+This patchset adds support for first futex wake and wait, and then
+futexv.
 
-Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
----
- tools/testing/selftests/sgx/test_encl.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+For both wait/wake/waitv, we support the bitset variant, as the
+"normal" variants can be easily implemented on top of that.
 
-diff --git a/tools/testing/selftests/sgx/test_encl.c b/tools/testing/selftests/sgx/test_encl.c
-index ea24cdf9e..b580c37f3 100644
---- a/tools/testing/selftests/sgx/test_encl.c
-+++ b/tools/testing/selftests/sgx/test_encl.c
-@@ -105,7 +105,8 @@ static inline void assert_inside_enclave(uint64_t arg, size_t len)
- static void do_encl_emodpe(void *_op)
- {
- 	struct encl_op_emodpe op;
--	struct sgx_secinfo secinfo __aligned(sizeof(struct sgx_secinfo)) = {0};
-+	/* declare secinfo volatile to preserve alignment */
-+	volatile struct __aligned(sizeof(struct sgx_secinfo)) sgx_secinfo secinfo = {0};
- 
- 	copy_inside_enclave(&op, _op, sizeof(op));
- 	assert_inside_enclave(op.epc_addr, PAGE_SIZE);
-@@ -122,8 +123,9 @@ static void do_encl_emodpe(void *_op)
- static void do_encl_eaccept(void *_op)
- {
- 	struct encl_op_eaccept op;
--	struct sgx_secinfo secinfo __aligned(sizeof(struct sgx_secinfo)) = {0};
- 	int rax;
-+	/* declare secinfo volatile to preserve alignment */
-+	volatile struct __aligned(sizeof(struct sgx_secinfo)) sgx_secinfo secinfo = {0};
- 
- 	copy_inside_enclave(&op, _op, sizeof(op));
- 	assert_inside_enclave(op.epc_addr, PAGE_SIZE);
-@@ -222,7 +224,7 @@ static void do_encl_op_nop(void *_op)
- 
- void encl_body(void *rdi,  void *rsi)
- {
--	const void (*encl_op_array[ENCL_OP_MAX])(void *) = {
-+	static const void (*encl_op_array[ENCL_OP_MAX])(void *) = {
- 		do_encl_op_put_to_buf,
- 		do_encl_op_get_from_buf,
- 		do_encl_op_put_to_addr,
-@@ -237,5 +239,5 @@ void encl_body(void *rdi,  void *rsi)
- 	copy_inside_enclave(&op, rdi, sizeof(op));
- 
- 	if (op.type < ENCL_OP_MAX)
--		(*encl_op_array[op.type])(rdi);
-+		(*(get_enclave_base() + encl_op_array[op.type]))(rdi);
- }
+PI and requeue are not supported through io_uring, just the above
+mentioned parts. This may change in the future, but in the spirit
+of keeping this small (and based on what people have been asking for),
+this is what we currently have.
+
+When I did these patches, I forgot that Pavel had previously posted a
+futex variant for io_uring. The major thing that had been holding me
+back from people asking about futexes and io_uring, is that I wanted
+to do this what I consider the right way - no usage of io-wq or thread
+offload, an actually async implementation that is efficient to use
+and don't rely on a blocking thread for futex wait/waitv. This is what
+this patchset attempts to do, while being minimally invasive on the
+futex side. I believe the diffstat reflects that.
+
+As far as I can recall, the first request for futex support with
+io_uring came from Andres Freund, working on postgres. His aio rework
+of postgres was one of the early adopters of io_uring, and futex
+support was a natural extension for that. This is relevant from both
+a usability point of view, as well as for effiency and performance.
+In Andres's words, for the former:
+
+"Futex wait support in io_uring makes it a lot easier to avoid deadlocks
+in concurrent programs that have their own buffer pool: Obviously pages in
+the application buffer pool have to be locked during IO. If the initiator
+of IO A needs to wait for a held lock B, the holder of lock B might wait
+for the IO A to complete.  The ability to wait for a lock and IO
+completions at the same time provides an efficient way to avoid such
+deadlocks."
+
+and in terms of effiency, even without unlocking the full potential yet,
+Andres says:
+
+"Futex wake support in io_uring is useful because it allows for more
+efficient directed wakeups.  For some "locks" postgres has queues
+implemented in userspace, with wakeup logic that cannot easily be
+implemented with FUTEX_WAKE_BITSET on a single "futex word" (imagine
+waiting for journal flushes to have completed up to a certain point). Thus
+a "lock release" sometimes need to wake up many processes in a row.  A
+quick-and-dirty conversion to doing these wakeups via io_uring lead to a
+3% throughput increase, with 12% fewer context switches, albeit in a
+fairly extreme workload."
+
+Some basic io_uring futex support and test cases are available in the
+liburing 'futex' branch:
+
+https://git.kernel.dk/cgit/liburing/log/?h=futex
+
+testing all of the variants. I originally wrote this code about a
+month ago and Andres has been using it with postgres, and I'm not
+aware of any bugs in it. That's not to say it's perfect, obviously,
+and I welcome some feedback so we can move this forward and hash out
+any potential issues.
+
+ include/linux/io_uring_types.h |   3 +
+ include/uapi/linux/futex.h     |  17 +-
+ include/uapi/linux/io_uring.h  |   4 +
+ io_uring/Makefile              |   4 +-
+ io_uring/cancel.c              |   5 +
+ io_uring/cancel.h              |   4 +
+ io_uring/futex.c               | 364 +++++++++++++++++++++++++++++++++
+ io_uring/futex.h               |  36 ++++
+ io_uring/io_uring.c            |   5 +
+ io_uring/opdef.c               |  35 +++-
+ kernel/futex/futex.h           |  64 +++++-
+ kernel/futex/requeue.c         |   3 +-
+ kernel/futex/syscalls.c        |  42 ++--
+ kernel/futex/waitwake.c        |  53 +++--
+ 14 files changed, 593 insertions(+), 46 deletions(-)
+
+You can also find the code here:
+
+https://git.kernel.dk/cgit/linux/log/?h=io_uring-futex
+
+V3:
+- Rebase on top of Peter's futex flag patches
+- Move to using FUTEX2 flags
+
 -- 
-2.34.1
+Jens Axboe
+
 
