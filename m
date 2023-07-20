@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A9F75AA49
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FE775AA39
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231736AbjGTJAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36000 "EHLO
+        id S229844AbjGTI6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 04:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231971AbjGTIe3 (ORCPT
+        with ESMTP id S231993AbjGTIe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 Jul 2023 04:34:29 -0400
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FB5268E
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:34:27 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=kenan.liu@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VnpHxp-_1689842063;
-Received: from iZbp125ew08a9bxe5bn4s4Z.localdomain(mailfrom:Kenan.Liu@linux.alibaba.com fp:SMTPD_---0VnpHxp-_1689842063)
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7554A268F
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:34:28 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R721e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=kenan.liu@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VnpHxpT_1689842064;
+Received: from iZbp125ew08a9bxe5bn4s4Z.localdomain(mailfrom:Kenan.Liu@linux.alibaba.com fp:SMTPD_---0VnpHxpT_1689842064)
           by smtp.aliyun-inc.com;
           Thu, 20 Jul 2023 16:34:24 +0800
 From:   "Kenan.Liu" <Kenan.Liu@linux.alibaba.com>
@@ -25,9 +25,9 @@ To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
         rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
         bristot@redhat.com, vschneid@redhat.com
 Cc:     luoben@linux.alibaba.com, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 1/2] sched/fair: Adjust CFS loadbalance for machine with qemu native CPU topology.
-Date:   Thu, 20 Jul 2023 16:34:12 +0800
-Message-Id: <1689842053-5291-2-git-send-email-Kenan.Liu@linux.alibaba.com>
+Subject: [RFC PATCH 2/2] sched/fair: Export a param to control the traverse len when select idle cpu.
+Date:   Thu, 20 Jul 2023 16:34:13 +0800
+Message-Id: <1689842053-5291-3-git-send-email-Kenan.Liu@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1689842053-5291-1-git-send-email-Kenan.Liu@linux.alibaba.com>
 References: <1689842053-5291-1-git-send-email-Kenan.Liu@linux.alibaba.com>
@@ -43,96 +43,116 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Kenan.Liu" <Kenan.Liu@linux.alibaba.com>
 
-Multithreading workloads in VM with Qemu may encounter an unexpected
-phenomenon: one hyperthread of a physical core is busy while its sibling
-is idle. The main reason is that hyperthread index is consecutive in qemu
-native x86 CPU model which is different from the physical topology. As the
-current kernel scheduler implementation, hyperthread with an even ID
-number will be picked up in a much higher probability during load-balancing
-and load-deploying. To solve the imbalance, when on a machine with multi
-core and hyperthread index is consecutive per core, change the result of
-select_idle_core() according to the hyperthread on which the task ran
-before.
+The variable 'nr' decides the length of traverse when we try to find an
+idle cpu in function select_idle_cpu(). A fixed value such as 4 may not
+perform well in all scenes and may lead to un-acceptable overhead. Export
+two sysctl parameters to enable adjustments.
 
 Signed-off-by: Kenan.Liu <Kenan.Liu@linux.alibaba.com>
 Signed-off-by: Ben Luo <luoben@linux.alibaba.com>
 ---
- kernel/sched/fair.c | 38 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 36 insertions(+), 2 deletions(-)
+ kernel/sched/fair.c | 65 +++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 63 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index a80a739..ad7c93f 100644
+index ad7c93f..e10de3b 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
 @@ -125,6 +125,9 @@
  static unsigned int normalized_sysctl_sched_wakeup_granularity	= 1000000UL;
  
  const_debug unsigned int sysctl_sched_migration_cost	= 500000UL;
-+static bool smt_neighbour_topo;
-+static bool core_smt_topo_detect;
-+static unsigned int smt_nr_cpu = 2;
++unsigned int __read_mostly sysctl_sched_idle_search_nr_default = 4;
++unsigned int __read_mostly sysctl_sched_idle_search_nr_threshold = 4;
++
+ static bool smt_neighbour_topo;
+ static bool core_smt_topo_detect;
+ static unsigned int smt_nr_cpu = 2;
+@@ -207,6 +210,50 @@ int __weak arch_asym_cpu_priority(int cpu)
+ #endif
  
- int sched_thermal_decay_shift;
- static int __init setup_sched_thermal_decay_shift(char *str)
-@@ -140,6 +143,26 @@ static int __init setup_sched_thermal_decay_shift(char *str)
- __setup("sched_thermal_decay_shift=", setup_sched_thermal_decay_shift);
- 
- #ifdef CONFIG_SMP
-+static void explore_core_smp_topology(void)
+ #ifdef CONFIG_SYSCTL
++static int sched_set_idle_search_nr_default(struct ctl_table *table, int write, void *buffer,
++		size_t *lenp, loff_t *ppos)
 +{
-+	int cpu = smp_processor_id(), sibling;
-+	const struct cpumask *smt_mask = cpu_smt_mask(cpu);
++	static DEFINE_MUTEX(mutex);
++	unsigned int old_nr;
++	int ret;
 +
-+	if (nr_cpu_ids <= 2)
-+		return;
-+
-+	smt_nr_cpu = cpumask_weight(smt_mask);
-+	if (smt_nr_cpu < 2)
-+		return;
-+
-+	for_each_cpu(sibling, cpu_smt_mask(cpu)) {
-+		if (cpu == sibling)
-+			continue;
-+		if (abs(cpu - sibling) == 1)
-+			smt_neighbour_topo = true;
++	mutex_lock(&mutex);
++	old_nr = sysctl_sched_idle_search_nr_default;
++	ret = proc_douintvec(table, write, buffer, lenp, ppos);
++	if (!ret && write) {
++		if (sysctl_sched_idle_search_nr_default == 0) {
++			sysctl_sched_idle_search_nr_default = old_nr;
++			mutex_unlock(&mutex);
++			return -EINVAL;
++		}
 +	}
++
++	mutex_unlock(&mutex);
++	return ret;
 +}
 +
- /*
-  * For asym packing, by default the lower numbered CPU has higher priority.
-  */
-@@ -6887,9 +6910,16 @@ void __update_idle_core(struct rq *rq)
- static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
- {
- 	bool idle = true;
--	int cpu;
-+	int cpu, sibling = core;
++static int sched_set_idle_search_nr_threshold(struct ctl_table *table, int write, void *buffer,
++		size_t *lenp, loff_t *ppos)
++{
++	static DEFINE_MUTEX(mutex);
++	unsigned int old_threshold;
++	int ret;
 +
-+	if (!core_smt_topo_detect) {
-+		explore_core_smp_topology();
-+		core_smt_topo_detect = true;
++	mutex_lock(&mutex);
++	old_threshold = sysctl_sched_idle_search_nr_threshold;
++	ret = proc_douintvec(table, write, buffer, lenp, ppos);
++	if (!ret && write) {
++		if (sysctl_sched_idle_search_nr_threshold == 0) {
++			sysctl_sched_idle_search_nr_threshold = old_threshold;
++			mutex_unlock(&mutex);
++			return -EINVAL;
++		}
 +	}
++
++	mutex_unlock(&mutex);
++	return ret;
++}
++
+ static struct ctl_table sched_fair_sysctls[] = {
+ 	{
+ 		.procname       = "sched_child_runs_first",
+@@ -235,6 +282,20 @@ int __weak arch_asym_cpu_priority(int cpu)
+ 		.extra1		= SYSCTL_ZERO,
+ 	},
+ #endif /* CONFIG_NUMA_BALANCING */
++	{
++		.procname	= "sched_cfs_idle_search_nr_default",
++		.data		= &sysctl_sched_idle_search_nr_default,
++		.maxlen		= sizeof(unsigned int),
++		.mode		= 0644,
++		.proc_handler	= sched_set_idle_search_nr_default,
++	},
++	{
++		.procname	= "sched_cfs_idle_search_nr_threshold",
++		.data		= &sysctl_sched_idle_search_nr_threshold,
++		.maxlen		= sizeof(unsigned int),
++		.mode		= 0644,
++		.proc_handler	= sched_set_idle_search_nr_threshold,
++	},
+ 	{}
+ };
  
- 	for_each_cpu(cpu, cpu_smt_mask(core)) {
-+		if (cpu != core)
-+			sibling = cpu;
- 		if (!available_idle_cpu(cpu)) {
- 			idle = false;
- 			if (*idle_cpu == -1) {
-@@ -6905,8 +6935,12 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
- 			*idle_cpu = cpu;
+@@ -7027,10 +7088,10 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+ 		avg_cost = this_sd->avg_scan_cost + 1;
+ 
+ 		span_avg = sd->span_weight * avg_idle;
+-		if (span_avg > 4*avg_cost)
++		if (span_avg > sysctl_sched_idle_search_nr_threshold * avg_cost)
+ 			nr = div_u64(span_avg, avg_cost);
+ 		else
+-			nr = 4;
++			nr = sysctl_sched_idle_search_nr_default;
+ 
+ 		time = cpu_clock(this);
  	}
- 
--	if (idle)
-+	if (idle) {
-+		if (!smt_neighbour_topo || unlikely(core % smt_nr_cpu))
-+			return core;
-+		core = task_cpu(p) % smt_nr_cpu ? core : sibling;
- 		return core;
-+	}
- 
- 	cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
- 	return -1;
 -- 
 1.8.3.1
 
