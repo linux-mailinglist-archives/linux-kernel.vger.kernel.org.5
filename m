@@ -2,67 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDDA75B728
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2672775B72C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbjGTSyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 14:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
+        id S229879AbjGTSze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 14:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjGTSyP (ORCPT
+        with ESMTP id S229633AbjGTSzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 14:54:15 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81C01705;
-        Thu, 20 Jul 2023 11:54:14 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bb1baf55f5so8534535ad.0;
-        Thu, 20 Jul 2023 11:54:14 -0700 (PDT)
+        Thu, 20 Jul 2023 14:55:32 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A00510FC;
+        Thu, 20 Jul 2023 11:55:30 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fbc0609cd6so9323045e9.1;
+        Thu, 20 Jul 2023 11:55:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689879254; x=1690484054;
-        h=to:cc:date:message-id:subject:mime-version
-         :content-transfer-encoding:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fRq4kiOe6o3GCeNturgO6VEAqY0DWx/wr2Uqp7KCQAQ=;
-        b=fNQQbA+N7NG8ROfS0eyXZ4nfFd3AwMKZfpfL9lXlvgIkkHfN/3GoQG+tX3ehHsb8dv
-         wGbxzGoTR581bIPQCfdzJRLm4LeVfm9Kcticw1Jd0mlKfxKfL47vahmEoZ0aeo26qApz
-         tZw3W7WeCo6PYtJqfPkdXYpRjSQjKdveHSHQQZtG5SJWaAtwAVzUxskYt9VVOPmYHvSG
-         m1nLU7HpvcwZCmHKeGfG5qQqvww+eezcjosiQfsJwq9VLeZcPENHUXXbttAxdxyunlqn
-         0BfdyhYgOUXAij8+5K7/S1BnN2NrWmPUopT0O824l7MoAqrIqkvPPgIVsp1KGXvkbFSi
-         mmmg==
+        d=gmail.com; s=20221208; t=1689879328; x=1690484128;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IHAsFL2xFeH6dIbXrH4rs7Rw43cZEw/nHrY87+X9P8w=;
+        b=M/Hy5wjGjpYdCaV1gWP14+9QhIcwCrD8LxTFGWxQ9ul9OqFRCJgsCnE6JYX5F7WU59
+         wd2vnPhXAgtwiIrwVMYDI1Bd4OLhJCqt24GjD9nZe9Osb3usOaiJ2sM+i5+45aUJx/U6
+         eXtBJxtsl8bEM6uK5+nugkR+J+ylFlG8UjcKGFbuJ5+rprMQ03DrpeVd/dlxG34JXHgd
+         5rJZQ4bw94XXZEtBSTcu3H3om53PeP+Jea+ODKn/rhLbKBRe4lYWuEGh8cIhdOlk+6JA
+         Vr+4OxxiM7OedgVNZ1grbr1fUoDkSzf6db7haCd1YK8vkHtl6/KZzOwzVaDCwzqAhpO8
+         MyWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689879254; x=1690484054;
-        h=to:cc:date:message-id:subject:mime-version
-         :content-transfer-encoding:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fRq4kiOe6o3GCeNturgO6VEAqY0DWx/wr2Uqp7KCQAQ=;
-        b=dvcQo+LFj/gEuYAscUDRHnP9nczYY0lOsYfIZ9mZ5/3rrV6ZjRWIzHep0O7QdkrcZx
-         wJmJgofE4C/IwZTUoXtlMfIlHYPfqLNaMn8DFpHe3dGRKMh6EjUQeVCrDr4dmKWbdI5k
-         GAb3qbnLKyfB7qdIo8Wk+TPUWNk7pd2kPUYJN23KInQhlnKh4lLGdNjq0Z0jLJvJOkyL
-         W3OHOvlOtFfKD8cvmyFIXfotuAWEWM0npOrUm53xy6fvtwmSoIFZkyCiUzV2eZ8wtqhA
-         FrnT62qQNVDOsvrMUTJC3u2DPGcx+92ECRgDt2IrVjV1SssHyR2LUeDFBiezmQeXMYyC
-         ibuQ==
-X-Gm-Message-State: ABy/qLZTKEzPM68atkk/5TAG/+4SWFWTWyVAZdf7OTCMHLhXmn4uOI75
-        tv7LyNDktqEjOzKhnwD47ogLwwtT9P0=
-X-Google-Smtp-Source: APBJJlHzuCcODyNyT6KQ00oY5CFkyrzoStrZfVAbxsa0cZRpGI+a0UvG2ODhZLQ/Id7StLYc9sd8Lg==
-X-Received: by 2002:a17:902:e883:b0:1b9:de75:d5bb with SMTP id w3-20020a170902e88300b001b9de75d5bbmr217104plg.7.1689879253780;
-        Thu, 20 Jul 2023 11:54:13 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id n7-20020a170902d2c700b001b9c960ff9bsm1762792plc.78.2023.07.20.11.54.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 Jul 2023 11:54:13 -0700 (PDT)
-From:   Alan Huang <mmpgouride@gmail.com>
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
-Subject: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
-Message-Id: <04C1E631-725C-47AD-9914-25D5CE04DFF4@gmail.com>
-Date:   Fri, 21 Jul 2023 02:53:53 +0800
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Eric Dumazet <edumazet@google.com>, roman.gushchin@linux.dev
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        rcu@vger.kernel.org
-X-Mailer: Apple Mail (2.3731.400.51.1.1)
+        d=1e100.net; s=20221208; t=1689879328; x=1690484128;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IHAsFL2xFeH6dIbXrH4rs7Rw43cZEw/nHrY87+X9P8w=;
+        b=dObL9BeaisNkbgqcYuu42gh8qfasWSqXa7Cg5f9zotDQ0LbTZkm3MZfW0lgzvl86Yg
+         LYLw/s/9MCIJyU4U/gj6I+itT32JicXxjxakIJ6Sh8dvJfyrtmy6iI8wk0C5W80dIIco
+         ReiCOqZd2YzsMvEgpHr3t0irJfWjZ+/7EIPMqVcp9QNlc2RWeGP5BVMmdvHLrjbEoC2y
+         f/8v8PhRJZdVViWro+tppt2FOH3CJiZ7LcR8nfarg4AyJwSJXqYM7ZNVeSRuI2yUhzZS
+         XjOSaTgAcCoqoEQILXLUL86PI0S1ZxLkvEMAiNgVmPCi73iPvsKBGWHwsByD/p+d0MEd
+         HHpw==
+X-Gm-Message-State: ABy/qLYTstzJP2kWgD2a4guS8b5J+UYBauENe1T79Fl7yn1lt2sys3UL
+        OtNgS0KudPyDhJSP5OCFKaQ=
+X-Google-Smtp-Source: APBJJlGOeasb3e7RZk+f4OtzpsQtOBcpuUDgw8hLHWviGL9qQrid91/Lk+MdjyHWW52L3IRFkwJQ1g==
+X-Received: by 2002:a7b:c3cd:0:b0:3fc:f9c:a3e9 with SMTP id t13-20020a7bc3cd000000b003fc0f9ca3e9mr4965128wmj.37.1689879328401;
+        Thu, 20 Jul 2023 11:55:28 -0700 (PDT)
+Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
+        by smtp.gmail.com with ESMTPSA id d15-20020a5d644f000000b003143c06135bsm2056400wrw.50.2023.07.20.11.55.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 11:55:28 -0700 (PDT)
+Message-ID: <72c0359a-eda6-30ea-0ec0-b7e9b804b87b@gmail.com>
+Date:   Thu, 20 Jul 2023 20:55:26 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/4] firmware: qcom_scm: Clear scm pointer on probe
+ failure
+Content-Language: en-US
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230528230351.168210-1-luzmaximilian@gmail.com>
+ <20230528230351.168210-3-luzmaximilian@gmail.com>
+ <ZJwXgqmu_zpV46lu@hovoldconsulting.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+In-Reply-To: <ZJwXgqmu_zpV46lu@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -73,24 +84,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+First off, sorry again for the long delay and thanks for being patient
+with me (and for the review of course). I'm finally getting back to
+finding some time for Linux things again, so I think I've mostly settled
+in by now.
 
-I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of first =
-item in hlist_nulls_for_each_entry_rcu=E2=80=9D)
-and a related discussion [1].
+On 6/28/23 13:20, Johan Hovold wrote:
+> On Mon, May 29, 2023 at 01:03:49AM +0200, Maximilian Luz wrote:
+>> When setting-up the IRQ goes wrong, the __scm pointer currently remains
+>> set even though we fail to probe the driver successfully. Due to this,
+>> access to __scm may go wrong since associated resources (clocks, ...)
+>> have been released. Therefore, clear the __scm pointer when setting-up
+>> the IRQ fails.
+>>
+>> Fixes: 6bf325992236 ("firmware: qcom: scm: Add wait-queue handling logic")
+>> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+>> ---
+>>
+>> Patch introduced in v4
+>>
+>> ---
+>>   drivers/firmware/qcom_scm.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+>> index fde33acd46b7..d0070b833889 100644
+>> --- a/drivers/firmware/qcom_scm.c
+>> +++ b/drivers/firmware/qcom_scm.c
+>> @@ -1488,8 +1488,10 @@ static int qcom_scm_probe(struct platform_device *pdev)
+>>   	} else {
+>>   		ret = devm_request_threaded_irq(__scm->dev, irq, NULL, qcom_scm_irq_handler,
+>>   						IRQF_ONESHOT, "qcom-scm", __scm);
+>> -		if (ret < 0)
+>> +		if (ret < 0) {
+>> +			__scm = NULL;
+> 
+> This looks fragile at best. Clients use qcom_scm_is_available() to see
+> if __scm is available and do not expect it to go away once it is live.
 
-After reading the whole discussion, it seems like that ptr->field was =
-cached by gcc even with the deprecated
-ACCESS_ONCE(), so my question is:
+Hmm, you're right. The whole situation is probably not ideal and that
+fix is really just a bad band-aid.
 
-	Is that a compiler bug? If so, has this bug been fixed today, =
-ten years later?=20
-=09
-	What about READ_ONCE(ptr->field)?
+> It looks like you can hold off on initialising __scm until you've
+> requested the interrupt, either by using IRQ_NOAUTOEN or fixing
+> qcom_scm_waitq_wakeup() so that it doesn't use __scm directly.
+> 
+> That would also take care of the previous branch which may also leave
+> __scm set after the structure itself has been released on errors.
 
+Agreed.
 
-[1] =
-https://lore.kernel.org/all/1369699930.3301.494.camel@edumazet-glaptop/
+> You'll have similar problems when registering qseecom which currently
+> depend on __scm being set, though. Clearing the pointer in that case is
+> clearly broken as you currently rely on devres for deregistering the aux
+> clients on errors (i.e. the clients using __scm are still registered
+> when you clear the pointer in patch 3/4).
 
-Thanks,
-Alan=
+Oh right, I hadn't thought of that. I'll have to rework that.
+
+>>   			return dev_err_probe(scm->dev, ret, "Failed to request qcom-scm irq\n");
+>> +		}
+>>   	}
+>>   
+>>   	__get_convention();
+> 
+> Johan
