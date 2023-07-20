@@ -2,261 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C59AC75B885
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 22:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADEE675B882
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 22:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbjGTUHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 16:07:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55322 "EHLO
+        id S230014AbjGTUG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 16:06:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbjGTUHl (ORCPT
+        with ESMTP id S229691AbjGTUG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 16:07:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD35A1BE2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 13:06:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689883616;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ucxp4CiclbQdAFxLcc4GXsXkfqukOJSf3s5CGFH45eo=;
-        b=izpPrmzzn67HFEuoN3YmmtA66cEd6DLJVGg0rXTeEk7sRvjMo2fZa3bCLI6yPpEueaqV6d
-        92IqwWlWQkMurlaDQk9NEBQqmex8IojwQWl/opQWazFAe5igr5fzQlouHygRZ4Tnjftfoe
-        Z/k92r9ErlzTy/zayP1uwjpp55D+ERU=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-94-H4U6mVyVOUy8T3kfn4RDMg-1; Thu, 20 Jul 2023 16:06:55 -0400
-X-MC-Unique: H4U6mVyVOUy8T3kfn4RDMg-1
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-635de6f75e0so2946506d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 13:06:54 -0700 (PDT)
+        Thu, 20 Jul 2023 16:06:57 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453842118;
+        Thu, 20 Jul 2023 13:06:57 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b8b4749013so8939045ad.2;
+        Thu, 20 Jul 2023 13:06:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689883617; x=1690488417;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zRzMPL6a/BSNtiQ7PJzND7IfnG5RjjKshq+ayDJRwvE=;
+        b=kZIq9ybemRD+z70zrt95FXrBHFPHV9z/ZL6uhkUy+NMiMeb1ftSsvyQesVG3rung/8
+         StKvGhzKm87e0EmDAArGi/OpQRYaBX+ijkyxRDwREw4WO3X3HDnALsNzYZqcx5Sd6QOc
+         iWEVrUthWYQCvOKLAo3ODL8Pl9vUglt3E4qiHVwNbLXnFmj8aJCwpmZaaWZLoKn/mJiB
+         Ovi+Zy45y62uqB0h4m29zNjzHs7UitPpt+kYNHyLYVEIJAvO3JuTUzbjSB/BaEeodbnI
+         Zj/AeMIOXUGtWYEs/nE8rLZUXzAEfnHm7xpk1IuVAsdG5NsWCk5BwlL0fo+ioKeQuWY5
+         1yYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689883614; x=1690488414;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ucxp4CiclbQdAFxLcc4GXsXkfqukOJSf3s5CGFH45eo=;
-        b=L+B99rAmnhECJOU4vONrgxx+toSvKgefOQ2/V3ruhXBlpGnu+sMF4l6geROLyZaC6Q
-         TEjoAgCteVqn+PofP+FMQZ+Wt+sC1q/tjWE8GzqYiVh0qh+JVf/nPEth+ZJu5+A5HyJA
-         6YQQNiCm3820PJIzh1fE6MIw231ys1pwy6+zqLuHZ0zp4kmeNk4as7NA92/V1byJs3uc
-         BMJHLiXOvx+t2wsPkZCGxd87BumsM0SIxpHfep1z14OuxUE0nd7F2pMibHwDfQ/33iZK
-         irlQRsucNfAQ/f/BEx+4D0aEdhbi6Fbtb3TKuLmhtasRRYxi9UWUO9Zg1oC4qhGNm5OZ
-         ankw==
-X-Gm-Message-State: ABy/qLYpQYq9+r4oqQRv0mLsg0i4xIphKFR0bM2O7iaZclTNkrPEkEmZ
-        6+jCsr3q0ZiAE+txZotsFdMr0jYkG5WANnBoyFknD/dDeE/YgiLUW8hiFCHR/5BUb/NlkFSGn3m
-        tLRTy5L1CeoY8+yyKk5ZzDfO+
-X-Received: by 2002:a05:6214:21c4:b0:639:d239:b4fd with SMTP id d4-20020a05621421c400b00639d239b4fdmr138692qvh.1.1689883614126;
-        Thu, 20 Jul 2023 13:06:54 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFfvvqT4xuU20f9j7ej5nd1HPvCjQU0/3eyMCHp2vS99rh43b9nNbOoZuAeDgyFr5glw3iNzQ==
-X-Received: by 2002:a05:6214:21c4:b0:639:d239:b4fd with SMTP id d4-20020a05621421c400b00639d239b4fdmr138665qvh.1.1689883613762;
-        Thu, 20 Jul 2023 13:06:53 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id k17-20020a0c9711000000b00635e68d3170sm721052qvd.31.2023.07.20.13.06.52
+        d=1e100.net; s=20221208; t=1689883617; x=1690488417;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zRzMPL6a/BSNtiQ7PJzND7IfnG5RjjKshq+ayDJRwvE=;
+        b=GjcV4kZ+kivLH130KjDnCbB0IHe/Fppd1Hj1xcNKv6jxDaoRR3w46Ny3I91nbQ26yM
+         gIpshXPJRbZEbTFhqvMITiRSI6ndkaWJLFZN9GNZOpEwxcj9DiIGYKkuAJlA/zl6ZsHa
+         nNYSmIX2tYVU7Ph6vOluwxD5nIvYJtxdGHv1+Vc9DL+hxjBPS5Qe7G6ope2zPx2c0evE
+         wZlQdmZnXElKHrTkoqPXCVc9jfQcJnn25nhOPV0qoBDqHOJLEPoOPgaYf6o/trOHxt+1
+         7xOZ7Y2VJM9Rpcnnmm7Fl+bkubwm3I42MNdX2RkcQaWEDSR7mLWAp9+zzYWFkwT1KhLZ
+         ixlw==
+X-Gm-Message-State: ABy/qLbkrh8h+YmD5a+6wBDrsActp1MuL1HJCk2DKQc3I9BmxaUw2d+k
+        DvIb5dhYhYfGTfE9u5zXuzQ=
+X-Google-Smtp-Source: APBJJlHRyNzSlmZk1gO0I4KgaFJfKwcCiGrlMaE9Y6r8Y2/J8zvtUfOH8dB947pcEUNUBxJs0cIa6g==
+X-Received: by 2002:a17:903:22c4:b0:1b6:6b03:10cd with SMTP id y4-20020a17090322c400b001b66b0310cdmr4453plg.67.1689883616584;
+        Thu, 20 Jul 2023 13:06:56 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:fbd8])
+        by smtp.gmail.com with ESMTPSA id jh6-20020a170903328600b001aad714400asm1795608plb.229.2023.07.20.13.06.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 13:06:53 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 16:06:52 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Dimitris Siakavaras <jimsiak@cslab.ece.ntua.gr>,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: Using userfaultfd with KVM's async page fault handling causes
- processes to hung waiting for mmap_lock to be released
-Message-ID: <ZLmT3BfcmltfFvbq@x1n>
-References: <79375b71-db2e-3e66-346b-254c90d915e2@cslab.ece.ntua.gr>
- <20230719211631.890995-1-axelrasmussen@google.com>
- <CAJHvVcj+Sc41mfercqxBii5cqRBEgZxNix2R1YMi04K-5nBh8w@mail.gmail.com>
+        Thu, 20 Jul 2023 13:06:56 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 20 Jul 2023 10:06:54 -1000
+From:   'Tejun Heo' <tj@kernel.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Carlos Bilbao <carlos.bilbao@amd.com>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        amd <amd@localhost.localdomain>
+Subject: Re: [PATCH] blk-iocost: fix seq_printf compile type mismatch error
+Message-ID: <ZLmT3mXuDlYY61w0@slm.duckdns.org>
+References: <20230717141852.153965-1-carlos.bilbao@amd.com>
+ <ZLWNHuTGk0fy8pjE@slm.duckdns.org>
+ <2b4540aadc3c4449a192aeed6211f232@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJHvVcj+Sc41mfercqxBii5cqRBEgZxNix2R1YMi04K-5nBh8w@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <2b4540aadc3c4449a192aeed6211f232@AcuMS.aculab.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Axel, Dimitris,
-
-On Wed, Jul 19, 2023 at 02:54:21PM -0700, Axel Rasmussen wrote:
-> On Wed, Jul 19, 2023 at 2:16 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
-> >
-> > Thanks for the detailed report Dimitris! I've CCed the MM mailing list and some
-> > folks who work on userfaultfd.
+On Wed, Jul 19, 2023 at 08:57:32AM +0000, David Laight wrote:
+> From: Tejun Heo
+> > Sent: 17 July 2023 19:49
+> > 
+> > On Mon, Jul 17, 2023 at 09:18:52AM -0500, Carlos Bilbao wrote:
+> > > From: amd <amd@localhost.localdomain>
+> > >
+> > > Fix two type mismatch errors encountered while compiling blk-iocost.c with
+> > > GCC version 13.1.1 that involved constant operator WEIGHT_ONE. Cast the
+> > > result of the division operation to (unsigned int) to match the expected
+> > > format specifier %u in two seq_printf invocations.
+> > 
+> > Can you detail the warnings? Was that on 32bit compiles?
 > 
-> Apologies, I should have quoted the original message for the others I
-> added to CC: https://lore.kernel.org/lkml/79375b71-db2e-3e66-346b-254c90d915e2@cslab.ece.ntua.gr/T/#u
+> The problem is caused by gcc 13 changing the types of the
+> constants inside an enum to be all the same.
 > 
-> >
-> > I took a look at this today, but I haven't quite come up with a solution.
-> >
-> > I thought it might be as easy as changing userfaultfd_release() to set released
-> > *after* taking the lock. But no such luck, the ordering is what it is to deal
-> > with another subtle case:
-> >
-> >
-> >         WRITE_ONCE(ctx->released, true);
-> >
-> >         if (!mmget_not_zero(mm))
-> >                 goto wakeup;
-> >
-> >         /*
-> >          * Flush page faults out of all CPUs. NOTE: all page faults
-> >          * must be retried without returning VM_FAULT_SIGBUS if
-> >          * userfaultfd_ctx_get() succeeds but vma->vma_userfault_ctx
-> >          * changes while handle_userfault released the mmap_lock. So
-> >          * it's critical that released is set to true (above), before
-> >          * taking the mmap_lock for writing.
-> >          */
-> >         mmap_write_lock(mm);
-> >
-> > I think perhaps the right thing to do is to have handle_userfault() release
-> > mmap_lock when it returns VM_FAULT_NOPAGE, and to have GUP deal with that
-> > appropriately? But, some investigation is required to be sure that's okay to do
-> > in the other non-GUP ways we can end up in handle_userfault().
+> The best fix is (probably) to replace all the enum used to
+> define unrelated constants with #defines.
 
-Heh, this is also what I thought after reading. :)
+Yeah, but then you end up without any way to read that value from outside
+the kernel for BPF, drgn or any other tools which use debug info. That
+actually matters.
 
-If we see in the very early commit from Andrea it seems that would not hang
-gup but just sigbus-ing it (see the comment that's mostly exactly the thing
-Dimitris hit here):
-
-commit 86039bd3b4e6a1129318cbfed4e0a6e001656635
-Author: Andrea Arcangeli <aarcange@redhat.com>
-Date:   Fri Sep 4 15:46:31 2015 -0700
-
-    userfaultfd: add new syscall to provide memory externalization
-
-+	/*
-+	 * If it's already released don't get it. This avoids to loop
-+	 * in __get_user_pages if userfaultfd_release waits on the
-+	 * caller of handle_userfault to release the mmap_sem.
-+	 */
-+	if (unlikely(ACCESS_ONCE(ctx->released)))
-+		return VM_FAULT_SIGBUS;
-+
-
-Then we switched over to the friendly way, assuming CRIU could close() the
-uffd during the monitee process running, in:
-
-commit 656710a60e3693911bee3a355d2f2bbae3faba33
-Author: Andrea Arcangeli <aarcange@redhat.com>
-Date:   Fri Sep 8 16:12:42 2017 -0700
-
-    userfaultfd: non-cooperative: closing the uffd without triggering SIGBUS
-
-I had a feeling that after that we didn't test gup (I assume normal page
-fault path will still work).  Let me copy Mike too for that just in case he
-has anything to say.  Paste thread again:
-
-https://lore.kernel.org/lkml/79375b71-db2e-3e66-346b-254c90d915e2@cslab.ece.ntua.gr/T/#u
-
-My understanding is that releasing mmap lock here should work, but we need
-to move the code a bit.  Dimitris, please feel free to try the patch
-attached here if you want.  It's probably not a major use case of uffd over
-kvm (IIUC unregister before close() will also work?), but if it's trivial
-to fix we should proably fix it.
-
-Thanks,
-
-===8<===
-From 7e9ef050b487220463fa77a7aa97259ffe9bb15e Mon Sep 17 00:00:00 2001
-From: Peter Xu <peterx@redhat.com>
-Date: Thu, 20 Jul 2023 15:33:55 -0400
-Subject: [PATCH] mm/uffd: Fix release hang over GUP
-
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- fs/userfaultfd.c | 57 ++++++++++++++++++++++++++----------------------
- 1 file changed, 31 insertions(+), 26 deletions(-)
-
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index bbfaf5837a08..2358e6b00315 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -455,32 +455,6 @@ vm_fault_t handle_userfault(struct vm_fault *vmf, unsigned long reason)
- 	if (!(vmf->flags & FAULT_FLAG_USER) && (ctx->flags & UFFD_USER_MODE_ONLY))
- 		goto out;
- 
--	/*
--	 * If it's already released don't get it. This avoids to loop
--	 * in __get_user_pages if userfaultfd_release waits on the
--	 * caller of handle_userfault to release the mmap_lock.
--	 */
--	if (unlikely(READ_ONCE(ctx->released))) {
--		/*
--		 * Don't return VM_FAULT_SIGBUS in this case, so a non
--		 * cooperative manager can close the uffd after the
--		 * last UFFDIO_COPY, without risking to trigger an
--		 * involuntary SIGBUS if the process was starting the
--		 * userfaultfd while the userfaultfd was still armed
--		 * (but after the last UFFDIO_COPY). If the uffd
--		 * wasn't already closed when the userfault reached
--		 * this point, that would normally be solved by
--		 * userfaultfd_must_wait returning 'false'.
--		 *
--		 * If we were to return VM_FAULT_SIGBUS here, the non
--		 * cooperative manager would be instead forced to
--		 * always call UFFDIO_UNREGISTER before it can safely
--		 * close the uffd.
--		 */
--		ret = VM_FAULT_NOPAGE;
--		goto out;
--	}
--
- 	/*
- 	 * Check that we can return VM_FAULT_RETRY.
- 	 *
-@@ -517,6 +491,37 @@ vm_fault_t handle_userfault(struct vm_fault *vmf, unsigned long reason)
- 	if (vmf->flags & FAULT_FLAG_RETRY_NOWAIT)
- 		goto out;
- 
-+	/*
-+	 * If it's already released don't get it. This avoids to loop
-+	 * in __get_user_pages if userfaultfd_release waits on the
-+	 * caller of handle_userfault to release the mmap_lock.
-+	 */
-+	if (unlikely(READ_ONCE(ctx->released))) {
-+		/*
-+		 * Don't return VM_FAULT_SIGBUS in this case, so a non
-+		 * cooperative manager can close the uffd after the
-+		 * last UFFDIO_COPY, without risking to trigger an
-+		 * involuntary SIGBUS if the process was starting the
-+		 * userfaultfd while the userfaultfd was still armed
-+		 * (but after the last UFFDIO_COPY). If the uffd
-+		 * wasn't already closed when the userfault reached
-+		 * this point, that would normally be solved by
-+		 * userfaultfd_must_wait returning 'false'.
-+		 *
-+		 * If we were to return VM_FAULT_SIGBUS here, the non
-+		 * cooperative manager would be instead forced to
-+		 * always call UFFDIO_UNREGISTER before it can safely
-+		 * close the uffd.
-+		 *
-+		 * We release the mmap lock in this special case, just in
-+		 * case we're in a gup to not dead loop, so the other uffd
-+		 * handler thread/process can have a chance to take the
-+		 * write lock and do the unregistration.
-+		 */
-+		release_fault_lock(vmf);
-+		goto out;
-+	}
-+
- 	/* take the reference before dropping the mmap_lock */
- 	userfaultfd_ctx_get(ctx);
- 
--- 
-2.41.0
-===8<===
+Thanks.
 
 -- 
-Peter Xu
-
+tejun
