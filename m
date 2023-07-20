@@ -2,171 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0FA275B840
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3C875B846
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbjGTTrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 15:47:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48044 "EHLO
+        id S230290AbjGTTsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 15:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjGTTrq (ORCPT
+        with ESMTP id S231193AbjGTTsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 15:47:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2F31733;
-        Thu, 20 Jul 2023 12:47:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Thu, 20 Jul 2023 15:48:05 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7F72128;
+        Thu, 20 Jul 2023 12:48:01 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 4F5CF120002;
+        Thu, 20 Jul 2023 22:48:00 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4F5CF120002
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1689882480;
+        bh=hwv5R9tYPXRms0RpX3wMPQwLn2Ci1haaAr1vtmjtPrw=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=VVTO+xo2+9DJuiYvXC4CpOUhP+/FtLhq8CrYdDnrlUZTxLAqbQQrjwZ08RJ0HzN28
+         4cs8OnUjcCP8akbdXWL5zb4Vbz/0o+08obcKurnSGCZ9kjSbamEoKWATzJkxGV347b
+         7Al8tZhQlTKioU8pkM/UQKdfIzj/Dj7aBVRJdmXuAaMM/PmPtz8R2Sz20jclwNxTwI
+         MkckzcIyNBAhCc7mUySnoNEAV/Agq8zzUj/GwJS+mek0tBr2ykZobby1JWNrtqBDrx
+         ww+uBkjFJxeIX7UoCE4oluhLF4fob+u5Wo89rN9MCW4GDkK58CQHqU9OKDSAAeMwwd
+         7Nvl9E/VyK8XA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 580E861C2A;
-        Thu, 20 Jul 2023 19:47:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9AE6C433C7;
-        Thu, 20 Jul 2023 19:47:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689882464;
-        bh=DwX1uNy6mTJOThmesJskJiO3f0zQ/UjEjsi7fYSoDeQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=F2VOzhGEq/ehzA3T7FojKe0nvvYABR7BaAGOIDRc3zB7kyFFHA8lK54shuPEhhkmw
-         LLp2y+fetfpkcgdK/tz0QUqF/4jkDeEX1t481gP22EiRadHc5WXu+y+q1onQqHz7hV
-         bD5RjIft73fv8JaYtIp2mg3gqI49YTajtIv63wdTs5yvSbwgUC+PVvXBmh4okXqURx
-         v07BYphbv8Om/rR6zc3kr6cAtnXbO+mNAHEDDD3JPDhHK/rdZPgkgjH53iAJw8UmrU
-         awqbn9sl31zZbzDDefvpkLFAzpxSWu/hqo2rrPE3rBjBE+F4GkngTyQmohYBEIy2/F
-         fi0bUPVPlLZAA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4B74ACE03CF; Thu, 20 Jul 2023 12:47:44 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 12:47:44 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
-        jslaby@suse.cz, rcu@vger.kernel.org
-Subject: Re: [BUG] Re: Linux 6.4.4
-Message-ID: <eb04b7d0-2f49-4e01-be09-9062d9f08404@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <2023071940-suspect-ominous-4a6a@gregkh>
- <20230720132714.GA3726096@google.com>
- <2b8fc10b-785e-48b9-9a38-5c1af81f9578@paulmck-laptop>
- <CAEXW_YQO7OCdkXm_SBcPhAm8V8vMaF_5DQq7PbG9PZb7RFgA_g@mail.gmail.com>
- <f18e165c-9196-4b41-a202-82cfd5ac7f8b@paulmck-laptop>
- <8682b08c-347b-5547-60e0-013dcf1f8c93@joelfernandes.org>
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu, 20 Jul 2023 22:47:59 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
+ 2023 22:47:59 +0300
+Date:   Thu, 20 Jul 2023 22:47:59 +0300
+From:   Dmitry Rokosov <ddrokosov@sberdevices.ru>
+To:     Huqiang Qin <huqiang.qin@amlogic.com>
+CC:     <neil.armstrong@linaro.org>, <khilman@baylibre.com>,
+        <jbrunet@baylibre.com>, <martin.blumenstingl@googlemail.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-amlogic@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2] arm64: dts: Add gpio_intc node and pinctrl node for
+ Amlogic C3 SoCs
+Message-ID: <20230720194759.es53r5d5w657j6ce@CAB-WSD-L081021>
+References: <20230720114639.833436-1-huqiang.qin@amlogic.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8682b08c-347b-5547-60e0-013dcf1f8c93@joelfernandes.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230720114639.833436-1-huqiang.qin@amlogic.com>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178762 [Jul 20 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: DDRokosov@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, lists.infradead.org:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/07/20 15:23:00
+X-KSMG-LinksScanning: Clean, bases: 2023/07/20 13:57:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/20 13:53:00 #21647430
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 03:32:35PM -0400, Joel Fernandes wrote:
-> On 7/20/23 15:04, Paul E. McKenney wrote:
-> > On Thu, Jul 20, 2023 at 12:31:13PM -0400, Joel Fernandes wrote:
-> >> Hi Paul,
-> >>
-> >> On Thu, Jul 20, 2023 at 11:55 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >>>
-> >>> On Thu, Jul 20, 2023 at 01:27:14PM +0000, Joel Fernandes wrote:
-> [...]
-> >>>>
-> >>>> So likely RCU boosting is failing:
-> >>>>
-> >>>> The full TREE03 splat:
-> >>>> [   54.243588] ------------[ cut here ]------------
-> >>>> [   54.244547] rcu-torture: rcu_torture_boost started
-> [...]
-> >>>> [   54.300499] RIP: 0010:rcu_torture_stats_print+0x5b2/0x620
-> [...]
-> >>>> [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
-> >>>>
-> >>>> However, if we are to believe the '9', it appears the object did made it
-> >>>> quite some till the end of the pipe array but not until the free pool.
-> >>>
-> >>> This is from this if/for statement, correct?
-> >>>
-> >>>                  stutter_waited = stutter_wait("rcu_torture_writer");
-> >>>                  if (stutter_waited &&
-> >>>                      !atomic_read(&rcu_fwd_cb_nodelay) &&
-> >>>                      !cur_ops->slow_gps &&
-> >>>                      !torture_must_stop() &&
-> >>>                      boot_ended)
-> >>>                          for (i = 0; i < ARRAY_SIZE(rcu_tortures); i++)
-> >>>                                  if (list_empty(&rcu_tortures[i].rtort_free) &&
-> >>>                                      rcu_access_pointer(rcu_torture_current) !=
-> >>>                                      &rcu_tortures[i]) {
-> >>>                                          tracing_off();
-> >>>                                          show_rcu_gp_kthreads();
-> >>>                                          WARN(1, "%s: rtort_pipe_count:
-> >>>                                          rcu_ftrace_dump(DUMP_ALL);
-> >>>                                  }
-> >>
-> >> Yes, that's right.
-> >>
-> >>> If so, this happens when there was a stutter wait, but RCU grace
-> >>> periods failed to clear out the backlog during the several seconds that
-> >>> rcutorture was forced idle.  This might be related to the RCU priority
-> >>> boosting failure, in which a preempted reader persisted across the
-> >>> stutter interval.
-> >>
-> >> When RCU is operating normally, shouldn't the check
-> >> "(list_empty(&rcu_tortures[i].rtort_free)" not run until the preempted
-> >> reader unblocks and exits its RCU read-side critical section?
-> >
-> > Yes, but not just "until", but rather "long after".  If RCU is doing
-> > grace periods correctly, an active reader on a given rcu_tortures[]
-> > element will prevent .rtort_pipe_count from exceeding the value 2.
+On Thu, Jul 20, 2023 at 07:46:39PM +0800, Huqiang Qin wrote:
+> Add gpio interrupt controller device and pinctrl device.
 > 
-> Ah ok, so the rtort_pipe_count being 9 is a sign RCU isn't making progress
-> thus making it absent from the free list.
+> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
 
-Yes, though RCU is -just- -barely- too slow, as one more grace period
-would have done it.
+Reviewed-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
 
-> > The element will not be put on a list until .rtort_pipe_count is equal
-> > to RCU_TORTURE_PIPE_LEN, which is 10.
-> >
-> > This warning usually appears when something is holding up the grace-period
-> > kthread.  Historically, this has included deadlocks, missed timers,
-> > and whatever else can prevent the grace-period kthread from running.
+> ---
 > 
-> Makes sense.
+> V1 -> V2: Nodes are sorted by address offset.
 > 
-> >> One thing that confuses me, in the case of
-> >> "cur_ops->deferred_free(old_rp);" , the earlier do-while loop may exit
-> >> before the async callbacks can finish. So what prevents the
-> >> "(list_empty(&rcu_tortures[i].rtort_free)" check from happening before
-> >> grace periods happen? Thanks for any clarification.
-> >
-> > We only enter this code if the stutter_wait() actually waited, and by
-> > default this function will wait about five seconds.  Since the rcutorture
-> > testing goes idle during this time period (or is supposed to!), if things
-> > are working properly, knocking off ten grace periods during that time
-> > should be pretty much a given.
+>  arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi | 26 +++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
 > 
-> Sure, makes sense. And this is not Lazy-RCU so 5 seconds should be plenty
-> ;). I think I was subconsciously expecting an rcu_barrier() somewhere in the
-> code before those checks, but that's not needed as you pointed that the
-> stutter should be giving enough time for RCU to make progress.
+> diff --git a/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi b/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi
+> index 60ad4f3eef9d..5a3725f6cf3d 100644
+> --- a/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi
+> @@ -72,6 +72,32 @@ apb4: bus@fe000000 {
+>  			#size-cells = <2>;
+>  			ranges = <0x0 0x0 0x0 0xfe000000 0x0 0x480000>;
+>  
+> +			periphs_pinctrl: pinctrl@4000 {
+> +				compatible = "amlogic,c3-periphs-pinctrl";
+> +				#address-cells = <2>;
+> +				#size-cells = <2>;
+> +				ranges;
+> +
+> +				gpio: bank@4000 {
+> +					reg = <0x0 0x4000 0x0 0x004c>,
+> +					      <0x0 0x4100 0x0 0x01de>;
+> +					reg-names = "mux", "gpio";
+> +					gpio-controller;
+> +					#gpio-cells = <2>;
+> +					gpio-ranges = <&periphs_pinctrl 0 0 55>;
+> +				};
+> +			};
+> +
+> +			gpio_intc: interrupt-controller@4080 {
+> +				compatible = "amlogic,meson-gpio-intc",
+> +					     "amlogic,c3-gpio-intc";
+> +				reg = <0x0 0x4080 0x0 0x0020>;
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +				amlogic,channel-interrupts =
+> +					<10 11 12 13 14 15 16 17 18 19 20 21>;
+> +			};
+> +
+>  			uart_b: serial@7a000 {
+>  				compatible = "amlogic,meson-s4-uart",
+>  					   "amlogic,meson-ao-uart";
+> -- 
+> 2.37.1
+> 
+> 
+> _______________________________________________
+> linux-amlogic mailing list
+> linux-amlogic@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-amlogic
 
-And there might need to be a call_rcu_hurry() in there somewhere,
-now that you mention it.  Which would pretty much defeat any sort of
-lazy-RCU-callback testing in rcutorture, but testing of laziness might
-need to be separate anyway.
-
-> So hmm, the count being 9 means that not enough RCU grace periods have
-> passed for the rcu_torture object in question thus keeping it always
-> allocated. The GP thread not getting CPU can do that indeed, or perhaps
-> something else stalling RCU like a preempted reader, length preemption
-> disabling on a CPU and so forth..  I'll try to collect a trace when it
-> happens.
-
-Looking forward to seeing what you come up with!
-
-							Thanx, Paul
+-- 
+Thank you,
+Dmitry
