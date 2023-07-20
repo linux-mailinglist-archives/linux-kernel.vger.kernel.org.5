@@ -2,128 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4297375A8A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9245E75A8A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbjGTIFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 04:05:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48304 "EHLO
+        id S230090AbjGTIHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 04:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbjGTIFw (ORCPT
+        with ESMTP id S229672AbjGTIHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 04:05:52 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39595269D
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:05:49 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b8392076c9so6634981fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:05:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689840347; x=1690445147;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2IcUSBCr2Loq4PRudtLWjQUKgc0wiYZCABH1HDiCskY=;
-        b=dvgczoDMgwYHkQ6EOrTagk28FT+IdOYLYiat89c/1UqSs78JZ8VVWoBI/DcUihMo1Q
-         5Sjhcxwx5W1f8QzLPIeaIfJrjyASHEolv+9eNkBLvNdxXaqydcvPhyNpv3ijdK9MiuK+
-         j3oTRZaMlpsQ6iB4uF5IVAJnJsdBI8qy4P29JIcrhdMB/hhp4bNu9YReSgpZVVINhM0J
-         tByuVConQL93J2K4of+AZ54kR9Bk2zwpWhnPhmqYiZ3kasnC687zGRm67pXtdhweGnxz
-         y1mW5yYqSSxKmaM0HH81ONHQJFgSVmG1sUuAvCFduL7budedpvoagBSjZwbDeDacGrxi
-         jiRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689840347; x=1690445147;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2IcUSBCr2Loq4PRudtLWjQUKgc0wiYZCABH1HDiCskY=;
-        b=ZzhQXsYKPVbL4KMQYgIRjx+UP0WoPSgjxqFmYBeWxC0smNi/OM//mMuYCGz0lba312
-         h5hsebcpyV/JXHLny790Vu1gPBS1n2mPO0+PJwlRhvyzTSZRvxSTHXZWoAHbFCEJOqRJ
-         RqkgpEdyag+UNECKERpkr2QeK4g40Ik/ExmpN6Scmo3t8A2wDvE3p2FNgz6pnN1FCTcz
-         MX5puCc8u2Ma4l6pK0RDpOyJZ5XeFO+Vcp4mzKR+ZIF8iGeymnhHn+muC+QatUx5qKax
-         HLajaLpxuslEqrCuxr0bnLTL3L+CD08QhGV746AX5qYsdmQKRK0Kl+LjriCsA0JVQ6ZA
-         ZLrA==
-X-Gm-Message-State: ABy/qLbKEQuh5cZ7jJTthWX4m30x1THoCRQ3elIWlcHyt5yJeo+gISve
-        7IR+g/e5mozTF1FaIfiC8mtqBw==
-X-Google-Smtp-Source: APBJJlGAELNJ/5vt9i9oMqxdlgS7sMYJv1NMK4MfH5hsf6BijM8/u4AlFV05wrBqnPrkjgxaiipGXw==
-X-Received: by 2002:a2e:86d5:0:b0:2b9:20fe:4bc4 with SMTP id n21-20020a2e86d5000000b002b920fe4bc4mr1171815ljj.40.1689840347409;
-        Thu, 20 Jul 2023 01:05:47 -0700 (PDT)
-Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
-        by smtp.gmail.com with ESMTPSA id l3-20020a2e99c3000000b002b6cc17add3sm125560ljj.25.2023.07.20.01.05.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 01:05:47 -0700 (PDT)
-Message-ID: <56e1c9bf-7dc0-7c28-ab0c-02cf78aed7c9@linaro.org>
-Date:   Thu, 20 Jul 2023 10:05:44 +0200
+        Thu, 20 Jul 2023 04:07:05 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4272110;
+        Thu, 20 Jul 2023 01:07:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689840424; x=1721376424;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=TKk/dHPABP1tFlo3srgjojySwslI5+zRhVJkwa3qF4k=;
+  b=BTVLpyL/BJ3NoXbnu2NBT5E7CbKpjYZGbgSWzSR3CEYoIhiwPtiP0LU6
+   2uZkW7dMd/cdBpAZNuW8ICXOPepUQUMvH/vZR15rLCWxdnwIOnoNYLCnk
+   acj9nyazJ6f195F2YycEYVD1SN4a55Wk44TlG3a29b2lotx5CMCGxl36C
+   FQWrlS9diyhb1ek6FvHd9ISQPWJ9xY+rw10LjfmOXrSSq0UbA7tvxwb39
+   bcpFDAH4pzhp76QYqWXu8vH1jQmP/yPOhgTZtMqu19CJPEPB1RGYGNDw0
+   SraWlhVtU0GgN3rVvkw+Mo7JEbmqTdAeEcSjFytR3+y3B3QLMxg0cyQ4d
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="364125384"
+X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
+   d="scan'208";a="364125384"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 01:07:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="970954013"
+X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
+   d="scan'208";a="970954013"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.32.109])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 01:07:00 -0700
+Message-ID: <047c746f-0787-37ec-7989-cd932f288564@intel.com>
+Date:   Thu, 20 Jul 2023 11:06:57 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] Add initial support for RDP415 of IPQ5018 family
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH V8 06/23] mmc: core: Support UHS-II card control and
+ access
 Content-Language: en-US
-To:     Hariharan K <quic_harihk@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     quic_srichara@quicinc.com, quic_sjaganat@quicinc.com,
-        quic_kathirav@quicinc.com, quic_arajkuma@quicinc.com,
-        quic_anusha@quicinc.com
-References: <20230720074846.20350-1-quic_harihk@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
- BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
- HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
- TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
- zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
- MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
- t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
- UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
- aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
- kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
- Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
- R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
- BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
- yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
- xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
- 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
- GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
- mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
- x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
- BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
- mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
- Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
- xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
- AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
- 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
- jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
- cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
- jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
- cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
- bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
- YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
- bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
- nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
- izWDgYvmBE8=
-In-Reply-To: <20230720074846.20350-1-quic_harihk@quicinc.com>
+To:     Victor Shih <victorshihgli@gmail.com>
+Cc:     ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, benchuanggli@gmail.com,
+        HL.Liu@genesyslogic.com.tw, Greg.tu@genesyslogic.com.tw,
+        takahiro.akashi@linaro.org, dlunev@chromium.org,
+        Jason Lai <jason.lai@genesyslogic.com.tw>,
+        Victor Shih <victor.shih@genesyslogic.com.tw>
+References: <20230621100151.6329-1-victorshihgli@gmail.com>
+ <20230621100151.6329-7-victorshihgli@gmail.com>
+ <37b29961-2b66-6dd3-e7c4-3ff291c8972b@intel.com>
+ <CAK00qKBX55WVkKRJ4bkXN97VYg0yz72G+osir1AQWALszoGEOQ@mail.gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <CAK00qKBX55WVkKRJ4bkXN97VYg0yz72G+osir1AQWALszoGEOQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.07.2023 09:48, Hariharan K wrote:
-> Add the initial device tree support for the Reference Design
-> Platform(RDP) 415 based on IPQ5018 family of SoC. This patch
-> carries the support for Console UART and eMMC.
+On 19/07/23 13:24, Victor Shih wrote:
+> On Mon, Jul 10, 2023 at 9:24 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>>
+>> On 21/06/23 13:01, Victor Shih wrote:
+>>> From: Victor Shih <victor.shih@genesyslogic.com.tw>
+>>>
+>>> Embed UHS-II access/control functionality into the MMC request
+>>> processing flow.
+>>>
+>>> Updates in V8:
+>>>  - Add MMC_UHS2_SUPPORT to be cleared in sd_uhs2_detect().
+>>>  - Modify return value in sd_uhs2_attach().
+>>>
+>>> Updates in V7:
+>>>  - Add mmc_uhs2_card_prepare_cmd helper function in sd_ops.h.
+>>>  - Drop uhs2_state in favor of ios->timing.
+>>>  - Remove unnecessary functions.
+>>>
+>>> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+>>> Signed-off-by: Jason Lai <jason.lai@genesyslogic.com.tw>
+>>> Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
+>>> ---
+>>>  drivers/mmc/core/block.c   |   18 +-
+>>>  drivers/mmc/core/core.c    |    8 +
+>>>  drivers/mmc/core/mmc_ops.c |   25 +-
+>>>  drivers/mmc/core/mmc_ops.h |    1 +
+>>>  drivers/mmc/core/sd.c      |   13 +-
+>>>  drivers/mmc/core/sd.h      |    4 +
+>>>  drivers/mmc/core/sd_ops.c  |   11 +
+>>>  drivers/mmc/core/sd_ops.h  |   18 +
+>>>  drivers/mmc/core/sd_uhs2.c | 1137 +++++++++++++++++++++++++++++++++++-
+>>>  9 files changed, 1176 insertions(+), 59 deletions(-)
+>>>
+>>> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+>>> index 2e9d3760c202..013ab071db9b 100644
+>>> --- a/drivers/mmc/core/block.c
+>>> +++ b/drivers/mmc/core/block.c
+>>> @@ -918,15 +918,9 @@ static int mmc_sd_num_wr_blocks(struct mmc_card *card, u32 *written_blocks)
+>>>
+>>>       struct scatterlist sg;
+>>>
+>>> -     cmd.opcode = MMC_APP_CMD;
+>>> -     cmd.arg = card->rca << 16;
+>>> -     cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_AC;
+>>> -
+>>> -     err = mmc_wait_for_cmd(card->host, &cmd, 0);
+>>> -     if (err)
+>>> -             return err;
+>>> -     if (!mmc_host_is_spi(card->host) && !(cmd.resp[0] & R1_APP_CMD))
+>>> -             return -EIO;
+>>> +     err = mmc_app_cmd(card->host, card);
+>>> +             if (err)
+>>> +                     return err;
+>>>
+>>>       memset(&cmd, 0, sizeof(struct mmc_command));
+>>>
+>>> @@ -1612,6 +1606,9 @@ static void mmc_blk_rw_rq_prep(struct mmc_queue_req *mqrq,
+>>>       struct request *req = mmc_queue_req_to_req(mqrq);
+>>>       struct mmc_blk_data *md = mq->blkdata;
+>>>       bool do_rel_wr, do_data_tag;
+>>> +     bool do_multi;
+>>> +
+>>> +     do_multi = (card->host->flags & MMC_UHS2_SD_TRAN) ? true : false;
+>>>
+>>>       mmc_blk_data_prep(mq, mqrq, recovery_mode, &do_rel_wr, &do_data_tag);
+>>>
+>>> @@ -1622,7 +1619,7 @@ static void mmc_blk_rw_rq_prep(struct mmc_queue_req *mqrq,
+>>>               brq->cmd.arg <<= 9;
+>>>       brq->cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_ADTC;
+>>>
+>>> -     if (brq->data.blocks > 1 || do_rel_wr) {
+>>> +     if (brq->data.blocks > 1 || do_rel_wr || do_multi) {
+>>>               /* SPI multiblock writes terminate using a special
+>>>                * token, not a STOP_TRANSMISSION request.
+>>>                */
+>>> @@ -1635,6 +1632,7 @@ static void mmc_blk_rw_rq_prep(struct mmc_queue_req *mqrq,
+>>>               brq->mrq.stop = NULL;
+>>>               readcmd = MMC_READ_SINGLE_BLOCK;
+>>>               writecmd = MMC_WRITE_BLOCK;
+>>> +             brq->cmd.uhs2_tmode0_flag = 1;
+>>>       }
+>>>       brq->cmd.opcode = rq_data_dir(req) == READ ? readcmd : writecmd;
+>>>
+>>> diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
+>>> index 7b8227e7ed26..04783f37da92 100644
+>>> --- a/drivers/mmc/core/core.c
+>>> +++ b/drivers/mmc/core/core.c
+>>> @@ -334,6 +334,8 @@ static int mmc_mrq_prep(struct mmc_host *host, struct mmc_request *mrq)
+>>>
+>>>  int mmc_start_request(struct mmc_host *host, struct mmc_request *mrq)
+>>>  {
+>>> +     struct uhs2_command uhs2_cmd;
+>>> +     __be32 payload[4]; /* for maximum size */
+>>>       int err;
+>>>
+>>>       init_completion(&mrq->cmd_completion);
+>>> @@ -351,6 +353,8 @@ int mmc_start_request(struct mmc_host *host, struct mmc_request *mrq)
+>>>       if (err)
+>>>               return err;
+>>>
+>>> +     mmc_uhs2_card_prepare_cmd(host, mrq, uhs2_cmd, payload);
+>>> +
+>>>       led_trigger_event(host->led, LED_FULL);
+>>>       __mmc_start_request(host, mrq);
+>>
+>> __mmc_start_request() is also called by mmc_wait_for_req_done()
+>> but uhs2_cmd is local to mmc_start_request(), so if mmc_wait_for_req_done()
+>> is ever called in UHS2 case with cmd->retries, it looks like
+>> host controller might try to access uhs2_cmd which is no
+>> longer valid?
+>>
+>>
 > 
-> This series is based on the below series,
-> https://lore.kernel.org/lkml/20230720072938.315
-> 46-1-quic_harihk@quicinc.com/
+> Hi, Adrian
 > 
-You just sent 3 series doing almost the same thing.
-For v2, please bunch them all up into a single series.
+>       I traced the code between the SD card initialization process and
+> found that
+>       __mmc_start_request() is only called by mmc_start_request in the
+> UHS2 case.
+>       I'm not sure if there's anything I'm missing, could you help me
+> with more comments?
 
-Konrad
+Perhaps mmc_send_status() used in block.c ?
+
+>       Or may you have any ideas on how to avoid this situation?
+> 
+
+Need to get Ulf's view, but putting "struct uhs2_command uhs2_cmd"
+and "__be32 payload[4]" in struct mmc_command or struct mmc_request
+would seem to be options.  If size is a concern, some optimization
+to reduce the size of struct uhs2_command looks possible, and is
+max payload len actually only 2 at the moment.
+
