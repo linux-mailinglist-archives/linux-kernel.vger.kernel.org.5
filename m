@@ -2,179 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D3D75A636
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552E975A63B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbjGTGU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
+        id S229563AbjGTGWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjGTGU4 (ORCPT
+        with ESMTP id S229512AbjGTGWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:20:56 -0400
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0158B210C;
-        Wed, 19 Jul 2023 23:20:53 -0700 (PDT)
-Received: from [192.168.0.2] (ip5f5aee77.dynamic.kabel-deutschland.de [95.90.238.119])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id AD75261E5FE04;
-        Thu, 20 Jul 2023 08:20:05 +0200 (CEST)
-Message-ID: <dfda43af-e9b4-85bf-e165-02127e02fbf0@molgen.mpg.de>
-Date:   Thu, 20 Jul 2023 08:20:05 +0200
+        Thu, 20 Jul 2023 02:22:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363582111
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:21:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689834072;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=G7E15ZRYXK8CY2BMMBkch1JiRHBbdCSXbkVcaEUkyro=;
+        b=ZAHP5lvCC9jkMysuoECumfiAj5WqhO5P7dk9R3u3mIQfXyRJD0Ug0nYn0agH9oKjhCK60+
+        H4nxU8Dkvwg76VrPgBguVZnTB52394aJbRt0gbTzII84v5kON4C8W8yvSA1YcHZVEy3iBr
+        KDG42R+P17brhY2UjDl1Vfk27xiNLgU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-640-FHUCZKxUPHKalde9EwlqBg-1; Thu, 20 Jul 2023 02:21:11 -0400
+X-MC-Unique: FHUCZKxUPHKalde9EwlqBg-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-31400956ce8so235650f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:21:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689834070; x=1690438870;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G7E15ZRYXK8CY2BMMBkch1JiRHBbdCSXbkVcaEUkyro=;
+        b=WpMZWWiU/shJ4gEDsU/6Ly4e4/4oIVhcJJzrvev9t/u+xyT6fcZjn8MmZwOBAvQmTP
+         nIKLfEU//9KAZiY3V3Cz28IJG5I2XQy0BhwgTazFQNbVGNf6Tf19woj7TH/X9FV2z7Vg
+         3GB61JehnLOHW7kcL4z/BbO+fhtG7u8SSp64RkS+Bm8+so2CSEDVGKTepwpSs/N4BJLs
+         UOpiHu3p2BEDNv8ADJyq7j1ThVL2Btf8coS+9mlNCcmaoroxDkHue4giJ1chj68wsibV
+         2LBOPzRhcpl6LN1O1kCoQd9uX0BwvdDSVqaFWkLUw+MVAPs3oKSD7e5JN7bH5Pu1Ia+w
+         Z1QQ==
+X-Gm-Message-State: ABy/qLY2KVoL8iH8zscOEx/jiStrB6hvRb6X0V0hYojhKldMkuZKMubt
+        IG0m8S1zOUjmHuW/VcyPOSfplAGg2icRIp300wEbYsYRkJJlQVkQhOO6QYOx7q7NRwgqpPWxYq/
+        2sNgaFsIS5semYNXKZCxXabgl
+X-Received: by 2002:a5d:6650:0:b0:315:9d38:3698 with SMTP id f16-20020a5d6650000000b003159d383698mr1245137wrw.61.1689834069853;
+        Wed, 19 Jul 2023 23:21:09 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlG72m49mtoIQRQmV7z3WrUBtsy50We3+bRwUIZdneZE1EVzG3ahYCSi5gjl2F65adK7buUGoA==
+X-Received: by 2002:a5d:6650:0:b0:315:9d38:3698 with SMTP id f16-20020a5d6650000000b003159d383698mr1245122wrw.61.1689834069571;
+        Wed, 19 Jul 2023 23:21:09 -0700 (PDT)
+Received: from redhat.com ([2a02:14f:172:65c:3b05:aa8f:9ec2:7e3e])
+        by smtp.gmail.com with ESMTPSA id w10-20020adfd4ca000000b003140f47224csm286661wrk.15.2023.07.19.23.21.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 23:21:08 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 02:21:05 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>, linux-doc@vger.kernel.org,
+        iommu@lists.linux.dev
+Subject: Re: [PATCH] dma: DMA_ATTR_SKIP_CPU_SYNC documentation tweaks
+Message-ID: <20230720021914-mutt-send-email-mst@kernel.org>
+References: <98ef4f76d7a5f90b0878e649a70b101402b8889d.1689761699.git.mst@redhat.com>
+ <20230720060742.GA2987@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/4] peci: Add peci-npcm controller driver
-Content-Language: en-US
-To:     Iwona Winiarska <iwona.winiarska@intel.com>
-Cc:     openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Tyrone Ting <warp5tw@gmail.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Tomer Maimon <tmaimon77@gmail.com>
-References: <20230719220853.1029316-1-iwona.winiarska@intel.com>
- <20230719220853.1029316-3-iwona.winiarska@intel.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20230719220853.1029316-3-iwona.winiarska@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230720060742.GA2987@lst.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Iwona,
-
-
-Am 20.07.23 um 00:08 schrieb Iwona Winiarska:
-> From: Tomer Maimon <tmaimon77@gmail.com>
+On Thu, Jul 20, 2023 at 08:07:42AM +0200, Christoph Hellwig wrote:
+> On Wed, Jul 19, 2023 at 06:15:59AM -0400, Michael S. Tsirkin wrote:
+> > A recent patchset highlighted to me that DMA_ATTR_SKIP_CPU_SYNC
+> > might be easily misunderstood.
 > 
-> Add support for Nuvoton NPCM BMC hardware to the Platform Environment
-> Control Interface (PECI) subsystem.
+> .. just curious: what patchset is that?  DMA_ATTR_SKIP_CPU_SYNC is
+> often a bad idea and all users probably could use a really good
+> audit..
 
-Please elaborate on the implementation, and document the used datasheets.
+Message-Id: <20230710034237.12391-1-xuanzhuo@linux.alibaba.com>
 
-Additionally, please document how you tested this.
 
-> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
-> Signed-off-by: Tyrone Ting <warp5tw@gmail.com>
-> Co-developed-by: Iwona Winiarska <iwona.winiarska@intel.com>
-> Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
-> ---
->   drivers/peci/controller/Kconfig     |  16 ++
->   drivers/peci/controller/Makefile    |   1 +
->   drivers/peci/controller/peci-npcm.c | 298 ++++++++++++++++++++++++++++
->   3 files changed, 315 insertions(+)
->   create mode 100644 drivers/peci/controller/peci-npcm.c
+Looks like there's really little else can be done: there's a
+shared page we allow DMA into, so we sync periodically.
+Then when we unmap we really do not need that data
+synced again.
+
+What exactly is wrong with this?
+
+
+> >  #define DMA_ATTR_NO_KERNEL_MAPPING	(1UL << 4)
+> >  /*
+> > - * DMA_ATTR_SKIP_CPU_SYNC: Allows platform code to skip synchronization of
+> > - * the CPU cache for the given buffer assuming that it has been already
+> > - * transferred to 'device' domain.
+> > + * DMA_ATTR_SKIP_CPU_SYNC: Allows platform code to skip synchronization of the
+> > + * CPU and device domains for the given buffer.
 > 
-> diff --git a/drivers/peci/controller/Kconfig b/drivers/peci/controller/Kconfig
-> index 2fc5e2abb74a..4f9c245ad042 100644
-> --- a/drivers/peci/controller/Kconfig
-> +++ b/drivers/peci/controller/Kconfig
-> @@ -16,3 +16,19 @@ config PECI_ASPEED
->   
->   	  This driver can also be built as a module. If so, the module will
->   	  be called peci-aspeed.
-> +
-> +config PECI_NPCM
-> +	tristate "Nuvoton NPCM PECI support"
-> +	depends on ARCH_NPCM || COMPILE_TEST
-> +	depends on OF
-> +	select REGMAP_MMIO
-> +	help
-> +	  This option enables PECI controller driver for Nuvoton NPCM7XX
-> +	  and NPCM8XX SoCs. It allows BMC to discover devices connected
-> +	  to it and communicate with them using PECI protocol.
-> +
-> +	  Say Y here if you want support for the Platform Environment Control
-> +	  Interface (PECI) bus adapter driver on the Nuvoton NPCM SoCs.
-> +
-> +	  This support is also available as a module. If so, the module
-> +	  will be called peci-npcm.
-> diff --git a/drivers/peci/controller/Makefile b/drivers/peci/controller/Makefile
-> index 022c28ef1bf0..e247449bb423 100644
-> --- a/drivers/peci/controller/Makefile
-> +++ b/drivers/peci/controller/Makefile
-> @@ -1,3 +1,4 @@
->   # SPDX-License-Identifier: GPL-2.0-only
->   
->   obj-$(CONFIG_PECI_ASPEED)	+= peci-aspeed.o
-> +obj-$(CONFIG_PECI_NPCM)		+= peci-npcm.o
-> diff --git a/drivers/peci/controller/peci-npcm.c b/drivers/peci/controller/peci-npcm.c
-> new file mode 100644
-> index 000000000000..3647e3628a17
-> --- /dev/null
-> +++ b/drivers/peci/controller/peci-npcm.c
-> @@ -0,0 +1,298 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2019 Nuvoton Technology corporation.
+> While we're at it, I think "allows" is the wrong word here, we really
+> must skip the synchronization or else we're in trouble.
 
-No dot/period at the end.
+Hmm could you explain? I thought multiple sync operations are harmless.
 
-[…]
+-- 
+MST
 
-> +static int npcm_peci_xfer(struct peci_controller *controller, u8 addr, struct peci_request *req)
-> +{
-> +	struct npcm_peci *priv = dev_get_drvdata(controller->dev.parent);
-> +	unsigned long timeout = msecs_to_jiffies(priv->cmd_timeout_ms);
-> +	unsigned int msg_rd;
-> +	u32 cmd_sts;
-> +	int i, ret;
-> +
-> +	/* Check command sts and bus idle state */
-> +	ret = regmap_read_poll_timeout(priv->regmap, NPCM_PECI_CTL_STS, cmd_sts,
-> +				       !(cmd_sts & NPCM_PECI_CTRL_START_BUSY),
-> +				       NPCM_PECI_IDLE_CHECK_INTERVAL_USEC,
-> +				       NPCM_PECI_IDLE_CHECK_TIMEOUT_USEC);
-> +	if (ret)
-> +		return ret; /* -ETIMEDOUT */
-> +
-> +	spin_lock_irq(&priv->lock);
-> +	reinit_completion(&priv->xfer_complete);
-> +
-> +	regmap_write(priv->regmap, NPCM_PECI_ADDR, addr);
-> +	regmap_write(priv->regmap, NPCM_PECI_RD_LENGTH, NPCM_PECI_WR_LEN_MASK & req->rx.len);
-> +	regmap_write(priv->regmap, NPCM_PECI_WR_LENGTH, NPCM_PECI_WR_LEN_MASK & req->tx.len);
-> +
-> +	if (req->tx.len) {
-> +		regmap_write(priv->regmap, NPCM_PECI_CMD, req->tx.buf[0]);
-> +
-> +		for (i = 0; i < (req->tx.len - 1); i++)
-> +			regmap_write(priv->regmap, NPCM_PECI_DAT_INOUT(i), req->tx.buf[i + 1]);
-> +	}
-> +
-> +#if IS_ENABLED(CONFIG_DYNAMIC_DEBUG)
-> +	dev_dbg(priv->dev, "addr : %#02x, tx.len : %#02x, rx.len : %#02x\n",
-> +		addr, req->tx.len, req->rx.len);
-> +	print_hex_dump_bytes("TX : ", DUMP_PREFIX_NONE, req->tx.buf, req->tx.len);
-> +#endif
-
-The preprocessor guards are not needed, as it’s taken care of in 
-`include/linux/printk.h`. Also in other parts of the patch.
-
-[…]
-
-> +module_platform_driver(npcm_peci_driver);
-> +
-> +MODULE_AUTHOR("Tomer Maimon <tomer.maimon@nuvoton.com>");
-> +MODULE_DESCRIPTION("NPCM PECI driver");
-> +MODULE_LICENSE("GPL");
-> +MODULE_IMPORT_NS(PECI);
-
-Also add an entry to `MAINTAINERS`, if Tomer is going to be the maintainer?
-
-
-Kind regards,
-
-Paul
