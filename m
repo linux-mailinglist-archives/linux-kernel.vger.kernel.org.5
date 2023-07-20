@@ -2,122 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A8275ABF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D1875ABF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbjGTK3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 06:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35864 "EHLO
+        id S231352AbjGTK3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 06:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231344AbjGTK3a (ORCPT
+        with ESMTP id S231370AbjGTK3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 06:29:30 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE5D010F5;
-        Thu, 20 Jul 2023 03:29:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689848969; x=1721384969;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=fen2UrZQEWJMxifw6fHPovr8FrzHe3MUWivgyT/3EZU=;
-  b=A+wRCNmy1JmGIuJTK3/8jeR6vqIr7zWSCB4olY4aHSiF7YKwT938+SNW
-   qLYz2jQmC8rPfA4gusOR9G6sJZnCVCMxDxHLiiBqRqhwYe1chAPuYJKch
-   5Bzyhx6R0MRM58eWPH92AZVfXWLeAJqRJLIbE0nZt9SFmU12f80FC512A
-   pTqVVP/hj+OPP4amwCD0OeYdi6SDA577UkcUMx1sLn50JGPSQpmJT5jXE
-   tyi+T9TBzC+G7raJ+NtLIJ10Em2AMqNLidh1kakU3zBQ2M6GNtbPPbMKy
-   lGutKTKKBDA1UBlaCSPfcDmYjURmwnWKa0Ks4iWOvMSYUrbcvq3ijtU5T
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="370261369"
-X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="370261369"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 03:29:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="727636710"
-X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="727636710"
-Received: from unknown (HELO jiaqingz-acrn-container.sh.intel.com) ([10.239.138.235])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 03:29:27 -0700
-From:   Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
-To:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>,
-        support@ems-wuensche.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-can@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiaqing Zhao <jiaqing.zhao@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH v2 2/2] can: ems_pci: move ASIX AX99100 ids to pci_ids.h
-Date:   Thu, 20 Jul 2023 10:28:59 +0000
-Message-Id: <20230720102859.2985655-3-jiaqing.zhao@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230720102859.2985655-1-jiaqing.zhao@linux.intel.com>
-References: <20230720102859.2985655-1-jiaqing.zhao@linux.intel.com>
+        Thu, 20 Jul 2023 06:29:41 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289FF199A
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:29:36 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fbb634882dso1043495e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:29:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google; t=1689848975; x=1690453775;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=55ldkBN7Z9rmeZAoOny3CqxP4h68H/R8XHjCRpEpvaM=;
+        b=To/aqJ+AR8e5dWEecXLmVyKzJv7p/eXCLLd8C+JTITCgvgX10gO3bPy9mTfjfApmKC
+         pxsQe0Zi0t9ZTJKAnnPaXOSY+2KgC+undQtxxu7OXKGlWVpCoprWFOsxf+W4mnSLiDLC
+         pAgi2NsmcZku6fKLA/jCVUWBjUWpmQMelRwLE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689848975; x=1690453775;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=55ldkBN7Z9rmeZAoOny3CqxP4h68H/R8XHjCRpEpvaM=;
+        b=MZZHa6dXJ3m/J8j9gm2qWVDthDjrTsMzaqE2jLeaA/zVb8Lmyh4/ClyOzv/PzQ+51L
+         syWIUE7vj99V3HVm6/QehPUViTCOV3Zsms/jUrt4x2UYDktSHe1TY8yUcY7QrnfaFWIs
+         tGQ/sOgmFCkRMtI4TBg752u3vSFjy3ZhaerdjAbnlUwg/ACUnZ50GoAYmxgwvTwK1d09
+         X6b3Y6MyYy+nsjqxmOKkvgArXXlWj6ZeBXADslpoCj9I5Rv0zEONc7jQ1oh+zL56D74o
+         uEqAPeS2bDJoXs6MC7D2C9C5eaH50m+ep5idxWdNsTlxU72jDuorFr3wl0DepEM8389e
+         oUcw==
+X-Gm-Message-State: ABy/qLYlFAWDo8vd/qe/kBSb+64uFS7vGJZ2XQNvqjXe0ZTdq4zg4z5k
+        n5sEks4KmOb8LsKSHKaArddIFUEJCVw/iSA0qTc=
+X-Google-Smtp-Source: APBJJlGt+6m30H+euMcgCia5xz8EHhxIYsHnKz/Fj04bqSKh9ChxaTbMBvaixRVxb9X8NJRNSY8UQQ==
+X-Received: by 2002:a05:600c:354f:b0:3fa:9587:8fc1 with SMTP id i15-20020a05600c354f00b003fa95878fc1mr1968458wmq.1.1689848974989;
+        Thu, 20 Jul 2023 03:29:34 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id f14-20020a7bcd0e000000b003fc01f7b415sm3582137wmj.39.2023.07.20.03.29.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 03:29:34 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 12:29:32 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     Tomer Tayar <ttayar@habana.ai>, Arnd Bergmann <arnd@kernel.org>,
+        Ohad Sharabi <osharabi@habana.ai>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Dafna Hirschfeld <dhirschfeld@habana.ai>,
+        Ofir Bitton <obitton@habana.ai>
+Subject: Re: [PATCH] accel/habanalabs: add more debugfs stub helpers
+Message-ID: <ZLkMjL8Aebipv4QR@phenom.ffwll.local>
+Mail-Followup-To: Oded Gabbay <ogabbay@kernel.org>,
+        Tomer Tayar <ttayar@habana.ai>, Arnd Bergmann <arnd@kernel.org>,
+        Ohad Sharabi <osharabi@habana.ai>, Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Dafna Hirschfeld <dhirschfeld@habana.ai>,
+        Ofir Bitton <obitton@habana.ai>
+References: <20230609120636.3969045-1-arnd@kernel.org>
+ <b3a3e2f8-51d8-f8ce-95ce-1180f80cc2d2@habana.ai>
+ <CAFCwf122kE8sNksXivPA+E=BWzjroKowwqDJrHVMNj-o3oJq0A@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAFCwf122kE8sNksXivPA+E=BWzjroKowwqDJrHVMNj-o3oJq0A@mail.gmail.com>
+X-Operating-System: Linux phenom 6.3.0-2-amd64 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move PCI Vendor and Device ID of ASIX AX99100 PCIe to Multi I/O
-Controller to pci_ids.h for its serial and parallel port driver
-support in subsequent patches.
+On Sun, Jun 11, 2023 at 12:50:31PM +0300, Oded Gabbay wrote:
+> On Fri, Jun 9, 2023 at 4:37 PM Tomer Tayar <ttayar@habana.ai> wrote:
+> >
+> > On 09/06/2023 15:06, Arnd Bergmann wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > >
+> > > Two functions got added with normal prototypes for debugfs, but not
+> > > alternative when building without it:
+> > >
+> > > drivers/accel/habanalabs/common/device.c: In function 'hl_device_init':
+> > > drivers/accel/habanalabs/common/device.c:2177:14: error: implicit declaration of function 'hl_debugfs_device_init'; did you mean 'hl_debugfs_init'? [-Werror=implicit-function-declaration]
+> > > drivers/accel/habanalabs/common/device.c:2305:9: error: implicit declaration of function 'hl_debugfs_device_fini'; did you mean 'hl_debugfs_remove_file'? [-Werror=implicit-function-declaration]
+> > >
+> > > Add stubs for these as well.
+> > >
+> > > Fixes: 553311fc7b76e ("accel/habanalabs: expose debugfs files later")
+> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> >
+> > Thanks,
+> > Reviewed-by: Tomer Tayar <ttayar@habana.ai>
+> 
+> Thanks,
+> Applied to -fixes.
 
-Signed-off-by: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
----
- drivers/net/can/sja1000/ems_pci.c | 6 +-----
- include/linux/pci_ids.h           | 4 ++++
- 2 files changed, 5 insertions(+), 5 deletions(-)
+As requested applied to drm-fixes, hopeful for the next one your drm-misc
+account issue is fixed.
+-Daniel
 
-diff --git a/drivers/net/can/sja1000/ems_pci.c b/drivers/net/can/sja1000/ems_pci.c
-index 3e18c63a982c..1aaedaf866f1 100644
---- a/drivers/net/can/sja1000/ems_pci.c
-+++ b/drivers/net/can/sja1000/ems_pci.c
-@@ -108,10 +108,6 @@ struct ems_pci_card {
- 
- #define EMS_PCI_BASE_SIZE  4096 /* size of controller area */
- 
--#ifndef PCI_VENDOR_ID_ASIX
--#define PCI_VENDOR_ID_ASIX 0x125b
--#define PCI_DEVICE_ID_ASIX_9110 0x9110
--#endif
- #define PCI_SUBDEVICE_ID_EMS 0x4010
- 
- static const struct pci_device_id ems_pci_tbl[] = {
-@@ -122,7 +118,7 @@ static const struct pci_device_id ems_pci_tbl[] = {
- 	/* CPC-104P v2 */
- 	{PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030, PCI_VENDOR_ID_PLX, 0x4002},
- 	/* CPC-PCIe v3 */
--	{PCI_VENDOR_ID_ASIX, PCI_DEVICE_ID_ASIX_9110, 0xa000, PCI_SUBDEVICE_ID_EMS},
-+	{PCI_VENDOR_ID_ASIX, PCI_DEVICE_ID_ASIX_AX99100_LB, 0xa000, PCI_SUBDEVICE_ID_EMS},
- 	{0,}
- };
- MODULE_DEVICE_TABLE(pci, ems_pci_tbl);
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 2dc75df1437f..16608ce4fd0f 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -1760,6 +1760,10 @@
- #define PCI_SUBDEVICE_ID_AT_2700FX	0x2701
- #define PCI_SUBDEVICE_ID_AT_2701FX	0x2703
- 
-+#define PCI_VENDOR_ID_ASIX		0x125b
-+#define PCI_DEVICE_ID_ASIX_AX99100	0x9100
-+#define PCI_DEVICE_ID_ASIX_AX99100_LB	0x9110
-+
- #define PCI_VENDOR_ID_ESS		0x125d
- #define PCI_DEVICE_ID_ESS_ESS1968	0x1968
- #define PCI_DEVICE_ID_ESS_ESS1978	0x1978
+> Oded
+> >
+> > > ---
+> > >   drivers/accel/habanalabs/common/habanalabs.h | 9 +++++++++
+> > >   1 file changed, 9 insertions(+)
+> > >
+> > > diff --git a/drivers/accel/habanalabs/common/habanalabs.h b/drivers/accel/habanalabs/common/habanalabs.h
+> > > index d92ba2e30e310..2f027d5a82064 100644
+> > > --- a/drivers/accel/habanalabs/common/habanalabs.h
+> > > +++ b/drivers/accel/habanalabs/common/habanalabs.h
+> > > @@ -3980,6 +3980,15 @@ static inline void hl_debugfs_fini(void)
+> > >   {
+> > >   }
+> > >
+> > > +static inline int hl_debugfs_device_init(struct hl_device *hdev)
+> > > +{
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +static inline void hl_debugfs_device_fini(struct hl_device *hdev)
+> > > +{
+> > > +}
+> > > +
+> > >   static inline void hl_debugfs_add_device(struct hl_device *hdev)
+> > >   {
+> > >   }
+> >
+> >
+
 -- 
-2.39.2
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
