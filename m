@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FEE75A43D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 04:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F3075A442
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 04:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbjGTCGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 22:06:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
+        id S229672AbjGTCIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 22:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjGTCGq (ORCPT
+        with ESMTP id S229476AbjGTCIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 22:06:46 -0400
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DCA1FF9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 19:06:44 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Vnnt3WB_1689818801;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vnnt3WB_1689818801)
-          by smtp.aliyun-inc.com;
-          Thu, 20 Jul 2023 10:06:42 +0800
-Message-ID: <1689818793.8129647-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH v1] virtio-pci: Fix legacy device flag setting error in probe
-Date:   Thu, 20 Jul 2023 10:06:33 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Feng Liu <feliu@nvidia.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Bodong Wang <bodong@nvidia.com>, Feng Liu <feliu@nvidia.com>,
-        Parav Pandit <parav@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230719154550.79536-1-feliu@nvidia.com>
-In-Reply-To: <20230719154550.79536-1-feliu@nvidia.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 19 Jul 2023 22:08:47 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5534E1FFE
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 19:08:44 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R5x1g1nVjzBRDrK
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:08:39 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689818917; x=1692410918; bh=op03lTFVycvrsoiSyYa7DnyLy2u
+        Eg3gNJvz56AOcgYw=; b=pq+Qbs4OFTu0lz4egMGZQExWe6EmSX8prEmbfTWCURJ
+        ck2+vPSdNp/tGva9IFvZNVgoOpXrBuEpTXcIMTSl00mPFZw27nPkI3Mdtd8++pNF
+        RRyEMETPvMTHnZltTQuA2gka6qRHJI5yIOBC7Bm74unl+PiTTi8j85gAKw5Qs6GB
+        6BPPVnf6xdeATF/exuQUNw9TGKQYterIjKAzLJVte2zhy/GI+mJcpGn3lEyddHoy
+        /nY0TLzRtaLgCLINjqAKz6gzaLa5n6oaHE0uoDkVPLpsPUwvo406s1EPpKiItxIJ
+        5l4o47cPRw4pQQUok61npPnKmnmOCd9rC6Cou3ya0Mg==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Tu8elr19Dr0u for <linux-kernel@vger.kernel.org>;
+        Thu, 20 Jul 2023 10:08:37 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R5x1d4rCHzBJCNV;
+        Thu, 20 Jul 2023 10:08:37 +0800 (CST)
+MIME-Version: 1.0
+Date:   Thu, 20 Jul 2023 10:08:37 +0800
+From:   sunran001@208suo.com
+To:     bp@suse.de, arnd@arndb.de, ebiederm@xmission.com,
+        brgerst@gmail.com, sohil.mehta@intel.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] compat: add missing spaces after ';'
+In-Reply-To: <20230720020219.766-1-xujianghui@cdjrlc.com>
+References: <20230720020219.766-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <164ef920bb0c98137824a729eb9ff13b@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Jul 2023 11:45:50 -0400, Feng Liu <feliu@nvidia.com> wrote:
-> The 'is_legacy' flag is used to differentiate between legacy vs modern
-> device. Currently, it is based on the value of vp_dev->ldev.ioaddr.
-> However, due to the shared memory of the union between struct
-> virtio_pci_legacy_device and struct virtio_pci_modern_device, when
-> virtio_pci_modern_probe modifies the content of struct
-> virtio_pci_modern_device, it affects the content of struct
-> virtio_pci_legacy_device, and ldev.ioaddr is no longer zero, causing
-> the 'is_legacy' flag to be set as true. To resolve issue, when legacy
-> device is probed, mark 'is_legacy' as true, when modern device is
-> probed, keep 'is_legacy' as false.
->
-> Fixes: 4f0fc22534e3 ("virtio_pci: Optimize virtio_pci_device structure size")
-> Signed-off-by: Feng Liu <feliu@nvidia.com>
-> Reviewed-by: Parav Pandit <parav@nvidia.com>
-> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Remove spaces to clear checkpatch errors.
 
-Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+ERROR: space required after that ';' (ctx:VxV)
 
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  include/linux/compat.h | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
-> ---
->  drivers/virtio/virtio_pci_common.c | 2 --
->  drivers/virtio/virtio_pci_legacy.c | 1 +
->  2 files changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-> index a6c86f916dbd..c2524a7207cf 100644
-> --- a/drivers/virtio/virtio_pci_common.c
-> +++ b/drivers/virtio/virtio_pci_common.c
-> @@ -557,8 +557,6 @@ static int virtio_pci_probe(struct pci_dev *pci_dev,
->
->  	pci_set_master(pci_dev);
->
-> -	vp_dev->is_legacy = vp_dev->ldev.ioaddr ? true : false;
-> -
->  	rc = register_virtio_device(&vp_dev->vdev);
->  	reg_dev = vp_dev;
->  	if (rc)
-> diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-> index 2257f1b3d8ae..d9cbb02b35a1 100644
-> --- a/drivers/virtio/virtio_pci_legacy.c
-> +++ b/drivers/virtio/virtio_pci_legacy.c
-> @@ -223,6 +223,7 @@ int virtio_pci_legacy_probe(struct virtio_pci_device *vp_dev)
->  	vp_dev->config_vector = vp_config_vector;
->  	vp_dev->setup_vq = setup_vq;
->  	vp_dev->del_vq = del_vq;
-> +	vp_dev->is_legacy = true;
->
->  	return 0;
->  }
-> --
-> 2.37.1 (Apple Git-137.1)
->
+diff --git a/include/linux/compat.h b/include/linux/compat.h
+index 1cfa4f0f490a..2f6a62afe984 100644
+--- a/include/linux/compat.h
++++ b/include/linux/compat.h
+@@ -39,7 +39,7 @@
+  #endif
+
+  #ifndef __SC_DELOUSE
+-#define __SC_DELOUSE(t,v) ((__force t)(unsigned long)(v))
++#define __SC_DELOUSE(t, v) ((__force t)(unsigned long)(v))
+  #endif
+
+  #ifndef COMPAT_SYSCALL_DEFINE0
+@@ -72,7 +72,7 @@
+  	__diag_push();								\
+  	__diag_ignore(GCC, 8, "-Wattribute-alias",				\
+  		      "Type aliasing is used to sanitize syscall arguments");\
+-	asmlinkage long compat_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))	\
++	asmlinkage long compat_sys##name(__MAP(x, __SC_DECL, __VA_ARGS__))	\
+  		__attribute__((alias(__stringify(__se_compat_sys##name))));	\
+  	ALLOW_ERROR_INJECTION(compat_sys##name, ERRNO);				\
+  	static inline long 
+__do_compat_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__));\
