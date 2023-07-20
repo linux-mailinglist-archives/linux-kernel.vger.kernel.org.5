@@ -2,103 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D35F975BAB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF07975BAB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbjGTWhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 18:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56724 "EHLO
+        id S230232AbjGTWiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 18:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjGTWhV (ORCPT
+        with ESMTP id S230337AbjGTWh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 18:37:21 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA05171B
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:37:20 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4f9fdb0ef35so2142438e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:37:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689892638; x=1690497438;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hDwVNaCwLkj+T7Bsxj7osVe4IR5sds5yMUqYgBnFTec=;
-        b=RrpAlqUm0mabMdrW7xEK50l1GNF6iN49ca5j+EY9M/WgnCWiXIvFzGDu74LWDP9eVd
-         hjw6NTvs9gFiwvKY3UTHybpIibi9dafuXULKm8ypdzSxXXKRlE5F5Kr0QdG4qc0Mhc3t
-         Z1+AbQPZUhtokYv1qL/qSmCi195Raf3yd0xn1gyGbhFxuJs5oToufDDt84iI+mEHt25k
-         vi8txd/Tfn/QhlWKD5cUAmnVFv9BnXXR4j0UNlEY+dgvO7FsQVaV5//uD2W2ic8Tmm7a
-         E03K+sR9xFjetBixY26Zd15iuY39Q92GfWofhIXeQ9oCTPG2/OrKiJZkapn7K/IOYCAe
-         RL2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689892638; x=1690497438;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hDwVNaCwLkj+T7Bsxj7osVe4IR5sds5yMUqYgBnFTec=;
-        b=IWBRp8r/iRjEP92WsrZ3U5IBABi3QaR0wKKT/AEnHhY3uAoPk/eWaKwbv3TcyjfseH
-         VRefdinUlwTBSRauLdxgiTWLXNWi9RuPbzH3OYC5/cGST0M0IXnGjPdhrBVKjG7DljxX
-         IcwxuKb46/E9GIdP0iEy/DRkuzoB9rF4OVDanNZOxdZx/sHlJ31iGwcnePID3fkOO+pv
-         xrWr2adnHxaU8ZTvyiN/rsFQni5beKqHF5Hz+t0Z1Ixj4VN2CNsOMQ5iHtwBsfI5uHur
-         Un/s5veUcMvWendIJFnoiK/f3+RzMEsFL38wyVYjWHtBciNFAYd/Ng64UEHSmlvGdOVJ
-         gMng==
-X-Gm-Message-State: ABy/qLayox2L62e7Qss6s/5PKng71AHaja+RRwVkcgqmN/6eNWe42JPu
-        HdNhJr6NrqxauXiOH+wGYeww/+eP7Ly32vj/
-X-Google-Smtp-Source: APBJJlGijby0oVBSlZQzPuE6wRs33kVNUMfK5HpKn/sbtkGkZX2707uwvvqV3FhTi9lLbUL+RHxxuQ==
-X-Received: by 2002:a05:6512:3da7:b0:4fb:52a3:e809 with SMTP id k39-20020a0565123da700b004fb52a3e809mr75159lfv.28.1689892637988;
-        Thu, 20 Jul 2023 15:37:17 -0700 (PDT)
-Received: from tora (83.10.92.232.ipv4.supernova.orange.pl. [83.10.92.232])
-        by smtp.gmail.com with ESMTPSA id v13-20020a19740d000000b004fbab4b7d45sm408232lfe.67.2023.07.20.15.37.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 15:37:17 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 00:37:15 +0200
-From:   Alicja Michalska <ahplka19@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     robbarnes@google.com, lalithkraj@google.com, rrangel@chromium.org,
-        bleung@chromium.org, groeck@chromium.org,
-        chrome-platform@lists.linux.dev
-Subject: [PATCH] platform/chrome: cros_ec_lpc: Add DMI definition for
- post-Skylake machines running custom Coreboot builds
-Message-ID: <ZLm3G5G6/gmLZwkn@tora>
+        Thu, 20 Jul 2023 18:37:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29517E65;
+        Thu, 20 Jul 2023 15:37:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=5wfB/JnTildGLpqIz22A/N+tA5l0CUHxiDZM+QP0Xnw=; b=Qdrj24cjE0nBvu1VL4hCFUzYtu
+        modSy+mz0JT/nbTsDGP4Rqu7vYpq+i2KZ4yfk3YoOuNcRbAQOYiql7azl3dXQ8FAsXH6fcgdu0/I1
+        zgIOAlrFrQXnV4palYO9N1gAvMiA0urkN1CRiEYesm4+Mrrl2Sdq31ytxBIT/pAPe99DwqAjtXvrZ
+        WRdPHrweHO6h5TAFdPcidCw9HVkffv9qM4d4NUTiJXPj//KjqeGH9X40cMX4+rbeorMp8yn/CETaY
+        kazpax+f2FpKq4dC2yflbMBJuQ8r7O0eM2rDzqurfiDz5n1eQnYZx5OQYidLNHh1SZqA0K4ieuH1n
+        iFMWH0eQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qMcH6-000Vlo-Ox; Thu, 20 Jul 2023 22:37:32 +0000
+Date:   Thu, 20 Jul 2023 23:37:32 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jeffrey Walton <noloader@gmail.com>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        christian.brauner@ubuntu.com,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        ZhangPeng <zhangpeng362@huawei.com>,
+        linux-m68k@lists.linux-m68k.org,
+        debian-ports <debian-ports@lists.debian.org>
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+Message-ID: <ZLm3LLrsSPYkLYr4@casper.infradead.org>
+References: <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
+ <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
+ <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
+ <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
+ <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
+ <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
+ <ZLlvII/jMPTT32ef@casper.infradead.org>
+ <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de>
+ <ZLl2Fq35Ya0cNbIm@casper.infradead.org>
+ <CAH8yC8=BwacXyFQret5pKVCzXXO0jLM_u9eW3bTdyPi4y8CSfw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAH8yC8=BwacXyFQret5pKVCzXXO0jLM_u9eW3bTdyPi4y8CSfw@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ChromeOS EC LPC lacks DMI match for newer machines, which
-use "Google" DMI_SYS_VENDOR as opposed to "GOOGLE" in older models.
-This patch adds DMI definition for MrChomebox's custom Coreboots builds,
-which we (Chrultrabook Project) are using.
+On Thu, Jul 20, 2023 at 05:38:52PM -0400, Jeffrey Walton wrote:
+> On Thu, Jul 20, 2023 at 2:39 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Thu, Jul 20, 2023 at 07:50:47PM +0200, John Paul Adrian Glaubitz wrote:
+> > > > Then we should delete the HFS/HFS+ filesystems.  They're orphaned in
+> > > > MAINTAINERS and if distros are going to do such a damnfool thing,
+> > > > then we must stop them.
+> > >
+> > > Both HFS and HFS+ work perfectly fine. And if distributions or users are so
+> > > sensitive about security, it's up to them to blacklist individual features
+> > > in the kernel.
+> > >
+> > > Both HFS and HFS+ have been the default filesystem on MacOS for 30 years
+> > > and I don't think it's justified to introduce such a hard compatibility
+> > > breakage just because some people are worried about theoretical evil
+> > > maid attacks.
+> > >
+> > > HFS/HFS+ mandatory if you want to boot Linux on a classic Mac or PowerMac
+> > > and I don't think it's okay to break all these systems running Linux.
+> >
+> > If they're so popular, then it should be no trouble to find somebody
+> > to volunteer to maintain those filesystems.  Except they've been
+> > marked as orphaned since 2011 and effectively were orphaned several
+> > years before that (the last contribution I see from Roman Zippel is
+> > in 2008, and his last contribution to hfs was in 2006).
+> 
+> One data point may help.. I've been running Linux on an old PowerMac
+> and an old Intel MacBook since about 2014 or 2015 or so. I have needed
+> the HFS/HFS+ filesystem support for about 9 years now (including that
+> "blessed" support for the Apple Boot partition).
+> 
+> There's never been a problem with Linux and the Apple filesystems.
+> Maybe it speaks to the maturity/stability of the code that already
+> exists. The code does not need a lot of attention nowadays.
+> 
+> Maybe the orphaned status is the wrong metric to use to determine
+> removal. Maybe a better metric would be installation base. I.e., how
+> many users use the filesystem.
 
-Signed-off-by: Alicja Michalska <ahplka19@gmail.com>
----
- drivers/platform/chrome/cros_ec_lpc.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/platform/chrome/cros_ec_lpc.c b/drivers/platform/chrome/cros_ec_lpc.c
-index 500a61b093e4..6ac993be4eb1 100644
---- a/drivers/platform/chrome/cros_ec_lpc.c
-+++ b/drivers/platform/chrome/cros_ec_lpc.c
-@@ -533,6 +533,14 @@ static const struct dmi_system_id cros_ec_lpc_dmi_table[] __initconst = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Glimmer"),
- 		},
- 	},
-+	/* DMI doesn't match modern machines running custom firmware */
-+	{
-+		/* MrChromebox's firmware */
-+		.matches = {
-+			DMI_MATCH(DMI_BIOS_VENDOR, "coreboot"),
-+			DMI_MATCH(DMI_BIOS_VERSION, "MrChromebox-"),
-+		},
-+	},
- 	/* A small number of non-Chromebook/box machines also use the ChromeOS EC */
- 	{
- 		/* the Framework Laptop */
--- 
-2.41.0
-
+I think you're missing the context.  There are bugs in how this filesystem
+handles intentionally-corrupted filesystems.  That's being reported as
+a critical bug because apparently some distributions automount HFS/HFS+
+filesystems presented to them on a USB key.  Nobody is being paid to fix
+these bugs.  Nobody is volunteering to fix these bugs out of the kindness
+of their heart.  What choice do we have but to remove the filesystem,
+regardless of how many happy users it has?
