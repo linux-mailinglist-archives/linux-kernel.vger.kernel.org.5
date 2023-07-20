@@ -2,116 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BC275BB45
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 01:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2970B75BB48
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 01:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbjGTXdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 19:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42050 "EHLO
+        id S229746AbjGTXew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 19:34:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbjGTXdW (ORCPT
+        with ESMTP id S229492AbjGTXeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 19:33:22 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA449273A;
-        Thu, 20 Jul 2023 16:33:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689895996; x=1721431996;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=54f6oGhMQOvzfr4uV0Pwhmi/Poh/uRJMyo79eGxiezU=;
-  b=BlOfBC6SMptz3gZ5eLCSfnFKDivgO+dvCKtAsnh9cRZkEvuBs1un6czK
-   dRbmCIBhAD6mlRv97G0MTCprlutpq9qsO9dOVIcnVo8aUPBC74g/xFn++
-   Wq9OYi7qzHCJKxQPfoAXaT63kaWlHA9B8yl2FFM70W+iunVANMh5rByvM
-   VBd0d2g48j6WIDowFGjtE4xMXXqMhclGtPDlHr3SoK4qMbS4G1Fx1saZs
-   96i7qcvdgz3svzO5fWT/1wK1BBChLcaaLl6PJYCDorx9RW6rdERtkf7OS
-   Tc0mbb7oabIFUD2cu60+4Pm7wfI9HZC2L5KqOz6Mas0uF46crJ616gMud
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="364355976"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="364355976"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 16:33:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="727891811"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="727891811"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 16:33:13 -0700
-From:   isaku.yamahata@intel.com
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
-        Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>
-Subject: [RFC PATCH v4 10/10] KVM: X86: KVM_MEM_ENC_OP check if unused field (flags, error) is zero
-Date:   Thu, 20 Jul 2023 16:32:56 -0700
-Message-Id: <cf4e12dbe7d8d759ff87e088ade54bd710926d1e.1689893403.git.isaku.yamahata@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1689893403.git.isaku.yamahata@intel.com>
-References: <cover.1689893403.git.isaku.yamahata@intel.com>
+        Thu, 20 Jul 2023 19:34:50 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D746A358C;
+        Thu, 20 Jul 2023 16:34:27 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-55ba895d457so746263a12.0;
+        Thu, 20 Jul 2023 16:34:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689896031; x=1690500831;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QDyB0fNg8iWGoLzY4kcY3n9F15g3W1rTkoIJoBTRg3A=;
+        b=p+DjGaqxAYYqPCdrR2BuBFrntop3OtvaJ9VPhfM4o2gjf3vqRJipbYIu7R0l45bmex
+         qOYSyJjyvqVatCS3/cx/jCT624c+7E64DfOD4mxB7fVWiy9qgxpagCj5Oq7t63/bbEbd
+         7XlvJpp22DUAqDFFOk1rUNh/4XL1OEyZ9/FICeZEWEvKrC3C2DaExZWPQbFmbi8btTih
+         OdWniYrypHRj+r7hruEGoY+OT/ko57kNTp34phNCjotDBg6lkZQug5+DcQiRLL+PYgyn
+         Urb767YbMH2gYYyExrPkfBmm/0ZwTrS0pZGlBY0dMuyw8WfHFCJ1y0ZDpbMza1FBy9MC
+         D1mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689896031; x=1690500831;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QDyB0fNg8iWGoLzY4kcY3n9F15g3W1rTkoIJoBTRg3A=;
+        b=NRiO54Rn8lbgKuokkNTepZppMGMOFYrCkQVoxv0Ad0EFubLQleHkEpk6xCnh4o/peO
+         YLLuCLPHj+TGCO6T1llA3AG3s8F68RJbjLjpOS+Q3IlcI2OKG7IjJPr/pBYnBf47iV2J
+         2CYrERtybiMoiNZ00fNMTaAwtvPjYqQ0E38Jh7G2HKm93g3RpoRZrpWlyzSa3RU333ee
+         UkRizE60IMyPAeGyZwBws1Ggia3JieNceOgS9BuvENiSZlZyEqWxgYaNurCwvJc+LfcM
+         1kVj2PhLeB01wnME9CYKfyXqfO8B7VnzurnFCSjOX3ymqMaeBHgG5zPdLmfZTDlSnbYU
+         OF6w==
+X-Gm-Message-State: ABy/qLaWWkAIobOMSg3mbIX51AQa5zRisvuHCJRCI/W774kP9EqvSPA4
+        nOZ59PhDySnZzAQLOKwGkQ0=
+X-Google-Smtp-Source: APBJJlG9dcKPqdMMFcJVFh6rhJcaarEtkzCu++Q5F259HoJP8/SfAsOR9pG4xjmljAFXmku1B2DUrg==
+X-Received: by 2002:a17:90a:6b4f:b0:262:b22b:8ab5 with SMTP id x15-20020a17090a6b4f00b00262b22b8ab5mr128498pjl.17.1689896030994;
+        Thu, 20 Jul 2023 16:33:50 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:fbd8])
+        by smtp.gmail.com with ESMTPSA id 3-20020a17090a01c300b00263c8b33bcfsm1576834pjd.14.2023.07.20.16.33.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 16:33:50 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 20 Jul 2023 13:33:49 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     "T.J. Mercier" <tjmercier@google.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 0/8] memory recharging for offline memcgs
+Message-ID: <ZLnEXbeQJ_69xV23@slm.duckdns.org>
+References: <20230720070825.992023-1-yosryahmed@google.com>
+ <20230720153515.GA1003248@cmpxchg.org>
+ <ZLmRlTej8Tm82kXG@slm.duckdns.org>
+ <CAJD7tkYhu3g9u7HkUTFBtT3Q4edVZ2g1TWV1FDcyM9srrYCBLg@mail.gmail.com>
+ <ZLmxLUNdxMi5s2Kq@slm.duckdns.org>
+ <CAJD7tkZKo_oSZ-mQc-knMELP8kiY1N7taQhdV6tPsqN0tg=gog@mail.gmail.com>
+ <ZLm1ptOYH6F8fGHT@slm.duckdns.org>
+ <CABdmKX0JETkXpOSfCUZ3jaZv1JxRzbTP+Se4i3HMKjP3PNZ8Qg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABdmKX0JETkXpOSfCUZ3jaZv1JxRzbTP+Se4i3HMKjP3PNZ8Qg@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Isaku Yamahata <isaku.yamahata@intel.com>
+Hello,
 
-This breaks uABI as the current code doesn't check padding and sev_fd
-when unused.
+On Thu, Jul 20, 2023 at 04:24:02PM -0700, T.J. Mercier wrote:
+> > Hmm... so, usually, the problems we see are resources that are persistent
+> > across different instances of the same application as they may want to share
+> > large chunks of memory like on-memory cache. I get that machines get
+> > different dynamic jobs but unrelated jobs usually don't share huge amount of
+> > memory at least in our case. The sharing across them comes down to things
+> > like some common library pages which don't really account for much these
+> > days.
+> >
+> This has also been my experience in terms of bytes of memory that are
+> incorrectly charged (because they're charged to a zombie), but that is
+> because memcg doesn't currently track the large shared allocations in
+> my case (primarily dma-buf). The greater issue I've seen so far is the
+> number of zombie cgroups that can accumulate over time. But my
+> understanding is that both of these two problems are currently
+> significant for Yosry's case.
 
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
----
-Changes v3 -> v4:
-- newly added
----
- arch/x86/kvm/x86.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+memcg already does reparenting of slab pages to lower the number of dying
+cgroups and maybe it makes sense to expand that to user memory too. One
+related thing is that if those reparented pages are written to, that's gonna
+break IO isolation w/ blk-iocost because iocost currently bypasses IOs from
+intermediate cgroups to root but we can fix that. Anyways, that's something
+pretty different from what's proposed here. Reparenting, I think, is a lot
+less conroversial.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index ab36e8940f1b..1d6085af6a00 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -7055,6 +7055,22 @@ int kvm_arch_vm_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
- 			r = -EFAULT;
- 			goto out;
- 		}
-+		/* No sub-command uses flags at the moment. */
-+		if (cmd.flags) {
-+			r = -EINVAL;
-+			goto out;
-+		}
-+		if (cmd.id != KVM_SEV_LAUNCH_START &&
-+		    cmd.id != KVM_SEV_RECEIVE_START && cmd.error64) {
-+			r = -EINVAL;
-+			goto out;
-+		}
-+		if ((cmd.id == KVM_SEV_LAUNCH_START ||
-+		     cmd.id == KVM_SEV_RECEIVE_START) && cmd.error) {
-+			r = -EINVAL;
-+			goto out;
-+		}
-+
- 		r = static_call(kvm_x86_mem_enc_ioctl)(kvm, &cmd);
- 		if (copy_to_user(argp, &cmd, sizeof(cmd)))
- 			r = -EFAULT;
+Thanks.
+
 -- 
-2.25.1
-
+tejun
