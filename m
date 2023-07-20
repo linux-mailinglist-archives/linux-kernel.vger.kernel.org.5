@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B249975AC0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDF775AC0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbjGTKcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 06:32:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
+        id S231422AbjGTKcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 06:32:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231382AbjGTKbs (ORCPT
+        with ESMTP id S229632AbjGTKbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 Jul 2023 06:31:48 -0400
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D3410F1;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82261719;
         Thu, 20 Jul 2023 03:31:46 -0700 (PDT)
 Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8ED4737A2;
-        Thu, 20 Jul 2023 12:30:46 +0200 (CEST)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 71C1537B1;
+        Thu, 20 Jul 2023 12:30:47 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1689849047;
-        bh=voR+HIz/XDavd4wzz+Vp//Iu4A0tNRNWdTZwN65n+JA=;
+        s=mail; t=1689849048;
+        bh=Rur1IK4TcPD70743h/tvl3kOfm8iOTDAhEwetSWaWDY=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=qOJTeAAF3tE6iRTT5jV6xxjKztvE1oDRJZ1hno6nioW0QURCwO/dPtFm2yyCbLJZk
-         G9w1cVZ8i2avaoSyUBkKm9wV4dL/dixDhpq+EpeV1liYz12gkgWj8Ab/0evs6R+oJ/
-         zcLYvA2Hg9rvtMYRUpyjs7+KFCqUfMbaZXke5dUU=
+        b=kTWD2/BOqU1mHDUETVmqL8Xqgc+KID6QJZTDOvsZViSS1WlREwDP2O7HQPiZhuBbE
+         IqQj6taNn4vL14OwZZ0E8ZBBUjoHMCiGkJ7tunZqd+IkL6P41xgbNwnTFANABWs5eM
+         y/syppZugjyabQMHPXi/e/yxxvfa/Fst76OxvvuE=
 From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date:   Thu, 20 Jul 2023 13:30:37 +0300
-Subject: [PATCH v2 6/8] media: i2c: ds90ub953: Restructure clkout
- management
+Date:   Thu, 20 Jul 2023 13:30:38 +0300
+Subject: [PATCH v2 7/8] media: i2c: ds90ub953: Support non-sync mode
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230720-fpdlink-additions-v2-6-b91b1eca2ad3@ideasonboard.com>
+Message-Id: <20230720-fpdlink-additions-v2-7-b91b1eca2ad3@ideasonboard.com>
 References: <20230720-fpdlink-additions-v2-0-b91b1eca2ad3@ideasonboard.com>
 In-Reply-To: <20230720-fpdlink-additions-v2-0-b91b1eca2ad3@ideasonboard.com>
 To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -46,21 +45,21 @@ To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
 Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6059;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2508;
  i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=voR+HIz/XDavd4wzz+Vp//Iu4A0tNRNWdTZwN65n+JA=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBkuQ0Gh4xXec7JBNHbwWLxEILbCSmxX/r09MWxF
- riAySfG8geJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZLkNBgAKCRD6PaqMvJYe
- 9XsZD/4oZvc1In4dU9ecUxJcex96ZAaNC6MyWiaVfKcTQ5tceKRvVcugDEJB3lMiN46aRY6qhtx
- 52PbvOESJrTS/V4LU8gIGPebkF7ji+tS4464TunFmeOgd0k9cixziwUOZZ/zDT50GXyu6+qjYkE
- i79F15ZNsHyOFk68iIsenAAgZvf6yBivCQeSjRltHx4ECnvucg9fnS+eWQnaeRWA0puzMCNU4xx
- bqrqoeUvFq/W3ZoxQ5zkuHmZs1EWxO6flcziZPYrGRZHabM1hpEfaRD1WT1jkTa55we4qUoUfzx
- ZHS3xJxpII62k8M8YRqwLKPOQNf/q75IGCiYpe5m4dsatxudLRyaCeO2G4ff2taQf89NT41RJnH
- Tct5ljQ41Ihy0N+69EYjQm5ChS1i2D5lof0Kw+wMecDRF8xR/kOIjEwrFiwD/1CYcft8BzTVbwl
- RIqU9kAK+IwsAfu9ApkujeP5T04dM67rZpHDwuSiitvRyGhZ48mFXA7YmEPT98kvL8NN5UH09cE
- Z1E3Si9lLCqClKjDmuFX98JrNUYfmyo8/0hZdAFOiC8kgYBYreqmmiAeLQIEFkZ4ZVkOjv+RUfv
- sXFqAezX5PFndxr+nY2m2Mr/Lku6YTzWa8b9nLmvqMCYpXxEOWK32uIr7UOU4gJ4TVZfLko+GoP
- v5OR2w2UXWCU4DA==
+ bh=Rur1IK4TcPD70743h/tvl3kOfm8iOTDAhEwetSWaWDY=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBkuQ0GiP2nZraBbDa6yM3SKZJuVPbC4eCco1Cnr
+ ATJOwBF2HGJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZLkNBgAKCRD6PaqMvJYe
+ 9X7KD/9AUuDRNnHu+8MdFW0vpJ19RtR8/1MAfDzbJjDy/hW7fD/oBZvcnwVZ4M83XAzbi1uEjg6
+ znk7BsFaCw9LYOBd9WvU7mGfbcr6F6TH1ZWwRFMZhZE+ZE+aYTIEGppn0mmkgTXs8yeeJHHPEaw
+ K3nvyntN1NyxfotbW2YrhzJ7nxDkvX/3fAE9ST/1jo59TKgkbDVeWyzD9f54zbUPGlqLcnoiiw9
+ Q/0+CvBpN9W33nLsoSHR6J5s2pvdObiXFzH7T8+QMUSoDkwaH5MU/qihWbPoAsMRx0TkdeBe9tx
+ SyCGlrkCtNHKfFsNZvk8MV1ONk4AeZNflPEfcgrj2O5RANhvTFE5h5ybUdwxvkeW/NmvnAIdgjN
+ uqDIj8F63hl1BclVZA1PzhL7gZvtOeUZ/bFs88ja/xF8F5U5ZngplyWmzTPy5PexY7A8Rckm5EQ
+ bzUEIX/xhWqC7ESGr2clmY4deyy1UY2k4yx5rmriIflvt14PQdLA+99wPjbXABRRymNPqlygq6u
+ lePxsFdB33QicHht0dwss9L0IDYeDOj6qT7k0s22ljX/ap9EJg3M57Xv8dFhpcHZvD76Qqpjx0U
+ 7VMUgtY0AW3kEDtNhzwCvJ7gcgAxRxDUCyJJwPx3Q7Pq5yshOJJ4U9iSKmKCqzsTsr91tef0KY/
+ CFzBb21ty6PiVXQ==
 X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
  fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,208 +72,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Separate clkout calculations and register writes into two functions:
-ub953_calc_clkout_params and ub953_write_clkout_regs, and add a struct
-ub953_clkout_data that is used to store the clkout parameters.
-
-This simplifies the clkout management.
+Add support for FPD-Link non-sync mode with external clock. The only
+thing that needs to be added is the calculation for the clkout.
 
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 ---
- drivers/media/i2c/ds90ub953.c | 135 ++++++++++++++++++++++--------------------
- 1 file changed, 70 insertions(+), 65 deletions(-)
+ drivers/media/i2c/ds90ub953.c | 34 ++++++++++++++++++++++++++--------
+ 1 file changed, 26 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/media/i2c/ds90ub953.c b/drivers/media/i2c/ds90ub953.c
-index ad479923d2b4..3a19c6dedd2f 100644
+index 3a19c6dedd2f..846542e6e20d 100644
 --- a/drivers/media/i2c/ds90ub953.c
 +++ b/drivers/media/i2c/ds90ub953.c
-@@ -131,6 +131,13 @@ struct ub953_hw_data {
- 	bool is_ub971;
- };
+@@ -143,6 +143,7 @@ struct ub953_data {
  
-+struct ub953_clkout_data {
-+	u32 hs_div;
-+	u32 m;
-+	u32 n;
-+	unsigned long rate;
-+};
-+
- struct ub953_data {
- 	const struct ub953_hw_data	*hw_data;
+ 	struct i2c_client	*client;
+ 	struct regmap		*regmap;
++	struct clk		*clkin;
  
-@@ -906,6 +913,58 @@ static unsigned long ub953_calc_clkout_ub971(struct ub953_data *priv,
- 	return res;
- }
+ 	u32			num_data_lanes;
+ 	bool			non_cont_clk;
+@@ -842,15 +843,21 @@ static int ub953_i2c_master_init(struct ub953_data *priv)
  
-+static void ub953_calc_clkout_params(struct ub953_data *priv,
-+				     unsigned long target_rate,
-+				     struct ub953_clkout_data *clkout_data)
-+{
-+	struct device *dev = &priv->client->dev;
-+	unsigned long clkout_rate;
-+	u64 fc_rate;
-+
-+	fc_rate = ub953_get_fc_rate(priv);
-+
-+	if (priv->hw_data->is_ub971) {
-+		u8 m, n;
-+
-+		clkout_rate = ub953_calc_clkout_ub971(priv, target_rate,
-+						      fc_rate, &m, &n);
-+
-+		clkout_data->m = m;
-+		clkout_data->n = n;
-+
-+		dev_dbg(dev, "%s %llu * %u / (8 * %u) = %lu (requested %lu)",
-+			__func__, fc_rate, m, n, clkout_rate, target_rate);
-+	} else {
-+		u8 hs_div, m, n;
-+
-+		clkout_rate = ub953_calc_clkout_ub953(priv, target_rate,
-+						      fc_rate, &hs_div, &m, &n);
-+
-+		clkout_data->hs_div = hs_div;
-+		clkout_data->m = m;
-+		clkout_data->n = n;
-+
-+		dev_dbg(dev, "%s %llu / %u * %u / %u = %lu (requested %lu)",
-+			__func__, fc_rate, hs_div, m, n, clkout_rate,
-+			target_rate);
-+	}
-+
-+	clkout_data->rate = clkout_rate;
-+}
-+
-+static void ub953_write_clkout_regs(struct ub953_data *priv,
-+				    struct ub953_clkout_data *clkout_data)
-+{
-+	if (priv->hw_data->is_ub971) {
-+		ub953_write(priv, UB953_REG_CLKOUT_CTRL0, clkout_data->m);
-+		ub953_write(priv, UB953_REG_CLKOUT_CTRL1, clkout_data->n);
-+	} else {
-+		ub953_write(priv, UB953_REG_CLKOUT_CTRL0,
-+			    (__ffs(clkout_data->hs_div) << 5) | clkout_data->m);
-+		ub953_write(priv, UB953_REG_CLKOUT_CTRL1, clkout_data->n);
-+	}
-+}
-+
- static unsigned long ub953_clkout_recalc_rate(struct clk_hw *hw,
- 					      unsigned long parent_rate)
+ static u64 ub953_get_fc_rate(struct ub953_data *priv)
  {
-@@ -965,52 +1024,25 @@ static long ub953_clkout_round_rate(struct clk_hw *hw, unsigned long rate,
- 				    unsigned long *parent_rate)
- {
- 	struct ub953_data *priv = container_of(hw, struct ub953_data, clkout_clk_hw);
--	struct device *dev = &priv->client->dev;
--	unsigned long res;
--	u64 fc_rate;
--	u8 hs_div, m, n;
+-	if (priv->mode != UB953_MODE_SYNC) {
++	switch (priv->mode) {
++	case UB953_MODE_SYNC:
++		if (priv->hw_data->is_ub971)
++			return priv->plat_data->bc_rate * 160ull;
++		else
++			return priv->plat_data->bc_rate / 2 * 160ull;
++
++	case UB953_MODE_NONSYNC_EXT:
++		/* CLKIN_DIV = 1 always */
++		return clk_get_rate(priv->clkin) * 80ull;
++
++	default:
+ 		/* Not supported */
+ 		return 0;
+ 	}
 -
--	fc_rate = ub953_get_fc_rate(priv);
-+	struct ub953_clkout_data clkout_data;
- 
--	if (priv->hw_data->is_ub971) {
--		res = ub953_calc_clkout_ub971(priv, rate, fc_rate, &m, &n);
-+	ub953_calc_clkout_params(priv, rate, &clkout_data);
- 
--		dev_dbg(dev, "%s %llu * %u / (8 * %u) = %lu (requested %lu)",
--			__func__, fc_rate, m, n, res, rate);
--	} else {
--		res = ub953_calc_clkout_ub953(priv, rate, fc_rate, &hs_div, &m, &n);
--
--		dev_dbg(dev, "%s %llu / %u * %u / %u = %lu (requested %lu)",
--			__func__, fc_rate, hs_div, m, n, res, rate);
--	}
--
--	return res;
-+	return clkout_data.rate;
- }
- 
- static int ub953_clkout_set_rate(struct clk_hw *hw, unsigned long rate,
- 				 unsigned long parent_rate)
- {
- 	struct ub953_data *priv = container_of(hw, struct ub953_data, clkout_clk_hw);
--	u64 fc_rate;
--	u8 hs_div, m, n;
--	unsigned long res;
-+	struct ub953_clkout_data clkout_data;
- 
--	fc_rate = ub953_get_fc_rate(priv);
--
--	if (priv->hw_data->is_ub971) {
--		res = ub953_calc_clkout_ub971(priv, rate, fc_rate, &m, &n);
--
--		ub953_write(priv, UB953_REG_CLKOUT_CTRL0, m);
--		ub953_write(priv, UB953_REG_CLKOUT_CTRL1, n);
--	} else {
--		res = ub953_calc_clkout_ub953(priv, rate, fc_rate, &hs_div, &m, &n);
-+	ub953_calc_clkout_params(priv, rate, &clkout_data);
- 
--		ub953_write(priv, UB953_REG_CLKOUT_CTRL0, (__ffs(hs_div) << 5) | m);
--		ub953_write(priv, UB953_REG_CLKOUT_CTRL1, n);
--	}
-+	dev_dbg(&priv->client->dev, "%s %lu (requested %lu)\n", __func__,
-+		clkout_data.rate, rate);
- 
--	dev_dbg(&priv->client->dev, "%s %lu (requested %lu)\n", __func__, res,
--		rate);
-+	ub953_write_clkout_regs(priv, &clkout_data);
- 
- 	return 0;
- }
-@@ -1021,32 +1053,6 @@ static const struct clk_ops ub953_clkout_ops = {
- 	.set_rate	= ub953_clkout_set_rate,
- };
- 
--static void ub953_init_clkout_ub953(struct ub953_data *priv)
--{
--	u64 fc_rate;
--	u8 hs_div, m, n;
--
--	fc_rate = ub953_get_fc_rate(priv);
--
--	ub953_calc_clkout_ub953(priv, 25000000, fc_rate, &hs_div, &m, &n);
--
--	ub953_write(priv, UB953_REG_CLKOUT_CTRL0, (__ffs(hs_div) << 5) | m);
--	ub953_write(priv, UB953_REG_CLKOUT_CTRL1, n);
--}
--
--static void ub953_init_clkout_ub971(struct ub953_data *priv)
--{
--	u64 fc_rate;
--	u8 m, n;
--
--	fc_rate = ub953_get_fc_rate(priv);
--
--	ub953_calc_clkout_ub971(priv, 25000000, fc_rate, &m, &n);
--
--	ub953_write(priv, UB953_REG_CLKOUT_CTRL0, m);
--	ub953_write(priv, UB953_REG_CLKOUT_CTRL1, n);
--}
--
- static int ub953_register_clkout(struct ub953_data *priv)
- {
- 	struct device *dev = &priv->client->dev;
-@@ -1055,16 +1061,15 @@ static int ub953_register_clkout(struct ub953_data *priv)
- 				  priv->hw_data->model, dev_name(dev)),
- 		.ops = &ub953_clkout_ops,
- 	};
-+	struct ub953_clkout_data clkout_data;
- 	int ret;
- 
- 	if (!init.name)
- 		return -ENOMEM;
- 
- 	/* Initialize clkout to 25MHz by default */
 -	if (priv->hw_data->is_ub971)
--		ub953_init_clkout_ub971(priv);
+-		return priv->plat_data->bc_rate * 160ull;
 -	else
--		ub953_init_clkout_ub953(priv);
-+	ub953_calc_clkout_params(priv, 25000000, &clkout_data);
-+	ub953_write_clkout_regs(priv, &clkout_data);
+-		return priv->plat_data->bc_rate / 2 * 160ull;
+ }
  
- 	priv->clkout_clk_hw.init = &init;
+ static unsigned long ub953_calc_clkout_ub953(struct ub953_data *priv,
+@@ -1188,9 +1195,15 @@ static int ub953_hw_init(struct ub953_data *priv)
+ 	dev_dbg(dev, "mode from %s: %#x\n", mode_override ? "reg" : "strap",
+ 		priv->mode);
  
+-	if (priv->mode != UB953_MODE_SYNC)
++	if (priv->mode != UB953_MODE_SYNC &&
++	    priv->mode != UB953_MODE_NONSYNC_EXT)
+ 		return dev_err_probe(dev, -ENODEV,
+-				     "Only synchronous mode supported\n");
++				     "Unsupported mode selected: %d\n",
++				     priv->mode);
++
++	if (priv->mode == UB953_MODE_NONSYNC_EXT && !priv->clkin)
++		return dev_err_probe(dev, -EINVAL,
++				     "clkin required for non-sync ext mode\n");
+ 
+ 	ret = ub953_read(priv, UB953_REG_REV_MASK_ID, &v);
+ 	if (ret)
+@@ -1318,6 +1331,11 @@ static int ub953_probe(struct i2c_client *client)
+ 		goto err_mutex_destroy;
+ 	}
+ 
++	priv->clkin = devm_clk_get_optional(dev, "clkin");
++	if (IS_ERR(priv->clkin))
++		return dev_err_probe(dev, PTR_ERR(priv->clkin),
++				     "failed to parse 'clkin'\n");
++
+ 	ret = ub953_parse_dt(priv);
+ 	if (ret)
+ 		goto err_mutex_destroy;
 
 -- 
 2.34.1
