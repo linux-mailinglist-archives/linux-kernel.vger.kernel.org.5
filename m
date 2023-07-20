@@ -2,196 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4CFA75B574
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E0275B57B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbjGTRU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 13:20:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
+        id S231702AbjGTRVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 13:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjGTRU0 (ORCPT
+        with ESMTP id S231444AbjGTRVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 13:20:26 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF85CC
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:20:25 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-66872d4a141so708383b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:20:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689873625; x=1690478425;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=u0xewG1cvw/piPahukDeQcAUXVw/NemttoACGhlUIf0=;
-        b=RcbofajWQQtwxWLyIGuP7sdbMlaKu21GK2CL4Tws++gJGiZcwugJ6RdOVJxGjFcjwE
-         ydVpr91UvvuIScmlQl/SAXRD3TdHkSuaBhpa+5T345iZrzm2BoG5MFgBH97sjXt0WN6d
-         cQyY6PERJcbLjjiNP0J95sGol+1hJF4/igCIY52lYEEjso/lhAyD9Ppy1UFaUALmplb8
-         RoS0jwXQ94Lf+VZa+f4f3RDa4eClJXixl8rki5NOGIz0B2KYMc4jmxx5oHOc0qKNzJqh
-         J/L8LGXUfiI5irx0Z82x09SKDNQdmeLIQDlmdahQnquUVRxX4tUGwLJsKI/dt2xJHWtf
-         VPSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689873625; x=1690478425;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u0xewG1cvw/piPahukDeQcAUXVw/NemttoACGhlUIf0=;
-        b=TpYdswo7G/b4wA2vh8HJ2nihI1Wh1N76cPxkW3WejJr8+KE0ubbe5HSK76BdYRXb7P
-         wg66i38kiw+8eEdrKmCd6Nid7W7TVjK1Om4zZv7gqxSPVm20FhqORRh4Np7dj9MXcUcj
-         W8bmvJ2Zk/C5fRJhEBPx2ZP0rplymaSz1ntw6SGV4w8a56JpzScWp9klwMnd7zyFRoYr
-         yETjhzCDKtEUtzQMXPR1HRKYYKjoVay3H+Z3mjjW25rquUUOoVAobhEEpO1qrx0w7L4a
-         v9B680wx51ux6Kd2CSTO5Y18WcE0/bhp8N7r9PT7iMSgqlr7OXqMLM53wUCfeOp6sP06
-         serQ==
-X-Gm-Message-State: ABy/qLbwoXDvGM3m+mBHWNC9LfGeCDGN93yl9T0yeZw5/tX0PxmdF7vb
-        +80rPRCHjRYfMOZ0Oe7lVL8=
-X-Google-Smtp-Source: APBJJlHwTCE/qfs//TO920/kd2Wc7nex4YRjMcedVAyflYwacyVGjzbIvdvESKr7onneRWRk6STQ+w==
-X-Received: by 2002:a05:6a00:2d9e:b0:668:6eed:7c0f with SMTP id fb30-20020a056a002d9e00b006686eed7c0fmr6685187pfb.12.1689873624907;
-        Thu, 20 Jul 2023 10:20:24 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t14-20020aa7938e000000b00659b8313d08sm1457885pfe.78.2023.07.20.10.20.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 10:20:24 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: [PATCH] regmap: maple: Use alloc_flags for memory allocations
-Date:   Thu, 20 Jul 2023 10:20:21 -0700
-Message-Id: <20230720172021.2617326-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
+        Thu, 20 Jul 2023 13:21:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABA8CC;
+        Thu, 20 Jul 2023 10:21:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F3C6D61BA9;
+        Thu, 20 Jul 2023 17:21:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5283C433C8;
+        Thu, 20 Jul 2023 17:21:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689873663;
+        bh=TPhswv/SPDq8a3pMV3LA6XHcj0530L73fp2ouFPJpf0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oN64Lgsz608zFqLYyIFDgUuRJfoSeG7LUDhQviJfNZBGVyMmwS0lAEimCffPQLVKG
+         DAQBVpYlCNzOiF1gSFbekw0Q/4FjkWyfnwF3sSe716XNZXb/jAu1grRxG0hJwM7vEq
+         hxcrvY6JEQoWOlhPaL2c/pjIh450Yt3PbDyGIkq77Vw48vRuZJyotNEq6Db5Fxm5lX
+         MFNu7OQ5JBVK8X2Y92/+GhKg/Ei6+lSffQKr3KcXJgdm2VcGr4YShdLwc7a2bd0dzB
+         PPRn04ooBSfoiq629t9wNBQVRC8ySLsjpaW46OFrqm59/d7Bt7CNiV1W/goy0dwBgt
+         y99mrOXYmSbVQ==
+Date:   Thu, 20 Jul 2023 18:20:58 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: pinctrl: qcom,pmic-gpio: document PMC8180
+ and PMC8180C
+Message-ID: <20230720-abstain-outwit-16fa79ef873e@spud>
+References: <20230720083539.73675-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="HW8D6UPgOw6ZaB72"
+Content-Disposition: inline
+In-Reply-To: <20230720083539.73675-1-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-REGCACHE_MAPLE needs to allocate memory for regmap operations.
-This results in lockdep splats if used with fast_io since fast_io uses
-spinlocks for locking.
 
-BUG: sleeping function called from invalid context at include/linux/sched/mm.h:306
-in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 167, name: kunit_try_catch
-preempt_count: 1, expected: 0
-1 lock held by kunit_try_catch/167:
- #0: 838e9c10 (regmap_kunit:86:(config)->lock){....}-{2:2}, at: regmap_lock_spinlock+0x14/0x1c
-irq event stamp: 146
-hardirqs last  enabled at (145): [<8078bfa8>] crng_make_state+0x1a0/0x294
-hardirqs last disabled at (146): [<80c5f62c>] _raw_spin_lock_irqsave+0x7c/0x80
-softirqs last  enabled at (0): [<80110cc4>] copy_process+0x810/0x216c
-softirqs last disabled at (0): [<00000000>] 0x0
-CPU: 0 PID: 167 Comm: kunit_try_catch Tainted: G                 N 6.5.0-rc1-00028-gc4be22597a36-dirty #6
-Hardware name: Generic DT based system
- unwind_backtrace from show_stack+0x18/0x1c
- show_stack from dump_stack_lvl+0x38/0x5c
- dump_stack_lvl from __might_resched+0x188/0x2d0
- __might_resched from __kmem_cache_alloc_node+0x1f4/0x258
- __kmem_cache_alloc_node from __kmalloc+0x48/0x170
- __kmalloc from regcache_maple_write+0x194/0x248
- regcache_maple_write from _regmap_write+0x88/0x140
- _regmap_write from regmap_write+0x44/0x68
- regmap_write from basic_read_write+0x8c/0x27c
- basic_read_write from kunit_generic_run_threadfn_adapter+0x1c/0x28
- kunit_generic_run_threadfn_adapter from kthread+0xf8/0x120
- kthread from ret_from_fork+0x14/0x3c
-Exception stack(0x881a5fb0 to 0x881a5ff8)
-5fa0:                                     00000000 00000000 00000000 00000000
-5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+--HW8D6UPgOw6ZaB72
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Use map->alloc_flags instead of GFP_KERNEL for memory allocations to fix
-the problem.
+On Thu, Jul 20, 2023 at 10:35:39AM +0200, Krzysztof Kozlowski wrote:
+> Document qcom,pmc8180-gpio and qcom,pmc8180c-gpio compatibles already
+> used in DTS and in the same binding in allOf:if:then section for
+> narrowing available GPIOs:
+>=20
+>   sc8180x-primus.dtb: pmic@4: gpio@c000:compatible:0: 'qcom,pmc8180c-gpio=
+' is not one of ...
+>=20
+> Fixes: 04bed6407ee6 ("dt-bindings: pinctrl: qcom,pmic-gpio: describe gpio=
+-line-names")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Fixes: f033c26de5a5 ("regmap: Add maple tree based register cache")
-Cc: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/base/regmap/regcache-maple.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-diff --git a/drivers/base/regmap/regcache-maple.c b/drivers/base/regmap/regcache-maple.c
-index 283c2e02a298..41edd6a430eb 100644
---- a/drivers/base/regmap/regcache-maple.c
-+++ b/drivers/base/regmap/regcache-maple.c
-@@ -74,7 +74,7 @@ static int regcache_maple_write(struct regmap *map, unsigned int reg,
- 	rcu_read_unlock();
- 
- 	entry = kmalloc((last - index + 1) * sizeof(unsigned long),
--			GFP_KERNEL);
-+			map->alloc_flags);
- 	if (!entry)
- 		return -ENOMEM;
- 
-@@ -92,7 +92,7 @@ static int regcache_maple_write(struct regmap *map, unsigned int reg,
- 	mas_lock(&mas);
- 
- 	mas_set_range(&mas, index, last);
--	ret = mas_store_gfp(&mas, entry, GFP_KERNEL);
-+	ret = mas_store_gfp(&mas, entry, map->alloc_flags);
- 
- 	mas_unlock(&mas);
- 
-@@ -134,7 +134,7 @@ static int regcache_maple_drop(struct regmap *map, unsigned int min,
- 
- 			lower = kmemdup(entry, ((min - mas.index) *
- 						sizeof(unsigned long)),
--					GFP_KERNEL);
-+					map->alloc_flags);
- 			if (!lower) {
- 				ret = -ENOMEM;
- 				goto out_unlocked;
-@@ -148,7 +148,7 @@ static int regcache_maple_drop(struct regmap *map, unsigned int min,
- 			upper = kmemdup(&entry[max + 1],
- 					((mas.last - max) *
- 					 sizeof(unsigned long)),
--					GFP_KERNEL);
-+					map->alloc_flags);
- 			if (!upper) {
- 				ret = -ENOMEM;
- 				goto out_unlocked;
-@@ -162,7 +162,7 @@ static int regcache_maple_drop(struct regmap *map, unsigned int min,
- 		/* Insert new nodes with the saved data */
- 		if (lower) {
- 			mas_set_range(&mas, lower_index, lower_last);
--			ret = mas_store_gfp(&mas, lower, GFP_KERNEL);
-+			ret = mas_store_gfp(&mas, lower, map->alloc_flags);
- 			if (ret != 0)
- 				goto out;
- 			lower = NULL;
-@@ -170,7 +170,7 @@ static int regcache_maple_drop(struct regmap *map, unsigned int min,
- 
- 		if (upper) {
- 			mas_set_range(&mas, upper_index, upper_last);
--			ret = mas_store_gfp(&mas, upper, GFP_KERNEL);
-+			ret = mas_store_gfp(&mas, upper, map->alloc_flags);
- 			if (ret != 0)
- 				goto out;
- 			upper = NULL;
-@@ -320,7 +320,7 @@ static int regcache_maple_insert_block(struct regmap *map, int first,
- 	unsigned long *entry;
- 	int i, ret;
- 
--	entry = kcalloc(last - first + 1, sizeof(unsigned long), GFP_KERNEL);
-+	entry = kcalloc(last - first + 1, sizeof(unsigned long), map->alloc_flags);
- 	if (!entry)
- 		return -ENOMEM;
- 
-@@ -331,7 +331,7 @@ static int regcache_maple_insert_block(struct regmap *map, int first,
- 
- 	mas_set_range(&mas, map->reg_defaults[first].reg,
- 		      map->reg_defaults[last].reg);
--	ret = mas_store_gfp(&mas, entry, GFP_KERNEL);
-+	ret = mas_store_gfp(&mas, entry, map->alloc_flags);
- 
- 	mas_unlock(&mas);
- 
--- 
-2.39.2
+Thaks,
+Conor.
 
+> ---
+>  Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yam=
+l b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> index 52b3d78645b3..3f8ad07c7cfd 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+> @@ -54,6 +54,8 @@ properties:
+>            - qcom,pm8994-gpio
+>            - qcom,pm8998-gpio
+>            - qcom,pma8084-gpio
+> +          - qcom,pmc8180-gpio
+> +          - qcom,pmc8180c-gpio
+>            - qcom,pmi632-gpio
+>            - qcom,pmi8950-gpio
+>            - qcom,pmi8994-gpio
+> --=20
+> 2.34.1
+>=20
+
+--HW8D6UPgOw6ZaB72
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLls+gAKCRB4tDGHoIJi
+0ic2AQCKjgg2Z2jHu/RJB283TwfwDjNiXHQd/6GV120Z1u6ihAEAltxJ1BI5BBHj
+Wu/h/eMCl636OeH6L6POpmfEZdg69gc=
+=DGC2
+-----END PGP SIGNATURE-----
+
+--HW8D6UPgOw6ZaB72--
