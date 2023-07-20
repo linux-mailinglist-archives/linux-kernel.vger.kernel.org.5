@@ -2,79 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D15D75AA0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C5675A9E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbjGTI54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 04:57:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38014 "EHLO
+        id S230422AbjGTI51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 04:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231164AbjGTIsW (ORCPT
+        with ESMTP id S231165AbjGTIsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 04:48:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD042690;
-        Thu, 20 Jul 2023 01:48:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 074A6618FF;
-        Thu, 20 Jul 2023 08:48:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEAEDC433C7;
-        Thu, 20 Jul 2023 08:48:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689842900;
-        bh=8KW1+yEEemv2diKxVcDh9KNKeIEiAXv3oJghvc2cE1A=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=Gb34TEMIi+l9IUrtQeod+9N0Zo//acgBpyPyfnsnf5viDm12zyYqS9rjOJbVZU2QP
-         d48qSsil/tECxtXofjiHd/+cu9U6e7b4oyenozL+DfhmOeiZEnb1GKwyOYArMecUWN
-         LL2+K4cPe90drGcszvzGscOxS6G+I+9x+Ibxj5n7q41DsTxkQZphr1Q6EN/6df2vVt
-         QZYXQReB/yPVlXMRHKkvdAe9AcjghAu10o2MvrWCpnd8p3Fg+El4mSnTE7KQrIHG3G
-         8I1EhUTB9XALDztommNih/Quok6oUcc9KOcWyXV5TwoUEuIO8XqFKnCH9kO5mq1a5m
-         xns7aYTBvoXmA==
-Message-ID: <3bd4be69-5a81-c6d5-6a59-691906fe9dd1@kernel.org>
-Date:   Thu, 20 Jul 2023 10:48:08 +0200
+        Thu, 20 Jul 2023 04:48:43 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96163268E;
+        Thu, 20 Jul 2023 01:48:40 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 82B48E0008;
+        Thu, 20 Jul 2023 08:48:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1689842919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vd+lEU5Fl2TIPJ8xcsPnSNyWBBTcuOGxPgWz+JpFHhw=;
+        b=TZpvZBP8z4VFpjhk1aMn9VASAw7o2tzmqRsxhui1u5vEMZ+6NllUmhF29PK0aQqjn/ZeAM
+        YaoqVo/39UESzDb9wSTsghpo+eRIK0i6PmKXfQvQvVLVRn8E06yQVCapKkV1IFdqxWv91R
+        ZhmjrIlW6PldJw/yx32DvspNkDLKJD8yG+9wMa6TDURVYNUIdH65VYe/bAMd9GoFnxP4NN
+        /KabCx1bF6RT0MVYrin7okunOVnUhF/1FLBUqLzCNLgw47w3aAoMJv1SCqe2P0cJtR6AIE
+        F8c3FJcLHdIFAga4NUHLZVTAw7mTGpOQSD9lQDOir0CWAdYb+PnmFolWBFT0EA==
+Date:   Thu, 20 Jul 2023 10:48:32 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Foley <pefoley2@pefoley.com>,
+        Pedro Falcato <pedro.falcato@gmail.com>,
+        Michael Walle <michael@walle.cc>,
+        Mark Brown <broonie@kernel.org>,
+        Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
+        Dhruva Gole <d-gole@ti.com>, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: avoid holes in struct spi_mem_op
+Message-ID: <20230720104832.15a4d4ab@xps-13>
+In-Reply-To: <598bd9d8-249e-125c-bde3-7a63ba6dc5f7@linaro.org>
+References: <20230719190045.4007391-1-arnd@kernel.org>
+        <598bd9d8-249e-125c-bde3-7a63ba6dc5f7@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [v11 3/6] dt-bindings: qcom: Add ipq5018 bindings
-Content-Language: en-US
-To:     Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, ulf.hansson@linaro.org,
-        linus.walleij@linaro.org, catalin.marinas@arm.com, will@kernel.org,
-        p.zabel@pengutronix.de, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, robimarko@gmail.com,
-        krzysztof.kozlowski@linaro.org, andy.shevchenko@gmail.com
-References: <20230616101749.2083974-1-quic_srichara@quicinc.com>
- <20230616101749.2083974-4-quic_srichara@quicinc.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <20230616101749.2083974-4-quic_srichara@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/06/2023 12:17, Sricharan Ramabadhran wrote:
-> Document the new ipq5018 SOC/board device tree bindings.
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> ---
+Hi Tudor,
 
-Please do not merge - turns out incorrect.
+tudor.ambarus@linaro.org wrote on Thu, 20 Jul 2023 07:50:33 +0100:
 
-Best regards,
-Krzysztof
+> On 7/19/23 20:00, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >=20
+> > gcc gets confused when -ftrivial-auto-var-init=3Dpattern is used on spa=
+rse
+> > bit fields such as 'struct spi_mem_op', which caused the previous false
+> > positive warning about an uninitialized variable:
+> >=20
+> > drivers/mtd/spi-nor/spansion.c: error: 'op' is used uninitialized [-Wer=
+ror=3Duninitialized]
+> >=20
+> > In fact, the variable is fully initialized and gcc does not see it being
+> > used, so the warning is entirely bogus. The problem appears to be
+> > a misoptimization in the initialization of single bit fields when the
+> > rest of the bytes are not initialized.
+> >=20
+> > A previous workaround added another initialization, which ended up
+> > shutting up the warning in spansion.c, though it apparently still happe=
+ns
+> > in other files as reported by Peter Foley in the gcc bugzilla. The
+> > workaround of adding a fake initialization seems particularly bad
+> > because it would set values that can never be correct but prevent the
+> > compiler from warning about actually missing initializations.
+> >=20
+> > Revert the broken workaround and instead pad the structure to only
+> > have bitfields that add up to full bytes, which should avoid this
+> > behavior in all drivers.
+> >=20
+> > I also filed a new bug against gcc with what I found, so this can
+> > hopefully be addressed in future gcc releases. At the moment, only
+> > gcc-12 and gcc-13 are affected.
+> >=20
+> > Cc: Peter Foley <pefoley2@pefoley.com>
+> > Cc: Pedro Falcato <pedro.falcato@gmail.com>
+> > Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D110743
+> > Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D108402
+> > Link: https://godbolt.org/z/efMMsG1Kx
+> > Fixes: 420c4495b5e56 ("mtd: spi-nor: spansion: make sure local struct d=
+oes not contain garbage")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de> =20
+>=20
+> Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>=20
+> Miquel, would you please take this through mtd/fixes?
 
+I will!
+
+Thanks,
+Miqu=C3=A8l
