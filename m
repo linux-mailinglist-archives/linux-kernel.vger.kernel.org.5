@@ -2,94 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2920D75B8BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 22:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B68D75B8C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 22:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbjGTU2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 16:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34100 "EHLO
+        id S229927AbjGTUeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 16:34:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjGTU2c (ORCPT
+        with ESMTP id S229452AbjGTUef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 16:28:32 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2084.outbound.protection.outlook.com [40.107.94.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F78272A;
-        Thu, 20 Jul 2023 13:28:29 -0700 (PDT)
+        Thu, 20 Jul 2023 16:34:35 -0400
+Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020021.outbound.protection.outlook.com [52.101.61.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862121731;
+        Thu, 20 Jul 2023 13:34:34 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SFeoc/GMaT4npENXHiKaPebbYtMwJcwdzc+zILgF8HXRe3AKou/+ECn6D/hCtuqhVkOAnWX7SRnlmFr7zZ8MnvizuF5CyKS/q6FCq3R4+gKCpG1mAnMdih2frP94Nj8P8BDmu3rC6YC5NUvtX95KcAqqzAli2h3xblQUx+KraK3veXY+ONlX7VgcKsK2IQoIUe6NsKsP0Yhcu7Tx4AmLeKWdBJSf5STTCqsYpzS5WA1yyJku4j6lsFb0QYyfFOVNdrwePdO82tjHd8/6oKEybsDQJrLSOVb/Yx9YuHkN+cKoJUI8p0RnO9yYP5UcVandq7RTBpvkKiFHv9vgw446Ag==
+ b=WzrXYMqNNi+rwUP0uG/yvkom2TBl1aIAQcWqCDmPM2oabPimSnsnyMQNcZ1qvnw1p7rVcSs8BIWn4arr7Azb3MX/Ui58pr9YMMD+qIU7meHwuQkFTKX1QwPx6WhEIcrykmU1/kMc0U6Lv09aNcDS2ZpXLFK6Utt6G71WsLsC73iIKXuli3Z3CLfr9aSagKcLC+hQcH1rYAOtPP6Zv9lO7KO/iDaRkP485hX/uZzPoe9cEH30KjbbvpegNTmgBSlqEcVgsNcu0BYg4Zip+qwph/fJpv5q1Ws9Gh4mIEqFjG4Y65qGh6XFwECQWIIHUsaOsKucisriZ1MMArrST8KpdA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OoM/PHiNwVCxv2JrvAPeXjDXTa6wF1QZnD03AwUPfRk=;
- b=HfS905KRbJTtOC4vSt1Eue1ltMUS6fHtywYAieQgQqW0S9HIj4kGf7Xn9K3DL+n5F6hyOSpWRJwoxLHgwe1R+X+quxLj/o5cRUGRa8/BbgcYCZG1ugXbHfuCZFPrFSRMn2BEVfNPCheh/zGlsTQSgy9PvJNsuVRDgQ8+dzspf1UDFzgqUo+J1C58/XgI7vzf+Q8NT7PLm/xd3Gq7ILLRxrcNNAp3TA/CXNL/oXatTvj5l1lqkNRcdiYsezFyUl/k/l/lXZVvGVolDlHsThp2vsmj5gvwqpOlz5awvtyc5ZATFsjh8Rwm73BvEb7EPrC+75HemQ4P3E0gh0pXRedCRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=AsErRc8q7g4PRs57iAEj54hLYOnhzglg+Hh42DSFbZQ=;
+ b=JD5IHxOinx3ESTjKjwNMzZ3j4vmoXplExUQZF6999nfPQDHQahV2G93XQFHGWNEeJkZSazvfC44eZ3l63dW7D39h0fJxite9yPRyROwNFHxE+ZkiwKssy1zn62ZyZWM6QSTU+FkojUbBBnkkSwH9/AVfusQkN1PnsIBx4Q/pcHR0tpexL0ApF6R7yl8qnMe+jB5FtRmq6GljfO8EPGLszh6CgKws3vCs08Z1PmBovTa5z6p8dvDNW2VDZfsTfVyGqxLB5yBdGtPpMcYfom8BbeeOKpqn0NXlTHFp3OfggmghEbsSzK2VfJY0L1lUJcZyJyZc73dulKxC1OGkY5lU4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OoM/PHiNwVCxv2JrvAPeXjDXTa6wF1QZnD03AwUPfRk=;
- b=Q5LLVxGuPLe9eCMB5jDiRvYhEh1dvjm84gPyes/O0mGmM78o1FBLYN9lz2XX55H/bIKyHpw8nBX9ThdSoh4os92aSfvHxZBbq7Npp9sMcz5eBoHCK8QIkAgZnv579u/26oa1cG02AUgCtNHgtEW5sj3/jkSUraAIYp9rukWgCVs=
-Received: from BN9PR03CA0356.namprd03.prod.outlook.com (2603:10b6:408:f6::31)
- by DM4PR12MB7718.namprd12.prod.outlook.com (2603:10b6:8:102::14) with
+ bh=AsErRc8q7g4PRs57iAEj54hLYOnhzglg+Hh42DSFbZQ=;
+ b=IfeAXTQ2Z4LJamWMaDueK7v1dOPS5yTPvVOiYx/VYry8e/5LxEH+J0blygysY3Qa1YjW19MdaYZYDeSoyHnkEOUKbL4fJe4KWrQEKgF8ukVOJEppZREvAoetcnSMZd3Jrl2FUl/4Zt8bJjphW02gAuDfLSH6aSWmys94i5XZzu8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from DM6PR21MB1370.namprd21.prod.outlook.com (2603:10b6:5:16b::28)
+ by LV2PR21MB3372.namprd21.prod.outlook.com (2603:10b6:408:14e::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Thu, 20 Jul
- 2023 20:28:27 +0000
-Received: from BN8NAM11FT093.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:f6:cafe::ce) by BN9PR03CA0356.outlook.office365.com
- (2603:10b6:408:f6::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25 via Frontend
- Transport; Thu, 20 Jul 2023 20:28:26 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT093.mail.protection.outlook.com (10.13.177.22) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6609.28 via Frontend Transport; Thu, 20 Jul 2023 20:28:26 +0000
-Received: from jallen-jump-host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 20 Jul
- 2023 15:28:25 -0500
-From:   John Allen <john.allen@amd.com>
-To:     <bp@alien8.de>, <linux-kernel@vger.kernel.org>
-CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <hpa@zytor.com>,
-        <x86@kernel.org>, John Allen <john.allen@amd.com>,
-        <stable@vger.kernel.org>
-Subject: [PATCH] x86/microcode/AMD: Increase microcode PATCH_MAX_SIZE
-Date:   Thu, 20 Jul 2023 20:28:13 +0000
-Message-ID: <20230720202813.3269888-1-john.allen@amd.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.8; Thu, 20 Jul
+ 2023 20:34:31 +0000
+Received: from DM6PR21MB1370.namprd21.prod.outlook.com
+ ([fe80::58ed:9fb:47a9:13df]) by DM6PR21MB1370.namprd21.prod.outlook.com
+ ([fe80::58ed:9fb:47a9:13df%7]) with mapi id 15.20.6631.011; Thu, 20 Jul 2023
+ 20:34:31 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        peterz@infradead.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+Cc:     mikelley@microsoft.com, stable@vger.kernel.org
+Subject: [PATCH 1/1] x86/hyperv: Disable IBT when hypercall page lacks ENDBR instruction
+Date:   Thu, 20 Jul 2023 13:33:57 -0700
+Message-Id: <1689885237-32662-1-git-send-email-mikelley@microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
+X-ClientProxiedBy: MW4P222CA0009.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:303:114::14) To DM6PR21MB1370.namprd21.prod.outlook.com
+ (2603:10b6:5:16b::28)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT093:EE_|DM4PR12MB7718:EE_
-X-MS-Office365-Filtering-Correlation-Id: 17a1e73b-56f1-44b9-bbb8-08db895fdf4c
+X-MS-TrafficTypeDiagnostic: DM6PR21MB1370:EE_|LV2PR21MB3372:EE_
+X-MS-Office365-Filtering-Correlation-Id: f0676b1c-2d56-49f0-b2a1-08db8960b86e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: u0rTj2uiBmC7j08AnhbRxtsAHSpM2OhlarWRWnCxMKR4YspAVHtHBhbS6gM/BV3ssFebvTaDiPk1znx+mDx70KjHTR4RST2XBDVDamd39nXwSiGmcHrKDHagcaKrSlWM6lHPefmufJIxub7bc/DZccdZJ/6uhyqA2KHksR4fKR0sQAKkFHg6UprdIYF9g7ZcD+JDnI9UL8y8+GrW+YletvMKUmoc86Rx58Mqys8NK6Q5Lut1TGvW6HXJEWMBjImUMdC2qp+grQ2J663ZlpN3qHzN8Jc665aYYkQcMHz6/1iUp37XgLSswjWzw4y8BUOaU+orYDBPDhnLNSQa6dn3j2fW/H93ohGWLx8iZziKYyeyg5/WMfsFKzLmbyd2g1Gwx6XngCpb6qSMYSETVAQrr5vwr/fA6Jw5UIfV7QxVYiuPR1Z4vEQ+eTZ47i4Z0ceYnmfDo9Roc+avhO73PkQLA5uUUCAGnpajoczXfasU/7gD/Su20P34ufjt2j799sLKuYLtDlJmjmewjrLbaZ8HFhgQ0TwUSlqiP8yIXFVYxpirZov+ZJSBPIu9mws+Y/eDGRBFVz6hxIaGLmFYmKHeNsmMZ5zYJLcHuxoRdMPjtda0j8dI4sxTwgmONmDULjQHJHm26iowFJQ757zIOJiwBn+bdP9JRpIL+nDvy2HjVd7FricA+6oCtncjfzNdtGjJjtCghgoBZdrgrHnd9u0XKMwRNUGxgW94/Ciw8SSWLdZhTyvjRmDCmz0bY3W30J0SS+v5BEEFENgkZ1dhcNL/9g==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(39860400002)(346002)(136003)(82310400008)(451199021)(36840700001)(46966006)(40470700004)(81166007)(82740400003)(356005)(40480700001)(40460700003)(7696005)(6666004)(86362001)(336012)(1076003)(8676002)(186003)(26005)(16526019)(44832011)(316002)(41300700001)(5660300002)(70586007)(70206006)(4326008)(54906003)(4744005)(2906002)(110136005)(8936002)(83380400001)(36860700001)(2616005)(36756003)(426003)(478600001)(47076005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 20:28:26.3834
+X-Microsoft-Antispam-Message-Info: J82f3JfiRciJEAz6GB7qcUZ5TKCxe565KVitsiyHWgf4zjC0eTwB6qeQwpJGmCMB0e+HKjtt0wosr0mCxqLxTpEBDwiyhOWW/dlwhDt+VSZd+P8GXePNH+gm6iDTNdZ+p9S3Wy6zRjCkPiEp9nhaSQFoxm23t1wMt4xVYpAPKZQryIfhLuz7UUXdcJdh4g6iVNhCG/xvrHYus/YKr2Ku04FD7Wt6Xng77KwLHSfBJay19/3ECvfTHFpgoLeV0d3Du3J66EnHWrPnNHB5NCaMpCXTVVzQezjaPvaiXBtM9KXZ+B9jmHmJI2DwjjCqi4UlItxeTM7aYoE6Pjcf6KephSITwnP38MlJI3U0x3BupTgfbczEHQejXY4k10t5GCHeTlqvef7I+oaT9ZWrjaVUyXxBO/JPMp4/Xvhs0fB0X2jHURpPjmAjBSFtkMUlHQTrUxquDoCEKEQncnG00r7CMf2m73C/MnDd/X2XVGNXYQ0XJ9H3LOInr6V9v2NtiMN1DGELZ4RmCy4HbcuUDRKLjrQs/e8K9QOafWgAN+MYvVmWCap6oIsVKNMwR23A5mmCHEvUQEy7FBAN4zhJtAJlWPD+WDKHYm2/Fsnzik0Pduxf3kUnKaRvsm5ALr+tfvZDz5njP6Q6werKGUL6rLI9ILglxJKkgmDH7jKKCJELDJF7KCQp8W4kktdr5aHr8Qb0
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1370.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(346002)(39860400002)(376002)(136003)(396003)(451199021)(66556008)(4326008)(66946007)(316002)(38350700002)(38100700002)(5660300002)(7416002)(36756003)(8676002)(41300700001)(8936002)(82960400001)(82950400001)(86362001)(921005)(66476007)(6512007)(6506007)(26005)(2906002)(186003)(10290500003)(478600001)(6666004)(6486002)(52116002)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NuG83c40c2HCcrQhiS/EmkYyntXSr+fAFSoM0YUWxUch/if3VA3XTZlrdDzK?=
+ =?us-ascii?Q?CDGJUyKzsPJTWisA6u609o7g6I4odk7OGIF1UEKqtfX9kGk2YFPeZ3BaiaGw?=
+ =?us-ascii?Q?SOOokv9eqIxHZ+Dj4n6HtVgj3nCepSkRXzbCYNrOFYqiL2gjNzXQ1E6URclB?=
+ =?us-ascii?Q?MtxK5EYMORRkIYJZWlJKTciv24CXeHN3FiYyJ/shhs29w+XvzaWnZRfXCifH?=
+ =?us-ascii?Q?mwRUhG+5q4H3gS+NzLKMft6HuH8FuO5R5Isk620WvjOeREynOYjinhD9qr+d?=
+ =?us-ascii?Q?3cArWWDy67G5BeltgiZ9OZmHfWJJuNaE1DCARN47Zj9PTFQPKq5d/fwuNSRi?=
+ =?us-ascii?Q?2JJJBtCBI1WlL6pNiOGbqSQRLIP/k0Pttsx8sP8+Ql7PB1hTUNDm65ZJHTQ3?=
+ =?us-ascii?Q?KULB3AbBuqMLmA5ifeBID0cWoEPIGO9ITU1W23Uynj2XmbpIX5fa8pdqrwP4?=
+ =?us-ascii?Q?aNE21C8ygmdiVuNAsja2lhLQ/gOViQkm7u2ite7Lt6iMpMmpHDImh6sfTLow?=
+ =?us-ascii?Q?vHGKda8jg+SOsqlsJRbuhmhADVh88iwTE2rNiUj5uN0ta1pJa0hbAbR33DrL?=
+ =?us-ascii?Q?TpxD4etY/s2zA+4dG6z19iXElj06U6iJ6ehi7Of1bFlObnzemPh6uUNsTiFx?=
+ =?us-ascii?Q?047sNO9uC51ZoSHX0RxY+/R2Jt+OcJbN7Ri4ycjy/sc4pVC0p2wFgEj5bgrt?=
+ =?us-ascii?Q?AzlkGrAVaV4N7lsX9jefU4iDydqAVagUKVfqJqYEpY8akVXDtKBvmOWNt+52?=
+ =?us-ascii?Q?V4JQiKnM4LUOz0ZsJCLznrkb4BucqN7+TM3naFuVHN29ShVJvwgh06LbjoCd?=
+ =?us-ascii?Q?09Wq75Jn61R2YfK3q936yombG5KWNhRVkis2RPeTp2RVoRNPKqHR9/96UiNv?=
+ =?us-ascii?Q?Tn+w5AUuGMiXc+Ro0HcwellV7QFMbZrblDlSBRetKNWgLpdLn9pzPJ16+Qdq?=
+ =?us-ascii?Q?wQYXbqK9UcGisWi6j8fKMXN7DeY4U8Fz6PD4KpSCMdN8pMoXQpkN4JmveCwA?=
+ =?us-ascii?Q?N5ejeqgTr393uIrj9hOTNsW4W5Ja7a7zpdEo3nTojZ9yAK9VRtDk+NCPZvC8?=
+ =?us-ascii?Q?wPOSvKNYgUOh+JIYPwK42L9A8wjLdUjHykwUZ2q6Mj0sah4GiOh6hipPEEr2?=
+ =?us-ascii?Q?uqTjuUBFv66sCiqYlCc0AHLyOg+rBOuRxx2SBWdp04yX4MNzgRCokYWWB7Jt?=
+ =?us-ascii?Q?LmKhMHkdid8NcoMF/YZok2jJByAva0fB1k9G7BeGwtyovrrN8DnHJFt1v7Pd?=
+ =?us-ascii?Q?lhfHrFT1tA0V/tKBUWyd32N8pY3q8hyjjxClEKfgFja3exy1NXjoQE2wiNOx?=
+ =?us-ascii?Q?ceomkEajLu1NtK+frp9xu86wducP4EP0d1BOuFkmLI2SXILesaftPUkMTfue?=
+ =?us-ascii?Q?NOBEp5UtMNEDhPN4iwjKZxg16r5uuWeY+xIscBG2BQeGvkTqN4tOacdnAL+1?=
+ =?us-ascii?Q?n8ycwgGvuBf+GXbNuz6YhyUhCuJaWoWbOvya5H1YVzcX7dOO2McC07W0M+df?=
+ =?us-ascii?Q?+3sK7Brr7QxEGLgNmZnxR8dYiv+RigqPOumDroN3BCXTOvXiaPRKxRP68qpN?=
+ =?us-ascii?Q?7/OJMhDuw7XK193EIuDgNdsXWPwVt7Pf+sPeHp0W?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0676b1c-2d56-49f0-b2a1-08db8960b86e
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1370.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 20:34:30.8260
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17a1e73b-56f1-44b9-bbb8-08db895fdf4c
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT093.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7718
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: A+RHfffXSZyvzSLyusr0lOqGj5OnmoGoAAwtQff//vUhmmV6DClL8vHdJoHJKTlW6nLIGA9pFp6zVbVryq4iYQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR21MB3372
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -98,29 +115,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Future AMD cpus will have microcode patches that exceed the current
-limit of three 4K pages. Increase substantially to avoid future size
-increases.
+On hardware that supports Indirect Branch Tracking (IBT), Hyper-V VMs
+with ConfigVersion 9.3 or later support IBT in the guest. However,
+current versions of Hyper-V have a bug in that there's not an ENDBR64
+instruction at the beginning of the hypercall page. Since hypercalls are
+made with an indirect call to the hypercall page, all hypercall attempts
+fail with an exception and Linux panics.
 
-Signed-off-by: John Allen <john.allen@amd.com>
+A Hyper-V fix is in progress to add ENDBR64. But guard against the Linux
+panic by clearing X86_FEATURE_IBT if the hypercall page doesn't start
+with ENDBR. The VM will boot and run without IBT.
+
+If future Linux 32-bit kernels were to support IBT, additional hypercall
+page hackery would be needed to make IBT work for such kernels in a
+Hyper-V VM.
+
 Cc: stable@vger.kernel.org
+Signed-off-by: Michael Kelley <mikelley@microsoft.com>
 ---
- arch/x86/include/asm/microcode_amd.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/hyperv/hv_init.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/arch/x86/include/asm/microcode_amd.h b/arch/x86/include/asm/microcode_amd.h
-index e6662adf3af4..e3d5f5ae2f46 100644
---- a/arch/x86/include/asm/microcode_amd.h
-+++ b/arch/x86/include/asm/microcode_amd.h
-@@ -41,7 +41,7 @@ struct microcode_amd {
- 	unsigned int			mpb[];
- };
+diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+index 6c04b52..5cbee24 100644
+--- a/arch/x86/hyperv/hv_init.c
++++ b/arch/x86/hyperv/hv_init.c
+@@ -14,6 +14,7 @@
+ #include <asm/apic.h>
+ #include <asm/desc.h>
+ #include <asm/sev.h>
++#include <asm/ibt.h>
+ #include <asm/hypervisor.h>
+ #include <asm/hyperv-tlfs.h>
+ #include <asm/mshyperv.h>
+@@ -472,6 +473,26 @@ void __init hyperv_init(void)
+ 	}
  
--#define PATCH_MAX_SIZE (3 * PAGE_SIZE)
-+#define PATCH_MAX_SIZE (8 * PAGE_SIZE)
- 
- #ifdef CONFIG_MICROCODE_AMD
- extern void __init load_ucode_amd_bsp(unsigned int family);
+ 	/*
++	 * Some versions of Hyper-V that provide IBT in guest VMs have a bug
++	 * in that there's no ENDBR64 instruction at the entry to the
++	 * hypercall page. Because hypercalls are invoked via an indirect call
++	 * to the hypercall page, all hypercall attempts fail when IBT is
++	 * enabled, and Linux panics. For such buggy versions, disable IBT.
++	 *
++	 * Fixed versions of Hyper-V always provide ENDBR64 on the hypercall
++	 * page, so if future Linux kernel versions enable IBT for 32-bit
++	 * builds, additional hypercall page hackery will be required here
++	 * to provide an ENDBR32.
++	 */
++#ifdef CONFIG_X86_KERNEL_IBT
++	if (cpu_feature_enabled(X86_FEATURE_IBT) &&
++	    *(u32 *)hv_hypercall_pg != gen_endbr()) {
++		setup_clear_cpu_cap(X86_FEATURE_IBT);
++		pr_info("Hyper-V: Disabling IBT because of Hyper-V bug\n");
++	}
++#endif
++
++	/*
+ 	 * hyperv_init() is called before LAPIC is initialized: see
+ 	 * apic_intr_mode_init() -> x86_platform.apic_post_init() and
+ 	 * apic_bsp_setup() -> setup_local_APIC(). The direct-mode STIMER
 -- 
-2.39.3
+1.8.3.1
 
