@@ -2,109 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDAB75B41F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C2075B424
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbjGTQZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 12:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51772 "EHLO
+        id S230400AbjGTQ0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 12:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbjGTQZp (ORCPT
+        with ESMTP id S230354AbjGTQ0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:25:45 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344D811D
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:25:44 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6687446eaccso838398b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:25:44 -0700 (PDT)
+        Thu, 20 Jul 2023 12:26:45 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3391114;
+        Thu, 20 Jul 2023 09:26:43 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbfcc6daa9so7987235e9.3;
+        Thu, 20 Jul 2023 09:26:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689870343; x=1690475143;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Yn/575ym0TaFIQctLLsNsaeMsWfyk2kbdLWYzyjH6KI=;
-        b=ZBMD60DwZKp0yM7rv7p8FTx7me9yNb9SQwbIXEmXU3sGA/D+PVGtjSbEWBruvzbHRn
-         q+CP98Q/B5TDY+FRtIWrNYFmtIecxk8cAcm8e6/vp9BLCJR1/hPtbc/paUu3xI5q12qo
-         hbwcWaDA1VL1dlha5h5FzAkqOF/RRsSSQIrKjg2n3DyCnWQ2MTos2xe+2jchzwqbXyUY
-         Kkycvuchv27ncULlsqfjeaR+lCgWEzOvKDGaSJ2tr5VJqqzy/a3B8iuGPLG1c97ImdOA
-         BJ6pF+56sd7NCgxdrkaB5Gzj4nhDxEWCcw14Qdjf0sBtYKXosEiogzVYa2lHVf49Ho2M
-         kBPw==
+        d=gmail.com; s=20221208; t=1689870402; x=1690475202;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:to:from:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3MBatkB8B/7dmkT4jPYHcJtlNDAH8uob1P4AD84IQBw=;
+        b=kNKqgGmtprt4qVSwqwHfSKWodkj79lkZACHQcW+pBUqWcLuiLpZ/Lfuubuo/n0gTFr
+         XY9FH1XmRsoA7/3CANPSADWBTawkBFncc+N9G4zI1HxYeNfUxY3oVyyoiS7smgFQ7vAj
+         2izo2C6Is2xVjTTm2sS3XPY4ioPz7v/Y9h1GUZWfhydqsSJy6woyHwxXOqiDoE2TV7OR
+         JE/AeJm32yAWABs1siajP6FOvgGZOptfMOtepkaCFuNwfe73pqY8KLBcCO3p8d6zvXaK
+         78jHlijrvdXVXVCZji3kGU+TYTn5xaCP96TNg13U+gIuk06MJcPJBp2ZKssoGKLlm5yu
+         Wurw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689870343; x=1690475143;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yn/575ym0TaFIQctLLsNsaeMsWfyk2kbdLWYzyjH6KI=;
-        b=ZC5DNrEuBpagn8Sg8OGU7nypgs12ZrrxOimrrkkqaoM+3dwdcNn343bHHSulJ1Cgwn
-         FKVk+sakP6te762XTqMZiVubYQI+MdWxNCwAw8dfSQSjU3rPGALBVd9v1m4xOh/lEGQ7
-         H5QlgbIeALjCKoQlpQ7Bcp0PqFuoP8PZ5mmqda43rXURAGCvjR7AfovqGoeto8qFjcD4
-         WfCKZpT7us3ZLM6WotgSw35TWkeA25bQq062J3H3gf+CFBJeL4Oaa658X0hEdk87uebO
-         kaPJ5ToI8Q+mlZfjXsbALGV8ci2efwK5GEfEIm9az3DBesLA0+YpX/DyU8DMuC8rujrd
-         vX7g==
-X-Gm-Message-State: ABy/qLYHYgvWrody32qWgHyYQg3CMGKmMz7wZ0jpFGGtw+lKiAqPr04I
-        ZU5WGaYhjEMpWI+/6YFT7nI=
-X-Google-Smtp-Source: APBJJlHJorx5b/unJvujA+QA02FIrynR0JYh+lJuI0EGB88KSaabBYPW5EzsOj+7J/Hdgkq0QTg22w==
-X-Received: by 2002:a05:6a20:2452:b0:137:2204:4ea6 with SMTP id t18-20020a056a20245200b0013722044ea6mr7065598pzc.27.1689870343553;
-        Thu, 20 Jul 2023 09:25:43 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w22-20020a63af16000000b00548d361c137sm1412731pge.61.2023.07.20.09.25.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 09:25:43 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <e3799cbf-daf2-c805-4c70-09679c4b6cf5@roeck-us.net>
-Date:   Thu, 20 Jul 2023 09:25:42 -0700
+        d=1e100.net; s=20221208; t=1689870402; x=1690475202;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3MBatkB8B/7dmkT4jPYHcJtlNDAH8uob1P4AD84IQBw=;
+        b=YYucT2ipe/hc1mhl5RJ1lqWSQSMRvBRluor78A5KpjHzhVKZCgAN42I3ZYaZH2QKee
+         jLikX+PZpbr73rnT2YZvVD/227eGn9fy1VNinYahnsLKxl/3uDQA4dfq3PcQtpgpnuM7
+         EUWIjqDy3K7/T7S7nbrq+28yTOOMMxNdweFtDbf+I1eT/0czsV5OJsiq3KGey8IAGi2c
+         2TX/3Dklq66IoUciMwjQR328w4JPcZVZ9H0mv8NM2xFgmoaOH9qTVDA3zA2sGLMvbcfF
+         OYA9DNS/T4XuCkRotKF6M1PJa3kdA8S5NMRpwz/GfcJjkgvksYkQyWhhY5N5jmFT6JtF
+         NvLA==
+X-Gm-Message-State: ABy/qLYaTMGTDhUXOwFTD3y+7LxR+/nQw6w43mVe14h+P2uMsdJ7zlkh
+        D8iDBfpwlu3l+HRklMOCzY0=
+X-Google-Smtp-Source: APBJJlE4NNXje+fLTPJ3D3Np2ydW4a+kn24RXNVE7EER6t80YS8KUag+iXNCYxs8aYJvK2neo9UQBw==
+X-Received: by 2002:a7b:c84c:0:b0:3fc:8a:7c08 with SMTP id c12-20020a7bc84c000000b003fc008a7c08mr4873507wml.35.1689870401973;
+        Thu, 20 Jul 2023 09:26:41 -0700 (PDT)
+Received: from debian ([89.238.191.199])
+        by smtp.gmail.com with ESMTPSA id u9-20020a05600c210900b003fbcdba1a52sm4294282wml.3.2023.07.20.09.26.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 09:26:41 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 18:26:27 +0200
+From:   Richard Gobert <richardbgobert@gmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, willemdebruijn.kernel@gmail.com,
+        dsahern@kernel.org, tom@herbertland.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gal@nvidia.com
+Subject: [PATCH v2 1/1] net: gro: fix misuse of CB in udp socket lookup
+Message-ID: <20230720162624.GA16428@debian>
+References: <20230720161322.GA16323@debian>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <ee59d128-413c-48ad-a3aa-d9d350c80042@roeck-us.net>
- <336fc14e-f734-49ea-97ce-802f03fa4422@kadam.mountain>
- <198c4edf-045c-8d85-1d5c-018378eeb490@roeck-us.net>
- <055f2564-551d-4b5f-a6e3-d54ae104d5c9@sirena.org.uk>
- <d29552c2-f20c-cf68-76ae-e03a2cc7e0ba@roeck-us.net>
- <12e6144c-0d24-4556-beef-d754273992e4@sirena.org.uk>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: Traceback with CONFIG_REGMAP_KUNIT=y+CONFIG_DEBUG_ATOMIC_SLEEP=y
-In-Reply-To: <12e6144c-0d24-4556-beef-d754273992e4@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230720161322.GA16323@debian>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/23 08:07, Mark Brown wrote:
-> On Thu, Jul 20, 2023 at 08:03:13AM -0700, Guenter Roeck wrote:
->> On 7/20/23 07:31, Mark Brown wrote:
-> 
->>> They're both independently fine, but I wouldn't expect anything that's
->>> running in atomic context to be actually using dynamic allocations.
-> 
->> Which one do you prefer ? As I mentioned in my second patch, there are
->> two drivers which use fast_io together with REGCACHE_RBTREE and thus
->> are likely affected by this problem. Dan's solution would cover that,
->> while my current RFC patch would likely cause those drivers to fail.
->> Plus, of course, they could get stuck if they actually end up trying to
->> sleep while allocating memory.
-> 
-> Like I say I don't think it's an either/or - we can do both
-> independently, they both make sense standalone and don't conflict with
-> each other.
+This patch fixes a misuse of IP{6}CB(skb) in GRO, while calling to
+`udp6_lib_lookup2` when handling udp tunnels. `udp6_lib_lookup2` fetch the
+device from CB. The fix changes it to fetch the device from `skb->dev`.
+l3mdev case requires special attention since it has a master and a slave
+device.
 
-I guess I am missing something. I have not tried it, but wouldn't my patches
-be unnecessary if Dan's patch is applied ?
+Fixes: a6024562ffd7 ("udp: Add GRO functions to UDP socket")
+Reported-by: Gal Pressman <gal@nvidia.com>
+Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
+---
+ include/net/udp.h      |  2 ++
+ net/ipv4/udp.c         | 28 ++++++++++++++++++++++++++--
+ net/ipv4/udp_offload.c |  7 +++++--
+ net/ipv6/udp.c         | 29 +++++++++++++++++++++++++++--
+ net/ipv6/udp_offload.c |  7 +++++--
+ 5 files changed, 65 insertions(+), 8 deletions(-)
 
-Thanks,
-Guenter
+diff --git a/include/net/udp.h b/include/net/udp.h
+index 4d13424f8f72..48af1479882f 100644
+--- a/include/net/udp.h
++++ b/include/net/udp.h
+@@ -299,6 +299,7 @@ int udp_lib_getsockopt(struct sock *sk, int level, int optname,
+ int udp_lib_setsockopt(struct sock *sk, int level, int optname,
+ 		       sockptr_t optval, unsigned int optlen,
+ 		       int (*push_pending_frames)(struct sock *));
++void udp4_get_iif_sdif(const struct sk_buff *skb, int *iif, int *sdif);
+ struct sock *udp4_lib_lookup(struct net *net, __be32 saddr, __be16 sport,
+ 			     __be32 daddr, __be16 dport, int dif);
+ struct sock *__udp4_lib_lookup(struct net *net, __be32 saddr, __be16 sport,
+@@ -310,6 +311,7 @@ struct sock *udp6_lib_lookup(struct net *net,
+ 			     const struct in6_addr *saddr, __be16 sport,
+ 			     const struct in6_addr *daddr, __be16 dport,
+ 			     int dif);
++void udp6_get_iif_sdif(const struct sk_buff *skb, int *iif, int *sdif);
+ struct sock *__udp6_lib_lookup(struct net *net,
+ 			       const struct in6_addr *saddr, __be16 sport,
+ 			       const struct in6_addr *daddr, __be16 dport,
+diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+index 8c3ebd95f5b9..85eb9977db2c 100644
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -550,15 +550,39 @@ static inline struct sock *__udp4_lib_lookup_skb(struct sk_buff *skb,
+ 				 inet_sdif(skb), udptable, skb);
+ }
+ 
++/* This function is the alternative to 'inet_iif' and 'inet_sdif'
++ * functions in case we can not rely on fields of IPCB.
++ *
++ * The caller must verify skb_valid_dst(skb) is false and skb->dev is initialized.
++ * The caller must hold the RCU read lock.
++ */
++inline void udp4_get_iif_sdif(const struct sk_buff *skb, int *iif, int *sdif)
++{
++	*iif = inet_iif(skb) ?: skb->dev->ifindex;
++	*sdif = 0;
++
++#if IS_ENABLED(CONFIG_NET_L3_MASTER_DEV)
++	if (netif_is_l3_slave(skb->dev)) {
++		struct net_device *master = netdev_master_upper_dev_get_rcu(skb->dev);
++
++		*sdif = *iif;
++		*iif = master ? master->ifindex : 0;
++	}
++#endif
++}
++
+ struct sock *udp4_lib_lookup_skb(const struct sk_buff *skb,
+ 				 __be16 sport, __be16 dport)
+ {
+ 	const struct iphdr *iph = ip_hdr(skb);
+ 	struct net *net = dev_net(skb->dev);
++	int iif, sdif;
++
++	udp4_get_iif_sdif(skb, &iif, &sdif);
+ 
+ 	return __udp4_lib_lookup(net, iph->saddr, sport,
+-				 iph->daddr, dport, inet_iif(skb),
+-				 inet_sdif(skb), net->ipv4.udp_table, NULL);
++				 iph->daddr, dport, iif,
++				 sdif, net->ipv4.udp_table, NULL);
+ }
+ 
+ /* Must be called under rcu_read_lock().
+diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+index 75aa4de5b731..70d760b271db 100644
+--- a/net/ipv4/udp_offload.c
++++ b/net/ipv4/udp_offload.c
+@@ -603,10 +603,13 @@ static struct sock *udp4_gro_lookup_skb(struct sk_buff *skb, __be16 sport,
+ {
+ 	const struct iphdr *iph = skb_gro_network_header(skb);
+ 	struct net *net = dev_net(skb->dev);
++	int iif, sdif;
++
++	udp4_get_iif_sdif(skb, &iif, &sdif);
+ 
+ 	return __udp4_lib_lookup(net, iph->saddr, sport,
+-				 iph->daddr, dport, inet_iif(skb),
+-				 inet_sdif(skb), net->ipv4.udp_table, NULL);
++				 iph->daddr, dport, iif,
++				 sdif, net->ipv4.udp_table, NULL);
+ }
+ 
+ INDIRECT_CALLABLE_SCOPE
+diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+index b7c972aa09a7..6dbcadc3bf8f 100644
+--- a/net/ipv6/udp.c
++++ b/net/ipv6/udp.c
+@@ -295,15 +295,40 @@ static struct sock *__udp6_lib_lookup_skb(struct sk_buff *skb,
+ 				 inet6_sdif(skb), udptable, skb);
+ }
+ 
++/* This function is the alternative to 'inet6_iif' and 'inet6_sdif'
++ * functions in case we can not rely on fields of IP6CB.
++ *
++ * The caller must verify skb_valid_dst(skb) is false and skb->dev is initialized.
++ * The caller must hold the RCU read lock.
++ */
++inline void udp6_get_iif_sdif(const struct sk_buff *skb, int *iif, int *sdif)
++{
++	/* using skb->dev->ifindex because skb_dst(skb) is not initialized */
++	*iif = skb->dev->ifindex;
++	*sdif = 0;
++
++#if IS_ENABLED(CONFIG_NET_L3_MASTER_DEV)
++	if (netif_is_l3_slave(skb->dev)) {
++		struct net_device *master = netdev_master_upper_dev_get_rcu(skb->dev);
++
++		*sdif = *iif;
++		*iif = master ? master->ifindex : 0;
++	}
++#endif
++}
++
+ struct sock *udp6_lib_lookup_skb(const struct sk_buff *skb,
+ 				 __be16 sport, __be16 dport)
+ {
+ 	const struct ipv6hdr *iph = ipv6_hdr(skb);
+ 	struct net *net = dev_net(skb->dev);
++	int iif, sdif;
++
++	udp6_get_iif_sdif(skb, &iif, &sdif);
+ 
+ 	return __udp6_lib_lookup(net, &iph->saddr, sport,
+-				 &iph->daddr, dport, inet6_iif(skb),
+-				 inet6_sdif(skb), net->ipv4.udp_table, NULL);
++				 &iph->daddr, dport, iif,
++				 sdif, net->ipv4.udp_table, NULL);
+ }
+ 
+ /* Must be called under rcu_read_lock().
+diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
+index ad3b8726873e..88191d79002e 100644
+--- a/net/ipv6/udp_offload.c
++++ b/net/ipv6/udp_offload.c
+@@ -119,10 +119,13 @@ static struct sock *udp6_gro_lookup_skb(struct sk_buff *skb, __be16 sport,
+ {
+ 	const struct ipv6hdr *iph = skb_gro_network_header(skb);
+ 	struct net *net = dev_net(skb->dev);
++	int iif, sdif;
++
++	udp6_get_iif_sdif(skb, &iif, &sdif);
+ 
+ 	return __udp6_lib_lookup(net, &iph->saddr, sport,
+-				 &iph->daddr, dport, inet6_iif(skb),
+-				 inet6_sdif(skb), net->ipv4.udp_table, NULL);
++				 &iph->daddr, dport, iif,
++				 sdif, net->ipv4.udp_table, NULL);
+ }
+ 
+ INDIRECT_CALLABLE_SCOPE
+-- 
+2.36.1
 
