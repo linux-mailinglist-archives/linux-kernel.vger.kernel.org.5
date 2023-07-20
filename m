@@ -2,91 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B670F75B3D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B54975B3CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbjGTQH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 12:07:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39480 "EHLO
+        id S229919AbjGTQHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 12:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjGTQHY (ORCPT
+        with ESMTP id S229744AbjGTQHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 Jul 2023 12:07:24 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BC2CE;
-        Thu, 20 Jul 2023 09:07:23 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b703cbfaf5so14514761fa.1;
-        Thu, 20 Jul 2023 09:07:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689869242; x=1690474042;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CjpaXRyovFt4+Nz0cyo8GxXlLalmODjwxKNY5UBoRaU=;
-        b=Hqt2yzKLXcKbOqavhn94wBwXqIJu3Plz2LCMyyB4bhl5kALZFcsnvseez4DpZfb62+
-         hwUnc2U0o30h3YG9Dl411XKWjaDXp+jZ7CcIoFwdx8HZn/FQSUz5+oP91htgTQCMPuuJ
-         PCJ5FGEcMsYdk7wHbNnfcqeo31LFlG5gXdQmTzV+Yqu/eAD9Vk4KdRhxb5O0GC2dwys6
-         469u7QeZlq0OkfTc35GNCrKMx+VU+dYp7bVJutLiEmtO7HwKAS2j5Ruz47JrWPxQ+F1N
-         NeX6aSGHtyVCJdl2ULhhtI3RAU7K8c85Vb1uHci+bxOSwySqIGQ5dUmFCnia34QrnDCL
-         OOYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689869242; x=1690474042;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CjpaXRyovFt4+Nz0cyo8GxXlLalmODjwxKNY5UBoRaU=;
-        b=ZKCbqm2XBS/dWNpD1mclcrhx/DZthh4+1/fS/Q3X0claFOxLyEhYEKZpXIh2g3yx63
-         c0rUoQ+G2qjMOkHpvykowlqoiG50P6224ma2gekB33GDCpP+HdF1fNp2mKsDOF/8INbM
-         lZvRCGIftOCq5TJc9barVv6lDc9hluJs0Hqr0Yn31nRR5EaXmqERuysttX6YUKQ3pvaf
-         rmdghKUv6ZuVBedKRX8g0OZ1au5jeBpDWSHyMZ7bkFpi7LnwA2f++TtbLM5mmTXYyo6a
-         EDI/RiDl78A8k727wmRFqYbjKe8qv/Rj/Sc0UIQ8CVUAMB9GFqAP455UD33APN1S9CJK
-         ebPQ==
-X-Gm-Message-State: ABy/qLZqB2eS5IA8D3H/MUNLMNDccwZW5kZq7lAmX+0qmk6LOCNNy9sX
-        chLnrYqsUnfG+Tu7xfKDS+IurQqfbvJsQJBly0s=
-X-Google-Smtp-Source: APBJJlFJSrSlbDs0Awxp8kmJS9Vyn69EhNnfWr0kV7di92MBpCh0nr3qtKge//MoYES/ay3jfDxZguEkM/kQsjzJ+Vw=
-X-Received: by 2002:a2e:9b5a:0:b0:2b9:4841:9652 with SMTP id
- o26-20020a2e9b5a000000b002b948419652mr2582916ljj.25.1689869241505; Thu, 20
- Jul 2023 09:07:21 -0700 (PDT)
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FECE47;
+        Thu, 20 Jul 2023 09:07:21 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 7E38460171;
+        Thu, 20 Jul 2023 18:07:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1689869228; bh=8hV6k4hJ/hPCHyUdlhZQjxzzgl5BuECH6T0mUmObz/A=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=00looCrQqz2H65GHYlx0abgubMpyVsyXyp8IA1zNRwsB0amyJp4cPTFbKgeWAVwRQ
+         a/dbt8V/55BEkBBkwDflqNa+ItbhgoiOtBCgYkg5ylb2NXvFOTjRp9dhtfMXUFjAYJ
+         sc6zv46T0thScF12thE3Daj7AXyKToqADPQiTWG7PAgoDATwHTO43rI4gH50vcmBQa
+         1g+6t/XIU8WMFAtR0yEcoTH+PcFcAoajKZqr50r6P+bBhx3GKTieiPcJADHgLZd+sR
+         KdxpZKOoTu6uF7BG0SuYcoJQPrQyZcCssHk6vZZkDIocx3iEruebI4TG58KIM/E1VP
+         c/9sXmZP6wR2g==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id DL_4EscF3azY; Thu, 20 Jul 2023 18:07:05 +0200 (CEST)
+Received: from [192.168.1.6] (unknown [94.250.191.183])
+        by domac.alu.hr (Postfix) with ESMTPSA id 1AB616016E;
+        Thu, 20 Jul 2023 18:07:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1689869225; bh=8hV6k4hJ/hPCHyUdlhZQjxzzgl5BuECH6T0mUmObz/A=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=N45t8GTcMB6u4PW17PfN3VhDIMRi8lha73l/YKkRW4JePy1Oq3Z2JsCcWdGFiI3YM
+         vSakh+4ES7dj9PIa9ZWPWIskx79Cs3xMXGKnEJPJny8gYp/dP0NAcvFRmJqGY5Ev8Q
+         HOWlXTH4rGaf9Rp5Acg7uQSPbrMHOjpT613CZ5bEDZnaOFPz+G88SfQ9ZDRtIS7qmZ
+         LuHserd8HZqlRzu6fMycpON481vztwneyqHMXtH+g4DsWr0cu+BMZk9VJadtV5UiBS
+         5UoHMn/+x/QUC16UsCx5H98MqtMWTdAFkrvV9idd7RnlHLLupamS66ly/Zd1NcQQ4t
+         i+FxehVeD8e6Q==
+Message-ID: <580b9f28-7a68-e618-b2d5-b8663386aa12@alu.unizg.hr>
+Date:   Thu, 20 Jul 2023 18:07:00 +0200
 MIME-Version: 1.0
-References: <20230720132535.23413-1-aboutphysycs@gmail.com>
-In-Reply-To: <20230720132535.23413-1-aboutphysycs@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 20 Jul 2023 19:06:44 +0300
-Message-ID: <CAHp75VeDGa9eKJv+4F13LRLhCutTWOhQcU66CnDaeTLCsSbP8A@mail.gmail.com>
-Subject: Re: [PATCH] gpio : max77620: remove unneeded platform_set_drvdata() call
-To:     Andrei Coardos <aboutphysycs@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        andy@kernel.org, brgl@bgdev.pl, linus.walleij@linaro.org,
-        Alexandru Ardelean <alex@shruggie.ro>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PROBLEM] seltests: net/forwarding/sch_ets.sh [HANG]
+To:     Petr Machata <petrm@nvidia.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kselftest@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>
+References: <759fe934-2e43-e9ff-8946-4fd579c09b05@alu.unizg.hr>
+ <87cz0m9a3n.fsf@nvidia.com>
+Content-Language: en-US
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <87cz0m9a3n.fsf@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 4:26=E2=80=AFPM Andrei Coardos <aboutphysycs@gmail.=
-com> wrote:
->
-> This function call is not required because no counterpart
-> platform_get_drvdata() call is present to leverage the private data of
-> the driver.
-> Since the private data is confined to this driver file, external access
-> is not feasible.
-> The use of this function appears redundant in the current context of the
-> driver's implementation.
+On 7/20/23 11:43, Petr Machata wrote:
+> 
+> Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr> writes:
+> 
+>> Using the same config for 6.5-rc2 on Ubuntu 22.04 LTS and 22.10, the execution
+>> stop at the exact same line on both boxes (os I reckon it is more than an
+>> accident):
+>>
+>> # selftests: net/forwarding: sch_ets.sh
+>> # TEST: ping vlan 10                                                  [ OK ]
+>> # TEST: ping vlan 11                                                  [ OK ]
+>> # TEST: ping vlan 12                                                  [ OK ]
+>> # Running in priomap mode
+>> # Testing ets bands 3 strict 3, streams 0 1
+>> # TEST: band 0                                                        [ OK ]
+>> # INFO: Expected ratio >95% Measured ratio 100.00
+>> # TEST: band 1                                                        [ OK ]
+>> # INFO: Expected ratio <5% Measured ratio 0
+>> # Testing ets bands 3 strict 3, streams 1 2
+>> # TEST: band 1                                                        [ OK ]
+>> # INFO: Expected ratio >95% Measured ratio 100.00
+>> # TEST: band 2                                                        [ OK ]
+>> # INFO: Expected ratio <5% Measured ratio 0
+>> # Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
+>> # TEST: band 0                                                        [ OK ]
+>> # INFO: Expected ratio >95% Measured ratio 100.00
+>> # TEST: band 1                                                        [ OK ]
+>> # INFO: Expected ratio <5% Measured ratio 0
+>> # Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 1 2
+>> # TEST: bands 1:2                                                     [ OK ]
+>> # INFO: Expected ratio 2.00 Measured ratio 1.99
+>> # Testing ets bands 3 quanta 3300 3300 3300, streams 0 1 2
+>> # TEST: bands 0:1                                                     [ OK ]
+>> # INFO: Expected ratio 1.00 Measured ratio .99
+>> # TEST: bands 0:2                                                     [ OK ]
+>> # INFO: Expected ratio 1.00 Measured ratio 1.00
+>> # Testing ets bands 3 quanta 5000 3500 1500, streams 0 1 2
+>> # TEST: bands 0:1                                                     [ OK ]
+>> # INFO: Expected ratio 1.42 Measured ratio 1.42
+>> # TEST: bands 0:2                                                     [ OK ]
+>> # INFO: Expected ratio 3.33 Measured ratio 3.33
+>> # Testing ets bands 3 quanta 5000 8000 1500, streams 0 1 2
+>> # TEST: bands 0:1                                                     [ OK ]
+>> # INFO: Expected ratio 1.60 Measured ratio 1.59
+>> # TEST: bands 0:2                                                     [ OK ]
+>> # INFO: Expected ratio 3.33 Measured ratio 3.33
+>> # Testing ets bands 2 quanta 5000 2500, streams 0 1
+>> # TEST: bands 0:1                                                     [ OK ]
+>> # INFO: Expected ratio 2.00 Measured ratio 1.99
+>> # Running in classifier mode
+>> # Testing ets bands 3 strict 3, streams 0 1
+>> # TEST: band 0                                                        [ OK ]
+>> # INFO: Expected ratio >95% Measured ratio 100.00
+>> # TEST: band 1                                                        [ OK ]
+>> # INFO: Expected ratio <5% Measured ratio 0
+>> # Testing ets bands 3 strict 3, streams 1 2
+>> # TEST: band 1                                                        [ OK ]
+>> # INFO: Expected ratio >95% Measured ratio 100.00
+>> # TEST: band 2                                                        [ OK ]
+>> # INFO: Expected ratio <5% Measured ratio 0
+>> # Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
+>>
+>> I tried to run 'set -x' enabled version standalone, but that one finished
+>> correctly (?).
+>>
+>> It could be something previous scripts left, but right now I don't have a clue.
+>> I can attempt to rerun all tests with sch_ets.sh bash 'set -x' enabled later today.
+> 
+> If you run it standalone without set -x, does it finish as well?
 
-Use full room of the lines, no need to start each sentence at a new line.
+Added that. Yes, standlone run finishes correctly, with or without 'set -x':
 
-Also, fix the Subject.
-It should be prefixed with "gpio: DRIVER: ", where DRIVER is one in
-question. This applies to all your last patches.
+root@defiant:/home/marvin/linux/kernel/linux_torvalds/tools/testing/selftests/net/forwarding# ./sch_ets.sh
+TEST: ping vlan 10                                                  [ OK ]
+TEST: ping vlan 11                                                  [ OK ]
+TEST: ping vlan 12                                                  [ OK ]
+Running in priomap mode
+Testing ets bands 3 strict 3, streams 0 1
+TEST: band 0                                                        [ OK ]
+INFO: Expected ratio >95% Measured ratio 100.00
+TEST: band 1                                                        [ OK ]
+INFO: Expected ratio <5% Measured ratio 0
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+Testing ets bands 3 strict 3, streams 1 2
+TEST: band 1                                                        [ OK ]
+INFO: Expected ratio >95% Measured ratio 100.00
+TEST: band 2                                                        [ OK ]
+INFO: Expected ratio <5% Measured ratio 0
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
+TEST: band 0                                                        [ OK ]
+INFO: Expected ratio >95% Measured ratio 100.00
+TEST: band 1                                                        [ OK ]
+INFO: Expected ratio <5% Measured ratio 0
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 1 2
+TEST: bands 1:2                                                     [ OK ]
+INFO: Expected ratio 2.00 Measured ratio 1.99
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+Testing ets bands 3 quanta 3300 3300 3300, streams 0 1 2
+TEST: bands 0:1                                                     [ OK ]
+INFO: Expected ratio 1.00 Measured ratio 1.00
+TEST: bands 0:2                                                     [ OK ]
+INFO: Expected ratio 1.00 Measured ratio .99
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+Testing ets bands 3 quanta 5000 3500 1500, streams 0 1 2
+TEST: bands 0:1                                                     [ OK ]
+INFO: Expected ratio 1.42 Measured ratio 1.42
+TEST: bands 0:2                                                     [ OK ]
+INFO: Expected ratio 3.33 Measured ratio 3.33
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+Testing ets bands 3 quanta 5000 8000 1500, streams 0 1 2
+TEST: bands 0:1                                                     [ OK ]
+INFO: Expected ratio 1.60 Measured ratio 1.59
+TEST: bands 0:2                                                     [ OK ]
+INFO: Expected ratio 3.33 Measured ratio 3.33
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+Testing ets bands 2 quanta 5000 2500, streams 0 1
+TEST: bands 0:1                                                     [ OK ]
+INFO: Expected ratio 2.00 Measured ratio 1.99
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+Running in classifier mode
+Testing ets bands 3 strict 3, streams 0 1
+TEST: band 0                                                        [ OK ]
+INFO: Expected ratio >95% Measured ratio 100.00
+TEST: band 1                                                        [ OK ]
+INFO: Expected ratio <5% Measured ratio 0
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+Testing ets bands 3 strict 3, streams 1 2
+TEST: band 1                                                        [ OK ]
+INFO: Expected ratio >95% Measured ratio 100.00
+TEST: band 2                                                        [ OK ]
+INFO: Expected ratio <5% Measured ratio 0
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
+TEST: band 0                                                        [ OK ]
+INFO: Expected ratio >95% Measured ratio 100.00
+TEST: band 1                                                        [ OK ]
+INFO: Expected ratio <5% Measured ratio 0
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 1 2
+TEST: bands 1:2                                                     [ OK ]
+INFO: Expected ratio 2.00 Measured ratio 1.99
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+Testing ets bands 3 quanta 3300 3300 3300, streams 0 1 2
+TEST: bands 0:1                                                     [ OK ]
+INFO: Expected ratio 1.00 Measured ratio .99
+TEST: bands 0:2                                                     [ OK ]
+INFO: Expected ratio 1.00 Measured ratio .99
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+Testing ets bands 3 quanta 5000 3500 1500, streams 0 1 2
+TEST: bands 0:1                                                     [ OK ]
+INFO: Expected ratio 1.42 Measured ratio 1.42
+TEST: bands 0:2                                                     [ OK ]
+INFO: Expected ratio 3.33 Measured ratio 3.33
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+Testing ets bands 3 quanta 5000 8000 1500, streams 0 1 2
+TEST: bands 0:1                                                     [ OK ]
+INFO: Expected ratio 1.60 Measured ratio 1.60
+TEST: bands 0:2                                                     [ OK ]
+INFO: Expected ratio 3.33 Measured ratio 3.33
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+Testing ets bands 2 quanta 5000 2500, streams 0 1
+TEST: bands 0:1                                                     [ OK ]
+INFO: Expected ratio 2.00 Measured ratio 2.00
+killing MZ
+killed MZ
+killing MZ
+killed MZ
+root@defiant:/home/marvin/linux/kernel/linux_torvalds/tools/testing/selftests/net/forwarding#
 
---=20
-With Best Regards,
-Andy Shevchenko
+> That would imply that the reproducer needs to include the previous tests as
+> well.
+
+This is entirely possible, as timeouts and CTRL+C events do not seem to be caught
+and the cleanup is not done ...
+
+sch_ets_core.sh:	trap cleanup EXIT
+
+Some tests time out even after settings:timeout=240, so IMHO this should be taken into account.
+
+Best regards,
+Mirsad Todorovac
+
+> It looks like the test is stuck in ets_test_mixed in classifier_mode.
+> A way to run just this test would be:
+> 
+>      TESTS="classifier_mode ets_test_mixed" ./sch_ets.sh
+> 
+> Looking at the code, the only place that I can see that waits on
+> anything is the "{ kill %% && wait %%; } 2>/dev/null" line in
+> stop_traffic() (in lib.sh). Maybe something like this would let
+> us see if that's the case:
+> 
+> modified   tools/testing/selftests/net/forwarding/lib.sh
+> @@ -1468,8 +1470,10 @@ start_tcp_traffic()
+>   
+>   stop_traffic()
+>   {
+> +	echo killing MZ
+>   	# Suppress noise from killing mausezahn.
+>   	{ kill %% && wait %%; } 2>/dev/null
+> +	echo killed MZ
+>   }
+
