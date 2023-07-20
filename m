@@ -2,72 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6039F75B3D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CB375B3DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229561AbjGTQIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 12:08:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40206 "EHLO
+        id S232783AbjGTQIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 12:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbjGTQII (ORCPT
+        with ESMTP id S231519AbjGTQIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:08:08 -0400
-Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D22F0;
-        Thu, 20 Jul 2023 09:08:06 -0700 (PDT)
-Received: from pps.filterd (m0134420.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36KG571m029141;
-        Thu, 20 Jul 2023 16:08:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : subject :
- date : message-id : mime-version : content-transfer-encoding; s=pps0720;
- bh=WW8wnQDb5F04c8xPquGYN1xbIFjNJENXcqLbV7qEtsk=;
- b=M5Ye+ZwEtM/STZRtpe7Je8s9VAzE14AaDdKOOgcc18Z8r1Hww4JmPEt/Szyatp6glwqn
- F/Y5rh9u0OV44HRCa07oVphQkCJ991uMLnZ3ENJ9agJwykKCqA5ExG8E1dN9GLsUl0r1
- hOjjHoQOajFTGy+dfqd5ybfWwkUg5vCihCVp7bFe8VaxkHkwYXITv6ZraCLoawHPdV8o
- SP5W/L1eoVAbTcuj4TtSJAaAHVeinlQgpBokFOpAjUfXdnK9mcNlOEeBXpRevLvRSjHA
- RZmSG9EtptlTNz/k1YAc5l5vENULPHlFO/s0NnAniClF6i2kvfa8uzyvPQ/8tVIeJe0I UQ== 
-Received: from p1lg14878.it.hpe.com (p1lg14878.it.hpe.com [16.230.97.204])
-        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3rxwk7e1wf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Jul 2023 16:08:05 +0000
-Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by p1lg14878.it.hpe.com (Postfix) with ESMTPS id A994AD2CF;
-        Thu, 20 Jul 2023 16:08:04 +0000 (UTC)
-Received: from dog.eag.rdlabs.hpecorp.net (unknown [16.231.227.39])
-        by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTP id 53E0180CBEB;
-        Thu, 20 Jul 2023 16:08:04 +0000 (UTC)
-Received: by dog.eag.rdlabs.hpecorp.net (Postfix, from userid 48746)
-        id CDFFC302F47FB; Thu, 20 Jul 2023 11:08:03 -0500 (CDT)
-From:   Frank Ramsay <frank.ramsay@hpe.com>
-To:     Frank Ramsay <frank.ramsay@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] tools/power/x86/intel-speed-select: Support more than 8 sockets.
-Date:   Thu, 20 Jul 2023 11:08:03 -0500
-Message-Id: <20230720160803.1648970-1-frank.ramsay@hpe.com>
-X-Mailer: git-send-email 2.21.0
+        Thu, 20 Jul 2023 12:08:10 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB60E75
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:08:07 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fbc0314a7bso1500216e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:08:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689869285; x=1690474085;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aXvy5ZC1HOxeejpe4siA1tnVneLqwXtPQ5iB8GhYx/k=;
+        b=kwiAwKtkmCZlWdDovbreCPXgueUAsxe/nsUj9CcVLkfyhwwYzntbckVyb1SSvXcLan
+         1qW/3OFDboJ6ph77z/8EY0lQhmjtLl0Zg027tZQ7SEBqIoG4f9hII18Pv0MjTi2MTk4W
+         lXYzzCqg0Ahzl70KTIITUW9kWeBuBp4noHEg/Bq11iaYBmENnrB/ymmNM00ZXObKYhid
+         UHVXi5EpDLymAlfEXLrgbvOHLbYyQNcxv+k211YKKSDDCeGN1nS6feHoxBryHXrAzOjt
+         EpA+eBcjLFXf6t+LIWApQAMwq/ld49K0RzVBzUE+XTdU90zHB61q0Zg79Q7dy0j+NTuT
+         xizg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689869285; x=1690474085;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aXvy5ZC1HOxeejpe4siA1tnVneLqwXtPQ5iB8GhYx/k=;
+        b=C3jnrmhbNe6ftT8ZgwCgwHIBL3IObgvaPKIw2jH2lq32ywHOZXi/3j7Y+BP5NAvLOS
+         2NNUihm7YfsIgKef5ztbe1u7tv+ou1lNQXxvQ47u4pW6FUE42c1qZMYxtImPOGXNHF+l
+         aKA+2z4hJEvIu6TVXr3/WJQyO8h+o6EKVB1mOugrr+Y5hOEyJGwhlWfboQdd7TmfjDkc
+         vk5MxUGupHvCLVGO3xeVbwCSID5u7pIfqHYn1cCQvne6sVy6TsfeGVtHxT1el57s/6bj
+         td+CHtXMwL9ULMBzAuvN5YiBx+vxA5IV5xVi4pSThTsplh7AxuECst8GBpPXOP4MPMmq
+         6Grg==
+X-Gm-Message-State: ABy/qLZ2SskD1csLjU9ZkbNHeY0LThtyUU/fjcPe7RkD2k5xqxGR7nTH
+        yCRCPvPZkFUb4VKkDX3ExkWA3A==
+X-Google-Smtp-Source: APBJJlGKvQoBcib8DKD/y9Wc/LkdvC52HopIr7MqwgHWGpSO0ksacRWg4dgb+axR47TowdRlrIldUw==
+X-Received: by 2002:a05:6512:159c:b0:4fb:89bb:ca19 with SMTP id bp28-20020a056512159c00b004fb89bbca19mr2091910lfb.66.1689869285421;
+        Thu, 20 Jul 2023 09:08:05 -0700 (PDT)
+Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
+        by smtp.gmail.com with ESMTPSA id h22-20020ac25976000000b004fbb821959bsm265474lfp.303.2023.07.20.09.08.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 09:08:04 -0700 (PDT)
+Message-ID: <d68cc9a4-d4a4-17b1-c6fd-d128b82a818e@linaro.org>
+Date:   Thu, 20 Jul 2023 18:08:03 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: 1s8DvVvOYPEgCw-8rqXI84_qufLTSZM4
-X-Proofpoint-GUID: 1s8DvVvOYPEgCw-8rqXI84_qufLTSZM4
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-20_08,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- lowpriorityscore=0 suspectscore=0 phishscore=0 spamscore=0 impostorscore=0
- bulkscore=0 malwarescore=0 adultscore=0 mlxlogscore=863 priorityscore=1501
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307200135
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clk: qcom: clk-rcg2: Fix wrong RCG clock rate for high
+ parent frequencies
+Content-Language: en-US
+To:     Devi Priya <quic_devipriy@quicinc.com>, andersson@kernel.org,
+        agross@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     quic_saahtoma@quicinc.com
+References: <20230720083304.28881-1-quic_devipriy@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230720083304.28881-1-quic_devipriy@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,30 +112,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MAX_PACKAGE_COUNT limits the intel-speed-select to systems with 8 sockets or fewer.
-On a system with more than 8 sockets intel-speed-select silently ignores everything
-beyond the 8th socket, rendering the tool useless for those systems.
+On 20.07.2023 10:33, Devi Priya wrote:
+> If the parent clock rate is greater than unsigned long max/2 then
+> integer overflow happens when calculating the clock rate on 32-bit systems.
+> As RCG2 uses half integer dividers, the clock rate is first being
+> multiplied by 2 which will overflow the unsigned long max value. So, use
+> unsigned long long for rate computations to avoid overflow.
+> 
+> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
+> ---
+>  drivers/clk/qcom/clk-rcg2.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/clk/qcom/clk-rcg2.c b/drivers/clk/qcom/clk-rcg2.c
+> index e22baf3a7112..42d00b134975 100644
+> --- a/drivers/clk/qcom/clk-rcg2.c
+> +++ b/drivers/clk/qcom/clk-rcg2.c
+> @@ -156,18 +156,18 @@ static int clk_rcg2_set_parent(struct clk_hw *hw, u8 index)
+>   *            hid_div       n
+>   */
+>  static unsigned long
+> -calc_rate(unsigned long rate, u32 m, u32 n, u32 mode, u32 hid_div)
+> +calc_rate(unsigned long parent_rate, u32 m, u32 n, u32 mode, u32 hid_div)
+>  {
+> +	u64 rate = parent_rate;
+This should not be necessary.. You're being passed a copy of
+the original value, which you can operate on.
 
-Increase MAX_PACKAGE_COUNT to support systems with up to 32 sockets.
+Otherwise, LGTM
 
-Signed-off-by: Frank Ramsay <frank.ramsay@hpe.com>
----
- tools/power/x86/intel-speed-select/isst.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/power/x86/intel-speed-select/isst.h b/tools/power/x86/intel-speed-select/isst.h
-index 54fc21575d56..8def22dec4a2 100644
---- a/tools/power/x86/intel-speed-select/isst.h
-+++ b/tools/power/x86/intel-speed-select/isst.h
-@@ -79,7 +79,7 @@
- 
- #define DISP_FREQ_MULTIPLIER 100
- 
--#define MAX_PACKAGE_COUNT	8
-+#define MAX_PACKAGE_COUNT	32
- #define MAX_DIE_PER_PACKAGE	2
- #define MAX_PUNIT_PER_DIE	8
- 
--- 
-2.39.1
-
+Konrad
