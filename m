@@ -2,53 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97CAF75AD8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B617575AD8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231487AbjGTLyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 07:54:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
+        id S230499AbjGTLzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 07:55:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231336AbjGTLys (ORCPT
+        with ESMTP id S229682AbjGTLy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:54:48 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE55C26BB;
-        Thu, 20 Jul 2023 04:54:28 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 554AB6732D; Thu, 20 Jul 2023 13:54:09 +0200 (CEST)
-Date:   Thu, 20 Jul 2023 13:54:08 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     Christoph Hellwig <hch@lst.de>, corbet@lwn.net,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        akpm@linux-foundation.org, paulmck@kernel.org,
-        catalin.marinas@arm.com, rdunlap@infradead.org,
-        peterz@infradead.org, rostedt@goodmis.org, kim.phillips@amd.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux.dev, linux-mm@kvack.org
-Subject: Re: [PATCH v3] dma-contiguous: support numa CMA for specified node
-Message-ID: <20230720115408.GA13114@lst.de>
-References: <20230720082517.GA7057@lst.de> <20230712074758.1133272-1-yajun.deng@linux.dev> <25942dafbc7f52488a30c807b6322109539442cf@linux.dev>
+        Thu, 20 Jul 2023 07:54:58 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCBA2D7D;
+        Thu, 20 Jul 2023 04:54:37 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C54DA6607083;
+        Thu, 20 Jul 2023 12:54:30 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689854071;
+        bh=xXEl0bZXMT2n/uen0YxtWvqWsJD2b4bMTkkm5cQcOic=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=jLSsMFqqYoBSQC564mB2hCYCi1hnD3bT31BL/kAaZhUmJ0FgmNIdhGxYyKmrPL0Ba
+         tJMMXoPkw3y5ZcpH1BmGQ8CoPXUUnQvGzwWY4f4WV8uXm9pzgf9E3CTVKi/lIYOOEF
+         JC9N7SaM2Ir5T+/RpZWjD1DyKIqoMa5es1vhDatBSaOO5VqOTWb5hUVLHKz5c8hw2c
+         fJ7PPkNtU0IKAlRXqcKsYM1gQOwYq4Pq7rLAZ+zOpuCCseCrOgLdZiU6hWQ76/0YoL
+         4Uye+n5XxetaD1Bbaj2zWHcm7WhfqbO0RbIWOkhL5Fr1JWllj6TdLyn0ah+EaLeQXb
+         YVf6ogHqsNJbg==
+Message-ID: <65da6005-3c07-a7ea-6b63-db45c8915ae8@collabora.com>
+Date:   Thu, 20 Jul 2023 13:54:28 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <25942dafbc7f52488a30c807b6322109539442cf@linux.dev>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3,3/3] drm/mediatek: dp: Add the audio divider to
+ mtk_dp_data struct
+Content-Language: en-US
+To:     Alexandre Mergnat <amergnat@baylibre.com>,
+        Shuijing Li <shuijing.li@mediatek.com>,
+        chunkuang.hu@kernel.org, p.zabel@pengutronix.de, airlied@gmail.com,
+        daniel@ffwll.ch, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        matthias.bgg@gmail.com, jitao.shi@mediatek.com
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20230720082604.18618-1-shuijing.li@mediatek.com>
+ <20230720082604.18618-4-shuijing.li@mediatek.com>
+ <44cc9cc5-7dce-f7a2-f077-b62d7851ee12@baylibre.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <44cc9cc5-7dce-f7a2-f077-b62d7851ee12@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 08:47:37AM +0000, Yajun Deng wrote:
-> It's based on linux-next tree.
+Il 20/07/23 12:14, Alexandre Mergnat ha scritto:
 > 
-> This patch should be after my other patch in linux-next tree.
-> a960925a6b23("dma-contiguous: support per-numa CMA for all architectures").
+> 
+> On 20/07/2023 10:26, Shuijing Li wrote:
+>> Due to the difference of HW, different dividers need to be set.
+>>
+>> Signed-off-by: Shuijing Li <shuijing.li@mediatek.com>
+>> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+>> ---
+>> Changes in v3:
+>> Separate these two things into two different patches.
+>> per suggestion from the previous thread:
+>> https://lore.kernel.org/lkml/e2ad22bcba31797f38a12a488d4246a01bf0cb2e.camel@mediatek.com/
+>> Changes in v2:
+>> - change the variables' name to be more descriptive
+>> - add a comment that describes the function of mtk_dp_audio_sample_arrange
+>> - reduce indentation by doing the inverse check
+>> - add a definition of some bits
+>> - add support for mediatek, mt8188-edp-tx
+>> per suggestion from the previous thread:
+>> https://lore.kernel.org/lkml/ac0fcec9-a2fe-06cc-c727-189ef7babe9c@collabora.com/
+>> ---
+>>   drivers/gpu/drm/mediatek/mtk_dp.c     | 7 ++++++-
+>>   drivers/gpu/drm/mediatek/mtk_dp_reg.h | 1 +
+>>   2 files changed, 7 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/mediatek/mtk_dp.c b/drivers/gpu/drm/mediatek/mtk_dp.c
+>> index d8cda83d6fef..8e1a13ab2ba2 100644
+>> --- a/drivers/gpu/drm/mediatek/mtk_dp.c
+>> +++ b/drivers/gpu/drm/mediatek/mtk_dp.c
+>> @@ -140,6 +140,7 @@ struct mtk_dp_data {
+>>       const struct mtk_dp_efuse_fmt *efuse_fmt;
+>>       bool audio_supported;
+>>       bool audio_pkt_in_hblank_area;
+>> +    u16 audio_m_div2_bit;
+>>   };
+>>   static const struct mtk_dp_efuse_fmt mt8195_edp_efuse_fmt[MTK_DP_CAL_MAX] = {
+>> @@ -648,7 +649,7 @@ static void mtk_dp_audio_sdp_asp_set_channels(struct mtk_dp 
+>> *mtk_dp,
+>>   static void mtk_dp_audio_set_divider(struct mtk_dp *mtk_dp)
+>>   {
+>>       mtk_dp_update_bits(mtk_dp, MTK_DP_ENC0_P0_30BC,
+>> -               AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_DIV_2,
+>> +               mtk_dp->data->audio_m_div2_bit,
+>>                  AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_MASK);
+>>   }
+>> @@ -2636,6 +2637,7 @@ static const struct mtk_dp_data mt8188_edp_data = {
+>>       .efuse_fmt = mt8195_edp_efuse_fmt,
+>>       .audio_supported = false,
+>>       .audio_pkt_in_hblank_area = false,
+>> +    .audio_m_div2_bit = MT8188_AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_DIV_2,
+>>   };
+>>   static const struct mtk_dp_data mt8188_dp_data = {
+>> @@ -2644,6 +2646,7 @@ static const struct mtk_dp_data mt8188_dp_data = {
+>>       .efuse_fmt = mt8195_dp_efuse_fmt,
+>>       .audio_supported = true,
+>>       .audio_pkt_in_hblank_area = true,
+>> +    .audio_m_div2_bit = MT8188_AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_DIV_2,
+>>   };
+>>   static const struct mtk_dp_data mt8195_edp_data = {
+>> @@ -2652,6 +2655,7 @@ static const struct mtk_dp_data mt8195_edp_data = {
+>>       .efuse_fmt = mt8195_edp_efuse_fmt,
+>>       .audio_supported = false,
+>>       .audio_pkt_in_hblank_area = false,
+>> +    .audio_m_div2_bit = AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_DIV_2,
+>>   };
+>>   static const struct mtk_dp_data mt8195_dp_data = {
+>> @@ -2660,6 +2664,7 @@ static const struct mtk_dp_data mt8195_dp_data = {
+>>       .efuse_fmt = mt8195_dp_efuse_fmt,
+>>       .audio_supported = true,
+>>       .audio_pkt_in_hblank_area = false,
+>> +    .audio_m_div2_bit = AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_DIV_2,
+>>   };
+>>   static const struct of_device_id mtk_dp_of_match[] = {
+>> diff --git a/drivers/gpu/drm/mediatek/mtk_dp_reg.h 
+>> b/drivers/gpu/drm/mediatek/mtk_dp_reg.h
+>> index f38d6ff12afe..6d7f0405867e 100644
+>> --- a/drivers/gpu/drm/mediatek/mtk_dp_reg.h
+>> +++ b/drivers/gpu/drm/mediatek/mtk_dp_reg.h
+>> @@ -162,6 +162,7 @@
+>>   #define AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_MUL_2    (1 << 8)
+>>   #define AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_MUL_4    (2 << 8)
+>>   #define AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_MUL_8    (3 << 8)
+>> +#define MT8188_AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_DIV_2    (4 << 8)
+> 
+> IMO, it's a bit weird to have SoC specific define in the generic header.
+> Are you sure this bit is only available for MT8188 ?
+> 
 
-Where did this land?  dma patches really should be going through
-the DMA tree..
+Eh, the P0_DIV2 bit is 5<<8 for MT8195, while for 8188 it's 4<<8, clearly :-)
+
+>>   #define AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_DIV_2    (5 << 8)
+>>   #define AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_DIV_4    (6 << 8)
+>>   #define AUDIO_M_CODE_MULT_DIV_SEL_DP_ENC0_P0_DIV_8    (7 << 8)
+> 
+> Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+> 
+
+
