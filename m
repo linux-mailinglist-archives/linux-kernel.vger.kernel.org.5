@@ -2,121 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 000B775A51B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 06:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE15475A51D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 06:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229701AbjGTE3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 00:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57866 "EHLO
+        id S229601AbjGTEdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 00:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229682AbjGTE3p (ORCPT
+        with ESMTP id S229517AbjGTEdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 00:29:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540A52112;
-        Wed, 19 Jul 2023 21:29:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C5756615B6;
-        Thu, 20 Jul 2023 04:29:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1284CC433C7;
-        Thu, 20 Jul 2023 04:29:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689827381;
-        bh=00793e+DVIX+KzxECbpJoJSmHqRjPxWfvFAIRLmu5OA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lGl4yoxCXG41iA0WBnzxDW4JqpYchqiEsKe/VNW6L/qU6UGFO0ogtp3fuAC4r1um7
-         iYQh1T6+hImHQQNvTaKBU+rDhBSD67g4nEKwJi8l2B2r7u2KvoquSSDlSAP2q0q8Ui
-         A3EfdWFfkVs8HdRr8NxhJfeDc21tt9TQe0Fsg9/UlXEBOyWrMlkaR562Of//eGyWsn
-         Ib5OkPFx65BMxlypb9N0lzKSx+e3ifn8i726AdE/2j7vuVqsdJ1zBOAG8+EHX+PY0T
-         kSmfESVk0CyowibqH1c4ilI1Gnk74Lk1NoKUu/v7hjTvpXsUh7/S5Gv5oT8hHDAG9b
-         6c3/HW/ju95xA==
-Date:   Wed, 19 Jul 2023 21:29:39 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Paul Rosswurm <paulros@microsoft.com>,
-        "olaf@aepfle.de" <olaf@aepfle.de>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Long Li <longli@microsoft.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2,net-next] net: mana: Add page pool for RX buffers
-Message-ID: <20230719212939.6da38bc0@kernel.org>
-In-Reply-To: <1689716837-22859-1-git-send-email-haiyangz@microsoft.com>
-References: <1689716837-22859-1-git-send-email-haiyangz@microsoft.com>
+        Thu, 20 Jul 2023 00:33:11 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EA219A6
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 21:33:09 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-40371070eb7so128681cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 21:33:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689827589; x=1692419589;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q2Wv2sXy6dPs6y1IoEF3FQ9f1Jy0jfZNRNNhi4fWntI=;
+        b=JMMTrSfiyjx7CON1Qej5uXP27SMvtJ0VVcu7XUROw4D3rwADg2hKHrftk0wLx082Vu
+         1TXTFGZoTaBb5lW09UjKdU+FRddJ2qboVf1kv3D959FKiUHIQ4ia4mIDaym+bNclOiVt
+         TVIEx6UUJNvJ3sG8tBxev2Cgsi79ym0GxYCB3CYYWoKVIrrp9jHDIdc7OUFZu/qk/WKp
+         3qlp8+x7EEkjmPdNpd4gPjO18z8OBeUc2O3xdmS2Me6/0a/gu9VYX0Dy689Cz3g0baLw
+         pBxsHZZA9BFpRwIg12BJRCJe15vmKmmde0xgDNCPtE1G/Ju47OzBDPDoioJHWzxzYA/i
+         duYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689827589; x=1692419589;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q2Wv2sXy6dPs6y1IoEF3FQ9f1Jy0jfZNRNNhi4fWntI=;
+        b=XUIxRudksO7dGvyP7x0OPXGMydeZgMgcY1X1YgHX3DshLXfnKAIlNrzAcz/2rA9KF6
+         KnzRvEzbzlQX8D+yWKraN0dWdB5bsg4ChMm2RsLI63qyMTW5nAxFVAa633ipBPm6Ka5L
+         Arf7spOg/FHLwpdpLTZ09rbOJEPi87vgx4l/R/jlR/bdp61jbRJrgyFr3QW5UBHe/hQT
+         t3HMSQQNAgmczLzybW/GQq3M62beOyqXk3f0xkAWfxT46FostVl0BimzuF3Trzvnswxk
+         i/yznWOWjyrtR+97GxHwsb0D9d0KVhvXqbbmoWr2dpjw+eS3r2vXHmPrHJURODolQydf
+         GM/g==
+X-Gm-Message-State: ABy/qLaLf69+14EC9U8vri2IcvRYJWdIi7ZfT/SttfaP/dSdMPkmFMT8
+        Hh1kwQZyDRXV4FLHWgdmIERgqVkdUV6B+mYiHkJUGA==
+X-Google-Smtp-Source: APBJJlEhNIa45NPT4/vzKTu/RdxY3ac7TLMhTaAs3LseOWlIwAIyrb+96NnNlFgFJplZMkHXZ4JNWCz25Rdd8N2Jh10=
+X-Received: by 2002:a05:622a:120c:b0:3f8:5b2:aef0 with SMTP id
+ y12-20020a05622a120c00b003f805b2aef0mr162550qtx.24.1689827588632; Wed, 19 Jul
+ 2023 21:33:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230720034022.31937-1-rongqianfeng@vivo.com>
+In-Reply-To: <20230720034022.31937-1-rongqianfeng@vivo.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 19 Jul 2023 21:32:57 -0700
+Message-ID: <CAP-5=fXQY1T2VQxs2ZBX_9ksuVfYvvzA6xSeOUpSQ8Sz1eJv_Q@mail.gmail.com>
+Subject: Re: [PATCH] tools: perf: Two typos have been corrected
+To:     Rong Qianfeng <rongqianfeng@vivo.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 21:48:01 +0000 Haiyang Zhang wrote:
-> Add page pool for RX buffers for faster buffer cycle and reduce CPU
-> usage.
-> 
-> The standard page pool API is used.
+On Wed, Jul 19, 2023 at 8:40=E2=80=AFPM Rong Qianfeng <rongqianfeng@vivo.co=
+m> wrote:
+>
+> When wrapping code, use ';' better than using ',' which is more
+> in line with the coding habits of most engineers.
+>
+> Signed-off-by: Rong Qianfeng <rongqianfeng@vivo.com>
 
-> @@ -1437,8 +1437,12 @@ static void mana_rx_skb(void *buf_va, struct mana_rxcomp_oob *cqe,
->  
->  	act = mana_run_xdp(ndev, rxq, &xdp, buf_va, pkt_len);
->  
-> -	if (act == XDP_REDIRECT && !rxq->xdp_rc)
-> +	if (act == XDP_REDIRECT && !rxq->xdp_rc) {
-> +		if (from_pool)
-> +			page_pool_release_page(rxq->page_pool,
-> +					       virt_to_head_page(buf_va));
+Snap: https://lore.kernel.org/lkml/20230706094635.1553-1-luhongfei@vivo.com=
+/
 
+Thanks,
+Ian
 
-IIUC you should pass the page_pool as the last argument to 
-xdp_rxq_info_reg_mem_model() and then the page will be recycled
-by the core, you shouldn't release it.
-
-Not to mention the potential race in releasing the page _after_
-giving its ownership to someone else.
-
-> -		page = dev_alloc_page();
-> +		if (is_napi) {
-> +			page = page_pool_dev_alloc_pages(rxq->page_pool);
-> +			*from_pool = true;
-> +		} else {
-> +			page = dev_alloc_page();
-
-FWIW if you're only calling this outside NAPI during init, when NAPI
-can't yet run, I _think_ it's okay to use page_pool_dev_alloc..
-
-> +	pprm.pool_size = RX_BUFFERS_PER_QUEUE;
-> +	pprm.napi = &cq->napi;
-> +	pprm.dev = gc->dev;
-> +	pprm.dma_dir = DMA_FROM_DEVICE;
-
-If you're not setting PP_FLAG_DMA_MAP you don't have to fill in .dev
-and .dma_dir
--- 
-pw-bot: cr
+> ---
+>  tools/perf/builtin-diff.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/perf/builtin-diff.c b/tools/perf/builtin-diff.c
+> index e8a1b16aa5f8..57d300d8e570
+> --- a/tools/perf/builtin-diff.c
+> +++ b/tools/perf/builtin-diff.c
+> @@ -1915,8 +1915,8 @@ static int data_init(int argc, const char **argv)
+>                 struct perf_data *data =3D &d->data;
+>
+>                 data->path  =3D use_default ? defaults[i] : argv[i];
+> -               data->mode  =3D PERF_DATA_MODE_READ,
+> -               data->force =3D force,
+> +               data->mode  =3D PERF_DATA_MODE_READ;
+> +               data->force =3D force;
+>
+>                 d->idx  =3D i;
+>         }
+> --
+> 2.39.0
+>
