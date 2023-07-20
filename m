@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD7275A3B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 02:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9782D75A3B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 03:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbjGTA5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 20:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34516 "EHLO
+        id S229452AbjGTBA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 21:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGTA5X (ORCPT
+        with ESMTP id S229450AbjGTBA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 20:57:23 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59CB91FFD
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 17:57:22 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6862842a028so139940b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 17:57:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689814642; x=1690419442;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EoHtEDrUeDBB6O4dpqwH1+7TO2wrwXezIfRG5JlgQeA=;
-        b=HmFTN0EwsP6KRPllj+z4z2bLlOlTq/BZzzaYMsJEsRv9VPqwYghrsiQdsmGZ+ju1Ra
-         zC8lIiM9aAqWbNFYdKVZjYVwvt9gSlEz9y9mVETd3tkyZnNxdDv2xRWqgiobP+V0fI5j
-         wgLnyXwRMC1FsO2fPNMMYbmtVkYK3lx2HMD70=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689814642; x=1690419442;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EoHtEDrUeDBB6O4dpqwH1+7TO2wrwXezIfRG5JlgQeA=;
-        b=hmTC1OI/HZWggztZS0S9DKox8GCu9NYgnrUvuehJtgiXCzHB7rPUSi4o/9PmR0pz2Y
-         1ffXzyG9669GLxhm1Tl6uky30/yhnSfohaIONcHimOm3Dob9sbTCAePqe/5bLs4eHVJi
-         p5/telcsMuCVWCOuC3cl6TSgEQoCeIG1hkZaFm6Pmgx3Tw2+nUwpks6YQlpvpGLfeB6f
-         ylQLDKarXnTKD9ftUKUXT2qOjkX4xTah29DaFql8dRulwbOT938p4csHyPU1MNyyPc51
-         6Ap78QsBPNPWKPX0p94r5IhrilMmq4SgiOvBmJ4BXkwPlbiMvQrZJeV1W97wHSF/ZwAk
-         l0tA==
-X-Gm-Message-State: ABy/qLbqYmQdlirPI5VFJlZi+gJym+wC92BmQXPTFTvGSU5Dws6YnDfD
-        E+BO3uts4Me16TPy7NJ3JwUg9A==
-X-Google-Smtp-Source: APBJJlGsN20HjU3kjOqIjW2vhq/ZUqU5m4b6w3IXK5ZmIdaMhUVcZM72TXBPKTPM+HJYkNgFq0kGgw==
-X-Received: by 2002:a05:6a20:144f:b0:133:2974:d31a with SMTP id a15-20020a056a20144f00b001332974d31amr4281643pzi.17.1689814641824;
-        Wed, 19 Jul 2023 17:57:21 -0700 (PDT)
-Received: from google.com (KD124209188001.ppp-bb.dion.ne.jp. [124.209.188.1])
-        by smtp.gmail.com with ESMTPSA id x4-20020a170902ec8400b001b895a9f3acsm4603603plg.224.2023.07.19.17.57.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 17:57:21 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 09:57:17 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@kernel.org
-Subject: Re: [PATCH] media: uvcvideo: Fix OOB read
-Message-ID: <20230720005717.GD57770@google.com>
-References: <20230717-uvc-oob-v1-1-f5b9b4aba3b4@chromium.org>
+        Wed, 19 Jul 2023 21:00:26 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A029692;
+        Wed, 19 Jul 2023 18:00:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1689814824;
+        bh=LfUF9ZhH9pFwsiMhXc+/2cqBqLy7keH0umsg+6P4TXo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=T1Bu1+OvHepCre2l6Kv6kJ9sQaSAGxMsnPqeatADFAnWkScuEMXJoz6L+arMgNj4U
+         R20erCgI1MQ8dTMKL18WuMy37GmWpSFFcDQy0SdhM8hiP2MivEpwaNhgTLq9Xdam+c
+         0Y+k+I2owNnjrYtAg3ucbM9KTcRfZ40oFT7iB5WuF/Ldsl7e1szfbTJfkbq4rNruJ4
+         e7o3XKye3H2Issf7OZja1+MtR2u0quguR+Cr/9hW7IasSE4/neVA0WwgBxzwoDETE4
+         bXl24vYvfF6qQQa3AJ19qk3iDoEWKxc2CEIZqsTake2LzEnhPHBQzGnPzz/8BTwecJ
+         SS9O71NljDTjg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R5vVv6dLmz4wZn;
+        Thu, 20 Jul 2023 11:00:23 +1000 (AEST)
+Date:   Thu, 20 Jul 2023 11:00:21 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steve French <smfrench@gmail.com>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        Winston Wen <wentao@uniontech.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-modules@vger.kernel.org
+Subject: Re: linux-next: build failure after merge of the cifs tree
+Message-ID: <20230720110021.3f2f9457@canb.auug.org.au>
+In-Reply-To: <CAH2r5mugNKYBNXm7AuPFL=V=77Qkm3q6TtXCj-B0kugmpL0aYQ@mail.gmail.com>
+References: <20230720103540.0436273d@canb.auug.org.au>
+        <CAH2r5mugNKYBNXm7AuPFL=V=77Qkm3q6TtXCj-B0kugmpL0aYQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717-uvc-oob-v1-1-f5b9b4aba3b4@chromium.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/FIrPqV5zDJ.FH04/BPP=TU=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/07/19 12:05), Ricardo Ribalda wrote:
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index 5e9d3da862dd..5e3af66a2223 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -1402,6 +1402,9 @@ int uvc_query_v4l2_menu(struct uvc_video_chain *chain,
->  	query_menu->id = id;
->  	query_menu->index = index;
->  
-> +	if (index >= UVC_MAX_MENU)
-> +		return -EINVAL;
+--Sig_/FIrPqV5zDJ.FH04/BPP=TU=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-We probably can just do
+Hi all,
 
-	if (index >= BITS_PER_TYPE(mapping->menu_mask))
-		return -EINVAL;
+On Wed, 19 Jul 2023 19:47:42 -0500 Steve French <smfrench@gmail.com> wrote:
+>
+> Winston had an updated version of the patch - just replaced it with
+> his updated one which does a cast to (char *)
+>=20
+>           ses->local_nls =3D load_nls((char *)ctx->local_nls->charset);
+>=20
+> But as he noted in an earlier email thread:
+> > Perhaps I should make a change to load_nls() to take a const char *
+> > instead of char *? If this make sense, I'll do it soon. =20
+>=20
+> which is probably cleaner
 
-This should be better than using a hard-coded constant or even
-BITS_PER_LONG (which is still a hard-coded constant). Because
-BITS_PER_LONG won't get us covered if one day ->menu_mask data
-type changes.
+s/probably/definitely/  ;-)
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/FIrPqV5zDJ.FH04/BPP=TU=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmS4hyYACgkQAVBC80lX
+0GxH8gf/Tx5aW0j6Mj4Q3aumRfNgl8nFIUfWng73joDDPna1bV9ck4lD2PaTbcgQ
+FhK9et4v/hkYfhjcmqern74/rlueEjpMa6+k1cf5Zrl8fzsWv8CirTJ7FfcPDJJP
+GjYf+jEyG6+V63RcOu97DriNKQ4CsIHto3LPvtygG2JCUqJWQ1YvetpiLo91iQFa
+CDweL6LLEteaUdwctceikPv9vNxcpo3+gR9pMjtxCu/VlIHviyduZ/mHEUZF1X7h
+Jwj3O+ikbpNZ5r4mxdruWp5C/0OXmSog1Yk04iZjOWzRFzb4jCBBgCFcsQKq6u0A
+TWL7fn9eL3QgP2vMPXxh2765MK/6wA==
+=oC+X
+-----END PGP SIGNATURE-----
+
+--Sig_/FIrPqV5zDJ.FH04/BPP=TU=--
