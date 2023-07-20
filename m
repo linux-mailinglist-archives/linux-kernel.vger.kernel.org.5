@@ -2,53 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C69D475A57C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E22C75A57E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbjGTFeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 01:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41876 "EHLO
+        id S229610AbjGTFhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 01:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGTFeo (ORCPT
+        with ESMTP id S229561AbjGTFhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 01:34:44 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99ECD1710
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 22:34:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hFybdOvvnOfesblq0ygtn3MBu6SceidBPg+cvmISP3Q=; b=vGqIT386WlC6G+dGehwmvQGZoA
-        buFsz+rMXKRceZlZD+mTvjlQ5n5jQmUi2TdpTrSMYfguBM6aE8HAu7ApPiINW/WVjQXh5TecxAyyd
-        mxTpquGrOiEFxshhsY1ht8BMVCX1YrMRebpbb1yM7nk8qH+0idECOxXnCO5qNHlw0s/R6hrnGngrH
-        hWfBit/tIb2A9ZpkmyXQYvJRvsom0rJCryXYfeRg0Y71+p9BPvVCEMxVKFBWV0WgAHIHFWOFLk1jl
-        qOzjTLdwPnQ9NGGv+jobG1LlwWe2+pVbE7He32UoQdy5ZpmT9/R2qzc9gy8HCsG1B7C4iDLsJISb0
-        WAX4G2fg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qMMJA-009pxE-18;
-        Thu, 20 Jul 2023 05:34:36 +0000
-Date:   Wed, 19 Jul 2023 22:34:36 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Peng Zhang <zhangpeng362@huawei.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, sidhartha.kumar@oracle.com,
-        akpm@linux-foundation.org, wangkefeng.wang@huawei.com,
-        sunnanyong@huawei.com
-Subject: Re: [PATCH v2 3/9] mm/page_io: convert bio_first_page_all() to
- bio_first_folio_all()
-Message-ID: <ZLjHbNNM8eyeaTpH@infradead.org>
-References: <20230719095848.3422629-1-zhangpeng362@huawei.com>
- <20230719095848.3422629-4-zhangpeng362@huawei.com>
- <ZLfwfhMkegLUav/B@casper.infradead.org>
+        Thu, 20 Jul 2023 01:37:12 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BA91723
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 22:37:10 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-313e742a787so230264f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 22:37:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689831428; x=1690436228;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=prBKU4P9K5Vnrw3K61gdTnAtHxfWsqw2YOPhkHzhRo8=;
+        b=MTKdFpWrOPbvoqRrtB2WF6CuCvdPunNmcaInrU+iSi57NGxkFN+xLVroy51LpmAlEu
+         cFgZbWX70EMqbH2bPZgJnnpctD6jtNrDMuEJkJ/tkKcvA5wKICX2gFsJP9cVtTsufQid
+         mm+rdjcHVMDsKZ6rvG201LjEXr+caApYg9xmOlScNf2AmBMmPWxC1v7N1xwT3ZAA51zk
+         qxsz1pCv9+FSY7CxlgFOaKUrvKrjKfXfSbXRWQaemW5wCnS6+YqzETU1WqLMM3KUYbO1
+         Tj9wLn1MS8NEHlKnYTnMt1X4Nmhlr2xUgwYcPasMbal8cy7Q54S54YyuuzbKRUF9jhA2
+         ss8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689831428; x=1690436228;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=prBKU4P9K5Vnrw3K61gdTnAtHxfWsqw2YOPhkHzhRo8=;
+        b=WDhP/xG+S6YWyWVuTUYpRsepTAiLG8OdBuSNmkIT0lFG9obee4w+JJxQWdDHgfk3ce
+         N1fjVpXSGqZpvBOI/+Sx5XboE/UveajNkY9CG5MgM7i+oe8Bz7WixBGozL7t/YgXuv2t
+         BFTc3Q5CectYk4kPhSaQrd0U/lWojBCN1oDEwdCcgGoXH6nZJUxdBIVrroMDgwYdTJ2S
+         7LCDYjxSMQan+/CTQv17ZJpW6Y6SS357bDs0xHKfKZ9iTydhp5Q+J3eoGzUvf98EU7uk
+         KZgtBA5ASKsjzJISKJlNHD5Sg/BPrTICyH2snjK3SPBJir69lvIIzuAz4yiIv9tOhklC
+         3j2w==
+X-Gm-Message-State: ABy/qLb40cHQJY/mLLnA1oIVvtzZeDDlzEwc0cSA+WYzyGFhhl4KeLhF
+        vAVN674OeUyS8MtbJmN28APBMw==
+X-Google-Smtp-Source: APBJJlHeGcYPzHF6itqem5hwKM5eAFLK2SDkFj5Zv+rK8xwF3m3obxBYz6B74SB3B9T8n9YD++ZDjg==
+X-Received: by 2002:a5d:62d1:0:b0:313:f75b:c552 with SMTP id o17-20020a5d62d1000000b00313f75bc552mr1533061wrv.15.1689831428389;
+        Wed, 19 Jul 2023 22:37:08 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id f6-20020a5d58e6000000b00313f9085119sm149792wrd.113.2023.07.19.22.37.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jul 2023 22:37:06 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 08:37:03 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Umang Jain <umang.jain@ideasonboard.com>
+Cc:     linux-staging@lists.linux.dev,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stefan.wahren@i2se.com,
+        gregkh@linuxfoundation.org, f.fainelli@gmail.com,
+        athierry@redhat.com, error27@gmail.com,
+        dave.stevenson@raspberrypi.com, kieran.bingham@ideasonboard.com,
+        laurent.pinchart@ideasonboard.com
+Subject: Re: [PATCH v9 2/5] staging: vc04_services: vchiq_arm: Register
+ vchiq_bus_type
+Message-ID: <8cd787ae-85ae-4187-9009-d3596b120186@kadam.mountain>
+References: <20230719164427.1383646-1-umang.jain@ideasonboard.com>
+ <20230719164427.1383646-3-umang.jain@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZLfwfhMkegLUav/B@casper.infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20230719164427.1383646-3-umang.jain@ideasonboard.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,19 +79,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 03:17:34PM +0100, Matthew Wilcox wrote:
-> On Wed, Jul 19, 2023 at 05:58:42PM +0800, Peng Zhang wrote:
-> > From: ZhangPeng <zhangpeng362@huawei.com>
-> > 
-> > Convert bio_first_page_all() to bio_first_folio_all() to return a
-> > folio, which makes it easier to use.
-> 
-> This wasn't what I was suggesting.  Indeed, this may introduce bugs.
-> I was suggesting adding bio_first_folio_all() so that it can be used
-> by code that knows this is what it wants.
+On Wed, Jul 19, 2023 at 10:14:24PM +0530, Umang Jain wrote:
+> @@ -1870,6 +1872,12 @@ static int __init vchiq_driver_init(void)
+>  {
+>  	int ret;
+>  
+> +	ret = bus_register(&vchiq_bus_type);
+> +	if (ret) {
+> +		pr_err("Failed to register %s\n", vchiq_bus_type.name);
+> +		return ret;
+> +	}
+> +
+>  	ret = platform_driver_register(&vchiq_driver);
+>  	if (ret)
+>  		pr_err("Failed to register vchiq driver\n");
 
-To add another opinion:  I'd really like to see bio_first_page_all
-go away.  The right way to iterate over the pages is an iterator.
-If we really want to micro-opimize not setting up an iteator because
-we know we have exactly one page/folio just stash it into bi_private.
+Call bus_unregister() if platform_driver_register() fails.  Otherwise
+it probably leads to a use after free or something bad.
+
+> @@ -1880,6 +1888,7 @@ module_init(vchiq_driver_init);
+
+regards,
+dan carpenter
 
