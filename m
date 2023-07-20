@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8885175AF0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC9F75AF05
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbjGTNCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 09:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57628 "EHLO
+        id S231461AbjGTNC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 09:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbjGTNC2 (ORCPT
+        with ESMTP id S230246AbjGTNCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 09:02:28 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B37626B0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:02:27 -0700 (PDT)
-Received: from kwepemm600020.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R6CSy0jrtzLnts;
-        Thu, 20 Jul 2023 20:59:46 +0800 (CST)
+        Thu, 20 Jul 2023 09:02:21 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0D2269D
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:02:20 -0700 (PDT)
+Received: from kwepemm600020.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R6CVx52DBzrRqj;
+        Thu, 20 Jul 2023 21:01:29 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -28,10 +28,12 @@ To:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
 CC:     <hch@infradead.org>, <sidhartha.kumar@oracle.com>,
         <akpm@linux-foundation.org>, <wangkefeng.wang@huawei.com>,
         <sunnanyong@huawei.com>, ZhangPeng <zhangpeng362@huawei.com>
-Subject: [PATCH v3 00/10] Convert several functions in page_io.c to use a folio
-Date:   Thu, 20 Jul 2023 21:01:37 +0800
-Message-ID: <20230720130147.4071649-1-zhangpeng362@huawei.com>
+Subject: [PATCH v3 01/10] mm/page_io: remove unneeded ClearPageUptodate()
+Date:   Thu, 20 Jul 2023 21:01:38 +0800
+Message-ID: <20230720130147.4071649-2-zhangpeng362@huawei.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230720130147.4071649-1-zhangpeng362@huawei.com>
+References: <20230720130147.4071649-1-zhangpeng362@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -39,9 +41,9 @@ X-Originating-IP: [10.175.112.125]
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemm600020.china.huawei.com (7.193.23.147)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -50,40 +52,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: ZhangPeng <zhangpeng362@huawei.com>
 
-This patch series converts several functions in page_io.c to use a
-folio, which can remove several implicit calls to compound_head().
+The VM_BUG_ON_FOLIO in swap_readpage() ensures that the page is already
+!uptodate in __end_swap_bio_read() and sio_read_complete().
+Just remove unneeded ClearPageUptodate().
 
-Changelog:
+Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+---
+ mm/page_io.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-v3:
-- introduce bio_first_folio_all(), rather than replacing
-  bio_first_page_all() per Matthew (patch 3)
-- use a folio in __end_swap_bio_write() (patch 4)
-- remove unneeded ifdefs per Matthew (patch 9)
-
-v2:
-- remove unneeded ClearPageUptodate() and SetPageError(), suggested by
-  Matthew Wilcox
-- convert bio_first_page_all() to bio_first_folio_all()
-- convert PageTransHuge to folio_test_pmd_mappable per Matthew Wilcox
-
-ZhangPeng (10):
-  mm/page_io: remove unneeded ClearPageUptodate()
-  mm/page_io: remove unneeded SetPageError()
-  mm/page_io: introduce bio_first_folio_all()
-  mm/page_io: use a folio in __end_swap_bio_write()
-  mm/page_io: use a folio in __end_swap_bio_read()
-  mm/page_io: use a folio in sio_read_complete()
-  mm/page_io: use a folio in swap_writepage_bdev_sync()
-  mm/page_io: use a folio in swap_writepage_bdev_async()
-  mm/page_io: convert count_swpout_vm_event() to take in a folio
-  mm/page_io: convert bio_associate_blkg_from_page() to take in a folio
-
- Documentation/block/biovecs.rst |  1 +
- include/linux/bio.h             |  5 +++
- mm/page_io.c                    | 63 +++++++++++++++------------------
- 3 files changed, 35 insertions(+), 34 deletions(-)
-
+diff --git a/mm/page_io.c b/mm/page_io.c
+index 8741d3a0d48a..3087a69a014b 100644
+--- a/mm/page_io.c
++++ b/mm/page_io.c
+@@ -62,7 +62,6 @@ static void __end_swap_bio_read(struct bio *bio)
+ 
+ 	if (bio->bi_status) {
+ 		SetPageError(page);
+-		ClearPageUptodate(page);
+ 		pr_alert_ratelimited("Read-error on swap-device (%u:%u:%llu)\n",
+ 				     MAJOR(bio_dev(bio)), MINOR(bio_dev(bio)),
+ 				     (unsigned long long)bio->bi_iter.bi_sector);
+@@ -417,7 +416,6 @@ static void sio_read_complete(struct kiocb *iocb, long ret)
+ 			struct page *page = sio->bvec[p].bv_page;
+ 
+ 			SetPageError(page);
+-			ClearPageUptodate(page);
+ 			unlock_page(page);
+ 		}
+ 		pr_alert_ratelimited("Read-error on swap-device\n");
 -- 
 2.25.1
 
