@@ -2,96 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2B075AA6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E9675AA9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbjGTJOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
+        id S230232AbjGTJ1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 05:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232438AbjGTJMe (ORCPT
+        with ESMTP id S229847AbjGTJ0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 05:12:34 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 849074C39
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:58:37 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-401d1d967beso237531cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:58:37 -0700 (PDT)
+        Thu, 20 Jul 2023 05:26:50 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44F649C3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:10:59 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-51e99584a82so724102a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:10:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689843455; x=1690448255;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k0Q8HK8TX799KwlVsueVU2Vn6pAZBPxCHZbkBqMog0w=;
-        b=sbu7cKX3RJ4STU+W+JnLifIFmUz7jowp9LlbTrMBKpyqTT6Kt21vKp2H8FzOIS5tep
-         bbXgF86b7ixmUe1C64by8cuyAkXEDJAhk/gJ2VRtUGHb9caKNjgb9OxMQP+zrnCqpcj2
-         0GriA2TxJI0nFyWsYdarH2tV2F8oXchBWBF49T4hNwMZKqRvLpT7KUAaFpv/hWBlJtnr
-         eR3Q7T3Ih01HzEFFJp1vIMbg3XuP9jk+gC3Voy9dtnPLpZFwxTUCMBTiLlhqEnVZspy9
-         c7k4pKrsJ+tQo++vjhDeFYDA9oaDf8lz3TJbJLHFGGmlrXivPKXfPtwH5nnoPelp0XVz
-         2R6Q==
+        d=linaro.org; s=google; t=1689844258; x=1692436258;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mLBhqc2CfVFX3pSGzYlz5mlevC+IfeuDoZjqLxaF6sM=;
+        b=ODMXwbZojNAx4UA/2ZkgWb1F/Ts3Nhh2zIiwPD0o5RA3RYfK1KIVV8G+G4xdLt7j9z
+         D/camQaRMZRUY5BEhsemCTECBR8nWE1CO9tmbqnggRkHvM9AADEzLpBxWEKdkVYzu11t
+         +O6Zr0WX0nCkOsrcpUN5/8NCb7+O8cyHL7K4goj5bNAjRvigG4RecE4wdMLYIvN7XCe6
+         5Q47ICljpGajs7GP3uwids1MGHadK7dXtnbLaPPDa4x6hcODxYKhD3TgqyiG1tozNw+v
+         g0Aj+dOGED/5g1dYUNd3ERfZupcJICy0MqxFZSlurvfQaZ+loE88I2i8oepIIsrz0HqP
+         tqlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689843455; x=1690448255;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k0Q8HK8TX799KwlVsueVU2Vn6pAZBPxCHZbkBqMog0w=;
-        b=Q2saSoQsvlCL/WA6hJhYmK48OFULIjqYkoCMXRnDUgHen6HgGcq2TlVrwZfLqWBusY
-         TYVcDI4tosNOhsOkgDqA+5O6llyv9qElizMdmJUR/g+paHmCp8Tfsf/ixFBL2IJR9xqO
-         bZ3pwjGqWWWYglcUPHdzeOYXyCnVl9jCIJ0rLsXzZOiLJRme7nWAEQitgDXWfkZj7mHG
-         aX268SLJ4sxJ20NrfVrTXFfi6P76pM90F5ESzkX0q1WvBV5/BNwbcW/fiCPwtM9TkZM/
-         DE8hB3ef8Sh+tZK8qrwr0Hh+eO7CyLOsrfScV+HfwGOC0m0qw9z6hrQMb1vsTIpAgl//
-         dx1Q==
-X-Gm-Message-State: ABy/qLZJnz0QS7bWnZ+xR3AcVzQXeOAskowvJM9CQD+CrsobgqrWs1mA
-        DMcDPtHBdT/d2gTPBggOH4IQskUeY4XEfaYOmjtP6g==
-X-Google-Smtp-Source: APBJJlFqutZVzbsA3NqN/Ssn0odGnTV/YCAAziUPG0pJHG9pnasjigUhJvUq9CLPLsN4fxxZHp1mY/y9L0R6loLApxY=
-X-Received: by 2002:a05:622a:1a12:b0:404:8218:83da with SMTP id
- f18-20020a05622a1a1200b00404821883damr159489qtb.1.1689843455136; Thu, 20 Jul
- 2023 01:57:35 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689844258; x=1692436258;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mLBhqc2CfVFX3pSGzYlz5mlevC+IfeuDoZjqLxaF6sM=;
+        b=XLUBLMDHFhYCOZqHlfYND2DfkGJekJs3hytclDsOly8/wg1TnrDbtlmWedtFcRNIVa
+         bLv5FR3OXZ3J/ygw06b/zQQY3tHTSnDyKuSHOrpYFT0L3UWmdM1TDe42PFCu8BS0r6nZ
+         CChEQjigwNF4Qq0MuHsX4RatcEED06XXL2ZmER5VUjb1LACEjd951PKzm9x8WWTzqIxV
+         57keYIU+R2Gs0KZFR8E/1OvAZC9wr3OnJrRqDQuP3PxExlYpdKX74MG4Tn+w7VCeYlhM
+         6092i0+zx4EoGNArID7gmu73CeFyeVlXrLB4+Ca7KgpqoG9GBqOcF3g/Oja7Xo5BL9Rp
+         5E5A==
+X-Gm-Message-State: ABy/qLZIb0B4QoMc/O+GbxJfEzFNs1cEIfnWkrA/8cXfxd/RIBbQWWBV
+        Q7T3M4cqh+fO5I9d05QgOA2v3lsal8ajrvZTH9U=
+X-Google-Smtp-Source: APBJJlFyqabXcBinhEE6qmbAkQmoFxuTmiSDb/e+O0iJKWJOq7quud5femdWEEDE1R6DbBh2mNZlTQ==
+X-Received: by 2002:a05:6512:20c3:b0:4fb:92df:a27c with SMTP id u3-20020a05651220c300b004fb92dfa27cmr1553589lfr.25.1689843512334;
+        Thu, 20 Jul 2023 01:58:32 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id 12-20020a05600c020c00b003fc16ee2864sm633408wmi.48.2023.07.20.01.58.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 01:58:31 -0700 (PDT)
+Message-ID: <5fdfe7b2-0afb-f7a1-c29a-4a7884ff8f1c@linaro.org>
+Date:   Thu, 20 Jul 2023 10:58:29 +0200
 MIME-Version: 1.0
-References: <20230711124157.97169-1-wuyun.abel@bytedance.com> <d114834c-2336-673f-f200-87fc6efb411f@bytedance.com>
-In-Reply-To: <d114834c-2336-673f-f200-87fc6efb411f@bytedance.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 20 Jul 2023 10:57:23 +0200
-Message-ID: <CANn89iLBLBO0CK-9r-eZiQL+h2bwTHL2nR6az5Az6W_-pBierw@mail.gmail.com>
-Subject: Re: [PATCH RESEND net-next 1/2] net-memcg: Scopify the indicators of
- sockmem pressure
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Ahern <dsahern@kernel.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Breno Leitao <leitao@debian.org>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 0/2] Add initial support for RDP404 of IPQ5018 family
+Content-Language: en-US
+To:     Hariharan K <quic_harihk@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     quic_srichara@quicinc.com, quic_sjaganat@quicinc.com,
+        quic_kathirav@quicinc.com, quic_arajkuma@quicinc.com,
+        quic_anusha@quicinc.com
+References: <20230720074302.13585-1-quic_harihk@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230720074302.13585-1-quic_harihk@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,36 +80,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 9:59=E2=80=AFAM Abel Wu <wuyun.abel@bytedance.com> =
-wrote:
->
-> Gentle ping :)
+On 20/07/2023 09:43, Hariharan K wrote:
+> Add the initial device tree support for the Reference Design
+> Platform(RDP) 404 based on IPQ5018 family of SoC. This patch
+> carries the support for Console UART and eMMC.
+> 
+> This series is based on the below series,
+> https://lore.kernel.org/lkml/20230720072938.315
+> 46-1-quic_harihk@quicinc.com/
 
-I was hoping for some feedback from memcg experts.
+Nope. You make it very difficult for us to review and follow your
+submissions. Especially considering issues in the old ipq5018 submission.
 
-You claim to fix a bug, please provide a Fixes: tag so that we can
-involve original patch author.
+Best regards,
+Krzysztof
 
-Thanks.
-
->
-> On 7/11/23 8:41 PM, Abel Wu wrote:
-> > Now there are two indicators of socket memory pressure sit inside
-> > struct mem_cgroup, socket_pressure and tcpmem_pressure.
-> >
-> > When in legacy mode aka. cgroupv1, the socket memory is charged
-> > into a separate counter memcg->tcpmem rather than ->memory, so
-> > the reclaim pressure of the memcg has nothing to do with socket's
-> > pressure at all. While for default mode, the ->tcpmem is simply
-> > not used.
-> >
-> > So {socket,tcpmem}_pressure are only used in default/legacy mode
-> > respectively. This patch fixes the pieces of code that make mixed
-> > use of both.
-> >
-> > Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
-> > ---
-> >   include/linux/memcontrol.h | 4 ++--
-> >   mm/vmpressure.c            | 8 ++++++++
-> >   2 files changed, 10 insertions(+), 2 deletions(-)
-> >
