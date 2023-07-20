@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA95575BA8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1C775BA93
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbjGTWYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 18:24:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52384 "EHLO
+        id S230317AbjGTWYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 18:24:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjGTWYj (ORCPT
+        with ESMTP id S230214AbjGTWYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 18:24:39 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602A81BB
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:24:38 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-992b66e5affso203439666b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:24:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689891877; x=1690496677;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G0owsP3MW0e32jBov7KLN+DK+7a5lEoZ//WqOCREwlQ=;
-        b=jd6zJsXD5mYj6yvKRyJH5NBquT74jAAnKJcxJxjtVugZ74xdKdKUA/Xqh2qycTBeFg
-         vPln7NlfYVWD/ksCNMT/BFt0LQbv78OLE46EKPak+6l1I1wQxZ8TsalyBCa4/uy2UGfP
-         4bQUMBpcGL0kubjXSaUgnImEDhLu8s2ELtZbAO8Vj9SBPIax+YSn04fWP2IBG5Yylr5X
-         8aFVUOFXvi3d0ege/03nCH4/jH9luNjJE8Hnq5/xwKNoEVplwnFF+7KsZF2+GABq1CH7
-         V2lajH7+XWj4nEhKf6uxSpT0wIJZS55VBvNUUqvbp2iLZnQ3ETD0dgV6lA42DVvyjOE4
-         /+vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689891877; x=1690496677;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G0owsP3MW0e32jBov7KLN+DK+7a5lEoZ//WqOCREwlQ=;
-        b=Wvbwa5bFMjB2K6OhsoHOP7en60cyp5o57eWOZJ+imvVlhrx1p/D0ZlO4ytMFBoCAr7
-         wbHuqlT8Rrot2/nKChkS5WGoBKy8p8qxyu4v8K+RTpMj6YDcWysFaGzgWeCj1UBUKVkd
-         3FrRqdvYOXTuz2yofmk1N8EmMxMhH5Jusow5VCvfgiZzqXb/1FyZ728H4rN+nrM9MAnn
-         7Nu8LCf80LBYDiB5KJbK3HSc3I9HoPNd/XX4ffkOKj7Hdz067R+jGMhPpbfuUc789jv4
-         H8u0wN3rF1DhQ8waczajqifLWNsgyh7ZNqPqEj4FfdJ3ZtiaAwdlU9nbM5EccXXcn/WK
-         8Dyw==
-X-Gm-Message-State: ABy/qLYfmOqJGZgNdIV6fompFBT7Itdgs42JxOibELoozYxt9QzE+IuA
-        FrcBKOtPIRKTwZCfec8jlwhQEpZBHez6Wff1c5GK0Oa7/VqXtCESOHA=
-X-Google-Smtp-Source: APBJJlGt5Dh/Vk/Hz8mmwcC6oq1uWZMyrPxtTI1+hvyrsTrR/mlI9dY1NvhlUCmg8KdNdNHw1ubChfd1KYDcCxGTRH4=
-X-Received: by 2002:a17:907:7810:b0:993:f2b4:13c9 with SMTP id
- la16-20020a170907781000b00993f2b413c9mr78921ejc.21.1689891876705; Thu, 20 Jul
- 2023 15:24:36 -0700 (PDT)
+        Thu, 20 Jul 2023 18:24:48 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329D0E44;
+        Thu, 20 Jul 2023 15:24:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689891887; x=1721427887;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=rdKwApR3nE0JioSbploXwNi+nKycgqcT+OaCWqAn1So=;
+  b=HJJkOmz0DSMX2l9ayx+quSZxgst6t6XP/S6iw2o9stPOFKq3WmHsYW08
+   Jd7wO51xF+XFavAui5u9YiswKMpuaOBhPbh+yrk3MV57/LgL5+/Qo47TM
+   Bqjn77O+exqglCaliDo6xuSdYl7luQKeN0VqGJyV462wdgptOXi0uT7kT
+   zH0iRYGk3p1sDKMLA2X1acVY9okQRbLWnQV4WDIrlqxad31GY0l8TQKOU
+   4YVoPAxTWrRL1kdKyxw3PfiD5TOwsRkdfuZtcsqMCfPBBgxf2rs+2V1b9
+   zK/2q9VJEjMOEJ4BXWyg3UH+C76ZeNsg34Rg0q46qb+2Jz5y7QW1Md+gD
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="453256097"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="453256097"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 15:24:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="814713346"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="814713346"
+Received: from tholtx-mobl.amr.corp.intel.com (HELO [10.209.39.44]) ([10.209.39.44])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 15:24:34 -0700
+Message-ID: <ac578d2f-7567-708d-f131-9899f1b8dec1@intel.com>
+Date:   Thu, 20 Jul 2023 15:24:33 -0700
 MIME-Version: 1.0
-References: <20230720070825.992023-1-yosryahmed@google.com>
- <20230720153515.GA1003248@cmpxchg.org> <ZLmRlTej8Tm82kXG@slm.duckdns.org>
- <CAJD7tkYhu3g9u7HkUTFBtT3Q4edVZ2g1TWV1FDcyM9srrYCBLg@mail.gmail.com> <ZLmxLUNdxMi5s2Kq@slm.duckdns.org>
-In-Reply-To: <ZLmxLUNdxMi5s2Kq@slm.duckdns.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 20 Jul 2023 15:23:59 -0700
-Message-ID: <CAJD7tkZKo_oSZ-mQc-knMELP8kiY1N7taQhdV6tPsqN0tg=gog@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/8] memory recharging for offline memcgs
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "T.J. Mercier" <tjmercier@google.com>,
-        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RFC v9 08/51] x86/speculation: Do not enable Automatic
+ IBRS if SEV SNP is enabled
+Content-Language: en-US
+To:     Kim Phillips <kim.phillips@amd.com>,
+        Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
+Cc:     linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        bp@alien8.de, vbabka@suse.cz, kirill@shutemov.name,
+        ak@linux.intel.com, tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        dgilbert@redhat.com, jarkko@kernel.org, ashish.kalra@amd.com,
+        nikunj.dadhania@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com
+References: <20230612042559.375660-1-michael.roth@amd.com>
+ <20230612042559.375660-9-michael.roth@amd.com>
+ <696ea7fe-3294-f21b-3bc0-3f8cc0a718e9@intel.com>
+ <b8eeb557-0a6b-3aff-0f31-1c5e3e965a50@amd.com>
+ <396d0e29-defc-e207-2cbd-fe7137e798ad@intel.com>
+ <a11ba4c9-8f6f-c231-c480-e2f25b8132b8@amd.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <a11ba4c9-8f6f-c231-c480-e2f25b8132b8@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,74 +84,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 3:12=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Thu, Jul 20, 2023 at 02:34:16PM -0700, Yosry Ahmed wrote:
-> > > Or just create a nesting layer so that there's a cgroup which represe=
-nts the
-> > > persistent resources and a nested cgroup instance inside representing=
- the
-> > > current instance.
-> >
-> > In practice it is not easy to know exactly which resources are shared
-> > and used by which cgroups, especially in a large dynamic environment.
->
-> Yeah, that only covers when resource persistence is confined in a known
-> scope. That said, I have a hard time seeing how recharding once after cgr=
-oup
-> destruction can be a solution for the situations you describe. What if A
-> touches it once first, B constantly uses it but C only very occasionally =
-and
-> after A dies C ends up owning it due to timing. This is very much possibl=
-e
-> in a large dynamic environment but neither the initial or final situation=
- is
-> satisfactory.
+On 7/20/23 12:11, Kim Phillips wrote:
+> Hopefully the commit text in this version will help answer all your
+> questions?:
 
-That is indeed possible, but it would be more likely that the charge
-is moved to B. As I said, it's not perfect, but it is an improvement
-over what we have today. Even if C ends up owning it, it's better than
-staying with the dead A.
+To be honest, it didn't really.  I kinda feel like I was having the APM
+contents tossed casually in my direction rather than being provided a
+fully considered explanation.
 
->
-> To solve the problems you're describing, you actually would have to
-> guarantee that memory pages are charged to the current majority user (or
-> maybe even spread across current active users). Maybe it can be argued th=
-at
-> this is a step towards that but it's a very partial step and at least wou=
-ld
-> need a technically viable direction that this development can follow.
+Here's what I came up with instead:
 
-Right, that would be a much larger effort (arguably memcg v3 ;) ).
-This proposal is focused on the painful artifact of the sharing/sticky
-resources problem: zombie memcgs. We can extend the automatic charge
-movement semantics later to cover more cases or be smarter, or ditch
-the existing charging semantics completely and start over with
-sharing/stickiness in mind. Either way, that would be a long-term
-effort. There is a problem that exists today though that ideally can
-be fixed/improved by this proposal.
+Host-side Automatic IBRS has different behavior based on whether SEV-SNP
+is enabled.
 
->
-> On its own, AFAICS, I'm not sure the scope of problems it can actually so=
-lve
-> is justifiably greater than what can be achieved with simple nesting.
+Without SEV-SNP, Automatic IBRS protects only the kernel.  But when
+SEV-SNP is enabled, the Automatic IBRS protection umbrella widens to all
+host-side code, including userspace.  This protection comes at a cost:
+reduced userspace indirect branch performance.
 
-In our use case nesting is not a viable option. As I said, in a large
-fleet where a lot of different workloads are dynamically being
-scheduled on different machines, and where there is no way of knowing
-what resources are being shared among what workloads, and even if we
-do, it wouldn't be constant, it's very difficult to construct the
-hierarchy with nesting to keep the resources confined.
+To avoid this performance loss, nix using Automatic IBRS on SEV-SNP
+hosts.  Fall back to retpolines instead.
 
-Keep in mind that the environment is dynamic, workloads are constantly
-coming and going. Even if find the perfect nesting to appropriately
-scope resources, some rescheduling may render the hierarchy obsolete
-and require us to start over.
+=====
 
->
-> Thanks.
->
-> --
-> tejun
+Is that about right?
+
+I don't think any chit-chat about the guest side is even relevant.
+
+This also absolutely needs a comment.  Perhaps just pull the code up to
+the top level of the function and do this:
+
+	/*
+	 * Automatic IBRS imposes unacceptable overhead on host
+	 * userspace for SEV-SNP systems.  Zap it instead.
+	 */
+	if (cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+		setup_clear_cpu_cap(X86_FEATURE_AUTOIBRS);
+
+BTW, I assume you've grumbled to folks about this.  It's an awful shame
+the hardware (or ucode) was built this was.  It's just throwing
+Automatic IBRS out the window because it's not architected in a nice way.
+
+Is there any plan to improve this?
