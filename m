@@ -2,218 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 858F075A6B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F07B75A6B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbjGTGlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
+        id S231321AbjGTGks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbjGTGk5 (ORCPT
+        with ESMTP id S230514AbjGTGkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:40:57 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6324235A4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:40:22 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-cac213f9264so441083276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:40:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689835209; x=1690440009;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=i3Gim78LlW0ImU8Nf7KfkXlFKv0mM0hU/1p3btyr4nM=;
-        b=5f9C5eFXQp0hGJsDoxGCFRckc7Px3DcrknxoAjktifh5StDa+zVV6XWxRyWl4wpUPD
-         2biiL+iilf0AgDI5sxpf7W8VW2o0Ux3ZuggzoLmM7PLy8Z3I7GtxySWk8m0rZZelUNRE
-         b5/PlSp8f59mHceQUG85M8pnRcVcV4A8ywL9iY1GwLH8GJZ7rvmTDJSt7644yc1aLCaA
-         ZhyM3Rj69OEIFlI4947vSLvC36fFxWnjkMCqrdbw/aScWuf6p3TgnB15frSw0eE8uYlm
-         /9lOVmJGVLAqX/jHl5ozL85NB1xCDQNkvCsYR2J83zbZ+G9ODeeKJ8pYFrPrxCvliuaF
-         uocQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689835209; x=1690440009;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=i3Gim78LlW0ImU8Nf7KfkXlFKv0mM0hU/1p3btyr4nM=;
-        b=ZrG3Jezux2g9G8fHaBkiJlVAAOBfiBQl+G773aliaX2dAm6NlzcoFO/C6Jc6IcRzMt
-         UcIpD1ub2whNz9BaVNcaDiB+e0Mf+hHxGjGGq8WBIZv/g2hMIRFzX9FHrDCqVqcJtnMp
-         8hIZdK+ZyvML6SycqIRinB6kZtZof96Ejvr1CKx/cLsvU3fd2fWnhItxOWRPxtFHBS5E
-         R7N4lyPTIKo10IZoaBH1xRMQwJgsU3oiI9gFFjxJh1oDaTGsfgsXKJUgJ0wY+2L0pA4m
-         bEI8jkNCV0IAWsrUbKIuSkW+27n0W6AoExGnezDtvhUQwuq5BjR7pbW+pPcLW30OIIzr
-         LWfw==
-X-Gm-Message-State: ABy/qLZ0bkXL8mXbbfcckVqMbn19+lBV9lAFhb5vUQ32B7uKwloFOVfG
-        iYFyeNeMej6y2xEANN3hSw4I78K0cL4tnQ==
-X-Google-Smtp-Source: APBJJlHksrDL5l4lPhnUlz0GtDMHq3IdfMTmcbYys5NVadOWYhr90nEPMgb/oWaI2BQLgYCE4qQc7zXkQFJhtw==
-X-Received: from slicestar.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:20a1])
- (user=davidgow job=sendgmr) by 2002:a05:6902:1709:b0:ccf:6bfa:2a03 with SMTP
- id by9-20020a056902170900b00ccf6bfa2a03mr37240ybb.7.1689835209388; Wed, 19
- Jul 2023 23:40:09 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 14:38:54 +0800
-In-Reply-To: <20230720-rustbind-v1-0-c80db349e3b5@google.com>
-Mime-Version: 1.0
-References: <20230720-rustbind-v1-0-c80db349e3b5@google.com>
-X-Mailer: b4 0.13-dev-099c9
-Message-ID: <20230720-rustbind-v1-3-c80db349e3b5@google.com>
-Subject: [PATCH 3/3] rust: kunit: allow to know if we are in a test
-From:   David Gow <davidgow@google.com>
-To:     Brendan Higgins <brendan.higgins@linux.dev>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        Benno Lossin <benno.lossin@proton.me>
-Cc:     David Gow <davidgow@google.com>,
-        "=?utf-8?q?Jos=C3=A9_Exp=C3=B3sito?=" <jose.exposito89@gmail.com>,
-        "=?utf-8?q?Bj=C3=B6rn_Roy_Baron?=" <bjorn3_gh@protonmail.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Thu, 20 Jul 2023 02:40:31 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003DC2711
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:39:53 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R631d4c6tzBRDsK
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:39:01 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689835141; x=1692427142; bh=QQ4F6/NsViTAdHqa0Q2JmIWKtN/
+        0Miytj1rY2XW/4Sc=; b=L65OXSFRzV/28Rcz8ukL9Grtu/e4CE0SCtv3s7IRxNn
+        huTl65AHbBsIhB39mVFP6UUv4N6fsVGyJP/y5IBiGX5LQbZaTRO1S+7/FhrwLLYG
+        MSmULSuu5hePloKlNYd5ncS8dmgdwaIp1JNHW6HkPVHRfI5wBTPjG+F9egUxaUG2
+        peA8a++blIQxq4Rr1HfKTo9aKDfd9CrGkCDMoFAudkdLpPGCwP8j0JHYHyy0qBFL
+        iIAoNf7WG/m0Fvml1x1TKOLLMwhVr9S6ghkZ8yzxLOJyShlbZfnynb/AqaY94O8z
+        cy9mAOcuMo6q99XQwDqWHro6iPcfuDdTuAJJBAmluqg==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id tZaEPnkX6t0e for <linux-kernel@vger.kernel.org>;
+        Thu, 20 Jul 2023 14:39:01 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R631d2F0bzBRDsD;
+        Thu, 20 Jul 2023 14:39:01 +0800 (CST)
+MIME-Version: 1.0
+Date:   Thu, 20 Jul 2023 14:39:01 +0800
+From:   sunran001@208suo.com
+To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: aic7xxx: add missing spaces
+In-Reply-To: <20230720063719.2618-1-xujianghui@cdjrlc.com>
+References: <20230720063719.2618-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <e8abfa9b5579c6ed85ed35662bac290b@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jos=C3=A9 Exp=C3=B3sito <jose.exposito89@gmail.com>
+Add missing spaces to clear checkpatch errors.
 
-In some cases, you need to call test-only code from outside the test
-case, for example, to mock a function or a module.
+ERROR: space required before the open parenthesis '('
+ERROR: spaces required around that '=' (ctx:VxW)
+ERROR: space required after that ',' (ctx:VxV)
 
-In order to check whether we are in a test or not, we need to test if
-`CONFIG_KUNIT` is set.
-Unfortunately, we cannot rely only on this condition because some
-distros compile KUnit in production kernels, so checking at runtime
-that `current->kunit_test !=3D NULL` is required.
-
-Note that the C function `kunit_get_current_test()` can not be used
-because it is not present in the current Rust tree yet. Once it is
-available we might want to change our Rust wrapper to use it.
-
-This patch adds a function to know whether we are in a KUnit test or
-not and examples showing how to mock a function and a module.
-
-Reviewed-by: David Gow <davidgow@google.com>
-Signed-off-by: Jos=C3=A9 Exp=C3=B3sito <jose.exposito89@gmail.com>
+Signed-off-by: Ran Sun <sunran001@208suo.com>
 ---
- rust/kernel/kunit.rs | 78 ++++++++++++++++++++++++++++++++++++++++++++++++=
-++++
- 1 file changed, 78 insertions(+)
+  drivers/scsi/aic7xxx/aicasm/aicasm.c | 8 ++++----
+  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/rust/kernel/kunit.rs b/rust/kernel/kunit.rs
-index 44ea67028316..dcaac19bb108 100644
---- a/rust/kernel/kunit.rs
-+++ b/rust/kernel/kunit.rs
-@@ -40,6 +40,8 @@ pub fn info(args: fmt::Arguments<'_>) {
-     }
- }
-=20
-+use crate::task::Task;
-+use core::ops::Deref;
- use macros::kunit_tests;
-=20
- /// Asserts that a boolean expression is `true` at runtime.
-@@ -256,11 +258,87 @@ macro_rules! kunit_unsafe_test_suite {
-     };
- }
-=20
-+/// In some cases, you need to call test-only code from outside the test c=
-ase, for example, to
-+/// create a function mock. This function can be invoked to know whether w=
-e are currently running a
-+/// KUnit test or not.
-+///
-+/// # Examples
-+///
-+/// This example shows how a function can be mocked to return a well-known=
- value while testing:
-+///
-+/// ```
-+/// # use kernel::kunit::in_kunit_test;
-+/// #
-+/// fn fn_mock_example(n: i32) -> i32 {
-+///     if in_kunit_test() {
-+///         100
-+///     } else {
-+///         n + 1
-+///     }
-+/// }
-+///
-+/// let mock_res =3D fn_mock_example(5);
-+/// assert_eq!(mock_res, 100);
-+/// ```
-+///
-+/// Sometimes, you don't control the code that needs to be mocked. This ex=
-ample shows how the
-+/// `bindings` module can be mocked:
-+///
-+/// ```
-+/// // Import our mock naming it as the real module.
-+/// #[cfg(CONFIG_KUNIT)]
-+/// use bindings_mock_example as bindings;
-+///
-+/// // This module mocks `bindings`.
-+/// mod bindings_mock_example {
-+///     use kernel::kunit::in_kunit_test;
-+///     use kernel::bindings::u64_;
-+///
-+///     // Make the other binding functions available.
-+///     pub(crate) use kernel::bindings::*;
-+///
-+///     // Mock `ktime_get_boot_fast_ns` to return a well-known value when=
- running a KUnit test.
-+///     pub(crate) unsafe fn ktime_get_boot_fast_ns() -> u64_ {
-+///         if in_kunit_test() {
-+///             1234
-+///         } else {
-+///             unsafe { kernel::bindings::ktime_get_boot_fast_ns() }
-+///         }
-+///     }
-+/// }
-+///
-+/// // This is the function we want to test. Since `bindings` has been moc=
-ked, we can use its
-+/// // functions seamlessly.
-+/// fn get_boot_ns() -> u64 {
-+///     unsafe { bindings::ktime_get_boot_fast_ns() }
-+/// }
-+///
-+/// let time =3D get_boot_ns();
-+/// assert_eq!(time, 1234);
-+/// ```
-+pub fn in_kunit_test() -> bool {
-+    if cfg!(CONFIG_KUNIT) {
-+        // SAFETY: By the type invariant, we know that `*Task::current().d=
-eref().0` is valid.
-+        let test =3D unsafe { (*Task::current().deref().0.get()).kunit_tes=
-t };
-+        !test.is_null()
-+    } else {
-+        false
-+    }
-+}
-+
- #[kunit_tests(rust_kernel_kunit)]
- mod tests {
-+    use super::*;
-+
-     #[test]
-     fn rust_test_kunit_kunit_tests() {
-         let running =3D true;
-         assert_eq!(running, true);
-     }
-+
-+    #[test]
-+    fn rust_test_kunit_in_kunit_test() {
-+        let in_kunit =3D in_kunit_test();
-+        assert_eq!(in_kunit, true);
-+    }
- }
+diff --git a/drivers/scsi/aic7xxx/aicasm/aicasm.c 
+b/drivers/scsi/aic7xxx/aicasm/aicasm.c
+index cd692a4c5f85..a22f0fffc9b9 100644
+--- a/drivers/scsi/aic7xxx/aicasm/aicasm.c
++++ b/drivers/scsi/aic7xxx/aicasm/aicasm.c
+@@ -396,7 +396,7 @@ output_code()
 
---=20
-2.41.0.255.g8b1d071c50-goog
+  	for (cur_node = SLIST_FIRST(&patch_functions);
+  	     cur_node != NULL;
+-	     cur_node = SLIST_NEXT(cur_node,links)) {
++	     cur_node = SLIST_NEXT(cur_node, links)) {
+  		fprintf(ofile,
+  "static %spatch_func_t %spatch%d_func;\n"
+  "\n"
+@@ -424,7 +424,7 @@ output_code()
 
+  	for (cur_patch = STAILQ_FIRST(&patches);
+  	     cur_patch != NULL;
+-	     cur_patch = STAILQ_NEXT(cur_patch,links)) {
++	     cur_patch = STAILQ_NEXT(cur_patch, links)) {
+  		fprintf(ofile, "%s\t{ %spatch%d_func, %d, %d, %d }",
+  			cur_patch == STAILQ_FIRST(&patches) ? "" : ",\n",
+  			prefix,
+@@ -638,7 +638,7 @@ output_listing(char *ifilename)
+  		instrptr++;
+  	}
+  	/* Dump the remainder of the file */
+-	while(fgets(buf, sizeof(buf), ifile) != NULL)
++	while (fgets(buf, sizeof(buf), ifile) != NULL)
+  		fprintf(listfile, "             %s", buf);
+
+  	fclose(ifile);
+@@ -747,7 +747,7 @@ cs_alloc()
+  {
+  	critical_section_t *new_cs;
+
+-	new_cs= (critical_section_t *)malloc(sizeof(critical_section_t));
++	new_cs = (critical_section_t *)malloc(sizeof(critical_section_t));
+  	if (new_cs == NULL)
+  		stop("Unable to malloc critical_section object", EX_SOFTWARE);
+  	memset(new_cs, 0, sizeof(*new_cs));
