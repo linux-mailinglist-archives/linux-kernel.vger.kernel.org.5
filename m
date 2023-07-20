@@ -2,57 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E0D75B9E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E8275B9E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbjGTVxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 17:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38218 "EHLO
+        id S229814AbjGTVz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 17:55:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230327AbjGTVxq (ORCPT
+        with ESMTP id S229610AbjGTVzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 17:53:46 -0400
+        Thu, 20 Jul 2023 17:55:55 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDAD271D
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:53:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5186D1719;
+        Thu, 20 Jul 2023 14:55:54 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D6DBE61CB8
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 21:53:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3B6AAC433D9;
-        Thu, 20 Jul 2023 21:53:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DA93361C37;
+        Thu, 20 Jul 2023 21:55:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB259C433C8;
+        Thu, 20 Jul 2023 21:55:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689890024;
-        bh=Ks/7SzKUrQWpvpD7qyUupUycx9MQHR2Gx+74B3iJ7lQ=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=qy6zhdF3xa3LWBYitjL5iHR20cnNSmnnBAhYCC10PqjIUquz2oGRI+K/VNjWRSjmP
-         zvt3uVlbem8aTgz/pTdsCb4EzHTJAwFIyqXuXSs2PHxzJoOEVpdH5einv1rQxLp+D+
-         EbRpV9PhodWEkaRDMBITh56i7Y9Lsr4yvkZ+cdZfTUrUy4HYw4ArKPhE9w6xAXJBXm
-         nuGpQdTlOZmvrEdckkM24Qhw0toUNvy+dSpKKhKpNn4twrS6F7fyaDa/S0LCKXU7SE
-         6p/VEFTRpQyllwE9EOxSAC+bNwUn2Sswo4e6UvCb3IK4y7QTyRWlsVBT7ZxXpJVD/a
-         MAAISpTppXTdQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 28AE2C595C4;
-        Thu, 20 Jul 2023 21:53:44 +0000 (UTC)
-Subject: Re: [GIT PULL] Networking for v6.5-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230720214559.163647-1-kuba@kernel.org>
-References: <20230720214559.163647-1-kuba@kernel.org>
-X-PR-Tracked-List-Id: <netdev.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230720214559.163647-1-kuba@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.5-rc3
-X-PR-Tracked-Commit-Id: 75d42b351f564b2568392a4e53cd74a3d9df4af2
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 57f1f9dd3abea322173ea75a15887ccf14bbbe51
-Message-Id: <168989002415.13899.12157867587483013615.pr-tracker-bot@kernel.org>
-Date:   Thu, 20 Jul 2023 21:53:44 +0000
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pabeni@redhat.com
+        s=k20201202; t=1689890153;
+        bh=/bXS787t6CrBfx1QzszVq51xokDzGgEBIJZxAQSEBpc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=PckrirTH+R/atkbCgfex4heLW9KXK7s+ISrPtn4IqPCDQOKZUWg1Hku404dLZZsBi
+         NuuAgsruXLXuYa229tXINUGekioW5P7Daw5vmq90cy11jXiwkYB9r4Q+5N+La7zPDk
+         5WqD3lk4QWHGuFSFJug0czFpUN8scQsR9tJ+IWE8KHhCRC0TUgdK5LmS3cYU52B7qH
+         9e5rmBwkikmKUYtCWFxPRDrRYB+UqPcIPK0NqFdydH+LDgmkJl14xxSE3FtpsbiCvI
+         9KcFD7+bTSrCTKeTdQWB2g7KwQ6lw6itidOZ0E6XQVL48L8lzxOjEWHZyfxe0A+k0L
+         Xv+29EkPDh4uA==
+Date:   Thu, 20 Jul 2023 16:55:50 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jammy Zhou <Jammy.Zhou@amd.com>,
+        Ken Wang <Qingqing.Wang@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Dean Luick <dean.luick@cornelisnetworks.com>,
+        Jonas =?iso-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v5 05/11] drm/amdgpu: Use RMW accessors for changing
+ LNKCTL
+Message-ID: <20230720215550.GA554900@bhelgaas>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230717120503.15276-6-ilpo.jarvinen@linux.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -63,15 +75,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 20 Jul 2023 14:45:59 -0700:
+On Mon, Jul 17, 2023 at 03:04:57PM +0300, Ilpo Järvinen wrote:
+> Don't assume that only the driver would be accessing LNKCTL. ASPM
+> policy changes can trigger write to LNKCTL outside of driver's control.
+> And in the case of upstream bridge, the driver does not even own the
+> device it's changing the registers for.
+> 
+> Use RMW capability accessors which do proper locking to avoid losing
+> concurrent updates to the register value.
+> 
+> Fixes: a2e73f56fa62 ("drm/amdgpu: Add support for CIK parts")
+> Fixes: 62a37553414a ("drm/amdgpu: add si implementation v10")
+> Suggested-by: Lukas Wunner <lukas@wunner.de>
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> Cc: stable@vger.kernel.org
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.5-rc3
+Do we have any reports of problems that are fixed by this patch (or by
+others in the series)?  If not, I'm not sure it really fits the usual
+stable kernel criteria:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/57f1f9dd3abea322173ea75a15887ccf14bbbe51
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/stable-kernel-rules.rst?id=v6.4
 
-Thank you!
+> ---
+>  drivers/gpu/drm/amd/amdgpu/cik.c | 36 +++++++++-----------------------
+>  drivers/gpu/drm/amd/amdgpu/si.c  | 36 +++++++++-----------------------
+>  2 files changed, 20 insertions(+), 52 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/amdgpu/cik.c b/drivers/gpu/drm/amd/amdgpu/cik.c
+> index 5641cf05d856..e63abdf52b6c 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/cik.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/cik.c
+> @@ -1574,17 +1574,8 @@ static void cik_pcie_gen3_enable(struct amdgpu_device *adev)
+>  			u16 bridge_cfg2, gpu_cfg2;
+>  			u32 max_lw, current_lw, tmp;
+>  
+> -			pcie_capability_read_word(root, PCI_EXP_LNKCTL,
+> -						  &bridge_cfg);
+> -			pcie_capability_read_word(adev->pdev, PCI_EXP_LNKCTL,
+> -						  &gpu_cfg);
+> -
+> -			tmp16 = bridge_cfg | PCI_EXP_LNKCTL_HAWD;
+> -			pcie_capability_write_word(root, PCI_EXP_LNKCTL, tmp16);
+> -
+> -			tmp16 = gpu_cfg | PCI_EXP_LNKCTL_HAWD;
+> -			pcie_capability_write_word(adev->pdev, PCI_EXP_LNKCTL,
+> -						   tmp16);
+> +			pcie_capability_set_word(root, PCI_EXP_LNKCTL, PCI_EXP_LNKCTL_HAWD);
+> +			pcie_capability_set_word(adev->pdev, PCI_EXP_LNKCTL, PCI_EXP_LNKCTL_HAWD);
+>  
+>  			tmp = RREG32_PCIE(ixPCIE_LC_STATUS1);
+>  			max_lw = (tmp & PCIE_LC_STATUS1__LC_DETECTED_LINK_WIDTH_MASK) >>
+> @@ -1637,21 +1628,14 @@ static void cik_pcie_gen3_enable(struct amdgpu_device *adev)
+>  				msleep(100);
+>  
+>  				/* linkctl */
+> -				pcie_capability_read_word(root, PCI_EXP_LNKCTL,
+> -							  &tmp16);
+> -				tmp16 &= ~PCI_EXP_LNKCTL_HAWD;
+> -				tmp16 |= (bridge_cfg & PCI_EXP_LNKCTL_HAWD);
+> -				pcie_capability_write_word(root, PCI_EXP_LNKCTL,
+> -							   tmp16);
+> -
+> -				pcie_capability_read_word(adev->pdev,
+> -							  PCI_EXP_LNKCTL,
+> -							  &tmp16);
+> -				tmp16 &= ~PCI_EXP_LNKCTL_HAWD;
+> -				tmp16 |= (gpu_cfg & PCI_EXP_LNKCTL_HAWD);
+> -				pcie_capability_write_word(adev->pdev,
+> -							   PCI_EXP_LNKCTL,
+> -							   tmp16);
+> +				pcie_capability_clear_and_set_word(root, PCI_EXP_LNKCTL,
+> +								   PCI_EXP_LNKCTL_HAWD,
+> +								   bridge_cfg &
+> +								   PCI_EXP_LNKCTL_HAWD);
+> +				pcie_capability_clear_and_set_word(adev->pdev, PCI_EXP_LNKCTL,
+> +								   PCI_EXP_LNKCTL_HAWD,
+> +								   gpu_cfg &
+> +								   PCI_EXP_LNKCTL_HAWD);
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Wow, there's a lot of pointless-looking work going on here:
+
+  set root PCI_EXP_LNKCTL_HAWD
+  set GPU  PCI_EXP_LNKCTL_HAWD
+
+  for (i = 0; i < 10; i++) {
+    read root PCI_EXP_LNKCTL
+    read GPU  PCI_EXP_LNKCTL
+
+    clear root PCI_EXP_LNKCTL_HAWD
+    if (root PCI_EXP_LNKCTL_HAWD was set)
+      set root PCI_EXP_LNKCTL_HAWD
+
+    clear GPU  PCI_EXP_LNKCTL_HAWD
+    if (GPU  PCI_EXP_LNKCTL_HAWD was set)
+      set GPU  PCI_EXP_LNKCTL_HAWD
+  }
+
+If it really *is* pointless, it would be nice to clean it up, but that
+wouldn't be material for this patch, so what you have looks good.
+
+>  				/* linkctl2 */
+>  				pcie_capability_read_word(root, PCI_EXP_LNKCTL2,
+
+The PCI_EXP_LNKCTL2 stuff also includes RMW updates.  I don't see any
+uses of PCI_EXP_LNKCTL2 outside this driver that look relevant, so I
+guess we don't care about making the PCI_EXP_LNKCTL2 updates atomic?
+
+Bjorn
