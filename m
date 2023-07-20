@@ -2,104 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D9C75AD9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D723A75ADA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbjGTL5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 07:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
+        id S230349AbjGTL6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 07:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbjGTL5d (ORCPT
+        with ESMTP id S229597AbjGTL6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:57:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BEE6AC;
-        Thu, 20 Jul 2023 04:57:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0605561A0F;
-        Thu, 20 Jul 2023 11:57:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE185C433C7;
-        Thu, 20 Jul 2023 11:57:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689854251;
-        bh=HYzOZwBCPNFiT5kmjwwkWIQMMa++9Xa/tD7IznzAtKo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E3ivI/wuaeM27HfM8GmboxrvtMcFm0CpdZ+1ijS5A7XMiHT/Vi9KejOY3R0wYf0Lg
-         aXKR1Zu8Ask5XVQs0mSkDXU7l00KHN+UGt+rrOkKKycCZcJfqTfcociTe5nA95gfui
-         dFaBfE5AYNLYo04zuhJveheh5zTvh6QDbFELy+zdMrmRa6qLUqOBgu7E02wM6EJc3f
-         KSPjbjdb6z3UzTH/CUJhMSJ8eAZK3OKxtE6uY2fjgTE6s5FYBN/f/9J96wVq4sup3A
-         RHph1oSpfx9mqMuaSaGtqqSTwLUzUdQ1UEvtrW+tg8mA/v3D+9d2MvY01vKvlPSoYk
-         eg6vAweIuanVA==
-Date:   Thu, 20 Jul 2023 13:57:28 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     David Gow <davidgow@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] drivers: base: Free devm resources when
- unregistering a device
-Message-ID: <ktpru2pormh4fgkwxjpidk3vrlg3qh47tmye5l4vk6slutd25p@fwtkiizh3fa4>
-References: <20230329-kunit-devm-inconsistencies-test-v2-0-19feb71e864b@kernel.org>
- <20230329-kunit-devm-inconsistencies-test-v2-3-19feb71e864b@kernel.org>
- <CABVgOSmBcSA69SXEOh8_A7=aSigv5vztkhPYt9TBSNnxhiRSYA@mail.gmail.com>
+        Thu, 20 Jul 2023 07:58:32 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2061.outbound.protection.outlook.com [40.107.101.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD39E4C
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:58:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CES4kZJ7nV9mTACgv9Ldppo2s2itLtnu/WdK+yzk2m7vYSiYieJP3YBbwTquUr1FHW4ux7uyB/m5yeb46D/oThwOCkcJOxAlF1NVkDbr5SQ9vI4D3kxs8NU4k8ekeks6irungSQuUupNX+BfbQeKOOXT/eeLpXp9KIeHUNjhnoXxYoY0FjQD+Vj+h/ITCdCMXa0CYZiCgb7h02Chi+4e4xxhADQIVvIIV8GQOjfMMRN5dcz4joodYrZppsrq16HnaLU+nEhkh3Ys5G4keDhDqs7cvsShEDkNliWSpUMADm7ktPsWbsM1gERakHAVWW1r2dDK/3M2Lufk1pu/83KDvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=v4lckvljWvieP4FEFItdXnGbxb7FZyvrEokOl/O+d4k=;
+ b=O42DBLUNxi3GsEXj0igfMMU4Ro7Cii+HoCki9BswAYHKR1QiUK+pKYZKZqBB4qvGiQXbk51fNguM38tF0s+MTcvCrmV0a2UMdJxy9lOXwxhBjYAPxdUWGH33X+bPtSVN3XYafoQLbv9Y3HDATY4Q2OcU9NTo1mYdPtaKLBF25cYU0A0IpmnrFDkAhtTruBVxjSd1lQyWmj8h98FN7Xw27ZZTtF4FjaXyqLFffvoBRLiPAcmbR8+KrSe6t7ZKXE7QQk50gnxwX5JhKy9W+IE+7v1lj7rrE7eOMp7XY3Bi0qS0TCjGm/fqAAkLyBOaevNUuZ7Nee28jno7ekYx0itReg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v4lckvljWvieP4FEFItdXnGbxb7FZyvrEokOl/O+d4k=;
+ b=pkiAFqCYyBjqgPrUrp4ci3Q/8DzuzUgJpKB7cvZWvZmt9qNYCOr8fSzTa7egET5C+YVjcaU5BNMrG/2QamRKhR5ki64BVFqXdSojJaUzIXyM5sLqRcGnGtMzUqUd1c4UB45Slo3/HR/uZGDdTS2p7791gn76ZpxmGKKHoctfZF8=
+Received: from DS7PR03CA0085.namprd03.prod.outlook.com (2603:10b6:5:3bb::30)
+ by MN0PR12MB5785.namprd12.prod.outlook.com (2603:10b6:208:374::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Thu, 20 Jul
+ 2023 11:58:28 +0000
+Received: from DM6NAM11FT094.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:3bb:cafe::9f) by DS7PR03CA0085.outlook.office365.com
+ (2603:10b6:5:3bb::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.28 via Frontend
+ Transport; Thu, 20 Jul 2023 11:58:28 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT094.mail.protection.outlook.com (10.13.172.195) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6588.34 via Frontend Transport; Thu, 20 Jul 2023 11:58:26 +0000
+Received: from cjq-desktop.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 20 Jul
+ 2023 06:58:20 -0500
+From:   Jiqian Chen <Jiqian.Chen@amd.com>
+To:     David Airlie <airlied@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@gmail.com>,
+        "Gurchetan Singh" <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        "Juergen Gross" <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
+        Robert Beckett <bob.beckett@collabora.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
+CC:     <xen-devel@lists.xenproject.org>,
+        Alex Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Stewart Hildebrand <Stewart.Hildebrand@amd.com>,
+        Xenia Ragiadakou <burzalodowa@gmail.com>,
+        Honglei Huang <Honglei1.Huang@amd.com>,
+        Julia Zhang <Julia.Zhang@amd.com>,
+        Huang Rui <Ray.Huang@amd.com>,
+        Jiqian Chen <Jiqian.Chen@amd.com>
+Subject: [LINUX KERNEL PATCH v3 0/1] add S3 support for virtgpu
+Date:   Thu, 20 Jul 2023 19:58:04 +0800
+Message-ID: <20230720115805.8206-1-Jiqian.Chen@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CABVgOSmBcSA69SXEOh8_A7=aSigv5vztkhPYt9TBSNnxhiRSYA@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT094:EE_|MN0PR12MB5785:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4b1fe0be-0d2c-43ec-872c-08db8918a062
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jXYUFBQ7AEZGF/YlfNS7kzvNQmN6njXu4ny/bPbU3u9ArINBygFdC573q8yhZSs+S/zk3FnO3WE468I7eusXX5gkF8lQ0vOtgxLkr8nTBIjHj6K5uArHs/YorXaZAv9tCbZHArvUVguhwPbHjHSYUAiPSTDZdUsvYYXRxV6tl5EgayFtOvOORgTDW8PH1uO2nABPaMZavPtJgwF18tlw53V/Vff1+zPP/uTqaor0pR7Wk7fKGe3RMrCnFL5r2JwXdmuMfD0pmpUDDl9c2vQPW8CjJoNPt/uTj+u9+sqM6ou7BPsvoUP2g5FyC2XggT2o3qkFL+1q9+LG48mV6dquZbyPZ0Fn5mI0tNx+mUEiXh1ECGOHCipFiZOEAYNyQHlR5MBbPvZ8K3b5OG5kMSRgE/Dk+5s25MFKrRhRb0aVdBSfVzWWdgJgm2UzzzUHlGxELkO0y0aNzowv3KSjb8L38dd9EeNK6PDD2GsWp+P9s7B7U8M01AA30e39mIPPvc4Vr9V1RETU/LuXO+4ZvRDD6qW5NT6uBDYFxx4kq+3UfGnSDG2N2w7Jp549CY6nv5K1t2pbQrR3yRfhQOQaSPCuzzVY0cEnmAoRj6ff7X8Fltz0MEO3/UPBQHclQuP/M9+h092pdifIsw0BmjL0M9iK17MpktSQ8kkRKKnW6W1G2USaaGoYgWPn9tDvkhSE/Q8fFRWM/2b3/TG5JHjf51kkZTCx5BP24IxNC8xTbyS5LN7k33q6j+6eovy+LAygSZcjdOgk+6n/791lSOwYTEzjzwhorV8x1ZapBxNWquijylsjg68eN59Tj3AcY6JN9VWS
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(396003)(136003)(346002)(82310400008)(451199021)(40470700004)(36840700001)(46966006)(2906002)(36860700001)(40460700003)(83380400001)(47076005)(2616005)(356005)(921005)(86362001)(36756003)(82740400003)(81166007)(40480700001)(4326008)(426003)(70206006)(70586007)(316002)(336012)(41300700001)(1076003)(26005)(16526019)(186003)(478600001)(7696005)(6666004)(966005)(54906003)(8676002)(8936002)(7416002)(110136005)(5660300002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 11:58:26.5308
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b1fe0be-0d2c-43ec-872c-08db8918a062
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT094.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5785
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 05:13:58PM +0800, David Gow wrote:
-> On Wed, 28 Jun 2023 at 17:50, Maxime Ripard <mripard@kernel.org> wrote:
-> >
-> > From: David Gow <davidgow@google.com>
-> >
-> > In the current code, devres_release_all() only gets called if the device
-> > has a bus and has been probed.
-> >
-> > This leads to issues when using bus-less or driver-less devices where
-> > the device might never get freed if a managed resource holds a reference
-> > to the device. This is happening in the DRM framework for example.
-> >
-> > We should thus call devres_release_all() in the device_del() function to
-> > make sure that the device-managed actions are properly executed when the
-> > device is unregistered, even if it has neither a bus nor a driver.
-> >
-> > This is effectively the same change than commit 2f8d16a996da ("devres:
-> > release resources on device_del()") that got reverted by commit
-> > a525a3ddeaca ("driver core: free devres in device_release") over
-> > use-after-free concerns.
-> >
-> > It's not clear whether those concerns are legitimate though, but I would
-> > expect drivers not to register new resources in their device-managed
-> > actions.
->=20
-> It might be clearer to notice that this patch effectively combines the
-> two patches above, freeing _both_ on device_del() and
-> device_release(). This should give us the best of both worlds.
+v3:
+Hi all,
+Thanks for Gerd Hoffmann's advice. V3 makes below changes:
+* Use enum for freeze mode, so this can be extended with more
+  modes in the future.
+* Rename functions and paratemers with "_S3" postfix.
+And no functional changes.
 
-You're right I'll add that part to the commit log.
+Best regards,
+Jiqian Chen.
 
-> I'm not aware of a use-after-free issue that could result here, though
-> it's possible there's a double free I'm missing now that we are
-> freeing things twice. My understanding is that commit a525a3ddeaca
-> ("driver core: free devres in device_release") was more to avoid a
-> leak than a use-after-free, but I could be wrong.
 
-Yeah, I'm not sure where I got the UAF from. I probably
-misread/misremembered.
+v2:
 
-Maxime
+Hi all,
+Thanks to Marc-André Lureau, Robert Beckett and Gerd Hoffmann for
+their advice and guidance. V2 makes below changes:
+* Change VIRTIO_CPU_CMD_STATUS_FREEZING to 0x0400 (<0x1000)
+* Add a new feature flag VIRTIO_GPU_F_FREEZING, so that guest and
+  host can negotiate whenever freezing is supported or not.
+
+V2 of Qemu patch:
+https://lore.kernel.org/qemu-devel/20230630070016.841459-1-Jiqian.Chen@amd.com/T/#t
+
+
+v1:
+
+link,
+https://lore.kernel.org/lkml/20230608063857.1677973-1-Jiqian.Chen@amd.com/
+
+Hi all,
+I am working to implement virtgpu S3 function on Xen.
+
+Currently on Xen, if we start a guest who enables virtgpu, and then
+run "echo mem > /sys/power/state" to suspend guest. And run
+"sudo xl trigger <guest id> s3resume" to resume guest. We can find that
+the guest kernel comes back, but the display doesn't. It just shows a
+black screen.
+
+In response to the above phenomenon, I have found two problems.
+
+First, if we move mouse on the black screen, guest kernel still sends a
+cursor request to Qemu, but Qemu doesn't response. Because when guest
+is suspending, it calls device_suspend, and then call into Qemu to call
+virtio_reset->__virtio_queue_reset. In __virtio_queue_reset, it clears
+all virtqueue information on Qemu end. So, after guest resumes, Qemu
+can't get message from virtqueue.
+
+Second, the reason why display can't come back is that when guest is
+suspending, it calls into Qemu to call virtio_reset->virtio_gpu_gl_reset.
+In virtio_gpu_gl_reset, it destroys all resources and resets renderer,
+which are used for display. So after guest resumes, the display can't
+come back to the status when guest is suspended.
+
+This patch initializes virtqueue when guest is resuming to solve first
+problem. And it notifies Qemu that guest is suspending to prevent Qemu
+destroying resources, this is to solve second problem. And then, I can
+bring the display back, and everything continues their actions after
+guest resumes.
+
+Modifications on Qemu end:
+https://lore.kernel.org/qemu-devel/20230608025655.1674357-2-Jiqian.Chen@amd.com/
+
+Jiqian Chen (1):
+  virtgpu: init vq during resume and notify qemu guest status
+
+ drivers/gpu/drm/virtio/virtgpu_debugfs.c |  1 +
+ drivers/gpu/drm/virtio/virtgpu_drv.c     | 39 ++++++++++++++++++++++++
+ drivers/gpu/drm/virtio/virtgpu_drv.h     |  5 +++
+ drivers/gpu/drm/virtio/virtgpu_kms.c     | 36 ++++++++++++++++------
+ drivers/gpu/drm/virtio/virtgpu_vq.c      | 16 ++++++++++
+ include/uapi/linux/virtio_gpu.h          | 19 ++++++++++++
+ 6 files changed, 107 insertions(+), 9 deletions(-)
+
+-- 
+2.34.1
+
