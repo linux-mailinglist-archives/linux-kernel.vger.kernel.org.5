@@ -2,136 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 794B775B9AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F17B75B9C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbjGTVjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 17:39:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58516 "EHLO
+        id S230304AbjGTVsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 17:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbjGTVjE (ORCPT
+        with ESMTP id S229452AbjGTVsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 17:39:04 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52342711;
-        Thu, 20 Jul 2023 14:39:03 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-5634d8d1db0so897181eaf.0;
-        Thu, 20 Jul 2023 14:39:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689889143; x=1690493943;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=dYRT8gR63QqqutiXBMjJgTOolNJSeb3NYTp1ggZnVKs=;
-        b=VUKpGzl0QmLZoG4AixW1FNm6MZLVscI7HSnH+yQ2S69X9KvLvYNNcPWo+9fTGgG69C
-         XkWMW0FSBeM2JfnQeqf05ws31rzZNmsHAr6oXuR2TWdDTGbJhS1u0ooVFIM1X4mJOSva
-         AuaYKm6PwaLRzCaOL/kff4xXwUuNzPDMVBuvIxLnRfgwQNqQ0BE7ZGwdIPwe0mIxVM+U
-         tS3kBrn27axHlaGVlR7wg+RoJL50fwx3iNJmu+fjhlZkDZ09pR/3Pk6FzzsoWVyeKyZT
-         tafEnuzOm3ZOUMqDi3GzRPVfQk7PNwNw26gFNYHLCqsgwgOfG21mlqNZl0skPu45bRFI
-         IqIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689889143; x=1690493943;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dYRT8gR63QqqutiXBMjJgTOolNJSeb3NYTp1ggZnVKs=;
-        b=eCtj62K69IKKic66G7frMa+cFaQYhV0f3yZbVkOEPmmCqaRi0IK6E+cNgvBmcvML7B
-         tmA35fJ+EmKL+Eq9aAEaQYxiv1FiKSyrK+BgsK13316HiTfQWXBL39d2mO/8TXYfZUjB
-         ozNzqLv67FGzGZDzGYZ11zcEsVzIcTO9EB7NJLqMtgISygEZeNMMAojPyI/NixNWgDsI
-         XzfCCR4BKdaRHCIooKQTe0VgqBz/714kML81ob7u9Hoa7shOaMfxGWsaXw4qq7Wm3mz+
-         XFFqjL6GLxecAqTk/Kwj8L0Rb3FE+NQH4O+hSd1PGN6CXNvV8VLzuqe69CKp22DXh2n4
-         ln3A==
-X-Gm-Message-State: ABy/qLZKTrKf5LiOcIouqsG5sdHLh1+bg/OREJwG8IIuEo4Lo83JXugN
-        nRhNYQDgmFediAtQT/8HrCQSS742AC3u1I5WjOY=
-X-Google-Smtp-Source: APBJJlFkP7d8cztDg5vTHEWZqe100qSHRs8QuvUy5m3xEBh4upu9IXMIuup4mlqAcJscbYhC7cBhJQQCzzbZNb7BSw4=
-X-Received: by 2002:a4a:391b:0:b0:567:27f4:8c45 with SMTP id
- m27-20020a4a391b000000b0056727f48c45mr93537ooa.8.1689889143157; Thu, 20 Jul
- 2023 14:39:03 -0700 (PDT)
+        Thu, 20 Jul 2023 17:48:31 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A241719;
+        Thu, 20 Jul 2023 14:48:28 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 67FFD120002;
+        Fri, 21 Jul 2023 00:48:27 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 67FFD120002
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1689889707;
+        bh=qisti3W3wpP9r1a7nirVa2nlar29oaY+UwKdINX+jB0=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=LhLrR1UKNGDal3fJTPJ2qswlPqFBaTxttrR2QXYdQzajT1SGeToJCXESR1mL/7dpX
+         nFhdFUMQOUHpv8uO69+xz0gbtc0qE+Cf768mIFL3AW94+Cecux7lqSgXAq0Qoq5xao
+         stBOK61h+w+0GgIe6klgJ/bYuSyyrLmiW6bj0TJZpZTINxL54xdVv9BKnj8MXEkKAb
+         sBoG9NnZn5woceNrt43JiJBZNBmJVNjhwOqBzvU1GkwbFQ+PBbbodv2HGJW0pAAud2
+         z0CZ7TR+K+TIT/uqfmbDqPsK+a93JCuJWFhR+bpgYP/6bvjGyZNZceNLdFq4jFWv/o
+         V+etP7DpWAS1Q==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Fri, 21 Jul 2023 00:48:27 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 21 Jul 2023 00:48:26 +0300
+From:   Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
+        <avkrasnov@sberdevices.ru>,
+        Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Subject: [PATCH net-next v3 0/4] vsock/virtio/vhost: MSG_ZEROCOPY preparations
+Date:   Fri, 21 Jul 2023 00:42:41 +0300
+Message-ID: <20230720214245.457298-1-AVKrasnov@sberdevices.ru>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
-References: <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
- <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
- <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com> <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
- <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com> <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
- <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com> <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
- <ZLlvII/jMPTT32ef@casper.infradead.org> <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de>
- <ZLl2Fq35Ya0cNbIm@casper.infradead.org>
-In-Reply-To: <ZLl2Fq35Ya0cNbIm@casper.infradead.org>
-Reply-To: noloader@gmail.com
-From:   Jeffrey Walton <noloader@gmail.com>
-Date:   Thu, 20 Jul 2023 17:38:52 -0400
-Message-ID: <CAH8yC8=BwacXyFQret5pKVCzXXO0jLM_u9eW3bTdyPi4y8CSfw@mail.gmail.com>
-Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Viacheslav Dubeyko <slava@dubeyko.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        christian.brauner@ubuntu.com,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com,
-        ZhangPeng <zhangpeng362@huawei.com>,
-        linux-m68k@lists.linux-m68k.org,
-        debian-ports <debian-ports@lists.debian.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178763 [Jul 20 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, sberdevices.ru:5.0.1,7.1.1;lore.kernel.org:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/07/20 19:55:00
+X-KSMG-LinksScanning: Clean, bases: 2023/07/20 20:04:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/20 17:17:00 #21648761
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 2:39=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Thu, Jul 20, 2023 at 07:50:47PM +0200, John Paul Adrian Glaubitz wrote=
-:
-> > > Then we should delete the HFS/HFS+ filesystems.  They're orphaned in
-> > > MAINTAINERS and if distros are going to do such a damnfool thing,
-> > > then we must stop them.
-> >
-> > Both HFS and HFS+ work perfectly fine. And if distributions or users ar=
-e so
-> > sensitive about security, it's up to them to blacklist individual featu=
-res
-> > in the kernel.
-> >
-> > Both HFS and HFS+ have been the default filesystem on MacOS for 30 year=
-s
-> > and I don't think it's justified to introduce such a hard compatibility
-> > breakage just because some people are worried about theoretical evil
-> > maid attacks.
-> >
-> > HFS/HFS+ mandatory if you want to boot Linux on a classic Mac or PowerM=
-ac
-> > and I don't think it's okay to break all these systems running Linux.
->
-> If they're so popular, then it should be no trouble to find somebody
-> to volunteer to maintain those filesystems.  Except they've been
-> marked as orphaned since 2011 and effectively were orphaned several
-> years before that (the last contribution I see from Roman Zippel is
-> in 2008, and his last contribution to hfs was in 2006).
+Hello,
 
-One data point may help.. I've been running Linux on an old PowerMac
-and an old Intel MacBook since about 2014 or 2015 or so. I have needed
-the HFS/HFS+ filesystem support for about 9 years now (including that
-"blessed" support for the Apple Boot partition).
+this patchset is first of three parts of another big patchset for
+MSG_ZEROCOPY flag support:
+https://lore.kernel.org/netdev/20230701063947.3422088-1-AVKrasnov@sberdevices.ru/
 
-There's never been a problem with Linux and the Apple filesystems.
-Maybe it speaks to the maturity/stability of the code that already
-exists. The code does not need a lot of attention nowadays.
+During review of this series, Stefano Garzarella <sgarzare@redhat.com>
+suggested to split it for three parts to simplify review and merging:
 
-Maybe the orphaned status is the wrong metric to use to determine
-removal. Maybe a better metric would be installation base. I.e., how
-many users use the filesystem.
+1) virtio and vhost updates (for fragged skbs) <--- this patchset
+2) AF_VSOCK updates (allows to enable MSG_ZEROCOPY mode and read
+   tx completions) and update for Documentation/.
+3) Updates for tests and utils.
 
-Jeff
+This series enables handling of fragged skbs in virtio and vhost parts.
+Newly logic won't be triggered, because SO_ZEROCOPY options is still
+impossible to enable at this moment (next bunch of patches from big
+set above will enable it).
+
+I've included changelog to some patches anyway, because there were some
+comments during review of last big patchset from the link above.
+
+Head for this patchset is 60cc1f7d0605598b47ee3c0c2b4b6fbd4da50a06
+
+Link to v1:
+https://lore.kernel.org/netdev/20230717210051.856388-1-AVKrasnov@sberdevices.ru/
+Link to v2:
+https://lore.kernel.org/netdev/20230718180237.3248179-1-AVKrasnov@sberdevices.ru/
+
+Changelog:
+ * See per-patch changelog after ---.
+
+Arseniy Krasnov (4):
+  vsock/virtio/vhost: read data from non-linear skb
+  vsock/virtio: support to send non-linear skb
+  vsock/virtio: non-linear skb handling for tap
+  vsock/virtio: MSG_ZEROCOPY flag support
+
+ drivers/vhost/vsock.c                   |  14 +-
+ include/linux/virtio_vsock.h            |   1 +
+ include/net/af_vsock.h                  |   3 +
+ net/vmw_vsock/virtio_transport.c        |  80 +++++-
+ net/vmw_vsock/virtio_transport_common.c | 307 +++++++++++++++++++-----
+ 5 files changed, 328 insertions(+), 77 deletions(-)
+
+-- 
+2.25.1
+
