@@ -2,71 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5168875B718
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F1675B721
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjGTSuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 14:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45932 "EHLO
+        id S229820AbjGTSuy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 Jul 2023 14:50:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjGTSuG (ORCPT
+        with ESMTP id S229563AbjGTSuw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 14:50:06 -0400
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC1C173A
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:50:01 -0700 (PDT)
-Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-48137084a66so518993e0c.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:50:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689879001; x=1690483801;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l9QzZvgjwr3E8Gyd9Qnq7CW2HMig9hbl1hb3MeCt/Hc=;
-        b=fUgz3LRjaGYQPcFhJy1jW0oD1wY9Wv4176AE1zS3NrgBr2NUWmG7AvzA33rcr1hsyN
-         K9rjLAC1QNEiLtlE4a1QD2CtVAIaGAvNjCaA2CVSf9ga1eteLBBTGXLkgvp7dID04nS7
-         FEWCoTakWHVhQCqdDUVhjMSuLYKqGT13lnJEbUqoNMefgj/nnjvBmwWLzGDIWlAL9BOt
-         SdFtGw9xr6IoXENdbS1JTZFK+CceVh/WfD0jtGQTULavtLLGCylXp2o/vZa2aOvFVaAw
-         prd5NMZctFnYiEc0WyinuHL0GSjnc7y7LaMVVu1irIlH71b1r7JD9udSQTjYiJ3XpIwT
-         iCQA==
+        Thu, 20 Jul 2023 14:50:52 -0400
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39EBF2D54;
+        Thu, 20 Jul 2023 11:50:31 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-94ea38c90ccso34165966b.1;
+        Thu, 20 Jul 2023 11:50:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689879001; x=1690483801;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689879029; x=1690483829;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=l9QzZvgjwr3E8Gyd9Qnq7CW2HMig9hbl1hb3MeCt/Hc=;
-        b=Mg1PCRgWNcbOVmGbS2t5ocn/o59zBDjitZK7wYKQdR/Gcqa/T0eSIIrhx/9w4k1dkW
-         YnpO3GsgEbqDOkSCieQLgM7C4P/faRgJGRyB22/+6ASy+xNmSjvKP1aDzkJPChlw/LJI
-         GEhU76JpG70W8eiJmzuVC/nVrxx1tYbHujRfNkCriG76CP9mkwlv6+5kQlk52Ae5ueQu
-         CwUpEXyBkGg119gLFgA3lI+JawsrqjtjMaElG1b0v4nbjY8ngaUMEJBJ9Zs3Iki3O2m1
-         4hn+NTVraF/PrBDAva0/Xne6rGzEKwdntSWtuf0fmwuTrEasBpSxow4qzMIxkRPthKuQ
-         WWfw==
-X-Gm-Message-State: ABy/qLYGzJ3FBAum14QMO6mpNn8y2lS81iKlNm+qYWGzsiaj+ZTA1Eyt
-        VrDa/LcsUnKTJA5f8bG7X4Uy2A==
-X-Google-Smtp-Source: APBJJlHP1fTNcL7sDTNwB0AIo/L4BNLRXl9sBgQwl9cZAx0q0u2j1SdUpMMY0FZawzaJmUkveMaGgQ==
-X-Received: by 2002:a1f:c116:0:b0:471:17be:ba8d with SMTP id r22-20020a1fc116000000b0047117beba8dmr7269818vkf.3.1689879000829;
-        Thu, 20 Jul 2023 11:50:00 -0700 (PDT)
-Received: from localhost.localdomain (072-189-067-006.res.spectrum.com. [72.189.67.6])
-        by smtp.gmail.com with ESMTPSA id h7-20020a0561220b6700b0047dbd48bc44sm238059vkf.17.2023.07.20.11.49.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 11:50:00 -0700 (PDT)
-From:   William Breathitt Gray <william.gray@linaro.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        William Breathitt Gray <william.gray@linaro.org>
-Subject: [RESEND PATCH 2/2] iio: addac: stx104: Add 8254 Counter/Timer support
-Date:   Thu, 20 Jul 2023 14:49:44 -0400
-Message-ID: <c73869c2b26db05303902f80ca86316b155c4832.1689878150.git.william.gray@linaro.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1689878150.git.william.gray@linaro.org>
-References: <cover.1689878150.git.william.gray@linaro.org>
+        bh=8Ri7fimkcHumz6u7/WZYeGYX85HXnNnQ+B/CYo4XrX0=;
+        b=PASJCP1x+y2EzoDAYUI5XcK0Z0/GmzxaQ6NyZY/o7xzT5BAJIufjy5WjFLbFOdJeh1
+         BNSavTc46dKgIChv7K3ZPZdetGzDhnAhrfh/D0mXpvxYJk8BYu6yrtTD5t9ThZK8lQom
+         YjAzMZQDIjlzSQnzjnsE2mFK7V1CL+IY1Jx8aN4GfEtQCudrJGxBpL1VIN+yKqvk3w+N
+         y3/zRYqsHkRaed25+48T/tqgPYsdCQgsFwI2Pn/d+FekGiIeYIcV07/XsDOsWOeGQYiv
+         BtXVm+8Xa9IVTK/6bH9byfomZ3WHXPTg2x+UcC4DL3sVlzQkP9kC/j0eln2e7tkr08Ju
+         C8Fw==
+X-Gm-Message-State: ABy/qLY4CmK/Gn12bX59thNFlb4of4ggQwMb7t8vexd5PfMbqluAuuJw
+        3Az+zTpWl6J9zRHzfKTo7jWredHw6fv+9/Ah5qM=
+X-Google-Smtp-Source: APBJJlHi91lqNeNV5b3NsqRozieOcqVx3nEK9H5IGaNOQgSl+w6cuVzQPslNMDSGV1xCPVo92lepZZT6y5Duc+GvbWI=
+X-Received: by 2002:a17:906:7a11:b0:993:d90e:3101 with SMTP id
+ d17-20020a1709067a1100b00993d90e3101mr2893837ejo.1.1689879029584; Thu, 20 Jul
+ 2023 11:50:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+References: <20230714175008.4064592-1-robh@kernel.org> <CAJZ5v0i-OByOSjpxrj5d9S9QHRySK-MEUo+bK_J_4ihsCBmnSg@mail.gmail.com>
+ <CAL_JsqLy22S5bTFu-ZKXhSMtMPPq9z1Gdb5kJMVmhui55miDsQ@mail.gmail.com>
+In-Reply-To: <CAL_JsqLy22S5bTFu-ZKXhSMtMPPq9z1Gdb5kJMVmhui55miDsQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 20 Jul 2023 20:50:18 +0200
+Message-ID: <CAJZ5v0hM63nVphwkYK1bL4uf_dXSew2+LBuG9kuhvvLdrhLxAw@mail.gmail.com>
+Subject: Re: [PATCH] thermal: Explicitly include correct DT includes
+To:     Rob Herring <robh@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Guillaume La Roque <glaroque@baylibre.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Markus Mayer <mmayer@broadcom.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thara Gopinath <thara.gopinath@gmail.com>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,164 +105,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The STX104 features an 8254 Counter/Timer chip providing three
-counter/timers which can be used for frequency measurement, frequency
-output, pulse width modulation, pulse width measurement, event count,
-etc. The STX104 provides a register bank selection to bank select
-between the 8254 Bank and the Indexed Register Array Bank; the Indexed
-Register Array is not utilized by this driver, so the 8254 Bank is
-selected unconditionally.
+On Fri, Jul 14, 2023 at 9:53 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Fri, Jul 14, 2023 at 12:54 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Fri, Jul 14, 2023 at 7:51 PM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > The DT of_device.h and of_platform.h date back to the separate
+> > > of_platform_bus_type before it as merged into the regular platform bus.
+> > > As part of that merge prepping Arm DT support 13 years ago, they
+> > > "temporarily" include each other. They also include platform_device.h
+> > > and of.h. As a result, there's a pretty much random mix of those include
+> > > files used throughout the tree. In order to detangle these headers and
+> > > replace the implicit includes with struct declarations, users need to
+> > > explicitly include the correct includes.
+> > >
+> > > Signed-off-by: Rob Herring <robh@kernel.org>
+> >
+> > Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> >
+> > or please let me know if you want me to pick this up.
+>
+> Single patch in your subsystem with no dependencies. Please pick it up.
 
-Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
----
- drivers/iio/addac/Kconfig  |  1 +
- drivers/iio/addac/stx104.c | 61 ++++++++++++++++++++++++++++++++++++--
- 2 files changed, 60 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/iio/addac/Kconfig b/drivers/iio/addac/Kconfig
-index 877f9124803c..b2623881f0ec 100644
---- a/drivers/iio/addac/Kconfig
-+++ b/drivers/iio/addac/Kconfig
-@@ -38,6 +38,7 @@ config STX104
- 	select REGMAP_MMIO
- 	select GPIOLIB
- 	select GPIO_REGMAP
-+	select I8254
- 	help
- 	  Say yes here to build support for the Apex Embedded Systems STX104
- 	  integrated analog PC/104 card.
-diff --git a/drivers/iio/addac/stx104.c b/drivers/iio/addac/stx104.c
-index d1f7ce033b46..6946a65512ca 100644
---- a/drivers/iio/addac/stx104.c
-+++ b/drivers/iio/addac/stx104.c
-@@ -8,6 +8,7 @@
- #include <linux/device.h>
- #include <linux/err.h>
- #include <linux/gpio/regmap.h>
-+#include <linux/i8254.h>
- #include <linux/iio/iio.h>
- #include <linux/iio/types.h>
- #include <linux/isa.h>
-@@ -55,6 +56,7 @@ MODULE_PARM_DESC(base, "Apex Embedded Systems STX104 base addresses");
- #define STX104_ADC_STATUS (STX104_AIO_BASE + 0x8)
- #define STX104_ADC_CONTROL (STX104_AIO_BASE + 0x9)
- #define STX104_ADC_CONFIGURATION (STX104_AIO_BASE + 0x11)
-+#define STX104_I8254_BASE (STX104_AIO_BASE + 0x12)
- 
- #define STX104_AIO_DATA_STRIDE 2
- #define STX104_DAC_OFFSET(_channel) (STX104_DAC_BASE + STX104_AIO_DATA_STRIDE * (_channel))
-@@ -77,6 +79,7 @@ MODULE_PARM_DESC(base, "Apex Embedded Systems STX104 base addresses");
- /* ADC Configuration */
- #define STX104_GAIN GENMASK(1, 0)
- #define STX104_ADBU BIT(2)
-+#define STX104_RBK GENMASK(7, 4)
- #define STX104_BIPOLAR 0
- #define STX104_GAIN_X1 0
- #define STX104_GAIN_X2 1
-@@ -168,6 +171,32 @@ static const struct regmap_config dio_regmap_config = {
- 	.io_port = true,
- };
- 
-+static const struct regmap_range pit_wr_ranges[] = {
-+	regmap_reg_range(0x0, 0x3),
-+};
-+static const struct regmap_range pit_rd_ranges[] = {
-+	regmap_reg_range(0x0, 0x2),
-+};
-+static const struct regmap_access_table pit_wr_table = {
-+	.yes_ranges = pit_wr_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(pit_wr_ranges),
-+};
-+static const struct regmap_access_table pit_rd_table = {
-+	.yes_ranges = pit_rd_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(pit_rd_ranges),
-+};
-+
-+static const struct regmap_config pit_regmap_config = {
-+	.name = "i8254",
-+	.reg_bits = 8,
-+	.reg_stride = 1,
-+	.reg_base = STX104_I8254_BASE,
-+	.val_bits = 8,
-+	.io_port = true,
-+	.wr_table = &pit_wr_table,
-+	.rd_table = &pit_rd_table,
-+};
-+
- static int stx104_read_raw(struct iio_dev *indio_dev,
- 	struct iio_chan_spec const *chan, int *val, int *val2, long mask)
- {
-@@ -339,6 +368,21 @@ static const char *stx104_names[STX104_NGPIO] = {
- 	"DIN0", "DIN1", "DIN2", "DIN3", "DOUT0", "DOUT1", "DOUT2", "DOUT3"
- };
- 
-+static int bank_select_i8254(struct regmap *map)
-+{
-+	const u8 select_i8254[] = { 0x3, 0xB, 0xA };
-+	size_t i;
-+	int err;
-+
-+	for (i = 0; i < ARRAY_SIZE(select_i8254); i++) {
-+		err = regmap_write_bits(map, STX104_ADC_CONFIGURATION, STX104_RBK, select_i8254[i]);
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
- static int stx104_init_hw(struct stx104_iio *const priv)
- {
- 	int err;
-@@ -361,7 +405,7 @@ static int stx104_init_hw(struct stx104_iio *const priv)
- 	if (err)
- 		return err;
- 
--	return 0;
-+	return bank_select_i8254(priv->aio_ctl_map);
- }
- 
- static int stx104_probe(struct device *dev, unsigned int id)
-@@ -369,6 +413,7 @@ static int stx104_probe(struct device *dev, unsigned int id)
- 	struct iio_dev *indio_dev;
- 	struct stx104_iio *priv;
- 	struct gpio_regmap_config gpio_config;
-+	struct i8254_regmap_config pit_config;
- 	void __iomem *stx104_base;
- 	struct regmap *aio_ctl_map;
- 	struct regmap *aio_data_map;
-@@ -406,6 +451,11 @@ static int stx104_probe(struct device *dev, unsigned int id)
- 		return dev_err_probe(dev, PTR_ERR(dio_map),
- 				     "Unable to initialize dio register map\n");
- 
-+	pit_config.map = devm_regmap_init_mmio(dev, stx104_base, &pit_regmap_config);
-+	if (IS_ERR(pit_config.map))
-+		return dev_err_probe(dev, PTR_ERR(pit_config.map),
-+				     "Unable to initialize i8254 register map\n");
-+
- 	priv = iio_priv(indio_dev);
- 	priv->aio_ctl_map = aio_ctl_map;
- 	priv->aio_data_map = aio_data_map;
-@@ -449,7 +499,13 @@ static int stx104_probe(struct device *dev, unsigned int id)
- 		.drvdata = dio_map,
- 	};
- 
--	return PTR_ERR_OR_ZERO(devm_gpio_regmap_register(dev, &gpio_config));
-+	err = PTR_ERR_OR_ZERO(devm_gpio_regmap_register(dev, &gpio_config));
-+	if (err)
-+		return err;
-+
-+	pit_config.parent = dev;
-+
-+	return devm_i8254_regmap_register(dev, &pit_config);
- }
- 
- static struct isa_driver stx104_driver = {
-@@ -464,3 +520,4 @@ module_isa_driver(stx104_driver, num_stx104);
- MODULE_AUTHOR("William Breathitt Gray <vilhelm.gray@gmail.com>");
- MODULE_DESCRIPTION("Apex Embedded Systems STX104 IIO driver");
- MODULE_LICENSE("GPL v2");
-+MODULE_IMPORT_NS(I8254);
--- 
-2.41.0
-
+Done, thanks!
