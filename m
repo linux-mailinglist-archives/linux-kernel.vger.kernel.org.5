@@ -2,143 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B687775AD66
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614D275AD4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbjGTLs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 07:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45474 "EHLO
+        id S230098AbjGTLr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 07:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbjGTLsO (ORCPT
+        with ESMTP id S229872AbjGTLrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:48:14 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4001711;
-        Thu, 20 Jul 2023 04:47:56 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d9443c01a7336-1b8a462e0b0so4112575ad.3;
-        Thu, 20 Jul 2023 04:47:56 -0700 (PDT)
+        Thu, 20 Jul 2023 07:47:24 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F604189
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:47:24 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-262e3c597b9so410423a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:47:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689853675; x=1690458475;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E3msxjZdgetMbrGi/qXLG+gWb+dY8uVEsPP0nY7G4QQ=;
-        b=nO5tehWvaIgWtdqxq77tk0usuoipGQXYmcIJVLSVxabUWEFmKxlLhb1u+voA2UhAY8
-         tf5PD0Lz86rT2JT4HGJbjh04Xb2NjGCZQpU1FnEl5La+yBg05yzTBgLPOMFQO/nHpiYc
-         j7JGD3oNEpGPxax8El4mk0QXy4OFkovT7ongxxXZoAW4D4aTVTq7AJ3eXYc+okMDt15x
-         1gLFv1aYNv88VbErxUKhzgVXmppKMYRGMQPkWQTGG04ekeDu6FvDHrAtmrThBAPWVvBY
-         cM5rbakOv2+xMrodu3FXbosh1KmTulNwrdCzMVvNTYJJMzIvDc5r+n8licLkGmEPhate
-         OKHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689853675; x=1690458475;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=gmail.com; s=20221208; t=1689853643; x=1690458443;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=E3msxjZdgetMbrGi/qXLG+gWb+dY8uVEsPP0nY7G4QQ=;
-        b=VDMBn5oWV1JK5trP9op+H7bukWXczrXDepjDyOQo88odvx1noBc8KSCV26uvTXcTmj
-         5eSzpeUkCw7pypc/PIAFbGdUyz17s7UI6QbY+tIUs+wIBffsy64HHPhRmtEDwgHCcRow
-         383aW4TziuI86PMO23J0j8do/o+M3NLz+U0TX2ogVQCLfd8guAu9xBBFCW0lVAwn7+O+
-         XSVB1aaD9lRnpBCKamCXMIpk5upREr8jB5GJJmtEVCUSvjMeH1kS5XUSC4+OaT4ts+Np
-         DJELk58R9xO1brWVcxaIWmA4kQs/duWaYFmsuHZnBW9ziFEjGFOIS+RJIXgOmKgnF5vs
-         JiiQ==
-X-Gm-Message-State: ABy/qLZEIIJ0vA0NRUw0hokPeY1MYKPF0rjxYYANZbJVUKzQVal0Jhnr
-        NAoYjxVclVKCGww7JW7bDdk=
-X-Google-Smtp-Source: APBJJlGhnr3budaAVAV3RnSZI66mWhW6dvpa/wc8siefx8aeHt5+M50r4WAe/hn2d3bUgjJ025iF/Q==
-X-Received: by 2002:a17:903:234c:b0:1b8:86a1:9cf with SMTP id c12-20020a170903234c00b001b886a109cfmr5893507plh.32.1689853675583;
-        Thu, 20 Jul 2023 04:47:55 -0700 (PDT)
-Received: from CLOUDLIANG-MB2.tencent.com ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id u22-20020a170902a61600b001b2069072ccsm1164007plq.18.2023.07.20.04.47.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 04:47:55 -0700 (PDT)
-From:   Jinrong Liang <ljr.kernel@gmail.com>
-X-Google-Original-From: Jinrong Liang <cloudliang@tencent.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Aaron Lewis <aaronlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        linux-kselftest@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5 6/6] KVM: selftests: Test gp event filters don't affect fixed event filters
-Date:   Thu, 20 Jul 2023 19:47:14 +0800
-Message-Id: <20230720114714.34079-7-cloudliang@tencent.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230720114714.34079-1-cloudliang@tencent.com>
-References: <20230720114714.34079-1-cloudliang@tencent.com>
+        bh=PCYsqkS4rayXce76GOIyhRVOeXdcebP35m1e+mIKBEE=;
+        b=Qn+DGoGO/uq12hb1soVkUVm9T2ISvFG5Fw/DnfhE8cZ6wyT337FFLi0ltBOH3wVpU5
+         yLz+U9zgPadZmbiy3Cu6CX5QDYwRwPDw1Cb4yBPtCEkosVqSCxeQe0tK65/JGsII4XxE
+         yfpNLKPGTB8ibJqziawQ9q41/cjg5JYR7MHHVlBChV4Ru60qKu94p3loyDB2QcwZBpjp
+         G6lRyn7BBqB1U49f/iIoj8RGj+rmu40wccx0MkfMI6xxHuO/QWWZKb9YyW93lFInW2HO
+         KYW5p3NVcqKeQqZuqnxDaEGvxuFm5O3m9RQN++RIIopeFIfWEA9p+eYuPw6eKyer/A5q
+         dy0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689853643; x=1690458443;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PCYsqkS4rayXce76GOIyhRVOeXdcebP35m1e+mIKBEE=;
+        b=W/bbw9TddITgDKADTEvMr2MmXQBSZ0VUBDFz8H4aiFHVkx3XysflR+KeSxGKTAAy5B
+         2WUj0m2Vx52jDeVwoOW+ab4y4RucVvdLNhXZaih3CssQ6jBT+07iZIFkSvsyAWvbNtw5
+         VaoJFNOW6sw1JtdoHpG13M5JpMQiJv72mRYMzQx3QYkkfX6xHEqqKNfw0hpBsmjLx+ny
+         k+jGTar630dTLwhQqMsNAO5tchDN6+PKqUHrc0ezmrzm+hdoJJKgx0oore0XxF9UDDo7
+         8dCQmenNbMHP1ZbE/RuExXMePkl/KtBRRIQYnQ6aje6gJVKRB7cluZz7gqYhfpfpaQQ+
+         c9Bg==
+X-Gm-Message-State: ABy/qLbV6N9wzmY7AfFD85QDBmEDTj+pRiRQCUX7YsTkqIf9IPMmsqab
+        HSDz7awNx89xC75Plh2hMbiAY2VvBxY4DMMeRAM=
+X-Google-Smtp-Source: APBJJlHTaz1n3EBLnSOFNHQpuqiVOAMD85i/cPNbhCe0dUXnO28Fhf5Wo29sYDRynmCh0KJpOqRza1VnAGGHw/eBFLE=
+X-Received: by 2002:a17:90a:4fa1:b0:263:30d6:dca with SMTP id
+ q30-20020a17090a4fa100b0026330d60dcamr1666169pjh.29.1689853643471; Thu, 20
+ Jul 2023 04:47:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:6a10:e111:b0:4da:1abe:a260 with HTTP; Thu, 20 Jul 2023
+ 04:47:22 -0700 (PDT)
+Reply-To: clementkwkhsbc@financier.com
+From:   Clement Kwok <clementkwok998@gmail.com>
+Date:   Thu, 20 Jul 2023 12:47:22 +0100
+Message-ID: <CAArzz+G9mwHPf=m4QBg3KeikXczkL44h-1vrCB1h-m=bzUsOow@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,HK_RANDOM_REPLYTO,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [2607:f8b0:4864:20:0:0:0:1034 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.0 HK_RANDOM_REPLYTO Reply-To username looks random
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [clementkwok998[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [clementkwok998[at]gmail.com]
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jinrong Liang <cloudliang@tencent.com>
-
-Add a test to ensure that setting both generic and fixed performance
-event filters does not affect the consistency of the fixed event filter
-behavior in KVM.
-
-Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
----
- .../kvm/x86_64/pmu_event_filter_test.c        | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
-
-diff --git a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-index a9d44ec210c4..08c7ccd81be2 100644
---- a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-@@ -838,6 +838,19 @@ static uint64_t test_with_fixed_counter_filter(struct kvm_vcpu *vcpu,
- 	return run_vcpu_to_sync(vcpu);
- }
- 
-+static uint64_t test_set_gp_and_fixed_event_filter(struct kvm_vcpu *vcpu,
-+						   uint32_t action,
-+						   uint32_t bitmap)
-+{
-+	struct __kvm_pmu_event_filter f = base_event_filter;
-+
-+	f.action = action;
-+	f.fixed_counter_bitmap = bitmap;
-+	do_vcpu_set_pmu_event_filter(vcpu, &f);
-+
-+	return run_vcpu_to_sync(vcpu);
-+}
-+
- static void __test_fixed_counter_bitmap(struct kvm_vcpu *vcpu, uint8_t idx,
- 					uint8_t nr_fixed_counters)
- {
-@@ -864,6 +877,20 @@ static void __test_fixed_counter_bitmap(struct kvm_vcpu *vcpu, uint8_t idx,
- 		count = test_with_fixed_counter_filter(vcpu, KVM_PMU_EVENT_DENY,
- 						       bitmap);
- 		ASSERT_EQ(!!count, !(bitmap & BIT(idx)));
-+
-+		/*
-+		 * Check that fixed_counter_bitmap has higher priority than
-+		 * events[] when both are set.
-+		 */
-+		count = test_set_gp_and_fixed_event_filter(vcpu,
-+							   KVM_PMU_EVENT_ALLOW,
-+							   bitmap);
-+		ASSERT_EQ(!!count, !!(bitmap & BIT(idx)));
-+
-+		count = test_set_gp_and_fixed_event_filter(vcpu,
-+							   KVM_PMU_EVENT_DENY,
-+							   bitmap);
-+		ASSERT_EQ(!!count, !(bitmap & BIT(idx)));
- 	}
- }
- 
 -- 
-2.39.3
+*I have a business proposal for you*
 
+*Kindly get back to me for details*
+
+*Regard*
