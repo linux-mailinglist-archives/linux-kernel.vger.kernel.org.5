@@ -2,479 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F1A75A756
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329C675A759
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbjGTHJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 03:09:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
+        id S230144AbjGTHJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 03:09:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbjGTHIu (ORCPT
+        with ESMTP id S231530AbjGTHJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 03:08:50 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C9AC270C
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:08:43 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-cb8263615d7so475357276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:08:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689836922; x=1692428922;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VyMIM9+tcYiRGMTsBGjvi0vU3Mwws8djANktEDDglwA=;
-        b=byOeZzDwSe+TlCjYRKBoXqqWywqR6C1yG/A40dOXCXNDbvhvWImB25mBWajRKzlpsd
-         7pw0yGkSnP78uE/qIJ91xiFtjZ8WsotdIkdUAUo9pCwMIjy6NapBzMWDaD5jSQ5WRKqG
-         Se0fctUKe/3aEu5ubRL9pul76zHCCtINkNBEyKURGH2aFpknJ55HycotBhqzgpzYPQKE
-         UJtv9JLEiNXgfyyCUh834Zn94be/WG5kodBP7zmNrBOk5cu/mZ3dShiUkQYtjSSYO1Rs
-         4gRgPSThLVz2L65vzOc7OySwGSHuufaREX+F7eqZX0F2Ko4WmwxK9yLR5upAijtlIKWO
-         +cGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689836922; x=1692428922;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VyMIM9+tcYiRGMTsBGjvi0vU3Mwws8djANktEDDglwA=;
-        b=l3lnzggkIXNlIM57sO+q5/QTKbraS6Ef+Q2r199w1mOkh8UTQj7uXC0GX1x3vax9E8
-         RTjxMQCwvwYKyscw14Do4jwFfGX9fhAfn/CbseZQ1bibfwKP8n+Fcom8ke+IqR5NIdDM
-         jU0M5BaOUcvhrfhOdUfr4ZUCSW7TNQPofqtZAZzWcAwtD7LKAP89bRVZtLLdKZdfKOnY
-         wozW30atVEu5DL7Ibugxd8g38S4KqCIj95+AXEHAmubT1OnRlsm+gFI8MQfIyDYWVu62
-         Pt2OOuu7O6cjKMvbSI5EW2P9nqbBwggA/RxsfDAcQHklpqf6NEWapZUNdgbtWDGSgLGO
-         mCTg==
-X-Gm-Message-State: ABy/qLaJjnGHAs31CmIpaLaXHgmwfZX6RsVrKiARY8dRHIp7yVy5CGhB
-        yKbWzTVSI/P+nhqCKnNl2RsxL+fV/BAYoqQB
-X-Google-Smtp-Source: APBJJlGnnUAk0gRTSVnJDIUOzDDJab7OFbTWyp59V1sIEHIaW1b9MjwRCYZFrCmirYEKnPFJ8IXeXLXbdqJdCfyP
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:1709:b0:cab:e42c:876b with
- SMTP id by9-20020a056902170900b00cabe42c876bmr40935ybb.3.1689836922401; Thu,
- 20 Jul 2023 00:08:42 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 07:08:25 +0000
-In-Reply-To: <20230720070825.992023-1-yosryahmed@google.com>
-Mime-Version: 1.0
-References: <20230720070825.992023-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230720070825.992023-9-yosryahmed@google.com>
-Subject: [RFC PATCH 8/8] selftests: cgroup: test_memcontrol: add a selftest
- for memcg recharging
-From:   Yosry Ahmed <yosryahmed@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     Muchun Song <muchun.song@linux.dev>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "T.J. Mercier" <tjmercier@google.com>,
-        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Thu, 20 Jul 2023 03:09:05 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DEA02737;
+        Thu, 20 Jul 2023 00:08:46 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36K5Nb39004008;
+        Thu, 20 Jul 2023 07:08:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=4u4VWKXuJbXsLHbL79Tc193Y4xrHuR7CkmDTmMtEJlA=;
+ b=Z3VQV5RlMSRrsg4fBcpe6l7DE9NCHGyrLYjFfEhltdQzOPGxeZx6Q21B0KgoxEUK9CUM
+ /Hl7rwFug/zwOM2+z9hmrMA3tn5uasR9INAiUvevk6cGykGVIOcfveXibBewV9amgRG+
+ ZZ8c4nuCezTVIGPx9jRHaem4BZlhbQedQ04JGVPVgq8UbfEeHm2dLzzXMvt7JKx4+bHJ
+ sMvwuxiIVKms2MiKR8cVtjO0QsryPCNIWpeQ7uot3VylGAp7jSrWpQoNuQ6QPqu2qKpi
+ K4C8/fPU9WajrY0Anav+P5SDDa7hASCzvoGo05ij8LXQlneaBPEYYavQQbCfqCiiV8H7 bQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxxqv06en-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 07:08:42 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36K78f63003563
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 07:08:41 GMT
+Received: from [10.216.19.45] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
+ 2023 00:08:36 -0700
+Message-ID: <796e321f-1119-19a3-8910-71061d04e5c2@quicinc.com>
+Date:   Thu, 20 Jul 2023 12:38:33 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.0
+Subject: Re: [PATCH V5 0/3] Introduce the read-modify-write API to collect
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        "Mukesh Ojha" <quic_mojha@quicinc.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>
+CC:     <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
+        <quic_anusha@quicinc.com>, <quic_saahtoma@quicinc.com>
+References: <20230720070408.1093698-1-quic_kathirav@quicinc.com>
+Content-Language: en-US
+From:   Kathiravan T <quic_kathirav@quicinc.com>
+In-Reply-To: <20230720070408.1093698-1-quic_kathirav@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: YCZLJqqoOpsQyl4b_R0Llu70RnTbo9Gt
+X-Proofpoint-GUID: YCZLJqqoOpsQyl4b_R0Llu70RnTbo9Gt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-19_16,2023-07-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ spamscore=0 priorityscore=1501 suspectscore=0 bulkscore=0 adultscore=0
+ impostorscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=611 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307200058
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a memcg is removed, any mapped pages charged to it are recharged to
-the memcg of the process(es) mapping them. Any remaining pages are
-recharged using deferred recharge on the next time they are accessed or
-ditied. Add a selftest that exercises these paths for shmem and normal
-files:
-- A page is recharged on offlining if it is already mapped into the
-  address space of a process in a different memcg.
-- A page is recharged after offlining when written to by a process in a
-  different memcg (if the write results in dirtying the page).
-- A page is recharged after offlining when read by a process in a
-  different memcg.
-- A page is recharged after offlining when mapped by a process in a
-  different memcg.
 
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- tools/testing/selftests/cgroup/cgroup_util.c  |  14 +
- tools/testing/selftests/cgroup/cgroup_util.h  |   1 +
- .../selftests/cgroup/test_memcontrol.c        | 310 ++++++++++++++++++
- 3 files changed, 325 insertions(+)
+On 7/20/2023 12:34 PM, Kathiravan T wrote:
 
-diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
-index e8bbbdb77e0d..e853b2a4db77 100644
---- a/tools/testing/selftests/cgroup/cgroup_util.c
-+++ b/tools/testing/selftests/cgroup/cgroup_util.c
-@@ -519,6 +519,20 @@ int is_swap_enabled(void)
- 	return cnt > 1;
- }
- 
-+
-+int is_memcg_recharging_enabled(void)
-+{
-+	char buf[10];
-+	bool enabled;
-+
-+	if (read_text("/proc/sys/vm/recharge_offline_memcgs",
-+		      buf, sizeof(buf)) <= 0)
-+		return -1;
-+
-+	enabled = strtol(buf, NULL, 10);
-+	return enabled;
-+}
-+
- int set_oom_adj_score(int pid, int score)
- {
- 	char path[PATH_MAX];
-diff --git a/tools/testing/selftests/cgroup/cgroup_util.h b/tools/testing/selftests/cgroup/cgroup_util.h
-index c92df4e5d395..10c0fa36bfd7 100644
---- a/tools/testing/selftests/cgroup/cgroup_util.h
-+++ b/tools/testing/selftests/cgroup/cgroup_util.h
-@@ -49,6 +49,7 @@ extern int get_temp_fd(void);
- extern int alloc_pagecache(int fd, size_t size);
- extern int alloc_anon(const char *cgroup, void *arg);
- extern int is_swap_enabled(void);
-+extern int is_memcg_recharging_enabled(void);
- extern int set_oom_adj_score(int pid, int score);
- extern int cg_wait_for_proc_count(const char *cgroup, int count);
- extern int cg_killall(const char *cgroup);
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index c7c9572003a8..4e1ea93e0a54 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -17,6 +17,8 @@
- #include <netdb.h>
- #include <errno.h>
- #include <sys/mman.h>
-+#include <sys/mount.h>
-+#include <sched.h>
- 
- #include "../kselftest.h"
- #include "cgroup_util.h"
-@@ -1287,6 +1289,313 @@ static int test_memcg_oom_group_score_events(const char *root)
- 	return ret;
- }
- 
-+/* Map 50M from the beginning of a file */
-+static int map_fd_50M_noexit(const char *cgroup, void *arg)
-+{
-+	size_t size = MB(50);
-+	int ppid = getppid();
-+	int fd = (long)arg;
-+	char *memory;
-+
-+	memory = mmap(NULL, size, PROT_READ, MAP_SHARED | MAP_POPULATE, fd, 0);
-+	if (memory == MAP_FAILED) {
-+		fprintf(stderr, "error: mmap, errno %d\n", errno);
-+		return -1;
-+	}
-+
-+	while (getppid() == ppid)
-+		sleep(1);
-+
-+	munmap(memory, size);
-+	return 0;
-+}
-+
-+/*
-+ * Write 50M to the beginning of a file.
-+ * The file is sync'ed first to make sure any dirty pages are laundered before
-+ * we dirty them again.
-+ */
-+static int write_fd_50M(const char *cgroup, void *arg)
-+{
-+	size_t size = MB(50);
-+	int fd = (long)arg;
-+	char buf[PAGE_SIZE];
-+	int i;
-+
-+	fsync(fd);
-+	lseek(fd, 0, SEEK_SET);
-+	for (i = 0; i < size; i += sizeof(buf))
-+		write(fd, buf, sizeof(buf));
-+
-+	return 0;
-+}
-+
-+/* See write_fd_50M() */
-+static int write_fd_50M_noexit(const char *cgroup, void *arg)
-+{
-+	int ppid = getppid();
-+
-+	write_fd_50M(cgroup, arg);
-+
-+	while (getppid() == ppid)
-+		sleep(1);
-+
-+	return 0;
-+}
-+
-+/* Read 50M from the beginning of a file */
-+static int read_fd_50M_noexit(const char *cgroup, void *arg)
-+{
-+	size_t size = MB(50);
-+	int ppid = getppid();
-+	int fd = (long)arg;
-+	char buf[PAGE_SIZE];
-+	int i;
-+
-+	lseek(fd, 0, SEEK_SET);
-+	for (i = 0; i < size; i += sizeof(buf))
-+		read(fd, buf, sizeof(buf));
-+
-+	while (getppid() == ppid)
-+		sleep(1);
-+
-+	return 0;
-+}
-+
-+#define TEST_RECHARGE_DIR "/test-recharge"
-+
-+static int __test_memcg_recharge(const char *root, char *stat_name)
-+{
-+	char *parent = NULL, *child1 = NULL, *child2 = NULL;
-+	long stat, prev, pstat, current;
-+	int ret = KSFT_FAIL;
-+	char file_path[256];
-+	int i, pid;
-+	struct {
-+		int fd;
-+		int (*before_fn)(const char *cgroup, void *arg);
-+		int (*after_fn)(const char *cgroup, void *arg);
-+	} test_files[] = {
-+		/* test recharge for already mapped file */
-+		{
-+			.before_fn = map_fd_50M_noexit,
-+		},
-+		/* test recharge on new mapping after offline */
-+		{
-+			.after_fn = map_fd_50M_noexit,
-+		},
-+		/* test recharge on write after offline */
-+		{
-+			.after_fn = write_fd_50M_noexit,
-+		},
-+		/* test recharge on read after offline */
-+		{
-+			.after_fn = read_fd_50M_noexit,
-+		}
-+	};
-+
-+	parent = cg_name(root, "parent");
-+	if (!parent)
-+		goto cleanup;
-+
-+	if (cg_create(parent))
-+		goto cleanup;
-+
-+	if (cg_write(parent, "cgroup.subtree_control", "+memory"))
-+		goto cleanup;
-+
-+	child1 = cg_name(parent, "child1");
-+	if (!child1)
-+		goto cleanup;
-+
-+	if (cg_create(child1))
-+		goto cleanup;
-+
-+	child2 = cg_name(parent, "child2");
-+	if (!child2)
-+		goto cleanup;
-+
-+	if (cg_create(child2))
-+		goto cleanup;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_files); i++) {
-+		long target = MB(50) * (i+1); /* 50MB per file */
-+		int fd;
-+
-+		snprintf(file_path, sizeof(file_path), "%s/file%d",
-+			 TEST_RECHARGE_DIR, i);
-+
-+		fd = open(file_path, O_CREAT | O_RDWR);
-+		if (fd < 0)
-+			goto cleanup;
-+
-+		test_files[i].fd = fd;
-+		if (cg_run(child1, write_fd_50M, (void *)(long) fd))
-+			goto cleanup;
-+
-+		stat = 0;
-+		do {
-+			sleep(1);
-+			prev = stat;
-+			stat = cg_read_key_long(child1, "memory.stat",
-+						stat_name);
-+		} while (stat < target && stat > prev);
-+
-+		if (stat < target) {
-+			fprintf(stderr, "error: child1 %s %ld < %ld",
-+				stat_name, stat, target);
-+			goto cleanup;
-+		}
-+
-+		current = cg_read_long(child1, "memory.current");
-+		if (current < target) {
-+			fprintf(stderr, "error: child1 current %ld < %ld",
-+				current, target);
-+			goto cleanup;
-+		}
-+
-+		if (test_files[i].before_fn) {
-+			pid = cg_run_nowait(child2, test_files[i].before_fn,
-+					    (void *)(long)fd);
-+			if (pid < 0)
-+				goto cleanup;
-+			/* make sure before_fn() finishes executing before offlining */
-+			sleep(1);
-+		}
-+	}
-+
-+	current = cg_read_long(child2, "memory.current");
-+	if (current > MB(1)) {
-+		fprintf(stderr, "error: child2 current %ld > 1M\n", current);
-+		goto cleanup;
-+	}
-+
-+	stat = cg_read_key_long(child2, "memory.stat", stat_name);
-+	if (stat > 0) {
-+		fprintf(stderr, "error: child2 %s %ld > 0\n",
-+			stat_name, stat);
-+		goto cleanup;
-+	}
-+
-+	if (cg_destroy(child1) < 0)
-+		goto cleanup;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_files); i++) {
-+		long target = MB(50) * (i+1);
-+		int fd = test_files[i].fd;
-+
-+		if (test_files[i].after_fn) {
-+			pid = cg_run_nowait(child2, test_files[i].after_fn,
-+					    (void *)(long)fd);
-+			if (pid < 0)
-+				goto cleanup;
-+		}
-+
-+		stat = 0;
-+		do {
-+			sleep(1);
-+			prev = stat;
-+			stat = cg_read_key_long(child2, "memory.stat",
-+						stat_name);
-+		} while (stat < target && stat > prev);
-+
-+		if (stat < target) {
-+			fprintf(stderr, "error: child2 %s %ld < %ld\n",
-+				stat_name, stat, target);
-+			goto cleanup;
-+		}
-+
-+		current = cg_read_long(child2, "memory.current");
-+		if (current < target) {
-+			fprintf(stderr, "error: child2 current %ld < %ld\n",
-+				current, target);
-+			goto cleanup;
-+		}
-+	}
-+
-+	pstat = cg_read_key_long(parent, "memory.stat", stat_name);
-+	if (stat < pstat) {
-+		fprintf(stderr, "error: recharged %s (%ld) < total (%ld)\n",
-+			stat_name, stat, pstat);
-+		goto cleanup;
-+	}
-+
-+	ret = KSFT_PASS;
-+cleanup:
-+	if (child2) {
-+		cg_destroy(child2);
-+		free(child2);
-+	}
-+	if (child1) {
-+		cg_destroy(child1);
-+		free(child1);
-+	}
-+	if (parent) {
-+		cg_destroy(parent);
-+		free(parent);
-+	}
-+	for (i = 0; i < ARRAY_SIZE(test_files); i++) {
-+		close(test_files[i].fd);
-+		snprintf(file_path, sizeof(file_path), "%s/file%d",
-+			 TEST_RECHARGE_DIR, i);
-+		remove(file_path);
-+	}
-+	return ret;
-+}
-+
-+static int test_memcg_recharge(const char *root)
-+{
-+	int i, ret = KSFT_PASS;
-+	struct {
-+		char *mount_type, *stat_name;
-+	} test_setups[] = {
-+		/* test both shmem & normal files */
-+		{
-+			.mount_type = "tmpfs",
-+			.stat_name = "shmem",
-+		},
-+		{
-+			.stat_name = "file",
-+		}
-+	};
-+
-+	if (!is_memcg_recharging_enabled())
-+		return KSFT_SKIP;
-+
-+	if (unshare(CLONE_NEWNS) < 0)
-+		return KSFT_FAIL;
-+
-+	if (mount(NULL, "/", "", MS_REC | MS_PRIVATE, NULL) < 0)
-+		return KSFT_FAIL;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_setups); i++) {
-+		int setup_ret = KSFT_FAIL;
-+		char *mount_type = test_setups[i].mount_type;
-+		char *stat_name = test_setups[i].stat_name;
-+
-+		if (mkdir(TEST_RECHARGE_DIR, 0777) < 0)
-+			goto next;
-+
-+		if (mount_type &&
-+		    mount(NULL, TEST_RECHARGE_DIR, mount_type, 0, NULL) < 0)
-+			goto next;
-+
-+		setup_ret = __test_memcg_recharge(root, stat_name);
-+
-+next:
-+		if (mount_type)
-+			umount(TEST_RECHARGE_DIR);
-+		remove(TEST_RECHARGE_DIR);
-+
-+		if (setup_ret == KSFT_FAIL) {
-+			ret = KSFT_FAIL;
-+			break;
-+		}
-+	}
-+	umount("/");
-+	return ret;
-+}
-+
- #define T(x) { x, #x }
- struct memcg_test {
- 	int (*fn)(const char *root);
-@@ -1306,6 +1615,7 @@ struct memcg_test {
- 	T(test_memcg_oom_group_leaf_events),
- 	T(test_memcg_oom_group_parent_events),
- 	T(test_memcg_oom_group_score_events),
-+	T(test_memcg_recharge),
- };
- #undef T
- 
--- 
-2.41.0.255.g8b1d071c50-goog
 
+$subject is messed up, it should be "Introduce the read-modify-write API 
+to collect the crashdump on IPQ chipsets". Will correct it in next spin 
+or let me know if I need to respin.
+
+
+> On IPQ platforms, to collect the crashdump, we need to just modify the
+> DLOAD bit in the TCSR register. Current infrastructure, overwrites the
+> entire regiter value when enabling the crashdump feature, which leads to
+> crashdump not gets collected. This series introduce the
+> qcom_scm_io_update_field API to achieve the same.
+>
+> Intially this approach is posted by Poovendhan[1], later Mukesh
+> integrated this patch in his minidump support series[2]. Based on the
+> current feedback on the minidump series, seems it will take sometime to
+> get into a good shape, in the meantime these patches doesn't have any
+> dependency with the minidump series. As discussed with the Mukesh[3],
+> posting these 3 patches to enable the crashdump on IPQ chipsets.
+>
+> Since the current version of minidump series is V4, I'm posting this as
+> a V5. Please let me know if this should be V1.
+>
+> [1]
+> https://lore.kernel.org/linux-arm-msm/20230113160012.14893-4-quic_poovendh@quicinc.com/
+>
+> [2]
+> https://lore.kernel.org/linux-arm-msm/1676990381-18184-3-git-send-email-quic_mojha@quicinc.com/
+>
+> [3]
+> https://lore.kernel.org/linux-arm-msm/d77f5601-2b08-a7c7-1400-7ab68b8add3a@quicinc.com/
+>
+>
+> Mukesh Ojha (3):
+>    firmware: qcom_scm: provide a read-modify-write function
+>    pinctrl: qcom: Use qcom_scm_io_update_field()
+>    firmware: scm: Modify only the download bits in TCSR register
+>
+>   drivers/firmware/qcom_scm.c            | 26 ++++++++++++++++++++++++--
+>   drivers/pinctrl/qcom/pinctrl-msm.c     | 12 +++++-------
+>   include/linux/firmware/qcom/qcom_scm.h |  2 ++
+>   3 files changed, 31 insertions(+), 9 deletions(-)
+>
