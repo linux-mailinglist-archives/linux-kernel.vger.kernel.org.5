@@ -2,116 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CEB75AB87
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E7B75AB88
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbjGTJz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53458 "EHLO
+        id S229924AbjGTJ4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 05:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230171AbjGTJzz (ORCPT
+        with ESMTP id S229823AbjGTJ42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 05:55:55 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CD5ED;
-        Thu, 20 Jul 2023 02:55:48 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-c5cf26e9669so523958276.0;
-        Thu, 20 Jul 2023 02:55:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689846947; x=1690451747;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2FLg5w4lDWIr9h+nDTSVvwZ06StSjnLpOQ138ZfnB4g=;
-        b=Fz/oPal1Dl3Txwaou60rukURA8B4NOHCTsLz6Ep0RmTRV6bQ7LNaeYtsW7rynq4i5l
-         vZ5nheF4yqXKoNDNnm9UA1JLJponL7SkxVbbo2vgfyQ9DBjBoux6FqalvRGwWkEORCif
-         cJ+NRCaoiRBIb67hJ+4zLdBpDGer1yIC2DHbd5Z3K7lb1sIZrE4HN6RRc9YRcWzzgq1j
-         Dz8U6aiNzFsXr7XyNjeTU8/OafX3/xm4dhUMuxibjd6A+wLbzwnTKRLW2pi67FMxLC0j
-         k95S9iKdUYvb2P3QfnEqZWUrZ+xCuzjtf8C/Cub37+faIF5PAnzy2WH7PeUwFqfc2dqI
-         j8uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689846947; x=1690451747;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2FLg5w4lDWIr9h+nDTSVvwZ06StSjnLpOQ138ZfnB4g=;
-        b=K4d3nlSPdtZs4J3bVeSfxJ++MSBfXUJUkIsnyoQCvb+6b3MKcLPmc9P3gaEqKZpVoU
-         sNHY3Fi9g+IogtnO5h3REybaODztp0NjMRRnVZw/8O2W2cQ/7h3nxBxY/Y6ilsz1fHrz
-         ggrnVMkCDluRfIYsjGd2T1dgw7Dk0q3HMOi+Rd1cTAnLsC7oXYkImfRq7pxprH1oa3eb
-         tekNSzIOxbo0CAq6n/Ho5VVKb+FA4mdXl/1YgJHDl3NVdbpXKawSYz8ZbtFo+gv+3YKW
-         TYMs9qSKFSmMA6AdRVaAelfi1dxemDZkiC96XbVq/US0V+69ze2gxA1XAxRmcmyALc0T
-         Fwgw==
-X-Gm-Message-State: ABy/qLbB3NwKn2uW6QaH21JldogdHcoEgM59+ew8rLokenp+SzWoQsms
-        zqYDNA7vzsAnmjH1OzBEegTCL4SKC05lxwDsWz4=
-X-Google-Smtp-Source: APBJJlGp5JsBSpSIG7GjjwdK0yzHG9WT2MLhM6tTWhnc6zgjiFpZs4TfhGAum7vV1O8n63oXkYMpIz2EU+WaUkTC2Xs=
-X-Received: by 2002:a05:6902:18d5:b0:c12:29ac:1d3b with SMTP id
- ck21-20020a05690218d500b00c1229ac1d3bmr7003409ybb.11.1689846947439; Thu, 20
- Jul 2023 02:55:47 -0700 (PDT)
+        Thu, 20 Jul 2023 05:56:28 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8C213E
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:56:26 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0A75822B47;
+        Thu, 20 Jul 2023 09:56:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1689846985; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b/WAt2ko11CilJolgusZ/OdpYjV+EX3EkCvfXpZrr+s=;
+        b=rYM95cPglHk9jDNfuHASRTtJqM/HIqnacVgIXmHuxF4ODF6cin0kf8fTvWqt6glaITqfuy
+        7+RzwU9B0mJDUrMkqT64sKEfgPT1Dod0laGPnAG/mMbq2gCiy9Ke+G7gEGBRbVuz5RaeCw
+        yAuwOjCRnfVMyzo1MI8oU4a5/yqlvJ4=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D4A08138EC;
+        Thu, 20 Jul 2023 09:56:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id YmAUM8gEuWQIVQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 20 Jul 2023 09:56:24 +0000
+Date:   Thu, 20 Jul 2023 11:56:23 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Zheng Wang <zyytlz.wz@163.com>
+Cc:     shaggy@kernel.org, jfs-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, hackerzheng666@gmail.com,
+        1395428693sheep@gmail.com, alex000young@gmail.com,
+        security@kernel.org
+Subject: Re: [PATCH] fs/jfs: Add a mutex named txEnd_lmLogClose_mutex to
+ prevent a race  condition between txEnd and lmLogClose functions
+Message-ID: <kyzmstq5dodvgpmd7rge3gtdikbbpauw6fide7vccgii4xtb6n@bwrwjsx4ylmx>
+References: <20230515095956.17898-1-zyytlz.wz@163.com>
 MIME-Version: 1.0
-References: <20230720062939.2411889-1-davidgow@google.com>
-In-Reply-To: <20230720062939.2411889-1-davidgow@google.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 20 Jul 2023 11:55:35 +0200
-Message-ID: <CANiq72k5mJDP8L2Mx8xWxts++kwiJXPTk88MTJQOvCiEKRMvYw@mail.gmail.com>
-Subject: Re: [PATCH] rust: doctests: Use tabs for indentation in generated C code
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jkju3j6sdz2snaei"
+Content-Disposition: inline
+In-Reply-To: <20230515095956.17898-1-zyytlz.wz@163.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 8:30=E2=80=AFAM David Gow <davidgow@google.com> wro=
-te:
->
-> While Rust uses 4 spaces for indentation, we should use tabs in the
-> generated C code. This does result in some scary-looking tab characters
-> in a .rs file, but they're in a string literal, so shouldn't make
-> anything complain too much.
->
-> Fixes: a66d733da801 ("rust: support running Rust documentation tests as K=
-Unit ones")
-> Signed-off-by: David Gow <davidgow@google.com>
 
-The indentation for the `KUNIT_CASE()` lines should be changed too:
+--jkju3j6sdz2snaei
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/scripts/rustdoc_test_gen.rs b/scripts/rustdoc_test_gen.rs
-index 5ebd42ae4a3f..9623e2e6313d 100644
---- a/scripts/rustdoc_test_gen.rs
-+++ b/scripts/rustdoc_test_gen.rs
-@@ -213,7 +213,7 @@ macro_rules! assert_eq {{
-         .unwrap();
+Hello Zheng.
 
-         write!(c_test_declarations, "void {kunit_name}(struct kunit
-*);\n").unwrap();
--        write!(c_test_cases, "    KUNIT_CASE({kunit_name}),\n").unwrap();
-+        write!(c_test_cases, "    KUNIT_CASE({kunit_name}),\n").unwrap();
-     }
+On Mon, May 15, 2023 at 05:59:56PM +0800, Zheng Wang <zyytlz.wz@163.com> wr=
+ote:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> BUG: KASAN: slab-use-after-free in instrument_atomic_write include/linux/=
+instrumented.h:87 [inline]
+> BUG: KASAN: slab-use-after-free in clear_bit include/asm-generic/bitops/i=
+nstrumented-atomic.h:41 [inline]
+> BUG: KASAN: slab-use-after-free in txEnd+0x2a3/0x5a0 fs/jfs/jfs_txnmgr.c:=
+535
+> Write of size 8 at addr ffff888021bee840 by task jfsCommit/130
+>=20
+> CPU: 3 PID: 130 Comm: jfsCommit Not tainted 6.3.0-rc7-pasta #1
 
-     let rust_tests =3D rust_tests.trim();
+Is this still pertinent with the current mainline? (There were some
+changes to jfs.)
 
-With that:
+> Through analysis, it was found that a race condition occurred between two
+> functions lmLogClose and txEnd, which were executed in different threads.
+> The possible sequence is as follows:
+>=20
+> -------------------------------------------------------------------------
+> cpu1(free thread)        |        cpu2(use thread)
+> -------------------------------------------------------------------------
+> lmLogClose               |        txEnd
+>                          |        log =3D JFS_SBI(tblk->sb)->log;
+> sbi->log =3D NULL;         |
+> kfree(log); [1] free log |
+>                          |        clear_bit(log_FLUSH, &log->flag); [2] U=
+AF
 
-    Acked-by: Miguel Ojeda <ojeda@kernel.org>
+That looks sane to a by-passer.
 
-Since the changes are within string literals, I don't expect issues,
-but I just in case I ran it through `checkpatch.pl`, `rustfmt` and
-`CLIPPY=3D1`:
+> Fix it by add a mutex lock between lmLogClose and txEnd:
 
-    Tested-by: Miguel Ojeda <ojeda@kernel.org>
+It doesn't feel right wrt "lock data, not code" heuristics.
+And when I apply that, it turns out there's already jfs_log_mutex.
+I'd suggest you explain more why a new lock is needed (if that's the
+preferred solutino).
 
-Thanks!
+Thanks,
+Michal
 
-Cheers,
-Miguel
+--jkju3j6sdz2snaei
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZLkExgAKCRAGvrMr/1gc
+jgMiAQDiHc2GPqN8BEsMex2H34eKF9kt0wtLtDPBjnRrVmd8ygEA43Tu18sFH+MU
+p0UqiCSAchUq85Mzs0XfmVLFFOAmXAU=
+=Toyw
+-----END PGP SIGNATURE-----
+
+--jkju3j6sdz2snaei--
