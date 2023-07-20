@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2291875B0A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DBC75B0A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbjGTOAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 10:00:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
+        id S231138AbjGTODH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 10:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231773AbjGTOAn (ORCPT
+        with ESMTP id S231823AbjGTOC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 10:00:43 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C4D1FC8;
-        Thu, 20 Jul 2023 07:00:42 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-668711086f4so591401b3a.1;
-        Thu, 20 Jul 2023 07:00:42 -0700 (PDT)
+        Thu, 20 Jul 2023 10:02:58 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C7E132;
+        Thu, 20 Jul 2023 07:02:56 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b8bbce9980so4799565ad.2;
+        Thu, 20 Jul 2023 07:02:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689861641; x=1690466441;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=U2HPdD+d9XvbmzcaBg97eWI4FwW6fi1mZZee8wqO980=;
-        b=RF3gXCPxsugEwn/S3iDUy2B27o3bFuAAcPv4PTJdXwnikS2JH3lxZin8WoDMmK55uT
-         96DmlLN1NZmkg7cT2HeAMvp3uRXsrtqPNcKSQRPTKEngfyRwrQh6qIkWBPq0f/+/lEvi
-         hRDfG7v0Fm3AY4TsmL2RnLd1xZx2K5zJpR91qgXg2BwaAUgMdPY76THyCbbYMjwaeRoC
-         pNKdhVS4GywTcByWJmikbM7Ojloy72BIxYboeG22YNo3LJpwQt4OzAAZIcJZh/aZ/WhU
-         qsWXpjp4isJ+uxBf3nKSs+8AD/AT2FfLu5sJET6MNWO5n1huWtjwDz2GFrll7vnOPF3O
-         EnZA==
+        d=gmail.com; s=20221208; t=1689861776; x=1690466576;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=qwzuxiRChoEzZX8chrQtc/DYiDIr4Y2uI1yGTkQydaY=;
+        b=coJyCCbK/BbC8OcOodRuJk308h5iExxtGlfbjiSORWvoKzdLtclbDD85weiIuT8+a9
+         b1EL1A0m+UxqvQtTmMdCA6cuQ2j7E1Rcx29I6JO+P0sQQUGmDhoEngtmGangBaWqU2+f
+         Ck00nU6rxfCzFnk7386PtpCBFnoc/Ye2dQMp2G9OmJwHmePHfmz406AFV7UUu9NXRWbg
+         m9eqTDBc8Kliov84Ss7Yq+cqyTpHWhPT4qmAujcPrSAuRH8++lU3Lj/lAE3c5D5hjFXN
+         vzlmv26h0KisU+40qVjAu84nnIFzusU+CeMDDKlXV2Y2tH3XbI+fqYWEXwTSXHpHAuA8
+         s1gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689861641; x=1690466441;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=U2HPdD+d9XvbmzcaBg97eWI4FwW6fi1mZZee8wqO980=;
-        b=dzoEzNKDBlQlok1n0ulwND9a3m6bKCwn4HeiUMPdPecLskdGHWy4RjKbcltPtxFVk6
-         Z0cnKszQdMyfgys/7xgQkBgC5vYhF5/49830SzWmp83Ot0z//Fl1PmC6LcotKC76yN6I
-         mgF6nCQTMihXnED3kxkbRn0EkQ2HqWwGKP8YHmwmN9WfeJNr2/iq0kB22niOz79aaGAe
-         /jKJacAKhjfNMHNSgRYNY0RhPvKn7X0PuwmTM1tKe8lHO030EsxrkeTYthn1fLA3K3GU
-         eFLt1AEL43ULab1E0LJLtY6kZCoT42r9CRmBlpLDNeM8D1Sgak1W01U64I+ElhQSi2Jv
-         XrNA==
-X-Gm-Message-State: ABy/qLZAbzzMenEGTg5rtBHDV29owmPyVZt6O2YDh2ZUwBIY6BdmRGQS
-        gZT0hp3sC4saf72JwzATPMA=
-X-Google-Smtp-Source: APBJJlFv7/5I7AWXqBrqjH99G0yw42Ln/KvWfi8tWAVrdTKQLIl0JKoCcclYyrclOqdTiytefdYlVw==
-X-Received: by 2002:a05:6a00:1409:b0:684:bb4a:b86e with SMTP id l9-20020a056a00140900b00684bb4ab86emr6744234pfu.1.1689861640837;
-        Thu, 20 Jul 2023 07:00:40 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689861776; x=1690466576;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qwzuxiRChoEzZX8chrQtc/DYiDIr4Y2uI1yGTkQydaY=;
+        b=Ijh4HGzzkZdTg7+ODROfLMJVf8s9bLwZ+11aiFL8oiYrjxT0Xikamuh8NZduro/Eg9
+         iJEtFJJX/KM56B/qMeOgou0SnP61pXT+LMOAVMEQgKeXZP3t5rJiQvdbaKyVxdCagJ29
+         JT9ktyQTy2pA3eIoLi5CA5Xf30cZMze6VpWiw7np0JBFbdgI+poxJIZd98AWStUAW20x
+         YzQ76FCbONHWD89gHSwRaQLwoR+LYuAmi3/JKUS4wOOMmJ2f9kHMG1FOuFmUTa+Xaxau
+         eizDFFD2Mwi2b8ZxmHnl8CQ5AxAwJdayp9dW5EvCWBofyWE+QqO9YoMtVmOoTYm27Kxg
+         LBBg==
+X-Gm-Message-State: ABy/qLZEVuTPG6u1I8K5TBxti8+mgLTq5hecSvZi/CwbkTMiYXVRitnR
+        Vmamdn/ZaqMAIxEvKK7XsE8=
+X-Google-Smtp-Source: APBJJlGvkAlzl2XvFlsvsdGMznaKfTtp1Mjhtgzxbc1hSH+H/JHs0tYSUBU0IKWsQOt3IaSP74NV9Q==
+X-Received: by 2002:a17:903:182:b0:1b8:9b90:e2bc with SMTP id z2-20020a170903018200b001b89b90e2bcmr5203321plg.52.1689861775927;
+        Thu, 20 Jul 2023 07:02:55 -0700 (PDT)
 Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id ey4-20020a056a0038c400b0065438394fa4sm1237964pfb.90.2023.07.20.07.00.39
+        by smtp.gmail.com with ESMTPSA id io19-20020a17090312d300b001b7fb1a8200sm1362530plb.258.2023.07.20.07.02.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 07:00:40 -0700 (PDT)
+        Thu, 20 Jul 2023 07:02:55 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <b86e19ed-12af-e488-3c21-002be2ad5914@roeck-us.net>
-Date:   Thu, 20 Jul 2023 07:00:39 -0700
+Message-ID: <90e261ec-b928-8f72-0398-524020c35332@roeck-us.net>
+Date:   Thu, 20 Jul 2023 07:02:54 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
+Subject: Re: [PATCH v2] Watchdog: New module for ITE 5632 watchdog
 Content-Language: en-US
-To:     "Marty E. Plummer" <hanetzer@startmail.com>,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>
-References: <20230720115805.1510279-1-hanetzer@startmail.com>
+To:     David Ober <dober6023@gmail.com>, wim@linux-watchdog.org
+Cc:     linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        mpearson@lenovo.com, dober@lenovo.com
+References: <20230720134030.119137-1-dober6023@gmail.com>
 From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] hwmon: (pmbus) Add driver fpr Infineon IR35201
-In-Reply-To: <20230720115805.1510279-1-hanetzer@startmail.com>
+In-Reply-To: <20230720134030.119137-1-dober6023@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,250 +78,337 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/23 04:58, Marty E. Plummer wrote:
-> The IR35201 is a dual-loop digital multi-phase buck controller designed for CPU voltage regulation.
+On 7/20/23 06:40, David Ober wrote:
+> This modules is to allow for the new ITE 5632 EC chip
+> to support the watchdog for initial use in the Lenovo SE10
 > 
-> Signed-off-by: Marty E. Plummer <hanetzer@startmail.com>
-> ---
->   Documentation/hwmon/index.rst   |  1 +
->   Documentation/hwmon/ir35201.rst | 63 +++++++++++++++++++++++
->   drivers/hwmon/pmbus/Kconfig     |  9 ++++
->   drivers/hwmon/pmbus/Makefile    |  1 +
->   drivers/hwmon/pmbus/ir35201.c   | 89 +++++++++++++++++++++++++++++++++
->   5 files changed, 163 insertions(+)
->   create mode 100644 Documentation/hwmon/ir35201.rst
->   create mode 100644 drivers/hwmon/pmbus/ir35201.c
+> Signed-off-by: David Ober <dober6023@gmail.com>
 > 
-> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> index 042e1cf9501b..5b44a268de0d 100644
-> --- a/Documentation/hwmon/index.rst
-> +++ b/Documentation/hwmon/index.rst
-> @@ -87,6 +87,7 @@ Hardware Monitoring Kernel Drivers
->      ina3221
->      inspur-ipsps1
->      intel-m10-bmc-hwmon
-> +   ir35201
->      ir35221
->      ir38064
->      ir36021
-> diff --git a/Documentation/hwmon/ir35201.rst b/Documentation/hwmon/ir35201.rst
-> new file mode 100644
-> index 000000000000..6ca34d4b02a3
-> --- /dev/null
-> +++ b/Documentation/hwmon/ir35201.rst
-> @@ -0,0 +1,63 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +Kernel driver ir35201
-> +=====================
-> +
-> +Supported chips:
-> +
-> +  * Infineon IR35201
-> +
-> +    Prefix: ir35201
-> +    Addresses scanned: -
-> +
-> +    Datasheet: Publicly available at the Infineon website
-> +      https://www.infineon.com/dgdl/Infineon-IR35201MTRPBF-DS-v01_00-EN.pdf?fileId=5546d462576f347501579c95d19772b5
-> +
-> +Authors:
-> +      - Marty E. Plummer <hanetzer@startmail.com>
-> +
-> +Description
-> +-----------
-> +
-> +The IR35201 is a dual-loop digital multi-phase buck controller designed for
-> +CPU voltage regulation.
-> +
-> +Usage Notes
-> +-----------
-> +
-> +This driver does not probe for PMBus devices. You will have to instantiate
-> +devices explicitly.
-> +
-> +Sysfs attributes
-> +----------------
-> +
-> +======================= ===========================
-> +curr1_label             "iin"
-> +curr1_input             Measured input current
-> +curr1_alarm             Input fault alarm
-> +
-> +curr2_label             "iout1"
-> +curr2_input             Measured output current
-> +curr2_alarm             Output over-current alarm
-> +
-> +in1_label               "vin"
-> +in1_input               Measured input voltage
-> +in1_alarm               Input under-voltage alarm
-> +
-> +in2_label               "vout1"
-> +in2_input               Measured output voltage
-> +in2_alarm               Output over-voltage alarm
-> +
-> +power1_label            "pin"
-> +power1_input            Measured input power
-> +power1_alarm            Input under-voltage alarm
-> +
-> +power2_label            "pout1"
-> +power2_input            Measured output power
-> +
-> +temp1_input             Measured temperature
-> +temp1_alarm             Temperature alarm
-> +
-> +temp2_input             Measured other loop temperature
-> +temp2_alarm             Temperature alarm
-> +======================= ===========================
-> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-> index 270b6336b76d..7180823b15bb 100644
-> --- a/drivers/hwmon/pmbus/Kconfig
-> +++ b/drivers/hwmon/pmbus/Kconfig
-> @@ -123,6 +123,15 @@ config SENSORS_INSPUR_IPSPS
->   	  This driver can also be built as a module. If so, the module will
->   	  be called inspur-ipsps.
->   
-> +config SENSORS_IR35201
-> +	tristate "Infineon IR35201"
-> +	help
-> +	  If you say yes here you get hardware monitoring support for the
-> +	  Infineon IR35201 controller.
-> +
-> +	  This driver can also be built as a module. If so, the module will
-> +	  be called ir35201.
-> +
->   config SENSORS_IR35221
->   	tristate "Infineon IR35221"
->   	help
-> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-> index 84ee960a6c2d..40729dd14e7a 100644
-> --- a/drivers/hwmon/pmbus/Makefile
-> +++ b/drivers/hwmon/pmbus/Makefile
-> @@ -15,6 +15,7 @@ obj-$(CONFIG_SENSORS_FSP_3Y)	+= fsp-3y.o
->   obj-$(CONFIG_SENSORS_IBM_CFFPS)	+= ibm-cffps.o
->   obj-$(CONFIG_SENSORS_DPS920AB)	+= dps920ab.o
->   obj-$(CONFIG_SENSORS_INSPUR_IPSPS) += inspur-ipsps.o
-> +obj-$(CONFIG_SENSORS_IR35201)	+= ir35201.o
->   obj-$(CONFIG_SENSORS_IR35221)	+= ir35221.o
->   obj-$(CONFIG_SENSORS_IR36021)	+= ir36021.o
->   obj-$(CONFIG_SENSORS_IR38064)	+= ir38064.o
-> diff --git a/drivers/hwmon/pmbus/ir35201.c b/drivers/hwmon/pmbus/ir35201.c
-> new file mode 100644
-> index 000000000000..77f77057175a
-> --- /dev/null
-> +++ b/drivers/hwmon/pmbus/ir35201.c
-> @@ -0,0 +1,89 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Hardware monitoring driver for Infineon IR35201
-> + */
-> +
-> +#include <linux/err.h>
-> +#include <linux/i2c.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include "pmbus.h"
-> +
-> +static struct pmbus_driver_info ir35201_info = {
-> +	.pages = 1,
-> +	.format[PSC_VOLTAGE_IN] = linear,
-> +	.format[PSC_VOLTAGE_OUT] = linear,
-> +	.format[PSC_CURRENT_IN] = linear,
-> +	.format[PSC_CURRENT_OUT] = linear,
-> +	.format[PSC_POWER] = linear,
-> +	.format[PSC_TEMPERATURE] = linear,
-> +	.func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_VOUT
-> +		| PMBUS_HAVE_IIN | PMBUS_HAVE_IOUT
-> +		| PMBUS_HAVE_PIN | PMBUS_HAVE_POUT
-> +		| PMBUS_HAVE_TEMP | PMBUS_HAVE_TEMP2
-> +		| PMBUS_HAVE_STATUS_TEMP,
+> V2 Fix stop to deactivate wdog on unload of module
+> V2 Fix issues indentified by maintainer
 
-Several supported status registers are missing.
+Please describe what exactly you fixed. The above is just as good as
+"made changes" which doesn't mean anything.
 
-> +};
-> +
-> +static int ir35201_probe(struct i2c_client *client)
-> +{
-> +	u8 buf[I2C_SMBUS_BLOCK_MAX];
-> +	int ret;
-> +
-> +	if (!i2c_check_functionality(client->adapter,
-> +				     I2C_FUNC_SMBUS_READ_BYTE_DATA
-> +					 | I2C_FUNC_SMBUS_READ_WORD_DATA
-> +					 | I2C_FUNC_SMBUS_READ_BLOCK_DATA))
-> +		return -ENODEV;
-> +
-> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_ID, buf);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "Failed to read PMBUS_MFR_ID\n");
-> +		return ret;
-> +	}
-> +	if (ret != 2 || strncmp(buf, "IR", strlen("IR"))) {
-> +		dev_err(&client->dev, "MFR_ID unrecognized\n");
-> +		return -ENODEV;
-> +	}
-> +
-
-Did you actually test this ? Datasheet says it is "ASCII 52 49" which
-would make it "RI" like IR35221, not "IR". Problem though is that it
-seems like the register is writeable via some USER programming,
-making it unreliable.
-
-> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, buf);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "Failed to read PMBUS_MFR_MODEL\n");
-> +		return ret;
-> +	}
-> +	if (ret != 1 || buf[0] != 0x50) {
-> +		dev_err(&client->dev, "MFR_MODEL unrecognized\n");
-> +		return -ENODEV;
-> +	}
-> +
-
-The datasheet suggests that PMBUS_MFR_ID and PMBUS_MFR_MODEL can differ based
-on some USER register programming. I would suggest to read IC_DEVICE_ID instead
-and compare against that (which s supposed to be 0x4d).
-
-On a higher level, I don't see anything special in this chip. Would it be possible
-to just add it to pmbus.c ? Something like
-
-	{"ir35201", (kernel_ulong_t)&pmbus_info_one},
-
-should do.
-
-Thanks,
 Guenter
 
-> +	return pmbus_do_probe(client, &ir35201_info);
+> ---
+>   drivers/watchdog/Kconfig       |  10 ++
+>   drivers/watchdog/Makefile      |   1 +
+>   drivers/watchdog/ite5632_wdt.c | 273 +++++++++++++++++++++++++++++++++
+>   3 files changed, 284 insertions(+)
+>   create mode 100644 drivers/watchdog/ite5632_wdt.c
+> 
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index ee97d89dfc11..861cc0eff468 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -264,6 +264,16 @@ config MENZ069_WATCHDOG
+>   	  This driver can also be built as a module. If so the module
+>   	  will be called menz069_wdt.
+>   
+> +config ITE5632_WDT
+> +        tristate "ITE 5632"
+> +        select WATCHDOG_CORE
+> +        help
+> +          If you say yes here you get support for the watchdog
+> +          functionality of the ITE 5632 eSIO chip.
+> +
+> +          This driver can also be built as a module. If so, the module
+> +          will be called ite5632_wdt.
+> +
+>   config WDAT_WDT
+>   	tristate "ACPI Watchdog Action Table (WDAT)"
+>   	depends on ACPI
+> diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+> index 3633f5b98236..32c8340f3175 100644
+> --- a/drivers/watchdog/Makefile
+> +++ b/drivers/watchdog/Makefile
+> @@ -119,6 +119,7 @@ obj-$(CONFIG_WAFER_WDT) += wafer5823wdt.o
+>   obj-$(CONFIG_I6300ESB_WDT) += i6300esb.o
+>   obj-$(CONFIG_IE6XX_WDT) += ie6xx_wdt.o
+>   obj-$(CONFIG_ITCO_WDT) += iTCO_wdt.o
+> +obj-$(CONFIG_ITE5632_WDT) += ite5632_wdt.o
+>   ifeq ($(CONFIG_ITCO_VENDOR_SUPPORT),y)
+>   obj-$(CONFIG_ITCO_WDT) += iTCO_vendor_support.o
+>   endif
+> diff --git a/drivers/watchdog/ite5632_wdt.c b/drivers/watchdog/ite5632_wdt.c
+> new file mode 100644
+> index 000000000000..4b1fe6de6f87
+> --- /dev/null
+> +++ b/drivers/watchdog/ite5632_wdt.c
+> @@ -0,0 +1,273 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + *	Customized ITE5632 WDT driver for Lenovo SE10.
+> + *
+> + */
+> +
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
+> +#include <linux/delay.h>
+> +#include <linux/init.h>
+> +#include <linux/io.h>
+> +#include <linux/ioport.h>
+> +#include <linux/module.h>
+> +#include <linux/moduleparam.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/string.h>
+> +#include <linux/types.h>
+> +#include <linux/watchdog.h>
+> +
+> +#define EC_STATUS_port	0x6C
+> +#define EC_CMD_port	0x6C
+> +#define EC_DATA_port	0x68
+> +#define EC_OBF		0x01
+> +#define EC_IBF		0x02
+> +#define CFG_LDN		0x07
+> +#define CFG_BRAM_LDN	0x10    /* for BRAM Base */
+> +#define CFG_PORT	0x2E
+> +
+> +#define CUS_WDT_SWI		0x1A
+> +#define CUS_WDT_CFG		0x1B
+> +#define CUS_WDT_FEED		0xB0
+> +#define CUS_WDT_CNT		0xB1
+> +
+> +#define DRVNAME			"ite5632"
+> +
+> +/*The timeout range is 1-255 seconds*/
+> +#define MIN_TIMEOUT		1
+> +#define MAX_TIMEOUT		255
+> +
+> +#define WATCHDOG_TIMEOUT	60	/* 60 sec default timeout */
+> +static unsigned short bram_base;
+> +
+> +static int timeout;	/* in seconds */
+> +module_param(timeout, int, 0);
+> +MODULE_PARM_DESC(timeout,
+> +		 "Watchdog timeout in seconds. 1 <= timeout <= 255, default="
+> +		 __MODULE_STRING(WATCHDOG_TIMEOUT) ".");
+> +
+> +static bool nowayout = WATCHDOG_NOWAYOUT;
+> +module_param(nowayout, bool, 0);
+> +MODULE_PARM_DESC(nowayout,
+> +		 "Watchdog cannot be stopped once started (default="
+> +		 __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
+> +
+> +struct ite5632_data_t {
+> +	struct watchdog_device wdt;
+> +	int region_locked;
+> +};
+> +
+> +/* Kernel methods. */
+> +static void set_bram(unsigned char offset, unsigned char val)
+> +{
+> +	outb(offset, bram_base);
+> +	outb(val, bram_base + 1);
 > +}
 > +
-> +static const struct i2c_device_id ir35201_id[] = {
-> +	{ "ir35201", 0},
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(i2c, ir35201_id);
+> +/* wait EC output buffer full */
+> +static void wait_EC_OBF(void)
+> +{
+> +	while (1) {
+> +		if (inb(EC_STATUS_port) & EC_OBF)
+> +			break;
+> +		usleep_range(10, 125);
+> +	}
+> +}
 > +
-> +static const struct of_device_id __maybe_unused ir35201_of_id[] = {
-> +	{ .compatible = "infineon,ir35201" },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, ir35201_of_id);
+> +/* wait EC input buffer empty */
+> +static void wait_EC_IBE(void)
+> +{
+> +	while (1) {
+> +		if (!(inb(EC_STATUS_port) & EC_IBF))
+> +			break;
+> +		usleep_range(10, 125);
+> +	}
+> +}
 > +
-> +static struct i2c_driver ir35201_driver = {
-> +	.class = I2C_CLASS_HWMON,
+> +static void send_EC_cmd(unsigned char eccmd)
+> +{
+> +	wait_EC_IBE();
+> +	outb(eccmd, EC_CMD_port);
+> +	wait_EC_IBE();
+> +}
+> +
+> +static unsigned char Read_EC_data(void)
+> +{
+> +	wait_EC_OBF();
+> +	return inb(EC_DATA_port);
+> +}
+> +
+> +static void LPC_Write_Byte(unsigned char index, unsigned char data)
+> +{
+> +	outb(index, CFG_PORT);
+> +	outb(data, CFG_PORT + 1);
+> +}
+> +
+> +static unsigned char LPC_Read_Byte(unsigned char index)
+> +{
+> +	outb(index, CFG_PORT);
+> +	return inb(CFG_PORT + 1);
+> +}
+> +
+> +static int GetChipID(void)
+> +{
+> +	unsigned char MSB, LSB;
+> +	unsigned char cmd = 0x55;
+> +
+> +	outb(0x87, CFG_PORT);
+> +	outb(0x01, CFG_PORT);
+> +	outb(0x55, CFG_PORT);
+> +	outb(cmd, CFG_PORT);
+> +	outb(0x20, CFG_PORT);
+> +	MSB = inb(CFG_PORT + 1);
+> +	outb(0x21, CFG_PORT);
+> +	LSB = inb(CFG_PORT + 1);
+> +	return (MSB * 256 + LSB);
+> +}
+> +
+> +static int wdt_start(struct watchdog_device *wdog)
+> +{
+> +	struct ite5632_data_t *data = watchdog_get_drvdata(wdog);
+> +
+> +	if (!request_region(EC_DATA_port, 5, "EC")) {
+> +		dev_err(data->wdt.parent, ":request fail\n");
+> +		return 0;
+> +	}
+> +	data->region_locked = 1;
+> +	set_bram(CUS_WDT_SWI, 0x80);
+> +	return 0;
+> +}
+> +
+> +static int wdt_set_timeout(struct watchdog_device *wdog, unsigned int timeout)
+> +{
+> +	wdog->timeout = timeout;
+> +	set_bram(CUS_WDT_CFG, wdog->timeout);
+> +	return 0;
+> +}
+> +
+> +static int wdt_stop(struct watchdog_device *wdog)
+> +{
+> +	struct ite5632_data_t *data = watchdog_get_drvdata(wdog);
+> +
+> +	set_bram(CUS_WDT_SWI, 0);
+> +	if (data->region_locked == 1)
+> +		release_region(EC_DATA_port, 5);
+> +	return 0;
+> +}
+> +
+> +static unsigned int wdt_get_time(struct watchdog_device *wdog)
+> +{
+> +	unsigned int timeleft;
+> +
+> +	send_EC_cmd(CUS_WDT_CNT);
+> +
+> +	timeleft = Read_EC_data();
+> +	return timeleft;
+> +}
+> +
+> +static int wdt_ping(struct watchdog_device *wdog)
+> +{
+> +	send_EC_cmd(CUS_WDT_FEED);
+> +	return 0;
+> +}
+> +
+> +/* Kernel Interfaces */
+> +static const struct watchdog_info wdt_info = {
+> +	.options = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING | WDIOF_MAGICCLOSE,
+> +	.identity = "5632 Watchdog",
+> +};
+> +
+> +static const struct watchdog_ops wdt_ops = {
+> +	.owner = THIS_MODULE,
+> +	.start = wdt_start,
+> +	.stop = wdt_stop,
+> +	.ping = wdt_ping,
+> +	.set_timeout = wdt_set_timeout,
+> +	.get_timeleft = wdt_get_time,
+> +};
+> +
+> +static int ite5632_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct ite5632_data_t *data = NULL;
+> +
+> +	dev_info(&pdev->dev, "Probe ITE5632 called\n");
+> +
+> +	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	data->region_locked = 0;
+> +	data->wdt.info = &wdt_info,
+> +	data->wdt.ops = &wdt_ops,
+> +	data->wdt.timeout = WATCHDOG_TIMEOUT; /* Set default timeout */
+> +	data->wdt.min_timeout = MIN_TIMEOUT;
+> +	data->wdt.max_timeout = MAX_TIMEOUT;
+> +	data->wdt.parent = &pdev->dev;
+> +
+> +	watchdog_init_timeout(&data->wdt, timeout, &pdev->dev);
+> +	watchdog_set_drvdata(&data->wdt, data);
+> +
+> +	watchdog_set_nowayout(&data->wdt, nowayout);
+> +	watchdog_stop_on_reboot(&data->wdt);
+> +	watchdog_stop_on_unregister(&data->wdt);
+> +
+> +	dev_info(&pdev->dev, "initialized. timeout=%d sec (nowayout=%d)\n",
+> +		 data->wdt.timeout, nowayout);
+> +
+> +	return devm_watchdog_register_device(dev, &data->wdt);
+> +}
+> +
+> +static struct platform_driver ite5632_driver = {
 > +	.driver = {
-> +		.name = "ir35201",
-> +		.of_match_table = of_match_ptr(ir35201_of_id),
+> +		.name = DRVNAME,
 > +	},
-> +	.probe_new = ir35201_probe,
-> +	.id_table = ir35201_id,
+> +	.probe  = ite5632_probe,
 > +};
 > +
-> +module_i2c_driver(ir35201_driver);
+> +static struct platform_device *pdev;
 > +
-> +MODULE_AUTHOR("Marty E. Plummer <hanetzer@startmail.com>");
-> +MODULE_DESCRIPTION("PMBus driver for Infineon IR35201");
+> +static int __init wdt_init(void)
+> +{
+> +	int ret;
+> +	int chip;
+> +
+> +	chip = GetChipID();
+> +
+> +	if (chip == 0x5632)
+> +		pr_info("Found ITE ChipID = %4X\n", chip);
+> +	else
+> +		return -ENODEV;
+> +
+> +	LPC_Write_Byte(CFG_LDN, CFG_BRAM_LDN);
+> +	bram_base = ((LPC_Read_Byte(0x60) << 8) | LPC_Read_Byte(0x61));
+> +
+> +	platform_driver_register(&ite5632_driver);
+> +
+> +	pdev = platform_device_alloc(DRVNAME, bram_base);
+> +
+> +	/* platform_device_add calls probe() */
+> +	ret = platform_device_add(pdev);
+> +	if (ret) {
+> +		platform_device_put(pdev);
+> +		if (pdev)
+> +			platform_device_unregister(pdev);
+> +		platform_driver_unregister(&ite5632_driver);
+> +	}
+> +	return ret;
+> +}
+> +
+> +static void __exit wdt_exit(void)
+> +{
+> +	platform_device_unregister(pdev);
+> +	platform_driver_unregister(&ite5632_driver);
+> +
+> +	LPC_Write_Byte(2, 2);
+> +}
+> +
+> +module_init(wdt_init);
+> +module_exit(wdt_exit);
+> +
 > +MODULE_LICENSE("GPL");
-> +MODULE_IMPORT_NS(PMBUS);
+> +MODULE_AUTHOR("David Ober<dober@lenovo.com>");
+> +MODULE_DESCRIPTION("WDT driver for ITE5632");
 
