@@ -2,101 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 390FD75AA97
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867F575AA99
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbjGTJ0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58034 "EHLO
+        id S229640AbjGTJ0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 05:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbjGTJZv (ORCPT
+        with ESMTP id S229603AbjGTJ0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 05:25:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B7E2E153
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:09:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 33E0B6192A
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:08:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5704C433C8;
-        Thu, 20 Jul 2023 09:08:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689844120;
-        bh=7vwFcJOK2o2ICUdblT8hzETcmg2FeUVLkIn7N0rywqM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=DyY8a9Zf8fGL/VPrimuDKR41GKnAtY7C1jKKvU2roErbYtGFI6ilB4gch6VPg3IOk
-         NTxq7dgvKiWSmy/ZHq8UGLzJ12f0aijd9/rYauzgFG7VUxZFs1ju+/J7/Lo/3F69gy
-         yMyhZT8TMHyLz/I/1NkLuViQsY020M99Q6WS0mTwkxg0tdgkVCDtnL2LvImxb4GrJu
-         +TEL5+adOFo+bfNRpPoehSnZkrVd3DCCw6grd457EFuKBESkbu0TdE6WOBsP0BiRrw
-         kjC4VVd2F3FtUwtDO6gCUdYEsEXce8bm0FaI8DU2JY/O2bPnTPXAPapRQ7nIFktGiY
-         xno4ZTNlBVJXQ==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Celeste Liu <coelacanthushex@gmail.com>,
-        Andreas Schwab <schwab@suse.de>
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Felix Yan <felixonmars@archlinux.org>,
-        Ruizhe Pan <c141028@gmail.com>,
-        Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
-Subject: Re: [PATCH v3] riscv: entry: set a0 = -ENOSYS only when syscall != -1
-In-Reply-To: <54D8BFF7-C4D2-417E-B18C-62B5DB17B51B@gmail.com>
-References: <20230718210037.250665-1-CoelacanthusHex@gmail.com>
- <mvmo7k8cqns.fsf@suse.de> <878rbbkgqo.fsf@all.your.base.are.belong.to.us>
- <54D8BFF7-C4D2-417E-B18C-62B5DB17B51B@gmail.com>
-Date:   Thu, 20 Jul 2023 11:08:37 +0200
-Message-ID: <87wmyvq7ai.fsf@all.your.base.are.belong.to.us>
+        Thu, 20 Jul 2023 05:26:20 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B599030EC0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:09:58 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R66Mg5fszzBRDrK
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 17:09:51 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689844191; x=1692436192; bh=ZXcpy+AEoHMva1uuc2MXgOHxjIp
+        1WDQ9VhZyfCsAByU=; b=LRWBOa7zssXRIuySv1T8BGMZIPFvmhNs5RMcaY1xNhr
+        ktOWDhFjz82mfdMy3q2GStURre1II3T3PBXY82xxtbaPIgRtOSuLSr3Jj2Ilf/au
+        zyo70ZV8dhXh6pZZTY6i/hTbhWJnjq1GSFpyptVGy3ihR5VVU/vfDIYkvmixOHJX
+        6K4CFZ4roaWInsFdLMta1nDQVmVkRyn/wHZkpTNa+c+lolb9cENZr94tjFl60VxU
+        +00InB08cmJ2Ek1c3LvcGVGY189nGTK7L33Yta8XMMqgL/FjsHPtUuXC4f5kAyU4
+        TbcNztR2F52NyMqSavtdiDVzcMDA5gpSJ+9VK5m/IQg==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id z4uPALwymecB for <linux-kernel@vger.kernel.org>;
+        Thu, 20 Jul 2023 17:09:51 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R66Mg3XpVzBHXhQ;
+        Thu, 20 Jul 2023 17:09:51 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Thu, 20 Jul 2023 17:09:51 +0800
+From:   sunran001@208suo.com
+To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: aic7xxx: aic79xx: Remove unnecessary parentheses
+In-Reply-To: <20230720090839.3506-1-xujianghui@cdjrlc.com>
+References: <20230720090839.3506-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <5663619f5f713c1ad99efbb8fa53bbb1@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Celeste Liu <coelacanthushex@gmail.com> writes:
+Fix "return is not a function, parentheses are not required" checkpatch
+error.
 
-> On July 20, 2023 12:28:47 AM GMT+08:00, "Bj=C3=B6rn T=C3=B6pel" <bjorn@ke=
-rnel.org> wrote:
->>Andreas Schwab <schwab@suse.de> writes:
->>
->>> On Jul 19 2023, Celeste Liu wrote:
->>>
->>>> @@ -308,7 +312,7 @@ asmlinkage __visible __trap_section void do_trap_e=
-call_u(struct pt_regs *regs)
->>>>=20=20
->>>>  		if (syscall < NR_syscalls)
->>>>  			syscall_handler(regs, syscall);
->>>> -		else
->>>> +		else if ((long)syscall !=3D -1L)
->>>
->>> You can also use syscall !=3D -1UL or even syscall !=3D -1.
->>
->>The former is indeed better for the eyes! :-) The latter will get a
->>-Wsign-compare warning, no?
->>
->>
->>Bj=C3=B6rn
->
-> Well, that's true. And I just found out that by C standards, converting
-> ulong to long is implementation-defined behavior, unlike long to ulong
-> which is well-defined. So it is really better than (long)syscall !=3D -1L.
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  drivers/scsi/aic7xxx/aic7xxx_93cx6.c | 8 ++++----
+  1 file changed, 4 insertions(+), 4 deletions(-)
 
-If you're respinning, I suggest you use David's suggestion:
- * Remove the comment I suggest you to add
- * Use (signed) long
- * Add syscall >=3D 0 &&
- * else if (syscall !=3D -1)
+diff --git a/drivers/scsi/aic7xxx/aic7xxx_93cx6.c 
+b/drivers/scsi/aic7xxx/aic7xxx_93cx6.c
+index 11ddffbcc2f3..0d3c33322eb5 100644
+--- a/drivers/scsi/aic7xxx/aic7xxx_93cx6.c
++++ b/drivers/scsi/aic7xxx/aic7xxx_93cx6.c
+@@ -236,7 +236,7 @@ ahc_write_seeprom(struct seeprom_descriptor *sd, 
+uint16_t *buf,
+  	} else {
+  		printk("ahc_write_seeprom: unsupported seeprom type %d\n",
+  		       sd->sd_chip);
+-		return (0);
++		return 0;
+  	}
 
-Which is the least amount of surprises IMO.
+  	send_seeprom_cmd(sd, ewen);
+@@ -292,7 +292,7 @@ ahc_write_seeprom(struct seeprom_descriptor *sd, 
+uint16_t *buf,
+  	send_seeprom_cmd(sd, ewds);
+  	reset_seeprom(sd);
+
+-	return (1);
++	return 1;
+  }
+
+  int
+@@ -311,8 +311,8 @@ ahc_verify_cksum(struct seeprom_config *sc)
+  		checksum = checksum + scarray[i];
+  	if (checksum == 0
+  	 || (checksum & 0xFFFF) != sc->checksum) {
+-		return (0);
++		return 0;
+  	} else {
+-		return(1);
++		return 1;
+  	}
+  }
