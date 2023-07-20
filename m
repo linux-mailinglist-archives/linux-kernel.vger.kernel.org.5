@@ -2,158 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1D375A482
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 04:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBEF475A493
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 04:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbjGTCs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 22:48:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
+        id S229776AbjGTCzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 22:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjGTCs5 (ORCPT
+        with ESMTP id S229616AbjGTCzv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 22:48:57 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55ACC1FD9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 19:48:52 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-5216569f9e3so344612a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 19:48:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1689821330; x=1690426130;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H6WYVWYrbXb8iJtFoUKTJHuArrTvnYpoCUNdm9ArDBU=;
-        b=vcpSq5efiWfRoeEuQ8DIpdemJ/kEyExu1pg4fGvQDP9AqI6EHLqRkrkvQ3LzqedoQ8
-         +5eOgLm5sUSffZnSTGRjU1uQV80HONokEyIl5FocvTQvle3W0Ef6LmGvKPf1DRuqce6q
-         NB/h5wq2mOhw1TW6bGfFARGLwoTv1d1x9oE90=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689821330; x=1690426130;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H6WYVWYrbXb8iJtFoUKTJHuArrTvnYpoCUNdm9ArDBU=;
-        b=CnWxjk42eHKRcjs5Y27WJTAz5PY3PO8u5FetVYMhvnNdovl4E2gBo77KlBXIhkJ+Um
-         hqr6xz/yo7j656HdHiEtO7PxigDildobwe7Lnnqy0rgRMmyed30R8jXbVfZmghuQJBG4
-         +b6sZlk16SVdnyAqqEc2Sczbg6aIsFjSNq2lFtTMnCQ8lR/AwPXoxKbEQb1X9cNQGIFA
-         pTN/cMQIJV/PKVAEXLBqViOASKYQsz51ab/pR/IirmpPHmVJREFdK4lXd+0VwBaFSjkG
-         QgcIprfhU2Rj+4HL3UKbg30ommSu+yHGTbQ1EDd1HZjdaxalTf24fkwkuLerbsLcuuGo
-         uJoQ==
-X-Gm-Message-State: ABy/qLZcfwygTvP/5v66DoQW9Z4+cSmzj6YSLk7H1MGeposFlIxNDRFe
-        PD0yCfvcGHnncZQVsbZDa9mj5mjfK2PeUPWwy+UpSA==
-X-Google-Smtp-Source: APBJJlE4lJbEWuicmvx7rTLzbS0AdQfZ0xYO09uqtILx/IgDEyJpnJ/Zj1jfL9NtM7jOdCNdJ9odgbHvUeY3HhKVqr4=
-X-Received: by 2002:a05:6402:1295:b0:51a:3159:53c7 with SMTP id
- w21-20020a056402129500b0051a315953c7mr3643380edv.30.1689821330554; Wed, 19
- Jul 2023 19:48:50 -0700 (PDT)
+        Wed, 19 Jul 2023 22:55:51 -0400
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DDB172A
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 19:55:49 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vno8Ffq_1689821744;
+Received: from 30.97.48.218(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Vno8Ffq_1689821744)
+          by smtp.aliyun-inc.com;
+          Thu, 20 Jul 2023 10:55:45 +0800
+Message-ID: <3fb50487-0531-fbef-5f85-089e5e405bf9@linux.alibaba.com>
+Date:   Thu, 20 Jul 2023 10:55:44 +0800
 MIME-Version: 1.0
-References: <ZLdY6JkWRccunvu0@debian.debian> <CAADnVQJNCEntFEh6pNY2HHwxoua0_2mRky2g2U5tj6XU2eoZog@mail.gmail.com>
-In-Reply-To: <CAADnVQJNCEntFEh6pNY2HHwxoua0_2mRky2g2U5tj6XU2eoZog@mail.gmail.com>
-From:   Yan Zhai <yan@cloudflare.com>
-Date:   Wed, 19 Jul 2023 21:48:39 -0500
-Message-ID: <CAO3-Pbr_S_1RYk0x4kHbnna=qcYVJ7u9zx9O-TGNcJz3oUQ0FQ@mail.gmail.com>
-Subject: Re: [PATCH v2 net] bpf: do not return NET_XMIT_xxx values on bpf_redirect
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jordan Griege <jgriege@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v4 2/2] erofs: boost negative xattr lookup with bloom
+ filter
+To:     Jingbo Xu <jefflexu@linux.alibaba.com>, chao@kernel.org,
+        huyue2@coolpad.com, linux-erofs@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, alexl@redhat.com
+References: <20230714031034.53210-1-jefflexu@linux.alibaba.com>
+ <20230714031034.53210-3-jefflexu@linux.alibaba.com>
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <20230714031034.53210-3-jefflexu@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 10:42=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Jul 18, 2023 at 8:30=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wro=
-te:
-> >
-> > skb_do_redirect handles returns error code from both rx and tx path. Th=
-e
-> > tx path codes are special, e.g. NET_XMIT_CN: they are non-negative, and
-> > can conflict with LWTUNNEL_XMIT_xxx values. Directly returning such cod=
-e
-> > can cause unexpected behavior. We found at least one bug that will pani=
-c
-> > the kernel through KASAN report when we are redirecting packets to a
-> > down or carrier-down device at lwt xmit hook:
-> >
-> > https://gist.github.com/zhaiyan920/8fbac245b261fe316a7ef04c9b1eba48
-> >
-> > Above bug is hit because NET_XMIT_CN is returned by noop_qdisc of the
-> > down device, and it propagates from dev_queue_xmit all way to the lwt
-> > logic. The result is skb that has been freed by the qdisc continues to
-> > neighbor subsystem and triggers the bug.
->
-> I'm struggling to parse the above paragraph.
-> Where bpf prog is installed?
-> Is this lwt bpf prog that returns BPF_REDIRECT ?
-> that redirects to netdev with noop_qdisc ?
-> What is the topology?
->
-Sorry for the confusion. Mentioning noop_qdisc is an explanation of
-what happened. The actual trigger is simple: install a bpf program on
-lwt route at xmit hook. It bpf_redirect packets to a device FOO. If
-FOO is down or carrier-down, redirected packets will crash the kernel.
-
-> Please add a selftest to make sure we don't regress.
->
-> Also pls mark your patch as [PATCH v3 bpf] when you respin.
->
-Ack
-
-> > This change converts the tx code to proper errors that lwt can consume.
-> >
-> > Suggested-by: Stanislav Fomichev <sdf@google.com>
-> > Reported-by: Jordan Griege <jgriege@cloudflare.com>
-> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> > ---
-> > v2: coding style fix; sent to netdev instead of bpf for bug fixing.
-> >
-> > ---
-> >  net/core/filter.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 06ba0e56e369..8738c7a4701d 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -2129,6 +2129,9 @@ static inline int __bpf_tx_skb(struct net_device =
-*dev, struct sk_buff *skb)
-> >         ret =3D dev_queue_xmit(skb);
-> >         dev_xmit_recursion_dec();
-> >
-> > +       if (unlikely(ret > 0))
-> > +               ret =3D net_xmit_errno(ret);
-> > +
-> >         return ret;
-> >  }
-> >
-> > --
-> > 2.30.2
-> >
 
 
+On 2023/7/14 11:10, Jingbo Xu wrote:
+> Optimise the negative xattr lookup with bloom filter.
+> 
+> The bit value for the bloom filter map has a reverse semantics for
+> compatibility.  That is, the bit value of 0 indicates existence, while
+> the bit value of 1 indicates the absence of corresponding xattr.
+> 
+> This feature is enabled only when xattr_filter_reserved is non-zero.
 
---=20
+The initial version is _only_ enabled when xattr_filter_reserved is zero.
 
-Yan
+> The on-disk format for the filter map may change in the future, in which
+> case the reserved flag will be set non-zero and we don't need bothering
+> the compatible bits again at that time.  For now disable the optimization
+> if this reserved flag is non-zero.
+
+The filter map internals may may change in the future, ...
+
+
+> 
+> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+> ---
+>   fs/erofs/Kconfig    |  1 +
+>   fs/erofs/internal.h |  3 +++
+>   fs/erofs/super.c    |  1 +
+>   fs/erofs/xattr.c    | 13 +++++++++++++
+>   4 files changed, 18 insertions(+)
+> 
+> diff --git a/fs/erofs/Kconfig b/fs/erofs/Kconfig
+> index f259d92c9720..f49669def828 100644
+> --- a/fs/erofs/Kconfig
+> +++ b/fs/erofs/Kconfig
+> @@ -38,6 +38,7 @@ config EROFS_FS_DEBUG
+>   config EROFS_FS_XATTR
+>   	bool "EROFS extended attributes"
+>   	depends on EROFS_FS
+> +	select XXHASH
+>   	default y
+>   	help
+>   	  Extended attributes are name:value pairs associated with inodes by
+> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+> index 36e32fa542f0..ebcad25e3750 100644
+> --- a/fs/erofs/internal.h
+> +++ b/fs/erofs/internal.h
+> @@ -151,6 +151,7 @@ struct erofs_sb_info {
+>   	u32 xattr_prefix_start;
+>   	u8 xattr_prefix_count;
+>   	struct erofs_xattr_prefix_item *xattr_prefixes;
+> +	unsigned int xattr_filter_reserved;
+>   #endif
+>   	u16 device_id_mask;	/* valid bits of device id to be used */
+>   
+> @@ -251,6 +252,7 @@ EROFS_FEATURE_FUNCS(fragments, incompat, INCOMPAT_FRAGMENTS)
+>   EROFS_FEATURE_FUNCS(dedupe, incompat, INCOMPAT_DEDUPE)
+>   EROFS_FEATURE_FUNCS(xattr_prefixes, incompat, INCOMPAT_XATTR_PREFIXES)
+>   EROFS_FEATURE_FUNCS(sb_chksum, compat, COMPAT_SB_CHKSUM)
+> +EROFS_FEATURE_FUNCS(xattr_filter, compat, COMPAT_XATTR_FILTER)
+>   
+>   /* atomic flag definitions */
+>   #define EROFS_I_EA_INITED_BIT	0
+> @@ -270,6 +272,7 @@ struct erofs_inode {
+>   	unsigned char inode_isize;
+>   	unsigned int xattr_isize;
+>   
+> +	unsigned long xattr_name_filter;
+
+	unsigned int xattr_name_filter or
+	u32 xattr_name_filter?
+
+no need to use unsinged long here.
+
+>   	unsigned int xattr_shared_count;
+>   	unsigned int *xattr_shared_xattrs;
+>   
+> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+> index 9d6a3c6158bd..72122323300e 100644
+> --- a/fs/erofs/super.c
+> +++ b/fs/erofs/super.c
+> @@ -388,6 +388,7 @@ static int erofs_read_superblock(struct super_block *sb)
+>   	sbi->xattr_blkaddr = le32_to_cpu(dsb->xattr_blkaddr);
+>   	sbi->xattr_prefix_start = le32_to_cpu(dsb->xattr_prefix_start);
+>   	sbi->xattr_prefix_count = dsb->xattr_prefix_count;
+> +	sbi->xattr_filter_reserved = dsb->xattr_filter_reserved;
+>   #endif
+>   	sbi->islotbits = ilog2(sizeof(struct erofs_inode_compact));
+>   	sbi->root_nid = le16_to_cpu(dsb->root_nid);
+> diff --git a/fs/erofs/xattr.c b/fs/erofs/xattr.c
+> index 40178b6e0688..eb1d1974d4b3 100644
+> --- a/fs/erofs/xattr.c
+> +++ b/fs/erofs/xattr.c
+> @@ -5,6 +5,7 @@
+>    * Copyright (C) 2021-2022, Alibaba Cloud
+>    */
+>   #include <linux/security.h>
+> +#include <linux/xxhash.h>
+>   #include "xattr.h"
+>   
+>   struct erofs_xattr_iter {
+> @@ -87,6 +88,7 @@ static int erofs_init_inode_xattrs(struct inode *inode)
+>   	}
+>   
+>   	ih = it.kaddr + erofs_blkoff(sb, it.pos);
+> +	vi->xattr_name_filter = le32_to_cpu(ih->h_name_filter);
+>   	vi->xattr_shared_count = ih->h_shared_count;
+>   	vi->xattr_shared_xattrs = kmalloc_array(vi->xattr_shared_count,
+>   						sizeof(uint), GFP_KERNEL);
+> @@ -392,7 +394,10 @@ int erofs_getxattr(struct inode *inode, int index, const char *name,
+>   		   void *buffer, size_t buffer_size)
+>   {
+>   	int ret;
+> +	uint32_t bit;
+
+	uint32_t hashbit; ?
+
+Thanks,
+Gao Xiang
