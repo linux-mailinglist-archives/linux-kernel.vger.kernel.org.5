@@ -2,347 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF87E75B8BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 22:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2920D75B8BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 22:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbjGTU2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 16:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33738 "EHLO
+        id S230218AbjGTU2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 16:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230348AbjGTU15 (ORCPT
+        with ESMTP id S229517AbjGTU2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 16:27:57 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18311719;
-        Thu, 20 Jul 2023 13:27:53 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36KCRiHs023539;
-        Thu, 20 Jul 2023 20:27:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=IlnuqZjdRU+QCa6m/gR0Nmxi8D9ACpUhU5R4kTCI2oI=;
- b=DMsZeHksxPYzX8iUNShf70cU/aZFhlqcQ82ZU7/FdBo/BJZnx0bfQCIwak+FketKN6pJ
- z+DsLILcDAY/NSIwAOOuxn42Vjz70akxDOCqTNbeLSgooAU903jbn7ZXQpM1EyQLIxts
- Tfa0YTSkyCtzkvmb87GJjZA1CdmvfO/1ohtNjwkIJ95PjgM9U4AFWwVKXeT2VzaBWH5c
- XeoRpxc4bmLWOwN/7waw2++WlOIwp0El0o4Dx0Sb4LaJ9pdsqKxefMhMhlAS9L8XfEys
- UaWaUS+JXbHdLbbczPTDB+HIMWmUMo8oxcEzYYMqgYoXmIS0qx4kmm4kbAiWg63X+tNU FA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxg3vbq7s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Jul 2023 20:27:36 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36KKRaWj026520
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Jul 2023 20:27:36 GMT
-Received: from [10.71.108.91] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
- 2023 13:27:35 -0700
-Message-ID: <07fe061c-6d0e-b3b7-7126-a7b014aec478@quicinc.com>
-Date:   Thu, 20 Jul 2023 13:27:34 -0700
+        Thu, 20 Jul 2023 16:28:32 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2084.outbound.protection.outlook.com [40.107.94.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F78272A;
+        Thu, 20 Jul 2023 13:28:29 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SFeoc/GMaT4npENXHiKaPebbYtMwJcwdzc+zILgF8HXRe3AKou/+ECn6D/hCtuqhVkOAnWX7SRnlmFr7zZ8MnvizuF5CyKS/q6FCq3R4+gKCpG1mAnMdih2frP94Nj8P8BDmu3rC6YC5NUvtX95KcAqqzAli2h3xblQUx+KraK3veXY+ONlX7VgcKsK2IQoIUe6NsKsP0Yhcu7Tx4AmLeKWdBJSf5STTCqsYpzS5WA1yyJku4j6lsFb0QYyfFOVNdrwePdO82tjHd8/6oKEybsDQJrLSOVb/Yx9YuHkN+cKoJUI8p0RnO9yYP5UcVandq7RTBpvkKiFHv9vgw446Ag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OoM/PHiNwVCxv2JrvAPeXjDXTa6wF1QZnD03AwUPfRk=;
+ b=HfS905KRbJTtOC4vSt1Eue1ltMUS6fHtywYAieQgQqW0S9HIj4kGf7Xn9K3DL+n5F6hyOSpWRJwoxLHgwe1R+X+quxLj/o5cRUGRa8/BbgcYCZG1ugXbHfuCZFPrFSRMn2BEVfNPCheh/zGlsTQSgy9PvJNsuVRDgQ8+dzspf1UDFzgqUo+J1C58/XgI7vzf+Q8NT7PLm/xd3Gq7ILLRxrcNNAp3TA/CXNL/oXatTvj5l1lqkNRcdiYsezFyUl/k/l/lXZVvGVolDlHsThp2vsmj5gvwqpOlz5awvtyc5ZATFsjh8Rwm73BvEb7EPrC+75HemQ4P3E0gh0pXRedCRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OoM/PHiNwVCxv2JrvAPeXjDXTa6wF1QZnD03AwUPfRk=;
+ b=Q5LLVxGuPLe9eCMB5jDiRvYhEh1dvjm84gPyes/O0mGmM78o1FBLYN9lz2XX55H/bIKyHpw8nBX9ThdSoh4os92aSfvHxZBbq7Npp9sMcz5eBoHCK8QIkAgZnv579u/26oa1cG02AUgCtNHgtEW5sj3/jkSUraAIYp9rukWgCVs=
+Received: from BN9PR03CA0356.namprd03.prod.outlook.com (2603:10b6:408:f6::31)
+ by DM4PR12MB7718.namprd12.prod.outlook.com (2603:10b6:8:102::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Thu, 20 Jul
+ 2023 20:28:27 +0000
+Received: from BN8NAM11FT093.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:f6:cafe::ce) by BN9PR03CA0356.outlook.office365.com
+ (2603:10b6:408:f6::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25 via Frontend
+ Transport; Thu, 20 Jul 2023 20:28:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN8NAM11FT093.mail.protection.outlook.com (10.13.177.22) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6609.28 via Frontend Transport; Thu, 20 Jul 2023 20:28:26 +0000
+Received: from jallen-jump-host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 20 Jul
+ 2023 15:28:25 -0500
+From:   John Allen <john.allen@amd.com>
+To:     <bp@alien8.de>, <linux-kernel@vger.kernel.org>
+CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <hpa@zytor.com>,
+        <x86@kernel.org>, John Allen <john.allen@amd.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH] x86/microcode/AMD: Increase microcode PATCH_MAX_SIZE
+Date:   Thu, 20 Jul 2023 20:28:13 +0000
+Message-ID: <20230720202813.3269888-1-john.allen@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 5/5] drm/msm/dp: move of_dp_aux_populate_bus() to probe
- for eDP
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Vinod Koul <vkoul@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        "Sankeerth Billakanti" <quic_sbillaka@quicinc.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>
-References: <1688773943-3887-1-git-send-email-quic_khsieh@quicinc.com>
- <1688773943-3887-6-git-send-email-quic_khsieh@quicinc.com>
- <0cac7c17-c822-927e-cc15-456b1423689c@linaro.org>
- <2278c46c-cb2c-2842-ab20-e6a334fe002b@quicinc.com>
- <CAA8EJpoJ4Tqew5oFSE44vnBrnO+nfizffLvHV3uwrvcvjZTk0A@mail.gmail.com>
-From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
-In-Reply-To: <CAA8EJpoJ4Tqew5oFSE44vnBrnO+nfizffLvHV3uwrvcvjZTk0A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: UwzjG-LzvQxIdysjjbd2JSIGFk5JxmvR
-X-Proofpoint-ORIG-GUID: UwzjG-LzvQxIdysjjbd2JSIGFk5JxmvR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-20_10,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- suspectscore=0 clxscore=1015 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2307200173
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8NAM11FT093:EE_|DM4PR12MB7718:EE_
+X-MS-Office365-Filtering-Correlation-Id: 17a1e73b-56f1-44b9-bbb8-08db895fdf4c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: u0rTj2uiBmC7j08AnhbRxtsAHSpM2OhlarWRWnCxMKR4YspAVHtHBhbS6gM/BV3ssFebvTaDiPk1znx+mDx70KjHTR4RST2XBDVDamd39nXwSiGmcHrKDHagcaKrSlWM6lHPefmufJIxub7bc/DZccdZJ/6uhyqA2KHksR4fKR0sQAKkFHg6UprdIYF9g7ZcD+JDnI9UL8y8+GrW+YletvMKUmoc86Rx58Mqys8NK6Q5Lut1TGvW6HXJEWMBjImUMdC2qp+grQ2J663ZlpN3qHzN8Jc665aYYkQcMHz6/1iUp37XgLSswjWzw4y8BUOaU+orYDBPDhnLNSQa6dn3j2fW/H93ohGWLx8iZziKYyeyg5/WMfsFKzLmbyd2g1Gwx6XngCpb6qSMYSETVAQrr5vwr/fA6Jw5UIfV7QxVYiuPR1Z4vEQ+eTZ47i4Z0ceYnmfDo9Roc+avhO73PkQLA5uUUCAGnpajoczXfasU/7gD/Su20P34ufjt2j799sLKuYLtDlJmjmewjrLbaZ8HFhgQ0TwUSlqiP8yIXFVYxpirZov+ZJSBPIu9mws+Y/eDGRBFVz6hxIaGLmFYmKHeNsmMZ5zYJLcHuxoRdMPjtda0j8dI4sxTwgmONmDULjQHJHm26iowFJQ757zIOJiwBn+bdP9JRpIL+nDvy2HjVd7FricA+6oCtncjfzNdtGjJjtCghgoBZdrgrHnd9u0XKMwRNUGxgW94/Ciw8SSWLdZhTyvjRmDCmz0bY3W30J0SS+v5BEEFENgkZ1dhcNL/9g==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(39860400002)(346002)(136003)(82310400008)(451199021)(36840700001)(46966006)(40470700004)(81166007)(82740400003)(356005)(40480700001)(40460700003)(7696005)(6666004)(86362001)(336012)(1076003)(8676002)(186003)(26005)(16526019)(44832011)(316002)(41300700001)(5660300002)(70586007)(70206006)(4326008)(54906003)(4744005)(2906002)(110136005)(8936002)(83380400001)(36860700001)(2616005)(36756003)(426003)(478600001)(47076005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 20:28:26.3834
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 17a1e73b-56f1-44b9-bbb8-08db895fdf4c
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT093.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7718
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Future AMD cpus will have microcode patches that exceed the current
+limit of three 4K pages. Increase substantially to avoid future size
+increases.
 
-On 7/10/2023 11:24 AM, Dmitry Baryshkov wrote:
-> [Restored CC list]
->
-> On Mon, 10 Jul 2023 at 20:08, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
->>
->> On 7/7/2023 5:32 PM, Dmitry Baryshkov wrote:
->>> On 08/07/2023 02:52, Kuogee Hsieh wrote:
->>>> Move of_dp_aux_populate_bus() to dp_display_probe() for eDP
->>>> from dp_display_bind() so that probe deferral cases can be
->>>> handled effectively
->>>>
->>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
->>>> ---
->>>>    drivers/gpu/drm/msm/dp/dp_aux.c     | 25 ++++++++++++
->>>>    drivers/gpu/drm/msm/dp/dp_display.c | 79
->>>> +++++++++++++++++++------------------
->>>>    2 files changed, 65 insertions(+), 39 deletions(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c
->>>> b/drivers/gpu/drm/msm/dp/dp_aux.c
->>>> index c592064..c1baffb 100644
->>>> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
->>>> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
->>>> @@ -505,6 +505,21 @@ void dp_aux_unregister(struct drm_dp_aux *dp_aux)
->>>>        drm_dp_aux_unregister(dp_aux);
->>>>    }
->>>>    +static int dp_wait_hpd_asserted(struct drm_dp_aux *dp_aux,
->>>> +                 unsigned long wait_us)
->>>> +{
->>>> +    int ret;
->>>> +    struct dp_aux_private *aux;
->>>> +
->>>> +    aux = container_of(dp_aux, struct dp_aux_private, dp_aux);
->>>> +
->>>> +    pm_runtime_get_sync(aux->dev);
->>>> +    ret = dp_catalog_aux_wait_for_hpd_connect_state(aux->catalog);
->>>> +    pm_runtime_put_sync(aux->dev);
->>>> +
->>>> +    return ret;
->>>> +}
->>>> +
->>>>    struct drm_dp_aux *dp_aux_get(struct device *dev, struct dp_catalog
->>>> *catalog,
->>>>                      bool is_edp)
->>>>    {
->>>> @@ -528,6 +543,16 @@ struct drm_dp_aux *dp_aux_get(struct device
->>>> *dev, struct dp_catalog *catalog,
->>>>        aux->catalog = catalog;
->>>>        aux->retry_cnt = 0;
->>>>    +    /*
->>>> +     * Use the drm_dp_aux_init() to use the aux adapter
->>>> +     * before registering aux with the DRM device.
->>>> +     */
->>>> +    aux->dp_aux.name = "dpu_dp_aux";
->>>> +    aux->dp_aux.dev = dev;
->>>> +    aux->dp_aux.transfer = dp_aux_transfer;
->>>> +    aux->dp_aux.wait_hpd_asserted = dp_wait_hpd_asserted;
->>>> +    drm_dp_aux_init(&aux->dp_aux);
->>>> +
->>>>        return &aux->dp_aux;
->>>>    }
->>>>    diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
->>>> b/drivers/gpu/drm/msm/dp/dp_display.c
->>>> index 185f1eb..7ed4bea 100644
->>>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
->>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->>>> @@ -302,10 +302,6 @@ static int dp_display_bind(struct device *dev,
->>>> struct device *master,
->>>>            goto end;
->>>>        }
->>>>    -    pm_runtime_enable(dev);
->>>> -    pm_runtime_set_autosuspend_delay(dev, 1000);
->>>> -    pm_runtime_use_autosuspend(dev);
->>>> -
->>>>        return 0;
->>>>    end:
->>>>        return rc;
->>>> @@ -322,8 +318,6 @@ static void dp_display_unbind(struct device *dev,
->>>> struct device *master,
->>>>          kthread_stop(dp->ev_tsk);
->>>>    -    of_dp_aux_depopulate_bus(dp->aux);
->>>> -
->>>>        dp_power_client_deinit(dp->power);
->>>>        dp_unregister_audio_driver(dev, dp->audio);
->>>>        dp_aux_unregister(dp->aux);
->>>> @@ -1245,6 +1239,29 @@ static const struct msm_dp_desc
->>>> *dp_display_get_desc(struct platform_device *pde
->>>>        return NULL;
->>>>    }
->>>>    +static void of_dp_aux_depopulate_bus_void(void *data)
->>>> +{
->>>> +    of_dp_aux_depopulate_bus(data);
->>>> +}
->>>> +
->>>> +static int dp_display_auxbus_emulation(struct dp_display_private *dp)
->>> Why is it called emulation?
->>>
->>>> +{
->>>> +    struct device *dev = &dp->pdev->dev;
->>>> +    struct device_node *aux_bus;
->>>> +    int ret = 0;
->>>> +
->>>> +    aux_bus = of_get_child_by_name(dev->of_node, "aux-bus");
->>>> +
->>>> +    if (aux_bus) {
->>>> +        ret = devm_of_dp_aux_populate_bus(dp->aux, NULL);
->>> And here you missed the whole point of why we have been asking for.
->>> Please add a sensible `done_probing' callback, which will call
->>> component_add(). This way the DP component will only be registered
->>> when the panel has been probed. Keeping us from the component binding
->>> retries and corresponding side effects.
->>>
->>>> +
->>>> +        devm_add_action_or_reset(dev, of_dp_aux_depopulate_bus_void,
->>>> +                     dp->aux);
->>> Useless, it's already handled by the devm_ part of the
->>> devm_of_dp_aux_populate_bus().
->>>
->>>> +    }
->>>> +
->>>> +    return ret;
->>>> +}
->>>> +
->>>>    static int dp_display_probe(struct platform_device *pdev)
->>>>    {
->>>>        int rc = 0;
->>>> @@ -1290,8 +1307,18 @@ static int dp_display_probe(struct
->>>> platform_device *pdev)
->>>>          platform_set_drvdata(pdev, &dp->dp_display);
->>>>    +    pm_runtime_enable(&pdev->dev);
->>>> +    pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
->>>> +    pm_runtime_use_autosuspend(&pdev->dev);
->>> Can we have this in probe right from the patch #2?
->> no, at patch#2, devm_of_dp_aux_populate_bus() is done ta bind timing.
->>
->> The device used by pm_runtime_get_sync() of generic_edp_panel_probe()
->> which is derived from devm_of_dp_aux_populate_bus() is different the
->> &pdev->dev here.
-> Excuse me, I don't get your answer. In patch #2 you have added
-> pm_runtime_enable() / etc to dp_display_bind().
-> In this patch you are moving these calls to dp_display_probe(). I
-> think that the latter is a better place for enabling runtime PM and as
-> such I've asked you to squash this chunk into patch #2.
-> Why isn't that going to work?
->
-> If I'm not mistaken here, the panel's call to pm_runtime_get_sync()
-> will wake up the panel and all the parent devices, including the DP.
-> That's what I meant in my comment regarding PM calls in the patch #1.
-> pm_runtime_get_sync() / resume() / etc. do not only increase the
-> runtime PM count. They do other things to parent devices, linked
-> devices, etc.
+Signed-off-by: John Allen <john.allen@amd.com>
+Cc: stable@vger.kernel.org
+---
+ arch/x86/include/asm/microcode_amd.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-sorry for late response,
+diff --git a/arch/x86/include/asm/microcode_amd.h b/arch/x86/include/asm/microcode_amd.h
+index e6662adf3af4..e3d5f5ae2f46 100644
+--- a/arch/x86/include/asm/microcode_amd.h
++++ b/arch/x86/include/asm/microcode_amd.h
+@@ -41,7 +41,7 @@ struct microcode_amd {
+ 	unsigned int			mpb[];
+ };
+ 
+-#define PATCH_MAX_SIZE (3 * PAGE_SIZE)
++#define PATCH_MAX_SIZE (8 * PAGE_SIZE)
+ 
+ #ifdef CONFIG_MICROCODE_AMD
+ extern void __init load_ucode_amd_bsp(unsigned int family);
+-- 
+2.39.3
 
-yes, pm_runtime_enable() at probe() is better and i did that original. 
-but it is not work.
-
-I found that,
-
-1) at dp_display_bind(), dev is mdss
-
-2) at probe() dev is dp
-
-3) pm_runtime_enable(dp's dev) and generic_edp_panel_probe() --> 
-pm_runtime_get_sync(mdss's dev)
-
-
-
->>>> +
->>>>        dp_display_request_irq(dp);
->>>>    +    if (dp->dp_display.is_edp) {
->>>> +        rc = dp_display_auxbus_emulation(dp);
->>>> +        if (rc)
->>>> +            DRM_ERROR("eDP aux-bus emulation failed, rc=%d\n", rc);
->>>> +    }
->>>> +
->>>>        rc = component_add(&pdev->dev, &dp_display_comp_ops);
->>>>        if (rc) {
->>>>            DRM_ERROR("component add failed, rc=%d\n", rc);
->>>> @@ -1306,11 +1333,14 @@ static int dp_display_remove(struct
->>>> platform_device *pdev)
->>>>        struct dp_display_private *dp =
->>>> dev_get_dp_display_private(&pdev->dev);
->>>>          component_del(&pdev->dev, &dp_display_comp_ops);
->>>> -    dp_display_deinit_sub_modules(dp);
->>>> -
->>>>        platform_set_drvdata(pdev, NULL);
->>>> +
->>>> +    pm_runtime_dont_use_autosuspend(&pdev->dev);
->>>> +    pm_runtime_disable(&pdev->dev);
->>>>        pm_runtime_put_sync_suspend(&pdev->dev);
->>>>    +    dp_display_deinit_sub_modules(dp);
->>>> +
->>>>        return 0;
->>>>    }
->>>>    @@ -1514,31 +1544,10 @@ void msm_dp_debugfs_init(struct msm_dp
->>>> *dp_display, struct drm_minor *minor)
->>>>      static int dp_display_get_next_bridge(struct msm_dp *dp)
->>>>    {
->>>> -    int rc;
->>>> +    int rc = 0;
->>>>        struct dp_display_private *dp_priv;
->>>> -    struct device_node *aux_bus;
->>>> -    struct device *dev;
->>>>          dp_priv = container_of(dp, struct dp_display_private,
->>>> dp_display);
->>>> -    dev = &dp_priv->pdev->dev;
->>>> -    aux_bus = of_get_child_by_name(dev->of_node, "aux-bus");
->>>> -
->>>> -    if (aux_bus && dp->is_edp) {
->>>> -        /*
->>>> -         * The code below assumes that the panel will finish probing
->>>> -         * by the time devm_of_dp_aux_populate_ep_devices() returns.
->>>> -         * This isn't a great assumption since it will fail if the
->>>> -         * panel driver is probed asynchronously but is the best we
->>>> -         * can do without a bigger driver reorganization.
->>>> -         */
->>>> -        rc = of_dp_aux_populate_bus(dp_priv->aux, NULL);
->>>> -        of_node_put(aux_bus);
->>>> -        if (rc)
->>>> -            goto error;
->>>> -    } else if (dp->is_edp) {
->>>> -        DRM_ERROR("eDP aux_bus not found\n");
->>>> -        return -ENODEV;
->>>> -    }
->>>>          /*
->>>>         * External bridges are mandatory for eDP interfaces: one has to
->>>> @@ -1551,17 +1560,9 @@ static int dp_display_get_next_bridge(struct
->>>> msm_dp *dp)
->>>>        if (!dp->is_edp && rc == -ENODEV)
->>>>            return 0;
->>>>    -    if (!rc) {
->>>> +    if (!rc)
->>>>            dp->next_bridge = dp_priv->parser->next_bridge;
->>>> -        return 0;
->>>> -    }
->>>>    -error:
->>>> -    if (dp->is_edp) {
->>>> -        of_dp_aux_depopulate_bus(dp_priv->aux);
->>>> -        dp_display_host_phy_exit(dp_priv);
->>>> -        dp_display_host_deinit(dp_priv);
->>>> -    }
->>>>        return rc;
->>>>    }
->
->
